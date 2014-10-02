@@ -13,7 +13,8 @@ module ngApp.widgets {
       resolve: {
         widgets: (WidgetsService: IWidgetsService) => {
           return WidgetsService.getWidgets();
-        }}
+        }
+      }
     });
 
     $stateProvider.state("widget", {

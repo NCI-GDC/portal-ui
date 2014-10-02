@@ -1,0 +1,17 @@
+<div class="container">
+  <h1>Widgets</h1>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr data-ng-repeat="w in wsc.widgets.hits track by w.id">
+      <td><a data-ui-sref="widget({ widgetId : w.id })">{{ w.id }}</a></td>
+      <td>{{ w.name }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

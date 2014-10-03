@@ -1,0 +1,39 @@
+<div class="container entity">
+  <h1>Participants</h1>
+  <table class="table table-striped table-hover table-condensed table-bordered">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Code</th>
+      <th>Participant Number</th>
+      <th>Site</th>
+      <th>Program</th>
+      <th>Status</th>
+      <th>Number of Data Files</th>
+      <th>Number of Annotations</th>
+      </tr>
+    </tr>
+    </thead>
+    <tbody>
+    <tr data-ng-repeat="p in psc.participants.hits track by p.id">
+      <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
+      <td>{{ p.code }}</td>
+      <td>{{ p.number }}</td>
+      <td>{{ p.site }}</td>
+      <td>{{ p.program }}</td>
+      <td>{{ p.status }}</td>
+      <td>
+        <a data-ui-sref="files({ participantId: p.id })">
+          {{ p.files.length }}
+        </a>
+      </td>
+      <td>
+        <a data-ui-sref="annotations({ participantId: p.id })">
+          {{ p.annotations.length }}
+        </a>
+      </td>
+      </tr>
+    </tr>
+    </tbody>
+  </table>
+</div>

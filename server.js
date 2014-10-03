@@ -70,6 +70,146 @@ router.get('/projects/:id', function (req, res) {
   }));
 });
 
+// Participants
+var participants = {
+  pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  facets: [],
+  hits: [
+    { 
+      id: 'P1',
+      code: 'TCGA-OR-A5L9',
+      number: 'A5L9'
+    },
+    { 
+      id: 'P2',
+      code: 'TCGA-OR-A4L8',
+      number: 'A4L8'
+    },
+    { 
+      id: 'P3',
+      code: 'TCGA-OR-A3L7',
+      number: 'A3L7'
+    },
+    { 
+      id: 'P4',
+      code: 'TCGA-OR-A2L6',
+      number: 'A2L6'
+    },
+    { 
+      id: 'P5',
+      code: 'TCGA-OR-A1L5',
+      number: 'A1L5'
+    },
+  ]};
+
+  var statuses = [
+    "Withdrawn",
+    "Active",
+    "In Trials"
+  ];
+
+  var sites = [
+    "Brain",
+    "Colon",
+    "Lungs",
+    "Breast",
+    "Skin"
+  ];
+
+  var uuid = require("node-uuid");
+
+  participants.hits.forEach(function(participant) {
+    participant.site = sites[Math.round(Math.random() * sites.length)];
+    participant.program = "TARGET";
+    participant.status = statuses[Math.round(Math.random() * statuses.length)];
+    participant.files = [];
+    for (var i = 0; i < Math.round(Math.random() * 700); i++) {
+      participant.files.push({});
+    }
+    participant.annotations = [];
+    for (var k = 0; k < Math.round(Math.random() * 10); k++) {
+      participant.annotations.push({});
+    }
+    participant.uuid = uuid.v4();
+    participant.gender = Math.round(Math.random()) ? "Male" : "Female";
+    participant.vitStatus = Math.round(Math.random()) ? "Deceased" : "Alive";
+    participant.key = uuid.v1();
+
+    participant.experiments = [
+      {
+        name: "RNA-Seq",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "WGS",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "WXS",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "miRNA-Seq",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Bisulfite-Seq",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Genotype Array",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      }
+    ];
+
+    participant.data = [
+      {
+        name: "Clinical Data",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "DNA Mutation",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "DNA Copy Number",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "mRNA Expression",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "miRNA Expression",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Methylation",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Protein Expression",
+        files: "-"
+      }
+    ];
+
+  });
+
+router.get('/participants', function (req, res) {
+  res.json(participants);
+});
+router.get('/participants/:id', function (req, res) {
+  res.json(_.find(participants.hits, function (obj) {
+    return obj.id === req.params.id;
+  }));
+});
+
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api

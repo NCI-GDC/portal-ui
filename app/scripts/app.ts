@@ -23,6 +23,7 @@ angular
 
       "ngApp.home",
       "ngApp.widgets",
+      "ngApp.participants",
       "ngApp.components",
       "templates"
     ])

@@ -245,8 +245,17 @@ gulp.task('ng:templates', function () {
 });
 // </ng-templates>
 
+gulp.task('api:server', function () {
+  //start the server at the beginning of the task
+  $.express.run({
+    file: 'server.js'
+  });
+
+  $.util.log("Development API server running on port 3001");
+});
+
 // Watch Files For Changes & Reload
-gulp.task('serve', ['default'], function () {
+gulp.task('serve', ['api:server', 'default'], function () {
   var bsOpts = {
     notify: false,
     // Run as an https by uncommenting 'https: true'

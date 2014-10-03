@@ -12,7 +12,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    RestangularProvider: restangular.IProvider) {
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/");
-  RestangularProvider.setBaseUrl("https://dcc.icgc.org/api/v1");
+  RestangularProvider.setBaseUrl("http://localhost:3001/api");
 }
 
 angular

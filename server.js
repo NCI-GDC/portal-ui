@@ -31,6 +31,25 @@ router.get('/', function (req, res) {
 });
 
 // more routes for our API will happen here
+// Widgets
+var widgets = {
+  pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  facets: [],
+  hits: [
+    {id: 'PR1', name: 'Widget One'},
+    {id: 'PR2', name: 'Widget Two'},
+    {id: 'PR3', name: 'Widget Three'},
+    {id: 'PR4', name: 'Widget Four'},
+    {id: 'PR5', name: 'Widget Five'}
+  ]};
+router.get('/widgets', function (req, res) {
+  res.json(widgets);
+});
+router.get('/widgets/:id', function (req, res) {
+  res.json(_.find(widgets.hits, function (obj) {
+    return obj.id === req.params.id;
+  }));
+});
 // Projects
 var projects = {
   pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},

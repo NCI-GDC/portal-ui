@@ -1,12 +1,13 @@
 exports.config = {
     // The file path to the selenium server jar.
-    seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.42.2.jar',
-    chromeOnly: false,
+    seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.43.1.jar',
+    chromeOnly: true,
     capabilities: {
-        browserName: 'firefox'
+        browserName: 'chrome'
     },
-    specs: ['src/tests/integration/**/*.js'],
-    baseUrl: 'http://localhost:8001',
+
+    specs: ['app/tests/**/*.spec.js'],
+    baseUrl: 'http://localhost:3000',
     framework: 'mocha',
     mochaOpts: {
         ui: 'bdd',

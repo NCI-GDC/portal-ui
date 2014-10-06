@@ -17,7 +17,7 @@ module ngApp.models {
     page: number;
     pages: number;
     sort: string;
-    order: SortOrder;
+    order: string;
   }
 
   export class Pagination implements IPagination {
@@ -28,7 +28,7 @@ module ngApp.models {
     page: number;
     pages: number;
     sort: string;
-    order: SortOrder;
+    order: string;
 
     constructor(obj: any) {
       this.count = obj.count;
@@ -38,8 +38,7 @@ module ngApp.models {
       this.page = obj.page;
       this.pages = obj.pages;
       this.sort = obj.sort;
-      var o: string = obj.order;
-      this.order = SortOrder[o];
+      this.order = obj.order;
     }
   }
 

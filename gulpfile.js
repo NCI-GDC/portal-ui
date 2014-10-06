@@ -155,12 +155,16 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
 
 // <tests>
 
-gulp.task('karma:once', function () {
+gulp.task('plato', function () {
+  return gulp.src('.tmp/scripts/**/*.js')
+      .pipe($.plato('report'));
+});
+
+gulp.task('karma:once', ['plato'], function () {
   // Be sure to return the stream
-  return gulp.src('app/test/**/*.js')
+  return gulp.src('app/scripts/*.js')
       .pipe($.karma({
         configFile: 'karma.conf.js',
-        noResolve: true,
         action: 'run'
       }))
       .on('error', function (err) {
@@ -170,9 +174,8 @@ gulp.task('karma:once', function () {
 });
 
 gulp.task('karma:watch', function () {
-  return gulp.src('app/scripts/**/*.ts')
-      .concat('app.js')
-      .pipe(karma({
+  return gulp.src('app/scripts/*.js')
+      .pipe($.karma({
         configFile: 'karma.conf.js',
         action: 'watch'
       }));
@@ -181,7 +184,7 @@ gulp.task('karma:watch', function () {
 gulp.task('webdriver', $.protractor.webdriver_update);
 
 gulp.task('protractor', ['webdriver'], function () {
-  return gulp.src(globs.integration)
+  return gulp.src('app/tests/**/*.spec.js')
       .pipe($.protractor.protractor({configFile: 'protractor.conf.js'}));
 });
 // </tests>
@@ -206,6 +209,7 @@ gulp.task('ts:compile', function () {
       .pipe($.typescript(tsProject));
 
   tsResult.dts.pipe(gulp.dest('dist/dts'));
+  tsResult.js.pipe(gulp.dest('.tmp'));
 
   return tsResult.js
       .pipe($.sourcemaps.init())
@@ -245,7 +249,7 @@ gulp.task('ng:templates', function () {
 });
 // </ng-templates>
 
-gulp.task('api:server', function () {
+gulp.task('serve:api', function () {
   //start the server at the beginning of the task
   $.express.run({
     file: 'server.js'
@@ -255,7 +259,7 @@ gulp.task('api:server', function () {
 });
 
 // Watch Files For Changes & Reload
-gulp.task('serve', ['api:server', 'default'], function () {
+gulp.task('serve:web', function (cb) {
   var bsOpts = {
     notify: false,
     // Run as an https by uncommenting 'https: true'
@@ -280,6 +284,10 @@ gulp.task('serve', ['api:server', 'default'], function () {
     gulp.watch(['app/scripts/**/*.html'], ['ng:templates', reload]);
     gulp.watch(['app/images/**/*'], ['images', reload]);
   }
+});
+
+gulp.task('serve', function (cb) {
+  runSequence('default', ['karma:watch', 'serve:api', 'serve:web'], cb);
 });
 
 // Build Production Files, the Default Task

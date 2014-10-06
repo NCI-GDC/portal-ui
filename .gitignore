@@ -1,7 +1,11 @@
-dist/
+.idea/
+
 node_modules/
 bower_components/
-npm-debug.log
+npm-debug.log*
 
-.idea/
+dist/
+.tmp/
+coverage/
+report/
 

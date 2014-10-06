@@ -10,30 +10,20 @@ module ngApp.widgets.services {
   }
 
   class WidgetsService implements IWidgetsService {
-    private static logWidget(id: string, params: Object) {
-      console.log("Received widget ", id, " request with params: ", params);
-    }
-
-    private static logWidgets(params: Object) {
-      console.log("Received widgets request with params: ", params);
-    }
-
     private ds: restangular.IElement;
 
     /* @ngInject */
     constructor(Restangular: restangular.IService) {
-      this.ds = Restangular.all("projects");
+      this.ds = Restangular.all("widgets");
     }
 
     getWidget(id: string, params: Object = {}): ng.IPromise<Widget> {
-      WidgetsService.logWidget(id, params);
       return this.ds.get(id, params).then(function (response) {
         return new Widget(response);
       });
     }
 
     getWidgets(params: Object = {}): ng.IPromise<Widgets> {
-      WidgetsService.logWidgets(params);
       return this.ds.get("", params).then(function (response) {
         return new Widgets(response);
       });
@@ -41,6 +31,6 @@ module ngApp.widgets.services {
   }
 
   angular
-      .module("widgets.services", ["widgets.models"])
+      .module("widgets.services", ["widgets.models", "restangular"])
       .service("WidgetsService", WidgetsService);
 }

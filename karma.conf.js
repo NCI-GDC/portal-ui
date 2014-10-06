@@ -5,33 +5,40 @@ module.exports = function (config) {
     browsers: ['PhantomJS'],
     plugins: [
       'karma-mocha',
-      'karma-typescript-preprocessor',
+      'karma-mocha-reporter',
+      'karma-coverage',
       'karma-phantomjs-launcher',
       'karma-chai-sinon'
     ],
     files: [
       'bower_components/angular/angular.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
+      'bower_components/restangular/dist/restangular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/lodash/dist/lodash.js',
-      'dist/js/templates.js',
-      'dist/js/app.js',
-      'app/tests/unit/**/*.js'
+      '.tmp/scripts/**/*.js',
+      'app/scripts/**/*.tests.js'
     ],
     exclude: ['app/tests/integration/**/*.js'],
     preprocessors: {
-      '**/*.ts': ['typescript']
+      '.tmp/scripts/**/*.js': ['coverage']
     },
-    typescriptPreprocessor: {
-      // options passed to the typescript compiler
-      options: {
-        sourceMap: false, // (optional) Generates corresponding .map file.
-        target: 'ES5', // (optional) Specify ECMAScript target version: 'ES3' (default), or 'ES5'
-        module: 'amd', // (optional) Specify module code generation: 'commonjs' or 'amd'
-        noImplicitAny: true, // (optional) Warn on expressions and declarations with an implied 'any' type.
-        noResolve: true, // (optional) Skip resolution and preprocessing.
-        removeComments: true // (optional) Do not emit comments to output.
-      }
+    colors: true,
+    autoWatch: true,
+    singleRun: false,
+
+    // level of logging
+    // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
+    logLevel: config.LOG_INFO,
+
+    reporters: ['mocha', 'coverage'],
+    // reporter options
+    mochaReporter: {
+      output: 'autowatch'
+    },
+    coverageReporter: {
+      type: 'html',
+      dir: 'coverage/'
     }
   });
 

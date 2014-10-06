@@ -62,6 +62,13 @@ gulp.task('fonts', function () {
       .pipe($.size({title: 'fonts'}));
 });
 
+// Copy External non Bower Libraries To Dist
+gulp.task('vendor', function () {
+  return gulp.src(['app/vendor/**'])
+      .pipe(gulp.dest('dist/libs'))
+      .pipe($.size({title: 'vendor'}));
+});
+
 // Compile and Automatically Prefix Stylesheets
 gulp.task('styles', function () {
   var f = production ? 'styles.min.css' : 'styles.css';
@@ -292,7 +299,7 @@ gulp.task('serve', function (cb) {
 
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['rev', 'images', 'fonts', 'ts:compile'], cb);
+  runSequence('styles', ['rev', 'images', 'fonts', 'vendor', 'ts:compile'], cb);
 });
 
 // Run PageSpeed Insights

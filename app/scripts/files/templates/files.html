@@ -1,0 +1,17 @@
+<div class="container entity files">
+  <h1>Files</h1>
+  <table class="table table-striped table-hover table-condensed table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-ng-repeat="f in fsc.files.hits track by f.id">
+        <td><a data-ui-sref="file({ fileId : f.id })">{{ f.id }}</a></td>
+        <td>{{ f.filename }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

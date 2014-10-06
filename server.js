@@ -6,6 +6,7 @@ var express = require('express'); 		// call express
 var _ = require('lodash'); 		// call lodash
 var app = express(); 				// define our app using express
 var bodyParser = require('body-parser');
+var uuid = require('node-uuid');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -116,8 +117,6 @@ var participants = {
     "Skin"
   ];
 
-  var uuid = require("node-uuid");
-
   participants.hits.forEach(function(participant) {
     participant.site = sites[Math.round(Math.random() * sites.length)];
     participant.program = "TARGET";
@@ -210,6 +209,88 @@ router.get('/participants/:id', function (req, res) {
   }));
 });
 
+var files = {
+  pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  facets: [],
+  hits: [
+    { id: 'F1' },
+    { id: 'F2' },
+    { id: 'F3' },
+    { id: 'F4' },
+    { id: 'F5' }
+  ]};
+
+files.hits.forEach(function(file) {
+  var fileCount = Math.round(Math.random()) ? 3 : 1;
+
+  file.files = [];
+  file.code = 'TCGA-59-2352-10A-01W-' + Math.round(Math.random() * 8000) + '-08';
+  file.uuid = uuid.v4();
+  file.filename = 'C239.' + file.code;
+
+  for (var i = 0; i < fileCount; i++) {
+    file.files.push({
+      code: 'TCGA-59-2352-10A-01W-' + Math.round(Math.random() * 8000) + '-08',
+      checksum: '9b8cebc0421241d087f6ab7e815285af803de7e7',
+      filename: 'C239.' + file.code,
+      published: '2013-05-23',
+      uploaded: '2013-05-23',
+      modified: '2013-06-03',
+      size: ((Math.random() * 2000000) / 1024).toFixed(2) + " GB",
+      state: Math.round(Math.random()) ? 'Live' : 'Inactive'
+    });
+  }
+
+  file.metadata = {
+    'Study': 'TCGA',
+    'Barcode': file.code,
+    'Disease': 'OV',
+    'Disease Name': 'Ovarian serous cystadenocarcinoma',
+    'Sample Type': 'NB',
+    'Sample Type Name': '10',
+    'Analyte Type': 'WGA',
+    'Library Type': 'WXS',
+    'Center': 'BI',
+    'Center Name': 'Broad Institute of MIT and Harvard',
+    'Platform': 'Illumina',
+    'Assembly': 'HG19_Broad_variant',
+    'Analysis Id': uuid.v1(),
+    'Aliquot Id': uuid.v1(),
+    'Participant Id': uuid.v1(),
+    'Sample Id': uuid.v1(),
+    'TSS Id': 'Roswell Park: Ovarian serous cystadenocarcinoma 59',
+    'Sample Accession': 'SRS061424'
+  };
+
+  file.metadataXML = {};
+
+  _.forIn(file.metadata, function(val, key) {
+    file.metadataXML[key.replace(/ /g, "-")] = val;
+  });
+
+  var baseXML = _.assign({}, file.metadataXML);
+
+  file.metadataXML.a = _.assign({}, baseXML);
+  file.metadataXML.f = _.assign({}, baseXML);
+  file.metadataXML.a.d = _.assign({}, baseXML);
+
+  // Note: XML generated in this fashion as a temporary means to do mockups.
+  // Please remove the npm package when a real backend exists.
+  file.metadataXML = require("js2xmlparser")('clinical', file.metadataXML, {
+    declaration: {
+      include: false
+    }
+  });
+});
+
+router.get('/files', function (req, res) {
+  res.json(files);
+});
+router.get('/files/:id', function (req, res) {
+  res.json(_.find(files.hits, function (obj) {
+    return obj.id === req.params.id;
+  }));
+});
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api

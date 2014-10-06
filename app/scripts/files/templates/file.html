@@ -1,0 +1,77 @@
+<div class="container entity file">
+  <h1>
+    <span class="entity-identifier">Pa</span>
+    {{ fc.file.code }}
+    <br>
+    <small>UUID: {{ fc.file.uuid }}</small>
+  </h1>
+
+  <section class="entity-section row">
+    <div class="col-lg-8 col-md-8">
+      <div class="row file-row" data-ng-repeat="file in fc.file.files">
+
+        <div class="col-lg-12 col-md-12">
+          <h3>File Properties - {{ file.code }}</h3>
+          <table class="table table-striped table-hover table-condensed table-bordered">
+            <tbody>
+              <tr>
+                <td>File Name</td>
+                <td>{{ file.filename }}</td>
+              </tr>
+              <tr>
+                <td>File Size</td>
+                <td>{{ file.size }}</td>
+              </tr>
+              <tr>
+                <td>Checksum</td>
+                <td>{{ file.checksum }}</td>
+              </tr>
+              <tr>
+                <td>Published</td>
+                <td>{{ file.published }}</td>
+              </tr>
+              <tr>
+                <td>Uploaded</td>
+                <td>{{ file.uploaded }}</td>
+              </tr>
+              <tr>
+                <td>Modified</td>
+                <td>{{ file.modified }}</td>
+              </tr>
+              <tr>
+                <td>State</td>
+                <td>{{ file.state }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="entity-section row">
+    <div class="col-lg-8 col-md-8">
+      <h2>Clinical Metadata</h2>
+      <table class="table table-striped table-hover table-condensed table-bordered">
+        <tbody>
+          <tr data-ng-repeat="(key, value) in fc.file.metadata">
+            <td>{{ key }}</td>
+            <td>{{ value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="entity-section row">
+    <div class="col-lg-8 col-md-8">
+      <h2>
+        Metadata XML
+        <button class="btn btn-default pull-right add">Add to list</button>
+        <button class="btn btn-default pull-right">Download Metadata XML</button>
+      </h2>
+      <xml-viewer id="xmlViewer" xml="fc.file.metadataXML"></xml-viewer>
+    </div>
+  </section>
+</div>

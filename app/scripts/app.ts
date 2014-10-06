@@ -24,6 +24,7 @@ angular
       "ngApp.home",
       "ngApp.widgets",
       "ngApp.participants",
+      "ngApp.files",
       "ngApp.components",
       "templates"
     ])

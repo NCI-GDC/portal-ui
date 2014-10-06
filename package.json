@@ -49,6 +49,7 @@
     "gulp-useref": "1.0.2",
     "gulp-util": "3.0.1",
     "gulp-wrap": "0.3.0",
+    "js2xmlparser": "0.1.5",
     "karma": "0.12.24",
     "karma-angular-templating-html2js-preprocessor": "^0.2.1",
     "karma-chai-sinon": "0.1.3",

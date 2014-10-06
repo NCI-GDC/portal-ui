@@ -1,0 +1,61 @@
+/*
+ * The following is a copy of the CSS from
+ * https://browser.cghub.ucsc.edu/static/css/libs/xmldisplay/XMLDisplay.css
+ * with some minor modifications to make it work better within our system.
+ */
+#xmlViewer {
+  outline: none;
+}
+
+#xmlViewer .Utility {
+  color: black;
+}
+
+#xmlViewer .NodeName {
+  font-weight: bold;
+  color: #800080;
+}
+
+#xmlViewer .AttributeName {
+  font-weight: bold;
+  color: black;
+}
+
+#xmlViewer .AttributeValue {
+  color: blue;
+}
+
+#xmlViewer .NodeValue {
+  color: black;
+}
+
+#xmlViewer .Element {
+  padding-top: 0px;
+  margin-top: 0px;
+  padding-left: 2px;
+}
+
+#xmlViewer .Clickable {  
+  background: transparent no-repeat url(/images/expand_collapse.png) 0 0;
+  height: 12px;
+  width: 14px;
+  display: inline-block;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+#xmlViewer .Clickable.element-expand {
+  background-position: 0 0;
+}
+
+#xmlViewer .Clickable.element-collapse {
+  background-position: -27px 0;
+}
+
+#xmlViewer .Clickable.element-expand-all {
+  background-position: -51px 0;
+}
+
+#xmlViewer .Clickable.element-collapse-all {
+  background-position: -72px 0;
+}

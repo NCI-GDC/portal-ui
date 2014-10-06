@@ -1,0 +1,100 @@
+.entity {
+
+  .entity-identifier {
+    display: inline-block;
+    font-size: 25px;
+    border: 1px solid black;
+    border-radius: 2px;
+    padding: 5px;
+    margin-right: 20px;
+  }
+
+  h1.header {
+    display: inline-block;
+    vertical-align: sub;
+  }
+
+  .entity-uuid {
+    font-weight: 600;
+    display: block;
+  }
+
+  span.heading-title {
+    display: block;
+    border-bottom: 1px solid #DEDEDE;
+    padding-bottom: 5px;
+    margin-top: 10px;
+    font-weight: 600;
+  }
+
+  h3.heading-title {
+    border-bottom: 1px solid #DEDEDE;
+    padding-bottom: 15px;
+
+    button {
+      float: right;
+
+      &:last-child {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  .entity-table {
+    margin-bottom: 10px;
+
+    table {
+      width: 100%;
+
+      tr {
+        display: block;
+
+        > th, td {
+          display: inline-block;
+        }
+      }
+
+      tbody {
+        display: block;
+
+        > tr:nth-child(even) {
+          background-color: #E9E9E9;
+        }
+
+        td {
+          padding-top: 5px;
+          padding-bottom: 5px;
+          margin: 0;
+
+          a {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      thead {
+        display: block;
+      }
+    }
+
+    &.entity-data table {
+      margin-top: 25px;
+    }
+  }
+
+  .clinical-row button.btn {
+    margin-top: 20px;
+  }
+
+  .entity-experiments table > tbody {
+    margin-top: 5px;
+  }
+
+  .entity-experiments, .entity-data {
+    table > tbody {
+      height: 250px;
+      overflow-y: auto;
+    }
+  }
+
+}

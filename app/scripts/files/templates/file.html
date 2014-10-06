@@ -1,0 +1,90 @@
+<div class="container entity file">
+  <div class="entity-identifier">AF</div>
+  <h1 class="header">{{ fc.file.code }}</h1>
+  <span class="entity-uuid">UUID: {{ fc.file.uuid }}</span>
+
+  <section class="entity-section row">
+    <div class="col-lg-12 col-md-12">
+      <h3>Files</h3>
+      <div class="row file-row" data-ng-repeat="file in fc.file.files">
+
+        <section class="col-lg-12 col-md-12 entity-table">
+          <span class="heading-title">File Properties - {{ file.code }}</span>
+          <table>
+            <tbody>
+              <tr>
+                <td class="col-lg-3 col-md-3">File Name</td>
+                <td class="col-lg-9 col-md-9">{{ file.filename }}</td>
+              </tr>
+              <tr>
+                <td class="col-lg-3 col-md-3">File Size</td>
+                <td class="col-lg-9 col-md-9">{{ file.size }}</td>
+              </tr>
+              <tr>
+                <td class="col-lg-3 col-md-3">Checksum</td>
+                <td class="col-lg-9 col-md-9">{{ file.checksum }}</td>
+              </tr>
+              <tr>
+                <td class="col-lg-3 col-md-3">Published</td>
+                <td class="col-lg-9 col-md-9">{{ file.published }}</td>
+              </tr>
+              <tr>
+                <td class="col-lg-3 col-md-3">Uploaded</td>
+                <td class="col-lg-9 col-md-9">{{ file.uploaded }}</td>
+              </tr>
+              <tr>
+                <td class="col-lg-3 col-md-3">Modified</td>
+                <td class="col-lg-9 col-md-9">{{ file.modified }}</td>
+              </tr>
+              <tr>
+                <td class="col-lg-3 col-md-3">State</td>
+                <td class="col-lg-9 col-md-9">{{ file.state }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="entity-section row">
+    <div class="col-lg-12 col-md-12">
+      <h3 class="heading-title">Clinical Metadata</h3>
+      <div class="row">
+
+        <section class="col-lg-12 col-md-12 entity-table">
+          <table>
+            <tbody>
+              <tr data-ng-repeat="(key, value) in fc.file.metadata">
+                <td class="col-lg-3 col-md-3">{{ key }}</td>
+                <td class="col-lg-9 col-md-9">{{ value }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="entity-section row">
+    <div class="col-lg-12 col-md-12">
+      <h3 class="heading-title">
+        Metadata XML
+        <button class="btn btn-default">Add to list</button>
+        <button class="btn btn-default">Download Metadata XML</button>
+      </h3>
+
+      <div class="row">
+
+        <section class="col-lg-12 col-md-12 entity-table">
+          <code>
+            {{ fc.file.metadataXML }}
+          </code>
+        </section>
+
+      </div>
+    </div>
+  </section>
+</div>

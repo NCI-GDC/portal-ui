@@ -1,4 +1,11 @@
-`Buzzwords: #typescript #angularjs #immutablejs #gulp #less #bower #selenium`
+`Buzzwords: #typescript #angularjs #immutablejs #gulp #less #bower #selenium #karma #protractor`
+
+- [Technologies](#technologies)
+- [Installation](#installation)
+- [Tests](#tests)
+- [Development](#development)
+- [Production](#production)
+- [Resources](#resources)
 
 # Technologies
 
@@ -11,85 +18,94 @@
 - [Protractor](https://github.com/angular/protractor) - E2E test framework for Angular apps
 - [Less](http://learnboost.github.io/stylus/)
 
-# Setup
+# Installation
 
-###Git hook
+## Global Dependencies
+
+Before continuing you must have the following programs installed:
+
+- [Node](http://nodejs.org/)
+
+## Setup Script
+
+Running the setup script will:
+
+1. Setup the needed git hook for the project
+2. Install npm and bower dependencies
+
+```
+❯ ./setup.sh
+commit-msg already exists! Backing up to commit-msg.bak...  OK
+Setting up commit-msg git hook...                           OK
+Making commit-msg executable...                             OK
+Making validate-commit.py executable...                     OK
+Confirming Node is installed...                             OK
+Installing NPM dependencies...
+...
+Setup Successful!
+```
+
+### Git hooks
 
 Git commit-msg hook is based on Angular's [Guidelines](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#)
 
-- Create a git commit message hook file
+The git hooks can be found in `git_hooks/`
 
-```
-mv .git/hooks/commit-msg.sample .git/hooks/commit-msg
-```
+### Project Dependencies
 
-- Edit `.git/hooks/commit-msg`
+Project dependencies are managed using [Bower](http://bower.io/) and [NPM](https://www.npmjs.org/)
 
-```
-#!/bin/sh
-
-exec < /dev/tty
-git_hooks/validate-commit.py $1
-```
-- Make sure `git_hooks/validate-commit.py` is executable
-
-```
-chmod 755 git_hooks/validate-commit.py
-```
-
-### Dependences
-
-The project is setup to use Bower and NPM
-
-```
-> npm install
-> npm run bower
-```
-
-Tests
-=
+# Tests
 
 Unit tests are run using Karma
 
 ```
-> npm test
+❯ npm test
 ...
+[16:44:06] Starting Karma server...
+WARN [karma]: Port 9876 in use
+INFO [karma]: Karma v0.12.24 server started at http://localhost:9877/
+INFO [launcher]: Starting browser PhantomJS
+INFO [PhantomJS 1.9.7 (Mac OS X)]: Connected on socket m-mK9_Udpg1Jb226Ws3o with id 36984552
+...
+Finished in 0.014 secs / 0.001 secs
 ```
-
-
 
 Browser tests are run with Protractor
 
 ```
-> npm run browsertest
+❯ npm run prot
 ...
-
-Starting selenium server in parallel mode... started - PID:  11996
-
+[16:34:28] Starting 'webdriver'...
+selenium standalone is up to date.
+chromedriver is up to date.
+[16:34:28] Finished 'webdriver' after 199 ms
+[16:34:28] Starting 'protractor'...
+Using ChromeDriver directly...
+...
+[16:34:32] Finished 'protractor' after 4.23 s
 
 ```
 
-Development
-=
+# Development
 
 The development server is setup using Browsersync
 
 ```
-> npm start
-Environment Development
+❯ npm start
+[16:47:02] Environment Development
 ...
 [BS] Local URL: http://localhost:3000
 [BS] External URL: http://192.168.1.42:3000
 [BS] Serving files from: dist
 ```
 
-Production
-=
+# Production
 
 Gulp bundles all the assets in production mode and creates unique file names for caching
 
 ```
-> npm dist
+❯ npm dist
 ...
 Found 3 matching tests...
 ...
@@ -97,15 +113,14 @@ Environment Production
 ...
 Starting selenium server in parallel mode...
 ...
-> cd dist
-> python -m SimpleHTTPServer
+❯ cd dist
+❯ python -m SimpleHTTPServer
 Serving HTTP on 0.0.0.0 port 8000
 ...
-> open http://localhost:8000/
+❯ open http://localhost:8000/
 ```
 
-Resources
-=
+# Resources
 
 - [angularjs-via-typescript-controllers](http://kodeyak.wordpress.com/2014/02/12/angularjs-via-typescript-controllers/)
 - [AngularJS + TypeScript : Controllers, Best Practice](https://www.youtube.com/watch?v=WdtVn_8K17E)

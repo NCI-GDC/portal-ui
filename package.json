@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "homepage": "",
   "description": "",
-  "repository": "",
+  "repository": "https://github.com/NCI-GDC/portal-ui",
   "README": "",
   "devDependencies": {
     "body-parser": "^1.9.0",
@@ -69,7 +69,7 @@
     "typescript": "1.0.1"
   },
   "scripts": {
-    "bower": "bower install",
+    "bower": "bower install --quiet",
     "test": "gulp karma:once",
     "prot": "gulp protractor",
     "start": "gulp serve",

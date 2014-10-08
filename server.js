@@ -292,6 +292,50 @@ router.get('/files/:id', function (req, res) {
   }));
 });
 
+// Annotations
+var annotations = {
+  pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  facets: [],
+  hits: [
+    {id: 'A1', uuid: uuid.v4() },
+    {id: 'A2', uuid: uuid.v4() },
+    {id: 'A3', uuid: uuid.v4() },
+    {id: 'A4', uuid: uuid.v4() },
+    {id: 'A5', uuid: uuid.v4() }
+  ]};
+
+annotations.hits.forEach(function(annotation) {
+  annotation.notes = [];
+
+  for (var i = 0; i < Math.max(1, Math.round(Math.random() * 3)); i++) {
+    annotation.notes.push({
+      created: new Date(),
+      group: "DCC",
+      text: "It provides a way to enter annotations for specific items. User can also browse/query the annotations." +
+            "It's also mentioned that when user downloaded the data, the associated annotation data should also be " +
+            "packaged into the download."
+    });
+  }
+
+  annotation.itemId = Math.max(30000, Math.round(Math.random() * 20000000));
+  annotation.itemType = "Aliquot";
+  annotation.participantId = Math.random().toString(36).substring(0, 8);
+  annotation.project = {
+    name: "BLD-TCGA"
+  };
+  annotation.category = "Item Flagged DNU";
+  annotation.created = new Date();
+  annotation.status = Math.round(Math.random()) ? "Approved" : "Denied";
+});
+router.get('/annotations', function (req, res) {
+  res.json(annotations);
+});
+router.get('/annotations/:id', function (req, res) {
+  res.json(_.find(annotations.hits, function (obj) {
+    return obj.id === req.params.id;
+  }));
+});
+
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);

@@ -1,0 +1,29 @@
+<div class="container entity annotations">
+  <h1>Annotations</h1>
+  <table class="table table-striped table-hover table-condensed table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Item ID</th>
+        <th>Item Type</th>
+        <th>Participant ID</th>
+        <th>Project</th>
+        <th>Category</th>
+        <th>Created By</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-ng-repeat="a in asc.annotations.hits track by a.id">
+        <td><a data-ui-sref="annotation({ annotationId : a.id })">{{ a.id }}</a></td>
+        <td>{{ a.itemId }}</td>
+        <td>{{ a.itemType }}</td>
+        <td>{{ a.participantId }}</td>
+        <td>{{ a.project.name }}</td>
+        <td>{{ a.category }}</td>
+        <td>{{ a.created }}</td>
+        <td>{{ a.status }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

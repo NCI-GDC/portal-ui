@@ -4,6 +4,7 @@
 - [Installation](#installation)
 - [Tests](#tests)
 - [Development](#development)
+- [Contributing](#contributing)
 - [Production](#production)
 - [Resources](#resources)
 
@@ -99,6 +100,10 @@ The development server is setup using Browsersync
 [BS] External URL: http://192.168.1.42:3000
 [BS] Serving files from: dist
 ```
+
+# Contributing
+
+Read how to contribute [here](https://github.com/NCI-GDC/portal-ui/blob/master/CONTRIBUTING.md)
 
 # Production
 

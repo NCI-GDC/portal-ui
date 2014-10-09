@@ -76,6 +76,6 @@
     "prot": "gulp protractor",
     "start": "gulp serve",
     "build": "gulp",
-    "upgrade": "npm-check-updates -u && bower-update"
+    "upgrade": "npm-check-updates -u && bower-update && npm test"
   }
 }

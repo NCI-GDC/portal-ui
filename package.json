@@ -71,7 +71,7 @@
     "typescript": "1.1.0-1"
   },
   "scripts": {
-    "bower": "bower install --quiet",
+    "postinstall": "bower install --quiet",
     "test": "gulp test",
     "prot": "gulp protractor",
     "start": "gulp serve",

@@ -6,6 +6,7 @@
 - [Development](#development)
 - [Contributing](#contributing)
 - [Production](#production)
+- [Verifying Tags](#verify)
 - [Resources](#resources)
 
 # Technologies
@@ -123,6 +124,13 @@ Starting selenium server in parallel mode...
 Serving HTTP on 0.0.0.0 port 8000
 ...
 ❯ open http://localhost:8000/
+```
+
+# Verifying Tags
+
+```
+❯ git show maintainer-pgp-pub | gpg --import
+❯ git tag --verify [signed-tag-name]
 ```
 
 # Resources

@@ -10,14 +10,6 @@ module ngApp.participants.services {
   }
 
   class ParticipantsService implements IParticipantsService {
-    private static logParticipant(id: string, params: Object) {
-      console.log("Received participant ", id, " request with params: ", params);
-    }
-
-    private static logParticipants(params: Object) {
-      console.log("Received participants request with params: ", params);
-    }
-
     private ds: restangular.IElement;
 
     /* @ngInject */
@@ -26,14 +18,12 @@ module ngApp.participants.services {
     }
 
     getParticipant(id: string, params: Object = {}): ng.IPromise<Participant> {
-      ParticipantsService.logParticipant(id, params);
       return this.ds.get(id, params).then(function (response) {
         return new Participant(response);
       });
     }
 
     getParticipants(params: Object = {}): ng.IPromise<Participants> {
-      ParticipantsService.logParticipants(params);
       return this.ds.get("", params).then(function (response) {
         return new Participants(response);
       });
@@ -41,6 +31,6 @@ module ngApp.participants.services {
   }
 
   angular
-      .module("participants.services", ["participants.models"])
+      .module("participants.services", ["participants.models", "restangular"])
       .service("ParticipantsService", ParticipantsService);
 }

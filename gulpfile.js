@@ -161,6 +161,9 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
 });
 
 // <tests>
+gulp.task('test', ['clean', 'ts:compile', 'ng:templates'], function() {
+  runSequence('karma:once')
+});
 
 gulp.task('plato', function () {
   return gulp.src('.tmp/scripts/**/*.js')

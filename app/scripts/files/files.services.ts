@@ -1,12 +1,10 @@
 module ngApp.files.services {
-  import IFile = ngApp.files.models.IFile;
-  import File = ngApp.files.models.File;
   import IFiles = ngApp.files.models.IFiles;
-  import Files = ngApp.files.models.Files;
+  import IFile = ngApp.files.models.IFile;
 
   export interface IFilesService {
-    getFile(id: string): ng.IPromise<File>;
-    getFiles(params?: Object): ng.IPromise<Files>;
+    getFile(id: string): ng.IPromise<IFile>;
+    getFiles(params?: Object): ng.IPromise<IFiles>;
   }
 
   class FilesService implements IFilesService {
@@ -17,20 +15,20 @@ module ngApp.files.services {
       this.ds = Restangular.all("files");
     }
 
-    getFile(id: string, params: Object = {}): ng.IPromise<File> {
-      return this.ds.get(id, params).then(function (response) {
-        return new File(response);
+    getFile(id: string, params: Object = {}): ng.IPromise<IFile> {
+      return this.ds.get(id, params).then((response): IFile => {
+        return response;
       });
     }
 
-    getFiles(params: Object = {}): ng.IPromise<Files> {
-      return this.ds.get("", params).then(function (response) {
-        return new Files(response);
+    getFiles(params: Object = {}): ng.IPromise<IFiles> {
+      return this.ds.get("", params).then((response): IFiles => {
+        return response;
       });
     }
   }
 
   angular
-      .module("files.services", ["files.models", "restangular"])
+      .module("files.services", ["restangular"])
       .service("FilesService", FilesService);
 }

@@ -2,6 +2,7 @@ module ngApp.files {
   "use strict";
 
   import IFilesService = ngApp.files.services.IFilesService;
+  import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
 
   /* @ngInject */
@@ -11,7 +12,7 @@ module ngApp.files {
       controller: "FilesController as fsc",
       templateUrl: "files/templates/files.html",
       resolve: {
-        files: (FilesService: IFilesService) => {
+        files: (FilesService: IFilesService): ng.IPromise<IFiles> => {
           return FilesService.getFiles();
         }
       }

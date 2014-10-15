@@ -22,7 +22,6 @@ angular
       "restangular",
 
       "ngApp.home",
-      "ngApp.widgets",
       "ngApp.participants",
       "ngApp.files",
       "ngApp.annotations",

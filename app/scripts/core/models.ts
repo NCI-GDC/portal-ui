@@ -1,12 +1,12 @@
 module ngApp.models {
+  export interface IEntity {
+    uuid: any;
+  }
+
   export interface ICollection {
     pagination: IPagination;
     hits: any[];
     facets?: IFacet[];
-  }
-
-  export enum SortOrder {
-    asc, desc
   }
 
   export interface IPagination {
@@ -20,45 +20,9 @@ module ngApp.models {
     order: string;
   }
 
-  export class Pagination implements IPagination {
-    count: number;
-    total: number;
-    size: number;
-    from: number;
-    page: number;
-    pages: number;
-    sort: string;
-    order: string;
-
-    constructor(obj: any) {
-      this.count = obj.count;
-      this.total = obj.total;
-      this.size = obj.size;
-      this.from = obj.from;
-      this.page = obj.page;
-      this.pages = obj.pages;
-      this.sort = obj.sort;
-      this.order = obj.order;
-    }
-  }
-
   export interface IFacet {
     term: string;
     value: any;
+    create(any): IFacet;
   }
-
-  export class Facet implements IFacet {
-    term: string;
-    value: any;
-
-    constructor(obj: any) {
-      this.term = obj.term;
-      this.value = obj.value;
-    }
-  }
-
-  angular
-      .module("ngApp.models", [])
-      .factory("Pagination", Pagination)
-      .factory("Facet", Facet);
 }

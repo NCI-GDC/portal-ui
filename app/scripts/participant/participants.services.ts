@@ -1,12 +1,10 @@
 module ngApp.participants.services {
-  import IParticipant = ngApp.participants.models.IParticipant;
-  import Participant = ngApp.participants.models.Participant;
   import IParticipants = ngApp.participants.models.IParticipants;
-  import Participants = ngApp.participants.models.Participants;
+  import IParticipant = ngApp.participants.models.IParticipant;
 
   export interface IParticipantsService {
-    getParticipant(id: string): ng.IPromise<Participant>;
-    getParticipants(params?: Object): ng.IPromise<Participants>;
+    getParticipant(id: string): ng.IPromise<IParticipant>;
+    getParticipants(params?: Object): ng.IPromise<IParticipants>;
   }
 
   class ParticipantsService implements IParticipantsService {
@@ -17,20 +15,20 @@ module ngApp.participants.services {
       this.ds = Restangular.all("participants");
     }
 
-    getParticipant(id: string, params: Object = {}): ng.IPromise<Participant> {
-      return this.ds.get(id, params).then(function (response) {
-        return new Participant(response);
+    getParticipant(id: string, params: Object = {}): ng.IPromise<IParticipant> {
+      return this.ds.get(id, params).then((response): IParticipant => {
+        return response;
       });
     }
 
-    getParticipants(params: Object = {}): ng.IPromise<Participants> {
-      return this.ds.get("", params).then(function (response) {
-        return new Participants(response);
+    getParticipants(params: Object = {}): ng.IPromise<IParticipants> {
+      return this.ds.get("", params).then((response): IParticipants => {
+        return response;
       });
     }
   }
 
   angular
-      .module("participants.services", ["participants.models", "restangular"])
+      .module("participants.services", ["restangular"])
       .service("ParticipantsService", ParticipantsService);
 }

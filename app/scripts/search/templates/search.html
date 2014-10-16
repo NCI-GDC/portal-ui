@@ -1,0 +1,87 @@
+<div class="container" id="search">
+  <h1>GDC Search</h1>
+
+  <div class="row hidden">
+    <div class="col-lg-8 col-md-8 pull-right">
+      <input class="form-control" type="text" />
+    </div>
+  </div>
+
+  <div class="row search-panel">
+
+    <div class="col-lg-4 col-md-4 facets-sidebar">
+      <tabset>
+        <tab heading="Participants">
+          <facets facets="sc.participantFacets"></facets>
+        </tab>
+
+        <tab heading="Files">
+          <facets facets="sc.fileFacets"></facets>
+        </tab>
+      </tabset>
+    </div>
+    <div class="col-lg-8 col-md-8 table-area">
+      <tabset>
+        <tab heading="Participants" select="sc.searchQuery('participants')">
+          <h4>Participants</h4>
+          <table class="table table-striped table-hover table-condensed table-bordered"
+                 ng-show="sc.tableData && sc.activeTabSection === 'participants'">
+            <thead>
+              <tr>
+                <th>Participant ID</th>
+                <th>Project</th>
+                <th>Disease Type</th>
+                <th>Gender</th>
+                <th>Tumor Stage</th>
+                <th>Files</th>
+                <th>Annotations</th>
+                </tr>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-ng-repeat="p in sc.tableData.hits track by p.id">
+                <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
+                <td>{{ p.project }}</td>
+                <td>{{ p.diseaseType }}</td>
+                <td>{{ p.gender }}</td>
+                <td>{{ p.tumorStage }}</td>
+                <td>
+                  <a data-ui-sref="files({ participantId: p.id })">
+                    {{ p.files.length }}
+                  </a>
+                </td>
+                <td>
+                  <a data-ui-sref="annotations({ participantId: p.id })">
+                    {{ p.annotations.length }}
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </tab>
+
+        <tab heading="Files" select="sc.searchQuery('files')">
+          <h4>Files</h4>
+          <table class="table table-striped table-hover table-condensed table-bordered"
+                 ng-show="sc.tableData && sc.activeTabSection === 'files'">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-ng-repeat="f in sc.tableData.hits track by f.id">
+                <td><a data-ui-sref="file({ fileId : f.id })">{{ f.id }}</a></td>
+                <td>{{ f.filename }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </tab>
+
+        <button class="btn btn-default pull-right">Share</button>
+        <span class="glyphicon glyphicon-refresh pull-right"></span>
+      </tabset>
+    </div>
+  </div>
+</div>

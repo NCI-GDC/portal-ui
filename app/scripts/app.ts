@@ -21,6 +21,7 @@ angular
       "ui.bootstrap",
       "restangular",
 
+      "ngApp.search",
       "ngApp.home",
       "ngApp.participants",
       "ngApp.files",

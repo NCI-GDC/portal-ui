@@ -21,8 +21,8 @@ module ngApp.models {
   }
 
   export interface IFacet {
-    term: string;
-    value: any;
-    create(any): IFacet;
+    terms: any;
+    category: string;
+    termsHidden: Boolean;
   }
 }

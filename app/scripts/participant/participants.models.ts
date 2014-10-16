@@ -12,16 +12,19 @@ module ngApp.participants.models {
     id: string;
     code: string;
     number: string;
-    site: string;
+    diseaseType: string;
     program: string;
+    project: string;
     status: string;
     files: any;
     annotations: any;
     experiments: any;
+    tumorStage: number;
     data: any;
     gender: string;
     vitStatus: string;
     key: string;
     uuid: string;
   }
+
 }

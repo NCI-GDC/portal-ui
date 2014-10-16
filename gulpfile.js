@@ -29,7 +29,7 @@ var paths = {
   "src": "./src",
   "dev": "./dist",
   "stage": "./dist",
-  "bower": "./bower_components/**/*.{js,css,map}",
+  "bower": "./bower_components/**/*.{js,css,map,eot,svg,ttf,woff}",
   js: {},
   html: {}
 };

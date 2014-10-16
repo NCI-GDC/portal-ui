@@ -2,9 +2,9 @@
 // =============================================================================
 
 // call the packages we need
-var express = require('express'); 		// call express
-var _ = require('lodash'); 		// call lodash
-var app = express(); 				// define our app using express
+var express = require('express');     // call express
+var _ = require('lodash');    // call lodash
+var app = express();        // define our app using express
 var bodyParser = require('body-parser');
 var uuid = require('node-uuid');
 
@@ -13,11 +13,11 @@ var uuid = require('node-uuid');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 3001; 		// set our port
+var port = process.env.PORT || 3001;    // set our port
 
 // ROUTES FOR OUR API
 // =============================================================================
-var router = express.Router(); 				// get an instance of the express Router
+var router = express.Router();        // get an instance of the express Router
 
 router.all('*', function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -145,130 +145,119 @@ router.get('/projects/:id', function (req, res) {
 var participants = {
   pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
   facets: [],
-  hits: [
-    {
-      id: 'P1',
-      code: 'TCGA-OR-A5L9',
-      number: 'A5L9'
-    },
-    {
-      id: 'P2',
-      code: 'TCGA-OR-A4L8',
-      number: 'A4L8'
-    },
-    {
-      id: 'P3',
-      code: 'TCGA-OR-A3L7',
-      number: 'A3L7'
-    },
-    {
-      id: 'P4',
-      code: 'TCGA-OR-A2L6',
-      number: 'A2L6'
-    },
-    {
-      id: 'P5',
-      code: 'TCGA-OR-A1L5',
-      number: 'A1L5'
-    },
-  ]};
+  hits: []
+};
 
-  var statuses = [
-    "Withdrawn",
-    "Active",
-    "In Trials"
+var statuses = [
+  "Withdrawn",
+  "Active",
+  "In Trials"
+];
+
+var sites = [
+  "Brain",
+  "Colon",
+  "Lung",
+  "Breast",
+  "Skin"
+];
+
+var participantProjects = [
+  "TCGA",
+  "LUAD",
+  "DYGK"
+];
+
+for (var j = 0; j < 70; j++) {
+  var participant = {};
+
+  participant.program = "TARGET";
+  participant.code = "TCGA-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
+  participant.number = Math.random().toString(36).substring(3,7).toUpperCase();
+  participant.project = participantProjects[Math.round(Math.random() * (participantProjects.length - 1))];
+  participant.id = participant.project + "-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
+  participant.tumorStage = Math.max(1, Math.round(Math.random() * 4));
+  participant.diseaseType = sites[Math.round(Math.random() * (sites.length - 1))];
+  participant.status = statuses[Math.round(Math.random() * (statuses.length - 1))];
+  participant.files = [];
+  for (var i = 0; i < Math.round(Math.random() * 700); i++) {
+    participant.files.push({});
+  }
+  participant.annotations = [];
+  for (var k = 0; k < Math.round(Math.random() * 10); k++) {
+    participant.annotations.push({});
+  }
+  participant.uuid = uuid.v4();
+  participant.gender = Math.round(Math.random()) ? "Male" : "Female";
+  participant.vitStatus = Math.round(Math.random()) ? "Deceased" : "Alive";
+  participant.key = uuid.v1();
+
+  participant.experiments = [
+    {
+      name: "RNA-Seq",
+      samples: Math.round(Math.random() * 400),
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "WGS",
+      samples: Math.round(Math.random() * 400),
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "WXS",
+      samples: Math.round(Math.random() * 400),
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "miRNA-Seq",
+      samples: Math.round(Math.random() * 400),
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "Bisulfite-Seq",
+      samples: Math.round(Math.random() * 400),
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "Genotype Array",
+      samples: Math.round(Math.random() * 400),
+      files: Math.round(Math.random() * 700)
+    }
   ];
 
-  var sites = [
-    "Brain",
-    "Colon",
-    "Lungs",
-    "Breast",
-    "Skin"
+  participant.data = [
+    {
+      name: "Clinical Data",
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "DNA Mutation",
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "DNA Copy Number",
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "mRNA Expression",
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "miRNA Expression",
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "Methylation",
+      files: Math.round(Math.random() * 700)
+    },
+    {
+      name: "Protein Expression",
+      files: "-"
+    }
   ];
 
-  participants.hits.forEach(function(participant) {
-    participant.site = sites[Math.round(Math.random() * sites.length)];
-    participant.program = "TARGET";
-    participant.status = statuses[Math.round(Math.random() * statuses.length)];
-    participant.files = [];
-    for (var i = 0; i < Math.round(Math.random() * 700); i++) {
-      participant.files.push({});
-    }
-    participant.annotations = [];
-    for (var k = 0; k < Math.round(Math.random() * 10); k++) {
-      participant.annotations.push({});
-    }
-    participant.uuid = uuid.v4();
-    participant.gender = Math.round(Math.random()) ? "Male" : "Female";
-    participant.vitStatus = Math.round(Math.random()) ? "Deceased" : "Alive";
-    participant.key = uuid.v1();
-
-    participant.experiments = [
-      {
-        name: "RNA-Seq",
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "WGS",
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "WXS",
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "miRNA-Seq",
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "Bisulfite-Seq",
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "Genotype Array",
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      }
-    ];
-
-    participant.data = [
-      {
-        name: "Clinical Data",
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "DNA Mutation",
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "DNA Copy Number",
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "mRNA Expression",
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "miRNA Expression",
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "Methylation",
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "Protein Expression",
-        files: "-"
-      }
-    ];
-
-  });
+  participants.hits.push(participant);
+}
 
 router.get('/participants', function (req, res) {
   res.json(participants);
@@ -282,18 +271,15 @@ router.get('/participants/:id', function (req, res) {
 var files = {
   pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
   facets: [],
-  hits: [
-    { id: 'F1' },
-    { id: 'F2' },
-    { id: 'F3' },
-    { id: 'F4' },
-    { id: 'F5' }
-  ]};
+  hits: []
+};
 
-files.hits.forEach(function(file) {
+for(var m = 0; m < 70; m++) {
+  var file = {};
   var fileCount = Math.round(Math.random()) ? 3 : 1;
 
   file.files = [];
+  file.id = Math.random().toString(36).substring(3,9).toUpperCase();
   file.code = 'TCGA-59-2352-10A-01W-' + Math.round(Math.random() * 8000) + '-08';
   file.uuid = uuid.v4();
   file.filename = 'C239.' + file.code;
@@ -351,7 +337,9 @@ files.hits.forEach(function(file) {
       include: false
     }
   });
-});
+
+  files.hits.push(file);
+}
 
 router.get('/files', function (req, res) {
   res.json(files);

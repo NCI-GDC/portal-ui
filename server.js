@@ -62,6 +62,76 @@ var projects = {
     {id: 'PR4', name: 'Project Four'},
     {id: 'PR5', name: 'Project Five'}
   ]};
+projects.hits.forEach(function(project) {
+  project.code = "GBM-TCGA";
+  project.name = "Brain Glioblastoma Multiforme";
+  project.site = "Brain";
+  project.numDonors = Math.round(Math.random() * 100);
+  project.program = "TCGA";
+  project.sequencingCenter = "BI";
+  project.numFiles = Math.round(Math.random() * 100);
+  project.data = {
+    "Clincal" : Math.round(Math.random() *100),
+    "Mutation": Math.round(Math.random() *100),
+    "mRNA": Math.round(Math.random() *100),
+    "miRNA": Math.round(Math.random() *100),
+    "Copy Number": Math.round(Math.random() *100),
+    "Meth": Math.round(Math.random() *100),
+    "Protein Expr": null
+  };
+  project.status = Math.round(Math.random()) ? "Legacy" : "Active";
+  project.date = new Date();
+  project.experiments = [
+      {
+        name: "RNA-Seq",
+        participants: Math.round(Math.random() * 100),
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "WGS",
+        participants: Math.round(Math.random() * 100),
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "WXS",
+        participants: Math.round(Math.random() * 100),
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "miRNA-Seq",
+        participants: Math.round(Math.random() * 100),
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Bisulfite-Seq",
+        participants: Math.round(Math.random() * 100),
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Genotype Array",
+        participants: Math.round(Math.random() * 100),
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      }
+    ];
+    project.reports = [
+      {
+        id: 93883,
+        type: "Case Overview",
+        date: new Date()
+      },
+      {
+        id: 38373,
+        type: "BCR Pipeline",
+        date: new Date()
+      }
+    ];
+});
 router.get('/projects', function (req, res) {
   res.json(projects);
 });
@@ -76,27 +146,27 @@ var participants = {
   pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
   facets: [],
   hits: [
-    { 
+    {
       id: 'P1',
       code: 'TCGA-OR-A5L9',
       number: 'A5L9'
     },
-    { 
+    {
       id: 'P2',
       code: 'TCGA-OR-A4L8',
       number: 'A4L8'
     },
-    { 
+    {
       id: 'P3',
       code: 'TCGA-OR-A3L7',
       number: 'A3L7'
     },
-    { 
+    {
       id: 'P4',
       code: 'TCGA-OR-A2L6',
       number: 'A2L6'
     },
-    { 
+    {
       id: 'P5',
       code: 'TCGA-OR-A1L5',
       number: 'A1L5'

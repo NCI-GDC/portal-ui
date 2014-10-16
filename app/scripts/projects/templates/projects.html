@@ -1,0 +1,40 @@
+<div class="container entity projects">
+  <h1>Projects</h1>
+  <table class="table table-striped table-hover table-condensed table-bordered">
+    <thead>
+      <tr>
+        <th rowspan="2" class="text-center">ID</th>
+        <th rowspan="2" class="text-center">Code</th>
+        <th rowspan="2" class="text-center">Name</th>
+        <th rowspan="2" class="text-center">Site</th>
+        <th rowspan="2" class="text-center">Program</th>
+        <th rowspan="2" class="text-center">&#35; Donors</th>
+        <th colspan="7" rowspan="1" class="text-center">Available Data</th>
+        <th rowspan="2" class="text-center">Status</th>
+        <th rowspan="2" class="text-center">Last Update</th>
+      </tr>
+      <tr>
+        <th rowspan="1" data-ng-repeat="(key, value) in prsc.projects.hits[0].data">
+            {{ key }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr data-ng-repeat="p in prsc.projects.hits track by p.id">
+        <td><a data-ui-sref="project({ projectId: p.id })">{{ p.id }}</a></td>
+        <td>{{ p.code }}</td>
+        <td>{{ p.name }}</td>
+        <td>{{ p.site }}</td>
+        <td>{{ p.program }}</td>
+        <td><a href="#">{{ p.numDonors }}</a></td>
+        <td data-ng-repeat="(key, value) in p.data">
+          <a href="#">{{ value }}</a>
+        </td>
+        <td>{{ p.status}}</td>
+        <td>{{ p.date }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+

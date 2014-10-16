@@ -25,6 +25,7 @@ angular
       "ngApp.participants",
       "ngApp.files",
       "ngApp.annotations",
+      "ngApp.projects",
       "ngApp.components",
       "templates"
     ])

@@ -82,6 +82,17 @@
         <button class="btn btn-default pull-right">Share</button>
         <span class="glyphicon glyphicon-refresh pull-right"></span>
       </tabset>
+      <pagination boundary-links="true"
+                  total-items="sc.pagination.total"
+                  ng-model="sc.pagination.page"
+                  items-per-page="sc.pagination.count"
+                  class="pagination-sm pull-right"
+                  ng-change="sc.pageChanged()"
+                  num-pages="sc.pagination.pages"
+                  previous-text="&lsaquo;"
+                  next-text="&rsaquo;"
+                  first-text="&laquo;"
+                  last-text="&raquo;"></pagination>
     </div>
   </div>
 </div>

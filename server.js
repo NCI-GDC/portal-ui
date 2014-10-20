@@ -34,7 +34,7 @@ router.get('/', function (req, res) {
 // more routes for our API will happen here
 // Widgets
 var widgets = {
-  pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  pagination: {"count": 20, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
   facets: [],
   hits: [
     {id: 'PR1', name: 'Widget One'},
@@ -53,7 +53,7 @@ router.get('/widgets/:id', function (req, res) {
 });
 // Projects
 var projects = {
-  pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  pagination: {"count": 20, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
   facets: [],
   hits: [
     {id: 'PR1', name: 'Project One'},
@@ -143,7 +143,7 @@ router.get('/projects/:id', function (req, res) {
 
 // Participants
 var participants = {
-  pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  pagination: {"count": 20, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
   facets: [],
   hits: []
 };
@@ -253,8 +253,27 @@ for (var j = 0; j < 70; j++) {
   participants.hits.push(participant);
 }
 
+participants.pagination.total = participants.hits.length;
+participants.pagination.pages = Math.ceil(participants.pagination.total /
+                                          participants.pagination.count);
+
 router.get('/participants', function (req, res) {
-  res.json(participants);
+  var paging = JSON.parse(req.query.paging);
+
+  var response = _.assign({}, participants);
+
+  response.pagination.page = paging.page;
+  response.pagination.count = paging.count;
+
+  var hits = [];
+  var start = paging.count * (paging.page - 1);
+
+  for (var i = 0; i < paging.count && response.hits[start + i]; i++) {
+    hits.push(response.hits[start + i]);
+  }
+
+  response.hits = hits;
+  res.json(response);
 });
 router.get('/participants/:id', function (req, res) {
   res.json(_.find(participants.hits, function (obj) {
@@ -263,7 +282,7 @@ router.get('/participants/:id', function (req, res) {
 });
 
 var files = {
-  pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  pagination: {"count": 20, "total": 20, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
   facets: [],
   hits: []
 };
@@ -335,8 +354,27 @@ for(var m = 0; m < 70; m++) {
   files.hits.push(file);
 }
 
+files.pagination.total = files.hits.length;
+files.pagination.pages = Math.ceil(files.pagination.total /
+                                          files.pagination.count);
+
 router.get('/files', function (req, res) {
-  res.json(files);
+  var paging = JSON.parse(req.query.paging);
+
+  var response = _.assign({}, files);
+
+  response.pagination.page = paging.page;
+  response.pagination.count = paging.count;
+
+  var hits = [];
+  var start = paging.count * (paging.page - 1);
+
+  for (var i = 0; i < paging.count && response.hits[start + i]; i++) {
+    hits.push(response.hits[start + i]);
+  }
+
+  response.hits = hits;
+  res.json(response);
 });
 router.get('/files/:id', function (req, res) {
   res.json(_.find(files.hits, function (obj) {
@@ -346,7 +384,7 @@ router.get('/files/:id', function (req, res) {
 
 // Annotations
 var annotations = {
-  pagination: {"count": 0, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  pagination: {"count": 20, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
   facets: [],
   hits: [
     {id: 'A1', uuid: uuid.v4() },

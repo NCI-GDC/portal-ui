@@ -258,17 +258,17 @@ participants.pagination.pages = Math.ceil(participants.pagination.total /
                                           participants.pagination.count);
 
 router.get('/participants', function (req, res) {
-  var paging = JSON.parse(req.query.paging);
+  var paging = JSON.parse(req.query.paging || "{}");
 
   var response = _.assign({}, participants);
 
-  response.pagination.page = paging.page;
-  response.pagination.count = paging.count;
+  response.pagination.page = paging.page || 1;
+  response.pagination.count = paging.count || participants.pagination.count;
 
   var hits = [];
-  var start = paging.count * (paging.page - 1);
+  var start = paging.count * (paging.page - 1) || 0;
 
-  for (var i = 0; i < paging.count && response.hits[start + i]; i++) {
+  for (var i = 0; i < response.pagination.count && response.hits[start + i]; i++) {
     hits.push(response.hits[start + i]);
   }
 
@@ -359,17 +359,17 @@ files.pagination.pages = Math.ceil(files.pagination.total /
                                           files.pagination.count);
 
 router.get('/files', function (req, res) {
-  var paging = JSON.parse(req.query.paging);
+  var paging = JSON.parse(req.query.paging || "{}");
 
   var response = _.assign({}, files);
 
-  response.pagination.page = paging.page;
-  response.pagination.count = paging.count;
+  response.pagination.page = paging.page || 1;
+  response.pagination.count = paging.count || files.pagination.count;
 
   var hits = [];
-  var start = paging.count * (paging.page - 1);
+  var start = paging.count * (paging.page - 1) || 0;
 
-  for (var i = 0; i < paging.count && response.hits[start + i]; i++) {
+  for (var i = 0; i < response.pagination.count && response.hits[start + i]; i++) {
     hits.push(response.hits[start + i]);
   }
 

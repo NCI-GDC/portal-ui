@@ -5,7 +5,7 @@ module ngApp.search.controllers {
 
   export interface ISearchController {
     searchQuery(section?: string): void;
-    pageChanged(): void;
+    pageChanged(newCount?: number): void;
     setPagination(newPagination: Object): void;
     participantFacets: IFacet[];
     fileFacets: IFacet[];
@@ -35,7 +35,7 @@ module ngApp.search.controllers {
       // Default Init value
       this.activeTabSection = this.$rootScope.activeTabSection || this.activeTabSection;
 
-      $scope.$on("gdc:facet-changed", () => {
+      $scope.$on("$locationChangeSuccess", () => {
         // This is an ugly way to have to call these functions we declare for controllers.
         // Need to think of a better way for this.
         SearchController.prototype.searchQuery.call(this);
@@ -46,7 +46,8 @@ module ngApp.search.controllers {
       this.pagination = newPagination;
     }
 
-    pageChanged() {
+    pageChanged(newCount: number = this.pagination.count) {
+      this.pagination.count = newCount;
       SearchController.prototype.searchQuery.call(this);
     }
 

@@ -39,7 +39,8 @@ module ngApp.search {
                 "Expression - miRNA",
                 "Protein expression",
                 "Microsatellite instability",
-              ]
+              ],
+              termsHidden: true
             },
             {
               category: "Data category",
@@ -55,7 +56,8 @@ module ngApp.search {
                 "miRNA expression",
                 "Protein expression",
                 "Other"
-              ]
+              ],
+              termsHidden: true
             },
             {
               category: "File type",
@@ -70,7 +72,8 @@ module ngApp.search {
                 "SVS",
                 "PDF",
                 "TSV"
-              ]
+              ],
+              termsHidden: true
             },
             {
               category: "Platform",
@@ -96,7 +99,8 @@ module ngApp.search {
                 "TCGA",
                 "TARGET",
                 "CGCI"
-              ]
+              ],
+              termsHidden: true
             },
             {
               category: "Project",
@@ -106,7 +110,8 @@ module ngApp.search {
                 "Pancreatic Cancer",
                 "Breast Cancer",
                 "Pediatric Brain Tumors"
-              ]
+              ],
+              termsHidden: true
             },
             {
               category: "Primary Site",
@@ -114,14 +119,16 @@ module ngApp.search {
                 "Brain",
                 "Breast",
                 "Colon"
-              ]
+              ],
+              termsHidden: true
             },
             {
               category: "Gender",
               terms: [
                 "Male",
                 "Female"
-              ]
+              ],
+              termsHidden: true
             }
           ];
         }

@@ -82,6 +82,22 @@
         <button class="btn btn-default pull-right">Share</button>
         <span class="glyphicon glyphicon-refresh pull-right"></span>
       </tabset>
+      <div class="number-results pull-left">
+        Show
+        <div class="btn-group dropup" dropdown is-open="status.isopen">
+          <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
+            {{ sc.pagination.count }}  <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu">
+            <li ng-click="sc.pageChanged(20)">20</li>
+            <li ng-click="sc.pageChanged(40)">40</li>
+            <li ng-click="sc.pageChanged(60)">60</li>
+            <li ng-click="sc.pageChanged(80)">80</li>
+            <li ng-click="sc.pageChanged(100)">100</li>
+          </ul>
+        </div>
+        entries
+      </div>
       <pagination boundary-links="true"
                   total-items="sc.pagination.total"
                   ng-model="sc.pagination.page"

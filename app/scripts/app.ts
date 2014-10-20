@@ -28,6 +28,7 @@ angular
       "ngApp.annotations",
       "ngApp.projects",
       "ngApp.components",
+      "ngApp.cart",
       "templates"
     ])
     .config(appConfig);

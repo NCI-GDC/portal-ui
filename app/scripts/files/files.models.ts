@@ -16,5 +16,6 @@ module ngApp.files.models {
     files: any;
     metadata: any;
     metadataXML: any;
+    size?: number;
   }
 }

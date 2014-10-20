@@ -47,6 +47,7 @@ module ngApp.components.facets.directives {
           filters[facet.category] = categoryTerms.join(",");
 
           $location.search(filters);
+          $scope.$emit("gdc:facet-changed");
         };
 
       }

@@ -21,13 +21,20 @@ module ngApp.search.controllers {
     /* @ngInject */
     constructor(private SearchService: ISearchService, private $rootScope: ISearchControllerRootScope,
                 public participantFacets: IFacet[], public fileFacets: IFacet[],
-                private $location: ng.ILocationService) {
+                private $location: ng.ILocationService, $scope: ng.IScope) {
       // Default Init value
       this.activeTabSection = this.$rootScope.activeTabSection || this.activeTabSection;
+
+      $scope.$on("gdc:facet-changed", () => {
+        // This is an ugly way to have to call these functions we declare for controllers.
+        // Need to think of a better way for this.
+        SearchController.prototype.searchQuery.call(this);
+      });
     }
 
     searchQuery(section: string = this.activeTabSection) {
       this.activeTabSection = section;
+      this.tableData = null;
       switch (section) {
         case "files":
           this.SearchService.getFiles(this.$location.search()).then((response) => {

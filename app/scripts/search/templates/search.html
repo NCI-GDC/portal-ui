@@ -41,7 +41,7 @@
             <tbody>
               <tr data-ng-repeat="p in sc.tableData.hits track by p.id">
                 <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
-                <td>{{ p.project }}</td>
+                <td><a data-ui-sref="project({ projectId : p.project.id })">{{ p.project.name }}</a></td>
                 <td>{{ p.diseaseType }}</td>
                 <td>{{ p.gender }}</td>
                 <td>{{ p.tumorStage }}</td>

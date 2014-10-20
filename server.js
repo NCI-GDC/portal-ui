@@ -162,20 +162,14 @@ var sites = [
   "Skin"
 ];
 
-var participantProjects = [
-  "TCGA",
-  "LUAD",
-  "DYGK"
-];
-
 for (var j = 0; j < 70; j++) {
   var participant = {};
 
   participant.program = "TARGET";
   participant.code = "TCGA-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
   participant.number = Math.random().toString(36).substring(3,7).toUpperCase();
-  participant.project = participantProjects[Math.round(Math.random() * (participantProjects.length - 1))];
-  participant.id = participant.project + "-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
+  participant.project = projects.hits[Math.round(Math.random() * (projects.hits.length - 1))];
+  participant.id = participant.project.id + "-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
   participant.tumorStage = Math.max(1, Math.round(Math.random() * 4));
   participant.diseaseType = sites[Math.round(Math.random() * (sites.length - 1))];
   participant.status = statuses[Math.round(Math.random() * (statuses.length - 1))];

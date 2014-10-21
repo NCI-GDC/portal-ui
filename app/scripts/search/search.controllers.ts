@@ -2,13 +2,15 @@ module ngApp.search.controllers {
   import IFacet = ngApp.models.IFacet;
   import IFilesService = ngApp.files.services.IFilesService;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
+  import IFiles = ngApp.files.models.IFiles;
+  import IParticipants = ngApp.participants.models.IParticipants;
 
   export interface ISearchController {
+    files: IFiles;
+    participants: IParticipants;
     searchQuery(section?: string): void;
     pageChanged(newCount?: number): void;
     setPagination(newPagination: Object): void;
-    participantFacets: IFacet[];
-    fileFacets: IFacet[];
     tableData: any;
     activeTabSection: string;
     pagination: any;
@@ -28,18 +30,20 @@ module ngApp.search.controllers {
     activeTabSection: string = "participant";
 
     /* @ngInject */
-    constructor(private FilesService: IFilesService, private ParticipantsService: IParticipantsService,
-                private $rootScope: ISearchControllerRootScope,
-                public participantFacets: IFacet[], public fileFacets: IFacet[],
-                private $location: ng.ILocationService, $scope: ng.IScope) {
+    constructor(
+        private FilesService: IFilesService, private ParticipantsService: IParticipantsService,
+//                private $rootScope: ISearchControllerRootScope,
+                private $location: ng.ILocationService,
+//                $scope: ng.IScope,
+                public files: IFiles, public participants: IParticipants) {
       // Default Init value
-      this.activeTabSection = this.$rootScope.activeTabSection || this.activeTabSection;
+      this.activeTabSection = 'participants'; //this.$rootScope.activeTabSection || this.activeTabSection;
 
-      $scope.$on("$locationChangeSuccess", () => {
-        // This is an ugly way to have to call these functions we declare for controllers.
-        // Need to think of a better way for this.
-        SearchController.prototype.searchQuery.call(this);
-      });
+//      $scope.$on("$locationChangeSuccess", () => {
+//        // This is an ugly way to have to call these functions we declare for controllers.
+//        // Need to think of a better way for this.
+//        SearchController.prototype.searchQuery.call(this);
+//      });
     }
 
     setPagination(newPagination: Object) {
@@ -60,13 +64,13 @@ module ngApp.search.controllers {
       switch (section) {
         case "files":
           this.FilesService.getFiles(filters).then((response) => {
-            this.tableData = response;
+            this.files = response;
             SearchController.prototype.setPagination.call(this, response.pagination);
           });
           break;
         case "participants":
           this.ParticipantsService.getParticipants(filters).then((response) => {
-            this.tableData = response;
+            this.participants = response;
             SearchController.prototype.setPagination.call(this, response.pagination);
           });
           break;

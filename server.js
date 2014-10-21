@@ -144,7 +144,41 @@ router.get('/projects/:id', function (req, res) {
 // Participants
 var participants = {
   pagination: {"count": 20, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
-  facets: [],
+  facets: [
+    {
+      category: "Cancer program",
+      terms: [
+        "TCGA",
+        "TARGET",
+        "CGCI"
+      ]
+    },
+    {
+      category: "Project",
+      terms: [
+        "Chronic Lymphocytic Leukemia",
+        "Ovarian Serous Cystadenocarcinoma",
+        "Pancreatic Cancer",
+        "Breast Cancer",
+        "Pediatric Brain Tumors"
+      ]
+    },
+    {
+      category: "Primary Site",
+      terms: [
+        "Brain",
+        "Breast",
+        "Colon"
+      ]
+    },
+    {
+      category: "Gender",
+      terms: [
+        "Male",
+        "Female"
+      ]
+    }
+  ],
   hits: []
 };
 
@@ -283,7 +317,81 @@ router.get('/participants/:id', function (req, res) {
 
 var files = {
   pagination: {"count": 20, "total": 20, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
-  facets: [],
+  facets: [
+    {
+      category: "Data Type",
+      terms: [
+        "Clinical data",
+        "Biospecimen data",
+        "Pathology report",
+        "WGS",
+        "WXS",
+        "RNA-Seq",
+        "Protein expression array",
+        "Gene expression array",
+        "SNP array",
+        "CGH array",
+        "Simple somatic mutation",
+        "Simple germline variation",
+        "Structural rearrangement",
+        "Copy number somatic mutation",
+        "Probe level methylation value",
+        "Methylation calls",
+        "Differentially methylated regions",
+        "Expression - exon",
+        "Expression - splice junction",
+        "Expression - isoform",
+        "Expression - gene",
+        "Expression - miRNA",
+        "Protein expression",
+        "Microsatellite instability"
+      ]
+    },
+    {
+      category: "Data category",
+      terms: [
+        "Clinical",
+        "Sequencing data",
+        "Microarray data",
+        "SNV",
+        "Structural rearrangement",
+        "Copy number variation",
+        "DNA methylation",
+        "mRNA expression",
+        "miRNA expression",
+        "Protein expression",
+        "Other"
+      ]
+    },
+    {
+      category: "File type",
+      terms: [
+        "BAM",
+        "VCF",
+        "MAF",
+        "Clinical XML",
+        "Biospecimen XML",
+        "SRA metadata XML",
+        "MAGE-Tab",
+        "SVS",
+        "PDF",
+        "TSV"
+      ]
+    },
+    {
+      category: "Platform",
+      terms: [
+        "ABI",
+        "Affymetrix U133 2.0",
+        "Affymetrix SNP 6.0",
+        "HG-CGH-244A",
+        "HumanMethylation450",
+        "Illumina GA",
+        "Illumina HiSeq",
+        "MDA_RPPA_Core"
+      ]
+    }
+  ],
   hits: []
 };
 

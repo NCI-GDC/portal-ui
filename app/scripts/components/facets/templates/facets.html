@@ -3,13 +3,13 @@
   <label class="facet-name">{{ facet.category }}</label>
   <div class="facet-term-group">
     <div ng-repeat="term in facet.terms">
-      <div class="term-wrapper" ng-hide="$index > (displayMax - 1) && facet.termsHidden">
+      <div class="term-wrapper" ng-hide="$index > (displayMax - 1) && !facet.termsHidden">
         <label class="facet-term"><input type="checkbox" ng-click="toggleFacetTerm($event, facet)" /><span>{{ term }}</span></label>
       </div>
     </div>
     <span class="show-more-terms" ng-if="facet.terms.length > displayMax"
-          ng-show="facet.termsHidden" ng-click="facet.termsHidden = false">More...</span>
+          ng-show="!facet.termsHidden" ng-click="facet.termsHidden = true">More...</span>
     <span class="show-more-terms" ng-if="facet.terms.length > displayMax" 
-          ng-show="!facet.termsHidden" ng-click="facet.termsHidden = true">Less...</span>
+          ng-show="facet.termsHidden" ng-click="facet.termsHidden = false">Less...</span>
   </div>
 </div>

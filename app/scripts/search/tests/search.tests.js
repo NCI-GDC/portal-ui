@@ -25,7 +25,13 @@ describe('Search:', function () {
       ];
 
       // Starting the controller
-      var wc = $controller('SearchController', {files: {}, participants: search});
+      var wc = $controller('SearchController', {
+        files: {},
+        participants: search,
+        data: {
+          tab: "participants"
+        }
+      });
 
       // We expect the controller to put the right value onto the scope
       expect(wc).to.have.property('participants').with.length(2);
@@ -43,8 +49,13 @@ describe('Search:', function () {
         }
       ];
 
-      // Starting the controller
-      var wc = $controller('SearchController', {files: search, participants: {}});
+      var wc = $controller('SearchController', {
+        files: search,
+        participants: {},
+        data: {
+          tab: "files"
+        }
+      });
 
       // We expect the controller to put the right value onto the scope
       expect(wc).to.have.property('files').with.length(2);

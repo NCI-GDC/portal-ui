@@ -6,9 +6,12 @@ module ngApp.search {
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
 
   /* @ngInject */
-  function searchConfig($stateProvider: ng.ui.IStateProvider) {
+  function searchConfig($stateProvider: ng.ui.IStateProvider,
+                        $urlRouterProvider: ng.ui.IUrlRouterProvider) {
+
     $stateProvider.state("search", {
       url: "/search",
+      abstract: true,
       controller: "SearchController as sc",
       templateUrl: "search/templates/search.html",
       resolve: {
@@ -20,6 +23,22 @@ module ngApp.search {
         }
       }
     });
+
+    $stateProvider.state("search.participants", {
+      url: "/p",
+      data: {
+        tab: "participants"
+      }
+    });
+
+    $stateProvider.state("search.files", {
+      url: "/f",
+      data: {
+        tab: "files"
+      }
+    });
+
+    $urlRouterProvider.when("/search", "/search/p");
   }
 
   angular

@@ -4,74 +4,61 @@ module ngApp.search.controllers {
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IFiles = ngApp.files.models.IFiles;
   import IParticipants = ngApp.participants.models.IParticipants;
+  import ISearchState = ngApp.search.services.ISearchState;
 
   export interface ISearchController {
     files: IFiles;
     participants: IParticipants;
-    searchQuery(section?: string): void;
-    pageChanged(newCount?: number): void;
-    setPagination(newPagination: Object): void;
-    tableData: any;
-    activeTabSection: string;
-    pagination: any;
-  }
-
-  interface ISearchControllerRootScope {
-    activeTabSection: string;
+    searchQuery(newCount?: number): void;
+    setState(state: string): void;
   }
 
   class SearchController implements ISearchController {
-    tableData: any;
-    pagination: any = {
-      count: 20,
-      page: 1,
-      pages: 4
-    };
-    activeTabSection: string = "participant";
 
     /* @ngInject */
-    constructor(
-        private FilesService: IFilesService, private ParticipantsService: IParticipantsService,
-//                private $rootScope: ISearchControllerRootScope,
+    constructor(private FilesService: IFilesService, private ParticipantsService: IParticipantsService,
                 private $location: ng.ILocationService,
-//                $scope: ng.IScope,
+                private $state: ng.ui.IStateService, private SearchState: ISearchState,
                 public files: IFiles, public participants: IParticipants) {
-      // Default Init value
-      this.activeTabSection = 'participants'; //this.$rootScope.activeTabSection || this.activeTabSection;
+      // In our tests this winds up being undefined. Haven't figured out a better solution around this.
+      $state.current.data = $state.current.data || {};
 
-//      $scope.$on("$locationChangeSuccess", () => {
-//        // This is an ugly way to have to call these functions we declare for controllers.
-//        // Need to think of a better way for this.
-//        SearchController.prototype.searchQuery.call(this);
-//      });
+      SearchState.setActiveFacets($state.current.data.tab);
+      SearchState.setActiveTable($state.current.name);
     }
 
-    setPagination(newPagination: Object) {
-      this.pagination = newPagination;
+    setState(state: string) {
+      var storedLocation = this.$location.search();
+      var newState:string = "search." + state;
+      
+      if (this.$state.current.name !== newState) {
+        this.$state.go(newState)
+          .then(() => {
+            this.$location.search(storedLocation);
+            this.SearchState.setActiveTable(newState);
+            SearchController.prototype.searchQuery.call(this);
+          });
+      }
     }
 
-    pageChanged(newCount: number = this.pagination.count) {
-      this.pagination.count = newCount;
-      SearchController.prototype.searchQuery.call(this);
-    }
-
-    searchQuery(section: string = this.activeTabSection) {
-      this.activeTabSection = section;
-
+    searchQuery(newCount?: number) {
+      var section = this.$state.current.name.split(".")[1];
       var filters = this.$location.search();
-      filters.paging = this.pagination;
+      filters.paging = this[section].pagination;
+
+      if (newCount) {
+        filters.paging.count = newCount;
+      }
 
       switch (section) {
         case "files":
           this.FilesService.getFiles(filters).then((response) => {
             this.files = response;
-            SearchController.prototype.setPagination.call(this, response.pagination);
           });
           break;
         case "participants":
           this.ParticipantsService.getParticipants(filters).then((response) => {
             this.participants = response;
-            SearchController.prototype.setPagination.call(this, response.pagination);
           });
           break;
       }

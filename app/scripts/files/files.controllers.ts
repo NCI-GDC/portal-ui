@@ -1,6 +1,7 @@
 module ngApp.files.controllers {
   import IFile = ngApp.files.models.IFile;
   import IFiles = ngApp.files.models.IFiles;
+  import ICoreService = ngApp.core.services.ICoreService;
 
   export interface IFilesController {
     files: IFiles;
@@ -8,7 +9,8 @@ module ngApp.files.controllers {
 
   class FilesController implements IFilesController {
     /* @ngInject */
-    constructor(public files: IFiles) {}
+    constructor(public files: IFiles) {
+    }
   }
 
   export interface IFileController {
@@ -17,7 +19,9 @@ module ngApp.files.controllers {
 
   class FileController implements IFileController {
     /* @ngInject */
-    constructor(public file: IFile) {}
+    constructor(public file: IFile, private CoreService: ICoreService) {
+      CoreService.setPageTitle("File " + file.filename);
+    }
   }
 
   angular

@@ -4,6 +4,7 @@ module ngApp.search.controllers {
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IFiles = ngApp.files.models.IFiles;
   import IParticipants = ngApp.participants.models.IParticipants;
+  import ICoreService = ngApp.core.services.ICoreService;
   import IState = ngApp.search.services.IState;
 
   export interface ISearchController {
@@ -18,9 +19,11 @@ module ngApp.search.controllers {
     constructor(private $state: ng.ui.IStateService,
                 public State: IState,
                 public files: IFiles,
-                public participants: IParticipants) {
+                public participants: IParticipants,
+                CoreService: ICoreService) {
       var data = $state.current.data || {};
       this.State.setActive(data.tab);
+      CoreService.setPageTitle("Search");
     }
 
     // TODO Load data lazily based on active tab

@@ -1,6 +1,7 @@
 module ngApp.cart.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import IFiles = ngApp.files.models.IFiles;
+  import ICoreService = ngApp.core.services.ICoreService;
 
   export interface ICartController {
     files: IFiles;
@@ -12,9 +13,10 @@ module ngApp.cart.controllers {
     files: IFiles;
     totalSize: number = 0;
 
-    constructor(private CartService: ICartService) {
+    constructor(private CartService: ICartService, private CoreService: ICoreService) {
         this.files = CartService.getFiles();
         this.calculateTotalSize();
+        CoreService.setPageTitle("Cart " + "(" + this.files.hits.length + ")");
     }
 
     calculateTotalSize(): void {

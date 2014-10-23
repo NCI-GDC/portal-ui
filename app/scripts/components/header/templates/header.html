@@ -12,9 +12,9 @@
     <nav class="navbar-collapse collapse navbar-responsive-collapse" data-collapse="HeaderController.isCollapsed"
          role="navigation" data-ng-click="HeaderController.collapse()">
       <ul class="nav navbar-nav">
-        <li><a href="/projects">Project List</a></li>
-        <li><a href="/search">Search</a></li>
-        <li><a href="/cart">Cart</a></li>
+        <li data-ng-class="{ active: pageTitle.indexOf('Project') != -1 }"><a href="/projects">Project List</a></li>
+        <li data-ng-class="{ active: pageTitle === 'Search' || pageTitle.indexOf('Participant') !== -1 || pageTitle.indexOf('Annotation') !== -1 || pageTitle.indexOf('File') !== -1}"><a href="/search">Search</a></li>
+        <li data-ng-class="{ active: pageTitle.indexOf('Cart') != -1 }"><a href="/cart">Cart</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right"></ul>
     </nav>

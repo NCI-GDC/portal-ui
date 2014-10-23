@@ -1,7 +1,11 @@
 module ngApp.home.controllers {
   export interface IHomeController {}
 
-  class HomeController implements IHomeController {}
+  class HomeController implements IHomeController {
+    constructor(private $rootScope: ngApp.IRootScope) {
+      $rootScope.pageTitle = "Home";
+    }
+  }
 
   angular
       .module("home.controller", [])

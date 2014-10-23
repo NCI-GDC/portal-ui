@@ -1,5 +1,29 @@
 .entity.file {
-  .entity-section button.add {
-    margin-left: 20px;
+
+  .glyphicon.download {
+    margin-top: 3px;
+    margin-left: 10px;
+  }
+
+  .archive-row {
+    
+    > td {
+      vertical-align: text-top;
+    }
+
+    .btn-group {
+      margin-left: 10px;
+
+      > ul > li > i {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  // Library throws additional styling to style attribute.
+  // Overridden to prevent layout oddities
+  #xmlViewer > .Element {
+    left: 0 !important;
+    border: 1px solid #DDDDDD;
   }
 }

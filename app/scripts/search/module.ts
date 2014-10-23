@@ -1,7 +1,6 @@
 module ngApp.search {
   "use strict";
 
-  import IFacet = ngApp.models.IFacet;
   import IFilesService = ngApp.files.services.IFilesService;
   import IFiles = ngApp.files.models.IFiles;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;

@@ -10,11 +10,9 @@ module ngApp.cart.controllers {
 
   class CartController implements ICartController {
     /* @ngInject */
-    files: IFiles;
     totalSize: number = 0;
 
-    constructor(private CartService: ICartService, private CoreService: ICoreService) {
-        this.files = CartService.getFiles();
+    constructor(public files: IFiles, private CoreService: ICoreService) {
         this.calculateTotalSize();
         CoreService.setPageTitle("Cart " + "(" + this.files.hits.length + ")");
     }

@@ -254,104 +254,122 @@ var sites = [
   "Skin"
 ];
 
-for (var j = 0; j < 70; j++) {
-  var participant = {};
+var fileParticipantCount = 70;
 
-  participant.program = "TARGET";
-  participant.code = "TCGA-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
-  participant.number = Math.random().toString(36).substring(3,7).toUpperCase();
-  participant.project = projects.hits[Math.round(Math.random() * (projects.hits.length - 1))];
-  participant.id = participant.project.id + "-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
-  participant.tumorStage = Math.max(1, Math.round(Math.random() * 4));
-  participant.diseaseType = sites[Math.round(Math.random() * (sites.length - 1))];
-  participant.status = statuses[Math.round(Math.random() * (statuses.length - 1))];
-  participant.files = [];
+function generateParticipants(count) {
+  var newParticipants = [];
 
-  for (var i = 0; i < Math.round(Math.random() * 700); i++) {
-    participant.files.push({});
+  for (var j = 0; j < count; j++) {
+    var participant = {};
+
+    participant.program = "TARGET";
+    participant.code = "TCGA-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
+    participant.number = Math.random().toString(36).substring(3,7).toUpperCase();
+    participant.project = projects.hits[Math.round(Math.random() * (projects.hits.length - 1))];
+    participant.id = participant.project.id + "-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
+    participant.tumorStage = Math.max(1, Math.round(Math.random() * 4));
+    participant.diseaseType = sites[Math.round(Math.random() * (sites.length - 1))];
+    participant.status = statuses[Math.round(Math.random() * (statuses.length - 1))];
+    participant.files = [];
+    for (var i = 0; i < Math.round(Math.random() * 700); i++) {
+      participant.files.push({});
+    }
+    participant.annotations = [];
+    for (var k = 0; k < Math.round(Math.random() * 10); k++) {
+      participant.annotations.push({});
+    }
+    participant.uuid = uuid.v4();
+    participant.gender = Math.round(Math.random()) ? "Male" : "Female";
+    participant.vitalStatus = Math.round(Math.random()) ? "Deceased" : "Alive";
+    participant.key = uuid.v1();
+    participant.sample = Math.random().toString(36).substring(3,18);
+    participant.portion = Math.random().toString(36).substring(3,18);
+    participant.analyte = Math.random().toString(36).substring(3,18);
+    participant.aliquot = Math.random().toString(36).substring(3,18);
+
+    participant.experiments = [
+      {
+        name: "RNA-Seq",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "WGS",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "WXS",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "miRNA-Seq",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Bisulfite-Seq",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Genotype Array",
+        samples: Math.round(Math.random() * 400),
+        files: Math.round(Math.random() * 700)
+      }
+    ];
+
+    participant.data = [
+      {
+        name: "Clinical Data",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "DNA Mutation",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "DNA Copy Number",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "mRNA Expression",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "miRNA Expression",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Methylation",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Other",
+        files: Math.round(Math.random() * 700)
+      },
+      {
+        name: "Protein Expression",
+        files: "-"
+      }
+    ];
+
+    participant.annotations = createAnnotations(Math.round(Math.random() * 8));
+
+    newParticipants.push(participant);
   }
 
-  participant.uuid = uuid.v4();
-  participant.gender = Math.round(Math.random()) ? "Male" : "Female";
-  participant.vitStatus = Math.round(Math.random()) ? "Deceased" : "Alive";
-  participant.key = uuid.v1();
+  participants.hits = participants.hits.concat(newParticipants);
 
-  participant.experiments = [
-    {
-      name: "RNA-Seq",
-      samples: Math.round(Math.random() * 400),
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "WGS",
-      samples: Math.round(Math.random() * 400),
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "WXS",
-      samples: Math.round(Math.random() * 400),
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "miRNA-Seq",
-      samples: Math.round(Math.random() * 400),
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "Bisulfite-Seq",
-      samples: Math.round(Math.random() * 400),
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "Genotype Array",
-      samples: Math.round(Math.random() * 400),
-      files: Math.round(Math.random() * 700)
-    }
-  ];
+  participants.pagination.total = participants.hits.length;
+  participants.pagination.pages = Math.ceil(participants.pagination.total /
+                                            participants.pagination.count);
 
-  participant.data = [
-    {
-      name: "Clinical Data",
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "DNA Mutation",
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "DNA Copy Number",
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "mRNA Expression",
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "miRNA Expression",
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "Methylation",
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "Other",
-      files: Math.round(Math.random() * 700)
-    },
-    {
-      name: "Protein Expression",
-      files: "-"
-    }
-  ];
-
-  participant.annotations = createAnnotations(Math.round(Math.random() * 8));
-
-  participants.hits.push(participant);
+  return newParticipants;
 }
 
-participants.pagination.total = participants.hits.length;
-participants.pagination.pages = Math.ceil(participants.pagination.total /
-                                          participants.pagination.count);
+generateParticipants(fileParticipantCount);
 
 router.get('/participants', function (req, res) {
   var paging = JSON.parse(req.query.paging || "{}");
@@ -374,6 +392,28 @@ router.get('/participants', function (req, res) {
 
 
   response.hits = hits;
+  res.json(response);
+});
+router.get('/participants', function (req, res) {
+  var paging = JSON.parse(req.query.paging || "{}");
+
+  var response = {};
+  response.pagination = _.assign({}, participants.pagination);
+  response.facets = _.assign([], participants.facets);
+  response.hits = [];
+
+  response.pagination.page = paging.page || 1;
+  response.pagination.count = paging.count || participants.pagination.count;
+
+  var start = paging.count * (paging.page - 1) || 0;
+
+  for (var i = 0; i < response.pagination.count && participants.hits[start + i]; i++) {
+    response.hits.push(_.assign({}, participants.hits[start + i]));
+  }
+
+  response.pagination.pages = Math.ceil(response.pagination.total /
+                                        response.pagination.count);
+
   res.json(response);
 });
 router.get('/participants/:id', function (req, res) {
@@ -463,97 +503,135 @@ var files = {
   hits: []
 };
 
-for(var m = 0; m < 70; m++) {
-  var file = {};
-  var fileCount = Math.round(Math.random()) ? 3 : 1;
+var fileFormats = [
+  "BAM",
+  "MAG",
+  "SRA",
+  "BAM.BAI"
+];
 
-  file.files = [];
-  file.id = Math.random().toString(36).substring(3,9).toUpperCase();
-  file.code = 'TCGA-59-2352-10A-01W-' + Math.round(Math.random() * 8000) + '-08';
-  file.uuid = uuid.v4();
-  file.filename = 'C239.' + file.code;
+var fileDataTypes = [
+  "Clinical",
+  "Research"
+];
 
-  for (var i = 0; i < fileCount; i++) {
-    file.files.push({
-      code: 'TCGA-59-2352-10A-01W-' + Math.round(Math.random() * 8000) + '-08',
-      checksum: '9b8cebc0421241d087f6ab7e815285af803de7e7',
-      filename: 'C239.' + file.code,
-      published: new Date(),
-      uploaded: new Date(),
-      modified: new Date(),
-      size: ((Math.random() * 2000000) / 1024).toFixed(2) + " GB",
-      state: Math.round(Math.random()) ? 'Live' : 'Inactive'
+function generateFiles(count) {
+  var newFiles = [];
+
+  for(var m = 0; m < count; m++) {
+    var file = {};
+
+    file.id = Math.random().toString(36).substring(3,9).toUpperCase();
+    file.barcode = "TCGA-59-2352-10A-01W-" + Math.round(Math.random() * 8000) + "-08";
+    file.uuid = uuid.v4();
+    file.format = fileFormats[Math.round(Math.random() * (fileFormats.length - 1))];
+    file.filename = "C239." + file.barcode + "." + file.format.toLowerCase();
+    file.checksum = "9b8cebc0421241d087f6ab7e815285af803de7e7";
+    file.published = new Date();
+    file.uploaded = new Date();
+    file.modified = new Date();
+    file.size = parseFloat(((Math.random() * 2000000) / 1024).toFixed(2));
+    file.state = Math.round(Math.random()) ? "Live" : "Inactive";
+    file.access = Math.round(Math.random()) ? true : false;
+    file.participants = generateParticipants(Math.max(1, Math.round(Math.random() * 5)));
+    file.dataType = fileDataTypes[Math.round(Math.random() * (fileDataTypes.length - 1))];
+    file.dataSubType = file.dataType + " Data";
+    file.experimentStrategy = "WXS";
+    file.programStatus = Math.round(Math.random()) ? true : false;
+    file.platform = "Illumina";
+    file.revision = "1.2." + Math.round(Math.random() * 14);
+    file.version = "Publication A";
+    file.level = Math.round(Math.random() * 5);
+    file.submitter = "UNC";
+    file.submittedSince = new Date();
+
+    // Randomly set to be part of an archive or not.
+    if (Math.round(Math.random())) {
+      file.archive = {
+        name: Math.random().toString(36).substring(3,15) + ".tar.gz"
+      };
+    }
+
+    file.metadata = {
+      "Study": "TCGA",
+      "Barcode": file.code,
+      "Disease": "OV",
+      "Disease Name": "Ovarian serous cystadenocarcinoma",
+      "Sample Type": "NB",
+      "Sample Type Name": "10",
+      "Analyte Type": "WGA",
+      "Library Type": "WXS",
+      "Center": "BI",
+      "Center Name": "Broad Institute of MIT and Harvard",
+      "Platform": "Illumina",
+      "Assembly": "HG19_Broad_variant",
+      "Analysis Id": uuid.v1(),
+      "Aliquot Id": uuid.v1(),
+      "Participant Id": uuid.v1(),
+      "Sample Id": uuid.v1(),
+      "TSS Id": "Roswell Park: Ovarian serous cystadenocarcinoma 59",
+      "Sample Accession": "SRS061424"
+    };
+
+    file.metadataXML = {};
+
+    _.forIn(file.metadata, function(val, key) {
+      file.metadataXML[key.replace(/ /g, "-")] = val;
     });
+
+    var baseXML = _.assign({}, file.metadataXML);
+
+    file.metadataXML.a = _.assign({}, baseXML);
+    file.metadataXML.f = _.assign({}, baseXML);
+    file.metadataXML.a.d = _.assign({}, baseXML);
+
+    // Note: XML generated in this fashion as a temporary means to do mockups.
+    // Please remove the npm package when a real backend exists.
+    file.metadataXML = require("js2xmlparser")("clinical", file.metadataXML, {
+      declaration: {
+        include: false
+      }
+    });
+
+    newFiles.push(file);
   }
 
-  file.metadata = {
-    'Study': 'TCGA',
-    'Barcode': file.code,
-    'Disease': 'OV',
-    'Disease Name': 'Ovarian serous cystadenocarcinoma',
-    'Sample Type': 'NB',
-    'Sample Type Name': '10',
-    'Analyte Type': 'WGA',
-    'Library Type': 'WXS',
-    'Center': 'BI',
-    'Center Name': 'Broad Institute of MIT and Harvard',
-    'Platform': 'Illumina',
-    'Assembly': 'HG19_Broad_variant',
-    'Analysis Id': uuid.v1(),
-    'Aliquot Id': uuid.v1(),
-    'Participant Id': uuid.v1(),
-    'Sample Id': uuid.v1(),
-    'TSS Id': 'Roswell Park: Ovarian serous cystadenocarcinoma 59',
-    'Sample Accession': 'SRS061424'
-  };
+  files.hits = files.hits.concat(newFiles);
+  files.pagination.total = files.hits.length;
+  files.pagination.pages = Math.ceil(files.pagination.total /
+                                     files.pagination.count);
 
-  file.metadataXML = {};
-
-  _.forIn(file.metadata, function(val, key) {
-    file.metadataXML[key.replace(/ /g, "-")] = val;
-  });
-
-  var baseXML = _.assign({}, file.metadataXML);
-
-  file.metadataXML.a = _.assign({}, baseXML);
-  file.metadataXML.f = _.assign({}, baseXML);
-  file.metadataXML.a.d = _.assign({}, baseXML);
-
-  // Note: XML generated in this fashion as a temporary means to do mockups.
-  // Please remove the npm package when a real backend exists.
-  file.metadataXML = require("js2xmlparser")('clinical', file.metadataXML, {
-    declaration: {
-      include: false
-    }
-  });
-
-  files.hits.push(file);
+  return newFiles;
 }
 
-files.pagination.total = files.hits.length;
-files.pagination.pages = Math.ceil(files.pagination.total /
-                                          files.pagination.count);
+generateFiles(fileParticipantCount);
+
+// Add related files
+var cachedLength = files.hits.length;
+for (var m = 0; m < cachedLength; m++) {
+  files.hits[m].related = generateFiles(Math.max(1, Math.round(Math.random() * 5)));
+}
 
 router.get('/files', function (req, res) {
   var paging = JSON.parse(req.query.paging || "{}");
 
-  var response = _.assign({}, files);
+  var response = {};
   response.pagination = _.assign({}, files.pagination);
+  response.facets = _.assign([], files.facets);
+  response.hits = [];
 
   response.pagination.page = paging.page || 1;
   response.pagination.count = paging.count || files.pagination.count;
 
-  var hits = [];
   var start = paging.count * (paging.page - 1) || 0;
 
-  for (var i = 0; i < response.pagination.count && response.hits[start + i]; i++) {
-    hits.push(response.hits[start + i]);
+  for (var i = 0; i < response.pagination.count && files.hits[start + i]; i++) {
+    response.hits.push(_.assign({}, files.hits[start + i]));
   }
 
   response.pagination.pages = Math.ceil(response.pagination.total /
                                         response.pagination.count);
 
-  response.hits = hits;
   res.json(response);
 });
 router.get('/files/:id', function (req, res) {
@@ -566,6 +644,6 @@ router.get('/files/:id', function (req, res) {
 // all of our routes will be prefixed with /api
 app.use('/api', router);
 
-// START THE SERVER
+// START the SERVER
 // =============================================================================
 app.listen(port);

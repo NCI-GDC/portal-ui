@@ -122,7 +122,7 @@
               <tr data-ng-repeat="report in prc.project.reports">
                 <td> {{ report.id }}</td>
                 <td> {{ report.type }}</td>
-                <td> {{ report.date }}</td>
+                <td> {{ report.date | date }}</td>
                 <td><a href="view/">View</a></td>
               </tr>
             </tbody>

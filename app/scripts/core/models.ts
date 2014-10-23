@@ -3,6 +3,11 @@ module ngApp.models {
     uuid: any;
   }
 
+  export interface IGDCWindowService extends ng.IWindowService {
+    LoadXMLString: any;
+    moment: MomentStatic;
+  }
+
   export interface ICollection {
     pagination: IPagination;
     hits: any[];

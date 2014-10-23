@@ -411,9 +411,9 @@ for(var m = 0; m < 70; m++) {
       code: 'TCGA-59-2352-10A-01W-' + Math.round(Math.random() * 8000) + '-08',
       checksum: '9b8cebc0421241d087f6ab7e815285af803de7e7',
       filename: 'C239.' + file.code,
-      published: '2013-05-23',
-      uploaded: '2013-05-23',
-      modified: '2013-06-03',
+      published: new Date(),
+      uploaded: new Date(),
+      modified: new Date(),
       size: ((Math.random() * 2000000) / 1024).toFixed(2) + " GB",
       state: Math.round(Math.random()) ? 'Live' : 'Inactive'
     });

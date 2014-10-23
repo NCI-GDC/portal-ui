@@ -1,14 +1,12 @@
 module ngApp.components.xmlviewer {
 
+  import IGDCWindowService = ngApp.models.IGDCWindowService;
+
   interface XMLViewerScope extends ng.IScope {
     xml: string;
   }
 
-  interface ILoadViewerService extends ng.IWindowService {
-    LoadXMLString: any;
-  }
-
-  function XMLViewer($window: ILoadViewerService): ng.IDirective {
+  function XMLViewer($window: IGDCWindowService): ng.IDirective {
 
     return {
       restrict: "EA",

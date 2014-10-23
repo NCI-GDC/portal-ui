@@ -4,7 +4,7 @@ module ngApp.components.datefilter {
 
   class MomentDate {
     constructor($window: IGDCWindowService) {
-      return function(val: string, format:string = "MM/DD/YYYY h.mm A") {
+      return function(val: string, format:string = "MM/DD/YYYY") {
         return $window.moment(val).format(format);
       };
     }

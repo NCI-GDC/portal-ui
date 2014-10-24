@@ -14,6 +14,14 @@ module ngApp.models {
     facets?: IFacet[];
   }
 
+  export interface IAdmin {
+    type: number;
+    batchNumber: string;
+    dateOfDccUpload: string;
+    projectCode: string;
+    revision: number;
+  }
+
   export interface IPagination {
     count: number;
     total: number;

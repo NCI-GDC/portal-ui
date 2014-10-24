@@ -18,13 +18,11 @@
   <div class="row search-panel">
     <div class="col-lg-4 col-md-4 facets-sidebar">
       <tabset>
-        <tab heading="Participants"
-             active="sc.SearchState.participantsFacetsActive">
+        <tab heading="Participants">
           <facets facets="sc.participants.facets"></facets>
         </tab>
 
-        <tab heading="Files"
-             active="sc.SearchState.filesFacetsActive">
+        <tab heading="Files">
           <facets facets="sc.files.facets"></facets>
         </tab>
       </tabset>
@@ -32,15 +30,15 @@
     <div class="col-lg-8 col-md-8 table-area">
       <tabset>
         <tab heading="Participants"
-             active="sc.SearchState.participantsTableActive"
-             select="sc.setState('participants')">
+             active="sc.State.tabs.participants.active"
+             select="sc.activate('participants')">
           <div class="pane-section">
             <div ng-include="'search/templates/search.participants.html'"></div>
           </div>
         </tab>
         <tab heading="Files"
-             active="sc.SearchState.filesTableActive"
-             select="sc.setState('files')">
+             active="sc.State.tabs.files.active"
+             select="sc.activate('files')">
           <div class="pane-section">
             <div ng-include="'search/templates/search.files.html'"></div>
           </div>

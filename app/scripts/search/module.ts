@@ -3,22 +3,24 @@ module ngApp.search {
 
   import IFacet = ngApp.models.IFacet;
   import IFilesService = ngApp.files.services.IFilesService;
+  import IFiles = ngApp.files.models.IFiles;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
+  import IParticipants = ngApp.participants.models.IParticipants;
 
   /* @ngInject */
   function searchConfig($stateProvider: ng.ui.IStateProvider,
                         $urlRouterProvider: ng.ui.IUrlRouterProvider) {
 
     $stateProvider.state("search", {
-      url: "/search",
+      url: "/search?query",
       abstract: true,
       controller: "SearchController as sc",
       templateUrl: "search/templates/search.html",
       resolve: {
-        files: (FilesService: IFilesService) => {
+        files: (FilesService: IFilesService): ng.IPromise<IFiles> => {
           return FilesService.getFiles();
         },
-        participants: (ParticipantsService: IParticipantsService) => {
+        participants: (ParticipantsService: IParticipantsService): ng.IPromise<IParticipants> => {
           return ParticipantsService.getParticipants();
         }
       }

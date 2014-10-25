@@ -31,18 +31,19 @@
       <tabset>
         <tab heading="Participants"
              active="sc.State.tabs.participants.active"
-             select="sc.activate('participants')">
+             select="sc.select('participants')">
           <div class="pane-section">
             <div ng-include="'search/templates/search.participants.html'"></div>
           </div>
         </tab>
         <tab heading="Files"
              active="sc.State.tabs.files.active"
-             select="sc.activate('files')">
+             select="sc.select('files')">
           <div class="pane-section">
             <div ng-include="'search/templates/search.files.html'"></div>
           </div>
         </tab>
+      </tabset>
     </div>
   </div>
 </div>

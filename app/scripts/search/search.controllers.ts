@@ -27,10 +27,11 @@ module ngApp.search.controllers {
     }
 
     // TODO Load data lazily based on active tab
-    activate(tab) {
-      if (tab) {
-        this.State.setActive(tab);
-        this.$state.transitionTo("search." + tab, {}, { inherit: true });
+    select(tab) {
+      // Changing tabs and then navigating to another page
+      // will cause this to fire.
+      if (tab && this.$state.current.name.match('search.')) {
+        this.$state.go("search." + tab, {}, { inherit: true });
       }
     }
 

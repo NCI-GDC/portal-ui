@@ -13,7 +13,6 @@ module ngApp.search {
 
     $stateProvider.state("search", {
       url: "/search?query",
-      abstract: true,
       controller: "SearchController as sc",
       templateUrl: "search/templates/search.html",
       resolve: {

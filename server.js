@@ -54,7 +54,54 @@ router.get('/widgets/:id', function (req, res) {
 // Projects
 var projects = {
   pagination: {"count": 20, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
-  facets: [],
+  facets: [
+    {
+      category: "Disease Type",
+      terms: [
+        "Brain"
+      ]
+    },
+    {
+      category: "Program",
+      terms: [
+        "TCGA"
+      ]
+    },
+    {
+      category: "Status (Program)",
+      terms: [
+        "Active",
+        "Legacy",
+      ]
+    },
+    {
+      category: "Data Type",
+      terms: [
+        "Clinical",
+        "Raw sequencing data",
+        "Raw microarray data",
+        "SNV calls",
+        "Structural rearrangement",
+        "Copy number variation",
+        "DNA methylation",
+        "mRNA Expression",
+        "miRNA Expression",
+        "Protein Expression",
+        "Other"
+      ]
+    },
+    {
+      category: "Experimental Strategy",
+      terms: [
+        "RNA-seq",
+        "WGS",
+        "WXS",
+        "miRNA-Seq",
+        "Bisulfite-Seq",
+        "Genotype array"
+      ]
+    },
+  ],
   hits: [
     {id: 'PR1', name: 'Project One'},
     {id: 'PR2', name: 'Project Two'},

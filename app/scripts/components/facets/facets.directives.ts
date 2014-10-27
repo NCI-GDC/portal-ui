@@ -54,7 +54,23 @@ module ngApp.components.facets.directives {
     };
   }
 
+  function FacetsFreeText($location: ng.ILocationService): ng.IDirective {
+    return {
+      restrict: "EA",
+      scope: {
+        header: "@",
+        placeholder: "@"
+      },
+      replace: false,
+      templateUrl: "components/facets/templates/facets-free-text.html",
+      link: function($scope: ng.IScope) {
+          //TODO
+      }
+    };
+  }
+
   angular.module("components.facets.directives", [])
-      .directive("facets", Facets);
+      .directive("facets", Facets)
+      .directive("facetsFreeText", FacetsFreeText);
 }
 

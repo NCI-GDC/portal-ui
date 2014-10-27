@@ -7,3 +7,10 @@
   padding-left: 0 !important;
 }
 
+// Styling override to prevent having an extra thick border on first row
+// when there is also a header
+.table-bordered > thead > tr > th,
+.table-bordered > thead > tr > td {
+  border-bottom-width: 1px;
+}
+

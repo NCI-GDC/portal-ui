@@ -16,27 +16,43 @@
           </tr>
           <tr>
             <td>Item ID</td>
-            <td>{{ ac.annotation.itemId }}</td>
+            <td>{{ ac.annotation.item }}</td>
           </tr>
           <tr>
             <td>Item Type</td>
-            <td>{{ ac.annotation.itemType }}</td>
+            <td>{{ ac.annotation.type }}</td>
           </tr>
           <tr>
             <td>Participant ID</td>
-            <td>{{ ac.annotation.participantId }}</td>
+            <td>
+              <a data-ui-sref="participant({ participantId: ac.annotation.participant.id })">
+                {{ ac.annotation.participant.id }}
+              </a>
+            </td>
           </tr>
           <tr>
             <td>Project</td>
-            <td>{{ ac.annotation.project.name }}</td>
+            <td>
+              <a data-ui-sref="project({ projectId: ac.annotation.project.id })">
+                {{ ac.annotation.project.name }}
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td>Classification</td>
+            <td>{{ ac.annotation.classification }}</td>
           </tr>
           <tr>
             <td>Category</td>
             <td>{{ ac.annotation.category }}</td>
           </tr>
           <tr>
+            <td>Created On</td>
+            <td>{{ ac.annotation.dateCreated | date }}</td>
+          </tr>
+          <tr>
             <td>Created By</td>
-            <td>{{ ac.annotation.created | date }}</td>
+            <td>{{ ac.annotation.createdBy }}</td>
           </tr>
           <tr>
             <td>Status</td>
@@ -53,7 +69,7 @@
       <div class="row annotation-row" data-ng-repeat="note in ac.annotation.notes">
 
         <div class="col-lg-12 col-md-12">
-          <h4>Added by {{ note.group }} on {{ note.created }}</h4>
+          <h4>Added by {{ note.addedBy }} on {{ note.dateAdded | date }}</h4>
           <p>{{ note.text }}</p>
         </div>
 

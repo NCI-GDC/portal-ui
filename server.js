@@ -149,11 +149,31 @@ var annotations = {
 };
 
 router.get('/annotations', function (req, res) {
-  res.json(annotations);
+  var paging = JSON.parse(req.query.paging || "{}");
+
+  var response = {};
+  response.pagination = _.assign({}, annotations.pagination);
+  response.facets = _.assign([], annotations.facets);
+  response.hits = [];
+
+  response.pagination.page = paging.page || 1;
+  response.pagination.count = paging.count || annotations.pagination.count;
+
+  var start = paging.count * (paging.page - 1) || 0;
+
+  for (var i = 0; i < response.pagination.count && annotations.hits[start + i]; i++) {
+    response.hits.push(_.assign({}, annotations.hits[start + i]));
+  }
+
+  response.pagination.pages = Math.ceil(response.pagination.total /
+                                        response.pagination.count);
+
+  res.json(response);
 });
 router.get('/annotations/:id', function (req, res) {
+  var id = parseInt(req.params.id);
   res.json(_.find(annotations.hits, function (obj) {
-    return obj.id === req.params.id;
+    return obj.id === id;
   }));
 });
 
@@ -179,7 +199,8 @@ function createAnnotations(count) {
       });
     }
 
-    annotation.id = uuid.v4();
+    annotation.uuid = uuid.v4();
+    annotation.id = Math.round(Math.random() * 30000);
     annotation.item = "TCGA-OR-" + Math.random().toString(36).substring(3,7).toUpperCase();
     annotation.type = "Aliquot";
     annotation.project = projects.hits[Math.round(Math.random() * (projects.hits.length - 1))];
@@ -610,6 +631,11 @@ generateFiles(fileParticipantCount);
 var cachedLength = files.hits.length;
 for (var m = 0; m < cachedLength; m++) {
   files.hits[m].related = generateFiles(Math.max(1, Math.round(Math.random() * 5)));
+}
+
+cachedLength = annotations.hits.length;
+for (var m = 0; m < cachedLength; m++) {
+  annotations.hits[m].participant = generateParticipants(1)[0];
 }
 
 router.get('/files', function (req, res) {

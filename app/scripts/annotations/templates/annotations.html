@@ -8,20 +8,32 @@
         <th>Item Type</th>
         <th>Participant ID</th>
         <th>Project</th>
+        <th>Classification</th>
         <th>Category</th>
         <th>Created By</th>
+        <th>Created On</th>
         <th>Status</th>
       </tr>
     </thead>
     <tbody>
       <tr data-ng-repeat="a in asc.annotations.hits track by a.id">
         <td><a data-ui-sref="annotation({ annotationId : a.id })">{{ a.id }}</a></td>
-        <td>{{ a.itemId }}</td>
-        <td>{{ a.itemType }}</td>
-        <td>{{ a.participantId }}</td>
-        <td>{{ a.project.name }}</td>
+        <td>{{ a.item }}</td>
+        <td>{{ a.type }}</td>
+        <td>
+          <a data-ui-sref="participant({ participantId: a.participant.id })">
+            {{ a.participant.id }}
+          </a>
+        </td>
+        <td>
+          <a data-ui-sref="project({ projectId: ac.annotation.project.id })">
+            {{ a.project.name }}
+          </a>
+        </td>
+        <td>{{ a.classification }}</td>
         <td>{{ a.category }}</td>
-        <td>{{ a.created | date }}</td>
+        <td>{{ a.createdBy }}</td>
+        <td>{{ a.dateCreated | date }}</td>
         <td>{{ a.status }}</td>
       </tr>
     </tbody>

@@ -5,6 +5,8 @@ module ngApp.search {
   import IFiles = ngApp.files.models.IFiles;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IParticipants = ngApp.participants.models.IParticipants;
+  import IAnnotations = ngApp.annotations.models.IAnnotations;
+  import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
 
   /* @ngInject */
   function searchConfig($stateProvider: ng.ui.IStateProvider,
@@ -20,6 +22,9 @@ module ngApp.search {
         },
         participants: (ParticipantsService: IParticipantsService): ng.IPromise<IParticipants> => {
           return ParticipantsService.getParticipants();
+        },
+        annotations: (AnnotationsService: IAnnotationsService): ng.IPromise<IAnnotations> => {
+          return AnnotationsService.getAnnotations();
         }
       }
     });
@@ -38,12 +43,20 @@ module ngApp.search {
       }
     });
 
+    $stateProvider.state("search.annotations", {
+      url: "/a",
+      data: {
+        tab: "annotations"
+      }
+    });
+
     $urlRouterProvider.when("/search", "/search/p");
   }
 
   angular
       .module("ngApp.search", [
         "search.controller",
+        "ngApp.annotations",
         "ngApp.participants",
         "ngApp.files",
         "ui.router.state"

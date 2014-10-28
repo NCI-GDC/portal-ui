@@ -5,5 +5,6 @@ angular
     "components.header",
     "components.xmlviewer",
     "components.datefilter",
-    "components.facets"
+    "components.facets",
+    "components.tables"
   ]);

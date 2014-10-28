@@ -4,12 +4,14 @@ module ngApp.search.controllers {
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IFiles = ngApp.files.models.IFiles;
   import IParticipants = ngApp.participants.models.IParticipants;
+  import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
   import IState = ngApp.search.services.IState;
 
   export interface ISearchController {
     files: IFiles;
     participants: IParticipants;
+    annotations: IAnnotations;
     State: IState;
   }
 
@@ -20,6 +22,7 @@ module ngApp.search.controllers {
                 public State: IState,
                 public files: IFiles,
                 public participants: IParticipants,
+                public annotations: IAnnotations,
                 CoreService: ICoreService) {
       var data = $state.current.data || {};
       this.State.setActive(data.tab);

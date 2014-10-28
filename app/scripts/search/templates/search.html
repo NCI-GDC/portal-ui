@@ -1,5 +1,5 @@
 <div class="container search">
-  <h1>GDC Search</h1>
+  <h1>Search</h1>
 
   <div class="row">
     <div class="col-lg-8 col-md-8 pull-right no-padding-left search-bar">
@@ -29,18 +29,25 @@
     </div>
     <div class="col-lg-8 col-md-8 table-area">
       <tabset>
-        <tab heading="Participants"
+        <tab heading="Participants ({{sc.participants.hits.length}})"
              active="sc.State.tabs.participants.active"
              select="sc.select('participants')">
           <div class="pane-section">
             <div ng-include="'search/templates/search.participants.html'"></div>
           </div>
         </tab>
-        <tab heading="Files"
+        <tab heading="Files ({{sc.files.hits.length}})"
              active="sc.State.tabs.files.active"
              select="sc.select('files')">
           <div class="pane-section">
             <div ng-include="'search/templates/search.files.html'"></div>
+          </div>
+        </tab>
+        <tab heading="Annotations ({{sc.annotations.hits.length}})"
+             active="sc.State.tabs.annotations.active"
+             select="sc.select('annotations')">
+          <div class="pane-section">
+            <div ng-include="'search/templates/search.annotations.html'"></div>
           </div>
         </tab>
       </tabset>

@@ -28,6 +28,9 @@ module ngApp.search.services {
       },
       files: {
         active: false
+      },
+      annotations: {
+        active: false
       }
     };
 

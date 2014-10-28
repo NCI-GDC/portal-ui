@@ -1,4 +1,11 @@
-<h4>Participants</h4>
+<h4 class="clearfix">
+  Participants
+  <span class="pull-right">
+    <select-columns></select-columns>
+    <export-table></export-table>
+  </span>
+</h4>
+
 <table class="table table-striped table-hover table-condensed table-bordered">
   <thead>
     <tr>
@@ -10,7 +17,6 @@
       <th>Files</th>
       <th>Annotations</th>
       </tr>
-    </tr>
   </thead>
   <tbody>
     <tr data-ng-repeat="p in sc.participants.hits track by p.id">

@@ -1,0 +1,72 @@
+<h4 class="clearfix">
+  Annotations
+  <span class="pull-right">
+    <select-columns></select-columns>
+    <export-table></export-table>
+  </span>
+</h4>
+<table class="table table-striped table-hover table-condensed table-bordered">
+  <thead>
+    <tr>
+      <th>Annotation ID</th>
+      <th>Item Type</th>
+      <th>Item barcode</th>
+      <th>Participant</th>
+      <th>Classification</th>
+      <th>Category</th>
+      <th>Annotation</th>
+      <th>Annotator</th>
+      <th>Date Created</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-ng-repeat="a in sc.annotations.hits track by a.id">
+      <td><a data-ui-sref="annotation({ annotationId : a.id })">{{ a.id }}</a></td>
+      <td>{{ a.type }}</td>
+      <td>{{ a.item }}</td>
+      <td>
+        <a data-ui-sref="participant({ participantId: a.participant.id })">
+          {{ a.participant.id }}
+        </a>
+      </td>
+      <td>{{ a.classification }}</td>
+      <td>{{ a.category }}</td>
+      <td>{{ a.annotation }}</td>
+      <td>{{ a.createdBy }}</td>
+      <td>{{ a.dateCreated | date }}</td>
+      <td>{{ a.status }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="number-results pull-left">
+  Show
+  <div class="btn-group dropup" dropdown is-open="status.isopen">
+    <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
+      {{ sc.annotations.pagination.count }}  <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+      <li ng-click="sc.searchQuery(10)">10</li>
+      <li ng-click="sc.searchQuery(20)">20</li>
+      <li ng-click="sc.searchQuery(40)">40</li>
+      <li ng-click="sc.searchQuery(60)">60</li>
+      <li ng-click="sc.searchQuery(80)">80</li>
+      <li ng-click="sc.searchQuery(100)">100</li>
+    </ul>
+  </div>
+  entries
+</div>
+<pagination boundary-links="true"
+            total-items="sc.annotations.pagination.total"
+            ng-model="sc.annotations.pagination.page"
+            items-per-page="sc.annotations.pagination.count"
+            class="pagination-sm pull-right"
+            ng-change="sc.searchQuery()"
+            num-pages="sc.annotations.pagination.pages"
+            max-size="6"
+            rotate="false"
+            previous-text="&lsaquo;"
+            next-text="&rsaquo;"
+            first-text="&laquo;"
+            last-text="&raquo;"></pagination>

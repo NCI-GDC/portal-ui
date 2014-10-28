@@ -11,7 +11,7 @@
         <div class="col-lg-7 col-md-7">
           <h3>
             File Properties
-            <i class="glyphicon download glyphicon-download-alt pull-right"></i>
+            <i class="fa download fa-download pull-right"></i>
             <button class="btn btn-default pull-right" data-ng-click="fc.file.inCart = !fc.file.inCart">
               <span data-ng-show="fc.file.inCart">Remove from Cart</span>
               <span data-ng-show="!fc.file.inCart">Add to Cart</span>
@@ -26,7 +26,8 @@
               <tr>
                 <td>File Access</td>
                 <td>
-                  <i data-ng-if="fc.file.access" class="glyphicon glyphicon-lock"></i>
+                  <i data-ng-if="!fc.file.access" class="fa fa-lock"></i>
+                  <i data-ng-if="fc.file.access" class="fa fa-unlock-alt"></i>
                   <span data-ng-if="fc.file.access">Public</span>
                   <span data-ng-if="!fc.file.access">Protected</span>
                 </td>
@@ -78,13 +79,13 @@
                     <ul class="dropdown-menu" role="menu">
                       <li>
                         <a>
-                          <i class="glyphicon glyphicon-eye-open"></i>
+                          <i class="fa fa-eye"></i>
                           View Files in same Archive
                         </a>
                       </li>
                       <li>
                         <a>
-                          <i class="glyphicon glyphicon-folder-open"></i>
+                          <i class="fa fa-folder-open"></i>
                           Download Archive
                         </a>
                       </li>

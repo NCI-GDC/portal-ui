@@ -80,7 +80,8 @@
                 <input type="checkbox">
               </td>
               <td class="text-center">
-                <i data-ng-if="!file.access" class="glyphicon glyphicon-lock"></i>
+                <i ng-if="!file.access" class="fa fa-lock fa-lg"></i>
+                <i ng-if="file.access" class="fa fa-unlock-alt fa-lg"></i>
               </td>
               <td>
                 <a data-ui-sref="file({ fileId: file.id })">

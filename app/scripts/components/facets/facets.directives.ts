@@ -23,12 +23,12 @@ module ngApp.components.facets.directives {
 
         $scope.toggleFacetCategory = function (clickEvent: any) {
           var facetGroup = clickEvent.target.parentNode.querySelector(".facet-term-group"),
-              arrow = clickEvent.target.querySelector(".glyphicon");
+              arrow = clickEvent.target.querySelector(".fa");
 
           if (facetGroup.classList.contains("hidden")) {
-            arrow.className = "glyphicon glyphicon-chevron-down";
+            arrow.className = "fa fa-chevron-down";
           } else {
-            arrow.className = "glyphicon glyphicon-chevron-right";
+            arrow.className = "fa fa-chevron-right";
           }
 
           facetGroup.classList.toggle("hidden");

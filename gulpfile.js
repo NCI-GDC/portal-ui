@@ -56,6 +56,33 @@ gulp.task('logs', function(){
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
+gulp.task('i18n:pot', function () {
+    return gulp.src(['app/scripts/**/*.html', 'app/scripts/**/*.js'])
+        .pipe($.angularGettext.extract('template.pot'))
+        .pipe(gulp.dest('translations/'));
+});
+
+gulp.task('i18n:translations', ['i18n:pot'], function () {
+    return gulp.src('translations/**/*.po')
+        .pipe($.angularGettext.compile({
+            format: 'javascript',
+            defaultLanguage: 'en'
+        }))
+        .pipe(gulp.dest('dist/translations/'));
+});
+
+gulp.task('i18n:build', ['i18n:translations'], function() {
+  return gulp.src('dist/translations/**/*.js')
+    .pipe($.concat('translations.js'))
+    .pipe(gulp.dest('dist/js'));
+});
+
+gulp.task('i18n:clean', del.bind(null, ['dist/translations']));
+
+gulp.task('i18n', function(cb) {
+  runSequence('i18n:build', ['i18n:clean'], cb);
+});
+
 // Optimize Images
 gulp.task('images', function () {
   return gulp.src('app/images/**/*')
@@ -309,7 +336,7 @@ gulp.task('serve:web', function (cb) {
 });
 
 gulp.task('serve', function (cb) {
-  runSequence('default', ['karma:watch', 'serve:api', 'serve:web'], cb);
+  runSequence('default', ['i18n', 'karma:watch', 'serve:api', 'serve:web'], cb);
 });
 
 // Build Production Files, the Default Task

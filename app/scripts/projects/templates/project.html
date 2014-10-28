@@ -9,40 +9,50 @@
     <div class="col-lg-12 col-md-12">
       <div class="row">
         <div class="col-lg-6 col-md-6">
-          <h2>Summary</h2>
+          <h2 data-translate>Summary</h2>
           <table class="table table-striped table-hover table-condensed table-bordered">
             <tbody>
               <tr>
-                <td>Code</td>
+                <td data-translate>Code</td>
                 <td>{{ prc.project.code }}</td>
               </tr>
               <tr>
-                <td>Name</td>
+                <td data-translate>Name</td>
                 <td>{{ prc.project.name }}</td>
               </tr>
               <tr>
-                <td>Disease Type</td>
+                <td data-translate>Disease Type</td>
                 <td>{{ prc.project.diseaseType }}</td>
               </tr>
               <tr>
-                <td>Program</td>
+                <td data-translate>Program</td>
                 <td>{{ prc.project.program }}</td>
               </tr>
               <tr>
-                <td>Sequencing Center</td>
-                  <td> {{ prc.project.sequencingCenter }} </td>
+                <td data-translate>Sequencing Center</td>
+                <td> {{ prc.project.sequencingCenter }} </td>
               </tr>
               <tr>
-                <td>Status</td>
+                <td data-translate>Status</td>
                 <td>{{ prc.project.status }}</td>
               </tr>
               <tr>
-                <td>&#35; of Participants</td>
-                <td><a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project.summary.fileCount }}</a></td> <!-- is donors the same as participants? -->
+                <td>
+                  &#35; 
+                  <span data-translate data-translate-comment="number of">of Participants</span>
+                </td>
+                <td>
+                  <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project.summary.participantCount }}</a>
+                </td> <!-- is donors the same as participants? -->
               </tr>
               <tr>
-                <td>&#35; of data files</td>
-                <td><a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project.summary.participantCount }}</a></td>
+                <td>
+                  &#35; 
+                  <span data-translate data-translate-comment"number of">of data files</span>
+                </td>
+                <td>
+                  <a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project.summary.fileCount }}</a>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -53,10 +63,10 @@
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
               <tr>
-                <th>Analysis</th>
-                <th>Participants</th>
-                <th>Samples</th>
-                <th>Files</th>
+                <th data-translate>Analysis</th>
+                <th data-translate>Participants</th>
+                <th data-translate>Samples</th>
+                <th data-translate>Files</th>
               </tr>
             </thead>
             <tbody>
@@ -68,18 +78,17 @@
               </tr>
             </tbody>
           </table>
-      </div>
+        </div>
 
-      <div class="row">
         <div class="col-lg-6 col-md-6">
-          <h2>
+          <h2 data-translate>
             Available Data
           </h2>
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
-              <th>Data Type</th>
-              <th>Participants</th>
-              <th>Files</th>
+              <th data-translate>Data Type</th>
+              <th data-translate>Participants</th>
+              <th data-translate>Files</th>
             </thead>
             <tbody>
               <tr data-ng-repeat="(dataCategory, counts) in prc.project.summary.analyzedData">
@@ -99,21 +108,24 @@
       <div class="row">
         <div class="col-lg-12 col-md-12">
           <h2>
-            Reports
+            <span data-translate>Reports</span>
             <button class="btn btn-default pull-right add">
-              Select a Date
+              <span data-translate>Select a Date</span>
               <span class="caret"></span>
             </button>
           </h2>
         </div>
+      </div>
+
+      <div class="row">
         <div class="col-lg-12 col-md-12">
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Type</th>
-                <th>Date</th>
-                <th>Action</th>
+                <th data-translate>ID</th>
+                <th data-translate>Type</th>
+                <th data-translate>Date</th>
+                <th data-translate>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -121,13 +133,12 @@
                 <td> {{ report.id }}</td>
                 <td> {{ report.type }}</td>
                 <td> {{ report.date | date }}</td>
-                <td><a href="view/">View</a></td>
+                <td><a href="view/" data-translate>View</a></td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-
     </div>
   </section>
 </div>

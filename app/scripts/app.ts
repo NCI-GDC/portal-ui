@@ -15,11 +15,17 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
   RestangularProvider.setBaseUrl("http://localhost:3001/api");
 }
 
+/* @ngInject */
+function appRun(gettextCatalog) {
+  gettextCatalog.debug = true;
+}
+
 angular
     .module("ngApp", [
       "ui.router.state",
       "ui.bootstrap",
       "restangular",
+      "gettext",
 
       "ngApp.core",
       "ngApp.search",
@@ -32,4 +38,5 @@ angular
       "ngApp.cart",
       "templates"
     ])
-    .config(appConfig);
+    .config(appConfig)
+    .run(appRun);

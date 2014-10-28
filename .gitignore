@@ -6,6 +6,7 @@ npm-debug.log*
 .DS_Store
 
 dist/
+translations/
 .tmp/
 coverage/
 report/

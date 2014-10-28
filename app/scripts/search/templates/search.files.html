@@ -1,5 +1,5 @@
 <h4 class="clearfix">
-  Files
+  <span data-translate>Files</span>
   <span class="pull-right">
     <select-columns></select-columns>
     <export-table></export-table>
@@ -11,17 +11,17 @@
     <th>
       <input type="checkbox">
     </th>
-    <th class="text-center">Access</th>
-    <th class="text-center">File Name</th>
-    <th class="text-center">Participant</th>
-    <th class="text-center">Annotations</th>
-    <th class="text-center">Project</th>
-    <th class="text-center">Data Category</th>
-    <th class="text-center">Status</th>
-    <th class="text-center">File type</th>
-    <th class="text-center">Size</th>
-    <th class="text-center">Revision</th>
-    <th class="text-center">Update date</th>
+    <th class="text-center" data-translate>Access</th>
+    <th class="text-center" data-translate>File Name</th>
+    <th class="text-center" data-translate>Participant</th>
+    <th class="text-center" data-translate>Annotations</th>
+    <th class="text-center" data-translate>Project</th>
+    <th class="text-center" data-translate>Data Category</th>
+    <th class="text-center" data-translate>Status</th>
+    <th class="text-center" data-translate>File type</th>
+    <th class="text-center" data-translate>Size</th>
+    <th class="text-center" data-translate>Revision</th>
+    <th class="text-center" data-translate>Update date</th>
   </tr>
   </thead>
   <tbody>
@@ -37,17 +37,17 @@
           <ul class="dropdown-menu" role="menu">
             <li><a href="#">
               <i class="fa fa-download"></i>
-              Download File</a></li>
+              <span data-translate>Download File</span></a></li>
             <li><a href="#">
               <i class="fa fa-download"></i>
-              Download Metadata</a></li>
+              <span data-translate>Download Metadata</span></a></li>
             <li class="divider"></li>
             <li><a href="#">
               <i class="fa fa-file-zip-o"></i>
-              View Files in same Archive</a></li>
+              <span data-translate>View Files in same Archive</span></a></li>
             <li><a href="#">
               <i class="fa fa-file-text-o"></i>
-              View Metadata Files</a></li>
+              <span data-translate>View Metadata Files</span></a></li>
           </ul>
         </div>
       </div>
@@ -83,7 +83,7 @@
 </table>
 <div class="pagination-controls">
   <div class="number-results pull-left">
-    Show
+    <span data-translate>Show</span>
     <div class="btn-group dropup" dropdown is-open="status.isopen">
       <button type="button" class="btn btn-default dropdown-toggle" data-ng-disabled="disabled">
         {{ sc.files.pagination.count }} <span class="caret"></span>
@@ -97,7 +97,7 @@
         <li data-ng-click="sc.searchQuery(100)">100</li>
       </ul>
     </div>
-    entries
+    <span data-translate>entries</span>
   </div>
   <pagination boundary-links="true"
               total-items="sc.files.pagination.total"

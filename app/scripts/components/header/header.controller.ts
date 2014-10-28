@@ -3,10 +3,22 @@ module ngApp.components.header.controllers {
     isCollapsed: boolean;
     toggleCollapsed(): void;
     collapse(): void;
+    currentLang: string;
+    languages: any;
+    setLanguage(): void;
   }
 
   class HeaderController implements IHeaderController {
     isCollapsed: boolean = true;
+    currentLang: string = "en";
+    languages: any = {
+      "en": "English",
+      "de": "German",
+      "fr": "French"
+    };
+
+    /* @ngInject */
+    constructor(private gettextCatalog) {}
 
     collapse() : void {
       this.isCollapsed = true;
@@ -14,6 +26,10 @@ module ngApp.components.header.controllers {
 
     toggleCollapsed() : void {
       this.isCollapsed = !this.isCollapsed;
+    }
+
+    setLanguage() {
+      this.gettextCatalog.setCurrentLanguage(this.currentLang);
     }
 
   }

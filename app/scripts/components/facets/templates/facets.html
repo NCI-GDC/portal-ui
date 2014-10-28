@@ -1,17 +1,19 @@
 <div class="facet-category" ng-repeat="facet in facets">
   <label class="facet-name" ng-click="toggleFacetCategory($event)">
     <span class="fa fa-chevron-down"></span>
-    {{ facet.category }}
+    {{ facet.category | translate }}
   </label>
   <div class="facet-term-group">
     <div ng-repeat="term in facet.terms">
       <div class="term-wrapper" ng-hide="$index > (displayMax - 1) && !facet.termsHidden">
-        <label class="facet-term"><input type="checkbox" ng-click="toggleFacetTerm($event, facet)" /><span>{{ term }}</span></label>
+        <label class="facet-term"><input type="checkbox" ng-click="toggleFacetTerm($event, facet)" />
+          <span>{{ term | translate }}</span>
+        </label>
       </div>
     </div>
     <span class="show-more-terms" ng-if="facet.terms.length > displayMax"
-          ng-show="!facet.termsHidden" ng-click="facet.termsHidden = true">More...</span>
+          ng-show="!facet.termsHidden" ng-click="facet.termsHidden = true" data-translate>More...</span>
     <span class="show-more-terms" ng-if="facet.terms.length > displayMax" 
-          ng-show="facet.termsHidden" ng-click="facet.termsHidden = false">Less...</span>
+          ng-show="facet.termsHidden" ng-click="facet.termsHidden = false" data-translate>Less...</span>
   </div>
 </div>

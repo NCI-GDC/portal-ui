@@ -19,6 +19,7 @@
     "express": "4.9.6",
     "graceful-fs": "3.0.3",
     "gulp": "3.8.8",
+    "gulp-angular-gettext": "0.3.1",
     "gulp-autoprefixer": "1.0.1",
     "gulp-cache": "0.2.4",
     "gulp-cdnizer": "1.0.3",

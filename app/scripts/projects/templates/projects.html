@@ -1,11 +1,11 @@
 <div class="container-fluid projects search">
-  <h1>Projects</h1>
+  <h1 data-translate>Projects</h1>
 
   <div class="row">
     <div class="col-lg-10 col-md-8 col-sm-12 pull-right no-padding-left search-bar">
       <div class="row">
         <div class="col-lg-2 col-md-2 col-sm-2">
-          <button class="btn btn-default pull-right">Share</button>
+          <button class="btn btn-default pull-right" data-translate>Share</button>
           <span class="fa fa-refresh pull-right"></span>
         </div>
         <div class="col-lg-10 col-md-10 col-sm-10">
@@ -17,7 +17,9 @@
 
   <div class="row search-panel">
     <div class="col-lg-2 col-md-3 facets-sidebar">
-      <facets-free-text header="Project" placeholder="(Project Name or Code)"></facets-free-text>
+      <facets-free-text header="Project"
+                        placeholder="{{ '(Project Name or Code)' | translate }}">
+      </facets-free-text>
       <facets facets="prsc.projects.facets"></facets>
     </div>
     <div class="col-lg-10 col-md-9 table-area">
@@ -31,22 +33,26 @@
       <table class="table table-striped table-hover table-condensed table-bordered">
         <thead>
         <tr>
-          <th rowspan="2" class="text-center">Code</th>
-          <th rowspan="2" class="text-center">Name</th>
-          <th rowspan="2" class="text-center">Disease Type</th>
-          <th rowspan="2" class="text-center">Program</th>
-          <th rowspan="2" class="text-center">&#35; Participants</th>
-          <th colspan="6" rowspan="1" class="text-center">Available Data Files per Data Type</th>
-          <th rowspan="2" class="text-center">Status</th>
-          <th rowspan="2" class="text-center">Last Update</th>
+          <th rowspan="2" class="text-center" data-translate>Code</th>
+          <th rowspan="2" class="text-center" data-translate>Name</th>
+          <th rowspan="2" class="text-center" data-translate>Disease Type</th>
+          <th rowspan="2" class="text-center" data-translate>Program</th>
+          <th rowspan="2" class="text-center">
+            &#35; <span data-translate>Participants</span>
+          </th>
+          <th colspan="6" rowspan="1" class="text-center" data-translate>
+            Available Data Files per Data Type
+          </th>
+          <th rowspan="2" class="text-center" data-translate>Status</th>
+          <th rowspan="2" class="text-center" data-translate>Last Update</th>
         </tr>
         <tr>
-          <th>Clinical</th>
-          <th>SNV</th>
-          <th>mRNA</th>
-          <th>miRNA</th>
-          <th>Copy Number</th>
-          <th>Meth</th>
+          <th data-translate>Clinical</th>
+          <th data-translate>SNV</th>
+          <th data-translate>mRNA</th>
+          <th data-translate>miRNA</th>
+          <th data-translate>Copy Number</th>
+          <th data-translate>Meth</th>
         </tr>
         </thead>
         <tbody>

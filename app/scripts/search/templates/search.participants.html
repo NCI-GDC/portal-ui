@@ -1,5 +1,5 @@
 <h4 class="clearfix">
-  Participants
+  <span data-translate>Participants</span>
   <span class="pull-right">
     <select-columns></select-columns>
     <export-table></export-table>
@@ -9,14 +9,14 @@
 <table class="table table-striped table-hover table-condensed table-bordered">
   <thead>
     <tr>
-      <th>Participant ID</th>
-      <th>Project</th>
-      <th>Disease Type</th>
-      <th>Gender</th>
-      <th>Tumor Stage</th>
-      <th>Files</th>
-      <th>Annotations</th>
-      </tr>
+      <th data-translate>Participant ID</th>
+      <th data-translate>Project</th>
+      <th data-translate>Disease Type</th>
+      <th data-translate>Gender</th>
+      <th data-translate>Tumor Stage</th>
+      <th data-translate>Files</th>
+      <th data-translate>Annotations</th>
+    </tr>
   </thead>
   <tbody>
     <tr data-ng-repeat="p in sc.participants.hits track by p.id">
@@ -40,7 +40,7 @@
 </table>
 <div class="pagination-controls">
   <div class="number-results pull-left">
-    Show
+    <span data-translate>Show</span>
     <div class="btn-group dropup" dropdown is-open="status.isopen">
       <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
         {{ sc.participants.pagination.count }}  <span class="caret"></span>
@@ -54,7 +54,7 @@
         <li ng-click="sc.searchQuery(100)">100</li>
       </ul>
     </div>
-    entries
+    <span data-translate>entries</span>
   </div>
   <pagination boundary-links="true"
               total-items="sc.participants.pagination.total"

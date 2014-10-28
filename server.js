@@ -110,74 +110,138 @@ var projects = {
     {id: 'PR5', name: 'Project Five'}
   ]};
 projects.hits.forEach(function(project) {
-  project.code = "GBM-TCGA";
-  project.name = "Brain Glioblastoma Multiforme";
-  project.site = "Brain";
-  project.numDonors = Math.round(Math.random() * 100);
-  project.program = "TCGA";
-  project.sequencingCenter = "BI";
-  project.numFiles = Math.round(Math.random() * 100);
-  project.data = {
-    "Clincal" : Math.round(Math.random() *100),
-    "Mutation": Math.round(Math.random() *100),
-    "mRNA": Math.round(Math.random() *100),
-    "miRNA": Math.round(Math.random() *100),
-    "Copy Number": Math.round(Math.random() *100),
-    "Meth": Math.round(Math.random() *100),
-    "Protein Expr": null
+  project.name = "Neuroblastoma";
+  project.code = "NBL-TARGET";
+  project.program = "TARGET";
+  project.status = "Legacy";
+  var analyzedData = {
+    "Clinical":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+    "Raw sequencing data":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+    "Raw microarray data":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+    "SNV":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+    "Structural rearrangement":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+    "Copy number variation":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+      "DNA methylation":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+      "mRNA Expression":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+      "miRNA Expression":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+      "Protein Expression":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      },
+      "Other":
+      {
+        participantCount: Math.round(Math.random() * 700),
+        fileCount: Math.round(Math.random() * 600)
+      }
   };
-  project.status = Math.round(Math.random()) ? "Legacy" : "Active";
-  project.date = new Date();
-  project.experiments = [
-      {
-        name: "RNA-Seq",
-        participants: Math.round(Math.random() * 100),
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "WGS",
-        participants: Math.round(Math.random() * 100),
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "WXS",
-        participants: Math.round(Math.random() * 100),
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "miRNA-Seq",
-        participants: Math.round(Math.random() * 100),
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "Bisulfite-Seq",
-        participants: Math.round(Math.random() * 100),
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      },
-      {
-        name: "Genotype Array",
-        participants: Math.round(Math.random() * 100),
-        samples: Math.round(Math.random() * 400),
-        files: Math.round(Math.random() * 700)
-      }
-    ];
-    project.reports = [
-      {
-        id: 93883,
-        type: "Case Overview",
-        date: new Date()
-      },
-      {
-        id: 38373,
-        type: "BCR Pipeline",
-        date: new Date()
-      }
-    ];
+  var experimentalData = [
+    {
+      experimentalType: "RNA-Seq",
+      participantCount: Math.round(Math.random()* 300),
+      fileCount: Math.round(Math.random()*100),
+      sampleCount: Math.round(Math.random()*100)
+    },
+    {
+      experimentalType: "WGS",
+      participantCount: Math.round(Math.random()* 300),
+      fileCount: Math.round(Math.random()*100),
+      sampleCount: Math.round(Math.random()*100)
+    },
+    {
+      experimentalType: "WXS",
+      participantCount: Math.round(Math.random()* 300),
+      fileCount: Math.round(Math.random()*100),
+      sampleCount: Math.round(Math.random()*100)
+    },
+    {
+      experimentalType: "miRNA-Seq",
+      participantCount: Math.round(Math.random()* 300),
+      fileCount: Math.round(Math.random()*100),
+      sampleCount: Math.round(Math.random()*100)
+    },
+    {
+      experimentalType: "Bisulfite-Seq",
+      participantCount: Math.round(Math.random()* 300),
+      fileCount: Math.round(Math.random()*100),
+      sampleCount: Math.round(Math.random()*100)
+    },
+    {
+      experimentalType: "Geotype Array",
+      participantCount: Math.round(Math.random()* 300),
+      fileCount: Math.round(Math.random()*100),
+      sampleCount: Math.round(Math.random()*100)
+    }
+  ];
+
+  var analyzedDataCounts = _.reduce(analyzedData, function(total, item) {
+    total.fileCount += item.fileCount;
+    total.participantCount += item.participantCount;
+    return total;
+  }, { fileCount: 0, participantCount: 0 });
+
+  var experimentalDataCounts = experimentalData.reduce(function(total, item) {
+    total.fileCount += item.fileCount;
+    total.participantCount += item.participantCount;
+    return total;
+  }, { fileCount: 0, participantCount: 0 });
+
+  project.summary = {
+    analyzedData: analyzedData,
+    experimentalData: experimentalData,
+    fileCount: analyzedDataCounts.fileCount + experimentalDataCounts.fileCount,
+    participantCount: analyzedDataCounts.participantCount + experimentalDataCounts.participantCount
+  };
+  project.diseaseType = "Brain";
+  project.sequencingCenter = "BI";
+  project.reports = [
+    {
+      id: 93883,
+      type: "Case Overview",
+      date: new Date()
+    },
+    {
+      id: 38373,
+      type: "BCR Pipeline",
+      date: new Date()
+    }
+  ];
 });
 router.get('/projects', function (req, res) {
   res.json(projects);

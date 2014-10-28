@@ -29,26 +29,32 @@
             <th rowspan="2" class="text-center">Disease Type</th>
             <th rowspan="2" class="text-center">Program</th>
             <th rowspan="2" class="text-center">&#35; Participants</th>
-            <th colspan="7" rowspan="1" class="text-center">Available Data Files per Data Type</th>
+            <th colspan="6" rowspan="1" class="text-center">Available Data Files per Data Type</th>
             <th rowspan="2" class="text-center">Status</th>
             <th rowspan="2" class="text-center">Last Update</th>
           </tr>
           <tr>
-            <th rowspan="1" data-ng-repeat="(key, value) in prsc.projects.hits[0].data">
-                {{ key }}
-            </th>
+            <th>Clinical</th>
+            <th>SNV</th>
+            <th>mRNA</th>
+            <th>miRNA</th>
+            <th>Copy Number</th>
+            <th>Meth...</th>
           </tr>
         </thead>
         <tbody>
             <tr data-ng-repeat="p in prsc.projects.hits track by p.id">
             <td><a data-ui-sref="project({ projectId: p.id })">{{ p.code }}</a></td>
             <td>{{ p.name }}</td>
-            <td>{{ p.site }}</td>
+            <td>{{ p.diseaseType }}</td>
             <td>{{ p.program }}</td>
-            <td><a data-ui-sref="search.participants( { projectId: p.id })">{{ p.numDonors }}</a></td>
-            <td data-ng-repeat="(key, value) in p.data">
-              <a data-ui-sref="search.files( {projectId: pid })">{{ value }}</a>
-            </td>
+            <td><a data-ui-sref="search.participants( { projectId: p.id })">{{ p.summary.participantCount }}</a></td>
+            <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["Clinical"].fileCount }}</a></td>
+            <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["SNV"].fileCount }}</a></td>
+            <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["mRNA Expression"].fileCount }}</a></td>
+            <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["miRNA Expression"].fileCount }}</a></td>
+            <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["Copy number variation"].fileCount }}</a></td>
+            <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["DNA methylation"].fileCount }}</a></td>
             <td>{{ p.status}}</td>
             <td>{{ p.date | date }}</td>
           </tr>

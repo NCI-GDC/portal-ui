@@ -678,6 +678,7 @@ generateFiles(fileParticipantCount);
 var cachedLength = files.hits.length;
 for (var m = 0; m < cachedLength; m++) {
   files.hits[m].related = generateFiles(Math.max(1, Math.round(Math.random() * 5)));
+  files.hits[m].project = projects.hits[Math.round(Math.random() * (projects.hits.length - 1))];
 }
 
 cachedLength = annotations.hits.length;

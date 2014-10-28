@@ -1,6 +1,7 @@
 module ngApp.cart.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import IFiles = ngApp.files.models.IFiles;
+  import IFile = ngApp.files.models.IFile;
   import ICoreService = ngApp.core.services.ICoreService;
 
   export interface ICartController {
@@ -12,12 +13,15 @@ module ngApp.cart.controllers {
     /* @ngInject */
     totalSize: number = 0;
 
-    constructor(public files: IFiles, private CoreService: ICoreService) {
-        this.calculateTotalSize();
-        CoreService.setPageTitle("Cart " + "(" + this.files.hits.length + ")");
+    constructor(public files: IFiles, private CoreService: ICoreService,
+                private CartService: ICartService) {
+      this.calculateTotalSize();
+      CoreService.setPageTitle("Cart " + "(" + this.files.hits.length + ")");
     }
 
     calculateTotalSize(): void {
+      this.totalSize = 0;
+
       for(var i = 0; i < this.files.hits.length; i++) {
         this.totalSize += this.files.hits[i].size;
       }

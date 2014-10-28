@@ -32,33 +32,35 @@
     </tr>
   </tbody>
 </table>
-<div class="number-results pull-left">
-  Show
-  <div class="btn-group dropup" dropdown is-open="status.isopen">
-    <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
-      {{ sc.participants.pagination.count }}  <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li ng-click="sc.searchQuery(10)">10</li>
-      <li ng-click="sc.searchQuery(20)">20</li>
-      <li ng-click="sc.searchQuery(40)">40</li>
-      <li ng-click="sc.searchQuery(60)">60</li>
-      <li ng-click="sc.searchQuery(80)">80</li>
-      <li ng-click="sc.searchQuery(100)">100</li>
-    </ul>
+<div class="pagination-controls">
+  <div class="number-results pull-left">
+    Show
+    <div class="btn-group dropup" dropdown is-open="status.isopen">
+      <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
+        {{ sc.participants.pagination.count }}  <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li ng-click="sc.searchQuery(10)">10</li>
+        <li ng-click="sc.searchQuery(20)">20</li>
+        <li ng-click="sc.searchQuery(40)">40</li>
+        <li ng-click="sc.searchQuery(60)">60</li>
+        <li ng-click="sc.searchQuery(80)">80</li>
+        <li ng-click="sc.searchQuery(100)">100</li>
+      </ul>
+    </div>
+    entries
   </div>
-  entries
+  <pagination boundary-links="true"
+              total-items="sc.participants.pagination.total"
+              ng-model="sc.participants.pagination.page"
+              items-per-page="sc.participants.pagination.count"
+              class="pagination-sm pull-right"
+              ng-change="sc.searchQuery()"
+              num-pages="sc.participants.pagination.pages"
+              max-size="6"
+              rotate="false"
+              previous-text="&lsaquo;"
+              next-text="&rsaquo;"
+              first-text="&laquo;"
+              last-text="&raquo;"></pagination>
 </div>
-<pagination boundary-links="true"
-            total-items="sc.participants.pagination.total"
-            ng-model="sc.participants.pagination.page"
-            items-per-page="sc.participants.pagination.count"
-            class="pagination-sm pull-right"
-            ng-change="sc.searchQuery()"
-            num-pages="sc.participants.pagination.pages"
-            max-size="6"
-            rotate="false"
-            previous-text="&lsaquo;"
-            next-text="&rsaquo;"
-            first-text="&laquo;"
-            last-text="&raquo;"></pagination>

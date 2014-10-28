@@ -22,12 +22,13 @@ module ngApp.components.facets.directives {
         $scope.displayMax = 5;
 
         $scope.toggleFacetCategory = function (clickEvent: any) {
-          var facetGroup = clickEvent.target.parentNode.querySelector(".facet-term-group");
+          var facetGroup = clickEvent.target.parentNode.querySelector(".facet-term-group"),
+              arrow = clickEvent.target.querySelector(".glyphicon");
 
           if (facetGroup.classList.contains("hidden")) {
-            clickEvent.target.className = "glyphicon glyphicon-chevron-down";
+            arrow.className = "glyphicon glyphicon-chevron-down";
           } else {
-            clickEvent.target.className = "glyphicon glyphicon-chevron-right";
+            arrow.className = "glyphicon glyphicon-chevron-right";
           }
 
           facetGroup.classList.toggle("hidden");

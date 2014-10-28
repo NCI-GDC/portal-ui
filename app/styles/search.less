@@ -33,20 +33,21 @@
     .facets-sidebar, .table-area {
       padding: 0;
       padding-top: 15px;
-
-      .pane-section {
-        padding: 15px;
-        padding-right: 0;
-      }
     }
 
     .facets-sidebar {
 
       .facet-category {
         margin: 5px 0;
+        padding-left: 15px;
+
+        &:first-child {
+          padding-top: 15px;
+        }
 
         label.facet-name {
           text-transform: capitalize;
+          cursor: pointer;
         }
 
         .facet-term-group {
@@ -74,6 +75,8 @@
 
     .table-area .pane-section {
       border-left: 1px solid #DDD;
+      padding: 15px;
+      padding-right: 0;
     }
   }
 

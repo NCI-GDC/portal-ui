@@ -1,6 +1,8 @@
 <div class="facet-category" ng-repeat="facet in facets">
-  <span class="glyphicon glyphicon-chevron-down" ng-click="toggleFacetCategory($event)"></span>
-  <label class="facet-name">{{ facet.category }}</label>
+  <label class="facet-name" ng-click="toggleFacetCategory($event)">
+    <span class="glyphicon glyphicon-chevron-down"></span>
+    {{ facet.category }}
+  </label>
   <div class="facet-term-group">
     <div ng-repeat="term in facet.terms">
       <div class="term-wrapper" ng-hide="$index > (displayMax - 1) && !facet.termsHidden">

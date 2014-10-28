@@ -26,7 +26,7 @@
               <tr>
                 <td>File Access</td>
                 <td>
-                  <i data-ng-if="fc.file.access" class="glyphicon glyphicon-lock"></i>
+                  <i data-ng-if="!fc.file.access" class="glyphicon glyphicon-lock"></i>
                   <span data-ng-if="fc.file.access">Public</span>
                   <span data-ng-if="!fc.file.access">Protected</span>
                 </td>

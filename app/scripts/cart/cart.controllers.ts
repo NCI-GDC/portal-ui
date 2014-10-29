@@ -10,9 +10,9 @@ module ngApp.cart.controllers {
   }
 
   class CartController implements ICartController {
-    /* @ngInject */
     totalSize: number = 0;
 
+    /* @ngInject */
     constructor(public files: IFiles, private CoreService: ICoreService,
                 private CartService: ICartService) {
       this.calculateTotalSize();
@@ -21,7 +21,6 @@ module ngApp.cart.controllers {
 
     calculateTotalSize(): void {
       this.totalSize = 0;
-
       for(var i = 0; i < this.files.hits.length; i++) {
         this.totalSize += this.files.hits[i].size;
       }

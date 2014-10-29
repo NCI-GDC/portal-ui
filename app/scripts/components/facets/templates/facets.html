@@ -5,7 +5,7 @@
   </label>
   <div class="facet-term-group">
     <div ng-repeat="term in facet.terms">
-      <div class="term-wrapper" ng-hide="$index > (displayMax - 1) && !facet.termsHidden">
+      <div class="term-wrapper">
         <label class="facet-term"><input type="checkbox" ng-click="toggleFacetTerm($event, facet)" />
           <span>{{ term | translate }}</span>
         </label>

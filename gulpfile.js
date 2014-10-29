@@ -47,7 +47,7 @@ gulp.task('logs', function(){
     repository: 'https://github.com/NCI-GDC/portal-ui',
     version: require('./package.json').version,
     issueLink: function (id) {
-      return '[GDC-'+id+'](https://jira.oicr.on.ca/browse/GDC-' + id + ')'
+      return '[OICR-'+id+'](https://jira.opensciencedatacloud.org/browse/OICR-' + id + ')'
     }
   }, function(err, log) {
     fs.writeFile('CHANGELOG.md', log);

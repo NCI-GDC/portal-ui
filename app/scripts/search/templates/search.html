@@ -1,22 +1,22 @@
-<div class="container search">
+<div class="container-fluid search">
   <h1>Search</h1>
 
-  <div class="row">
-    <div class="col-lg-8 col-md-8 pull-right no-padding-left search-bar">
-      <div class="row">
-        <div class="col-lg-2 col-md-2">
-          <button class="btn btn-default pull-right">Share</button>
-          <span class="fa fa-refresh pull-right"></span>
+    <div class="row">
+        <div class="col-lg-10 col-md-8 col-sm-12 pull-right no-padding-left search-bar">
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <button class="btn btn-default pull-right">Share</button>
+                    <span class="fa fa-refresh pull-right"></span>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10">
+                    <input class="form-control" type="text" />
+                </div>
+            </div>
         </div>
-        <div class="col-lg-10 col-md-10 hidden">
-          <input class="form-control" type="text" />
-        </div>
-      </div>
     </div>
-  </div>
 
   <div class="row search-panel">
-    <div class="col-lg-4 col-md-4 facets-sidebar">
+    <div class="col-lg-2 col-md-3 facets-sidebar">
       <tabset>
         <tab heading="Participants">
           <facets facets="sc.participants.facets"></facets>
@@ -27,7 +27,7 @@
         </tab>
       </tabset>
     </div>
-    <div class="col-lg-8 col-md-8 table-area">
+    <div class="col-lg-10 col-md-9 table-area">
       <tabset>
         <tab heading="Participants ({{sc.participants.hits.length}})"
              active="sc.State.tabs.participants.active"

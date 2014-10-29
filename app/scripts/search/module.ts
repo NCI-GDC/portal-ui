@@ -12,6 +12,8 @@ module ngApp.search {
   function searchConfig($stateProvider: ng.ui.IStateProvider,
                         $urlRouterProvider: ng.ui.IUrlRouterProvider) {
 
+    $urlRouterProvider.when("/search", "/search/p");
+
     $stateProvider.state("search", {
       url: "/search?query",
       controller: "SearchController as sc",
@@ -49,8 +51,6 @@ module ngApp.search {
         tab: "annotations"
       }
     });
-
-    $urlRouterProvider.when("/search", "/search/p");
   }
 
   angular

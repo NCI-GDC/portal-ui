@@ -6,7 +6,7 @@ source $(dirname $0)/scripts/utils.inc
 
 readonly PACKAGE="package.json"
 
-readonly VERSION_REGEX="^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(\-[A-Za-z]+)?$"
+readonly VERSION_REGEX="^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?(\-[A-Za-z0-9]+)?$"
 readonly ACTION_REGEX="^(prepare|publish|next|retract)$"
 readonly COMMIT_SHA_REGEX="(.*)"
 readonly ARG_DEFS=(
@@ -19,7 +19,7 @@ while [[ $# > 1 ]]; do
 	key="$1"
 	shift
 
-	case $key in
+	case ${key} in
 		-v|--version)
 	    VERSION="$1"
 	    shift

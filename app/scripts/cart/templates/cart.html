@@ -6,18 +6,18 @@
       <table class="table table-striped table-hover table-condensed table-bordered">
         <tbody>
         <tr>
-          <td data-translate>Last Update</td>
+          <th scope="row" data-translate>Last Update</th>
           <td>{{ (cc.files.hits | orderBy: -modified)[0].modified | date }}</td>
         </tr>
         <tr>
-          <td>
+          <th scope="row">
             &#35;
-            <span data-translate data-translate-comment="number of">of files</span>
-          </td>
+             <span data-translate data-translate-comment="number of">of files</span>
+          </th>
           <td>{{ cc.files.hits.length }}</td>
         </tr>
         <tr>
-          <td data-translate>Size</td>
+          <th scope="row" data-translate>Size</th>
           <td>{{ cc.totalSize.toFixed(0) }} GB</td>
         </tr>
         </tbody>
@@ -66,20 +66,20 @@
         <table class="table table-striped table-hover table-condensed table-bordered">
           <thead>
           <tr>
-            <th>
+            <th scope="col">
               <input type="checkbox">
             </th>
-            <th class="text-center" data-translate>Access</th>
-            <th class="text-center" data-translate>File Name</th>
-            <th class="text-center" data-translate>Annotations</th>
-            <th class="text-center" data-translate>Participants</th>
-            <th class="text-center" data-translate>Projects</th>
-            <th class="text-center" data-translate>Data Category</th>
-            <th class="text-center" data-translate>Status</th>
-            <th class="text-center" data-translate>File type</th>
-            <th class="text-center" data-translate>Size</th>
-            <th class="text-center" data-translate>Revision</th>
-            <th class="text-center" data-translate>Update date</th>
+            <th scope="col" class="text-center" data-translate>Access</th>
+            <th scope="col" class="text-center" data-translate>File Name</th>
+            <th scope="col" class="text-center" data-translate>Annotations</th>
+            <th scope="col" class="text-center" data-translate>Participants</th>
+            <th scope="col" class="text-center" data-translate>Projects</th>
+            <th scope="col" class="text-center" data-translate>Data Category</th>
+            <th scope="col" class="text-center" data-translate>Status</th>
+            <th scope="col" class="text-center" data-translate>File type</th>
+            <th scope="col" class="text-center" data-translate>Size</th>
+            <th scope="col" class="text-center" data-translate>Revision</th>
+            <th scope="col" class="text-center" data-translate>Update date</th>
           </tr>
           </thead>
           <tbody>

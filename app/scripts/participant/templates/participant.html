@@ -14,27 +14,27 @@
           <table class="table table-striped table-hover table-condensed table-bordered">
             <tbody>
             <tr>
-              <td data-translate>Code</td>
+              <th scope="row" data-translate>Code</th>
               <td>{{ pc.participant.code }}</td>
             </tr>
             <tr>
-              <td data-translate>Participant Number</td>
+              <th scope="row" data-translate>Participant Number</th>
               <td>{{ pc.participant.number }}</td>
             </tr>
             <tr>
-              <td data-translate>Disease Type</td>
+              <th scope="row" data-translate>Disease Type</th>
               <td>{{ pc.participant.diseaseType }}</td>
             </tr>
             <tr>
-              <td data-translate>Program</td>
+              <th scope="row" data-translate>Program</th>
               <td>{{ pc.participant.program }}</td>
             </tr>
             <tr>
-              <td data-translate>Status</td>
+              <th scope="row" data-translate>Status</th>
               <td>{{ pc.participant.status }}</td>
             </tr>
             <tr>
-              <td data-translate>Number of Data Files</td>
+              <th scope="row" data-translate>Number of Data Files</th>
               <td>
                 <a data-ui-sref="search.files">
                   {{ pc.participant.files.length }}
@@ -42,7 +42,7 @@
               </td>
             </tr>
             <tr>
-              <td data-translate>Number of Annotations</td>
+              <th scope="row" data-translate>Number of Annotations</th>
               <td>
                 <a data-ui-sref="search.files">
                   {{ pc.participant.annotations.length }}
@@ -59,9 +59,9 @@
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
             <tr>
-              <th data-translate>Analysis</th>
-              <th data-translate>Samples</th>
-              <th data-translate>Files</th>
+              <th scope="col" data-translate>Analysis</th>
+              <th scope="col" data-translate>Samples</th>
+              <th scope="col" data-translate>Files</th>
             </tr>
             </thead>
             <tbody>
@@ -84,7 +84,7 @@
       <table class="table table-striped table-hover table-condensed table-bordered">
         <tbody>
         <tr data-ng-repeat="item in pc.participant.data">
-          <td>{{ item.name }}</td>
+          <th scope="row">{{ item.name }}</th>
           <td>
             <a data-ui-sref="search.files">
               {{ item.files }}
@@ -106,15 +106,15 @@
       <table class="table table-striped table-hover table-condensed table-bordered">
         <tbody>
         <tr>
-          <td data-translate>Gender</td>
+          <th scope="row" data-translate>Gender</th>
           <td>{{ pc.participant.gender }}</td>
         </tr>
         <tr>
-          <td data-translate>Vital Status</td>
+          <th scope="row" data-translate>Vital Status</th>
           <td>{{ pc.participant.vitalStatus }}</td>
         </tr>
         <tr>
-          <td data-translate>Key</td>
+          <th scope="row" data-translate>Key</th>
           <td>{{ pc.participant.key }}</td>
         </tr>
         </tbody>
@@ -133,15 +133,15 @@
       <table data-ng-if="pc.participant.annotations.length"
              class="table table-striped table-hover table-condensed table-bordered">
         <thead>
-        <th data-translate>ID</th>
-        <th data-translate>Item Type</th>
-        <th data-translate>Item Barcode</th>
-        <th data-translate>Classification</th>
-        <th data-translate>Category</th>
-        <th data-translate>Annotation</th>
-        <th data-translate>Annotator</th>
-        <th data-translate>Date Created</th>
-        <th data-translate>Status</th>
+        <th scope="col" data-translate>ID</th>
+        <th scope="col" data-translate>Item Type</th>
+        <th scope="col" data-translate>Item Barcode</th>
+        <th scope="col" data-translate>Classification</th>
+        <th scope="col" data-translate>Category</th>
+        <th scope="col" data-translate>Annotation</th>
+        <th scope="col" data-translate>Annotator</th>
+        <th scope="col" data-translate>Date Created</th>
+        <th scope="col" data-translate>Status</th>
         </thead>
         <tbody>
         <tr data-ng-repeat="a in pc.participant.annotations track by a.id">

@@ -13,45 +13,43 @@
           <table class="table table-striped table-hover table-condensed table-bordered">
             <tbody>
             <tr>
-              <td data-translate>Code</td>
+              <th scope="row" data-translate>Code</th>
               <td>{{ prc.project.code }}</td>
             </tr>
             <tr>
-              <td data-translate>Name</td>
+              <th scope="row" data-translate>Name</th>
               <td>{{ prc.project.name }}</td>
             </tr>
             <tr>
-              <td data-translate>Disease Type</td>
+              <th scope="row" data-translate>Disease Type</th>
               <td>{{ prc.project.diseaseType }}</td>
             </tr>
             <tr>
-              <td data-translate>Program</td>
+              <th scope="row" data-translate>Program</th>
               <td>{{ prc.project.program }}</td>
             </tr>
             <tr>
-              <td data-translate>Sequencing Center</td>
-              <td> {{ prc.project.sequencingCenter }}</td>
+              <th scope="row" data-translate>Sequencing Center</th>
+              <td> {{ prc.project.sequencingCenter }} </td>
             </tr>
             <tr>
-              <td data-translate>Status</td>
+              <th scope="row" data-translate>Status</th>
               <td>{{ prc.project.status }}</td>
             </tr>
             <tr>
-              <td>
+              <th scope="row">
                 &#35;
-                <span data-translate data-translate-comment="number of">of Participants</span>
-              </td>
+                 <span data-translate data-translate-comment="number of">of Participants</span>
+              </th>
               <td>
-                <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project.summary.participantCount
-                  }}</a>
-              </td>
-              <!-- is donors the same as participants? -->
+                <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project.summary.participantCount }}</a>
+              </td> <!-- is donors the same as participants? -->
             </tr>
             <tr>
-              <td>
+              <th scope="row">
                 &#35;
-                <span data-translate data-translate-comment"number of">of data files</span>
-              </td>
+                 <span data-translate data-translate-comment"number of">of data files</span>
+              </th>
               <td>
                 <a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project.summary.fileCount }}</a>
               </td>
@@ -65,10 +63,10 @@
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
             <tr>
-              <th data-translate>Analysis</th>
-              <th data-translate>Participants</th>
-              <th data-translate>Samples</th>
-              <th data-translate>Files</th>
+              <th scope="col" data-translate>Analysis</th>
+              <th scope="col" data-translate>Participants</th>
+              <th scope="col" data-translate>Samples</th>
+              <th scope="col" data-translate>Files</th>
             </tr>
             </thead>
             <tbody>
@@ -88,9 +86,9 @@
           </h2>
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
-            <th data-translate>Data Type</th>
-            <th data-translate>Participants</th>
-            <th data-translate>Files</th>
+            <th scope="col" data-translate>Data Type</th>
+            <th scope="col" data-translate>Participants</th>
+            <th scope="col" data-translate>Files</th>
             </thead>
             <tbody>
             <tr data-ng-repeat="(dataCategory, counts) in prc.project.summary.analyzedData">
@@ -125,10 +123,10 @@
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
             <tr>
-              <th data-translate>ID</th>
-              <th data-translate>Type</th>
-              <th data-translate>Date</th>
-              <th data-translate>Action</th>
+              <th scope="col" data-translate>ID</th>
+              <th scope="col" data-translate>Type</th>
+              <th scope="col" data-translate>Date</th>
+              <th scope="col" data-translate>Action</th>
             </tr>
             </thead>
             <tbody>

@@ -29,7 +29,7 @@
     <div class="cart-actions row">
       <div class="col-lg-12 col-md-12">
         <button class="btn btn-default add" data-translate>Remove from Cart</button>
-        <button class="btn btn-default add" data-translate>Clear Cart</button>
+        <button class="btn btn-default add" data-translate data-ng-click="cc.handleRemoveAllClick()">Clear Cart</button>
         <button class="btn btn-default add" data-translate>Download Manifest</button>
         <button class="btn btn-default add" data-translate>Download URLs</button>
         <button class="btn btn-default add" data-translate>Download Metadata</button>
@@ -71,8 +71,9 @@
             </th>
             <th class="text-center" data-translate>Access</th>
             <th class="text-center" data-translate>File Name</th>
-            <th class="text-center" data-translate>Participant</th>
-            <th class="text-center" data-translate>Project</th>
+            <th class="text-center" data-translate>Annotations</th>
+            <th class="text-center" data-translate>Participants</th>
+            <th class="text-center" data-translate>Projects</th>
             <th class="text-center" data-translate>Data Category</th>
             <th class="text-center" data-translate>Status</th>
             <th class="text-center" data-translate>File type</th>
@@ -95,12 +96,12 @@
                 {{ file.filename }}
               </a>
             </td>
+            <td>{{ file.participants.length }}</td>
             <td>
               <a data-ui-sref="participant({ participantId: file.participants[0].id })">
                 {{ file.participants[0].id }}
               </a>
             </td>
-            <td>{{ file.participants.length }}</td>
             <td>
               <a data-ui-sref="project({ projectId: file.project.id })">
                 {{ file.project.name }}

@@ -2,6 +2,7 @@ module ngApp.files.controllers {
   import IFile = ngApp.files.models.IFile;
   import IFiles = ngApp.files.models.IFiles;
   import ICoreService = ngApp.core.services.ICoreService;
+  import ICartService = ngApp.cart.services.ICartService;
 
   export interface IFilesController {
     files: IFiles;
@@ -19,9 +20,16 @@ module ngApp.files.controllers {
 
   class FileController implements IFileController {
     /* @ngInject */
-    constructor(public file: IFile, private CoreService: ICoreService) {
+    constructor(public file: IFile,
+                private CoreService: ICoreService,
+                private CartService: ICartService) {
       CoreService.setPageTitle("File " + file.filename);
     }
+
+    handleAddClick(file: IFile) {
+      this.CartService.add(file);
+    }
+
   }
 
   angular

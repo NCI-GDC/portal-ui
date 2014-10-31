@@ -657,6 +657,7 @@ function generateFiles(count) {
     file.level = Math.round(Math.random() * 5);
     file.submitter = "UNC";
     file.submittedSince = new Date();
+    file.url = "/files/" + file.id;
 
     // Randomly set to be part of an archive or not.
     if (Math.round(Math.random())) {

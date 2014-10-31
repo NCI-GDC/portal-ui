@@ -14,7 +14,7 @@ describe('Files:', function () {
     it('should have files', inject(function ($controller) {
       // Which HTTP requests do we expect to occur, and how do we response?
       var files = [
-        { 
+        {
           id: 1,
           uuid: "gerg43g34g-fberg-233223-g2g3r-gerg23fg"
         },

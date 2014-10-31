@@ -4,18 +4,16 @@ module ngApp.cart {
   import IFilesService = ngApp.files.services.IFilesService;
   import IFiles = ngApp.files.models.IFiles;
 
+  import ICartService = ngApp.cart.services.ICartService;
+
   function cartConfig($stateProvider: ng.ui.IStateProvider) {
     $stateProvider.state("cart", {
       url: "/cart",
       controller: "CartController as cc",
       templateUrl: "cart/templates/cart.html",
       resolve: {
-        files: (FilesService: IFilesService) => {
-          return FilesService.getFiles({
-            paging: {
-              count: 10
-            }
-          });
+        files: (CartService: ICartService) => {
+          return CartService.getFiles();
         }
       }
      }
@@ -25,6 +23,7 @@ module ngApp.cart {
   angular
     .module("ngApp.cart", [
         "cart.controller",
+        "cart.services",
         "ngApp.files",
         "ui.router.state"
     ])

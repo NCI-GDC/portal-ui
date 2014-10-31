@@ -54,5 +54,7 @@ module ngApp.files.models {
     level: number;
     submitter: string;
     submittedSince: string;
+    url: string;
   }
 }
+

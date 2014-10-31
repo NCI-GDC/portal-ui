@@ -1,31 +1,63 @@
 module ngApp.components.facets.directives {
-  /* @ngInject */
-  function Facets(): ng.IDirective {
+  import IFacet = ngApp.models.IFacet;
 
+  interface IFacetScope extends ng.IScope {
+    toggleTerm(clickEvent: any): void;
+    toggle(): void;
+    displayCount: number;
+    collapsed: boolean;
+    expanded: boolean;
+    facet: IFacet;
+  }
+
+  /* @ngInject */
+  function FacetTerms(): ng.IDirective {
     return {
       restrict: "EA",
       scope: {
-        facets: "="
+        facet: "=",
+        collapsed: "@",
+        expanded: "@",
+        displayCount: "@"
       },
       replace: true,
-      templateUrl: "components/facets/templates/facets.html"
+      templateUrl: "components/facets/templates/facet.html",
+      compile: function(element: Element, attrs) {
+        attrs.expanded = attrs.expanded || false;
+        attrs.collapsed = attrs.collapsed || false;
+        attrs.displayCount = parseInt(attrs.displayCount, 10) || 5;
+        attrs.expanded = !!attrs.expanded;
+        attrs.collapsed = !!attrs.collapsed;
+
+        return {
+          post: function($scope: IFacetScope) {
+            $scope.toggleTerm = function (clickEvent: any) {
+              console.log(clickEvent);
+            };
+
+            $scope.toggle = function() {
+              $scope.expanded = !$scope.expanded;
+            };
+          }
+        };
+      }
     };
   }
 
   function FacetsFreeText(): ng.IDirective {
     return {
       restrict: "EA",
+      replace: true,
       scope: {
         header: "@",
         placeholder: "@"
       },
-      replace: false,
       templateUrl: "components/facets/templates/facets-free-text.html"
     };
   }
 
   angular.module("components.facets.directives", [])
-      .directive("facets", Facets)
+      .directive("facetTerms", FacetTerms)
       .directive("facetsFreeText", FacetsFreeText);
 }
 

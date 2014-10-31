@@ -1,6 +1,9 @@
-<label class="facet-name">{{ header }}</label>
-<input type="text" class="facet-free-text-input form-control" placeholder="{{ placeholder }}">
-<button class="btn btn-default" type="button">
-  <span class="fa fa-search"></span>
-  <span data-translate>Search</span>
-</button>
+<div class="facet-free-text-input">
+  <label data-ng-if="header" class="facet-name">{{ header }}</label>
+  <div class="input-group">
+    <input type="text" class=" form-control" placeholder="{{ placeholder }}">
+    <span class="input-group-addon">
+      <span class="fa fa-search"></span>
+    </span>
+  </div>
+</div>

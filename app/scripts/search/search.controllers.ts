@@ -13,9 +13,13 @@ module ngApp.search.controllers {
     participants: IParticipants;
     annotations: IAnnotations;
     State: IState;
+    participantAccordian: boolean;
+    participantBioAccordian: boolean;
   }
 
   class SearchController implements ISearchController {
+    participantAccordian: boolean = true;
+    participantBioAccordian: boolean = true;
 
     /* @ngInject */
     constructor(private $state: ng.ui.IStateService,

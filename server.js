@@ -35,28 +35,28 @@ router.get('/', function (req, res) {
 // Projects
 var projects = {
   pagination: {"count": 20, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
-  facets: [
-    {
-      category: "Disease Type",
+  facets: {
+    "diseaseType": {
+      value: "Disease Type",
       terms: [
         "Brain"
       ]
     },
-    {
-      category: "Program",
+    "program": {
+      value: "Program",
       terms: [
         "TCGA"
       ]
     },
-    {
-      category: "Status (Program)",
+    "status": {
+      value: "Status",
       terms: [
         "Active",
         "Legacy"
       ]
     },
-    {
-      category: "Data Type",
+    "dataType": {
+      value: "Data Type",
       terms: [
         "Clinical",
         "Raw sequencing data",
@@ -71,8 +71,8 @@ var projects = {
         "Other"
       ]
     },
-    {
-      category: "Experimental Strategy",
+    "experimentalStrategy": {
+      value: "Experimental Strategy",
       terms: [
         "RNA-seq",
         "WGS",
@@ -82,7 +82,7 @@ var projects = {
         "Genotype array"
       ]
     }
-  ],
+  },
   hits: [
     {id: 'PR1', name: 'Project One'},
     {id: 'PR2', name: 'Project Two'},
@@ -315,17 +315,17 @@ function createAnnotations(count) {
 // Participants
 var participants = {
   pagination: {"count": 20, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
-  facets: [
-    {
-      category: "Cancer program",
+  facets: {
+    "cancerProgram": {
+      value: "Cancer Program",
       terms: [
         "TCGA",
         "TARGET",
         "CGCI"
       ]
     },
-    {
-      category: "Project",
+    "project": {
+      value: "Project",
       terms: [
         "Chronic Lymphocytic Leukemia",
         "Ovarian Serous Cystadenocarcinoma",
@@ -334,22 +334,22 @@ var participants = {
         "Pediatric Brain Tumors"
       ]
     },
-    {
-      category: "Primary Site",
+    "primarySite": {
+      value: "Primary Site",
       terms: [
         "Brain",
         "Breast",
         "Colon"
       ]
     },
-    {
-      category: "Gender",
+    "gender": {
+      value: "Gender",
       terms: [
         "Male",
         "Female"
       ]
     }
-  ],
+  },
   hits: []
 };
 
@@ -512,7 +512,7 @@ router.get('/participants', function (req, res) {
 
   var response = {};
   response.pagination = _.assign({}, participants.pagination);
-  response.facets = _.assign([], participants.facets);
+  response.facets = _.assign({}, participants.facets);
   response.hits = [];
 
   response.pagination.page = paging.page || 1;
@@ -538,9 +538,9 @@ router.get('/participants/:id', function (req, res) {
 // Files
 var files = {
   pagination: {"count": 20, "total": 20, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
-  facets: [
-    {
-      category: "Data Type",
+  facets: {
+    "dataType": {
+      value: "Data Type",
       terms: [
         "Clinical data",
         "Biospecimen data",
@@ -568,8 +568,8 @@ var files = {
         "Microsatellite instability"
       ]
     },
-    {
-      category: "Data category",
+    "dataCategory": {
+      value: "Data Category",
       terms: [
         "Clinical",
         "Sequencing data",
@@ -584,8 +584,8 @@ var files = {
         "Other"
       ]
     },
-    {
-      category: "File type",
+    "fileType": {
+      value: "File Type",
       terms: [
         "BAM",
         "VCF",
@@ -599,8 +599,8 @@ var files = {
         "TSV"
       ]
     },
-    {
-      category: "Platform",
+    "platform": {
+      value: "Platform",
       terms: [
         "ABI",
         "Affymetrix U133 2.0",
@@ -612,7 +612,7 @@ var files = {
         "MDA_RPPA_Core"
       ]
     }
-  ],
+  },
   hits: []
 };
 
@@ -737,7 +737,7 @@ router.get('/files', function (req, res) {
 
   var response = {};
   response.pagination = _.assign({}, files.pagination);
-  response.facets = _.assign([], files.facets);
+  response.facets = _.assign({}, files.facets);
   response.hits = [];
 
   response.pagination.page = paging.page || 1;

@@ -19,11 +19,11 @@
     <div class="col-lg-2 col-md-3 facets-sidebar">
       <tabset>
         <tab heading="Participants">
-          <facets facets="sc.participants.facets"></facets>
+          <div data-ng-include="'search/templates/search.participants.facets.html'"></div>
         </tab>
 
         <tab heading="Files">
-          <facets facets="sc.files.facets"></facets>
+          <div data-ng-include="'search/templates/search.files.facets.html'"></div>
         </tab>
       </tabset>
     </div>

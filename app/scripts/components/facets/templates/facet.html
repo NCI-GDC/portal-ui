@@ -1,0 +1,23 @@
+<div class="facet-group">
+  <label class="facet-name" data-ng-click="collapsed = !collapsed">
+    <span class="fa" data-ng-class="{ 'fa-chevron-down': !collapsed, 'fa-chevron-right': collapsed }"></span>
+    {{ facet.value | translate }}
+  </label>
+  <div class="facet-term-group" data-ng-show="!collapsed">
+    <div data-ng-repeat="term in facet.terms">
+      <div class="term-wrapper" data-ng-hide="$index > (displayCount - 1) && !expanded">
+        <label class="facet-term"><input type="checkbox" data-ng-click="toggleTerm($event)" />
+          <span>{{ term | translate }}</span>
+        </label>
+      </div>
+    </div>
+
+    <span class="show-more-terms" data-ng-if="facet.terms.length > displayCount"
+          data-ng-show="!expanded" data-ng-click="toggle()">
+      {{ facet.terms.length - displayCount }}
+       <span>More...</span>
+    </span>
+    <span class="show-more-terms" data-ng-if="facet.terms.length > displayCount"
+          data-ng-show="expanded" data-ng-click="toggle()">Less...</span>
+  </div>
+</div>

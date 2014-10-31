@@ -17,10 +17,15 @@
 
   <div class="row search-panel">
     <div class="col-lg-2 col-md-3 facets-sidebar">
-      <facets-free-text header="Project"
-                        placeholder="{{ '(Project Name or Code)' | translate }}">
+      <facets-free-text placeholder="{{ '(Project Name or Code)' | translate }}">
       </facets-free-text>
-      <facets facets="prsc.projects.facets"></facets>
+      <facet-terms data-facet="prsc.projects.facets.diseaseType"></facet-terms>
+      <facet-terms data-facet="prsc.projects.facets.program"
+                   data-collapsed="true"></facet-terms>
+      <facet-terms data-facet="prsc.projects.facets.status"></facet-terms>
+      <facet-terms data-facet="prsc.projects.facets.dataType"></facet-terms>
+      <facet-terms data-facet="prsc.projects.facets.experimentalStrategy"
+                   data-collapsed="true"></facet-terms>
     </div>
     <div class="col-lg-10 col-md-9 table-area">
       <h4 class="clearfix">

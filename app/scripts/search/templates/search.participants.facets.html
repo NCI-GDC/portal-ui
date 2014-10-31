@@ -1,0 +1,52 @@
+<accordion close-others="sc.participantAccordian">
+  <accordion-group heading="{{ 'Clinical' | translate }}" is-open="sc.participantAccordian">
+    <facets-free-text placeholder="{{ 'ID (Barcode or Participant number)' | translate }}"></facets-free-text>
+    <facet-terms data-facet="sc.participants.facets.cancerProgram"></facet-terms>
+    <facet-terms data-facet="sc.participants.facets.project"></facet-terms>
+    <facet-terms data-facet="sc.participants.facets.primarySite"></facet-terms>
+    <facets-free-text header="{{ 'ICD10' | translate }}" 
+                      placeholder="{{ 'e.g. C50.9, C64.1' | translate }}"></facets-free-text>
+    <facet-terms data-facet="sc.participants.facets.gender"
+           data-collapsed="true"></facet-terms>
+  </accordion-group>
+  <accordion-group heading="{{ 'Bio-specimens' | translate }}">
+    <accordion close-others="sc.participantBioAccordian">
+      <accordion-group heading="{{ 'Samples' | translate }}" is-open="sc.participantBioAccordian">
+        <facets-free-text placeholder="{{ 'ID (Sample)' | translate }}"></facets-free-text>
+        <facet-terms data-facet="sc.participants.facets.cancerProgram"
+               data-collapsed="true"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.project"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.primarySite"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.gender"
+               data-collapsed="true"></facet-terms>
+      </accordion-group>
+      <accordion-group heading="{{ 'Portions' | translate }}">
+        <facets-free-text placeholder="{{ 'ID (Portion)' | translate }}"></facets-free-text>
+        <facet-terms data-facet="sc.participants.facets.cancerProgram"
+               data-collapsed="true"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.project"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.primarySite"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.gender"
+               data-collapsed="true"></facet-terms>
+      </accordion-group>
+      <accordion-group heading="{{ 'Analytes' | translate }}">
+        <facets-free-text placeholder="{{ 'ID (Analyte)' | translate }}"></facets-free-text>
+        <facet-terms data-facet="sc.participants.facets.cancerProgram"
+               data-collapsed="true"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.project"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.primarySite"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.gender"
+               data-collapsed="true"></facet-terms>
+      </accordion-group>
+      <accordion-group heading="{{ 'Aliquots' | translate }}">
+        <facets-free-text placeholder="{{ 'ID (Aliquot)' | translate }}"></facets-free-text>
+        <facet-terms data-facet="sc.participants.facets.cancerProgram"
+               data-collapsed="true"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.project"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.primarySite"></facet-terms>
+        <facet-terms data-facet="sc.participants.facets.gender"
+               data-collapsed="true"></facet-terms>
+      </accordion-group>
+    </accordion>
+  </accordion-group>
+</accordion>

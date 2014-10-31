@@ -35,7 +35,6 @@ module ngApp.models {
 
   export interface IFacet {
     terms: any;
-    category: string;
-    termsHidden: Boolean;
+    value: string;
   }
 }

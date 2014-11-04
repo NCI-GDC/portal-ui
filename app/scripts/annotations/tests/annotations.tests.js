@@ -30,7 +30,7 @@ describe('Annotations:', function () {
     it('should get all annotations', inject(function (AnnotationsService) {
       sinon.spy(AnnotationsService.ds, 'get');
 
-      var fs = {hits:[],facets:[],pagination:{}};
+      var fs = {hits: [], facets: [], pagination: {}};
       httpBackend.whenGET("/annotations").respond(fs);
 
       AnnotationsService.getAnnotations();

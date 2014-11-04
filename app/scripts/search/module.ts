@@ -9,8 +9,7 @@ module ngApp.search {
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
 
   /* @ngInject */
-  function searchConfig($stateProvider: ng.ui.IStateProvider,
-                        $urlRouterProvider: ng.ui.IUrlRouterProvider) {
+  function searchConfig($stateProvider: ng.ui.IStateProvider, $urlRouterProvider: ng.ui.IUrlRouterProvider) {
 
     $urlRouterProvider.when("/search", "/search/p");
 

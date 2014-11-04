@@ -36,7 +36,7 @@ describe('Files:', function () {
     it('should get all files', inject(function (FilesService) {
       sinon.spy(FilesService.ds, 'get');
 
-      var fs = {hits:[],facets:[],pagination:{}};
+      var fs = {hits: [], facets: [], pagination: {}};
       httpBackend.whenGET("/files").respond(fs);
 
       FilesService.getFiles();

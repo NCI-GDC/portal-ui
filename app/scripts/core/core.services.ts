@@ -6,16 +6,17 @@ module ngApp.core.services {
 
   class CoreService implements ICoreService {
     /* @ngInject */
-    constructor (private $rootScope: ngApp.IRootScope) {}
+    constructor(private $rootScope: ngApp.IRootScope) {
+    }
 
-    setPageTitle(title: string) : void {
+    setPageTitle(title: string): void {
       this.$rootScope.pageTitle = title;
     }
 
   }
 
   angular
-    .module("core.services", [])
-    .service("CoreService", CoreService);
+      .module("core.services", [])
+      .service("CoreService", CoreService);
 }
 

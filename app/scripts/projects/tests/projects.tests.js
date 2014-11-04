@@ -13,7 +13,7 @@ describe('Projects:', function () {
   describe('Controller:', function () {
     it('should have projects', inject(function ($controller) {
       // Which HTTP requests do we expect to occur, and how do we response?
-      var projects= [
+      var projects = [
         { id: 1 },
         { id: 2 }
       ];
@@ -30,7 +30,7 @@ describe('Projects:', function () {
     it('should get all projects', inject(function (ProjectsService) {
       sinon.spy(ProjectsService.ds, 'get');
 
-      var fs = {hits:[],facets:[],pagination:{}};
+      var fs = {hits: [], facets: [], pagination: {}};
       httpBackend.whenGET("/projects").respond(fs);
 
       ProjectsService.getProjects();

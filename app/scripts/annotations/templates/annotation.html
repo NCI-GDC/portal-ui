@@ -10,54 +10,54 @@
     <div class="col-lg-8 col-md-8">
       <table class="table table-striped table-hover table-condensed table-bordered">
         <tbody>
-          <tr>
-            <td data-translate>Annotation ID</td>
-            <td>{{ ac.annotation.id }}</td>
-          </tr>
-          <tr>
-            <td data-translate>Item ID</td>
-            <td>{{ ac.annotation.item }}</td>
-          </tr>
-          <tr>
-            <td data-translate>Item Type</td>
-            <td>{{ ac.annotation.type }}</td>
-          </tr>
-          <tr>
-            <td data-translate>Participant ID</td>
-            <td>
-              <a data-ui-sref="participant({ participantId: ac.annotation.participant.id })">
-                {{ ac.annotation.participant.id }}
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td data-translate>Project</td>
-            <td>
-              <a data-ui-sref="project({ projectId: ac.annotation.project.id })">
-                {{ ac.annotation.project.name }}
-              </a>
-            </td>
-          </tr>
-          <tr>
-            <td data-translate>Classification</td>
-            <td>{{ ac.annotation.classification }}</td>
-          </tr>
-          <tr>
-            <td data-translate>Category</td>
-            <td>{{ ac.annotation.category }}</td>
-          </tr>
-          <tr>
-            <td data-translate>Created On</td>
-            <td>{{ ac.annotation.dateCreated | date }}</td>
-          </tr>
-          <tr>
-            <td data-translate>Created By</td>
-            <td>{{ ac.annotation.createdBy }}</td>
-          </tr>
-          <tr>
-            <td data-translate>Status</td>
-            <td>{{ ac.annotation.status }}</td>
-          </tr>
+        <tr>
+          <td data-translate>Annotation ID</td>
+          <td>{{ ac.annotation.id }}</td>
+        </tr>
+        <tr>
+          <td data-translate>Item ID</td>
+          <td>{{ ac.annotation.item }}</td>
+        </tr>
+        <tr>
+          <td data-translate>Item Type</td>
+          <td>{{ ac.annotation.type }}</td>
+        </tr>
+        <tr>
+          <td data-translate>Participant ID</td>
+          <td>
+            <a data-ui-sref="participant({ participantId: ac.annotation.participant.id })">
+              {{ ac.annotation.participant.id }}
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td data-translate>Project</td>
+          <td>
+            <a data-ui-sref="project({ projectId: ac.annotation.project.id })">
+              {{ ac.annotation.project.name }}
+            </a>
+          </td>
+        </tr>
+        <tr>
+          <td data-translate>Classification</td>
+          <td>{{ ac.annotation.classification }}</td>
+        </tr>
+        <tr>
+          <td data-translate>Category</td>
+          <td>{{ ac.annotation.category }}</td>
+        </tr>
+        <tr>
+          <td data-translate>Created On</td>
+          <td>{{ ac.annotation.dateCreated | date }}</td>
+        </tr>
+        <tr>
+          <td data-translate>Created By</td>
+          <td>{{ ac.annotation.createdBy }}</td>
+        </tr>
+        <tr>
+          <td data-translate>Status</td>
+          <td>{{ ac.annotation.status }}</td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -66,11 +66,13 @@
   <section class="entity-section row">
     <div class="col-lg-8 col-md-8">
       <h2 data-translate>Notes</h2>
+
       <div class="row annotation-row" data-ng-repeat="note in ac.annotation.notes">
 
         <div class="col-lg-12 col-md-12">
           <h4><span data-translate>Added by</span> {{ note.addedBy }}
-             <span data-translate>on</span> {{ note.dateAdded | date }}</h4>
+            <span data-translate>on</span> {{ note.dateAdded | date }}</h4>
+
           <p>{{ note.text }}</p>
         </div>
 

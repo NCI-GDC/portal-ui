@@ -12,48 +12,50 @@
           <h2 data-translate>Summary</h2>
           <table class="table table-striped table-hover table-condensed table-bordered">
             <tbody>
-              <tr>
-                <td data-translate>Code</td>
-                <td>{{ prc.project.code }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Name</td>
-                <td>{{ prc.project.name }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Disease Type</td>
-                <td>{{ prc.project.diseaseType }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Program</td>
-                <td>{{ prc.project.program }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Sequencing Center</td>
-                <td> {{ prc.project.sequencingCenter }} </td>
-              </tr>
-              <tr>
-                <td data-translate>Status</td>
-                <td>{{ prc.project.status }}</td>
-              </tr>
-              <tr>
-                <td>
-                  &#35; 
-                  <span data-translate data-translate-comment="number of">of Participants</span>
-                </td>
-                <td>
-                  <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project.summary.participantCount }}</a>
-                </td> <!-- is donors the same as participants? -->
-              </tr>
-              <tr>
-                <td>
-                  &#35; 
-                  <span data-translate data-translate-comment"number of">of data files</span>
-                </td>
-                <td>
-                  <a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project.summary.fileCount }}</a>
-                </td>
-              </tr>
+            <tr>
+              <td data-translate>Code</td>
+              <td>{{ prc.project.code }}</td>
+            </tr>
+            <tr>
+              <td data-translate>Name</td>
+              <td>{{ prc.project.name }}</td>
+            </tr>
+            <tr>
+              <td data-translate>Disease Type</td>
+              <td>{{ prc.project.diseaseType }}</td>
+            </tr>
+            <tr>
+              <td data-translate>Program</td>
+              <td>{{ prc.project.program }}</td>
+            </tr>
+            <tr>
+              <td data-translate>Sequencing Center</td>
+              <td> {{ prc.project.sequencingCenter }}</td>
+            </tr>
+            <tr>
+              <td data-translate>Status</td>
+              <td>{{ prc.project.status }}</td>
+            </tr>
+            <tr>
+              <td>
+                &#35;
+                <span data-translate data-translate-comment="number of">of Participants</span>
+              </td>
+              <td>
+                <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project.summary.participantCount
+                  }}</a>
+              </td>
+              <!-- is donors the same as participants? -->
+            </tr>
+            <tr>
+              <td>
+                &#35;
+                <span data-translate data-translate-comment"number of">of data files</span>
+              </td>
+              <td>
+                <a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project.summary.fileCount }}</a>
+              </td>
+            </tr>
             </tbody>
           </table>
 
@@ -62,20 +64,20 @@
           </h2>
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
-              <tr>
-                <th data-translate>Analysis</th>
-                <th data-translate>Participants</th>
-                <th data-translate>Samples</th>
-                <th data-translate>Files</th>
-              </tr>
+            <tr>
+              <th data-translate>Analysis</th>
+              <th data-translate>Participants</th>
+              <th data-translate>Samples</th>
+              <th data-translate>Files</th>
+            </tr>
             </thead>
             <tbody>
-              <tr data-ng-repeat="experiment in prc.project.summary.experimentalData">
-                <td>{{ experiment.experimentalType }}</td>
-                <td><a data-ui-sref="search.participants({{ prc.project.id }})">{{ experiment.participantCount }}</a></td>
-                <td>{{ experiment.sampleCount }}</td>
-                <td><a data-ui-sref="search.files({{ prc.project.id }})">{{ experiment.fileCount }}</a></td>
-              </tr>
+            <tr data-ng-repeat="experiment in prc.project.summary.experimentalData">
+              <td>{{ experiment.experimentalType }}</td>
+              <td><a data-ui-sref="search.participants({{ prc.project.id }})">{{ experiment.participantCount }}</a></td>
+              <td>{{ experiment.sampleCount }}</td>
+              <td><a data-ui-sref="search.files({{ prc.project.id }})">{{ experiment.fileCount }}</a></td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -86,20 +88,21 @@
           </h2>
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
-              <th data-translate>Data Type</th>
-              <th data-translate>Participants</th>
-              <th data-translate>Files</th>
+            <th data-translate>Data Type</th>
+            <th data-translate>Participants</th>
+            <th data-translate>Files</th>
             </thead>
             <tbody>
-              <tr data-ng-repeat="(dataCategory, counts) in prc.project.summary.analyzedData">
-                <td>{{ dataCategory }}</td>
-                <td>
-                  <a data-ui-sref="search.participants({{ prc.project.id }})">{{ counts.participantCount ? counts.participantCount : "-" }}</a>
-                </td>
-                <td>
-                  <a data-ui-sref="search.files({{ prc.project.id }})">{{ counts.fileCount ? counts.fileCount : "-" }}</a>
-                </td>
-              </tr>
+            <tr data-ng-repeat="(dataCategory, counts) in prc.project.summary.analyzedData">
+              <td>{{ dataCategory }}</td>
+              <td>
+                <a data-ui-sref="search.participants({{ prc.project.id }})">{{ counts.participantCount ?
+                  counts.participantCount : "-" }}</a>
+              </td>
+              <td>
+                <a data-ui-sref="search.files({{ prc.project.id }})">{{ counts.fileCount ? counts.fileCount : "-" }}</a>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -121,20 +124,20 @@
         <div class="col-lg-12 col-md-12">
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
-              <tr>
-                <th data-translate>ID</th>
-                <th data-translate>Type</th>
-                <th data-translate>Date</th>
-                <th data-translate>Action</th>
-              </tr>
+            <tr>
+              <th data-translate>ID</th>
+              <th data-translate>Type</th>
+              <th data-translate>Date</th>
+              <th data-translate>Action</th>
+            </tr>
             </thead>
             <tbody>
-              <tr data-ng-repeat="report in prc.project.reports">
-                <td> {{ report.id }}</td>
-                <td> {{ report.type }}</td>
-                <td> {{ report.date | date }}</td>
-                <td><a href="view/" data-translate>View</a></td>
-              </tr>
+            <tr data-ng-repeat="report in prc.project.reports">
+              <td> {{ report.id }}</td>
+              <td> {{ report.type }}</td>
+              <td> {{ report.date | date }}</td>
+              <td><a href="view/" data-translate>View</a></td>
+            </tr>
             </tbody>
           </table>
         </div>

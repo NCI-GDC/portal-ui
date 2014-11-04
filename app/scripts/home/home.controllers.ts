@@ -1,5 +1,6 @@
 module ngApp.home.controllers {
-  export interface IHomeController {}
+  export interface IHomeController {
+  }
 
   class HomeController implements IHomeController {
     /* @ngInject */
@@ -10,6 +11,6 @@ module ngApp.home.controllers {
 
   angular
       .module("home.controller", [
-          ])
+      ])
       .controller("HomeController", HomeController);
 }

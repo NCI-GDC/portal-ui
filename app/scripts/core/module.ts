@@ -1,4 +1,5 @@
-module ngApp.core {}
+module ngApp.core {
+}
 
 angular
     .module("ngApp.core", [

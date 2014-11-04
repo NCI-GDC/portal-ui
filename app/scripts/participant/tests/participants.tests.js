@@ -14,7 +14,7 @@ describe('Participants:', function () {
     it('should have participants', inject(function ($controller) {
       // Which HTTP requests do we expect to occur, and how do we response?
       var participants = [
-        { 
+        {
           id: 1,
           number: "gerg23fg"
         },
@@ -36,7 +36,7 @@ describe('Participants:', function () {
     it('should get all participants', inject(function (ParticipantsService) {
       sinon.spy(ParticipantsService.ds, 'get');
 
-      var fs = {hits:[],facets:[],pagination:{}};
+      var fs = {hits: [], facets: [], pagination: {}};
       httpBackend.whenGET("/participants").respond(fs);
 
       ParticipantsService.getParticipants();

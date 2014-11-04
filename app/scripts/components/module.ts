@@ -1,10 +1,11 @@
-declare module ngApp.components {}
+declare module ngApp.components {
+}
 
 angular
-  .module("ngApp.components", [
-    "components.header",
-    "components.xmlviewer",
-    "components.datefilter",
-    "components.facets",
-    "components.tables"
-  ]);
+    .module("ngApp.components", [
+      "components.header",
+      "components.xmlviewer",
+      "components.datefilter",
+      "components.facets",
+      "components.tables"
+    ]);

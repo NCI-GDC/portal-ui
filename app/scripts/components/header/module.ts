@@ -1,4 +1,5 @@
-module ngApp.components.header {}
+module ngApp.components.header {
+}
 
 angular
     .module("components.header", [

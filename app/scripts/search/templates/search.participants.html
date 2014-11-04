@@ -8,42 +8,43 @@
 
 <table class="table table-striped table-hover table-condensed table-bordered">
   <thead>
-    <tr>
-      <th data-translate>Participant ID</th>
-      <th data-translate>Project</th>
-      <th data-translate>Disease Type</th>
-      <th data-translate>Gender</th>
-      <th data-translate>Tumor Stage</th>
-      <th data-translate>Files</th>
-      <th data-translate>Annotations</th>
-    </tr>
+  <tr>
+    <th data-translate>Participant ID</th>
+    <th data-translate>Project</th>
+    <th data-translate>Disease Type</th>
+    <th data-translate>Gender</th>
+    <th data-translate>Tumor Stage</th>
+    <th data-translate>Files</th>
+    <th data-translate>Annotations</th>
+  </tr>
   </thead>
   <tbody>
-    <tr data-ng-repeat="p in sc.participants.hits track by p.id">
-      <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
-      <td><a data-ui-sref="project({ projectId : p.project.id })">{{ p.project.name }}</a></td>
-      <td>{{ p.diseaseType }}</td>
-      <td>{{ p.gender }}</td>
-      <td>{{ p.tumorStage }}</td>
-      <td>
-        <a data-ui-sref="files({ participantId: p.id })">
-          {{ p.files.length }}
-        </a>
-      </td>
-      <td>
-        <a data-ui-sref="annotations({ participantId: p.id })">
-          {{ p.annotations.length }}
-        </a>
-      </td>
-    </tr>
+  <tr data-ng-repeat="p in sc.participants.hits track by p.id">
+    <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
+    <td><a data-ui-sref="project({ projectId : p.project.id })">{{ p.project.name }}</a></td>
+    <td>{{ p.diseaseType }}</td>
+    <td>{{ p.gender }}</td>
+    <td>{{ p.tumorStage }}</td>
+    <td>
+      <a data-ui-sref="files({ participantId: p.id })">
+        {{ p.files.length }}
+      </a>
+    </td>
+    <td>
+      <a data-ui-sref="annotations({ participantId: p.id })">
+        {{ p.annotations.length }}
+      </a>
+    </td>
+  </tr>
   </tbody>
 </table>
 <div class="pagination-controls">
   <div class="number-results pull-left">
     <span data-translate>Show</span>
+
     <div class="btn-group dropup" dropdown is-open="status.isopen">
       <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
-        {{ sc.participants.pagination.count }}  <span class="caret"></span>
+        {{ sc.participants.pagination.count }} <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
         <li ng-click="sc.searchQuery(10)">10</li>

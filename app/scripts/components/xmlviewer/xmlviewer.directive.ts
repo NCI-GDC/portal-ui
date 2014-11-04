@@ -13,7 +13,7 @@ module ngApp.components.xmlviewer {
       scope: {
         xml: "="
       },
-      link: function($scope: XMLViewerScope) {
+      link: function ($scope: XMLViewerScope) {
         $window.LoadXMLString("xmlViewer", $scope.xml);
       }
     };

@@ -7,7 +7,7 @@ module ngApp.projects {
   /* ngInject */
   function projectsConfig($stateProvider: ng.ui.IStateProvider) {
     $stateProvider.state("projects", {
-      url : "/projects",
+      url: "/projects",
       controller: "ProjectsController as prsc",
       templateUrl: "projects/templates/projects.html",
       resolve: {
@@ -31,9 +31,9 @@ module ngApp.projects {
   }
 
   angular
-    .module("ngApp.projects", [
+      .module("ngApp.projects", [
         "projects.controller",
         "ui.router.state"
-    ])
-    .config(projectsConfig);
+      ])
+      .config(projectsConfig);
 }

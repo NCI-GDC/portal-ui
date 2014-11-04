@@ -1,226 +1,226 @@
 <div class="container entity file">
-  <h1>
-    <span class="entity-identifier">F</span>
-    {{ fc.file.filename }}
-  </h1>
+<h1>
+  <span class="entity-identifier">F</span>
+  {{ fc.file.filename }}
+</h1>
 
-  <section class="row">
-    <div class="col-lg-12 col-md-12">
-      <div class="row file-row">
+<section class="row">
+  <div class="col-lg-12 col-md-12">
+    <div class="row file-row">
 
-        <div class="col-lg-7 col-md-7">
-          <h3>
-            <span data-translate>File Properties</span>
-            <i class="fa download fa-download pull-right"></i>
-            <button class="btn btn-default pull-right" data-ng-click="fc.handleAddClick(fc.file)">
-              <span data-ng-show="fc.file.inCart" data-translate>Remove from Cart</span>
-              <span data-ng-show="!fc.file.inCart" data-translate>Add to Cart</span>
-            </button>
-          </h3>
-          <table class="table table-striped table-hover table-condensed table-bordered">
-            <tbody>
-              <tr>
-                <td data-translate>File Name</td>
-                <td>{{ fc.file.filename }}</td>
-              </tr>
-              <tr>
-                <td data-translate>File Access</td>
-                <td>
-                  <i data-ng-if="!fc.file.access" class="fa fa-lock"></i>
-                  <i data-ng-if="fc.file.access" class="fa fa-unlock-alt"></i>
-                  <span data-ng-if="fc.file.access" data-translate>Public</span>
-                  <span data-ng-if="!fc.file.access" data-translate>Protected</span>
-                </td>
-              </tr>
-              <tr>
-                <td data-translate>UUID</td>
-                <td>{{ fc.file.uuid }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Barcode</td>
-                <td>{{ fc.file.barcode }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Data format</td>
-                <td>{{ fc.file.format }}</td>
-              </tr>
-              <tr>
-                <td data-translate>File Size</td>
-                <td>{{ fc.file.size }} GB</td>
-              </tr>
-              <tr>
-                <td data-translate>Checksum</td>
-                <td>{{ fc.file.checksum }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Published</td>
-                <td>{{ fc.file.published | date }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Uploaded</td>
-                <td>{{ fc.file.uploaded | date }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Modified</td>
-                <td>{{ fc.file.modified | date }}</td>
-              </tr>
-              <tr>
-                <td data-translate>State</td>
-                <td>{{ fc.file.state }}</td>
-              </tr>
-              <tr data-ng-if="fc.file.archive" class="archive-row">
-                <td data-translate>Archive</td>
-                <td>
-                  {{ fc.file.archive.name }}
-                  <div class="btn-group" dropdown>
-                    <button type="button" class="btn btn-default dropdown-toggle">
-                      A <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                      <li>
-                        <a>
-                          <i class="fa fa-eye"></i>
-                          <span data-translate>View Files in same Archive</span>
-                        </a>
-                      </li>
-                      <li>
-                        <a>
-                          <i class="fa fa-folder-open"></i>
-                          <span data-translate>Download Archive</span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="col-lg-5 col-md-5">
-          <h3 data-translate>Data Information</h3>
-          <table class="table table-striped table-hover table-condensed table-bordered">
-            <tbody>
-              <tr>
-                <td data-translate>Data Type</td>
-                <td>{{ fc.file.dataType }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Data Subtype</td>
-                <td>{{ fc.file.dataSubType }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Experimental Strategy</td>
-                <td>{{ fc.file.experimentStrategy }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Program Status</td>
-                <td>{{ fc.file.programStatus }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Platform</td>
-                <td>{{ fc.file.platform }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Data Revision</td>
-                <td>{{ fc.file.revision }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Data Version</td>
-                <td>{{ fc.file.version }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Data Level</td>
-                <td>{{ fc.file.level }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Data Submitter</td>
-                <td>{{ fc.file.submitter }}</td>
-              </tr>
-              <tr>
-                <td data-translate>Data Submitted Since</td>
-                <td>{{ fc.file.submittedSince | date }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <section class="row">
-    <div class="col-lg-12 col-md-12">
-      <h3>
-        <span data-translate>Participants</span>
-        <button class="btn btn-default pull-right" data-translate>Export Table</button>
-      </h3>
-      <table class="table table-striped table-hover table-condensed table-bordered">
-        <thead>
+      <div class="col-lg-7 col-md-7">
+        <h3>
+          <span data-translate>File Properties</span>
+          <i class="fa download fa-download pull-right"></i>
+          <button class="btn btn-default pull-right" data-ng-click="fc.handleAddClick(fc.file)">
+            <span data-ng-show="fc.file.inCart" data-translate>Remove from Cart</span>
+            <span data-ng-show="!fc.file.inCart" data-translate>Add to Cart</span>
+          </button>
+        </h3>
+        <table class="table table-striped table-hover table-condensed table-bordered">
+          <tbody>
           <tr>
-            <th data-translate>ID</th>
-            <th data-translate>Project</th>
-            <th data-translate>Disease</th>
-            <th data-translate>Sample</th>
-            <th data-translate>Portion</th>
-            <th data-translate>Analyte</th>
-            <th data-translate>Aliquot</th>
+            <td data-translate>File Name</td>
+            <td>{{ fc.file.filename }}</td>
           </tr>
-        </thead>
-        <tbody>
-          <tr data-ng-repeat="p in fc.file.participants track by p.id">
-            <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
-            <td><a data-ui-sref="project({ projectId : p.project.id })">{{ p.project.name }}</a></td>
-            <td>{{ p.diseaseType }}</td>
-            <td>{{ p.sample }}</td>
-            <td>{{ p.portion }}</td>
-            <td>{{ p.analyte }}</td>
-            <td>{{ p.aliquot }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="row">
-    <div class="col-lg-12 col-md-12">
-      <h3>
-        <span data-translate>Related Files</span>
-        <button class="btn btn-default pull-right" data-translate>Export Table</button>
-      </h3>
-      <table class="table table-striped table-hover table-condensed table-bordered">
-        <thead>
           <tr>
-            <th data-translate>File Name</th>
-            <th data-translate>File Type</th>
-            <th data-translate>Checksum</th>
-            <th data-translate>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr data-ng-repeat="f in fc.file.related track by f.id">
-            <td>{{ f.filename }}</td>
-            <td>{{ f.format }}</td>
-            <td>{{ f.checksum }}</td>
+            <td data-translate>File Access</td>
             <td>
-              <a data-ui-sref="file({ fileId: f.id })" data-translate>
-                View
-              </a>
-              /
-              <a data-translate>
-                Download
-              </a>
+              <i data-ng-if="!fc.file.access" class="fa fa-lock"></i>
+              <i data-ng-if="fc.file.access" class="fa fa-unlock-alt"></i>
+              <span data-ng-if="fc.file.access" data-translate>Public</span>
+              <span data-ng-if="!fc.file.access" data-translate>Protected</span>
             </td>
           </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+          <tr>
+            <td data-translate>UUID</td>
+            <td>{{ fc.file.uuid }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Barcode</td>
+            <td>{{ fc.file.barcode }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Data format</td>
+            <td>{{ fc.file.format }}</td>
+          </tr>
+          <tr>
+            <td data-translate>File Size</td>
+            <td>{{ fc.file.size }} GB</td>
+          </tr>
+          <tr>
+            <td data-translate>Checksum</td>
+            <td>{{ fc.file.checksum }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Published</td>
+            <td>{{ fc.file.published | date }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Uploaded</td>
+            <td>{{ fc.file.uploaded | date }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Modified</td>
+            <td>{{ fc.file.modified | date }}</td>
+          </tr>
+          <tr>
+            <td data-translate>State</td>
+            <td>{{ fc.file.state }}</td>
+          </tr>
+          <tr data-ng-if="fc.file.archive" class="archive-row">
+            <td data-translate>Archive</td>
+            <td>
+              {{ fc.file.archive.name }}
+              <div class="btn-group" dropdown>
+                <button type="button" class="btn btn-default dropdown-toggle">
+                  A <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li>
+                    <a>
+                      <i class="fa fa-eye"></i>
+                      <span data-translate>View Files in same Archive</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a>
+                      <i class="fa fa-folder-open"></i>
+                      <span data-translate>Download Archive</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
 
-  <section class="row">
-    <div class="col-lg-12 col-md-12 pull-right">
-      <h3 data-translate>File Content</h3>
-      <xml-viewer id="xmlViewer" xml="fc.file.metadataXML"></xml-viewer>
+      <div class="col-lg-5 col-md-5">
+        <h3 data-translate>Data Information</h3>
+        <table class="table table-striped table-hover table-condensed table-bordered">
+          <tbody>
+          <tr>
+            <td data-translate>Data Type</td>
+            <td>{{ fc.file.dataType }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Data Subtype</td>
+            <td>{{ fc.file.dataSubType }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Experimental Strategy</td>
+            <td>{{ fc.file.experimentStrategy }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Program Status</td>
+            <td>{{ fc.file.programStatus }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Platform</td>
+            <td>{{ fc.file.platform }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Data Revision</td>
+            <td>{{ fc.file.revision }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Data Version</td>
+            <td>{{ fc.file.version }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Data Level</td>
+            <td>{{ fc.file.level }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Data Submitter</td>
+            <td>{{ fc.file.submitter }}</td>
+          </tr>
+          <tr>
+            <td data-translate>Data Submitted Since</td>
+            <td>{{ fc.file.submittedSince | date }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
-  </section>
+  </div>
+</section>
+
+<section class="row">
+  <div class="col-lg-12 col-md-12">
+    <h3>
+      <span data-translate>Participants</span>
+      <button class="btn btn-default pull-right" data-translate>Export Table</button>
+    </h3>
+    <table class="table table-striped table-hover table-condensed table-bordered">
+      <thead>
+      <tr>
+        <th data-translate>ID</th>
+        <th data-translate>Project</th>
+        <th data-translate>Disease</th>
+        <th data-translate>Sample</th>
+        <th data-translate>Portion</th>
+        <th data-translate>Analyte</th>
+        <th data-translate>Aliquot</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr data-ng-repeat="p in fc.file.participants track by p.id">
+        <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
+        <td><a data-ui-sref="project({ projectId : p.project.id })">{{ p.project.name }}</a></td>
+        <td>{{ p.diseaseType }}</td>
+        <td>{{ p.sample }}</td>
+        <td>{{ p.portion }}</td>
+        <td>{{ p.analyte }}</td>
+        <td>{{ p.aliquot }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="row">
+  <div class="col-lg-12 col-md-12">
+    <h3>
+      <span data-translate>Related Files</span>
+      <button class="btn btn-default pull-right" data-translate>Export Table</button>
+    </h3>
+    <table class="table table-striped table-hover table-condensed table-bordered">
+      <thead>
+      <tr>
+        <th data-translate>File Name</th>
+        <th data-translate>File Type</th>
+        <th data-translate>Checksum</th>
+        <th data-translate>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr data-ng-repeat="f in fc.file.related track by f.id">
+        <td>{{ f.filename }}</td>
+        <td>{{ f.format }}</td>
+        <td>{{ f.checksum }}</td>
+        <td>
+          <a data-ui-sref="file({ fileId: f.id })" data-translate>
+            View
+          </a>
+          /
+          <a data-translate>
+            Download
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="row">
+  <div class="col-lg-12 col-md-12 pull-right">
+    <h3 data-translate>File Content</h3>
+    <xml-viewer id="xmlViewer" xml="fc.file.metadataXML"></xml-viewer>
+  </div>
+</section>
 </div>

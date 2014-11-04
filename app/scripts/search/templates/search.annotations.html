@@ -7,36 +7,36 @@
 </h4>
 <table class="table table-striped table-hover table-condensed table-bordered">
   <thead>
-    <tr>
-      <th>Annotation ID</th>
-      <th>Item Type</th>
-      <th>Item barcode</th>
-      <th>Participant</th>
-      <th>Classification</th>
-      <th>Category</th>
-      <th>Annotation</th>
-      <th>Annotator</th>
-      <th>Date Created</th>
-      <th>Status</th>
-    </tr>
+  <tr>
+    <th>Annotation ID</th>
+    <th>Item Type</th>
+    <th>Item barcode</th>
+    <th>Participant</th>
+    <th>Classification</th>
+    <th>Category</th>
+    <th>Annotation</th>
+    <th>Annotator</th>
+    <th>Date Created</th>
+    <th>Status</th>
+  </tr>
   </thead>
   <tbody>
-    <tr data-ng-repeat="a in sc.annotations.hits track by a.id">
-      <td><a data-ui-sref="annotation({ annotationId : a.id })">{{ a.id }}</a></td>
-      <td>{{ a.type }}</td>
-      <td>{{ a.item }}</td>
-      <td>
-        <a data-ui-sref="participant({ participantId: a.participant.id })">
-          {{ a.participant.id }}
-        </a>
-      </td>
-      <td>{{ a.classification }}</td>
-      <td>{{ a.category }}</td>
-      <td>{{ a.annotation }}</td>
-      <td>{{ a.createdBy }}</td>
-      <td>{{ a.dateCreated | date }}</td>
-      <td>{{ a.status }}</td>
-    </tr>
+  <tr data-ng-repeat="a in sc.annotations.hits track by a.id">
+    <td><a data-ui-sref="annotation({ annotationId : a.id })">{{ a.id }}</a></td>
+    <td>{{ a.type }}</td>
+    <td>{{ a.item }}</td>
+    <td>
+      <a data-ui-sref="participant({ participantId: a.participant.id })">
+        {{ a.participant.id }}
+      </a>
+    </td>
+    <td>{{ a.classification }}</td>
+    <td>{{ a.category }}</td>
+    <td>{{ a.annotation }}</td>
+    <td>{{ a.createdBy }}</td>
+    <td>{{ a.dateCreated | date }}</td>
+    <td>{{ a.status }}</td>
+  </tr>
   </tbody>
 </table>
 <div class="pagination-controls">
@@ -44,7 +44,7 @@
     Show
     <div class="btn-group dropup" dropdown is-open="status.isopen">
       <button type="button" class="btn btn-default dropdown-toggle" ng-disabled="disabled">
-        {{ sc.annotations.pagination.count }}  <span class="caret"></span>
+        {{ sc.annotations.pagination.count }} <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
         <li ng-click="sc.searchQuery(10)">10</li>

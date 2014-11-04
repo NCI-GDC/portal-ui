@@ -18,13 +18,14 @@ module ngApp.components.header.controllers {
     };
 
     /* @ngInject */
-    constructor(private gettextCatalog) {}
+    constructor(private gettextCatalog) {
+    }
 
-    collapse() : void {
+    collapse(): void {
       this.isCollapsed = true;
     }
 
-    toggleCollapsed() : void {
+    toggleCollapsed(): void {
       this.isCollapsed = !this.isCollapsed;
     }
 

@@ -21,7 +21,7 @@ module ngApp.annotations.controllers {
   class AnnotationController implements IAnnotationController {
     /* @ngInject */
     constructor(public annotation: IAnnotation, private CoreService: ICoreService) {
-      CoreService.setPageTitle( "Annotation " + annotation.id);
+      CoreService.setPageTitle("Annotation " + annotation.id);
     }
   }
 

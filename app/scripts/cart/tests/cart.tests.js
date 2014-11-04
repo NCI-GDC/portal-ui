@@ -40,14 +40,14 @@ describe('Cart:', function () {
     var file = { id: 'AAA', url: '/files/AAA' };
     var fileB = { id: 'BBB', url: '/files/BBB' };
 
-    it('should add a file to the cart', inject(function(CartService) {
+    it('should add a file to the cart', inject(function (CartService) {
       var addCallback = sinon.spy(CartService, 'add');
       CartService.add(file);
       expect(addCallback).to.have.been.calledOnce;
       expect(CartService).to.have.property('files').to.have.property('hits').with.length(1);
     }));
 
-    it('should get all files in the cart', inject(function(CartService) {
+    it('should get all files in the cart', inject(function (CartService) {
       CartService.add(file);
       var getFilesCallback = sinon.spy(CartService, 'getFiles');
       var returned = CartService.getFiles();
@@ -56,7 +56,7 @@ describe('Cart:', function () {
       expect(returned).to.have.deep.property('.hits[0].id', 'AAA');
     }));
 
-    it('should remove all files', inject(function(CartService) {
+    it('should remove all files', inject(function (CartService) {
       CartService.add(file);
       var removeCallback = sinon.spy(CartService, 'removeAll');
       CartService.removeAll();
@@ -64,7 +64,7 @@ describe('Cart:', function () {
       expect(CartService).to.have.property('files').to.have.property('hits').to.be.empty;
     }));
 
-    it('should remove files by ids', inject(function(CartService) {
+    it('should remove files by ids', inject(function (CartService) {
       CartService.add(file);
       CartService.add(fileB);
       var removeByIdCallback = sinon.spy(CartService, 'remove');
@@ -74,7 +74,7 @@ describe('Cart:', function () {
       expect(CartService).to.have.property('files').to.have.property('hits').to.include(fileB);
     }));
 
-    it('should return a list of all file urls', inject(function(CartService) {
+    it('should return a list of all file urls', inject(function (CartService) {
       CartService.add(file);
       var callback = sinon.spy(CartService, 'getAllFileUrls');
       var returned = CartService.getAllFileUrls();
@@ -85,7 +85,7 @@ describe('Cart:', function () {
       expect(returned).to.include('/files/BBB');
     }));
 
-    it('should return a list of file urls by ids', inject(function(CartService) {
+    it('should return a list of file urls by ids', inject(function (CartService) {
       CartService.add(file);
       CartService.add(fileB);
       var callback = sinon.spy(CartService, 'getFileUrls');
@@ -94,7 +94,7 @@ describe('Cart:', function () {
       expect(returned).to.not.include('/files/BBB');
     }));
 
-    it('should return a list of file ids', inject(function(CartService) {
+    it('should return a list of file ids', inject(function (CartService) {
       CartService.add(file);
       CartService.add(fileB);
       var returnValue = CartService.getAllFileIds();

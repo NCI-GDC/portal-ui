@@ -7,7 +7,7 @@ describe('Search:', function () {
     it('should have participants', inject(function ($controller) {
       // Which HTTP requests do we expect to occur, and how do we response?
       var search = [
-        { 
+        {
           id: 1,
           number: "gerg23fg"
         },

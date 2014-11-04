@@ -11,23 +11,23 @@ module ngApp.cart.services {
     remove(fileIds: string[]): void;
   }
 
-    class CartService implements ICartService {
-      files: IFiles;
-      totalSize: number = 0;
+  class CartService implements ICartService {
+    files: IFiles;
+    totalSize: number = 0;
 
     /* @ngInject */
-    constructor () {
+    constructor() {
       this.files = { hits: [],
-              pagination: {
-                count: 0,
-                total: 0,
-                size: 0,
-                from: 0,
-                page: 0,
-                pages: 0,
-                sort: "false",
-                order: "false"
-              }};
+        pagination: {
+          count: 0,
+          total: 0,
+          size: 0,
+          from: 0,
+          page: 0,
+          pages: 0,
+          sort: "false",
+          order: "false"
+        }};
       this.getFiles();
     }
 
@@ -41,7 +41,7 @@ module ngApp.cart.services {
     }
 
     add(file: IFile): void {
-      if(_.where(this.files.hits, { id: file.id} ).length === 0) {
+      if (_.where(this.files.hits, { id: file.id}).length === 0) {
         this.files.hits.push(file);
       }
     }
@@ -51,31 +51,31 @@ module ngApp.cart.services {
     }
 
     remove(fileIds: string[]): void {
-      this.files.hits = _.reject(this.files.hits, function(hit) {
+      this.files.hits = _.reject(this.files.hits, function (hit) {
         return _.contains(fileIds, hit.id);
       });
     }
 
     getAllFileUrls(): string[] {
-      return _.pluck(this.files.hits, 'url');
+      return _.pluck(this.files.hits, "url");
     }
 
-    getFileUrls(fileIds: string[]) : string[] {
-      return _.pluck(_.filter(this.files.hits, function(hit) {
+    getFileUrls(fileIds: string[]): string[] {
+      return _.pluck(_.filter(this.files.hits, function (hit) {
         return _.contains(fileIds, hit.id);
-      }), 'url');
+      }), "url");
     }
 
     getAllFileIds(): string[] {
-      return _.pluck(this.files.hits, 'id');
+      return _.pluck(this.files.hits, "id");
     }
 
   }
 
   angular
-    .module("cart.services", [
+      .module("cart.services", [
         "ngApp.files"
-        ])
-    .service("CartService", CartService);
+      ])
+      .service("CartService", CartService);
 }
 

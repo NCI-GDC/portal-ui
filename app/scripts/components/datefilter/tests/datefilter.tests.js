@@ -9,17 +9,19 @@ describe("Date Filter:", function () {
 
   it("should filter date with no given format", inject(function($filter) {
     var date = new Date();
+    var day = (date.getDate() < 10 ? '0' : '') + date.getDate();
     var formattedDate = $filter("date")(date.toString());
-    var expectedDate = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+    var expectedDate = (date.getMonth() + 1) + "/" + day + "/" + date.getFullYear();
 
     expect(formattedDate).to.equal(expectedDate);
   }));
 
-  it("should filter date with to given format", inject(function($filter) {
+  it("should filter date when given a format", inject(function($filter) {
     var date = new Date();
+    var day = (date.getDate() < 10 ? '0' : '') + date.getDate();
     var formattedDate = $filter("date")(date.toString(), "DD");
 
-    expect(formattedDate).to.equal(String(date.getDate()));
+    expect(formattedDate).to.equal(day);
   }));
 
 });

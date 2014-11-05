@@ -14,7 +14,12 @@
       <ul class="nav navbar-nav">
         <li ui-sref-active="active"><a ui-sref="projects" data-translate>Projects</a></li>
         <li ui-sref-active="active"><a ui-sref="search" data-translate>Search</a></li>
-        <li ui-sref-active="active"><a ui-sref="cart" data-translate>Cart</a></li>
+        <li ui-sref-active="active">
+          <a ui-sref="cart">
+            <span data-translate>Cart</span>
+            ({{ HeaderController.getNumCartItems() }})
+          </a>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>

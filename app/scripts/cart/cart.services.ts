@@ -36,10 +36,6 @@ module ngApp.cart.services {
       return this.files;
     }
 
-    getNumFiles(): number {
-      return this.files.hits.length;
-    }
-
     add(file: IFile): void {
       if (_.where(this.files.hits, { id: file.id}).length === 0) {
         this.files.hits.push(file);

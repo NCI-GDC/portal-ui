@@ -13,11 +13,9 @@
     </div>
 
     <span class="show-more-terms" data-ng-if="facet.terms.length > displayCount"
-          data-ng-show="!expanded" data-ng-click="toggle()">
-      {{ facet.terms.length - displayCount }}
-       <span>More...</span>
+          data-ng-click="toggle()">
+      <span data-ng-show="!expanded">{{ facet.terms.length - displayCount }} More...</span>
+      <span data-ng-show="expanded">Less...</span>
     </span>
-    <span class="show-more-terms" data-ng-if="facet.terms.length > displayCount"
-          data-ng-show="expanded" data-ng-click="toggle()">Less...</span>
   </div>
 </div>

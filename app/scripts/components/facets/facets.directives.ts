@@ -4,10 +4,17 @@ module ngApp.components.facets.directives {
   interface IFacetScope extends ng.IScope {
     toggleTerm(clickEvent: any): void;
     toggle(): void;
-    displayCount: number;
+    facet: IFacet;
     collapsed: boolean;
     expanded: boolean;
-    facet: IFacet;
+    displayCount: number;
+  }
+
+  interface IFacetAttributes extends ng.IAttributes {
+    collapsed: boolean;
+    expanded: boolean;
+    displayCount: number;
+    toggle(): void;
   }
 
   /* @ngInject */
@@ -22,12 +29,10 @@ module ngApp.components.facets.directives {
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
-      compile: function(element: Element, attrs) {
-        attrs.expanded = attrs.expanded || false;
-        attrs.collapsed = attrs.collapsed || false;
-        attrs.displayCount = parseInt(attrs.displayCount, 10) || 5;
-        attrs.expanded = !!attrs.expanded;
+      compile: function(element: ng.IAugmentedJQuery, attrs: IFacetAttributes) {
         attrs.collapsed = !!attrs.collapsed;
+        attrs.displayCount = attrs.displayCount || 5;
+        attrs.expanded = !!attrs.expanded;
 
         return {
           post: function($scope: IFacetScope) {

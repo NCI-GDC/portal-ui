@@ -18,32 +18,32 @@
   <div class="row search-panel">
     <div class="col-lg-2 col-md-3 facets-sidebar">
       <tabset>
-        <tab heading="Participants">
+        <tab heading="{{ 'Participants' | translate }}">
           <div data-ng-include="'search/templates/search.participants.facets.html'"></div>
         </tab>
 
-        <tab heading="Files">
+        <tab heading="{{ 'Files' | translate }}">
           <div data-ng-include="'search/templates/search.files.facets.html'"></div>
         </tab>
       </tabset>
     </div>
     <div class="col-lg-10 col-md-9 table-area">
       <tabset>
-        <tab heading="Participants ({{sc.participants.hits.length}})"
+        <tab heading="{{ 'Participants' | translate }} ({{sc.participants.hits.length}})"
              active="sc.State.tabs.participants.active"
              select="sc.select('participants')">
           <div class="pane-section">
             <div ng-include="'search/templates/search.participants.html'"></div>
           </div>
         </tab>
-        <tab heading="Files ({{sc.files.hits.length}})"
+        <tab heading="{{ 'Files' | translate }} ({{sc.files.hits.length}})"
              active="sc.State.tabs.files.active"
              select="sc.select('files')">
           <div class="pane-section">
             <div ng-include="'search/templates/search.files.html'"></div>
           </div>
         </tab>
-        <tab heading="Annotations ({{sc.annotations.hits.length}})"
+        <tab heading="{{ 'Annotations' | translate }} ({{sc.annotations.hits.length}})"
              active="sc.State.tabs.annotations.active"
              select="sc.select('annotations')">
           <div class="pane-section">

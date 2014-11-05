@@ -1,9 +1,7 @@
 module ngApp.cart {
   "use strict";
 
-  import IFilesService = ngApp.files.services.IFilesService;
   import IFiles = ngApp.files.models.IFiles;
-
   import ICartService = ngApp.cart.services.ICartService;
 
   function cartConfig($stateProvider: ng.ui.IStateProvider) {
@@ -12,7 +10,7 @@ module ngApp.cart {
           controller: "CartController as cc",
           templateUrl: "cart/templates/cart.html",
           resolve: {
-            files: (CartService: ICartService) => {
+            files: (CartService: ICartService): IFiles => {
               return CartService.getFiles();
             }
           }

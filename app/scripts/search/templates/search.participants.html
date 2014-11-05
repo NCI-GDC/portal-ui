@@ -9,6 +9,7 @@
 <table class="table table-striped table-hover table-condensed table-bordered">
   <thead>
   <tr>
+    <th scope="col"></th>
     <th scope="col" data-translate>Participant ID</th>
     <th scope="col" data-translate>Project</th>
     <th scope="col" data-translate>Disease Type</th>
@@ -20,6 +21,27 @@
   </thead>
   <tbody>
   <tr data-ng-repeat="p in sc.participants.hits track by p.id">
+    <td style="width: 35px;">
+      <div class="btn-group pull-right" dropdown>
+        <button type="button" class="btn btn-default action-button dropdown-toggle">
+          A
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li>
+            <a data-ng-click="sc.CartService.addFiles(sc.files.hits)">
+              <i class="fa fa-download"></i>
+              <span data-translate>Add filtered files to Cart</span> (145)
+            </a>
+          </li>
+          <li>
+            <a data-ng-click="sc.CartService.addAllFiles()">
+              <i class="fa fa-download"></i>
+              <span data-translate>Add all files to Cart</span> (231)
+            </a>
+          </li>
+        </ul>
+      </div>
+    </td>
     <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
     <td><a data-ui-sref="project({ projectId : p.project.id })">{{ p.project.name }}</a></td>
     <td>{{ p.diseaseType }}</td>

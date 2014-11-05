@@ -9,7 +9,25 @@
   <thead>
   <tr>
     <th>
-      <input type="checkbox">
+      <div class="btn-group pull-right" dropdown>
+        <button type="button" class="btn btn-default action-button dropdown-toggle">
+          A
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li>
+            <a data-ng-click="sc.CartService.addFiles(sc.files.hits)">
+              <i class="fa fa-download"></i>
+              <span data-translate>Select All on This Page</span> ({{sc.files.hits.length}})
+            </a>
+          </li>
+          <li>
+            <a data-ng-click="sc.CartService.addAllFiles()">
+              <i class="fa fa-download"></i>
+              <span data-translate>Select All in Result Set</span> (#)
+            </a>
+          </li>
+        </ul>
+      </div>
     </th>
     <th scope="col" class="text-center" data-translate>Access</th>
     <th scope="col" class="text-center" data-translate>File Name</th>
@@ -26,30 +44,31 @@
   </thead>
   <tbody>
   <tr data-ng-repeat="file in sc.files.hits">
-    <td style="vertical-align: middle">
-      <div style="width: 60px">
-        <input type="checkbox">
+    <td>
+      <input type="checkbox"
+             class="cart-checkbox"
+             data-ng-checked="sc.CartService.isInCart(file)"
+             data-ng-click="!sc.CartService.isInCart(file) ? sc.CartService.add(file) : sc.CartService.remove([file.id])">
 
-        <div class="btn-group pull-right" dropdown>
-          <button type="button" class="btn btn-default dropdown-toggle">
-            A
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">
-              <i class="fa fa-download"></i>
-              <span data-translate>Download File</span></a></li>
-            <li><a href="#">
-              <i class="fa fa-download"></i>
-              <span data-translate>Download Metadata</span></a></li>
-            <li class="divider"></li>
-            <li><a href="#">
-              <i class="fa fa-file-zip-o"></i>
-              <span data-translate>View Files in same Archive</span></a></li>
-            <li><a href="#">
-              <i class="fa fa-file-text-o"></i>
-              <span data-translate>View Metadata Files</span></a></li>
-          </ul>
-        </div>
+      <div class="btn-group pull-right" dropdown>
+        <button type="button" class="btn btn-default action-button dropdown-toggle">
+          A
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">
+            <i class="fa fa-download"></i>
+            <span data-translate>Download File</span></a></li>
+          <li><a href="#">
+            <i class="fa fa-download"></i>
+            <span data-translate>Download Metadata</span></a></li>
+          <li class="divider"></li>
+          <li><a href="#">
+            <i class="fa fa-file-zip-o"></i>
+            <span data-translate>View Files in same Archive</span></a></li>
+          <li><a href="#">
+            <i class="fa fa-file-text-o"></i>
+            <span data-translate>View Metadata Files</span></a></li>
+        </ul>
       </div>
     </td>
     <td class="text-center">

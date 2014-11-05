@@ -7,12 +7,14 @@ module ngApp.search.controllers {
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
   import IState = ngApp.search.services.IState;
+  import ICartService = ngApp.cart.services.ICartService;
 
   export interface ISearchController {
     files: IFiles;
     participants: IParticipants;
     annotations: IAnnotations;
     State: IState;
+    CartService: ICartService;
     participantAccordian: boolean;
     participantBioAccordian: boolean;
   }
@@ -27,6 +29,7 @@ module ngApp.search.controllers {
                 public files: IFiles,
                 public participants: IParticipants,
                 public annotations: IAnnotations,
+                public CartService: ICartService,
                 CoreService: ICoreService) {
       var data = $state.current.data || {};
       this.State.setActive(data.tab);
@@ -46,6 +49,9 @@ module ngApp.search.controllers {
   }
 
   angular
-      .module("search.controller", ["search.services"])
+      .module("search.controller", [
+        "search.services",
+        "cart.services"
+        ])
       .controller("SearchController", SearchController);
 }

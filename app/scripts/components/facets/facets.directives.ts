@@ -14,7 +14,6 @@ module ngApp.components.facets.directives {
     collapsed: boolean;
     expanded: boolean;
     displayCount: number;
-    toggle(): void;
   }
 
   /* @ngInject */

@@ -7,6 +7,7 @@ module ngApp.cart.controllers {
   export interface ICartController {
     files: IFiles;
     totalSize: number;
+    getTotalSize(): number;
   }
 
   class CartController implements ICartController {
@@ -15,41 +16,11 @@ module ngApp.cart.controllers {
     /* @ngInject */
     constructor(public files: IFiles, private CoreService: ICoreService, private CartService: ICartService) {
       CoreService.setPageTitle("Cart " + "(" + this.files.hits.length + ")");
-      // TODO remove when Search is hooked up to CartService
-      this.CartService.add({
-        uuid: "uuid",
-        id: "id",
-        filename: "filename",
-        files: [],
-        metadata: {},
-        metadataXML: {},
-        barcode: "barcode",
-        format: "format",
-        checksum: "checksum",
-        published: "published",
-        uploaded: "uploaded",
-        modified: "modified",
-        size: 1,
-        state: "state",
-        access: true,
-        participants: [],
-        dataType: "dataType",
-        dataSubType: "dataSubType",
-        experimentStrategy: "experimentStrategy",
-        programStatus: true,
-        platform: "platform",
-        revision: "revision",
-        version: "version",
-        level: 1,
-        submitter: "submitter",
-        submittedSince: "submittedSince",
-        url: "url"
-      });
       this.totalSize = this.getTotalSize();
     }
 
     getTotalSize(): number {
-      return _.reduce(this.files.hits, function (sum, hit) {
+      return _.reduce(this.files.hits, function (sum: number, hit: IFile) {
         return sum + hit.size;
       }, 0);
     }

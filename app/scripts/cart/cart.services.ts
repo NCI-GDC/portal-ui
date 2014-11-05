@@ -2,11 +2,15 @@ module ngApp.cart.services {
 
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
+  import IFilesService = ngApp.files.services.IFilesService;
 
   export interface ICartService {
     files: IFiles;
     getFiles(): IFiles;
     add(file: IFile): void;
+    addFiles(files: IFile[]): void;
+    addAllFiles(): void;
+    isInCart(file: IFile): boolean;
     removeAll(): void;
     remove(fileIds: string[]): void;
   }
@@ -16,7 +20,7 @@ module ngApp.cart.services {
     totalSize: number = 0;
 
     /* @ngInject */
-    constructor() {
+    constructor(private FilesService: IFilesService) {
       this.files = { hits: [],
         pagination: {
           count: 0,
@@ -36,10 +40,27 @@ module ngApp.cart.services {
       return this.files;
     }
 
+    isInCart(file: IFile): boolean {
+      return !!_.where(this.files.hits, { id: file.id }).length;
+    }
+
     add(file: IFile): void {
-      if (_.where(this.files.hits, { id: file.id}).length === 0) {
+      if (!this.isInCart(file)) {
         this.files.hits.push(file);
       }
+    }
+
+    addFiles(files: IFile[]): void {
+      _.forEach(files, file => this.add(file));
+    }
+
+    addAllFiles(): void {
+      this.FilesService.getFiles()
+      .then((response) => {
+        console.log(response);
+
+        this.addFiles(response.hits);
+      });
     }
 
     removeAll(): void {
@@ -47,7 +68,7 @@ module ngApp.cart.services {
     }
 
     remove(fileIds: string[]): void {
-      this.files.hits = _.reject(this.files.hits, function (hit) {
+      this.files.hits = _.reject(this.files.hits, function (hit: IFile) {
         return _.contains(fileIds, hit.id);
       });
     }
@@ -57,7 +78,7 @@ module ngApp.cart.services {
     }
 
     getFileUrls(fileIds: string[]): string[] {
-      return _.pluck(_.filter(this.files.hits, function (hit) {
+      return _.pluck(_.filter(this.files.hits, function (hit: IFile) {
         return _.contains(fileIds, hit.id);
       }), "url");
     }

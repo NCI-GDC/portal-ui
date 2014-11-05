@@ -26,6 +26,24 @@
       }
     }
 
+    table {
+      .cart-checkbox {
+        /* Uses a non standard value implemented by both Firefox
+         * and all webkit browsers. Only IE doesn't have an implemention, which
+         * will use fallback instead.
+         */
+        vertical-align: bottom;
+        vertical-align: -moz-middle-with-baseline;
+        vertical-align: -webkit-baseline-middle;
+      }
+
+      .action-button {
+        border-radius: 50%;
+        font-size: 12px;
+        font-weight: 600;
+      }
+    }
+
     .facets-sidebar, .table-area {
       padding: 0;
       padding-top: 15px;

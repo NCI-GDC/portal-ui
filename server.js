@@ -21,7 +21,8 @@ var router = express.Router();        // get an instance of the express Router
 
 router.all('*', function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Methods", "POST");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
 
@@ -754,6 +755,36 @@ router.get('/files', function (req, res) {
 
   res.json(response);
 });
+
+router.post('/files', function (req, res) {
+  var paging = JSON.parse(req.query.paging || "{}");
+  var filters = req.body.filters;
+
+  var response = {};
+  response.pagination = _.assign({}, files.pagination);
+  response.facets = _.assign({}, files.facets);
+  response.hits = [];
+
+  response.pagination.page = paging.page || 1;
+  response.pagination.count = paging.count || files.pagination.count;
+
+  var start = paging.count * (paging.page - 1) || 0;
+
+  var filteredFiles = _.filter(files.hits, function (file) {
+    return _.contains(filters.id, file.id);
+  });
+
+  response.pagination.total = filteredFiles.length;
+  response.pagination.pages = Math.ceil(response.pagination.total /
+                                        response.pagination.count);
+
+  for (var i = 0; i < response.pagination.count && filteredFiles[start + i]; i++) {
+    response.hits.push(_.assign({}, filteredFiles[start + i]));
+  }
+
+  res.json(response);
+});
+
 router.get('/files/:id', function (req, res) {
   res.json(_.find(files.hits, function (obj) {
     return obj.id === req.params.id;

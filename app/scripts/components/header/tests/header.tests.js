@@ -4,6 +4,11 @@ describe('Header:', function () {
   beforeEach(module('ngApp.components', 'ngApp.cart'));
 
   describe('Controller:', function () {
+    beforeEach(inject(function ($window) {
+      // Clear localStorage system to prevent oddities from tests.
+      $window.localStorage.setItem("gdc-cart-items", []);
+    }));
+
     it('should get cart count', inject(function ($controller, CartService) {
       var wc = $controller('HeaderController', { gettextCatalog: {} });
       expect(wc.getNumCartItems()).to.equal(0);

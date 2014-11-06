@@ -3,10 +3,12 @@ module ngApp.cart.services {
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
   import IFilesService = ngApp.files.services.IFilesService;
+  import IGDCWindowService = ngApp.models.IGDCWindowService;
 
   export interface ICartService {
     files: IFiles;
-    getFiles(): IFiles;
+    fileIds: string[];
+    getFiles(): ng.IPromise<IFiles>;
     add(file: IFile): void;
     addFiles(files: IFile[]): void;
     addAllFiles(): void;
@@ -16,37 +18,52 @@ module ngApp.cart.services {
   }
 
   class CartService implements ICartService {
-    files: IFiles;
+    files: IFiles = {
+      hits: [],
+      pagination: {
+        count: 0,
+        total: 0,
+        size: 0,
+        from: 0,
+        page: 0,
+        pages: 0,
+        sort: "false",
+        order: "false"
+      }
+    };
+    fileIds: string[];
     totalSize: number = 0;
 
+    private static GDC_CART_KEY = "gdc-cart-items";
+
     /* @ngInject */
-    constructor(private FilesService: IFilesService) {
-      this.files = { hits: [],
-        pagination: {
-          count: 0,
-          total: 0,
-          size: 0,
-          from: 0,
-          page: 0,
-          pages: 0,
-          sort: "false",
-          order: "false"
-        }};
+    constructor(private FilesService: IFilesService, private $window: IGDCWindowService) {
+      this.fileIds = JSON.parse($window.localStorage.getItem(CartService.GDC_CART_KEY) || "[]");
       this.getFiles();
     }
 
-    getFiles(): IFiles {
-      //TODO: get files from localstorage
-      return this.files;
+    getFiles(): ng.IPromise<IFiles> {
+      var fileIds = this.getAllFileIds();
+      fileIds = _.union(this.fileIds, fileIds);
+
+      return this.FilesService.getFilesWithFilters({ filters : { id: fileIds } });
     }
 
     isInCart(file: IFile): boolean {
       return !!_.where(this.files.hits, { id: file.id }).length;
     }
 
+    private addFileId(fileId: string) {
+      if (!_.contains(this.fileIds, fileId)) {
+        this.fileIds.push(fileId);
+        this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.fileIds));
+      }
+    }
+
     add(file: IFile): void {
       if (!this.isInCart(file)) {
         this.files.hits.push(file);
+        this.addFileId(file.id);
       }
     }
 
@@ -65,12 +82,18 @@ module ngApp.cart.services {
 
     removeAll(): void {
       this.files.hits = [];
+      this.fileIds = [];
+      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.fileIds));
     }
 
     remove(fileIds: string[]): void {
       this.files.hits = _.reject(this.files.hits, function (hit: IFile) {
         return _.contains(fileIds, hit.id);
       });
+      this.fileIds = _.reject(this.fileIds, function (id: string) {
+        return _.contains(fileIds, id);
+      });
+      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.fileIds));
     }
 
     getAllFileUrls(): string[] {

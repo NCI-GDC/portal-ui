@@ -16,6 +16,7 @@ module ngApp.cart.controllers {
     /* @ngInject */
     constructor(public files: IFiles, private CoreService: ICoreService, private CartService: ICartService) {
       CoreService.setPageTitle("Cart " + "(" + this.files.hits.length + ")");
+      CartService.files = files;
       this.totalSize = this.getTotalSize();
     }
 

@@ -40,6 +40,11 @@ describe('Cart:', function () {
     var file = { id: 'AAA', url: '/files/AAA' };
     var fileB = { id: 'BBB', url: '/files/BBB' };
 
+    beforeEach(inject(function ($window) {
+      // Clear localStorage system to prevent oddities from tests.
+      $window.localStorage.setItem("gdc-cart-items", []);
+    }));
+
     it('should add a file to the cart', inject(function (CartService) {
       var addCallback = sinon.spy(CartService, 'add');
       CartService.add(file);
@@ -50,10 +55,12 @@ describe('Cart:', function () {
     it('should get all files in the cart', inject(function (CartService) {
       CartService.add(file);
       var getFilesCallback = sinon.spy(CartService, 'getFiles');
-      var returned = CartService.getFiles();
-      expect(getFilesCallback).to.have.been.calledOnce;
-      expect(returned).to.have.property('hits').with.length(1);
-      expect(returned).to.have.deep.property('.hits[0].id', 'AAA');
+      CartService.getFiles()
+      .then(function(response) {
+        expect(getFilesCallback).to.have.been.calledOnce;
+        expect(response).to.have.property('hits').with.length(1);
+        expect(response).to.have.deep.property('.hits[0].id', 'AAA');
+      });
     }));
 
     it('should remove all files', inject(function (CartService) {

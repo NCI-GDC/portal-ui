@@ -38,7 +38,7 @@ module ngApp.components.header.controllers {
     }
 
     getNumCartItems(): number {
-      return this.CartService.files.hits.length;
+      return this.CartService.files && this.CartService.files.hits.length;
     }
 
   }

@@ -55,6 +55,7 @@ module ngApp.files.models {
     submitter: string;
     submittedSince: string;
     url: string;
+    selected?: boolean
   }
 }
 

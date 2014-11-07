@@ -30,6 +30,19 @@ module ngApp.cart.controllers {
     handleRemoveAllClick(): void {
       this.CartService.removeAll();
     }
+
+    handleRemoveByIds(): void {
+      var ids : string[] = _.pluck(_.filter(this.files.hits, (hit : IFile) : string[] => {
+        return hit.selected == true;
+      }), 'id');
+      this.CartService.remove(ids);
+    }
+
+    toggleSelectAll(e): void {
+      this.files.hits.forEach((file:IFile):void => {
+        file.selected = e.srcElement.checked;
+      });
+    }
   }
 
   angular

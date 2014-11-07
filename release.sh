@@ -50,7 +50,7 @@ readonly ACTION=${ACTION:-"prepare"}
 readonly COMMIT_SHA=${COMMIT_SHA:-"HEAD"}
 
 compareVersions() {
-	local FROM=${1//"-beta"/}
+	local FROM=${1//"-.+"/}
 	local TO=$2
 	
 	printf "Checking that %s is greater than %s..." $(focus ${TO}) $(focus ${1})

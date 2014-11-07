@@ -1,4 +1,4 @@
-### 0.1.8-rc2 (2014-11-07)
+### 0.1.8-rc1 (2014-11-07)
 
 
 #### Features
@@ -15,7 +15,7 @@
 * **search:** Files can be added to cart. ([7437d426](https://github.com/NCI-GDC/portal-ui/commit/7437d4263e2700b6d6a3802ee844f7d82fc8288d), closes [OICR-61](https://jira.opensciencedatacloud.org/browse/OICR-61))
 
 
-### 0.1.8-rc1 (2014-10-29)
+### 0.1.8-rc1+build.1 (2014-10-29)
 
 
 #### Features

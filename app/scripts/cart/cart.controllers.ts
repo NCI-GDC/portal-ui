@@ -8,6 +8,9 @@ module ngApp.cart.controllers {
     files: IFiles;
     totalSize: number;
     getTotalSize(): number;
+    toggleSelectAll(e: any): void;
+    handleRemoveAllClick(): void;
+    handleRemoveByIds(): void;
   }
 
   class CartController implements ICartController {
@@ -38,9 +41,9 @@ module ngApp.cart.controllers {
       this.CartService.remove(ids);
     }
 
-    toggleSelectAll(e): void {
+    toggleSelectAll(e: any): void {
       this.files.hits.forEach((file:IFile):void => {
-        file.selected = e.srcElement.checked;
+        file.selected = e.target.checked;
       });
     }
   }

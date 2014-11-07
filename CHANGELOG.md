@@ -7,28 +7,23 @@
   * adds remove by id, select all ([f0917a98](https://github.com/NCI-GDC/portal-ui/commit/f0917a98a068e2e635af5bc776505fa32ad3449c))
   * Support localStorage of IDs ([b697d5c7](https://github.com/NCI-GDC/portal-ui/commit/b697d5c7f55745d3de7f4f83e58b6276a8d92ac5))
   * adds working methods to cart service ([39f63da0](https://github.com/NCI-GDC/portal-ui/commit/39f63da0969da07dafaa246d2827566e1084d5be), closes [OICR-58](https://jira.opensciencedatacloud.org/browse/OICR-58))
+  * Updates to cart UI. ([58a7dfd6](https://github.com/NCI-GDC/portal-ui/commit/58a7dfd66476f4fbf9b917dc9ce366fef2256a3d), closes [OICR-52](https://jira.opensciencedatacloud.org/browse/OICR-52))
 * **facets:**
   * simplify facets directive, ts fixes ([ba3d210c](https://github.com/NCI-GDC/portal-ui/commit/ba3d210c253cef2feb3124e6552808a3843bbc9b))
   * Updates facet UI. ([455b82d0](https://github.com/NCI-GDC/portal-ui/commit/455b82d076e88c1e841eae76662e5decf385d86b), closes [OICR-63](https://jira.opensciencedatacloud.org/browse/OICR-63))
-* **header:** cart count in header tab ([1e43d4ce](https://github.com/NCI-GDC/portal-ui/commit/1e43d4ce4d9c39ef54eed6979ab0cc2d6db242d1), closes [OICR-59](https://jira.opensciencedatacloud.org/browse/OICR-59))
+* **header:** 
+	* cart count in header tab ([1e43d4ce](https://github.com/NCI-GDC/portal-ui/commit/1e43d4ce4d9c39ef54eed6979ab0cc2d6db242d1), closes [OICR-59](https://jira.opensciencedatacloud.org/browse/OICR-59))
+	* highlight active header link ([9f04fb5c](https://github.com/NCI-GDC/portal-ui/commit/9f04fb5cb97ab19cf34a67d445e594cc3869798f))
 * **i18n:** Integrates i18n into application. ([e15366fa](https://github.com/NCI-GDC/portal-ui/commit/e15366faeeefe6da73f01478d6c2244591f621f0), closes [OICR-67](https://jira.opensciencedatacloud.org/browse/OICR-67))
-* **search:** Files can be added to cart. ([7437d426](https://github.com/NCI-GDC/portal-ui/commit/7437d4263e2700b6d6a3802ee844f7d82fc8288d), closes [OICR-61](https://jira.opensciencedatacloud.org/browse/OICR-61))
-
-
-### 0.1.8-rc1+build.1 (2014-10-29)
-
-
-#### Features
-
+* **search:** 
+	* Files can be added to cart. ([7437d426](https://github.com/NCI-GDC/portal-ui/commit/7437d4263e2700b6d6a3802ee844f7d82fc8288d), closes [OICR-61](https://jira.opensciencedatacloud.org/browse/OICR-61))
+	* updates search tables ([3aaf0b36](https://github.com/NCI-GDC/portal-ui/commit/3aaf0b367c83f0985bd206323d920a488866088a), closes [OICR-27](https://jira.opensciencedatacloud.org/browse/OICR-27))
 * **annotations:** Updates UI to new mockups. ([4e0347cd](https://github.com/NCI-GDC/portal-ui/commit/4e0347cda1750381024032e95cf32e037be96f06), closes [OICR-47](https://jira.opensciencedatacloud.org/browse/OICR-47))
-* **cart:** Updates to cart UI. ([58a7dfd6](https://github.com/NCI-GDC/portal-ui/commit/58a7dfd66476f4fbf9b917dc9ce366fef2256a3d), closes [OICR-52](https://jira.opensciencedatacloud.org/browse/OICR-52))
 * **core:** adds service for page state ([b703dc87](https://github.com/NCI-GDC/portal-ui/commit/b703dc87c731f4fccd9dbea4be27be01a4857e10), closes [OICR-57](https://jira.opensciencedatacloud.org/browse/OICR-57))
 * **files:** Updates File Entity UI. ([82798c6b](https://github.com/NCI-GDC/portal-ui/commit/82798c6bfd37d714d1c075ae846f9c3b47e87750), closes [OICR-37](https://jira.opensciencedatacloud.org/browse/OICR-37))
-* **header:** highlight active header link ([9f04fb5c](https://github.com/NCI-GDC/portal-ui/commit/9f04fb5cb97ab19cf34a67d445e594cc3869798f))
 * **participant:** Updates UI to new mockups. ([745e523c](https://github.com/NCI-GDC/portal-ui/commit/745e523c9e408488d50c7d1772b2c7922cae2674), closes [OICR-52](https://jira.opensciencedatacloud.org/browse/OICR-52))
 * **project:** update to match new mockups ([65b4ae57](https://github.com/NCI-GDC/portal-ui/commit/65b4ae57220fe58ede624f0f25746994e98bf4c6), closes [OICR-25](https://jira.opensciencedatacloud.org/browse/OICR-25))
 * **projects:** update projects list ([83a32db1](https://github.com/NCI-GDC/portal-ui/commit/83a32db121e828d228686a5e2aba1672b016e83e), closes [OICR-22](https://jira.opensciencedatacloud.org/browse/OICR-22))
-* **search:** updates search tables ([3aaf0b36](https://github.com/NCI-GDC/portal-ui/commit/3aaf0b367c83f0985bd206323d920a488866088a), closes [OICR-27](https://jira.opensciencedatacloud.org/browse/OICR-27))
 
 
 ### 0.1.5 (2014-10-22)

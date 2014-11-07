@@ -1,3 +1,20 @@
+### 0.1.8-rc2 (2014-11-07)
+
+
+#### Features
+
+* **cart:**
+  * adds remove by id, select all ([f0917a98](https://github.com/NCI-GDC/portal-ui/commit/f0917a98a068e2e635af5bc776505fa32ad3449c))
+  * Support localStorage of IDs ([b697d5c7](https://github.com/NCI-GDC/portal-ui/commit/b697d5c7f55745d3de7f4f83e58b6276a8d92ac5))
+  * adds working methods to cart service ([39f63da0](https://github.com/NCI-GDC/portal-ui/commit/39f63da0969da07dafaa246d2827566e1084d5be), closes [OICR-58](https://jira.opensciencedatacloud.org/browse/OICR-58))
+* **facets:**
+  * simplify facets directive, ts fixes ([ba3d210c](https://github.com/NCI-GDC/portal-ui/commit/ba3d210c253cef2feb3124e6552808a3843bbc9b))
+  * Updates facet UI. ([455b82d0](https://github.com/NCI-GDC/portal-ui/commit/455b82d076e88c1e841eae76662e5decf385d86b), closes [OICR-63](https://jira.opensciencedatacloud.org/browse/OICR-63))
+* **header:** cart count in header tab ([1e43d4ce](https://github.com/NCI-GDC/portal-ui/commit/1e43d4ce4d9c39ef54eed6979ab0cc2d6db242d1), closes [OICR-59](https://jira.opensciencedatacloud.org/browse/OICR-59))
+* **i18n:** Integrates i18n into application. ([e15366fa](https://github.com/NCI-GDC/portal-ui/commit/e15366faeeefe6da73f01478d6c2244591f621f0), closes [OICR-67](https://jira.opensciencedatacloud.org/browse/OICR-67))
+* **search:** Files can be added to cart. ([7437d426](https://github.com/NCI-GDC/portal-ui/commit/7437d4263e2700b6d6a3802ee844f7d82fc8288d), closes [OICR-61](https://jira.opensciencedatacloud.org/browse/OICR-61))
+
+
 ### 0.1.8-rc1 (2014-10-29)
 
 

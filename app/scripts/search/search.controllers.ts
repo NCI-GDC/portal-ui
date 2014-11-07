@@ -12,7 +12,6 @@ module ngApp.search.controllers {
   export interface ISearchController {
     files: IFiles;
     participants: IParticipants;
-    annotations: IAnnotations;
     State: IState;
     CartService: ICartService;
     participantAccordian: boolean;
@@ -28,7 +27,6 @@ module ngApp.search.controllers {
                 public State: IState,
                 public files: IFiles,
                 public participants: IParticipants,
-                public annotations: IAnnotations,
                 public CartService: ICartService,
                 CoreService: ICoreService) {
       var data = $state.current.data || {};

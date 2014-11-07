@@ -21,7 +21,6 @@ describe('Search:', function () {
       var wc = $controller('SearchController', {
         files: {},
         participants: search,
-        annotations: {},
         data: {
           tab: "participants"
         }
@@ -46,7 +45,6 @@ describe('Search:', function () {
       var wc = $controller('SearchController', {
         files: search,
         participants: {},
-        annotations: {},
         data: {
           tab: "files"
         }
@@ -54,31 +52,6 @@ describe('Search:', function () {
 
       // We expect the controller to put the right value onto the scope
       expect(wc).to.have.property('files').with.length(2);
-    }));
-    it('should have annotations', inject(function ($controller) {
-      // Which HTTP requests do we expect to occur, and how do we response?
-      var search = [
-        {
-          id: 1,
-          number: "gerg23fg"
-        },
-        {
-          id: 2,
-          number: "gerg23fg"
-        }
-      ];
-
-      var wc = $controller('SearchController', {
-        files: {},
-        participants: {},
-        annotations: search,
-        data: {
-          tab: "files"
-        }
-      });
-
-      // We expect the controller to put the right value onto the scope
-      expect(wc).to.have.property('annotations').with.length(2);
     }));
   });
 });

@@ -43,13 +43,6 @@
             <div ng-include="'search/templates/search.files.html'"></div>
           </div>
         </tab>
-        <tab heading="{{ 'Annotations' | translate }} ({{sc.annotations.hits.length}})"
-             active="sc.State.tabs.annotations.active"
-             select="sc.select('annotations')">
-          <div class="pane-section">
-            <div ng-include="'search/templates/search.annotations.html'"></div>
-          </div>
-        </tab>
       </tabset>
     </div>
   </div>

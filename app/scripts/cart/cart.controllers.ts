@@ -32,7 +32,7 @@ module ngApp.cart.controllers {
     }
 
     handleRemoveByIds(): void {
-      var ids : string[] = _.pluck(_.filter(this.files.hits, (hit : IFile) : string[] => {
+      var ids : string[] = _.pluck(_.filter(this.files.hits, (hit : IFile) : boolean => {
         return hit.selected == true;
       }), 'id');
       this.CartService.remove(ids);

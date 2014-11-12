@@ -35,33 +35,83 @@
 
 <body>
 
-<nga-header></nga-header>
-<div data-ng-if="!loaded" class="app-loading">
-  <i class="fa fa-circle-o-notch fa-spin fa-5x"></i>
-</div>
-<noscript>
-  <style>
-    #loadingScreen { display: none; }
-  </style>
-  <header class="navbar navbar-default navbar-static-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/">GDC Data Portal</a>
+<div id="wrapper">
+  <div data-ng-if="!loaded" class="app-loading">
+    <i class="fa fa-circle-o-notch fa-spin fa-5x"></i>
+  </div>
+
+  <div id="header">
+    <!-- NCI Header -->
+    <table id="nci-header">
+      <tbody>
+        <tr>
+          <td height="34" align="left" width="283">
+            <a href="http://www.cancer.gov">
+              <img src="/images/logotype.gif"
+                   title="National Cancer Institute"
+                   alt="National Cancer Institute"
+                   height="34" border="0" width="283">
+            </a>
+          </td>
+          <td width="97%"></td>
+          <td align="right" width="177">
+            <a href="http://www.cancer.gov">
+              <img src="/images/tagline.gif"
+                   title="U.S. National Institutes of Health"
+                   alt="U.S. National Institutes of Health"
+                   height="37" border="0" width="177">
+            </a>
+          </td>
+          <td align="right" width="118">
+            <a href="http://www.cancer.gov">
+              <img src="/images/cancergov.gif"
+                   title="www.cancer.gov"
+                   alt="www.cancer.gov"
+                   height="37" border="0" width="118">
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <nga-header></nga-header>
+  </div>
+
+  <noscript>
+    <style>
+      #loadingScreen { display: none; }
+    </style>
+    <div id="body">
+      <p class="noscript">
+        Javascript is required to use the features of this website.
+      </p>
+    </div>
+  </noscript>
+
+  <div id="body" data-ui-view></div>
+
+  <!-- NCI Footer -->
+  <footer id="footer">
+    <div class="container">
+      <div>
+        <a data-ui-sref="home">Site Home</a>
+         | <a href="http://www.cancer.gov/global/web/policies">Policies</a>
+         | <a href="http://www.cancer.gov/global/web/policies/accessibility">Accessibility</a>
+         | <a href="http://www.cancer.gov/global/web/policies/foia">FOIA</a>
+         | <a>Site Map</a>
+      </div>
+      <div>
+        <a href="http://www.hhs.gov">U.S. Department of Health and Human Services</a>
+         | <a href="http://www.nih.gov">National Institutes of Health</a>
+         | <a href="http://www.cancer.gov">National Cancer Institute</a>
+         | <a href="http://www.usa.gov">USA.gov</a>
+      </div>
+      <div>
+        NIH... Turning Discovery Into Health &#174;
       </div>
     </div>
-  </header>
-  <p class="noscript">
-    Javascript is required to use the features of this website.
-  </p>
-</noscript>
-
-<div data-ui-view></div>
+  </footer>
+</div>
 
 <!-- CDN Vendor Files -->
 <script src="/libs/lodash/dist/lodash.js"></script>

@@ -7,5 +7,23 @@
 @import "facets.less";
 @import "files.less";
 @import "pagination.less";
+@import "header.less";
+@import "footer.less";
 @import "search.less";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+#wrapper {
+  min-height: 100%;
+  position: relative;
+}
+
+#body {
+  padding-bottom: @FOOTER_HEIGHT + 20;
+  margin-top: -20px;
+}
 

@@ -1,6 +1,4 @@
 module ngApp.home.controllers {
-  import ICoreService = ngApp.core.services.ICoreService;
-
   export interface IHomeController {
   }
 
@@ -12,8 +10,6 @@ module ngApp.home.controllers {
   }
 
   angular
-      .module("home.controller", [
-        "core.services"
-      ])
+      .module("home.controller", [])
       .controller("HomeController", HomeController);
 }

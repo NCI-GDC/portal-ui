@@ -7,12 +7,12 @@ module ngApp.core.services {
   class CoreService implements ICoreService {
     /* @ngInject */
     constructor(private $rootScope: ngApp.IRootScope) {
+      this.$rootScope.loaded = true
     }
 
     setPageTitle(title: string): void {
       this.$rootScope.pageTitle = title;
     }
-
   }
 
   angular

@@ -6,7 +6,7 @@ module ngApp.home {
     $stateProvider.state("home", {
       url: "/",
       controller: "HomeController as hc",
-      templateUrl: "home/templates/index.html"
+      templateUrl: "home/templates/home.html"
     });
   }
 

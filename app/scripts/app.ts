@@ -1,6 +1,7 @@
 declare module ngApp {
   interface IRootScope extends ng.IScope {
     pageTitle: string;
+    loaded: boolean;
   }
 }
 
@@ -20,6 +21,7 @@ function appRun(gettextCatalog) {
 
 angular
     .module("ngApp", [
+      "ngAnimate",
       "ui.router.state",
       "ui.bootstrap",
       "restangular",

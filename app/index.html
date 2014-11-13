@@ -36,7 +36,13 @@
 <body>
 
 <nga-header></nga-header>
+<div data-ng-if="!loaded" class="app-loading">
+  <i class="fa fa-circle-o-notch fa-spin fa-5x"></i>
+</div>
 <noscript>
+  <style>
+    #loadingScreen { display: none; }
+  </style>
   <header class="navbar navbar-default navbar-static-top">
     <div class="container-fluid">
       <div class="navbar-header">
@@ -54,6 +60,7 @@
     Javascript is required to use the features of this website.
   </p>
 </noscript>
+
 <div data-ui-view></div>
 
 <!-- CDN Vendor Files -->
@@ -70,6 +77,7 @@
 <!-- Angular Plugins -->
 <!-- build:js /js/ng-plugins.js -->
 <script src="/libs/angular-cache/dist/angular-cache.js"></script>
+<script src="/libs/angular-animate/angular-animate.js"></script>
 <script src="/libs/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="/libs/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js"></script>
 <script src="/libs/restangular/dist/restangular.js"></script>

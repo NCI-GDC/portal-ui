@@ -6,6 +6,8 @@ module ngApp.models {
   export interface IGDCWindowService extends ng.IWindowService {
     LoadXMLString: any;
     moment: MomentStatic;
+    jQuery: JQueryStatic;
+    scrollY: number;
   }
 
   export interface ICollection {

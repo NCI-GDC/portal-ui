@@ -112,7 +112,7 @@ gulp.task('vendor', function () {
 gulp.task('styles', function () {
   var f = production ? 'styles.min.css' : 'styles.css';
 
-  return gulp.src('app/styles/*.less')
+  return gulp.src('app/styles/app.less')
       .pipe($.changed('styles', {extension: '.less'}))
       .pipe($.less())
       .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))

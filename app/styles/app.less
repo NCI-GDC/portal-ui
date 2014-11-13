@@ -1,67 +1,11 @@
-// angular cloak
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-  display: none !important;
-
-}
-
 // angular-ui-bootstrap fix
-.nav, .pagination, .carousel, a {
-  cursor: pointer;
-}
-
-/* UTILS */
-.no-padding-left {
-  padding-left: 0 !important;
-}
-
-.noscript {
-  padding-left: 15px;
-}
-
-.app-loading {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: #A90101;
-  z-index: 1000;
-}
-
-.app-loading i {
-  color: #fff;
-  z-index: 1010;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-top: -50px;
-  margin-left: -50px;
-  line-height: 100px;
-  text-align: center;
-  vertical-align: bottom;
-  height: 100px;
-  width: 100px;
-}
-
-.app-loading.ng-enter, .app-loading.ng-leave {
-  -webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-  transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-}
-
-.app-loading.ng-enter,
-.app-loading.ng-leave.ng-leave-active {
-  opacity: 0;
-}
-
-.app-loading.ng-leave,
-.app-loading.ng-enter.ng-enter-active {
-  opacity: 1;
-}
-
-// Styling override to prevent having an extra thick border on first row
-// when there is also a header
-.table-bordered > thead > tr > th,
-.table-bordered > thead > tr > td {
-  border-bottom-width: 1px;
-}
+@import "colours.less";
+@import "globals.less";
+@import "utils.less";
+@import "cart.less";
+@import "entities.less";
+@import "facets.less";
+@import "files.less";
+@import "pagination.less";
+@import "search.less";
 

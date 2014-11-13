@@ -1,10 +1,67 @@
 .entity {
+  @ENTITY_HEADER_HEIGHT: 65px;
 
   .entity-identifier {
     font-size: 25px;
     border: 1px solid black;
     border-radius: 2px;
     padding: 5px;
+  }
+
+  .hide-overflow {
+    overflow: hidden;
+  }
+
+  .entity-body {
+    padding: 0 15px;
+    border-top: 1px solid @lightgrey;
+    border-left: 1px solid @lightgrey;
+
+    &.scroll-fix-margin {
+      margin-top: @ENTITY_HEADER_HEIGHT;
+    }
+  }
+
+  > h1:first-child {
+    margin-top: -10px;
+    line-height: 1.8;
+    width: 100%;
+
+    padding-left: 15px;
+
+    &.ui-scroll-fix {
+      padding-top: 20px;
+      padding-bottom: 10px;
+      top: 0;
+      width: 100%;
+      background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.9);
+      border-bottom: 1px solid @lightgrey;
+    }
+  }
+
+  aside {
+    margin-top: 10px;
+
+    a {
+      -webkit-transition: color 0.2s ease;
+      -moz-transition: color 0.2s ease;
+      transition: color 0.2s ease;
+      text-decoration: none;
+      color: black;
+      font-size: 1.8rem;
+
+      &:hover {
+        color: #507EA5;
+      }
+    }
+
+    &.ui-scroll-fix {
+      margin-top: 24px;
+    }
+
+    > div.current > a {
+      color: #2A6496;
+    }
   }
 
 }

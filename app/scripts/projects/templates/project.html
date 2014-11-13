@@ -1,112 +1,136 @@
-<div class="container entity project">
-  <h1>
+<div class="container-fluid entity project no-padding-right" data-scroll-spy="">
+  <h1 data-scroll-fix=50>
     <span class="entity-identifier">Pr</span>
     {{ prc.project.code }}
-    <br>
   </h1>
 
-  <section class="project-section row">
-    <div class="col-lg-12 col-md-12">
-      <div class="row">
-        <div class="col-lg-6 col-md-6">
-          <h2 data-translate>Summary</h2>
-          <table class="table table-striped table-hover table-condensed table-bordered">
-            <tbody>
-            <tr>
-              <th scope="row" data-translate>Code</th>
-              <td>{{ prc.project.code }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Name</th>
-              <td>{{ prc.project.name }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Disease Type</th>
-              <td>{{ prc.project.diseaseType }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Program</th>
-              <td>{{ prc.project.program }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Sequencing Center</th>
-              <td> {{ prc.project.sequencingCenter }} </td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Status</th>
-              <td>{{ prc.project.status }}</td>
-            </tr>
-            <tr>
-              <th scope="row">
-                &#35;
-                 <span data-translate data-translate-comment="number of">of Participants</span>
-              </th>
-              <td>
-                <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project.summary.participantCount }}</a>
-              </td> <!-- is donors the same as participants? -->
-            </tr>
-            <tr>
-              <th scope="row">
-                &#35;
-                 <span data-translate data-translate-comment"number of">of data files</span>
-              </th>
-              <td>
-                <a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project.summary.fileCount }}</a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-
-          <h2>
-            Experimental Analysis
-          </h2>
-          <table class="table table-striped table-hover table-condensed table-bordered">
-            <thead>
-            <tr>
-              <th scope="col" data-translate>Analysis</th>
-              <th scope="col" data-translate>Participants</th>
-              <th scope="col" data-translate>Samples</th>
-              <th scope="col" data-translate>Files</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr data-ng-repeat="experiment in prc.project.summary.experimentalData">
-              <td>{{ experiment.experimentalType }}</td>
-              <td><a data-ui-sref="search.participants({{ prc.project.id }})">{{ experiment.participantCount }}</a></td>
-              <td>{{ experiment.sampleCount }}</td>
-              <td><a data-ui-sref="search.files({{ prc.project.id }})">{{ experiment.fileCount }}</a></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="col-lg-6 col-md-6">
-          <h2 data-translate>
-            Available Data
-          </h2>
-          <table class="table table-striped table-hover table-condensed table-bordered">
-            <thead>
-            <th scope="col" data-translate>Data Type</th>
-            <th scope="col" data-translate>Participants</th>
-            <th scope="col" data-translate>Files</th>
-            </thead>
-            <tbody>
-            <tr data-ng-repeat="(dataCategory, counts) in prc.project.summary.analyzedData">
-              <td>{{ dataCategory }}</td>
-              <td>
-                <a data-ui-sref="search.participants({{ prc.project.id }})">{{ counts.participantCount ?
-                  counts.participantCount : "-" }}</a>
-              </td>
-              <td>
-                <a data-ui-sref="search.files({{ prc.project.id }})">{{ counts.fileCount ? counts.fileCount : "-" }}</a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
+  <div class="col-lg-2 col-md-2">
+    <aside data-scroll-fix=50>
+      <div data-spy="summary" class="current">
+        <a data-scroll-to href="#summary" data-translate>Summary</a>
       </div>
+      <div data-spy="available-data">
+        <a data-scroll-to href="#available-data" data-translate>Available Data</a>
+      </div>
+      <div data-spy="reports">
+        <a data-scroll-to href="#reports" data-translate>Reports</a>
+      </div>
+    </aside>
+  </div>
 
-      <div class="row">
+  <div class="col-lg-10 col-md-10 no-padding-right hide-overflow">
+
+    <div class="entity-body">
+      <section class="row" id="summary">
+        <div class="col-lg-12 col-md-12">
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <div class="row">
+                <div class="col-lg-12 col-md-12">
+                  <h2 data-translate>Summary</h2>
+                  <table class="table table-striped table-hover table-condensed table-bordered">
+                    <tbody>
+                    <tr>
+                      <th scope="row" data-translate>Code</th>
+                      <td>{{ prc.project.code }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Name</th>
+                      <td>{{ prc.project.name }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Disease Type</th>
+                      <td>{{ prc.project.diseaseType }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Program</th>
+                      <td>{{ prc.project.program }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Sequencing Center</th>
+                      <td> {{ prc.project.sequencingCenter }} </td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Status</th>
+                      <td>{{ prc.project.status }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">
+                        &#35;
+                         <span data-translate data-translate-comment="number of">of Participants</span>
+                      </th>
+                      <td>
+                        <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project.summary.participantCount }}</a>
+                      </td> <!-- is donors the same as participants? -->
+                    </tr>
+                    <tr>
+                      <th scope="row">
+                        &#35;
+                         <span data-translate data-translate-comment"number of">of data files</span>
+                      </th>
+                      <td>
+                        <a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project.summary.fileCount }}</a>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="row" id="available-data">
+                <div class="col-lg-12 col-md-12">
+                  <h2 data-translate>
+                    Available Data
+                  </h2>
+                  <table class="table table-striped table-hover table-condensed table-bordered">
+                    <thead>
+                    <th scope="col" data-translate>Data Type</th>
+                    <th scope="col" data-translate>Participants</th>
+                    <th scope="col" data-translate>Files</th>
+                    </thead>
+                    <tbody>
+                    <tr data-ng-repeat="(dataCategory, counts) in prc.project.summary.analyzedData">
+                      <td>{{ dataCategory }}</td>
+                      <td>
+                        <a data-ui-sref="search.participants({{ prc.project.id }})">{{ counts.participantCount ?
+                          counts.participantCount : "-" }}</a>
+                      </td>
+                      <td>
+                        <a data-ui-sref="search.files({{ prc.project.id }})">{{ counts.fileCount ? counts.fileCount : "-" }}</a>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <h2>
+                Experimental Analysis
+              </h2>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
+                  <th scope="col" data-translate>Analysis</th>
+                  <th scope="col" data-translate>Participants</th>
+                  <th scope="col" data-translate>Samples</th>
+                  <th scope="col" data-translate>Files</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="experiment in prc.project.summary.experimentalData">
+                  <td>{{ experiment.experimentalType }}</td>
+                  <td><a data-ui-sref="search.participants({{ prc.project.id }})">{{ experiment.participantCount }}</a></td>
+                  <td>{{ experiment.sampleCount }}</td>
+                  <td><a data-ui-sref="search.files({{ prc.project.id }})">{{ experiment.fileCount }}</a></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="row" id="reports">
         <div class="col-lg-12 col-md-12">
           <h2>
             <span data-translate>Reports</span>
@@ -115,11 +139,6 @@
               <span class="caret"></span>
             </button>
           </h2>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-lg-12 col-md-12">
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
             <tr>
@@ -139,7 +158,7 @@
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
     </div>
-  </section>
+  </div>
 </div>

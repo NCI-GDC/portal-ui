@@ -229,9 +229,15 @@ router.get('/projects', function (req, res) {
   res.json(projects);
 });
 router.get('/projects/:id', function (req, res) {
-  res.json(_.find(projects.hits, function (obj) {
+  var project = _.find(projects.hits, function (obj) {
     return obj.id === req.params.id;
-  }));
+  });
+
+  if (!project) {
+    return res.send(404);
+  }
+
+  res.json(project);
 });
 
 // Annotations
@@ -265,9 +271,15 @@ router.get('/annotations', function (req, res) {
 });
 router.get('/annotations/:id', function (req, res) {
   var id = parseInt(req.params.id);
-  res.json(_.find(annotations.hits, function (obj) {
+  var annotation = _.find(annotations.hits, function (obj) {
     return obj.id === id;
-  }));
+  });
+
+  if (!annotation) {
+    return res.send(404);
+  }
+
+  res.json(annotation);
 });
 
 function createAnnotations(count) {
@@ -531,9 +543,15 @@ router.get('/participants', function (req, res) {
   res.json(response);
 });
 router.get('/participants/:id', function (req, res) {
-  res.json(_.find(participants.hits, function (obj) {
+  var participant = _.find(participants.hits, function (obj) {
     return obj.id === req.params.id;
-  }));
+  });
+
+  if (!participant) {
+    return res.send(404);
+  }
+
+  res.json(participant);
 });
 
 // Files
@@ -786,9 +804,15 @@ router.post('/files', function (req, res) {
 });
 
 router.get('/files/:id', function (req, res) {
-  res.json(_.find(files.hits, function (obj) {
+  var file = _.find(files.hits, function (obj) {
     return obj.id === req.params.id;
-  }));
+  });
+
+  if (!file) {
+    return res.send(404);
+  }
+
+  res.json(file);
 });
 
 // REGISTER OUR ROUTES -------------------------------

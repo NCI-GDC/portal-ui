@@ -1,21 +1,32 @@
 <div class="facet-group">
-  <label class="facet-name" data-ng-click="collapsed = !collapsed">
+  <div class="facet-name" data-ng-click="toggle($event, 'collapsed')"
+                          data-ng-keypress="toggle($event, 'collapsed')"
+                          aria-collapsed="{{ collapsed }}"
+                          aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
+                          role="button">
     <span class="fa" data-ng-class="{ 'fa-chevron-down': !collapsed, 'fa-chevron-right': collapsed }"></span>
     {{ facet.value | translate }}
-  </label>
+  </div>
   <div class="facet-term-group" data-ng-show="!collapsed">
     <div data-ng-repeat="term in facet.terms">
-      <div class="term-wrapper" data-ng-hide="$index > (displayCount - 1) && !expanded">
-        <label class="facet-term"><input type="checkbox" data-ng-click="toggleTerm($event)" />
+      <div class="term-wrapper"
+           data-ng-hide="$index > (displayCount - 1) && !expanded">
+        <label class="facet-term">
+          <input type="checkbox" data-ng-click="toggleTerm($event)"
+                 aria-controls="data-table"
+                 aria-checked="false"/>
           <span>{{ term | translate }}</span>
         </label>
       </div>
     </div>
 
     <span class="show-more-terms" data-ng-if="facet.terms.length > displayCount"
-          data-ng-click="toggle()">
-      <span data-ng-show="!expanded">{{ facet.terms.length - displayCount }} More...</span>
-      <span data-ng-show="expanded">Less...</span>
+          data-ng-click="toggle($event, 'expanded')"
+          data-ng-keypress="toggle($event, 'expanded')"
+          aria-label="Expanded Terms Toggle"
+          role="button">
+      <span data-ng-show="!$parent.expanded">{{ facet.terms.length - displayCount }} More...</span>
+      <span data-ng-show="$parent.expanded">Less...</span>
     </span>
   </div>
 </div>

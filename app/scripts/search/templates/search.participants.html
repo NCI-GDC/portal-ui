@@ -1,12 +1,10 @@
-<h4 class="clearfix">
-  <span data-translate>Participants</span>
-  <span class="pull-right">
-    <select-columns></select-columns>
-    <export-table></export-table>
-  </span>
-</h4>
+<div class="pull-right table-actions">
+  <select-columns></select-columns>
+  <export-table></export-table>
+</div>
 
-<table class="table table-striped table-hover table-condensed table-bordered">
+<table id="data-table" class="table table-striped table-hover table-condensed table-bordered">
+  <caption class="h4" data-translate>Participants</caption>
   <thead>
   <tr>
     <th scope="col"></th>
@@ -23,21 +21,25 @@
   <tr data-ng-repeat="p in sc.participants.hits track by p.id">
     <td style="width: 35px;">
       <div class="btn-group pull-right" dropdown>
-        <button type="button" class="btn btn-default action-button dropdown-toggle">
+        <button type="button"
+                class="btn btn-default action-button dropdown-toggle"
+                aria-label="Participant Actions">
           A
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li>
-            <a data-ng-click="sc.CartService.addFiles(sc.files.hits)">
-              <i class="fa fa-download"></i>
-              <span data-translate>Add filtered files to Cart</span> (145)
-            </a>
+          <li data-ng-click="sc.CartService.addFiles(sc.files.hits)"
+              data-ng-keypress="sc.addFilesKeyPress($event)"
+              aria-label="{{ 'Add filtered files to Cart' | translate }}"
+              role="button">
+            <i class="fa fa-download"></i>
+            <span data-translate>Add filtered files to Cart</span> (145)
           </li>
-          <li>
-            <a data-ng-click="sc.CartService.addAllFiles()">
-              <i class="fa fa-download"></i>
-              <span data-translate>Add all files to Cart</span> (231)
-            </a>
+          <li data-ng-click="sc.CartService.addAllFiles()"
+              data-ng-keypress="sc.addFilesKeyPress($event, 'all')"
+              aria-label="{{ 'Add all files to Cart' | translate }}"
+              role="button">
+            <i class="fa fa-download"></i>
+            <span data-translate>Add all files to Cart</span> (231)
           </li>
         </ul>
       </div>
@@ -69,12 +71,30 @@
         {{ sc.participants.pagination.count }} <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
-        <li ng-click="sc.searchQuery(10)">10</li>
-        <li ng-click="sc.searchQuery(20)">20</li>
-        <li ng-click="sc.searchQuery(40)">40</li>
-        <li ng-click="sc.searchQuery(60)">60</li>
-        <li ng-click="sc.searchQuery(80)">80</li>
-        <li ng-click="sc.searchQuery(100)">100</li>
+        <li data-ng-click="sc.searchQuery($event, 10)"
+            data-ng-keypress="sc.searchQuery($event, 10)"
+            role="button"
+            aria-label="Data Sample Size">10</li>
+        <li data-ng-click="sc.searchQuery($event, 20)"
+            data-ng-keypress="sc.searchQuery($event, 20)"
+            role="button"
+            aria-label="Data Sample Size">20</li>
+        <li data-ng-click="sc.searchQuery($event, 40)"
+            data-ng-keypress="sc.searchQuery($event, 40)"
+            role="button"
+            aria-label="Data Sample Size">40</li>
+        <li data-ng-click="sc.searchQuery($event, 60)"
+            data-ng-keypress="sc.searchQuery($event, 60)"
+            role="button"
+            aria-label="Data Sample Size">60</li>
+        <li data-ng-click="sc.searchQuery($event, 80)"
+            data-ng-keypress="sc.searchQuery($event, 80)"
+            role="button"
+            aria-label="Data Sample Size">80</li>
+        <li data-ng-click="sc.searchQuery($event, 100)"
+            data-ng-keypress="sc.searchQuery($event, 100)"
+            role="button"
+            aria-label="Data Sample Size">100</li>
       </ul>
     </div>
     <span data-translate>entries</span>

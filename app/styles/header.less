@@ -11,7 +11,19 @@
   }
 }
 
-#gdc-header.navbar-static-top {
-  z-index: auto;
+#gdc-header {
+
+  &.navbar-static-top {
+    z-index: auto;
+  }
+
+  a.skip-to-content {
+    position: absolute;
+    left: -140px;
+
+    &:focus {
+      left: 0;
+    }
+  }
 }
 

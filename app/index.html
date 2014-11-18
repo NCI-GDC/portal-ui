@@ -35,7 +35,7 @@
 
 <body>
 
-<div id="wrapper">
+<div id="wrapper" aria-busy="true" aria-live="assertive">
   <div data-ng-if="!loaded" class="app-loading">
     <i class="fa fa-circle-o-notch fa-spin fa-5x"></i>
   </div>
@@ -88,11 +88,11 @@
     </div>
   </noscript>
 
-  <div id="body" data-ui-view></div>
+  <div id="body" data-ui-view role="main"></div>
 
   <!-- NCI Footer -->
   <footer id="footer">
-    <div class="container">
+    <div class="container" role="contentinfo">
       <div>
         <a data-ui-sref="home">Site Home</a>
          | <a href="http://www.cancer.gov/global/web/policies">Policies</a>
@@ -133,6 +133,7 @@
 <script src="/libs/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js"></script>
 <script src="/libs/restangular/dist/restangular.js"></script>
 <script src="/libs/angular-gettext/dist/angular-gettext.js"></script>
+<script src="/libs/angular-aria/angular-aria.js"></script>
 <!-- endbuild -->
 
 <!-- App -->

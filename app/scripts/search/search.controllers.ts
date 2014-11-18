@@ -16,11 +16,15 @@ module ngApp.search.controllers {
     CartService: ICartService;
     participantAccordian: boolean;
     participantBioAccordian: boolean;
+    query: string;
+    searchQuery(event: any, size: number): void;
+    addFilesKeyPress(event: any, type: string): void;
   }
 
   class SearchController implements ISearchController {
     participantAccordian: boolean = true;
     participantBioAccordian: boolean = true;
+    query: string = "";
 
     /* @ngInject */
     constructor(private $state: ng.ui.IStateService,
@@ -40,6 +44,22 @@ module ngApp.search.controllers {
       // will cause this to fire.
       if (tab && this.$state.current.name.match("search.")) {
         this.$state.go("search." + tab, {}, { inherit: true });
+      }
+    }
+
+    addFilesKeyPress(event: any, type: string) {
+      if (event.which === 13) {
+        if (type === "all") {
+          this.CartService.addAllFiles();
+        } else {
+          this.CartService.addFiles(this.files.hits)
+        }
+      }
+    }
+
+    searchQuery(event: any, size: number): void {
+      if (event.which === 1 || event.which === 13) {
+        console.log("Click event or enter key pressed");
       }
     }
 

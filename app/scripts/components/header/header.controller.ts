@@ -5,7 +5,7 @@ module ngApp.components.header.controllers {
   export interface IHeaderController {
     isCollapsed: boolean;
     toggleCollapsed(): void;
-    collapse(): void;
+    collapse(event: any): void;
     currentLang: string;
     languages: any;
     setLanguage(): void;
@@ -25,8 +25,10 @@ module ngApp.components.header.controllers {
     constructor(private gettextCatalog, private CartService: ICartService) {
     }
 
-    collapse(): void {
-      this.isCollapsed = true;
+    collapse(event: any): void {
+      if (event.which === 1 || event.which === 13) {
+        this.isCollapsed = true;
+      }
     }
 
     toggleCollapsed(): void {

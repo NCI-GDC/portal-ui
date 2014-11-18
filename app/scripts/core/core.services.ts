@@ -7,6 +7,9 @@ module ngApp.core.services {
   class CoreService implements ICoreService {
     /* @ngInject */
     constructor(private $rootScope: ngApp.IRootScope, private gettextCatalog) {
+      var wrapper = angular.element(document.getElementById("wrapper"));
+
+      wrapper.attr("aria-busy", false);
       this.$rootScope.loaded = true;
     }
 

@@ -27,6 +27,7 @@ function appRun(gettextCatalog, Restangular: restangular.IProvider, $state: ng.u
 angular
     .module("ngApp", [
       "ngAnimate",
+      "ngAria",
       "ui.router.state",
       "ui.bootstrap",
       "restangular",

@@ -3,11 +3,11 @@ module ngApp.components.facets.directives {
 
   interface IFacetScope extends ng.IScope {
     toggleTerm(clickEvent: any): void;
-    toggle(): void;
     facet: IFacet;
     collapsed: boolean;
     expanded: boolean;
     displayCount: number;
+    toggle(event: any, property: string): void;
   }
 
   interface IFacetAttributes extends ng.IAttributes {
@@ -36,11 +36,17 @@ module ngApp.components.facets.directives {
         return {
           post: function($scope: IFacetScope) {
             $scope.toggleTerm = function (clickEvent: any) {
-              console.log(clickEvent);
+              angular.element(clickEvent.target).attr("aria-checked", clickEvent.target.checked);
             };
 
-            $scope.toggle = function() {
-              $scope.expanded = !$scope.expanded;
+            $scope.toggle = function(event: any, property: string) {
+              if (event.which === 1 || event.which === 13) {
+                $scope[property] = !$scope[property];
+              }
+
+              if (property === "collapsed") {
+                element.find("div.facet-name").attr("aria-collapsed", $scope.collapsed);
+              }
             };
           }
         };

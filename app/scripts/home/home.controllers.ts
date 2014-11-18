@@ -1,4 +1,6 @@
 module ngApp.home.controllers {
+  import ICoreService = ngApp.core.services.ICoreService;
+
   export interface IHomeController {
   }
 

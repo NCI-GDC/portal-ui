@@ -6,17 +6,19 @@ module ngApp.core.services {
 
   class CoreService implements ICoreService {
     /* @ngInject */
-    constructor(private $rootScope: ngApp.IRootScope) {
-      this.$rootScope.loaded = true
+    constructor(private $rootScope: ngApp.IRootScope, private gettextCatalog) {
+      this.$rootScope.loaded = true;
     }
 
     setPageTitle(title: string): void {
-      this.$rootScope.pageTitle = title;
+      this.$rootScope.pageTitle = this.gettextCatalog.getString(title);
     }
   }
 
   angular
-      .module("core.services", [])
+      .module("core.services", [
+        "gettext"
+      ])
       .service("CoreService", CoreService);
 }
 

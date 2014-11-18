@@ -35,14 +35,14 @@ module ngApp.cart.controllers {
     }
 
     handleRemoveByIds(): void {
-      var ids : string[] = _.pluck(_.filter(this.files.hits, (hit : IFile) : boolean => {
-        return hit.selected == true;
-      }), 'id');
+      var ids : string[] = _.pluck(_.filter(this.files.hits, (hit: IFile): boolean => {
+        return hit.selected;
+      }), "id");
       this.CartService.remove(ids);
     }
 
     toggleSelectAll(e: any): void {
-      this.files.hits.forEach((file:IFile):void => {
+      this.files.hits.forEach((file: IFile): void => {
         file.selected = e.target.checked;
       });
     }

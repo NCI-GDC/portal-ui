@@ -12,19 +12,15 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    RestangularProvider: restangular.IProvider) {
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/404");
-  $stateProvider.state("404", {
-    url: "/404",
-    templateUrl: "core/templates/404.html"
-  });
   RestangularProvider.setBaseUrl("http://localhost:3001/api");
 }
 
 /* @ngInject */
-function appRun(gettextCatalog, Restangular: restangular.IService, $state: ng.ui.IStateService) {
+function appRun(gettextCatalog, Restangular: restangular.IProvider, $state: ng.ui.IStateService) {
   gettextCatalog.debug = true;
 
   Restangular.setErrorInterceptor((response) => {
-    $state.go("404");
+    $state.go("404", {}, { inherit: true });
   });
 }
 
@@ -45,6 +41,7 @@ angular
       "ngApp.projects",
       "ngApp.components",
       "ngApp.cart",
+      "ngApp.notFound",
       "templates"
     ])
     .config(appConfig)

@@ -58,6 +58,7 @@ angular
       "ngApp.components",
       "ngApp.cart",
       "ngApp.notFound",
+      "ngApp.reports",
       "templates"
     ])
     .config(appConfig)

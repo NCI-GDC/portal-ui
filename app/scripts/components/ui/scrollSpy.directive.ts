@@ -16,9 +16,8 @@ module ngApp.components.ui.scrollSpy {
         };
       },
       link: function ($scope: IScrollSpyScope, elem: ng.IAugmentedJQuery) {
-        var spyElems, w;
+        var w;
 
-        spyElems = [];
         w = $window.jQuery($window);
 
         function scrl() {
@@ -30,7 +29,7 @@ module ngApp.components.ui.scrollSpy {
             spy = _ref[_i];
             spy.out();
 
-            pos = pos = spyElems[spy.id].offset().top + 100;
+            pos = pos = elem.find("#" + spy.id).offset().top + 100;
             if (((pos - $window.scrollY) <= 65) ||
                 (pos > $window.scrollY && pos < ($window.innerHeight + $window.scrollY))) {
               spy.pos = pos;
@@ -49,20 +48,6 @@ module ngApp.components.ui.scrollSpy {
 
           return highlightSpy ? highlightSpy["in"]() : $scope.spies[0]["in"]();
         }
-
-        $scope.$watch("spies", function (spies) {
-          var spy, _i, _len, _results;
-          _results = [];
-          for (_i = 0, _len = spies.length; _i < _len; _i++) {
-            spy = spies[_i];
-            if (!spyElems[spy.id]) {
-            _results.push(spyElems[spy.id] = elem.find("#" + spy.id));
-            } else {
-              _results.push(void 0);
-            }
-          }
-          return _results;
-        });
 
         w.on("scroll", scrl);
         $scope.$on("$destroy", function () {

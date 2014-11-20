@@ -21,7 +21,7 @@ module ngApp.participants.controllers {
   class ParticipantController implements IParticipantController {
     /* @ngInject */
     constructor(public participant: IParticipant, private CoreService: ICoreService) {
-      CoreService.setPageTitle("Participant " + participant.id);
+      CoreService.setPageTitle("Participant", participant.id);
     }
   }
 

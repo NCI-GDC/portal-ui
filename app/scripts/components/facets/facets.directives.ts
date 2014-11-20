@@ -26,9 +26,9 @@ module ngApp.components.facets.directives {
         expanded: "@",
         displayCount: "@"
       },
-      replace: true,
       templateUrl: "components/facets/templates/facet.html",
       compile: function(element: ng.IAugmentedJQuery, attrs: IFacetAttributes) {
+        element.addClass("facet-element");
         attrs.collapsed = !!attrs.collapsed;
         attrs.displayCount = attrs.displayCount || 5;
         attrs.expanded = !!attrs.expanded;
@@ -57,12 +57,14 @@ module ngApp.components.facets.directives {
   function FacetsFreeText(): ng.IDirective {
     return {
       restrict: "EA",
-      replace: true,
       scope: {
         header: "@",
         placeholder: "@"
       },
-      templateUrl: "components/facets/templates/facets-free-text.html"
+      templateUrl: "components/facets/templates/facets-free-text.html",
+      compile: function(element: ng.IAugmentedJQuery) {
+        element.addClass("facet-element");
+      }
     };
   }
 

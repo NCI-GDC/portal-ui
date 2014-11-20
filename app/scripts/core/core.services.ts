@@ -1,7 +1,7 @@
 module ngApp.core.services {
 
   export interface ICoreService {
-    setPageTitle(title: string): void;
+    setPageTitle(title: string, id?: any): void;
     setLoadedState(state: boolean): void;
   }
 
@@ -19,8 +19,10 @@ module ngApp.core.services {
       this.$rootScope.loaded = state;
     }
 
-    setPageTitle(title: string): void {
-      this.$rootScope.pageTitle = this.gettextCatalog.getString(title);
+    setPageTitle(title: string, id?: any): void {
+      var formattedTitle: string = this.gettextCatalog.getString(title);
+      formattedTitle = id ? formattedTitle + " - " + id : formattedTitle; 
+      this.$rootScope.pageTitle = formattedTitle;
     }
   }
 

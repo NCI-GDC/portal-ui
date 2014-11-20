@@ -328,7 +328,7 @@ gulp.task('serve:web', function (cb) {
 
   if (!production) {
     gulp.watch(['app/**/*.html'], ['html', reload]);
-    gulp.watch(['app/styles/**/*.{less,css}'], ['styles', reload]);
+    gulp.watch(['app/**/*.{less,css}'], ['styles', reload]);
     gulp.watch(['app/scripts/**/*.ts'], ['ts:lint', 'ts:compile', reload]);
     gulp.watch(['app/scripts/**/*.html'], ['ng:templates', reload]);
     gulp.watch(['app/images/**/*'], ['images', reload]);

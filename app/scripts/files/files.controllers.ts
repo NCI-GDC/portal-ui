@@ -21,7 +21,7 @@ module ngApp.files.controllers {
   class FileController implements IFileController {
     /* @ngInject */
     constructor(public file: IFile, private CoreService: ICoreService, private CartService: ICartService) {
-      CoreService.setPageTitle("File " + file.filename);
+      CoreService.setPageTitle("File", file.filename);
     }
 
     handleAddClick(file: IFile) {

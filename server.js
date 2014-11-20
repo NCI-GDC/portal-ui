@@ -26,10 +26,291 @@ router.all('*', function (req, res, next) {
   next();
 });
 
-
 // test route to make sure everything is working (accessed at GET http://localhost:3001/api)
 router.get('/', function (req, res) {
   res.json({ message: 'hooray! welcome to our api!' });
+});
+
+var reports = {
+  pagination: {"count": 20, "total": 50, "size": 0, "from": 1, "page": 1, "pages": 50, "sort": "totalDonorCount", "order": "desc"},
+  hits: [
+    {
+      id: "R1",
+      name: "Most Requested",
+      charts: [
+        {
+          type: "bar-chart",
+          heading: "Most Requested Platform Types",
+          yLabel: "# Requests",
+          id: uuid.v4(),
+          data: [
+            {
+              x: "BAM-file Relationship",
+              y: 45000
+            },
+            {
+              x: "CNV (CN Array)",
+              y: 90340
+            },
+            {
+              x: "CNV (Low Pass DNASeq)",
+              y: 2345
+            },
+            {
+              x: "CNV (SNP Array)",
+              y: 112456
+            },
+            {
+              x: "Complete Clinical Set",
+              y: 10
+            },
+            {
+              x: "DNA Methylation",
+              y: 118234
+            },
+            {
+              x: "Expression-Exon",
+              y: 128234
+            },
+            {
+              x: "Expression-Genes",
+              y: 185678
+            },
+            {
+              x: "Expression-Protein",
+              y: 6748
+            },
+            {
+              x: "Expression-miRNA",
+              y: 84567
+            },
+            {
+              x: "Fragment Analysis Results",
+              y: 48
+            },
+            {
+              x: "Methylation - Bisulfate Sequencing",
+              y: 3897
+            },
+            {
+              x: "Minimal Clinical Set",
+              y: 13
+            },
+            {
+              x: "Protected Mutations",
+              y: 21345
+            },
+            {
+              x: "Quantification-miRNA",
+              y: 5
+            },
+            {
+              x: "Quantification-miRNA Isoform",
+              y: 6
+            },
+            {
+              x: "RNASeq",
+              y: 82548
+            },
+            {
+              x: "RNASeqV2",
+              y: 110213
+            },
+            {
+              x: "SNP Copy Number Results",
+              y: 1200
+            },
+            {
+              x: "SNP Frequencies",
+              y: 1200
+            },
+            {
+              x: "Sequencing Trace",
+              y: 1200
+            },
+            {
+              x: "Short-Read Relationship",
+              y: 51340
+            },
+            {
+              x: "Somatic Mutations",
+              y: 114532
+            },
+            {
+              x: "Tissue Slide Images",
+              y: 47123
+            },
+            {
+              x: "TotalRNASeqV2",
+              y: 873
+            },
+            {
+              x: "Trace-Sample Relationship",
+              y: 69342
+            },
+            {
+              x: "miRNASeq",
+              y: 33862
+            }
+          ]
+        },
+        {
+          type: "bar-chart",
+          heading: "Most Requested Batches",
+          yLabel: "# Requests",
+          id: uuid.v4(),
+          xLabelPrefix: "Batch",
+          data: []
+        }
+      ]
+    },
+    {
+      id: "R2",
+      name: "Most Requested",
+      charts: [
+        {
+          type: "bar-chart",
+          heading: "Most Requested Platform Types",
+          yLabel: "# Requests",
+          id: uuid.v4(),
+          data: [
+            {
+              x: "BAM-file Relationship",
+              y: 45000
+            },
+            {
+              x: "CNV (CN Array)",
+              y: 90340
+            },
+            {
+              x: "CNV (Low Pass DNASeq)",
+              y: 2345
+            },
+            {
+              x: "CNV (SNP Array)",
+              y: 112456
+            },
+            {
+              x: "Complete Clinical Set",
+              y: 10
+            },
+            {
+              x: "DNA Methylation",
+              y: 118234
+            },
+            {
+              x: "Expression-Exon",
+              y: 128234
+            },
+            {
+              x: "Expression-Genes",
+              y: 185678
+            },
+            {
+              x: "Expression-Protein",
+              y: 6748
+            },
+            {
+              x: "Expression-miRNA",
+              y: 84567
+            },
+            {
+              x: "Fragment Analysis Results",
+              y: 48
+            },
+            {
+              x: "Methylation - Bisulfate Sequencing",
+              y: 3897
+            },
+            {
+              x: "Minimal Clinical Set",
+              y: 13
+            },
+            {
+              x: "Protected Mutations",
+              y: 21345
+            },
+            {
+              x: "Quantification-miRNA",
+              y: 5
+            },
+            {
+              x: "Quantification-miRNA Isoform",
+              y: 6
+            },
+            {
+              x: "RNASeq",
+              y: 82548
+            },
+            {
+              x: "RNASeqV2",
+              y: 110213
+            },
+            {
+              x: "SNP Copy Number Results",
+              y: 1200
+            },
+            {
+              x: "SNP Frequencies",
+              y: 1200
+            },
+            {
+              x: "Sequencing Trace",
+              y: 1200
+            },
+            {
+              x: "Short-Read Relationship",
+              y: 51340
+            },
+            {
+              x: "Somatic Mutations",
+              y: 114532
+            },
+            {
+              x: "Tissue Slide Images",
+              y: 47123
+            },
+            {
+              x: "TotalRNASeqV2",
+              y: 873
+            },
+            {
+              x: "Trace-Sample Relationship",
+              y: 69342
+            },
+            {
+              x: "miRNASeq",
+              y: 33862
+            }
+          ]
+        },
+      ]
+    }
+  ]
+};
+
+// Generate Random date for the Most Requested Batches
+for (var i = 1; i <= 150; i++) {
+  reports.hits[0].charts[1].data.push({
+    x: i,
+    y: Math.max(20, Math.round(Math.random() * 4500))
+  });
+}
+
+router.get('/reports', function (req, res) {
+  res.json(reports);
+});
+
+router.get('/reports/:id', function (req, res) {
+  var report = _.find(reports.hits, function (obj) {
+    return obj.id === req.params.id;
+  });
+
+  if (!report) {
+    return res.send(404);
+  }
+
+  res.json(report);
 });
 
 // more routes for our API will happen here

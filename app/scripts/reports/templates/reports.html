@@ -1,3 +1,10 @@
-<div class="container-fluid">
+<div class="container">
   <h1 data-translate>Reports</h1>
+  <div class="row">
+    <div class="col-lg-12 col-md-12">
+      <div data-ng-repeat="r in rsc.reports.hits track by r.id">
+        <a data-ui-sref="report({ reportId : r.id })">{{ r.id }} - {{ r.name }}</a>
+      </div>
+    </div>
+  </div>
 </div>

@@ -21,7 +21,7 @@ module ngApp.projects.controllers {
   class ProjectController implements IProjectController {
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService) {
-      CoreService.setPageTitle("Project " + project.code);
+      CoreService.setPageTitle("Project", project.code);
     }
   }
 

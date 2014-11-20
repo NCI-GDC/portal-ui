@@ -8,5 +8,6 @@ angular
       "components.datefilter",
       "components.facets",
       "components.tables",
-      "components.ui"
+      "components.ui",
+      "components.charts"
     ]);

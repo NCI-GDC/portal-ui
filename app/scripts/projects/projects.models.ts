@@ -20,14 +20,10 @@ module ngApp.projects.models {
   }
 
   export interface IProject extends IEntity {
-    id: string;
-    name: string;
-    code: string;
+    project_name: string;
+    project_code: string;
     program: string;
     status: string;
     summary: ISummary;
-    diseaseType: string;
-    sequencingCenter: string;
-    reports: any;
   }
 }

@@ -1,7 +1,7 @@
 <div class="container-fluid entity participant no-padding-right" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <span class="entity-identifier">Pa</span>
-    {{ pc.participant.code }}
+    {{ pc.participant.bcr_patient_barcode }}
   </h1>
 
   <div class="col-lg-2 col-md-2">
@@ -30,33 +30,33 @@
                 <tbody>
                 <tr>
                   <th scope="row" data-translate>Code</th>
-                  <td>{{ pc.participant.code }}</td>
+                  <td>{{ ::pc.participant.bcr_patient_barcode }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>UUID</th>
-                  <td>{{ pc.participant.uuid }}</td>
+                  <td>{{ ::pc.participant.bcr_patient_uuid }}</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-translate>Participant Number</th>
-                  <td>{{ pc.participant.number }}</td>
+                  <th scope="row" data-translate>Participant ID</th>
+                  <td>{{ ::pc.participant.patient_id }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Disease Type</th>
-                  <td>{{ pc.participant.diseaseType }}</td>
+                  <td>??? {{ ::pc.participant.diseaseType }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Program</th>
-                  <td>{{ pc.participant.program }}</td>
+                  <td>??? {{ ::pc.participant.program }}</td>
                 </tr>
                 <tr>
-                  <th scope="row" data-translate>Status</th>
-                  <td>{{ pc.participant.status }}</td>
+                  <th scope="row" data-translate>Vital Status</th>
+                  <td>{{ ::pc.participant.vital_status }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Number of Data Files</th>
                   <td>
                     <a data-ui-sref="search.files">
-                      {{ pc.participant.files.length }}
+                      ??? {{ ::pc.participant.files.length }}
                     </a>
                   </td>
                 </tr>
@@ -64,7 +64,7 @@
                   <th scope="row" data-translate>Number of Annotations</th>
                   <td>
                     <a data-ui-sref="search.files">
-                      {{ pc.participant.annotations.length }}
+                      ??? {{ ::pc.participant.annotations.length }}
                     </a>
                   </td>
                 </tr>
@@ -85,11 +85,11 @@
                 </thead>
                 <tbody>
                 <tr data-ng-repeat="experiment in pc.participant.experiments">
-                  <td>{{ experiment.name }}</td>
-                  <td>{{ experiment.samples }}</td>
+                  <td>??? {{ ::experiment.name }}</td>
+                  <td>??? {{ ::experiment.samples }}</td>
                   <td>
                     <a data-ui-sref="search.files">
-                      {{ experiment.files }}
+                      ??? {{ ::experiment.files }}
                     </a>
                   </td>
                 </tr>
@@ -126,15 +126,15 @@
             <tbody>
             <tr>
               <th scope="row" data-translate>Gender</th>
-              <td>{{ pc.participant.gender }}</td>
+              <td>{{ ::pc.participant.gender }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Vital Status</th>
-              <td>{{ pc.participant.vitalStatus }}</td>
+              <td>{{ ::pc.participant.vital_status }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Key</th>
-              <td>{{ pc.participant.key }}</td>
+              <td>??? {{ pc.participant.key }}</td>
             </tr>
             </tbody>
           </table>
@@ -165,14 +165,14 @@
             <tbody>
             <tr data-ng-repeat="a in pc.participant.annotations track by a.id">
               <td><a data-ui-sref="annotation({ annotationId : a.id })">{{ a.id }}</a></td>
-              <td>{{ a.type }}</td>
-              <td>{{ a.item }}</td>
-              <td>{{ a.classification }}</td>
-              <td>{{ a.category }}</td>
-              <td>{{ a.annotation }}</td>
-              <td>{{ a.createdBy }}</td>
-              <td>{{ a.dateCreated | date }}</td>
-              <td>{{ a.status }}</td>
+              <td>??? {{ ::a.type }}</td>
+              <td>??? {{ ::a.item }}</td>
+              <td>??? {{ ::a.classification }}</td>
+              <td>??? {{ ::a.category }}</td>
+              <td>??? {{ ::a.annotation }}</td>
+              <td>??? {{ ::a.createdBy }}</td>
+              <td>??? {{ ::a.dateCreated | date }}</td>
+              <td>??? {{ ::a.status }}</td>
             </tr>
             </tbody>
           </table>

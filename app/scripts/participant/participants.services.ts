@@ -17,13 +17,13 @@ module ngApp.participants.services {
 
     getParticipant(id: string, params: Object = {}): ng.IPromise<IParticipant> {
       return this.ds.get(id, params).then((response): IParticipant => {
-        return response;
+        return response["data"];
       });
     }
 
     getParticipants(params: Object = {}): ng.IPromise<IParticipants> {
       return this.ds.get("", params).then((response): IParticipants => {
-        return response;
+        return response["data"];
       });
     }
   }

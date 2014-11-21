@@ -12,7 +12,18 @@ module ngApp.projects {
       templateUrl: "projects/templates/projects.html",
       resolve: {
         projects: (ProjectsService: IProjectsService) => {
-          return ProjectsService.getProjects();
+          return ProjectsService.getProjects({ fields: [
+              "project_uuid",
+              "project_name",
+              "status",
+              "program",
+              "project_code",
+              "_summary._participant_count",
+              "_summary._analyzed_data.data_type",
+              "_summary._analyzed_data._participant_count",
+              "_summary._analyzed_data._file_count"
+              ]
+          });
         }
       }
     });

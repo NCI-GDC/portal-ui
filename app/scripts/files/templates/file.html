@@ -1,7 +1,7 @@
 <div class="container-fluid entity file no-padding-right" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <span class="entity-identifier">F</span>
-    {{ fc.file.filename }}
+    {{ ::fc.file.file_name }}
   </h1>
 
   <div class="col-lg-2 col-md-2">
@@ -40,57 +40,57 @@
                 <tbody>
                 <tr>
                   <th scope="row" data-translate>File Name</th>
-                  <td>{{ fc.file.filename }}</td>
+                  <td>{{ ::fc.file.file_name }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>File Access</th>
                   <td>
-                    <i data-ng-if="!fc.file.access" class="fa fa-lock"></i>
-                    <i data-ng-if="fc.file.access" class="fa fa-unlock-alt"></i>
-                    <span data-ng-if="fc.file.access" data-translate>Public</span>
-                    <span data-ng-if="!fc.file.access" data-translate>Protected</span>
+                    <i data-ng-if="!fc.file.data_access" class="fa fa-lock"></i>
+                    <i data-ng-if="fc.file.data_access" class="fa fa-unlock-alt"></i>
+                    <span data-ng-if="fc.file.data_access" data-translate>Public</span>
+                    <span data-ng-if="!fc.file.data_access" data-translate>Protected</span>
                   </td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>UUID</th>
-                  <td>{{ fc.file.uuid }}</td>
+                  <td>{{ ::fc.file.file_uuid }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Barcode</th>
-                  <td>{{ fc.file.barcode }}</td>
+                  <td>{{ ::fc.file._aliquot_barcode }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Data format</th>
-                  <td>{{ fc.file.format }}</td>
+                  <td>??? {{ ::fc.file.data_format }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>File Size</th>
-                  <td>{{ fc.file.size }} GB</td>
+                  <td>{{ ::fc.file.file_size }} GB (units???)</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Checksum</th>
-                  <td>{{ fc.file.checksum }}</td>
+                  <td>??? {{ ::fc.file.checksum }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Published</th>
-                  <td>{{ fc.file.published | date }}</td>
+                  <td>{{ ::fc.file.published | date }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Uploaded</th>
-                  <td>{{ fc.file.uploaded | date }}</td>
+                  <td>{{ ::fc.file.uploaded | date }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Modified</th>
-                  <td>{{ fc.file.modified | date }}</td>
+                  <td>{{ ::fc.file.updated | date }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>State</th>
-                  <td>{{ fc.file.state }}</td>
+                  <td>??? {{ ::fc.file.state }}</td>
                 </tr>
                 <tr data-ng-if="fc.file.archive" class="archive-row">
                   <th scope="row" data-translate>Archive</th>
                   <td>
-                    {{ fc.file.archive.name }}
+                    ??? {{ ::fc.file.archive.name }}
                     <div class="btn-group" dropdown>
                       <button type="button" class="btn btn-default dropdown-toggle">
                         A <span class="caret"></span>
@@ -122,43 +122,43 @@
                 <tbody>
                 <tr>
                   <th scope="row" data-translate>Data Type</th>
-                  <td>{{ fc.file.dataType }}</td>
+                  <td>{{ ::fc.file.data_type }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Data Subtype</th>
-                  <td>{{ fc.file.dataSubType }}</td>
+                  <td>{{ ::fc.file.data_subtype }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Experimental Strategy</th>
-                  <td>{{ fc.file.experimentStrategy }}</td>
+                  <td>{{ ::fc.file.experimental_strategy }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Program Status</th>
-                  <td>{{ fc.file.programStatus }}</td>
+                  <td>??? {{ ::fc.file.programStatus }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Platform</th>
-                  <td>{{ fc.file.platform }}</td>
+                  <td>{{ ::fc.file.platform }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Data Revision</th>
-                  <td>{{ fc.file.revision }}</td>
+                  <td>??? {{ ::fc.file.revision }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Data Version</th>
-                  <td>{{ fc.file.version }}</td>
+                  <td>??? {{ ::fc.file.version }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Data Level</th>
-                  <td>{{ fc.file.level }}</td>
+                  <td>{{ ::fc.file.data_level }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Data Submitter</th>
-                  <td>{{ fc.file.submitter }}</td>
+                  <td>??? {{ ::fc.file.submitter }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Data Submitted Since</th>
-                  <td>{{ fc.file.submittedSince | date }}</td>
+                  <td>{{ ::fc.file.submittedSince | date }}</td>
                 </tr>
                 </tbody>
               </table>
@@ -188,8 +188,8 @@
             </thead>
             <tbody>
               <tr data-ng-repeat="p in fc.file.participants track by p.id">
-                <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
-                <td><a data-ui-sref="project({ projectId : p.project.id })">{{ p.project.name }}</a></td>
+                <td><a data-ui-sref="participant({ participantId : p.id })">??? {{ ::p.id }}</a></td>
+                <td><a data-ui-sref="project({ projectId : p.project.id })">{{ ::p.project.name }}</a></td>
                 <td>{{ p.diseaseType }}</td>
                 <td>{{ p.sample }}</td>
                 <td>{{ p.portion }}</td>
@@ -218,9 +218,9 @@
             </thead>
             <tbody>
               <tr data-ng-repeat="f in fc.file.related track by f.id">
-                <td>{{ f.filename }}</td>
-                <td>{{ f.format }}</td>
-                <td>{{ f.checksum }}</td>
+                <td>??? {{ ::f.filename }}</td>
+                <td>??? {{ ::f.format }}</td>
+                <td>??? {{ ::f.checksum }}</td>
                 <td>
                   <a data-ui-sref="file({ fileId: f.id })" data-translate>
                     View

@@ -15,7 +15,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    RestangularProvider: restangular.IProvider) {
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/404");
-  RestangularProvider.setBaseUrl("http://localhost:3001/api");
+  RestangularProvider.setBaseUrl("http://localhost:5000/");
 }
 
 /* @ngInject */
@@ -63,4 +63,3 @@ angular
     ])
     .config(appConfig)
     .run(appRun);
-

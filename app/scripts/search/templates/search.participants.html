@@ -18,7 +18,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr data-ng-repeat="p in sc.participants.hits track by p.id">
+  <tr data-ng-repeat="p in sc.participants.hits track by p.patient_id">
     <td style="width: 35px;">
       <div class="btn-group pull-right" dropdown>
         <button type="button"
@@ -44,19 +44,19 @@
         </ul>
       </div>
     </td>
-    <td><a data-ui-sref="participant({ participantId : p.id })">{{ p.id }}</a></td>
-    <td><a data-ui-sref="project({ projectId : p.project.id })">{{ p.project.name }}</a></td>
-    <td>{{ p.diseaseType }}</td>
-    <td>{{ p.gender }}</td>
-    <td>{{ p.tumorStage }}</td>
+    <td><a data-ui-sref="participant({ participantId : p.bcr_patient_uuid })">{{ ::p.patient_id }}</a></td>
+    <td>??? <a data-ui-sref="project({ projectId : p.project.id })">{{ ::p.project.name }}</a></td>
+    <td>??? {{ ::p.diseaseType }}</td>
+    <td>{{ ::p.gender }}</td>
+    <td>??? {{ ::p.tumor_stage }}</td>
     <td>
-      <a data-ui-sref="files({ participantId: p.id })">
-        {{ p.files.length }}
+      <a data-ui-sref="files({ participantId: p.bcr_patient_uuid })">
+        ??? {{ ::p.files.length }}
       </a>
     </td>
     <td>
       <a data-ui-sref="annotations({ participantId: p.id })">
-        {{ p.annotations.length }}
+        ??? {{ ::p.annotations.length }}
       </a>
     </td>
   </tr>

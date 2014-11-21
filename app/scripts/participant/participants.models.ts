@@ -12,30 +12,32 @@ module ngApp.participants.models {
   }
 
   export interface IParticipant extends IEntity {
-    id: string;
-    code: string;
-    number: string;
-    diseaseType: string;
-    program: string;
-    project: string;
-    status: string;
-    experiments: any;
-    tumorStage: number;
+    patient_id: string;
+    age_at_initial_pathologic_diagnosis: number;
+    bcr_patient_uuid: string;
+    bcr_patient_code: string;
+    day_of_form_completion: number;
+    days_to_birth: number;
+    days_to_initial_pathologic_diagnosis: number;
+    days_to_last_followup: number;
+    gender: string;
+    histological_type: string;
+    icd_10: string;
+    icd_o_3_histology: string;
+    icd_o_3_site: string;
+    informed_consent_verified: boolean;
+    month_of_form_completion: number;
+    person_neoplasm_cancer_status: string;
+    prior_dx: boolean;
+    race: string;
+    tissue_prospective_collection_indicator: boolean;
+    tissue_source_site: string;
+    tumor_tissue_site: string;
+    vital_status: string;
+    year_of_form_completion: number;
+    year_of_initial_pathologic_diagnosis: number;
     data: any;
     admin: IAdmin;
-    ageAtInitialPathologicDiagnosis: number;
-    bcrPatientBarcode: string;
-    bcrPatientUuid: string;
-    breastCarcinomaEstrogenReceptorStatus: string;
-    cancerType: string;
-    dayToDeath: number;
-    gender: string;
-    histologicalType: string;
-    pathologicalStage: string;
-    patientId: string;
-    race: string;
-    tissueSourceSite: string;
-    vitalStatus: string;
     annotations: IAnnotation[];
     files: IFile[];
   }

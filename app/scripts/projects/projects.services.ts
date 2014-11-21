@@ -16,14 +16,20 @@ module ngApp.projects.services {
     }
 
     getProject(id: string, params: Object = {}): ng.IPromise<IProject> {
+      if (params.hasOwnProperty("fields")) {
+          params["fields"] = params["fields"].join()
+      }
       return this.ds.get(id, params).then((response): IProject => {
-        return response;
+        return response["data"];
       });
     }
 
     getProjects(params: Object = {}): ng.IPromise<IProjects> {
+      if (params.hasOwnProperty("fields")) {
+          params["fields"] = params["fields"].join()
+      }
       return this.ds.get("", params).then((response): IProjects => {
-        return response;
+        return response["data"];
       });
     }
   }

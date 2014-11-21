@@ -28,33 +28,21 @@ module ngApp.files.models {
   }
 
   export interface IFile extends IEntity {
-    id: string;
-    filename: string;
-    files: any;
-    metadata: any;
-    metadataXML: any;
-    barcode: string;
-    format: string;
-    checksum: string;
-    published: string;
-    uploaded: string;
-    modified: string;
-    size: number;
-    state: string;
-    access: boolean;
+    _aliquote_barcode: string;
+    data_access: string;
+    data_format: string;
+    data_subtype: string;
+    data_type: string;
+    experimental_strategoy: string;
+    file_extension: string;
+    file_name: string;
+    file_size: number;
+    file_url: string;
+    file_uuid: string;
+    platform: string;
+    updated: any;
     participants: IParticipant[];
     archive?: IArchive;
-    dataType: string;
-    dataSubType: string;
-    experimentStrategy: string;
-    programStatus: boolean;
-    platform: string;
-    revision: string;
-    version: string;
-    level: number;
-    submitter: string;
-    submittedSince: string;
-    url: string;
     selected?: boolean
   }
 }

@@ -18,13 +18,13 @@ module ngApp.files.services {
 
     getFile(id: string, params: Object = {}): ng.IPromise<IFile> {
       return this.ds.get(id, params).then((response): IFile => {
-        return response;
+        return response["data"];
       });
     }
 
     getFiles(params: Object = {}): ng.IPromise<IFiles> {
       return this.ds.get("", params).then((response): IFiles => {
-        return response;
+        return response["data"];
       });
     }
 

@@ -40,7 +40,6 @@
         <tr>
           <th scope="col" rowspan="2" class="text-center" data-translate>Code</th>
           <th scope="col" rowspan="2" class="text-center" data-translate>Name</th>
-          <th scope="col" rowspan="2" class="text-center" data-translate>Disease Type</th>
           <th scope="col" rowspan="2" class="text-center" data-translate>Program</th>
           <th scope="col" rowspan="2" class="text-center">
             &#35; <span data-translate>Participants</span>
@@ -61,25 +60,24 @@
         </tr>
         </thead>
         <tbody>
-        <tr data-ng-repeat="p in prsc.projects.hits track by p.id">
-          <td><a data-ui-sref="project({ projectId: p.id })">{{ p.code }}</a></td>
-          <td>{{ p.name }}</td>
-          <td>{{ p.diseaseType }}</td>
-          <td>{{ p.program }}</td>
-          <td><a data-ui-sref="search.participants( { projectId: p.id })">{{ p.summary.participantCount }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["Clinical"].fileCount }}</a>
+        <tr data-ng-repeat="p in prsc.projects.hits track by p.project_code">
+          <td><a data-ui-sref="project({ projectId: p.project_code })">{{ ::p.project_code }}</a></td>
+          <td>{{ ::p.project_name }}</td>
+          <td>{{ ::p.program }}</td>
+          <td><a data-ui-sref="search.participants( { projectId: p.id })">{{ ::p._summary._participant_count }}</a></td>
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["Clinical"].fileCount }}</a>
           </td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["SNV"].fileCount }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["mRNA Expression"].fileCount
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["SNV"].fileCount }}</a></td>
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["mRNA Expression"].fileCount
             }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["miRNA
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["miRNA
             Expression"].fileCount }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["Copy number
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["Copy number
             variation"].fileCount }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ p.summary.analyzedData["DNA methylation"].fileCount
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["DNA methylation"].fileCount
             }}</a></td>
-          <td>{{ p.status}}</td>
-          <td>{{ p.date | date }}</td>
+          <td>{{ ::p.status}}</td>
+          <td>{{ ::p.date | date }}</td>
         </tr>
         </tbody>
       </table>

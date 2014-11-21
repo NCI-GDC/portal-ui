@@ -39,6 +39,7 @@ module ngApp.cart.services {
     /* @ngInject */
     constructor(private FilesService: IFilesService, private $window: IGDCWindowService) {
       this.fileIds = JSON.parse($window.localStorage.getItem(CartService.GDC_CART_KEY) || "[]");
+      this.fileIds = this.fileIds || [];
       this.getFiles();
     }
 

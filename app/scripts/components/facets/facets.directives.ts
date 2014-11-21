@@ -45,7 +45,7 @@ module ngApp.components.facets.directives {
               }
 
               if (property === "collapsed") {
-                element.find("div.facet-name").attr("aria-collapsed", $scope.collapsed);
+                element.find("div.facet-name").attr("aria-collapsed", new Boolean($scope.collapsed).toString());
               }
             };
           }

@@ -776,7 +776,7 @@ router.get('/files', function (req, res) {
 
 router.post('/files', function (req, res) {
   var paging = JSON.parse(req.query.paging || "{}");
-  var filters = req.body.filters;
+  var filters = req.body.filters || { id: [] };
 
   var response = {};
   response.pagination = _.assign({}, files.pagination);

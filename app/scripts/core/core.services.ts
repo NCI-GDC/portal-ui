@@ -2,15 +2,21 @@ module ngApp.core.services {
 
   export interface ICoreService {
     setPageTitle(title: string): void;
+    setLoadedState(state: boolean): void;
   }
 
   class CoreService implements ICoreService {
     /* @ngInject */
     constructor(private $rootScope: ngApp.IRootScope, private gettextCatalog) {
-      var wrapper = angular.element(document.getElementById("wrapper"));
+      this.setLoadedState(true);
+    }
 
-      wrapper.attr("aria-busy", false);
-      this.$rootScope.loaded = true;
+    setLoadedState(state: boolean) {
+      var wrapper = angular.element(document.getElementById("wrapper"));
+      var flippedState = new Boolean(!state);
+
+      wrapper.attr("aria-busy", flippedState.toString());
+      this.$rootScope.loaded = state;
     }
 
     setPageTitle(title: string): void {

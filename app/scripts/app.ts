@@ -1,9 +1,12 @@
 declare module ngApp {
-  interface IRootScope extends ng.IScope {
+  export interface IRootScope extends ng.IScope {
     pageTitle: string;
     loaded: boolean;
   }
 }
+
+import ICoreService = ngApp.core.services.ICoreService;
+import IRootScope = ngApp.IRootScope;
 
 /* @ngInject */
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
@@ -16,11 +19,23 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
 }
 
 /* @ngInject */
-function appRun(gettextCatalog, Restangular: restangular.IProvider, $state: ng.ui.IStateService) {
+function appRun(gettextCatalog, Restangular: restangular.IProvider,
+                $state: ng.ui.IStateService, CoreService: ICoreService,
+                $rootScope: IRootScope) {
   gettextCatalog.debug = true;
 
   Restangular.setErrorInterceptor((response) => {
     $state.go("404", {}, { inherit: true });
+  });
+  Restangular.addRequestInterceptor((data) => {
+    CoreService.setLoadedState(false);
+    return data;
+  });
+  Restangular.addResponseInterceptor((data, operation, what, url, response, deferred) => {
+    return deferred.resolve(data);
+  });
+  $rootScope.$on("$stateChangeSuccess", function() {
+    CoreService.setLoadedState(true);
   });
 }
 
@@ -47,3 +62,4 @@ angular
     ])
     .config(appConfig)
     .run(appRun);
+

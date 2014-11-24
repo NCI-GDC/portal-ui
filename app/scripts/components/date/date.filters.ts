@@ -1,4 +1,4 @@
-module ngApp.components.datefilter {
+module ngApp.components.date {
 
   import IGDCWindowService = ngApp.models.IGDCWindowService;
 
@@ -11,7 +11,6 @@ module ngApp.components.datefilter {
     }
   }
 
-  angular.module("components.datefilter", [])
+  angular.module("date.filters", [])
       .filter("date", MomentDate);
-
 }

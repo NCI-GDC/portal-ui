@@ -27,15 +27,32 @@ module ngApp.search.controllers {
     query: string = "";
 
     /* @ngInject */
-    constructor(private $state: ng.ui.IStateService,
+    constructor(
+        private $scope,
+        private $state: ng.ui.IStateService,
                 public State: IState,
                 public files: IFiles,
                 public participants: IParticipants,
                 public CartService: ICartService,
+                public FilesService: IFilesService,
+                public ParticipantsService: IParticipantsService,
                 CoreService: ICoreService) {
       var data = $state.current.data || {};
       this.State.setActive(data.tab);
       CoreService.setPageTitle("Search");
+
+      // TODO Listen for Location change event - run activate
+      this.setup();
+
+    }
+
+    setup() {
+      this.$scope.$on('$locationChangeSuccess',  (event, next) => {
+        if (next.indexOf('search') !== -1) {
+          this.FilesService.getFiles().then((data) => this.files = data);
+          this.ParticipantsService.getParticipants().then((data) => this.participants = data);
+        }
+      });
     }
 
     // TODO Load data lazily based on active tab
@@ -63,8 +80,6 @@ module ngApp.search.controllers {
         console.log("Click event or enter key pressed");
       }
     }
-
-    // TODO Listen for Location change event - run activate
   }
 
   angular

@@ -20,6 +20,7 @@ module ngApp.core.services {
     }
 
     setPageTitle(title: string, id?: any): void {
+      // TODO - this could probably be done when the function is called
       var formattedTitle: string = this.gettextCatalog.getString(title);
       formattedTitle = id ? formattedTitle + " - " + id : formattedTitle;
       this.$rootScope.pageTitle = formattedTitle;

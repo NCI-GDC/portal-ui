@@ -8,13 +8,24 @@
     {{ facet.value | translate }}
   </div>
   <div class="facet-term-group" data-ng-show="!collapsed">
-    <div data-ng-repeat="term in facet.terms">
+    <div data-ng-repeat="term in tc.actives">
+        <label class="facet-term">
+          <i class="fa fa-minus"
+             data-ng-click="tc.remove(facet.value, term)"
+             aria-controls="data-table"
+             aria-checked="false"></i>
+          <span>{{ term | translate }}</span>
+        </label>
+    </div>
+    <div data-ng-repeat="term in tc.inactives">
       <div class="term-wrapper"
+           data-ng-class="{ 'facet-active': term.active}"
            data-ng-hide="$index > (displayCount - 1) && !expanded">
         <label class="facet-term">
-          <input type="checkbox" data-ng-click="toggleTerm($event)"
+          <i class="fa fa-plus"
+              data-ng-click="tc.add(facet.value, term)"
                  aria-controls="data-table"
-                 aria-checked="false"/>
+                 aria-checked="false"></i>
           <span>{{ term | translate }}</span>
         </label>
       </div>

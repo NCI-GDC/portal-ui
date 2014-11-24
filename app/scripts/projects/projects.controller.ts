@@ -1,6 +1,7 @@
 module ngApp.projects.controllers {
   import IProject = ngApp.projects.models.IProject;
   import IProjects = ngApp.projects.models.IProjects;
+  import IProjectsService = ngApp.projects.services.IProjectsService;
   import ICoreService = ngApp.core.services.ICoreService;
 
   export interface IProjectsController {
@@ -9,9 +10,18 @@ module ngApp.projects.controllers {
 
   class ProjectsController implements IProjectsController {
     /* @ngInject */
-    constructor(public projects: IProjects, private CoreService: ICoreService) {
+    constructor(private $scope, public projects: IProjects, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
       CoreService.setPageTitle("Projects");
-      console.log(projects);
+      this.setup();
+
+    }
+
+    setup() {
+      this.$scope.$on('$locationChangeSuccess', (event, next) => {
+        if (next.indexOf('projects') !== -1) {
+          this.ProjectsService.getProjects().then((data) => this.projects = data);
+        }
+      });
     }
   }
 

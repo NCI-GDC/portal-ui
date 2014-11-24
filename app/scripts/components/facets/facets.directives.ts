@@ -1,8 +1,8 @@
 module ngApp.components.facets.directives {
   import IFacet = ngApp.models.IFacet;
+  import IFacetService = ngApp.components.facets.services.IFacetService;
 
   interface IFacetScope extends ng.IScope {
-    toggleTerm(clickEvent: any): void;
     facet: IFacet;
     collapsed: boolean;
     expanded: boolean;
@@ -16,40 +16,63 @@ module ngApp.components.facets.directives {
     displayCount: number;
   }
 
+  interface ITermsController {
+    add(facet: string, term: string): void;
+    actives: string[];
+    inactives: string[];
+  }
+
+  class TermsController implements ITermsController {
+    name : string = "";
+    terms : string[] = [];
+    actives: string[] = [];
+    inactives: string[] = [];
+
+    /* @ngInject */
+    constructor($scope: IFacetScope, private FacetService: IFacetService) {
+      this.name = $scope.facet.value;
+      this.terms = $scope.facet.terms;
+      this.refresh();
+      $scope.$watch("facet", (n,o) => {
+        if (n === o) {
+          return;
+        }
+        this.refresh();
+      });
+    }
+
+    add(facet: string, term: string): void {
+      this.FacetService.addTerm(facet, term);
+    }
+
+    remove(facet: string, term: string): void {
+      this.FacetService.removeTerm(facet, term);
+    }
+
+    refresh() {
+      this.actives = this.FacetService.getActives(this.name, this.terms);
+      this.inactives = _.difference(this.terms, this.actives);
+    }
+
+  }
+
   /* @ngInject */
-  function FacetTerms(): ng.IDirective {
+  function Terms(): ng.IDirective {
     return {
-      restrict: "EA",
+      restrict: "E",
       scope: {
         facet: "=",
         collapsed: "@",
         expanded: "@",
         displayCount: "@"
       },
+      replace: true,
       templateUrl: "components/facets/templates/facet.html",
-      compile: function(element: ng.IAugmentedJQuery, attrs: IFacetAttributes) {
-        element.addClass("facet-element");
+      controller: 'termsCtrl as tc',
+      compile: function (element: ng.IAugmentedJQuery, attrs: IFacetAttributes) {
         attrs.collapsed = !!attrs.collapsed;
         attrs.displayCount = attrs.displayCount || 5;
         attrs.expanded = !!attrs.expanded;
-
-        return {
-          post: function($scope: IFacetScope) {
-            $scope.toggleTerm = function (clickEvent: any) {
-              angular.element(clickEvent.target).attr("aria-checked", clickEvent.target.checked);
-            };
-
-            $scope.toggle = function(event: any, property: string) {
-              if (event.which === 1 || event.which === 13) {
-                $scope[property] = !$scope[property];
-              }
-
-              if (property === "collapsed") {
-                element.find("div.facet-name").attr("aria-collapsed", $scope.collapsed.toString());
-              }
-            };
-          }
-        };
       }
     };
   }
@@ -61,15 +84,15 @@ module ngApp.components.facets.directives {
         header: "@",
         placeholder: "@"
       },
-      templateUrl: "components/facets/templates/facets-free-text.html",
-      compile: function(element: ng.IAugmentedJQuery) {
-        element.addClass("facet-element");
-      }
+      templateUrl: "components/facets/templates/facets-free-text.html"
     };
   }
 
-  angular.module("components.facets.directives", [])
-      .directive("facetTerms", FacetTerms)
+  angular.module("facets.directives", [
+    "facets.services"
+  ])
+      .controller("termsCtrl", TermsController)
+      .directive("facetTerms", Terms)
       .directive("facetsFreeText", FacetsFreeText);
 }
 

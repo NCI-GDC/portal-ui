@@ -1,4 +1,5 @@
 declare module ngApp {
+
   export interface IRootScope extends ng.IScope {
     pageTitle: string;
     loaded: boolean;
@@ -25,7 +26,7 @@ function appRun(gettextCatalog, Restangular: restangular.IProvider,
   gettextCatalog.debug = true;
 
   Restangular.setErrorInterceptor((response) => {
-    $state.go("404", {}, { inherit: true });
+    $state.go("404", {}, {inherit: true});
   });
   Restangular.addRequestInterceptor((data) => {
     CoreService.setLoadedState(false);

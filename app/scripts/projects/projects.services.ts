@@ -17,7 +17,7 @@ module ngApp.projects.services {
 
     getProject(id: string, params: Object = {}): ng.IPromise<IProject> {
       if (params.hasOwnProperty("fields")) {
-          params["fields"] = params["fields"].join()
+        params["fields"] = params["fields"].join();
       }
       return this.ds.get(id, params).then((response): IProject => {
         return response["data"];
@@ -26,7 +26,7 @@ module ngApp.projects.services {
 
     getProjects(params: Object = {}): ng.IPromise<IProjects> {
       if (params.hasOwnProperty("fields")) {
-          params["fields"] = params["fields"].join()
+        params["fields"] = params["fields"].join();
       }
       return this.ds.get("", params).then((response): IProjects => {
         return response["data"];

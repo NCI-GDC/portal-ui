@@ -43,16 +43,17 @@ module ngApp.search.controllers {
       // Changing tabs and then navigating to another page
       // will cause this to fire.
       if (tab && this.$state.current.name.match("search.")) {
-        this.$state.go("search." + tab, {}, { inherit: true });
+        this.$state.go("search." + tab, {}, {inherit: true});
       }
     }
 
     addFilesKeyPress(event: any, type: string) {
       if (event.which === 13) {
         if (type === "all") {
-          this.CartService.addAllFiles();
+          // TODO add filtered list of files
+          this.CartService.addFiles(this.files.hits);
         } else {
-          this.CartService.addFiles(this.files.hits)
+          this.CartService.addFiles(this.files.hits);
         }
       }
     }
@@ -70,6 +71,6 @@ module ngApp.search.controllers {
       .module("search.controller", [
         "search.services",
         "cart.services"
-        ])
+      ])
       .controller("SearchController", SearchController);
 }

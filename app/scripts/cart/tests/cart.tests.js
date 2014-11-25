@@ -37,8 +37,8 @@ describe('Cart:', function () {
   });
 
   describe('Service:', function () {
-    var file = { id: 'AAA', url: '/files/AAA' };
-    var fileB = { id: 'BBB', url: '/files/BBB' };
+    var file = {file_uuid: 'AAA', file_url: '/files/AAA'};
+    var fileB = {file_uuid: 'BBB', file_url: '/files/BBB'};
 
     beforeEach(inject(function ($window) {
       // Clear localStorage system to prevent oddities from tests.
@@ -55,12 +55,10 @@ describe('Cart:', function () {
     it('should get all files in the cart', inject(function (CartService) {
       CartService.add(file);
       var getFilesCallback = sinon.spy(CartService, 'getFiles');
-      CartService.getFiles()
-      .then(function(response) {
-        expect(getFilesCallback).to.have.been.calledOnce;
-        expect(response).to.have.property('hits').with.length(1);
-        expect(response).to.have.deep.property('.hits[0].id', 'AAA');
-      });
+      var files = CartService.getFiles();
+      expect(getFilesCallback).to.have.been.calledOnce;
+      expect(files).to.have.property('hits').with.length(1);
+      expect(files).to.have.deep.property('.hits[0].file_uuid', 'AAA');
     }));
 
     it('should remove all files', inject(function (CartService) {
@@ -106,8 +104,8 @@ describe('Cart:', function () {
       CartService.add(fileB);
       var returnValue = CartService.getAllFileIds();
       expect(returnValue).to.have.length(2);
-      expect(returnValue).to.contain(file.id);
-      expect(returnValue).to.contain(fileB.id);
+      expect(returnValue).to.contain(file.file_uuid);
+      expect(returnValue).to.contain(fileB.file_uuid);
     }));
 
   });

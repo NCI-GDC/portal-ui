@@ -23,9 +23,6 @@ module ngApp.search {
         },
         participants: (ParticipantsService: IParticipantsService): ng.IPromise<IParticipants> => {
           return ParticipantsService.getParticipants();
-        },
-        annotations: (AnnotationsService: IAnnotationsService): ng.IPromise<IAnnotations> => {
-          return AnnotationsService.getAnnotations();
         }
       }
     });

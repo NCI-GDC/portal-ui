@@ -5,7 +5,6 @@ module ngApp.files.services {
   export interface IFilesService {
     getFile(id: string): ng.IPromise<IFile>;
     getFiles(params?: Object): ng.IPromise<IFiles>;
-    getFilesWithFilters(params?: Object): ng.IPromise<IFiles>;
   }
 
   class FilesService implements IFilesService {
@@ -25,12 +24,6 @@ module ngApp.files.services {
     getFiles(params: Object = {}): ng.IPromise<IFiles> {
       return this.ds.get("", params).then((response): IFiles => {
         return response["data"];
-      });
-    }
-
-    getFilesWithFilters(params: Object = {}): ng.IPromise<IFiles> {
-      return this.ds.post(params).then((response): IFiles => {
-        return response;
       });
     }
   }

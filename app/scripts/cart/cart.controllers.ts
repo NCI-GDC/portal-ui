@@ -25,7 +25,7 @@ module ngApp.cart.controllers {
 
     getTotalSize(): number {
       return _.reduce(this.files.hits, function (sum: number, hit: IFile) {
-        return sum + hit.size;
+        return sum + hit.file_size;
       }, 0);
     }
 
@@ -37,7 +37,7 @@ module ngApp.cart.controllers {
     handleRemoveByIds(): void {
       var ids : string[] = _.pluck(_.filter(this.files.hits, (hit: IFile): boolean => {
         return hit.selected;
-      }), "id");
+      }), "file_uuid");
       this.CartService.remove(ids);
     }
 

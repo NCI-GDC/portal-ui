@@ -46,8 +46,8 @@
     <td>
       <input type="checkbox"
              class="cart-checkbox"
-             data-ng-checked="sc.CartService.isInCart(file)"
-             data-ng-click="!sc.CartService.isInCart(file) ? sc.CartService.add(file) : sc.CartService.remove([file.id])">
+             data-ng-checked="sc.CartService.isInCart(file.file_uuid)"
+             data-ng-click="!sc.CartService.isInCart(file.file_uuid) ? sc.CartService.add(file) : sc.CartService.remove([file.file_uuid])">
 
       <div class="btn-group pull-right" dropdown>
         <button type="button" class="btn btn-default action-button dropdown-toggle">
@@ -101,8 +101,8 @@
     <td>{{ ::file.data_type }}</td>
     <td>??? {{ ::file.state }}</td>
     <td>{{ ::file.file_extension }}</td>
-    <td>{{ ::file.file_size }} GB (units???)</td>
-    <td>??? {{ ::file.revision }}</td>
+    <td>{{ (file.file_size / 1.0e9).toFixed(2) }} GB</td>
+    <td>??? {{ ::file.admin.revision }}</td>
     <td>{{ file.modified | date }}</td>
   </tr>
   </tbody>

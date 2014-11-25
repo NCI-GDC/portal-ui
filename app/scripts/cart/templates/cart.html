@@ -18,7 +18,7 @@
         </tr>
         <tr>
           <th scope="row" data-translate>Size</th>
-          <td>{{ cc.totalSize.toFixed(0) }} GB</td>
+          <td>{{ (cc.totalSize / 1.0e9).toFixed(2) }} GB</td>
         </tr>
         </tbody>
       </table>
@@ -85,27 +85,19 @@
               <i data-ng-if="file.access" class="fa fa-unlock-alt fa-lg"></i>
             </td>
             <td>
-              <a data-ui-sref="file({ fileId: file.id })">
-                {{ file.filename }}
+              <a data-ui-sref="file({ fileId: file.file_uuid })">
+                {{ file.file_name }}
               </a>
             </td>
-            <td>{{ file.participants.length }}</td>
-            <td>
-              <a data-ui-sref="participant({ participantId: file.participants[0].id })">
-                {{ file.participants[0].id }}
-              </a>
-            </td>
-            <td>
-              <a data-ui-sref="project({ projectId: file.project.id })">
-                {{ file.project.name }}
-              </a>
-            </td>
-            <td>{{ file.dataType }}</td>
-            <td>{{ file.state }}</td>
-            <td>{{ file.format }}</td>
-            <td>{{ file.size }} GB</td>
-            <td>{{ file.revision }}</td>
-            <td>{{ file.modified | date }}</td>
+            <td>???</td>
+            <td>???</td>
+            <td>???</td>
+            <td>{{ file.data_type }}</td>
+            <td>???</td>
+            <td>{{ file.data_format }}</td>
+            <td>{{ (file.file_size / 1.0e9).toFixed(2) }} GB</td>
+            <td>{{ file.archive.revision }}</td>
+            <td>???</td>
           </tr>
           </tbody>
         </table>

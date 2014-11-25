@@ -10,7 +10,7 @@ module ngApp.cart {
           controller: "CartController as cc",
           templateUrl: "cart/templates/cart.html",
           resolve: {
-            files: (CartService: ICartService): ng.IPromise<IFiles> => {
+            files: (CartService: ICartService): IFiles => {
               return CartService.getFiles();
             }
           }

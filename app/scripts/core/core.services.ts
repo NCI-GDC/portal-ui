@@ -13,7 +13,7 @@ module ngApp.core.services {
 
     setLoadedState(state: boolean) {
       var wrapper = angular.element(document.getElementById("wrapper"));
-      var flippedState = new Boolean(!state);
+      var flippedState = !state;
 
       wrapper.attr("aria-busy", flippedState.toString());
       this.$rootScope.loaded = state;
@@ -21,7 +21,7 @@ module ngApp.core.services {
 
     setPageTitle(title: string, id?: any): void {
       var formattedTitle: string = this.gettextCatalog.getString(title);
-      formattedTitle = id ? formattedTitle + " - " + id : formattedTitle; 
+      formattedTitle = id ? formattedTitle + " - " + id : formattedTitle;
       this.$rootScope.pageTitle = formattedTitle;
     }
   }
@@ -32,4 +32,3 @@ module ngApp.core.services {
       ])
       .service("CoreService", CoreService);
 }
-

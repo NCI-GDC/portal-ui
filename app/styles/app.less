@@ -27,3 +27,16 @@ html, body {
   margin-top: -20px;
 }
 
+body {
+  > a.skip-to-content {
+    position: absolute;
+    left: -999px;
+    background-color: black;
+    z-index: 1000;
+
+    &:focus {
+      left: 5px;
+    }
+  }
+}
+

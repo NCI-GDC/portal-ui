@@ -222,11 +222,12 @@
                 <td>??? {{ ::f.format }}</td>
                 <td>??? {{ ::f.checksum }}</td>
                 <td>
-                  <a data-ui-sref="file({ fileId: f.id })" data-translate>
+                  <a data-ui-sref="file({ fileId: f.id })" data-translate
+                     aria-label="View file {{ f.filename }}">
                     View
                   </a>
                   /
-                  <a data-translate>
+                  <a data-translate aria-label="Download file {{ f.filename }}">
                     Download
                   </a>
                 </td>
@@ -236,7 +237,7 @@
         </div>
       </section>
 
-      <section class="row" id="content">
+      <section class="row" id="content" role="application">
         <div class="col-lg-12 col-md-12 pull-right">
           <h3 data-translate>File Content</h3>
           <xml-viewer id="xmlViewer" xml="fc.file.metadataXML"></xml-viewer>

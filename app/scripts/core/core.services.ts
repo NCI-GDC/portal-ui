@@ -25,6 +25,7 @@ module ngApp.core.services {
       formattedTitle = id ? formattedTitle + " - " + id : formattedTitle;
       this.$rootScope.pageTitle = formattedTitle;
     }
+
   }
 
   angular

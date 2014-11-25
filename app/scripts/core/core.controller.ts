@@ -1,10 +1,7 @@
 module ngApp.core.controllers {
+  export interface ICoreController {}
 
-  export interface ICoreController {
-  }
-
-  class CoreController implements ICoreController {
-  }
+  class CoreController implements ICoreController {}
 
   angular
       .module("core.controller", [])

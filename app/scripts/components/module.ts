@@ -9,5 +9,6 @@ angular
       "components.tables",
       "components.ui",
       "components.location",
-      "components.charts"
+      "components.charts",
+      "components.overrides"
     ]);

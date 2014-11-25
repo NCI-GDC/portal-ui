@@ -35,7 +35,9 @@
 
 <body>
 
-<div id="wrapper" aria-busy="true" aria-live="assertive">
+<a href="#body" tabindex="1" class="skip-to-content" data-translate>Skip to Main Content</a>
+
+<div id="wrapper" aria-busy="true" aria-live="assertive" tabindex="0">
   <div data-ng-if="!loaded" class="app-loading">
     <i class="fa fa-spinner fa-spin fa-5x"></i>
   </div>
@@ -81,14 +83,14 @@
     <style>
       #loadingScreen { display: none; }
     </style>
-    <div id="body">
+    <div id="body" tabindex="0">
       <p class="noscript">
         Javascript is required to use the features of this website.
       </p>
     </div>
   </noscript>
 
-  <div id="body" data-ui-view role="main"></div>
+  <div id="body" data-ui-view role="main" tabindex="0"></div>
 
   <!-- NCI Footer -->
   <footer id="footer">

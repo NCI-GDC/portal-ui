@@ -4,7 +4,8 @@ describe('Search:', function () {
   beforeEach(module('ngApp.search'));
 
   describe('Controller:', function () {
-    it('should have participants', inject(function ($controller) {
+    it('should have participants', inject(function ($rootScope, $controller) {
+      var scope = $rootScope.$new();
       // Which HTTP requests do we expect to occur, and how do we response?
       var search = [
         {
@@ -19,6 +20,7 @@ describe('Search:', function () {
 
       // Starting the controller
       var wc = $controller('SearchController', {
+        $scope: scope,
         files: {},
         participants: search,
         data: {
@@ -29,7 +31,8 @@ describe('Search:', function () {
       // We expect the controller to put the right value onto the scope
       expect(wc).to.have.property('participants').with.length(2);
     }));
-    it('should have files', inject(function ($controller) {
+    it('should have files', inject(function ($rootScope, $controller) {
+      var scope = $rootScope.$new();
       // Which HTTP requests do we expect to occur, and how do we response?
       var search = [
         {
@@ -43,6 +46,7 @@ describe('Search:', function () {
       ];
 
       var wc = $controller('SearchController', {
+        $scope: scope,
         files: search,
         participants: {},
         data: {

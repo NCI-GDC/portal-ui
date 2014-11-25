@@ -1,6 +1,6 @@
 describe('Projects:', function () {
 
-  var ProjectsService, controller, httpBackend;
+  var httpBackend;
 
   // Initialization of the AngularJS application before each test case
   beforeEach(module('ngApp.projects'));
@@ -11,7 +11,8 @@ describe('Projects:', function () {
   }));
 
   describe('Controller:', function () {
-    it('should have projects', inject(function ($controller) {
+    it('should have projects', inject(function ($rootScope, $controller) {
+      var scope = $rootScope.$new();
       // Which HTTP requests do we expect to occur, and how do we response?
       var projects = [
         { id: 1 },
@@ -19,7 +20,7 @@ describe('Projects:', function () {
       ];
 
       // Starting the controller
-      var wc = $controller('ProjectsController', {projects: projects});
+      var wc = $controller('ProjectsController', {$scope: scope, projects: projects});
 
       // We expect the controller to put the right value onto the scope
       expect(wc).to.have.property('projects').with.length(2);

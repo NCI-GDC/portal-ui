@@ -285,6 +285,46 @@ var reports = {
           ]
         },
       ]
+    },
+    {
+      id: "R3",
+      name: "Most Requested",
+      charts: [
+        {
+          type: "pie-chart",
+          heading: "Most Requested Data Level",
+          id: uuid.v4(),
+          data: [
+            {
+              label: "Level 1",
+              value: 26.82
+            },
+            {
+              label: "Level 2",
+              value: 27.51
+            },
+            {
+              label: "Level 3",
+              value: 45.67
+            }
+          ]
+        },
+        {
+          type: "pie-chart",
+          heading: "Most Requested Access Type",
+          id: uuid.v4(),
+          data: [
+            {
+              label: "Public",
+              value: 92.30
+            },
+            {
+              label: "Protected",
+              value: 7.70
+            }
+          ]
+        }
+      ]
     }
   ]
 };

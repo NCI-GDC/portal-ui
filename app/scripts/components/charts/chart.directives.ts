@@ -15,7 +15,89 @@ module ngApp.components.charts {
     vm: any;
   }
 
+  interface IPieChartScope extends ng.IScope {
+    data: any;
+    heading: string;
+    redraw(): void;
+  }
+
   /* @ngInject */
+  function PieChart($window: IGDCWindowService): ng.IDirective {
+    return {
+      restrict: "EA",
+      replace: true,
+      transclude: true,
+      scope: {
+        data: "=",
+        heading: "@"
+      },
+      templateUrl: "components/charts/templates/pie-chart.html",
+      controller: function($scope: IPieChartScope) {
+        //pass
+      },
+      link: function($scope: IPieChartScope, element: ng.IAugmentedJQuery) {
+        var margin = { top: 10, right: 20, bottom: 60, left: 40 };
+        var width = element.find(".chart-container")[0].clientWidth - margin.left - margin.right;
+        var height = 500 - margin.top - margin.bottom;
+        var radius = Math.min(width, height) /2;
+
+        function buildChart() {
+          var colour = d3.scale.category20c();
+          var arc = d3.svg.arc()
+                    .outerRadius(radius - 10)
+                    .innerRadius(0);
+
+          var pie = d3.layout.pie()
+                    .sort(null)
+                    .value(function(d) { return d.value; });
+          var svg = d3.select(element.find(".chart-container")[0]).append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+          var tip = d3.tip().attr("class", "d3-tip").html(function(d) {
+            return "<label class='x-text'>" + d.data.label + "</label>: <span class='value'>" + d.value + "%</span>";
+          });
+
+          var g = svg.selectAll(".arc")
+                  .data(pie($scope.data.data))
+                  .enter().append("g")
+                  .attr("class", "arc")
+                  .on("mouseover", tip.show)
+                  .on("mouseout", tip.hide);
+
+          g.append("path")
+          .attr("d", arc)
+          .style("fill", function(d, i) { return colour(i); });
+
+          g.append("text")
+          .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+          .attr("dy", ".35em")
+          .style("text-anchor", "middle")
+          .text(function(d) { return d.data.label + ", " + d.data.value + "%"; });
+          svg.call(tip);
+        }
+        buildChart();
+        var redraw = function() {
+          width = parseInt(d3.select(element.find(".chart-container")[0]).style("width"), 10);
+          width = width - margin.left - margin.right;
+          radius = Math.min(width, height)/2;
+          d3.select(element.find(".chart-container > svg")[0]).remove();
+          buildChart();
+        };
+
+        $scope.redraw = redraw;
+        $window.jQuery($window).resize(redraw);
+
+        $scope.$on("$destroy", function() {
+          $window.jQuery($window).off("resize", redraw);
+        });
+
+      }
+    };
+  }
+
   function BarChart($window: IGDCWindowService): ng.IDirective {
     return {
       restrict: "EA",
@@ -92,7 +174,7 @@ module ngApp.components.charts {
           var svg = d3.select(element.find(".chart-container")[0]).append("svg")
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
-            .append("g")
+              .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
           $scope.data.xLabelPrefix = $scope.data.xLabelPrefix || "";
@@ -135,7 +217,7 @@ module ngApp.components.charts {
 
           svg.selectAll(".bar")
               .data($scope.data.data)
-            .enter().append("rect")
+              .enter().append("rect")
               .attr("class", "bar")
               .attr("x", function(d) { return x(d.x); })
               .attr("width", x.rangeBand())
@@ -184,6 +266,7 @@ module ngApp.components.charts {
 
   angular.module("components.charts", [])
       .directive("barChart", BarChart)
+      .directive("pieChart", PieChart)
       .directive("sortChart", SortChart);
 }
 

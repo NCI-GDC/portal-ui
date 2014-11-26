@@ -26,16 +26,22 @@ function appRun(gettextCatalog, Restangular: restangular.IProvider,
   gettextCatalog.debug = true;
 
   Restangular.setErrorInterceptor((response) => {
+    // TODO more than just 404
     $state.go("404", {}, {inherit: true});
   });
-  Restangular.addRequestInterceptor((data) => {
+  Restangular.addRequestInterceptor((element) => {
+    // Ajax
     CoreService.setLoadedState(false);
-    return data;
+    return element;
   });
   Restangular.addResponseInterceptor((data, operation, what, url, response, deferred) => {
+    // Ajax
+    CoreService.setLoadedState(true);
     return deferred.resolve(data);
   });
+
   $rootScope.$on("$stateChangeSuccess", function() {
+    // Page change
     CoreService.setLoadedState(true);
   });
 }

@@ -3,17 +3,6 @@ module ngApp.participants.controllers {
   import IParticipants = ngApp.participants.models.IParticipants;
   import ICoreService = ngApp.core.services.ICoreService;
 
-  export interface IParticipantsController {
-    participants: IParticipants;
-  }
-
-  class ParticipantsController implements IParticipantsController {
-    /* @ngInject */
-    constructor(public participants: IParticipants, private CoreService: ICoreService) {
-      CoreService.setPageTitle("Participants");
-    }
-  }
-
   export interface IParticipantController {
     participant: IParticipant;
   }
@@ -30,6 +19,5 @@ module ngApp.participants.controllers {
         "participants.services",
         "core.services"
       ])
-      .controller("ParticipantsController", ParticipantsController)
       .controller("ParticipantController", ParticipantController);
 }

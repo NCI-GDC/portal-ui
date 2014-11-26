@@ -10,34 +10,12 @@ describe('Participants:', function () {
     httpBackend = $httpBackend;
   }));
 
-  describe('Controller:', function () {
-    it('should have participants', inject(function ($controller) {
-      // Which HTTP requests do we expect to occur, and how do we response?
-      var participants = [
-        {
-          id: 1,
-          number: "gerg23fg"
-        },
-        {
-          id: 2,
-          number: "gerg23fg"
-        }
-      ];
-
-      // Starting the controller
-      var wc = $controller('ParticipantsController', {participants: participants});
-
-      // We expect the controller to put the right value onto the scope
-      expect(wc).to.have.property('participants').with.length(2);
-    }));
-  });
-
   describe('Service:', function () {
     it('should get all participants', inject(function (ParticipantsService) {
       sinon.spy(ParticipantsService.ds, 'get');
 
       var fs = {hits: [], facets: [], pagination: {}};
-      httpBackend.whenGET("/participants").respond(fs);
+      httpBackend.whenGET("/participants?filters=%7B%7D&from=1&size=10").respond(fs);
 
       ParticipantsService.getParticipants();
       httpBackend.flush();

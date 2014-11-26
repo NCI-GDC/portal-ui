@@ -45,6 +45,6 @@ module ngApp.participants.services {
   }
 
   angular
-      .module("participants.services", ["restangular"])
+      .module("participants.services", ["restangular", "components.location"])
       .service("ParticipantsService", ParticipantsService);
 }

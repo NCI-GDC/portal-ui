@@ -46,6 +46,6 @@ module ngApp.files.services {
   }
 
   angular
-      .module("files.services", ["restangular"])
+      .module("files.services", ["restangular", "components.location"])
       .service("FilesService", FilesService);
 }

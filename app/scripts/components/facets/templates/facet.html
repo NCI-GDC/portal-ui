@@ -1,35 +1,41 @@
 <div class="facet-group" data-ng-show="tc.name">
-  <div class="facet-name" data-ng-click="toggle($event, 'collapsed')"
-                          data-ng-keypress="toggle($event, 'collapsed')"
-                          aria-collapsed="{{ collapsed }}"
-                          aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
-                          role="button">
-    <span class="fa" data-ng-class="{ 'fa-chevron-down': !collapsed, 'fa-chevron-right': collapsed }"></span>
-    {{ tc.title | translate }}
+  <div class="facet-name"
+       style="margin: 1rem 0"
+       data-ng-click="toggle($event, 'collapsed')"
+       data-ng-keypress="toggle($event, 'collapsed')"
+       aria-collapsed="{{ collapsed }}"
+       aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
+       role="button">
+    <i class="fa" data-ng-class="{ 'fa-chevron-down': !collapsed, 'fa-chevron-right': collapsed }"></i>
+    <span style="font-size: 1.8rem">{{ tc.title | translate }}</span>
   </div>
   <div class="facet-term-group" data-ng-show="!collapsed">
-    <div data-ng-repeat="term in tc.actives">
-        <label class="facet-term">
-          <i class="fa fa-minus"
-             data-ng-click="tc.remove(tc.name, term.key)"
+    <ul class="list-unstyled">
+      <li style="color: forestgreen" class="facet-term" data-ng-repeat="term in tc.actives track by term.key">
+        <span style="cursor: pointer" data-ng-click="tc.remove(tc.name, term.key)">
+        <i class="fa fa-check-circle-o"
+           aria-controls="data-table"
+           aria-checked="true"></i>
+        {{ term.key | translate }}</span>
+        <span class="label label-success pull-right">{{term.doc_count}}</span>
+      </li>
+    </ul>
+    <ul class="list-unstyled">
+      <li data-ng-repeat="term in tc.inactives track by term.key">
+      <span class="term-wrapper"
+            data-ng-class="{ 'facet-active': term.active}"
+            data-ng-hide="$index > (displayCount - 1) && !expanded">
+        <span style="cursor: pointer" data-ng-click="tc.add(tc.name, term.key)">
+          <i class="fa fa-circle-o"
              aria-controls="data-table"
              aria-checked="false"></i>
-          <span>{{ term.key | translate }} {{term.doc_count}}</span>
-        </label>
-    </div>
-    <div data-ng-repeat="term in tc.inactives">
-      <div class="term-wrapper"
-           data-ng-class="{ 'facet-active': term.active}"
-           data-ng-hide="$index > (displayCount - 1) && !expanded">
-        <label class="facet-term">
-          <i class="fa fa-plus"
-              data-ng-click="tc.add(tc.name, term.key)"
-                 aria-controls="data-table"
-                 aria-checked="false"></i>
-          <span>{{ term.key | translate }} {{term.doc_count}}</span>
-        </label>
-      </div>
-    </div>
+          {{ term.key | translate }}
+        </span>
+        <span class="label label-default pull-right">{{term.doc_count}}</span>
+
+      </span>
+      </li>
+    </ul>
 
     <span class="show-more-terms" data-ng-if="facet.terms.length > displayCount"
           data-ng-click="toggle($event, 'expanded')"

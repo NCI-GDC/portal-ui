@@ -23,7 +23,7 @@ module ngApp.components.facets.services {
         if (facet === c["field"]) {
           c["value"].forEach((v) => {
             terms.forEach((t) => {
-              if (t === v) {
+              if (t.key === v) {
                 xs.push(t);
               }
             });

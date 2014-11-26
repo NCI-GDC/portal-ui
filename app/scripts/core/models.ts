@@ -36,7 +36,6 @@ module ngApp.models {
   }
 
   export interface IFacet {
-    terms: any;
-    value: string;
+    buckets: any;
   }
 }

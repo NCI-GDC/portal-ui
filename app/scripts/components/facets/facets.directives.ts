@@ -4,6 +4,8 @@ module ngApp.components.facets.directives {
 
   interface IFacetScope extends ng.IScope {
     facet: IFacet;
+    title: string;
+    name: string;
     collapsed: boolean;
     expanded: boolean;
     displayCount: number;
@@ -23,15 +25,18 @@ module ngApp.components.facets.directives {
   }
 
   class TermsController implements ITermsController {
-    name : string = "";
+    title : string = "";
+    name: string = "";
     terms : string[] = [];
     actives: string[] = [];
     inactives: string[] = [];
 
     /* @ngInject */
     constructor($scope: IFacetScope, private FacetService: IFacetService) {
-      this.name = $scope.facet.value;
-      this.terms = $scope.facet.terms;
+      this.title = $scope.title;
+      // TODO api should re-format the facets
+      this.name = $scope.name;
+      this.terms = $scope.facet.buckets;
       this.refresh();
       $scope.$watch("facet", (n,o) => {
         if (n === o) {
@@ -64,7 +69,9 @@ module ngApp.components.facets.directives {
         facet: "=",
         collapsed: "@",
         expanded: "@",
-        displayCount: "@"
+        displayCount: "@",
+        title: "@",
+        name: "@"
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
@@ -92,7 +99,7 @@ module ngApp.components.facets.directives {
     "facets.services"
   ])
       .controller("termsCtrl", TermsController)
-      .directive("facetTerms", Terms)
+      .directive("terms", Terms)
       .directive("facetsFreeText", FacetsFreeText);
 }
 

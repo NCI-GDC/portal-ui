@@ -5,16 +5,16 @@
                           aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
                           role="button">
     <span class="fa" data-ng-class="{ 'fa-chevron-down': !collapsed, 'fa-chevron-right': collapsed }"></span>
-    {{ facet.value | translate }}
+    {{ tc.title | translate }}
   </div>
   <div class="facet-term-group" data-ng-show="!collapsed">
     <div data-ng-repeat="term in tc.actives">
         <label class="facet-term">
           <i class="fa fa-minus"
-             data-ng-click="tc.remove(facet.value, term)"
+             data-ng-click="tc.remove(tc.name, term.key)"
              aria-controls="data-table"
              aria-checked="false"></i>
-          <span>{{ term | translate }}</span>
+          <span>{{ term.key | translate }} {{term.doc_count}}</span>
         </label>
     </div>
     <div data-ng-repeat="term in tc.inactives">
@@ -23,10 +23,10 @@
            data-ng-hide="$index > (displayCount - 1) && !expanded">
         <label class="facet-term">
           <i class="fa fa-plus"
-              data-ng-click="tc.add(facet.value, term)"
+              data-ng-click="tc.add(tc.name, term.key)"
                  aria-controls="data-table"
                  aria-checked="false"></i>
-          <span>{{ term | translate }}</span>
+          <span>{{ term.key | translate }} {{term.doc_count}}</span>
         </label>
       </div>
     </div>

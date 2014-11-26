@@ -1,4 +1,36 @@
-### 0.1.8-rc1 (2014-11-07)
+### 0.1.8-sprt2 (2014-11-26)
+
+
+#### Bug Fixes
+
+* **cart:** Fixes toggle select all items. ([40c5b1d4](https://github.com/NCI-GDC/portal-ui/commit/40c5b1d426ea72104be988cce4ea15070c3ce1e1))
+
+
+#### Features
+
+* **404:** Adds 404 page for non existing pages. ([d1b4e6b0](https://github.com/NCI-GDC/portal-ui/commit/d1b4e6b01749287a9c56178b43011cde2395f7f8), closes [OICR-116](https://jira.opensciencedatacloud.org/browse/OICR-116))
+* **a11y:** Adds ngAria module. ([df643057](https://github.com/NCI-GDC/portal-ui/commit/df643057ad27d1c5967436036c0f3ac1f8305b7b), closes [OICR-112](https://jira.opensciencedatacloud.org/browse/OICR-112))
+* **api:** hooks up the UI to the API ([7e916401](https://github.com/NCI-GDC/portal-ui/commit/7e9164014f56abcc1c83426d417b8a4fe7b7f40b), closes [OICR-113](https://jira.opensciencedatacloud.org/browse/OICR-113))
+* **app:**
+  * better support for ajax spinners ([dadb14e3](https://github.com/NCI-GDC/portal-ui/commit/dadb14e336a44fc191fcbce9466d3a9431c7ffb1))
+  * Display loading during AJAX requests. ([fcc0ee3d](https://github.com/NCI-GDC/portal-ui/commit/fcc0ee3d8fcf2f7bef42099fbeb8c81f6a4e5f0f), closes [OICR-117](https://jira.opensciencedatacloud.org/browse/OICR-117))
+  * Adds NCI/NIH Header/Footer. ([4ef63aef](https://github.com/NCI-GDC/portal-ui/commit/4ef63aef37886348bd069249d29e92a2a2b5333c), closes [OICR-90](https://jira.opensciencedatacloud.org/browse/OICR-90))
+* **core:** adds app loading screen ([229823d2](https://github.com/NCI-GDC/portal-ui/commit/229823d24eab79f69a9623f6ecd69120369af0cc), closes [OICR-118](https://jira.opensciencedatacloud.org/browse/OICR-118))
+* **entities:** Adds sidebar navigation. ([824215f1](https://github.com/NCI-GDC/portal-ui/commit/824215f1cea95dcd2136687e18801ccf4dc56cb9), closes [OICR-110](https://jira.opensciencedatacloud.org/browse/OICR-110))
+* **facets:**
+  * updates facet styles/markup ([61346670](https://github.com/NCI-GDC/portal-ui/commit/613466704d6175c73881fcfed3434d6393928704))
+  * updates facets to work with api ([4015b98c](https://github.com/NCI-GDC/portal-ui/commit/4015b98c0fea6b859d258a619d9a24d7d6747b4e))
+* **location:** Adds Location Service. ([045dc4bf](https://github.com/NCI-GDC/portal-ui/commit/045dc4bf62e4fa1700718a71dbaa0d56e13ce580))
+* **projects:**
+  * better error handling ([c16b56f2](https://github.com/NCI-GDC/portal-ui/commit/c16b56f2f1c2c905f6808ddcb5f442cde69696f5))
+  * updates facets ([2f710e72](https://github.com/NCI-GDC/portal-ui/commit/2f710e729f30191a8b82c7c5bb5b4fa9ebf23574))
+* **reports:**
+  * Create basic chart directive. ([21181e06](https://github.com/NCI-GDC/portal-ui/commit/21181e06a959d5e424da500f449409b6b0724209), closes [OICR-108](https://jira.opensciencedatacloud.org/browse/OICR-108))
+  * Adds reports page. ([2501299a](https://github.com/NCI-GDC/portal-ui/commit/2501299a2861339604108d1f9bf580ba0028c28a))
+* **search:** updates search facets ([1d2d8a2f](https://github.com/NCI-GDC/portal-ui/commit/1d2d8a2ff2e7be177cd847d3ee03e3709b5c92d5))
+
+
+### 0.1.8-sprt1 (2014-11-07)
 
 
 #### Features

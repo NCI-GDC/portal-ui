@@ -45,6 +45,9 @@ module ngApp.projects.services {
   }
 
   angular
-      .module("projects.services", ["restangular"])
+      .module("projects.services", [
+        "restangular",
+        "components.location"
+      ])
       .service("ProjectsService", ProjectsService);
 }

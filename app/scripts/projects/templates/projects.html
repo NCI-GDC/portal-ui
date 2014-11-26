@@ -19,19 +19,26 @@
   <div class="row search-panel">
     <div class="col-lg-2 col-md-3 facets-sidebar">
       <facets-free-text placeholder="{{ '(Project Name or Code)' | translate }}"></facets-free-text>
-      <!--<facet-terms data-facet="prsc.projects.aggregations.diseaseType"></facet-terms>-->
+      <facet-terms data-facet="prsc.projects.aggregations.diseaseType"></facet-terms>
       <terms data-name="project_code"
              data-facet="prsc.projects.aggregations.project_code" data-title="Project Code"></terms>
       <terms data-name="program"
              data-facet="prsc.projects.aggregations.program" data-title="Program"></terms>
       <terms data-name="status"
              data-facet="prsc.projects.aggregations.status" data-title="Status"></terms>
-      <!--<facet-terms data-facet="prsc.projects.facets.dataType"></facet-terms>-->
-      <!--<facet-terms data-facet="prsc.projects.facets.experimentalStrategy"></facet-terms>-->
+      <facet-terms data-facet="prsc.projects.facets.dataType"></facet-terms>
+      <facet-terms data-facet="prsc.projects.facets.experimentalStrategy"></facet-terms>
     </div>
-    <div class="col-lg-10 col-md-9 table-area">
-      <h4 class="clearfix">
+    <h2 class="col-lg-10 col-md-9" data-ng-if="!prsc.projects">
+      <i class="fa fa-spinner fa-spin"></i> Loading projects...
+    </h2>
 
+    <h2 class="col-lg-10 col-md-9" data-ng-if="prsc.projects.hits.length === 0">
+      No projects found using those filters.
+    </h2>
+
+    <div class="col-lg-10 col-md-9" data-ng-if="prsc.projects.hits.length > 0">
+      <h4 class="clearfix">
         <span class="pull-right">
           <select-columns></select-columns>
           <export-table></export-table>

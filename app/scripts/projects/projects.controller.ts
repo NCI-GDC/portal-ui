@@ -9,36 +9,37 @@ module ngApp.projects.controllers {
   }
 
   class ProjectsController implements IProjectsController {
+    projects: IProjects;
     /* @ngInject */
-    constructor(private $scope, public projects: IProjects, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
+    constructor(private $scope, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
       CoreService.setPageTitle("Projects");
-      this.setup();
-
-    }
-
-    setup() {
       this.$scope.$on('$locationChangeSuccess', (event, next) => {
         if (next.indexOf('projects') !== -1) {
-          this.ProjectsService.getProjects({
-            fields: [
-              "project_uuid",
-              "project_name",
-              "status",
-              "program",
-              "project_code",
-              "_summary._participant_count",
-              "_summary._analyzed_data.data_type",
-              "_summary._analyzed_data._participant_count",
-              "_summary._analyzed_data._file_count"
-            ],
-            facets: [
-              "status",
-              "program",
-              "project_code"
-            ]
-          }).then((data) => this.projects = data);
+          this.refresh();
         }
       });
+      this.refresh();
+    }
+
+    refresh() {
+      this.ProjectsService.getProjects({
+        fields: [
+          "project_uuid",
+          "project_name",
+          "status",
+          "program",
+          "project_code",
+          "_summary._participant_count",
+          "_summary._analyzed_data.data_type",
+          "_summary._analyzed_data._participant_count",
+          "_summary._analyzed_data._file_count"
+        ],
+        facets: [
+          "status",
+          "program",
+          "project_code"
+        ]
+      }).then((data) => this.projects = data);
     }
   }
 

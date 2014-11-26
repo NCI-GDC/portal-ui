@@ -16,15 +16,7 @@ module ngApp.search {
     $stateProvider.state("search", {
       url: "/search?query",
       controller: "SearchController as sc",
-      templateUrl: "search/templates/search.html",
-      resolve: {
-        files: (FilesService: IFilesService): ng.IPromise<IFiles> => {
-          return FilesService.getFiles();
-        },
-        participants: (ParticipantsService: IParticipantsService): ng.IPromise<IParticipants> => {
-          return ParticipantsService.getParticipants();
-        }
-      }
+      templateUrl: "search/templates/search.html"
     });
 
     $stateProvider.state("search.participants", {

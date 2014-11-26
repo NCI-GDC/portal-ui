@@ -42,7 +42,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr data-ng-repeat="file in sc.files.hits">
+  <tr data-ng-repeat="file in sc.files.hits track by file.file_uuid">
     <td>
       <input type="checkbox"
              class="cart-checkbox"

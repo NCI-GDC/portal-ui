@@ -24,15 +24,14 @@ module ngApp.search.controllers {
   class SearchController implements ISearchController {
     participantAccordian: boolean = true;
     participantBioAccordian: boolean = true;
+    files : IFiles;
+    participants: IParticipants;
     query: string = "";
 
     /* @ngInject */
-    constructor(
-        private $scope,
-        private $state: ng.ui.IStateService,
+    constructor(private $scope,
+                private $state: ng.ui.IStateService,
                 public State: IState,
-                public files: IFiles,
-                public participants: IParticipants,
                 public CartService: ICartService,
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
@@ -41,18 +40,57 @@ module ngApp.search.controllers {
       this.State.setActive(data.tab);
       CoreService.setPageTitle("Search");
 
-      // TODO Listen for Location change event - run activate
-      this.setup();
-
-    }
-
-    setup() {
-      this.$scope.$on('$locationChangeSuccess',  (event, next) => {
+      this.$scope.$on('$locationChangeSuccess', (event, next) => {
         if (next.indexOf('search') !== -1) {
-          this.FilesService.getFiles().then((data) => this.files = data);
-          this.ParticipantsService.getParticipants().then((data) => this.participants = data);
+          this.refresh();
         }
       });
+      this.refresh();
+    }
+
+    refresh() {
+      this.FilesService.getFiles({
+        fields: [
+          "data_access",
+          "data_format",
+          "data_level",
+          "data_subtype",
+          "data_type",
+          "file_extension",
+          "file_name",
+          "file_size",
+          "file_uuid",
+          "platform",
+          "updated"
+        ],
+        facets: [
+          "data_access",
+          "data_format",
+          "data_level",
+          "data_subtype",
+          "data_type",
+          "file_extension",
+          "platform"
+        ]
+      }).then((data) => this.files = data);
+      this.ParticipantsService.getParticipants({
+        fields: [
+          "bcr_patient_barcode",
+          "bcr_patient_uuid",
+          "gender",
+          "patient_id",
+          "vital_status"
+        ],
+        facets: [
+          "ethnicity",
+          "gender",
+          "histological_type",
+          "history_of_neoadjuvant_treatment",
+          "race",
+          "tumor_tissue_site",
+          "vital_status"
+        ]
+      }).then((data) => this.participants = data);
     }
 
     // TODO Load data lazily based on active tab

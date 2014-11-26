@@ -16,7 +16,7 @@ module ngApp.components.facets.directives {
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
-      controller: 'termsCtrl as tc',
+      controller: "termsCtrl as tc",
       compile: function (element: ng.IAugmentedJQuery, attrs: IFacetAttributes) {
         attrs.collapsed = !!attrs.collapsed;
         attrs.displayCount = attrs.displayCount || 5;

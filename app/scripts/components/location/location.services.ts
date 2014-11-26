@@ -1,9 +1,8 @@
 module ngApp.components.location.services {
 
   export interface ISearch {
-    filters: string
+    filters: string;
   }
-
 
   export interface ILocationService {
     path(): string;
@@ -27,7 +26,7 @@ module ngApp.components.location.services {
     }
 
     setSearch(search: ISearch): ng.ILocationService {
-      return this.$location.search(search)
+      return this.$location.search(search);
     }
 
     clear(): ng.ILocationService {

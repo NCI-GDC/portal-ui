@@ -40,8 +40,8 @@ module ngApp.search.controllers {
       this.State.setActive(data.tab);
       CoreService.setPageTitle("Search");
 
-      this.$scope.$on('$locationChangeSuccess', (event, next) => {
-        if (next.indexOf('search') !== -1) {
+      this.$scope.$on("$locationChangeSuccess", (event, next) => {
+        if (next.indexOf("search") !== -1) {
           this.refresh();
         }
       });

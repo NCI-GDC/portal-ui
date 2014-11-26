@@ -13,8 +13,8 @@ module ngApp.projects.controllers {
     /* @ngInject */
     constructor(private $scope, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
       CoreService.setPageTitle("Projects");
-      this.$scope.$on('$locationChangeSuccess', (event, next) => {
-        if (next.indexOf('projects') !== -1) {
+      this.$scope.$on("$locationChangeSuccess", (event, next) => {
+        if (next.indexOf("projects") !== -1) {
           this.refresh();
         }
       });

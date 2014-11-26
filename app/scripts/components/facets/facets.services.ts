@@ -37,7 +37,7 @@ module ngApp.components.facets.services {
 
     ensurePath(filters: Object): Object {
       if (!filters.hasOwnProperty("content")) {
-        filters = {op: "and", content: []}
+        filters = {op: "and", content: []};
       }
       return filters;
     }
@@ -49,10 +49,10 @@ module ngApp.components.facets.services {
       var cs = filters["content"];
       for (var i = 0; i < cs.length; i++) {
         var c = cs[i]["content"];
-        if (c['field'] === facet) {
+        if (c["field"] === facet) {
           found = true;
           // TODO as a set
-          c['value'].push(term);
+          c["value"].push(term);
           break;
         }
       }
@@ -73,8 +73,8 @@ module ngApp.components.facets.services {
       var cs = filters["content"];
       for (var i = 0; i < cs.length; i++) {
         var c = cs[i]["content"];
-        if (c['field'] === facet) {
-          var vs = c['value'];
+        if (c["field"] === facet) {
+          var vs = c["value"];
           vs.splice(vs.indexOf(term), 1);
           if (vs.length === 0) {
             cs.splice(i, 1);
@@ -82,7 +82,7 @@ module ngApp.components.facets.services {
               filters = null;
             }
           }
-          break
+          break;
         }
       }
       this.LocationService.setFilters(filters);

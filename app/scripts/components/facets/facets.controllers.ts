@@ -1,5 +1,6 @@
 module ngApp.components.facets.directives {
-  import IFacetScope = ngApp.components.facets.models.IFacetScope
+
+  import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import IFacetService = ngApp.components.facets.services.IFacetService;
 
   interface ITermsController {
@@ -17,12 +18,16 @@ module ngApp.components.facets.directives {
     /* @ngInject */
     constructor($scope: IFacetScope, private FacetService: IFacetService) {
       this.title = $scope.title;
-      if ($scope.facet) this.refresh($scope.facet.buckets);
+      if ($scope.facet) {
+        this.refresh($scope.facet.buckets);
+      }
       // TODO api should re-format the facets
       this.name = $scope.name;
 
       $scope.$watch("facet", (n, o) => {
-        if (n === o) return;
+        if (n === o) {
+          return;
+        }
         this.refresh(n.buckets);
       });
     }
@@ -42,5 +47,5 @@ module ngApp.components.facets.directives {
   }
 
   angular.module("facets.controllers", ["facets.services"])
-      .controller("termsCtrl", TermsController)
+      .controller("termsCtrl", TermsController);
 }

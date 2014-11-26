@@ -17,6 +17,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/404");
   RestangularProvider.setBaseUrl("http://localhost:5000/");
+  RestangularProvider.setDefaultHttpFields({cache: true});
 }
 
 /* @ngInject */

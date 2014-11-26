@@ -1,6 +1,7 @@
 module ngApp.projects.services {
   import IProject = ngApp.projects.models.IProject;
   import IProjects = ngApp.projects.models.IProjects;
+  import ILocationService = ngApp.components.location.services.ILocationService;
 
   export interface IProjectsService {
     getProject(id: string): ng.IPromise<IProject>;
@@ -11,7 +12,7 @@ module ngApp.projects.services {
     private ds: restangular.IElement;
 
     /* @ngInject */
-    constructor(Restangular: restangular.IService) {
+    constructor(Restangular: restangular.IService, private LocationService: ILocationService) {
       this.ds = Restangular.all("projects");
     }
 
@@ -28,7 +29,16 @@ module ngApp.projects.services {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
-      return this.ds.get("", params).then((response): IProjects => {
+      if (params.hasOwnProperty("facets")) {
+        params["facets"] = params["facets"].join();
+      }
+      var defaults = {
+        size: 10,
+        from: 1,
+        filters: this.LocationService.filters()
+      };
+
+      return this.ds.get("", angular.extend(defaults, params)).then((response): IProjects => {
         return response["data"];
       });
     }

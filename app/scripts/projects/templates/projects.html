@@ -5,7 +5,8 @@
     <div class="col-lg-10 col-md-8 col-sm-12 pull-right no-padding-left search-bar">
       <div class="row">
         <div class="col-lg-2 col-md-2 col-sm-2">
-          <button class="btn btn-default pull-right" data-translate aria-label="{{ 'Share Query' | translate }}">Share</button>
+          <button class="btn btn-default pull-right" data-translate aria-label="{{ 'Share Query' | translate }}">Share
+          </button>
           <span class="fa fa-refresh pull-right"></span>
         </div>
         <div class="col-lg-10 col-md-10 col-sm-10">
@@ -17,15 +18,16 @@
 
   <div class="row search-panel">
     <div class="col-lg-2 col-md-3 facets-sidebar">
-      <facets-free-text placeholder="{{ '(Project Name or Code)' | translate }}">
-      </facets-free-text>
-      <facet-terms data-facet="prsc.projects.facets.diseaseType"></facet-terms>
-      <facet-terms data-facet="prsc.projects.facets.program"
-                   data-collapsed="true"></facet-terms>
-      <facet-terms data-facet="prsc.projects.facets.status"></facet-terms>
-      <facet-terms data-facet="prsc.projects.facets.dataType"></facet-terms>
-      <facet-terms data-facet="prsc.projects.facets.experimentalStrategy"
-                   data-collapsed="true"></facet-terms>
+      <facets-free-text placeholder="{{ '(Project Name or Code)' | translate }}"></facets-free-text>
+      <!--<facet-terms data-facet="prsc.projects.aggregations.diseaseType"></facet-terms>-->
+      <terms data-name="project_code"
+             data-facet="prsc.projects.aggregations.project_code" data-title="Project Code"></terms>
+      <terms data-name="program"
+             data-facet="prsc.projects.aggregations.program" data-title="Program"></terms>
+      <terms data-name="status"
+             data-facet="prsc.projects.aggregations.status" data-title="Status"></terms>
+      <!--<facet-terms data-facet="prsc.projects.facets.dataType"></facet-terms>-->
+      <!--<facet-terms data-facet="prsc.projects.facets.experimentalStrategy"></facet-terms>-->
     </div>
     <div class="col-lg-10 col-md-9 table-area">
       <h4 class="clearfix">
@@ -65,16 +67,20 @@
           <td>{{ ::p.project_name }}</td>
           <td>{{ ::p.program }}</td>
           <td><a data-ui-sref="search.participants( { projectId: p.id })">{{ ::p._summary._participant_count }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["Clinical"].fileCount }}</a>
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["Clinical"].fileCount
+            }}</a>
           </td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["SNV"].fileCount }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["mRNA Expression"].fileCount
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["SNV"].fileCount
+            }}</a></td>
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["mRNA
+            Expression"].fileCount
             }}</a></td>
           <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["miRNA
             Expression"].fileCount }}</a></td>
           <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["Copy number
             variation"].fileCount }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["DNA methylation"].fileCount
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["DNA
+            methylation"].fileCount
             }}</a></td>
           <td>{{ ::p.status}}</td>
           <td>{{ ::p.date | date }}</td>

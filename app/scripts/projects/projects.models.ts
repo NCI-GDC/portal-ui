@@ -9,7 +9,7 @@ module ngApp.projects.models {
   }
 
   export interface ISummary {
-    fileCount: number;
+    file_count: number;
     participantCount: number;
     analyzedData: any;
     experimentalData: IExperimentalData[];

@@ -9,7 +9,8 @@ module ngApp.projects {
     $stateProvider.state("projects", {
       url: "/projects",
       controller: "ProjectsController as prsc",
-      templateUrl: "projects/templates/projects.html"
+      templateUrl: "projects/templates/projects.html",
+      reloadOnSearch: false
     });
 
     $stateProvider.state("project", {

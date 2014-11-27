@@ -12,39 +12,61 @@ module ngApp.search {
   function searchConfig($stateProvider: ng.ui.IStateProvider, $urlRouterProvider: ng.ui.IUrlRouterProvider) {
 
     $urlRouterProvider.when("/search", "/search/p");
+    $urlRouterProvider.when("/query", "/query/p");
 
     $stateProvider.state("search", {
-      url: "/search?query",
+      url: "/search?filters",
       controller: "SearchController as sc",
-      templateUrl: "search/templates/search.html"
+      templateUrl: "search/templates/search.html",
+      reloadOnSearch: false
     });
 
     $stateProvider.state("search.participants", {
       url: "/p?filters",
       data: {
         tab: "participants"
-      }
+      },
+      reloadOnSearch: false
     });
 
     $stateProvider.state("search.files", {
       url: "/f?filters",
       data: {
         tab: "files"
-      }
+      },
+      reloadOnSearch: false
     });
 
-    $stateProvider.state("search.annotations", {
-      url: "/a",
-      data: {
-        tab: "annotations"
-      }
+    $stateProvider.state("query", {
+      url: "/query?query",
+      controller: "SearchController as sc",
+      templateUrl: "search/templates/search.html",
+      reloadOnSearch: false
     });
+
+    $stateProvider.state("query.participants", {
+      url: "/p",
+      data: {
+        tab: "participants",
+        advancedQuery: true
+      },
+      reloadOnSearch: false
+    });
+
+    $stateProvider.state("query.files", {
+      url: "/f",
+      data: {
+        tab: "files",
+        advancedQuery: true
+      },
+      reloadOnSearch: false
+    });
+
   }
 
   angular
       .module("ngApp.search", [
         "search.controller",
-        "ngApp.annotations",
         "ngApp.participants",
         "ngApp.files",
         "ui.router.state"

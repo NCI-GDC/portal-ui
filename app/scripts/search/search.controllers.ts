@@ -19,6 +19,12 @@ module ngApp.search.controllers {
     query: string;
     searchQuery(event: any, size: number): void;
     addFilesKeyPress(event: any, type: string): void;
+    setState(tab: string, next: string): void;
+    select(section: string, tab: string): void;
+  }
+
+  interface ISearchControllerScope extends ng.IScope {
+    advancedQuery: boolean;
   }
 
   class SearchController implements ISearchController {
@@ -29,7 +35,7 @@ module ngApp.search.controllers {
     query: string = "";
 
     /* @ngInject */
-    constructor(private $scope,
+    constructor(private $scope: ISearchControllerScope,
                 private $state: ng.ui.IStateService,
                 public State: IState,
                 public CartService: ICartService,
@@ -37,12 +43,25 @@ module ngApp.search.controllers {
                 public ParticipantsService: IParticipantsService,
                 CoreService: ICoreService) {
       var data = $state.current.data || {};
-      this.State.setActive(data.tab);
+      this.State.setActive("tabs", data.tab);
+      this.State.setActive("facets", data.tab);
+      $scope.advancedQuery = data.advancedQuery;
       CoreService.setPageTitle("Search");
 
-      this.$scope.$on("$locationChangeSuccess", (event, next) => {
-        if (next.indexOf("search") !== -1) {
+      $scope.$on("$locationChangeSuccess", (event, next: string) => {
+        if (next.indexOf("search") !== -1 || next.indexOf("query") !== -1) {
           this.refresh();
+        }
+      });
+      $scope.$watch("advancedQuery", (newVal: boolean) => {
+        if (newVal !== undefined) {
+          var state: string = "search.";
+
+          if (newVal) {
+            state = "query.";
+          }
+
+          this.setState(this.$state.current.name.substring(this.$state.current.name.lastIndexOf(".") + 1), state);
         }
       });
       this.refresh();
@@ -95,12 +114,28 @@ module ngApp.search.controllers {
     }
 
     // TODO Load data lazily based on active tab
-    select(tab) {
+    setState(tab: string, next: string) {
       // Changing tabs and then navigating to another page
       // will cause this to fire.
-      if (tab && this.$state.current.name.match("search.")) {
-        this.$state.go("search." + tab, {}, {inherit: true});
+      if (tab && (this.$state.current.name.match("search.") ||
+                  this.$state.current.name.match("query."))) {
+
+        next += tab;
+
+        this.$state.go(next, {}, {inherit: true});
       }
+    }
+
+    select(section: string, tab: string) {
+      var next = "search.";
+
+      this.State.setActive(section, tab);
+
+      if (this.$state.current.name.match("query.")) {
+        next = "query.";
+      }
+
+      this.setState(tab, next);
     }
 
     addFilesKeyPress(event: any, type: string) {

@@ -1,64 +1,64 @@
 <div class="container-fluid search">
   <h1 data-translate>Search</h1>
 
-  <div class="row search-bar">
-    <div class="col-lg-10 col-md-8 col-sm-12 pull-right">
-      <div class="row">
-        <div class="col-lg-1 col-md-2 col-sm-2">
-          <button class="btn btn-default pull-right" data-translate aria-label="{{ 'Share Query' | translate }}">Share</button>
-          <span class="fa fa-refresh pull-right"></span>
-        </div>
-        <div class="col-lg-11 col-md-10 col-sm-10">
-          <current-filters class="current-filters"></current-filters>
-        </div>
-      </div>
-    </div>
-  </div>
+  <search-bar></search-bar>
 
   <div class="row search-panel">
-    <div class="col-lg-2 col-md-3 facets-sidebar">
-      <tabset>
-        <tab heading="{{ 'Participants' | translate }}">
-          <div data-ng-include="'search/templates/search.participants.facets.html'" role="form"></div>
-        </tab>
-
-        <tab heading="{{ 'Files' | translate }}">
-          <div data-ng-include="'search/templates/search.files.facets.html'" role="form"></div>
-        </tab>
-      </tabset>
+    <div class="col-lg-2 col-md-3 facets-sidebar" data-ng-show="!sc.$scope.advancedQuery">
+      <ul class="nav nav-tabs">
+        <li role="presentation"
+            data-ng-class="{ active: sc.State.facets.participants.active }"
+            data-ng-click="sc.State.setActive('facets', 'participants')">
+          <a>{{ 'Participants' | translate }}</a>
+        </li>
+        <li role="presentation"
+            data-ng-class="{ active: sc.State.facets.files.active }"
+            data-ng-click="sc.State.setActive('facets', 'files')">
+          <a>{{ 'Files' | translate }}</a>
+        </li>
+      </ul>
+      <div data-ng-include="'search/templates/search.participants.facets.html'" role="form"
+           data-ng-show="sc.State.facets.participants.active"></div>
+      <div data-ng-include="'search/templates/search.files.facets.html'" role="form"
+           data-ng-show="sc.State.facets.files.active"></div>
     </div>
-    <div class="col-lg-10 col-md-9 table-area">
-      <tabset>
-        <tab heading="{{ 'Participants' | translate }} ({{sc.participants.pagination.total}})"
-             active="sc.State.tabs.participants.active"
-             select="sc.select('participants')">
-          <div class="pane-section">
-            <h2 class="col-lg-10 col-md-9" data-ng-if="!sc.participants">
-              <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading participants...</span>
-            </h2>
+    <div class="table-area"
+         data-ng-class="{ 'col-lg-10 col-md-9': !sc.$scope.advancedQuery, 'col-lg-12 col-md-12': sc.$scope.advancedQuery }">
+      <ul class="nav nav-tabs">
+        <li role="presentation"
+            data-ng-class="{ active: sc.State.tabs.participants.active }"
+            data-ng-click="sc.select('tabs', 'participants')">
+          <a>{{ 'Participants' | translate }} ({{sc.participants.pagination.total}})</a>
+        </li>
+        <li role="presentation"
+            data-ng-class="{ active: sc.State.tabs.files.active }"
+            data-ng-click="sc.select('tabs', 'files')">
+          <a>{{ 'Files' | translate }} ({{sc.files.pagination.total}})</a>
+        </li>
+      </ul>
+      <div class="pane-section"
+           data-ng-show="sc.State.tabs.participants.active">
+        <h2 class="col-lg-10 col-md-9" data-ng-if="!sc.participants">
+          <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading participants...</span>
+        </h2>
 
-            <h2 class="col-lg-10 col-md-9" data-ng-if="sc.participants.hits.length === 0" data-translate>
-              No participants found using those filters.
-            </h2>
-            <div data-ng-include="'search/templates/search.participants.html'" data-ng-if="sc.participants.hits.length > 0"></div>
-          </div>
-        </tab>
-        <tab heading="{{ 'Files' | translate }} ({{sc.files.pagination.total}})"
-             active="sc.State.tabs.files.active"
-             select="sc.select('files')">
-          <div class="pane-section">
-            <h2 class="col-lg-10 col-md-9" data-ng-if="!sc.files">
-              <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading files...</span>
-            </h2>
+        <h2 class="col-lg-10 col-md-9" data-ng-if="sc.participants.hits.length === 0" data-translate>
+          No participants found using those filters.
+        </h2>
+        <div data-ng-include="'search/templates/search.participants.html'" data-ng-if="sc.participants.hits.length > 0"></div>
+      </div>
+      <div class="pane-section"
+           data-ng-show="sc.State.tabs.files.active">
+        <h2 class="col-lg-10 col-md-9" data-ng-if="!sc.files">
+          <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading files...</span>
+        </h2>
 
-            <h2 class="col-lg-10 col-md-9" data-ng-if="sc.files.hits.length === 0" data-translate>
-              No files found using those filters.
-            </h2>
+        <h2 class="col-lg-10 col-md-9" data-ng-if="sc.files.hits.length === 0" data-translate>
+          No files found using those filters.
+        </h2>
 
-            <div data-ng-include="'search/templates/search.files.html'" data-ng-if="sc.files.hits.length > 0"></div>
-          </div>
-        </tab>
-      </tabset>
+        <div data-ng-include="'search/templates/search.files.html'" data-ng-if="sc.files.hits.length > 0"></div>
+      </div>
     </div>
   </div>
 </div>

@@ -39,7 +39,7 @@ module ngApp.components.charts {
         var margin = { top: 10, right: 20, bottom: 60, left: 40 };
         var width = element.find(".chart-container")[0].clientWidth - margin.left - margin.right;
         var height = 500 - margin.top - margin.bottom;
-        var radius = Math.min(width, height) /2;
+        var radius = Math.min(width, height) / 2;
 
         function buildChart() {
           var colour = d3.scale.category20c();
@@ -82,7 +82,7 @@ module ngApp.components.charts {
         var redraw = function() {
           width = parseInt(d3.select(element.find(".chart-container")[0]).style("width"), 10);
           width = width - margin.left - margin.right;
-          radius = Math.min(width, height)/2;
+          radius = Math.min(width, height) / 2;
           d3.select(element.find(".chart-container > svg")[0]).remove();
           buildChart();
         };

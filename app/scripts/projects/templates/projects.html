@@ -1,22 +1,10 @@
 <div class="container-fluid projects search">
   <h1 data-translate>Projects</h1>
 
-  <div class="row search-bar">
-    <div class="col-lg-10 col-md-8 col-sm-12 pull-right">
-      <div class="row">
-        <div class="col-lg-1 col-md-2 col-sm-2">
-          <button class="btn btn-default pull-right" data-translate aria-label="{{ 'Share Query' | translate }}">Share</button>
-          <span class="fa fa-refresh pull-right"></span>
-        </div>
-        <div class="col-lg-11 col-md-10 col-sm-10">
-          <current-filters class="current-filters"></current-filters>
-        </div>
-      </div>
-    </div>
-  </div>
+  <search-bar></search-bar>
 
   <div class="row search-panel">
-    <div class="col-lg-2 col-md-3 facets-sidebar">
+    <div class="col-lg-2 col-md-3 facets-sidebar" data-ng-show="!prsc.$scope.advancedQuery">
       <facets-free-text placeholder="{{ '(Project Name or Code)' | translate }}"></facets-free-text>
       <facet-terms data-facet="prsc.projects.aggregations.diseaseType"></facet-terms>
       <terms data-name="project_code"
@@ -36,8 +24,8 @@
       No projects found using those filters.
     </h2>
 
-    <div class="col-lg-10 col-md-9" data-ng-if="prsc.projects.hits.length > 0">
-
+    <div class="col-lg-10 col-md-9" data-ng-if="prsc.projects.hits.length > 0"
+         data-ng-class="{ 'col-lg-10 col-md-9': !prsc.$scope.advancedQuery, 'col-lg-12 col-md-12': prsc.$scope.advancedQuery }">
       <h4 class="clearfix">
         <span class="pull-right">
           <select-columns></select-columns>

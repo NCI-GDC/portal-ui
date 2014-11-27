@@ -11,7 +11,8 @@ module ngApp.search.services {
 
   export interface IState {
     tabs: ITabs;
-    setActive(s: string): void;
+    facets: ITabs;
+    setActive(section: string, s: string): void;
   }
 
   class State implements IState {
@@ -21,15 +22,23 @@ module ngApp.search.services {
       },
       files: {
         active: false
+      }
+    };
+    facets: ITabs = {
+      participants: {
+        active: false
       },
-      annotations: {
+      files: {
         active: false
       }
     };
 
-    setActive(tab: string) {
-      if (tab) {
-        this.tabs[tab].active = true;
+    setActive(section: string, tab: string) {
+      if (section && tab) {
+        _.each(this[section], function (section: ITab) {
+          section.active = false;
+        });
+        this[section][tab].active = true;
       }
     }
   }

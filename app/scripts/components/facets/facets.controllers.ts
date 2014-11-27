@@ -32,11 +32,11 @@ module ngApp.components.facets.directives {
       this.expanded = !!$scope.expanded;
       this.displayCount = this.originalDisplayCount = $scope.displayCount || 5;
       this.title = $scope.title;
+      // TODO api should re-format the facets
+      this.name = $scope.name;
       if ($scope.facet) {
         this.refresh($scope.facet.buckets);
       }
-      // TODO api should re-format the facets
-      this.name = $scope.name;
 
       $scope.$watch("facet", (n, o) => {
         if (n === o) {

@@ -8,12 +8,17 @@ module ngApp.projects.controllers {
     projects: IProjects;
   }
 
+  interface IProjectsControllerScope {
+    advancedQuery: boolean;
+  }
+
   class ProjectsController implements IProjectsController {
     projects: IProjects;
+    advancedQuery: boolean = false;
     /* @ngInject */
-    constructor(private $scope, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
+    constructor(private $scope: ng.IScope, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
       CoreService.setPageTitle("Projects");
-      this.$scope.$on("$locationChangeSuccess", (event, next) => {
+      $scope.$on("$locationChangeSuccess", (event, next) => {
         if (next.indexOf("projects") !== -1) {
           this.refresh();
         }

@@ -1,0 +1,49 @@
+<div class="row search-bar">
+  <div class="col-sm-12 pull-right"
+       data-ng-class="{ 'col-lg-10 col-md-8 col-sm-12': !$parent.advancedQuery, 'col-lg-12 col-md-12': $parent.advancedQuery }">
+    <div class="row">
+      <div class="col-lg-10 col-md-9 col-sm-9">
+        <div class="row" data-ng-if="!$parent.advancedQuery">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <current-filters class="current-filters"></current-filters>
+          </div>
+        </div>
+        <div class="row" data-ng-if="$parent.advancedQuery" >
+          <div class="col-lg-11 col-md-11 col-sm-11">
+            <textarea class="form-control"
+                   data-ng-model="sb.query"
+                   type="text"
+                   aria-label="Advanced Query"
+                   placeholder="Start Typing Your Query...."
+                   role="search">
+            </textarea>
+          </div>
+          <div class="col-lg-1 col-md-1 col-sm-1 no-padding-left">
+            <button class="btn btn-default" data-ng-if="$parent.advancedQuery" data-translate
+                    data-ng-click="sb.sendQuery()">Search</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-3 col-sm-3" data-ng-if="sb.isSearchQuery">
+        <button class="btn btn-default pull-right"
+                data-ng-click="sb.resetQuery()"
+                aria-label="{{ 'Clear Query' | translate }}" data-translate>
+          Clear
+        </button>
+        <button class="btn btn-default pull-right"
+                aria-label="{{ 'Share Query' | translate }}" data-translate>
+          Share
+        </button>
+        <button class="btn btn-default pull-right" data-ng-click="sb.toggle(true)"
+                data-ng-if="!$parent.advancedQuery" data-translate>
+           Advanced
+        </button>
+        <button class="btn btn-default pull-right" data-ng-click="sb.toggle(false)"
+           data-ng-disabled="sb.query"
+           data-ng-if="$parent.advancedQuery" data-translate>
+           Basic
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

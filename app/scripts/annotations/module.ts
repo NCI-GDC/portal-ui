@@ -15,7 +15,8 @@ module ngApp.annotations {
         annotations: (AnnotationsService: IAnnotationsService): ng.IPromise<IAnnotations> => {
           return AnnotationsService.getAnnotations();
         }
-      }
+      },
+      reloadOnSearch: false
     });
 
     $stateProvider.state("annotation", {

@@ -1,4 +1,4 @@
-<div data-ng-repeat="filter in cfc.currentFilters">
+<div data-ng-repeat="filter in cfc.currentFilters" class="filter">
   <span class="facet-button facet-name"
         data-ng-click="cfc.removeTerm(filter.content.field, null, $event)"
         data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event)">

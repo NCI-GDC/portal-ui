@@ -15,7 +15,9 @@
          aria-label="{{ 'Site Navigation' | translate }}">
       <ul class="nav navbar-nav">
         <li ui-sref-active="active"><a ui-sref="projects" data-translate>Projects</a></li>
-        <li ui-sref-active="active"><a ui-sref="search" data-translate>Search</a></li>
+        <li data-ng-class="{ active: HeaderController.$state.includes('search') || HeaderController.$state.includes('query') }">
+          <a ui-sref="search.participants" data-translate>Search</a>
+        </li>
         <li ui-sref-active="active">
           <a ui-sref="cart">
             <span data-translate>Cart</span>

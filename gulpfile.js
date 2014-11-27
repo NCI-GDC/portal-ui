@@ -7,6 +7,7 @@ var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var pagespeed = require('psi');
 var fs = require('graceful-fs');
+var packageJSON = require("./package.json");
 var modRewrite = require('connect-modrewrite');
 
 var AUTOPREFIXER_BROWSERS = [
@@ -44,8 +45,8 @@ paths.html.dest = paths.dest + "/index.html";
 
 gulp.task('logs', function(){
   require('conventional-changelog')({
-    repository: 'https://github.com/NCI-GDC/portal-ui',
-    version: require('./package.json').version,
+    repository: packageJSON.repository,
+    version: packageJSON.version,
     issueLink: function (id) {
       return '[OICR-'+id+'](https://jira.opensciencedatacloud.org/browse/OICR-' + id + ')'
     }
@@ -92,6 +93,32 @@ gulp.task('images', function () {
       })))
       .pipe(gulp.dest('dist/images'))
       .pipe($.size({title: 'images'}));
+});
+
+gulp.task("config", function () {
+  fs.readFile("app/config.js", "UTF-8", function(err, content) {
+    if (err) {
+      throw err;
+    }
+
+    $.git.exec({args : "rev-parse --short HEAD"}, function (err, stdout) {
+      if (err) {
+        throw err;
+      }
+  
+      content = content.replace(/__VERSION__/g, packageJSON.version);
+      content = content.replace(/__COMMIT__/g, stdout.replace(/[\r\n]/, ""));
+
+      // Ensures path is in place, as I've had occurances where it may not be.
+      require("mkdirp")("dist/js", function(err) {
+        if (err) {
+          throw err;
+        }
+
+        fs.writeFile("dist/js/config.js", content);
+      });
+    });
+  });
 });
 
 // Copy Web Fonts To Dist
@@ -298,15 +325,6 @@ gulp.task('ng:templates', function () {
 });
 // </ng-templates>
 
-gulp.task('serve:api', function () {
-  //start the server at the beginning of the task
-  $.express.run({
-    file: 'server.js'
-  });
-
-  $.util.log("Development API server running on port 3001");
-});
-
 // Watch Files For Changes & Reload
 gulp.task('serve:web', function (cb) {
   var bsOpts = {
@@ -336,12 +354,12 @@ gulp.task('serve:web', function (cb) {
 });
 
 gulp.task('serve', function (cb) {
-  runSequence('default', ['i18n', 'karma:watch', 'serve:api', 'serve:web'], cb);
+  runSequence('default', ['karma:watch', 'serve:web'], cb);
 });
 
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['rev', 'images', 'fonts', 'vendor', 'ts:compile'], cb);
+  runSequence('styles', ['rev', 'images', 'fonts', 'vendor', 'ts:compile', 'i18n', 'config'], cb);
 });
 
 // Run PageSpeed Insights

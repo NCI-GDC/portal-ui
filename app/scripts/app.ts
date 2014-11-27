@@ -1,13 +1,21 @@
 declare module ngApp {
+  export interface IGDCConfig {
+    version: string;
+    tag: string;
+    commitLink: string;
+    commitHash: string;
+  }
 
   export interface IRootScope extends ng.IScope {
     pageTitle: string;
     loaded: boolean;
+    config: IGDCConfig;
   }
 }
 
 import ICoreService = ngApp.core.services.ICoreService;
 import IRootScope = ngApp.IRootScope;
+import IGDCConfig = ngApp.IGDCConfig;
 
 /* @ngInject */
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
@@ -23,9 +31,10 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
 /* @ngInject */
 function appRun(gettextCatalog, Restangular: restangular.IProvider,
                 $state: ng.ui.IStateService, CoreService: ICoreService,
-                $rootScope: IRootScope) {
+                $rootScope: IRootScope, config: IGDCConfig) {
   gettextCatalog.debug = true;
 
+  $rootScope.config = config;
   Restangular.setErrorInterceptor((response) => {
     // TODO more than just 404
     $state.go("404", {}, {inherit: true});
@@ -51,6 +60,7 @@ angular
     .module("ngApp", [
       "ngAnimate",
       "ngAria",
+      "ngApp.config",
       "ui.router.state",
       "ui.bootstrap",
       "restangular",

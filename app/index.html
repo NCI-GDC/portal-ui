@@ -112,7 +112,8 @@
         NIH... Turning Discovery Into Health &#174;
       </div>
       <div>
-        0.1.8-sprt2
+        <a href= "{{ config.tag }}">{{ config.version }}</a> @
+        <a href="{{ config.commitLink }}">{{ config.commitHash }}</a>
       </div>
     </div>
   </footer>
@@ -147,6 +148,7 @@
 <!-- build:js /js/app.js -->
 <script src="/js/templates.js"></script>
 <script src="/js/translations.js"></script>
+<script src="/js/config.js"></script>
 <script src="/js/app.js"></script>
 <!-- endbuild -->
 

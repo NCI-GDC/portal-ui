@@ -102,7 +102,7 @@
     <td>{{ ::file.data_type }}</td>
     <td>??? {{ ::file.state }}</td>
     <td>{{ ::file.file_extension }}</td>
-    <td>{{ (file.file_size / 1.0e9).toFixed(2) }} GB</td>
+    <td>{{ file.file_size | size }}</td>
     <td>??? {{ ::file.admin.revision }}</td>
     <td>{{ file.modified | date }}</td>
   </tr>

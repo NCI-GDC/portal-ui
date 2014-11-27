@@ -5,7 +5,6 @@ angular
     .module("ngApp.components", [
       "components.header",
       "components.xmlviewer",
-      "components.date",
       "components.facets",
       "components.tables",
       "components.ui",

@@ -18,7 +18,7 @@
         </tr>
         <tr>
           <th scope="row" data-translate>Size</th>
-          <td>{{ (cc.totalSize / 1.0e9).toFixed(2) }} GB</td>
+          <td>{{ cc.totalSize | size }}</td>
         </tr>
         </tbody>
       </table>

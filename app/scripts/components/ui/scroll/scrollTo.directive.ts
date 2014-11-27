@@ -23,7 +23,7 @@ module ngApp.components.ui.scrollTo {
     };
   }
 
-  angular.module("components.ui.scrollTo", [])
+  angular.module("ui.scroll.scrollTo", [])
       .directive("scrollTo", ScrollTo);
 }
 

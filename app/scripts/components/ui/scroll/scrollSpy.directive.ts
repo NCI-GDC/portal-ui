@@ -80,7 +80,7 @@ module ngApp.components.ui.scrollSpy {
     };
   }
 
-  angular.module("components.ui.scrollSpy", [])
+  angular.module("ui.scroll.scrollSpy", [])
       .directive("scrollSpy", ScrollSpy)
       .directive("spy", Spy);
 }

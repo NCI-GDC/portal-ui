@@ -62,7 +62,7 @@ module ngApp.components.ui.scrollFix {
     };
   }
 
-  angular.module("components.ui.scrollFix", [])
+  angular.module("ui.scroll.scrollFix", [])
       .directive("scrollFix", ScrollFix)
       .directive("scrollFixTarget", ScrollFixTarget);
 }

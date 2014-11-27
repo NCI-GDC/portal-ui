@@ -75,20 +75,19 @@
           <td>{{ ::p.project_name }}</td>
           <td>{{ ::p.program }}</td>
           <td><a data-ui-sref="search.participants( { projectId: p.id })">{{ ::p._summary._participant_count }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["Clinical"].fileCount
+          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ ::p._summary._analyzed_data["Clinical data"].file_count
             }}</a>
           </td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["SNV"].fileCount
+          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ ::p._summary._analyzed_data["SNV"].file_count
             }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["mRNA
-            Expression"].fileCount
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p._summary._analyzed_data["mRNA
+            Expression"].file_count
             }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["miRNA
-            Expression"].fileCount }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["Copy number
-            variation"].fileCount }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p.summary.analyzedData["DNA
-            methylation"].fileCount
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p._summary._analyzed_data["miRNA
+            Expression"].file_count }}</a></td>
+          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ ::p._summary._analyzed_data["CNV"].file_count }}</a></td>
+          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p._summary._analyzed_data["DNA
+            methylation"].file_count
             }}</a></td>
           <td>{{ ::p.status}}</td>
           <td>{{ ::p.date | date }}</td>

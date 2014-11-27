@@ -28,7 +28,7 @@ module ngApp.files.models {
   }
 
   export interface IFile extends IEntity {
-    _aliquote_barcode: string;
+    _aliquot_barcode: string;
     data_access: string;
     data_format: string;
     data_subtype: string;

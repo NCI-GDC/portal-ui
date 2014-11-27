@@ -4,7 +4,7 @@ module ngApp.files.services {
   import ILocationService = ngApp.components.location.services.ILocationService;
 
   export interface IFilesService {
-    getFile(id: string): ng.IPromise<IFile>;
+    getFile(id: string, params: Object): ng.IPromise<IFile>;
     getFiles(params?: Object): ng.IPromise<IFiles>;
   }
 

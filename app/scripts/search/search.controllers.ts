@@ -79,7 +79,8 @@ module ngApp.search.controllers {
           "bcr_patient_uuid",
           "gender",
           "patient_id",
-          "vital_status"
+          "vital_status",
+          "person_neoplasm_cancer_status"
         ],
         facets: [
           "ethnicity",

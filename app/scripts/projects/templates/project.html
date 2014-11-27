@@ -1,7 +1,7 @@
 <div class="container-fluid entity project no-padding-right" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <span class="entity-identifier">Pr</span>
-    {{ prc.project.project_code }}
+    {{ ::prc.project.project_code }}
   </h1>
 
   <div class="col-lg-2 col-md-2">
@@ -32,27 +32,27 @@
                     <tbody>
                     <tr>
                       <th scope="row" data-translate>Code</th>
-                      <td>{{ prc.project.project_code }}</td>
+                      <td>{{ ::prc.project.project_code }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Name</th>
-                      <td>{{ prc.project.project_name }}</td>
+                      <td>{{ ::prc.project.project_name }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Disease Type</th>
-                      <td>{{ prc.project.disease_type }}</td>
+                      <td>??? {{ ::prc.project.disease_type }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Program</th>
-                      <td>{{ prc.project.program }}</td>
+                      <td>{{ ::prc.project.program }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Sequencing Center</th>
-                      <td> {{ prc.project.sequencing_center }} </td>
+                      <td>??? {{ ::prc.project.sequencing_center }} </td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Status</th>
-                      <td>{{ prc.project.status }}</td>
+                      <td>{{ ::prc.project.status }}</td>
                     </tr>
                     <tr>
                       <th scope="row">
@@ -60,8 +60,8 @@
                          <span data-translate data-translate-comment="number of">of Participants</span>
                       </th>
                       <td>
-                        <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project.summary.participantCount }}</a>
-                      </td> <!-- is donors the same as participants? -->
+                        <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project._summary._participant_count }}</a>
+                      </td>
                     </tr>
                     <tr>
                       <th scope="row">
@@ -69,7 +69,7 @@
                          <span data-translate data-translate-comment"number of">of data files</span>
                       </th>
                       <td>
-                        <a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project.summary.fileCount }}</a>
+                        <a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project._summary.file_count }}</a>
                       </td>
                     </tr>
                     </tbody>
@@ -77,26 +77,26 @@
                 </div>
               </div>
               <div class="row" id="available-data">
+
                 <div class="col-lg-12 col-md-12">
                   <h2 data-translate>
-                    Available Data
+                    Experimental Strategy
                   </h2>
                   <table class="table table-striped table-hover table-condensed table-bordered">
                     <thead>
-                    <th scope="col" data-translate>Data Type</th>
-                    <th scope="col" data-translate>Participants</th>
-                    <th scope="col" data-translate>Files</th>
+                    <tr>
+                      <th scope="col" data-translate>Analysis</th>
+                      <th scope="col" data-translate>Participants</th>
+                      <th scope="col" data-translate>Samples</th>
+                      <th scope="col" data-translate>Files</th>
+                    </tr>
                     </thead>
                     <tbody>
-                    <tr data-ng-repeat="(dataCategory, counts) in prc.project.summary.analyzedData">
-                      <td>{{ dataCategory }}</td>
-                      <td>
-                        <a data-ui-sref="search.participants({{ prc.project.id }})">{{ counts.participantCount ?
-                          counts.participantCount : "-" }}</a>
-                      </td>
-                      <td>
-                        <a data-ui-sref="search.files({{ prc.project.id }})">{{ counts.fileCount ? counts.fileCount : "-" }}</a>
-                      </td>
+                    <tr data-ng-repeat="(experiment, counts) in prc.project._summary._experimental_data">
+                      <td>{{ ::experiment }}</td>
+                      <td><a data-ui-sref="search.participants({{ prc.project.id }})">{{ ::counts.participant_count }}</a></td>
+                      <td>??? {{ ::experiment.sample_count }}</td>
+                      <td><a data-ui-sref="search.files({{ prc.project.id }})">{{ ::counts.file_count }}</a></td>
                     </tr>
                     </tbody>
                   </table>
@@ -104,24 +104,26 @@
               </div>
             </div>
             <div class="col-lg-6 col-md-6">
-              <h2>
-                Experimental Analysis
+              <h2 data-translate>
+                Available Data
               </h2>
               <table class="table table-striped table-hover table-condensed table-bordered">
                 <thead>
-                <tr>
-                  <th scope="col" data-translate>Analysis</th>
-                  <th scope="col" data-translate>Participants</th>
-                  <th scope="col" data-translate>Samples</th>
-                  <th scope="col" data-translate>Files</th>
-                </tr>
+                <th scope="col" data-translate>Data Type</th>
+                <th scope="col" data-translate>Participants</th>
+                <th scope="col" data-translate>Files</th>
                 </thead>
                 <tbody>
-                <tr data-ng-repeat="experiment in prc.project.summary.experimentalData">
-                  <td>{{ experiment.experimentalType }}</td>
-                  <td><a data-ui-sref="search.participants({{ prc.project.id }})">{{ experiment.participantCount }}</a></td>
-                  <td>{{ experiment.sampleCount }}</td>
-                  <td><a data-ui-sref="search.files({{ prc.project.id }})">{{ experiment.fileCount }}</a></td>
+                <tr data-ng-repeat="(dataCategory, counts) in prc.project._summary._analyzed_data">
+                  <td>{{ ::dataCategory }} </td>
+                  <td>
+                    <a data-ui-sref="search.participants({{ prc.project.id }})">{{ counts.participant_count ?
+                      counts.participant_count : "-" }}</a>
+                  </td>
+                  <td>
+                    <a data-ui-sref="search.files({{ prc.project.id }})">{{ counts.file_count ? counts.file_count : "-" 
+                      }}</a>
+                  </td>
                 </tr>
                 </tbody>
               </table>

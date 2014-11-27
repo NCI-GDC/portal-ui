@@ -18,11 +18,25 @@ module ngApp.projects {
       templateUrl: "projects/templates/project.html",
       resolve: {
         project: ($stateParams: ng.ui.IStateParamsService, ProjectsService: IProjectsService): ng.IPromise<IProject> => {
-          return ProjectsService.getProject($stateParams["projectId"]);
+          return ProjectsService.getProject($stateParams["projectId"], {
+            fields: [
+              "project_uuid",
+              "project_name",
+              "status",
+              "program",
+              "project_code",
+              "_summary._participant_count",
+              "_summary._analyzed_data.data_type",
+              "_summary._analyzed_data._participant_count",
+              "_summary._analyzed_data._file_count",
+              "_summary._experimental_data._participant_count",
+              "_summary._experimental_data._file_count",
+              "_summary._experimental_data.experimental_type"
+            ]
+          });
         }
       }
     });
-
   }
 
   angular

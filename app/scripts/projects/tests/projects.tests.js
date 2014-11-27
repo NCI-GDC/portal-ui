@@ -23,7 +23,7 @@ describe('Projects:', function () {
     it('should get all projects', inject(function (ProjectsService) {
       sinon.spy(ProjectsService.ds, 'get');
 
-      var fs = {hits: [], facets: [], pagination: {}};
+      var fs = {data: { hits: [], facets: [], pagination: {} }};
       httpBackend.whenGET("/projects?filters=%7B%7D&from=1&size=10").respond(fs);
 
       ProjectsService.getProjects();
@@ -36,7 +36,7 @@ describe('Projects:', function () {
     it('should get one project by id', inject(function (ProjectsService) {
       sinon.spy(ProjectsService.ds, 'get');
 
-      var f = {};
+      var f = {data: {}};
       httpBackend.whenGET("/projects/1").respond(f);
 
       ProjectsService.getProject(1);

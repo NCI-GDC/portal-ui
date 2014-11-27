@@ -1,7 +1,7 @@
 <div class="container-fluid entity annotation no-padding-right" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <span class="entity-identifier">An</span>
-    {{ ac.annotation.id }}
+    {{ ::ac.annotation.id }}
   </h1>
 
   <div class="col-lg-2 col-md-2">
@@ -25,25 +25,25 @@
             <tbody>
             <tr>
               <th data-translate scope="row">Annotation ID</th>
-              <td>{{ ac.annotation.id }}</td>
+              <td>{{ ::ac.annotation.id }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">UUID</th>
-              <td>{{ ac.annotation.uuid }}</td>
+              <td>??? {{ ::ac.annotation.uuid }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Item ID</th>
-              <td>{{ ac.annotation.item }}</td>
+              <td>{{ ::ac.annotation.item }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Item Type</th>
-              <td>{{ ac.annotation.type }}</td>
+              <td>{{ ::ac.annotation.itemType }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Participant ID</th>
               <td>
                 <a data-ui-sref="participant({ participantId: ac.annotation.participant.id })">
-                  {{ ac.annotation.participant.id }}
+                  ??? {{ ::ac.annotation.participant.id }}
                 </a>
               </td>
             </tr>
@@ -51,29 +51,29 @@
               <th data-translate scope="row">Project</th>
               <td>
                 <a data-ui-sref="project({ projectId: ac.annotation.project.id })">
-                  {{ ac.annotation.project.name }}
+                  ??? {{ ::ac.annotation.project.name }}
                 </a>
               </td>
             </tr>
             <tr>
               <th data-translate scope="row">Classification</th>
-              <td>{{ ac.annotation.classification }}</td>
+              <td>{{ ::ac.annotation.annotationClassificationName }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Category</th>
-              <td>{{ ac.annotation.category }}</td>
+              <td>{{ ::ac.annotation.categoryName }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Created On</th>
-              <td>{{ ac.annotation.dateCreated | date }}</td>
+              <td>{{ ::ac.annotation.dateCreated | date }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Created By</th>
-              <td>{{ ac.annotation.createdBy }}</td>
+              <td>{{ ::ac.annotation.createdBy }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Status</th>
-              <td>{{ ac.annotation.status }}</td>
+              <td>{{ ::ac.annotation.status }}</td>
             </tr>
             </tbody>
           </table>
@@ -87,10 +87,10 @@
           <div class="row annotation-row" data-ng-repeat="note in ac.annotation.notes">
 
             <div class="col-lg-12 col-md-12">
-              <h4><span data-translate>Added by</span> {{ note.addedBy }}
-                <span data-translate>on</span> {{ note.dateAdded | date }}</h4>
+              <h4><span data-translate>Added by</span> {{ ::note.addedBy }}
+                <span data-translate>on</span> {{ ::note.dateAdded | date }}</h4>
 
-              <p>{{ note.text }}</p>
+              <p>{{ ::note.noteText}}</p>
             </div>
 
           </div>

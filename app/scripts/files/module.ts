@@ -24,7 +24,23 @@ module ngApp.files {
       templateUrl: "files/templates/file.html",
       resolve: {
         file: ($stateParams: ng.ui.IStateParamsService, FilesService: IFilesService): ng.IPromise<IFile> => {
-          return FilesService.getFile($stateParams["fileId"]);
+          return FilesService.getFile($stateParams["fileId"], {
+            fields: [
+            "_aliquot_barcode",
+            "data_access",
+            "data_format",
+            "data_level",
+            "data_subtype",
+            "data_type",
+            "file_extension",
+            "file_name",
+            "file_size",
+            "file_uuid",
+            "platform",
+            "updated",
+            "experimental_strategy"
+            ]
+          });
         }
       }
     });

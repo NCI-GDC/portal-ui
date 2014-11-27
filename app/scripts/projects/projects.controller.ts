@@ -32,7 +32,10 @@ module ngApp.projects.controllers {
           "_summary._participant_count",
           "_summary._analyzed_data.data_type",
           "_summary._analyzed_data._participant_count",
-          "_summary._analyzed_data._file_count"
+          "_summary._analyzed_data._file_count",
+          "_summary._experimental_data._participant_count",
+          "_summary._experimental_data._file_count",
+          "_summary._experimental_data.experimental_type",
         ],
         facets: [
           "status",

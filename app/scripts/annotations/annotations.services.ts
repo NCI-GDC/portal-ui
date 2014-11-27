@@ -3,7 +3,7 @@ module ngApp.annotations.services {
   import IAnnotations = ngApp.annotations.models.IAnnotations;
 
   export interface IAnnotationsService {
-    getAnnotation(id: string): ng.IPromise<IAnnotation>;
+    getAnnotation(id: string, params?: Object): ng.IPromise<IAnnotation>;
     getAnnotations(params?: Object): ng.IPromise<IAnnotations>;
   }
 
@@ -16,14 +16,17 @@ module ngApp.annotations.services {
     }
 
     getAnnotation(id: string, params: Object = {}): ng.IPromise<IAnnotation> {
+      if(params.hasOwnProperty("fields")) {
+        params["fields"] = params["fields"].join();
+      }
       return this.ds.get(id, params).then((response): IAnnotation => {
-        return response;
+        return response["data"];
       });
     }
 
     getAnnotations(params: Object = {}): ng.IPromise<IAnnotations> {
       return this.ds.get("", params).then((response): IAnnotations => {
-        return response;
+        return response["data"];
       });
     }
   }

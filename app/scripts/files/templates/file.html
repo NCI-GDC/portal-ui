@@ -45,10 +45,10 @@
                 <tr>
                   <th scope="row" data-translate>File Access</th>
                   <td>
-                    <i data-ng-if="!fc.file.data_access" class="fa fa-lock"></i>
-                    <i data-ng-if="fc.file.data_access" class="fa fa-unlock-alt"></i>
-                    <span data-ng-if="fc.file.data_access" data-translate>Public</span>
-                    <span data-ng-if="!fc.file.data_access" data-translate>Protected</span>
+                    <i data-ng-if="fc.file.data_access !== 'open'" class="fa fa-lock"></i>
+                    <i data-ng-if="fc.file.data_access === 'open'" class="fa fa-unlock-alt"></i>
+                    <span data-ng-if="fc.file.data_access === 'open'" data-translate>Public</span>
+                    <span data-ng-if="fc.file.data_access !== 'open'" data-translate>Protected</span>
                   </td>
                 </tr>
                 <tr>
@@ -61,7 +61,7 @@
                 </tr>
                 <tr>
                   <th scope="row" data-translate>Data format</th>
-                  <td>??? {{ ::fc.file.data_format }}</td>
+                  <td>{{ ::fc.file.data_format }}</td>
                 </tr>
                 <tr>
                   <th scope="row" data-translate>File Size</th>

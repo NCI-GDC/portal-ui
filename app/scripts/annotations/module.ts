@@ -23,7 +23,22 @@ module ngApp.annotations {
       templateUrl: "annotations/templates/annotation.html",
       resolve: {
         annotation: ($stateParams: ng.ui.IStateParamsService, AnnotationsService: IAnnotationsService): ng.IPromise<IAnnotation> => {
-          return AnnotationsService.getAnnotation($stateParams["annotationId"]);
+          return AnnotationsService.getAnnotation($stateParams["annotationId"],
+            {
+              fields: [
+                "id",
+                "categoryName",
+                "createdBy",
+                "status",
+                "itemType",
+                "item",
+                "annotationClassificationName",
+                "notes.noteText",
+                "notes.dateAdded",
+                "notes.noteId",
+                "notes.addedBy"
+              ]
+            });
         }
       }
     });

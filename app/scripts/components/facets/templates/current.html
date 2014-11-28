@@ -1,0 +1,16 @@
+<div data-ng-repeat="filter in cfc.currentFilters">
+  <span class="facet-button facet-name"
+        data-ng-click="cfc.removeTerm(filter.content.field, null, $event)"
+        data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event)">
+    {{ filter.content.field | translate }}
+  </span>
+  <span class="facet-operator">{{ filter.op | translate }}</span>
+  <div class="facet-terms"
+       data-ng-repeat="term in filter.content.value">
+    <span class="facet-button facet-term-value"
+          data-ng-click="cfc.removeTerm(filter.content.field, term, $event)"
+          data-ng-keypress="cfc.removeTerm(filter.content.field, term, $event)">{{ term | translate }}</span>
+    <span class="facet-operator or" data-ng-if="!$last">OR</span>
+  </div>
+  <span class="facet-operator and" data-ng-if="!$last">AND</span>
+</div>

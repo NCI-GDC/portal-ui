@@ -2,6 +2,7 @@ module ngApp.components.facets.directives {
 
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import IFacetService = ngApp.components.facets.services.IFacetService;
+  import ILocationService = ngApp.components.location.services.ILocationService;
 
   interface ITermsController {
     add(facet: string, term: string, event: any): void;
@@ -77,6 +78,37 @@ module ngApp.components.facets.directives {
     }
   }
 
+  interface ICurrentFiltersController {
+    build(): void;
+    currentFilters: any;
+    removeTerm(facet: string, term: string, event: any): void;
+  }
+
+  class CurrentFiltersController implements ICurrentFiltersController {
+    currentFilters: any = [];
+
+    /* @ngInject */
+    constructor($scope: ng.IScope, private LocationService: ILocationService,
+                private FacetService: IFacetService) {
+      this.build();
+
+      $scope.$on("$locationChangeSuccess", () => this.build());
+    }
+
+    removeTerm(facet: string, term: string, event: any) {
+      if (event.which === 1 || event.which === 13) {
+        this.FacetService.removeTerm(facet, term);
+      }
+    }
+
+    build() {
+      this.currentFilters = _.sortBy(this.LocationService.filters().content, function(item: any) {
+        return item.content.field;
+      });
+    }
+  }
+
   angular.module("facets.controllers", ["facets.services"])
+      .controller("currentFiltersCtrl", CurrentFiltersController)
       .controller("termsCtrl", TermsController);
 }

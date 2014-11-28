@@ -1,16 +1,15 @@
 <div class="container-fluid projects search">
   <h1 data-translate>Projects</h1>
 
-  <div class="row">
-    <div class="col-lg-10 col-md-8 col-sm-12 pull-right no-padding-left search-bar">
+  <div class="row search-bar">
+    <div class="col-lg-10 col-md-8 col-sm-12 pull-right">
       <div class="row">
-        <div class="col-lg-2 col-md-2 col-sm-2">
-          <button class="btn btn-default pull-right" data-translate aria-label="{{ 'Share Query' | translate }}">Share
-          </button>
+        <div class="col-lg-1 col-md-2 col-sm-2">
+          <button class="btn btn-default pull-right" data-translate aria-label="{{ 'Share Query' | translate }}">Share</button>
           <span class="fa fa-refresh pull-right"></span>
         </div>
-        <div class="col-lg-10 col-md-10 col-sm-10">
-          <input disabled="disabled" class="form-control" type="text" role="search"/>
+        <div class="col-lg-11 col-md-10 col-sm-10">
+          <current-filters class="current-filters"></current-filters>
         </div>
       </div>
     </div>
@@ -38,12 +37,14 @@
     </h2>
 
     <div class="col-lg-10 col-md-9" data-ng-if="prsc.projects.hits.length > 0">
+
       <h4 class="clearfix">
         <span class="pull-right">
           <select-columns></select-columns>
           <export-table></export-table>
         </span>
       </h4>
+
       <table class="table table-striped table-hover table-condensed table-bordered">
         <thead>
         <tr>

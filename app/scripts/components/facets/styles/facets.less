@@ -49,3 +49,49 @@
   }
 }
 
+.current-filters {
+  div, span {
+    display: inline-block;
+    margin-bottom: 3px;
+  }
+
+  .facet-button {
+    padding: 7px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .facet-name {
+    background: #C0E1F6;
+    color: #166AA2;
+    text-transform: capitalize;
+
+    &:hover {
+      text-decoration: line-through;
+    }
+  }
+
+  .facet-term-value {
+    background: #DAF2FB;
+    color: #1693C0;
+
+    &:hover {
+      text-decoration: line-through;
+    }
+  }
+
+  .facet-operator {
+    font-weight: 700;
+    margin: 0 5px;
+
+    &.and {
+      color: #1A9900;
+    }
+
+    &.or {
+      color: #E9931C;
+
+    }
+  }
+}
+

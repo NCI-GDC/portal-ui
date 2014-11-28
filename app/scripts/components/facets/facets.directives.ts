@@ -31,8 +31,18 @@ module ngApp.components.facets.directives {
     };
   }
 
+  /* @ngInject */
+  function CurrentFilters(): ng.IDirective {
+    return {
+      restrict: "E",
+      controller: "currentFiltersCtrl as cfc",
+      templateUrl: "components/facets/templates/current.html"
+    };
+  }
+
   angular.module("facets.directives", ["facets.controllers"])
       .directive("terms", Terms)
+      .directive("currentFilters", CurrentFilters)
       .directive("facetsFreeText", FacetsFreeText);
 }
 

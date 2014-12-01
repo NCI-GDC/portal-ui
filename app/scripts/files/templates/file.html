@@ -1,7 +1,35 @@
 <div class="container-fluid entity file no-padding-right" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <span class="entity-identifier">F</span>
-    {{ ::fc.file.file_name }}
+    {{ ::fc.file.file_uuid }}
+
+    <span class="h-actions pull-right">
+      <button data-ng-if="fc.isInCart()" type="button" class="btn btn-success" data-ng-click="fc.handleCartButton()">
+        <i class="fa fa-shopping-cart"></i> In Cart
+      </button>
+      <button data-ng-if="!fc.isInCart()" type="button" class="btn btn-primary" data-ng-click="fc.handleCartButton()">
+        <i class="fa fa-shopping-cart"></i> Add to Cart
+      </button>
+      <span class="btn-group" data-dropdown>
+        <button type="button" class="btn btn-primary">
+          <i class="fa fa-cloud-download"></i> Download
+        </button>
+        <button type="button" class="btn btn-primary dropdown-toggle">
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li role="listitem" aria-label="{{ 'Download File' | translate }}">
+            <a href="#"><i class="fa fa-download fa-stack"></i> Download File</a>
+          </li>
+          <li role="listitem" aria-label="{{ 'Download URL' | translate }}">
+            <a href="#"><i class="fa fa-file-text-o fa-stack"></i> Download URL</a>
+          </li>
+          <li role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
+            <a href="#"><i class="fa fa-file-code-o fa-stack"></i> Download Metadata Files</a>
+          </li>
+        </ul>
+      </span>
+    </span>
   </h1>
 
   <div class="col-lg-2 col-md-2">
@@ -30,11 +58,6 @@
             <div class="col-lg-7 col-md-7">
               <h3>
                 <span data-translate>File Properties</span>
-                <i class="fa download fa-download pull-right"></i>
-                <button class="btn btn-default pull-right" data-ng-click="fc.file.inCart = !fc.file.inCart">
-                  <span data-ng-show="fc.file.inCart" data-translate>Remove from Cart</span>
-                  <span data-ng-show="!fc.file.inCart" data-translate>Add to Cart</span>
-                </button>
               </h3>
               <table class="table table-striped table-hover table-condensed table-bordered">
                 <tbody>
@@ -187,15 +210,15 @@
             </tr>
             </thead>
             <tbody>
-              <tr data-ng-repeat="p in fc.file.participants track by p.id">
-                <td><a data-ui-sref="participant({ participantId : p.id })">??? {{ ::p.id }}</a></td>
-                <td><a data-ui-sref="project({ projectId : p.project.id })">{{ ::p.project.name }}</a></td>
-                <td>{{ p.diseaseType }}</td>
-                <td>{{ p.sample }}</td>
-                <td>{{ p.portion }}</td>
-                <td>{{ p.analyte }}</td>
-                <td>{{ p.aliquot }}</td>
-              </tr>
+            <tr data-ng-repeat="p in fc.file.participants track by p.id">
+              <td><a data-ui-sref="participant({ participantId : p.id })">??? {{ ::p.id }}</a></td>
+              <td><a data-ui-sref="project({ projectId : p.project.id })">{{ ::p.project.name }}</a></td>
+              <td>{{ p.diseaseType }}</td>
+              <td>{{ p.sample }}</td>
+              <td>{{ p.portion }}</td>
+              <td>{{ p.analyte }}</td>
+              <td>{{ p.aliquot }}</td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -209,29 +232,28 @@
           </h3>
           <table class="table table-striped table-hover table-condensed table-bordered">
             <thead>
-              <tr>
-                <th scope="col" data-translate>File Name</th>
-                <th scope="col" data-translate>File Type</th>
-                <th scope="col" data-translate>Checksum</th>
-                <th scope="col" data-translate>Action</th>
-              </tr>
+            <tr>
+              <th scope="col" data-translate>File Name</th>
+              <th scope="col" data-translate>File Type</th>
+              <th scope="col" data-translate>Checksum</th>
+              <th scope="col" data-translate>Action</th>
+            </tr>
             </thead>
             <tbody>
-              <tr data-ng-repeat="f in fc.file.related track by f.id">
-                <td>??? {{ ::f.filename }}</td>
-                <td>??? {{ ::f.format }}</td>
-                <td>??? {{ ::f.checksum }}</td>
-                <td>
-                  <a data-ui-sref="file({ fileId: f.id })" data-translate
-                     aria-label="View file {{ f.filename }}">
-                    View
-                  </a>
-                  /
-                  <a data-translate aria-label="Download file {{ f.filename }}">
-                    Download
-                  </a>
-                </td>
-              </tr>
+            <tr data-ng-repeat="f in fc.file.related track by f.id">
+              <td>??? {{ ::f.filename }}</td>
+              <td>??? {{ ::f.format }}</td>
+              <td>??? {{ ::f.checksum }}</td>
+              <td>
+                <a data-ui-sref="file({ fileId: f.id })" data-translate>
+                  View
+                </a>
+                /
+                <a data-translate>
+                  Download
+                </a>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>

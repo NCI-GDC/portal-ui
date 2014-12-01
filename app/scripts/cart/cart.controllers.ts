@@ -6,21 +6,33 @@ module ngApp.cart.controllers {
 
   export interface ICartController {
     files: IFiles;
-    totalSize: number;
+    lastModified: Moment;
+    selected(): IFile[];
+    selectedSize(): number;
     getTotalSize(): number;
-    toggleSelectAll(e: any): void;
-    handleRemoveAllClick(): void;
-    handleRemoveByIds(): void;
+    removeSelected(): void;
+    remove(id: string): void;
+    selectAll(): void;
+    deselectAll(): void;
+    all(): boolean;
   }
 
   class CartController implements ICartController {
-    totalSize: number = 0;
+    lastModified: Moment;
 
     /* @ngInject */
     constructor(public files: IFiles, private CoreService: ICoreService, private CartService: ICartService) {
       CoreService.setPageTitle("Cart", "(" + this.files.hits.length + ")");
       CartService.files = files;
-      this.totalSize = this.getTotalSize();
+      this.lastModified = this.CartService.lastModified;
+    }
+
+    selected(): IFile[] {
+      return this.CartService.getSelectedFiles();
+    }
+
+    selectedSize(): number {
+      return this.getSelectedSize();
     }
 
     getTotalSize(): number {
@@ -29,23 +41,46 @@ module ngApp.cart.controllers {
       }, 0);
     }
 
-    // click handlers
-    handleRemoveAllClick(): void {
+
+    getSelectedSize(): number {
+      return _.reduce(this.selected(), function (sum: number, hit: IFile) {
+        return sum + hit.file_size;
+      }, 0);
+    }
+
+    remove(id: string) {
+      this.CartService.remove([id]);
+      this.lastModified = this.CartService.lastModified;
+    }
+
+    removeAll() {
+      console.log(1);
       this.CartService.removeAll();
+      this.lastModified = this.CartService.lastModified;
     }
 
-    handleRemoveByIds(): void {
-      var ids : string[] = _.pluck(_.filter(this.files.hits, (hit: IFile): boolean => {
-        return hit.selected;
-      }), "file_uuid");
+    removeSelected(): void {
+      var ids : string[] = _.pluck(this.selected(), "file_uuid");
       this.CartService.remove(ids);
+      this.lastModified = this.CartService.lastModified;
     }
 
-    toggleSelectAll(e: any): void {
+    selectAll(): void {
       this.files.hits.forEach((file: IFile): void => {
-        file.selected = e.target.checked;
+        file.selected = true;
       });
     }
+
+    deselectAll(): void {
+      this.files.hits.forEach((file: IFile): void => {
+        file.selected = false;
+      });
+    }
+
+    all() :boolean {
+      return _.every(this.files.hits, {selected: true});
+    }
+
   }
 
   angular

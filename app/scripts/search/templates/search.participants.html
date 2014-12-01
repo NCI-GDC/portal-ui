@@ -20,26 +20,27 @@
   <tbody>
   <tr data-ng-repeat="p in sc.participants.hits track by p.patient_id">
     <td style="width: 35px;">
-      <div class="btn-group pull-right" dropdown>
+      <div class="btn-group" data-dropdown>
         <button type="button"
-                class="btn btn-default action-button dropdown-toggle"
+                class="btn btn-default dropdown-toggle"
                 aria-label="Participant Actions">
-          A
+          <i class="fa fa-shopping-cart"></i>
+          <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li data-ng-click="sc.CartService.addFiles(sc.files.hits)"
-              data-ng-keypress="sc.addFilesKeyPress($event)"
-              aria-label="{{ 'Add filtered files to Cart' | translate }}"
+          <li aria-label="{{ 'Add all related files' | translate }}"
               role="button">
-            <i class="fa fa-download"></i>
-            <span data-translate>Add filtered files to Cart</span> (145)
+            <a>
+            <i class="fa fa-shopping-cart fa-stack"></i>
+            <span data-translate>Add all related files</span> (5)
+              </a>
           </li>
-          <li data-ng-click="sc.CartService.addAllFiles()"
-              data-ng-keypress="sc.addFilesKeyPress($event, 'all')"
-              aria-label="{{ 'Add all files to Cart' | translate }}"
+          <li aria-label="{{ 'Add filtered related files' | translate }}"
               role="button">
-            <i class="fa fa-download"></i>
-            <span data-translate>Add all files to Cart</span> (231)
+            <a>
+            <i class="fa fa-shopping-cart fa-stack"></i>
+            <span data-translate>Add filtered related files</span> (2)
+              </a>
           </li>
         </ul>
       </div>

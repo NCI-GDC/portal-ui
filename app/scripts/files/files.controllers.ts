@@ -6,6 +6,8 @@ module ngApp.files.controllers {
 
   export interface IFileController {
     file: IFile;
+    isInCart(): boolean;
+    handleCartButton(): void;
   }
 
   class FileController implements IFileController {
@@ -14,8 +16,16 @@ module ngApp.files.controllers {
       CoreService.setPageTitle("File " + file.file_name);
     }
 
-    handleAddClick(file: IFile) {
-      this.CartService.add(file);
+    isInCart(): boolean {
+      return this.CartService.isInCart(this.file.file_uuid);
+    }
+
+    handleCartButton(): void {
+      if(!this.CartService.isInCart(this.file.file_uuid)) {
+        this.CartService.add(this.file);
+      } else {
+        this.CartService.remove([this.file.file_uuid]);
+      }
     }
 
   }

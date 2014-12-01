@@ -1,5 +1,6 @@
 module ngApp.cart.services {
 
+  import IGDCWindowService = ngApp.models.IGDCWindowService;
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
   import IFilesService = ngApp.files.services.IFilesService;
@@ -7,23 +8,34 @@ module ngApp.cart.services {
 
   export interface ICartService {
     files: IFiles;
+    lastModified: Moment;
     getFiles(): IFiles;
+    getSelectedFiles(): IFile[];
+    getFileUrls(): string[];
+    getFileIds(): string[];
     add(file: IFile): void;
     addFiles(files: IFile[]): void;
     isInCart(fileId: string): boolean;
+    areInCart(files: IFile[]): boolean;
     removeAll(): void;
     remove(fileIds: string[]): void;
+    removeFiles(files: IFile[]): void;
   }
 
   class CartService implements ICartService {
     files: IFiles;
+    lastModified: Moment;
 
     private static GDC_CART_KEY = "gdc-cart-items";
+    private static GDC_CART_UPDATE = "gdc-cart-updated";
 
     /* @ngInject */
-    constructor(private $window: ng.IWindowService) {
-      var local = $window.localStorage.getItem(CartService.GDC_CART_KEY);
-      this.files = local ? JSON.parse(local) : {
+    constructor(private $window: IGDCWindowService) {
+      var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
+      var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
+
+      this.lastModified = local_time ? $window.moment(local_time) : $window.moment();
+      this.files = local_files ? JSON.parse(local_files) : {
         hits: [],
         pagination: {
           count: 0,
@@ -43,45 +55,61 @@ module ngApp.cart.services {
     }
 
     isInCart(fileId: string): boolean {
-      return !!_.where(this.files.hits, { file_uuid: fileId }).length;
+      return _.some(this.files.hits, { file_uuid: fileId });
+    }
+
+    areInCart(files: IFile[]): boolean {
+      return _.every(files, (f) => this.isInCart(f.file_uuid));
     }
 
     add(file: IFile): void {
-      if (!this.isInCart(file.file_uuid)) {
-        this.files.hits.push(file);
-        this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
-      }
+      this.addFiles([file]);
     }
 
     addFiles(files: IFile[]): void {
-      _.forEach(files, file => this.add(file));
+      _.forEach(files, (file) => {
+        if (!this.isInCart(file.file_uuid)) {
+          file.selected = true;
+          this.files.hits.push(file);
+        }
+      });
+      this._sync();
     }
 
     removeAll(): void {
       this.files.hits = [];
+      this._sync();
     }
 
     remove(fileIds: string[]): void {
       this.files.hits = _.reject(this.files.hits, function (hit: IFile) {
         return fileIds.indexOf(hit.file_uuid) !== -1;
       });
+      this._sync();
+    }
+
+    removeFiles(files: IFile[]): void {
+      var ids :string[] = _.pluck(files, "file_uuid");
+      this.remove(ids);
+    }
+
+    getSelectedFiles(): IFile[] {
+      return _.where(this.files.hits, {selected: true});
+    }
+
+    getFileUrls(): string[] {
+      return _.pluck(this.getSelectedFiles(), "file_url");
+    }
+
+    getFileIds(): string[] {
+      return _.pluck(this.getSelectedFiles(), "file_uuid");
+    }
+
+    _sync() {
+      this.lastModified = this.$window.moment();
+      this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
       this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
     }
-
-    getAllFileUrls(): string[] {
-      return _.pluck(this.files.hits, "file_url");
-    }
-
-    getFileUrls(fileIds: string[]): string[] {
-      return _.pluck(_.filter(this.files.hits, function (hit: IFile) {
-        return _.contains(fileIds, hit.file_uuid);
-      }), "file_url");
-    }
-
-    getAllFileIds(): string[] {
-      return _.pluck(this.files.hits, "file_uuid");
-    }
-
   }
 
   angular

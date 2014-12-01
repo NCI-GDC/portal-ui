@@ -3,6 +3,7 @@ module ngApp.search.controllers {
   import IFilesService = ngApp.files.services.IFilesService;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IFiles = ngApp.files.models.IFiles;
+  import IFile = ngApp.files.models.IFile;
   import IParticipants = ngApp.participants.models.IParticipants;
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
@@ -21,6 +22,7 @@ module ngApp.search.controllers {
     addFilesKeyPress(event: any, type: string): void;
     setState(tab: string, next: string): void;
     select(section: string, tab: string): void;
+    removeFiles(files: IFile[]): void;
   }
 
   interface ISearchControllerScope extends ng.IScope {
@@ -154,6 +156,11 @@ module ngApp.search.controllers {
         console.log("Click event or enter key pressed");
       }
     }
+
+    removeFiles(files: IFile[]): void {
+      this.CartService.remove(_.pluck(files, 'file_uuid'));
+    }
+
   }
 
   angular

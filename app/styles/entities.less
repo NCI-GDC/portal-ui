@@ -1,5 +1,5 @@
 .entity {
-  @ENTITY_HEADER_HEIGHT: 93px;
+  @ENTITY_HEADER_HEIGHT: 83px;
 
   .entity-identifier {
     font-size: 25px;
@@ -22,21 +22,35 @@
     }
   }
 
-  > h1:first-child {
+  h1 {
     margin-top: 7px;
     line-height: 1.8;
     width: 100%;
     padding-left: 15px;
 
+    .h-actions {
+      margin-right: 16px;
+
+      .dropdown-menu {
+        right: 0;
+        left: inherit;
+      }
+    }
+
     &.ui-scroll-fix {
       margin-top: 0;
-      padding-top: 20px;
+      padding-top: 10px;
       padding-bottom: 10px;
       top: 0;
       width: 100%;
-      background: none repeat scroll 0% 0% rgba(255, 255, 255, 0.9);
+      background: none repeat scroll 0 0 rgba(255, 255, 255, 0.9);
       border-bottom: 1px solid @lightgrey;
+      .h-actions {
+        margin-right: 31px;
+      }
     }
+
+
   }
 
   aside {
@@ -56,7 +70,7 @@
     }
 
     &.ui-scroll-fix {
-      margin-top: 24px;
+      margin-top: 7px;
     }
 
     > div.current > a {

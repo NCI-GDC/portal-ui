@@ -7,23 +7,28 @@
   <caption class="h4" data-translate>Files</caption>
   <thead>
   <tr>
-    <th>
-      <i class="fa fa-shopping-cart fa-2x"></i>
-      <div class="btn-group pull-right" dropdown>
-        <button type="button" class="btn btn-default action-button dropdown-toggle">
-          A
+    <th class="text-center">
+      <div class="btn-group" data-dropdown>
+        <button data-ng-if="sc.CartService.areInCart(sc.files.hits)" type="button" class="btn btn-default" data-ng-click="sc.CartService.removeFiles(sc.files.hits)">
+          <i class="fa fa-check-circle-o"></i>
+        </button>
+        <button data-ng-if="!sc.CartService.areInCart(sc.files.hits)" type="button" class="btn btn-default" data-ng-click="sc.CartService.addFiles(sc.files.hits)">
+          <i class="fa fa-circle-o"></i>
+        </button>
+        <button type="button" class="btn btn-default dropdown-toggle">
+          <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
           <li>
-            <a data-ng-click="sc.CartService.addFiles(sc.files.hits)">
-              <i class="fa fa-download"></i>
-              <span data-translate>Select All on This Page</span> ({{sc.files.hits.length}})
+            <a data-ng-click="sc.CartService.addAllFiles()">
+              <i class="fa fa-shopping-cart fa-stack"></i>
+              <span data-translate>Add all in Search Result</span>
             </a>
           </li>
           <li>
-            <a data-ng-click="sc.CartService.addAllFiles()">
-              <i class="fa fa-download"></i>
-              <span data-translate>Select All in Result Set</span> (#)
+            <a data-ng-click="sc.CartService.removeAll()">
+              <i class="fa fa-shopping-cart fa-stack"></i>
+              <span data-translate>Remove all in Search Result</span>
             </a>
           </li>
         </ul>
@@ -44,37 +49,54 @@
   </thead>
   <tbody>
   <tr data-ng-repeat="file in sc.files.hits track by file.file_uuid">
-    <td>
-      <input type="checkbox"
-             class="cart-checkbox"
-             data-ng-checked="sc.CartService.isInCart(file.file_uuid)"
-             data-ng-click="!sc.CartService.isInCart(file.file_uuid) ? sc.CartService.add(file) : sc.CartService.remove([file.file_uuid])">
-
-      <div class="btn-group pull-right" dropdown>
-        <button type="button" class="btn btn-default action-button dropdown-toggle">
-          A
+    <td class="text-center">
+      <div class="btn-group" data-dropdown>
+        <button type="button" class="btn btn-default"
+                data-ng-click="!sc.CartService.isInCart(file.file_uuid) ? sc.CartService.add(file) : sc.CartService.remove([file.file_uuid])">
+          <i class="fa"
+             data-ng-class="sc.CartService.isInCart(file.file_uuid) ? 'fa-check-circle-o' : 'fa-circle-o'"></i>
+        </button>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                aria-expanded="false">
+          <span class="caret"></span>
+          <span class="sr-only">Toggle Dropdown</span>
         </button>
         <ul class="dropdown-menu" role="menu">
-          <li role="button"
+          <li role="listitem"
               aria-label="{{ 'Download File' | translate }}">
-            <i class="fa fa-download"></i>
-            <span data-translate>Download File</span>
+            <a href="">
+              <i class="fa-stack fa fa-cloud-download fa-stack "></i>
+              <span data-translate>Download</span>
+            </a>
           </li>
-          <li role="button"
+          <li role="listitem"
+              aria-label="{{ 'Download File' | translate }}">
+            <a href="">
+              <i class="fa-stack fa fa-download fa-stack "></i>
+              <span data-translate>Download File</span>
+            </a>
+          </li>
+          <li role="listitem"
               aria-label="{{ 'Download Metadata' | translate }}">
-            <i class="fa fa-download"></i>
-            <span data-translate>Download Metadata</span>
+            <a>
+              <i class="fa fa-download fa-stack "></i>
+              <span data-translate>Download Metadata</span>
+            </a>
           </li>
           <li class="divider"></li>
-          <li role="button"
+          <li role="listitem"
               aria-label="{{ 'View Files in same Archive' | translate }}">
-            <i class="fa fa-file-zip-o"></i>
-            <span data-translate>View Files in same Archive</span>
+            <a>
+              <i class="fa fa-file-zip-o fa-stack "></i>
+              <span data-translate>View Files in same Archive</span>
+            </a>
           </li>
-          <li role="button"
+          <li role="listitem"
               aria-label="{{ 'View Metadata Files' | translate }}">
-            <i class="fa fa-file-text-o"></i>
-            <span data-translate>View Metadata Files</span>
+            <a>
+              <i class="fa fa-file-text-o fa-stack "></i>
+              <span data-translate>View Metadata Files</span>
+            </a>
           </li>
         </ul>
       </div>
@@ -124,27 +146,33 @@
         <li data-ng-click="sc.searchQuery($event, 10)"
             data-ng-keypress="sc.searchQuery($event, 10)"
             role="button"
-            aria-label="Data Sample Size">10</li>
+            aria-label="Data Sample Size">10
+        </li>
         <li data-ng-click="sc.searchQuery($event, 20)"
             data-ng-keypress="sc.searchQuery($event, 20)"
             role="button"
-            aria-label="Data Sample Size">20</li>
+            aria-label="Data Sample Size">20
+        </li>
         <li data-ng-click="sc.searchQuery($event, 40)"
             data-ng-keypress="sc.searchQuery($event, 40)"
             role="button"
-            aria-label="Data Sample Size">40</li>
+            aria-label="Data Sample Size">40
+        </li>
         <li data-ng-click="sc.searchQuery($event, 60)"
             data-ng-keypress="sc.searchQuery($event, 60)"
             role="button"
-            aria-label="Data Sample Size">60</li>
+            aria-label="Data Sample Size">60
+        </li>
         <li data-ng-click="sc.searchQuery($event, 80)"
             data-ng-keypress="sc.searchQuery($event, 80)"
             role="button"
-            aria-label="Data Sample Size">80</li>
+            aria-label="Data Sample Size">80
+        </li>
         <li data-ng-click="sc.searchQuery($event, 100)"
             data-ng-keypress="sc.searchQuery($event, 100)"
             role="button"
-            aria-label="Data Sample Size">100</li>
+            aria-label="Data Sample Size">100
+        </li>
       </ul>
     </div>
     <span data-translate>entries</span>

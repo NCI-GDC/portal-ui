@@ -39,8 +39,11 @@ module.exports = function (config) {
       output: 'autowatch'
     },
     coverageReporter: {
-      type: 'html',
-      dir: 'coverage/'
+      dir: 'coverage',
+      reporters: [
+        {type: 'html'},
+        {type: 'lcovonly', subdir: '.', file: 'lcov.info'}
+      ]
     }
   });
 

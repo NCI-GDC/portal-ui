@@ -1,9 +1,9 @@
 language: node_js
 node_js:
-- '0.11'
+  - '0.11'
 notifications:
   slack:
-    secure: EtX/0NRh/GyXkKFADMOzCLVg5p37THfgAOr8dGEl14RoGRwp+M9LufHTcq0ycNOcYCJDb8upCzbiR1mjkjgLdlHK7n0NhrXr0cwl2yBQs8ayQcjTuT+5D09twp14c/SPJVuqXdtHtn6PGC+7nY8C/P2v7NuG7QKVuoF9BBgzl2w=
+    secure: EtX/0NRh/GyXkKFADMOzCLVg5p37THfgAOr8dGEl14RoGRwp+M9LufHTcq0ycNOcYCJDb8upCzbiR1mjkjgLdlHK7n0NhrXr0cwl2yBQs8ayQcjTuT+5D09twp14c/SPJVuqXdtHtn6PGC+7nY8C/P2v7NuG7QKVuoF9BBgzl2w=#ci
 addons:
   code_climate:
     repo_token:

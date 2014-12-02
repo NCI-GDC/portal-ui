@@ -236,7 +236,7 @@ gulp.task('plato', function () {
       .pipe($.plato('report'));
 });
 
-gulp.task('karma:once', ['plato'], function () {
+gulp.task('karma:once', function () {
   // Be sure to return the stream
   return gulp.src('app/scripts/*.js')
       .pipe($.karma({

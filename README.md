@@ -59,6 +59,10 @@ The git hooks can be found in `git_hooks/`
 
 Project dependencies are managed using [Bower](http://bower.io/) and [NPM](https://www.npmjs.org/)
 
+### Environment Config
+
+We rely on environment variables for some build configuration. Before starting the application, copy `env.dist` and name it `.env`
+
 # Tests
 
 Unit tests are run using Karma

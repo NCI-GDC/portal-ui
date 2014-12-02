@@ -11,6 +11,15 @@ var packageJSON = require("./package.json");
 var modRewrite = require('connect-modrewrite');
 var mkdirp = require("mkdirp");
 
+var habitat = require("habitat");
+
+habitat.load();
+
+var env = new habitat("gdc", {
+  deployment: "development",
+  api: "http://localhost:5000"
+});
+
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
   'ie_mob >= 10',
@@ -23,7 +32,7 @@ var AUTOPREFIXER_BROWSERS = [
   'bb >= 10'
 ];
 
-var production = !!$.util.env.production;
+var production = env.get("deployment").toLowerCase() === "production";
 $.util.log('Environment', $.util.colors.blue(production ? 'Production' : 'Development'));
 
 // <paths>
@@ -38,7 +47,6 @@ var paths = {
 paths.ddest = production ? paths.stage : paths.dev;
 paths.js.src = paths.src + "/app/**/*";
 paths.js.dest = paths.ddest + "/js";
-//paths.bower = production ? paths.bower + ".min.js" : paths.bower + ".js";
 paths.vendor = paths.ddest + "/libs";
 paths.html.src = paths.src + "/index.html";
 paths.html.dest = paths.dest + "/index.html";
@@ -74,12 +82,14 @@ gulp.task('i18n:translations', ['i18n:pot'], function () {
 });
 
 gulp.task('i18n:build', ['i18n:translations'], function() {
+  var f = production ? 'translations.min.js' : 'translations.js';
+
   return gulp.src('dist/translations/**/*.js')
-    .pipe($.concat('translations.js'))
+    .pipe($.concat(f))
     .pipe(gulp.dest('dist/js'));
 });
 
-// No file gets build in the case no translations exist.
+// No file gets built in the case no translations exist.
 // Build one to prevent 404s in browser.
 gulp.task('i18n:exists', function() {
   var f = production ? "translations.min.js" : "translations.js";
@@ -115,6 +125,8 @@ gulp.task('images', function () {
 });
 
 gulp.task("config", function () {
+  var f = production ? "config.min.js" : "config.js";
+
   fs.readFile("app/config.js", "UTF-8", function(err, content) {
     if (err) {
       throw err;
@@ -127,6 +139,7 @@ gulp.task("config", function () {
   
       content = content.replace(/__VERSION__/g, packageJSON.version);
       content = content.replace(/__COMMIT__/g, stdout.replace(/[\r\n]/, ""));
+      content = content.replace(/__API__/, env.get("api"));
 
       // Ensures path is in place, as I've had occurances where it may not be.
       mkdirp("dist/js", function(err) {
@@ -134,7 +147,7 @@ gulp.task("config", function () {
           throw err;
         }
 
-        fs.writeFile("dist/js/config.js", content);
+        fs.writeFileSync("dist/js/" + f, content);
       });
     });
   });
@@ -170,12 +183,25 @@ gulp.task('styles', function () {
 });
 
 gulp.task('js:bower', function () {
-  var filter = production ? $.filter('**/*.min.{js,css}') : $.filter('**/*.{js,css}');
   var stream = gulp.src(paths.bower);
 
   if (production) {
+    var filter = $.filter('**/*.min.{js,css,map}');
+
     stream
         .pipe(filter)
+        .pipe($.foreach(function(stream, file) {
+          if (file.relative.indexOf(".js")) {
+            var fileName = file.relative.substr(file.relative.lastIndexOf("/") + 1);
+            fileName = fileName.substr(0, fileName.lastIndexOf(".min") + 4) + ".js.map";
+
+            var path = file.relative.substr(0, file.relative.lastIndexOf("/") + 1) + fileName;
+            return stream
+                  .pipe($.replace(fileName, "/libs/" + path));
+          }
+
+          return stream;
+        }))
         .pipe($.rev())
         .pipe(gulp.dest(paths.vendor))
         .pipe($.rev.manifest())
@@ -189,12 +215,12 @@ gulp.task('js:bower', function () {
 
 // Scan Your HTML For Assets & Optimize Them
 gulp.task('rev', ['html'], function () {
-  var assets = $.useref.assets({searchPath: 'dist'});
   var stream = gulp.src('dist/index.html');
 
   if (production) {
     var manifest = paths.vendor + "/rev-manifest.json";
     var vendorFiles = fs.existsSync(manifest) ? require(manifest) : [];
+    var assets = $.useref.assets({searchPath: 'dist'});
 
     for (var file in vendorFiles) {
       if (vendorFiles.hasOwnProperty(file)) {
@@ -224,21 +250,24 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
   if (production) {
     stream
         .pipe($.replace('.js', '.min.js'))
+        .pipe($.replace('d3-tip/index.min.js', 'd3-tip/index.js'))
+        .pipe($.replace('moment/moment.min.js', 'moment/min/moment.min.js'))
+        .pipe($.replace('analytics.min.js', 'analytics.js'))
         .pipe($.replace('.css', '.min.css'))
-        .pipe(
-        $.cdnizer({
-          allowRev: true,
-          allowMin: true,
-          fallbackScript: "<script>function cdnizerLoad(u) {document.write('<scr'+'ipt src=\"'+u+'\"></scr'+'ipt>');}</script>",
-          fallbackTest: '<script>if(typeof ${ test } === "undefined") cdnizerLoad("${ filepath }");</script>',
-          files: [
-            'google:angular',
-            {
-              cdn: 'cdnjs:lodash.js',
-              package: 'lodash',
-              test: '_'
-            }
-          ]}))
+        // .pipe(
+        // $.cdnizer({
+        //   allowRev: true,
+        //   allowMin: true,
+        //   fallbackScript: "<script>function cdnizerLoad(u) {document.write('<scr'+'ipt src=\"'+u+'\"></scr'+'ipt>');}</script>",
+        //   fallbackTest: '<script>if(typeof ${ test } === "undefined") cdnizerLoad("${ filepath }");</script>',
+        //   files: [
+        //     'google:angular',
+        //     {
+        //       cdn: 'cdnjs:lodash.js',
+        //       package: 'lodash',
+        //       test: '_'
+        //     }
+        //   ]}))
   }
   return stream
       .pipe(gulp.dest('dist'))

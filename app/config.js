@@ -4,5 +4,6 @@ angular.module("ngApp.config", [])
     "version": "__VERSION__",
     "commitLink": "https://github.com/NCI-GDC/portal-ui/commit/__COMMIT__",
     "commitHash": "__COMMIT__",
+    "api": "__API__",
     "tag":"https://github.com/NCI-GDC/portal-ui/releases/tag/__VERSION__"
   });

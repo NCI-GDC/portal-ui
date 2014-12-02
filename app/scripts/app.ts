@@ -4,6 +4,7 @@ declare module ngApp {
     tag: string;
     commitLink: string;
     commitHash: string;
+    api: string;
   }
 
   export interface IRootScope extends ng.IScope {
@@ -21,10 +22,11 @@ import IGDCConfig = ngApp.IGDCConfig;
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    $stateProvider: ng.ui.IStateProvider,
                    $locationProvider: ng.ILocationProvider,
-                   RestangularProvider: restangular.IProvider) {
+                   RestangularProvider: restangular.IProvider,
+                   config: IGDCConfig) {
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/404");
-  RestangularProvider.setBaseUrl("http://localhost:5000/");
+  RestangularProvider.setBaseUrl(config.api);
   RestangularProvider.setDefaultHttpFields({cache: true});
 }
 

@@ -9,6 +9,7 @@ var pagespeed = require('psi');
 var fs = require('graceful-fs');
 var packageJSON = require("./package.json");
 var modRewrite = require('connect-modrewrite');
+var mkdirp = require("mkdirp");
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -78,10 +79,28 @@ gulp.task('i18n:build', ['i18n:translations'], function() {
     .pipe(gulp.dest('dist/js'));
 });
 
-gulp.task('i18n:clean', del.bind(null, ['dist/translations']));
+// No file gets build in the case no translations exist.
+// Build one to prevent 404s in browser.
+gulp.task('i18n:exists', function() {
+  var f = production ? "translations.min.js" : "translations.js";
+
+  fs.readFile("dist/js/" + f, function(err) {
+    if (err) {
+      mkdirp("dist/js", function(err) {
+        if (err) {
+          throw err;
+        }
+
+        fs.writeFile("dist/js/" + f, "");
+      });
+    }
+  });
+});
+
+gulp.task('i18n:clean', del.bind(null, ['dist/translations', 'dist/js/translations.js', 'dist/js/translations.min.js']));
 
 gulp.task('i18n', function(cb) {
-  runSequence('i18n:build', ['i18n:clean'], cb);
+  runSequence('i18n:clean', ['i18n:build', 'i18n:exists'], cb);
 });
 
 // Optimize Images
@@ -110,7 +129,7 @@ gulp.task("config", function () {
       content = content.replace(/__COMMIT__/g, stdout.replace(/[\r\n]/, ""));
 
       // Ensures path is in place, as I've had occurances where it may not be.
-      require("mkdirp")("dist/js", function(err) {
+      mkdirp("dist/js", function(err) {
         if (err) {
           throw err;
         }

@@ -24,7 +24,7 @@
         </li>
         <li ui-sref-active="active"><a ui-sref="reports" data-translate>Reports</a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav navbar-right" data-ng-if="HeaderController.addedLanguages">
         <li>
           <select ng-model="HeaderController.currentLang"
                   ng-change="HeaderController.setLanguage()"

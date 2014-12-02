@@ -8,6 +8,7 @@ module ngApp.components.header.controllers {
     collapse(event: any): void;
     currentLang: string;
     languages: any;
+    addedLanguages: boolean;
     setLanguage(): void;
     getNumCartItems(): number;
   }
@@ -15,14 +16,16 @@ module ngApp.components.header.controllers {
   class HeaderController implements IHeaderController {
     isCollapsed: boolean = true;
     currentLang: string = "en";
+    addedLanguages: boolean = false;
     languages: any = {
       "en": "English",
-      "de": "German",
-      "fr": "French"
+      "fr": "French",
+      "es": "Spanish"
     };
 
     /* @ngInject */
     constructor(private gettextCatalog, private CartService: ICartService) {
+      this.addedLanguages = _.keys(gettextCatalog.strings).length;
     }
 
     collapse(event: any): void {

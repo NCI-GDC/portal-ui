@@ -20,14 +20,14 @@ module ngApp.search {
     });
 
     $stateProvider.state("search.participants", {
-      url: "/p",
+      url: "/p?filters",
       data: {
         tab: "participants"
       }
     });
 
     $stateProvider.state("search.files", {
-      url: "/f",
+      url: "/f?filters",
       data: {
         tab: "files"
       }

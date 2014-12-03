@@ -52,7 +52,11 @@
                 <tr>
                   <th scope="row" data-translate>Number of Data Files</th>
                   <td>
-                    <a data-ui-sref="search.files">
+                    <a data-ui-sref="search.files({ 'filters': makeFilter([
+                      {
+                        name: 'participant_id', value: pc.participant.bcr_patient_uuid
+                      }
+                    ])})">
                       ??? {{ ::pc.participant.files.length }}
                     </a>
                   </td>
@@ -60,7 +64,11 @@
                 <tr>
                   <th scope="row" data-translate>Number of Annotations</th>
                   <td>
-                    <a data-ui-sref="search.files">
+                    <a data-ui-sref="search.files({ 'filters': makeFilter([
+                      {
+                        name: 'participant_id', value: pc.participant.bcr_patient_uuid
+                      }
+                    ])})">
                       ??? {{ ::pc.participant.annotations.length }}
                     </a>
                   </td>
@@ -85,7 +93,11 @@
                   <td>??? {{ ::experiment.name }}</td>
                   <td>??? {{ ::experiment.samples }}</td>
                   <td>
-                    <a data-ui-sref="search.files">
+                    <a data-ui-sref="search.files({ 'filters': makeFilter([
+                      {
+                        name: 'participant_id', value: pc.participant.bcr_patient_uuid
+                      }
+                    ])})">
                       ??? {{ ::experiment.files }}
                     </a>
                   </td>

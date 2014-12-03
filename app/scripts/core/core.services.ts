@@ -7,7 +7,9 @@ module ngApp.core.services {
 
   class CoreService implements ICoreService {
     /* @ngInject */
-    constructor(private $rootScope: ngApp.IRootScope, private gettextCatalog) {
+    constructor(private $rootScope: ngApp.IRootScope,
+                private $state: ng.ui.IStateService,
+                private gettextCatalog) {
       this.setLoadedState(true);
     }
 
@@ -17,7 +19,24 @@ module ngApp.core.services {
 
       wrapper.attr("aria-busy", flippedState.toString());
       this.$rootScope.loaded = state;
+
+      this.$rootScope.makeFilter = function (fields: { name: string; value: string }[]): string {
+        var contentArray = _.map(fields, function(item) {
+          return {
+            "op": "is",
+            "content": {
+              "field": item.name,
+              "value": item.value.split(",")
+            }
+          }
+        });
+        return angular.toJson({
+          "op": "and",
+          "content": contentArray
+        });
+      }
     }
+
 
     setPageTitle(title: string, id?: any): void {
       // TODO - this could probably be done when the function is called
@@ -30,7 +49,7 @@ module ngApp.core.services {
 
   angular
       .module("core.services", [
-        "gettext"
+        "gettext",
       ])
       .service("CoreService", CoreService);
 }

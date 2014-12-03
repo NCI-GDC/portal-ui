@@ -50,7 +50,12 @@
     <td>{{ ::p.gender }}</td>
     <td>{{ ::p.person_neoplasm_cancer_status }}</td>
     <td>
-      <a data-ui-sref="files({ participantId: p.bcr_patient_uuid })">
+      <!--<a data-ui-sref="files({ participantId: p.bcr_patient_uuid })">-->
+      <a data-ui-sref="search.files({ 'filters': makeFilter([
+        {
+          name: 'participant_id', value: p.bcr_patient_uuid
+        }
+      ])})">
         ??? {{ ::p.files.length }}
       </a>
     </td>

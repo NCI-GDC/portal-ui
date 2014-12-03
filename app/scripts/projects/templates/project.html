@@ -60,7 +60,13 @@
                          <span data-translate data-translate-comment="number of">of Participants</span>
                       </th>
                       <td>
-                        <a data-ui-sref="search.participants({{ prc.project.id }})">{{ prc.project._summary._participant_count }}</a>
+                        <a data-ui-sref="search.participants({ 'filters': makeFilter([
+                          {
+                            name: 'project_code', value: prc.project.project_code
+                          }
+                        ])})">
+                          {{ prc.project._summary._participant_count }}
+                        </a>
                       </td>
                     </tr>
                     <tr>
@@ -69,7 +75,13 @@
                          <span data-translate data-translate-comment"number of">of data files</span>
                       </th>
                       <td>
-                        <a data-ui-sref="search.files({{ prc.project.id }})">{{ prc.project._summary.file_count }}</a>
+                        <a data-ui-sref="search.files({ 'filters': makeFilter([
+                          {
+                            name: 'project_code', value: prc.project.project_code
+                          }
+                        ])})">
+                          ??? {{ prc.project._summary.file_count }}
+                        </a>
                       </td>
                     </tr>
                     </tbody>
@@ -94,9 +106,28 @@
                     <tbody>
                     <tr data-ng-repeat="(experiment, counts) in prc.project._summary._experimental_data">
                       <td>{{ ::experiment }}</td>
-                      <td><a data-ui-sref="search.participants({{ prc.project.id }})">{{ ::counts.participant_count }}</a></td>
+                      <td>
+                        <a data-ui-sref="search.participants({ 'filters': makeFilter([
+                          {
+                            name: 'project_code', value: prc.project.project_code
+                          }
+                        ])})">
+                          {{ ::counts.participant_count }}
+                        </a>
+                      </td>
                       <td>??? {{ ::experiment.sample_count }}</td>
-                      <td><a data-ui-sref="search.files({{ prc.project.id }})">{{ ::counts.file_count }}</a></td>
+                      <td>
+                        <a data-ui-sref="search.files({ 'filters': makeFilter([
+                          {
+                            name: 'project_code', value: prc.project.project_code
+                          },
+                          {
+                            name: 'data_type', value: experiment
+                          }
+                        ])})">
+                          {{ ::counts.file_count }}
+                        </a>
+                      </td>
                     </tr>
                     </tbody>
                   </table>
@@ -117,12 +148,30 @@
                 <tr data-ng-repeat="(dataCategory, counts) in prc.project._summary._analyzed_data">
                   <td>{{ ::dataCategory }} </td>
                   <td>
-                    <a data-ui-sref="search.participants({{ prc.project.id }})">{{ counts.participant_count ?
-                      counts.participant_count : "-" }}</a>
+                    <a data-ui-sref="search.participants({ 'filters': makeFilter([
+                      {
+                        name: 'project_code', value: prc.project.project_code
+                      },
+                      {
+                        name: 'data_type', value: dataCategory
+                      }
+                    ])})">
+                      {{ counts.participant_count ?
+                      counts.participant_count : "-" }}
+                    </a>
                   </td>
                   <td>
-                    <a data-ui-sref="search.files({{ prc.project.id }})">{{ counts.file_count ? counts.file_count : "-" 
-                      }}</a>
+                    <a data-ui-sref="search.files({ 'filters': makeFilter([
+                      {
+                        name: 'project_code', value: prc.project.project_code
+                      },
+                      {
+                        name: 'data_type', value: dataCategory
+                      }
+                    ])})">
+                      {{ counts.file_count ? counts.file_count : "-"
+                      }}
+                    </a>
                   </td>
                 </tr>
                 </tbody>

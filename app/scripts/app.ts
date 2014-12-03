@@ -11,6 +11,7 @@ declare module ngApp {
     pageTitle: string;
     loaded: boolean;
     config: IGDCConfig;
+    makeFilter(fields: { name: string; value: string }[]): string;
   }
 }
 

@@ -74,21 +74,94 @@
           <td><a data-ui-sref="project({ projectId: p.project_code })">{{ ::p.project_code }}</a></td>
           <td>{{ ::p.project_name }}</td>
           <td>{{ ::p.program }}</td>
-          <td><a data-ui-sref="search.participants( { projectId: p.id })">{{ ::p._summary._participant_count }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ ::p._summary._analyzed_data["Clinical data"].file_count
-            }}</a>
+          <td>
+            <a data-ui-sref="search.participants({ 'filters': makeFilter([
+              {
+                name: 'project_code', value: p.project_code
+              }
+            ])})">
+              {{ ::p._summary._participant_count }}
+            </a>
           </td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ ::p._summary._analyzed_data["SNV"].file_count
-            }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p._summary._analyzed_data["mRNA
+          <td>
+            <a data-ui-sref="search.files({ 'filters': makeFilter([
+              {
+                name: 'project_code', value: p.project_code
+              },
+              {
+                name: 'data_type', value: 'Clinical data'
+              }
+            ])})">
+              {{ ::p._summary._analyzed_data["Clinical data"].file_count
+              }}
+            </a>
+          </td>
+          <td>
+            <a data-ui-sref="search.files({ 'filters': makeFilter([
+              {
+                name: 'project_code', value: p.project_code
+              },
+              {
+                name: 'data_type', value: 'SNV'
+              }
+            ])})">
+              {{ ::p._summary._analyzed_data["SNV"].file_count
+              }}
+            </a>
+          </td>
+          <td>
+            <a data-ui-sref="search.files({ 'filters': makeFilter([
+              {
+                name: 'project_code', value: p.project_code
+              },
+              {
+                name: 'data_type', value: 'mRNA Expression'
+              }
+            ])})">
+              ??? {{ ::p._summary._analyzed_data["mRNA
             Expression"].file_count
-            }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p._summary._analyzed_data["miRNA
-            Expression"].file_count }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">{{ ::p._summary._analyzed_data["CNV"].file_count }}</a></td>
-          <td><a data-ui-sref="search.files({ projectId: p.id })">??? {{ ::p._summary._analyzed_data["DNA
+            }}
+            </a>
+          </td>
+          <td>
+            <a data-ui-sref="search.files({ 'filters': makeFilter([
+              {
+                name: 'project_code', value: p.project_code
+              },
+              {
+                name: 'data_type', value: 'miRNA Expression'
+              }
+            ])})">
+              ??? {{ ::p._summary._analyzed_data["miRNA
+              Expression"].file_count }}
+            </a>
+          </td>
+          <td>
+            <a data-ui-sref="search.files({ 'filters': makeFilter([
+              {
+                name: 'project_code', value: p.project_code
+              },
+              {
+                name: 'data_type', value: 'CNV'
+              }
+            ])})">
+              {{ ::p._summary._analyzed_data["CNV"].file_count }}
+            </a>
+          </td>
+          <td>
+            <a data-ui-sref="search.files({ 'filters': makeFilter([
+              {
+                name: 'project_code', value: p.project_code
+              },
+              {
+                name: 'data_type', value: 'DNA methylation'
+              }
+            ])})">
+              ??? {{ ::p._summary._analyzed_data["DNA
             methylation"].file_count
-            }}</a></td>
+            }}
+            </a>
+          </td>
           <td>{{ ::p.status}}</td>
           <td>{{ ::p.date | date }}</td>
         </tr>

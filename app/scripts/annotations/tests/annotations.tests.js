@@ -10,28 +10,12 @@ describe('Annotations:', function () {
     httpBackend = $httpBackend;
   }));
 
-  describe('Controller:', function () {
-    it('should have annotations', inject(function ($controller) {
-      // Which HTTP requests do we expect to occur, and how do we response?
-      var annotations = [
-        { id: 1 },
-        { id: 2 }
-      ];
-
-      // Starting the controller
-      var wc = $controller('AnnotationsController', {annotations: annotations});
-
-      // We expect the controller to put the right value onto the scope
-      expect(wc).to.have.property('annotations').with.length(2);
-    }));
-  });
-
   describe('Service:', function () {
     it('should get all annotations', inject(function (AnnotationsService) {
       sinon.spy(AnnotationsService.ds, 'get');
 
       var fs = {hits: [], facets: [], pagination: {}};
-      httpBackend.whenGET("/annotations").respond(fs);
+      httpBackend.whenGET("/annotations?filters=%7B%7D&from=1&size=10").respond(fs);
 
       AnnotationsService.getAnnotations();
       httpBackend.flush();

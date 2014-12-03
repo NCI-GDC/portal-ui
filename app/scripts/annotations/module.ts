@@ -2,6 +2,7 @@ module ngApp.annotations {
   "use strict";
 
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
+  import IAnnotations = ngApp.annotations.models.IAnnotations;
   import IAnnotation = ngApp.annotations.models.IAnnotation;
 
   /* @ngInject */
@@ -11,7 +12,7 @@ module ngApp.annotations {
       controller: "AnnotationsController as asc",
       templateUrl: "annotations/templates/annotations.html",
       resolve: {
-        annotations: (AnnotationsService: IAnnotationsService) => {
+        annotations: (AnnotationsService: IAnnotationsService): ng.IPromise<IAnnotations> => {
           return AnnotationsService.getAnnotations();
         }
       }

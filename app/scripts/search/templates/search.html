@@ -34,10 +34,10 @@
              select="sc.select('participants')">
           <div class="pane-section">
             <h2 class="col-lg-10 col-md-9" data-ng-if="!sc.participants">
-              <i class="fa fa-spinner fa-spin"></i> Loading participants...
+              <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading participants...</span>
             </h2>
 
-            <h2 class="col-lg-10 col-md-9" data-ng-if="sc.participants.hits.length === 0">
+            <h2 class="col-lg-10 col-md-9" data-ng-if="sc.participants.hits.length === 0" data-translate>
               No participants found using those filters.
             </h2>
             <div data-ng-include="'search/templates/search.participants.html'" data-ng-if="sc.participants.hits.length > 0"></div>
@@ -48,10 +48,10 @@
              select="sc.select('files')">
           <div class="pane-section">
             <h2 class="col-lg-10 col-md-9" data-ng-if="!sc.files">
-              <i class="fa fa-spinner fa-spin"></i> Loading files...
+              <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading files...</span>
             </h2>
 
-            <h2 class="col-lg-10 col-md-9" data-ng-if="sc.files.hits.length === 0">
+            <h2 class="col-lg-10 col-md-9" data-ng-if="sc.files.hits.length === 0" data-translate>
               No files found using those filters.
             </h2>
 

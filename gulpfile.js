@@ -254,6 +254,7 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
         .pipe($.replace('moment/moment.min.js', 'moment/min/moment.min.js'))
         .pipe($.replace('analytics.min.js', 'analytics.js'))
         .pipe($.replace('.css', '.min.css'))
+        .pipe($.replace('ngprogress-lite.min.css', 'ngprogress-lite.css'))
         // .pipe(
         // $.cdnizer({
         //   allowRev: true,

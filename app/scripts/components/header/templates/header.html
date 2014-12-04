@@ -25,8 +25,11 @@
         <li ui-sref-active="active"><a ui-sref="reports" data-translate>Reports</a></li>
         <li ui-sref-active="active"><a ui-sref="annotations" data-translate>Annotations</a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right" data-ng-if="HeaderController.addedLanguages">
-        <li>
+      <ul class="nav navbar-nav navbar-right">
+        <li data-ng-show="HeaderController.CoreService.activeRequests">
+          {{ HeaderController.CoreService.finishedRequests }} / {{ HeaderController.CoreService.requestCount }}
+        </li>
+        <li data-ng-if="HeaderController.addedLanguages">
           <select ng-model="HeaderController.currentLang"
                   ng-change="HeaderController.setLanguage()"
                   aria-label="Select language"

@@ -39,21 +39,27 @@ function appRun(gettextCatalog, Restangular: restangular.IProvider,
 
   $rootScope.config = config;
   Restangular.setErrorInterceptor((response) => {
+    CoreService.xhrDone();
     // TODO more than just 404
     $state.go("404", {}, {inherit: true});
   });
   Restangular.addRequestInterceptor((element) => {
     // Ajax
-    CoreService.setLoadedState(false);
+    CoreService.xhrSent();
     return element;
   });
   Restangular.addResponseInterceptor((data, operation, what, url, response, deferred) => {
     // Ajax
-    CoreService.setLoadedState(true);
+    CoreService.xhrDone();
     return deferred.resolve(data);
   });
 
-  $rootScope.$on("$stateChangeSuccess", function() {
+  $rootScope.$on("$stateChangeStart", () => {
+    // Page change
+    CoreService.setLoadedState(false);
+  });
+
+  $rootScope.$on("$stateChangeSuccess", () => {
     // Page change
     CoreService.setLoadedState(true);
   });
@@ -61,6 +67,7 @@ function appRun(gettextCatalog, Restangular: restangular.IProvider,
 
 angular
     .module("ngApp", [
+      "ngProgressLite",
       "ngAnimate",
       "ngAria",
       "ngApp.config",

@@ -1,6 +1,7 @@
 module ngApp.components.header.controllers {
 
   import ICartService = ngApp.cart.services.ICartService;
+  import ICoreService = ngApp.core.services.ICoreService;
 
   export interface IHeaderController {
     isCollapsed: boolean;
@@ -24,7 +25,8 @@ module ngApp.components.header.controllers {
     };
 
     /* @ngInject */
-    constructor(private gettextCatalog, private CartService: ICartService) {
+    constructor(private gettextCatalog, private CartService: ICartService,
+                private CoreService: ICoreService) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
     }
 

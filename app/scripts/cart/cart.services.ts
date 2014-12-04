@@ -1,6 +1,5 @@
 module ngApp.cart.services {
 
-  import IGDCWindowService = ngApp.models.IGDCWindowService;
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
   import IFilesService = ngApp.files.services.IFilesService;
@@ -54,8 +53,12 @@ module ngApp.cart.services {
       return this.files;
     }
 
+    getSelectedFiles(): IFile[] {
+      return _.where(this.files.hits, {selected: true});
+    }
+
     isInCart(fileId: string): boolean {
-      return _.some(this.files.hits, { file_uuid: fileId });
+      return _.some(this.files.hits, {file_uuid: fileId});
     }
 
     areInCart(files: IFile[]): boolean {
@@ -89,13 +92,10 @@ module ngApp.cart.services {
     }
 
     removeFiles(files: IFile[]): void {
-      var ids :string[] = _.pluck(files, "file_uuid");
+      var ids: string[] = _.pluck(files, "file_uuid");
       this.remove(ids);
     }
 
-    getSelectedFiles(): IFile[] {
-      return _.where(this.files.hits, {selected: true});
-    }
 
     getFileUrls(): string[] {
       return _.pluck(this.getSelectedFiles(), "file_url");

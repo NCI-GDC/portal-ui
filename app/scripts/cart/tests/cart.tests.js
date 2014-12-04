@@ -18,12 +18,14 @@ describe('Cart:', function () {
       var files = {
         hits: [
           {
-            id: "AAA",
-            size: 0
+            file_uuid: "AAA",
+            file_size: 20,
+            file_url: "urlA"
           },
           {
-            id: "BBB",
-            size: 0
+            file_uuid: "BBB",
+            file_size: 10,
+            file_url: "urlB"
           }
         ]
       };
@@ -33,29 +35,76 @@ describe('Cart:', function () {
 
       // We expect the controller to put the right value onto the scope
       expect(wc).to.have.property('files').to.have.property('hits').with.length(2);
-      //expect(wc).to.have.property('files').with.length(1);
 
     }));
   });
 
   describe('Service:', function () {
-    var file = {file_uuid: 'AAA', file_url: '/files/AAA'};
-    var fileB = {file_uuid: 'BBB', file_url: '/files/BBB'};
+    var fileA = {
+      file_uuid: "AAA",
+      file_size: 20,
+      file_url: "urlA"
+    };
+    var fileB = {
+      file_uuid: "BBB",
+      file_size: 10,
+      file_url: "urlB"
+    };
 
     beforeEach(inject(function ($window) {
       // Clear localStorage system to prevent oddities from tests.
       $window.localStorage.setItem("gdc-cart-items", []);
     }));
 
-    it('should add a file to the cart', inject(function (CartService) {
+    it('should return files', inject(function (CartService) {
+      var addCallback = sinon.spy(CartService, 'getFiles');
+      var fs = [fileA, fileB];
+      CartService.addFiles(fs);
+      var ret = CartService.getFiles();
+      expect(addCallback).to.have.been.calledOnce;
+      expect(ret.hits.length).to.eq(2);
+    }));
+
+    it('should return selected files', inject(function (CartService) {
+      var addCallback = sinon.spy(CartService, 'getSelectedFiles');
+      var fs = [fileA, fileB];
+      CartService.addFiles(fs);
+      CartService.getFiles().hits[0].selected = false;
+      var ret = CartService.getSelectedFiles();
+      expect(addCallback).to.have.been.calledOnce;
+      expect(ret.length).to.eq(1);
+    }));
+
+    it('should check if file in cart', inject(function (CartService) {
       var addCallback = sinon.spy(CartService, 'add');
-      CartService.add(file);
+      CartService.add(fileA);
       expect(addCallback).to.have.been.calledOnce;
       expect(CartService).to.have.property('files').to.have.property('hits').with.length(1);
     }));
 
+    it('should list of files in cart', inject(function (CartService) {
+      var addCallback = sinon.spy(CartService, 'add');
+      CartService.add(fileA);
+      expect(addCallback).to.have.been.calledOnce;
+      expect(CartService).to.have.property('files').to.have.property('hits').with.length(1);
+    }));
+
+    it('should add a file to the cart', inject(function (CartService) {
+      var addCallback = sinon.spy(CartService, 'add');
+      CartService.add(fileA);
+      expect(addCallback).to.have.been.calledOnce;
+      expect(CartService).to.have.property('files').to.have.property('hits').with.length(1);
+    }));
+    
+    it('should add many files to the cart', inject(function (CartService) {
+      var addCallback = sinon.spy(CartService, 'addFiles');
+      CartService.addFiles([fileA, fileB]);
+      expect(addCallback).to.have.been.calledOnce;
+      expect(CartService).to.have.property('files').to.have.property('hits').with.length(2);
+    }));
+
     it('should get all files in the cart', inject(function (CartService) {
-      CartService.add(file);
+      CartService.add(fileA);
       var getFilesCallback = sinon.spy(CartService, 'getFiles');
       var files = CartService.getFiles();
       expect(getFilesCallback).to.have.been.calledOnce;
@@ -64,7 +113,7 @@ describe('Cart:', function () {
     }));
 
     it('should remove all files', inject(function (CartService) {
-      CartService.add(file);
+      CartService.add(fileA);
       var removeCallback = sinon.spy(CartService, 'removeAll');
       CartService.removeAll();
       expect(removeCallback).to.have.been.calledOnce;
@@ -72,41 +121,43 @@ describe('Cart:', function () {
     }));
 
     it('should remove files by ids', inject(function (CartService) {
-      CartService.add(file);
+      CartService.add(fileA);
       CartService.add(fileB);
       var removeByIdCallback = sinon.spy(CartService, 'remove');
       CartService.remove(['AAA']);
       expect(removeByIdCallback).to.have.been.calledOnce;
-      expect(CartService).to.have.property('files').to.have.property('hits').to.not.include(file);
+      expect(CartService).to.have.property('files').to.have.property('hits').to.not.include(fileA);
       expect(CartService).to.have.property('files').to.have.property('hits').to.include(fileB);
     }));
 
-    it('should return a list of all file urls', inject(function (CartService) {
-      CartService.add(file);
-      var callback = sinon.spy(CartService, 'getAllFileUrls');
-      var returned = CartService.getAllFileUrls();
-      expect(returned).to.include('/files/AAA');
+
+    it('should remove files', inject(function (CartService) {
+      CartService.add(fileA);
       CartService.add(fileB);
-      returned = CartService.getAllFileUrls();
-      expect(returned).to.include('/files/AAA');
-      expect(returned).to.include('/files/BBB');
+      var removeByIdCallback = sinon.spy(CartService, 'removeFiles');
+      CartService.removeFiles([fileA]);
+      expect(removeByIdCallback).to.have.been.calledOnce;
+      expect(CartService).to.have.property('files').to.have.property('hits').to.not.include(fileA);
+      expect(CartService).to.have.property('files').to.have.property('hits').to.include(fileB);
     }));
 
-    it('should return a list of file urls by ids', inject(function (CartService) {
-      CartService.add(file);
-      CartService.add(fileB);
+    it('should return a list of all fileA urls', inject(function (CartService) {
+      CartService.add(fileA);
       var callback = sinon.spy(CartService, 'getFileUrls');
-      var returned = CartService.getFileUrls(['AAA']);
-      expect(returned).to.include('/files/AAA');
-      expect(returned).to.not.include('/files/BBB');
+      var returned = CartService.getFileUrls();
+      expect(returned).to.include('urlA');
+      CartService.add(fileB);
+      returned = CartService.getFileUrls();
+      expect(returned).to.include('urlA');
+      expect(returned).to.include('urlB');
     }));
 
-    it('should return a list of file ids', inject(function (CartService) {
-      CartService.add(file);
+    it('should return a list of fileA ids', inject(function (CartService) {
+      CartService.add(fileA);
       CartService.add(fileB);
-      var returnValue = CartService.getAllFileIds();
+      var returnValue = CartService.getFileIds();
       expect(returnValue).to.have.length(2);
-      expect(returnValue).to.contain(file.file_uuid);
+      expect(returnValue).to.contain(fileA.file_uuid);
       expect(returnValue).to.contain(fileB.file_uuid);
     }));
 

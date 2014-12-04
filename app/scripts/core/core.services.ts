@@ -49,7 +49,7 @@ module ngApp.core.services {
 
   angular
       .module("core.services", [
-        "gettext",
+        "gettext"
       ])
       .service("CoreService", CoreService);
 }

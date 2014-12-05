@@ -82,6 +82,7 @@
     "prot": "gulp protractor",
     "prestart" : "npm install",
     "start": "gulp serve",
+    "prebuild": "npm install",
     "build": "gulp",
     "upgrade": "npm-check-updates -u && bower-update && npm test"
   }

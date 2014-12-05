@@ -1,8 +1,9 @@
 <accordion close-others="sc.participantAccordian">
   <accordion-group heading="{{ 'Clinical' | translate }}" is-open="sc.participantAccordian">
-    <facets-free-text placeholder="{{ 'ID (Barcode or Participant number)' | translate }}"></facets-free-text>
+    <facets-free-text placeholder="{{ 'ID (Barcode or Participant number)' | translate }}" field="bcr_patient_uuid"></facets-free-text>
     <facets-free-text header="{{ 'ICD10' | translate }}"
-                      placeholder="{{ 'e.g. C50.9, C64.1' | translate }}"></facets-free-text>
+                      placeholder="{{ 'e.g. C50.9, C64.1' | translate }}"
+                      field="icd_10"></facets-free-text>
     <terms data-name="ethnicity" data-title="Ethnicity" data-facet="sc.participants.aggregations.ethnicity"></terms>
     <terms data-name="gender" data-title="Gender" data-facet="sc.participants.aggregations.gender"></terms>
     <terms data-name="histological_type" data-title="Histological Type" data-facet="sc.participants.aggregations.histological_type"></terms>

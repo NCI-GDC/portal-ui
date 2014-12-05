@@ -108,7 +108,53 @@ module ngApp.components.facets.directives {
     }
   }
 
+  interface IFreeTextController {
+    actives: string[];
+    searchTerm: string;
+    searchButtonClick(): void;
+    remove(term: string): void;
+    refresh(): void;
+  }
+
+  class FreeTextController implements IFreeTextController {
+    searchTerm: string = "";
+    actives: string[] = [];
+
+    /* @ngInject */
+    constructor(private $scope: ng.IScope,
+                private LocationService: ILocationService,
+                private FacetService: IFacetService) {
+      this.refresh();
+      $scope.$watch("searchTerm", (n, o) => {
+        if (n === o) {
+          return;
+        }
+        this.refresh();
+      });
+
+      $scope.$on("$locationChangeSuccess", () => this.refresh());
+    }
+
+    searchButtonClick(): void {
+      this.FacetService.addTerm(this.$scope.field, this.searchTerm);
+      this.actives.push(this.searchTerm);
+      this.searchTerm = "";
+    }
+
+    remove(term: string): void {
+      this.FacetService.removeTerm(this.$scope.field, term);
+      this.refresh();
+    }
+
+    refresh(): void {
+      this.actives = this.FacetService.getActiveIDs(this.$scope.field);
+    }
+
+  }
+
   angular.module("facets.controllers", ["facets.services"])
       .controller("currentFiltersCtrl", CurrentFiltersController)
+      .controller("freeTextCtrl", FreeTextController)
       .controller("termsCtrl", TermsController);
 }
+

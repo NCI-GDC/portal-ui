@@ -6,7 +6,8 @@ module ngApp.components.facets.services {
   export interface IFacetService {
     addTerm(facet: string, term: string): void;
     removeTerm(facet: string, term: string): void;
-    getActives(facet: string, terms: string[]): string[];
+    getActives(facet: string, terms: any[]): string[];
+    getActiveIDs(facet: string): string[];
   }
 
   class FacetService implements IFacetService {
@@ -14,7 +15,7 @@ module ngApp.components.facets.services {
     constructor(private LocationService: ILocationService) {
     }
 
-    getActives(facet, terms) {
+    getActives(facet, terms): string[] {
       var filters = this.ensurePath(this.LocationService.filters());
       var xs = [];
       var cs = filters["content"];
@@ -32,6 +33,22 @@ module ngApp.components.facets.services {
         }
       }
 
+      return xs;
+    }
+
+    getActiveIDs(facet: string): string[] {
+      var filters = this.ensurePath(this.LocationService.filters());
+      var xs = [];
+      var cs = filters["content"];
+      for (var i = 0; i < filters["content"].length; i++) {
+        var c = cs[i]["content"];
+        if (facet === c["field"]) {
+          c["value"].forEach((v) => {
+            xs.push(v);
+          });
+          break;
+        }
+      }
       return xs;
     }
 

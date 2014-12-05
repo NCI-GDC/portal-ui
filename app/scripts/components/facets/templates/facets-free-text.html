@@ -1,9 +1,23 @@
 <div class="facet-free-text-input facet-element">
+
+  <div class="facet-term-group">
+    <ul class="list-unstyled terms-list active-terms">
+      <li data-ng-repeat="active in ftc.actives">
+        <span data-ng-click="ftc.remove(active)"
+              data-ng-keypress="ftc.remove(active)">
+          <i class="fa fa-check-circle-o" aria-controls="data-table" aria-checked="true"></i>
+            {{ active }}
+        </span>
+        <!--<span class="label label-success">{{ term.doc_count }}</span>-->
+      </li>
+    </ul>
+  </div>
+
   <label data-ng-if="header" class="facet-name">{{ header }}</label>
   <div class="input-group">
-    <input type="text" class=" form-control" placeholder="{{ placeholder }}">
+    <input type="text" class="form-control" placeholder="{{ placeholder }}" ng-model="ftc.searchTerm">
     <span class="input-group-addon">
-      <span class="fa fa-search"></span>
+      <span class="fa fa-search" ng-click="ftc.searchButtonClick()"></span>
     </span>
   </div>
 </div>

@@ -20,14 +20,17 @@ module ngApp.components.facets.directives {
     };
   }
 
+  /* @ngInject */
   function FacetsFreeText(): ng.IDirective {
     return {
       restrict: "EA",
       scope: {
         header: "@",
-        placeholder: "@"
+        placeholder: "@",
+        field: "@"
       },
-      templateUrl: "components/facets/templates/facets-free-text.html"
+      templateUrl: "components/facets/templates/facets-free-text.html",
+      controller: "freeTextCtrl as ftc"
     };
   }
 

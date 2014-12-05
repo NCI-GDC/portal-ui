@@ -150,4 +150,55 @@
       </table>
     </div>
   </div>
+  <div class="pagination-controls">
+    <div class="number-results pull-left">
+      <span data-translate>Show</span>
+
+      <div class="btn-group dropup" dropdown is-open="status.isopen">
+        <button type="button" class="btn btn-default dropdown-toggle" data-ng-disabled="disabled">
+          {{ sc.files.pagination.count }} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li data-ng-click="prsc.searchQuery($event, 10)"
+              data-ng-keypress="prsc.searchQuery($event, 10)"
+              role="button"
+              aria-label="Data Sample Size">10</li>
+          <li data-ng-click="prsc.searchQuery($event, 20)"
+              data-ng-keypress="prsc.searchQuery($event, 20)"
+              role="button"
+              aria-label="Data Sample Size">20</li>
+          <li data-ng-click="prsc.searchQuery($event, 40)"
+              data-ng-keypress="prsc.searchQuery($event, 40)"
+              role="button"
+              aria-label="Data Sample Size">40</li>
+          <li data-ng-click="prsc.searchQuery($event, 60)"
+              data-ng-keypress="prsc.searchQuery($event, 60)"
+              role="button"
+              aria-label="Data Sample Size">60</li>
+          <li data-ng-click="prsc.searchQuery($event, 80)"
+              data-ng-keypress="prsc.searchQuery($event, 80)"
+              role="button"
+              aria-label="Data Sample Size">80</li>
+          <li data-ng-click="prsc.searchQuery($event, 100)"
+              data-ng-keypress="prsc.searchQuery($event, 100)"
+              role="button"
+              aria-label="Data Sample Size">100</li>
+        </ul>
+      </div>
+      <span data-translate>entries</span>
+    </div>
+    <pagination boundary-links="true"
+                total-items="prsc.projects.pagination.total"
+                data-ng-model="prsc.projects.pagination.page"
+                items-per-page="prsc.projects.pagination.count"
+                class="pagination-sm pull-right"
+                data-ng-change="prsc.searchQuery()"
+                num-pages="prsc.projects.pagination.pages"
+                max-size="6"
+                rotate="false"
+                previous-text="&lsaquo;"
+                next-text="&rsaquo;"
+                first-text="&laquo;"
+                last-text="&raquo;"></pagination>
+  </div>
 </div>

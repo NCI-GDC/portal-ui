@@ -16,8 +16,8 @@ var habitat = require("habitat");
 habitat.load();
 
 var env = new habitat("gdc", {
-  deployment: "development",
-  api: "http://localhost:5000"
+  api: "http://localhost:5000",
+  base: "/"
 });
 
 var AUTOPREFIXER_BROWSERS = [
@@ -32,7 +32,7 @@ var AUTOPREFIXER_BROWSERS = [
   'bb >= 10'
 ];
 
-var production = env.get("deployment").toLowerCase() === "production";
+var production = process.env.NODE_ENV.toLowerCase() === "production";
 $.util.log('Environment', $.util.colors.blue(production ? 'Production' : 'Development'));
 
 // <paths>
@@ -270,6 +270,7 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
         //   ]}))
   }
   return stream
+      .pipe($.replace('__BASE__', env.get("base")))
       .pipe(gulp.dest('dist'))
       .pipe($.size({title: 'html'}));
 });

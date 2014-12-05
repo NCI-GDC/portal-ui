@@ -80,7 +80,7 @@
     "postinstall": "bower install --quiet",
     "test": "gulp test",
     "prot": "gulp protractor",
-    "prod": "GDC_DEPLOYMENT=production gulp serve",
+    "prestart" : "npm install",
     "start": "gulp serve",
     "build": "gulp",
     "upgrade": "npm-check-updates -u && bower-update && npm test"

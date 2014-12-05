@@ -1,18 +1,18 @@
 <!doctype html>
-<html lang="en" data-ng-app="ngApp" ng-strict-di>
+<html lang="en" data-ng-app="ngApp" data-ng-strict-di>
 <head>
-  <base href="/">
+  <base href="__BASE__">
 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title ng-bind="pageTitle + ' | GDC'"></title>
+  <title data-ng-bind="pageTitle + ' | GDC'"></title>
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
+  <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
 
   <!-- Add to homescreen for Safari on iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -24,12 +24,12 @@
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
   <meta name="msapplication-TileColor" content="#3372DF">
 
-  <link rel="stylesheet" href="/libs/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="/libs/components-font-awesome/css/font-awesome.css">
-  <!-- build:css /css/styles.css -->
-  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="libs/components-font-awesome/css/font-awesome.css">
+  <!-- build:css css/styles.css -->
+  <link rel="stylesheet" href="css/styles.css">
   <!-- endbuild -->
-  <link rel="stylesheet" href="/libs/xmldisplay/xmldisplay.css">
+  <link rel="stylesheet" href="libs/xmldisplay/xmldisplay.css">
 
 </head>
 
@@ -47,29 +47,29 @@
     <table id="nci-header">
       <tbody>
         <tr>
-          <td height="34" align="left" width="283">
+          <td height="37" align="left" width="283">
             <a href="http://www.cancer.gov">
-              <img src="/images/logotype.gif"
+              <img src="images/logotype.gif"
                    title="National Cancer Institute"
                    alt="National Cancer Institute"
-                   height="34" border="0" width="283">
+                   height="37" border="0" width="283">
             </a>
           </td>
           <td width="97%"></td>
-          <td align="right" width="177">
+          <td align="right" height="34" width="177">
             <a href="http://www.cancer.gov">
-              <img src="/images/tagline.gif"
+              <img src="images/tagline.gif"
                    title="U.S. National Institutes of Health"
                    alt="U.S. National Institutes of Health"
-                   height="37" border="0" width="177">
+                   height="34" border="0" width="177">
             </a>
           </td>
-          <td align="right" width="118">
+          <td align="right" height="34" width="118">
             <a href="http://www.cancer.gov">
-              <img src="/images/cancergov.gif"
+              <img src="images/cancergov.gif"
                    title="www.cancer.gov"
                    alt="www.cancer.gov"
-                   height="37" border="0" width="118">
+                   height="34" border="0" width="118">
             </a>
           </td>
         </tr>
@@ -120,36 +120,36 @@
 </div>
 
 <!-- CDN Vendor Files -->
-<script src="/libs/lodash/dist/lodash.js"></script>
-<script src="/libs/jquery/dist/jquery.js"></script>
-<script src="/libs/angular/angular.js"></script>
+<script src="libs/lodash/dist/lodash.js"></script>
+<script src="libs/jquery/dist/jquery.js"></script>
+<script src="libs/angular/angular.js"></script>
 
 <!-- Vendor Files -->
-<!-- build:js /js/vendor.js -->
-<script src="/libs/immutable/dist/immutable.js"></script>
-<script src="/libs/xmldisplay/xmldisplay.js"></script>
-<script src="/libs/moment/moment.js"></script>
-<script src="/libs/d3/d3.js"></script>
-<script src="/libs/d3-tip/index.js"></script>
+<!-- build:js js/vendor.js -->
+<script src="libs/immutable/dist/immutable.js"></script>
+<script src="libs/xmldisplay/xmldisplay.js"></script>
+<script src="libs/moment/moment.js"></script>
+<script src="libs/d3/d3.js"></script>
+<script src="libs/d3-tip/index.js"></script>
 <!-- endbuild -->
 
 <!-- Angular Plugins -->
-<!-- build:js /js/ng-plugins.js -->
-<script src="/libs/angular-cache/dist/angular-cache.js"></script>
-<script src="/libs/angular-animate/angular-animate.js"></script>
-<script src="/libs/angular-ui-router/release/angular-ui-router.js"></script>
-<script src="/libs/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js"></script>
-<script src="/libs/restangular/dist/restangular.js"></script>
-<script src="/libs/angular-gettext/dist/angular-gettext.js"></script>
-<script src="/libs/angular-aria/angular-aria.js"></script>
+<!-- build:js js/ng-plugins.js -->
+<script src="libs/angular-cache/dist/angular-cache.js"></script>
+<script src="libs/angular-animate/angular-animate.js"></script>
+<script src="libs/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="libs/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js"></script>
+<script src="libs/restangular/dist/restangular.js"></script>
+<script src="libs/angular-gettext/dist/angular-gettext.js"></script>
+<script src="libs/angular-aria/angular-aria.js"></script>
 <!-- endbuild -->
 
 <!-- App -->
-<!-- build:js /js/app.js -->
-<script src="/js/templates.js"></script>
-<script src="/js/translations.js"></script>
-<script src="/js/config.js"></script>
-<script src="/js/app.js"></script>
+<!-- build:js js/app.js -->
+<script src="js/templates.js"></script>
+<script src="js/translations.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
 <!-- endbuild -->
 
 

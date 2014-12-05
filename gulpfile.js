@@ -32,7 +32,7 @@ var AUTOPREFIXER_BROWSERS = [
   'bb >= 10'
 ];
 
-var production = process.env.NODE_ENV.toLowerCase() === "production";
+var production = process.env.NODE_ENV === "production";
 $.util.log('Environment', $.util.colors.blue(production ? 'Production' : 'Development'));
 
 // <paths>

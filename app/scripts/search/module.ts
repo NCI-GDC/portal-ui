@@ -22,7 +22,7 @@ module ngApp.search {
     });
 
     $stateProvider.state("search.participants", {
-      url: "/p?filters",
+      url: "/p",
       data: {
         tab: "participants"
       },
@@ -30,7 +30,7 @@ module ngApp.search {
     });
 
     $stateProvider.state("search.files", {
-      url: "/f?filters",
+      url: "/f",
       data: {
         tab: "files"
       },

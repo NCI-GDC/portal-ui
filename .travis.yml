@@ -1,12 +1,6 @@
 language: node_js
 node_js:
-- '0.11'
+- '0.10'
 notifications:
   slack:
-    secure: EtX/0NRh/GyXkKFADMOzCLVg5p37THfgAOr8dGEl14RoGRwp+M9LufHTcq0ycNOcYCJDb8upCzbiR1mjkjgLdlHK7n0NhrXr0cwl2yBQs8ayQcjTuT+5D09twp14c/SPJVuqXdtHtn6PGC+7nY8C/P2v7NuG7QKVuoF9BBgzl2w=#ci
-addons:
-  code_climate:
-    repo_token:
-      secure: JJmKcg9rp0/C4SQwggb+rYp+dVpAYLGZh8keBf2gO45fnfH4vdsiK6uxYmFaJ46WrJXbagE2yrvB252COzr75jj6314727eRNQGX9YSza7vCTrOAg+dNg7ZYZwtSD54BqxAgrCMesAx6rMBXs57K7+iPOKuKU8x7j9IFFZaNwg8=
-after_script:
-  - cat coverage/lcov.info | ./node_modules/codeclimate-test-reporter/bin/codeclimate.js
+    secure: Njn9VjYMUJcb8jfvusetb13uC0rcQ1NN6KumKxc6/jBCRoQ7uhQbqhcemZDK/7s/jRUGYTkb72u5QJxgVHcYDMchO9aOCVI3xs8veQ6j6shOCJbSIHGby1nkuwDPNzyyYh5mjJVDiWbiIBOzOaMko0QT//Ce1IitBBkyTEtQPcg=

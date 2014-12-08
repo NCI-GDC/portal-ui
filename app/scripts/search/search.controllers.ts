@@ -25,7 +25,7 @@ module ngApp.search.controllers {
     removeFiles(files: IFile[]): void;
   }
 
-  interface ISearchControllerScope extends ng.IScope {
+  export interface ISearchControllerScope extends ng.IScope {
     advancedQuery: boolean;
   }
 

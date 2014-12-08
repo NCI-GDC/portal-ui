@@ -2,6 +2,7 @@ module ngApp.components.facets.directives {
 
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import IFacetService = ngApp.components.facets.services.IFacetService;
+  import IFreeTextFacetsScope = ngApp.components.facets.models.IFreeTextFacetsScope;
   import ILocationService = ngApp.components.location.services.ILocationService;
 
   interface ITermsController {
@@ -121,7 +122,7 @@ module ngApp.components.facets.directives {
     actives: string[] = [];
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope,
+    constructor(private $scope: IFreeTextFacetsScope,
                 private LocationService: ILocationService,
                 private FacetService: IFacetService) {
       this.refresh();

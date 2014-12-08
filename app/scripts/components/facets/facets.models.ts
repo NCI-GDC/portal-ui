@@ -16,4 +16,9 @@ module ngApp.components.facets.models {
     expanded: boolean;
     displayCount: number;
   }
+
+  export interface IFreeTextFacetsScope extends ng.IScope {
+    field: any;
+  }
+
 }

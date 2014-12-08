@@ -2,6 +2,7 @@ module ngApp.components.facets.services {
 
   import ILocationService = ngApp.components.location.services.ILocationService;
   import ISearch = ngApp.components.location.services.ISearch;
+  import ICartService = ngApp.cart.services.ICartService;
 
   export interface IFacetService {
     addTerm(facet: string, term: string): void;

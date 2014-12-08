@@ -9,7 +9,7 @@ module ngApp.components.location.services {
     path(): string;
     clear(): ng.ILocationService;
     search(): ISearch;
-    filters(): string;
+    filters(): any;
     setFilters(filters: Object): ng.ILocationService;
     query(): string;
     setQuery(query: Object): ng.ILocationService;
@@ -106,7 +106,7 @@ module ngApp.components.location.services {
       return this.$location.search({});
     }
 
-    filters(): string {
+    filters(): any {
       // TODO error handling
       var f = this.search()["filters"];
       return f ? angular.fromJson(f) : {};

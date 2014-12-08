@@ -17,7 +17,7 @@ module ngApp.components.overrides.directives {
 
           if (attrs.href && attrs.href.charAt(0) === "#") {
             element[0].blur();
-            document.querySelector(attrs.href).focus();
+            (<HTMLElement>document.querySelector(attrs.href)).focus();
           }
         });
       }

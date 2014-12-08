@@ -15,7 +15,7 @@ module ngApp.components.facets.services {
     constructor(private LocationService: ILocationService) {
     }
 
-    getActives(facet, terms): string[] {
+    getActives(facet: string, terms: any[]): string[] {
       var filters = this.ensurePath(this.LocationService.filters());
       var xs = [];
       var cs = filters["content"];
@@ -68,8 +68,11 @@ module ngApp.components.facets.services {
         var c = cs[i]["content"];
         if (c["field"] === facet) {
           found = true;
-          // TODO as a set
-          c["value"].push(term);
+          if(!_.contains(c["value"], term)) {
+            c["value"].push(term);
+          } else {
+            return;
+          }
           break;
         }
       }

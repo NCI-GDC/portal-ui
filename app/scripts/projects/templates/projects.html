@@ -5,7 +5,7 @@
 
   <div class="row search-panel">
     <div class="col-lg-2 col-md-3 facets-sidebar" data-ng-show="!prsc.$scope.advancedQuery">
-      <facets-free-text placeholder="{{ '(Project Name or Code)' | translate }}"></facets-free-text>
+      <facets-free-text placeholder="{{ '(Project Name or Code)' | translate }}" field="project_code"></facets-free-text>
       <facet-terms data-facet="prsc.projects.aggregations.diseaseType"></facet-terms>
       <terms data-name="project_code"
              data-facet="prsc.projects.aggregations.project_code" data-title="Project Code"></terms>

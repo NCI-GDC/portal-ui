@@ -15,21 +15,19 @@
          aria-label="{{ 'Site Navigation' | translate }}">
       <ul class="nav navbar-nav">
         <li ui-sref-active="active"><a ui-sref="projects" data-translate>Projects</a></li>
-        <li data-ng-class="{ active: HeaderController.$state.includes('search') || HeaderController.$state.includes('query') }">
-          <a ui-sref="search.participants" data-translate>Search</a>
-        </li>
-        <li ui-sref-active="active">
-          <a ui-sref="cart">
-            <span data-translate>Cart</span>
-            ({{ HeaderController.getNumCartItems() }})
-          </a>
-        </li>
-        <li ui-sref-active="active"><a ui-sref="reports" data-translate>Reports</a></li>
         <li ui-sref-active="active"><a ui-sref="annotations" data-translate>Annotations</a></li>
+        <li data-ng-class="{ active: HeaderController.$state.includes('search') || HeaderController.$state.includes('query') }">
+          <a ui-sref="search.files" data-translate>Search</a>
+        </li>
+
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li data-ng-show="HeaderController.CoreService.activeRequests">
-          {{ HeaderController.CoreService.finishedRequests }} / {{ HeaderController.CoreService.requestCount }}
+        <li ui-sref-active="active">
+          <a ui-sref="cart">
+            <i class="fa fa-shopping-cart"></i>
+            <span data-translate>Cart</span>
+            <span class="label label-primary">{{ HeaderController.getNumCartItems() }}</span>
+          </a>
         </li>
         <li data-ng-if="HeaderController.addedLanguages">
           <select ng-model="HeaderController.currentLang"
@@ -40,5 +38,9 @@
         </li>
       </ul>
     </nav>
+  </div>
+
+  <div class="xhrCounter" data-ng-if="HeaderController.CoreService.activeRequests">
+    {{ (HeaderController.CoreService.finishedRequests / HeaderController.CoreService.requestCount * 100).toFixed(0) }}%
   </div>
 </header>

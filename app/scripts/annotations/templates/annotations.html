@@ -1,137 +1,160 @@
-<div class="container-fluid projects search">
-  <h1 data-translate>Annotations</h1>
-
-  <search-bar></search-bar>
-
+<div class="container-fluid full-page">
   <div class="row search-panel">
-    <div class="col-lg-2 col-md-3 facets-sidebar">
-      <!-- <facets-free-text placeholder="{{ '(Project Name or Code)' | translate }}"></facets-free-text> -->
-      <terms data-name="itemType" 
-             data-title="Annotated Item"
-             data-facet="asc.annotations.aggregations.itemType"></terms>
-      <terms data-name="categoryName"
-             data-title="Annotation Category"
-             data-facet="asc.annotations.aggregations.categoryName"></terms>
-      <terms data-name="annotationClassificationName"
-             data-title="Annotation Classification"
-             data-facet="asc.annotations.aggregations.annotationClassificationName"></terms>
-      <terms data-name="status"
-             data-title="Annotation Status"
-             data-facet="asc.annotations.aggregations.status"
-             data-collapsed="true"></terms>
-    </div>
-    <h2 class="col-lg-10 col-md-9" data-ng-if="!asc.annotations">
-      <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading annotations...</span>
-    </h2>
-
-    <h2 class="col-lg-10 col-md-9" data-ng-if="asc.annotations.hits.length === 0" data-translate>
-      No annotations found using those filters.
-    </h2>
-
-    <div class="col-lg-10 col-md-9" data-ng-if="asc.annotations.hits.length > 0">
-
-      <div class="pull-right table-actions">
-        <select-columns></select-columns>
-        <export-table></export-table>
-      </div>
-
-      <table id="data-table" class="table table-striped table-hover table-condensed table-bordered">
-        <caption class="h4" data-translate>Annotations</caption>
-        <thead>
-        <tr>
-          <th scope="col" class="text-center" data-translate>ID</th>
-          <th scope="col" class="text-center" data-translate>Participant ID</th>
-          <th scope="col" class="text-center" data-translate>Project</th>
-          <th scope="col" class="text-center" data-translate>Item Type</th>
-          <th scope="col" class="text-center" data-translate>Item UUID</th>
-          <th scope="col" class="text-center" data-translate>Item Barcode</th>
-          <th scope="col" class="text-center" data-translate>Classification</th>
-          <th scope="col" class="text-center" data-translate>Category</th>
-          <th scope="col" class="text-center" data-translate>Created Date</th>
-          <th scope="col" class="text-center" data-translate>Annotator</th>
-          <th scope="col" class="text-center" data-translate>Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr data-ng-repeat="annotation in asc.annotations.hits track by annotation.id">
-          <td>
-            <a data-ui-sref="annotation({ annotationId: annotation.id })">
-              {{ ::annotation.id }}
-            </a>
-          </td>
-          <td>
-            <a>
-              ???
-            </a>
-          </td>
-          <td>
-            <a>
-              ???
-            </a>
-          </td>
-          <td>{{ ::annotation.itemType }}</td>
-          <td>???</td>
-          <td>{{ ::annotation.item }}</td>
-          <td>{{ ::annotation.annotationClassificationName }}</td>
-          <td>{{ ::annotation.categoryName }}</td>
-          <td>{{ ::annotation.dateCreated | date }}</td>
-          <td>{{ ::annotation.createdBy }}</td>
-          <td>{{ ::annotation.status }}</td>
-        </tr>
-        </tbody>
-      </table>
-
-      <div class="pagination-controls">
-        <div class="number-results pull-left">
-          <span data-translate>Show</span>
-
-          <div class="btn-group dropup" dropdown is-open="status.isopen">
-            <button type="button" class="btn btn-default dropdown-toggle" data-ng-disabled="disabled">
-              {{ asc.annotations.pagination.count }} <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-              <li data-ng-click="asc.searchQuery($event, 10)"
-                  data-ng-keypress="asc.searchQuery($event, 10)"
-                  role="button"
-                  aria-label="Data Sample Size">10</li>
-              <li data-ng-click="asc.searchQuery($event, 20)"
-                  data-ng-keypress="asc.searchQuery($event, 20)"
-                  role="button"
-                  aria-label="Data Sample Size">20</li>
-              <li data-ng-click="asc.searchQuery($event, 40)"
-                  data-ng-keypress="asc.searchQuery($event, 40)"
-                  role="button"
-                  aria-label="Data Sample Size">40</li>
-              <li data-ng-click="asc.searchQuery($event, 60)"
-                  data-ng-keypress="asc.searchQuery($event, 60)"
-                  role="button"
-                  aria-label="Data Sample Size">60</li>
-              <li data-ng-click="asc.searchQuery($event, 80)"
-                  data-ng-keypress="asc.searchQuery($event, 80)"
-                  role="button"
-                  aria-label="Data Sample Size">80</li>
-              <li data-ng-click="asc.searchQuery($event, 100)"
-                  data-ng-keypress="asc.searchQuery($event, 100)"
-                  role="button"
-                  aria-label="Data Sample Size">100</li>
-            </ul>
-          </div>
-          <span data-translate>entries</span>
+    <div class="col-lg-3 col-md-4 facets-sidebar">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <h3 class="panel-title pull-left">Facets</h3>
         </div>
-        <pagination boundary-links="true"
-                    total-items="asc.annotations.pagination.total"
-                    data-ng-model="asc.annotations.pagination.page"
-                    items-per-page="asc.annotations.pagination.count"
-                    class="pagination-sm pull-right"
-                    data-ng-change="asc.searchQuery()"
-                    num-pages="asc.annotations.pagination.pages"
-                    max-size="6"
-                    rotate="false"
-                    previous-text="&lsaquo;"
-                    next-text="&rsaquo;"
-                    first-text="&laquo;"
-                    last-text="&raquo;"></pagination>
+        <div class="list-group">
+          <facets-free-text data-title="Annotation" placeholder="{{ 'Annotation ID' | translate }}"></facets-free-text>
+
+          <terms data-name="itemType"
+                 data-title="Annotated Item"
+                 data-facet="asc.annotations.aggregations.itemType"></terms>
+          <terms data-name="categoryName"
+                 data-title="Category"
+                 data-facet="asc.annotations.aggregations.categoryName"></terms>
+          <terms data-name="annotationClassificationName"
+                 data-title="Classification"
+                 data-facet="asc.annotations.aggregations.annotationClassificationName"></terms>
+          <terms data-name="status"
+                 data-title="Status"
+                 data-facet="asc.annotations.aggregations.status"></terms>
+        </div>
       </div>
+
+    </div>
+    <h4 class="col-lg-9 col-md-8" data-ng-if="!asc.annotations">
+      <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading annotations...</span>
+    </h4>
+
+    <h4 class="col-lg-9 col-md-8" data-ng-if="asc.annotations.hits.length === 0" data-translate>
+      No annotations found using those filters.
+    </h4>
+
+    <div class="col-lg-9 col-md-8" data-ng-if="asc.annotations.hits.length > 0">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="alert alert-info clearfix">
+        <span data-ng-if="!cfc.currentFilters.length">
+          <i class="fa fa-long-arrow-left"></i> Start searching by selecting a facet
+        </span>
+            <current-filters></current-filters>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Annotations ({{asc.annotations.pagination.total}})</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped table-hover table-condensed table-bordered">
+            <thead>
+            <tr>
+              <th scope="col" class="text-center" data-translate>ID</th>
+              <th scope="col" class="text-center" data-translate>Participant ID</th>
+              <th scope="col" class="text-center" data-translate>Project</th>
+              <th scope="col" class="text-center" data-translate>Item Type</th>
+              <th scope="col" class="text-center" data-translate>Item UUID</th>
+              <th scope="col" class="text-center" data-translate>Item Barcode</th>
+              <th scope="col" class="text-center" data-translate>Classification</th>
+              <th scope="col" class="text-center" data-translate>Category</th>
+              <th scope="col" class="text-center" data-translate>Created Date</th>
+              <th scope="col" class="text-center" data-translate>Annotator</th>
+              <th scope="col" class="text-center" data-translate>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="annotation in asc.annotations.hits track by annotation.id">
+              <td>
+                <a data-ui-sref="annotation({ annotationId: annotation.id })">
+                  {{ ::annotation.id }}
+                </a>
+              </td>
+              <td>
+                <a>
+                  ???
+                </a>
+              </td>
+              <td>
+                <a>
+                  ???
+                </a>
+              </td>
+              <td>{{ ::annotation.itemType }}</td>
+              <td>???</td>
+              <td>{{ ::annotation.item }}</td>
+              <td>{{ ::annotation.annotationClassificationName }}</td>
+              <td>{{ ::annotation.categoryName }}</td>
+              <td>{{ ::annotation.dateCreated | date }}</td>
+              <td>{{ ::annotation.createdBy }}</td>
+              <td>{{ ::annotation.status }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="panel-footer">
+          <div class="pagination-controls">
+            <div class="number-results pull-left">
+              <span data-translate>Show</span>
+
+              <div class="btn-group dropup" dropdown is-open="status.isopen">
+                <button type="button" class="btn btn-default dropdown-toggle" data-ng-disabled="disabled">
+                  {{ asc.annotations.pagination.count }} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li data-ng-click="asc.searchQuery($event, 10)"
+                      data-ng-keypress="asc.searchQuery($event, 10)"
+                      role="button"
+                      aria-label="Data Sample Size">10
+                  </li>
+                  <li data-ng-click="asc.searchQuery($event, 20)"
+                      data-ng-keypress="asc.searchQuery($event, 20)"
+                      role="button"
+                      aria-label="Data Sample Size">20
+                  </li>
+                  <li data-ng-click="asc.searchQuery($event, 40)"
+                      data-ng-keypress="asc.searchQuery($event, 40)"
+                      role="button"
+                      aria-label="Data Sample Size">40
+                  </li>
+                  <li data-ng-click="asc.searchQuery($event, 60)"
+                      data-ng-keypress="asc.searchQuery($event, 60)"
+                      role="button"
+                      aria-label="Data Sample Size">60
+                  </li>
+                  <li data-ng-click="asc.searchQuery($event, 80)"
+                      data-ng-keypress="asc.searchQuery($event, 80)"
+                      role="button"
+                      aria-label="Data Sample Size">80
+                  </li>
+                  <li data-ng-click="asc.searchQuery($event, 100)"
+                      data-ng-keypress="asc.searchQuery($event, 100)"
+                      role="button"
+                      aria-label="Data Sample Size">100
+                  </li>
+                </ul>
+              </div>
+              <span data-translate>entries</span>
+            </div>
+            <pagination boundary-links="true"
+                        total-items="asc.annotations.pagination.total"
+                        data-ng-model="asc.annotations.pagination.page"
+                        items-per-page="asc.annotations.pagination.count"
+                        class="pagination-sm pull-right"
+                        data-ng-change="asc.searchQuery()"
+                        num-pages="asc.annotations.pagination.pages"
+                        max-size="6"
+                        rotate="false"
+                        previous-text="&lsaquo;"
+                        next-text="&rsaquo;"
+                        first-text="&laquo;"
+                        last-text="&raquo;"></pagination>
+          </div>
+        </div>
+      </div>
+
 
     </div>
   </div>

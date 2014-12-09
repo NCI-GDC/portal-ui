@@ -28,7 +28,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/404");
   RestangularProvider.setBaseUrl(config.api);
-  RestangularProvider.setDefaultHttpFields({cache: true});
+  RestangularProvider.setDefaultHttpFields({cache: false});
 }
 
 /* @ngInject */
@@ -41,7 +41,7 @@ function appRun(gettextCatalog, Restangular: restangular.IProvider,
   Restangular.setErrorInterceptor((response) => {
     CoreService.xhrDone();
     // TODO more than just 404
-    $state.go("404", {}, {inherit: true});
+    //$state.go("404", {}, {inherit: true});
   });
   Restangular.addRequestInterceptor((element) => {
     // Ajax

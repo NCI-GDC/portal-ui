@@ -150,6 +150,22 @@ module ngApp.components.facets.directives {
       this.actives = this.FacetService.getActiveIDs(this.$scope.field);
     }
 
+
+
+    toggle(event: any, property: string) {
+      if (event.which === 1 || event.which === 13) {
+        this[property] = !this[property];
+      }
+
+      if (property === "collapsed") {
+        angular.element(event.target).attr("aria-collapsed", this.collapsed.toString());
+      }
+
+      if (property === "expanded") {
+        this.displayCount = this.expanded ? this.inactives.length : this.originalDisplayCount;
+      }
+    }
+
   }
 
   angular.module("facets.controllers", ["facets.services"])

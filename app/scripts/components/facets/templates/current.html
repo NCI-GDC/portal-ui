@@ -1,16 +1,26 @@
-<div data-ng-repeat="filter in cfc.currentFilters" class="filter">
-  <span class="facet-button facet-name"
-        data-ng-click="cfc.removeTerm(filter.content.field, null, $event)"
-        data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event)">
-    {{ filter.content.field | translate }}
+<div class="current-filters">
+
+  <span data-ng-if="cfc.currentFilters.length">
+<span class="btn-group">
+<button class="btn btn-default"
+        aria-label="{{ 'Share Query' | translate }}" data-translate>
+  <i class="fa fa-share"></i> Share
+</button>
+
+      <button class="btn btn-default"
+              data-ng-click="sb.resetQuery()"
+              aria-label="{{ 'Clear Query' | translate }}" data-translate>
+        <i class="fa fa-rotate-left"></i> Clear
+      </button>
+</span>
+    <span class="filter" data-ng-repeat="filter in cfc.currentFilters">
+      <span class="label label-primary facet-name facet-button"
+            data-ng-click="cfc.removeTerm(filter.content.field, null, $event)"
+            data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event)">
+        {{ filter.content.field | translate }} : {{filter.content.value[0]}}
+      </span>
+      <span class="label label-warning" data-ng-if="!$last">AND</span>
+    </span>
   </span>
-  <span class="facet-operator">{{ filter.op | translate }}</span>
-  <div class="facet-terms"
-       data-ng-repeat="term in filter.content.value">
-    <span class="facet-button facet-term-value"
-          data-ng-click="cfc.removeTerm(filter.content.field, term, $event)"
-          data-ng-keypress="cfc.removeTerm(filter.content.field, term, $event)">{{ term | translate }}</span>
-    <span class="facet-operator or" data-ng-if="!$last">OR</span>
-  </div>
-  <span class="facet-operator and" data-ng-if="!$last">AND</span>
+
 </div>

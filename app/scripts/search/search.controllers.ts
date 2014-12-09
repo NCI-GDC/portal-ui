@@ -160,7 +160,6 @@ module ngApp.search.controllers {
     removeFiles(files: IFile[]): void {
       this.CartService.remove(_.pluck(files, "file_uuid"));
     }
-
   }
 
   angular

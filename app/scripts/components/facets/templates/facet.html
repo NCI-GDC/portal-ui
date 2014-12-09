@@ -1,43 +1,34 @@
-<div class="facet-group facet-element" data-ng-show="tc.name">
-  <div class="facet-name"
+<div class="list-group-item" data-ng-show="tc.inactives.length">
+  <h4 class="list-group-item-heading"
        data-ng-click="tc.toggle($event, 'collapsed')"
        data-ng-keypress="tc.toggle($event, 'collapsed')"
-       aria-collapsed="{{ tc.collapsed }}"
+       aria-expanded="{{ !tc.collapsed }}"
        aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
        role="button">
     <i class="fa" data-ng-class="{ 'fa-chevron-down': !tc.collapsed, 'fa-chevron-right': tc.collapsed }"></i>
-    <span>{{ tc.title | translate }}</span>
-  </div>
-  <div class="facet-term-group" data-ng-show="!tc.collapsed">
-    <ul class="list-unstyled terms-list active-terms">
-      <li data-ng-repeat="term in tc.actives track by term.key">
-        <span data-ng-click="tc.remove(tc.name, term.key, $event)"
-              data-ng-keypress="tc.remove(tc.name, term.key, $event)">
-          <i class="fa fa-check-circle-o" aria-controls="data-table" aria-checked="true"></i>
-            {{ term.key | translate }}
-        </span>
-        <span class="label label-success">{{ term.doc_count }}</span>
-      </li>
-    </ul>
-    <ul class="list-unstyled terms-list">
-      <li data-ng-repeat="term in tc.inactives | limitTo: tc.displayCount track by term.key"
-          data-ng-class="{ 'facet-active': term.active }">
+    {{ tc.title | translate }}
+  </h4>
+  <div data-ng-show="!tc.collapsed">
+      <p data-ng-repeat="term in tc.inactives | limitTo: tc.displayCount track by term.key"
+          data-ng-class="list-group-item-text">
         <span data-ng-click="tc.add(tc.name, term.key, $event)"
-              data-ng-keypress="tc.add(tc.name, term.key, $event)">
-          <i class="fa fa-circle-o" aria-controls="data-table" aria-checked="false"></i>
+              data-ng-keypress="tc.add(tc.name, term.key, $event)"
+              class="facet-term-label"
+            >
+          <i class="fa fa-square-o" aria-controls="data-table" aria-checked="false"></i>
           {{ term.key | translate }}
         </span>
-        <span class="label label-default">{{ term.doc_count }}</span>
-      </li>
-    </ul>
+        <span class="label label-primary pull-right">{{ term.doc_count }}</span>
+      </p>
 
-    <span class="show-more-terms" data-ng-if="tc.inactives.length > tc.originalDisplayCount"
+
+    <div class="text-right"><a href="" data-ng-if="tc.inactives.length > tc.originalDisplayCount"
           data-ng-click="tc.toggle($event, 'expanded')"
           data-ng-keypress="tc.toggle($event, 'expanded')"
           aria-label="Expanded Terms Toggle"
           role="button">
       <span data-ng-show="!tc.expanded">{{ tc.inactives.length - tc.displayCount }} More...</span>
       <span data-ng-show="tc.expanded">Less...</span>
-    </span>
+    </a></div>
   </div>
 </div>

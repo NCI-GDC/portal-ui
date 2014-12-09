@@ -8,7 +8,7 @@
       margin-top: 5px;
     }
 
-    div.facet-name {
+    .facet-name {
       text-transform: capitalize;
       cursor: pointer;
       font-weight: 600;
@@ -16,15 +16,18 @@
     }
 
     .facet-term-group {
-      margin-left: 17px;
+      margin-left: 0;
 
       ul.terms-list {
         > li {
           > span:first-child {
-            cursor: pointer;
-            font-size: 1.1rem;
-            display: inline-block;
-            max-width: 80%;
+//            cursor: pointer;
+//            font-size: 1.1rem;
+//            display: inline-block;
+//            max-width: 70%;
+//            overflow: hidden;
+//            white-space: nowrap;
+//            text-overflow: ellipsis;
           }
 
           span.label {
@@ -50,21 +53,20 @@
 }
 
 .current-filters {
+  font-size: 1.9rem;
 
-  div, span {
-    display: inline-block;
-    margin-bottom: 3px;
+  .filter {
+    margin-right: 5px;
   }
-
   .facet-button {
-    padding: 7px 5px;
-    border-radius: 5px;
+    //    padding: 5px 7px;
+    //    border-radius: 5px;
     cursor: pointer;
   }
 
   .facet-name {
-    background: #C0E1F6;
-    color: #166AA2;
+    //    background: #C0E1F6;
+    //    color: #166AA2;
     text-transform: capitalize;
 
     &:hover {
@@ -96,3 +98,12 @@
   }
 }
 
+.facet-term-label {
+
+  cursor: pointer;
+  display: inline-block;
+  max-width: 85%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

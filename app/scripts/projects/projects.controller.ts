@@ -27,6 +27,7 @@ module ngApp.projects.controllers {
     }
 
     refresh() {
+      console.log('here');
       this.ProjectsService.getProjects({
         fields: [
           "project_uuid",
@@ -45,8 +46,11 @@ module ngApp.projects.controllers {
         facets: [
           "status",
           "program",
-          "project_code"
-        ]
+          "project_code",
+          "_summary._experimental_data.experimental_type",
+          "_summary._analyzed_data.data_type",
+        ],
+        size: 100
       }).then((data) => this.projects = data);
     }
   }

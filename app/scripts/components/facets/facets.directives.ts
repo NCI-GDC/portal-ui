@@ -25,7 +25,7 @@ module ngApp.components.facets.directives {
     return {
       restrict: "EA",
       scope: {
-        header: "@",
+        title: "@",
         placeholder: "@",
         field: "@"
       },

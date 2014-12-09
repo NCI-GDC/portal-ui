@@ -15,6 +15,7 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  background: #fff;
 }
 
 #wrapper {
@@ -40,3 +41,61 @@ body {
   }
 }
 
+.full-page {
+  padding-top: 20px;
+}
+
+.xhrCounter{
+  position: fixed;
+  z-index: 2000;
+  top: 5rem;
+  right: 5rem;
+  height: 5rem;
+  width: 5rem;
+  font-weight: 100;
+  font-size: 5rem;
+
+}
+
+.xhrCounter.ng-enter, .xhrCounter.ng-leave {
+  -webkit-transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+.xhrCounter.ng-enter,
+.xhrCounter.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+
+.xhrCounter.ng-leave,
+.xhrCounter.ng-enter.ng-enter-active {
+  opacity: .5;
+}
+
+th, td {
+  white-space: nowrap;
+}
+
+/* bootcard override */
+.list-group-item {
+  margin-left: 0 ;
+  padding-left: 10px;
+
+  i, img {
+    margin-right: 0;
+    opacity: 1;
+  }
+}
+p {
+  margin: 0 0 5px;
+}
+.pagination {
+  margin: 0;
+}
+table .btn {
+  padding: 4px 10px;
+}
+.table>tbody>tr>td:first-child, .table>tbody>tr>th:first-child, .table>tfoot>tr>td:first-child, .table>tfoot>tr>th:first-child, .table>thead>tr>td:first-child, .table>thead>tr>th:first-child {
+  padding-left: 5px;
+}

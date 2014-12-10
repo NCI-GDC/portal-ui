@@ -6,22 +6,29 @@
 
   <div class="col-lg-2 col-md-2">
     <aside data-scroll-fix=85>
-      <div data-spy="properties" class="current">
-        <a data-scroll-to href="#properties" data-translate>File Properties</a>
-      </div>
-      <div data-spy="participants">
-        <a data-scroll-to href="#participants" data-translate>Participants</a>
-      </div>
-      <div data-spy="related">
-        <a data-scroll-to href="#related" data-translate>Related Files</a>
-      </div>
-      <div data-spy="content">
-        <a data-scroll-to href="#content" data-translate>File Content</a>
+      <div class="panel panel-default">
+        <div class="list-group">
+          <div class="list-group-item">
+            <h4 data-spy="summary" class="current list-group-item-heading">
+              <a data-scroll-to href="#summary" data-translate>Summary</a>
+            </h4>
+          </div>
+          <div class="list-group-item">
+            <h4 data-spy="participants" class="list-group-item-heading">
+              <a data-scroll-to href="#participants" data-translate>Participants</a>
+            </h4>
+          </div>
+          <div class="list-group-item">
+            <h4 data-spy="files" class="list-group-item-heading">
+              <a data-scroll-to href="#files" data-translate>Related Files</a>
+            </h4>
+          </div>
+        </div>
       </div>
     </aside>
   </div>
   <div class="col-lg-10 col-md-10 entity-body">
-      <section class="row" id="properties">
+      <section class="row" id="summary">
             <div class="col-lg-7 col-md-7">
               <div class="panel panel-default">
                 <div class="panel-heading clearfix">
@@ -200,7 +207,7 @@
           </div>
       </section>
 
-      <section class="row" id="related">
+      <section class="row" id="files">
           <div class="col-lg-12 col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading">

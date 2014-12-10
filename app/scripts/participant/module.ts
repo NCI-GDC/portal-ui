@@ -23,7 +23,18 @@ module ngApp.participants {
       templateUrl: "participant/templates/participant.html",
       resolve: {
         participant: ($stateParams: ng.ui.IStateParamsService, ParticipantsService: IParticipantsService): ng.IPromise<IParticipant> => {
-          return ParticipantsService.getParticipant($stateParams["participantId"], {});
+          return ParticipantsService.getParticipant($stateParams["participantId"], {
+            fields: [
+              "bcr_patient_uuid",
+              "vital_status",
+              "patient_id",
+              "tumor_tissue_site",
+              "ethnicity",
+              "gender",
+              "race",
+              "bcr_patient_barcode"
+            ]
+          });
         }
       }
     });

@@ -119,20 +119,20 @@
           name: 'file_id', value: file.file_uuid
         }
       ])})">
-            ??? {{ ::file.participants[0].id }}
+            tbc {{ ::file.participants[0].id }}
           </a>
         </td>
-        <td>??? {{ ::file.participants.length }}</td>
+        <td>tbc {{ ::file.participants.length }}</td>
         <td>
           <a data-ui-sref="project({ projectId: file.project.id })">
-            ??? {{ ::file.project.project_name }}
+            tbc {{ ::file.project.project_name }}
           </a>
         </td>
         <td>{{ ::file.data_type }}</td>
-        <td>??? {{ ::file.state }}</td>
+        <td>tbc {{ ::file.state }}</td>
         <td>{{ ::file.file_extension }}</td>
         <td>{{ file.file_size | size }}</td>
-        <td>??? {{ ::file.admin.revision }}</td>
+        <td>tbc {{ ::file.admin.revision }}</td>
         <td>{{ file.modified | date }}</td>
       </tr>
       </tbody>

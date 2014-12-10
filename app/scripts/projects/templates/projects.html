@@ -92,10 +92,10 @@
                 name: 'project_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'SNV'
+                name: 'data_type', value: 'Simple nucleotide variant'
               }
             ])})">
-              {{ ::p._summary._analyzed_data["SNV"].file_count }}
+              {{ ::p._summary._analyzed_data["Simple nucleotide variant"].file_count }}
             </a>
           </td>
           <td>
@@ -104,10 +104,10 @@
                 name: 'project_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'mRNA Expression'
+                name: 'data_type', value: 'mRNA expression'
               }
             ])})">
-              ??? {{ ::p._summary._analyzed_data["mRNA Expression"].file_count }}
+              {{ ::p._summary._analyzed_data["mRNA expression"].file_count }}
             </a>
           </td>
           <td>
@@ -116,10 +116,10 @@
                 name: 'project_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'miRNA Expression'
+                name: 'data_type', value: 'miRNA expression'
               }
             ])})">
-              ??? {{ ::p._summary._analyzed_data["miRNA Expression"].file_count }}
+              {{ ::p._summary._analyzed_data["miRNA expression"].file_count }}
             </a>
           </td>
           <td>
@@ -128,10 +128,10 @@
                 name: 'project_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'CNV'
+                name: 'data_type', value: 'Copy number variant'
               }
             ])})">
-              {{ ::p._summary._analyzed_data["CNV"].file_count }}
+              {{ ::p._summary._analyzed_data["Copy number variant"].file_count }}
             </a>
           </td>
           <td>
@@ -143,7 +143,7 @@
                 name: 'data_type', value: 'DNA methylation'
               }
             ])})">
-              ??? {{ ::p._summary._analyzed_data["DNA methylation"].file_count }}
+              {{ ::p._summary._analyzed_data["DNA methylation"].file_count }}
             </a>
           </td>
           <td>{{ ::p.status}}</td>

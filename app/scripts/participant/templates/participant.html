@@ -47,11 +47,11 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Disease Type</th>
-              <td>??? {{ ::pc.participant.diseaseType }}</td>
+              <td>tbc {{ ::pc.participant.diseaseType }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Program</th>
-              <td>??? {{ ::pc.participant.program }}</td>
+              <td>tbc {{ ::pc.participant.program }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Status</th>
@@ -65,7 +65,7 @@
                         name: 'participant_id', value: pc.participant.bcr_patient_uuid
                       }
                     ])})">
-                  ??? {{ ::pc.participant.files.length }}
+                  tbc {{ ::pc.participant.files.length }}
                 </a>
               </td>
             </tr>
@@ -77,7 +77,7 @@
                         name: 'participant_id', value: pc.participant.bcr_patient_uuid
                       }
                     ])})">
-                  ??? {{ ::pc.participant.annotations.length }}
+                  tbc {{ ::pc.participant.annotations.length }}
                 </a>
               </td>
             </tr>
@@ -100,15 +100,15 @@
             </thead>
             <tbody>
             <tr data-ng-repeat="experiment in pc.participant.experiments">
-              <td>??? {{ ::experiment.name }}</td>
-              <td>??? {{ ::experiment.samples }}</td>
+              <td>tbc {{ ::experiment.name }}</td>
+              <td>tbc {{ ::experiment.samples }}</td>
               <td>
                 <a data-ui-sref="search.files({ 'filters': makeFilter([
                       {
                         name: 'participant_id', value: pc.participant.bcr_patient_uuid
                       }
                     ])})">
-                  ??? {{ ::experiment.files }}
+                  tbc {{ ::experiment.files }}
                 </a>
               </td>
             </tr>
@@ -155,13 +155,12 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Key</th>
-              <td>??? {{ pc.participant.key }}</td>
+              <td>tbc {{ pc.participant.key }}</td>
             </tr>
             </tbody>
           </table>
         </div>
       </div>
-
     </section>
 
     <section class="row" id="annotations">
@@ -189,28 +188,27 @@
               <tbody>
               <tr data-ng-repeat="a in pc.participant.annotations track by a.id">
                 <td><a data-ui-sref="annotation({ annotationId : a.id })">{{ a.id }}</a></td>
-                <td>??? {{ ::a.type }}</td>
-                <td>??? {{ ::a.item }}</td>
-                <td>??? {{ ::a.classification }}</td>
-                <td>??? {{ ::a.category }}</td>
-                <td>??? {{ ::a.annotation }}</td>
-                <td>??? {{ ::a.createdBy }}</td>
-                <td>??? {{ ::a.dateCreated | date }}</td>
-                <td>??? {{ ::a.status }}</td>
+                <td>tbc {{ ::a.type }}</td>
+                <td>tbc {{ ::a.item }}</td>
+                <td>tbc {{ ::a.classification }}</td>
+                <td>tbc {{ ::a.category }}</td>
+                <td>tbc {{ ::a.annotation }}</td>
+                <td>tbc {{ ::a.createdBy }}</td>
+                <td>tbc {{ ::a.dateCreated | date }}</td>
+                <td>tbc {{ ::a.status }}</td>
               </tr>
               </tbody>
             </table>
           </div>
 
-          <div data-ng-if="!pc.participant.annotations.length"
-               data-translate
-               data-translate-comment="Text shown when no data exists">
+          <p data-ng-if="!pc.participant.annotations.length"
+             data-translate
+             class="no-results"
+             data-translate-comment="Text shown when no data exists">
             There are currently no Annotations for this participant.
-          </div>
+          </p>
         </div>
       </div>
     </section>
   </div>
-</div>
-
 </div>

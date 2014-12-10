@@ -25,7 +25,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    RestangularProvider: restangular.IProvider,
                    config: IGDCConfig) {
   $locationProvider.html5Mode(true);
-  $urlRouterProvider.otherwise("/404");
+  $urlRouterProvider.otherwise("/projects");
   RestangularProvider.setBaseUrl(config.api);
   RestangularProvider.setDefaultHttpFields({cache: false});
 }
@@ -77,7 +77,8 @@ angular
 
       "ngApp.core",
       "ngApp.search",
-      "ngApp.home",
+      "ngApp.query",
+      //"ngApp.home",
       "ngApp.participants",
       "ngApp.files",
       "ngApp.annotations",

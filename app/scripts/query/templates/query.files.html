@@ -1,0 +1,200 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Files</h3>
+  </div>
+  <div class="table-responsive">
+
+    <table id="file-table" class="table table-striped table-hover table-condensed table-bordered">
+      <thead>
+      <tr>
+        <th class="text-center">
+          <div class="btn-group" data-dropdown>
+            <button data-ng-if="qc.CartService.areInCart(qc.files.hits)" type="button" class="btn btn-success" disabled>
+              <i class="fa fa-check-circle"></i>
+            </button>
+            <button data-ng-if="!qc.CartService.areInCart(qc.files.hits)" type="button" class="btn btn-primary"
+                    data-ng-click="qc.CartService.addFiles(qc.files.hits)">
+              <i class="fa fa-shopping-cart"></i>
+            </button>
+            <button type="button" class="btn btn-default dropdown-toggle">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <a>
+                  <i class="fa fa-shopping-cart fa-stack"></i>
+                  <span data-translate>Add all in Search Result</span>
+                </a>
+              </li>
+              <li>
+                <a>
+                  <i class="fa fa-shopping-cart fa-stack"></i>
+                  <span data-translate>Remove all in Search Result</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </th>
+        <th scope="col" class="text-center" data-translate>Access</th>
+        <th scope="col" class="text-center" data-translate>File Name</th>
+        <th scope="col" class="text-center" data-translate>Participant ID</th>
+        <th scope="col" class="text-center" data-translate>Annotations</th>
+        <th scope="col" class="text-center" data-translate>Project</th>
+        <th scope="col" class="text-center" data-translate>Data Category</th>
+        <th scope="col" class="text-center" data-translate>Status</th>
+        <th scope="col" class="text-center" data-translate>File type</th>
+        <th scope="col" class="text-center" data-translate>Size</th>
+        <th scope="col" class="text-center" data-translate>Revision</th>
+        <th scope="col" class="text-center" data-translate>Update date</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr data-ng-repeat="file in qc.files.hits track by file.file_uuid">
+        <td class="text-center">
+          <div class="btn-group" data-dropdown>
+            <button data-ng-if="qc.CartService.isInCart(file.file_uuid)" type="button" class="btn btn-success" disabled>
+              <i class="fa fa-check-circle"></i>
+            </button>
+            <button data-ng-if="!qc.CartService.isInCart(file.file_uuid)" type="button" class="btn btn-default"
+                    data-ng-click="qc.CartService.add(file)">
+              <i class="fa fa-shopping-cart"></i>
+            </button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">
+              <span class="caret"></span>
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li role="listitem"
+                  aria-label="{{ 'Download File' | translate }}">
+                <a href="">
+                  <i class="fa-stack fa fa-cloud-download fa-stack "></i>
+                  <span data-translate>Download</span>
+                </a>
+              </li>
+              <li role="listitem"
+                  aria-label="{{ 'Download File' | translate }}">
+                <a href="">
+                  <i class="fa-stack fa fa-download fa-stack "></i>
+                  <span data-translate>Download File</span>
+                </a>
+              </li>
+              <li role="listitem"
+                  aria-label="{{ 'Download Metadata' | translate }}">
+                <a>
+                  <i class="fa fa-download fa-stack "></i>
+                  <span data-translate>Download Metadata</span>
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li role="listitem"
+                  aria-label="{{ 'View Files in same Archive' | translate }}">
+                <a>
+                  <i class="fa fa-file-zip-o fa-stack "></i>
+                  <span data-translate>View Files in same Archive</span>
+                </a>
+              </li>
+              <li role="listitem"
+                  aria-label="{{ 'View Metadata Files' | translate }}">
+                <a>
+                  <i class="fa fa-file-text-o fa-stack "></i>
+                  <span data-translate>View Metadata Files</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </td>
+        <td class="text-center">
+          <i data-ng-if="file.data_access=='protected'" class="fa fa-lock fa-lg"></i>
+          <i data-ng-if="file.data_access!='protected'" class="fa fa-unlock-alt fa-lg"></i>
+        </td>
+        <td>
+          <a data-ui-sref="file({ fileId: file.file_uuid })">
+            {{ ::file.file_name }}
+          </a>
+        </td>
+        <td>
+          <a data-ui-sref="search.participants({ 'filters': makeFilter([
+        {
+          name: 'file_id', value: file.file_uuid
+        }
+      ])})">
+            ??? {{ ::file.participants[0].id }}
+          </a>
+        </td>
+        <td>??? {{ ::file.participants.length }}</td>
+        <td>
+          <a data-ui-sref="project({ projectId: file.project.id })">
+            ??? {{ ::file.project.project_name }}
+          </a>
+        </td>
+        <td>{{ ::file.data_type }}</td>
+        <td>??? {{ ::file.state }}</td>
+        <td>{{ ::file.file_extension }}</td>
+        <td>{{ file.file_size | size }}</td>
+        <td>??? {{ ::file.admin.revision }}</td>
+        <td>{{ file.modified | date }}</td>
+      </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="panel-footer">
+      <div class="pagination-controls">
+        <div class="number-results pull-left">
+          <span data-translate>Show</span>
+
+          <div class="btn-group dropup" dropdown is-open="status.isopen">
+            <button type="button" class="btn btn-default dropdown-toggle" data-ng-disabled="disabled">
+              {{ qc.files.pagination.count }} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li data-ng-click="qc.searchQuery($event, 10)"
+                  data-ng-keypress="qc.searchQuery($event, 10)"
+                  role="button"
+                  aria-label="Data Sample Size">10
+              </li>
+              <li data-ng-click="qc.searchQuery($event, 20)"
+                  data-ng-keypress="qc.searchQuery($event, 20)"
+                  role="button"
+                  aria-label="Data Sample Size">20
+              </li>
+              <li data-ng-click="qc.searchQuery($event, 40)"
+                  data-ng-keypress="qc.searchQuery($event, 40)"
+                  role="button"
+                  aria-label="Data Sample Size">40
+              </li>
+              <li data-ng-click="qc.searchQuery($event, 60)"
+                  data-ng-keypress="qc.searchQuery($event, 60)"
+                  role="button"
+                  aria-label="Data Sample Size">60
+              </li>
+              <li data-ng-click="qc.searchQuery($event, 80)"
+                  data-ng-keypress="qc.searchQuery($event, 80)"
+                  role="button"
+                  aria-label="Data Sample Size">80
+              </li>
+              <li data-ng-click="qc.searchQuery($event, 100)"
+                  data-ng-keypress="qc.searchQuery($event, 100)"
+                  role="button"
+                  aria-label="Data Sample Size">100
+              </li>
+            </ul>
+          </div>
+          <span data-translate>entries</span>
+        </div>
+        <pagination boundary-links="true"
+                    total-items="qc.files.pagination.total"
+                    data-ng-model="qc.files.pagination.page"
+                    items-per-page="qc.files.pagination.count"
+                    class="pagination-sm pull-right"
+                    data-ng-change="qc.searchQuery()"
+                    num-pages="qc.files.pagination.pages"
+                    max-size="6"
+                    rotate="false"
+                    previous-text="&lsaquo;"
+                    next-text="&rsaquo;"
+                    first-text="&laquo;"
+                    last-text="&raquo;"></pagination>
+      </div>
+    </div>
+  </div>

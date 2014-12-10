@@ -1,4 +1,4 @@
-module ngApp.search.controllers {
+module ngApp.query.controllers {
   import IFacet = ngApp.models.IFacet;
   import IFilesService = ngApp.files.services.IFilesService;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
@@ -7,63 +7,44 @@ module ngApp.search.controllers {
   import IParticipants = ngApp.participants.models.IParticipants;
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
-  import IState = ngApp.search.services.IState;
+  import IQueryState = ngApp.query.services.IQueryState;
   import ICartService = ngApp.cart.services.ICartService;
 
-  export interface ISearchController {
+  export interface IQueryController {
     files: IFiles;
     participants: IParticipants;
-    State: IState;
+    QState: IQueryState;
     CartService: ICartService;
-    participantAccordian: boolean;
-    participantBioAccordian: boolean;
     query: string;
-    searchQuery(event: any, size: number): void;
+    queryQuery(event: any, size: number): void;
     addFilesKeyPress(event: any, type: string): void;
     setState(tab: string, next: string): void;
     select(section: string, tab: string): void;
-    removeFiles(files: IFile[]): void;
   }
 
-  export interface ISearchControllerScope extends ng.IScope {
-    advancedQuery: boolean;
+  interface IQueryControllerScope extends ng.IScope {
   }
 
-  class SearchController implements ISearchController {
-    participantAccordian: boolean;
-    participantBioAccordian: boolean;
+  class QueryController implements IQueryController {
     files : IFiles;
     participants: IParticipants;
     query: string = "";
 
     /* @ngInject */
-    constructor(private $scope: ISearchControllerScope,
+    constructor(private $scope: IQueryControllerScope,
                 private $state: ng.ui.IStateService,
-                public State: IState,
+                public QState: IQueryState,
                 public CartService: ICartService,
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
                 CoreService: ICoreService) {
       var data = $state.current.data || {};
-      this.State.setActive("tabs", data.tab);
-      this.State.setActive("facets", data.tab);
-      $scope.advancedQuery = data.advancedQuery;
-      CoreService.setPageTitle("Search");
+      this.QState.setActive(data.tab);
+      CoreService.setPageTitle("Query");
 
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
-        if (next.indexOf("search") !== -1 || next.indexOf("query") !== -1) {
+        if (next.indexOf("query") !== -1) {
           this.refresh();
-        }
-      });
-      $scope.$watch("advancedQuery", (newVal: boolean) => {
-        if (newVal !== undefined) {
-          var state: string = "search.";
-
-          if (newVal) {
-            state = "query.";
-          }
-
-          this.setState(this.$state.current.name.substring(this.$state.current.name.lastIndexOf(".") + 1), state);
         }
       });
       this.refresh();
@@ -83,15 +64,6 @@ module ngApp.search.controllers {
           "file_uuid",
           "platform",
           "updated"
-        ],
-        facets: [
-          "data_access",
-          "data_format",
-          "data_level",
-          "data_subtype",
-          "data_type",
-          "file_extension",
-          "platform"
         ]
       }).then((data) => this.files = data);
       this.ParticipantsService.getParticipants({
@@ -102,15 +74,6 @@ module ngApp.search.controllers {
           "patient_id",
           "vital_status",
           "person_neoplasm_cancer_status"
-        ],
-        facets: [
-          "ethnicity",
-          "gender",
-          "histological_type",
-          "history_of_neoadjuvant_treatment",
-          "race",
-          "tumor_tissue_site",
-          "vital_status"
         ]
       }).then((data) => this.participants = data);
     }
@@ -119,8 +82,7 @@ module ngApp.search.controllers {
     setState(tab: string, next: string) {
       // Changing tabs and then navigating to another page
       // will cause this to fire.
-      if (tab && (this.$state.current.name.match("search.") ||
-                  this.$state.current.name.match("query."))) {
+      if (tab && (this.$state.current.name.match("query."))) {
 
         next += tab;
 
@@ -128,10 +90,10 @@ module ngApp.search.controllers {
       }
     }
 
-    select(section: string, tab: string) {
-      var next = "search.";
+    select(tab: string) {
+      var next = "query.";
 
-      this.State.setActive(section, tab);
+      this.QState.setActive(tab);
 
       if (this.$state.current.name.match("query.")) {
         next = "query.";
@@ -151,24 +113,20 @@ module ngApp.search.controllers {
       }
     }
 
-    searchQuery(event: any, size: number): void {
+    queryQuery(event: any, size: number): void {
       if (event.which === 1 || event.which === 13) {
         console.log("Click event or enter key pressed");
       }
     }
-
-    removeFiles(files: IFile[]): void {
-      this.CartService.remove(_.pluck(files, "file_uuid"));
-    }
   }
 
   angular
-      .module("search.controller", [
-        "search.services",
+      .module("query.controller", [
+        "query.services",
         "cart.services",
-          "core.services",
+        "core.services",
         "participants.services",
         "files.services",
       ])
-      .controller("SearchController", SearchController);
+      .controller("QueryController", QueryController);
 }

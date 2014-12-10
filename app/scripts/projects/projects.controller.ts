@@ -45,7 +45,7 @@ module ngApp.projects.controllers {
         facets: [
           "status",
           "program",
-          "project_code",
+          "disease_code",
           "_summary._experimental_data.experimental_type",
           "_summary._analyzed_data.data_type",
         ],

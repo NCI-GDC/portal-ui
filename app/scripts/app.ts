@@ -27,7 +27,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/projects");
   RestangularProvider.setBaseUrl(config.api);
-  RestangularProvider.setDefaultHttpFields({cache: false});
+  RestangularProvider.setDefaultHttpFields({cache: true});
 }
 
 /* @ngInject */

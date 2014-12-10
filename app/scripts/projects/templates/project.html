@@ -6,14 +6,19 @@
 
   <div class="col-lg-2 col-md-2">
     <aside data-scroll-fix=85>
-      <div data-spy="summary" class="current">
-        <a data-scroll-to href="#summary" data-translate>Summary</a>
-      </div>
-      <div data-spy="available-data">
-        <a data-scroll-to href="#available-data" data-translate>Available Data</a>
-      </div>
-      <div data-spy="reports">
-        <a data-scroll-to href="#reports" data-translate>Reports</a>
+      <div class="panel panel-default">
+        <div class="list-group">
+          <div class="list-group-item">
+            <h4 data-spy="summary" class="current list-group-item-heading">
+              <a data-scroll-to href="#summary" data-translate>Summary</a>
+            </h4>
+          </div>
+          <div class="list-group-item">
+            <h4 data-spy="reports" class="list-group-item-heading">
+              <a data-scroll-to href="#reports" data-translate>Reports</a>
+            </h4>
+          </div>
+        </div>
       </div>
     </aside>
   </div>
@@ -203,7 +208,7 @@
                 <td> {{ report.id }}</td>
                 <td> {{ report.type }}</td>
                 <td> {{ report.date | date }}</td>
-                <td><a href="view/" data-translate>View</a></td>
+                <td><a href="" data-translate>View</a></td>
               </tr>
               </tbody>
             </table>

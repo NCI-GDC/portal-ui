@@ -73,7 +73,8 @@ module ngApp.query.controllers {
           "gender",
           "patient_id",
           "vital_status",
-          "person_neoplasm_cancer_status"
+          "person_neoplasm_cancer_status",
+          "admin.disease_code"
         ]
       }).then((data) => this.participants = data);
     }

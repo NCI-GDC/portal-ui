@@ -47,7 +47,7 @@
         </td>
         <td><a data-ui-sref="participant({ participantId : p.bcr_patient_uuid })">{{ ::p.bcr_patient_barcode }}</a></td>
         <td>tbc <a data-ui-sref="project({ projectId : p.project.id })">{{ ::p.project.name }}</a></td>
-        <td>tbc {{ ::p.diseaseType }}</td>
+        <td>{{ ::p.admin.disease_code }}</td>
         <td>{{ ::p.gender }}</td>
         <td>{{ ::p.person_neoplasm_cancer_status }}</td>
         <td>

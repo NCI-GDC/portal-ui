@@ -32,7 +32,8 @@ module ngApp.participants {
               "ethnicity",
               "gender",
               "race",
-              "bcr_patient_barcode"
+              "bcr_patient_barcode",
+              "admin.disease_code"
             ]
           });
         }

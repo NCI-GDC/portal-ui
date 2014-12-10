@@ -193,7 +193,7 @@
               <tr data-ng-repeat="p in fc.file.participants track by p.id">
                 <td><a data-ui-sref="participant({ participantId : p.bcr_patient_uuid })">{{ ::p.bcr_patient_barcode }}</a></td>
                 <td><a data-ui-sref="project({ projectId : p.project.id })">tbc{{ ::p.project.name }}</a></td>
-                <td>tbc{{ p.diseaseType }}</td>
+                <td>{{ p.admin.disease_code }}</td>
                 <td>{{ p.sc }}</td>
                 <td>{{ p.poc }}</td>
                 <td>{{ p.anc }}</td>

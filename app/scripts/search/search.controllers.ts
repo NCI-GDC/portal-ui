@@ -101,7 +101,8 @@ module ngApp.search.controllers {
           "gender",
           "patient_id",
           "vital_status",
-          "person_neoplasm_cancer_status"
+          "person_neoplasm_cancer_status",
+          "admin.disease_code"
         ],
         facets: [
           "ethnicity",

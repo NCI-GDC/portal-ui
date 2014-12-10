@@ -1,4 +1,4 @@
-<div class="container-fluid entity project no-padding-right" data-scroll-spy="">
+<div class="container entity" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <span class="entity-identifier">Pr</span>
     {{ ::prc.project.project_code }}
@@ -18,106 +18,102 @@
     </aside>
   </div>
 
-  <div class="col-lg-10 col-md-10 no-padding-right hide-overflow">
-
-    <div class="entity-body">
-      <section class="row" id="summary">
-        <div class="col-lg-12 col-md-12">
-          <div class="row">
-            <div class="col-lg-6 col-md-6">
-              <div class="row">
-                <div class="col-lg-12 col-md-12">
-                  <h2 data-translate>Summary</h2>
-                  <table class="table table-striped table-hover table-condensed table-bordered">
-                    <tbody>
-                    <tr>
-                      <th scope="row" data-translate>Code</th>
-                      <td>{{ ::prc.project.project_code }}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row" data-translate>Name</th>
-                      <td>{{ ::prc.project.project_name }}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row" data-translate>Disease Type</th>
-                      <td>??? {{ ::prc.project.disease_type }}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row" data-translate>Program</th>
-                      <td>{{ ::prc.project.program }}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row" data-translate>Sequencing Center</th>
-                      <td>??? {{ ::prc.project.sequencing_center }} </td>
-                    </tr>
-                    <tr>
-                      <th scope="row" data-translate>Status</th>
-                      <td>{{ ::prc.project.status }}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        &#35;
-                         <span data-translate data-translate-comment="number of">of Participants</span>
-                      </th>
-                      <td>
-                        <a data-ui-sref="search.participants({ 'filters': makeFilter([
+  <div class="col-lg-10 col-md-10 entity-body">
+    <section class="row" id="summary">
+      <div class="col-lg-6 col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title" data-translate>Summary</h3>
+          </div>
+          <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
+            <tbody>
+            <tr>
+              <th scope="row" data-translate>Code</th>
+              <td>{{ ::prc.project.project_code }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Name</th>
+              <td>{{ ::prc.project.project_name }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Disease Type</th>
+              <td>??? {{ ::prc.project.disease_type }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Program</th>
+              <td>{{ ::prc.project.program }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Sequencing Center</th>
+              <td>??? {{ ::prc.project.sequencing_center }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Status</th>
+              <td>{{ ::prc.project.status }}</td>
+            </tr>
+            <tr>
+              <th scope="row">
+                &#35;
+                <span data-translate data-translate-comment="number of">of Participants</span>
+              </th>
+              <td>
+                <a data-ui-sref="search.participants({ 'filters': makeFilter([
                           {
                             name: 'project_code', value: prc.project.project_code
                           }
                         ])})">
-                          {{ prc.project._summary._participant_count }}
-                        </a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        &#35;
-                         <span data-translate data-translate-comment"number of">of data files</span>
-                      </th>
-                      <td>
-                        <a data-ui-sref="search.files({ 'filters': makeFilter([
+                  {{ prc.project._summary._participant_count }}
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">
+                &#35;
+                <span data-translate data-translate-comment="number of">of data files</span>
+              </th>
+              <td>
+                <a data-ui-sref="search.files({ 'filters': makeFilter([
                           {
                             name: 'project_code', value: prc.project.project_code
                           }
                         ])})">
-                          ??? {{ prc.project._summary.file_count }}
-                        </a>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div class="row" id="available-data">
-
-                <div class="col-lg-12 col-md-12">
-                  <h2 data-translate>
-                    Experimental Strategy
-                  </h2>
-                  <table class="table table-striped table-hover table-condensed table-bordered">
-                    <thead>
-                    <tr>
-                      <th scope="col" data-translate>Analysis</th>
-                      <th scope="col" data-translate>Participants</th>
-                      <th scope="col" data-translate>Samples</th>
-                      <th scope="col" data-translate>Files</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr data-ng-repeat="(experiment, counts) in prc.project._summary._experimental_data">
-                      <td>{{ ::experiment }}</td>
-                      <td>
-                        <a data-ui-sref="search.participants({ 'filters': makeFilter([
+                  ??? {{ prc.project._summary.file_count }}
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title" data-translate>Experimental Strategy</h3>
+          </div>
+          <table class="table table-striped table-hover table-condensed table-bordered">
+            <thead>
+            <tr>
+              <th scope="col" data-translate>Analysis</th>
+              <th scope="col" data-translate>Participants</th>
+              <th scope="col" data-translate>Samples</th>
+              <th scope="col" data-translate>Files</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="(experiment, counts) in prc.project._summary._experimental_data">
+              <td>{{ ::experiment }}</td>
+              <td>
+                <a data-ui-sref="search.participants({ 'filters': makeFilter([
                           {
                             name: 'project_code', value: prc.project.project_code
                           }
                         ])})">
-                          {{ ::counts.participant_count }}
-                        </a>
-                      </td>
-                      <td>??? {{ ::experiment.sample_count }}</td>
-                      <td>
-                        <a data-ui-sref="search.files({ 'filters': makeFilter([
+                  {{ ::counts.participant_count }}
+                </a>
+              </td>
+              <td>??? {{ ::experiment.sample_count }}</td>
+              <td>
+                <a data-ui-sref="search.files({ 'filters': makeFilter([
                           {
                             name: 'project_code', value: prc.project.project_code
                           },
@@ -125,89 +121,95 @@
                             name: 'data_type', value: experiment
                           }
                         ])})">
-                          {{ ::counts.file_count }}
-                        </a>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <h2 data-translate>
-                Available Data
-              </h2>
-              <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                <th scope="col" data-translate>Data Type</th>
-                <th scope="col" data-translate>Participants</th>
-                <th scope="col" data-translate>Files</th>
-                </thead>
-                <tbody>
-                <tr data-ng-repeat="(dataCategory, counts) in prc.project._summary._analyzed_data">
-                  <td>{{ ::dataCategory }} </td>
-                  <td>
-                    <a data-ui-sref="search.participants({ 'filters': makeFilter([
-                      {
-                        name: 'project_code', value: prc.project.project_code
-                      },
-                      {
-                        name: 'data_type', value: dataCategory
-                      }
-                    ])})">
-                      {{ counts.participant_count ? counts.participant_count : "-" }}
-                    </a>
-                  </td>
-                  <td>
-                    <a data-ui-sref="search.files({ 'filters': makeFilter([
-                      {
-                        name: 'project_code', value: prc.project.project_code
-                      },
-                      {
-                        name: 'data_type', value: dataCategory
-                      }
-                    ])})">
-                      {{ counts.file_count ? counts.file_count : "-" }}
-                    </a>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="row" id="reports">
-        <div class="col-lg-12 col-md-12">
-          <h2>
-            <span data-translate>Reports</span>
-            <button class="btn btn-default pull-right add">
-              <span data-translate>Select a Date</span>
-              <span class="caret"></span>
-            </button>
-          </h2>
-          <table class="table table-striped table-hover table-condensed table-bordered">
-            <thead>
-            <tr>
-              <th scope="col" data-translate>ID</th>
-              <th scope="col" data-translate>Type</th>
-              <th scope="col" data-translate>Date</th>
-              <th scope="col" data-translate>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr data-ng-repeat="report in prc.project.reports">
-              <td> {{ report.id }}</td>
-              <td> {{ report.type }}</td>
-              <td> {{ report.date | date }}</td>
-              <td><a href="view/" data-translate>View</a></td>
+                  {{ ::counts.file_count }}
+                </a>
+              </td>
             </tr>
             </tbody>
           </table>
         </div>
-      </section>
-    </div>
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title" data-translate>Available Data</h3>
+          </div>
+          <table class="table table-striped table-hover table-condensed table-bordered">
+            <thead>
+            <tr>
+              <th scope="col" data-translate>Data Type</th>
+              <th scope="col" data-translate>Participants</th>
+              <th scope="col" data-translate>Files</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="(dataCategory, counts) in prc.project._summary._analyzed_data">
+              <td>{{ ::dataCategory }}</td>
+              <td>
+                <a data-ui-sref="search.participants({ 'filters': makeFilter([
+                      {
+                        name: 'project_code', value: prc.project.project_code
+                      },
+                      {
+                        name: 'data_type', value: dataCategory
+                      }
+                    ])})">
+                  {{ counts.participant_count ? counts.participant_count : "-" }}
+                </a>
+              </td>
+              <td>
+                <a data-ui-sref="search.files({ 'filters': makeFilter([
+                      {
+                        name: 'project_code', value: prc.project.project_code
+                      },
+                      {
+                        name: 'data_type', value: dataCategory
+                      }
+                    ])})">
+                  {{ counts.file_count ? counts.file_count : "-" }}
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+    <section class="row" id="reports">
+      <div class="col-lg-12 col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading clearfix">
+            <h3 class="panel-title pull-left" data-translate>Reports</h3>
+            <div class="btn-group pull-right">
+              <button class="btn btn-primary">
+                <i class="fa fa-calendar"></i>
+                Select Date
+              </button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th scope="col" data-translate>ID</th>
+                <th scope="col" data-translate>Type</th>
+                <th scope="col" data-translate>Date</th>
+                <th scope="col" data-translate>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr data-ng-repeat="report in prc.project.reports">
+                <td> {{ report.id }}</td>
+                <td> {{ report.type }}</td>
+                <td> {{ report.date | date }}</td>
+                <td><a href="view/" data-translate>View</a></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>

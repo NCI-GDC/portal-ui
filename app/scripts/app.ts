@@ -21,7 +21,6 @@ import IGDCConfig = ngApp.IGDCConfig;
 
 /* @ngInject */
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
-                   $stateProvider: ng.ui.IStateProvider,
                    $locationProvider: ng.ILocationProvider,
                    RestangularProvider: restangular.IProvider,
                    config: IGDCConfig) {

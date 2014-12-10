@@ -27,7 +27,6 @@ module ngApp.projects.controllers {
     }
 
     refresh() {
-      console.log('here');
       this.ProjectsService.getProjects({
         fields: [
           "project_uuid",

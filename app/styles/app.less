@@ -78,10 +78,20 @@ th, td {
 }
 
 /* bootcard override */
+.panel {
+  border-radius: 0;
+}
+.panel-default .panel-heading {
+  background: #fff;
+}
+
 .list-group-item {
   margin-left: 0 ;
   padding-left: 10px;
 
+  i {
+    width: 3rem;
+  }
   i, img {
     margin-right: 0;
     opacity: 1;
@@ -98,4 +108,12 @@ table .btn {
 }
 .table>tbody>tr>td:first-child, .table>tbody>tr>th:first-child, .table>tfoot>tr>td:first-child, .table>tfoot>tr>th:first-child, .table>thead>tr>td:first-child, .table>thead>tr>th:first-child {
   padding-left: 5px;
+}
+.table-vertical {
+  &>tbody>tr>td:first-child, &>tbody>tr>th:first-child, &>tfoot>tr>td:first-child, &>tfoot>tr>th:first-child, &>thead>tr>td:first-child, &>thead>tr>th:first-child {
+    white-space: nowrap;
+  }
+  td,th {
+    white-space: normal;
+  }
 }

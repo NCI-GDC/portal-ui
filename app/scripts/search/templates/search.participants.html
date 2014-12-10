@@ -45,9 +45,9 @@
             </ul>
           </div>
         </td>
-        <td><a data-ui-sref="participant({ participantId : p.bcr_patient_uuid })">{{ ::p.patient_id }}</a></td>
-        <td>??? <a data-ui-sref="project({ projectId : p.project.id })">{{ ::p.project.name }}</a></td>
-        <td>??? {{ ::p.diseaseType }}</td>
+        <td><a data-ui-sref="participant({ participantId : p.bcr_patient_uuid })">{{ ::p.bcr_patient_barcode }}</a></td>
+        <td>tbc <a data-ui-sref="project({ projectId : p.project.id })">{{ ::p.project.name }}</a></td>
+        <td>tbc {{ ::p.diseaseType }}</td>
         <td>{{ ::p.gender }}</td>
         <td>{{ ::p.person_neoplasm_cancer_status }}</td>
         <td>
@@ -56,12 +56,12 @@
           name: 'participant_id', value: p.bcr_patient_uuid
         }
       ])})">
-            ??? {{ ::p.files.length }}
+            tbc {{ ::p.files.length }}
           </a>
         </td>
         <td>
           <a data-ui-sref="annotations({ participantId: p.id })">
-            ??? {{ ::p.annotations.length }}
+            tbc {{ ::p.annotations.length }}
           </a>
         </td>
       </tr>

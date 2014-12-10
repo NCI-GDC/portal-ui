@@ -4,7 +4,7 @@ module ngApp.participants.services {
   import ILocationService = ngApp.components.location.services.ILocationService;
 
   export interface IParticipantsService {
-    getParticipant(id: string): ng.IPromise<IParticipant>;
+    getParticipant(id: string, params: Object): ng.IPromise<IParticipant>;
     getParticipants(params?: Object): ng.IPromise<IParticipants>;
   }
 

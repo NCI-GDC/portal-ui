@@ -101,6 +101,10 @@ module ngApp.components.facets.directives {
       }
     }
 
+    resetQuery() {
+      this.LocationService.clear();
+    }
+
     build() {
       this.currentFilters = _.sortBy(this.LocationService.filters().content, function(item: any) {
         return item.content.field;

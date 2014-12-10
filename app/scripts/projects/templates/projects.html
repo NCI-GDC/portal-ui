@@ -6,7 +6,7 @@
           <h3 class="panel-title pull-left">Facets</h3>
         </div>
         <div class="list-group">
-          <facets-free-text data-title="Project" placeholder="{{ 'Project Name or Code' | translate }}"></facets-free-text>
+          <facets-free-text data-title="Project" field="project_code" placeholder="{{ 'Project Name or Code' | translate }}"></facets-free-text>
           <terms data-name="disease_type" data-title="Disease Type"
                  data-facet="prsc.projects.aggregations.disease_type"></terms>
           <terms data-name="project_code"

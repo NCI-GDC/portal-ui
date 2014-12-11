@@ -6,17 +6,6 @@ module ngApp.participants {
 
   /* @ngInject */
   function participantsConfig($stateProvider: ng.ui.IStateProvider) {
-    $stateProvider.state("participants", {
-      url: "/participants",
-      controller: "ParticipantsController as psc",
-      templateUrl: "participant/templates/participants.html",
-      resolve: {
-        participants: (ParticipantsService: IParticipantsService) => {
-          return ParticipantsService.getParticipants();
-        }
-      }
-    });
-
     $stateProvider.state("participant", {
       url: "/participants/:participantId",
       controller: "ParticipantController as pc",

@@ -58,13 +58,12 @@
             </tr>
             <tr>
               <th scope="row">
-                &#35;
-                <span data-translate data-translate-comment="number of">of Participants</span>
+                Participants
               </th>
               <td>
                 <a data-ui-sref="search.participants({ 'filters': makeFilter([
                           {
-                            name: 'project_code', value: prc.project.project_code
+                            name: 'participants.admin.disease_code',value: prc.project.project_code
                           }
                         ])})">
                   {{ prc.project._summary._participant_count }}
@@ -73,13 +72,12 @@
             </tr>
             <tr>
               <th scope="row">
-                &#35;
-                <span data-translate data-translate-comment="number of">of data files</span>
+                Files
               </th>
               <td>
                 <a data-ui-sref="search.files({ 'filters': makeFilter([
                           {
-                            name: 'project_code', value: prc.project.project_code
+                            name: 'participants.admin.disease_code',value: prc.project.project_code
                           }
                         ])})">
                   tbc {{ prc.project._summary.file_count }}
@@ -108,7 +106,10 @@
               <td>
                 <a data-ui-sref="search.participants({ 'filters': makeFilter([
                           {
-                            name: 'project_code', value: prc.project.project_code
+                            name: 'participants.admin.disease_code',value: prc.project.project_code
+                          },
+                          {
+                            name: 'files.experimental_strategy', value: experiment
                           }
                         ])})">
                   {{ ::counts.participant_count }}
@@ -118,10 +119,10 @@
               <td>
                 <a data-ui-sref="search.files({ 'filters': makeFilter([
                           {
-                            name: 'project_code', value: prc.project.project_code
+                            name: 'participants.admin.disease_code',value: prc.project.project_code
                           },
                           {
-                            name: 'data_type', value: experiment
+                            name: 'files.experimental_strategy', value: experiment
                           }
                         ])})">
                   {{ ::counts.file_count }}
@@ -151,10 +152,10 @@
               <td>
                 <a data-ui-sref="search.participants({ 'filters': makeFilter([
                       {
-                        name: 'project_code', value: prc.project.project_code
+                        name: 'participants.admin.disease_code',value: prc.project.project_code
                       },
                       {
-                        name: 'data_type', value: dataCategory
+                        name: 'files.data_type', value: dataCategory
                       }
                     ])})">
                   {{ counts.participant_count ? counts.participant_count : "-" }}
@@ -163,10 +164,10 @@
               <td>
                 <a data-ui-sref="search.files({ 'filters': makeFilter([
                       {
-                        name: 'project_code', value: prc.project.project_code
+                        name: 'participants.admin.disease_code',value: prc.project.project_code
                       },
                       {
-                        name: 'data_type', value: dataCategory
+                        name: 'files.data_type', value: dataCategory
                       }
                     ])})">
                   {{ counts.file_count ? counts.file_count : "-" }}

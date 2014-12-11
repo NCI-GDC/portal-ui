@@ -17,7 +17,13 @@
       <span class="label label-primary facet-name facet-button"
             data-ng-click="cfc.removeTerm(filter.content.field, null, $event)"
             data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event)">
-        {{ filter.content.field | translate }} : {{filter.content.value[0]}}
+        {{ filter.content.field | translate }} :
+        <span data-ng-click="cfc.removeTerm(filter.content.field, term, $event)"
+            data-ng-repeat="v in filter.content.value">
+        {{v}}
+          <span data-ng-if="!$last">, </span>
+        </span>
+
       </span>
       <span class="label label-warning" data-ng-if="!$last">AND</span>
     </span>

@@ -17,12 +17,11 @@ module ngApp.annotations.services {
     }
 
     getAnnotation(id: string, params: Object = {}): ng.IPromise<IAnnotation> {
-      console.log(2);
-      if(params.hasOwnProperty("fields")) {
+      if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
+
       return this.ds.get(id, params).then((response): IAnnotation => {
-        console.log(3);
         return response["data"];
       });
     }
@@ -31,12 +30,22 @@ module ngApp.annotations.services {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
+
       if (params.hasOwnProperty("facets")) {
         params["facets"] = params["facets"].join();
       }
-      var defaults = {
+
+      var paging = angular.fromJson(this.LocationService.pagination()["annotations"]);
+
+      // Testing is expecting these values in URL, so this is needed.
+      paging = paging || {
         size: 10,
-        from: 1,
+        from: 1
+      };
+
+      var defaults = {
+        size: paging.size,
+        from: paging.from,
         filters: this.LocationService.filters()
       };
 

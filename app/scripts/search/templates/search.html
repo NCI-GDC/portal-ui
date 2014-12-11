@@ -12,12 +12,15 @@
     </div>
     <div class="col-lg-9 col-md-8">
       <div class="alert alert-info clearfix">
-        <a data-ui-sref="query.files" class="btn btn-primary pull-right" data-translate>
-          <i class="fa fa-gears"></i> Advanced
+        <a class="btn btn-primary pull-right" data-translate data-advanced-query>
+          <i class="fa fa-gears"></i> <span data-translate>Advanced</span>
         </a>
         <span data-ng-if="!cfc.currentFilters.length" style="line-height: 3.4rem">
-          <i class="fa fa-long-arrow-left"></i> Start searching by selecting a facet or try a custom query with the Advanced Search <i
-            class="fa fa-long-arrow-right"></i>
+          <i class="fa fa-long-arrow-left"></i>
+          <span data-translate>
+            Start searching by selecting a facet or try a custom query with the Advanced Search
+          </span>
+          <i class="fa fa-long-arrow-right"></i>
         </span>
         <current-filters></current-filters>
       </div>

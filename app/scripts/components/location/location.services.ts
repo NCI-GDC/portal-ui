@@ -1,8 +1,8 @@
 module ngApp.components.location.services {
-
   export interface ISearch {
     filters: string;
     query: string;
+    pagination: any;
   }
 
   export interface ILocationService {
@@ -12,66 +12,14 @@ module ngApp.components.location.services {
     filters(): any;
     setFilters(filters: Object): ng.ILocationService;
     query(): string;
-    setQuery(query: Object): ng.ILocationService;
+    setQuery(query?: Object): ng.ILocationService;
+    pagination(): any;
+    setPaging(pagination: any): ng.ILocationService;
   }
 
   class LocationService implements ILocationService {
     /* @ngInject */
-    constructor(private $rootScope: ng.IRootScopeService, private $location: ng.ILocationService) {
-      var cachedFilters: any = {};
-      var validSwitches = [
-        "search",
-        "query"
-      ];
-
-      $rootScope.$on("$stateChangeStart", (event: any, toState: any, toParams: any, fromState: any, fromParams: any) => {
-        var toStateRoot = toState.name.substr(0, toState.name.indexOf("."));
-        var fromStateRoot = fromState.name.substr(0, fromState.name.indexOf("."));
-
-        if (validSwitches.indexOf(toStateRoot) !== -1 && validSwitches.indexOf(fromStateRoot) !== -1) {
-          if (toState.name.match("query.") && fromState.name.match("search.")) {
-            cachedFilters = this.filters();
-            var query = "";
-
-            _.each(cachedFilters.content, (facet, index: number) => {
-              query += facet.content.field.toUpperCase() + " IS ";
-
-              _.each(facet.content.value, (value: string, index: number) => {
-                query += value;
-
-                if (index !== (facet.content.value.length - 1)) {
-                  query += " OR ";
-                }
-              });
-
-              if (index !== (cachedFilters.content.length - 1)) {
-                query += " AND ";
-              }
-            });
-
-            cachedFilters = query;
-          } else if (toState.name.match("query.") && fromState.name.match("query.")) {
-            cachedFilters = this.query();
-          } else if (toState.name.match("search.") && fromState.name.match("search.")) {
-            cachedFilters = this.filters();
-          }
-        }
-      });
-
-      $rootScope.$on("$stateChangeSuccess", (event: any, toState: any, toParams: any, fromState: any, fromParams: any) => {
-        var toStateRoot = toState.name.substr(0, toState.name.indexOf("."));
-        var fromStateRoot = fromState.name.substr(0, fromState.name.indexOf("."));
-
-        if (validSwitches.indexOf(toStateRoot) !== -1 && validSwitches.indexOf(fromStateRoot) !== -1) {
-          if ((toState.name.match("query.") && fromState.name.match("search.")) ||
-              (toState.name.match("query.") && fromState.name.match("query."))) {
-            this.setQuery(cachedFilters);
-          } else if (toState.name.match("search.") && fromState.name.match("search.")) {
-            this.setFilters(cachedFilters);
-          }
-        }
-      });
-    }
+    constructor(private $location: ng.ILocationService) {}
 
     path(): string {
       return this.$location.path();
@@ -95,7 +43,7 @@ module ngApp.components.location.services {
         return val;
       });
 
-      if (!propsWithValues) {
+      if (propsWithValues !== undefined && !propsWithValues) {
         search = "";
       }
 
@@ -128,13 +76,29 @@ module ngApp.components.location.services {
       return f ? angular.fromJson(f) : {};
     }
 
-    setQuery(query: Object): ng.ILocationService {
+    setQuery(query?: Object): ng.ILocationService {
       var search: ISearch = this.search();
       if (query) {
         search.query = angular.toJson(query);
       } else {
         delete search.query;
       }
+      return this.setSearch(search);
+    }
+
+    pagination(): any {
+      var f = this.search()["pagination"];
+      return f ? angular.fromJson(f) : {};
+    }
+
+    setPaging(pagination: any): ng.ILocationService {
+      var search: ISearch = this.search();
+      if (pagination) {
+        search.pagination = angular.toJson(pagination);
+      } else if (_.isEmpty(search.pagination)) {
+        delete search.pagination;
+      }
+
       return this.setSearch(search);
     }
   }

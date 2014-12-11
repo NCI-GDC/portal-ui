@@ -6,7 +6,7 @@ module ngApp.query {
     $urlRouterProvider.when("/query", "/query/f");
 
     $stateProvider.state("query", {
-      url: "/query?filters",
+      url: "/query?query&pagination",
       controller: "QueryController as qc",
       templateUrl: "query/templates/query.html",
       reloadOnQuery: false

@@ -9,14 +9,13 @@ module ngApp.query.controllers {
   import ICoreService = ngApp.core.services.ICoreService;
   import IQueryState = ngApp.query.services.IQueryState;
   import ICartService = ngApp.cart.services.ICartService;
+  import ILocationService = ngApp.components.location.services.ILocationService;
 
   export interface IQueryController {
     files: IFiles;
     participants: IParticipants;
     QState: IQueryState;
     CartService: ICartService;
-    query: string;
-    queryQuery(event: any, size: number): void;
     addFilesKeyPress(event: any, type: string): void;
     setState(tab: string, next: string): void;
     select(section: string, tab: string): void;
@@ -37,6 +36,7 @@ module ngApp.query.controllers {
                 public CartService: ICartService,
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
+                private LocationService: ILocationService,
                 CoreService: ICoreService) {
       var data = $state.current.data || {};
       this.QState.setActive(data.tab);
@@ -87,7 +87,7 @@ module ngApp.query.controllers {
 
         next += tab;
 
-        this.$state.go(next, {}, {inherit: true});
+        this.$state.go(next, this.LocationService.search(), {inherit: true});
       }
     }
 
@@ -111,12 +111,6 @@ module ngApp.query.controllers {
         } else {
           this.CartService.addFiles(this.files.hits);
         }
-      }
-    }
-
-    queryQuery(event: any, size: number): void {
-      if (event.which === 1 || event.which === 13) {
-        console.log("Click event or enter key pressed");
       }
     }
   }

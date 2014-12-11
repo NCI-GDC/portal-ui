@@ -91,67 +91,9 @@
           </table>
         </div>
         <div class="panel-footer clearfix">
-          <div class="pagination-controls">
-            <div class="number-results pull-left">
-              <span data-translate>Show</span>
-
-              <div class="btn-group dropup" dropdown is-open="status.isopen">
-                <button type="button" class="btn btn-default dropdown-toggle" data-ng-disabled="disabled">
-                  {{ asc.annotations.pagination.count }} <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                  <li data-ng-click="asc.searchQuery($event, 10)"
-                      data-ng-keypress="asc.searchQuery($event, 10)"
-                      role="button"
-                      aria-label="Data Sample Size">10
-                  </li>
-                  <li data-ng-click="asc.searchQuery($event, 20)"
-                      data-ng-keypress="asc.searchQuery($event, 20)"
-                      role="button"
-                      aria-label="Data Sample Size">20
-                  </li>
-                  <li data-ng-click="asc.searchQuery($event, 40)"
-                      data-ng-keypress="asc.searchQuery($event, 40)"
-                      role="button"
-                      aria-label="Data Sample Size">40
-                  </li>
-                  <li data-ng-click="asc.searchQuery($event, 60)"
-                      data-ng-keypress="asc.searchQuery($event, 60)"
-                      role="button"
-                      aria-label="Data Sample Size">60
-                  </li>
-                  <li data-ng-click="asc.searchQuery($event, 80)"
-                      data-ng-keypress="asc.searchQuery($event, 80)"
-                      role="button"
-                      aria-label="Data Sample Size">80
-                  </li>
-                  <li data-ng-click="asc.searchQuery($event, 100)"
-                      data-ng-keypress="asc.searchQuery($event, 100)"
-                      role="button"
-                      aria-label="Data Sample Size">100
-                  </li>
-                </ul>
-              </div>
-              <span data-translate>entries</span>
-            </div>
-            <pagination boundary-links="true"
-                        total-items="asc.annotations.pagination.total"
-                        data-ng-model="asc.annotations.pagination.page"
-                        items-per-page="asc.annotations.pagination.count"
-                        class="pagination-sm pull-right"
-                        data-ng-change="asc.searchQuery()"
-                        num-pages="asc.annotations.pagination.pages"
-                        max-size="6"
-                        rotate="false"
-                        previous-text="&lsaquo;"
-                        next-text="&rsaquo;"
-                        first-text="&laquo;"
-                        last-text="&raquo;"></pagination>
-          </div>
+          <pagination-controls data-page="annotations" data-paging="asc.annotations.pagination"></pagination-controls>
         </div>
       </div>
-
-
     </div>
   </div>
 </div>

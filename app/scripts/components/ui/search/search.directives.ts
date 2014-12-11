@@ -11,7 +11,7 @@ module ngApp.components.ui.search.directives {
     };
   }
 
-  angular.module("search.directives", ["search.controllers"])
+  angular.module("ui.search.directives", ["ui.search.controllers"])
       .directive("searchBar", SearchBar);
 }
 

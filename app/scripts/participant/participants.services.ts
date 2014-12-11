@@ -5,7 +5,7 @@ module ngApp.participants.services {
 
   export interface IParticipantsService {
     getParticipant(id: string, params: Object): ng.IPromise<IParticipant>;
-    getParticipants(params?: Object): ng.IPromise<IParticipants>;
+    getParticipants(params?: Object, paginationKey?: string): ng.IPromise<IParticipants>;
   }
 
   class ParticipantsService implements IParticipantsService {
@@ -20,6 +20,7 @@ module ngApp.participants.services {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
+
       return this.ds.get(id, params).then((response): IParticipant => {
         return response["data"];
       });
@@ -29,12 +30,22 @@ module ngApp.participants.services {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
+
       if (params.hasOwnProperty("facets")) {
         params["facets"] = params["facets"].join();
       }
-      var defaults = {
+
+      var paging = angular.fromJson(this.LocationService.pagination()["participants"]);
+
+      // Testing is expecting these values in URL, so this is needed.
+      paging = paging || {
         size: 10,
-        from: 1,
+        from: 1
+      };
+
+      var defaults = {
+        size: paging.size,
+        from: paging.from,
         filters: this.LocationService.filters()
       };
 

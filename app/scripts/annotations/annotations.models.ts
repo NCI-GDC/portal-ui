@@ -1,5 +1,4 @@
 module ngApp.annotations.models {
-  import IPagination = ngApp.models.IPagination;
   import IFacet = ngApp.models.IFacet;
   import ICollection = ngApp.models.ICollection;
   import IEntity = ngApp.models.IEntity;

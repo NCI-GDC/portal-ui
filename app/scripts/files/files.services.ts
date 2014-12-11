@@ -30,12 +30,22 @@ module ngApp.files.services {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
+
       if (params.hasOwnProperty("facets")) {
         params["facets"] = params["facets"].join();
       }
-      var defaults = {
+
+      var paging = angular.fromJson(this.LocationService.pagination()["files"]);
+
+      // Testing is expecting these values in URL, so this is needed.
+      paging = paging || {
         size: 10,
-        from: 1,
+        from: 1
+      };
+
+      var defaults = {
+        size: paging.size,
+        from: paging.from,
         filters: this.LocationService.filters()
       };
 

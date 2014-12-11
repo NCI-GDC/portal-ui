@@ -25,14 +25,11 @@ module ngApp.query.services {
     };
 
     setActive(tab: string) {
-      console.log(this.tabs, tab);
       if (tab) {
         _.each(this.tabs, (t: ITab) => {
-          console.log(t.active);
           t.active = false;
         });
         this.tabs[tab].active = true;
-        console.log(this.tabs[tab].active)
       }
     }
   }

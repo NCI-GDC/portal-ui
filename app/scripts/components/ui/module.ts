@@ -19,7 +19,8 @@ module ngApp.components.ui {
     "ui.date",
     "ui.file",
     "ui.search",
-    "ui.string"
+    "ui.string",
+    "ui.pagination"
   ]);
 
 }

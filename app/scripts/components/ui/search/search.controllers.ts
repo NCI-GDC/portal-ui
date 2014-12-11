@@ -21,7 +21,7 @@ module ngApp.components.ui.search.controllers {
                            !!$state.current.name.match("query.");
       $scope.$watch("query", () => {
         if (!this.query) {
-          this.LocationService.clear();
+          this.LocationService.setQuery();
         }
       });
       this.setQuery();
@@ -49,6 +49,6 @@ module ngApp.components.ui.search.controllers {
     }
   }
 
-  angular.module("search.controllers", [])
+  angular.module("ui.search.controllers", [])
       .controller("SearchBarController", SearchBarController);
 }

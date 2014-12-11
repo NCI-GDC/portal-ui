@@ -1,5 +1,4 @@
 module ngApp.files.models {
-  import IPagination = ngApp.models.IPagination;
   import IFacet = ngApp.models.IFacet;
   import ICollection = ngApp.models.ICollection;
   import IEntity = ngApp.models.IEntity;
@@ -13,6 +12,7 @@ module ngApp.files.models {
     archive_center_name: string;
     archive_center_type: string;
     archive_data_level: string;
+    archive_uuid: string;
     archive_data_type_in_url: string;
     date_archive_added: string;
     disease_code: string;

@@ -113,6 +113,7 @@ module ngApp.components.facets.controllers {
     actives: string[];
     searchTerm: string;
     searchButtonClick(event: any): void;
+    collapsed: boolean;
     remove(term: string): void;
     refresh(): void;
   }
@@ -120,6 +121,7 @@ module ngApp.components.facets.controllers {
   class FreeTextController implements IFreeTextController {
     searchTerm: string = "";
     actives: string[] = [];
+    collapsed: boolean = false;
 
     /* @ngInject */
     constructor(private $scope: IFreeTextFacetsScope,
@@ -160,10 +162,6 @@ module ngApp.components.facets.controllers {
 
       if (property === "collapsed") {
         angular.element(event.target).attr("aria-collapsed", this.collapsed.toString());
-      }
-
-      if (property === "expanded") {
-        this.displayCount = this.expanded ? this.inactives.length : this.originalDisplayCount;
       }
     }
 

@@ -1,6 +1,4 @@
 module ngApp.participants.models {
-  import IPagination = ngApp.models.IPagination;
-  import IFacet = ngApp.models.IFacet;
   import ICollection = ngApp.models.ICollection;
   import IAnnotation = ngApp.annotations.models.IAnnotation;
   import IFile = ngApp.files.models.IFile;

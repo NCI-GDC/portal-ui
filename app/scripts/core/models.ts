@@ -1,4 +1,6 @@
 module ngApp.models {
+  import IPagination = ngApp.components.ui.pagination.models.IPagination;
+
   export interface IEntity {
     uuid: any;
   }
@@ -11,9 +13,9 @@ module ngApp.models {
   }
 
   export interface ICollection {
-    pagination: IPagination;
     hits: any[];
     facets?: IFacet[];
+    pagination: IPagination;
   }
 
   export interface IAdmin {
@@ -22,17 +24,6 @@ module ngApp.models {
     dateOfDccUpload: string;
     projectCode: string;
     revision: number;
-  }
-
-  export interface IPagination {
-    count: number;
-    total: number;
-    size: number;
-    from: number;
-    page: number;
-    pages: number;
-    sort: string;
-    order: string;
   }
 
   export interface IFacet {

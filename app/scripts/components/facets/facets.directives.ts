@@ -29,6 +29,7 @@ module ngApp.components.facets.directives {
         placeholder: "@",
         field: "@"
       },
+      replace: true,
       templateUrl: "components/facets/templates/facets-free-text.html",
       controller: "freeTextCtrl as ftc"
     };

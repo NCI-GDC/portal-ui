@@ -15,6 +15,10 @@
                  data-facet="prsc.projects.aggregations.program" data-title="Program"></terms>
           <terms data-name="status"
                  data-facet="prsc.projects.aggregations.status" data-title="Status"></terms>
+          <terms data-name="_summary._analyzed_data.data_type"
+                 data-facet="prsc.projects.aggregations['_summary._analyzed_data'].data_type" data-title="Data Type"></terms>
+          <terms data-name="_summary._experimental_data.experimental_type"
+                 data-facet="prsc.projects.aggregations['_summary._experimental_data'].experimental_type" data-title="Experimental Strategy"></terms>
         </div>
       </div>
     </div>
@@ -41,106 +45,106 @@
         <table id="project-table" class="table table-striped table-hover table-condensed table-bordered">
         <thead>
         <tr>
-          <th scope="col" rowspan="2" class="text-center" data-translate>Code</th>
-          <th scope="col" rowspan="2" class="text-center" data-translate>Name</th>
-          <th scope="col" rowspan="2" class="text-center" data-translate>Program</th>
-          <th scope="col" rowspan="2" class="text-center" data-translate>Participants</th>
+          <th scope="col" rowspan="2" data-translate>Code</th>
+          <th scope="col" rowspan="2" data-translate>Disease Type</th>
+          <th scope="col" rowspan="2" data-translate>Program</th>
+          <th scope="col" rowspan="2" data-translate>Participants</th>
           <th scope="col" colspan="6" rowspan="1" class="text-center" data-translate>
             Available Data Files per Data Type
           </th>
-          <th scope="col" rowspan="2" class="text-center" data-translate>Status</th>
-          <th scope="col" rowspan="2" class="text-center" data-translate>Last Update</th>
+          <th scope="col" rowspan="2" data-translate>Status</th>
+          <th scope="col" rowspan="2" data-translate>Last Update</th>
         </tr>
         <tr>
           <th scope="col" data-translate>Clinical</th>
           <th scope="col" data-translate>SNV</th>
           <th scope="col" data-translate>mRNA</th>
           <th scope="col" data-translate>miRNA</th>
-          <th scope="col" data-translate>Copy Number</th>
+          <th scope="col" data-translate>CNV</th>
           <th scope="col" data-translate>Meth</th>
         </tr>
         </thead>
         <tbody>
         <tr data-ng-repeat="p in prsc.projects.hits track by p.project_code">
           <td><a data-ui-sref="project({ projectId: p.project_code })">{{ ::p.project_code }}</a></td>
-          <td>{{ ::p.project_name }}</td>
+          <td>{{ ::p.disease_type }}</td>
           <td>{{ ::p.program }}</td>
-          <td>
+          <td class="text-right">
             <a data-ui-sref="search.participants({ 'filters': makeFilter([
               {
-                name: 'project_code', value: p.project_code
+                name: 'participants.admin.disease_code', value: p.project_code
               }
             ])})">
               {{ ::p._summary._participant_count }}
             </a>
           </td>
-          <td>
+          <td class="text-right">
             <a data-ui-sref="search.files({ 'filters': makeFilter([
               {
-                name: 'project_code', value: p.project_code
+                name: 'participants.admin.disease_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'Clinical data'
+                name: 'files.data_type', value: 'Clinical data'
               }
             ])})">
               {{ ::p._summary._analyzed_data["Clinical data"].file_count }}
             </a>
           </td>
-          <td>
+          <td class="text-right">
             <a data-ui-sref="search.files({ 'filters': makeFilter([
               {
-                name: 'project_code', value: p.project_code
+                name: 'participants.admin.disease_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'Simple nucleotide variant'
+                name: 'files.data_type', value: 'Simple nucleotide variant'
               }
             ])})">
               {{ ::p._summary._analyzed_data["Simple nucleotide variant"].file_count }}
             </a>
           </td>
-          <td>
+          <td class="text-right">
             <a data-ui-sref="search.files({ 'filters': makeFilter([
               {
-                name: 'project_code', value: p.project_code
+                name: 'participants.admin.disease_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'mRNA expression'
+                name: 'files.data_type', value: 'mRNA expression'
               }
             ])})">
               {{ ::p._summary._analyzed_data["mRNA expression"].file_count }}
             </a>
           </td>
-          <td>
+          <td class="text-right">
             <a data-ui-sref="search.files({ 'filters': makeFilter([
               {
-                name: 'project_code', value: p.project_code
+                name: 'participants.admin.disease_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'miRNA expression'
+                name: 'files.data_type', value: 'miRNA expression'
               }
             ])})">
               {{ ::p._summary._analyzed_data["miRNA expression"].file_count }}
             </a>
           </td>
-          <td>
+          <td class="text-right">
             <a data-ui-sref="search.files({ 'filters': makeFilter([
               {
-                name: 'project_code', value: p.project_code
+                name: 'participants.admin.disease_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'Copy number variant'
+                name: 'files.data_type', value: 'Copy number variant'
               }
             ])})">
               {{ ::p._summary._analyzed_data["Copy number variant"].file_count }}
             </a>
           </td>
-          <td>
+          <td class="text-right">
             <a data-ui-sref="search.files({ 'filters': makeFilter([
               {
-                name: 'project_code', value: p.project_code
+                name: 'participants.admin.disease_code', value: p.project_code
               },
               {
-                name: 'data_type', value: 'DNA methylation'
+                name: 'files.data_type', value: 'DNA methylation'
               }
             ])})">
               {{ ::p._summary._analyzed_data["DNA methylation"].file_count }}

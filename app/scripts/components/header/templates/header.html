@@ -14,10 +14,10 @@
          data-ng-keypress="HeaderController.collapse($event)"
          aria-label="{{ 'Site Navigation' | translate }}">
       <ul class="nav navbar-nav">
-        <li ui-sref-active="active"><a ui-sref="projects" data-translate>Projects</a></li>
-        <li ui-sref-active="active"><a ui-sref="annotations" data-translate>Annotations</a></li>
+        <li ui-sref-active="active"><a ui-sref="projects"><i class="fa fa-folder-o"></i> Projects</a></li>
+        <li ui-sref-active="active"><a ui-sref="annotations"><i class="fa fa-align-left"></i> Annotations</a></li>
         <li data-ng-class="{ active: HeaderController.$state.includes('search') || HeaderController.$state.includes('query') }">
-          <a ui-sref="search.files" data-translate>Search</a>
+          <a ui-sref="search.files"><i class="fa fa-search"></i> Search</a>
         </li>
 
       </ul>

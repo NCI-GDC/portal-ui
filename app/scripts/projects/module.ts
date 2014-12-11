@@ -21,7 +21,7 @@ module ngApp.projects {
         project: ($stateParams: ng.ui.IStateParamsService, ProjectsService: IProjectsService): ng.IPromise<IProject> => {
           return ProjectsService.getProject($stateParams["projectId"], {
             fields: [
-              "project_uuid",
+              "disease_type",
               "project_name",
               "status",
               "program",

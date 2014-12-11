@@ -1,56 +1,3 @@
-.facet-element {
-
-  &.facet-group, &.facet-free-text-input {
-    margin: 5px 0;
-    padding: 0 15px;
-
-    &:first-child {
-      margin-top: 5px;
-    }
-
-    .facet-name {
-      text-transform: capitalize;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1.3rem;
-    }
-
-    .facet-term-group {
-      margin-left: 0;
-
-      ul.terms-list {
-        > li {
-          > span:first-child {
-//            cursor: pointer;
-//            font-size: 1.1rem;
-//            display: inline-block;
-//            max-width: 70%;
-//            overflow: hidden;
-//            white-space: nowrap;
-//            text-overflow: ellipsis;
-          }
-
-          span.label {
-            float: right;
-          }
-        }
-      }
-
-      .active-terms {
-        > li {
-          color: forestgreen;
-        }
-      }
-
-      .show-more-terms {
-        font-size: 11px;
-        cursor: pointer;
-        color: #428BCA;
-        text-decoration: underline;
-      }
-    }
-  }
-}
 
 .current-filters {
   font-size: 1.9rem;
@@ -58,48 +5,22 @@
   .filter {
     margin-right: 5px;
   }
-  .facet-button {
-    //    padding: 5px 7px;
-    //    border-radius: 5px;
-    cursor: pointer;
-  }
 
   .facet-name {
-    //    background: #C0E1F6;
-    //    color: #166AA2;
-    text-transform: capitalize;
+    cursor: pointer;
+    line-height: 3rem;
 
     &:hover {
       text-decoration: line-through;
-    }
-  }
-
-  .facet-term-value {
-    background: #DAF2FB;
-    color: #1693C0;
-
-    &:hover {
-      text-decoration: line-through;
-    }
-  }
-
-  .facet-operator {
-    font-weight: 700;
-    margin: 0 5px;
-
-    &.and {
-      color: #1A9900;
-    }
-
-    &.or {
-      color: #E9931C;
-
     }
   }
 }
 
-.facet-term-label {
+.facet-title {
+  cursor: pointer;
+}
 
+.facet-term-label {
   cursor: pointer;
   display: inline-block;
   max-width: 85%;
@@ -107,6 +28,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
 .input-group-addon:hover {
   cursor: pointer;
 }

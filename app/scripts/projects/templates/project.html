@@ -1,6 +1,6 @@
 <div class="container entity" data-scroll-spy="">
   <h1 data-scroll-fix=85>
-    <span class="entity-identifier">Pr</span>
+    <i class="fa fa-folder-o"></i>
     {{ ::prc.project.project_code }}
   </h1>
 
@@ -42,7 +42,7 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Disease Type</th>
-              <td>??? {{ ::prc.project.disease_type }}</td>
+              <td>{{ ::prc.project.disease_type }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Program</th>
@@ -50,7 +50,7 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Sequencing Center</th>
-              <td>??? {{ ::prc.project.sequencing_center }}</td>
+              <td>tbc {{ ::prc.project.sequencing_center }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Status</th>
@@ -82,15 +82,13 @@
                             name: 'project_code', value: prc.project.project_code
                           }
                         ])})">
-                  ??? {{ prc.project._summary.file_count }}
+                  tbc {{ prc.project._summary.file_count }}
                 </a>
               </td>
             </tr>
             </tbody>
           </table>
         </div>
-      </div>
-      <div class="col-lg-6 col-md-6">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Experimental Strategy</h3>
@@ -116,7 +114,7 @@
                   {{ ::counts.participant_count }}
                 </a>
               </td>
-              <td>??? {{ ::experiment.sample_count }}</td>
+              <td>tbc {{ ::experiment.sample_count }}</td>
               <td>
                 <a data-ui-sref="search.files({ 'filters': makeFilter([
                           {
@@ -133,8 +131,8 @@
             </tbody>
           </table>
         </div>
-
-
+      </div>
+      <div class="col-lg-6 col-md-6">
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Available Data</h3>
@@ -186,6 +184,7 @@
         <div class="panel panel-default">
           <div class="panel-heading clearfix">
             <h3 class="panel-title pull-left" data-translate>Reports</h3>
+
             <div class="btn-group pull-right">
               <button class="btn btn-primary">
                 <i class="fa fa-calendar"></i>
@@ -193,7 +192,10 @@
               </button>
             </div>
           </div>
-          <div class="table-responsive">
+          <div class="panel-body">
+            <h4 class="list-group-item-heading">No reports found for {{prc.project.project_code}}</h4>
+          </div>
+          <div class="table-responsive" data-ng-if="prc.project.reports.length">
             <table class="table table-striped table-hover table-condensed table-bordered">
               <thead>
               <tr>

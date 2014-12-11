@@ -1,11 +1,11 @@
 <div class="list-group-item" data-ng-show="tc.inactives.length">
-  <h4 class="list-group-item-heading"
+  <h4 class="list-group-item-heading facet-title"
        data-ng-click="tc.toggle($event, 'collapsed')"
        data-ng-keypress="tc.toggle($event, 'collapsed')"
        aria-expanded="{{ !tc.collapsed }}"
        aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
        role="button">
-    <i class="fa" data-ng-class="{ 'fa-chevron-down': !tc.collapsed, 'fa-chevron-right': tc.collapsed }"></i>
+    <i class="fa" data-ng-class="{ 'fa-angle-down': !tc.collapsed, 'fa-angle-right': tc.collapsed }"></i>
     {{ tc.title | translate }}
   </h4>
   <div data-ng-show="!tc.collapsed">

@@ -82,7 +82,8 @@ th, td {
 .panel {
   border-radius: 0;
 }
-.panel-default .panel-heading {
+.panel-default .panel-heading,
+.panel-default .panel-footer {
   background: #fff;
 }
 .list-group-item-heading.current a{
@@ -94,6 +95,7 @@ th, td {
 
   i {
     width: 3rem;
+    text-align: center;
   }
   i, img {
     margin-right: 0;
@@ -108,6 +110,9 @@ p {
 }
 table .btn {
   padding: 4px 10px;
+}
+.table > thead > tr > th {
+  vertical-align: middle;
 }
 .table>tbody>tr>td:first-child, .table>tbody>tr>th:first-child, .table>tfoot>tr>td:first-child, .table>tfoot>tr>th:first-child, .table>thead>tr>td:first-child, .table>thead>tr>th:first-child {
   padding-left: 5px;

@@ -32,7 +32,7 @@ module ngApp.search.controllers {
   class SearchController implements ISearchController {
     participantAccordian: boolean;
     participantBioAccordian: boolean;
-    files : IFiles;
+    files: IFiles;
     participants: IParticipants;
     query: string = "";
 
@@ -105,6 +105,9 @@ module ngApp.search.controllers {
           "admin.disease_code"
         ],
         facets: [
+          "admin.project_code",
+          "admin.disease_code",
+          "stage_event.pathologic_stage",
           "ethnicity",
           "gender",
           "histological_type",
@@ -121,7 +124,7 @@ module ngApp.search.controllers {
       // Changing tabs and then navigating to another page
       // will cause this to fire.
       if (tab && (this.$state.current.name.match("search.") ||
-                  this.$state.current.name.match("query."))) {
+          this.$state.current.name.match("query."))) {
 
         next += tab;
 
@@ -167,7 +170,7 @@ module ngApp.search.controllers {
       .module("search.controller", [
         "search.services",
         "cart.services",
-          "core.services",
+        "core.services",
         "participants.services",
         "files.services",
       ])

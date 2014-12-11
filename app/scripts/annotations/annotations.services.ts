@@ -17,10 +17,12 @@ module ngApp.annotations.services {
     }
 
     getAnnotation(id: string, params: Object = {}): ng.IPromise<IAnnotation> {
+      console.log(2);
       if(params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
       return this.ds.get(id, params).then((response): IAnnotation => {
+        console.log(3);
         return response["data"];
       });
     }

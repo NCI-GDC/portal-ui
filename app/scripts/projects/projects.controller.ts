@@ -29,7 +29,7 @@ module ngApp.projects.controllers {
     refresh() {
       this.ProjectsService.getProjects({
         fields: [
-          "project_uuid",
+          "disease_type",
           "project_name",
           "status",
           "program",
@@ -45,7 +45,7 @@ module ngApp.projects.controllers {
         facets: [
           "status",
           "program",
-          "disease_code",
+          "disease_type",
           "_summary._experimental_data.experimental_type",
           "_summary._analyzed_data.data_type",
         ],

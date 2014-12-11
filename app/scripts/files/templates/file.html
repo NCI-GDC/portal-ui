@@ -1,6 +1,6 @@
 <div class="container entity" data-scroll-spy="">
   <h1 data-scroll-fix=85>
-    <span class="entity-identifier">F</span>
+    <i class="fa fa-file-o"></i>
     {{ ::fc.file.file_uuid }}
   </h1>
 
@@ -176,7 +176,10 @@
           <div class="panel-heading">
             <h3 class="panel-title">Participants</h3>
           </div>
-          <div class="table-responsive">
+          <div class="panel-body" data-ng-if="!fc.file.participants.length">
+            <h4 class="list-group-item-heading">No participants found.</h4>
+          </div>
+          <div class="table-responsive" data-ng-if="fc.file.participants.length">
             <table class="table table-striped table-hover table-condensed table-bordered">
               <thead>
               <tr>
@@ -212,7 +215,11 @@
           <div class="panel-heading">
             <h3 class="panel-title">Related Files</h3>
           </div>
-          <div class="table-responsive">
+
+          <div class="panel-body" data-ng-if="!fc.file.related.length">
+            <h4 class="list-group-item-heading">No related files found.</h4>
+          </div>
+          <div class="table-responsive" data-ng-if="fc.file.related.length">
             <table class="table table-striped table-hover table-condensed table-bordered">
               <thead>
               <tr>

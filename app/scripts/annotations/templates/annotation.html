@@ -1,6 +1,6 @@
 <div class="container entity" data-scroll-spy="">
   <h1 data-scroll-fix=85>
-    <span class="entity-identifier">An</span>
+    <i class="fa fa-align-left"></i>
     {{ ::ac.annotation.id }}
   </h1>
 
@@ -25,8 +25,7 @@
   </div>
 
   <div class="col-lg-8 entity-body">
-      <section class="row" id="summary">
-          <div class="panel panel-default">
+          <div class="panel panel-default" id="summary">
             <div class="panel-heading">
               <h3 class="panel-title" data-translate>Summary</h3>
             </div>
@@ -87,21 +86,20 @@
             </tbody>
           </table>
         </div>
-      </section>
 
-      <section class="row" id="notes">
-        <div class="panel panel-default">
+
+
+        <div class="panel panel-default" id="notes">
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Notes</h3>
           </div>
           <div class="list-group">
-            <div class="list-group-item" data-ng-repeat="note in ac.annotation.notes">
-              <h4 class="list-group-item-heading">{{ ::note.noteText}}</h4>
-              <p class="list-group-item-text"><span data-translate>Added by</span> <strong>{{ ::note.addedBy }}</strong>
+            <div class="list-group-item clearfix" data-ng-repeat="note in ac.annotation.notes">
+              <p class="list-group-item-text" style="word-break: break-all">{{ ::note.noteText}}</p>
+              <p class="list-group-item-text pull-right"><span data-translate>Added by</span> <strong>{{ ::note.addedBy }}</strong>
                 <span data-translate>on</span> <strong>{{ ::note.dateAdded | date }}</strong></p>
             </div>
           </div>
         </div>
-      </section>
     </div>
   </div>

@@ -82,16 +82,22 @@ module ngApp.search.controllers {
           "file_size",
           "file_uuid",
           "platform",
-          "updated"
+          "updated",
+            "archive.disease_code",
+          "archive.revision",
+            "participants.bcr_patient_uuid"
         ],
         facets: [
-          "data_access",
-          "data_format",
-          "data_level",
-          "data_subtype",
           "data_type",
-          "file_extension",
-          "platform"
+          "data_subtype",
+            "experimental_strategy",
+          "data_format",
+          "platform",
+            "archive.revision",
+          "data_level",
+          "data_access",
+          "archive.center_name",
+          "file_extension"
         ]
       }).then((data) => this.files = data);
       this.ParticipantsService.getParticipants({

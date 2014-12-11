@@ -114,25 +114,19 @@
           </a>
         </td>
         <td>
-          <a data-ui-sref="search.participants({ 'filters': makeFilter([
-              {
-                name: 'file_id', value: file.file_uuid
-              }
-            ])})">
-            tbc {{ ::file.participants[0].id }}
-          </a>
+          {{ ::file.participants.length }}
         </td>
-        <td>tbc {{ ::file.participants.length }}</td>
+        <td>0{{ ::file.annotations.length }}</td>
         <td>
           <a data-ui-sref="project({ projectId: file.project.id })">
-            tbc {{ ::file.project.project_name }}
+            {{ ::file.archive.disease_code}}
           </a>
         </td>
         <td>{{ ::file.data_type }}</td>
         <td>tbc {{ ::file.state }}</td>
         <td>{{ ::file.file_extension }}</td>
         <td>{{ file.file_size | size }}</td>
-        <td>tbc {{ ::file.admin.revision }}</td>
+        <td>{{ ::file.archive.revision }}</td>
         <td>{{ file.modified | date }}</td>
       </tr>
       </tbody>

@@ -1,3 +1,38 @@
+### 0.1.8-spr3 (2014-12-11)
+
+
+#### Bug Fixes
+
+* **facets:**
+  * use indexOf ([329016fe](https://github.com/NCI-GDC/portal-ui/commit/329016fe45cd9770c48b53b7e02a902dda013b8c))
+  * don't allow dup terms to be added ([da56974d](https://github.com/NCI-GDC/portal-ui/commit/da56974d9cbed3f1a9ea103dff0765fa112d2491))
+
+
+#### Features
+
+* **annotations:** hook up id search ([b14c2303](https://github.com/NCI-GDC/portal-ui/commit/b14c23039c8f495b3789d340d5eaac2c3d33fb10))
+* **app:**
+  * Adds progress bar indicator. ([f64b4ce1](https://github.com/NCI-GDC/portal-ui/commit/f64b4ce1b28581e5c2760f8e03a9f03bb1d04476), closes [OICR-126](https://jira.opensciencedatacloud.org/browse/OICR-126))
+  * check content of modules ([735b2271](https://github.com/NCI-GDC/portal-ui/commit/735b2271963c6b40415895d133c2b2bd9f3c5320), closes [OICR-131](https://jira.opensciencedatacloud.org/browse/OICR-131))
+  * Generate front end config file. ([8e97245a](https://github.com/NCI-GDC/portal-ui/commit/8e97245a5f3443a9d0e248beff765ab866bdae7e), closes [OICR-125](https://jira.opensciencedatacloud.org/browse/OICR-125))
+* **build:** Production environment build step. ([b2a63e02](https://github.com/NCI-GDC/portal-ui/commit/b2a63e02e437cc3e39b8adb97494fe9a0d9bda8b), closes [OICR-146](https://jira.opensciencedatacloud.org/browse/OICR-146))
+* **cart:** update cart buttons/actions ([5c48317c](https://github.com/NCI-GDC/portal-ui/commit/5c48317c1347b0ab772d0c793900cf7fc9f7d285), closes [OICR-137](https://jira.opensciencedatacloud.org/browse/OICR-137))
+* **current:** allows multi terms ([1d293a2c](https://github.com/NCI-GDC/portal-ui/commit/1d293a2c25527736598bd027932480539e6c1dfe))
+* **facets:** hooks up id facet with LocationService ([c87aa5b0](https://github.com/NCI-GDC/portal-ui/commit/c87aa5b02579e3513029690ded24fa39e9ff947b), closes [OICR-143](https://jira.opensciencedatacloud.org/browse/OICR-143))
+* **files:**
+  * field/facet updates ([89ad7e0a](https://github.com/NCI-GDC/portal-ui/commit/89ad7e0a6f58c35bcab86bf6798364d7e92ceb1f))
+  * Adds file size filter. ([fd944876](https://github.com/NCI-GDC/portal-ui/commit/fd9448769ff85db02e27ff2563a754baaff42629), closes [OICR-82](https://jira.opensciencedatacloud.org/browse/OICR-82))
+* **models:** field updates ([219996cb](https://github.com/NCI-GDC/portal-ui/commit/219996cb210015063fb000c0cb3e44c9656441ae))
+* **projects:**
+  * updates project search links ([7c6cb981](https://github.com/NCI-GDC/portal-ui/commit/7c6cb981ffb9851db7a5da141646544264b9c347))
+  * hook up project code search ([6804785c](https://github.com/NCI-GDC/portal-ui/commit/6804785cc60feb731fe786efeeb1afd17e2c43f1))
+* **reports:** basic pie-chart directive ([1dd05975](https://github.com/NCI-GDC/portal-ui/commit/1dd0597561b34229d6ec5336529dfb2c072c2d0a), closes [OICR-109](https://jira.opensciencedatacloud.org/browse/OICR-109))
+* **search:**
+  * support xfilter on facets ([59d1222e](https://github.com/NCI-GDC/portal-ui/commit/59d1222eb9d3c79e04da8ac2ada83b5dd042579d), closes [OICR-133](https://jira.opensciencedatacloud.org/browse/OICR-133))
+  * Add advanced query toggle. ([1aac50bb](https://github.com/NCI-GDC/portal-ui/commit/1aac50bb14e5160158be2414fcae4dd5079b34d5), closes [OICR-95](https://jira.opensciencedatacloud.org/browse/OICR-95))
+  * Update Annotations Page ([8659e86b](https://github.com/NCI-GDC/portal-ui/commit/8659e86bb922969cefe9408a718702458d473d7c), closes [OICR-130](https://jira.opensciencedatacloud.org/browse/OICR-130))
+
+
 ### 0.1.8-sprt2 (2014-11-26)
 
 

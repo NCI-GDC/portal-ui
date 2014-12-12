@@ -91,6 +91,8 @@ module ngApp.search.controllers {
           "updated",
           "archive.disease_code",
           "archive.revision",
+          "archive.archive_name",
+          "archive.archive_uuid",
           "participants.bcr_patient_uuid"
         ],
         facets: [

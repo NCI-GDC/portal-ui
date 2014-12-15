@@ -18,7 +18,8 @@ module ngApp.components.ui {
     "ui.scroll",
     "ui.date",
     "ui.file",
-    "ui.search"
+    "ui.search",
+    "ui.ellipsicate"
   ]);
 
 }

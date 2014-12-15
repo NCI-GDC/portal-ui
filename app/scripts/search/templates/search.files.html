@@ -37,12 +37,12 @@
         </th>
         <th scope="col" class="text-center" data-translate>Access</th>
         <th scope="col" class="text-center" data-translate>File Name</th>
-        <th scope="col" class="text-center" data-translate>Participant ID</th>
+        <th scope="col" class="text-center" data-translate>File type</th>
+        <th scope="col" class="text-center" data-translate>Participants</th>
         <th scope="col" class="text-center" data-translate>Annotations</th>
         <th scope="col" class="text-center" data-translate>Project</th>
         <th scope="col" class="text-center" data-translate>Data Category</th>
         <th scope="col" class="text-center" data-translate>Status</th>
-        <th scope="col" class="text-center" data-translate>File type</th>
         <th scope="col" class="text-center" data-translate>Size</th>
         <th scope="col" class="text-center" data-translate>Revision</th>
         <th scope="col" class="text-center" data-translate>Update date</th>
@@ -110,13 +110,14 @@
         </td>
         <td>
           <a data-ui-sref="file({ fileId: file.file_uuid })">
-            {{ ::file.file_name }}
+            {{ ::file.file_name | ellipsicate }}
           </a>
         </td>
-        <td>
-          {{ ::file.participants.length }}
+        <td>{{ ::file.file_extension }}</td>
+        <td class="text-right">
+          {{ ::file.participants.length | number:0 }}
         </td>
-        <td>0{{ ::file.annotations.length }}</td>
+        <td class="text-right">{{ ::file.annotations.length | number:0 }}</td>
         <td>
           <a data-ui-sref="project({ projectId: file.project.id })">
             {{ ::file.archive.disease_code}}
@@ -124,7 +125,6 @@
         </td>
         <td>{{ ::file.data_type }}</td>
         <td>tbc {{ ::file.state }}</td>
-        <td>{{ ::file.file_extension }}</td>
         <td>{{ file.file_size | size }}</td>
         <td>{{ ::file.archive.revision }}</td>
         <td>{{ file.modified | date }}</td>

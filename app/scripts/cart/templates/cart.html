@@ -16,7 +16,7 @@
               &#35;
               <span data-translate data-translate-comment="number of">of files</span>
             </th>
-            <td>{{ cc.files.hits.length }}</td>
+            <td>{{ cc.files.hits.length | number:0 }}</td>
           </tr>
           <tr>
             <th scope="row" data-translate>Size</th>

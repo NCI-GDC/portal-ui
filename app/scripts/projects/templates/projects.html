@@ -75,7 +75,7 @@
                 name: 'participants.admin.disease_code', value: p.project_code
               }
             ])})">
-              {{ ::p._summary._participant_count }}
+              {{ ::p._summary._participant_count| number:0 }}
             </a>
           </td>
           <td class="text-right">
@@ -87,7 +87,7 @@
                 name: 'files.data_type', value: 'Clinical data'
               }
             ])})">
-              {{ ::p._summary._analyzed_data["Clinical data"].file_count }}
+              {{ ::p._summary._analyzed_data["Clinical data"].file_count | number:0 }}
             </a>
           </td>
           <td class="text-right">
@@ -99,7 +99,7 @@
                 name: 'files.data_type', value: 'Simple nucleotide variant'
               }
             ])})">
-              {{ ::p._summary._analyzed_data["Simple nucleotide variant"].file_count }}
+              {{ ::p._summary._analyzed_data["Simple nucleotide variant"].file_count | number:0 }}
             </a>
           </td>
           <td class="text-right">
@@ -111,7 +111,7 @@
                 name: 'files.data_type', value: 'mRNA expression'
               }
             ])})">
-              {{ ::p._summary._analyzed_data["mRNA expression"].file_count }}
+              {{ ::p._summary._analyzed_data["mRNA expression"].file_count | number:0 }}
             </a>
           </td>
           <td class="text-right">
@@ -123,7 +123,7 @@
                 name: 'files.data_type', value: 'miRNA expression'
               }
             ])})">
-              {{ ::p._summary._analyzed_data["miRNA expression"].file_count }}
+              {{ ::p._summary._analyzed_data["miRNA expression"].file_count | number:0 }}
             </a>
           </td>
           <td class="text-right">
@@ -135,7 +135,7 @@
                 name: 'files.data_type', value: 'Copy number variant'
               }
             ])})">
-              {{ ::p._summary._analyzed_data["Copy number variant"].file_count }}
+              {{ ::p._summary._analyzed_data["Copy number variant"].file_count | number:0 }}
             </a>
           </td>
           <td class="text-right">
@@ -147,7 +147,7 @@
                 name: 'files.data_type', value: 'DNA methylation'
               }
             ])})">
-              {{ ::p._summary._analyzed_data["DNA methylation"].file_count }}
+              {{ ::p._summary._analyzed_data["DNA methylation"].file_count | number:0 }}
             </a>
           </td>
           <td>{{ ::p.status}}</td>

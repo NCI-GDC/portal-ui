@@ -26,12 +26,12 @@
         <li role="presentation"
             data-ng-class="{ active: sc.State.tabs.files.active }"
             data-ng-click="sc.select('tabs', 'files')">
-          <a>{{ 'Files' | translate }} ({{sc.files.pagination.total}})</a>
+          <a>{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: sc.State.tabs.participants.active }"
             data-ng-click="sc.select('tabs', 'participants')">
-          <a>{{ 'Participants' | translate }} ({{sc.participants.pagination.total}})</a>
+          <a>{{ 'Participants' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
         </li>
       </ul>
       <div class="pane-section"

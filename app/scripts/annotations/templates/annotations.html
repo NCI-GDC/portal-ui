@@ -80,7 +80,7 @@
               </td>
               <td>{{ ::annotation.itemType }}</td>
               <td>tbc</td>
-              <td>{{ ::annotation.item }}</td>
+              <td>{{ ::annotation.item | ellipsicate:50 }}</td>
               <td>{{ ::annotation.annotationClassificationName }}</td>
               <td>{{ ::annotation.categoryName }}</td>
               <td>{{ ::annotation.dateCreated | date }}</td>

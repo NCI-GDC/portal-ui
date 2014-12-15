@@ -65,7 +65,7 @@
                         name: 'participants.bcr_patient_uuid', value: pc.participant.bcr_patient_uuid
                       }
                     ])})">
-                  {{ ::pc.participant.files.length }}
+                  {{ ::pc.participant.files.length | number:0 }}
                 </a>
               </td>
             </tr>
@@ -73,7 +73,7 @@
               <th scope="row" data-translate>Annotations</th>
               <td>
                 <a data-scroll-to href="#annotations">
-                  {{ ::pc.participant.participant_annotations.length }}
+                  {{ ::pc.participant.participant_annotations.length | number:0 }}
                 </a>
               </td>
             </tr>
@@ -84,7 +84,10 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Experimental Strategy</h3>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
+          <div class="panel-body" data-ng-if="!pc.participant.experiments.length">
+            <h4 class="list-group-item-heading" data-translate>No experimental strategies were found.</h4>
+          </div>
+          <table class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.experiments.length">
             <thead>
             <tr>
               <th scope="col" data-translate>Analysis</th>
@@ -95,14 +98,14 @@
             <tbody>
             <tr data-ng-repeat="experiment in pc.participant.experiments">
               <td>tbc {{ ::experiment.name }}</td>
-              <td>tbc {{ ::experiment.samples }}</td>
-              <td>
+              <td class="text-right">tbc {{ ::experiment.samples | number:0 }}</td>
+              <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters': makeFilter([
                       {
                         name: 'participant_id', value: pc.participant.bcr_patient_uuid
                       }
                     ])})">
-                  tbc {{ ::experiment.files }}
+                  tbc {{ ::experiment.files | number:0 }}
                 </a>
               </td>
             </tr>
@@ -115,13 +118,16 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Available Data</h3>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
+          <div class="panel-body" data-ng-if="!pc.participant.data.length">
+            <h4 class="list-group-item-heading" data-translate>No available data.</h4>
+          </div>
+          <table class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.data.length">
             <tbody>
             <tr data-ng-repeat="item in pc.participant.data">
               <th scope="row">{{ item.name }}</th>
               <td>
                 <a data-ui-sref="search.files">
-                  {{ item.files }}
+                  {{ item.files | number:0 }}
                 </a>
               </td>
             </tr>

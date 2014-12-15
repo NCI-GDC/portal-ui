@@ -50,18 +50,18 @@
         <td>{{ ::p.admin.disease_code }}</td>
         <td>{{ ::p.gender }}</td>
         <td>{{ ::p.person_neoplasm_cancer_status }}</td>
-        <td>
+        <td class="text-right">
           <a data-ui-sref="search.files({ 'filters': makeFilter([
         {
           name: 'participant_id', value: p.bcr_patient_uuid
         }
       ])})">
-            tbc {{ ::p.files.length }}
+            tbc {{ ::p.files.length | number:0 }}
           </a>
         </td>
-        <td>
+        <td class="text-right">
           <a data-ui-sref="annotations({ participantId: p.id })">
-            tbc {{ ::p.annotations.length }}
+            tbc {{ ::p.annotations.length | number:0 }}
           </a>
         </td>
       </tr>

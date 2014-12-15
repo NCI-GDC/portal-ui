@@ -80,7 +80,7 @@
                             name: 'participants.admin.disease_code',value: prc.project.project_code
                           }
                         ])})">
-                  tbc {{ prc.project._summary.file_count }}
+                  tbc {{ prc.project._summary.file_count | number:0 }}
                 </a>
               </td>
             </tr>
@@ -91,7 +91,10 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Experimental Strategy</h3>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered">
+          <div class="panel-body" data-ng-if="!prc.project._summary._experimental_data">
+            <h4 class="list-group-item-heading" data-translate>No experimental strategies were found.</h4>
+          </div>
+          <table class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project._summary._experimental_data">
             <thead>
             <tr>
               <th scope="col" data-translate>Analysis</th>
@@ -103,7 +106,7 @@
             <tbody>
             <tr data-ng-repeat="(experiment, counts) in prc.project._summary._experimental_data">
               <td>{{ ::experiment }}</td>
-              <td>
+              <td class="text-right">
                 <a data-ui-sref="search.participants({ 'filters': makeFilter([
                           {
                             name: 'participants.admin.disease_code',value: prc.project.project_code
@@ -112,10 +115,10 @@
                             name: 'files.experimental_strategy', value: experiment
                           }
                         ])})">
-                  {{ ::counts.participant_count }}
+                  {{ ::counts.participant_count | number:0 }}
                 </a>
               </td>
-              <td>tbc {{ ::experiment.sample_count }}</td>
+              <td class="text-right">tbc {{ ::experiment.sample_count | number:0 }}</td>
               <td>
                 <a data-ui-sref="search.files({ 'filters': makeFilter([
                           {
@@ -125,7 +128,7 @@
                             name: 'files.experimental_strategy', value: experiment
                           }
                         ])})">
-                  {{ ::counts.file_count }}
+                  {{ ::counts.file_count | number:0 }}
                 </a>
               </td>
             </tr>
@@ -138,7 +141,10 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Available Data</h3>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered">
+          <div class="panel-body" data-ng-if="!prc.project._summary._analyzed_data">
+            <h4 class="list-group-item-heading" data-translate>No available data.</h4>
+          </div>
+          <table class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project._summary._analyzed_data">
             <thead>
             <tr>
               <th scope="col" data-translate>Data Type</th>
@@ -149,7 +155,7 @@
             <tbody>
             <tr data-ng-repeat="(dataCategory, counts) in prc.project._summary._analyzed_data">
               <td>{{ ::dataCategory }}</td>
-              <td>
+              <td class="text-right">
                 <a data-ui-sref="search.participants({ 'filters': makeFilter([
                       {
                         name: 'participants.admin.disease_code',value: prc.project.project_code
@@ -158,10 +164,10 @@
                         name: 'files.data_type', value: dataCategory
                       }
                     ])})">
-                  {{ counts.participant_count ? counts.participant_count : "-" }}
+                    {{ counts.participant_count | number:0 }}
                 </a>
               </td>
-              <td>
+              <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters': makeFilter([
                       {
                         name: 'participants.admin.disease_code',value: prc.project.project_code
@@ -170,7 +176,7 @@
                         name: 'files.data_type', value: dataCategory
                       }
                     ])})">
-                  {{ counts.file_count ? counts.file_count : "-" }}
+                  {{ counts.file_count | number:0 }}
                 </a>
               </td>
             </tr>

@@ -18,7 +18,7 @@
           <i class="fa fa-square-o" aria-controls="data-table" aria-checked="false"></i>
           {{ term.key | translate }}
         </span>
-        <span class="label label-primary pull-right">{{ term.doc_count }}</span>
+        <span class="label label-primary pull-right">{{ term.doc_count| number:0}}</span>
       </p>
 
 

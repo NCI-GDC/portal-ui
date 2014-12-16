@@ -24,9 +24,9 @@ module ngApp.participants {
               "bcr_patient_barcode",
               "admin.disease_code",
               "admin.project_code",
-                "clinical_cqcf.consent_or_death_status",
-                "files.file_uuid",
-                "participant_annotations.id"
+              "clinical_cqcf.consent_or_death_status",
+              "files.file_uuid",
+              "participant_annotations.id"
             ]
           });
         }

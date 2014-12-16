@@ -1,14 +1,16 @@
 module ngApp.search.controllers {
   import IFacet = ngApp.models.IFacet;
   import IFilesService = ngApp.files.services.IFilesService;
-  import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
+  import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IParticipants = ngApp.participants.models.IParticipants;
+  import IParticipant = ngApp.participants.models.IParticipant;
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
   import IState = ngApp.search.services.IState;
   import ICartService = ngApp.cart.services.ICartService;
+  import ILocationService = ngApp.components.location.services.ILocationService;
 
   export interface ISearchController {
     files: IFiles;
@@ -23,6 +25,9 @@ module ngApp.search.controllers {
     setState(tab: string, next: string): void;
     select(section: string, tab: string): void;
     removeFiles(files: IFile[]): void;
+    addRelatedFiles(participant: IParticipant): void;
+    getFilteredRelatedFiles(participant: IParticipant): void;
+    addFilteredRelatedFiles(participant: IParticipant): void;
   }
 
   export interface ISearchControllerScope extends ng.IScope {
@@ -43,6 +48,7 @@ module ngApp.search.controllers {
                 public CartService: ICartService,
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
+                private LocationService: ILocationService,
                 CoreService: ICoreService) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
@@ -83,17 +89,17 @@ module ngApp.search.controllers {
           "file_uuid",
           "platform",
           "updated",
-            "archive.disease_code",
+          "archive.disease_code",
           "archive.revision",
-            "participants.bcr_patient_uuid"
+          "participants.bcr_patient_uuid"
         ],
         facets: [
           "data_type",
           "data_subtype",
-            "experimental_strategy",
+          "experimental_strategy",
           "data_format",
           "platform",
-            "archive.revision",
+          "archive.revision",
           "data_level",
           "data_access",
           "archive.center_name",
@@ -108,7 +114,14 @@ module ngApp.search.controllers {
           "patient_id",
           "vital_status",
           "person_neoplasm_cancer_status",
-          "admin.disease_code"
+          "admin.disease_code",
+          "files.file_uuid",
+          "files.file_name",
+          "files.file_size",
+          "files.data_type",
+          "files.data_access",
+          "files.archive.revision",
+          "files.data_level"
         ],
         facets: [
           "admin.project_code",
@@ -170,11 +183,60 @@ module ngApp.search.controllers {
     removeFiles(files: IFile[]): void {
       this.CartService.remove(_.pluck(files, "file_uuid"));
     }
+
+    addRelatedFiles(participant: IParticipant):void {
+      this.CartService.addFiles(participant.files);
+    }
+
+    getFilteredRelatedFiles(participant: IParticipant): void {
+      var filters = this.LocationService.filters();
+
+      if (!filters.content) {
+        filters.op = "and";
+        filters.content = [];
+      }
+
+      filters.content.push({
+        content: {
+          field: "participants.bcr_patient_uuid",
+          value: [
+            participant.bcr_patient_uuid
+          ]
+        },
+        op: "is"
+      });
+
+      this.FilesService.getFiles({
+        fields: [
+          "data_access",
+          "data_format",
+          "data_level",
+          "data_subtype",
+          "data_type",
+          "file_extension",
+          "file_name",
+          "file_size",
+          "file_uuid",
+          "platform",
+          "updated",
+          "archive.disease_code",
+          "archive.revision",
+          "participants.bcr_patient_uuid"
+        ],
+        filters: filters,
+        size: 100
+      }).then((data) => participant.filteredRelatedFiles = data);
+    }
+
+    addFilteredRelatedFiles(participant: IParticipant): void {
+      this.CartService.addFiles(participant.filteredRelatedFiles.hits);
+    }
   }
 
   angular
       .module("search.controller", [
         "search.services",
+        "location.services",
         "cart.services",
         "core.services",
         "participants.services",

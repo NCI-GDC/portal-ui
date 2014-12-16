@@ -23,6 +23,7 @@
           <div class="btn-group" data-dropdown>
             <button type="button"
                     class="btn btn-default dropdown-toggle"
+                    data-ng-click="sc.getFilteredRelatedFiles(p)"
                     aria-label="Participant Actions">
               <i class="fa fa-shopping-cart"></i>
               <span class="caret"></span>
@@ -30,16 +31,16 @@
             <ul class="dropdown-menu" role="menu">
               <li aria-label="{{ 'Add all related files' | translate }}"
                   role="button">
-                <a>
+                <a data-ng-click="sc.addRelatedFiles(p)">
                   <i class="fa fa-shopping-cart fa-stack"></i>
-                  <span data-translate>Add all related files</span> (5)
+                  <span data-translate>Add all related files</span> ({{ p.files.length }})
                 </a>
               </li>
               <li aria-label="{{ 'Add filtered related files' | translate }}"
                   role="button">
-                <a>
+                <a data-ng-click="sc.addFilteredRelatedFiles(p)">
                   <i class="fa fa-shopping-cart fa-stack"></i>
-                  <span data-translate>Add filtered related files</span> (2)
+                  <span data-translate>Add filtered related files</span> ({{ p.filteredRelatedFiles.pagination.total }})
                 </a>
               </li>
             </ul>

@@ -4,6 +4,7 @@ module ngApp.participants.models {
   import ICollection = ngApp.models.ICollection;
   import IAnnotation = ngApp.annotations.models.IAnnotation;
   import IFile = ngApp.files.models.IFile;
+  import IFiles = ngApp.files.models.IFiles;
   import IAdmin = ngApp.models.IAdmin;
   import IEntity = ngApp.models.IEntity;
 
@@ -40,6 +41,7 @@ module ngApp.participants.models {
     admin: IAdmin;
     annotations: IAnnotation[];
     files: IFile[];
+    filteredRelatedFiles: IFiles;
   }
 
 }

@@ -15,6 +15,7 @@ module ngApp.files.models {
     url: string;
     uuid: string;
     batch: string;
+    archive_uuid: string;
     centerName: string;
     centerType: string;
     dataLevel: string;

@@ -1,5 +1,5 @@
 <div class="list-group-item">
-  <h4 class="list-group-item-heading"
+  <h4 class="list-group-item-heading facet-title"
       data-ng-click="ftc.toggle($event, 'collapsed')"
       data-ng-keypress="ftc.toggle($event, 'collapsed')"
       aria-expanded="{{ !ftc.collapsed }}"
@@ -9,19 +9,20 @@
     {{ title | translate }}
   </h4>
 
-      <p class="text-success" data-ng-repeat="active in ftc.actives">
-        <span data-ng-click="ftc.remove(active)"
-              data-ng-keypress="ftc.remove(active)">
-          <i class="fa fa-check-circle-o" aria-controls="data-table" aria-checked="true"></i>
-            {{ active }}
-        </span>
-        <!--<span class="label label-success">{{ term.doc_count }}</span>-->
-      </p>
+  <p class="text-success" data-ng-repeat="active in ftc.actives">
+    <span data-ng-click="ftc.remove(active)"
+          data-ng-keypress="ftc.remove(active)">
+      <i class="fa fa-check-circle-o" aria-controls="data-table" aria-checked="true"></i>
+        {{ active }}
+    </span>
+  </p>
 
   <p class="input-group" data-ng-if="!ftc.collapsed">
-    <input type="text" class="form-control" placeholder="{{ placeholder }}" data-ng-model="ftc.searchTerm">
+    <input type="text" class="form-control" placeholder="{{ placeholder }}"
+           data-ng-model="ftc.searchTerm"
+           data-ng-keypress="ftc.searchButtonClick($event)">
     <span class="input-group-addon">
-      <span class="fa fa-search" data-ng-click="ftc.searchButtonClick()"></span>
+      <span class="fa fa-search" data-ng-click="ftc.searchButtonClick($event)"></span>
     </span>
   </p>
 </div>

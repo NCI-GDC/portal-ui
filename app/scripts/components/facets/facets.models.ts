@@ -8,7 +8,8 @@ module ngApp.components.facets.models {
     collapsed: boolean;
     expanded: boolean;
     displayCount: number;
-    toggle(event: any, property: string): void;
+    add(facet: string, term: string, event: any): void;
+    remove(facet: string, term: string, event: any): void;
   }
 
   export interface IFacetAttributes extends ng.IAttributes {

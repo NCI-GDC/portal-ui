@@ -1,6 +1,7 @@
 module ngApp.components.facets.directives {
   import IFacet = ngApp.models.IFacet;
-  import IFacetAttributes = ngApp.components.facets.models.IFacetAttributes;
+  import IFacetScope = ngApp.components.facets.models.IFacetScope;
+  import ITermsController = ngApp.components.facets.controllers.ITermsController;
 
   /* @ngInject */
   function Terms(): ng.IDirective {
@@ -16,7 +17,22 @@ module ngApp.components.facets.directives {
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
-      controller: "termsCtrl as tc"
+      controller: "termsCtrl as tc",
+      link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: ITermsController) => {
+        $scope.add = (facet: string, term: string, event: any) => {
+          if (event.which === 13) {
+            elem.closest(".list-group").focus();
+            ctrl.add(facet, term);
+          }
+        };
+
+        $scope.remove = (facet: string, term: string, event: any) => {
+          if (event.which === 13) {
+            elem.closest(".list-group").focus();
+            ctrl.remove(facet, term);
+          }
+        };
+      }
     };
   }
 

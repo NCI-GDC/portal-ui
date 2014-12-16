@@ -1,13 +1,13 @@
-module ngApp.components.facets.directives {
+module ngApp.components.facets.controllers {
 
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import IFacetService = ngApp.components.facets.services.IFacetService;
   import IFreeTextFacetsScope = ngApp.components.facets.models.IFreeTextFacetsScope;
   import ILocationService = ngApp.components.location.services.ILocationService;
 
-  interface ITermsController {
-    add(facet: string, term: string, event: any): void;
-    remove(facet: string, term: string, event: any): void;
+  export interface ITermsController {
+    add(facet: string, term: string): void;
+    remove(facet: string, term: string): void;
     actives: string[];
     inactives: string[];
     displayCount: number;
@@ -28,7 +28,7 @@ module ngApp.components.facets.directives {
     inactives: string[] = [];
 
     /* @ngInject */
-    constructor($scope: IFacetScope, private FacetService: IFacetService) {
+    constructor(private $scope: IFacetScope, private FacetService: IFacetService) {
       this.collapsed = !!$scope.collapsed;
       this.expanded = !!$scope.expanded;
       this.displayCount = this.originalDisplayCount = $scope.displayCount || 5;
@@ -47,16 +47,12 @@ module ngApp.components.facets.directives {
       });
     }
 
-    add(facet: string, term: string, event: any): void {
-      if (event.which === 1 || event.which === 13) {
-        this.FacetService.addTerm(facet, term);
-      }
+    add(facet: string, term: string): void {
+      this.FacetService.addTerm(facet, term);
     }
 
-    remove(facet: string, term: string, event: any): void {
-      if (event.which === 1 || event.which === 13) {
-        this.FacetService.removeTerm(facet, term);
-      }
+    remove(facet: string, term: string): void {
+      this.FacetService.removeTerm(facet, term);
     }
 
     refresh(terms) {
@@ -116,7 +112,7 @@ module ngApp.components.facets.directives {
   interface IFreeTextController {
     actives: string[];
     searchTerm: string;
-    searchButtonClick(): void;
+    searchButtonClick(event: any): void;
     remove(term: string): void;
     refresh(): void;
   }
@@ -140,10 +136,12 @@ module ngApp.components.facets.directives {
       $scope.$on("$locationChangeSuccess", () => this.refresh());
     }
 
-    searchButtonClick(): void {
-      this.FacetService.addTerm(this.$scope.field, this.searchTerm);
-      this.actives.push(this.searchTerm);
-      this.searchTerm = "";
+    searchButtonClick(event: any): void {
+      if (event.which === 13 || event.which === 1) {
+        this.FacetService.addTerm(this.$scope.field, this.searchTerm);
+        this.actives.push(this.searchTerm);
+        this.searchTerm = "";
+      }
     }
 
     remove(term: string): void {
@@ -154,8 +152,6 @@ module ngApp.components.facets.directives {
     refresh(): void {
       this.actives = this.FacetService.getActiveIDs(this.$scope.field);
     }
-
-
 
     toggle(event: any, property: string) {
       if (event.which === 1 || event.which === 13) {

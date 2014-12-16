@@ -3,16 +3,20 @@ module ngApp.files.controllers {
   import IFiles = ngApp.files.models.IFiles;
   import ICoreService = ngApp.core.services.ICoreService;
   import ICartService = ngApp.cart.services.ICartService;
+  import IFilesService = ngApp.files.services.IFilesService;
 
   export interface IFileController {
     file: IFile;
     isInCart(): boolean;
     handleCartButton(): void;
+    archiveCount: number;
   }
 
   class FileController implements IFileController {
+    archiveCount: number = 0;
+
     /* @ngInject */
-    constructor(public file: IFile, private CoreService: ICoreService, private CartService: ICartService) {
+    constructor(public file: IFile, private CoreService: ICoreService, private CartService: ICartService, private FilesService: IFilesService) {
       CoreService.setPageTitle("File " + file.file_name);
       angular.forEach(file.participants, (p: any) => {
         p.sc = 0;
@@ -32,6 +36,12 @@ module ngApp.files.controllers {
           });
         });
       });
+      this.FilesService.getFiles({
+        fields: [
+          "archive.archive_uuid"
+        ],
+        filters: {"op":"is","content":{"field":"files.archive.archive_uuid","value":[file.archive.archive_uuid]}}
+      }).then((data) => this.archiveCount = data.pagination.total);
     }
 
     isInCart(): boolean {

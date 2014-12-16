@@ -34,11 +34,10 @@
           <div class="panel-heading clearfix">
             <h3 class="panel-title pull-left" data-translate>File Properties</h3>
             <div class="btn-group pull-right">
-              <button data-ng-if="fc.isInCart()" type="button" class="btn btn-success" disabled>
-                <i class="fa fa-shopping-cart"></i> In Cart
-              </button>
-              <button data-ng-if="!fc.isInCart()" type="button" class="btn btn-primary" data-ng-click="fc.handleCartButton()">
-                <i class="fa fa-shopping-cart"></i> Add to Cart
+              <button type="button" class="btn btn-primary" data-ng-click="fc.handleCartButton()">
+                <i class="fa fa-shopping-cart"></i>
+                <span data-ng-if="fc.isInCart()" data-translate>Remove from Cart</span>
+                <span data-ng-if="!fc.isInCart()" data-translate>Add to Cart</span>
               </button>
               <div class="btn-group" data-dropdown>
                 <button type="button" class="btn btn-primary">
@@ -111,6 +110,19 @@
             <tr>
               <th scope="row" data-translate>State</th>
               <td>??? {{ ::fc.file.state }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Archive</th>
+              <td>
+                {{ ::fc.file.archive.archive_name }}
+                (<a data-ui-sref="search.files({ 'filters': makeFilter([
+                  {
+                    name: 'files.archive.archive_uuid', value: fc.file.archive.archive_uuid
+                  }
+                ])})">
+                  {{ fc.archiveCount }} files
+                </a>)
+              </td>
             </tr>
             </tbody>
           </table>

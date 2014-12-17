@@ -10,5 +10,6 @@ angular
       "components.ui",
       "components.location",
       "components.charts",
-      "components.overrides"
+      "components.overrides",
+      "components.user"
     ]);

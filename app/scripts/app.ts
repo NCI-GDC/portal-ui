@@ -78,7 +78,6 @@ angular
       "ngApp.core",
       "ngApp.search",
       "ngApp.query",
-      //"ngApp.home",
       "ngApp.participants",
       "ngApp.files",
       "ngApp.annotations",

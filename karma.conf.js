@@ -17,6 +17,7 @@ module.exports = function (config) {
       'bower_components/restangular/dist/restangular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/ngprogress-lite/ngprogress-lite.js',
+      'bower_components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.js',
       'bower_components/lodash/dist/lodash.js',
       'bower_components/moment/moment.js',
       '.tmp/scripts/**/*.js',

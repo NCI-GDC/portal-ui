@@ -22,19 +22,42 @@
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li ui-sref-active="active">
-          <a ui-sref="cart">
-            <i class="fa fa-shopping-cart"></i>
-            <span data-translate>Cart</span>
-            <span class="label label-primary">{{ HeaderController.getNumCartItems() }}</span>
-          </a>
-        </li>
         <li data-ng-if="HeaderController.addedLanguages">
           <select ng-model="HeaderController.currentLang"
                   ng-change="HeaderController.setLanguage()"
                   aria-label="Select language"
                   ng-options="k as v for (k, v) in HeaderController.languages">
           </select>
+        </li>
+        <li data-ng-if="!HeaderController.currentUser">
+          <a data-ng-click="HeaderController.login()">
+            <i class="fa fa-sign-in"></i>
+            <span data-translate>Login</span>
+          </a>
+        </li>
+        <li data-ng-if="HeaderController.currentUser">
+          <ul class="nav navbar-nav">
+            <li class="btn-group" data-dropdown>
+              <a href="" class="dropdown-toggle" aria-expanded="false">
+                {{ HeaderController.currentUser.username }} <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a data-ng-click="HeaderController.logout()">
+                    <i class="fa fa-sign-out"></i>
+                    <span data-translate>Logout</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li ui-sref-active="active">
+          <a ui-sref="cart">
+            <i class="fa fa-shopping-cart"></i>
+            <span data-translate>Cart</span>
+            <span class="label label-primary">{{ HeaderController.getNumCartItems() }}</span>
+          </a>
         </li>
       </ul>
     </nav>

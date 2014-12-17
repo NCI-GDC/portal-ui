@@ -19,7 +19,7 @@ module ngApp.components.ui {
     "ui.date",
     "ui.file",
     "ui.search",
-    "ui.ellipsicate"
+    "ui.string"
   ]);
 
 }

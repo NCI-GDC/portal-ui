@@ -17,7 +17,7 @@
       <span class="label label-primary facet-name facet-button"
             data-ng-click="cfc.removeTerm(filter.content.field, null, $event)"
             data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event)">
-        {{ filter.content.field | translate }} :
+        {{ filter.content.field | translate | humanify }} :
         <span data-ng-click="cfc.removeTerm(filter.content.field, term, $event)"
             data-ng-repeat="v in filter.content.value">
         {{v}}

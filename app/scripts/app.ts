@@ -23,15 +23,21 @@ import IGDCConfig = ngApp.IGDCConfig;
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    $locationProvider: ng.ILocationProvider,
                    RestangularProvider: restangular.IProvider,
-                   config: IGDCConfig) {
+                   config: IGDCConfig,
+                   ngToastProvider: any
+                   ) {
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/projects");
   RestangularProvider.setBaseUrl(config.api);
   RestangularProvider.setDefaultHttpFields({cache: true});
+  ngToastProvider.configure({
+    verticalPosition: 'top',
+    horizontalPosition: 'center'
+  });
 }
 
 /* @ngInject */
-function appRun(gettextCatalog, Restangular: restangular.IProvider,
+function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
                 $state: ng.ui.IStateService, CoreService: ICoreService,
                 $rootScope: IRootScope, config: IGDCConfig) {
   gettextCatalog.debug = true;
@@ -66,6 +72,7 @@ function appRun(gettextCatalog, Restangular: restangular.IProvider,
 
 angular
     .module("ngApp", [
+      "ngToast",
       "ngProgressLite",
       "ngAnimate",
       "ngAria",
@@ -90,3 +97,4 @@ angular
     ])
     .config(appConfig)
     .run(appRun);
+

@@ -4,7 +4,6 @@ describe('Search:', function () {
   beforeEach(module('ngApp.search'));
   beforeEach(module('ngProgressLite'));
 
-
   describe('Controller:', function () {
     it('should have participants', inject(function ($rootScope, $controller) {
       var scope = $rootScope.$new();

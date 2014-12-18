@@ -42,7 +42,8 @@ module ngApp.search.controllers {
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
                 private LocationService: ILocationService,
-                CoreService: ICoreService) {
+                public CoreService: ICoreService
+                ) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
       this.State.setActive("facets", data.tab);
@@ -229,7 +230,8 @@ module ngApp.search.controllers {
         "cart.services",
         "core.services",
         "participants.services",
-        "files.services",
+        "files.services"
       ])
       .controller("SearchController", SearchController);
 }
+

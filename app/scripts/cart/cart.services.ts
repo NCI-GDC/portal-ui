@@ -29,7 +29,8 @@ module ngApp.cart.services {
     private static GDC_CART_UPDATE = "gdc-cart-updated";
 
     /* @ngInject */
-    constructor(private $window: IGDCWindowService) {
+    constructor(private $window: IGDCWindowService,
+                private ngToast: any) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
 
@@ -70,13 +71,22 @@ module ngApp.cart.services {
     }
 
     addFiles(files: IFile[]): void {
+      var numAdded = 0;
+      var lastAddedFileName = "";
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_uuid)) {
           file.selected = true;
           this.files.hits.push(file);
+          numAdded++;
+          lastAddedFileName = file.file_name;
         }
       });
       this._sync();
+      if (numAdded == 1) {
+        this.ngToast.create("added file <b>" + lastAddedFileName + "</b> to the cart");
+      } else {
+        this.ngToast.create("added <b>" + numAdded + "</b> files added to the cart");
+      }
     }
 
     removeAll(): void {
@@ -114,7 +124,8 @@ module ngApp.cart.services {
 
   angular
       .module("cart.services", [
-        "ngApp.files"
+        "ngApp.files",
+        "ngToast"
       ])
       .service("CartService", CartService);
 }

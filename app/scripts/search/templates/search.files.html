@@ -59,7 +59,7 @@
             <i class="fa fa-check-circle"></i>
           </button>
           <button data-ng-if="!sc.CartService.isInCart(file.file_uuid)" type="button" class="btn btn-default"
-                    data-ng-click="sc.CartService.add(file)">
+                    data-ng-click="sc.addToCart([file])">
             <i class="fa fa-shopping-cart"></i>
           </button>
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"

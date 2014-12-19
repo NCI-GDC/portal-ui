@@ -25,12 +25,16 @@ module ngApp.search.controllers {
     addRelatedFiles(participant: IParticipant): void;
     getFilteredRelatedFiles(participant: IParticipant): void;
     addFilteredRelatedFiles(participant: IParticipant): void;
+    addToCart(files: IFile[]): void;
+    undo(): void;
     isUserProject(file: IFile): boolean;
   }
 
   class SearchController implements ISearchController {
     files: IFiles;
     participants: IParticipants;
+    lastAddedFiles: IFile[];
+    lastNotifyDialog: INotify;
 
     /* @ngInject */
     constructor(private $scope: ng.IScope,
@@ -41,7 +45,8 @@ module ngApp.search.controllers {
                 public ParticipantsService: IParticipantsService,
                 private LocationService: ILocationService,
                 private UserService: IUserService,
-                public CoreService: ICoreService) {
+                public CoreService: ICoreService,
+                private notify: INotify) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
       this.State.setActive("facets", data.tab);
@@ -163,12 +168,28 @@ module ngApp.search.controllers {
       }
     }
 
+    addToCart(files: IFile[]): void {
+      var cartReturned = this.CartService.addFiles(files);
+      this.lastAddedFiles = cartReturned["added"];
+      this.notify.closeAll();
+      this.notify({
+          messageTemplate: this.CartService.buildAddedMsg(cartReturned),
+          scope: this.$scope
+      });
+    }
+
+    undo(): void {
+      this.notify.closeAll();
+      this.removeFiles(this.lastAddedFiles);
+    }
+
     removeFiles(files: IFile[]): void {
+      console.log(files.length);
       this.CartService.remove(_.pluck(files, "file_uuid"));
     }
 
     addRelatedFiles(participant: IParticipant): void {
-      this.CartService.addFiles(participant.files);
+      this.addToCart(participant.files);
     }
 
     getFilteredRelatedFiles(participant: IParticipant): void {
@@ -212,7 +233,7 @@ module ngApp.search.controllers {
     }
 
     addFilteredRelatedFiles(participant: IParticipant): void {
-      this.CartService.addFiles(participant.filteredRelatedFiles.hits);
+      this.addToCart(participant.filteredRelatedFiles.hits);
     }
   }
 
@@ -223,7 +244,8 @@ module ngApp.search.controllers {
         "cart.services",
         "core.services",
         "participants.services",
-        "files.services"
+        "files.services",
+        "cgNotify"
       ])
       .controller("SearchController", SearchController);
 }

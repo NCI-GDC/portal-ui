@@ -22,7 +22,7 @@
     "restangular": "1.4.0",
     "angular-bootstrap": "0.12.0",
     "bootcards": "~1.0.0",
-    "ngtoast": "1.2.1"
+    "angular-notify": "2.0.2"
   },
   "resolutions": {
     "angular": "1.3.5",

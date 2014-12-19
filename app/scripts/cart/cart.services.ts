@@ -4,6 +4,7 @@ module ngApp.cart.services {
   import IFile = ngApp.files.models.IFile;
   import IFilesService = ngApp.files.services.IFilesService;
   import IGDCWindowService = ngApp.models.IGDCWindowService;
+  import INotify = ng.cgNotify.INotify;
   import IUserService = ngApp.components.user.services.IUserService;
 
   export interface ICartService {
@@ -14,12 +15,13 @@ module ngApp.cart.services {
     getFileUrls(): string[];
     getFileIds(): string[];
     add(file: IFile): void;
-    addFiles(files: IFile[]): void;
+    addFiles(files: IFile[]): Object;
     isInCart(fileId: string): boolean;
     areInCart(files: IFile[]): boolean;
     removeAll(): void;
     remove(fileIds: string[]): void;
     removeFiles(files: IFile[]): void;
+    buildAddedMsg(addedAndAlreadyIn: Object): string;
   }
 
   class CartService implements ICartService {
@@ -31,7 +33,7 @@ module ngApp.cart.services {
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
-                private ngToast: any,
+                private notify: INotify,
                 private UserService: IUserService) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
@@ -63,23 +65,41 @@ module ngApp.cart.services {
       this.addFiles([file]);
     }
 
-    addFiles(files: IFile[]): void {
-      var numAdded = 0;
-      var lastAddedFileName = "";
+    addFiles(files: IFile[]): Object {
+      var addedFiles:IFile[] = [];
+      var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_uuid)) {
           file.selected = true;
           this.files.push(file);
-          numAdded++;
-          lastAddedFileName = file.file_name;
+          addedFiles.push(file);
+        } else {
+          alreadyIn.push(file);
         }
       });
       this._sync();
-      if (numAdded === 1) {
-        this.ngToast.create("added file <b>" + lastAddedFileName + "</b> to the cart");
+      return { "added": addedFiles, "alreadyIn": alreadyIn };
+    }
+
+    buildAddedMsg(addedAndAlreadyIn: Object): string {
+      console.log(addedAndAlreadyIn);
+      var added = addedAndAlreadyIn["added"];
+      var alreadyIn = addedAndAlreadyIn["alreadyIn"];
+      var message = '<span>added ';
+      if (added.length === 1) {
+        message += 'file <b>' + added[0].file_name + '</b>';
       } else {
-        this.ngToast.create("added <b>" + numAdded + "</b> files added to the cart");
+        message += '<b>' + added.length + '</b> files';
       }
+      message += ' to the cart.';
+      if(alreadyIn.length > 0) {
+        message += '<br /><b>' + alreadyIn.length + '</b> files already in cart, not added.';
+      }
+      if(added.length !== 0)
+        message += '<br /> <a ng-click="sc.undo()"><i class="fa fa-undo"></i> Undo</a>';
+
+      return message + '</span>';
+
     }
 
     removeAll(): void {
@@ -118,7 +138,7 @@ module ngApp.cart.services {
       .module("cart.services", [
         "ngApp.files",
         "user.services",
-        "ngToast"
+        "cgNotify"
       ])
       .service("CartService", CartService);
 }

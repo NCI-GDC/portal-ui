@@ -16,20 +16,21 @@ module ngApp.files.controllers {
     archiveCount: number = 0;
 
     /* @ngInject */
-    constructor(public file: IFile, private CoreService: ICoreService, private CartService: ICartService, private FilesService: IFilesService) {
+    constructor(public file: IFile, private CoreService: ICoreService, private CartService: ICartService,
+                private FilesService: IFilesService) {
       CoreService.setPageTitle("File " + file.file_name);
       angular.forEach(file.participants, (p: any) => {
         p.sc = 0;
         p.poc = 0;
         p.anc = 0;
         p.alc = 0;
-        angular.forEach(p.samples, (s:any) => {
+        angular.forEach(p.samples, (s: any) => {
           p.sc++;
-          angular.forEach(s.portions, (po:any) => {
+          angular.forEach(s.portions, (po: any) => {
             p.poc++;
-            angular.forEach(po.analytes, (an:any) => {
+            angular.forEach(po.analytes, (an: any) => {
               p.anc++;
-              angular.forEach(an.aliquots, (al:any) => {
+              angular.forEach(an.aliquots, (al: any) => {
                 p.alc++;
               });
             });
@@ -40,7 +41,7 @@ module ngApp.files.controllers {
         fields: [
           "archive.archive_uuid"
         ],
-        filters: {"op":"is","content":{"field":"files.archive.archive_uuid","value":[file.archive.archive_uuid]}}
+        filters: {"op": "is", "content": {"field": "files.archive.archive_uuid", "value": [file.archive.archive_uuid]}}
       }).then((data) => this.archiveCount = data.pagination.total);
     }
 
@@ -49,7 +50,7 @@ module ngApp.files.controllers {
     }
 
     handleCartButton(): void {
-      if(!this.CartService.isInCart(this.file.file_uuid)) {
+      if (!this.CartService.isInCart(this.file.file_uuid)) {
         this.CartService.add(this.file);
       } else {
         this.CartService.remove([this.file.file_uuid]);

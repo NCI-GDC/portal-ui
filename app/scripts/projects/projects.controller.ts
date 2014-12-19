@@ -8,13 +8,9 @@ module ngApp.projects.controllers {
     projects: IProjects;
   }
 
-  interface IProjectsControllerScope {
-    advancedQuery: boolean;
-  }
-
   class ProjectsController implements IProjectsController {
     projects: IProjects;
-    advancedQuery: boolean = false;
+
     /* @ngInject */
     constructor(private $scope: ng.IScope, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
       CoreService.setPageTitle("Projects");
@@ -22,6 +18,9 @@ module ngApp.projects.controllers {
         if (next.indexOf("projects") !== -1) {
           this.refresh();
         }
+      });
+      $scope.$on("gdc-user-reset", () => {
+        this.refresh();
       });
       this.refresh();
     }
@@ -40,14 +39,14 @@ module ngApp.projects.controllers {
           "_summary._analyzed_data._file_count",
           "_summary._experimental_data._participant_count",
           "_summary._experimental_data._file_count",
-          "_summary._experimental_data.experimental_type",
+          "_summary._experimental_data.experimental_type"
         ],
         facets: [
           "status",
           "program",
           "disease_type",
           "_summary._experimental_data.experimental_type",
-          "_summary._analyzed_data.data_type",
+          "_summary._analyzed_data.data_type"
         ],
         size: 100
       }).then((data) => this.projects = data);

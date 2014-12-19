@@ -31,8 +31,8 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
   RestangularProvider.setBaseUrl(config.api);
   RestangularProvider.setDefaultHttpFields({cache: true});
   ngToastProvider.configure({
-    verticalPosition: 'top',
-    horizontalPosition: 'center'
+    verticalPosition: "top",
+    horizontalPosition: "center"
   });
 }
 

@@ -16,7 +16,7 @@
               &#35;
               <span data-translate data-translate-comment="number of">of files</span>
             </th>
-            <td>{{ cc.files.hits.length | number:0 }}</td>
+            <td>{{ cc.files.length | number:0 }}</td>
           </tr>
           <tr>
             <th scope="row" data-translate>Size</th>
@@ -28,9 +28,9 @@
     </div>
   </section>
 
-  <h2 data-ng-if="!cc.files.hits.length" data-translate>Your Cart is empty.</h2>
+  <h2 data-ng-if="!cc.files.length" data-translate>Your Cart is empty.</h2>
 
-  <section data-ng-if="cc.files.hits.length">
+  <section data-ng-if="cc.files.length">
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
         <h3 class="panel-title pull-left">Cart Items</h3>
@@ -88,7 +88,6 @@
             </button>
           </div>
       </div>
-      <div class="table-responsive">
         <table class="table table-striped table-hover table-condensed table-bordered">
           <thead>
           <tr>
@@ -99,6 +98,11 @@
               <button data-ng-if="!cc.all()" type="button" class="btn btn-default" data-ng-click="cc.selectAll()">
                 <i class="fa fa-circle-o"></i>
               </button>
+            </th>
+            <th scope="col" class="text-center"
+                data-ng-if="cc.UserService.currentUser"
+                data-translate>
+              My Projects
             </th>
             <th scope="col" class="text-center" data-translate>Access</th>
             <th scope="col" class="text-center" data-translate>File Name</th>
@@ -114,7 +118,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr data-ng-repeat="file in cc.files.hits">
+          <tr data-ng-repeat="file in cc.files">
             <td>
               <div class="btn-group" data-dropdown>
                 <button type="button" class="btn btn-default"
@@ -151,9 +155,15 @@
                 </ul>
               </div>
             </td>
+            <td scope="col" class="text-center"
+                data-ng-if="cc.UserService.currentUser"
+                data-translate>
+              <i data-ng-if="cc.isUserProject(file)" class="fa fa-check fa-lg"></i>
+              <i data-ng-if="!cc.isUserProject(file)" class="fa fa-close fa-lg"></i>
+            </td>
             <td class="text-center">
-              <i data-ng-if="!file.access" class="fa fa-lock fa-lg"></i>
-              <i data-ng-if="file.access" class="fa fa-unlock-alt fa-lg"></i>
+              <i data-ng-if="file.data_access=='protected'" class="fa fa-lock fa-lg"></i>
+              <i data-ng-if="file.data_access!='protected'" class="fa fa-unlock-alt fa-lg"></i>
             </td>
             <td>
               <a data-ui-sref="file({ fileId: file.file_uuid })">
@@ -172,10 +182,6 @@
           </tr>
           </tbody>
         </table>
-      </div>
-<!--       <div class="panel-footer clearfix">
-        <pagination-controls data-page="cart"></pagination-controls>
-      </div> -->
     </div>
   </section>
 </div>

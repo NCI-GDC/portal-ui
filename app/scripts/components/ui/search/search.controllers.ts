@@ -4,7 +4,6 @@ module ngApp.components.ui.search.controllers {
   interface ISearchBarController {
     query: string;
     isSearchQuery: boolean;
-    toggle(isAdvancedQuery?: boolean): void;
     setQuery(): void;
     sendQuery(): void;
     resetQuery(): void;
@@ -37,10 +36,6 @@ module ngApp.components.ui.search.controllers {
       if (typeof currentQuery === "string") {
         this.query = currentQuery;
       }
-    }
-
-    toggle(isAdvancedQuery: boolean = false) {
-      this.$scope.$parent.advancedQuery = isAdvancedQuery;
     }
 
     resetQuery() {

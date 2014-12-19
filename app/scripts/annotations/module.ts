@@ -19,7 +19,6 @@ module ngApp.annotations {
       templateUrl: "annotations/templates/annotation.html",
       resolve: {
         annotation: ($stateParams: ng.ui.IStateParamsService, AnnotationsService: IAnnotationsService): ng.IPromise<IAnnotation> => {
-          console.log(1);
           return AnnotationsService.getAnnotation($stateParams["annotationId"],
             {
               fields: [

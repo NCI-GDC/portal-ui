@@ -6,7 +6,7 @@ module ngApp.components.header.directives {
     return {
       restrict: "E",
       templateUrl: "components/header/templates/header.html",
-      controller: "HeaderController as HeaderController"
+      controller: "HeaderController as hc"
     };
   }
 

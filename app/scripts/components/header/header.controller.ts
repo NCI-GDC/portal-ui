@@ -3,14 +3,12 @@ module ngApp.components.header.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import ICoreService = ngApp.core.services.ICoreService;
   import IUserService = ngApp.components.user.services.IUserService;
-  import IUser = ngApp.components.user.models.IUser;
 
   export interface IHeaderController {
     isCollapsed: boolean;
     toggleCollapsed(): void;
     collapse(event: any): void;
     currentLang: string;
-    currentUser: IUser;
     languages: any;
     addedLanguages: boolean;
     setLanguage(): void;
@@ -22,7 +20,6 @@ module ngApp.components.header.controllers {
   class HeaderController implements IHeaderController {
     isCollapsed: boolean = true;
     currentLang: string = "en";
-    currentUser: IUser;
     addedLanguages: boolean = false;
     languages: any = {
       "en": "English",
@@ -32,8 +29,7 @@ module ngApp.components.header.controllers {
 
     /* @ngInject */
     constructor(private gettextCatalog, private CartService: ICartService,
-                private CoreService: ICoreService, private $state: ng.ui.IStateService,
-                private UserService: IUserService, private $modal) {
+                private UserService: IUserService, private $modal: any) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
     }
 
@@ -44,14 +40,12 @@ module ngApp.components.header.controllers {
       });
 
       modalInstance.result.then((data) => {
-        this.UserService.login(data.username)
-          .then((user) => this.currentUser = user);
+        this.UserService.login(data.username);
       });
     }
 
     logout(): void {
-      this.UserService.logout()
-        .then((user) => this.currentUser = user);
+      this.UserService.logout();
     }
 
     collapse(event: any): void {
@@ -69,7 +63,7 @@ module ngApp.components.header.controllers {
     }
 
     getNumCartItems(): number {
-      return this.CartService.getFiles().hits.length;
+      return this.CartService.getFiles().length;
     }
 
   }

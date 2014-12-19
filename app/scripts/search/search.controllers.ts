@@ -11,6 +11,7 @@ module ngApp.search.controllers {
   import IState = ngApp.search.services.IState;
   import ICartService = ngApp.cart.services.ICartService;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface ISearchController {
     files: IFiles;
@@ -24,10 +25,7 @@ module ngApp.search.controllers {
     addRelatedFiles(participant: IParticipant): void;
     getFilteredRelatedFiles(participant: IParticipant): void;
     addFilteredRelatedFiles(participant: IParticipant): void;
-  }
-
-  export interface ISearchControllerScope extends ng.IScope {
-    advancedQuery: boolean;
+    isUserProject(file: IFile): boolean;
   }
 
   class SearchController implements ISearchController {
@@ -35,19 +33,18 @@ module ngApp.search.controllers {
     participants: IParticipants;
 
     /* @ngInject */
-    constructor(private $scope: ISearchControllerScope,
+    constructor(private $scope: ng.IScope,
                 private $state: ng.ui.IStateService,
                 public State: IState,
                 public CartService: ICartService,
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
                 private LocationService: ILocationService,
-                public CoreService: ICoreService
-                ) {
+                private UserService: IUserService,
+                public CoreService: ICoreService) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
       this.State.setActive("facets", data.tab);
-      $scope.advancedQuery = data.advancedQuery;
       CoreService.setPageTitle("Search");
 
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
@@ -55,16 +52,8 @@ module ngApp.search.controllers {
           this.refresh();
         }
       });
-      $scope.$watch("advancedQuery", (newVal: boolean) => {
-        if (newVal !== undefined) {
-          var state: string = "search.";
-
-          if (newVal) {
-            state = "query.";
-          }
-
-          this.setState(this.$state.current.name.substring(this.$state.current.name.lastIndexOf(".") + 1), state);
-        }
+      $scope.$on("gdc-user-reset", () => {
+        this.refresh();
       });
       this.refresh();
     }
@@ -147,6 +136,10 @@ module ngApp.search.controllers {
       }
     }
 
+    isUserProject(file: IFile): boolean {
+      return this.UserService.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
+    }
+
     select(section: string, tab: string) {
       var next = "search.";
 
@@ -174,7 +167,7 @@ module ngApp.search.controllers {
       this.CartService.remove(_.pluck(files, "file_uuid"));
     }
 
-    addRelatedFiles(participant: IParticipant):void {
+    addRelatedFiles(participant: IParticipant): void {
       this.CartService.addFiles(participant.files);
     }
 

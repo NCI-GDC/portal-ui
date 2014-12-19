@@ -2,6 +2,7 @@ module ngApp.projects.services {
   import IProject = ngApp.projects.models.IProject;
   import IProjects = ngApp.projects.models.IProjects;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface IProjectsService {
     getProject(id: string, params?: Object): ng.IPromise<IProject>;
@@ -12,7 +13,8 @@ module ngApp.projects.services {
     private ds: restangular.IElement;
 
     /* @ngInject */
-    constructor(Restangular: restangular.IService, private LocationService: ILocationService) {
+    constructor(Restangular: restangular.IService, private LocationService: ILocationService,
+                private UserService: IUserService) {
       this.ds = Restangular.all("projects");
     }
 
@@ -59,11 +61,14 @@ module ngApp.projects.services {
       if (params.hasOwnProperty("facets")) {
         params["facets"] = params["facets"].join();
       }
+
       var defaults = {
         size: 10,
         from: 1,
         filters: this.LocationService.filters()
       };
+
+      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "project_code");
 
       return this.ds.get("", angular.extend(defaults, params)).then((response): IProjects => {
         var outer_class = this;
@@ -78,7 +83,8 @@ module ngApp.projects.services {
   angular
       .module("projects.services", [
         "restangular",
-        "components.location"
+        "components.location",
+        "user.services"
       ])
       .service("ProjectsService", ProjectsService);
 }

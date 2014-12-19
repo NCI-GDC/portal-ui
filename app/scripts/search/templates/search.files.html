@@ -33,6 +33,11 @@
           </ul>
         </div>
       </th>
+      <th scope="col" class="text-center"
+          data-ng-if="sc.UserService.currentUser"
+          data-translate>
+        My Projects
+      </th>
       <th scope="col" class="text-center" data-translate>Access</th>
       <th scope="col" class="text-center" data-translate>File Name</th>
       <th scope="col" class="text-center" data-translate>File type</th>
@@ -105,6 +110,12 @@
           </ul>
         </div>
       </td>
+      <td scope="col" class="text-center"
+          data-ng-if="sc.UserService.currentUser"
+          data-translate>
+        <i data-ng-if="sc.isUserProject(file)" class="fa fa-check fa-lg"></i>
+        <i data-ng-if="!sc.isUserProject(file)" class="fa fa-close fa-lg"></i>
+      </td>
       <td class="text-center">
         <i data-ng-if="file.data_access=='protected'" class="fa fa-lock fa-lg"></i>
         <i data-ng-if="file.data_access!='protected'" class="fa fa-unlock-alt fa-lg"></i>
@@ -121,7 +132,7 @@
       <td class="text-right">{{ ::file.annotations.length | number:0 }}</td>
       <td>
         <a data-ui-sref="project({ projectId: file.project.id })">
-          {{ ::file.archive.disease_code}}
+          {{ ::file.archive.disease_code }}
         </a>
       </td>
       <td>{{ ::file.data_type }}</td>

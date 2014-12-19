@@ -1,7 +1,7 @@
 <header id="gdc-header" class="navbar navbar-default navbar-static-top" role="banner">
   <div class="container-fluid">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-ng-click="HeaderController.toggleCollapsed()">
+      <button type="button" class="navbar-toggle" data-ng-click="hc.toggleCollapsed()">
         <span class="sr-only" data-translate>Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -9,41 +9,49 @@
       </button>
       <a class="navbar-brand" data-ui-sref="projects" data-translate>GDC Data Portal</a>
     </div>
-    <nav class="navbar-collapse collapse navbar-responsive-collapse" data-collapse="HeaderController.isCollapsed"
-         role="navigation" data-ng-click="HeaderController.collapse($event)"
-         data-ng-keypress="HeaderController.collapse($event)"
+    <nav class="navbar-collapse collapse navbar-responsive-collapse" data-collapse="hc.isCollapsed"
+         role="navigation" data-ng-click="hc.collapse($event)"
+         data-ng-keypress="hc.collapse($event)"
          aria-label="{{ 'Site Navigation' | translate }}">
       <ul class="nav navbar-nav">
         <li ui-sref-active="active"><a ui-sref="projects"><i class="fa fa-folder-o"></i> Projects</a></li>
         <li ui-sref-active="active"><a ui-sref="annotations"><i class="fa fa-align-left"></i> Annotations</a></li>
-        <li data-ng-class="{ active: HeaderController.$state.includes('search') || HeaderController.$state.includes('query') }">
+        <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }">
           <a ui-sref="search.files"><i class="fa fa-search"></i> Search</a>
         </li>
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li data-ng-if="HeaderController.addedLanguages">
-          <select ng-model="HeaderController.currentLang"
-                  ng-change="HeaderController.setLanguage()"
+        <li data-ng-if="hc.addedLanguages">
+          <select ng-model="hc.currentLang"
+                  ng-change="hc.setLanguage()"
                   aria-label="Select language"
-                  ng-options="k as v for (k, v) in HeaderController.languages">
+                  ng-options="k as v for (k, v) in hc.languages">
           </select>
         </li>
-        <li data-ng-if="!HeaderController.currentUser">
-          <a data-ng-click="HeaderController.login()">
+        <li data-ng-if="!hc.UserService.currentUser">
+          <a data-ng-click="hc.login()">
             <i class="fa fa-sign-in"></i>
             <span data-translate>Login</span>
           </a>
         </li>
-        <li data-ng-if="HeaderController.currentUser">
+        <li class="MyProjects" data-ng-if="hc.UserService.currentUser">
+          <label class="MyProjects__label navbar-text">
+            <input type="checkbox"
+                   data-ng-change="hc.UserService.toggleFilter()"
+                   data-ng-model="hc.UserService.currentUser.isFiltered">
+            <span data-translate>Only My Projects</span>
+          </label>
+        </li>
+        <li data-ng-if="hc.UserService.currentUser">
           <ul class="nav navbar-nav">
             <li class="btn-group" data-dropdown>
               <a href="" class="dropdown-toggle" aria-expanded="false">
-                {{ HeaderController.currentUser.username }} <span class="caret"></span>
+                {{ hc.UserService.currentUser.username }} <span class="caret"></span>
               </a>
               <ul class="dropdown-menu" role="menu">
                 <li>
-                  <a data-ng-click="HeaderController.logout()">
+                  <a data-ng-click="hc.logout()">
                     <i class="fa fa-sign-out"></i>
                     <span data-translate>Logout</span>
                   </a>
@@ -56,14 +64,14 @@
           <a ui-sref="cart">
             <i class="fa fa-shopping-cart"></i>
             <span data-translate>Cart</span>
-            <span class="label label-primary">{{ HeaderController.getNumCartItems() }}</span>
+            <span class="label label-primary">{{ hc.getNumCartItems() }}</span>
           </a>
         </li>
       </ul>
     </nav>
   </div>
 
-  <div class="xhrCounter" data-ng-if="HeaderController.CoreService.activeRequests">
-    {{ (HeaderController.CoreService.finishedRequests / HeaderController.CoreService.requestCount * 100).toFixed(0) }}%
+  <div class="xhrCounter" data-ng-if="hc.CoreService.activeRequests">
+    {{ (hc.CoreService.finishedRequests / hc.CoreService.requestCount * 100).toFixed(0) }}%
   </div>
 </header>

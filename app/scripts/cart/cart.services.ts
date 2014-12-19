@@ -4,11 +4,12 @@ module ngApp.cart.services {
   import IFile = ngApp.files.models.IFile;
   import IFilesService = ngApp.files.services.IFilesService;
   import IGDCWindowService = ngApp.models.IGDCWindowService;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface ICartService {
-    files: IFiles;
+    files: IFile[];
     lastModified: Moment;
-    getFiles(): IFiles;
+    getFiles(): IFile[];
     getSelectedFiles(): IFile[];
     getFileUrls(): string[];
     getFileIds(): string[];
@@ -22,7 +23,7 @@ module ngApp.cart.services {
   }
 
   class CartService implements ICartService {
-    files: IFiles;
+    files: IFile[];
     lastModified: Moment;
 
     private static GDC_CART_KEY = "gdc-cart-items";
@@ -30,36 +31,28 @@ module ngApp.cart.services {
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
-                private ngToast: any) {
+                private ngToast: any,
+                private UserService: IUserService) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
 
       this.lastModified = local_time ? $window.moment(local_time) : $window.moment();
-      this.files = local_files ? JSON.parse(local_files) : {
-        hits: [],
-        pagination: {
-          count: 0,
-          total: 0,
-          size: 0,
-          from: 0,
-          page: 0,
-          pages: 0,
-          sort: "false",
-          order: "false"
-        }
-      };
+      this.files = local_files ? JSON.parse(local_files) : [];
     }
 
-    getFiles(): IFiles {
-      return this.files;
+    getFiles(): IFile[] {
+      var filtered: boolean = this.UserService.currentUser && this.UserService.currentUser.isFiltered;
+      return filtered ? _.filter(this.files, (file: IFile) : boolean => {
+        return this.UserService.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
+      }) : this.files;
     }
 
     getSelectedFiles(): IFile[] {
-      return _.where(this.files.hits, {selected: true});
+      return _.where(this.getFiles(), {selected: true});
     }
 
     isInCart(fileId: string): boolean {
-      return _.some(this.files.hits, {file_uuid: fileId});
+      return _.some(this.files, {file_uuid: fileId});
     }
 
     areInCart(files: IFile[]): boolean {
@@ -76,13 +69,13 @@ module ngApp.cart.services {
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_uuid)) {
           file.selected = true;
-          this.files.hits.push(file);
+          this.files.push(file);
           numAdded++;
           lastAddedFileName = file.file_name;
         }
       });
       this._sync();
-      if (numAdded == 1) {
+      if (numAdded === 1) {
         this.ngToast.create("added file <b>" + lastAddedFileName + "</b> to the cart");
       } else {
         this.ngToast.create("added <b>" + numAdded + "</b> files added to the cart");
@@ -90,12 +83,12 @@ module ngApp.cart.services {
     }
 
     removeAll(): void {
-      this.files.hits = [];
+      this.files = [];
       this._sync();
     }
 
     remove(fileIds: string[]): void {
-      this.files.hits = _.reject(this.files.hits, function (hit: IFile) {
+      this.files = _.reject(this.files, function (hit: IFile) {
         return fileIds.indexOf(hit.file_uuid) !== -1;
       });
       this._sync();
@@ -105,7 +98,6 @@ module ngApp.cart.services {
       var ids: string[] = _.pluck(files, "file_uuid");
       this.remove(ids);
     }
-
 
     getFileUrls(): string[] {
       return _.pluck(this.getSelectedFiles(), "file_url");
@@ -125,6 +117,7 @@ module ngApp.cart.services {
   angular
       .module("cart.services", [
         "ngApp.files",
+        "user.services",
         "ngToast"
       ])
       .service("CartService", CartService);

@@ -31,20 +31,20 @@ module ngApp.core.services {
       this.$rootScope.loaded = state;
 
       this.$rootScope.makeFilter = function (fields: { name: string; value: string }[]): string {
-        var contentArray = _.map(fields, function(item) {
+        var contentArray = _.map(fields, function (item) {
           return {
             "op": "is",
             "content": {
               "field": item.name,
               "value": item.value.split(",")
             }
-          }
+          };
         });
         return angular.toJson({
           "op": "and",
           "content": contentArray
         });
-      }
+      };
     }
 
 

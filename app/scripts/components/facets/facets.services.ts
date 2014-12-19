@@ -69,7 +69,7 @@ module ngApp.components.facets.services {
         var c = cs[i]["content"];
         if (c["field"] === facet) {
           found = true;
-          if(c["value"].indexOf(term) === -1) {
+          if (c["value"].indexOf(term) === -1) {
             c["value"].push(term);
           } else {
             return;

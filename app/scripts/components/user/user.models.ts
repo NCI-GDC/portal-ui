@@ -3,5 +3,6 @@ module ngApp.components.user.models {
     username: string;
     projects: string[];
     token: string;
+    isFiltered: boolean;
   }
 }

@@ -3,9 +3,10 @@ module ngApp.cart.controllers {
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
   import ICoreService = ngApp.core.services.ICoreService;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface ICartController {
-    files: IFiles;
+    files: IFile[];
     lastModified: Moment;
     selected(): IFile[];
     selectedSize(): number;
@@ -15,16 +16,21 @@ module ngApp.cart.controllers {
     selectAll(): void;
     deselectAll(): void;
     all(): boolean;
+    isUserProject(file: IFile): boolean;
   }
 
   class CartController implements ICartController {
     lastModified: Moment;
 
     /* @ngInject */
-    constructor(public files: IFiles, private CoreService: ICoreService, private CartService: ICartService) {
-      CoreService.setPageTitle("Cart", "(" + this.files.hits.length + ")");
-      CartService.files = files;
+    constructor(private $scope: ng.IScope, public files: IFile[], private CoreService: ICoreService,
+                private CartService: ICartService, private UserService: IUserService) {
+      CoreService.setPageTitle("Cart", "(" + this.files.length + ")");
       this.lastModified = this.CartService.lastModified;
+
+      $scope.$on("gdc-user-reset", () => {
+        this.files = CartService.getFiles();
+      });
     }
 
     selected(): IFile[] {
@@ -36,7 +42,7 @@ module ngApp.cart.controllers {
     }
 
     getTotalSize(): number {
-      return _.reduce(this.files.hits, function (sum: number, hit: IFile) {
+      return _.reduce(this.files, function (sum: number, hit: IFile) {
         return sum + hit.file_size;
       }, 0);
     }
@@ -54,37 +60,40 @@ module ngApp.cart.controllers {
     }
 
     removeAll() {
-      console.log(1);
       this.CartService.removeAll();
       this.lastModified = this.CartService.lastModified;
     }
 
     removeSelected(): void {
-      var ids : string[] = _.pluck(this.selected(), "file_uuid");
+      var ids: string[] = _.pluck(this.selected(), "file_uuid");
       this.CartService.remove(ids);
       this.lastModified = this.CartService.lastModified;
     }
 
     selectAll(): void {
-      this.files.hits.forEach((file: IFile): void => {
+      this.files.forEach((file: IFile): void => {
         file.selected = true;
       });
     }
 
     deselectAll(): void {
-      this.files.hits.forEach((file: IFile): void => {
+      this.files.forEach((file: IFile): void => {
         file.selected = false;
       });
     }
 
-    all() :boolean {
-      return _.every(this.files.hits, {selected: true});
+    all(): boolean {
+      return _.every(this.files, {selected: true});
+    }
+
+    isUserProject(file: IFile): boolean {
+      return this.UserService.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
     }
 
   }
 
   angular
-      .module("cart.controller", ["cart.services", "core.services"])
+      .module("cart.controller", ["cart.services", "core.services", "user.services"])
       .controller("CartController", CartController);
 }
 

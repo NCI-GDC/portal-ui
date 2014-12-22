@@ -170,6 +170,16 @@ No development should happen on the master branch and tests should never be brok
 
 ## Release
 
+### Version Schema
+
+Version number are based on the current stage of development, in the form:
+
+```
+0.{Phase}.{Month}-spr{Sprint}
+```
+
+For example the version `0.1.8-spr3` represents `Phase 1`, `Monthly deadline 8`, `Sprint 3`
+
 ### Prepare release
 
 ```

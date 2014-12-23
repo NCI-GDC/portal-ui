@@ -1,3 +1,23 @@
+### 0.1.8-spr4 (2014-12-23)
+
+
+#### Features
+
+* **a11y:** Continued improvement w/ 508 comp. ([a6efdd2c](https://github.com/NCI-GDC/portal-ui/commit/a6efdd2c765f52b6bc63369a1a6823d014c27acc), closes [OICR-158](https://jira.opensciencedatacloud.org/browse/OICR-158))
+* **app:**
+  * adds undo to cart notification ([01bf7cc5](https://github.com/NCI-GDC/portal-ui/commit/01bf7cc5453b1813fcc12cdb928ddab7252384d2), closes [OICR-169](https://jira.opensciencedatacloud.org/browse/OICR-169))
+  * notify when file added to cart ([5f0395e0](https://github.com/NCI-GDC/portal-ui/commit/5f0395e0dd8bb94f068597b7e7f8d834b1699767), closes [OICR-168](https://jira.opensciencedatacloud.org/browse/OICR-168))
+  * Create reusable pagination controls. ([2390115a](https://github.com/NCI-GDC/portal-ui/commit/2390115a79c85a0c92a96c9783ba87ee8f4b39b6), closes [OICR-159](https://jira.opensciencedatacloud.org/browse/OICR-159))
+  * some fixes to table contents ([35e653ac](https://github.com/NCI-GDC/portal-ui/commit/35e653ac9b14bfb32c94d63bae7c7da831762659), closes [OICR-160](https://jira.opensciencedatacloud.org/browse/OICR-160))
+* **files:** add back remove frm cart & archive cell ([67cc52e3](https://github.com/NCI-GDC/portal-ui/commit/67cc52e3c324cf5dbbc48948d8aa8ce920537be7), closes [OICR-162](https://jira.opensciencedatacloud.org/browse/OICR-162))
+* **filter:** add humanify filter ([c47fa078](https://github.com/NCI-GDC/portal-ui/commit/c47fa078a11b4ed180ee8acc1a67ec4b31b47221), closes [OICR-166](https://jira.opensciencedatacloud.org/browse/OICR-166))
+* **login:** Mockup login process. ([51b052f1](https://github.com/NCI-GDC/portal-ui/commit/51b052f13676fae14b90bbac3907e20345a07271), closes [OICR-167](https://jira.opensciencedatacloud.org/browse/OICR-167))
+* **search:**
+  * add dropdwn archive & metafiles link ([9320130f](https://github.com/NCI-GDC/portal-ui/commit/9320130f58594a0447f21070e39cc2608abc1099), closes [OICR-161](https://jira.opensciencedatacloud.org/browse/OICR-161))
+  * Participant buttons add files. ([b25ba9b3](https://github.com/NCI-GDC/portal-ui/commit/b25ba9b39e79f6e8026f9f8198dbfda4a8e0595a), closes [OICR-164](https://jira.opensciencedatacloud.org/browse/OICR-164))
+* **user:** Adds MyProjects feature. ([80167280](https://github.com/NCI-GDC/portal-ui/commit/80167280520988e1cd0427c3df961cd50ca8d20f), closes [OICR-170](https://jira.opensciencedatacloud.org/browse/OICR-170))
+
+
 ### 0.1.8-spr3 (2014-12-11)
 
 

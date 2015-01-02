@@ -55,7 +55,6 @@ module ngApp.core.services {
       this.$rootScope.makeDownloadLink = function(ids: string[]): string {
         return "/api/data/" + ids.join(",");
       };
-
     }
 
     setPageTitle(title: string, id?: any): void {

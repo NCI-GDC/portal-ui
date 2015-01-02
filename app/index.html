@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-ng-app="ngApp" data-ng-strict-di>
+<html lang="en" data-ng-app="ngApp" data-ng-controller="CoreController as corec" data-ng-strict-di>
 <head>
   <base href="__BASE__">
 
@@ -24,11 +24,11 @@
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
   <meta name="msapplication-TileColor" content="#3372DF">
   <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="libs/angular-notify/dist/angular-notify.css">
   <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.css">
   <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="libs/bootcards/src/css/bootcards-desktop.css">
   <link rel="stylesheet" href="libs/ngprogress-lite/ngprogress-lite.css">
-  <link rel="stylesheet" href="libs/angular-notify/dist/angular-notify.css">
 
   <!-- build:css css/styles.css -->
   <link rel="stylesheet" href="css/styles.css">
@@ -38,6 +38,7 @@
 </head>
 
 <body>
+<div id="notification"></div>
 <a href="#body" tabindex="1" class="skip-to-content" data-translate>Skip to Main Content</a>
 
 <div id="wrapper" aria-busy="true" aria-live="assertive" tabindex="0">

@@ -4,8 +4,8 @@ module ngApp.cart.services {
   import IFile = ngApp.files.models.IFile;
   import IFilesService = ngApp.files.services.IFilesService;
   import IGDCWindowService = ngApp.models.IGDCWindowService;
-  import INotify = ng.cgNotify.INotify;
   import IUserService = ngApp.components.user.services.IUserService;
+  import INotifyService = ng.cgNotify.INotifyService;
 
   export interface ICartService {
     files: IFile[];
@@ -15,26 +15,31 @@ module ngApp.cart.services {
     getFileUrls(): string[];
     getFileIds(): string[];
     add(file: IFile): void;
-    addFiles(files: IFile[]): Object;
+    addFiles(files: IFile[]): void;
     isInCart(fileId: string): boolean;
     areInCart(files: IFile[]): boolean;
     removeAll(): void;
     remove(fileIds: string[]): void;
     removeFiles(files: IFile[]): void;
     buildAddedMsg(addedAndAlreadyIn: Object): string;
+    buildRemovedMsg(removedFiles: IFile[]): string;
+    //undo(): void;
+    undoAdded(): void;
+    undoRemoved(): void;
   }
 
   class CartService implements ICartService {
     files: IFile[];
     lastModified: Moment;
+    lastModifiedFiles: IFile[];
 
     private static GDC_CART_KEY = "gdc-cart-items";
     private static GDC_CART_UPDATE = "gdc-cart-updated";
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
-                private notify: INotify,
-                private UserService: IUserService) {
+                private UserService: IUserService,
+                private notify: INotifyService) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
 
@@ -65,7 +70,7 @@ module ngApp.cart.services {
       this.addFiles([file]);
     }
 
-    addFiles(files: IFile[]): Object {
+    addFiles(files: IFile[]): void {
       var addedFiles:IFile[] = [];
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
@@ -78,43 +83,79 @@ module ngApp.cart.services {
         }
       });
       this._sync();
-      return { "added": addedFiles, "alreadyIn": alreadyIn };
+      this.lastModifiedFiles = addedFiles;
+      this.notify.config({ duration: 5000 });
+      this.notify.closeAll();
+      this.notify({
+          message: "",
+          messageTemplate: this.buildAddedMsg({"added": addedFiles, "alreadyIn": alreadyIn }),
+          container: "#notification",
+          classes: "alert-success"
+      });
     }
 
     buildAddedMsg(addedAndAlreadyIn: Object): string {
       var added = addedAndAlreadyIn["added"];
       var alreadyIn = addedAndAlreadyIn["alreadyIn"];
-      var message = '<span>added ';
 
+      var message = "<span>Added ";
       if (added.length === 1) {
-        message += 'file <b>' + added[0].file_name + '</b>';
+        message += "file <b>" + added[0].file_name + "</b>";
       } else {
-        message += '<b>' + added.length + '</b> files';
+        message += "<b>" + added.length + "</b> files";
       }
-
-      message += ' to the cart.';
-      if (alreadyIn.length > 0) {
-        message += '<br /><b>' + alreadyIn.length + '</b> files already in cart, not added.';
+      message += " to the cart.";
+      if(alreadyIn.length > 0) {
+        message += "<br /><b>" + alreadyIn.length + "</b> files already in cart, not added.";
       }
-
-      if (added.length !== 0) {
-        message += '<br /> <a ng-click="sc.undo()"><i class="fa fa-undo"></i> Undo</a>';
+      if(added.length !== 0) {
+        message += "<br /> <a data-ng-click='undoClicked(\"added\")'><i class='fa fa-undo'></i> Undo</a>";
       }
-
-      return message + '</span>';
+      return message + "</span>";
 
     }
 
+    buildRemovedMsg(removedFiles: IFile[]): string {
+      var message = "<span>Removed ";
+      if (removedFiles.length === 1) {
+        message += "file <b>" + removedFiles[0].file_name + "</b>";
+      } else {
+        message += "<b>" + removedFiles.length + "</b> files";
+      }
+      message += " from the cart.";
+      if(removedFiles.length !== 0) {
+        message += "<br /> <a data-ng-click='undoClicked(\"removed\")'><i class='fa fa-undo'></i> Undo</a>";
+      }
+      return message + "</span>";
+    }
+
     removeAll(): void {
+      this.notify.closeAll();
+      this.notify({
+          message: "",
+          messageTemplate: this.buildRemovedMsg(this.files),
+          container: "#notification",
+          classes: "alert-warning"
+      });
+      this.lastModifiedFiles = this.files;
       this.files = [];
       this._sync();
     }
 
     remove(fileIds: string[]): void {
-      this.files = _.reject(this.files, function (hit: IFile) {
+      var remaining = _.reject(this.files, function (hit: IFile) {
         return fileIds.indexOf(hit.file_uuid) !== -1;
       });
+      this.lastModifiedFiles = _.difference(this.files, remaining);
       this._sync();
+      this.notify.closeAll();
+      this.notify({
+          message: "",
+          messageTemplate: this.buildRemovedMsg(this.lastModifiedFiles),
+          container: "#notification",
+          classes: "alert-warning"
+      });
+      this.files = remaining;
     }
 
     removeFiles(files: IFile[]): void {
@@ -128,6 +169,14 @@ module ngApp.cart.services {
 
     getFileIds(): string[] {
       return _.pluck(this.getSelectedFiles(), "file_uuid");
+    }
+
+    undoAdded(): void {
+      this.removeFiles(this.lastModifiedFiles);
+    }
+
+    undoRemoved(): void {
+      this.addFiles(this.lastModifiedFiles);
     }
 
     _sync() {

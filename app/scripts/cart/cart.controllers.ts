@@ -56,6 +56,11 @@ module ngApp.cart.controllers {
       $scope.$on("cart-paging-update", (event: any, newPaging: any) => {
         this.setDisplayedFiles(newPaging);
       });
+
+      $scope.$on("undo", () => {
+        this.setDisplayedFiles();
+      });
+
     }
 
     setDisplayedFiles(newPaging: IPagination = this.pagination): void {

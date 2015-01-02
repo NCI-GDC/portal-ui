@@ -14,12 +14,14 @@ declare module ngApp {
     config: IGDCConfig;
     makeFilter(fields: { name: string; value: string }[]): string;
     makeDownloadLink(ids: string[]): string;
+    undoClicked(action: string): void;
   }
 }
 
 import ICoreService = ngApp.core.services.ICoreService;
 import IRootScope = ngApp.IRootScope;
 import IGDCConfig = ngApp.IGDCConfig;
+import INotifyService = ng.cgNotify.INotifyService;
 
 /* @ngInject */
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
@@ -36,7 +38,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
 /* @ngInject */
 function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
                 $state: ng.ui.IStateService, CoreService: ICoreService,
-                $rootScope: IRootScope, config: IGDCConfig) {
+                $rootScope: IRootScope, config: IGDCConfig, notify: INotifyService) {
   gettextCatalog.debug = true;
 
   $rootScope.config = config;
@@ -59,12 +61,15 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
   $rootScope.$on("$stateChangeStart", () => {
     // Page change
     CoreService.setLoadedState(false);
+    // Close all notifcation windows
+    notify.closeAll();
   });
 
   $rootScope.$on("$stateChangeSuccess", () => {
     // Page change
     CoreService.setLoadedState(true);
   });
+
 }
 
 angular

@@ -16,8 +16,13 @@ module ngApp.files.controllers {
     archiveCount: number = 0;
 
     /* @ngInject */
-    constructor(public file: IFile, private CoreService: ICoreService, private CartService: ICartService,
-                private FilesService: IFilesService) {
+    constructor(public file: IFile,
+                public $scope: ng.IScope,
+                private CoreService: ICoreService,
+                private CartService: ICartService,
+                private FilesService: IFilesService
+                ) {
+
       CoreService.setPageTitle("File " + file.file_name);
       angular.forEach(file.participants, (p: any) => {
         p.sc = 0;
@@ -51,7 +56,7 @@ module ngApp.files.controllers {
 
     handleCartButton(): void {
       if (!this.CartService.isInCart(this.file.file_uuid)) {
-        this.CartService.add(this.file);
+        this.CartService.addFiles([this.file]);
       } else {
         this.CartService.remove([this.file.file_uuid]);
       }
@@ -65,3 +70,4 @@ module ngApp.files.controllers {
       ])
       .controller("FileController", FileController);
 }
+

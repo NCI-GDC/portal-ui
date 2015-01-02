@@ -26,7 +26,6 @@ module ngApp.search.controllers {
     getFilteredRelatedFiles(participant: IParticipant): void;
     addFilteredRelatedFiles(participant: IParticipant): void;
     addToCart(files: IFile[]): void;
-    undo(): void;
     isUserProject(file: IFile): boolean;
   }
 
@@ -34,7 +33,6 @@ module ngApp.search.controllers {
     files: IFiles;
     participants: IParticipants;
     lastAddedFiles: IFile[];
-    lastNotifyDialog: INotify;
     fileSortColumns: any = [
       {
         key: "file_size",
@@ -77,8 +75,9 @@ module ngApp.search.controllers {
                 public ParticipantsService: IParticipantsService,
                 private LocationService: ILocationService,
                 private UserService: IUserService,
-                public CoreService: ICoreService,
-                private notify: INotify) {
+                public CoreService: ICoreService
+                ) {
+
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
       this.State.setActive("facets", data.tab);
@@ -92,7 +91,9 @@ module ngApp.search.controllers {
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });
+
       this.refresh();
+
     }
 
     refresh() {
@@ -223,21 +224,9 @@ module ngApp.search.controllers {
 
     addToCart(files: IFile[]): void {
       var cartReturned = this.CartService.addFiles(files);
-      this.lastAddedFiles = cartReturned["added"];
-      this.notify.closeAll();
-      this.notify({
-          messageTemplate: this.CartService.buildAddedMsg(cartReturned),
-          scope: this.$scope
-      });
-    }
-
-    undo(): void {
-      this.notify.closeAll();
-      this.removeFiles(this.lastAddedFiles);
     }
 
     removeFiles(files: IFile[]): void {
-      console.log(files.length);
       this.CartService.remove(_.pluck(files, "file_uuid"));
     }
 
@@ -297,8 +286,7 @@ module ngApp.search.controllers {
         "cart.services",
         "core.services",
         "participants.services",
-        "files.services",
-        "cgNotify"
+        "files.services"
       ])
       .controller("SearchController", SearchController);
 }

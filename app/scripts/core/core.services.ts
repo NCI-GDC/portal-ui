@@ -3,8 +3,9 @@ module ngApp.core.services {
   export interface ICoreService {
     setPageTitle(title: string, id?: any): void;
     setLoadedState(state: boolean): void;
-    xhrSent(): void;
-    xhrDone(): void;
+    setSearchModelState(state: boolean): void;
+    xhrSent(model: string): void;
+    xhrDone(model: string): void;
     activeRequests: boolean;
     finishedRequests: number;
     requestCount: number;
@@ -14,6 +15,11 @@ module ngApp.core.services {
     activeRequests: boolean = false;
     finishedRequests: number = 0;
     requestCount: number = 0;
+    searchModels: string[] = [
+      "files",
+      "participants",
+      "annotations"
+    ];
 
     /* @ngInject */
     constructor(private $rootScope: ngApp.IRootScope,
@@ -59,22 +65,32 @@ module ngApp.core.services {
       this.$rootScope.pageTitle = formattedTitle;
     }
 
-    xhrSent() {
+    xhrSent(model: string) {
       if (!this.activeRequests) {
         this.activeRequests = true;
         this.ngProgressLite.start();
+        if (this.searchModels.indexOf(model) !== -1) {
+          this.setSearchModelState(false);
+        }
       }
       this.requestCount++;
     }
 
-    xhrDone() {
+    xhrDone(model: string) {
       this.finishedRequests++;
       if (this.finishedRequests === this.requestCount) {
         this.activeRequests = false;
         this.finishedRequests = 0;
         this.requestCount = 0;
         this.ngProgressLite.done();
+        if (this.searchModels.indexOf(model) !== -1) {
+          this.setSearchModelState(true);
+        }
       }
+    }
+
+    setSearchModelState(state: boolean): void {
+      this.$rootScope.modelLoaded = state;
     }
 
   }

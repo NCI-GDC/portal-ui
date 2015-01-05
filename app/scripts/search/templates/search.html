@@ -11,6 +11,10 @@
       </accordion>
     </div>
     <div class="col-lg-9 col-md-8">
+      <div data-ng-if="!modelLoaded" class="app-loading table-loader">
+        <i class="fa fa-spinner fa-spin fa-5x"></i>
+      </div>
+
       <div class="alert alert-info clearfix">
         <a class="btn btn-primary pull-right" data-translate data-advanced-query>
           <i class="fa fa-gears"></i> <span data-translate>Advanced</span>
@@ -39,9 +43,6 @@
       </ul>
       <div class="pane-section"
            data-ng-show="sc.State.tabs.participants.active">
-        <h2 data-ng-if="!sc.participants">
-          <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading participants...</span>
-        </h2>
 
         <h2 data-ng-if="sc.participants.hits.length === 0" data-translate>
           No participants found using those filters.
@@ -52,9 +53,6 @@
       </div>
       <div class="pane-section"
            data-ng-show="sc.State.tabs.files.active">
-        <h2 data-ng-if="!sc.files">
-          <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading files...</span>
-        </h2>
 
         <h2 data-ng-if="sc.files.hits.length === 0" data-translate>
           No files found using those filters.

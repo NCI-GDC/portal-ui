@@ -1,6 +1,10 @@
 <div class="container-fluid full-page">
   <div class="row search-panel">
     <div class="col-lg-12">
+      <div data-ng-if="!modelLoaded" class="app-loading table-loader">
+        <i class="fa fa-spinner fa-spin fa-5x"></i>
+      </div>
+
       <search-bar></search-bar>
 
       <ul class="nav nav-tabs" style="margin-bottom: 20px">
@@ -17,9 +21,6 @@
       </ul>
       <div class="pane-section"
            data-ng-show="qc.QState.tabs.participants.active">
-        <h2 data-ng-if="!qc.participants">
-          <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading participants...</span>
-        </h2>
 
         <h2 data-ng-if="qc.participants.hits.length === 0" data-translate>
           No participants found using those filters.
@@ -30,9 +31,6 @@
       </div>
       <div class="pane-section"
            data-ng-show="qc.QState.tabs.files.active">
-        <h2 data-ng-if="!qc.files">
-          <i class="fa fa-spinner fa-spin"></i> <span data-translate>Loading files...</span>
-        </h2>
 
         <h2 data-ng-if="qc.files.hits.length === 0" data-translate>
           No files found using those filters.

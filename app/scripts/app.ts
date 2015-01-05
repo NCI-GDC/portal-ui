@@ -44,14 +44,14 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
     // TODO more than just 404
     //$state.go("404", {}, {inherit: true});
   });
-  Restangular.addRequestInterceptor((element) => {
+  Restangular.addRequestInterceptor((element, operation: string, model: string) => {
     // Ajax
-    CoreService.xhrSent();
+    CoreService.xhrSent(model);
     return element;
   });
-  Restangular.addResponseInterceptor((data, operation, what, url, response, deferred) => {
+  Restangular.addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
     // Ajax
-    CoreService.xhrDone();
+    CoreService.xhrDone(model);
     return deferred.resolve(data);
   });
 

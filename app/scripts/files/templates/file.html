@@ -40,21 +40,21 @@
                 <span data-ng-if="!fc.isInCart()" data-translate>Add to Cart</span>
               </button>
               <div class="btn-group" data-dropdown>
-                <button type="button" class="btn btn-primary">
+                <a type="button" class="btn btn-primary" data-ng-href="{{ makeDownloadLink([fc.file.file_uuid]) }}">
                   <i class="fa fa-cloud-download"></i> Download
-                </button>
+                </a>
                 <button type="button" class="btn btn-primary dropdown-toggle">
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li role="listitem" aria-label="{{ 'Download File' | translate }}">
-                    <a href="#"><i class="fa fa-download fa-stack"></i> Download File</a>
+                    <a data-ng-href="{{ makeDownloadLink([fc.file.file_uuid]) }}"><i class="fa fa-download fa-stack"></i> Download file with metadata</a>
                   </li>
                   <li role="listitem" aria-label="{{ 'Download URL' | translate }}">
-                    <a href="#"><i class="fa fa-file-text-o fa-stack"></i> Download URL</a>
+                    <a data-ng-href="{{ makeDownloadLink([fc.file.file_uuid]) }}"><i class="fa fa-file-text-o fa-stack"></i> Download file</a>
                   </li>
                   <li role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                    <a href="#"><i class="fa fa-file-code-o fa-stack"></i> Download Metadata Files</a>
+                    <a data-ng-href="{{ makeDownloadLink([fc.file.file_uuid]) }}"><i class="fa fa-file-code-o fa-stack"></i> Download metadata</a>
                   </li>
                 </ul>
               </div>

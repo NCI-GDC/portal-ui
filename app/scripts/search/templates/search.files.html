@@ -70,21 +70,21 @@
           <ul class="dropdown-menu" role="menu">
             <li role="listitem"
                 aria-label="{{ 'Download File' | translate }}">
-              <a href="">
+              <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
                 <i class="fa-stack fa fa-cloud-download fa-stack "></i>
                 <span data-translate>Download</span>
               </a>
             </li>
             <li role="listitem"
                 aria-label="{{ 'Download File' | translate }}">
-              <a href="">
+              <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
                 <i class="fa-stack fa fa-download fa-stack "></i>
                 <span data-translate>Download File</span>
               </a>
             </li>
             <li role="listitem"
                 aria-label="{{ 'Download Metadata' | translate }}">
-              <a>
+              <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
                 <i class="fa fa-download fa-stack "></i>
                 <span data-translate>Download Metadata</span>
               </a>

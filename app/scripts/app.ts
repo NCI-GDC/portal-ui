@@ -12,6 +12,7 @@ declare module ngApp {
     loaded: boolean;
     config: IGDCConfig;
     makeFilter(fields: { name: string; value: string }[]): string;
+    makeDownloadLink(ids: string[]): string;
   }
 }
 

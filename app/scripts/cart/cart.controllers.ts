@@ -17,6 +17,7 @@ module ngApp.cart.controllers {
     deselectAll(): void;
     all(): boolean;
     isUserProject(file: IFile): boolean;
+    getFileIds(): string[];
   }
 
   class CartController implements ICartController {
@@ -47,6 +48,9 @@ module ngApp.cart.controllers {
       }, 0);
     }
 
+    getFileIds(): string[] {
+      return _.pluck(this.files, "file_uuid");
+    }
 
     getSelectedSize(): number {
       return _.reduce(this.selected(), function (sum: number, hit: IFile) {

@@ -10,6 +10,7 @@ declare module ngApp {
   export interface IRootScope extends ng.IScope {
     pageTitle: string;
     loaded: boolean;
+    modelLoaded: boolean;
     config: IGDCConfig;
     makeFilter(fields: { name: string; value: string }[]): string;
     makeDownloadLink(ids: string[]): string;

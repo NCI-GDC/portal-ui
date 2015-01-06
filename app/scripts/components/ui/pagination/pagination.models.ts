@@ -6,7 +6,6 @@ module ngApp.components.ui.pagination.models {
     from: number;
     page: number;
     pages: number;
-    sort: string;
-    order: string;
+    sort: any;
   }
 }

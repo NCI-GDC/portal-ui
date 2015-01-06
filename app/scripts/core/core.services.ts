@@ -5,7 +5,7 @@ module ngApp.core.services {
     setLoadedState(state: boolean): void;
     setSearchModelState(state: boolean): void;
     xhrSent(model: string): void;
-    xhrDone(model: string): void;
+    xhrDone(model?: string): void;
     activeRequests: boolean;
     finishedRequests: number;
     requestCount: number;
@@ -76,7 +76,7 @@ module ngApp.core.services {
       this.requestCount++;
     }
 
-    xhrDone(model: string) {
+    xhrDone(model?: string) {
       this.finishedRequests++;
       if (this.finishedRequests === this.requestCount) {
         this.activeRequests = false;

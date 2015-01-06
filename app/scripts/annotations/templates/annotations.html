@@ -44,7 +44,13 @@
       <div class="panel panel-default">
 
         <div class="panel-heading">
-          <h3 class="panel-title">Annotations ({{asc.annotations.pagination.total}})</h3>
+          <h3 class="panel-title table-heading">
+            <span data-translate>Annotations</span> ({{asc.annotations.pagination.total}})
+            <div class="pull-right">
+              <sort-table data-sort-columns="asc.sortColumns"
+                          data-paging="asc.annotations.pagination" data-page="annotations"></sort-table>
+            </div>
+          </h3>
         </div>
         <div class="table-responsive">
           <table id="annotations-table" class="table table-striped table-hover table-condensed table-bordered">

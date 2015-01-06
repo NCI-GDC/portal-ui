@@ -1,7 +1,13 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Files</h3>
+    <h3 class="panel-title table-heading">
+      <span data-translate>Files</span>
+      <div class="pull-right">
+        <sort-table data-sort-columns="sc.fileSortColumns"
+                    data-paging="sc.files.pagination" data-page="files"></sort-table>
+      </div>
+    </h3>
   </div>
   <table id="file-table" class="table table-striped table-hover table-condensed table-bordered">
     <thead>
@@ -72,7 +78,7 @@
             <li role="listitem"
                 aria-label="{{ 'Download File' | translate }}">
               <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
-                <i class="fa-stack fa fa-cloud-download fa-stack "></i>
+                <i class="fa-stack fa fa-cloud-download fa-stack"></i>
                 <span data-translate>Download</span>
               </a>
             </li>
@@ -128,12 +134,12 @@
       </td>
       <td>{{ ::file.file_extension }}</td>
       <td class="text-right">
-        <span ng-if="::file.participants.length == 1"> 
+        <span data-ng-if="::file.participants.length == 1"> 
           <a data-ui-sref="participant({'participantId':file.participants[0].bcr_patient_uuid})">
-            {{file.participants[0].bcr_patient_uuid}} 
+            {{ file.participants[0].bcr_patient_uuid | ellipsicate: 25 }} 
           </a>
         </span>
-        <span ng-if="::file.participants.length > 1">
+        <span data-ng-if="::file.participants.length > 1">
           <a data-ui-sref="search.participants({ 'filters': makeFilter([
               {
                 name: 'files.file_uuid', value: file.file_uuid

@@ -1,0 +1,30 @@
+<div class="btn-group table-sort" data-dropdown>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    <span data-translate>Sort Table</span>
+    <span class="caret"></span>
+  </button>
+
+  <ul class="dropdown-menu sort-menu pull-right" role="menu">
+    <li data-ng-repeat="item in sortColumns">
+      <div class="sort-item">
+        <input type="checkbox" aria-label="Sort data by {{ item.name | translate }}"
+               data-ng-model="item.sort"
+               data-ng-change="tsc.updateSorting()" name="{{ page }}-sort-column">
+        <span>{{ item.name | translate }}</span>
+        <span data-ng-if="item.sort">
+          <i class="fa fa-sort-alpha-asc"></i>
+          <input type="radio" aria-label="Sort Data Ascending" value="asc"
+                 data-ng-model="item.order" data-ng-change="tsc.updateSorting()"
+                 data-ng-checked="!item.order || item.order === 'asc'"
+                 name="{{ item.key }}-sort-order">
+        </span>
+        <span data-ng-if="item.sort">
+          <i class="fa fa-sort-alpha-desc"></i>
+          <input type="radio" aria-label="Sort Data Descending" value="desc"
+                 data-ng-model="item.order" data-ng-change="tsc.updateSorting()"
+                 name="{{ item.key }}-sort-order">
+        </span>
+      </div>
+    </li>
+  </ul>
+</div>

@@ -26,9 +26,24 @@ module ngApp.components.tables.directives {
       }
     };
   }
+  
+  function SortTable(): ng.IDirective {
+    return {
+      restrict: "EA",
+      scope: {
+        sortColumns: "=",
+        paging: "=",
+        page: "@"
+      },
+      replace: true,
+      templateUrl: "components/tables/templates/sort-table.html",
+      controller: "TableSortController as tsc"
+    }
+  }
 
-  angular.module("components.tables.directives", [])
+  angular.module("tables.directives", ["tables.controllers"])
       .directive("selectColumns", SelectColumns)
-      .directive("exportTable", ExportTable);
+      .directive("exportTable", ExportTable)
+      .directive("sortTable", SortTable);
 }
 

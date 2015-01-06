@@ -30,7 +30,7 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Summary</h3>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
+          <table id="summary-table" class="table table-striped table-hover table-condensed table-bordered table-vertical">
             <tbody>
             <tr>
               <th scope="row" data-translate>Code</th>
@@ -94,7 +94,7 @@
           <div class="panel-body" data-ng-if="!prc.project._summary._experimental_data">
             <h4 class="list-group-item-heading" data-translate>No experimental strategies were found.</h4>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project._summary._experimental_data">
+          <table id="experimental-strategy-table" class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project._summary._experimental_data">
             <thead>
             <tr>
               <th scope="col" data-translate>Analysis</th>
@@ -144,7 +144,7 @@
           <div class="panel-body" data-ng-if="!prc.project._summary._analyzed_data">
             <h4 class="list-group-item-heading" data-translate>No available data.</h4>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project._summary._analyzed_data">
+          <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project._summary._analyzed_data">
             <thead>
             <tr>
               <th scope="col" data-translate>Data Type</th>
@@ -203,7 +203,7 @@
             <h4 class="list-group-item-heading">No reports found for {{prc.project.project_code}}</h4>
           </div>
           <div class="table-responsive" data-ng-if="prc.project.reports.length">
-            <table class="table table-striped table-hover table-condensed table-bordered">
+            <table id="reports-table" class="table table-striped table-hover table-condensed table-bordered">
               <thead>
               <tr>
                 <th scope="col" data-translate>ID</th>

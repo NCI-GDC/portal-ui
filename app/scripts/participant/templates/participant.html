@@ -35,7 +35,7 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Summary</h3>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
+          <table id="summary-table" class="table table-striped table-hover table-condensed table-bordered table-vertical">
             <tbody>
             <tr>
               <th scope="row" data-translate>Uuid</th>
@@ -87,7 +87,7 @@
           <div class="panel-body" data-ng-if="!pc.participant.experiments.length">
             <h4 class="list-group-item-heading" data-translate>No experimental strategies were found.</h4>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.experiments.length">
+          <table id="experimental-strategy-table" class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.experiments.length">
             <thead>
             <tr>
               <th scope="col" data-translate>Analysis</th>
@@ -121,7 +121,7 @@
           <div class="panel-body" data-ng-if="!pc.participant.data.length">
             <h4 class="list-group-item-heading" data-translate>No available data.</h4>
           </div>
-          <table class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.data.length">
+          <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.data.length">
             <tbody>
             <tr data-ng-repeat="item in pc.participant.data">
               <th scope="row">{{ item.name }}</th>
@@ -144,7 +144,7 @@
             <h3 class="panel-title" data-translate>Clinical</h3>
           </div>
 
-          <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
+          <table id="clinical-table" class="table table-striped table-hover table-condensed table-bordered table-vertical">
             <tbody>
             <tr>
               <th scope="row" data-translate>Gender</th>
@@ -174,7 +174,7 @@
             <h4 class="list-group-item-heading">No annotations were found.</h4>
           </div>
           <div class="table-responsive" data-ng-if="pc.participant.annotations.length">
-            <table class="table table-striped table-hover table-condensed table-bordered">
+            <table id="annotation-table" class="table table-striped table-hover table-condensed table-bordered">
               <thead>
               <tr>
                 <th scope="col" data-translate>ID</th>

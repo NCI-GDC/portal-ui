@@ -108,6 +108,7 @@ module ngApp.search.controllers {
           "files.file_uuid",
           "files.file_name",
           "files.file_size",
+          "tumor_tissue_site",
           "files.data_type",
           "files.data_access",
           "files.archive.revision",
@@ -125,7 +126,27 @@ module ngApp.search.controllers {
           "tumor_tissue_site",
           "vital_status"
         ]
-      }).then((data) => this.participants = data);
+      }).then((data) => {
+        var participants = data.hits.map((participant)=>{
+
+          participant.filesByType = participant.files.reduce((a,b)=>{
+
+            var type = b.data_type;
+            if (a[type]) {
+              a[type] += 1;
+            } else {
+              a[type] = 1;
+            }
+
+            return a;
+          },{});
+
+          return participant;
+
+        });
+
+        this.participants = data;
+      });
     }
 
     // TODO Load data lazily based on active tab

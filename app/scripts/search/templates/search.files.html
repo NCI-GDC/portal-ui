@@ -128,7 +128,17 @@
       </td>
       <td>{{ ::file.file_extension }}</td>
       <td class="text-right">
-        {{ ::file.participants.length | number:0 }}
+        <span ng-if="::file.participants.length == 1"> 
+          <a data-ui-sref="participant({'participantId':file.participants[0].bcr_patient_uuid})">
+            {{file.participants[0].bcr_patient_uuid}} 
+          </a>
+        </span>
+        <span ng-if="::file.participants.length > 1">
+          <a data-ui-sref="search.participants({ 'filters': makeFilter([
+              {
+                name: 'files.file_uuid', value: file.file_uuid
+              }
+            ])})"> file.participants.length</a> </span>
       </td>
       <td class="text-right">{{ ::file.annotations.length | number:0 }}</td>
       <td>

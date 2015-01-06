@@ -16,7 +16,7 @@ from subprocess import call
 valid_commit_types = ['feat', 'fix', 'docs', 'style', 'refactor', 'test', 'chore']
 help_address = 'https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#'
 
-if os.environ.get('EDITOR') != 'none':
+if os.environ.get('EDITOR') is not None:
     editor = os.environ['EDITOR']
 else:
     editor = "vim"

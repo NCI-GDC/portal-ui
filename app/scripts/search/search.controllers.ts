@@ -127,8 +127,9 @@ module ngApp.search.controllers {
           "vital_status"
         ]
       }).then((data) => {
+        
+        // TODO - remove when aggregations done on server
         var participants = data.hits.map((participant)=>{
-
           participant.filesByType = participant.files.reduce((a,b)=>{
 
             var type = b.data_type;
@@ -140,7 +141,6 @@ module ngApp.search.controllers {
 
             return a;
           },{});
-
           return participant;
 
         });

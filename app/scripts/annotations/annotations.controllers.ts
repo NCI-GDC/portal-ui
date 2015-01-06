@@ -19,6 +19,71 @@ module ngApp.annotations.controllers {
           this.refresh();
         }
       });
+
+      $scope.annotationsColumns = [
+      {
+        name:"ID",
+        id:"id",
+        enabled: true
+      },
+      {
+        name:"Participant ID",
+        id:"participant_id",
+        enabled: true
+      },
+      {
+        name:"Project",
+        id:"project",
+        enabled: true
+      },
+      {
+        name:"Item Type",
+        id:"item_type",
+        enabled: true
+      },
+      {
+        name:"Item UUID",
+        id:"item_UUID",
+        enabled: true
+      },
+      {
+        name:"Item Barcode",
+        id:"item_barcode",
+        enabled: true
+      },
+      {
+        name:"Classification",
+        id:"classification",
+        enabled: true
+      },
+      {
+        name:"Category",
+        id:"category",
+        enabled: true
+      },
+      {
+        name:"Created Date",
+        id:"created_date",
+        enabled: true
+      },
+      {
+        name:"Annotator",
+        id:"annotator",
+        enabled: true
+      },
+      {
+        name:"Status",
+        id:"status",
+        enabled: true
+      }
+      ];
+      
+
+      $scope.annotationsColumnIsEnabled = function(columnId) {
+        return CoreService.arrayHasEnabledColumn($scope.annotationsColumns,columnId);
+      }
+
+
       this.refresh();
     }
 

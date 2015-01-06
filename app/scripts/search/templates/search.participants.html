@@ -1,24 +1,26 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Participants</h3>
+    <h3 class="panel-title">Participants &nbsp;
+      <div table-filters-dropdown filters='searchParticipantColumns'></div>
+    </h3>
   </div>
   <table id="participant-table" class="table table-striped table-hover table-condensed table-bordered">
     <thead>
     <tr>
       <th scope="col" rowspan=2 ></th>
-      <th scope="col" rowspan=2 data-translate>Participant ID</th>
-      <th scope="col" rowspan=2 data-translate>Project</th>
-      <th scope="col" rowspan=2 data-translate>Primary Site</th>
-      <th scope="col" rowspan=2  data-translate>Disease Type</th>
-      <th scope="col" rowspan=2  data-translate>Gender</th>
-      <th scope="col" rowspan=2 data-translate>Tumor Stage</th>
-      <th scope="col" rowspan=2 data-translate>Files</th>
-      <th scope="col" rowspan=1 colspan='6' data-translate class="text-center">Available Data Files Per Type</th>
-      <th scope="col" rowspan=2 data-translate>Annotations</th>
+      <th ng-if="participantColumnIsEnabled('participant_id')" scope="col" rowspan=2 data-translate>Participant ID</th>
+      <th ng-if="participantColumnIsEnabled('project')"  scope="col" rowspan=2 data-translate>Project</th>
+      <th ng-if="participantColumnIsEnabled('primary_site')" scope="col" rowspan=2 data-translate>Primary Site</th>
+      <th ng-if="participantColumnIsEnabled('disease_type')" scope="col" rowspan=2  data-translate>Disease Type</th>
+      <th ng-if="participantColumnIsEnabled('gender')" scope="col" rowspan=2  data-translate>Gender</th>
+      <th ng-if="participantColumnIsEnabled('tumor_stage')" scope="col" rowspan=2 data-translate>Tumor Stage</th>
+      <th ng-if="participantColumnIsEnabled('files')" scope="col" rowspan=2 data-translate>Files</th>
+      <th ng-if="participantColumnIsEnabled('available_data_files')" scope="col" rowspan=1 colspan='6' data-translate class="text-center">Available Data Files Per Type</th>
+      <th ng-if="participantColumnIsEnabled('annotations')" scope="col" rowspan=2 data-translate>Annotations</th>
     </tr>
 
-    <tr>
+    <tr ng-if="participantColumnIsEnabled('available_data_files')" >
       <th scope="col" data-translate>Clinical</th>
       <th scope="col" data-translate>SNV</th>
       <th scope="col" data-translate>mRNA</th>
@@ -56,15 +58,15 @@
           </ul>
         </div>
       </td>
-      <td><a data-ui-sref="participant({ participantId : p.bcr_patient_uuid })">{{ ::p.bcr_patient_barcode }}</a></td>
-      <td>tbc <a data-ui-sref="project({ projectId : p.project.id })">{{ ::p.project.name }}</a></td>
-       <td>{{ ::p.tumor_tissue_site }}</td>
-      <td>{{ ::p.admin.disease_code }}</td>
+      <td ng-if="participantColumnIsEnabled('participant_id')"><a data-ui-sref="participant({ participantId : p.bcr_patient_uuid })">{{ ::p.bcr_patient_barcode }}</a></td>
+      <td ng-if="participantColumnIsEnabled('project')">tbc <a data-ui-sref="project({ projectId : p.project.id })">{{ ::p.project.name }}</a></td>
+       <td ng-if="participantColumnIsEnabled('primary_site')" >{{ ::p.tumor_tissue_site }}</td>
+      <td ng-if="participantColumnIsEnabled('disease_type')">{{ ::p.admin.disease_code }}</td>
      
-      <td>{{ ::p.gender }}</td>
+      <td ng-if="participantColumnIsEnabled('gender')">{{ ::p.gender }}</td>
 
-      <td>{{ ::p.person_neoplasm_cancer_status }}</td>
-      <td class="text-right">
+      <td ng-if="participantColumnIsEnabled('tumor_stage')">{{ ::p.person_neoplasm_cancer_status }}</td>
+      <td ng-if="participantColumnIsEnabled('files')" class="text-right">
         <a data-ui-sref="search.files({ 'filters': makeFilter([
       {
         name: 'participant_id', value: p.bcr_patient_uuid
@@ -73,7 +75,7 @@
           tbc {{ ::p.files.length | number:0 }}
         </a>
       </td>
-      <td>
+      <td ng-if="participantColumnIsEnabled('available_data_files')" >
         <a data-ui-sref="search.files({ 'filters': makeFilter([
         {
             name: 'participants.participant_id', value: p.bcr_patient_uuid
@@ -82,7 +84,7 @@
           {{ ::p.filesByType['Clinical']}}
        </a>
       </td>
-      <td>
+      <td ng-if="participantColumnIsEnabled('available_data_files')" >
         <a data-ui-sref="search.files({ 'filters': makeFilter([
         {
             name: 'participants.participant_id', value: p.bcr_patient_uuid
@@ -91,7 +93,7 @@
         {{ ::p.filesByType['SNV']}}
        </a>
       </td>
-      <td>
+      <td ng-if="participantColumnIsEnabled('available_data_files')" >
         <a data-ui-sref="search.files({ 'filters': makeFilter([
         {
             name: 'participants.participant_id', value: p.bcr_patient_uuid
@@ -101,7 +103,7 @@
        </a>
 
       </td>
-      <td>
+      <td ng-if="participantColumnIsEnabled('available_data_files')" >
         <a data-ui-sref="search.files({ 'filters': makeFilter([
         {
             name: 'participants.participant_id', value: p.bcr_patient_uuid
@@ -110,7 +112,7 @@
         {{ ::p.filesByType['miRNA']}}
        </a>
       </td>
-      <td>
+      <td ng-if="participantColumnIsEnabled('available_data_files')" >
         <a data-ui-sref="search.files({ 'filters': makeFilter([
         {
             name: 'participants.participant_id', value: p.bcr_patient_uuid
@@ -118,7 +120,7 @@
         ])})">
         {{ ::p.filesByType['CNV']}}
        </a>
-       <td>
+       <td ng-if="participantColumnIsEnabled('available_data_files')" >
         <a data-ui-sref="search.files({ 'filters': makeFilter([
         {
             name: 'participants.participant_id', value: p.bcr_patient_uuid
@@ -128,7 +130,7 @@
        </a>
       </td>
       </td>
-      <td class="text-right">
+      <td ng-if="participantColumnIsEnabled('annotations')" class="text-right" >
         <a data-ui-sref="annotations({ participantId: p.id })">
           tbc {{ ::p.annotations.length | number:0 }}
         </a>

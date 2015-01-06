@@ -1,7 +1,10 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Files</h3>
+    <h3 class="panel-title">Files &nbsp;
+
+    <div table-filters-dropdown filters='searchFileColumns'></div>
+      </h3>
   </div>
   <table id="file-table" class="table table-striped table-hover table-condensed table-bordered">
     <thead>
@@ -39,17 +42,17 @@
           data-translate>
         My Projects
       </th>
-      <th scope="col" class="text-center" data-translate>Access</th>
-      <th scope="col" class="text-center" data-translate>File Name</th>
-      <th scope="col" class="text-center" data-translate>File type</th>
-      <th scope="col" class="text-center" data-translate>Participants</th>
-      <th scope="col" class="text-center" data-translate>Annotations</th>
-      <th scope="col" class="text-center" data-translate>Project</th>
-      <th scope="col" class="text-center" data-translate>Data Category</th>
-      <th scope="col" class="text-center" data-translate>Status</th>
-      <th scope="col" class="text-center" data-translate>Size</th>
-      <th scope="col" class="text-center" data-translate>Revision</th>
-      <th scope="col" class="text-center" data-translate>Update date</th>
+      <th ng-if="fileColumnIsEnabled('access')" scope="col" class="text-center" data-translate>Access</th>
+      <th ng-if="fileColumnIsEnabled('file_name')" scope="col" class="text-center" data-translate>File Name</th>
+      <th ng-if="fileColumnIsEnabled('file_type')"  scope="col" class="text-center" data-translate>File type</th>
+      <th ng-if="fileColumnIsEnabled('participants')"  scope="col" class="text-center" data-translate>Participants</th>
+      <th ng-if="fileColumnIsEnabled('annotations')"  scope="col" class="text-center" data-translate>Annotations</th>
+      <th ng-if="fileColumnIsEnabled('project')"  scope="col" class="text-center" data-translate>Project</th>
+      <th ng-if="fileColumnIsEnabled('data_category')"  scope="col" class="text-center" data-translate>Data Category</th>
+      <th ng-if="fileColumnIsEnabled('status')" scope="col" class="text-center" data-translate>Status</th>
+      <th ng-if="fileColumnIsEnabled('size')"  scope="col" class="text-center" data-translate>Size</th>
+      <th ng-if="fileColumnIsEnabled('revision')"  scope="col" class="text-center" data-translate>Revision</th>
+      <th ng-if="fileColumnIsEnabled('update_date')"  scope="col" class="text-center" data-translate>Update date</th>
     </tr>
     </thead>
     <tbody>
@@ -117,17 +120,18 @@
         <i data-ng-if="sc.isUserProject(file)" class="fa fa-check fa-lg"></i>
         <i data-ng-if="!sc.isUserProject(file)" class="fa fa-close fa-lg"></i>
       </td>
-      <td class="text-center">
+      <td class="text-center" ng-if="fileColumnIsEnabled('access')">
         <i data-ng-if="file.data_access=='protected'" class="fa fa-lock fa-lg"></i>
         <i data-ng-if="file.data_access!='protected'" class="fa fa-unlock-alt fa-lg"></i>
       </td>
-      <td>
+      <td ng-if="fileColumnIsEnabled('file_name')" >
         <a data-ui-sref="file({ fileId: file.file_uuid })">
           {{ ::file.file_name | ellipsicate }}
         </a>
       </td>
-      <td>{{ ::file.file_extension }}</td>
-      <td class="text-right">
+
+      <td ng-if="fileColumnIsEnabled('file_type')">{{ ::file.file_extension }}</td>
+      <td ng-if="fileColumnIsEnabled('participants')" class="text-right">
         <span ng-if="::file.participants.length == 1"> 
           <a data-ui-sref="participant({'participantId':file.participants[0].bcr_patient_uuid})">
             {{file.participants[0].bcr_patient_uuid}} 
@@ -140,17 +144,17 @@
               }
             ])})"> file.participants.length</a> </span>
       </td>
-      <td class="text-right">{{ ::file.annotations.length | number:0 }}</td>
-      <td>
+      <td ng-if="fileColumnIsEnabled('annotations')"  class="text-right">{{ ::file.annotations.length | number:0 }}</td>
+      <td ng-if="fileColumnIsEnabled('project')">
         <a data-ui-sref="project({ projectId: file.project.id })">
           {{ ::file.archive.disease_code }}
         </a>
       </td>
-      <td>{{ ::file.data_type }}</td>
-      <td>tbc {{ ::file.state }}</td>
-      <td>{{ file.file_size | size }}</td>
-      <td>{{ ::file.archive.revision }}</td>
-      <td>{{ file.modified | date }}</td>
+      <td ng-if="fileColumnIsEnabled('data_category')">{{ ::file.data_type }}</td>
+      <td ng-if="fileColumnIsEnabled('status')" >tbc {{ ::file.state }}</td>
+      <td ng-if="fileColumnIsEnabled('size')" >{{ file.file_size | size }}</td>
+      <td ng-if="fileColumnIsEnabled('revision')" >{{ ::file.archive.revision }}</td>
+      <td ng-if="fileColumnIsEnabled('update_date')" >{{ file.modified | date }}</td>
     </tr>
     </tbody>
   </table>

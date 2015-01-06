@@ -22,6 +22,48 @@ module ngApp.projects.controllers {
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });
+
+      $scope.projectColumns = [
+      {
+        name:"Code",
+        id:"code",
+        enabled: true
+      },
+      {
+        name:"Disease Type",
+        id:"disease_type",
+        enabled: true
+      },
+      {
+        name:"Program",
+        id:"program",
+        enabled: true
+      },
+      {
+        name:"Participants",
+        id:"participants",
+        enabled: true
+      },
+      {
+        name:"Available Data Files per Data Type",
+        id:"available_data_files",
+        enabled: true
+      },
+      {
+        name:"Status",
+        id:"status",
+        enabled: true
+      },
+      {
+        name:"Last Update",
+        id:"last_update",
+        enabled: true
+      }
+      ];
+
+      $scope.projectColumnIsEnabled = function(columnId) {
+        return CoreService.arrayHasEnabledColumn($scope.projectColumns,columnId);
+      }
       this.refresh();
     }
 

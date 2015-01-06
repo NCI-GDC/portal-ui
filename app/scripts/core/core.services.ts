@@ -93,6 +93,14 @@ module ngApp.core.services {
       this.$rootScope.modelLoaded = state;
     }
 
+
+    arrayHasEnabledColumn (array,columnId) {
+        var column = _.find(array,function(_column){
+          return _column.id === columnId;
+        });
+        return column && column.enabled;
+      }
+
   }
 
   angular

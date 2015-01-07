@@ -1,14 +1,16 @@
-<div class="container-fluid full-page">
+<div class="container-fluid full-page search">
   <div class="row search-panel">
     <div class="col-lg-3 col-md-4 facets-sidebar">
-      <accordion>
-        <accordion-group heading="Files" is-open="false">
-          <div data-ng-include="'search/templates/search.files.facets.html'" role="form"></div>
-        </accordion-group>
-        <accordion-group heading="Participants" is-open="false">
-          <div data-ng-include="'search/templates/search.participants.facets.html'" role="form"></div>
-        </accordion-group>
-      </accordion>
+      <tabset>
+        <tab heading="{{ 'Files' | translate }}" active="true">
+          <div data-ng-include="'search/templates/search.files.facets.html'"
+               class="facet-section" role="form"></div>
+        </tab>
+        <tab heading="{{ 'Participants' | translate }}">
+          <div data-ng-include="'search/templates/search.participants.facets.html'"
+               class="facet-section"role="form"></div>
+        </tab>
+      </tabset>
     </div>
     <div class="col-lg-9 col-md-8">
       <div data-ng-if="!modelLoaded" class="app-loading table-loader">

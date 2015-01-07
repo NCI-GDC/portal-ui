@@ -1,8 +1,13 @@
 <div class="panel panel-default">
 
   <div class="panel-heading">
-    <h3 class="panel-title">Participants &nbsp;
-      <div table-filters-dropdown filters='searchParticipantColumns'></div>
+    <h3 class="panel-title table-heading">
+      <span data-translate>Participants</span>
+      <div class="pull-right">
+        <sort-table data-sort-columns="sc.participantSortColumns"
+                    data-paging="sc.participants.pagination" data-page="participants"></sort-table>
+        <div table-filters-dropdown filters='searchParticipantColumns'></div>
+      </div>
     </h3>
   </div>
   <table id="participant-table" class="table table-striped table-hover table-condensed table-bordered">

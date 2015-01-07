@@ -28,6 +28,38 @@ module ngApp.query.controllers {
     files : IFiles;
     participants: IParticipants;
     query: string = "";
+    fileSortColumns: any = [
+      {
+        key: "file_size",
+        name: "Size"
+      },
+      {
+        key: "file_name",
+        name: "File Name"
+      },
+      {
+        key: "file_extension",
+        name: "File Type"
+      },
+      {
+        key: "data_type",
+        name: "Data Category"
+      }
+    ];
+    participantSortColumns: any = [
+      {
+        key: "bcr_patient_barcode",
+        name: "Participant ID"
+      },
+      {
+        key: "gender",
+        name: "Gender"
+      },
+      {
+        key: "person_neoplasm_cancer_status",
+        name: "Tumor Stage"
+      }
+    ];
 
     /* @ngInject */
     constructor(private $scope: IQueryControllerScope,

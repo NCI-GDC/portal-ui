@@ -48,8 +48,13 @@ module ngApp.files.services {
       var defaults = {
         size: paging.size,
         from: paging.from,
+        sort: paging.sort,
         filters: this.LocationService.filters()
       };
+
+      if (!defaults.sort) {
+        delete defaults.sort;
+      }
 
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.admin.disease_code");
 

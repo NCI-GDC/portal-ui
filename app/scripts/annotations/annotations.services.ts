@@ -46,8 +46,13 @@ module ngApp.annotations.services {
       var defaults = {
         size: paging.size,
         from: paging.from,
+        sort: paging.sort,
         filters: this.LocationService.filters()
       };
+
+      if (!defaults.sort) {
+        delete defaults.sort;
+      }
 
       return this.ds.get("", angular.extend(defaults, params)).then((response): IAnnotations => {
         return response["data"];

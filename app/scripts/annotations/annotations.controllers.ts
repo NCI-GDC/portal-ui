@@ -6,10 +6,25 @@ module ngApp.annotations.controllers {
 
   export interface IAnnotationsController {
     annotations: IAnnotations;
+    sortColumns: any;
   }
 
   class AnnotationsController implements IAnnotationsController {
     annotations: IAnnotations;
+    sortColumns: any = [
+      {
+        key: "categoryName",
+        name: "Category"
+      },
+      {
+        key: "createdBy",
+        name: "Annotator"
+      },
+      {
+        key: "id",
+        name: "ID"
+      }
+    ];
 
     /* @ngInject */
     constructor(private $scope: ng.IScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService) {

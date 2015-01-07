@@ -30,7 +30,8 @@ module ngApp.components.ui.pagination.controllers {
 
       var obj = {
         from: current.from,
-        size: current.size
+        size: current.size,
+        sort: current.sort
       };
 
       pagination[this.$scope.page] = obj;

@@ -26,6 +26,20 @@ module ngApp.components.tables.directives {
       }
     };
   }
+  
+  function SortTable(): ng.IDirective {
+    return {
+      restrict: "EA",
+      scope: {
+        sortColumns: "=",
+        paging: "=",
+        page: "@"
+      },
+      replace: true,
+      templateUrl: "components/tables/templates/sort-table.html",
+      controller: "TableSortController as tsc"
+    }
+  }
 
   function TableFiltersDropdown(): ng.IDirective {
     return {
@@ -49,9 +63,11 @@ module ngApp.components.tables.directives {
     };
   }
 
-  angular.module("components.tables.directives", [])
+
+  angular.module("tables.directives", ["tables.controllers"])
       .directive("selectColumns", SelectColumns)
       .directive("exportTable", ExportTable)
-      .directive("tableFiltersDropdown", TableFiltersDropdown);
+      .directive("tableFiltersDropdown", TableFiltersDropdown)
+      .directive("sortTable", SortTable);
 }
 

@@ -6,6 +6,7 @@ module ngApp.core.services {
     setSearchModelState(state: boolean): void;
     xhrSent(model: string): void;
     xhrDone(model?: string): void;
+    arrayHasEnabledColumn(array:any[], id:string):boolean;
     activeRequests: boolean;
     finishedRequests: number;
     requestCount: number;
@@ -95,7 +96,7 @@ module ngApp.core.services {
 
 
     arrayHasEnabledColumn (array,columnId) {
-        var column = _.find(array,function(_column){
+        var column = _.find(array,function(_column:any){
           return _column.id === columnId;
         });
         return column && column.enabled;

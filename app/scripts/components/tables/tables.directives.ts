@@ -1,5 +1,10 @@
 module ngApp.components.tables.directives {
 
+
+  interface ITableDirectiveScope extends ng.IScope {
+     filtersRevealed:boolean;
+  }
+
   /* @ngInject */
   function SelectColumns(): ng.IDirective {
     return {
@@ -49,7 +54,7 @@ module ngApp.components.tables.directives {
       },
       replace: true,
       templateUrl: "components/tables/templates/table-filters-dropdown.html",
-      link: function ($scope: ng.IScope, elem) {
+      link: function ($scope: ITableDirectiveScope, elem) {
         $scope.filtersRevealed = false;
 
         $('body').on('click',function(e){

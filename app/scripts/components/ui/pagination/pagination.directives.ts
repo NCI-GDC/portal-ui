@@ -6,7 +6,8 @@ module ngApp.components.ui.pagination.directives {
       restrict: "E",
       scope: {
         page: "@",
-        paging: "="
+        paging: "=",
+        update: "="
       },
       templateUrl: "components/ui/pagination/templates/pagination.html",
       controller: "PagingController as pc"

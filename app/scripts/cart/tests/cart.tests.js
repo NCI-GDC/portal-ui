@@ -11,7 +11,12 @@ describe('Cart:', function () {
   }));
 
   describe('Controller:', function () {
-    it('should have files', inject(function ($rootScope, $controller) {
+    beforeEach(inject(function ($window) {
+      // Clear localStorage system to prevent oddities from tests.
+      $window.localStorage.setItem("gdc-cart-items", []);
+    }));
+
+    it('should have files', inject(function ($rootScope, $controller, CartService) {
       var scope = $rootScope.$new();
       // Which HTTP requests do we expect to occur, and how do we response?
       var files = [
@@ -26,6 +31,8 @@ describe('Cart:', function () {
           file_url: "urlB"
         }
       ];
+
+      CartService.addFiles(files);
 
       // Starting the controller
       var wc = $controller('CartController', {$scope: scope, files: files});

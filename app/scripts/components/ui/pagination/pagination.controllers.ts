@@ -10,6 +10,7 @@ module ngApp.components.ui.pagination.controllers {
   interface IPagingScope extends ng.IScope {
     page: string;
     paging: IPagination;
+    update: boolean;
   }
 
   class PagingController implements IPagingController {
@@ -36,7 +37,11 @@ module ngApp.components.ui.pagination.controllers {
 
       pagination[this.$scope.page] = obj;
 
-      this.LocationService.setPaging(pagination);
+      if (!this.$scope.update) {
+        return this.LocationService.setPaging(pagination);
+      }
+
+      this.$scope.$emit(this.$scope.page + "-paging-update", obj);
     }
   }
 

@@ -82,21 +82,24 @@ module ngApp.cart.services {
     }
 
     buildAddedMsg(addedAndAlreadyIn: Object): string {
-      console.log(addedAndAlreadyIn);
       var added = addedAndAlreadyIn["added"];
       var alreadyIn = addedAndAlreadyIn["alreadyIn"];
       var message = '<span>added ';
+
       if (added.length === 1) {
         message += 'file <b>' + added[0].file_name + '</b>';
       } else {
         message += '<b>' + added.length + '</b> files';
       }
+
       message += ' to the cart.';
-      if(alreadyIn.length > 0) {
+      if (alreadyIn.length > 0) {
         message += '<br /><b>' + alreadyIn.length + '</b> files already in cart, not added.';
       }
-      if(added.length !== 0)
+
+      if (added.length !== 0) {
         message += '<br /> <a ng-click="sc.undo()"><i class="fa fa-undo"></i> Undo</a>';
+      }
 
       return message + '</span>';
 

@@ -7,15 +7,14 @@ module ngApp.components.tables.directives {
 
   /* @ngInject */
   function SelectColumns(): ng.IDirective {
+
     return {
       restrict: "EA",
       scope: {
+        filters:"="
       },
       replace: true,
-      templateUrl: "components/tables/templates/select-columns.html",
-      link: function ($scope: ng.IScope) {
-        //TODO
-      }
+      templateUrl: "components/tables/templates/select-columns.html"
     };
   }
 
@@ -46,22 +45,12 @@ module ngApp.components.tables.directives {
     }
   }
 
-  function TableFiltersDropdown(): ng.IDirective {
-    return {
-      restrict: "EA",
-      scope: {
-        filters:"="
-      },
-      replace: true,
-      templateUrl: "components/tables/templates/table-filters-dropdown.html"
-    };
-  }
+
 
 
   angular.module("tables.directives", ["tables.controllers"])
       .directive("selectColumns", SelectColumns)
       .directive("exportTable", ExportTable)
-      .directive("tableFiltersDropdown", TableFiltersDropdown)
       .directive("sortTable", SortTable);
 }
 

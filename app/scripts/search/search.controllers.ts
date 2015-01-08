@@ -13,6 +13,7 @@ module ngApp.search.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
   import INotify = ng.cgNotify.INotify;
+  import ITableService = ngApp.components.tables.services.ITableService;
 
   export interface ISearchController {
     files: IFiles;
@@ -86,6 +87,7 @@ module ngApp.search.controllers {
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 public CoreService: ICoreService,
+                public TableService : ITableService,
                 private notify: any) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
@@ -208,11 +210,11 @@ module ngApp.search.controllers {
       ];
       
       $scope.fileColumnIsEnabled = function(columnId) {
-        return CoreService.arrayHasEnabledColumn($scope.searchFileColumns,columnId);
+        return TableService.objectWithMatchingIdInArrayIsEnabled($scope.searchFileColumns,columnId);
       }
 
       $scope.participantColumnIsEnabled = function(columnId) {
-        return CoreService.arrayHasEnabledColumn($scope.searchParticipantColumns,columnId);
+        return TableService.objectWithMatchingIdInArrayIsEnabled($scope.searchParticipantColumns,columnId);
       }
 
       this.refresh();

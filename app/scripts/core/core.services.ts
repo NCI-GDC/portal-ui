@@ -6,7 +6,6 @@ module ngApp.core.services {
     setSearchModelState(state: boolean): void;
     xhrSent(model: string): void;
     xhrDone(model?: string): void;
-    arrayHasEnabledColumn(array:any[], id:string):Boolean;
     activeRequests: boolean;
     finishedRequests: number;
     requestCount: number;
@@ -93,14 +92,6 @@ module ngApp.core.services {
     setSearchModelState(state: boolean): void {
       this.$rootScope.modelLoaded = state;
     }
-
-
-    arrayHasEnabledColumn (array:any[], id:string) : Boolean {
-        var column = _.find(array,function(_column:any){
-          return _column.id === id;
-        });
-        return column && column.enabled;
-      }
 
   }
 

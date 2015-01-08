@@ -3,6 +3,7 @@ module ngApp.annotations.controllers {
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
+  import ITableService = ngApp.components.tables.services.ITableService;
 
   export interface IAnnotationsController {
     annotations: IAnnotations;
@@ -32,7 +33,7 @@ module ngApp.annotations.controllers {
     ];
 
     /* @ngInject */
-    constructor(private $scope: IAnnotationsScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService) {
+    constructor(private $scope: IAnnotationsScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService, TableService : ITableService) {
       CoreService.setPageTitle("Annotations");
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
         if (next.indexOf("annotations") !== -1) {
@@ -99,7 +100,7 @@ module ngApp.annotations.controllers {
       ];
 
       $scope.annotationsColumnIsEnabled = function(columnId:string):Boolean {
-        return CoreService.arrayHasEnabledColumn($scope.annotationsColumns,columnId);
+        return TableService.objectWithMatchingIdInArrayIsEnabled($scope.annotationsColumns,columnId);
       };
 
 

@@ -19,7 +19,7 @@ module ngApp.projects.controllers {
     projects: IProjects;
 
     /* @ngInject */
-    constructor(private $scope: IProjectsScope, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
+    constructor(private $scope: IProjectsScope, private ProjectsService: IProjectsService, private CoreService: ICoreService, TableService) {
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
         if (next.indexOf("projects") !== -1) {
@@ -69,7 +69,7 @@ module ngApp.projects.controllers {
       ];
 
       $scope.projectColumnIsEnabled = function(columnId) {
-        return CoreService.arrayHasEnabledColumn($scope.projectColumns,columnId);
+        return TableService.objectWithMatchingIdInArrayIsEnabled($scope.projectColumns,columnId);
       }
       this.refresh();
     }

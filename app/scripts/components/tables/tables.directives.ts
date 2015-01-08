@@ -46,6 +46,17 @@ module ngApp.components.tables.directives {
     }
   }
 
+  function TableFiltersDropdown(): ng.IDirective {
+    return {
+      restrict: "EA",
+      scope: {
+        filters:"="
+      },
+      replace: true,
+      templateUrl: "components/tables/templates/table-filters-dropdown.html"
+    };
+  }
+
 
   angular.module("tables.directives", ["tables.controllers"])
       .directive("selectColumns", SelectColumns)

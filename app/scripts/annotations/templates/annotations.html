@@ -48,9 +48,11 @@
           <h3 class="panel-title table-heading">
             <span data-translate>Annotations</span> ({{asc.annotations.pagination.total}})
             <div class="pull-right">
-              <div table-filters-dropdown filters='annotationsColumns'></div>
-              <sort-table data-sort-columns="asc.sortColumns"
-                          data-paging="asc.annotations.pagination" data-page="annotations"></sort-table>
+              <div class="btn-group" role="group" aria-label="Filter and sort table">
+                <sort-table data-sort-columns="asc.sortColumns"
+                            data-paging="asc.annotations.pagination" data-page="annotations"></sort-table>
+                <div table-filters-dropdown filters='annotationsColumns'></div>
+              </div>
             </div>
           </h3>
         </div>

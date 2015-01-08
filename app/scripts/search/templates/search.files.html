@@ -5,9 +5,11 @@
     <h3 class="panel-title table-heading">
       <span data-translate>Files</span>
       <div class="pull-right">
-         <div table-filters-dropdown filters='searchFileColumns'></div>
+        <div class="btn-group" role="group" aria-label="Filter and sort table">
         <sort-table data-sort-columns="sc.fileSortColumns"
                     data-paging="sc.files.pagination" data-page="files"></sort-table>
+          <div table-filters-dropdown filters='searchFileColumns'></div>
+        </div>
       </div>
     </h3>
 

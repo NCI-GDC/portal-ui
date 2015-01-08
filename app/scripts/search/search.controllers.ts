@@ -37,7 +37,7 @@ module ngApp.search.controllers {
     fileColumnIsEnabled(id):Boolean;
     participantColumnIsEnabled(id):Boolean;
   }
-  
+
   class SearchController implements ISearchController {
     files: IFiles;
     participants: IParticipants;

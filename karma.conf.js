@@ -22,7 +22,8 @@ module.exports = function (config) {
       'bower_components/moment/moment.js',
       'bower_components/angular-notify/angular-notify.js',
       '.tmp/scripts/**/*.js',
-      'app/scripts/**/*.tests.js'
+      'app/scripts/**/*.tests.js',
+      'app/scripts/**/tests/*.js'
     ],
     exclude: ['app/tests/integration/**/*.js'],
     preprocessors: {

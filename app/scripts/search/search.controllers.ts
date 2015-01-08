@@ -12,6 +12,7 @@ module ngApp.search.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import INotify = ng.cgNotify.INotify;
 
   export interface ISearchController {
     files: IFiles;
@@ -30,6 +31,13 @@ module ngApp.search.controllers {
     isUserProject(file: IFile): boolean;
   }
 
+  interface ISearchScope extends ng.IScope {
+    searchFileColumns:Object[];
+    searchParticipantColumns:Object[];
+    fileColumnIsEnabled(id):Boolean;
+    participantColumnIsEnabled(id):Boolean;
+  }
+  
   class SearchController implements ISearchController {
     files: IFiles;
     participants: IParticipants;
@@ -69,7 +77,7 @@ module ngApp.search.controllers {
     ];
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope,
+    constructor(private $scope: ISearchScope,
                 private $state: ng.ui.IStateService,
                 public State: IState,
                 public CartService: ICartService,
@@ -78,7 +86,7 @@ module ngApp.search.controllers {
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 public CoreService: ICoreService,
-                private notify: INotify) {
+                private notify: any) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
       this.State.setActive("facets", data.tab);

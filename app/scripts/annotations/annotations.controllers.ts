@@ -11,7 +11,7 @@ module ngApp.annotations.controllers {
 
   interface IAnnotationsScope extends ng.IScope {
      annotationsColumns:Object[];
-     annotationsColumnIsEnabled:Boolean;
+     annotationsColumnIsEnabled(columnId:string):Boolean;
   }
 
   class AnnotationsController implements IAnnotationsController {
@@ -97,11 +97,10 @@ module ngApp.annotations.controllers {
         enabled: true
       }
       ];
-      
 
-      $scope.annotationsColumnIsEnabled = function(columnId) {
+      $scope.annotationsColumnIsEnabled = function(columnId:string):Boolean {
         return CoreService.arrayHasEnabledColumn($scope.annotationsColumns,columnId);
-      }
+      };
 
 
       this.refresh();

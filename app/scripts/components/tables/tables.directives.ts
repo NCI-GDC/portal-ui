@@ -46,28 +46,6 @@ module ngApp.components.tables.directives {
     }
   }
 
-  function TableFiltersDropdown(): ng.IDirective {
-    return {
-      restrict: "EA",
-      scope: {
-        filters:"="
-      },
-      replace: true,
-      templateUrl: "components/tables/templates/table-filters-dropdown.html",
-      link: function ($scope: ITableDirectiveScope, elem) {
-        $scope.filtersRevealed = false;
-
-        $('body').on('click',function(e){
-          var targetIsMenu = $(e.target).parents('.filter-dropdown-group')[0];
-          if (!targetIsMenu) {
-            $scope.filtersRevealed = false;
-            $scope.$apply();
-          }
-        })
-      }
-    };
-  }
-
 
   angular.module("tables.directives", ["tables.controllers"])
       .directive("selectColumns", SelectColumns)

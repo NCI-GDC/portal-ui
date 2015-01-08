@@ -140,7 +140,7 @@
 
 
       <td data-ng-if="fileColumnIsEnabled('file_type')">{{ ::file.file_extension }}</td>
-      <td data-ng-if="fileColumnIsEnabled('participants')" class="text-right">
+      <td data-ng-if="fileColumnIsEnabled('participants')">
       <td class="text-right">
         <span data-ng-if="::file.participants.length == 1"> 
           <a data-ui-sref="participant({'participantId':file.participants[0].bcr_patient_uuid})">

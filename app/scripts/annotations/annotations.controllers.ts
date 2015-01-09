@@ -94,10 +94,6 @@ module ngApp.annotations.controllers {
         }
       });
 
-      //this.annotationsColumns =
-
-
-
       this.refresh();
     }
 
@@ -131,8 +127,6 @@ module ngApp.annotations.controllers {
     annotationsColumnIsEnabled = (columnId:string):Boolean => {
       return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.annotationsColumns,columnId);
     };
-
-
 
   }
 

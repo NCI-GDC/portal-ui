@@ -1,16 +1,20 @@
 module ngApp.components.tables.directives {
 
+
+  interface ITableDirectiveScope extends ng.IScope {
+     filtersRevealed:boolean;
+  }
+
   /* @ngInject */
   function SelectColumns(): ng.IDirective {
+
     return {
       restrict: "EA",
       scope: {
+        filters:"="
       },
       replace: true,
-      templateUrl: "components/tables/templates/select-columns.html",
-      link: function ($scope: ng.IScope) {
-        //TODO
-      }
+      templateUrl: "components/tables/templates/select-columns.html"
     };
   }
 
@@ -40,6 +44,9 @@ module ngApp.components.tables.directives {
       controller: "TableSortController as tsc"
     }
   }
+
+
+
 
   angular.module("tables.directives", ["tables.controllers"])
       .directive("selectColumns", SelectColumns)

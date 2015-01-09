@@ -1,4 +1,15 @@
-<button class="btn btn-default hidden" data-translate>
-  Select columns
-</button>
-
+<div class="btn-group filter-dropdown-group" data-dropdown>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+    {{!filtersRevealed ? "Show filters" : "Hide filters"}}
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu pull-right" role="menu">
+    <li data-ng-repeat="column in filters">
+      <a data-ng-click='column.enabled = !column.enabled;'>
+        <i data-ng-show='column.enabled' class="fa fa-check fa-stack"></i>
+        <i data-ng-show='!column.enabled' class="fa fa-ban fa-stack"></i>
+        <span data-translate>{{column.name}}</span>
+      </a>
+    </li>
+  </ul>
+</div>

@@ -3,16 +3,19 @@ module ngApp.projects.controllers {
   import IProjects = ngApp.projects.models.IProjects;
   import IProjectsService = ngApp.projects.services.IProjectsService;
   import ICoreService = ngApp.core.services.ICoreService;
+  import ITableService = ngApp.components.tables.services.ITableService;
 
   export interface IProjectsController {
     projects: IProjects;
   }
 
+
   class ProjectsController implements IProjectsController {
     projects: IProjects;
+    projectColumns: any[];
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
+    constructor(private $scope: ng.IScope, private ProjectsService: IProjectsService, private CoreService: ICoreService, private TableService:ITableService) {
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
         if (next.indexOf("projects") !== -1) {
@@ -22,7 +25,51 @@ module ngApp.projects.controllers {
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });
+
+      this.projectColumns = [
+      {
+        name:"Code",
+        id:"code",
+        enabled: true
+      },
+      {
+        name:"Disease Type",
+        id:"disease_type",
+        enabled: true
+      },
+      {
+        name:"Program",
+        id:"program",
+        enabled: true
+      },
+      {
+        name:"Participants",
+        id:"participants",
+        enabled: true
+      },
+      {
+        name:"Available Data Files per Data Type",
+        id:"available_data_files",
+        enabled: true
+      },
+      {
+        name:"Status",
+        id:"status",
+        enabled: true
+      },
+      {
+        name:"Last Update",
+        id:"last_update",
+        enabled: true
+      }
+      ];
+
       this.refresh();
+    }
+
+
+    projectColumnIsEnabled = (columnId) => {
+      return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.projectColumns,columnId);
     }
 
     refresh() {

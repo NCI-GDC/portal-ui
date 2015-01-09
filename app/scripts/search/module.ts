@@ -34,6 +34,7 @@ module ngApp.search {
       .module("ngApp.search", [
         "search.directives",
         "search.controller",
+        "tables.services",
         "ui.router.state"
       ])
       .config(searchConfig);

@@ -43,6 +43,7 @@ module ngApp.projects {
   angular
       .module("ngApp.projects", [
         "projects.controller",
+        "tables.services",
         "ui.router.state"
       ])
       .config(projectsConfig);

@@ -3,6 +3,7 @@ module ngApp.annotations.controllers {
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
+  import ITableService = ngApp.components.tables.services.ITableService;
 
   export interface IAnnotationsController {
     annotations: IAnnotations;
@@ -11,6 +12,64 @@ module ngApp.annotations.controllers {
 
   class AnnotationsController implements IAnnotationsController {
     annotations: IAnnotations;
+    annotationsColumns:any[] = [
+      {
+        name:"ID",
+        id:"id",
+        enabled: true
+      },
+      {
+        name:"Participant ID",
+        id:"participant_id",
+        enabled: true
+      },
+      {
+        name:"Project",
+        id:"project",
+        enabled: true
+      },
+      {
+        name:"Item Type",
+        id:"item_type",
+        enabled: true
+      },
+      {
+        name:"Item UUID",
+        id:"item_UUID",
+        enabled: true
+      },
+      {
+        name:"Item Barcode",
+        id:"item_barcode",
+        enabled: true
+      },
+      {
+        name:"Classification",
+        id:"classification",
+        enabled: true
+      },
+      {
+        name:"Category",
+        id:"category",
+        enabled: true
+      },
+      {
+        name:"Created Date",
+        id:"created_date",
+        enabled: true
+      },
+      {
+        name:"Annotator",
+        id:"annotator",
+        enabled: true
+      },
+      {
+        name:"Status",
+        id:"status",
+        enabled: true
+      }
+    ];
+
     sortColumns: any = [
       {
         key: "categoryName",
@@ -27,15 +86,18 @@ module ngApp.annotations.controllers {
     ];
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService) {
+    constructor(private $scope: ng.IScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService, private TableService : ITableService) {
       CoreService.setPageTitle("Annotations");
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
         if (next.indexOf("annotations") !== -1) {
           this.refresh();
         }
       });
+
       this.refresh();
     }
+
+
 
     refresh() {
       this.AnnotationsService.getAnnotations({
@@ -61,6 +123,11 @@ module ngApp.annotations.controllers {
         ]
       }).then((data) => this.annotations = data);
     }
+
+    annotationsColumnIsEnabled = (columnId:string):Boolean => {
+      return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.annotationsColumns,columnId);
+    };
+
   }
 
   export interface IAnnotationController {

@@ -39,6 +39,7 @@ module ngApp.participants.models {
     admin: IAdmin;
     annotations: IAnnotation[];
     files: IFile[];
+    filesByType: Object;
     filteredRelatedFiles: IFiles;
   }
 

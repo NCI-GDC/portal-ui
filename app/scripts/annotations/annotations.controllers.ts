@@ -12,33 +12,7 @@ module ngApp.annotations.controllers {
 
   class AnnotationsController implements IAnnotationsController {
     annotations: IAnnotations;
-    annotationsColumns:any[];
-
-    sortColumns: any = [
-      {
-        key: "categoryName",
-        name: "Category"
-      },
-      {
-        key: "createdBy",
-        name: "Annotator"
-      },
-      {
-        key: "id",
-        name: "ID"
-      }
-    ];
-
-    /* @ngInject */
-    constructor(private $scope: ng.IScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService, private TableService : ITableService) {
-      CoreService.setPageTitle("Annotations");
-      $scope.$on("$locationChangeSuccess", (event, next: string) => {
-        if (next.indexOf("annotations") !== -1) {
-          this.refresh();
-        }
-      });
-
-      this.annotationsColumns = [
+    annotationsColumns:any[] = [
       {
         name:"ID",
         id:"id",
@@ -94,7 +68,33 @@ module ngApp.annotations.controllers {
         id:"status",
         enabled: true
       }
-      ];
+    ];
+
+    sortColumns: any = [
+      {
+        key: "categoryName",
+        name: "Category"
+      },
+      {
+        key: "createdBy",
+        name: "Annotator"
+      },
+      {
+        key: "id",
+        name: "ID"
+      }
+    ];
+
+    /* @ngInject */
+    constructor(private $scope: ng.IScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService, private TableService : ITableService) {
+      CoreService.setPageTitle("Annotations");
+      $scope.$on("$locationChangeSuccess", (event, next: string) => {
+        if (next.indexOf("annotations") !== -1) {
+          this.refresh();
+        }
+      });
+
+      //this.annotationsColumns =
 
 
 

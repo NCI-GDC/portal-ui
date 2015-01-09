@@ -3,6 +3,7 @@ module ngApp.projects.controllers {
   import IProjects = ngApp.projects.models.IProjects;
   import IProjectsService = ngApp.projects.services.IProjectsService;
   import ICoreService = ngApp.core.services.ICoreService;
+  import ITableService = ngApp.components.tables.services.ITableService;
 
   export interface IProjectsController {
     projects: IProjects;
@@ -18,10 +19,9 @@ module ngApp.projects.controllers {
   class ProjectsController implements IProjectsController {
     projects: IProjects;
     projectColumns: any[];
-    projectColumnIsEnabled(columnId:any);
 
     /* @ngInject */
-    constructor(private $scope: IProjectsScope, private ProjectsService: IProjectsService, private CoreService: ICoreService, TableService) {
+    constructor(private $scope: IProjectsScope, private ProjectsService: IProjectsService, private CoreService: ICoreService, private TableService:ITableService) {
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
         if (next.indexOf("projects") !== -1) {
@@ -70,11 +70,12 @@ module ngApp.projects.controllers {
       }
       ];
 
-      this.projectColumnIsEnabled = function(columnId) {
-        var projectColumns = this.projectColumns;
-        return TableService.objectWithMatchingIdInArrayIsEnabled(projectColumns,columnId);
-      }
       this.refresh();
+    }
+
+
+    projectColumnIsEnabled = (columnId) => {
+      return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.projectColumns,columnId);
     }
 
     refresh() {

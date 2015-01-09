@@ -151,8 +151,6 @@ module ngApp.search.controllers {
       },
     ];
 
-    participantColumnIsEnabled(columnId)
-    fileColumnIsEnabled(columnId)
 
     fileSortColumns: any = [
       {
@@ -197,7 +195,7 @@ module ngApp.search.controllers {
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 public CoreService: ICoreService,
-                public TableService : ITableService,
+                private TableService : ITableService,
                 private notify: any) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
@@ -214,13 +212,8 @@ module ngApp.search.controllers {
       });
 
       
-      this.fileColumnIsEnabled = (columnId) => {
-        return TableService.objectWithMatchingIdInArrayIsEnabled(this.searchfileColumns,columnId);
-      }
-
-      this.participantColumnIsEnabled = (columnId) => {
-        return TableService.objectWithMatchingIdInArrayIsEnabled(this.searchParticipantColumns,columnId);
-      }
+      //this.
+      //this.
 
       this.refresh();
     }
@@ -327,6 +320,15 @@ module ngApp.search.controllers {
     isUserProject(file: IFile): boolean {
       return this.UserService.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
     }
+
+    fileColumnIsEnabled = (columnId) => {
+      return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.searchfileColumns,columnId);
+    }
+
+    participantColumnIsEnabled = (columnId) => {
+      return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.searchParticipantColumns,columnId);
+    }
+
 
     select(section: string, tab: string) {
       var next = "search.";

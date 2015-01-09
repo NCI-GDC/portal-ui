@@ -10,18 +10,12 @@ module ngApp.projects.controllers {
   }
 
 
-  interface IProjectsScope extends ng.IScope {
-    projectColumns:Object[];
-    projectColumnIsEnabled(id):Boolean;
-  }
-
-
   class ProjectsController implements IProjectsController {
     projects: IProjects;
     projectColumns: any[];
 
     /* @ngInject */
-    constructor(private $scope: IProjectsScope, private ProjectsService: IProjectsService, private CoreService: ICoreService, private TableService:ITableService) {
+    constructor(private $scope: ng.IScope, private ProjectsService: IProjectsService, private CoreService: ICoreService, private TableService:ITableService) {
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
         if (next.indexOf("projects") !== -1) {

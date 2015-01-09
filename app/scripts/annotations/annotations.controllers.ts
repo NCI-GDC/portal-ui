@@ -10,11 +10,6 @@ module ngApp.annotations.controllers {
     sortColumns: any;
   }
 
-  interface IAnnotationsScope extends ng.IScope {
-     annotationsColumns:Object[];
-     annotationsColumnIsEnabled(columnId:string):Boolean;
-  }
-
   class AnnotationsController implements IAnnotationsController {
     annotations: IAnnotations;
     annotationsColumns:any[];
@@ -35,7 +30,7 @@ module ngApp.annotations.controllers {
     ];
 
     /* @ngInject */
-    constructor(private $scope: IAnnotationsScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService, private TableService : ITableService) {
+    constructor(private $scope: ng.IScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService, private TableService : ITableService) {
       CoreService.setPageTitle("Annotations");
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
         if (next.indexOf("annotations") !== -1) {

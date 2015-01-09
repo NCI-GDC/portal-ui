@@ -32,13 +32,6 @@ module ngApp.search.controllers {
     isUserProject(file: IFile): boolean;
   }
 
-  interface ISearchScope extends ng.IScope {
-    searchFileColumns:Object[];
-    searchParticipantColumns:Object[];
-    fileColumnIsEnabled(id):Boolean;
-    participantColumnIsEnabled(id):Boolean;
-  }
-
   class SearchController implements ISearchController {
     files: IFiles;
     participants: IParticipants;
@@ -186,7 +179,7 @@ module ngApp.search.controllers {
     ];
 
     /* @ngInject */
-    constructor(private $scope: ISearchScope,
+    constructor(private $scope: ng.IScope,
                 private $state: ng.ui.IStateService,
                 public State: IState,
                 public CartService: ICartService,

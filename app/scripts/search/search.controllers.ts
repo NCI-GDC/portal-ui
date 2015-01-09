@@ -44,6 +44,116 @@ module ngApp.search.controllers {
     participants: IParticipants;
     lastAddedFiles: IFile[];
     lastNotifyDialog: INotify;
+
+    searchParticipantColumns:any[] = [
+      {
+        name:"Participant ID",
+        id:"participant_id",
+        enabled: true
+      },
+      {
+        name:"Project",
+        id:"project",
+        enabled: true
+      },
+      {
+        name:"Primary Site",
+        id:"primary_site",
+        enabled: true
+      },
+      {
+        name:"Disease Type",
+        id:"disease_type",
+        enabled: true
+      },
+      {
+        name:"Gender",
+        id:"gender",
+        enabled: true
+      },
+      {
+        name:"Tumor Stage",
+        id:"tumor_stage",
+        enabled: true
+      },
+      {
+        name:"Files",
+        id:"files",
+        enabled: true
+      },
+      {
+        name:"Available Data Files Per Type",
+        id:"available_data_files",
+        enabled: true
+      },
+      {
+        name:"Annotations",
+        id:"annotations",
+        enabled: true
+      }
+    ];
+
+    searchfileColumns:any[] = [
+      {
+        name:"Access",
+        id:"access",
+        enabled: true
+      },
+      {
+        name:"File Type",
+        id:"file_type",
+        enabled: true
+      },
+      {
+        name:"File Name",
+        id:"file_name",
+        enabled: true
+      },
+      {
+        name:"Participants",
+        id:"participants",
+        enabled: true
+      },
+      {
+        name:"Annotations",
+        id:"annotations",
+        enabled: true
+      },
+      {
+        name:"Project",
+        id:"project",
+        enabled: true
+      },
+      {
+        name:"Data Category",
+        id:"data_category",
+        enabled: true
+      },
+      {
+        name:"Status",
+        id:"status",
+        enabled: true
+      },
+      {
+        name:"Size",
+        id:"size",
+        enabled: true
+      },
+      {
+        name:"Revision",
+        id:"revision",
+        enabled: true
+      },
+      {
+        name:"Update date",
+        id:"update_date",
+        enabled: true
+      },
+    ];
+
+    participantColumnIsEnabled(columnId)
+    fileColumnIsEnabled(columnId)
+
     fileSortColumns: any = [
       {
         key: "file_size",
@@ -103,118 +213,13 @@ module ngApp.search.controllers {
         this.refresh();
       });
 
-      $scope.searchFileColumns = [
-      {
-        name:"Access",
-        id:"access",
-        enabled: true
-      },
-      {
-        name:"File Type",
-        id:"file_type",
-        enabled: true
-      },
-      {
-        name:"File Name",
-        id:"file_name",
-        enabled: true
-      },
-      {
-        name:"Participants",
-        id:"participants",
-        enabled: true
-      },
-      {
-        name:"Annotations",
-        id:"annotations",
-        enabled: true
-      },
-      {
-        name:"Project",
-        id:"project",
-        enabled: true
-      },
-      {
-        name:"Data Category",
-        id:"data_category",
-        enabled: true
-      },
-      {
-        name:"Status",
-        id:"status",
-        enabled: true
-      },
-      {
-        name:"Size",
-        id:"size",
-        enabled: true
-      },
-      {
-        name:"Revision",
-        id:"revision",
-        enabled: true
-      },
-      {
-        name:"Update date",
-        id:"update_date",
-        enabled: true
-      },
-      ];
-
-      $scope.searchParticipantColumns = [
-      {
-        name:"Participant ID",
-        id:"participant_id",
-        enabled: true
-      },
-      {
-        name:"Project",
-        id:"project",
-        enabled: true
-      },
-      {
-        name:"Primary Site",
-        id:"primary_site",
-        enabled: true
-      },
-      {
-        name:"Disease Type",
-        id:"disease_type",
-        enabled: true
-      },
-      {
-        name:"Gender",
-        id:"gender",
-        enabled: true
-      },
-      {
-        name:"Tumor Stage",
-        id:"tumor_stage",
-        enabled: true
-      },
-      {
-        name:"Files",
-        id:"files",
-        enabled: true
-      },
-      {
-        name:"Available Data Files Per Type",
-        id:"available_data_files",
-        enabled: true
-      },
-      {
-        name:"Annotations",
-        id:"annotations",
-        enabled: true
-      }
-      ];
       
-      $scope.fileColumnIsEnabled = function(columnId) {
-        return TableService.objectWithMatchingIdInArrayIsEnabled($scope.searchFileColumns,columnId);
+      this.fileColumnIsEnabled = (columnId) => {
+        return TableService.objectWithMatchingIdInArrayIsEnabled(this.searchfileColumns,columnId);
       }
 
-      $scope.participantColumnIsEnabled = function(columnId) {
-        return TableService.objectWithMatchingIdInArrayIsEnabled($scope.searchParticipantColumns,columnId);
+      this.participantColumnIsEnabled = (columnId) => {
+        return TableService.objectWithMatchingIdInArrayIsEnabled(this.searchParticipantColumns,columnId);
       }
 
       this.refresh();

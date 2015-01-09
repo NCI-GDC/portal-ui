@@ -8,7 +8,7 @@
         <div class="btn-group" role="group" aria-label="Filter and sort table">
         <sort-table data-sort-columns="sc.fileSortColumns"
                     data-paging="sc.files.pagination" data-page="files"></sort-table>
-          <select-columns filters='searchFileColumns'></select-columns>
+          <select-columns filters='sc.searchFileColumns'></select-columns>
         </div>
       </div>
     </h3>
@@ -50,17 +50,17 @@
           data-translate>
         My Projects
       </th>
-      <th ng-if="fileColumnIsEnabled('access')" scope="col" class="text-center" data-translate>Access</th>
-      <th ng-if="fileColumnIsEnabled('file_name')" scope="col" class="text-center" data-translate>File Name</th>
-      <th ng-if="fileColumnIsEnabled('file_type')"  scope="col" class="text-center" data-translate>File type</th>
-      <th ng-if="fileColumnIsEnabled('participants')"  scope="col" class="text-center" data-translate>Participants</th>
-      <th ng-if="fileColumnIsEnabled('annotations')"  scope="col" class="text-center" data-translate>Annotations</th>
-      <th ng-if="fileColumnIsEnabled('project')"  scope="col" class="text-center" data-translate>Project</th>
-      <th ng-if="fileColumnIsEnabled('data_category')"  scope="col" class="text-center" data-translate>Data Category</th>
-      <th ng-if="fileColumnIsEnabled('status')" scope="col" class="text-center" data-translate>Status</th>
-      <th ng-if="fileColumnIsEnabled('size')"  scope="col" class="text-center" data-translate>Size</th>
-      <th ng-if="fileColumnIsEnabled('revision')"  scope="col" class="text-center" data-translate>Revision</th>
-      <th ng-if="fileColumnIsEnabled('update_date')"  scope="col" class="text-center" data-translate>Update date</th>
+      <th ng-if="sc.fileColumnIsEnabled('access')" scope="col" class="text-center" data-translate>Access</th>
+      <th ng-if="sc.fileColumnIsEnabled('file_name')" scope="col" class="text-center" data-translate>File Name</th>
+      <th ng-if="sc.fileColumnIsEnabled('file_type')"  scope="col" class="text-center" data-translate>File type</th>
+      <th ng-if="sc.fileColumnIsEnabled('participants')"  scope="col" class="text-center" data-translate>Participants</th>
+      <th ng-if="sc.fileColumnIsEnabled('annotations')"  scope="col" class="text-center" data-translate>Annotations</th>
+      <th ng-if="sc.fileColumnIsEnabled('project')"  scope="col" class="text-center" data-translate>Project</th>
+      <th ng-if="sc.fileColumnIsEnabled('data_category')"  scope="col" class="text-center" data-translate>Data Category</th>
+      <th ng-if="sc.fileColumnIsEnabled('status')" scope="col" class="text-center" data-translate>Status</th>
+      <th ng-if="sc.fileColumnIsEnabled('size')"  scope="col" class="text-center" data-translate>Size</th>
+      <th ng-if="sc.fileColumnIsEnabled('revision')"  scope="col" class="text-center" data-translate>Revision</th>
+      <th ng-if="sc.fileColumnIsEnabled('update_date')"  scope="col" class="text-center" data-translate>Update date</th>
     </tr>
     </thead>
     <tbody>
@@ -128,19 +128,19 @@
         <i data-ng-if="sc.isUserProject(file)" class="fa fa-check fa-lg"></i>
         <i data-ng-if="!sc.isUserProject(file)" class="fa fa-close fa-lg"></i>
       </td>
-      <td class="text-center" ng-if="fileColumnIsEnabled('access')">
+      <td class="text-center" ng-if="sc.fileColumnIsEnabled('access')">
         <i data-ng-if="file.data_access=='protected'" class="fa fa-lock fa-lg"></i>
         <i data-ng-if="file.data_access!='protected'" class="fa fa-unlock-alt fa-lg"></i>
       </td>
-      <td ng-if="fileColumnIsEnabled('file_name')" >
+      <td ng-if="sc.fileColumnIsEnabled('file_name')" >
         <a data-ui-sref="file({ fileId: file.file_uuid })">
           {{ ::file.file_name | ellipsicate }}
         </a>
       </td>
 
 
-      <td data-ng-if="fileColumnIsEnabled('file_type')">{{ ::file.file_extension }}</td>
-      <td data-ng-if="fileColumnIsEnabled('participants')" class="text-right">
+      <td data-ng-if="sc.fileColumnIsEnabled('file_type')">{{ ::file.file_extension }}</td>
+      <td data-ng-if="sc.fileColumnIsEnabled('participants')" class="text-right">
         <span data-ng-if="::file.participants.length == 1"> 
           <a data-ui-sref="participant({'participantId':file.participants[0].bcr_patient_uuid})">
             {{ file.participants[0].bcr_patient_uuid | ellipsicate: 25 }} 
@@ -153,17 +153,17 @@
               }
             ])})"> file.participants.length</a> </span>
       </td>
-      <td ng-if="fileColumnIsEnabled('annotations')"  class="text-right">{{ ::file.annotations.length | number:0 }}</td>
-      <td ng-if="fileColumnIsEnabled('project')">
+      <td ng-if="sc.fileColumnIsEnabled('annotations')"  class="text-right">{{ ::file.annotations.length | number:0 }}</td>
+      <td ng-if="sc.fileColumnIsEnabled('project')">
         <a data-ui-sref="project({ projectId: file.project.id })">
           {{ ::file.archive.disease_code }}
         </a>
       </td>
-      <td ng-if="fileColumnIsEnabled('data_category')">{{ ::file.data_type }}</td>
-      <td ng-if="fileColumnIsEnabled('status')" >tbc {{ ::file.state }}</td>
-      <td ng-if="fileColumnIsEnabled('size')" >{{ file.file_size | size }}</td>
-      <td ng-if="fileColumnIsEnabled('revision')" >{{ ::file.archive.revision }}</td>
-      <td ng-if="fileColumnIsEnabled('update_date')" >{{ file.modified | date }}</td>
+      <td ng-if="sc.fileColumnIsEnabled('data_category')">{{ ::file.data_type }}</td>
+      <td ng-if="sc.fileColumnIsEnabled('status')" >tbc {{ ::file.state }}</td>
+      <td ng-if="sc.fileColumnIsEnabled('size')" >{{ file.file_size | size }}</td>
+      <td ng-if="sc.fileColumnIsEnabled('revision')" >{{ ::file.archive.revision }}</td>
+      <td ng-if="sc.fileColumnIsEnabled('update_date')" >{{ file.modified | date }}</td>
     </tr>
     </tbody>
   </table>

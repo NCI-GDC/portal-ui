@@ -51,7 +51,7 @@
               <div class="btn-group" role="group" aria-label="Filter and sort table">
                 <sort-table data-sort-columns="asc.sortColumns"
                             data-paging="asc.annotations.pagination" data-page="annotations"></sort-table>
-                <select-columns filters='annotationsColumns'></select-columns>
+                <select-columns filters='asc.annotationsColumns'></select-columns>
               </div>
             </div>
           </h3>
@@ -60,55 +60,55 @@
           <table id="annotations-table" class="table table-striped table-hover table-condensed table-bordered">
             <thead>
             <tr>
-              <th ng-if="annotationsColumnIsEnabled('id')" 
+              <th ng-if="asc.annotationsColumnIsEnabled('id')" 
                 scope="col" class="text-center" data-translate>ID</th>
-              <th ng-if="annotationsColumnIsEnabled('participant_id')" 
+              <th ng-if="asc.annotationsColumnIsEnabled('participant_id')" 
                 scope="col" class="text-center" data-translate>Participant ID</th>
-              <th ng-if="annotationsColumnIsEnabled('project')" 
+              <th ng-if="asc.annotationsColumnIsEnabled('project')" 
                 scope="col" class="text-center" data-translate>Project</th>
-              <th ng-if="annotationsColumnIsEnabled('item_type')"  
+              <th ng-if="asc.annotationsColumnIsEnabled('item_type')"  
                 scope="col" class="text-center" data-translate>Item Type</th>
-              <th ng-if="annotationsColumnIsEnabled('item_UUID')"  
+              <th ng-if="asc.annotationsColumnIsEnabled('item_UUID')"  
                 scope="col" class="text-center" data-translate>Item UUID</th>
-              <th ng-if="annotationsColumnIsEnabled('item_barcode')" 
+              <th ng-if="asc.annotationsColumnIsEnabled('item_barcode')" 
                 scope="col" class="text-center" data-translate>Item Barcode</th>
-              <th ng-if="annotationsColumnIsEnabled('classification')" 
+              <th ng-if="asc.annotationsColumnIsEnabled('classification')" 
                 scope="col" class="text-center" data-translate>Classification</th>
-              <th ng-if="annotationsColumnIsEnabled('category')" 
+              <th ng-if="asc.annotationsColumnIsEnabled('category')" 
                 scope="col" class="text-center" data-translate>Category</th>
-              <th ng-if="annotationsColumnIsEnabled('created_date')"
+              <th ng-if="asc.annotationsColumnIsEnabled('created_date')"
                 scope="col" class="text-center" data-translate>Created Date</th>
-              <th ng-if="annotationsColumnIsEnabled('annotator')" 
+              <th ng-if="asc.annotationsColumnIsEnabled('annotator')" 
                 scope="col" class="text-center" data-translate>Annotator</th>
-              <th ng-if="annotationsColumnIsEnabled('status')" 
+              <th ng-if="asc.annotationsColumnIsEnabled('status')" 
                 scope="col" class="text-center" data-translate>Status</th>
             </tr>
             </thead>
             <tbody>
             <tr data-ng-repeat="annotation in asc.annotations.hits track by annotation.id">
-              <td ng-if="annotationsColumnIsEnabled('id')">
+              <td ng-if="asc.annotationsColumnIsEnabled('id')">
                 <a data-ui-sref="annotation({ annotationId: annotation.id })">
                   {{ ::annotation.id }}
                 </a>
               </td>
-              <td ng-if="annotationsColumnIsEnabled('participant_id')">
+              <td ng-if="asc.annotationsColumnIsEnabled('participant_id')">
                 <a>
                   tbc
                 </a>
               </td>
-              <td ng-if="annotationsColumnIsEnabled('project')">
+              <td ng-if="asc.annotationsColumnIsEnabled('project')">
                 <a>
                   tbc
                 </a>
               </td>
-              <td ng-if="annotationsColumnIsEnabled('item_type')">{{ ::annotation.itemType }}</td>
-              <td ng-if="annotationsColumnIsEnabled('item_UUID')">tbc</td>
-              <td ng-if="annotationsColumnIsEnabled('item_barcode')">{{ ::annotation.item | ellipsicate:50 }}</td>
-              <td ng-if="annotationsColumnIsEnabled('classification')">{{ ::annotation.annotationClassificationName }}</td>
-              <td ng-if="annotationsColumnIsEnabled('category')" >{{ ::annotation.categoryName }}</td>
-              <td ng-if="annotationsColumnIsEnabled('created_date')">{{ ::annotation.dateCreated | date }}</td>
-              <td ng-if="annotationsColumnIsEnabled('annotator')">{{ ::annotation.createdBy }}</td>
-              <td ng-if="annotationsColumnIsEnabled('status')" >{{ ::annotation.status }}</td>
+              <td ng-if="asc.annotationsColumnIsEnabled('item_type')">{{ ::annotation.itemType }}</td>
+              <td ng-if="asc.annotationsColumnIsEnabled('item_UUID')">tbc</td>
+              <td ng-if="asc.annotationsColumnIsEnabled('item_barcode')">{{ ::annotation.item | ellipsicate:50 }}</td>
+              <td ng-if="asc.annotationsColumnIsEnabled('classification')">{{ ::annotation.annotationClassificationName }}</td>
+              <td ng-if="asc.annotationsColumnIsEnabled('category')" >{{ ::annotation.categoryName }}</td>
+              <td ng-if="asc.annotationsColumnIsEnabled('created_date')">{{ ::annotation.dateCreated | date }}</td>
+              <td ng-if="asc.annotationsColumnIsEnabled('annotator')">{{ ::annotation.createdBy }}</td>
+              <td ng-if="asc.annotationsColumnIsEnabled('status')" >{{ ::annotation.status }}</td>
             </tr>
             </tbody>
           </table>

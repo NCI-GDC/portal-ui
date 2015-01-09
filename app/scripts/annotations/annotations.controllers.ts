@@ -17,6 +17,9 @@ module ngApp.annotations.controllers {
 
   class AnnotationsController implements IAnnotationsController {
     annotations: IAnnotations;
+    annotationsColumns:any[];
+    annotationsColumnIsEnabled(columnId:string):Boolean;
+
     sortColumns: any = [
       {
         key: "categoryName",
@@ -41,7 +44,7 @@ module ngApp.annotations.controllers {
         }
       });
 
-      $scope.annotationsColumns = [
+      this.annotationsColumns = [
       {
         name:"ID",
         id:"id",
@@ -99,8 +102,8 @@ module ngApp.annotations.controllers {
       }
       ];
 
-      $scope.annotationsColumnIsEnabled = function(columnId:string):Boolean {
-        return TableService.objectWithMatchingIdInArrayIsEnabled($scope.annotationsColumns,columnId);
+      this.annotationsColumnIsEnabled = (columnId:string):Boolean => {
+        return TableService.objectWithMatchingIdInArrayIsEnabled(this.annotationsColumns,columnId);
       };
 
 

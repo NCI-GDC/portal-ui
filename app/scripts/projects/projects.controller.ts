@@ -17,6 +17,8 @@ module ngApp.projects.controllers {
 
   class ProjectsController implements IProjectsController {
     projects: IProjects;
+    projectColumns: any[];
+    projectColumnIsEnabled(columnId:any);
 
     /* @ngInject */
     constructor(private $scope: IProjectsScope, private ProjectsService: IProjectsService, private CoreService: ICoreService, TableService) {
@@ -30,7 +32,7 @@ module ngApp.projects.controllers {
         this.refresh();
       });
 
-      $scope.projectColumns = [
+      this.projectColumns = [
       {
         name:"Code",
         id:"code",
@@ -68,8 +70,9 @@ module ngApp.projects.controllers {
       }
       ];
 
-      $scope.projectColumnIsEnabled = function(columnId) {
-        return TableService.objectWithMatchingIdInArrayIsEnabled($scope.projectColumns,columnId);
+      this.projectColumnIsEnabled = function(columnId) {
+        var projectColumns = this.projectColumns;
+        return TableService.objectWithMatchingIdInArrayIsEnabled(projectColumns,columnId);
       }
       this.refresh();
     }

@@ -52,14 +52,14 @@ paths.html.src = paths.src + "/index.html";
 paths.html.dest = paths.dest + "/index.html";
 // </paths>
 
-gulp.task('logs', function(){
+gulp.task('logs', function () {
   require('conventional-changelog')({
     repository: packageJSON.repository,
     version: packageJSON.version,
     issueLink: function (id) {
-      return '[OICR-'+id+'](https://jira.opensciencedatacloud.org/browse/OICR-' + id + ')'
+      return '[OICR-' + id + '](https://jira.opensciencedatacloud.org/browse/OICR-' + id + ')'
     }
-  }, function(err, log) {
+  }, function (err, log) {
     fs.writeFile('CHANGELOG.md', log);
   });
 });
@@ -67,36 +67,36 @@ gulp.task('logs', function(){
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
 gulp.task('i18n:pot', function () {
-    return gulp.src(['app/scripts/**/*.html', 'app/scripts/**/*.js'])
-        .pipe($.angularGettext.extract('template.pot'))
-        .pipe(gulp.dest('translations/'));
+  return gulp.src(['app/scripts/**/*.html', 'app/scripts/**/*.js'])
+      .pipe($.angularGettext.extract('template.pot'))
+      .pipe(gulp.dest('translations/'));
 });
 
 gulp.task('i18n:translations', ['i18n:pot'], function () {
-    return gulp.src('translations/**/*.po')
-        .pipe($.angularGettext.compile({
-            format: 'javascript',
-            defaultLanguage: 'en'
-        }))
-        .pipe(gulp.dest('dist/translations/'));
+  return gulp.src('translations/**/*.po')
+      .pipe($.angularGettext.compile({
+        format: 'javascript',
+        defaultLanguage: 'en'
+      }))
+      .pipe(gulp.dest('dist/translations/'));
 });
 
-gulp.task('i18n:build', ['i18n:translations'], function() {
+gulp.task('i18n:build', ['i18n:translations'], function () {
   var f = production ? 'translations.min.js' : 'translations.js';
 
   return gulp.src('dist/translations/**/*.js')
-    .pipe($.concat(f))
-    .pipe(gulp.dest('dist/js'));
+      .pipe($.concat(f))
+      .pipe(gulp.dest('dist/js'));
 });
 
 // No file gets built in the case no translations exist.
 // Build one to prevent 404s in browser.
-gulp.task('i18n:exists', function() {
+gulp.task('i18n:exists', function () {
   var f = production ? "translations.min.js" : "translations.js";
 
-  fs.readFile("dist/js/" + f, function(err) {
+  fs.readFile("dist/js/" + f, function (err) {
     if (err) {
-      mkdirp("dist/js", function(err) {
+      mkdirp("dist/js", function (err) {
         if (err) {
           throw err;
         }
@@ -109,7 +109,7 @@ gulp.task('i18n:exists', function() {
 
 gulp.task('i18n:clean', del.bind(null, ['dist/translations', 'dist/js/translations.js', 'dist/js/translations.min.js']));
 
-gulp.task('i18n', function(cb) {
+gulp.task('i18n', function (cb) {
   runSequence('i18n:clean', ['i18n:build', 'i18n:exists'], cb);
 });
 
@@ -127,22 +127,22 @@ gulp.task('images', function () {
 gulp.task("config", function () {
   var f = production ? "config.min.js" : "config.js";
 
-  fs.readFile("app/config.js", "UTF-8", function(err, content) {
+  fs.readFile("app/config.js", "UTF-8", function (err, content) {
     if (err) {
       throw err;
     }
 
-    $.git.exec({args : "rev-parse --short HEAD"}, function (err, stdout) {
+    $.git.exec({args: "rev-parse --short HEAD"}, function (err, stdout) {
       if (err) {
         throw err;
       }
-  
+
       content = content.replace(/__VERSION__/g, packageJSON.version);
       content = content.replace(/__COMMIT__/g, stdout.replace(/[\r\n]/, ""));
       content = content.replace(/__API__/, env.get("api"));
 
       // Ensures path is in place, as I've had occurances where it may not be.
-      mkdirp("dist/js", function(err) {
+      mkdirp("dist/js", function (err) {
         if (err) {
           throw err;
         }
@@ -190,14 +190,14 @@ gulp.task('js:bower', function () {
 
     stream
         .pipe(filter)
-        .pipe($.foreach(function(stream, file) {
+        .pipe($.foreach(function (stream, file) {
           if (file.relative.indexOf(".js")) {
             var fileName = file.relative.substr(file.relative.lastIndexOf("/") + 1);
             fileName = fileName.substr(0, fileName.lastIndexOf(".min") + 4) + ".js.map";
 
             var path = file.relative.substr(0, file.relative.lastIndexOf("/") + 1) + fileName;
             return stream
-                  .pipe($.replace(fileName, "/libs/" + path));
+                .pipe($.replace(fileName, "/libs/" + path));
           }
 
           return stream;
@@ -256,20 +256,20 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
         .pipe($.replace('.css', '.min.css'))
         .pipe($.replace('src/css/bootcards-desktop.min.css', 'dist/css/bootcards-desktop.min.css'))
         .pipe($.replace('ngprogress-lite.min.css', 'ngprogress-lite.css'));
-        // .pipe(
-        // $.cdnizer({
-        //   allowRev: true,
-        //   allowMin: true,
-        //   fallbackScript: "<script>function cdnizerLoad(u) {document.write('<scr'+'ipt src=\"'+u+'\"></scr'+'ipt>');}</script>",
-        //   fallbackTest: '<script>if(typeof ${ test } === "undefined") cdnizerLoad("${ filepath }");</script>',
-        //   files: [
-        //     'google:angular',
-        //     {
-        //       cdn: 'cdnjs:lodash.js',
-        //       package: 'lodash',
-        //       test: '_'
-        //     }
-        //   ]}))
+    // .pipe(
+    // $.cdnizer({
+    //   allowRev: true,
+    //   allowMin: true,
+    //   fallbackScript: "<script>function cdnizerLoad(u) {document.write('<scr'+'ipt src=\"'+u+'\"></scr'+'ipt>');}</script>",
+    //   fallbackTest: '<script>if(typeof ${ test } === "undefined") cdnizerLoad("${ filepath }");</script>',
+    //   files: [
+    //     'google:angular',
+    //     {
+    //       cdn: 'cdnjs:lodash.js',
+    //       package: 'lodash',
+    //       test: '_'
+    //     }
+    //   ]}))
   }
   return stream
       .pipe($.replace('__BASE__', env.get("base")))
@@ -278,7 +278,7 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
 });
 
 // <tests>
-gulp.task('test', ['clean', 'ts:compile', 'ng:templates'], function() {
+gulp.task('test', ['clean', 'ts:compile', 'ng:templates'], function () {
   runSequence('karma:once')
 });
 
@@ -343,7 +343,7 @@ gulp.task('ts:compile', function () {
       .pipe($.concat(f))
       .pipe($.ngAnnotate())
       .pipe($.if(production, $.uglify()))
-      .pipe($.wrap({ src: './iife.txt'}))
+      .pipe($.wrap({src: './iife.txt'}))
       .pipe($.sourcemaps.write())
       .pipe(gulp.dest('dist/js'))
       .pipe($.size({title: 'typescript'}));
@@ -404,13 +404,35 @@ gulp.task('serve:web', function (cb) {
   }
 });
 
+gulp.task('pegjs', function () {
+  var PEG = require('pegjs');
+  var input = fs.readFileSync("gql.pegjs", {encoding: 'utf8'});
+  var parser = PEG.buildParser(input, {output: "source"});
+  mkdirp("dist/js", function (err) {
+    if (err) {
+      throw err;
+    }
+    var out = production ? "dist/js/gql.min.js" : "dist/js/gql.js";
+    fs.writeFileSync(out, "window.gql = " + parser);
+    if (production) {
+      gulp.src(out)
+        .pipe($.uglify())
+        .pipe(gulp.dest('dist/js'))
+        .pipe($.size({title: 'GQL'}));
+    }
+
+  });
+});
+
 gulp.task('serve', function (cb) {
-  runSequence('default', ['karma:watch', 'serve:web'], cb);
+  runSequence('default', [
+    //'karma:watch',
+    'serve:web'], cb);
 });
 
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['rev', 'images', 'fonts', 'vendor', 'ts:compile', 'i18n', 'config'], cb);
+  runSequence('styles', ['rev', 'images', 'fonts', 'vendor', 'ts:compile', 'i18n', 'config', 'pegjs'], cb);
 });
 
 // Run PageSpeed Insights

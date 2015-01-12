@@ -49,6 +49,13 @@ Installing NPM dependencies...
 Setup Successful!
 ```
 
+### ElasticSearch
+Edit path-to-elastic-search/config/elasticsearch.yml, find the line with http.max_content_length, add
+```
+http.max_initial_line_length: 1000mb
+```
+to increase the max length of a HTTP URL
+
 ### Git hooks
 
 Git commit-msg hook is based on Angular's [Guidelines](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#)

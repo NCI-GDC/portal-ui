@@ -22,9 +22,10 @@ module ngApp.cart.services {
     removeFiles(files: IFile[]): void;
     buildAddedMsg(addedAndAlreadyIn: Object): string;
     buildRemovedMsg(removedFiles: IFile[]): string;
-    //undo(): void;
     undoAdded(): void;
     undoRemoved(): void;
+    getMaxSize(): number;
+    isFull(): boolean;
   }
 
   class CartService implements ICartService {
@@ -34,6 +35,7 @@ module ngApp.cart.services {
 
     private static GDC_CART_KEY = "gdc-cart-items";
     private static GDC_CART_UPDATE = "gdc-cart-updated";
+    private static MAX_SIZE: number = 1000;
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
@@ -43,6 +45,14 @@ module ngApp.cart.services {
 
       this.lastModified = local_time ? $window.moment(local_time) : $window.moment();
       this.files = local_files ? JSON.parse(local_files) : [];
+    }
+
+    getMaxSize(): number {
+      return CartService.MAX_SIZE;
+    }
+
+    isFull(): boolean {
+      return this.files.length >= CartService.MAX_SIZE;
     }
 
     getFiles(): IFile[] {
@@ -151,6 +161,7 @@ module ngApp.cart.services {
           classes: "alert-warning"
       });
       this.files = remaining;
+      this._sync();
     }
 
     removeFiles(files: IFile[]): void {

@@ -27,12 +27,13 @@ module ngApp.search.controllers {
     addFilteredRelatedFiles(participant: IParticipant): void;
     addToCart(files: IFile[]): void;
     isUserProject(file: IFile): boolean;
+    addAll(): void;
+    removeAllinSearchResult(): void;
   }
 
   class SearchController implements ISearchController {
     files: IFiles;
     participants: IParticipants;
-    lastAddedFiles: IFile[];
     fileSortColumns: any = [
       {
         key: "file_size",
@@ -129,6 +130,7 @@ module ngApp.search.controllers {
           "file_extension"
         ]
       }).then((data) => this.files = data);
+
       this.ParticipantsService.getParticipants({
         fields: [
           "bcr_patient_barcode",
@@ -160,7 +162,6 @@ module ngApp.search.controllers {
           "vital_status"
         ]
       }).then((data) => {
-        
         // TODO - remove when aggregations done on server
         var participants = data.hits.map((participant)=>{
           participant.filesByType = participant.files.reduce((a,b)=>{
@@ -223,7 +224,61 @@ module ngApp.search.controllers {
     }
 
     addToCart(files: IFile[]): void {
-      var cartReturned = this.CartService.addFiles(files);
+      this.CartService.addFiles(files);
+    }
+
+    addAll(): void {
+      console.log("SearchController::addAll");
+      var filters = this.LocationService.filters();
+      var size: number = (this.files.pagination.total >= this.CartService.getMaxSize()) ? this.CartService.getMaxSize() : this.files.pagination.total;
+      this.FilesService.getFiles({
+        fields: [
+          "data_access",
+          "data_format",
+          "data_level",
+          "data_subtype",
+          "data_type",
+          "file_extension",
+          "file_name",
+          "file_size",
+          "file_uuid",
+          "platform",
+          "updated",
+          "archive.disease_code",
+          "archive.revision",
+          "participants.bcr_patient_uuid"
+        ],
+        filters: filters,
+        size: size
+      }).then((data) => this.CartService.addFiles(data.hits));
+    }
+
+    removeAllInSearchResult(): void {
+      // Query ES using the current filter and the file uuids in the Cart
+      // If an id is in the result, then it is both in the Cart and in the current Search query
+      var filters = this.LocationService.filters();
+      var size: number = this.CartService.getFiles().length;
+      if (!filters.content) {
+        filters.op = "and";
+        filters.content = [];
+      }
+      filters.content.push({
+        content: {
+          field: "files.file_uuid",
+          value: _.pluck(this.CartService.getFiles(), "file_uuid")
+        },
+        op: "is"
+      });
+      this.FilesService.getFiles({
+        fields:[
+          "file_uuid"
+        ],
+        filters: filters,
+        size: size,
+        from: 0
+      }).then((data) => {
+        this.CartService.remove(_.pluck(data.hits, "file_uuid"));
+      });
     }
 
     removeFiles(files: IFile[]): void {
@@ -272,11 +327,13 @@ module ngApp.search.controllers {
         filters: filters,
         size: 100
       }).then((data) => participant.filteredRelatedFiles = data);
+
     }
 
     addFilteredRelatedFiles(participant: IParticipant): void {
       this.addToCart(participant.filteredRelatedFiles.hits);
     }
+
   }
 
   angular

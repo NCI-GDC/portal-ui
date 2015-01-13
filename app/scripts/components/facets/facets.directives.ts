@@ -43,7 +43,9 @@ module ngApp.components.facets.directives {
       scope: {
         title: "@",
         placeholder: "@",
-        field: "@"
+        field: "@",
+        entity: "@",
+        template: "@"
       },
       replace: true,
       templateUrl: "components/facets/templates/facets-free-text.html",

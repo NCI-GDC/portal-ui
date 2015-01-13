@@ -18,11 +18,14 @@
   </p>
 
   <p class="input-group" data-ng-if="!ftc.collapsed">
-    <input type="text" class="form-control" placeholder="{{ placeholder }}"
-           data-ng-model="ftc.searchTerm"
-           data-ng-keypress="ftc.searchButtonClick($event)">
+    <input type="text" data-ng-model="ftc.searchTerm" placeholder="{{ placeholder }}"
+           data-typeahead="id for id in ftc.autoComplete($viewValue) | limitTo: 10"
+           data-typeahead-on-select="ftc.termSelected()"
+           data-typeahead-min-length="2"
+           typeahead-template-url="{{ template }}"
+           class="form-control">
     <span class="input-group-addon">
-      <span class="fa fa-search" data-ng-click="ftc.searchButtonClick($event)"></span>
+      <span class="fa fa-search" data-ng-click="ftc.termSelected($event)"></span>
     </span>
   </p>
 </div>

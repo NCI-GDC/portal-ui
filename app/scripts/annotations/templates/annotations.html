@@ -6,7 +6,9 @@
           <h3 class="panel-title pull-left">Facets</h3>
         </div>
         <div class="list-group">
-          <facets-free-text data-field="id" data-title="Annotation" placeholder="{{ 'Annotation ID' | translate }}"></facets-free-text>
+          <facets-free-text data-field="id" data-title="Annotation" placeholder="{{ 'Annotation ID' | translate }}"
+                            entity="annotations"
+                            data-template="components/facets/templates/typeahead-annotations.html"></facets-free-text>
 
           <terms data-name="itemType"
                  data-title="Annotated Item"

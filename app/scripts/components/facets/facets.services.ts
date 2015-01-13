@@ -9,11 +9,20 @@ module ngApp.components.facets.services {
     removeTerm(facet: string, term: string): void;
     getActives(facet: string, terms: any[]): string[];
     getActiveIDs(facet: string): string[];
+    autoComplete(entity: string, query: string, field: string): ng.IPromise<any>;
   }
 
   class FacetService implements IFacetService {
     /* @ngInject */
-    constructor(private LocationService: ILocationService) {
+    constructor(private LocationService: ILocationService, private Restangular: restangular.IService) {
+    }
+
+    autoComplete(entity: string, query: string, field: string): ng.IPromise<any> {
+      return this.Restangular.all(entity + "/ids").get("", {
+        query: query
+      }).then((data) => {
+        return data.data.hits;
+      });
     }
 
     getActives(facet: string, terms: any[]): string[] {
@@ -110,6 +119,6 @@ module ngApp.components.facets.services {
     }
   }
   angular.
-      module("facets.services", ["location.services"])
+      module("facets.services", ["location.services", "restangular"])
       .service("FacetService", FacetService);
 }

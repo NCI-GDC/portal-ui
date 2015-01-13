@@ -20,6 +20,7 @@ module ngApp.components.facets.models {
 
   export interface IFreeTextFacetsScope extends ng.IScope {
     field: any;
+    entity: string;
   }
 
 }

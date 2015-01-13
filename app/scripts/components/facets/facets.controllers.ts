@@ -113,10 +113,11 @@ module ngApp.components.facets.controllers {
   interface IFreeTextController {
     actives: string[];
     searchTerm: string;
-    searchButtonClick(event: any): void;
+    termSelected(event?: any): void;
     collapsed: boolean;
     remove(term: string): void;
     refresh(): void;
+    autoComplete(query: string): ng.IPromise<any>;
   }
 
   class FreeTextController implements IFreeTextController {
@@ -139,12 +140,25 @@ module ngApp.components.facets.controllers {
       $scope.$on("$locationChangeSuccess", () => this.refresh());
     }
 
-    searchButtonClick(event: any): void {
-      if (event.which === 13 || event.which === 1) {
-        this.FacetService.addTerm(this.$scope.field, this.searchTerm);
+    termSelected(event: any = { which: 13 }): void {
+      if ((event.which === 13 || event.which === 1) &&
+          this.actives.indexOf(this.searchTerm) === -1) {
+        var term = this.searchTerm;
+
+        if (typeof term === "object") {
+          var parts = this.$scope.field.split(".");
+          var field = parts.length > 1 ? parts[parts.length - 1] : parts[0];
+          term = term[field].toLowerCase();
+        }
+
+        this.FacetService.addTerm(this.$scope.field, term);
         this.actives.push(this.searchTerm);
         this.searchTerm = "";
       }
+    }
+
+    autoComplete(query: string): ng.IPromise<any> {
+      return this.FacetService.autoComplete(this.$scope.entity, query, this.$scope.field);
     }
 
     remove(term: string): void {

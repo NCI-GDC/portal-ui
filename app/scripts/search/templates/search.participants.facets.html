@@ -1,5 +1,7 @@
 <facets-free-text data-title="Participant" placeholder="{{ 'Participant Barcode or Uuid' | translate }}"
-                  data-field="participants.bcr_patient_uuid"></facets-free-text>
+                  data-field="participants.bcr_patient_uuid"
+                  data-entity="participants"
+                  data-template="components/facets/templates/typeahead-participants.html"></facets-free-text>
 <terms data-name="participants.admin.project_code" data-title="Cancer Program"
        data-facet="sc.participants.aggregations['admin.project_code']" data-collapsed="true"></terms>
 <terms data-name="participants.admin.disease_code" data-title="Project"
@@ -10,7 +12,8 @@
        data-facet="sc.participants.aggregations.tumor_tissue_site"></terms>
 <facets-free-text data-title="ICD10"
                   placeholder="{{ 'e.g. C50.9, C64.1' | translate }}"
-                  data-field="icd_10"></facets-free-text>
+                  data-field="icd_10"
+                  data-entity="participants"></facets-free-text>
 <terms data-name="participants.ethnicity" data-title="Ethnicity"
        data-facet="sc.participants.aggregations.ethnicity"></terms>
 <terms data-name="participants.gender" data-title="Gender" data-facet="sc.participants.aggregations.gender"></terms>

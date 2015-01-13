@@ -7,7 +7,7 @@ module ngApp.components.user.services {
     login(username: string): void;
     logout(): void;
     toggleFilter(): void;
-    addMyProjectsFilter(filters: any, key: string);
+    addMyProjectsFilter(filters: any, key: string): void;
     currentUser: IUser;
   }
 
@@ -41,7 +41,7 @@ module ngApp.components.user.services {
       this.$rootScope.$broadcast("gdc-user-reset");
     }
 
-    addMyProjectsFilter(filters: any, key: string) {
+    addMyProjectsFilter(filters: any, key: string): void {
       if (this.currentUser && this.currentUser.isFiltered &&
           this.currentUser.projects.length) {
         var userProjects = {
@@ -67,12 +67,15 @@ module ngApp.components.user.services {
           if (!projectFilter) {
             filters.content.push(userProjects);
           } else {
-            // If there are projects selected already, check if any aren't in users list
-            // If there are, default to entire user list. If there aren't, stick with selection.
-            var diff = _.difference(projectFilter.content.value, this.currentUser.projects);
-            if (diff.length) {
-              projectFilter.content.value = this.currentUser.projects;
-              this.LocationService.setFilters(filters);
+            var sharedValues = _.intersection(projectFilter.content.value, this.currentUser.projects);
+
+            // If any of the projects selected belong to the user, stick with those rather then defaulting
+            // to all of the users projects.
+            if (sharedValues.length) {
+              projectFilter.content.value = sharedValues;
+            } else {
+              // User is trying to search on only projects that aren't in their list.
+              projectFilter.content.value = [""];
             }
           }
         }

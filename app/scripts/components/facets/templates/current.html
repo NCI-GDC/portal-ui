@@ -23,6 +23,10 @@
           {{v}}
           <span data-ng-if="!$last">, </span>
         </span>
+        <span data-ng-if="filter.content.field === 'participants.admin.disease_code' && cfc.UserService.currentUser && cfc.UserService.currentUser.isFiltered"
+              data-ng-translate>
+          and in My Projects
+        </span>
 
       </span>
       <span class="label label-warning and" data-ng-if="!$last">AND</span>

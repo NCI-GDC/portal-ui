@@ -41,7 +41,7 @@
         </div>
       </th>
       <th scope="col" class="text-center"
-          data-ng-if="sc.UserService.currentUser"
+          data-ng-if="sc.UserService.currentUser && !sc.UserService.currentUser.isFiltered"
           data-translate>
         My Projects
       </th>
@@ -118,7 +118,7 @@
         </div>
       </td>
       <td scope="col" class="text-center"
-          data-ng-if="sc.UserService.currentUser"
+          data-ng-if="sc.UserService.currentUser && !sc.UserService.currentUser.isFiltered"
           data-translate>
         <i data-ng-if="sc.isUserProject(file)" class="fa fa-check fa-lg"></i>
         <i data-ng-if="!sc.isUserProject(file)" class="fa fa-close fa-lg"></i>

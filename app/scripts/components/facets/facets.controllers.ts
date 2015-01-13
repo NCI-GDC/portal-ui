@@ -4,6 +4,7 @@ module ngApp.components.facets.controllers {
   import IFacetService = ngApp.components.facets.services.IFacetService;
   import IFreeTextFacetsScope = ngApp.components.facets.models.IFreeTextFacetsScope;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface ITermsController {
     add(facet: string, term: string): void;
@@ -86,7 +87,7 @@ module ngApp.components.facets.controllers {
 
     /* @ngInject */
     constructor($scope: ng.IScope, private LocationService: ILocationService,
-                private FacetService: IFacetService) {
+                private FacetService: IFacetService, private UserService: IUserService) {
       this.build();
 
       $scope.$on("$locationChangeSuccess", () => this.build());

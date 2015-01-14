@@ -425,9 +425,7 @@ gulp.task('pegjs', function () {
 });
 
 gulp.task('serve', function (cb) {
-  runSequence('default', [
-    //'karma:watch',
-    'serve:web'], cb);
+  runSequence('default', ['karma:watch', 'serve:web'], cb);
 });
 
 // Build Production Files, the Default Task

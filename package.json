@@ -79,7 +79,7 @@
     "postinstall": "bower install --quiet",
     "test": "gulp test",
     "prot": "gulp protractor",
-    "prestart" : "npm install && pegjs -e window.gql gql.pegjs",
+    "prestart" : "npm install",
     "start": "gulp serve",
     "prebuild": "npm install",
     "build": "gulp",

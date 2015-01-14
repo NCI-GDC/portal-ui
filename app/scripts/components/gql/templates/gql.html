@@ -1,0 +1,13 @@
+<div>
+<textarea
+          class="form-control"
+          style="border:none;box-shadow: none"
+          data-ng-model="query"
+          data-ng-change="onChange($event)"
+          aria-label="Advanced Query"
+          placeholder="Start Typing Your Query...."
+          role="textbox">
+</textarea>
+<div data-ng-show="gql" style="margin: 0; border-radius: 0; border: none" class="alert alert-success">{{gql}}</div>
+<div data-ng-show="error" style="margin: 0; border-radius: 0; border: none" class="alert alert-danger">{{errorMsg}}</div>
+</div>

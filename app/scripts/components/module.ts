@@ -11,5 +11,6 @@ angular
       "components.location",
       "components.charts",
       "components.overrides",
-      "components.user"
+      "components.user",
+        "components.gql"
     ]);

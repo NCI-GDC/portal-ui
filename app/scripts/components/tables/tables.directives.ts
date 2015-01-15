@@ -1,16 +1,32 @@
 module ngApp.components.tables.directives {
 
+
+  interface ITableDirectiveScope extends ng.IScope {
+     filtersRevealed:boolean;
+  }
+
   /* @ngInject */
   function SelectColumns(): ng.IDirective {
+
     return {
       restrict: "EA",
       scope: {
+        filters:"="
       },
       replace: true,
-      templateUrl: "components/tables/templates/select-columns.html",
-      link: function ($scope: ng.IScope) {
-        //TODO
-      }
+      templateUrl: "components/tables/templates/select-columns.html"
+    };
+  }
+
+  function ArrangeColumns(): ng.IDirective {
+
+    return {
+      restrict: "EA",
+      scope: {
+        list:"="
+      },
+      replace: true,
+      templateUrl: "components/tables/templates/arrange-columns.html",
     };
   }
 
@@ -41,9 +57,13 @@ module ngApp.components.tables.directives {
     }
   }
 
+
+
+
   angular.module("tables.directives", ["tables.controllers"])
       .directive("selectColumns", SelectColumns)
       .directive("exportTable", ExportTable)
-      .directive("sortTable", SortTable);
+      .directive("sortTable", SortTable)
+      .directive("arrangeColumns", ArrangeColumns);
 }
 

@@ -43,65 +43,27 @@
 
       <div class="panel panel-default">
 
-        <div class="panel-heading clearfix">
-          <h3 class="panel-title pull-left">
+        <div class="panel-heading">
+
+          <h3 class="panel-title table-heading">
             <span data-translate>Annotations</span> ({{asc.annotations.pagination.total}})
+            <div class="pull-right">
+              <div class="btn-group" role="group" aria-label="Filter and sort table">
+                <sort-table data-sort-columns="asc.sortColumns"
+                            data-paging="asc.annotations.pagination" data-page="annotations"></sort-table>
+                <select-columns filters='tableConfig.headings'></select-columns>
+
+              </div>
+            </div>
           </h3>
-          <div class="pull-right">
-            <sort-table data-sort-columns="asc.sortColumns"
-                        data-paging="asc.annotations.pagination" data-page="annotations"></sort-table>
-          </div>
         </div>
-        <div class="table-responsive">
-          <table id="annotations-table" class="table table-striped table-hover table-condensed table-bordered">
-            <thead>
-            <tr>
-              <th scope="col" class="text-center" data-translate>ID</th>
-              <th scope="col" class="text-center" data-translate>Participant ID</th>
-              <th scope="col" class="text-center" data-translate>Project</th>
-              <th scope="col" class="text-center" data-translate>Item Type</th>
-              <th scope="col" class="text-center" data-translate>Item UUID</th>
-              <th scope="col" class="text-center" data-translate>Item Barcode</th>
-              <th scope="col" class="text-center" data-translate>Classification</th>
-              <th scope="col" class="text-center" data-translate>Category</th>
-              <th scope="col" class="text-center" data-translate>Created Date</th>
-              <th scope="col" class="text-center" data-translate>Annotator</th>
-              <th scope="col" class="text-center" data-translate>Status</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr data-ng-repeat="annotation in asc.annotations.hits track by annotation.id">
-              <td>
-                <a data-ui-sref="annotation({ annotationId: annotation.id })">
-                  {{ ::annotation.id }}
-                </a>
-              </td>
-              <td>
-                <a>
-                  tbc
-                </a>
-              </td>
-              <td>
-                <a>
-                  tbc
-                </a>
-              </td>
-              <td>{{ ::annotation.itemType }}</td>
-              <td>tbc</td>
-              <td>{{ ::annotation.item | ellipsicate:50 }}</td>
-              <td>{{ ::annotation.annotationClassificationName }}</td>
-              <td>{{ ::annotation.categoryName }}</td>
-              <td>{{ ::annotation.dateCreated | date }}</td>
-              <td>{{ ::annotation.createdBy }}</td>
-              <td>{{ ::annotation.status }}</td>
-            </tr>
-            </tbody>
-          </table>
+        <tableicious data=asc.annotations.hits  config=tableConfig></tableicious>
         </div>
         <div class="panel-footer clearfix">
           <pagination-controls data-page="annotations" data-paging="asc.annotations.pagination"></pagination-controls>
         </div>
       </div>
+
     </div>
   </div>
 </div>

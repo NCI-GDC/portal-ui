@@ -3,10 +3,15 @@ module ngApp.annotations.controllers {
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
+  import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
   export interface IAnnotationsController {
     annotations: IAnnotations;
     sortColumns: any;
+  }
+
+  interface IAnnotationsScope extends ng.IScope {
+    tableConfig:TableiciousConfig;
   }
 
   class AnnotationsController implements IAnnotationsController {
@@ -26,16 +31,22 @@ module ngApp.annotations.controllers {
       }
     ];
 
+
     /* @ngInject */
-    constructor(private $scope: ng.IScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService) {
+    constructor(private $scope: IAnnotationsScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService, AnnotationsTableModel:TableiciousConfig) {
       CoreService.setPageTitle("Annotations");
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
         if (next.indexOf("annotations") !== -1) {
           this.refresh();
         }
       });
+
+      $scope.tableConfig = AnnotationsTableModel;
+
       this.refresh();
     }
+
+
 
     refresh() {
       this.AnnotationsService.getAnnotations({
@@ -61,6 +72,7 @@ module ngApp.annotations.controllers {
         ]
       }).then((data) => this.annotations = data);
     }
+
   }
 
   export interface IAnnotationController {
@@ -77,7 +89,8 @@ module ngApp.annotations.controllers {
   angular
       .module("annotations.controller", [
         "annotations.services",
-        "core.services"
+        "core.services",
+        "annotations.table.model"
       ])
       .controller("AnnotationsController", AnnotationsController)
       .controller("AnnotationController", AnnotationController);

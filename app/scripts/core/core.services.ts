@@ -75,6 +75,8 @@ module ngApp.core.services {
       this.requestCount++;
     }
 
+
+
     xhrDone(model?: string) {
       this.finishedRequests++;
       if (this.finishedRequests === this.requestCount) {

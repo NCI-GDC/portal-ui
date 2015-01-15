@@ -12,6 +12,8 @@ module ngApp.search.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import INotify = ng.cgNotify.INotify;
+  import ITableService = ngApp.components.tables.services.ITableService;
 
   export interface ISearchController {
     files: IFiles;
@@ -31,9 +33,123 @@ module ngApp.search.controllers {
     removeAllinSearchResult(): void;
   }
 
+  interface ISearchScope extends ng.IScope {
+      searchfileColumns:any[];
+      searchParticipantColumns:any[];
+  }
+
   class SearchController implements ISearchController {
     files: IFiles;
     participants: IParticipants;
+    lastAddedFiles: IFile[];
+    lastNotifyDialog: INotify;
+
+    searchParticipantColumns:any[] = [
+      {
+        displayName:"Participant ID",
+        id:"participant_id",
+        enabled: true
+      },
+      {
+        displayName:"Project",
+        id:"project",
+        enabled: true
+      },
+      {
+        displayName:"Primary Site",
+        id:"primary_site",
+        enabled: true
+      },
+      {
+        displayName:"Disease Type",
+        id:"disease_type",
+        enabled: true
+      },
+      {
+        displayName:"Gender",
+        id:"gender",
+        enabled: true
+      },
+      {
+        displayName:"Tumor Stage",
+        id:"tumor_stage",
+        enabled: true
+      },
+      {
+        displayName:"Files",
+        id:"files",
+        enabled: true
+      },
+      {
+        displayName:"Available Data Files Per Type",
+        id:"available_data_files",
+        enabled: true
+      },
+      {
+        displayName:"Annotations",
+        id:"annotations",
+        enabled: true
+      }
+    ];
+
+    searchfileColumns:any[] = [
+      {
+        displayName:"Access",
+        id:"access",
+        enabled: true
+      },
+      {
+        displayName:"File Type",
+        id:"file_type",
+        enabled: true
+      },
+      {
+        displayName:"Name",
+        id:"file_name",
+        enabled: true
+      },
+      {
+        displayName:"Participants",
+        id:"participants",
+        enabled: true
+      },
+      {
+        displayName:"Annotations",
+        id:"annotations",
+        enabled: true
+      },
+      {
+        displayName:"Project",
+        id:"project",
+        enabled: true
+      },
+      {
+        displayName:"Data Category",
+        id:"data_category",
+        enabled: true
+      },
+      {
+        displayName:"Status",
+        id:"status",
+        enabled: true
+      },
+      {
+        displayName:"Size",
+        id:"size",
+        enabled: true
+      },
+      {
+        displayName:"Revision",
+        id:"revision",
+        enabled: true
+      },
+      {
+        displayName:"Update date",
+        id:"update_date",
+        enabled: true
+      },
+    ];
+
     fileSortColumns: any = [
       {
         key: "file_size",
@@ -68,7 +184,7 @@ module ngApp.search.controllers {
     ];
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope,
+    constructor(private $scope: ISearchScope,
                 private $state: ng.ui.IStateService,
                 public State: IState,
                 public CartService: ICartService,
@@ -76,9 +192,9 @@ module ngApp.search.controllers {
                 public ParticipantsService: IParticipantsService,
                 private LocationService: ILocationService,
                 private UserService: IUserService,
-                public CoreService: ICoreService
-                ) {
-
+                public CoreService: ICoreService,
+                private TableService : ITableService,
+                private notify: any) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
       this.State.setActive("facets", data.tab);
@@ -92,6 +208,10 @@ module ngApp.search.controllers {
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });
+
+      $scope.searchfileColumns = this.searchfileColumns;
+      $scope.searchParticipantColumns = this.searchParticipantColumns;
+
 
       this.refresh();
 
@@ -199,6 +319,15 @@ module ngApp.search.controllers {
     isUserProject(file: IFile): boolean {
       return this.UserService.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
     }
+
+    fileColumnIsEnabled = (columnId) => {
+        return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.searchfileColumns,columnId);
+    }
+
+    participantColumnIsEnabled = (columnId) => {
+      return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.searchParticipantColumns,columnId);
+    }
+
 
     select(section: string, tab: string) {
       var next = "search.";

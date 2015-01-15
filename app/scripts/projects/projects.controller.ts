@@ -3,16 +3,24 @@ module ngApp.projects.controllers {
   import IProjects = ngApp.projects.models.IProjects;
   import IProjectsService = ngApp.projects.services.IProjectsService;
   import ICoreService = ngApp.core.services.ICoreService;
+  import ITableService = ngApp.components.tables.services.ITableService;
+  import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
   export interface IProjectsController {
     projects: IProjects;
   }
 
+  export interface IProjectScope extends ng.IScope {
+    tableConfig:TableiciousConfig ;
+  }
+
+
   class ProjectsController implements IProjectsController {
     projects: IProjects;
+    projectColumns: any[];
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope, private ProjectsService: IProjectsService, private CoreService: ICoreService) {
+    constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService, private CoreService: ICoreService, ProjectTableModel) {
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
         if (next.indexOf("projects") !== -1) {
@@ -22,6 +30,10 @@ module ngApp.projects.controllers {
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });
+
+
+      $scope.tableConfig = ProjectTableModel;
+
       this.refresh();
     }
 
@@ -67,7 +79,8 @@ module ngApp.projects.controllers {
   angular
       .module("projects.controller", [
         "projects.services",
-        "core.services"
+        "core.services",
+        "projects.table.model"
       ])
       .controller("ProjectsController", ProjectsController)
       .controller("ProjectController", ProjectController);

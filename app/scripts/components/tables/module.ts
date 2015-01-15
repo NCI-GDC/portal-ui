@@ -1,7 +1,9 @@
-module ngApp.components.tables {
+module ngApp.components.tables.directives {
 
   angular.module("components.tables", [
-    "tables.directives"
+    "tables.directives",
+    "tablicious.directive",
+      "tables.services"
   ]);
 
 }

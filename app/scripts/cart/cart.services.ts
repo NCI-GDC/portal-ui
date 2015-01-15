@@ -4,7 +4,6 @@ module ngApp.cart.services {
   import IFile = ngApp.files.models.IFile;
   import IFilesService = ngApp.files.services.IFilesService;
   import IGDCWindowService = ngApp.models.IGDCWindowService;
-  import IUserService = ngApp.components.user.services.IUserService;
   import INotifyService = ng.cgNotify.INotifyService;
 
   export interface ICartService {
@@ -38,7 +37,6 @@ module ngApp.cart.services {
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
-                private UserService: IUserService,
                 private notify: INotifyService) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
@@ -48,10 +46,7 @@ module ngApp.cart.services {
     }
 
     getFiles(): IFile[] {
-      var filtered: boolean = this.UserService.currentUser && this.UserService.currentUser.isFiltered;
-      return filtered ? _.filter(this.files, (file: IFile) : boolean => {
-        return this.UserService.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
-      }) : this.files;
+      return this.files;
     }
 
     getSelectedFiles(): IFile[] {
@@ -189,7 +184,6 @@ module ngApp.cart.services {
   angular
       .module("cart.services", [
         "ngApp.files",
-        "user.services",
         "cgNotify"
       ])
       .service("CartService", CartService);

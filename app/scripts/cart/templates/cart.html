@@ -115,7 +115,7 @@
             </button>
           </th>
           <th scope="col" class="text-center"
-              data-ng-if="cc.UserService.currentUser && !cc.UserService.currentUser.isFiltered"
+              data-ng-if="cc.UserService.currentUser"
               data-translate>
             My Projects
           </th>
@@ -187,7 +187,7 @@
             </div>
           </td>
           <td scope="col" class="text-center"
-              data-ng-if="cc.UserService.currentUser && !cc.UserService.currentUser.isFiltered">
+              data-ng-if="cc.UserService.currentUser">
             <i data-ng-if="cc.isUserProject(file)" class="fa fa-check fa-lg"></i>
             <i data-ng-if="!cc.isUserProject(file)" class="fa fa-close fa-lg"></i>
           </td>

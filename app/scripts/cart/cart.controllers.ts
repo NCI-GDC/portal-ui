@@ -327,6 +327,7 @@ module ngApp.cart.controllers {
             $scope.removeAll = function(){
               $scope.removeAllInSearchResult();
             }
+
           }
         }
       })

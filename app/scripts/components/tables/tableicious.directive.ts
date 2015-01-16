@@ -325,10 +325,8 @@ module ngApp.components.tables.directives.tableicious {
             controller:function($scope, $element,$compile){
 
                 if ($scope.heading && $scope.heading.id === 'add_to_cart') {
-                    //debugger;
 
                     _.defer(function(){
-
                         var htm = '<div add-to-cart-all files="data"></div>';
                         var compiled = $compile(htm)($scope);
                         $element.html(compiled);

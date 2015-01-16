@@ -105,7 +105,8 @@ module ngApp.components.tables.services {
                 if (_.isEqual(firstHeadings, _.keys(datum))) {
                     return true;
                 } else {
-                    console.error("Error generating table - all data must have the same structure: ",firstHeadings , "is not congruent with ", _.keys(datum));
+                    //console.warn("Warnning - some data in this set does not have the same structure: ",firstHeadings , "is not congruent with ", _.keys(datum));
+                    return true;
                 }
             })
         }
@@ -124,13 +125,13 @@ module ngApp.components.tables.services {
 
             headingsDefinedByData.forEach(function(heading){
                 if (!_.contains(headingsDefinedByConfig,heading)) {
-                    console.error('Error generating table, data contains field for which no heading definition found in config: ',heading, '. This entry will be ignored.');
+                    //console.error('Error generating table, data contains field for which no heading definition found in config: ',heading, '. This entry will be ignored.');
                 }
             });
 
             headingsDefinedByConfig.forEach(function(heading){
                 if (!_.contains(headingsDefinedByData,heading)) {
-                    console.warn('Config contains definition for entry not found in data: ',heading, '. This field will be blank.');
+                    //console.warn('Config contains definition for entry not found in data: ',heading, '. This field will be blank.');
                 }
             });
         }
@@ -146,7 +147,7 @@ module ngApp.components.tables.services {
                 if (_.contains(orderArray,heading.id)) {
                     return true;
                 } else {
-                    console.error("No order specified for heading: ",heading.id);
+                    //console.error("No order specified for heading: ",heading.id);
                 }
 
             });

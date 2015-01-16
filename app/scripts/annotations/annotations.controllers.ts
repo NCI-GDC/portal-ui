@@ -25,10 +25,10 @@ module ngApp.annotations.controllers {
         key: "createdBy",
         name: "Annotator"
       },
-      {
-        key: "id",
-        name: "ID"
-      }
+      //{
+      //  key: "id",
+      //  name: "ID"
+      //}
     ];
 
 

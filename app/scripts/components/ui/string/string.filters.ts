@@ -3,7 +3,11 @@ module ngApp.components.ui.string {
   class Ellipsicate {
     constructor() {
       return function (fullstring: string, length: number = 50) {
-        return (fullstring.length <= length) ? fullstring : fullstring.substring(0, length) + "…";
+        if (fullstring) {
+          return (fullstring.length <= length) ? fullstring : fullstring.substring(0, length) + "…";
+        } else {
+          return '';
+        }
       };
     }
   }

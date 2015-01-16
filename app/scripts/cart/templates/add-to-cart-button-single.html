@@ -1,0 +1,55 @@
+<div class="btn-group" data-dropdown>
+    <button data-ng-if="CartService.isInCart(file.file_uuid)" type="button" class="btn btn-success" disabled>
+        <i class="fa fa-check-circle"></i>
+    </button>
+    <button data-ng-if="!CartService.isInCart(file.file_uuid)" type="button" class="btn btn-default"
+            data-ng-click="addToCart([file])">
+        <i class="fa fa-shopping-cart"></i>
+    </button>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+            aria-expanded="false">
+        <span class="caret"></span>
+        <span class="sr-only">Toggle Dropdown</span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li role="listitem"
+            aria-label="{{ 'Download File' | translate }}">
+            <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+                <i class="fa-stack fa fa-cloud-download fa-stack"></i>
+                <span data-translate>Download</span>
+            </a>
+        </li>
+        <li role="listitem"
+            aria-label="{{ 'Download File' | translate }}">
+            <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+                <i class="fa-stack fa fa-download fa-stack "></i>
+                <span data-translate>Download File</span>
+            </a>
+        </li>
+        <li role="listitem"
+            aria-label="{{ 'Download Metadata' | translate }}">
+            <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+                <i class="fa fa-download fa-stack "></i>
+                <span data-translate>Download Metadata</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li data-ng-if="file.archive.archive_uuid" role="listitem"
+            aria-label="{{ 'Find Files in same archive' | translate }}">
+            <a data-ng-href="search/f?filters={{ makeFilter([
+                  { name: 'files.archive.archive_uuid', value: file.archive.archive_uuid }
+                  ])}}">
+                <i class="fa fa-file-zip-o fa-stack "></i>
+                <span data-translate>Find Files in same archive</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li role="listitem"
+            aria-label="{{ 'View Metadata Files' | translate }}">
+            <a data-ng-href="/files/{{ file.file_uuid }}#files">
+                <i class="fa fa-file-text-o fa-stack "></i>
+                <span data-translate>View Metadata Files</span>
+            </a>
+        </li>
+    </ul>
+</div>

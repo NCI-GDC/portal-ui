@@ -1,0 +1,26 @@
+<div class="btn-group" data-dropdown>
+    <button type="button"
+            class="btn btn-default dropdown-toggle"
+            data-ng-click="getFilteredRelatedFiles()"
+            aria-label="Participant Actions">
+        <i class="fa fa-shopping-cart"></i>
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li aria-label="{{ 'Add all related files' | translate }}"
+            role="button">
+            <a data-ng-click="addRelatedFiles(p)">
+                <i class="fa fa-shopping-cart fa-stack"></i>
+                <span data-translate>Add all related files</span> ({{ files.length }})
+            </a>
+        </li>
+        <li aria-label="{{ 'Add filtered related files' | translate }}"
+            role="button">
+            <a data-ng-click="addFilteredRelatedFiles(p)">
+                <i class="fa fa-shopping-cart fa-stack"></i>
+                <span data-translate>Add filtered related files</span> ({{ filteredRelatedFiles.pagination.total }})
+                <!--<span data-translate>Add filtered related files</span> ({{ p.filteredRelatedFiles.pagination.total }})-->
+            </a>
+        </li>
+    </ul>
+</div>

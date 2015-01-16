@@ -5,6 +5,11 @@ module ngApp.projects.models {
     function getFileSref(data_type:string) {
         return function fileSref (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
 
+            //debugger;
+            //if (row) {
+
+            //}
+
             var projectCode = _.find(row,function(elem){
                 return elem.id === 'project_code';
             }).val;
@@ -26,7 +31,7 @@ module ngApp.projects.models {
             enabled: true,
             sref: function (field) {
                 return "project({projectId:'" + field.val + "'})"
-            },
+            }
         }, {
             displayName: "Disease Type",
             id: "disease_type",
@@ -34,7 +39,7 @@ module ngApp.projects.models {
         }, {
             displayName: "Program",
             id: "program",
-            enabled: true,
+            enabled: true
         },
         {
             displayName: "Participants",
@@ -52,7 +57,7 @@ module ngApp.projects.models {
                 var filter = scope.root.makeFilter([{name: 'participants.admin.disease_code', value: projectCode}]);
                 return "search.participants({ 'filters':"+angular.toJson(filter)+"})";
 
-            },
+            }
         }, {
             displayName: "Project",
             id: "project_name",
@@ -66,49 +71,38 @@ module ngApp.projects.models {
                 displayName: 'Clinical',
                 id: 'clinical',
                 enabled: true,
-                template: function (x) {
-                    return 452;
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === '_summary';
+                    });
+                    var data:any = summary.val._analyzed_data['Clinical data'];
+                    return data['file_count'];
                 },
                 sref: getFileSref('Clinical data')
             }, {
                 displayName: 'SNV',
                 id: 'snv',
                 enabled: true,
-                template: function (x) {
-                    return '';
-                },
                 sref: getFileSref('Simple nucleotide variant')
             }, {
                 displayName: 'mrnA',
                 id: 'mrna',
                 enabled: true,
-                template: function (x) {
-                    return 58;
-                },
                 sref: getFileSref('mRNA expression')
             }, {
                 displayName: 'miRNA',
                 id: 'mirna',
                 enabled: true,
-                template: function (x) {
-                    return 3251;
-                },
                 sref: getFileSref('miRNA expression')
             }, {
                 displayName: 'CNV',
                 id: 'cnv',
                 enabled: true,
-                template: function (x) {
-                    return 68;
-                },
                 sref: getFileSref('Copy number variant')
             }, {
                 displayName: 'Meth',
                 id: 'meth',
                 enabled: true,
-                template: function (x) {
-                    return 3251;
-                },
                 sref: getFileSref('DNA methylation')
                 }]
             }, {

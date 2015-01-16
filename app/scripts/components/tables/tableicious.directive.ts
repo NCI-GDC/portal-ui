@@ -10,6 +10,7 @@ module ngApp.components.tables.directives.tableicious {
         draggableHeadings:any[];
         root:IRootScope;
         models:any;
+        $filter:ng.IFilterProvider;
         getColumnIndex(arg:any):number;
         expandNestedData(nestedData:any):any;
         getHeadingColSpan(heading):number;
@@ -77,19 +78,24 @@ module ngApp.components.tables.directives.tableicious {
         * If template is defined, the contents of a table cell will be the result of passing the object
         * that defines it to the template function.
         */
-        template?(field:TableiciousEntryDefinition) :string
+        template?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope) :string
 
         /**
          * @sref(field:TableiciousEntryDefinition):string
          * If defined, wraps the text in a UI sref linking to the string returned by this function.
          */
-        sref?(field:TableiciousEntryDefinition):string
+        sref?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope):string
+
+        /**
+         * If defined, an icon will be displayed where that icon is "fa-<return-val>" from the function
+         */
+        icon?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope) : string
     }
 
     class TableiciousController {
 
         /* @ngInject */
-        constructor(private $scope: ITableicousScope, private TableService, private $rootScope) {
+        constructor(private $scope: ITableicousScope, private TableService, private $rootScope,$filter) {
 
             $scope.getColumnIndex = this.getColumnIndex.bind(this);
             $scope.getHeadingRowSpan = this.getHeadingRowSpan.bind(this);
@@ -98,6 +104,7 @@ module ngApp.components.tables.directives.tableicious {
             $scope.getDataAtRow = this.getDataAtRow.bind(this);
             $scope.models = {};
             $scope.root = $rootScope;
+            $scope.$filter = $filter;
 
             $scope.$watch('data',()=>{
                 $scope.dataAsKeyValuePairs = undefined;
@@ -107,12 +114,23 @@ module ngApp.components.tables.directives.tableicious {
             },true);
 
             $scope.$watch(()=>{
-                return $scope.draggableHeadings.map(function(head){
+                return $scope.draggableHeadings && $scope.draggableHeadings.map(function(head){
                     return head.displayName;
                 })
             },()=>{
                 $scope.order = this.createOrderArray($scope.draggableHeadings);
             },true);
+
+            $scope.getTemplate = function(heading,field,row,_scope) {
+                var result = undefined;
+                try {
+                    result = heading.template ? heading.template(field,row,_scope) : field.val;
+                } catch (e) {
+                    result = '?';
+                }
+
+                return result;
+            }
 
             this.refresh.bind(this)();
 
@@ -242,6 +260,14 @@ module ngApp.components.tables.directives.tableicious {
         }
     }
 
+    function arrayToObject(array){
+        var obj = {};
+        array.forEach(function(elem){
+            obj[elem.id] = elem.val;
+        })
+        return obj;
+    }
+
 
     function Tableicious(): ng.IDirective {
         return {
@@ -258,7 +284,66 @@ module ngApp.components.tables.directives.tableicious {
         }
     }
 
+    function tableiciousCell(){
+        return {
+            restrict:"AE",
+            link: function(scope, element){
+                scope.$elem = element;
+            },
+            controller:function($scope, $element,$compile){
+
+                if ($scope.heading.id === 'add_to_cart') {
+                    $scope.arrayRow = arrayToObject($scope.row);
+                    var htm = '<div add-to-cart-single file="arrayRow"></div>';
+                    var compiled = $compile(htm)($scope);
+                    $element.append(compiled);
+                }
+
+                if ($scope.heading.id === 'add_to_cart_filtered') {
+                    $scope.arrayRow = arrayToObject($scope.row);
+                    var files = _.find($scope.row,function(elem){
+                        return elem.id === 'files';
+                    });
+
+                    $scope.files = files.val;
+                    var htm = '<div add-to-cart-filtered files="files" row="row"></div>';
+                    var compiled = $compile(htm)($scope);
+                    $element.append(compiled);
+                }
+
+            }
+        }
+    }
+
+    function tableiciousHeader() {
+        return {
+            restrict:"AE",
+            scope:{
+                heading:'=',
+                data:'='
+            },
+            controller:function($scope, $element,$compile){
+
+                if ($scope.heading && $scope.heading.id === 'add_to_cart') {
+                    //debugger;
+
+                    _.defer(function(){
+
+                        var htm = '<div add-to-cart-all files="data"></div>';
+                        var compiled = $compile(htm)($scope);
+                        $element.html(compiled);
+                    })
+                }
+
+            }
+        }
+    }
+
+
+
     angular.module("tablicious.directive",['dndLists'])
         .directive("tableicious", Tableicious)
         .controller("TableiciousController",TableiciousController)
+        .directive("tableiciousCell",tableiciousCell)
+        .directive("tableiciousHeader",tableiciousHeader)
 }

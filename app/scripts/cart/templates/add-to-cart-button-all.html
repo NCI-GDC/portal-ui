@@ -1,0 +1,36 @@
+<div class="btn-group" data-dropdown>
+    <button data-ng-if="CartService.areInCart(files)" type="button" class="btn btn-success" disabled>
+        <i class="fa fa-check-circle"></i>
+        <!--stuff? {{files}} {{files.hits}}-->
+    </button>
+    <button data-ng-if="!CartService.areInCart(files)" type="button" class="btn btn-primary"
+            data-ng-click="CartService.addFiles(files)"
+            data-ng-disabled="(CartService.getFiles().length + files.length) > CartService.getMaxSize()">
+        <i class="fa fa-shopping-cart"></i>
+    </button>
+    <button type="button" class="btn btn-default dropdown-toggle">
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li>
+            <a data-ng-if="CartService.isFull()">
+                <i class="fa fa-shopping-cart fa-stack"></i>
+                <span data-translate>Cart Full</span>
+            </a>
+            <a data-ng-if="CartService.getFiles().length  > 1" disabled>
+                <i class="fa fa-shopping-cart fa-stack"></i>
+                <span data-translate>Cart can only hold {{CartService.getMaxSize() - CartService.getFiles().length }} more items</span>
+            </a>
+            <a data-ng-if="(CartService.getFiles().length + files.length) <= CartService.getMaxSize()" data-ng-click="addAll()">
+                <i class="fa fa-shopping-cart fa-stack"></i>
+                <span data-translate>Add all in Search Result</span>
+            </a>
+        </li>
+        <li>
+            <a data-ng-click="removeAll()">
+                <i class="fa fa-shopping-cart fa-stack"></i>
+                <span data-translate>Remove all in Search Result</span>
+            </a>
+        </li>
+    </ul>
+</div>

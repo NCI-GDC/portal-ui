@@ -14,6 +14,7 @@ module ngApp.search.controllers {
   import IUserService = ngApp.components.user.services.IUserService;
   import INotify = ng.cgNotify.INotify;
   import ITableService = ngApp.components.tables.services.ITableService;
+  import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
   export interface ISearchController {
     files: IFiles;
@@ -31,11 +32,14 @@ module ngApp.search.controllers {
     isUserProject(file: IFile): boolean;
     addAll(): void;
     removeAllinSearchResult(): void;
+    fileTableConfig:TableiciousConfig;
+    participantTableConfig:TableiciousConfig;
+
   }
 
   interface ISearchScope extends ng.IScope {
-      searchfileColumns:any[];
-      searchParticipantColumns:any[];
+    fileTableConfig:TableiciousConfig;
+    participantTableConfig:TableiciousConfig;
   }
 
   class SearchController implements ISearchController {
@@ -43,112 +47,6 @@ module ngApp.search.controllers {
     participants: IParticipants;
     lastAddedFiles: IFile[];
     lastNotifyDialog: INotify;
-
-    searchParticipantColumns:any[] = [
-      {
-        displayName:"Participant ID",
-        id:"participant_id",
-        enabled: true
-      },
-      {
-        displayName:"Project",
-        id:"project",
-        enabled: true
-      },
-      {
-        displayName:"Primary Site",
-        id:"primary_site",
-        enabled: true
-      },
-      {
-        displayName:"Disease Type",
-        id:"disease_type",
-        enabled: true
-      },
-      {
-        displayName:"Gender",
-        id:"gender",
-        enabled: true
-      },
-      {
-        displayName:"Tumor Stage",
-        id:"tumor_stage",
-        enabled: true
-      },
-      {
-        displayName:"Files",
-        id:"files",
-        enabled: true
-      },
-      {
-        displayName:"Available Data Files Per Type",
-        id:"available_data_files",
-        enabled: true
-      },
-      {
-        displayName:"Annotations",
-        id:"annotations",
-        enabled: true
-      }
-    ];
-
-    searchfileColumns:any[] = [
-      {
-        displayName:"Access",
-        id:"access",
-        enabled: true
-      },
-      {
-        displayName:"File Type",
-        id:"file_type",
-        enabled: true
-      },
-      {
-        displayName:"Name",
-        id:"file_name",
-        enabled: true
-      },
-      {
-        displayName:"Participants",
-        id:"participants",
-        enabled: true
-      },
-      {
-        displayName:"Annotations",
-        id:"annotations",
-        enabled: true
-      },
-      {
-        displayName:"Project",
-        id:"project",
-        enabled: true
-      },
-      {
-        displayName:"Data Category",
-        id:"data_category",
-        enabled: true
-      },
-      {
-        displayName:"Status",
-        id:"status",
-        enabled: true
-      },
-      {
-        displayName:"Size",
-        id:"size",
-        enabled: true
-      },
-      {
-        displayName:"Revision",
-        id:"revision",
-        enabled: true
-      },
-      {
-        displayName:"Update date",
-        id:"update_date",
-        enabled: true
-      },
-    ];
 
     fileSortColumns: any = [
       {
@@ -169,10 +67,10 @@ module ngApp.search.controllers {
       }
     ];
     participantSortColumns: any = [
-      {
-        key: "bcr_patient_barcode",
-        name: "Participant ID"
-      },
+      //{
+      //  key: "bcr_patient_barcode",
+      //  name: "Participant ID"
+      //},
       {
         key: "gender",
         name: "Gender"
@@ -182,6 +80,8 @@ module ngApp.search.controllers {
         name: "Tumor Stage"
       }
     ];
+
+    //searchFileTableModel:TableiciousConfig =
 
     /* @ngInject */
     constructor(private $scope: ISearchScope,
@@ -194,6 +94,8 @@ module ngApp.search.controllers {
                 private UserService: IUserService,
                 public CoreService: ICoreService,
                 private TableService : ITableService,
+                private SearchTableFilesModel:TableiciousConfig,
+                private SearchTableParticipantsModel:TableiciousConfig,
                 private notify: any) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
@@ -209,8 +111,8 @@ module ngApp.search.controllers {
         this.refresh();
       });
 
-      $scope.searchfileColumns = this.searchfileColumns;
-      $scope.searchParticipantColumns = this.searchParticipantColumns;
+      $scope.fileTableConfig = this.SearchTableFilesModel;
+      $scope.participantTableConfig = this.SearchTableParticipantsModel;
 
 
       this.refresh();
@@ -320,14 +222,6 @@ module ngApp.search.controllers {
       return this.UserService.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
     }
 
-    fileColumnIsEnabled = (columnId) => {
-        return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.searchfileColumns,columnId);
-    }
-
-    participantColumnIsEnabled = (columnId) => {
-      return this.TableService.objectWithMatchingIdInArrayIsEnabled(this.searchParticipantColumns,columnId);
-    }
-
 
     select(section: string, tab: string) {
       var next = "search.";
@@ -356,59 +250,9 @@ module ngApp.search.controllers {
       this.CartService.addFiles(files);
     }
 
-    addAll(): void {
-      console.log("SearchController::addAll");
-      var filters = this.LocationService.filters();
-      var size: number = (this.files.pagination.total >= this.CartService.getMaxSize()) ? this.CartService.getMaxSize() : this.files.pagination.total;
-      this.FilesService.getFiles({
-        fields: [
-          "data_access",
-          "data_format",
-          "data_level",
-          "data_subtype",
-          "data_type",
-          "file_extension",
-          "file_name",
-          "file_size",
-          "file_uuid",
-          "platform",
-          "updated",
-          "archive.disease_code",
-          "archive.revision",
-          "participants.bcr_patient_uuid"
-        ],
-        filters: filters,
-        size: size
-      }).then((data) => this.CartService.addFiles(data.hits));
-    }
 
-    removeAllInSearchResult(): void {
-      // Query ES using the current filter and the file uuids in the Cart
-      // If an id is in the result, then it is both in the Cart and in the current Search query
-      var filters = this.LocationService.filters();
-      var size: number = this.CartService.getFiles().length;
-      if (!filters.content) {
-        filters.op = "and";
-        filters.content = [];
-      }
-      filters.content.push({
-        content: {
-          field: "files.file_uuid",
-          value: _.pluck(this.CartService.getFiles(), "file_uuid")
-        },
-        op: "is"
-      });
-      this.FilesService.getFiles({
-        fields:[
-          "file_uuid"
-        ],
-        filters: filters,
-        size: size,
-        from: 0
-      }).then((data) => {
-        this.CartService.remove(_.pluck(data.hits, "file_uuid"));
-      });
-    }
+
+
 
     removeFiles(files: IFile[]): void {
       this.CartService.remove(_.pluck(files, "file_uuid"));
@@ -418,46 +262,46 @@ module ngApp.search.controllers {
       this.addToCart(participant.files);
     }
 
-    getFilteredRelatedFiles(participant: IParticipant): void {
-      var filters = this.LocationService.filters();
-
-      if (!filters.content) {
-        filters.op = "and";
-        filters.content = [];
-      }
-
-      filters.content.push({
-        content: {
-          field: "participants.bcr_patient_uuid",
-          value: [
-            participant.bcr_patient_uuid
-          ]
-        },
-        op: "is"
-      });
-
-      this.FilesService.getFiles({
-        fields: [
-          "data_access",
-          "data_format",
-          "data_level",
-          "data_subtype",
-          "data_type",
-          "file_extension",
-          "file_name",
-          "file_size",
-          "file_uuid",
-          "platform",
-          "updated",
-          "archive.disease_code",
-          "archive.revision",
-          "participants.bcr_patient_uuid"
-        ],
-        filters: filters,
-        size: 100
-      }).then((data) => participant.filteredRelatedFiles = data);
-
-    }
+    //getFilteredRelatedFiles(participant: IParticipant): void {
+    //  var filters = this.LocationService.filters();
+    //
+    //  if (!filters.content) {
+    //    filters.op = "and";
+    //    filters.content = [];
+    //  }
+    //
+    //  filters.content.push({
+    //    content: {
+    //      field: "participants.bcr_patient_uuid",
+    //      value: [
+    //        participant.bcr_patient_uuid
+    //      ]
+    //    },
+    //    op: "is"
+    //  });
+    //
+    //  this.FilesService.getFiles({
+    //    fields: [
+    //      "data_access",
+    //      "data_format",
+    //      "data_level",
+    //      "data_subtype",
+    //      "data_type",
+    //      "file_extension",
+    //      "file_name",
+    //      "file_size",
+    //      "file_uuid",
+    //      "platform",
+    //      "updated",
+    //      "archive.disease_code",
+    //      "archive.revision",
+    //      "participants.bcr_patient_uuid"
+    //    ],
+    //    filters: filters,
+    //    size: 100
+    //  }).then((data) => participant.filteredRelatedFiles = data);
+    //
+    //}
 
     addFilteredRelatedFiles(participant: IParticipant): void {
       this.addToCart(participant.filteredRelatedFiles.hits);
@@ -472,6 +316,8 @@ module ngApp.search.controllers {
         "cart.services",
         "core.services",
         "participants.services",
+        "search.table.files.model",
+        'search.table.participants.model',
         "files.services"
       ])
       .controller("SearchController", SearchController);

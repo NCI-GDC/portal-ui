@@ -20,7 +20,9 @@ module ngApp.components.tables.directives.tableicious {
         getTemplate(heading,field,row,_scope):string;
         getHeadingEnabled(heading):boolean;
         getHeadingById(id:string):TableiciousColumnDefinition
-        createOrderArray()
+        getHeadingClass(heading):string;
+        getFieldClass(elem,row,scope,heading):string;
+        createOrderArray();
         getDataAtRow (heading:TableiciousColumnDefinition,index:number) : TableiciousEntryDefinition;
     }
 
@@ -85,6 +87,7 @@ module ngApp.components.tables.directives.tableicious {
         * If template is defined, the contents of a table cell will be the result of passing the object
         * that defines it to the template function.
         */
+
         template?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope) :string
 
         /**
@@ -102,6 +105,19 @@ module ngApp.components.tables.directives.tableicious {
          * If false, won't show up in the table. Will still show up in sorting.
          */
         visible? : boolean;
+
+        /**
+         * A class or space-delimited list of classes to be applied only to the heading of the column.
+         * Or, a function that returns the above.
+         */
+        headingClass?: any;
+
+        /**
+         * A string representing a class or space-delimited list of classes to apply to every
+         * Or a function that returns the above, given the field itself as the first argument, and the row as the second.
+         */
+
+        fieldClass?: any;
     }
 
     class TableiciousController {
@@ -130,6 +146,26 @@ module ngApp.components.tables.directives.tableicious {
                     this.refresh();
                 })
             },true);
+
+            $scope.getHeadingClass = function(heading){
+                if (heading.headingClass){
+                    if (_.isFunction(heading.headingClass)){
+                        return heading.headingClass();
+                    } else {
+                        return heading.headingClass;
+                    }
+                }
+            }
+
+            $scope.getFieldClass = function(elem,row,scope,heading){
+                if (heading.fieldClass){
+                    if (_.isFunction(heading.fieldClass)){
+                        return heading.fieldClass(elem,row,scope);
+                    } else {
+                        return heading.fieldClass;
+                    }
+                }
+            }
 
             $scope.$watch(()=>{
                 return $scope.config.headings.map(function(head){

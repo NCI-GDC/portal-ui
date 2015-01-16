@@ -18,27 +18,28 @@ module ngApp.components.charts {
   interface IPieChartScope extends ng.IScope {
     data: any;
     heading: string;
+    height: number;
+    labelFilter: string;  
     redraw(): void;
   }
 
   /* @ngInject */
-  function PieChart($window: IGDCWindowService): ng.IDirective {
+  function PieChart($window: IGDCWindowService, $filter: ng.IFilterService): ng.IDirective {
     return {
       restrict: "EA",
       replace: true,
       transclude: true,
       scope: {
         data: "=",
-        heading: "@"
+        heading: "@",
+        height: "@",
+        labelFilter: "@"
       },
       templateUrl: "components/charts/templates/pie-chart.html",
-      controller: function($scope: IPieChartScope) {
-        //pass
-      },
       link: function($scope: IPieChartScope, element: ng.IAugmentedJQuery) {
-        var margin = { top: 10, right: 20, bottom: 60, left: 40 };
+        var margin = { top: 30, right: 20, bottom: 30, left: 20 };
         var width = element.find(".chart-container")[0].clientWidth - margin.left - margin.right;
-        var height = 500 - margin.top - margin.bottom;
+        var height = (parseInt($scope.height, 10) || 500) - margin.top - margin.bottom;
         var radius = Math.min(width, height) / 2;
 
         function buildChart() {
@@ -55,9 +56,20 @@ module ngApp.components.charts {
                     .attr("height", height)
                     .append("g")
                     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+          var total = d3.sum($scope.data.data, function(item) {
+            return item.value;
+          });
 
           var tip = d3.tip().attr("class", "d3-tip").html(function(d) {
-            return "<label class='x-text'>" + d.data.label + "</label>: <span class='value'>" + d.value + "%</span>";
+            var ret = "<label class='x-text'>" + d.data.label +
+                      "</label>: <span class='value'>{{ val }}, " +
+                      ((d.data.value / total) * 100).toFixed("2") + "%</span>";
+            if ($scope.labelFilter) {
+              ret = ret.replace("{{ val }}", $filter($scope.labelFilter)(d.data.value));
+            } else {
+              ret = ret.replace("{{ val }}", d.data.value);
+            }
+            return ret;
           });
 
           var g = svg.selectAll(".arc")
@@ -70,12 +82,6 @@ module ngApp.components.charts {
           g.append("path")
           .attr("d", arc)
           .style("fill", function(d, i) { return colour(i); });
-
-          g.append("text")
-          .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-          .attr("dy", ".35em")
-          .style("text-anchor", "middle")
-          .text(function(d) { return d.data.label + ", " + d.data.value + "%"; });
           svg.call(tip);
         }
         buildChart();
@@ -89,7 +95,7 @@ module ngApp.components.charts {
 
         $scope.redraw = redraw;
         $window.jQuery($window).resize(redraw);
-
+        $scope.$watch("data", redraw);
         $scope.$on("$destroy", function() {
           $window.jQuery($window).off("resize", redraw);
         });
@@ -98,7 +104,7 @@ module ngApp.components.charts {
     };
   }
 
-  function BarChart($window: IGDCWindowService): ng.IDirective {
+  function BarChart($window: IGDCWindowService, $filter: ng.IFilterService): ng.IDirective {
     return {
       restrict: "EA",
       replace: true,
@@ -106,167 +112,103 @@ module ngApp.components.charts {
       scope: {
         data: "=",
         heading: "@",
-        yLabel: "@"
+        yLabel: "@",
+        height: "@",
+        direction: "@",
+        formatFilter: "@"
       },
       templateUrl: "components/charts/templates/bar-chart.html",
-      controller: function($scope: IBarChartScope) {
-        this.sortAsc = function() {
-          $scope.sortingAsc = true;
-          $scope.sortingDesc = false;
-          $scope.data.data = _.sortBy($scope.data.data, "y");
-          $scope.redraw();
-        };
-        this.unSort = function() {
-          $scope.sortingAsc = false;
-          $scope.sortingDesc = false;
-          $scope.data = _.assign({}, $scope.originalData);
-          $scope.redraw();
-        };
-        this.sortDesc = function() {
-          $scope.sortingAsc = false;
-          $scope.sortingDesc = true;
-          $scope.data.data = _.sortBy($scope.data.data, "y").reverse();
-          $scope.redraw();
-        };
-      },
       link: function ($scope: IBarChartScope, element: ng.IAugmentedJQuery) {
-        $scope.originalData = _.assign({}, $scope.data);
+        $scope.direction = $scope.direction || "vertical";
+        var chart;
+        var baseChartOptions = {
+          bindto: element.find(".chart-container")[0],
+          size: {
+            height: parseInt($scope.height) || 500
+          },
+          data: {
+            columns: [],
+            type: "bar"
+          },
+          axis: {
+            rotated: $scope.direction === "horizontal",
+            x: {
+              tick: {
+                format: function(x) {
+                  return "";
+                },
+                count: 0
+              }
+            },
+            y: {
+              tick: {
+                count: 6,
+                format: function(x) {
+                  if (isNaN(x)) {
+                    return x;
+                  }
 
-        var margin = { top: 10, right: 20, bottom: 60, left: 40 },
-            width = element.find(".chart-container")[0].clientWidth - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+                  return Math.round(x);
+                }
+              }
+            }
+          }
+        };
 
         function buildChart() {
-          var x = d3.scale.ordinal()
-              .rangeRoundBands([0, width], .1);
+          var chartOptions = _.assign({}, baseChartOptions);
 
-          var y = d3.scale.linear()
-              .range([height, 0]);
-
-          var xAxis = d3.svg.axis()
-              .scale(x)
-              .orient("bottom")
-              .tickFormat(function(x) {
-                if (typeof x === "string") {
-                  // If label is longer than 12 chars, make it an ellipsis.
-                  if (x.length > 12) {
-                    x = x.substring(0, 11) + "...";
-                  }
-                  return x;
-                }
-
-                return "";
-              });
-
-          var yAxis = d3.svg.axis()
-              .scale(y)
-              .orient("left")
-              .ticks(8)
-              .tickFormat(function(y) {
-                if (y < 10000) {
-                  return y;
-                }
-
-                y = Math.round(y / 1000);
-                return y + "k";
-              });
-
-          var svg = d3.select(element.find(".chart-container")[0]).append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-          $scope.data.xLabelPrefix = $scope.data.xLabelPrefix || "";
-          $scope.data.xLabelPrefix += " ";
-
-          /* Initialize tooltip */
-          var tip = d3.tip().attr("class", "d3-tip").html(function(d) {
-            return "<label class='x-text'>" + $scope.data.xLabelPrefix + d.x + "</label>: <span class='value'>" + d.y + "</span>";
+          _.each($scope.data, (item: any) => {
+            var dataArray = [
+              item.label
+            ];
+            dataArray = dataArray.concat(item.value);
+            chartOptions.data.columns.push(dataArray);
           });
 
-          x.domain($scope.data.data.map(function(d) {
-            return d.x;
-          }));
-          y.domain([0, d3.max($scope.data.data, function(d: any) {
-            return d.y;
-          })]);
+          var formatFunction = function(d) {
+            return $filter($scope.formatFilter)(d);
+          }
 
-          svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis)
-            .selectAll("text")
-              .style("text-anchor", "end")
-              .attr("dx", "-.8em")
-              .attr("dy", ".15em")
-              .attr("transform", function(d) {
-                return "rotate(-45)";
-              });
+          if ($scope.formatFilter) {
 
-          svg.append("g")
-            .attr("class", "y axis")
-            .call(yAxis)
-          .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            .style("font-weight", 600)
-            .text($scope.yLabel);
+            if (chartOptions.axis.rotated) {
+              chartOptions.axis.y.tick.format = formatFunction;
+            } else {
+              chartOptions.axis.x.tick.format = formatFunction;
+            }
+          }
 
-          svg.selectAll(".bar")
-              .data($scope.data.data)
-              .enter().append("rect")
-              .attr("class", "bar")
-              .attr("x", function(d) { return x(d.x); })
-              .attr("width", x.rangeBand())
-              .attr("y", function(d) { return y(d.y); })
-              .attr("height", function(d) { return height - y(d.y); })
-              .on("mouseover", tip.show)
-              .on("mouseout", tip.hide);
-
-          /* Invoke the tip in the context of your visualization */
-          svg.call(tip);
+          chart = $window.c3.generate(chartOptions);
         }
 
         buildChart();
 
         var redraw = function() {
-          width = parseInt(d3.select(element.find(".chart-container")[0]).style("width"), 10);
-          width = width - margin.left - margin.right;
+          var chartOptions = {
+            unload: true,
+            columns: []
+          };
 
-          d3.select(element.find(".chart-container > svg")[0]).remove();
-          buildChart();
+          _.each($scope.data, (item: any) => {
+            var dataArray = [
+              item.label
+            ];
+            dataArray = dataArray.concat(item.value);
+            chartOptions.columns.push(dataArray);
+          });
+
+          chart.load(chartOptions);
         };
 
         $scope.redraw = redraw;
-        $window.jQuery($window).resize(redraw);
-
-        $scope.$on("$destroy", function() {
-          $window.jQuery($window).off("resize", redraw);
-        });
-      }
-    };
-  }
-
-  /* @ngInject */
-  function SortChart(): ng.IDirective {
-    return {
-      restrict: "EA",
-      require: ["^?barChart"],
-      replace: true,
-      transclude: true,
-      templateUrl: "components/charts/templates/sort.html",
-      link: function($scope: ISortChartScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, controllers: any) {
-        $scope.vm = controllers[0];
+        $scope.$watch("data", redraw);
       }
     };
   }
 
   angular.module("components.charts", [])
       .directive("barChart", BarChart)
-      .directive("pieChart", PieChart)
-      .directive("sortChart", SortChart);
+      .directive("pieChart", PieChart);
 }
 

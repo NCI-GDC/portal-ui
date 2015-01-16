@@ -225,7 +225,7 @@ module ngApp.search.controllers {
     }
 
     isUserProject(file: IFile): boolean {
-      return this.UserService.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
+      return this.UserService.isUserProject(file);
     }
 
 

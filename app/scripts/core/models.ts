@@ -10,6 +10,7 @@ module ngApp.models {
     moment: MomentStatic;
     jQuery: JQueryStatic;
     scrollY: number;
+    c3: any;
   }
 
   export interface ICollection {

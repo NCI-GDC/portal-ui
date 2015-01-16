@@ -1,6 +1,7 @@
 module ngApp.components.user.services {
   import IGDCConfig = ngApp.IGDCConfig;
   import IUser = ngApp.components.user.models.IUser;
+  import IFile = ngApp.files.models.IFile;
   import ILocationService = ngApp.components.location.services.ILocationService;
 
   export interface IUserService {
@@ -8,6 +9,7 @@ module ngApp.components.user.services {
     logout(): void;
     toggleFilter(): void;
     addMyProjectsFilter(filters: any, key: string): void;
+    isUserProject(file: IFile): boolean;
     currentUser: IUser;
   }
 
@@ -39,6 +41,10 @@ module ngApp.components.user.services {
 
     toggleFilter(): void {
       this.$rootScope.$broadcast("gdc-user-reset");
+    }
+
+    isUserProject(file: IFile): boolean {
+      return this.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
     }
 
     addMyProjectsFilter(filters: any, key: string): void {

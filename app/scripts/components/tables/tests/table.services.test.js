@@ -1,6 +1,6 @@
 describe('Table Service:', function () {
 
-    beforeEach(module('ngApp.components', 'tables.services','tablicious.directive'));
+    beforeEach(module('ngApp.components', 'tables.services','tablicious.directive','tables.validator'));
 
     var testColumns = [{
         id:'a',
@@ -40,14 +40,14 @@ describe('Table Service:', function () {
 
         // TODO - TEST ALL THE THINGS
         describe("validating the congruency of the data",function(){
-            it('should return true when data is congruent',inject(function(TableService){
+            it('should return true when data is congruent',inject(function(TableValidator){
                 var sampleData = [
                     {a:1,b:2,d:3},
                     {a:4,b:5,d:6},
                     {a:7,b:8,d:9}
                 ];
 
-                assert.isTrue(TableService.dataIsCongruent(sampleData));
+                assert.isTrue(TableValidator.dataIsCongruent(sampleData));
             }));
 
             //it('should return false  if the data is non-congruent',inject(function(TableService){
@@ -182,3 +182,36 @@ describe('Table Service:', function () {
 
 
 });
+
+describe("the tableicous controller",function(){
+    //beforeEach(module('ngApp.components', 'tables.services','tablicious.directive'));
+    //
+    //var $controller;
+    //
+    //beforeEach(inject(function(_$controller_){
+    //    // The injector unwraps the underscores (_) from around the parameter names when matching
+    //    $controller = _$controller_;
+    //}));
+    //
+    //describe('$scope.getHeadingRowSpan', function() {
+    //    describe("how it returns how many rows wide a heading should be",function(){
+    //        it('returns 1 for a heading with no children', function() {
+    //            var sampleConfig = {
+    //                name:"hello",
+    //                headings:[{
+    //                    id:'a',
+    //                    displayName:'A'
+    //                }],
+    //
+    //            }
+    //            var $scope = {
+    //                $watch:function(){}
+    //            };
+    //            var controller = $controller('TableiciousController', { $scope: $scope });
+    //            var heading = {id:'a',displayName:'A'};
+    //            //expect($scope.getHeadingRowSpan(heading)).toEqual(1);
+    //        });
+    //    })
+    //});
+
+})

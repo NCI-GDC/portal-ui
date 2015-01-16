@@ -26,14 +26,14 @@ module ngApp.search.controllers {
     select(section: string, tab: string): void;
     removeFiles(files: IFile[]): void;
     addRelatedFiles(participant: IParticipant): void;
-    getFilteredRelatedFiles(participant: IParticipant): void;
+    //getFilteredRelatedFiles(participant: IParticipant): void;
+    //addAll(): void;
+    //removeAllinSearchResult(): void;
     addFilteredRelatedFiles(participant: IParticipant): void;
     addToCart(files: IFile[]): void;
     isUserProject(file: IFile): boolean;
-    addAll(): void;
-    removeAllinSearchResult(): void;
-    fileTableConfig:TableiciousConfig;
-    participantTableConfig:TableiciousConfig;
+    //fileTableConfig:TableiciousConfig;
+    //participantTableConfig:TableiciousConfig;
 
   }
 
@@ -80,8 +80,6 @@ module ngApp.search.controllers {
         name: "Tumor Stage"
       }
     ];
-
-    //searchFileTableModel:TableiciousConfig =
 
     /* @ngInject */
     constructor(private $scope: ISearchScope,

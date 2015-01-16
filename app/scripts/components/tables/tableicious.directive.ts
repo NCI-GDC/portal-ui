@@ -1,25 +1,27 @@
 module ngApp.components.tables.directives.tableicious {
-    interface ITableicousScope extends ng.IScope {
-        data: any[];
-        dataAsKeyValuePairs: any[];
-        config: TableiciousConfig;
-        expandedHeadings: TableiciousColumnDefinition[];
-        order: string[];
-        allHeadings: any[];
+    export interface ITableicousScope extends ng.IScope {
+        data:any[];
+        dataAsKeyValuePairs:any[];
+        config:TableiciousConfig;
+        expandedHeadings:TableiciousColumnDefinition[];
+        order:string[];
+        allHeadings:any[];
         TableService;
-        draggableHeadings: any[];
-        root: IRootScope;
-        models: any;
-        $filter: ng.IFilterProvider;
-        getColumnIndex(arg: any): number;
-        expandNestedData(nestedData: any): any;
-        getHeadingColSpan(heading): number;
-        getHeadingRowSpan(heading): number;
-        getAllHeadingsAtNestingLevel(level): any[];
+        draggableHeadings:any[];
+        root:IRootScope;
+        models:any;
+        UserService?: any;
 
-        getHeadingById(id: string): TableiciousColumnDefinition;
-        createOrderArray(): void;
-        getDataAtRow(heading: TableiciousColumnDefinition, index: number) : TableiciousEntryDefinition;
+        $filter(name:string):any;
+        getColumnIndex(arg:any):number;
+        getHeadingColSpan(heading):number;
+        getHeadingRowSpan(heading):number;
+        getAllHeadingsAtNestingLevel(level):any[];
+        getTemplate(heading,field,row,_scope):string;
+        getHeadingEnabled(heading):boolean;
+        getHeadingById(id:string):TableiciousColumnDefinition
+        createOrderArray()
+        getDataAtRow (heading:TableiciousColumnDefinition,index:number) : TableiciousEntryDefinition;
     }
 
     export class TableiciousConfig {
@@ -38,6 +40,7 @@ module ngApp.components.tables.directives.tableicious {
          * @headings An array of TableiciousColumnDefinitions which defines the behavior of the columns;
          */
         headings:TableiciousColumnDefinition[];
+
     }
 
     export class TableiciousEntryDefinition {
@@ -57,9 +60,13 @@ module ngApp.components.tables.directives.tableicious {
         id:string;
 
         /**
-         * @enabled Determines if the column is displayed. If false, the whole column is hidden.
+         * @enabled(scope).
+         * If defined, a function which determines if the column appears at all.
+         * Return either true or false, given a reference to the scope of the table it is on.
+         * This overrides "visible"
          */
-        enabled:boolean;
+        enabled?:any;
+        //enabled?(scope) : Boolean;
 
         /**
          * @children
@@ -84,28 +91,38 @@ module ngApp.components.tables.directives.tableicious {
          * @sref(field:TableiciousEntryDefinition):string
          * If defined, wraps the text in a UI sref linking to the string returned by this function.
          */
-        sref?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope,
-              $filter: ng.IFilterService):string
+        sref?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope,$filter: ng.IFilterService):string
 
         /**
          * If defined, an icon will be displayed where that icon is "fa-<return-val>" from the function
          */
         icon?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope) : string
+
+        /**
+         * If false, won't show up in the table. Will still show up in sorting.
+         */
+        visible? : boolean;
     }
 
     class TableiciousController {
 
         /* @ngInject */
-        constructor(private $scope: ITableicousScope, private TableService, private $rootScope,$filter) {
+        constructor(private $scope: ITableicousScope,
+                    private TableService,
+                    private TableValidator,
+                    private $rootScope,$filter,
+                    private UserService) {
 
             $scope.getColumnIndex = this.getColumnIndex.bind(this);
             $scope.getHeadingRowSpan = this.getHeadingRowSpan.bind(this);
             $scope.getHeadingColSpan = this.getHeadingColSpan.bind(this);
             $scope.getAllHeadingsAtNestingLevel = this.getAllHeadingsAtNestingLevel.bind(this);
             $scope.getDataAtRow = this.getDataAtRow.bind(this);
-            $scope.models = {};
+            //$scope.getTemplate = TableService.getTemplate;
+            //$scope.getHeadingEnabled = TableService.getHeadingEnabled;
             $scope.root = $rootScope;
             $scope.$filter = $filter;
+            $scope.UserService = UserService;
 
             $scope.$watch('data',()=>{
                 $scope.dataAsKeyValuePairs = undefined;
@@ -115,12 +132,22 @@ module ngApp.components.tables.directives.tableicious {
             },true);
 
             $scope.$watch(()=>{
-                return $scope.draggableHeadings && $scope.draggableHeadings.map(function(head){
+                return $scope.config.headings.map(function(head){
                     return head.displayName;
                 })
             },()=>{
-                $scope.order = this.createOrderArray($scope.draggableHeadings);
+                $scope.order = this.createOrderArray($scope.config.headings);
             },true);
+
+
+            $scope.$watch(()=>{
+                return $scope.config.headings.map(function(head:TableiciousColumnDefinition){
+                    return head.hidden;
+                })
+            },()=>{
+
+            },true);
+
 
             $scope.getTemplate = function(heading,field,row,_scope) {
                 var result = undefined;
@@ -133,42 +160,41 @@ module ngApp.components.tables.directives.tableicious {
                 return result;
             }
 
-            this.refresh.bind(this)();
+            $scope.getHeadingEnabled = function(heading){
 
+                $scope.UserService = UserService;
+                if (_.isFunction(heading.enabled)){
+
+                    return heading.enabled($scope);
+                } else {
+                    return true;
+                }
+            }
+
+
+
+            this.refresh.bind(this)();
         }
 
         /**
          * Function that runs every time the data is updated.
-         * Outputs errors to the console if it detects anything is not configured properly.
          * Finally, converts the data from an array of objects to an array of arrays of tuples just a single time
-         * and calculates headings..
+         * and calculates headings.
          */
         refresh() {
 
             var $scope = this.$scope;
+
             var data = $scope.data;
 
-            this.TableService.validateConfigData($scope.config,data);
             $scope.allHeadings = this.TableService.expandHeadings($scope.config.headings);
 
             $scope.order = this.createOrderArray();
-
-            if (!this.TableService.validateOrderObject($scope.order,$scope.allHeadings)){
-                return;
-            }
-
-            if (!this.TableService.dataIsCongruent(data)) {
-                return;
-            }
 
             $scope.dataAsKeyValuePairs = data.map(this.TableService.objectToArray);
 
             $scope.expandedHeadings = $scope.allHeadings.filter(function(heading){
                 return !heading.children;
-            });
-
-            $scope.draggableHeadings = $scope.allHeadings.filter(function(heading){
-                return heading.nestingLevel === 0;
             });
 
             _.defer(()=>{
@@ -177,8 +203,14 @@ module ngApp.components.tables.directives.tableicious {
         }
 
 
-
-        createOrderArray(headings = null):string[] {
+        /**
+         *
+         * @param headings
+         * An array of Tableicious column definitions. If none is provided, it will modify the active order being applied by $scope.
+         *
+         * @returns {any}
+         */
+        createOrderArray(headings:TableiciousColumnDefinition[] = null):string[] {
             var orderedHeadings = headings || this.$scope.allHeadings;
             var orderArray:any = orderedHeadings.reduce(function(a:TableiciousColumnDefinition[],b:TableiciousColumnDefinition){
                 var node:any = b || {};
@@ -302,12 +334,12 @@ module ngApp.components.tables.directives.tableicious {
 
                 if ($scope.heading.id === 'add_to_cart_filtered') {
                     $scope.arrayRow = arrayToObject($scope.row);
-                    var files = _.find($scope.row,function(elem){
+                    var files:TableiciousEntryDefinition = _.find($scope.row,function(elem:TableiciousEntryDefinition){
                         return elem.id === 'files';
                     });
 
                     $scope.files = files.val;
-                    var htm = '<div add-to-cart-filtered data-files="files" data-row="row"></div>';
+                    var htm = '<div add-to-cart-filtered files="files" row="row"></div>';
                     var compiled = $compile(htm)($scope);
                     $element.append(compiled);
                 }
@@ -321,17 +353,14 @@ module ngApp.components.tables.directives.tableicious {
             restrict:"AE",
             scope:{
                 heading:'=',
-                data:'=',
-                paging: '='
+                data:'='
             },
             controller:function($scope, $element,$compile){
 
                 if ($scope.heading && $scope.heading.id === 'add_to_cart') {
-                    //debugger;
 
                     _.defer(function(){
-
-                        var htm = '<div add-to-cart-all data-files="data" data-paging="paging"></div>';
+                        var htm = '<div add-to-cart-all files="data"></div>';
                         var compiled = $compile(htm)($scope);
                         $element.html(compiled);
                     })
@@ -343,7 +372,7 @@ module ngApp.components.tables.directives.tableicious {
 
 
 
-    angular.module("tablicious.directive",['dndLists'])
+    angular.module("tablicious.directive",['dndLists','tables.services','tables.validator'])
         .directive("tableicious", Tableicious)
         .controller("TableiciousController",TableiciousController)
         .directive("tableiciousCell",tableiciousCell)

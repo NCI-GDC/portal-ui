@@ -5,14 +5,28 @@ module ngApp.search.models {
     var searchTableFilesModel: TableiciousConfig = {
         title: 'Files',
         order: ['file_type', 'participants', 'project_name', 'availableData', 'status', 'last_update'],
-        headings: [{
+        headings: [
+        {
+            displayName: "My Projects",
+            id: "my_projects",
+            enabled: function(scope){
+                return scope.UserService.currentUser;
+            },
+            icon:function(field,row,scope){
+                //debugger;
+                var archive = _.find(row,function(elem){return elem.id==='archive'}).val;
+                var UserService:any = scope.UserService;
+                return (UserService.currentUser.projects.indexOf(archive.disease_code) !== -1) ? 'check' : 'close';
+
+            }
+        },{
             displayName: "add_to_cart",
             id: "add_to_cart",
-            enabled: true
+            visible: true
         }, {
             displayName: "Access",
             id: "data_access",
-            enabled: true,
+                visible: true,
             icon:function(field){
                 return field && field.val === 'protected' ? "lock" : "unlock";
             },
@@ -22,7 +36,7 @@ module ngApp.search.models {
         }, {
             displayName: "File Name",
             id: "file_name",
-            enabled: true,
+                visible: true,
             template:function(field,row,scope){
                 return field && field.val && scope.$filter('ellipsicate')(field.val,50);
             },
@@ -33,7 +47,7 @@ module ngApp.search.models {
         },{
             displayName: "Participants",
             id: "participants",
-            enabled: true,
+                visible: true,
             template: function (field,row,scope) {
                 var participants = field.val;
                 if (participants) {
@@ -53,7 +67,7 @@ module ngApp.search.models {
         }, {
             displayName: "Project",
             id: "disease_code",
-            enabled: true,
+                visible: true,
             template:function(field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope){
                 var arch:TableiciousEntryDefinition = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'archive'});
                 var code:any = arch.val.disease_code;
@@ -70,15 +84,15 @@ module ngApp.search.models {
         }, {
             displayName: "Data Type",
             id: "data_type",
-            enabled: true
+                visible: true
         }, {
             displayName: "Data Format",
             id: "data_format",
-            enabled: true
+                visible: true
         }, {
             displayName: "Size",
             id: "file_size",
-            enabled: true,
+                visible: true,
             template:function(field,row,scope){
                 //debugger;
                 return scope.$filter('size')(field.val);
@@ -86,7 +100,7 @@ module ngApp.search.models {
         },{
             displayName: "Revision",
             id: "revision",
-            enabled: true,
+                visible: true,
             template: function(field,row) {
                 var archive:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                     return x.id === 'archive';
@@ -96,7 +110,7 @@ module ngApp.search.models {
         },{
             displayName: "Update date",
             id: "updated",
-            enabled: true,
+                visible: true,
             template:function(field,row,scope){
                 return scope.$filter('date')(field.val);
             }

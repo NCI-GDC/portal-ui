@@ -6,27 +6,22 @@ module ngApp.components.tables.directives {
   }
 
   /* @ngInject */
-  function SelectColumns(): ng.IDirective {
-
-    return {
-      restrict: "EA",
-      scope: {
-        filters:"="
-      },
-      replace: true,
-      templateUrl: "components/tables/templates/select-columns.html"
-    };
-  }
-
   function ArrangeColumns(): ng.IDirective {
 
     return {
       restrict: "EA",
       scope: {
-        list:"="
+        list:"=",
+        order:"="
       },
       replace: true,
-      templateUrl: "components/tables/templates/arrange-columns.html"
+      templateUrl: "components/tables/templates/arrange-columns.html",
+      link:function(scope:any){
+        scope.models = {};
+        scope.onMoved = function($index){
+          scope.list.splice($index,1);
+        }
+      }
     };
   }
 
@@ -61,7 +56,6 @@ module ngApp.components.tables.directives {
 
 
   angular.module("tables.directives", ["tables.controllers"])
-      .directive("selectColumns", SelectColumns)
       .directive("exportTable", ExportTable)
       .directive("sortTable", SortTable)
       .directive("arrangeColumns", ArrangeColumns);

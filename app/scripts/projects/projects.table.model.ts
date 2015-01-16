@@ -74,7 +74,7 @@ module ngApp.projects.models {
                         return x.id === 'summary';
                     });
 
-                    var data = _.find(summary.val.data_types, function(x){
+                    var data = _.find(summary.val.data_types, function(x:any){
                         return x.data_type === 'Clinical';
                     });
 

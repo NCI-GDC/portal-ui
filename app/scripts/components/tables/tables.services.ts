@@ -7,8 +7,8 @@ module ngApp.components.tables.services {
         objectWithMatchingIdInArrayIsEnabled (array:any[], id:string) : Boolean
     }
 
-    class TableService implements ITableService {
 
+    class TableService implements ITableService {
 
         /**
          * If, in a given array, there is a member and that member has a property called ID and that property is equal to @id, return true if that member also has a truthy enabled property.
@@ -85,73 +85,12 @@ module ngApp.components.tables.services {
          * @returns {any}
          * The flattened array.
          */
-
         flattenArrayAtKey(array:any[],key:string):any[] {
             return array.map((elem)=>{
                 return this.flattenObjectAtKey(elem,key);
             });
         }
 
-
-        /**
-         * Returns true if the array passed is an array of objects, and every object has the same structure.
-         * @param data
-         * @returns {boolean}
-         */
-        dataIsCongruent(data) {
-            var firstHeadings = _.keys(data[0]);
-
-            return data.every(function(datum){
-                if (_.isEqual(firstHeadings, _.keys(datum))) {
-                    return true;
-                } else {
-                    //console.warn("Warnning - some data in this set does not have the same structure: ",firstHeadings , "is not congruent with ", _.keys(datum));
-                    return true;
-                }
-            })
-        }
-
-        /**
-         * Function that outputs warnings regarding the table configuration to the console.
-         * @param config
-         * The table configuration.
-         * @param data
-         * The data that will be used.
-         */
-        validateConfigData(config:TableiciousConfig,data:any[]):void {
-
-            var headingsDefinedByConfig = _.pluck(config.headings,'id');
-            var headingsDefinedByData = _.keys(data[0]);
-
-            headingsDefinedByData.forEach(function(heading){
-                if (!_.contains(headingsDefinedByConfig,heading)) {
-                    //console.error('Error generating table, data contains field for which no heading definition found in config: ',heading, '. This entry will be ignored.');
-                }
-            });
-
-            headingsDefinedByConfig.forEach(function(heading){
-                if (!_.contains(headingsDefinedByData,heading)) {
-                    //console.warn('Config contains definition for entry not found in data: ',heading, '. This field will be blank.');
-                }
-            });
-        }
-
-        /**
-         * Outputs a warning to the console if the order array will not function correctly.
-         * @param orderArray
-         * @param config
-         */
-
-        validateOrderObject(orderArray:string[],headings:TableiciousColumnDefinition[]){
-            return headings.every(function(heading:TableiciousColumnDefinition){
-                if (_.contains(orderArray,heading.id)) {
-                    return true;
-                } else {
-                    //console.error("No order specified for heading: ",heading.id);
-                }
-
-            });
-        }
 
         /**
          * Goes through an array of Tableicious column definitions.
@@ -187,10 +126,30 @@ module ngApp.components.tables.services {
             });
         }
 
+        getTemplate(heading:TableiciousColumnDefinition,field:any,row,scope) {
+            var result;
+            try {
+                result = heading.template ? heading.template(field,row,scope) : field.val;
+            } catch (e) {
+                result = '?';
+            }
 
+            return result;
+        }
+
+        getHeadingEnabled = function(heading,$scope){
+            return true;
+            // todo - fix again
+            //debugger;
+            //if (_.isFunction(heading.enabled)){
+            //    return heading.enabled($scope);
+            //} else {
+            //    return true;
+            //}
+        }
     }
 
 angular
     .module("tables.services",[])
-    .service("TableService", TableService);
+    .service("TableService", TableService)
 }

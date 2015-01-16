@@ -1,49 +1,39 @@
 <table class="table table-striped table-hover table-condensed table-bordered">
     <thead>
         <tr>
-            <th data-ng-if="heading.enabled" class="{{heading.headingClass}}" data-ng-repeat="heading in getAllHeadingsAtNestingLevel(0) | orderBy:getColumnIndex:heading"
+            <th ng-if="!heading.hidden && getHeadingEnabled(heading, this)" class="{{heading.headingClass}}" data-translate ng-repeat="heading in getAllHeadingsAtNestingLevel(0) | orderBy:getColumnIndex:heading"
                 rowspan="{{getHeadingRowSpan(heading)}}"
                 colspan="{{getHeadingColSpan(heading)}}"
-                data-tableicious-header data-heading="heading" data-data="data" data-paging="paging">
-                   <span data-ng-if="!heading.noTitle" data-translate>
+                tableicious-header heading="heading" data="data">
+                   <span ng-if="!heading.noTitle">
                        {{heading.displayName}}
                    </span>
             </th>
 
         </tr>
         <tr>
-            <th data-ng-repeat="childHeading in getAllHeadingsAtNestingLevel(1)" data-translate>
+            <th ng-repeat="childHeading in getAllHeadingsAtNestingLevel(1)">
                 {{childHeading.displayName}}
             </th>
         </tr>
     </thead>
     <tbody>
-        <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index" data-ng-init="$$index = $index; row = datum;">
-            <td data-ng-if="heading.enabled" data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading" data-ng-init="field = getDataAtRow(heading, $$index)" field-id="heading.id" field="field" row="row" tableicious-cell>
+        <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index" ng-init="$$index = $index; row = datum;">
+            <td ng-if="!heading.hidden && getHeadingEnabled(heading, this)" data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading" ng-init="field = getDataAtRow(heading, $$index)" field-id="heading.id" field="field" row="row" tableicious-cell>
 
-                <a data-ng-if="heading.sref" data-ui-sref="{{heading.sref(field, datum, this, $filter)}}">
-                    <!--{{heading.template ? heading.template(field,row,this) : field.val}}-->
+                <a ng-if="heading.sref" data-ui-sref="{{heading.sref(field, datum, this, $filter)}}" >
                     {{getTemplate(heading,field,row,this)}}
                 </a>
 
-                <span data-ng-if="!heading.sref">
-                    {{heading.template ? heading.template(field,row,this) : field.val}}
+                <span ng-if="!heading.sref">
+                    {{getTemplate(heading,field,row,this)}}
                 </span>
 
-                <div data-ng-if="heading.icon" class="text-center">
-                    <i class="fa fa-{{heading.icon(field)}} fa-lg"></i>
+                <div ng-if="heading.icon" class="text-center">
+                    <i class="fa fa-{{heading.icon(field,row,this)}} fa-lg"></i>
                 </div>
 
             </td>
         </tr>
     </tbody>
 </table>
-
-    <!---->
-    <!--<h4>-->
-        <!--Rearrange Columns (Prototype Demo Example)-->
-    <!--</h4>-->
-    <!--<h5>-->
-        <!--Drag items to rearrange the columns.-->
-    <!--</h5>-->
-    <!--<arrange-columns list="draggableHeadings"></arrange-columns>-->

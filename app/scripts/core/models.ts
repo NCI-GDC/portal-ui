@@ -19,11 +19,15 @@ module ngApp.models {
   }
 
   export interface IAdmin {
-    type: number;
-    batchNumber: string;
-    dateOfDccUpload: string;
-    projectCode: string;
-    revision: number;
+    bcr: string;
+    disease_code: string;
+    batch_number: string;
+    year_of_dcc_upload: number;
+    file_uuid: string;
+    day_of_dcc_upload: number;
+    month_of_dcc_upload: number;
+    project_code: string;
+    patient_withdrawal: Object;
   }
 
   export interface IFacet {

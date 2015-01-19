@@ -20,7 +20,7 @@
         {{ filter.content.field | translate | humanify }} :
         <span data-ng-click="cfc.removeTerm(filter.content.field, term, $event)"
             data-ng-repeat="v in filter.content.value">
-          {{v}}
+          {{v | translate | humanify }}
           <span data-ng-if="!$last">, </span>
         </span>
         <span data-ng-if="filter.content.field === 'participants.admin.disease_code' && cfc.UserService.currentUser && cfc.UserService.currentUser.isFiltered"

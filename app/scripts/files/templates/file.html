@@ -40,7 +40,7 @@
                 <span data-ng-if="!fc.isInCart()" data-translate>Add to Cart</span>
               </button>
               <div class="btn-group" data-dropdown>
-                <a type="button" class="btn btn-primary" data-ng-href="{{ makeDownloadLink([fc.file.file_uuid]) }}">
+                <a type="button" class="btn btn-primary" data-ng-href="{{ [fc.file.file_uuid] | makeDownloadLink }}">
                   <i class="fa fa-cloud-download"></i> Download
                 </a>
                 <button type="button" class="btn btn-primary dropdown-toggle">
@@ -48,13 +48,13 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li role="listitem" aria-label="{{ 'Download File' | translate }}">
-                    <a data-ng-href="{{ makeDownloadLink([fc.file.file_uuid]) }}"><i class="fa fa-download fa-stack"></i> Download file with metadata</a>
+                    <a data-ng-href="{{ [fc.file.file_uuid] | makeDownloadLink }}"><i class="fa fa-download fa-stack"></i> Download file with metadata</a>
                   </li>
                   <li role="listitem" aria-label="{{ 'Download URL' | translate }}">
-                    <a data-ng-href="{{ makeDownloadLink([fc.file.file_uuid]) }}"><i class="fa fa-file-text-o fa-stack"></i> Download file</a>
+                    <a data-ng-href="{{ [fc.file.file_uuid] | makeDownloadLink }}"><i class="fa fa-file-text-o fa-stack"></i> Download file</a>
                   </li>
                   <li role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                    <a data-ng-href="{{ makeDownloadLink([fc.file.file_uuid]) }}"><i class="fa fa-file-code-o fa-stack"></i> Download metadata</a>
+                    <a data-ng-href="{{ [fc.file.file_uuid] | makeDownloadLink }}"><i class="fa fa-file-code-o fa-stack"></i> Download metadata</a>
                   </li>
                 </ul>
               </div>
@@ -115,11 +115,9 @@
               <th scope="row" data-translate>Archive</th>
               <td>
                 {{ ::fc.file.archive.archive_name }}
-                (<a data-ui-sref="search.files({ 'filters': makeFilter([
-                  {
-                    name: 'files.archive.archive_uuid', value: fc.file.archive.archive_uuid
-                  }
-                ])})">
+                (<a data-ui-sref="search.files({ 'filters': {{ 
+                    [{ name: 'files.archive.archive_uuid', value: fc.file.archive.archive_uuid }] | makeFilter }}
+                  })">
                   {{ fc.archiveCount }} files
                 </a>)
               </td>

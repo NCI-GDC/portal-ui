@@ -3,19 +3,13 @@ module ngApp.projects.models {
     import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
 
     function getFileSref(data_type:string) {
-        return function fileSref (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
-
-            //debugger;
-            //if (row) {
-
-            //}
-
+        return function fileSref (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
             var projectCode = _.find(row,function(elem){
                 return elem.id === 'project_code';
             }).val;
 
-            var filter = scope.root.makeFilter([{name: 'participants.admin.disease_code', value: projectCode},{name: 'files.data_type', value: data_type}]);
-            return "search.participants({ 'filters':"+angular.toJson(filter)+"})";
+            var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: projectCode},{name: 'files.data_type', value: data_type}]);
+            return "search.participants({ 'filters':"+filter+"})";
 
         }
     }
@@ -48,14 +42,14 @@ module ngApp.projects.models {
             template: function (field) {
                 return field && field.val || 321;
             },
-            sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
+            sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
 
                 var projectCode = _.find(row,function(elem){
                     return elem.id === 'project_code';
                 }).val;
 
-                var filter = scope.root.makeFilter([{name: 'participants.admin.disease_code', value: projectCode}]);
-                return "search.participants({ 'filters':"+angular.toJson(filter)+"})";
+                var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: projectCode }]);
+                return "search.participants({ 'filters':"+filter+"})";
 
             }
         }, {

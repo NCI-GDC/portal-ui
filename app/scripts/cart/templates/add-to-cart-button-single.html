@@ -14,21 +14,21 @@
     <ul class="dropdown-menu" role="menu">
         <li role="listitem"
             aria-label="{{ 'Download File' | translate }}">
-            <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+            <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
                 <i class="fa-stack fa fa-cloud-download fa-stack"></i>
                 <span data-translate>Download</span>
             </a>
         </li>
         <li role="listitem"
             aria-label="{{ 'Download File' | translate }}">
-            <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+            <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
                 <i class="fa-stack fa fa-download fa-stack "></i>
                 <span data-translate>Download File</span>
             </a>
         </li>
         <li role="listitem"
             aria-label="{{ 'Download Metadata' | translate }}">
-            <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+            <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
                 <i class="fa fa-download fa-stack "></i>
                 <span data-translate>Download Metadata</span>
             </a>
@@ -36,9 +36,7 @@
         <li class="divider"></li>
         <li data-ng-if="file.archive.archive_uuid" role="listitem"
             aria-label="{{ 'Find Files in same archive' | translate }}">
-            <a data-ng-href="search/f?filters={{ makeFilter([
-                  { name: 'files.archive.archive_uuid', value: file.archive.archive_uuid }
-                  ])}}">
+            <a data-ng-href="search/f?filters={{ [{ name: 'files.archive.archive_uuid', value: file.archive.archive_uuid }] | makeFilter: true }}">
                 <i class="fa fa-file-zip-o fa-stack "></i>
                 <span data-translate>Find Files in same archive</span>
             </a>

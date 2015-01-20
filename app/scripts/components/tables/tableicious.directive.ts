@@ -84,7 +84,8 @@ module ngApp.components.tables.directives.tableicious {
          * @sref(field:TableiciousEntryDefinition):string
          * If defined, wraps the text in a UI sref linking to the string returned by this function.
          */
-        sref?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope):string
+        sref?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope,
+              $filter: ng.IFilterService):string
 
         /**
          * If defined, an icon will be displayed where that icon is "fa-<return-val>" from the function

@@ -70,25 +70,25 @@
             </button>
             <ul class="dropdown-menu" role="menu">
               <li role="listitem" aria-label="{{ 'Download Files' | translate }}">
-                <a data-ng-href="{{ makeDownloadLink(cc.getFileIds()) }}">
+                <a data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}">
                   <i class="fa fa-download fa-stack"></i>
                   <span data-translate>Download Files</span>
                 </a>
               </li>
               <li role="listitem" aria-label="{{ 'Download URLs' | translate }}">
-                <a data-ng-href="{{ makeDownloadLink(cc.getFileIds()) }}">
+                <a data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}">
                   <i class="fa fa-file-text-o fa-stack"></i>
                   <span data-translate>Download URLs</span>
                 </a>
               </li>
               <li role="listitem" aria-label="{{ 'Download Manifest' | translate }}">
-                <a data-ng-href="{{ makeDownloadLink(cc.getFileIds()) }}">
+                <a data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}">
                   <i class="fa fa-file-code-o fa-stack"></i>
                   <span data-translate>Download Manifest</span>
                 </a>
               </li>
               <li role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                <a data-ng-href="{{ makeDownloadLink(cc.getFileIds()) }}">
+                <a data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}">
                   <i class="fa fa-file-code-o fa-stack"></i>
                   <span data-translate>Download Metadata Files</span>
                 </a>
@@ -147,31 +147,31 @@
               </button>
               <ul class="dropdown-menu" role="menu">
                 <li role="listitem" aria-label="{{ 'Download' | translate }}">
-                  <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+                  <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
                     <i class="fa fa-cloud-download fa-stack"></i>
                     <span data-translate>Download</span>
                   </a>
                 </li>
                 <li role="listitem" aria-label="{{ 'Download File' | translate }}">
-                  <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+                  <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
                     <i class="fa fa-download fa-stack"></i>
                     <span data-translate>Download File</span>
                   </a>
                 </li>
                 <li role="listitem" aria-label="{{ 'Download URL' | translate }}">
-                  <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+                  <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
                     <i class="fa fa-file-text-o fa-stack"></i>
                     <span data-translate>Download URL</span>
                   </a>
                 </li>
                 <li role="listitem" aria-label="{{ 'Download Manifest' | translate }}">
-                  <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+                  <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
                     <i class="fa fa-file-code-o fa-stack"></i>
                     <span data-translate>Download Manifest</span>
                   </a>
                 </li>
                 <li role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                  <a data-ng-href="{{ makeDownloadLink([file.file_uuid]) }}">
+                  <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
                     <i class="fa fa-file-code-o fa-stack"></i>
                     <span data-translate>Download Metadata Files</span>
                   </a>

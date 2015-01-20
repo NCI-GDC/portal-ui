@@ -121,11 +121,9 @@
           </a>
         </td>
         <td>
-          <a data-ui-sref="search.participants({ 'filters': makeFilter([
-        {
-          name: 'file_id', value: file.file_uuid
-        }
-      ])})">
+          <a data-ui-sref="search.participants({ 'filters':
+            {{ [{ name: 'file_id', value: file.file_uuid }] | makeFilter }}
+          })">
             tbc {{ ::file.participants[0].id }}
           </a>
         </td>

@@ -21,7 +21,7 @@
         <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index" ng-init="$$index = $index; row = datum;">
             <td ng-if="heading.enabled" data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading" ng-init="field = getDataAtRow(heading, $$index)" field-id="heading.id" field="field" row="row" tableicious-cell>
 
-                <a ng-if="heading.sref" data-ui-sref="{{heading.sref(field, datum, this)}}">
+                <a ng-if="heading.sref" data-ui-sref="{{heading.sref(field, datum, this, $filter)}}">
                     <!--{{heading.template ? heading.template(field,row,this) : field.val}}-->
                     {{getTemplate(heading,field,row,this)}}
                 </a>

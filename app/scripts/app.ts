@@ -12,8 +12,6 @@ declare module ngApp {
     loaded: boolean;
     modelLoaded: boolean;
     config: IGDCConfig;
-    makeFilter(fields: { name: string; value: string }[]): string;
-    makeDownloadLink(ids: string[]): string;
     undoClicked(action: string): void;
   }
 }

@@ -65,11 +65,9 @@
             <tr>
               <th scope="row" data-translate>Files</th>
               <td>
-                <a data-ui-sref="search.files({ 'filters': makeFilter([
-                      {
-                        name: 'participants.bcr_patient_uuid', value: pc.participant.bcr_patient_uuid
-                      }
-                    ])})">
+                <a data-ui-sref="search.files({ 'filters':
+                  {{ [{ name: 'participants.bcr_patient_uuid', value: pc.participant.bcr_patient_uuid }] | makeFilter }}
+                })">
                   {{ ::pc.participant.files.length | number:0 }}
                 </a>
               </td>
@@ -105,11 +103,9 @@
               <td>tbc {{ ::experiment.name }}</td>
               <td class="text-right">tbc {{ ::experiment.samples | number:0 }}</td>
               <td class="text-right">
-                <a data-ui-sref="search.files({ 'filters': makeFilter([
-                      {
-                        name: 'participant_id', value: pc.participant.bcr_patient_uuid
-                      }
-                    ])})">
+                <a data-ui-sref="search.files({ 'filters':
+                  {{ [{ name: 'participant_id', value: pc.participant.bcr_patient_uuid }] | makeFilter }}
+                })">
                   tbc {{ ::experiment.files | number:0 }}
                 </a>
               </td>

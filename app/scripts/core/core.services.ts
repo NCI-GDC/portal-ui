@@ -35,26 +35,6 @@ module ngApp.core.services {
 
       wrapper.attr("aria-busy", flippedState.toString());
       this.$rootScope.loaded = state;
-
-      this.$rootScope.makeFilter = function (fields: { name: string; value: string }[]): string {
-        var contentArray = _.map(fields, function (item) {
-          return {
-            "op": "is",
-            "content": {
-              "field": item.name,
-              "value": item.value.split(",")
-            }
-          };
-        });
-        return angular.toJson({
-          "op": "and",
-          "content": contentArray
-        });
-      };
-
-      this.$rootScope.makeDownloadLink = function(ids: string[]): string {
-        return "/api/data/" + ids.join(",");
-      };
     }
 
     setPageTitle(title: string, id?: any): void {
@@ -74,8 +54,6 @@ module ngApp.core.services {
       }
       this.requestCount++;
     }
-
-
 
     xhrDone(model?: string) {
       this.finishedRequests++;

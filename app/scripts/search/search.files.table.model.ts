@@ -2,7 +2,7 @@ module ngApp.search.models {
     import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
     import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
 
-    var searchTableFilesModel:TableiciousConfig = {
+    var searchTableFilesModel: TableiciousConfig = {
         title: 'Files',
         order: ['add_to_cart','data_access', 'file_name', 'file_type', 'participants', 'project_name', 'availableData', 'status', 'last_update'],
         headings: [{
@@ -16,7 +16,7 @@ module ngApp.search.models {
             icon:function(field){
                 return field && field.val === 'protected' ? "lock" : "unlock";
             },
-            template:function(){
+            template: function(){
                 return '';
             }
         }, {

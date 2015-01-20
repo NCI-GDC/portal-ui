@@ -22,6 +22,7 @@ module ngApp.cart {
       .module("ngApp.cart", [
         "cart.controller",
         "cart.services",
+        "cart.directives",
         "ngApp.files",
         "ui.router.state"
       ])

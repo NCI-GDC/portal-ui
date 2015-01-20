@@ -26,6 +26,7 @@ module ngApp.cart.services {
     undoRemoved(): void;
     getMaxSize(): number;
     isFull(): boolean;
+    getCartVacancySize(): number;
   }
 
   class CartService implements ICartService {
@@ -53,6 +54,10 @@ module ngApp.cart.services {
 
     isFull(): boolean {
       return this.files.length >= CartService.MAX_SIZE;
+    }
+
+    getCartVacancySize(): number {
+      return this.getMaxSize() - this.getFiles().length;
     }
 
     getFiles(): IFile[] {

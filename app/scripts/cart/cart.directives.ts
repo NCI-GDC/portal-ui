@@ -24,6 +24,7 @@ module ngApp.cart.directives {
     return {
       restrict: "AE",
       scope:{
+        paging: "=",
         files: "=",
         removeAllInSearchResult: "&"
       },
@@ -72,7 +73,7 @@ module ngApp.cart.directives {
 
         $scope.addAll = function(){
           var filters = LocationService.filters();
-          var size: number = ($scope.files.length >= this.CartService.getMaxSize()) ? this.CartService.getMaxSize() : this.files.length;
+          var size: number = ($scope.paging.total >= this.CartService.getMaxSize()) ? this.CartService.getMaxSize() : this.paging.total;
           FilesService.getFiles({
             fields: [
               "data_access",
@@ -91,7 +92,8 @@ module ngApp.cart.directives {
               "participants.bcr_patient_uuid"
             ],
             filters: filters,
-            size: size
+            size: size,
+            from: 0
           }).then((data) => this.CartService.addFiles(data.hits));
         }
       }
@@ -178,7 +180,7 @@ module ngApp.cart.directives {
       }
     }
   }
-  
+
   angular.module("cart.directives", ["user.services", "location.services", "files.services"])
     .directive("addToCartSingle", AddToCartSingle)
     .directive("addToCartAll", AddToCartAll)

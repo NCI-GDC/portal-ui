@@ -11,23 +11,33 @@
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu">
-        <li>
-            <a data-ng-if="CartService.isFull()">
-                <i class="fa fa-shopping-cart fa-stack"></i>
+      <li data-ng-class="{disabled: (CartService.getCartVacancySize() === 0 || CartService.getCartVacancySize() - paging.total < 0)}">
+            <a data-ng-if="CartService.getCartVacancySize() === 0">
+              <span class="fa-stack">
+                    <i class="fa fa-shopping-cart fa-stack-1x"></i>
+                    <i class="fa fa-ban fa-stack-2x"></i>
+                </span>
                 <span data-translate>Cart Full</span>
             </a>
-            <a data-ng-if="CartService.getFiles().length  > 1" disabled>
-                <i class="fa fa-shopping-cart fa-stack"></i>
-                <span data-translate>Cart can only hold {{CartService.getMaxSize() - CartService.getFiles().length }} more items</span>
+            <a data-ng-if="CartService.getCartVacancySize() - paging.total < 0" disabled>
+                <span class="fa-stack">
+                    <i class="fa fa-shopping-cart fa-stack-1x"></i>
+                    <i class="fa fa-ban fa-stack-2x"></i>
+                </span>
+                <span data-translate>Cart can only hold {{ CartService.getCartVacancySize() }} more items</span>
             </a>
-            <a data-ng-if="(CartService.getFiles().length + files.length) <= CartService.getMaxSize()" data-ng-click="addAll()">
-                <i class="fa fa-shopping-cart fa-stack"></i>
+            <a data-ng-if="CartService.getCartVacancySize() - paging.total >= 0" data-ng-click="addAll()">
+                <span class="fa-stack">
+                  <i class="fa fa-shopping-cart fa-stack-1x"></i>
+                </span>
                 <span data-translate>Add all in Search Result</span>
             </a>
         </li>
         <li>
             <a data-ng-click="removeAll()">
-                <i class="fa fa-shopping-cart fa-stack"></i>
+                <span class="fa-stack">
+                  <i class="fa fa-shopping-cart fa-stack-1x"></i>
+                </span>
                 <span data-translate>Remove all in Search Result</span>
             </a>
         </li>

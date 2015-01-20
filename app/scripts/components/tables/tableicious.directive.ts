@@ -307,7 +307,7 @@ module ngApp.components.tables.directives.tableicious {
                     });
 
                     $scope.files = files.val;
-                    var htm = '<div add-to-cart-filtered files="files" row="row"></div>';
+                    var htm = '<div add-to-cart-filtered data-files="files" data-row="row"></div>';
                     var compiled = $compile(htm)($scope);
                     $element.append(compiled);
                 }
@@ -321,7 +321,8 @@ module ngApp.components.tables.directives.tableicious {
             restrict:"AE",
             scope:{
                 heading:'=',
-                data:'='
+                data:'=',
+                paging: '='
             },
             controller:function($scope, $element,$compile){
 
@@ -330,7 +331,7 @@ module ngApp.components.tables.directives.tableicious {
 
                     _.defer(function(){
 
-                        var htm = '<div add-to-cart-all files="data"></div>';
+                        var htm = '<div add-to-cart-all data-files="data" data-paging="paging"></div>';
                         var compiled = $compile(htm)($scope);
                         $element.html(compiled);
                     })

@@ -68,12 +68,12 @@ module ngApp.cart.controllers {
       this.pagination.from = newPaging.from;
       this.pagination.size = newPaging.size;
       this.pagination.count = this.pagination.size;
-      this.pagination.pages = Math.ceil(this.files / this.pagination.size);
+      this.pagination.pages = Math.ceil(this.files.length / this.pagination.size);
       this.pagination.total = this.files.length;
 
       // Used to check if files are deleted and the overall count can't reach the page
       // we are on.
-      while(this.pagination.from * (this.pagination.page - 1) > this.pagination.total) {
+      while(this.pagination.from > this.pagination.total) {
         this.pagination.page--;
         this.pagination.from -= this.pagination.size;
       }

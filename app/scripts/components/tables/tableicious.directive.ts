@@ -1,25 +1,25 @@
 module ngApp.components.tables.directives.tableicious {
     interface ITableicousScope extends ng.IScope {
-        data:any[];
-        dataAsKeyValuePairs:any[];
-        config:TableiciousConfig;
-        expandedHeadings:TableiciousColumnDefinition[];
-        order:string[];
-        allHeadings:any[];
+        data: any[];
+        dataAsKeyValuePairs: any[];
+        config: TableiciousConfig;
+        expandedHeadings: TableiciousColumnDefinition[];
+        order: string[];
+        allHeadings: any[];
         TableService;
-        draggableHeadings:any[];
-        root:IRootScope;
-        models:any;
-        $filter:ng.IFilterProvider;
-        getColumnIndex(arg:any):number;
-        expandNestedData(nestedData:any):any;
-        getHeadingColSpan(heading):number;
-        getHeadingRowSpan(heading):number;
-        getAllHeadingsAtNestingLevel(level):any[];
+        draggableHeadings: any[];
+        root: IRootScope;
+        models: any;
+        $filter: ng.IFilterProvider;
+        getColumnIndex(arg: any): number;
+        expandNestedData(nestedData: any): any;
+        getHeadingColSpan(heading): number;
+        getHeadingRowSpan(heading): number;
+        getAllHeadingsAtNestingLevel(level): any[];
 
-        getHeadingById(id:string):TableiciousColumnDefinition
-        createOrderArray()
-        getDataAtRow (heading:TableiciousColumnDefinition,index:number) : TableiciousEntryDefinition;
+        getHeadingById(id: string): TableiciousColumnDefinition;
+        createOrderArray(): void;
+        getDataAtRow(heading: TableiciousColumnDefinition, index: number) : TableiciousEntryDefinition;
     }
 
     export class TableiciousConfig {

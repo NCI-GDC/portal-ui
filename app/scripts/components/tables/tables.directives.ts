@@ -26,7 +26,7 @@ module ngApp.components.tables.directives {
         list:"="
       },
       replace: true,
-      templateUrl: "components/tables/templates/arrange-columns.html",
+      templateUrl: "components/tables/templates/arrange-columns.html"
     };
   }
 

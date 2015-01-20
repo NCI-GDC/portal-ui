@@ -1,13 +1,24 @@
-<div class="arrange-columns">
-    <ul dnd-list="list">
+<div class="btn-group filter-dropdown-group" data-dropdown>
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+        <span class="fa fa-cube"></span> Reorder Columns
+        <span class="caret"></span>
+    </button>
+
+    <ul dnd-list="list" class="dropdown-menu pull-right" role="menu">
         <li ng-repeat="item in list"
-            dnd-draggable="item"
-            dnd-moved="list.splice($index, 1)"
-            dnd-effect-allowed="move"
-            dnd-selected="models.selected = item"
             ng-class="{'selected': models.selected === item}"
                 >
-            {{item.displayName}}
+            <a dnd-draggable="item"
+               dnd-moved="list.splice($index, 1)"
+               dnd-effect-allowed="move"
+               dnd-selected="models.selected = item">
+                {{item.displayName}}
+            </a>
+
         </li>
     </ul>
+
 </div>
+<!--<div class="arrange-columns">-->
+
+<!--</div>-->

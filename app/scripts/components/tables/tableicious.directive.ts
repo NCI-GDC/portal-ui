@@ -114,11 +114,11 @@ module ngApp.components.tables.directives.tableicious {
             },true);
 
             $scope.$watch(()=>{
-                return $scope.draggableHeadings && $scope.draggableHeadings.map(function(head){
+                return $scope.config.headings && $scope.config.headings.map(function(head){
                     return head.displayName;
                 })
             },()=>{
-                $scope.order = this.createOrderArray($scope.draggableHeadings);
+                $scope.order = this.createOrderArray($scope.config.headings);
             },true);
 
             $scope.getTemplate = function(heading,field,row,_scope) {
@@ -166,9 +166,9 @@ module ngApp.components.tables.directives.tableicious {
                 return !heading.children;
             });
 
-            $scope.draggableHeadings = $scope.allHeadings.filter(function(heading){
-                return heading.nestingLevel === 0;
-            });
+            //$scope.draggableHeadings = $scope.allHeadings.filter(function(heading){
+            //    return heading.nestingLevel === 0;
+            //});
 
             _.defer(()=>{
                 $scope.$apply();
@@ -325,10 +325,8 @@ module ngApp.components.tables.directives.tableicious {
             controller:function($scope, $element,$compile){
 
                 if ($scope.heading && $scope.heading.id === 'add_to_cart') {
-                    //debugger;
 
                     _.defer(function(){
-
                         var htm = '<div add-to-cart-all files="data"></div>';
                         var compiled = $compile(htm)($scope);
                         $element.html(compiled);

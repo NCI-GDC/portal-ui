@@ -142,10 +142,10 @@ module ngApp.cart.services {
     removeAll(): void {
       this.notify.closeAll();
       this.notify({
-          message: "",
-          messageTemplate: this.buildRemovedMsg(this.files),
-          container: "#notification",
-          classes: "alert-warning"
+        message: "",
+        messageTemplate: this.buildRemovedMsg(this.files),
+        container: "#notification",
+        classes: "alert-warning"
       });
       this.lastModifiedFiles = this.files;
       this.files = [];
@@ -160,10 +160,10 @@ module ngApp.cart.services {
       this._sync();
       this.notify.closeAll();
       this.notify({
-          message: "",
-          messageTemplate: this.buildRemovedMsg(this.lastModifiedFiles),
-          container: "#notification",
-          classes: "alert-warning"
+        message: "",
+        messageTemplate: this.buildRemovedMsg(this.lastModifiedFiles),
+        container: "#notification",
+        classes: "alert-warning"
       });
       this.files = remaining;
       this._sync();

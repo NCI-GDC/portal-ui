@@ -16,6 +16,9 @@ module ngApp.cart.directives {
         $scope.addToCart = function(files: IFile[]) {
           CartService.addFiles(files)
         };
+        $scope.removeFromCart = function(files: IFile[]) {
+          CartService.removeFiles(files);
+        };
       }
     }
   }
@@ -120,7 +123,6 @@ module ngApp.cart.directives {
             filters.content = [];
           }
 
-          //debugger;
           var barcode = _.find($scope.row,function(elem){return elem.id === "bcr_patient_uuid"}).val;
 
           filters.content.push({
@@ -154,28 +156,18 @@ module ngApp.cart.directives {
             size: 100
           }).then((data) => {
             $scope.filteredRelatedFiles = data;
-            //$scope.$apply();
           });
-        }
+        };
 
         $scope.addFilteredRelatedFiles = function()  {
-
-          //console.info("Filter add to cart",$scope);
-
           CartService.addFiles($scope.filteredRelatedFiles.hits);
-        }
+        };
 
-        $scope. addRelatedFiles  = function(){
-            //this.addToCart(participant.files);
-           CartService.addFiles($scope.files);
-        }
+        $scope.addRelatedFiles = function() {
+          CartService.addFiles($scope.files);
+        };
 
         $scope.CartService = CartService;
-
-
-        $scope.removeAll = function(){
-          $scope.removeAllInSearchResult();
-        }
       }
     }
   }

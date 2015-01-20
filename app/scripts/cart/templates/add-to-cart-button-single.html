@@ -1,10 +1,11 @@
 <div class="btn-group" data-dropdown>
-    <button data-ng-if="CartService.isInCart(file.file_uuid)" type="button" class="btn btn-success" disabled>
+    <button data-ng-if="CartService.isInCart(file.file_uuid)" type="button" class="btn btn-success"
+            data-ng-click="removeFromCart([file])">
         <i class="fa fa-check-circle"></i>
     </button>
     <button data-ng-if="!CartService.isInCart(file.file_uuid)" type="button" class="btn btn-default"
             data-ng-click="addToCart([file])">
-        <i class="fa fa-shopping-cart"></i>
+        <i class="fa fa-circle-o"></i>
     </button>
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
             aria-expanded="false">

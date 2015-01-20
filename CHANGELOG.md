@@ -1,3 +1,34 @@
+### 0.1.8-spr5 (2015-01-20)
+
+
+#### Bug Fixes
+
+* **facets:** display _missing terms ([989a8b58](https://github.com/NCI-GDC/portal-ui/commit/989a8b584cc2c14ba7e20e24ecc1e819095653f3), closes [OICR-172](https://jira.opensciencedatacloud.org/browse/OICR-172))
+
+
+#### Features
+
+* **app:**
+  * undo add/remove files in notification ([2b24a742](https://github.com/NCI-GDC/portal-ui/commit/2b24a7420bafc5c3b3dad1b9607e250ccc3af222), closes [OICR-169](https://jira.opensciencedatacloud.org/browse/OICR-169))
+  * Create table sorting directive ([420e25f1](https://github.com/NCI-GDC/portal-ui/commit/420e25f117a4f5c8cf05bc0d58fd8e37d70931fc), closes [OICR-195](https://jira.opensciencedatacloud.org/browse/OICR-195))
+  * Loading spinner on page XHR requests ([b4e08621](https://github.com/NCI-GDC/portal-ui/commit/b4e08621d84d03b479113abd3f1d72a1f9e8f198))
+  * link download btns w/ makeDownloadLink ([61c9126b](https://github.com/NCI-GDC/portal-ui/commit/61c9126bda323407084f6b4769b0febcae3cd17b), closes [OICR-165](https://jira.opensciencedatacloud.org/browse/OICR-165))
+* **cart:** Add pagination to cart page. ([d568ad2d](https://github.com/NCI-GDC/portal-ui/commit/d568ad2def3fa08c4431c7aa24112e89a97bd845), closes [OICR-194](https://jira.opensciencedatacloud.org/browse/OICR-194))
+* **core:** send js errors to API ([fd789b0c](https://github.com/NCI-GDC/portal-ui/commit/fd789b0c9b22c12a18f54509d0a97cce78d299f5), closes [OICR-212](https://jira.opensciencedatacloud.org/browse/OICR-212))
+* **facets:** add id autosuggest support. ([50c5ab2a](https://github.com/NCI-GDC/portal-ui/commit/50c5ab2aacf890cd8759550180b145a5dc982254), closes [OICR-173](https://jira.opensciencedatacloud.org/browse/OICR-173))
+* **gql:** adds gql directive ([05583eac](https://github.com/NCI-GDC/portal-ui/commit/05583eac9c05a7ecf549df3859c0a3157c9d94fa))
+* **participants:** Initial Biospecimen section. ([e8579df0](https://github.com/NCI-GDC/portal-ui/commit/e8579df0b8a0640eba837e948f2989fb7acb87be), closes [OICR-209](https://jira.opensciencedatacloud.org/browse/OICR-209))
+* **search:**
+  * search table header actions ([f929b2a2](https://github.com/NCI-GDC/portal-ui/commit/f929b2a26f44ce8b701895ee618b842ce367f1f7), closes [OICR-193](https://jira.opensciencedatacloud.org/browse/OICR-193))
+  * Switch back to Tabs for facets. ([175c971d](https://github.com/NCI-GDC/portal-ui/commit/175c971d2ec2c88920ff99a9a8a53e2b511ce8a1), closes [OICR-208](https://jira.opensciencedatacloud.org/browse/OICR-208))
+  * add tumor tissue status ([7db74e40](https://github.com/NCI-GDC/portal-ui/commit/7db74e40b63ca01a47d3053b29dd6a273712a028), closes [OICR-187](https://jira.opensciencedatacloud.org/browse/OICR-187))
+* **table:**
+  * add table directive to search page ([1ed88acc](https://github.com/NCI-GDC/portal-ui/commit/1ed88accaad15d84096b57c1adba297c1f098e11), closes [OICR-215](https://jira.opensciencedatacloud.org/browse/OICR-215))
+  * implement table directive ([28bafce7](https://github.com/NCI-GDC/portal-ui/commit/28bafce7d99408629912460495d9cc184511151d), closes [OICR-205](https://jira.opensciencedatacloud.org/browse/OICR-205))
+* **templates:** adds ids to tables for qa hooks ([86a43476](https://github.com/NCI-GDC/portal-ui/commit/86a434768e8fc40da4fb1c0e915e12c26859e7de))
+* **user:** Better handling of non user projects. ([305fc7ac](https://github.com/NCI-GDC/portal-ui/commit/305fc7acd7edc6eba119dab4e3fff267032bfb4c), closes [OICR-213](https://jira.opensciencedatacloud.org/browse/OICR-213))
+
+
 ### 0.1.8-spr4 (2014-12-23)
 
 

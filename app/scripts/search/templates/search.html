@@ -33,6 +33,11 @@
 
       <ul class="nav nav-tabs" style="margin-bottom: 20px">
         <li role="presentation"
+            data-ng-class="{ active: sc.State.tabs.summary.active }"
+            data-ng-click="sc.select('tabs', 'summary')">
+          <a>{{ 'Summary' | translate }}</a>
+        </li>
+        <li role="presentation"
             data-ng-class="{ active: sc.State.tabs.files.active }"
             data-ng-click="sc.select('tabs', 'files')">
           <a>{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
@@ -43,15 +48,21 @@
           <a>{{ 'Participants' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
         </li>
       </ul>
-      <div class="pane-section"
-           data-ng-show="sc.State.tabs.participants.active">
+      <div class="pane-section" data-ng-show="sc.State.tabs.summary.active">
+
+        <h2 data-ng-if="sc.files.hits.length === 0" data-translate>
+          No files found using those filters.
+        </h2>
+
+        <div data-ng-include="'search/templates/search.summary.html'" data-ng-if="sc.files.hits.length > 0"></div>
+      </div>
+      <div class="pane-section" data-ng-show="sc.State.tabs.participants.active">
 
         <h2 data-ng-if="sc.participants.hits.length === 0" data-translate>
           No participants found using those filters.
         </h2>
 
-        <div data-ng-include="'search/templates/search.participants.html'"
-             data-ng-if="sc.participants.hits.length > 0"></div>
+        <div data-ng-include="'search/templates/search.participants.html'" data-ng-if="sc.participants.hits.length > 0"></div>
       </div>
       <div class="pane-section"
            data-ng-show="sc.State.tabs.files.active">

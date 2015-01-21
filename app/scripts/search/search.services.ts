@@ -17,6 +17,9 @@ module ngApp.search.services {
 
   class State implements IState {
     tabs: ITabs = {
+      summary: {
+        active: false
+      },
       participants: {
         active: false
       },
@@ -38,7 +41,11 @@ module ngApp.search.services {
         _.each(this[section], function (section: ITab) {
           section.active = false;
         });
-        this[section][tab].active = true;
+        console.log(section, tab);
+        if (!(section === "facets" && tab==="summary")) {
+          this[section][tab].active = true;
+        }
+
       }
     }
   }

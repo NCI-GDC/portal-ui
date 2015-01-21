@@ -13,6 +13,14 @@ module ngApp.search {
       reloadOnSearch: false
     });
 
+    $stateProvider.state("search.summary", {
+      url: "/s",
+      data: {
+        tab: "summary"
+      },
+      reloadOnSearch: false
+    });
+
     $stateProvider.state("search.participants", {
       url: "/p",
       data: {

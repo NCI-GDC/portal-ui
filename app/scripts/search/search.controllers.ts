@@ -103,7 +103,7 @@ module ngApp.search.controllers {
       CoreService.setPageTitle("Search");
 
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
-        if (next.indexOf("search") !== -1 || next.indexOf("query") !== -1) {
+        if (next.indexOf("search") !== -1) {
           this.refresh();
         }
       });
@@ -190,37 +190,16 @@ module ngApp.search.controllers {
           "vital_status"
         ]
       }).then((data) => {
-        // TODO - remove when aggregations done on server
-        var participants = data.hits.map((participant)=>{
-          participant.filesByType = participant.files.reduce((a,b)=>{
-
-            var type = b.data_type;
-            if (a[type]) {
-              a[type] += 1;
-            } else {
-              a[type] = 1;
-            }
-
-            return a;
-          },{});
-          return participant;
-
-        });
-
         this.participants = data;
       });
     }
 
     // TODO Load data lazily based on active tab
-    setState(tab: string, next: string) {
+    setState(tab: string) {
       // Changing tabs and then navigating to another page
       // will cause this to fire.
-      if (tab && (this.$state.current.name.match("search.") ||
-          this.$state.current.name.match("query."))) {
-
-        next += tab;
-
-        this.$state.go(next, this.LocationService.search(), {inherit: true});
+      if (tab && (this.$state.current.name.match("search."))) {
+        this.$state.go("search." + tab, this.LocationService.search(), {inherit: true});
       }
     }
 
@@ -230,15 +209,8 @@ module ngApp.search.controllers {
 
 
     select(section: string, tab: string) {
-      var next = "search.";
-
       this.State.setActive(section, tab);
-
-      if (this.$state.current.name.match("query.")) {
-        next = "query.";
-      }
-
-      this.setState(tab, next);
+      this.setState(tab);
     }
 
     addFilesKeyPress(event: any, type: string) {
@@ -256,10 +228,6 @@ module ngApp.search.controllers {
       this.CartService.addFiles(files);
     }
 
-
-
-
-
     removeFiles(files: IFile[]): void {
       this.CartService.remove(_.pluck(files, "file_uuid"));
     }
@@ -267,47 +235,6 @@ module ngApp.search.controllers {
     addRelatedFiles(participant: IParticipant): void {
       this.addToCart(participant.files);
     }
-
-    //getFilteredRelatedFiles(participant: IParticipant): void {
-    //  var filters = this.LocationService.filters();
-    //
-    //  if (!filters.content) {
-    //    filters.op = "and";
-    //    filters.content = [];
-    //  }
-    //
-    //  filters.content.push({
-    //    content: {
-    //      field: "participants.bcr_patient_uuid",
-    //      value: [
-    //        participant.bcr_patient_uuid
-    //      ]
-    //    },
-    //    op: "is"
-    //  });
-    //
-    //  this.FilesService.getFiles({
-    //    fields: [
-    //      "data_access",
-    //      "data_format",
-    //      "data_level",
-    //      "data_subtype",
-    //      "data_type",
-    //      "file_extension",
-    //      "file_name",
-    //      "file_size",
-    //      "file_uuid",
-    //      "platform",
-    //      "updated",
-    //      "archive.disease_code",
-    //      "archive.revision",
-    //      "participants.bcr_patient_uuid"
-    //    ],
-    //    filters: filters,
-    //    size: 100
-    //  }).then((data) => participant.filteredRelatedFiles = data);
-    //
-    //}
 
     addFilteredRelatedFiles(participant: IParticipant): void {
       this.addToCart(participant.filteredRelatedFiles.hits);

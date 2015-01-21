@@ -154,7 +154,6 @@ module ngApp.cart.directives {
             size: 100
           }).then((data) => {
             $scope.filteredRelatedFiles = data;
-            console.log("Set filtered related files...", $scope.filteredRelatedFiles);
             //$scope.$apply();
           });
         }

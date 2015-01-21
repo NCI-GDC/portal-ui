@@ -41,7 +41,7 @@ module ngApp.search.services {
         _.each(this[section], function (section: ITab) {
           section.active = false;
         });
-        console.log(section, tab);
+        
         if (!(section === "facets" && tab==="summary")) {
           this[section][tab].active = true;
         }

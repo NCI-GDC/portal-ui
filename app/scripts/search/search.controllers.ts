@@ -93,9 +93,9 @@ module ngApp.search.controllers {
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 public CoreService: ICoreService,
-                private TableService : ITableService,
-                private SearchTableFilesModel:TableiciousConfig,
-                private SearchTableParticipantsModel:TableiciousConfig,
+                private TableService: ITableService,
+                private SearchTableFilesModel: TableiciousConfig,
+                private SearchTableParticipantsModel: TableiciousConfig,
                 private notify: any) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
@@ -240,6 +240,33 @@ module ngApp.search.controllers {
       this.addToCart(participant.filteredRelatedFiles.hits);
     }
 
+
+    // TODO remove
+    addAll(): void {
+      var filters = this.LocationService.filters();
+      var size: number = (this.files.pagination.total >= this.CartService.getMaxSize()) ? this.CartService.getMaxSize() : this.files.pagination.total;
+      this.FilesService.getFiles({
+        fields: [
+          "data_access",
+          "data_format",
+          "data_level",
+          "data_subtype",
+          "data_type",
+          "file_extension",
+          "file_name",
+          "file_size",
+          "file_uuid",
+          "platform",
+          "updated",
+          "archive.disease_code",
+          "archive.revision",
+          "participants.bcr_patient_uuid"
+        ],
+        filters: filters,
+        size: size,
+        from: 0
+      }).then((data) => this.CartService.addFiles(data.hits));
+    }
   }
 
   angular

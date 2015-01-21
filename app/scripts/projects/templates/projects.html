@@ -42,16 +42,13 @@
 
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title table-heading clearfix">Projects ({{prsc.projects.pagination.total}})
-              <div class="pull-right">
-              </div>
-          </h3>
+          <h3 class="panel-title table-heading clearfix">Projects ({{prsc.projects.pagination.total}})</h3>
         </div>
-
+<div class="table-responsive">
        <tableicious data=prsc.projects.hits id="project-table" config=tableConfig></tableicious>
+  </div>
       </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
+

@@ -23,16 +23,18 @@ module ngApp.projects {
             fields: [
               "disease_type",
               "project_name",
+              "primary_site",
               "status",
               "program",
               "project_code",
-              "_summary._participant_count",
-              "_summary._analyzed_data.data_type",
-              "_summary._analyzed_data._participant_count",
-              "_summary._analyzed_data._file_count",
-              "_summary._experimental_data._participant_count",
-              "_summary._experimental_data._file_count",
-              "_summary._experimental_data.experimental_type"
+              "summary.participant_count",
+              "summary.data_file_count",
+              "summary.data_types.data_type",
+              "summary.data_types.participant_count",
+              "summary.data_types.file_count",
+              "summary.experimental_strategies.participant_count",
+              "summary.experimental_strategies.file_count",
+              "summary.experimental_strategies.experimental_strategy"
             ]
           });
         }

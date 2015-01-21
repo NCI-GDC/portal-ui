@@ -64,7 +64,7 @@
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [{ name: 'participants.admin.disease_code',value: prc.project.project_code }] | makeFilter }}
                 })">
-                  {{ prc.project._summary._participant_count }}
+                  {{ prc.project.summary.participant_count }}
                 </a>
               </td>
             </tr>
@@ -76,7 +76,7 @@
                 <a data-ui-sref="search.files({ 'filters':
                   {{ [{ name: 'participants.admin.disease_code', value: prc.project.project_code }] | makeFilter }}
                 })">
-                  tbc {{ prc.project._summary.file_count | number:0 }}
+                  {{ prc.project.summary.data_file_count | number:0 }}
                 </a>
               </td>
             </tr>
@@ -87,42 +87,40 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Experimental Strategy</h3>
           </div>
-          <div class="panel-body" data-ng-if="!prc.project._summary._experimental_data">
+          <div class="panel-body" data-ng-if="!prc.project.summary.experimental_strategies">
             <h4 class="list-group-item-heading" data-translate>No experimental strategies were found.</h4>
           </div>
-          <table id="experimental-strategy-table" class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project._summary._experimental_data">
+          <table id="experimental-strategy-table" class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project.summary.experimental_strategies">
             <thead>
             <tr>
               <th scope="col" data-translate>Analysis</th>
               <th scope="col" data-translate>Participants</th>
-              <th scope="col" data-translate>Samples</th>
               <th scope="col" data-translate>Files</th>
             </tr>
             </thead>
             <tbody>
-            <tr data-ng-repeat="(experiment, counts) in prc.project._summary._experimental_data">
-              <td>{{ ::experiment }}</td>
+            <tr data-ng-repeat="es in prc.project.summary.experimental_strategies">
+              <td>{{ ::es.experimental_strategy }}</td>
               <td class="text-right">
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [
                       { name: 'participants.admin.disease_code',value: prc.project.project_code },
-                      { name: 'files.experimental_strategy', value: experiment }
+                      { name: 'files.experimental_strategy', value: es.experimental_strategy }
                      ] | makeFilter
                   }}
                 })">
-                  {{ ::counts.participant_count | number:0 }}
+                  {{ ::es.participant_count | number:0 }}
                 </a>
               </td>
-              <td class="text-right">tbc {{ ::experiment.sample_count | number:0 }}</td>
-              <td>
+              <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters':
                   {{ [
                       { name: 'participants.admin.disease_code',value: prc.project.project_code },
-                      { name: 'files.experimental_strategy', value: experiment }
+                      { name: 'files.experimental_strategy', value: es.experimental_strategy }
                      ] | makeFilter
                   }}
                 })">
-                  {{ ::counts.file_count | number:0 }}
+                  {{ ::es.file_count | number:0 }}
                 </a>
               </td>
             </tr>
@@ -135,10 +133,10 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Available Data</h3>
           </div>
-          <div class="panel-body" data-ng-if="!prc.project._summary._analyzed_data">
+          <div class="panel-body" data-ng-if="!prc.project.summary.data_types">
             <h4 class="list-group-item-heading" data-translate>No available data.</h4>
           </div>
-          <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project._summary._analyzed_data">
+          <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project.summary.data_types">
             <thead>
             <tr>
               <th scope="col" data-translate>Data Type</th>
@@ -147,28 +145,28 @@
             </tr>
             </thead>
             <tbody>
-            <tr data-ng-repeat="(dataCategory, counts) in prc.project._summary._analyzed_data">
-              <td>{{ ::dataCategory }}</td>
+            <tr data-ng-repeat="dt in prc.project.summary.data_types">
+              <td>{{ ::dt.data_type }}</td>
               <td class="text-right">
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [
                       { name: 'participants.admin.project_code',value: prc.project.project_code },
-                      { name: 'files.data_type', value: dataCategory }
+                      { name: 'files.data_type', value: dt.data_type }
                      ] | makeFilter
                   }}
                 })">
-                    {{ counts.participant_count | number:0 }}
+                    {{ dt.participant_count | number:0 }}
                 </a>
               </td>
               <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters':
                   {{ [
                       { name: 'participants.admin.disease_code',value: prc.project.project_code },
-                      { name: 'files.data_type', value: dataCategory }
+                      { name: 'files.data_type', value: dt.data_type }
                      ] | makeFilter
                   }}
                 })">
-                  {{ counts.file_count | number:0 }}
+                  {{ dt.file_count | number:0 }}
                 </a>
               </td>
             </tr>

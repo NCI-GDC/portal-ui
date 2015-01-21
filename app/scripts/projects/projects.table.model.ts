@@ -2,7 +2,7 @@ module ngApp.projects.models {
     import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
     import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
 
-    function getFileSref(data_type:string) {
+    function getParticipantSref(data_type:string) {
         return function fileSref (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
             var projectCode = _.find(row,function(elem){
                 return elem.id === 'project_code';
@@ -18,7 +18,8 @@ module ngApp.projects.models {
 
     var projectTableModel:TableiciousConfig = {
         title: 'Projects',
-        order: ['project_code', 'disease_type', 'program', 'participants', 'project_name', 'availableData', 'status', 'last_update'],
+        //order: ['project_code', 'disease_type', 'primary_site', 'program', 'participants', 'project_name', 'data_types', 'file_size', 'files', 'last_update'],
+        order: ['project_code'],
         headings: [{
             displayName: "Code",
             id: "project_code",
@@ -30,6 +31,10 @@ module ngApp.projects.models {
             displayName: "Disease Type",
             id: "disease_type",
             enabled: true
+        },{
+            displayName: "Primary Site",
+            id: "primary_site",
+            enabled: true
         }, {
             displayName: "Program",
             id: "program",
@@ -39,8 +44,11 @@ module ngApp.projects.models {
             displayName: "Participants",
             id: "participants",
             enabled: true,
-            template: function (field) {
-                return field && field.val || 321;
+            template: function (field, row) {
+                var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                    return x.id === 'summary';
+                });
+                return summary.val.participant_count
             },
             sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
 
@@ -57,8 +65,8 @@ module ngApp.projects.models {
             id: "project_name",
             enabled: false
         }, {
-            displayName: "Available Data Files per Data Type",
-            id: "availableData",
+            displayName: "Available Participants per Data Type",
+            id: "data_types",
             headingClass:'text-center',
             enabled: true,
             children: [{
@@ -67,51 +75,112 @@ module ngApp.projects.models {
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                        return x.id === '_summary';
+                        return x.id === 'summary';
                     });
-                    var data:any = summary.val._analyzed_data['Clinical data'];
-                    return data['file_count'];
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Clinical';
+                    });
+
+                    return data && data.participant_count ? data.participant_count : 0;
                 },
-                sref: getFileSref('Clinical data')
-            }, {
-                displayName: 'SNV',
-                id: 'snv',
-                enabled: true,
-                sref: getFileSref('Simple nucleotide variant')
-            }, {
+                sref: getParticipantSref('Clinical')
+            },  {
                 displayName: 'mrnA',
                 id: 'mrna',
                 enabled: true,
-                sref: getFileSref('mRNA expression')
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Gene expression';
+                    });
+
+                    return data && data.participant_count ? data.participant_count : 0;
+                },
+                sref: getParticipantSref('Gene expression')
             }, {
                 displayName: 'miRNA',
                 id: 'mirna',
                 enabled: true,
-                sref: getFileSref('miRNA expression')
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Raw microarray data';
+                    });
+
+                    return data && data.participant_count ? data.participant_count : 0;
+                },
+                sref: getParticipantSref('Raw microarray data')
             }, {
                 displayName: 'CNV',
                 id: 'cnv',
                 enabled: true,
-                sref: getFileSref('Copy number variant')
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Copy number variation';
+                    });
+
+                    return data && data.participant_count ? data.participant_count : 0;
+                },
+                sref: getParticipantSref('Copy number variation')
             }, {
                 displayName: 'Meth',
                 id: 'meth',
                 enabled: true,
-                sref: getFileSref('DNA methylation')
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'DNA methylation';
+                    });
+
+                    return data && data.participant_count ? data.participant_count : 0;
+                },
+                sref: getParticipantSref('DNA methylation')
                 }]
             }, {
-                displayName: "Status",
-                id: "status",
+                displayName: "Files",
+                id: "data_file_count",
+                enabled: true,
+                template: function (field, row) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+                    return summary.val.data_file_count
+                },
+                sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
+                    var projectCode = _.find(row,function(elem){
+                        return elem.id === 'project_code';
+                    }).val;
+
+                    var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: projectCode }]);
+                    return "search.files({ 'filters':"+filter+"})";
+                }
+            }, {
+                displayName: "File Size",
+                id: "file_size",
                 enabled: true,
                 template: function (field) {
-                    return field && field.val || 'legacy';
+                    return field && field.val || 0;
                 }
             }, {
                 displayName: "Last Update",
-                id: "last_update",
+                id: "last_updated",
                 enabled: true,
                 template: function (field) {
-                    return field && field.val || '01/12/2015';
+                    return field && field.val || 0;
                 }
             }
         ]

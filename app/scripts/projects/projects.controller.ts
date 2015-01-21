@@ -45,20 +45,23 @@ module ngApp.projects.controllers {
           "status",
           "program",
           "project_code",
-          "_summary._participant_count",
-          "_summary._analyzed_data.data_type",
-          "_summary._analyzed_data._participant_count",
-          "_summary._analyzed_data._file_count",
-          "_summary._experimental_data._participant_count",
-          "_summary._experimental_data._file_count",
-          "_summary._experimental_data.experimental_type"
+            "primary_site",
+          "summary.file_size",
+          "summary.participant_count",
+          "summary.data_file_count",
+          "summary.data_types.data_type",
+          "summary.data_types.participant_count",
+          "summary.data_types.file_count",
+          "summary.experimental_strategies.participant_count",
+          "summary.experimental_strategies.file_count",
+          "summary.experimental_strategies.experimental_strategy"
         ],
         facets: [
-          "status",
           "program",
           "disease_type",
-          "_summary._experimental_data.experimental_type",
-          "_summary._analyzed_data.data_type"
+          "primary_site",
+          "summary.experimental_strategies.experimental_strategy",
+          "summary.data_types.data_type"
         ],
         size: 100
       }).then((data) => this.projects = data);

@@ -18,6 +18,14 @@ module ngApp.annotations.controllers {
     annotations: IAnnotations;
     sortColumns: any = [
       {
+        key: "itemType",
+        name: "Item Type"
+      },
+      {
+        key: "annotationClassificationName",
+        name: "Classification"
+      },
+      {
         key: "categoryName",
         name: "Category"
       },
@@ -25,10 +33,10 @@ module ngApp.annotations.controllers {
         key: "createdBy",
         name: "Annotator"
       },
-      //{
-      //  key: "id",
-      //  name: "ID"
-      //}
+      {
+        key: "status",
+        name: "Status"
+      }
     ];
 
 

@@ -15,7 +15,7 @@ module ngApp.search.models {
 
     var searchParticipantsModel:TableiciousConfig = {
         title: 'Participants',
-        order: ['add_to_cart', 'participant_id', 'disease_type', 'availableData', 'gender', 'tumor_stage', 'files', 'last_update'],
+        order: ['disease_type', 'gender', 'tumor_stage', 'files', 'last_update'],
         headings: [{
             displayName: "Add to Cart",
             id: "add_to_cart_filtered",
@@ -44,6 +44,14 @@ module ngApp.search.models {
                 return admin && admin.val && admin.val.disease_code;
             }
         }, {
+            displayName: "Gender",
+            id: "gender",
+            enabled: true
+        }, {
+            displayName: "Tumor Stage",
+            id: "person_neoplasm_cancer_status",
+            enabled: true
+        }, {
             displayName: "Available Files per Data Type",
             id: "data_types",
             headingClass:'text-center',
@@ -65,8 +73,8 @@ module ngApp.search.models {
                 },
                 sref: getFileSref('Clinical')
             },  {
-                displayName: 'mrnA',
-                id: 'mrna',
+                displayName: 'Exp',
+                id: 'Exp',
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -81,8 +89,8 @@ module ngApp.search.models {
                 },
                 sref: getFileSref('Gene expression')
             }, {
-                displayName: 'miRNA',
-                id: 'mirna',
+                displayName: 'Array',
+                id: 'Array',
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -96,6 +104,22 @@ module ngApp.search.models {
                     return data && data.file_count ? data.file_count : 0;
                 },
                 sref: getFileSref('Raw microarray data')
+            }, {
+                displayName: 'Seq',
+                id: 'Seq',
+                enabled: true,
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Raw sequencing data';
+                    });
+
+                    return data && data.file_count ? data.file_count : 0;
+                },
+                sref: getFileSref('Raw sequencing data')
             }, {
                 displayName: 'CNV',
                 id: 'cnv',
@@ -130,29 +154,12 @@ module ngApp.search.models {
                 sref: getFileSref('DNA methylation')
             }]
         }, {
-            displayName: "Gender",
-            id: "gender",
-            enabled: true,
-        }, {
-            displayName: "Tumor Stage",
-            id: "person_neoplasm_cancer_status",
-            enabled: true
-        }, {
+
             displayName: "Files",
             id: "files",
             enabled: true,
             template:function(field){
                 return field && field.val && field.val.length;
-            }
-        }, {
-            displayName: "Annotations",
-            id: "annotations",
-            enabled: true,
-            template: function (field) {
-                return 'tbc'
-            },
-            sref: function(){
-                return 'annotations';
             }
         }]
     };

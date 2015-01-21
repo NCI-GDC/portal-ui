@@ -15,7 +15,7 @@ module ngApp.projects.models {
 
     var projectTableModel:TableiciousConfig = {
         title: 'Projects',
-        order: ['disease_type', 'primary_site', 'program', 'participants', 'project_name', 'data_types', 'file_size', 'files', 'last_update'],
+        order: ['disease_type', 'primary_site', 'program', 'participants', 'project_name', 'file_size', 'files', 'last_update'],
         headings: [{
             displayName: "Code",
             id: "project_code",
@@ -82,8 +82,8 @@ module ngApp.projects.models {
                 },
                 sref: getParticipantSref('Clinical')
             },  {
-                displayName: 'mrnA',
-                id: 'mrna',
+                displayName: 'Exp',
+                id: 'Exp',
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -98,8 +98,8 @@ module ngApp.projects.models {
                 },
                 sref: getParticipantSref('Gene expression')
             }, {
-                displayName: 'miRNA',
-                id: 'mirna',
+                displayName: 'Array',
+                id: 'Array',
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -113,6 +113,22 @@ module ngApp.projects.models {
                     return data && data.participant_count ? data.participant_count : 0;
                 },
                 sref: getParticipantSref('Raw microarray data')
+            }, {
+                displayName: 'Seq',
+                id: 'Seq',
+                enabled: true,
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Raw sequencing data';
+                    });
+
+                    return data && data.participant_count ? data.participant_count : 0;
+                },
+                sref: getParticipantSref('Raw sequencing data')
             }, {
                 displayName: 'CNV',
                 id: 'cnv',

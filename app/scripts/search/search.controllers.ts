@@ -54,23 +54,23 @@ module ngApp.search.controllers {
         name: "Size"
       },
       {
-        key: "file_name",
-        name: "File Name"
-      },
-      {
-        key: "file_extension",
-        name: "File Type"
-      },
-      {
         key: "data_type",
-        name: "Data Category"
+        name: "Data Type"
+      },
+      {
+        key: "data_format",
+        name: "Data Format"
+      },
+      {
+        key: "disease_code",
+        name: "Project"
       }
     ];
     participantSortColumns: any = [
-      //{
-      //  key: "bcr_patient_barcode",
-      //  name: "Participant ID"
-      //},
+      {
+        key: "admin.disease_code",
+        name: "Disease Type"
+      },
       {
         key: "gender",
         name: "Gender"

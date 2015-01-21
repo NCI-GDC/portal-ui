@@ -33,12 +33,13 @@
                 row="row"
                 tableicious-cell>
 
-                 <a ng-if="heading.sref" data-ui-sref="{{heading.sref(field, datum, this, $filter)}}" >
+                <a ng-if="heading.sref" data-ui-sref="{{getSref(heading,field, datum, this, $filter)}}">
                     {{getTemplate(heading,field,row,this)}}
                  </a>
 
                 <span ng-if="!heading.sref">
                     {{getTemplate(heading,field,row,this)}}
+
                 </span>
 
                 <div ng-if="heading.icon" class="text-center">

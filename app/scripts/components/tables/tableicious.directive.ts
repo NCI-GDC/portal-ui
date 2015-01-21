@@ -207,7 +207,16 @@ module ngApp.components.tables.directives.tableicious {
                 }
             }
 
+            $scope.getSref = function(heading, field, row, scope, $filter) {
+                var result = undefined;
+                try {
+                    result = heading.sref ? heading.sref(field,row,scope,$filter) : field.val;
+                } catch (e) {
+                    result = '?';
+                }
 
+                return result;
+            }
 
             this.refresh.bind(this)();
         }

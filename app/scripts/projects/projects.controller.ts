@@ -45,7 +45,7 @@ module ngApp.projects.controllers {
           "status",
           "program",
           "project_code",
-            "primary_site",
+          "primary_site",
           "summary.file_size",
           "summary.participant_count",
           "summary.data_file_count",

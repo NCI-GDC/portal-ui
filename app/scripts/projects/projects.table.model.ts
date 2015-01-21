@@ -10,16 +10,12 @@ module ngApp.projects.models {
 
             var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: projectCode},{name: 'files.data_type', value: data_type}]);
             return "search.participants({ 'filters':"+filter+"})";
-
         }
     }
 
-
-
     var projectTableModel:TableiciousConfig = {
         title: 'Projects',
-        //order: ['project_code', 'disease_type', 'primary_site', 'program', 'participants', 'project_name', 'data_types', 'file_size', 'files', 'last_update'],
-        order: ['project_code'],
+        order: ['disease_type', 'primary_site', 'program', 'participants', 'project_name', 'data_types', 'file_size', 'files', 'last_update'],
         headings: [{
             displayName: "Code",
             id: "project_code",
@@ -172,16 +168,19 @@ module ngApp.projects.models {
                 displayName: "File Size",
                 id: "file_size",
                 enabled: true,
-                template: function (field) {
-                    return field && field.val || 0;
+                template: function (field, row) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+                    return summary.val.file_size
                 }
-            }, {
-                displayName: "Last Update",
-                id: "last_updated",
-                enabled: true,
-                template: function (field) {
-                    return field && field.val || 0;
-                }
+            //}, {
+            //    displayName: "Last Update",
+            //    id: "last_updated",
+            //    enabled: true,
+            //    template: function (field) {
+            //        return field && field.val || 0;
+            //    }
             }
         ]
     };

@@ -3,10 +3,13 @@ module ngApp.search.models {
     import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
 
     function getFileSref(data_type:string) {
-        return function fileSref (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
+        return function fileSref (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
+            var uuid = _.find(row,function(elem){
+                return elem.id === 'bcr_patient_uuid';
+            }).val;
 
-            return 'tbc';
-
+            var filter = $filter("makeFilter")([{name: 'participants.bcr_patient_uuid', value: uuid},{name: 'files.data_type', value: data_type}]);
+            return "search.files({ 'filters':"+filter+"})";
         }
     }
 
@@ -40,45 +43,90 @@ module ngApp.search.models {
 
                 return admin && admin.val && admin.val.disease_code;
             }
-        },{
-            displayName: "Available Data Files per Data Type",
-            id: "availableData",
+        }, {
+            displayName: "Available Files per Data Type",
+            id: "data_types",
             headingClass:'text-center',
             enabled: true,
             children: [{
                 displayName: 'Clinical',
                 id: 'clinical',
                 enabled: true,
-                sref: getFileSref('Clinical data'),
-                template:function(){return 'tbc'}
-            }, {
-                displayName: 'SNV',
-                id: 'snv',
-                enabled: true,
-                sref: getFileSref('Simple nucleotide variant'),
-                template:function(){return 'tbc'}
-            }, {
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Clinical';
+                    });
+
+                    return data && data.file_count ? data.file_count : 0;
+                },
+                sref: getFileSref('Clinical')
+            },  {
                 displayName: 'mrnA',
                 id: 'mrna',
                 enabled: true,
-                sref: getFileSref('mRNA expression'),
-                template:function(){return 'tbc'}
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Gene expression';
+                    });
+
+                    return data && data.file_count ? data.file_count : 0;
+                },
+                sref: getFileSref('Gene expression')
             }, {
                 displayName: 'miRNA',
                 id: 'mirna',
                 enabled: true,
-                sref: getFileSref('miRNA expression'),
-                template:function(){return 'tbc'}
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Raw microarray data';
+                    });
+
+                    return data && data.file_count ? data.file_count : 0;
+                },
+                sref: getFileSref('Raw microarray data')
             }, {
                 displayName: 'CNV',
                 id: 'cnv',
                 enabled: true,
-                sref: getFileSref('Copy number variant'),
-                template:function(){return 'tbc'}
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'Copy number variation';
+                    });
+
+                    return data && data.file_count ? data.file_count : 0;
+                },
+                sref: getFileSref('Copy number variation')
             }, {
                 displayName: 'Meth',
                 id: 'meth',
                 enabled: true,
+                template: function (field:TableiciousEntryDefinition,row,scope) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    });
+
+                    var data = _.find(summary.val.data_types, function(x){
+                        return x.data_type === 'DNA methylation';
+                    });
+
+                    return data && data.file_count ? data.file_count : 0;
+                },
                 sref: getFileSref('DNA methylation')
             }]
         }, {

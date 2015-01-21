@@ -4,7 +4,7 @@ module ngApp.search.models {
 
     var searchTableFilesModel: TableiciousConfig = {
         title: 'Files',
-        order: ['add_to_cart','data_access', 'file_name', 'file_type', 'participants', 'project_name', 'availableData', 'status', 'last_update'],
+        order: ['file_type', 'participants', 'project_name', 'availableData', 'status', 'last_update'],
         headings: [{
             displayName: "add_to_cart",
             id: "add_to_cart",
@@ -31,9 +31,9 @@ module ngApp.search.models {
                 return "file({ fileId: '"+uuid.val+"' })";
             }
         }, {
-            displayName: "File Type",
+            displayName: "Data Type",
             id: "data_format",
-            enabled: true,
+            enabled: true
         },
         {
             displayName: "Participants",
@@ -55,10 +55,6 @@ module ngApp.search.models {
                     return "participant({ participantId : '" + participant[0].bcr_patient_uuid + "' })";
                 }
             }
-        }, {
-            displayName: "Annotations",
-            id: "annotations",
-            enabled: true
         }, {
             displayName: "Project",
             id: "disease_code",
@@ -84,13 +80,6 @@ module ngApp.search.models {
                 return field && field.val || 'miRNA expression';
             }
         }, {
-            displayName: "Status",
-            id: "last_update",
-            enabled: true,
-            template: function (field) {
-                return field && field.val || 'tbc';
-            }
-        }, {
             displayName: "Size",
             id: "file_size",
             enabled: true,
@@ -101,7 +90,13 @@ module ngApp.search.models {
         },{
             displayName: "Revision",
             id: "revision",
-            enabled: true
+            enabled: true,
+            template: function(field,row) {
+                var archive:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                    return x.id === 'archive';
+                });
+                return archive.val.revision
+            }
         },{
             displayName: "Update date",
             id: "updated",

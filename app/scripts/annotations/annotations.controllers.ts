@@ -61,7 +61,6 @@ module ngApp.annotations.controllers {
           "annotationClassificationName"
         ],
         facets: [
-          "id",
           "categoryName",
           "dateCreated",
           "createdBy",

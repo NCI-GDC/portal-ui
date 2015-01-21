@@ -137,7 +137,7 @@ module ngApp.search.controllers {
           "archive.revision",
           "archive.archive_name",
           "archive.archive_uuid",
-          "participants.bcr_patient_uuid"
+          "participants.bcr_patient_uuid",
         ],
         facets: [
           "data_type",
@@ -169,7 +169,13 @@ module ngApp.search.controllers {
           "files.data_type",
           "files.data_access",
           "files.archive.revision",
-          "files.data_level"
+          "files.data_level",
+          "summary.data_file_count",
+          "summary.file_size",
+          "summary.data_types.file_count",
+          "summary.data_types.data_type",
+          "summary.experimental_strategies.file_count",
+          "summary.experimental_strategies.experimental_strategy"
         ],
         facets: [
           "admin.project_code",

@@ -30,12 +30,7 @@ module ngApp.search.models {
                 var uuid = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'file_uuid'});
                 return "file({ fileId: '"+uuid.val+"' })";
             }
-        }, {
-            displayName: "Data Type",
-            id: "data_format",
-            enabled: true
-        },
-        {
+        },{
             displayName: "Participants",
             id: "participants",
             enabled: true,
@@ -73,12 +68,13 @@ module ngApp.search.models {
 
             }
         }, {
-            displayName: "Data Category",
-            id: "status",
-            enabled: true,
-            template: function (field) {
-                return field && field.val || 'miRNA expression';
-            }
+            displayName: "Data Type",
+            id: "data_type",
+            enabled: true
+        }, {
+            displayName: "Data Format",
+            id: "data_format",
+            enabled: true
         }, {
             displayName: "Size",
             id: "file_size",

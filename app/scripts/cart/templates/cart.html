@@ -121,12 +121,10 @@
           </th>
           <th scope="col" class="text-center" data-translate>Access</th>
           <th scope="col" class="text-center" data-translate>File Name</th>
-          <th scope="col" class="text-center" data-translate>Annotations</th>
           <th scope="col" class="text-center" data-translate>Participants</th>
           <th scope="col" class="text-center" data-translate>Projects</th>
-          <th scope="col" class="text-center" data-translate>Data Category</th>
-          <th scope="col" class="text-center" data-translate>Status</th>
-          <th scope="col" class="text-center" data-translate>File type</th>
+          <th scope="col" class="text-center" data-translate>Data Type</th>
+          <th scope="col" class="text-center" data-translate>Data Format</th>
           <th scope="col" class="text-center" data-translate>Size</th>
           <th scope="col" class="text-center" data-translate>Revision</th>
           <th scope="col" class="text-center" data-translate>Update date</th>
@@ -200,12 +198,10 @@
               {{ file.file_name | ellipsicate }}
             </a>
           </td>
-          <td>???</td>
-          <td>???</td>
-          <td>???</td>
-          <td>{{ file.data_type }}</td>
-          <td>???</td>
-          <td>{{ file.data_format }}</td>
+          <td>{{file.participants.length}}</td>
+          <td><a data-ui-sref="project(({projectId:file.archive.disease_code}))">{{file.archive.disease_code}}</a></td>
+          <td>{{file.data_type}}</td>
+          <td>{{file.data_format }}</td>
           <td>{{ file.file_size | size }}</td>
           <td>{{ file.archive.revision }}</td>
           <td>???</td>

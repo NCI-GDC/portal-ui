@@ -184,11 +184,11 @@ module ngApp.projects.models {
                 displayName: "File Size",
                 id: "file_size",
                 enabled: true,
-                template: function (field, row) {
+                template: function (field, row, scope, filter) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                         return x.id === 'summary';
                     });
-                    return summary.val.file_size
+                    return scope.$filter('size')(summary.val.file_size);
                 }
             //}, {
             //    displayName: "Last Update",

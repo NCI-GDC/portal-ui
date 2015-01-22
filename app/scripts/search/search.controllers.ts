@@ -199,7 +199,7 @@ module ngApp.search.controllers {
       // Changing tabs and then navigating to another page
       // will cause this to fire.
       if (tab && (this.$state.current.name.match("search."))) {
-        this.$state.go("search." + tab, this.LocationService.search(), {inherit: true});
+        this.$state.go("search." + tab, this.LocationService.search(), {inherit: false});
       }
     }
 

@@ -65,7 +65,7 @@ module ngApp.components.tables.validator {
                     return true;
                 } else {
                     console.warn("Warnning - some data in this set does not have the same structure: ",firstHeadings , "is not congruent with ", _.keys(datum));
-                    return true;
+                    return false;
                 }
             })
         }

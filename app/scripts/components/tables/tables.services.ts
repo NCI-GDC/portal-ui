@@ -126,6 +126,16 @@ module ngApp.components.tables.services {
             });
         }
 
+
+
+        getHeadingRowSpan(heading):number {
+            return heading.children ? 1 : 2;
+        }
+
+        getHeadingColSpan(heading):number {
+            return heading.children ? heading.children.length : 1;
+        }
+
         getTemplate(heading:TableiciousColumnDefinition,field:any,row,scope) {
             var result;
             try {
@@ -137,16 +147,46 @@ module ngApp.components.tables.services {
             return result;
         }
 
-        getHeadingEnabled = function(heading,$scope){
-            return true;
-            // todo - fix again
-            //debugger;
-            //if (_.isFunction(heading.enabled)){
-            //    return heading.enabled($scope);
-            //} else {
-            //    return true;
-            //}
+        getHeadingEnabled(heading,$scope){
+            if (_.isFunction(heading.enabled)){
+                return heading.enabled($scope);
+            } else {
+                return true;
+            }
         }
+
+        getSref(heading, field, row, scope, $filter) {
+            var result = undefined;
+            try {
+                result = heading.sref ? heading.sref(field,row,scope,$filter) : field.val;
+            } catch (e) {
+                result = '?';
+            }
+
+            return result;
+        }
+
+        getFieldClass(elem,row,scope,heading){
+            if (heading.fieldClass){
+                if (_.isFunction(heading.fieldClass)){
+                    return heading.fieldClass(elem,row,scope);
+                } else {
+                    return heading.fieldClass;
+                }
+            }
+        }
+
+        getHeadingClass(heading){
+            if (heading.headingClass){
+                if (_.isFunction(heading.headingClass)){
+                    return heading.headingClass();
+                } else {
+                    return heading.headingClass;
+                }
+            }
+        }
+
+
     }
 
 angular

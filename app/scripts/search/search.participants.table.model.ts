@@ -2,6 +2,14 @@ module ngApp.search.models {
     import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
     import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
 
+    function arrayToObject(array){
+        var obj = {};
+        array.forEach(function(elem){
+            obj[elem.id] = elem.val;
+        })
+        return obj;
+    }
+
     function getFileSref(data_type:string) {
         return function fileSref (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
             var uuid = _.find(row,function(elem){
@@ -20,7 +28,18 @@ module ngApp.search.models {
             displayName: "Add to Cart",
             id: "add_to_cart_filtered",
             noTitle: true,
-            enabled: true
+            enabled: true,
+            compile:function($scope){
+                $scope.arrayRow = arrayToObject($scope.row);
+                var files:TableiciousEntryDefinition = _.find($scope.row,function(elem:TableiciousEntryDefinition){
+                    return elem.id === 'files';
+                });
+
+                $scope.files = files.val;
+                var htm = '<div add-to-cart-filtered files="files" row="row"></div>';
+                return htm;
+
+            }
         },{
             displayName: "Participant ID",
             id: "bcr_patient_barcode",

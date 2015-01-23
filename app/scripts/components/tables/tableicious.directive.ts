@@ -24,6 +24,7 @@ module ngApp.components.tables.directives.tableicious {
         getFieldClass(elem,row,scope,heading):string;
         createOrderArray();
         getDataAtRow (heading:TableiciousColumnDefinition,index:number) : TableiciousEntryDefinition;
+        getSref();
     }
 
     export class TableiciousConfig {
@@ -118,6 +119,24 @@ module ngApp.components.tables.directives.tableicious {
          */
 
         fieldClass?: any;
+
+        /**
+         * If true, the heading won't have the displayname automatically inserted.
+         */
+        noTitle?: boolean;
+
+        /**
+         * If defined, the string that is returned by
+         * this will be compiled into a directive and inserted into each cell of the column.
+         */
+        compile?(scope):string;
+
+        /**
+         * Like compile, but for the head.
+         * If defined, the string that is returned by
+         * this will be compiled into a directive and inserted in the head of the column.
+         */
+        compileHead?(scope):string;
     }
 
     class TableiciousController {
@@ -130,12 +149,18 @@ module ngApp.components.tables.directives.tableicious {
                     private UserService) {
 
             $scope.getColumnIndex = this.getColumnIndex.bind(this);
-            $scope.getHeadingRowSpan = this.getHeadingRowSpan.bind(this);
-            $scope.getHeadingColSpan = this.getHeadingColSpan.bind(this);
             $scope.getAllHeadingsAtNestingLevel = this.getAllHeadingsAtNestingLevel.bind(this);
             $scope.getDataAtRow = this.getDataAtRow.bind(this);
-            //$scope.getTemplate = TableService.getTemplate;
-            //$scope.getHeadingEnabled = TableService.getHeadingEnabled;
+
+
+            $scope.getHeadingColSpan = TableService.getHeadingColSpan.bind($scope);
+            $scope.getHeadingRowSpan = TableService.getHeadingRowSpan.bind($scope);
+            $scope.getTemplate = TableService.getTemplate.bind($scope);
+            $scope.getHeadingEnabled = TableService.getHeadingEnabled.bind($scope);
+            $scope.getSref = TableService.getSref.bind($scope);
+            $scope.getHeadingClass = TableService.getHeadingClass.bind($scope);
+            $scope.getFieldClass = TableService.getFieldClass.bind($scope);
+
             $scope.root = $rootScope;
             $scope.$filter = $filter;
             $scope.UserService = UserService;
@@ -147,25 +172,6 @@ module ngApp.components.tables.directives.tableicious {
                 })
             },true);
 
-            $scope.getHeadingClass = function(heading){
-                if (heading.headingClass){
-                    if (_.isFunction(heading.headingClass)){
-                        return heading.headingClass();
-                    } else {
-                        return heading.headingClass;
-                    }
-                }
-            }
-
-            $scope.getFieldClass = function(elem,row,scope,heading){
-                if (heading.fieldClass){
-                    if (_.isFunction(heading.fieldClass)){
-                        return heading.fieldClass(elem,row,scope);
-                    } else {
-                        return heading.fieldClass;
-                    }
-                }
-            }
 
             $scope.$watch(()=>{
                 return $scope.config.headings.map(function(head){
@@ -185,38 +191,6 @@ module ngApp.components.tables.directives.tableicious {
             },true);
 
 
-            $scope.getTemplate = function(heading,field,row,_scope) {
-                var result = undefined;
-                try {
-                    result = heading.template ? heading.template(field,row,_scope) : field.val;
-                } catch (e) {
-                    result = '?';
-                }
-
-                return result;
-            }
-
-            $scope.getHeadingEnabled = function(heading){
-
-                $scope.UserService = UserService;
-                if (_.isFunction(heading.enabled)){
-
-                    return heading.enabled($scope);
-                } else {
-                    return true;
-                }
-            }
-
-            $scope.getSref = function(heading, field, row, scope, $filter) {
-                var result = undefined;
-                try {
-                    result = heading.sref ? heading.sref(field,row,scope,$filter) : field.val;
-                } catch (e) {
-                    result = '?';
-                }
-
-                return result;
-            }
 
             this.refresh.bind(this)();
         }
@@ -286,14 +260,6 @@ module ngApp.components.tables.directives.tableicious {
 
 
 
-        getHeadingRowSpan(heading):number {
-            return heading.children ? 1 : 2;
-        }
-
-        getHeadingColSpan(heading):number {
-            return heading.children ? heading.children.length : 1;
-        }
-
         getAllHeadingsAtNestingLevel(level):TableiciousColumnDefinition[] {
 
             var headingsAtLevel = this.$scope.allHeadings.filter(function(heading){
@@ -338,14 +304,6 @@ module ngApp.components.tables.directives.tableicious {
         }
     }
 
-    function arrayToObject(array){
-        var obj = {};
-        array.forEach(function(elem){
-            obj[elem.id] = elem.val;
-        })
-        return obj;
-    }
-
 
     function Tableicious(): ng.IDirective {
         return {
@@ -362,64 +320,16 @@ module ngApp.components.tables.directives.tableicious {
         }
     }
 
-    function tableiciousCell(){
-        return {
-            restrict:"AE",
-            link: function(scope, element){
-                scope.$elem = element;
-            },
-            controller:function($scope, $element,$compile){
-
-                if ($scope.heading.id === 'add_to_cart') {
-                    $scope.arrayRow = arrayToObject($scope.row);
-                    var htm = '<div add-to-cart-single file="arrayRow"></div>';
-                    var compiled = $compile(htm)($scope);
-                    $element.append(compiled);
-                }
-
-                if ($scope.heading.id === 'add_to_cart_filtered') {
-                    $scope.arrayRow = arrayToObject($scope.row);
-                    var files:TableiciousEntryDefinition = _.find($scope.row,function(elem:TableiciousEntryDefinition){
-                        return elem.id === 'files';
-                    });
-
-                    $scope.files = files.val;
-                    var htm = '<div add-to-cart-filtered files="files" row="row"></div>';
-                    var compiled = $compile(htm)($scope);
-                    $element.append(compiled);
-                }
-
-            }
-        }
-    }
-
-    function tableiciousHeader() {
-        return {
-            restrict:"AE",
-            scope:{
-                heading:'=',
-                data:'='
-            },
-            controller:function($scope, $element,$compile){
-
-                if ($scope.heading && $scope.heading.id === 'add_to_cart') {
-
-                    _.defer(function(){
-                        var htm = '<div add-to-cart-all files="data"></div>';
-                        var compiled = $compile(htm)($scope);
-                        $element.html(compiled);
-                    })
-                }
-
-            }
-        }
-    }
 
 
 
-    angular.module("tablicious.directive",['dndLists','tables.services','tables.validator'])
-        .directive("tableicious", Tableicious)
-        .controller("TableiciousController",TableiciousController)
-        .directive("tableiciousCell",tableiciousCell)
-        .directive("tableiciousHeader",tableiciousHeader)
+    angular.module("tableicious.directive",[
+        'dndLists',
+        'tables.services',
+        'tables.validator',
+        'tableicious.directive.head',
+        'tableicious.directive.cell'
+    ])
+    .directive("tableicious", Tableicious)
+    .controller("TableiciousController",TableiciousController);
 }

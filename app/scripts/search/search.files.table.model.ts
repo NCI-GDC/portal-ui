@@ -2,6 +2,14 @@ module ngApp.search.models {
     import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
     import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
 
+    function arrayToObject(array){
+        var obj = {};
+        array.forEach(function(elem){
+            obj[elem.id] = elem.val;
+        })
+        return obj;
+    }
+
     var searchTableFilesModel: TableiciousConfig = {
         title: 'Files',
         order: ['file_type', 'participants', 'project_name', 'availableData', 'status', 'last_update'],
@@ -22,6 +30,16 @@ module ngApp.search.models {
         },{
             displayName: "add_to_cart",
             id: "add_to_cart",
+            compile:function($scope){
+                $scope.arrayRow = arrayToObject($scope.row);
+                var htm = '<div add-to-cart-single file="arrayRow"></div>';
+                return htm;
+            },
+            compileHead:function($scope){
+                var htm = '<div add-to-cart-all files="data"></div>';
+                return htm;
+            },
+                noTitle: true,
             visible: true
         }, {
             displayName: "Access",

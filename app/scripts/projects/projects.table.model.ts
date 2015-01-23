@@ -41,6 +41,7 @@ module ngApp.projects.models {
             id: "participants",
             enabled: true,
             template: function (field, row) {
+                //debugger;
                 var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                     return x.id === 'summary';
                 });

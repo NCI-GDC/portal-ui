@@ -1,6 +1,6 @@
 describe('Table Service:', function () {
 
-    beforeEach(module('ngApp.components', 'tables.services','tablicious.directive','tables.validator'));
+    beforeEach(module('ngApp.components', 'tables.services','tableicious.directive','tables.validator'));
 
     var testColumns = [{
         id:'a',
@@ -50,15 +50,15 @@ describe('Table Service:', function () {
                 assert.isTrue(TableValidator.dataIsCongruent(sampleData));
             }));
 
-            //it('should return false  if the data is non-congruent',inject(function(TableService){
-            //    var sampleData = [
-            //        {a:1,b:2,d:3},
-            //        {a:4,e:5,f:6},
-            //        {c:7,b:8,g:9}
-            //    ];
-            //
-            //    assert.isFalse(TableService.dataIsCongruent(sampleData));
-            //}));
+            it('should not return true  if the data is non-congruent',inject(function(TableValidator){
+                var sampleData = [
+                    {a:1,b:2,d:3},
+                    {a:4,e:5,f:6},
+                    {c:7,b:8,g:9}
+                ];
+
+                assert.isFalse(TableValidator.dataIsCongruent(sampleData) === true);
+            }));
         })
 
     });
@@ -178,40 +178,27 @@ describe('Table Service:', function () {
         }));
 
 
-    })
+    });
+
+    describe('Getting the rowspan and colspan of a heading', function() {
+        describe("how it returns how many rows tall a heading should be",function(){
+            it('returns 2 for a heading with no children', inject(function(TableService) {
+                var heading = {id:'a',displayName:'A'};
+                assert.equal(TableService.getHeadingRowSpan(heading), 2);
+            }));
+            it('returns 1 for a heading with one or more children', inject(function(TableService) {
+                var heading = {
+                    id:'a',
+                    displayName:'A',
+                    children:[
+                        {id:'b',displayName:"B"},
+                        {id:'c',displayName:"C"}
+                    ]};
+                assert.equal(TableService.getHeadingRowSpan(heading), 1);
+            }));
+
+        })
+    });
 
 
 });
-
-describe("the tableicous controller",function(){
-    //beforeEach(module('ngApp.components', 'tables.services','tablicious.directive'));
-    //
-    //var $controller;
-    //
-    //beforeEach(inject(function(_$controller_){
-    //    // The injector unwraps the underscores (_) from around the parameter names when matching
-    //    $controller = _$controller_;
-    //}));
-    //
-    //describe('$scope.getHeadingRowSpan', function() {
-    //    describe("how it returns how many rows wide a heading should be",function(){
-    //        it('returns 1 for a heading with no children', function() {
-    //            var sampleConfig = {
-    //                name:"hello",
-    //                headings:[{
-    //                    id:'a',
-    //                    displayName:'A'
-    //                }],
-    //
-    //            }
-    //            var $scope = {
-    //                $watch:function(){}
-    //            };
-    //            var controller = $controller('TableiciousController', { $scope: $scope });
-    //            var heading = {id:'a',displayName:'A'};
-    //            //expect($scope.getHeadingRowSpan(heading)).toEqual(1);
-    //        });
-    //    })
-    //});
-
-})

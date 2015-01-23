@@ -4,16 +4,21 @@
 
   .filter {
     margin-right: 5px;
-  }
 
-  .facet-name {
-    cursor: pointer;
-    line-height: 3rem;
-
-    &:hover, &:focus {
+    .facet-name:hover ~ span, .facet-name:focus ~ span {
       text-decoration: line-through;
     }
+
+    .facet-name, .facet-term {
+      cursor: pointer;
+      line-height: 3rem;
+
+      &:hover, &:focus {
+        text-decoration: line-through;
+      }
+    }
   }
+
 
   .label.and {
     margin-left: 5px;

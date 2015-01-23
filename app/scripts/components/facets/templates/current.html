@@ -13,21 +13,23 @@
         <i class="fa fa-rotate-left"></i> Clear
       </button>
     </span>
+
     <span class="filter" data-ng-repeat="filter in cfc.currentFilters">
-      <span class="label label-primary facet-name facet-button"
+      <span class="label label-primary facet-name"
             data-ng-click="cfc.removeTerm(filter.content.field, null, $event)"
             data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event)">
         {{ filter.content.field | translate | humanify }} :
-        <span data-ng-click="cfc.removeTerm(filter.content.field, term, $event)"
-            data-ng-repeat="v in filter.content.value">
-          {{v | translate | humanify }}
-          <span data-ng-if="!$last">, </span>
-        </span>
-        <span data-ng-if="filter.content.field === 'participants.admin.disease_code' && cfc.UserService.currentUser && cfc.UserService.currentUser.isFiltered"
-              data-ng-translate>
-          and in My Projects
-        </span>
-
+      </span>
+      <span data-ng-click="cfc.removeTerm(filter.content.field, term, $event)"
+            class="label label-success">
+          <span data-ng-repeat="v in filter.content.value">
+            <span class="facet-term">{{v | translate | humanify }}</span>
+            <span data-ng-if="!$last">, </span>
+            <span data-ng-if="filter.content.field === 'participants.admin.disease_code' && cfc.UserService.currentUser && cfc.UserService.currentUser.isFiltered && $last"
+                  data-ng-translate>
+              and in My Projects
+            </span>
+          </span>
       </span>
       <span class="label label-warning and" data-ng-if="!$last">AND</span>
     </span>

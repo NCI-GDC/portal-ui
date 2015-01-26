@@ -68,8 +68,7 @@ module ngApp.components.tables.directives.tableicious {
          * Return either true or false, given a reference to the scope of the table it is on.
          * This overrides "visible"
          */
-        enabled?:any;
-        //enabled?(scope) : Boolean;
+        enabled?(scope:ng.IScope):boolean;
 
         /**
          * @children
@@ -104,6 +103,7 @@ module ngApp.components.tables.directives.tableicious {
 
         /**
          * If false, won't show up in the table. Will still show up in sorting.
+         * Use for the show / hide column directive.
          */
         visible? : boolean;
 
@@ -155,7 +155,8 @@ module ngApp.components.tables.directives.tableicious {
 
             $scope.getHeadingColSpan = TableService.getHeadingColSpan.bind($scope);
             $scope.getHeadingRowSpan = TableService.getHeadingRowSpan.bind($scope);
-            $scope.getTemplate = TableService.getTemplate.bind($scope);
+            $scope.getTemplate = TableService.getTemplate.bind(TableService);
+            //$scope.getTemplate = TableService.getTemplate.bind($scope);
             $scope.getHeadingEnabled = TableService.getHeadingEnabled.bind($scope);
             $scope.getSref = TableService.getSref.bind($scope);
             $scope.getHeadingClass = TableService.getHeadingClass.bind($scope);

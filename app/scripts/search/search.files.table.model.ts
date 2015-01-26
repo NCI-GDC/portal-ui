@@ -84,13 +84,8 @@ module ngApp.search.models {
             }
         }, {
             displayName: "Project",
-            id: "disease_code",
-                visible: true,
-            template:function(field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope){
-                var arch:TableiciousEntryDefinition = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'archive'});
-                var code:any = arch.val.disease_code;
-                return code;
-            },
+            id: "archive.disease_code",
+            visible: true,
             sref:function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
 
                 var arch:TableiciousEntryDefinition = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'archive'});
@@ -117,14 +112,9 @@ module ngApp.search.models {
             }
         },{
             displayName: "Revision",
-            id: "revision",
-                visible: true,
-            template: function(field,row) {
-                var archive:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                    return x.id === 'archive';
-                });
-                return archive.val.revision
-            }
+            id: "archive.revision",
+            visible: true,
+
         },{
             displayName: "Update date",
             id: "updated",

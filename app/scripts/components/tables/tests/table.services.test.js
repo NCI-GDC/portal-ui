@@ -200,5 +200,180 @@ describe('Table Service:', function () {
         })
     });
 
+    describe("Determining when a column should be enabled",function(){
+        describe("The behaviour when the heading has no enabled property",function() {
+            it("should return true if no condition is defined", inject(function (TableService) {
+                var heading = {
+                    id: 'a',
+                    displayName: 'A',
+                };
+
+                var $scope = {};
+
+                assert.isTrue(TableService.getHeadingEnabled(heading, $scope));
+            }));
+        });
+
+        describe("the behavior when a property is defined",function(){
+
+            it("should return false if a condition is defined but not met",inject(function(TableService) {
+                var heading = {
+                    id:'a',
+                    displayName:'A',
+                    enabled:function($scope){
+                        return $scope.a === 'B';
+                    }
+                };
+
+                var $scope = {a:"A"};
+
+                assert.isFalse(TableService.getHeadingEnabled(heading,$scope));
+            }));
+
+            it("should return true if a condition is defined and is met",inject(function(TableService) {
+                var heading = {
+                    id:'a',
+                    displayName:'A',
+                    enabled:function($scope){
+                        return $scope.a === 'A';
+                    }
+                };
+
+                var $scope = {a:"A"};
+
+                assert.isTrue(TableService.getHeadingEnabled(heading,$scope));
+            }));
+
+            it("should return true if a condition is defined and is met",inject(function(TableService) {
+                var heading = {
+                    id:'a',
+                    displayName:'A',
+                    enabled:function($scope){
+                        return $scope.a === 'A';
+                    }
+                };
+
+                var $scope = {a:"A"};
+
+                assert.isTrue(TableService.getHeadingEnabled(heading,$scope));
+            }));
+
+            it("should throw an error if the enabled function throws an error",inject(function(TableService) {
+                var heading = {
+                    id:'a',
+                    displayName:'A',
+                    enabled:function($scope){
+                        return $scope.a === $scope.a.b.c;
+                    }
+                };
+
+                var $scope = {a:"A"};
+
+                expect(function(){
+                    TableService.getHeadingEnabled(heading,$scope);
+                }).to.throw()
+            }));
+
+        })
+    });
+
+    describe("getting the value of an entity in an array of tuples",function(){
+        it ("should return the right value when passed a valid array and ID",inject(function(TableService){
+            var tuples = [{
+                id:"a",
+                val:"A"
+            },{
+                id:"b",
+                val:"B"
+            }];
+
+            expect(TableService.getValueFromRow(tuples,'a')).to.equal('A');
+            expect(TableService.getValueFromRow(tuples,'b')).to.equal('B');
+        }));
+
+        it ("should return undefined if the tuple with that ID can't be found",inject(function(TableService){
+            var tuples = [{
+                id:"c",
+                val:"C"
+            },{
+                id:"d",
+                val:"D"
+            }];
+
+            expect(TableService.getValueFromRow(tuples,'a')).to.be.undefined();
+            expect(TableService.getValueFromRow(tuples,'b')).to.be.undefined();
+        }));
+
+    });
+
+    describe('extracting nested values from tuples using a string',function(){
+        it("should be the same as just finding a value if the string has no delimiters",inject(function(TableService){
+            var tuples = [{
+                id:"bin",
+                val:"baz"
+            }];
+
+            expect(TableService.delimitedStringToValue('bin',tuples)).to.be.equal('baz');
+        }))
+
+        it("should dig into the values to find the correct one if there is a delimited string",inject(function(TableService){
+            var tuples = [{
+                id:"bin",
+                val:"baz"
+            },{
+                id:"quo",
+                val:{
+                    foo:'bar'
+                }
+            },{
+                id:"nim",
+                val:{
+                    foo:{
+                        zab:"zoo"
+                    }
+                }
+            }];
+
+            expect(TableService.delimitedStringToValue('quo.foo',tuples)).to.be.equal('bar');
+            expect(TableService.delimitedStringToValue('nim.foo.zab',tuples)).to.be.equal('zoo');
+        }))
+
+        it("should accept a custom delimiter",inject(function(TableService){
+            var tuples = [{
+                id:"quo",
+                val:{
+                    foo:'bar'
+                }
+            }];
+
+            expect(TableService.delimitedStringToValue('quo!foo',tuples,'!')).to.be.equal('bar');
+        }))
+
+        it("should return undefined if the path defined is impossible",inject(function(TableService){
+            var tuples = [{
+                id:"quo",
+                val:{
+                    foo:{
+                        zab:"zoo"
+                    }
+                }
+            }];
+
+            expect(TableService.delimitedStringToValue('quo.zim.gir',tuples)).to.be.undefined;
+        }))
+    });
+
+    describe("templating the contents of a cell",function(){
+        // todo
+        //it ("should return the value of that cell if no template is defined",inject(function(TableService){
+        //    var heading = [{
+        //        id:"foo",
+        //        displayName:"FOO"
+        //    }];
+        //
+        //    expect(TableService.getTemplate(heading,{id:'foo',val:'bar'},[{id:'foo',val:'bar'}]).to.equal('bar'));
+        //}));
+    })
+
 
 });

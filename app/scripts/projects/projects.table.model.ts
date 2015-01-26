@@ -38,15 +38,8 @@ module ngApp.projects.models {
         },
         {
             displayName: "Participants",
-            id: "participants",
+            id: "summary.participant_count",
             enabled: true,
-            template: function (field, row) {
-                //debugger;
-                var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                    return x.id === 'summary';
-                });
-                return summary.val.participant_count
-            },
             sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
 
                 var projectCode = _.find(row,function(elem){
@@ -165,14 +158,8 @@ module ngApp.projects.models {
                 }]
             }, {
                 displayName: "Files",
-                id: "data_file_count",
+                id: "summary.data_file_count",
                 enabled: true,
-                template: function (field, row) {
-                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                        return x.id === 'summary';
-                    });
-                    return summary.val.data_file_count
-                },
                 sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
                     var projectCode = _.find(row,function(elem){
                         return elem.id === 'project_code';
@@ -191,13 +178,6 @@ module ngApp.projects.models {
                     });
                     return scope.$filter('size')(summary.val.file_size);
                 }
-            //}, {
-            //    displayName: "Last Update",
-            //    id: "last_updated",
-            //    enabled: true,
-            //    template: function (field) {
-            //        return field && field.val || 0;
-            //    }
             }
         ]
     };

@@ -2,6 +2,7 @@ module ngApp.components.tables.services {
 
     import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
     import TableiciousColumnDefinition = ngApp.components.tables.directives.tableicious.TableiciousColumnDefinition;
+    import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
 
     export interface ITableService {
         objectWithMatchingIdInArrayIsEnabled (array:any[], id:string) : Boolean
@@ -127,27 +128,87 @@ module ngApp.components.tables.services {
         }
 
 
-
-        getHeadingRowSpan(heading):number {
+        /**
+         * Returns the appropriate width for a heading in columns.
+         */
+        getHeadingRowSpan(heading:TableiciousColumnDefinition):number {
             return heading.children ? 1 : 2;
         }
 
+        /**
+         * Returns the appropriate height for a heading in rows.
+         */
         getHeadingColSpan(heading):number {
             return heading.children ? heading.children.length : 1;
         }
 
+        /**
+         * Given an array of objects each having a "val" and an "id" property, returns the
+         * val of an object whose ID matches `valueId`
+         */
+        getValueFromRow(row:TableiciousEntryDefinition[],valueId:string):string{
+            var tuple  = _.find(row,function(x:any){
+                return x.id === valueId;
+            });
+
+            return tuple && tuple.val;
+        }
+
+        /**
+         * Finds a nested value in an array of tuples.
+         * @param str
+         * The string representing the path into the data.
+         * @param row
+         * An array representing one entry in a table.
+         * @param delimiter
+         */
+        delimitedStringToValue(str,row:TableiciousEntryDefinition[],delimiter = '.'): string{
+
+            var id = str;
+            var result = undefined;
+            var split = id.split(delimiter);
+            var getValueFromRow = this.getValueFromRow;
+
+            split.forEach((pathSeg)=>{
+                if (result) {
+                    result = result[pathSeg];
+                } else {
+                    result = getValueFromRow(row, pathSeg);
+                }
+            });
+
+            return result;
+
+        }
+
+
+        /**
+         * Returns the ultimate text value for an entry in a table based on the heading defintion and the whole row.
+         */
         getTemplate(heading:TableiciousColumnDefinition,field:any,row,scope) {
             var result;
-            try {
-                result = heading.template ? heading.template(field,row,scope) : field.val;
-            } catch (e) {
-                result = '?';
+
+            var id = heading.id;
+            var template = heading.template;
+            if (heading.template) {
+                try {
+                    result = heading.template(field,row,scope);
+                } catch (e) {
+                    result = '?';
+                }
+            } else {
+                result = this.delimitedStringToValue(id, row);
             }
 
             return result;
         }
 
-        getHeadingEnabled(heading,$scope){
+        /**
+         * Given a heading, determines if that heading should be displayed or not.
+         * Gets passed $scope since usually you will want a reference to UserService or
+         * another service for this function.
+         */
+        getHeadingEnabled(heading:TableiciousColumnDefinition,$scope){
             if (_.isFunction(heading.enabled)){
                 return heading.enabled($scope);
             } else {

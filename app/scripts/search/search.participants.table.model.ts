@@ -53,15 +53,8 @@ module ngApp.search.models {
             }
         }, {
             displayName: "Disease Type",
-            id: "disease_type",
-            enabled: true,
-            template:function(elem:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope){
-                var admin:TableiciousEntryDefinition = _.find(row,function(elem:TableiciousEntryDefinition){
-                    return elem.id === 'admin';
-                });
-
-                return admin && admin.val && admin.val.disease_code;
-            }
+            id: "admin.disease_code",
+            enabled: true
         }, {
             displayName: "Gender",
             id: "gender",

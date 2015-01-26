@@ -21,7 +21,6 @@ module ngApp.components.ui {
     "ui.file",
     "ui.search",
     "ui.string",
-    "ui.pagination",
     "ui.biospecimen"
   ]);
 

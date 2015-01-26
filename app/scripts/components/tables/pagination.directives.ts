@@ -1,4 +1,4 @@
-module ngApp.components.ui.pagination.directives {
+module ngApp.components.tables.pagination.directives {
 
   /* @ngInject */
   function PaginationControls(): ng.IDirective {
@@ -9,7 +9,7 @@ module ngApp.components.ui.pagination.directives {
         paging: "=",
         update: "="
       },
-      templateUrl: "components/ui/pagination/templates/pagination.html",
+      templateUrl: "components/tables/templates/pagination.html",
       controller: "PagingController as pc"
     };
   }

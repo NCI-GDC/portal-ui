@@ -1,21 +1,8 @@
-<div class="panel panel-default">
-
-    <div class="panel-heading clearfix">
-      <h3 class="panel-title table-heading pull-left">
-        <span data-translate>Files</span>
-      </h3>
-      <div class="pull-right">
-        <div class="btn-group" role="group" aria-label="Filter and sort table">
-          <sort-table data-sort-columns="sc.fileSortColumns"
-                      data-paging="sc.files.pagination" data-page="files"></sort-table>
-          <arrange-columns list="fileTableConfig.headings" hidden="fileTableConfig.hidden"></arrange-columns>
-          <reset-table target="fileTableConfig"></reset-table>
-        </div>
-      </div>
-
-    </div>
-  <tableicious id="file-table" data-data=sc.files.hits data-config=fileTableConfig data-paging="sc.files.pagination"></tableicious>
-  <div class="panel-footer clearfix">
-    <pagination-controls data-page="files" data-paging="sc.files.pagination"></pagination-controls>
-  </div>
-</div>
+<gdc-table data-data="sc.files.hits"
+           data-config="fileTableConfig"
+           data-paging="sc.files.pagination"
+           data-page="files"
+           data-heading="Files"
+           data-id="file-table"
+           data-sort-columns="sc.fileSortColumns">
+</gdc-table>

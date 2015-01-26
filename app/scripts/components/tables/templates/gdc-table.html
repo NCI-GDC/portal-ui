@@ -1,0 +1,23 @@
+<div class="panel panel-default">
+  <div class="panel-heading clearfix">
+    <h3 class="panel-title table-heading pull-left">
+      {{ heading | translate }}
+    </h3>
+
+    <div class="pull-right" data-ng-if="sortColumns || gtc.sortingHeadings.length">
+      <div class="btn-group" role="group" aria-label="Filter and sort table">
+        <sort-table data-ng-if="sortColumns"
+                    data-sort-columns="sortColumns"
+                    data-paging="paging" data-page="{{ page }}"></sort-table>
+        <arrange-columns data-ng-if="gtc.sortingHeadings.length"
+                         data-list="config.headings"
+                         data-hidden="config.hidden"></arrange-columns>
+        <reset-table data-ng-if="gtc.sortingHeadings.length" target="config"></reset-table>
+      </div>
+    </div>
+  </div>
+  <tableicious id="{{ id }}" data-data="data" data-config="config" data-paging="paging"></tableicious>
+  <div class="panel-footer clearfix" data-ng-if="page && paging">
+    <pagination-controls data-page="{{ page }}" data-paging="paging"></pagination-controls>
+  </div>
+</div>

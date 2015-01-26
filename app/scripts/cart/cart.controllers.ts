@@ -4,7 +4,7 @@ module ngApp.cart.controllers {
   import IFile = ngApp.files.models.IFile;
   import ICoreService = ngApp.core.services.ICoreService;
   import IUserService = ngApp.components.user.services.IUserService;
-  import IPagination = ngApp.components.ui.pagination.models.IPagination;
+  import IPagination = ngApp.components.tables.pagination.models.IPagination;
 
   export interface ICartController {
     files: IFile[];

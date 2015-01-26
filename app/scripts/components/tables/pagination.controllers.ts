@@ -1,4 +1,4 @@
-module ngApp.components.ui.pagination.controllers {
+module ngApp.components.tables.pagination.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IPagination = ngApp.components.ui.pagination.models.IPagination;
 

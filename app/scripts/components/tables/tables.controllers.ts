@@ -1,7 +1,7 @@
 module ngApp.components.tables.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import ITableColumn = ngApp.components.tables.models.ITableColumn;
-  import IPagination = ngApp.components.ui.pagination.models.IPagination;
+  import IPagination = ngApp.components.tables.pagination.models.IPagination;
 
   interface ITableSortController {
     updateSorting(): void;
@@ -65,6 +65,26 @@ module ngApp.components.tables.controllers {
     }
   }
 
+  interface IGDCTableScope extends ng.IScope {
+    heading: string;
+    data: any[];
+    config: any;
+    paging: IPagination;
+    page: string;
+    sortColumns: any;
+    id: string;
+  }
+
+  class GDCTableController implements IGDCTableController {
+    sortingHeadings: any[] = [];
+
+    /* @ngInject */
+    constructor(private $scope: IGDCTableScope) {
+      this.sortingHeadings = _.filter($scope.config.headings, (heading: any) => { return heading.sortable; });
+    }
+  }
+
   angular.module("tables.controllers", ["location.services"])
+      .controller("GDCTableController", GDCTableController)
       .controller("TableSortController", TableSortController);
 }

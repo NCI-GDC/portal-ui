@@ -92,7 +92,23 @@ module ngApp.components.tables.directives {
     }
   }
 
-
+  function GDCTable(): ng.IDirective {
+    return {
+      restrict: "E",
+      scope: {
+        heading: "@",
+        data: "=",
+        config: "=",
+        paging: "=",
+        page: "@",
+        sortColumns: "=",
+        id: "@"
+      },
+      replace: true,
+      templateUrl: "components/tables/templates/gdc-table.html",
+      controller: "GDCTableController as gtc"
+    }
+  }
 
   function ResetTable(): ng.IDirective {
     return {
@@ -121,11 +137,11 @@ module ngApp.components.tables.directives {
     }
   }
 
-
   angular.module("tables.directives", ["tables.controllers"])
       .directive("exportTable", ExportTable)
       .directive("sortTable", SortTable)
       .directive("resetTable", ResetTable)
+      .directive("gdcTable", GDCTable)
       .directive("arrangeColumns", ArrangeColumns);
 }
 

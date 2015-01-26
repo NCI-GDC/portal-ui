@@ -1,4 +1,4 @@
-module ngApp.components.ui.pagination.models {
+module ngApp.components.tables.pagination.models {
   export interface IPagination {
     count: number;
     total: number;

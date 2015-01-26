@@ -43,33 +43,14 @@
         <current-filters></current-filters>
       </div>
 
-      <div class="panel panel-default">
-
-        <div class="panel-heading clearfix">
-
-          <h3 class="panel-title table-heading pull-left">
-            <span data-translate>Annotations</span> ({{asc.annotations.pagination.total}})
-          </h3>
-
-          <div class="pull-right">
-            <div class="btn-group" role="group" aria-label="Filter and sort table">
-              <sort-table data-sort-columns="asc.sortColumns"
-                          data-paging="asc.annotations.pagination" data-page="annotations"></sort-table>
-              <arrange-columns list="tableConfig.headings" order="tableConfig.order"></arrange-columns>
-              <reset-table target="tableConfig">
-
-              </reset-table>
-            </div>
-          </div>
-
-        </div>
-        <div class="table-responsive">
-          <tableicious data=asc.annotations.hits config=tableConfig></tableicious>
-        </div>
-        <div class="panel-footer clearfix">
-          <pagination-controls data-page="annotations" data-paging="asc.annotations.pagination"></pagination-controls>
-        </div>
-      </div>
+      <gdc-table data-data="asc.annotations.hits"
+                 data-config="tableConfig"
+                 data-paging="asc.annotations.pagination"
+                 data-page="annotations"
+                 data-heading="Annotations ({{asc.annotations.pagination.total}})"
+                 data-id="annotation-table"
+                 data-sort-columns="asc.sortColumns">
+      </gdc-table>
 
     </div>
   </div>

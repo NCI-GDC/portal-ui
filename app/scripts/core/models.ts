@@ -1,5 +1,5 @@
 module ngApp.models {
-  import IPagination = ngApp.components.ui.pagination.models.IPagination;
+  import IPagination = ngApp.components.tables.pagination.models.IPagination;
 
   export interface IEntity {
     uuid: any;

@@ -6,7 +6,7 @@ var sampleString = "file.archive.archive_uuid";
 var startsWith_ = "_missing";
 
 it("should have a humanify filter", inject(function ($filter) {
-  expect($filter("humanify")).not.to.equal(null);
+  expect($filter("humanify")).not.to.be.null;
 }));
 
 it("should split on . ", inject(function ($filter) {

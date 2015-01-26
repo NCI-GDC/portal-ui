@@ -5,7 +5,7 @@ describe("Ellipsictae Filter:", function() {
   var sampleString = "Cake liquorice bear claw wafer marzipan pudding. Cupcake chocolate bar dessert wafer. Lemon drops applicake pastry fruitcake pastry icing tart unerdwear.com cotton candy. Donut carrot cake apple pie apple pie jelly-o toffee oat cake cookie lollipop.";
 
   it("should have an ellipsicate filter", inject(function ($filter) {
-    expect($filter("ellipsicate")).not.to.equal(null);
+    expect($filter("ellipsicate")).not.to.be.null;
   }));
 
   it("should truncate to default length+1 chars with no length param", inject(function ($filter) {

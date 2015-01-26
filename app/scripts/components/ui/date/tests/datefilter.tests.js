@@ -4,7 +4,7 @@ describe("Date Filter:", function () {
   beforeEach(module("ngApp.components"));
 
   it("should have a date filter", inject(function ($filter) {
-    expect($filter("date")).not.to.equal(null);
+    expect($filter("date")).not.to.be.null;
   }));
 
   it("should filter date with no given format", inject(function ($filter) {

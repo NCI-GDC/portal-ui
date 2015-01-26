@@ -4,7 +4,7 @@ describe("File Size Filter:", function () {
   beforeEach(module("ngApp.components"));
 
   it("should have a size filter", inject(function ($filter) {
-    expect($filter("size")).not.to.equal(null);
+    expect($filter("size")).not.to.be.null;
   }));
 
   it("should filter GB when size >= 999500000 bytes ", inject(function ($filter) {

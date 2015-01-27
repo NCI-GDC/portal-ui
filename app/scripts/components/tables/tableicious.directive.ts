@@ -179,6 +179,7 @@ module ngApp.components.tables.directives.tableicious {
                 })
             },()=>{
                 $scope.order = this.createOrderArray($scope.config.headings);
+                this.refresh();
             },true);
 
 
@@ -187,7 +188,7 @@ module ngApp.components.tables.directives.tableicious {
                     return head.hidden;
                 })
             },()=>{
-
+                this.refresh();
             },true);
 
 

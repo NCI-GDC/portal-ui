@@ -1,16 +1,18 @@
-<div class="typeahead-row">
-  <div class="icon-container">
-    <i class="fa fa-folder-o"></i>
+<a>
+  <div class="typeahead-row">
+    <div class="icon-container">
+      <i class="fa fa-folder-o"></i>
+    </div>
+    <div class="data-container">
+      <div class="data-row">
+        <span class="uuid">{{ match.model.project_code }}</span>
+      </div>
+      <div class="data-row sub-item">
+        {{ match.model.project_name }}
+      </div>
+      <div class="data-row sub-item">
+        {{ match.model.disease_type }}
+      </div>
+    </div>
   </div>
-  <div class="data-container">
-    <div class="data-row">
-      <span class="uuid">{{ match.model.project_code }}</span>
-    </div>
-    <div class="data-row sub-item">
-      {{ match.model.project_name }}
-    </div>
-    <div class="data-row sub-item">
-      {{ match.model.disease_type }}
-    </div>
-  </div>
-</div>
+</a>

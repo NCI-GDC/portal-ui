@@ -21,6 +21,9 @@ module ngApp.components.ui.pagination.controllers {
           if ((newVal.pages * newVal.size) > newVal.total) {
             newVal.pages = Math.ceil(newVal.total / newVal.size);
             $scope.paging = _.assign({}, newVal);
+            _.defer(() => {
+              $scope.$apply();
+            });
           }
         }
       }, true);

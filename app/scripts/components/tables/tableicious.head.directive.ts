@@ -5,7 +5,8 @@ module ngApp.components.tables.directives.tableicious {
             restrict:"AE",
             scope:{
                 heading:'=',
-                data:'='
+                data:'=',
+                paging: "="
             },
             controller:function($scope, $element,$compile){
 

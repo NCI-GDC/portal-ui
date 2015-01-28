@@ -36,7 +36,7 @@ module ngApp.search.models {
                 return htm;
             },
             compileHead:function($scope){
-                var htm = '<div add-to-cart-all files="data"></div>';
+                var htm = '<div add-to-cart-all files="data" paging="paging"></div>';
                 return htm;
             },
                 noTitle: true,

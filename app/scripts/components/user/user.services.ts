@@ -1,5 +1,4 @@
 module ngApp.components.user.services {
-  import IGDCConfig = ngApp.IGDCConfig;
   import IUser = ngApp.components.user.models.IUser;
   import IFile = ngApp.files.models.IFile;
   import ILocationService = ngApp.components.location.services.ILocationService;

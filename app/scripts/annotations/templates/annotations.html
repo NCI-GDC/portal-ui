@@ -27,11 +27,7 @@
 
     </div>
 
-    <h4 class="col-lg-9 col-md-8" data-ng-if="asc.annotations.hits.length === 0" data-translate>
-      No annotations found using those filters.
-    </h4>
-
-    <div class="col-lg-9 col-md-8" data-ng-if="asc.annotations.hits.length > 0">
+    <div class="col-lg-9 col-md-8">
       <div data-ng-if="!modelLoaded" class="app-loading table-loader">
         <i class="fa fa-spinner fa-spin fa-5x"></i>
       </div>
@@ -43,13 +39,18 @@
         <current-filters></current-filters>
       </div>
 
+      <h3 class="col-lg-9 col-md-8" data-ng-if="asc.annotations.hits.length === 0" data-translate>
+            No annotations found using those filters.
+      </h3>
+
       <gdc-table data-data="asc.annotations.hits"
                  data-config="tableConfig"
                  data-paging="asc.annotations.pagination"
                  data-page="annotations"
                  data-heading="Annotations ({{asc.annotations.pagination.total}})"
                  data-id="annotation-table"
-                 data-sort-columns="asc.sortColumns">
+                 data-sort-columns="asc.sortColumns"
+                 data-ng-if="asc.annotations.hits.length">
       </gdc-table>
 
     </div>

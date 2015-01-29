@@ -27,11 +27,8 @@
     <h4 class="col-lg-9 col-md-8" data-ng-if="!prsc.projects">
       <i class="fa fa-spinner fa-spin"></i> Loading projects...
     </h4>
-    <h4 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0">
-      No projects found using those filters.
-    </h4>
 
-    <div class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length > 0">
+    <div class="col-lg-9 col-md-8">
       <div class="alert alert-info clearfix">
         <span data-ng-if="!cfc.currentFilters.length">
           <i class="fa fa-long-arrow-left"></i> Start searching by selecting a facet
@@ -39,11 +36,17 @@
         <current-filters></current-filters>
       </div>
 
+      <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0">
+            No projects found using those filters.
+      </h3>
+
       <gdc-table data-data="prsc.projects.hits"
                  data-config="tableConfig"
                  data-heading="Projects ({{prsc.projects.pagination.total}})"
-                 data-id="project-table">
+                 data-id="project-table"
+                 data-ng-if="prsc.projects.hits.length">
       </gdc-table>
+
     </div>
   </div>
 </div>

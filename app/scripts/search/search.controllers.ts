@@ -25,16 +25,7 @@ module ngApp.search.controllers {
     setState(tab: string, next: string): void;
     select(section: string, tab: string): void;
     removeFiles(files: IFile[]): void;
-    addRelatedFiles(participant: IParticipant): void;
-    //getFilteredRelatedFiles(participant: IParticipant): void;
-    //addAll(): void;
-    //removeAllinSearchResult(): void;
-    addFilteredRelatedFiles(participant: IParticipant): void;
-    addToCart(files: IFile[]): void;
     isUserProject(file: IFile): boolean;
-    //fileTableConfig:TableiciousConfig;
-    //participantTableConfig:TableiciousConfig;
-
   }
 
   interface ISearchScope extends ng.IScope {
@@ -134,9 +125,7 @@ module ngApp.search.controllers {
         return a;
       },[]);
 
-
       this.refresh();
-
     }
 
     refresh() {
@@ -182,13 +171,15 @@ module ngApp.search.controllers {
           "vital_status",
           "person_neoplasm_cancer_status",
           "admin.disease_code",
+          "tumor_tissue_site",
           "files.file_uuid",
           "files.file_name",
           "files.file_size",
-          "tumor_tissue_site",
           "files.data_type",
           "files.data_access",
           "files.archive.revision",
+          "files.archive.disease_code",
+          "files.data_format",
           "files.data_level",
           "summary.data_file_count",
           "summary.file_size",
@@ -252,41 +243,6 @@ module ngApp.search.controllers {
       this.CartService.remove(_.pluck(files, "file_uuid"));
     }
 
-    addRelatedFiles(participant: IParticipant): void {
-      this.addToCart(participant.files);
-    }
-
-    addFilteredRelatedFiles(participant: IParticipant): void {
-      this.addToCart(participant.filteredRelatedFiles.hits);
-    }
-
-
-    // TODO remove
-    addAll(): void {
-      var filters = this.LocationService.filters();
-      var size: number = (this.files.pagination.total >= this.CartService.getMaxSize()) ? this.CartService.getMaxSize() : this.files.pagination.total;
-      this.FilesService.getFiles({
-        fields: [
-          "data_access",
-          "data_format",
-          "data_level",
-          "data_subtype",
-          "data_type",
-          "file_extension",
-          "file_name",
-          "file_size",
-          "file_uuid",
-          "platform",
-          "updated",
-          "archive.disease_code",
-          "archive.revision",
-          "participants.bcr_patient_uuid"
-        ],
-        filters: filters,
-        size: size,
-        from: 0
-      }).then((data) => this.CartService.addFiles(data.hits));
-    }
   }
 
   angular

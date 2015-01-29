@@ -218,7 +218,18 @@
               {{ file.file_name | ellipsicate }}
             </a>
           </td>
-          <td>{{file.participants.length}}</td>
+          <td data-ng-if="file.participants.length === 1">
+            <a data-ui-sref="participant({ participantId : '{{ file.participants[0].bcr_patient_uuid }}' })">
+              {{file.participants[0].bcr_patient_uuid | ellipsicate:8 }}
+            </a>
+          </td>
+          <td data-ng-if="file.participants.length > 1">
+            <a data-ui-sref="search.participants({ 'filters': {{
+                [{ name: 'files.file_uuid', value: file.file_uuid }] | makeFilter }}
+            })">
+              {{ file.participants.length }}
+            </a>
+          </td>
           <td><a data-ui-sref="project(({projectId:file.archive.disease_code}))">{{file.archive.disease_code}}</a></td>
           <td>{{file.data_type}}</td>
           <td>{{file.data_format }}</td>

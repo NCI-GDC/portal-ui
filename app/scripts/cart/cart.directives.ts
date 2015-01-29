@@ -153,7 +153,7 @@ module ngApp.cart.directives {
               "participants.bcr_patient_uuid"
             ],
             filters: filters,
-            size: 100
+            size: CartService.getCartVacancySize()
           }).then((data) => {
             $scope.filteredRelatedFiles = data;
           });
@@ -164,7 +164,41 @@ module ngApp.cart.directives {
         };
 
         $scope.addRelatedFiles = function() {
-          CartService.addFiles($scope.files);
+          var barcode = _.find($scope.row,function(elem){return elem.id === "bcr_patient_uuid"}).val;
+          var filters = {
+            "op": "and",
+            "content": [{
+              "op": "is",
+              "content": {
+              "field": "participants.bcr_patient_uuid",
+              "value": barcode
+              }
+            }]
+          };
+
+          FilesService.getFiles({
+            fields: [
+              "data_access",
+              "data_format",
+              "data_level",
+              "data_subtype",
+              "data_type",
+              "file_extension",
+              "file_name",
+              "file_size",
+              "file_uuid",
+              "platform",
+              "updated",
+              "archive.disease_code",
+              "archive.revision",
+              "participants.bcr_patient_uuid"
+            ],
+            filters: filters,
+            size: CartService.getCartVacancySize()
+          }).then((data) => {
+            CartService.addFiles(data.hits);
+          });
+
         };
 
         $scope.CartService = CartService;
@@ -177,3 +211,4 @@ module ngApp.cart.directives {
     .directive("addToCartAll", AddToCartAll)
     .directive("addToCartFiltered", AddToCartFiltered);
 }
+

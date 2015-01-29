@@ -35,7 +35,8 @@ module ngApp.files {
               "participants.samples.portions.analytes.aliquots.bcr_aliquot_uuid",
               "participants.admin.disease_code",
               "archive.archive_name",
-              "archive.archive_uuid"
+              "archive.archive_uuid",
+              "archive.disease_code"
             ]
           });
         }

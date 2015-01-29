@@ -50,11 +50,13 @@ module ngApp.search.models {
                 });
 
                 return "participant({ participantId : '"+uuid.val+"' })";
-            }
+            },
+            sortable: true
         }, {
             displayName: "Disease Type",
             id: "admin.disease_code",
-            enabled: true
+            enabled: true,
+            sortable: true
         }, {
             displayName: "Gender",
             id: "gender",

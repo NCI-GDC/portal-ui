@@ -112,6 +112,28 @@ module ngApp.search.controllers {
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchTableParticipantsModel;
 
+      this.fileSortColumns = SearchTableFilesModel.headings.reduce(function(a,b){
+        if (b.sortable) {
+          a.push({
+            key:b.id,
+            name:b.displayName
+          })
+        }
+        return a;
+      },[]);
+
+      this.participantSortColumns = SearchTableParticipantsModel.headings.reduce(function(a,b){
+
+        if (b.sortable) {
+          a.push({
+            key:b.id,
+            name:b.displayName
+          })
+        }
+
+        return a;
+      },[]);
+
 
       this.refresh();
 

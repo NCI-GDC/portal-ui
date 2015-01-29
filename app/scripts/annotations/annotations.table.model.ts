@@ -15,15 +15,18 @@ module ngApp.projects.models {
             id: "itemType",
             template: function (x) {
                 return x && x.val || "tbc";
-            }
+            },
+            sortable: true
         },
         {
             displayName: "Item Barcode",
             id: "item",
+            sortable: true
         },
         {
             displayName: "Classification",
             id: "annotationClassificationName",
+            sortable: true
         },
         {
             displayName: "Category",
@@ -40,6 +43,7 @@ module ngApp.projects.models {
         {
             displayName: "Status",
             id: "status",
+            sortable: true
         }
         ]
     }

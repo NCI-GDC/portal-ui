@@ -101,11 +101,7 @@ module ngApp.components.tables.directives.tableicious {
          */
         icon?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope) : string
 
-        /**
-         * If false, won't show up in the table. Will still show up in sorting.
-         * Use for the show / hide column directive.
-         */
-        visible? : boolean;
+
 
         /**
          * A class or space-delimited list of classes to be applied only to the heading of the column.
@@ -137,6 +133,30 @@ module ngApp.components.tables.directives.tableicious {
          * this will be compiled into a directive and inserted in the head of the column.
          */
         compileHead?(scope):string;
+
+        /**
+         * Does this heading show up in the sort/hide directive?
+         * Defaults to true if undefined;
+         */
+        canReorder?:boolean;
+
+        /**
+         * Determines if the header is hidden by default. If so, it will need to be unhidden in the menu to be displayed.
+         * Use for the show / hide column directive.
+         * Defaults to false if undefined;
+         */
+        hidden? : boolean;
+
+        /**
+         * Does this heading appear in the sort-ascending/descending plugin?
+         * Defaults to false if undefined;
+         */
+
+        sortable? : boolean;
+
+
+
+
     }
 
     class TableiciousController {

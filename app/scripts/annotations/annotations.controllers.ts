@@ -16,28 +16,6 @@ module ngApp.annotations.controllers {
 
   class AnnotationsController implements IAnnotationsController {
     annotations: IAnnotations;
-    sortColumns: any = [
-      {
-        key: "itemType",
-        name: "Item Type"
-      },
-      {
-        key: "annotationClassificationName",
-        name: "Classification"
-      },
-      {
-        key: "categoryName",
-        name: "Category"
-      },
-      {
-        key: "createdBy",
-        name: "Annotator"
-      },
-      {
-        key: "status",
-        name: "Status"
-      }
-    ];
 
 
     /* @ngInject */
@@ -50,6 +28,17 @@ module ngApp.annotations.controllers {
       });
 
       $scope.tableConfig = AnnotationsTableModel;
+      this.sortColumns = AnnotationsTableModel.headings.reduce(function(a,b){
+
+        if (b.sortable) {
+          a.push({
+            key:b.id,
+            name:b.displayName
+          })
+        }
+
+        return a;
+      },[]);
 
       this.refresh();
     }

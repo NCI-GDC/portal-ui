@@ -61,7 +61,8 @@ module ngApp.search.models {
             sref:function(field,row){
                 var uuid = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'file_uuid'});
                 return "file({ fileId: '"+uuid.val+"' })";
-            }
+            },
+                sortable: true
         },{
             displayName: "Participants",
             id: "participants",
@@ -93,15 +94,18 @@ module ngApp.search.models {
 
                 return "project({ 'projectId':'" + code + "'})";
 
-            }
+            },
+                sortable: true
         }, {
             displayName: "Data Type",
             id: "data_type",
-                visible: true
+                visible: true,
+                sortable: true
         }, {
             displayName: "Data Format",
             id: "data_format",
-                visible: true
+                visible: true,
+                sortable: true
         }, {
             displayName: "Size",
             id: "file_size",
@@ -109,7 +113,8 @@ module ngApp.search.models {
             template:function(field,row,scope){
                 //debugger;
                 return scope.$filter('size')(field.val);
-            }
+            },
+                sortable: true
         },{
             displayName: "Revision",
             id: "archive.revision",

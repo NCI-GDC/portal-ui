@@ -21,8 +21,8 @@ module ngApp.components.tables.directives {
         function init() {
           scope.listMap = scope.list.map(function (elem) {
             var composite = _.pick(elem, "id", "displayName", "hidden", "sortable", "canReorder");
-            if (!composite.canReorder === false) {
-              composite.canReoder = true;
+            if (composite.canReorder !== false) {
+              composite.canReorder = true;
             }
             return composite;
           });

@@ -9,7 +9,7 @@ module ngApp.components.tables.directives.tableicious {
                 _.defer(function(){
 
                     if ($scope.heading.compile) {
-                        //debugger;
+                        $scope.row = $scope.$parent.datum;
                         var htm;
                         try {
                             htm = $scope.heading.compile($scope);

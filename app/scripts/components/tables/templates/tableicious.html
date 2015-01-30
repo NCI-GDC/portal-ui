@@ -25,27 +25,26 @@
         </tr>
     </thead>
     <tbody>
-        <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index" ng-init="$$index = $index; row = datum;">
+        <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index">
             <td ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
                 data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading"
                 class="{{getFieldClass(field,datum,this,heading)}}"
-                ng-init="field = getDataAtRow(heading, $$index)"
                 field-id="heading.id"
-                field="field"
-                row="row"
+                field="getDataAtRow(heading, $parent.$index)"
+                row="$parent.datum"
                 tableicious-cell>
 
-                <a ng-if="heading.sref" data-ui-sref="{{getSref(heading,field, datum, this, $filter)}}">
-                    {{getTemplate(heading,field,row,this)}}
+                <a ng-if="heading.sref" data-ui-sref="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
+                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this)}}
                  </a>
 
                 <span ng-if="!heading.sref">
-                    {{getTemplate(heading,field,row,this)}}
+                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this)}}
 
                 </span>
 
                 <div ng-if="heading.icon" class="text-center">
-                    <i class="fa fa-{{heading.icon(field,row,this)}} fa-lg"></i>
+                    <i class="fa fa-{{heading.icon(getDataAtRow(heading, $parent.$index),$parent.datum,this)}} fa-lg"></i>
                 </div>
 
             </td>

@@ -186,9 +186,17 @@ module ngApp.components.tables.services {
          * Returns the ultimate text value for an entry in a table based on the heading defintion and the whole row.
          */
         getTemplate(heading:TableiciousColumnDefinition,field:any,row,scope) {
+
+            var row = scope.$parent.datum;
+            var field = {
+                val: this.getValueFromRow(row, heading.id),
+                id: heading.id
+            }
+
             var result;
 
             var id = heading.id;
+
             var template = heading.template;
             if (heading.template) {
                 try {
@@ -217,7 +225,15 @@ module ngApp.components.tables.services {
         }
 
         getSref(heading, field, row, scope, $filter) {
+
+            var row = scope.$parent.datum;
+            var field = {
+                val: this.getValueFromRow(row, heading.id),
+                id: heading.id
+            }
+
             var result = undefined;
+
             try {
                 result = heading.sref ? heading.sref(field,row,scope,$filter) : field.val;
             } catch (e) {

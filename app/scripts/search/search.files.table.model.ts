@@ -78,6 +78,7 @@ module ngApp.search.models {
                 }
             },
             sref: function (field) {
+                //debugger;
                 var participant = field.val;
                 if (participant) {
                     return "participant({ participantId : '" + participant[0].bcr_patient_uuid + "' })";

@@ -178,7 +178,7 @@ module ngApp.components.tables.directives.tableicious {
             $scope.getTemplate = TableService.getTemplate.bind(TableService);
             //$scope.getTemplate = TableService.getTemplate.bind($scope);
             $scope.getHeadingEnabled = TableService.getHeadingEnabled.bind($scope);
-            $scope.getSref = TableService.getSref.bind($scope);
+            $scope.getSref = TableService.getSref.bind(TableService);
             $scope.getHeadingClass = TableService.getHeadingClass.bind($scope);
             $scope.getFieldClass = TableService.getFieldClass.bind($scope);
 
@@ -187,10 +187,7 @@ module ngApp.components.tables.directives.tableicious {
             $scope.UserService = UserService;
 
             $scope.$watch('data',()=>{
-                $scope.dataAsKeyValuePairs = undefined;
-                _.defer(()=>{
-                    this.refresh();
-                })
+                this.refresh();
             },true);
 
 
@@ -212,8 +209,6 @@ module ngApp.components.tables.directives.tableicious {
                 this.refresh();
             },true);
 
-
-
             this.refresh.bind(this)();
         }
 
@@ -232,13 +227,12 @@ module ngApp.components.tables.directives.tableicious {
 
             $scope.order = this.createOrderArray();
 
-            $scope.dataAsKeyValuePairs = data.map(this.TableService.objectToArray);
-
             $scope.expandedHeadings = $scope.allHeadings.filter(function(heading){
                 return !heading.children;
             });
 
             _.defer(()=>{
+                $scope.dataAsKeyValuePairs = data.map(this.TableService.objectToArray);
                 $scope.$apply();
             })
         }

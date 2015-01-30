@@ -36,7 +36,7 @@ module ngApp.cart.services {
 
     private static GDC_CART_KEY = "gdc-cart-items";
     private static GDC_CART_UPDATE = "gdc-cart-updated";
-    private static MAX_SIZE: number = 1000;
+    private static MAX_SIZE: number = 10000;
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,

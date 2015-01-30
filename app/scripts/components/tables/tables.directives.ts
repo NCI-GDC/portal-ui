@@ -1,5 +1,6 @@
 module ngApp.components.tables.directives {
 
+  import IGDCConfig = ngApp.IGDCConfig;
 
   interface ITableDirectiveScope extends ng.IScope {
      filtersRevealed:boolean;
@@ -69,15 +70,15 @@ module ngApp.components.tables.directives {
     return {
       restrict: "EA",
       scope: {
+        endpoint:"@",
+        size: "@"
       },
       replace: true,
       templateUrl: "components/tables/templates/export-table.html",
-      link: function ($scope: ng.IScope) {
-        //TODO
-      }
+      controller: "ExportTableController as etc"
     };
   }
-  
+
   function SortTable(): ng.IDirective {
     return {
       restrict: "EA",

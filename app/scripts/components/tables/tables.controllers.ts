@@ -2,6 +2,7 @@ module ngApp.components.tables.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import ITableColumn = ngApp.components.tables.models.ITableColumn;
   import IPagination = ngApp.components.tables.pagination.models.IPagination;
+  import IGDCConfig = ngApp.IGDCConfig;
 
   interface ITableSortController {
     updateSorting(): void;
@@ -84,7 +85,33 @@ module ngApp.components.tables.controllers {
     }
   }
 
+  interface IExportScope extends ng.IScope {
+    endpoint: string;
+    size: number;
+  }
+
+  interface IExportTableController {
+    exportTable(fileType: string): void;
+  }
+
+  class ExportTableController implements IExportTableController {
+    constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig) {}
+
+    exportTable(fileType: string): void {
+      console.log(this.$scope.size);
+      var filters: Object = this.LocationService.filters();
+      this.LocationService.setHref(this.config.api + "/" +
+                                  this.$scope.endpoint +
+                                  "?attachment=true&format=" + fileType +
+                                  "&size=" + this.$scope.size +
+                                  "&filters=" + JSON.stringify(filters));
+    }
+
+  }
+
   angular.module("tables.controllers", ["location.services"])
+      .controller("TableSortController", TableSortController)
       .controller("GDCTableController", GDCTableController)
-      .controller("TableSortController", TableSortController);
+      .controller("ExportTableController", ExportTableController);
 }
+

@@ -1,4 +1,7 @@
 module ngApp.components.location.services {
+
+  import IGDCWindowService = ngApp.models.IGDCWindowService;
+
   export interface ISearch {
     filters: string;
     query: string;
@@ -15,11 +18,12 @@ module ngApp.components.location.services {
     setQuery(query?: Object): ng.ILocationService;
     pagination(): any;
     setPaging(pagination: any): ng.ILocationService;
+    setHref(href: string): void;
   }
 
   class LocationService implements ILocationService {
     /* @ngInject */
-    constructor(private $location: ng.ILocationService) {}
+    constructor(private $location: ng.ILocationService, private $window: IGDCWindowsService) {}
 
     path(): string {
       return this.$location.path();
@@ -101,6 +105,11 @@ module ngApp.components.location.services {
 
       return this.setSearch(search);
     }
+
+    setHref(href: string): void {
+      this.$window.location.href = href;
+    }
+
   }
 
   angular

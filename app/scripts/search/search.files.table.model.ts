@@ -15,19 +15,6 @@ module ngApp.search.models {
         order: ['file_type', 'participants', 'project_name', 'availableData', 'status', 'last_update'],
         headings: [
         {
-            displayName: "My Projects",
-            id: "my_projects",
-            enabled: function(scope){
-                return scope.UserService.currentUser;
-            },
-            icon:function(field,row,scope){
-                //debugger;
-                var archive = _.find(row,function(elem){return elem.id==='archive'}).val;
-                var UserService:any = scope.UserService;
-                return (UserService.currentUser.projects.indexOf(archive.disease_code) !== -1) ? 'check' : 'close';
-
-            }
-        },{
             displayName: "add_to_cart",
             id: "add_to_cart",
             compile:function($scope){
@@ -41,6 +28,19 @@ module ngApp.search.models {
             },
                 noTitle: true,
             visible: true
+        }, {
+            displayName: "My Projects",
+            id: "my_projects",
+            enabled: function(scope){
+                return scope.UserService.currentUser;
+            },
+            icon:function(field,row,scope){
+                //debugger;
+                var archive = _.find(row,function(elem){return elem.id==='archive'}).val;
+                var UserService:any = scope.UserService;
+                return (UserService.currentUser.projects.indexOf(archive.disease_code) !== -1) ? 'check' : 'close';
+
+            }
         }, {
             displayName: "Access",
             id: "data_access",

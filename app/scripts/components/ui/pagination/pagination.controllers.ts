@@ -15,7 +15,19 @@ module ngApp.components.ui.pagination.controllers {
 
   class PagingController implements IPagingController {
     /* @ngInject */
-    constructor(private $scope: IPagingScope, private LocationService: ILocationService) {}
+    constructor(private $scope: IPagingScope, private LocationService: ILocationService) {
+      $scope.$watch("paging", function(newVal, oldVal) {
+        if (!angular.equals(newVal, oldVal)) {
+          if ((newVal.pages * newVal.size) > newVal.total) {
+            newVal.pages = Math.ceil(newVal.total / newVal.size);
+            $scope.paging = _.assign({}, newVal);
+            _.defer(() => {
+              $scope.$apply();
+            });
+          }
+        }
+      }, true);
+    }
 
     setCount(event: any, size: number) {
       this.$scope.paging.size = size;

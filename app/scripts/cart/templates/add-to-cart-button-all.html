@@ -1,4 +1,4 @@
-<div class="btn-group" data-dropdown>
+<div data-ng-if="!addAllOnly" class="btn-group" data-dropdown>
     <button data-ng-if="CartService.areInCart(files)" type="button" class="btn btn-success" disabled>
         <i class="fa fa-check-circle"></i>
     </button>
@@ -42,4 +42,20 @@
             </a>
         </li>
     </ul>
+</div>
+<div data-ng-if="addAllOnly">
+  <button class="btn btn-primary disabled" data-ng-if="CartService.getCartVacancySize() - paging.total < 0" disabled="disabled">
+    <span class="fa-stack">
+        <i class="fa fa-shopping-cart fa-stack-1x"></i>
+        <i class="fa fa-ban fa-stack-2x"></i>
+    </span>
+    <span data-translate>Cart can only hold {{ CartService.getCartVacancySize() }} more items</span>
+  </button>
+  <button class="btn btn-primary" data-ng-click="addAll()" data-ng-if="CartService.getCartVacancySize() - paging.total >= 0">
+            <span class="fa-stack">
+              <i class="fa fa-shopping-cart fa-stack-1x"></i>
+            </span>
+    <span data-translate>Add all in Search Result</span>
+  </button>
+
 </div>

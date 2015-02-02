@@ -7,7 +7,7 @@ module ngApp.components.user.services {
     login(username: string): void;
     logout(): void;
     toggleFilter(): void;
-    addMyProjectsFilter(filters: any, key: string): void;
+    addMyProjectsFilter(filters: any, key: string): any;
     isUserProject(file: IFile): boolean;
     currentUser: IUser;
   }
@@ -46,7 +46,7 @@ module ngApp.components.user.services {
       return this.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
     }
 
-    addMyProjectsFilter(filters: any, key: string): void {
+    addMyProjectsFilter(filters: any, key: string): any {
       if (this.currentUser && this.currentUser.isFiltered &&
           this.currentUser.projects.length) {
         var userProjects = {
@@ -88,6 +88,7 @@ module ngApp.components.user.services {
 
       return filters;
     }
+
   }
 
   angular

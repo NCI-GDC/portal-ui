@@ -29,11 +29,16 @@ module ngApp.cart.directives {
       scope:{
         paging: "=",
         files: "=",
-        removeAllInSearchResult: "&"
+        removeAllInSearchResult: "&",
+        addAllOnly: "@"
+      },
+      compile: function(element, attrs) {
+        if(!attrs.addAllOnly)
+          attrs.addAllOnly = false;
       },
       templateUrl: "cart/templates/add-to-cart-button-all.html",
       controller: function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
-                           FilesService: IFilesService) {
+                           FilesService: IFilesService, UserService: IUserService) {
 
         $scope.CartService = CartService;
         $scope.addToCart = function(files: IFile[]) {
@@ -76,7 +81,8 @@ module ngApp.cart.directives {
 
         $scope.addAll = function(){
           var filters = LocationService.filters();
-          var size: number = ($scope.paging.total >= this.CartService.getMaxSize()) ? this.CartService.getMaxSize() : this.paging.total;
+          filters = UserService.addMyProjectsFilter(filters, "participants.admin.disease_code");
+          var size: number = ($scope.paging.total >= CartService.getMaxSize()) ? CartService.getMaxSize() : $scope.paging.total;
           FilesService.getFiles({
             fields: [
               "data_access",

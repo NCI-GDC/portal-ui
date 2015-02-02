@@ -15,19 +15,6 @@
     </tbody>
   </table>
 
-      <button class="btn btn-primary disabled" data-ng-if="sc.CartService.getCartVacancySize() - sc.files.pagination.total < 0" disabled="disabled">
-                <span class="fa-stack">
-                    <i class="fa fa-shopping-cart fa-stack-1x"></i>
-                    <i class="fa fa-ban fa-stack-2x"></i>
-                </span>
-        <span data-translate>Cart can only hold {{ sc.CartService.getCartVacancySize() }} more items</span>
-      </button>
-      <button class="btn btn-primary" data-ng-click="sc.addAll()" data-ng-if="sc.CartService.getCartVacancySize() - sc.files.pagination.total >= 0">
-                <span class="fa-stack">
-                  <i class="fa fa-shopping-cart fa-stack-1x"></i>
-                </span>
-        <span data-translate>Add all in Search Result</span>
-      </button>
-
+  <div add-to-cart-all data-files="sc.files" data-paging="sc.files.pagination" data-add-all-only=true></div>
 
 </div>

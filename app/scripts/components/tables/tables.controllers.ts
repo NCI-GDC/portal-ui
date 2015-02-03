@@ -98,7 +98,6 @@ module ngApp.components.tables.controllers {
     constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig) {}
 
     exportTable(fileType: string): void {
-      console.log(this.$scope.size);
       var filters: Object = this.LocationService.filters();
       this.LocationService.setHref(this.config.api + "/" +
                                   this.$scope.endpoint +

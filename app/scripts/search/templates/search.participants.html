@@ -1,33 +1,10 @@
-<<<<<<< HEAD
 <gdc-table data-data="sc.participants.hits"
            data-config="participantTableConfig"
            data-paging="sc.participants.pagination"
            data-page="participants"
            data-heading="Participants"
            data-id="participant-table"
+           data-endpoint="participants"
            data-sort-columns="sc.participantSortColumns">
 </gdc-table>
-=======
-<div class="panel panel-default">
 
-  <div class="panel-heading clearfix">
-    <h3 class="panel-title table-heading pull-left">
-      <span data-translate>Participants</span>
-    </h3>
-    <div class="pull-right">
-      <div class="btn-group" role="group" aria-label="Filter and sort table">
-      <sort-table data-sort-columns="sc.participantSortColumns"
-                  data-paging="sc.participants.pagination" data-page="participants"></sort-table>
-        <arrange-columns list="participantTableConfig.headings" hidden="participantTableConfig.hidden"></arrange-columns>
-        <reset-table target="participantTableConfig"></reset-table>
-        <export-table data-endpoint="participants" data-size="{{ sc.participants.pagination.total }}"></export-table>
-      </div>
-    </div>
-
-  </div>
-    <tableicious data=sc.participants.hits id="participant-table" config=participantTableConfig></tableicious>
-  <div class="panel-footer clearfix">
-    <pagination-controls data-page="participants" data-paging="sc.participants.pagination"></pagination-controls>
-  </div>
-</div>
->>>>>>> 244ddd5... feat(search): export tbl to file

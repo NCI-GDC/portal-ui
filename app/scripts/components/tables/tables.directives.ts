@@ -103,7 +103,8 @@ module ngApp.components.tables.directives {
         paging: "=",
         page: "@",
         sortColumns: "=",
-        id: "@"
+        id: "@",
+        endpoint: "@"
       },
       replace: true,
       templateUrl: "components/tables/templates/gdc-table.html",

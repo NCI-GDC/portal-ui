@@ -15,6 +15,11 @@
         <reset-table data-ng-if="gtc.sortingHeadings.length" target="config"></reset-table>
       </div>
     </div>
+
+    <div class="pull-right">
+      <export-table data-endpoint="{{ endpoint }}" data-size="{{ paging.total }}">
+    </div>
+
   </div>
   <tableicious id="{{ id }}" data-data="data" data-config="config" data-paging="paging"></tableicious>
   <div class="panel-footer clearfix" data-ng-if="page && paging">

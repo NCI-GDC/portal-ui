@@ -18,8 +18,7 @@ module ngApp.core.services {
     searchModels: string[] = [
       "files",
       "participants",
-      "annotations",
-      "status"
+      "annotations"
     ];
 
     /* @ngInject */

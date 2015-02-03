@@ -43,13 +43,6 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
                 $rootScope: IRootScope, config: IGDCConfig, notify: INotifyService) {
   gettextCatalog.debug = true;
 
-  Restangular.all('status').get('').then(function(data){
-    config.apiVersion = data['version'];
-    config.apiCommitHash = data['commit'];
-    config.apiTag = "https://github.com/NCI-GDC/gdcapi/releases/tag/" + config.apiVersion;
-    config.apiCommitLink ="https://github.com/NCI-GDC/gdcapi/commit/" + config.apiCommitHash;
-  });
-
   $rootScope.config = config;
   Restangular.setErrorInterceptor((response) => {
     CoreService.xhrDone();
@@ -65,6 +58,13 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
     // Ajax
     CoreService.xhrDone(model);
     return deferred.resolve(data);
+  });
+
+  Restangular.all('status').get('').then(function(data){
+    config.apiVersion = data['version'];
+    config.apiCommitHash = data['commit'];
+    config.apiTag = "https://github.com/NCI-GDC/gdcapi/releases/tag/" + config.apiVersion;
+    config.apiCommitLink ="https://github.com/NCI-GDC/gdcapi/commit/" + config.apiCommitHash;
   });
 
   $rootScope.$on("$stateChangeStart", () => {

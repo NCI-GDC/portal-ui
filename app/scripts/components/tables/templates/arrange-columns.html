@@ -6,18 +6,30 @@
     </button>
 
     <ul dnd-list="listMap" class="dropdown-menu pull-right" role="menu">
-        <li ng-repeat="item in listMap"
-            ng-class="{'selected': models.selected === item}"
-            ng-if="item.canReorder"
+        <li class="column-heading">
+        <div class="input-group input-group-sm">
+          <span class="input-group-addon" id="sizing-addon3">
+            <i class="fa fa-search"></i>
+          </span>
+          <input type="text" class="form-control" placeholder="Search" aria-describedby="sizing-addon3"
+                 data-ng-click="$event.stopPropagation()"
+                 data-ng-model="search.displayName" />
+        </div>
+        </li>
+        <li data-ng-repeat="item in listMap | filter:search:strict"
+            data-ng-class="{'selected': models.selected === item}"
+            data-ng-if="item.canReorder"
             class="column-heading">
 
             <a dnd-draggable="item"
                dnd-moved="onMoved($index)"
-               dnd-effect-allowed="move"
+               effect-allowed="move"
+               dnd-disable-if="search.displayName.length > 0"
+               data-ng-if="true"
                tabindex=0
                dnd-selected="models.selected = item">
-                <i class="fa fa-bars fa-stack fa-lg"></i>
-                {{item.displayName | ellipsicate:18}}
+                <i class="fa fa-bars fa-stack fa-lg" data-ng-class="{ 'fa-disabled': search.displayName }"></i>
+                {{ item.displayName | humanify | ellipsicate:18 }}
                 <i class="fa fa-stack fa-{{item.hidden ? 'eye-slash' : 'eye'}} fa-lg pull-right" ng-click="item.hidden = !item.hidden"></i>
             </a>
 

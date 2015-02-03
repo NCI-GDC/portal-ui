@@ -19,6 +19,7 @@ module ngApp.query.controllers {
     addFilesKeyPress(event: any, type: string): void;
     setState(tab: string, next: string): void;
     select(section: string, tab: string): void;
+    tabSwitch: boolean;
   }
 
   interface IQueryControllerScope extends ng.IScope {
@@ -28,6 +29,7 @@ module ngApp.query.controllers {
     files : IFiles;
     participants: IParticipants;
     query: string = "";
+    tabSwitch: boolean = false;
     fileSortColumns: any = [
       {
         key: "file_size",
@@ -83,6 +85,11 @@ module ngApp.query.controllers {
     }
 
     refresh() {
+      if (this.tabSwitch) {
+        this.tabSwitch = false;
+        return;
+      }
+
       this.FilesService.getFiles({
         fields: [
           "data_access",
@@ -118,7 +125,7 @@ module ngApp.query.controllers {
       if (tab && (this.$state.current.name.match("query."))) {
 
         next += tab;
-
+        this.tabSwitch = true;
         this.$state.go(next, this.LocationService.search(), {inherit: true});
       }
     }

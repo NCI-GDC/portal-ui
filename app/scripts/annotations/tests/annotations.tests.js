@@ -3,7 +3,7 @@ describe('Annotations:', function () {
   var AnnotationsService, controller, httpBackend;
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngApp.annotations'));
+  beforeEach(module('ngApp.annotations', 'core.services', 'ngProgressLite'));
 
   // Injection of dependencies, $http will be mocked with $httpBackend
   beforeEach(inject(function ($httpBackend) {

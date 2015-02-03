@@ -4,8 +4,8 @@ module ngApp.core.services {
     setPageTitle(title: string, id?: any): void;
     setLoadedState(state: boolean): void;
     setSearchModelState(state: boolean): void;
-    xhrSent(model: string): void;
-    xhrDone(model?: string): void;
+    xhrSent(): void;
+    xhrDone(): void;
     activeRequests: boolean;
     finishedRequests: number;
     requestCount: number;
@@ -15,11 +15,6 @@ module ngApp.core.services {
     activeRequests: boolean = false;
     finishedRequests: number = 0;
     requestCount: number = 0;
-    searchModels: string[] = [
-      "files",
-      "participants",
-      "annotations"
-    ];
 
     /* @ngInject */
     constructor(private $rootScope: ngApp.IRootScope,
@@ -27,6 +22,9 @@ module ngApp.core.services {
                 private ngProgressLite: ng.progressLite.INgProgressLite,
                 private gettextCatalog) {
       this.setLoadedState(true);
+      $rootScope.$on("tableicious-data-loaded", () => {
+        this.setSearchModelState(true);
+      });
     }
 
     setLoadedState(state: boolean) {
@@ -44,27 +42,21 @@ module ngApp.core.services {
       this.$rootScope.pageTitle = formattedTitle;
     }
 
-    xhrSent(model: string) {
+    xhrSent() {
       if (!this.activeRequests) {
         this.activeRequests = true;
         this.ngProgressLite.start();
-        if (this.searchModels.indexOf(model) !== -1) {
-          this.setSearchModelState(false);
-        }
       }
       this.requestCount++;
     }
 
-    xhrDone(model?: string) {
+    xhrDone() {
       this.finishedRequests++;
       if (this.finishedRequests === this.requestCount) {
         this.activeRequests = false;
         this.finishedRequests = 0;
         this.requestCount = 0;
         this.ngProgressLite.done();
-        if (this.searchModels.indexOf(model) !== -1) {
-          this.setSearchModelState(true);
-        }
       }
     }
 

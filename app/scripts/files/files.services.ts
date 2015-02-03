@@ -1,5 +1,6 @@
 module ngApp.files.services {
   import IFiles = ngApp.files.models.IFiles;
+  import ICoreService = ngApp.core.services.ICoreService;
   import IFile = ngApp.files.models.IFile;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
@@ -14,7 +15,7 @@ module ngApp.files.services {
 
     /* @ngInject */
     constructor(Restangular: restangular.IService, private LocationService: ILocationService,
-                private UserService: IUserService) {
+                private UserService: IUserService, private CoreService: ICoreService) {
       this.ds = Restangular.all("files");
     }
 
@@ -57,6 +58,7 @@ module ngApp.files.services {
       }
 
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.admin.disease_code");
+      this.CoreService.setSearchModelState(false);
 
       return this.ds.get("", angular.extend(defaults, params)).then((response): IFiles => {
         return response["data"];
@@ -65,6 +67,6 @@ module ngApp.files.services {
   }
 
   angular
-      .module("files.services", ["restangular", "components.location", "user.services"])
+      .module("files.services", ["restangular", "components.location", "user.services", "core.services"])
       .service("FilesService", FilesService);
 }

@@ -26,6 +26,7 @@ module ngApp.search.controllers {
     select(section: string, tab: string): void;
     removeFiles(files: IFile[]): void;
     isUserProject(file: IFile): boolean;
+    tabSwitch: boolean;
   }
 
   interface ISearchScope extends ng.IScope {
@@ -38,6 +39,7 @@ module ngApp.search.controllers {
     participants: IParticipants;
     lastAddedFiles: IFile[];
     lastNotifyDialog: INotify;
+    tabSwitch: boolean = false;
 
     fileSortColumns: any = [
       {
@@ -129,6 +131,11 @@ module ngApp.search.controllers {
     }
 
     refresh() {
+      if (this.tabSwitch) {
+        this.tabSwitch = false;
+        return;
+      }
+
       this.FilesService.getFiles({
         fields: [
           "data_access",
@@ -206,10 +213,13 @@ module ngApp.search.controllers {
     }
 
     // TODO Load data lazily based on active tab
+    // If done, flag preventing data reload on tab switch needs to
+    // be reworked.
     setState(tab: string) {
       // Changing tabs and then navigating to another page
       // will cause this to fire.
       if (tab && (this.$state.current.name.match("search."))) {
+        this.tabSwitch = true;
         this.$state.go("search." + tab, this.LocationService.search(), {inherit: false});
       }
     }

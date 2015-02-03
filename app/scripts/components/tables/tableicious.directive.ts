@@ -1,4 +1,8 @@
 module ngApp.components.tables.directives.tableicious {
+    import IRootScope = ngApp.IRootScope;
+    import IUserService = ngApp.components.user.services.IUserService;
+    import ITableService = ngApp.components.tables.services.ITableService;
+
     export interface ITableicousScope extends ng.IScope {
         data:any[];
         dataAsKeyValuePairs:any[];
@@ -163,10 +167,10 @@ module ngApp.components.tables.directives.tableicious {
 
         /* @ngInject */
         constructor(private $scope: ITableicousScope,
-                    private TableService,
+                    private TableService: ITableService,
                     private TableValidator,
-                    private $rootScope,$filter,
-                    private UserService) {
+                    private $rootScope: IRootScope, $filter: ng.IFilterService,
+                    private UserService: IUserService) {
 
             $scope.getColumnIndex = this.getColumnIndex.bind(this);
             $scope.getAllHeadingsAtNestingLevel = this.getAllHeadingsAtNestingLevel.bind(this);
@@ -231,9 +235,12 @@ module ngApp.components.tables.directives.tableicious {
                 return !heading.children;
             });
 
+
             _.defer(()=>{
                 $scope.dataAsKeyValuePairs = data.map(this.TableService.objectToArray);
-                $scope.$apply();
+                $scope.$apply(()=> {
+                    $scope.$emit("tableicious-data-loaded");
+                });
             })
         }
 

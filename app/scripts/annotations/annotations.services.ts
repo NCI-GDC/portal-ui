@@ -2,6 +2,7 @@ module ngApp.annotations.services {
   import IAnnotation = ngApp.annotations.models.IAnnotation;
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import ICoreService = ngApp.core.services.ICoreService;
 
   export interface IAnnotationsService {
     getAnnotation(id: string, params?: Object): ng.IPromise<IAnnotation>;
@@ -12,7 +13,8 @@ module ngApp.annotations.services {
     private ds: restangular.IElement;
 
     /* @ngInject */
-    constructor(Restangular: restangular.IService, private LocationService: ILocationService) {
+    constructor(Restangular: restangular.IService, private LocationService: ILocationService,
+                private CoreService: ICoreService) {
       this.ds = Restangular.all("annotations");
     }
 
@@ -54,6 +56,8 @@ module ngApp.annotations.services {
         delete defaults.sort;
       }
 
+      this.CoreService.setSearchModelState(false);
+
       return this.ds.get("", angular.extend(defaults, params)).then((response): IAnnotations => {
         return response["data"];
       });
@@ -61,6 +65,6 @@ module ngApp.annotations.services {
   }
 
   angular
-      .module("annotations.services", ["restangular", "components.location"])
+      .module("annotations.services", ["restangular", "components.location", "core.services"])
       .service("AnnotationsService", AnnotationsService);
 }

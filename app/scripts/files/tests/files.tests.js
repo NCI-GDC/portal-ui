@@ -3,7 +3,7 @@ describe('Files:', function () {
   var FilesService, controller, httpBackend;
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngApp.files'));
+  beforeEach(module('ngApp.files', 'core.services', 'ngProgressLite'));
 
   // Injection of dependencies, $http will be mocked with $httpBackend
   beforeEach(inject(function ($httpBackend) {

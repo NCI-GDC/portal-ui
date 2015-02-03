@@ -51,12 +51,12 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
   });
   Restangular.addRequestInterceptor((element, operation: string, model: string) => {
     // Ajax
-    CoreService.xhrSent(model);
+    CoreService.xhrSent();
     return element;
   });
   Restangular.addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
     // Ajax
-    CoreService.xhrDone(model);
+    CoreService.xhrDone();
     return deferred.resolve(data);
   });
 

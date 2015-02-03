@@ -3,7 +3,7 @@ describe('Participants:', function () {
   var ParticipantsService, controller, httpBackend;
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngApp.participants'));
+  beforeEach(module('ngApp.participants', 'core.services', 'ngProgressLite'));
 
   // Injection of dependencies, $http will be mocked with $httpBackend
   beforeEach(inject(function ($httpBackend) {

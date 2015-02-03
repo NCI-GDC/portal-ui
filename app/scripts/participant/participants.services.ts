@@ -1,5 +1,6 @@
 module ngApp.participants.services {
   import IParticipants = ngApp.participants.models.IParticipants;
+  import ICoreService = ngApp.core.services.ICoreService;
   import IParticipant = ngApp.participants.models.IParticipant;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
@@ -14,7 +15,7 @@ module ngApp.participants.services {
 
     /* @ngInject */
     constructor(Restangular: restangular.IService, private LocationService: ILocationService,
-                private UserService: IUserService) {
+                private UserService: IUserService, private CoreService: ICoreService) {
       this.ds = Restangular.all("participants");
     }
 
@@ -57,6 +58,7 @@ module ngApp.participants.services {
       }
 
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.admin.disease_code");
+      this.CoreService.setSearchModelState(false);
 
       return this.ds.get("", angular.extend(defaults, params)).then((response): IParticipants => {
         return response["data"];
@@ -65,6 +67,6 @@ module ngApp.participants.services {
   }
 
   angular
-      .module("participants.services", ["restangular", "components.location", "user.services"])
+      .module("participants.services", ["restangular", "components.location", "user.services", "core.services"])
       .service("ParticipantsService", ParticipantsService);
 }

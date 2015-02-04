@@ -34,7 +34,7 @@ module ngApp.projects.services {
         if (hit["_summary"].hasOwnProperty("_experimental_data")) {
           var experimental_data = {};
           _.forEach(hit["_summary"]["_experimental_data"], function(item) {
-            experimental_data[item["experimental_type"]] = {
+            experimental_data[item["experimental_strategy"]] = {
               file_count: item["_file_count"],
               participant_count: item["_participant_count"]
             };

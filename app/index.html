@@ -39,6 +39,11 @@
 </head>
 
 <body>
+<div class="alert alert-warning m-margin-bottom-0" ng-if="config.apiIsMismatched">
+  <a onclick="window.location.reload()">
+    A newer version of this software is available. Click here to refresh the page. <i class="fa fa-lg fa-refresh"></i>
+  </a>
+</div>
 <div id="notification"></div>
 <a href="#skip" tabindex="1" class="skip-to-content" data-translate>Skip to Main Content</a>
 
@@ -96,6 +101,7 @@
   </noscript>
 
   <div id="skip" class="gdc-body" data-ui-view role="main" tabindex="0"></div>
+
 
   <!-- NCI Footer -->
   <footer id="footer">

@@ -9,6 +9,7 @@ declare module ngApp {
     apiCommitHash: string;
     apiCommitLink: string;
     apiTag: string;
+    supportedAPI: string;
   }
 
   export interface IRootScope extends ng.IScope {
@@ -43,6 +44,8 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
                 $rootScope: IRootScope, config: IGDCConfig, notify: INotifyService) {
   gettextCatalog.debug = true;
 
+  //debugger;
+
   $rootScope.config = config;
   Restangular.setErrorInterceptor((response) => {
     CoreService.xhrDone();
@@ -61,10 +64,15 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
   });
 
   Restangular.all('status').get('').then(function(data){
-    config.apiVersion = data['version'];
+
+    config.apiVersion = data['tag'];
     config.apiCommitHash = data['commit'];
     config.apiTag = "https://github.com/NCI-GDC/gdcapi/releases/tag/" + config.apiVersion;
     config.apiCommitLink ="https://github.com/NCI-GDC/gdcapi/commit/" + config.apiCommitHash;
+
+    if (+data.version !== +config.supportedAPI) {
+      config.apiIsMismatched = true;
+    };
   });
 
   $rootScope.$on("$stateChangeStart", () => {

@@ -48,13 +48,9 @@ module ngApp.annotations.services {
       var defaults = {
         size: paging.size,
         from: paging.from,
-        sort: paging.sort,
+        sort: paging.sort || 'itemType:asc',
         filters: this.LocationService.filters()
       };
-
-      if (!defaults.sort) {
-        delete defaults.sort;
-      }
 
       this.CoreService.setSearchModelState(false);
 

@@ -74,6 +74,7 @@ module ngApp.search.models {
                 displayName: 'Clinical',
                 id: 'clinical',
                 enabled: true,
+                fieldClass: 'text-right',
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                         return x.id === 'summary';
@@ -89,6 +90,7 @@ module ngApp.search.models {
             },  {
                 displayName: 'Exp',
                 id: 'Exp',
+                fieldClass: 'text-right',
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -105,6 +107,7 @@ module ngApp.search.models {
             }, {
                 displayName: 'Array',
                 id: 'Array',
+                fieldClass: 'text-right',
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -121,6 +124,7 @@ module ngApp.search.models {
             }, {
                 displayName: 'Seq',
                 id: 'Seq',
+                fieldClass: 'text-right',
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -137,6 +141,7 @@ module ngApp.search.models {
             }, {
                 displayName: 'CNV',
                 id: 'cnv',
+                fieldClass: 'text-right',
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -153,6 +158,7 @@ module ngApp.search.models {
             }, {
                 displayName: 'Meth',
                 id: 'meth',
+                fieldClass: 'text-right',
                 enabled: true,
                 template: function (field:TableiciousEntryDefinition,row,scope) {
                     var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -171,6 +177,7 @@ module ngApp.search.models {
 
             displayName: "Files",
             id: "files",
+            fieldClass: 'text-right',
             enabled: true,
             template:function(field){
                 return field && field.val && field.val.length;

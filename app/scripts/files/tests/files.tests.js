@@ -15,7 +15,7 @@ describe('Files:', function () {
       sinon.spy(FilesService.ds, 'get');
 
       var fs = {hits: [], facets: [], pagination: {}};
-      httpBackend.whenGET("/files?filters=%7B%7D&from=1&size=10").respond(fs);
+      httpBackend.whenGET("/files?filters=%7B%7D&from=1&size=10&sort=file_name:asc").respond(fs);
 
       FilesService.getFiles();
       httpBackend.flush();

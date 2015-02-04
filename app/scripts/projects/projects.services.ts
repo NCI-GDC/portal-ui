@@ -65,7 +65,8 @@ module ngApp.projects.services {
       var defaults = {
         size: 10,
         from: 1,
-        filters: this.LocationService.filters()
+        filters: this.LocationService.filters(),
+        sort:'disease_type:asc'
       };
 
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "project_code");

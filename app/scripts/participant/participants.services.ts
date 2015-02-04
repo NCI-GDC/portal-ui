@@ -49,13 +49,9 @@ module ngApp.participants.services {
       var defaults = {
         size: paging.size,
         from: paging.from,
-        sort: paging.sort,
+        sort: paging.sort || 'bcr_patient_barcode:asc',
         filters: this.LocationService.filters()
       };
-
-      if (!defaults.sort) {
-        delete defaults.sort;
-      }
 
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.admin.disease_code");
       this.CoreService.setSearchModelState(false);

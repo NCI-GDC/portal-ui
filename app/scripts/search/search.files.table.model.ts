@@ -119,11 +119,13 @@ module ngApp.search.models {
                 //debugger;
                 return scope.$filter('size')(field.val);
             },
-                sortable: true
+            sortable: true,
+            fieldClass: 'text-right'
         },{
             displayName: "Revision",
             id: "archive.revision",
             visible: true,
+
 
         },{
             displayName: "Update date",

@@ -35,6 +35,9 @@ module ngApp.projects.models {
         {
             displayName: "Created Date",
             id: "dateCreated",
+            template:function(field,row,scope){
+                return scope.$filter('date')(field.val);
+            }
         },
         {
             displayName: "Annotator",

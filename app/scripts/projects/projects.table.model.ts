@@ -42,14 +42,15 @@ module ngApp.projects.models {
             enabled: true,
             sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
 
-                var projectCode = _.find(row,function(elem){
-                    return elem.id === 'project_code';
+                var disease_code = _.find(row,function(elem){
+                    return elem.id === 'disease_code';
                 }).val;
 
-                var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: projectCode }]);
+                var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: disease_code }]);
                 return "search.participants({ 'filters':"+filter+"})";
 
-            }
+            },
+            fieldClass: 'text-right',
         }, {
             displayName: "Project",
             id: "project_name",
@@ -74,6 +75,7 @@ module ngApp.projects.models {
 
                     return data && data.participant_count ? data.participant_count : 0;
                 },
+                fieldClass: 'text-right',
                 sref: getParticipantSref('Clinical')
             },  {
                 displayName: 'Exp',
@@ -90,6 +92,7 @@ module ngApp.projects.models {
 
                     return data && data.participant_count ? data.participant_count : 0;
                 },
+                fieldClass: 'text-right',
                 sref: getParticipantSref('Gene expression')
             }, {
                 displayName: 'Array',
@@ -106,6 +109,7 @@ module ngApp.projects.models {
 
                     return data && data.participant_count ? data.participant_count : 0;
                 },
+                fieldClass: 'text-right',
                 sref: getParticipantSref('Raw microarray data')
             }, {
                 displayName: 'Seq',
@@ -122,6 +126,7 @@ module ngApp.projects.models {
 
                     return data && data.participant_count ? data.participant_count : 0;
                 },
+                fieldClass: 'text-right',
                 sref: getParticipantSref('Raw sequencing data')
             }, {
                 displayName: 'CNV',
@@ -138,6 +143,7 @@ module ngApp.projects.models {
 
                     return data && data.participant_count ? data.participant_count : 0;
                 },
+                fieldClass: 'text-right',
                 sref: getParticipantSref('Copy number variation')
             }, {
                 displayName: 'Meth',
@@ -154,6 +160,7 @@ module ngApp.projects.models {
 
                     return data && data.participant_count ? data.participant_count : 0;
                 },
+                fieldClass: 'text-right',
                 sref: getParticipantSref('DNA methylation')
                 }]
             }, {
@@ -167,7 +174,8 @@ module ngApp.projects.models {
 
                     var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: projectCode }]);
                     return "search.files({ 'filters':"+filter+"})";
-                }
+                },
+                fieldClass: 'text-right'
             }, {
                 displayName: "File Size",
                 id: "file_size",
@@ -177,7 +185,8 @@ module ngApp.projects.models {
                         return x.id === 'summary';
                     });
                     return scope.$filter('size')(summary.val.file_size);
-                }
+                },
+                fieldClass: 'text-right'
             }
         ]
     };

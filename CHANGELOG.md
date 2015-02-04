@@ -1,3 +1,44 @@
+### 0.1.10-spr1 (2015-02-04)
+
+
+#### Bug Fixes
+
+* **app:**
+  * Status request needs to occur later. ([b6c538b6](https://github.com/NCI-GDC/portal-ui/commit/b6c538b679357c5ee995171e6592b14148ddfa83))
+  * Fix model loading spinner. ([5dea5e4c](https://github.com/NCI-GDC/portal-ui/commit/5dea5e4cb0e8577200b81e36ad9e54e82138dd95))
+* **cart:**
+  * add all to cart uses my projects filter ([c720a8bf](https://github.com/NCI-GDC/portal-ui/commit/c720a8bfb8aaee8fc88a2fda8117c1967f030a37), closes [OICR-236](https://jira.opensciencedatacloud.org/browse/OICR-236))
+  * ensure cart cols filled ([a54e3a2c](https://github.com/NCI-GDC/portal-ui/commit/a54e3a2cafccf24f2cd52470e837c28b1d2499a2), closes [OICR-245](https://jira.opensciencedatacloud.org/browse/OICR-245))
+* **pagination:** Fixes pagination total pages. ([308e921d](https://github.com/NCI-GDC/portal-ui/commit/308e921d0b353ad31451e73f811cbc586222c839), closes [OICR-238](https://jira.opensciencedatacloud.org/browse/OICR-238))
+* **search:** don't add removed facets on tabswitch ([f5ce5781](https://github.com/NCI-GDC/portal-ui/commit/f5ce57819ce7a43003d88d6779a7204b30f72210))
+* **table:** prevent no data flash ([758afd15](https://github.com/NCI-GDC/portal-ui/commit/758afd159e3d92f25fbd7fe58822174fc859c641))
+
+
+#### Features
+
+* **app:**
+  * use export-table with gdc-table ([8097c365](https://github.com/NCI-GDC/portal-ui/commit/8097c36522cc0dc26adb0facec41d770bcce4783))
+  * show api ver in ui ([1bf7f5f6](https://github.com/NCI-GDC/portal-ui/commit/1bf7f5f68ebc23ac8278737467dba79a7d8ce15e), closes [OICR-249](https://jira.opensciencedatacloud.org/browse/OICR-249))
+* **cart:** increase limit to 10,000 ([e173d2af](https://github.com/NCI-GDC/portal-ui/commit/e173d2af157830605f946b42ad6b8c1a6acf39b2))
+* **facets:**
+  * Updates for multiple terms. ([6d2adf59](https://github.com/NCI-GDC/portal-ui/commit/6d2adf59a1f972552385cd02f5e2032d3a4e9ae8), closes [OICR-250](https://jira.opensciencedatacloud.org/browse/OICR-250))
+  * Keyboard support for autocomplete. ([afd34269](https://github.com/NCI-GDC/portal-ui/commit/afd342695e808c391473bde2a58332ed0e68076c), closes [OICR-221](https://jira.opensciencedatacloud.org/browse/OICR-221))
+* **search:** export tbl to file ([5d034272](https://github.com/NCI-GDC/portal-ui/commit/5d034272c83631b3b3694585a8f3f355603fd216))
+* **table:**
+  * sort, visibility reorder ([ce1965ab](https://github.com/NCI-GDC/portal-ui/commit/ce1965aba3c6eb2f54891ec36fbc7fd48df0b7b5), closes [OICR-247](https://jira.opensciencedatacloud.org/browse/OICR-247))
+  * add reset button to table ([47e42caf](https://github.com/NCI-GDC/portal-ui/commit/47e42cafe26caae726299581e8386c7d730eb684), closes [OICR-261](https://jira.opensciencedatacloud.org/browse/OICR-261))
+  * nested fields ([490b62dc](https://github.com/NCI-GDC/portal-ui/commit/490b62dc4927c5b974d7e29bbf50f5a3db5915ed))
+  * fix bug ([0ae9e336](https://github.com/NCI-GDC/portal-ui/commit/0ae9e3364e3483f9d8e82eff1d3ada71b90dd1ed))
+  * add compile ([d567af1b](https://github.com/NCI-GDC/portal-ui/commit/d567af1b1c4d01390b1db8c4cee7ed437e314722), closes [OICR-232](https://jira.opensciencedatacloud.org/browse/OICR-232))
+  * sref in trycatch ([e1e8fda4](https://github.com/NCI-GDC/portal-ui/commit/e1e8fda4af0f83f293323eae48d7276596d750ae))
+  * fix bug ([8dead21d](https://github.com/NCI-GDC/portal-ui/commit/8dead21d37bfaaa80e895bd8e97cc09acd146cc9))
+  * add directive to search page ([239ea774](https://github.com/NCI-GDC/portal-ui/commit/239ea77490f9fc555f77dbe38fca25bf0dff5cef))
+* **tableicious:**
+  * search filter to dropdown ([d527ff02](https://github.com/NCI-GDC/portal-ui/commit/d527ff02792bba5bae95380af50219e28cbd2a54), closes [OICR-243](https://jira.opensciencedatacloud.org/browse/OICR-243))
+  * Control table loading spinner. ([1a68e1cd](https://github.com/NCI-GDC/portal-ui/commit/1a68e1cdf601328edb86e7803602c3ec8b6690ca), closes [OICR-219](https://jira.opensciencedatacloud.org/browse/OICR-219))
+* **tables:** Create GDC wrappeer table directive. ([2890b07d](https://github.com/NCI-GDC/portal-ui/commit/2890b07d5043c2d8e8cee2158c5e601b9872796f), closes [OICR-220](https://jira.opensciencedatacloud.org/browse/OICR-220))
+
+
 ### 0.1.8 (2015-01-21)
 
 

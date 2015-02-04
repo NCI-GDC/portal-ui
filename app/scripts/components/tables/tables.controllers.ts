@@ -95,6 +95,8 @@ module ngApp.components.tables.controllers {
   }
 
   class ExportTableController implements IExportTableController {
+
+    /* @ngInject */
     constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig) {}
 
     exportTable(fileType: string): void {

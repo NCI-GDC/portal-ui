@@ -128,7 +128,11 @@ module ngApp.components.charts {
           },
           data: {
             columns: [],
-            type: "bar"
+            type: "bar",
+            labels: true
+          },
+          tooltip: {
+            show: false
           },
           axis: {
             rotated: $scope.direction === "horizontal",
@@ -177,9 +181,31 @@ module ngApp.components.charts {
             } else {
               chartOptions.axis.x.tick.format = formatFunction;
             }
+
+            chartOptions.data.labels = {
+              format: formatFunction
+            };
           }
 
           chart = $window.c3.generate(chartOptions);
+
+          // Adds accessible related information as per
+          // http://www.sitepoint.com/tips-accessible-svg/
+          d3.select(chartOptions.bindto)
+            .select("svg")
+            .append("title")
+              .text(function() {
+                return $filter("translate")($scope.heading);
+              });
+          d3.select(chartOptions.bindto)
+            .select("svg")
+            .append("desc")
+              .text(function() {
+                return $filter("translate")($scope.heading);
+              });
+
+          element.find("svg").attr("aria-labelledby", "title");
+          element.find("svg").attr("role", "img");
         }
 
         buildChart();

@@ -66,7 +66,13 @@ module ngApp.annotations.controllers {
           "item",
           "annotationClassificationName"
         ]
-      }).then((data) => this.annotations = data);
+      }).then((data) => {
+        if (!data.hits.length) {
+          this.CoreService.setSearchModelState(true);
+        }
+
+        this.annotations = data;
+      });
     }
 
   }

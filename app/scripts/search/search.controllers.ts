@@ -167,7 +167,13 @@ module ngApp.search.controllers {
           "archive.center_name",
           "file_extension"
         ]
-      }).then((data) => this.files = data);
+      }).then((data) => {
+        if (!data.hits.length) {
+          this.CoreService.setSearchModelState(true);
+        }
+
+        this.files = data;
+      });
 
       this.ParticipantsService.getParticipants({
         fields: [
@@ -208,6 +214,10 @@ module ngApp.search.controllers {
           "vital_status"
         ]
       }).then((data) => {
+        if (!data.hits.length) {
+          this.CoreService.setSearchModelState(true);
+        }
+
         this.participants = data;
       });
     }

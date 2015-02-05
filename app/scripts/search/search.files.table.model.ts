@@ -56,13 +56,15 @@ module ngApp.search.models {
             id: "file_name",
                 visible: true,
             template:function(field,row,scope){
-                return field && field.val && scope.$filter('ellipsicate')(field.val,50);
+                //return field && field.val && scope.$filter('ellipsicate')(field.val,50);
+                return field && field.val;
             },
             sref:function(field,row){
                 var uuid = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'file_uuid'});
                 return "file({ fileId: '"+uuid.val+"' })";
             },
-                sortable: true
+                sortable: true,
+                fieldClass: 'truncated-cell'
         },{
             displayName: "Participants",
             id: "participants",
@@ -71,7 +73,8 @@ module ngApp.search.models {
                 var participants = field.val;
                 if (participants) {
                     if (participants.length === 1) {
-                       return  scope.$filter('ellipsicate')(participants[0].bcr_patient_uuid, 8);
+                       return  participants[0].bcr_patient_uuid;
+                       //return  scope.$filter('ellipsicate')(participants[0].bcr_patient_uuid, 8);
                     } else if (participants.length > 1) {
                         return participants.length;
                     }
@@ -83,7 +86,8 @@ module ngApp.search.models {
                 if (participant) {
                     return "participant({ participantId : '" + participant[0].bcr_patient_uuid + "' })";
                 }
-            }
+            },
+                fieldClass: 'truncated-cell'
         }, {
             displayName: "Project",
             id: "archive.disease_code",

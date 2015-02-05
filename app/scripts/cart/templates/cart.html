@@ -213,14 +213,14 @@
             <i data-ng-if="file.data_access === 'protected'" class="fa fa-lock fa-lg"></i>
             <i data-ng-if="file.data_access !== 'protected'" class="fa fa-unlock-alt fa-lg"></i>
           </td>
-          <td>
+          <td class="truncated-cell">
             <a data-ui-sref="file({ fileId: file.file_uuid })">
-              {{ file.file_name | ellipsicate }}
+              {{ file.file_name }}
             </a>
           </td>
-          <td data-ng-if="file.participants.length === 1">
+          <td class="truncated-cell" data-ng-if="file.participants.length === 1">
             <a data-ui-sref="participant({ participantId : '{{ file.participants[0].bcr_patient_uuid }}' })">
-              {{file.participants[0].bcr_patient_uuid | ellipsicate:8 }}
+              {{file.participants[0].bcr_patient_uuid }}
             </a>
           </td>
           <td data-ng-if="file.participants.length > 1">

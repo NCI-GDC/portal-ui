@@ -11,8 +11,9 @@
                     data-paging="paging" data-page="{{ page }}"></sort-table>
         <arrange-columns data-ng-if="gtc.sortingHeadings.length"
                          data-list="config.headings"
+                         data-config="config"
                          data-hidden="config.hidden"></arrange-columns>
-        <reset-table data-ng-if="gtc.sortingHeadings.length" target="config"></reset-table>
+
       </div>
     </div>
 

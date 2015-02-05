@@ -13,7 +13,8 @@ module ngApp.components.tables.directives {
       restrict: "EA",
       scope: {
         list:"=",
-        order:"="
+        order:"=",
+        config:"="
       },
       replace: true,
       templateUrl: "components/tables/templates/arrange-columns.html",
@@ -116,14 +117,17 @@ module ngApp.components.tables.directives {
     return {
       restrict: "EA",
       scope: {
-        target:"="
+        target:"=",
+        config:'='
       },
       replace:true,
       templateUrl: "components/tables/templates/reset-table.html",
       controller: function($scope,$element){
-        var config = $scope.target;
+        var config = $scope.config;
         var originalOrder = _.pluck(config.headings,'id');
+        console.log("Reset table init...");
         $scope.reset = function(){
+          console.log("Reset...",config);
 
           config.headings = originalOrder.map(function(id){
             var heading = _.find(config.headings,function(head){return head.id === id});

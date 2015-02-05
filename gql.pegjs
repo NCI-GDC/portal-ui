@@ -1,55 +1,134 @@
-start = sexp
+start 
+  = _* node:node+ _*
+    {
+      return node[0];
+    }
+  / _*
+    {
+      return {};
+    }
+  / EOF
+    {
+      return {};
+    }
 
-sexp = "(" ops:ops ")" 
-       { return ops }
+node 
+  = group_expr
+  / exprs
 
-ops = group_op / list_op / value_op
+exprs
+  = list_expr
+  / value_expr 
+  / parens 
 
-// Group Operators take >1 sexps
-group_op = op:group_op_terms ':' args:group_args
-           { return {"op": op, "content": args} }
+parens 
+  = "(" node:node ")"
+    { 
+      return node;
+    }
 
-group_op_terms = "and" / "or"
+// Group Operators
+group_expr
+  = left:exprs operator:group_operator_expr right:node
+    { 
+      return {
+        op: operator, 
+        content: [left, right]
+      }
+    }
 
-group_args = xs:sexps+ x:sexp 
-             { xs.push(x); return xs  }
-
-sexps = xs:(sexp ",") 
-        { return xs[0] }
+group_operator_expr 
+  = _ operator:("or"i / "and"i) _
+    { 
+      return operator; 
+    }
 
 // List Operators take a field and a list of terms
-list_op = op:list_op_terms ":" args:list_args 
-          { return {"op": op, "content": args}}
+list_expr 
+  = field:unquoted_term operator:list_operator_expr terms:terms
+    { 
+      return {
+        op: operator, 
+        content: {
+          field: field,
+          terms: terms 
+        }
+      }
+    }
 
-list_op_terms = "in" / "out"
+list_operator_expr 
+  = _ operator:list_operators _
+    { 
+      return operator;
+    }
 
-list_args = f:word "," "[" v:terms "]"
-            { return {"field": f, "value": v }}
-
+list_operators 
+  = "not in"i 
+  / "in"i 
+  
 // Value Operators take a field and a value
-value_op = op:value_op_terms ":" args:value_args 
-           { return {"op": op, "content": args}}
+value_expr 
+  = field:unquoted_term operator:value_operator_expr term:term
+    { 
+      return {
+        op: operator, 
+        content: {
+          field: field,
+          term: term 
+        }
+      }
+    }
 
-value_op_terms = "is" / "not" / "gt" / "gte" / "lt" / "lte"
+value_operator_expr 
+  = _ operator:value_operators _
+    { 
+      return operator;
+    }
 
-value_args = f:word "," v:term
-             { return {"field": f, "value": v }}
+value_operators 
+  = "is not"i 
+  / "is"i 
+  / "gte"i 
+  / "gt"i 
+  / "lte"i 
+  / "lt"i
 
-arg = xs:(term / sexp)
 
-terms = xs:_terms+ x:term 
-        { xs.push(x); return xs } 
+terms 
+  = "[" x:term xs:_terms* "]"
+    {
+      var ts = [x];
+      if (xs.length) {
+        ts = ts.concat(xs)
+      }
 
-_terms = xs:(term ',') 
-         {return xs[0] }
+      return ts; 
+    }
 
-term = word / text
+_terms 
+  = xs:(_ term)
+    {
+      return xs[1];
+    }
 
-text = quote .+ quote
+term 
+  = unquoted_term
+  / quoted_term
 
-quote = '"'
+unquoted_term
+  = term:$[^: \t\r\n\f\{\}()"+-/^~\[\]]+
+    {
+      return term;
+    }
 
-word = cs:$char+ 
-       { return cs }
+quoted_term
+  = '"' term:$[^"]+ '"'
+    {
+      return term;
+    }
 
-char = [A-Za-z0-9_-]
+_ "whitespace"
+  = [ \t\r\n\f,]+
+
+EOF
+  = !.

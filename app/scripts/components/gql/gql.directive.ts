@@ -10,9 +10,9 @@ module ngApp.components.gql.directives {
       link: function($scope: ng.IScope) {
         $scope.query = "";
         $scope.onChange = () => {
-          if ($scope.query[0] !== "(") {
-            $scope.query = "(" + $scope.query;
-          }
+          //if ($scope.query[0] !== "(") {
+          //  $scope.query = "(" + $scope.query;
+          //}
           try {
             $scope.gql = $window.gql.parse($scope.query);
             console.log($scope.gql);
@@ -22,10 +22,10 @@ module ngApp.components.gql.directives {
             $scope.gql = null;
             $scope.errorMsg = Error.message;
             $scope.error = _.pluck(Error.expected, 'value');
-            if ($scope.error.length === 1 && $scope.error[0].length === 1) {
-              $scope.query += $scope.error[0];
-              $scope.onChange();
-            }
+            //if ($scope.error.length === 1 && $scope.error[0].length === 1) {
+            //  $scope.query += $scope.error[0];
+            //  $scope.onChange();
+            //}
 
           }
 

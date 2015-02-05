@@ -7,7 +7,7 @@
     <div class="pull-right" data-ng-if="sortColumns || gtc.sortingHeadings.length">
       <div class="btn-group" role="group" aria-label="Filter and sort table">
         <sort-table data-ng-if="sortColumns"
-                    data-sort-columns="sortColumns"
+                    data-config="config"
                     data-paging="paging" data-page="{{ page }}"></sort-table>
         <arrange-columns data-ng-if="gtc.sortingHeadings.length"
                          data-list="config.headings"

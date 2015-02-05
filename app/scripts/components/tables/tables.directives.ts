@@ -84,9 +84,9 @@ module ngApp.components.tables.directives {
     return {
       restrict: "EA",
       scope: {
-        sortColumns: "=",
         paging: "=",
-        page: "@"
+        page: "@",
+        config: '='
       },
       replace: true,
       templateUrl: "components/tables/templates/sort-table.html",

@@ -13,6 +13,7 @@ module ngApp.components.tables.controllers {
     paging: IPagination;
     page: string;
     sortColumns: ITableColumn[];
+    config:any;
   }
 
   class TableSortController implements ITableSortController {
@@ -22,6 +23,18 @@ module ngApp.components.tables.controllers {
     constructor(private $scope: ITableScope, private LocationService: ILocationService) {
       this.paging = $scope.paging;
       var currentSorting = $scope.paging.sort;
+
+      $scope.sortColumns = $scope.config.headings.reduce(function(a,b){
+
+        if (b.sortable) {
+          a.push({
+            key:b.id,
+            name:b.displayName
+          })
+        }
+
+        return a;
+      },[]);
 
       // We need to manually check the URL and parse any active sorting down
       if (currentSorting) {

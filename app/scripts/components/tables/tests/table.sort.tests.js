@@ -10,16 +10,18 @@ describe('Tables:', function () {
       scope.paging = {
         sort: "file_size:asc,file_name:desc"
       };
-      scope.sortColumns = [
-        {
-          key: "file_size",
-          name: "Size"
+      scope.config = {
+        headings:[{
+          name: 'File Size',
+          id:'file_size',
+          sortable:true
         },
         {
-          key: "file_name",
-          name: "File Name"
-        }
-      ];
+          name: 'File Count',
+          id: 'file_name',
+          sortable: true
+        }]
+      };
 
       var wc = $controller('TableSortController', { $scope: scope, LocationService: LocationService });
       expect(wc.$scope.sortColumns[0].sort).to.equal(true);
@@ -32,16 +34,14 @@ describe('Tables:', function () {
       var scope = $rootScope.$new();
       scope.paging = {};
       scope.page = "test";
-      scope.sortColumns = [
-        {
-          key: "file_size",
-          name: "Size"
-        },
-        {
-          key: "file_name",
-          name: "File Name"
-        }
-      ];
+      scope.config = {
+        headings:[{
+          name: 'File Size',
+          id:'file_size',
+          sortable:true
+        }]
+      }
+
 
       var wc = $controller('TableSortController', { $scope: scope, LocationService: LocationService });
       wc.$scope.sortColumns[0].sort = true;

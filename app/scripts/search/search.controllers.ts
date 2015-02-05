@@ -41,39 +41,6 @@ module ngApp.search.controllers {
     lastNotifyDialog: INotify;
     tabSwitch: boolean = false;
 
-    fileSortColumns: any = [
-      {
-        key: "file_size",
-        name: "Size"
-      },
-      {
-        key: "data_type",
-        name: "Data Type"
-      },
-      {
-        key: "data_format",
-        name: "Data Format"
-      },
-      {
-        key: "disease_code",
-        name: "Project"
-      }
-    ];
-    participantSortColumns: any = [
-      {
-        key: "admin.disease_code",
-        name: "Disease Type"
-      },
-      {
-        key: "gender",
-        name: "Gender"
-      },
-      {
-        key: "person_neoplasm_cancer_status",
-        name: "Tumor Stage"
-      }
-    ];
-
     /* @ngInject */
     constructor(private $scope: ISearchScope,
                 private $state: ng.ui.IStateService,
@@ -105,27 +72,7 @@ module ngApp.search.controllers {
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchTableParticipantsModel;
 
-      this.fileSortColumns = SearchTableFilesModel.headings.reduce(function(a,b){
-        if (b.sortable) {
-          a.push({
-            key:b.id,
-            name:b.displayName
-          })
-        }
-        return a;
-      },[]);
 
-      this.participantSortColumns = SearchTableParticipantsModel.headings.reduce(function(a,b){
-
-        if (b.sortable) {
-          a.push({
-            key:b.id,
-            name:b.displayName
-          })
-        }
-
-        return a;
-      },[]);
 
       this.refresh();
     }

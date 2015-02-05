@@ -29,6 +29,7 @@ module ngApp.components.header.controllers {
 
     /* @ngInject */
     constructor(private gettextCatalog, private CartService: ICartService,
+                private $state: ng.ui.IStateService,
                 private UserService: IUserService, private $modal: any) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
     }

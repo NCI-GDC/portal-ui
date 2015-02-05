@@ -71,7 +71,7 @@ module ngApp.query.controllers {
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
                 private LocationService: ILocationService,
-                CoreService: ICoreService) {
+                private CoreService: ICoreService) {
       var data = $state.current.data || {};
       this.QState.setActive(data.tab);
       CoreService.setPageTitle("Query");
@@ -104,7 +104,11 @@ module ngApp.query.controllers {
           "platform",
           "updated"
         ]
-      }).then((data) => this.files = data);
+      }).then((data) => {
+        // TODO: Remove when this view uses our gdc-table directive
+        this.CoreService.setSearchModelState(true);
+        this.files = data;
+      });
       this.ParticipantsService.getParticipants({
         fields: [
           "bcr_patient_barcode",
@@ -115,7 +119,11 @@ module ngApp.query.controllers {
           "person_neoplasm_cancer_status",
           "admin.disease_code"
         ]
-      }).then((data) => this.participants = data);
+      }).then((data) => {
+        // TODO: Remove when this view uses our gdc-table directive
+        this.CoreService.setSearchModelState(true);
+        this.participants = data;
+      });
     }
 
     // TODO Load data lazily based on active tab

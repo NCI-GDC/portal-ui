@@ -11,12 +11,12 @@
         <li role="presentation"
             data-ng-class="{ active: qc.QState.tabs.files.active }"
             data-ng-click="qc.select('files')">
-          <a>{{ 'Files' | translate }} ({{qc.files.pagination.total}})</a>
+          <a>{{ 'Files' | translate }} ({{qc.files.pagination.total | number:0}})</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: qc.QState.tabs.participants.active }"
             data-ng-click="qc.select('participants')">
-          <a>{{ 'Participants' | translate }} ({{qc.participants.pagination.total}})</a>
+          <a>{{ 'Participants' | translate }} ({{qc.participants.pagination.total | number:0}})</a>
         </li>
       </ul>
       <div class="pane-section"

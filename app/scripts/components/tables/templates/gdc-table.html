@@ -4,8 +4,8 @@
       {{ heading | translate }}
     </h3>
 
-    <div class="pull-right" data-ng-if="sortColumns || gtc.sortingHeadings.length">
-      <div class="btn-group" role="group" aria-label="Filter and sort table">
+    <div class="pull-right" data-ng-if="endpoint || sortColumns || gtc.sortingHeadings.length">
+      <div class="btn-group" role="group" aria-label="Filter, sort or export table">
         <sort-table data-ng-if="sortColumns"
                     data-config="config"
                     data-paging="paging" data-page="{{ page }}"></sort-table>
@@ -13,12 +13,8 @@
                          data-list="config.headings"
                          data-config="config"
                          data-hidden="config.hidden"></arrange-columns>
-
+        <export-table data-endpoint="{{ endpoint }}" data-size="{{ paging.total }}">
       </div>
-    </div>
-
-    <div class="pull-right">
-      <export-table data-endpoint="{{ endpoint }}" data-size="{{ paging.total }}">
     </div>
 
   </div>

@@ -23,6 +23,28 @@ module ngApp.cart.directives {
     }
   }
 
+  function AddToCartButton() {
+    return {
+      restrict:"A",
+      replace: false,
+      scope:{
+        file:'='
+      },
+      controller:function($scope,$element,CartService){
+        console.log("Add to cart button init");
+        $element.click(function(){
+          console.log("you clicked the element");
+          var file = $scope.file;
+          if (!CartService.isInCart(file.file_uuid)) {
+              CartService.addFiles([file]);
+          } else {
+             CartService.removeFiles([file]);
+          }
+        })
+      }
+    }
+  }
+
   function AddToCartAll(): ng.IDirective {
     return {
       restrict: "AE",
@@ -215,6 +237,7 @@ module ngApp.cart.directives {
   angular.module("cart.directives", ["user.services", "location.services", "files.services"])
     .directive("addToCartSingle", AddToCartSingle)
     .directive("addToCartAll", AddToCartAll)
-    .directive("addToCartFiltered", AddToCartFiltered);
+    .directive("addToCartFiltered", AddToCartFiltered)
+    .directive("addToCartButton", AddToCartButton);
 }
 

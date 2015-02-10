@@ -3,6 +3,7 @@
     <i class="fa fa-file-o"></i>
     {{ ::fc.file.file_uuid }}
   </h1>
+<!--    {{fc.file}}-->
 
   <div class="col-lg-2 col-md-2">
     <aside data-scroll-fix=85>
@@ -122,6 +123,10 @@
                 </a>)
               </td>
             </tr>
+            <tr>
+              <th scope="row" data-translate>File Status</th>
+              <td>Migrated</td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -145,10 +150,6 @@
             <tr>
               <th scope="row" data-translate>Experimental Strategy</th>
               <td>{{ ::fc.file.experimental_strategy }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Program Status</th>
-              <td>??? {{ ::fc.file.programStatus }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Platform</th>
@@ -193,24 +194,18 @@
             <table id="participants-table" class="table table-striped table-hover table-condensed table-bordered">
               <thead>
               <tr>
-                <th scope="col" data-translate>ID</th>
-                <th scope="col" data-translate>Project</th>
-                <th scope="col" data-translate>Disease</th>
-                <th scope="col" data-translate>Sample</th>
-                <th scope="col" data-translate>Portion</th>
-                <th scope="col" data-translate>Analyte</th>
-                <th scope="col" data-translate>Aliquot</th>
+                <th scope="col" data-translate>Item UUID</th>
+                <th scope="col" data-translate>Item Type</th>
+                <th scope="col" data-translate>Participant UUID</th>
+                <th scope="col" data-translate>Annotations (Entity et. Parents)</th>
               </tr>
               </thead>
               <tbody>
               <tr data-ng-repeat="p in fc.file.participants track by p.id">
-                <td><a data-ui-sref="participant({ participantId : p.bcr_patient_uuid })">{{ ::p.bcr_patient_barcode }}</a></td>
-                <td><a data-ui-sref="project({ projectId : p.project.id })">tbc{{ ::p.project.name }}</a></td>
-                <td>{{ p.admin.disease_code }}</td>
-                <td>{{ p.sc }}</td>
-                <td>{{ p.poc }}</td>
-                <td>{{ p.anc }}</td>
-                <td>{{ p.alc }}</td>
+                <td><a data-ui-sref="project({ projectId : p.project.id })">tbd {{ ::fc.file.name }}</a></td>
+                <td>Aliquot</td>
+                <td><a data-ui-sref="participant({ participantId : p.bcr_patient_uuid })">{{ ::p.bcr_patient_uuid }}</a></td>
+                <td>3</td>
               </tr>
               </tbody>
             </table>

@@ -3,7 +3,8 @@
         <i class="fa fa-check-circle"></i>
     </button>
     <button data-ng-if="!CartService.areInCart(files)" type="button" class="btn btn-primary"
-            data-ng-click="CartService.addFiles(files)"
+            add-to-cart-button
+            file=files
             data-ng-disabled="(CartService.getFiles().length + files.length) > CartService.getMaxSize()">
         <i class="fa fa-circle-o"></i>
     </button>

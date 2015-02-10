@@ -13,12 +13,6 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-single.html",
       controller: function($scope: ng.IScope, CartService: ICartService) {
         $scope.CartService = CartService;
-        $scope.addToCart = function(files: IFile[]) {
-          CartService.addFiles(files)
-        };
-        $scope.removeFromCart = function(files: IFile[]) {
-          CartService.removeFiles(files);
-        };
       }
     }
   }

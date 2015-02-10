@@ -27,7 +27,7 @@
                 </span>
                 <span data-translate>Cart can only hold {{ CartService.getCartVacancySize() }} more items</span>
             </a>
-            <a data-ng-if="CartService.getCartVacancySize() - paging.total >= 0" data-ng-click="addAll()">
+            <a data-ng-if="CartService.getCartVacancySize() - paging.total > 0" data-ng-click="addAll()">
                 <span class="fa-stack">
                   <i class="fa fa-shopping-cart fa-stack-1x"></i>
                 </span>

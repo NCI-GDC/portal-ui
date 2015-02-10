@@ -31,9 +31,7 @@ module ngApp.cart.directives {
         file:'='
       },
       controller:function($scope,$element,CartService){
-        console.log("Add to cart button init");
         $element.click(function(){
-          console.log("you clicked the element");
           var file = $scope.file;
           if (!CartService.isInCart(file.file_uuid)) {
               CartService.addFiles([file]);

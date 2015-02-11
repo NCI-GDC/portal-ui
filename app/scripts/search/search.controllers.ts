@@ -12,8 +12,6 @@ module ngApp.search.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
-  import INotify = ng.cgNotify.INotify;
-  import ITableService = ngApp.components.tables.services.ITableService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
   export interface ISearchController {
@@ -37,8 +35,6 @@ module ngApp.search.controllers {
   class SearchController implements ISearchController {
     files: IFiles;
     participants: IParticipants;
-    lastAddedFiles: IFile[];
-    lastNotifyDialog: INotify;
     tabSwitch: boolean = false;
 
     /* @ngInject */
@@ -51,10 +47,8 @@ module ngApp.search.controllers {
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 public CoreService: ICoreService,
-                private TableService: ITableService,
                 private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig,
-                private notify: any) {
+                private SearchTableParticipantsModel: TableiciousConfig) {
       var data = $state.current.data || {};
       this.State.setActive("tabs", data.tab);
       this.State.setActive("facets", data.tab);
@@ -71,8 +65,6 @@ module ngApp.search.controllers {
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchTableParticipantsModel;
-
-
 
       this.refresh();
     }
@@ -160,7 +152,7 @@ module ngApp.search.controllers {
           "tumor_tissue_site",
           "vital_status"
         ]
-      }).then((data) => {
+      }).then((data: IFiles) => {
         if (!data.hits.length) {
           this.CoreService.setSearchModelState(true);
         }
@@ -208,6 +200,21 @@ module ngApp.search.controllers {
 
     removeFiles(files: IFile[]): void {
       this.CartService.remove(_.pluck(files, "file_uuid"));
+    }
+
+    gotoQuery() {
+      var stateParams = {};
+      var f = this.LocationService.filters();
+      var q = this.LocationService.filter2query(f);
+
+      if (q) {
+        stateParams = {
+          query: q,
+          filters: angular.toJson(f)
+        };
+      }
+      console.log(stateParams);
+      this.$state.go("query.summary", stateParams, { inherit: true });
     }
 
   }

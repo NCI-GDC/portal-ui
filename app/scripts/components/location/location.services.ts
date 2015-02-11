@@ -12,19 +12,21 @@ module ngApp.components.location.services {
     path(): string;
     clear(): ng.ILocationService;
     search(): ISearch;
+    setSearch(search: any): ng.ILocationService;
     filters(): any;
     setFilters(filters: Object): ng.ILocationService;
     query(): string;
-    setQuery(query?: Object): ng.ILocationService;
+    setQuery(query?: string): ng.ILocationService;
     pagination(): any;
     setPaging(pagination: any): ng.ILocationService;
     setHref(href: string): void;
     getHref(href: string): string;
+    filter2query(f: any): string;
   }
 
   class LocationService implements ILocationService {
     /* @ngInject */
-    constructor(private $location: ng.ILocationService, private $window: IGDCWindowsService) {}
+    constructor(private $location: ng.ILocationService, private $window: IGDCWindowService) {}
 
     path(): string {
       return this.$location.path();
@@ -77,14 +79,14 @@ module ngApp.components.location.services {
 
     query(): string {
       // TODO error handling
-      var f = this.search()["query"];
-      return f ? angular.fromJson(f) : {};
+      var q = this.search()["query"];
+      return q ? q : "";
     }
 
-    setQuery(query?: Object): ng.ILocationService {
+    setQuery(query?: string): ng.ILocationService {
       var search: ISearch = this.search();
       if (query) {
-        search.query = angular.toJson(query);
+        search.query = query;
       } else {
         delete search.query;
       }
@@ -114,6 +116,17 @@ module ngApp.components.location.services {
     getHref(href: string): string {
       return this.$window.location.href;
     }
+
+    filter2query(f): string {
+      var q = _.map(f.content, (ftr) => {
+        var c = ftr.content;
+        var t = " in " + angular.toJson(c.terms);
+        return c.field + t;
+      });
+
+      return q.join(" and ");
+    }
+
 
   }
 

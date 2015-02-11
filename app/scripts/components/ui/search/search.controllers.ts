@@ -2,22 +2,21 @@ module ngApp.components.ui.search.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
 
   interface ISearchBarController {
+    gql: any;
     query: string;
-    isSearchQuery: boolean;
     setQuery(): void;
     sendQuery(): void;
     resetQuery(): void;
   }
 
   class SearchBarController implements ISearchBarController {
+    gql: any = null;
     query: string = "";
-    isSearchQuery: boolean = false;
 
     /* @ngInject */
     constructor(private $scope: ng.IScope, private LocationService: ILocationService,
                 private $state: ng.ui.IStateService) {
-      this.isSearchQuery = !!$state.current.name.match("search.") ||
-                           !!$state.current.name.match("query.");
+
       $scope.$watch("query", () => {
         if (!this.query) {
           this.LocationService.setQuery();
@@ -27,7 +26,10 @@ module ngApp.components.ui.search.controllers {
     }
 
     sendQuery() {
-      this.LocationService.setQuery(this.query);
+      this.LocationService.setSearch({
+        query: this.query,
+        filters: angular.toJson(this.gql.filters)
+      });
     }
 
     setQuery() {
@@ -41,6 +43,7 @@ module ngApp.components.ui.search.controllers {
     resetQuery() {
       this.LocationService.clear();
       this.query = "";
+      this.gql = null;
     }
   }
 

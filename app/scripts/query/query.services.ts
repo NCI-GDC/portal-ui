@@ -14,8 +14,11 @@ module ngApp.query.services {
     setActive(tab: string): void;
   }
 
-  class State implements IQueryState {
+  class QState implements IQueryState {
     tabs: ITabs = {
+      summary: {
+        active: false
+      },
       participants: {
         active: false
       },
@@ -29,6 +32,7 @@ module ngApp.query.services {
         _.each(this.tabs, (t: ITab) => {
           t.active = false;
         });
+
         this.tabs[tab].active = true;
       }
     }
@@ -36,5 +40,5 @@ module ngApp.query.services {
 
   angular
       .module("query.services", [])
-      .service("QState", State);
+      .service("QState", QState);
 }

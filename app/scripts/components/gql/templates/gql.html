@@ -6,8 +6,12 @@
           data-ng-change="onChange($event)"
           aria-label="Advanced Query"
           placeholder="Start Typing Your Query...."
+          data-ng-trim="false"
           role="textbox">
 </textarea>
 <div data-ng-show="gql" style="margin: 0; border-radius: 0; border: none" class="alert alert-success">{{gql}}</div>
-<div data-ng-show="error" style="margin: 0; border-radius: 0; border: none" class="alert alert-danger">{{errorMsg}}</div>
+<!--<div data-ng-show="error" style="margin: 0; border-radius: 0; border: none" class="alert alert-danger">{{errorMsg}}</div>-->
+<ul>
+  <li data-ng-repeat="e in error | filter:last:startsWith | limitTo:10">{{e}}</li>
+</ul>
 </div>

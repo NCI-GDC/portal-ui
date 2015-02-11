@@ -32,7 +32,7 @@ module ngApp.components.facets.services {
       for (var i = 0; i < filters["content"].length; i++) {
         var c = cs[i]["content"];
         if (facet === c["field"]) {
-          c["value"].forEach((v) => {
+          c["terms"].forEach((v) => {
             terms.forEach((t) => {
               if (t.key === v) {
                 xs.push(t);
@@ -53,7 +53,7 @@ module ngApp.components.facets.services {
       for (var i = 0; i < filters["content"].length; i++) {
         var c = cs[i]["content"];
         if (facet === c["field"]) {
-          c["value"].forEach((v) => {
+          c["terms"].forEach((v) => {
             xs.push(v);
           });
           break;
@@ -78,8 +78,8 @@ module ngApp.components.facets.services {
         var c = cs[i]["content"];
         if (c["field"] === facet) {
           found = true;
-          if (c["value"].indexOf(term) === -1) {
-            c["value"].push(term);
+          if (c["terms"].indexOf(term) === -1) {
+            c["terms"].push(term);
           } else {
             return;
           }
@@ -88,10 +88,10 @@ module ngApp.components.facets.services {
       }
       if (!found) {
         cs.push({
-          op: "is",
+          op: "in",
           content: {
             field: facet,
-            value: [term]
+            terms: [term]
           }
         });
       }
@@ -107,7 +107,7 @@ module ngApp.components.facets.services {
           if (!term) {
             cs.splice(i, 1);
           } else {
-            var vs = c["value"];
+            var vs = c["terms"];
             vs.splice(vs.indexOf(term), 1);
             if (vs.length === 0) {
               cs.splice(i, 1);

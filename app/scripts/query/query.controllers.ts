@@ -10,6 +10,8 @@ module ngApp.query.controllers {
   import IQueryState = ngApp.query.services.IQueryState;
   import ICartService = ngApp.cart.services.ICartService;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IUserService = ngApp.components.user.services.IUserService;
+  import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
   export interface IQueryController {
     files: IFiles;
@@ -19,59 +21,35 @@ module ngApp.query.controllers {
     addFilesKeyPress(event: any, type: string): void;
     setState(tab: string, next: string): void;
     select(section: string, tab: string): void;
+    removeFiles(files: IFile[]): void;
+    isUserProject(file: IFile): boolean;
     tabSwitch: boolean;
+    query: string;
   }
 
-  interface IQueryControllerScope extends ng.IScope {
+  interface IQueryScope extends ng.IScope {
+    fileTableConfig:TableiciousConfig;
+    participantTableConfig:TableiciousConfig;
   }
 
   class QueryController implements IQueryController {
-    files : IFiles;
+    files: IFiles;
     participants: IParticipants;
     query: string = "";
     tabSwitch: boolean = false;
-    fileSortColumns: any = [
-      {
-        key: "file_size",
-        name: "Size"
-      },
-      {
-        key: "file_name",
-        name: "File Name"
-      },
-      {
-        key: "file_extension",
-        name: "File Type"
-      },
-      {
-        key: "data_type",
-        name: "Data Category"
-      }
-    ];
-    participantSortColumns: any = [
-      {
-        key: "bcr_patient_barcode",
-        name: "Participant ID"
-      },
-      {
-        key: "gender",
-        name: "Gender"
-      },
-      {
-        key: "person_neoplasm_cancer_status",
-        name: "Tumor Stage"
-      }
-    ];
 
     /* @ngInject */
-    constructor(private $scope: IQueryControllerScope,
+    constructor(private $scope: IQueryScope,
                 private $state: ng.ui.IStateService,
                 public QState: IQueryState,
                 public CartService: ICartService,
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
                 private LocationService: ILocationService,
-                private CoreService: ICoreService) {
+                private UserService: IUserService,
+                private CoreService: ICoreService,
+                private SearchTableFilesModel: TableiciousConfig,
+                private SearchTableParticipantsModel: TableiciousConfig) {
       var data = $state.current.data || {};
       this.QState.setActive(data.tab);
       CoreService.setPageTitle("Query");
@@ -81,6 +59,13 @@ module ngApp.query.controllers {
           this.refresh();
         }
       });
+      $scope.$on("gdc-user-reset", () => {
+        this.refresh();
+      });
+
+      $scope.fileTableConfig = this.SearchTableFilesModel;
+      $scope.participantTableConfig = this.SearchTableParticipantsModel;
+
       this.refresh();
     }
 
@@ -102,13 +87,21 @@ module ngApp.query.controllers {
           "file_size",
           "file_uuid",
           "platform",
-          "updated"
+          "updated",
+          "archive.disease_code",
+          "archive.revision",
+          "archive.archive_name",
+          "archive.archive_uuid",
+          "participants.bcr_patient_uuid",
         ]
       }).then((data) => {
-        // TODO: Remove when this view uses our gdc-table directive
-        this.CoreService.setSearchModelState(true);
+        if (!data.hits.length) {
+          this.CoreService.setSearchModelState(true);
+        }
+
         this.files = data;
       });
+
       this.ParticipantsService.getParticipants({
         fields: [
           "bcr_patient_barcode",
@@ -117,37 +110,51 @@ module ngApp.query.controllers {
           "patient_id",
           "vital_status",
           "person_neoplasm_cancer_status",
-          "admin.disease_code"
+          "admin.disease_code",
+          "tumor_tissue_site",
+          "files.file_uuid",
+          "files.file_name",
+          "files.file_size",
+          "files.data_type",
+          "files.data_access",
+          "files.archive.revision",
+          "files.archive.disease_code",
+          "files.data_format",
+          "files.data_level",
+          "summary.data_file_count",
+          "summary.file_size",
+          "summary.data_types.file_count",
+          "summary.data_types.data_type",
+          "summary.experimental_strategies.file_count",
+          "summary.experimental_strategies.experimental_strategy"
         ]
-      }).then((data) => {
-        // TODO: Remove when this view uses our gdc-table directive
-        this.CoreService.setSearchModelState(true);
+      }).then((data: IFiles) => {
+        if (!data.hits.length) {
+          this.CoreService.setSearchModelState(true);
+        }
+
         this.participants = data;
       });
     }
 
     // TODO Load data lazily based on active tab
-    setState(tab: string, next: string) {
+    setState(tab: string) {
       // Changing tabs and then navigating to another page
       // will cause this to fire.
       if (tab && (this.$state.current.name.match("query."))) {
-
-        next += tab;
         this.tabSwitch = true;
-        this.$state.go(next, this.LocationService.search(), {inherit: true});
+        this.$state.go('query.' + tab, this.LocationService.search(), {inherit: false});
       }
     }
 
+    isUserProject(file: IFile): boolean {
+      return this.UserService.isUserProject(file);
+    }
+
+
     select(tab: string) {
-      var next = "query.";
-
       this.QState.setActive(tab);
-
-      if (this.$state.current.name.match("query.")) {
-        next = "query.";
-      }
-
-      this.setState(tab, next);
+      this.setState(tab);
     }
 
     addFilesKeyPress(event: any, type: string) {
@@ -160,15 +167,25 @@ module ngApp.query.controllers {
         }
       }
     }
-  }
 
+    addToCart(files: IFile[]): void {
+      this.CartService.addFiles(files);
+    }
+
+    removeFiles(files: IFile[]): void {
+      this.CartService.remove(_.pluck(files, "file_uuid"));
+    }
+  }
   angular
       .module("query.controller", [
         "query.services",
+        "location.services",
         "cart.services",
         "core.services",
         "participants.services",
-        "files.services",
+        "search.table.files.model",
+        'search.table.participants.model',
+        "files.services"
       ])
       .controller("QueryController", QueryController);
 }

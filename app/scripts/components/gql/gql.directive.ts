@@ -5,31 +5,32 @@ module ngApp.components.gql.directives {
     return {
       restrict: 'E',
       replace: true,
+      scope: {
+        gql: '=',
+        query : '='
+      },
       templateUrl: "components/gql/templates/gql.html",
       controller: "GqlController as gc",
       link: function($scope: ng.IScope) {
-        $scope.query = "";
         $scope.onChange = () => {
-          //if ($scope.query[0] !== "(") {
-          //  $scope.query = "(" + $scope.query;
-          //}
+          var qs = $scope.query.split(" ");
+          $scope.last = qs[qs.length - 1].trim();
           try {
             $scope.gql = $window.gql.parse($scope.query);
-            console.log($scope.gql);
-            $scope.errorMsg = Error.message;
-            $scope.error = null;
+            $scope.errorMsg = $scope.error = null;
           } catch(Error) {
             $scope.gql = null;
             $scope.errorMsg = Error.message;
-            $scope.error = _.pluck(Error.expected, 'value');
-            //if ($scope.error.length === 1 && $scope.error[0].length === 1) {
-            //  $scope.query += $scope.error[0];
-            //  $scope.onChange();
-            //}
-
+            $scope.error = _.filter(_.pluck(Error.expected, 'value'), (e) => {
+              return (e !== undefined) && ['[A-Za-z0-9\\-_.]', '[0-9]', '[ \\t\\r\\n]', '"', '('].indexOf(e) == -1;
+            });
           }
-
         };
+
+        $scope.startsWith = function (actual, expected) {
+          var lowerStr = (actual + "").toLowerCase();
+          return lowerStr.indexOf(expected.toLowerCase()) === 0;
+        }
       }
     };
   }

@@ -112,6 +112,7 @@ angular
       "ui.bootstrap",
       "restangular",
       "gettext",
+      "ngTagsInput",
 
       "ngApp.core",
       "ngApp.search",

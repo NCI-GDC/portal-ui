@@ -94,6 +94,8 @@ terms
 term
   : UNQUOTED_STRING
   | QUOTED_STRING
+  | INTEGER
+  | DATE
   ;
 
 functions

@@ -22,9 +22,6 @@ module ngApp.core.services {
                 private ngProgressLite: ng.progressLite.INgProgressLite,
                 private gettextCatalog) {
       this.setLoadedState(true);
-      $rootScope.$on("tableicious-data-loaded", () => {
-        this.setSearchModelState(true);
-      });
     }
 
     setLoadedState(state: boolean) {

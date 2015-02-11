@@ -16,6 +16,7 @@ module ngApp.components.facets.controllers {
     collapsed: boolean;
     expanded: boolean;
     toggle(event: any, property: string): void;
+    expandTerms(event: any, filter: any): void;
   }
 
   class TermsController implements ITermsController {
@@ -101,6 +102,12 @@ module ngApp.components.facets.controllers {
 
     resetQuery() {
       this.LocationService.clear();
+    }
+
+    expandTerms(event: any, filter: any) {
+      if (event.which === 1 || event.which === 13) {
+        filter.expanded = !filter.expanded;
+      }
     }
 
     build() {

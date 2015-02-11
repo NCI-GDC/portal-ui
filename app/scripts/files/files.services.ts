@@ -58,6 +58,7 @@ module ngApp.files.services {
       this.CoreService.setSearchModelState(false);
 
       return this.ds.get("", angular.extend(defaults, params)).then((response): IFiles => {
+        this.CoreService.setSearchModelState(true);
         return response["data"];
       });
     }

@@ -104,14 +104,20 @@ module ngApp.components.facets.services {
       for (var i = 0; i < cs.length; i++) {
         var c = cs[i]["content"];
         if (c["field"] === facet) {
-          var vs = c["value"];
-          vs.splice(vs.indexOf(term), 1);
-          if (vs.length === 0) {
+          if (!term) {
             cs.splice(i, 1);
-            if (cs.length === 0) {
-              filters = null;
+          } else {
+            var vs = c["value"];
+            vs.splice(vs.indexOf(term), 1);
+            if (vs.length === 0) {
+              cs.splice(i, 1);
             }
           }
+
+          if (cs.length === 0) {
+            filters = null;
+          }
+
           break;
         }
       }

@@ -238,9 +238,7 @@ module ngApp.components.tables.directives.tableicious {
 
             _.defer(()=>{
                 $scope.dataAsKeyValuePairs = data.map(this.TableService.objectToArray);
-                $scope.$apply(()=> {
-                    $scope.$emit("tableicious-data-loaded");
-                });
+                $scope.$apply();
             })
         }
 

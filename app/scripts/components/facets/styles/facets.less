@@ -5,8 +5,10 @@
   .filter {
     margin-right: 5px;
 
-    .facet-name:hover ~ span, .facet-name:focus ~ span {
+    .facet-name:hover ~ .terms-container .term-container,
+    .facet-name:focus ~ .terms-container .term-container {
       text-decoration: line-through;
+      color: white;
     }
 
     .facet-name, .facet-term {
@@ -15,6 +17,26 @@
 
       &:hover, &:focus {
         text-decoration: line-through;
+        color: white;
+      }
+    }
+
+    .terms-container {
+      white-space: inherit;
+
+      .term-separator {
+        color: @orange;
+        margin: 0 2px;
+        text-decoration: none;
+      }
+
+      .expand-terms, .hide-terms {
+        cursor: pointer;
+      }
+
+      .hide-terms {
+        font-size: 0.8em;
+        margin-left: 5px;
       }
     }
   }
@@ -22,6 +44,24 @@
 
   .label.and {
     margin-left: 5px;
+  }
+
+  .in, .is {
+    text-transform: uppercase;
+    cursor: default;
+  }
+
+  .multiterm {
+    &:before {
+      content: "( ";
+      color: @orange;
+    }
+
+    &:after {
+      content: " )";
+      margin-left: 5px;
+      color: @orange;
+    }
   }
 }
 

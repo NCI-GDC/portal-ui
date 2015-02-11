@@ -27,8 +27,8 @@ module ngApp.cart.directives {
       controller:function($scope,$element,CartService){
         $element.click(function(){
           var file = $scope.file;
-            if (!_.isArray(file)) file = [file];
-          if (!CartService.isInCart(file.file_uuid)) {
+          if (!_.isArray(file)) file = [file];
+          if (!CartService.isInCart(file[0].file_uuid)) {
               CartService.addFiles(file);
           } else {
              CartService.removeFiles(file);

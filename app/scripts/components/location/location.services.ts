@@ -19,6 +19,7 @@ module ngApp.components.location.services {
     pagination(): any;
     setPaging(pagination: any): ng.ILocationService;
     setHref(href: string): void;
+    getHref(href: string): string;
   }
 
   class LocationService implements ILocationService {
@@ -108,6 +109,10 @@ module ngApp.components.location.services {
 
     setHref(href: string): void {
       this.$window.location.href = href;
+    }
+
+    getHref(href: string): string {
+      return this.$window.location.href;
     }
 
   }

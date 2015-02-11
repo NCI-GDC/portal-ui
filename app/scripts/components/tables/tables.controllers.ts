@@ -2,7 +2,6 @@ module ngApp.components.tables.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import ITableColumn = ngApp.components.tables.models.ITableColumn;
   import IPagination = ngApp.components.tables.pagination.models.IPagination;
-  import IGDCConfig = ngApp.IGDCConfig;
 
   interface ITableSortController {
     updateSorting(): void;
@@ -110,22 +109,83 @@ module ngApp.components.tables.controllers {
   class ExportTableController implements IExportTableController {
 
     /* @ngInject */
-    constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig) {}
+    constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig,
+                private $modal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
+                private $window: ng.IWindowService) {}
 
     exportTable(fileType: string): void {
       var filters: Object = this.LocationService.filters();
-      this.LocationService.setHref(this.config.api + "/" +
-                                  this.$scope.endpoint +
-                                  "?attachment=true&format=" + fileType +
-                                  "&size=" + this.$scope.size +
-                                  "&filters=" + JSON.stringify(filters));
+      var url = this.LocationService.getHref();
+      var abort = this.$q.defer();
+      var modalInstance = this.$modal.open({
+        templateUrl: "components/tables/templates/export-modal.html",
+        controller: "ExportTableModalController as etmc",
+        backdrop: 'static'
+      });
+
+      if (this.$window.URL && this.$window.URL.createObjectURL) {
+        abort = this.$q.defer();
+        this.Restangular.all(this.$scope.endpoint)
+        .withHttpConfig({
+          timeout: abort.promise,
+          responseType: "blob"
+        })
+        .get('', {
+          filters: filters,
+          attachment: true,
+          format: fileType,
+          size: this.$scope.size
+        }).then((file) => {
+          var url = this.$window.URL.createObjectURL(file);
+          var a = this.$window.document.createElement("a");
+          a.setAttribute("href", url);
+          a.setAttribute("download", this.$scope.endpoint + "." +
+                         this.$window.moment().format() + "." +
+                         fileType.toLowerCase());
+          this.$window.document.body.appendChild(a);
+
+          _.defer(() => {
+            a.click();
+            modalInstance.close();
+            this.$window.document.body.removeChild(a);
+          });
+        });
+      } else {
+        this.LocationService.setHref(this.config.api + "/" +
+                                     this.$scope.endpoint +
+                                     "?attachment=true&format=" + fileType +
+                                     "&size=" + this.$scope.size +
+                                     "&filters=" + JSON.stringify(filters));
+      }
+
+      modalInstance.result.then((data) => {
+        if (data.cancel) {
+          if (abort) {
+            abort.resolve();
+          } else {
+            this.LocationService.setHref(url);
+          }
+        }
+      });
     }
 
+  }
+
+  class ExportTableModalController {
+
+    /* @ngInject */
+    constructor(private $modalInstance) {}
+    cancel(): void {
+      this.$modalInstance.close({
+        cancel: true
+      });
+    }
   }
 
   angular.module("tables.controllers", ["location.services"])
       .controller("TableSortController", TableSortController)
       .controller("GDCTableController", GDCTableController)
+      .controller("ExportTableModalController", ExportTableModalController)
       .controller("ExportTableController", ExportTableController);
 }
 

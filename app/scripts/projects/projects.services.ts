@@ -3,6 +3,8 @@ module ngApp.projects.services {
   import IProjects = ngApp.projects.models.IProjects;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import ICoreService = ngApp.core.services.ICoreService;
+  import IRootScope = ngApp.IRootScope;
 
   export interface IProjectsService {
     getProject(id: string, params?: Object): ng.IPromise<IProject>;
@@ -14,7 +16,8 @@ module ngApp.projects.services {
 
     /* @ngInject */
     constructor(Restangular: restangular.IService, private LocationService: ILocationService,
-                private UserService: IUserService) {
+                private UserService: IUserService, private CoreService: ICoreService,
+                private $rootScope: IRootScope, private $q: ng.IQService) {
       this.ds = Restangular.all("projects");
     }
 
@@ -70,14 +73,28 @@ module ngApp.projects.services {
       };
 
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "project_code");
+      this.CoreService.setSearchModelState(false);
 
-      return this.ds.get("", angular.extend(defaults, params)).then((response): IProjects => {
+      var abort = this.$q.defer();
+      var prom: ng.IPromise<IProjects> = this.ds.withHttpConfig({
+        timeout: abort.promise
+      })
+      .get("", angular.extend(defaults, params)).then((response): IFiles => {
         var outer_class = this;
         _.forEach(response["data"]["hits"], function(hit) {
           hit = outer_class.crunch_summary(hit);
         });
+        this.CoreService.setSearchModelState(true);
         return response["data"];
       });
+
+      var eventCancel = this.$rootScope.$on("gdc-cancel-request", () => {
+        abort.resolve();
+        eventCancel();
+        this.CoreService.setSearchModelState(true);
+      });
+
+      return prom;
     }
   }
 

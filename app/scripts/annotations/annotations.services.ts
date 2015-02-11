@@ -3,6 +3,7 @@ module ngApp.annotations.services {
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import ICoreService = ngApp.core.services.ICoreService;
+  import IRootScope = ngApp.IRootScope;
 
   export interface IAnnotationsService {
     getAnnotation(id: string, params?: Object): ng.IPromise<IAnnotation>;
@@ -14,7 +15,8 @@ module ngApp.annotations.services {
 
     /* @ngInject */
     constructor(Restangular: restangular.IService, private LocationService: ILocationService,
-                private CoreService: ICoreService) {
+                private CoreService: ICoreService, private $rootScope: IRootScope,
+                private $q: ng.IQService) {
       this.ds = Restangular.all("annotations");
     }
 
@@ -54,10 +56,22 @@ module ngApp.annotations.services {
 
       this.CoreService.setSearchModelState(false);
 
-      return this.ds.get("", angular.extend(defaults, params)).then((response): IAnnotations => {
+      var abort = this.$q.defer();
+      var prom: ng.IPromise<IAnnotations> = this.ds.withHttpConfig({
+        timeout: abort.promise
+      })
+      .get("", angular.extend(defaults, params)).then((response): IAnnotations => {
         this.CoreService.setSearchModelState(true);
         return response["data"];
       });
+
+      var eventCancel = this.$rootScope.$on("gdc-cancel-request", () => {
+        abort.resolve();
+        eventCancel();
+        this.CoreService.setSearchModelState(true);
+      });
+
+      return prom;
     }
   }
 

@@ -4,6 +4,7 @@ module ngApp.participants.services {
   import IParticipant = ngApp.participants.models.IParticipant;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import IRootScope = ngApp.IRootScope;
 
   export interface IParticipantsService {
     getParticipant(id: string, params: Object): ng.IPromise<IParticipant>;
@@ -15,7 +16,8 @@ module ngApp.participants.services {
 
     /* @ngInject */
     constructor(Restangular: restangular.IService, private LocationService: ILocationService,
-                private UserService: IUserService, private CoreService: ICoreService) {
+                private UserService: IUserService, private CoreService: ICoreService,
+                private $rootScope: IRootScope, private $q: ng.IQService) {
       this.ds = Restangular.all("participants");
     }
 
@@ -56,10 +58,22 @@ module ngApp.participants.services {
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.admin.disease_code");
       this.CoreService.setSearchModelState(false);
 
-      return this.ds.get("", angular.extend(defaults, params)).then((response): IParticipants => {
+      var abort = this.$q.defer();
+      var prom: ng.IPromise<IParticipants> = this.ds.withHttpConfig({
+        timeout: abort.promise
+      })
+      .get("", angular.extend(defaults, params)).then((response): IParticipants => {
         this.CoreService.setSearchModelState(true);
         return response["data"];
       });
+
+      var eventCancel = this.$rootScope.$on("gdc-cancel-request", () => {
+        abort.resolve();
+        eventCancel();
+        this.CoreService.setSearchModelState(true);
+      });
+
+      return prom;
     }
   }
 

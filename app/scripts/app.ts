@@ -18,6 +18,7 @@ declare module ngApp {
     modelLoaded: boolean;
     config: IGDCConfig;
     undoClicked(action: string): void;
+    cancelRequest(): void;
   }
 }
 
@@ -46,8 +47,6 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
                 $cookieStore: ng.cookies.ICookieStoreService,
                 UserService: IUserService) {
   gettextCatalog.debug = true;
-
-  //debugger;
 
   $rootScope.config = config;
   Restangular.setErrorInterceptor((response) => {

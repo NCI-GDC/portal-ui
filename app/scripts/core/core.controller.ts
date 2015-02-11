@@ -24,7 +24,11 @@ module ngApp.core.controllers {
 
       this.$rootScope.undoClicked = (action: string): void => {
         this.$rootScope.$broadcast("undo", action);
-      }
+      };
+
+      this.$rootScope.cancelRequest = (): void => {
+        this.$rootScope.$broadcast("gdc-cancel-request");
+      };
 
     }
 

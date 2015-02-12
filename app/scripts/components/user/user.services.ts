@@ -23,18 +23,24 @@ module ngApp.components.user.services {
       this.Restangular.all("auth/login").post({
         username: username
       }).then((data) => {
-        this.currentUser = data;
-        this.currentUser.isFiltered = true;
-        this.$rootScope.$broadcast("gdc-user-reset");
+        data.isFiltered = true;
+        this.setUser(data);
       });
+    }
+
+    setUser(user: IUser): void {
+      user.projects = _.map(user.projects, (project: string) => {
+        return project.toLowerCase();
+      });
+      this.currentUser = user;
+      this.$rootScope.$broadcast("gdc-user-reset");
     }
 
     logout(): void {
       this.Restangular.all("auth/logout").post({
         user: this.currentUser
       }).then(() => {
-        this.currentUser = null;
-        this.$rootScope.$broadcast("gdc-user-reset");
+        this.setUser(null);
       });
     }
 
@@ -72,7 +78,10 @@ module ngApp.components.user.services {
           if (!projectFilter) {
             filters.content.push(userProjects);
           } else {
-            var sharedValues = _.intersection(projectFilter.content.value, this.currentUser.projects);
+            var projects = key === "project_code" ? _.assign([], this.currentUser.projects) :
+                           _.map(this.currentUser.projects, (project: string) => { return project.toUpperCase(); });
+
+            var sharedValues = _.intersection(projectFilter.content.value, projects);
 
             // If any of the projects selected belong to the user, stick with those rather then defaulting
             // to all of the users projects.

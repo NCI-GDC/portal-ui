@@ -100,6 +100,16 @@ module ngApp.components.facets.controllers {
       }
     }
 
+    isInMyProjects(filter: any) {
+      var validCodes = [
+        "project_code",
+        "participants.admin.disease_code"
+      ];
+
+      return validCodes.indexOf(filter.content.field) !== -1 && this.UserService.currentUser &&
+             this.UserService.currentUser.isFiltered;
+    }
+
     resetQuery() {
       this.LocationService.clear();
     }

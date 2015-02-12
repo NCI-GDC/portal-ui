@@ -1,7 +1,8 @@
 describe('Header:', function () {
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngApp.components', 'ngApp.cart', 'ngProgressLite', 'ui.bootstrap'));
+  beforeEach(module('ngApp.components', 'ngApp.cart', 'ngProgressLite', 'ui.bootstrap',
+                    'ngCookies'));
 
   describe('Controller:', function () {
     beforeEach(inject(function ($window) {

@@ -30,8 +30,7 @@
                   data-ng-keypress="cfc.removeTerm(filter.content.field, v, $event)">
               {{v | translate | humanify }}
             </span>
-            <span data-ng-if="filter.content.field === 'participants.admin.disease_code' && cfc.UserService.currentUser && cfc.UserService.currentUser.isFiltered && $last"
-                  data-ng-translate>
+            <span data-ng-if="cfc.isInMyProjects(filter) && $last" data-ng-translate>
               and in My Projects
             </span>
           </span>

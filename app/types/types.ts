@@ -8,6 +8,7 @@
 /// <reference path="libs/d3.d.ts"/>
 /// <reference path="libs/ngprogress-lite.d.ts"/>
 /// <reference path="libs/angular-notify.d.ts"/>
+/// <reference path="libs/angular-cookies.d.ts"/>
 
 
 // API TYPES

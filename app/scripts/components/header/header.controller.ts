@@ -30,23 +30,29 @@ module ngApp.components.header.controllers {
     /* @ngInject */
     constructor(private gettextCatalog, private CartService: ICartService,
                 private $state: ng.ui.IStateService,
-                private UserService: IUserService, private $modal: any) {
+                private UserService: IUserService, private $modal: any,
+                private $cookieStore: ng.cookies.ICookieStoreService,
+                private $window: ng.IWindowService) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
     }
 
     login(): void {
-      var modalInstance = this.$modal.open({
-        templateUrl: "components/user/templates/login.html",
-        controller: "LoginController as lc"
+      this.$cookieStore.put("gdc-token", {
+        "username": "kelly",
+        "password": "1234",
+        "projects": [
+            "KIRC",
+            "UCEC",
+            "STAD"
+        ],
+        "token": "32r23ef23f13f23g13fdavgrghq423g3g12g3g"
       });
-
-      modalInstance.result.then((data) => {
-        this.UserService.login(data.username);
-      });
+      this.$window.location.reload();
     }
 
     logout(): void {
-      this.UserService.logout();
+      this.$cookieStore.remove("gdc-token");
+      this.$window.location.reload();
     }
 
     collapse(event: any): void {

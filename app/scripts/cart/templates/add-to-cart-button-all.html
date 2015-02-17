@@ -3,7 +3,8 @@
         <i class="fa fa-check-circle"></i>
     </button>
     <button data-ng-if="!CartService.areInCart(files)" type="button" class="btn btn-primary"
-            data-ng-click="CartService.addFiles(files)"
+            add-to-cart-button
+            file=files
             data-ng-disabled="(CartService.getFiles().length + files.length) > CartService.getMaxSize()">
         <i class="fa fa-circle-o"></i>
     </button>
@@ -26,7 +27,7 @@
                 </span>
                 <span data-translate>Cart can only hold {{ CartService.getCartVacancySize() }} more items</span>
             </a>
-            <a data-ng-if="CartService.getCartVacancySize() - paging.total >= 0" data-ng-click="addAll()">
+            <a data-ng-if="CartService.getCartVacancySize() - paging.total > 0" data-ng-click="addAll()">
                 <span class="fa-stack">
                   <i class="fa fa-shopping-cart fa-stack-1x"></i>
                 </span>

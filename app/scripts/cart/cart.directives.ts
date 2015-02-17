@@ -13,12 +13,27 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-single.html",
       controller: function($scope: ng.IScope, CartService: ICartService) {
         $scope.CartService = CartService;
-        $scope.addToCart = function(files: IFile[]) {
-          CartService.addFiles(files)
-        };
-        $scope.removeFromCart = function(files: IFile[]) {
-          CartService.removeFiles(files);
-        };
+      }
+    }
+  }
+
+  function AddToCartButton() {
+    return {
+      restrict:"A",
+      replace: false,
+      scope:{
+        file:'='
+      },
+      controller:function($scope,$element,CartService){
+        $element.click(function(){
+          var file = $scope.file;
+          if (!_.isArray(file)) file = [file];
+          if (!CartService.isInCart(file[0].file_uuid)) {
+              CartService.addFiles(file);
+          } else {
+             CartService.removeFiles(file);
+          }
+        })
       }
     }
   }
@@ -215,6 +230,7 @@ module ngApp.cart.directives {
   angular.module("cart.directives", ["user.services", "location.services", "files.services"])
     .directive("addToCartSingle", AddToCartSingle)
     .directive("addToCartAll", AddToCartAll)
-    .directive("addToCartFiltered", AddToCartFiltered);
+    .directive("addToCartFiltered", AddToCartFiltered)
+    .directive("addToCartButton", AddToCartButton);
 }
 

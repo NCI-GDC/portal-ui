@@ -57,6 +57,7 @@ module ngApp.cart.services {
     }
 
     getCartVacancySize(): number {
+//    debugger;
       return this.getMaxSize() - this.getFiles().length;
     }
 

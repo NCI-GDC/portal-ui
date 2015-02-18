@@ -18,8 +18,10 @@
     </span>
   </p>
 
-  <div class="input-group" data-ng-if="!ftc.collapsed">
-    <input type="text" data-ng-model="ftc.searchTerm" placeholder="{{ placeholder }}"
+  <div class="input-group search-input" data-ng-if="!ftc.collapsed">
+    <span class="fa fa-search"></span>
+    <input type="text" data-ng-model="ftc.searchTerm"
+           placeholder="{{ 'Search for' | translate }} {{ placeholder | translate }}"
            data-typeahead="id for id in ftc.autoComplete($viewValue) | limitTo: 10"
            data-typeahead-on-select="ftc.termSelected()"
            data-typeahead-min-length="2"
@@ -27,8 +29,5 @@
            id="{{ 'autocomplete-' + title }}"
            typeahead-template-url="{{ template }}"
            class="form-control">
-    <span class="input-group-addon">
-      <span class="fa fa-search" data-ng-click="ftc.termSelected($event)"></span>
-    </span>
   </div>
 </div>

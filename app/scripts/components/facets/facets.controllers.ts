@@ -130,7 +130,7 @@ module ngApp.components.facets.controllers {
   interface IFreeTextController {
     actives: string[];
     searchTerm: string;
-    termSelected(event?: any): void;
+    termSelected(): void;
     collapsed: boolean;
     remove(term: string): void;
     refresh(): void;
@@ -157,9 +157,8 @@ module ngApp.components.facets.controllers {
       $scope.$on("$locationChangeSuccess", () => this.refresh());
     }
 
-    termSelected(event: any = { which: 13 }): void {
-      if ((event.which === 13 || event.which === 1) &&
-          this.actives.indexOf(this.searchTerm) === -1) {
+    termSelected(): void {
+      if (this.actives.indexOf(this.searchTerm) === -1) {
         var term = this.searchTerm;
 
         if (typeof term === "object") {

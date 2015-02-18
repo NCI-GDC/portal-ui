@@ -5,7 +5,7 @@ module ngApp.components.tables.directives.tableicious {
             restrict:"AE",
             controller:function($scope, $element,$compile,$filter){
                 
-                $scope.$watch('$parent.datum',function(){console.log("datum changed."); draw()},true);
+                $scope.$watch('$parent.datum',draw,true);
 
                 $scope.$filter = $filter;
                 

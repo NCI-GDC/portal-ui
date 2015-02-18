@@ -6,6 +6,7 @@ module ngApp.components.user.services {
   export interface IUserService {
     login(username: string): void;
     logout(): void;
+    setUser(user: IUser): void;
     toggleFilter(): void;
     addMyProjectsFilter(filters: any, key: string): any;
     isUserProject(file: IFile): boolean;
@@ -60,7 +61,7 @@ module ngApp.components.user.services {
             field: key,
             value: this.currentUser.projects
           },
-          op: "is"
+          op: "in"
         };
 
         if (!filters.content) {

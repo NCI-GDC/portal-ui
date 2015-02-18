@@ -19,11 +19,11 @@
             data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event)">
         {{ filter.content.field | translate | humanify }}
       </span>
-      <span data-ng-if="filter.content.terms.length === 1" class="is label label-danger">is</span>
-      <span data-ng-if="filter.content.terms.length > 1" class="in label label-danger">in</span>
+      <span data-ng-if="filter.content.value.length === 1" class="is label label-danger">is</span>
+      <span data-ng-if="filter.content.value.length > 1" class="in label label-danger">in</span>
       <span class="terms-container"
-            data-ng-class="{ multiterm: filter.content.terms.length > 1 }">
-        <span data-ng-repeat="v in filter.content.terms">
+            data-ng-class="{ multiterm: filter.content.value.length > 1 }">
+        <span data-ng-repeat="v in filter.content.value">
           <span data-ng-hide="$index > 1 && !filter.expanded" class="label label-success term-container">
             <span class="facet-term"
                   data-ng-click="cfc.removeTerm(filter.content.field, v, $event)"
@@ -37,10 +37,10 @@
           <span data-ng-if="!$last" data-ng-hide="$index > 1 && !filter.expanded"
                 class="term-separator">, </span>
         </span>
-        <span data-ng-if="!filter.expanded && filter.content.terms.length > 2" class="expand-terms"
+        <span data-ng-if="!filter.expanded && filter.content.value.length > 2" class="expand-terms"
               data-ng-click="cfc.expandTerms($event, filter)"
               data-ng-keypress="cfc.expandTerms($event, filter)">...</span>
-        <span data-ng-if="filter.expanded && filter.content.terms.length > 2" class="hide-terms"
+        <span data-ng-if="filter.expanded && filter.content.value.length > 2" class="hide-terms"
               data-ng-click="cfc.expandTerms($event, filter)"
               data-ng-keypress="cfc.expandTerms($event, filter)"> ... Less</span>
       </span>

@@ -560,7 +560,9 @@ function ParallelCoordinates(data,options) {
 
 		labels
 			.select("text")
-            .attr('text-anchor','start')
+            .attr('x',-5)
+//            .attr('y',10)
+            .style('text-anchor','start')
             .text(function(d){
             
                 if (_.isNumber(d.value)){
@@ -733,7 +735,7 @@ function ParallelCoordinates(data,options) {
 
 	var padding={
 		left:70,
-		right:30,
+		right:100,
 		top:20,
 		bottom:0
 	};

@@ -2,6 +2,7 @@ module ngApp.components.tables.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import ITableColumn = ngApp.components.tables.models.ITableColumn;
   import IPagination = ngApp.components.tables.pagination.models.IPagination;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   interface ITableSortController {
     updateSorting(): void;
@@ -111,9 +112,15 @@ module ngApp.components.tables.controllers {
     /* @ngInject */
     constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig,
                 private $modal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
-                private $window: ng.IWindowService) {}
+                private $window: ng.IWindowService, private UserService: IUserService) {}
 
     exportTable(fileType: string): void {
+      var projectsKeys = {
+        "files": "participants.admin.disease_code",
+        "participants": "admin.disease_code",
+        "projects": "project_code"
+      };
+
       var filters: Object = this.LocationService.filters();
       var url = this.LocationService.getHref();
       var abort = this.$q.defer();
@@ -123,8 +130,11 @@ module ngApp.components.tables.controllers {
         backdrop: 'static'
       });
 
+      if (projectsKeys[this.$scope.endpoint]) {
+        filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[this.$scope.endpoint]);
+      }
+
       if (this.$window.URL && this.$window.URL.createObjectURL) {
-        abort = this.$q.defer();
         this.Restangular.all(this.$scope.endpoint)
         .withHttpConfig({
           timeout: abort.promise,
@@ -146,7 +156,7 @@ module ngApp.components.tables.controllers {
 
           _.defer(() => {
             a.click();
-            modalInstance.close();
+            modalInstance.close({cancel: true});
             this.$window.document.body.removeChild(a);
           });
         });
@@ -182,7 +192,7 @@ module ngApp.components.tables.controllers {
     }
   }
 
-  angular.module("tables.controllers", ["location.services"])
+  angular.module("tables.controllers", ["location.services", "user.services"])
       .controller("TableSortController", TableSortController)
       .controller("GDCTableController", GDCTableController)
       .controller("ExportTableModalController", ExportTableModalController)

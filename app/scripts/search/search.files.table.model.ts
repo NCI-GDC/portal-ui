@@ -1,6 +1,7 @@
 module ngApp.search.models {
     import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
     import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
+    import IUserService = ngApp.components.user.services.IUserService;
 
     function arrayToObject(array){
         var obj = {};
@@ -35,11 +36,9 @@ module ngApp.search.models {
                 return scope.UserService.currentUser;
             },
             icon:function(field,row,scope){
-                //debugger;
                 var archive = _.find(row,function(elem){return elem.id==='archive'}).val;
-                var UserService:any = scope.UserService;
-                return (UserService.currentUser.projects.indexOf(archive.disease_code) !== -1) ? 'check' : 'close';
-
+                var UserService: IUserService = scope.UserService;
+                return UserService.isUserProject({archive: archive}) ? 'check' : 'close';
             }
         }, {
             displayName: "Access",

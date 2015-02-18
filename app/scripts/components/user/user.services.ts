@@ -50,7 +50,7 @@ module ngApp.components.user.services {
     }
 
     isUserProject(file: IFile): boolean {
-      return this.currentUser.projects.indexOf(file.archive.disease_code) !== -1;
+      return this.currentUser.projects.indexOf(file.archive.disease_code.toLowerCase()) !== -1;
     }
 
     addMyProjectsFilter(filters: any, key: string): any {

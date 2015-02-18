@@ -23,6 +23,7 @@
            data-typeahead="id for id in ftc.autoComplete($viewValue) | limitTo: 10"
            data-typeahead-on-select="ftc.termSelected()"
            data-typeahead-min-length="2"
+           maxlength="100"
            id="{{ 'autocomplete-' + title }}"
            typeahead-template-url="{{ template }}"
            class="form-control">

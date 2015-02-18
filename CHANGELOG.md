@@ -1,3 +1,36 @@
+### 0.1.10-spr2 (2015-02-18)
+
+
+#### Bug Fixes
+
+* **projects:** exp strategy facet works again ([4bebe7b3](https://github.com/NCI-GDC/portal-ui/commit/4bebe7b344398cf9e6e865c03909f35ec97e1be1))
+* **search:** fixes facet filters ([af8af372](https://github.com/NCI-GDC/portal-ui/commit/af8af3722603a3aec954d647d329a83e00b870b5))
+* **table:** adds ngInject to export ctrl ([d4b46b22](https://github.com/NCI-GDC/portal-ui/commit/d4b46b22e49d39f4659888188583dc28cb29c587))
+* **ui:** general touchups ([4b31b487](https://github.com/NCI-GDC/portal-ui/commit/4b31b4876fc1efc2fbfe7cf263b91c875fa5ea28), closes [OICR-240](https://jira.opensciencedatacloud.org/browse/OICR-240))
+
+
+#### Features
+
+* **a11y:**
+  * Improve colour contrast in app. ([614860a6](https://github.com/NCI-GDC/portal-ui/commit/614860a63a0b9b82d2a18eed586b99d8c701c570), closes [OICR-283](https://jira.opensciencedatacloud.org/browse/OICR-283))
+  * Add better a11y features for graphs. ([f79a0141](https://github.com/NCI-GDC/portal-ui/commit/f79a0141484294c2674ad54780c86d009683b626), closes [OICR-281](https://jira.opensciencedatacloud.org/browse/OICR-281))
+  * Use label elem for heading. ([b430866b](https://github.com/NCI-GDC/portal-ui/commit/b430866b2b9ae52b1171669331bd50719e024185), closes [OICR-282](https://jira.opensciencedatacloud.org/browse/OICR-282))
+* **api:** add warning for wrong version ([9585248e](https://github.com/NCI-GDC/portal-ui/commit/9585248e5e1cae069e26ec58299fdbffdde2bc87), closes [OICR-251](https://jira.opensciencedatacloud.org/browse/OICR-251))
+* **export-table:** Cancel export requests. ([f0f8e2f8](https://github.com/NCI-GDC/portal-ui/commit/f0f8e2f879bf849b526e28296c1c8ee3a57c917f), closes [OICR-277](https://jira.opensciencedatacloud.org/browse/OICR-277))
+* **export-tables:** add csv & tsv ([c5421964](https://github.com/NCI-GDC/portal-ui/commit/c542196461f5740a74bb87ec7c81f99b9e48ac26), closes [OICR-286](https://jira.opensciencedatacloud.org/browse/OICR-286))
+* **facets:** Support OR facets in UI. ([91293acb](https://github.com/NCI-GDC/portal-ui/commit/91293acb48950bbfd2cf87ed310e7711311338df), closes [OICR-252](https://jira.opensciencedatacloud.org/browse/OICR-252))
+* **gql:**
+  * expand grammar ([571c2a04](https://github.com/NCI-GDC/portal-ui/commit/571c2a04679ac11ec0d6b1f834e50cc30c2f0ba9))
+  * adds support for top level ops. ([784d48d8](https://github.com/NCI-GDC/portal-ui/commit/784d48d842734da7b808a28c1675a0c41ca9582f))
+* **graph:** add githut graph (WIP) ([0aa7cc44](https://github.com/NCI-GDC/portal-ui/commit/0aa7cc44eddcffb84fa1666f0bed7ca9462592f7), closes [OICR-301](https://jira.opensciencedatacloud.org/browse/OICR-301), [OICR-341](https://jira.opensciencedatacloud.org/browse/OICR-341), [OICR-337](https://jira.opensciencedatacloud.org/browse/OICR-337), [OICR-349](https://jira.opensciencedatacloud.org/browse/OICR-349))
+* **login:** Use cookies for login mockup. ([e052943c](https://github.com/NCI-GDC/portal-ui/commit/e052943c6ad1e0837faceb9f4c6528df5d9a9fe1), closes [OICR-338](https://jira.opensciencedatacloud.org/browse/OICR-338))
+* **table:**
+  * pluginify sort and reorder ([e1af6519](https://github.com/NCI-GDC/portal-ui/commit/e1af6519250f605969ee23a709b940258d25c6fd))
+  * truncate cells with css ([3ebab0d1](https://github.com/NCI-GDC/portal-ui/commit/3ebab0d1a2aeb62a6910c6ca85443b985d071efb))
+  * reset within arrange ([6042dbb6](https://github.com/NCI-GDC/portal-ui/commit/6042dbb6588562d11cc1acba036179380a9e57b3))
+* **ui:** general ui updates ([997874ed](https://github.com/NCI-GDC/portal-ui/commit/997874edaa9c08b879b97cb95a6d60dad8616588), closes [OICR-302](https://jira.opensciencedatacloud.org/browse/OICR-302))
+
+
 ### 0.1.10-spr1 (2015-02-04)
 
 

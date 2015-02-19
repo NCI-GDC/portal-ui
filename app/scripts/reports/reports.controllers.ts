@@ -42,6 +42,24 @@ module ngApp.reports.controllers {
              return a;
           },[]);
             
+          $scope.filesByType = a.reduce(function(a,b){
+             var data_type = b.data_type;
+             var k = {
+               data_type:data_type,
+               count: 1,
+               file_size: b.file_size
+             }
+             var g = _.find(a,function(c){return c.data_type === data_type});
+             if (g) {
+               g.count ++;
+               g.file_size += b.file_size;
+             } else {
+               a.push(k);
+             }
+              
+             return a;
+          },[]);
+            
           $scope.filesByProgram = [{
               program:'TCGA',
               count:395,

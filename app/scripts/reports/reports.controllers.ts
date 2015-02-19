@@ -15,14 +15,12 @@ module ngApp.reports.controllers {
   class ReportsController implements IReportsController {
 
     /* @ngInject */
-    constructor(private CoreService: ICoreService, $scope,ReportsService, $q) {
-        
+    constructor(private CoreService: ICoreService, $scope,ReportsService, $q) {   
 
       CoreService.setPageTitle("Reports");
-      CoreService.setSearchModelState(true);
         
         ReportsService.getReports().then(function(a){
-          console.log("Got data.",a);
+          CoreService.setSearchModelState(true);
           
           $scope.filesByProject = a.reduce(function(a,b){
              var project = b.archive.disease_code;
@@ -155,6 +153,8 @@ module ngApp.reports.controllers {
               count:84,
               file_size:6293859
           }]
+          
+          
             
           
         });
@@ -181,5 +181,75 @@ module ngApp.reports.controllers {
         "core.services"
       ])
       .controller("ReportController", ReportController)
+      .directive("reportsBarChart",function(){
+          return {
+            restrict:"AE",
+            scope:{
+              data:'='
+            },
+            controller:function($scope,$element){
+                console.log("Bar chart controller init.");
+                
+          // charts
+          // chart1
+          var margin = {top: 20, right: 30, bottom: 30, left: 40},
+                width = 450 - margin.left - margin.right,
+                height = 210 - margin.top - margin.bottom;
+
+            var x = d3.scale.ordinal()
+                .rangeRoundBands([0, width], .1);
+
+            var y = d3.scale.linear()
+                .range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
+
+            var chart = d3.select($element[0]).append('svg')
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            
+            var data = $scope.data.map(function(x){
+                return {
+                    name: x.project,
+                    value: x.count
+                }
+            });
+            
+              x.domain(data.map(function(d) { return d.name; }));
+              y.domain([0, d3.max(data, function(d) { return d.value; })]);
+            
+            var colors = d3.scale.category10();
+
+              chart.append("g")
+                  .attr("class", "x axis")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(xAxis);
+
+              chart.append("g")
+                  .attr("class", "y axis")
+                  .call(yAxis);
+
+              chart.selectAll(".bar")
+                  .data(data)
+                .enter().append("rect")
+                  .attr("class", "bar")
+                  .attr("x", function(d) { return x(d.name); })
+                  .attr("y", function(d) { return y(d.value); })
+                  .attr("height", function(d) { return height - y(d.value); })
+                  .attr('fill',function(d,i){return colors(i)})
+                  .attr("width", x.rangeBand());
+
+            }
+          }
+       })
       .controller("ReportsController", ReportsController);
 }

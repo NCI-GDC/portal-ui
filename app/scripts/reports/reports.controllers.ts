@@ -15,14 +15,19 @@ module ngApp.reports.controllers {
     /* @ngInject */
     constructor(public reports: IReports, private CoreService: ICoreService) {
       CoreService.setPageTitle("Reports");
+           CoreService.setSearchModelState(true);
     }
   }
 
   class ReportController implements IReportController {
 
     /* @ngInject */
-    constructor(public report: IReport, private CoreService: ICoreService) {
+    constructor(public report: IReport, private CoreService: ICoreService, $timeout) {
       CoreService.setPageTitle("Report", report.id);
+      $timeout(function(){
+          console.log("Clear.");
+   
+      },1000);
     }
   }
 

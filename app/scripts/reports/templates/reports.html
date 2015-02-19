@@ -47,20 +47,12 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
+        <tr ng-repeat='aggregation in filesByProject'>
             <th>
-                LUSC
+                {{aggregation.project}}
             </th>
             <td>
-                46,200
-            </td>
-        </tr>
-         <tr>
-            <th>
-                LUAD
-            </th>
-            <td>
-                12,200
+                {{aggregation.count}}
             </td>
         </tr>
     </tbody>

@@ -20,6 +20,7 @@
 
       
      <div data-ng-if="mode==='table'">
+<!--
           <gdc-table data-data="prsc.projects.hits"
                      data-config="config"
                      data-heading="Reports"
@@ -30,6 +31,44 @@
                      data-ng-show="mode==='table'"
                      >
           </gdc-table>
+-->
+      <div class="row">
+          <div class="col-sm-6">
+             <table class="table table-striped table-hover table-condensed table-bordered">
+    <thead>
+        <tr>
+            <th data-translate>
+                Project
+            </th>
+            <th>
+                File Count
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>
+                LUSC
+            </th>
+            <td>
+                46,200
+            </td>
+        </tr>
+         <tr>
+            <th>
+                LUAD
+            </th>
+            <td>
+                12,200
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+              
+          </div>
+      </div>
        </div>
         </div>
 

@@ -1,10 +1,39 @@
-<div class="container">
-  <h1 data-translate>Reports</h1>
-  <div class="row">
+<div class="container-fluid full-page">
+  <div class="row search-panel">
+ 
+
     <div class="col-lg-12 col-md-12">
-      <div data-ng-repeat="r in rsc.reports.hits track by r.id">
-        <a data-ui-sref="report({ reportId : r.id })">{{ r.id }} - {{ r.name }}</a>
+      
+     <div class="btn-group" role="group" aria-label="Filter and sort table" ng-init="mode='table'">
+           <button type="button" class="btn btn-default" ng-class="{'btn-primary': mode==='table'}" ng-click="mode='table'">Table</button>
+          <button type="button" class="btn btn-default" ng-class="{'btn-primary': mode==='graph'}" ng-click="mode='graph'">Graph</button>
+
       </div>
+    <div class="githut">
+        
+    	
+		<div id="pc"  data-ng-show="mode==='graph'">
+		    This visualization is coming soon.
+		</div>
+</div>
+
+
+      
+     <div data-ng-if="mode==='table'">
+          <gdc-table data-data="prsc.projects.hits"
+                     data-config="config"
+                     data-heading="Reports"
+                     data-id="reports-table"
+                     data-endpoint="reports"
+                     data-paging="prsc.projects.pagination"
+
+                     data-ng-show="mode==='table'"
+                     >
+          </gdc-table>
+       </div>
+        </div>
+
     </div>
   </div>
 </div>
+

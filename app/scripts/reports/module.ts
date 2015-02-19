@@ -20,13 +20,13 @@ module ngApp.reports {
     $stateProvider.state("reports", {
       url: "/reports",
       controller: "ReportsController as rsc",
-//      templateUrl: "reports/templates/reports.html",
-      template: "this is a test",
-      resolve: {
-        reports: (ReportsService: IReportsService) => {
+      templateUrl: "reports/templates/reports.html",
+//      template: "this is a test",
+//      resolve: {
+//        reports: (ReportsService: IReportsService) => {
 //          return ReportsService.getReports();
-        }
-      }
+//        }
+//      }
     });
   }
 

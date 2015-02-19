@@ -56,7 +56,7 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
   });
   Restangular.addRequestInterceptor((element, operation: string, model: string) => {
     // Ajax
-    CoreService.xhrSent();
+    //CoreService.xhrSent();
     return element;
   });
   Restangular.addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
@@ -88,7 +88,7 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
 
   $rootScope.$on("$stateChangeStart", () => {
     // Page change
-    CoreService.setLoadedState(false);
+    //CoreService.setLoadedState(false);
     // Close all notifcation windows
     notify.closeAll();
   });

@@ -14,14 +14,14 @@ describe("makeFilter Filter:", function () {
     "op": "and",
     "content":[
       {
-        "op": "is",
+        "op": "in",
         "content": {
           "field": "participants.bcr_patient_uuid",
           "value":["b64bfca1-033c-4501-a900-103ac105c084"]
         }
       },
       {
-        "op": "is",
+        "op": "in",
         "content": {
           "field": "files.data_type",
           "value":["DNA methylation"]

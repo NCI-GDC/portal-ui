@@ -27,9 +27,9 @@ module ngApp.components.gql.directives {
           }
         };
 
-        $scope.startsWith = function (actual, expected) {
+        $scope.contains = function (actual, expected) {
           var lowerStr = (actual + "").toLowerCase();
-          return lowerStr.indexOf(expected.toLowerCase()) === 0;
+          return lowerStr.indexOf(expected.toLowerCase()) > -1;
         }
       }
     };

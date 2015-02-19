@@ -64,7 +64,7 @@ module ngApp.cart.directives {
               field: "files.file_uuid",
               value: _.pluck(CartService.getFiles(), "file_uuid")
             },
-            op: "is"
+            op: "in"
           });
 
           FilesService.getFiles({
@@ -138,7 +138,7 @@ module ngApp.cart.directives {
                 barcode
               ]
             },
-            op: "is"
+            op: "in"
           });
 
           FilesService.getFiles({
@@ -174,7 +174,7 @@ module ngApp.cart.directives {
           var filters = {
             "op": "and",
             "content": [{
-              "op": "is",
+              "op": "in",
               "content": {
               "field": "participants.bcr_patient_uuid",
               "value": barcode

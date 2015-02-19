@@ -120,7 +120,7 @@ module ngApp.components.location.services {
     filter2query(f): string {
       var q = _.map(f.content, (ftr) => {
         var c = ftr.content;
-        var t = " in " + angular.toJson(c.terms);
+        var t = " in " + angular.toJson(c.value);
         return c.field + t;
       });
 

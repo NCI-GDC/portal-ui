@@ -5,7 +5,7 @@ module ngApp.core.filters {
       return function (fields: { name: string; value: string }[], noEscape: boolean) {
         var contentArray = _.map(fields, function (item) {
           return {
-            "op": "is",
+            "op": "in",
             "content": {
               "field": item.name,
               "value": item.value.split(",")

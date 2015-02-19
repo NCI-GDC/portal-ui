@@ -46,7 +46,7 @@ module ngApp.files.controllers {
         fields: [
           "archive.archive_uuid"
         ],
-        filters: {"op": "is", "content": {"field": "files.archive.archive_uuid", "value": [file.archive.archive_uuid]}}
+        filters: {"op": "=", "content": {"field": "files.archive.archive_uuid", "value": [file.archive.archive_uuid]}}
       }).then((data) => this.archiveCount = data.pagination.total);
     }
 

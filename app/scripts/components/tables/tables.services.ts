@@ -203,6 +203,7 @@ module ngApp.components.tables.services {
                     result = heading.template(field,row,scope);
                 } catch (e) {
                     result = '?';
+                  console.error(e);
                 }
             } else {
                 result = this.delimitedStringToValue(id, row);
@@ -238,6 +239,7 @@ module ngApp.components.tables.services {
                 result = heading.sref ? heading.sref(field,row,scope,$filter) : field.val;
             } catch (e) {
                 result = '?';
+                console.error(e);
             }
 
             return result;

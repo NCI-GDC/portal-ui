@@ -13,11 +13,6 @@
               <a data-scroll-to href="#summary" data-translate>Summary</a>
             </h4>
           </div>
-          <div class="list-group-item">
-            <h4 data-spy="reports" class="list-group-item-heading">
-              <a data-scroll-to href="#reports" data-translate>Reports</a>
-            </h4>
-          </div>
         </div>
       </div>
     </aside>
@@ -150,7 +145,7 @@
               <td class="text-right">
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [
-                      { name: 'participants.admin.project_code',value: prc.project.project_code },
+                      { name: 'participants.admin.disease_code',value: prc.project.project_code },
                       { name: 'files.data_type', value: dt.data_type }
                      ] | makeFilter
                   }}

@@ -14,7 +14,8 @@ module ngApp.components.tables.directives.tableicious {
                         try {
                             htm = $scope.heading.compile($scope);
                         } catch (e) {
-                            htm = '<span>?</span>'
+                            htm = '<span>?</span>';
+                            console.error(e);
                         }
                         var compiled = $compile(htm)($scope);
                         $element.append(compiled);

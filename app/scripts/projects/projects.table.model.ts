@@ -41,12 +41,13 @@ module ngApp.projects.models {
             id: "summary.participant_count",
             enabled: true,
             sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-
+                console.log(row);
                 var disease_code = _.find(row,function(elem){
-                    return elem.id === 'disease_code';
+                    return elem.id === 'project_code';
                 }).val;
 
                 var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: disease_code }]);
+
                 return "search.participants({ 'filters':"+filter+"})";
 
             },

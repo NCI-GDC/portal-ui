@@ -23,21 +23,46 @@ module ngApp.reports.controllers {
         
         ReportsService.getReports().then(function(a){
           console.log("Got data.",a);
+          
           $scope.filesByProject = a.reduce(function(a,b){
              var project = b.archive.disease_code;
              var k = {
                project:project,
-               count: 1
+               count: 1,
+               file_size: b.file_size
              }
              var g = _.find(a,function(c){return c.project === project});
              if (g) {
                g.count ++;
+               g.file_size += b.file_size;
              } else {
                a.push(k);
              }
               
              return a;
-          },[])
+          },[]);
+            
+          $scope.filesByProgram = [{
+              program:'TCGA',
+              count:395,
+              file_size:129034893
+          }]
+          
+          $scope.filesByPrimarySite = [{
+              primary_site:'Lung',
+              count:212,
+              file_size:12903323
+          },{
+              primary_site:'Heart',
+              count:19,
+              file_size:3266746
+          },{
+              primary_site:'Skin',
+              count:84,
+              file_size:6293859
+          }]
+            
+          
         });
       
     }  

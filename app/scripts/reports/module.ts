@@ -5,7 +5,7 @@ module ngApp.reports {
 
   /* @ngInject */
   function reportsConfig($stateProvider: ng.ui.IStateProvider) {
-      console.log("Reports config.");
+      
     $stateProvider.state("report", {
       url: "/reports/:reportId",
       controller: "ReportController as rc",

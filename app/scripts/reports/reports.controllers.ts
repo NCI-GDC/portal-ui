@@ -60,6 +60,31 @@ module ngApp.reports.controllers {
              return a;
           },[]);
             
+         $scope.filesBySubtype = a.reduce(function(a,b){
+             var data_subtype = b.data_subtype;
+             var k = {
+               data_subtype:data_subtype,
+               count: 1,
+               file_size: b.file_size
+             }
+             var g = _.find(a,function(c){return c.data_subtype === data_subtype});
+             if (g) {
+               g.count ++;
+               g.file_size += b.file_size;
+             } else {
+               a.push(k);
+             }
+              
+             return a;
+          },[]);
+            
+         $scope.filesByStrategy = [{
+            strategy:"unknown",
+            count: 0,
+            file_size: 0
+         }]
+            
+            
           $scope.filesByProgram = [{
               program:'TCGA',
               count:395,

@@ -119,7 +119,21 @@ module ngApp.reports.controllers {
             strategy:"unknown",
             count: 0,
             file_size: 0
-         }]
+         }];
+         
+         $scope.filesByLocation = [{
+            location:"unknown",
+            count: 0,
+            file_size: 0
+         }];
+            
+        $scope.filesByUserAccess = [{
+            access:"unknown",
+            count: 0,
+            file_size: 0
+         }];
+            
+            
             
             
           $scope.filesByProgram = [{

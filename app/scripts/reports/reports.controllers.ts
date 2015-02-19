@@ -78,6 +78,43 @@ module ngApp.reports.controllers {
              return a;
           },[]);
             
+        $scope.filesByDataLevel = a.reduce(function(a,b){
+             var data_level = b.data_level;
+             var k = {
+               data_level:data_level,
+               count: 1,
+               file_size: b.file_size
+             }
+             var g = _.find(a,function(c){return c.data_level === data_level});
+             if (g) {
+               g.count ++;
+               g.file_size += b.file_size;
+             } else {
+               a.push(k);
+             }
+              
+             return a;
+          },[]);
+            
+        $scope.filesByAccess = a.reduce(function(a,b){
+             var data_access = b.data_access;
+             var k = {
+               data_access:data_access,
+               count: 1,
+               file_size: b.file_size
+             }
+             var g = _.find(a,function(c){return c.data_access === data_access});
+             if (g) {
+               g.count ++;
+               g.file_size += b.file_size;
+             } else {
+               a.push(k);
+             }
+              
+             return a;
+          },[]);
+            
+            
          $scope.filesByStrategy = [{
             strategy:"unknown",
             count: 0,

@@ -219,6 +219,72 @@
             </table>
           </div>
       </div>
+         <div class="row">
+          <div class="col-sm-6">
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th data-translate>
+                            Data Level
+                        </th>
+                         <th>
+                            File Size
+                        </th>
+                        <th>
+                            File Count
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat='aggregation in filesByDataLevel'>
+                        <th>
+                            {{aggregation.data_level}}
+                        </th>
+                        <td>
+                            {{aggregation.count}}
+                        </td>
+                         <td>
+                            {{aggregation.file_size | size}}
+                        </td>
+                    </tr>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+           <div class="col-sm-6">
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th data-translate>
+                            Data Access
+                        </th>
+                         <th>
+                            File Size
+                        </th>
+                        <th>
+                            File Count
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat='aggregation in filesByAccess'>
+                        <th>
+                            {{aggregation.data_access}}
+                        </th>
+                        <td>
+                            {{aggregation.count}}
+                        </td>
+                         <td>
+                            {{aggregation.file_size | size}}
+                        </td>
+                    </tr>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
+      </div>
        </div>
         </div>
 

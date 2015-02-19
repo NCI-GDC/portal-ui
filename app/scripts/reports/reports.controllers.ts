@@ -40,6 +40,13 @@ module ngApp.reports.controllers {
              return a;
           },[]);
             
+          $scope.projectChartData = $scope.filesByProject.map(function(x){
+                return {
+                    name: x.project,
+                    value: x.count
+                }
+            });
+            
           $scope.filesByType = a.reduce(function(a,b){
              var data_type = b.data_type;
              var k = {
@@ -75,6 +82,15 @@ module ngApp.reports.controllers {
               
              return a;
           },[]);
+            
+             $scope.subtypeChartData = $scope.filesBySubtype.map(function(x){
+                return {
+                    name: x.data_subtype,
+                    value: x.count
+                }
+            });
+            
+            
             
         $scope.filesByDataLevel = a.reduce(function(a,b){
              var data_level = b.data_level;
@@ -185,16 +201,16 @@ module ngApp.reports.controllers {
           return {
             restrict:"AE",
             scope:{
-              data:'='
+              data:'=',
+                rotateAxisText:'='
             },
             controller:function($scope,$element){
-                console.log("Bar chart controller init.");
                 
           // charts
           // chart1
-          var margin = {top: 20, right: 30, bottom: 30, left: 40},
+          var margin = {top: 20, right: 30, bottom: $scope.rotateAxisText ? 90 : 30, left: 40},
                 width = 450 - margin.left - margin.right,
-                height = 210 - margin.top - margin.bottom;
+                height = ($scope.rotateAxisText ? 310 : 210) - margin.top - margin.bottom;
 
             var x = d3.scale.ordinal()
                 .rangeRoundBands([0, width], .1);
@@ -217,23 +233,30 @@ module ngApp.reports.controllers {
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             
-            var data = $scope.data.map(function(x){
-                return {
-                    name: x.project,
-                    value: x.count
-                }
-            });
+            var data = $scope.data;
             
               x.domain(data.map(function(d) { return d.name; }));
               y.domain([0, d3.max(data, function(d) { return d.value; })]);
             
-            var colors = d3.scale.category10();
+            var colors = d3.scale.category20();
 
-              chart.append("g")
+            var xAxis = chart.append("g")
                   .attr("class", "x axis")
                   .attr("transform", "translate(0," + height + ")")
-                  .call(xAxis);
+                  .call(xAxis)
+            
+            if ($scope.rotateAxisText){
+            xAxis
+            .selectAll("text")  
+                    .style("text-anchor", "end")
+                    .attr("dx", "-.8em")
+                    .attr("dy", ".15em")
+                    .attr("transform", function(d) {
+                        return "rotate(-45)" 
+                        });
 
+            }
+                   
               chart.append("g")
                   .attr("class", "y axis")
                   .call(yAxis);

@@ -56,7 +56,7 @@
                 </tbody>
             </table>
            <h4>File Count by Project</h4>
-           <div class="reports-chart" ng-if=filesByProject reports-bar-chart data=filesByProject></div>
+           <div class="reports-chart" ng-if=filesByProject reports-bar-chart data=projectChartData></div>
            
           </div>
           <div class="col-sm-6">
@@ -191,6 +191,7 @@
                     </tr>
                 </tbody>
             </table>
+             <div class="reports-chart" ng-if=subtypeChartData rotate-axis-text=true reports-bar-chart data=subtypeChartData></div>
           </div>
            <div class="col-sm-6">
               <table class="table table-striped table-hover table-condensed table-bordered">

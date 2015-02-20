@@ -560,9 +560,23 @@ function ParallelCoordinates(data,options) {
 
 		labels
 			.select("text")
-            .attr('x',-5)
+            .attr('x',function(d){
+//              debugger;
+              if (d.column === 'primary_site') {
+                return -5
+              } else {
+                return 0;
+              }
+            })
 //            .attr('y',10)
-            .style('text-anchor','start')
+            .style('text-anchor',function(d){
+//              debugger;
+              if (d.column === 'primary_site') {
+                return 'start';
+              } else {
+                return 'middle';
+              }
+            })
             .text(function(d){
             
                 if (_.isNumber(d.value)){

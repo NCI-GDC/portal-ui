@@ -59,67 +59,70 @@ module ngApp.reports.controllers {
           scale:'ordinal',
           dimensional:true
         },
-//                          {
-//          id:'Clinical',
-//          display_name:['Clinical'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },{
-//          id:'Raw microarray data',
-//          display_name:['Array'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },{
-//          id:'Raw sequencing data',
-//          display_name:['Seq'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },{
-//          id:'Simple nucleotide variation',
-//          display_name:['SNV'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },{
-//          id:'Copy number variation',
-//          display_name:['CNV'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },{
-//          id:'Structural rearrangement',
-//          display_name:['SV'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },{
-//          id:'Gene expression',
-//          display_name:['Exp'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },{
-//          id:'Protein expression',
-//          display_name:['PExp'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },{
-//          id:'Other',
-//          display_name:['Other'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },{
-//          id:'DNA methylation',
-//          display_name:['Meth'],
-//          scale:'ordinal',
-//          is_subtype:true,
-//          dimensional:true
-//        },
+                          {
+          id:'Clinical',
+          display_name:['Clinical'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },
+                          {
+          id:'Raw microarray data',
+          display_name:['Array'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },
+                            {
+          id:'Raw sequencing data',
+          display_name:['Seq'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Simple nucleotide variation',
+          display_name:['SNV'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },
+                          {
+          id:'Copy number variation',
+          display_name:['CNV'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Structural rearrangement',
+          display_name:['SV'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Gene expression',
+          display_name:['Exp'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Protein expression',
+          display_name:['PExp'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Other',
+          display_name:['Other'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'DNA methylation',
+          display_name:['Meth'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },
         {
           id:'primary_site',
           display_name:["Primary","Site"],

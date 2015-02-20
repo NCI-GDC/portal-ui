@@ -15,13 +15,28 @@ module ngApp.reports.controllers {
   class ReportsController implements IReportsController {
 
     /* @ngInject */
-    constructor(private CoreService: ICoreService, $scope,ReportsService, $q,ProjectsService) {   
+    constructor(private CoreService: ICoreService, $scope,ReportsService, $q,ProjectsService,$timeout) {   
 
       CoreService.setPageTitle("Reports");
         
         ReportsService.getReports().then(function(a){
           CoreService.setSearchModelState(true);
           console.log("raw thing from reports",a);
+          
+            ProjectsService.getProjects({
+        fields: [
+  
+          "project_code",
+          "primary_site",
+        ],
+        facets: [
+
+          "primary_site",
+
+        ],
+        size: 100
+      }).then((projects) => {
+    
           
          
      
@@ -37,7 +52,7 @@ module ngApp.reports.controllers {
           display_name:["File","Size"],
           scale:'ordinal',
           dimensional:true
-        }
+        },
 //                          ,{
 //          id:'file_count',
 //          display_name:["File","Count"],
@@ -104,12 +119,12 @@ module ngApp.reports.controllers {
 //          is_subtype:true,
 //          dimensional:true
 //        },
-//                          {
-//          id:'primary_site',
-//          display_name:["Primary","Site"],
-//          scale:'linear',
-//          dimensional:true
-//        }
+          {
+          id:'primary_site',
+          display_name:["Primary","Site"],
+          scale:'linear',
+          dimensional:true
+        }
                          ];
           
           var aggregations = a.reduce(function(a,b){
@@ -124,9 +139,13 @@ module ngApp.reports.controllers {
               }
             
             } else {
+//              debugger;
+//              debugger;
+              var project = projects.hits[projects.hits.map(function(a){return a.project_code}).indexOf(b.archive.disease_code)]
               a[b.archive.disease_code] = {
                 file_size:b.file_size,
-                project_code:b.archive.disease_code
+                project_code:b.archive.disease_code,
+                primary_site:project.primary_site
               };
               
               a[b.archive.disease_code][b.data_type] = 1;
@@ -250,8 +269,12 @@ module ngApp.reports.controllers {
           duration:1000,
         };
         
+        $timeout(function(){
+        
+        
         $scope.githutConfig = config;
         $scope.githutData = d3.values(aggregations);
+          },500);
           
           $scope.filesByProject = a.reduce(function(a,b){
              var project = b.archive.disease_code;
@@ -652,7 +675,8 @@ module ngApp.reports.controllers {
       });
 //    }
       
-    }  
+    }) }
+                                         
   
   }
 

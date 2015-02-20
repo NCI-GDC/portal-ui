@@ -7,17 +7,14 @@
          Reports
      </h2>
       
-     <div class="btn-group" role="group" aria-label="Filter and sort table" ng-init="mode='table'">
+     <div class="btn-group" role="group" aria-label="Filter and sort table" ng-init="mode='graph'">
            <button type="button" class="btn btn-default" ng-class="{'btn-primary': mode==='table'}" ng-click="mode='table'">Table</button>
           <button type="button" class="btn btn-default" ng-class="{'btn-primary': mode==='graph'}" ng-click="mode='graph'">Graph</button>
       </div>
       
     <div class="githut">
        <div class="graph" data-ng-show="mode==='graph'">
-        graph
-    
-		
-<!--		<div class=githut data-ng-show="mode==='graph'"></div>-->
+  
         <parallel-coordinates  ng-if=githutData data=githutData config=githutConfig>
 	    	
 	    </parallel-coordinates>

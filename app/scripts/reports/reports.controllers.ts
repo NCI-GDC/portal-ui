@@ -53,12 +53,13 @@ module ngApp.reports.controllers {
           scale:'ordinal',
           dimensional:true
         },
-//                          ,{
-//          id:'file_count',
-//          display_name:["File","Count"],
-//          scale:'ordinal',
-//          dimensional:true
-//        },{
+        {
+          id:'file_count',
+          display_name:["File","Count"],
+          scale:'ordinal',
+          dimensional:true
+        },
+//                          {
 //          id:'Clinical',
 //          display_name:['Clinical'],
 //          scale:'ordinal',
@@ -119,7 +120,7 @@ module ngApp.reports.controllers {
 //          is_subtype:true,
 //          dimensional:true
 //        },
-          {
+        {
           id:'primary_site',
           display_name:["Primary","Site"],
           scale:'linear',
@@ -132,6 +133,7 @@ module ngApp.reports.controllers {
             if (a[b.archive.disease_code]) {
               var record = a[b.archive.disease_code];
               record.file_size += b.file_size;
+              record.file_count+=1;
               if (record[b.data_type]) {
                 record[b.data_type] += 1;
               } else {
@@ -145,7 +147,8 @@ module ngApp.reports.controllers {
               a[b.archive.disease_code] = {
                 file_size:b.file_size,
                 project_code:b.archive.disease_code,
-                primary_site:project.primary_site
+                primary_site:project.primary_site,
+                file_count:1
               };
               
               a[b.archive.disease_code][b.data_type] = 1;

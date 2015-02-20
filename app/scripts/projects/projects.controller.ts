@@ -275,9 +275,12 @@ module ngApp.projects.controllers {
          */
           duration:1000,
         };
+        
+        this.$scope.githutConfig = config;
+        this.$scope.githutData = d3.values(aggregations);
 
 
-        new ParallelCoordinates(d3.values(aggregations),config);
+//        new ParallelCoordinates(d3.values(aggregations),config);
       });
     }
   }
@@ -309,6 +312,8 @@ module ngApp.projects.controllers {
       },
       controller:function($scope,$element,ProjectsService){
         console.log("PC Directive:: Init",$scope.config, $scope.data);
+        $scope.config.container = $element[0];
+        new ParallelCoordinates($scope.data,$scope.config);
 
       }	
     }

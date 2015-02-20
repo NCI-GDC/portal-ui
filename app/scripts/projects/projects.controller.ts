@@ -89,7 +89,22 @@ module ngApp.projects.controllers {
         "projects.table.model"
       ])
       .controller("ProjectsController", ProjectsController)
-      .controller("ProjectController", ProjectController);
+      .directive("parallelCoordinates",function(){
+        return {
+          restrict:"E",
+			scope:{
+				config:'=',
+				data:'='
+			},
+			controller:function($scope){
+				console.log("PC Directive:: Init");
+			}
+					
+  
+				
+		}
+	})
+  .controller("ProjectController", ProjectController);
 }
 
 

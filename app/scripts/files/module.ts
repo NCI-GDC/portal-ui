@@ -14,30 +14,26 @@ module ngApp.files {
         file: ($stateParams: ng.ui.IStateParamsService, FilesService: IFilesService): ng.IPromise<IFile> => {
           return FilesService.getFile($stateParams["fileId"], {
             fields: [
-              "_aliquot_barcode",
-              "data_access",
+              "state",
+              "md5sum",
+              "access",
               "data_format",
-              "data_level",
-              "data_subtype",
               "data_type",
-              "file_extension",
+              "data_subtype",
+              "data_format",
               "file_name",
               "file_size",
-              "file_uuid",
+              "file_id",
               "platform",
-              "updated",
               "experimental_strategy",
-              "participants.bcr_patient_uuid",
-              "participants.bcr_patient_barcode",
-              "participants.samples.bcr_sample_uuid",
-              "participants.samples.portions.bcr_portion_uuid",
-              "participants.samples.portions.analytes.bcr_analyte_uuid",
-              "participants.samples.portions.analytes.aliquots.bcr_aliquot_uuid",
-              "participants.admin.disease_code",
-              "archive.archive_name",
-              "archive.archive_uuid",
-              "archive.disease_code"
-            ]
+              "archives.archive_id",
+              "center.name",
+              "creation_datetime",
+              "participants.participant_id",
+              "related_files.file_id",
+              "related_files.file_name",
+              "related_files.md5sum",
+              ]
           });
         }
       }

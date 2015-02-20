@@ -22,10 +22,14 @@ module ngApp.files.models {
     revision: number;
   }
 
+  export interface IDataFormat {
+    name: string;
+  }
+
   export interface IFile extends IEntity {
     _aliquot_barcode: string;
     data_access: string;
-    data_format: string;
+    data_format: IDataFormat;
     data_subtype: string;
     data_type: string;
     experimental_strategoy: string;
@@ -33,7 +37,7 @@ module ngApp.files.models {
     file_name: string;
     file_size: number;
     file_url: string;
-    file_uuid: string;
+    file_id: string;
     platform: string;
     updated: any;
     participants: IParticipant[];

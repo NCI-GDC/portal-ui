@@ -69,10 +69,10 @@ module ngApp.projects.services {
         size: 10,
         from: 1,
         filters: this.LocationService.filters(),
-        sort:'disease_type:asc'
+        sort:'name:asc'
       };
 
-      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "project_code");
+      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "code");
       this.CoreService.setSearchModelState(false);
 
       var abort = this.$q.defer();

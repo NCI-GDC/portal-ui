@@ -21,20 +21,22 @@ module ngApp.projects {
         project: ($stateParams: ng.ui.IStateParamsService, ProjectsService: IProjectsService): ng.IPromise<IProject> => {
           return ProjectsService.getProject($stateParams["projectId"], {
             fields: [
-              "disease_type",
-              "project_name",
-              "primary_site",
-              "status",
-              "program",
-              "project_code",
-              "summary.participant_count",
-              "summary.data_file_count",
+              "code",
+              "name",
+              "summary.data_types.file_count",
               "summary.data_types.data_type",
               "summary.data_types.participant_count",
-              "summary.data_types.file_count",
-              "summary.experimental_strategies.participant_count",
               "summary.experimental_strategies.file_count",
-              "summary.experimental_strategies.experimental_strategy"
+              "summary.experimental_strategies.participant_count",
+              "summary.experimental_strategies.experimental_strategy",
+              "summary.participant_count",
+              "summary.file_size",
+              "summary.file_count",
+              "state",
+              "program.name",
+              "program.program_id",
+              "primary_site",
+              "project_id"
             ]
           });
         }

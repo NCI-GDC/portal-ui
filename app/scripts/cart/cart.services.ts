@@ -69,11 +69,11 @@ module ngApp.cart.services {
     }
 
     isInCart(fileId: string): boolean {
-      return _.some(this.files, {file_uuid: fileId});
+      return _.some(this.files, { "file_id": fileId });
     }
 
     areInCart(files: IFile[]): boolean {
-      return _.every(files, (f) => this.isInCart(f.file_uuid));
+      return _.every(files, (f) => this.isInCart(f.file_id));
     }
 
     add(file: IFile): void {
@@ -84,7 +84,7 @@ module ngApp.cart.services {
       var addedFiles:IFile[] = [];
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
-        if (!this.isInCart(file.file_uuid)) {
+        if (!this.isInCart(file.file_id)) {
           file.selected = true;
           this.files.push(file);
           addedFiles.push(file);
@@ -154,7 +154,7 @@ module ngApp.cart.services {
 
     remove(fileIds: string[]): void {
       var remaining = _.reject(this.files, function (hit: IFile) {
-        return fileIds.indexOf(hit.file_uuid) !== -1;
+        return fileIds.indexOf(hit.file_id) !== -1;
       });
       this.lastModifiedFiles = _.difference(this.files, remaining);
       this._sync();
@@ -170,7 +170,7 @@ module ngApp.cart.services {
     }
 
     removeFiles(files: IFile[]): void {
-      var ids: string[] = _.pluck(files, "file_uuid");
+      var ids: string[] = _.pluck(files, "file_id");
       this.remove(ids);
     }
 
@@ -179,7 +179,7 @@ module ngApp.cart.services {
     }
 
     getFileIds(): string[] {
-      return _.pluck(this.getSelectedFiles(), "file_uuid");
+      return _.pluck(this.getSelectedFiles(), "file_id");
     }
 
     undoAdded(): void {

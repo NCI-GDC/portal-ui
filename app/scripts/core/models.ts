@@ -24,7 +24,7 @@ module ngApp.models {
     disease_code: string;
     batch_number: string;
     year_of_dcc_upload: number;
-    file_uuid: string;
+    file_id: string;
     day_of_dcc_upload: number;
     month_of_dcc_upload: number;
     project_code: string;

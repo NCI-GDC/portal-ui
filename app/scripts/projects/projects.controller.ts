@@ -40,25 +40,26 @@ module ngApp.projects.controllers {
     refresh() {
       this.ProjectsService.getProjects({
         fields: [
-          "disease_type",
-          "project_name",
-          "status",
-          "program",
-          "project_code",
-          "primary_site",
-          "summary.file_size",
-          "summary.participant_count",
-          "summary.data_file_count",
+          "name",
+          "code",
+          "summary.data_types.file_count",
           "summary.data_types.data_type",
           "summary.data_types.participant_count",
-          "summary.data_types.file_count",
-          "summary.experimental_strategies.participant_count",
           "summary.experimental_strategies.file_count",
-          "summary.experimental_strategies.experimental_strategy"
+          "summary.experimental_strategies.participant_count",
+          "summary.experimental_strategies.experimental_strategy",
+          "summary.participant_count",
+          "summary.file_size",
+          "summary.file_count",
+          "state",
+          "program.name",
+          "program.program_id",
+          "primary_site",
+          "project_id"
         ],
         facets: [
-          "program",
-          "disease_type",
+          "program.name",
+          "code",
           "primary_site",
           "summary.experimental_strategies.experimental_strategy",
           "summary.data_types.data_type"
@@ -78,7 +79,7 @@ module ngApp.projects.controllers {
   class ProjectController implements IProjectController {
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService) {
-      CoreService.setPageTitle("Project " + project.project_code);
+      CoreService.setPageTitle("Project " + project.code);
     }
   }
 
@@ -101,18 +102,18 @@ function githutTable(data){
 
     d3.select("svg")
        .remove();
-    
+
      function findTheThing(array,data_type,propname){
           return _.find(array,function(type){return type[propname] === data_type})
-     } 
-   
+     }
+
     var project_codes = hits.reduce(function(a,b){
-        a[b.project_code] = b;
+        a[b.code] = b;
         return a;
     },{});
-    
+
     var columns = [{
-        id:'project_code',
+        id:'code',
         display_name:["Project","Code"],
         scale:'ordinal',
         dimensional:true
@@ -197,7 +198,7 @@ function githutTable(data){
         scale:'linear',
          dimensional:true
     }];
-    
+
   
 
         
@@ -206,57 +207,57 @@ function githutTable(data){
         var types = group.summary.data_types;
 
         if (!_.contains(primary_sites,group.primary_site)){
-          primary_sites.push(group.primary_site);    
-        } 
-        
+          primary_sites.push(group.primary_site);
+        }
+
         var the_returned = {
 
-            project_code:key,
+            code:key,
             primary_site:group.primary_site,
             file_count:group.summary.data_file_count,
             file_size:group.summary.file_size,
             participant_count:group.summary.participant_count,
 
         }
-        
+
         columns
             .filter(function(c){return c.is_subtype})
             .forEach(function(s){
                 var thing = findTheThing(types,s.id,"data_type");
                 the_returned[s.id] = thing ? thing.participant_count : 0;
-            })   
-                
+            })
+
         a[key] = the_returned;
         return a;
-    },{});    
+    },{});
   
-    
+
 //    aggregations = {
 //        'ACC':aggregations['ACC']
 //    };
 
     var config = {
-        
+
         /* the id of the tag the table will be generated into */
         container:"#pc",
-        
+
         /* default scale value, not useful */
         scale:"ordinal",
-        
+
         /* Ordered list of columns. Only titles appearing here appear in the table */
         columns:columns.map(function(c){return c.id}),
-        
+
         /* ???
          * The value that all the other values are divided by?
          * Has something to do with dimensions?
          **/
         ref:"lang_usage",
-        
+
         /**
          * No idea what title_column does.
         **/
-        title_column:"project_code",
-        
+        title_column:"code",
+
         /**
          * Not really a scale map, more a map of what kind of column it will be.
          * Ordinal is the more geometry-oriented choice
@@ -265,23 +266,23 @@ function githutTable(data){
            a[b.id] = b.scale || 'ordinal';
            return a;
         },{}),
-        
+
         /**
          * Interconnected with ref and dimension, possibly.
          * No idea what this does, really.
          */
         use:{
-            "project_code":"project_code"
+            "code":"code"
         },
-        
+
         /**
          * The order each column will appear in.
          * Don't know how well this is implemented.
          */
         sorting:{
-            "participant_count":d3.ascending
+            "name":d3.descending
         },
-        
+
         /**
          *  Don't know what "d" is here.
          *  If defined for a column, formats the labels.
@@ -290,12 +291,12 @@ function githutTable(data){
         formats:{
             "primary_site":"d"
         },
-        
+
         /**
          *  Not known what this is. Any values in columns that are not in dimensions causes an error.
          */
         dimensions:columns.filter(function(c){return c.dimensional}).map(function(c){return c.id}),
-        
+
         /**
          *  Name for each column.
          **/
@@ -303,13 +304,13 @@ function githutTable(data){
            a[b.id] = b.display_name || ['Untitled'];
            return a;
         },{}),
-        
+
         /**
          * Related to animation
          */
         duration:1000,
     };
-    
+
 
     pc=new ParallelCoordinates(d3.values(aggregations),config);
 }

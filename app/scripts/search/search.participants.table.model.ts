@@ -42,11 +42,11 @@ module ngApp.search.models {
             }
         },{
             displayName: "Participant ID",
-            id: "bcr_patient_barcode",
+            id: "participant_id",
             enabled: true,
             sref:function(elem,row,scope){
                 var uuid:TableiciousEntryDefinition = _.find(row,function(elem:TableiciousEntryDefinition){
-                    return elem.id === "bcr_patient_uuid";
+                    return elem.id === "participant_id";
                 });
 
                 return "participant({ participantId : '"+uuid.val+"' })";
@@ -54,20 +54,23 @@ module ngApp.search.models {
             sortable: true
         }, {
             displayName: "Disease Type",
-            id: "admin.disease_code",
+            id: "project.name",
             enabled: true,
             sortable: true
         }, {
             displayName: "Gender",
-            id: "gender",
+            id: "clinical.gender",
             enabled: true
         }, {
             displayName: "Tumor Stage",
             id: "person_neoplasm_cancer_status",
-            enabled: true
+            enabled: true,
+            template: function() {
+              return "tbd";
+            }
         }, {
             displayName: "Available Files per Data Type",
-            id: "data_types",
+            id: "summary.data_types",
             headingClass:'text-center',
             enabled: true,
             children: [{
@@ -180,6 +183,7 @@ module ngApp.search.models {
             fieldClass: 'text-right',
             enabled: true,
             template:function(field){
+                //why is fields an object instead of an array....
                 return field && field.val && field.val.length;
             }
         }]

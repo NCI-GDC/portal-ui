@@ -1,7 +1,7 @@
 <div class="container entity" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <i class="fa fa-folder-o"></i>
-    {{ ::prc.project.project_code }}
+    {{ ::prc.project.name }}
   </h1>
 
   <div class="col-lg-2 col-md-2">
@@ -29,27 +29,27 @@
             <tbody>
             <tr>
               <th scope="row" data-translate>Code</th>
-              <td>{{ ::prc.project.project_code }}</td>
+              <td>{{ ::prc.project.code }}</td>
             </tr>
             <tr>
-              <th scope="row" data-translate>Name</th>
-              <td>{{ ::prc.project.project_name }}</td>
+              <th scope="row" data-translate>Program Name</th>
+              <td>{{ ::prc.project.program.name }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Disease Type</th>
-              <td>{{ ::prc.project.disease_type }}</td>
+              <td>{{ ::prc.project.name }}</td>
             </tr>
-            <tr>
-              <th scope="row" data-translate>Program</th>
-              <td>{{ ::prc.project.program }}</td>
-            </tr>
+            <!--<tr>-->
+              <!--<th scope="row" data-translate>Program</th>-->
+              <!--<td>{{ ::prc.project.program }}</td>-->
+            <!--</tr>-->
             <tr>
               <th scope="row" data-translate>Sequencing Center</th>
               <td>tbc {{ ::prc.project.sequencing_center }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Status</th>
-              <td>{{ ::prc.project.status }}</td>
+              <td>{{ ::prc.project.state}}</td>
             </tr>
             <tr>
               <th scope="row">
@@ -57,10 +57,10 @@
               </th>
               <td>
                 <a data-ui-sref="search.participants({ 'filters':
-                  {{ [{ name: 'participants.admin.disease_code',value: prc.project.project_code }] | makeFilter }}
+                  {{ [{ name: 'participants.admin.disease_code',value: prc.project.name }] | makeFilter }}
                 })">
                   {{ prc.project.summary.participant_count }}
-                </a>
+                  </a>
               </td>
             </tr>
             <tr>
@@ -69,9 +69,9 @@
               </th>
               <td>
                 <a data-ui-sref="search.files({ 'filters':
-                  {{ [{ name: 'participants.admin.disease_code', value: prc.project.project_code }] | makeFilter }}
+                  {{ [{ name: 'participants.admin.disease_code', value: prc.project.name }] | makeFilter }}
                 })">
-                  {{ prc.project.summary.data_file_count | number:0 }}
+                  {{ prc.project.summary.file_count | number:0 }}
                 </a>
               </td>
             </tr>
@@ -99,7 +99,7 @@
               <td class="text-right">
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [
-                      { name: 'participants.admin.disease_code',value: prc.project.project_code },
+                      { name: 'participants.admin.disease_code',value: prc.project.name },
                       { name: 'files.experimental_strategy', value: es.experimental_strategy }
                      ] | makeFilter
                   }}
@@ -110,7 +110,7 @@
               <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters':
                   {{ [
-                      { name: 'participants.admin.disease_code',value: prc.project.project_code },
+                      { name: 'participants.admin.disease_code',value: prc.project.name },
                       { name: 'files.experimental_strategy', value: es.experimental_strategy }
                      ] | makeFilter
                   }}
@@ -145,7 +145,7 @@
               <td class="text-right">
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [
-                      { name: 'participants.admin.disease_code',value: prc.project.project_code },
+                      { name: 'participants.admin.disease_code',value: prc.project.name },
                       { name: 'files.data_type', value: dt.data_type }
                      ] | makeFilter
                   }}
@@ -156,7 +156,7 @@
               <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters':
                   {{ [
-                      { name: 'participants.admin.disease_code',value: prc.project.project_code },
+                      { name: 'participants.admin.disease_code',value: prc.project.name },
                       { name: 'files.data_type', value: dt.data_type }
                      ] | makeFilter
                   }}
@@ -171,6 +171,6 @@
       </div>
 
     </section>
-  
+
   </div>
 </div>

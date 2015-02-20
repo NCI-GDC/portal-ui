@@ -1,7 +1,7 @@
 <div class="container entity" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <i class="fa fa-user"></i>
-    {{ ::pc.participant.bcr_patient_barcode }}
+    {{ ::pc.participant.participant_id }}
   </h1>
 
   <div class="col-lg-2">
@@ -43,53 +43,46 @@
           <table id="summary-table" class="table table-striped table-hover table-condensed table-bordered table-vertical">
             <tbody>
             <tr>
-              <th scope="row" data-translate>Uuid</th>
-              <td>{{ ::pc.participant.bcr_patient_uuid }}</td>
+              <th scope="row" data-translate>Participant UUID</th>
+              <td>{{ ::pc.participant.participant_id }}</td>
             </tr>
             <tr>
-              <th scope="row" data-translate>Barcode</th>
-              <td>{{ ::pc.participant.bcr_patient_barcode }}</td>
+              <th scope="row" data-translate>Participant Barcode</th>
+              <td>tbd {{ ::pc.participant.bcr_patient_barcode }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Disease Type</th>
-              <td>{{ ::pc.participant.admin.disease_code }}</td>
+              <td>{{ ::pc.participant.project.name }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Program</th>
-              <td>{{ ::pc.participant.admin.project_code}}</td>
+              <td>{{ ::pc.participant.project.code }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Primary Site</th>
+              <td>{{ ::pc.participant.project.primary_site }}
             </tr>
             <tr>
               <th scope="row" data-translate>Status</th>
-              <td>{{ ::pc.participant.clinical_cqcf.consent_or_death_status }}</td>
+              <td>{{ ::pc.participant.clinical.vital_status }}</td>
             </tr>
             <tr>
-              <th scope="row" data-translate>Files</th>
+              <th scope="row" data-translate>Number of Data Files</th>
               <td>
                 <a data-ui-sref="search.files({ 'filters':
-                  {{ [{ name: 'participants.bcr_patient_uuid', value: pc.participant.bcr_patient_uuid }] | makeFilter }}
+                  {{ [{ name: 'participants.participant_id', value: pc.participant.participant_id}] | makeFilter }}
                 })">
                   {{ ::pc.participant.files.length | number:0 }}
                 </a>
               </td>
             </tr>
             <tr>
-              <th scope="row" data-translate>Annotations</th>
+              <th scope="row" data-translate>Number of Annotations</th>
               <td>
                 <a data-scroll-to href="#annotations">
-                 tbd {{ ::pc.participant.participant_annotations.length | number:0}}
+                 {{ ::pc.participant.annotations.length || 0  | number:0 }}
                 </a>
               </td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Project Code</th>
-              <td>
-                  tbd
-<!--                  {{ pc.participant }}-->
-                </td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Project Name</th>
-              <td>tbd</td>
             </tr>
             </tbody>
           </table>
@@ -98,26 +91,24 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Experimental Strategy</h3>
           </div>
-          <div class="panel-body" data-ng-if="!pc.participant.experiments.length">
+          <div class="panel-body" data-ng-if="!pc.participant.summary.experimental_strategies.length">
             <h4 class="list-group-item-heading" data-translate>No experimental strategies were found.</h4>
           </div>
-          <table id="experimental-strategy-table" class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.experiments.length">
+          <table id="experimental-strategy-table" class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.summary.experimental_strategies.length">
             <thead>
             <tr>
               <th scope="col" data-translate>Analysis</th>
-              <th scope="col" data-translate>Samples</th>
               <th scope="col" data-translate>Files</th>
             </tr>
             </thead>
             <tbody>
-            <tr data-ng-repeat="experiment in pc.participant.experiments">
-              <td>tbc {{ ::experiment.name }}</td>
-              <td class="text-right">tbc {{ ::experiment.samples | number:0 }}</td>
+            <tr data-ng-repeat="experiment in pc.participant.summary.experimental_strategies">
+              <td>{{ ::experiment.experimental_strategy }}</td>
               <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters':
-                  {{ [{ name: 'participant_id', value: pc.participant.bcr_patient_uuid }] | makeFilter }}
+                  {{ [{ name: 'participant_id', value: pc.participant.participant_id }] | makeFilter }}
                 })">
-                  tbc {{ ::experiment.files | number:0 }}
+                  {{ ::experiment.file_count| number:0 }}
                 </a>
               </td>
             </tr>
@@ -128,8 +119,7 @@
       <div class="col-lg-6">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title" data-translate>Available Data 
-<!--                {{pc.participant}}-->
+            <h3 class="panel-title" data-translate>Available Data
               </h3>
           </div>
           <div class="panel-body" data-ng-if="!pc.participant.samples.length">
@@ -138,13 +128,9 @@
           <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.samples.length">
             <tbody>
             <tr data-ng-repeat="item in pc.participant.samples">
-<!--              <th scope="row">-->
-<!--                  Sample-->
-<!--                </th>-->
               <td>
                 <a data-ui-sref="search.files">
-                    {{item.bcr_sample_barcode || 'tbd'}}
-<!--                  {{ item.files | number:0 }}-->
+                  {{item.sample_id || 'tbd'}} <!-- TOOD -->
                 </a>
               </td>
             </tr>
@@ -160,7 +146,6 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>
                 Clinical
-<!--                {{pc.participant}}-->
               </h3>
           </div>
 
@@ -168,41 +153,25 @@
             <tbody>
             <tr>
               <th scope="row" data-translate>Gender</th>
-              <td>{{ ::pc.participant.gender }}</td>
+              <td>{{ ::pc.participant.clinical.gender || '--' }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Vital Status</th>
-              <td>{{ ::pc.participant.vital_status }}</td>
+              <td>{{ ::pc.participant.clinical.vital_status || '--' }}</td>
             </tr>
             <tr>
-              <th scope="row" data-translate>Key</th>
-              <td>tbc {{ pc.participant.key }}</td>
-            </tr>
-                <tr>
-              <th scope="row" data-translate>Clinical</th>
-              <td>tbc {{ pc.participant.key }}</td>
-            </tr>
-                <tr>
-              <th scope="row" data-translate>Exp</th>
-              <td>tbc {{ pc.participant.key }}</td>
-            </tr>
-                <tr>
-              <th scope="row" data-translate>Array</th>
-              <td>tbc {{ pc.participant.key }}</td>
-            </tr>
-                <tr>
-              <th scope="row" data-translate>Seq</th>
-              <td>tbc {{ pc.participant.key }}</td>
-            </tr>
-                <tr>
-              <th scope="row" data-translate>CNV</th>
-              <td>tbc {{ pc.participant.key }}</td>
+              <th scope="row" data-translate>ICD10</th>
+              <td>{{ pc.participant.clinical.icd_10 || '--' }}</td>
             </tr>
             <tr>
-              <th scope="row" data-translate>Meth</th>
-              <td>tbc {{ pc.participant.key }}</td>
+              <th scope="row" data-translate>Ethnicity</th>
+              <td>{{ pc.participant.clinical.ethnicity || '--' }}</td>
             </tr>
-                					
+            <tr>
+              <th scope="row" data-translate>Race</th>
+              <td>{{ pc.participant.clinical.race || '--' }}</td>
+            </tr>
+
             </tbody>
           </table>
         </div>

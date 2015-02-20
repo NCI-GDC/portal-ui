@@ -3,35 +3,43 @@ module ngApp.projects.models {
   import IEntity = ngApp.models.IEntity;
 
   export interface IExperimentalStrategies {
-    experimentalStrategies: string;
-    fileCount: number;
-    participantCount: number;
+    file_count: number;
+    participant_count: number;
+    experimental_strategy: string;
   }
 
   export interface IDataTypes {
-    experimentalStrategies: string;
-    fileCount: number;
-    participantCount: number;
+    data_type: string;
+    file_count: number;
+    participant_count: number;
   }
 
   export interface ISummary {
-    data_file_count: number;
-    participantCount: number;
-    dataTypes: IDataTypes[];
-    experimentalStrategies: IExperimentalStrategies[];
+    file_count: number;
+    participant_count: number;
+    file_size: number;
+    data_types: IDataTypes[];
+    experimental_strategies: IExperimentalStrategies[];
   }
 
   export interface IProjects extends ICollection {
     hits: IProject[];
   }
 
-  export interface IProject extends IEntity {
-    project_name: string;
-    status: string;
-    program: string;
-    project_code: string;
-    disease_type: string;
-    list_updated: string;
-    summary: ISummary;
+  export interface IProgram {
+    name: string;
+    program_id: string;
   }
+
+  export interface IProject extends IEntity {
+    code: string;
+    name: string; //disease_type
+    state: string;
+    primary_site: string;
+    project_id: string;
+    summary: ISummary;
+    program: IProgram;
+  }
+
 }
+

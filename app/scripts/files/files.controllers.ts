@@ -42,12 +42,15 @@ module ngApp.files.controllers {
           });
         });
       });
+
       this.FilesService.getFiles({
         fields: [
-          "archive.archive_uuid"
+          "archives.archive_id"
         ],
-        filters: {"op": "=", "content": {"field": "files.archive.archive_uuid", "value": [file.archive.archive_uuid]}}
+        filters: {"op": "=", "content": {"field": "files.archives.archive_id", "value": [file.archives ? file.archives.archive_id : 0]}}
       }).then((data) => this.archiveCount = data.pagination.total);
+
+      //this.archiveCount = 0;
     }
 
     isInCart(): boolean {

@@ -77,80 +77,64 @@ module ngApp.search.controllers {
 
       this.FilesService.getFiles({
         fields: [
-          "data_access",
-          "data_format",
-          "data_level",
-          "data_subtype",
-          "data_type",
-          "file_extension",
+          "access",
           "file_name",
+          "data_type",
+          "data_subtype",
+          "data_format",
           "file_size",
-          "file_uuid",
-          "platform",
-          "updated",
-          "archive.disease_code",
-          "archive.revision",
-          "archive.archive_name",
-          "archive.archive_uuid",
-          "participants.bcr_patient_uuid",
+          "file_id",
+          "archives.revision",
+          "participants.participant_id",
+          "participants.project.name", //disease code
+          "participants.project.project_id",
+          "platform"
         ],
         facets: [
-          "data_type",
           "data_subtype",
+          "data_type",
           "experimental_strategy",
           "data_format",
           "platform",
-          "archive.revision",
-          "data_level",
-          "data_access",
-          "archive.center_name",
-          "file_extension"
+          "archives.revision",
+          "access",
+          "data_format",
+          "center.name"
         ]
       }).then((data) => {
         if (!data.hits.length) {
           this.CoreService.setSearchModelState(true);
         }
-
         this.files = data;
       });
 
       this.ParticipantsService.getParticipants({
         fields: [
-          "bcr_patient_barcode",
-          "bcr_patient_uuid",
-          "gender",
-          "patient_id",
-          "vital_status",
-          "person_neoplasm_cancer_status",
-          "admin.disease_code",
-          "tumor_tissue_site",
-          "files.file_uuid",
+          "participant_id",
+          "clinical.vital_status",
+          "clinical.gender",
+          "clinical.ethnicity",
+          "files.file_id",
           "files.file_name",
           "files.file_size",
-          "files.data_type",
-          "files.data_access",
-          "files.archive.revision",
-          "files.archive.disease_code",
-          "files.data_format",
-          "files.data_level",
-          "summary.data_file_count",
+          "files.access",
           "summary.file_size",
+          "summary.file_count",
+          "summary.experimental_strategies.file_count",
+          "summary.experimental_strategies.experimental_strategy",
           "summary.data_types.file_count",
           "summary.data_types.data_type",
-          "summary.experimental_strategies.file_count",
-          "summary.experimental_strategies.experimental_strategy"
+          "project.name",
+          "project.code"
         ],
         facets: [
-          "admin.project_code",
-          "admin.disease_code",
-          "stage_event.pathologic_stage",
-          "ethnicity",
-          "gender",
-          "histological_type",
-          "history_of_neoadjuvant_treatment",
-          "race",
-          "tumor_tissue_site",
-          "vital_status"
+          "clinical.icd_10",
+          "clinical.ethnicity",
+          "clinical.gender",
+          "clinical.vital_status",
+          "clinical.race",
+          "project.name",
+          "project.code"
         ]
       }).then((data: IFiles) => {
         if (!data.hits.length) {
@@ -177,7 +161,6 @@ module ngApp.search.controllers {
       return this.UserService.isUserProject(file);
     }
 
-
     select(section: string, tab: string) {
       this.State.setActive(section, tab);
       this.setState(tab);
@@ -199,7 +182,7 @@ module ngApp.search.controllers {
     }
 
     removeFiles(files: IFile[]): void {
-      this.CartService.remove(_.pluck(files, "file_uuid"));
+      this.CartService.remove(_.pluck(files, "file_id"));
     }
 
     gotoQuery() {

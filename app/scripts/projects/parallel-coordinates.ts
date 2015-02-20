@@ -724,7 +724,7 @@ function ParallelCoordinates(data,options) {
 
 	var nested_data=d3.nest()
         .key(function(d){
-            return d.project_code;
+            return d.code;
         })
         .rollup(function(leaves) {
             var r={};
@@ -732,7 +732,7 @@ function ParallelCoordinates(data,options) {
                 r[col]=d3.sum(leaves,function(o){
                     return o[col]
                 });
-                r.project_code=leaves[0]["project_code"];
+                r.code=leaves[0]["code"];
                 r.file_count = leaves[0]['file_count'];
                 r.participant_count = leaves[0]['participant_count'];
                 r.primary_site = leaves[0]['primary_site'];
@@ -749,8 +749,8 @@ function ParallelCoordinates(data,options) {
         })
         .slice(0,28);
 	
-    
-    var marker_max_width = (WIDTH-d3.sum([margins.left,margins.right,padding.left,padding.right]))/options.columns.length;
+
+  var marker_max_width = (WIDTH-d3.sum([margins.left,margins.right,padding.left,padding.right]))/options.columns.length;
 	var marker_width=[2,marker_max_width];
 
 	var tooltip=d3.select(options.container)

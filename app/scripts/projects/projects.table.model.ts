@@ -4,8 +4,8 @@ module ngApp.projects.models {
 
     function getParticipantSref(data_type:string) {
         return function fileSref (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-            var projectCode = _.find(row,function(elem){
-                return elem.id === 'project_code';
+            var projectCode = _.find(row, function(elem) {
+                return elem.id === 'name';
             }).val;
 
             var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: projectCode},{name: 'files.data_type', value: data_type}]);
@@ -15,21 +15,22 @@ module ngApp.projects.models {
 
     var projectTableModel:TableiciousConfig = {
         title: 'Projects',
-        order: ['disease_type', 'project_name','primary_site', 'program', 'participants', 'file_size', 'files', 'last_update'],
+        order: ['code', 'primary_site', 'program', 'participants', 'name', 'file_size', 'files', 'last_update'],
         headings: [{
             displayName: "Code",
-            id: "project_code",
+            id: "code",
             enabled: true,
-            sref: function (field) {
-                return "project({projectId:'" + field.val + "'})"
+            sref: function (field, scope) {
+                var project_id = _.result(_.findWhere(scope, { 'id': 'project_id' }), 'val');
+                return "project({projectId:'" + project_id  + "'})";
             }
         }, {
             displayName: "Project",
-            id: "project_name",
+            id: "program.name",
             enabled: false
         },{
             displayName: "Disease Type",
-            id: "disease_type",
+            id: "name",
             enabled: true
         },{
             displayName: "Primary Site",
@@ -37,7 +38,7 @@ module ngApp.projects.models {
             enabled: true
         }, {
             displayName: "Program",
-            id: "program",
+            id: "program.name",
             enabled: true
         },
         {
@@ -45,9 +46,8 @@ module ngApp.projects.models {
             id: "summary.participant_count",
             enabled: true,
             sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-                console.log(row);
                 var disease_code = _.find(row,function(elem){
-                    return elem.id === 'project_code';
+                    return elem.id === 'name';
                 }).val;
 
                 var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: disease_code }]);
@@ -166,11 +166,11 @@ module ngApp.projects.models {
                 }]
             }, {
                 displayName: "Files",
-                id: "summary.data_file_count",
+                id: "summary.file_count",
                 enabled: true,
                 sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
                     var projectCode = _.find(row,function(elem){
-                        return elem.id === 'project_code';
+                        return elem.id === 'name';
                     }).val;
 
                     var filter = $filter("makeFilter")([{name: 'participants.admin.disease_code', value: projectCode }]);

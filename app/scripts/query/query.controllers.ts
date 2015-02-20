@@ -85,7 +85,7 @@ module ngApp.query.controllers {
           "file_extension",
           "file_name",
           "file_size",
-          "file_uuid",
+          "file_id",
           "platform",
           "updated",
           "archive.disease_code",
@@ -112,7 +112,7 @@ module ngApp.query.controllers {
           "person_neoplasm_cancer_status",
           "admin.disease_code",
           "tumor_tissue_site",
-          "files.file_uuid",
+          "files.file_id",
           "files.file_name",
           "files.file_size",
           "files.data_type",
@@ -173,7 +173,7 @@ module ngApp.query.controllers {
     }
 
     removeFiles(files: IFile[]): void {
-      this.CartService.remove(_.pluck(files, "file_uuid"));
+      this.CartService.remove(_.pluck(files, "file_id"));
     }
   }
   angular

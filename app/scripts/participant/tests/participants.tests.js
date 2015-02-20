@@ -15,7 +15,7 @@ describe('Participants:', function () {
       sinon.spy(ParticipantsService.ds, 'get');
 
       var fs = {hits: [], facets: [], pagination: {}};
-      httpBackend.whenGET("/participants?filters=%7B%7D&from=1&size=10&sort=bcr_patient_barcode:asc").respond(fs);
+      httpBackend.whenGET("/participants?filters=%7B%7D&from=1&size=10&sort=participant_id:asc").respond(fs);
 
       ParticipantsService.getParticipants();
       httpBackend.flush();

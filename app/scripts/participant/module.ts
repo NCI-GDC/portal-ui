@@ -14,32 +14,27 @@ module ngApp.participants {
         participant: ($stateParams: ng.ui.IStateParamsService, ParticipantsService: IParticipantsService): ng.IPromise<IParticipant> => {
           return ParticipantsService.getParticipant($stateParams["participantId"], {
             fields: [
-              "bcr_patient_uuid",
-              "vital_status",
-              "patient_id",
-              "tumor_tissue_site",
-              "ethnicity",
-              "gender",
-              "race",
-              "bcr_patient_barcode",
-              "admin.disease_code",
-              "admin.project_code",
-              "clinical_cqcf.consent_or_death_status",
-              "files.file_uuid",
-              "participant_annotations.id",
-              "samples.bcr_sample_barcode",
-              "samples.bcr_sample_uuid",
-              "samples.portions.bcr_portion_uuid",
-              "samples.portions.bcr_portion_barcode",
-              "samples.portions.slides.bcr_slide_uuid",
-              "samples.portions.slides.bcr_slide_barcode",
-              "samples.portions.analytes.bcr_analyte_uuid",
-              "samples.portions.analytes.bcr_analyte_barcode",
+              "participant_id",
+              "clinical.vital_status",
+              "clinical.ethnicity",
+              "clinical.gender",
+              "clinical.race",
+              "clinical.icd_10",
+              "files.file_id",
+              "project.name",
+              "project.code",
+              "project.primary_site",
+              "annotations.annotation_id",
+              "summary.experimental_strategies.experimental_strategy",
+              "summary.experimental_strategies.file_count",
+              "samples.sample_id",
+              "samples.portions.portion_id",
+              "samples.portions.slides.slide_id",
+              "samples.portions.analytes.analyte_id",
               "samples.portions.analytes.amount",
               "samples.portions.analytes.analyte_type",
-              "samples.portions.analytes.aliquots.bcr_aliquot_barcode",
-              "samples.portions.analytes.aliquots.bcr_aliquot_uuid"
-            ]
+              "samples.portions.analytes.aliquots.aliquot_id"
+           ]
           });
         }
       }

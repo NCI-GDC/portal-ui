@@ -1,9 +1,9 @@
 <div class="btn-group" data-dropdown>
-    <button data-ng-if="CartService.isInCart(file.file_uuid)" type="button" class="btn btn-success"
+    <button data-ng-if="CartService.isInCart(file.file_id)" type="button" class="btn btn-success"
             data-ng-click="removeFromCart([file])">
         <i class="fa fa-check-circle"></i>
     </button>
-    <button data-ng-if="!CartService.isInCart(file.file_uuid)" type="button" class="btn btn-default"
+    <button data-ng-if="!CartService.isInCart(file.file_id)" type="button" class="btn btn-default"
             data-ng-click="addToCart([file])">
         <i class="fa fa-circle-o"></i>
     </button>
@@ -15,21 +15,21 @@
     <ul class="dropdown-menu" role="menu">
         <li role="listitem"
             aria-label="{{ 'Download File' | translate }}">
-            <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
+            <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
                 <i class="fa-stack fa fa-cloud-download fa-stack"></i>
                 <span data-translate>Download</span>
             </a>
         </li>
         <li role="listitem"
             aria-label="{{ 'Download File' | translate }}">
-            <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
+            <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
                 <i class="fa-stack fa fa-download fa-stack "></i>
                 <span data-translate>Download File</span>
             </a>
         </li>
         <li role="listitem"
             aria-label="{{ 'Download Metadata' | translate }}">
-            <a data-ng-href="{{ [file.file_uuid] | makeDownloadLink }}">
+            <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
                 <i class="fa fa-download fa-stack "></i>
                 <span data-translate>Download Metadata</span>
             </a>
@@ -45,7 +45,7 @@
         <li class="divider"></li>
         <li role="listitem"
             aria-label="{{ 'View Metadata Files' | translate }}">
-            <a data-ng-href="/files/{{ file.file_uuid }}#files">
+            <a data-ng-href="/files/{{ file.file_id }}#files">
                 <i class="fa fa-file-text-o fa-stack "></i>
                 <span data-translate>View Metadata Files</span>
             </a>

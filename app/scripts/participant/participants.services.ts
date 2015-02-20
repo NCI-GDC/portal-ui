@@ -51,7 +51,7 @@ module ngApp.participants.services {
       var defaults = {
         size: paging.size,
         from: paging.from,
-        sort: paging.sort || 'bcr_patient_barcode:asc',
+        sort: paging.sort || 'participant_id:asc',
         filters: this.LocationService.filters()
       };
 

@@ -1,5 +1,5 @@
 module ngApp.core.filters {
-  
+
   class MakeFilter {
     constructor() {
       return function (fields: { name: string; value: string }[], noEscape: boolean) {
@@ -8,7 +8,7 @@ module ngApp.core.filters {
             "op": "in",
             "content": {
               "field": item.name,
-              "value": item.value.split(",")
+              "value": item.value ? item.value.split(",") : item.value
             }
           };
         });

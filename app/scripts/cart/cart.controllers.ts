@@ -214,7 +214,7 @@ module ngApp.cart.controllers {
     }
 
     getFileIds(): string[] {
-      return _.pluck(this.files, "file_uuid");
+      return _.pluck(this.files, "file_id");
     }
 
     getSelectedSize(): number {
@@ -238,7 +238,7 @@ module ngApp.cart.controllers {
     }
 
     removeSelected(): void {
-      var ids: string[] = _.pluck(this.selected(), "file_uuid");
+      var ids: string[] = _.pluck(this.selected(), "file_id");
       this.CartService.remove(ids);
       this.lastModified = this.CartService.lastModified;
       this.setDisplayedFiles();

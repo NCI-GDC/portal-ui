@@ -6,19 +6,19 @@
           <h3 class="panel-title pull-left">Facets</h3>
         </div>
         <div class="list-group">
-          <facets-free-text data-title="Project" field="project_code" placeholder="{{ 'Project Name or Code' | translate }}"
+          <facets-free-text data-title="Project" field="name" placeholder="{{ 'Project Name or Code' | translate }}"
                             data-entity="projects"
                             data-template="components/facets/templates/typeahead-projects.html"></facets-free-text>
           <terms data-name="disease_type" data-title="Disease Type"
-                 data-facet="prsc.projects.aggregations.disease_type"></terms>
+                 data-facet="prsc.projects.aggregations.name"></terms>
           <terms data-name="primary_site"
                  data-facet="prsc.projects.aggregations.primary_site" data-title="Primary Site"></terms>
-          <terms data-name="project_code"
-                 data-facet="prsc.projects.aggregations.project_code" data-title="Project Code"></terms>
+          <terms data-name="code"
+                 data-facet="prsc.projects.aggregations.code" data-title="Code"></terms>
           <terms data-name="program"
-                 data-facet="prsc.projects.aggregations.program" data-title="Program"></terms>
+                 data-facet="prsc.projects.aggregations.program.code" data-title="Program"></terms>
           <terms data-name="status"
-                 data-facet="prsc.projects.aggregations.status" data-title="Status"></terms>
+                 data-facet="prsc.projects.aggregations.state" data-title="Status"></terms>
           <terms data-name="summary.data_types.data_type"
                  data-facet="prsc.projects.aggregations['summary.data_types.data_type']" data-title="Data Type"></terms>
           <terms data-name="summary.experimental_strategies.experimental_strategy"
@@ -38,7 +38,6 @@
       <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0" data-translate>
         No projects found using those filters.
       </h3>
-
       <div class="btn-group" role="group" aria-label="Filter and sort table" ng-init="mode='graph'"
            data-ng-show="prsc.projects.hits.length">
         <button type="button" class="btn btn-default" ng-class="{'btn-primary': mode==='table'}"
@@ -50,14 +49,12 @@
           Graph
         </button>
       </div>
-          <div class="githut">
-        
-    
-		
-		<div id="pc"  data-ng-show="mode==='graph'"></div>
-</div>
+      <!--</div>-->
+      <div class="githut">
+        <div id="pc"  data-ng-show="mode==='graph'"></div>
+      </div>
 
-      <gdc-table data-data="prsc.projects.hits"
+     <gdc-table data-data="prsc.projects.hits"
                  data-config="tableConfig"
                  data-heading="Projects ({{prsc.projects.pagination.total}})"
                  data-id="project-table"

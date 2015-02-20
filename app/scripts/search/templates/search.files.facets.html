@@ -1,16 +1,14 @@
-<facets-free-text data-title="File" placeholder="{{ 'File name or Uuid' | translate }}"
-                  data-field="files.file_uuid"
+<facets-free-text data-title="File" placeholder="{{ 'File name or ID' | translate }}"
+                  data-field="files.file_id"
                   data-entity="files"
                   data-template="components/facets/templates/typeahead-files.html"></facets-free-text>
 <terms data-name="files.data_type" data-title="Type" data-facet="sc.files.aggregations.data_type"></terms>
 <terms data-name="files.data_subtype" data-title="Subtype" data-facet="sc.files.aggregations.data_subtype"></terms>
 <terms data-name="files.experimental_strategy" data-title="Experimental Strategy" data-facet="sc.files.aggregations.experimental_strategy"></terms>
 <terms data-name="files.data_format" data-title="Format" data-facet="sc.files.aggregations.data_format" data-collapsed="true"></terms>
-<terms data-name="files.none" data-title="Program Status" data-facet="sc.files.aggregations.none" data-collapsed="true"></terms>
 <terms data-name="files.platform" data-title="Platform" data-facet="sc.files.aggregations.platform" data-collapsed="true"></terms>
-<terms data-name="files.archive.revision" data-title="Revision" data-facet="sc.files.aggregations['archive.revision']" data-collapsed="true"></terms>
-<terms data-name="files.none" data-title="Version" data-facet="sc.files.aggregations.none" data-collapsed="true"></terms>
-<terms data-name="files.data_level" data-title="Level" data-facet="sc.files.aggregations.data_level" data-collapsed="true"></terms>
-<terms data-name="files.data_access" data-title="Access" data-facet="sc.files.aggregations.data_access" data-collapsed="true"></terms>
-<terms data-name="files.archive.center_name" data-title="Submitter" data-facet="sc.files.aggregations['archive.center_name']" data-collapsed="true"></terms>
-<terms data-name="files.file_extension" data-title="File Extension" data-facet="sc.files.aggregations.file_extension" data-collapsed="true"></terms>
+<terms data-name="files.archives.revision" data-title="Revision" data-facet="sc.files.aggregations['archives.revision']" data-collapsed="true"></terms>
+<!-- todo what's none? <terms data-name="files.none" data-title="Version" data-facet="sc.files.aggregations.none" data-collapsed="true"></terms> -->
+<!-- todo data_level tbd <terms data-name="files.data_level" data-title="Level" data-facet="sc.files.aggregations.data_level" data-collapsed="true"></terms>-->
+<terms data-name="files.access" data-title="Access" data-facet="sc.files.aggregations.access" data-collapsed="true"></terms>
+<terms data-name="files.center.name" data-title="Submitter" data-facet="sc.files.aggregations['center.name']" data-collapsed="true"></terms>

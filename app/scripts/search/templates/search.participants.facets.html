@@ -1,27 +1,27 @@
 <facets-free-text data-title="Participant" placeholder="{{ 'Participant Barcode or Uuid' | translate }}"
-                  data-field="participants.bcr_patient_uuid"
+                  data-field="participants.participant_id"
                   data-entity="participants"
                   data-template="components/facets/templates/typeahead-participants.html"></facets-free-text>
-<terms data-name="participants.admin.project_code" data-title="Cancer Program"
-       data-facet="sc.participants.aggregations['admin.project_code']" data-collapsed="true"></terms>
-<terms data-name="participants.admin.disease_code" data-title="Project"
-       data-facet="sc.participants.aggregations['admin.disease_code']" data-collapsed="true"></terms>
-<terms data-name="participants.admin.disease_code" data-title="Disease Type"
-       data-facet="sc.participants.aggregations['admin.disease_code']" data-collapsed="true"></terms>
+<!-- this is the same as project.code? <terms data-name="participants.project.code" data-title="Cancer Program"
+       data-facet="sc.participants.aggregations['project.code']" data-collapsed="true"></terms> -->
+<terms data-name="participants.project.code" data-title="Project"
+       data-facet="sc.participants.aggregations['project.code']" data-collapsed="true"></terms>
+<terms data-name="participants.project.name" data-title="Disease Type"
+       data-facet="sc.participants.aggregations['project.name']" data-collapsed="true"></terms>
 <terms data-name="participants.tumor_tissue_site" data-title="Tumor Tissue Site"
        data-facet="sc.participants.aggregations.tumor_tissue_site"></terms>
 <facets-free-text data-title="ICD10"
                   placeholder="{{ 'e.g. C50.9, C64.1' | translate }}"
-                  data-field="icd_10"
+                  data-field="clinical.icd_10"
                   data-entity="participants"></facets-free-text>
-<terms data-name="participants.ethnicity" data-title="Ethnicity"
-       data-facet="sc.participants.aggregations.ethnicity"></terms>
-<terms data-name="participants.gender" data-title="Gender" data-facet="sc.participants.aggregations.gender"></terms>
+<terms data-name="participants.clinical.ethnicity" data-title="Ethnicity"
+       data-facet="sc.participants.aggregations['clinical.ethnicity']"></terms>
+<terms data-name="participants.clinical.gender" data-title="Gender" data-facet="sc.participants.aggregations['clinical.gender']"></terms>
 <terms data-name="participants.histological_type" data-title="Histological Type"
        data-facet="sc.participants.aggregations.histological_type"></terms>
-<terms data-name="participants.race" data-title="Race" data-facet="sc.participants.aggregations.race"
+<terms data-name="participants.clinical.race" data-title="Race" data-facet="sc.participants.aggregations['clinical.race']"
        data-collapsed="true"></terms>
-<terms data-name="participants.vital_status" data-title="Vital Status"
-       data-facet="sc.participants.aggregations.vital_status" data-collapsed="true"></terms>
+<terms data-name="participants.clinical.vital_status" data-title="Vital Status"
+       data-facet="sc.participants.aggregations['clinical.vital_status']" data-collapsed="true"></terms>
 <terms data-name="participants.stage_event.pathologic_stage" data-title="Pathologic Stage"
        data-facet="sc.participants.aggregations['stage_event.pathologic_stage']" data-collapsed="true"></terms>

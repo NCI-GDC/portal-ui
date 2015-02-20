@@ -13,13 +13,13 @@ module ngApp.search.models {
 
     var searchTableFilesModel: TableiciousConfig = {
         title: 'Files',
-        order: ['file_type', 'participants', 'project_name', 'availableData', 'status', 'last_update'],
+        order: ['file_type', 'participants', 'code', 'availableData', 'state', 'last_update'],
         headings: [
         {
             displayName: "add_to_cart",
             id: "add_to_cart",
             compile:function($scope){
-                $scope.arrayRow = arrayToObject($scope.row);
+                $scope.arrayRow = arrayToObject($scope.row); // TODO: the file being passed here is wrong how to fix?
                 var htm = '<div add-to-cart-single file="arrayRow"></div>';
                 return htm;
             },
@@ -42,7 +42,7 @@ module ngApp.search.models {
             }
         }, {
             displayName: "Access",
-            id: "data_access",
+            id: "access",
                 visible: true,
             icon:function(field){
                 return field && field.val === 'protected' ? "lock" : "unlock";
@@ -59,7 +59,7 @@ module ngApp.search.models {
                 return field && field.val;
             },
             sref:function(field,row){
-                var uuid = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'file_uuid'});
+                var uuid = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'file_id'});
                 return "file({ fileId: '"+uuid.val+"' })";
             },
                 sortable: true,
@@ -72,7 +72,7 @@ module ngApp.search.models {
                 var participants = field.val;
                 if (participants) {
                     if (participants.length === 1) {
-                       return  participants[0].bcr_patient_uuid;
+                       return  participants[0].participant_id;
                        //return  scope.$filter('ellipsicate')(participants[0].bcr_patient_uuid, 8);
                     } else if (participants.length > 1) {
                         return participants.length;
@@ -83,22 +83,27 @@ module ngApp.search.models {
                 //debugger;
                 var participant = field.val;
                 if (participant) {
-                    return "participant({ participantId : '" + participant[0].bcr_patient_uuid + "' })";
+                    return "participant({ participantId : '" + participant[0].participant_id + "' })";
                 }
             },
                 fieldClass: 'truncated-cell'
         }, {
             displayName: "Project",
-            id: "archive.disease_code",
+            id: "participants.project.name",
             visible: true,
-            sref:function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
-
-                var arch:TableiciousEntryDefinition = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'archive'});
-                var code:any = arch.val.disease_code;
-
-                return "project({ 'projectId':'" + code + "'})";
-
+            template: function(field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
+              var participants: TableiciousEntryDefinition = _.find(row, function (a:TableiciousEntryDefinition) { return a.id === 'participants' });
+              var projectName: string = participants.val[0].project.name;
+              var projectId: string = participants.val[0].project.project_id;
+              return projectName; //TODO make the link work
             },
+            //sref:function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
+                //console.log(field);
+                //var participants: TableiciousEntryDefinition = _.find(row, function (a:TableiciousEntryDefinition) { console.log(a); return a.id === 'participants' });
+                //var projectName: string = participants.val[0].project.name;
+                //var projectId: string = participants.val[0].project.project_id;
+                //return "project({projectId:'" + projectId + "'})";
+            //},
                 sortable: true
         }, {
             displayName: "Data Type",
@@ -122,9 +127,12 @@ module ngApp.search.models {
             fieldClass: 'text-right'
         },{
             displayName: "Revision",
-            id: "archive.revision",
+            id: "revision",
             visible: true,
-
+            template:function(field,row,scope){
+              var archives = _.find(row,function(elem){return elem.id==='archives'}).val;
+              return archives[0].revision;
+            }
 
         },{
             displayName: "Update date",

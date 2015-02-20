@@ -21,12 +21,12 @@ describe('Cart:', function () {
       // Which HTTP requests do we expect to occur, and how do we response?
       var files = [
         {
-          file_uuid: "AAA",
+          file_id: "AAA",
           file_size: 20,
           file_url: "urlA"
         },
         {
-          file_uuid: "BBB",
+          file_id: "BBB",
           file_size: 10,
           file_url: "urlB"
         }
@@ -45,12 +45,12 @@ describe('Cart:', function () {
 
   describe('Service:', function () {
     var fileA = {
-      file_uuid: "AAA",
+      file_id: "AAA",
       file_size: 20,
       file_url: "urlA"
     };
     var fileB = {
-      file_uuid: "BBB",
+      file_id: "BBB",
       file_size: 10,
       file_url: "urlB"
     };
@@ -113,7 +113,7 @@ describe('Cart:', function () {
       var files = CartService.getFiles();
       expect(getFilesCallback).to.have.been.calledOnce;
       expect(files).to.have.length(1);
-      expect(files[0]).to.have.property('file_uuid', 'AAA');
+      expect(files[0]).to.have.property('file_id', 'AAA');
     }));
 
     it('should remove all files', inject(function (CartService) {
@@ -161,8 +161,8 @@ describe('Cart:', function () {
       CartService.add(fileB);
       var returnValue = CartService.getFileIds();
       expect(returnValue).to.have.length(2);
-      expect(returnValue).to.contain(fileA.file_uuid);
-      expect(returnValue).to.contain(fileB.file_uuid);
+      expect(returnValue).to.contain(fileA.file_id);
+      expect(returnValue).to.contain(fileB.file_id);
     }));
 
   });

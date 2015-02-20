@@ -10,6 +10,10 @@ module ngApp.components.tables.services {
 
 
     class TableService implements ITableService {
+      
+      constructor(private $log) {
+      
+      }
 
         /**
          * If, in a given array, there is a member and that member has a property called ID and that property is equal to @id, return true if that member also has a truthy enabled property.
@@ -47,7 +51,7 @@ module ngApp.components.tables.services {
                     object[_key] = subTree[_key];
                 }
             } else {
-                throw new Error("Can't flatten object at key" + key +  ". Object " + object +  " has no property with name " + key);
+                $log.error("Can't flatten object at key" + key +  ". Object " + object +  " has no property with name " + key);
             }
 
             return object;
@@ -203,6 +207,7 @@ module ngApp.components.tables.services {
                     result = heading.template(field,row,scope);
                 } catch (e) {
                     result = '?';
+                    $log.warn("Tableicious:: Encountered error processing template property for " + heading.id,e);
                 }
             } else {
                 result = this.delimitedStringToValue(id, row);
@@ -238,6 +243,7 @@ module ngApp.components.tables.services {
                 result = heading.sref ? heading.sref(field,row,scope,$filter) : field.val;
             } catch (e) {
                 result = '?';
+                $log.warn("Tableicious:: Encountered error processing sref property for " + heading.id,e);
             }
 
             return result;

@@ -125,10 +125,9 @@ module ngApp.components.tables.directives {
       controller: function($scope,$element){
         var config = $scope.config;
         var originalOrder = _.pluck(config.headings,'id');
-        console.log("Reset table init...");
-        $scope.reset = function(){
-          console.log("Reset...",config);
 
+        $scope.reset = function(){
+          
           config.headings = originalOrder.map(function(id){
             var heading = _.find(config.headings,function(head){return head.id === id});
             if (heading) {

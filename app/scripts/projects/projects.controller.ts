@@ -96,12 +96,11 @@ module ngApp.projects.controllers {
 				config:'=',
 				data:'='
 			},
-			controller:function($scope){
-				console.log("PC Directive:: Init");
-			}
-					
-  
-				
+			controller:function($scope,$element){
+				console.log("PC Directive:: Init",$scope.config, $scope.data);
+				if (!$scope.data || !$scope.config) throw new Error();
+				githutTable($scope.data,$scope.config,$element[0]);
+			}	
 		}
 	})
   .controller("ProjectController", ProjectController);
@@ -111,7 +110,7 @@ module ngApp.projects.controllers {
 var chartDrawn = false;
 var primary_sites = [];
 
-function githutTable(data){
+function githutTable(data,_config,container){
     var hits = data.hits;
 
     d3.select("svg")
@@ -250,10 +249,10 @@ function githutTable(data){
 //        'ACC':aggregations['ACC']
 //    };
 
-    var config = {
+    var config = _config || {
         
         /* the id of the tag the table will be generated into */
-        container:"#pc",
+        container:container || "#pc",
         
         /* default scale value, not useful */
         scale:"ordinal",

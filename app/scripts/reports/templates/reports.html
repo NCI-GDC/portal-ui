@@ -13,15 +13,17 @@
       </div>
       
     <div class="githut">
-        
-    	
-		<div id="pc"  data-ng-show="mode==='graph'">
-<!--		    This visualization is coming soon.-->
-	    <parallel-coordinates>
+       <div class="graph" data-ng-show="mode==='graph'">
+        graph
+    
+		
+<!--		<div class=githut data-ng-show="mode==='graph'"></div>-->
+        <parallel-coordinates  ng-if=githutData data=githutData config=githutConfig>
 	    	
 	    </parallel-coordinates>
-		</div>
-    </div>
+	 </div>
+</div>
+
 
 
       

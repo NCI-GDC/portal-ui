@@ -68,8 +68,8 @@ module ngApp.projects.controllers {
         this.projects = data;
         //          githutTable(data);
 
-        d3.select("svg")
-        .remove();
+//        d3.select("svg")
+//        .remove();
 
         var hits = data.hits;
 
@@ -311,7 +311,7 @@ module ngApp.projects.controllers {
         data:'='
       },
       controller:function($scope,$element,ProjectsService){
-        console.log("PC Directive:: Init",$scope.config, $scope.data);
+//        console.log("PC Directive:: Init",$scope.config, $scope.data);
         $scope.config.container = $element[0];
         new ParallelCoordinates($scope.data,$scope.config);
 

@@ -3,6 +3,7 @@ module ngApp.components.facets.services {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import ISearch = ngApp.components.location.services.ISearch;
   import ICartService = ngApp.cart.services.ICartService;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface IFacetService {
     addTerm(facet: string, term: string): void;
@@ -14,12 +15,21 @@ module ngApp.components.facets.services {
 
   class FacetService implements IFacetService {
     /* @ngInject */
-    constructor(private LocationService: ILocationService, private Restangular: restangular.IService) {
-    }
+    constructor(private LocationService: ILocationService, private Restangular: restangular.IService,
+                private UserService: IUserService) {}
 
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any> {
+      var projectsKeys = {
+        "files": "participants.admin.disease_code",
+        "participants": "admin.disease_code",
+        "projects": "project_code"
+      };
+      var filters = this.LocationService.filters();
+      filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[entity]);
+
       return this.Restangular.all(entity + "/ids").get("", {
-        query: query
+        query: query,
+        filters: filters
       }).then((data) => {
         return data.data.hits;
       });
@@ -126,6 +136,6 @@ module ngApp.components.facets.services {
     }
   }
   angular.
-      module("facets.services", ["location.services", "restangular"])
+      module("facets.services", ["location.services", "restangular", "user.services"])
       .service("FacetService", FacetService);
 }

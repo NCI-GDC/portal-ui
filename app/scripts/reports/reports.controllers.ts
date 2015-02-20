@@ -21,6 +21,154 @@ module ngApp.reports.controllers {
         
         ReportsService.getReports().then(function(a){
           CoreService.setSearchModelState(true);
+          console.log("raw thing from reports",a);
+          
+         
+     
+   
+          
+           var columns = [{
+          id:'project_code',
+          display_name:["Project","Code"],
+          scale:'ordinal',
+          dimensional:true
+        },{
+          id:'file_size',
+          display_name:["File","Size"],
+          scale:'ordinal',
+          dimensional:true
+        },{
+          id:'file_count',
+          display_name:["File","Count"],
+          scale:'ordinal',
+          dimensional:true
+        },{
+          id:'Clinical',
+          display_name:['Clinical'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Raw microarray data',
+          display_name:['Array'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Raw sequencing data',
+          display_name:['Seq'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Simple nucleotide variation',
+          display_name:['SNV'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Copy number variation',
+          display_name:['CNV'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Structural rearrangement',
+          display_name:['SV'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Gene expression',
+          display_name:['Exp'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Protein expression',
+          display_name:['PExp'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'Other',
+          display_name:['Other'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'DNA methylation',
+          display_name:['Meth'],
+          scale:'ordinal',
+          is_subtype:true,
+          dimensional:true
+        },{
+          id:'primary_site',
+          display_name:["Primary","Site"],
+          scale:'linear',
+          dimensional:true
+        }];
+          
+          var aggregations = a.reduce(function(a,b){
+//            debugger;
+            if (a[b.archive.disease_code]) {
+              var record = a[b.archive.disease_code];
+              record.file_size += b.file_size;
+              if (record[b.data_type]) {
+                record[b.data_type] += 1;
+              } else {
+                record[b.data_type] = 1;
+              }
+            
+            } else {
+              a[b.archive.disease_code] = {
+                file_size:b.file_size,
+              };
+              
+              a[b.archive.disease_code][b.data_type] = 1;
+           
+            }
+            return a;
+          },{});
+          
+          console.log("aggregationes?",aggregations);
+
+          
+          
+//        var aggregations = d3.keys(project_codes).reduce(function(x,key){
+////          debugger;
+//          
+////          var group = project_codes[key];
+////          var types = group.summary.data_types;
+////
+////          if (!_.contains(primary_sites,group.primary_site)){
+////            primary_sites.push(group.primary_site);    
+////          } 
+////
+//          var the_returned = {
+//
+////            project_code:key,
+////            primary_site:group.primary_site,
+////            file_count:group.summary.data_file_count,
+////            file_size:group.summary.file_size,
+////            participant_count:group.summary.participant_count,
+//
+//          }
+////
+//          columns
+//          .filter(function(c){return c.is_subtype})
+//          .forEach(function(s){
+////            var thing = findTheThing(types,s.id,"data_type");
+////            the_returned[s.id] = thing ? thing.file_count : 0;
+//          })   
+////
+////          a[key] = the_returned;
+////          return a;
+//        },{});    
+//          
+          console.log("Aggregations from reports...",aggregations);
+          
+//               debugger;
           
           $scope.filesByProject = a.reduce(function(a,b){
              var project = b.archive.disease_code;
@@ -205,6 +353,8 @@ module ngApp.reports.controllers {
       }).then((data) => {
         this.projects = data;
         //          githutTable(data);
+         
+           console.log("raw thing from projects",data.hits);
 
         d3.select("svg")
         .remove();
@@ -233,11 +383,6 @@ module ngApp.reports.controllers {
         },{
           id:'file_count',
           display_name:["File","Count"],
-          scale:'ordinal',
-          dimensional:true
-        },{
-          id:'participant_count',
-          display_name:["Part.","Count"],
           scale:'ordinal',
           dimensional:true
         },{
@@ -337,6 +482,8 @@ module ngApp.reports.controllers {
           a[key] = the_returned;
           return a;
         },{});    
+         
+         console.log('aggregations for projects...',aggregations);
 
 
         var config = {

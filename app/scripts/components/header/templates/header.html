@@ -19,6 +19,12 @@
         <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }">
           <a ui-sref="search.summary"><i class="fa fa-database"></i> Data</a>
         </li>
+        <li ui-sref-active="active">
+          <a ui-sref="reports">
+            <i class="fa fa-cube"></i>
+            <span data-translate>Reports</span>
+          </a>
+        </li>
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -67,12 +73,7 @@
             <span class="label label-primary">{{ hc.getNumCartItems() }}</span>
           </a>
         </li>
-        <li ui-sref-active="active">
-          <a ui-sref="reports">
-            <i class="fa fa-cube"></i>
-            <span data-translate>Reports</span>
-          </a>
-        </li>
+        
       </ul>
     </nav>
   </div>

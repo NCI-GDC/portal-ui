@@ -51,7 +51,7 @@ module ngApp.components.tables.services {
                     object[_key] = subTree[_key];
                 }
             } else {
-                $log.error("Can't flatten object at key" + key +  ". Object " + object +  " has no property with name " + key);
+                this.$log.error("Can't flatten object at key" + key +  ". Object " + object +  " has no property with name " + key);
             }
 
             return object;
@@ -207,7 +207,7 @@ module ngApp.components.tables.services {
                     result = heading.template(field,row,scope);
                 } catch (e) {
                     result = '?';
-                    $log.warn("Tableicious:: Encountered error processing template property for " + heading.id,e);
+                    this.$log.warn("Tableicious:: Encountered error processing template property for " + heading.id,e);
                 }
             } else {
                 result = this.delimitedStringToValue(id, row);
@@ -243,7 +243,7 @@ module ngApp.components.tables.services {
                 result = heading.sref ? heading.sref(field,row,scope,$filter) : field.val;
             } catch (e) {
                 result = '?';
-                $log.warn("Tableicious:: Encountered error processing sref property for " + heading.id,e);
+                this.$log.warn("Tableicious:: Encountered error processing sref property for " + heading.id,e);
             }
 
             return result;

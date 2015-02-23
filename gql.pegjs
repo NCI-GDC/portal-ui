@@ -160,7 +160,7 @@ missing_expression
 
 
 list_expression
-  = field:field operator:list_operator LBRACK terms:terms RBRACK
+  = field:field operator:list_operator LBRACK _* terms:terms _* RBRACK
   {
     return {
       op: operator,
@@ -186,7 +186,7 @@ _sort_columns
 sort_column
   = _* field:field order:(_* COLON _* order)?
   {
-    order = order ? ":" + order[3] : '';
+    order = order ? ":" + order[3] : "";
     return field + order ;
   }
 
@@ -231,48 +231,48 @@ compare_operator = _* op:(GTE / GT / LTE / LT) _* { return op; }
 DIGIT = [0-9]
 ALPHA = [A-Za-z]
 ALPHA_NUM = ALPHA / DIGIT
-SEP = '_' / '-' / '.'
+SEP = "_" / "-" / "."
 
 // Symbols
 INTEGER = $DIGIT+
-REAL = DIGIT* '.' DIGIT+
-COMMA = ','
-COLON = ':'
-SEMI = ''
-EQUAL = '='
-NEQ = '!='
-GT = '>'
-GTE = '>='
-LT = '<'
-LTE = '<='
-LPAR = '('
-RPAR = ')'
-LBRACE = '{'
-RBRACE = '}'
-LBRACK = '['
-RBRACK = ']'
+REAL = DIGIT* "." DIGIT+
+COMMA = ","
+COLON = ":"
+SEMI = ";"
+EQUAL = "="
+NEQ = "!="
+GT = ">"
+GTE = ">="
+LT = "<"
+LTE = "<="
+LPAR = "("
+RPAR = ")"
+LBRACE = "{"
+RBRACE = "}"
+LBRACK = "["
+RBRACK = "]"
 DBLQ = '"'
 
 // GQL Keywords
-SELECT = 'select'i { return 'select'; }
-AND = 'and'i { return 'and'; }
-ASC = 'asc'i { return 'asc'; }
-DESC = 'desc'i { return 'desc'; }
-IN = 'in'i { return 'in'; }
-IS = 'is'i { return 'is'; }
-NOT = 'not'i { return 'not'; }
-IS_NOT = IS _+ NOT { return 'is not'; }
-NOT_IN = NOT _+ IN { return 'not in'; }
-OR = 'or'i { return 'or'; }
-MISSING = 'missing'i { return 'missing'; }
-SORT = 'sort'i { return 'sort'; }
-AGGS = 'aggregate on'i { return 'aggregate'; }
-WHERE = 'where'i { return 'where'; }
+SELECT = "select"i { return "select"; }
+AND = "and"i { return "and"; }
+ASC = "asc"i { return "asc"; }
+DESC = "desc"i { return "desc"; }
+IN = "in"i { return "in"; }
+IS = "is"i { return "is"; }
+NOT = "not"i { return "not"; }
+IS_NOT = IS _+ NOT { return "is not"; }
+NOT_IN = NOT _+ IN { return "not in"; }
+OR = "or"i { return "or"; }
+MISSING = "missing"i { return "missing"; }
+SORT = "sort"i { return "sort"; }
+AGGS = "aggregate on"i { return "aggregate"; }
+WHERE = "where"i { return "where"; }
 
 // Values
 UNQUOTED_STRING = $[A-Za-z0-9\-\_\.]+
 QUOTED_STRING = DBLQ s:$[^"]+ DBLQ { return s; }
-DATE = $(DIGIT DIGIT DIGIT DIGIT ('-'/'/') DIGIT DIGIT ('-'/'/') DIGIT DIGIT)
+DATE = $(DIGIT DIGIT DIGIT DIGIT ("-"/"/") DIGIT DIGIT ("-"/"/") DIGIT DIGIT)
 
 // Extra
 _ = [ \t\r\n]
@@ -280,9 +280,10 @@ EOF = !.
 
 // Model
 MODEL
-  = 'participants.icd_o_3_histology' / 'participants.days_to_last_followup' / 'participants.bcr_patient_uuid' / 'participants.days_to_index' / 'participants.prior_dx' / 'participants.vital_status' / 'participants.radiation_therapy' / 'participants.year_of_form_completion' / 'participants.year_of_initial_pathologic_diagnosis' / 'participants.extrathyroid_carcinoma_present_extension_status' / 'participants.genotype_analysis_performed_indicator' / 'participants.patient_id' / 'participants.tumor_tissue_site' / 'participants.icd_10' / 'participants.informed_consent_verified' / 'participants.histological_type' / 'participants.tissue_prospective_collection_indicator' / 'participants.month_of_form_completion' / 'participants.ethnicity' / 'participants.gender' / 'participants.age_at_initial_pathologic_diagnosis' / 'participants.history_of_neoadjuvant_treatment' / 'participants.icd_o_3_site' / 'participants.race' / 'participants.primary_thyroid_gland_neoplasm_location_anatomic_site' / 'participants.primary_lymph_node_presentation_assessment' / 'participants.lymph_node_preoperative_scan_indicator' / 'participants.primary_neoplasm_focus_type' / 'participants.tissue_retrospective_collection_indicator' / 'participants.residual_tumor' / 'participants.tissue_source_site' / 'participants.person_neoplasm_cancer_status' / 'participants.number_of_lymphnodes_positive_by_he' / 'participants.days_to_birth' / 'participants.lymph_node_examined_count' / 'participants.days_to_initial_pathologic_diagnosis' / 'participants.person_lifetime_risk_radiation_exposure_indicator' / 'participants.day_of_form_completion' / 'participants.bcr_patient_barcode' / 'participants.follow_ups.person_neoplasm_cancer_status' / 'participants.follow_ups.followup_case_report_form_submission_reason' / 'participants.follow_ups.i_131_total_administered_preparation_technique' / 'participants.follow_ups.month_of_form_completion' / 'participants.follow_ups.vital_status' / 'participants.follow_ups.year_of_form_completion' / 'participants.follow_ups.bcr_followup_uuid' / 'participants.follow_ups.days_to_last_followup' / 'participants.follow_ups.radiation_therapy' / 'participants.follow_ups.bcr_followup_barcode' / 'participants.follow_ups.day_of_form_completion' / 'participants.follow_ups.targeted_molecular_therapy' / 'participants.follow_ups.post_surgical_procedure_assessment_thyroid_gland_carcinoma_status' / 'participants.follow_ups.new_tumor.new_tumor_event_after_initial_treatment' / 'participants.bcr_canonical_check.bcr_patient_canonical_status' / 'participants.samples.sample_type_id' / 'participants.samples.diagnostic_slides' / 'participants.samples.oct_embedded' / 'participants.samples.vial_number' / 'participants.samples.bcr_sample_barcode' / 'participants.samples.pathology_report_uuid' / 'participants.samples.days_to_collection' / 'participants.samples.is_ffpe' / 'participants.samples.initial_weight' / 'participants.samples.sample_type' / 'participants.samples.bcr_sample_uuid' / 'participants.samples.portions.shipment_portion_day_of_shipment' / 'participants.samples.portions.shipment_portion_month_of_shipment' / 'participants.samples.portions.shipment_portion_year_of_shipment' / 'participants.samples.portions.shipment_portion_bcr_aliquot_barcode' / 'participants.samples.portions.center_id' / 'participants.samples.portions.plate_id' / 'participants.samples.portions.is_ffpe' / 'participants.samples.portions.day_of_creation' / 'participants.samples.portions.month_of_creation' / 'participants.samples.portions.year_of_creation' / 'participants.samples.portions.weight' / 'participants.samples.portions.portion_number' / 'participants.samples.portions.bcr_shipment_portion_uuid' / 'participants.samples.portions.bcr_portion_uuid' / 'participants.samples.portions.bcr_portion_barcode' / 'participants.samples.portions.slides.bcr_slide_uuid' / 'participants.samples.portions.slides.bcr_slide_barcode' / 'participants.samples.portions.slides.percent_lymphocyte_infiltration' / 'participants.samples.portions.slides.percent_necrosis' / 'participants.samples.portions.slides.percent_stromal_cells' / 'participants.samples.portions.slides.percent_normal_cells' / 'participants.samples.portions.slides.percent_monocyte_infiltration' / 'participants.samples.portions.slides.percent_tumor_cells' / 'participants.samples.portions.slides.percent_tumor_nuclei' / 'participants.samples.portions.slides.percent_neutrophil_infiltration' / 'participants.samples.portions.slides.is_derived_from_ffpe' / 'participants.samples.portions.slides.section_location' / 'participants.samples.portions.analytes.bcr_analyte_uuid' / 'participants.samples.portions.analytes.amount' / 'participants.samples.portions.analytes.analyte_type' / 'participants.samples.portions.analytes.spectrophotometer_method' / 'participants.samples.portions.analytes.gel_image_file' / 'participants.samples.portions.analytes.concentration' / 'participants.samples.portions.analytes.bcr_analyte_barcode' / 'participants.samples.portions.analytes.analyte_type_id' / 'participants.samples.portions.analytes.is_derived_from_ffpe' / 'participants.samples.portions.analytes.aliquots.amount' / 'participants.samples.portions.analytes.aliquots.month_of_shipment' / 'participants.samples.portions.analytes.aliquots.bcr_aliquot_barcode' / 'participants.samples.portions.analytes.aliquots.concentration' / 'participants.samples.portions.analytes.aliquots.plate_row' / 'participants.samples.portions.analytes.aliquots.is_derived_from_ffpe' / 'participants.samples.portions.analytes.aliquots.plate_column' / 'participants.samples.portions.analytes.aliquots.source_center' / 'participants.samples.portions.analytes.aliquots.center_id' / 'participants.samples.portions.analytes.aliquots.bcr_aliquot_uuid' / 'participants.samples.portions.analytes.aliquots.plate_id' / 'participants.samples.portions.analytes.aliquots.day_of_shipment' / 'participants.samples.portions.analytes.aliquots.biospecimen_barcode_bottom' / 'participants.samples.portions.analytes.aliquots.year_of_shipment' / 'participants.samples.portions.analytes.protocols.experimental_protocol_type' / 'participants.samples.portions.analytes.dna.pcr_amplification_successful' / 'participants.samples.portions.analytes.dna.normal_tumor_genotype_match' / 'participants.admin.disease_code' / 'participants.admin.project_code' / 'participants.stage_event.pathologic_stage' / 'participants.clinical_cqcf.consent_or_death_status' / 'participants.files.files._aliquot_barcode' / 'participants.files._aliquot_uuid' / 'participants.files._control_aliquot_barcode' / 'participants.files._control_aliquot_uuid' / 'participants.files._participant_barcode' / 'participants.files._slide_barcode' / 'participants.files._slide_uuid' / 'participants.files._tumor_aliquot_barcode' / 'participants.files._tumor_aliquot_uuid' / 'participants.files.data_type' / 'participants.files.data_access' / 'participants.files.data_level' / 'participants.files.data_subtype' / 'participants.files.file_extension' / 'participants.files.file_name' / 'participants.files.file_size' / 'participants.files.data_format' / 'participants.files.file_url' / 'participants.files.file_uuid' / 'participants.files.experimental_strategy' / 'participants.files.platform' / 'participants.files.updated' / 'participants.files.archive.archive_folder_url' / 'participants.files.archive.archive_name' / 'participants.files.archive.archive_url' / 'participants.files.archive.archive_uuid' / 'participants.files.archive.batch' / 'participants.files.archive.center_name' / 'participants.files.archive.center_type' / 'participants.files.archive.data_level' / 'participants.files.archive.data_type_in_url' / 'participants.files.archive.date_archive_added' / 'participants.files.archive.disease_code' / 'participants.files.archive.platform' / 'participants.files.archive.platform_in_url' / 'participants.files.archive.protected' / 'participants.files.archive.revision' / 'participants.participant_annotations.id' / 'participants.summary.data_file_count' / 'participants.summary.file_size' / 'participants.summary.experimental_strategies.file_count' / 'participants.summary.experimental_strategies.experimental_strategy' / 'participants.summary.data_types.file_count' / 'participants.summary.data_types.data_type'
-  / 'files._aliquot_barcode' / 'files._aliquot_uuid' / 'files._control_aliquot_barcode' / 'files._control_aliquot_uuid' / 'files._participant_barcode' / 'files._slide_barcode' / 'files._slide_uuid' / 'files._tumor_aliquot_barcode' / 'files._tumor_aliquot_uuid' / 'files.data_type' / 'files.data_access' / 'files.data_level' / 'files.data_subtype' / 'files.file_extension' / 'files.file_name' / 'files.file_size' / 'files.data_format' / 'files.file_url' / 'files.file_uuid' / 'files.experimental_strategy' / 'files.platform' / 'files.updated' / 'files.archive.archive_folder_url' / 'files.archive.archive_name' / 'files.archive.archive_url' / 'files.archive.archive_uuid' / 'files.archive.batch' / 'files.archive.center_name' / 'files.archive.center_type' / 'files.archive.data_level' / 'files.archive.data_type_in_url' / 'files.archive.date_archive_added' / 'files.archive.disease_code' / 'files.archive.platform' / 'files.archive.platform_in_url' / 'files.archive.protected' / 'files.archive.revision'
+  = "participants.days_to_index" / "participants.submitter_id" / "participants.project.project_name" / "project.project_id" / "participants.project.primary_site" / "participants.project.name" / "participants.project.state" / "participants.clinical.year_of_diagnosis" / "participants.clinical.clinical_id" / "participants.clinical.gender" / "participants.clinical.race" / "participants.clinical.age_at_diagnosis" / "participants.clinical.icd_10" / "participants.clinical.vital_status" / "participants.clinical.days_to_death" / "participants.clinical.ethnicity" / "participants.annotations.category" / "participants.annotations.status" / "participants.annotations.classification" / "participants.annotations.creator" / "participants.annotations.notes" / "participants.annotations.submitter_id" / "participants.annotations.annotation_id" / "participants.samples.sample_type_id" / "participants.samples.pathology_report_uuid" / "participants.samples.time_between_clamping_and_freezing" / "participants.samples.time_between_excision_and_freezing" / "participants.samples.shortest_dimension" / "participants.samples.oct_embedded" / "participants.samples.sample_type" / "participants.samples.submitter_id" / "participants.samples.days_to_collection" / "participants.samples.intermediate_dimension" / "participants.samples.days_to_sample_procurement" / "participants.samples.sample_id" / "participants.samples.initial_weight" / "participants.samples.freezing_method" / "participants.samples.current_weight" / "participants.samples.longest_dimension" / "participants.samples.is_ffpe" / "participants.participant_id" / "participants.summary.data_types.data_type" / "participants.summary.experimental_strategies.experimental_strategy" / "participants.tissue_source_site.project" / "participants.tissue_source_site.bcr_id" / "participants.tissue_source_site.code" / "participants.tissue_source_site.tissue_source_site_id" / "participants.tissue_source_site.name"
+  / "participants.annotations.created_datetime" / "participants.summary.data_types.file_count" / "participants.summary.file_count" / "participants.summary.experimental_strategies.file_count" / "participants.summary.file_size"
+  / "files.data_format.data_format_id" / "files.data_format.name" / "files.related_files.file_name" / "files.related_files.md5sum" / "files.related_files.submitter_id" / "files.related_files.state" / "participants.related_files.file_id" / "files.related_files.state_comment" / "files.center.code" / "files.center.name" / "files.center.short_name" / "files.center.center_id" / "files.center.namespace" / "files.center.center_type" / "files.tags.name" / "files.tags.tag_id" / "files.file_name" / "files.md5sum" / "files.submitter_id" / "files.access" / "files.platform.platform_id" / "files.platform.name" / "files.state" / "files.data_subtype.name" / "files.data_subtype.data_subtype_id" / "files.file_id" / "files.experimental_strategy.experimental_strategy_id" / "files.experimental_strategy.name" / "files.state_comment" / "files.annotations.category" / "files.annotations.status" / "files.annotations.classification" / "files.annotations.creator" / "files.annotations.notes" / "files.annotations.submitter_id" / "files.annotations.annotation_id" / "files.archives.archive_id" / "files.archives.submitter_id"
+  / "files.related_files.file_size" / "files.file_size" / "files.annotations.created_datetime" / "files.archives.revision"
 
-  
   
   

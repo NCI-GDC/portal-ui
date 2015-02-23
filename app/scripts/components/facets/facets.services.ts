@@ -80,7 +80,6 @@ module ngApp.components.facets.services {
     }
 
     addTerm(facet: string, term: string) {
-      console.log('here?');
       var filters = this.ensurePath(this.LocationService.filters());
       // TODO - not like this
       var found = false;

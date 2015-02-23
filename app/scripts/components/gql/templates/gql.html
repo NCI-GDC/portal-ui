@@ -1,17 +1,11 @@
-<div>
 <textarea
           class="form-control"
           style="border:none;box-shadow: none"
           data-ng-model="query"
-          data-ng-change="onChange($event)"
+          data-ng-change="onChange()"
+          data-ng-keydown="keypress($event)"
           aria-label="Advanced Query"
           placeholder="Start Typing Your Query...."
           data-ng-trim="false"
           role="textbox">
 </textarea>
-<div data-ng-show="gql" style="margin: 0; border-radius: 0; border: none" class="alert alert-success">{{gql}}</div>
-<!--<div data-ng-show="error" style="margin: 0; border-radius: 0; border: none" class="alert alert-danger">{{errorMsg}}</div>-->
-<ul>
-  <li data-ng-repeat="e in error | filter:last:startsWith | limitTo:10">{{e}}</li>
-</ul>
-</div>

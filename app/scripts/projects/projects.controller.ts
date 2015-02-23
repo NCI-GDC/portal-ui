@@ -199,8 +199,10 @@ function githutTable(data){
         scale:'linear',
          dimensional:true
     }];
+    
 
   
+
 
         
     var aggregations = d3.keys(project_codes).reduce(function(a,key){
@@ -230,9 +232,9 @@ function githutTable(data){
 
         a[key] = the_returned;
         return a;
-    },{});
-  
+    },{});    
 
+    
 //    aggregations = {
 //        'ACC':aggregations['ACC']
 //    };

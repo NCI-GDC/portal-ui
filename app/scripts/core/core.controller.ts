@@ -52,8 +52,15 @@ module ngApp.core.controllers {
         this.$rootScope.$broadcast("gdc-cancel-request");
       };
 
-    }
+      this.$rootScope.handleApplicationClick = (): void => {
+        $scope.$broadcast('application:click');
+      }
+      this.$rootScope.closeWarning = () => {
+        this.$rootScope.showWarning = false;
+        this.$cookies["NCI-Warning"] = true;
+      };
 
+    }
   }
 
   class WarningController {

@@ -19,7 +19,7 @@
 
         </tr>
         <tr>
-            <th ng-repeat="childHeading in getAllHeadingsAtNestingLevel(1)">
+            <th ng-repeat="childHeading in getAllHeadingsAtNestingLevel(1)" data-ng-if="!childHeading.hidden">
                 {{childHeading.displayName}}
             </th>
         </tr>

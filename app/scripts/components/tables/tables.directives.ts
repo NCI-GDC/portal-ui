@@ -51,6 +51,12 @@ module ngApp.components.tables.directives {
                 return li.id === listElem.id;
               });
               matchingHeader.hidden = listElem.hidden;
+
+              if (matchingHeader.children) {
+                matchingHeader.children.forEach(function(childHeader) {
+                  childHeader.hidden = listElem.hidden;
+                });
+              }
             });
           }
         },true);

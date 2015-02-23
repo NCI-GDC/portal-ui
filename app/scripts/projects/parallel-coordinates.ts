@@ -180,6 +180,23 @@ function ParallelCoordinates(data,options) {
             .text(function(d){
                 return d;
             });
+      
+//        
+        var data_types =svg.append('g')
+          .attr('width',xscale('Other')-xscale('Clinical'))
+          .attr('height',100)
+//          .attr('x',50)
+//          .attr('y',50)
+           .attr("transform",function(d){
+            var x=xscale('Clinical')+(0.5*(xscale('Other')-xscale('Clinical')))+padding.left+margins.left,
+                y=60;
+            return "translate("+x+","+y+")";
+          })
+     
+          .append('text')
+            .text("DATA TYPES")
+             .style("text-anchor",'middle')
+          
 
 		var axis=column
             .filter(function(col){
@@ -743,7 +760,7 @@ function ParallelCoordinates(data,options) {
 	var margins={
 		left:20,
 		right:30,
-		top:30,
+		top:100,
 		bottom:30
 	};
 
@@ -837,6 +854,8 @@ function ParallelCoordinates(data,options) {
 	var xscale=d3.scale.ordinal()
         .domain(options.columns)
         .rangePoints([0,WIDTH-(margins.left+margins.right+padding.left+padding.right)]);
+  
+//  debugger;
 	
 	
 	var yscales={},

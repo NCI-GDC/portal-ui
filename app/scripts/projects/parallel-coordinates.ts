@@ -671,15 +671,16 @@ function ParallelCoordinates(data,options) {
 				return d.column=="primary_site"
 			})
             .on("mouseover",function(d){
+              console.log("a goodly label is hovered,",d);
                 labels_group
                     .selectAll(".labels")
-                    .classed("primary_site",function(l){
+                    .classed("hover",function(l){
                         return l.values.primary_site==d.value;
                     });
             
                 languages_group
                     .selectAll(".lang")
-                    .classed("primary_site",function(l){
+                    .classed("hover",function(l){
                         return l.values.primary_site==d.value;
                     });
             })
@@ -892,9 +893,9 @@ function ParallelCoordinates(data,options) {
                 .classed("hover",true)	
         })
         .on("mouseout",function(d){
-            svg.selectAll("g.hover,g.primary_site")
-                .classed("hover",false)
-                .classed("primary_site",false);
+              svg.selectAll("g.hover,g.primary_site")
+                  .classed("hover",false)
+                  .classed("primary_site",false);
         })
 
 	var language=languages_group.selectAll("g.lang")

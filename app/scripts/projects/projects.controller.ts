@@ -229,8 +229,7 @@ function githutTable(data){
         a[key] = the_returned;
         return a;
     },{});    
-    
-    console.log("Data:", aggregations,project_codes);
+  
     
 //    aggregations = {
 //        'ACC':aggregations['ACC']

@@ -198,6 +198,7 @@ function githutTable(data){
          dimensional:true
     }];
     
+  
 
         
     var aggregations = d3.keys(project_codes).reduce(function(a,key){
@@ -222,14 +223,13 @@ function githutTable(data){
             .filter(function(c){return c.is_subtype})
             .forEach(function(s){
                 var thing = findTheThing(types,s.id,"data_type");
-                the_returned[s.id] = thing ? thing.file_count : 0;
+                the_returned[s.id] = thing ? thing.participant_count : 0;
             })   
                 
         a[key] = the_returned;
         return a;
     },{});    
-    
-    console.log("Data:", aggregations);
+  
     
 //    aggregations = {
 //        'ACC':aggregations['ACC']

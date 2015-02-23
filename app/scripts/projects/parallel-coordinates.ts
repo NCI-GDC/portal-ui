@@ -671,7 +671,7 @@ function ParallelCoordinates(data,options) {
 				return d.column=="primary_site"
 			})
             .on("mouseover",function(d){
-              console.log("a goodly label is hovered,",d);
+          
                 labels_group
                     .selectAll(".labels")
                     .classed("hover",function(l){

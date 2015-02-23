@@ -117,16 +117,6 @@ function githutTable(data){
         scale:'ordinal',
         dimensional:true
     },{
-        id:'file_size',
-        display_name:["File","Size"],
-        scale:'ordinal',
-        dimensional:true
-    },{
-        id:'file_count',
-        display_name:["File","Count"],
-        scale:'ordinal',
-         dimensional:true
-    },{
         id:'participant_count',
         display_name:["Part.","Count"],
         scale:'ordinal',
@@ -192,12 +182,23 @@ function githutTable(data){
         is_subtype:true,
          dimensional:true
     },{
+        id:'file_count',
+        display_name:["File","Count"],
+        scale:'ordinal',
+         dimensional:true
+    },{
+        id:'file_size',
+        display_name:["File","Size"],
+        scale:'ordinal',
+        dimensional:true
+    },{
         id:'primary_site',
         display_name:["Primary","Site"],
         scale:'linear',
          dimensional:true
     }];
     
+  
 
         
     var aggregations = d3.keys(project_codes).reduce(function(a,key){
@@ -222,14 +223,13 @@ function githutTable(data){
             .filter(function(c){return c.is_subtype})
             .forEach(function(s){
                 var thing = findTheThing(types,s.id,"data_type");
-                the_returned[s.id] = thing ? thing.file_count : 0;
+                the_returned[s.id] = thing ? thing.participant_count : 0;
             })   
                 
         a[key] = the_returned;
         return a;
     },{});    
-    
-    console.log("Data:", aggregations);
+  
     
 //    aggregations = {
 //        'ACC':aggregations['ACC']
@@ -279,7 +279,7 @@ function githutTable(data){
          * Don't know how well this is implemented.
          */
         sorting:{
-            "project_code":d3.descending
+            "participant_count":d3.ascending
         },
         
         /**

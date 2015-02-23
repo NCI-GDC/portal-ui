@@ -181,21 +181,17 @@ function ParallelCoordinates(data,options) {
                 return d;
             });
       
-//        
-        var data_types =svg.append('g')
-          .attr('width',xscale('Other')-xscale('Clinical'))
+          svg.append('g')
           .attr('height',100)
-//          .attr('x',50)
-//          .attr('y',50)
-           .attr("transform",function(d){
-            var x=xscale('Clinical')+(0.5*(xscale('Other')-xscale('Clinical')))+padding.left+margins.left,
-                y=60;
-            return "translate("+x+","+y+")";
-          })
-     
+          .attr("transform",function(d){
+          var x=xscale('Clinical')+(0.5*(xscale('DNA methylation')-xscale('Clinical')))+padding.left+margins.left,
+              y=60;
+          return "translate("+x+","+y+")";
+          })  
           .append('text')
-            .text("DATA TYPES")
-             .style("text-anchor",'middle')
+          .text("DATA TYPES")
+          .style("text-anchor",'middle')
+          .attr('class','title')
           
 
 		var axis=column
@@ -758,7 +754,7 @@ function ParallelCoordinates(data,options) {
         HEIGHT=Math.min(500);
 
 	var margins={
-		left:20,
+		left:0,
 		right:30,
 		top:100,
 		bottom:30

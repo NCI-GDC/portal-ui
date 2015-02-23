@@ -182,16 +182,22 @@ function ParallelCoordinates(data,options) {
             });
       
           svg.append('g')
-          .attr('height',100)
-          .attr("transform",function(d){
-          var x=xscale('Clinical')+(0.5*(xscale('DNA methylation')-xscale('Clinical')))+padding.left+margins.left,
-              y=60;
-          return "translate("+x+","+y+")";
-          })  
-          .append('text')
-          .text("DATA TYPES")
-          .style("text-anchor",'middle')
-          .attr('class','title')
+            .attr('height',100)
+            .attr("transform",function(d){
+            var x=xscale('Clinical')+(0.5*(xscale('DNA methylation')-xscale('Clinical')))+padding.left+margins.left,
+                y=70;
+            return "translate("+x+","+y+")";
+            })  
+            .append('text')
+            .text("DATA TYPES")
+            .style("text-anchor",'middle')
+            .attr('class','title')
+          
+          svg.append('rect')
+            .attr('width',xscale('DNA methylation')-xscale('Clinical'))
+            .attr('height',1)
+            .attr('y',75)
+            .attr('x',xscale('Clinical') +padding.left+margins.left);
           
 
 		var axis=column

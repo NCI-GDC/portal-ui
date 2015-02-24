@@ -18,13 +18,22 @@ module ngApp.components.user.services {
 
     /* @ngInject */
     constructor(private Restangular: restangular.IService, private $rootScope: ng.IRootScopeService,
-                private LocationService: ILocationService) {}
+                private LocationService: ILocationService, private $cookies: ng.cookies.ICookiesService,
+                private $window: ng.IWindowService) {}
 
-    login(username: string): void {
-      this.Restangular.all("auth/login").post({
-        username: username
+    login(): void {
+      if (!this.$cookies["X-Auth-Token"]) {
+        return;
+      }
+
+      this.Restangular.all("auth/login").post({}, {}, {
+        "X-Auth-Token": this.$cookies["X-Auth-Token"]
       }).then((data) => {
         data.isFiltered = true;
+        data.username = this.$cookies["X-Auth-Username"];
+        data.originalProjectsResponse = _.assign([], data.projects);
+        // Overriding projects until we get a more useful response
+        data.projects = [];
         this.setUser(data);
       });
     }
@@ -38,11 +47,13 @@ module ngApp.components.user.services {
     }
 
     logout(): void {
-      this.Restangular.all("auth/logout").post({
-        user: this.currentUser
-      }).then(() => {
-        this.setUser(null);
-      });
+      // Angular's $cookies/$cookieStore services abstract away the ability to set
+      // the expiration time. Manual manipulation seems to be required.
+      // See: http://stackoverflow.com/questions/12624181/angularjs-how-to-set-expiration-date-for-cookie-in-angularjs
+      this.$window.document.cookie = "X-Auth-Token= ;expires=" + new Date().toGMTString() +
+                                     ";domain=.nci.nih.gov;path= /";
+      this.$window.document.cookie = "X-Auth-Username= ;expires=" + new Date().toGMTString() +
+                                     ";domain=.nci.nih.gov;path= /";
     }
 
     toggleFilter(): void {
@@ -102,6 +113,6 @@ module ngApp.components.user.services {
   }
 
   angular
-      .module("user.services", ["restangular", "location.services"])
+      .module("user.services", ["restangular", "location.services", "ngCookies"])
       .service("UserService", UserService);
 }

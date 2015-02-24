@@ -13,13 +13,14 @@ module ngApp.components.header.controllers {
     addedLanguages: boolean;
     setLanguage(): void;
     getNumCartItems(): number;
-    login(): void;
     logout(): void;
+    loginQuery: string;
   }
 
   class HeaderController implements IHeaderController {
     isCollapsed: boolean = true;
     currentLang: string = "en";
+    loginQuery: string = "";
     addedLanguages: boolean = false;
     languages: any = {
       "en": "English",
@@ -31,27 +32,16 @@ module ngApp.components.header.controllers {
     constructor(private gettextCatalog, private CartService: ICartService,
                 private $state: ng.ui.IStateService,
                 private UserService: IUserService, private $modal: any,
-                private $cookieStore: ng.cookies.ICookieStoreService,
                 private $window: ng.IWindowService) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
-    }
 
-    login(): void {
-      this.$cookieStore.put("gdc-token", {
-        "username": "kelly",
-        "password": "1234",
-        "projects": [
-            "KIRC",
-            "UCEC",
-            "STAD"
-        ],
-        "token": "32r23ef23f13f23g13fdavgrghq423g3g12g3g"
-      });
-      this.$window.location.reload();
+      if ($window.location.port) {
+        this.loginQuery = "?next=:" + $window.location.port;
+      }
     }
 
     logout(): void {
-      this.$cookieStore.remove("gdc-token");
+      this.UserService.logout();
       this.$window.location.reload();
     }
 

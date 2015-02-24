@@ -30,7 +30,7 @@
           </select>
         </li>
         <li data-ng-if="!hc.UserService.currentUser">
-          <a data-ng-click="hc.login()">
+          <a data-ng-href="https://gdc.nci.nih.gov{{ hc.loginQuery }}">
             <i class="fa fa-sign-in"></i>
             <span data-translate>Login</span>
           </a>

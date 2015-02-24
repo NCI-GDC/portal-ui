@@ -44,7 +44,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
 function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
                 $state: ng.ui.IStateService, CoreService: ICoreService,
                 $rootScope: IRootScope, config: IGDCConfig, notify: INotifyService,
-                $cookieStore: ng.cookies.ICookieStoreService,
+                $cookies: ng.cookies.ICookiesService,
                 UserService: IUserService) {
   gettextCatalog.debug = true;
 
@@ -75,16 +75,12 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
     if (+data.version !== +config.supportedAPI) {
       config.apiIsMismatched = true;
     }
-
-    // TODO: If the logic here changes to not always perform this request each
-    // time then this AJAX call needs to be done on it's own if a cookie
-    // called 'token' exists.
-    var userToken = $cookieStore.get("gdc-token");
-    if (userToken) {
-      userToken.isFiltered = true;
-      UserService.setUser(userToken);
-    }
   });
+
+  var userToken = $cookies["X-Auth-Token"];
+  if (userToken) {
+    UserService.login();
+  }
 
   $rootScope.$on("$stateChangeStart", () => {
     // Page change

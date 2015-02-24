@@ -49,6 +49,12 @@ Installing NPM dependencies...
 Setup Successful!
 ```
 
+### Modifying /etc/hosts
+In order to support local use of the login system we need to add the following
+to your `/etc/hosts` file.
+
+`127.0.0.1 portal.nci.nih.gov`
+
 ### ElasticSearch
 Edit path-to-elastic-search/config/elasticsearch.yml, find the line with http.max_content_length, add
 ```

@@ -194,66 +194,66 @@ function ParallelCoordinates(data,options) {
             })
 
 		axis.append("line")
-			.attr("x1",function(d){
-				return -width_scales[d].range()[1]/2;
-			})
-			.attr("y1",0)
-			.attr("x2",function(d){
-				return width_scales[d].range()[1]/2;
-			})
-			.attr("y2",0)
-		
+//			.attr("x1",function(d){
+//				return -width_scales[d].range()[1]/2;
+//			})
+//			.attr("y1",0)
+//			.attr("x2",function(d){
+//				return width_scales[d].range()[1]/2;
+//			})
+//			.attr("y2",0)
+//		
 
 
 		var ticks=axis
-			.selectAll("g.tick")
-            .data(function(d){
-
-                var ticks=[
-                            0,
-                            width_scales[d].domain()[1]
-                        ].map(function(v,i){
-                    return {
-                        value:i===0?0:v,
-                        x:(i===0?0:width_scales[d](v)/2),
-                        domain:width_scales[d].domain(),
-                        range:width_scales[d].range()
-                    }
-                });
-
-                return ticks.concat(ticks.map(function(t){
-                    return {
-                        scale:d,
-                        value:t.value,
-                        x:-t.x
-                    };
-                }));
-            })
-            .enter()
-            .append("g")
-            .attr("class","tick")
-            .classed("start",function(d){
-                return d.x<0;
-            })
-            .classed("end",function(d){
-                return d.x>0;
-            })
-            .attr("transform",function(d){
-                return "translate("+d.x+",0)";
-            })
-
-		ticks.append("line")
-			.attr("x1",0)
-			.attr("y1",-3)
-			.attr("x2",0)
-			.attr("y2",3)
-
-		ticks.append("text")
-			.attr("x",0)
-			.attr("y",12)
-			.text(function(d){
-				return d3.format("s")(d.value);
-			})
+//			.selectAll("g.tick")
+//            .data(function(d){
+//
+//                var ticks=[
+//                            0,
+//                            width_scales[d].domain()[1]
+//                        ].map(function(v,i){
+//                    return {
+//                        value:i===0?0:v,
+//                        x:(i===0?0:width_scales[d](v)/2),
+//                        domain:width_scales[d].domain(),
+//                        range:width_scales[d].range()
+//                    }
+//                });
+//
+//                return ticks.concat(ticks.map(function(t){
+//                    return {
+//                        scale:d,
+//                        value:t.value,
+//                        x:-t.x
+//                    };
+//                }));
+//            })
+//            .enter()
+//            .append("g")
+//            .attr("class","tick")
+//            .classed("start",function(d){
+//                return d.x<0;
+//            })
+//            .classed("end",function(d){
+//                return d.x>0;
+//            })
+//            .attr("transform",function(d){
+//                return "translate("+d.x+",0)";
+//            })
+//
+//		ticks.append("line")
+//			.attr("x1",0)
+//			.attr("y1",-3)
+//			.attr("x2",0)
+//			.attr("y2",3)
+//
+//		ticks.append("text")
+//			.attr("x",0)
+//			.attr("y",12)
+//			.text(function(d){
+//				return d3.format("s")(d.value);
+//			})
 	}
     
 	function updateAxes() {

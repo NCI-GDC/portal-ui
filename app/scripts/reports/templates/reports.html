@@ -4,16 +4,22 @@
 
     <div class="col-lg-12 col-md-12">
      <h2 data-translate>
-         Reports
+         Download Statistics Report <button class='btn btn-primary pull-right'>Export</button>
      </h2>
       
+<!--
      <div class="btn-group" role="group" aria-label="Filter and sort table" ng-init="mode='graph'">
            <button type="button" class="btn btn-default" ng-class="{'btn-primary': mode==='table'}" ng-click="mode='table'">Table</button>
           <button type="button" class="btn btn-default" ng-class="{'btn-primary': mode==='graph'}" ng-click="mode='graph'">Graph</button>
       </div>
+-->
       
     <div class="githut">
-       <div class="graph" data-ng-show="mode==='graph'">
+       <div class="graph">
+       
+       <h2>
+         Available Data by File Type
+       </h2>
   
         <parallel-coordinates  ng-if=githutData data=githutData config=githutConfig>
 	    	
@@ -24,7 +30,7 @@
 
 
       
-     <div data-ng-if="mode==='table'">
+     <div>
       
       <div class="row">
            <div class="col-xs-12">
@@ -41,10 +47,10 @@
                             Project
                         </th>
                         <th>
-                            File Size
+                            File Count
                         </th>
                         <th>
-                            File Count
+                           File Size
                         </th>
 
                     </tr>

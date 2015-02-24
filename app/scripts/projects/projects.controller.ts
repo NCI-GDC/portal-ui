@@ -117,16 +117,6 @@ function githutTable(data){
         scale:'ordinal',
         dimensional:true
     },{
-        id:'file_size',
-        display_name:["File","Size"],
-        scale:'ordinal',
-        dimensional:true
-    },{
-        id:'file_count',
-        display_name:["File","Count"],
-        scale:'ordinal',
-         dimensional:true
-    },{
         id:'participant_count',
         display_name:["Part.","Count"],
         scale:'ordinal',
@@ -191,6 +181,16 @@ function githutTable(data){
         scale:'ordinal',
         is_subtype:true,
          dimensional:true
+    },{
+        id:'file_count',
+        display_name:["File","Count"],
+        scale:'ordinal',
+         dimensional:true
+    },{
+        id:'file_size',
+        display_name:["File","Size"],
+        scale:'ordinal',
+        dimensional:true
     },{
         id:'primary_site',
         display_name:["Primary","Site"],

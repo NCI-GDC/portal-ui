@@ -14,7 +14,7 @@ module ngApp.components.ui.string {
 
   class Humanify {
     constructor() {
-      return function (original: string, capitalize: boolean = true) {
+      return function (original: string, capitalize: boolean = true, facetTerm: boolean = false) {
         if (!angular.isDefined(original) || (angular.isString(original) && !original.length)) {
           return '--';
         }
@@ -22,13 +22,27 @@ module ngApp.components.ui.string {
           return original;
         }
 
-        var split = original.split(".");
-        var humanified = split[split.length - 1].replace(/_/g, " ").trim();
-        var words, cWords = [];
+        var split;
+        var humanified;
+
+        if (facetTerm) {
+          humanified = original.replace(/\./g, " ").trim();
+        } else {
+          split = original.split(".");
+          humanified = split[split.length - 1].replace(/_/g, " ").trim();
+        }
+
+        var words = humanified.split(' '),
+            cWords = [];
+
         if (capitalize) {
-          words = humanified.split(' ');
           words.forEach(function (word) {
-            cWords.push(word.charAt(0).toUpperCase() + word.slice(1));
+            // Specialcase miRNA instances
+            if (word.indexOf("miRNA") === -1) {
+              cWords.push(word.charAt(0).toUpperCase() + word.slice(1));
+            } else {
+              cWords.push(word);
+            }
           });
           humanified = cWords.join(' ');
         }

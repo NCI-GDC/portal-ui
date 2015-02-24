@@ -279,7 +279,7 @@ function githutTable(data){
          * Don't know how well this is implemented.
          */
         sorting:{
-            "project_code":d3.descending
+            "participant_count":d3.ascending
         },
         
         /**

@@ -15,7 +15,7 @@ module ngApp.projects.models {
 
     var projectTableModel:TableiciousConfig = {
         title: 'Projects',
-        order: ['disease_type', 'primary_site', 'program', 'participants', 'project_name', 'file_size', 'files', 'last_update'],
+        order: ['disease_type', 'project_name','primary_site', 'program', 'participants', 'file_size', 'files', 'last_update'],
         headings: [{
             displayName: "Code",
             id: "project_code",
@@ -24,6 +24,10 @@ module ngApp.projects.models {
                 return "project({projectId:'" + field.val + "'})"
             }
         }, {
+            displayName: "Project",
+            id: "project_name",
+            enabled: false
+        },{
             displayName: "Disease Type",
             id: "disease_type",
             enabled: true
@@ -52,11 +56,7 @@ module ngApp.projects.models {
 
             },
             fieldClass: 'text-right',
-        }, {
-            displayName: "Project",
-            id: "project_name",
-            enabled: false
-        }, {
+        },  {
             displayName: "Available Participants per Data Type",
             id: "data_types",
             headingClass:'text-center',

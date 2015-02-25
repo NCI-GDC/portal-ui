@@ -223,14 +223,13 @@ module ngApp.reports.controllers {
               var proj1 = aggregations[a];
               var proj2 = aggregations[b];
               
-              debugger;
               
-              if (proj1.file_count > proj2.fileCount) {
-                return -1;
-              } else {
+              if (proj1.file_count > proj2.file_count) {
                 return 1;
+              } else {
+                return -1;
               }
-//              debugger;
+              
             }
           },
 

@@ -61,11 +61,6 @@ module ngApp.reports.controllers {
           display_name:["Project","Code"],
           scale:'ordinal',
           dimensional:true
-        },{
-          id:'file_size',
-          display_name:["File","Size"],
-          scale:'ordinal',
-          dimensional:true
         },
         {
           id:'file_count',
@@ -135,6 +130,12 @@ module ngApp.reports.controllers {
           display_name:['Meth'],
           scale:'ordinal',
           is_subtype:true,
+          dimensional:true
+        },
+        {
+          id:'file_size',
+          display_name:["File","Size"],
+          scale:'ordinal',
           dimensional:true
         },
         {
@@ -217,13 +218,20 @@ module ngApp.reports.controllers {
           use:{
             "project_code":"project_code"
           },
-
-          /**
-         * The order each column will appear in.
-         * Don't know how well this is implemented.
-         */
           sorting:{
-            "project_code":d3.descending
+            "project_code":function(a,b){
+              var proj1 = aggregations[a];
+              var proj2 = aggregations[b];
+              
+              debugger;
+              
+              if (proj1.file_count > proj2.fileCount) {
+                return -1;
+              } else {
+                return 1;
+              }
+//              debugger;
+            }
           },
 
           /**

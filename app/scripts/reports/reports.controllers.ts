@@ -275,6 +275,24 @@ module ngApp.reports.controllers {
         $scope.byDisease = magicNest('disease_type').entries(superdeluxe);
         $scope.byProgram = magicNest('program').entries(superdeluxe);
               
+        $scope.byDataType = magicNest('data_type').entries(superdeluxe.reduce(function(a,b){
+          a = a.concat(b.data_types);
+          return a;
+        },[]));
+              
+        $scope.byDataSubtype = magicNest('data_subtype').entries(superdeluxe.reduce(function(a,b){
+          a = a.concat(b.data_types || []);
+          return a;
+        },[]));
+              
+        $scope.byStrat = magicNest('experimental_strategy').entries(superdeluxe.reduce(function(a,b){
+          a = a.concat(b.experimental_strategies);
+          return a;
+        },[]));
+              
+
+              
+              
     
         function magicNest(key){
           return d3.nest()
@@ -288,6 +306,8 @@ module ngApp.reports.controllers {
            .sortValues(function(a,b){return a.file_count - b.file_count});
 
          }
+            
+         console.log("The goods.",superdeluxe, $scope);
           
           
             

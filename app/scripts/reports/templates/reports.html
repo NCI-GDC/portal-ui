@@ -194,6 +194,116 @@
               </table>
             </article>
           </section>
+          
+          
+          <section id=dataLevel>
+            <h3>
+              Data download statistic at Data level 
+            </h3>
+            <article id=byDataType>
+              <h4>
+                Data download statistics by Data Type
+              </h4>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
+                  <th data-translate>
+                    Data Type
+                  </th>
+                  <th>
+                    # of files
+                  </th>
+                  <th>
+                    File Size
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat='project in byDataType'>
+                <th>
+                    {{project.key}}
+                </th>
+                <td>
+                   {{project.values.file_count}}
+                </td>
+                <td>
+                   {{project.values.file_size * 1e6 | size}}
+                </td>
+                </tr>
+                </tbody>
+              </table>
+            </article>
+            
+            <article id=byDataSubtype>
+              <h4>
+                Data download statistics by Data Subtype
+              </h4>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
+                  <th data-translate>
+                    Data Subtype
+                  </th>
+                  <th>
+                    # of files
+                  </th>
+                  <th>
+                    File Size
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat='project in byDataSubtype'>
+                <th>
+                     {{project.key || '(none specified)'}}
+                </th>
+                <td>
+                   {{project.values.file_count}}
+                </td>
+                <td>
+                   {{project.values.file_size * 1e6 | size}}
+                </td>
+                </tr>
+                </tbody>
+              </table>
+            </article>
+            
+            <article id=byDataSubtype>
+              <h4>
+                Data download statistics by Experimental Strategy
+              </h4>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
+                  <th data-translate>
+                    Experimental Strategy
+                  </th>
+                  <th>
+                    # of files
+                  </th>
+                  <th>
+                    File Size
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat='project in byStrat'>
+                <th>
+                     {{project.key || '(none specified)'}}
+                </th>
+                <td>
+                   {{project.values.file_count}}
+                </td>
+                <td>
+                   {{project.values.file_size * 1e6 | size}}
+                </td>
+                </tr>
+                </tbody>
+              </table>
+            </article>
+            
+            
+          </section>
        
        </div>
     </div>

@@ -21,7 +21,6 @@ module ngApp.reports.controllers {
         
         ReportsService.getReports().then(function(a){
           CoreService.setSearchModelState(true);
-          console.log("raw thing from reports",a);
           
             ProjectsService.getProjects({
         fields: [
@@ -625,3 +624,9 @@ var __reports_dummy_data__ = {
     } ]
   }
 }
+
+var superdeluxe = __reports_dummy_data__.hits.hits.map(function(z){
+  return z._source;
+})
+
+debugger;

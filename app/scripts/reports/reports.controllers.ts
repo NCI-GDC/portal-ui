@@ -267,153 +267,33 @@ module ngApp.reports.controllers {
         $scope.githutData = d3.values(aggregations);
           },500);
           
-          $scope.filesByProject = a.reduce(function(a,b){
-             var project = b.archive.disease_code;
-             var k = {
-               project:project,
-               count: 1,
-               file_size: b.file_size
-             }
-             var g = _.find(a,function(c){return c.project === project});
-             if (g) {
-               g.count ++;
-               g.file_size += b.file_size;
-             } else {
-               a.push(k);
-             }
+        var superdeluxe = __reports_dummy_data__.hits.hits.map(function(z){
+          return z._source;
+        })
+
+        $scope.byProject = d3.nest()
+          .key(function(d){return d.project_code})
+          .rollup(function(d){
+//            debugger;
+            return {
+              file_count:d3.sum(d.map(function(x){return x.count})),
+              file_size:d3.sum(d.map(function(x){return x.size_in_mb})),
+            }
+          })
+          .entries(superdeluxe);
+//              debugger;
+        $scope.byDisease = d3.nest()
+          .key(function(d){return d.disease_type})
+          .rollup(function(d){
+            return {
+              file_count:d3.sum(d.map(function(x){return x.count})),
+              file_size:d3.sum(d.map(function(x){return x.size_in_mb})),
+            }
+          })
+          .entries(superdeluxe);    
               
-             return a;
-          },[]);
-            
-          $scope.projectChartData = $scope.filesByProject.map(function(x){
-                return {
-                    name: x.project,
-                    value: x.count
-                }
-            });
-            
-          $scope.filesByType = a.reduce(function(a,b){
-             var data_type = b.data_type;
-             var k = {
-               data_type:data_type,
-               count: 1,
-               file_size: b.file_size
-             }
-             var g = _.find(a,function(c){return c.data_type === data_type});
-             if (g) {
-               g.count ++;
-               g.file_size += b.file_size;
-             } else {
-               a.push(k);
-             }
-              
-             return a;
-          },[]);
-            
-         $scope.filesBySubtype = a.reduce(function(a,b){
-             var data_subtype = b.data_subtype;
-             var k = {
-               data_subtype:data_subtype,
-               count: 1,
-               file_size: b.file_size
-             }
-             var g = _.find(a,function(c){return c.data_subtype === data_subtype});
-             if (g) {
-               g.count ++;
-               g.file_size += b.file_size;
-             } else {
-               a.push(k);
-             }
-              
-             return a;
-          },[]);
-            
-             $scope.subtypeChartData = $scope.filesBySubtype.map(function(x){
-                return {
-                    name: x.data_subtype,
-                    value: x.count
-                }
-            });
-            
-            
-            
-        $scope.filesByDataLevel = a.reduce(function(a,b){
-             var data_level = b.data_level;
-             var k = {
-               data_level:data_level,
-               count: 1,
-               file_size: b.file_size
-             }
-             var g = _.find(a,function(c){return c.data_level === data_level});
-             if (g) {
-               g.count ++;
-               g.file_size += b.file_size;
-             } else {
-               a.push(k);
-             }
-              
-             return a;
-          },[]);
-            
-        $scope.filesByAccess = a.reduce(function(a,b){
-             var data_access = b.data_access;
-             var k = {
-               data_access:data_access,
-               count: 1,
-               file_size: b.file_size
-             }
-             var g = _.find(a,function(c){return c.data_access === data_access});
-             if (g) {
-               g.count ++;
-               g.file_size += b.file_size;
-             } else {
-               a.push(k);
-             }
-              
-             return a;
-          },[]);
-            
-            
-         $scope.filesByStrategy = [{
-            strategy:"unknown",
-            count: 0,
-            file_size: 0
-         }];
-         
-         $scope.filesByLocation = [{
-            location:"unknown",
-            count: 0,
-            file_size: 0
-         }];
-            
-        $scope.filesByUserAccess = [{
-            access:"unknown",
-            count: 0,
-            file_size: 0
-         }];
-            
-            
-            
-            
-          $scope.filesByProgram = [{
-              program:'TCGA',
-              count:395,
-              file_size:129034893
-          }]
-          
-          $scope.filesByPrimarySite = [{
-              primary_site:'Lung',
-              count:212,
-              file_size:12903323
-          },{
-              primary_site:'Heart',
-              count:19,
-              file_size:3266746
-          },{
-              primary_site:'Skin',
-              count:84,
-              file_size:6293859
-          }]
+//              debugger;
+
           
           
             
@@ -625,12 +505,5 @@ var __reports_dummy_data__ = {
   }
 }
 
-var superdeluxe = __reports_dummy_data__.hits.hits.map(function(z){
-  return z._source;
-})
-
-var byProject = d3.nest()
-  .key(function(d){return d.project_code})
-  .entries(superdeluxe);
 
 //debugger;

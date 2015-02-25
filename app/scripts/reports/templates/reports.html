@@ -67,13 +67,19 @@
           </ul>
         </li>
         <li>
-          User access level
-          <ul>
+         <a href="#userLevel">
+            User access level
+         </a>
+         <ul>
             <li>
-              By User access type
+             <a href="#byAccessType">
+                By User access type
+              </a>
             </li>
             <li>
-              By User access location
+              <a href="#byAccessLocation">
+                By User access location
+              </a>
             </li>
           </ul>
         </li>
@@ -382,6 +388,82 @@
                 </tbody>
               </table>
             </article>
+            
+            
+          </section>
+          
+          <section id=userLevel>
+            <h3>
+              Data download statistic at User Level 
+            </h3>
+            <article id=byAccessType>
+              <h4>
+                Data download statistics by User Access Type
+              </h4>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
+                  <th data-translate>
+                    Access Type
+                  </th>
+                  <th>
+                    # of files
+                  </th>
+                  <th>
+                    File Size
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat='x in byUserType'>
+                <th>
+                    {{x.key}}
+                </th>
+                <td>
+                   {{x.values.file_count}}
+                </td>
+                <td>
+                   {{x.values.file_size * 1e6 | size}}
+                </td>
+                </tr>
+                </tbody>
+              </table>
+            </article>
+            
+            <article id=byAccessLocation>
+              <h4>
+                Data download statistics by Access Location
+              </h4>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
+                  <th data-translate>
+                    Data Subtype
+                  </th>
+                  <th>
+                    # of files
+                  </th>
+                  <th>
+                    File Size
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat='x in byLocation'>
+                  <th>
+                      {{x.key}}
+                  </th>
+                  <td>
+                     {{x.values.file_count}}
+                  </td>
+                  <td>
+                     {{x.values.file_size * 1e6 | size}}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </article>
+           
             
             
           </section>

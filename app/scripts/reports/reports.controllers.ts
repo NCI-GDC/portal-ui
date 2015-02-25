@@ -285,6 +285,16 @@ module ngApp.reports.controllers {
           return a;
         },[]));
               
+        $scope.byUserType = magicNest('user_type').entries(superdeluxe.reduce(function(a,b){
+          a = a.concat(b.user_types);
+          return a;
+        },[]));
+              
+        $scope.byLocation = magicNest('country').entries(superdeluxe.reduce(function(a,b){
+          a = a.concat(b.countries);
+          return a;
+        },[]));
+              
    
         function magicNest(key){
           return d3.nest()

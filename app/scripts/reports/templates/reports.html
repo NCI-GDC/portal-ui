@@ -34,22 +34,35 @@
           </ul>
         </li>
         <li>
-          Data level
+          <a href="#dataLevel">
+            Data level
+          </a>
           <ul>
             <li>
+              <a href="#byDataType">
               By Data type
+              </a>
             </li>
             <li>
-              By Data subtype
+             <a href="#byDataSubtype">
+                By Data subtype
+              </a>
             </li>
             <li>
-              By Experimental strategy
+              <a href="#byStrategy">
+                By Experimental strategy
+              </a>
             </li>
             <li>
-              By Data level
+              <a href="#byDataLevel">
+                
+                By Data level
+              </a>
             </li>
             <li>
-              By Data access
+              <a href="#byDataAccess">
+                By Data access
+              </a>
             </li>
           </ul>
         </li>
@@ -253,22 +266,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat='project in byDataSubtype'>
+                <tr>
                 <th>
-                     {{project.key || '(none specified)'}}
+                   MiRNA Quantification
                 </th>
                 <td>
-                   {{project.values.file_count}}
+                   3705
                 </td>
                 <td>
-                   {{project.values.file_size * 1e6 | size}}
+                   77.77GB
                 </td>
                 </tr>
                 </tbody>
               </table>
             </article>
             
-            <article id=byDataSubtype>
+            <article id=byStrategy>
               <h4>
                 Data download statistics by Experimental Strategy
               </h4>
@@ -297,6 +310,74 @@
                 <td>
                    {{project.values.file_size * 1e6 | size}}
                 </td>
+                </tr>
+                </tbody>
+              </table>
+            </article>
+            
+             <article id=byDataLevel>
+              <h4>
+                Data download statistics by Data Level
+              </h4>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
+                  <th data-translate>
+                    Data Level
+                  </th>
+                  <th>
+                    # of files
+                  </th>
+                  <th>
+                    File Size
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                <th>
+                   Level 3
+                </th>
+                <td>
+                   3705
+                </td>
+                <td>
+                   77.77GB
+                </td>
+                </tr>
+                </tbody>
+              </table>
+            </article>
+            
+            <article id=byDataAccess>
+              <h4>
+                Data download statistics by Data Access
+              </h4>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
+                  <th data-translate>
+                    Data Access
+                  </th>
+                  <th>
+                    # of files
+                  </th>
+                  <th>
+                    File Size
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <th>
+                     Open
+                  </th>
+                  <td>
+                     3705
+                  </td>
+                  <td>
+                     77.77GB
+                  </td>
                 </tr>
                 </tbody>
               </table>

@@ -280,20 +280,12 @@ module ngApp.reports.controllers {
           return a;
         },[]));
               
-        $scope.byDataSubtype = magicNest('data_subtype').entries(superdeluxe.reduce(function(a,b){
-          a = a.concat(b.data_types || []);
-          return a;
-        },[]));
-              
         $scope.byStrat = magicNest('experimental_strategy').entries(superdeluxe.reduce(function(a,b){
           a = a.concat(b.experimental_strategies);
           return a;
         },[]));
               
-
-              
-              
-    
+   
         function magicNest(key){
           return d3.nest()
             .key(function(d){return d[key]})

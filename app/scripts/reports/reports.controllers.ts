@@ -271,37 +271,23 @@ module ngApp.reports.controllers {
           return z._source;
         })
 
-        $scope.byProject = d3.nest()
-        .key(function(d){return d.project_code})
-        .rollup(function(d){
-          return {
-            file_count:d3.sum(d.map(function(x){return x.count})),
-            file_size:d3.sum(d.map(function(x){return x.size_in_mb})),
-          }
-        })
-        .entries(superdeluxe);
+        $scope.byProject = magicNest('project_code').entries(superdeluxe);
+        $scope.byDisease = magicNest('disease_type').entries(superdeluxe);
+        $scope.byProgram = magicNest('program').entries(superdeluxe);
               
-        $scope.byDisease = d3.nest()
-        .key(function(d){return d.disease_type})
-        .rollup(function(d){
-          return {
-            file_count:d3.sum(d.map(function(x){return x.count})),
-            file_size:d3.sum(d.map(function(x){return x.size_in_mb})),
-          }
-        })
-        .entries(superdeluxe);    
-              
-        $scope.byProgram = d3.nest()
-        .key(function(d){return d.program})
-        .rollup(function(d){
-          return {
-            file_count:d3.sum(d.map(function(x){return x.count})),
-            file_size:d3.sum(d.map(function(x){return x.size_in_mb})),
-          }
-        })
-        .entries(superdeluxe); 
+    
+        function magicNest(key){
+          return d3.nest()
+            .key(function(d){return d[key]})
+            .rollup(function(d){
+              return {
+                file_count:d3.sum(d.map(function(x){return x.count})),
+                file_size:d3.sum(d.map(function(x){return x.size_in_mb})),
+              }
+            })
+           .sortValues(function(a,b){return a.file_count - b.file_count});
 
-
+         }
           
           
             

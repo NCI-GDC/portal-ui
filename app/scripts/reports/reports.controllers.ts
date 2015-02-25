@@ -629,4 +629,8 @@ var superdeluxe = __reports_dummy_data__.hits.hits.map(function(z){
   return z._source;
 })
 
-debugger;
+var byProject = d3.nest()
+  .key(function(d){return d.project_code})
+  .entries(superdeluxe);
+
+//debugger;

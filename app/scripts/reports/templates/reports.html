@@ -81,45 +81,80 @@
 
       </section>
      <div>
-      
-      <section>
-      <h4>File Count by Project</h4>
-      <table class="table table-striped table-hover table-condensed table-bordered">
-          <thead>
-              <tr>
+
+          <section>
+            <h3>
+              Data download statistic at Project level 
+            </h3>
+            <article>
+              <h4>
+                Data download statistics by Project
+              </h4>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
                   <th data-translate>
-                      Project
+                    Project
                   </th>
                   <th>
-                      File Count
+                    # of files
                   </th>
                   <th>
-                     File Size
+                    File Size
                   </th>
-
-              </tr>
-          </thead>
-          <tbody>
-              <tr ng-repeat='aggregation in filesByProject'>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat='aggregation in filesByProject'>
+                <th>
+                  {{aggregation.project}}
+                </th>
+                <td>
+                  (tbd)
+                </td>
+                <td>
+                  (tbd)
+                </td>
+                </tr>
+                </tbody>
+              </table>
+            </article>
+            <article>
+              <h4>
+                Data download statistics by Disease Type
+              </h4>
+              <table class="table table-striped table-hover table-condensed table-bordered">
+                <thead>
+                <tr>
+                  <th data-translate>
+                    Disease Type
+                  </th>
                   <th>
-                      {{aggregation.project}}
+                    # of files
+                  </th>
+                  <th>
+                    File Size
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="zim in ['gir','dag','dib']">
+                  <th>
+                    (tbd)
                   </th>
                   <td>
-                      {{aggregation.count}}
+                    (tbd)
                   </td>
                   <td>
-                      {{aggregation.file_size | size}}
+                    (tbd)
                   </td>
-              </tr>
-          </tbody>
-          </table>
-      </section>
-
-
-
+                </tr>
+                </tbody>
+              </table>
+            </article>
+          </section>
        
-        </div>
-
+       </div>
     </div>
   </div>
 </div>

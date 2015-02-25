@@ -7,7 +7,9 @@
       </h3>
       <ol>
         <li>
-          By Project and Data type
+         <a href="#by-project-and-data-type">          
+            By Project and Data type
+          </a>
         </li>
         <li>
           Project level
@@ -60,6 +62,7 @@
 
   <div class="col-lg-9 col-md-9">
     <button class='btn btn-primary'>Export</button>
+    <section id=by-project-and-data-type>
      <h2 data-translate>
          Data download statistics by Project and Data type 
      </h2>
@@ -74,446 +77,47 @@
 	    	
 	    </parallel-coordinates>
 	 </div>
-</div>
+    </div> 
 
-
-
-      
+      </section>
      <div>
       
-      <div class="row">
-           <div class="col-xs-12">
-            <h4>File Count by Project</h4>
-            </div>
-      </div>
-
-      <div class="row">
-          <div class="col-sm-6">
-             <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            Project
-                        </th>
-                        <th>
-                            File Count
-                        </th>
-                        <th>
-                           File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesByProject'>
-                        <th>
-                            {{aggregation.project}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                        <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-         
-           
-           
-          </div>
-          <div class="col-sm-6">
-            <div class="reports-chart" ng-if=filesByProject reports-bar-chart data=projectChartData></div>
-             
-            
-          </div>
-      </div>
-      <hr>
-        <div class="row">
-           <div class="col-xs-12">
-            <h4>File Count by Program</h4>
-            </div>
-      </div>
-
-      <div class="row">
-          <div class="col-sm-6">
-             <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            Program
-                        </th>
-                         <th>
-                            File Count
-                        </th>
-                        <th>
-                            File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesByProgram'>
-                        <th>
-                            {{aggregation.program}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                         <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table> 
-             
-          </div>
-           <div class="col-sm-6">
-           
-          </div>
-      </div>
       <section>
-       <hr>
-        <div class="row">
-           <div class="col-xs-12">
-            <h4>File Count by Primary Site</h4>
-            </div>
-      </div>
+      <h4>File Count by Project</h4>
+      <table class="table table-striped table-hover table-condensed table-bordered">
+          <thead>
+              <tr>
+                  <th data-translate>
+                      Project
+                  </th>
+                  <th>
+                      File Count
+                  </th>
+                  <th>
+                     File Size
+                  </th>
 
-      <div class="row">
-          <div class="col-sm-6">
-            <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            Primary Site
-                        </th>
-                         <th>
-                            File Count
-                        </th>
-                        <th>
-                            File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesByPrimarySite'>
-                        <th>
-                            {{aggregation.primary_site}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                         <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-      </div>
-      </section>
-       <section>
-       <hr>
-        <div class="row">
-           <div class="col-xs-12">
-            <h4>Files by Data Type</h4>
-            </div>
-      </div>
-
-      <div class="row">
-          <div class="col-sm-6">
-                     
-                <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            Data Type
-                        </th>
-                         <th>
-                            File Count
-                        </th>
-                        <th>
-                            File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesByType'>
-                        <th>
-                            {{aggregation.data_type}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                         <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-   
-      <div class="col-sm-6">
-                <div class="reports-chart" data=filesByType ng-if=filesByType reports-pie-chart></div>
-      </div>
-         </div>
-      </section>
-       <section>
-       <hr>
-        <div class="row">
-           <div class="col-xs-12">
-            <h4>Files by Data Subype</h4>
-            </div>
-      </div>
-
-      <div class="row">
-          <div class="col-sm-6">
-                     
-               <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            Data Subtype
-                        </th>
-                         <th>
-                            File Count
-                        </th>
-                        <th>
-                            File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesBySubtype'>
-                        <th>
-                            {{aggregation.data_subtype}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                         <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-             <div class="col-sm-6">
-                  <div class="reports-chart" ng-if=subtypeChartData rotate-axis-text=true reports-bar-chart data=subtypeChartData></div>
-             </div>
-      </div>
-      </section>
-      
-      
-       <section>
-       <hr>
-        <div class="row">
-           <div class="col-xs-12">
-            <h4>Files by Experimental Strategy</h4>
-            </div>
-      </div>
-
-      <div class="row">
-          <div class="col-sm-6">
-                     
-               <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            Experimental Strategy
-                        </th>
-                         <th>
-                            File Count
-                        </th>
-                        <th>
-                            File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesByStrategy'>
-                        <th>
-                            {{aggregation.strategy}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                         <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-             <div class="col-sm-6">
-            
-             </div>
-      </div>
-      </section>
-          <section>
-       <hr>
-        <div class="row">
-           <div class="col-xs-12">
-            <h4>Other Statistics</h4>
-            </div>
-      </div>
-
-      <div class="row">
-          <div class="col-sm-6">
-                     
-              <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            Data Level
-                        </th>
-                         <th>
-                            File Count
-                        </th>
-                        <th>
-                            File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesByDataLevel'>
-                        <th>
-                            {{aggregation.data_level}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                         <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
-              <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            Data Access
-                        </th>
-                         <th>
-                            File Count
-                        </th>
-                        <th>
-                            File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesByAccess'>
-                        <th>
-                            {{aggregation.data_access}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                         <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-             <div class="col-sm-6">
-             <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            User Access
-                        </th>
-                         <th>
-                            File Count
-                        </th>
-                        <th>
-                            File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesByUserAccess'>
-                        <th>
-                            {{aggregation.access}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                         <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
-               <table class="table table-striped table-hover table-condensed table-bordered">
-                <thead>
-                    <tr>
-                        <th data-translate>
-                            User Location
-                        </th>
-                         <th>
-                            File Count
-                        </th>
-                        <th>
-                            File Size
-                        </th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat='aggregation in filesByLocation'>
-                        <th>
-                            {{aggregation.location}}
-                        </th>
-                        <td>
-                            {{aggregation.count}}
-                        </td>
-                         <td>
-                            {{aggregation.file_size | size}}
-                        </td>
-                    </tr>
-                    </tr>
-                </tbody>
-            </table>
-             </div>
-      </div>
+              </tr>
+          </thead>
+          <tbody>
+              <tr ng-repeat='aggregation in filesByProject'>
+                  <th>
+                      {{aggregation.project}}
+                  </th>
+                  <td>
+                      {{aggregation.count}}
+                  </td>
+                  <td>
+                      {{aggregation.file_size | size}}
+                  </td>
+              </tr>
+          </tbody>
+          </table>
       </section>
 
-         <div class="row">
-          <div class="col-sm-6">
-              
-          </div>
-           <div class="col-sm-6">
-            
-          </div>
-      </div>
-         <div class="row">
-          <div class="col-sm-6">
-             
-          </div>
-           <div class="col-sm-6">
-           
-          </div>
-      </div>
-       </div>
+
+
+       
         </div>
 
     </div>

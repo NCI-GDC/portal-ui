@@ -232,7 +232,6 @@ function ParallelCoordinates(data,options) {
                             width_scales[d].domain()[1]
                         ].map(function(v,i){
                     return {
-//                        value:i===0?0:v,
                         value:v,
                         x:(i===0?0:width_scales[d](v)/2),
                         domain:width_scales[d].domain(),

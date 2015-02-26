@@ -32,28 +32,28 @@ module ngApp.annotations.controllers {
       this.refresh();
     }
 
-
-
     refresh() {
       this.AnnotationsService.getAnnotations({
         fields: [
-          "id",
-          "categoryName",
-          "dateCreated",
-          "createdBy",
+          "annotation_id",
+          "category",
+          //"dateCreated",
+          "creator",
           "status",
-          "itemType",
-          "item",
-          "annotationClassificationName"
+          "item_type",
+          "item_id",
+          "classification",
+          "project.program.name",
+          "project.code"
         ],
         facets: [
-          "categoryName",
-          "dateCreated",
-          "createdBy",
+          "category",
+          //"dateCreated",
+          "creator",
           "status",
-          "itemType",
+          "item_type",
           "item",
-          "annotationClassificationName"
+          "classification"
         ]
       }).then((data) => {
         if (!data.hits.length) {

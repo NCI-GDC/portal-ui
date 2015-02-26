@@ -22,17 +22,19 @@ module ngApp.annotations {
           return AnnotationsService.getAnnotation($stateParams["annotationId"],
             {
               fields: [
-                "id",
-                "categoryName",
-                "createdBy",
+                "annotation_id",
+                "category",
+                "creator",
                 "status",
-                "itemType",
-                "item",
-                "annotationClassificationName",
-                "notes.noteText",
-                "notes.dateAdded",
-                "notes.noteId",
-                "notes.addedBy"
+                "item_type",
+                "item_id",
+                "classification",
+                "notes",
+                "project.code",
+                "project.project_id"
+                //"notes.dateAdded",
+                //"notes.noteId",
+                //"notes.addedBy"
               ]
             });
         }

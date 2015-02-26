@@ -3,16 +3,36 @@ module ngApp.projects.models {
 
     var AnnotationsTableModel:TableiciousConfig = {
         title: "Annotations",
-        order: ['itemType', 'item', 'annotationClassificationName', 'categoryName', 'dateCreated', 'createdBy', 'status'],
+        order: ['annotation_id', 'participant_id', 'project.program.name', 'project.code', 'barcode', 'item_type', 'category', 'classification', 'dateCreated', 'creator', 'status'],
         headings: [{
             displayName: "ID",
-            id: "id",
+            id: "annotation_id",
             sref: function (field) {
                 return "annotation({annotationId:'" + field.val + "'})";
-            }
-        }, {
+            },
+            sortable: true
+        },
+        {
+            displayName: "Participant ID",
+            id: "participant_id",
+            template: function () {
+              return "tbd";
+            },
+            sortable: true
+        },
+        {
+            displayName: "Program",
+            id: "project.program.name",
+            sortable: true
+        },
+        {
+            displayName: "Project",
+            id: "project.code",
+            sortable: true
+        },
+        {
             displayName: "Item Type",
-            id: "itemType",
+            id: "item_type",
             template: function (x) {
                 return x && x.val || "tbc";
             },
@@ -20,28 +40,37 @@ module ngApp.projects.models {
         },
         {
             displayName: "Item Barcode",
-            id: "item",
+            id: "barcode",
+            sortable: true,
+            template: function() {
+              return "tbd";
+            }
+        },
+        {
+            displayName: "Category",
+            id: "category",
+            template: function(field,row,scope) {
+              return scope.$filter('ellipsicate')(field.val, 30);
+            },
             sortable: true
         },
         {
             displayName: "Classification",
-            id: "annotationClassificationName",
+            id: "classification",
             sortable: true
-        },
-        {
-            displayName: "Category",
-            id: "categoryName",
         },
         {
             displayName: "Created Date",
             id: "dateCreated",
             template:function(field,row,scope){
-                return scope.$filter('date')(field.val);
+                return "tbd";
+                //return scope.$filter('date')(field.val);
             }
         },
         {
             displayName: "Annotator",
-            id: "createdBy",
+            id: "creator",
+            sortable: true
         },
         {
             displayName: "Status",

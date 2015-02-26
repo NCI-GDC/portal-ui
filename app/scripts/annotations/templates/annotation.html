@@ -1,7 +1,7 @@
 <div class="container entity" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <i class="fa fa-align-left"></i>
-    {{ ::ac.annotation.id }}
+    {{ ::ac.annotation.annotation_id }}
   </h1>
 
   <div class="col-lg-2 col-md-2">
@@ -20,7 +20,6 @@
           </div>
         </div>
       </div>
-
     </aside>
   </div>
 
@@ -33,51 +32,51 @@
             <tbody>
             <tr>
               <th data-translate scope="row">Annotation ID</th>
-              <td>{{ ::ac.annotation.id }}</td>
+              <td>{{ ::ac.annotation.annotation_id  }}</td>
             </tr>
             <tr>
-              <th data-translate scope="row">UUID</th>
-              <td>??? {{ ::ac.annotation.uuid }}</td>
+              <th data-translate scope="row">Item UUID</th>
+              <td>{{ ::ac.annotation.item_id }}</td>
             </tr>
             <tr>
-              <th data-translate scope="row">Item ID</th>
-              <td>{{ ::ac.annotation.item }}</td>
+              <th data-translate scope="row">Item Barcode</th>
+              <td>tbd {{ ::ac.annotation.barcode }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Item Type</th>
-              <td>{{ ::ac.annotation.itemType }}</td>
+              <td>{{ ::ac.annotation.item_type }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Participant ID</th>
               <td>
                 <a data-ui-sref="participant({ participantId: ac.annotation.participant.id })">
-                  ??? {{ ::ac.annotation.participant.id }}
+                  tbd {{ ::ac.annotation.participant.id }}
                 </a>
               </td>
             </tr>
             <tr>
-              <th data-translate scope="row">Project</th>
+              <th data-translate scope="row">Project Code</th>
               <td>
-                <a data-ui-sref="project({ projectId: ac.annotation.project.id })">
-                  ??? {{ ::ac.annotation.project.name }}
+                <a data-ui-sref="project({ projectId: ac.annotation.project.project_id })">
+                  {{ ::ac.annotation.project.code}}
                 </a>
               </td>
             </tr>
             <tr>
               <th data-translate scope="row">Classification</th>
-              <td>{{ ::ac.annotation.annotationClassificationName }}</td>
+              <td>{{ ::ac.annotation.classification }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Category</th>
-              <td>{{ ::ac.annotation.categoryName }}</td>
+              <td>{{ ::ac.annotation.category }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Created On</th>
-              <td>{{ ::ac.annotation.dateCreated | date }}</td>
+              <td>tbd {{ ::ac.annotation.dateCreated | date }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Created By</th>
-              <td>{{ ::ac.annotation.createdBy }}</td>
+              <td>{{ ::ac.annotation.creator }}</td>
             </tr>
             <tr>
               <th data-translate scope="row">Status</th>
@@ -87,18 +86,19 @@
           </table>
         </div>
 
-
-
         <div class="panel panel-default" id="notes">
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Notes</h3>
           </div>
           <div class="list-group">
-            <div class="list-group-item clearfix" data-ng-repeat="note in ac.annotation.notes">
-              <p class="list-group-item-text" style="word-break: break-all">{{ ::note.noteText}}</p>
-              <p class="list-group-item-text pull-right"><span data-translate>Added by</span> <strong>{{ ::note.addedBy }}</strong>
-                <span data-translate>on</span> <strong>{{ ::note.dateAdded | date }}</strong></p>
+            <div class="list-group-item clearfix">
+              <p class="list-group-item-text" style="word-break: break-all">{{ ::ac.annotation.notes }}</p>
             </div>
+          <!--  <div class="list-group-item clearfix" data-ng-repeat="note in ac.annotation.notes">-->
+              <!--<p class="list-group-item-text" style="word-break: break-all">{{ ::note.noteText}}</p>-->
+              <!--<p class="list-group-item-text pull-right"><span data-translate>Added by</span> <strong>{{ ::note.addedBy }}</strong>-->
+                <!--<span data-translate>on</span> <strong>{{ ::note.dateAdded | date }}</strong></p>-->
+            <!--</div>-->
           </div>
         </div>
     </div>

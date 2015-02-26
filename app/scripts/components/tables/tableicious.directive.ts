@@ -105,8 +105,6 @@ module ngApp.components.tables.directives.tableicious {
          */
         icon?(field:TableiciousEntryDefinition, row:TableiciousEntryDefinition[],scope:ITableicousScope) : string
 
-
-
         /**
          * A class or space-delimited list of classes to be applied only to the heading of the column.
          * Or, a function that returns the above.
@@ -157,9 +155,6 @@ module ngApp.components.tables.directives.tableicious {
          */
 
         sortable? : boolean;
-
-
-
 
     }
 

@@ -15,14 +15,24 @@ module ngApp.core.controllers {
                 private CartService: ICartService,
                 private notify: INotifyService,
                 $location: ng.ILocationService,
-                private $cookies: ng.ICookiesService) {
+                private $cookies: ng.ICookiesService,
+                private $modal: any) {
 
       var showWarning = $location.search()["showWarning"];
 
-      if (showWarning) {
-        this.$rootScope.showWarning = true;
-      } else if (!$cookies["NCI-Warning"]) {
-        this.$rootScope.showWarning = true;
+      if (showWarning || !showWarning && !$cookies["NCI-Warning"]) {
+        var modalInstance = this.$modal.open({
+          templateUrl: "core/templates/warning.html",
+          controller: "WarningController as wc",
+          backdrop: "static",
+          keyboard: false,
+          backdropClass: "warning-backdrop",
+          size: "lg"
+        });
+
+        modalInstance.result.then(() => {
+          this.$cookies["NCI-Warning"] = true;
+        });
       }
 
       $scope.$on("undo", (event, action) => {
@@ -42,16 +52,21 @@ module ngApp.core.controllers {
         this.$rootScope.$broadcast("gdc-cancel-request");
       };
 
-      this.$rootScope.closeWarning = () => {
-        this.$rootScope.showWarning = false;
-        this.$cookies["NCI-Warning"] = true;
-      };
-
     }
 
   }
 
+  class WarningController {
+    /* @ngInject */
+    constructor(private $modalInstance){}
+
+    acceptWarning(): void {
+      this.$modalInstance.close();
+    }
+  }
+
   angular
       .module("core.controller", ["ngCookies"])
+      .controller("WarningController", WarningController)
       .controller("CoreController", CoreController);
 }

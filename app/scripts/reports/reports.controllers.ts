@@ -176,7 +176,31 @@ module ngApp.reports.controllers {
             }
             return a;
           },{});
-          
+              
+                    var dummymap = __reports_dummy_data__.hits.hits.map(function(z){
+          return z._source;
+        })
+              
+              
+var dummy_aggregations = dummymap.reduce(function(a,b){
+            if (a[b.project_code]) {
+              var c = a[b.project_code];
+              c.file_size += b.size_in_mb;
+              c.file_count += b.count;
+                
+            
+            } else {
+              a[b.project_code] = {
+                file_size:b.size_in_mb,
+                project_code:b.project_code,
+                primary_site:b.primary_site,
+                file_count:b.count
+              
+              } 
+            }
+            
+            return a;    
+          },{})
   
           
         var config = {
@@ -219,8 +243,8 @@ module ngApp.reports.controllers {
           },
           sorting:{
             "project_code":function(a,b){
-              var proj1 = aggregations[a];
-              var proj2 = aggregations[b];
+              var proj1 = dummy_aggregations[a];
+              var proj2 = dummy_aggregations[b];
               
               
               if (proj1.file_count > proj2.file_count) {
@@ -262,14 +286,17 @@ module ngApp.reports.controllers {
         
         $timeout(function(){
         
+          console.log("aggs?", aggregations);
+          console.log('dummy map',dummymap);
+          
+          
+          
         
         $scope.githutConfig = config;
-        $scope.githutData = d3.values(aggregations);
+        $scope.githutData = d3.values(dummy_aggregations);
           },500);
           
-        var dummymap = __reports_dummy_data__.hits.hits.map(function(z){
-          return z._source;
-        })
+  
 
         $scope.byProject = dataNest('project_code').entries(dummymap);
         $scope.byDisease = dataNest('disease_type').entries(dummymap);

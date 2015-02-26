@@ -185,7 +185,7 @@ function ParallelCoordinates(data,options) {
             .attr('height',100)
             .attr("transform",function(d){
             var x=xscale('Clinical')+(0.5*(xscale('DNA methylation')-xscale('Clinical')))+padding.left+margins.left,
-                y=70;
+                y=10;
             return "translate("+x+","+y+")";
             })  
             .append('text')
@@ -196,7 +196,7 @@ function ParallelCoordinates(data,options) {
           svg.append('rect')
             .attr('width',xscale('DNA methylation')-xscale('Clinical'))
             .attr('height',1)
-            .attr('y',75)
+            .attr('y',15)
             .attr('x',xscale('Clinical') +padding.left+margins.left);
           
 
@@ -700,14 +700,16 @@ function ParallelCoordinates(data,options) {
         updateLangLabels();
         updateAxes();
 	}
+  
+    var LHR = $(options.container);
     
-    var WIDTH=Math.round(800),
+    var WIDTH=LHR.width(),
         HEIGHT=Math.min(500);
 
 	var margins={
 		left:0,
 		right:30,
-		top:100,
+		top:40,
 		bottom:30
 	};
 

@@ -214,7 +214,7 @@ function githutTable(data){
 
             code:key,
             primary_site:group.primary_site,
-            file_count:group.summary.data_file_count,
+            file_count:group.summary.file_count,
             file_size:group.summary.file_size,
             participant_count:group.summary.participant_count,
 

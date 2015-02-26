@@ -19,131 +19,89 @@ module ngApp.reports.controllers {
         
         ReportsService.getReports().then(function(reports){
           CoreService.setSearchModelState(true);
-//         debugger;
      
-   
           
-         var columns = [{
-          id:'project_code',
-          display_name:["Project","Code"],
-          scale:'ordinal',
-          dimensional:true
-        },
-        {
-          id:'file_count',
-          display_name:["File","Count"],
-          scale:'ordinal',
-          dimensional:true
-        },
-                          {
-          id:'Clinical',
-          display_name:['Clinical'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },
-                          {
-          id:'Raw microarray data',
-          display_name:['Array'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },
-                            {
-          id:'Raw sequencing data',
-          display_name:['Seq'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },{
-          id:'Simple nucleotide variation',
-          display_name:['SNV'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },
-                          {
-          id:'Copy number variation',
-          display_name:['CNV'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },{
-          id:'Structural rearrangement',
-          display_name:['SV'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },{
-          id:'Gene expression',
-          display_name:['Exp'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },{
-          id:'Protein expression',
-          display_name:['PExp'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },{
-          id:'Other',
-          display_name:['Other'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },{
-          id:'DNA methylation',
-          display_name:['Meth'],
-          scale:'ordinal',
-          is_subtype:true,
-          dimensional:true
-        },
-        {
-          id:'file_size',
-          display_name:["File","Size"],
-          scale:'ordinal',
-          dimensional:true
-        },
-        {
-          id:'primary_site',
-          display_name:["Primary","Site"],
-          scale:'linear',
-          dimensional:true
-        }
-                         ];
+        
+
+
+          var dummymap = reports.hits.hits.map(function(z){
+            return z._source;
+          })
+              
+              
+          var dummy_aggregations = dummymap.reduce(function(a,b){
+
+              if (!_.contains(primary_sites,b.primary_site)){
+                    primary_sites.push(b.primary_site);    
+                } 
+              if (a[b.project_code]) {
+                var c = a[b.project_code];
+                c.file_size += b.size_in_mb;
+                c.file_count += b.count;
+                
+                b.data_types.forEach(function(d){
+                  c[d.data_type] += d.count;
+                })
+
+
+              } else {
+                a[b.project_code] = {
+                  file_size:b.size_in_mb,
+                  project_code:b.project_code,
+                  primary_site:b.primary_site,
+                  file_count:b.count
+
+                } 
+                
+                b.data_types.forEach(function(d){
+                  a[b.project_code][d.data_type] = d.count;
+                })
+              }
+            
+//              debugger;
+
+              return a;    
+            },{});
+          
+          var columns = [{
+            id:'project_code',
+            display_name:["Project","Code"],
+            scale:'ordinal',
+            dimensional:true
+          },
+          {
+            id:'file_count',
+            display_name:["File","Count"],
+            scale:'ordinal',
+            dimensional:true
+          },
+             
+          {
+            id:'file_size',
+            display_name:["File","Size"],
+            scale:'ordinal',
+            dimensional:true
+          },
+          {
+            id:'primary_site',
+            display_name:["Primary","Site"],
+            scale:'linear',
+            dimensional:true
+          }];
+          
+          var data_types = dummymap.reduce(function(a,b){return a.concat(b.data_types)},[])
+          var nest = d3.nest().key(function(a){return a.data_type}).entries(data_types);
+          
+          nest.forEach(function(a){
+            columns.splice(2,0,{
+              id:a.key,
+              display_name:[a.key],
+              scale:'ordinal',
+              dimensional:true
+            });
+          });
           
 
-              
-        var dummymap = reports.hits.hits.map(function(z){
-          return z._source;
-        })
-              
-              
-        var dummy_aggregations = dummymap.reduce(function(a,b){
-  
-            if (!_.contains(primary_sites,b.primary_site)){
-                  primary_sites.push(b.primary_site);    
-              } 
-            if (a[b.project_code]) {
-              var c = a[b.project_code];
-              c.file_size += b.size_in_mb;
-              c.file_count += b.count;
-                
-            
-            } else {
-              a[b.project_code] = {
-                file_size:b.size_in_mb,
-                project_code:b.project_code,
-                primary_site:b.primary_site,
-                file_count:b.count
-              
-              } 
-            }
-            
-            return a;    
-          },{})
-  
           
         var config = {
 
@@ -303,6 +261,3 @@ module ngApp.reports.controllers {
       .controller("ReportController", ReportController)
       .controller("ReportsController", ReportsController);
 }
-
-
-//debugger;

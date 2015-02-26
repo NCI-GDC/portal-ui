@@ -16,36 +16,19 @@ module ngApp.reports.services {
       this.dr = dummyReports;
     }
 
-    getReport(id: string, params: Object = {}): ng.IPromise<IReport> {
-        var deferred = $q.defer();
-        _.defer(function(){
-            deferred.resolve({
-                data:dummyReports
-            })
-        });
-//    
-        return deferred.promise;
-        return this.ds.get("", params).then((response): IReports => {
-            return response;
-        });
-      
-      
+    getReport(id: string, params: Object = {}): ng.IPromise<IReport> {      
         
         
     }
 
     getReports(params: Object = {}): ng.IPromise<IReports> {
         
-        
-        
         var deferred = this.$q.defer();
         _.defer(()=>{
-//            deferred.resolve(sampleDownloadContent)
             deferred.resolve(this.dr);
         });
     
         return deferred.promise;
-
 
     }
   }

@@ -267,36 +267,36 @@ module ngApp.reports.controllers {
         $scope.githutData = d3.values(aggregations);
           },500);
           
-        var superdeluxe = __reports_dummy_data__.hits.hits.map(function(z){
+        var dummymap = __reports_dummy_data__.hits.hits.map(function(z){
           return z._source;
         })
 
-        $scope.byProject = magicNest('project_code').entries(superdeluxe);
-        $scope.byDisease = magicNest('disease_type').entries(superdeluxe);
-        $scope.byProgram = magicNest('program').entries(superdeluxe);
+        $scope.byProject = dataNest('project_code').entries(dummymap);
+        $scope.byDisease = dataNest('disease_type').entries(dummymap);
+        $scope.byProgram = dataNest('program').entries(dummymap);
               
-        $scope.byDataType = magicNest('data_type').entries(superdeluxe.reduce(function(a,b){
+        $scope.byDataType = dataNest('data_type').entries(dummymap.reduce(function(a,b){
           a = a.concat(b.data_types);
           return a;
         },[]));
               
-        $scope.byStrat = magicNest('experimental_strategy').entries(superdeluxe.reduce(function(a,b){
+        $scope.byStrat = dataNest('experimental_strategy').entries(dummymap.reduce(function(a,b){
           a = a.concat(b.experimental_strategies);
           return a;
         },[]));
               
-        $scope.byUserType = magicNest('user_type').entries(superdeluxe.reduce(function(a,b){
+        $scope.byUserType = dataNest('user_type').entries(dummymap.reduce(function(a,b){
           a = a.concat(b.user_types);
           return a;
         },[]));
               
-        $scope.byLocation = magicNest('country').entries(superdeluxe.reduce(function(a,b){
+        $scope.byLocation = dataNest('country').entries(dummymap.reduce(function(a,b){
           a = a.concat(b.countries);
           return a;
         },[]));
               
    
-        function magicNest(key){
+        function dataNest(key){
           return d3.nest()
             .key(function(d){return d[key]})
             .rollup(function(d){
@@ -309,7 +309,7 @@ module ngApp.reports.controllers {
 
          }
             
-         console.log("The goods.",superdeluxe, $scope);
+         console.log("The goods.",dummymap, $scope);
           
           
             

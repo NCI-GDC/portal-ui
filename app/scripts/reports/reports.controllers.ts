@@ -145,44 +145,18 @@ module ngApp.reports.controllers {
         }
                          ];
           
-          var aggregations = a.reduce(function(a,b){
 
-            if (a[b.archive.disease_code]) {
-              var record = a[b.archive.disease_code];
-              record.file_size += b.file_size;
-              record.file_count+=1;
-              if (record[b.data_type]) {
-                record[b.data_type] += 1;
-              } else {
-                record[b.data_type] = 1;
-              }
-            
-            } else {
-
-
-              var project = projects.hits[projects.hits.map(function(a){return a.project_code}).indexOf(b.archive.disease_code)]
-                if (!_.contains(primary_sites,project.primary_site)){
-                  primary_sites.push(project.primary_site);    
-              } 
-              a[b.archive.disease_code] = {
-                file_size:b.file_size,
-                project_code:b.archive.disease_code,
-                primary_site:project.primary_site,
-                file_count:1
-              };
               
-              a[b.archive.disease_code][b.data_type] = 1;
-           
-            }
-            return a;
-          },{});
-              
-                    var dummymap = __reports_dummy_data__.hits.hits.map(function(z){
+        var dummymap = __reports_dummy_data__.hits.hits.map(function(z){
           return z._source;
         })
               
               
-var dummy_aggregations = dummymap.reduce(function(a,b){
+        var dummy_aggregations = dummymap.reduce(function(a,b){
+  
+            if (!_.contains(primary_sites,b.primary_site)){
+                  primary_sites.push(b.primary_site);    
+              } 
             if (a[b.project_code]) {
               var c = a[b.project_code];
               c.file_size += b.size_in_mb;
@@ -286,8 +260,7 @@ var dummy_aggregations = dummymap.reduce(function(a,b){
         
         $timeout(function(){
         
-          console.log("aggs?", aggregations);
-          console.log('dummy map',dummymap);
+
           
           
           

@@ -50,7 +50,7 @@ module ngApp.annotations.services {
       var defaults = {
         size: paging.size,
         from: paging.from,
-        sort: paging.sort || 'itemType:asc',
+        sort: paging.sort || 'item_type:asc',
         filters: this.LocationService.filters()
       };
 

@@ -12,11 +12,13 @@ module ngApp.search.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import ISearchService = ngApp.search.services.ISearchService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
   export interface ISearchController {
     files: IFiles;
     participants: IParticipants;
+    summary: any;
     State: IState;
     CartService: ICartService;
     addFilesKeyPress(event: any, type: string): void;
@@ -35,6 +37,7 @@ module ngApp.search.controllers {
   class SearchController implements ISearchController {
     files: IFiles;
     participants: IParticipants;
+    summary: any;
     tabSwitch: boolean = false;
 
     /* @ngInject */
@@ -42,6 +45,7 @@ module ngApp.search.controllers {
                 private $state: ng.ui.IStateService,
                 public State: IState,
                 public CartService: ICartService,
+                public SearchService: ISearchService,
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
                 private LocationService: ILocationService,
@@ -74,6 +78,10 @@ module ngApp.search.controllers {
         this.tabSwitch = false;
         return;
       }
+
+      this.SearchService.getSummary().then((data) => {
+        this.summary = data;
+      });
 
       this.FilesService.getFiles({
         fields: [
@@ -196,7 +204,7 @@ module ngApp.search.controllers {
           filters: angular.toJson(f)
         };
       }
-      console.log(stateParams);
+
       this.$state.go("query.summary", stateParams, { inherit: true });
     }
 

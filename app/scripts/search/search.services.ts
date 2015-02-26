@@ -41,7 +41,7 @@ module ngApp.search.services {
         _.each(this[section], function (section: ITab) {
           section.active = false;
         });
-        console.log('h33!');
+
         if (!(section === "facets" && tab==="summary")) {
           this[section][tab].active = true;
         }
@@ -50,7 +50,28 @@ module ngApp.search.services {
     }
   }
 
+
+  export interface ISearchService {
+    getSummary();
+  }
+
+  class SearchService implements ISearchService {
+    private ds: restangular.IElement;
+
+    /* @ngInject */
+    constructor(Restangular: restangular.IService) {
+      this.ds = Restangular.all("ui/search");
+    }
+
+    getSummary() {
+      return this.ds.get('summary', {}).then((response) => {
+        return response;
+      });
+    }
+  }
+
   angular
       .module("search.services", [])
-      .service("State", State);
+      .service("State", State)
+      .service("SearchService", SearchService);
 }

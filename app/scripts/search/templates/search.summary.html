@@ -1,12 +1,17 @@
-<div class="col-lg-4">
-  <h2>Summary</h2>
+<div class="col-lg-12">
+  <h2>
+    Query Result Summary
+  </h2>
 
-  <table id="summary-table"
-         class="table table-striped table-hover table-condensed table-bordered table-vertical col-lg-1">
+  <table id="summary-table" class="table table-striped table-hover table-bordered table-vertical">
     <tbody>
     <tr>
-      <th scope="row" data-translate>Files</th>
+      <th scope="row" data-translate># of Files</th>
       <td>{{ sc.files.pagination.total }}</td>
+    </tr>
+    <tr>
+      <th scope="row" data-translate>File Size (GB)</th>
+      <td>{{ sc.summary.fs.value | size}}</td>
     </tr>
     <tr>
       <th scope="row" data-translate>Participants</th>
@@ -15,6 +20,92 @@
     </tbody>
   </table>
 
-  <div add-to-cart-all data-files="sc.files" data-paging="sc.files.pagination" data-add-all-only=true></div>
+  <div data-add-to-cart-all data-files="sc.files" data-paging="sc.files.pagination"
+       data-add-all-only=true></div>
 
+  <h3>
+    Breakdowns
+  </h3>
+
+  <div class="row">
+    <div class="col-lg-6">
+      <table id="summary-table-dt" class="col-lg-6 table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+          <th>Data Type</th>
+          <th># Files</th>
+          <th>
+            File Size
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-ng-repeat='type in sc.summary.data_type.buckets'>
+          <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
+          <td>{{ type.doc_count }}</td>
+          <td>{{ type.file_size.value | size}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-lg-6">
+      <table id="summary-table-es" class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+          <th>Experimental Strategy</th>
+          <th># Files</th>
+          <th>File Size</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-ng-repeat='type in sc.summary.experimental_strategy.buckets'>
+          <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
+          <td>{{ type.doc_count }}</td>
+          <td>{{ type.file_size.value | size}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6">
+
+      <table id="summary-table-df" class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+          <th>Data Format</th>
+          <th># Files</th>
+          <th>File Size</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-ng-repeat='type in sc.summary.data_format.buckets'>
+          <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
+          <td>{{ type.doc_count }}</td>
+          <td>{{ type.file_size.value | size}}</td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="col-lg-6">
+      <table id="summary-table-da" class="table table-striped table-hover table-bordered">
+        <thead>
+        <tr>
+          <th>Data Access</th>
+          <th># Files</th>
+          <th>File Size</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr data-ng-repeat='type in sc.summary.access.buckets'>
+          <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
+          <td>{{ type.doc_count }}</td>
+          <td>{{ type.file_size.value | size}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

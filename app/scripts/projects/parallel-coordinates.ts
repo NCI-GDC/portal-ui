@@ -140,7 +140,7 @@ function ParallelCoordinates(data,options) {
 
 	};
     
-    function addAxes() {
+      function addAxes() {
 
 		var column=columns.selectAll("g.column")
             .data(options.columns)
@@ -180,7 +180,8 @@ function ParallelCoordinates(data,options) {
             .text(function(d){
                 return d;
             });
-      
+
+        
           svg.append('g')
             .attr('height',100)
             .attr("transform",function(d){
@@ -198,7 +199,6 @@ function ParallelCoordinates(data,options) {
             .attr('height',1)
             .attr('y',15)
             .attr('x',xscale('Clinical') +padding.left+margins.left);
-          
 
 		var axis=column
             .filter(function(col){
@@ -212,11 +212,60 @@ function ParallelCoordinates(data,options) {
                 return "translate("+x+","+y+")";
             })
 
-		axis.append("line");
-//		
+		axis.append("line")
+			.attr("x1",function(d){
+				return -width_scales[d].range()[1]/2;
+			})
+			.attr("y1",0)
+			.attr("x2",function(d){
+				return width_scales[d].range()[1]/2;
+			})
+			.attr("y2",0)
+		
 
 
-		var ticks=axis;
+		var ticks=axis
+			.selectAll("g.tick")
+            .data(function(d){
+
+                var ticks=[
+                            width_scales[d].domain()[1]
+                        ].map(function(v,i){
+                    return {
+                        value:v,
+                        x:(i===0?0:width_scales[d](v)/2),
+                        domain:width_scales[d].domain(),
+                        range:width_scales[d].range()
+                    }
+                });
+
+                return ticks;
+            })
+            .enter()
+            .append("g")
+            .attr("class","tick")
+            .classed("start",function(d){
+                return d.x<0;
+            })
+            .classed("end",function(d){
+                return d.x>0;
+            })
+            .attr("transform",function(d){
+                return "translate("+d.x+",0)";
+            })
+
+		ticks.append("line")
+			.attr("x1",0)
+			.attr("y1",-3)
+			.attr("x2",0)
+			.attr("y2",3)
+
+		ticks.append("text")
+			.attr("x",0)
+			.attr("y",12)
+			.text(function(d){
+				return d3.format("s")(d.value);
+			})
 	}
     
 	function updateAxes() {

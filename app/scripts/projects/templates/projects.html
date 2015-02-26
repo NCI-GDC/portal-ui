@@ -55,7 +55,22 @@
         </div>
       </div>
       <div class="pane-section" data-ng-show="mode === 'details'">
-        <gdc-table data-data="prsc.projects.hits"
+               
+<!--
+		 <h3 data-ng-show="mode==='graph'">
+		   Available Data per Project
+		 </h3>
+      
+-->
+      </div>
+
+<!--          <div class="githut">-->
+        
+    
+<!--		<div id="pc" ></div>-->
+		
+<!--</div>-->
+     <gdc-table data-data="prsc.projects.hits"
                     data-config="tableConfig"
                     data-heading="Projects ({{prsc.projects.pagination.total}})"
                     data-id="project-table"
@@ -63,7 +78,8 @@
                     data-paging="prsc.projects.pagination"
                     data-ng-if="prsc.projects.hits.length">
          </gdc-table>
-      </div>
+
+   
     </div>
   </div>
 </div>

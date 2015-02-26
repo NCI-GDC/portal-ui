@@ -2,8 +2,6 @@ module ngApp.reports.controllers {
   import ICoreService = ngApp.core.services.ICoreService;
   import IReports = ngApp.reports.models.IReports;
   import IReport = ngApp.reports.models.IReport;
-        import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
-    import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
 
   export interface IReportsController {
     reports: IReports;
@@ -19,43 +17,13 @@ module ngApp.reports.controllers {
 
       CoreService.setPageTitle("Reports");
         
-        ReportsService.getReports().then(function(a){
+        ReportsService.getReports().then(function(reports){
           CoreService.setSearchModelState(true);
-          
-            ProjectsService.getProjects({
-        fields: [
-          "disease_type",
-          "project_name",
-          "status",
-          "program",
-          "project_code",
-          "primary_site",
-          "summary.file_size",
-          "summary.participant_count",
-          "summary.data_file_count",
-          "summary.data_types.data_type",
-          "summary.data_types.participant_count",
-          "summary.data_types.file_count",
-          "summary.experimental_strategies.participant_count",
-          "summary.experimental_strategies.file_count",
-          "summary.experimental_strategies.experimental_strategy"
-        ],
-        facets: [
-          "program",
-          "disease_type",
-          "primary_site",
-          "summary.experimental_strategies.experimental_strategy",
-          "summary.data_types.data_type"
-        ],
-        size: 100
-      }).then((projects) => {
-    
-          
-         
+//         debugger;
      
    
           
-           var columns = [{
+         var columns = [{
           id:'project_code',
           display_name:["Project","Code"],
           scale:'ordinal',
@@ -147,7 +115,7 @@ module ngApp.reports.controllers {
           
 
               
-        var dummymap = __reports_dummy_data__.hits.hits.map(function(z){
+        var dummymap = reports.hits.hits.map(function(z){
           return z._source;
         })
               
@@ -308,13 +276,9 @@ module ngApp.reports.controllers {
            .sortValues(function(a,b){return a.file_count - b.file_count});
 
          }
-            
-         console.log("The goods.",dummymap, $scope);
+    
           
           
-            
-          
-        });
       
       });
     }
@@ -480,45 +444,6 @@ module ngApp.reports.controllers {
           }
        })
       .controller("ReportsController", ReportsController);
-}
-
-var __reports_dummy_data__ = {
-  "took" : 1,
-  "timed_out" : false,
-  "_shards" : {
-    "total" : 5,
-    "successful" : 5,
-    "failed" : 0
-  },
-  "hits" : {
-    "total" : 4,
-    "max_score" : 1.0,
-    "hits" : [ {
-      "_index" : "test",
-      "_type" : "report",
-      "_id" : "3",
-      "_score" : 1.0,
-      "_source":{        "date": "2015-02-07T01:00:00-05:00",		"project_code": "OV",	    "program": "TCGA",	    "primary_site": "Ovary",	    "disease_type": "",	    "size_in_mb": 2875423,	    "count": 145332,	    "data_types": [	        {	            "data_type": "raw_seq",	            "size_in_mb": 4632,	            "count": 533	        },	        {	        	"data_type": "ssm",	            "size_in_mb": 23454544,	            "count": 45332	        }	    ],	    "experimental_strategies": [	        {	        	"experimental_strategy": "WGS",	            "size_in_mb": 2515151,	            "count": 3242	        },	        {	            "experimental_strategy": "N/A",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "user_types": [	        {	            "user_type": "logged_in_user",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	            "user_type": "anonymous",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "countries": [	        {	        	"country": "US",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	            "country": "UK",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	        	"country": "CA",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "continents": [	        {	        	"continent": "North America",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	        	"continent": "Europe",	            "size_in_mb": 3424232,	            "count": 232	        }	    ]}
-    }, {
-      "_index" : "test",
-      "_type" : "report",
-      "_id" : "2",
-      "_score" : 1.0,
-      "_source":{        "date": "2015-02-06T01:00:00-05:00",		"project_code": "GBM",	    "program": "TCGA",	    "primary_site": "Brain",	    "disease_type": "",	    "size_in_mb": 3875423,	    "count": 145332,	    "data_types": [	        {	            "data_type": "raw_seq",	            "size_in_mb": 4632643,	            "count": 533	        },	        {	        	"data_type": "ssm",	            "size_in_mb": 23454544,	            "count": 45332	        }	    ],	    "experimental_strategies": [	        {	        	"experimental_strategy": "WGS",	            "size_in_mb": 2515151,	            "count": 3242	        },	        {	            "experimental_strategy": "N/A",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "user_types": [	        {	            "user_type": "logged_in_user",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	            "user_type": "anonymous",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "countries": [	        {	        	"country": "US",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	            "country": "UK",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	        	"country": "CA",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "continents": [	        {	        	"continent": "North America",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	        	"continent": "Europe",	            "size_in_mb": 3424232,	            "count": 232	        }	    ]}
-    }, {
-      "_index" : "test",
-      "_type" : "report",
-      "_id" : "1",
-      "_score" : 1.0,
-      "_source":{        "date": "2015-02-06T01:00:00-05:00",		"project_code": "OV",	    "program": "TCGA",	    "primary_site": "Ovary",	    "disease_type": "",	    "size_in_mb": 2875423,	    "count": 145332,	    "data_types": [	        {	            "data_type": "raw_seq",	            "size_in_mb": 4632643,	            "count": 533	        },	        {	        	"data_type": "ssm",	            "size_in_mb": 454544,	            "count": 45332	        }	    ],	    "experimental_strategies": [	        {	        	"experimental_strategy": "WGS",	            "size_in_mb": 2515151,	            "count": 3242	        },	        {	            "experimental_strategy": "N/A",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "user_types": [	        {	            "user_type": "logged_in_user",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	            "user_type": "anonymous",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "countries": [	        {	        	"country": "US",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	            "country": "UK",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	        	"country": "CA",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "continents": [	        {	        	"continent": "North America",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	        	"continent": "Europe",	            "size_in_mb": 3424232,	            "count": 232	        }	    ]}
-    }, {
-      "_index" : "test",
-      "_type" : "report",
-      "_id" : "4",
-      "_score" : 1.0,
-      "_source":{        "date": "2015-02-07T01:00:00-05:00",		"project_code": "GBM",	    "program": "TCGA",	    "primary_site": "Brain",	    "disease_type": "",	    "size_in_mb": 3875423,	    "count": 145332,	    "data_types": [	        {	            "data_type": "raw_seq",	            "size_in_mb": 4632643,	            "count": 533	        },	        {	        	"data_type": "ssm",	            "size_in_mb": 23454544,	            "count": 45332	        }	    ],	    "experimental_strategies": [	        {	        	"experimental_strategy": "WGS",	            "size_in_mb": 2515151,	            "count": 3242	        },	        {	            "experimental_strategy": "N/A",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "user_types": [	        {	            "user_type": "logged_in_user",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	            "user_type": "anonymous",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "countries": [	        {	        	"country": "US",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	            "country": "UK",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	        	"country": "CA",	            "size_in_mb": 3424232,	            "count": 232	        }	    ],	    "continents": [	        {	        	"continent": "North America",	            "size_in_mb": 3424232,	            "count": 232	        },	        {	        	"continent": "Europe",	            "size_in_mb": 3424232,	            "count": 232	        }	    ]}
-    } ]
-  }
 }
 
 

@@ -19,6 +19,7 @@ module ngApp.cart.controllers {
     all(): boolean;
     isUserProject(file: IFile): boolean;
     getFileIds(): string[];
+    getRelatedFileIds(): string[];
     processPaging: boolean;
     pagination: IPagination;
     displayedFiles: IFile[];
@@ -215,6 +216,12 @@ module ngApp.cart.controllers {
 
     getFileIds(): string[] {
       return _.pluck(this.files, "file_id");
+    }
+
+    getRelatedFileIds(): string[] {
+      return _.reduce(this.files, function(ids, file) {
+        return ids.concat(file.related_ids);
+      }, []);
     }
 
     getSelectedSize(): number {

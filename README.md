@@ -121,6 +121,20 @@ The development server is setup using Browsersync
 [BS] Serving files from: dist
 ```
 
+# Connecting to UChi System
+
+Port forward the api at localhost:5000
+
+```
+ssh -L 5000:0:443 -N 172.17.0.64
+```
+
+Start npm with GDC_API=https://localhost:5000
+
+```
+GDC_API=https://localhost:5000 npm start
+```
+
 # Contributing
 
 Read how to contribute [here](https://github.com/NCI-GDC/portal-ui/blob/master/CONTRIBUTING.md)

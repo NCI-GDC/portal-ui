@@ -80,19 +80,20 @@
           </span>
           (<strong>{{ cc.selectedSize() | size}}</strong>)
           <span style="margin-left: 15px" class="btn-group" data-dropdown>
-            <button type="button"
+            <a type="button"
+                    data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}"
                     class="btn btn-primary">
               <i class="fa fa-cloud-download"></i> <span data-translate>Download</span>
-            </button>
+            </a>
             <button type="button"
                     class="btn btn-primary dropdown-toggle">
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
               <li role="listitem" aria-label="{{ 'Download Files' | translate }}">
-                <a data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}">
+                <a data-ng-href="{{ cc.getFileIds().concat(cc.getRelatedFileIds() || []) | makeDownloadLink }}">
                   <i class="fa fa-download fa-stack"></i>
-                  <span data-translate>Download Files</span>
+                  <span data-translate>Download Files with Metadata</span>
                 </a>
               </li>
               <li role="listitem" aria-label="{{ 'Download URLs' | translate }}">
@@ -107,10 +108,14 @@
                   <span data-translate>Download Manifest</span>
                 </a>
               </li>
-              <li role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                <a data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}">
+              <li data-ng-class="{ disabled: cc.getRelatedFileIds().length === 0}"
+                  role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
+                <a data-ng-href="{{ cc.getRelatedFileIds() || [] | makeDownloadLink }}">
                   <i class="fa fa-file-code-o fa-stack"></i>
-                  <span data-translate>Download Metadata Files</span>
+                  <span data-ng-switch="cc.getRelatedFileIds().length">
+                    <span data-ng-switch-when="0" data-translate>No Metadata Files to Download</span>
+                    <span data-ng-switch-default data-translate>Download Metadata</span>
+                  </span>
                 </a>
               </li>
             </ul>
@@ -166,16 +171,16 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" role="menu">
-                <li role="listitem" aria-label="{{ 'Download' | translate }}">
-                  <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
+                <li role="listitem" aria-label="{{ 'Download File with Metadata' | translate }}">
+                  <a data-ng-href="{{ [file.file_id].concat(file.related_ids || []) | makeDownloadLink }}">
                     <i class="fa fa-cloud-download fa-stack"></i>
-                    <span data-translate>Download</span>
+                    <span data-translate>Download File with Metadata</span>
                   </a>
                 </li>
-                <li role="listitem" aria-label="{{ 'Download File' | translate }}">
+                <li role="listitem" aria-label="{{ 'Download Only File' | translate }}">
                   <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
                     <i class="fa fa-download fa-stack"></i>
-                    <span data-translate>Download File</span>
+                    <span data-translate>Download Only File</span>
                   </a>
                 </li>
                 <li role="listitem" aria-label="{{ 'Download URL' | translate }}">
@@ -190,8 +195,9 @@
                     <span data-translate>Download Manifest</span>
                   </a>
                 </li>
-                <li role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                  <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
+                <li data-ng-class="{ disabled: file.related_ids.length === 0}"
+                    role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
+                  <a data-ng-href="{{ file.related_ids || [] | makeDownloadLink }}">
                     <i class="fa fa-file-code-o fa-stack"></i>
                     <span data-translate>Download Metadata Files</span>
                   </a>
@@ -212,8 +218,8 @@
             <i data-ng-if="!cc.isUserProject(file)" class="fa fa-close fa-lg"></i>
           </td>
           <td class="text-center">
-            <i data-ng-if="file.data_access === 'protected'" class="fa fa-lock fa-lg"></i>
-            <i data-ng-if="file.data_access !== 'protected'" class="fa fa-unlock-alt fa-lg"></i>
+            <i data-ng-if="file.access === 'protected'" class="fa fa-lock fa-lg"></i>
+            <i data-ng-if="file.access !== 'protected'" class="fa fa-unlock-alt fa-lg"></i>
           </td>
           <td class="truncated-cell">
             <a data-ui-sref="file({ fileId: file.file_id })">

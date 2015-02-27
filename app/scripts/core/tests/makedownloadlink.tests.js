@@ -7,15 +7,17 @@ describe("makeDownloadLink Filter:", function () {
     expect($filter("makeDownloadLink")).not.to.be.null;
   }));
 
-  it("should generate url when given list of ids", inject(function ($filter) {
+  it("should generate url when given list of ids", inject(function ($filter, $rootScope) {
     var ids = [
       "AAA",
       "BBB",
       "CCC"
     ];
 
-    var actual = $filter("makeDownloadLink")(ids);
-    var expected = "/api/data/" + ids.join(",");
+    var apiUrl = "http://myapi";
+    $rootScope.config = { 'api': apiUrl };
+    var actual = $filter("makeDownloadLink")(ids, apiUrl);
+    var expected = apiUrl + "/data/" + ids.join(",");
 
     expect(actual).to.equal(expected);
   }));

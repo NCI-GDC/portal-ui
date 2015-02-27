@@ -14,28 +14,39 @@
     </button>
     <ul class="dropdown-menu" role="menu">
         <li role="listitem"
-            aria-label="{{ 'Download File' | translate }}">
-            <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
-                <i class="fa-stack fa fa-cloud-download fa-stack"></i>
-                <span data-translate>Download</span>
-            </a>
-        </li>
-        <li role="listitem"
-            aria-label="{{ 'Download File' | translate }}">
+            aria-label="{{ 'Download Only File' | translate }}">
             <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
                 <i class="fa-stack fa fa-download fa-stack "></i>
-                <span data-translate>Download File</span>
+                <span data-translate>Download Only File</span>
             </a>
         </li>
         <li role="listitem"
-            aria-label="{{ 'Download Metadata' | translate }}">
-            <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
+            data-ng-switch="file.related_ids.length"
+            data-ng-class="{ disabled: file.related_ids.length === 0}"
+            aria-label="{{ 'Download Metadata' | translate }}" >
+            <a data-ng-switch-default data-ng-href="{{ file.related_ids || [] | makeDownloadLink }}">
                 <i class="fa fa-download fa-stack "></i>
-                <span data-translate>Download Metadata</span>
+                Download Metadata
+            </a>
+            <a data-ng-switch-when="0" data-translate>
+              <i class="fa fa-download fa-stack "></i>
+              No Metadata Files to Download
             </a>
         </li>
-        <li class="divider" data-ng-if="file.archives.length"></li>
-        <li data-ng-if="file.archives.length" role="listitem"
+        <li role="listitem"
+            data-ng-class="{ disabled: file.related_ids.length === 0}"
+            data-ng-switch="file.related_ids.length"
+            aria-label="{{ 'Download File with Metadata' | translate }}">
+            <a data-ng-switch-when="0">
+                <i class="fa-stack fa fa-cloud-download fa-stack"></i>
+                Download File with Metadata
+            </a>
+            <a data-ng-switch-default data-ng-href="{{ [file.file_id].concat(file.related_ids || []) | makeDownloadLink }}">
+                <i class="fa-stack fa fa-cloud-download fa-stack"></i>
+                <span data-translate>Download File with Metadata</span>
+            </a>
+        </li>
+        <li data-ng-if="file.archive.archive_uuid" class="divider"></li>
             aria-label="{{ 'Find Files in same archive' | translate }}">
             <a data-ng-href="search/f?filters={{ [{ name: 'files.archives.archive_id', value: file.archives[0].archive_id }] | makeFilter: true }}">
                 <i class="fa fa-file-zip-o fa-stack "></i>

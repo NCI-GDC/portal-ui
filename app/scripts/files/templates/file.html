@@ -48,13 +48,32 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                   <li role="listitem" aria-label="{{ 'Download File' | translate }}">
-                    <a data-ng-href="{{ [fc.file.file_id ] | makeDownloadLink }}"><i class="fa fa-download fa-stack"></i> Download file with metadata</a>
+                    <a data-ng-href="{{ [fc.file.file_id ] | makeDownloadLink }}"><i class="fa fa-file-text-o fa-stack"></i>Download File</a>
                   </li>
-                  <li role="listitem" aria-label="{{ 'Download URL' | translate }}">
-                    <a data-ng-href="{{ [fc.file.file_id ] | makeDownloadLink }}"><i class="fa fa-file-text-o fa-stack"></i> Download file</a>
+                  <li data-ng-class="{ disabled: fc.file.related_ids.length === 0}"
+                      role="listitem"
+                      data-ng-switch="fc.file.related_ids.length"
+                      aria-label="{{ 'Download Metadata Files' | translate }}">
+                    <a data-ng-switch-when="0">
+                      <i class="fa fa-file-text-o fa-stack"></i>No Metadata Files to Download
+                    </a>
+                    <a data-ng-switch-default
+                       data-ng-href="{{ [fc.file.file_id ] | makeDownloadLink }}">
+                      <i class="fa fa-file-text-o fa-stack"></i>Download Metadata
+                    </a>
                   </li>
-                  <li role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                    <a data-ng-href="{{ [fc.file.file_id ] | makeDownloadLink }}"><i class="fa fa-file-code-o fa-stack"></i> Download metadata</a>
+                  <li data-ng-class="{ disabled: fc.file.related_ids.length === 0}"
+                      role="listitem" aria-label="{{ 'Download File with Metadata' | translate }}"
+                      data-ng-switch="fc.file.related_ids.length">
+                    <a data-ng-switch-when="0">
+                      <i class="fa fa-download fa-stack"></i>
+                      Download File With Metadata
+                    </a>
+                    <a data-ng-switch-default
+                      data-ng-href="{{ [fc.file.file_id ].concat(fc.file.related_ids || [] ) | makeDownloadLink }}">
+                      <i class="fa fa-download fa-stack"></i>
+                      Download File with Metadata
+                    </a>
                   </li>
                 </ul>
               </div>

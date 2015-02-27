@@ -8,7 +8,6 @@ module ngApp.search.controllers {
   import IParticipant = ngApp.participants.models.IParticipant;
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
-  import IState = ngApp.search.services.IState;
   import ICartService = ngApp.cart.services.ICartService;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
@@ -99,7 +98,8 @@ module ngApp.search.controllers {
           "platform",
           "archives.revision",
           "archives.archive_id",
-          "annotations.annotation_id"
+          "annotations.annotation_id",
+          "related_files.file_id"
         ],
         facets: [
           "data_subtype",
@@ -118,6 +118,11 @@ module ngApp.search.controllers {
           this.CoreService.setSearchModelState(true);
         }
         this.files = data;
+
+        for(var i = 0; i < this.files.hits.length; i++) {
+          this.files.hits[i].related_ids = _.pluck(this.files.hits[i].related_files, "file_id");
+        }
+
       });
 
       this.ParticipantsService.getParticipants({

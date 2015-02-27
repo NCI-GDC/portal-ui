@@ -27,8 +27,7 @@ module ngApp.files.models {
   }
 
   export interface IFile extends IEntity {
-    _aliquot_barcode: string;
-    data_access: string;
+    access: string;
     data_format: IDataFormat;
     data_subtype: string;
     data_type: string;
@@ -41,6 +40,8 @@ module ngApp.files.models {
     platform: string;
     updated: any;
     participants: IParticipant[];
+    related_files: IFile[];
+    related_ids: string[];
     archive?: IArchive;
     selected?: boolean
   }

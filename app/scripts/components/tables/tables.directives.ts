@@ -1,7 +1,5 @@
 module ngApp.components.tables.directives {
 
-  import IGDCConfig = ngApp.IGDCConfig;
-
   interface ITableDirectiveScope extends ng.IScope {
      filtersRevealed:boolean;
   }

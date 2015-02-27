@@ -27,6 +27,8 @@ module ngApp.files.controllers {
 
       CoreService.setPageTitle("File " + file.file_name);
 
+      this.file.related_ids = _.pluck(this.file.related_files, 'file_id');
+
       this.FilesService.getFiles({
         fields: [
           "archives.archive_id"
@@ -38,7 +40,6 @@ module ngApp.files.controllers {
         return annotation.annotation_id;
       });
 
-      //this.archiveCount = 0;
     }
 
     isInCart(): boolean {

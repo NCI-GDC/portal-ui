@@ -82,3 +82,4 @@ module ngApp.files.services {
       .module("files.services", ["restangular", "components.location", "user.services", "core.services"])
       .service("FilesService", FilesService);
 }
+

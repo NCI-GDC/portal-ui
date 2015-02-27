@@ -39,9 +39,10 @@ module ngApp.core.filters {
   }
 
   class MakeDownloadLink {
-    constructor() {
-      return function (ids: string[]) {
-        return "/api/data/" + ids.join(",");
+    constructor($rootScope: IRootScope) {
+      return function (ids: string[],
+                      baseUrl: string = $rootScope.config.api) {
+        return baseUrl + "/data/" + ids.join(",");
       };
     }
   }

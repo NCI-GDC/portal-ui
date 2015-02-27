@@ -26,7 +26,21 @@ module ngApp.reports.controllers {
 
           var dummymap = reports.hits.hits.map(function(z){
             return z._source;
+          });
+          
+          var x = ['ACC','AGG','LUAD','LUSC','BCC',"COAD","CESC","PRAD",'READ','SKCM','STAD'];
+          var t = ['Ovary','Skin','Brain','Heart','Lung'];
+                   
+          x.forEach(function(g){
+            var n = _.clone(dummymap[0]);
+            n.project_code = g;
+            n.count += Math.floor(Math.random() * 1000);
+            n.primary_site = _.sample(t);
+            n.size_in_mb += Math.floor(Math.random() * 1000);
+            dummymap.push(n);
           })
+          
+          console.log(dummymap);
               
               
           var dummy_aggregations = dummymap.reduce(function(a,b){

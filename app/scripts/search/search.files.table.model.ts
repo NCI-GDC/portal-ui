@@ -11,6 +11,17 @@ module ngApp.search.models {
         return obj;
     }
 
+    function getAnnotationsSref(data_type:string) {
+        return function annotationSref (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
+            var projectCode = _.find(row, function(elem) {
+                return elem.id === 'code';
+            }).val;
+
+            var filter = $filter("makeFilter")([{name: 'participants.project.code', value: projectCode},{name: 'files.data_type', value: data_type}]);
+            return "search.participants({ 'filters':"+filter+"})";
+        }
+    }
+
     var searchTableFilesModel: TableiciousConfig = {
         title: 'Files',
         order: ['file_type', 'participants', 'code', 'availableData', 'state', 'last_update'],
@@ -51,6 +62,25 @@ module ngApp.search.models {
                 return '';
             }
         }, {
+            displayName: "Annotations",
+            id: "annotations",
+            visible: true,
+            template: function(field, row) {
+                return field && field.val && field.val.length;
+            },
+            sref: function(field, row, scope, $filter) {
+                var annotationIds = _.map(field.val || [], (annotation) => {
+                    return annotation.annotation_id;
+                });
+
+                var filter = "{}";
+
+                if (annotationIds.length) {
+                    filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
+                }
+                return "annotations({ 'filters':"+filter+"})";
+            }
+        },{
             displayName: "File Name",
             id: "file_name",
                 visible: true,
@@ -130,8 +160,13 @@ module ngApp.search.models {
             id: "revision",
             visible: true,
             template:function(field,row,scope){
-              var archives = _.find(row,function(elem){return elem.id==='archives'}).val;
-              return archives[0].revision;
+              var archives = _.find(row,function(elem){return elem.id==='archives'});
+              if (archives) {
+                archives = archives.val;
+                return archives[0].revision;
+              }
+
+              return "--";
             }
 
         },{

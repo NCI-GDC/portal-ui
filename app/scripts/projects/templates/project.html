@@ -1,7 +1,7 @@
 <div class="container entity" data-scroll-spy="">
   <h1 data-scroll-fix=85>
     <i class="fa fa-folder-o"></i>
-    {{ ::prc.project.name }}
+    {{ ::prc.project.code }}
   </h1>
 
   <div class="col-lg-2 col-md-2">
@@ -32,24 +32,16 @@
               <td>{{ ::prc.project.code }}</td>
             </tr>
             <tr>
-              <th scope="row" data-translate>Program Name</th>
-              <td>{{ ::prc.project.program.name }}</td>
+              <th scope="row" data-translate>Project Name</th>
+              <td>{{ ::prc.project.name }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Disease Type</th>
-              <td>{{ ::prc.project.name }}</td>
-            </tr>
-            <!--<tr>-->
-              <!--<th scope="row" data-translate>Program</th>-->
-              <!--<td>{{ ::prc.project.program }}</td>-->
-            <!--</tr>-->
-            <tr>
-              <th scope="row" data-translate>Sequencing Center</th>
-              <td>tbc {{ ::prc.project.sequencing_center }}</td>
+              <td>{{ ::prc.project.code }}</td>
             </tr>
             <tr>
-              <th scope="row" data-translate>Status</th>
-              <td>{{ ::prc.project.state}}</td>
+              <th scope="row" data-translate>Program</th>
+              <td>{{ ::prc.project.program.name }}</td>
             </tr>
             <tr>
               <th scope="row">
@@ -57,7 +49,7 @@
               </th>
               <td>
                 <a data-ui-sref="search.participants({ 'filters':
-                  {{ [{ name: 'participants.admin.disease_code',value: prc.project.name }] | makeFilter }}
+                  {{ [{ name: 'participants.project.code',value: prc.project.code }] | makeFilter }}
                 })">
                   {{ prc.project.summary.participant_count }}
                   </a>
@@ -69,7 +61,7 @@
               </th>
               <td>
                 <a data-ui-sref="search.files({ 'filters':
-                  {{ [{ name: 'participants.admin.disease_code', value: prc.project.name }] | makeFilter }}
+                  {{ [{ name: 'participants.project.code', value: prc.project.code }] | makeFilter }}
                 })">
                   {{ prc.project.summary.file_count | number:0 }}
                 </a>
@@ -99,7 +91,7 @@
               <td class="text-right">
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [
-                      { name: 'participants.admin.disease_code',value: prc.project.name },
+                      { name: 'participants.project.code',value: prc.project.code },
                       { name: 'files.experimental_strategy', value: es.experimental_strategy }
                      ] | makeFilter
                   }}
@@ -110,7 +102,7 @@
               <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters':
                   {{ [
-                      { name: 'participants.admin.disease_code',value: prc.project.name },
+                      { name: 'participants.project.code',value: prc.project.code },
                       { name: 'files.experimental_strategy', value: es.experimental_strategy }
                      ] | makeFilter
                   }}
@@ -145,7 +137,7 @@
               <td class="text-right">
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [
-                      { name: 'participants.admin.disease_code',value: prc.project.name },
+                      { name: 'participants.project.code',value: prc.project.code },
                       { name: 'files.data_type', value: dt.data_type }
                      ] | makeFilter
                   }}
@@ -156,7 +148,7 @@
               <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters':
                   {{ [
-                      { name: 'participants.admin.disease_code',value: prc.project.name },
+                      { name: 'participants.project.code',value: prc.project.code },
                       { name: 'files.data_type', value: dt.data_type }
                      ] | makeFilter
                   }}

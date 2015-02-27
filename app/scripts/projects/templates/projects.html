@@ -9,14 +9,14 @@
           <facets-free-text data-title="Project" field="name" placeholder="{{ 'Project Name or Code' | translate }}"
                             data-entity="projects"
                             data-template="components/facets/templates/typeahead-projects.html"></facets-free-text>
-          <terms data-name="disease_type" data-title="Disease Type"
+          <terms data-name="name" data-title="Disease Type"
                  data-facet="prsc.projects.aggregations.name"></terms>
           <terms data-name="primary_site"
                  data-facet="prsc.projects.aggregations.primary_site" data-title="Primary Site"></terms>
+          <terms data-name="program.name"
+                 data-facet="prsc.projects.aggregations['program.name']" data-title="Program"></terms>
           <terms data-name="code"
                  data-facet="prsc.projects.aggregations.code" data-title="Code"></terms>
-          <terms data-name="program"
-                 data-facet="prsc.projects.aggregations.program.code" data-title="Program"></terms>
           <terms data-name="status"
                  data-facet="prsc.projects.aggregations.state" data-title="Status"></terms>
           <terms data-name="summary.data_types.data_type"
@@ -38,30 +38,33 @@
       <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0" data-translate>
         No projects found using those filters.
       </h3>
-      <div class="btn-group" role="group" aria-label="Filter and sort table" ng-init="mode='graph'"
-           data-ng-show="prsc.projects.hits.length">
-        <button type="button" class="btn btn-default" ng-class="{'btn-primary': mode==='table'}"
-                ng-click="mode='table'" data-translate>
-          Table
-        </button>
-        <button type="button" class="btn btn-default" ng-class="{'btn-primary': mode==='graph'}"
-                ng-click="mode='graph'" data-translate>
-          Graph
-        </button>
+      <ul class="nav nav-tabs" style="margin-bottom: 20px" data-ng-init="mode = 'summary'">
+        <li role="presentation"
+            data-ng-class="{ active: mode === 'summary' }"
+            data-ng-click="mode = 'summary'">
+          <a>{{ 'Summary' | translate }}</a>
+        </li>
+        <li role="presentation"
+            data-ng-class="{ active: mode === 'details' }"
+            data-ng-click="mode = 'details'">
+          <a>{{ 'Details' | translate }}</a>
+        </li>
+      </ul>
+      <div class="pane-section" data-ng-show="mode === 'summary'">
+        <div class="githut">
+          <div id="pc"></div>
+        </div>
       </div>
-      <!--</div>-->
-      <div class="githut">
-        <div id="pc"  data-ng-show="mode==='graph'"></div>
+      <div class="pane-section" data-ng-show="mode === 'details'">
+        <gdc-table data-data="prsc.projects.hits"
+                    data-config="tableConfig"
+                    data-heading="Projects ({{prsc.projects.pagination.total}})"
+                    data-id="project-table"
+                    data-endpoint="projects"
+                    data-paging="prsc.projects.pagination"
+                    data-ng-if="prsc.projects.hits.length">
+         </gdc-table>
       </div>
-
-     <gdc-table data-data="prsc.projects.hits"
-                 data-config="tableConfig"
-                 data-heading="Projects ({{prsc.projects.pagination.total}})"
-                 data-id="project-table"
-                 data-endpoint="projects"
-                 data-paging="prsc.projects.pagination"
-                 data-ng-if="prsc.projects.hits.length && mode==='table'">
-      </gdc-table>
     </div>
   </div>
 </div>

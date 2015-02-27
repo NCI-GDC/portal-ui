@@ -116,9 +116,9 @@ module ngApp.components.tables.controllers {
 
     exportTable(fileType: string): void {
       var projectsKeys = {
-        "files": "participants.admin.disease_code",
-        "participants": "admin.disease_code",
-        "projects": "project_code"
+        "files": "participants.project.code",
+        "participants": "project.code",
+        "projects": "code"
       };
 
       var filters: Object = this.LocationService.filters();

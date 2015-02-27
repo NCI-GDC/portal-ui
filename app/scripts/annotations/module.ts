@@ -7,7 +7,7 @@ module ngApp.annotations {
   /* @ngInject */
   function annotationsConfig($stateProvider: ng.ui.IStateProvider) {
     $stateProvider.state("annotations", {
-      url: "/annotations",
+      url: "/annotations?filters",
       controller: "AnnotationsController as asc",
       templateUrl: "annotations/templates/annotations.html",
       reloadOnSearch: false

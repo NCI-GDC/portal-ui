@@ -81,7 +81,7 @@ module ngApp.cart.directives {
 
         $scope.addAll = function(){
           var filters = LocationService.filters();
-          filters = UserService.addMyProjectsFilter(filters, "participants.admin.disease_code");
+          filters = UserService.addMyProjectsFilter(filters, "participants.project.code");
           var size: number = ($scope.paging.total >= CartService.getMaxSize()) ? CartService.getMaxSize() : $scope.paging.total;
           FilesService.getFiles({
             fields: [
@@ -96,9 +96,8 @@ module ngApp.cart.directives {
               "file_id",
               "platform",
               "updated",
-              "archive.disease_code",
-              "archive.revision",
-              "participants.bcr_patient_uuid"
+              "project.code",
+              "participants.submitter_id"
             ],
             filters: filters,
             size: size,

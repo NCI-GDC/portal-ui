@@ -32,9 +32,7 @@ module ngApp.projects {
               "summary.participant_count",
               "summary.file_size",
               "summary.file_count",
-              "state",
               "program.name",
-              "program.program_id",
               "primary_site",
               "project_id"
             ]

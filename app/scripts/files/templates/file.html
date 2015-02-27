@@ -102,15 +102,15 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Uploaded</th>
-              <td>tbd {{ ::fc.file.uploaded | date }}</td>
+              <td>{{ ::fc.file.uploaded | date }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Modified</th>
-              <td>tbd {{ ::fc.file.updated | date }}</td>
+              <td>{{ ::fc.file.updated | date }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>State</th>
-              <td>{{ ::fc.file.state }}</td>
+              <td>{{ ::fc.file.state | humanify }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Archive</th>
@@ -169,7 +169,7 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Data Submitted Since</th>
-              <td>tbd {{ ::fc.file.submittedSince | date }}</td>
+              <td>{{ ::fc.file.submittedSince | date }}</td>
             </tr>
             </tbody>
           </table>
@@ -181,7 +181,7 @@
       <div class="col-lg-12 col-md-12">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title">Participants</h3>
+            <h3 class="panel-title">Associated Participants / Biospecimen</h3>
           </div>
           <div class="panel-body" data-ng-if="!fc.file.participants.length">
             <h4 class="list-group-item-heading">No participants found.</h4>

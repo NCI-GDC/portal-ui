@@ -13,10 +13,10 @@ module ngApp.search.models {
     function getFileSref(data_type:string) {
         return function fileSref (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
             var uuid = _.find(row,function(elem){
-                return elem.id === 'bcr_patient_uuid';
+                return elem.id === 'participant_id';
             }).val;
 
-            var filter = $filter("makeFilter")([{name: 'participants.bcr_patient_uuid', value: uuid},{name: 'files.data_type', value: data_type}]);
+            var filter = $filter("makeFilter")([{name: 'participants.participant_id', value: uuid},{name: 'files.data_type', value: data_type}]);
             return "search.files({ 'filters':"+filter+"})";
         }
     }

@@ -90,7 +90,7 @@ module ngApp.components.user.services {
           if (!projectFilter) {
             filters.content.push(userProjects);
           } else {
-            var projects = key === "project_code" ? _.assign([], this.currentUser.projects) :
+            var projects = key === "code" ? _.assign([], this.currentUser.projects) :
                            _.map(this.currentUser.projects, (project: string) => { return project.toUpperCase(); });
 
             var sharedValues = _.intersection(projectFilter.content.value, projects);

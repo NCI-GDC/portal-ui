@@ -92,11 +92,12 @@ module ngApp.search.controllers {
           "data_format",
           "file_size",
           "file_id",
-          "archives.revision",
           "participants.participant_id",
-          "participants.project.name", //disease code
+          "participants.project.name",
           "participants.project.project_id",
-          "platform"
+          "platform",
+          "archives.revision",
+          "annotations.annotation_id"
         ],
         facets: [
           "data_subtype",

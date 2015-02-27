@@ -33,7 +33,7 @@ module ngApp.files {
               "related_files.file_id",
               "related_files.file_name",
               "related_files.md5sum",
-              ]
+            ]
           });
         }
       }

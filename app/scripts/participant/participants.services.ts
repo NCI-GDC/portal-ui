@@ -55,7 +55,7 @@ module ngApp.participants.services {
         filters: this.LocationService.filters()
       };
 
-      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.admin.disease_code");
+      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.project.code");
       this.CoreService.setSearchModelState(false);
 
       var abort = this.$q.defer();

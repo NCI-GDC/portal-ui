@@ -52,12 +52,13 @@ module ngApp.projects.controllers {
           "summary.file_size",
           "summary.file_count",
           "state",
+          "program.code",
           "program.name",
-          "program.program_id",
           "primary_site",
           "project_id"
         ],
         facets: [
+          "name",
           "program.name",
           "code",
           "primary_site",

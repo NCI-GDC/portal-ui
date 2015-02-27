@@ -1,6 +1,30 @@
-<div class="container-fluid full-page">
+<div class="container entity" data-scroll-spy="">
+  <h1 data-scroll-fix=85>
+    <i class="fa fa-folder-o"></i>
+    {{ ::prc.project.project_code }}
+  </h1>
+
+  <div class="col-lg-2 col-md-2">
+    <aside data-scroll-fix=85>
+      <div class="panel panel-default">
+        <div class="list-group">
+          <div class="list-group-item">
+            <h4 data-spy="projectLevel" class="current list-group-item-heading">
+              <a data-scroll-to href="#projectLevel" data-translate>Summary</a>
+            </h4>
+          </div>
+          <div class="list-group-item">
+            <h4 data-spy="byProject" class="list-group-item-heading">
+              <a data-scroll-to href="#byProject" data-translate>Reports</a>
+            </h4>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
   <div class="row search-panel">
   
+<!--
     <div class="col-lg-3 col-md-3">
       <h3>
         Data download statistics
@@ -85,6 +109,7 @@
         </li>
       </ol>
     </div>
+-->
  
 
   <div class="col-lg-9 col-md-9">

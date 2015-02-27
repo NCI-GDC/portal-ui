@@ -3,20 +3,22 @@ module ngApp.projects.models {
 
     var AnnotationsTableModel:TableiciousConfig = {
         title: "Annotations",
-        order: ['participant_id', 'project.program.name', 'project.code', 'barcode', 'item_type', 'category', 'classification', 'dateCreated', 'creator', 'status'],
+        order: ['annotation_id', 'participant_id', 'project.program.name', 'project.code', 'barcode', 'item_type', 'category', 'classification', 'dateCreated', 'creator', 'status'],
         headings: [{
             displayName: "ID",
             id: "annotation_id",
             sref: function (field) {
                 return "annotation({annotationId:'" + field.val + "'})";
-            }
+            },
+            sortable: true
         },
         {
             displayName: "Participant ID",
             id: "participant_id",
             template: function () {
               return "tbd";
-            }
+            },
+            sortable: true
         },
         {
             displayName: "Program",
@@ -47,6 +49,10 @@ module ngApp.projects.models {
         {
             displayName: "Category",
             id: "category",
+            template: function(field,row,scope) {
+              return scope.$filter('ellipsicate')(field.val, 30);
+            },
+            sortable: true
         },
         {
             displayName: "Classification",
@@ -64,6 +70,7 @@ module ngApp.projects.models {
         {
             displayName: "Annotator",
             id: "creator",
+            sortable: true
         },
         {
             displayName: "Status",

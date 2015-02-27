@@ -4,20 +4,43 @@
     {{ ::prc.project.project_code }}
   </h1>
 
-  <div class="col-lg-2 col-md-2">
+  <div class="col-lg-3 col-md-3">
     <aside data-scroll-fix=85>
       <div class="panel panel-default">
         <div class="list-group">
           <div class="list-group-item">
             <h4 data-spy="projectLevel" class="current list-group-item-heading">
-              <a data-scroll-to href="#projectLevel" data-translate>Summary</a>
+              <a data-scroll-to href="#projectLevel" data-translate>Data download statistics</a>
             </h4>
           </div>
           <div class="list-group-item">
             <h4 data-spy="byProject" class="list-group-item-heading">
-              <a data-scroll-to href="#byProject" data-translate>Reports</a>
+              <a data-scroll-to href="#byProject" data-translate>By Project and Data type</a>
             </h4>
           </div>
+          <div class="list-group-item">
+            <h5 data-spy="projectLevel" class="list-group-item-heading">
+              <a data-scroll-to href="#projectLevel" data-translate>Project Level</a>
+            </h5>
+             <div class="list-group-item">
+                <h5 data-spy="byProject" class="list-group-item-heading">
+                  <a data-scroll-to href="#byProject" data-translate>By Project</a>
+                </h5>
+            </div>  
+            <div class="list-group-item">
+                <h5 data-spy="byDisease" class="list-group-item-heading">
+                  <a data-scroll-to href="#byDisease" data-translate> By Disease type</a>
+                </h5>
+            </div> 
+              <div class="list-group-item">
+                <h5 data-spy="byProgram" class="list-group-item-heading">
+                  <a data-scroll-to href="#byProgram" data-translate> By Program</a>
+                </h5>
+            </div>
+          </div>
+          
+
+          
         </div>
       </div>
     </aside>
@@ -31,20 +54,9 @@
       </h3>
       <ol>
         <li>
-         <a href="#pc">          
-            By Project and Data type
-          </a>
-        </li>
-        <li>
-          <a href="#projectLevel">  
-            Project level
-          </a>
+        
           <ul>
-            <li>
-              <a href="#byProject">
-                By Project
-              </a>
-            </li>
+            
             <li>
               <a href="#byDisease">
                 By Disease type
@@ -112,7 +124,7 @@
 -->
  
 
-  <div class="col-lg-9 col-md-9">
+  <div class="col-lg-6 col-md-6 entity-body">
    <p>
      This report depicts statistics describing data download since the GDC Data Portal launch. Represented GDC data includes information about the total number and size of downloaded files categorized at project, data and user access levels.
    </p>

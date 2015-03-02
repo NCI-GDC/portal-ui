@@ -1,9 +1,508 @@
-<div class="container">
-  <h1 data-translate>Reports</h1>
-  <div class="row">
-    <div class="col-lg-12 col-md-12">
-      <div data-ng-repeat="r in rsc.reports.hits track by r.id">
-        <a data-ui-sref="report({ reportId : r.id })">{{ r.id }} - {{ r.name }}</a>
+<div class="container entity" data-scroll-spy="">
+  <h1 data-scroll-fix=85>
+    <i class="fa fa-folder-o"></i>
+    {{ ::prc.project.project_code }}
+  </h1>
+
+  <div class="col-lg-3 col-md-3">
+    <aside data-scroll-fix=85>
+      <div class="panel panel-default">
+        <div class="list-group small">
+          <div class="list-group-item">
+            <h4 data-spy="githut" class="current list-group-item-heading">
+              <a data-scroll-to href="#githut" data-translate>Data download statistics</a>
+            </h4>
+          </div>
+          <div class="list-group-item">
+            <h4 data-spy="byProject" class="list-group-item-heading">
+              <a data-scroll-to href="#byProject" data-translate>By Project and Data type</a>
+            </h4>
+          </div>
+          <div class="list-group-item">
+            <h4 data-spy="projectLevel" class="list-group-item-heading">
+              <a data-scroll-to href="#projectLevel" data-translate>Project Level</a>
+            </h4>
+
+          </div>  <div class="list-group-item">
+          <h5 data-spy="byProject" class="list-group-item-heading">
+            <a data-scroll-to href="#byProject" data-translate>By Project</a>
+          </h5>
+        </div>
+          <div class="list-group-item">
+            <h5 data-spy="byDisease" class="list-group-item-heading">
+              <a data-scroll-to href="#byDisease" data-translate> By Disease type</a>
+            </h5>
+          </div>
+          <div class="list-group-item">
+            <h5 data-spy="byProgram" class="list-group-item-heading">
+              <a data-scroll-to href="#byProgram" data-translate> By Program</a>
+            </h5>
+          </div>
+          <div class="list-group-item">
+            <h4 data-spy="dataLevel" class="list-group-item-heading">
+              <a data-scroll-to href="#dataLevel" data-translate>  Data level</a>
+            </h4>
+
+          </div>
+          <div class="list-group-item">
+            <h5 data-spy="byDataType" class="list-group-item-heading">
+              <a data-scroll-to href="#byDataType" data-translate> By Data type</a>
+            </h5>
+          </div>
+          <div class="list-group-item">
+            <h5 data-spy="byDataSubtype" class="list-group-item-heading">
+              <a data-scroll-to href="#byDataSubtype" data-translate>  By Data subtype</a>
+            </h5>
+          </div>
+          <div class="list-group-item">
+            <h5 data-spy="byStrategy" class="list-group-item-heading">
+              <a data-scroll-to href="#byStrategy" data-translate>   By Experimental strategy</a>
+            </h5>
+          </div>
+          <div class="list-group-item">
+            <h5 data-spy="byDataLevel" class="list-group-item-heading">
+              <a data-scroll-to href="#byDataLevel" data-translate>   By Data level</a>
+            </h5>
+          </div>
+          <div class="list-group-item">
+            <h5 data-spy="byDataAccess" class="list-group-item-heading">
+              <a data-scroll-to href="#byDataAccess" data-translate>     By Data access</a>
+            </h5>
+          </div>
+          <div class="list-group-item">
+            <h4 data-spy="userLevel" class="list-group-item-heading">
+              <a data-scroll-to href="#userLevel" data-translate>      User access level</a>
+            </h4>
+          </div>
+          <div class="list-group-item">
+            <h5 data-spy="byAccessType" class="list-group-item-heading">
+              <a data-scroll-to href="#byAccessType" data-translate>By User access type</a>
+            </h5>
+          </div>
+          <div class="list-group-item">
+            <h5 data-spy="byAccessLocation" class="list-group-item-heading">
+              <a data-scroll-to href="#byAccessLocation" data-translate>By User access location</a>
+            </h5>
+          </div>
+
+
+
+        </div>
+      </div>
+    </aside>
+  </div>
+  <div class="row search-panel">
+
+    <!--
+     \
+            <li>
+             <a href="#userLevel">
+                User access level
+             </a>
+             <ul>
+                <li>
+                 <a href="#byAccessType">
+                    By User access type
+                  </a>
+                </li>
+                <li>
+                  <a href="#byAccessLocation">
+                    By User access location
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+    -->
+
+
+    <div class="col-lg-6 col-md-6 entity-body">
+      <p>
+        This report depicts statistics describing data download since the GDC Data Portal launch. Represented GDC data includes information about the total number and size of downloaded files categorized at project, data and user access levels.
+      </p>
+      <button class='btn btn-primary'>Export</button>
+      <section id=by-project-and-data-type>
+        <h2 data-translate>
+          Data download statistics by Project and Data type
+        </h2>
+
+
+        <div class="githut" id=githut >
+          <div class="graph">
+
+              <div class="githut">
+          <div id="pc"></div>
+        </div>
+
+            <parallel-coordinates width=400px ng-if=githutData data=githutData config=githutConfig>
+
+            </parallel-coordinates>
+          </div>
+        </div>
+
+      </section>
+      <div>
+
+        <section id=projectLevel>
+          <h3>
+            Data download statistic at Project level
+          </h3>
+          <article id=byProject>
+            <h4>
+              Data download statistics by Project
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Project
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat='project in byProject'>
+                <th>
+                  {{project.key}}
+                </th>
+                <td>
+                  {{project.values.file_count}}
+                </td>
+                <td>
+                  {{project.values.file_size * 1e6 | size}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+          <article id=byDisease>
+            <h4>
+              Data download statistics by Disease Type
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Disease Type
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="project in byDisease">
+                <th>
+                  {{project.key || '(none specified)'}}
+                </th>
+                <td>
+                  {{project.values.file_count}}
+                </td>
+                <td>
+                  {{project.values.file_size * 1e6 | size}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+          <article id=byProgram>
+            <h4>
+              Data download statistics by Program
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Disease Type
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat="project in byProgram">
+                <th>
+                  {{project.key || '(none specified)'}}
+                </th>
+                <td>
+                  {{project.values.file_count}}
+                </td>
+                <td>
+                  {{project.values.file_size * 1e6 | size}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+        </section>
+
+
+        <section id=dataLevel>
+          <h3>
+            Data download statistic at Data level
+          </h3>
+          <article id=byDataType>
+            <h4>
+              Data download statistics by Data Type
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Data Type
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat='project in byDataType'>
+                <th>
+                  {{project.key}}
+                </th>
+                <td>
+                  {{project.values.file_count}}
+                </td>
+                <td>
+                  {{project.values.file_size * 1e6 | size}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article id=byDataSubtype>
+            <h4>
+              Data download statistics by Data Subtype
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Data Subtype
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <th>
+                  MiRNA Quantification
+                </th>
+                <td>
+                  3705
+                </td>
+                <td>
+                  77.77GB
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article id=byStrategy>
+            <h4>
+              Data download statistics by Experimental Strategy
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Experimental Strategy
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat='project in byStrat'>
+                <th>
+                  {{project.key || '(none specified)'}}
+                </th>
+                <td>
+                  {{project.values.file_count}}
+                </td>
+                <td>
+                  {{project.values.file_size * 1e6 | size}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article id=byDataLevel>
+            <h4>
+              Data download statistics by Data Level
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Data Level
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <th>
+                  Level 3
+                </th>
+                <td>
+                  3705
+                </td>
+                <td>
+                  77.77GB
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article id=byDataAccess>
+            <h4>
+              Data download statistics by Data Access
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Data Access
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <th>
+                  Open
+                </th>
+                <td>
+                  3705
+                </td>
+                <td>
+                  77.77GB
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+
+
+        </section>
+
+        <section id=userLevel>
+          <h3>
+            Data download statistic at User Level
+          </h3>
+          <article id=byAccessType>
+            <h4>
+              Data download statistics by User Access Type
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Access Type
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat='x in byUserType'>
+                <th>
+                  {{x.key}}
+                </th>
+                <td>
+                  {{x.values.file_count}}
+                </td>
+                <td>
+                  {{x.values.file_size * 1e6 | size}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article id=byAccessLocation>
+            <h4>
+              Data download statistics by Access Location
+            </h4>
+            <table class="table table-striped table-hover table-condensed table-bordered">
+              <thead>
+              <tr>
+                <th data-translate>
+                  Data Subtype
+                </th>
+                <th>
+                  # of files
+                </th>
+                <th>
+                  File Size
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr ng-repeat='x in byLocation'>
+                <th>
+                  {{x.key}}
+                </th>
+                <td>
+                  {{x.values.file_count}}
+                </td>
+                <td>
+                  {{x.values.file_size * 1e6 | size}}
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+
+
+
+        </section>
+
       </div>
     </div>
   </div>

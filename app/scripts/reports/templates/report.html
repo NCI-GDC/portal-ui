@@ -19,15 +19,15 @@
 
     <div class="entity-body">
       <section class="row" data-ng-repeat="c in rc.report.charts track by c.id" id="{{ c.heading.split(' ').join('') }}">
-      <bar-chart ng-if="c.type === 'bar-chart'"
-                 data="c"
-                 heading="{{ c.heading | translate }}"
-                 y-label="{{ c.yLabel | translate }}">
-      </bar-chart>
-      <pie-chart ng-if="c.type === 'pie-chart'"
-                 data="c"
-                 heading="{{ c.heading | translate }}">
-      </pie-chart>
+        <bar-chart ng-if="c.type === 'bar-chart'"
+                   data="c"
+                   heading="{{ c.heading | translate }}"
+                   y-label="{{ c.yLabel | translate }}">
+        </bar-chart>
+        <pie-chart ng-if="c.type === 'pie-chart'"
+                   data="c"
+                   heading="{{ c.heading | translate }}">
+        </pie-chart>
       </section>
     </div>
   </div>

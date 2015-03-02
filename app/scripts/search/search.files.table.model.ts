@@ -61,31 +61,11 @@ module ngApp.search.models {
             template: function(){
                 return '';
             }
-        }, {
-            displayName: "Annotations",
-            id: "annotations",
-            visible: true,
-            template: function(field, row) {
-                return field && field.val && field.val.length;
-            },
-            sref: function(field, row, scope, $filter) {
-                var annotationIds = _.map(field.val || [], (annotation) => {
-                    return annotation.annotation_id;
-                });
-
-                var filter = "{}";
-
-                if (annotationIds.length) {
-                    filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
-                }
-                return "annotations({ 'filters':"+filter+"})";
-            }
         },{
             displayName: "File Name",
             id: "file_name",
                 visible: true,
             template:function(field,row,scope){
-                //return field && field.val && scope.$filter('ellipsicate')(field.val,50);
                 return field && field.val;
             },
             sref:function(field,row){
@@ -94,7 +74,27 @@ module ngApp.search.models {
             },
                 sortable: true,
                 fieldClass: 'truncated-cell'
-        },{
+        }, {
+            displayName: "Annotations",
+            id: "annotations",
+            visible: true,
+            template: function(field, row) {
+                var ret = field && field.val ? field.val.length : "0";
+
+                return ret;
+            },
+            sref: function(field, row, scope, $filter) {
+                var annotations = _.find(row, (item) => {
+                    return item.id === "annotations";
+                });
+                var annotationIds = _.map(annotations.val, (annotation) => {
+                    return annotation.annotation_id;
+                });
+
+                var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
+                return "annotations({ 'filters':"+filter+"})";
+            }
+        }, {
             displayName: "Participants",
             id: "participants",
                 visible: true,
@@ -102,38 +102,77 @@ module ngApp.search.models {
                 var participants = field.val;
                 if (participants) {
                     if (participants.length === 1) {
-                       return  participants[0].participant_id;
-                       //return  scope.$filter('ellipsicate')(participants[0].bcr_patient_uuid, 8);
+                       return participants[0].participant_id;
                     } else if (participants.length > 1) {
                         return participants.length;
                     }
                 }
             },
-            sref: function (field) {
-                //debugger;
+            sref: function (field, row, scope, $filter) {
                 var participant = field.val;
+                if (field.val.length > 1) {
+                    var filters = $filter("makeFilter")([{name: "participant.participant_id", value: field.val}]);
+                    return "search.participants({'filters':" + filters + "})";
+                }
+
                 if (participant) {
                     return "participant({ participantId : '" + participant[0].participant_id + "' })";
                 }
             },
-                fieldClass: 'truncated-cell'
+            fieldClass: 'truncated-cell'
         }, {
             displayName: "Project",
-            id: "participants.project.name",
+            id: "participants.project.code",
             visible: true,
             template: function(field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
               var participants: TableiciousEntryDefinition = _.find(row, function (a:TableiciousEntryDefinition) { return a.id === 'participants' });
-              var projectName: string = participants.val[0].project.name;
-              var projectId: string = participants.val[0].project.project_id;
-              return projectName; //TODO make the link work
+              if (participants) {
+                  if (participants.val.length === 1) {
+                      return participants.val[0].project.code;
+                  } else if (participants.val.length > 1) {
+                      var projects = _.map(participants.val, (participant) => {
+                        return {
+                            code: participant.project.code,
+                            project_id: participant.project.project_id
+                        };
+                      });
+
+                      var projectCodes = _.union(_.map(projects, (project) => {
+                        return project.code;
+                      }));
+
+                      if (projectCodes.length === 1) {
+                        return projectCodes[0];
+                      }
+
+                      return projectCodes.length;
+                  }
+              }
             },
-            //sref:function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
-                //console.log(field);
-                //var participants: TableiciousEntryDefinition = _.find(row, function (a:TableiciousEntryDefinition) { console.log(a); return a.id === 'participants' });
-                //var projectName: string = participants.val[0].project.name;
-                //var projectId: string = participants.val[0].project.project_id;
-                //return "project({projectId:'" + projectId + "'})";
-            //},
+            sref:function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
+                var participants: TableiciousEntryDefinition = _.find(row, function (a:TableiciousEntryDefinition) { return a.id === 'participants' });
+                if (participants.val.length === 1) {
+                   return "project({ projectId: '" + participants.val[0].project.project_id + "'})";
+                } else if (participants.val.length > 1) {
+                   var projects = _.map(participants.val, (participant) => {
+                     return {
+                         code: participant.project.code,
+                         project_id: participant.project.project_id
+                     };
+                   });
+
+                   var projectCodes = _.union(_.map(projects, (project) => {
+                     return project.code;
+                   }));
+
+                   if (projectCodes.length === 1) {
+                     return "project({ projectId: '" + projects[0].project_id + "'})";
+                   }
+
+                   var filters = $filter("makeFilter")([{name: "code", value: projectCodes}]);
+                   return "projects({ 'filters':" + filters + "})";
+                }
+            },
                 sortable: true
         }, {
             displayName: "Data Type",

@@ -53,13 +53,31 @@ module ngApp.search.models {
             },
             sortable: true
         }, {
-            displayName: "Disease Type",
-            id: "project.name",
+            displayName: "Project",
+            id: "project.code",
+            enabled: true,
+            sortable: true,
+            sref: function(field, row, scope, $filter) {
+                var project = _.find(row, (item) => {
+                    return item.id === "project";
+                });
+
+                return "project({ projectId: '" + project.val.project_id + "'})";
+            }
+        }, {
+            displayName: "Primary Site",
+            id: "project.primary_site",
             enabled: true,
             sortable: true
         }, {
             displayName: "Gender",
             id: "clinical.gender",
+            template: function(field, row, scope, $filter) {
+                var clinical = _.find(row, (item) => {
+                    return item.id === "clinical";
+                });
+                return $filter("humanify")(clinical.val.gender);
+            },
             enabled: true
         }, {
             displayName: "Tumor Stage",
@@ -69,114 +87,6 @@ module ngApp.search.models {
               return "tbd";
             }
         }, {
-            displayName: "Available Files per Data Type",
-            id: "summary.data_types",
-            headingClass:'text-center',
-            enabled: true,
-            children: [{
-                displayName: 'Clinical',
-                id: 'clinical',
-                enabled: true,
-                fieldClass: 'text-right',
-                template: function (field:TableiciousEntryDefinition,row,scope) {
-                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                        return x.id === 'summary';
-                    });
-
-                    var data = _.find(summary.val.data_types, function(x){
-                        return x.data_type === 'Clinical';
-                    });
-
-                    return data && data.file_count ? data.file_count : 0;
-                },
-                sref: getFileSref('Clinical')
-            },  {
-                displayName: 'Exp',
-                id: 'Exp',
-                fieldClass: 'text-right',
-                enabled: true,
-                template: function (field:TableiciousEntryDefinition,row,scope) {
-                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                        return x.id === 'summary';
-                    });
-
-                    var data = _.find(summary.val.data_types, function(x){
-                        return x.data_type === 'Gene expression';
-                    });
-
-                    return data && data.file_count ? data.file_count : 0;
-                },
-                sref: getFileSref('Gene expression')
-            }, {
-                displayName: 'Array',
-                id: 'Array',
-                fieldClass: 'text-right',
-                enabled: true,
-                template: function (field:TableiciousEntryDefinition,row,scope) {
-                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                        return x.id === 'summary';
-                    });
-
-                    var data = _.find(summary.val.data_types, function(x){
-                        return x.data_type === 'Raw microarray data';
-                    });
-
-                    return data && data.file_count ? data.file_count : 0;
-                },
-                sref: getFileSref('Raw microarray data')
-            }, {
-                displayName: 'Seq',
-                id: 'Seq',
-                fieldClass: 'text-right',
-                enabled: true,
-                template: function (field:TableiciousEntryDefinition,row,scope) {
-                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                        return x.id === 'summary';
-                    });
-
-                    var data = _.find(summary.val.data_types, function(x){
-                        return x.data_type === 'Raw sequencing data';
-                    });
-
-                    return data && data.file_count ? data.file_count : 0;
-                },
-                sref: getFileSref('Raw sequencing data')
-            }, {
-                displayName: 'CNV',
-                id: 'cnv',
-                fieldClass: 'text-right',
-                enabled: true,
-                template: function (field:TableiciousEntryDefinition,row,scope) {
-                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                        return x.id === 'summary';
-                    });
-
-                    var data = _.find(summary.val.data_types, function(x){
-                        return x.data_type === 'Copy number variation';
-                    });
-
-                    return data && data.file_count ? data.file_count : 0;
-                },
-                sref: getFileSref('Copy number variation')
-            }, {
-                displayName: 'Meth',
-                id: 'meth',
-                fieldClass: 'text-right',
-                enabled: true,
-                template: function (field:TableiciousEntryDefinition,row,scope) {
-                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                        return x.id === 'summary';
-                    });
-
-                    var data = _.find(summary.val.data_types, function(x){
-                        return x.data_type === 'DNA methylation';
-                    });
-
-                    return data && data.file_count ? data.file_count : 0;
-                },
-                sref: getFileSref('DNA methylation')
-            }]
-        }, {
 
             displayName: "Files",
             id: "files",
@@ -185,6 +95,204 @@ module ngApp.search.models {
             template:function(field){
                 //why is fields an object instead of an array....
                 return field && field.val && field.val.length;
+            }
+        }, {
+            displayName: "Available Files per Data Type",
+            id: "summary.data_types",
+            headingClass:'text-center',
+            enabled: true,
+            children: [
+                {
+                    displayName: 'Clinical',
+                    id: 'clinical',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x:any){
+                            return x.data_type === 'Clinical';
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getFileSref('Clinical')
+                },  {
+                    displayName: 'Array',
+                    id: 'Array',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Raw microarray data';
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getFileSref('Raw microarray data')
+                }, {
+                    displayName: 'Seq',
+                    id: 'Seq',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Raw sequencing data';
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getFileSref('Raw sequencing data')
+                }, {
+                    displayName: "SNV",
+                    id: "SNV",
+                    enabled: true,
+                    fieldClass: "text-right",
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === "Simple nucleotide variation";
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    sref: getFileSref("Simple nucleotide variation")
+                }, {
+                    displayName: 'CNV',
+                    id: 'cnv',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Copy number variation';
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getFileSref('Copy number variation')
+                }, {
+                    displayName: 'SV',
+                    id: 'sv',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Structural rearrangement';
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getFileSref('Structural rearrangement')
+                }, {
+                    displayName: 'Exp',
+                    id: 'Exp',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Gene expression';
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getFileSref('Gene expression')
+                }, {
+                    displayName: 'PExp',
+                    id: 'pexp',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Protein expression';
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getFileSref('Protein expression')
+                }, {
+                    displayName: 'Meth',
+                    id: 'meth',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'DNA methylation';
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getFileSref('DNA methylation')
+                }, {
+                    displayName: 'Other',
+                    id: 'other',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Other';
+                        });
+
+                        return data && data.file_count ? data.file_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getFileSref('Other')
+                }
+            ]
+        }, {
+            displayName: "Annotations",
+            id: "annotations",
+            visible: true,
+            template: function(field, row) {
+                var ret = field && field.val ? field.val.length : "0";
+
+                return ret;
+            },
+            sref: function(field, row, scope, $filter) {
+                var annotations = _.find(row, (item) => {
+                    return item.id === "annotations";
+                });
+                var annotationIds = _.map(annotations.val, (annotation) => {
+                    return annotation.annotation_id;
+                });
+
+                var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
+                return "annotations({ 'filters':"+filter+"})";
             }
         }]
     };

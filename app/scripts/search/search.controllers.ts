@@ -95,6 +95,7 @@ module ngApp.search.controllers {
           "participants.participant_id",
           "participants.project.name",
           "participants.project.project_id",
+          "participants.project.code",
           "platform",
           "archives.revision",
           "annotations.annotation_id"
@@ -134,7 +135,10 @@ module ngApp.search.controllers {
           "summary.data_types.file_count",
           "summary.data_types.data_type",
           "project.name",
-          "project.code"
+          "project.code",
+          "project.primary_site",
+          "project.project_id",
+          "annotations.annotation_id"
         ],
         facets: [
           "clinical.icd_10",

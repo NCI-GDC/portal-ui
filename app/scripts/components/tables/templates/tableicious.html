@@ -35,12 +35,11 @@
                 tableicious-cell>
 
                 <a ng-if="heading.sref" data-ui-sref="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
-                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this)}}
+                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
                  </a>
 
                 <span ng-if="!heading.sref">
-                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this)}}
-
+                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
                 </span>
 
                 <div ng-if="heading.icon" class="text-center">

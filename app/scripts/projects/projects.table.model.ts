@@ -59,40 +59,23 @@ module ngApp.projects.models {
             enabled: true,
             children: [
                 {
-                displayName: 'Clinical',
-                id: 'clinical',
-                enabled: true,
-                template: function (field:TableiciousEntryDefinition,row,scope) {
-                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                        return x.id === 'summary';
-                    });
-
-                    var data = _.find(summary.val.data_types, function(x:any){
-                        return x.data_type === 'Clinical';
-                    });
-
-                    return data && data.participant_count ? data.participant_count : 0;
-                },
-                fieldClass: 'text-right',
-                sref: getParticipantSref('Clinical')
-                },  {
-                    displayName: 'Exp',
-                    id: 'Exp',
+                    displayName: 'Clinical',
+                    id: 'clinical',
                     enabled: true,
                     template: function (field:TableiciousEntryDefinition,row,scope) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
-                            return x.data_type === 'Gene expression';
+                        var data = _.find(summary.val.data_types, function(x:any){
+                            return x.data_type === 'Clinical';
                         });
 
                         return data && data.participant_count ? data.participant_count : 0;
                     },
                     fieldClass: 'text-right',
-                    sref: getParticipantSref('Gene expression')
-                }, {
+                    sref: getParticipantSref('Clinical')
+                },  {
                     displayName: 'Array',
                     id: 'Array',
                     enabled: true,
@@ -127,6 +110,23 @@ module ngApp.projects.models {
                     fieldClass: 'text-right',
                     sref: getParticipantSref('Raw sequencing data')
                 }, {
+                    displayName: "SNV",
+                    id: "SNV",
+                    enabled: true,
+                    fieldClass: "text-right",
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === "Simple nucleotide variation";
+                        });
+
+                        return data && data.participant_count ? data.participant_count : 0;
+                    },
+                    sref: getParticipantSref("Simple nucleotide variation")
+                }, {
                     displayName: 'CNV',
                     id: 'cnv',
                     enabled: true,
@@ -144,6 +144,57 @@ module ngApp.projects.models {
                     fieldClass: 'text-right',
                     sref: getParticipantSref('Copy number variation')
                 }, {
+                    displayName: 'SV',
+                    id: 'sv',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Structural rearrangement';
+                        });
+
+                        return data && data.participant_count ? data.participant_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getParticipantSref('Structural rearrangement')
+                }, {
+                    displayName: 'Exp',
+                    id: 'Exp',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Gene expression';
+                        });
+
+                        return data && data.participant_count ? data.participant_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getParticipantSref('Gene expression')
+                }, {
+                    displayName: 'PExp',
+                    id: 'pexp',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Protein expression';
+                        });
+
+                        return data && data.participant_count ? data.participant_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getParticipantSref('Protein expression')
+                }, {
                     displayName: 'Meth',
                     id: 'meth',
                     enabled: true,
@@ -160,6 +211,23 @@ module ngApp.projects.models {
                     },
                     fieldClass: 'text-right',
                     sref: getParticipantSref('DNA methylation')
+                }, {
+                    displayName: 'Other',
+                    id: 'other',
+                    enabled: true,
+                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                            return x.id === 'summary';
+                        });
+
+                        var data = _.find(summary.val.data_types, function(x){
+                            return x.data_type === 'Other';
+                        });
+
+                        return data && data.participant_count ? data.participant_count : 0;
+                    },
+                    fieldClass: 'text-right',
+                    sref: getParticipantSref('Other')
                 }
             ]
         }, {

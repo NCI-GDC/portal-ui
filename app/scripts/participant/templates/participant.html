@@ -15,17 +15,12 @@
           </div>
           <div class="list-group-item">
             <h4 data-spy="clinical" class="list-group-item-heading">
-              <a data-scroll-to href="#clinical" data-translate>Clinical</a>
+              <a data-scroll-to href="#clinical" data-translate>Clinical Information</a>
             </h4>
           </div>
           <div class="list-group-item">
             <h4 data-spy="biospecimen" class="list-group-item-heading">
               <a data-scroll-to href="#biospecimen" data-translate>Biospecimen</a>
-            </h4>
-          </div>
-          <div class="list-group-item">
-            <h4 data-spy="annotations" class="list-group-item-heading">
-              <a data-scroll-to href="#annotations" data-translate>Annotations</a>
             </h4>
           </div>
         </div>
@@ -48,7 +43,7 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Participant Barcode</th>
-              <td>tbd {{ ::pc.participant.bcr_patient_barcode }}</td>
+              <td>{{ ::pc.participant.submitter_id }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Disease Type</th>
@@ -64,7 +59,7 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Status</th>
-              <td>{{ ::pc.participant.clinical.vital_status }}</td>
+              <td>{{ ::pc.participant.clinical.vital_status | humanify }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Number of Data Files</th>
@@ -79,9 +74,12 @@
             <tr>
               <th scope="row" data-translate>Number of Annotations</th>
               <td>
-                <a data-scroll-to href="#annotations">
-                 {{ ::pc.participant.annotations.length || 0  | number:0 }}
+                <a data-ng-if="pc.participant.annotations.length"
+                   data-ui-sref="annotations({ 'filters':
+                    {{ [{ name: 'annotation_id', value: pc.annotationIds }] | makeFilter }} })">
+                 {{ ::pc.participant.annotations.length | number:0 }}
                 </a>
+                <span data-ng-if="!pc.participant.annotations.length">0</span>
               </td>
             </tr>
             </tbody>
@@ -122,15 +120,20 @@
             <h3 class="panel-title" data-translate>Available Data
               </h3>
           </div>
-          <div class="panel-body" data-ng-if="!pc.participant.samples.length">
+          <div class="panel-body" data-ng-if="!pc.participant.summary.data_types.length">
             <h4 class="list-group-item-heading" data-translate>No available data.</h4>
           </div>
-          <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.samples.length">
+          <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered table-vertical" data-ng-if="pc.participant.summary.data_types.length">
             <tbody>
-            <tr data-ng-repeat="item in pc.participant.samples">
+            <tr data-ng-repeat="item in pc.participant.summary.data_types">
+              <td scope="row" data-translate>
+                {{ item.data_type }}
+              </td>
               <td>
-                <a data-ui-sref="search.files">
-                  {{item.sample_id || 'tbd'}} <!-- TOOD -->
+                <a data-ui-sref="search.files({ 'filters':
+                  {{ [{name: 'data_type', value: [item.data_type]},
+                      {name: 'participant.participant_id', value: [pc.participant.participant_id]}] | makeFilter }} })">
+                  {{ item.file_count }}
                 </a>
               </td>
             </tr>
@@ -153,11 +156,11 @@
             <tbody>
             <tr>
               <th scope="row" data-translate>Gender</th>
-              <td>{{ ::pc.participant.clinical.gender || '--' }}</td>
+              <td>{{ ::pc.participant.clinical.gender | humanify }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Vital Status</th>
-              <td>{{ ::pc.participant.clinical.vital_status || '--' }}</td>
+              <td>{{ ::pc.participant.clinical.vital_status | humanify }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>ICD10</th>
@@ -165,11 +168,11 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Ethnicity</th>
-              <td>{{ pc.participant.clinical.ethnicity || '--' }}</td>
+              <td>{{ pc.participant.clinical.ethnicity | humanify }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Race</th>
-              <td>{{ pc.participant.clinical.race || '--' }}</td>
+              <td>{{ pc.participant.clinical.race | humanify }}</td>
             </tr>
 
             </tbody>

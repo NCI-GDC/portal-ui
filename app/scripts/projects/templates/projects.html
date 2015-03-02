@@ -17,8 +17,6 @@
                  data-facet="prsc.projects.aggregations['program.name']" data-title="Program"></terms>
           <terms data-name="code"
                  data-facet="prsc.projects.aggregations.code" data-title="Code"></terms>
-          <terms data-name="status"
-                 data-facet="prsc.projects.aggregations.state" data-title="Status"></terms>
           <terms data-name="summary.data_types.data_type"
                  data-facet="prsc.projects.aggregations['summary.data_types.data_type']" data-title="Data Type"></terms>
           <terms data-name="summary.experimental_strategies.experimental_strategy"
@@ -38,7 +36,8 @@
       <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0" data-translate>
         No projects found using those filters.
       </h3>
-      <ul class="nav nav-tabs" style="margin-bottom: 20px" data-ng-init="mode = 'summary'">
+      <ul class="nav nav-tabs" style="margin-bottom: 20px" data-ng-init="mode = 'summary'"
+          data-ng-show="prsc.projects.hits.length">
         <li role="presentation"
             data-ng-class="{ active: mode === 'summary' }"
             data-ng-click="mode = 'summary'">

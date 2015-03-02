@@ -9,25 +9,26 @@
       </div>
       <div class="panel-body">
         <div class="col-lg-6 col-md-6">
+          <!-- <pre>{{ participant.samples | json }}</pre> -->
           <h4 data-translate>Samples</h4>
           <div data-ng-repeat="sample in participant.samples">
             <!-- Apparently the samples can be missing this data -->
-            <div data-ng-if="sample.bcr_sample_barcode">
+            <div data-ng-if="sample.submitter_id">
               <i class="fa fa-plus-square-o action" data-ng-if="!sample.expanded"
                  data-ng-click="expandTree($event, sample)"
                  data-ng-keypress="expandTree($event, sample)"
-                 aria-label="Expand Sample {{ sample.bcr_sample_barcode }}"></i>
+                 aria-label="Expand Sample {{ sample.submitter_id }}"></i>
               <i class="fa fa-minus-square-o action" data-ng-if="sample.expanded"
                  data-ng-click="expandTree($event, sample)"
                  data-ng-keypress="expandTree($event, sample)"
-                 aria-label="Collapse Sample {{ sample.bcr_sample_barcode }}"></i>
+                 aria-label="Collapse Sample {{ sample.submitter_id }}"></i>
               <i class="fa fa-file-o" data-ng-if="!sample.expanded"></i>
               <i class="fa fa-file-o" data-ng-if="sample.expanded"></i>
               &nbsp;
               <span data-ng-click="bc.displayBioSpecimenDocument($event, sample, 'sample')"
                     data-ng-keypress="bc.displayBioSpecimenDocument($event, sample, 'sample')"
                     class="biospecimen-id">
-                {{ sample.bcr_sample_uuid }}
+                {{ sample.sample_id }}
               </span>
 
               <div data-ng-if="sample.portions.length" data-ng-class="{ hidden: !sample.expanded }"
@@ -36,11 +37,11 @@
                   <i class="fa fa-plus-square-o action" data-ng-if="!sample.portions.expanded"
                      data-ng-click="expandTree($event, sample.portions)"
                      data-ng-keypress="expandTree($event, sample.portions)"
-                     aria-label="Expand Portions for {{ sample.bcr_sample_barcode }}"></i>
+                     aria-label="Expand Portions for {{ sample.submitter_id }}"></i>
                   <i class="fa fa-minus-square-o action" data-ng-if="sample.portions.expanded"
                      data-ng-click="expandTree($event, sample.portions)"
                      data-ng-keypress="expandTree($event, sample.portions)"
-                     aria-label="Collapse Portions for {{ sample.bcr_sample_barcode }}"></i>
+                     aria-label="Collapse Portions for {{ sample.submitter_id }}"></i>
                   <i class="fa fa-folder-o" data-ng-if="!sample.portions.expanded"></i>
                   <i class="fa fa-folder-open-o" data-ng-if="sample.portions.expanded"></i>
                   &nbsp;<span class="h5" data-translate>Portions</span>
@@ -51,18 +52,18 @@
                     <i class="fa fa-plus-square-o action" data-ng-if="!portion.expanded"
                        data-ng-click="expandTree($event, portion)"
                        data-ng-keypress="expandTree($event, portion)"
-                       aria-label="Expand Portion {{ portion.bcr_portion_barcode }}"></i>
+                       aria-label="Expand Portion {{ portion.submitter_id }}"></i>
                     <i class="fa fa-minus-square-o action" data-ng-if="portion.expanded"
                        data-ng-click="expandTree($event, portion)"
                        data-ng-keypress="expandTree($event, portion)"
-                       aria-label="Collapse Portion {{ portion.bcr_portion_barcode }}"></i>
+                       aria-label="Collapse Portion {{ portion.submitter_id }}"></i>
                     <i class="fa fa-file-o" data-ng-if="!portion.expanded"></i>
                     <i class="fa fa-file-o" data-ng-if="portion.expanded"></i>
                     &nbsp;
                     <span data-ng-click="bc.displayBioSpecimenDocument($event, portion, 'portion')"
                           data-ng-keypress="bc.displayBioSpecimenDocument($event, portion, 'portion')"
                           class="biospecimen-id">
-                      {{ portion.bcr_portion_uuid }}
+                      {{ portion.portion_id }}
                     </span>
 
                     <div data-ng-if="portion.slides.length" data-ng-class="{ hidden: !portion.expanded }"
@@ -71,11 +72,11 @@
                         <i class="fa fa-plus-square-o action" data-ng-if="!portion.slides.expanded"
                            data-ng-click="expandTree($event, portion.slides)"
                            data-ng-keypress="expandTree($event, portion.slides)"
-                           aria-label="Expand Slides for {{ portion.bcr_portion_barcode }}"></i>
+                           aria-label="Expand Slides for {{ portion.submitter_id }}"></i>
                         <i class="fa fa-minus-square-o action" data-ng-if="portion.slides.expanded"
                            data-ng-click="expandTree($event, portion.slides)"
                            data-ng-keypress="expandTree($event, portion.slides)"
-                           aria-label="Collapse Slides for {{ portion.bcr_portion_barcode }}"></i>
+                           aria-label="Collapse Slides for {{ portion.submitter_id }}"></i>
                         <i class="fa fa-folder-o" data-ng-if="!portion.slides.expanded"></i>
                         <i class="fa fa-folder-open-o" data-ng-if="portion.slides.expanded"></i>
                         &nbsp;
@@ -85,7 +86,7 @@
                              data-ng-keypress="bc.displayBioSpecimenDocument($event, slide, 'slide')"
                              data-ng-if="portion.slides.expanded">
                           <i class="fa fa-file-o"></i>
-                          &nbsp;{{ slide.bcr_slide_uuid }}
+                          &nbsp;{{ slide.slide_id }}
                         </div>
                       </div>
                     </div>
@@ -96,11 +97,11 @@
                         <i class="fa fa-plus-square-o action" data-ng-if="!portion.analytes.expanded"
                            data-ng-click="expandTree($event, portion.analytes)"
                            data-ng-keypress="expandTree($event, portion.analytes)"
-                           aria-label="Expand Portions for {{ sample.bcr_sample_barcode }}"></i>
+                           aria-label="Expand Portions for {{ sample.submitter_id }}"></i>
                         <i class="fa fa-minus-square-o action" data-ng-if="portion.analytes.expanded"
                            data-ng-click="expandTree($event, portion.analytes)"
                            data-ng-keypress="expandTree($event, portion.analytes)"
-                           aria-label="Collapse Portions for {{ sample.bcr_sample_barcode }}"></i>
+                           aria-label="Collapse Portions for {{ sample.submitter_id }}"></i>
                         <i class="fa fa-folder-o" data-ng-if="!portion.analytes.expanded"></i>
                         <i class="fa fa-folder-open-o" data-ng-if="portion.analytes.expanded"></i>
                         &nbsp;
@@ -110,11 +111,11 @@
                           <i class="fa fa-plus-square-o" data-ng-if="!analyte.expanded"
                              data-ng-click="expandTree($event, analyte)"
                              data-ng-keypress="expandTree($event, analyte)"
-                             aria-label="Expand Analytes {{ portion.bcr_portion_barcode }}"></i>
+                             aria-label="Expand Analytes {{ portion.submitter_id }}"></i>
                           <i class="fa fa-minus-square-o" data-ng-if="analyte.expanded"
                              data-ng-click="expandTree($event, analyte)"
                              data-ng-keypress="expandTree($event, analyte)"
-                             aria-label="Collapse Analytes {{ portion.bcr_portion_barcode }}"></i>
+                             aria-label="Collapse Analytes {{ portion.submitter_id }}"></i>
                           <i class="fa fa-folder-o" data-ng-if="!analyte.expanded"></i>
                           <i class="fa fa-folder-open-o" data-ng-if="analyte.expanded"></i>
                           &nbsp;
@@ -122,7 +123,7 @@
                                 data-ng-keypress="bc.displayBioSpecimenDocument($event, analyte, 'analyte')"
                                 data-ng-if="portion.analytes.expanded"
                                 class="biospecimen-id">
-                            {{ analyte.bcr_analyte_uuid }}
+                            {{ analyte.analyte_id }}
                           </span>
 
                           <div data-ng-if="analyte.aliquots.length" data-ng-class="{ hidden: !analyte.expanded }"
@@ -131,11 +132,11 @@
                               <i class="fa fa-plus-square-o action" data-ng-if="!analyte.aliquots.expanded"
                                  data-ng-click="expandTree($event, analyte.aliquots)"
                                  data-ng-keypress="expandTree($event, analyte.aliquots)"
-                                 aria-label="Expand Aliquots for {{ analyte.bcr_analyte_barcode }}"></i>
+                                 aria-label="Expand Aliquots for {{ analyte.submitter_id }}"></i>
                               <i class="fa fa-minus-square-o action" data-ng-if="analyte.aliquots.expanded"
                                  data-ng-click="expandTree($event, analyte.aliquots)"
                                  data-ng-keypress="expandTree($event, analyte.aliquots)"
-                                 aria-label="Collapse Aliquots for {{ analyte.bcr_analyte_barcode }}"></i>
+                                 aria-label="Collapse Aliquots for {{ analyte.submitter_id }}"></i>
                               <i class="fa fa-folder-o" data-ng-if="!analyte.aliquots.expanded"></i>
                               <i class="fa fa-folder-open-o" data-ng-if="analyte.aliquots.expanded"></i>
                               &nbsp;
@@ -145,7 +146,7 @@
                                    data-ng-keypress="bc.displayBioSpecimenDocument($event, aliquot, 'aliquot')"
                                    data-ng-if="analyte.aliquots.expanded">
                                 <i class="fa fa-file-o"></i>
-                                &nbsp;{{ aliquot.bcr_aliquot_uuid }}
+                                &nbsp;{{ aliquot.aliquot_id }}
                               </div>
                             </div>
                           </div>
@@ -164,11 +165,11 @@
             <tbody>
             <tr>
               <th scope="row" data-translate>UUID</th>
-              <td>{{ bc.activeBioSpecimenDocument['bcr_' + bc.activeBioSpecimenDocumentType + '_uuid'] }}</td>
+              <td>{{ bc.activeBioSpecimenDocument[bc.activeBioSpecimenDocumentType + '_id'] }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Barcode</th>
-              <td>{{ bc.activeBioSpecimenDocument['bcr_' + bc.activeBioSpecimenDocumentType + '_barcode'] }}</td>
+              <td>{{ bc.activeBioSpecimenDocument['submitter_id'] }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Type</th>

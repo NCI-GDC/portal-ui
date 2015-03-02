@@ -7,7 +7,7 @@ module ngApp.projects {
   /* ngInject */
   function projectsConfig($stateProvider: ng.ui.IStateProvider) {
     $stateProvider.state("projects", {
-      url: "/projects",
+      url: "/projects?filters",
       controller: "ProjectsController as prsc",
       templateUrl: "projects/templates/projects.html",
       reloadOnSearch: false

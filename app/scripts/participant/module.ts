@@ -15,6 +15,7 @@ module ngApp.participants {
           return ParticipantsService.getParticipant($stateParams["participantId"], {
             fields: [
               "participant_id",
+              "submitter_id",
               "clinical.vital_status",
               "clinical.ethnicity",
               "clinical.gender",
@@ -27,13 +28,21 @@ module ngApp.participants {
               "annotations.annotation_id",
               "summary.experimental_strategies.experimental_strategy",
               "summary.experimental_strategies.file_count",
+              "summary.data_types.file_count",
+              "summary.data_types.data_type",
+              "summary.data_types.participant_count",
               "samples.sample_id",
+              "samples.submitter_id",
               "samples.portions.portion_id",
+              "samples.portions.submitter_id",
               "samples.portions.slides.slide_id",
+              "samples.portions.slides.submitter_id",
               "samples.portions.analytes.analyte_id",
+              "samples.portions.analytes.submitter_id",
               "samples.portions.analytes.amount",
               "samples.portions.analytes.analyte_type",
-              "samples.portions.analytes.aliquots.aliquot_id"
+              "samples.portions.analytes.aliquots.aliquot_id",
+              "samples.portions.analytes.aliquots.submitter_id"
            ]
           });
         }

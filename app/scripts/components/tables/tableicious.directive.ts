@@ -21,7 +21,7 @@ module ngApp.components.tables.directives.tableicious {
         getHeadingColSpan(heading):number;
         getHeadingRowSpan(heading):number;
         getAllHeadingsAtNestingLevel(level):any[];
-        getTemplate(heading,field,row,_scope):string;
+        getTemplate(heading,field,row,_scope, $filter: ng.IFilterService):string;
         getHeadingEnabled(heading):boolean;
         getHeadingById(id:string):TableiciousColumnDefinition
         getHeadingClass(heading):string;

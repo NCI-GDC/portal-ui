@@ -5,12 +5,17 @@ module ngApp.participants.controllers {
 
   export interface IParticipantController {
     participant: IParticipant;
+    annotationIds: string[];
   }
 
   class ParticipantController implements IParticipantController {
     /* @ngInject */
     constructor(public participant: IParticipant, private CoreService: ICoreService) {
-      CoreService.setPageTitle("Participant " + participant.patient_id);
+      CoreService.setPageTitle("Participant " + participant.participant_id);
+
+      this.annotationIds = _.map(this.participant.annotations, (annotation) => {
+        return annotation.annotation_id;
+      });
     }
   }
 

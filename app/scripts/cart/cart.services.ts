@@ -86,6 +86,12 @@ module ngApp.cart.services {
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_id)) {
           file.selected = true;
+          file.projectCodes = _.unique(_.map(file.participants, (participant) => {
+            return participant.project.code;
+          }));
+          file.annotationIds = _.map(file.annotations, (annotation) => {
+            return annotation.annotation_id;
+          });
           this.files.push(file);
           addedFiles.push(file);
         } else {

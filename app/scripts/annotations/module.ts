@@ -30,11 +30,9 @@ module ngApp.annotations {
                 "item_id",
                 "classification",
                 "notes",
+                "created_datetime",
                 "project.code",
                 "project.project_id"
-                //"notes.dateAdded",
-                //"notes.noteId",
-                //"notes.addedBy"
               ]
             });
         }

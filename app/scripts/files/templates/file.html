@@ -71,7 +71,7 @@
               <td>
                 <i data-ng-if="fc.file.access !== 'open'" class="fa fa-lock"></i>
                 <i data-ng-if="fc.file.access === 'open'" class="fa fa-unlock-alt"></i>
-                <span data-ng-if="fc.file.access === 'open'" data-translate>Public</span>
+                <span data-ng-if="fc.file.access === 'open'" data-translate>Open</span>
                 <span data-ng-if="fc.file.access !== 'open'" data-translate>Protected</span>
               </td>
             </tr>
@@ -116,11 +116,23 @@
               <th scope="row" data-translate>Archive</th>
               <td>
                 {{ ::fc.file.archives.archive_id || '--' }}
-                (<a data-ui-sref="search.files({ 'filters': {{
-                  [{ name: 'files.archive.archive_uuid', value: fc.file.archive.archive_uuid }] | makeFilter }}
-                  })">
-                  {{ fc.archiveCount }} files
-                </a>)
+                <span data-ng-if="fc.file.archives">
+                  (<a data-ui-sref="search.files({ 'filters': {{
+                    [{ name: 'files.archives.archive_id', value: fc.file.archives.archive_id }] | makeFilter }}
+                    })">
+                    {{ fc.archiveCount }} files
+                  </a>)
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Tag</th>
+              <td>
+                <span data-ng-if="!fc.file.tags">--</span>
+                <span data-ng-repeat="tag in fc.file.tags">
+                  {{ tag }}
+                  <span data-ng-if="!$last">, </span>
+                </span>
               </td>
             </tr>
             </tbody>
@@ -165,7 +177,7 @@
             </tr>
             <tr>
               <th scope="row" data-translate>Data Submitter</th>
-              <td>{{ ::fc.file.center.name | ellipsicate:25 }}</td>
+              <td>{{ ::fc.file.center.short_name }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>Data Submitted Since</th>
@@ -200,8 +212,18 @@
               <tr data-ng-repeat="p in fc.file.participants track by p.participant_id">
                 <td>tbd</td>
                 <td>tbd</td>
-                <td><a data-ui-sref="participant({ participantId : p.participant_id })">{{ ::p.participant_id }}</a></td>
-                <td>tbd</td>
+                <td>
+                  <a data-ui-sref="participant({ participantId : p.participant_id })">
+                    {{ ::p.participant_id }}
+                  </a>
+                </td>
+                <td>
+                  <a data-ui-sref="annotations({ 'filters':
+                     {{ [{name: 'annotation_id', value: fc.annotationIds }] | makeFilter }} })"
+                     data-ng-if="fc.file.annotations">
+                     {{ fc.file.annotations.length }}
+                  </a>
+                </td>
               </tr>
               </tbody>
             </table>
@@ -240,7 +262,7 @@
                     View
                   </a>
                   /
-                  <a data-translate>
+                  <a data-ng-href="{{ [f.file_id ] | makeDownloadLink }}" data-translate>
                     Download
                   </a>
                 </td>

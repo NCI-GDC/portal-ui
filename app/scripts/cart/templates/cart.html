@@ -141,9 +141,11 @@
           </th>
           <th scope="col" class="text-center" data-translate>Access</th>
           <th scope="col" class="text-center" data-translate>File Name</th>
-          <th scope="col" class="text-center" data-translate>Participants</th>
+          <th scope="col" class="text-center" data-translate>Annotations</th>
+          <th scope="col" class="text-center" data-translate>Participant</th>
           <th scope="col" class="text-center" data-translate>Projects</th>
           <th scope="col" class="text-center" data-translate>Data Type</th>
+          <th scope="col" class="text-center" data-translate>Status</th>
           <th scope="col" class="text-center" data-translate>Data Format</th>
           <th scope="col" class="text-center" data-translate>Size</th>
           <th scope="col" class="text-center" data-translate>Revision</th>
@@ -218,9 +220,22 @@
               {{ file.file_name }}
             </a>
           </td>
+          <td class="truncated-cell">
+            <a data-ng-if="file.annotations.length === 1"
+               data-ui-sref="annotation(({annotationId: file.annotations[0].annotation_id }))">
+               {{ file.annotations[0].annotation_id }}
+            </a>
+            <a data-ng-if="file.annotations.length > 1"
+               data-ui-sref="annotations({ 'filters': {{
+                [{ name: 'annotation_id', value: file.annotationIds }] | makeFilter }}
+            })">
+              {{ file.annotations.length }}
+            </a>
+            <span data-ng-if="!file.annotations.length">0</span>
+          </td>
           <td class="truncated-cell" data-ng-if="file.participants.length === 1">
-            <a data-ui-sref="participant({ participantId : '{{ file.participants[0].bcr_patient_uuid }}' })">
-              {{file.participants[0].bcr_patient_uuid }}
+            <a data-ui-sref="participant({ participantId : '{{ file.participants[0].participant_id }}' })">
+              {{file.participants[0].participant_id }}
             </a>
           </td>
           <td data-ng-if="file.participants.length > 1">
@@ -230,12 +245,25 @@
               {{ file.participants.length }}
             </a>
           </td>
-          <td><a data-ui-sref="project(({projectId:file.archive.disease_code}))">{{file.archive.disease_code}}</a></td>
-          <td>{{file.data_type}}</td>
-          <td>{{file.data_format }}</td>
+          <td>
+            <a data-ng-if="file.participants.length === 1 || file.projectCodes.length === 1"
+               data-ui-sref="project(({projectId: file.participants[0].project.code }))">
+               {{ file.participants[0].project.code }}
+            </a>
+            <a data-ng-if="file.participants.length > 1 && file.projectCodes.length > 1"
+               data-ui-sref="projects({ 'filters': {{
+                [{ name: 'code', value: file.projectCodes }] | makeFilter }}
+            })">
+              {{ file.participants.length }}
+            </a>
+            <span data-ng-if="!file.participants.length">0</span>
+          </td>
+          <td>{{ file.data_type }}</td>
+          <td>{{ file.state }}</td>
+          <td>{{ file.data_format }}</td>
           <td>{{ file.file_size | size }}</td>
           <td>{{ file.archive.revision }}</td>
-          <td>{{file.update_date | date}}</td>
+          <td>{{ file.update_date | date }}</td>
         </tr>
         </tbody>
       </table>

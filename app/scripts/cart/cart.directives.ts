@@ -85,18 +85,20 @@ module ngApp.cart.directives {
           var size: number = ($scope.paging.total >= CartService.getMaxSize()) ? CartService.getMaxSize() : $scope.paging.total;
           FilesService.getFiles({
             fields: [
-              "data_access",
-              "data_format",
-              "data_level",
-              "data_subtype",
-              "data_type",
-              "file_extension",
+              "access",
               "file_name",
+              "data_type",
+              "data_subtype",
+              "data_format",
               "file_size",
               "file_id",
+              "participants.participant_id",
+              "participants.project.name",
+              "participants.project.project_id",
+              "participants.project.code",
               "platform",
-              "updated",
-              "project.code",
+              "archives.revision",
+              "annotations.annotation_id",
               "participants.submitter_id"
             ],
             filters: filters,
@@ -142,20 +144,21 @@ module ngApp.cart.directives {
 
           FilesService.getFiles({
             fields: [
-              "data_access",
-              "data_format",
-              "data_level",
-              "data_subtype",
-              "data_type",
-              "file_extension",
+              "access",
               "file_name",
+              "data_type",
+              "data_subtype",
+              "data_format",
               "file_size",
               "file_id",
+              "participants.participant_id",
+              "participants.project.name",
+              "participants.project.project_id",
+              "participants.project.code",
               "platform",
-              "updated",
-              "archive.disease_code",
-              "archive.revision",
-              "participants.participant_id"
+              "archives.revision",
+              "annotations.annotation_id",
+              "participants.submitter_id"
             ],
             filters: filters,
             size: CartService.getCartVacancySize()
@@ -175,33 +178,36 @@ module ngApp.cart.directives {
             "content": [{
               "op": "in",
               "content": {
-              "field": "participants.bcr_patient_uuid",
-              "value": barcode
+                "field": "participants.participant_id",
+                "value": barcode
               }
             }]
           };
 
           FilesService.getFiles({
             fields: [
-              "data_access",
-              "data_format",
-              "data_level",
-              "data_subtype",
-              "data_type",
-              "file_extension",
+              "access",
               "file_name",
+              "data_type",
+              "data_subtype",
+              "data_format",
               "file_size",
               "file_id",
+              "participants.participant_id",
+              "participants.project.name",
+              "participants.project.project_id",
+              "participants.project.code",
               "platform",
-              "updated",
-              "archive.disease_code",
-              "archive.revision",
-              "participants.bcr_patient_uuid"
+              "archives.revision",
+              "annotations.annotation_id",
+              "participants.submitter_id"
             ],
             filters: filters,
             size: CartService.getCartVacancySize()
           }).then((data) => {
-            CartService.addFiles(data.hits);
+            if (!CartService.areInCart(data.hits)) {
+              this.CartService.addFiles(data.hits);
+            }
           });
 
         };

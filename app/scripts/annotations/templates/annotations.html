@@ -6,20 +6,28 @@
           <h3 class="panel-title pull-left">Facets</h3>
         </div>
         <div class="list-group">
-          <facets-free-text data-field="id" data-title="Annotation" placeholder="{{ 'Annotation ID' | translate }}"
+          <facets-free-text data-field="annotation_id" data-title="Annotation" placeholder="{{ 'Annotation ID' | translate }}"
                             entity="annotations"
                             data-template="components/facets/templates/typeahead-annotations.html"></facets-free-text>
-
-          <terms data-name="item_type"
-                 data-title="Annotated Item"
+          <terms data-name="annotations.project.program.name"
+                 data-title="Program"
+                 data-facet="asc.annotations.aggregations['project.program.name']" data-collapsed="true"></terms>
+          <terms data-name="annotations.project.code"
+                 data-title="Project"
+                 data-facet="asc.annotations.aggregations['project.code']" data-collapsed="true"></terms>
+          <terms data-name="annotations.project.primary_site"
+                 data-title="Primary Site"
+                 data-facet="asc.annotations.aggregations['project.primary_site']" data-collapsed="true"></terms>
+          <terms data-name="annotations.item_type"
+                 data-title="Item Type"
                  data-facet="asc.annotations.aggregations.item_type"></terms>
-          <terms data-name="category"
-                 data-title="Category"
+          <terms data-name="annotations.category"
+                 data-title="Annotation Category"
                  data-facet="asc.annotations.aggregations.category"></terms>
-          <terms data-name="classification"
-                 data-title="Classification"
+          <terms data-name="annotations.classification"
+                 data-title="Annotation Classification"
                  data-facet="asc.annotations.aggregations.classifcation"></terms>
-          <terms data-name="status"
+          <terms data-name="annotations.status"
                  data-title="Status"
                  data-facet="asc.annotations.aggregations.status"></terms>
         </div>

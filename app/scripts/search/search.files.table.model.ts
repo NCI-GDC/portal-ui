@@ -137,7 +137,7 @@ module ngApp.search.models {
                         };
                       });
 
-                      var projectCodes = _.union(_.map(projects, (project) => {
+                      var projectCodes = _.unique(_.map(projects, (project) => {
                         return project.code;
                       }));
 
@@ -161,7 +161,7 @@ module ngApp.search.models {
                      };
                    });
 
-                   var projectCodes = _.union(_.map(projects, (project) => {
+                   var projectCodes = _.unique(_.map(projects, (project) => {
                      return project.code;
                    }));
 

@@ -98,6 +98,7 @@ module ngApp.search.controllers {
           "participants.project.code",
           "platform",
           "archives.revision",
+          "archives.archive_id",
           "annotations.annotation_id"
         ],
         facets: [
@@ -108,6 +109,7 @@ module ngApp.search.controllers {
           "platform",
           "archives.revision",
           "access",
+          "state",
           "data_format",
           "center.name"
         ]
@@ -138,6 +140,7 @@ module ngApp.search.controllers {
           "project.code",
           "project.primary_site",
           "project.project_id",
+          "project.program.name",
           "annotations.annotation_id"
         ],
         facets: [
@@ -147,7 +150,9 @@ module ngApp.search.controllers {
           "clinical.vital_status",
           "clinical.race",
           "project.name",
-          "project.code"
+          "project.code",
+          "project.primary_site",
+          "project.program.name"
         ]
       }).then((data: IFiles) => {
         if (!data.hits.length) {

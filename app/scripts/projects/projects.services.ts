@@ -42,7 +42,7 @@ module ngApp.projects.services {
         size: 10,
         from: 1,
         filters: this.LocationService.filters(),
-        sort:'name:asc'
+        sort:'summary.participant_count:desc'
       };
 
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "code");

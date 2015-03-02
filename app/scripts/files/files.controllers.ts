@@ -10,10 +10,12 @@ module ngApp.files.controllers {
     isInCart(): boolean;
     handleCartButton(): void;
     archiveCount: number;
+    annotationIds: string[];
   }
 
   class FileController implements IFileController {
     archiveCount: number = 0;
+    annotationIds: string[] = [];
 
     /* @ngInject */
     constructor(public file: IFile,
@@ -24,24 +26,6 @@ module ngApp.files.controllers {
                 ) {
 
       CoreService.setPageTitle("File " + file.file_name);
-      angular.forEach(file.participants, (p: any) => {
-        p.sc = 0;
-        p.poc = 0;
-        p.anc = 0;
-        p.alc = 0;
-        angular.forEach(p.samples, (s: any) => {
-          p.sc++;
-          angular.forEach(s.portions, (po: any) => {
-            p.poc++;
-            angular.forEach(po.analytes, (an: any) => {
-              p.anc++;
-              angular.forEach(an.aliquots, (al: any) => {
-                p.alc++;
-              });
-            });
-          });
-        });
-      });
 
       this.FilesService.getFiles({
         fields: [
@@ -49,6 +33,10 @@ module ngApp.files.controllers {
         ],
         filters: {"op": "=", "content": {"field": "files.archives.archive_id", "value": [file.archives ? file.archives.archive_id : 0]}}
       }).then((data) => this.archiveCount = data.pagination.total);
+
+      this.annotationIds = _.map(file.annotations, (annotation) => {
+        return annotation.annotation_id;
+      });
 
       //this.archiveCount = 0;
     }

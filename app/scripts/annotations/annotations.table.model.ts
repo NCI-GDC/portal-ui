@@ -28,11 +28,25 @@ module ngApp.projects.models {
         {
             displayName: "Project",
             id: "project.code",
+            sref: function (field, row) {
+                var project = _.find(row, (a) => {
+                    return a.id === "project";
+                });
+                return "project({ projectId: '" + project.val.code + "'})";
+            },
             sortable: true
         },
         {
             displayName: "Item Type",
             id: "item_type",
+            template: function (field, row, scope, $filter) {
+                return $filter("humanify")(field && field.val || "tbc");
+            },
+            sortable: true
+        },
+        {
+            displayName: "Item ID",
+            id: "item_id",
             template: function (x) {
                 return x && x.val || "tbc";
             },
@@ -61,15 +75,18 @@ module ngApp.projects.models {
         },
         {
             displayName: "Created Date",
-            id: "dateCreated",
-            template:function(field,row,scope){
-                return "tbd";
-                //return scope.$filter('date')(field.val);
+            id: "created_datetime",
+            template:function(field,row,scope, $filter){
+                // The value given appears to be in seconds rather than milliseconds
+                return $filter('date')(field.val * 1000);
             }
         },
         {
             displayName: "Annotator",
             id: "creator",
+            template: function(field, row, scope, $filter) {
+                return $filter("humanify")(field.val);
+            },
             sortable: true
         },
         {

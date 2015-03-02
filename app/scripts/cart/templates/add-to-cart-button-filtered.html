@@ -15,10 +15,17 @@
             </a>
         </li>
         <li aria-label="{{ 'Add filtered related files' | translate }}"
-            role="button">
-            <a data-ng-click="addFilteredRelatedFiles(p)">
+            role="button" data-ng-class="{ disabled: !filteredRelatedFiles.pagination.total }">
+            <a data-ng-click="addFilteredRelatedFiles(p)" data-ng-if="filteredRelatedFiles.pagination.total">
                 <i class="fa fa-shopping-cart fa-stack"></i>
                 <span data-translate>Add filtered related files</span> ({{ filteredRelatedFiles.pagination.total }})
+            </a>
+            <a data-ng-if="!filteredRelatedFiles.pagination.total">
+                <span class="fa-stack">
+                    <i class="fa fa-shopping-cart fa-stack-1x"></i>
+                    <i class="fa fa-ban fa-stack-2x"></i>
+                </span>
+                <span data-translate>No related files with current filters</span>
             </a>
         </li>
     </ul>

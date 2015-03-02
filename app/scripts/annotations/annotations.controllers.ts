@@ -37,23 +37,27 @@ module ngApp.annotations.controllers {
         fields: [
           "annotation_id",
           "category",
-          //"dateCreated",
+          "created_datetime",
           "creator",
           "status",
           "item_type",
           "item_id",
+          "notes",
           "classification",
           "project.program.name",
           "project.code"
         ],
         facets: [
           "category",
-          //"dateCreated",
+          "created_datetime",
           "creator",
           "status",
           "item_type",
           "item",
-          "classification"
+          "classification",
+          "project.code",
+          "project.primary_site",
+          "project.program.name"
         ]
       }).then((data) => {
         if (!data.hits.length) {

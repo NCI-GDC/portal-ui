@@ -4,7 +4,13 @@ module ngApp.core.filters {
     constructor() {
       return function (fields: { name: string; value: string }[], noEscape: boolean) {
         var contentArray = _.map(fields, function (item) {
-          var value = _.isArray(item.value) ? item.value : item.value.split(",");
+          var value = [];
+
+          if (_.isArray(item.value)) {
+            value = item.value;
+          } else if (item.value) {
+            value = item.value.split(",");
+          } 
 
           return {
             "op": "in",

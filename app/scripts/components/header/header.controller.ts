@@ -37,6 +37,8 @@ module ngApp.components.header.controllers {
 
       if ($window.location.port) {
         this.loginQuery = "?next=:" + $window.location.port;
+      } else {
+        this.loginQuery = "?next=/";
       }
     }
 

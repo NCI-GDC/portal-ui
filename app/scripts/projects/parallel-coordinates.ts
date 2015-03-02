@@ -555,6 +555,7 @@ function ParallelCoordinates(data,options) {
 			.text(function(d){
 				return d.value;
 			})
+            .attr('class','visible-always')
 
 		new_label.append("rect")
             .attr("class","ix")

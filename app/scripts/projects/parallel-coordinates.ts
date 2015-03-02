@@ -364,24 +364,24 @@ function ParallelCoordinates(data,options) {
                 fill:"url(#diagonalHatch)"
             });
 
-		new_markers
-            .filter(function(d){
-                return options.scale_map[d.column]!="ordinal"
-            })
-            .append("circle")
-            .attr("cx",0)
-            .attr("cy",0)
-            .attr("r",2);
-
-		new_markers
-            .filter(function(d){
-                return options.scale_map[d.column]!="ordinal"
-            })
-            .append("circle")
-            .attr("class","hover")
-            .attr("cx",0)
-            .attr("cy",0)
-            .attr("r",5);
+//		new_markers
+//            .filter(function(d){
+//                return options.scale_map[d.column]!="ordinal"
+//            })
+//            .append("circle")
+//            .attr("cx",0)
+//            .attr("cy",0)
+//            .attr("r",2);
+//
+//		new_markers
+//            .filter(function(d){
+//                return options.scale_map[d.column]!="ordinal"
+//            })
+//            .append("circle")
+//            .attr("class","hover")
+//            .attr("cx",0)
+//            .attr("cy",0)
+//            .attr("r",5);
 
 		marker
 			.transition()
@@ -550,7 +550,7 @@ function ParallelCoordinates(data,options) {
 				return d.column=="primary_site";
 			})
 			.append("text")
-			.attr("x",0)
+			.attr("x",-10 )
 			.attr("y",3)
 			.text(function(d){
 				return d.value;
@@ -576,7 +576,7 @@ function ParallelCoordinates(data,options) {
             .attr('x',function(d){
 //              debugger;
               if (d.column === 'primary_site') {
-                return -5
+                return -10
               } else {
                 return 0;
               }

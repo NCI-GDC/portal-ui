@@ -753,8 +753,10 @@ function ParallelCoordinates(data,options) {
   
     var LHR = $(options.container);
     
+//    debugger;
     var WIDTH=LHR.width(),
-        HEIGHT=Math.min(500);
+        HEIGHT=80 +data.length * 15;
+//        HEIGHT=Math.min(500);
 
 	var margins={
 		left:0,

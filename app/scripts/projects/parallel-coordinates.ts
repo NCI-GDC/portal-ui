@@ -595,7 +595,11 @@ function ParallelCoordinates(data,options) {
                 if (_.isNumber(d.value)){
                     return parseInt(d.value);
                 } else {
-                    return d.value;
+                    var t = d.value;
+                    if (t.length > 18) {
+                      t = t.slice(0,15).concat('...');
+                    }
+                    return t;
                 }
                 
             

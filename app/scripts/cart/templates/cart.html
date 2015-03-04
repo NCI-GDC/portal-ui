@@ -96,14 +96,8 @@
                   <span data-translate>Download Files with Metadata</span>
                 </a>
               </li>
-              <li role="listitem" aria-label="{{ 'Download URLs' | translate }}">
-                <a data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}">
-                  <i class="fa fa-file-text-o fa-stack"></i>
-                  <span data-translate>Download URLs</span>
-                </a>
-              </li>
               <li role="listitem" aria-label="{{ 'Download Manifest' | translate }}">
-                <a data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}">
+                <a data-ng-href="{{ cc.getFileIds() | makeManifestLink }}">
                   <i class="fa fa-file-code-o fa-stack"></i>
                   <span data-translate>Download Manifest</span>
                 </a>
@@ -183,14 +177,8 @@
                     <span data-translate>Download Only File</span>
                   </a>
                 </li>
-                <li role="listitem" aria-label="{{ 'Download URL' | translate }}">
-                  <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
-                    <i class="fa fa-file-text-o fa-stack"></i>
-                    <span data-translate>Download URL</span>
-                  </a>
-                </li>
                 <li role="listitem" aria-label="{{ 'Download Manifest' | translate }}">
-                  <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
+                  <a data-ng-href="{{ [file.file_id] | makeManifestLink }}">
                     <i class="fa fa-file-code-o fa-stack"></i>
                     <span data-translate>Download Manifest</span>
                   </a>

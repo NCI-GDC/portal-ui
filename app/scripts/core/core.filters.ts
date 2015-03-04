@@ -47,7 +47,17 @@ module ngApp.core.filters {
     }
   }
 
+  class MakeManifestLink {
+    constructor($rootScope: IScope) {
+      return function (ids: string[],
+                      baseUrl: string = $rootScope.config.api) {
+        return baseUrl + "/manifest/" + ids.join(",");
+      };
+    }
+  }
+
   angular.module("core.filters", [])
+    .filter("makeManifestLink", MakeManifestLink)
     .filter("makeFilter", MakeFilter)
     .filter("makeDownloadLink", MakeDownloadLink);
 }

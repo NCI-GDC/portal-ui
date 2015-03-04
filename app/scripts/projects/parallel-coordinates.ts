@@ -805,7 +805,7 @@ function ParallelCoordinates(data,options) {
         .sort(function(a,b){
             return d3.descending(a.values["file_count"],b.values["file_count"]);
         })
-        .slice(0,28);
+        .slice(0,100);
 	
 
   var marker_max_width = (WIDTH-d3.sum([margins.left,margins.right,padding.left,padding.right]))/options.columns.length;

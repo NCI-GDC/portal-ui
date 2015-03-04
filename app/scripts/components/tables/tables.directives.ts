@@ -76,7 +76,8 @@ module ngApp.components.tables.directives {
       restrict: "EA",
       scope: {
         endpoint:"@",
-        size: "@"
+        size: "@",
+        fields: "="
       },
       replace: true,
       templateUrl: "components/tables/templates/export-table.html",

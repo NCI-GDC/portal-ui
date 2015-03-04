@@ -1,0 +1,15 @@
+<facets-free-text data-title="Project" field="code" placeholder="{{ 'Project Name or Code' | translate }}"
+                  data-entity="projects"
+                  data-template="components/facets/templates/typeahead-projects.html"></facets-free-text>
+<terms data-name="disease_type" data-title="Disease Type"
+       data-facet="prsc.projects.aggregations.disease_type"></terms>
+<terms data-name="primary_site"
+       data-facet="prsc.projects.aggregations.primary_site" data-title="Primary Site"></terms>
+<terms data-name="program.name"
+       data-facet="prsc.projects.aggregations['program.name']" data-title="Program"></terms>
+<terms data-name="code"
+       data-facet="prsc.projects.aggregations.code" data-title="Code"></terms>
+<terms data-name="summary.data_types.data_type"
+       data-facet="prsc.projects.aggregations['summary.data_types.data_type']" data-title="Data Type"></terms>
+<terms data-name="summary.experimental_strategies.experimental_strategy"
+       data-facet="prsc.projects.aggregations['summary.experimental_strategies.experimental_strategy']" data-title="Experimental Strategy"></terms> 

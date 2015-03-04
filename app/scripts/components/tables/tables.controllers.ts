@@ -101,6 +101,7 @@ module ngApp.components.tables.controllers {
   interface IExportScope extends ng.IScope {
     endpoint: string;
     size: number;
+    fields: string[];
   }
 
   interface IExportTableController {
@@ -135,17 +136,20 @@ module ngApp.components.tables.controllers {
       }
 
       if (this.$window.URL && this.$window.URL.createObjectURL) {
+        var params = {
+          filters: filters,
+          fields: this.$scope.fields.join(),
+          attachment: true,
+          format: fileType,
+          size: this.$scope.size
+        };
+
         this.Restangular.all(this.$scope.endpoint)
         .withHttpConfig({
           timeout: abort.promise,
           responseType: "blob"
         })
-        .get('', {
-          filters: filters,
-          attachment: true,
-          format: fileType,
-          size: this.$scope.size
-        }).then((file) => {
+        .get('', params).then((file) => {
           var url = this.$window.URL.createObjectURL(file);
           var a = this.$window.document.createElement("a");
           a.setAttribute("href", url);
@@ -164,6 +168,7 @@ module ngApp.components.tables.controllers {
         this.LocationService.setHref(this.config.api + "/" +
                                      this.$scope.endpoint +
                                      "?attachment=true&format=" + fileType +
+                                     "&fields=" + this.$scope.fields.join() +
                                      "&size=" + this.$scope.size +
                                      "&filters=" + JSON.stringify(filters));
       }

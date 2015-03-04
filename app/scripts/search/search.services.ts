@@ -9,13 +9,13 @@ module ngApp.search.services {
     files: ITab;
   }
 
-  export interface IState {
+  export interface ISearchState {
     tabs: ITabs;
     facets: ITabs;
     setActive(section: string, s: string): void;
   }
 
-  class State implements IState {
+  class State implements ISearchState {
     tabs: ITabs = {
       summary: {
         active: false
@@ -72,6 +72,6 @@ module ngApp.search.services {
 
   angular
       .module("search.services", [])
-      .service("State", State)
+      .service("SearchState", State)
       .service("SearchService", SearchService);
 }

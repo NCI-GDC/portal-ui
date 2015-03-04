@@ -5,11 +5,29 @@ module ngApp.projects {
   import IProject = ngApp.projects.models.IProject;
 
   /* ngInject */
-  function projectsConfig($stateProvider: ng.ui.IStateProvider) {
+  function projectsConfig($stateProvider: ng.ui.IStateProvider, $urlRouterProvider: ng.ui.IUrlRouterProvider) {
+    $urlRouterProvider.when("/projects", "/projects/t");
+
     $stateProvider.state("projects", {
       url: "/projects?filters",
       controller: "ProjectsController as prsc",
       templateUrl: "projects/templates/projects.html",
+      reloadOnSearch: false
+    });
+
+    $stateProvider.state("projects.table", {
+      url: "/t",
+      data: {
+        tab: "table"
+      },
+      reloadOnSearch: false
+    });
+
+    $stateProvider.state("projects.graph", {
+      url: "/g",
+      data: {
+        tab: "graph"
+      },
       reloadOnSearch: false
     });
 

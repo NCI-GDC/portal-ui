@@ -294,7 +294,29 @@ module ngApp.search.models {
                 var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
                 return "annotations({ 'filters':"+filter+"})";
             }
-        }]
+        }],
+        fields: [
+          "participant_id",
+          "clinical.vital_status",
+          "clinical.gender",
+          "clinical.ethnicity",
+          "files.file_id",
+          "files.file_name",
+          "files.file_size",
+          "files.access",
+          "summary.file_size",
+          "summary.file_count",
+          "summary.experimental_strategies.file_count",
+          "summary.experimental_strategies.experimental_strategy",
+          "summary.data_types.file_count",
+          "summary.data_types.data_type",
+          "project.name",
+          "project.code",
+          "project.primary_site",
+          "project.project_id",
+          "project.program.name",
+          "annotations.annotation_id"
+        ]
     };
     angular.module("search.table.participants.model", [])
         .value("SearchTableParticipantsModel", searchParticipantsModel);

@@ -6,21 +6,8 @@
           <h3 class="panel-title pull-left">Facets</h3>
         </div>
         <div class="list-group">
-          <facets-free-text data-title="Project" field="name" placeholder="{{ 'Project Name or Code' | translate }}"
-                            data-entity="projects"
-                            data-template="components/facets/templates/typeahead-projects.html"></facets-free-text>
-          <terms data-name="name" data-title="Disease Type"
-                 data-facet="prsc.projects.aggregations.name"></terms>
-          <terms data-name="primary_site"
-                 data-facet="prsc.projects.aggregations.primary_site" data-title="Primary Site"></terms>
-          <terms data-name="program.name"
-                 data-facet="prsc.projects.aggregations['program.name']" data-title="Program"></terms>
-          <terms data-name="code"
-                 data-facet="prsc.projects.aggregations.code" data-title="Code"></terms>
-          <terms data-name="summary.data_types.data_type"
-                 data-facet="prsc.projects.aggregations['summary.data_types.data_type']" data-title="Data Type"></terms>
-          <terms data-name="summary.experimental_strategies.experimental_strategy"
-                 data-facet="prsc.projects.aggregations['summary.experimental_strategies.experimental_strategy']" data-title="Experimental Strategy"></terms> 
+          <div data-ng-include="'projects/templates/projects.facets.html'"
+               class="facet-section" role="form"></div>
         </div>
       </div>
     </div>
@@ -36,39 +23,40 @@
       <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0" data-translate>
         No projects found using those filters.
       </h3>
-      <ul class="nav nav-tabs" style="margin-bottom: 20px" data-ng-init="mode = 'summary'"
-          data-ng-show="prsc.projects.hits.length">
+      <ul class="nav nav-tabs" style="margin-bottom: 20px">
         <li role="presentation"
-            data-ng-class="{ active: mode === 'summary' }"
-            data-ng-click="mode = 'summary'">
-          <a>{{ 'Summary' | translate }}</a>
+            data-ng-class="{ active: prsc.ProjectsState.tabs.table.active }"
+            data-ng-click="prsc.select('tabs', 'table')">
+          <a>{{ 'Table' | translate }}</a>
         </li>
         <li role="presentation"
-            data-ng-class="{ active: mode === 'details' }"
-            data-ng-click="mode = 'details'">
-          <a>{{ 'Details' | translate }}</a>
+            data-ng-class="{ active: prsc.ProjectsState.tabs.graph.active }"
+            data-ng-click="prsc.select('tabs', 'graph')">
+          <a>{{ 'Graph' | translate }}</a>
         </li>
       </ul>
-      <div class="pane-section" data-ng-show="mode === 'summary'">
+      <div class="pane-section" data-ng-show="prsc.ProjectsState.tabs.table.active">
+        <gdc-table data-data="prsc.projects.hits"
+                   data-config="tableConfig"
+                   data-heading="Projects ({{prsc.projects.pagination.total}})"
+                   data-id="project-table"
+                   data-endpoint="projects"
+                   data-paging="prsc.projects.pagination"
+                   data-ng-if="prsc.projects.hits.length">
+        </gdc-table>
+      </div>
+      <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the
+           container will not be the expected size for the graph.
+        -->
+      <div class="pane-section" data-ng-if="prsc.ProjectsState.tabs.graph.active">
         <h3>
           Available Data per Project 
         </h3>
-         <div class="githut">
+        <div class="githut">
           <div id="pc"></div>
         </div>
       </div>
-      <div class="pane-section" data-ng-show="mode === 'details'">
-        
-     <gdc-table data-data="prsc.projects.hits"
-                    data-config="tableConfig"
-                    data-heading="Projects ({{prsc.projects.pagination.total}})"
-                    data-id="project-table"
-                    data-endpoint="projects"
-                    data-paging="prsc.projects.pagination"
-                    data-ng-if="prsc.projects.hits.length">
-         </gdc-table>
 
-   
     </div>
   </div>
 </div>

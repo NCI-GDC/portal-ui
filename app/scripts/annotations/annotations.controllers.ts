@@ -19,7 +19,8 @@ module ngApp.annotations.controllers {
 
 
     /* @ngInject */
-    constructor(private $scope: IAnnotationsScope, private AnnotationsService: IAnnotationsService, private CoreService: ICoreService, AnnotationsTableModel:TableiciousConfig) {
+    constructor(private $scope: IAnnotationsScope, private AnnotationsService: IAnnotationsService,
+                private CoreService: ICoreService, private AnnotationsTableModel:TableiciousConfig) {
       CoreService.setPageTitle("Annotations");
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
         if (next.indexOf("annotations") !== -1) {
@@ -34,19 +35,7 @@ module ngApp.annotations.controllers {
 
     refresh() {
       this.AnnotationsService.getAnnotations({
-        fields: [
-          "annotation_id",
-          "category",
-          "created_datetime",
-          "creator",
-          "status",
-          "item_type",
-          "item_id",
-          "notes",
-          "classification",
-          "project.program.name",
-          "project.code"
-        ],
+        fields: this.AnnotationsTableModel.fields,
         facets: [
           "category",
           "created_datetime",

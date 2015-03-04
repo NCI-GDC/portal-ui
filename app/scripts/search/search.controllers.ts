@@ -42,7 +42,7 @@ module ngApp.search.controllers {
     /* @ngInject */
     constructor(private $scope: ISearchScope,
                 private $state: ng.ui.IStateService,
-                public State: IState,
+                public SearchState: ISearchState,
                 public CartService: ICartService,
                 public SearchService: ISearchService,
                 public FilesService: IFilesService,
@@ -53,8 +53,8 @@ module ngApp.search.controllers {
                 private SearchTableFilesModel: TableiciousConfig,
                 private SearchTableParticipantsModel: TableiciousConfig) {
       var data = $state.current.data || {};
-      this.State.setActive("tabs", data.tab);
-      this.State.setActive("facets", data.tab);
+      this.SearchState.setActive("tabs", data.tab);
+      this.SearchState.setActive("facets", data.tab);
       CoreService.setPageTitle("Search");
 
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
@@ -83,24 +83,7 @@ module ngApp.search.controllers {
       });
 
       this.FilesService.getFiles({
-        fields: [
-          "access",
-          "file_name",
-          "data_type",
-          "data_subtype",
-          "data_format",
-          "file_size",
-          "file_id",
-          "participants.participant_id",
-          "participants.project.name",
-          "participants.project.project_id",
-          "participants.project.code",
-          "platform",
-          "archives.revision",
-          "archives.archive_id",
-          "annotations.annotation_id",
-          "related_files.file_id"
-        ],
+        fields: this.SearchTableFilesModel.fields,
         facets: [
           "data_subtype",
           "data_type",
@@ -126,28 +109,7 @@ module ngApp.search.controllers {
       });
 
       this.ParticipantsService.getParticipants({
-        fields: [
-          "participant_id",
-          "clinical.vital_status",
-          "clinical.gender",
-          "clinical.ethnicity",
-          "files.file_id",
-          "files.file_name",
-          "files.file_size",
-          "files.access",
-          "summary.file_size",
-          "summary.file_count",
-          "summary.experimental_strategies.file_count",
-          "summary.experimental_strategies.experimental_strategy",
-          "summary.data_types.file_count",
-          "summary.data_types.data_type",
-          "project.name",
-          "project.code",
-          "project.primary_site",
-          "project.project_id",
-          "project.program.name",
-          "annotations.annotation_id"
-        ],
+        fields: this.SearchTableParticipantsModel.fields,
         facets: [
           "clinical.icd_10",
           "clinical.ethnicity",
@@ -185,7 +147,7 @@ module ngApp.search.controllers {
     }
 
     select(section: string, tab: string) {
-      this.State.setActive(section, tab);
+      this.SearchState.setActive(section, tab);
       this.setState(tab);
     }
 

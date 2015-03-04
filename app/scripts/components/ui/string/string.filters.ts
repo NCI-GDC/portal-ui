@@ -30,6 +30,12 @@ module ngApp.components.ui.string {
         } else {
           split = original.split(".");
           humanified = split[split.length - 1].replace(/_/g, " ").trim();
+
+          // Special case 'name' to include any parent nested for sake of
+          // specificity in the UI
+          if (humanified === "name" && split.length > 1) {
+            humanified = split[split.length - 2] + " " + humanified;
+          }
         }
 
         var words = humanified.split(' '),

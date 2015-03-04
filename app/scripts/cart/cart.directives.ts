@@ -3,6 +3,7 @@ module ngApp.cart.directives {
   import ICartService = ngApp.cart.services.ICartService;
   import IFilesService = ngApp.files.services.IFilesService;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
   function AddToCartSingle(): ng.IDirective {
     return {
@@ -23,7 +24,7 @@ module ngApp.cart.directives {
     }
   }
 
-  function AddToCartAll(): ng.IDirective {
+  function AddToCartAll(SearchTableFilesModel: TableiciousConfig): ng.IDirective {
     return {
       restrict: "AE",
       scope:{
@@ -84,23 +85,7 @@ module ngApp.cart.directives {
           filters = UserService.addMyProjectsFilter(filters, "participants.project.code");
           var size: number = ($scope.paging.total >= CartService.getMaxSize()) ? CartService.getMaxSize() : $scope.paging.total;
           FilesService.getFiles({
-            fields: [
-              "access",
-              "file_name",
-              "data_type",
-              "data_subtype",
-              "data_format",
-              "file_size",
-              "file_id",
-              "participants.participant_id",
-              "participants.project.name",
-              "participants.project.project_id",
-              "participants.project.code",
-              "platform",
-              "archives.revision",
-              "annotations.annotation_id",
-              "participants.submitter_id"
-            ],
+            fields: SearchTableFilesModel.fields,
             filters: filters,
             size: size,
             from: 0
@@ -110,7 +95,7 @@ module ngApp.cart.directives {
     }
   }
 
-  function AddToCartFiltered(): ng.IDirective {
+  function AddToCartFiltered(SearchTableFilesModel: TableiciousConfig): ng.IDirective {
     return {
       restrict:"AE",
       scope:{
@@ -143,23 +128,7 @@ module ngApp.cart.directives {
           });
 
           FilesService.getFiles({
-            fields: [
-              "access",
-              "file_name",
-              "data_type",
-              "data_subtype",
-              "data_format",
-              "file_size",
-              "file_id",
-              "participants.participant_id",
-              "participants.project.name",
-              "participants.project.project_id",
-              "participants.project.code",
-              "platform",
-              "archives.revision",
-              "annotations.annotation_id",
-              "participants.submitter_id"
-            ],
+            fields: SearchTableFilesModel.fields,
             filters: filters,
             size: CartService.getCartVacancySize()
           }).then((data) => {
@@ -185,23 +154,7 @@ module ngApp.cart.directives {
           };
 
           FilesService.getFiles({
-            fields: [
-              "access",
-              "file_name",
-              "data_type",
-              "data_subtype",
-              "data_format",
-              "file_size",
-              "file_id",
-              "participants.participant_id",
-              "participants.project.name",
-              "participants.project.project_id",
-              "participants.project.code",
-              "platform",
-              "archives.revision",
-              "annotations.annotation_id",
-              "participants.submitter_id"
-            ],
+            fields: SearchTableFilesModel.fields,
             filters: filters,
             size: CartService.getCartVacancySize()
           }).then((data) => {
@@ -217,7 +170,12 @@ module ngApp.cart.directives {
     }
   }
 
-  angular.module("cart.directives", ["user.services", "location.services", "files.services"])
+  angular.module("cart.directives", [
+      "user.services",
+      "location.services",
+      "files.services",
+      "search.table.files.model"
+    ])
     .directive("addToCartSingle", AddToCartSingle)
     .directive("addToCartAll", AddToCartAll)
     .directive("addToCartFiltered", AddToCartFiltered);

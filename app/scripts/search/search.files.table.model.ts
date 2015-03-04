@@ -215,7 +215,26 @@ module ngApp.search.models {
             template:function(field,row,scope){
                 return scope.$filter('date')(field.val);
             }
-        }]
+        }],
+        fields: [
+          "access",
+          "file_name",
+          "data_type",
+          "data_subtype",
+          "data_format",
+          "file_size",
+          "file_id",
+          "participants.participant_id",
+          "participants.project.name",
+          "participants.project.project_id",
+          "participants.project.code",
+          "participants.submitter_id",
+          "platform",
+          "archives.revision",
+          "archives.archive_id",
+          "annotations.annotation_id",
+          "related_files.file_id"
+        ]
     };
     angular.module("search.table.files.model", [])
         .value("SearchTableFilesModel", searchTableFilesModel);

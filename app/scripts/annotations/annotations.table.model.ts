@@ -94,6 +94,19 @@ module ngApp.projects.models {
             id: "status",
             sortable: true
         }
+        ],
+        fields: [
+          "annotation_id",
+          "category",
+          "created_datetime",
+          "creator",
+          "status",
+          "item_type",
+          "item_id",
+          "notes",
+          "classification",
+          "project.program.name",
+          "project.code"
         ]
     }
     angular.module("annotations.table.model", [])

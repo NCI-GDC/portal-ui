@@ -25,6 +25,7 @@ module ngApp.participants {
               "project.name",
               "project.code",
               "project.primary_site",
+              "program.name",
               "annotations.annotation_id",
               "summary.experimental_strategies.experimental_strategy",
               "summary.experimental_strategies.file_count",

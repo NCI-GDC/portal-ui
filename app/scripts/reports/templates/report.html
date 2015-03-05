@@ -4,7 +4,7 @@
     {{ rc.report.name }}
   </h1>
 
-  <div class="col-lg-2 col-md-2">
+  <div class="col-lg-2 col-md-2 hidden-sm">
     <aside data-scroll-fix=85>
       <div data-ng-repeat="c in rc.report.charts track by c.id"
            data-ng-init="linkId = c.heading.split(' ').join('')"

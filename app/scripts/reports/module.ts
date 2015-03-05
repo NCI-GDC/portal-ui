@@ -7,24 +7,6 @@ module ngApp.reports {
   function reportsConfig($stateProvider: ng.ui.IStateProvider) {
     $stateProvider.state("report", {
       url: "/reports/:reportId",
-//      controller: "ReportController as rc",
-//      templateUrl: "reports/templates/report.html",
-//      resolve: {
-//        report: ($stateParams: ng.ui.IStateParamsService, ReportsService: IReportsService): ng.IPromise<IReport> => {
-//          return ReportsService.getReport($stateParams["reportId"]);
-//        }
-//      }
-      controller: "ReportsController as rsc",
-      templateUrl: "reports/templates/reports.html",
-      resolve: {
-        reports: (ReportsService: IReportsService) => {
-          return ReportsService.getReports();
-        }
-      }
-    });
-
-    $stateProvider.state("reports", {
-      url: "/reports",
       controller: "ReportsController as rsc",
       templateUrl: "reports/templates/reports.html",
       resolve: {

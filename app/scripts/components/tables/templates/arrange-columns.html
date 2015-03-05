@@ -5,9 +5,9 @@
         <span class="caret"></span>
     </button>
 
-    <ul dnd-list="listMap" class="dropdown-menu pull-right" role="menu">
-
-        <li class="column-heading">
+    <ul  class="dropdown-menu pull-right" role="menu" >
+      
+      <li class="column-heading">
         <div class="input-group input-group-sm">
           <span class="input-group-addon" id="sizing-addon3">
             <i class="fa fa-search"></i>
@@ -20,25 +20,34 @@
         <li class="column-heading"><a>
             <reset-table target="list" config="config"></reset-table>
         </a></li>
-        <li data-ng-repeat="item in listMap | filter:search:strict"
-            data-ng-class="{'selected': models.selected === item}"
-            data-ng-if="item.canReorder"
-            class="column-heading">
+       
+       <li>
+         <ul dnd-list="listMap">
 
-            <a dnd-draggable="item"
-               dnd-moved="onMoved($index)"
-               effect-allowed="move"
-               dnd-disable-if="search.displayName.length > 0"
-               data-ng-if="true"
-               tabindex=0
-               dnd-selected="models.selected = item">
-                <i class="fa fa-bars fa-stack fa-lg" data-ng-class="{ 'fa-disabled': search.displayName }"></i>
-                {{ item.displayName | humanify | ellipsicate:18 }}
-                <i class="fa fa-stack fa-{{item.hidden ? 'eye-slash' : 'eye'}} fa-lg pull-right" ng-click="item.hidden = !item.hidden"></i>
-            </a>
+          <li data-ng-repeat="item in listMap | filter:search:strict"
+              data-ng-class="{'selected': models.selected === item}"
+              data-ng-if="item.canReorder"
+              class="column-heading"
+              style="padding-left: 10px">
 
-        </li>
-        <li class="divider"></li>
+              <a dnd-draggable="item"
+                 dnd-moved="onMoved($index)"
+                 effect-allowed="move"
+                 dnd-disable-if="search.displayName.length > 0"
+                 data-ng-if="true"
+                 tabindex=0
+                 dnd-selected="models.selected = item">
+                  <i class="fa fa-bars fa-stack fa-lg" data-ng-class="{ 'fa-disabled': search.displayName }"></i>
+                  {{ item.displayName | humanify | ellipsicate:18 }}
+                  <i class="fa fa-stack fa-{{item.hidden ? 'eye-slash' : 'eye'}} fa-lg pull-right" ng-click="item.hidden = !item.hidden"></i>
+              </a>
+
+          </li>
+         </ul>
+       </li>
+
+<!--        <li class="divider"></li>-->
+         
 
     </ul>
 </div>

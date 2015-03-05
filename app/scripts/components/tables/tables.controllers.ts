@@ -3,6 +3,7 @@ module ngApp.components.tables.controllers {
   import ITableColumn = ngApp.components.tables.models.ITableColumn;
   import IPagination = ngApp.components.tables.pagination.models.IPagination;
   import IUserService = ngApp.components.user.services.IUserService;
+  import IGDCConfig = ngApp.IGDCConfig;
 
   interface ITableSortController {
     updateSorting(): void;

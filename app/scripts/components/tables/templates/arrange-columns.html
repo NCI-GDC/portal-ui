@@ -7,19 +7,7 @@
 
     <ul dnd-list="listMap" class="dropdown-menu pull-right" role="menu">
 
-        <li class="column-heading">
-        <div class="input-group input-group-sm">
-          <span class="input-group-addon" id="sizing-addon3">
-            <i class="fa fa-search"></i>
-          </span>
-          <input type="text" class="form-control" placeholder="Search" aria-describedby="sizing-addon3"
-                 data-ng-click="$event.stopPropagation()"
-                 data-ng-model="search.displayName" />
-        </div>
-        </li>
-        <li class="column-heading"><a>
-            <reset-table target="list" config="config"></reset-table>
-        </a></li>
+       
         <li data-ng-repeat="item in listMap | filter:search:strict"
             data-ng-class="{'selected': models.selected === item}"
             data-ng-if="item.canReorder"
@@ -39,6 +27,19 @@
 
         </li>
         <li class="divider"></li>
+         <li class="column-heading">
+        <div class="input-group input-group-sm">
+          <span class="input-group-addon" id="sizing-addon3">
+            <i class="fa fa-search"></i>
+          </span>
+          <input type="text" class="form-control" placeholder="Search" aria-describedby="sizing-addon3"
+                 data-ng-click="$event.stopPropagation()"
+                 data-ng-model="search.displayName" />
+        </div>
+        </li>
+        <li class="column-heading"><a>
+            <reset-table target="list" config="config"></reset-table>
+        </a></li>
 
     </ul>
 </div>

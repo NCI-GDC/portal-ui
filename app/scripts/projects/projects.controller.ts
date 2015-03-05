@@ -287,7 +287,8 @@ function githutTable(data){
      * Don't know how well this is implemented.
      */
     sorting:{
-        "name":d3.descending
+      "code":d3.descending,
+      "primary_site":d3.ascending
     },
 
     /**

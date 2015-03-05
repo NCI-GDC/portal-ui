@@ -15,76 +15,26 @@
           </div>
           <div class="list-group-item">
             <h4 data-spy="byProject" class="list-group-item-heading">
-              <a data-scroll-to href="#byProject" data-translate>By Project and Data type</a>
+              <a data-scroll-to href="#byProject" data-translate >1. By Project and Data type</a>
             </h4>
           </div>
           <div class="list-group-item">
             <h4 data-spy="projectLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#projectLevel" data-translate>Project Level</a>
+              <a data-scroll-to href="#projectLevel" data-translate >2. Project Level</a>
             </h4>
+          </div>
 
-          </div>  <div class="list-group-item">
-          <h5 data-spy="byProject" class="list-group-item-heading">
-            <a data-scroll-to href="#byProject" data-translate>By Project</a>
-          </h5>
-        </div>
-          <div class="list-group-item">
-            <h5 data-spy="byDisease" class="list-group-item-heading">
-              <a data-scroll-to href="#byDisease" data-translate> By Disease type</a>
-            </h5>
-          </div>
-          <div class="list-group-item">
-            <h5 data-spy="byProgram" class="list-group-item-heading">
-              <a data-scroll-to href="#byProgram" data-translate> By Program</a>
-            </h5>
-          </div>
+
           <div class="list-group-item">
             <h4 data-spy="dataLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#dataLevel" data-translate>  Data level</a>
+              <a data-scroll-to href="#dataLevel" data-translate >3. Data level</a>
             </h4>
-
-          </div>
-          <div class="list-group-item">
-            <h5 data-spy="byDataType" class="list-group-item-heading">
-              <a data-scroll-to href="#byDataType" data-translate> By Data type</a>
-            </h5>
-          </div>
-          <div class="list-group-item">
-            <h5 data-spy="byDataSubtype" class="list-group-item-heading">
-              <a data-scroll-to href="#byDataSubtype" data-translate>  By Data subtype</a>
-            </h5>
-          </div>
-          <div class="list-group-item">
-            <h5 data-spy="byStrategy" class="list-group-item-heading">
-              <a data-scroll-to href="#byStrategy" data-translate>   By Experimental strategy</a>
-            </h5>
-          </div>
-          <div class="list-group-item">
-            <h5 data-spy="byDataLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#byDataLevel" data-translate>   By Data level</a>
-            </h5>
-          </div>
-          <div class="list-group-item">
-            <h5 data-spy="byDataAccess" class="list-group-item-heading">
-              <a data-scroll-to href="#byDataAccess" data-translate>     By Data access</a>
-            </h5>
           </div>
           <div class="list-group-item">
             <h4 data-spy="userLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#userLevel" data-translate>      User access level</a>
+              <a data-scroll-to href="#userLevel" data-translate > 4.     User access level</a>
             </h4>
           </div>
-          <div class="list-group-item">
-            <h5 data-spy="byAccessType" class="list-group-item-heading">
-              <a data-scroll-to href="#byAccessType" data-translate>By User access type</a>
-            </h5>
-          </div>
-          <div class="list-group-item">
-            <h5 data-spy="byAccessLocation" class="list-group-item-heading">
-              <a data-scroll-to href="#byAccessLocation" data-translate>By User access location</a>
-            </h5>
-          </div>
-
 
 
         </div>
@@ -93,39 +43,21 @@
   </div>
   <div class="row search-panel">
 
-    <!--
-     \
-            <li>
-             <a href="#userLevel">
-                User access level
-             </a>
-             <ul>
-                <li>
-                 <a href="#byAccessType">
-                    By User access type
-                  </a>
-                </li>
-                <li>
-                  <a href="#byAccessLocation">
-                    By User access location
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ol>
-        </div>
-    -->
 
 
-    <div class="col-lg-6 col-md-6 entity-body">
+
+    <div class="col-lg-8 col-md-8 entity-body">
+     <h2>
+       Data download statistics 
+     </h2>
       <p>
         This report depicts statistics describing data download since the GDC Data Portal launch. Represented GDC data includes information about the total number and size of downloaded files categorized at project, data and user access levels.
       </p>
       <button class='btn btn-primary'>Export</button>
       <section id=by-project-and-data-type>
-        <h2 data-translate>
-          Data download statistics by Project and Data type
-        </h2>
+        <h3 data-translate>
+          1. Data download statistics by Project and Data type
+        </h3>
 
 
         <div class="githut" id=githut >
@@ -146,7 +78,7 @@
 
         <section id=projectLevel>
           <h3>
-            Data download statistic at Project level
+            2. Data download statistic at Project level
           </h3>
           <article id=byProject>
             <h4>
@@ -167,7 +99,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat='project in byProject'>
+              <tr ng-repeat="project in byProject | orderBy:'values.file_count':true">
                 <th>
                   {{project.key}}
                 </th>
@@ -200,7 +132,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat="project in byDisease">
+              <tr ng-repeat="project in byDisease  | orderBy:'values.file_count':true">
                 <th>
                   {{project.key || '(none specified)'}}
                 </th>
@@ -233,7 +165,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat="project in byProgram">
+              <tr ng-repeat="project in byProgram | orderBy:'values.file_count':true">
                 <th>
                   {{project.key || '(none specified)'}}
                 </th>
@@ -252,7 +184,7 @@
 
         <section id=dataLevel>
           <h3>
-            Data download statistic at Data level
+            3. Data download statistic at Data level
           </h3>
           <article id=byDataType>
             <h4>
@@ -273,7 +205,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat='project in byDataType'>
+              <tr ng-repeat="project in byDataType | orderBy:'values.file_count':true ">
                 <th>
                   {{project.key}}
                 </th>
@@ -341,7 +273,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat='project in byStrat'>
+              <tr ng-repeat="project in byStrat | orderBy:'values.file_count':true">
                 <th>
                   {{project.key || '(none specified)'}}
                 </th>
@@ -429,7 +361,7 @@
 
         <section id=userLevel>
           <h3>
-            Data download statistic at User Level
+            4. Data download statistic at User Level
           </h3>
           <article id=byAccessType>
             <h4>
@@ -450,7 +382,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat='x in byUserType'>
+              <tr ng-repeat="x in byUserType | orderBy:'values.file_count':true">
                 <th>
                   {{x.key}}
                 </th>
@@ -484,7 +416,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat='x in byLocation'>
+              <tr ng-repeat="x in byLocation | orderBy:'values.file_count':true">
                 <th>
                   {{x.key}}
                 </th>

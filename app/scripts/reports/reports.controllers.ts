@@ -40,7 +40,6 @@ module ngApp.reports.controllers {
           dummymap.push(n);
         })
 
-        console.log(dummymap);
 
 
         var dummy_aggregations = dummymap.reduce(function(a,b){
@@ -72,7 +71,7 @@ module ngApp.reports.controllers {
             })
           }
 
-//              debugger;
+
 
           return a;
         },{});
@@ -155,19 +154,9 @@ module ngApp.reports.controllers {
           use:{
             "code":"code"
           },
-          sorting:{
-            "code":function(a,b){
-              var proj1 = dummy_aggregations[a];
-              var proj2 = dummy_aggregations[b];
-
-
-              if (proj1.file_count > proj2.file_count) {
-                return 1;
-              } else {
-                return -1;
-              }
-
-            }
+           sorting:{
+            "code":d3.descending,
+            "primary_site":d3.ascending
           },
 
           /**

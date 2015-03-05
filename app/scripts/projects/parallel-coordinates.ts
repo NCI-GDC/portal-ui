@@ -29,13 +29,18 @@ function ParallelCoordinates(data,options) {
 
             var use=options.use[d] || d; 
 
+
             if(options.scale_map[d]==="ordinal") {
                 
                 var inc=0.001;
                 scales[d]=d3.scale.ordinal()
                 .domain(nested_data.filter(function(){return true;}).sort(function(a, b){
+                  
+//                  debugger;
 
                     var sorting=options.sorting[use] || d3.ascending;
+                  
+           
 
 
                     if(a.values[use]==b.values[use]) {
@@ -73,8 +78,10 @@ function ParallelCoordinates(data,options) {
 
                 var type = options.scale_map[d]?options.scale_map[d]:scale_type;
                 var yRange = HEIGHT-(margins.top+margins.bottom+padding.top+padding.bottom);
+              
+                console.log("sorting",d);
 
-                var sites = primary_sites;
+                var sites = primary_sites.sort(options.sorting[use] || d3.ascending);
                 var indices = primary_sites.map(function(d,i){return i  * 50});
                 var indices = primary_sites.map(function(d,i){return i  * yRange / (indices ? indices.length : 1)});
                 scales[d]=d3.scale.ordinal().domain(sites).range(indices);

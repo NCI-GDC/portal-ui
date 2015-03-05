@@ -1,3 +1,42 @@
+### 0.1.10-spr3 (2015-03-04)
+
+
+#### Bug Fixes
+
+* **annotations:** match fields ([aa4e723a](https://github.com/NCI-GDC/portal-ui/commit/aa4e723a1e4fc776f27c117484a85e64eb952c6e))
+* **app:** fixes filter related bugs ([04f4d81b](https://github.com/NCI-GDC/portal-ui/commit/04f4d81b534e836a91f547e7b98eb903555f4246))
+* **file:** fix file page exception ([2b050da9](https://github.com/NCI-GDC/portal-ui/commit/2b050da9266de7aae2636c215e35ff67e0997a30))
+* **graph:** update title text ([f37927b8](https://github.com/NCI-GDC/portal-ui/commit/f37927b89069f56d4c3d1b48e6064031f2f9cfc6), closes [OICR-348](https://jira.opensciencedatacloud.org/browse/OICR-348))
+* **project:** add graph title ([4a6b17d6](https://github.com/NCI-GDC/portal-ui/commit/4a6b17d6be5302efa4c6f3abbe62cc3985faedc9))
+
+
+#### Features
+
+* **app:**
+  * Update all the UI. ([446b24e8](https://github.com/NCI-GDC/portal-ui/commit/446b24e8523396cdb47e4c1ae33c9c294fe6d4ce), closes [OICR-366](https://jira.opensciencedatacloud.org/browse/OICR-366))
+  * Redo warning as modal. ([2101c4cd](https://github.com/NCI-GDC/portal-ui/commit/2101c4cdea99b6d5c713697615bbd1e8f868459c))
+  * Add NCI Warning Banner. ([9554e28d](https://github.com/NCI-GDC/portal-ui/commit/9554e28de1125966118748a7794370b594c8167c), closes [OICR-380](https://jira.opensciencedatacloud.org/browse/OICR-380))
+  * Pass filters to autocomplete. ([1378154c](https://github.com/NCI-GDC/portal-ui/commit/1378154c3883e21e98cc4cd3d8b40e6ec07d511a), closes [OICR-364](https://jira.opensciencedatacloud.org/browse/OICR-364))
+* **auth:** Points login to NCI. ([1fa8e22b](https://github.com/NCI-GDC/portal-ui/commit/1fa8e22b5833824d94d1644acc4706f13b41729d), closes [OICR-192](https://jira.opensciencedatacloud.org/browse/OICR-192))
+* **cart:** updates download options ([356a24b6](https://github.com/NCI-GDC/portal-ui/commit/356a24b6118930cceb297b60a16b47874963657a), closes [OICR-300](https://jira.opensciencedatacloud.org/browse/OICR-300))
+* **export:** Apply my projects as filters. ([88fdc9f9](https://github.com/NCI-GDC/portal-ui/commit/88fdc9f94d6c15eb4023839c2b82f28635c1190f), closes [OICR-363](https://jira.opensciencedatacloud.org/browse/OICR-363))
+* **graph:**
+  * display all codes ([7c27de78](https://github.com/NCI-GDC/portal-ui/commit/7c27de78701ff2e991813fe44b50ba8e4b08170f))
+  * add truncation ([4b4b591b](https://github.com/NCI-GDC/portal-ui/commit/4b4b591becd0784f4b36fe9af94a32d642065a44), closes [OICR-362](https://jira.opensciencedatacloud.org/browse/OICR-362))
+  * githut variable height ([d0f4898a](https://github.com/NCI-GDC/portal-ui/commit/d0f4898aeeb0e8ce4e631f24bd70b25ffc70707a), closes [OICR-385](https://jira.opensciencedatacloud.org/browse/OICR-385))
+  * make githut repsonsive ([1139dd54](https://github.com/NCI-GDC/portal-ui/commit/1139dd54e6ffec21ecd2bb80df6c3bd138a666fd))
+  * various fixes to graph et al ([b7823c96](https://github.com/NCI-GDC/portal-ui/commit/b7823c964bed7375e42bc2ac3c7881ab4a54bf52), closes [OICR-373](https://jira.opensciencedatacloud.org/browse/OICR-373))
+  * fix regression ([b307365f](https://github.com/NCI-GDC/portal-ui/commit/b307365f49f445c8c30267206f31136287df57a9))
+  * fix primary site alignment ([7fc97b47](https://github.com/NCI-GDC/portal-ui/commit/7fc97b47027b91e36f589044e86981fb8b48779e), closes [OICR-362](https://jira.opensciencedatacloud.org/browse/OICR-362))
+* **pc:**
+  * show primary site labels ([91648c0c](https://github.com/NCI-GDC/portal-ui/commit/91648c0c88119a3edc3e694160e1242dadf9276a), closes [OICR-405](https://jira.opensciencedatacloud.org/browse/OICR-405))
+  * simplify x-axis ([56064b1d](https://github.com/NCI-GDC/portal-ui/commit/56064b1d3b544967e62deffdd14b64d1ac4cd364), closes [OICR-406](https://jira.opensciencedatacloud.org/browse/OICR-406), [OICR-407](https://jira.opensciencedatacloud.org/browse/OICR-407))
+* **projects:** Adds Primary Site facet. ([8095dcfd](https://github.com/NCI-GDC/portal-ui/commit/8095dcfd03e5c2cd8e8a199c612faf62d9c7cba8), closes [OICR-322](https://jira.opensciencedatacloud.org/browse/OICR-322))
+* **query:** adds autosuggest for gql ([a74e4fe0](https://github.com/NCI-GDC/portal-ui/commit/a74e4fe0fdcc173e9660a4be3c2b9c7f7e803376))
+* **reports:** add reports page ([0fad8962](https://github.com/NCI-GDC/portal-ui/commit/0fad8962b414c82a3e17c571e5e720650ca024be), closes [OICR-365](https://jira.opensciencedatacloud.org/browse/OICR-365))
+* **search:** adds summary tables ([82a9421a](https://github.com/NCI-GDC/portal-ui/commit/82a9421a87c5be0f20d6c067a18f5dac1be46b0e), closes [OICR-381](https://jira.opensciencedatacloud.org/browse/OICR-381))
+
+
 ### 0.1.10-spr2 (2015-02-18)
 
 

@@ -26,7 +26,6 @@ module ngApp.participants {
               "project.code",
               "project.primary_site",
               "project.program.name",
-              "annotations.annotation_id",
               "summary.experimental_strategies.experimental_strategy",
               "summary.experimental_strategies.file_count",
               "summary.data_types.file_count",
@@ -42,7 +41,8 @@ module ngApp.participants {
               "samples.portions.analytes.amount",
               "samples.portions.analytes.analyte_type",
               "samples.portions.analytes.aliquots.aliquot_id",
-              "samples.portions.analytes.aliquots.submitter_id"
+              "samples.portions.analytes.aliquots.submitter_id",
+              "samples.portions.annotations.annotation_id"
            ]
           });
         }

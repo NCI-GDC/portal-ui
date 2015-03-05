@@ -82,12 +82,12 @@
             <tr>
               <th scope="row" data-translate>Number of Annotations</th>
               <td>
-                <a data-ng-if="pc.participant.annotations.length"
+                <a data-ng-if="pc.annotationIds.length"
                    data-ui-sref="annotations({ 'filters':
                     {{ [{ name: 'annotation_id', value: pc.annotationIds }] | makeFilter }} })">
-                 {{ ::pc.participant.annotations.length | number:0 }}
+                 {{ ::pc.annotationIds.length | number:0 }}
                 </a>
-                <span data-ng-if="!pc.participant.annotations.length">0</span>
+                <span data-ng-if="!pc.annotationIds.length">0</span>
               </td>
             </tr>
             </tbody>

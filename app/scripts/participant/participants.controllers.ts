@@ -12,6 +12,7 @@ module ngApp.participants.controllers {
   }
 
   class ParticipantController implements IParticipantController {
+    annotationIds: string[];
     /* @ngInject */
     constructor(public participant: IParticipant,
                 private CoreService: ICoreService,
@@ -19,9 +20,17 @@ module ngApp.participants.controllers {
                 private config: IGDCConfig) {
       CoreService.setPageTitle("Participant " + participant.participant_id);
 
-      this.annotationIds = _.map(this.participant.annotations, (annotation) => {
-        return annotation.annotation_id;
+      var annotationIds = [];
+      _.forEach(this.participant.samples, function(sample){
+        _.forEach(sample.portions, function(p) {
+            if(_.has(p, 'annotations')) {
+              _.forEach(p.annotations, function(annotation){
+                annotationIds.push(annotation.annotation_id);
+              });
+            }
+        });
       });
+      this.annotationIds = annotationIds;
     }
 
     DownloadClinicalXML(): void {

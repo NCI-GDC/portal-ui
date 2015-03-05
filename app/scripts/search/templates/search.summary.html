@@ -7,7 +7,7 @@
     <tbody>
     <tr>
       <th scope="row" data-translate># of Files</th>
-      <td>{{ sc.files.pagination.total }}</td>
+      <td>{{ sc.files.pagination.total | number }}</td>
     </tr>
     <tr>
       <th scope="row" data-translate>File Size (GB)</th>
@@ -15,7 +15,7 @@
     </tr>
     <tr>
       <th scope="row" data-translate>Participants</th>
-      <td>{{ sc.participants.pagination.total }}</td>
+      <td>{{ sc.participants.pagination.total | number }}</td>
     </tr>
     </tbody>
   </table>
@@ -42,7 +42,7 @@
         <tbody>
         <tr data-ng-repeat='type in sc.summary.data_type.buckets'>
           <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
-          <td>{{ type.doc_count }}</td>
+          <td>{{ type.doc_count | number }}</td>
           <td>{{ type.file_size.value | size}}</td>
         </tr>
         </tbody>
@@ -60,7 +60,7 @@
         <tbody>
         <tr data-ng-repeat='type in sc.summary.experimental_strategy.buckets'>
           <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
-          <td>{{ type.doc_count }}</td>
+          <td>{{ type.doc_count | number }}</td>
           <td>{{ type.file_size.value | size}}</td>
         </tr>
         </tbody>
@@ -82,7 +82,7 @@
         <tbody>
         <tr data-ng-repeat='type in sc.summary.data_format.buckets'>
           <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
-          <td>{{ type.doc_count }}</td>
+          <td>{{ type.doc_count | number }}</td>
           <td>{{ type.file_size.value | size}}</td>
         </tr>
         </tbody>
@@ -101,7 +101,7 @@
         <tbody>
         <tr data-ng-repeat='type in sc.summary.access.buckets'>
           <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
-          <td>{{ type.doc_count }}</td>
+          <td>{{ type.doc_count | number }}</td>
           <td>{{ type.file_size.value | size}}</td>
         </tr>
         </tbody>

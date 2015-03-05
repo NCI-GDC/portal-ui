@@ -106,7 +106,7 @@ module ngApp.search.models {
                     displayName: 'Clinical',
                     id: 'clinical',
                     enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -115,7 +115,7 @@ module ngApp.search.models {
                             return x.data_type === 'Clinical';
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     fieldClass: 'text-right',
                     sref: getFileSref('Clinical')
@@ -123,7 +123,7 @@ module ngApp.search.models {
                     displayName: 'Array',
                     id: 'Array',
                     enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -132,7 +132,7 @@ module ngApp.search.models {
                             return x.data_type === 'Raw microarray data';
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     fieldClass: 'text-right',
                     sref: getFileSref('Raw microarray data')
@@ -140,7 +140,7 @@ module ngApp.search.models {
                     displayName: 'Seq',
                     id: 'Seq',
                     enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -149,7 +149,7 @@ module ngApp.search.models {
                             return x.data_type === 'Raw sequencing data';
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     fieldClass: 'text-right',
                     sref: getFileSref('Raw sequencing data')
@@ -158,7 +158,7 @@ module ngApp.search.models {
                     id: "SNV",
                     enabled: true,
                     fieldClass: "text-right",
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -167,14 +167,14 @@ module ngApp.search.models {
                             return x.data_type === "Simple nucleotide variation";
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     sref: getFileSref("Simple nucleotide variation")
                 }, {
                     displayName: 'CNV',
                     id: 'cnv',
                     enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -183,7 +183,7 @@ module ngApp.search.models {
                             return x.data_type === 'Copy number variation';
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     fieldClass: 'text-right',
                     sref: getFileSref('Copy number variation')
@@ -191,7 +191,7 @@ module ngApp.search.models {
                     displayName: 'SV',
                     id: 'sv',
                     enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -200,7 +200,7 @@ module ngApp.search.models {
                             return x.data_type === 'Structural rearrangement';
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     fieldClass: 'text-right',
                     sref: getFileSref('Structural rearrangement')
@@ -208,7 +208,7 @@ module ngApp.search.models {
                     displayName: 'Exp',
                     id: 'Exp',
                     enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -217,7 +217,7 @@ module ngApp.search.models {
                             return x.data_type === 'Gene expression';
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     fieldClass: 'text-right',
                     sref: getFileSref('Gene expression')
@@ -225,7 +225,7 @@ module ngApp.search.models {
                     displayName: 'PExp',
                     id: 'pexp',
                     enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -234,7 +234,7 @@ module ngApp.search.models {
                             return x.data_type === 'Protein expression';
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     fieldClass: 'text-right',
                     sref: getFileSref('Protein expression')
@@ -242,7 +242,7 @@ module ngApp.search.models {
                     displayName: 'Meth',
                     id: 'meth',
                     enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -251,7 +251,7 @@ module ngApp.search.models {
                             return x.data_type === 'DNA methylation';
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     fieldClass: 'text-right',
                     sref: getFileSref('DNA methylation')
@@ -259,7 +259,7 @@ module ngApp.search.models {
                     displayName: 'Other',
                     id: 'other',
                     enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope) {
+                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                             return x.id === 'summary';
                         });
@@ -268,7 +268,7 @@ module ngApp.search.models {
                             return x.data_type === 'Other';
                         });
 
-                        return data && data.file_count ? data.file_count : 0;
+                        return $filter("number")(data && data.file_count ? data.file_count : 0);
                     },
                     fieldClass: 'text-right',
                     sref: getFileSref('Other')

@@ -63,7 +63,7 @@ module ngApp.projects.models {
                         displayName: 'Clinical',
                         id: 'clinical',
                         enabled: true,
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -72,7 +72,7 @@ module ngApp.projects.models {
                                 return x.data_type === 'Clinical';
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         fieldClass: 'text-right',
                         sref: getParticipantSref('Clinical')
@@ -80,7 +80,7 @@ module ngApp.projects.models {
                         displayName: 'Array',
                         id: 'Array',
                         enabled: true,
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -89,7 +89,7 @@ module ngApp.projects.models {
                                 return x.data_type === 'Raw microarray data';
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         fieldClass: 'text-right',
                         sref: getParticipantSref('Raw microarray data')
@@ -97,7 +97,7 @@ module ngApp.projects.models {
                         displayName: 'Seq',
                         id: 'Seq',
                         enabled: true,
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -106,7 +106,7 @@ module ngApp.projects.models {
                                 return x.data_type === 'Raw sequencing data';
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         fieldClass: 'text-right',
                         sref: getParticipantSref('Raw sequencing data')
@@ -115,7 +115,7 @@ module ngApp.projects.models {
                         id: "SNV",
                         enabled: true,
                         fieldClass: "text-right",
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -124,14 +124,14 @@ module ngApp.projects.models {
                                 return x.data_type === "Simple nucleotide variation";
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         sref: getParticipantSref("Simple nucleotide variation")
                     }, {
                         displayName: 'CNV',
                         id: 'cnv',
                         enabled: true,
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -140,7 +140,7 @@ module ngApp.projects.models {
                                 return x.data_type === 'Copy number variation';
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         fieldClass: 'text-right',
                         sref: getParticipantSref('Copy number variation')
@@ -148,7 +148,7 @@ module ngApp.projects.models {
                         displayName: 'SV',
                         id: 'sv',
                         enabled: true,
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -157,7 +157,7 @@ module ngApp.projects.models {
                                 return x.data_type === 'Structural rearrangement';
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         fieldClass: 'text-right',
                         sref: getParticipantSref('Structural rearrangement')
@@ -165,7 +165,7 @@ module ngApp.projects.models {
                         displayName: 'Exp',
                         id: 'Exp',
                         enabled: true,
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -174,7 +174,7 @@ module ngApp.projects.models {
                                 return x.data_type === 'Gene expression';
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         fieldClass: 'text-right',
                         sref: getParticipantSref('Gene expression')
@@ -182,7 +182,7 @@ module ngApp.projects.models {
                         displayName: 'PExp',
                         id: 'pexp',
                         enabled: true,
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -191,7 +191,7 @@ module ngApp.projects.models {
                                 return x.data_type === 'Protein expression';
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         fieldClass: 'text-right',
                         sref: getParticipantSref('Protein expression')
@@ -199,7 +199,7 @@ module ngApp.projects.models {
                         displayName: 'Meth',
                         id: 'meth',
                         enabled: true,
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -208,7 +208,7 @@ module ngApp.projects.models {
                                 return x.data_type === 'DNA methylation';
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         fieldClass: 'text-right',
                         sref: getParticipantSref('DNA methylation')
@@ -216,7 +216,7 @@ module ngApp.projects.models {
                         displayName: 'Other',
                         id: 'other',
                         enabled: true,
-                        template: function (field:TableiciousEntryDefinition,row,scope) {
+                        template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                             var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
                                 return x.id === 'summary';
                             });
@@ -225,7 +225,7 @@ module ngApp.projects.models {
                                 return x.data_type === 'Other';
                             });
 
-                            return data && data.participant_count ? data.participant_count : 0;
+                            return $filter("number")(data && data.participant_count ? data.participant_count : 0);
                         },
                         fieldClass: 'text-right',
                         sref: getParticipantSref('Other')
@@ -235,6 +235,13 @@ module ngApp.projects.models {
                 displayName: "Files",
                 id: "summary.file_count",
                 enabled: true,
+                template: function(field, row, scope, $filter) {
+                    var summary = _.find(row, function(elem) {
+                        return elem.id === "summary";
+                    });
+
+                    return $filter("number")(summary.val.file_count || 0); 
+                },
                 sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
                     var projectCode = _.find(row,function(elem){
                         return elem.id === 'code';

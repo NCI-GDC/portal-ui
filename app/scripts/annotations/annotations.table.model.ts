@@ -32,7 +32,7 @@ module ngApp.projects.models {
                 var project = _.find(row, (a) => {
                     return a.id === "project";
                 });
-                return "project({ projectId: '" + project.val.code + "'})";
+                return "project({ projectId: '" + project.val.project_id + "'})";
             },
             sortable: true
         },
@@ -106,7 +106,8 @@ module ngApp.projects.models {
           "notes",
           "classification",
           "project.program.name",
-          "project.code"
+          "project.code",
+          "project.project_id"
         ]
     }
     angular.module("annotations.table.model", [])

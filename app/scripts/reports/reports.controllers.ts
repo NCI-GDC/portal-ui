@@ -62,7 +62,8 @@ module ngApp.reports.controllers {
               file_size:b.size_in_mb,
               code:b.code,
               primary_site:b.primary_site,
-              file_count:b.count
+              file_count:b.count,
+              colorgroup:'file_count'
 
             }
 
@@ -75,6 +76,8 @@ module ngApp.reports.controllers {
 
           return a;
         },{});
+        
+          var color = d3.scale.category10()
 
         var columns = [{
           id:'code',
@@ -86,14 +89,16 @@ module ngApp.reports.controllers {
             id:'file_count',
             display_name:["File","Count"],
             scale:'ordinal',
-            dimensional:true
+            dimensional:true,
+            colorgroup:'file_count'
           },
 
           {
             id:'file_size',
             display_name:["File","Size"],
             scale:'ordinal',
-            dimensional:true
+            dimensional:true,
+            colorgroup:'file_size'
           },
           {
             id:'primary_site',
@@ -109,6 +114,7 @@ module ngApp.reports.controllers {
           columns.splice(2,0,{
             id:a.key,
             display_name:[a.key],
+            colorgroup:'file_count',
             scale:'ordinal',
             dimensional:true
           });
@@ -167,6 +173,16 @@ module ngApp.reports.controllers {
           formats:{
             "primary_site":"d"
           },
+            color_group_map:columns.reduce(function(a,b){
+       a[b.id] = b.colorgroup;
+       return a;
+    },{}),
+        color_groups:{
+          'file_count':color(0),
+          'file_size':color(1),
+          'participant_count':color(2)
+
+        },
 
           /**
            *  Not known what this is. Any values in columns that are not in dimensions causes an error.

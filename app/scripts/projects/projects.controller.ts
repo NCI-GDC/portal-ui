@@ -26,7 +26,7 @@ module ngApp.projects.controllers {
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService) {
+                private LocationService: ILocationService, private $filter) {
 
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
@@ -61,14 +61,15 @@ module ngApp.projects.controllers {
         }).then((data) => {
           this.projects = data;
           
+          
           if (this.ProjectsState.tabs.graph.active) {
-            githutTable(data);
+            githutTable(data,{filters:{file_size:this.$filter('size')}});
           }
         });
       } else {
         this.tabSwitch = false;
         if (this.ProjectsState.tabs.graph.active) {
-          githutTable(this.projects);
+          githutTable(this.projects,{filters:{file_size:this.$filter('size')}});
         }
       }
     }
@@ -112,7 +113,7 @@ module ngApp.projects.controllers {
 
 var primary_sites = [];
 
-function githutTable(data){
+function githutTable(data,config){
   var hits = data.hits;
 
   d3.select(".githut > #pc svg")
@@ -137,77 +138,90 @@ function githutTable(data){
         id:'participant_count',
         display_name:["Part.","Count"],
         scale:'ordinal',
-         dimensional:true
+        dimensional:true,
+        colorgroup:'participant_count'
     },{
         id:'Clinical',
         display_name:['Clinical'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'Raw microarray data',
         display_name:['Array'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'Raw sequencing data',
         display_name:['Seq'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'Simple nucleotide variation',
         display_name:['SNV'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'Copy number variation',
         display_name:['CNV'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'Structural rearrangement',
         display_name:['SV'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'Gene expression',
         display_name:['Exp'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'Protein expression',
         display_name:['PExp'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'Other',
         display_name:['Other'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'DNA methylation',
         display_name:['Meth'],
         scale:'ordinal',
         is_subtype:true,
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'file_count',
         display_name:["File","Count"],
         scale:'ordinal',
-         dimensional:true
+         dimensional:true,
+        colorgroup:'file_count'
     },{
         id:'file_size',
         display_name:["File","Size"],
         scale:'ordinal',
-        dimensional:true
+        dimensional:true,
+        colorgroup:'file_size'
     },{
         id:'primary_site',
         display_name:["Primary","Site"],
@@ -242,6 +256,8 @@ function githutTable(data){
     a[key] = the_returned;
     return a;
   },{});
+  
+  var color = d3.scale.category10()
 
   var config = {
 
@@ -281,6 +297,17 @@ function githutTable(data){
     use:{
         "code":"code"
     },
+//    color_group_map:columns.map(function(c){return c.colorgroup}),
+    color_group_map:columns.reduce(function(a,b){
+       a[b.id] = b.colorgroup;
+       return a;
+    },{}),
+    color_groups:{
+      'file_count':color(0),
+      'file_size':color(1),
+      'participant_count':color(2)
+      
+    },
 
     /**
      * The order each column will appear in.
@@ -298,6 +325,9 @@ function githutTable(data){
      */
     formats:{
         "primary_site":"d"
+    },
+    filters:{
+        "file_size":config.filters.file_size
     },
 
     /**

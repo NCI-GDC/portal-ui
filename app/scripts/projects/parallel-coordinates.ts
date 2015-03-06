@@ -33,24 +33,23 @@ function ParallelCoordinates(data,options) {
             if(options.scale_map[d]==="ordinal") {
                 
                 var inc=0.001;
-                scales[d]=d3.scale.ordinal()
-                .domain(nested_data.filter(function(){return true;}).sort(function(a, b){
-                  
-//                  debugger;
+                var domain = nested_data
+                  .filter(function(){return true;})
+                  .sort(function(a, b){
 
                     var sorting=options.sorting[use] || d3.ascending;
                   
            
 
 
-                    if(a.values[use]==b.values[use]) {
-                        if(d3.ascending(a.key,b.key)>1) {
-                            a.values[use]+=inc;
-                        } else {
-                            b.values[use]+=inc;
-                        }
-                        inc+=0.001;
-                    }
+//                    if(a.values[use]==b.values[use]) {
+//                        if(d3.ascending(a.key,b.key)>1) {
+//                            a.values[use]+=inc;
+//                        } else {
+//                            b.values[use]+=inc;
+//                        }
+//                        inc+=0.001;
+//                    }
 
                     var __a=(a.values[use]),
                         __b=(b.values[use]);
@@ -62,14 +61,18 @@ function ParallelCoordinates(data,options) {
 
                     return sorting(__a, __b);
 
-                }).map(function(o){
+                })
+                .map(function(o){
                     if(options.dimensions.indexOf(use)>-1) {
                         return o.values[use];
                     } else {
                         return o.values[use]/((options.dimensions.indexOf(use)>-1)?1:o.values[options.ref])
                     }
-                }))
-                .rangePoints([HEIGHT-(margins.top+margins.bottom+padding.top+padding.bottom),0]);
+                });
+              
+                scales[d]=d3.scale.ordinal()
+                  .domain(domain)
+                  .rangePoints([HEIGHT-(margins.top+margins.bottom+padding.top+padding.bottom),0]);
 
             } else if (options.scale_map[d]=="linear") {
                 if(extents[d][0]===0) {
@@ -78,8 +81,6 @@ function ParallelCoordinates(data,options) {
 
                 var type = options.scale_map[d]?options.scale_map[d]:scale_type;
                 var yRange = HEIGHT-(margins.top+margins.bottom+padding.top+padding.bottom);
-              
-                console.log("sorting",d);
 
                 var sites = primary_sites.sort(options.sorting[use] || d3.ascending);
                 var indices = primary_sites.map(function(d,i){return i  * 50});
@@ -197,7 +198,7 @@ function ParallelCoordinates(data,options) {
             return "translate("+x+","+y+")";
             })  
             .append('text')
-            .text("DATA TYPES")
+            .text("Participant count per data type")
             .style("text-anchor",'middle')
             .attr('class','title')
           
@@ -367,28 +368,12 @@ function ParallelCoordinates(data,options) {
             .attr("y",-4)
             .attr("width",0)
             .attr("height",8)
-            .style({
-                fill:"url(#diagonalHatch)"
+            .style('fill',function(d){
+                return options.color_groups[options.color_group_map[d.column]]
+
             });
 
-//		new_markers
-//            .filter(function(d){
-//                return options.scale_map[d.column]!="ordinal"
-//            })
-//            .append("circle")
-//            .attr("cx",0)
-//            .attr("cy",0)
-//            .attr("r",2);
-//
-//		new_markers
-//            .filter(function(d){
-//                return options.scale_map[d.column]!="ordinal"
-//            })
-//            .append("circle")
-//            .attr("class","hover")
-//            .attr("cx",0)
-//            .attr("cy",0)
-//            .attr("r",5);
+
 
 		marker
 			.transition()
@@ -598,15 +583,25 @@ function ParallelCoordinates(data,options) {
               }
             })
             .text(function(d){
+          
+                function noop(a){
+                  return a;
+                }
+          
+//                debugger;
+          
+                options.filters = options.filters || {};
+          
+                var filter = options.filters[d.column] || noop;
             
                 if (_.isNumber(d.value)){
-                    return parseInt(d.value);
+                    return filter(parseInt(d.value));
                 } else {
                     var t = d.value;
                     if (t.length > 18) {
                       t = t.slice(0,15).concat('...');
                     }
-                    return t;
+                    return filter(t);
                 }
                 
             

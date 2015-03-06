@@ -231,10 +231,9 @@ module ngApp.search.models {
           "participants.project.code",
           "participants.submitter_id",
           "platform",
-          "archives.revision",
-          "archives.archive_id",
           "annotations.annotation_id",
-          "related_files.file_id"
+          "related_files.file_id",
+          "archive.archive_id"
         ]
     };
     angular.module("search.table.files.model", [])

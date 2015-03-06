@@ -46,9 +46,10 @@
                 <span data-translate>Download File with Metadata</span>
             </a>
         </li>
-        <li data-ng-if="file.archive.archive_uuid" class="divider"></li>
+        <li data-ng-if="file.archive.archive_id" class="divider"></li>
+        <li data-ng-if="file.archive.archive_id"
             aria-label="{{ 'Find Files in same archive' | translate }}">
-            <a data-ng-href="search/f?filters={{ [{ name: 'files.archives.archive_id', value: file.archives[0].archive_id }] | makeFilter: true }}">
+            <a data-ng-href="search/f?filters={{ [{ name: 'files.archive.archive_id', value: file.archive.archive_id }] | makeFilter: true }}">
                 <i class="fa fa-file-zip-o fa-stack "></i>
                 <span data-translate>Find Files in same archive</span>
             </a>

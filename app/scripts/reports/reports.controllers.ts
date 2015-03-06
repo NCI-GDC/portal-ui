@@ -13,9 +13,73 @@ module ngApp.reports.controllers {
   class ReportsController implements IReportsController {
 
     /* @ngInject */
-    constructor(private CoreService: ICoreService, $scope,ReportsService, $q,ProjectsService,$timeout) {
+    constructor(private CoreService: ICoreService, $scope,ReportsService, $q,ProjectsService,$timeout,private LocationService: ILocationService, private config: IGDCConfig,  private $modal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
+                private $window: ng.IWindowService, private UserService: IUserService,$timeout) {
 
       CoreService.setPageTitle("Reports");
+      
+      /**
+      * TODO: refactor with app/scripts/components/tables/tables.controllers.ts#L119
+      */
+      $scope.reportExport = function a(){  
+
+        var url = LocationService.getHref();
+        var abort = $q.defer();
+        var modalInstance = $modal.open({
+          templateUrl: "components/tables/templates/export-modal.html",
+          controller: "ExportTableModalController as etmc",
+          backdrop: 'static'
+        });
+        
+        var fileType = 'JSON';
+        var endpoint = 'reports';
+
+        if ($window.URL && $window.URL.createObjectURL) {
+          var params = {
+            attachment: true,
+            format: fileType,
+            size: 20
+          };
+
+        Restangular.all(endpoint)
+        .withHttpConfig({
+          timeout: abort.promise,
+          responseType: "blob"
+        })
+        .get('', params).then((file) => {
+          var url = $window.URL.createObjectURL(file);
+          var a = $window.document.createElement("a");
+          a.setAttribute("href", url);
+          a.setAttribute("download", endpoint + "." +
+            $window.moment().format() + "." +
+            fileType.toLowerCase());
+            $window.document.body.appendChild(a);
+
+            $timeout(() => {
+              a.click();
+              modalInstance.close({cancel: true});
+              $window.document.body.removeChild(a);
+            },777);
+        });
+      } else {
+        this.LocationService.setHref(this.config.api + "/" +
+             this.$scope.endpoint +
+             "?attachment=true&format=" + fileType +
+             "&fields=" + this.$scope.fields.join() +
+             "&size=" + this.$scope.size +
+             "&filters=" + JSON.stringify(filters));
+      }
+        
+      modalInstance.result.then((data) => {
+        if (data.cancel) {
+          if (abort) {
+            abort.resolve();
+          } else {
+            this.LocationService.setHref(url);
+          }
+        }
+      });
+      }
 
       ReportsService.getReports().then(function(reports){
         CoreService.setSearchModelState(true);

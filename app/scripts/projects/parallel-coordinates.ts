@@ -197,7 +197,7 @@ function ParallelCoordinates(data,options) {
             return "translate("+x+","+y+")";
             })  
             .append('text')
-            .text("DATA TYPES")
+            .text("Participant count per data type")
             .style("text-anchor",'middle')
             .attr('class','title')
           

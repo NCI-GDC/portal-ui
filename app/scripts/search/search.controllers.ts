@@ -117,7 +117,7 @@ module ngApp.search.controllers {
           "clinical.vital_status",
           "clinical.race",
           "project.name",
-          "project.code",
+          "project.project_id",
           "project.primary_site",
           "project.program.name"
         ]

@@ -102,8 +102,8 @@ module ngApp.components.facets.controllers {
 
     isInMyProjects(filter: any) {
       var validCodes = [
-        "code",
-        "participants.project.code"
+        "project_id",
+        "participants.project.project_id"
       ];
 
       return validCodes.indexOf(filter.content.field) !== -1 && this.UserService.currentUser &&

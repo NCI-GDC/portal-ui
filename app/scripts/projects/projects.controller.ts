@@ -52,7 +52,7 @@ module ngApp.projects.controllers {
           facets: [
             "disease_type",
             "program.name",
-            "code",
+            "project_id",
             "primary_site",
             "summary.experimental_strategies.experimental_strategy",
             "summary.data_types.data_type"

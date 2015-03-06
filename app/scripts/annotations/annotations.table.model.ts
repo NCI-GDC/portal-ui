@@ -32,12 +32,17 @@ module ngApp.projects.models {
         },
         {
             displayName: "Project",
-            id: "project.code",
+            id: "project.project_id",
             sref: function (field, row) {
                 var project = _.find(row, (a) => {
                     return a.id === "project";
                 });
-                return "project({ projectId: '" + project.val.project_id + "'})";
+                return {
+                    state: "project",
+                    filters: {
+                        projectId: project.val.project_id
+                    }
+                };
             },
             sortable: true
         },
@@ -111,7 +116,6 @@ module ngApp.projects.models {
           "notes",
           "classification",
           "project.program.name",
-          "project.code",
           "project.project_id"
         ]
     }

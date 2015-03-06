@@ -20,9 +20,9 @@ module ngApp.components.facets.services {
 
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any> {
       var projectsKeys = {
-        "files": "participants.project.code",
-        "participants": "project.code",
-        "projects": "code"
+        "files": "participants.project.project_id",
+        "participants": "project.project_id",
+        "projects": "project_id"
       };
       var filters = this.LocationService.filters();
       filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[entity]);

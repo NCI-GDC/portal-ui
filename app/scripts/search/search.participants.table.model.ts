@@ -74,7 +74,7 @@ module ngApp.search.models {
             sortable: true
         }, {
             displayName: "Project",
-            id: "project.code",
+            id: "project.project_id",
             enabled: true,
             sortable: true,
             sref: function(field, row, scope, $filter) {
@@ -368,7 +368,6 @@ module ngApp.search.models {
           "summary.data_types.file_count",
           "summary.data_types.data_type",
           "project.name",
-          "project.code",
           "project.primary_site",
           "project.project_id",
           "project.program.name",

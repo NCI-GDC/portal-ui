@@ -45,7 +45,7 @@ module ngApp.annotations.controllers {
           "item_type",
           "item",
           "classification",
-          "project.code",
+          "project.project_id",
           "project.primary_site",
           "project.program.name"
         ]

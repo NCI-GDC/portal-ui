@@ -14,10 +14,10 @@ module ngApp.search.models {
     function getAnnotationsSref(data_type:string) {
         return function annotationSref (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
             var projectCode = _.find(row, function(elem) {
-                return elem.id === 'code';
+                return elem.id === 'project_id';
             }).val;
 
-            var filter = $filter("makeFilter")([{name: 'participants.project.code', value: projectCode},{name: 'files.data_type', value: data_type}]);
+            var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: projectCode},{name: 'files.data_type', value: data_type}]);
             return {
               state: "search.participants",
               filters: {
@@ -29,7 +29,7 @@ module ngApp.search.models {
 
     var searchTableFilesModel: TableiciousConfig = {
         title: 'Files',
-        order: ['file_type', 'participants', 'code', 'availableData', 'state', 'last_update'],
+        order: ['file_type', 'participants', 'project_id', 'availableData', 'state', 'last_update'],
         headings: [
         {
             displayName: "add_to_cart",
@@ -147,7 +147,7 @@ module ngApp.search.models {
             fieldClass: 'truncated-cell'
         }, {
             displayName: "Project",
-            id: "participants.project.code",
+            id: "participants.project.project_id",
             visible: true,
             template: function(field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[],scope) {
               var participants: TableiciousEntryDefinition = _.find(row, function (a:TableiciousEntryDefinition) { return a.id === 'participants' });
@@ -157,13 +157,12 @@ module ngApp.search.models {
                   } else if (participants.val.length > 1) {
                       var projects = _.map(participants.val, (participant) => {
                         return {
-                            code: participant.project.code,
                             project_id: participant.project.project_id
                         };
                       });
 
                       var projectCodes = _.unique(_.map(projects, (project) => {
-                        return project.code;
+                        return project.project_id;
                       }));
 
                       if (projectCodes.length === 1) {
@@ -181,13 +180,12 @@ module ngApp.search.models {
                 } else if (participants.val.length > 1) {
                    var projects = _.map(participants.val, (participant) => {
                      return {
-                         code: participant.project.code,
                          project_id: participant.project.project_id
                      };
                    });
 
                    var projectCodes = _.unique(_.map(projects, (project) => {
-                     return project.code;
+                     return project.project_id;
                    }));
 
                    if (projectCodes.length === 1) {
@@ -199,7 +197,7 @@ module ngApp.search.models {
                      };
                    }
 
-                   var filters = $filter("makeFilter")([{name: "code", value: projectCodes}]);
+                   var filters = $filter("makeFilter")([{name: "project_id", value: projectCodes}]);
                    return {
                      state: "projects",
                      filters: {
@@ -263,7 +261,6 @@ module ngApp.search.models {
           "participants.participant_id",
           "participants.project.name",
           "participants.project.project_id",
-          "participants.project.code",
           "participants.submitter_id",
           "platform",
           "annotations.annotation_id",

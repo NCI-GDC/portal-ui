@@ -274,7 +274,7 @@
               <tbody>
               <tr data-ng-repeat="f in fc.file.related_files track by f.file_id">
                 <td>{{ ::f.file_name }}</td>
-                <td>tbd {{ ::f.data_format }}</td>
+                <td>{{ ::f.type }}</td>
                 <td>{{ ::f.md5sum }}</td>
                 <td>
                   <a data-ui-sref="file({ fileId: f.file_id })" data-translate>

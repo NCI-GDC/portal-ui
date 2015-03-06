@@ -31,7 +31,7 @@ module ngApp.files {
               "creation_datetime",
               "participants.participant_id",
               "related_files.file_id",
-              "related_files.data_type",
+              "related_files.type",
               "related_files.file_name",
               "related_files.md5sum",
               "annotations.annotation_id",

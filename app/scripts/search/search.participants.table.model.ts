@@ -105,6 +105,28 @@ module ngApp.search.models {
             template:function(field){
                 //why is fields an object instead of an array....
                 return field && field.val && field.val.length;
+            },
+            sref: function(field, row, scope, $filter) {
+                var files = _.find(row, (item) => {
+                    return item.id === "files";
+                });
+                var fileIds = _.map(files.val, (file) => {
+                    return file.file_id;
+                });
+
+                if (!fileIds.length) {
+                    return;
+                }
+
+                var uuid:TableiciousEntryDefinition = _.find(row,function(elem:TableiciousEntryDefinition){
+                    return elem.id === "participant_id";
+                }).val;
+
+                var filter = $filter("makeFilter")([
+                    {name: 'file_id', value: fileIds},
+                    {name: "participants.participant_id", value: uuid}
+                ]);
+                return "search.files({ 'filters':"+filter+"})";
             }
         }, {
             displayName: "Available Files per Data Type",

@@ -26,7 +26,7 @@ module ngApp.projects.controllers {
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService) {
+                private LocationService: ILocationService, private $filter) {
 
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
@@ -61,14 +61,16 @@ module ngApp.projects.controllers {
         }).then((data) => {
           this.projects = data;
           
+          debugger;
+          
           if (this.ProjectsState.tabs.graph.active) {
-            githutTable(data);
+            githutTable(data,{filters:{file_size:this.$filter('size')}});
           }
         });
       } else {
         this.tabSwitch = false;
         if (this.ProjectsState.tabs.graph.active) {
-          githutTable(this.projects);
+          githutTable(this.projects,{filters:{file_size:this.$filter('size')}});
         }
       }
     }
@@ -112,7 +114,7 @@ module ngApp.projects.controllers {
 
 var primary_sites = [];
 
-function githutTable(data){
+function githutTable(data,config){
   var hits = data.hits;
 
   d3.select(".githut > #pc svg")
@@ -300,13 +302,7 @@ function githutTable(data){
         "primary_site":"d"
     },
     filters:{
-        "file_size":function bytesToSize(bytes) {
-           if(bytes == 0) return '0';
-           var k = 1000;
-           var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-           var i = Math.floor(Math.log(bytes) / Math.log(k));
-           return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
-        }
+        "file_size":config.filters.file_size
     },
 
     /**

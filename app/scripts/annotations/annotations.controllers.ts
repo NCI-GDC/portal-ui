@@ -37,6 +37,7 @@ module ngApp.annotations.controllers {
       this.AnnotationsService.getAnnotations({
         fields: this.AnnotationsTableModel.fields,
         facets: [
+          "classification",
           "category",
           "created_datetime",
           "creator",

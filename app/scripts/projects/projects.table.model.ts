@@ -42,6 +42,13 @@ module ngApp.projects.models {
                 displayName: "Participants",
                 id: "summary.participant_count",
                 enabled: true,
+                template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
+                    var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
+                        return x.id === 'summary';
+                    }).val;
+
+                    return $filter("number")(summary && summary.participant_count ? summary.participant_count : 0);
+                },
                 sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
                     var disease_code = _.find(row,function(elem){
                         return elem.id === 'code';

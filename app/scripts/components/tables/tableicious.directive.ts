@@ -165,6 +165,7 @@ module ngApp.components.tables.directives.tableicious {
                     private TableService: ITableService,
                     private TableValidator,
                     private $rootScope: IRootScope, $filter: ng.IFilterService,
+                    $state: ng.ui.IStateService,
                     private UserService: IUserService) {
 
             $scope.getColumnIndex = this.getColumnIndex.bind(this);
@@ -207,6 +208,18 @@ module ngApp.components.tables.directives.tableicious {
             },()=>{
                 this.refresh();
             },true);
+
+            $scope.goToState = (stateParams: any) => {
+                var state = stateParams.state;
+                var filters = stateParams.filters;
+
+                // We are going to a state with facet filters
+                if (filters.filters) {
+                    filters.filters = angular.fromJson(filters.filters);
+                }
+
+                $state.go(state, filters, {inherit: false});
+            };
 
             this.refresh.bind(this)();
         }

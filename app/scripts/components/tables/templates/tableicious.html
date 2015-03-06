@@ -35,7 +35,7 @@
                 tableicious-cell>
 
                 <a data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) !== '?'"
-                   data-ui-sref="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
+                   data-ng-click="goToState(getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter))">
                     {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
                 </a>
 

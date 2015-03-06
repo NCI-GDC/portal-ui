@@ -27,7 +27,12 @@ module ngApp.search.models {
             }
 
             var filter = $filter("makeFilter")([{name: 'participants.participant_id', value: uuid},{name: 'files.data_type', value: data_type}]);
-            return "search.files({ 'filters':"+filter+"})";
+            return {
+                state: "search.files",
+                filters: {
+                    filters: filter
+                }
+            };
         }
     }
 
@@ -59,7 +64,12 @@ module ngApp.search.models {
                     return elem.id === "participant_id";
                 });
 
-                return "participant({ participantId : '"+uuid.val+"' })";
+                return {
+                    state: "participant",
+                    filters: {
+                        participantId: uuid.val
+                    }
+                };
             },
             sortable: true
         }, {
@@ -72,7 +82,12 @@ module ngApp.search.models {
                     return item.id === "project";
                 });
 
-                return "project({ projectId: '" + project.val.project_id + "'})";
+                return {
+                    state: "project",
+                    filters: {
+                        projectId: project.val.project_id
+                    }
+                };
             }
         }, {
             displayName: "Primary Site",
@@ -126,7 +141,12 @@ module ngApp.search.models {
                     {name: 'file_id', value: fileIds},
                     {name: "participants.participant_id", value: uuid}
                 ]);
-                return "search.files({ 'filters':"+filter+"})";
+                return {
+                    state: "search.files",
+                    filters: {
+                        filters: filter
+                    }
+                };
             }
         }, {
             displayName: "Available Files per Data Type",
@@ -324,7 +344,12 @@ module ngApp.search.models {
                 });
 
                 var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
-                return "annotations({ 'filters':"+filter+"})";
+                return {
+                    state: "annotations",
+                    filters: {
+                        filters: filter
+                    }
+                };
             }
         }],
         fields: [

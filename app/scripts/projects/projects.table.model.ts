@@ -9,7 +9,12 @@ module ngApp.projects.models {
             }).val;
 
             var filter = $filter("makeFilter")([{name: 'participants.project.code', value: projectCode},{name: 'files.data_type', value: data_type}]);
-            return "search.participants({ 'filters':"+filter+"})";
+            return {
+                state: "search.participants",
+                filters: { 
+                    filters: filter
+                }
+            };
         }
     }
 
@@ -23,7 +28,12 @@ module ngApp.projects.models {
                 enabled: true,
                 sref: function (field, scope) {
                     var project_id = _.result(_.findWhere(scope, { 'id': 'project_id' }), 'val');
-                    return "project({projectId:'" + project_id  + "'})";
+                    return {
+                        state: "project",
+                        filters: {
+                            projectId: project_id
+                        }
+                    };
                 }
             },{
                 displayName: "Disease Type",
@@ -56,7 +66,12 @@ module ngApp.projects.models {
 
                     var filter = $filter("makeFilter")([{name: 'participants.project.code', value: disease_code }]);
 
-                    return "search.participants({ 'filters':"+filter+"})";
+                    return {
+                        state: "search.participants",
+                        filters: {
+                            filters: filter
+                        }
+                    };
 
                 },
                 fieldClass: 'text-right',
@@ -255,7 +270,12 @@ module ngApp.projects.models {
                     }).val;
 
                     var filter = $filter("makeFilter")([{name: 'participants.project.code', value: projectCode }]);
-                    return "search.files({ 'filters':"+filter+"})";
+                    return {
+                        state: "search.files",
+                        filters: {
+                            filters: filter
+                        }
+                    };
                 },
                 fieldClass: 'text-right'
             }, {

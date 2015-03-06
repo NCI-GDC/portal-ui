@@ -8,7 +8,12 @@ module ngApp.projects.models {
             displayName: "ID",
             id: "annotation_id",
             sref: function (field) {
-                return "annotation({annotationId:'" + field.val + "'})";
+                return {
+                    state: "annotation",
+                    filters: {
+                        annotationId: field.val
+                    }
+                };
             },
             sortable: true
         },

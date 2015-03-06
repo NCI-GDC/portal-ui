@@ -18,7 +18,12 @@ module ngApp.search.models {
             }).val;
 
             var filter = $filter("makeFilter")([{name: 'participants.project.code', value: projectCode},{name: 'files.data_type', value: data_type}]);
-            return "search.participants({ 'filters':"+filter+"})";
+            return {
+              state: "search.participants",
+              filters: {
+                filters: filter
+              }
+            };
         }
     }
 
@@ -70,7 +75,12 @@ module ngApp.search.models {
             },
             sref:function(field,row){
                 var uuid = _.find(row,function(a:TableiciousEntryDefinition){return a.id === 'file_id'});
-                return "file({ fileId: '"+uuid.val+"' })";
+                return {
+                  state: "file",
+                  filters: {
+                    fileId: uuid.val
+                  }
+                };
             },
                 sortable: true,
                 fieldClass: 'truncated-cell'
@@ -92,7 +102,12 @@ module ngApp.search.models {
                 });
 
                 var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
-                return "annotations({ 'filters':"+filter+"})";
+                return {
+                  state: "annotations",
+                  filters: {
+                    filters: filter
+                  }
+                };
             }
         }, {
             displayName: "Participants",
@@ -112,11 +127,21 @@ module ngApp.search.models {
                 var participant = field.val;
                 if (field.val.length > 1) {
                     var filters = $filter("makeFilter")([{name: "participant.participant_id", value: field.val}]);
-                    return "search.participants({'filters':" + filters + "})";
+                    return {
+                      state: "search.participants",
+                      filters: {
+                        filters: filter
+                      }
+                    };
                 }
 
                 if (participant) {
-                    return "participant({ participantId : '" + participant[0].participant_id + "' })";
+                    return {
+                      state: "participant",
+                      filters: {
+                        participantId: participant[0].participant_id
+                      }
+                    };
                 }
             },
             fieldClass: 'truncated-cell'
@@ -166,11 +191,21 @@ module ngApp.search.models {
                    }));
 
                    if (projectCodes.length === 1) {
-                     return "project({ projectId: '" + projects[0].project_id + "'})";
+                     return {
+                       state: "project",
+                       filters: {
+                         projectId: projects[0].project_id
+                       }
+                     };
                    }
 
                    var filters = $filter("makeFilter")([{name: "code", value: projectCodes}]);
-                   return "projects({ 'filters':" + filters + "})";
+                   return {
+                     state: "projects",
+                     filters: {
+                       filters: filters
+                     }
+                   };
                 }
             },
                 sortable: true

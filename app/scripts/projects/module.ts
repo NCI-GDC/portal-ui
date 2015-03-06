@@ -39,7 +39,6 @@ module ngApp.projects {
         project: ($stateParams: ng.ui.IStateParamsService, ProjectsService: IProjectsService): ng.IPromise<IProject> => {
           return ProjectsService.getProject($stateParams["projectId"], {
             fields: [
-              "code",
               "name",
               "summary.data_types.file_count",
               "summary.data_types.data_type",

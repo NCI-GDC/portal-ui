@@ -99,11 +99,6 @@
               <td>{{ ::fc.file.file_id }}</td>
             </tr>
             <tr>
-              <th scope="row" data-translate>File Status</th>
-              <!-- TODO? this is hardcoded...-->
-              <td>Migrated</td>
-            </tr>
-            <tr>
               <th scope="row" data-translate>Data format</th>
               <td>{{ ::fc.file.data_format }}</td>
             </tr>
@@ -134,10 +129,10 @@
             <tr>
               <th scope="row" data-translate>Archive</th>
               <td>
-                {{ ::fc.file.archives.archive_id || '--' }}
-                <span data-ng-if="fc.file.archives">
+                {{ ::fc.file.archive.archive_id || '--' }}
+                <span data-ng-if="fc.file.archive">
                   (<a data-ui-sref="search.files({ 'filters': {{
-                    [{ name: 'files.archives.archive_id', value: fc.file.archives.archive_id }] | makeFilter }}
+                    [{ name: 'files.archive.archive_id', value: fc.file.archive.archive_id }] | makeFilter }}
                     })">
                     {{ fc.archiveCount }} files
                   </a>)

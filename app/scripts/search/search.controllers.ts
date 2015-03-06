@@ -90,7 +90,7 @@ module ngApp.search.controllers {
           "experimental_strategy",
           "data_format",
           "platform",
-          "archives.revision",
+          "archive.revision",
           "access",
           "state",
           "data_format",

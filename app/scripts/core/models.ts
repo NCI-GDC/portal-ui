@@ -27,7 +27,7 @@ module ngApp.models {
     file_id: string;
     day_of_dcc_upload: number;
     month_of_dcc_upload: number;
-    project_code: string;
+    project_id: string;
     patient_withdrawal: Object;
   }
 

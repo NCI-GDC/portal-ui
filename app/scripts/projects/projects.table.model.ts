@@ -4,11 +4,11 @@ module ngApp.projects.models {
 
     function getParticipantSref(data_type:string) {
         return function fileSref (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-            var projectCode = _.find(row, function(elem) {
+            var projectId = _.find(row, function(elem) {
                 return elem.id === 'project_id';
             }).val;
 
-            var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: projectCode},{name: 'files.data_type', value: data_type}]);
+            var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: projectId},{name: 'files.data_type', value: data_type}]);
             return {
                 state: "search.participants",
                 filters: { 
@@ -23,7 +23,7 @@ module ngApp.projects.models {
         order: ['project_id', 'primary_site', 'program', 'participants', 'disease_type', 'file_size', 'files', 'last_update'],
         headings: [
             {
-                displayName: "Code",
+                displayName: "ID",
                 id: "project_id",
                 enabled: true,
                 sref: function (field, scope) {
@@ -60,11 +60,11 @@ module ngApp.projects.models {
                     return $filter("number")(summary && summary.participant_count ? summary.participant_count : 0);
                 },
                 sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-                    var disease_code = _.find(row,function(elem){
+                    var project_id = _.find(row,function(elem){
                         return elem.id === 'project_id';
                     }).val;
 
-                    var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: disease_code }]);
+                    var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: project_id }]);
 
                     return {
                         state: "search.participants",
@@ -265,11 +265,11 @@ module ngApp.projects.models {
                     return $filter("number")(summary.val.file_count || 0); 
                 },
                 sref: function (field:TableiciousEntryDefinition,row:TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-                    var projectCode = _.find(row,function(elem){
+                    var projectId = _.find(row,function(elem){
                         return elem.id === 'project_id';
                     }).val;
 
-                    var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: projectCode }]);
+                    var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: projectId }]);
                     return {
                         state: "search.files",
                         filters: {
@@ -303,7 +303,7 @@ module ngApp.projects.models {
             "summary.file_size",
             "summary.file_count",
             "state",
-            "program.code",
+            "program.project_id",
             "program.name",
             "primary_site",
             "project_id"

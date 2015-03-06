@@ -31,7 +31,6 @@ module ngApp.annotations {
                 "classification",
                 "notes",
                 "created_datetime",
-                "project.code",
                 "project.project_id"
               ]
             });

@@ -110,7 +110,7 @@ module ngApp.query.controllers {
           "patient_id",
           "vital_status",
           "person_neoplasm_cancer_status",
-          "project.code",
+          "project.project_id",
           "tumor_tissue_site",
           "files.file_id",
           "files.file_name",

@@ -23,7 +23,7 @@ module ngApp.participants {
               "clinical.icd_10",
               "files.file_id",
               "project.name",
-              "project.code",
+              "project.project_id",
               "project.primary_site",
               "project.program.name",
               "project.disease_type",

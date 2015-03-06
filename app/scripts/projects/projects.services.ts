@@ -45,7 +45,7 @@ module ngApp.projects.services {
         sort:'summary.participant_count:desc'
       };
 
-      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "code");
+      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "project_id");
       this.CoreService.setSearchModelState(false);
 
       var abort = this.$q.defer();

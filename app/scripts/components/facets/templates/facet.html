@@ -15,8 +15,8 @@
             data-ng-keypress="add(tc.name, term.key, $event)"
             class="facet-term-label">
         <i class="fa fa-square-o" aria-controls="data-table" aria-checked="false"></i>
-        <span data-ng-if="tc.name.indexOf('code') !== -1">{{ ::term.key.toUpperCase() }}</span>
-        <span data-ng-if="tc.name.indexOf('code') == -1">{{ ::term.key | translate | humanify: true:true }}</span>
+        <span data-ng-if="tc.name.indexOf('project_id') !== -1">{{ ::term.key.toUpperCase() }}</span>
+        <span data-ng-if="tc.name.indexOf('project_id') == -1">{{ ::term.key | translate | humanify: true:true }}</span>
       </span>
       <span class="label label-primary pull-right">{{ term.doc_count | number:0}}</span>
     </p>

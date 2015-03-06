@@ -240,13 +240,13 @@
             </a>
           </td>
           <td>
-            <a data-ng-if="file.participants.length === 1 || file.projectCodes.length === 1"
-               data-ui-sref="project(({projectId: file.participants[0].project.code }))">
-               {{ file.participants[0].project.code }}
+            <a data-ng-if="file.participants.length === 1 || file.projectIds.length === 1"
+               data-ui-sref="project(({projectId: file.participants[0].project.project_id}))">
+               {{ file.participants[0].project.project_id}}
             </a>
-            <a data-ng-if="file.participants.length > 1 && file.projectCodes.length > 1"
+            <a data-ng-if="file.participants.length > 1 && file.projectIds.length > 1"
                data-ui-sref="projects({ 'filters': {{
-                [{ name: 'code', value: file.projectCodes }] | makeFilter }}
+                [{ name: 'project_id', value: file.projectIds }] | makeFilter }}
             })">
               {{ file.participants.length }}
             </a>
@@ -256,7 +256,7 @@
           <td>{{ file.state | humanify }}</td>
           <td>{{ file.data_format }}</td>
           <td>{{ file.file_size | size }}</td>
-          <td>{{ file.archives[0].revision || "--" }}</td>
+          <td>{{ file.archive.revision || "--" }}</td>
           <td>{{ file.update_date | date }}</td>
         </tr>
         </tbody>

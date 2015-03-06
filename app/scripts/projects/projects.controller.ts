@@ -97,7 +97,7 @@ module ngApp.projects.controllers {
   class ProjectController implements IProjectController {
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService) {
-      CoreService.setPageTitle("Project " + project.code);
+      CoreService.setPageTitle("Project " + project.project_id);
     }
   }
 
@@ -123,15 +123,15 @@ function githutTable(data,config){
     return _.find(array,function(type){return type[propname] === data_type})
   }
 
-  var project_codes = hits.reduce(function(a,b){
-      a[b.code] = b;
+  var project_ids = hits.reduce(function(a,b){
+      a[b.project_id] = b;
       return a;
   },{});
 
   var columns = [
     {
-        id:'code',
-        display_name:["Project","Code"],
+        id:'project_id',
+        display_name:["Project","ID"],
         scale:'ordinal',
         dimensional:true
     },{
@@ -230,8 +230,8 @@ function githutTable(data,config){
     }
   ];
       
-  var aggregations = d3.keys(project_codes).reduce(function(a,key){
-    var group = project_codes[key];
+  var aggregations = d3.keys(project_ids).reduce(function(a,key){
+    var group = project_ids[key];
     var types = group.summary.data_types;
 
     if (!_.contains(primary_sites,group.primary_site)){
@@ -239,7 +239,7 @@ function githutTable(data,config){
     }
 
     var the_returned = {
-      code: key,
+      project_id: key,
       primary_site: group.primary_site,
       file_count: group.summary.file_count,
       file_size: group.summary.file_size,
@@ -279,7 +279,7 @@ function githutTable(data,config){
     /**
      * No idea what title_column does.
     **/
-    title_column:"code",
+    title_column:"project_id",
 
     /**
      * Not really a scale map, more a map of what kind of column it will be.
@@ -295,7 +295,7 @@ function githutTable(data,config){
      * No idea what this does, really.
      */
     use:{
-        "code":"code"
+        "project_id":"project_id"
     },
 //    color_group_map:columns.map(function(c){return c.colorgroup}),
     color_group_map:columns.reduce(function(a,b){
@@ -314,7 +314,7 @@ function githutTable(data,config){
      * Don't know how well this is implemented.
      */
     sorting:{
-      "code":d3.descending,
+      "project_id":d3.descending,
       "primary_site":d3.ascending
     },
 

@@ -31,9 +31,9 @@ module ngApp.files.controllers {
 
       this.FilesService.getFiles({
         fields: [
-          "archives.archive_id"
+          "archive.archive_id"
         ],
-        filters: {"op": "=", "content": {"field": "files.archives.archive_id", "value": [file.archives ? file.archives.archive_id : 0]}}
+        filters: {"op": "=", "content": {"field": "files.archive.archive_id", "value": [file.archive.archive_id]}}
       }).then((data) => this.archiveCount = data.pagination.total);
 
       this.annotationIds = _.map(file.annotations, (annotation) => {

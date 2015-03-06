@@ -56,7 +56,7 @@ module ngApp.files.services {
       };
 
 
-      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.project.code");
+      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.project.project_id");
       this.CoreService.setSearchModelState(false);
 
       var abort = this.$q.defer();

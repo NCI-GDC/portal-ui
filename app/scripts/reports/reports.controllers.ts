@@ -97,7 +97,7 @@ module ngApp.reports.controllers {
 
         x.forEach(function(g){
           var n = _.clone(dummymap[0]);
-          n.code = g;
+          n.project_id = g;
           n.count += Math.floor(Math.random() * 1000);
           n.primary_site = _.sample(t);
           n.size_in_mb += Math.floor(Math.random() * 1000);
@@ -111,8 +111,8 @@ module ngApp.reports.controllers {
           if (!_.contains(primary_sites,b.primary_site)){
             primary_sites.push(b.primary_site);
           }
-          if (a[b.code]) {
-            var c = a[b.code];
+          if (a[b.project_id]) {
+            var c = a[b.project_id];
             c.file_size += b.size_in_mb;
             c.file_count += b.count;
 
@@ -122,9 +122,9 @@ module ngApp.reports.controllers {
 
 
           } else {
-            a[b.code] = {
+            a[b.project_id] = {
               file_size:b.size_in_mb,
-              code:b.code,
+              project_id:b.project_id,
               primary_site:b.primary_site,
               file_count:b.count,
               colorgroup:'file_count'
@@ -132,7 +132,7 @@ module ngApp.reports.controllers {
             }
 
             b.data_types.forEach(function(d){
-              a[b.code][d.data_type] = d.count;
+              a[b.project_id][d.data_type] = d.count;
             })
           }
 
@@ -144,8 +144,8 @@ module ngApp.reports.controllers {
           var color = d3.scale.category10()
 
         var columns = [{
-          id:'code',
-          display_name:["Project","Code"],
+          id:'project_id',
+          display_name:["Project","project_id"],
           scale:'ordinal',
           dimensional:true
         },
@@ -206,7 +206,7 @@ module ngApp.reports.controllers {
           /**
            * No idea what title_column does.
            **/
-          title_column:"code",
+          title_column:"project_id",
 
           /**
            * Not really a scale map, more a map of what kind of column it will be.
@@ -222,10 +222,10 @@ module ngApp.reports.controllers {
            * No idea what this does, really.
            */
           use:{
-            "code":"code"
+            "project_id":"project_id"
           },
            sorting:{
-            "code":d3.descending,
+            "project_id":d3.descending,
             "primary_site":d3.ascending
           },
 
@@ -282,7 +282,7 @@ module ngApp.reports.controllers {
 
 
 
-        $scope.byProject = dataNest('code').entries(dummymap);
+        $scope.byProject = dataNest('project_id').entries(dummymap);
         $scope.byDisease = dataNest('disease_type').entries(dummymap);
         $scope.byProgram = dataNest('program').entries(dummymap);
 

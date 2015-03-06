@@ -784,7 +784,7 @@ function ParallelCoordinates(data,options) {
 
 	var nested_data=d3.nest()
         .key(function(d){
-            return d.code;
+            return d.project_id;
         })
         .rollup(function(leaves) {
             var r={};
@@ -792,7 +792,7 @@ function ParallelCoordinates(data,options) {
                 r[col]=d3.sum(leaves,function(o){
                     return o[col]
                 });
-                r.code=leaves[0]["code"];
+                r.project_id=leaves[0]["project_id"];
                 r.file_count = leaves[0]['file_count'];
                 r.participant_count = leaves[0]['participant_count'];
                 r.primary_site = leaves[0]['primary_site'];

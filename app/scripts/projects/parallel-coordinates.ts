@@ -598,15 +598,25 @@ function ParallelCoordinates(data,options) {
               }
             })
             .text(function(d){
+          
+                function noop(a){
+                  return a;
+                }
+          
+//                debugger;
+          
+                options.filters = options.filters || {};
+          
+                var filter = options.filters[d.column] || noop;
             
                 if (_.isNumber(d.value)){
-                    return parseInt(d.value);
+                    return filter(parseInt(d.value));
                 } else {
                     var t = d.value;
                     if (t.length > 18) {
                       t = t.slice(0,15).concat('...');
                     }
-                    return t;
+                    return filter(t);
                 }
                 
             

@@ -112,7 +112,7 @@
               <td>{{ ::experiment.experimental_strategy }}</td>
               <td class="text-right">
                 <a data-ui-sref="search.files({ 'filters':
-                  {{ [{ name: 'participant_id', value: pc.participant.participant_id }] | makeFilter }}
+                  {{ [{ name: 'participants.participant_id', value: pc.participant.participant_id }] | makeFilter }}
                 })">
                   {{ ::experiment.file_count| number:0 }}
                 </a>
@@ -139,8 +139,8 @@
               </td>
               <td>
                 <a data-ui-sref="search.files({ 'filters':
-                  {{ [{name: 'data_type', value: [item.data_type]},
-                      {name: 'participant.participant_id', value: [pc.participant.participant_id]}] | makeFilter }} })">
+                  {{ [{name: 'files.data_type', value: [item.data_type]},
+                      {name: 'participants.participant_id', value: [pc.participant.participant_id]}] | makeFilter }} })">
                   {{ item.file_count }}
                 </a>
               </td>

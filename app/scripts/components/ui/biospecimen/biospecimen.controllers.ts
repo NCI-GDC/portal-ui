@@ -30,18 +30,18 @@ module ngApp.components.ui.biospecimen.controllers {
                                      participant_id +
                                      "?attachment=true&format=xml" +
                                       "&fields=" +
-                                      "samples.sample_id",
-                                      "samples.submitter_id",
-                                      "samples.portions.portion_id",
-                                      "samples.portions.submitter_id",
-                                      "samples.portions.slides.slide_id",
-                                      "samples.portions.slides.submitter_id",
-                                      "samples.portions.analytes.analyte_id",
-                                      "samples.portions.analytes.submitter_id",
-                                      "samples.portions.analytes.amount",
-                                      "samples.portions.analytes.analyte_type",
-                                      "samples.portions.analytes.aliquots.aliquot_id",
-                                      "samples.portions.analytes.aliquots.submitter_id",
+                                      "samples.sample_id," +
+                                      "samples.submitter_id," +
+                                      "samples.portions.portion_id," +
+                                      "samples.portions.submitter_id," +
+                                      "samples.portions.slides.slide_id," +
+                                      "samples.portions.slides.submitter_id," +
+                                      "samples.portions.analytes.analyte_id," +
+                                      "samples.portions.analytes.submitter_id," +
+                                      "samples.portions.analytes.amount," +
+                                      "samples.portions.analytes.analyte_type," +
+                                      "samples.portions.analytes.aliquots.aliquot_id," +
+                                      "samples.portions.analytes.aliquots.submitter_id," +
                                       "samples.portions.annotations.annotation_id"
                                   );
     }

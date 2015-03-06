@@ -218,6 +218,7 @@ module ngApp.search.models {
         }],
         fields: [
           "access",
+          "state",
           "file_name",
           "data_type",
           "data_subtype",

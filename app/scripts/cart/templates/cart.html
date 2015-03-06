@@ -253,10 +253,10 @@
             <span data-ng-if="!file.participants.length">0</span>
           </td>
           <td>{{ file.data_type }}</td>
-          <td>{{ file.state }}</td>
+          <td>{{ file.state | humanify }}</td>
           <td>{{ file.data_format }}</td>
           <td>{{ file.file_size | size }}</td>
-          <td>{{ file.archive.revision }}</td>
+          <td>{{ file.archives[0].revision || "--" }}</td>
           <td>{{ file.update_date | date }}</td>
         </tr>
         </tbody>

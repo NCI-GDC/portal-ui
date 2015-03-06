@@ -34,9 +34,14 @@
                 row="$parent.datum"
                 tableicious-cell>
 
-                <a ng-if="heading.sref" data-ui-sref="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
+                <a data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) !== '?'"
+                   data-ui-sref="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
                     {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
-                 </a>
+                </a>
+
+                <span data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) === '?'">
+                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
+                </span>
 
                 <span ng-if="!heading.sref">
                     {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}

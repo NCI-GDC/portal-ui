@@ -16,6 +16,16 @@ module ngApp.search.models {
                 return elem.id === 'participant_id';
             }).val;
 
+            var experimentalStrat = _.find(_.find(row, function(elem) {
+                    return elem.id === "summary"
+                }).val.data_types, function(type) {
+                    return type.data_type === data_type;
+                });
+
+            if (!experimentalStrat.file_count) {
+                return;
+            }
+
             var filter = $filter("makeFilter")([{name: 'participants.participant_id', value: uuid},{name: 'files.data_type', value: data_type}]);
             return "search.files({ 'filters':"+filter+"})";
         }

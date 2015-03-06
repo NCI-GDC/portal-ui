@@ -33,24 +33,23 @@ function ParallelCoordinates(data,options) {
             if(options.scale_map[d]==="ordinal") {
                 
                 var inc=0.001;
-                scales[d]=d3.scale.ordinal()
-                .domain(nested_data.filter(function(){return true;}).sort(function(a, b){
-                  
-//                  debugger;
+                var domain = nested_data
+                  .filter(function(){return true;})
+                  .sort(function(a, b){
 
                     var sorting=options.sorting[use] || d3.ascending;
                   
            
 
 
-                    if(a.values[use]==b.values[use]) {
-                        if(d3.ascending(a.key,b.key)>1) {
-                            a.values[use]+=inc;
-                        } else {
-                            b.values[use]+=inc;
-                        }
-                        inc+=0.001;
-                    }
+//                    if(a.values[use]==b.values[use]) {
+//                        if(d3.ascending(a.key,b.key)>1) {
+//                            a.values[use]+=inc;
+//                        } else {
+//                            b.values[use]+=inc;
+//                        }
+//                        inc+=0.001;
+//                    }
 
                     var __a=(a.values[use]),
                         __b=(b.values[use]);
@@ -62,14 +61,18 @@ function ParallelCoordinates(data,options) {
 
                     return sorting(__a, __b);
 
-                }).map(function(o){
+                })
+                .map(function(o){
                     if(options.dimensions.indexOf(use)>-1) {
                         return o.values[use];
                     } else {
                         return o.values[use]/((options.dimensions.indexOf(use)>-1)?1:o.values[options.ref])
                     }
-                }))
-                .rangePoints([HEIGHT-(margins.top+margins.bottom+padding.top+padding.bottom),0]);
+                });
+              
+                scales[d]=d3.scale.ordinal()
+                  .domain(domain)
+                  .rangePoints([HEIGHT-(margins.top+margins.bottom+padding.top+padding.bottom),0]);
 
             } else if (options.scale_map[d]=="linear") {
                 if(extents[d][0]===0) {

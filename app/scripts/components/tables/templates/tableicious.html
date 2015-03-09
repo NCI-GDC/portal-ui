@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
-                class="{{getHeadingClass(heading)}"
+                ng-class="getHeadingClass(heading)"
                 data-translate
                 ng-repeat="heading in getAllHeadingsAtNestingLevel(0) | orderBy:getColumnIndex:heading"
                 rowspan="{{getHeadingRowSpan(heading)}}"

@@ -1,66 +1,8 @@
-<div class="btn-group" data-dropdown>
-    <button data-ng-if="CartService.isInCart(file.file_id)" type="button" class="btn btn-success"
-            data-ng-click="removeFromCart([file])">
-        <i class="fa fa-check-circle"></i>
-    </button>
-    <button data-ng-if="!CartService.isInCart(file.file_id)" type="button" class="btn btn-default"
-            data-ng-click="addToCart([file])">
-        <i class="fa fa-circle-o"></i>
-    </button>
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-            aria-expanded="false">
-        <span class="caret"></span>
-        <span class="sr-only">Toggle Dropdown</span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-        <li role="listitem"
-            aria-label="{{ 'Download Only File' | translate }}">
-            <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
-                <i class="fa-stack fa fa-download fa-stack "></i>
-                <span data-translate>Download Only File</span>
-            </a>
-        </li>
-        <li role="listitem"
-            data-ng-switch="file.related_ids.length"
-            data-ng-class="{ disabled: file.related_ids.length === 0}"
-            aria-label="{{ 'Download Metadata' | translate }}" >
-            <a data-ng-switch-default data-ng-href="{{ file.related_ids || [] | makeDownloadLink }}">
-                <i class="fa fa-download fa-stack "></i>
-                Download Metadata
-            </a>
-            <a data-ng-switch-when="0" data-translate>
-              <i class="fa fa-download fa-stack "></i>
-              No Metadata Files to Download
-            </a>
-        </li>
-        <li role="listitem"
-            data-ng-class="{ disabled: file.related_ids.length === 0}"
-            data-ng-switch="file.related_ids.length"
-            aria-label="{{ 'Download File with Metadata' | translate }}">
-            <a data-ng-switch-when="0">
-                <i class="fa-stack fa fa-cloud-download fa-stack"></i>
-                Download File with Metadata
-            </a>
-            <a data-ng-switch-default data-ng-href="{{ [file.file_id].concat(file.related_ids || []) | makeDownloadLink }}">
-                <i class="fa-stack fa fa-cloud-download fa-stack"></i>
-                <span data-translate>Download File with Metadata</span>
-            </a>
-        </li>
-        <li data-ng-if="file.archive.archive_id" class="divider"></li>
-        <li data-ng-if="file.archive.archive_id"
-            aria-label="{{ 'Find Files in same archive' | translate }}">
-            <a data-ng-href="search/f?filters={{ [{ name: 'files.archive.archive_id', value: file.archive.archive_id }] | makeFilter: true }}">
-                <i class="fa fa-file-zip-o fa-stack "></i>
-                <span data-translate>Find Files in same archive</span>
-            </a>
-        </li>
-        <li class="divider"></li>
-        <li role="listitem"
-            aria-label="{{ 'View Metadata Files' | translate }}">
-            <a data-ng-href="/files/{{ file.file_id }}#files">
-                <i class="fa fa-file-text-o fa-stack "></i>
-                <span data-translate>View Metadata Files</span>
-            </a>
-        </li>
-    </ul>
-</div>
+<button data-ng-if="CartService.isInCart(file.file_id)" type="button" class="btn btn-success"
+        data-ng-click="removeFromCart([file])">
+  <i class="fa fa-check-circle"></i>
+</button>
+<button data-ng-if="!CartService.isInCart(file.file_id)" type="button" class="btn btn-default"
+        data-ng-click="addToCart([file])">
+  <i class="fa fa-circle-o"></i>
+</button>

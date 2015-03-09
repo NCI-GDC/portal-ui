@@ -51,7 +51,8 @@ module ngApp.projects {
               "summary.file_count",
               "program.name",
               "primary_site",
-              "project_id"
+              "project_id",
+              "disease_type"
             ]
           });
         }

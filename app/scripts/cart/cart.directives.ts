@@ -48,7 +48,7 @@ module ngApp.cart.directives {
 
         $scope.removeAll = function(){
           $scope.removeAllInSearchResult();
-        }
+        };
 
         $scope.removeAllInSearchResult = function() {
           // Query ES using the current filter and the file uuids in the Cart

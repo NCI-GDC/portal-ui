@@ -14,13 +14,14 @@
                          data-config="config"
                          data-hidden="config.hidden"></arrange-columns>
         <export-table data-endpoint="{{ endpoint }}" data-size="{{ paging.total }}"
-                      data-fields="config.fields">
+                      data-fields="config.fields"></export-table>
       </div>
     </div>
-
   </div>
+  <div class="table-responsive">
   <tableicious id="{{ id }}" data-data="data" data-config="config" data-paging="paging"></tableicious>
   <div class="panel-footer clearfix" data-ng-if="page && paging">
     <pagination-controls data-page="{{ page }}" data-paging="paging"></pagination-controls>
   </div>
+    </div>
 </div>

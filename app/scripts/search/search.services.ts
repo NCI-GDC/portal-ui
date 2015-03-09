@@ -1,5 +1,7 @@
 module ngApp.search.services {
 
+  import ILocationService = ngApp.components.location.services.ILocationService;
+
   export interface ITab {
     active: boolean;
   }
@@ -59,12 +61,12 @@ module ngApp.search.services {
     private ds: restangular.IElement;
 
     /* @ngInject */
-    constructor(Restangular: restangular.IService) {
+    constructor(Restangular: restangular.IService, private LocationService: ILocationService) {
       this.ds = Restangular.all("ui/search");
     }
 
     getSummary() {
-      return this.ds.get('summary', {}).then((response) => {
+      return this.ds.get('summary', {filters: this.LocationService.filters()}).then((response) => {
         return response;
       });
     }

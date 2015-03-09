@@ -236,6 +236,11 @@ module ngApp.components.tables.services {
 
             try {
                 result = heading.sref ? heading.sref(field,row,scope,$filter) : field.val;
+                if (result.filters.filters) {
+                    result = result.state + "?filters=" + angular.fromJson(result.filters.filters);
+                } else {
+                    result = result.state + result.filters[_.keys(result.filters)[0]];
+                }
             } catch (e) {
                 result = '?';
             }

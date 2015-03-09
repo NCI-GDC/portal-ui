@@ -9,7 +9,7 @@ module ngApp.projects.models {
             id: "annotation_id",
             sref: function (field) {
                 return {
-                    state: "annotation",
+                    state: "/annotations/",
                     filters: {
                         annotationId: field.val
                     }
@@ -38,7 +38,7 @@ module ngApp.projects.models {
                     return a.id === "project";
                 });
                 return {
-                    state: "project",
+                    state: "/projects/",
                     filters: {
                         projectId: project.val.project_id
                     }

@@ -209,18 +209,6 @@ module ngApp.components.tables.directives.tableicious {
                 this.refresh();
             },true);
 
-            $scope.goToState = (stateParams: any) => {
-                var state = stateParams.state;
-                var filters = stateParams.filters;
-
-                // We are going to a state with facet filters
-                if (filters.filters) {
-                    filters.filters = angular.fromJson(filters.filters);
-                }
-
-                $state.go(state, filters, {inherit: false});
-            };
-
             this.refresh.bind(this)();
         }
 

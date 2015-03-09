@@ -13,7 +13,7 @@ module ngApp.projects.models {
         value: projectId
       }, {name: 'files.data_type', value: data_type}]);
       return {
-        state: "search.participants",
+        state: "/search/p",
         filters: {
           filters: filter
         }
@@ -32,7 +32,7 @@ module ngApp.projects.models {
         sref: function (field, scope) {
           var project_id = _.result(_.findWhere(scope, {'id': 'project_id'}), 'val');
           return {
-            state: "project",
+            state: "/projects/",
             filters: {
               projectId: project_id
             }
@@ -72,7 +72,7 @@ module ngApp.projects.models {
           var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: project_id}]);
 
           return {
-            state: "search.participants",
+            state: "/search/p",
             filters: {
               filters: filter
             }
@@ -276,7 +276,7 @@ module ngApp.projects.models {
 
           var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: projectId}]);
           return {
-            state: "search.files",
+            state: "/search/f",
             filters: {
               filters: filter
             }

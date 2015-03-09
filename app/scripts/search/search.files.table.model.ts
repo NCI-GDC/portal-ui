@@ -22,7 +22,7 @@ module ngApp.search.models {
         value: projectId
       }, {name: 'files.data_type', value: data_type}]);
       return {
-        state: "search.participants",
+        state: "/search/p",
         filters: {
           filters: filter
         }
@@ -94,7 +94,7 @@ module ngApp.search.models {
             return a.id === 'file_id'
           });
           return {
-            state: "file",
+            state: "/files/",
             filters: {
               fileId: uuid.val
             }
@@ -121,7 +121,7 @@ module ngApp.search.models {
 
           var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
           return {
-            state: "annotations",
+            state: "/annotations",
             filters: {
               filters: filter
             }
@@ -146,7 +146,7 @@ module ngApp.search.models {
           if (field.val.length > 1) {
             var filters = $filter("makeFilter")([{name: "participant.participant_id", value: field.val}]);
             return {
-              state: "search.participants",
+              state: "/search/p",
               filters: {
                 filters: filters
               }
@@ -155,7 +155,7 @@ module ngApp.search.models {
 
           if (participant) {
             return {
-              state: "participant",
+              state: "/participants/",
               filters: {
                 participantId: participant[0].participant_id
               }
@@ -198,7 +198,12 @@ module ngApp.search.models {
             return a.id === 'participants'
           });
           if (participants.val.length === 1) {
-            return "project({ projectId: '" + participants.val[0].project.project_id + "'})";
+            return {
+              state: "/projects/",
+              filters: {
+                projectId: participants.val[0].project.project_id
+              }
+            };
           } else if (participants.val.length > 1) {
             var projects = _.map(participants.val, (participant) => {
               return {
@@ -212,7 +217,7 @@ module ngApp.search.models {
 
             if (projectId.length === 1) {
               return {
-                state: "project",
+                state: "/projects/",
                 filters: {
                   projectId: projects[0].project_id
                 }
@@ -221,7 +226,7 @@ module ngApp.search.models {
 
             var filters = $filter("makeFilter")([{name: "project_id", value: projectId}]);
             return {
-              state: "projects",
+              state: "/projects/t",
               filters: {
                 filters: filters
               }

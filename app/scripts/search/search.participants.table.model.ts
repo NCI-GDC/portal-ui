@@ -28,7 +28,7 @@ module ngApp.search.models {
 
             var filter = $filter("makeFilter")([{name: 'participants.participant_id', value: uuid},{name: 'files.data_type', value: data_type}]);
             return {
-                state: "search.files",
+                state: "/search/f",
                 filters: {
                     filters: filter
                 }
@@ -65,7 +65,7 @@ module ngApp.search.models {
                 });
 
                 return {
-                    state: "participant",
+                    state: "/participants/",
                     filters: {
                         participantId: uuid.val
                     }
@@ -83,7 +83,7 @@ module ngApp.search.models {
                 });
 
                 return {
-                    state: "project",
+                    state: "/projects/",
                     filters: {
                         projectId: project.val.project_id
                     }
@@ -142,7 +142,7 @@ module ngApp.search.models {
                     {name: "participants.participant_id", value: uuid}
                 ]);
                 return {
-                    state: "search.files",
+                    state: "/search/f",
                     filters: {
                         filters: filter
                     }
@@ -345,7 +345,7 @@ module ngApp.search.models {
 
                 var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
                 return {
-                    state: "annotations",
+                    state: "/annotations",
                     filters: {
                         filters: filter
                     }

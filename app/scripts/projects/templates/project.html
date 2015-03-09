@@ -64,10 +64,7 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Experimental Strategy</h3>
           </div>
-          <div class="panel-body" data-ng-if="!prc.project.summary.experimental_strategies">
-            <h4 class="list-group-item-heading" data-translate>No experimental strategies were found.</h4>
-          </div>
-          <table id="experimental-strategy-table" class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project.summary.experimental_strategies">
+          <table id="experimental-strategy-table" class="table table-striped table-hover table-condensed table-bordered">
             <thead>
             <tr>
               <th scope="col" data-translate>Analysis</th>
@@ -76,31 +73,35 @@
             </tr>
             </thead>
             <tbody>
-            <tr data-ng-repeat="es in prc.project.summary.experimental_strategies">
-              <td>{{ ::es.experimental_strategy }}</td>
-              <td class="text-right">
-                <a data-ui-sref="search.participants({ 'filters':
-                  {{ [
-                      { name: 'participants.project.project_id',value: prc.project.project_id },
-                      { name: 'files.experimental_strategy', value: es.experimental_strategy }
-                     ] | makeFilter
-                  }}
-                })">
-                  {{ ::es.participant_count | number:0 }}
-                </a>
-              </td>
-              <td class="text-right">
-                <a data-ui-sref="search.files({ 'filters':
-                  {{ [
-                      { name: 'participants.project.project_id',value: prc.project.project_id },
-                      { name: 'files.experimental_strategy', value: es.experimental_strategy }
-                     ] | makeFilter
-                  }}
-                })">
-                  {{ ::es.file_count | number:0 }}
-                </a>
-              </td>
-            </tr>
+              <tr data-ng-repeat="name in prc.expStrategyNames">
+                <td>{{ name }}</td>
+                <td data-ng-switch="prc.expData[name].participant_count">
+                  <a data-ng-switch-default data-ui-sref="search.participants({ 'filters':
+                    {{ [
+                        { name: 'participants.project.project_id',value: prc.project.project_id },
+                        { name: 'files.experimental_strategy', value: name }
+                       ] | makeFilter
+                    }}
+                    })">
+                      {{ prc.expData[name].participant_count }}
+                  </a>
+                  <span data-ng-switch-when="undefined">0</span>
+                  <span data-ng-switch-when="0">0</span>
+                </td>
+                <td data-ng-switch="prc.expData[name].file_count">
+                  <a data-ng-switch-default data-ui-sref="search.files({ 'filters':
+                    {{ [
+                        { name: 'participants.project.project_id',value: prc.project.project_id },
+                        { name: 'files.experimental_strategy', value: name }
+                       ] | makeFilter
+                    }}
+                    })">
+                      {{ prc.expData[name].file_count }}
+                  </a>
+                  <span data-ng-switch-when="undefined">0</span>
+                  <span data-ng-switch-when="0">0</span>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

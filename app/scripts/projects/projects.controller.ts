@@ -94,11 +94,15 @@ module ngApp.projects.controllers {
     project: IProject;
     availableData: any;
     dataTypeNames: string[];
+    expStrategyNames: string[];
+    expData: any;
   }
 
   class ProjectController implements IProjectController {
     availableData: any;
     dataTypeNames: string[];
+    expStrategyNames: string[];
+    expData: any;
 
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService) {
@@ -111,16 +115,63 @@ module ngApp.projects.controllers {
       }, {});
 
       this.dataTypeNames = ['Clinical',
-                       'Raw microarray data',
-                       'Raw sequencing data',
-                       'Simple nucleotide variation',
-                       'Copy number variation',
-                       'Structural rearrangement',
-                       'Gene expression',
-                       'Protein expression',
-                       'DNA methylation',
-                       'Other'
-                      ];
+                            'Raw microarray data',
+                            'Raw sequencing data',
+                            'Simple nucleotide variation',
+                            'Copy number variation',
+                            'Structural rearrangement',
+                            'Gene expression',
+                            'Protein expression',
+                            'DNA methylation',
+                            'Other'
+                          ];
+
+      this.expData = _.reduce(this.project.summary.experimental_strategies, function(result, dataType) {
+        result[dataType['experimental_strategy']] = {"file_count": dataType['file_count'],
+                                                     "participant_count": dataType['participant_count']
+                                                    };
+        return result;
+      }, {});
+
+      this.expStrategyNames = [ 'Genotyping Array',
+                                'Gene Expression Array',
+                                'Exon Array',
+                                'miRNA Expression Array',
+                                'Methylation Array',
+                                'CGH Array',
+                                'MSI-Mono-Dinucleotide Assay',
+                                'WGS',
+                                'WGA',
+                                'WXS',
+                                'RNA-Seq',
+                                'miRNA-Seq',
+                                'ncRNA-Seq',
+                                'WCS',
+                                'CLONE',
+                                'POOLCLONE',
+                                'AMPLICON',
+                                'CLONEEND',
+                                'FINISHING',
+                                'ChIP-Seq',
+                                'MNase-Seq',
+                                'DNase-Hypersensitivity',
+                                'Bisulfite-Seq',
+                                'EST',
+                                'FL-cDNA',
+                                'CTS',
+                                'MRE-Seq',
+                                'MeDIP-Seq',
+                                'MBD-Seq',
+                                'Tn-Seq',
+                                'FAIRE-seq',
+                                'SELEX',
+                                'RIP-Seq',
+                                'ChIA-PET',
+                                'DNA-Seq',
+                                'Total RNA-Seq',
+                                'VALIDATION',
+                                'OTHER'
+                              ];
     }
   }
 

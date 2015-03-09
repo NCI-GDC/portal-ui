@@ -14,7 +14,7 @@
          data-ng-keypress="hc.collapse($event)"
          aria-label="{{ 'Site Navigation' | translate }}">
       <ul class="nav navbar-nav">
-        <li ui-sref-active="active"><a ui-sref="projects"><i class="fa fa-folder-o"></i> Projects</a></li>
+        <li ui-sref-active="active"><a ui-sref="projects.table"><i class="fa fa-folder-o"></i> Projects</a></li>
         <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }">
           <a ui-sref="search.summary"><i class="fa fa-database"></i> Data</a>
         </li>

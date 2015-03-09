@@ -105,13 +105,6 @@ module ngApp.search.models {
             },
             enabled: true
         }, {
-            displayName: "Tumor Stage",
-            id: "person_neoplasm_cancer_status",
-            enabled: true,
-            template: function() {
-              return "tbd";
-            }
-        }, {
 
             displayName: "Files",
             id: "files",

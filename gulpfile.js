@@ -176,7 +176,7 @@ gulp.task('styles', function () {
       .pipe($.less())
       .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
       .pipe($.concat(f))
-      .pipe($.if(production, $.csso()))
+      //.pipe($.if(production, $.csso()))
     // Concatenate And Minify Styles
       .pipe(gulp.dest('dist/css'))
       .pipe($.size({title: 'styles'}));

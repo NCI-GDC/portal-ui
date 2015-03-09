@@ -32,7 +32,7 @@ module ngApp.reports.controllers {
         });
         
         var fileType = 'JSON';
-        var endpoint = 'reports';
+        var endpoint = 'reports/data-download-statistics';
 
         if ($window.URL && $window.URL.createObjectURL) {
           var params = {

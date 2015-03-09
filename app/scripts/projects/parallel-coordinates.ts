@@ -902,13 +902,6 @@ function ParallelCoordinates(data,options) {
         .attr("rel",function(d){
             return d.key;
         })
-        .on("click",function(d){
-            var $this=d3.select(this);
-            $this.classed("highlight",!($this.classed("highlight")))
-            languages_group
-                .selectAll("g.lang[rel='"+d.key+"']")
-                .classed("highlight",$this.classed("highlight"))
-        })
         .on("mouseover",function(d){
             d3.select(this)
                 .classed("hover",true);

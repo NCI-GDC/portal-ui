@@ -110,10 +110,7 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Available Data</h3>
           </div>
-          <div class="panel-body" data-ng-if="!prc.project.summary.data_types">
-            <h4 class="list-group-item-heading" data-translate>No available data.</h4>
-          </div>
-          <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered" data-ng-if="prc.project.summary.data_types">
+          <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered">
             <thead>
             <tr>
               <th scope="col" data-translate>Data Type</th>
@@ -122,31 +119,35 @@
             </tr>
             </thead>
             <tbody>
-            <tr data-ng-repeat="dt in prc.project.summary.data_types">
-              <td>{{ ::dt.data_type }}</td>
-              <td class="text-right">
-                <a data-ui-sref="search.participants({ 'filters':
-                  {{ [
-                      { name: 'participants.project.project_id',value: prc.project.project_id },
-                      { name: 'files.data_type', value: dt.data_type }
-                     ] | makeFilter
-                  }}
-                })">
-                    {{ dt.participant_count | number:0 }}
-                </a>
-              </td>
-              <td class="text-right">
-                <a data-ui-sref="search.files({ 'filters':
-                  {{ [
-                      { name: 'participants.project.project_id',value: prc.project.project_id },
-                      { name: 'files.data_type', value: dt.data_type }
-                     ] | makeFilter
-                  }}
-                })">
-                  {{ dt.file_count | number:0 }}
-                </a>
-              </td>
-            </tr>
+              <tr data-ng-repeat="name in prc.dataTypeNames">
+                <td>{{ name }}</td>
+                <td data-ng-switch="prc.availableData[name].participant_count">
+                  <a data-ng-switch-default data-ui-sref="search.participants({ 'filters':
+                    {{ [
+                        { name: 'participants.project.project_id',value: prc.project.project_id },
+                        { name: 'files.data_type', value: name }
+                       ] | makeFilter
+                    }}
+                    })">
+                      {{ prc.availableData[name].participant_count }}
+                  </a>
+                  <span data-ng-switch-when="undefined">0</span>
+                  <span data-ng-switch-when="0">0</span>
+                </td>
+                <td data-ng-switch="prc.availableData[name].file_count">
+                  <a data-ng-switch-default data-ui-sref="search.files({ 'filters':
+                    {{ [
+                        { name: 'participants.project.project_id',value: prc.project.project_id },
+                        { name: 'files.data_type', value: name }
+                       ] | makeFilter
+                    }}
+                    })">
+                      {{ prc.availableData[name].file_count }}
+                  </a>
+                  <span data-ng-switch-when="undefined">0</span>
+                  <span data-ng-switch-when="0">0</span>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

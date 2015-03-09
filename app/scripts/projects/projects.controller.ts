@@ -60,8 +60,8 @@ module ngApp.projects.controllers {
           size: 100
         }).then((data) => {
           this.projects = data;
-          
-          
+
+
           if (this.ProjectsState.tabs.graph.active) {
             githutTable(data,{filters:{file_size:this.$filter('size')}});
           }
@@ -92,12 +92,35 @@ module ngApp.projects.controllers {
 
   export interface IProjectController {
     project: IProject;
+    availableData: any;
+    dataTypeNames: string[];
   }
 
   class ProjectController implements IProjectController {
+    availableData: any;
+    dataTypeNames: string[];
+
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService) {
       CoreService.setPageTitle("Project " + project.project_id);
+      this.availableData = _.reduce(this.project.summary.data_types, function(result, dataType) {
+        result[dataType['data_type']] = {"file_count": dataType['file_count'],
+                                         "participant_count": dataType['participant_count']
+                                        };
+        return result;
+      }, {});
+
+      this.dataTypeNames = ['Clinical',
+                       'Raw microarray data',
+                       'Raw sequencing data',
+                       'Simple nucleotide variation',
+                       'Copy number variation',
+                       'Structural rearrangement',
+                       'Gene expression',
+                       'Protein expression',
+                       'DNA methylation',
+                       'Other'
+                      ];
     }
   }
 
@@ -230,8 +253,7 @@ function githutTable(data,config){
          dimensional:true
     }
   ];
-  
-      
+
   var aggregations = d3.keys(project_ids).reduce(function(a,key){
     var group = project_ids[key];
     var types = group.summary.data_types;
@@ -258,7 +280,7 @@ function githutTable(data,config){
     a[key] = the_returned;
     return a;
   },{});
-  
+
   var color = d3.scale.category10()
 
   var config = {

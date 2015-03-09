@@ -1,7 +1,7 @@
 <div class="container entity">
   <h1>
     <i class="fa fa-folder-o"></i>
-    {{ ::prc.project.project_id}}
+    {{ ::prc.project.project_id }}
   </h1>
 
   <div class="col-lg-12">
@@ -64,46 +64,7 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Experimental Strategy</h3>
           </div>
-          <table id="experimental-strategy-table" class="table table-striped table-hover table-condensed table-bordered">
-            <thead>
-            <tr>
-              <th scope="col" data-translate>Analysis</th>
-              <th scope="col" data-translate>Participants</th>
-              <th scope="col" data-translate>Files</th>
-            </tr>
-            </thead>
-            <tbody>
-              <tr data-ng-repeat="name in prc.expStrategyNames">
-                <td>{{ name }}</td>
-                <td data-ng-switch="prc.expData[name].participant_count">
-                  <a data-ng-switch-default data-ui-sref="search.participants({ 'filters':
-                    {{ [
-                        { name: 'participants.project.project_id',value: prc.project.project_id },
-                        { name: 'files.experimental_strategy', value: name }
-                       ] | makeFilter
-                    }}
-                    })">
-                      {{ prc.expData[name].participant_count }}
-                  </a>
-                  <span data-ng-switch-when="undefined">0</span>
-                  <span data-ng-switch-when="0">0</span>
-                </td>
-                <td data-ng-switch="prc.expData[name].file_count">
-                  <a data-ng-switch-default data-ui-sref="search.files({ 'filters':
-                    {{ [
-                        { name: 'participants.project.project_id',value: prc.project.project_id },
-                        { name: 'files.experimental_strategy', value: name }
-                       ] | makeFilter
-                    }}
-                    })">
-                      {{ prc.expData[name].file_count }}
-                  </a>
-                  <span data-ng-switch-when="undefined">0</span>
-                  <span data-ng-switch-when="0">0</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <entity-page-counts-table data-type="experimental-strategy" data-parent-field-name="project.project_id" data-parent-id="{{ prc.project.project_id }}" data-data="prc.project.summary.experimental_strategies"></entity-page-counts-table>
         </div>
       </div>
       <div class="col-lg-6 col-md-6">
@@ -111,46 +72,7 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Available Data</h3>
           </div>
-          <table id="available-data-table" class="table table-striped table-hover table-condensed table-bordered">
-            <thead>
-            <tr>
-              <th scope="col" data-translate>Data Type</th>
-              <th scope="col" data-translate>Participants</th>
-              <th scope="col" data-translate>Files</th>
-            </tr>
-            </thead>
-            <tbody>
-              <tr data-ng-repeat="name in prc.dataTypeNames">
-                <td>{{ name }}</td>
-                <td data-ng-switch="prc.availableData[name].participant_count">
-                  <a data-ng-switch-default data-ui-sref="search.participants({ 'filters':
-                    {{ [
-                        { name: 'participants.project.project_id',value: prc.project.project_id },
-                        { name: 'files.data_type', value: name }
-                       ] | makeFilter
-                    }}
-                    })">
-                      {{ prc.availableData[name].participant_count }}
-                  </a>
-                  <span data-ng-switch-when="undefined">0</span>
-                  <span data-ng-switch-when="0">0</span>
-                </td>
-                <td data-ng-switch="prc.availableData[name].file_count">
-                  <a data-ng-switch-default data-ui-sref="search.files({ 'filters':
-                    {{ [
-                        { name: 'participants.project.project_id',value: prc.project.project_id },
-                        { name: 'files.data_type', value: name }
-                       ] | makeFilter
-                    }}
-                    })">
-                      {{ prc.availableData[name].file_count }}
-                  </a>
-                  <span data-ng-switch-when="undefined">0</span>
-                  <span data-ng-switch-when="0">0</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <entity-page-counts-table data-type="available-data" data-parent-field-name="project.project_id" data-parent-id="{{ prc.project.project_id }}" data-data="prc.project.summary.data_types"></entity-page-counts-table>
         </div>
       </div>
 

@@ -232,8 +232,11 @@ module ngApp.reports.controllers {
           use:{
             "project_id":"project_id"
           },
+          sorter:{
+            "project_id":'file_count'
+          },
            sorting:{
-            "project_id":d3.descending,
+            "project_id":d3.ascending,
             "primary_site":d3.ascending
           },
 

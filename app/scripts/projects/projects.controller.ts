@@ -299,6 +299,9 @@ function githutTable(data,config){
     use:{
         "project_id":"project_id"
     },
+    sorter:{
+        "project_id":"participant_count"
+    },
 //    color_group_map:columns.map(function(c){return c.colorgroup}),
     color_group_map:columns.reduce(function(a,b){
        a[b.id] = b.colorgroup;
@@ -316,7 +319,7 @@ function githutTable(data,config){
      * Don't know how well this is implemented.
      */
     sorting:{
-      "project_id":d3.descending,
+      "project_id":d3.ascending,
       "primary_site":d3.ascending
     },
 

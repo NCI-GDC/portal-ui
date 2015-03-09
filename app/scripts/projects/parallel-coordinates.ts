@@ -28,6 +28,7 @@ function ParallelCoordinates(data,options) {
         options.columns.forEach(function(d){
 
             var use=options.use[d] || d; 
+            var sorter=options.sorter[d] || d;
 
 
             if(options.scale_map[d]==="ordinal") {
@@ -51,8 +52,8 @@ function ParallelCoordinates(data,options) {
 //                        inc+=0.001;
 //                    }
 
-                    var __a=(a.values[use]),
-                        __b=(b.values[use]);
+                    var __a=(a.values[sorter]),
+                        __b=(b.values[sorter]);
 
                     if(options.dimensions.indexOf(d)==-1) {
                         __a=(a.values[use]/((options.dimensions.indexOf(use)>-1)?1:a.values[options.ref]));

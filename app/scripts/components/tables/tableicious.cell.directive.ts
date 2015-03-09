@@ -4,11 +4,9 @@ module ngApp.components.tables.directives.tableicious {
         return {
             restrict:"AE",
             controller:function($scope, $element,$compile,$filter){
-
-                $scope.$filter = $filter;
-                _.defer(function(){
-
+                function doCompile() {
                     if ($scope.heading.compile) {
+                        $element.empty();
                         $scope.row = $scope.$parent.datum;
                         var htm;
                         try {
@@ -19,6 +17,20 @@ module ngApp.components.tables.directives.tableicious {
                         }
                         var compiled = $compile(htm)($scope);
                         $element.append(compiled);
+                    }
+                }
+
+                $scope.$filter = $filter;
+                _.defer(function(){
+
+                    if ($scope.heading.compile) {
+                        doCompile();
+
+                        $scope.$watch((scope)=> {
+                            return scope.$parent.datum;
+                        }, () => {
+                            doCompile();
+                        }, true);
                     }
 
                 })

@@ -43,7 +43,7 @@ module ngApp.participants {
               "samples.portions.analytes.analyte_type",
               "samples.portions.analytes.aliquots.aliquot_id",
               "samples.portions.analytes.aliquots.submitter_id",
-              "samples.portions.annotations.annotation_id"
+              "annotations.annotation_id"
            ]
           });
         }

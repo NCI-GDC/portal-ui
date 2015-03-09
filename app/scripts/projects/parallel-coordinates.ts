@@ -545,7 +545,7 @@ function ParallelCoordinates(data,options) {
 			.attr("x",-10 )
 			.attr("y",3)
 			.text(function(d){
-				return d.value;
+//				return d.value;
 			})
             .attr('class','visible-always')
 
@@ -588,11 +588,22 @@ function ParallelCoordinates(data,options) {
                   return a;
                 }
           
-//                debugger;
+//                return 0;
+//          
+////                debugger;
           
                 options.filters = options.filters || {};
           
                 var filter = options.filters[d.column] || noop;
+          
+                if (d.column === 'primary_site' &&
+                      _.contains(drawn_primary_sites, d.value)) {
+                    return '';
+                }
+          
+                if (d.column === 'primary_site'){
+                  drawn_primary_sites.push(d.value);
+                }
             
                 if (_.isNumber(d.value)){
                     return filter(parseInt(d.value));
@@ -936,6 +947,8 @@ function ParallelCoordinates(data,options) {
                 return yscales[options.use[d.col]||d.col](d.y);
             }
         });
+  
+    var drawn_primary_sites = [];
 	
 	
 	

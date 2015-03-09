@@ -584,7 +584,7 @@ function ParallelCoordinates(data,options) {
             })
             .text(function(d){
           
-                function noop(a){
+                function id(a){
                   return a;
                 }
           
@@ -594,7 +594,7 @@ function ParallelCoordinates(data,options) {
           
                 options.filters = options.filters || {};
           
-                var filter = options.filters[d.column] || noop;
+                var filter = options.filters[d.column] || undefined;
           
                 if (d.column === 'primary_site' &&
                       _.contains(drawn_primary_sites, d.value)) {
@@ -606,12 +606,19 @@ function ParallelCoordinates(data,options) {
                 }
             
                 if (_.isNumber(d.value)){
-                    return filter(parseInt(d.value));
+                    var commify = d3.format(',');
+                    if (filter) {
+                      return filter(parseInt(d.value));
+                    } else {
+                      return commify(d.value);
+                    }
+                    
                 } else {
                     var t = d.value;
                     if (t.length > 18) {
                       t = t.slice(0,15).concat('...');
                     }
+                    filter = filter || id;
                     return filter(t);
                 }
                 

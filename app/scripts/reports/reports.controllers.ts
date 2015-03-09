@@ -14,7 +14,7 @@ module ngApp.reports.controllers {
 
     /* @ngInject */
     constructor(private CoreService: ICoreService, $scope,ReportsService, $q,ProjectsService,$timeout,private LocationService: ILocationService, private config: IGDCConfig,  private $modal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
-                private $window: ng.IWindowService, private UserService: IUserService,$timeout) {
+                private $window: ng.IWindowService, private UserService: IUserService,$timeout,$filter) {
 
       CoreService.setPageTitle("Reports");
       
@@ -273,6 +273,9 @@ module ngApp.reports.controllers {
            * Related to animation
            */
           duration:1000,
+          filters:{
+            file_size: $filter('size')
+          }
         };
 
         $timeout(function(){

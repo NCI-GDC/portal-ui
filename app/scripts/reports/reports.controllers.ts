@@ -170,18 +170,26 @@ module ngApp.reports.controllers {
             scale:'linear',
             dimensional:true
           }];
+        
+        var order = ["Clinical", "Raw microarray data", "Raw sequencing data", "Simple nucleotide variation", "Copy number variation", "Structural rearrangement", "Gene expression", "Protein expression", "DNA methylation", "Other"];
 
         var data_types = dummymap.reduce(function(a,b){return a.concat(b.data_types)},[])
         var nest = d3.nest().key(function(a){return a.data_type}).entries(data_types);
-
-        nest.forEach(function(a){
-          columns.splice(2,0,{
+        
+        var types = nest.map(function(a){
+          return {
             id:a.key,
             display_name:[a.key],
             colorgroup:'file_count',
             scale:'ordinal',
             dimensional:true
-          });
+          };
+        });
+        
+        types = types.sort(function(a,b){return order.indexOf(a) - order.indexOf(b)});
+
+        types.forEach(function(a){
+          columns.splice(2,0,a);
         });
 
 

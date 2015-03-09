@@ -197,15 +197,15 @@ function githutTable(data,config){
          dimensional:true,
         colorgroup:'file_count'
     },{
-        id:'Other',
-        display_name:['Other'],
+        id:'DNA methylation',
+        display_name:['Meth'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
         colorgroup:'file_count'
     },{
-        id:'DNA methylation',
-        display_name:['Meth'],
+        id:'Other',
+        display_name:['Other'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
@@ -229,6 +229,7 @@ function githutTable(data,config){
          dimensional:true
     }
   ];
+  
       
   var aggregations = d3.keys(project_ids).reduce(function(a,key){
     var group = project_ids[key];

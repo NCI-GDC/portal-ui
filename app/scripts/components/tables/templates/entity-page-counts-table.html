@@ -1,18 +1,19 @@
 <table id="{{ tableId }}" class="table table-striped table-hover table-condensed table-bordered">
 <thead>
   <tr>
-    <th scope="col" data-translate>Analysis</th>
-    <th scope="col" data-translate>Participants</th>
+    <th scope="col" data-ng-if="tableId === 'experimental-strategy-table'" data-translate>Analysis</th>
+    <th scope="col" data-ng-if="tableId === 'available-data-table'" data-translate>Data Type</th>
+    <th scope="col" data-ng-if="parentFieldName === 'participants.project.project_id'" data-translate>Participants</th>
     <th scope="col" data-translate>Files</th>
   </tr>
   </thead>
   <tbody>
     <tr data-ng-repeat="name in names ">
       <td>{{ name }}</td>
-      <td data-ng-switch="dataTransformed[name].participant_count">
+      <td data-ng-if="parentFieldName === 'participants.project.project_id'" data-ng-switch="dataTransformed[name].participant_count">
         <a data-ng-switch-default data-ui-sref="search.participants({ 'filters':
           {{ [
-              { name: 'participants.' + parentFieldName, value: parentId },
+              { name: parentFieldName, value: parentId },
               { name: 'files.' + keyName, value: name }
              ] | makeFilter
           }}
@@ -25,7 +26,7 @@
       <td data-ng-switch="dataTransformed[name].file_count">
         <a data-ng-switch-default data-ui-sref="search.files({ 'filters':
           {{ [
-              { name: 'participants.' + parentFieldName, value: parentId },
+              { name: parentFieldName, value: parentId },
               { name: 'files.' + keyName, value: name }
              ] | makeFilter
           }}

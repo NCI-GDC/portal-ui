@@ -202,7 +202,7 @@ module ngApp.components.tables.services {
                 try {
                     result = heading.template(field,row,scope, $filter);
                 } catch (e) {
-                    result = '?';
+                    result = '--';
                 }
             } else {
                 result = this.delimitedStringToValue(id, row);
@@ -242,7 +242,7 @@ module ngApp.components.tables.services {
                     result = result.state + result.filters[_.keys(result.filters)[0]];
                 }
             } catch (e) {
-                result = '?';
+                result = '--';
             }
 
             return result;

@@ -20,8 +20,13 @@ module ngApp.projects.models {
         {
             displayName: "Participant ID",
             id: "participant_id",
-            template: function () {
-              return "tbd";
+            sref: function (field) {
+              return {
+                state: "participant",
+                filters: {
+                  participantId: field.val
+                }
+              }
             },
             sortable: true
         },
@@ -116,7 +121,8 @@ module ngApp.projects.models {
           "notes",
           "classification",
           "project.program.name",
-          "project.project_id"
+          "project.project_id",
+          "participant_id"
         ]
     }
     angular.module("annotations.table.model", [])

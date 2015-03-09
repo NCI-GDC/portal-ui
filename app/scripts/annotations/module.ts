@@ -31,7 +31,8 @@ module ngApp.annotations {
                 "classification",
                 "notes",
                 "created_datetime",
-                "project.project_id"
+                "project.project_id",
+                "participant_id"
               ]
             });
         }

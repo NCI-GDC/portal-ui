@@ -115,6 +115,7 @@ var primary_sites = [];
 
 function githutTable(data,config){
   var hits = data.hits;
+  primary_sites = [];
 
   d3.select(".githut > #pc svg")
     .remove();

@@ -45,6 +45,10 @@
             <td>{{ ::fc.file.file_id }}</td>
           </tr>
           <tr>
+            <th scope="row" data-translate>File Origin</th>
+            <td>{{ ::fc.file.file_origin | humanify }}</td>
+          </tr>
+          <tr>
             <th scope="row" data-translate>Data format</th>
             <td>{{ ::fc.file.data_format }}</td>
           </tr>
@@ -65,10 +69,6 @@
             <td>{{ ::fc.file.uploaded | date }}</td>
           </tr>
           <tr>
-            <th scope="row" data-translate>Modified</th>
-            <td>{{ ::fc.file.updated | date }}</td>
-          </tr>
-          <tr>
             <th scope="row" data-translate>State</th>
             <td>{{ ::fc.file.state | humanify }}</td>
           </tr>
@@ -82,16 +82,6 @@
                     })">
                   {{ fc.archiveCount }} files
                 </a>)
-                </span>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>Tag</th>
-            <td>
-              <span data-ng-if="!fc.file.tags">--</span>
-                <span data-ng-repeat="tag in fc.file.tags track by $index">
-                  {{ tag }}
-                  <span data-ng-if="!$last">, </span>
                 </span>
             </td>
           </tr>
@@ -140,9 +130,15 @@
           <td>{{ ::fc.file.center.short_name }}</td>
         </tr>
         <tr>
-          <th scope="row" data-translate>Data Submitted Since</th>
-          <td>{{ ::fc.file.submittedSince | date }}</td>
-        </tr>
+          <th scope="row" data-translate>Tag</th>
+          <td>
+            <span data-ng-if="!fc.file.tags">--</span>
+              <span data-ng-repeat="tag in fc.file.tags track by $index">
+                {{ tag }}
+                <span data-ng-if="!$last">, </span>
+              </span>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

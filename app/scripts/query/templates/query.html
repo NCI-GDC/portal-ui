@@ -6,45 +6,45 @@
 
       <ul class="nav nav-tabs" style="margin-bottom: 20px">
         <li role="presentation"
-            data-ng-class="{ active: qc.QState.tabs.summary.active }"
-            data-ng-click="qc.select('summary')">
+            data-ng-class="{ active: sc.QState.tabs.summary.active }"
+            data-ng-click="sc.select('summary')">
           <a>{{ 'Summary' | translate }}</a>
         </li>
         <li role="presentation"
-            data-ng-class="{ active: qc.QState.tabs.files.active }"
-            data-ng-click="qc.select('files')">
-          <a>{{ 'Files' | translate }} ({{qc.files.pagination.total| number:0}})</a>
+            data-ng-class="{ active: sc.QState.tabs.files.active }"
+            data-ng-click="sc.select('files')">
+          <a>{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
         </li>
         <li role="presentation"
-            data-ng-class="{ active: qc.QState.tabs.participants.active }"
-            data-ng-click="qc.select('participants')">
-          <a>{{ 'Participants' | translate }} ({{qc.participants.pagination.total| number:0}})</a>
+            data-ng-class="{ active: sc.QState.tabs.participants.active }"
+            data-ng-click="sc.select('participants')">
+          <a>{{ 'Participants' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
         </li>
       </ul>
-      <div class="pane-section" data-ng-show="qc.QState.tabs.summary.active">
+      <div class="pane-section" data-ng-show="sc.QState.tabs.summary.active">
 
-        <h2 data-ng-if="qc.files.hits.length === 0" data-translate>
+        <h2 data-ng-if="sc.files.hits.length === 0" data-translate>
           No files found using those filters.
         </h2>
 
-        <div data-ng-include="'query/templates/query.summary.html'" data-ng-if="qc.files.hits.length > 0"></div>
+        <div data-ng-include="'search/templates/search.summary.html'" data-ng-if="sc.files.hits.length > 0"></div>
       </div>
-      <div class="pane-section" data-ng-show="qc.QState.tabs.participants.active">
+      <div class="pane-section" data-ng-show="sc.QState.tabs.participants.active">
 
-        <h2 data-ng-if="qc.participants.hits.length === 0" data-translate>
+        <h2 data-ng-if="sc.participants.hits.length === 0" data-translate>
           No participants found using those filters.
         </h2>
 
-        <div data-ng-include="'query/templates/query.participants.html'" data-ng-if="qc.participants.hits.length > 0"></div>
+        <div data-ng-include="'search/templates/search.participants.html'" data-ng-if="sc.participants.hits.length > 0"></div>
       </div>
       <div class="pane-section"
-           data-ng-show="qc.QState.tabs.files.active">
+           data-ng-show="sc.QState.tabs.files.active">
 
-        <h2 data-ng-if="qc.files.hits.length === 0" data-translate>
+        <h2 data-ng-if="sc.files.hits.length === 0" data-translate>
           No files found using those filters.
         </h2>
 
-        <div data-ng-include="'query/templates/query.files.html'" data-ng-if="qc.files.hits.length > 0"></div>
+        <div data-ng-include="'search/templates/search.files.html'" data-ng-if="sc.files.hits.length > 0"></div>
       </div>
     </div>
   </div>

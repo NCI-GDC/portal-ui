@@ -11,6 +11,7 @@ module ngApp.query.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import ISearchService = ngApp.search.services.ISearchService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
   export interface IQueryController {
@@ -43,6 +44,7 @@ module ngApp.query.controllers {
                 private $state: ng.ui.IStateService,
                 public QState: IQueryState,
                 public CartService: ICartService,
+                public SearchService: ISearchService,
                 public FilesService: IFilesService,
                 public ParticipantsService: IParticipantsService,
                 private LocationService: ILocationService,
@@ -75,59 +77,26 @@ module ngApp.query.controllers {
         return;
       }
 
+      this.SearchService.getSummary().then((data) => {
+        this.summary = data;
+      });
+
       this.FilesService.getFiles({
-        fields: [
-          "data_access",
-          "data_format",
-          "data_level",
-          "data_subtype",
-          "data_type",
-          "file_extension",
-          "file_name",
-          "file_size",
-          "file_id",
-          "platform",
-          "updated",
-          "archive.disease_code",
-          "archive.revision",
-          "archive.archive_name",
-          "archive.archive_uuid",
-          "participants.bcr_patient_uuid",
-        ]
+        fields: this.SearchTableFilesModel.fields
       }).then((data) => {
         if (!data.hits.length) {
           this.CoreService.setSearchModelState(true);
         }
-
         this.files = data;
+
+        for(var i = 0; i < this.files.hits.length; i++) {
+          this.files.hits[i].related_ids = _.pluck(this.files.hits[i].related_files, "file_id");
+        }
+
       });
 
       this.ParticipantsService.getParticipants({
-        fields: [
-          "bcr_patient_barcode",
-          "bcr_patient_uuid",
-          "gender",
-          "patient_id",
-          "vital_status",
-          "person_neoplasm_cancer_status",
-          "project.project_id",
-          "tumor_tissue_site",
-          "files.file_id",
-          "files.file_name",
-          "files.file_size",
-          "files.data_type",
-          "files.data_access",
-          "files.archive.revision",
-          "files.archive.disease_code",
-          "files.data_format",
-          "files.data_level",
-          "summary.data_file_count",
-          "summary.file_size",
-          "summary.data_types.file_count",
-          "summary.data_types.data_type",
-          "summary.experimental_strategies.file_count",
-          "summary.experimental_strategies.experimental_strategy"
-        ]
+        fields: this.SearchTableParticipantsModel.fields
       }).then((data: IFiles) => {
         if (!data.hits.length) {
           this.CoreService.setSearchModelState(true);
@@ -179,6 +148,7 @@ module ngApp.query.controllers {
   angular
       .module("query.controller", [
         "query.services",
+        "search.services",
         "location.services",
         "cart.services",
         "core.services",

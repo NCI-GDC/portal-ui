@@ -4,6 +4,13 @@ module ngApp.cart.directives {
   import IFilesService = ngApp.files.services.IFilesService;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
+  import IFile = ngApp.files.models.IFile;
+
+  interface IAddToCartScope extends ng.IScope {
+    CartService: ICartService;
+    addToCart(files: IFile[]): void;
+    removeFromCart(files: IFile[]): void;
+  }
 
   function AddToCartSingle(): ng.IDirective {
     return {
@@ -12,7 +19,7 @@ module ngApp.cart.directives {
         file: "=",
       },
       templateUrl: "cart/templates/add-to-cart-button-single.html",
-      controller: function($scope: ng.IScope, CartService: ICartService) {
+      controller: function($scope: IAddToCartScope, CartService: ICartService) {
         $scope.CartService = CartService;
         $scope.addToCart = function(files: IFile[]) {
           CartService.addFiles(files)
@@ -38,7 +45,7 @@ module ngApp.cart.directives {
           attrs.addAllOnly = false;
       },
       templateUrl: "cart/templates/add-to-cart-button-all.html",
-      controller: function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
+      controller: function($scope: IAddToCartScope, CartService: ICartService, LocationService: ILocationService,
                            FilesService: IFilesService, UserService: IUserService) {
 
         $scope.CartService = CartService;

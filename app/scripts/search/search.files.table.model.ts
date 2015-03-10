@@ -116,7 +116,7 @@ module ngApp.search.models {
           var annotations = _.find(row, (item) => {
             return item.id === "annotations";
           });
-          var annotationIds = _.map(annotations.val, (annotation) => {
+          var annotationIds = _.map(annotations.val, (annotation: any) => {
             return annotation.annotation_id;
           });
 
@@ -176,7 +176,7 @@ module ngApp.search.models {
             if (participants.val.length === 1) {
               return participants.val[0].project.project_id;
             } else if (participants.val.length > 1) {
-              var projects = _.map(participants.val, (participant) => {
+              var projects = _.map(participants.val, (participant: any) => {
                 return {
                   project_id: participant.project.project_id
                 };
@@ -206,7 +206,7 @@ module ngApp.search.models {
               }
             };
           } else if (participants.val.length > 1) {
-            var projects = _.map(participants.val, (participant) => {
+            var projects = _.map(participants.val, (participant: TableicousEntryDefinition) => {
               return {
                 project_id: participant.project.project_id
               };

@@ -7,7 +7,6 @@ module ngApp.annotations.controllers {
 
   export interface IAnnotationsController {
     annotations: IAnnotations;
-    sortColumns: any;
   }
 
   interface IAnnotationsScope extends ng.IScope {

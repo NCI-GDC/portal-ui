@@ -27,7 +27,7 @@ module ngApp.files.models {
   }
 
   export interface IFile extends IEntity {
-    access: string;
+    data_access: string;
     data_format: IDataFormat;
     data_subtype: string;
     data_type: string;

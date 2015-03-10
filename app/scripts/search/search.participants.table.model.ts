@@ -137,7 +137,7 @@ module ngApp.search.models {
                 var files = _.find(row, (item) => {
                     return item.id === "files";
                 });
-                var fileIds = _.map(files.val, (file) => {
+                var fileIds = _.map(files.val, (file: any) => {
                     return file.file_id;
                 });
 
@@ -192,7 +192,7 @@ module ngApp.search.models {
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
+                        var data = _.find(summary.val.data_types, function(x: any){
                             return x.data_type === 'Raw microarray data';
                         });
 
@@ -209,7 +209,7 @@ module ngApp.search.models {
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
+                        var data = _.find(summary.val.data_types, function(x: any){
                             return x.data_type === 'Raw sequencing data';
                         });
 
@@ -227,7 +227,7 @@ module ngApp.search.models {
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
+                        var data = _.find(summary.val.data_types, function(x: any){
                             return x.data_type === "Simple nucleotide variation";
                         });
 
@@ -243,7 +243,7 @@ module ngApp.search.models {
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
+                        var data = _.find(summary.val.data_types, function(x: any){
                             return x.data_type === 'Copy number variation';
                         });
 
@@ -260,7 +260,7 @@ module ngApp.search.models {
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
+                        var data = _.find(summary.val.data_types, function(x: any){
                             return x.data_type === 'Structural rearrangement';
                         });
 
@@ -277,7 +277,7 @@ module ngApp.search.models {
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
+                        var data = _.find(summary.val.data_types, function(x: any){
                             return x.data_type === 'Gene expression';
                         });
 
@@ -294,7 +294,7 @@ module ngApp.search.models {
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
+                        var data = _.find(summary.val.data_types, function(x: any){
                             return x.data_type === 'Protein expression';
                         });
 
@@ -311,7 +311,7 @@ module ngApp.search.models {
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
+                        var data = _.find(summary.val.data_types, function(x: any){
                             return x.data_type === 'DNA methylation';
                         });
 
@@ -328,7 +328,7 @@ module ngApp.search.models {
                             return x.id === 'summary';
                         });
 
-                        var data = _.find(summary.val.data_types, function(x){
+                        var data = _.find(summary.val.data_types, function(x: any){
                             return x.data_type === 'Other';
                         });
 
@@ -351,7 +351,7 @@ module ngApp.search.models {
                 var annotations = _.find(row, (item) => {
                     return item.id === "annotations";
                 });
-                var annotationIds = _.map(annotations.val, (annotation) => {
+                var annotationIds = _.map(annotations.val, (annotation: any) => {
                     return annotation.annotation_id;
                 });
 

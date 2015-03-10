@@ -48,6 +48,10 @@ module ngApp.components.tables.directives.tableicious {
          */
         headings:TableiciousColumnDefinition[];
 
+        /**
+         * @fields An array of field names that will be used to populate the table
+         */
+        fields:string[];
     }
 
     export class TableiciousEntryDefinition {

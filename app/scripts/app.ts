@@ -10,6 +10,7 @@ declare module ngApp {
     apiCommitLink: string;
     apiTag: string;
     supportedAPI: string;
+    apiIsMismatched: boolean;
   }
 
   export interface IRootScope extends ng.IScope {

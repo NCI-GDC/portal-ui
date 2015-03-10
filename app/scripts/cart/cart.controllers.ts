@@ -32,6 +32,8 @@ module ngApp.cart.controllers {
     pagination: any = {};
     processPaging: boolean = true;
     displayedFiles: IFile[];
+    numberFilesGraph: any;
+    sizeFilesGraph: any;
 
     /* @ngInject */
     constructor(private $scope: ng.IScope, public files: IFile[], private CoreService: ICoreService,

@@ -19,7 +19,7 @@ module ngApp.components.charts {
     data: any;
     heading: string;
     height: number;
-    labelFilter: string;  
+    labelFilter: string;
     redraw(): void;
   }
 

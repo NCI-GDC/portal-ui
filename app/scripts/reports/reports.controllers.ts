@@ -82,35 +82,83 @@ module ngApp.reports.controllers {
       }
 
       ReportsService.getReports().then(function(reports){
-        CoreService.setSearchModelState(true);
+        
+        var columns = [{
+          id:'project_id',
+          display_name:["Project","project_id"],
+          scale:'ordinal',
+          dimensional:true
+        },
+        {
+          id:'file_count',
+          display_name:["File","Count"],
+          scale:'ordinal',
+          dimensional:true,
+          colorgroup:'file_count'
+        },
+
+        {
+          id:'file_size',
+          display_name:["File","Size"],
+          scale:'ordinal',
+          dimensional:true,
+          colorgroup:'file_size'
+        },
+        {
+          id:'primary_site',
+          display_name:["Primary","Site"],
+          scale:'linear',
+          dimensional:true
+        }];
+        
+        var color = d3.scale.category10()
+        
+        var order = ["Clinical", "Raw microarray data", 
+                      "Raw sequencing data", "Simple nucleotide variation", 
+                      "Copy number variation", "Structural rearrangement", 
+                      "Gene expression", "Protein expression",  
+                      "DNA methylation", "Other"];
+        
+         
+        function addFakeData (array) {
+          var x = ['ACC','AGG','LUAD','LUSC','BCC',"COAD","CESC","PRAD",'READ','SKCM','STAD'];
+          var t = ['Ovary','Skin','Brain','Heart','Lung'];
+
+          x.forEach(function(g){
+            var n = _.clone(array[0]);
+            n.project_id = g;
+            n.count += Math.floor(Math.random() * 1000);
+            n.primary_site = _.sample(t);
+            n.size_in_mb += Math.floor(Math.random() * 1000);
+            array.push(n);
+          })
+          
+          return array;
+        }
+        
+        primary_sites = [];
 
 
-
-
-
-        var dummymap = reports.hits.hits.map(function(z){
-          return z._source;
+        var data = reports.hits.map(function(a){
+          a.file_size = a.size;
+          a.file_count = a.count;
+          return a;
         });
-
-        var x = ['ACC','AGG','LUAD','LUSC','BCC',"COAD","CESC","PRAD",'READ','SKCM','STAD'];
-        var t = ['Ovary','Skin','Brain','Heart','Lung'];
-
-        x.forEach(function(g){
-          var n = _.clone(dummymap[0]);
-          n.project_id = g;
-          n.count += Math.floor(Math.random() * 1000);
-          n.primary_site = _.sample(t);
-          n.size_in_mb += Math.floor(Math.random() * 1000);
-          dummymap.push(n);
-        })
+        
+        console.log("data?",data);
+        
+//        data = addFakeData(data);
+        
+     
 
 
 
-        var dummy_aggregations = dummymap.reduce(function(a,b){
+        var aggregations = data.reduce(function(a,b){
 
           if (!_.contains(primary_sites,b.primary_site)){
             primary_sites.push(b.primary_site);
           }
+          
           if (a[b.project_id]) {
             var c = a[b.project_id];
             c.file_size += b.size_in_mb;
@@ -123,8 +171,9 @@ module ngApp.reports.controllers {
 
           } else {
             a[b.project_id] = {
-              file_size:b.size_in_mb,
+              file_size:b.size,
               project_id:b.project_id,
+              project_name:b.project_name,
               primary_site:b.primary_site,
               file_count:b.count,
               colorgroup:'file_count'
@@ -141,39 +190,17 @@ module ngApp.reports.controllers {
           return a;
         },{});
         
-          var color = d3.scale.category10()
-
-        var columns = [{
-          id:'project_id',
-          display_name:["Project","project_id"],
-          scale:'ordinal',
-          dimensional:true
-        },
-          {
-            id:'file_count',
-            display_name:["File","Count"],
-            scale:'ordinal',
-            dimensional:true,
-            colorgroup:'file_count'
-          },
-
-          {
-            id:'file_size',
-            display_name:["File","Size"],
-            scale:'ordinal',
-            dimensional:true,
-            colorgroup:'file_size'
-          },
-          {
-            id:'primary_site',
-            display_name:["Primary","Site"],
-            scale:'linear',
-            dimensional:true
-          }];
+        console.log("Aggregations?",aggregations);
         
-        var order = ["Clinical", "Raw microarray data", "Raw sequencing data", "Simple nucleotide variation", "Copy number variation", "Structural rearrangement", "Gene expression", "Protein expression", "DNA methylation", "Other"];
 
-        var data_types = dummymap.reduce(function(a,b){return a.concat(b.data_types)},[])
+        
+      
+
+    
+        
+ 
+
+        var data_types = data.reduce(function(a,b){return a.concat(b.data_types)},[])
         var nest = d3.nest().key(function(a){return a.data_type}).entries(data_types);
         
         var types = nest.map(function(a){
@@ -248,17 +275,18 @@ module ngApp.reports.controllers {
           formats:{
             "primary_site":"d"
           },
-            color_group_map:columns.reduce(function(a,b){
-       a[b.id] = b.colorgroup;
-       return a;
-    },{}),
-        color_groups:{
-          'file_count':color(0),
-          'file_size':color(1),
-          'participant_count':color(2)
-
-        },
-
+          
+          color_group_map:columns.reduce(function(a,b){
+             a[b.id] = b.colorgroup;
+             return a;
+          },{}),
+          
+          color_groups:{
+            'file_count':color(0),
+            'file_size':color(1),
+            'participant_count':color(2)
+          },
+          
           /**
            *  Not known what this is. Any values in columns that are not in dimensions causes an error.
            */
@@ -280,45 +308,50 @@ module ngApp.reports.controllers {
             file_size: $filter('size')
           }
         };
-
+        
+        console.log("Final PC data: ", d3.values(aggregations));
         $timeout(function(){
-
-
-
-
-
-
-          $scope.githutConfig = config;
-          $scope.githutData = d3.values(dummy_aggregations);
-          
-              pc=new ParallelCoordinates(d3.values(dummy_aggregations),config);
+        
+        
+          pc=new ParallelCoordinates(d3.values(aggregations),config);
         },500);
 
 
+        $scope.byProject = dataNest('project_id').entries(data);
+        $scope.byDisease = dataNest('disease_type').entries(data);
+        $scope.byProgram = dataNest('program').entries(data);
 
-        $scope.byProject = dataNest('project_id').entries(dummymap);
-        $scope.byDisease = dataNest('disease_type').entries(dummymap);
-        $scope.byProgram = dataNest('program').entries(dummymap);
-
-        $scope.byDataType = dataNest('data_type').entries(dummymap.reduce(function(a,b){
+        $scope.byDataType = dataNest('data_type').entries(data.reduce(function(a,b){
           a = a.concat(b.data_types);
           return a;
         },[]));
+        
+        $scope.bySubtype = dataNest('data_subtype').entries(data.reduce(function(a,b){
+          a = a.concat(b.data_subtypes);
+          return a;
+        },[]));
 
-        $scope.byStrat = dataNest('experimental_strategy').entries(dummymap.reduce(function(a,b){
+        $scope.byStrat = dataNest('experimental_strategy').entries(data.reduce(function(a,b){
           a = a.concat(b.experimental_strategies);
           return a;
         },[]));
-
-        $scope.byUserType = dataNest('user_type').entries(dummymap.reduce(function(a,b){
-          a = a.concat(b.user_types);
+        
+        $scope.byDataAccess = dataNest('access').entries(data.reduce(function(a,b){
+          a = a.concat(b.data_access);
           return a;
         },[]));
 
-        $scope.byLocation = dataNest('country').entries(dummymap.reduce(function(a,b){
+        $scope.byUserType = dataNest('user_access_type').entries(data.reduce(function(a,b){
+          a = a.concat(b.user_access_types);
+          return a;
+        },[]));
+
+        $scope.byLocation = dataNest('country').entries(data.reduce(function(a,b){
           a = a.concat(b.countries);
           return a;
         },[]));
+        
+//        debugger;
 
 
         function dataNest(key){
@@ -327,12 +360,14 @@ module ngApp.reports.controllers {
               .rollup(function(d){
                 return {
                   file_count:d3.sum(d.map(function(x){return x.count})),
-                  file_size:d3.sum(d.map(function(x){return x.size_in_mb})),
+                  file_size:d3.sum(d.map(function(x){return x.size})),
+                  project_name:d[0].project_name
                 }
               })
               .sortValues(function(a,b){return a.file_count - b.file_count});
 
         }
+        
 
 
 

@@ -72,7 +72,10 @@
           <thead>
           <tr>
             <th data-translate>
-              Project
+              Project ID
+            </th>
+            <th data-translate>
+              Project Name
             </th>
             <th>
               # of files
@@ -87,6 +90,9 @@
             <th>
               {{project.key}}
             </th>
+              <td>
+              {{project.values.project_name}}
+            </td>
             <td>
               {{project.values.file_count | number }}
             </td>
@@ -239,15 +245,15 @@
               </tr>
               </thead>
               <tbody>
-              <tr>
+              <tr ng-repeat='p in bySubtype'>
                 <th>
-                  MiRNA Quantification
+                  {{p.key}}
                 </th>
                 <td>
-                  3,705
+                  {{p.values.file_count | number}}
                 </td>
                 <td>
-                  77.77GB
+                  {{p.values.file_size | number}}
                 </td>
               </tr>
               </tbody>
@@ -319,13 +325,13 @@
               <tbody>
               <tr>
                 <th>
-                  Level 3
+                  --
                 </th>
                 <td>
-                  3,705
+                  --
                 </td>
                 <td>
-                  77.77GB
+                  --
                 </td>
               </tr>
               </tbody>
@@ -355,15 +361,15 @@
               </tr>
               </thead>
               <tbody>
-              <tr>
+              <tr ng-repeat='p in byDataAccess'>
                 <th>
-                  Open
+                  {{p.key}}
                 </th>
                 <td>
-                  3,705
+                   {{p.values.file_count}}
                 </td>
                 <td>
-                  77.77GB
+                  {{p.values.file_size | size}}
                 </td>
               </tr>
               </tbody>
@@ -426,7 +432,7 @@
           <thead>
           <tr>
             <th data-translate>
-              Data Subtype
+              Access Location
             </th>
             <th>
               # of files

@@ -73,7 +73,10 @@
           <div class="panel-heading">
             <h3 class="panel-title" data-translate>Experimental Strategy</h3>
           </div>
-          <entity-page-counts-table data-type="experimental-strategy" data-parent-field-name="participants.participant_id" data-parent-id="{{ pc.participant.participant_id }}" data-data="pc.participant.summary.experimental_strategies"></entity-page-counts-table>
+          <div class="panel-body" data-ng-if="!pc.participant.summary.experimental_strategies.length">
+            <h4 class="list-group-item-heading" data-translate>No experimental strategies were found.</h4>
+          </div>
+          <entity-page-counts-table data-ng-if="pc.participant.summary.experimental_strategies.length" data-type="experimental-strategy" data-parent-field-name="participants.participant_id" data-parent-id="{{ pc.participant.participant_id }}" data-data="pc.participant.summary.experimental_strategies"></entity-page-counts-table>
         </div>
       </div>
       <div class="col-lg-6">

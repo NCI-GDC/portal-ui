@@ -3,14 +3,14 @@
   <tr>
     <th scope="col" data-ng-if="tableId === 'experimental-strategy-table'" data-translate>Analysis</th>
     <th scope="col" data-ng-if="tableId === 'available-data-table'" data-translate>Data Type</th>
-    <th scope="col" data-ng-if="parentFieldName === 'participants.project.project_id'" data-translate>Participants</th>
+    <th scope="col" data-ng-if="tableId == 'available-data-table'" data-translate>Participants</th>
     <th scope="col" data-translate>Files</th>
   </tr>
   </thead>
   <tbody>
-    <tr data-ng-repeat="name in names ">
-      <td>{{ name }}</td>
-      <td data-ng-if="parentFieldName === 'participants.project.project_id'" data-ng-switch="dataTransformed[name].participant_count">
+  <tr data-ng-repeat="name in names">
+    <td data-ng-if="dataTransformed[name].file_count > 0 || tableId === 'available-data-table'">{{ name }}</td>
+      <td data-ng-if="tableId === 'available-data-table'" data-ng-switch="dataTransformed[name].participant_count">
         <a data-ng-switch-default data-ui-sref="search.participants({ 'filters':
           {{ [
               { name: parentFieldName, value: parentId },
@@ -18,12 +18,12 @@
              ] | makeFilter
           }}
           })">
-            {{ dataTransformed[name].participant_count }}
+          {{ dataTransformed[name].participant_count }}
         </a>
         <span data-ng-switch-when="undefined">0</span>
         <span data-ng-switch-when="0">0</span>
       </td>
-      <td data-ng-switch="dataTransformed[name].file_count">
+      <td data-ng-if="dataTransformed[name].file_count > 0 || tableId === 'available-data-table'" data-ng-switch="dataTransformed[name].file_count">
         <a data-ng-switch-default data-ui-sref="search.files({ 'filters':
           {{ [
               { name: parentFieldName, value: parentId },
@@ -31,7 +31,7 @@
              ] | makeFilter
           }}
           })">
-            {{ dataTransformed[name].file_count }}
+          {{ dataTransformed[name].file_count }}
         </a>
         <span data-ng-switch-when="undefined">0</span>
         <span data-ng-switch-when="0">0</span>
@@ -39,5 +39,4 @@
     </tr>
   </tbody>
 </table>
-
 

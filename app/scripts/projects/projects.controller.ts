@@ -92,18 +92,9 @@ module ngApp.projects.controllers {
 
   export interface IProjectController {
     project: IProject;
-    availableData: any;
-    dataTypeNames: string[];
-    expStrategyNames: string[];
-    expData: any;
   }
 
   class ProjectController implements IProjectController {
-    availableData: any;
-    dataTypeNames: string[];
-    expStrategyNames: string[];
-    expData: any;
-
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService) {
       CoreService.setPageTitle("Project " + project.project_id);

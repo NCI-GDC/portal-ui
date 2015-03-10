@@ -11,11 +11,12 @@ module ngApp.models {
     jQuery: JQueryStatic;
     scrollY: number;
     c3: any;
+    gql: any;
   }
 
   export interface ICollection {
     hits: any[];
-    facets?: IFacet[];
+    aggregations?: IFacet[];
     pagination: IPagination;
   }
 

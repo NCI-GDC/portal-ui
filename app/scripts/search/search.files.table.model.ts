@@ -66,11 +66,11 @@ module ngApp.search.models {
           return scope.UserService.currentUser;
         },
         icon: function (field, row, scope) {
-          var archive = _.find(row, function (elem) {
-            return elem.id === 'archive'
+          var participants = _.find(row, function (elem) {
+            return elem.id === 'participants'
           }).val;
           var UserService: IUserService = scope.UserService;
-          return UserService.isUserProject({archive: archive}) ? 'check' : 'close';
+          return UserService.isUserProject({participants: participants}) ? 'check' : 'close';
         }
       }, {
         displayName: "Access",

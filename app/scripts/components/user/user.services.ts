@@ -31,17 +31,11 @@ module ngApp.components.user.services {
       }).then((data) => {
         data.isFiltered = true;
         data.username = this.$cookies["X-Auth-Username"];
-        data.originalProjectsResponse = _.assign([], data.projects);
-        // Overriding projects until we get a more useful response
-        data.projects = [];
         this.setUser(data);
       });
     }
 
     setUser(user: IUser): void {
-      user.projects = _.map(user.projects, (project: string) => {
-        return project.toLowerCase();
-      });
       this.currentUser = user;
       this.$rootScope.$broadcast("gdc-user-reset");
     }
@@ -61,16 +55,21 @@ module ngApp.components.user.services {
     }
 
     isUserProject(file: IFile): boolean {
-      return this.currentUser.projects.indexOf(file.archive.disease_code.toLowerCase()) !== -1;
+      var projectIds = _.unique(_.map(file.participants, (participant) => {
+        return participant.project.project_id;
+      }));
+      return _.some(projectIds, (id) => {
+        return this.currentUser.projects.gdc_ids.indexOf(id);
+      });
     }
 
     addMyProjectsFilter(filters: any, key: string): any {
       if (this.currentUser && this.currentUser.isFiltered &&
-          this.currentUser.projects.length) {
+          this.currentUser.projects.gdc_ids.length) {
         var userProjects = {
           content: {
             field: key,
-            value: this.currentUser.projects
+            value: this.currentUser.projects.gdc_ids
           },
           op: "in"
         };
@@ -90,8 +89,7 @@ module ngApp.components.user.services {
           if (!projectFilter) {
             filters.content.push(userProjects);
           } else {
-            var projects = key === "project_id" ? _.assign([], this.currentUser.projects) :
-                           _.map(this.currentUser.projects, (project: string) => { return project.toUpperCase(); });
+            var projects = _.assign([], this.currentUser.projects.gdc_ids);
 
             var sharedValues = _.intersection(projectFilter.content.value, projects);
 
@@ -105,8 +103,8 @@ module ngApp.components.user.services {
             }
           }
         }
-      }
 
+      }
       return filters;
     }
 

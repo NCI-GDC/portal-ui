@@ -21,16 +21,12 @@ module ngApp.participants.controllers {
       CoreService.setPageTitle("Participant " + participant.participant_id);
 
       this.annotationIds = _.map(this.participant.annotations, (annotation) => {
-                                  return annotation.annotation_id;
-                                });
-      }
+        return annotation.annotation_id;
+      });
 
-    DownloadClinicalXML(): void {
-      this.LocationService.setHref(this.config.api + "/participants/" +
-                                     this.participant.participant_id +
-                                     "?attachment=true&format=xml" +
-                                     "&fields=clinical.gender,clinical.vital_status,clinical.icd_10,clinical.ethnicity,clinical.race"
-                                  )
+      this.clinicalFileId = _.find(this.participant.files, (file) => {
+        return file.data_subtype.toLowerCase() === "clinical data";
+      }).file_id;
     }
 
   }

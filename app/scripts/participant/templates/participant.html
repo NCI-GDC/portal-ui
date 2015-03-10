@@ -97,8 +97,8 @@
             <h3 class="panel-title pull-left" data-translate>
                 Clinical
             </h3>
-            <button class="btn btn-default pull-right" data-translate data-ng-click="pc.DownloadClinicalXML()">
-                Download Clinical XML
+            <button class="btn btn-default pull-right">
+              <a data-ng-href="{{ [pc.clinicalFileId] | makeDownloadLink }}" data-translate>Download Clinical XML</a>
             </button>
           </div>
 
@@ -131,7 +131,7 @@
       </div>
     </section>
 
-    <biospecimen data-participant="pc.participant" data-expanded="true"></biospecimen>
+    <biospecimen data-participant="pc.participant"></biospecimen>
 
   </div>
 </div>

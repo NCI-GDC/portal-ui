@@ -24,7 +24,8 @@ module ngApp.cart {
         "cart.services",
         "cart.directives",
         "ngApp.files",
-        "ui.router.state"
+        "ui.router.state",
+        "ui.bootstrap"
       ])
       .config(cartConfig);
 }

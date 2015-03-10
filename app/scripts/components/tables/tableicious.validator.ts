@@ -9,6 +9,9 @@ module ngApp.components.tables.validator {
      */
     class TableiciousValidator {
 
+        /* @ngInject */
+        constructor(private $log: ngILogService) {}
+
         /**
          * Function that outputs warnings regarding the table configuration to the console.
          * @param config
@@ -21,15 +24,15 @@ module ngApp.components.tables.validator {
             var headingsDefinedByConfig = _.pluck(config.headings,'id');
             var headingsDefinedByData = _.keys(data[0]);
 
-            headingsDefinedByData.forEach(function(heading){
+            headingsDefinedByData.forEach((heading) => {
                 if (!_.contains(headingsDefinedByConfig,heading)) {
-                    console.error('Error generating table, data contains field for which no heading definition found in config: ',heading, '. This entry will be ignored.');
+                    this.$log.error('Error generating table, data contains field for which no heading definition found in config: ',heading, '. This entry will be ignored.');
                 }
             });
 
-            headingsDefinedByConfig.forEach(function(heading){
+            headingsDefinedByConfig.forEach((heading) => {
                 if (!_.contains(headingsDefinedByData,heading)) {
-                    console.warn('Config contains definition for entry not found in data: ',heading, '. This field will be blank.');
+                    this.$log.warn('Config contains definition for entry not found in data: ',heading, '. This field will be blank.');
                 }
             });
         }
@@ -41,11 +44,11 @@ module ngApp.components.tables.validator {
          */
 
         validateOrderObject(orderArray:string[],headings:TableiciousColumnDefinition[]){
-            return headings.every(function(heading:TableiciousColumnDefinition){
+            return headings.every((heading:TableiciousColumnDefinition) => {
                 if (_.contains(orderArray,heading.id)) {
                     return true;
                 } else {
-                    console.error("No order specified for heading: ",heading.id);
+                    this.$log.error("No order specified for heading: ",heading.id);
                 }
 
             });
@@ -60,11 +63,11 @@ module ngApp.components.tables.validator {
         dataIsCongruent(data) {
             var firstHeadings = _.keys(data[0]);
 
-            return data.every(function(datum){
+            return data.every((datum) => {
                 if (_.isEqual(firstHeadings, _.keys(datum))) {
                     return true;
                 } else {
-                    console.warn("Warnning - some data in this set does not have the same structure: ",firstHeadings , "is not congruent with ", _.keys(datum));
+                    this.$log.warn("Warnning - some data in this set does not have the same structure: ",firstHeadings , "is not congruent with ", _.keys(datum));
                     return false;
                 }
             })

@@ -1,6 +1,6 @@
 module ngApp.components.tables.directives.tableicious {
 
-    function tableiciousCell(){
+    function tableiciousCell($log: ng.ILogService){
         return {
             restrict:"AE",
             controller:function($scope, $element,$compile,$filter){
@@ -13,7 +13,7 @@ module ngApp.components.tables.directives.tableicious {
                             htm = $scope.heading.compile($scope);
                         } catch (e) {
                             htm = '<span>?</span>';
-                            console.error(e);
+                            $log.error(e);
                         }
                         var compiled = $compile(htm)($scope);
                         $element.append(compiled);

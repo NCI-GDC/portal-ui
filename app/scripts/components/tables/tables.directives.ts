@@ -118,7 +118,7 @@ module ngApp.components.tables.directives {
     }
   }
 
-  function ResetTable(): ng.IDirective {
+  function ResetTable($log: ng.ILogService): ng.IDirective {
     return {
       restrict: "EA",
       scope: {
@@ -130,9 +130,9 @@ module ngApp.components.tables.directives {
       controller: function($scope,$element){
         var config = $scope.config;
         var originalOrder = _.pluck(config.headings,'id');
-        console.log("Reset table init...");
+        $log.log("Reset table init...");
         $scope.reset = function(){
-          console.log("Reset...",config);
+          $log.log("Reset...",config);
 
           config.headings = originalOrder.map(function(id){
             var heading = _.find(config.headings,function(head){return head.id === id});

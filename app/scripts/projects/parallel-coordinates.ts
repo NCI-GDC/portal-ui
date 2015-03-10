@@ -191,6 +191,9 @@ function ParallelCoordinates(data,options) {
             });
 
         
+        if (xscale('DNA methylation') && xscale('Clinical')) {
+        
+        
           svg.append('g')
             .attr('height',100)
             .attr("transform",function(d){
@@ -208,6 +211,8 @@ function ParallelCoordinates(data,options) {
             .attr('height',1)
             .attr('y',15)
             .attr('x',xscale('Clinical') +padding.left+margins.left);
+          
+          }
 
 		var axis=column
             .filter(function(col){

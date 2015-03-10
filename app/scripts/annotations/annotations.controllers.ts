@@ -45,9 +45,9 @@ module ngApp.annotations.controllers {
           "item_type",
           "item",
           "classification",
-          "project.project_id",
           "project.primary_site",
-          "project.program.name"
+          "project.program.name",
+          "project.name"
         ]
       }).then((data) => {
         if (!data.hits.length) {

@@ -16,7 +16,7 @@ module ngApp.models {
 
   export interface ICollection {
     hits: any[];
-    facets?: IFacet[];
+    aggregations?: IFacet[];
     pagination: IPagination;
   }
 

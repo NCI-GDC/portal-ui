@@ -25,7 +25,8 @@
                     <i class="fa fa-shopping-cart fa-stack-1x"></i>
                     <i class="fa fa-ban fa-stack-2x"></i>
                 </span>
-                <span data-translate>No related files with current filters</span>
+                <span data-translate ng-if=!retreivingFilteredFiles>No related files with current filters</span>
+                <span data-translate ng-if=retreivingFilteredFiles>Loading...</span>
             </a>
         </li>
     </ul>

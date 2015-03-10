@@ -106,8 +106,11 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
       controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
                           FilesService: IFilesService){
+        
+        $scope.retreivingFilteredFiles = true;
 
         $scope.getFilteredRelatedFiles = function() {
+          $scope.retreivingFilteredFiles = true;
           var filters = LocationService.filters();
 
           if (!filters.content) {
@@ -132,6 +135,7 @@ module ngApp.cart.directives {
             filters: filters,
             size: CartService.getCartVacancySize()
           }).then((data) => {
+            $scope.retreivingFilteredFiles = false;
             $scope.filteredRelatedFiles = data;
           });
         };

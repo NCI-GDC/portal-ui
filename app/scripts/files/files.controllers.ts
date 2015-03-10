@@ -29,12 +29,16 @@ module ngApp.files.controllers {
 
       this.file.related_ids = _.pluck(this.file.related_files, 'file_id');
 
-      this.FilesService.getFiles({
-        fields: [
-          "archive.archive_id"
-        ],
-        filters: {"op": "=", "content": {"field": "files.archive.archive_id", "value": [file.archive.archive_id]}}
-      }).then((data) => this.archiveCount = data.pagination.total);
+      if(this.file.archive) {
+        this.FilesService.getFiles({
+          fields: [
+            "archive.archive_id"
+          ],
+          filters: {"op": "=", "content": {"field": "files.archive.archive_id", "value": [file.archive.archive_id]}}
+        }).then((data) => this.archiveCount = data.pagination.total);
+      } else {
+        this.archiveCount = 0;
+      }
 
       this.annotationIds = _.map(file.annotations, (annotation) => {
         return annotation.annotation_id;

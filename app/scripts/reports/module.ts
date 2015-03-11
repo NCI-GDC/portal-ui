@@ -6,7 +6,7 @@ module ngApp.reports {
   /* @ngInject */
   function reportsConfig($stateProvider: ng.ui.IStateProvider) {
     $stateProvider.state("reports", {
-      url: "/reports/data-statistics-download",
+      url: "/reports/data-download-statistics",
       controller: "ReportsController as rsc",
       templateUrl: "reports/templates/reports.html",
       resolve: {

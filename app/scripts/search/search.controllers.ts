@@ -93,6 +93,7 @@ module ngApp.search.controllers {
           "archive.revision",
           "access",
           "state",
+          "origin",
           "data_format",
           "center.name"
         ]

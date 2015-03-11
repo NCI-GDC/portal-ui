@@ -22,7 +22,7 @@ module ngApp.projects.models {
             id: "participant_id",
             sref: function (field) {
               return {
-                state: "participant",
+                state: "/participants/",
                 filters: {
                   participantId: field.val
                 }

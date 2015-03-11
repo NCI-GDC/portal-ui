@@ -16,16 +16,16 @@
             <td>{{ ::ac.annotation.annotation_id  }}</td>
           </tr>
           <tr>
-            <th data-translate scope="row">Item UUID</th>
-            <td>{{ ::ac.annotation.item_id }}</td>
+            <th data-translate scope="row">Entity ID</th>
+            <td>{{ ::ac.annotation.entity_id || "--" }}</td>
           </tr>
           <tr>
-            <th data-translate scope="row">Item Barcode</th>
-            <td>tbd {{ ::ac.annotation.barcode }}</td>
+            <th data-translate scope="row">Entity Barcode</th>
+            <td>{{ ::ac.annotation.submitter_id || "--" }}</td>
           </tr>
           <tr>
-            <th data-translate scope="row">Item Type</th>
-            <td>{{ ::ac.annotation.item_type | humanify }}</td>
+            <th data-translate scope="row">Entity Type</th>
+            <td>{{ ::ac.annotation.entity_type | humanify }}</td>
           </tr>
           <tr>
             <th data-translate scope="row">Participant ID</th>

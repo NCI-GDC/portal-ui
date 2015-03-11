@@ -17,7 +17,6 @@ module ngApp.annotations.controllers {
   class AnnotationsController implements IAnnotationsController {
     annotations: IAnnotations;
 
-
     /* @ngInject */
     constructor(private $scope: IAnnotationsScope, private AnnotationsService: IAnnotationsService,
                 private CoreService: ICoreService, private AnnotationsTableModel:TableiciousConfig) {
@@ -37,13 +36,13 @@ module ngApp.annotations.controllers {
       this.AnnotationsService.getAnnotations({
         fields: this.AnnotationsTableModel.fields,
         facets: [
+          "annotation_id",
           "classification",
           "category",
           "created_datetime",
           "creator",
           "status",
-          "item_type",
-          "item",
+          "entity_type",
           "classification",
           "project.primary_site",
           "project.program.name",

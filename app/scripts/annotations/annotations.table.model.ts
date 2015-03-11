@@ -3,7 +3,7 @@ module ngApp.projects.models {
 
     var AnnotationsTableModel:TableiciousConfig = {
         title: "Annotations",
-        order: ['annotation_id', 'participant_id', 'project.program.name', 'project.project_id', 'barcode', 'item_type', 'category', 'classification', 'dateCreated', 'creator', 'status'],
+        order: ['annotation_id', 'participant_id', 'project.program.name', 'project.project_id', 'entity_id', 'entity_type', 'category', 'classification', 'dateCreated', 'creator', 'status', 'submitter_id'],
         headings: [{
             displayName: "ID",
             id: "annotation_id",
@@ -52,27 +52,27 @@ module ngApp.projects.models {
             sortable: true
         },
         {
-            displayName: "Item Type",
-            id: "item_type",
+            displayName: "Entity Type",
+            id: "entity_type",
             template: function (field, row, scope, $filter) {
-                return $filter("humanify")(field && field.val || "tbc");
+                return $filter("humanify")(field && field.val || "--");
             },
             sortable: true
         },
         {
-            displayName: "Item ID",
-            id: "item_id",
-            template: function (x) {
-                return x && x.val || "tbc";
+            displayName: "Entity ID",
+            id: "entity_id",
+            template: function (field) {
+                return field && field.val || "--";
             },
             sortable: true
         },
         {
-            displayName: "Item Barcode",
-            id: "barcode",
+            displayName: "Entity Barcode",
+            id: "submitter_id",
             sortable: true,
-            template: function() {
-              return "tbd";
+            template: function(field) {
+                return field && field.val || "--";
             }
         },
         {
@@ -116,8 +116,9 @@ module ngApp.projects.models {
           "created_datetime",
           "creator",
           "status",
-          "item_type",
-          "item_id",
+          "entity_type",
+          "entity_id",
+          "submitter_id",
           "notes",
           "classification",
           "project.program.name",

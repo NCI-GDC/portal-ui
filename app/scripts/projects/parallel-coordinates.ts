@@ -705,7 +705,7 @@ function ParallelCoordinates(data,options) {
 					y=yscales[d.column](d.value/d.ref)
 				}
 
-				return "translate("+(x-d.marker_width/2-d.text_width/2-10)+","+y+")";
+				return "translate("+(x+d.marker_width/2-d.text_width/2-10)+","+y+")";
 			})
 
 		labels

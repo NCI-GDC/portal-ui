@@ -321,6 +321,11 @@ function githutTable(data,config){
       "project_id":d3.ascending,
       "primary_site":d3.ascending
     },
+    superhead:{
+      start:'Clinical',
+      end:'Other',
+      text:'DATA TYPES'
+    },
 
     /**
      *  Don't know what "d" is here.

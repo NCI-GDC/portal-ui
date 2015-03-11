@@ -191,26 +191,25 @@ function ParallelCoordinates(data,options) {
             });
 
         
-        if (xscale('DNA methylation') && xscale('Clinical')) {
-        
+        if (options.superhead) {
         
           svg.append('g')
             .attr('height',100)
             .attr("transform",function(d){
-            var x=xscale('Clinical')+(0.5*(xscale('DNA methylation')-xscale('Clinical')))+padding.left+margins.left,
+            var x=xscale(options.superhead.start)+(0.5*(xscale(options.superhead.end)-xscale(options.superhead.start)))+padding.left+margins.left,
                 y=10;
             return "translate("+x+","+y+")";
             })  
             .append('text')
-            .text("DATA TYPES")
+            .text(options.superhead.text)
             .style("text-anchor",'middle')
             .attr('class','title')
           
           svg.append('rect')
-            .attr('width',xscale('DNA methylation')-xscale('Clinical'))
+            .attr('width',xscale(options.superhead.end)-xscale(options.superhead.start))
             .attr('height',1)
             .attr('y',15)
-            .attr('x',xscale('Clinical') +padding.left+margins.left);
+            .attr('x',xscale(options.superhead.start) +padding.left+margins.left);
           
           }
 

@@ -306,8 +306,14 @@ module ngApp.reports.controllers {
           duration:1000,
           filters:{
             file_size: $filter('size')
+          },
+           superhead:{
+            end:types[0].id,
+            start:types[types.length - 1].id,
+            text:'File count per data type'
           }
         };
+        
         
         console.log("Final PC data: ", d3.values(aggregations));
         $timeout(function(){

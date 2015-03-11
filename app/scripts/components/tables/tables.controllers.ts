@@ -126,11 +126,7 @@ module ngApp.components.tables.controllers {
       var filters: Object = this.LocationService.filters();
       var url = this.LocationService.getHref();
       var abort = this.$q.defer();
-      var modalInstance = this.$modal.open({
-        templateUrl: "components/tables/templates/export-modal.html",
-        controller: "ExportTableModalController as etmc",
-        backdrop: 'static'
-      });
+      var modalInstance;  
 
       if (projectsKeys[this.$scope.endpoint]) {
         filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[this.$scope.endpoint]);
@@ -144,6 +140,23 @@ module ngApp.components.tables.controllers {
           format: fileType,
           size: this.$scope.size
         };
+
+        modalInstance = this.$modal.open({
+          templateUrl: "components/tables/templates/export-modal.html",
+          controller: "ExportTableModalController as etmc",
+          backdrop: 'static'
+        });
+
+        modalInstance.result.then((data) => {
+          if (data.cancel) {
+            if (abort) {
+              abort.resolve();
+            } else {
+              this.LocationService.setHref(url);
+            }
+          }
+        });
+
 
         this.Restangular.all(this.$scope.endpoint)
         .withHttpConfig({
@@ -173,16 +186,6 @@ module ngApp.components.tables.controllers {
                                      "&size=" + this.$scope.size +
                                      "&filters=" + JSON.stringify(filters));
       }
-
-      modalInstance.result.then((data) => {
-        if (data.cancel) {
-          if (abort) {
-            abort.resolve();
-          } else {
-            this.LocationService.setHref(url);
-          }
-        }
-      });
     }
 
   }

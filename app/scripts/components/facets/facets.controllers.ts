@@ -58,6 +58,7 @@ module ngApp.components.facets.controllers {
     }
 
     refresh(terms) {
+      this.terms = terms;
       this.actives = this.FacetService.getActives(this.name, terms);
       this.inactives = _.difference(terms, this.actives);
     }

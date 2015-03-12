@@ -1,4 +1,4 @@
-<div class="list-group-item" data-ng-show="tc.inactives.length">
+<div class="list-group-item" data-ng-show="tc.terms.length">
   <h4 class="list-group-item-heading facet-title"
        data-ng-click="tc.toggle($event, 'collapsed')"
        data-ng-keypress="tc.toggle($event, 'collapsed')"
@@ -8,7 +8,20 @@
     <i class="fa" data-ng-class="{ 'fa-angle-down': !tc.collapsed, 'fa-angle-right': tc.collapsed }"></i>
     {{ tc.title | translate }}
   </h4>
+
   <div data-ng-show="!tc.collapsed">
+    <p data-ng-repeat="term in tc.actives track by term.key"
+        data-ng-class="list-group-item-text">
+      <span data-ng-click="tc.remove(tc.name, term.key)"
+            data-ng-keypress="remove(tc.name, term.key, $event)"
+            class="facet-term-label">
+        <i class="fa fa-check-square-o" aria-controls="data-table" aria-checked="false"></i>
+        <span data-ng-if="tc.name.indexOf('project_id') !== -1">{{ ::term.key.toUpperCase() }}</span>
+        <span data-ng-if="tc.name.indexOf('project_id') == -1">{{ ::term.key | translate | humanify: true:true }}</span>
+      </span>
+      <span class="label label-primary pull-right">{{ term.doc_count | number:0}}</span>
+    </p>
+
     <p data-ng-repeat="term in tc.inactives | limitTo: tc.displayCount track by term.key"
         data-ng-class="list-group-item-text">
       <span data-ng-click="tc.add(tc.name, term.key)"
@@ -22,11 +35,11 @@
     </p>
 
     <div class="text-right">
-      <a href="" data-ng-if="tc.inactives.length > tc.originalDisplayCount"
-          data-ng-click="tc.toggle($event, 'expanded')"
-          data-ng-keypress="tc.toggle($event, 'expanded')"
-          aria-label="Expanded Terms Toggle"
-          role="button">
+      <a data-ng-if="tc.inactives.length > tc.originalDisplayCount"
+         data-ng-click="tc.toggle($event, 'expanded')"
+         data-ng-keypress="tc.toggle($event, 'expanded')"
+         aria-label="Expanded Terms Toggle"
+         role="button">
         <span data-ng-show="!tc.expanded">{{ tc.inactives.length - tc.displayCount }} More...</span>
         <span data-ng-show="tc.expanded">Less...</span>
       </a>

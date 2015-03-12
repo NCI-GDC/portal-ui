@@ -1,0 +1,87 @@
+/**
+* Drag and Drop List CSS
+**/
+ul[dnd-list], ul.sort-list {
+  //  min-height: 42px;
+  padding-left: 0px;
+
+  /**
+  * The dnd-lists's child elements currently MUST have
+  * position: relative. Otherwise we can not determine
+  * whether the mouse pointer is in the upper or lower
+  * half of the element we are dragging over. In other
+  * browsers we can use event.offsetY for this.
+  * - Seems to work fine in Chrome without this. -DS
+  */
+  //position: relative;
+
+
+  /**
+  * An element with .dndPlaceholder class will be
+  * added to the dnd-list while the user is dragging
+  * over it.
+  */
+  .dndPlaceholder {
+    display: block;
+    background-color: #ddd;
+    min-height: 42px;
+  }
+
+  .input-group {
+    padding: 3px 20px;
+  }
+
+  li.column-heading {
+    //    min-height: 42px;
+    background-color: #fff;
+    //    border: 1px solid #ddd;
+    //    border-top-right-radius: 4px;
+    //    border-top-left-radius: 4px;
+    display: block;
+    //    padding: 10px 15px;
+    //    margin-bottom: -1px;
+    width: 250px;
+    opacity: 1;
+
+    &.selected {
+      //      background-color: #dff0d8;
+      //      color: #3c763d;
+    }
+
+
+    a {
+      display: block;
+      //      padding: 3px 16px;
+      clear: both;
+      //      font-weight: normal;
+      //      line-height: 1.42857143;
+      color: #333;
+      white-space: nowrap;
+      //      margin: 10px 15px;
+    }
+  }
+
+  //  .dropdown-subtitle {
+  //    text-align: center;
+  //    color: darken(red,50%);
+  //    font-size: 1.2rem;
+  //    padding-bottom: 0.4rem;
+  //  }
+
+  /**
+  * The dndDraggingSource class will be applied to
+  * the source element of a drag operation. It makes
+  * sense to hide it to give the user the feeling
+  * that he's actually moving it.
+  */
+  .dndDraggingSource {
+    display: none !important;
+  }
+
+  .dndDragging {
+    color: rgba(0,0,0,0.5);
+
+  }
+
+
+}

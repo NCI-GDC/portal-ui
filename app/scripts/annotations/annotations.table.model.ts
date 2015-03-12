@@ -15,7 +15,8 @@ module ngApp.projects.models {
                     }
                 };
             },
-            sortable: true
+            sortable: true,
+          fieldClass: 'truncated-cell'
         },
         {
             displayName: "Participant ID",
@@ -28,7 +29,8 @@ module ngApp.projects.models {
                 }
               }
             },
-            sortable: true
+            sortable: true,
+          fieldClass: 'truncated-cell'
         },
         {
             displayName: "Program",
@@ -65,7 +67,8 @@ module ngApp.projects.models {
             template: function (field) {
                 return field && field.val || "--";
             },
-            sortable: true
+            sortable: true,
+            fieldClass: 'truncated-cell'
         },
         {
             displayName: "Entity Barcode",

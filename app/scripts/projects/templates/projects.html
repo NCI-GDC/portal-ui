@@ -2,9 +2,6 @@
   <div class="row search-panel">
     <div class="col-lg-3 col-md-4 facets-sidebar">
       <div class="panel panel-default">
-        <div class="panel-heading clearfix">
-          <h3 class="panel-title pull-left">Facets</h3>
-        </div>
         <div class="list-group">
           <div data-ng-include="'projects/templates/projects.facets.html'"
                class="facet-section" role="form"></div>
@@ -12,7 +9,7 @@
       </div>
     </div>
 
-    <div class="col-lg-9 col-md-8">
+    <div class="col-lg-9 col-md-8 content">
       <div class="alert alert-info clearfix">
         <span data-ng-if="!cfc.currentFilters.length">
           <i class="fa fa-long-arrow-left"></i> Start searching by selecting a facet
@@ -23,7 +20,7 @@
       <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0" data-translate>
         No projects found using those filters.
       </h3>
-      <ul class="nav nav-tabs" style="margin-bottom: 20px">
+      <ul class="nav nav-tabs">
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.table.active }"
             data-ng-click="prsc.select('tabs', 'table')">
@@ -49,14 +46,16 @@
            container will not be the expected size for the graph.
         -->
       <div class="pane-section" data-ng-if="prsc.ProjectsState.tabs.graph.active">
-        <h3>
-          Available Data per Project 
-        </h3>
-        <div class="githut">
-          <div id="pc"></div>
+        <div class="panel panel-default">
+          <div class="panel-heading clearfix">
+            <h3 class="panel-title">Available Data per Project</h3>
+          </div>
+
+          <div class="githut">
+            <div id="pc"></div>
+          </div>
         </div>
       </div>
-
     </div>
   </div>
 </div>

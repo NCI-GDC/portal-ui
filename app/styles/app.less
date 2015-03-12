@@ -1,33 +1,44 @@
 @import "../../bower_components/bootstrap/less/bootstrap.less";
-@import "theme.less";
+  @import "theme.less";
 @icon-font-path: "../../libs/bootstrap/dist/fonts/";
-
-// angular-ui-bootstrap fix
-@import "colours.less";
+//
+//// angular-ui-bootstrap fix
+  @import "colours.less";
 @import "globals.less";
-@import "utils.less";
-@import "cart.less";
-@import "entities.less";
-@import "files.less";
-@import "pagination.less";
+  @import "utils.less";
+//  @import "cart.less";
+  @import "entities.less";
+//  @import "files.less";
 @import "header.less";
 @import "footer.less";
-@import "search.less";
+//  @import "search.less";
+@import "facets.less";
 @import "tables.less";
-@import "../scripts/components/styles.less";
-
+@import "pagination.less";
+@import "dnd.less";
+@import "par-cord.less";
+  @import "../scripts/components/styles.less";
+//
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background: #fff;
-  font-family: "Open Sans", "Helvetica Neue", "Helvetica", "sans-serif";
 }
 
 #wrapper {
   min-height: 100%;
   position: relative;
 }
+
+#gdc-header {
+  border: none;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+  background-color: #f5f5f5;
+}
+
 
 .gdc-body {
   padding-bottom: @FOOTER_HEIGHT + 20;
@@ -51,44 +62,10 @@ body {
   padding-top: 20px;
 }
 
-.warning-backdrop {
-  height: 100%;
-}
-
-.warning-modal-body {
-  color: @red;
-}
-
-.xhrCounter{
-  position: fixed;
-  z-index: 2000;
-  top: 8rem;
-  right: 5rem;
-  height: 5rem;
-  width: 5rem;
-  font-weight: 300;
-  font-size: 5rem;
-}
-
-.xhrCounter.ng-enter, .xhrCounter.ng-leave {
-  -webkit-transition: opacity 0.5s;
-  -moz-transition: opacity 0.5s;
-  transition: opacity 0.5s;
-}
-
-.xhrCounter.ng-enter,
-.xhrCounter.ng-leave.ng-leave-active {
-  opacity: 0;
-}
-
-.xhrCounter.ng-leave,
-.xhrCounter.ng-enter.ng-enter-active {
-  opacity: .5;
-}
-
 th, td {
   white-space: nowrap;
 }
+
 
 /* bootcard override */
 .panel {
@@ -98,63 +75,694 @@ th, td {
 .panel-default .panel-footer {
   background: #fff;
 }
-.list-group-item-heading.current a{
-  color: #428bca;
-}
-.list-group-item {
-  margin-left: 0 ;
-  padding-left: 10px;
-
-  i {
-    width: 3rem;
-    text-align: center;
-  }
-  i, img {
-    margin-right: 0;
-    opacity: 1;
-  }
-}
-p {
-  margin: 0 0 5px;
-}
-.pagination {
-  margin: 0;
+h3.panel-title {
+  line-height: 1.4em;
 }
 
-.btn-group > .btn + .dropdown-toggle {
-  padding-left: 4px;
-  padding-right: 5px;
+/* bootstrap */
+.content .nav.nav-tabs {
+  border-bottom: 0;
+  cursor: pointer;
+}
+
+//bootcard override
+
+//.list-group-item-heading.current a{
+//  color: #428bca;
+//}
+//.list-group-item {
+//  margin-left: 0 ;
+//  padding-left: 10px;
+//
+//  i {
+//    width: 3rem;
+//    text-align: center;
+//  }
+//  i, img {
+//    margin-right: 0;
+//    opacity: 1;
+//  }
+//}
+//p {
+//  margin: 0 0 5px;
+//}
+//.pagination {
+//  margin: 0;
+//}
+//
+//.btn-group > .btn + .dropdown-toggle {
+//  padding-left: 4px;
+//  padding-right: 5px;
+//}
+//.reset-table-span {
+//  color: @link-blue;
+//}
+//
+//.m-margin-bottom-0 {
+//  margin-bottom: 0px;
+//}
+//
+
+// --- ICONS
+.navbar-nav .fa {
+  display:inline-block;
+  text-indent:-10000px;
+  overflow:hidden;
+  width:19px;
+  height:14px;
+}
+/*---projects---*/
+.fa-projects {
+  background:url(/images/icon-projects-large.png) no-repeat 2px 0;
+}
+
+/*---data---*/
+.fa-data {
+  background:url(/images/icon-data-large.png) no-repeat 2px 3px;
+}
+/*---annotations---*/
+.fa-annotations {
+  background:url(/images/icon-annotations-large.png) no-repeat 0 0;
+}
+
+/*---reports---*/
+.fa-reports {
+  background:url(/images/icon-reports-large.png) no-repeat 4px 2px;
+}
+
+/*---cart---*/
+.fa-cart {
+  background:url(/images/icon-cart-large.png) no-repeat 3px 2px;
+}
+
+
+/******************************************************************/
+/* CSS INJECTOR [##]                                              */
+/* For: Data Portal    */
+/******************************************************************/
+
+/****************************/
+/* gdc-style.css                */
+/****************************/
+
+
+/* Basic Typography
+-------------------------------------------------------------- */
+body {
+  font-family: Arial, Helvetica, Verdana, "Bitstream Vera Sans", sans-serif;
+  /*  font-size: 75%;    also set in acquia_prosper.info: settings[base-font-size] = font-size-12 */
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6, .h4 {
+  font-weight: normal;
+  line-height: 100%;
+}
+
+label {
+  font-weight:normal;
+}
+
+h1,
+h1.title {
+  font-size: 30px;
+}
+
+h2,
+h3.panel-title {
+  font-size: 24px;
+}
+
+h3,
+.list-group-item-heading {
+  font-size: 18px;
+}
+
+h4  {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6,
+.panel-default .list-group-item .text-right {
+  font-size: 12px;
+}
+
+@font-face {
+  font-family: "franklin_gothic_fsbook";
+  src: url('/fonts/FranklinGothic-Book-webfont.eot');
+  src: url('/fonts/FranklinGothic-Book-webfont.eot?#iefix') format('embedded-opentype'),
+  url('/fonts/FranklinGothic-Book-webfont.woff2') format('woff2'),
+  url('/fonts/FranklinGothic-Book-webfont.woff') format('woff'),
+  url('/fonts/FranklinGothic-Book-webfont.ttf') format('truetype'),
+  url('/fonts/FranklinGothic-Book-webfont.svg#franklin_gothic_fsbook') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html,
+body {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+/* Headings */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "franklin_gothic_fsbook","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.list-group-item-heading {
+  font-family: "franklin_gothic_fsbook","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+/* Basic Colors
+-------------------------------------------------------------- */
+
+html { background-color: #f5f5f5;}
+
+body {
+  background-color: #f5f5f5;
+  color: #3a3a3a;
+}
+
+/* Links */
+a,
+a:link {
+  color: #347cb0;
+  text-decoration: none;
+}
+
+a:visited {
+  color: #347cb0;
+}
+
+a:hover,
+a:focus {
+  color: #347cb0;
+  text-decoration: underline;
+}
+
+.nav-tabs a,
+.nav-tabs a:link,
+.nav-tabs a:hover,
+.nav-tabs a:visited,
+.nav-tabs a:active,
+.nav-tabs a:focus {
+  color: #6d6363;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6, h3.panel-title {
+  color: #68644e !important;
+}
+
+h3,
+h4,
+.list-group-item-heading {
+  color: #993333 !important;
+}
+
+/* HTML Elements LAYOUT
+-------------------------------------------------------------- */
+body {
+  padding: 0;
+}
+
+/* Blockquotes */
+blockquote {
+  font-style: italic;
+  margin: 10px 0;
+  padding: 10px 30px;
+}
+p, ul, ol {
+  font-size: 1em;
+}
+
+dt {
+  font-weight: bold;
+  color:#66581c; }
+
+dd {
+  margin-left: 0;
+}
+
+blockquote {
+  padding-left: 40px;
+  font-family: "franklin_gothic_fsbook","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 115.44%;
+}
+
+blockquote p {
+  font-size: 1em;
+  margin-top: 0;
+}
+
+blockquote cite {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 75.0720%;
+  font-style: normal;
+}
+
+/* Tables */
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+  padding: 3px;
 }
 .table > thead > tr > th {
+  background-color:#dedddd;
+}
+
+
+
+/* HTML Elements SYTLE
+-------------------------------------------------------------- */
+/* Lists */
+/*ul li {
+  list-style-image: url(http://gdcdev.res.oicr.on.ca/sites/all/themes/gdc/design_packs/gray/images/list-level-1.png);
+}
+
+ul li ul li {
+  list-style-image: url(http://gdcdev.res.oicr.on.ca/sites/all/themes/gdc/design_packs/gray/images/list-level-2.png);
+}
+
+ul li ul li ul li {
+  list-style-image: url(http://gdcdev.res.oicr.on.ca/sites/all/themes/gdc/design_packs/gray/images/list-level-3.png);
+}*/
+
+/* Blockquotes */
+blockquote {
+  /*background-image: url(http://gdcdev.res.oicr.on.ca/sites/all/themes/gdc/design_packs/gray/images/blockquote-quote.png);*/
+  background-repeat: no-repeat;
+  background-position: left 0.6425em;
+  border-top: 1px dotted #c4c4c4;
+  border-bottom: 1px dotted #c4c4c4;
+  font-style:normal;
+  font-size: 116.66%;
+  font-style: normal;
+}
+
+/* Blockquotes */
+blockquote {
+  background-color: transparent;
+  color: #5b5151;;
+}
+
+blockquote cite {
+  color: #999;
+  display: block;
+
+}
+
+/* Horizontal Rule */
+hr {
+  border-style: none none solid;
+  background-color: #d9d8d8;
+  border:#d9d8d8 3px solid;
+  color:#d9d8d8;
+}
+
+
+/* Preformatted text and code */
+pre {
+  overflow: auto;
+  width: auto;
+  max-width: 100%;
+}
+
+pre, code, kbd, samp {
+  font-family: monospace,serif;
+  font-size: 1em;
+}
+
+code {
+  background: none repeat scroll 0 0 #ede8d5;
+  border-radius: 3px;
+  color: #66581c;
+  font-family: "Menlo",monospace;
+  font-size: 14px;
+  padding: 3px;
+}
+
+pre {
+  color: #66581c;
+  font-size: 86.66%;
+  background-color: #eee;
+  border-bottom: 1px dotted #bfbfbf;
+  border-top: 1px dotted #bfbfbf;
+  font-family: Consolas,Monaco,'Andale Mono',monospace;
+  text-shadow: 0 1px white;
+  word-spacing: normal;
+}
+
+pre code {
+  background: none repeat scroll 0 0 transparent;
+  font-size: 100%;
+}
+
+/* Page Top & Bottom Regions LAYOUT
+/-------------------------------------------------------------- */
+
+.page-top-inner,
+#footer .container {
+  font-size: 85.714%;  /* 12px/13px */
+}
+
+/* NCI Mini-banner */
+.nci-mini-banner.block { margin-bottom: 0;}
+
+#nci-header a {
+  height: 50px;
+  float: left;
+}
+
+.nci-mini-banner a.mini-banner-sub {
+  margin-left: 10px;
+  float: right;
+}
+
+#nci-header a img {
+  height: 50px;
+  width: auto;
   vertical-align: middle;
 }
-.table>tbody>tr>td:first-child, .table>tbody>tr>th:first-child, .table>tfoot>tr>td:first-child, .table>tfoot>tr>th:first-child, .table>thead>tr>td:first-child, .table>thead>tr>th:first-child {
-  padding-left: 5px;
-}
-.table-vertical {
-  &>tbody>tr>td:first-child, &>tbody>tr>th:first-child, &>tfoot>tr>td:first-child, &>tfoot>tr>th:first-child, &>thead>tr>td:first-child, &>thead>tr>th:first-child {
-    white-space: nowrap;
-  }
-  td,th {
-    white-space: normal;
-  }
+#nci-header tr td {
+  padding:0 10px;
 }
 
-.reset-table-span {
-  color: @link-blue;
+
+/*----NCI Footer-----*/
+#footer { height: auto;}
+
+#footer .container {
+  padding:15px 0;
+}
+.page-bottom-wrapper {
+  background-color: #a34748;
+  border-top: 1px solid #621c1e;
+  border-bottom: 6px solid #813130;
+}
+/* NCI Agency Links */
+.nci-links-agency a {
+  float: left;
+  margin-right: 20px;
+  vertical-align: middle;
 }
 
-.m-margin-bottom-0 {
-  margin-bottom: 0px;
+.nci-links-agency a img {
+  vertical-align: middle;
 }
 
-.table .btn-group {
-  min-width: 48px !important;
+.nci-links-agency .link-dhhs img {height: 49px; width: 49px;}
+.nci-links-agency .link-nih img {width: 55px; height: 34px;}
+.nci-links-agency .link-nci img {height: 38px; width: 60px;}
+.nci-links-agency .link-usa img {height: 34px; width: 110px;}
+
+/* NCI Tagline */
+.nci-tagline {
+  clear: both;
 }
 
-.table .btn {
-  padding: 0 5px;
-  i {
-    margin: 0;
-  }
+.nci-tagline blockquote {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-style: normal;
+  font-size: 100%;
+}
+
+.nci-tagline blockquote {
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+}
+
+
+
+/* Page Top & Bottom Regions STYLE
+/-------------------------------------------------------------- */
+#nci-header { background-color: #9a0000;}
+
+#nci-header tbody { color: #fff;}
+
+#nci-header a,
+#nci-header a:link {
+  color: #fff;
+}
+
+#footer {
+  background-color:#a34748;
+  border-top: 1px solid #621c1e;
+  border-bottom: 6px solid #813130;
+}
+
+#footer .container { color: #c88b8a;}
+
+#footer a,
+#footer a:link,
+#footer a:visited {
+  color: #c88b8a;
+  color: #efdddd;
+}
+
+#footer a:hover {
+  color: #efdddd;
+}
+
+/* NCI Info Links */
+.nci-links-info.fusion-inline-menu .inner ul.menu li {
+  border-right-color: #c88b8a;
+}
+
+
+/* NCI Tagline */
+.nci-tagline blockquote {
+  background-image: none;
+  background-color: transparent;
+  border-color: transparent;
+  color: inherit;
+}
+
+/* Portal Specific Items
+/-------------------------------------------------------------- */
+
+/* Header and Navigation */
+#gdc-header {
+  background-color: #fff;
+}
+
+.label-primary {
+  background-color:  #5b5151;
+}
+
+.navbar-default {
+  border-color: #c4c4c4;
+}
+
+
+/* nav bar changes */
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .active > a:hover {
+  color: #fff;
+  background-color: #5b5151;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  background-color: #dedddd;
+  text-decoration: none;
+}
+
+.navbar-brand {
+  background:url(/images/logo-GDC-data-portal.png) no-repeat 10px 14px;
+  width:253px;
+  text-indent:-10000px;
+  overflow:hidden;
+  margin-right:82px;
+}
+
+/* nav bar icon replacement (replacing font-awesome icons) */
+
+.navbar-nav .fa {
+  display:inline-block;
+  text-indent:-10000px;
+  overflow:hidden;
+  width:19px;
+  height:14px;
+}
+/*---projects---*/
+.navbar-nav .fa-folder-o {
+  background:url(/images/icon-projects-off.png) no-repeat 2px 0;
+}
+
+/*---data---*/
+.navbar-nav .fa-database {
+  background:url(/images/icon-data-off.png) no-repeat 2px 3px;
+}
+.navbar-nav .active .fa-database {
+  background:url(/images/icon-data-on.png) no-repeat 2px 3px;
+}
+
+
+/*---annotations---*/
+.navbar-nav .fa-align-left {
+  background:url(/images/icon-annotations-off.png) no-repeat 0 0;
+}
+.navbar-nav .active .fa-align-left {
+  background:url(/images/icon-annotations-on.png) no-repeat 0 0;
+}
+
+/*---reports---*/
+.navbar-nav .fa-cube {
+  background:url(/images/icon-reports-off.png) no-repeat 4px 2px;
+}
+.navbar-nav .active .fa-cube {
+  background:url(/images/icon-reports-on.png) no-repeat 4px 2px;
+}
+
+/*---login---*/
+.navbar-nav .fa-sign-in {
+  background:url(/images/icon-login-off.png) no-repeat 3px 2px;
+}
+.navbar-nav .active .fa-sign-in {
+  background:url(/images/icon-login-on.png) no-repeat 3px 2px;
+}
+
+/*---cart---*/
+.navbar-nav .fa-shopping-cart {
+  background:url(/images/icon-cart-off.png) no-repeat 3px 2px;
+}
+.navbar-nav .active .fa-shopping-cart {
+  background:url(/images/icon-cart-on.png) no-repeat 3px 2px;
+}
+
+.navbar-nav .active.nav-cart .label-primary {
+  background-color:#fff;
+  color:#5b5151;
+}
+
+i.fa,
+.btn.btn-default i.fa,
+span.fa-search { color: #c5c3c4;}
+
+/*.navbar-nav .active i.fa { color: #68644e;}*/
+
+.alert-info i.fa { color: #68644e; }
+
+.btn.btn-primary i.fa { color: #e4eff7; }
+
+.nav-tabs {
+  border-bottom: 1px solid #c4c4c4;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  background-color: #f5f5f5;
+  border-color: #c4c4c4 #c4c4c4 transparent;
+  color: inherit;
+}
+
+.nav-tabs > li > a:hover {
+  border-color: #d9d8d8 #d9d8d8 #c4c4c4;
+}
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  background-color: #fff;
+  border-color: #c4c4c4 #c4c4c4 transparent;
+  color: inherit;
+}
+
+/* Left Panal sidebar */
+.facets-sidebar .nav-tabs > li.active > a,
+.facets-sidebar .nav-tabs > li.active > a:hover,
+.facets-sidebar .nav-tabs > li.active > a:focus {
+  background-color: #fff;
+}
+
+.panel-default {
+  border-color: #c4c4c4;
+}
+.panel-default .list-group-item p {
+  padding:0;
+  margin:0;
+}
+.list-group-item p.ng-scope:first-child {
+  margin-top:10px;
+}
+
+.input-group-addon:not(:first-child):not(:last-child),
+.input-group-btn:not(:first-child):not(:last-child),
+.input-group .form-control:not(:first-child):not(:last-child) {
+  border-radius: 3px;
+}
+
+/* Content elements */
+.alert-info {
+  background-color: rgb(238, 228, 192);
+  border-color: transparent;
+  color: #5b5151;
+}
+
+
+.pagination > li > a,
+.pagination > li > span {
+  color: #686868;
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  background-color: #686868;
+  border-color:  #686868;
+}
+
+.btn-primary {
+  background-color: #347cb0;
+  border-color: #1f486c;
+  color: #fff!important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active,
+.open > .dropdown-toggle.btn-primary {
+  background: linear-gradient(to bottom, #347cb0 50%, #1f486c 100%) repeat scroll 0 0 #1f486c;
+  border-color: #1f486c;
+  color: #fff!important;
+}
+
+.btn-primary.disabled, .btn-primary[disabled], fieldset[disabled] .btn-primary, .btn-primary.disabled:hover, .btn-primary[disabled]:hover, fieldset[disabled] .btn-primary:hover, .btn-primary.disabled:focus, .btn-primary[disabled]:focus, fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary.focus[disabled], fieldset[disabled] .btn-primary.focus, .btn-primary.disabled:active, .btn-primary[disabled]:active, fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary.active[disabled], fieldset[disabled] .btn-primary.active {
+  background-color: #347cb0;
+  border-color: #1f486c;
+}
+
+.btn-default {
+  background-color: #fff;
+  border-color: #ccc;
+  color: #333;
+}
+
+.btn-default:hover,
+.btn-default:focus,
+.btn-default.focus,
+.btn-default:active,
+.btn-default.active,
+.open > .dropdown-toggle.btn-default {
+  background: linear-gradient(to bottom, #ffffff 50%, #e6e6e6 100%) repeat scroll 0 0 #e6e6e6;
+  border-color: #adadad;
+  color: #333;
 }

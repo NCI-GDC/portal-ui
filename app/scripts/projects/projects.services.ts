@@ -29,6 +29,10 @@ module ngApp.projects.services {
         return response["data"];
       });
     }
+  
+    getTableHeading() {
+      return 'Participant count per data type';
+    }
 
     getProjects(params: Object = {}): ng.IPromise<IProjects> {
       if (params.hasOwnProperty("fields")) {

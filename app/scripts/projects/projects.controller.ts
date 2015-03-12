@@ -63,13 +63,13 @@ module ngApp.projects.controllers {
 
 
           if (this.ProjectsState.tabs.graph.active) {
-            githutTable(data,{filters:{file_size:this.$filter('size')}});
+            githutTable(data,{filters:{file_size:this.$filter('size')},heading:this.ProjectsService.getTableHeading()});
           }
         });
       } else {
         this.tabSwitch = false;
         if (this.ProjectsState.tabs.graph.active) {
-          githutTable(this.projects,{filters:{file_size:this.$filter('size')}});
+          githutTable(this.projects,{filters:{file_size:this.$filter('size')},heading:this.ProjectsService.getTableHeading()});
         }
       }
     }
@@ -324,7 +324,7 @@ function githutTable(data,config){
     superhead:{
       start:'Clinical',
       end:'Other',
-      text:'DATA TYPES'
+      text:config.heading //Participant count per data type 
     },
 
     /**

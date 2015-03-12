@@ -47,5 +47,9 @@ describe('Projects:', function () {
       expect(ProjectsService.ds.get).to.have.been.calledOnce;
       expect(ProjectsService.ds.get).to.have.been.calledWith(1);
     }));
+    
+     it('title of table should match spec', inject(function (ProjectsService) {
+       assert.equal(ProjectsService.getTableHeading(),'Participant count per data type');
+    }));
   });
 });

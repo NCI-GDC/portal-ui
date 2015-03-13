@@ -1,6 +1,6 @@
 <div class="container-fluid cart full-page">
   <section class="row">
-    <div class="col-lg-6 col-md-6 cart-summary">
+    <div class="col-lg-6 col-md-6 col-sm-6 cart-summary">
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title" data-translate>Cart Summary</h3>
@@ -26,26 +26,14 @@
         </table>
       </div>
     </div>
-    <div class="col-lg-6 col-md-6" data-ng-if="cc.files.length">
-      <div class="row charts-container">
-        <div class="col-lg-6 col-md-6">
-          <bar-chart data="cc.numberFilesGraph"
-                     data-heading="Number of files in your cart"
-                     data-direction="horizontal"
-                     data-height="200">
-          </bar-chart>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+<!--           <div class="chart"></div>-->
+        <div ng-if=chartData>
+          <div pie-chart data=chartData config=chartConfig> </div>
         </div>
-        <div class="col-lg-6 col-md-6">
-          <bar-chart data="cc.sizeFilesGraph"
-                     data-heading="Size of files in your cart"
-                     data-height="200"
-                     data-format-filter="size"
-                     data-direction="horizontal"
-                     data-label-filter="size">
-          </bar-chart>
-        </div>
+         
       </div>
-    </div>
+
   </section>
 
   <h2 data-ng-if="!cc.files.length" data-translate>Your Cart is empty.</h2>

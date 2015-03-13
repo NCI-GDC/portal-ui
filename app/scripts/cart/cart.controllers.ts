@@ -50,13 +50,13 @@ module ngApp.cart.controllers {
       };
 
       this.setDisplayedFiles();
-      this.setGraphData();
+
 
 
       $scope.$on("gdc-user-reset", () => {
         this.files = CartService.getFiles();
         this.setDisplayedFiles();
-        this.setGraphData();
+
       });
       $scope.$on("cart-paging-update", (event: any, newPaging: any) => {
         this.setDisplayedFiles(newPaging);
@@ -64,117 +64,44 @@ module ngApp.cart.controllers {
 
       $scope.$on("undo", () => {
         this.setDisplayedFiles();
-        this.setGraphData();
+
       });
+      
+      var accessCount = _.countBy(files,function(f){return UserService.userCanDownloadFiles([f])}); 
+      
 
-    }
-
-    setGraphData(): void {
-      var numberFilesGraph = [];
-      var sizeFilesGraph = [];
-
-      if (!this.UserService.currentUser) {
-        numberFilesGraph.push({
-          "label": "Protected Files",
-          "value": _.filter(this.files, (file: IFile) => { return file.data_access === 'protected'; }).length
-        });
-        numberFilesGraph.push({
-          "label": "Open Files",
-          "value": _.filter(this.files, (file: IFile) => { return file.data_access !== 'protected'; }).length
-        });
-
-        var sizeProtected = 0,
-            sizeOpen = 0;
-
-        _.each(_.filter(this.files, (file: IFile) => { return file.data_access === 'protected'; }), (file: IFile) => {
-          sizeProtected += file.file_size;
-        });
-
-        _.each(_.filter(this.files, (file: IFile) => { return file.data_access !== 'protected'; }), (file: IFile) => {
-          sizeOpen += file.file_size;
-        });
-
-        sizeFilesGraph.push({
-          "label": "Protected Files",
-          "value": sizeProtected
-        });
-        sizeFilesGraph.push({
-          "label": "Open Files",
-          "value": sizeOpen
-        });
-      } else {
-        numberFilesGraph.push({
-          "label": "Protected Files in My Projects",
-          "value": _.filter(this.files, (file: IFile) => {
-            return file.data_access === 'protected' && this.isUserProject(file);
-          }).length
-        });
-        numberFilesGraph.push({
-          "label": "Open Files in My Projects",
-          "value": _.filter(this.files, (file: IFile) => {
-            return file.data_access !== 'protected' && this.isUserProject(file);
-          }).length
-        });
-        numberFilesGraph.push({
-          "label": "Protected Files not in My Projects",
-          "value": _.filter(this.files, (file: IFile) => {
-            return file.data_access === 'protected' && !this.isUserProject(file);
-          }).length
-        });
-        numberFilesGraph.push({
-          "label": "Open Files not in My Projects",
-          "value": _.filter(this.files, (file: IFile) => {
-            return file.data_access !== 'protected' && !this.isUserProject(file);
-          }).length
-        });
-
-        var sizeProtectedProjects = 0,
-            sizeOpenProjects = 0,
-            sizeProtectedNotProjects = 0,
-            sizeOpenNotProjects = 0;
-
-        _.each(_.filter(this.files, (file: IFile) => {
-            return file.data_access === 'protected' && this.isUserProject(file);
-          }), (file: IFile) => {
-          sizeProtectedProjects += file.file_size;
-        });
-        _.each(_.filter(this.files, (file: IFile) => {
-            return file.data_access !== 'protected' && this.isUserProject(file);
-          }), (file: IFile) => {
-          sizeOpenProjects += file.file_size;
-        });
-        _.each(_.filter(this.files, (file: IFile) => {
-            return file.data_access === 'protected' && !this.isUserProject(file);
-          }), (file: IFile) => {
-          sizeProtectedNotProjects += file.file_size;
-        });
-        _.each(_.filter(this.files, (file: IFile) => {
-            return file.data_access !== 'protected' && !this.isUserProject(file);
-          }), (file: IFile) => {
-          sizeOpenNotProjects += file.file_size;
-        });
-
-        sizeFilesGraph.push({
-          "label": "Protected Files in My Projects",
-          "value": sizeProtectedProjects
-        });
-        sizeFilesGraph.push({
-          "label": "Open Files in My Projects",
-          "value": sizeOpenProjects
-        });
-        sizeFilesGraph.push({
-          "label": "Protected Files not in My Projects",
-          "value": sizeProtectedNotProjects
-        });
-        sizeFilesGraph.push({
-          "label": "Open Files not in My Projects",
-          "value": sizeOpenNotProjects
-        });
+      
+      var data = [
+        {
+          access:'open',
+          count:accessCount['true'],
+        },
+        {
+          access:'protected',
+          count:accessCount['false'],
+        }
+      ]
+      
+      
+      $scope.chartConfig = {
+        legend:{
+          open:'%!% file(s) you are authorized to download',
+          protected:'%!% file(s) you are not authorized to download'
+        }
       }
+      
+      $scope.chartData = data.map(function(a){
+        return {
+          key:a.access,
+          value:a.count
+        }
+      })
 
-      this.numberFilesGraph = numberFilesGraph;
-      this.sizeFilesGraph = sizeFilesGraph;
+   
+
     }
+
+
 
     setDisplayedFiles(newPaging: IPagination = this.pagination): void {
       this.files = this.CartService.getFiles();

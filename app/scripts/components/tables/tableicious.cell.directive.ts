@@ -13,8 +13,12 @@ module ngApp.components.tables.directives.tableicious {
                             return item.id === "files";
                         });
 
+                        var fileId = _.find($scope.row, (item) => {
+                            return item.id === "file_id";
+                        });
+
                         var htm;
-                        if (!files) {
+                        if (!files && !fileId) {
                             htm = "<span>--</span>";
                         } else {
                             try {

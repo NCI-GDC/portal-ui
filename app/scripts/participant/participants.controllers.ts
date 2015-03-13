@@ -8,11 +8,13 @@ module ngApp.participants.controllers {
   export interface IParticipantController {
     participant: IParticipant;
     annotationIds: string[];
+    clinicalFileId: string;
     DownloadClinicalXML(): void;
   }
 
   class ParticipantController implements IParticipantController {
     annotationIds: string[];
+    clinicalFileId: string;
     /* @ngInject */
     constructor(public participant: IParticipant,
                 private CoreService: ICoreService,
@@ -24,9 +26,14 @@ module ngApp.participants.controllers {
         return annotation.annotation_id;
       });
 
-      this.clinicalFileId = _.find(this.participant.files, (file) => {
+      var clinicalFile = _.find(this.participant.files, (file) => {
         return file.data_subtype.toLowerCase() === "clinical data";
-      }).file_id;
+      });
+
+      if(clinicalFile) {
+        this.clinicalFileId = clinicalFile.file_id;
+      }
+
     }
 
   }

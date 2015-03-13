@@ -8,11 +8,13 @@ module ngApp.components.ui.biospecimen.controllers {
     activeBioSpecimenDocumentType: string;
     displayBioSpecimenDocument(event: any, doc: any, type: string): void;
     downloadBiospecimenXML(participant_id: string): void;
+    bioSpecimenFileId: string;
   }
 
   class BiospecimenController implements IBiospecimenController {
     activeBioSpecimenDocument: any;
     activeBioSpecimenDocumentType: string;
+    bioSpecimenFileId: string;
 
     /* @ngInject */
     constructor(private LocationService: ILocationService,
@@ -20,9 +22,14 @@ module ngApp.components.ui.biospecimen.controllers {
       $scope.participant.samples[0].expanded = true;
       this.activeBioSpecimenDocument = $scope.participant.samples[0];
 
-      this.bioSpecimenFileId = _.find($scope.participant.files, (file) => {
+      var biospecimenFile =  _.find($scope.participant.files, (file) => {
         return file.data_subtype.toLowerCase() === "biospecimen data";
-      }).file_id;
+      });
+
+      if(biospecimenFile) {
+        this.bioSpecimenFileId = biospecimenFile.file_id;
+      }
+
     }
 
     displayBioSpecimenDocument(event: any, doc: any): void {

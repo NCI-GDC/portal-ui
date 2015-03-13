@@ -5,36 +5,11 @@
         <div class="panel-heading clearfix">
           <h3 class="panel-title pull-left">Facets</h3>
         </div>
-        <div class="list-group">
-          <facets-free-text data-field="annotation_id" data-title="Annotation" placeholder="{{ 'Annotation ID' | translate }}"
-                            entity="annotations"
-                            data-template="components/facets/templates/typeahead-annotations.html"></facets-free-text>
-          <terms data-name="annotations.project.program.name"
-                 data-title="Program"
-                 data-facet="asc.annotations.aggregations['project.program.name']" data-collapsed="true"></terms>
-          <terms data-name="annotations.project.name"
-                 data-title="Project"
-                 data-facet="asc.annotations.aggregations['project.name']" data-collapsed="true"></terms>
-          <terms data-name="annotations.project.primary_site"
-                 data-title="Primary Site"
-                 data-facet="asc.annotations.aggregations['project.primary_site']" data-collapsed="true"></terms>
-          <terms data-name="annotations.entity_type"
-                 data-title="Entity Type"
-                 data-facet="asc.annotations.aggregations['entity_type']"></terms>
-          <terms data-name="annotations.category"
-                 data-title="Annotation Category"
-                 data-facet="asc.annotations.aggregations.category"></terms>
-          <terms data-name="annotations.classification"
-                 data-title="Annotation Classification"
-                 data-facet="asc.annotations.aggregations.classification"></terms>
-          <terms data-name="annotations.status"
-                 data-title="Status"
-                 data-facet="asc.annotations.aggregations.status"></terms>
+        <div class="list-group" data-ng-include="'annotations/templates/annotations.facets.html'" class="facet-section" role="form">
         </div>
       </div>
 
     </div>
-
     <div class="col-lg-9 col-md-8">
 
       <div class="alert alert-info clearfix">

@@ -1,12 +1,22 @@
 <div class="modal-header">
-  <h4 data-translate>Data File Download</h4>
+  <h4 data-translate>Access Error</h4>
 </div>
 <div class="modal-body">
-  <p data-translate>
-      Your cart contains {{meta.protected.length}} protected files out of {{meta.all.length}} that you do not have access to. Please <a login-button>login <i class="fa fa-sign-in"></i>.</a>
-  </p>
+ <p>
+   You are attempting to download files that you are not authorized to access.
+ </p>
+ <p>
+   <span class="label label-success">{{meta.authorized.length}}</span> open access files that you can download.
+ </p>
+ <p>
+   <span class="label label-danger">{{meta.unauthorized.length}}</span> protected files that you are not authorized to download.
+ </p>
+ <p>
+   Please <a login-button>login <i class="fa fa-sign-in"></i>.</a>
+ </p>
 </div>
 <div class="modal-footer">
+ <button class="btn btn-warning" ng-click="wc.cancel()" data-translate>Cancel</button>
   <button class="btn btn-primary {{}}" ng-if="meta.protected.length < meta.all.length" ng-click="wc.goAuth()" data-translate>Download authorized files</button>
-  <button class="btn btn-warning" ng-click="wc.cancel()" data-translate>Cancel</button>
+  
 </div>

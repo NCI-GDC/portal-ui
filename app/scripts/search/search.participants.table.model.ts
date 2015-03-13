@@ -50,7 +50,7 @@ module ngApp.search.models {
                     return elem.id === 'files';
                 });
 
-                $scope.files = files.val;
+                $scope.files = files ? files.val : [];
                 var htm = '<div add-to-cart-filtered files="files" row="row"></div>';
                 return htm;
 

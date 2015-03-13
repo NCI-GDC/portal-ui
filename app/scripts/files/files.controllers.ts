@@ -40,10 +40,15 @@ module ngApp.files.controllers {
         this.archiveCount = 0;
       }
 
-      this.annotationIds = _.map(file.annotations, (annotation) => {
-        return annotation.annotation_id;
-      });
+      _.every(file.associated_entities, (entity) => {
+        entity.annotations = _.find(file.annotations, (annotation) => {
+          return annotation.annotation_id === entity.entity_id;
+        });
 
+        if (entity.annotations) {
+          entity.annotations = _.pluck(entity.annotations, "annotation_id");
+        }
+      });
     }
 
     isInCart(): boolean {

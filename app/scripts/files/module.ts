@@ -36,6 +36,9 @@ module ngApp.files {
               "related_files.type",
               "related_files.file_name",
               "related_files.md5sum",
+              "associated_entities.entity_id",
+              "associated_entities.entity_type",
+              "associated_entities.participant_id",
               "annotations.annotation_id",
               "tags",
               "origin"

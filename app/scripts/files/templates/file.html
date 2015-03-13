@@ -143,7 +143,7 @@
         <div class="panel-body" data-ng-if="!fc.file.participants.length">
           <h4 class="list-group-item-heading">No participants found.</h4>
         </div>
-        <div class="table-responsive" data-ng-if="fc.file.participants.length">
+        <div class="table-responsive" data-ng-if="fc.file.associated_entities.length">
           <table id="participants-table" class="table table-striped table-hover table-condensed table-bordered">
             <thead>
             <tr>
@@ -154,20 +154,21 @@
             </tr>
             </thead>
             <tbody>
-            <tr data-ng-repeat="p in fc.file.participants track by p.participant_id">
-              <td>tbd</td>
-              <td>tbd</td>
+            <tr data-ng-repeat="e in fc.file.associated_entities track by e.participant_id">
+              <td>{{ ::e.entity_id }}</td>
+              <td>{{ ::e.entity_type | humanify }}</td>
               <td>
-                <a data-ui-sref="participant({ participantId : p.participant_id })">
-                  {{ ::p.participant_id }}
+                <a data-ui-sref="participant({ participantId : e.participant_id })">
+                  {{ ::e.participant_id }}
                 </a>
               </td>
               <td>
                 <a data-ui-sref="annotations({ 'filters':
-                     {{ [{name: 'annotation_id', value: fc.annotationIds }] | makeFilter }} })"
-                   data-ng-if="fc.file.annotations">
-                  {{ fc.file.annotations.length }}
+                     {{ [{name: 'annotation_id', value: e.annotations }] | makeFilter }} })"
+                   data-ng-if="e.annotations.length">
+                  {{ e.annotations.length }}
                 </a>
+                <span data-ng-if="!e.annotations.length">0</span>
               </td>
             </tr>
             </tbody>

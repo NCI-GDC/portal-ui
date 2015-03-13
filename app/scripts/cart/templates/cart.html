@@ -85,28 +85,14 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-              <li role="listitem" aria-label="{{ 'Download Files' | translate }}">
-                <a data-ng-href="{{ cc.getFileIds().concat(cc.getRelatedFileIds() || []) | makeDownloadLink }}">
-                  <i class="fa fa-download fa-stack"></i>
-                  <span data-translate>Download Files with Metadata</span>
-                </a>
-              </li>
+         
               <li role="listitem" aria-label="{{ 'Download Manifest' | translate }}">
                 <a data-ng-href="{{ cc.getFileIds() | makeManifestLink }}">
                   <i class="fa fa-file-code-o fa-stack"></i>
                   <span data-translate>Download Manifest</span>
                 </a>
               </li>
-              <li data-ng-class="{ disabled: cc.getRelatedFileIds().length === 0}"
-                  role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                <a data-ng-href="{{ cc.getRelatedFileIds() || [] | makeDownloadLink }}">
-                  <i class="fa fa-file-code-o fa-stack"></i>
-                  <span data-ng-switch="cc.getRelatedFileIds().length">
-                    <span data-ng-switch-when="0" data-translate>No Metadata Files to Download</span>
-                    <span data-ng-switch-default data-translate>Download Metadata</span>
-                  </span>
-                </a>
-              </li>
+              
             </ul>
           </span>
           <button type="button"
@@ -128,6 +114,9 @@
               <i class="fa fa-circle-o"></i>
             </button>
           </th>
+          <th>
+            
+          </th>
           <th scope="col" class="text-center"
               data-ng-if="cc.UserService.currentUser"
               data-translate>
@@ -139,7 +128,6 @@
           <th scope="col" class="text-center" data-translate>Participant</th>
           <th scope="col" class="text-center" data-translate>Projects</th>
           <th scope="col" class="text-center" data-translate>Data Type</th>
-          <th scope="col" class="text-center" data-translate>Status</th>
           <th scope="col" class="text-center" data-translate>Data Format</th>
           <th scope="col" class="text-center" data-translate>Size</th>
           <th scope="col" class="text-center" data-translate>Revision</th>
@@ -149,51 +137,38 @@
         <tbody>
         <tr data-ng-repeat="file in cc.displayedFiles">
           <td>
-            <div class="btn-group" data-dropdown>
-              <button type="button" class="btn btn-default"
-                      data-ng-click="file.selected = !file.selected">
-                <i class="fa"
-                   data-ng-class="file.selected ? 'fa-check-circle-o' : 'fa-circle-o'"></i>
-              </button>
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+            <button type="button" class="btn btn-default"
+                    data-ng-click="file.selected = !file.selected">
+              <i class="fa"
+                 data-ng-class="file.selected ? 'fa-check-circle-o' : 'fa-circle-o'"></i>
+            </button>
+
+          </td>
+          <td>
+           <div class="btn-group" data-dropdown>
+            <button class="btn btn-primary" download-button files=file><i class="fa fa-download"></i></button>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                       aria-expanded="false">
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" role="menu">
-                <li role="listitem" aria-label="{{ 'Download File with Metadata' | translate }}">
-                  <a data-ng-href="{{ [file.file_id].concat(file.related_ids || []) | makeDownloadLink }}">
-                    <i class="fa fa-cloud-download fa-stack"></i>
-                    <span data-translate>Download File with Metadata</span>
-                  </a>
-                </li>
-                <li role="listitem" aria-label="{{ 'Download Only File' | translate }}">
-                  <a data-ng-href="{{ [file.file_id] | makeDownloadLink }}">
-                    <i class="fa fa-download fa-stack"></i>
-                    <span data-translate>Download Only File</span>
-                  </a>
-                </li>
-                <li role="listitem" aria-label="{{ 'Download Manifest' | translate }}">
-                  <a data-ng-href="{{ [file.file_id] | makeManifestLink }}">
-                    <i class="fa fa-file-code-o fa-stack"></i>
-                    <span data-translate>Download Manifest</span>
-                  </a>
-                </li>
+               
                 <li data-ng-class="{ disabled: file.related_ids.length === 0}"
                     role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                  <a data-ng-href="{{ file.related_ids || [] | makeDownloadLink }}">
+                  <a ng-if=file.annotations[0] data-ng-href="{{ file.related_ids || [] | makeDownloadLink }}">
                     <i class="fa fa-file-code-o fa-stack"></i>
-                    <span data-translate>Download Metadata Files</span>
+                    <span  data-translate>Download Metadata Files</span>
+                    
+                  </a>
+                  <a ng-if=!file.annotations[0]>
+                    <span data-translate>No Metadata files</span>
                   </a>
                 </li>
-                <li class="divider"></li>
-                <li role="listitem" aria-label="{{ 'Remove from Cart' | translate }}">
-                  <a href="#" data-ng-click="cc.remove(file.file_id)">
-                    <i class="fa fa-remove fa-stack"></i>
-                    <span data-translate>Remove from Cart</span>
-                  </a>
-                </li>
+                
               </ul>
-            </div>
+          </div>
+           
+            <a class="btn btn-danger" data-ng-click="cc.remove(file.file_id)" files=file><i class="fa fa-times"></i></a>
           </td>
           <td scope="col" class="text-center"
               data-ng-if="cc.UserService.currentUser">
@@ -248,7 +223,6 @@
             <span data-ng-if="!file.participants.length">0</span>
           </td>
           <td>{{ file.data_type }}</td>
-          <td>{{ file.state | humanify }}</td>
           <td>{{ file.data_format }}</td>
           <td>{{ file.file_size | size }}</td>
           <td>{{ file.archive.revision || "--" }}</td>

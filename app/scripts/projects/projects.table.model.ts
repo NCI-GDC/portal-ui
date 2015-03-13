@@ -8,6 +8,16 @@ module ngApp.projects.models {
         return elem.id === 'project_id';
       }).val;
 
+      var data = _.find(_.find(row, function (x: TableiciousEntryDefinition) {
+        return x.id === 'summary';
+      }).val.data_types, function (x: any) {
+        return x.data_type === data_type;
+      });
+
+      if (!data || !data.participant_count) {
+        return;
+      }
+
       var filter = $filter("makeFilter")([{
         name: 'participants.project.project_id',
         value: projectId

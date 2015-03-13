@@ -55,11 +55,33 @@ module ngApp.components.user.services {
     }
 
     isUserProject(file: IFile): boolean {
+      if (!this.currentUser) {
+        return false;
+      }
+
       var projectIds = _.unique(_.map(file.participants, (participant) => {
         return participant.project.project_id;
       }));
       return _.some(projectIds, (id) => {
-        return this.currentUser.projects.gdc_ids.indexOf(id);
+        return this.currentUser.projects.gdc_ids.indexOf(id) !== -1;
+      });
+    }
+
+    setUserProjectsTerms(terms) {
+      if (!this.currentUser || !this.currentUser.isFiltered) {
+        return terms;
+      }
+
+      return _.filter(terms, (term) => {
+        return this.isUserProject({
+          participants: [
+            {
+              project: {
+                project_id: term.key
+              }
+            }
+          ]
+        });
       });
     }
     

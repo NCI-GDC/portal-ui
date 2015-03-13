@@ -8,13 +8,23 @@ module ngApp.components.tables.directives.tableicious {
                     if ($scope.heading.compile) {
                         $element.empty();
                         $scope.row = $scope.$parent.datum;
+
+                        var files = _.find($scope.row, (item) => {
+                            return item.id === "files";
+                        });
+
                         var htm;
-                        try {
-                            htm = $scope.heading.compile($scope);
-                        } catch (e) {
-                            htm = '<span>?</span>';
-                            $log.error(e);
+                        if (!files) {
+                            htm = "<span>--</span>";
+                        } else {
+                            try {
+                                htm = $scope.heading.compile($scope);
+                            } catch (e) {
+                                htm = '<span>?</span>';
+                                $log.error(e);
+                            }
                         }
+
                         var compiled = $compile(htm)($scope);
                         $element.append(compiled);
                     }

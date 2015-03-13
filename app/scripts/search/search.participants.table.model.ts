@@ -55,7 +55,26 @@ module ngApp.search.models {
                 return htm;
 
             }
-        },{
+        }, {
+            displayName: "My Projects",
+            id: "my_projects",
+            enabled: function (scope) {
+              return scope.UserService.currentUser;
+            },
+            icon: function (field, row, scope) {
+              var project = _.find(row, function (elem) {
+                return elem.id === 'project'
+              }).val;
+              var UserService: IUserService = scope.UserService;
+              return UserService.isUserProject({
+                participants: [
+                    {
+                        project: project
+                    }
+                ]
+              }) ? 'check' : 'close';
+            }
+        }, {
             displayName: "Participant ID",
             id: "participant_id",
             enabled: true,

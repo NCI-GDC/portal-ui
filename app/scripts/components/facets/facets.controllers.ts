@@ -30,7 +30,8 @@ module ngApp.components.facets.controllers {
     inactives: string[] = [];
 
     /* @ngInject */
-    constructor(private $scope: IFacetScope, private FacetService: IFacetService) {
+    constructor(private $scope: IFacetScope, private FacetService: IFacetService,
+                private UserService: IUserService) {
       this.collapsed = !!$scope.collapsed;
       this.expanded = !!$scope.expanded;
       this.displayCount = this.originalDisplayCount = $scope.displayCount || 5;
@@ -58,6 +59,16 @@ module ngApp.components.facets.controllers {
     }
 
     refresh(terms) {
+      var projectCodeKeys = [
+        "project_id",
+        "participants.project.project_id",
+        "project.project_id"
+      ];
+
+      if (projectCodeKeys.indexOf(this.name) !== -1) {
+        terms = this.UserService.setUserProjectsTerms(terms);
+      }
+
       this.terms = terms;
       this.actives = this.FacetService.getActives(this.name, terms);
       this.inactives = _.difference(terms, this.actives);
@@ -199,7 +210,7 @@ module ngApp.components.facets.controllers {
 
   }
 
-  angular.module("facets.controllers", ["facets.services"])
+  angular.module("facets.controllers", ["facets.services", "user.services"])
       .controller("currentFiltersCtrl", CurrentFiltersController)
       .controller("freeTextCtrl", FreeTextController)
       .controller("termsCtrl", TermsController);

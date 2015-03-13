@@ -81,11 +81,11 @@ module ngApp.core.controllers {
             controller:function($scope,$element,$window){
               $element.on('click',function(){
                 var loginQuery;
-                
+
                   if ($window.location.port) {
-                    loginQuery = "?next=:" + $window.location.port;
+                    loginQuery = "?next=" + ":" + $window.location.port + $window.location.pathname;
                   } else {
-                    loginQuery = "?next=/";
+                    loginQuery = "?next=" + $window.location.pathname;
                   }
                 
                  $window.location = 'https://gdc.nci.nih.gov' + loginQuery;

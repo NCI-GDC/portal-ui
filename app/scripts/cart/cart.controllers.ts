@@ -35,7 +35,7 @@ module ngApp.cart.controllers {
 
     /* @ngInject */
     constructor(private $scope: ng.IScope, public files: IFile[], private CoreService: ICoreService,
-                private CartService: ICartService, private UserService: IUserService, private $modal, private $filter, private $window, private Restangular) {
+                private CartService: ICartService, private UserService: IUserService, private $modal, private $filter, private $window, private Restangular, private FilesService) {
       CoreService.setPageTitle("Cart", "(" + this.files.length + ")");
       this.lastModified = this.CartService.lastModified;
 
@@ -279,6 +279,7 @@ module ngApp.cart.controllers {
       var $modal = this.$modal;
       var scope = this.$scope;
       var ids = this.getFileIds();
+      var FilesService = this.FilesService;
       
 
       var isLoggedIn = this.UserService.currentUser;
@@ -327,9 +328,10 @@ module ngApp.cart.controllers {
       
       
       function download(_ids){
-        _ids = _ids || ids;
-        var x = $filter('makeDownloadLink')(_ids);  
-        $window.location = x;
+          _ids = _ids || ids;
+//        var x = $filter('makeDownloadLink')(_ids);  
+//        $window.location = x;
+         FilesService.downloadFiles(_ids);
       }
       
       function showLoginModal() {

@@ -17,7 +17,8 @@
                 <span data-ng-if="fc.isInCart(fc.file.file_id)" data-translate>Remove from Cart</span>
                 <span data-ng-if="!fc.isInCart(fc.file.file_id)" data-translate>Add to Cart</span>
               </button>
-              <a type="button" class="btn btn-primary" data-ng-href="{{ [fc.file.file_id ] | makeDownloadLink }}">
+<!--              <a type="button" class="btn btn-primary" file=file download-button data-ng-href="{{ [fc.file.file_id ] | makeDownloadLink }}">-->
+              <a type="button" class="btn btn-primary" files=fc.file download-button>
                 <i class="fa fa-cloud-download"></i> Download
               </a>
             </div>

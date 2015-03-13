@@ -62,6 +62,15 @@ module ngApp.components.user.services {
         return this.currentUser.projects.gdc_ids.indexOf(id);
       });
     }
+    
+    userCanDownloadFiles(files) {
+        return files.every((file)=>{
+          if (file.access === 'open') return true;
+          if (file.access !== 'open' && !this.currentUser) return false;
+          if (this.isUserProject(file)) return true;
+        })
+    
+    }
 
     addMyProjectsFilter(filters: any, key: string): any {
       if (this.currentUser && this.currentUser.isFiltered &&

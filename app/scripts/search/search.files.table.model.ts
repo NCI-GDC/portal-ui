@@ -53,7 +53,8 @@ module ngApp.search.models {
         id: "download",
         compile: function ($scope) {
           $scope.file = arrayToObject($scope.row); // TODO: the file being passed here is wrong how to fix?
-          var htm = '<a class="btn btn-primary" data-ng-href="{{ [file.file_id].concat(file.related_ids || []) | makeDownloadLink }}">' +
+          var htm = '<a class="btn btn-primary" download-button files=file>' +
+//          var htm = '<a class="btn btn-primary" download-button data-ng-href="{{ [file.file_id].concat(file.related_ids || []) | makeDownloadLink }}">' +
               '<i class="fa fa-download"></i></a>';
           return htm;
         },

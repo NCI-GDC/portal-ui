@@ -183,9 +183,9 @@
           <td class="truncated-cell">
             <a data-ng-if="file.annotationIds.length === 1"
                data-ui-sref="annotation(({annotationId: file.annotationIds[0]}))">
-               {{ file.annotationIds[0] }}
+               {{ file.annotationIds.length }}
             </a>
-            <a data-ng-if="file.annotationIds > 1"
+            <a data-ng-if="file.annotationIds.length > 1"
                data-ui-sref="annotations({ 'filters': {{
                 [{ name: 'annotation_id', value: file.annotationIds }] | makeFilter }}
             })">

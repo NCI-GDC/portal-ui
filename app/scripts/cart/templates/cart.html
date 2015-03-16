@@ -140,31 +140,10 @@
             </button>
 
           </td>
-          <td>
-           <div class="btn-group" data-dropdown>
+          <td scope="col" class="text-center">
             <button class="btn btn-primary" download-button files=file><i class="fa fa-download"></i></button>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                      aria-expanded="false">
-                <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" role="menu">
 
-                <li data-ng-class="{ disabled: file.related_ids.length === 0}"
-                    role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
-                  <a ng-if=file.annotations[0] data-ng-href="{{ file.related_ids || [] | makeDownloadLink }}">
-                    <i class="fa fa-file-code-o fa-stack"></i>
-                    <span  data-translate>Download Metadata Files</span>
-
-                  </a>
-                  <a ng-if=!file.annotations[0]>
-                    <span data-translate>No Metadata files</span>
-                  </a>
-                </li>
-
-              </ul>
-          </div>
-
-            <a class="btn btn-danger" data-ng-click="cc.remove(file.file_id)" files=file><i class="fa fa-times"></i></a>
+            <button class="btn btn-danger" data-ng-click="cc.remove(file.file_id)" files=file><i class="fa fa-times"></i></button>
           </td>
           <td scope="col" class="text-center"
               data-ng-if="cc.UserService.currentUser">

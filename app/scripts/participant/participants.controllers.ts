@@ -30,7 +30,7 @@ module ngApp.participants.controllers {
         return file.data_subtype.toLowerCase() === "clinical data";
       });
 
-      if(clinicalFile) {
+      if (clinicalFile) {
         this.clinicalFileId = clinicalFile.file_id;
       }
 

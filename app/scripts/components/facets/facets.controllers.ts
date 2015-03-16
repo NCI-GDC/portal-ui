@@ -173,11 +173,9 @@ module ngApp.components.facets.controllers {
       if (this.actives.indexOf(this.searchTerm) === -1) {
         var term = this.searchTerm;
 
-        if (typeof term === "object") {
-          var parts = this.$scope.field.split(".");
-          var field = parts.length > 1 ? parts[parts.length - 1] : parts[0];
-          term = term[field].toLowerCase();
-        }
+        var parts = this.$scope.field.split(".");
+        var field = parts.length > 1 ? parts[parts.length - 1] : parts[0];
+        term = term[field];
 
         this.FacetService.addTerm(this.$scope.field, term);
         this.actives.push(this.searchTerm);

@@ -113,12 +113,19 @@ module ngApp.components.user.services {
     }
 
     userCanDownloadFiles(files) {
-        return files.every((file) => {
-          if (file.access === 'open') return true;
-          if (file.access !== 'open' && !this.currentUser) return false;
-          if (this.isUserProject(file)) return true;
-        })
+      return files.every((file)=>{
+        if (file.access === "open") {
+          return true;
+        }
 
+        if (file.access !== "open" && !this.currentUser) {
+          return false;
+        }
+
+        if (this.isUserProject(file)) {
+          return true;
+        }
+      });
     }
 
     addMyProjectsFilter(filters: any, key: string): any {
@@ -147,7 +154,7 @@ module ngApp.components.user.services {
           if (!projectFilter) {
             filters.content.push(userProjects);
           } else {
-            var projects = _.assign([], this.currentUser.projects.gdc_ids);
+            var projects = this.currentUser.projects.gdc_ids;
 
             var sharedValues = _.intersection(projectFilter.content.value, projects);
 

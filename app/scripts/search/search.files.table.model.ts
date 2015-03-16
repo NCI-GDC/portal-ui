@@ -143,9 +143,13 @@ module ngApp.search.models {
           }
         },
         sref: function (field, row, scope, $filter) {
-          var participant = field.val;
-          if (field.val.length > 1) {
-            var filters = $filter("makeFilter")([{name: "participant.participant_id", value: field.val}]);
+          var participants = field.val;
+          if (participants.length > 1) {
+            var file_id = _.find(row, (item) => {
+              return item.id === "file_id"
+            }).val;
+
+            var filters = $filter("makeFilter")([{name: "files.file_id", value: file_id}]);
             return {
               state: "/search/p",
               filters: {
@@ -154,11 +158,11 @@ module ngApp.search.models {
             };
           }
 
-          if (participant) {
+          if (participants) {
             return {
               state: "/participants/",
               filters: {
-                participantId: participant[0].participant_id
+                participantId: participants[0].participant_id
               }
             };
           }

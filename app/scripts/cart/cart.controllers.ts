@@ -69,39 +69,44 @@ module ngApp.cart.controllers {
 
       });
       
-      var accessCount = _.countBy(files,function(f){return UserService.userCanDownloadFiles([f])}); 
-      
+      $scope.$watch(function(){
+        return CartService.getFiles().length
+      },function(){
+        updateChartData();
+      }, true);
+    
+        
+      function updateChartData(){
+          var accessCount = _.countBy(CartService.getFiles(),function(f){return UserService.userCanDownloadFiles([f])}); 
 
-      
-      var data = [
-        {
-          access:'open',
-          count:accessCount['true'],
-        },
-        {
-          access:'protected',
-          count:accessCount['false'],
-        }
-      ]
-      
-      
-      $scope.chartConfig = {
-        legend:{
-          open:'%!% file(s) you are authorized to download',
-          protected:'%!% file(s) you are not authorized to download'
-        }
+          var data = [
+            {
+              access:'open',
+              count:accessCount['true'] || 0,
+            },
+            {
+              access:'protected',
+              count:accessCount['false'] || 0,
+            }
+          ]
+
+
+          $scope.chartConfig = {
+            legend:{
+              open:'%!% file(s) you are authorized to download',
+              protected:'%!% file(s) you are not authorized to download'
+            }
+          }
+
+          $scope.chartData = data.map(function(a){
+            return {
+              key:a.access,
+              value:a.count
+            }
+          })
+
       }
-      
-      $scope.chartData = data.map(function(a){
-        return {
-          key:a.access,
-          value:a.count
-        }
-      })
-
-   
-
-    }
+  }
 
 
 
@@ -163,14 +168,14 @@ module ngApp.cart.controllers {
       this.CartService.remove([id]);
       this.lastModified = this.CartService.lastModified;
       this.setDisplayedFiles();
-      this.setGraphData();
+//      this.setGraphData();
     }
 
     removeAll() {
       this.CartService.removeAll();
       this.lastModified = this.CartService.lastModified;
       this.setDisplayedFiles();
-      this.setGraphData();
+//      this.setGraphData();
     }
 
     removeSelected(): void {
@@ -178,7 +183,7 @@ module ngApp.cart.controllers {
       this.CartService.remove(ids);
       this.lastModified = this.CartService.lastModified;
       this.setDisplayedFiles();
-      this.setGraphData();
+//      this.setGraphData();
     }
 
     selectAll(): void {

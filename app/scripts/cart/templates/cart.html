@@ -135,7 +135,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr data-ng-repeat="file in cc.displayedFiles">
+        <tr data-ng-repeat="file in cc.displayedFiles track by $index">
           <td>
             <button type="button" class="btn btn-default"
                     data-ng-click="file.selected = !file.selected">

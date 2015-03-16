@@ -11,7 +11,6 @@ module ngApp.cart.services {
     lastModified: Moment;
     getFiles(): IFile[];
     getSelectedFiles(): IFile[];
-    getFileUrls(): string[];
     getFileIds(): string[];
     add(file: IFile): void;
     addFiles(files: IFile[]): void;
@@ -189,10 +188,6 @@ module ngApp.cart.services {
     removeFiles(files: IFile[]): void {
       var ids: string[] = _.pluck(files, "file_id");
       this.remove(ids);
-    }
-
-    getFileUrls(): string[] {
-      return _.pluck(this.getSelectedFiles(), "file_url");
     }
 
     getFileIds(): string[] {

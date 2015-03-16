@@ -97,13 +97,22 @@ module ngApp.cart.controllers {
               protected:'%!% file(s) you are not authorized to download'
             }
           }
+          
+          if(data.every(function(a){
+            return a.count > 0;
+          })) {
+            $scope.chartData = data.map(function(a){
+              return {
+                key:a.access,
+                value:a.count
+              }
+            })    
+          } else {
+            console.log("Clear chart data.");
+            $scope.chartData = undefined;
+          }
 
-          $scope.chartData = data.map(function(a){
-            return {
-              key:a.access,
-              value:a.count
-            }
-          })
+         
 
       }
   }

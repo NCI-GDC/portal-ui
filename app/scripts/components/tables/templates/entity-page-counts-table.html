@@ -10,7 +10,7 @@
   <tbody>
   <tr data-ng-repeat="name in names"
       data-ng-if="dataTransformed[name].file_count > 0 || tableId === 'available-data-table'">
-    <td>{{ name }}</td>
+    <td>{{ name | titlefy }}</td>
     <td data-ng-if="tableId == 'available-data-table'"
         data-ng-switch="dataTransformed[name].participant_count">
       <a data-ng-switch-default data-ui-sref="search.participants({ 'filters':

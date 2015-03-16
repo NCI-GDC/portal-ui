@@ -56,8 +56,20 @@ module ngApp.components.ui.string {
       };
     }
   }
+  
+  class Titlefy {
+    constructor() {
+      return function(s){
+        s = ( s === undefined || s === null ) ? '' : s;
+        return s.toString().toLowerCase().replace( /\b([a-z])/g, function(ch) {
+          return ch.toUpperCase();
+        });
+      } 
+    }
+  }
 
   angular.module("string.filters", [])
       .filter("ellipsicate", Ellipsicate)
+      .filter("titlefy", Titlefy)
       .filter("humanify", Humanify);
 }

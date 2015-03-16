@@ -4,23 +4,25 @@ module ngApp.components.ui.biospecimen.controllers {
   import IGDCConfig = ngApp.IGDCConfig;
 
   export interface IBiospecimenController {
-    activeBioSpecimenDocument: any;
-    activeBioSpecimenDocumentType: string;
+    activeBioSpecimenDoc: any;
+    activeBioSpecimenDocType: string;
     displayBioSpecimenDocument(event: any, doc: any, type: string): void;
     downloadBiospecimenXML(participant_id: string): void;
     bioSpecimenFileId: string;
   }
 
   class BiospecimenController implements IBiospecimenController {
-    activeBioSpecimenDocument: any;
-    activeBioSpecimenDocumentType: string;
+    activeBioSpecimenDoc: any;
+    activeBioSpecimenDocType: string;
     bioSpecimenFileId: string;
 
     /* @ngInject */
     constructor(private LocationService: ILocationService,
                 private config: IGDCConfig, $scope) {
       $scope.participant.samples[0].expanded = true;
-      this.activeBioSpecimenDocument = $scope.participant.samples[0];
+      $scope.participant.samples.expanded = true;
+      this.activeBioSpecimenDoc = $scope.participant.samples[0];
+      this.activeBioSpecimenDocType = "sample";
 
       var biospecimenFile =  _.find($scope.participant.files, (file) => {
         return file.data_subtype.toLowerCase() === "biospecimen data";
@@ -32,9 +34,10 @@ module ngApp.components.ui.biospecimen.controllers {
 
     }
 
-    displayBioSpecimenDocument(event: any, doc: any): void {
+    displayBioSpecimenDocument(event: any, doc: any, type: string): void {
       if (event.which === 1 || event.which === 13) {
-        this.activeBioSpecimenDocument = doc;
+        this.activeBioSpecimenDocType = type;
+        this.activeBioSpecimenDoc = doc;
       }
     }
 
@@ -44,6 +47,10 @@ module ngApp.components.ui.biospecimen.controllers {
       }
 
       if (key.toLowerCase() === "submitter_id") {
+        return false;
+      }
+
+      if (key === this.activeBioSpecimenDocType + "_id") {
         return false;
       }
 

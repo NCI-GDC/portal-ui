@@ -13,9 +13,8 @@ module ngApp.components.ui.file {
           var ret = (bytes / Math.pow(k, i)).toFixed(2);
           var split = ret.split(".");
 
-          if (split.length > 1 && split[1] === "00") {
+          if (split.length > 1 && split[1] === "00" && i === 0) {
             ret = split[0];
-
           }
 
           return ret + " " + sizes[i];

@@ -11,7 +11,7 @@
 
   <div data-ng-show="!tc.collapsed">
     <p data-ng-repeat="term in tc.actives track by term.key"
-        data-ng-class="list-group-item-text">
+       class="list-group-item-text">
       <span data-ng-click="tc.remove(tc.name, term.key)"
             data-ng-keypress="remove(tc.name, term.key, $event)"
             class="facet-term-label">
@@ -23,7 +23,7 @@
     </p>
 
     <p data-ng-repeat="term in tc.inactives | limitTo: tc.displayCount track by term.key"
-        data-ng-class="list-group-item-text">
+       class="list-group-item-text">
       <span data-ng-click="tc.add(tc.name, term.key)"
             data-ng-keypress="add(tc.name, term.key, $event)"
             class="facet-term-label">

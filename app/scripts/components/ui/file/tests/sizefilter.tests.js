@@ -10,7 +10,7 @@ describe("File Size Filter:", function () {
   it("should filter GB when size >= 999500000 bytes ", inject(function ($filter) {
     var formattedSize;
     formattedSize= $filter("size")(1000000000);
-    expect(formattedSize).to.equal("1.00 GB");
+    expect(formattedSize).to.equal("1 GB");
     formattedSize = $filter("size")(1220000000);
     expect(formattedSize).to.equal("1.22 GB");
     formattedSize = $filter("size")(10510000000);
@@ -20,7 +20,7 @@ describe("File Size Filter:", function () {
   it("should filter MB when 999500000 > size >= 999500 bytes ", inject(function ($filter) {
     var formattedSize;
     formattedSize = $filter("size")(1000000);
-    expect(formattedSize).to.equal("1.00 MB");
+    expect(formattedSize).to.equal("1 MB");
     formattedSize = $filter("size")(1220000);
     expect(formattedSize).to.equal("1.22 MB");
     formattedSize = $filter("size")(999499999);
@@ -30,7 +30,7 @@ describe("File Size Filter:", function () {
   it("should filter KB when 999499 > size >= 1000 bytes ", inject(function ($filter) {
     var formattedSize;
     formattedSize = $filter("size")(1000);
-    expect(formattedSize).to.equal("1.00 KB");
+    expect(formattedSize).to.equal("1 KB");
     formattedSize = $filter("size")(999499);
     expect(formattedSize).to.equal("999.50 KB");
   }));
@@ -38,9 +38,9 @@ describe("File Size Filter:", function () {
   it("should filter B when size < 1000 bytes ", inject(function ($filter) {
     var formattedSize;
     formattedSize = $filter("size")(150);
-    expect(formattedSize).to.equal("150.00 B");
+    expect(formattedSize).to.equal("150 B");
     formattedSize = $filter("size")(999);
-    expect(formattedSize).to.equal("999.00 B");
+    expect(formattedSize).to.equal("999 B");
   }));
 
 });

@@ -84,14 +84,14 @@ module ngApp.components.user.services {
         });
       });
     }
-    
+
     userCanDownloadFiles(files) {
-        return files.every((file)=>{
+        return files.every((file) => {
           if (file.access === 'open') return true;
           if (file.access !== 'open' && !this.currentUser) return false;
           if (this.isUserProject(file)) return true;
         })
-    
+
     }
 
     addMyProjectsFilter(filters: any, key: string): any {

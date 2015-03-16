@@ -27,13 +27,10 @@
       </div>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6">
-<!--           <div class="chart"></div>-->
-        <div ng-if=chartData>
-          <div pie-chart data=chartData config=chartConfig> </div>
-        </div>
-         
+      <div data-ng-if=chartData>
+        <div pie-chart data-data=chartData data-config=chartConfig> </div>
       </div>
-
+    </div>
   </section>
 
   <h2 data-ng-if="!cc.files.length" data-translate>Your Cart is empty.</h2>
@@ -85,14 +82,13 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-         
+
               <li role="listitem" aria-label="{{ 'Download Manifest' | translate }}">
                 <a data-ng-href="{{ cc.getFileIds() | makeManifestLink }}">
                   <i class="fa fa-file-code-o fa-stack"></i>
                   <span data-translate>Download Manifest</span>
                 </a>
               </li>
-              
             </ul>
           </span>
           <button type="button"
@@ -115,7 +111,7 @@
             </button>
           </th>
           <th>
-            
+
           </th>
           <th scope="col" class="text-center"
               data-ng-if="cc.UserService.currentUser"
@@ -152,22 +148,22 @@
                 <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" role="menu">
-               
+
                 <li data-ng-class="{ disabled: file.related_ids.length === 0}"
                     role="listitem" aria-label="{{ 'Download Metadata Files' | translate }}">
                   <a ng-if=file.annotations[0] data-ng-href="{{ file.related_ids || [] | makeDownloadLink }}">
                     <i class="fa fa-file-code-o fa-stack"></i>
                     <span  data-translate>Download Metadata Files</span>
-                    
+
                   </a>
                   <a ng-if=!file.annotations[0]>
                     <span data-translate>No Metadata files</span>
                   </a>
                 </li>
-                
+
               </ul>
           </div>
-           
+
             <a class="btn btn-danger" data-ng-click="cc.remove(file.file_id)" files=file><i class="fa fa-times"></i></a>
           </td>
           <td scope="col" class="text-center"
@@ -185,42 +181,42 @@
             </a>
           </td>
           <td class="truncated-cell">
-            <a data-ng-if="file.annotations.length === 1"
-               data-ui-sref="annotation(({annotationId: file.annotations[0].annotation_id }))">
-               {{ file.annotations[0].annotation_id }}
+            <a data-ng-if="file.annotationIds.length === 1"
+               data-ui-sref="annotation(({annotationId: file.annotationIds[0]}))">
+               {{ file.annotationIds[0] }}
             </a>
-            <a data-ng-if="file.annotations.length > 1"
+            <a data-ng-if="file.annotationIds > 1"
                data-ui-sref="annotations({ 'filters': {{
                 [{ name: 'annotation_id', value: file.annotationIds }] | makeFilter }}
             })">
-              {{ file.annotations.length }}
+              {{ file.annotationIds.length }}
             </a>
-            <span data-ng-if="!file.annotations.length">0</span>
+            <span data-ng-if="!file.annotationIds.length">0</span>
           </td>
-          <td class="truncated-cell" data-ng-if="file.participants.length === 1">
-            <a data-ui-sref="participant({ participantId : '{{ file.participants[0].participant_id }}' })">
-              {{file.participants[0].participant_id }}
+          <td class="truncated-cell" data-ng-if="file.participantNum === 1">
+            <a data-ui-sref="participant({ participantId : '{{ file.participantId }}' })">
+              {{ file.participantId }}
             </a>
           </td>
-          <td data-ng-if="file.participants.length > 1">
+          <td data-ng-if="file.participantNum > 1">
             <a data-ui-sref="search.participants({ 'filters': {{
                 [{ name: 'files.file_id', value: file.file_id }] | makeFilter }}
             })">
-              {{ file.participants.length }}
+              {{ file.participantNum }}
             </a>
           </td>
           <td>
-            <a data-ng-if="file.participants.length === 1 || file.projectIds.length === 1"
-               data-ui-sref="project(({projectId: file.participants[0].project.project_id}))">
-               {{ file.participants[0].project.project_id}}
+            <a data-ng-if="file.projects.length === 1"
+               data-ui-sref="project(({projectId: file.projects[0] }))">
+               {{ file.projects[0] }}
             </a>
-            <a data-ng-if="file.participants.length > 1 && file.projectIds.length > 1"
+            <a data-ng-if="file.projects.length > 1"
                data-ui-sref="projects({ 'filters': {{
-                [{ name: 'project_id', value: file.projectIds }] | makeFilter }}
+                [{ name: 'project_id', value: file.projects }] | makeFilter }}
             })">
-              {{ file.participants.length }}
+              {{ file.projects.length }}
             </a>
-            <span data-ng-if="!file.participants.length">0</span>
+            <span data-ng-if="file.projects.length === 0">--</span>
           </td>
           <td>{{ file.data_type }}</td>
           <td>{{ file.data_format }}</td>

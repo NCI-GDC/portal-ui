@@ -85,17 +85,29 @@ module ngApp.cart.services {
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_id)) {
-          file.selected = true;
           file.projectIds = _.unique(_.map(file.participants, (participant) => {
             return participant.project.project_id;
           }));
           file.annotationIds = _.map(file.annotations, (annotation) => {
             return annotation.annotation_id;
           });
-          this.files.push(file);
-          addedFiles.push(file);
+          var fileNeededFieldsOnly = {
+            'selected': true,
+            'access': file.access || '--',
+            'file_name': file.file_name || '--',
+            'file_id': file.file_id || '--',
+            'annotationIds': file.annotationIds,
+            'participantNum': file.participants ? file.participants.length : 0,
+            'participantId': file.participants && file.participants.length > 0 ? file.participants[0].participant_id : "--",
+            'projects': file.projectIds,
+            'data_type': file.data_type || '--',
+            'data_format': file.data_format || '--',
+            'file_size': file.file_size || 0
+          };
+          this.files.push(fileNeededFieldsOnly);
+          addedFiles.push(fileNeededFieldsOnly);
         } else {
-          alreadyIn.push(file);
+          alreadyIn.push(fileNeededFieldsOnly);
         }
       });
       this._sync();
@@ -196,11 +208,12 @@ module ngApp.cart.services {
       this.addFiles(this.lastModifiedFiles);
     }
 
-    _sync() {
+    _sync(): void {
       this.lastModified = this.$window.moment();
       this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
       this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
     }
+
   }
 
   angular

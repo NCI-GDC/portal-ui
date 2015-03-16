@@ -32,17 +32,14 @@ module ngApp.components.charts {
         config:'='
       },
       link: function($scope: IPieChartScope, element: ng.IAugmentedJQuery) {
-        
-        
         var color = d3.scale.category20();
-        
-        
+
         var data = $scope.data;
         var config = $scope.config;
-        
+
         var width = 450,
           height = 175,
-          radius = Math.min(width, height) / 2;  
+          radius = Math.min(width, height) / 2;
         
        var pie = d3.layout.pie()
           .sort(null)
@@ -61,7 +58,7 @@ module ngApp.components.charts {
            var svg = d3.select(element[0]).append("svg")
             .attr("width", width)
             .attr("height", height)
-          .append("g")
+            .append("g")
             .attr("transform", "translate(" + width / 3.5 + "," + height / 2 + ")");
           
           
@@ -115,9 +112,9 @@ module ngApp.components.charts {
 
 
 
-        
+
         function wrap(text, width) {
-     
+
           text.each(function() {
             var text = d3.select(this),
                 words = text.text().split(/\s+/).reverse(),
@@ -145,8 +142,6 @@ module ngApp.components.charts {
       }
     };
   }
-
- 
 
   angular.module("components.charts", [])
       .directive("pieChart", PieChart);

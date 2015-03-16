@@ -24,7 +24,6 @@ module ngApp.cart.controllers {
     pagination: IPagination;
     displayedFiles: IFile[];
     setDisplayedFiles(newPaging?: IPagination): void;
-    setGraphData(): void;
   }
 
   class CartController implements ICartController {
@@ -53,8 +52,6 @@ module ngApp.cart.controllers {
 
       this.setDisplayedFiles();
 
-
-
       $scope.$on("gdc-user-reset", () => {
         this.files = CartService.getFiles();
         this.setDisplayedFiles();
@@ -68,17 +65,15 @@ module ngApp.cart.controllers {
         this.setDisplayedFiles();
 
       });
-      
+
       $scope.$watch(function(){
         return CartService.getFiles().length
       },function(){
         updateChartData();
       }, true);
-    
-        
+
       function updateChartData(){
           var accessCount = _.countBy(CartService.getFiles(),function(f){return UserService.userCanDownloadFiles([f])}); 
-
           var data = [
             {
               access:'open',
@@ -89,7 +84,6 @@ module ngApp.cart.controllers {
               count:accessCount['false'] || 0,
             }
           ]
-
 
           $scope.chartConfig = {
             legend:{
@@ -116,8 +110,6 @@ module ngApp.cart.controllers {
 
       }
   }
-
-
 
     setDisplayedFiles(newPaging: IPagination = this.pagination): void {
       this.files = this.CartService.getFiles();
@@ -177,14 +169,12 @@ module ngApp.cart.controllers {
       this.CartService.remove([id]);
       this.lastModified = this.CartService.lastModified;
       this.setDisplayedFiles();
-//      this.setGraphData();
     }
 
     removeAll() {
       this.CartService.removeAll();
       this.lastModified = this.CartService.lastModified;
       this.setDisplayedFiles();
-//      this.setGraphData();
     }
 
     removeSelected(): void {
@@ -192,7 +182,6 @@ module ngApp.cart.controllers {
       this.CartService.remove(ids);
       this.lastModified = this.CartService.lastModified;
       this.setDisplayedFiles();
-//      this.setGraphData();
     }
 
     selectAll(): void {

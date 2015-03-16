@@ -85,7 +85,7 @@ module ngApp.reports.controllers {
         
         var columns = [{
           id:'project_id',
-          display_name:["Project","project_id"],
+          display_name:["Project","ID"],
           scale:'ordinal',
           dimensional:true
         },

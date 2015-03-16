@@ -799,8 +799,8 @@ function ParallelCoordinates(data,options) {
 	};
 
 	var padding={
-		left:70,
-		right:100,
+		left:100,
+		right:115,
 		top:20,
 		bottom:0
 	};

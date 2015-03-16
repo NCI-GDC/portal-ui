@@ -137,7 +137,7 @@ function githutTable(data,config){
         dimensional:true
     },{
         id:'participant_count',
-        display_name:["Part.","Count"],
+        display_name:["Participant","Count"],
         scale:'ordinal',
         dimensional:true,
         colorgroup:'participant_count'
@@ -147,76 +147,76 @@ function githutTable(data,config){
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'Raw microarray data',
         display_name:['Array'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'Raw sequencing data',
         display_name:['Seq'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'Simple nucleotide variation',
         display_name:['SNV'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'Copy number variation',
         display_name:['CNV'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'Structural rearrangement',
         display_name:['SV'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'Gene expression',
         display_name:['Exp'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'Protein expression',
         display_name:['PExp'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'DNA methylation',
         display_name:['Meth'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'Other',
         display_name:['Other'],
         scale:'ordinal',
         is_subtype:true,
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'file_count',
         display_name:["File","Count"],
         scale:'ordinal',
          dimensional:true,
-        colorgroup:'file_count'
+        colorgroup:'participant_count'
     },{
         id:'file_size',
         display_name:["File","Size"],

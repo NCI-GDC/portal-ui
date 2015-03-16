@@ -65,13 +65,6 @@
           </span>
           (<strong>{{ cc.selectedSize() | size}}</strong>)
           <span style="margin-left: 15px" class="btn-group" data-dropdown>
-<!--
-            <a type="button"
-                    data-ng-href="{{ cc.getFileIds() | makeDownloadLink }}"
-                    class="btn btn-primary">
-              <i class="fa fa-cloud-download"></i> <span data-translate>Download</span>
-            </a> 
--->
             <a type="button"
                     ng-click=cc.checkCartForClosedFiles()
                     class="btn btn-primary">
@@ -111,7 +104,7 @@
             </button>
           </th>
           <th>
-
+            <!-- Note, this is empty on purpose. Don't remove -->
           </th>
           <th scope="col" class="text-center"
               data-ng-if="cc.UserService.currentUser"
@@ -126,7 +119,6 @@
           <th scope="col" class="text-center" data-translate>Data Type</th>
           <th scope="col" class="text-center" data-translate>Data Format</th>
           <th scope="col" class="text-center" data-translate>Size</th>
-          <th scope="col" class="text-center" data-translate>Revision</th>
           <th scope="col" class="text-center" data-translate>Update date</th>
         </tr>
         </thead>
@@ -200,7 +192,6 @@
           <td>{{ file.data_type }}</td>
           <td>{{ file.data_format }}</td>
           <td>{{ file.file_size | size }}</td>
-          <td>{{ file.archive.revision || "--" }}</td>
           <td>{{ file.update_date | date }}</td>
         </tr>
         </tbody>

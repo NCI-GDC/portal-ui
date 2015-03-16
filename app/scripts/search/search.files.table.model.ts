@@ -250,27 +250,10 @@ module ngApp.search.models {
         id: "file_size",
         visible: true,
         template: function (field, row, scope) {
-          //debugger;
           return scope.$filter('size')(field.val);
         },
         sortable: true,
         fieldClass: 'text-right'
-      }, {
-        displayName: "Revision",
-        id: "revision",
-        visible: true,
-        template: function (field, row, scope) {
-          var archive = _.find(row, function (elem) {
-            return elem.id === 'archive'
-          });
-          if (archive) {
-            archive = archive.val;
-            return archive.revision;
-          }
-
-          return "--";
-        }
-
       }, {
         displayName: "Update date",
         id: "updated",

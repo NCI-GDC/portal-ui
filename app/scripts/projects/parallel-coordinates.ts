@@ -502,6 +502,8 @@ function ParallelCoordinates(data,options) {
 	}
     
     function updateLabels(duration) {
+      
+        var labelAdjust = 25;
 		var labels=labels_group
             .selectAll(".labels")
             .selectAll("g.label")
@@ -578,6 +580,7 @@ function ParallelCoordinates(data,options) {
                 return 0;
               }
             })
+            .attr("transform","translate("+labelAdjust+",0)")
 //            .attr('y',10)
             .style('text-anchor',function(d){
 //              debugger;
@@ -655,7 +658,6 @@ function ParallelCoordinates(data,options) {
             });
 
 
-
 		labels
 			.select("path")
 			.attr("class","label")
@@ -665,6 +667,8 @@ function ParallelCoordinates(data,options) {
             
 				return "M"+(w/2+dw/2)+",0l-"+dw/2+",-10l-"+w+",0l0,20l"+w+",0z";
 			})
+            .attr("x",50)
+            .attr("transform","translate("+labelAdjust+",0)")
         
      
 		labels
@@ -705,7 +709,7 @@ function ParallelCoordinates(data,options) {
 					y=yscales[d.column](d.value/d.ref)
 				}
 
-				return "translate("+(x+d.marker_width/2-d.text_width/2-10)+","+y+")";
+				return "translate("+(x-d.marker_width/2-d.text_width/2-10)+","+y+")";
 			})
 
 		labels

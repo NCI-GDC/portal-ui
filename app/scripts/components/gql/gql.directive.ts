@@ -116,6 +116,7 @@ module ngApp.components.gql.directives {
               size: 0,
               filters: {}
             }).then((fs: IParticipants): IGqlExpected[] => {
+              console.log(fs);
               return _.map(fs.aggregations[facet].buckets, (b) => {
                 return {text: b.key, value: b.key};
               });
@@ -148,13 +149,19 @@ module ngApp.components.gql.directives {
               return '[A-Za-z0-9\\-_.]' == e.value
             });
             if ($scope.ajax) {
-              var qs: string[] = _.filter($scope.query.substr(0, Error.offset).split(" "), (x: string): boolean => {
+              var qs: string[] = _.filter($scope.query.substr(0, Error.offset).split(
+                  /!=|=|<|>| and | or | in \[/
+              ), (x: string): boolean => {
                 return !!x.length;
               });
-              // left of current search term
-              var op: string = qs[qs.length - 1];
               // 2 left of current search term
-              var field: string = qs[qs.length - 2];
+              console.log(qs);
+              for (var i=qs.length-1;i>=0;i--) {
+                console.log("idx " + i + ": ", qs[i]);
+              }
+              var field: string = qs[qs.length - 2].replace(/^\s+|\s+$/g,'');
+              console.log(qs.length - 2);
+              console.log(field);
               ajaxRequest(field).then(function (es: IGqlExpected[]) {
                 $scope.totalErrors = $scope.errors = es;
               });
@@ -251,7 +258,8 @@ module ngApp.components.gql.directives {
           if ($scope.errors.length) {
             var oldOffset = $scope.Error.offset;
             var v = $scope.errors[active].value;
-            var v = v == "in" ? "in [" : v;
+            v = v.indexOf(" ") !== -1 ? '"' + v + '"' : v;
+            v = v == "in" ? "in [" : v;
 
             qs.shift();
             qs.unshift(v);

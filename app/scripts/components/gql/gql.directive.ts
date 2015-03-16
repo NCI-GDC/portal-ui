@@ -40,7 +40,7 @@ module ngApp.components.gql.directives {
     showResults();
     cycle(val: number);
     keypress(e: any);
-    caret(input:any, offset: number);
+    caret(input: any, offset: number);
     enter();
     gql: IGqlResult;
     query: string;
@@ -116,7 +116,6 @@ module ngApp.components.gql.directives {
               size: 0,
               filters: {}
             }).then((fs: IParticipants): IGqlExpected[] => {
-              console.log(fs);
               return _.map(fs.aggregations[facet].buckets, (b) => {
                 return {text: b.key, value: b.key};
               });
@@ -131,6 +130,13 @@ module ngApp.components.gql.directives {
             // if ajax
             // T: filter ajax response
             if ($scope.ajax) {
+              //var qs: string[] = _.filter($scope.query.substr(0, $scope.Error.offset).split(
+              //    /!=|=|<|>| and | or | in \[?/
+              //), (x: string): boolean => {
+              //  return !!x.length;
+              //});
+              //console.log(qs);
+
               var xs: string[] = $scope.query.substr($scope.Error.offset).split(" ");
               var term = xs[xs.length - 1];
               $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
@@ -146,34 +152,37 @@ module ngApp.components.gql.directives {
 
             // determine if ajax needed
             $scope.ajax = _.some(Error.expected, (e: IGqlExpected): boolean => {
-              return '[A-Za-z0-9\\-_.]' == e.value
+              return '\"' == e.value
             });
             if ($scope.ajax) {
-              var qs: string[] = _.filter($scope.query.substr(0, Error.offset).split(
-                  /!=|=|<|>| and | or | in \[/
-              ), (x: string): boolean => {
-                return !!x.length;
-              });
-              // 2 left of current search term
-              console.log(qs);
-              for (var i=qs.length-1;i>=0;i--) {
-                console.log("idx " + i + ": ", qs[i]);
-              }
-              var field: string = qs[qs.length - 2].replace(/^\s+|\s+$/g,'');
-              console.log(qs.length - 2);
-              console.log(field);
+              var qs = splitOnOp(Error.offset);
+
+              var field: string = qs[qs.length - 3].replace(/^\s+|\s+$/g, '');
+
               ajaxRequest(field).then(function (es: IGqlExpected[]) {
                 $scope.totalErrors = $scope.errors = es;
               });
             } else {
-              var xs: string[] = $scope.query.substr(Error.offset).split(" ");
-              var term = xs[0];
+              var xs: string[] = _.filter(($scope.query.substr(Error.offset) + " ").split(
+                  /(!=|=|<|>| and | or | in \[?)/
+              ), (x: string): boolean => {
+                return !!x.length;
+              });
+              var term = xs[0].replace(/^\s+|\s+$/g, '');
               $scope.totalErrors = Error.expected;
               $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
                 return contains(e.value, term) && clean(e.value);
               }));
             }
           }
+        }
+
+        function splitOnOp(offset: number): string[] {
+          return _.filter(($scope.query.substr(0, offset) + " ").split(
+              /(!=|=|<|>| and | or | in \[?)/
+          ), (x: string): boolean => {
+            return !!x.length;
+          });
         }
 
         $scope.onChange = () => {
@@ -232,7 +241,7 @@ module ngApp.components.gql.directives {
           }
         };
 
-        $scope.caret = (input:any, offset: number) => {
+        $scope.caret = (input: any, offset: number) => {
           if (input.setSelectionRange) {
             input.focus();
             input.setSelectionRange(offset, offset);
@@ -248,9 +257,12 @@ module ngApp.components.gql.directives {
 
         $scope.enter = (): void => {
           $scope.ajax = false;
+
           var left = $scope.query.substr(0, $scope.Error.offset);
-          var qs = _.filter($scope.query.substr($scope.Error.offset).split(" "), (x) => {
-            return x.length;
+          var qs = _.filter(($scope.query.substr($scope.Error.offset) + " ").split(
+              /(?=!=|=|<|>| and | or | in \[? | \])/
+          ), (x: string): boolean => {
+            return !!x.length;
           });
 
           var active = $scope.active == -1 ? 0 : $scope.active;
@@ -261,9 +273,12 @@ module ngApp.components.gql.directives {
             v = v.indexOf(" ") !== -1 ? '"' + v + '"' : v;
             v = v == "in" ? "in [" : v;
 
-            qs.shift();
+            if (qs[0].indexOf(']') === -1) {
+              qs.shift();
+            }
             qs.unshift(v);
-            $scope.query = left + qs.join(" ") + " ";
+
+            $scope.query = left + qs.join(''); // + " ";
             $scope.focus = false;
             $scope.clearActive();
 

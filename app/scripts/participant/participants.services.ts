@@ -44,7 +44,7 @@ module ngApp.participants.services {
 
       // Testing is expecting these values in URL, so this is needed.
       paging = paging || {
-        size: 10,
+        size: 20,
         from: 1
       };
 

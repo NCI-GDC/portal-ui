@@ -15,7 +15,7 @@ describe('Annotations:', function () {
       sinon.spy(AnnotationsService.ds, 'get');
 
       var fs = {hits: [], facets: [], pagination: {}};
-      httpBackend.whenGET("/annotations?filters=%7B%7D&from=1&size=10&sort=entity_type:asc").respond(fs);
+      httpBackend.whenGET("/annotations?filters=%7B%7D&from=1&size=20&sort=entity_type:asc").respond(fs);
 
       AnnotationsService.getAnnotations();
       httpBackend.flush();

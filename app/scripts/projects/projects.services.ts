@@ -43,7 +43,7 @@ module ngApp.projects.services {
       }
 
       var defaults = {
-        size: 10,
+        size: 20,
         from: 1,
         filters: this.LocationService.filters(),
         sort:'summary.participant_count:desc'

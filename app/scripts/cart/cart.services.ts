@@ -140,7 +140,6 @@ module ngApp.cart.services {
         message += "<br /> <a data-ng-click='undoClicked(\"added\")'><i class='fa fa-undo'></i> Undo</a>";
       }
       return message + "</span>";
-
     }
 
     buildRemovedMsg(removedFiles: IFile[]): string {

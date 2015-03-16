@@ -113,7 +113,6 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
       controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
                           FilesService: IFilesService){
-        
         $scope.retreivingFilteredFiles = true;
 
         $scope.getFilteredRelatedFiles = function() {
@@ -163,19 +162,15 @@ module ngApp.cart.directives {
               }
             }]
           };
-
           FilesService.getFiles({
             fields: SearchTableFilesModel.fields,
             filters: filters,
             size: CartService.getCartVacancySize()
           }).then((data) => {
-            if (!CartService.areInCart(data.hits)) {
               this.CartService.addFiles(data.hits);
-            }
           });
 
         };
-
         $scope.CartService = CartService;
       }
     }

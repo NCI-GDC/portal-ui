@@ -104,7 +104,9 @@
             <h3 class="panel-title pull-left" data-translate>
               Clinical
             </h3>
-            <a class="btn btn-default pull-right" data-ng-href="{{ [pc.clinicalFileId] | makeDownloadLink }}"
+            <a class="btn btn-default pull-right"
+               data-ng-if="pc.clinicalFileId"
+               data-ng-href="{{ [pc.clinicalFileId] | makeDownloadLink }}"
                data-translate>Download Clinical XML</a>
           </div>
 

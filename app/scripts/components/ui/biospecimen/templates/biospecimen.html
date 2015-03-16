@@ -3,7 +3,9 @@
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
         <h3 class="panel-title pull-left" data-translate>Biospecimen</h3>
-        <a class="btn btn-default pull-right" data-ng-href="{{ [bc.bioSpecimenFileId] | makeDownloadLink }}"
+        <a class="btn btn-default pull-right"
+           data-ng-if="bc.bioSpecimenFileId"
+           data-ng-href="{{ [bc.bioSpecimenFileId] | makeDownloadLink }}"
            data-translate>Download Biospecimen XML</a>
 
       </div>

@@ -3,7 +3,7 @@ module ngApp.projects.models {
 
     var AnnotationsTableModel:TableiciousConfig = {
         title: "Annotations",
-        order: ['annotation_id', 'participant_id', 'project.program.name', 'project.project_id', 'entity_id', 'entity_type', 'category', 'classification', 'dateCreated', 'creator', 'status', 'submitter_id'],
+        order: ['annotation_id', 'participant_id', 'project.program.name', 'project.project_id', 'entity_id', 'entity_type', 'category', 'classification', 'dateCreated', 'creator', 'status', 'entity_submitter_id'],
         headings: [{
             displayName: "ID",
             id: "annotation_id",
@@ -72,7 +72,7 @@ module ngApp.projects.models {
         },
         {
             displayName: "Entity Barcode",
-            id: "submitter_id",
+            id: "entity_submitter_id",
             sortable: true,
             template: function(field) {
                 return field && field.val || "--";
@@ -121,7 +121,7 @@ module ngApp.projects.models {
           "status",
           "entity_type",
           "entity_id",
-          "submitter_id",
+          "entity_submitter_id",
           "notes",
           "classification",
           "project.program.name",

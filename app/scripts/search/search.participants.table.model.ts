@@ -134,10 +134,9 @@ module ngApp.search.models {
                 return field && field.val && field.val.length;
             },
             sref: function(field, row, scope, $filter) {
-                var files = _.find(row, (item) => {
+                var fileIds = _.map(_.find(row, (item) => {
                     return item.id === "files";
-                });
-                var fileIds = _.map(files.val, (file: any) => {
+                }).val, (file: any) => {
                     return file.file_id;
                 });
 
@@ -150,7 +149,6 @@ module ngApp.search.models {
                 }).val;
 
                 var filter = $filter("makeFilter")([
-                    {name: 'file_id', value: fileIds},
                     {name: "participants.participant_id", value: uuid}
                 ]);
                 return {

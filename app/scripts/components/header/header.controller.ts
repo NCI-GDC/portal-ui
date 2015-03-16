@@ -47,6 +47,10 @@ module ngApp.components.header.controllers {
       this.$window.location.reload();
     }
 
+    getToken(): void {
+      this.UserService.getToken();
+    }
+
     collapse(event: any): void {
       if (event.which === 1 || event.which === 13) {
         this.isCollapsed = true;

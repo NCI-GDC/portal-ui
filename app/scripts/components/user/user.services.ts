@@ -2,6 +2,7 @@ module ngApp.components.user.services {
   import IUser = ngApp.components.user.models.IUser;
   import IFile = ngApp.files.models.IFile;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IGDCConfig = ngApp.IGDCConfig;
 
   export interface IUserService {
     login(username: string): void;
@@ -33,6 +34,32 @@ module ngApp.components.user.services {
         data.username = this.$cookies["X-Auth-Username"];
         this.setUser(data);
       });
+    }
+
+    getToken(): void {
+      // TODO: We need to come up with a solution for exporting/downloading
+      // that will work with IE9 when auth tokens are required.
+      // TODO: Make this code reusable.
+      if (this.$window.URL && this.$window.URL.createObjectURL) {
+        this.Restangular.all("auth/token")
+        .withHttpConfig({
+          responseType: "blob"
+        })
+        .get("", {}, {
+          "X-Auth-Token": this.$cookies["X-Auth-Token"]
+        }).then((file) => {
+          var url = this.$window.URL.createObjectURL(file);
+          var a = this.$window.document.createElement("a");
+          a.setAttribute("href", url);
+          a.setAttribute("download", "gdc-user-token." + this.$window.moment().format() + ".txt");
+          this.$window.document.body.appendChild(a);
+
+          _.defer(() => {
+            a.click();
+            this.$window.document.body.removeChild(a);
+          });
+        });
+      }
     }
 
     setUser(user: IUser): void {

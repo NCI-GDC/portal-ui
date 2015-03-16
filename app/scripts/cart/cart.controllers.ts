@@ -92,7 +92,7 @@ module ngApp.cart.controllers {
             }
           }
           
-          if(data.every(function(a){
+          if(_.find(data,function(a){
             return a.count > 0;
           })) {
             $scope.chartData = data.map(function(a){

@@ -23,6 +23,7 @@
     </p>
 
     <p data-ng-repeat="term in tc.inactives | limitTo: tc.displayCount track by term.key"
+       data-ng-if="term.key !== '_missing'"
        class="list-group-item-text">
       <span data-ng-click="tc.add(tc.name, term.key)"
             data-ng-keypress="add(tc.name, term.key, $event)"

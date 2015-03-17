@@ -153,7 +153,7 @@ module ngApp.cart.controllers {
       return _.pluck(this.files, "file_id");
     }
 
-    getRelatedFileIds(): string[] {
+    getRelatedFileIds(files): string[] {
       return _.reduce(this.files, function (ids, file) {
         return ids.concat(file.related_ids);
       }, []);
@@ -205,13 +205,9 @@ module ngApp.cart.controllers {
     }
 
     checkCartForClosedFiles() {
-      var $window = this.$window;
-      var $filter = this.$filter;
       var $modal = this.$modal;
       var scope = this.$scope;
-      var ids = this.getFileIds();
       var FilesService = this.FilesService;
-      var relatedIds = this.getRelatedFileIds();
 
       var isLoggedIn = this.UserService.currentUser;
 
@@ -221,13 +217,12 @@ module ngApp.cart.controllers {
       var openInCart = _.filter(this.CartService.files, function (a) {
         return a.access !== 'protected'
       });
-      var all = this.files;
+
       var unauthorizedInCart;
       var authorizedInCart;
 
       if (isLoggedIn) {
         var projects = this.UserService.currentUser.projects.gdc_ids;
-        console.log('here');
         unauthorizedInCart = _.filter(protectedInCart, function (a) {
           return !_.intersection(projects, a.projects).length && a.selected == true;
         });
@@ -252,8 +247,7 @@ module ngApp.cart.controllers {
         protected: protectedInCart,
         open: openInCart,
         unauthorized: unauthorizedInCart,
-        authorized: authorizedInCart,
-        all: all
+        authorized: authorizedInCart
       };
 
       if (unauthorizedInCart.length === 0) {
@@ -267,11 +261,19 @@ module ngApp.cart.controllers {
       }
 
       //FIXME clean up
-      function download(_ids) {
-        _ids = _ids || ids;
-//        var x = $filter('makeDownloadLink')(_ids);  
-//        $window.location = x;
-        var file_ids = _ids.concat(relatedIds);
+      function download() {
+        var file_ids = []
+        _.forEach(authorizedInCart, (f) => {
+          console.log(f);
+          console.log(f.file_id);
+          console.log(f.related_ids);
+
+          if (f.hasOwnProperty('related_ids')) {
+            file_ids = file_ids.concat(f.related_ids)
+          }
+          file_ids.push(f.file_id)
+        });
+        console.log(file_ids);
         FilesService.downloadFiles(file_ids);
       }
 
@@ -287,11 +289,8 @@ module ngApp.cart.controllers {
         });
 
         modalInstance.result.then((a) => {
-          if (a && openInCart.length > 0) {
-            openIds = openInCart.map(function (a) {
-              return a.file_id
-            });
-            download(openIds);
+          if (a && authorizedInCart.length > 0) {
+            download();
           }
         });
 
@@ -309,12 +308,9 @@ module ngApp.cart.controllers {
         });
 
         modalInstance.result.then((a) => {
-          var available = openInCart.concat(protectedInCart);
-          if (a && available.length > 0) {
-            availIds = available.map(function (a) {
-              return a.file_id
-            });
-            download(availIds);
+          if (a && authorizedInCart.length > 0) {
+            console.log(authorizedInCart);
+            download();
           }
         });
       }
@@ -331,11 +327,11 @@ module ngApp.cart.controllers {
 
         this.cancel = function (a) {
           $modalInstance.close(false);
-        }
+        };
 
         this.goAuth = function () {
           $modalInstance.close(true);
-        }
+        };
       })
 
       .controller("CartController", CartController);

@@ -218,8 +218,13 @@ module ngApp.reports.controllers {
         types.forEach(function(a){
           columns.splice(2,0,a);
         });
-
-
+        
+        $scope.getTableOrder = function(a){
+          console.log("get table order...",a.key,order.indexOf(a.key));
+          return -types.map(function(a){return a.id}).indexOf(a.key);
+        }
+        
+        
 
         var config = {
 

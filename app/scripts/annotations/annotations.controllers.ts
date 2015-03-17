@@ -25,6 +25,9 @@ module ngApp.annotations.controllers {
           this.refresh();
         }
       });
+      $scope.$on("gdc-user-reset", () => {
+        this.refresh();
+      });
 
       $scope.tableConfig = AnnotationsTableModel;
 

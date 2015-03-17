@@ -62,6 +62,7 @@ module ngApp.components.facets.controllers {
       var projectCodeKeys = [
         "project_id",
         "participants.project.project_id",
+        "annotations.project.project_id",
         "project.project_id"
       ];
 

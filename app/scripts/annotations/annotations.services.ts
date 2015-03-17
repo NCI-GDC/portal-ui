@@ -4,6 +4,7 @@ module ngApp.annotations.services {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import ICoreService = ngApp.core.services.ICoreService;
   import IRootScope = ngApp.IRootScope;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface IAnnotationsService {
     getAnnotation(id: string, params?: Object): ng.IPromise<IAnnotation>;
@@ -16,7 +17,7 @@ module ngApp.annotations.services {
     /* @ngInject */
     constructor(Restangular: restangular.IService, private LocationService: ILocationService,
                 private CoreService: ICoreService, private $rootScope: IRootScope,
-                private $q: ng.IQService) {
+                private $q: ng.IQService, private UserService: IUserService) {
       this.ds = Restangular.all("annotations");
     }
 
@@ -54,6 +55,7 @@ module ngApp.annotations.services {
         filters: this.LocationService.filters()
       };
 
+      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "annotations.project.project_id");
       this.CoreService.setSearchModelState(false);
 
       var abort = this.$q.defer();
@@ -76,6 +78,11 @@ module ngApp.annotations.services {
   }
 
   angular
-      .module("annotations.services", ["restangular", "components.location", "core.services"])
+      .module("annotations.services", [
+        "restangular",
+        "components.location",
+        "user.services",
+        "core.services"
+      ])
       .service("AnnotationsService", AnnotationsService);
 }

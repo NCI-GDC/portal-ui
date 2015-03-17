@@ -175,6 +175,7 @@ module ngApp.search.controllers {
       var stateParams = {};
       var f = this.LocationService.filters();
       var q = this.LocationService.filter2query(f);
+      var toTab = this.$state.current.name.split(".")[1];
 
       if (q) {
         stateParams = {
@@ -183,7 +184,7 @@ module ngApp.search.controllers {
         };
       }
 
-      this.$state.go("query.summary", stateParams, { inherit: true });
+      this.$state.go("query." + toTab, stateParams, { inherit: true });
     }
 
   }

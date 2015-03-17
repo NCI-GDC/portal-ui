@@ -67,47 +67,49 @@ module ngApp.cart.controllers {
 
       });
 
-      $scope.$watch(function(){
+      $scope.$watch(function () {
         return CartService.getFiles().length && UserService.currentUser;
-      },function(){
+      }, function () {
         updateChartData();
       }, true);
 
-      function updateChartData(){
-          var accessCount = _.countBy(CartService.getFiles(),function(f){return UserService.userCanDownloadFiles([f])});
-          var data = [
-            {
-              access:'open',
-              count:accessCount['true'] || 0,
-            },
-            {
-              access:'protected',
-              count:accessCount['false'] || 0,
-            }
-          ]
-
-          $scope.chartConfig = {
-            legend:{
-              open:'%!% file(s) you are authorized to download',
-              protected:'%!% file(s) you are not authorized to download'
-            }
+      function updateChartData() {
+        var accessCount = _.countBy(CartService.getFiles(), function (f) {
+          return UserService.userCanDownloadFiles([f])
+        });
+        var data = [
+          {
+            access: 'open',
+            count: accessCount['true'] || 0,
+          },
+          {
+            access: 'protected',
+            count: accessCount['false'] || 0,
           }
+        ]
 
-          if(_.find(data,function(a){
-            return a.count > 0;
-          })) {
-            $scope.chartData = data.map(function(a){
-              return {
-                key:a.access,
-                value:a.count
-              }
-            })
-          } else {
-            $scope.chartData = undefined;
+        $scope.chartConfig = {
+          legend: {
+            open: '%!% file(s) you are authorized to download',
+            protected: '%!% file(s) you are not authorized to download'
           }
+        }
+
+        if (_.find(data, function (a) {
+              return a.count > 0;
+            })) {
+          $scope.chartData = data.map(function (a) {
+            return {
+              key: a.access,
+              value: a.count
+            }
+          })
+        } else {
+          $scope.chartData = undefined;
+        }
 
       }
-  }
+    }
 
     setDisplayedFiles(newPaging: IPagination = this.pagination): void {
       this.files = this.CartService.getFiles();
@@ -119,7 +121,7 @@ module ngApp.cart.controllers {
 
       // Used to check if files are deleted and the overall count can't reach the page
       // we are on.
-      while(this.pagination.from > this.pagination.total) {
+      while (this.pagination.from > this.pagination.total) {
         this.pagination.page--;
         this.pagination.from -= this.pagination.size;
       }
@@ -152,7 +154,7 @@ module ngApp.cart.controllers {
     }
 
     getRelatedFileIds(): string[] {
-      return _.reduce(this.files, function(ids, file) {
+      return _.reduce(this.files, function (ids, file) {
         return ids.concat(file.related_ids);
       }, []);
     }
@@ -213,60 +215,64 @@ module ngApp.cart.controllers {
 
       var isLoggedIn = this.UserService.currentUser;
 
-      var protectedInCart = _.filter(this.CartService.files,function(a){return a.access === 'protected'});
-      var openInCart = _.filter(this.CartService.files,function(a){return a.access !== 'protected'});
+      var protectedInCart = _.filter(this.CartService.files, function (a) {
+        return a.access === 'protected'
+      });
+      var openInCart = _.filter(this.CartService.files, function (a) {
+        return a.access !== 'protected'
+      });
       var all = this.files;
       var unauthorizedInCart;
       var authorizedInCart;
 
       if (isLoggedIn) {
-          var projects = this.UserService.currentUser.projects.gdc_ids;
-
-          unauthorizedInCart = _.filter(protectedInCart, function(a){
-            return !_.intersection(projects,a.projects).length && a.selected == true;
-          });
-        var openSelected = _.filter(openInCart, function(a){
+        var projects = this.UserService.currentUser.projects.gdc_ids;
+        console.log('here');
+        unauthorizedInCart = _.filter(protectedInCart, function (a) {
+          return !_.intersection(projects, a.projects).length && a.selected == true;
+        });
+        var openSelected = _.filter(openInCart, function (a) {
           return a.selected == true;
         });
-          authorizedInCart = openSelected.concat(_.filter(protectedInCart, function(a){
-            return !!_.intersection(projects,a.projects).length && a.selected == true;
-          }));
+        authorizedInCart = openSelected.concat(_.filter(protectedInCart, function (a) {
+          return !!_.intersection(projects, a.projects).length && a.selected == true;
+        }));
 
 
       } else {
-         unauthorizedInCart = protectedInCart;
-         authorizedInCart = openInCart;
+        unauthorizedInCart = _.filter(protectedInCart, function (a) {
+          return a.selected == true;
+        });
+        authorizedInCart = _.filter(openInCart, function (a) {
+          return a.selected == true;
+        });
       }
 
       scope.meta = {
         protected: protectedInCart,
         open: openInCart,
         unauthorized: unauthorizedInCart,
-        authorized:authorizedInCart,
+        authorized: authorizedInCart,
         all: all
       };
 
-      if (protectedInCart.length < 1) {
+      if (unauthorizedInCart.length === 0) {
         download();
       } else {
         if (isLoggedIn) {
-          if (unauthorizedInCart.length < 1) {
-            download();
-          } else {
-            showRequestAccessModal();
-          }
+          showRequestAccessModal();
         } else {
           showLoginModal();
         }
       }
 
       //FIXME clean up
-      function download(_ids){
-          _ids = _ids || ids;
+      function download(_ids) {
+        _ids = _ids || ids;
 //        var x = $filter('makeDownloadLink')(_ids);  
 //        $window.location = x;
-          var file_ids = _ids.concat(relatedIds);
-          FilesService.downloadFiles(file_ids);
+        var file_ids = _ids.concat(relatedIds);
+        FilesService.downloadFiles(file_ids);
       }
 
       function showLoginModal() {
@@ -282,7 +288,9 @@ module ngApp.cart.controllers {
 
         modalInstance.result.then((a) => {
           if (a && openInCart.length > 0) {
-            openIds = openInCart.map(function(a){return a.file_id});
+            openIds = openInCart.map(function (a) {
+              return a.file_id
+            });
             download(openIds);
           }
         });
@@ -290,7 +298,7 @@ module ngApp.cart.controllers {
       }
 
       function showRequestAccessModal() {
-         var modalInstance = $modal.open({
+        var modalInstance = $modal.open({
           templateUrl: "core/templates/request-access-to-download.html",
           controller: "LoginToDownloadController as wc",
           backdrop: "static",
@@ -303,7 +311,9 @@ module ngApp.cart.controllers {
         modalInstance.result.then((a) => {
           var available = openInCart.concat(protectedInCart);
           if (a && available.length > 0) {
-            availIds = available.map(function(a){return a.file_id});
+            availIds = available.map(function (a) {
+              return a.file_id
+            });
             download(availIds);
           }
         });
@@ -313,20 +323,19 @@ module ngApp.cart.controllers {
   }
 
 
-
   angular
       .module("cart.controller", ["cart.services", "core.services", "user.services"])
-      .controller("LoginToDownloadController",function($scope,$modalInstance, $window){
+      .controller("LoginToDownloadController", function ($scope, $modalInstance, $window) {
 
         var meta = $scope.$parent.chartData;
 
-          this.cancel = function(a){
-            $modalInstance.close(false);
-          }
+        this.cancel = function (a) {
+          $modalInstance.close(false);
+        }
 
-          this.goAuth = function() {
-            $modalInstance.close(true);
-          }
+        this.goAuth = function () {
+          $modalInstance.close(true);
+        }
       })
 
       .controller("CartController", CartController);

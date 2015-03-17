@@ -104,31 +104,6 @@ module ngApp.search.models {
         sortable: true,
         fieldClass: 'truncated-cell'
       }, {
-        displayName: "Annotations",
-        id: "annotations",
-        visible: true,
-        template: function (field, row) {
-          var ret = field && field.val ? field.val.length : "0";
-
-          return ret;
-        },
-        sref: function (field, row, scope, $filter) {
-          var annotations = _.find(row, (item) => {
-            return item.id === "annotations";
-          });
-          var annotationIds = _.map(annotations.val, (annotation: any) => {
-            return annotation.annotation_id;
-          });
-
-          var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
-          return {
-            state: "/annotations",
-            filters: {
-              filters: filter
-            }
-          };
-        }
-      }, {
         displayName: "Participants",
         id: "participants",
         visible: true,
@@ -259,11 +234,29 @@ module ngApp.search.models {
         sortable: true,
         fieldClass: 'text-right'
       }, {
-        displayName: "Update date",
-        id: "updated",
+        displayName: "Annotations",
+        id: "annotations",
         visible: true,
-        template: function (field, row, scope) {
-          return scope.$filter('date')(field.val);
+        template: function (field, row) {
+          var ret = field && field.val ? field.val.length : "0";
+
+          return ret;
+        },
+        sref: function (field, row, scope, $filter) {
+          var annotations = _.find(row, (item) => {
+            return item.id === "annotations";
+          });
+          var annotationIds = _.map(annotations.val, (annotation: any) => {
+            return annotation.annotation_id;
+          });
+
+          var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
+          return {
+            state: "/annotations",
+            filters: {
+              filters: filter
+            }
+          };
         }
       }],
     fields: [

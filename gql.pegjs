@@ -264,7 +264,10 @@ AGGS = "aggregate on"i { return "aggregate"; }
 WHERE = "where"i { return "where"; }
 
 // Values
-UNQUOTED_STRING = !('and'/'or'/'(') $[A-Za-z0-9\-\_\.]+
+UNQUOTED_STRING = x:(!('and'/'or'/'(') $[A-Za-z0-9\-\_\.]+)
+{
+  return x[1];
+}
 QUOTED_STRING = DBLQ s:$[^"]+ DBLQ { return s; }
 DATE = $(DIGIT DIGIT DIGIT DIGIT ("-"/"/") DIGIT DIGIT ("-"/"/") DIGIT DIGIT)
 

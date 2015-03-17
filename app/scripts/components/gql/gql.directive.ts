@@ -150,9 +150,10 @@ module ngApp.components.gql.directives {
               return ['\"', ','].indexOf(e.value) !== -1;
             });
             if ($scope.ajax) {
+              var terms: string[] = [];
               var qs = splitOnOp(Error.offset);
               if (qs[qs.length - 2] === " in [") {
-                var terms: string[] = _.map(qs[qs.length - 1].split(','), (t) => {
+                terms = _.map(qs[qs.length - 1].split(','), (t) => {
                   return t.replace(/^\s+|\s+$/g, '')
                 });
                 var term: string = terms[terms.length - 1];

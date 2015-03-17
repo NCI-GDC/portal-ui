@@ -137,7 +137,7 @@
         <div class="panel-heading">
           <h3 class="panel-title">Associated Participants / Biospecimen</h3>
         </div>
-        <div class="panel-body" data-ng-if="!fc.file.participants.length">
+        <div class="panel-body" data-ng-if="!fc.file.associated_entities.length">
           <h4 class="list-group-item-heading">No participants found.</h4>
         </div>
         <div class="table-responsive" data-ng-if="fc.file.associated_entities.length">
@@ -151,7 +151,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr data-ng-repeat="e in fc.file.associated_entities track by e.participant_id">
+            <tr data-ng-repeat="e in fc.file.associated_entities track by e.entity_id">
               <td>{{ ::e.entity_id }}</td>
               <td>{{ ::e.entity_type | humanify }}</td>
               <td>

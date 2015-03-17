@@ -28,6 +28,7 @@ module ngApp.annotations {
                 "status",
                 "entity_type",
                 "entity_id",
+                "entity_submitter_id",
                 "submitter_id",
                 "classification",
                 "notes",

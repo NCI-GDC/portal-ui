@@ -8,9 +8,9 @@
         <span data-ng-if="fc.isInCart(fc.file.file_id)" data-translate>Remove from Cart</span>
         <span data-ng-if="!fc.isInCart(fc.file.file_id)" data-translate>Add to Cart</span>
       </button>
-              <a type="button" class="btn btn-primary" files=fc.file download-button>
-                <i class="fa fa-cloud-download"></i> Download
-              </a>
+      <a download-button class="btn btn-primary" data-files=fc.file>
+        <i class="fa fa-cloud-download"></i> Download
+      </a>
     </span>
   </h1>
 
@@ -20,9 +20,6 @@
         <div class="panel panel-default">
           <div class="panel-heading clearfix">
             <h3 class="panel-title pull-left" data-translate>File Properties</h3>
-
-
-
           </div>
 
         <table id="properties-table"

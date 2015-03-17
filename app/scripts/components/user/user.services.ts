@@ -12,6 +12,7 @@ module ngApp.components.user.services {
     addMyProjectsFilter(filters: any, key: string): any;
     isUserProject(file: IFile): boolean;
     currentUser: IUser;
+    userCanDownloadFiles(files: IFile[]): boolean;
   }
 
   class UserService implements IUserService {
@@ -111,8 +112,8 @@ module ngApp.components.user.services {
       });
     }
 
-    userCanDownloadFiles(files) {
-      return files.every((file)=>{
+    userCanDownloadFiles(files: IFile[]) {
+      return _.every(files, (file) => {
         if (file.access === "open") {
           return true;
         }

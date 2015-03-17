@@ -24,6 +24,7 @@ module ngApp.cart.controllers {
     pagination: IPagination;
     displayedFiles: IFile[];
     setDisplayedFiles(newPaging?: IPagination): void;
+    checkCartForClosedFiles();
   }
 
   class CartController implements ICartController {
@@ -91,7 +92,7 @@ module ngApp.cart.controllers {
               protected:'%!% file(s) you are not authorized to download'
             }
           }
-          
+
           if(_.find(data,function(a){
             return a.count > 0;
           })) {
@@ -100,12 +101,10 @@ module ngApp.cart.controllers {
                 key:a.access,
                 value:a.count
               }
-            })    
+            })
           } else {
             $scope.chartData = undefined;
           }
-
-         
 
       }
   }
@@ -202,25 +201,24 @@ module ngApp.cart.controllers {
     isUserProject(file: IFile): boolean {
       return this.UserService.isUserProject(file);
     }
-    
-    checkCartForClosedFiles() {
 
+    checkCartForClosedFiles() {
       var $window = this.$window;
       var $filter = this.$filter;
       var $modal = this.$modal;
       var scope = this.$scope;
       var ids = this.getFileIds();
       var FilesService = this.FilesService;
-      
+      var relatedIds = this.getRelatedFileIds();
 
       var isLoggedIn = this.UserService.currentUser;
-      
+
       var protectedInCart = _.filter(this.CartService.files,function(a){return a.access === 'protected'});
       var openInCart = _.filter(this.CartService.files,function(a){return a.access !== 'protected'});
       var all = this.files;
       var unauthorizedInCart;
       var authorizedInCart;
-      
+
       if (isLoggedIn) {
           var projects = this.UserService.currentUser.projects;
           unauthorizedInCart = protectedInCart.filter(function(a){
@@ -233,7 +231,7 @@ module ngApp.cart.controllers {
          unauthorizedInCart = protectedInCart;
          authorizedInCart = openInCart;
       }
-      
+
       scope.meta = {
         protected: protectedInCart,
         open: openInCart,
@@ -256,15 +254,15 @@ module ngApp.cart.controllers {
         }
       }
 
-      
-      
+      //FIXME clean up
       function download(_ids){
           _ids = _ids || ids;
 //        var x = $filter('makeDownloadLink')(_ids);  
 //        $window.location = x;
-         FilesService.downloadFiles(_ids);
+          var file_ids = _ids.concat(relatedIds);
+          FilesService.downloadFiles(file_ids);
       }
-      
+
       function showLoginModal() {
         var modalInstance = $modal.open({
           templateUrl: "core/templates/login-to-download.html",
@@ -275,18 +273,17 @@ module ngApp.cart.controllers {
           backdropClass: "warning-backdrop",
           size: "lg"
         });
-        
+
         modalInstance.result.then((a) => {
           if (a && openInCart.length > 0) {
             openIds = openInCart.map(function(a){return a.file_id});
             download(openIds);
           }
         });
-        
+
       }
-      
+
       function showRequestAccessModal() {
-        
          var modalInstance = $modal.open({
           templateUrl: "core/templates/request-access-to-download.html",
           controller: "LoginToDownloadController as wc",
@@ -296,7 +293,7 @@ module ngApp.cart.controllers {
           backdropClass: "warning-backdrop",
           size: "lg"
         });
-        
+
         modalInstance.result.then((a) => {
           var available = openInCart.concat(protectedInCart);
           if (a && available.length > 0) {
@@ -304,7 +301,6 @@ module ngApp.cart.controllers {
             download(availIds);
           }
         });
-      
       }
     }
 
@@ -315,20 +311,19 @@ module ngApp.cart.controllers {
   angular
       .module("cart.controller", ["cart.services", "core.services", "user.services"])
       .controller("LoginToDownloadController",function($scope,$modalInstance, $window){
-    
+
         console.log("Login to download.", $scope);
         var meta = $scope.$parent.meta;
-          
+
           this.cancel = function(a){
             $modalInstance.close(false);
           }
-          
+
           this.goAuth = function() {
             $modalInstance.close(true);
           }
-  
       })
-    
+
       .controller("CartController", CartController);
 }
 

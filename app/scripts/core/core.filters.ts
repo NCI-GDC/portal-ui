@@ -42,7 +42,8 @@ module ngApp.core.filters {
     constructor($rootScope: IRootScope) {
       return function (ids: string[],
                       baseUrl: string = $rootScope.config.api) {
-        return baseUrl + "/data/" + ids.join(",");
+        //FIXME make annotations=1 a param on the filter
+        return baseUrl + "/data/" + ids.join(",") + "?annotations=1";
       };
     }
   }

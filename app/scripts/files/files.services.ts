@@ -30,13 +30,12 @@ module ngApp.files.services {
         return response["data"];
       });
     }
-  
+
     downloadFiles(_ids) {
         var $filter = this.$filter;
         var $window = this.$window;
-        var x = $filter('makeDownloadLink')(_ids);  
+        var x = $filter('makeDownloadLink')(_ids);
         $window.location = x;
-    
     }
 
     getFiles(params: Object = {}): ng.IPromise<IFiles> {
@@ -88,7 +87,7 @@ module ngApp.files.services {
 
   angular
       .module("files.services", ["restangular", "components.location", "user.services", "core.services","ui.bootstrap"])
-      .directive('downloadButton',function(){
+      .directive('downloadButton', function(){
         return {
           restrict:"AE",
           scope:{
@@ -97,12 +96,15 @@ module ngApp.files.services {
           controller:function($element,$scope, FilesService,UserService,$modal){
               $element.on('click',function(a){
                 var files = $scope.files;
-                if (!_.isArray(files)) files = [files];
-                if (UserService.userCanDownloadFiles(files)){
-                  FilesService.downloadFiles(files.map(function(a){return a.file_id}));
+                if (!_.isArray(files)) {
+                  files = [files];
+                }
+                if (UserService.userCanDownloadFiles(files)) {
+                  var file_ids = _.pluck(files, 'file_id').concat($scope.files.related_ids);
+                  FilesService.downloadFiles(file_ids);
                 } else {
-                  var template = UserService.currentUser ? 
-                      "core/templates/request-access-to-download-single.html" : 
+                  var template = UserService.currentUser ?
+                      "core/templates/request-access-to-download-single.html" :
                       "core/templates/login-to-download-single.html";
                     console.log("File not authorized.");
                     $modal.open({

@@ -17,7 +17,7 @@ describe("makeDownloadLink Filter:", function () {
     var apiUrl = "http://myapi";
     $rootScope.config = { 'api': apiUrl };
     var actual = $filter("makeDownloadLink")(ids, apiUrl);
-    var expected = apiUrl + "/data/" + ids.join(",");
+    var expected = apiUrl + "/data/" + ids.join(",") + "?annotations=1";
 
     expect(actual).to.equal(expected);
   }));

@@ -2,13 +2,13 @@
   <h1 class="col-lg-12">
     <i class="fa fa-file-o"></i>
     {{ ::fc.file.file_id }}
-    <span class="btn-group pull-right">
+    <span class="btn-group pull-right" style="margin-top: .3em">
       <button type="button" class="btn btn-primary" data-ng-click="fc.handleCartButton()">
         <i class="fa fa-shopping-cart"></i>
         <span data-ng-if="fc.isInCart(fc.file.file_id)" data-translate>Remove from Cart</span>
         <span data-ng-if="!fc.isInCart(fc.file.file_id)" data-translate>Add to Cart</span>
       </button>
-      <a download-button class="btn btn-primary" data-files=fc.file>
+      <a data-download-button class="btn btn-primary" data-files=fc.file>
         <i class="fa fa-cloud-download"></i> Download
       </a>
     </span>
@@ -22,58 +22,58 @@
             <h3 class="panel-title pull-left" data-translate>File Properties</h3>
           </div>
 
-        <table id="properties-table"
-               class="table table-striped table-hover table-condensed table-bordered table-vertical">
-          <tbody>
-          <tr>
-            <th scope="row" data-translate>File Name</th>
-            <td>{{ ::fc.file.file_name }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>File Access</th>
-            <td>
-              <i data-ng-if="fc.file.access !== 'open'" class="fa fa-lock"></i>
-              <i data-ng-if="fc.file.access === 'open'" class="fa fa-unlock-alt"></i>
-              <span data-ng-if="fc.file.access === 'open'" data-translate>Open</span>
-              <span data-ng-if="fc.file.access !== 'open'" data-translate>Protected</span>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>UUID</th>
-            <td>{{ ::fc.file.file_id }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>File Origin</th>
-            <td>{{ ::fc.file.origin | humanify }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>Data format</th>
-            <td>{{ ::fc.file.data_format }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>File Size</th>
-            <td>{{ ::fc.file.file_size | size }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>Checksum</th>
-            <td>{{ ::fc.file.md5sum }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>Published</th>
-            <td>{{ ::fc.file.creation_datetime | date }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>Uploaded</th>
-            <td>{{ ::fc.file.uploaded | date }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>State</th>
-            <td>{{ ::fc.file.state | humanify }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>Archive</th>
-            <td>
-              {{ ::fc.file.archive.archive_id || '--' }}
+          <table id="properties-table"
+                 class="table table-striped table-hover table-condensed table-bordered table-vertical">
+            <tbody>
+            <tr>
+              <th scope="row" data-translate>File Name</th>
+              <td>{{ ::fc.file.file_name }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>File Access</th>
+              <td>
+                <i data-ng-if="fc.file.access !== 'open'" class="fa fa-lock"></i>
+                <i data-ng-if="fc.file.access === 'open'" class="fa fa-unlock-alt"></i>
+                <span data-ng-if="fc.file.access === 'open'" data-translate>Open</span>
+                <span data-ng-if="fc.file.access !== 'open'" data-translate>Protected</span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>UUID</th>
+              <td>{{ ::fc.file.file_id }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>File Origin</th>
+              <td>{{ ::fc.file.origin | humanify }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Data format</th>
+              <td>{{ ::fc.file.data_format }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>File Size</th>
+              <td>{{ ::fc.file.file_size | size }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Checksum</th>
+              <td>{{ ::fc.file.md5sum }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Published</th>
+              <td>{{ ::fc.file.creation_datetime | date }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Uploaded</th>
+              <td>{{ ::fc.file.uploaded | date }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>State</th>
+              <td>{{ ::fc.file.state | humanify }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Archive</th>
+              <td>
+                {{ ::fc.file.archive.archive_id || '--' }}
                 <span data-ng-if="fc.file.archive">
                   (<a data-ui-sref="search.files({ 'filters': {{
                     [{ name: 'files.archive.archive_id', value: fc.file.archive.archive_id }] | makeFilter }}
@@ -81,67 +81,68 @@
                   {{ fc.archiveCount }} files
                 </a>)
                 </span>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-  </div>
 
-  <div class="col-lg-5 col-md-5">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title" data-translate>Data Information</h3>
-      </div>
-      <table id="data-information-table" class="table table-striped table-hover table-condensed table-bordered">
-        <tbody>
-        <tr>
-          <th scope="row" data-translate>Data Type</th>
-          <td>{{ ::fc.file.data_type | titlefy }}</td>
-        </tr>
-        <tr>
-          <th scope="row" data-translate>Data Subtype</th>
-          <td>{{ ::fc.file.data_subtype | titlefy }}</td>
-        </tr>
-        <tr>
-          <th scope="row" data-translate>Experimental Strategy</th>
-          <td>{{ ::fc.file.experimental_strategy || '--' }}</td>
-        </tr>
-        <tr>
-          <th scope="row" data-translate>Platform</th>
-          <td>{{ ::fc.file.platform }}</td>
-        </tr>
-        <tr>
-          <th scope="row" data-translate>Data Submitter</th>
-          <td>{{ ::fc.file.center.short_name }}</td>
-        </tr>
-        <tr>
-          <th scope="row" data-translate>Tag</th>
-          <td>
-            <span data-ng-if="!fc.file.tags">--</span>
+      <div class="col-lg-5 col-md-5">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title" data-translate>Data Information</h3>
+          </div>
+          <table id="data-information-table" class="table table-striped table-hover table-condensed table-bordered">
+            <tbody>
+            <tr>
+              <th scope="row" data-translate>Data Type</th>
+              <td>{{ ::fc.file.data_type | titlefy }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Data Subtype</th>
+              <td>{{ ::fc.file.data_subtype | titlefy }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Experimental Strategy</th>
+              <td>{{ ::fc.file.experimental_strategy || '--' }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Platform</th>
+              <td>{{ ::fc.file.platform }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Data Submitter</th>
+              <td>{{ ::fc.file.center.short_name }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Tag</th>
+              <td>
+                <span data-ng-if="!fc.file.tags">--</span>
               <span data-ng-repeat="tag in fc.file.tags track by $index">
                 {{ tag }}
                 <span data-ng-if="!$last">, </span>
               </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  </section>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-  <section class="row" id="participants">
-    <div class="col-lg-12 col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Associated Participants / Biospecimen</h3>
-        </div>
-        <div class="panel-body" data-ng-if="!fc.file.associated_entities.length">
-          <h4 class="list-group-item-heading">No participants found.</h4>
-        </div>
-        <div class="table-responsive" data-ng-if="fc.file.associated_entities.length">
-          <table id="participants-table" class="table table-striped table-hover table-condensed table-bordered">
+    <section class="row" id="participants">
+      <div class="col-lg-12 col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Associated Participants / Biospecimen</h3>
+          </div>
+          <div class="panel-body" data-ng-if="!fc.file.associated_entities.length">
+            <h4 class="list-group-item-heading">No participants found.</h4>
+          </div>
+
+          <table id="participants-table" class="table table-striped table-hover table-condensed table-bordered"
+                 data-ng-if="fc.file.associated_entities.length">
             <thead>
             <tr>
               <th scope="col" data-translate>Entity ID</th>
@@ -152,9 +153,9 @@
             </thead>
             <tbody>
             <tr data-ng-repeat="e in fc.file.associated_entities track by e.entity_id">
-              <td>{{ ::e.entity_id }}</td>
+              <td class="truncated-cell">{{ ::e.entity_id }}</td>
               <td>{{ ::e.entity_type | humanify }}</td>
-              <td>
+              <td class="truncated-cell">
                 <a data-ui-sref="participant({ participantId : e.participant_id })">
                   {{ ::e.participant_id }}
                 </a>
@@ -171,22 +172,23 @@
             </tbody>
           </table>
         </div>
+
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="row" id="files">
-    <div class="col-lg-12 col-md-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Related Files</h3>
-        </div>
+    <section class="row" id="files">
+      <div class="col-lg-12 col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Related Files</h3>
+          </div>
 
-        <div class="panel-body" data-ng-if="!fc.file.related_files.length">
-          <h4 class="list-group-item-heading">No related files found.</h4>
-        </div>
-        <div class="table-responsive" data-ng-if="fc.file.related_files.length">
-          <table id="related-files-table" class="table table-striped table-hover table-condensed table-bordered">
+          <div class="panel-body" data-ng-if="!fc.file.related_files.length">
+            <h4 class="list-group-item-heading">No related files found.</h4>
+          </div>
+
+          <table id="related-files-table" class="table table-striped table-hover table-condensed table-bordered"
+                 data-ng-if="fc.file.related_files.length">
             <thead>
             <tr>
               <th scope="col" data-translate>File Name</th>
@@ -197,7 +199,7 @@
             </thead>
             <tbody>
             <tr data-ng-repeat="f in fc.file.related_files track by f.file_id">
-              <td>{{ ::f.file_name }}</td>
+              <td class="truncated-cell">{{ ::f.file_name }}</td>
               <td>{{ ::f.type }}</td>
               <td>{{ ::f.md5sum }}</td>
               <td>
@@ -210,20 +212,7 @@
           </table>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="row" id="content" role="application" data-ng-if="fc.file.metadataXML">
-    <div class="col-lg-12 col-md-12 pull-right">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title" data-translate="">File Content</h3>
-        </div>
-        <div class="table-responsive">
-          <xml-viewer id="xmlViewer" xml="fc.file.metadataXML"></xml-viewer>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
+    </section>
+  </div>
 </div>

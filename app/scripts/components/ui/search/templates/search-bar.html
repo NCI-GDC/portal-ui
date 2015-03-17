@@ -5,29 +5,31 @@
         <h3 class="panel-title" data-translate>Query Builder</h3>
       </div>
 
-      <gql data-gql="sb.gql" data-query="sb.query"></gql>
+      <div style="position: relative">
+        <gql data-gql="sb.gql" data-query="sb.query"></gql>
+        <span style="position: absolute; top: 5px;left:10px">
+          <span data-ng-if="sb.gql.filters"><i class="text-success fa fa-check-square"></i></span>
+          <span data-ng-if="!sb.gql.filters"><i class="text-danger fa fa-remove"></i></span>
+        </span>
+      </div>
 
-      <div class="panel-footer">
-        <div class="btn-group btn-group-justified">
-          <div class="btn-group">
-            <button class="btn btn-primary" data-ui-sref="search.files"
+      <div class="panel-footer text-right">
+            <a
+
+                data-ui-sref="search.files" style="margin-right: 15px"
                     data-ng-disabled="sb.query" data-translate>
-              <i class="fa fa-list"></i> Basic
-            </button>
-          </div>
-          <div class="btn-group">
-            <button class="btn btn-danger"
+              Basic
+            </a>
+            <a style="margin-right: 15px"
                     data-ng-click="sb.resetQuery()"
                     aria-label="{{ 'Clear Query' | translate }}">
-              <i class="fa fa-rotate-left"></i> Clear
-            </button>
-          </div>
-          <div class="btn-group">
-            <button class="btn btn-success" data-ng-click="sb.sendQuery()">
+              Reset
+            </a>
+            <button
+                data-ng-disabled="!sb.gql.filters"
+                class="btn btn-success" data-ng-click="sb.sendQuery()">
               <i class="fa fa-search"></i> Search
             </button>
-          </div>
-        </div>
       </div>
     </div>
   </div>

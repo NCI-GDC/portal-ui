@@ -4,5 +4,16 @@
       data-ng-mouseout="mouseout($index)"
       data-ng-click="click(e)"
       data-ng-class="{true:'Gql_dropdown_item-active'}[e.active]"
-      data-ng-repeat="e in errors">{{e.icon[0]}} {{e.text}}</li>
+      data-ng-repeat="e in errors">
+    <i class="fa"
+       data-ng-if="e.icon"
+       style="margin-right: 10px;background: #5b5151;padding: 1rem;color: #fff;"
+        data-ng-class="{'files':'fa-file', 'participants':'fa-user', '':'fa-square'}[e.icon]">
+    </i>
+    <i class="fa fa-square"
+       data-ng-if="!e.icon"
+       style="margin-right: 10px;background: #5b5151;padding: 1rem;color: #fff;">
+    </i>
+    {{e.text}}
+  </li>
 </ul>

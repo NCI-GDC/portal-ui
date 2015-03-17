@@ -124,25 +124,31 @@ module ngApp.components.gql.directives {
             });
           }
         }
-
+        var oldQuery = "";
         function gqlParse() {
+          console.log('her');
           try {
-            // setup gql
-            $scope.gql = $window.gql.parse($scope.query);
-            console.log("GQL: ", $scope.gql);
-            // if ajax
-            // T: filter ajax response
-            if ($scope.ajax) {
-              var xs: string[] = $scope.query.substr($scope.Error.offset).split(" ");
-              var term = xs[xs.length - 1];
-              $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
-                return contains(e.value, term);
-              }));
-            } else {
-              // F: reset errors
-              $scope.totalErrors = $scope.errors = [];
+            if ($scope.query != oldQuery) {
+              oldQuery = $scope.query;
+              // setup gql
+              $scope.gql = $window.gql.parse($scope.query);
+              $scope.gql.filters = $scope.gql.filters || {};
+
+              // if ajax
+              // T: filter ajax response
+              if ($scope.ajax) {
+                var xs: string[] = $scope.query.substr($scope.Error.offset).split(" ");
+                var term = xs[xs.length - 1];
+                $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
+                  return contains(e.value, term);
+                }));
+              } else {
+                // F: reset errors
+                $scope.totalErrors = $scope.errors = [];
+              }
             }
           } catch (Error) {
+            $scope.gql= null;
             // capture Error info
             $scope.Error = Error;
             // determine if ajax needed

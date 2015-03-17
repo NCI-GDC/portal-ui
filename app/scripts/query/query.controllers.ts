@@ -82,6 +82,7 @@ module ngApp.query.controllers {
       });
 
       this.FilesService.getFiles({
+        raw: true,
         fields: this.SearchTableFilesModel.fields
       }).then((data) => {
         if (!data.hits.length) {
@@ -96,6 +97,7 @@ module ngApp.query.controllers {
       });
 
       this.ParticipantsService.getParticipants({
+        raw: true,
         fields: this.SearchTableParticipantsModel.fields
       }).then((data: IFiles) => {
         if (!data.hits.length) {

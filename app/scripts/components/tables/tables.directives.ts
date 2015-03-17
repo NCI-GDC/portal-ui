@@ -155,7 +155,8 @@ module ngApp.components.tables.directives {
         type: "@",
         parentFieldName: "@",
         parentId: "@",
-        data: "="
+        data: "=",
+        showParticipants: "="
       },
       replace: true,
       templateUrl: "components/tables/templates/entity-page-counts-table.html",

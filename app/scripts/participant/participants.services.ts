@@ -55,7 +55,9 @@ module ngApp.participants.services {
         filters: this.LocationService.filters()
       };
 
-      defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.project.project_id");
+      if (!params.hasOwnProperty("raw")) {
+        defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "participants.project.project_id");
+      }
       this.CoreService.setSearchModelState(false);
 
       var abort = this.$q.defer();

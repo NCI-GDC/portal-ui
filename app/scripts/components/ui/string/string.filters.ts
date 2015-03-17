@@ -26,7 +26,10 @@ module ngApp.components.ui.string {
         var humanified;
 
         if (facetTerm) {
-          original = original.split(/(?=[A-Z])/).join(" ");
+          // Splits on capital letters followed by lowercase letters to find
+          // words squished together in a string.
+          original = original.split(/(?=[A-Z][a-z])/).join(" ");
+
           humanified = original.replace(/\./g, " ").trim();
         } else {
           split = original.split(".");

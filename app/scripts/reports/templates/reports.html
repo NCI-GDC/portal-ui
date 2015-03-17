@@ -5,22 +5,22 @@
   </h1>
 
   <div class="col-lg-3">
-    <aside data-scroll-fix=85>
+    <aside data-scroll-fix=85 class=col-sm-3>
       <div class="panel panel-default">
         <div class="list-group">
           <div class="list-group-item">
             <span data-spy="projectLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#projectLevel" data-translate>1. Project Breakdown</a>
+              <a data-scroll-to href="#projectLevel" data-translate>Project</a>
             </span>
           </div>
           <div class="list-group-item">
             <span data-spy="dataLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#dataLevel" data-translate>2. Data Type Breakdown</a>
+              <a data-scroll-to href="#dataLevel" data-translate>Data</a>
             </span>
           </div>
           <div class="list-group-item">
             <span data-spy="userLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#userLevel" data-translate>3. Access breakdown</a>
+              <a data-scroll-to href="#userLevel" data-translate>User Access</a>
             </span>
           </div>
         </div>
@@ -41,12 +41,12 @@
       </p>
     </section>
     <section id="projectLevel" style="padding-top: 40px; margin-top: -40px;">
-      <h2>1. Project Breakdown</h2>
+      <h2>Project</h2>
 
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
-            Downloads by Project
+            Downloads by Project and Data Type 
           </h4>
         </div>
 
@@ -65,7 +65,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
-            1.1 Downloads by Project
+           Downloads by Project
           </h4>
         </div>
         <table class="table table-striped table-hover table-condensed table-bordered">
@@ -108,7 +108,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title" data-translate>
-                1.2 Downloads by Disease Type
+                Downloads by Disease Type
               </h4>
             </div>
             <table class="table table-striped table-hover table-condensed table-bordered">
@@ -146,7 +146,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title" data-translate>
-                1.3 Downloads by Program
+               Downloads by Program
               </h4>
             </div>
             <table class="table table-striped table-hover table-condensed table-bordered">
@@ -183,13 +183,13 @@
     </section>
     <section id="dataLevel" style="padding-top: 40px; margin-top: -40px;">
       <h2>
-        2. Data Type Breakdown
+       Data
       </h2>
 
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
-            2.1 Downloads by Data Type
+          Downloads by Data Type
           </h4>
         </div>
         <table class="table table-striped table-hover table-condensed table-bordered">
@@ -227,7 +227,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title" data-translate>
-                2.2 Downloads by Data Subtype
+               Downloads by Data Subtype
               </h4>
             </div>
             <table class="table table-striped table-hover table-condensed table-bordered">
@@ -253,7 +253,7 @@
                   {{p.values.file_count | number}}
                 </td>
                 <td>
-                  {{p.values.file_size | number}}
+                  {{p.values.file_size | size}}
                 </td>
               </tr>
               </tbody>
@@ -265,7 +265,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title" data-translate>
-                2.3 Downloads by Experimental Strategy
+            Downloads by Experimental Strategy
               </h4>
             </div>
             <table class="table table-striped table-hover table-condensed table-bordered">
@@ -305,7 +305,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title" data-translate>
-                2.4 Downloads by Data Level
+              Downloads by Data Level
               </h4>
             </div>
             <table class="table table-striped table-hover table-condensed table-bordered">
@@ -343,7 +343,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title" data-translate>
-                2.5 Downloads by Data Access
+               Downloads by Data Access
               </h4>
             </div>
             <table class="table table-striped table-hover table-condensed table-bordered">
@@ -366,7 +366,7 @@
                   {{p.key}}
                 </th>
                 <td>
-                   {{p.values.file_count}}
+                   {{p.values.file_count | number}}
                 </td>
                 <td>
                   {{p.values.file_size | size}}
@@ -382,13 +382,14 @@
     </section>
     <section id="userLevel" style="padding-top: 40px; margin-top: -40px;">
       <h2>
-        3. Access Breakdown
+        User Access
       </h2>
-
-      <div class="panel panel-default">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
-            3.1 Downloads by User Access Type
+           Downloads by User Access Type
           </h4>
         </div>
         <table class="table table-striped table-hover table-condensed table-bordered">
@@ -420,12 +421,15 @@
           </tbody>
         </table>
       </div>
-
+          
+        </div>
+         <div class="col-sm-6">
+          
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
 
-            3.2 Downloads by Access Location
+          Downloads by Access Location
           </h4>
         </div>
         <table class="table table-striped table-hover table-condensed table-bordered">
@@ -457,6 +461,10 @@
           </tbody>
         </table>
       </div>
+        </div>
+      </div>
+     
+
     </section>
   </div>
 </div>

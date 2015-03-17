@@ -87,11 +87,18 @@ module ngApp.components.user.services {
         return false;
       }
       
-      var projects1 = file.projects;
-      var projects2 = this.currentUser.projects.gdc_ids;
-      var nexus = _.intersection(projects1,projects2);
+      var projectIds;
 
-      return nexus[0] ? true : false;
+      // Support multiple use cases
+      if (file.projects) {
+        projectIds = file.projects;
+      } else {
+        projectIds = _.unique(_.map(file.participants, (participant) => {
+          return participant.project.project_id;
+        }));
+      }
+
+      return !!_.intersection(projectIds, this.currentUser.projects.gdc_ids).length;
     }
 
     setUserProjectsTerms(terms) {

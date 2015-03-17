@@ -71,9 +71,7 @@ module ngApp.search.models {
             return elem.id === 'participants'
           }).val;
           var UserService: IUserService = scope.UserService;
-          var projects = participants.map(function(p){return p.project.project_id});
-          
-          return UserService.isUserProject({projects: projects}) ? 'check' : 'close';
+          return UserService.isUserProject({participants: participants}) ? 'check' : 'close';
         }
       }, {
         displayName: "Access",

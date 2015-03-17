@@ -65,7 +65,7 @@ SORT
 }
 
 start
-  = (WHERE _+ )? filters:filters aggs:(_+ aggs)? sort:(_+ sort)? _*
+  = (WHERE _+ )? _* filters:filters aggs:(_+ aggs)? sort:(_+ sort)? _*
   {
     var r = {};
     if (filters) {
@@ -120,7 +120,7 @@ filters
   = condition_expression / expression
 
 par_expression
-  = LPAR filters:filters RPAR { return filters; }
+  = LPAR _* filters:filters _* RPAR { return filters; }
 
 expression
   = equality_expression

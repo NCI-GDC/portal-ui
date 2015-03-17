@@ -35,7 +35,8 @@ module ngApp.projects.models {
         {
             displayName: "Program",
             id: "project.program.name",
-            sortable: true
+            sortable: true,
+            hidden:true
         },
         {
             displayName: "Project",
@@ -76,7 +77,8 @@ module ngApp.projects.models {
             sortable: true,
             template: function(field) {
                 return field && field.val || "--";
-            }
+            },
+            hidden:true
         },
         {
             displayName: "Category",
@@ -105,7 +107,8 @@ module ngApp.projects.models {
             template: function(field, row, scope, $filter) {
                 return $filter("humanify")(field.val);
             },
-            sortable: true
+            sortable: true,
+            hidden: true
         },
         {
             displayName: "Status",

@@ -223,11 +223,15 @@ module ngApp.cart.controllers {
           var projects = this.UserService.currentUser.projects.gdc_ids;
 
           unauthorizedInCart = _.filter(protectedInCart, function(a){
-            return !_.intersection(projects,a.projects).length;
+            return !_.intersection(projects,a.projects).length && a.selected == true;
           });
-          authorizedInCart = openInCart.concat(_.filter(protectedInCart, function(a){
-            return !!_.intersection(projects,a.projects).length;
+        var openSelected = _.filter(openInCart, function(a){
+          return a.selected == true;
+        });
+          authorizedInCart = openSelected.concat(_.filter(protectedInCart, function(a){
+            return !!_.intersection(projects,a.projects).length && a.selected == true;
           }));
+
 
       } else {
          unauthorizedInCart = protectedInCart;

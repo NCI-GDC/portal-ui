@@ -178,46 +178,8 @@ module ngApp.components.tables.directives {
                             'Other'];
 
                     if($scope.type === "experimental-strategy") {
-                    $scope.names = [ 'Genotyping array',
-                                'Gene expression array',
-                                'Exon array',
-                                'miRNA expression array',
-                                'Methylation array',
-                                'CGH array',
-                                'MSI-Mono-Dinucleotide assay',
-                                'WGS',
-                                'WGA',
-                                'WXS',
-                                'RNA-seq',
-                                'miRNA-seq',
-                                'ncRNA-seq',
-                                'WCS',
-                                'CLONE',
-                                'POOLCLONE',
-                                'AMPLICON',
-                                'CLONEEND',
-                                'FINISHING',
-                                'ChIP-seq',
-                                'MNase-seq',
-                                'DNase-Hypersensitivity',
-                                'Bisulfite-Seq',
-                                'EST',
-                                'FL-cDNA',
-                                'CTS',
-                                'MRE-seq',
-                                'MeDIP-seq',
-                                'MBD-seq',
-                                'Tn-seq',
-                                'FAIRE-seq',
-                                'SELEX',
-                                'RIP-seq',
-                                'ChIA-PET',
-                                'DNA-Seq',
-                                'Total RNA-Seq',
-                                'VALIDATION',
-                                'OTHER'
-                              ];
-                              }
+                      $scope.names = _.uniq($scope.data.map(function(d){return d.experimental_strategy}));                    
+                    }
 
         $scope.dataTransformed = _.reduce($scope.data, function(result, dataType) {
         result[dataType[$scope.keyName]] = {"file_count": dataType['file_count'],

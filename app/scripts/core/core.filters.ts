@@ -41,9 +41,15 @@ module ngApp.core.filters {
   class MakeDownloadLink {
     constructor($rootScope: IRootScope) {
       return function (ids: string[],
-                      baseUrl: string = $rootScope.config.api) {
-        //FIXME make annotations=1 a param on the filter
-        return baseUrl + "/data/" + ids.join(",") + "?annotations=1";
+                      annotations : boolean = true) {
+        
+        var baseUrl = $rootScope.config.api; 
+        var url = baseUrl + "/data/" + ids.join(",");
+        if (annotations) {
+          url+= "?annotations=1";
+        }
+        return url;
+        
       };
     }
   }

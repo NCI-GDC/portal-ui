@@ -5,7 +5,7 @@
         <h3 class="panel-title pull-left" data-translate>Biospecimen</h3>
         <a class="btn btn-default pull-right"
            data-ng-if="bc.bioSpecimenFileId"
-           data-ng-href="{{ [bc.bioSpecimenFileId] | makeDownloadLink }}"
+           data-ng-href="{{ [bc.bioSpecimenFileId] | makeDownloadLink:false }}"
            data-translate>Download Biospecimen XML</a>
 
       </div>

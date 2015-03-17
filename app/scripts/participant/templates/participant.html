@@ -106,7 +106,7 @@
             </h3>
             <a class="btn btn-default pull-right"
                data-ng-if="pc.clinicalFileId"
-               data-ng-href="{{ [pc.clinicalFileId] | makeDownloadLink }}"
+               data-ng-href="{{ [pc.clinicalFileId] | makeDownloadLink:false }}"
                data-translate>Download Clinical XML</a>
           </div>
 

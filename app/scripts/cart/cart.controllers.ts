@@ -102,7 +102,6 @@ module ngApp.cart.controllers {
               }
             })    
           } else {
-            console.log("Clear chart data.");
             $scope.chartData = undefined;
           }
 

@@ -115,19 +115,19 @@
         </tr>
         </thead>
         <tbody>
-        <tr data-ng-repeat="file in cc.displayedFiles track by $index">
+        <tr data-ng-repeat="file in cc.displayedFiles track by $index | orderBy:date_added_to_cart">
           <td>
             <button type="button" class="btn btn-default"
                     data-ng-click="file.selected = !file.selected">
               <i class="fa"
-                 data-ng-class="file.selected ? 'fa-check-circle-o' : 'fa-circle-o'"></i>
+                 data-ng-class="file.selected ? 'fa-check' : 'fa-circle-o'"></i>
             </button>
 
           </td>
           <td scope="col" class="text-center">
             <button class="btn btn-primary" download-button files=file><i class="fa fa-download"></i></button>
 
-            <button class="btn btn-danger" data-ng-click="cc.remove(file.file_id)" files=file><i class="fa fa-times"></i></button>
+            <button class="btn btn-default" data-ng-click="cc.remove(file.file_id)" files=file><i class="fa fa-trash-o"></i></button>
           </td>
           <td scope="col" class="text-center"
               data-ng-if="cc.UserService.currentUser">

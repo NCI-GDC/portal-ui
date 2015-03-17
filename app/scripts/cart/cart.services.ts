@@ -101,7 +101,8 @@ module ngApp.cart.services {
             'projects': file.projectIds,
             'data_type': file.data_type || '--',
             'data_format': file.data_format || '--',
-            'file_size': file.file_size || 0
+            'file_size': file.file_size || 0,
+            'date_added_to_cart':Date.now()
           };
           this.files.push(fileNeededFieldsOnly);
           addedFiles.push(fileNeededFieldsOnly);

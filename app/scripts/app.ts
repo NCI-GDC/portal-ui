@@ -55,10 +55,20 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
     // TODO more than just 404
     //$state.go("404", {}, {inherit: true});
   });
-  Restangular.addRequestInterceptor((element, operation: string, model: string) => {
-    // Ajax
-    //CoreService.xhrSent();
-    return element;
+  Restangular.setFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig) {
+    var userHeaders = {};
+
+    if (UserService.currentUser) {
+      userHeaders["X-Auth-Token"] = $cookies["X-Auth-Token"];
+      userHeaders["X-Auth-Username"] = $cookies["X-Auth-Username"];
+    }
+
+    return {
+      element: element,
+      params: params,
+      headers: _.extend(headers, userHeaders),
+      httpConfig: httpConfig
+    };
   });
   Restangular.addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
     // Ajax

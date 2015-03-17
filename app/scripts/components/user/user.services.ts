@@ -28,9 +28,8 @@ module ngApp.components.user.services {
         return;
       }
 
-      this.Restangular.all("auth/login").post({}, {}, {
-        "X-Auth-Token": this.$cookies["X-Auth-Token"]
-      }).then((data) => {
+      this.Restangular.all("auth/login").post({}, {})
+      .then((data) => {
         data.isFiltered = true;
         data.username = this.$cookies["X-Auth-Username"];
         this.setUser(data);
@@ -46,9 +45,8 @@ module ngApp.components.user.services {
         .withHttpConfig({
           responseType: "blob"
         })
-        .get("", {}, {
-          "X-Auth-Token": this.$cookies["X-Auth-Token"]
-        }).then((file) => {
+        .get("", {})
+        .then((file) => {
           var url = this.$window.URL.createObjectURL(file);
           var a = this.$window.document.createElement("a");
           a.setAttribute("href", url);

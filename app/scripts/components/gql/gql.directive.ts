@@ -127,16 +127,10 @@ module ngApp.components.gql.directives {
           try {
             // setup gql
             $scope.gql = $window.gql.parse($scope.query);
+            console.log("GQL: ", $scope.gql);
             // if ajax
             // T: filter ajax response
             if ($scope.ajax) {
-              //var qs: string[] = _.filter($scope.query.substr(0, $scope.Error.offset).split(
-              //    /!=|=|<|>| and | or | in \[?/
-              //), (x: string): boolean => {
-              //  return !!x.length;
-              //});
-              //console.log(qs);
-
               var xs: string[] = $scope.query.substr($scope.Error.offset).split(" ");
               var term = xs[xs.length - 1];
               $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
@@ -149,18 +143,27 @@ module ngApp.components.gql.directives {
           } catch (Error) {
             // capture Error info
             $scope.Error = Error;
-
             // determine if ajax needed
             $scope.ajax = _.some(Error.expected, (e: IGqlExpected): boolean => {
-              return '\"' == e.value
+              return ['\"', ','].indexOf(e.value) !== -1;
             });
             if ($scope.ajax) {
               var qs = splitOnOp(Error.offset);
-
+              if (qs[qs.length - 2] === " in [") {
+                var terms: string[] = _.map(qs[qs.length - 1].split(','), (t) => {
+                  return t.replace(/^\s+|\s+$/g, '')
+                });
+                var term: string = terms[terms.length - 1];
+              } else {
+                var term: string = qs[qs.length - 1].replace(/^\s+|\s+$/g, '');
+              }
               var field: string = qs[qs.length - 3].replace(/^\s+|\s+$/g, '');
 
               ajaxRequest(field).then(function (es: IGqlExpected[]) {
-                $scope.totalErrors = $scope.errors = es;
+                $scope.totalErrors = es;
+                $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
+                  return contains(e.value, term);
+                }));
               });
             } else {
               var xs: string[] = _.filter(($scope.query.substr(Error.offset) + " ").split(
@@ -258,9 +261,9 @@ module ngApp.components.gql.directives {
         $scope.enter = (): void => {
           $scope.ajax = false;
 
-          var left = $scope.query.substr(0, $scope.Error.offset);
-          var qs = _.filter(($scope.query.substr($scope.Error.offset) + " ").split(
-              /(?=!=|=|<|>| and | or | in \[? | \])/
+          var lhs = $scope.query.substr(0, $scope.Error.offset);
+          var rhs_qs = _.filter(($scope.query.substr($scope.Error.offset) + " ").split(
+              /(?=!=|=|<|>|\ and | or | in \[? | \])/
           ), (x: string): boolean => {
             return !!x.length;
           });
@@ -273,12 +276,35 @@ module ngApp.components.gql.directives {
             v = v.indexOf(" ") !== -1 ? '"' + v + '"' : v;
             v = v == "in" ? "in [" : v;
 
-            if (qs[0].indexOf(']') === -1) {
-              qs.shift();
-            }
-            qs.unshift(v);
+            var rhs_clean = rhs_qs[0].replace(/^\s+|\s+$/g, '');
 
-            $scope.query = left + qs.join(''); // + " ";
+            var is_in = _.some($scope.Error.expected, (e: IGqlExpected): boolean => {
+              return [','].indexOf(e.value) !== -1;
+            });
+
+            if (is_in) {
+              var lhs_xs = lhs.split('[');
+              var term_list = lhs_xs.pop();
+              var terms = term_list.split(',');
+              terms.pop();
+              terms.push(v);
+              lhs = lhs_xs.join('[') + "[" + terms.join(', ');
+              $scope.query = lhs + rhs_qs.join('');
+            } else {
+              if (rhs_qs[0].indexOf(']') === -1
+                  && (v.toLowerCase().indexOf(rhs_clean.toLowerCase()) > -1)
+                  && rhs_qs.length == 1
+              ) {
+                rhs_qs.shift();
+              }
+              rhs_qs.unshift(v + " ");
+
+              $scope.query = lhs + rhs_qs.join('');
+            }
+
+
+
+
             $scope.focus = false;
             $scope.clearActive();
 

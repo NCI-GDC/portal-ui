@@ -74,7 +74,7 @@ module ngApp.cart.controllers {
       }, true);
 
       function updateChartData(){
-          var accessCount = _.countBy(CartService.getFiles(),function(f){return UserService.userCanDownloadFiles([f])}); 
+          var accessCount = _.countBy(CartService.getFiles(),function(f){return UserService.userCanDownloadFiles([f])});
           var data = [
             {
               access:'open',
@@ -220,13 +220,15 @@ module ngApp.cart.controllers {
       var authorizedInCart;
 
       if (isLoggedIn) {
-          var projects = this.UserService.currentUser.projects;
-          unauthorizedInCart = protectedInCart.filter(function(a){
-            return !_.contains(projects,a.project_id);
-          })
-          authorizedInCart = openInCart.concat(protectedInCart.filter(function(a){
-            return _.contains(projects,a.project_id);
-          }))
+          var projects = this.UserService.currentUser.projects.gdc_ids;
+
+          unauthorizedInCart = _.filter(protectedInCart, function(a){
+            return !_.intersection(projects,a.projects).length;
+          });
+          authorizedInCart = openInCart.concat(_.filter(protectedInCart, function(a){
+            return !!_.intersection(projects,a.projects).length;
+          }));
+
       } else {
          unauthorizedInCart = protectedInCart;
          authorizedInCart = openInCart;
@@ -238,7 +240,7 @@ module ngApp.cart.controllers {
         unauthorized: unauthorizedInCart,
         authorized:authorizedInCart,
         all: all
-      }
+      };
 
       if (protectedInCart.length < 1) {
         download();
@@ -312,8 +314,7 @@ module ngApp.cart.controllers {
       .module("cart.controller", ["cart.services", "core.services", "user.services"])
       .controller("LoginToDownloadController",function($scope,$modalInstance, $window){
 
-        console.log("Login to download.", $scope);
-        var meta = $scope.$parent.meta;
+        var meta = $scope.$parent.chartData;
 
           this.cancel = function(a){
             $modalInstance.close(false);

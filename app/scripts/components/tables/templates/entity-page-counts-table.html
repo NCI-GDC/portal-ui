@@ -13,7 +13,7 @@
   <tr data-ng-repeat="name in names"
       data-ng-if="dataTransformed[name].file_count > 0 || tableId === 'available-data-table'">
     <td>{{ name | titlefy }}</td>
-    <td data-ng-if="showParticipants"
+    <td class="text-right" data-ng-if="showParticipants"
         data-ng-switch="dataTransformed[name].participant_count">
       <a data-ng-switch-default data-ui-sref="search.participants({ 'filters':
           {{ [
@@ -27,7 +27,7 @@
       <span data-ng-switch-when="undefined">0</span>
       <span data-ng-switch-when="0">0</span>
     </td>
-    <td data-ng-switch="dataTransformed[name].file_count">
+    <td class="text-right" data-ng-switch="dataTransformed[name].file_count">
       <a data-ng-switch-default data-ui-sref="search.files({ 'filters':
           {{ [
               { name: parentFieldName, value: parentId },

@@ -216,7 +216,7 @@ function githutTable(data,config){
         display_name:["File","Count"],
         scale:'ordinal',
          dimensional:true,
-        colorgroup:'participant_count'
+        colorgroup:'file_count'
     },{
         id:'file_size',
         display_name:["File","Size"],

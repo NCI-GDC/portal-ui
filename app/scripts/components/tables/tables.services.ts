@@ -210,6 +210,34 @@ module ngApp.components.tables.services {
 
             return result;
         }
+      
+            /**
+         * Returns the ultimate text value for an entry in a table based on the heading defintion and the whole row.
+         */
+        getIcon(heading:TableiciousColumnDefinition,field:any,row,scope, $filter: ng.IFilterService) {
+
+            var row = scope.$parent.datum;
+            var field = {
+                val: this.getValueFromRow(row, heading.id),
+                id: heading.id
+            }
+
+            var result;
+
+            var id = heading.id;
+
+            if (heading.icon) {
+                try {
+                    result = heading.icon(field,row,scope, $filter);
+                } catch (e) {
+                    result = '--';
+                }
+            } else {
+                result = '--';
+            }
+
+            return result;
+        }
 
         /**
          * Given a heading, determines if that heading should be displayed or not.

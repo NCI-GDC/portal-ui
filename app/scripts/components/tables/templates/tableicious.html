@@ -48,7 +48,7 @@
                 </span>
 
                 <div ng-if="heading.icon" class="text-center">
-                    <i class="fa fa-{{heading.icon(getDataAtRow(heading, $parent.$index),$parent.datum,this)}} fa-lg"></i>
+                    <i class="fa fa-{{getIcon(heading, getDataAtRow(heading, $parent.$index),$parent.datum,this)}} fa-lg"></i>
                 </div>
 
             </td>

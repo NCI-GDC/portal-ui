@@ -180,7 +180,7 @@ module ngApp.components.tables.directives.tableicious {
             $scope.getHeadingColSpan = TableService.getHeadingColSpan.bind($scope);
             $scope.getHeadingRowSpan = TableService.getHeadingRowSpan.bind($scope);
             $scope.getTemplate = TableService.getTemplate.bind(TableService);
-            //$scope.getTemplate = TableService.getTemplate.bind($scope);
+            $scope.getIcon = TableService.getIcon.bind(TableService);
             $scope.getHeadingEnabled = TableService.getHeadingEnabled.bind($scope);
             $scope.getSref = TableService.getSref.bind(TableService);
             $scope.getHeadingClass = TableService.getHeadingClass.bind($scope);

@@ -1,3 +1,5 @@
+// FIXME kind of getting out of hand
+
 module ngApp.components.gql.directives {
   import IGDCWindowService = ngApp.models.IGDCWindowService;
   import IFilesService = ngApp.files.services.IFilesService;
@@ -162,7 +164,8 @@ module ngApp.components.gql.directives {
               ajaxRequest(field).then(function (es: IGqlExpected[]) {
                 $scope.totalErrors = es;
                 $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
-                  return contains(e.value, term);
+                  return contains(e.value, term)
+                      && (terms.indexOf(e.value) === -1 && terms.indexOf('"' + e.value + '"') === -1);
                 }));
               });
             } else {
@@ -301,9 +304,6 @@ module ngApp.components.gql.directives {
 
               $scope.query = lhs + rhs_qs.join('');
             }
-
-
-
 
             $scope.focus = false;
             $scope.clearActive();

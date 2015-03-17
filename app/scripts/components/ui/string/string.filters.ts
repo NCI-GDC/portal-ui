@@ -26,6 +26,7 @@ module ngApp.components.ui.string {
         var humanified;
 
         if (facetTerm) {
+          original = original.split(/(?=[A-Z])/).join(" ");
           humanified = original.replace(/\./g, " ").trim();
         } else {
           split = original.split(".");

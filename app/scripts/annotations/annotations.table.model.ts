@@ -91,6 +91,12 @@ module ngApp.projects.models {
         {
             displayName: "Classification",
             id: "classification",
+            template: function(field) {
+                var original = field.val;
+                original = original.split(/(?=[A-Z])/).join(" ");
+
+                return original;
+            },
             sortable: true
         },
         {

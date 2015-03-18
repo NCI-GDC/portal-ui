@@ -60,7 +60,7 @@ module ngApp.components.ui.string {
       };
     }
   }
-  
+
   class Titlefy {
     constructor() {
       return function(s){
@@ -68,7 +68,7 @@ module ngApp.components.ui.string {
         return s.toString().toLowerCase().replace( /\b([a-z])/g, function(ch) {
           return ch.toUpperCase();
         });
-      } 
+      }
     }
   }
 

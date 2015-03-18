@@ -42,14 +42,14 @@ module ngApp.core.filters {
     constructor($rootScope: IRootScope) {
       return function (ids: string[],
                       annotations : boolean = true) {
-        
-        var baseUrl = $rootScope.config.api; 
+
+        var baseUrl = $rootScope.config.api;
         var url = baseUrl + "/data/" + ids.join(",");
         if (annotations) {
           url+= "?annotations=1";
         }
         return url;
-        
+
       };
     }
   }

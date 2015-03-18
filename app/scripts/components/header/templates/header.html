@@ -47,7 +47,7 @@
           </label>
         </li>
         <li data-ng-if="hc.UserService.currentUser">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav user-nav">
             <li class="btn-group" data-dropdown>
               <a href="" class="dropdown-toggle" aria-expanded="false">
                 {{ hc.UserService.currentUser.username }} <span class="caret"></span>
@@ -55,7 +55,7 @@
               <ul class="dropdown-menu" role="menu">
                 <li>
                   <a data-ng-click="hc.getToken()">
-                    <i class="fa fa-zip-o"></i>
+                    <i class="fa fa-file-zip-o"></i>
                     <span data-translate>Download Token</span>
                   </a>
                 </li>

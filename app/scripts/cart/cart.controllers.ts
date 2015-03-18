@@ -68,7 +68,10 @@ module ngApp.cart.controllers {
       });
 
       $scope.$watch(function () {
-        return CartService.getFiles().length && UserService.currentUser;
+        return {
+          l:CartService.getFiles().length,
+          u:UserService.currentUser
+        };
       }, function () {
         updateChartData();
       }, true);

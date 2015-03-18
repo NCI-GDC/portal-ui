@@ -119,10 +119,7 @@
               <th scope="row" data-translate>Tag</th>
               <td>
                 <span data-ng-if="!fc.file.tags">--</span>
-              <span data-ng-repeat="tag in fc.file.tags track by $index">
-                {{ tag }}
-                <span data-ng-if="!$last">, </span>
-              </span>
+                <span data-ng-if="fc.file.tags">{{ fc.file.tags.join(", ") }}</span>
               </td>
             </tr>
             </tbody>

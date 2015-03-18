@@ -145,9 +145,8 @@ module ngApp.reports.controllers {
           return a;
         });
         
-        console.log("data?",data);
+
         
-//        data = addFakeData(data);
         
      
 
@@ -220,7 +219,6 @@ module ngApp.reports.controllers {
         });
         
         $scope.getTableOrder = function(a){
-          console.log("get table order...",a.key,order.indexOf(a.key));
           return -types.map(function(a){return a.id}).indexOf(a.key);
         }
         
@@ -320,7 +318,6 @@ module ngApp.reports.controllers {
         };
         
         
-        console.log("Final PC data: ", d3.values(aggregations));
         $timeout(function(){
         
         

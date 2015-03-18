@@ -360,7 +360,8 @@ module ngApp.search.models {
                         filters: filter
                     }
                 };
-            }
+            },
+            fieldClass: 'text-right'
         }],
         fields: [
           "participant_id",

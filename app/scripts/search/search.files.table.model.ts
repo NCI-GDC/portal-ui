@@ -257,7 +257,8 @@ module ngApp.search.models {
               filters: filter
             }
           };
-        }
+        },
+        fieldClass: 'text-right'
       }],
     fields: [
       "access",

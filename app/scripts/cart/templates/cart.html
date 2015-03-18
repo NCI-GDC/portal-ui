@@ -171,7 +171,7 @@
           <td>{{ file.data_type }}</td>
           <td>{{ file.data_format }}</td>
           <td>{{ file.file_size | size }}</td>
-          <td class="truncated-cell">
+          <td class="truncated-cell text-right">
             <a data-ng-if="file.annotationIds.length === 1"
                data-ui-sref="annotation(({annotationId: file.annotationIds[0]}))">
                {{ file.annotationIds.length }}

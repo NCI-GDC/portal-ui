@@ -204,6 +204,47 @@ module ngApp.cart.controllers {
       return this.UserService.isUserProject(file);
     }
 
+    getManifest() {
+      var isLoggedIn = this.UserService.currentUser;
+
+      var protectedInCart = _.filter(this.CartService.files, function (a) {
+        return a.access === 'protected'
+      });
+      var openInCart = _.filter(this.CartService.files, function (a) {
+        return a.access !== 'protected'
+      });
+
+      var authorizedInCart;
+
+      if (isLoggedIn) {
+        var projects = this.UserService.currentUser.projects.gdc_ids;
+        var openSelected = _.filter(openInCart, function (a) {
+          return a.selected == true;
+        });
+        authorizedInCart = openSelected.concat(_.filter(protectedInCart, function (a) {
+          return !!_.intersection(projects, a.projects).length && a.selected == true;
+        }));
+
+
+      } else {
+        authorizedInCart = _.filter(openInCart, function (a) {
+          return a.selected == true;
+        });
+      }
+
+      var file_ids = [];
+      _.forEach(authorizedInCart, (f) => {
+
+        if (f.hasOwnProperty('related_ids')) {
+          file_ids = file_ids.concat(f.related_ids)
+        }
+        file_ids.push(f.file_id)
+      });
+
+      this.FilesService.downloadManifest(file_ids);
+
+    }
+
     checkCartForClosedFiles() {
       var $modal = this.$modal;
       var scope = this.$scope;
@@ -264,16 +305,13 @@ module ngApp.cart.controllers {
       function download() {
         var file_ids = []
         _.forEach(authorizedInCart, (f) => {
-          console.log(f);
-          console.log(f.file_id);
-          console.log(f.related_ids);
 
           if (f.hasOwnProperty('related_ids')) {
             file_ids = file_ids.concat(f.related_ids)
           }
           file_ids.push(f.file_id)
         });
-        console.log(file_ids);
+
         FilesService.downloadFiles(file_ids);
       }
 

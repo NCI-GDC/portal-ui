@@ -31,11 +31,12 @@ module ngApp.files.services {
       });
     }
 
+    downloadManifest(_ids) {
+      this.$window.location = this.$filter('makeManifestLink')(_ids);
+    }
+
     downloadFiles(_ids) {
-        var $filter = this.$filter;
-        var $window = this.$window;
-        var x = $filter('makeDownloadLink')(_ids);
-        $window.location = x;
+      this.$window.location = this.$filter('makeManifestLink')(_ids);
     }
 
     getFiles(params: Object = {}): ng.IPromise<IFiles> {

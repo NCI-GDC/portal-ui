@@ -21,18 +21,21 @@
           <tr>
             <th scope="row" data-translate>Size</th>
             <td>{{ cc.getTotalSize() | size }}</td>
-          </tr>
+          </tr
           </tbody>
         </table>
+      
+       
       </div>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6">
-      <div data-ng-if=chartData>
-        <div pie-chart data-data=chartData data-config=chartConfig> </div>
-      </div>
+        <div cart-displaying-pie-chart></div>
     </div>
+    <div class="col-xs-12">
+     <div remove-unauthorized-files-button>        </div>
+     </div>
   </section>
-
+    
   <h2 data-ng-if="!cc.files.length" data-translate>Your Cart is empty.</h2>
 
   <section data-ng-if="cc.files.length">
@@ -53,7 +56,10 @@
                   data-ng-click="cc.removeAll()">
             <i class="fa fa-remove"></i> <span data-translate>Empty Cart</span>
           </button>
+
         </div>
+   
+
         <div data-ng-if="cc.selected().length" class="pull-right">
           <strong>{{cc.selected().length}}</strong>&nbsp;
           <!-- angular-gettext also supports known variables like $count, which can
@@ -65,7 +71,7 @@
           </span>
           (<strong>{{ cc.selectedSize() | size}}</strong>)
           <a type="button"
-                  data-ng-click=cc.checkCartForClosedFiles()
+                  download-button-all-cart
                   class="btn btn-primary">
             <i class="fa fa-cloud-download"></i> <span data-translate>Download</span>
           </a>
@@ -190,6 +196,7 @@
       </table>
       <div class="panel-footer clearfix">
         <pagination-controls data-page="cart" data-paging="cc.pagination" update="cc.processPaging"></pagination-controls>
+         
       </div>
     </div>
   </section>

@@ -101,6 +101,116 @@ module ngApp.cart.directives {
       }
     }
   }
+  
+  /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/  
+  function RemoveUnauthorizedFilesButton() {
+    return {
+      restrict:"AE",
+      templateUrl:"cart/templates/remove-unauthorized-files.button.html",
+      replace: true,
+      controller:function($scope,$element,UserService,CartService,FilesService){
+         //todo
+        $scope.$watch(function(){
+          return CartService.getUnauthorizedFiles();
+        },function(f){
+          $scope.files = f;
+        },true);
+        
+        $scope.remove = function() {
+              CartService.removeFiles($scope.files);
+        }
+         
+      }
+    }
+  }
+  
+  
+  
+  function DownloadButtonAllCart() {
+    return {
+      restrict:"AE",
+      controller:function($scope,FilesService,UserService,CartService,$modal,$element){
+        $element.on('click',function checkCartForClosedFiles() {
+          
+          var scope = $scope;
+          var isLoggedIn = UserService.currentUser;
+          
+          function isSelected(a){return a.selected};
+          
+          var authorizedInCart = CartService.getAuthorizedFiles().filter(isSelected);
+          var unauthorizedInCart = CartService.getUnauthorizedFiles().filter(isSelected);
+          
+
+          scope.meta = {
+            unauthorized: unauthorizedInCart,
+            authorized: authorizedInCart
+          };
+
+          if (unauthorizedInCart.length === 0) {
+            download();
+          } else {
+            if (isLoggedIn) {
+              showRequestAccessModal();
+            } else {
+              showLoginModal();
+            }
+          }
+
+          //FIXME clean up
+          function download() {
+            var file_ids = []
+            _.forEach(authorizedInCart, (f) => {
+
+              if (f.hasOwnProperty('related_ids')) {
+                file_ids = file_ids.concat(f.related_ids)
+              }
+              file_ids.push(f.file_id)
+            });
+
+            FilesService.downloadFiles(file_ids);
+          }
+
+          function showLoginModal() {
+            var modalInstance = $modal.open({
+              templateUrl: "core/templates/login-to-download.html",
+              controller: "LoginToDownloadController as wc",
+              backdrop: "static",
+              keyboard: false,
+              scope: scope,
+              backdropClass: "warning-backdrop",
+              size: "lg"
+            });
+
+            modalInstance.result.then((a) => {
+              if (a && authorizedInCart.length > 0) {
+                download();
+              }
+            });
+
+          }
+
+          function showRequestAccessModal() {
+            var modalInstance = $modal.open({
+              templateUrl: "core/templates/request-access-to-download.html",
+              controller: "LoginToDownloadController as wc",
+              backdrop: "static",
+              keyboard: false,
+              scope: scope,
+              backdropClass: "warning-backdrop",
+              size: "lg"
+            });
+
+            modalInstance.result.then((a) => {
+              if (a && authorizedInCart.length > 0) {
+                download();
+              }
+            });
+          }
+        })
+      
+      }
+    }
+  }
 
   function AddToCartFiltered(SearchTableFilesModel: TableiciousConfig): ng.IDirective {
     return {
@@ -175,6 +285,64 @@ module ngApp.cart.directives {
       }
     }
   }
+  
+  
+  /** Directive which can be placed anywhere, that displays a pie chart of the contents of the cart **/
+  function CartDisplayingPieChart() {
+    return {
+      restrict:"AE",
+      template:'<div pie-chart ng-if=chartData data-data=chartData data-config=chartConfig> </div>',
+      controller:function(CartService,UserService,$scope){
+        $scope.$watch(function () {
+        return {
+          l:CartService.getFiles().length,
+          u:UserService.currentUser
+          };
+        }, function () {
+          updateChartData();
+        }, true);
+
+      function updateChartData() {
+        
+        var accessCount = _.countBy(CartService.getFiles(), function (f) {
+          return UserService.userCanDownloadFiles([f])
+        });
+        var data = [
+          {
+            access: 'open',
+            count: accessCount['true'] || 0,
+          },
+          {
+            access: 'protected',
+            count: accessCount['false'] || 0,
+          }
+        ]
+
+        $scope.chartConfig = {
+          legend: {
+            open: '%!% file(s) you are authorized to download',
+            protected: '%!% file(s) you are not authorized to download'
+          }
+        }
+
+        if (_.find(data, function (a) {
+              return a.count > 0;
+            })) {
+          $scope.chartData = data.map(function (a) {
+            return {
+              key: a.access,
+              value: a.count
+            }
+          })
+        } else {
+          $scope.chartData = undefined;
+        }
+      }
+      
+      }
+    }
+  }
+  
 
   angular.module("cart.directives", [
       "user.services",
@@ -184,6 +352,9 @@ module ngApp.cart.directives {
     ])
     .directive("addToCartSingle", AddToCartSingle)
     .directive("addToCartAll", AddToCartAll)
-    .directive("addToCartFiltered", AddToCartFiltered);
+    .directive("addToCartFiltered", AddToCartFiltered)
+    .directive("downloadButtonAllCart", DownloadButtonAllCart)
+    .directive("cartDisplayingPieChart", CartDisplayingPieChart)
+    .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton);
 }
 

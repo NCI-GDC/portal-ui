@@ -1,0 +1,10 @@
+<span>
+  <button ng-if=files[0] ng-click=remove() type="button" class="btn btn-danger" >
+        Remove unauthorized files from cart
+  </button>
+
+
+  <button ng-if=!files[0] type="button" disabled class="btn btn-danger" >
+        You have no unauthorized files in the cart
+  </button>
+</span>

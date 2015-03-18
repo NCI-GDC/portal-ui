@@ -36,8 +36,14 @@ module ngApp.cart.controllers {
     sizeFilesGraph: any;
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope, public files: IFile[], private CoreService: ICoreService,
-                private CartService: ICartService, private UserService: IUserService, private $modal, private $filter, private $window, private Restangular, private FilesService) {
+    constructor(private $scope: ng.IScope, 
+                public files: IFile[], 
+                private CoreService: ICoreService,
+                private CartService: ICartService, 
+                private UserService: IUserService, 
+                private Restangular, 
+                private FilesService) {
+      
       CoreService.setPageTitle("Cart", "(" + this.files.length + ")");
       this.lastModified = this.CartService.lastModified;
 
@@ -66,52 +72,14 @@ module ngApp.cart.controllers {
         this.setDisplayedFiles();
 
       });
+      
+      $scope.$on("cart.update",()=>{
+        this.setDisplayedFiles();
+      })
+    
 
-      $scope.$watch(function () {
-        return {
-          l:CartService.getFiles().length,
-          u:UserService.currentUser
-        };
-      }, function () {
-        updateChartData();
-      }, true);
 
-      function updateChartData() {
-        var accessCount = _.countBy(CartService.getFiles(), function (f) {
-          return UserService.userCanDownloadFiles([f])
-        });
-        var data = [
-          {
-            access: 'open',
-            count: accessCount['true'] || 0,
-          },
-          {
-            access: 'protected',
-            count: accessCount['false'] || 0,
-          }
-        ]
-
-        $scope.chartConfig = {
-          legend: {
-            open: '%!% file(s) you are authorized to download',
-            protected: '%!% file(s) you are not authorized to download'
-          }
-        }
-
-        if (_.find(data, function (a) {
-              return a.count > 0;
-            })) {
-          $scope.chartData = data.map(function (a) {
-            return {
-              key: a.access,
-              value: a.count
-            }
-          })
-        } else {
-          $scope.chartData = undefined;
-        }
-
-      }
+    
     }
 
     setDisplayedFiles(newPaging: IPagination = this.pagination): void {
@@ -208,32 +176,9 @@ module ngApp.cart.controllers {
     }
 
     getManifest() {
-      var isLoggedIn = this.UserService.currentUser;
-
-      var protectedInCart = _.filter(this.CartService.files, function (a) {
-        return a.access === 'protected'
-      });
-      var openInCart = _.filter(this.CartService.files, function (a) {
-        return a.access !== 'protected'
-      });
-
-      var authorizedInCart;
-
-      if (isLoggedIn) {
-        var projects = this.UserService.currentUser.projects.gdc_ids;
-        var openSelected = _.filter(openInCart, function (a) {
-          return a.selected == true;
-        });
-        authorizedInCart = openSelected.concat(_.filter(protectedInCart, function (a) {
-          return !!_.intersection(projects, a.projects).length && a.selected == true;
-        }));
-
-
-      } else {
-        authorizedInCart = _.filter(openInCart, function (a) {
-          return a.selected == true;
-        });
-      }
+      
+    
+      var authorizedInCart = this.CartService.getAuthorizedFiles().filter(function isSelected(a){return a.selected});
 
       var file_ids = [];
       _.forEach(authorizedInCart, (f) => {
@@ -248,133 +193,30 @@ module ngApp.cart.controllers {
 
     }
 
-    checkCartForClosedFiles() {
-      var $modal = this.$modal;
-      var scope = this.$scope;
-      var FilesService = this.FilesService;
+    
 
-      var isLoggedIn = this.UserService.currentUser;
-
-      var protectedInCart = _.filter(this.CartService.files, function (a) {
-        return a.access === 'protected'
-      });
-      var openInCart = _.filter(this.CartService.files, function (a) {
-        return a.access !== 'protected'
-      });
-
-      var unauthorizedInCart;
-      var authorizedInCart;
-
-      if (isLoggedIn) {
-        var projects = this.UserService.currentUser.projects.gdc_ids;
-        unauthorizedInCart = _.filter(protectedInCart, function (a) {
-          return !_.intersection(projects, a.projects).length && a.selected == true;
-        });
-        var openSelected = _.filter(openInCart, function (a) {
-          return a.selected == true;
-        });
-        authorizedInCart = openSelected.concat(_.filter(protectedInCart, function (a) {
-          return !!_.intersection(projects, a.projects).length && a.selected == true;
-        }));
-
-
-      } else {
-        unauthorizedInCart = _.filter(protectedInCart, function (a) {
-          return a.selected == true;
-        });
-        authorizedInCart = _.filter(openInCart, function (a) {
-          return a.selected == true;
-        });
-      }
-
-      scope.meta = {
-        protected: protectedInCart,
-        open: openInCart,
-        unauthorized: unauthorizedInCart,
-        authorized: authorizedInCart
-      };
-
-      if (unauthorizedInCart.length === 0) {
-        download();
-      } else {
-        if (isLoggedIn) {
-          showRequestAccessModal();
-        } else {
-          showLoginModal();
-        }
-      }
-
-      //FIXME clean up
-      function download() {
-        var file_ids = []
-        _.forEach(authorizedInCart, (f) => {
-
-          if (f.hasOwnProperty('related_ids')) {
-            file_ids = file_ids.concat(f.related_ids)
-          }
-          file_ids.push(f.file_id)
-        });
-
-        FilesService.downloadFiles(file_ids);
-      }
-
-      function showLoginModal() {
-        var modalInstance = $modal.open({
-          templateUrl: "core/templates/login-to-download.html",
-          controller: "LoginToDownloadController as wc",
-          backdrop: "static",
-          keyboard: false,
-          scope: scope,
-          backdropClass: "warning-backdrop",
-          size: "lg"
-        });
-
-        modalInstance.result.then((a) => {
-          if (a && authorizedInCart.length > 0) {
-            download();
-          }
-        });
+  }
+  
+  class LoginToDownloadController {
+    
+    constructor (private $modalInstance) {
 
       }
-
-      function showRequestAccessModal() {
-        var modalInstance = $modal.open({
-          templateUrl: "core/templates/request-access-to-download.html",
-          controller: "LoginToDownloadController as wc",
-          backdrop: "static",
-          keyboard: false,
-          scope: scope,
-          backdropClass: "warning-backdrop",
-          size: "lg"
-        });
-
-        modalInstance.result.then((a) => {
-          if (a && authorizedInCart.length > 0) {
-            console.log(authorizedInCart);
-            download();
-          }
-        });
+    
+      cancel() :void {
+        this.$modalInstance.close(false);
       }
-    }
-
+    
+      goAuth() :void {
+          this.$modalInstance.close(true);
+      }
+  
   }
 
 
   angular
       .module("cart.controller", ["cart.services", "core.services", "user.services"])
-      .controller("LoginToDownloadController", function ($scope, $modalInstance, $window) {
-
-        var meta = $scope.$parent.chartData;
-
-        this.cancel = function (a) {
-          $modalInstance.close(false);
-        };
-
-        this.goAuth = function () {
-          $modalInstance.close(true);
-        };
-      })
-
+      .controller("LoginToDownloadController", LoginToDownloadController )
       .controller("CartController", CartController);
 }
 

@@ -116,6 +116,10 @@ module ngApp.components.user.services {
         });
       });
     }
+    
+    userCanDownloadFile(file) {
+      return this.userCanDownloadFiles([file]);
+    }
 
     userCanDownloadFiles(files: IFile[]) {
       return _.every(files, (file) => {

@@ -39,7 +39,7 @@ module ngApp.cart.services {
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
-                private notify: INotifyService) {
+                private notify: INotifyService, private UserService,private $rootScope) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
 
@@ -61,6 +61,18 @@ module ngApp.cart.services {
 
     getFiles(): IFile[] {
       return this.files;
+    }
+    
+    getAuthorizedFiles() {
+      return this.files.filter((file)=>{
+        return this.UserService.userCanDownloadFile(file);
+      })
+    }
+    
+    getUnauthorizedFiles() {
+      return this.files.filter((file)=>{
+        return !this.UserService.userCanDownloadFile(file);
+      })
     }
 
     getSelectedFiles(): IFile[] {
@@ -185,6 +197,8 @@ module ngApp.cart.services {
       });
       this.files = remaining;
       this._sync();
+      
+      this.$rootScope.$broadcast('cart.update');
     }
 
     removeFiles(files: IFile[]): void {

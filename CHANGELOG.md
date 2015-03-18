@@ -1,3 +1,177 @@
+### 0.1.10-spr4 (2015-03-17)
+
+
+#### Bug Fixes
+
+* **annotation:**
+  * get entity_submitter_id ([f6b37cfd](https://github.com/NCI-GDC/portal-ui/commit/f6b37cfd0e50b3f2a6f9b428775a688f92eb3bba), closes [OICR-558](https://jira.opensciencedatacloud.org/browse/OICR-558))
+  * sumbitter_id->entity_submitter_id ([a73eedbb](https://github.com/NCI-GDC/portal-ui/commit/a73eedbb19d0dce2f43fa20dde1496d9e5c39502), closes [OICR-558](https://jira.opensciencedatacloud.org/browse/OICR-558))
+  * annotations num on participant pg ([ad219fcb](https://github.com/NCI-GDC/portal-ui/commit/ad219fcb068693d573fabf17ce34c242fc789d76), closes [OICR-418](https://jira.opensciencedatacloud.org/browse/OICR-418))
+  * correct project page link ([d486340a](https://github.com/NCI-GDC/portal-ui/commit/d486340ae2f2125889ec795b0c1d0ec939fadf1c), closes [OICR-490](https://jira.opensciencedatacloud.org/browse/OICR-490))
+* **annotations:**
+  * Apply my projects filters. ([c8dbc00f](https://github.com/NCI-GDC/portal-ui/commit/c8dbc00fb64cbb80ea41a0995d2caabd6a2eab59), closes [OICR-640](https://jira.opensciencedatacloud.org/browse/OICR-640))
+  * Split up classification word. ([e38b7d4c](https://github.com/NCI-GDC/portal-ui/commit/e38b7d4ccf6d5bc3e450fc3777c9cad9f33f3712), closes [OICR-634](https://jira.opensciencedatacloud.org/browse/OICR-634))
+  * updates ([ed5a3de2](https://github.com/NCI-GDC/portal-ui/commit/ed5a3de21fc5d23d7d06d7c04c1e86a5efe3968e))
+  * Use project_id for facet. ([23659ed2](https://github.com/NCI-GDC/portal-ui/commit/23659ed2d655c86e547c8c7602c5789995fddf20), closes [OICR-573](https://jira.opensciencedatacloud.org/browse/OICR-573))
+  * still display facets on back ([09c6f41a](https://github.com/NCI-GDC/portal-ui/commit/09c6f41ad422e0ea47bc83f2e94c346a7f9b2a8e), closes [OICR-557](https://jira.opensciencedatacloud.org/browse/OICR-557))
+  * update field names ([616ff868](https://github.com/NCI-GDC/portal-ui/commit/616ff868500e0e47889de041cea0742d7820db09), closes [OICR-555](https://jira.opensciencedatacloud.org/browse/OICR-555), [OICR-484](https://jira.opensciencedatacloud.org/browse/OICR-484), [OICR-491](https://jira.opensciencedatacloud.org/browse/OICR-491), [OICR-535](https://jira.opensciencedatacloud.org/browse/OICR-535))
+  * Fix participant link ([c6c45568](https://github.com/NCI-GDC/portal-ui/commit/c6c45568c18ce2311b78eb545d9c1ff172a7f885))
+  * display project name in facet ([b311bcc4](https://github.com/NCI-GDC/portal-ui/commit/b311bcc4c8b6f296e9dbcb00aa57c8cdd83f5401), closes [OICR-519](https://jira.opensciencedatacloud.org/browse/OICR-519))
+  * use participant_id ([b045c50e](https://github.com/NCI-GDC/portal-ui/commit/b045c50ee261134ab079e1afcf494c5756b3f835), closes [OICR-489](https://jira.opensciencedatacloud.org/browse/OICR-489))
+  * show classification facet ([98c03a4b](https://github.com/NCI-GDC/portal-ui/commit/98c03a4b90a105a074fa6f2fab890844d4649a83), closes [OICR-488](https://jira.opensciencedatacloud.org/browse/OICR-488))
+* **app:**
+  * Update facets displayed/order. ([91a5d342](https://github.com/NCI-GDC/portal-ui/commit/91a5d34293978e24e68676b93f7d1e17cfa2c667), closes [OICR-610](https://jira.opensciencedatacloud.org/browse/OICR-610))
+  * Remove columns in Cart and Files. ([c62330c8](https://github.com/NCI-GDC/portal-ui/commit/c62330c812c10ec5ba63efec88715bd3815c8656), closes [OICR-591](https://jira.opensciencedatacloud.org/browse/OICR-591))
+  * Remove revision columns from pages. ([1449fdbe](https://github.com/NCI-GDC/portal-ui/commit/1449fdbed145fb304f0f9d813dc61b0776532c93), closes [OICR-595](https://jira.opensciencedatacloud.org/browse/OICR-595))
+  * Prevent multiple menu items active. ([b6407bf8](https://github.com/NCI-GDC/portal-ui/commit/b6407bf80d6973a99405d2e82340c5ef6e4fc354), closes [OICR-568](https://jira.opensciencedatacloud.org/browse/OICR-568))
+  * some typescript errors ([3e6bcdd4](https://github.com/NCI-GDC/portal-ui/commit/3e6bcdd48f960b4e54efa8cbe5de2732f5208ef8))
+  * Hide sidebar nav small screens. ([56acaf36](https://github.com/NCI-GDC/portal-ui/commit/56acaf36d0ada24abd462765015eccd5c229eadd), closes [OICR-307](https://jira.opensciencedatacloud.org/browse/OICR-307))
+* **cart:**
+  * fix manifest not respecting selected ([5336ea78](https://github.com/NCI-GDC/portal-ui/commit/5336ea78d8c84595a773c7e0bb82cfb3ab43396a))
+  * fix downloads not respecting selected ([309075f7](https://github.com/NCI-GDC/portal-ui/commit/309075f79646bb597f61ca6e92f2c5291a49e1d2))
+  * fix popup counts ([d9dea729](https://github.com/NCI-GDC/portal-ui/commit/d9dea729edad055be8ed359638af6b33f81d000f))
+  * works ([23d1a604](https://github.com/NCI-GDC/portal-ui/commit/23d1a6043b5985c47da2ebccb097a8f101de2178))
+  * fix my project row ([bebb9dbf](https://github.com/NCI-GDC/portal-ui/commit/bebb9dbf310fc0b02e7528cd7a50dc544492ed41))
+  * Fixes for cart ([db08ab48](https://github.com/NCI-GDC/portal-ui/commit/db08ab48799bb92e559ddb9ebab3330aac597c2a))
+  * move dl manifest out of dropdown ([94fae86e](https://github.com/NCI-GDC/portal-ui/commit/94fae86e851d8f3b666e5f51eb6180e2599d5f2d), closes [OICR-603](https://jira.opensciencedatacloud.org/browse/OICR-603))
+  * display files not added notification ([ca342ff7](https://github.com/NCI-GDC/portal-ui/commit/ca342ff7ea67f9fcdd4060012c34f1726598e739), closes [OICR-622](https://jira.opensciencedatacloud.org/browse/OICR-622))
+  * remove dl metadata ([30134e5b](https://github.com/NCI-GDC/portal-ui/commit/30134e5bc7c71fda68eab907a9bbdd97bd21ac70), closes [OICR-583](https://jira.opensciencedatacloud.org/browse/OICR-583))
+  * always show annotation length ([9c0fd797](https://github.com/NCI-GDC/portal-ui/commit/9c0fd797395ec5f1fe4246bb385becd67f02c8dc), closes [OICR-589](https://jira.opensciencedatacloud.org/browse/OICR-589))
+  * fix add/remove from cart ([3fe4c3d5](https://github.com/NCI-GDC/portal-ui/commit/3fe4c3d5260dd383ea8529ea23337bbaf02dc256), closes [OICR-618](https://jira.opensciencedatacloud.org/browse/OICR-618))
+  * hide cart chart on 0 items ([6e522a22](https://github.com/NCI-GDC/portal-ui/commit/6e522a225c38a8aed4d2fcf8a821a2cebe6bad75))
+  * display missing fields ([099d5d1e](https://github.com/NCI-GDC/portal-ui/commit/099d5d1ed968cc43022ba7a8674a3583a1e4b6de), closes [OICR-457](https://jira.opensciencedatacloud.org/browse/OICR-457))
+* **colors:** fix project list colors ([6d104ef3](https://github.com/NCI-GDC/portal-ui/commit/6d104ef3f2500309d7fd0b6c1a59a01d6dbfd4e8), closes [OICR-561](https://jira.opensciencedatacloud.org/browse/OICR-561))
+* **dnd:** fixing reordering bug ([18dc1128](https://github.com/NCI-GDC/portal-ui/commit/18dc1128ff6feedb6afab708550d01c8b41c6e05), closes [OICR-316](https://jira.opensciencedatacloud.org/browse/OICR-316))
+* **download:** add related_ids to download ([794daacd](https://github.com/NCI-GDC/portal-ui/commit/794daacd057288410e8be2b8a7294e8f8ce98259), closes [OICR-624](https://jira.opensciencedatacloud.org/browse/OICR-624))
+* **entity:**
+  * participant fixes ([0812193f](https://github.com/NCI-GDC/portal-ui/commit/0812193f2b10dedd6831430bbff58e76bf4c9a33), closes [OICR-596](https://jira.opensciencedatacloud.org/browse/OICR-596))
+  * update language ([61b7e045](https://github.com/NCI-GDC/portal-ui/commit/61b7e0456c19dba20163f90e1f51e32a39c2fae9))
+* **facets:** Consistent spacing for terms. ([7734cbc4](https://github.com/NCI-GDC/portal-ui/commit/7734cbc44caf7fe33c462aadb2c652203dba468f), closes [OICR-611](https://jira.opensciencedatacloud.org/browse/OICR-611))
+* **file:**
+  * Update associated entities. ([3acb7926](https://github.com/NCI-GDC/portal-ui/commit/3acb7926c52e047d02952aeec6661db092d13b22), closes [OICR-531](https://jira.opensciencedatacloud.org/browse/OICR-531))
+  * add dl access modal ([70037cc7](https://github.com/NCI-GDC/portal-ui/commit/70037cc73c53ac3dd6329b65a961fe950a03cc59), closes [OICR-550](https://jira.opensciencedatacloud.org/browse/OICR-550))
+  * set archiveCount to 0 when no archive ([96434f03](https://github.com/NCI-GDC/portal-ui/commit/96434f03a35a53f4fd98e9a700cf14e5b1aa858d), closes [OICR-525](https://jira.opensciencedatacloud.org/browse/OICR-525))
+  * match mockup ([cf2d293b](https://github.com/NCI-GDC/portal-ui/commit/cf2d293b3f6b513341e28caf89c219a0e99013d3), closes [OICR-516](https://jira.opensciencedatacloud.org/browse/OICR-516))
+  * find file same archive ([19ad64b4](https://github.com/NCI-GDC/portal-ui/commit/19ad64b4fa96f57f4ffd3432e2662bfca5665147), closes [OICR-485](https://jira.opensciencedatacloud.org/browse/OICR-485))
+  * add to cart from file page ([3b7bf382](https://github.com/NCI-GDC/portal-ui/commit/3b7bf382f4ba1df2fad2b14d2fb8d9e0ce70bf32), closes [OICR-497](https://jira.opensciencedatacloud.org/browse/OICR-497))
+  * related files type ([9c6a3b4c](https://github.com/NCI-GDC/portal-ui/commit/9c6a3b4c8ce041a94641830b1416cbd95de52da0))
+* **files:**
+  * Track by entity_id over participant_id ([159a80df](https://github.com/NCI-GDC/portal-ui/commit/159a80df59a8cdf73862c795a4e33df5c1f4937a))
+  * Show '00' remainder for all but Bytes. ([032a75d4](https://github.com/NCI-GDC/portal-ui/commit/032a75d4dfbbc3e5c949159dcd4bc643485fd08f), closes [OICR-577](https://jira.opensciencedatacloud.org/browse/OICR-577))
+  * Properly linking to participants. ([00c9158f](https://github.com/NCI-GDC/portal-ui/commit/00c9158f16f50ca7b98f0d3530fd4bc05d230500), closes [OICR-605](https://jira.opensciencedatacloud.org/browse/OICR-605))
+  * Trim trailing '00' from filter. ([48c31bb0](https://github.com/NCI-GDC/portal-ui/commit/48c31bb042aded8df054d8d10560c0093dc97244))
+  * Update file size filter. ([a19e2f69](https://github.com/NCI-GDC/portal-ui/commit/a19e2f698b2e15b5835c649fcd9965127a6abc29), closes [OICR-577](https://jira.opensciencedatacloud.org/browse/OICR-577))
+  * Updates for removed data. ([1c2faebe](https://github.com/NCI-GDC/portal-ui/commit/1c2faebee1d334dcd7b349dcf0fe0b90df53bfee), closes [OICR-530](https://jira.opensciencedatacloud.org/browse/OICR-530))
+  * use files.origin ([9da26db2](https://github.com/NCI-GDC/portal-ui/commit/9da26db291e30cc8b1a5e3089f8f2b9f428c2c3b), closes [OICR-532](https://jira.opensciencedatacloud.org/browse/OICR-532))
+* **filter:** correct lang ([0100e2e4](https://github.com/NCI-GDC/portal-ui/commit/0100e2e4e5b3836a8e2820a319e5b7ed62b3798a))
+* **filters:** makes ?annotations=1 optional ([8f2ac17f](https://github.com/NCI-GDC/portal-ui/commit/8f2ac17f5de33c0798796fb276ce5a4da34bd712), closes [OICR-641](https://jira.opensciencedatacloud.org/browse/OICR-641))
+* **footer:** footer fixes ([299ead23](https://github.com/NCI-GDC/portal-ui/commit/299ead23e4c8c4bcbb6850c250c8217c20984c91))
+* **githut:**
+  * fix project page ([6a74efd1](https://github.com/NCI-GDC/portal-ui/commit/6a74efd1bcdc511d493f907b5827a771fceb7254))
+  * change project order ([164f7865](https://github.com/NCI-GDC/portal-ui/commit/164f7865eb2a402f18e1f935e0c680634a5a1c95))
+* **gql:** suggest failing under certain conditions ([4f7de1e6](https://github.com/NCI-GDC/portal-ui/commit/4f7de1e692cc8f26dd6f0bc655f8db3bee7351cc), closes [OICR-559](https://jira.opensciencedatacloud.org/browse/OICR-559))
+* **login:**
+  * Filter terms for projects. ([faf48e47](https://github.com/NCI-GDC/portal-ui/commit/faf48e47831c281c876d51f4b3c7fa8c3960a709), closes [OICR-542](https://jira.opensciencedatacloud.org/browse/OICR-542))
+  * Updates for API changes. ([a1118777](https://github.com/NCI-GDC/portal-ui/commit/a11187778bffbc423be1e525f01032c1db3e3873), closes [OICR-542](https://jira.opensciencedatacloud.org/browse/OICR-542))
+* **myprojects:** Don't hide facet when logged in. ([9259dcc5](https://github.com/NCI-GDC/portal-ui/commit/9259dcc59ae35a165d1d7894b5baff4e62d9c459), closes [OICR-639](https://jira.opensciencedatacloud.org/browse/OICR-639))
+* **pagination:** Fixes size selector. ([21b126e5](https://github.com/NCI-GDC/portal-ui/commit/21b126e59c80f0db1b17ce2afb0775bbf5fb5728), closes [OICR-492](https://jira.opensciencedatacloud.org/browse/OICR-492))
+* **part:**
+  * suppress error ([360f8160](https://github.com/NCI-GDC/portal-ui/commit/360f8160f5d4976fb44c1a12623afd079079e580), closes [OICR-554](https://jira.opensciencedatacloud.org/browse/OICR-554))
+  * show filter files load ([934792a5](https://github.com/NCI-GDC/portal-ui/commit/934792a516d81c4387e0c792035011b63a4addb3))
+* **participant:**
+  * fix experimental strategies ([5e327ed9](https://github.com/NCI-GDC/portal-ui/commit/5e327ed9bb3b3a51bc754a339ad2d15485e590e9))
+  * Biospecimen updates. ([355ea9c5](https://github.com/NCI-GDC/portal-ui/commit/355ea9c515927cb9954581424fcd8dd3a5dbd515))
+  * Hide buttons when no file. ([37956139](https://github.com/NCI-GDC/portal-ui/commit/37956139f1ada80715bd12854cbff371b6571066), closes [OICR-614](https://jira.opensciencedatacloud.org/browse/OICR-614))
+  * check if file found ([a02f693a](https://github.com/NCI-GDC/portal-ui/commit/a02f693a0b79df5608e29a31b462f8149182b0f7), closes [OICR-551](https://jira.opensciencedatacloud.org/browse/OICR-551))
+  * Updates for Biospecimen. ([7761077c](https://github.com/NCI-GDC/portal-ui/commit/7761077c39d6f1d61bcdd557fe651390306b9692), closes [OICR-515](https://jira.opensciencedatacloud.org/browse/OICR-515))
+  * use count tabl directive ([9395faaa](https://github.com/NCI-GDC/portal-ui/commit/9395faaa12fb777f3ba1f2f957c51755eabeb3f7), closes [OICR-512](https://jira.opensciencedatacloud.org/browse/OICR-512), [OICR-511](https://jira.opensciencedatacloud.org/browse/OICR-511))
+  * search page links work ([d72e06ab](https://github.com/NCI-GDC/portal-ui/commit/d72e06ab9400668a64db5c7b4860eb2d4a491e63), closes [OICR-416](https://jira.opensciencedatacloud.org/browse/OICR-416))
+  * dl biospecimen xml ([4dab658d](https://github.com/NCI-GDC/portal-ui/commit/4dab658d9ac15b16e758d701f0e758d4c5adc56f), closes [OICR-493](https://jira.opensciencedatacloud.org/browse/OICR-493))
+  * expand all biospecimen ([1363d1dc](https://github.com/NCI-GDC/portal-ui/commit/1363d1dc5ce2d99673b9132daed8735fee88fdc8))
+  * add project-name and program tbd ([77d95ac7](https://github.com/NCI-GDC/portal-ui/commit/77d95ac762df26455d01ea2882300e05266aca9c))
+* **participants:**
+  * avail. str. heading spacing ([e65fc88d](https://github.com/NCI-GDC/portal-ui/commit/e65fc88de4f175219c5cad1ccdfddf61426f4768), closes [OICR-469](https://jira.opensciencedatacloud.org/browse/OICR-469))
+  * use diesease_type ([16b676f4](https://github.com/NCI-GDC/portal-ui/commit/16b676f42fd992dd2a4eee8635b4291ebde4b39c))
+  * show annotation number ([9ac045e3](https://github.com/NCI-GDC/portal-ui/commit/9ac045e3fbcc243ad7525226ae9ef4f32fed2935), closes [OICR-418](https://jira.opensciencedatacloud.org/browse/OICR-418))
+* **pc:**
+  * hovering issue ([6280b654](https://github.com/NCI-GDC/portal-ui/commit/6280b6542da990e2a720b8c4b3cb0256c4087cd4), closes [OICR-613](https://jira.opensciencedatacloud.org/browse/OICR-613))
+  * hover ([54158cc9](https://github.com/NCI-GDC/portal-ui/commit/54158cc92c30819bbb7d426d95e4d966cd235149))
+  * prevent err ([f14c453f](https://github.com/NCI-GDC/portal-ui/commit/f14c453f50243950388ac3982b31d88b9958242d))
+  * fix sorting ([042af187](https://github.com/NCI-GDC/portal-ui/commit/042af187ffbc53336ce001ae216527779e66197a))
+  * number style ([61feec3a](https://github.com/NCI-GDC/portal-ui/commit/61feec3ac2703e3d8fba7ced21a981e6f8947b90))
+  * fix overlap ([552b8516](https://github.com/NCI-GDC/portal-ui/commit/552b8516c649501f56b734e632f75fc7b8957b23))
+  * no bold text ([676ed1c9](https://github.com/NCI-GDC/portal-ui/commit/676ed1c994204588c525fb6a57d1bc4d579baf11))
+  * no select path ([2f21c2e4](https://github.com/NCI-GDC/portal-ui/commit/2f21c2e4001a85c39f56070062c1ac785d83db94))
+  * fixes format and hover issues ([fd1621ef](https://github.com/NCI-GDC/portal-ui/commit/fd1621efb501e7b6b3e68d0b92c5b27dbcb6a39a), closes [OICR-339](https://jira.opensciencedatacloud.org/browse/OICR-339), [OICR-411](https://jira.opensciencedatacloud.org/browse/OICR-411), [OICR-388](https://jira.opensciencedatacloud.org/browse/OICR-388), [OICR-348](https://jira.opensciencedatacloud.org/browse/OICR-348))
+* **pie:**
+  * change behavoir ([7d090b63](https://github.com/NCI-GDC/portal-ui/commit/7d090b63fa2e589b1b5186af12ea324ba5be8e11))
+  * update pie ([44a8f376](https://github.com/NCI-GDC/portal-ui/commit/44a8f37692b9b7cd69a05d8148ad0532e9d5229b), closes [OICR-566](https://jira.opensciencedatacloud.org/browse/OICR-566))
+* **project:**
+  * experimental strategy data ([918e1de0](https://github.com/NCI-GDC/portal-ui/commit/918e1de0fe8b8c2c49a14c5758f93d60f4d0dee0))
+  * update available data ([42dded95](https://github.com/NCI-GDC/portal-ui/commit/42dded9532506d76be24ac9721b66d60275113c3))
+* **projects:**
+  * Fixes searching my project codes. ([ea78b357](https://github.com/NCI-GDC/portal-ui/commit/ea78b357c9a7a422df789f978dff1b4e2aad99b1), closes [OICR-567](https://jira.opensciencedatacloud.org/browse/OICR-567))
+  * Prevent 0 counts being links. ([57c58dd6](https://github.com/NCI-GDC/portal-ui/commit/57c58dd662951923b65592aa3643fa3ea2136ffd))
+  * Ensure table tab is defaulted. ([26bd423d](https://github.com/NCI-GDC/portal-ui/commit/26bd423d0bf797d6292e9b66007d5f50d85d1398), closes [OICR-510](https://jira.opensciencedatacloud.org/browse/OICR-510))
+  * fixes pc sorting ([b41de43f](https://github.com/NCI-GDC/portal-ui/commit/b41de43f3378534c9b6bf265b215bf856466ab77), closes [OICR-464](https://jira.opensciencedatacloud.org/browse/OICR-464))
+  * Fixes for Projects List. ([54e7f0fd](https://github.com/NCI-GDC/portal-ui/commit/54e7f0fd8252c813b16014520d4324d427dd7752), closes [OICR-420](https://jira.opensciencedatacloud.org/browse/OICR-420), [OICR-427](https://jira.opensciencedatacloud.org/browse/OICR-427), [OICR-474](https://jira.opensciencedatacloud.org/browse/OICR-474), [OICR-428](https://jira.opensciencedatacloud.org/browse/OICR-428), [OICR-422](https://jira.opensciencedatacloud.org/browse/OICR-422), [OICR-425](https://jira.opensciencedatacloud.org/browse/OICR-425))
+* **query:** Active sub view persists on switch. ([18561bdf](https://github.com/NCI-GDC/portal-ui/commit/18561bdf8aae2a2895446b3723562c8380b66645), closes [OICR-601](https://jira.opensciencedatacloud.org/browse/OICR-601))
+* **report:**
+  * report url hotfix ([9619bdf0](https://github.com/NCI-GDC/portal-ui/commit/9619bdf05217f17b3bf947a182fce18c9fc99b23))
+  * update data types ([ec9b83bd](https://github.com/NCI-GDC/portal-ui/commit/ec9b83bd26bcbfcf74adaf7e809fc1dbf58bf11e))
+* **reports:**
+  * no nav ([e2fa37c1](https://github.com/NCI-GDC/portal-ui/commit/e2fa37c1dc559e148c0f5ea3c5cc1bbccf1d32d7))
+  * data reports fixes ([5649c7c2](https://github.com/NCI-GDC/portal-ui/commit/5649c7c2fa2cd59a166bfe5d1a53d4f4a970dbca), closes [OICR-629](https://jira.opensciencedatacloud.org/browse/OICR-629), [OICR-630](https://jira.opensciencedatacloud.org/browse/OICR-630))
+  * fix button ([0e13268e](https://github.com/NCI-GDC/portal-ui/commit/0e13268e3831132435a4709500175a990f69da51))
+  * download report data ([4006be85](https://github.com/NCI-GDC/portal-ui/commit/4006be85403095f57197f6efc03418fa7e9a5838), closes [OICR-397](https://jira.opensciencedatacloud.org/browse/OICR-397), [OICR-463](https://jira.opensciencedatacloud.org/browse/OICR-463), [OICR-434](https://jira.opensciencedatacloud.org/browse/OICR-434))
+  * various features and bugs ([7e7d563c](https://github.com/NCI-GDC/portal-ui/commit/7e7d563ce7ea270908ab67d3f3b4809dd4763080))
+* **search:**
+  * Update copy for participants. ([c69cfe53](https://github.com/NCI-GDC/portal-ui/commit/c69cfe53ec20a42a6a67a1d7cc0fa36060a47856), closes [OICR-579](https://jira.opensciencedatacloud.org/browse/OICR-579))
+  * Remove GB from summary header. ([ff907fa7](https://github.com/NCI-GDC/portal-ui/commit/ff907fa76ba43cce3475f982f38db6f68533db9c), closes [OICR-576](https://jira.opensciencedatacloud.org/browse/OICR-576))
+  * Files for participant linking. ([992dd704](https://github.com/NCI-GDC/portal-ui/commit/992dd70482d988e543b1483f48c7ade59ad25a6d), closes [OICR-571](https://jira.opensciencedatacloud.org/browse/OICR-571))
+  * Update UI for add all to cart. ([1d36176e](https://github.com/NCI-GDC/portal-ui/commit/1d36176e3f40ec18b7bae944036d4add5f2254c6), closes [OICR-545](https://jira.opensciencedatacloud.org/browse/OICR-545))
+  * Better fix for search files. ([b6602852](https://github.com/NCI-GDC/portal-ui/commit/b66028529e22de38186d84605c24b15dc72fb04d))
+  * Fix compile for files. ([5e63e1fe](https://github.com/NCI-GDC/portal-ui/commit/5e63e1fef2aff7fceedf9131600369d863a1fe2c))
+  * Table state links update. ([759d5d25](https://github.com/NCI-GDC/portal-ui/commit/759d5d255b54b0af285ac8dc5514e0cd25394da7))
+  * Participant file count links ([cd3bf2d5](https://github.com/NCI-GDC/portal-ui/commit/cd3bf2d52dbbf8d8c8db8102683b1f5602160984))
+  * Fixes for search page. ([fd1df6fa](https://github.com/NCI-GDC/portal-ui/commit/fd1df6fa19e04cdb523e9d9535139148dcdcc349), closes [OICR-443](https://jira.opensciencedatacloud.org/browse/OICR-443))
+* **table:**
+  * table icons ([b704ee8a](https://github.com/NCI-GDC/portal-ui/commit/b704ee8a9349f3b8eceb183814b74af55daff031))
+  * fix title ([6bbb65fd](https://github.com/NCI-GDC/portal-ui/commit/6bbb65fda943a20f6fa188f6e1d8e73057606010))
+  * ?s ([237f0076](https://github.com/NCI-GDC/portal-ui/commit/237f00762a263169087ff20f92b462219a2a849f))
+* **tableicious:**
+  * Rerun compiles. ([db1f12a7](https://github.com/NCI-GDC/portal-ui/commit/db1f12a7983c07ae4c8f53a2b73cc6c881112854), closes [OICR-408](https://jira.opensciencedatacloud.org/browse/OICR-408))
+  * Use ng-href for links. ([c55e3ddf](https://github.com/NCI-GDC/portal-ui/commit/c55e3ddf7cece5a3d8924ea447fa3e1b04cc8401))
+* **tables:**
+  * Default size to 20. ([80036b5d](https://github.com/NCI-GDC/portal-ui/commit/80036b5d6804c755a5db3e24074f106d167a1603), closes [OICR-597](https://jira.opensciencedatacloud.org/browse/OICR-597))
+  * Add margin to bottom of tables. ([aa291d2a](https://github.com/NCI-GDC/portal-ui/commit/aa291d2a7a48f3f0b38debc319fd325accbe2f3b), closes [OICR-609](https://jira.opensciencedatacloud.org/browse/OICR-609))
+* **title:** change case ([fbccb5a0](https://github.com/NCI-GDC/portal-ui/commit/fbccb5a022c3bc2cdd0c5e0810c8670fe0d13d48), closes [OICR-600](https://jira.opensciencedatacloud.org/browse/OICR-600))
+
+
+#### Features
+
+* **cart:**
+  * update ([b39d1ee5](https://github.com/NCI-GDC/portal-ui/commit/b39d1ee5ebbf78443eba93f16b73e274c10ec257))
+  * add pie chart ([f8a71b4b](https://github.com/NCI-GDC/portal-ui/commit/f8a71b4b6658c548371e7c8b6e0dfa46c331cd84))
+  * manifest link ([e304f166](https://github.com/NCI-GDC/portal-ui/commit/e304f1666fd95cdcda3dfc402a05a0f4f32833b9))
+* **directives:** refactor count tbl as directive ([d4d56802](https://github.com/NCI-GDC/portal-ui/commit/d4d56802cb98a787bfba9fb5b36e299062ae78fe))
+* **facets:** Always show active facet. ([8b4dadac](https://github.com/NCI-GDC/portal-ui/commit/8b4dadace1b8c865ff231ca893d877c9f21c989d), closes [OICR-544](https://jira.opensciencedatacloud.org/browse/OICR-544))
+* **file:** simplifies download buttons ([5de103e4](https://github.com/NCI-GDC/portal-ui/commit/5de103e4d68b65bb3feb93e2c04683c5a209c17c), closes [OICR-506](https://jira.opensciencedatacloud.org/browse/OICR-506))
+* **gql:**
+  * removes duplicates in autocomplete ([afd7a43b](https://github.com/NCI-GDC/portal-ui/commit/afd7a43b68790dbf04b13618b421c6bc1ebb8a59), closes [OICR-626](https://jira.opensciencedatacloud.org/browse/OICR-626))
+  * autocomplete IN arrays ([838ac891](https://github.com/NCI-GDC/portal-ui/commit/838ac89197d539cf6f248071082af7038e629f59))
+  * adds better infix suggest ([2d2f02f1](https://github.com/NCI-GDC/portal-ui/commit/2d2f02f154453a4741803974e9d21756be0065f7))
+* **login:**
+  * Add auth token downloading. ([49e9c311](https://github.com/NCI-GDC/portal-ui/commit/49e9c311249a616b106139f36bd5bd32f6d881d6), closes [OICR-563](https://jira.opensciencedatacloud.org/browse/OICR-563))
+  * returns to current page ([d2e50aa1](https://github.com/NCI-GDC/portal-ui/commit/d2e50aa1231a86e17f87fce66239ea17ee113f6e))
+* **partipant:** add download clinical xml ([db607374](https://github.com/NCI-GDC/portal-ui/commit/db60737494ae36194a0913dff336143cdf9a9a34), closes [OICR-417](https://jira.opensciencedatacloud.org/browse/OICR-417))
+* **pc:** implement both superheader ([30426945](https://github.com/NCI-GDC/portal-ui/commit/30426945c1ef6a898b827f125608900ec211bcaf))
+* **popup:** close login loop ([d50e2c8a](https://github.com/NCI-GDC/portal-ui/commit/d50e2c8ad2d8563c2a8355c6873e55fa1a63258a))
+* **query:** updates query page to match search ([c5cdab2d](https://github.com/NCI-GDC/portal-ui/commit/c5cdab2d0271fe7a1d45c0f04914a169150a851c))
+* **report:** adds more data for download report ([44f1c651](https://github.com/NCI-GDC/portal-ui/commit/44f1c65133e93c38fe220664de4653229bc9481b), closes [OICR-575](https://jira.opensciencedatacloud.org/browse/OICR-575))
+* **styles:** match gdc theme ([8fd81e34](https://github.com/NCI-GDC/portal-ui/commit/8fd81e34d1914567efeab203fa918c637429aa91), closes [OICR-267](https://jira.opensciencedatacloud.org/browse/OICR-267))
+
+
 ### 0.1.10-spr3 (2015-03-04)
 
 

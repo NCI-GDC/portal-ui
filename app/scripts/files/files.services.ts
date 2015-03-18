@@ -36,7 +36,7 @@ module ngApp.files.services {
     }
 
     downloadFiles(_ids) {
-      this.$window.location = this.$filter('makeManifestLink')(_ids);
+      this.$window.location = this.$filter('makeDownloadLink')(_ids);
     }
 
     getFiles(params: Object = {}): ng.IPromise<IFiles> {

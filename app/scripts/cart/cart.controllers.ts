@@ -151,20 +151,35 @@ module ngApp.cart.controllers {
       this.setDisplayedFiles();
     }
 
-    selectAll(): void {
-      this.files.forEach((file: IFile): void => {
-        file.selected = true;
+    selectAll(visibleOnly): void {
+    
+      var visible = this.getVisible();
+      var iteratee = visibleOnly ? visible : this.files;
+      _.each(iteratee,(file: IFile): void => {
+          file.selected = true;
       });
     }
+    
+    getVisible(): any[] {
+        var p = this.pagination;
+        var visible = this.files.slice(p.from-1, p.from+p.count-1);
+        return visible;
+    
+    }
 
-    deselectAll(): void {
-      this.files.forEach((file: IFile): void => {
+    deselectAll(visibleOnly): void {
+      var visible = this.getVisible();
+      var iteratee = visibleOnly ? visible : this.files;
+      _.each(iteratee,(file: IFile): void => {
         file.selected = false;
       });
     }
 
-    all(): boolean {
-      return _.every(this.files, {selected: true});
+    all(visibleOnly): boolean {
+      var visible = this.getVisible();
+      var iteratee = visibleOnly ? visible : this.files;
+//      var iteratee = 
+      return _.every(iteratee, {selected: true});
     }
 
     isUserProject(file: IFile): boolean {

@@ -49,7 +49,7 @@
                   style="margin-left: 15px"
                   class="btn btn-primary"
                   data-ng-click="cc.selectAll()">
-            <i class="fa fa-shopping-cart"></i> <span data-translate>Selected All Files</span>
+            <i class="fa fa-shopping-cart"></i> <span data-translate>Select All Files</span>
           </button>
           <button type="button"
                   class="btn btn-danger"
@@ -95,12 +95,37 @@
         <thead>
         <tr>
           <th scope="col">
-            <button data-ng-if="cc.all()" type="button" class="btn btn-success" data-ng-click="cc.deselectAll()">
+           <div class="btn-group" data-dropdown>
+            <button data-ng-if="cc.all(true)" type="button" class="btn btn-success" data-ng-click="cc.deselectAll(true)">
               <i class="fa fa-check-circle"></i>
             </button>
-            <button data-ng-if="!cc.all()" type="button" class="btn btn-primary" data-ng-click="cc.selectAll()">
+            <button data-ng-if="!cc.all(true)" type="button" class="btn btn-primary" data-ng-click="cc.selectAll(true)">
               <i class="fa fa-circle-o"></i>
             </button>
+             <button type="button" class="btn btn-default dropdown-toggle">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li data-ng-class="{disabled: (CartService.getCartVacancySize() === 0 || CartService.getCartVacancySize() - paging.total < 0)}">
+                      <a ng-click="cc.selectAll(false)">
+                        <span class="fa-stack">
+                              <i class="fa fa-shopping-cart fa-stack-1x"></i>
+<!--                              <i class="fa fa-ban fa-stack-2x"></i>-->
+                          </span>
+                          <span data-translate>Select All</span>
+                      </a>
+                       <a ng-click="cc.deselectAll(false)">
+                        <span class="fa-stack">
+                              <i class="fa fa-shopping-cart fa-stack-1x"></i>
+                              <i class="fa fa-ban fa-stack-2x"></i>
+                          </span>
+                          <span data-translate>Deselect All</span>
+                      </a>
+                  </li>
+                  
+              </ul>
+            </div>
+            
           </th>
           <th>
             <!-- Note, this is empty on purpose. Don't remove -->

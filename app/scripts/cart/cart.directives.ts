@@ -101,7 +101,7 @@ module ngApp.cart.directives {
       }
     }
   }
-  
+
   /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/  
   function RemoveUnauthorizedFilesButton() {
     return {
@@ -115,31 +115,25 @@ module ngApp.cart.directives {
         },function(f){
           $scope.files = f;
         },true);
-        
+
         $scope.remove = function() {
               CartService.removeFiles($scope.files);
         }
-         
+
       }
     }
   }
-  
-  
-  
+
   function DownloadButtonAllCart() {
     return {
       restrict:"AE",
       controller:function($scope,FilesService,UserService,CartService,$modal,$element){
         $element.on('click',function checkCartForClosedFiles() {
-          
           var scope = $scope;
           var isLoggedIn = UserService.currentUser;
-          
           function isSelected(a){return a.selected};
-          
           var authorizedInCart = CartService.getAuthorizedFiles().filter(isSelected);
           var unauthorizedInCart = CartService.getUnauthorizedFiles().filter(isSelected);
-          
 
           scope.meta = {
             unauthorized: unauthorizedInCart,
@@ -161,7 +155,7 @@ module ngApp.cart.directives {
             var file_ids = []
             _.forEach(authorizedInCart, (f) => {
 
-              if (f.hasOwnProperty('related_ids')) {
+              if (f.hasOwnProperty('related_ids') && f.related_ids) {
                 file_ids = file_ids.concat(f.related_ids)
               }
               file_ids.push(f.file_id)
@@ -207,7 +201,6 @@ module ngApp.cart.directives {
             });
           }
         })
-      
       }
     }
   }
@@ -285,8 +278,8 @@ module ngApp.cart.directives {
       }
     }
   }
-  
-  
+
+
   /** Directive which can be placed anywhere, that displays a pie chart of the contents of the cart **/
   function CartDisplayingPieChart() {
     return {
@@ -303,7 +296,7 @@ module ngApp.cart.directives {
         }, true);
 
       function updateChartData() {
-        
+
         var accessCount = _.countBy(CartService.getFiles(), function (f) {
           return UserService.userCanDownloadFiles([f])
         });
@@ -338,11 +331,11 @@ module ngApp.cart.directives {
           $scope.chartData = undefined;
         }
       }
-      
+
       }
     }
   }
-  
+
 
   angular.module("cart.directives", [
       "user.services",

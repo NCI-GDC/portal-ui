@@ -115,7 +115,7 @@ module ngApp.cart.services {
             'data_format': file.data_format || '--',
             'file_size': file.file_size || 0,
             'date_added_to_cart':Date.now(),
-            'related_ids': file.related_ids
+            'related_ids': file.related_ids || _.pluck(file.related_files, "file_id")
           };
           this.files.push(fileNeededFieldsOnly);
           addedFiles.push(fileNeededFieldsOnly);

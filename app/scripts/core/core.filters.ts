@@ -44,6 +44,7 @@ module ngApp.core.filters {
                       annotations : boolean = true) {
 
         var baseUrl = $rootScope.config.api;
+        ids = _.compact(ids);
         var url = baseUrl + "/data/" + ids.join(",");
         if (annotations) {
           url+= "?annotations=1";

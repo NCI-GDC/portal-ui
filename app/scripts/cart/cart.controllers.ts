@@ -176,14 +176,12 @@ module ngApp.cart.controllers {
     }
 
     getManifest() {
-      
-    
       var authorizedInCart = this.CartService.getAuthorizedFiles().filter(function isSelected(a){return a.selected});
 
       var file_ids = [];
       _.forEach(authorizedInCart, (f) => {
 
-        if (f.hasOwnProperty('related_ids')) {
+        if (f.hasOwnProperty('related_ids') && f.related_ids) {
           file_ids = file_ids.concat(f.related_ids)
         }
         file_ids.push(f.file_id)
@@ -193,24 +191,19 @@ module ngApp.cart.controllers {
 
     }
 
-    
-
   }
-  
-  class LoginToDownloadController {
-    
-    constructor (private $modalInstance) {
 
-      }
-    
+  class LoginToDownloadController {
+
+    constructor (private $modalInstance) {}
+
       cancel() :void {
         this.$modalInstance.close(false);
       }
-    
+
       goAuth() :void {
           this.$modalInstance.close(true);
       }
-  
   }
 
 

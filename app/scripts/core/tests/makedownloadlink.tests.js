@@ -11,13 +11,14 @@ describe("makeDownloadLink Filter:", function () {
     var ids = [
       "AAA",
       "BBB",
-      "CCC"
+      "CCC",
+      ""
     ];
 
     var apiUrl = "http://myapi";
     $rootScope.config = { 'api': apiUrl };
     var actual = $filter("makeDownloadLink")(ids, apiUrl);
-    var expected = apiUrl + "/data/" + ids.join(",") + "?annotations=1";
+    var expected = apiUrl + "/data/AAA,BBB,CCC?annotations=1";
 
     expect(actual).to.equal(expected);
   }));

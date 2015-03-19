@@ -57,11 +57,13 @@ module ngApp.projects.models {
         displayName: "Primary Site",
         id: "primary_site",
         enabled: true,
-        fieldClass: 'truncated-cell'
+        fieldClass: 'truncated-cell',
+        sortable: true
       }, {
         displayName: "Program",
         id: "program.name",
-        enabled: true
+        enabled: true,
+        sortable: true
       },
       {
         displayName: "Participants",
@@ -89,6 +91,7 @@ module ngApp.projects.models {
           };
 
         },
+        sortable: true,
         fieldClass: 'text-right'
       }, {
         displayName: "Available Participants per Data Type",
@@ -292,6 +295,7 @@ module ngApp.projects.models {
             }
           };
         },
+        sortable: true,
         fieldClass: 'text-right'
       }, {
         displayName: "File Size",
@@ -303,6 +307,7 @@ module ngApp.projects.models {
           });
           return scope.$filter('size')(summary.val.file_size);
         },
+        sortable: true,
         fieldClass: 'text-right'
       }
     ],

@@ -31,7 +31,7 @@ module ngApp.projects.services {
     }
   
     getTableHeading() {
-      return 'Participant count per data type';
+      return "Participant count per data type";
     }
 
     getProjects(params: Object = {}): ng.IPromise<IProjects> {
@@ -42,11 +42,19 @@ module ngApp.projects.services {
         params["facets"] = params["facets"].join();
       }
 
-      var defaults = {
+      var paging = angular.fromJson(this.LocationService.pagination()["projects"]);
+
+      // Testing is expecting these values in URL, so this is needed.
+      paging = paging || {
         size: 20,
-        from: 1,
-        filters: this.LocationService.filters(),
-        sort:'summary.participant_count:desc'
+        from: 1
+      };
+
+      var defaults = {
+        size: paging.size || 20,
+        from: paging.from || 1,
+        sort: paging.sort || "summary.participant_count:desc",
+        filters: this.LocationService.filters()
       };
 
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "project_id");

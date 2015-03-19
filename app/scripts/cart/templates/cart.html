@@ -150,16 +150,16 @@
               {{ file.file_name }}
             </a>
           </td>
-          <td class="truncated-cell" data-ng-if="file.participantNum === 1">
+          <td class="truncated-cell" data-ng-if="file.participantNum === 1" >
             <a data-ui-sref="participant({ participantId : '{{ file.participantId }}' })">
-              {{ file.participantId }}
+              {{ file.participantId || '--'}}
             </a>
           </td>
-          <td data-ng-if="file.participantNum > 1">
+          <td data-ng-if="file.participantNum !== 1" >
             <a data-ui-sref="search.participants({ 'filters': {{
                 [{ name: 'files.file_id', value: file.file_id }] | makeFilter }}
             })">
-              {{ file.participantNum }}
+              {{ file.participantNum || '--' }}
             </a>
           </td>
           <td>

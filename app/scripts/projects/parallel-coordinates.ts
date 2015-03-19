@@ -337,7 +337,8 @@ function ParallelCoordinates(data,options) {
                             lang:d.key,
                             column:col,
                             value:d.values[col],
-                            ref:d.values[options.ref]
+                            ref:d.values[options.ref],
+                            href:options.urlMap[col]
                         }
                     })
             },function(d){
@@ -511,6 +512,8 @@ function ParallelCoordinates(data,options) {
                 return options.columns.map(function(col){
                     
                     var use=options.use[col] || col;
+                  
+                    debugger;
 
                     return {
                         lang:d.key,
@@ -518,7 +521,8 @@ function ParallelCoordinates(data,options) {
                         value:d.values[use],
                         ref:d.values[options.ref],
                         text_width:0,
-                        marker_width:0
+                        marker_width:0,
+                        href:options.urlMap[col]
                     }
                 })
             });

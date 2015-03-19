@@ -94,7 +94,10 @@ module ngApp.reports.controllers {
           display_name:["File","Count"],
           scale:'ordinal',
           dimensional:true,
-          colorgroup:'file_count'
+          colorgroup:'file_count',
+          href:function(d){
+            console.log(d);
+          }
         },
 
         {
@@ -231,6 +234,10 @@ module ngApp.reports.controllers {
 
           /* Ordered list of columns. Only titles appearing here appear in the table */
           columns:columns.map(function(c){return c.id}),
+          urlMap:columns.reduce(function(a,b){
+             a[b.id] = b.href;
+             return a;
+          },{}),
 
           /* ???
            * The value that all the other values are divided by?

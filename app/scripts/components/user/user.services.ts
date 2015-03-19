@@ -116,7 +116,7 @@ module ngApp.components.user.services {
         });
       });
     }
-    
+
     userCanDownloadFile(file) {
       return this.userCanDownloadFiles([file]);
     }

@@ -36,14 +36,13 @@ module ngApp.cart.controllers {
     sizeFilesGraph: any;
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope, 
-                public files: IFile[], 
+    constructor(private $scope: ng.IScope,
+                public files: IFile[],
                 private CoreService: ICoreService,
-                private CartService: ICartService, 
-                private UserService: IUserService, 
-                private Restangular, 
+                private CartService: ICartService,
+                private UserService: IUserService,
+                private Restangular,
                 private FilesService) {
-      
       CoreService.setPageTitle("Cart", "(" + this.files.length + ")");
       this.lastModified = this.CartService.lastModified;
 
@@ -72,14 +71,11 @@ module ngApp.cart.controllers {
         this.setDisplayedFiles();
 
       });
-      
+
       $scope.$on("cart.update",()=>{
         this.setDisplayedFiles();
       })
-    
 
-
-    
     }
 
     setDisplayedFiles(newPaging: IPagination = this.pagination): void {

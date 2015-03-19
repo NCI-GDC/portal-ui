@@ -62,13 +62,13 @@ module ngApp.cart.services {
     getFiles(): IFile[] {
       return this.files;
     }
-    
+
     getAuthorizedFiles() {
       return this.files.filter((file)=>{
         return this.UserService.userCanDownloadFile(file);
       })
     }
-    
+
     getUnauthorizedFiles() {
       return this.files.filter((file)=>{
         return !this.UserService.userCanDownloadFile(file);
@@ -197,7 +197,7 @@ module ngApp.cart.services {
       });
       this.files = remaining;
       this._sync();
-      
+
       this.$rootScope.$broadcast('cart.update');
     }
 

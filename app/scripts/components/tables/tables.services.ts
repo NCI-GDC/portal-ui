@@ -38,19 +38,7 @@ module ngApp.components.tables.services {
          * The new object with properties (if any) added.
          */
         flattenObjectAtKey(object:Object, key:string):Object {
-
-            if (object.hasOwnProperty(key)) {
-                var subTree = object[key];
-
-                for (var _key in subTree) {
-
-                    object[_key] = subTree[_key];
-                }
-            } else {
-                throw new Error("Can't flatten object at key" + key +  ". Object " + object +  " has no property with name " + key);
-            }
-
-            return object;
+            return _.extend(object,object[key]);
         }
 
 
@@ -66,15 +54,12 @@ module ngApp.components.tables.services {
          * The object as an array.
          */
         objectToArray(object:Object):any[] {
-            var arrayFormatObject:any[] = [];
-            for (var key in object) {
-                arrayFormatObject.push({
-                    id:key,
-                    val:object[key]
-                })
-            };
-
-            return arrayFormatObject;
+            return _.keys(object).map(function(key){
+              return {
+                id:key,
+                val:object[key]
+              }
+            })
         }
 
         /**
@@ -164,9 +149,8 @@ module ngApp.components.tables.services {
          */
         delimitedStringToValue(str,row:TableiciousEntryDefinition[],delimiter = '.'): string{
 
-            var id = str;
             var result = undefined;
-            var split = id.split(delimiter);
+            var split = str.split(delimiter);
             var getValueFromRow = this.getValueFromRow;
 
             split.forEach((pathSeg)=>{
@@ -186,6 +170,8 @@ module ngApp.components.tables.services {
          * Returns the ultimate text value for an entry in a table based on the heading defintion and the whole row.
          */
         getTemplate(heading:TableiciousColumnDefinition,field:any,row,scope, $filter: ng.IFilterService) {
+            //TODO::FIXME - field and row values in arguments are never right
+
 
             var row = scope.$parent.datum;
             var field = {
@@ -215,6 +201,8 @@ module ngApp.components.tables.services {
          * Returns the ultimate text value for an entry in a table based on the heading defintion and the whole row.
          */
         getIcon(heading:TableiciousColumnDefinition,field:any,row,scope, $filter: ng.IFilterService) {
+          
+           //TODO::FIXME - field and row values in arguments are never right
 
             var row = scope.$parent.datum;
             var field = {
@@ -253,6 +241,9 @@ module ngApp.components.tables.services {
         }
 
         getSref(heading, field, row, scope, $filter) {
+            
+            //TODO::FIXME - field and row values in arguments are never right
+
 
             var row = scope.$parent.datum;
             var field = {

@@ -2,17 +2,21 @@
     <thead>
         <tr>
             <th ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
-                ng-class="getHeadingClass(heading)"
+                ng-class="::getHeadingClass(heading)"
                 data-translate
                 ng-repeat="heading in getAllHeadingsAtNestingLevel(0) | orderBy:getColumnIndex:heading"
-                rowspan="{{getHeadingRowSpan(heading)}}"
-                colspan="{{getHeadingColSpan(heading)}}"
-                tableicious-header
+                rowspan="{{::getHeadingRowSpan(heading)}}"
+                colspan="{{::getHeadingColSpan(heading)}}"
+               >
+                <div  tableicious-header
                 heading="heading"
                 paging="paging"
                 scope="col"
-                data="data">
-                <span ng-if="!heading.noTitle">
+                data="data"
+                 ng-if='::heading.compileHead'>
+                  
+                </div>
+                <span ng-if="::!heading.noTitle">
                    {{heading.displayName}}
                 </span>
             </th>
@@ -29,12 +33,13 @@
             <td ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
                 data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading"
                 class="{{getFieldClass(field,datum,this,heading)}}"
-                field-id="heading.id"
-                field="getDataAtRow(heading, $parent.$index)"
-                row="$parent.datum"
-                tableicious-cell>
-
-                <a data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) !== '--'"
+                >
+                
+                <div ng-if='::heading.compile' tableicious-cell >
+ 
+                </div>
+  
+              <a data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) !== '--'"
                    data-ng-href="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
                     {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
                 </a>

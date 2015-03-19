@@ -3,7 +3,7 @@ module ngApp.components.tables.directives.tableicious {
     function tableiciousCell($log: ng.ILogService){
         return {
             restrict:"AE",
-            controller:function($scope, $element,$compile,$filter){
+            controller:function($scope, $element,$compile,$filter, TableService,UserService){
                 function doCompile() {
                     if ($scope.heading.compile) {
                         $element.empty();
@@ -28,20 +28,24 @@ module ngApp.components.tables.directives.tableicious {
                         var compiled = $compile(htm)($scope);
                         $element.append(compiled);
                     }
+                  
+                  $scope.UserService = UserService;
+                  
+//                  $scope.template = TableService.getTemplate($scope.heading, $scope.field,$scope.row,$scope,$filter);
+//                  $scope.sref = TableService.getSref($scope.heading, $scope.field,$scope.row,$scope,$filter);
+//                  $scope.icon = TableService.getIcon($scope.heading, $scope.field,$scope.row,$scope,$filter);
                 }
+              
 
-                $scope.$filter = $filter;
                 _.defer(function(){
+                    doCompile();
 
-                    if ($scope.heading.compile) {
+                    $scope.$watch((scope)=> {
+                        return scope.$parent.datum;
+                    }, () => {
                         doCompile();
-
-                        $scope.$watch((scope)=> {
-                            return scope.$parent.datum;
-                        }, () => {
-                            doCompile();
-                        }, true);
-                    }
+                    }, true);
+                    
 
                 })
 

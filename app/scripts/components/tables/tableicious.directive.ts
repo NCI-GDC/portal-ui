@@ -1,5 +1,4 @@
 module ngApp.components.tables.directives.tableicious {
-    import IRootScope = ngApp.IRootScope;
     import IUserService = ngApp.components.user.services.IUserService;
     import ITableService = ngApp.components.tables.services.ITableService;
 
@@ -10,11 +9,8 @@ module ngApp.components.tables.directives.tableicious {
         expandedHeadings:TableiciousColumnDefinition[];
         order:string[];
         allHeadings:any[];
-        TableService;
-        draggableHeadings:any[];
-        root:IRootScope;
-        models:any;
-        UserService?: any;
+        TableService:ITableService;
+        UserService: IUserService;
 
         $filter(name:string):any;
         getColumnIndex(arg:any):number;
@@ -167,16 +163,13 @@ module ngApp.components.tables.directives.tableicious {
         /* @ngInject */
         constructor(private $scope: ITableicousScope,
                     private TableService: ITableService,
-                    private TableValidator,
-                    private $rootScope: IRootScope, $filter: ng.IFilterService,
-                    $state: ng.ui.IStateService,
+                    $filter: ng.IFilterService,
                     private UserService: IUserService) {
 
             $scope.getColumnIndex = this.getColumnIndex.bind(this);
             $scope.getAllHeadingsAtNestingLevel = this.getAllHeadingsAtNestingLevel.bind(this);
             $scope.getDataAtRow = this.getDataAtRow.bind(this);
-
-
+                      
             $scope.getHeadingColSpan = TableService.getHeadingColSpan.bind($scope);
             $scope.getHeadingRowSpan = TableService.getHeadingRowSpan.bind($scope);
             $scope.getTemplate = TableService.getTemplate.bind(TableService);
@@ -186,14 +179,13 @@ module ngApp.components.tables.directives.tableicious {
             $scope.getHeadingClass = TableService.getHeadingClass.bind($scope);
             $scope.getFieldClass = TableService.getFieldClass.bind($scope);
 
-            $scope.root = $rootScope;
             $scope.$filter = $filter;
             $scope.UserService = UserService;
 
             $scope.$watch('data',()=>{
                 this.refresh();
             },true);
-
+                      
 
             $scope.$watch(()=>{
                 return $scope.config.headings.map(function(head){
@@ -201,7 +193,7 @@ module ngApp.components.tables.directives.tableicious {
                 })
             },()=>{
                 $scope.order = this.createOrderArray($scope.config.headings);
-                this.refresh();
+                refresh();
             },true);
 
 
@@ -210,10 +202,10 @@ module ngApp.components.tables.directives.tableicious {
                     return head.hidden;
                 })
             },()=>{
-                this.refresh();
+                refresh();
             },true);
-
-            this.refresh.bind(this)();
+                      
+            var refresh = _.throttle(()=>{this.refresh()},250)
         }
 
         /**
@@ -222,6 +214,8 @@ module ngApp.components.tables.directives.tableicious {
          * and calculates headings.
          */
         refresh() {
+          
+            // TODO - use ServiceWorker for this?
 
             var $scope = this.$scope;
 
@@ -252,19 +246,12 @@ module ngApp.components.tables.directives.tableicious {
          */
         createOrderArray(headings:TableiciousColumnDefinition[] = null):string[] {
             var orderedHeadings = headings || this.$scope.allHeadings;
-            var orderArray:any = orderedHeadings.reduce(function(a:TableiciousColumnDefinition[],b:TableiciousColumnDefinition){
+            return orderedHeadings.reduce(function(a:any[],b:any){
                 var node:any = b || {};
                 a.push(node.id);
-                if (node.children) {
-                    node.children.forEach(function(child){
-                        a.push(child.id);
-                    });
-                }
-
+                if (node.children) a.concat(_.pluck(node.children,'id'))
                 return a;
             },[]);
-
-            return orderArray;
         }
 
 
@@ -283,11 +270,9 @@ module ngApp.components.tables.directives.tableicious {
 
         getAllHeadingsAtNestingLevel(level):TableiciousColumnDefinition[] {
 
-            var headingsAtLevel = this.$scope.allHeadings.filter(function(heading){
+            return this.$scope.allHeadings.filter(function(heading){
                 return heading.nestingLevel === level;
             });
-
-            return headingsAtLevel;
         }
 
         /**

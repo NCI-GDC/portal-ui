@@ -337,7 +337,8 @@ function ParallelCoordinates(data,options) {
                             lang:d.key,
                             column:col,
                             value:d.values[col],
-                            ref:d.values[options.ref]
+                            ref:d.values[options.ref],
+                            href:options.urlMap[col]
                         }
                     })
             },function(d){
@@ -511,6 +512,7 @@ function ParallelCoordinates(data,options) {
                 return options.columns.map(function(col){
                     
                     var use=options.use[col] || col;
+                  
 
                     return {
                         lang:d.key,
@@ -518,7 +520,8 @@ function ParallelCoordinates(data,options) {
                         value:d.values[use],
                         ref:d.values[options.ref],
                         text_width:0,
-                        marker_width:0
+                        marker_width:0,
+                        href:options.urlMap ? options.urlMap[col] : undefined
                     }
                 })
             });
@@ -559,7 +562,10 @@ function ParallelCoordinates(data,options) {
 		new_label.append("rect")
             .attr("class","ix")
             .attr("y",-8)
-            .attr("height",15);
+            .attr("height",15)
+            .on("click",function(z,i,m){
+                if (z.href) window.location = z.href(z);
+            })
         
 		labels
 			.selectAll("path.label")

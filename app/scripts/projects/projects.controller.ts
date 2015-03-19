@@ -134,7 +134,10 @@ function githutTable(data,config){
         id:'project_id',
         display_name:["Project","ID"],
         scale:'ordinal',
-        dimensional:true
+        dimensional:true,
+        href:function(d){
+            return "projects/"+d.value;
+        }
     },{
         id:'participant_count',
         display_name:["Participant","Count"],
@@ -288,6 +291,10 @@ function githutTable(data,config){
      */
     scale_map:columns.reduce(function(a,b){
        a[b.id] = b.scale || 'ordinal';
+       return a;
+    },{}),
+    urlMap:columns.reduce(function(a,b){
+       a[b.id] = b.href;
        return a;
     },{}),
 

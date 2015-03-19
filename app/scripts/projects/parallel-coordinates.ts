@@ -521,7 +521,7 @@ function ParallelCoordinates(data,options) {
                         ref:d.values[options.ref],
                         text_width:0,
                         marker_width:0,
-                        href:options.urlMap[col]
+                        href:options.urlMap ? options.urlMap[col] : undefined
                     }
                 })
             });

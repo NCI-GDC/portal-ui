@@ -55,10 +55,11 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
     // TODO more than just 404
     //$state.go("404", {}, {inherit: true});
   });
+
   Restangular.setFullRequestInterceptor(function(element, operation, route, url, headers, params, httpConfig) {
     var userHeaders = {};
 
-    if (UserService.currentUser) {
+    if (UserService.currentUser || $cookies["X-Auth-Token"]) {
       userHeaders["X-Auth-Token"] = $cookies["X-Auth-Token"];
       userHeaders["X-Auth-Username"] = $cookies["X-Auth-Username"];
     }

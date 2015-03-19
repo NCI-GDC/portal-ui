@@ -157,10 +157,14 @@
                   {{ ::e.participant_id }}
                 </a>
               </td>
-              <td>
+              <td class="text-right">
                 <a data-ui-sref="annotations({ 'filters':
                      {{ [{name: 'annotation_id', value: e.annotations }] | makeFilter }} })"
-                   data-ng-if="e.annotations.length">
+                   data-ng-if="e.annotations.length > 1">
+                  {{ e.annotations.length }}
+                </a>
+                <a data-ui-sref="annotation({ annotationId: e.annotations[0] })"
+                   data-ng-if="e.annotations.length === 1">
                   {{ e.annotations.length }}
                 </a>
                 <span data-ng-if="!e.annotations.length">0</span>

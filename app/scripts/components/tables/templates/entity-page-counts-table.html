@@ -22,7 +22,7 @@
              ] | makeFilter
           }}
           })">
-        {{ dataTransformed[name].participant_count }}
+        {{ dataTransformed[name].participant_count | number:0 }}
       </a>
       <span data-ng-switch-when="undefined">0</span>
       <span data-ng-switch-when="0">0</span>
@@ -35,7 +35,7 @@
              ] | makeFilter
           }}
           })">
-        {{ dataTransformed[name].file_count }}
+        {{ dataTransformed[name].file_count | number:0 }}
       </a>
       <span data-ng-switch-when="undefined">0</span>
       <span data-ng-switch-when="0">0</span>

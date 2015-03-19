@@ -29,7 +29,7 @@ module ngApp.files.controllers {
 
       this.file.related_ids = _.pluck(this.file.related_files, 'file_id');
 
-      if(this.file.archive) {
+      if (this.file.archive) {
         this.FilesService.getFiles({
           fields: [
             "archive.archive_id"

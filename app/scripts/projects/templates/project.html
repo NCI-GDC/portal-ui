@@ -42,7 +42,7 @@
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [{ name: 'participants.project.project_id',value: prc.project.project_id }] | makeFilter }}
                 })">
-                  {{ prc.project.summary.participant_count }}
+                  {{ prc.project.summary.participant_count | number:0 }}
                 </a>
               </td>
             </tr>

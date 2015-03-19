@@ -23,9 +23,7 @@ module ngApp.search.models {
       }, {name: 'files.data_type', value: data_type}]);
       return {
         state: "/search/p",
-        filters: {
-          filters: filter
-        }
+        filters: filter
       };
     }
   }
@@ -95,10 +93,7 @@ module ngApp.search.models {
             return a.id === 'file_id'
           });
           return {
-            state: "/files/",
-            filters: {
-              fileId: uuid.val
-            }
+            state: "/files/" + uuid.val
           };
         },
         sortable: true,
@@ -110,11 +105,7 @@ module ngApp.search.models {
         template: function (field, row, scope) {
           var participants = field.val;
           if (participants) {
-            if (participants.length === 1) {
-              return participants[0].participant_id;
-            } else if (participants.length > 1) {
-              return participants.length;
-            }
+            return participants.length;
           }
         },
         sref: function (field, row, scope, $filter) {
@@ -127,22 +118,17 @@ module ngApp.search.models {
             var filters = $filter("makeFilter")([{name: "files.file_id", value: file_id}]);
             return {
               state: "/search/p",
-              filters: {
-                filters: filters
-              }
+              filters: filters
             };
           }
 
           if (participants) {
             return {
-              state: "/participants/",
-              filters: {
-                participantId: participants[0].participant_id
-              }
+              state: "/participants/" + participants[0].participant_id
             };
           }
         },
-        fieldClass: 'truncated-cell'
+        fieldClass: 'text-right'
       }, {
         displayName: "Project",
         id: "participants.project.project_id",
@@ -179,10 +165,7 @@ module ngApp.search.models {
           });
           if (participants.val.length === 1) {
             return {
-              state: "/projects/",
-              filters: {
-                projectId: participants.val[0].project.project_id
-              }
+              state: "/projects/" + participants.val[0].project.project_id
             };
           } else if (participants.val.length > 1) {
             var projects = _.map(participants.val, (participant: TableicousEntryDefinition) => {
@@ -197,19 +180,14 @@ module ngApp.search.models {
 
             if (projectId.length === 1) {
               return {
-                state: "/projects/",
-                filters: {
-                  projectId: projects[0].project_id
-                }
+                state: "/projects/" + projects[0].project_id
               };
             }
 
             var filters = $filter("makeFilter")([{name: "project_id", value: projectId}]);
             return {
               state: "/projects/t",
-              filters: {
-                filters: filters
-              }
+              filters: filters
             };
           }
         },
@@ -250,13 +228,17 @@ module ngApp.search.models {
             return annotation.annotation_id;
           });
 
-          var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
-          return {
-            state: "/annotations",
-            filters: {
+          if (annotationIds.length > 1) {
+            var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
+            return {
+              state: "/annotations",
               filters: filter
-            }
-          };
+            };
+          } else if (annotationIds.length === 1) {
+            return {
+              state: "/annotations/" + annotationIds[0]
+            };
+          }
         },
         fieldClass: 'text-right'
       }],

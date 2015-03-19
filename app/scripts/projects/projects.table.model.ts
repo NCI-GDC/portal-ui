@@ -24,9 +24,7 @@ module ngApp.projects.models {
       }, {name: 'files.data_type', value: data_type}]);
       return {
         state: "/search/p",
-        filters: {
-          filters: filter
-        }
+        filters: filter
       };
     }
   }
@@ -42,10 +40,7 @@ module ngApp.projects.models {
         sref: function (field, scope) {
           var project_id = _.result(_.findWhere(scope, {'id': 'project_id'}), 'val');
           return {
-            state: "/projects/",
-            filters: {
-              projectId: project_id
-            }
+            state: "/projects/" + project_id
           };
         }
       }, {
@@ -81,13 +76,19 @@ module ngApp.projects.models {
             return elem.id === 'project_id';
           }).val;
 
+          var summary: TableiciousEntryDefinition = _.find(row, function (x: TableiciousEntryDefinition) {
+            return x.id === 'summary';
+          }).val;
+
+          if (!summary || (summary && !summary.participant_count)) {
+            return;
+          }
+
           var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: project_id}]);
 
           return {
             state: "/search/p",
-            filters: {
-              filters: filter
-            }
+            filters: filter
           };
 
         },
@@ -278,21 +279,27 @@ module ngApp.projects.models {
         template: function (field, row, scope, $filter) {
           var summary = _.find(row, function (elem) {
             return elem.id === "summary";
-          });
+          }).val;
 
-          return $filter("number")(summary.val.file_count || 0);
+          return $filter("number")(summary && summary.file_count || 0);
         },
         sref: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
           var projectId = _.find(row, function (elem) {
             return elem.id === 'project_id';
           }).val;
 
+          var summary = _.find(row, function (x: TableiciousEntryDefinition) {
+            return x.id === 'summary';
+          }).val;
+
+          if (!summary || (summary && !summary.file_count)) {
+            return;
+          }
+
           var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: projectId}]);
           return {
             state: "/search/f",
-            filters: {
-              filters: filter
-            }
+            filters: filter
           };
         },
         sortable: true,

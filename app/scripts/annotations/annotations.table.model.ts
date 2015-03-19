@@ -9,10 +9,7 @@ module ngApp.projects.models {
             id: "annotation_id",
             sref: function (field) {
                 return {
-                    state: "/annotations/",
-                    filters: {
-                        annotationId: field.val
-                    }
+                    state: "/annotations/" + field.val
                 };
             },
             sortable: true,
@@ -23,10 +20,7 @@ module ngApp.projects.models {
             id: "participant_id",
             sref: function (field) {
               return {
-                state: "/participants/",
-                filters: {
-                  participantId: field.val
-                }
+                state: "/participants/" + field.val
               }
             },
             sortable: true,
@@ -46,10 +40,7 @@ module ngApp.projects.models {
                     return a.id === "project";
                 });
                 return {
-                    state: "/projects/",
-                    filters: {
-                        projectId: project.val.project_id
-                    }
+                    state: "/projects/" + project.val.project_id
                 };
             },
             sortable: true

@@ -16,23 +16,27 @@ module ngApp.search.models {
                 return elem.id === 'participant_id';
             }).val;
 
-            var experimentalStrat = _.find(_.find(row, function(elem) {
-                    return elem.id === "summary"
-                }).val.data_types, function(type) {
-                    return type.data_type === data_type;
-                });
+            var files = _.filter(_.find(row, (elem) => {
+                return elem.id === "files";
+            }).val, (file) => {
+                return file.data_type === data_type;
+            });
 
-            if (!experimentalStrat.file_count) {
+            if (!files.length) {
                 return;
             }
 
-            var filter = $filter("makeFilter")([{name: 'participants.participant_id', value: uuid},{name: 'files.data_type', value: data_type}]);
-            return {
-                state: "/search/f",
-                filters: {
+            if (files.length > 1) {
+                var filter = $filter("makeFilter")([{name: 'participants.participant_id', value: uuid},{name: 'files.data_type', value: data_type}]);
+                return {
+                    state: "/search/f",
                     filters: filter
-                }
-            };
+                };
+            } else if (files.length === 1) {
+                return {
+                    state: "/files/" + files[0].file_id
+                };
+            } 
         }
     }
 
@@ -84,10 +88,7 @@ module ngApp.search.models {
                 });
 
                 return {
-                    state: "/participants/",
-                    filters: {
-                        participantId: uuid.val
-                    }
+                    state: "/participants/" + uuid.val
                 };
             },
             sortable: true
@@ -102,10 +103,7 @@ module ngApp.search.models {
                 });
 
                 return {
-                    state: "/projects/",
-                    filters: {
-                        projectId: project.val.project_id
-                    }
+                    state: "/projects/" + project.val.project_id
                 };
             }
         }, {
@@ -153,9 +151,7 @@ module ngApp.search.models {
                 ]);
                 return {
                     state: "/search/f",
-                    filters: {
-                        filters: filter
-                    }
+                    filters: filter
                 };
             }
         }, {
@@ -353,13 +349,17 @@ module ngApp.search.models {
                     return annotation.annotation_id;
                 });
 
-                var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
-                return {
+                if (annotationIds.length > 1) {
+                  var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
+                  return {
                     state: "/annotations",
-                    filters: {
-                        filters: filter
-                    }
-                };
+                    filters: filter
+                  };
+                } else if (annotationIds.length === 1) {
+                  return {
+                    state: "/annotations/" + annotationIds[0]
+                  };
+                }
             },
             fieldClass: 'text-right'
         }],
@@ -371,6 +371,7 @@ module ngApp.search.models {
           "files.file_id",
           "files.file_name",
           "files.file_size",
+          "files.data_type",
           "files.access",
           "summary.file_size",
           "summary.file_count",

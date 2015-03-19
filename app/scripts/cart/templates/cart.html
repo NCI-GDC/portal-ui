@@ -89,10 +89,10 @@
         <thead>
         <tr>
           <th scope="col">
-            <button data-ng-if="cc.all()" type="button" class="btn btn-default" data-ng-click="cc.deselectAll()">
-              <i class="fa fa-check-circle-o"></i>
+            <button data-ng-if="cc.all()" type="button" class="btn btn-success" data-ng-click="cc.deselectAll()">
+              <i class="fa fa-check-circle"></i>
             </button>
-            <button data-ng-if="!cc.all()" type="button" class="btn btn-default" data-ng-click="cc.selectAll()">
+            <button data-ng-if="!cc.all()" type="button" class="btn btn-primary" data-ng-click="cc.selectAll()">
               <i class="fa fa-circle-o"></i>
             </button>
           </th>
@@ -117,10 +117,11 @@
         <tbody>
         <tr data-ng-repeat="file in cc.displayedFiles track by $index | orderBy:date_added_to_cart">
           <td>
-            <button type="button" class="btn btn-default"
+            <button type="button" class="btn"
+                   data-ng-class="file.selected ? 'btn-success' : 'btn-default'"
                     data-ng-click="file.selected = !file.selected">
               <i class="fa"
-                 data-ng-class="file.selected ? 'fa-check' : 'fa-circle-o'"></i>
+                 data-ng-class="file.selected ? 'fa-check-circle' : 'fa-circle-o'"></i>
             </button>
 
           </td>

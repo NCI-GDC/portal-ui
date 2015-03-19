@@ -513,7 +513,6 @@ function ParallelCoordinates(data,options) {
                     
                     var use=options.use[col] || col;
                   
-                    debugger;
 
                     return {
                         lang:d.key,
@@ -566,6 +565,7 @@ function ParallelCoordinates(data,options) {
             .attr("height",15)
             .on("click",function(z,i,m){
                 console.log("You clicked X",z,i,m);
+                window.location = z.href(z);
             })
         
 		labels

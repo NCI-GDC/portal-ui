@@ -234,10 +234,7 @@ module ngApp.reports.controllers {
 
           /* Ordered list of columns. Only titles appearing here appear in the table */
           columns:columns.map(function(c){return c.id}),
-          urlMap:columns.reduce(function(a,b){
-             a[b.id] = b.href;
-             return a;
-          },{}),
+
 
           /* ???
            * The value that all the other values are divided by?

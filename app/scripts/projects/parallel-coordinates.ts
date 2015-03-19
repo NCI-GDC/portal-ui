@@ -564,8 +564,7 @@ function ParallelCoordinates(data,options) {
             .attr("y",-8)
             .attr("height",15)
             .on("click",function(z,i,m){
-                console.log("You clicked X",z,i,m);
-                window.location = z.href(z);
+                if (z.href) window.location = z.href(z);
             })
         
 		labels

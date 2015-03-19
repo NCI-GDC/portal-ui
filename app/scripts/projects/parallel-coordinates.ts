@@ -559,7 +559,10 @@ function ParallelCoordinates(data,options) {
 		new_label.append("rect")
             .attr("class","ix")
             .attr("y",-8)
-            .attr("height",15);
+            .attr("height",15)
+            .on("click",function(z,i,m){
+                console.log("You clicked X",z,i,m);
+            })
         
 		labels
 			.selectAll("path.label")

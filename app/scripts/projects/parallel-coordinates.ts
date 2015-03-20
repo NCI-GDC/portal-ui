@@ -804,10 +804,8 @@ angular.module('GDC.PC',[])
   
     var LHR = $(options.container);
     
-//    debugger;
     var WIDTH=LHR.width(),
         HEIGHT=80 +data.length * 15;
-//        HEIGHT=Math.min(500);
 
 	var margins={
 		left:0,
@@ -822,8 +820,7 @@ angular.module('GDC.PC',[])
 		top:20,
 		bottom:0
 	};
-    
-//    debugger;
+  
 
 
 	var self=this;
@@ -862,8 +859,6 @@ angular.module('GDC.PC',[])
 
 	var tooltip=d3.select(options.container)
         .select("#tooltip");
-    
-    debugger;
 
 	var svg=d3.select(options.container)
         .style("width",WIDTH+"px")	

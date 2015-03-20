@@ -60,20 +60,25 @@ module ngApp.projects.controllers {
           size: 100
         }).then((data) => {
           this.projects = data;
-
           if (this.ProjectsState.tabs.graph.active) {
-            drawTable(data);
+            ProjectsGithut = this.ProjectsGithut;
+            $scope = this.$scope;
+            drawTable(this.projects);
           }
         });
       } else {
         this.tabSwitch = false;
         if (this.ProjectsState.tabs.graph.active) {
+          ProjectsGithut = this.ProjectsGithut;
+          $scope = this.$scope;
           drawTable(this.projects);
         }
       }
       
-      var $scope = this.$scope;
-      var ProjectsGithut = this.ProjectsGithut;
+     
+      
+      var $scope;
+      var ProjectsGithut;
       
       function drawTable(data){
         var githut = ProjectsGithut(data);

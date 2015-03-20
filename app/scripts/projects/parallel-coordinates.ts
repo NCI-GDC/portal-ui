@@ -6,8 +6,9 @@ angular.module('GDC.PC',[])
       config:"=",
       data:"="
     },
-    controller:function($element){
-      
+    controller:function($element,$scope){
+      console.log("PARALELLEL",$scope.config);
+      new ParallelCoordinates($scope.data,$scope.config);
     }
   }
 })

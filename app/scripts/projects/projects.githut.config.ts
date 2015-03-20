@@ -49,7 +49,7 @@ angular.module('projects.githut.config',[])
     }
   }
 })
-.value("ProjectsGithutColumns",[
+.service("ProjectsGithutColumns",function(){return [
     {
         id:'project_id',
         display_name:["Project","ID"],
@@ -149,7 +149,7 @@ angular.module('projects.githut.config',[])
         scale:'linear',
          dimensional:true
     }
-  ])
+  ]})
 .service("ProjectsGithutConfig",function(ProjectsService,ProjectsGithutColumns,$filter){
 
     var color = d3.scale.category10()

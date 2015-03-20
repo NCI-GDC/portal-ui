@@ -1,3 +1,5 @@
+var primary_sites = [];
+
 angular.module('GDC.PC',[])
 .directive("parallelCoordinates",function(){
   return {

@@ -128,4 +128,4 @@ module ngApp.projects.controllers {
       .controller("ProjectController", ProjectController);
 }
 
-var primary_sites = [];
+

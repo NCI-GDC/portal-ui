@@ -358,5 +358,7 @@ function githutTable(data,config){
     duration:1000
   };
 
-  return new ParallelCoordinates(d3.values(aggregations), config);
+//  return new ParallelCoordinates(d3.values(aggregations), config);
+  $scope.githutData = d3.values(aggregations);
+  $scope.githutConfig = config;
 }

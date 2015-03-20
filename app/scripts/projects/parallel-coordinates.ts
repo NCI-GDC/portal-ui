@@ -1,3 +1,16 @@
+angular.module('GDC.PC',[])
+.directive("parallelCoordinates",function(){
+  return {
+    restrict:"AE",
+    scope:{
+      config:"=",
+      data:"="
+    },
+    controller:function($element){
+      
+    }
+  }
+})
 function ParallelCoordinates(data,options) {  
     
     function updateScales() {

@@ -44,7 +44,7 @@ angular.module('projects.githut.config',[])
         return a;
       },{});
     return {
-      data:aggregations,
+      data:data.hits,
       config:ProjectsGithutConfig
     }
   }

@@ -862,6 +862,8 @@ angular.module('GDC.PC',[])
 
 	var tooltip=d3.select(options.container)
         .select("#tooltip");
+    
+    debugger;
 
 	var svg=d3.select(options.container)
         .style("width",WIDTH+"px")	

@@ -26,7 +26,7 @@ module ngApp.projects.controllers {
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService, private $filter) {
+                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig) {
 
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
@@ -74,6 +74,8 @@ module ngApp.projects.controllers {
       }
       
       var $scope = this.$scope;
+      var ProjectsGithutConfig = this.ProjectsGithutConfig;
+      
       function githutTable(data,config){
         var hits = data.hits;
         primary_sites = [];
@@ -90,7 +92,86 @@ module ngApp.projects.controllers {
             return a;
         },{});
 
-        var columns = [
+      
+      
+//        debugger;
+        var aggregations = d3.keys(project_ids).reduce(function(a,key){
+          var group = project_ids[key];
+          var types = group.summary.data_types;
+
+          if (!_.contains(primary_sites,group.primary_site)){
+            primary_sites.push(group.primary_site);
+          }
+
+          var the_returned = {
+            project_id: key,
+            primary_site: group.primary_site,
+            file_count: group.summary.file_count,
+            file_size: group.summary.file_size,
+            participant_count: group.summary.participant_count
+          };
+
+          ProjectsGithutConfig.config
+              .filter(function(c){return c.is_subtype})
+              .forEach(function(s){
+                  var thing = findTheThing(types,s.id,"data_type");
+                  the_returned[s.id] = thing ? thing.participant_count : 0;
+              })
+
+          a[key] = the_returned;
+          return a;
+        },{});
+
+
+
+
+      //  return new ParallelCoordinates(d3.values(aggregations), config);
+        $scope.githutData = d3.values(aggregations);
+        $scope.githutConfig = ProjectsGithutConfig;
+      }
+
+    }
+
+    select(section: string, tab: string) {
+      this.ProjectsState.setActive(section, tab);
+      this.setState(tab);
+    }
+
+    // TODO Load data lazily based on active tab
+    setState(tab: string) {
+      // Changing tabs and then navigating to another page
+      // will cause this to fire.
+      if (tab && (this.$state.current.name.match("projects."))) {
+        this.tabSwitch = true;
+        this.$state.go("projects." + tab, this.LocationService.search(), {inherit: false});
+      }
+    }
+  }
+
+  export interface IProjectController {
+    project: IProject;
+  }
+
+  class ProjectController implements IProjectController {
+    /* @ngInject */
+    constructor(public project: IProject, private CoreService: ICoreService) {
+      CoreService.setPageTitle("Project " + project.project_id);
+    }
+  }
+
+  angular
+      .module("projects.controller", [
+        "projects.services",
+        "core.services",
+        "projects.table.model",
+        "GDC.PC"
+      ])
+      .controller("ProjectsController", ProjectsController)
+      .service("ProjectsGithutConfig",function(ProjectsService,$filter){
+    
+          var color = d3.scale.category10()
+    
+          var columns = [
           {
               id:'project_id',
               display_name:["Project","ID"],
@@ -191,37 +272,7 @@ module ngApp.projects.controllers {
                dimensional:true
           }
         ];
-
-        var aggregations = d3.keys(project_ids).reduce(function(a,key){
-          var group = project_ids[key];
-          var types = group.summary.data_types;
-
-          if (!_.contains(primary_sites,group.primary_site)){
-            primary_sites.push(group.primary_site);
-          }
-
-          var the_returned = {
-            project_id: key,
-            primary_site: group.primary_site,
-            file_count: group.summary.file_count,
-            file_size: group.summary.file_size,
-            participant_count: group.summary.participant_count
-          };
-
-          columns
-              .filter(function(c){return c.is_subtype})
-              .forEach(function(s){
-                  var thing = findTheThing(types,s.id,"data_type");
-                  the_returned[s.id] = thing ? thing.participant_count : 0;
-              })
-
-          a[key] = the_returned;
-          return a;
-        },{});
-
-        var color = d3.scale.category10()
-
-        var config = {
+        return {
 
           /* the id of the tag the table will be generated into */
           container:"#pc",
@@ -231,6 +282,7 @@ module ngApp.projects.controllers {
 
           /* Ordered list of columns. Only titles appearing here appear in the table */
           columns:columns.map(function(c){return c.id}),
+          config:columns,
 
           /* ???
            * The value that all the other values are divided by?
@@ -285,7 +337,7 @@ module ngApp.projects.controllers {
           superhead:{
             start:'Clinical',
             end:'Other',
-            text:config.heading //Participant count per data type 
+            text:ProjectsService.getTableHeading() //Participant count per data type 
           },
 
           /**
@@ -297,7 +349,7 @@ module ngApp.projects.controllers {
               "primary_site":"d"
           },
           filters:{
-              "file_size":config.filters.file_size
+              "file_size":$filter("size")
           },
 
           /**
@@ -318,49 +370,7 @@ module ngApp.projects.controllers {
            */
           duration:1000
         };
-
-      //  return new ParallelCoordinates(d3.values(aggregations), config);
-        $scope.githutData = d3.values(aggregations);
-        $scope.githutConfig = config;
-      }
-
-    }
-
-    select(section: string, tab: string) {
-      this.ProjectsState.setActive(section, tab);
-      this.setState(tab);
-    }
-
-    // TODO Load data lazily based on active tab
-    setState(tab: string) {
-      // Changing tabs and then navigating to another page
-      // will cause this to fire.
-      if (tab && (this.$state.current.name.match("projects."))) {
-        this.tabSwitch = true;
-        this.$state.go("projects." + tab, this.LocationService.search(), {inherit: false});
-      }
-    }
-  }
-
-  export interface IProjectController {
-    project: IProject;
-  }
-
-  class ProjectController implements IProjectController {
-    /* @ngInject */
-    constructor(public project: IProject, private CoreService: ICoreService) {
-      CoreService.setPageTitle("Project " + project.project_id);
-    }
-  }
-
-  angular
-      .module("projects.controller", [
-        "projects.services",
-        "core.services",
-        "projects.table.model",
-        "GDC.PC"
-      ])
-      .controller("ProjectsController", ProjectsController)
+      })
       .controller("ProjectController", ProjectController);
 }
 

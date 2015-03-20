@@ -15,8 +15,7 @@ angular.module('GDC.PC',[])
 .factory("ParallelCoordinates",function(UserService){
   return function ParallelCoordinates(data,options) {
     
-    console.log("Init PC",data,options);
-//    return;
+
     
     function updateScales() {
         
@@ -591,7 +590,6 @@ angular.module('GDC.PC',[])
 		labels
 			.select("text")
             .attr('x',function(d){
-//              debugger;
               if (d.column === 'primary_site') {
                 return -10
               } else {
@@ -599,9 +597,7 @@ angular.module('GDC.PC',[])
               }
             })
             .attr("transform","translate("+labelAdjust+",0)")
-//            .attr('y',10)
             .style('text-anchor',function(d){
-//              debugger;
               if (d.column === 'primary_site') {
                 return 'start';
               } else {
@@ -614,9 +610,6 @@ angular.module('GDC.PC',[])
                   return a;
                 }
           
-//                return 0;
-//          
-////                debugger;
           
                 options.filters = options.filters || {};
           

@@ -77,7 +77,6 @@ module ngApp.projects.controllers {
       
       function drawTable(data){
         var githut = ProjectsGithut(data);
-        console.log("GITHUUUT!",githut);
         
         $scope.githutData = githut.data;
         $scope.githutConfig = githut.config;

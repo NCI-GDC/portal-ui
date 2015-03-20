@@ -155,102 +155,102 @@ angular.module('projects.githut.config',[])
     var color = d3.scale.category10()
 
     var columns = ProjectsGithutColumns;
-  return {
+    return {
 
-    /* the id of the tag the table will be generated into */
-    container:"#pc",
+      /* the id of the tag the table will be generated into */
+      container:"#pc",
 
-    /* default scale value, not useful */
-    scale:"ordinal",
+      /* default scale value, not useful */
+      scale:"ordinal",
 
-    /* Ordered list of columns. Only titles appearing here appear in the table */
-    columns:columns.map(function(c){return c.id}),
-    config:columns,
+      /* Ordered list of columns. Only titles appearing here appear in the table */
+      columns:columns.map(function(c){return c.id}),
+      config:columns,
 
-    /* ???
-     * The value that all the other values are divided by?
-     * Has something to do with dimensions?
-     **/
-    ref:"lang_usage",
+      /* ???
+       * The value that all the other values are divided by?
+       * Has something to do with dimensions?
+       **/
+      ref:"lang_usage",
 
-    /**
-     * No idea what title_column does.
-    **/
-    title_column:"project_id",
+      /**
+       * No idea what title_column does.
+      **/
+      title_column:"project_id",
 
-    /**
-     * Not really a scale map, more a map of what kind of column it will be.
-     * Ordinal is the more geometry-oriented choice
-     */
-    scale_map:columns.reduce(function(a,b){
-       a[b.id] = b.scale || 'ordinal';
-       return a;
-    },{}),
+      /**
+       * Not really a scale map, more a map of what kind of column it will be.
+       * Ordinal is the more geometry-oriented choice
+       */
+      scale_map:columns.reduce(function(a,b){
+         a[b.id] = b.scale || 'ordinal';
+         return a;
+      },{}),
 
-    /**
-     * Interconnected with ref and dimension, possibly.
-     * No idea what this does, really.
-     */
-    use:{
-        "project_id":"project_id"
-    },
-    sorter:{
-        "project_id":"participant_count"
-    },
-//    color_group_map:columns.map(function(c){return c.colorgroup}),
-    color_group_map:columns.reduce(function(a,b){
-       a[b.id] = b.colorgroup;
-       return a;
-    },{}),
-    color_groups:{
-      'file_count':color(0),
-      'file_size':color(1),
-      'participant_count':color(2)
+      /**
+       * Interconnected with ref and dimension, possibly.
+       * No idea what this does, really.
+       */
+      use:{
+          "project_id":"project_id"
+      },
+      sorter:{
+          "project_id":"participant_count"
+      },
+  //    color_group_map:columns.map(function(c){return c.colorgroup}),
+      color_group_map:columns.reduce(function(a,b){
+         a[b.id] = b.colorgroup;
+         return a;
+      },{}),
+      color_groups:{
+        'file_count':color(0),
+        'file_size':color(1),
+        'participant_count':color(2)
 
-    },
+      },
 
-    /**
-     * The order each column will appear in.
-     * Don't know how well this is implemented.
-     */
-    sorting:{
-      "project_id":d3.ascending,
-      "primary_site":d3.ascending
-    },
-    superhead:{
-      start:'Clinical',
-      end:'Other',
-      text:ProjectsService.getTableHeading() //Participant count per data type 
-    },
+      /**
+       * The order each column will appear in.
+       * Don't know how well this is implemented.
+       */
+      sorting:{
+        "project_id":d3.ascending,
+        "primary_site":d3.ascending
+      },
+      superhead:{
+        start:'Clinical',
+        end:'Other',
+        text:ProjectsService.getTableHeading() //Participant count per data type 
+      },
 
-    /**
-     *  Don't know what "d" is here.
-     *  If defined for a column, formats the labels.
-     *  Might not be implemented anywhere.
-     */
-    formats:{
-        "primary_site":"d"
-    },
-    filters:{
-        "file_size":$filter("size")
-    },
+      /**
+       *  Don't know what "d" is here.
+       *  If defined for a column, formats the labels.
+       *  Might not be implemented anywhere.
+       */
+      formats:{
+          "primary_site":"d"
+      },
+      filters:{
+          "file_size":$filter("size")
+      },
 
-    /**
-     *  Not known what this is. Any values in columns that are not in dimensions causes an error.
-     */
-    dimensions:columns.filter(function(c){return c.dimensional}).map(function(c){return c.id}),
+      /**
+       *  Not known what this is. Any values in columns that are not in dimensions causes an error.
+       */
+      dimensions:columns.filter(function(c){return c.dimensional}).map(function(c){return c.id}),
 
-    /**
-     *  Name for each column.
-     **/
-    column_map:columns.reduce(function(a,b){
-       a[b.id] = b.display_name || ['Untitled'];
-       return a;
-    },{}),
+      /**
+       *  Name for each column.
+       **/
+      column_map:columns.reduce(function(a,b){
+         a[b.id] = b.display_name || ['Untitled'];
+         return a;
+      },{}),
 
-    /**
-     * Related to animation
-     */
-    duration:1000
-  };
+      /**
+       * Related to animation
+       */
+      duration:1000
+    };
 })

@@ -6,13 +6,14 @@ angular.module('GDC.PC',[])
       config:"=",
       data:"="
     },
-    controller:function($element,$scope){
+    controller:function($element,$scope,ParallelCoordinates){
       console.log("PARALELLEL",$scope.config);
       new ParallelCoordinates($scope.data,$scope.config);
     }
   }
 })
-function ParallelCoordinates(data,options) {  
+.factory("ParallelCoordinates",function(UserService){
+  return function ParallelCoordinates(data,options) {  
     
     function updateScales() {
         
@@ -998,3 +999,5 @@ function ParallelCoordinates(data,options) {
       
       
   }
+
+})

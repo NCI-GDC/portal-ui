@@ -91,7 +91,6 @@ module ngApp.reports.controllers {
 
        
         
-//        console.log("Final PC data: ", d3.values(aggregations));
         $timeout(function(){
           var githut = ReportsGithut(data);
         
@@ -99,7 +98,6 @@ module ngApp.reports.controllers {
           $scope.githutData = githut.data;
           $scope.githutConfig = githut.config;
           
-          debugger;
         },500);
 
 
@@ -136,8 +134,6 @@ module ngApp.reports.controllers {
           a = a.concat(b.countries);
           return a;
         },[]));
-        
-//        debugger;
 
 
         function dataNest(key){
@@ -176,194 +172,9 @@ module ngApp.reports.controllers {
   angular
       .module("reports.controller", [
         "reports.services",
-        "core.services"
+        "core.services",
+        'reports.githut.config'
       ])
       .controller("ReportController", ReportController)
-      .factory("ReportsGithut",function(ReportsGithutColumns,ReportsGithutConfig){
-        return function(data){
-        
-        
-         var columns = ReportsGithutColumns;
-        var config = ReportsGithutConfig;
-        
-        
-        var order = ["Clinical", "Raw microarray data", 
-                      "Raw sequencing data", "Simple nucleotide variation", 
-                      "Copy number variation", "Structural rearrangement", 
-                      "Gene expression", "Protein expression",  
-                      "DNA methylation", "Other"];
-        
-        primary_sites = [];
-
-
-        var aggregations = data.reduce(function(a,b){
-
-          if (!_.contains(primary_sites,b.primary_site)){
-            primary_sites.push(b.primary_site);
-          }
-          
-          if (a[b.project_id]) {
-            var c = a[b.project_id];
-            c.file_size += b.size_in_mb;
-            c.file_count += b.count;
-
-            b.data_types.forEach(function(d){
-              c[d.data_type] += d.count;
-            })
-
-
-          } else {
-            a[b.project_id] = {
-              file_size:b.size,
-              project_id:b.project_id,
-              project_name:b.project_name,
-              primary_site:b.primary_site,
-              file_count:b.count,
-              colorgroup:'file_count'
-
-            }
-
-            b.data_types.forEach(function(d){
-              a[b.project_id][d.data_type] = d.count;
-            })
-          }
-
-
-
-          return a;
-        },{});
-        
-        
-
-    
-        
- 
-
-        var data_types = data.reduce(function(a,b){return a.concat(b.data_types)},[])
-        var nest = d3.nest().key(function(a){return a.data_type}).entries(data_types);
-        
-        var types = nest.map(function(a){
-          return {
-            id:a.key,
-            display_name:[a.key],
-            colorgroup:'file_count',
-            scale:'ordinal',
-            dimensional:true
-          };
-        });
-        
-        types = types.sort(function(a,b){return order.indexOf(a) - order.indexOf(b)});
-
-        types.forEach(function(a){
-          ReportsGithutColumns.splice(2,0,a);
-        });
-    
-        ReportsGithutConfig.superhead={
-          end:types[0].id,
-          start:types[types.length - 1].id,
-          text:'File count per data type'
-        }
-    
-        return {
-          data:d3.values(aggregations),
-          config:ReportsGithutConfig
-        }
-        }
-
-
-        
-      })
-      .service("ReportsGithutColumns",function(){return [{
-          id:'project_id',
-          display_name:["Project","ID"],
-          scale:'ordinal',
-          dimensional:true
-        },
-        {
-          id:'file_count',
-          display_name:["File","Count"],
-          scale:'ordinal',
-          dimensional:true,
-          colorgroup:'file_count'
-        },
-
-        {
-          id:'file_size',
-          display_name:["File","Size"],
-          scale:'ordinal',
-          dimensional:true,
-          colorgroup:'file_size'
-        },
-        {
-          id:'primary_site',
-          display_name:["Primary","Site"],
-          scale:'linear',
-          dimensional:true
-        }]})
-      .service("ReportsGithutConfig",function(ReportsGithutColumns,$filter){
-
-          var color = d3.scale.category10()
-
-          var columns = ReportsGithutColumns;
-           var config = {
-          container:"#pc",
-
-          scale:"ordinal",
-
-          columns:columns.map(function(c){return c.id}),
-
-          ref:"lang_usage",
-
-          title_column:"project_id",
-
-          scale_map:columns.reduce(function(a,b){
-            a[b.id] = b.scale || 'ordinal';
-            return a;
-          },{}),
-
-          use:{
-            "project_id":"project_id"
-          },
-          sorter:{
-            "project_id":'file_count'
-          },
-           sorting:{
-            "project_id":d3.ascending,
-            "primary_site":d3.ascending
-          },
-
-          formats:{
-            "primary_site":"d"
-          },
-          
-          color_group_map:columns.reduce(function(a,b){
-             a[b.id] = b.colorgroup;
-             return a;
-          },{}),
-          
-          color_groups:{
-            'file_count':color(0),
-            'file_size':color(1),
-            'participant_count':color(2)
-          },
-          
-          dimensions:columns.filter(function(c){return c.dimensional}).map(function(c){return c.id}),
-
-          column_map:columns.reduce(function(a,b){
-            a[b.id] = b.display_name || ['Untitled'];
-            return a;
-          },{}),
-
-          duration:1000,
-             
-          filters:{
-            file_size: $filter('size')
-          }
-           
-        };
-    
-        return config;
-        
-      })
       .controller("ReportsController", ReportsController);
 }

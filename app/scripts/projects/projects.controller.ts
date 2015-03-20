@@ -26,7 +26,7 @@ module ngApp.projects.controllers {
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig) {
+                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns) {
 
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
@@ -75,6 +75,7 @@ module ngApp.projects.controllers {
       
       var $scope = this.$scope;
       var ProjectsGithutConfig = this.ProjectsGithutConfig;
+      var ProjectsGithutColumns = this.ProjectsGithutColumns;
       
       function githutTable(data,config){
         var hits = data.hits;
@@ -111,7 +112,7 @@ module ngApp.projects.controllers {
             participant_count: group.summary.participant_count
           };
 
-          ProjectsGithutConfig.config
+          ProjectsGithutColumns
               .filter(function(c){return c.is_subtype})
               .forEach(function(s){
                   var thing = findTheThing(types,s.id,"data_type");
@@ -122,10 +123,6 @@ module ngApp.projects.controllers {
           return a;
         },{});
 
-
-
-
-      //  return new ParallelCoordinates(d3.values(aggregations), config);
         $scope.githutData = d3.values(aggregations);
         $scope.githutConfig = ProjectsGithutConfig;
       }
@@ -167,11 +164,7 @@ module ngApp.projects.controllers {
         "GDC.PC"
       ])
       .controller("ProjectsController", ProjectsController)
-      .service("ProjectsGithutConfig",function(ProjectsService,$filter){
-    
-          var color = d3.scale.category10()
-    
-          var columns = [
+      .value("ProjectsGithutColumns",[
           {
               id:'project_id',
               display_name:["Project","ID"],
@@ -271,7 +264,12 @@ module ngApp.projects.controllers {
               scale:'linear',
                dimensional:true
           }
-        ];
+        ])
+      .service("ProjectsGithutConfig",function(ProjectsService,ProjectsGithutColumns,$filter){
+    
+          var color = d3.scale.category10()
+    
+          var columns = ProjectsGithutColumns;
         return {
 
           /* the id of the tag the table will be generated into */

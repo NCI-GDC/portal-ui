@@ -7,12 +7,16 @@ angular.module('GDC.PC',[])
       data:"="
     },
     controller:function($element,$scope,ParallelCoordinates){
+      
       new ParallelCoordinates($scope.data,$scope.config);
     }
   }
 })
 .factory("ParallelCoordinates",function(UserService){
-  return function ParallelCoordinates(data,options) {  
+  return function ParallelCoordinates(data,options) {
+    
+    console.log("Init PC",data,options);
+//    return;
     
     function updateScales() {
         
@@ -818,6 +822,8 @@ angular.module('GDC.PC',[])
 		top:20,
 		bottom:0
 	};
+    
+//    debugger;
 
 
 	var self=this;

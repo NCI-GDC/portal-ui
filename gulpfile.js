@@ -16,7 +16,7 @@ var habitat = require("habitat");
 habitat.load();
 
 var env = new habitat("gdc", {
-  api: "http://localhost:5000",
+  api: "http://portal.gdc.nci.nih.gov:5000",
   base: "/"
 });
 
@@ -389,7 +389,9 @@ gulp.task('serve:web', function (cb) {
         modRewrite(['!\\.html|\\images|\\.js|\\.css|\\.png|\\.jpg|\\.woff|\\.ttf|\\.svg /index.html [L]'])
       ],
       baseDir: 'dist'
-    }
+    },
+    host: "portal.gdc.nci.nih.gov",
+    open: "external"
   };
 //    bsOpts.tunnel = production ? 'oicrgdcdev' : false;
 

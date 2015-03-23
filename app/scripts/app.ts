@@ -39,8 +39,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
   $urlRouterProvider.otherwise("/projects");
   RestangularProvider.setBaseUrl(config.api);
   RestangularProvider.setDefaultHttpFields({
-    cache: true,
-    withCredentials: true
+    cache: true
   });
 }
 

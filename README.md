@@ -49,7 +49,14 @@ Installing NPM dependencies...
 Setup Successful!
 ```
 
-### Modifying /etc/hosts
+### Authentication
+By default running `npm start` when developing the API will be set to `http://portal.gdc.nci.nih.gov:5000` as that
+is the new default for it to ensure authentication calls receive their proper cookies. If you need to change this you
+can do so by creating a custom `.env` file in the root of the repository with overriding keys like those in `env.dist`.
+
+It is important that this keeps in sync with the host the API is set to. Changing one requires keeping both up to date.
+
+#### Modifying /etc/hosts
 In order to support local use of the login system we need to add the following
 to your `/etc/hosts` file.
 

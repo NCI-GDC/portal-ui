@@ -1,4 +1,23 @@
-function ParallelCoordinates(data,options) {  
+var primary_sites = [];
+
+angular.module('GDC.PC',[])
+.directive("parallelCoordinates",function(){
+  return {
+    restrict:"AE",
+    scope:{
+      config:"=",
+      data:"="
+    },
+    controller:function($element,$scope,ParallelCoordinates){
+      
+      new ParallelCoordinates($scope.data,$scope.config);
+    }
+  }
+})
+.factory("ParallelCoordinates",function(UserService){
+  return function ParallelCoordinates(data,options) {
+    
+
     
     function updateScales() {
         
@@ -573,7 +592,6 @@ function ParallelCoordinates(data,options) {
 		labels
 			.select("text")
             .attr('x',function(d){
-//              debugger;
               if (d.column === 'primary_site') {
                 return -10
               } else {
@@ -581,9 +599,7 @@ function ParallelCoordinates(data,options) {
               }
             })
             .attr("transform","translate("+labelAdjust+",0)")
-//            .attr('y',10)
             .style('text-anchor',function(d){
-//              debugger;
               if (d.column === 'primary_site') {
                 return 'start';
               } else {
@@ -596,9 +612,6 @@ function ParallelCoordinates(data,options) {
                   return a;
                 }
           
-//                return 0;
-//          
-////                debugger;
           
                 options.filters = options.filters || {};
           
@@ -786,10 +799,8 @@ function ParallelCoordinates(data,options) {
   
     var LHR = $(options.container);
     
-//    debugger;
     var WIDTH=LHR.width(),
         HEIGHT=80 +data.length * 15;
-//        HEIGHT=Math.min(500);
 
 	var margins={
 		left:0,
@@ -804,6 +815,7 @@ function ParallelCoordinates(data,options) {
 		top:20,
 		bottom:0
 	};
+  
 
 
 	var self=this;
@@ -984,3 +996,5 @@ function ParallelCoordinates(data,options) {
       
       
   }
+
+})

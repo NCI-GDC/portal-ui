@@ -26,6 +26,10 @@ module ngApp.participants.services {
         params["fields"] = params["fields"].join();
       }
 
+      if (params.hasOwnProperty("expand")) {
+        params["expand"] = params["expand"].join();
+      }
+
       return this.ds.get(id, params).then((response): IParticipant => {
         return response["data"];
       });
@@ -34,6 +38,10 @@ module ngApp.participants.services {
     getParticipants(params: Object = {}): ng.IPromise<IParticipants> {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
+      }
+
+      if (params.hasOwnProperty("expand")) {
+        params["expand"] = params["expand"].join();
       }
 
       if (params.hasOwnProperty("facets")) {

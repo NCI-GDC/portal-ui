@@ -179,7 +179,7 @@ module ngApp.components.tables.directives {
                             'Other'];
 
                     if($scope.type === "experimental-strategy") {
-                      $scope.names = _.uniq($scope.data.map(function(d){return d.experimental_strategy}));                    
+                      $scope.names = _.uniq($scope.data.map(function(d){return d.experimental_strategy}));
                     }
 
         $scope.dataTransformed = _.reduce($scope.data, function(result, dataType) {
@@ -188,8 +188,6 @@ module ngApp.components.tables.directives {
                                                     };
         return result;
       }, {});
-        
-
       }
     }
   }

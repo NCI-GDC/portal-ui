@@ -51,6 +51,7 @@ module ngApp.projects.controllers {
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
           fields: this.ProjectTableModel.fields,
+          expand: this.ProjectTableModel.expand,
           facets: [
             "disease_type",
             "program.name",

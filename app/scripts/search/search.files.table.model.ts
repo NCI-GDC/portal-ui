@@ -251,14 +251,13 @@ module ngApp.search.models {
       "data_format",
       "file_size",
       "file_id",
-      "participants.participant_id",
-      "participants.project.name",
-      "participants.project.project_id",
-      "participants.submitter_id",
       "platform",
       "annotations.annotation_id",
       "related_files.file_id",
       "archive.archive_id"
+    ],
+    expand: [
+      "participants"
     ]
   };
   angular.module("search.table.files.model", [])

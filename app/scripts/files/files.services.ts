@@ -26,6 +26,10 @@ module ngApp.files.services {
         params["fields"] = params["fields"].join();
       }
 
+      if (params.hasOwnProperty("expand")) {
+        params["expand"] = params["expand"].join();
+      }
+
       return this.ds.get(id, params).then((response): IFile => {
         return response["data"];
       });
@@ -42,6 +46,10 @@ module ngApp.files.services {
     getFiles(params: Object = {}): ng.IPromise<IFiles> {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
+      }
+
+      if (params.hasOwnProperty("expand")) {
+        params["expand"] = params["expand"].join();
       }
 
       if (params.hasOwnProperty("facets")) {

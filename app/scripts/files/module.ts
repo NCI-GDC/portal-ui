@@ -26,22 +26,18 @@ module ngApp.files {
               "file_id",
               "platform",
               "experimental_strategy",
-              "archive.archive_id",
-              "archive.revision",
               "center.short_name",
               "creation_datetime",
               "participants.participant_id",
               "participants.project.project_id",
-              "related_files.file_id",
-              "related_files.type",
-              "related_files.file_name",
-              "related_files.md5sum",
-              "associated_entities.entity_id",
-              "associated_entities.entity_type",
-              "associated_entities.participant_id",
               "annotations.annotation_id",
               "tags",
               "origin"
+            ],
+            expand: [
+              "archive",
+              "related_files",
+              "associated_entities"
             ]
           });
         }

@@ -89,6 +89,7 @@ module ngApp.search.controllers {
 
       this.FilesService.getFiles({
         fields: this.SearchTableFilesModel.fields,
+        expand: this.SearchTableFilesModel.expand,
         facets: [
           "data_subtype",
           "data_type",
@@ -116,6 +117,7 @@ module ngApp.search.controllers {
 
       this.ParticipantsService.getParticipants({
         fields: this.SearchTableParticipantsModel.fields,
+        expand: this.SearchTableParticipantsModel.expand,
         facets: [
           "clinical.icd_10",
           "clinical.ethnicity",

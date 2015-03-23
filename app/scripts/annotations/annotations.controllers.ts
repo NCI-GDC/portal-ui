@@ -37,6 +37,7 @@ module ngApp.annotations.controllers {
     refresh() {
       this.AnnotationsService.getAnnotations({
         fields: this.AnnotationsTableModel.fields,
+        expand: this.AnnotationsTableModel.expand,
         facets: [
           "annotation_id",
           "classification",
@@ -54,7 +55,6 @@ module ngApp.annotations.controllers {
         if (!data.hits.length) {
           this.CoreService.setSearchModelState(true);
         }
-
         this.annotations = data;
       });
     }

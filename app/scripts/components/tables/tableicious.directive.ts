@@ -48,6 +48,11 @@ module ngApp.components.tables.directives.tableicious {
          * @fields An array of field names that will be used to populate the table
          */
         fields:string[];
+
+        /**
+        * @expand: Fields to expand
+        */
+        expand:string[];
     }
 
     export class TableiciousEntryDefinition {
@@ -169,7 +174,6 @@ module ngApp.components.tables.directives.tableicious {
             $scope.getColumnIndex = this.getColumnIndex.bind(this);
             $scope.getAllHeadingsAtNestingLevel = this.getAllHeadingsAtNestingLevel.bind(this);
             $scope.getDataAtRow = this.getDataAtRow.bind(this);
-                      
             $scope.getHeadingColSpan = TableService.getHeadingColSpan.bind($scope);
             $scope.getHeadingRowSpan = TableService.getHeadingRowSpan.bind($scope);
             $scope.getTemplate = TableService.getTemplate.bind(TableService);
@@ -185,7 +189,6 @@ module ngApp.components.tables.directives.tableicious {
             $scope.$watch('data',()=>{
                 this.refresh();
             },true);
-                      
 
             $scope.$watch(()=>{
                 return $scope.config.headings.map(function(head){
@@ -196,7 +199,6 @@ module ngApp.components.tables.directives.tableicious {
                 refresh();
             },true);
 
-
             $scope.$watch(()=>{
                 return $scope.config.headings.map(function(head:TableiciousColumnDefinition){
                     return head.hidden;
@@ -204,7 +206,6 @@ module ngApp.components.tables.directives.tableicious {
             },()=>{
                 refresh();
             },true);
-                      
             var refresh = _.throttle(()=>{this.refresh()},250)
         }
 
@@ -214,7 +215,6 @@ module ngApp.components.tables.directives.tableicious {
          * and calculates headings.
          */
         refresh() {
-          
             // TODO - use ServiceWorker for this?
 
             var $scope = this.$scope;

@@ -320,20 +320,15 @@ module ngApp.projects.models {
     ],
     fields: [
       "disease_type",
-      "summary.data_types.file_count",
-      "summary.data_types.data_type",
-      "summary.data_types.participant_count",
-      "summary.experimental_strategies.file_count",
-      "summary.experimental_strategies.participant_count",
-      "summary.experimental_strategies.experimental_strategy",
-      "summary.participant_count",
-      "summary.file_size",
-      "summary.file_count",
       "state",
-      "program.project_id",
-      "program.name",
       "primary_site",
       "project_id"
+    ],
+    expand: [
+      "summary",
+      "summary.data_types",
+      "summary.experimental_strategies",
+      "program"
     ]
   };
   angular.module("projects.table.model", [])

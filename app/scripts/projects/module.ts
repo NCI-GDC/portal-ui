@@ -40,19 +40,15 @@ module ngApp.projects {
           return ProjectsService.getProject($stateParams["projectId"], {
             fields: [
               "name",
-              "summary.data_types.file_count",
-              "summary.data_types.data_type",
-              "summary.data_types.participant_count",
-              "summary.experimental_strategies.file_count",
-              "summary.experimental_strategies.participant_count",
-              "summary.experimental_strategies.experimental_strategy",
-              "summary.participant_count",
-              "summary.file_size",
-              "summary.file_count",
               "program.name",
               "primary_site",
               "project_id",
               "disease_type"
+            ],
+            expand: [
+              "summary",
+              "summary.data_types",
+              "summary.experimental_strategies"
             ]
           });
         }

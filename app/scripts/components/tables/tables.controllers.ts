@@ -126,7 +126,7 @@ module ngApp.components.tables.controllers {
       var filters: Object = this.LocationService.filters();
       var url = this.LocationService.getHref();
       var abort = this.$q.defer();
-      var modalInstance;  
+      var modalInstance;
 
       if (projectsKeys[this.$scope.endpoint]) {
         filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[this.$scope.endpoint]);

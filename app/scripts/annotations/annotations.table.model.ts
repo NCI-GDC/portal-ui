@@ -124,9 +124,10 @@ module ngApp.projects.models {
           "entity_submitter_id",
           "notes",
           "classification",
-          "project.program.name",
-          "project.project_id",
           "participant_id"
+        ],
+        expand: [
+          "project"
         ]
     }
     angular.module("annotations.table.model", [])

@@ -25,11 +25,15 @@ module ngApp.projects.services {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
+      if (params.hasOwnProperty("expand")) {
+        params["expand"] = params["expand"].join();
+      }
+
       return this.ds.get(id, params).then((response): IProject => {
         return response["data"];
       });
     }
-  
+
     getTableHeading() {
       return "Participant count per data type";
     }
@@ -37,6 +41,9 @@ module ngApp.projects.services {
     getProjects(params: Object = {}): ng.IPromise<IProjects> {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
+      }
+      if (params.hasOwnProperty("expand")) {
+        params["expand"] = params["expand"].join();
       }
       if (params.hasOwnProperty("facets")) {
         params["facets"] = params["facets"].join();

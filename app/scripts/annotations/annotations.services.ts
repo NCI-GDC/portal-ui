@@ -26,6 +26,10 @@ module ngApp.annotations.services {
         params["fields"] = params["fields"].join();
       }
 
+      if (params.hasOwnProperty("expand")) {
+        params["expand"] = params["expand"].join();
+      }
+
       return this.ds.get(id, params).then((response): IAnnotation => {
         return response["data"];
       });
@@ -38,6 +42,10 @@ module ngApp.annotations.services {
 
       if (params.hasOwnProperty("facets")) {
         params["facets"] = params["facets"].join();
+      }
+
+      if (params.hasOwnProperty("expand")) {
+        params["expand"] = params["expand"].join();
       }
 
       var paging = angular.fromJson(this.LocationService.pagination()["annotations"]);

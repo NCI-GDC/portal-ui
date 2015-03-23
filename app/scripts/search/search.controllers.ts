@@ -51,7 +51,8 @@ module ngApp.search.controllers {
                 private UserService: IUserService,
                 public CoreService: ICoreService,
                 private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig) {
+                private SearchTableParticipantsModel: TableiciousConfig,
+			   public FacetService) {
       var data = $state.current.data || {};
       this.SearchState.setActive("tabs", data.tab);
       this.SearchState.setActive("facets", data.tab);
@@ -65,6 +66,10 @@ module ngApp.search.controllers {
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });
+		
+//	  $scope.addFacet = function(a,b){
+//		FacetService.addTerm(a,b);
+//	  }
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchTableParticipantsModel;
@@ -198,7 +203,8 @@ module ngApp.search.controllers {
         "participants.services",
         "search.table.files.model",
         'search.table.participants.model',
-        "files.services"
+        "files.services",
+	  	"facets.services"
       ])
       .controller("SearchController", SearchController);
 }

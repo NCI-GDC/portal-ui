@@ -46,7 +46,8 @@
         <tbody>
         <tr data-ng-repeat='type in sc.summary.data_type.buckets'>
           <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
-          <td class="text-right">{{ type.doc_count | number }}</td>
+          <td ng-click="sc.FacetService.addTerm('files.data_type', type.key)" class="text-right">
+          <a href="">{{ type.doc_count | number }}</a></td>
           <td class="text-right">{{ type.file_size.value | size}}</td>
         </tr>
         </tbody>
@@ -67,7 +68,9 @@
         <tbody>
         <tr data-ng-repeat='type in sc.summary.experimental_strategy.buckets'>
           <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
-          <td class="text-right">{{ type.doc_count | number }}</td>
+          <td ng-click="sc.FacetService.addTerm('files.experimental_strategy', type.key)" class="text-right"  class="text-right">
+          <a href="">{{ type.doc_count | number }}
+          </a></td>
           <td class="text-right">{{ type.file_size.value | size}}</td>
         </tr>
         </tbody>
@@ -90,7 +93,8 @@
         <tbody>
         <tr data-ng-repeat='type in sc.summary.data_format.buckets'>
           <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
-          <td class="text-right">{{ type.doc_count | number }}</td>
+          <td ng-click="sc.FacetService.addTerm('files.data_format', type.key)" class="text-right">
+          <a href="">{{ type.doc_count | number }}</a></td>
           <td class="text-right">{{ type.file_size.value | size}}</td>
         </tr>
         </tbody>
@@ -111,7 +115,7 @@
         <tbody>
         <tr data-ng-repeat='type in sc.summary.access.buckets'>
           <th scope="row" data-translate>{{type.key | humanify: true:true }}</th>
-          <td class="text-right">{{ type.doc_count | number }}</td>
+          <td ng-click="sc.FacetService.addTerm('files.access', type.key)"  class="text-right"><a href="">{{ type.doc_count | number }}</a></td>
           <td class="text-right">{{ type.file_size.value | size}}</td>
         </tr>
         </tbody>

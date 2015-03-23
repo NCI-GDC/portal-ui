@@ -209,7 +209,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr data-ng-repeat="project in byDataType | orderBy:'values.file_count':true ">
+          <tr data-ng-repeat="project in byDataType | orderBy:getTableOrder:project:true">
             <th>
               {{project.key}}
             </th>

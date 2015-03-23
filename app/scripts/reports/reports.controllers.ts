@@ -145,9 +145,8 @@ module ngApp.reports.controllers {
           return a;
         });
         
-        console.log("data?",data);
+
         
-//        data = addFakeData(data);
         
      
 
@@ -218,8 +217,12 @@ module ngApp.reports.controllers {
         types.forEach(function(a){
           columns.splice(2,0,a);
         });
-
-
+        
+        $scope.getTableOrder = function(a){
+          return -types.map(function(a){return a.id}).indexOf(a.key);
+        }
+        
+        
 
         var config = {
 
@@ -315,7 +318,6 @@ module ngApp.reports.controllers {
         };
         
         
-        console.log("Final PC data: ", d3.values(aggregations));
         $timeout(function(){
         
         

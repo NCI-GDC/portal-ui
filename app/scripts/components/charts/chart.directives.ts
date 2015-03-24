@@ -60,22 +60,35 @@ module ngApp.components.charts {
         $scope.$watch('data',function(a){
           updateChart();
         })
+		
+//		var g = svg.selectAll(".arc")
+//		  .data(pie(data))
+//		  .enter().append("g")
+//		  .attr("class", "arc");
+//
+//		g.append("path")
+//		  .attr("d", arc)
+//		  .style("fill", function(d,i) { return color(i); });
+		
+		var path = svg.datum(data).selectAll("path")
+			.data(pie)
+			.enter().append("path")
+			.attr("fill", function(d, i) { return color(i); })
+			.attr("d", arc)
+			.each(function(d) { this._current = d; }); // store the initial angles
         
         function updateChart(){
+			console.log("update data.");
             var data = $scope.data;
+			pie.value(function(d) { return d.value; }); // change the value function
+//			path = path.data(pie); // compute the new angles
+//			path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
 
-            var g = svg.selectAll(".arc")
-              .data(pie(data))
-              .enter().append("g")
-              .attr("class", "arc");
-
-            g.append("path")
-              .attr("d", arc)
-              .style("fill", function(d,i) { return color(i); });
+       
           
      
          
-	     }
+	    }
 
       }
     };

@@ -44,6 +44,17 @@ module ngApp.components.charts {
        var pie = d3.layout.pie()
           .sort(null)
           .value(function(d) { return d.value; });
+		  
+		var svg = d3.select(element[0]).append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 3.5 + "," + height / 2 + ")");
+          
+          
+		var arc = d3.svg.arc()
+		  .outerRadius(radius - 10)
+		  .innerRadius(0);
 
         
         $scope.$watch('data',function(a){
@@ -52,19 +63,6 @@ module ngApp.components.charts {
         
         function updateChart(){
             var data = $scope.data;
-            d3.select('svg').remove();
-
-          
-           var svg = d3.select(element[0]).append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", "translate(" + width / 3.5 + "," + height / 2 + ")");
-          
-          
-            var arc = d3.svg.arc()
-              .outerRadius(radius - 10)
-              .innerRadius(0);
 
             var g = svg.selectAll(".arc")
               .data(pie(data))
@@ -76,68 +74,8 @@ module ngApp.components.charts {
               .style("fill", function(d,i) { return color(i); });
           
      
-          
-          var legendX = 125;
-          var legendStartY = -5;
-          var legendSpaceEach = 55;
-
-          var legendSquares = svg.selectAll('rect')
-            .data(data,function(a){
-              return a.key;
-            })
-            .enter()
-              .append('rect')
-              .attr('width',25)
-              .attr('height',25)
-              .attr("transform", function(d,i) { return "translate(" + legendX +","+ (legendStartY + legendSpaceEach * (i - 1)) + ")"; })
-              .style("fill",function(d,i){return color(i)})
-
-          var legendText = svg.selectAll('text')
-            .data(data)
-            .enter()
-              .append("text")
-              .attr("transform", function(d,i) { return "translate(" + (legendX+30) +","+ ((legendStartY+10) + legendSpaceEach * (i - 1)) + ")"; })
-              .style("text-anchor", "left")
-              .style("fill", function(d,i) { return 'black'})
-              .text(function(d) { return config.legend[d.key].replace('%!%',d.value)})
-              .attr('y',0)
-              .attr('dy',0)
-              .call(wrap, 150)
-              .attr('class','pie-legend-text');
-          }
-
-        data.forEach(function(d) {
-            d.value = +d.value;
-        });
-
-
-
-
-        function wrap(text, width) {
-
-          text.each(function() {
-            var text = d3.select(this),
-                words = text.text().split(/\s+/).reverse(),
-                word,
-                line = [],
-                lineNumber = 0,
-                lineHeight = 1.1, // ems
-                y = text.attr("y"),
-                dy = parseFloat(text.attr("dy")),
-                tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-
-            while (word = words.pop()) {
-              line.push(word);
-              tspan.text(line.join(" "));
-              if (tspan.node().getComputedTextLength() > width) {
-                line.pop();
-                tspan.text(line.join(" "));
-                line = [word];
-                tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-              }
-            }
-          });
-        }
+         
+	     }
 
       }
     };

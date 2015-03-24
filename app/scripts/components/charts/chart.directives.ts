@@ -61,15 +61,6 @@ module ngApp.components.charts {
           updateChart();
         })
 		
-//		var g = svg.selectAll(".arc")
-//		  .data(pie(data))
-//		  .enter().append("g")
-//		  .attr("class", "arc");
-//
-//		g.append("path")
-//		  .attr("d", arc)
-//		  .style("fill", function(d,i) { return color(i); });
-		
 		var path = svg.datum(data).selectAll("path")
 			.data(pie)
 			.enter().append("path")
@@ -78,12 +69,10 @@ module ngApp.components.charts {
 			.each(function(d) { this._current = d; }); // store the initial angles
         
         function updateChart(){
-			  var data = $scope.data;
-			console.log("update data.",_.pluck(data,'value'));
+			var data = $scope.data;
 			
 			path.datum(data);
           
-//			pie.value(function(d) { return d.value; }); // change the value function
 			path = path.data(pie(data)); // compute the new angles
 			path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
 

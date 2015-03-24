@@ -67,6 +67,62 @@ module ngApp.components.charts {
 			.attr("fill", function(d, i) { return color(i); })
 			.attr("d", arc)
 			.each(function(d) { this._current = d; }); // store the initial angles
+		  
+		var legendX = 125;
+		var legendStartY = -5;
+		var legendSpaceEach = 55;
+
+		var legendSquares = svg.selectAll('rect')
+		.data(data,function(a){
+		  return a.key;
+		})
+		.enter()
+		  .append('rect')
+		  .attr('width',25)
+		  .attr('height',25)
+		  .attr("transform", function(d,i) { return "translate(" + legendX +","+ (legendStartY + legendSpaceEach * (i - 1)) + ")"; })
+		  .style("fill",function(d,i){return color(i)})
+
+		var legendText = svg.selectAll('text')
+		.data(data)
+		.enter()
+		  .append("text")
+		  .attr("transform", function(d,i) { return "translate(" + (legendX+30) +","+ ((legendStartY+10) + legendSpaceEach * (i - 1)) + ")"; })
+		  .style("text-anchor", "left")
+		  .style("fill", function(d,i) { return 'black'})
+		  .text(function(d) { return config.legend[d.key].replace('%!%',d.value)})
+		  .attr('y',0)
+		  .attr('dy',0)
+		  .call(wrap, 150)
+		  .attr('class','pie-legend-text');
+		
+		  function wrap(text, width) {
+
+          text.each(function() {
+            var text = d3.select(this),
+                words = text.text().split(/\s+/).reverse(),
+                word,
+                line = [],
+                lineNumber = 0,
+                lineHeight = 1.1, // ems
+                y = text.attr("y"),
+                dy = parseFloat(text.attr("dy")),
+                tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+
+            while (word = words.pop()) {
+              line.push(word);
+              tspan.text(line.join(" "));
+              if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+              }
+            }
+          });
+        }
+		
+		
         
         function updateChart(){
 			var data = $scope.data;
@@ -75,6 +131,14 @@ module ngApp.components.charts {
           
 			path = path.data(pie(data)); // compute the new angles
 			path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+			
+			legendText
+			.data(data)
+			  .text(function(d) { return config.legend[d.key].replace('%!%',d.value)})
+			  .attr('y',0)
+			  .attr('dy',0)
+			  .call(wrap, 150)
+			  .attr('class','pie-legend-text');
 
        
           

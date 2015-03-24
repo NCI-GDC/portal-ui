@@ -169,19 +169,18 @@ module ngApp.components.tables.services {
         /**
          * Returns the ultimate text value for an entry in a table based on the heading defintion and the whole row.
          */
-        getTemplate(heading:TableiciousColumnDefinition,field:any,row,scope, $filter: ng.IFilterService) {
-            //TODO::FIXME - field and row values in arguments are never right
-
-
+        getTemplate(scope, $filter: ng.IFilterService) {
+			
+			var result;
+			var heading = scope.heading;
+			var id = heading.id;
             var row = scope.$parent.datum;
             var field = {
-                val: this.getValueFromRow(row, heading.id),
+                val: this.getValueFromRow(row, id),
                 id: heading.id
             }
 
-            var result;
-
-            var id = heading.id;
+         
 
             var template = heading.template;
             if (heading.template) {

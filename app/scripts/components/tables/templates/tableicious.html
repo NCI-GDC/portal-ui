@@ -29,10 +29,11 @@
         </tr>
     </thead>
     <tbody>
-        <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index">
+        <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index | limitTo:2">
             <td ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
                 data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading"
                 class="{{getFieldClass(field,datum,this,heading)}}"
+                
                 >
                 
                 <div ng-if='::heading.compile' tableicious-cell >
@@ -41,15 +42,15 @@
   
               <a data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) !== '--'"
                    data-ng-href="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
-                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
+                    {{getTemplate(this, $filter)}}
                 </a>
 
                 <span data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) === '--'">
-                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
+                    {{getTemplate(this, $filter)}}
                 </span>
 
                 <span ng-if="!heading.sref">
-                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
+                    {{getTemplate(this, $filter)}}
                 </span>
 
                 <div ng-if="heading.icon" class="text-center">

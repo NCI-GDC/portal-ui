@@ -78,17 +78,28 @@ module ngApp.components.charts {
 			.each(function(d) { this._current = d; }); // store the initial angles
         
         function updateChart(){
-			console.log("update data.");
-            var data = $scope.data;
-			pie.value(function(d) { return d.value; }); // change the value function
-//			path = path.data(pie); // compute the new angles
-//			path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+			  var data = $scope.data;
+			console.log("update data.",_.pluck(data,'value'));
+			
+			path.datum(data);
+          
+//			pie.value(function(d) { return d.value; }); // change the value function
+			path = path.data(pie(data)); // compute the new angles
+			path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
 
        
           
      
          
 	    }
+		  
+		function arcTween(a) {
+		  var i = d3.interpolate(this._current, a);
+		  this._current = i(0);
+		  return function(t) {
+			return arc(i(t));
+		  };
+		}  
 
       }
     };

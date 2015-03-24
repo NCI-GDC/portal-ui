@@ -6,8 +6,7 @@
                 data-translate
                 ng-repeat="heading in getAllHeadingsAtNestingLevel(0) | orderBy:getColumnIndex:heading"
                 rowspan="{{::getHeadingRowSpan(heading)}}"
-                colspan="{{::getHeadingColSpan(heading)}}"
-               >
+                colspan="{{::getHeadingColSpan(heading)}}">
                 <div  tableicious-header
                 heading="heading"
                 paging="paging"
@@ -32,20 +31,17 @@
         <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index | limitTo:2">
             <td ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
                 data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading"
-                class="{{getFieldClass(field,datum,this,heading)}}"
-                
-                >
+                class="{{getFieldClass(field,datum,this,heading)}}"  >
                 
                 <div ng-if='::heading.compile' tableicious-cell >
  
                 </div>
   
-              <a data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) !== '--'"
-                   data-ng-href="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
+              <a data-ng-if="heading.sref && getSref(this, $filter) !== '--'" data-ng-href="{{getSref(this, $filter)}}">
                     {{getTemplate(this, $filter)}}
                 </a>
 
-                <span data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) === '--'">
+                <span data-ng-if="heading.sref && getSref(this, $filter) === '--'">
                     {{getTemplate(this, $filter)}}
                 </span>
 
@@ -54,7 +50,7 @@
                 </span>
 
                 <div ng-if="heading.icon" class="text-center">
-                    <i class="fa fa-{{getIcon(heading, getDataAtRow(heading, $parent.$index),$parent.datum,this)}} fa-lg"></i>
+                    <i class="fa fa-{{getIcon(this)}} fa-lg"></i>
                 </div>
 
             </td>

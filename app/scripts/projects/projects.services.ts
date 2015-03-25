@@ -91,6 +91,7 @@ module ngApp.projects.services {
   }
 
   export interface ITabs {
+    summary: ITab;
     table: ITab;
     graph: ITab;
   }
@@ -102,6 +103,9 @@ module ngApp.projects.services {
 
   class State implements IProjectsState {
     tabs: ITabs = {
+      summary: {
+        active: false
+      },
       table: {
         active: false
       },

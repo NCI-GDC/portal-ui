@@ -7,11 +7,13 @@ module ngApp.projects.controllers {
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
+  import IProjectsState = ngApp.projects.services.IProjectsState;
 
   export interface IProjectsController {
     projects: IProjects;
     ProjectsState: IProjectsState;
     tabSwitch: boolean;
+    numPrimarySites: number;
   }
 
   export interface IProjectScope extends ng.IScope {
@@ -22,13 +24,13 @@ module ngApp.projects.controllers {
     projects: IProjects;
     projectColumns: any[];
     tabSwitch: boolean = false;
+    numPrimarySites: number = 0;
 
     /* @ngInject */
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig,
-                private ProjectsGithutColumns, private ProjectsGithut) {
+                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut) {
 
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
@@ -48,7 +50,7 @@ module ngApp.projects.controllers {
     }
 
     refresh() {
-      
+
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
           fields: this.ProjectTableModel.fields,
@@ -66,6 +68,8 @@ module ngApp.projects.controllers {
           this.projects = data;
           if (this.ProjectsState.tabs.graph.active) {
             this.drawTable(this.projects);
+          } else if(this.ProjectsState.tabs.summary.active) {
+            this.numPrimarySites = _.unique(this.projects.hits, (project) => { return project.primary_site; }).length;
           }
         });
       } else {
@@ -75,7 +79,7 @@ module ngApp.projects.controllers {
         }
       }
     }
-	  
+
   	drawTable(data) {
   		var githut = this.ProjectsGithut(data);
 
@@ -140,5 +144,4 @@ module ngApp.projects.controllers {
       .controller("ProjectsController", ProjectsController)
       .controller("ProjectController", ProjectController);
 }
-
 

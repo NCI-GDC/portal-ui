@@ -52,7 +52,7 @@ module ngApp.search.controllers {
                 public CoreService: ICoreService,
                 private SearchTableFilesModel: TableiciousConfig,
                 private SearchTableParticipantsModel: TableiciousConfig,
-			   public FacetService) {
+                public FacetService) {
       var data = $state.current.data || {};
       this.SearchState.setActive("tabs", data.tab);
       this.SearchState.setActive("facets", data.tab);

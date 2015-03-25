@@ -15,6 +15,14 @@ module ngApp.projects {
       reloadOnSearch: false
     });
 
+    $stateProvider.state("projects.summary", {
+      url: "/s",
+      data: {
+        tab: "summary"
+      },
+      reloadOnSearch: false
+    });
+
     $stateProvider.state("projects.table", {
       url: "/t",
       data: {

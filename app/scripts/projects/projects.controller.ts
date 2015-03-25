@@ -6,6 +6,7 @@ module ngApp.projects.controllers {
   import ITableService = ngApp.components.tables.services.ITableService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
 
   export interface IProjectsController {
     projects: IProjects;
@@ -104,8 +105,27 @@ module ngApp.projects.controllers {
 
   class ProjectController implements IProjectController {
     /* @ngInject */
-    constructor(public project: IProject, private CoreService: ICoreService) {
+    constructor(public project: IProject, private CoreService: ICoreService,
+                private AnnotationsService: IAnnotationsService) {
       CoreService.setPageTitle("Project " + project.project_id);
+
+      AnnotationsService.getAnnotations({
+        filters: {
+          content: [
+            {
+              content: {
+                field: "project.project_id",
+                value: project.project_id
+              },
+              op: "in"
+            }
+          ],
+          op: "and"
+        },
+        size: 0
+      }).then((data) => {
+        this.project.annotations = data.pagination.total;
+      });
     }
   }
 
@@ -114,7 +134,8 @@ module ngApp.projects.controllers {
         "projects.services",
         "core.services",
         "projects.table.model",
-        "projects.githut.config"
+        "projects.githut.config",
+        "annotations.services"
       ])
       .controller("ProjectsController", ProjectsController)
       .controller("ProjectController", ProjectController);

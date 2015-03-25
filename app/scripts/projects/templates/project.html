@@ -35,9 +35,7 @@
               <td>{{ ::prc.project.program.name }}</td>
             </tr>
             <tr>
-              <th scope="row">
-                Participants
-              </th>
+              <th scope="row" data-translate>Participants</th>
               <td>
                 <a data-ui-sref="search.participants({ 'filters':
                   {{ [{ name: 'participants.project.project_id',value: prc.project.project_id }] | makeFilter }}
@@ -47,14 +45,22 @@
               </td>
             </tr>
             <tr>
-              <th scope="row">
-                Files
-              </th>
+              <th scope="row" data-translate>Files</th>
               <td>
                 <a data-ui-sref="search.files({ 'filters':
                   {{ [{ name: 'participants.project.project_id', value: prc.project.project_id }] | makeFilter }}
                 })">
                   {{ prc.project.summary.file_count | number:0 }}
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Annotations</th>
+              <td>
+                <a data-ui-sref="annotations({ 'filters':
+                  {{ [{ name: 'project.project_id', value: prc.project.project_id }] | makeFilter }}
+                })">
+                  {{ prc.project.annotations | number:0 }}
                 </a>
               </td>
             </tr>

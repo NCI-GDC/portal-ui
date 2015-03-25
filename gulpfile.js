@@ -173,7 +173,7 @@ gulp.task('styles', function () {
 
   return gulp.src('app/styles/app.less')
       .pipe($.changed('styles', {extension: '.less'}))
-      .pipe($.less())
+      .pipe($.less().on('error', $.util.log))
       .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
       .pipe($.concat(f))
       //.pipe($.if(production, $.csso()))

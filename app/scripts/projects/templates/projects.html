@@ -53,10 +53,7 @@
             <h3 class="panel-title">Available Data per Project</h3>
           </div>
 
-          <div class="githut">
-            <div id="pc"></div>
-          </div>
-         <div parallel-coordinates ng-if=::prsc.githutData data=::prsc.githutData config=prsc.githutConfig></div>
+          <git-hut data-ng-if="prsc.githutData" data="prsc.githutData" config="prsc.githutConfig"></git-hut>
         </div>
       </div>
     </div>

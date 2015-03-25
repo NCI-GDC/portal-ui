@@ -12,5 +12,6 @@ angular
       "components.charts",
       "components.overrides",
       "components.user",
-        "components.gql"
+      "components.githut",
+      "components.gql"
     ]);

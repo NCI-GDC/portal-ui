@@ -26,7 +26,8 @@ module ngApp.projects.controllers {
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns,private ProjectsGithut) {
+                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig,
+                private ProjectsGithutColumns, private ProjectsGithut) {
 
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
@@ -62,35 +63,23 @@ module ngApp.projects.controllers {
         }).then((data) => {
           this.projects = data;
           if (this.ProjectsState.tabs.graph.active) {
-            ProjectsGithut = this.ProjectsGithut;
-            $scope = this.$scope;
             this.drawTable(this.projects);
           }
         });
       } else {
         this.tabSwitch = false;
         if (this.ProjectsState.tabs.graph.active) {
-          ProjectsGithut = this.ProjectsGithut;
-          $scope = this.$scope;
           this.drawTable(this.projects);
         }
       }
-      
-     
-      
-      var $scope;
-      var ProjectsGithut;
-	
-      
-
     }
 	  
-	drawTable(data){
-		var githut = this.ProjectsGithut(data);
+  	drawTable(data) {
+  		var githut = this.ProjectsGithut(data);
 
-		this.githutData = githut.data;
-		this.githutConfig = githut.config;
-	}
+  		this.githutData = githut.data;
+  		this.githutConfig = githut.config;
+  	}
 
     select(section: string, tab: string) {
       this.ProjectsState.setActive(section, tab);
@@ -124,8 +113,7 @@ module ngApp.projects.controllers {
         "projects.services",
         "core.services",
         "projects.table.model",
-        "projects.githut.config",
-        "GDC.PC"
+        "projects.githut.config"
       ])
       .controller("ProjectsController", ProjectsController)
       .controller("ProjectController", ProjectController);

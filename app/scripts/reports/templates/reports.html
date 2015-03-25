@@ -4,32 +4,6 @@
     Data download statistics
   </h1>
 
-<!--
-  <div class="col-lg-3">
-    <aside data-scroll-fix=85 class=col-sm-3>
-      <div class="panel panel-default">
-        <div class="list-group">
-          <div class="list-group-item">
-            <span data-spy="projectLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#projectLevel" data-translate>Project</a>
-            </span>
-          </div>
-          <div class="list-group-item">
-            <span data-spy="dataLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#dataLevel" data-translate>Data</a>
-            </span>
-          </div>
-          <div class="list-group-item">
-            <span data-spy="userLevel" class="list-group-item-heading">
-              <a data-scroll-to href="#userLevel" data-translate>User Access</a>
-            </span>
-          </div>
-        </div>
-      </div>
-    </aside>
-  </div>
--->
-
   <div class="col-lg-12">
     <section>
       <p>
@@ -45,24 +19,14 @@
     <section id="projectLevel" style="padding-top: 40px; margin-top: -40px;">
       <h2>Project</h2>
 
-      <div class="panel panel-default">
+      <div class="panel panel-default" data-ng-if="githutData">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
             Downloads by Project and Data Type 
           </h4>
         </div>
 
-        <div class="githut" id="githut">
-          <div class="graph">
-            <div class="githut">
-              <div id="pc"></div>
-            </div>
-            <parallel-coordinates
-                ng-if=githutData
-                data=githutData
-                config=githutConfig></parallel-coordinates>
-          </div>
-        </div>
+        <git-hut data="githutData" config="githutConfig"></git-hut>
       </div>
       <div class="panel panel-default">
         <div class="panel-heading">

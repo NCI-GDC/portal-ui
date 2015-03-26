@@ -47,36 +47,9 @@
   a:hover {
     color:#A06535;
   }
-  #header {
-    width:80%;
-    //	min-width: 960px;
-    margin:0 auto 10px;
-    padding-bottom:5px;
-    position: relative;
-  }
-  #header h1 {
-    font-size: 23px;
-    color:#A06535;
-    font-weight: 400;
-    margin:0;
-    text-align: center;
-    padding: 0;
-  }
-  #header h1 b{
-    font-weight: 700;
-  }
-  #header h2 {
-    font-size: 13px;
-    color:#666;
-    font-weight: 300;
-    margin:0;
-    text-align: center;
-    padding: 0;
-    text-transform: uppercase;
-  }
   #pc {
     width:99%;
-    //	min-width: 700px;
+    //  min-width: 700px;
     margin:0 auto;
     //        min-height:400px;
     position: relative;
@@ -284,7 +257,24 @@
     text-transform: uppercase;
     font-size: 11px;
     font-weight: 400;
-    cursor: help;
+    cursor: default;
+  }
+  #pc {
+    &.projects {
+      @facet-panel-adjust: 200px;
+
+      @media (min-width: (@screen-sm-min + @facet-panel-adjust)) and (max-width: (@screen-sm-max + @facet-panel-adjust)) {
+        svg .column text.title {
+          font-size: 7px;
+        }
+      }
+
+      @media (min-width: (@screen-md-min + @facet-panel-adjust)) and (max-width: (@screen-md-max + @facet-panel-adjust)) {
+        svg .column text.title {
+          font-size: 8px;
+        }
+      }
+    }
   }
   #pc svg .column text.title.first {
     text-anchor:end;

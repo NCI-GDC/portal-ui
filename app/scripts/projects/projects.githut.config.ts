@@ -198,6 +198,9 @@ angular.module('projects.githut.config',[])
       /* the id of the tag the table will be generated into */
       container: "#pc",
 
+      // Used for unique styling per githut graph
+      containerClass: "projects",
+
       /* default scale value, not useful */
       scale: "ordinal",
 

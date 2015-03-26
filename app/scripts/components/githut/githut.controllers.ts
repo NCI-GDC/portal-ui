@@ -757,8 +757,9 @@ module ngApp.components.githut.controllers {
             });
       }
       
-      var LHR = $(options.container);
+      var LHR = this.$window.$(options.container);
 
+      LHR.addClass(options.containerClass);
       LHR.empty();
 
       var WIDTH = LHR.width(),

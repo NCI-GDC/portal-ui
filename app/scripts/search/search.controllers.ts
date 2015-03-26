@@ -101,7 +101,8 @@ module ngApp.search.controllers {
           "state",
           "origin",
           "data_format",
-          "center.name"
+          "center.name",
+          "tags"
         ]
       }).then((data) => {
         if (!data.hits.length) {

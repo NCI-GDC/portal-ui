@@ -12,7 +12,7 @@ module ngApp.components.githut.controllers {
   class GitHutController implements IGitHutController {
 
     /* @ngInject */
-    constructor(private $scope: IGitHutScope) {
+    constructor(private $scope: IGitHutScope, private $window: ng.IWindowService) {
       this.draw();
 
       $scope.$watch("data", () => {
@@ -23,6 +23,12 @@ module ngApp.components.githut.controllers {
     draw() {
       var data = this.$scope.data,
           options = this.$scope.config;
+
+      this.$window.$(this.$window).off("resize");
+
+      this.$window.$(this.$window).on("resize", _.debounce(() => {
+        this.draw();
+      }, 150));
 
       function updateScales() {
         // what in the seven kingdoms does this do?
@@ -808,7 +814,6 @@ module ngApp.components.githut.controllers {
         ])) / options.columns.length;
       var marker_width = [2, marker_max_width];
       var svg = d3.select(options.container)
-            .style("width", WIDTH + "px") 
             .append("svg")
             .attr("width", WIDTH)
             .attr("height", HEIGHT);

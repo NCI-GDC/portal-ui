@@ -8,6 +8,7 @@ module ngApp.components.githut {
         config: "=",
         data: "="
       },
+      replace: true,
       templateUrl: "components/githut/templates/graph.html",
       controller: "GitHutController as ghc"
     };

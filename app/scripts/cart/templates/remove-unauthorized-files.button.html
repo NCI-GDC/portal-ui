@@ -1,10 +1,11 @@
-<span>
-  <button ng-if=files[0] ng-click=remove() type="button" class="btn btn-danger" >
-        Remove unauthorized files from cart
+<div class="pull-right authorized-button">
+  <button data-ng-if="files[0]" ng-click="remove()" type="button" class="btn btn-danger">
+    <i class="fa fa-remove"></i>
+    <span data-translate>Remove unauthorized files from cart</span>
   </button>
 
 
-  <button ng-if=!files[0] type="button" disabled class="btn btn-danger" >
-        You have no unauthorized files in the cart
+  <button data-ng-if="!files[0]" type="button" disabled class="btn btn-danger" data-translate>
+    You have no unauthorized files in the cart
   </button>
-</span>
+</div>

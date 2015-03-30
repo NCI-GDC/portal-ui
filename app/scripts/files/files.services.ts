@@ -97,41 +97,8 @@ module ngApp.files.services {
   }
 
   angular
-      .module("files.services", ["restangular", "components.location", "user.services", "core.services","ui.bootstrap"])
-      .directive('downloadButton', function(){
-        return {
-          restrict:"AE",
-          scope:{
-            files:'='
-          },
-          controller:function($element,$scope, FilesService,UserService,$modal){
-              $element.on('click',function(a){
-                var files = $scope.files;
-                if (!_.isArray(files)) {
-                  files = [files];
-                }
-                if (UserService.userCanDownloadFiles(files)) {
-                  var file_ids = _.pluck(files, 'file_id').concat($scope.files.related_ids);
-                  FilesService.downloadFiles(file_ids);
-                } else {
-                  var template = UserService.currentUser ?
-                      "core/templates/request-access-to-download-single.html" :
-                      "core/templates/login-to-download-single.html";
-                    console.log("File not authorized.");
-                    $modal.open({
-                      templateUrl: template,
-                      controller: "LoginToDownloadController as wc",
-                      backdrop: "static",
-                      keyboard: false,
-                      scope: $scope,
-                      backdropClass: "warning-backdrop",
-                      size: "lg"
-                    });
-                }
-            })
-          }
-        }
-      })
-      .service("FilesService", FilesService);
+    .module("files.services", ["restangular", "components.location", "user.services", "core.services"])
+    .service("FilesService", FilesService);
+
 }
 

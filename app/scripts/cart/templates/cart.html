@@ -1,5 +1,5 @@
 <div class="container-fluid cart full-page">
-  <section class="row">
+  <section class="row" data-ng-if="cc.files.length">
     <div class="col-lg-6 col-md-6 col-sm-6 cart-summary">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -29,200 +29,69 @@
       </div>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6">
-        <div cart-displaying-pie-chart></div>
+      <div cart-displaying-pie-chart></div>
     </div>
-    <div class="col-xs-12">
-     <div remove-unauthorized-files-button>        </div>
-     </div>
+  </section>
+
+  <section class="row cart-table-actions" data-ng-if="cc.files.length">
+    <div class="col-xs-8 col-xs-offset-4">
+      <div remove-unauthorized-files-button class="pull-right"></div>
+      <div data-ng-if="!cc.selected().length">
+        <i class="fa fa-warning"></i> <span data-translate>You have no items selected</span>
+        <button type="button"
+                style="margin-left: 15px"
+                class="btn btn-primary"
+                data-ng-click="cc.selectAll()">
+          <i class="fa fa-shopping-cart"></i> <span data-translate>Select All Files</span>
+        </button>
+        <button type="button"
+                class="btn btn-danger"
+                data-ng-click="cc.removeAll()">
+          <i class="fa fa-remove"></i> <span data-translate>Empty Cart</span>
+        </button>
+      </div>
+
+      <div data-ng-if="cc.selected().length" class="pull-right">
+        <strong>{{cc.selected().length}}</strong>&nbsp;
+        <!-- angular-gettext also supports known variables like $count, which can
+             be used here in the translate-plural text like {{ $count }} -->
+        <span data-translate
+              data-translate-n="cc.selected().length"
+              data-translate-plural="files selected">
+          file selected
+        </span>
+        (<strong>{{ cc.selectedSize() | size}}</strong>)
+        <a type="button"
+                download-button-all-cart
+                class="btn btn-primary">
+          <i class="fa fa-cloud-download"></i> <span data-translate>Download</span>
+        </a>
+        <a type="button"
+                class="btn btn-primary"
+                data-ng-click="cc.getManifest()">
+          <i class="fa fa-file-code-o"></i>
+          <span data-translate>Download Manifest</span>
+        </a>
+        <button type="button"
+                class="btn btn-danger"
+                data-ng-click="cc.removeSelected()">
+          <i class="fa fa-remove"></i>
+          <span data-translate>Remove Selected Files from Cart</span>
+        </button>
+      </div>
+    </div>
   </section>
 
   <h2 data-ng-if="!cc.files.length" data-translate>Your Cart is empty.</h2>
 
-  <section data-ng-if="cc.files.length">
-    <div class="panel panel-default">
-      <div class="panel-heading clearfix">
-        <h3 class="panel-title pull-left" data-translate>Cart Items</h3>
+  <gdc-table data-ng-if="cc.files.length"
+             data-data="cc.displayedFiles"
+             data-config="cc.cartTableConfig"
+             data-paging="cc.pagination"
+             data-page="cart"
+             data-heading="Cart Items"
+             data-id="cart-table"
+             data-cart-update="cc.processPaging">
+  </gdc-table>
 
-        <div data-ng-if="!cc.selected().length" class="pull-right">
-          <i class="fa fa-warning"></i> <span data-translate>You have no items selected</span>
-          <button type="button"
-                  style="margin-left: 15px"
-                  class="btn btn-primary"
-                  data-ng-click="cc.selectAll()">
-            <i class="fa fa-shopping-cart"></i> <span data-translate>Select All Files</span>
-          </button>
-          <button type="button"
-                  class="btn btn-danger"
-                  data-ng-click="cc.removeAll()">
-            <i class="fa fa-remove"></i> <span data-translate>Empty Cart</span>
-          </button>
-
-        </div>
-
-
-        <div data-ng-if="cc.selected().length" class="pull-right">
-          <strong>{{cc.selected().length}}</strong>&nbsp;
-          <!-- angular-gettext also supports known variables like $count, which can
-               be used here in the translate-plural text like {{ $count }} -->
-          <span data-translate
-                data-translate-n="cc.selected().length"
-                data-translate-plural="files selected">
-            file selected
-          </span>
-          (<strong>{{ cc.selectedSize() | size}}</strong>)
-          <a type="button"
-                  download-button-all-cart
-                  class="btn btn-primary">
-            <i class="fa fa-cloud-download"></i> <span data-translate>Download</span>
-          </a>
-          <a type="button"
-                  class="btn btn-primary"
-                  data-ng-click="cc.getManifest()">
-            <i class="fa fa-file-code-o"></i>
-            <span data-translate>Download Manifest</span>
-          </a>
-          <button type="button"
-                  class="btn btn-danger"
-                  data-ng-click="cc.removeSelected()">
-            <i class="fa fa-remove"></i>
-            <span data-translate>Remove Selected Files from Cart</span>
-          </button>
-
-        </div>
-
-      </div>
-      <table class="table table-striped table-hover table-condensed table-bordered">
-        <thead>
-        <tr>
-          <th scope="col">
-           <div class="btn-group" data-dropdown>
-            <button data-ng-if="cc.all(true)" type="button" class="btn btn-success" data-ng-click="cc.deselectAll(true)">
-              <i class="fa fa-check-circle"></i>
-            </button>
-            <button data-ng-if="!cc.all(true)" type="button" class="btn btn-primary" data-ng-click="cc.selectAll(true)">
-              <i class="fa fa-circle-o"></i>
-            </button>
-             <button type="button" class="btn btn-default dropdown-toggle">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li data-ng-class="{disabled: (CartService.getCartVacancySize() === 0 || CartService.getCartVacancySize() - paging.total < 0)}">
-                      <a ng-click="cc.selectAll(false)">
-                        <span class="fa-stack">
-                              <i class="fa fa-shopping-cart fa-stack-1x"></i>
-<!--                              <i class="fa fa-ban fa-stack-2x"></i>-->
-                          </span>
-                          <span data-translate>Select All</span>
-                      </a>
-                       <a ng-click="cc.deselectAll(false)">
-                        <span class="fa-stack">
-                              <i class="fa fa-shopping-cart fa-stack-1x"></i>
-                              <i class="fa fa-ban fa-stack-2x"></i>
-                          </span>
-                          <span data-translate>Deselect All</span>
-                      </a>
-                  </li>
-                  
-              </ul>
-            </div>
-            
-          </th>
-          <th>
-            <!-- Note, this is empty on purpose. Don't remove -->
-          </th>
-          <th scope="col" class="text-center"
-              data-ng-if="cc.UserService.currentUser"
-              data-translate>
-            My Projects
-          </th>
-          <th scope="col" class="text-center" data-translate>Access</th>
-          <th scope="col" class="text-center" data-translate>File Name</th>
-          <th scope="col" class="text-center" data-translate>Participant</th>
-          <th scope="col" class="text-center" data-translate>Projects</th>
-          <th scope="col" class="text-center" data-translate>Data Type</th>
-          <th scope="col" class="text-center" data-translate>Data Format</th>
-          <th scope="col" class="text-center" data-translate>Size</th>
-          <th scope="col" class="text-center" data-translate>Annotations</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr data-ng-repeat="file in cc.displayedFiles track by $index | orderBy:date_added_to_cart">
-          <td>
-            <button type="button" class="btn"
-                   data-ng-class="file.selected ? 'btn-success' : 'btn-default'"
-                    data-ng-click="file.selected = !file.selected">
-              <i class="fa"
-                 data-ng-class="file.selected ? 'fa-check-circle' : 'fa-circle-o'"></i>
-            </button>
-
-          </td>
-          <td scope="col" class="text-center">
-            <button class="btn btn-primary" download-button files=file><i class="fa fa-download"></i></button>
-
-            <button class="btn btn-default" data-ng-click="cc.remove(file.file_id)" files=file><i class="fa fa-trash-o"></i></button>
-          </td>
-          <td scope="col" class="text-center"
-              data-ng-if="cc.UserService.currentUser">
-            <i data-ng-if="cc.isUserProject(file)" class="fa fa-check fa-lg"></i>
-            <i data-ng-if="!cc.isUserProject(file)" class="fa fa-close fa-lg"></i>
-          </td>
-          <td class="text-center">
-            <i data-ng-if="file.access === 'protected'" class="fa fa-lock fa-lg"></i>
-            <i data-ng-if="file.access !== 'protected'" class="fa fa-unlock-alt fa-lg"></i>
-          </td>
-          <td class="truncated-cell">
-            <a data-ui-sref="file({ fileId: file.file_id })">
-              {{ file.file_name }}
-            </a>
-          </td>
-          <td class="truncated-cell" data-ng-if="file.participantNum === 1" >
-            <a data-ui-sref="participant({ participantId : '{{ file.participantId }}' })">
-              {{ file.participantId || '--'}}
-            </a>
-          </td>
-          <td data-ng-if="file.participantNum !== 1" >
-            <a data-ui-sref="search.participants({ 'filters': {{
-                [{ name: 'files.file_id', value: file.file_id }] | makeFilter }}
-            })">
-              {{ file.participantNum || '--' }}
-            </a>
-          </td>
-          <td>
-            <a data-ng-if="file.projects.length === 1"
-               data-ui-sref="project(({projectId: file.projects[0] }))">
-               {{ file.projects[0] }}
-            </a>
-            <a data-ng-if="file.projects.length > 1"
-               data-ui-sref="projects({ 'filters': {{
-                [{ name: 'project_id', value: file.projects }] | makeFilter }}
-            })">
-              {{ file.projects.length }}
-            </a>
-            <span data-ng-if="file.projects.length === 0">--</span>
-          </td>
-          <td>{{ file.data_type }}</td>
-          <td>{{ file.data_format }}</td>
-          <td>{{ file.file_size | size }}</td>
-          <td class="truncated-cell text-right">
-            <a data-ng-if="file.annotationIds.length === 1"
-               data-ui-sref="annotation(({annotationId: file.annotationIds[0]}))">
-               {{ file.annotationIds.length }}
-            </a>
-            <a data-ng-if="file.annotationIds.length > 1"
-               data-ui-sref="annotations({ 'filters': {{
-                [{ name: 'annotation_id', value: file.annotationIds }] | makeFilter }}
-            })">
-              {{ file.annotationIds.length }}
-            </a>
-            <span data-ng-if="!file.annotationIds.length">0</span>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-      <div class="panel-footer clearfix">
-        <pagination-controls data-page="cart" data-paging="cc.pagination" update="cc.processPaging"></pagination-controls>
-
-      </div>
-    </div>
-  </section>
 </div>

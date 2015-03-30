@@ -26,6 +26,7 @@ module ngApp.cart.services {
     getMaxSize(): number;
     isFull(): boolean;
     getCartVacancySize(): number;
+    selectFile(file: IFile): void;
   }
 
   class CartService implements ICartService {
@@ -63,16 +64,20 @@ module ngApp.cart.services {
       return this.files;
     }
 
+    getFile(fileId: string) {
+      return _.find(this.getFiles(), { "file_id": fileId });
+    }
+
     getAuthorizedFiles() {
       return this.files.filter((file)=>{
         return this.UserService.userCanDownloadFile(file);
-      })
+      });
     }
 
     getUnauthorizedFiles() {
       return this.files.filter((file)=>{
         return !this.UserService.userCanDownloadFile(file);
-      })
+      });
     }
 
     getSelectedFiles(): IFile[] {
@@ -96,21 +101,32 @@ module ngApp.cart.services {
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_id)) {
-          file.projectIds = _.unique(_.map(file.participants, (participant) => {
-            return participant.project.project_id;
-          }));
-          file.annotationIds = _.map(file.annotations, (annotation) => {
-            return annotation.annotation_id;
-          });
+          var projectIds = file.projects;
+          var annotationIds = file.annotationIds;
+          var participantIds = file.participantId;
+          
+          // We are not loading a file in from an undo action
+          if (file.participants) {
+            projectIds = _.unique(_.map(file.participants, (participant) => {
+              return participant.project.project_id;
+            }));
+            annotationIds = _.map(file.annotations, (annotation) => {
+              return annotation.annotation_id;
+            });
+            participantIds = _.map(file.participants, (participant) => {
+              return participant.participant_id;
+            });
+          }
+
           var fileNeededFieldsOnly = {
             'selected': true,
             'access': file.access || '--',
             'file_name': file.file_name || '--',
             'file_id': file.file_id || '--',
-            'annotationIds': file.annotationIds,
-            'participantNum': file.participants ? file.participants.length : 0,
-            'participantId': file.participants && file.participants.length > 0 ? file.participants[0].participant_id : "--",
-            'projects': file.projectIds,
+            'annotationIds': annotationIds,
+            'participantNum': participantIds.length ? participantIds.length : 0,
+            'participantId': participantIds.length > 0 ? participantIds : [],
+            'projects': projectIds,
             'data_type': file.data_type || '--',
             'data_format': file.data_format || '--',
             'file_size': file.file_size || 0,
@@ -222,6 +238,14 @@ module ngApp.cart.services {
       this.lastModified = this.$window.moment();
       this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
       this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
+    }
+
+    selectFile(file: IFile) {
+      var fileInCart = this.getFile(file.file_id);
+
+      if (fileInCart) {
+        fileInCart.selected = !fileInCart.selected;
+      }
     }
 
   }

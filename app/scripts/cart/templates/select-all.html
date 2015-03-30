@@ -1,0 +1,28 @@
+<div class="btn-group" data-dropdown>
+  <button data-ng-if="all(true)" type="button" class="btn btn-success" data-ng-click="deselectAll(true)">
+    <i class="fa fa-check-circle"></i>
+  </button>
+  <button data-ng-if="!all(true)" type="button" class="btn btn-primary" data-ng-click="selectAll(true)">
+    <i class="fa fa-circle-o"></i>
+  </button>
+   <button type="button" class="btn btn-default dropdown-toggle">
+      <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li data-ng-class="{disabled: (CartService.getCartVacancySize() === 0 || CartService.getCartVacancySize() - paging.total < 0)}">
+      <a ng-click="selectAll(false)">
+        <span class="fa-stack">
+          <i class="fa fa-shopping-cart fa-stack-1x"></i>
+        </span>
+        <span data-translate>Select All</span>
+      </a>
+       <a ng-click="deselectAll(false)">
+        <span class="fa-stack">
+          <i class="fa fa-shopping-cart fa-stack-1x"></i>
+          <i class="fa fa-ban fa-stack-2x"></i>
+        </span>
+        <span data-translate>Deselect All</span>
+      </a>
+    </li>
+  </ul>
+</div>

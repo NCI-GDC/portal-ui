@@ -14,7 +14,7 @@
                          data-config="config"
                          data-hidden="config.hidden"></arrange-columns>
         <export-table data-endpoint="{{ endpoint }}" data-size="{{ paging.total }}"
-                      data-fields="config.fields"></export-table>
+                      data-fields="config.fields" data-ng-if="endpoint"></export-table>
       </div>
     </div>
   </div>
@@ -22,6 +22,6 @@
     <tableicious id="{{ id }}" data-data="data" data-config="config" data-paging="paging"></tableicious>
   </div>
   <div class="panel-footer clearfix" data-ng-if="page && paging">
-    <pagination-controls data-page="{{ page }}" data-paging="paging"></pagination-controls>
+    <pagination-controls data-page="{{ page }}" data-paging="paging" data-update="cartUpdate"></pagination-controls>
   </div>
 </div>

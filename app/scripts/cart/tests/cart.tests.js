@@ -23,12 +23,14 @@ describe('Cart:', function () {
         {
           file_id: "AAA",
           file_size: 20,
-          file_url: "urlA"
+          file_url: "urlA",
+          participantId: []
         },
         {
           file_id: "BBB",
           file_size: 10,
-          file_url: "urlB"
+          file_url: "urlB",
+          participantId: []
         }
       ];
 
@@ -47,12 +49,14 @@ describe('Cart:', function () {
     var fileA = {
       file_id: "AAA",
       file_size: 20,
-      file_url: "urlA"
+      file_url: "urlA",
+      participantId: []
     };
     var fileB = {
       file_id: "BBB",
       file_size: 10,
-      file_url: "urlB"
+      file_url: "urlB",
+      participantId: []
     };
 
     beforeEach(inject(function ($window) {

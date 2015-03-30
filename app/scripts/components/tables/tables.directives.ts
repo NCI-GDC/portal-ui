@@ -110,7 +110,8 @@ module ngApp.components.tables.directives {
         page: "@",
         sortColumns: "=",
         id: "@",
-        endpoint: "@"
+        endpoint: "@",
+        cartUpdate: "="
       },
       replace: true,
       templateUrl: "components/tables/templates/gdc-table.html",

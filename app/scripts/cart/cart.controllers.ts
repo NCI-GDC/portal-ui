@@ -13,11 +13,6 @@ module ngApp.cart.controllers {
     selectedSize(): number;
     getTotalSize(): number;
     removeSelected(): void;
-    remove(id: string): void;
-    selectAll(): void;
-    deselectAll(): void;
-    all(): boolean;
-    isUserProject(file: IFile): boolean;
     getFileIds(): string[];
     getRelatedFileIds(): string[];
     processPaging: boolean;
@@ -41,10 +36,12 @@ module ngApp.cart.controllers {
                 private CoreService: ICoreService,
                 private CartService: ICartService,
                 private UserService: IUserService,
+                private CartTableModel,
                 private Restangular,
                 private FilesService) {
       CoreService.setPageTitle("Cart", "(" + this.files.length + ")");
       this.lastModified = this.CartService.lastModified;
+      this.cartTableConfig = CartTableModel;
 
       this.pagination = {
         from: 1,
@@ -61,8 +58,8 @@ module ngApp.cart.controllers {
       $scope.$on("gdc-user-reset", () => {
         this.files = CartService.getFiles();
         this.setDisplayedFiles();
-
       });
+
       $scope.$on("cart-paging-update", (event: any, newPaging: any) => {
         this.setDisplayedFiles(newPaging);
       });
@@ -72,9 +69,10 @@ module ngApp.cart.controllers {
 
       });
 
-      $scope.$on("cart.update",()=>{
+      $scope.$on("cart.update", () => {
+        this.lastModified = this.CartService.lastModified;
         this.setDisplayedFiles();
-      })
+      });
 
     }
 
@@ -132,12 +130,6 @@ module ngApp.cart.controllers {
       }, 0);
     }
 
-    remove(id: string) {
-      this.CartService.remove([id]);
-      this.lastModified = this.CartService.lastModified;
-      this.setDisplayedFiles();
-    }
-
     removeAll() {
       this.CartService.removeAll();
       this.lastModified = this.CartService.lastModified;
@@ -151,47 +143,14 @@ module ngApp.cart.controllers {
       this.setDisplayedFiles();
     }
 
-    selectAll(visibleOnly): void {
-    
-      var visible = this.getVisible();
-      var iteratee = visibleOnly ? visible : this.files;
-      _.each(iteratee,(file: IFile): void => {
-          file.selected = true;
-      });
-    }
-    
-    getVisible(): any[] {
-        var p = this.pagination;
-        var visible = this.files.slice(p.from-1, p.from+p.count-1);
-        return visible;
-    
-    }
-
-    deselectAll(visibleOnly): void {
-      var visible = this.getVisible();
-      var iteratee = visibleOnly ? visible : this.files;
-      _.each(iteratee,(file: IFile): void => {
-        file.selected = false;
-      });
-    }
-
-    all(visibleOnly): boolean {
-      var visible = this.getVisible();
-      var iteratee = visibleOnly ? visible : this.files;
-//      var iteratee = 
-      return _.every(iteratee, {selected: true});
-    }
-
-    isUserProject(file: IFile): boolean {
-      return this.UserService.isUserProject(file);
-    }
-
     getManifest() {
-      var authorizedInCart = this.CartService.getAuthorizedFiles().filter(function isSelected(a){return a.selected});
+      var authorizedInCart = this.CartService.getAuthorizedFiles()
+          .filter(function isSelected(a) {
+            return a.selected;
+          });
 
       var file_ids = [];
       _.forEach(authorizedInCart, (f) => {
-
         if (f.hasOwnProperty('related_ids') && f.related_ids) {
           file_ids = file_ids.concat(f.related_ids)
         }
@@ -199,27 +158,29 @@ module ngApp.cart.controllers {
       });
 
       this.FilesService.downloadManifest(file_ids);
-
     }
 
   }
 
   class LoginToDownloadController {
-
     constructor (private $modalInstance) {}
 
-      cancel() :void {
-        this.$modalInstance.close(false);
-      }
+    cancel() :void {
+      this.$modalInstance.close(false);
+    }
 
-      goAuth() :void {
-          this.$modalInstance.close(true);
-      }
+    goAuth() :void {
+      this.$modalInstance.close(true);
+    }
   }
 
-
   angular
-      .module("cart.controller", ["cart.services", "core.services", "user.services"])
+      .module("cart.controller", [
+        "cart.services",
+        "core.services",
+        "user.services",
+        "cart.table.model"
+      ])
       .controller("LoginToDownloadController", LoginToDownloadController )
       .controller("CartController", CartController);
 }

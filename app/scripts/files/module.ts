@@ -48,6 +48,7 @@ module ngApp.files {
   angular
       .module("ngApp.files", [
         "files.controller",
+        "files.directives",
         "ui.router.state"
       ])
       .config(filesConfig);

@@ -12,6 +12,80 @@ module ngApp.cart.directives {
     removeFromCart(files: IFile[]): void;
   }
 
+  function SelectAllCart(): ng.IDirective {
+    return {
+      restrict: "AE",
+      replace: true,
+      scope: {
+        paging: "="
+      },
+      templateUrl: "cart/templates/select-all.html",
+      controller: function($scope, CartService: ICartService) {
+        $scope.files = CartService.getFiles();
+
+        function getVisible() {
+          var p = $scope.paging;
+          var visible = $scope.files.slice(p.from - 1, p.from + p.count - 1);
+          return visible;
+        }
+
+        $scope.CartService = CartService;
+        $scope.selectAll = function(visibleOnly) {
+          var visible = getVisible();
+          var iteratee = visibleOnly ? visible : $scope.files;
+          _.each(iteratee,(file: IFile): void => {
+              file.selected = true;
+          });
+        };
+
+        $scope.deselectAll = function(visibleOnly) {
+          var visible = getVisible();
+          var iteratee = visibleOnly ? visible : $scope.files;
+          _.each(iteratee, (file: IFile): void => {
+            file.selected = false;
+          });
+        };
+
+        $scope.all = function(visibleOnly) {
+          var visible = getVisible();
+          var iteratee = visibleOnly ? visible : $scope.files;
+          return _.every(iteratee, {selected: true});
+        };
+      }
+    }
+  }
+
+  function SelectSingleCart(): ng.IDirective {
+    return {
+      restrict: "AE",
+      replace: true,
+      scope: {
+        file: "="
+      },
+      templateUrl: "cart/templates/select-single.html",
+      controller: function($scope, CartService) {
+        $scope.CartService = CartService;
+      }
+    };
+  }
+
+  function RemoveSingleCart(): ng.IDirective {
+    return {
+      restrict: "A",
+      replace: true,
+      scope: {
+        file: "="
+      },
+      templateUrl: "cart/templates/remove-single.html",
+      controller: function($scope, CartService: ICartService) {
+        $scope.remove = function(id: string) {
+          CartService.remove([id]);
+          $scope.$emit("cart-update");
+        }
+      }
+    };
+  }
+
   function AddToCartSingle(): ng.IDirective {
     return {
       restrict: "AE",
@@ -93,6 +167,7 @@ module ngApp.cart.directives {
           var size: number = ($scope.paging.total >= CartService.getMaxSize()) ? CartService.getMaxSize() : $scope.paging.total;
           FilesService.getFiles({
             fields: SearchTableFilesModel.fields,
+            expand: SearchTableFilesModel.expand,
             filters: filters,
             size: size,
             from: 0
@@ -241,6 +316,7 @@ module ngApp.cart.directives {
 
           FilesService.getFiles({
             fields: SearchTableFilesModel.fields,
+            expand: SearchTableFilesModel.expand,
             filters: filters,
             size: CartService.getCartVacancySize()
           }).then((data) => {
@@ -267,6 +343,7 @@ module ngApp.cart.directives {
           };
           FilesService.getFiles({
             fields: SearchTableFilesModel.fields,
+            expand: SearchTableFilesModel.expand,
             filters: filters,
             size: CartService.getCartVacancySize()
           }).then((data) => {
@@ -348,6 +425,9 @@ module ngApp.cart.directives {
     .directive("addToCartFiltered", AddToCartFiltered)
     .directive("downloadButtonAllCart", DownloadButtonAllCart)
     .directive("cartDisplayingPieChart", CartDisplayingPieChart)
-    .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton);
+    .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton)
+    .directive("selectSingleCart", SelectSingleCart)
+    .directive("removeSingleCart", RemoveSingleCart)
+    .directive("selectAllCart", SelectAllCart);
 }
 

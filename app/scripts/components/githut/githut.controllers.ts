@@ -37,7 +37,7 @@ module ngApp.components.githut.controllers {
           options.columns.forEach(function(d, i) {
             extents[d] = d3.extent(nested_data, function(o) {
               return o.values[d];
-              
+
               // the following code block is unreachable
               if (options.dimensions.indexOf(d) > -1) {
                 return o.values[d];
@@ -67,7 +67,7 @@ module ngApp.components.githut.controllers {
 
                 if (options.dimensions.indexOf(d) === -1) {
                   __a = (a.values[use] / ((options.dimensions.indexOf(use) > -1) ? 1 : a.values[options.ref]));
-                  __b = (b.values[use] / ((options.dimensions.indexOf(use) > -1) ? 1 : b.values[options.ref]))  
+                  __b = (b.values[use] / ((options.dimensions.indexOf(use) > -1) ? 1 : b.values[options.ref]))
                 }
 
                 return sorting(__a, __b);
@@ -79,7 +79,7 @@ module ngApp.components.githut.controllers {
                   return o.values[use] / ((options.dimensions.indexOf(use) > -1) ? 1 : o.values[options.ref]);
                 }
               });
-          
+
             scales[d] = d3.scale.ordinal()
               .domain(domain)
               .rangePoints([HEIGHT - (margins.top + margins.bottom + padding.top + padding.bottom), 0]);
@@ -107,7 +107,7 @@ module ngApp.components.githut.controllers {
         yscales = scales;
         width_scales = wscales;
       }
-      
+
       function createAxes() {
         var axes = {};
         options.columns.forEach(function(col){
@@ -160,14 +160,14 @@ module ngApp.components.githut.controllers {
               if (values.indexOf(d) >- 1) {
                 return d3.format(d >= 100 ? ",.0f" : ",.2f")(d);
               }
-              return "";  
+              return "";
             } else {
               return d3.format(d>=100?",.0f":",.2f")(d);
             }
           });
         });
       }
-      
+
       function addAxes() {
         var column = columns.selectAll("g.column")
           .data(options.columns)
@@ -209,27 +209,27 @@ module ngApp.components.githut.controllers {
             return d;
           });
 
-            
+
         if (options.superhead) {
           svg.append("g")
             .attr("height", 100)
             .attr("transform", function(d){
-            var x = xscale(options.superhead.start) + 
+            var x = xscale(options.superhead.start) +
                     (0.5 * (xscale(options.superhead.end) - xscale(options.superhead.start))) +
                     padding.left + margins.left,
                 y = 10;
               return "translate(" + x + "," + y + ")";
-            })  
+            })
             .append("text")
             .text(options.superhead.text)
             .style("text-anchor", "middle")
             .attr("class","title");
-          
+
           svg.append("rect")
             .attr("width", xscale(options.superhead.end) - xscale(options.superhead.start))
             .attr("height", 1)
             .attr("y", 15)
-            .attr("x", xscale(options.superhead.start) + padding.left + margins.left);  
+            .attr("x", xscale(options.superhead.start) + padding.left + margins.left);
         }
 
         var axis = column
@@ -297,11 +297,11 @@ module ngApp.components.githut.controllers {
             return d3.format("s")(d.value);
           })
       }
-      
+
       function updateAxes() {
         columns.selectAll("g.axis")
           .selectAll("g.tick")
-          .data(function(d) {        
+          .data(function(d) {
             var ticks = [0, width_scales[d].domain()[1]]
                 .map(function(v,i){
                   return {
@@ -324,11 +324,10 @@ module ngApp.components.githut.controllers {
             return d3.format("s")(d.value);
           })
       }
-      
+
       function createLanguages(languages) {
         languages.append("g")
           .attr("class", "connections");
-        
 
         languages.append("g")
           .attr("class", "markers");
@@ -337,7 +336,7 @@ module ngApp.components.githut.controllers {
           .attr("class", "lang-label")
           .call(createLangLabel);
       }
-      
+
       function updateMarkers(duration) {
         var marker = languages_group
           .selectAll(".lang").select("g.markers")
@@ -394,11 +393,11 @@ module ngApp.components.githut.controllers {
           .attr("transform",function(d){
             var x = xscale(d.column),
                 y = yscales[d.column](d.value/d.ref);
-            
+
             if (d[d.column] === 0) {
               y = yscales[d.column].range()[0];
             }
-                
+
             if (options.dimensions.indexOf(d.column) > -1) {
               y = yscales[d.column](d.value);
             }
@@ -425,7 +424,7 @@ module ngApp.components.githut.controllers {
           .select("g.connections")
             .selectAll("g.connection")
             .data(function(d) {
-              var flattened = options.columns.map(function(col, i) {  
+              var flattened = options.columns.map(function(col, i) {
                 var use = options.use[col] || col;
 
                 var val = {
@@ -475,7 +474,7 @@ module ngApp.components.githut.controllers {
             },function(d){
               return d.lang;
             });
-          
+
         connection.exit().remove();
 
         var new_connection = connection.enter()
@@ -491,7 +490,7 @@ module ngApp.components.githut.controllers {
             .attr("class","line");
 
         var paths = ["line", "hover"];
-          
+
         paths.forEach(function(p) {
           connection.select("path." + p)
           .transition()
@@ -501,14 +500,14 @@ module ngApp.components.githut.controllers {
           });
         });
       }
-      
+
       function updateLabels(duration) {
         var labelAdjust = 25;
         var labels = labels_group
           .selectAll(".labels")
           .selectAll("g.label")
           .data(function(d){
-            return options.columns.map(function(col) {  
+            return options.columns.map(function(col) {
               var use = options.use[col] || col;
               return {
                 lang: d.key,
@@ -521,14 +520,14 @@ module ngApp.components.githut.controllers {
               }
             })
           });
-          
+
         var new_label = labels.enter()
           .append("g")
           .attr("class", "label")
           .classed("primary_site", function(d) {
             return d.column === "primary_site";
           });
-      
+
         new_label
           .filter(function(d) {
             return d.column !== "primary_site" && d.column !== options.title_column;
@@ -561,11 +560,11 @@ module ngApp.components.githut.controllers {
               z.href(z);
             }
           });
-            
+
         labels
           .selectAll("path.label")
             .attr("d", "M0,0L0,0");
-          
+
         labels
           .selectAll("rect.ix")
             .attr("width", 0)
@@ -594,17 +593,16 @@ module ngApp.components.githut.controllers {
             }
 
             options.filters = options.filters || {};
-      
+
             var filter = options.filters[d.column] || undefined;
-      
+
             if (d.column === "primary_site" && _.contains(drawn_primary_sites, d.value)) {
               return "";
             }
-      
             if (d.column === "primary_site") {
               drawn_primary_sites.push(d.value);
             }
-        
+
             if (_.isNumber(d.value)) {
               var commify = d3.format(",");
               if (filter) {
@@ -623,7 +621,7 @@ module ngApp.components.githut.controllers {
 
             // the following code block is unreachable
             if (d.column === "primary_site") {
-              return d.value;    
+              return d.value;
             } else if (d.column ==="Simple nucleotide variation") {
               return d.value;
             } else if(options.formats[d.column]) {
@@ -653,7 +651,7 @@ module ngApp.components.githut.controllers {
           .attr("d", function(d) {
             var dw = 10,
                 w = d.text_width + dw;
-                
+
             return "M" + (w / 2 + dw / 2) + ",0l-" + dw / 2 + ",-10l-" + w + ",0l0,20l" + w + ",0z";
           })
           .attr("x", 50)
@@ -710,7 +708,7 @@ module ngApp.components.githut.controllers {
             .classed("hover", function(l) {
               return l.values.primary_site == d.value;
             });
-        
+
             languages_group
             .selectAll(".lang")
             .classed("hover", function(l) {
@@ -741,7 +739,7 @@ module ngApp.components.githut.controllers {
             return d.values[options.title_column];
           })
       }
-      
+
       function updateLangLabels(duration) {
         languages_group.selectAll(".lang")
           .select("g.lang-label")
@@ -756,7 +754,7 @@ module ngApp.components.githut.controllers {
               return "translate(" + x + "," + y + ")";
             });
       }
-      
+
       var LHR = this.$window.$(options.container);
 
       LHR.addClass(options.containerClass);
@@ -827,7 +825,7 @@ module ngApp.components.githut.controllers {
           patternTransform: "rotate(-45 0 0)",
           patternUnits: "userSpaceOnUse"
         });
-      
+
       defs.append("rect")
         .attr({
           x: 0,
@@ -839,7 +837,7 @@ module ngApp.components.githut.controllers {
           stroke:"none",
           fill:"#fff"
         });
-      
+
       defs.append("line")
         .attr({
           x0: 0,
@@ -864,7 +862,7 @@ module ngApp.components.githut.controllers {
           width_scales = {},
           extents = {},
           yAxes = {};
-      
+
       var languages_group = svg.append("g")
           .attr("id", "languages")
           .attr("transform", "translate(" + (margins.left + padding.left) + "," +
@@ -924,15 +922,15 @@ module ngApp.components.githut.controllers {
               return yscales[options.use[d.col] || d.col](d.y);
             }
           });
-      
+
       var drawn_primary_sites = [];
-      
+
       updateScales();
       addAxes();
       createLanguages(language);
       updateConnections(-1);
       updateMarkers(-1);
-      updateLabels(-1);  
+      updateLabels(-1);
       updateLangLabels(-1);
     }
   }

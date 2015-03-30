@@ -54,8 +54,8 @@ angular.module('projects.githut.config',[])
     }, {name: 'files.data_type', value: d.column}]);
 
     $state.go("search.participants", {filters:JSON.parse(filter)});
-  }  
-  
+  }
+
   return [
     {
       id: 'project_id',

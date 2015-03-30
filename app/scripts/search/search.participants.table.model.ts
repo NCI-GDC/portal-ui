@@ -97,14 +97,12 @@ module ngApp.search.models {
             id: "project.project_id",
             enabled: true,
             sortable: true,
-            sref: function(field, row, scope, $filter) {
-                var project = _.find(row, (item) => {
-                    return item.id === "project";
-                });
-
-                return {
-                    state: "/projects/" + project.val.project_id
-                };
+            compile: function ($scope) {
+              var project = _.result(_.findWhere($scope.row, {'id': 'project'}), 'val');
+              var htm = '<a data-ng-href="/projects/' + project.project_id + '" data-tooltip="' +
+                        project.name + '" tooltip-append-to-body="true" tooltip-placement="right">' +
+                        project.project_id + '</a>';
+              return htm;
             }
         }, {
             displayName: "Primary Site",

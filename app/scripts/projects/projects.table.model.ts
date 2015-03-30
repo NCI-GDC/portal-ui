@@ -37,11 +37,12 @@ module ngApp.projects.models {
         displayName: "ID",
         id: "project_id",
         enabled: true,
-        sref: function (field, scope) {
-          var project_id = _.result(_.findWhere(scope, {'id': 'project_id'}), 'val');
-          return {
-            state: "/projects/" + project_id
-          };
+        compile: function ($scope) {
+          var project_id = _.result(_.findWhere($scope.row, {'id': 'project_id'}), 'val');
+          var projectName = _.result(_.findWhere($scope.row, {'id': 'name'}), 'val');
+          var htm = '<a data-ng-href="/projects/' + project_id + '" data-tooltip="' + projectName +
+                    '" tooltip-append-to-body="true" tooltip-placement="right">' + project_id + '</a>';
+          return htm;
         }
       }, {
         displayName: "Disease Type",
@@ -322,7 +323,8 @@ module ngApp.projects.models {
       "disease_type",
       "state",
       "primary_site",
-      "project_id"
+      "project_id",
+      "name"
     ],
     expand: [
       "summary",

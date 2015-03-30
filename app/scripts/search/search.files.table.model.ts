@@ -36,7 +36,7 @@ module ngApp.search.models {
         displayName: "add_to_cart",
         id: "add_to_cart",
         compile: function ($scope) {
-          $scope.arrayRow = arrayToObject($scope.row); // TODO: the file being passed here is wrong how to fix?
+          $scope.arrayRow = arrayToObject($scope.row);
           var htm = '<div add-to-cart-single file="arrayRow"></div>';
           return htm;
         },
@@ -50,10 +50,9 @@ module ngApp.search.models {
         displayName: "download",
         id: "download",
         compile: function ($scope) {
-          $scope.file = arrayToObject($scope.row); // TODO: the file being passed here is wrong how to fix?
+          $scope.file = arrayToObject($scope.row);
           var htm = '<a class="btn btn-primary" download-button files=file>' +
-//          var htm = '<a class="btn btn-primary" download-button data-ng-href="{{ [file.file_id].concat(file.related_ids || []) | makeDownloadLink }}">' +
-              '<i class="fa fa-download"></i></a>';
+                    '<i class="fa fa-download"></i></a>';
           return htm;
         },
         noTitle: true,
@@ -159,16 +158,16 @@ module ngApp.search.models {
             }
           }
         },
-        sref: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
-          var participants: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
-            return a.id === 'participants'
-          });
-          if (participants.val.length === 1) {
-            return {
-              state: "/projects/" + participants.val[0].project.project_id
-            };
+        compile: function ($scope) {
+          var participants = _.result(_.findWhere($scope.row, {'id': 'participants'}), 'val'),
+              href, projectNames, projectVal;
+
+          if (participants.length === 1) {
+            href = "/projects/" + participants[0].project.project_id;
+            projectNames = participants[0].project.name;
+            projectVal = participants[0].project.project_id;
           } else if (participants.val.length > 1) {
-            var projects = _.map(participants.val, (participant: TableicousEntryDefinition) => {
+            var projects = _.map(participants, (participant: TableicousEntryDefinition) => {
               return {
                 project_id: participant.project.project_id
               };
@@ -179,17 +178,23 @@ module ngApp.search.models {
             }));
 
             if (projectId.length === 1) {
-              return {
-                state: "/projects/" + projects[0].project_id
-              };
-            }
+              href = "/projects/" + participants[0].project.project_id;
+              projectNames = participants[0].project.name;
+              projectVal = participants[0].project.project_id;
+            } else {
+              var filters = $filter("makeFilter")([{name: "project_id", value: projectId}]);
 
-            var filters = $filter("makeFilter")([{name: "project_id", value: projectId}]);
-            return {
-              state: "/projects/t",
-              filters: filters
-            };
+              projectNames = _.map(participants, (participant: TableicousEntryDefinition) => {
+                return participant.project.name;
+              }).join("<br />");
+              projectVal = projectId.length;
+              href = "/projects/t?filters=" + angular.fromJson(filters);
+            }
           }
+
+          var htm = '<a data-ng-href="' + href + '" data-tooltip="' + projectNames +
+                    '" tooltip-append-to-body="true" tooltip-placement="right">' + projectVal + '</a>';
+          return htm;
         },
         sortable: true
       }, {

@@ -40,7 +40,7 @@ var paths = {
   "src": "./src",
   "dev": "./dist",
   "stage": "./dist",
-  "bower": "./bower_components/**/*.{js,css,map,eot,svg,ttf,woff}",
+  "bower": "./bower_components/**/*.{js,css,map,eot,svg,ttf,woff,woff2}",
   js: {},
   html: {}
 };

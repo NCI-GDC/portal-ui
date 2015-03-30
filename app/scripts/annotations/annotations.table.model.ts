@@ -35,13 +35,12 @@ module ngApp.projects.models {
         {
             displayName: "Project",
             id: "project.project_id",
-            sref: function (field, row) {
-                var project = _.find(row, (a) => {
-                    return a.id === "project";
-                });
-                return {
-                    state: "/projects/" + project.val.project_id
-                };
+            compile: function ($scope) {
+                var project = _.result(_.findWhere($scope.row, {'id': 'project'}), 'val');
+                var htm = '<a data-ng-href="/projects/' + project.project_id + '" data-tooltip="' +
+                          project.name + '" tooltip-append-to-body="true" tooltip-placement="right">' +
+                          project.project_id + '</a>';
+                return htm;
             },
             sortable: true
         },

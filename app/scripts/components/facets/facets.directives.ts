@@ -1,10 +1,11 @@
 module ngApp.components.facets.directives {
   import IFacet = ngApp.models.IFacet;
+  import IProjectsService = ngApp.projects.services.IProjectsService;
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import ITermsController = ngApp.components.facets.controllers.ITermsController;
 
   /* @ngInject */
-  function Terms(): ng.IDirective {
+  function Terms(ProjectsService: IProjectsService): ng.IDirective {
     return {
       restrict: "E",
       scope: {
@@ -19,6 +20,8 @@ module ngApp.components.facets.directives {
       templateUrl: "components/facets/templates/facet.html",
       controller: "termsCtrl as tc",
       link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: ITermsController) => {
+        $scope.ProjectsService = ProjectsService;
+
         $scope.add = (facet: string, term: string, event: any) => {
           if (event.which === 13) {
             elem.closest(".list-group").focus();

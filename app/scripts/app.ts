@@ -28,6 +28,7 @@ import IRootScope = ngApp.IRootScope;
 import IGDCConfig = ngApp.IGDCConfig;
 import INotifyService = ng.cgNotify.INotifyService;
 import IUserService = ngApp.components.user.services.IUserService;
+import IProjectsService = ngApp.projects.services.IProjectsService;
 
 /* @ngInject */
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
@@ -48,7 +49,8 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
                 $state: ng.ui.IStateService, CoreService: ICoreService,
                 $rootScope: IRootScope, config: IGDCConfig, notify: INotifyService,
                 $cookies: ng.cookies.ICookiesService,
-                UserService: IUserService) {
+                UserService: IUserService,
+                ProjectsService: IProjectsService) {
   gettextCatalog.debug = true;
 
   $rootScope.config = config;
@@ -76,6 +78,17 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
   });
 
   UserService.login();
+
+  ProjectsService.getProjects({
+    size: 100
+  })
+  .then((data) => {
+    var mapping = {};
+    _.each(data.hits, (project) => {
+      mapping[project.project_id] = project.name;
+    });
+    ProjectsService.projectIdMapping = mapping;
+  });
 
   $rootScope.$on("$stateChangeStart", () => {
     // Page change

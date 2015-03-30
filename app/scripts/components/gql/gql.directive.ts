@@ -1,5 +1,24 @@
 // FIXME kind of getting out of hand
 
+/*
+ Behaviours Requirements
+
+ - Autocomplete fields names
+ - Autocomplete operators
+ - Autocomplete values
+ - Autocomplete values in array [..., ..., ...]
+ - Position aware autocomplete when editing query
+ - Make available all autocomplete results, limit view, offer scrolling
+ - Autocomplete when modifying values
+ - Autocomplete when modifying fields
+ - Handle autocomplete while inside parens
+ - Autocomplete Ids
+
+ - Give feedback on Errors
+
+ - Handle keyboard actions (arrow keys, enter to submit, ...)
+ */
+
 module ngApp.components.gql.directives {
   import IGDCWindowService = ngApp.models.IGDCWindowService;
   import IFilesService = ngApp.files.services.IFilesService;

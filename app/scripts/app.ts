@@ -75,10 +75,7 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
     }
   });
 
-  var userToken = $cookies["X-Auth-Token"];
-  if (userToken) {
-    UserService.login();
-  }
+  UserService.login();
 
   $rootScope.$on("$stateChangeStart", () => {
     // Page change

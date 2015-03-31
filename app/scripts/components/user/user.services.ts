@@ -5,7 +5,7 @@ module ngApp.components.user.services {
   import IGDCConfig = ngApp.IGDCConfig;
 
   export interface IUserService {
-    login(username: string): void;
+    login(): void;
     logout(): void;
     setUser(user: IUser): void;
     toggleFilter(): void;
@@ -19,24 +19,28 @@ module ngApp.components.user.services {
     currentUser: IUser;
 
     /* @ngInject */
-    constructor(private Restangular: restangular.IService, private $rootScope: ng.IRootScopeService,
-                private LocationService: ILocationService, private $cookies: ng.cookies.ICookiesService,
-                private $window: ng.IWindowService) {}
+    constructor(private Restangular: restangular.IService,
+                private $rootScope: ng.IRootScopeService,
+                private LocationService: ILocationService,
+                private $cookies: ng.cookies.ICookiesService,
+                private $window: ng.IWindowService,
+                private $log: ng.ILogService) {}
 
     login(): void {
-      if (!this.$cookies["X-Auth-Token"]) {
-        return;
-      }
-
       this.Restangular.all("auth/login")
       .withHttpConfig({
         withCredentials: true
       })
       .post({}, {})
       .then((data) => {
-        data.isFiltered = true;
-        data.username = this.$cookies["X-Auth-Username"];
-        this.setUser(data);
+          data.isFiltered = true;
+          this.setUser(data);
+      }, (response) => {
+        if(response.status === 401) {
+          return;
+        } else {
+          this.$log.error("Error logging in, response status " + response.status);
+        }
       });
     }
 
@@ -89,7 +93,7 @@ module ngApp.components.user.services {
       if (!this.currentUser) {
         return false;
       }
-      
+
       var projectIds;
 
       // Support multiple use cases

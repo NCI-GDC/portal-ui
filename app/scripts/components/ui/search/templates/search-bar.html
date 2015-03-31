@@ -6,12 +6,14 @@
       </div>
 
       <div style="position: relative">
-        <gql data-gql="sb.gql" data-query="sb.query"></gql>
+        <gql data-gql="sb.gql" data-query="sb.query" data-error="sb.Error"></gql>
         <span style="position: absolute; top: 5px;left:10px">
           <span data-ng-if="sb.gql.filters"><i class="text-success fa fa-check-square"></i></span>
           <span data-ng-if="!sb.gql.filters"><i class="text-danger fa fa-remove"></i></span>
         </span>
+        <div data-ng-if="!sb.gql.filters && !!sb.Error" style="padding: 1rem;" class="alert-danger"><i class="text-danger fa fa-warning"></i> {{sb.Error.line}} : {{sb.Error.column}} - {{sb.Error.message}}</div>
       </div>
+
 
       <div class="panel-footer text-right">
             <a

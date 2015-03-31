@@ -1,13 +1,12 @@
 <textarea
     class="form-control"
-
     style="border:none;box-shadow: none;border-radius: 0;padding-left: 40px"
     data-ng-model="query"
     data-ng-model-options="{ debounce: 200 }"
     data-ng-change="onChange()"
-    data-ng-keydown="keypress($event)"
+    data-nng-keyup="keypress($event)"
     aria-label="Advanced Query"
     placeholder="Start Typing Your Query...."
-    data-ng-trim="false"
+    data-nng-trim="false"
     role="textbox">
 </textarea>

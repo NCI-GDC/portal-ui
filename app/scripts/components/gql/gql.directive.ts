@@ -6,15 +6,20 @@
  - Autocomplete fields names
  - Autocomplete operators
  - Autocomplete values
- - Autocomplete values in array [..., ..., ...]
- - Position aware autocomplete when editing query
- - Make available all autocomplete results, limit view, offer scrolling
- - Autocomplete when modifying values
- - Autocomplete when modifying fields
- - Handle autocomplete while inside parens
  - Autocomplete Ids
 
+ - Autocomplete values in array [..., ..., …]
+ - Handle autocomplete while inside parens
+
+ - Make available all autocomplete results, limit view, offer scrolling
+
+ - Position aware autocomplete when editing query
+ - Autocomplete when modifying values
+ - Autocomplete when modifying fields
+
  - Give feedback on Errors
+
+ - Field type aware operator suggestions - eg. only offer < > for numeric/date types
 
  - Handle keyboard actions (arrow keys, enter to submit, ...)
  */
@@ -77,6 +82,7 @@ module ngApp.components.gql.directives {
   /* @ngInject */
   function gqlInput($window: IGDCWindowService,
                     $compile: ng.ICompileService,
+                    Restangular: restangular.IService,
                     FilesService: IFilesService,
                     ParticipantsService: IParticipantsService): ng.IDirective {
     return {
@@ -84,11 +90,156 @@ module ngApp.components.gql.directives {
       replace: true,
       scope: {
         gql: '=',
-        query: '='
+        query: '=',
+        error: '='
       },
       templateUrl: "components/gql/templates/gql.html",
       link: function ($scope: IGqlScope, element: any) {
+        var ds = Restangular.all("gql");
+        var mapping;
+        ds.get('_mapping', {}).then((m) => {
+          mapping = m;
+        });
+
         var inactive = -1;
+
+        $scope.mode = "fresh";
+
+        function getPos(element) {
+          if ('selectionStart' in element) {
+            return element.selectionStart;
+          } else if (document.selection) {
+            element.focus();
+            var sel = document.selection.createRange();
+            var selLen = document.selection.createRange().text.length;
+            sel.moveStart('character', -element.value.length);
+            return sel.text.length - selLen;
+          }
+        }
+
+        function setPos(element, caretPos) {
+          if (element.createTextRange) {
+            var range = element.createTextRange();
+            range.move('character', caretPos);
+            range.select();
+          } else {
+            element.focus();
+            if (element.selectionStart !== undefined) {
+              element.setSelectionRange(caretPos, caretPos);
+            }
+          }
+        }
+
+        $scope.keypress = (event) => {
+          var index = getPos(element[0]);
+          console.log($scope.query.substring(0, index));
+          console.log($scope.query.substring(index));
+        };
+
+        function countNeedle(stack:string, needle: string) {
+          return stack.split(needle).length - 1
+        }
+
+        function isCountOdd(stack: string, needle: string) : boolean {
+          return  countNeedle(stack, needle) % 2 !== 0;
+        }
+
+        function unbalanced(stack: string, start: string, end: string) {
+          // http://stackoverflow.com/questions/881085/count-the-number-of-occurences-of-a-character-in-a-string-in-javascript
+          var numStart = countNeedle(stack, start);
+          var numEnd = countNeedle(stack, end);
+          return  numStart > numEnd;
+        }
+
+        $scope.onChange = () => {
+          var index = getPos(element[0]);
+          var left = $scope.query.substring(0, index);
+          var right = $scope.query.substring(index);
+
+          var ob = '[';
+          var cb = ']';
+          var quote = '"';
+          var space =' ';
+          var in_quoted_string = false;
+          var in_list_of_values;
+
+          if (in_list_of_values = unbalanced(left, ob, cb)) {
+            console.log("in list");
+            var ls = left.lastIndexOf(ob) + 1;
+            var le = right.indexOf(cb) !== -1 ? right.indexOf(cb) : right.length;
+            var vsFromStart = left.substring(ls);
+            var vsFromEnd = right.substring(0, le);
+            var values = _.map((vsFromStart + vsFromEnd).split(','), (x) => {
+              return x.trim();
+            });
+            var newLeft = left.substring(0, ls);
+            console.log("left: ", left);
+            console.log("right: ", right);
+            console.log("ls: ", ls);
+            console.log("le: ", le);
+            console.log("vsS: ", vsFromStart);
+            console.log("vsE: ", vsFromEnd);
+            console.log("newL: ", newLeft);
+
+            var parts = _.filter(newLeft.split(space), (x) => {
+              return x;
+            });
+            var op = parts[parts.length - 2];
+            var field = parts[parts.length - 3];
+
+            console.log("values: ", values);
+            console.log("op: ", op);
+            console.log("field: ", field);
+          }
+          else if (in_quoted_string = isCountOdd(left, quote)) {
+            console.log("in unquoted");
+          } else {
+            var is_value_string = false;
+            var is_field_string = false;
+
+            var parts = _.filter(left.split(' '), (x) => {
+              return x;
+            });
+            var curr = parts[parts.length - 1];
+            var op = parts[parts.length - 2];
+            var field = parts[parts.length - 3];
+
+            if (is_field_string = parts.length === 1 || ["and", "or"].indexOf(op) !== -1) {
+              console.log("in field: ", curr);
+            }
+            else if (is_value_string = ["=", "!="].indexOf(op) !== -1) {
+              console.log("in value: ", curr);
+              console.log("op: ", op);
+              console.log("field: ", field);
+            }
+
+          }
+
+
+
+        };
+
+
+        function gqlParse(event) {
+          console.log(event);
+          switch ($scope.mode) {
+            case "fresh":
+              console.log("new query");
+              break;
+            case "field":
+              console.log("field");
+              break;
+            case "operator":
+              console.log("operator");
+              break;
+            case "value":
+              console.log("value");
+              break;
+          }
+        }
+
+
+
 
         $scope.ajax = false;
         $scope.term = "";
@@ -102,18 +253,6 @@ module ngApp.components.gql.directives {
 
         function clean(e: string): boolean {
           return (e !== undefined) && ['[A-Za-z0-9\\-_.]', '[0-9]', '[ \\t\\r\\n]', '"', '('].indexOf(e) == -1;
-        }
-
-        function formatForAutoComplete(errors: IGqlExpected[]): IGqlExpected[] {
-          return _.map(_.take(errors, 10), (e) => {
-            var es: string[] = e.value.split(".");
-            if (es.length > 1) {
-              e.icon = es[0];
-              es.shift();
-            }
-            e.text = es.join(".");
-            return e;
-          });
         }
 
         function ajaxRequest(field: string): ng.IPromise {
@@ -143,9 +282,9 @@ module ngApp.components.gql.directives {
             });
           }
         }
+
         var oldQuery = "";
-        function gqlParse() {
-          console.log('her');
+        function gqlParse1() {
           try {
             if ($scope.query != oldQuery) {
               oldQuery = $scope.query;
@@ -170,11 +309,22 @@ module ngApp.components.gql.directives {
             $scope.gql= null;
             // capture Error info
             $scope.Error = Error;
+            $scope.error = Error;
+
+            var field_mode = _.some(Error.expected, (e: IGqlExpected): boolean => {
+              return ["[A-Za-z0-9\\-_.]"].indexOf(e.value.toString()) !== -1;
+            });
+
             // determine if ajax needed
             $scope.ajax = _.some(Error.expected, (e: IGqlExpected): boolean => {
               return ['\"', ','].indexOf(e.value) !== -1;
             });
-            if ($scope.ajax) {
+
+            if (field_mode) {
+              $scope.totalErrors = $scope.errors = mapping;
+              console.log($scope.errors);
+            }
+            else if ($scope.ajax) {
               var terms: string[] = [];
               var qs = splitOnOp(Error.offset);
               if (qs[qs.length - 2] === " in [") {
@@ -217,7 +367,7 @@ module ngApp.components.gql.directives {
           });
         }
 
-        $scope.onChange = () => {
+        $scope.onChange1 = () => {
           $scope.focus = true;
           gqlParse();
         };
@@ -256,7 +406,7 @@ module ngApp.components.gql.directives {
           return !!($scope.focus && $scope.query.length > 0 && results);
         };
 
-        $scope.keypress = (e: any) => {
+        $scope.keypress1 = (e: any) => {
           if (e.which === 13 || e.keyCode === 13) {
             e.preventDefault();
             $scope.enter();
@@ -270,6 +420,9 @@ module ngApp.components.gql.directives {
           } else if (e.which === 40 || e.keyCode === 40) {
             e.preventDefault();
             $scope.cycle(1);
+          }
+          else {
+            //gqlParse();
           }
         };
 

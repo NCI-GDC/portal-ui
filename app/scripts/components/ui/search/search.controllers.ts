@@ -12,9 +12,11 @@ module ngApp.components.ui.search.controllers {
   class SearchBarController implements ISearchBarController {
     gql: any = null;
     query: string = "";
+    Error: any = null;
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope, private LocationService: ILocationService,
+    constructor(private $scope: ng.IScope,
+                private LocationService: ILocationService,
                 private $state: ng.ui.IStateService) {
 
       $scope.$watch("query", () => {

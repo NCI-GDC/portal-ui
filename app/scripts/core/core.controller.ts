@@ -1,6 +1,7 @@
 module ngApp.core.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import INotifyService = ng.cgNotify.INotifyService;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface ICoreController {
     showWarning: boolean;
@@ -73,27 +74,29 @@ module ngApp.core.controllers {
   }
 
   angular
-      .module("core.controller", ["ngCookies"])
+      .module("core.controller", ["ngCookies", "user.services"])
       .controller("WarningController", WarningController)
-      .directive('loginButton',function(){
+      .directive('authButton', function(){
         return {
           restrict:'A',
+          scope: {
+            redirect: "@"
+          },
           controller:function($scope,$element,$window){
             $element.on('click',function(){
-              var loginQuery;
+              var authQuery;
 
               if ($window.location.port) {
-                loginQuery = "?next=" + ":" + $window.location.port + $window.location.pathname;
+                authQuery = "?next=" + ":" + $window.location.port + $window.location.pathname;
               } else {
-                loginQuery = "?next=" + $window.location.pathname;
+                authQuery = "?next=" + $window.location.pathname;
               }
 
-              $window.location = 'https://gdc.nci.nih.gov' + loginQuery;
+              $window.location = $scope.redirect + authQuery;
 
             });
           }
         }
-
       })
       .controller("CoreController", CoreController);
 }

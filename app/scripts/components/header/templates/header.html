@@ -33,7 +33,7 @@
           </select>
         </li>
         <li data-ng-if="!hc.UserService.currentUser">
-          <a login-button>
+          <a auth-button data-redirect="https://gdc.nci.nih.gov">
             <i class="fa fa-sign-in"></i>
             <span data-translate>Login</span>
           </a>
@@ -60,7 +60,7 @@
                   </a>
                 </li>
                 <li>
-                  <a data-ng-click="hc.logout()">
+                  <a auth-button data-redirect="https://gdc.nci.nih.gov/logout">
                     <i class="fa fa-sign-out"></i>
                     <span data-translate>Logout</span>
                   </a>

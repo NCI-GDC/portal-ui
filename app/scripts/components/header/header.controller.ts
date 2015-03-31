@@ -13,14 +13,11 @@ module ngApp.components.header.controllers {
     addedLanguages: boolean;
     setLanguage(): void;
     getNumCartItems(): number;
-    logout(): void;
-    loginQuery: string;
   }
 
   class HeaderController implements IHeaderController {
     isCollapsed: boolean = true;
     currentLang: string = "en";
-    loginQuery: string = "";
     addedLanguages: boolean = false;
     languages: any = {
       "en": "English",
@@ -34,17 +31,6 @@ module ngApp.components.header.controllers {
                 private UserService: IUserService, private $modal: any,
                 private $window: ng.IWindowService) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
-
-      if ($window.location.port) {
-        this.loginQuery = "?next=:" + $window.location.port;
-      } else {
-        this.loginQuery = "?next=/";
-      }
-    }
-
-    logout(): void {
-      this.UserService.logout();
-      this.$window.location.reload();
     }
 
     getToken(): void {

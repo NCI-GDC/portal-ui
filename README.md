@@ -58,9 +58,10 @@ It is important that this keeps in sync with the host the API is set to. Changin
 
 #### Modifying /etc/hosts
 In order to support local use of the login system we need to add the following
-to your `/etc/hosts` file.
+to your `/etc/hosts` file:
 
 `127.0.0.1 portal.gdc.nci.nih.gov`
+`192.170.230.212 gdc.nci.nih.gov`
 
 ### ElasticSearch
 Edit path-to-elastic-search/config/elasticsearch.yml, find the line with http.max_content_length, add

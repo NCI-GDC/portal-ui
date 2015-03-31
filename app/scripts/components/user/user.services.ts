@@ -6,7 +6,6 @@ module ngApp.components.user.services {
 
   export interface IUserService {
     login(): void;
-    logout(): void;
     setUser(user: IUser): void;
     toggleFilter(): void;
     addMyProjectsFilter(filters: any, key: string): any;
@@ -73,16 +72,6 @@ module ngApp.components.user.services {
     setUser(user: IUser): void {
       this.currentUser = user;
       this.$rootScope.$broadcast("gdc-user-reset");
-    }
-
-    logout(): void {
-      // Angular's $cookies/$cookieStore services abstract away the ability to set
-      // the expiration time. Manual manipulation seems to be required.
-      // See: http://stackoverflow.com/questions/12624181/angularjs-how-to-set-expiration-date-for-cookie-in-angularjs
-      this.$window.document.cookie = "X-Auth-Token= ;expires=" + new Date().toGMTString() +
-                                     ";domain=.nci.nih.gov;path= /";
-      this.$window.document.cookie = "X-Auth-Username= ;expires=" + new Date().toGMTString() +
-                                     ";domain=.nci.nih.gov;path= /";
     }
 
     toggleFilter(): void {

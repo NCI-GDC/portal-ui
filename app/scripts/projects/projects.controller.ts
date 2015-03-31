@@ -50,7 +50,6 @@ module ngApp.projects.controllers {
     }
 
     refresh() {
-
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
           fields: this.ProjectTableModel.fields,
@@ -67,25 +66,25 @@ module ngApp.projects.controllers {
         }).then((data) => {
           this.projects = data;
           if (this.ProjectsState.tabs.graph.active) {
-            this.drawTable(this.projects);
-          } else if(this.ProjectsState.tabs.summary.active) {
+            this.drawGraph(this.projects);
+          } else if(this.ProjectsState.tabs.summary.active || this.numPrimarySites === 0) {
             this.numPrimarySites = _.unique(this.projects.hits, (project) => { return project.primary_site; }).length;
           }
         });
       } else {
         this.tabSwitch = false;
         if (this.ProjectsState.tabs.graph.active) {
-          this.drawTable(this.projects);
+          this.drawGraph(this.projects);
         }
       }
     }
 
-  	drawTable(data) {
-  		var githut = this.ProjectsGithut(data);
+    drawGraph(data) {
+      var githut = this.ProjectsGithut(data);
 
-  		this.githutData = githut.data;
-  		this.githutConfig = githut.config;
-  	}
+      this.githutData = githut.data;
+      this.githutConfig = githut.config;
+    }
 
     select(section: string, tab: string) {
       this.ProjectsState.setActive(section, tab);

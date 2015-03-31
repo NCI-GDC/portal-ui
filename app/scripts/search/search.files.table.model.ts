@@ -257,7 +257,8 @@ module ngApp.search.models {
       "archive.archive_id"
     ],
     expand: [
-      "participants"
+      "participants",
+      "participants.project"
     ]
   };
   angular.module("search.table.files.model", [])

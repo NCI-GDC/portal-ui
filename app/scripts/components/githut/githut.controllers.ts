@@ -67,7 +67,7 @@ module ngApp.components.githut.controllers {
 
                 if (options.dimensions.indexOf(d) === -1) {
                   __a = (a.values[use] / ((options.dimensions.indexOf(use) > -1) ? 1 : a.values[options.ref]));
-                  __b = (b.values[use] / ((options.dimensions.indexOf(use) > -1) ? 1 : b.values[options.ref]))
+                  __b = (b.values[use] / ((options.dimensions.indexOf(use) > -1) ? 1 : b.values[options.ref]));
                 }
 
                 return sorting(__a, __b);
@@ -715,6 +715,30 @@ module ngApp.components.githut.controllers {
                 return l.values.primary_site == d.value;
             });
           });
+
+        // Mouseover trigger for highlighting all paths that cross through
+        // a label that isn't primary site or project id
+        labels
+        .filter(function(d) {
+          return d.column !== "primary_site" && d.column !== "project_id";
+        })
+        .on("mouseover", function(d) {
+          labels_group
+          .selectAll(".labels")
+          .classed("hover", function(l) {
+            var ret = l.values[d.column] === d.value;
+
+            // Don't forget to ensure the connecting lines themselves
+            // are highlighted
+            if (ret) {
+              languages_group
+                .selectAll("g.lang[rel='" + l.key + "']")
+                .classed("hover", true);
+            }
+
+            return ret;
+          });
+        });
       }
 
       function createLangLabel(lang_label) {
@@ -890,7 +914,7 @@ module ngApp.components.githut.controllers {
           })
           .on("mouseover",function(d){
             d3.select(this)
-              .classed("hover",true);
+              .classed("hover", true);
 
             languages_group
               .selectAll("g.lang[rel='" + d.key + "']")

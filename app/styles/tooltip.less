@@ -18,6 +18,35 @@
     display: none;
   }
 
+  /* d3-tip Northward tooltips */
+  &.n:after, &.n:before {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: #fff;
+    position: absolute;
+    pointer-events: none;
+  }
+
+  &.n:after {
+    content: "\25BC";
+    margin: -7px 0 0 0;
+    top: 100%;
+    left: 0;
+    text-align: center;
+  }
+
+  &.n:before {
+    content: "\25BC";
+    margin: -7px -2px 1px 0;
+    top: 100%;
+    left: 0;
+    color: #b3b3b3;
+    text-align: center;
+  }
+
   &:after, &:before {
     border: solid transparent;
     content: " ";

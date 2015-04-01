@@ -12,7 +12,7 @@ module ngApp.components.githut.controllers {
   class GitHutController implements IGitHutController {
 
     /* @ngInject */
-    constructor(private $scope: IGitHutScope, private $window: ng.IWindowService) {
+    constructor(private $scope: IGitHutScope, private $window: ng.IWindowService, private $filter: ng.IFilterService) {
       this.draw();
 
       $scope.$watch("data", () => {
@@ -168,14 +168,15 @@ module ngApp.components.githut.controllers {
         });
       }
 
+      var $filter = this.$filter;
       function addAxes() {
         var column = columns.selectAll("g.column")
-          .data(options.columns)
+          .data(options.config)
           .enter()
           .append("g")
           .attr("class", "column")
           .attr("transform",function(d){
-            var x = xscale(d);
+            var x = xscale(d.id);
             return "translate(" + x + "," + 0 + ")";
           });
 
@@ -184,31 +185,38 @@ module ngApp.components.githut.controllers {
           .attr("x", 0)
           .attr("y", 0);
 
+        var tip = d3.tip()
+                    .attr("class", "tooltip")
+                    .offset([-5, 0])
+                    .html(function(d) {
+                            return $filter("humanify")(d.id);
+                          });
+
+        title.filter((d) => { return d.is_subtype; })
+          .call(tip)
+          .on('mouseover', tip.show)
+          .on('mouseout', tip.hide);
+
         title.filter(function(d){
-          return d==options.title_column
+          return d.id===options.title_column;
         })
         .classed("first",true)
         .attr("transform","translate(-10,0)");
 
         title.selectAll("tspan")
         .data(function(d){
-          var txt = options.column_map[d];
-          if (typeof txt == "string") {
-            return [txt];
-          }
-          return txt;
+          return d.display_name;
         })
         .enter()
         .append("tspan")
-          .attr("x", 0)
-          .attr("y", function(d,i){
-            // Magic numbers
-            return i * 15 + (-10 - padding.top);
-          })
-          .text(function(d){
-            return d;
-          });
-
+        .attr("x", 0)
+        .attr("y", function(d,i){
+          // Magic numbers
+          return i * 15 + (-5 - padding.top);
+        })
+        .text(function(d){
+          return d;
+        });
 
         if (options.superhead) {
           svg.append("g")
@@ -939,7 +947,7 @@ module ngApp.components.githut.controllers {
 
       var line = d3.svg.line()
           .x(function(d, i) { return d.x; })
-          .y(function(d, i) { 
+          .y(function(d, i) {
             if (d.y === 0) {
               return yscales[options.use[d.col] || d.col].range()[0];
             } else {

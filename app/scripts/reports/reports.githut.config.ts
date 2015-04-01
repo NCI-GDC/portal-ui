@@ -14,7 +14,7 @@ angular.module("reports.githut.config",[])
       if (!_.contains(primary_sites, b.primary_site)) {
         primary_sites.push(b.primary_site);
       }
-      
+
       if (a[b.project_id]) {
         var c = a[b.project_id];
         c.file_size += b.size_in_mb;
@@ -43,7 +43,7 @@ angular.module("reports.githut.config",[])
 
     var data_types = data.reduce(function(a,b){return a.concat(b.data_types)}, []);
     var nest = d3.nest().key(function(a){return a.data_type}).entries(data_types);
-    
+
     var types = nest.map(function(a){
       return {
         id: a.key,
@@ -53,7 +53,7 @@ angular.module("reports.githut.config",[])
         dimensional: true
       };
     });
-    
+
     types = types.sort(function(a,b){return order.indexOf(a) - order.indexOf(b)});
 
     types.forEach(function(a) {
@@ -65,23 +65,23 @@ angular.module("reports.githut.config",[])
       start: types[types.length - 1].id,
       text: "File count per data type"
     };
-   
+
     ReportsGithutConfig.columns = columns.map(function(c){return c.id});
     ReportsGithutConfig.scale_map = columns.reduce(function(a, b) {
       a[b.id] = b.scale || "ordinal";
       return a;
     },{});
-      
+
     ReportsGithutConfig.color_group_map = columns.reduce(function(a,b){
       a[b.id] = b.colorgroup;
       return a;
     },{});
-      
+
     ReportsGithutConfig.column_map = columns.reduce(function(a,b){
       a[b.id] = b.display_name || ["Untitled"];
       return a;
     },{});
-      
+
     ReportsGithutConfig.dimensions = columns.filter(function(c){return c.dimensional}).map(function(c){return c.id});
 
     return {
@@ -141,7 +141,7 @@ angular.module("reports.githut.config",[])
     },
     formats:{
       "primary_site":"d"
-    },  
+    },
     color_group_map:undefined,
     color_groups:{
       "file_count":color(0),
@@ -149,7 +149,6 @@ angular.module("reports.githut.config",[])
       "participant_count":color(2)
     },
     dimensions:undefined,
-    column_map:undefined,
     duration:1000,
     filters:{
       file_size: $filter("size")

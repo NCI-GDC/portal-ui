@@ -279,13 +279,6 @@ angular.module('projects.githut.config',[])
        */
       dimensions:columns.filter(function(c){return c.dimensional}).map(function(c){return c.id}),
 
-      /**
-       *  Name for each column.
-       **/
-      column_map:columns.reduce(function(a,b){
-         a[b.id] = b.display_name || ['Untitled'];
-         return a;
-      },{}),
       urlMap:columns.reduce(function(a,b){
         a[b.id] = b.href;
         return a;

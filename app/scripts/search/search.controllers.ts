@@ -66,10 +66,6 @@ module ngApp.search.controllers {
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });
-		
-//	  $scope.addFacet = function(a,b){
-//		FacetService.addTerm(a,b);
-//	  }
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchTableParticipantsModel;
@@ -207,7 +203,7 @@ module ngApp.search.controllers {
         "search.table.files.model",
         'search.table.participants.model',
         "files.services",
-	  	"facets.services"
+        "facets.services"
       ])
       .controller("SearchController", SearchController);
 }

@@ -370,8 +370,10 @@ module ngApp.search.models {
         expand: [
           "clinical",
           "files",
-          "summary",
-          "project"
+          "summary.data_types",
+          "summary.experimental_strategies",
+          "project",
+          "project.program"
         ]
     };
     angular.module("search.table.participants.model", [])

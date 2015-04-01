@@ -214,7 +214,7 @@ module ngApp.cart.services {
       this.files = remaining;
       this._sync();
 
-      this.$rootScope.$broadcast('cart.update');
+      this.$rootScope.$broadcast("cart-update");
     }
 
     removeFiles(files: IFile[]): void {

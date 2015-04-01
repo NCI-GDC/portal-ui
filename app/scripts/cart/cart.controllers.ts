@@ -17,8 +17,6 @@ module ngApp.cart.controllers {
     getRelatedFileIds(): string[];
     processPaging: boolean;
     pagination: IPagination;
-    displayedFiles: IFile[];
-    setDisplayedFiles(newPaging?: IPagination): void;
     checkCartForClosedFiles();
   }
 
@@ -53,51 +51,18 @@ module ngApp.cart.controllers {
         sort: ""
       };
 
-      this.setDisplayedFiles();
-
       $scope.$on("gdc-user-reset", () => {
         this.files = CartService.getFiles();
-        this.setDisplayedFiles();
-      });
-
-      $scope.$on("cart-paging-update", (event: any, newPaging: any) => {
-        this.setDisplayedFiles(newPaging);
       });
 
       $scope.$on("undo", () => {
-        this.setDisplayedFiles();
-
+        this.files = CartService.getFiles();
       });
 
-      $scope.$on("cart.update", () => {
+      $scope.$on("cart-update", () => {
         this.lastModified = this.CartService.lastModified;
-        this.setDisplayedFiles();
+        this.files = CartService.getFiles();
       });
-
-    }
-
-    setDisplayedFiles(newPaging: IPagination = this.pagination): void {
-      this.files = this.CartService.getFiles();
-      this.pagination.from = newPaging.from;
-      this.pagination.size = newPaging.size;
-      this.pagination.count = this.pagination.size;
-      this.pagination.pages = Math.ceil(this.files.length / this.pagination.size);
-      this.pagination.total = this.files.length;
-
-      // Used to check if files are deleted and the overall count can't reach the page
-      // we are on.
-      while (this.pagination.from > this.pagination.total) {
-        this.pagination.page--;
-        this.pagination.from -= this.pagination.size;
-      }
-
-      // Safe fallback
-      if (this.pagination.page < 0 || this.pagination.from < 1) {
-        this.pagination.page = 1;
-        this.pagination.from = 1;
-      }
-
-      this.displayedFiles = _.assign([], this.files).splice(this.pagination.from - 1, this.pagination.size);
     }
 
     selected(): IFile[] {
@@ -133,14 +98,14 @@ module ngApp.cart.controllers {
     removeAll() {
       this.CartService.removeAll();
       this.lastModified = this.CartService.lastModified;
-      this.setDisplayedFiles();
+      this.files = this.CartService.getFiles();
     }
 
     removeSelected(): void {
       var ids: string[] = _.pluck(this.selected(), "file_id");
       this.CartService.remove(ids);
       this.lastModified = this.CartService.lastModified;
-      this.setDisplayedFiles();
+      this.files = this.CartService.getFiles();
     }
 
     getManifest() {

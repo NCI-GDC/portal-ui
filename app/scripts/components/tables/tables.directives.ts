@@ -91,7 +91,9 @@ module ngApp.components.tables.directives {
       scope: {
         paging: "=",
         page: "@",
-        config: '='
+        config: '=',
+        update: "=",
+        data: "="
       },
       replace: true,
       templateUrl: "components/tables/templates/sort-table.html",
@@ -111,7 +113,7 @@ module ngApp.components.tables.directives {
         sortColumns: "=",
         id: "@",
         endpoint: "@",
-        cartUpdate: "="
+        clientSide: "="
       },
       replace: true,
       templateUrl: "components/tables/templates/gdc-table.html",

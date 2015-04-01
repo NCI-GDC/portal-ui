@@ -8,34 +8,47 @@ module ngApp.components.tables.controllers {
   interface ITableSortController {
     updateSorting(): void;
     paging: IPagination;
+    activeSorting: any;
+    setDefaultSorting(): void;
+    clientSorting(): void;
+    toggleSorting(item: any): void;
   }
 
   interface ITableScope extends ng.IScope {
     paging: IPagination;
     page: string;
     sortColumns: ITableColumn[];
-    config:any;
+    config: any;
+    data: any;
+    update: boolean;
   }
 
   class TableSortController implements ITableSortController {
     paging: IPagination;
+    activeSorting: any = [];
 
     /* @ngInject */
     constructor(private $scope: ITableScope, private LocationService: ILocationService) {
       this.paging = $scope.paging;
       var currentSorting = $scope.paging.sort;
 
-      $scope.sortColumns = $scope.config.headings.reduce(function(a,b){
+      $scope.sortColumns = _.reduce($scope.config.headings, (a,b) => {
 
         if (b.sortable) {
-          a.push({
-            key:b.id,
-            name:b.displayName
-          })
+          var obj = {
+            key: b.id,
+            name: b.displayName
+          };
+
+          if (b.sortMethod) {
+            obj.sortMethod = b.sortMethod;
+          }
+
+          a.push(obj);
         }
 
         return a;
-      },[]);
+      }, []);
 
       // We need to manually check the URL and parse any active sorting down
       if (currentSorting) {
@@ -50,25 +63,102 @@ module ngApp.components.tables.controllers {
           if (sortObj) {
             sortObj.sort = true;
             sortObj.order = sortField[1];
+
+            this.activeSorting.push(sortObj);
           }
         });
+
+        if ($scope.update) {
+          this.clientSorting();
+        }
+      } else {
+        this.setDefaultSorting();
       }
     }
 
+    setDefaultSorting(): void {
+      this.activeSorting = [];
+      this.activeSorting.push(this.$scope.sortColumns[0]);
+
+      this.activeSorting[0].sort = true;
+      this.activeSorting[0].order = "asc";
+    }
+
+    clientSorting(): void {
+      function defaultSort(a, b, order) {
+        if (order === "asc") {
+          if (isNaN(a)) {
+            if (a < b) return -1;
+            if(a > b) return 1;
+            return 0;
+          } else {
+            return a - b;
+          }
+        }
+
+        if (order === "desc") {
+          if (isNaN(a)) {
+            if (a > b) return -1;
+            if(a < b) return 1;
+            return 0;
+          } else {
+            return b - a;
+          }
+        }
+      }
+
+      if (!this.activeSorting.length) {
+        this.setDefaultSorting();
+      }
+
+      _.forEach(this.activeSorting, (sortValue, sortIndex) => {
+        var order = sortValue.order || "asc";
+
+        this.$scope.data.sort((a, b) => {
+          var column = _.find(this.$scope.sortColumns, (column) => {
+            return column.key === sortValue.key;
+          });
+
+          if (column.sortMethod) {
+            return column.sortMethod(a[sortValue.key], b[sortValue.key], order);
+          }
+
+          return defaultSort(a[sortValue.key], b[sortValue.key], order);
+        });
+      });
+    }
+
+    toggleSorting(item: any): void {
+      if (!item.sort) {
+        item.sort = true;
+        item.order = "asc";
+        this.activeSorting.push(item);
+      } else {
+        item.sort = false;
+        this.activeSorting.splice(this.activeSorting.indexOf(item), 1);
+      }
+
+      this.updateSorting();
+    }
+
     updateSorting(): void {
+      if (this.$scope.update) {
+        this.clientSorting();
+        return;
+      }
+
       var pagination = this.LocationService.pagination();
-      this.paging.sort = _.filter(this.$scope.sortColumns, (col: any) => { return col.sort; });
 
       var sortString = "";
 
-      _.each(this.paging.sort, (col: any, index: number) => {
+      _.each(this.activeSorting, (col: any, index: number) => {
         if (!col.order) {
           col.order = "asc";
         }
 
         sortString += col.key + ":" + col.order;
 
-        if (index < (this.paging.sort.length - 1)) {
+        if (index < (this.activeSorting.length - 1)) {
           sortString += ",";
         }
       });
@@ -90,12 +180,61 @@ module ngApp.components.tables.controllers {
     id: string;
   }
 
+  interface IGDCTableController {
+    setDisplayedData(newPaging?: any): void;
+  }
+
   class GDCTableController implements IGDCTableController {
     sortingHeadings: any[] = [];
+    displayedData: any[];
 
     /* @ngInject */
     constructor(private $scope: IGDCTableScope) {
-      this.sortingHeadings = _.filter($scope.config.headings, (heading: any) => { return heading.sortable; });
+      this.sortingHeadings = _.filter($scope.config.headings, (heading: any) => {
+        return heading.sortable;
+      });
+
+      if ($scope.clientSide) {
+        $scope.$on("cart-paging-update", (event: any, newPaging: any) => {
+          this.setDisplayedData(newPaging);
+        });
+      }
+
+      $scope.$watch("data", ()=> {
+        this.setDisplayedData();
+      }, true);
+
+      this.setDisplayedData();
+    }
+
+    setDisplayedData(newPaging: any = this.$scope.paging) {
+      if (this.$scope.clientSide) {
+        this.$scope.paging.from = newPaging.from;
+        this.$scope.paging.size = newPaging.size;
+        this.$scope.paging.count = this.$scope.paging.size;
+        this.$scope.paging.pages = Math.ceil(this.$scope.data.length /
+                                             this.$scope.paging.size);
+        this.$scope.paging.total = this.$scope.data.length;
+
+        // Used to check if files are deleted and the overall count can't reach the page
+        // we are on.
+        while (this.$scope.paging.from > this.$scope.paging.total) {
+          this.$scope.paging.page--;
+          this.$scope.paging.from -= this.$scope.paging.size;
+        }
+
+        // Safe fallback
+        if (this.$scope.paging.page < 0 || this.$scope.paging.from < 1) {
+          this.$scope.paging.page = 1;
+          this.$scope.paging.from = 1;
+        }
+
+        this.displayedData = _.assign([], this.$scope.data)
+                              .splice(this.$scope.paging.from - 1, this.$scope.paging.size);
+
+      } else {
+        this.displayedData = this.$scope.data;
+      }
     }
   }
 

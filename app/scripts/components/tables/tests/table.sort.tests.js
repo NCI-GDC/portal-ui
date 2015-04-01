@@ -35,21 +35,27 @@ describe('Tables:', function () {
       scope.paging = {};
       scope.page = "test";
       scope.config = {
-        headings:[{
-          name: 'File Size',
-          id:'file_size',
-          sortable:true
-        }]
-      }
+        headings:[
+          {
+            name: 'File Size',
+            id:'file_size',
+            sortable: true
+          },
+          {
+            name: 'File Name',
+            id:'file_name',
+            sortable: true
+          }
+        ]
+      };
 
 
       var wc = $controller('TableSortController', { $scope: scope, LocationService: LocationService });
-      wc.$scope.sortColumns[0].sort = true;
-      wc.updateSorting();
+      wc.toggleSorting(wc.$scope.sortColumns[1]);
 
       var paging = LocationService.pagination()[wc.$scope.page];
 
-      expect(paging.sort).to.equal("file_size:asc");
+      expect(paging.sort).to.equal("file_size:asc,file_name:asc");
     }));
 
   });

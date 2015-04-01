@@ -301,7 +301,7 @@ module ngApp.components.tables.directives.tableicious {
          * The data or a blank object.
          */
         getDataAtRow (heading:TableiciousColumnDefinition,index:number) : TableiciousEntryDefinition{
-            //debugger;
+            
             var row = this.$scope.dataAsKeyValuePairs[index];
 
             return _.find(row,function(datum:TableiciousEntryDefinition){

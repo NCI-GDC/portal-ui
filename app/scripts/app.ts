@@ -20,6 +20,7 @@ declare module ngApp {
     config: IGDCConfig;
     undoClicked(action: string): void;
     cancelRequest(): void;
+    tourConfig: any;
   }
 }
 
@@ -82,6 +83,7 @@ function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
     //CoreService.setLoadedState(false);
     // Close all notifcation windows
     notify.closeAll();
+    $rootScope.tourConfig = null;
   });
 
   $rootScope.$on("$stateChangeSuccess", () => {
@@ -104,6 +106,7 @@ angular
       "restangular",
       "gettext",
       "ngTagsInput",
+      "ui.tour",
 
       "ngApp.core",
       "ngApp.search",

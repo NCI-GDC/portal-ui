@@ -22,7 +22,7 @@ module ngApp.components.ui {
     "ui.search",
     "ui.string",
     "ui.biospecimen",
-    "ui.tour"
+    "gdc.ui.tour"
   ]);
 
 }

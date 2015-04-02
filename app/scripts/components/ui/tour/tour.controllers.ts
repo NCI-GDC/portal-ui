@@ -15,7 +15,7 @@ module ngApp.components.ui.tour.controllers {
 
     /* @ngInject */
     constructor(private $scope: IGDCTourScope) {
-      this.currentStep = $scope.config.start || 0;
+      this.currentStep = $scope.config.start || 1;
       this.tourSteps = $scope.config.steps;
       this.currentStepItem = this.tourSteps[this.currentStep];
     }
@@ -30,6 +30,6 @@ module ngApp.components.ui.tour.controllers {
 
   }
 
-  angular.module("tour.controllers", [])
+  angular.module("gdc.tour.controllers", [])
       .controller("GDCTourController", GDCTourController);
 }

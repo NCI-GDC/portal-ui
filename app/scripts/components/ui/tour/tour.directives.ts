@@ -13,7 +13,7 @@ module ngApp.components.ui.tour.directives {
     };
   }
 
-  angular.module("tour.directives", ["tour.controllers"])
+  angular.module("gdc.tour.directives", ["gdc.tour.controllers"])
       .directive("gdcTour", GDCTour);
 }
 

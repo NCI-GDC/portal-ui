@@ -335,20 +335,20 @@ module ngApp.projects.models {
   var ProjectsTourConfig = {
     steps: [
       {
-        at: "left",
+        at: "right",
         overlay: true,
-        target: ".facet-section div[data-name='primary_site']",
+        target: ".facet-section div.list-group-item:nth-child(3)",
         title: "Add a term to your query",
         body: "Select one of the checkboxes to add a term"
       },
       {
-        at: "bottom",
+        at: "top",
         target: "#project-table",
         title: "View Projects",
         body: "View the results of your query!"
       }
     ],
-    start: 0
+    start: 1
   };
 
   angular.module("projects.table.model", [])

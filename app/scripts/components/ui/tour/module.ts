@@ -1,7 +1,7 @@
 module ngApp.components.ui.tour {
 
-  angular.module("ui.tour", [
-    "tour.directives",
-    "tour.controllers"
+  angular.module("gdc.ui.tour", [
+    "gdc.tour.directives",
+    "gdc.tour.controllers"
   ]);
 }

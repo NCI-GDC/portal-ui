@@ -13,15 +13,15 @@
     </h3>
     <div class="popover-content">
       <div class="tour-body">
-        {{ step.text | translate }}
+        {{ step.body | translate }}
       </div>
-      <button class="btn" data-ng-click="gdct.nextStep()" data-translate
-              data-ng-if="gdct.currentStep < (gdct.tourSteps.length - 1)">
-        Next
-      </button>
-      <button class="btn" data-ng-click="gdct.previousStep()" data-translate
-              data-ng-if="gdct.currentStep > 0">
+      <button class="btn pull-left" data-ng-click="gdct.previousStep()" data-translate
+              data-ng-if="gdct.currentStep > 1">
         Previous
+      </button>
+      <button class="btn pull-right" data-ng-click="gdct.nextStep()" data-translate
+              data-ng-if="gdct.currentStep < gdct.tourSteps.length">
+        Next
       </button>
     </div>
   </li>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>AngularUI - Date Picker Demo</title>
+  <base href=".."></base> 
+  <link rel="stylesheet" href="demo/bootstrap.css">
+  <script type="text/javascript" src="demo/jquery.min.js"></script>
+  <script type="text/javascript" src="demo/angular.min.js"></script>
+  <script type="text/javascript" src="src/tour.js"></script>
+  <style>
+  /*
+    [ui-tour] li.active {
+      display: block;
+      position: absolute;
+      background: blue;
+      color: white;
+      padding: 20px;
+      margin-top: 10px;
+      
+    }
+    [ui-tour] li.active div {
+      position: relative;
+      margin: -20px;
+      padding: 20px;
+    }
+    [ui-tour] li.active div:after {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 50%;
+      top: -10px;
+      margin-left: -5px;
+      width: 0;
+      height: 0;
+      border-bottom: 10px solid black;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+    }
+    [ui-tour] li.active[at=top] div:after {
+      border-top: 10px solid black;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+    }
+    [ui-tour] li.active[at=right] div:after {
+      left: -10px;
+      top: 50%;
+      margin-left: 0;
+      margin-top: -5px;
+      border-right: 10px solid black;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+    }
+    */
+    h1 { width: 50%; margin: 100px auto; text-align: center; background: lightblue; color: white;}
+
+    [ui-tour] > li {
+      display: none;
+    }
+    .active {
+      display: block !important;
+    }
+    .tour-overlay {
+      display: none;
+      height: 500px;
+      width: 500px;
+      top: -4100px;
+      left: -4100px;
+      background: transparent;
+      border-radius: 8000px;
+      border: 4000px solid rgba(0,0,0,.5);
+      position: fixed;
+      -webkit-transition: all 1s ease;
+      -moz-transition: all 1s ease;
+      -ms-transition: all 1s ease;
+      -o-transition: all 1s ease;
+      transition: all 1s ease;
+    }
+	.tour-overlay.in {
+		height: 300px;
+		width: 300px;
+		top: -4000px;
+		left: -4000px;
+	}
+
+  .test {
+    position: absolute;
+    top: 500px;
+    left: 500px;
+  }
+  </style>
+</head>
+<body ng-app="ui.tour" ng-init="currentStep=1">
+  <h1 id="one">Chapter One</h1>
+  <h1>Chapter Two</h1>
+  <h1>Chapter <a>Three</a></h1>
+  <h1>Chapter Four</h1>
+  <div class="test">derp derp</div>
+  <button class="btn" ng-click="currentStep=3">Go to 3</button>
+  <button class="btn" ng-click="currentStep='chapter3'">Go to 'chapter3'</button>
+  <button class="btn" ng-click="currentStep=0">Go to 0</button>
+  <button class="btn" ng-click="currentStep=false">Go to false</button>
+  <button class="btn" ng-click="currentStep=true">Go to true</button>
+  <button class="btn" ng-click="currentStep={}">Go to {}</button>
+  <ul ui-tour="currentStep">
+    <li target="div.test" at="right" class="popover right in" overlay="ffwewefwefwefwef">
+      <div class="arrow"></div>
+      <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
+      <div class="popover-content">And here's some amazing content. It's very engaging. right? First <button class="btn" ng-click="currentStep=currentStep+1">Next</button> <button class="btn" ng-click="currentStep=4">Go to 4</button> <button class="btn" ng-click="currentStep='chapter3'">Go to 'chapter3'</button></div>
+    </li>
+    <li target="h1:eq(1)" at="top" class="popover top in">
+      <div class="arrow"></div>
+      <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
+      <div class="popover-content"><button class="btn" ng-click="currentStep=currentStep-1">Prev</button> Second <button class="btn" ng-click="currentStep=currentStep+1">Next</button></div>
+    </li>
+    <li target="h1:eq(2) a" at="left" name="chapter3" class="popover left in" overlay>
+      <div class="arrow"></div>
+      <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
+      <div class="popover-content"><button class="btn" ng-click="currentStep=currentStep-1">Prev</button> Third <button class="btn" ng-click="currentStep=currentStep+1">Next</button></div>
+    </li>
+    <li target="h1:eq(3)" at="bottom" class="popover bottom in">
+      <div class="arrow"></div>
+      <h3 class="popover-title">A Title <a class="close" ng-click="currentStep=false">&times;</a></h3>
+      <div class="popover-content">Fourth <button class="btn" ng-click="currentStep=currentStep+1">Next</button></div>
+    </li>
+  </ul>
+  <pre>{{currentStep|json}}</pre>
+  <div class="tour-overlay fade"></div>
+</body>
+</html>

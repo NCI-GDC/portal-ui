@@ -30,7 +30,9 @@ module ngApp.projects.controllers {
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut) {
+                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig,
+                private ProjectsGithutColumns, private ProjectsGithut,
+                private ProjectsTourConfig) {
 
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {

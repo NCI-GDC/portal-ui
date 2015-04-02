@@ -253,6 +253,7 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
         .pipe($.replace('d3-tip/index.min.js', 'd3-tip/index.js'))
         .pipe($.replace('moment/moment.min.js', 'moment/min/moment.min.js'))
         .pipe($.replace('analytics.min.js', 'analytics.js'))
+        .pipe($.replace('ui-tour/src/tour.min.js', 'ui-tour/src/tour.js'))
         .pipe($.replace('.css', '.min.css'))
         .pipe($.replace('src/css/bootcards-desktop.min.css', 'src/css/bootcards-desktop.css'))
         .pipe($.replace('ngprogress-lite.min.css', 'ngprogress-lite.css'));

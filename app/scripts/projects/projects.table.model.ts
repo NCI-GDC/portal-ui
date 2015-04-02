@@ -331,6 +331,27 @@ module ngApp.projects.models {
       "program"
     ]
   };
+
+  var ProjectsTourConfig = {
+    steps: [
+      {
+        at: "left",
+        overlay: true,
+        target: ".facet-section div[data-name='primary_site']",
+        title: "Add a term to your query",
+        body: "Select one of the checkboxes to add a term"
+      },
+      {
+        at: "bottom",
+        target: "#project-table",
+        title: "View Projects",
+        body: "View the results of your query!"
+      }
+    ],
+    start: 0
+  };
+
   angular.module("projects.table.model", [])
-      .value("ProjectTableModel", projectTableModel);
+    .value("ProjectsTourConfig", ProjectsTourConfig)
+    .value("ProjectTableModel", projectTableModel);
 }

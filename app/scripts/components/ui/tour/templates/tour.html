@@ -1,0 +1,28 @@
+<ul class="ui-tour" ui-tour="gdct.currentStep">
+  <li data-ng-repeat="step in gdct.tourSteps"
+      target="{{ step.target }}"
+      at="{{ step.at }}"
+      class="popover {{ step.at }} in"
+      attr-on-off
+      data-attr-on="{{ step.overlay }}"
+      data-attr-name="overlay">
+    <div class="arrow"></div>
+    <h3 class="popover-title">
+      {{ step.title | translate }}
+      <a class="close" ng-click="gdct.currentStep = false">&times;</a>
+    </h3>
+    <div class="popover-content">
+      <div class="tour-body">
+        {{ step.text | translate }}
+      </div>
+      <button class="btn" data-ng-click="gdct.nextStep()" data-translate
+              data-ng-if="gdct.currentStep < (gdct.tourSteps.length - 1)">
+        Next
+      </button>
+      <button class="btn" data-ng-click="gdct.previousStep()" data-translate
+              data-ng-if="gdct.currentStep > 0">
+        Previous
+      </button>
+    </div>
+  </li>
+</ul>

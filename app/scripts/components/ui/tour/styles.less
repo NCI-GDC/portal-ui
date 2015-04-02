@@ -1,0 +1,31 @@
+[ui-tour] > li {
+  display: none;
+}
+
+.ui-tour > li.active {
+  display: block !important;
+}
+
+.tour-overlay {
+  display: none;
+  height: 500px;
+  width: 500px;
+  top: -4100px;
+  left: -4100px;
+  background: transparent;
+  border-radius: 8000px;
+  border: 4000px solid rgba(0,0,0,.5);
+  position: fixed;
+  -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -ms-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  transition: all 1s ease;
+}
+
+.tour-overlay.in {
+  height: 300px;
+  width: 300px;
+  top: -4000px;
+  left: -4000px;
+}

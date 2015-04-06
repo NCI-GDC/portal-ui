@@ -32,7 +32,6 @@ module ngApp.components.tables.pagination.controllers {
       var obj = {
         from: current.from,
         size: current.size,
-        page: current.page,
         sort: current.sort
       };
 

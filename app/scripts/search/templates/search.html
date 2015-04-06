@@ -35,17 +35,20 @@
       <ul class="nav nav-tabs">
         <li role="presentation"
             data-ng-class="{ active: sc.SearchState.tabs.summary.active }"
-            data-ng-click="sc.select('tabs', 'summary')">
+            data-ng-click="sc.select('tabs', 'summary')"
+            id="search-summary">
           <a>{{ 'Summary' | translate }}</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: sc.SearchState.tabs.files.active }"
-            data-ng-click="sc.select('tabs', 'files')">
+            data-ng-click="sc.select('tabs', 'files')"
+            id="search-files">
           <a>{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
-            data-ng-click="sc.select('tabs', 'participants')">
+            data-ng-click="sc.select('tabs', 'participants')"
+            id="search-participants">
           <a>{{ 'Participants' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
         </li>
       </ul>

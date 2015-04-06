@@ -14,14 +14,20 @@
          data-ng-keypress="hc.collapse($event)"
          aria-label="{{ 'Site Navigation' | translate }}">
       <ul class="nav navbar-nav">
-        <li data-ng-class="{ active: hc.$state.includes('projects') }">
+        <li data-ng-class="{ active: hc.$state.includes('projects') }"
+            id="header-projects">
           <a ui-sref="projects.table"><i class="fa fa-folder-o"></i> Projects</a>
         </li>
-        <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }">
+        <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
+            id="header-data">
           <a ui-sref="search.summary"><i class="fa fa-database"></i> Data</a>
         </li>
-        <li ui-sref-active="active"><a ui-sref="annotations"><i class="fa fa-align-left"></i> Annotations</a></li>
-        <li ui-sref-active="active"><a ui-sref="reports"><i class="fa fa-cube"></i> Reports</a></li>
+        <li ui-sref-active="active" id="header-annotations">
+          <a ui-sref="annotations"><i class="fa fa-align-left"></i> Annotations</a>
+        </li>
+        <li ui-sref-active="active" id="header-reports">
+          <a ui-sref="reports"><i class="fa fa-cube"></i> Reports</a>
+        </li>
 
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -32,7 +38,7 @@
                   ng-options="k as v for (k, v) in hc.languages">
           </select>
         </li>
-        <li data-ng-if="!hc.UserService.currentUser">
+        <li data-ng-if="!hc.UserService.currentUser" id="header-login">
           <a auth-button data-redirect="https://gdc.nci.nih.gov">
             <i class="fa fa-sign-in"></i>
             <span data-translate>Login</span>
@@ -53,13 +59,13 @@
                 {{ hc.UserService.currentUser.username }} <span class="caret"></span>
               </a>
               <ul class="dropdown-menu" role="menu">
-                <li>
+                <li id="header-token">
                   <a data-ng-click="hc.getToken()">
                     <i class="fa fa-file-zip-o"></i>
                     <span data-translate>Download Token</span>
                   </a>
                 </li>
-                <li>
+                <li id="header-logout">
                   <a auth-button data-redirect="https://gdc.nci.nih.gov/logout">
                     <i class="fa fa-sign-out"></i>
                     <span data-translate>Logout</span>

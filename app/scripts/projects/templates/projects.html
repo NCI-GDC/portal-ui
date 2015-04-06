@@ -23,17 +23,20 @@
       <ul class="nav nav-tabs">
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.summary.active }"
-            data-ng-click="prsc.select('tabs', 'summary')">
+            data-ng-click="prsc.select('tabs', 'summary')"
+            id="projects-summary">
           <a>{{ 'Summary' | translate }}</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.table.active }"
-            data-ng-click="prsc.select('tabs', 'table')">
+            data-ng-click="prsc.select('tabs', 'table')"
+            id="projects-table">
           <a>{{ 'Table' | translate }}</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.graph.active }"
-            data-ng-click="prsc.select('tabs', 'graph')">
+            data-ng-click="prsc.select('tabs', 'graph')"
+            id="projects-graph">
           <a>{{ 'Graph' | translate }}</a>
         </li>
       </ul>

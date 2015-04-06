@@ -7,17 +7,20 @@
       <ul class="nav nav-tabs">
         <li role="presentation"
             data-ng-class="{ active: sc.QState.tabs.summary.active }"
-            data-ng-click="sc.select('summary')">
+            data-ng-click="sc.select('summary')"
+            id="query-summary">
           <a>{{ 'Summary' | translate }}</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: sc.QState.tabs.files.active }"
-            data-ng-click="sc.select('files')">
+            data-ng-click="sc.select('files')"
+            id="query-files">
           <a>{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: sc.QState.tabs.participants.active }"
-            data-ng-click="sc.select('participants')">
+            data-ng-click="sc.select('participants')"
+            id="query-participants">
           <a>{{ 'Participants' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
         </li>
       </ul>

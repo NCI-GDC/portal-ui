@@ -4,10 +4,11 @@
     </button>
     <button data-ng-if="!CartService.areInCart(files)" type="button" class="btn btn-primary"
             data-ng-click="CartService.addFiles(files)"
+            dropdown-toggle
             data-ng-disabled="(CartService.getFiles().length + files.length) > CartService.getMaxSize()">
         <i class="fa fa-circle-o"></i>
     </button>
-    <button type="button" class="btn btn-default dropdown-toggle">
+    <button type="button" class="btn btn-default dropdown-toggle"dropdown-toggle>
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu">

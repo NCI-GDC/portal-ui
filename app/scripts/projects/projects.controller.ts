@@ -8,6 +8,7 @@ module ngApp.projects.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
   import IProjectsState = ngApp.projects.services.IProjectsState;
+  import IRootScope = ngApp.IRootScope;
 
   export interface IProjectsController {
     projects: IProjects;
@@ -30,7 +31,9 @@ module ngApp.projects.controllers {
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut) {
+                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig,
+                private ProjectsGithutColumns, private ProjectsGithut,
+                private ProjectsTourConfig, private $rootScope: IRootScope) {
 
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
@@ -50,6 +53,8 @@ module ngApp.projects.controllers {
     }
 
     refresh() {
+      this.$rootScope.tourConfig = null;
+
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
           fields: this.ProjectTableModel.fields,
@@ -70,12 +75,20 @@ module ngApp.projects.controllers {
           } else if(this.ProjectsState.tabs.summary.active || this.numPrimarySites === 0) {
             this.numPrimarySites = _.unique(this.projects.hits, (project) => { return project.primary_site; }).length;
           }
+
+          _.defer(() => {
+            this.$rootScope.tourConfig = this.ProjectsTourConfig;
+          });
         });
       } else {
         this.tabSwitch = false;
         if (this.ProjectsState.tabs.graph.active) {
           this.drawGraph(this.projects);
         }
+
+        _.defer(() => {
+          this.$rootScope.tourConfig = this.ProjectsTourConfig;
+        });
       }
     }
 

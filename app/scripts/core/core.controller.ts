@@ -75,25 +75,5 @@ module ngApp.core.controllers {
   angular
       .module("core.controller", ["ngCookies"])
       .controller("WarningController", WarningController)
-      .directive('loginButton',function(){
-        return {
-          restrict:'A',
-          controller:function($scope,$element,$window){
-            $element.on('click',function(){
-              var loginQuery;
-
-              if ($window.location.port) {
-                loginQuery = "?next=" + ":" + $window.location.port + $window.location.pathname;
-              } else {
-                loginQuery = "?next=" + $window.location.pathname;
-              }
-
-              $window.location = 'https://gdc.nci.nih.gov' + loginQuery;
-
-            });
-          }
-        }
-
-      })
       .controller("CoreController", CoreController);
 }

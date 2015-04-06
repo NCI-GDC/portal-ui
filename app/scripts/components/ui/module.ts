@@ -21,7 +21,8 @@ module ngApp.components.ui {
     "ui.file",
     "ui.search",
     "ui.string",
-    "ui.biospecimen"
+    "ui.biospecimen",
+    "gdc.ui.tour"
   ]);
 
 }

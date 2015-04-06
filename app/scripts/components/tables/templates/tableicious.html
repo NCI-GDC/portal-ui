@@ -14,7 +14,6 @@
                 scope="col"
                 data="data"
                  ng-if='::heading.compileHead'>
-                  
                 </div>
                 <span ng-if="::!heading.noTitle">
                    {{heading.displayName}}
@@ -33,11 +32,8 @@
             <td ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
                 data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading"
                 class="{{getFieldClass(field,datum,this,heading)}}">
-                
                 <div ng-if='::heading.compile' tableicious-cell >
- 
                 </div>
-  
                 <a data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) !== '--'"
                    data-ng-href="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
                     {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}

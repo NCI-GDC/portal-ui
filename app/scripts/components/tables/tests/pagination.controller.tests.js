@@ -9,7 +9,7 @@ describe('Pagination:', function () {
       var scope = $rootScope.$new();
       scope.paging = {
         page: 1,
-        size: 10,
+        size: 20,
         from: 1
       };
       scope.page = "test";
@@ -18,7 +18,7 @@ describe('Pagination:', function () {
       wc.refresh();
 
       var paging = LocationService.pagination()[scope.page];
-      expect(paging.size).to.equal(10);
+      expect(paging.size).to.equal(20);
       expect(paging.from).to.equal(1);
     }));
 
@@ -26,7 +26,7 @@ describe('Pagination:', function () {
       var scope = $rootScope.$new();
       scope.paging = {
         page: 1,
-        size: 10,
+        size: 20,
         from: 1
       };
       scope.update = true;
@@ -42,7 +42,7 @@ describe('Pagination:', function () {
       var scope = $rootScope.$new();
       scope.paging = {
         page: 1,
-        size: 10,
+        size: 20,
         from: 1
       };
       scope.page = "test";

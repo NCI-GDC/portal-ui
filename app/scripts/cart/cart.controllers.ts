@@ -31,27 +31,26 @@ module ngApp.cart.controllers {
     sizeFilesGraph: any;
 
     /* @ngInject */
-    constructor(private $scope: ng.IScope,
-                public files: IFile[],
-                private CoreService: ICoreService,
+    constructor(private $scope: ng.IScope, public files: IFile[], private CoreService: ICoreService,
                 private CartService: ICartService,
                 private UserService: IUserService,
                 private CartTableModel,
+                private LocationService: ILocationService,
                 private Restangular,
                 private FilesService) {
       CoreService.setPageTitle("Cart", "(" + this.files.length + ")");
       this.lastModified = this.CartService.lastModified;
       this.cartTableConfig = CartTableModel;
 
-      this.pagination = {
-        from: 1,
-        size: 20,
-        count: 10,
-        page: 1,
-        pages: Math.ceil(files.length / 10),
-        total: files.length,
-        sort: ""
-      };
+      this.pagination = angular.fromJson(this.LocationService.pagination()["cart"]);
+      this.pagination = this.pagination || {
+          from: 1,
+          size: 20,
+          count: 10,
+          page: 1,
+          pages: Math.ceil(files.length / 10),
+          total: files.length,
+        };
 
       this.setDisplayedFiles();
 
@@ -98,6 +97,13 @@ module ngApp.cart.controllers {
       }
 
       this.displayedFiles = _.assign([], this.files).splice(this.pagination.from - 1, this.pagination.size);
+      var pagination = this.LocationService.pagination();
+      if(this.pagination.page !== 1) {
+        pagination["cart"] = this.pagination;
+        this.LocationService.setPaging(pagination);
+      } else {
+        this.LocationService.clear();
+      }
     }
 
     selected(): IFile[] {

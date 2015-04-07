@@ -98,8 +98,12 @@ module ngApp.cart.controllers {
 
       this.displayedFiles = _.assign([], this.files).splice(this.pagination.from - 1, this.pagination.size);
       var pagination = this.LocationService.pagination();
-      pagination["cart"] = this.pagination;
-      this.LocationService.setPaging(pagination);
+      if(this.pagination.page !== 1) {
+        pagination["cart"] = this.pagination;
+        this.LocationService.setPaging(pagination);
+      } else {
+        this.LocationService.clear();
+      }
     }
 
     selected(): IFile[] {

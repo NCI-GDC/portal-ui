@@ -66,6 +66,10 @@ module ngApp.components.ui.biospecimen.controllers {
         return value.name;
       }
 
+      if (!value && (!isNaN(value) && value !== 0)) {
+        return "--";
+      }
+
       return value;
     }
 

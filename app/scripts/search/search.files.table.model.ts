@@ -263,7 +263,8 @@ module ngApp.search.models {
     ],
     expand: [
       "participants",
-      "participants.project"
+      "participants.project",
+      "participants.clinical"
     ]
   };
   angular.module("search.table.files.model", [])

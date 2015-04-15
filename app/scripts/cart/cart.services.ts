@@ -104,7 +104,6 @@ module ngApp.cart.services {
           var projectIds = file.projects;
           var annotationIds = file.annotationIds;
           var participantIds = file.participantId;
-          
           // We are not loading a file in from an undo action
           if (file.participants) {
             projectIds = _.unique(_.map(file.participants, (participant) => {
@@ -124,8 +123,8 @@ module ngApp.cart.services {
             'file_name': file.file_name || '--',
             'file_id': file.file_id || '--',
             'annotationIds': annotationIds,
-            'participantNum': participantIds.length ? participantIds.length : 0,
-            'participantId': participantIds.length > 0 ? participantIds : [],
+            'participantNum': participantIds ? participantIds.length : 0,
+            'participantId': participantIds ? participantIds : [],
             'projects': projectIds,
             'data_type': file.data_type || '--',
             'data_format': file.data_format || '--',

@@ -57,6 +57,36 @@ module ngApp.components.facets.directives {
   }
 
   /* @ngInject */
+  function DateFacet(): ng.IDirective {
+    return {
+      restrict: "EA",
+      scope: {
+        title: "@",
+        name: "@"
+      },
+      replace: true,
+      templateUrl: "components/facets/templates/facets-date.html",
+      controller: "dateFacetCtrl as dfc"
+    };
+  }
+
+  /* @ngInject */
+  function RangeFacet(): ng.IDirective {
+    return {
+      restrict: "E",
+      scope: {
+        collapsed: '@',
+        facet: "=",
+        title: "@",
+        field: "@",
+      },
+      replace: true,
+      templateUrl: "components/facets/templates/range-facet.html",
+      controller: "rangeFacetCtrl as rfc"
+    };
+  }
+
+  /* @ngInject */
   function CurrentFilters(): ng.IDirective {
     return {
       restrict: "E",
@@ -68,6 +98,8 @@ module ngApp.components.facets.directives {
   angular.module("facets.directives", ["facets.controllers"])
       .directive("terms", Terms)
       .directive("currentFilters", CurrentFilters)
+      .directive("rangeFacet", RangeFacet)
+      .directive("dateFacet", DateFacet)
       .directive("facetsFreeText", FacetsFreeText);
 }
 

@@ -122,8 +122,16 @@
               <td>{{ ::pc.participant.clinical.gender | humanify }}</td>
             </tr>
             <tr>
+              <th scope="row" data-translate>Age at Diagnosis</th>
+              <td>{{ ::pc.participant.clinical.age_at_diagnosis | humanify }}</td>
+            </tr>
+            <tr>
               <th scope="row" data-translate>Vital Status</th>
               <td>{{ ::pc.participant.clinical.vital_status | humanify }}</td>
+            </tr>
+            <tr>
+              <th scope="row" data-translate>Days to death</th>
+              <td>{{ ::pc.participant.clinical.days_to_death | humanify }}</td>
             </tr>
             <tr>
               <th scope="row" data-translate>ICD10</th>

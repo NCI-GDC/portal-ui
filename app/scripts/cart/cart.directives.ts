@@ -358,57 +358,96 @@ module ngApp.cart.directives {
 
 
   /** Directive which can be placed anywhere, that displays a pie chart of the contents of the cart **/
-  function CartDisplayingPieChart() {
+  function CartDisplayingPieChart($filter: ng.IFilterService) {
     return {
       restrict:"AE",
       template:'<div pie-chart ng-if=chartData data-data=chartData data-config=chartConfig> </div>',
       controller:function(CartService,UserService,$scope){
         $scope.$watch(function () {
-        return {
-          l:CartService.getFiles().length,
-          u:UserService.currentUser
+          return {
+            l: CartService.getFiles().length,
+            u: UserService.currentUser
           };
         }, function () {
           updateChartData();
         }, true);
 
-      function updateChartData() {
+        function updateChartData() {
+          var files = CartService.getFiles();
+          var accessCount = _.countBy(files, function (f) {
+            return UserService.userCanDownloadFiles([f]);
+          });
 
-        var accessCount = _.countBy(CartService.getFiles(), function (f) {
-          return UserService.userCanDownloadFiles([f])
-        });
-        var data = [
-          {
-            access: 'open',
-            count: accessCount['true'] || 0,
-          },
-          {
-            access: 'protected',
-            count: accessCount['false'] || 0,
-          }
-        ]
-
-        $scope.chartConfig = {
-          legend: {
-            open: '%!% file(s) you are authorized to download',
-            protected: '%!% file(s) you are not authorized to download'
-          }
-        }
-
-        if (_.find(data, function (a) {
-              return a.count > 0;
-            })) {
-          $scope.chartData = data.map(function (a) {
-            return {
-              key: a.access,
-              value: a.count
+          var data = [
+            {
+              access: 'open',
+              count: accessCount['true'] || 0,
+              state: {
+                name: "search.files",
+                params: {
+                  filters: $filter("makeFilter")([
+                    {
+                      name: "files.file_id",
+                      value: _.pluck(_.filter(files, (file) => {
+                        return file.access === "open";
+                      }), "file_id")
+                    },
+                    {
+                      name: "files.access",
+                      value: "open"
+                    }
+                  ], true)
+                }
+              }
+            },
+            {
+              access: 'protected',
+              count: accessCount['false'] || 0,
+              state: {
+                name: "search.files",
+                params: {
+                  filters: $filter("makeFilter")([
+                    {
+                      name: "files.file_id",
+                      value: _.pluck(_.filter(files, (file) => {
+                        return file.access === "protected";
+                      }), "file_id")
+                    },
+                    {
+                      name: "files.access",
+                      value: "protected"
+                    }
+                  ], true)
+                }
+              }
             }
-          })
-        } else {
-          $scope.chartData = undefined;
-        }
-      }
+          ];
 
+          $scope.chartConfig = {
+            legend: {
+              open: '%!% ' + $filter("translate")("file(s) you are authorized to download"),
+              protected: '%!% ' + $filter("translate")("file(s) you are not authorized to download")
+            }
+          };
+
+          if (_.find(data, function (a) {
+                return a.count > 0;
+              })) {
+            $scope.chartData = data.map(function (a) {
+              var ret = {
+                key: a.access,
+                value: a.count
+              };
+
+              if (a.state) {
+                ret.state = a.state;
+              }
+              return ret;
+            });
+          } else {
+            $scope.chartData = undefined;
+          }
+        }
       }
     }
   }

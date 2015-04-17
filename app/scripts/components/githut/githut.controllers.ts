@@ -724,6 +724,20 @@ module ngApp.components.githut.controllers {
             });
           });
 
+        var projectTip = d3.tip()
+                    .attr("class", "tooltip")
+                    .offset([-5, 0])
+                    .html(function(d) {
+                      return _.find(nested_data, {key: d.lang}).values.name;
+                    });
+
+          labels.filter((d) => {
+              return d.column === "project_id";
+          })
+          .call(projectTip)
+          .on("mouseover", projectTip.show)
+          .on("mouseout", projectTip.hide);
+
         // Mouseover trigger for highlighting all paths that cross through
         // a label that isn't primary site or project id
         labels
@@ -769,7 +783,7 @@ module ngApp.components.githut.controllers {
           .attr("y", 3)
           .text(function(d) {
             return d.values[options.title_column];
-          })
+          });
       }
 
       function updateLangLabels(duration) {
@@ -824,6 +838,7 @@ module ngApp.components.githut.controllers {
               r.participant_count = leaves[0]["participant_count"];
               r.primary_site = leaves[0]["primary_site"];
               r.file_size = leaves[0]["file_size"];
+              r.name = leaves[0]["name"];
             });
 
             return r;
@@ -971,5 +986,4 @@ module ngApp.components.githut.controllers {
       .module("githut.controllers", [])
       .controller("GitHutController", GitHutController);
 }
-
 

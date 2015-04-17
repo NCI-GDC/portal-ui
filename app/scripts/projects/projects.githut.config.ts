@@ -23,6 +23,7 @@ angular.module('projects.githut.config',[])
 
       var the_returned = {
         project_id: key,
+        name: group.name,
         primary_site: group.primary_site,
         file_count: group.summary.file_count,
         file_size: group.summary.file_size,

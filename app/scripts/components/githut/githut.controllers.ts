@@ -24,6 +24,177 @@ module ngApp.components.githut.controllers {
       var data = this.$scope.data,
           options = this.$scope.config;
 
+      var LHR = this.$window.$(options.container);
+
+      LHR.addClass(options.containerClass);
+      LHR.empty();
+
+      var WIDTH = LHR.width(),
+          HEIGHT = 80 + data.length * 15;
+
+      var margins = {
+        left: 0,
+        right: 30,
+        top: 40,
+        bottom: 30
+      };
+      var padding = {
+        left: 100,
+        right: 115,
+        top: 20,
+        bottom: 0
+      };
+      var self = this;
+      var scale_type = options.scale || "linear";
+      var nested_data = d3.nest()
+          .key(function(d) {
+            return d.project_id;
+          })
+          .rollup(function(leaves) {
+            var r = {};
+            options.columns.forEach(function(col) {
+              r[col] = d3.sum(leaves, function(o) {
+                return o[col];
+              });
+              r.project_id = leaves[0]["project_id"];
+              r.file_count = leaves[0]["file_count"];
+              r.participant_count = leaves[0]["participant_count"];
+              r.primary_site = leaves[0]["primary_site"];
+              r.file_size = leaves[0]["file_size"];
+              r.name = leaves[0]["name"];
+            });
+
+            return r;
+          })
+          .entries(data)
+          .filter(function(d) {
+            return d.key !== "null";
+          })
+          .sort(function(a,b) {
+            return d3.descending(a.values["file_count"], b.values["file_count"]);
+          })
+          .slice(0, 100);
+
+      var marker_max_width = (WIDTH - d3.sum([
+          margins.left,
+          margins.right,
+          padding.left,
+          padding.right
+        ])) / options.columns.length;
+      var marker_width = [2, marker_max_width];
+      var svg = d3.select(options.container)
+            .append("svg")
+            .attr("width", WIDTH)
+            .attr("height", HEIGHT);
+      var defs = svg.append("defs")
+        .append("pattern")
+        .attr({
+          id: "diagonalHatch",
+          width: 3,
+          height: 3,
+          patternTransform: "rotate(-45 0 0)",
+          patternUnits: "userSpaceOnUse"
+        });
+
+      defs.append("rect")
+        .attr({
+          x: 0,
+          y: 0,
+          width: 3,
+          height: 3
+        })
+        .style({
+          stroke:"none",
+          fill:"#fff"
+        });
+
+      defs.append("line")
+        .attr({
+          x0: 0,
+          y1: 0,
+          x2: 0,
+          y2: 3
+        })
+        .style({
+          stroke: "#A06535",
+          "stroke-opacity": 1,
+          "stroke-width": 1
+        });
+
+      var xscale = d3.scale.ordinal()
+          .domain(options.columns)
+          .rangePoints([
+            0,
+            WIDTH - (margins.left + margins.right + padding.left + padding.right)
+          ]);
+
+      var yscales = {},
+          width_scales = {},
+          extents = {},
+          yAxes = {};
+
+      var languages_group = svg.append("g")
+          .attr("id", "languages")
+          .attr("transform", "translate(" + (margins.left + padding.left) + "," +
+                                            (margins.top + padding.top) + ")");
+
+      var labels_group = svg.append("g")
+          .attr("id", "labels")
+          .attr("transform", "translate(" + (margins.left + padding.left) + "," +
+                                            (margins.top + padding.top) + ")");
+
+      var columns = svg.append("g")
+          .attr("id", "columns")
+          .attr("transform", "translate(" + (margins.left + padding.left) + "," +
+                                            (margins.top + padding.top) + ")");
+
+      var labels = labels_group.selectAll("g.labels")
+          .data(nested_data,function(d) {
+            return d.key;
+          })
+          .enter()
+          .append("g")
+          .attr("class", "labels")
+          .attr("rel", function(d) {
+            return d.key;
+          })
+          .on("mouseover",function(d){
+            d3.select(this)
+              .classed("hover", true);
+
+            languages_group
+              .selectAll("g.lang[rel='" + d.key + "']")
+              .classed("hover",true);
+          })
+          .on("mouseout",function(d){
+            svg.selectAll("g.hover,g.primary_site")
+              .classed("hover", false)
+              .classed("primary_site", false);
+          });
+
+      var language = languages_group.selectAll("g.lang")
+          .data(nested_data,function(d) {
+            return d.key;
+          })
+          .enter()
+          .append("g")
+          .attr("class", "lang")
+          .attr("rel", function(d) {
+            return d.key;
+          });
+
+      var line = d3.svg.line()
+          .x(function(d, i) { return d.x; })
+          .y(function(d, i) {
+            if (d.y === 0) {
+              return yscales[options.use[d.col] || d.col].range()[0];
+            } else {
+              return yscales[options.use[d.col] || d.col](d.y);
+            }
+          });
+
+      var drawn_primary_sites = [];
+
       this.$window.$(this.$window).off("resize");
 
       this.$window.$(this.$window).on("resize", _.debounce(() => {
@@ -108,66 +279,6 @@ module ngApp.components.githut.controllers {
         width_scales = wscales;
       }
 
-      function createAxes() {
-        var axes = {};
-        options.columns.forEach(function(col){
-          axes[col] = d3.svg.axis().scale(yscales[col])
-          .orient(col == options.title_column ? "left" : "right").tickFormat(function(d) {
-            if (options.formats[col]) {
-              return d3.format(options.formats[col])(d);
-            } else if (col == options.title_column) {
-              return "";
-            } else if (scale_type == "log" && (!options.scale_map[col] || options.scale_map[col] == "log")) {
-              var values = [
-                0.01, 0.1, 1,10,100,
-                1000,10000,100000,
-                1000000,10000000
-              ];
-
-              if (values.indexOf(d) > -1) {
-                return d3.format(d >= 100 ? ",.0f" : ",.2f")(d);
-              }
-
-              return "";
-            } else if (options.scale_map[col] == "ordinal") {
-              return d;
-            } else {
-              return d3.format(d >= 100 ? ",.0f" : ",.2f")(d);
-            }
-          });
-        });
-        yAxes = axes;
-      }
-
-      // NOTE: Refactor Create/Update as they are nearly identical.
-      function updateAxes() {
-        options.columns.forEach(function(col){
-          yAxes[col].scale(yscales[col]).tickFormat(function(d){
-
-            if (options.formats[col]) {
-              return d3.format(options.formats[col])(d)
-            } else if (col == options.title_column) {
-              return "";
-            } else if (options.scale_map[col] == "ordinal") {
-              return d;
-            } else if (scale_type == "log") {
-              var values = [
-                0.01, 0.1, 1,10,100,
-                1000,10000,100000,
-                1000000,10000000
-              ];
-
-              if (values.indexOf(d) >- 1) {
-                return d3.format(d >= 100 ? ",.0f" : ",.2f")(d);
-              }
-              return "";
-            } else {
-              return d3.format(d>=100?",.0f":",.2f")(d);
-            }
-          });
-        });
-      }
-
       var $filter = this.$filter;
       function addAxes() {
         var column = columns.selectAll("g.column")
@@ -189,7 +300,7 @@ module ngApp.components.githut.controllers {
                     .attr("class", "tooltip")
                     .offset([-5, 0])
                     .html(function(d) {
-                            return $filter("humanify")(d.id);
+                            return $filter("humanify")(d.tool_tip_text || d.id);
                           });
 
         title.filter((d) => { return d.is_subtype; })
@@ -800,177 +911,6 @@ module ngApp.components.githut.controllers {
               return "translate(" + x + "," + y + ")";
             });
       }
-
-      var LHR = this.$window.$(options.container);
-
-      LHR.addClass(options.containerClass);
-      LHR.empty();
-
-      var WIDTH = LHR.width(),
-          HEIGHT = 80 + data.length * 15;
-
-      var margins = {
-        left: 0,
-        right: 30,
-        top: 40,
-        bottom: 30
-      };
-      var padding = {
-        left: 100,
-        right: 115,
-        top: 20,
-        bottom: 0
-      };
-      var self = this;
-      var scale_type = options.scale || "linear";
-      var nested_data = d3.nest()
-          .key(function(d) {
-            return d.project_id;
-          })
-          .rollup(function(leaves) {
-            var r = {};
-            options.columns.forEach(function(col) {
-              r[col] = d3.sum(leaves, function(o) {
-                return o[col];
-              });
-              r.project_id = leaves[0]["project_id"];
-              r.file_count = leaves[0]["file_count"];
-              r.participant_count = leaves[0]["participant_count"];
-              r.primary_site = leaves[0]["primary_site"];
-              r.file_size = leaves[0]["file_size"];
-              r.name = leaves[0]["name"];
-            });
-
-            return r;
-          })
-          .entries(data)
-          .filter(function(d) {
-            return d.key !== "null";
-          })
-          .sort(function(a,b) {
-            return d3.descending(a.values["file_count"], b.values["file_count"]);
-          })
-          .slice(0, 100);
-
-      var marker_max_width = (WIDTH - d3.sum([
-          margins.left,
-          margins.right,
-          padding.left,
-          padding.right
-        ])) / options.columns.length;
-      var marker_width = [2, marker_max_width];
-      var svg = d3.select(options.container)
-            .append("svg")
-            .attr("width", WIDTH)
-            .attr("height", HEIGHT);
-      var defs = svg.append("defs")
-        .append("pattern")
-        .attr({
-          id: "diagonalHatch",
-          width: 3,
-          height: 3,
-          patternTransform: "rotate(-45 0 0)",
-          patternUnits: "userSpaceOnUse"
-        });
-
-      defs.append("rect")
-        .attr({
-          x: 0,
-          y: 0,
-          width: 3,
-          height: 3
-        })
-        .style({
-          stroke:"none",
-          fill:"#fff"
-        });
-
-      defs.append("line")
-        .attr({
-          x0: 0,
-          y1: 0,
-          x2: 0,
-          y2: 3
-        })
-        .style({
-          stroke: "#A06535",
-          "stroke-opacity": 1,
-          "stroke-width": 1
-        });
-
-      var xscale = d3.scale.ordinal()
-          .domain(options.columns)
-          .rangePoints([
-            0,
-            WIDTH - (margins.left + margins.right + padding.left + padding.right)
-          ]);
-
-      var yscales = {},
-          width_scales = {},
-          extents = {},
-          yAxes = {};
-
-      var languages_group = svg.append("g")
-          .attr("id", "languages")
-          .attr("transform", "translate(" + (margins.left + padding.left) + "," +
-                                            (margins.top + padding.top) + ")");
-
-      var labels_group = svg.append("g")
-          .attr("id", "labels")
-          .attr("transform", "translate(" + (margins.left + padding.left) + "," +
-                                            (margins.top + padding.top) + ")");
-
-      var columns = svg.append("g")
-          .attr("id", "columns")
-          .attr("transform", "translate(" + (margins.left + padding.left) + "," +
-                                            (margins.top + padding.top) + ")");
-
-      var labels = labels_group.selectAll("g.labels")
-          .data(nested_data,function(d) {
-            return d.key;
-          })
-          .enter()
-          .append("g")
-          .attr("class", "labels")
-          .attr("rel", function(d) {
-            return d.key;
-          })
-          .on("mouseover",function(d){
-            d3.select(this)
-              .classed("hover", true);
-
-            languages_group
-              .selectAll("g.lang[rel='" + d.key + "']")
-              .classed("hover",true);
-          })
-          .on("mouseout",function(d){
-            svg.selectAll("g.hover,g.primary_site")
-              .classed("hover", false)
-              .classed("primary_site", false);
-          });
-
-      var language = languages_group.selectAll("g.lang")
-          .data(nested_data,function(d) {
-            return d.key;
-          })
-          .enter()
-          .append("g")
-          .attr("class", "lang")
-          .attr("rel", function(d) {
-            return d.key;
-          });
-
-      var line = d3.svg.line()
-          .x(function(d, i) { return d.x; })
-          .y(function(d, i) {
-            if (d.y === 0) {
-              return yscales[options.use[d.col] || d.col].range()[0];
-            } else {
-              return yscales[options.use[d.col] || d.col](d.y);
-            }
-          });
-
-      var drawn_primary_sites = [];
 
       updateScales();
       addAxes();

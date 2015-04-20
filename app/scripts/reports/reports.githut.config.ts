@@ -3,11 +3,19 @@ angular.module("reports.githut.config",[])
   return function(data) {
     var columns = ReportsGithutColumns,
         config = ReportsGithutConfig,
-        order = ["Clinical", "Raw microarray data", 
-                  "Raw sequencing data", "Simple nucleotide variation", 
-                  "Copy number variation", "Structural rearrangement", 
-                  "Gene expression", "Protein expression",  
-                  "DNA methylation", "Other"],
+        order = ["Clinical", "Array", "Seq", "SNV", "CNV", "SV", "Exp", "PExp", "Meth", "Other"],
+        dataTypesMap = {
+                  "Clinical": "Clinical",
+                  "Array": "Raw microarray data",
+                  "Seq": "Raw sequencing data",
+                  "SNV": "Simple nucleotide variation",
+                  "CNV": "Copy number variation",
+                  "SV": "Structural rearrangement",
+                  "Exp": "Gene expression",
+                  "PExp": "Protein expression",
+                  "Meth": "DNA methylation",
+                  "Other": "Other"
+                  },
         primary_sites = [];
 
     var aggregations = data.reduce(function(a,b) {
@@ -47,22 +55,24 @@ angular.module("reports.githut.config",[])
     var types = nest.map(function(a){
       return {
         id: a.key,
+        tool_tip_text: dataTypesMap[a.key],
         display_name: [a.key],
         colorgroup: "file_count",
         scale: "ordinal",
-        dimensional: true
+        dimensional: true,
+        is_subtype: true
       };
     });
 
-    types = types.sort(function(a,b){return order.indexOf(a) - order.indexOf(b)});
+    types = _.sortBy(types, (type) => { return 0 - _.indexOf(order, type.id); });
 
     types.forEach(function(a) {
       ReportsGithutColumns.splice(2, 0, a);
     });
 
     ReportsGithutConfig.superhead = {
-      end: types[0].id,
       start: types[types.length - 1].id,
+      end: types[0].id,
       text: "File count per data type"
     };
 
@@ -125,7 +135,7 @@ angular.module("reports.githut.config",[])
   return {
     container:"#pc",
     scale:"ordinal",
-    columns:undefined,
+    config: columns,
     ref:"lang_usage",
     title_column:"project_id",
     scale_map:undefined,

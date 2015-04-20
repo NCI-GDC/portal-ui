@@ -17,7 +17,7 @@ module ngApp.reports.controllers {
                 private $window: ng.IWindowService, private UserService: IUserService,$timeout,$filter,ReportsGithutColumns,ReportsGithut) {
 
       CoreService.setPageTitle("Reports");
-      
+
       /**
       * TODO: refactor with app/scripts/components/tables/tables.controllers.ts#L119
       */
@@ -30,7 +30,7 @@ module ngApp.reports.controllers {
           controller: "ExportTableModalController as etmc",
           backdrop: 'static'
         });
-        
+
         var fileType = 'JSON';
         var endpoint = 'reports/data-download-statistics';
 
@@ -69,7 +69,6 @@ module ngApp.reports.controllers {
              "&size=" + this.$scope.size +
              "&filters=" + JSON.stringify(filters));
       }
-        
       modalInstance.result.then((data) => {
         if (data.cancel) {
           if (abort) {
@@ -82,23 +81,19 @@ module ngApp.reports.controllers {
       }
 
       ReportsService.getReports().then(function(reports){
-        
        var data = reports.hits.map(function(a){
           a.file_size = a.size;
           a.file_count = a.count;
           return a;
         });
 
-       
-        
         $timeout(function(){
           var githut = ReportsGithut(data);
-        
-        
+
           $scope.githutData = githut.data;
           $scope.githutConfig = githut.config;
-          
-        },500);
+
+        }, 500);
 
 
         $scope.byProject = dataNest('project_id').entries(data);
@@ -109,7 +104,7 @@ module ngApp.reports.controllers {
           a = a.concat(b.data_types);
           return a;
         },[]));
-        
+
         $scope.bySubtype = dataNest('data_subtype').entries(data.reduce(function(a,b){
           a = a.concat(b.data_subtypes);
           return a;
@@ -119,7 +114,7 @@ module ngApp.reports.controllers {
           a = a.concat(b.experimental_strategies);
           return a;
         },[]));
-        
+
         $scope.byDataAccess = dataNest('access').entries(data.reduce(function(a,b){
           a = a.concat(b.data_access);
           return a;
@@ -147,17 +142,9 @@ module ngApp.reports.controllers {
                 }
               })
               .sortValues(function(a,b){return a.file_count - b.file_count});
-
         }
-        
-
-
-
-
       });
     }
-
-
   }
 
   class ReportController implements IReportController {

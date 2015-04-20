@@ -169,18 +169,18 @@ angular.module('projects.githut.config',[])
       display_name:["File","Count"],
       scale:'ordinal',
       dimensional:true,
-      colorgroup:'file_count'
+      colorgroup:'file_count',
+      href:function(d) {
+          var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: d.lang}], true);
+          $state.go("search.files", { filters:filter });
+      }
     },
     {
       id:'file_size',
       display_name:["File","Size"],
       scale:'ordinal',
       dimensional:true,
-      colorgroup:'file_size',
-      href:function(d){
-        var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: d.lang}]);
-        $state.go("search.files",{filters:filter});
-      }
+      colorgroup:'file_size'
     },
     {
       id:'primary_site',

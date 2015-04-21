@@ -24,7 +24,6 @@ module ngApp.search.controllers {
     setState(tab: string, next: string): void;
     select(section: string, tab: string): void;
     removeFiles(files: IFile[]): void;
-    isUserProject(file: IFile): boolean;
     tabSwitch: boolean;
   }
 
@@ -74,16 +73,19 @@ module ngApp.search.controllers {
     }
 
     refresh() {
-      if (this.tabSwitch) {
+      if (this.tabSwitch && ((this.SearchState.tabs.files.active && this.files.hits.length) ||
+         (this.SearchState.tabs.participants.active && this.participants.hits.length) ||
+         (this.SearchState.tabs.summary.active && this.summary))) {
         this.tabSwitch = false;
         return;
       }
 
       this.SearchService.getSummary().then((data) => {
         this.summary = data;
+        this.tabSwitch = false;
       });
 
-      this.FilesService.getFiles({
+      var fileOptions = {
         fields: this.SearchTableFilesModel.fields,
         expand: this.SearchTableFilesModel.expand,
         facets: [
@@ -100,19 +102,9 @@ module ngApp.search.controllers {
           "center.name",
           "tags"
         ]
-      }).then((data) => {
-        if (!data.hits.length) {
-          this.CoreService.setSearchModelState(true);
-        }
-        this.files = data;
+      };
 
-        for(var i = 0; i < this.files.hits.length; i++) {
-          this.files.hits[i].related_ids = _.pluck(this.files.hits[i].related_files, "file_id");
-        }
-
-      });
-
-      this.ParticipantsService.getParticipants({
+      var participantOptions = {
         fields: this.SearchTableParticipantsModel.fields,
         expand: this.SearchTableParticipantsModel.expand,
         facets: [
@@ -126,18 +118,31 @@ module ngApp.search.controllers {
           "project.primary_site",
           "project.program.name"
         ]
-      }).then((data: IFiles) => {
-        if (!data.hits.length) {
-          this.CoreService.setSearchModelState(true);
-        }
+      };
 
+      if (!this.SearchState.tabs.files.active) {
+        fileOptions.size = 0;
+      }
+
+      if (!this.SearchState.tabs.participants.active) {
+        participantOptions.size = 0;
+      }
+
+      this.FilesService.getFiles(fileOptions).then((data) => {
+        this.files = data;
+        this.tabSwitch = false;
+
+        for (var i = 0; i < this.files.hits.length; i++) {
+          this.files.hits[i].related_ids = _.pluck(this.files.hits[i].related_files, "file_id");
+        }
+      });
+
+      this.ParticipantsService.getParticipants(participantOptions).then((data: IFiles) => {
         this.participants = data;
+        this.tabSwitch = false;
       });
     }
 
-    // TODO Load data lazily based on active tab
-    // If done, flag preventing data reload on tab switch needs to
-    // be reworked.
     setState(tab: string) {
       // Changing tabs and then navigating to another page
       // will cause this to fire.
@@ -145,10 +150,6 @@ module ngApp.search.controllers {
         this.tabSwitch = true;
         this.$state.go("search." + tab, this.LocationService.search(), {inherit: false});
       }
-    }
-
-    isUserProject(file: IFile): boolean {
-      return this.UserService.isUserProject(file);
     }
 
     select(section: string, tab: string) {

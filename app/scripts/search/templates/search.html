@@ -26,7 +26,7 @@
           </span>
         </div>
         <div class="col-lg-2 col-md-2">
-          <a class="btn btn-primary pull-right" data-translate  data-ng-click="sc.gotoQuery()">
+          <a class="btn btn-primary pull-right" data-translate data-ng-click="sc.gotoQuery()">
             <i class="fa fa-gears"></i> <span data-translate>Advanced</span>
           </a>
         </div>
@@ -53,29 +53,14 @@
         </li>
       </ul>
       <div class="pane-section" data-ng-show="sc.SearchState.tabs.summary.active">
-
-        <h2 data-ng-if="sc.files.hits.length === 0" data-translate>
-          No files found using those filters.
-        </h2>
-
-        <div data-ng-include="'search/templates/search.summary.html'" data-ng-if="sc.files.hits.length > 0"></div>
+        <div data-ng-include="'search/templates/search.summary.html'" data-ng-if="sc.summary"></div>
       </div>
       <div class="pane-section" data-ng-show="sc.SearchState.tabs.participants.active">
-
-        <h2 data-ng-if="sc.participants.hits.length === 0" data-translate>
-          No participants found using those filters.
-        </h2>
-
-        <div data-ng-include="'search/templates/search.participants.html'" data-ng-if="sc.participants.hits.length > 0"></div>
+        <div data-ng-include="'search/templates/search.participants.html'"></div>
       </div>
       <div class="pane-section"
            data-ng-show="sc.SearchState.tabs.files.active">
-
-        <h2 data-ng-if="sc.files.hits.length === 0" data-translate>
-          No files found using those filters.
-        </h2>
-
-        <div data-ng-include="'search/templates/search.files.html'" data-ng-if="sc.files.hits.length > 0"></div>
+        <div data-ng-include="'search/templates/search.files.html'"></div>
       </div>
     </div>
   </div>

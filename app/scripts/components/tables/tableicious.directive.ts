@@ -339,7 +339,8 @@ module ngApp.components.tables.directives.tableicious {
         'tables.services',
         'tables.validator',
         'tableicious.directive.head',
-        'tableicious.directive.cell'
+        'tableicious.directive.cell',
+        'tableicious.directive.row' 
     ])
     .directive("tableicious", Tableicious)
     .controller("TableiciousController",TableiciousController);

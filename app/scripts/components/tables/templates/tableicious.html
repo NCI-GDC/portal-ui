@@ -1,59 +1,47 @@
 <table class="table table-striped table-hover table-condensed table-bordered">
-    <thead>
-        <tr>
-            <th ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
-                ng-class="::getHeadingClass(heading)"
-                data-translate
-                ng-repeat="heading in getAllHeadingsAtNestingLevel(0) | orderBy:getColumnIndex:heading"
-                rowspan="{{::getHeadingRowSpan(heading)}}"
-                colspan="{{::getHeadingColSpan(heading)}}"
-               >
-                <div  tableicious-header
-                heading="heading"
-                paging="paging"
-                scope="col"
-                data="data"
-                 ng-if='::heading.compileHead'>
-                </div>
-                <span ng-if="::!heading.noTitle">
-                   {{heading.displayName}}
-                </span>
-            </th>
+  <thead>
+    <tr>
+      <th ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
+          ng-class="::getHeadingClass(heading)"
+          data-translate
+          ng-repeat="heading in getAllHeadingsAtNestingLevel(0) | orderBy:getColumnIndex:heading track by $index"
+          rowspan="{{::getHeadingRowSpan(heading)}}"
+          colspan="{{::getHeadingColSpan(heading)}}">
+        <div tableicious-header heading="heading" paging="paging" scope="col" data="data"ng-if='::heading.compileHead'></div>
+        <span ng-if="::!heading.noTitle">{{heading.displayName}}</span>
+      </th>
+    </tr>
+    <tr>
+      <th ng-repeat="childHeading in ::getAllHeadingsAtNestingLevel(1) track by $index" data-ng-if="!childHeading.hidden">
+        <span data-tooltip="{{ childHeading.toolTipText }}" data-tooltip-append-to-body="true" tooltip-placement="top">
+          {{ childHeading.displayName }}
+        </span>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index" tableicious-row>
+      <td ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
+          data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading"
+          class="{{getFieldClass(field,datum,this,heading)}}">
+        <div ng-if='::heading.compile' tableicious-cell></div>
+        <a data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) !== '--'"
+           data-ng-href="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
+          {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
+        </a>
 
-        </tr>
-        <tr>
-            <th ng-repeat="childHeading in getAllHeadingsAtNestingLevel(1)" data-ng-if="!childHeading.hidden">
-              <span data-tooltip="{{ childHeading.toolTipText }}" data-tooltip-append-to-body="true" tooltip-placement="top">
-                {{ childHeading.displayName }}
-              </span>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr data-ng-repeat="datum in dataAsKeyValuePairs track by $index">
-            <td ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
-                data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading"
-                class="{{getFieldClass(field,datum,this,heading)}}">
-                <div ng-if='::heading.compile' tableicious-cell >
-                </div>
-                <a data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) !== '--'"
-                   data-ng-href="{{getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter)}}">
-                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
-                </a>
+        <span data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) === '--'">
+          {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
+        </span>
 
-                <span data-ng-if="heading.sref && getSref(heading,getDataAtRow(heading, $parent.$index), $parent.datum, this, $filter) === '--'">
-                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
-                </span>
+        <span ng-if="!heading.sref && !heading.compile">
+          {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
+        </span>
 
-                <span ng-if="!heading.sref && !heading.compile">
-                    {{getTemplate(heading,getDataAtRow(heading, $parent.$index),$parent.datum,this, $filter)}}
-                </span>
-
-                <div ng-if="heading.icon" class="text-center">
-                    <i class="fa fa-{{getIcon(heading, getDataAtRow(heading, $parent.$index),$parent.datum,this)}} fa-lg"></i>
-                </div>
-
-            </td>
-        </tr>
-    </tbody>
+        <div ng-if="heading.icon" class="text-center">
+          <i class="fa fa-{{getIcon(heading, getDataAtRow(heading, $parent.$index),$parent.datum,this)}} fa-lg"></i>
+        </div>
+      </td>
+    </tr>
+  </tbody>
 </table>

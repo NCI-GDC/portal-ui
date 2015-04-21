@@ -179,11 +179,15 @@ module ngApp.components.tables.controllers {
 
   interface IGDCTableController {
     setDisplayedData(newPaging?: any): void;
+    tableRendered: boolean;
+    sortingHeadings: any[];
+    displayedData: any[];
   }
 
   class GDCTableController implements IGDCTableController {
     sortingHeadings: any[] = [];
     displayedData: any[];
+    tableRendered: boolean = false;
 
     /* @ngInject */
     constructor(private $scope: IGDCTableScope) {
@@ -200,6 +204,10 @@ module ngApp.components.tables.controllers {
       $scope.$watch("data", ()=> {
         this.setDisplayedData();
       }, true);
+
+      $scope.$on("tableicious-loaded", () => {
+        this.tableRendered = true;
+      });
 
       this.setDisplayedData();
     }

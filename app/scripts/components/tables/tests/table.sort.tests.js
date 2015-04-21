@@ -11,6 +11,7 @@ describe('Tables:', function () {
         sort: "file_size:asc,file_name:desc"
       };
       scope.config = {
+        title: 'test',
         headings:[{
           name: 'File Size',
           id:'file_size',
@@ -24,10 +25,12 @@ describe('Tables:', function () {
       };
 
       var wc = $controller('TableSortController', { $scope: scope, LocationService: LocationService });
-      expect(wc.$scope.sortColumns[0].sort).to.equal(true);
-      expect(wc.$scope.sortColumns[1].sort).to.equal(true);
-      expect(wc.$scope.sortColumns[0].order).to.equal("asc");
-      expect(wc.$scope.sortColumns[1].order).to.equal("desc");
+      var fileSizeSort = _.find(wc.$scope.sortColumns, function(col) { return col.key === 'file_size'; });
+      var fileNameSort = _.find(wc.$scope.sortColumns, function(col) { return col.key === 'file_name'; });
+      expect(fileSizeSort.sort).to.equal(true);
+      expect(fileNameSort.sort).to.equal(true);
+      expect(fileSizeSort.order).to.equal("asc");
+      expect(fileNameSort.order).to.equal("desc");
     }));
 
     it('should update sorting', inject(function ($rootScope, $controller, LocationService) {
@@ -35,6 +38,7 @@ describe('Tables:', function () {
       scope.paging = {};
       scope.page = "test";
       scope.config = {
+        title: "test",
         headings:[
           {
             name: 'File Size',
@@ -54,8 +58,7 @@ describe('Tables:', function () {
       wc.toggleSorting(wc.$scope.sortColumns[1]);
 
       var paging = LocationService.pagination()[wc.$scope.page];
-
-      expect(paging.sort).to.equal("file_size:asc,file_name:asc");
+      expect(paging.sort).to.equal("file_name:asc");
     }));
 
   });

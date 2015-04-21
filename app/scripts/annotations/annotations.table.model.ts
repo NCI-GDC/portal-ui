@@ -3,7 +3,7 @@ module ngApp.projects.models {
 
     var AnnotationsTableModel:TableiciousConfig = {
         title: "Annotations",
-        order: ['annotation_id', 'participant_id', 'project.program.name', 'project.project_id', 'entity_id', 'entity_type', 'category', 'classification', 'dateCreated', 'creator', 'status', 'entity_submitter_id'],
+        order: ['annotation_id', 'participant_id', 'project.program.name', 'project.project_id', 'entity_type', 'entity_id', 'entity_submitter_id', 'category', 'classification', 'created_datetime', 'creator', 'status'],
         headings: [{
             displayName: "ID",
             id: "annotation_id",

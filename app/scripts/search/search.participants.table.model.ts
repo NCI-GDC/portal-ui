@@ -42,7 +42,7 @@ module ngApp.search.models {
 
     var searchParticipantsModel:TableiciousConfig = {
         title: 'Participants',
-        order: ['disease_type', 'gender', 'tumor_stage', 'files', 'last_update'],
+        order: ['add_to_cart_filtered', 'my_projects', 'participant_id', 'project.project_id', 'project.primary_site', 'clinical.gender', 'files', 'summary.data_types', 'annotations'],
         headings: [{
             displayName: "Add to Cart",
             id: "add_to_cart_filtered",

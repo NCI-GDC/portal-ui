@@ -13,6 +13,7 @@ module ngApp.cart.models {
 
   var CartTableModel: TableiciousConfig = {
     title: 'Cart',
+    order: ['select_file', 'download', 'my_projects', 'download', 'my_projects', 'access', 'file_name', 'participantId', 'projects', 'data_type', 'data_format', 'file_size', 'annotationIds'],
     headings: [
       {
         displayName: "select_file",

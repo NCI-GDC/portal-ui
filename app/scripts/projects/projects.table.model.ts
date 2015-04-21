@@ -31,7 +31,7 @@ module ngApp.projects.models {
 
   var projectTableModel: TableiciousConfig = {
     title: 'Projects',
-    order: ['project_id', 'primary_site', 'program', 'participants', 'disease_type', 'file_size', 'files', 'last_update'],
+    order: ['project_id', 'disease_type', 'primary_site', 'program.name', 'summary.participant_count', 'data_types', 'summary.file_count', 'file_size'],
     headings: [
       {
         displayName: "ID",

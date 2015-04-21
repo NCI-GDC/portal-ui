@@ -6,7 +6,6 @@
     </button>
 
     <ul  class="dropdown-menu pull-right" role="menu" >
-      
       <li class="column-heading">
         <div class="input-group input-group-sm">
           <span class="input-group-addon" id="sizing-addon3">
@@ -17,10 +16,11 @@
                  data-ng-model="search.displayName" />
         </div>
         </li>
-        <li class="column-heading"><a>
-            <reset-table target="list" config="config"></reset-table>
-        </a></li>
-       
+        <li class="column-heading">
+          <a data-ng-click="acc.reset()" class="reset-table-span" data-translate>
+            Restore Defaults
+          </a>
+      </li>
        <li>
          <ul dnd-list="listMap" class="column-dnd-list">
 
@@ -31,7 +31,7 @@
               style="padding-left: 10px">
 
               <a dnd-draggable="item"
-                 dnd-moved="onMoved($index)"
+                 dnd-moved="acc.onMoved($index)"
                  effect-allowed="move"
                  dnd-disable-if="search.displayName.length > 0"
                  data-ng-if="true"
@@ -39,15 +39,11 @@
                  dnd-selected="models.selected = item">
                   <i class="fa fa-bars fa-stack fa-lg" data-ng-class="{ 'fa-disabled': search.displayName }"></i>
                   {{ item.displayName | humanify | ellipsicate:18 }}
-                  <i class="fa fa-stack fa-{{item.hidden ? 'eye-slash' : 'eye'}} fa-lg hide-icon" ng-click="item.hidden = !item.hidden"></i>
+                  <i class="fa fa-stack fa-{{item.hidden ? 'eye-slash' : 'eye'}} fa-lg hide-icon" data-ng-click="acc.toggleVisibility($index)"></i>
               </a>
 
           </li>
          </ul>
        </li>
-
-<!--        <li class="divider"></li>-->
-         
-
     </ul>
 </div>

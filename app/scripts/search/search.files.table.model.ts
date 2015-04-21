@@ -30,7 +30,7 @@ module ngApp.search.models {
 
   var searchTableFilesModel: TableiciousConfig = {
     title: 'Files',
-    order: ['file_type', 'participants', 'project_id', 'availableData', 'state', 'last_update'],
+    order: ['add_to_cart', 'download', 'my_projects', 'access', 'file_name', 'participants', 'participants.project.project_id', 'data_type', 'data_format', 'file_size', 'annotations'],
     headings: [
       {
         displayName: "add_to_cart",

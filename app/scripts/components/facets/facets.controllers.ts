@@ -171,15 +171,17 @@ module ngApp.components.facets.controllers {
     }
 
     termSelected(): void {
-      if (this.actives.indexOf(this.searchTerm) === -1) {
-        var term = this.searchTerm;
+      var parts = this.$scope.field.split(".");
+      var field = parts.length > 1 ? parts[parts.length - 1] : parts[0];
 
-        var parts = this.$scope.field.split(".");
-        var field = parts.length > 1 ? parts[parts.length - 1] : parts[0];
+      if (this.actives.indexOf(this.searchTerm[field]) === -1) {
+        var term = this.searchTerm;
         term = term[field];
 
         this.FacetService.addTerm(this.$scope.field, term);
         this.actives.push(this.searchTerm);
+        this.searchTerm = "";
+      } else {
         this.searchTerm = "";
       }
     }

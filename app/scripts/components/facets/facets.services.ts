@@ -24,13 +24,21 @@ module ngApp.components.facets.services {
         "participants": "project.project_id",
         "projects": "project_id"
       };
-      var filters = this.LocationService.filters();
-      filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[entity]);
+      var options = {
+        query: query
+      };
 
-      return this.Restangular.all(entity + "/ids").get("", {
-        query: query,
-        filters: filters
-      }).then((data) => {
+      var filters = this.LocationService.filters();
+      _.remove(filters.content, (filter) => {
+        return filter.content.field === field;
+      });
+      
+      if (filters.content.length) {
+        filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[entity]);
+        options.filters = filters;
+      }
+
+      return this.Restangular.all(entity + "/ids").get("", options).then((data) => {
         return data.data.hits;
       });
     }

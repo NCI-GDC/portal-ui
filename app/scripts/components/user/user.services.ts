@@ -55,16 +55,8 @@ module ngApp.components.user.services {
         })
         .get("", {})
         .then((file) => {
-          var url = this.$window.URL.createObjectURL(file);
-          var a = this.$window.document.createElement("a");
-          a.setAttribute("href", url);
-          a.setAttribute("download", "gdc-user-token." + this.$window.moment().format() + ".txt");
-          this.$window.document.body.appendChild(a);
-
-          _.defer(() => {
-            a.click();
-            this.$window.document.body.removeChild(a);
-          });
+          modalInstance.close({cancel: true});
+          this.$window.saveAs(file, "gdc-user-token." + this.$window.moment().format() + ".txt");
         });
       }
     }

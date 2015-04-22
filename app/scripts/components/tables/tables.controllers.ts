@@ -303,19 +303,10 @@ module ngApp.components.tables.controllers {
           responseType: "blob"
         })
         .get('', params).then((file) => {
-          var url = this.$window.URL.createObjectURL(file);
-          var a = this.$window.document.createElement("a");
-          a.setAttribute("href", url);
-          a.setAttribute("download", this.$scope.endpoint + "." +
-                         this.$window.moment().format() + "." +
-                         fileType.toLowerCase());
-          this.$window.document.body.appendChild(a);
-
-          _.defer(() => {
-            a.click();
-            modalInstance.close({cancel: true});
-            this.$window.document.body.removeChild(a);
-          });
+          modalInstance.close({cancel: true});
+          this.$window.saveAs(file, this.$scope.endpoint + "." +
+                              this.$window.moment().format() + "." +
+                              fileType.toLowerCase());
         });
       } else {
         this.LocationService.setHref(this.config.api + "/" +

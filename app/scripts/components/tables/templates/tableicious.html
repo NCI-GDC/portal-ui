@@ -23,7 +23,9 @@
         </tr>
         <tr>
             <th ng-repeat="childHeading in getAllHeadingsAtNestingLevel(1)" data-ng-if="!childHeading.hidden">
-                {{childHeading.displayName}}
+              <span data-tooltip="{{ childHeading.toolTipText }}" data-tooltip-append-to-body="true" tooltip-placement="top">
+                {{ childHeading.displayName }}
+              </span>
             </th>
         </tr>
     </thead>

@@ -177,6 +177,7 @@ module ngApp.search.models {
                     sref: getFileSref('Clinical')
                 },  {
                     displayName: 'Array',
+                    toolTipText: 'Raw microarray data',
                     id: 'Array',
                     enabled: true,
                     template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
@@ -195,6 +196,7 @@ module ngApp.search.models {
                 }, {
                     displayName: 'Seq',
                     id: 'Seq',
+                    toolTipText: 'Raw sequencing data',
                     enabled: true,
                     template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -212,6 +214,7 @@ module ngApp.search.models {
                 }, {
                     displayName: "SNV",
                     id: "SNV",
+                    toolTipText: "Simple nucleotide variation",
                     enabled: true,
                     fieldClass: "text-right",
                     template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
@@ -229,6 +232,7 @@ module ngApp.search.models {
                 }, {
                     displayName: 'CNV',
                     id: 'cnv',
+                    toolTipText: 'Copy number variation',
                     enabled: true,
                     template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -245,6 +249,7 @@ module ngApp.search.models {
                     sref: getFileSref('Copy number variation')
                 }, {
                     displayName: 'SV',
+                    toolTipText: 'Structural rearrangement',
                     id: 'sv',
                     enabled: true,
                     template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
@@ -262,6 +267,7 @@ module ngApp.search.models {
                     sref: getFileSref('Structural rearrangement')
                 }, {
                     displayName: 'Exp',
+                    toolTipText: 'Gene expression',
                     id: 'Exp',
                     enabled: true,
                     template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
@@ -280,6 +286,7 @@ module ngApp.search.models {
                 }, {
                     displayName: 'PExp',
                     id: 'pexp',
+                    toolTipText: 'Protein expression',
                     enabled: true,
                     template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
@@ -297,6 +304,7 @@ module ngApp.search.models {
                 }, {
                     displayName: 'Meth',
                     id: 'meth',
+                    toolTipText: 'DNA methylation',
                     enabled: true,
                     template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
                         var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){

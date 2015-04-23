@@ -67,6 +67,11 @@ module ngApp.components.tables.directives.tableicious {
         displayName:string;
 
         /**
+         * @toolTipText appears in a tooltip above child headings
+         */
+        toolTipText: string;
+
+        /**
          * @id A unique string that will identify this column.
          */
         id:string;

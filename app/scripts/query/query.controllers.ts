@@ -100,8 +100,8 @@ module ngApp.query.controllers {
       });
 
       this.FilesService.getFiles({
-        raw: true,
-        fields: this.SearchTableFilesModel.fields
+        fields: this.SearchTableFilesModel.fields,
+        expand: this.SearchTableFilesModel.expand
       }).then((data) => {
         if (!data.hits.length) {
           this.CoreService.setSearchModelState(true);
@@ -115,8 +115,8 @@ module ngApp.query.controllers {
       });
 
       this.ParticipantsService.getParticipants({
-        raw: true,
-        fields: this.SearchTableParticipantsModel.fields
+        fields: this.SearchTableParticipantsModel.fields,
+        expand: this.SearchTableParticipantsModel.expand
       }).then((data: IFiles) => {
         if (!data.hits.length) {
           this.CoreService.setSearchModelState(true);

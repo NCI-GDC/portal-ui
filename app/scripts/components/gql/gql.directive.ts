@@ -67,7 +67,7 @@ module ngApp.components.gql.directives {
     cycle(val: number);
     keypress(e: any);
     caret(input: any, offset: number);
-    enter();
+    enter(item: any);
     gql: IGqlResult;
     query: string;
     Error: IGqlSyntaxError;
@@ -82,6 +82,7 @@ module ngApp.components.gql.directives {
   /* @ngInject */
   function gqlInput($window: IGDCWindowService,
                     $compile: ng.ICompileService,
+                    $timeout: ng.ITimeoutService,
                     Restangular: restangular.IService,
                     FilesService: IFilesService,
                     ParticipantsService: IParticipantsService): ng.IDirective {
@@ -96,14 +97,12 @@ module ngApp.components.gql.directives {
       templateUrl: "components/gql/templates/gql.html",
       link: function ($scope: IGqlScope, element: any) {
         var ds = Restangular.all("gql");
-        var mapping;
+        var mapping, mapping_names;
         ds.get('_mapping', {}).then((m) => {
           mapping = m;
         });
 
         var inactive = -1;
-
-        $scope.mode = "fresh";
 
         function getPos(element) {
           if ('selectionStart' in element) {
@@ -119,126 +118,151 @@ module ngApp.components.gql.directives {
 
         function setPos(element, caretPos) {
           if (element.createTextRange) {
+            console.log(1);
             var range = element.createTextRange();
             range.move('character', caretPos);
             range.select();
           } else {
+            console.log(2);
             element.focus();
             if (element.selectionStart !== undefined) {
-              element.setSelectionRange(caretPos, caretPos);
+              console.log(3);
+              //element.focus();
+              $timeout(() => element.setSelectionRange(caretPos, caretPos));
             }
           }
         }
 
-        $scope.keypress = (event) => {
-          var index = getPos(element[0]);
-          console.log($scope.query.substring(0, index));
-          console.log($scope.query.substring(index));
-        };
+        //$scope.keypress = (event) => {
+        //  var index = getPos(element[0]);
+        //  console.log($scope.query.substring(0, index));
+        //  console.log($scope.query.substring(index));
+        //};
 
-        function countNeedle(stack:string, needle: string) {
+        function countNeedle(stack: string, needle: string) {
           return stack.split(needle).length - 1
         }
 
-        function isCountOdd(stack: string, needle: string) : boolean {
-          return  countNeedle(stack, needle) % 2 !== 0;
+        function isCountOdd(stack: string, needle: string): boolean {
+          return countNeedle(stack, needle) % 2 !== 0;
         }
 
         function unbalanced(stack: string, start: string, end: string) {
           // http://stackoverflow.com/questions/881085/count-the-number-of-occurences-of-a-character-in-a-string-in-javascript
           var numStart = countNeedle(stack, start);
           var numEnd = countNeedle(stack, end);
-          return  numStart > numEnd;
+          return numStart > numEnd;
         }
 
+        //$scope.is_field_string = false;
+        //$scope.is_value_string = false;
+        //$scope.in_quoted_string = false;
+        //$scope.in_list_of_values = false;
+        //$scope.in_op_mode = false;
+
+        $scope.mode = "";
+
         $scope.onChange = () => {
+          gqlParse();
+
           var index = getPos(element[0]);
           var left = $scope.query.substring(0, index);
           var right = $scope.query.substring(index);
 
-          var ob = '[';
-          var cb = ']';
-          var quote = '"';
-          var space =' ';
-          var in_quoted_string = false;
-          var in_list_of_values;
+          if ($scope.Error && _.some($scope.Error.expected, (e: IGqlExpected): boolean => {
+                return ["in", "and"].indexOf(e.value.toString()) !== -1;
+              })) {
+            $scope.mode = "op";
 
-          if (in_list_of_values = unbalanced(left, ob, cb)) {
-            console.log("in list");
-            var ls = left.lastIndexOf(ob) + 1;
-            var le = right.indexOf(cb) !== -1 ? right.indexOf(cb) : right.length;
-            var vsFromStart = left.substring(ls);
-            var vsFromEnd = right.substring(0, le);
-            var values = _.map((vsFromStart + vsFromEnd).split(','), (x) => {
-              return x.trim();
+            var parts = left.split(' ');
+            var needle = parts[parts.length - 1];
+
+            $scope.ddItems = _.map(_.filter($scope.Error.expected, (e) => {
+              return contains(e.value, needle) && clean(e.value);
+            }), (m) => {
+              return {
+                field: m.value,
+                full: m.value
+              };
             });
-            var newLeft = left.substring(0, ls);
-            console.log("left: ", left);
-            console.log("right: ", right);
-            console.log("ls: ", ls);
-            console.log("le: ", le);
-            console.log("vsS: ", vsFromStart);
-            console.log("vsE: ", vsFromEnd);
-            console.log("newL: ", newLeft);
 
-            var parts = _.filter(newLeft.split(space), (x) => {
-              return x;
-            });
-            var op = parts[parts.length - 2];
-            var field = parts[parts.length - 3];
-
-            console.log("values: ", values);
-            console.log("op: ", op);
-            console.log("field: ", field);
-          }
-          else if (in_quoted_string = isCountOdd(left, quote)) {
-            console.log("in unquoted");
           } else {
-            var is_value_string = false;
-            var is_field_string = false;
 
-            var parts = _.filter(left.split(' '), (x) => {
-              return x;
-            });
-            var curr = parts[parts.length - 1];
-            var op = parts[parts.length - 2];
-            var field = parts[parts.length - 3];
+            var ob = '[';
+            var cb = ']';
+            var quote = '"';
+            var space = ' ';
 
-            if (is_field_string = parts.length === 1 || ["and", "or"].indexOf(op) !== -1) {
-              console.log("in field: ", curr);
+            if ($scope.in_list_of_values = unbalanced(left, ob, cb)) {
+              $scope.mode = "list";
+
+              var ls = left.lastIndexOf(ob) + 1;
+              var le = right.indexOf(cb) !== -1 ? right.indexOf(cb) : right.length;
+              var vsFromStart = left.substring(ls);
+              var vsFromEnd = right.substring(0, le);
+              var values = _.map((vsFromStart + vsFromEnd).split(','), (x) => {
+                return x.trim();
+              });
+              var newLeft = left.substring(0, ls);
+              var parts = _.filter(newLeft.split(space), (x) => {
+                return x;
+              });
+              var op = parts[parts.length - 2];
+              var field = parts[parts.length - 3];
             }
-            else if (is_value_string = ["=", "!="].indexOf(op) !== -1) {
-              console.log("in value: ", curr);
-              console.log("op: ", op);
-              console.log("field: ", field);
-            }
 
+            else if ($scope.in_quoted_string = isCountOdd(left, quote)) {
+              $scope.mode = "quoted";
+              console.log($scope.mode);
+            } else {
+              var parts = left.split(' ');
+              var needle = parts[parts.length - 1];
+              var op = parts[parts.length - 2];
+              var field = parts[parts.length - 3];
+
+              if ($scope.is_value_string = ["=", "!="].indexOf(op) !== -1) {
+                $scope.mode = "unquoted";
+                console.log("in value: ", needle);
+                console.log("op: ", op);
+                console.log("field: ", field);
+
+                ajaxRequest(field.replace("(", "")).then((d)=>{
+                  $scope.ddItems = _.take(_.filter(d, (m) => {
+                    return contains(m.full, needle) && clean(m.full);
+                  }), 10);
+                });
+              }
+
+              else if ($scope.is_field_string = parts.length === 1 || ["and", "or"].indexOf(op) !== -1) {
+                $scope.mode = "field";
+                console.log("left: ", left);
+                console.log("right: ", right);
+                console.log("needle: ", needle);
+                console.log("op: ", op);
+                console.log("field: ", field);
+
+                $scope.ddItems = _.take(_.filter(mapping, (m) => {
+                  return contains(m.full, needle.replace("(", "")) && clean(m.full);
+                }), 10);
+              } else {
+                console.log("else");
+              }
+            }
           }
-
-
-
         };
 
 
-        function gqlParse(event) {
-          console.log(event);
-          switch ($scope.mode) {
-            case "fresh":
-              console.log("new query");
-              break;
-            case "field":
-              console.log("field");
-              break;
-            case "operator":
-              console.log("operator");
-              break;
-            case "value":
-              console.log("value");
-              break;
+        function gqlParse() {
+          try {
+            $scope.gql = $window.gql.parse($scope.query);
+            $scope.Error = null;
+            console.log($scope.gql);
+          } catch (Error) {
+            console.log(Error);
+            $scope.Error = Error;
+            $scope.gql = null;
           }
         }
-
-
 
 
         $scope.ajax = false;
@@ -247,6 +271,7 @@ module ngApp.components.gql.directives {
         $scope.active = inactive;
 
         function contains(phrase: string, sub: string): boolean {
+          if (sub.length === 0) return true;
           var phraseStr = (phrase + "").toLowerCase();
           return phraseStr.indexOf((sub + "").toLowerCase()) > -1;
         }
@@ -265,9 +290,9 @@ module ngApp.components.gql.directives {
               facets: [facet],
               size: 0,
               filters: {}
-            }).then((fs: IFiles): IGqlExpected[] => {
+            }).then((fs: IFiles): any[] => {
               return _.map(fs.aggregations[facet].buckets, (b) => {
-                return {text: b.key, value: b.key};
+                return {field: b.key, full: b.key};
               });
             });
           } else {
@@ -275,15 +300,16 @@ module ngApp.components.gql.directives {
               facets: [facet],
               size: 0,
               filters: {}
-            }).then((fs: IParticipants): IGqlExpected[] => {
+            }).then((fs: IParticipants): any[] => {
               return _.map(fs.aggregations[facet].buckets, (b) => {
-                return {text: b.key, value: b.key};
+                return {field: b.key, full: b.key};
               });
             });
           }
         }
 
         var oldQuery = "";
+
         function gqlParse1() {
           try {
             if ($scope.query != oldQuery) {
@@ -297,16 +323,16 @@ module ngApp.components.gql.directives {
               if ($scope.ajax) {
                 var xs: string[] = $scope.query.substr($scope.Error.offset).split(" ");
                 var term = xs[xs.length - 1];
-                $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
+                $scope.ddItems = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
                   return contains(e.value, term);
                 }));
               } else {
                 // F: reset errors
-                $scope.totalErrors = $scope.errors = [];
+                $scope.totalErrors = $scope.ddItems = [];
               }
             }
           } catch (Error) {
-            $scope.gql= null;
+            $scope.gql = null;
             // capture Error info
             $scope.Error = Error;
             $scope.error = Error;
@@ -321,8 +347,8 @@ module ngApp.components.gql.directives {
             });
 
             if (field_mode) {
-              $scope.totalErrors = $scope.errors = mapping;
-              console.log($scope.errors);
+              $scope.totalErrors = $scope.ddItems = mapping;
+              console.log($scope.ddItems);
             }
             else if ($scope.ajax) {
               var terms: string[] = [];
@@ -339,7 +365,7 @@ module ngApp.components.gql.directives {
 
               ajaxRequest(field).then(function (es: IGqlExpected[]) {
                 $scope.totalErrors = es;
-                $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
+                $scope.ddItems = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
                   return contains(e.value, term)
                       && (terms.indexOf(e.value) === -1 && terms.indexOf('"' + e.value + '"') === -1);
                 }));
@@ -352,7 +378,7 @@ module ngApp.components.gql.directives {
               });
               var term = xs[0].replace(/^\s+|\s+$/g, '');
               $scope.totalErrors = Error.expected;
-              $scope.errors = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
+              $scope.ddItems = formatForAutoComplete(_.filter($scope.totalErrors, (e) => {
                 return contains(e.value, term) && clean(e.value);
               }));
             }
@@ -372,19 +398,10 @@ module ngApp.components.gql.directives {
           gqlParse();
         };
 
-        $scope.clearActive = () => {
-          if ($scope.errors) {
-            for (var i = 0; i < $scope.errors.length; ++i) {
-              $scope.errors[i].active = false;
-            }
-            $scope.active = inactive;
-          }
-        };
-
         $scope.setActive = (active: number) => {
-          $scope.clearActive();
+          if ($scope.active >= 0) $scope.ddItems[$scope.active].active = false;
+          $scope.ddItems[active].active = true;
           $scope.active = active;
-          $scope.errors[active].active = true;
         };
 
         $scope.cycle = (val: number) => {
@@ -392,28 +409,37 @@ module ngApp.components.gql.directives {
 
           var active = $scope.active + val;
 
-          if (active >= $scope.errors.length) {
+          if (active >= $scope.ddItems.length) {
             active = 0;
           } else if (active < 0) {
-            active = $scope.errors.length - 1;
+            active = $scope.ddItems.length - 1;
           }
-
+          console.log('active: ', active);
           $scope.setActive(active);
         };
 
         $scope.showResults = () => {
-          var results = $scope.errors ? !!$scope.errors.length : false;
+          var results = $scope.ddItems ? !!$scope.ddItems.length : false;
           return !!($scope.focus && $scope.query.length > 0 && results);
         };
 
-        $scope.keypress1 = (e: any) => {
+        $scope.keypress = (e: any) => {
+          console.log('beep');
+          console.log(e);
+          console.log(e.which);
+          console.log('boop');
           if (e.which === 13 || e.keyCode === 13) {
             e.preventDefault();
+            console.log('here: ', e.which);
             $scope.enter();
           } else if (e.which === 27 || e.keyCode === 27) {
+            $scope.ddItems = [];
+            $scope.active = -1;
             $scope.focus = false;
           } else if (e.which === 32 || e.keyCode === 32) {
-            $scope.ajax = false;
+            console.log('here');
+            if ($scope.mode !== "quoted") $scope.ddItems = [];
+            //$scope.ajax = false;
           } else if (e.which === 38 || e.keyCode === 38) {
             e.preventDefault();
             $scope.cycle(-1);
@@ -440,7 +466,39 @@ module ngApp.components.gql.directives {
           }
         };
 
-        $scope.enter = (): void => {
+        $scope.enter = (item: any): void => {
+          item = item || $scope.ddItems[$scope.active];
+          console.log(item);
+          if (item.full.indexOf(" ") !== -1) item.full = '"' + item.full + '"';
+          $scope.ddItems = [];
+          $scope.active = -1;
+
+          if (["field", "op", "unquoted"].indexOf($scope.mode) !== -1) {
+            console.log('!!!!!!!!!!!!!!!!!');
+            var index = getPos(element[0]);
+            var left = $scope.query.substring(0, index);
+            var right = $scope.query.substring(index);
+            console.log('left: ', left);
+            console.log('right: ', right);
+            var lLastToken;
+            if ($scope.mode === "field") {
+              var lLastSpace = left.lastIndexOf(' ');
+              var lLastParen = left.lastIndexOf('(');
+              lLastToken = lLastSpace > lLastParen ? lLastSpace : lLastParen;
+            }
+            else lLastToken = left.lastIndexOf(' ');
+            var newLeft = $scope.query.substring(0, lLastToken + 1);
+            var rFirstSpace = right.indexOf(' ');
+            var newRight = right.substring(rFirstSpace, right.length);
+            console.log('Nleft: ', newLeft);
+            console.log('Nright: ', newRight);
+            $scope.query = newLeft + item.full + newRight;
+            setPos(element[0], (newLeft + item.full).length);
+            console.log('@@@@@@@@@@@@@@@@@@');
+          }
+        };
+
+        $scope.enter1 = (): void => {
           $scope.ajax = false;
 
           var lhs = $scope.query.substr(0, $scope.Error.offset);
@@ -452,9 +510,9 @@ module ngApp.components.gql.directives {
 
           var active = $scope.active == -1 ? 0 : $scope.active;
 
-          if ($scope.errors.length) {
+          if ($scope.ddItems.length) {
             var oldOffset = $scope.Error.offset;
-            var v = $scope.errors[active].value;
+            var v = $scope.ddItems[active].value;
             v = v.indexOf(" ") !== -1 ? '"' + v + '"' : v;
             v = v == "in" ? "in [" : v;
 
@@ -516,11 +574,11 @@ module ngApp.components.gql.directives {
       templateUrl: "components/gql/templates/gql_dropdown.html",
       link: function ($scope) {
         $scope.mouseover = function (i) {
-          $scope.setActive(i);
+          //$scope.setActive(i);
         };
 
         $scope.mouseout = function () {
-          $scope.clearActive();
+          //$scope.clearActive();
         };
 
         $scope.click = function (item) {

@@ -40,28 +40,25 @@ module ngApp.components.charts {
         var width = 450,
           height = 175,
           radius = Math.min(width, height) / 2;
-        
+
        var pie = d3.layout.pie()
           .sort(null)
           .value(function(d) { return d.value; });
 
-        
         $scope.$watch('data',function(a){
           updateChart();
         })
-        
+
         function updateChart(){
             var data = $scope.data;
             d3.select('svg').remove();
 
-          
            var svg = d3.select(element[0]).append("svg")
             .attr("width", width)
             .attr("height", height)
             .append("g")
             .attr("transform", "translate(" + width / 3.5 + "," + height / 2 + ")");
-          
-          
+
             var arc = d3.svg.arc()
               .outerRadius(radius - 10)
               .innerRadius(0);
@@ -74,9 +71,7 @@ module ngApp.components.charts {
             g.append("path")
               .attr("d", arc)
               .style("fill", function(d,i) { return color(i); });
-          
-     
-          
+
           var legendX = 125;
           var legendStartY = -5;
           var legendSpaceEach = 55;
@@ -109,9 +104,6 @@ module ngApp.components.charts {
         data.forEach(function(d) {
             d.value = +d.value;
         });
-
-
-
 
         function wrap(text, width) {
 

@@ -119,6 +119,7 @@ angular
       "ngTagsInput",
 
       "ngApp.core",
+      "ngApp.home",
       "ngApp.search",
       "ngApp.query",
       "ngApp.participants",

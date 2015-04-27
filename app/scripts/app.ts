@@ -111,6 +111,7 @@ angular
       "ngAnimate",
       "ngAria",
       "ngCookies",
+      "ngSanitize",
       "ngApp.config",
       "ui.router.state",
       "ui.bootstrap",

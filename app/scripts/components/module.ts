@@ -13,5 +13,6 @@ angular
       "components.overrides",
       "components.user",
       "components.githut",
-      "components.gql"
+      "components.gql",
+      "components.quickSearch"
     ]);

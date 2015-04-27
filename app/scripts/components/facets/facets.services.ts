@@ -18,7 +18,7 @@ module ngApp.components.facets.services {
   class FacetService implements IFacetService {
     /* @ngInject */
     constructor(private LocationService: ILocationService, private Restangular: restangular.IService,
-                private UserService: IUserService) {}
+                private UserService: IUserService, private $q: ng.IQService) {}
 
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any> {
       var projectsKeys = {
@@ -43,6 +43,21 @@ module ngApp.components.facets.services {
       return this.Restangular.all(entity + "/ids").get("", options).then((data) => {
         return data.data.hits;
       });
+    }
+
+    searchAll(query: string): ng.IPromise<any> {
+      var abort = this.$q.defer();
+      var prom: ng.IPromise<any> = this.Restangular.all("all")
+      .withHttpConfig({
+        timeout: abort.promise
+      })
+      .get("", {
+        query: query
+      }).then((data) => {
+        return data.data.hits;
+      });
+
+      return prom;
     }
 
     getActives(facet: string, terms: any[]): string[] {

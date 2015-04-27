@@ -1,0 +1,25 @@
+<div class="row">
+  <div class="col-lg-12 icon-row">
+    <img src="/images/icon-projects-large.png" width="132" height="168"/>
+  </div>
+</div>
+<table class="table table-striped table-hover table-condensed table-bordered table-vertical">
+  <tbody>
+    <tr data-ng-if="qsmc.displayItem.project_id">
+      <th scope="row" data-translate>Project ID</th>
+      <td>{{ qsmc.displayItem.project_id }}</td>
+    </tr>
+    <tr data-ng-if="qsmc.displayItem.name">
+      <th scope="row" data-translate>Project Name</th>
+      <td>{{ qsmc.displayItem.name }}</td>
+    </tr>
+    <tr data-ng-if="qsmc.displayItem.primary_site">
+      <th scope="row" data-translate>Primary Site</th>
+      <td>{{ qsmc.displayItem.primary_site | humanify }}</td>
+    </tr>
+    <tr data-ng-if="qsmc.displayItem.disease_type">
+      <th scope="row" data-translate>Disease Type</th>
+      <td>{{ qsmc.displayItem.disease_type | humanify }}</td>
+    </tr>
+  </tbody>
+</table>

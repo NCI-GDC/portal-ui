@@ -38,6 +38,11 @@
                   ng-options="k as v for (k, v) in hc.languages">
           </select>
         </li>
+        <li>
+          <a quick-search>
+            <i class="fa fa-search stock-icon"></i>
+          </a>
+        </li>
         <li data-ng-if="!hc.UserService.currentUser" id="header-login">
           <a auth-button data-redirect="https://gdc.nci.nih.gov">
             <i class="fa fa-sign-in"></i>
@@ -53,7 +58,7 @@
           </label>
         </li>
         <li data-ng-if="hc.UserService.currentUser">
-          <ul class="nav navbar-nav user-nav">
+          <ul class="nav navbar-nav">
             <li class="btn-group" data-dropdown>
               <a href="" class="dropdown-toggle" dropdown-toggle aria-expanded="false">
                 {{ hc.UserService.currentUser.username }} <span class="caret"></span>
@@ -61,13 +66,13 @@
               <ul class="dropdown-menu" role="menu">
                 <li id="header-token">
                   <a data-ng-click="hc.getToken()">
-                    <i class="fa fa-file-zip-o"></i>
+                    <i class="fa fa-file-zip-o stock-icon"></i>
                     <span data-translate>Download Token</span>
                   </a>
                 </li>
                 <li id="header-logout">
                   <a auth-button data-redirect="https://gdc.nci.nih.gov/logout">
-                    <i class="fa fa-sign-out"></i>
+                    <i class="fa fa-sign-out stock-icon"></i>
                     <span data-translate>Logout</span>
                   </a>
                 </li>

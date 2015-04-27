@@ -70,7 +70,7 @@ module ngApp.components.tables.controllers {
       // check localStorage for saved sorting
       var sortColumnsSaved = JSON.parse(this.$window.localStorage.getItem(this.$scope.config.title + '-sort'));
       _.each(sortColumnsSaved, (savedCol: Object) => {
-        if(savedCol) {
+        if (savedCol) {
           var sortObj = _.find($scope.sortColumns, (col: Object) => { return col.key === savedCol.key; });
           sortObj.sort = savedCol.sort || sortObj.sort;
           sortObj.order = savedCol.order || sortObj.order;

@@ -5,6 +5,11 @@ describe('Tables:', function () {
 
   describe('TableSortController:', function () {
 
+    beforeEach(inject(function ($window) {
+      // Clear localStorage system to prevent oddities from tests.
+      $window.localStorage.setItem("test-sort", "[]");
+    }));
+
     it('should process sorting from url on load', inject(function ($rootScope, $controller, LocationService) {
       var scope = $rootScope.$new();
       scope.paging = {
@@ -23,7 +28,6 @@ describe('Tables:', function () {
           sortable: true
         }]
       };
-
       var wc = $controller('TableSortController', { $scope: scope, LocationService: LocationService });
       var fileSizeSort = _.find(wc.$scope.sortColumns, function(col) { return col.key === 'file_size'; });
       var fileNameSort = _.find(wc.$scope.sortColumns, function(col) { return col.key === 'file_name'; });

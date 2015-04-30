@@ -2,11 +2,11 @@
   <div class="row search-panel">
     <div class="col-lg-3 col-md-4 facets-sidebar">
       <tabset>
-        <tab heading="{{ 'Files' | translate }}">
+        <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
           <div data-ng-include="'search/templates/search.files.facets.html'"
                class="facet-section" role="form"></div>
         </tab>
-        <tab heading="{{ 'Participants' | translate }}" active="true">
+        <tab heading="{{ 'Participants' | translate }}" active="true" id="participants-facets-tab">
           <div data-ng-include="'search/templates/search.participants.facets.html'"
                class="facet-section" role="form"></div>
         </tab>

@@ -72,8 +72,17 @@ module ngApp.components.ui.string {
     }
   }
 
+  class SpaceReplace {
+    constructor() {
+      return function(s: string, replaceWith: string) {
+        return s.toString().replace(/\s+/g, replaceWith || '');
+      };
+    }
+  }
+
   angular.module("string.filters", [])
       .filter("ellipsicate", Ellipsicate)
       .filter("titlefy", Titlefy)
+      .filter("spaceReplace", SpaceReplace)
       .filter("humanify", Humanify);
 }

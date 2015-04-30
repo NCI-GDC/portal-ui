@@ -78,7 +78,7 @@
       <div class="pane-section" data-ng-if="prsc.ProjectsState.tabs.graph.active">
         <div class="panel panel-default">
           <div class="panel-heading clearfix">
-            <h3 class="panel-title">Available Data per Project</h3>
+            <h3 class="panel-title">Available Data per Project ({{ prsc.projects.pagination.total }})</h3>
           </div>
 
           <git-hut data-ng-if="prsc.githutData" data="prsc.githutData" config="prsc.githutConfig"></git-hut>

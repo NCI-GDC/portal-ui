@@ -43,12 +43,14 @@ module ngApp.projects.models {
           var htm = '<a data-ng-href="/projects/' + project_id + '" data-tooltip="' + projectName +
                     '" tooltip-append-to-body="true" tooltip-placement="right">' + project_id + '</a>';
           return htm;
-        }
+        },
+        sortable: true
       }, {
         displayName: "Disease Type",
         id: "disease_type",
         enabled: true,
-        fieldClass: 'truncated-cell'
+        fieldClass: 'truncated-cell',
+        sortable: true
       }, {
         displayName: "Primary Site",
         id: "primary_site",

@@ -1,0 +1,16 @@
+<div class="panel panel-default panel-stat">
+  <div class="panel-heading">
+    <div class="stat">
+      <div class="row">
+        <div class="col-xs-4">
+          <i class="fa {{ icon }}"></i>
+        </div>
+        <div class="col-xs-8">
+          <small class="stat-label">{{ title | translate }}</small>
+          <h1 data-ng-if="!filter">{{ data | number }}</h1>
+          <h1 data-ng-if="filter">{{ data | size }}</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

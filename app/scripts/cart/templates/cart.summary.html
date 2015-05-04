@@ -1,0 +1,48 @@
+<div class="panel panel-default summary-panel summary-pane">
+  <div class="row">
+    <div class="col-lg-12">
+      <a type="button"
+         download-button-all-cart
+         class="btn btn-primary">
+        <i class="fa fa-cloud-download"></i> <span data-translate>Download All</span>
+      </a>
+      <a type="button"
+         class="btn btn-primary"
+         data-ng-click="cc.getManifest()">
+        <i class="fa fa-file-code-o"></i>
+        <span data-translate>Download All Manifests</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<section class="row" data-ng-if="cc.files.length">
+  <div class="col-lg-12">
+    <div class="row card-row">
+      <div class="col-lg-4">
+        <count-card title="Files" icon="fa-user" data="cc.files.length"></count-card>
+      </div>
+      <div class="col-lg-4">
+        <count-card title="Participants" icon="fa-user" data="cc.summary.participants.doc_count"></count-card>
+      </div>
+      <div class="col-lg-4">
+        <count-card title="File Size" icon="fa-save" data="cc.summary.fs.value"
+                    data-filter="true"></count-card>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12">
+    <div class="row">
+      <div class="col-lg-6">
+        <donut-chart data="cc.summary.participants['participants.project.project_id'].buckets"
+                     height="350" data-filter="true" config="cc.projectCountChartConfig"
+                     data-title="File Counts by Project"></donut-chart>
+      </div>
+      <div class="col-lg-6">
+        <donut-chart data="cc.summary.access.buckets"
+                     height="350" data-filter="true" config="cc.fileCountChartConfig"
+                     data-title="File Counts by Access"></donut-chart>
+      </div>
+    </div>
+  </div>
+</section>

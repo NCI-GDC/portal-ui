@@ -68,6 +68,24 @@ module ngApp.query.controllers {
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchTableParticipantsModel;
 
+      this.projectIdChartConfig = {
+        key: "project_id",
+        textValue: "file_size.value",
+        textFilter: "size",
+        label: "file",
+        sortKey: "doc_count",
+        defaultText: "project"
+      };
+
+      this.primarySiteChartConfig = {
+        key: "primary_site",
+        textValue: "file_size.value",
+        textFilter: "size",
+        label: "file",
+        sortKey: "doc_count",
+        defaultText: "primary site"
+      };
+
       this.refresh();
     }
 

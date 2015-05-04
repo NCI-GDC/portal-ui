@@ -1,68 +1,34 @@
-<div class="panel panel-default summary-results">
-  <div class="panel-heading clearfix">
-    <h3 class="panel-title">Query Result Summary</h3>
+<div class="panel panel-default summary-panel">
+  <div class="row">
+    <div class="col-lg-12">
+      <div data-add-to-cart-all data-files="sc.files" data-paging="sc.files.pagination"
+         data-add-all-only=true></div>
+    </div>
   </div>
-  <table id="summary-table" class="table table-striped table-hover table-bordered table-vertical">
-    <tbody>
-    <tr>
-      <th scope="row"># <span data-translate>of Files</span></th>
-      <td>{{ sc.files.pagination.total | number }}</td>
-    </tr>
-    <tr>
-      <th scope="row" data-translate>File Size</th>
-      <td>{{ sc.summary.fs.value | size }}</td>
-    </tr>
-    <tr>
-      <th scope="row"># <span data-translate>of Participants</span></th>
-      <td>{{ sc.participants.pagination.total | number }}</td>
-    </tr>
-    <tr>
-      <th scope="row"># <span data-translate>of Projects</span></th>
-      <td>{{ sc.summary.participants['participants.project.project_id'].buckets.length | number }}</td>
-    </tr>
-    <tr>
-      <th scope="row"># <span data-translate>of Primary Sites</span></th>
-      <td>{{ sc.summary.participants['participants.project.primary_site'].buckets.length | number }}</td>
-    </tr>
-    </tbody>
-  </table>
 </div>
 
-<div data-add-to-cart-all data-files="sc.files" data-paging="sc.files.pagination"
-     data-add-all-only=true></div>
-
-<h3>
-  Breakdowns
-</h3>
+<div class="row">
+  <div class="col-lg-4">
+    <count-card title="Files" icon="fa-file-o" data="sc.files.pagination.total"></count-card>
+  </div>
+  <div class="col-lg-4">
+    <count-card title="Participants" icon="fa-user" data="sc.participants.pagination.total"></count-card>
+  </div>
+  <div class="col-lg-4">
+    <count-card title="File Size" icon="fa-save" data="sc.summary.fs.value"
+                data-filter="true"></count-card>
+  </div>
+</div>
 
 <div class="row">
   <div class="col-lg-6">
-    <summary-table facet="participants.project.project_id"
-                   title="Project"
-                   buckets="sc.summary.participants['participants.project.project_id'].buckets"
-                   id="summary-table-pid"></summary-table>
-    <summary-table facet="files.data_type"
-                   title="Data Type"
-                   buckets="sc.summary.data_type.buckets"
-                   id="summary-table-dt"></summary-table>
-    <summary-table facet="files.experimental_strategy"
-                   title="Experimental Strategy"
-                   id="summary-table-es"
-                   buckets="sc.summary.experimental_strategy.buckets"></summary-table>
+    <donut-chart data="sc.summary.participants['participants.project.project_id'].buckets"
+                 height="400" data-filter="true" config="sc.projectIdChartConfig"
+                 data-title="File Counts by Project"></donut-chart>
   </div>
   <div class="col-lg-6">
-    <summary-table facet="participants.project.primary_site"
-                   title="Primary Site"
-                   buckets="sc.summary.participants['participants.project.primary_site'].buckets"
-                   id="summary-table-ps"></summary-table>
-    <summary-table facet="files.data_format"
-                   title="Data Format"
-                   id="summary-table-df"
-                   buckets="sc.summary.data_format.buckets"></summary-table>
-    <summary-table facet="files.access"
-                   title="Data Access"
-                   id="summary-table-da"
-                   buckets="sc.summary.access.buckets"></summary-table>
+    <donut-chart data="sc.summary.participants['participants.project.primary_site'].buckets"
+                 height="400" data-filter="true" config="sc.primarySiteChartConfig"
+                 data-title="File Counts by Primary Site"></donut-chart>
   </div>
 </div>
-

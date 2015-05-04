@@ -1,8 +1,19 @@
-.chart {
-  .chart-container {
-    svg {
-      margin-left: -50px;
-    }
+.donut-chart {
+
+  path {
+    stroke: #fff;
+    stroke-width: 2px;
+    transition: fill 250ms linear;
+    transition-delay: 150ms;
+  }
+
+  path:hover {
+    transition-delay: 0;
+  }
+
+  .chart-title {
+    text-align: center;
+    padding-top: 15px;
   }
 }
 

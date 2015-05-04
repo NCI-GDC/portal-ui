@@ -54,7 +54,7 @@ module ngApp.search.services {
 
 
   export interface ISearchService {
-    getSummary();
+    getSummary(filters?: Object);
   }
 
   class SearchService implements ISearchService {
@@ -65,8 +65,8 @@ module ngApp.search.services {
       this.ds = Restangular.all("ui/search");
     }
 
-    getSummary() {
-      return this.ds.get('summary', {filters: this.LocationService.filters()}).then((response) => {
+    getSummary(filters: Object = this.LocationService.filters()) {
+      return this.ds.get('summary', {filters: filters}).then((response) => {
         return response;
       });
     }

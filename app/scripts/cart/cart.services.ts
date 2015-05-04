@@ -249,11 +249,38 @@ module ngApp.cart.services {
 
   }
 
+  export interface ICartState {
+    tabs: ITabs;
+    setActive(section: string, s: string): void;
+  }
+
+  class State implements ICartState {
+    tabs: ITabs = {
+      summary: {
+        active: false
+      },
+      items: {
+        active: false
+      }
+    };
+
+    setActive(section: string, tab: string) {
+      if (section && tab) {
+        _.each(this[section], function (section: ITab) {
+          section.active = false;
+        });
+
+        this[section][tab].active = true;
+      }
+    }
+  }
+
   angular
       .module("cart.services", [
         "ngApp.files",
         "cgNotify"
       ])
+      .service("CartState", State)
       .service("CartService", CartService);
 }
 

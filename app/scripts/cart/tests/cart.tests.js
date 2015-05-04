@@ -3,7 +3,7 @@ describe('Cart:', function () {
   var CartService, controller, httpBackend;
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngProgressLite', 'ngApp.cart'));
+  beforeEach(module('ngProgressLite', 'ngApp.cart', 'core.filters'));
 
   // Injection of dependencies, $http will be mocked with $httpBackend
   beforeEach(inject(function ($httpBackend) {

@@ -22,12 +22,6 @@
       </h3>
       <ul class="nav nav-tabs">
         <li role="presentation"
-            data-ng-class="{ active: prsc.ProjectsState.tabs.summary.active }"
-            data-ng-click="prsc.select('tabs', 'summary')"
-            id="projects-summary">
-          <a>{{ 'Summary' | translate }}</a>
-        </li>
-        <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.table.active }"
             data-ng-click="prsc.select('tabs', 'table')"
             id="projects-table">
@@ -40,26 +34,6 @@
           <a>{{ 'Graph' | translate }}</a>
         </li>
       </ul>
-      <div class="pane-section" data-ng-show="prsc.ProjectsState.tabs.summary.active">
-        <div class="panel panel-default">
-          <div class="panel-heading clearfix">
-            <h3 class="panel-title">Query Result Summary</h3>
-          </div>
-          <table id="summary-table" class="table table-striped table-hover table-bordered table-vertical">
-            <tbody>
-            <tr>
-              <th scope="row"># <span data-translate>of Projects </span></th>
-              <td>{{ prsc.projects.pagination.total | number }}</td>
-            </tr>
-            <tr>
-              <th scope="row"># <span data-translate>of Primary Sites</span></th>
-              <td>{{ prsc.numPrimarySites | number }}</td>
-              <!--<td>{{ prsc.projects.fs.value | size }}</td>-->
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
       <div class="pane-section" data-ng-show="prsc.ProjectsState.tabs.table.active">
         <gdc-table data-data="prsc.projects.hits"
                    data-config="tableConfig"

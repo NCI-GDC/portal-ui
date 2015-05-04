@@ -202,13 +202,21 @@ module ngApp.cart.directives {
   function DownloadButtonAllCart() {
     return {
       restrict:"AE",
+      scope: {
+        selectedOnly: "@"
+      },
       controller:function($scope,FilesService,UserService,CartService,$modal,$element){
         $element.on('click',function checkCartForClosedFiles() {
           var scope = $scope;
           var isLoggedIn = UserService.currentUser;
           function isSelected(a){return a.selected};
-          var authorizedInCart = CartService.getAuthorizedFiles().filter(isSelected);
-          var unauthorizedInCart = CartService.getUnauthorizedFiles().filter(isSelected);
+          var authorizedInCart = CartService.getAuthorizedFiles();
+          var unauthorizedInCart = CartService.getUnauthorizedFiles();
+
+          if ($scope.selectedOnly) {
+            authorizedInCart = authorizedInCart.filter(isSelected);
+            unauthorizedInCart = unauthorizedInCart.filter(isSelected);
+          }
 
           scope.meta = {
             unauthorized: unauthorizedInCart,

@@ -41,7 +41,6 @@ module ngApp.search {
   angular
       .module("ngApp.search", [
         "search.controller",
-        "search.directives",
         "ui.router.state"
       ])
       .config(searchConfig);

@@ -1,97 +1,25 @@
 <div class="container-fluid cart full-page">
-  <section class="row" data-ng-if="cc.files.length">
-    <div class="col-lg-6 col-md-6 col-sm-6 cart-summary">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title" data-translate>Cart Summary</h3>
-        </div>
-        <table id="cart-table" class="table table-striped table-hover table-condensed table-bordered">
-          <tbody>
-          <tr>
-            <th scope="row" data-translate>Last Update</th>
-            <td>{{ cc.lastModified | date:'MM/DD/YYYY H:mm:ss' }}</td>
-          </tr>
-          <tr>
-            <th scope="row">
-              &#35;
-              <span data-translate data-translate-comment="number of">of files</span>
-            </th>
-            <td>{{ cc.files.length | number:0 }}</td>
-          </tr>
-          <tr>
-            <th scope="row" data-translate>Size</th>
-            <td>{{ cc.getTotalSize() | size }}</td>
-          </tr
-          </tbody>
-        </table>
 
+  <ul class="nav nav-tabs">
+    <li role="presentation"
+        data-ng-class="{ active: cc.CartState.tabs.summary.active }"
+        data-ng-click="cc.select('tabs', 'summary')"
+        id="cart-summary">
+      <a>{{ 'Summary' | translate }}</a>
+    </li>
+    <li role="presentation"
+        data-ng-class="{ active: cc.CartState.tabs.items.active }"
+        data-ng-click="cc.select('tabs', 'items')"
+        id="cart-items">
+      <a>{{ 'Items' | translate }} ({{cc.files.length| number:0}})</a>
+    </li>
+  </ul>
 
-      </div>
-    </div>
-    <div class="col-lg-6 col-md-6 col-sm-6">
-      <div cart-displaying-pie-chart></div>
-    </div>
-  </section>
-
-  <section class="row cart-table-actions" data-ng-if="cc.files.length">
-    <div class="col-xs-12">
-      <div remove-unauthorized-files-button class="pull-right"></div>
-      <div data-ng-if="!cc.selected().length">
-        <i class="fa fa-warning"></i> <span data-translate>You have no items selected</span>
-        <button type="button"
-                style="margin-left: 15px"
-                class="btn btn-primary"
-                data-ng-click="cc.selectAll()">
-          <i class="fa fa-shopping-cart"></i> <span data-translate>Select All Files</span>
-        </button>
-        <button type="button"
-                class="btn btn-danger"
-                data-ng-click="cc.removeAll()">
-          <i class="fa fa-remove"></i> <span data-translate>Empty Cart</span>
-        </button>
-      </div>
-
-      <div data-ng-if="cc.selected().length" class="pull-right">
-        <strong>{{cc.selected().length}}</strong>&nbsp;
-        <!-- angular-gettext also supports known variables like $count, which can
-             be used here in the translate-plural text like {{ $count }} -->
-        <span data-translate
-              data-translate-n="cc.selected().length"
-              data-translate-plural="files selected">
-          file selected
-        </span>
-        (<strong>{{ cc.selectedSize() | size}}</strong>)
-        <a type="button"
-                download-button-all-cart
-                class="btn btn-primary">
-          <i class="fa fa-cloud-download"></i> <span data-translate>Download</span>
-        </a>
-        <a type="button"
-                class="btn btn-primary"
-                data-ng-click="cc.getManifest()">
-          <i class="fa fa-file-code-o"></i>
-          <span data-translate>Download Manifest</span>
-        </a>
-        <button type="button"
-                class="btn btn-danger"
-                data-ng-click="cc.removeSelected()">
-          <i class="fa fa-remove"></i>
-          <span data-translate>Remove Selected Files from Cart</span>
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <h2 data-ng-if="!cc.files.length" data-translate>Your Cart is empty.</h2>
-
-  <gdc-table data-ng-if="cc.files.length"
-             data-data="cc.files"
-             data-config="cc.cartTableConfig"
-             data-paging="cc.pagination"
-             data-page="cart"
-             data-heading="Cart Items"
-             data-id="cart-table"
-             data-client-side="cc.processPaging">
-  </gdc-table>
+  <div class="pane-section" data-ng-show="cc.CartState.tabs.summary.active">
+    <div data-ng-include="'cart/templates/cart.summary.html'" data-ng-show="cc.summary"></div>
+  </div>
+  <div class="pane-section" data-ng-show="cc.CartState.tabs.items.active">
+    <div data-ng-include="'cart/templates/cart.items.html'"></div>
+  </div>
 
 </div>

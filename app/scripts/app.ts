@@ -117,6 +117,7 @@ angular
       "restangular",
       "gettext",
       "ngTagsInput",
+      "lz-string",
 
       "ngApp.core",
       "ngApp.search",

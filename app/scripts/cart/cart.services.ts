@@ -40,9 +40,9 @@ module ngApp.cart.services {
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
-                private notify: INotifyService, private UserService,private $rootScope) {
-      var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
-      var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
+                private notify: INotifyService, private UserService, private $rootScope, private LZString) {
+      var local_files = $window.localStorage.getItem(LZString.decompress(CartService.GDC_CART_KEY));
+      var local_time = $window.localStorage.getItem(LZString.decompress(CartService.GDC_CART_UPDATE));
 
       this.lastModified = local_time ? $window.moment(local_time) : $window.moment();
       this.files = local_files ? JSON.parse(local_files) : [];
@@ -235,8 +235,8 @@ module ngApp.cart.services {
 
     _sync(): void {
       this.lastModified = this.$window.moment();
-      this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
-      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
+      this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, LZString.compress(this.lastModified.toISOString()));
+      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, LZString.compress(JSON.stringify(this.files)));
     }
 
     selectFile(file: IFile) {

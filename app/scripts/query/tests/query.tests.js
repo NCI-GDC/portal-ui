@@ -1,7 +1,7 @@
 describe('Query:', function () {
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngApp.query', 'ngProgressLite'));
+  beforeEach(module('ngApp.query', 'ngProgressLite', 'lz-string'));
 
   describe('Controller:', function () {
     it('should have participants', inject(function ($rootScope, $controller) {

@@ -15,13 +15,13 @@
           <input type="radio" aria-label="Sort Data Ascending" value="asc"
               data-ng-model="item.order" data-ng-change="tsc.updateSorting()"
               data-ng-checked="!item.order || item.order === 'asc'"
-              name="{{ item.key }}-sort-order">
+              name="{{ item.id }}-sort-order">
         </span>
         <span data-ng-if="item.sort">
           <i class="fa fa-sort-alpha-desc"></i>
           <input type="radio" aria-label="Sort Data Descending" value="desc"
                  data-ng-model="item.order" data-ng-change="tsc.updateSorting()"
-                 name="{{ item.key }}-sort-order">
+                 name="{{ item.id }}-sort-order">
         </span>
       </div>
     </li>

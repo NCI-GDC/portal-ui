@@ -1,7 +1,7 @@
 describe('Tables:', function () {
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngApp.components', 'location.services'));
+  beforeEach(module('ngApp.components', 'location.services', 'lz-string'));
 
   describe('TableSortController:', function () {
 
@@ -18,19 +18,19 @@ describe('Tables:', function () {
       scope.config = {
         title: 'test',
         headings:[{
-          name: 'File Size',
+          displayName: 'File Size',
           id:'file_size',
           sortable:true
         },
         {
-          name: 'File Count',
+          displayName: 'File Count',
           id: 'file_name',
           sortable: true
         }]
       };
       var wc = $controller('TableSortController', { $scope: scope, LocationService: LocationService });
-      var fileSizeSort = _.find(wc.$scope.sortColumns, function(col) { return col.key === 'file_size'; });
-      var fileNameSort = _.find(wc.$scope.sortColumns, function(col) { return col.key === 'file_name'; });
+      var fileSizeSort = _.find(wc.$scope.sortColumns, function(col) { return col.id === 'file_size'; });
+      var fileNameSort = _.find(wc.$scope.sortColumns, function(col) { return col.id === 'file_name'; });
       expect(fileSizeSort.sort).to.equal(true);
       expect(fileNameSort.sort).to.equal(true);
       expect(fileSizeSort.order).to.equal("asc");
@@ -45,12 +45,12 @@ describe('Tables:', function () {
         title: "test",
         headings:[
           {
-            name: 'File Size',
+            displayName: 'File Size',
             id:'file_size',
             sortable: true
           },
           {
-            name: 'File Name',
+            displayName: 'File Name',
             id:'file_name',
             sortable: true
           }

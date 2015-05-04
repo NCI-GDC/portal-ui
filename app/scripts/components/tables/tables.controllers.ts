@@ -25,7 +25,7 @@ module ngApp.components.tables.controllers {
     paging: IPagination;
 
     /* @ngInject */
-    constructor(private $scope: ITableScope, private LocationService: ILocationService, private $window: IGDCWindowService) {
+    constructor(private $scope: ITableScope, private LocationService: ILocationService, private $window: IGDCWindowService, private LZString) {
       this.paging = $scope.paging;
       var currentSorting = $scope.paging.sort;
 
@@ -33,8 +33,9 @@ module ngApp.components.tables.controllers {
 
         if (col.sortable) {
           var obj = {
-            key: col.id,
-            name: col.displayName
+            id: col.id,
+            name: col.displayName,
+            sort: false
           };
 
           if (col.sortMethod) {
@@ -53,7 +54,7 @@ module ngApp.components.tables.controllers {
         _.each(currentSorting, (sort: string) => {
           var sortField = sort.split(":");
 
-          var sortObj = _.find($scope.sortColumns, (col: any) => { return col.key === sortField[0]; });
+          var sortObj = _.find($scope.sortColumns, (col: any) => { return col.id === sortField[0]; });
 
           // Update the internal sorting object to have sorting from URL values applied
           if (sortObj) {
@@ -67,16 +68,7 @@ module ngApp.components.tables.controllers {
         }
       }
 
-      // check localStorage for saved sorting
-      var sortColumnsSaved = JSON.parse(this.$window.localStorage.getItem(this.$scope.config.title + '-sort'));
-      _.each(sortColumnsSaved, (savedCol: Object) => {
-        if (savedCol) {
-          var sortObj = _.find($scope.sortColumns, (col: Object) => { return col.key === savedCol.key; });
-          sortObj.sort = savedCol.sort || sortObj.sort;
-          sortObj.order = savedCol.order || sortObj.order;
-        }
-      });
-
+      this.restoreFromLocalStorage();
     }
 
     clientSorting(): void {
@@ -107,9 +99,9 @@ module ngApp.components.tables.controllers {
           var order = sortValue.order || "asc";
           this.$scope.data.sort((a, b) => {
             if(sortValue.sortMethod) {
-              return sortValue.sortMethod(a[sortValue.key], b[sortValue.key], order);
+              return sortValue.sortMethod(a[sortValue.id], b[sortValue.id], order);
             }
-            return defaultSort(a[sortValue.key], b[sortValue.key], order);
+            return defaultSort(a[sortValue.id], b[sortValue.id], order);
           });
         }
       });
@@ -125,17 +117,42 @@ module ngApp.components.tables.controllers {
       this.updateSorting();
     }
 
-    updateSorting(): void {
-      var save = _.reduce(this.$scope.sortColumns, (result, col) => {
-                            var picked = _.pick(col, ['key', 'sort', 'order']);
+    saveToLocalStorage(): void {
+      var toSave = _.reduce(this.$scope.sortColumns, (result, col) => {
+                            var picked = _.pick(col, ['id', 'sort', 'order']);
                             if (picked && _.has(picked, 'sort')) {
-                              result.push(picked);
+                              var saveObj = {
+                                             'id': picked['id'],
+                                             'sort': picked['sort'] ? 1 : 0,
+                                             }
+                              if (picked['sort']) {
+                                saveObj['order'] = picked['order'];
+                              }
+                              result.push(saveObj);
                             }
                             return result;
                           }, []);
 
       this.$window.localStorage.setItem(this.$scope.config.title + '-sort',
-                                        JSON.stringify(save));
+                                        this.LZString.compress(JSON.stringify(toSave)));
+    }
+
+    restoreFromLocalStorage(): void {
+      var decompressed = this.LZString.decompress(this.$window.localStorage.getItem(this.$scope.config.title + '-sort'));
+      var sortColumnsSaved = decompressed ? JSON.parse(decompressed) : null;
+      _.each(sortColumnsSaved, (savedCol: Object) => {
+        if (savedCol) {
+          var sortObj = _.find(this.$scope.sortColumns, (col: Object) => { return col.id === savedCol.id; });
+          if (sortObj) {
+            sortObj.sort = savedCol.sort ? true : false;
+            sortObj.order = savedCol.order;
+          }
+        }
+      });
+    }
+
+    updateSorting(): void {
+      this.saveToLocalStorage();
 
       if (this.$scope.update) {
         this.clientSorting();
@@ -147,12 +164,12 @@ module ngApp.components.tables.controllers {
       var sortString = "";
 
       _.each(this.$scope.sortColumns, (col: any, index: number) => {
-        if(col.sort) {
+        if (col.sort) {
           if (!col.order) {
             col.order = "asc";
           }
 
-          sortString += col.key + ":" + col.order;
+          sortString += col.id + ":" + col.order;
 
           if (index < (this.$scope.sortColumns.length - 1)) {
             sortString += ",";
@@ -236,7 +253,6 @@ module ngApp.components.tables.controllers {
 
         this.displayedData = _.assign([], this.$scope.data)
                               .splice(this.$scope.paging.from - 1, this.$scope.paging.size);
-
       } else {
         this.displayedData = this.$scope.data;
       }
@@ -337,7 +353,7 @@ module ngApp.components.tables.controllers {
   }
 
   interface IArrangeColumnsScope extends ng.IScope {
-      listMap: any;
+      dndList: any;
       list: any;
       order: any;
       config: any;
@@ -345,51 +361,71 @@ module ngApp.components.tables.controllers {
 
   class ArrangeColumnsController {
     /* @ngInject */
-    constructor(private $scope: IArrangeColumnsScope, private $window: IGDCWindowService) {
-      //attempt to restore from localstorage
-      var saved = JSON.parse($window.localStorage.getItem($scope.config.title + '-cols'));
-      if (saved) {
-        $scope.listMap = saved;
-        var reordered = _.map($scope.listMap, (lmItem) => {
-          var found = _.find($scope.list, (lItem) => {
-            return lmItem.id === lItem.id;
-          });
-          if (found) {
-            found.hidden = lmItem.hidden;
-            found.canReorder = lmItem.canReorder;
-            this.updateChildrenVisibility(found);
-          }
-          return found;
-        });
-        $scope.list = reordered;
-      } else {
+    constructor(private $scope: IArrangeColumnsScope, private $window: IGDCWindowService, private LZString) {
+      if (!this.restoreFromLocalStorage()) {
         this.initListMap();
       }
+    }
 
+    /**
+      @return true if restored
+    **/
+    restoreFromLocalStorage(): boolean {
+      var decompressed = this.LZString.decompress(this.$window.localStorage.getItem(this.$scope.config.title + '-col'));
+      var saved = decompressed ? JSON.parse(decompressed) : null;
+      if (saved) {
+        var reordered = [];
+        // don't use lodash for this because iteration order is not guaranteed in _.map
+        for(var i = 0; i < saved.length; i++) {
+          var found = _.find(this.$scope.list, (lItem) => {
+            return saved[i].id === lItem.id;
+          });
+          if (found) {
+            found.hidden = saved[i].hidden;
+            found.canReorder = saved[i].canReorder;
+            saved[i].displayName = found.displayName;
+            this.updateChildrenVisibility(found);
+          }
+          reordered.push(found);
+        }
+        this.$scope.dndList = saved;
+        this.$scope.list = reordered;
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    saveToLocalStorage(): void {
+      var save = _.reduce(this.$scope.dndList, (result, item) => {
+        result.push({'id': item.id, 'hidden': item.hidden ? 1 : 0, 'canReorder': item.canReorder ? 1 : 0});
+        return result;
+      }, []);
+      this.$window.localStorage.setItem(this.$scope.config.title + '-col', this.LZString.compress(angular.toJson(save)));
     }
 
     onMoved($index): void {
-      this.$scope.listMap.splice($index,1);
+      this.$scope.dndList.splice($index,1);
       var list = this.$scope.list;
-      this.$scope.list = this.$scope.listMap.map(function(elem){
+      this.$scope.list = this.$scope.dndList.map(function(elem){
         return _.find(list, function(li){
           return li.id === elem.id;
         });
       });
-      this.$window.localStorage.setItem(this.$scope.config.title + '-cols', angular.toJson(this.$scope.listMap));
+      this.saveToLocalStorage();
     }
 
     toggleVisibility(index: int): void {
-      this.$scope.listMap[index].hidden = !this.$scope.listMap[index].hidden;
-      var itemId = this.$scope.listMap[index].id;
+      this.$scope.dndList[index].hidden = !this.$scope.dndList[index].hidden;
+      var itemId = this.$scope.dndList[index].id;
       var matchingHeader = _.find(this.$scope.list, function(li) {
         return li.id === itemId;
       });
       if (matchingHeader) {
-        matchingHeader.hidden = this.$scope.listMap[index].hidden;
+        matchingHeader.hidden = this.$scope.dndList[index].hidden;
         this.updateChildrenVisibility(matchingHeader);
       }
-      this.$window.localStorage.setItem(this.$scope.config.title + '-cols', angular.toJson(this.$scope.listMap));
+      this.saveToLocalStorage();
     }
 
     updateChildrenVisibility(parentCol: any): void {
@@ -412,11 +448,11 @@ module ngApp.components.tables.controllers {
         });
       this.$scope.list = reordered;
       this.initListMap();
-      this.$window.localStorage.removeItem(this.$scope.config.title + '-cols');
+      this.$window.localStorage.removeItem(this.$scope.config.title + '-col');
     }
 
     initListMap() {
-     this.$scope.listMap = this.$scope.list.map(function (elem) {
+     this.$scope.dndList = this.$scope.list.map(function (elem) {
               var composite = _.pick(elem, "id", "displayName", "hidden", "canReorder");
               if (composite.canReorder !== false) {
                 composite.canReorder = true;

@@ -22,9 +22,9 @@
           </a>
       </li>
        <li>
-         <ul dnd-list="listMap" class="column-dnd-list">
+         <ul dnd-list="dndList" class="column-dnd-list">
 
-          <li data-ng-repeat="item in listMap | filter:search:strict"
+          <li data-ng-repeat="item in dndList | filter:search:strict"
               data-ng-class="{'selected': models.selected === item}"
               data-ng-if="item.canReorder"
               class="column-heading"

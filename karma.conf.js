@@ -23,6 +23,8 @@ module.exports = function (config) {
       'bower_components/angular-notify/angular-notify.js',
       'bower_components/angular-cookies/angular-cookies.js',
       'bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js',
+      'bower_components/lz-string/libs/lz-string.js',
+      'bower_components/angular-lz-string/angular-lz-string.js',
       '.tmp/scripts/**/*.js',
       'app/scripts/**/*.tests.js',
       'app/scripts/**/tests/*.js'

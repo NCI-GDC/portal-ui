@@ -4,7 +4,7 @@
       <th ng-if="!heading.hidden && getHeadingEnabled(heading, this)"
           ng-class="::getHeadingClass(heading)"
           data-translate
-          ng-repeat="heading in getAllHeadingsAtNestingLevel(0) | orderBy:getColumnIndex:heading track by $index"
+          ng-repeat="heading in getAllHeadingsAtNestingLevel(0) | orderBy:getColumnIndex:heading track by heading.id"
           rowspan="{{::getHeadingRowSpan(heading)}}"
           colspan="{{::getHeadingColSpan(heading)}}">
         <div tableicious-header heading="heading" paging="paging" scope="col" data="data"ng-if='::heading.compileHead'></div>
@@ -12,7 +12,7 @@
       </th>
     </tr>
     <tr>
-      <th ng-repeat="childHeading in ::getAllHeadingsAtNestingLevel(1) track by $index" data-ng-if="!childHeading.hidden">
+      <th ng-repeat="childHeading in ::getAllHeadingsAtNestingLevel(1) track by childHeading.id" data-ng-if="!childHeading.hidden">
         <span data-tooltip="{{ childHeading.toolTipText }}" data-tooltip-append-to-body="true" tooltip-placement="top">
           {{ childHeading.displayName }}
         </span>

@@ -300,8 +300,8 @@ describe('Table Service:', function () {
                 val:"D"
             }];
 
-            expect(TableService.getValueFromRow(tuples,'a')).to.be.undefined();
-            expect(TableService.getValueFromRow(tuples,'b')).to.be.undefined();
+            expect(TableService.getValueFromRow(tuples,'a')).to.be.undefined;
+            expect(TableService.getValueFromRow(tuples,'b')).to.be.undefined;
         }));
 
     });

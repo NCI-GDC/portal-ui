@@ -131,8 +131,8 @@ module ngApp.components.tables.services {
          * Given an array of objects each having a "val" and an "id" property, returns the
          * val of an object whose ID matches `valueId`
          */
-        getValueFromRow(row:TableiciousEntryDefinition[],valueId:string):string{
-            var tuple  = _.find(row,function(x:any){
+        getValueFromRow(row: TableiciousEntryDefinition[],valueId: string): string{
+            var tuple  = _.find(row,function(x: any){
                 return x.id === valueId;
             });
 

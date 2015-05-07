@@ -18,7 +18,7 @@ module.exports = function (config) {
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/ngprogress-lite/ngprogress-lite.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
-      'bower_components/lodash/dist/lodash.js',
+      'bower_components/lodash/lodash.js',
       'bower_components/moment/moment.js',
       'bower_components/angular-notify/angular-notify.js',
       'bower_components/angular-cookies/angular-cookies.js',

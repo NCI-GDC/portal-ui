@@ -52,8 +52,11 @@
           <a>{{ 'Participants' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
         </li>
       </ul>
-      <div class="pane-section" data-ng-show="sc.SearchState.tabs.summary.active">
-        <div data-ng-include="'search/templates/search.summary.html'" data-ng-if="sc.summary"></div>
+      <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the
+           container will not be the expected size for the graphs.
+        -->
+      <div class="pane-section" data-ng-if="sc.SearchState.tabs.summary.active">
+        <div data-ng-include="'search/templates/search.summary.html'"></div>
       </div>
       <div class="pane-section" data-ng-show="sc.SearchState.tabs.participants.active">
         <div data-ng-include="'search/templates/search.participants.html'"></div>

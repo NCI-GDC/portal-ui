@@ -14,8 +14,10 @@
       <a>{{ 'Items' | translate }} ({{cc.files.length| number:0}})</a>
     </li>
   </ul>
-
-  <div class="pane-section" data-ng-show="cc.CartState.tabs.summary.active">
+  <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the
+       container will not be the expected size for the graphs.
+    -->
+  <div class="pane-section" data-ng-if="cc.CartState.tabs.summary.active">
     <div data-ng-include="'cart/templates/cart.summary.html'" data-ng-show="cc.summary"></div>
   </div>
   <div class="pane-section" data-ng-show="cc.CartState.tabs.items.active">

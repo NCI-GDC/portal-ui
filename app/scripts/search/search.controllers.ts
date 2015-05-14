@@ -53,8 +53,8 @@ module ngApp.search.controllers {
                 private SearchTableParticipantsModel: TableiciousConfig,
                 public FacetService) {
       var data = $state.current.data || {};
-      this.SearchState.setActive("tabs", data.tab);
-      this.SearchState.setActive("facets", data.tab);
+      this.SearchState.setActive("tabs", data.tab, "active");
+      this.SearchState.setActive("facets", data.tab, "active");
       CoreService.setPageTitle("Search");
 
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
@@ -91,9 +91,14 @@ module ngApp.search.controllers {
     }
 
     refresh() {
-      if (this.tabSwitch && ((this.SearchState.tabs.files.active && this.files.hits.length) ||
-         (this.SearchState.tabs.participants.active && this.participants.hits.length) ||
-         (this.SearchState.tabs.summary.active && this.summary))) {
+      if (this.tabSwitch) {
+        if (this.SearchState.tabs.participants.active) {
+          this.SearchState.setActive("tabs", "participants", "hasLoadedOnce");
+        }
+
+        if (this.SearchState.tabs.files.active) {
+          this.SearchState.setActive("tabs", "files", "hasLoadedOnce");
+        }
         this.tabSwitch = false;
         return;
       }
@@ -140,26 +145,28 @@ module ngApp.search.controllers {
         ]
       };
 
-      if (!this.SearchState.tabs.files.active) {
-        fileOptions.size = 0;
-      }
+      this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
+        if (!_.isEqual(this.files, data)) {
+          this.files = data;
+          this.tabSwitch = false;
+          if (this.SearchState.tabs.files.active) {
+            this.SearchState.setActive("tabs", "files", "hasLoadedOnce");
+          }
 
-      if (!this.SearchState.tabs.participants.active) {
-        participantOptions.size = 0;
-      }
-
-      this.FilesService.getFiles(fileOptions).then((data) => {
-        this.files = data;
-        this.tabSwitch = false;
-
-        for (var i = 0; i < this.files.hits.length; i++) {
-          this.files.hits[i].related_ids = _.pluck(this.files.hits[i].related_files, "file_id");
+          for (var i = 0; i < this.files.hits.length; i++) {
+            this.files.hits[i].related_ids = _.pluck(this.files.hits[i].related_files, "file_id");
+          }
         }
       });
 
-      this.ParticipantsService.getParticipants(participantOptions).then((data: IFiles) => {
-        this.participants = data;
-        this.tabSwitch = false;
+      this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
+        if (!_.isEqual(this.participants, data)) {
+          this.participants = data;
+          this.tabSwitch = false;
+          if (this.SearchState.tabs.participants.active) {
+            this.SearchState.setActive("tabs", "participants", "hasLoadedOnce");
+          }
+        }
       });
     }
 
@@ -173,7 +180,7 @@ module ngApp.search.controllers {
     }
 
     select(section: string, tab: string) {
-      this.SearchState.setActive(section, tab);
+      this.SearchState.setActive(section, tab, "active");
       this.setState(tab);
     }
 

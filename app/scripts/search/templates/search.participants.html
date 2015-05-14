@@ -6,6 +6,6 @@
            data-id="participant-table"
            data-endpoint="participants"
            data-sort-columns=true
-           data-ng-if="sc.participants.hits.length">
+           data-ng-if="(sc.SearchState.tabs.participants.hasLoadedOnce || sc.SearchState.tabs.participants.active) && sc.participants.hits.length">
 </gdc-table>
 

@@ -14,19 +14,22 @@ module ngApp.search.services {
   export interface ISearchState {
     tabs: ITabs;
     facets: ITabs;
-    setActive(section: string, s: string): void;
+    setActive(section: string, tab: string, key: string): void;
   }
 
   class State implements ISearchState {
     tabs: ITabs = {
       summary: {
-        active: false
+        active: false,
+        hasLoadedOnce: false
       },
       participants: {
-        active: false
+        active: false,
+        hasLoadedOnce: false
       },
       files: {
-        active: false
+        active: false,
+        hasLoadedOnce: false
       }
     };
     facets: ITabs = {
@@ -38,14 +41,18 @@ module ngApp.search.services {
       }
     };
 
-    setActive(section: string, tab: string) {
+    setActive(section: string, tab: string, key: string) {
       if (section && tab) {
-        _.each(this[section], function (section: ITab) {
-          section.active = false;
-        });
+        if (key === "active") {
+          _.each(this[section], function (section: ITab) {
+            section.active = false;
+          });
 
-        if (!(section === "facets" && tab==="summary")) {
-          this[section][tab].active = true;
+          if (!(section === "facets" && tab==="summary")) {
+            this[section][tab].active = true;
+          }
+        } else {
+          this[section][tab].hasLoadedOnce = true;
         }
 
       }

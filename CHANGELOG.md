@@ -1,3 +1,22 @@
+<a name"0.2.13-spr3"></a>
+### 0.2.13-spr3 (2015-05-14)
+
+
+#### Bug Fixes
+
+* **facets:** autocomplete working again ([a94622a0](https://github.com/NCI-GDC/portal-ui/commit/a94622a0), closes [OICR-731](https://jira.opensciencedatacloud.org/browse/OICR-731))
+* **tbls:** correctly arrange child headings again ([2ce5c4a6](https://github.com/NCI-GDC/portal-ui/commit/2ce5c4a6))
+
+
+#### Features
+
+* **facets:** date and input range facets ([ed90b5d5](https://github.com/NCI-GDC/portal-ui/commit/ed90b5d5), closes [OICR-694](https://jira.opensciencedatacloud.org/browse/OICR-694), [OICR-699](https://jira.opensciencedatacloud.org/browse/OICR-699))
+* **gql:**
+  * parens and unquoted vals ([10215752](https://github.com/NCI-GDC/portal-ui/commit/10215752))
+  * adds autocomplete ([37f5baa9](https://github.com/NCI-GDC/portal-ui/commit/37f5baa9))
+* **projects:** add id and disease type to sort ([27b849e6](https://github.com/NCI-GDC/portal-ui/commit/27b849e6), closes [OICR-722](https://jira.opensciencedatacloud.org/browse/OICR-722))
+
+
 ### 0.2.13-spr2 (2015-04-29)
 
 

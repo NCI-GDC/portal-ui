@@ -125,6 +125,7 @@ angular
       "gettext",
       "ngTagsInput",
       "lz-string",
+      "ui.utils.masks",
 
       "ngApp.core",
       "ngApp.search",

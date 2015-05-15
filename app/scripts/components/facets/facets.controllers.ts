@@ -307,6 +307,7 @@ module ngApp.components.facets.controllers {
           formatDayTitle: "MMMM YYYY",
           formatYear: "YYYY",
           formatMonthTitle: "YYYY",
+          showWeeks: false,
           startingDay: 1
       };
       this.name = $scope.name;

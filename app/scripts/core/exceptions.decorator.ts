@@ -1,7 +1,4 @@
 /* @ngInject */
-
-import IUserService = ngApp.components.user.services.IUserService;
-
 function exceptionDecorator($provide: ng.auto.IProvideService) {
   $provide.decorator("$exceptionHandler",
     /* @ngInject */

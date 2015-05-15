@@ -61,7 +61,7 @@ module ngApp.search.services {
 
 
   export interface ISearchService {
-    getSummary(filters?: Object);
+    getSummary(filters?: Object): ng.IPromise<any>;
   }
 
   class SearchService implements ISearchService {

@@ -1,7 +1,7 @@
 module ngApp.annotations.models {
-  import IFacet = ngApp.models.IFacet;
-  import ICollection = ngApp.models.ICollection;
-  import IEntity = ngApp.models.IEntity;
+  import IFacet = ngApp.core.models.IFacet;
+  import ICollection = ngApp.core.models.ICollection;
+  import IEntity = ngApp.core.models.IEntity;
 
   export interface INote {
     addedBy: string;

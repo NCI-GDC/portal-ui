@@ -1,5 +1,5 @@
 module ngApp.components.charts {
-  import IGDCWindowService = ngApp.models.IGDCWindowService;
+  import IGDCWindowService = ngApp.core.models.IGDCWindowService;
 
   interface IPieChartScope extends ng.IScope {
     data: any;

@@ -1,11 +1,15 @@
 module ngApp.components.location.services {
 
-  import IGDCWindowService = ngApp.models.IGDCWindowService;
+  import IGDCWindowService = ngApp.core.models.IGDCWindowService;
 
   export interface ISearch {
     filters: string;
     query: string;
     pagination: any;
+  }
+
+  export interface IFilters {
+    op: string;
   }
 
   export interface ILocationService {
@@ -20,7 +24,7 @@ module ngApp.components.location.services {
     pagination(): any;
     setPaging(pagination: any): ng.ILocationService;
     setHref(href: string): void;
-    getHref(href: string): string;
+    getHref(): string;
     filter2query(f: any): string;
   }
 
@@ -113,7 +117,7 @@ module ngApp.components.location.services {
       this.$window.location.href = href;
     }
 
-    getHref(href: string): string {
+    getHref(): string {
       return this.$window.location.href;
     }
 

@@ -4,6 +4,7 @@ module ngApp.cart.controllers {
   import IFile = ngApp.files.models.IFile;
   import ICoreService = ngApp.core.services.ICoreService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import ISearchService = ngApp.search.services.ISearchService;
   import IPagination = ngApp.components.tables.pagination.models.IPagination;
 
   export interface ICartController {
@@ -17,7 +18,9 @@ module ngApp.cart.controllers {
     getRelatedFileIds(): string[];
     processPaging: boolean;
     pagination: IPagination;
-    checkCartForClosedFiles();
+    cartTableConfig: any;
+    projectCountChartConfig: any;
+    fileCountChartConfig: any;
   }
 
   class CartController implements ICartController {
@@ -27,6 +30,9 @@ module ngApp.cart.controllers {
     displayedFiles: IFile[];
     numberFilesGraph: any;
     sizeFilesGraph: any;
+    cartTableConfig: any;
+    projectCountChartConfig: any;
+    fileCountChartConfig: any;
 
     /* @ngInject */
     constructor(private $scope: ng.IScope,
@@ -178,7 +184,7 @@ module ngApp.cart.controllers {
       return _.pluck(this.files, "file_id");
     }
 
-    getRelatedFileIds(files): string[] {
+    getRelatedFileIds(): string[] {
       return _.reduce(this.files, function (ids, file) {
         return ids.concat(file.related_ids);
       }, []);

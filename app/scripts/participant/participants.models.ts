@@ -1,10 +1,10 @@
 module ngApp.participants.models {
-  import ICollection = ngApp.models.ICollection;
+  import ICollection = ngApp.core.models.ICollection;
   import IAnnotation = ngApp.annotations.models.IAnnotation;
   import IFile = ngApp.files.models.IFile;
   import IFiles = ngApp.files.models.IFiles;
-  import IAdmin = ngApp.models.IAdmin;
-  import IEntity = ngApp.models.IEntity;
+  import IAdmin = ngApp.core.models.IAdmin;
+  import IEntity = ngApp.core.models.IEntity;
 
   export interface IParticipants extends ICollection {
     hits: IParticipant[];

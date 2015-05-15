@@ -12,6 +12,7 @@ module ngApp.components.user.services {
     isUserProject(file: IFile): boolean;
     currentUser: IUser;
     userCanDownloadFiles(files: IFile[]): boolean;
+    getToken(): void;
   }
 
   class UserService implements IUserService {

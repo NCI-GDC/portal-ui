@@ -1,3 +1,5 @@
+/// <reference path="../types/types"/>
+
 declare module ngApp {
   export interface IGDCConfig {
     version: string;
@@ -45,9 +47,13 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
 }
 
 /* @ngInject */
-function appRun(gettextCatalog: any, Restangular: restangular.IProvider,
-                $state: ng.ui.IStateService, CoreService: ICoreService,
-                $rootScope: IRootScope, config: IGDCConfig, notify: INotifyService,
+function appRun(gettextCatalog: any, 
+                Restangular: restangular.IProvider,
+                $state: ng.ui.IStateService, 
+                CoreService: ICoreService,
+                $rootScope: IRootScope, 
+                config: IGDCConfig, 
+                notify: INotifyService,
                 $cookies: ng.cookies.ICookiesService,
                 UserService: IUserService,
                 ProjectsService: IProjectsService) {

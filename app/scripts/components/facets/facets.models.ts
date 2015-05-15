@@ -1,5 +1,5 @@
 module ngApp.components.facets.models {
-  import IFacet = ngApp.models.IFacet;
+  import IFacet = ngApp.core.models.IFacet;
 
   export interface IFacetScope extends ng.IScope {
     facet: IFacet;

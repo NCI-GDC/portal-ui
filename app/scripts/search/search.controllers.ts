@@ -1,5 +1,5 @@
 module ngApp.search.controllers {
-  import IFacet = ngApp.models.IFacet;
+  import IFacet = ngApp.core.models.IFacet;
   import IFilesService = ngApp.files.services.IFilesService;
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
@@ -12,19 +12,22 @@ module ngApp.search.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
   import ISearchService = ngApp.search.services.ISearchService;
+  import ISearchState = ngApp.search.services.ISearchState;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
   export interface ISearchController {
     files: IFiles;
     participants: IParticipants;
     summary: any;
-    State: IState;
+    SearchState: ISearchState;
     CartService: ICartService;
     addFilesKeyPress(event: any, type: string): void;
     setState(tab: string, next: string): void;
     select(section: string, tab: string): void;
     removeFiles(files: IFile[]): void;
     tabSwitch: boolean;
+    projectIdChartConfig: any;
+    primarySiteChartConfig: any;
   }
 
   interface ISearchScope extends ng.IScope {
@@ -37,6 +40,8 @@ module ngApp.search.controllers {
     participants: IParticipants;
     summary: any;
     tabSwitch: boolean = false;
+    projectIdChartConfig: any;
+    primarySiteChartConfig: any;
 
     /* @ngInject */
     constructor(private $scope: ISearchScope,

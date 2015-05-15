@@ -37,7 +37,6 @@ module ngApp.projects.models {
     disease_type: string;
     state: string;
     primary_site: string;
-    project_id: string;
     summary: ISummary;
     program: IProgram;
   }

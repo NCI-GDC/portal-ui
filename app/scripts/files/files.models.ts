@@ -1,7 +1,7 @@
 module ngApp.files.models {
-  import IFacet = ngApp.models.IFacet;
-  import ICollection = ngApp.models.ICollection;
-  import IEntity = ngApp.models.IEntity;
+  import IFacet = ngApp.core.models.IFacet;
+  import ICollection = ngApp.core.models.ICollection;
+  import IEntity = ngApp.core.models.IEntity;
   import IParticipant = ngApp.participants.models.IParticipant;
 
   export interface IFiles extends ICollection {
@@ -43,7 +43,8 @@ module ngApp.files.models {
     related_files: IFile[];
     related_ids: string[];
     archive?: IArchive;
-    selected?: boolean
+    selected?: boolean;
+    access?: string;
   }
 }
 

@@ -1,6 +1,6 @@
 module ngApp.reports.models {
-  import ICollection = ngApp.models.ICollection;
-  import IEntity = ngApp.models.IEntity;
+  import ICollection = ngApp.core.models.ICollection;
+  import IEntity = ngApp.core.models.IEntity;
 
   export interface IReports extends ICollection {
     hits: IReport[];

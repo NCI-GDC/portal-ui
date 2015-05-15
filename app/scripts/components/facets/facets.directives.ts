@@ -1,5 +1,5 @@
 module ngApp.components.facets.directives {
-  import IFacet = ngApp.models.IFacet;
+  import IFacet = ngApp.core.models.IFacet;
   import IProjectsService = ngApp.projects.services.IProjectsService;
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import ITermsController = ngApp.components.facets.controllers.ITermsController;

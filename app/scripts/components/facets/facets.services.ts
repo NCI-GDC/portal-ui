@@ -6,9 +6,8 @@ module ngApp.components.facets.services {
   import IUserService = ngApp.components.user.services.IUserService;
 
   export interface IFacetService {
-    addRange(facet: string, operator: string, term: string): void;
-    addTerm(facet: string, term: string): void;
-    removeTerm(facet: string, term: string): void;
+    addTerm(facet: string, term: string, op?:string): void;
+    removeTerm(facet: string, term: string, op?: string): void;
     getActives(facet: string, terms: any[]): string[];
     getActiveIDs(facet: string): string[];
     getActivesWithOperator(facet: string): any;
@@ -26,7 +25,7 @@ module ngApp.components.facets.services {
         "participants": "project.project_id",
         "projects": "project_id"
       };
-      var options = {
+      var options: any = {
         query: query
       };
 

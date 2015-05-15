@@ -1,6 +1,6 @@
 module ngApp.components.xmlviewer {
 
-  import IGDCWindowService = ngApp.models.IGDCWindowService;
+  import IGDCWindowService = ngApp.core.models.IGDCWindowService;
 
   interface XMLViewerScope extends ng.IScope {
     xml: string;

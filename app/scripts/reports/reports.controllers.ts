@@ -2,9 +2,11 @@ module ngApp.reports.controllers {
   import ICoreService = ngApp.core.services.ICoreService;
   import IReports = ngApp.reports.models.IReports;
   import IReport = ngApp.reports.models.IReport;
+  import IReportsService = ngApp.reports.services.IReportsService;
+  import IProjectsService = ngApp.projects.services.IProjectsService;
+  import ILocationService = ngApp.components.location.services.ILocationService;
 
   export interface IReportsController {
-    reports: IReports;
   }
   export interface IReportController {
     report: IReport;
@@ -13,8 +15,21 @@ module ngApp.reports.controllers {
   class ReportsController implements IReportsController {
 
     /* @ngInject */
-    constructor(private CoreService: ICoreService, $scope,ReportsService, $q,ProjectsService,$timeout,private LocationService: ILocationService, private config: IGDCConfig,  private $modal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
-                private $window: ng.IWindowService, private UserService: IUserService,$timeout,$filter,ReportsGithutColumns,ReportsGithut) {
+    constructor(private CoreService: ICoreService, 
+                $scope: ng.IScope,
+                ReportsService: IReportsService, 
+                ProjectsService: IProjectsService,
+                $timeout: ng.ITimeoutService,
+                private LocationService: ILocationService, 
+                private config: IGDCConfig,  
+                private $modal: any, 
+                private $q: ng.IQService, 
+                private Restangular: restangular.IProvider,
+                private $window: ng.IWindowService, 
+                private UserService: IUserService,
+                $filter: ng.IFilterService,
+                ReportsGithutColumns,
+                ReportsGithut) {
 
       CoreService.setPageTitle("Reports");
 

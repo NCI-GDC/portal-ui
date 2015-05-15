@@ -4,7 +4,7 @@ module ngApp.core.filters {
     constructor() {
       return function (fields: { name: string; value: string }[], noEscape: boolean) {
         var contentArray = _.map(fields, function (item) {
-          var value = [];
+          var value;
 
           if (_.isArray(item.value)) {
             value = item.value;
@@ -56,7 +56,7 @@ module ngApp.core.filters {
   }
 
   class MakeManifestLink {
-    constructor($rootScope: IScope) {
+    constructor($rootScope: ng.IScope) {
       return function (ids: string[],
                       baseUrl: string = $rootScope.config.api) {
         return baseUrl + "/manifest/" + ids.join(",");

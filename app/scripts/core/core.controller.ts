@@ -16,7 +16,7 @@ module ngApp.core.controllers {
                 private CartService: ICartService,
                 private notify: INotifyService,
                 $location: ng.ILocationService,
-                private $cookies: ng.ICookiesService,
+                private $cookies: ng.cookies.ICookiesService,
                 private $modal: any) {
 
       var showWarning = $location.search()["showWarning"];

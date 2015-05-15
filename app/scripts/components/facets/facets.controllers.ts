@@ -7,7 +7,7 @@ module ngApp.components.facets.controllers {
   import IDateFacetScope = ngApp.components.facets.models.IDateFacetScope;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
-  import IGDCWindowService = ngApp.models.IGDCWindowService;
+  import IGDCWindowService = ngApp.core.models.IGDCWindowService;
 
   class Toggleable {
 
@@ -35,7 +35,6 @@ module ngApp.components.facets.controllers {
     collapsed: boolean;
     expanded: boolean;
     toggle(event: any, property: string): void;
-    expandTerms(event: any, filter: any): void;
   }
 
   class TermsController implements ITermsController {

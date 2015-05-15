@@ -3,7 +3,9 @@ module ngApp.cart.services {
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
   import IFilesService = ngApp.files.services.IFilesService;
-  import IGDCWindowService = ngApp.models.IGDCWindowService;
+  import ITabs = ngApp.search.services.ITabs;
+  import ITab = ngApp.search.services.ITab;
+  import IGDCWindowService = ngApp.core.models.IGDCWindowService;
   import INotifyService = ng.cgNotify.INotifyService;
 
   export interface ICartService {
@@ -27,6 +29,8 @@ module ngApp.cart.services {
     isFull(): boolean;
     getCartVacancySize(): number;
     selectFile(file: IFile): void;
+    getAuthorizedFiles(): IFile[];
+    getUnauthorizedFiles(): IFile[];
   }
 
   class CartService implements ICartService {
@@ -68,13 +72,13 @@ module ngApp.cart.services {
       return _.find(this.getFiles(), { "file_id": fileId });
     }
 
-    getAuthorizedFiles() {
+    getAuthorizedFiles(): IFile[] {
       return this.files.filter((file)=>{
         return this.UserService.userCanDownloadFile(file);
       });
     }
 
-    getUnauthorizedFiles() {
+    getUnauthorizedFiles(): IFile[] {
       return this.files.filter((file)=>{
         return !this.UserService.userCanDownloadFile(file);
       });

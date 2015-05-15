@@ -1,5 +1,5 @@
 module ngApp.query.controllers {
-  import IFacet = ngApp.models.IFacet;
+  import IFacet = ngApp.core.models.IFacet;
   import IFilesService = ngApp.files.services.IFilesService;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IFiles = ngApp.files.models.IFiles;
@@ -26,6 +26,8 @@ module ngApp.query.controllers {
     isUserProject(file: IFile): boolean;
     tabSwitch: boolean;
     query: string;
+    projectIdChartConfig: any;
+    primarySiteChartConfig: any;
   }
 
   interface IQueryScope extends ng.IScope {
@@ -38,6 +40,8 @@ module ngApp.query.controllers {
     participants: IParticipants;
     query: string = "";
     tabSwitch: boolean = false;
+    projectIdChartConfig: any;
+    primarySiteChartConfig: any;
 
     /* @ngInject */
     constructor(private $scope: IQueryScope,

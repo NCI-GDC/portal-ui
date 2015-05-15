@@ -25,7 +25,7 @@
  */
 
 module ngApp.components.gql.directives {
-  import IGDCWindowService = ngApp.models.IGDCWindowService;
+  import IGDCWindowService = ngApp.core.models.IGDCWindowService;
   import IFilesService = ngApp.files.services.IFilesService;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IFiles = ngApp.files.models.IFiles;

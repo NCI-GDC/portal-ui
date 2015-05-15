@@ -1,4 +1,4 @@
-module ngApp.models {
+module ngApp.core.models {
   import IPagination = ngApp.components.tables.pagination.models.IPagination;
 
   export interface IEntity {

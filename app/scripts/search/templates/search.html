@@ -6,7 +6,7 @@
           <div data-ng-include="'search/templates/search.files.facets.html'"
                class="facet-section" role="form"></div>
         </tab>
-        <tab heading="{{ 'Participants' | translate }}" active="true" id="participants-facets-tab">
+        <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
           <div data-ng-include="'search/templates/search.participants.facets.html'"
                class="facet-section" role="form"></div>
         </tab>
@@ -49,7 +49,7 @@
             data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
             data-ng-click="sc.select('tabs', 'participants')"
             id="search-participants">
-          <a>{{ 'Participants' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
+          <a>{{ 'Cases' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
         </li>
       </ul>
       <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the

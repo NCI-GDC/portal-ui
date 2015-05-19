@@ -69,7 +69,7 @@ angular.module('projects.githut.config',[])
     },
     {
       id:'participant_count',
-      display_name:["Participant","Count"],
+      display_name:["Case","Count"],
       scale:'ordinal',
       dimensional:true,
       colorgroup:'participant_count'
@@ -260,7 +260,7 @@ angular.module('projects.githut.config',[])
       superhead:{
         start:'Clinical',
         end:'Other',
-        text: ProjectsService.getTableHeading() //Participant count per data type 
+        text: ProjectsService.getTableHeading() //Case count per data type 
       },
 
       /**

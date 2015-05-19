@@ -64,7 +64,7 @@ module ngApp.projects.models {
         sortable: true
       },
       {
-        displayName: "Participants",
+        displayName: "Cases",
         id: "summary.participant_count",
         enabled: true,
         template: function (field: TableiciousEntryDefinition, row, scope, $filter) {
@@ -98,7 +98,7 @@ module ngApp.projects.models {
         sortable: true,
         fieldClass: 'text-right'
       }, {
-        displayName: "Available Participants per Data Type",
+        displayName: "Available Cases per Data Type",
         id: "data_types",
         headingClass: 'text-center',
         enabled: true,

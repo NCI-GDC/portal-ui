@@ -79,7 +79,7 @@ module ngApp.search.models {
               }) ? 'check' : 'close';
             }
         }, {
-            displayName: "Participant ID",
+            displayName: "Case ID",
             id: "participant_id",
             enabled: true,
             sref:function(elem,row,scope){

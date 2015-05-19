@@ -90,7 +90,7 @@ module ngApp.cart.models {
         fieldClass: 'truncated-cell'
       },
       {
-        displayName: "Participants",
+        displayName: "Cases",
         id: "participantId",
         visible: true,
         template: function (field, row, scope) {

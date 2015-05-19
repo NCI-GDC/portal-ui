@@ -16,7 +16,7 @@ module ngApp.projects.models {
           fieldClass: 'truncated-cell'
         },
         {
-            displayName: "Participant ID",
+            displayName: "Case ID",
             id: "participant_id",
             sref: function (field) {
               return {

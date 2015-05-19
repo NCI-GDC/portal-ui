@@ -5,6 +5,7 @@
            data-heading="Files"
            data-id="file-table"
            data-endpoint="files"
-           data-sort-columns=true>
+           data-sort-columns=true
+           data-ng-if="(qc.QState.tabs.files.hasLoadedOnce || qc.QState.tabs.files.active) && qc.files.hits.length">
 </gdc-table>
 

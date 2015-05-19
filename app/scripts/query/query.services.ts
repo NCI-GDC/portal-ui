@@ -17,23 +17,30 @@ module ngApp.query.services {
   class QState implements IQueryState {
     tabs: ITabs = {
       summary: {
-        active: false
+        active: false,
+        hasLoadedOnce: false
       },
       participants: {
-        active: false
+        active: false,
+        hasLoadedOnce: false
       },
       files: {
-        active: false
+        active: false,
+        hasLoadedOnce: false
       }
     };
 
-    setActive(tab: string) {
+    setActive(tab: string, key: string) {
       if (tab) {
-        _.each(this.tabs, (t: ITab) => {
-          t.active = false;
-        });
+        if (key === "active") {
+          _.each(this.tabs, (t: ITab) => {
+            t.active = false;
+          });
 
-        this.tabs[tab].active = true;
+          this.tabs[tab].active = true;
+        } else {
+          this.tabs[tab].hasLoadedOnce = true;
+        }
       }
     }
   }

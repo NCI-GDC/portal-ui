@@ -57,7 +57,7 @@ module ngApp.query.controllers {
                 private SearchTableFilesModel: TableiciousConfig,
                 private SearchTableParticipantsModel: TableiciousConfig) {
       var data = $state.current.data || {};
-      this.QState.setActive(data.tab);
+      this.QState.setActive(data.tab, "active");
       CoreService.setPageTitle("Query");
 
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
@@ -95,6 +95,13 @@ module ngApp.query.controllers {
 
     refresh() {
       if (this.tabSwitch) {
+        if (this.QState.tabs.participants.active) {
+          this.QState.setActive("participants", "hasLoadedOnce");
+        }
+
+        if (this.QState.tabs.files.active) {
+          this.QState.setActive("files", "hasLoadedOnce");
+        }
         this.tabSwitch = false;
         return;
       }
@@ -107,8 +114,8 @@ module ngApp.query.controllers {
         fields: this.SearchTableFilesModel.fields,
         expand: this.SearchTableFilesModel.expand
       }).then((data) => {
-        if (!data.hits.length) {
-          this.CoreService.setSearchModelState(true);
+        if (this.QState.tabs.files.active) {
+          this.QState.setActive("files", "hasLoadedOnce");
         }
         this.files = data;
 
@@ -122,8 +129,8 @@ module ngApp.query.controllers {
         fields: this.SearchTableParticipantsModel.fields,
         expand: this.SearchTableParticipantsModel.expand
       }).then((data: IFiles) => {
-        if (!data.hits.length) {
-          this.CoreService.setSearchModelState(true);
+        if (this.QState.tabs.participants.active) {
+          this.QState.setActive("participants", "hasLoadedOnce");
         }
 
         this.participants = data;
@@ -146,7 +153,7 @@ module ngApp.query.controllers {
 
 
     select(tab: string) {
-      this.QState.setActive(tab);
+      this.QState.setActive(tab, "active");
       this.setState(tab);
     }
 

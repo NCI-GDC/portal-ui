@@ -5,5 +5,6 @@
            data-heading="Cases"
            data-id="participant-table"
            data-endpoint="participants"
-           data-sort-columns=true>
+           data-sort-columns=true
+           data-ng-if="(qc.QState.tabs.participants.hasLoadedOnce || qc.QState.tabs.participants.active) && qc.participants.hits.length">
 </gdc-table>

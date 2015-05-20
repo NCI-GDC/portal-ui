@@ -249,7 +249,7 @@ module ngApp.components.charts {
           gPath.attr("d", arc)
               .style("fill", function(d, i) { return color(i); })
               .attr("state", function(d) {
-                return config.state && config.state[d.data.key] ? "true" : "false";
+                return config.state ? "true" : "false";
               })
               .on("click", goToState)
               .on("mouseover.text", function(d) {
@@ -304,13 +304,24 @@ module ngApp.components.charts {
         }
 
         function goToState(d) {
-          if (!config.state || !config.state[d.data.key]) {
+          if (!config.state || (!config.state[d.data.key] &&
+              !config.state["default"])) {
             return;
           }
 
-          var state = config.state[d.data.key];
+          if (config.state[d.data.key]) {
+            var state = config.state[d.data.key];
 
-          $state.go(state.name, state.params, {inherit: false});
+            $state.go(state.name, state.params, {inherit: false});
+            return;
+          }
+
+          var state = config.state["default"],
+              params = {
+                filters: state.params.filters(d.data.key)
+              };
+
+          $state.go(state.name, params, {inherit: false});
         }
 
         function arcTween(outerRadius, delay) {

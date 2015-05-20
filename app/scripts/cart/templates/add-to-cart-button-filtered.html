@@ -16,6 +16,7 @@
             </a>
         </li>
         <li aria-label="{{ 'Add filtered related files' | translate }}"
+            data-ng-if="areFiltersApplied"
             role="button" data-ng-class="{ disabled: !filteredRelatedFiles.pagination.total }">
             <a data-ng-click="addFilteredRelatedFiles(p)" data-ng-if="filteredRelatedFiles.pagination.total">
                 <i class="fa fa-shopping-cart fa-stack"></i>

@@ -299,7 +299,17 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
       controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
                           FilesService: IFilesService){
-        $scope.retreivingFilteredFiles = true;
+        var content = LocationService.filters().content;
+        $scope.areFiltersApplied = content && _.find(content, (item) => {
+          return item.content.field.indexOf("files.") === 0;
+        });
+
+        $scope.$on("$locationChangeSuccess", () => {
+          var content = LocationService.filters().content;
+          $scope.areFiltersApplied = content && _.find(content, (item) => {
+            return item.content.field.indexOf("files.") === 0;
+          });
+        });
 
         $scope.getFilteredRelatedFiles = function() {
           $scope.retreivingFilteredFiles = true;

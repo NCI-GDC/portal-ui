@@ -45,8 +45,8 @@ module ngApp.cart.services {
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
                 private notify: INotifyService, private UserService, private $rootScope, private LZString) {
-      var local_files = $window.localStorage.getItem(LZString.decompress(CartService.GDC_CART_KEY));
-      var local_time = $window.localStorage.getItem(LZString.decompress(CartService.GDC_CART_UPDATE));
+      var local_files = LZString.decompress($window.localStorage.getItem(CartService.GDC_CART_KEY));
+      var local_time = LZString.decompress($window.localStorage.getItem(CartService.GDC_CART_UPDATE));
 
       this.lastModified = local_time ? $window.moment(local_time) : $window.moment();
       this.files = local_files ? JSON.parse(local_files) : [];

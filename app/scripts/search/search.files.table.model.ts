@@ -30,31 +30,23 @@ module ngApp.search.models {
 
   var searchTableFilesModel: TableiciousConfig = {
     title: 'Files',
-    order: ['add_to_cart', 'download', 'my_projects', 'access', 'file_name', 'participants', 'participants.project.project_id', 'data_type', 'data_format', 'file_size', 'annotations'],
+    order: ['file_actions', 'my_projects', 'access', 'file_name', 'participants', 'participants.project.project_id', 'data_type', 'data_format', 'file_size', 'annotations'],
     headings: [
       {
-        displayName: "add_to_cart",
-        id: "add_to_cart",
+        displayName: "file_actions",
+        id: "file_actions",
         compile: function ($scope) {
           $scope.arrayRow = arrayToObject($scope.row);
-          var htm = '<div add-to-cart-single file="arrayRow"></div>';
+          var htm = '<div add-to-cart-single file="arrayRow"></div>' +
+                    '<a class="btn btn-primary" download-button files=file>' +
+                    '<i class="fa fa-download"></i></a>';
           return htm;
         },
         compileHead: function ($scope) {
           var htm = '<div add-to-cart-all files="data" paging="paging"></div>';
           return htm;
         },
-        noTitle: true,
-        visible: true
-      }, {
-        displayName: "download",
-        id: "download",
-        compile: function ($scope) {
-          $scope.file = arrayToObject($scope.row);
-          var htm = '<a class="btn btn-primary" download-button files=file>' +
-                    '<i class="fa fa-download"></i></a>';
-          return htm;
-        },
+        fieldClass: "table-compile-cell",
         noTitle: true,
         visible: true
       }, {

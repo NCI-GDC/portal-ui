@@ -16,7 +16,7 @@ var habitat = require("habitat");
 habitat.load();
 
 var env = new habitat("gdc", {
-  api: "http://portal.gdc.nci.nih.gov:5000",
+  api: "https://portal.gdc.nci.nih.gov",
   base: "/"
 });
 

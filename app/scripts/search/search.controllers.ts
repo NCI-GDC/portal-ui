@@ -54,6 +54,7 @@ module ngApp.search.controllers {
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 public CoreService: ICoreService,
+                $filter: ng.IFilterService,
                 private SearchTableFilesModel: TableiciousConfig,
                 private SearchTableParticipantsModel: TableiciousConfig,
                 public FacetService) {
@@ -82,7 +83,24 @@ module ngApp.search.controllers {
         textFilter: "size",
         label: "file",
         sortKey: "doc_count",
-        defaultText: "project"
+        defaultText: "project",
+        state: {
+          "default": {
+            name: "search.files",
+            params: {
+              filters: function(value) {
+                return $filter("makeFilter")([
+                  {
+                    name: "participants.project.project_id",
+                    value: [
+                      value
+                    ]
+                  }
+                ], true);
+              }
+            }
+          }
+        }
       };
 
       this.primarySiteChartConfig = {
@@ -91,7 +109,24 @@ module ngApp.search.controllers {
         textFilter: "size",
         label: "file",
         sortKey: "doc_count",
-        defaultText: "primary site"
+        defaultText: "primary site",
+        state: {
+          "default": {
+            name: "search.files",
+            params: {
+              filters: function(value) {
+                return $filter("makeFilter")([
+                  {
+                    name: "participants.project.primary_site",
+                    value: [
+                      value
+                    ]
+                  }
+                ], true);
+              }
+            }
+          }
+        }
       };
     }
 

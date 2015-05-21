@@ -5,9 +5,6 @@
   "path": "typings",
   "bundle": "typings/tsd.d.ts",
   "installed": {
-    "rx/rx.d.ts": {
-      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
-    },
     "angularjs/angular.d.ts": {
       "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
     },
@@ -36,15 +33,6 @@
       "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
     },
     "d3/d3.d.ts": {
-      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
-    },
-    "rx/rx-lite.d.ts": {
-      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
-    },
-    "rx/rx.async-lite.d.ts": {
-      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
-    },
-    "rx/rx.async.d.ts": {
       "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
     }
   }

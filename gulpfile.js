@@ -11,14 +11,10 @@ var packageJSON = require("./package.json");
 var modRewrite = require('connect-modrewrite');
 var mkdirp = require("mkdirp");
 
-var habitat = require("habitat");
-
-habitat.load();
-
-var env = new habitat("gdc", {
-  api: "https://portal.gdc.nci.nih.gov",
-  base: "/"
-});
+var env = {
+  api: process.env.GDC_API || "http://localhost:5000",
+  base: process.env.GDC_BASE || "/"
+};
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -139,7 +135,7 @@ gulp.task("config", function () {
 
       content = content.replace(/__VERSION__/g, packageJSON.version);
       content = content.replace(/__COMMIT__/g, stdout.replace(/[\r\n]/, ""));
-      content = content.replace(/__API__/, env.get("api"));
+      content = content.replace(/__API__/, env.api);
 
       // Ensures path is in place, as I've had occurances where it may not be.
       mkdirp("dist/js", function (err) {
@@ -274,7 +270,7 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
     //   ]}))
   }
   return stream
-      .pipe($.replace('__BASE__', env.get("base")))
+      .pipe($.replace('__BASE__', env.base))
       .pipe(gulp.dest('dist'))
       .pipe($.size({title: 'html'}));
 });

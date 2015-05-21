@@ -1,5 +1,6 @@
 <div data-ng-if="!addAllOnly" class="btn-group" data-dropdown>
-    <button data-ng-if="CartService.areInCart(files)" type="button" class="btn btn-success" disabled>
+    <button data-ng-if="CartService.areInCart(files)" type="button" class="btn btn-success"
+            data-ng-click="CartService.removeFiles(files)">
         <i class="fa fa-check-circle"></i>
     </button>
     <button data-ng-if="!CartService.areInCart(files)" type="button" class="btn btn-primary"

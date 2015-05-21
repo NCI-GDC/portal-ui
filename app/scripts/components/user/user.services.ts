@@ -56,7 +56,6 @@ module ngApp.components.user.services {
         })
         .get("", {})
         .then((file) => {
-          modalInstance.close({cancel: true});
           this.$window.saveAs(file, "gdc-user-token." + this.$window.moment().format() + ".txt");
         });
       }

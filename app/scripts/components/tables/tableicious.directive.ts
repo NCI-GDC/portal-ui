@@ -197,7 +197,9 @@ module ngApp.components.tables.directives.tableicious {
 
             $scope.$watch(()=>{
                 return $scope.config.headings.map(function(head){
-                    return head.displayName;
+                    if (head) {
+                        return head.displayName;
+                    }
                 })
             },()=>{
                 $scope.order = this.createOrderArray($scope.config.headings);
@@ -206,7 +208,9 @@ module ngApp.components.tables.directives.tableicious {
 
             $scope.$watch(()=>{
                 return $scope.config.headings.map(function(head:TableiciousColumnDefinition){
-                    return head.hidden;
+                    if (head) {
+                        return head.hidden;
+                    }
                 })
             },()=>{
                 refresh();

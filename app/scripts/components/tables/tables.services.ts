@@ -90,7 +90,7 @@ module ngApp.components.tables.services {
             }
             return headings.reduce(function(a,b){
                 function addChildrenOfNode(node){
-                    a.push(node)
+                    a.push(node);
                     if (node.parent) {
                         node.nestingLevel = node.parent.nestingLevel + 1;
                     } else {
@@ -104,7 +104,9 @@ module ngApp.components.tables.services {
                         });
                     }
                 }
-                addChildrenOfNode(b);
+                if (b) {
+                    addChildrenOfNode(b);
+                }
                 return a;
             },[]).map(function(heading){
                 heading.parent = undefined;

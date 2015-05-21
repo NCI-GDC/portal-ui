@@ -209,7 +209,7 @@ module ngApp.components.tables.controllers {
     /* @ngInject */
     constructor(private $scope: IGDCTableScope) {
       this.sortingHeadings = _.filter($scope.config.headings, (heading: any) => {
-        return heading.sortable;
+        return heading && heading.sortable;
       });
 
       if ($scope.clientSide) {

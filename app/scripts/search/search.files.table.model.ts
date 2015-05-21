@@ -229,6 +229,11 @@ module ngApp.search.models {
           var annotations = _.find(row, (item) => {
             return item.id === "annotations";
           });
+
+          if (!annotations) {
+            return;
+          }
+
           var annotationIds = _.map(annotations.val, (annotation: any) => {
             return annotation.annotation_id;
           });

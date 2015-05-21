@@ -73,10 +73,11 @@
     "run-sequence": "1.1.0",
     "sinon": "1.14.1",
     "sinon-chai": "2.7.0",
+    "tsd": "^0.6.0",
     "typescript": "1.5.0-beta"
   },
   "scripts": {
-    "postinstall": "bower install --quiet",
+    "postinstall": "bower install --quiet && tsd reinstall",
     "test": "gulp test",
     "prot": "gulp protractor",
     "prestart": "npm install",

@@ -1,0 +1,51 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "rx/rx.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "angularjs/angular.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "angular-ui-router/angular-ui-router.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "ngprogress-lite/ngprogress-lite.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "angularjs/angular-cookies.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "restangular/restangular.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "angular-notify/angular-notify.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "moment/moment.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "lodash/lodash.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "jquery/jquery.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "d3/d3.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "rx/rx-lite.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "rx/rx.async-lite.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    },
+    "rx/rx.async.d.ts": {
+      "commit": "2259de6588fb6627c3e511bcf40a0e85cadefbc5"
+    }
+  }
+}

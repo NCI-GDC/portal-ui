@@ -322,9 +322,11 @@ gulp.task('ts:lint', function () {
 });
 
 var tsProject = $.typescript.createProject({
-  sortOutput: true,
-  declarationFiles: true,
-  noExternalResolve: false
+    "target": "es6",
+		"module": "commonjs",
+		"sortOutput": true,
+		"declarationFiles": true,
+		"noExternalResolve": false
 });
 
 gulp.task('ts:compile', function () {
@@ -425,7 +427,7 @@ gulp.task('pegjs', function () {
 });
 
 gulp.task('serve', function (cb) {
-  runSequence('default', ['karma:watch', 'serve:web'], cb);
+  runSequence('default', [/*'karma:watch',*/ 'serve:web'], cb);
 });
 
 // Build Production Files, the Default Task

@@ -13,37 +13,27 @@ module ngApp.cart.models {
 
   var CartTableModel: TableiciousConfig = {
     title: 'Cart',
-    order: ['select_file', 'download', 'my_projects', 'download', 'my_projects', 'access', 'file_name', 'participantId', 'projects', 'data_type', 'data_format', 'file_size', 'annotationIds'],
+    order: ['file_actions','my_projects', 'access', 'file_name', 'participantId', 'projects', 'data_type', 'data_format', 'file_size', 'annotationIds'],
     headings: [
       {
-        displayName: "select_file",
-        id: "select_file",
+        displayName: "file_actions",
+        id: "file_actions",
         compile: function ($scope) {
           $scope.file = arrayToObject($scope.row);
-          var htm = '<div select-single-cart file="file"></div>';
+          var htm = '<div select-single-cart file="file"></div>' +
+                    "<button class='btn btn-primary' download-button files='file'>" +
+                    "<i class='fa fa-download'></i></button>" +
+                    "<button class='btn btn-default' remove-single-cart file='file'>" +
+                    "<i class='fa fa-trash-o'></i></button>";
           return htm;
         },
+        fieldClass: "table-compile-cell",
         compileHead: function ($scope) {
           var htm = '<div select-all-cart paging="paging"></div>';
           return htm;
         },
         noTitle: true,
         visible: true
-      },
-      {
-        displayName: "download",
-        id: "download",
-        compile: function ($scope) {
-          $scope.file = arrayToObject($scope.row);
-          var htm = "<button class='btn btn-primary' download-button files='file'>" +
-                    "<i class='fa fa-download'></i></button>" +
-                    "<button class='btn btn-default' remove-single-cart file='file'>" +
-                    "<i class='fa fa-trash-o'></i></button>";
-          return htm;
-        },
-        noTitle: true,
-        visible: true,
-        fieldClass: "text-center"
       },
       {
         displayName: "My Projects",

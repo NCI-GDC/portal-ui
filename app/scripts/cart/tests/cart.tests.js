@@ -5,6 +5,10 @@ describe('Cart:', function () {
   // Initialization of the AngularJS application before each test case
   beforeEach(module('ngProgressLite', 'ngApp.cart', 'core.filters', 'lz-string'));
 
+  beforeEach(module(function ($provide) {
+      $provide.value('RestFullResponse', {});
+  }));
+
   // Injection of dependencies, $http will be mocked with $httpBackend
   beforeEach(inject(function ($httpBackend) {
     httpBackend = $httpBackend;

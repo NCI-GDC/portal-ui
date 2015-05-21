@@ -65,15 +65,15 @@ module ngApp.search.services {
   }
 
   class SearchService implements ISearchService {
-    private ds: restangular.IElement;
 
     /* @ngInject */
-    constructor(Restangular: restangular.IService, private LocationService: ILocationService) {
-      this.ds = Restangular.all("ui/search");
+    constructor(private Restangular: restangular.IService, private LocationService: ILocationService) {
     }
 
     getSummary(filters: Object = this.LocationService.filters()) {
-      return this.ds.get('summary', {filters: filters}).then((response) => {
+      return this.Restangular.all("ui/search/summary")
+      .post({ filters: filters }, undefined, { 'Content-Type': 'application/json' })
+      .then((response) => {
         return response;
       });
     }

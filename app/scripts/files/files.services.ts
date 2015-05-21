@@ -15,9 +15,9 @@ module ngApp.files.services {
     private ds: restangular.IElement;
 
     /* @ngInject */
-    constructor(Restangular: restangular.IService, private LocationService: ILocationService,
+    constructor(private Restangular: restangular.IService, private LocationService: ILocationService,
                 private UserService: IUserService, private CoreService: ICoreService,
-                private $rootScope: IRootScope, private $q: ng.IQService, private $filter, private $window) {
+                private $rootScope: IRootScope, private $q: ng.IQService, private $filter, private $window, private RestFullResponse: any) {
       this.ds = Restangular.all("files");
     }
 
@@ -36,11 +36,26 @@ module ngApp.files.services {
     }
 
     downloadManifest(_ids) {
-      this.$window.location = this.$filter('makeManifestLink')(_ids);
+      this.download("/manifest", _ids);
     }
 
     downloadFiles(_ids) {
-      this.$window.location = this.$filter('makeDownloadLink')(_ids);
+      this.download("/data", _ids);
+    }
+
+    download(endpoint: string, ids: Array<string>) {
+      var abort = this.$q.defer();
+      var params = { "ids": ids };
+      this.RestFullResponse.all(endpoint)
+        .withHttpConfig({
+          timeout: abort.promise,
+          responseType: "blob"
+        })
+        .post(params, undefined, { 'Content-Type': 'application/json' })
+        .then((response) => {
+          var filename: string = response.headers['content-disposition'].match(/filename=(.*)/i)[1];
+          this.$window.saveAs(response.data, filename);
+        });
     }
 
     getFiles(params: Object = {}): ng.IPromise<IFiles> {

@@ -5,12 +5,17 @@ describe('Files:', function () {
   // Initialization of the AngularJS application before each test case
   beforeEach(module('ngApp.files', 'core.services', 'ngProgressLite'));
 
+  beforeEach(module(function ($provide) {
+      $provide.value('RestFullResponse', {});
+  }));
+
   // Injection of dependencies, $http will be mocked with $httpBackend
   beforeEach(inject(function ($httpBackend) {
     httpBackend = $httpBackend;
   }));
 
   describe('Service:', function () {
+
     it('should get all files', inject(function (FilesService) {
       sinon.spy(FilesService.ds, 'get');
 

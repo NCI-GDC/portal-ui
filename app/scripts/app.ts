@@ -47,12 +47,12 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
 }
 
 /* @ngInject */
-function appRun(gettextCatalog: any, 
+function appRun(gettextCatalog: any,
                 Restangular: restangular.IProvider,
-                $state: ng.ui.IStateService, 
+                $state: ng.ui.IStateService,
                 CoreService: ICoreService,
-                $rootScope: IRootScope, 
-                config: IGDCConfig, 
+                $rootScope: IRootScope,
+                config: IGDCConfig,
                 notify: INotifyService,
                 $cookies: ng.cookies.ICookiesService,
                 UserService: IUserService,
@@ -68,8 +68,14 @@ function appRun(gettextCatalog: any,
   Restangular.addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
     // Ajax
     CoreService.xhrDone();
-    return deferred.resolve(data);
+    if (response.headers('content-disposition')) {
+      return deferred.resolve({ 'data': data, 'headers': response.headers()});
+    } else {
+      return deferred.resolve(data);
+    }
+
   });
+
 
   Restangular.all('status').get('').then(function(data){
 
@@ -141,5 +147,10 @@ angular
       "templates"
     ])
     .config(appConfig)
+    .factory('RestFullResponse', function(Restangular: restangular.IService) {
+      return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
+        RestangularConfigurer.setFullResponse(true);
+      });
+    })
     .run(appRun);
 

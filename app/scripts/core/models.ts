@@ -33,6 +33,11 @@ module ngApp.core.models {
   }
 
   export interface IFacet {
-    buckets: any;
+    buckets: IBucket[];
   }
+  
+  export interface IBucket {
+    key: string;
+  }
+  
 }

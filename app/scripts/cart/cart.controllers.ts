@@ -10,10 +10,7 @@ module ngApp.cart.controllers {
   export interface ICartController {
     files: IFile[];
     lastModified: Moment;
-    selected(): IFile[];
-    selectedSize(): number;
     getTotalSize(): number;
-    removeSelected(): void;
     getFileIds(): string[];
     getRelatedFileIds(): string[];
     processPaging: boolean;
@@ -33,11 +30,12 @@ module ngApp.cart.controllers {
     cartTableConfig: any;
     projectCountChartConfig: any;
     fileCountChartConfig: any;
+    helpHidden: boolean = false;
 
     /* @ngInject */
     constructor(private $scope: ng.IScope,
                 private $state: ng.ui.IStateService,
-                $filter: ng.IFilterService,
+                private $filter: ng.IFilterService,
                 public files: IFile[],
                 private CoreService: ICoreService,
                 private CartService: ICartService,
@@ -84,7 +82,8 @@ module ngApp.cart.controllers {
         textFilter: "size",
         label: "file",
         sortKey: "doc_count",
-        defaultText: "project"
+        defaultText: "project",
+        pluralDefaultText: "projects",
       };
 
       this.fileCountChartConfig = {
@@ -93,8 +92,9 @@ module ngApp.cart.controllers {
         label: "file",
         sortKey: "doc_count",
         defaultText: "access level",
+        pluralDefaultText: "files",
         state: {
-          open: {
+          "open": {
             name: "search.files",
             params: {
               filters: $filter("makeFilter")([
@@ -150,6 +150,28 @@ module ngApp.cart.controllers {
 
       this.SearchService.getSummary(filters).then((data) => {
         this.summary = data;
+        var state = _.reduce(this.summary.participants['participants.project.project_id'].buckets, (result, bucket) => {
+          result[bucket.key] = {
+                                name: "search.files",
+                                params: {
+                                  filters: this.$filter("makeFilter")([
+                                    {
+                                    name: 'participants.project.project_id',
+                                    value: bucket.key
+                                    },
+                                    {
+                                    name: "files.file_id",
+                                    value: _.pluck(_.filter(this.files, (file) => {
+                                                        return _.indexOf(file.projects, bucket.key) !== -1;
+                                                      }), "file_id")
+
+                                    }
+                                  ], true)
+                                }
+                              };
+          return result;
+        }, {});
+        this.projectCountChartConfig['state'] = state;
       });
     }
 
@@ -159,19 +181,6 @@ module ngApp.cart.controllers {
       if (tab && (this.$state.current.name.match("cart."))) {
         this.$state.go("cart." + tab, {}, {inherit: false});
       }
-    }
-
-    select(section: string, tab: string) {
-      this.CartState.setActive(section, tab);
-      this.setState(tab);
-    }
-
-    selected(): IFile[] {
-      return this.CartService.getSelectedFiles();
-    }
-
-    selectedSize(): number {
-      return this.getSelectedSize();
     }
 
     getTotalSize(): number {
@@ -190,12 +199,6 @@ module ngApp.cart.controllers {
       }, []);
     }
 
-    getSelectedSize(): number {
-      return _.reduce(this.selected(), function (sum: number, hit: IFile) {
-        return sum + hit.file_size;
-      }, 0);
-    }
-
     removeAll() {
       this.CartService.removeAll();
       this.lastModified = this.CartService.lastModified;
@@ -203,22 +206,8 @@ module ngApp.cart.controllers {
       this.getSummary();
     }
 
-    removeSelected(): void {
-      var ids: string[] = _.pluck(this.selected(), "file_id");
-      this.CartService.remove(ids);
-      this.lastModified = this.CartService.lastModified;
-      this.files = this.CartService.getFiles();
-      this.getSummary();
-    }
-
     getManifest(selectedOnly: boolean = false) {
       var authorizedInCart = this.CartService.getAuthorizedFiles();
-
-      if (selectedOnly) {
-        authorizedInCart = authorizedInCart.filter(function isSelected(a) {
-          return a.selected;
-        });
-      }
 
       var file_ids = [];
       _.forEach(authorizedInCart, (f) => {

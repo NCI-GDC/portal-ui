@@ -13,25 +13,20 @@ module ngApp.cart.models {
 
   var CartTableModel: TableiciousConfig = {
     title: 'Cart',
-    order: ['file_actions','my_projects', 'access', 'file_name', 'participantId', 'projects', 'data_type', 'data_format', 'file_size', 'annotationIds'],
+    order: ['my_projects', 'access', 'file_name', 'participantId', 'projects', 'data_type', 'data_format', 'file_size', 'annotationIds'],
     headings: [
       {
         displayName: "file_actions",
         id: "file_actions",
         compile: function ($scope) {
           $scope.file = arrayToObject($scope.row);
-          var htm = '<div select-single-cart file="file"></div>' +
-                    "<button class='btn btn-primary' download-button files='file'>" +
+          var htm = "<button class='btn btn-primary' download-button files='file' style='margin-right: 10%'>" +
                     "<i class='fa fa-download'></i></button>" +
                     "<button class='btn btn-default' remove-single-cart file='file'>" +
                     "<i class='fa fa-trash-o'></i></button>";
           return htm;
         },
-        fieldClass: "table-compile-cell",
-        compileHead: function ($scope) {
-          var htm = '<div select-all-cart paging="paging"></div>';
-          return htm;
-        },
+        fieldClass: "table-compile-cell text-center",
         noTitle: true,
         visible: true
       },

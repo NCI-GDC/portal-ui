@@ -4,8 +4,7 @@ module ngApp.cart {
   import IFile = ngApp.files.models.IFile;
   import ICartService = ngApp.cart.services.ICartService;
 
-  function cartConfig($stateProvider: ng.ui.IStateProvider, $urlRouterProvider: ng.ui.IUrlRouterProvider) {
-    $urlRouterProvider.when("/cart", "/cart/s");
+  function cartConfig($stateProvider: ng.ui.IStateProvider) {
 
     $stateProvider.state("cart", {
       url: "/cart",
@@ -18,21 +17,6 @@ module ngApp.cart {
       }
     });
 
-    $stateProvider.state("cart.summary", {
-      url: "/s",
-      data: {
-        tab: "summary"
-      },
-      reloadOnSearch: false
-    });
-
-    $stateProvider.state("cart.items", {
-      url: "/i",
-      data: {
-        tab: "items"
-      },
-      reloadOnSearch: false
-    });
   }
 
   angular

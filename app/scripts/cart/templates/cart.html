@@ -1,27 +1,79 @@
 <div class="container-fluid cart full-page">
+  <section class="row">
+      <div class="col-lg-12">
+      <span data-ng-if="cc.files.length">
+      <div class="col-lg-2">
+        <div class="row card-row">
+            <count-card title="Files" icon="fa-user" data="cc.files.length"></count-card>
+            <count-card title="Cases" icon="fa-user" data="cc.summary.participants.doc_count"></count-card>
+            <count-card title="File Size" icon="fa-save" data="cc.summary.fs.value" data-filter="true"></count-card>
+        </div>
+      </div>
+        <div class="col-lg-3">
+          <pie-chart data="cc.summary.participants['participants.project.project_id'].buckets"
+                     height="300" data-filter="true" config="cc.projectCountChartConfig"
+                     data-title="File Counts by Project"></pie-chart>
+        </div>
+        <div class="col-lg-3">
+          <pie-chart data="cc.summary.access.buckets"
+                     height="300" data-filter="true" config="cc.fileCountChartConfig"
+                     data-title="File Counts by Access"></pie-chart>
+        </div>
+      </span>
 
-  <ul class="nav nav-tabs">
-    <li role="presentation"
-        data-ng-class="{ active: cc.CartState.tabs.summary.active }"
-        data-ng-click="cc.select('tabs', 'summary')"
-        id="cart-summary">
-      <a>{{ 'Summary' | translate }}</a>
-    </li>
-    <li role="presentation"
-        data-ng-class="{ active: cc.CartState.tabs.items.active }"
-        data-ng-click="cc.select('tabs', 'items')"
-        id="cart-items">
-      <a>{{ 'Items' | translate }} ({{cc.files.length| number:0}})</a>
-    </li>
-  </ul>
-  <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the
-       container will not be the expected size for the graphs.
-    -->
-  <div class="pane-section" data-ng-if="cc.CartState.tabs.summary.active">
-    <div data-ng-include="'cart/templates/cart.summary.html'" data-ng-show="cc.summary"></div>
-  </div>
-  <div class="pane-section" data-ng-show="cc.CartState.tabs.items.active">
-    <div data-ng-include="'cart/templates/cart.items.html'"></div>
-  </div>
+      <div class="col-lg-8" data-ng-if="!cc.files.length">
+        <h2 data-translate>Your Cart is empty.</h2>
+      </div>
 
+      <div class="panel panel-default panel-stat col-lg-4" data-ng-if="!cc.helpHidden">
+        <div class="panel-heading">
+          <h3 class="panel-title" data-translate><i class="fa fa-question"></i>How to download files in my Cart?</h3>
+        </div>
+        <p data-translate>
+          <strong>Manifest for Fast Download tool</strong>: Download a manifest file and use it with GDC High Performance Download Client. For more info on Fast Download, click
+           <a href="https://beta-edits-gdc.oicr.on.ca/access-data/gdc-high-performance-download-client">here</a>.
+        </p>
+        <p data-translate>
+          <strong>Download Cart (web browser)</strong>: Download Files in your Cart directly from Web-browser (recommended when File size of your Cart is less than XX MB).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="row items-pane" data-ng-if="cc.files.length">
+    <div class="col-xs-12 button-row">
+        <!-- angular-gettext also supports known variables like $count, which can
+             be used here in the translate-plural text like {{ $count }} -->
+        <a type="button"
+                class="btn btn-primary"
+                data-ng-click="cc.getManifest(true)">
+          <i class="fa fa-file-code-o"></i>
+          <span data-translate>Manifest for Fast Download Tool</span>
+        </a>
+        <a type="button"
+                download-button-all-cart
+                data-selected-only="true"
+                class="btn btn-primary">
+          <i class="fa fa-cloud-download"></i> <span data-translate>Download Cart (web browser)</span>
+        </a>
+        <button type="button"
+                class="btn btn-danger"
+                data-ng-click="cc.removeAll()">
+          <i class="fa fa-remove"></i>
+          <span data-translate>Clear Cart</span>
+        </button>
+    </div>
+  </section>
+
+
+  <gdc-table data-ng-if="cc.files.length"
+             data-data="cc.files"
+             data-config="cc.cartTableConfig"
+             data-paging="cc.pagination"
+             data-page="cart"
+             data-heading="Cart Items"
+             data-id="cart-table"
+             data-client-side="cc.processPaging"
+             class="cart-table">
+  </gdc-table>
 </div>

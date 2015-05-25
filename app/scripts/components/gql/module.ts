@@ -55,7 +55,7 @@ module ngApp.components.gql {
       return this.countNeedle(stack, needle) % 2 !== 0;
     }
 
-    unbalanced(stack: string, start: string, end: string): boolean {
+    isUnbalanced(stack: string, start: string, end: string): boolean {
       const numStart = this.countNeedle(stack, start);
       const numEnd = this.countNeedle(stack, end);
       return numStart > numEnd;
@@ -63,7 +63,7 @@ module ngApp.components.gql {
     
     contains(phrase: string, sub: string): boolean {
       if (sub.length === 0) return true;
-      var phraseStr = (phrase + this.GqlTokens.NOTHING).toLowerCase();
+      const phraseStr = (phrase + this.GqlTokens.NOTHING).toLowerCase();
       return phraseStr.indexOf((sub + this.GqlTokens.NOTHING).toLowerCase()) > -1;
     }
 
@@ -79,12 +79,8 @@ module ngApp.components.gql {
       return s.indexOf(this.GqlTokens.RBRACKET) !== -1 ? s.indexOf(this.GqlTokens.RBRACKET) : s.length;
     }
     
-    getContentOfList(s: string, start: number, end: number): string {
-      return s.substring(start, end);
-    }
-    
     getValuesOfList(s:string): string[] {
-      return _.map(s.split(this.GqlTokens.COMMA), (x) => x.trim());
+      return _.map(s.split(this.GqlTokens.COMMA), (x) => x.trim().split(this.GqlTokens.QUOTE).join(this.GqlTokens.NOTHING));
     }
     
     getNeedleFromList(s:string): string {
@@ -94,20 +90,14 @@ module ngApp.components.gql {
                 .replace(this.GqlTokens.LPARENS, this.GqlTokens.NOTHING);
     }
     
-    getComplexParts(s: string, n: number): IParts {
-      var parts = this.getParts(s.substring(0, n));
-      parts.needle = this.getNeedleFromList(s.substring(n));
-      
-      return parts;
-    }
-    
     getParts(s: string): IParts {
-//      var parts = _.filter(s.split(this.GqlTokens.SPACE), x => x);
-      console.log('getParts: ', parts);
       var parts = s.split(this.GqlTokens.SPACE);
       var needle = parts[parts.length - 1];
       var op = parts[parts.length - 2];
       var field = parts[parts.length - 3];
+      if (field) {
+        field = field.replace(this.GqlTokens.LPARENS, this.GqlTokens.NOTHING); 
+      }
       
       return {
         needle: needle,
@@ -116,8 +106,52 @@ module ngApp.components.gql {
       };
     }
     
-    parseGrammarError(query: string, index: number, error: IGqlSyntaxError): IDdItem[] {
-      var left = query.substring(0, index);
+    getComplexParts(s: string, n: number): IParts {
+      var parts = this.getParts(s.substring(0, n));
+      parts.needle = this.getNeedleFromList(s.substring(n));
+      
+      return parts;
+    }
+    
+    splitField(s: string): IFieldParts {
+      const xs = s.split(this.GqlTokens.PERIOD);
+      
+      return {
+        docType: xs.shift(),
+        facet: xs.join(this.GqlTokens.PERIOD)
+      }
+    }
+    
+    ajaxRequest(field: string): ng.IPromise<IDdItem[]> {
+      const parts = this.splitField(field);
+      
+      const params = {
+        facets: [parts.facet],
+        size: 0,
+        filters: {}
+      };
+      
+      if (parts.docType === "files") {
+        return this.FilesService.getFiles(params)
+          .then((fs: IFiles): IDdItem[] => {
+            var f: IFacet = fs.aggregations[parts.facet];
+            return _.map(f.buckets, (b) => {
+              return {field: b.key, full: b.key};
+            });
+          });
+      } else {
+        return this.ParticipantsService.getParticipants(params)
+          .then((fs: IParticipants): IDdItem[] => {
+            var f: IFacet = fs.aggregations[parts.facet];
+            return _.map(f.buckets, (b) => {
+              return {field: b.key, full: b.key};
+            });
+          });
+      }
+    }
+    
+    parseGrammarError(left: string, error: IGqlSyntaxError): IDdItem[] {
+      // Handles GQL Parser errors
       var parts = left.split(this.GqlTokens.SPACE);
       var needle = parts[parts.length - 1];
 
@@ -131,7 +165,7 @@ module ngApp.components.gql {
       });
     }
     
-    parseList(query: string, index: number): ng.IPromise<IDdItem[]> {
+    parseList(left: string, right: string): ng.IPromise<IDdItem[]> {
       /*
       * ... FIELD OP [vvv, vvv, nnn|xxx, vvv, vvv] ...
       * FIELD = field searching on
@@ -150,94 +184,57 @@ module ngApp.components.gql {
       *  - Autocomplete values for FIELD
       *  - Remove current values from autocomplete 
       */
-      var left = query.substring(0, index);
-      var right = query.substring(index);
-
       // Get the beginning of the list
       var listStart = this.getStartOfList(left);
       // Get the end of the list
       var listEnd = this.getEndOfList(right)
       // Get the values of the list
-      var listContent = this.getContentOfList(query, listStart, listEnd);
+      var listContent = left.substring(listStart) + right.substring(listEnd);
       // Get array of list values
       var listValues = this.getValuesOfList(listContent); 
-      
       // Get all the fields needed for Ajax
       var parts = this.getComplexParts(left, listStart);
       
       // Autocomplete suggestions
-      return this.ajaxRequest(parts.field.replace(
-          this.GqlTokens.LPARENS, 
-          this.GqlTokens.NOTHING)
-        ).then((d) => {
-          return _.take(_.filter(d, (m) => {
-            // Filter out values that are already in the list
-            return listValues.indexOf(m.field) === -1 && 
-              this.contains(m.full, parts.needle) && 
-              this.clean(m.full);
-          }), 10)
+      return this.ajaxRequest(parts.field).then((d) => {
+        return _.take(_.filter(d, (m) => {
+          // Filter out values that are already in the list
+          return listValues.indexOf(m.field) === -1 && 
+            this.contains(m.full, parts.needle) && 
+            this.clean(m.full);
+        }), 10)
       });
     }
     
-    parseQuoted(query: string, index: number): ng.IPromise<IDdItem[]> {
-      var left = query.substring(0, index);
-      var right = query.substring(index);
-
+    parseQuoted(left: string): ng.IPromise<IDdItem[]> {
+       /*
+      * ... FIELD OP "nnn nnn|xxx ...
+      * FIELD = field searching on
+      * OP = operator using on search
+      * | = current cursor position
+      * nnn = active part of value - used in filtering
+      * xxx = ignored - NOT used in filtering and removed after adding new value
+      * ... = uninteresting parts of the query
+      *
+      * Requirements for List:
+      *  - Get the beginning of the quoted term
+      *  - Get active search term
+      *  - Autocomplete values for FIELD
+      */
       // Get the last quote
-      var lastQuote = this.getLastQuote(left);
+      var lastQuote = left.lastIndexOf(this.GqlTokens.QUOTE);
       
       // Get all the fields needed for Ajax
       var parts = this.getComplexParts(left, lastQuote);
       
       // Autocomplete suggestions
-      return this.ajaxRequest(parts.field.replace(
-          this.GqlTokens.LPARENS, 
-          this.GqlTokens.NOTHING)
-        ).then((d)=> {
+      return this.ajaxRequest(parts.field).then((d)=> {
         return _.take(_.filter(d, (m) => {
           return this.contains(m.full, parts.needle) &&
           this.clean(m.full);
         }), 10);
       });
     }
-    
-    getLastQuote(s: string): number {
-      return s.lastIndexOf(this.GqlTokens.QUOTE);
-    }
-    
-    ajaxRequest(field: string): ng.IPromise<IDdItem[]> {
-          var xs = field.split(this.GqlTokens.PERIOD);
-          var doc_type = xs.shift();
-          var facet = xs.join(this.GqlTokens.PERIOD);
-          var params = {
-            facets: [facet],
-            size: 0,
-            filters: {}
-          };
-          if (doc_type === "files") {
-            return this.FilesService.getFiles(params)
-              .then((fs: IFiles): IDdItem[] => {
-                var f: IFacet = fs.aggregations[facet];
-                return _.map(f.buckets, (b) => {
-                  return {field: b.key, full: b.key};
-                });
-              });
-          } else {
-            return this.ParticipantsService.getParticipants(params)
-              .then((fs: IParticipants): IDdItem[] => {
-                var f: IFacet = fs.aggregations[facet];
-                return _.map(f.buckets, (b) => {
-                  return {field: b.key, full: b.key};
-                });
-              });
-          }
-        }
-  }
-  
-  interface IParts {
-    op: string;
-    field: string;
-    needle: string;
   }
   
   /* @ngInject */
@@ -263,7 +260,7 @@ module ngApp.components.gql {
         var ds = Restangular.all("gql");
         var mapping;
         ds.get('_mapping', {}).then(m => mapping = m);
-        
+              
         $scope.active = INACTIVE;
         
         $scope.onChange = function() {
@@ -277,24 +274,22 @@ module ngApp.components.gql {
               })) {
             $scope.mode = Mode.Op;
   	        
-            $scope.ddItems = GqlService.parseGrammarError($scope.query, index, $scope.Error)
+            $scope.ddItems = GqlService.parseGrammarError($scope.left, $scope.Error)
           } else {
-            if (GqlService.unbalanced($scope.left, T.LBRACKET, T.RBRACKET)) {
+            if (GqlService.isUnbalanced($scope.left, T.LBRACKET, T.RBRACKET)) {
               // in_list_of_values
               $scope.mode = Mode.List;
-              GqlService.parseList($scope.query, index).then((d) => {
+              GqlService.parseList($scope.left, $scope.right).then((d) => {
                 $scope.ddItems = d;
               });
             } else if (GqlService.isCountOdd($scope.left, T.QUOTE)) {
               //in_quoted_string
               $scope.mode = Mode.Quoted;
-              GqlService.parseQuoted($scope.query, index).then((d) => {
+              GqlService.parseQuoted($scope.left).then((d) => {
                 $scope.ddItems = d;
               });
             } else {
               var parts = GqlService.getParts($scope.left);
-              
-              console.log(parts);
               
               if ((parts.needle && !parts.op) || [T.AND, T.OR].indexOf(parts.op) !== -1) { 
                 // is_field_string
@@ -307,18 +302,15 @@ module ngApp.components.gql {
                 // is_value_string
                 $scope.mode = Mode.Unquoted;
 
-                GqlService.ajaxRequest(parts.field.replace(T.LPARENS, T.NOTHING)).then((d)=> {
+                GqlService.ajaxRequest(parts.field).then((d)=> {
                   $scope.ddItems = _.take(_.filter(d, (m) => {
                     return GqlService.contains(m.full, parts.needle) && GqlService.clean(m.full);
                   }), 10);
                 });
-              } else {
-                console.log('else:', $scope.Error);
               }
             }
           }
         };
-
 
         function gqlParse() {
           try {
@@ -329,10 +321,6 @@ module ngApp.components.gql {
             $scope.gql = null;
           }
         }
-
-        
-
-        
 
         $scope.setActive = function(active: number): void {
           if ($scope.active >= 0) $scope.ddItems[$scope.active].active = false;
@@ -387,7 +375,7 @@ module ngApp.components.gql {
               break;
           
             default:
-            $scope.onChange();
+              $scope.onChange();
               break;
           }
         }
@@ -473,7 +461,7 @@ module ngApp.components.gql {
       restrict: 'E',
       replace: true,
       templateUrl: "components/gql/templates/gql_dropdown.html",
-      link: function ($scope: ng.IScope) {
+      link: function ($scope: IGqlScope) {
         $scope.click = function (item) {
           $scope.enter(item)
         };
@@ -503,6 +491,17 @@ module ngApp.components.gql {
     .directive("gql", gqlInput)
     .directive("gqlDropdown", gqlDropdown)
     .constant('GqlTokens', Tokens);
+   
+  interface IFieldParts {
+    docType: string;
+    facet: string;
+  }
+    
+  interface IParts {
+    op: string;
+    field: string;
+    needle: string;
+  }
     
   interface IGqlInput extends ng.IDirective {
     link($scope: IGqlScope, element: Node): void;
@@ -513,21 +512,20 @@ module ngApp.components.gql {
     setPos(element: any, caretPos: number): void;
     countNeedle(stack: string, needle: string): number;
     isCountOdd(stack: string, needle: string): boolean;
-    unbalanced(stack: string, start: string, end: string): boolean;
+    isUnbalanced(stack: string, start: string, end: string): boolean;
     contains(phrase: string, sub: string): boolean;
     clean(e: string): boolean;
     getStartOfList(s: string): number;
     getEndOfList(s: string): number;
-    getContentOfList(s: string, start: number, end: number): string;
     getValuesOfList(s: string): string[];
-    getNeedle(s: string): string;
+    getNeedleFromList(s: string): string;
     getComplexParts(s: string, n: number): IParts;
+    splitField(s: string): IFieldParts;
     getParts(s: string): IParts;
-    parseGrammarError(query: string, index: number, error: IGqlSyntaxError): IDdItem[];
-    parseList(query: string, index: number): ng.IPromise<IDdItem[]>;
-    parseQuoted(query: string, index: number): ng.IPromise<IDdItem[]>;
+    parseGrammarError(left: string, error: IGqlSyntaxError): IDdItem[];
+    parseList(left: string, right: string): ng.IPromise<IDdItem[]>;
+    parseQuoted(left: string): ng.IPromise<IDdItem[]>;
     ajaxRequest(field: string): ng.IPromise<IDdItem[]>;
-    getLastQuote(s: string): number;
   }
 
   interface ITokens {
@@ -595,8 +593,9 @@ module ngApp.components.gql {
     setActive(active: number): void;
     cycle(val: Cycle): void;
     showResults(): void;
-    enter(item?: any): void;
-    keypress(e: any): void;
+    enter(item?: IDdItem): void;
+    keypress(e: KeyboardEvent): void;
     focus: boolean;
+    click(item: IDdItem): void;
   }
 }

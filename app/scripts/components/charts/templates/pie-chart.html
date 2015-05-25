@@ -1,0 +1,25 @@
+<div class="panel panel-default chart donut-chart">
+  <div class="panel-heading clearfix">
+    <h4 class="panel-title" data-translate>{{ title }}</h4>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 col-md-12 chart-container"></div>
+  </div>
+  <div chart-legend class="chart-legend" data="legendData"></div>
+
+  <div class="panel-footer text-center">
+    <span data-ng-if="showDefault">
+      {{ data.length | number }}
+      <span data-ng-if="data.length === 1">
+        {{ config.defaultText | translate | humanify }}
+      </span>
+      <span data-ng-if="data.length > 1">
+        {{ config.defaultText + "s" | translate | humanify }}
+      </span>
+    </span>
+    <span data-ng-if="!showDefault">
+      {{ hoverKey | translate | humanify }} - {{ hoverCount | number }}
+      {{ 'Files' | translate }}, {{ hoverSize | size }}
+    </span>
+  </div>
+</div>

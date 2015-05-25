@@ -13,7 +13,7 @@
     <tbody>
       <tr data-ng-repeat="item in displayedData track by $index">
         <th scope="row">
-          <div class="donut-chart-color" style="background-color: {{ item.color }};"></div>
+          <div class="chart-color" style="background-color: {{ item.color }};"></div>
           {{ item.data.key }}
         </th>
         <td class="text-right">{{ item.data.doc_count | number }}</td>

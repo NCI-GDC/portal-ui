@@ -20,9 +20,10 @@ module ngApp.cart.models {
         id: "file_actions",
         compile: function ($scope) {
           $scope.file = arrayToObject($scope.row);
-          var htm = "<button class='btn btn-primary' download-button files='file' style='margin-right: 10%'>" +
+          var htm = '<div select-single-cart file="file"></div>' +
+                    "<button class='btn btn-primary' download-button files='file' data-tooltip='Download file' data-tooltip-placement='top'>" +
                     "<i class='fa fa-download'></i></button>" +
-                    "<button class='btn btn-default' remove-single-cart file='file'>" +
+                    "<button class='btn btn-default' remove-single-cart file='file' data-tooltip='Remove from Cart' data-tooltip-placement='top'>" +
                     "<i class='fa fa-trash-o'></i></button>";
           return htm;
         },
@@ -49,11 +50,19 @@ module ngApp.cart.models {
         displayName: "Access",
         id: "access",
         visible: true,
-        icon: function (field) {
-          return field && field.val === 'protected' ? "lock" : "unlock";
-        },
-        template: function () {
-          return '';
+        compile: function($scope) {
+          $scope.file = arrayToObject($scope.row);
+          var icon, toolTipText;
+          if ($scope.file.access === 'protected') {
+            icon = 'fa-lock';
+            toolTipText = 'Protected file';
+          } else {
+            icon = 'fa-unlock';
+            toolTipText = 'Open file';
+          }
+          return "<div class='text-center'>" +
+                 "<i class='fa fa-lg " + icon + "' data-tooltip='" + toolTipText + "'></i>" +
+                 "</div>";
         }
       },
       {

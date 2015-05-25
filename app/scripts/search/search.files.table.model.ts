@@ -50,6 +50,17 @@ module ngApp.search.models {
         noTitle: true,
         visible: true
       }, {
+        displayName: "download",
+        id: "download",
+        compile: function ($scope) {
+          $scope.file = arrayToObject($scope.row);
+          var htm = '<a class="btn btn-primary" download-button files=file data-tooltip="Download file">' +
+                    '<i class="fa fa-download"></i></a>';
+          return htm;
+        },
+        noTitle: true,
+        visible: true
+      }, {
         displayName: "My Projects",
         id: "my_projects",
         enabled: function (scope) {
@@ -66,11 +77,19 @@ module ngApp.search.models {
         displayName: "Access",
         id: "access",
         visible: true,
-        icon: function (field) {
-          return field && field.val === 'protected' ? "lock" : "unlock";
-        },
-        template: function () {
-          return '';
+        compile: function($scope) {
+          $scope.file = arrayToObject($scope.row);
+          var icon, toolTipText;
+          if ($scope.file.access === 'protected') {
+            icon = 'fa-lock';
+            toolTipText = 'Protected file';
+          } else {
+            icon = 'fa-unlock';
+            toolTipText = 'Open file';
+          }
+          return "<div class='text-center'>" +
+                 "<i class='fa fa-lg " + icon + "' data-tooltip='" + toolTipText + "'></i>" +
+                 "</div>";
         }
       }, {
         displayName: "File Name",

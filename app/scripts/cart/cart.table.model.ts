@@ -50,19 +50,14 @@ module ngApp.cart.models {
         displayName: "Access",
         id: "access",
         visible: true,
-        compile: function($scope) {
-          $scope.file = arrayToObject($scope.row);
-          var icon, toolTipText;
-          if ($scope.file.access === 'protected') {
-            icon = 'fa-lock';
-            toolTipText = 'Protected file';
-          } else {
-            icon = 'fa-unlock';
-            toolTipText = 'Open file';
-          }
-          return "<div class='text-center'>" +
-                 "<i class='fa fa-lg " + icon + "' data-tooltip='" + toolTipText + "'></i>" +
-                 "</div>";
+        icon: function (field) {
+          return field && field.val === 'protected' ? "lock" : "unlock";
+        },
+        template: function () {
+          return '';
+        },
+        toolTipText: function(field) {
+          return field.val === 'protected' ? "Protected File" : "Open file";
         }
       },
       {
@@ -81,7 +76,10 @@ module ngApp.cart.models {
           };
         },
         sortable: true,
-        fieldClass: 'truncated-cell'
+        fieldClass: "truncate-cell",
+        toolTipText: function (field) {
+          return field.val;
+        }
       },
       {
         displayName: "Cases",
@@ -118,36 +116,44 @@ module ngApp.cart.models {
         displayName: "Project",
         id: "projects",
         visible: true,
-        template: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
-          var projects: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
-            return a.id === 'projects'
-          }).val;
-          if (projects.length) {
-            if (projects.length === 1) {
-              return projects[0];
-            }
+        compile: function ($scope) {
+                var project = _.result(_.findWhere($scope.row, {'id': 'projects'}), 'val');
+                console.log(project);
+                var htm = '<a data-ng-href="/projects/' + project.project_id + '" data-tooltip="' +
+                          project.name + '" tooltip-append-to-body="true" tooltip-placement="right">' +
+                          project.project_id + '</a>';
+                return htm;
+            },
+        //template: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
+          //var projects: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
+            //return a.id === 'projects'
+          //}).val;
+          //if (projects.length) {
+            //if (projects.length === 1) {
+              //return projects[0];
+            //}
 
-            return projects.length;
-          }
-        },
-        sref: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
-          var projects: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
-            return a.id === 'projects'
-          }).val;
-          if (projects.length === 1) {
-            return {
-              state: "/projects/" + projects[0]
-            };
-          }
+            //return projects.length;
+          //}
+        //},
+        //sref: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
+          //var projects: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
+            //return a.id === 'projects'
+          //}).val;
+          //if (projects.length === 1) {
+            //return {
+              //state: "/projects/" + projects[0]
+            //};
+          //}
 
-          if (projects.length > 1) {
-            var filters = $filter("makeFilter")([{name: "project_id", value: projects}]);
-            return {
-              state: "/projects/t",
-              filters: filters
-            };
-          }
-        },
+          //if (projects.length > 1) {
+            //var filters = $filter("makeFilter")([{name: "project_id", value: projects}]);
+            //return {
+              //state: "/projects/t",
+              //filters: filters
+            //};
+          //}
+        //},
         sortable: true
       },
       {

@@ -304,6 +304,7 @@ module ngApp.components.githut.controllers {
                           });
 
         title.filter((d) => { return d.is_subtype; })
+          .style("text-decoration", "underline")
           .call(tip)
           .on('mouseover', tip.show)
           .on('mouseout', tip.hide);

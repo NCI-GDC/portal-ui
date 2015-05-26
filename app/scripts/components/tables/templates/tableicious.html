@@ -25,7 +25,7 @@
           data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading"
           class="{{getFieldClass(field,datum,this,heading)}}">
         <div ng-if='::heading.compile' tableicious-cell></div>
-        <span data-tooltip='{{ getToolTipText(heading, datum) }}' data-tooltip-append-to-body="true" data->
+        <span data-tooltip='{{ getToolTipText(heading, datum, this) }}' data-ng-class="{ 'tooltip-target': heading.toolTipText }">
           <a data-ng-if="heading.sref && getSref(this, $filter) !== '--'"
              data-ng-href="{{getSref(this, $filter)}}">
             {{ getTemplate(this, $filter) }}

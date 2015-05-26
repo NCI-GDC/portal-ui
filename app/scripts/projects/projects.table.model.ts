@@ -49,6 +49,9 @@ module ngApp.projects.models {
         displayName: "Disease Type",
         id: "disease_type",
         enabled: true,
+        toolTipText: function(field) {
+          return field.val;
+        },
         fieldClass: 'truncated-cell',
         sortable: true
       }, {

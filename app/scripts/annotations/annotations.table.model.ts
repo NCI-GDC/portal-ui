@@ -13,18 +13,28 @@ module ngApp.projects.models {
                 };
             },
             sortable: true,
-          fieldClass: 'truncated-cell'
+            template: function (field, row, scope) {
+              return scope.$filter('ellipsicate')(field.val, 20);
+            },
+            toolTipText: function (field) {
+              return field.val;
+            }
         },
         {
             displayName: "Case ID",
             id: "participant_id",
+            template: function (field, row, scope) {
+              return scope.$filter('ellipsicate')(field.val, 20);
+            },
             sref: function (field) {
               return {
                 state: "/participants/" + field.val
               }
             },
             sortable: true,
-          fieldClass: 'truncated-cell'
+            toolTipText: function(field) {
+              return field.val;
+            }
         },
         {
             displayName: "Program",

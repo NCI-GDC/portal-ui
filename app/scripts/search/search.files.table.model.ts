@@ -77,19 +77,14 @@ module ngApp.search.models {
         displayName: "Access",
         id: "access",
         visible: true,
-        compile: function($scope) {
-          $scope.file = arrayToObject($scope.row);
-          var icon, toolTipText;
-          if ($scope.file.access === 'protected') {
-            icon = 'fa-lock';
-            toolTipText = 'Protected file';
-          } else {
-            icon = 'fa-unlock';
-            toolTipText = 'Open file';
-          }
-          return "<div class='text-center'>" +
-                 "<i class='fa fa-lg " + icon + "' data-tooltip='" + toolTipText + "'></i>" +
-                 "</div>";
+        icon: function (field) {
+          return field && field.val === 'protected' ? "lock" : "unlock";
+        },
+        template: function () {
+          return '';
+        },
+        toolTipText: function(field) {
+          return field.val === 'protected' ? "Protected File" : "Open file";
         }
       }, {
         displayName: "File Name",
@@ -97,7 +92,6 @@ module ngApp.search.models {
         visible: true,
         template: function (field, row, scope) {
           return scope.$filter('ellipsicate')(field.val, 20);
-          //return field && field.val;
         },
         sref: function (field, row) {
           var uuid = _.find(row, function (a: TableiciousEntryDefinition) {

@@ -46,6 +46,7 @@ module ngApp.search.controllers {
     /* @ngInject */
     constructor(private $scope: ISearchScope,
                 private $state: ng.ui.IStateService,
+                private $filter: ng.IFilterService,
                 public SearchState: ISearchState,
                 public CartService: ICartService,
                 public SearchService: ISearchService,
@@ -54,7 +55,6 @@ module ngApp.search.controllers {
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 public CoreService: ICoreService,
-                $filter: ng.IFilterService,
                 private SearchTableFilesModel: TableiciousConfig,
                 private SearchTableParticipantsModel: TableiciousConfig,
                 public FacetService) {
@@ -88,8 +88,8 @@ module ngApp.search.controllers {
           "default": {
             name: "search.files",
             params: {
-              filters: function(value) {
-                return $filter("makeFilter")([
+              filters: (value) => {
+                return this.$filter("makeFilter")([
                   {
                     name: "participants.project.project_id",
                     value: [
@@ -114,8 +114,8 @@ module ngApp.search.controllers {
           "default": {
             name: "search.files",
             params: {
-              filters: function(value) {
-                return $filter("makeFilter")([
+              filters: (value) => {
+                return this.$filter("makeFilter")([
                   {
                     name: "participants.project.primary_site",
                     value: [

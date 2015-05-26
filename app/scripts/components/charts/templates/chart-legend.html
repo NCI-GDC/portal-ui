@@ -14,7 +14,7 @@
       <tr data-ng-repeat="item in displayedData track by $index">
         <th scope="row">
           <div class="chart-color" style="background-color: {{ item.color }};"></div>
-          {{ item.data.key }}
+          {{ item.data.key | humanify }}
         </th>
         <td class="text-right">{{ item.data.doc_count | number }}</td>
         <td class="text-right">{{ item.data.file_size.value | size }}</td>

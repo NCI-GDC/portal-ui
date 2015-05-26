@@ -2,12 +2,12 @@
   <div class="row search-panel">
     <div class="col-lg-3 col-md-4 facets-sidebar">
       <tabset>
-        <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
-          <div data-ng-include="'search/templates/search.files.facets.html'"
-               class="facet-section" role="form"></div>
-        </tab>
         <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
           <div data-ng-include="'search/templates/search.participants.facets.html'"
+               class="facet-section" role="form"></div>
+        </tab>
+        <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
+          <div data-ng-include="'search/templates/search.files.facets.html'"
                class="facet-section" role="form"></div>
         </tab>
       </tabset>
@@ -40,16 +40,16 @@
           <a>{{ 'Summary' | translate }}</a>
         </li>
         <li role="presentation"
-            data-ng-class="{ active: sc.SearchState.tabs.files.active }"
-            data-ng-click="sc.select('tabs', 'files')"
-            id="search-files">
-          <a>{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
-        </li>
-        <li role="presentation"
             data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
             data-ng-click="sc.select('tabs', 'participants')"
             id="search-participants">
           <a>{{ 'Cases' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
+        </li>
+        <li role="presentation"
+            data-ng-class="{ active: sc.SearchState.tabs.files.active }"
+            data-ng-click="sc.select('tabs', 'files')"
+            id="search-files">
+          <a>{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
         </li>
       </ul>
       <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the

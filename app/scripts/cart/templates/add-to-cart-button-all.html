@@ -1,67 +1,40 @@
 <div data-ng-if="!addAllOnly" class="btn-group" data-dropdown>
-    <button data-ng-if="CartService.areInCart(files)" type="button" class="btn btn-success"
-            data-ng-click="CartService.removeFiles(files)">
-        <i class="fa fa-check-circle"></i>
-    </button>
-    <button data-ng-if="!CartService.areInCart(files)" type="button" class="btn btn-primary"
-            data-ng-click="CartService.addFiles(files)"
-            data-ng-disabled="(CartService.getFiles().length + files.length) > CartService.getMaxSize()">
-        <i class="fa fa-circle-o"></i>
-    </button>
-    <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
-        <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-      <li data-ng-class="{disabled: (CartService.getCartVacancySize() === 0 || CartService.getCartVacancySize() - paging.total < 0)}">
-            <a data-ng-if="CartService.getCartVacancySize() === 0">
-              <span class="fa-stack">
-                    <i class="fa fa-shopping-cart fa-stack-1x"></i>
-                    <i class="fa fa-ban fa-stack-2x"></i>
-                </span>
-                <span data-translate>Cart Full</span>
-            </a>
-            <a data-ng-if="CartService.getCartVacancySize() - paging.total < 0" disabled>
-                <span class="fa-stack">
-                    <i class="fa fa-shopping-cart fa-stack-1x"></i>
-                    <i class="fa fa-ban fa-stack-2x"></i>
-                </span>
-                <span data-translate>Cart can only hold {{ CartService.getCartVacancySize() }} more items</span>
-            </a>
-            <a data-ng-if="CartService.getCartVacancySize() - paging.total >= 0" data-ng-click="addAll()">
-                <span class="fa-stack">
-                  <i class="fa fa-shopping-cart fa-stack-1x"></i>
-                </span>
-                <span data-translate>Add all in Search Result</span>
-            </a>
-        </li>
-        <li>
-            <a data-ng-click="removeAll()">
-                <span class="fa-stack">
-                  <i class="fa fa-shopping-cart fa-stack-1x"></i>
-                </span>
-                <span data-translate>Remove all in Search Result</span>
-            </a>
-        </li>
-    </ul>
+  <button data-ng-if="CartService.areInCart(files)" type="button" class="btn btn-success"
+          data-ng-click="CartService.removeFiles(files)">
+    <i class="fa fa-shopping-cart"></i>
+  </button>
+  <button data-ng-if="!CartService.areInCart(files)" type="button" class="btn btn-primary"
+          data-ng-click="CartService.addFiles(files)"
+          data-ng-disabled="(CartService.getFiles().length + files.length) > CartService.getMaxSize()">
+    <i class="fa fa-shopping-cart"></i>
+  </button>
+  <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a data-ng-click="addAll()">
+          <span class="fa-stack">
+            <i class="fa fa-shopping-cart fa-stack-1x"></i>
+          </span>
+          <span data-translate>Add all files to the Cart</span>
+      </a>
+    </li>
+    <li>
+      <a data-ng-click="removeAll()">
+        <span class="fa-stack">
+          <i class="fa fa-trash fa-stack-1x"></i>
+        </span>
+        <span data-translate>Remove all from the Cart</span>
+      </a>
+    </li>
+  </ul>
 </div>
 <div data-ng-if="addAllOnly">
-  <div data-ng-if="CartService.getCartVacancySize() - paging.total < 0">
-    <button class="btn btn-primary disabled" disabled="disabled">
-      <span class="fa-stack">
-          <i class="fa fa-shopping-cart fa-stack-1x"></i>
-          <i class="fa fa-ban fa-stack-2x"></i>
-      </span>
-      <span data-translate>Add all files to the cart</span>
-    </button>
-    <span data-translate>Cart can only hold {{ CartService.getCartVacancySize() }} more items</span>
-  </div>
-  <div data-ng-if="CartService.getCartVacancySize() - paging.total >= 0">
-    <button class="btn btn-primary" data-ng-click="addAll()">
-      <span class="fa-stack">
-        <i class="fa fa-shopping-cart fa-stack-1x"></i>
-      </span>
-      <span data-translate>Add all files to the cart</span>
-    </button>
-  </div>
-
+  <button class="btn btn-primary" data-ng-click="addAll()">
+    <span class="fa-stack">
+      <i class="fa fa-shopping-cart fa-stack-1x"></i>
+    </span>
+    <span data-translate>Add all files to the Cart</span>
+  </button>
 </div>

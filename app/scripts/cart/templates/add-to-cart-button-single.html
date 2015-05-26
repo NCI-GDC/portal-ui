@@ -1,8 +1,8 @@
 <button data-ng-if="CartService.isInCart(file.file_id)" type="button" class="btn btn-success"
         data-ng-click="removeFromCart([file])">
-  <i class="fa fa-check-circle"></i>
+  <i class="fa fa-shopping-cart"></i>
 </button>
 <button data-ng-if="!CartService.isInCart(file.file_id)" type="button" class="btn btn-default"
         data-ng-click="addToCart([file])">
-  <i class="fa fa-circle-o"></i>
+  <i class="fa fa-shopping-cart"></i>
 </button>

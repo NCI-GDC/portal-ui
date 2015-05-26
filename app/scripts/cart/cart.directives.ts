@@ -115,23 +115,17 @@ module ngApp.cart.directives {
         addAllOnly: "@"
       },
       compile: function(element, attrs) {
-        if(!attrs.addAllOnly)
+        if (!attrs.addAllOnly) {
           attrs.addAllOnly = false;
+        }
       },
       templateUrl: "cart/templates/add-to-cart-button-all.html",
       controller: function($scope: IAddToCartScope, CartService: ICartService, LocationService: ILocationService,
                            FilesService: IFilesService, UserService: IUserService) {
 
         $scope.CartService = CartService;
-        $scope.addToCart = function(files: IFile[]) {
-          CartService.addFiles(files)
-        };
 
-        $scope.removeAll = function(){
-          $scope.removeAllInSearchResult();
-        };
-
-        $scope.removeAllInSearchResult = function() {
+        $scope.removeAll  = function() {
           // Query ES using the current filter and the file uuids in the Cart
           // If an id is in the result, then it is both in the Cart and in the current Search query
           var filters = LocationService.filters();
@@ -159,17 +153,22 @@ module ngApp.cart.directives {
           }).then((data) => {
             CartService.remove(_.pluck(data.hits, "file_id"));
           });
-        }
+        };
 
         $scope.addAll = function(){
           var filters = LocationService.filters();
           filters = UserService.addMyProjectsFilter(filters, "participants.project.project_id");
-          var size: number = ($scope.paging.total >= CartService.getMaxSize()) ? CartService.getMaxSize() : $scope.paging.total;
+
+          if ($scope.paging.total >= CartService.getMaxSize()) {
+            CartService.sizeWarning();
+            return;
+          }
+
           FilesService.getFiles({
             fields: SearchTableFilesModel.fields,
             expand: SearchTableFilesModel.expand,
             filters: filters,
-            size: size,
+            size: $scope.paging.total,
             from: 0
           }).then((data) => this.CartService.addFiles(data.hits));
         }

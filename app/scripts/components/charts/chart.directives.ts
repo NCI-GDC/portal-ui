@@ -6,20 +6,17 @@ module ngApp.components.charts {
     height: number;
     config: any;
     title: string;
-    filter: boolean;
   }
 
   /* @ngInject */
-  function PieChart($window: IGDCWindowService, $filter: ng.IFilterService,
-                      $state: ng.ui.IStateService): ng.IDirective {
+  function PieChart($window: IGDCWindowService, $state: ng.ui.IStateService): ng.IDirective {
     return {
       restrict: "EA",
       scope: {
         data: "=",
         height: "@",
         config: "=",
-        title: "@",
-        filter: "="
+        title: "@"
       },
       templateUrl: "components/charts/templates/pie-chart.html",
       link: function($scope: IPieChartScope, element: ng.IAugmentedJQuery) {
@@ -189,7 +186,7 @@ module ngApp.components.charts {
         function calculateLeft() {
           var parent = $scope.data.parent.find(".chart-container");
           var width = $scope.data.elem[0].getBoundingClientRect().width;
-          var LEGEND_WIDTH = 275;
+          var LEGEND_WIDTH = elem.width();
           var offset = $scope.data.elem.offset();
           var left = width + ((parent.width() - width) / 2) + 20;
 

@@ -44,7 +44,8 @@ module ngApp.cart.services {
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
-                private notify: INotifyService, private UserService, private $rootScope, private LZString) {
+                private notify: INotifyService, private UserService, private $rootScope,
+                private LZString, private gettextCatalog) {
       var local_files = LZString.decompress($window.localStorage.getItem(CartService.GDC_CART_KEY));
       var local_time = LZString.decompress($window.localStorage.getItem(CartService.GDC_CART_UPDATE));
 
@@ -147,10 +148,26 @@ module ngApp.cart.services {
       this.notify.config({ duration: 5000 });
       this.notify.closeAll();
       this.notify({
-          message: "",
-          messageTemplate: this.buildAddedMsg({"added": addedFiles, "alreadyIn": alreadyIn }),
-          container: "#notification",
-          classes: "alert-success"
+        message: "",
+        messageTemplate: this.buildAddedMsg({"added": addedFiles, "alreadyIn": alreadyIn }),
+        container: "#notification",
+        classes: "alert-success"
+      });
+    }
+
+    sizeWarning() {
+      var template = "<span>" + this.gettextCatalog.getString("Only") + " " +
+                     this.getCartVacancySize() + " "  +
+                     this.gettextCatalog.getString("more files can be added") +
+                     " " + this.gettextCatalog.getString("to the cart") + ".</span>";
+
+      this.notify.config({ duration: 5000 });
+      this.notify.closeAll();
+      this.notify({
+        message: "",
+        messageTemplate: template,
+        container: "#notification",
+        classes: "alert-warning"
       });
     }
 

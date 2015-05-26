@@ -46,7 +46,6 @@ module ngApp.search.controllers {
     /* @ngInject */
     constructor(private $scope: ISearchScope,
                 private $state: ng.ui.IStateService,
-                private $filter: ng.IFilterService,
                 public SearchState: ISearchState,
                 public CartService: ICartService,
                 public SearchService: ISearchService,
@@ -57,7 +56,8 @@ module ngApp.search.controllers {
                 public CoreService: ICoreService,
                 private SearchTableFilesModel: TableiciousConfig,
                 private SearchTableParticipantsModel: TableiciousConfig,
-                public FacetService) {
+                public FacetService,
+                SearchChartConfigs) {
       var data = $state.current.data || {};
       this.SearchState.setActive("tabs", data.tab, "active");
       this.SearchState.setActive("facets", data.tab, "active");
@@ -76,58 +76,7 @@ module ngApp.search.controllers {
       $scope.participantTableConfig = this.SearchTableParticipantsModel;
 
       this.refresh();
-
-      this.projectIdChartConfig = {
-        key: "project_id",
-        textValue: "file_size.value",
-        textFilter: "size",
-        label: "file",
-        sortKey: "doc_count",
-        defaultText: "project",
-        state: {
-          "default": {
-            name: "search.files",
-            params: {
-              filters: (value) => {
-                return this.$filter("makeFilter")([
-                  {
-                    name: "participants.project.project_id",
-                    value: [
-                      value
-                    ]
-                  }
-                ], true);
-              }
-            }
-          }
-        }
-      };
-
-      this.primarySiteChartConfig = {
-        key: "primary_site",
-        textValue: "file_size.value",
-        textFilter: "size",
-        label: "file",
-        sortKey: "doc_count",
-        defaultText: "primary site",
-        state: {
-          "default": {
-            name: "search.files",
-            params: {
-              filters: (value) => {
-                return this.$filter("makeFilter")([
-                  {
-                    name: "participants.project.primary_site",
-                    value: [
-                      value
-                    ]
-                  }
-                ], true);
-              }
-            }
-          }
-        }
-      };
+      this.chartConfigs = SearchChartConfigs;
     }
 
     refresh() {
@@ -269,7 +218,7 @@ module ngApp.search.controllers {
         "core.services",
         "participants.services",
         "search.table.files.model",
-        'search.table.participants.model',
+        "search.table.participants.model",
         "files.services",
         "facets.services"
       ])

@@ -1,10 +1,16 @@
-.donut-chart {
+.pie-chart {
 
   path {
     stroke: #fff;
     stroke-width: 1px;
     transition: fill 250ms linear;
     transition-delay: 150ms;
+  }
+
+  .pie-chart-footer {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   path:hover {
@@ -16,7 +22,7 @@
   }
 
   .chart-legend {
-    width: 275px;
+    min-width: 275px;
     position: absolute;
     z-index: 100000;
 

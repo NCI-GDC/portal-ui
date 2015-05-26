@@ -12,7 +12,7 @@
             role="button">
             <a data-ng-click="addRelatedFiles(p)">
                 <i class="fa fa-shopping-cart fa-stack"></i>
-                <span data-translate>Add all associated files </span> ({{ files.length }})
+                <span data-translate>Add all Case files to the Cart</span> ({{ files.length }})
             </a>
         </li>
         <li aria-label="{{ 'Add filtered related files' | translate }}"
@@ -20,15 +20,15 @@
             role="button" data-ng-class="{ disabled: !filteredRelatedFiles.pagination.total }">
             <a data-ng-click="addFilteredRelatedFiles(p)" data-ng-if="filteredRelatedFiles.pagination.total">
                 <i class="fa fa-shopping-cart fa-stack"></i>
-                <span data-translate>Add filtered associated files </span> ({{ filteredRelatedFiles.pagination.total }})
+                <span data-translate>Add filtered Case files to the Cart</span> ({{ filteredRelatedFiles.pagination.total }})
             </a>
             <a data-ng-if="!filteredRelatedFiles.pagination.total">
                 <span class="fa-stack">
                     <i class="fa fa-shopping-cart fa-stack-1x"></i>
                     <i class="fa fa-ban fa-stack-2x"></i>
                 </span>
-                <span data-translate ng-if=!retreivingFilteredFiles>No related files with current filters</span>
-                <span data-translate ng-if=retreivingFilteredFiles>Loading...</span>
+                <span data-translate ng-if="!retreivingFilteredFiles">No related files with current filters</span>
+                <span data-translate ng-if="retreivingFilteredFiles">Loading...</span>
             </a>
         </li>
     </ul>

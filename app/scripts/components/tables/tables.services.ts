@@ -195,7 +195,7 @@ module ngApp.components.tables.services {
             return result;
         }
 
-            /**
+        /**
          * Returns the ultimate text value for an entry in a table based on the heading defintion and the whole row.
          */
         getIcon(scope, $filter: ng.IFilterService) {
@@ -233,6 +233,20 @@ module ngApp.components.tables.services {
                 return heading.enabled($scope);
             } else {
                 return true;
+            }
+        }
+
+        getToolTipText(heading:TableiciousColumnDefinition, row: TableiciousEntryDefinition[]){
+            if (heading.toolTipText) {
+              var field = {
+                           val: this.getValueFromRow(row, heading.id),
+                           id: heading.id
+                          }
+              if (_.isFunction(heading.toolTipText)) {
+                return heading.toolTipText(field);
+              } else {
+                return field.val;
+              }
             }
         }
 

@@ -55,7 +55,8 @@ module ngApp.query.controllers {
                 private UserService: IUserService,
                 private CoreService: ICoreService,
                 private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig) {
+                private SearchTableParticipantsModel: TableiciousConfig,
+                SearchChartConfigs) {
       var data = $state.current.data || {};
       this.QState.setActive(data.tab, "active");
       CoreService.setPageTitle("Query");
@@ -72,25 +73,8 @@ module ngApp.query.controllers {
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchTableParticipantsModel;
 
-      this.projectIdChartConfig = {
-        key: "project_id",
-        textValue: "file_size.value",
-        textFilter: "size",
-        label: "file",
-        sortKey: "doc_count",
-        defaultText: "project"
-      };
-
-      this.primarySiteChartConfig = {
-        key: "primary_site",
-        textValue: "file_size.value",
-        textFilter: "size",
-        label: "file",
-        sortKey: "doc_count",
-        defaultText: "primary site"
-      };
-
       this.refresh();
+      this.chartConfigs = SearchChartConfigs;
     }
 
     refresh() {

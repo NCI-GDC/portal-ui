@@ -7,6 +7,7 @@ describe('Cart:', function () {
 
   beforeEach(module(function ($provide) {
       $provide.value('RestFullResponse', {});
+      $provide.value('CartTableModel', {});
   }));
 
   // Injection of dependencies, $http will be mocked with $httpBackend

@@ -68,7 +68,6 @@ module ngApp.cart.models {
           id: "file_name",
           visible: true,
           template: function (field, row, scope) {
-            //console.log(scope.UserService);
             return field && field.val;
           },
           sref: function (field, row) {
@@ -120,14 +119,6 @@ module ngApp.cart.models {
           displayName: "Project",
           id: "projects",
           visible: true,
-          //compile: function ($scope) {
-                  //var project = _.result(_.findWhere($scope.row, {'id': 'projects'}), 'val');
-                  //console.log(project);
-                  //var htm = '<a data-ng-href="/projects/' + project.project_id + '" data-tooltip="' +
-                            //project.name + '" tooltip-append-to-body="true" tooltip-placement="right">' +
-                            //project.project_id + '</a>';
-                  //return htm;
-          //    },
           template: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
             var projects: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
               return a.id === 'projects'

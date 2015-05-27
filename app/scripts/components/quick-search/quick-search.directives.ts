@@ -15,27 +15,30 @@ module ngApp.components.quickSearch.directives {
         });
 
         this.openModal = () => {
-          if (!(modalElem.data("bs.modal") || {}).isShown) {
-
-            modalInstance = $modal.open({
-              templateUrl: "components/quick-search/templates/quick-search-modal.html",
-              controller: "QuickSearchModalController as qsmc",
-              backdrop: "static",
-              size: "lg",
-              keyboard: true
-            });
-
-            modalInstance.opened.then(() => {
-              // Apparently the Modal should support this by default but I'm running
-              // into cases where it is not.
-              docElem.on("click", (e) => {
-                if (angular.element(e.target).find("#quick-search-modal").length) {
-                  e.preventDefault();
-                  modalInstance.close();
-                }
-              });
-            });
+          // Modal stack is a helper service. Used to figure out if one is currently
+          // open already.
+          if ($modalStack.getTop()) {
+            return;
           }
+
+          modalInstance = $modal.open({
+            templateUrl: "components/quick-search/templates/quick-search-modal.html",
+            controller: "QuickSearchModalController as qsmc",
+            backdrop: "static",
+            size: "lg",
+            keyboard: true
+          });
+
+          modalInstance.opened.then(() => {
+            // Apparently the Modal should support this by default but I'm running
+            // into cases where it is not.
+            docElem.on("click", (e) => {
+              if (angular.element(e.target).find("#quick-search-modal").length) {
+                e.preventDefault();
+                modalInstance.close();
+              }
+            });
+          });
         };
       },
       link: function($scope, $element, attrs, ctrl) {
@@ -44,12 +47,6 @@ module ngApp.components.quickSearch.directives {
         });
 
         angular.element($window.document).on("keypress", (e) => {
-          // Modal stack is a helper service. Used to figure out if one is currently
-          // open already.
-          if ($modalStack.getTop()) {
-            return;
-          }
-
           var modalElem = angular.element("#quick-search-modal");
           var validSpaceKeys = [
             0, // Webkit
@@ -65,17 +62,27 @@ module ngApp.components.quickSearch.directives {
     };
   }
 
-  function MatchedTerm($sce): ng.IDirective {
+  function MatchedTerms($sce): ng.IDirective {
     return {
       restrict: "E",
-      templateUrl: "components/quick-search/templates/matched-term.html",
+      templateUrl: "components/quick-search/templates/matched-terms.html",
       scope: {
-        term: "=",
+        terms: "=",
         query: "="
       },
       link: function($scope) {
-        var boldedQuery = "<span class='bolded'>" + $scope.query + "</span>";
-        $scope.term = $sce.trustAsHtml($scope.term.replace(new RegExp($scope.query, "g"), boldedQuery));
+        $scope.$watch("terms", (newVal) => {
+          if (newVal) {
+            var boldedQuery = "<span class='bolded'>" + $scope.query + "</span>";
+            var boldedTerms = [];
+            var regex = new RegExp("[" + $scope.query + "]{" + $scope.query.length + "}", "g");
+            _.forEach(newVal, (item) => {
+              boldedTerms.push(item.replace(regex, boldedQuery));
+            });
+
+            $scope.matchedTerms = _.assign([], boldedTerms);
+          }
+        });
       }
     };
   }
@@ -84,6 +91,6 @@ module ngApp.components.quickSearch.directives {
     .module("quickSearch.directives", [
       "ui.bootstrap.modal"
     ])
-    .directive("matchedTerm", MatchedTerm)
+    .directive("matchedTerms", MatchedTerms)
     .directive("quickSearch", QuickSearch);
 }

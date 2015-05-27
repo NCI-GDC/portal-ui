@@ -20,9 +20,7 @@
              data-ng-if="item._type === 'project'"/>
         {{ item._id }}
 
-        <div data-ng-repeat="term in item.matchedTerms track by $index">
-          <matched-term data-term="term" query="qsmc.searchQuery"></matched-term>
-        </div>
+        <matched-terms data-terms="item.matchedTerms" data-query="qsmc.searchQuery"></matched-terms>
       </div>
     </div>
     <div class="col-lg-7" data-ng-if="qsmc.selectedItem">

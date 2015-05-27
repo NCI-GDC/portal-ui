@@ -49,14 +49,10 @@ module ngApp.components.quickSearch.controllers {
           if (typeof obj === "string") {
             if (obj.indexOf(this.searchQuery) > -1) {
               matchedTerms.push(obj);
-              return;
             }
-          }
-
-          if (typeof obj[key] === "string") {
+          } else if (typeof obj[key] === "string") {
             if (obj[key].indexOf(this.searchQuery) > -1) {
               matchedTerms.push(obj[key]);
-              return;
             }
           }
         }
@@ -229,6 +225,7 @@ module ngApp.components.quickSearch.controllers {
         if (!data.length) {
           this.selectedItem = null;
         }
+        this.results = null;
 
         for (var i = 0; i < data.hits.length; i++) {
           var matchedTerms = [];
@@ -257,7 +254,7 @@ module ngApp.components.quickSearch.controllers {
           data.hits[i].matchedTerms = matchedTerms;
         }
 
-        this.results = _.assign([], data);
+        this.results = _.assign({}, data);
         this.setupListeners();
       });
     }

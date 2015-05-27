@@ -13,7 +13,7 @@ module ngApp.components.ui.file {
 
     constructor() {
       return function (val: number) {
-        var formattedVal: string;
+        var formattedVal: string = "0 B";
 
         if (val >= FileSize.BYTES_TB_LIMIT) {
           formattedVal = (val / FileSize.BYTES_PB).toFixed(2) + " PB";
@@ -25,7 +25,7 @@ module ngApp.components.ui.file {
           formattedVal = (val / FileSize.BYTES_MB).toFixed(0) + " MB";
         } else if (val >= FileSize.BYTES_KB) {
           formattedVal = (val / FileSize.BYTES_KB).toFixed(0) + " KB";
-        } else {
+        } else if (val) {
           formattedVal = val + " B";
         }
 

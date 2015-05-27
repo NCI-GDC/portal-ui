@@ -63,4 +63,10 @@ describe("File Size Filter:", function () {
     expect(formattedSize).to.equal("999 B");
   }));
 
+  it("should filter 0 B when no value given", inject(function ($filter) {
+    var formattedSize = "0 B";
+    formattedSize = $filter("size")();
+    expect(formattedSize).to.equal("0 B");
+  }));
+
 });

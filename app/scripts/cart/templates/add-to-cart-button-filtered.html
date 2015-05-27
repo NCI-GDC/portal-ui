@@ -2,17 +2,25 @@
     <button type="button"
             class="btn btn-default dropdown-toggle"
             dropdown-toggle
-            data-ng-click="getFilteredRelatedFiles()"
+            data-ng-click="getFiles()"
             aria-label="Case Actions">
         <i class="fa fa-shopping-cart"></i>
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu">
         <li aria-label="{{ 'Add all related files' | translate }}"
-            role="button">
-            <a data-ng-click="addRelatedFiles(p)">
+            role="button"
+            data-ng-class="{ disabled: !files.length }">
+            <a data-ng-click="addRelatedFiles()" data-ng-if="files.length">
                 <i class="fa fa-shopping-cart fa-stack"></i>
                 <span data-translate>Add all Case files to the Cart</span> ({{ files.length }})
+            </a>
+            <a data-ng-if="!files.length">
+                <span class="fa-stack">
+                    <i class="fa fa-shopping-cart fa-stack-1x"></i>
+                    <i class="fa fa-ban fa-stack-2x"></i>
+                </span>
+                <span data-translate data-ng-if="retreivingFiles">Loading...</span>
             </a>
         </li>
         <li aria-label="{{ 'Add filtered related files' | translate }}"
@@ -27,8 +35,7 @@
                     <i class="fa fa-shopping-cart fa-stack-1x"></i>
                     <i class="fa fa-ban fa-stack-2x"></i>
                 </span>
-                <span data-translate ng-if="!retreivingFilteredFiles">No related files with current filters</span>
-                <span data-translate ng-if="retreivingFilteredFiles">Loading...</span>
+                <span data-translate data-ng-if="retreivingFiles">Loading...</span>
             </a>
         </li>
     </ul>

@@ -50,14 +50,8 @@ module ngApp.search.models {
             enabled: true,
             compile:function($scope){
                 $scope.arrayRow = arrayToObject($scope.row);
-                var files:TableiciousEntryDefinition = _.find($scope.row,function(elem:TableiciousEntryDefinition){
-                    return elem.id === 'files';
-                });
-
-                $scope.files = files ? files.val : [];
-                var htm = '<div add-to-cart-filtered files="files" row="row"></div>';
+                var htm = '<div add-to-cart-filtered row="row"></div>';
                 return htm;
-
             }
         }, {
             displayName: "My Projects",
@@ -125,21 +119,19 @@ module ngApp.search.models {
             id: "files",
             fieldClass: 'text-right',
             enabled: true,
-            template:function(field){
-                //why is fields an object instead of an array....
-                return field && field.val && field.val.length;
-            },
-            sref: function(field, row, scope, $filter) {
-                var fileIds = _.map(_.find(row, (item) => {
-                    return item.id === "files";
-                }).val, (file: any) => {
-                    return file.file_id;
+            template:function(field, row){
+                var fileCount = 0;
+                var summary = _.find(row, (item) => {
+                    return item.id === "summary";
+                }).val;
+
+                _.forEach(summary.data_types, (dType) => {
+                    fileCount += dType.file_count;
                 });
 
-                if (!fileIds.length) {
-                    return;
-                }
-
+                return fileCount;
+            },
+            sref: function(field, row, scope, $filter) {
                 var uuid:TableiciousEntryDefinition = _.find(row,function(elem:TableiciousEntryDefinition){
                     return elem.id === "participant_id";
                 }).val;
@@ -380,9 +372,7 @@ module ngApp.search.models {
         ],
         expand: [
           "clinical",
-          "files",
           "summary.data_types",
-          "summary.experimental_strategies",
           "project",
           "project.program"
         ]

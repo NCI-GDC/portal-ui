@@ -9,20 +9,12 @@ module ngApp.components.tables.directives.tableicious {
                         $element.empty();
                         $scope.row = $scope.$parent.datum;
 
-                        var files = _.find($scope.row, (item) => {
-                            return item.id === "files";
-                        });
-
                         var htm;
-                        if (!files && $scope.$parent.heading.id === "add_to_cart_filtered") {
-                            htm = "<span>--</span>";
-                        } else {
-                            try {
-                                htm = $scope.heading.compile($scope);
-                            } catch (e) {
-                                htm = '<span>?</span>';
-                                $log.error(e);
-                            }
+                        try {
+                            htm = $scope.heading.compile($scope);
+                        } catch (e) {
+                            htm = '<span>?</span>';
+                            $log.error(e);
                         }
 
                         var compiled = $compile(htm)($scope);
@@ -30,10 +22,6 @@ module ngApp.components.tables.directives.tableicious {
                     }
                   
                   $scope.UserService = UserService;
-                  
-//                  $scope.template = TableService.getTemplate($scope.heading, $scope.field,$scope.row,$scope,$filter);
-//                  $scope.sref = TableService.getSref($scope.heading, $scope.field,$scope.row,$scope,$filter);
-//                  $scope.icon = TableService.getIcon($scope.heading, $scope.field,$scope.row,$scope,$filter);
                 }
               
 
@@ -45,8 +33,6 @@ module ngApp.components.tables.directives.tableicious {
                     }, () => {
                         doCompile();
                     }, true);
-                    
-
                 })
 
             }

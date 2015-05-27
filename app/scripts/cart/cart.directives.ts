@@ -291,13 +291,13 @@ module ngApp.cart.directives {
     return {
       restrict:"AE",
       scope:{
-        files: "=",
-        participant: "=",
         row: "="
       },
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
       controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
-                          FilesService: IFilesService){
+                          FilesService: IFilesService,
+                          ParticipantsService){
+        $scope.files = [];
         var content = LocationService.filters().content;
         $scope.areFiltersApplied = content && _.find(content, (item) => {
           return item.content.field.indexOf("files.") === 0;
@@ -310,8 +310,8 @@ module ngApp.cart.directives {
           });
         });
 
-        $scope.getFilteredRelatedFiles = function() {
-          $scope.retreivingFilteredFiles = true;
+        $scope.getFiles = function() {
+          $scope.retreivingFiles = true;
           var filters = LocationService.filters();
 
           if (!filters.content) {
@@ -319,27 +319,51 @@ module ngApp.cart.directives {
             filters.content = [];
           }
 
-          var barcode = _.find($scope.row,function(elem){return elem.id === "participant_id"}).val;
+          var uuid = _.find($scope.row,function(elem){return elem.id === "participant_id"}).val;
 
           filters.content.push({
             content: {
-              field: "participants.participant_id",
+              field: "files.participants.participant_id",
               value: [
-                barcode
+                uuid
               ]
             },
             op: "in"
           });
 
-          FilesService.getFiles({
-            fields: SearchTableFilesModel.fields,
-            expand: SearchTableFilesModel.expand,
-            filters: filters,
-            size: CartService.getCartVacancySize()
-          }).then((data) => {
-            $scope.retreivingFilteredFiles = false;
-            $scope.filteredRelatedFiles = data;
-          });
+          if ($scope.areFiltersApplied) {
+            FilesService.getFiles({
+              fields: SearchTableFilesModel.fields,
+              expand: SearchTableFilesModel.expand,
+              filters: filters,
+              size: CartService.getCartVacancySize()
+            }).then((data) => {
+              $scope.retreivingFiles = $scope.files.length ? false : true;
+              $scope.filteredRelatedFiles = data;
+            });
+          }
+
+          if (!$scope.files.length) {
+            ParticipantsService.getParticipant(uuid, {
+              fields: [
+                "participant_id",
+                "submitter_id",
+                "annotations.annotation_id"
+              ],
+              expand: [
+                "files"
+              ]
+            }).then((data) => {
+
+              if ($scope.areFiltersApplied) {
+                $scope.retreivingFiles = $scope.filteredRelatedFiles ? false: true;
+              } else {
+                $scope.retreivingFiles = false;
+              }
+
+              $scope.files = data.files;
+            });
+          }
         };
 
         $scope.addFilteredRelatedFiles = function()  {
@@ -347,27 +371,9 @@ module ngApp.cart.directives {
         };
 
         $scope.addRelatedFiles = function() {
-          var barcode = _.find($scope.row,function(elem){return elem.id === "participant_id"}).val;
-          var filters = {
-            "op": "and",
-            "content": [{
-              "op": "in",
-              "content": {
-                "field": "participants.participant_id",
-                "value": barcode
-              }
-            }]
-          };
-          FilesService.getFiles({
-            fields: SearchTableFilesModel.fields,
-            expand: SearchTableFilesModel.expand,
-            filters: filters,
-            size: CartService.getCartVacancySize()
-          }).then((data) => {
-              this.CartService.addFiles(data.hits);
-          });
-
+          CartService.addFiles($scope.files);
         };
+
         $scope.CartService = CartService;
       }
     }

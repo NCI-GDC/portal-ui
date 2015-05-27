@@ -18,7 +18,8 @@ module ngApp.projects.models {
             },
             toolTipText: function (field) {
               return field.val;
-            }
+            },
+            fieldClass: 'truncated-cell'
         },
         {
             displayName: "Case ID",
@@ -34,7 +35,8 @@ module ngApp.projects.models {
             sortable: true,
             toolTipText: function(field) {
               return field.val;
-            }
+            },
+            fieldClass: 'truncated-cell'
         },
         {
             displayName: "Program",

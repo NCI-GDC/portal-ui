@@ -80,7 +80,7 @@ module ngApp.search.models {
         id: "file_name",
         visible: true,
         template: function (field, row, scope) {
-          return scope.$filter('ellipsicate')(field.val, 20);
+          return scope.$filter('ellipsicate')(field.val, 30);
         },
         sref: function (field, row) {
           var uuid = _.find(row, function (a: TableiciousEntryDefinition) {
@@ -93,7 +93,8 @@ module ngApp.search.models {
         sortable: true,
         toolTipText: function(field) {
           return field.val;
-        }
+        },
+        fieldClass: 'truncated-cell'
       }, {
         displayName: "Participants",
         id: "participants",

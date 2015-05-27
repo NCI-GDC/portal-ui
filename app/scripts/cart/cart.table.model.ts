@@ -23,8 +23,7 @@ module ngApp.cart.models {
           id: "file_actions",
           compile: function ($scope) {
             $scope.file = arrayToObject($scope.row);
-            var htm = '<div select-single-cart file="file"></div>' +
-                      "<button class='btn btn-primary' download-button files='file' data-tooltip='Download file' data-tooltip-placement='top'>" +
+            var htm = "<button class='btn btn-primary' download-button files='file' data-tooltip='Download file' data-tooltip-placement='top'>" +
                       "<i class='fa fa-download'></i></button>" +
                       "<button class='btn btn-default' remove-single-cart file='file' data-tooltip='Remove from Cart' data-tooltip-placement='top'>" +
                       "<i class='fa fa-trash-o'></i></button>";

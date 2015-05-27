@@ -8,48 +8,44 @@
 </div>
 
 <div class="row">
-  <div class="col-lg-4">
-    <count-card title="Files" icon="fa-file-o" data="sc.files.pagination.total"></count-card>
+  <div class="col-sm-4">
+    <count-card title="Files" icon="fa-file-o" data="sc.files.pagination.total | number"></count-card>
   </div>
-  <div class="col-lg-4">
-    <count-card title="Cases" icon="fa-user" data="sc.participants.pagination.total"></count-card>
+  <div class="col-sm-4">
+    <count-card title="Cases" icon="fa-user" data="sc.participants.pagination.total | number"></count-card>
   </div>
-  <div class="col-lg-4">
-    <count-card title="File Size" icon="fa-save" data="sc.summary.fs.value"
-                data-filter="true"></count-card>
+  <div class="col-sm-4">
+    <count-card title="File Size" icon="fa-save" data="sc.summary.fs.value | size"></count-card>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-lg-4">
+  <div class="col-lg-4 col-sm-6">
     <pie-chart data="sc.summary.participants['participants.project.project_id'].buckets"
                  height="300" config="sc.chartConfigs.projectIdChartConfig"
                  data-title="File Counts by Project"></pie-chart>
   </div>
-  <div class="col-lg-4">
+  <div class="col-lg-4 col-sm-6">
     <pie-chart data="sc.summary.participants['participants.project.primary_site'].buckets"
                  height="300" config="sc.chartConfigs.primarySiteChartConfig"
                  data-title="File Counts by Primary Site"></pie-chart>
   </div>
-  <div class="col-lg-4">
+  <div class="col-lg-4 col-sm-6">
     <pie-chart data="sc.summary.access.buckets"
                  height="300" config="sc.chartConfigs.accessChartConfig"
                  data-title="File Counts by Access Level"></pie-chart>
   </div>
-</div>
-
-<div class="row">
-  <div class="col-lg-4">
+  <div class="col-lg-4 col-sm-6">
     <pie-chart data="sc.summary.data_type.buckets"
                  height="300" config="sc.chartConfigs.dataTypeChartConfig"
                  data-title="File Counts by Data Type"></pie-chart>
   </div>
-  <div class="col-lg-4">
+  <div class="col-lg-4 col-sm-6">
     <pie-chart data="sc.summary.data_format.buckets"
                  height="300" config="sc.chartConfigs.dataFormatChartConfig"
                  data-title="File Counts by Data Format"></pie-chart>
   </div>
-  <div class="col-lg-4">
+  <div class="col-lg-4 col-sm-6">
     <pie-chart data="sc.summary.experimental_strategy.buckets"
                  height="300" config="sc.chartConfigs.expStratChartConfig"
                  data-title="File Counts by Experimental Strategy"></pie-chart>

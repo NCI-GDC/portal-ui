@@ -1,16 +1,11 @@
-<div class="panel panel-default panel-stat">
-  <div class="panel-heading">
-    <div class="stat">
-      <div class="row">
-        <div class="col-xs-4">
-          <i class="fa {{ icon }}"></i>
-        </div>
-        <div class="col-xs-8">
-          <small class="stat-label">{{ title | translate }}</small>
-          <h1 data-ng-if="!filter">{{ data | number }}</h1>
-          <h1 data-ng-if="filter">{{ data | size }}</h1>
-        </div>
-      </div>
+<div class="panel panel-default CountCard">
+  <div class="row">
+    <div class="col-xs-9">
+      <div class="CountCard-title">{{ title | translate }}</div>
+      <div class="CountCard-data">{{ data }}</div>
+    </div>
+    <div class="col-xs-2">
+      <i class="CountCard-icon fa fa-3x {{ icon }}"></i>
     </div>
   </div>
 </div>

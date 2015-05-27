@@ -1,36 +1,11 @@
 module ngApp.components.location.services {
 
-  import IGDCWindowService = ngApp.core.models.IGDCWindowService;
-
-  export interface ISearch {
-    filters: string;
-    query: string;
-    pagination: any;
-  }
-
-  export interface IFilters {
-    op: string;
-  }
-
-  export interface ILocationService {
-    path(): string;
-    clear(): ng.ILocationService;
-    search(): ISearch;
-    setSearch(search: any): ng.ILocationService;
-    filters(): any;
-    setFilters(filters: Object): ng.ILocationService;
-    query(): string;
-    setQuery(query?: string): ng.ILocationService;
-    pagination(): any;
-    setPaging(pagination: any): ng.ILocationService;
-    setHref(href: string): void;
-    getHref(): string;
-    filter2query(f: any): string;
-  }
-
   class LocationService implements ILocationService {
     /* @ngInject */
-    constructor(private $location: ng.ILocationService, private $window: IGDCWindowService) {}
+    constructor(
+      private $location: ng.ILocationService, 
+      private $window: ngApp.core.models.IGDCWindowService
+    ) {}
 
     path(): string {
       return this.$location.path();
@@ -40,38 +15,25 @@ module ngApp.components.location.services {
       return this.$location.search();
     }
 
-    setSearch(search): ng.ILocationService {
-      if (!_.keys(search).length) {
-        search = "";
-      }
-
-      var propsWithValues = _.find(search, function(val) {
-
-        if (typeof val === "object" || val === "{}") {
-          return false;
-        }
-
-        return val;
+    setSearch(search: ISearch): ng.ILocationService {
+      var propsWithValues = _.pick(search, function(v) { 
+        return !_.isEmpty(v) && v !== "{}"
       });
 
-      if (propsWithValues !== undefined && !propsWithValues) {
-        search = "";
-      }
-
-      return this.$location.search(search);
+      return this.$location.search(propsWithValues);
     }
 
     clear(): ng.ILocationService {
       return this.$location.search({});
     }
 
-    filters(): any {
+    filters(): IFilters {
       // TODO error handling
-      var f = this.search()["filters"];
+      var f = this.search().filters;
       return f ? angular.fromJson(f) : {};
     }
 
-    setFilters(filters: Object): ng.ILocationService {
+    setFilters(filters: IFilters): ng.ILocationService {
       var search: ISearch = this.search();
       if (filters) {
         search.filters = angular.toJson(filters);
@@ -83,7 +45,7 @@ module ngApp.components.location.services {
 
     query(): string {
       // TODO error handling
-      var q = this.search()["query"];
+      var q = this.search().query;
       return q ? q : "";
     }
 
@@ -102,8 +64,9 @@ module ngApp.components.location.services {
       return f ? angular.fromJson(f) : {};
     }
 
-    setPaging(pagination: any): ng.ILocationService {
+    setPaging(pagination: {[key: string]: string}): ng.ILocationService {
       var search: ISearch = this.search();
+      
       if (pagination) {
         search.pagination = angular.toJson(pagination);
       } else if (_.isEmpty(search.pagination)) {
@@ -121,12 +84,12 @@ module ngApp.components.location.services {
       return this.$window.location.href;
     }
 
-    filter2query(f): string {
-      var q = _.map(f.content, (ftr) => {
-        var c = ftr.content;
-        var o = " " + ftr.op + " ";
-        var v = ftr.op === "in" ? angular.toJson(c.value) : c.value 
-        return c.field + o + v;
+    filter2query(f: IFilters): string {
+      var q: string[] = _.map(f.content, (ftr: IFilter) => {
+        const c: IFilterValue = ftr.content;
+        const o = ftr.op;
+        const v = ftr.op === "in" ? angular.toJson(c.value) : c.value 
+        return [c.field, o, v].join(" ");
       });
 
       return q.join(" and ");

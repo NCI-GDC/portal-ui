@@ -92,7 +92,7 @@ module ngApp.cart.controllers {
         label: "file",
         sortKey: "doc_count",
         defaultText: "access level",
-        pluralDefaultText: "files",
+        pluralDefaultText: "access levels",
         state: {
           "open": {
             name: "search.files",

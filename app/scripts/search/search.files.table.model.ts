@@ -38,7 +38,7 @@ module ngApp.search.models {
         compile: function ($scope) {
           $scope.arrayRow = arrayToObject($scope.row);
           var htm = '<div add-to-cart-single file="arrayRow"></div>' +
-                    '<a class="btn btn-primary" download-button files=file>' +
+                    '<a class="btn btn-primary" download-button files=file data-tooltip="Download file">' +
                     '<i class="fa fa-download"></i></a>';
           return htm;
         },
@@ -47,17 +47,6 @@ module ngApp.search.models {
           return htm;
         },
         fieldClass: "table-compile-cell",
-        noTitle: true,
-        visible: true
-      }, {
-        displayName: "download",
-        id: "download",
-        compile: function ($scope) {
-          $scope.file = arrayToObject($scope.row);
-          var htm = '<a class="btn btn-primary" download-button files=file data-tooltip="Download file">' +
-                    '<i class="fa fa-download"></i></a>';
-          return htm;
-        },
         noTitle: true,
         visible: true
       }, {

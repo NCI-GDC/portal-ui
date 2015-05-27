@@ -35,7 +35,7 @@ angular.module("reports.githut.config",[])
         a[b.project_id] = {
           file_size:b.size,
           project_id:b.project_id,
-          project_name:b.project_name,
+          name:b.name,
           primary_site:b.primary_site,
           file_count:b.count,
           colorgroup:"file_count"

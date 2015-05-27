@@ -847,6 +847,7 @@ module ngApp.components.githut.controllers {
           })
           .call(projectTip)
           .on("mouseover", projectTip.show)
+          .on("click", projectTip.hide)
           .on("mouseout", projectTip.hide);
 
         // Mouseover trigger for highlighting all paths that cross through

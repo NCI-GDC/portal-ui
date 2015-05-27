@@ -66,15 +66,11 @@ module ngApp.search.models {
         displayName: "Access",
         id: "access",
         visible: true,
-        icon: function (field) {
-          return field && field.val === 'protected' ? "lock" : "unlock";
+        compile: function($scope) {
+            $scope.file = arrayToObject($scope.row);
+            return $scope.file.access === 'protected' ? "<i class='fa fa-lock'></i> <span>Protected</span>" : "<i class='fa fa-unlock-alt'></i> <span>Open</span>";
         },
-        template: function () {
-          return '';
-        },
-        toolTipText: function(field) {
-          return field.val === 'protected' ? "Protected File" : "Open file";
-        }
+        fieldClass: "table-compile-cell"
       }, {
         displayName: "File Name",
         id: "file_name",

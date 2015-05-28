@@ -76,7 +76,7 @@ module ngApp.cart.models {
       },
       {
         displayName: "Cases",
-        id: "participantId",
+        id: "participantIds",
         visible: true,
         template: function (field, row, scope) {
           var participants = field.val;

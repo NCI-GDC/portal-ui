@@ -77,16 +77,6 @@ describe('Cart:', function () {
       expect(ret.length).to.eq(2);
     }));
 
-    it('should return selected files', inject(function (CartService) {
-      var addCallback = sinon.spy(CartService, 'getSelectedFiles');
-      var fs = [fileA, fileB];
-      CartService.addFiles(fs);
-      CartService.getFiles()[0].selected = false;
-      var ret = CartService.getSelectedFiles();
-      expect(addCallback).to.have.been.calledOnce;
-      expect(ret.length).to.eq(1);
-    }));
-
     it('should check if file in cart', inject(function (CartService) {
       var addCallback = sinon.spy(CartService, 'add');
       CartService.add(fileA);

@@ -12,7 +12,6 @@ module ngApp.cart.services {
     files: IFile[];
     lastModified: Moment;
     getFiles(): IFile[];
-    getSelectedFiles(): IFile[];
     getFileIds(): string[];
     add(file: IFile): void;
     addFiles(files: IFile[]): void;
@@ -21,14 +20,13 @@ module ngApp.cart.services {
     removeAll(): void;
     remove(fileIds: string[]): void;
     removeFiles(files: IFile[]): void;
-    buildAddedMsg(addedAndAlreadyIn: Object): string;
+    buildAddedMsg(added: Array<Object>, alreadyIn: Array<Object>): string;
     buildRemovedMsg(removedFiles: IFile[]): string;
     undoAdded(): void;
     undoRemoved(): void;
     getMaxSize(): number;
     isFull(): boolean;
     getCartVacancySize(): number;
-    selectFile(file: IFile): void;
     getAuthorizedFiles(): IFile[];
     getUnauthorizedFiles(): IFile[];
   }
@@ -46,8 +44,8 @@ module ngApp.cart.services {
     constructor(private $window: IGDCWindowService,
                 private notify: INotifyService, private UserService, private $rootScope,
                 private LZString, private gettextCatalog) {
-      var local_files = LZString.decompress($window.localStorage.getItem(CartService.GDC_CART_KEY));
-      var local_time = LZString.decompress($window.localStorage.getItem(CartService.GDC_CART_UPDATE));
+      var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
+      var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
 
       this.lastModified = local_time ? $window.moment(local_time) : $window.moment();
       this.files = local_files ? JSON.parse(local_files) : [];
@@ -85,10 +83,6 @@ module ngApp.cart.services {
       });
     }
 
-    getSelectedFiles(): IFile[] {
-      return _.where(this.getFiles(), {selected: true});
-    }
-
     isInCart(fileId: string): boolean {
       return _.some(this.files, { "file_id": fileId });
     }
@@ -102,54 +96,40 @@ module ngApp.cart.services {
     }
 
     addFiles(files: IFile[]): void {
-      var addedFiles:IFile[] = [];
+      //var addedFiles:IFile[] = [];
+      this.lastModifiedFiles = [];
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_id)) {
-          var projectIds = file.projects;
-          var annotationIds = file.annotationIds;
-          var participantIds = file.participantId;
-          // We are not loading a file in from an undo action
-          if (file.participants) {
-            projectIds = _.unique(_.map(file.participants, (participant) => {
-              return participant.project.project_id;
-            }));
-            annotationIds = _.map(file.annotations, (annotation) => {
-              return annotation.annotation_id;
-            });
-            participantIds = _.map(file.participants, (participant) => {
-              return participant.participant_id;
-            });
-          }
-
-          var fileNeededFieldsOnly = {
-            'selected': true,
-            'access': file.access || '--',
-            'file_name': file.file_name || '--',
-            'file_id': file.file_id || '--',
-            'annotationIds': annotationIds,
-            'participantNum': participantIds ? participantIds.length : 0,
-            'participantId': participantIds ? participantIds : [],
-            'projects': projectIds,
-            'data_type': file.data_type || '--',
-            'data_format': file.data_format || '--',
-            'file_size': file.file_size || 0,
-            'date_added_to_cart':Date.now(),
-            'related_ids': file.related_ids || _.pluck(file.related_files, "file_id")
-          };
-          this.files.push(fileNeededFieldsOnly);
-          addedFiles.push(fileNeededFieldsOnly);
+          var projectIds = [];
+          var participantIds = [];
+          _.forEach(file.participants, (participant) => {
+            participantIds.push(participant.participant_id);
+            projectIds.push(participant.project.project_id);
+          });
+          this.lastModifiedFiles.push({
+                  'access': file.access,
+                  'file_name': file.file_name,
+                  'file_id': file.file_id,
+                  'annotationIds': _.pluck(file.annotations, 'annotation_id'),
+                  'projects': projectIds,
+                  'participantIds': participantIds,
+                  'data_type': file.data_type,
+                  'data_format': file.data_format,
+                  'file_size': file.file_size,
+                  'related_ids': file.related_ids || _.pluck(file.related_files, "file_id")
+                  });
         } else {
-          alreadyIn.push(fileNeededFieldsOnly);
+          alreadyIn.push(file);
         }
       });
+      this.files = this.files.concat(this.lastModifiedFiles);
       this._sync();
-      this.lastModifiedFiles = addedFiles;
       this.notify.config({ duration: 5000 });
       this.notify.closeAll();
       this.notify({
         message: "",
-        messageTemplate: this.buildAddedMsg({"added": addedFiles, "alreadyIn": alreadyIn }),
+        messageTemplate: this.buildAddedMsg(this.lastModifiedFiles, alreadyIn),
         container: "#notification",
         classes: "alert-success"
       });
@@ -171,10 +151,7 @@ module ngApp.cart.services {
       });
     }
 
-    buildAddedMsg(addedAndAlreadyIn: Object): string {
-      var added = addedAndAlreadyIn["added"];
-      var alreadyIn = addedAndAlreadyIn["alreadyIn"];
-
+    buildAddedMsg(added: Array<Object>, alreadyIn: Array<Object>): string {
       var message = "<span>Added ";
       if (added.length === 1) {
         message += "file <b>" + added[0].file_name + "</b>";
@@ -243,7 +220,7 @@ module ngApp.cart.services {
     }
 
     getFileIds(): string[] {
-      return _.pluck(this.getSelectedFiles(), "file_id");
+      return _.pluck(this.files, "file_id");
     }
 
     undoAdded(): void {
@@ -256,16 +233,8 @@ module ngApp.cart.services {
 
     _sync(): void {
       this.lastModified = this.$window.moment();
-      this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, LZString.compress(this.lastModified.toISOString()));
-      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, LZString.compress(JSON.stringify(this.files)));
-    }
-
-    selectFile(file: IFile) {
-      var fileInCart = this.getFile(file.file_id);
-
-      if (fileInCart) {
-        fileInCart.selected = !fileInCart.selected;
-      }
+      this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
+      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
     }
 
   }

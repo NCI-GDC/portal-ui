@@ -62,22 +62,29 @@ module ngApp.cart.models {
           displayName: "File Name",
           id: "file_name",
           visible: true,
-          template: function (field, row, scope) {
-            return field && field.val;
+          compile: function($scope) {
+              var file_name = _.findWhere($scope.row, {'id': 'file_name'}).val;
+              var file_id = _.findWhere($scope.row, {'id': 'file_id'}).val;
+              return "<a data-tooltip='" + file_name +
+                     "' data-ng-href='/files/" + file_id +
+                     "'>" + file_name + "</a>";
           },
-          sref: function (field, row) {
-            var uuid = _.find(row, function (a: TableiciousEntryDefinition) {
-              return a.id === 'file_id'
-            });
-            return {
-              state: "/files/" + uuid.val
-            };
-          },
+          //template: function (field, row, scope) {
+            //return field && field.val;
+          //},
+          //sref: function (field, row) {
+            //var uuid = _.find(row, function (a: TableiciousEntryDefinition) {
+              //return a.id === 'file_id'
+            //});
+            //return {
+              //state: "/files/" + uuid.val
+            //};
+          //},
           sortable: true,
           fieldClass: "truncate-cell",
-          toolTipText: function (field) {
-            return field.val;
-          }
+          //toolTipText: function (field) {
+            //return field.val;
+          //}
         },
         {
           displayName: "Cases",
@@ -114,40 +121,57 @@ module ngApp.cart.models {
           displayName: "Project",
           id: "projects",
           visible: true,
-          template: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
-            var projects: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
-              return a.id === 'projects'
-            }).val;
-            if (projects.length) {
+          compile: function($scope) {
+              var projects = _.findWhere($scope.row, {'id': 'projects'}).val;
               if (projects.length === 1) {
-                return projects[0];
+                var project_id = projects[0];
+                return "<a data-tooltip='" + ProjectsService.projectIdMapping[project_id] +
+                     "' data-ng-href='/projects/" + project_id +
+                     "'>" + project_id + "</a>";
+              } else {
+                var filters = $filter("makeFilter")([{name: "project_id", value: projects}]);
+                return "<a href='/projects/'" + filters + "/>" + projects.length + "</a>";
               }
-
-              return projects.length;
-            }
+              //var = _.findWhere($scope.row, {'id': 'file_id'}).val;
+              return "test";
+              //return "<a data-tooltip='" + ProjectsService.projectIdMapping[project_id] +
+                     //"' data-ng-href='/projects/" + project_id +
+              //       "'>" + project_id + "</a>";
           },
-          sref: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
-            var projects: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
-              return a.id === 'projects'
-            }).val;
-            if (projects.length === 1) {
-              return {
-                state: "/projects/" + projects[0]
-              };
-            }
+//template: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
+            //var projects: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
+              //return a.id === 'projects'
+            //}).val;
+            //if (projects.length) {
+              //if (projects.length === 1) {
+                //return projects[0];
+              //}
 
-            if (projects.length > 1) {
-              var filters = $filter("makeFilter")([{name: "project_id", value: projects}]);
-              return {
-                state: "/projects/t",
-                filters: filters
-              };
-            }
-          },
+              //return projects.length;
+            //}
+          //},
+          //sref: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
+            //var projects: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
+              //return a.id === 'projects'
+            //}).val;
+            //if (projects.length === 1) {
+              //return {
+                //state: "/projects/" + projects[0]
+              //};
+            //}
+
+            //if (projects.length > 1) {
+              //var filters = $filter("makeFilter")([{name: "project_id", value: projects}]);
+              //return {
+                //state: "/projects/t",
+                //filters: filters
+              //};
+            //}
+          //},
           sortable: true,
-          toolTipText: function(field)  {
-            return ProjectsService.projectIdMapping[field.val];
-          }
+          //toolTipText: function(field)  {
+            //return ProjectsService.projectIdMapping[field.val];
+          //}
         },
         {
           displayName: "Data Type",

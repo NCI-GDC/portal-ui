@@ -236,19 +236,19 @@ module ngApp.components.tables.services {
             }
         }
 
-        getToolTipText(heading:TableiciousColumnDefinition, row: TableiciousEntryDefinition[], $scope: any){
-            if (heading.toolTipText) {
-              var field = {
-                           val: this.getValueFromRow(row, heading.id),
-                           id: heading.id
-                          }
-              if (_.isFunction(heading.toolTipText)) {
-                return heading.toolTipText(field, $scope);
-              } else {
-                return field.val;
-              }
-            }
-        }
+        //getToolTipText(heading:TableiciousColumnDefinition, row: TableiciousEntryDefinition[], $scope: any){
+            //if (heading.toolTipText) {
+              //var field = {
+                           //val: this.getValueFromRow(row, heading.id),
+                           //id: heading.id
+                          //}
+              //if (_.isFunction(heading.toolTipText)) {
+                //return heading.toolTipText(field, $scope);
+              //} else {
+                //return field.val;
+              //}
+            //}
+        //}
 
         getSref(scope, $filter) {
             var heading = scope.heading;

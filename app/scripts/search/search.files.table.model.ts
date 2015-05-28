@@ -75,21 +75,28 @@ module ngApp.search.models {
         displayName: "File Name",
         id: "file_name",
         visible: true,
-        template: function (field, row, scope) {
-          return scope.$filter('ellipsicate')(field.val, 30);
-        },
-        sref: function (field, row) {
-          var uuid = _.find(row, function (a: TableiciousEntryDefinition) {
-            return a.id === 'file_id'
-          });
-          return {
-            state: "/files/" + uuid.val
-          };
-        },
+        compile: function($scope) {
+              var file_name = _.result(_.findWhere($scope.row, {'id': 'file_name'}), 'val');
+              var file_id = _.result(_.findWhere($scope.row, {'id': 'file_id'}), 'val');
+              return "<a data-tooltip='" + file_name +
+                     "' data-ng-href='/files/" + file_id +
+                     "'>" + file_name + "</a>";
+          },
+        //template: function (field, row, scope) {
+          //return scope.$filter('ellipsicate')(field.val, 30);
+        //},
+        //sref: function (field, row) {
+          //var uuid = _.find(row, function (a: TableiciousEntryDefinition) {
+            //return a.id === 'file_id'
+          //});
+          //return {
+            //state: "/files/" + uuid.val
+          //};
+        //},
         sortable: true,
-        toolTipText: function(field) {
-          return field.val;
-        },
+        //toolTipText: function(field) {
+          //return field.val;
+        //},
         fieldClass: 'truncated-cell'
       }, {
         displayName: "Participants",

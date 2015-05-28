@@ -18,7 +18,7 @@ module ngApp.components.tables.directives.tableicious {
         getHeadingRowSpan(heading):number;
         getAllHeadingsAtNestingLevel(level):any[];
         getTemplate(heading,field,row,_scope, $filter: ng.IFilterService):string;
-        getToolTipText(heading,scope):string;
+        //getToolTipText(heading,scope):string;
         getHeadingEnabled(heading):boolean;
         getHeadingById(id:string):TableiciousColumnDefinition
         getHeadingClass(heading):string;
@@ -75,7 +75,7 @@ module ngApp.components.tables.directives.tableicious {
         /**
          * @toolTipText appears in a tooltip in table cell
          */
-        toolTipText?(field:TableiciousEntryDefinition, scope:ITableicousScope):string
+        //toolTipText?(field:TableiciousEntryDefinition, scope:ITableicousScope):string
 
         /**
          * @id A unique string that will identify this column.
@@ -188,7 +188,7 @@ module ngApp.components.tables.directives.tableicious {
             $scope.getHeadingColSpan = TableService.getHeadingColSpan.bind($scope);
             $scope.getHeadingRowSpan = TableService.getHeadingRowSpan.bind($scope);
             $scope.getTemplate = TableService.getTemplate.bind(TableService);
-            $scope.getToolTipText = TableService.getToolTipText.bind(TableService);
+            //$scope.getToolTipText = TableService.getToolTipText.bind(TableService);
             $scope.getIcon = TableService.getIcon.bind(TableService);
             $scope.getHeadingEnabled = TableService.getHeadingEnabled.bind($scope);
             $scope.getSref = TableService.getSref.bind(TableService);

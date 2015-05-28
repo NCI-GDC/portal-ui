@@ -49,9 +49,14 @@ module ngApp.projects.models {
         displayName: "Disease Type",
         id: "disease_type",
         enabled: true,
-        toolTipText: function(field) {
-          return field.val;
+        compile: function($scope) {
+          var disease_type = _.result(_.findWhere($scope.row, {'id': 'disease_type'}), 'val');
+          return "<span class='tooltip-target' data-tooltip='" + disease_type +
+                 "'>" + disease_type + "</span>";
         },
+        //toolTipText: function(field) {
+          //return field.val;
+        //},
         fieldClass: 'truncated-cell',
         sortable: true
       }, {

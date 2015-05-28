@@ -7,35 +7,46 @@ module ngApp.projects.models {
         headings: [{
             displayName: "ID",
             id: "annotation_id",
-            sref: function (field) {
-                return {
-                    state: "/annotations/" + field.val
-                };
+            //sref: function (field) {
+                //return {
+                    //state: "/annotations/" + field.val
+                //};
+            //},
+            //compile: function($scope) {
+              //console.log($scope.row);
+            //  return "";
+            //return "<a data-ui-sref='annotations(" + $scope.)'
+            //},
+            compile: function($scope) {
+              var annotation_id = _.result(_.findWhere($scope.row, {'id': 'annotation_id'}), 'val');
+              return "<a data-tooltip='" + annotation_id +
+                     "' data-ng-href='/annotations/" + annotation_id +
+                     "'>" + annotation_id + "</a>";
             },
             sortable: true,
-            template: function (field, row, scope) {
-              return scope.$filter('ellipsicate')(field.val, 20);
-            },
-            toolTipText: function (field) {
-              return field.val;
-            },
             fieldClass: 'truncated-cell'
         },
         {
             displayName: "Case ID",
             id: "participant_id",
-            template: function (field, row, scope) {
-              return scope.$filter('ellipsicate')(field.val, 20);
+            compile: function($scope) {
+              var participant_id = _.result(_.findWhere($scope.row, {'id': 'participant_id'}), 'val');
+              return "<a data-tooltip='" + participant_id +
+                     "' data-ng-href='/participants/" + participant_id +
+                     "'>" + participant_id + "</a>";
             },
-            sref: function (field) {
-              return {
-                state: "/participants/" + field.val
-              }
-            },
+            //template: function (field, row, scope) {
+              //return scope.$filter('ellipsicate')(field.val, 20);
+            //},
+            //sref: function (field) {
+              //return {
+                //state: "/participants/" + field.val
+              //}
+            //},
             sortable: true,
-            toolTipText: function(field) {
-              return field.val;
-            },
+            //toolTipText: function(field) {
+              //return field.val;
+            //},
             fieldClass: 'truncated-cell'
         },
         {

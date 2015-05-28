@@ -28,14 +28,11 @@ module ngApp.components.tables.directives.tableicious {
                         var compiled = $compile(htm)($scope);
                         $element.append(compiled);
                     }
-                  
                   $scope.UserService = UserService;
-                  
 //                  $scope.template = TableService.getTemplate($scope.heading, $scope.field,$scope.row,$scope,$filter);
 //                  $scope.sref = TableService.getSref($scope.heading, $scope.field,$scope.row,$scope,$filter);
 //                  $scope.icon = TableService.getIcon($scope.heading, $scope.field,$scope.row,$scope,$filter);
                 }
-              
 
                 _.defer(function(){
                     doCompile();
@@ -45,7 +42,6 @@ module ngApp.components.tables.directives.tableicious {
                     }, () => {
                         doCompile();
                     }, true);
-                    
 
                 })
 

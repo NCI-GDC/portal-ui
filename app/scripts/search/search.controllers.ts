@@ -68,6 +68,11 @@ module ngApp.search.controllers {
           this.refresh();
         }
       });
+      $scope.$on("$stateChangeSuccess", (event, toState: any) => {
+        if (toState.name.indexOf("search") !== -1) {
+          this.SearchState.setActive("tabs", toState.name.split(".")[1], "active");
+        }
+      });
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });

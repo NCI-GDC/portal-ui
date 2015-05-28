@@ -38,6 +38,11 @@ module ngApp.projects.controllers {
           this.refresh();
         }
       });
+      $scope.$on("$stateChangeSuccess", (event, toState: any) => {
+        if (toState.name.indexOf("projects") !== -1) {
+          this.ProjectsState.setActive("tabs", toState.name.split(".")[1], "active");
+        }
+      });
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });

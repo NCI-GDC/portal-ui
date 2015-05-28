@@ -92,43 +92,7 @@ module ngApp.cart.controllers {
         label: "file",
         sortKey: "doc_count",
         defaultText: "access level",
-        pluralDefaultText: "access levels",
-        state: {
-          "open": {
-            name: "search.files",
-            params: {
-              filters: $filter("makeFilter")([
-                {
-                  name: "files.file_id",
-                  value: _.pluck(_.filter(this.files, (file) => {
-                    return file.access === "open";
-                  }), "file_id")
-                },
-                {
-                  name: "files.access",
-                  value: "open"
-                }
-              ], true)
-            }
-          },
-          "protected": {
-            name: "search.files",
-            params: {
-              filters: $filter("makeFilter")([
-                {
-                  name: "files.file_id",
-                  value: _.pluck(_.filter(this.files, (file) => {
-                    return file.access === "protected";
-                  }), "file_id")
-                },
-                {
-                  name: "files.access",
-                  value: "protected"
-                }
-              ], true)
-            }
-          }
-        }
+        pluralDefaultText: "access levels"
       };
 
       this.getSummary();
@@ -150,28 +114,6 @@ module ngApp.cart.controllers {
 
       this.SearchService.getSummary(filters).then((data) => {
         this.summary = data;
-        var state = _.reduce(this.summary.participants['participants.project.project_id'].buckets, (result, bucket) => {
-          result[bucket.key] = {
-                                name: "search.files",
-                                params: {
-                                  filters: this.$filter("makeFilter")([
-                                    {
-                                    name: 'participants.project.project_id',
-                                    value: bucket.key
-                                    },
-                                    {
-                                    name: "files.file_id",
-                                    value: _.pluck(_.filter(this.files, (file) => {
-                                                        return _.indexOf(file.projects, bucket.key) !== -1;
-                                                      }), "file_id")
-
-                                    }
-                                  ], true)
-                                }
-                              };
-          return result;
-        }, {});
-        this.projectCountChartConfig['state'] = state;
       });
     }
 

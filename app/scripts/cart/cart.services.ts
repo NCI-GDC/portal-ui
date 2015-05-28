@@ -10,6 +10,7 @@ module ngApp.cart.services {
 
   export interface ICartService {
     files: IFile[];
+    projectsMap: {};
     lastModified: Moment;
     getFiles(): IFile[];
     getSelectedFiles(): IFile[];
@@ -111,7 +112,7 @@ module ngApp.cart.services {
           var participantIds = file.participantId;
           // We are not loading a file in from an undo action
           if (file.participants) {
-            projectIds = _.unique(_.map(file.participants, (participant) => {
+             projectIds = _.unique(_.map(file.participants, (participant) => {
               return participant.project.project_id;
             }));
             annotationIds = _.map(file.annotations, (annotation) => {
@@ -182,10 +183,10 @@ module ngApp.cart.services {
         message += "<b>" + added.length + "</b> files";
       }
       message += " to the cart.";
-      if(alreadyIn.length > 0) {
+      if (alreadyIn.length > 0) {
         message += "<br /><b>" + alreadyIn.length + "</b> files already in cart, not added.";
       }
-      if(added.length !== 0) {
+      if (added.length !== 0) {
         message += "<br /> <a data-ng-click='undoClicked(\"added\")'><i class='fa fa-undo'></i> Undo</a>";
       }
       return message + "</span>";

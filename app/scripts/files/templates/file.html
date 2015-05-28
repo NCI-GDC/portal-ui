@@ -150,7 +150,7 @@
             </thead>
             <tbody>
             <tr data-ng-repeat="e in fc.file.associated_entities track by e.entity_id">
-              <td class="truncated-cell">{{ ::e.entity_id }}</td>
+              <td class="truncated-cell"><span data-tooltip="{{ ::e.entity_id }}" class="tooltip-target">{{ ::e.entity_id }}</td>
               <td>{{ ::e.entity_type | humanify }}</td>
               <td class="truncated-cell">
                 <a data-ui-sref="participant({ participantId : e.participant_id })">

@@ -49,6 +49,14 @@ module ngApp.projects.models {
         displayName: "Disease Type",
         id: "disease_type",
         enabled: true,
+        compile: function($scope) {
+          var disease_type = _.result(_.findWhere($scope.row, {'id': 'disease_type'}), 'val');
+          return "<span class='tooltip-target' data-tooltip='" + disease_type +
+                 "'>" + disease_type + "</span>";
+        },
+        //toolTipText: function(field) {
+          //return field.val;
+        //},
         fieldClass: 'truncated-cell',
         sortable: true
       }, {
@@ -122,7 +130,7 @@ module ngApp.projects.models {
             sref: getParticipantSref('Clinical')
           }, {
             displayName: 'Array',
-            toolTipText: 'Raw microarray data',
+            headingToolTipText: 'Raw microarray data',
             id: 'Array',
             enabled: true,
             template: function (field: TableiciousEntryDefinition, row, scope, $filter) {
@@ -141,7 +149,7 @@ module ngApp.projects.models {
           }, {
             displayName: 'Seq',
             id: 'Seq',
-            toolTipText: 'Raw sequencing data',
+            headingToolTipText: 'Raw sequencing data',
             enabled: true,
             template: function (field: TableiciousEntryDefinition, row, scope, $filter) {
               var summary: TableiciousEntryDefinition = _.find(row, function (x: TableiciousEntryDefinition) {
@@ -158,7 +166,7 @@ module ngApp.projects.models {
             sref: getParticipantSref('Raw sequencing data')
           }, {
             displayName: "SNV",
-            toolTipText: "Simple nucleotide variation",
+            headingToolTipText: "Simple nucleotide variation",
             id: "SNV",
             enabled: true,
             fieldClass: "text-right",
@@ -176,7 +184,7 @@ module ngApp.projects.models {
             sref: getParticipantSref("Simple nucleotide variation")
           }, {
             displayName: 'CNV',
-            toolTipText: 'Copy number variation',
+            headingToolTipText: 'Copy number variation',
             id: 'cnv',
             enabled: true,
             template: function (field: TableiciousEntryDefinition, row, scope, $filter) {
@@ -194,7 +202,7 @@ module ngApp.projects.models {
             sref: getParticipantSref('Copy number variation')
           }, {
             displayName: 'SV',
-            toolTipText: 'Structural rearrangement',
+            headingToolTipText: 'Structural rearrangement',
             id: 'sv',
             enabled: true,
             template: function (field: TableiciousEntryDefinition, row, scope, $filter) {
@@ -212,7 +220,7 @@ module ngApp.projects.models {
             sref: getParticipantSref('Structural rearrangement')
           }, {
             displayName: 'Exp',
-            toolTipText: 'Gene expression',
+            headingToolTipText: 'Gene expression',
             id: 'Exp',
             enabled: true,
             template: function (field: TableiciousEntryDefinition, row, scope, $filter) {
@@ -230,7 +238,7 @@ module ngApp.projects.models {
             sref: getParticipantSref('Gene expression')
           }, {
             displayName: 'PExp',
-            toolTipText: 'Protein expression',
+            headingToolTipText: 'Protein expression',
             id: 'pexp',
             enabled: true,
             template: function (field: TableiciousEntryDefinition, row, scope, $filter) {
@@ -248,7 +256,7 @@ module ngApp.projects.models {
             sref: getParticipantSref('Protein expression')
           }, {
             displayName: 'Meth',
-            toolTipText: 'DNA methylation',
+            headingToolTipText: 'DNA methylation',
             id: 'meth',
             enabled: true,
             template: function (field: TableiciousEntryDefinition, row, scope, $filter) {

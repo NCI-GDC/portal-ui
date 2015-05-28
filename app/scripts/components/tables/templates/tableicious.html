@@ -13,7 +13,7 @@
     </tr>
     <tr>
       <th ng-repeat="childHeading in ::getAllHeadingsAtNestingLevel(1) track by childHeading.id" data-ng-if="!childHeading.hidden">
-        <span data-tooltip="{{ childHeading.toolTipText }}" data-tooltip-append-to-body="true" tooltip-placement="top">
+        <span data-tooltip="{{ childHeading.headingToolTipText }}" data-tooltip-append-to-body="true" tooltip-placement="top">
           {{ childHeading.displayName }}
         </span>
       </th>
@@ -25,22 +25,24 @@
           data-ng-repeat="heading in expandedHeadings | orderBy:getColumnIndex:heading"
           class="{{getFieldClass(field,datum,this,heading)}}">
         <div ng-if='::heading.compile' tableicious-cell></div>
-        <a data-ng-if="heading.sref && getSref(this, $filter) !== '--'"
-           data-ng-href="{{getSref(this, $filter)}}">
-          {{getTemplate(this, $filter)}}
-        </a>
+        <!--<span data-tooltip='{{ getToolTipText(heading, datum, this) }}' data-ng-class="{ 'tooltip-target': heading.toolTipText && !heading.sref }">-->
+          <a data-ng-if="heading.sref && getSref(this, $filter) !== '--'"
+             data-ng-href="{{getSref(this, $filter)}}">
+            {{ getTemplate(this, $filter) }}
+          </a>
 
-        <span data-ng-if="heading.sref && getSref(this, $filter) === '--'">
-          {{getTemplate(this, $filter)}}
-        </span>
+          <span data-ng-if="heading.sref && getSref(this, $filter) === '--'">
+            {{ getTemplate(this, $filter) }}
+          </span>
 
-        <span ng-if="!heading.sref && !heading.compile">
-          {{getTemplate(this, $filter)}}
-        </span>
+          <span ng-if="!heading.sref && !heading.compile">
+            {{ getTemplate(this, $filter) }}
+          </span>
 
-        <div ng-if="heading.icon" class="text-center">
-          <i class="fa fa-{{getIcon(this)}} fa-lg"></i>
-        </div>
+          <div ng-if="heading.icon" class="text-center">
+            <i class="fa fa-{{getIcon(this)}} fa-lg"></i>
+          </div>
+          <!--</span>-->
       </td>
     </tr>
   </tbody>

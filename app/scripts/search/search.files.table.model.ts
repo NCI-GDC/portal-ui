@@ -38,7 +38,7 @@ module ngApp.search.models {
         compile: function ($scope) {
           $scope.arrayRow = arrayToObject($scope.row);
           var htm = '<div add-to-cart-single file="arrayRow"></div>' +
-                    '<a class="btn btn-primary" download-button files=file>' +
+                    '<a class="btn btn-primary" download-button files=file data-tooltip="Download file">' +
                     '<i class="fa fa-download"></i></a>';
           return htm;
         },
@@ -66,28 +66,37 @@ module ngApp.search.models {
         displayName: "Access",
         id: "access",
         visible: true,
-        icon: function (field) {
-          return field && field.val === 'protected' ? "lock" : "unlock";
+        compile: function($scope) {
+            $scope.file = arrayToObject($scope.row);
+            return $scope.file.access === 'protected' ? "<i class='fa fa-lock'></i> <span>Protected</span>" : "<i class='fa fa-unlock-alt'></i> <span>Open</span>";
         },
-        template: function () {
-          return '';
-        }
+        fieldClass: "table-compile-cell"
       }, {
         displayName: "File Name",
         id: "file_name",
         visible: true,
-        template: function (field, row, scope) {
-          return field && field.val;
-        },
-        sref: function (field, row) {
-          var uuid = _.find(row, function (a: TableiciousEntryDefinition) {
-            return a.id === 'file_id'
-          });
-          return {
-            state: "/files/" + uuid.val
-          };
-        },
+        compile: function($scope) {
+              var file_name = _.result(_.findWhere($scope.row, {'id': 'file_name'}), 'val');
+              var file_id = _.result(_.findWhere($scope.row, {'id': 'file_id'}), 'val');
+              return "<a data-tooltip='" + file_name +
+                     "' data-ng-href='/files/" + file_id +
+                     "'>" + file_name + "</a>";
+          },
+        //template: function (field, row, scope) {
+          //return scope.$filter('ellipsicate')(field.val, 30);
+        //},
+        //sref: function (field, row) {
+          //var uuid = _.find(row, function (a: TableiciousEntryDefinition) {
+            //return a.id === 'file_id'
+          //});
+          //return {
+            //state: "/files/" + uuid.val
+          //};
+        //},
         sortable: true,
+        //toolTipText: function(field) {
+          //return field.val;
+        //},
         fieldClass: 'truncated-cell'
       }, {
         displayName: "Participants",

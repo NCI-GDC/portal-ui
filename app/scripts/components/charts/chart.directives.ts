@@ -43,7 +43,9 @@ module ngApp.components.charts {
           $window.$($window).off("resize" + id);
 
           $window.$($window).on("resize" + id, _.debounce(() => {
-            updateChart();
+            if (element.find(".chart-container").is(":visible")) {
+              updateChart();
+            }
           }, 150));
 
           if (element.find(".chart-container > svg").length) {
@@ -184,6 +186,10 @@ module ngApp.components.charts {
         $scope.limit = 10;
 
         function calculateLeft() {
+          if (!$scope.data.parent.find(".chart-container").is(":visible")) {
+            return;
+          }
+
           var parent = $scope.data.parent.find(".chart-container");
           var width = $scope.data.elem[0].getBoundingClientRect().width;
           var LEGEND_WIDTH = elem.width();

@@ -235,15 +235,21 @@ module ngApp.components.facets.controllers {
       $scope.$on("$locationChangeSuccess", () => this.refresh());
 
       $scope.$watch("facet", (n, o) => {
-        if (n === o) {
+        if (n === o && ($scope.min !== undefined || $scope.max !== undefined)) {
           return;
         }
         $scope.min = _.min(n.buckets, (bucket) => {
-            return bucket.key === '_missing' ? Number.POSITIVE_INFINITY : parseInt(bucket.key, 10);
+          return bucket.key === '_missing' ? Number.POSITIVE_INFINITY : parseInt(bucket.key, 10);
         }).key;
+        if ($scope.min === '_missing') {
+          $scope.min = null;
+        }
         $scope.max = _.max(n.buckets, (bucket) => {
           return bucket.key === '_missing' ? Number.NEGATIVE_INFINITY : parseInt(bucket.key, 10);
         }).key;
+        if ($scope.max === '_missing') {
+          $scope.max = null;
+        }
       });
 
     }

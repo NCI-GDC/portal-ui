@@ -5,7 +5,7 @@
         rowspan="{{h.children ? 1 : 2}}" 
         colspan="{{h.children ? h.children.length : 1}}" 
         data-ng-repeat="h in config.headings" 
-        data-ng-if="!h.hidden && !h.parent">
+        data-ng-if="!h.hidden">
           {{ ::h.displayName }}
       </th>
     </tr>
@@ -20,7 +20,7 @@
     <tr data-ng-repeat="d in data track by d[config.rowId]">
       <td 
         data-cell="c.render(d, filter)"
-        data-ng-repeat="c in config.headings" 
+        data-ng-repeat="c in dataCols" 
         data-ng-if="!c.hidden">
       </td>
     </tr>

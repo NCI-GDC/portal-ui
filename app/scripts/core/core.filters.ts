@@ -3,7 +3,6 @@ module ngApp.core.filters {
   class MakeFilter {
     constructor() {
       return function (fields: { name: string; value: string }[], noEscape: boolean) {
-        console.log(fields);
         var contentArray = _.map(fields, function (item) {
           var value;
 

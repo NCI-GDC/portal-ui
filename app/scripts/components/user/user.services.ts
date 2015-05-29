@@ -56,7 +56,9 @@ module ngApp.components.user.services {
         })
         .get("", {})
         .then((file) => {
-          this.$window.saveAs(file, "gdc-user-token." + this.$window.moment().format() + ".txt");
+          // This endpoint receives the header 'content-disposition' which our Restangular
+          // setup alters the data.
+          this.$window.saveAs(file.data, "gdc-user-token." + this.$window.moment().format() + ".txt");
         });
       }
     }

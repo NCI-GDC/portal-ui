@@ -22,9 +22,9 @@
           <i class="fa fa-folder-o" data-ng-if="!participant.samples.expanded"></i>
           <i class="fa fa-folder-open-o" data-ng-if="participant.samples.expanded"></i>
           &nbsp;<span class="h5" data-translate>Samples</span>
+          <!-- Start of Samples List -->
           <div data-ng-repeat="sample in participant.samples"
                data-ng-if="participant.samples.expanded">
-            <!-- Apparently the samples can be missing this data -->
             <div data-ng-if="sample.submitter_id" class="biospecimen-row document">
               <i class="fa fa-plus-square-o action" data-ng-if="!sample.expanded"
                  data-ng-click="expandTree($event, sample)"
@@ -59,8 +59,9 @@
                   <i class="fa fa-folder-open-o" data-ng-if="sample.portions.expanded"></i>
                   &nbsp;<span class="h5" data-translate>Portions</span>
 
+                  <!-- Start of Portions List -->
                   <div data-ng-repeat="portion in sample.portions" data-ng-if="sample.portions.expanded">
-                    <div data-ng-if="portion.submitter_id" class="biospecimen-row">
+                    <div class="biospecimen-row">
                       <i class="fa fa-plus-square-o action"
                          data-ng-if="!portion.expanded && (portion.slides.length || portion.analytes.length)"
                          data-ng-click="expandTree($event, portion)"
@@ -78,7 +79,11 @@
                             data-ng-keypress="bc.displayBioSpecimenDocument($event, portion, 'portion')"
                             class="biospecimen-id"
                             data-ng-class="{ selected: portion === bc.activeBioSpecimenDoc }">
-                        {{ portion.submitter_id }}
+                        <span data-ng-if="portion.submitter_id">{{ portion.submitter_id }}</span>
+                        <span data-ng-if="!portion.submitter_id">
+                          <span data-translate>TARGET Portion</span>
+                          {{ $index + 1 }}
+                        </span>
                       </span>
 
                       <div data-ng-if="portion.slides.length" data-ng-class="{ hidden: !portion.expanded }"
@@ -103,7 +108,11 @@
                                data-ng-if="portion.slides.expanded"
                                data-ng-class="{ selected: slide === bc.activeBioSpecimenDoc }">
                             <i class="fa fa-file-o"></i>
-                            &nbsp;{{ slide.submitter_id }}
+                            <span data-ng-if="slide.submitter_id">{{ slide.submitter_id }}</span>
+                            <span data-ng-if="!slide.submitter_id">
+                              <span data-translate>TARGET Slide</span>
+                              {{ $index + 1 }}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -142,7 +151,11 @@
                                   data-ng-if="portion.analytes.expanded"
                                   class="biospecimen-id"
                                   data-ng-class="{ selected: analyte === bc.activeBioSpecimenDoc }">
-                              {{ analyte.submitter_id }}
+                              <span data-ng-if="analyte.submitter_id">{{ analyte.submitter_id }}</span>
+                              <span data-ng-if="!analyte.submitter_id">
+                                <span data-translate>TARGET Analyte</span>
+                                {{ $index + 1 }}
+                              </span>
                             </span>
 
                             <div data-ng-if="analyte.aliquots.length" data-ng-class="{ hidden: !analyte.expanded }"
@@ -168,7 +181,11 @@
                                      class="biospecimen-id"
                                      data-ng-class="{ selected: aliquot === bc.activeBioSpecimenDoc }">
                                   <i class="fa fa-file-o"></i>
-                                  &nbsp;{{ aliquot.submitter_id }}
+                                  <span data-ng-if="aliquot.submitter_id">{{ aliquot.submitter_id }}</span>
+                                  <span data-ng-if="!aliquot.submitter_id">
+                                    <span data-translate>TARGET Aliquot</span>
+                                    {{ $index + 1 }}
+                                  </span>
                                 </div>
                               </div>
                             </div>

@@ -1,7 +1,7 @@
 <div class="panel panel-default" data-ng-class="{ 'table-loading': !gtc.tableRendered }">
-  <div class="table-loader app-loading" data-ng-show="!gtc.tableRendered">
+<!--  <div class="table-loader app-loading" data-ng-show="!gtc.tableRendered">
     <i class="fa fa-spinner fa-spin fa-5x"></i>
-  </div>
+  </div>-->
 
   <div class="panel-heading clearfix">
     <h3 class="panel-title table-heading">
@@ -28,8 +28,7 @@
       </div>
     </div>
   </div>
-
-  <div class="table-responsive" data-ng-show="gtc.tableRendered">
+  <div class="table-responsive" data-nng-show="gtc.tableRendered">
     <tableicious id="{{ id }}" data-data="gtc.displayedData" data-config="config" data-paging="paging"></tableicious>
   </div>
   <div class="panel-footer clearfix" data-ng-if="page && paging && page !== 'projects'"

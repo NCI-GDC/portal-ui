@@ -32,68 +32,46 @@ module ngApp.projects.models {
   var projectTableModel: TableiciousConfig = {
     title: 'Projects',
     order: ['project_id', 'disease_type', 'primary_site', 'program.name', 'summary.participant_count', 'data_types', 'summary.file_count', 'file_size'],
+    rowId: 'project_id',
     headings: [
       {
         displayName: "ID",
         id: "project_id",
-        enabled: true,
-        compile: function ($scope) {
-          var project_id = _.result(_.findWhere($scope.row, {'id': 'project_id'}), 'val');
-          var projectName = _.result(_.findWhere($scope.row, {'id': 'name'}), 'val');
-          var htm = '<a data-ng-href="/projects/' + project_id + '" data-tooltip="' + projectName +
-                    '" tooltip-append-to-body="true" tooltip-placement="right">' + project_id + '</a>';
-          return htm;
+        render: (row) => {
+          return '<a data-ui-sref="project({projectId:\''+row.project_id+'\'})' + 
+                    '" data-tooltip="' + row.name +
+                    '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' + 
+                    row.project_id + 
+                  '</a>';
         },
-        sortable: true
+        sortable: true,
+        hidden: false
       }, {
         displayName: "Disease Type",
         id: "disease_type",
-        enabled: true,
         fieldClass: 'truncated-cell',
+        render: row => row.disease_type,
         sortable: true
       }, {
         displayName: "Primary Site",
         id: "primary_site",
-        enabled: true,
         fieldClass: 'truncated-cell',
+        render: row => row.primary_site,
         sortable: true
       }, {
         displayName: "Program",
         id: "program.name",
-        enabled: true,
+        render: row => row.program.name,
         sortable: true
       },
       {
         displayName: "Cases",
         id: "summary.participant_count",
-        enabled: true,
-        template: function (field: TableiciousEntryDefinition, row, scope, $filter) {
-          var summary: TableiciousEntryDefinition = _.find(row, function (x: TableiciousEntryDefinition) {
-            return x.id === 'summary';
-          }).val;
-
-          return $filter("number")(summary && summary.participant_count ? summary.participant_count : 0);
-        },
-        sref: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-          var project_id = _.find(row, function (elem) {
-            return elem.id === 'project_id';
-          }).val;
-
-          var summary: TableiciousEntryDefinition = _.find(row, function (x: TableiciousEntryDefinition) {
-            return x.id === 'summary';
-          }).val;
-
-          if (!summary || (summary && !summary.participant_count)) {
-            return;
-          }
-
-          var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: project_id}]);
-
-          return {
-            state: "/search/p",
-            filters: filter
-          };
-
+        render: (row, $filter) => {
+          const filters = $filter("makeFilter")([{name: 'participants.project.project_id', value: row.project_id}], true);
+          const href = 'search/p?filters=' + filters;
+          const val = '{{' + row.summary.participant_count + '|number:0}}'; 
+          return "<a href=" + href + ">" + val + '</a>';
         },
         sortable: true,
         fieldClass: 'text-right'
@@ -286,45 +264,18 @@ module ngApp.projects.models {
       }, {
         displayName: "Files",
         id: "summary.file_count",
-        enabled: true,
-        template: function (field, row, scope, $filter) {
-          var summary = _.find(row, function (elem) {
-            return elem.id === "summary";
-          }).val;
-
-          return $filter("number")(summary && summary.file_count || 0);
-        },
-        sref: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-          var projectId = _.find(row, function (elem) {
-            return elem.id === 'project_id';
-          }).val;
-
-          var summary = _.find(row, function (x: TableiciousEntryDefinition) {
-            return x.id === 'summary';
-          }).val;
-
-          if (!summary || (summary && !summary.file_count)) {
-            return;
-          }
-
-          var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: projectId}]);
-          return {
-            state: "/search/f",
-            filters: filter
-          };
+        render: (row, $filter) => {
+          const filters = $filter("makeFilter")([{name: 'participants.project.project_id', value: row.project_id}], true);
+          const href = 'search/f?filters=' + filters;
+          const val = '{{' + row.summary.file_count + '|number:0}}'; 
+          return '<a href=' + href + '>' + val + '</a>';
         },
         sortable: true,
         fieldClass: 'text-right'
       }, {
         displayName: "File Size",
         id: "file_size",
-        enabled: true,
-        template: function (field, row, scope, filter) {
-          var summary: TableiciousEntryDefinition = _.find(row, function (x: TableiciousEntryDefinition) {
-            return x.id === 'summary';
-          });
-          return scope.$filter('size')(summary.val.file_size);
-        },
+        render: row => '{{' + row.summary.file_size + '|size}}',
         sortable: true,
         fieldClass: 'text-right'
       }

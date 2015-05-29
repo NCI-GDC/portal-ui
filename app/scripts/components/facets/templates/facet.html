@@ -6,7 +6,7 @@
        aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
        role="button">
     <i class="fa" data-ng-class="{ 'fa-angle-down': !tc.collapsed, 'fa-angle-right': tc.collapsed }"></i>
-    {{ tc.title | translate }}
+    {{ ::tc.title | translate }}
   </h4>
 
   <div data-ng-show="!tc.collapsed">
@@ -17,10 +17,12 @@
             class="facet-term-label">
         <i class="fa fa-check-square-o" aria-controls="data-table" aria-checked="false"></i>
         <span data-ng-if="tc.name.indexOf('project_id') !== -1"
-              data-tooltip="{{ ProjectsService.projectIdMapping[term.key] }}"
+              data-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"
               data-tooltip-placement="right">{{ ::term.key.toUpperCase() }}</span>
-        <span data-ng-if="tc.name.indexOf('project_id') === -1">{{ ::term.key | translate | humanify: true:true }}</span>
+        <span data-ng-if="tc.name.indexOf('project_id') === -1">
+          {{ ::term.key | translate | humanify:true:true }}
+        </span>
       </span>
       <span class="label label-primary pull-right">{{ term.doc_count | number:0}}</span>
     </p>
@@ -33,10 +35,12 @@
             class="facet-term-label">
         <i class="fa fa-square-o" aria-controls="data-table" aria-checked="false"></i>
         <span data-ng-if="tc.name.indexOf('project_id') !== -1"
-              data-tooltip="{{ ProjectsService.projectIdMapping[term.key] }}"
+              data-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"
               data-tooltip-placement="right">{{ ::term.key.toUpperCase() }}</span>
-        <span data-ng-if="tc.name.indexOf('project_id') === -1">{{ ::term.key | translate | humanify: true:true }}</span>
+        <span data-ng-if="tc.name.indexOf('project_id') === -1">
+          {{ ::term.key | translate | humanify: true:true }}
+        </span>
       </span>
       <span class="label label-primary pull-right">{{ term.doc_count | number:0}}</span>
     </p>

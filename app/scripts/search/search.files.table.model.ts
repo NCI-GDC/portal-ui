@@ -31,6 +31,7 @@ module ngApp.search.models {
   var searchTableFilesModel: TableiciousConfig = {
     title: 'Files',
     order: ['file_actions', 'my_projects', 'access', 'file_name', 'participants', 'participants.project.project_id', 'data_type', 'data_format', 'file_size', 'annotations'],
+    rowId: 'file_id',
     headings: [
       {
         displayName: "file_actions",

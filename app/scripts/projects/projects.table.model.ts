@@ -1,35 +1,5 @@
 module ngApp.projects.models {
-  import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
-  import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
-
-  function getParticipantSref(data_type: string) {
-    return function fileSref(field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-      var projectId = _.find(row, function (elem) {
-        return elem.id === 'project_id';
-      }).val;
-
-      var data = _.find(_.find(row, function (x: TableiciousEntryDefinition) {
-        return x.id === 'summary';
-      }).val.data_types, function (x: any) {
-        return x.data_type === data_type;
-      });
-
-      if (!data || !data.participant_count) {
-        return;
-      }
-
-      var filter = $filter("makeFilter")([{
-        name: 'participants.project.project_id',
-        value: projectId
-      }, {name: 'files.data_type', value: data_type}]);
-      return {
-        state: "/search/p",
-        filters: filter
-      };
-    }
-  }
-
-  var projectTableModel: TableiciousConfig = {
+  var projectTableModel = {
     title: 'Projects',
     order: ['project_id', 'disease_type', 'primary_site', 'program.name', 'summary.participant_count', 'data_types', 'summary.file_count', 'file_size'],
     rowId: 'project_id',

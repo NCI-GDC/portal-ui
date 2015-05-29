@@ -379,6 +379,7 @@ gulp.task('ng:templates', function () {
 // Watch Files For Changes & Reload
 gulp.task('serve:web', function (cb) {
   var bsOpts = {
+    open: false,
     notify: false,
     // Run as an https by uncommenting 'https: true'
     // Note: this uses an unsigned certificate which on first access
@@ -390,8 +391,8 @@ gulp.task('serve:web', function (cb) {
       ],
       baseDir: 'dist'
     },
-    host: "portal.gdc.nci.nih.gov",
-    open: "external"
+    host: "portal.gdc.nci.nih.gov"
+//    open: "external"
   };
 //    bsOpts.tunnel = production ? 'oicrgdcdev' : false;
 

@@ -32,6 +32,8 @@ module ngApp.components.tables.directives.tableicious {
                     if (_.isEqual(h, o)) return;
                    refresh(h.headings); 
                 }, true);
+                
+                refresh($scope.config.headings);
             }
         }
     }
@@ -59,8 +61,9 @@ module ngApp.components.tables.directives.tableicious {
     }
     
     interface IHeading {
-        displayName: string;
+        th: string;
         id: string;
+        td(row:any, filter: ng.IFilterService): string;
         sortable: boolean;
         hidden: boolean;
         children: IHeading[];

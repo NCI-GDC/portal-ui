@@ -35,9 +35,9 @@ module ngApp.projects.models {
     rowId: 'project_id',
     headings: [
       {
-        displayName: "ID",
+        th: "ID",
         id: "project_id",
-        render: (row) => {
+        td: (row) => {
           return '<a data-ui-sref="project({projectId:\''+row.project_id+'\'})' + 
                     '" data-tooltip="' + row.name +
                     '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' + 
@@ -46,37 +46,35 @@ module ngApp.projects.models {
         },
         sortable: true,
         hidden: false,
-        enabled: true,
-        canReorder: true
+        draggable: true
       }, {
-        displayName: "Disease Type",
+        th: "Disease Type",
         id: "disease_type",
-        fieldClass: 'truncated-cell',
-        render: row => row.disease_type,
+        tdClassName: 'truncated-cell',
+        td: row => row.disease_type,
         sortable: true,
         hidden: false,
-        canReorder: true,
-        enabled: true
+        draggable: true
       }, {
-        displayName: "Primary Site",
+        th: "Primary Site",
         id: "primary_site",
-        fieldClass: 'truncated-cell',
-        render: row => row.primary_site,
+        tdClassName: 'truncated-cell',
+        td: row => row.primary_site,
         sortable: true,
         hidden: false,
         canReorder: true,
         enabled: true
       }, {
-        displayName: "Program",
+        th: "Program",
         id: "program.name",
-        render: row => row.program.name,
+        td: row => row.program.name,
         sortable: true,
         hidden: false
       },
       {
-        displayName: "Cases",
+        th: "Cases",
         id: "summary.participant_count",
-        render: (row, $filter) => {
+        td: (row, $filter) => {
           const filters = $filter("makeFilter")([{name: 'participants.project.project_id', value: row.project_id}], true);
           const href = 'search/p?filters=' + filters;
           const val = '{{' + row.summary.participant_count + '|number:0}}'; 
@@ -84,83 +82,83 @@ module ngApp.projects.models {
         },
         sortable: true,
         hidden: false,
-        fieldClass: 'text-right'
+        tdClassName: 'text-right'
       }, {
-        displayName: "Available Cases per Data Type",
+        th: "Available Cases per Data Type",
         id: "data_types",
-        headingClass: 'text-center',
+        thClassName: 'text-center',
         hidden: false,
         children: [
           {
-            displayName: 'Clinical',
+            th: 'Clinical',
             id: 'clinical',
-            render: (row) => {
+            td: (row) => {
               const a = _.find(row.summary.data_types, {data_type: "Clinical"})
 
               return 'A'
             },
           }, {
-            displayName: 'Array',
+            th: 'Array',
             toolTipText: 'Raw microarray data',
             id: 'Array',
-            render: row => "A",
+            td: row => "A",
           }, {
-            displayName: 'Seq',
+            th: 'Seq',
             id: 'Seq',
-            render: row => "A",
+            td: row => "A",
           }, {
-            displayName: "SNV",
+            th: "SNV",
             toolTipText: "Simple nucleotide variation",
             id: "SNV",
-            render: row => "A",
+            td: row => "A",
           }, {
-            displayName: 'CNV',
+            th: 'CNV',
             toolTipText: 'Copy number variation',
             id: 'cnv',
-            render: row => "A",
+            td: row => "A",
           }, {
-            displayName: 'SV',
+            th: 'SV',
             toolTipText: 'Structural rearrangement',
             id: 'sv',
-            render: row => "A",
+            td: row => "A",
           }, {
-            displayName: 'Exp',
+            th: 'Exp',
             toolTipText: 'Gene expression',
             id: 'Exp',
-            render: row => "A",
+            td: row => "A",
           }, {
-            displayName: 'PExp',
+            th: 'PExp',
             toolTipText: 'Protein expression',
             id: 'pexp',
-            render: row => "A",
+            td: row => "A",
           }, {
-            displayName: 'Meth',
+            th: 'Meth',
             toolTipText: 'DNA methylation',
             id: 'meth',
-            render: row => "A",
+            td: row => "A",
           }, {
-            displayName: 'Other',
+            th: 'Other',
             id: 'other',
-            render: row => "A",
+            td: row => "A",
           }
         ]
       }, {
-        displayName: "Files",
+        th: "Files",
         id: "summary.file_count",
-        render: (row, $filter) => {
+        td: (row, $filter) => {
           const filters = $filter("makeFilter")([{name: 'participants.project.project_id', value: row.project_id}], true);
           const href = 'search/f?filters=' + filters;
           const val = '{{' + row.summary.file_count + '|number:0}}'; 
           return '<a href=' + href + '>' + val + '</a>';
         },
         sortable: true,
-        fieldClass: 'text-right'
+        tdClassName: 'text-right'
       }, {
-        displayName: "File Size",
+        th: "File Size",
         id: "file_size",
-        render: row => '{{' + row.summary.file_size + '|size}}',
+        td: row => '{{' + row.summary.file_size + '|size}}',
         sortable: true,
-        fieldClass: 'text-right'
+        tdClassName: 'text-right'
       }
     ],
     fields: [

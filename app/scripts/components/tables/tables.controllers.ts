@@ -34,7 +34,7 @@ module ngApp.components.tables.controllers {
         if (col.sortable) {
           var obj = {
             id: col.id,
-            name: col.displayName,
+            name: col.th,
             sort: false
           };
 
@@ -383,7 +383,7 @@ module ngApp.components.tables.controllers {
           if (found) {
             found.hidden = saved[i].hidden;
             found.canReorder = saved[i].canReorder;
-            saved[i].displayName = found.displayName;
+            saved[i].th = found.th;
             this.updateChildrenVisibility(found);
           }
           reordered.push(found);
@@ -453,7 +453,7 @@ module ngApp.components.tables.controllers {
 
     initListMap() {
      this.$scope.dndList = this.$scope.list.map(function (elem) {
-              var composite = _.pick(elem, "id", "displayName", "hidden", "canReorder");
+              var composite = _.pick(elem, "id", "th", "hidden", "canReorder");
               if (composite.canReorder !== false) {
                 composite.canReorder = true;
               }

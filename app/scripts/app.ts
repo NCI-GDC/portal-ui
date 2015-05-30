@@ -132,6 +132,7 @@ angular
       "ngTagsInput",
       "lz-string",
       "ui.utils.masks",
+      "ui.sortable",
 
       "ngApp.core",
       "ngApp.search",

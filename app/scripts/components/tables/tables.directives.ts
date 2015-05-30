@@ -12,14 +12,15 @@ module ngApp.components.tables.directives {
     return {
       restrict: "EA",
       scope: {
-        list:"=",
-        order:"=",
-        config:"="
+        headings:"="
       },
       replace: true,
       templateUrl: "components/tables/templates/arrange-columns.html",
-      controller: "ArrangeColumnsController as acc",
-      link:function(scope:any, window: IGDCWindowService) {
+//      controller: "ArrangeColumnsController as acc",
+      link:function($scope:any) {
+        $scope.toggleVisibility = function (item) {
+          item.hidden = !item.hidden
+        }
       }
     };
   }
@@ -70,7 +71,19 @@ module ngApp.components.tables.directives {
       },
       replace: true,
       templateUrl: "components/tables/templates/gdc-table.html",
-      controller: "GDCTableController as gtc"
+      controller: "GDCTableController as gtc",
+      link: function($scope) {
+        function refresh(hs) {
+          $scope.visibleColumns = _.filter(hs, h => !h.hidden);
+        }
+        
+        $scope.$watch('config.headings', (n: IHeading[], o: IHeading[]) => {
+          if (_.isEqual(n,o)) return;
+          refresh(n); 	
+        }, true);
+        
+        refresh($scope.config.headings);
+      }
     }
   }
 

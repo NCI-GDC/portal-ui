@@ -6,8 +6,7 @@
         data-ng-class="h.thClassName"
         rowspan="{{h.children ? 1 : 2}}" 
         colspan="{{h.children ? h.children.length : 1}}" 
-        data-ng-repeat="h in config.headings" 
-        data-ng-if="!h.hidden">
+        data-ng-repeat="h in headings">
       </th>
     </tr>
     <tr>
@@ -18,12 +17,11 @@
     </tr>
   </thead>
   <tbody>
-    <tr data-ng-repeat="d in data track by d[config.rowId]">
+    <tr data-ng-repeat="d in data track by d[rowId]">
       <td 
         data-cell="h.td(d, filter)"
         data-ng-class="h.tdClassName"
-        data-ng-repeat="h in dataCols" 
-        data-ng-if="!h.hidden">
+        data-ng-repeat="h in dataCols">
       </td>
     </tr>
   </tbody>

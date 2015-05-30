@@ -19,17 +19,19 @@
                     data-update="clientSide"
                     data-data="data"
                     data-paging="paging" data-page="{{ page }}"></sort-table>
-        <arrange-columns data-ng-if="gtc.sortingHeadings.length"
-                         data-list="config.headings"
-                         data-config="config"
-                         data-hidden="config.hidden"></arrange-columns>
+        <arrange-columns data-headings="config.headings"></arrange-columns>
         <export-table data-endpoint="{{ endpoint }}" data-size="{{ paging.total }}"
                       data-fields="config.fields" data-ng-if="endpoint"></export-table>
       </div>
     </div>
   </div>
   <div class="table-responsive" data-nng-show="gtc.tableRendered">
-    <tableicious id="{{ id }}" data-data="gtc.displayedData" data-config="config" data-paging="paging"></tableicious>
+    <tableicious 
+        id="{{ id }}"
+        data-row-id="{{ config.rowId }}"
+      	data-headings="visibleColumns"
+        data-data="data" 
+        data-paging="paging"></tableicious>
   </div>
   <div class="panel-footer clearfix" data-ng-if="page && paging && page !== 'projects'"
        data-ng-show="gtc.tableRendered">

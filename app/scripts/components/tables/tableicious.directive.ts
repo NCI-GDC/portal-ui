@@ -5,15 +5,18 @@ module ngApp.components.tables.directives.tableicious {
         return {
             restrict: "E",
             scope: {
+                rowId: "@",
                 data: "=",
-                config: "=",
-                paging: "="
+                paging: "=",
+                headings: "="
             },
             replace: true,
             templateUrl: "components/tables/templates/tableicious.html",
             link: function($scope: ITableiciousScope) {
+                $scope.filter = $filter;
+
                 function hasChildren(h: IHeading): boolean {
-                    return !!h.children && !h.hidden;
+                    return h.children && h.children.length > 0;
                 }
                 
                 function refresh(hs: IHeading[]): void {
@@ -24,16 +27,15 @@ module ngApp.components.tables.directives.tableicious {
                     $scope.dataCols = _.flatten<IHeading>(
                         _.map(hs, (h: IHeading): IHeading[] | IHeading => {
                             return hasChildren(h) ? h.children : h;
-                    }));    
+                    }));
+                    console.log($scope.dataCols);    
                 }
                 
-                $scope.filter = $filter;
-                $scope.$watch('config', (h: IConfig, o: IConfig) => {
-                    if (_.isEqual(h, o)) return;
-                   refresh(h.headings); 
-                }, true);
+                $scope.$watchCollection('headings', (n: IHeading[], o: IHeading[]) => {
+                   refresh(n); 
+                });
                 
-                refresh($scope.config.headings);
+                refresh($scope.headings);
             }
         }
     }
@@ -44,10 +46,11 @@ module ngApp.components.tables.directives.tableicious {
 
     interface ITableiciousScope extends ng.IScope {
         data: any[];
-        config: IConfig;
+        headings: IHeading[];
         filter: ng.IFilterService;
         subHeaders: IHeading[];
         dataCols: IHeading[];
+        rowId: string;
         hasChildren(h: IHeading): boolean;
         refresh(h: IHeading[]): void;
     }

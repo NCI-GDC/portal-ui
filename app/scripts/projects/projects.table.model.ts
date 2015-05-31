@@ -1,4 +1,22 @@
 module ngApp.projects.models {
+  function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
+    const filterString = $filter("makeFilter")(filters, true);
+    const href = 'search/p?filters=' + filterString;
+    const val = '{{' + value + '|number:0}}'; 
+    return "<a href='" + href + "'>" + val + '</a>';
+  }
+  function getDataType(dataTypes: Object[], dataType:string): number {
+    const data = _.find(dataTypes, {data_type: dataType})
+    return data ? data.participant_count : 0;
+  }
+  function dataTypeWithFilters(dataType: string, row: Object[], $filter: ng.IFilterService) {
+    const fs = [
+                  {name: 'participants.project.project_id', value: row.project_id},
+                  {name: 'files.data_type', value: dataType}
+                ] 
+    return withFilter(getDataType(row.summary.data_types, dataType), fs, $filter);
+  }
+  
   var projectTableModel = {
     title: 'Projects',
     order: ['project_id', 'disease_type', 'primary_site', 'program.name', 'summary.participant_count', 'data_types', 'summary.file_count', 'file_size'],
@@ -45,10 +63,8 @@ module ngApp.projects.models {
         th: "Cases",
         id: "summary.participant_count",
         td: (row, $filter) => {
-          const filters = $filter("makeFilter")([{name: 'participants.project.project_id', value: row.project_id}], true);
-          const href = 'search/p?filters=' + filters;
-          const val = '{{' + row.summary.participant_count + '|number:0}}'; 
-          return "<a href=" + href + ">" + val + '</a>';
+          const fs = [{name: 'participants.project.project_id', value: row.project_id}] 
+          return withFilter(row.summary.participant_count, fs, $filter);
         },
         sortable: true,
         hidden: false,
@@ -62,54 +78,43 @@ module ngApp.projects.models {
           {
             th: 'Clinical',
             id: 'clinical',
-            td: (row) => {
-              const a = _.find(row.summary.data_types, {data_type: "Clinical"})
-
-              return 'A'
-            },
+            td: (row, $filter) => dataTypeWithFilters("Clinical", row, $filter)
           }, {
             th: 'Array',
-            toolTipText: 'Raw microarray data',
             id: 'Array',
-            td: row => "A",
+            td: (row, $filter) => dataTypeWithFilters("Raw microarray data", row, $filter)
           }, {
             th: 'Seq',
             id: 'Seq',
-            td: row => "A",
+            td: (row, $filter) => dataTypeWithFilters("Raw sequencing data", row, $filter)
           }, {
             th: "SNV",
-            toolTipText: "Simple nucleotide variation",
             id: "SNV",
-            td: row => "A",
+            td: (row, $filter) => dataTypeWithFilters("Simple nucleotide variation", row, $filter)
           }, {
             th: 'CNV',
-            toolTipText: 'Copy number variation',
             id: 'cnv',
-            td: row => "A",
+            td: (row, $filter) => dataTypeWithFilters("Copy number variation", row, $filter)
           }, {
             th: 'SV',
-            toolTipText: 'Structural rearrangement',
             id: 'sv',
-            td: row => "A",
+            td: (row, $filter) => dataTypeWithFilters("Structural rearrangement", row, $filter)
           }, {
             th: 'Exp',
-            toolTipText: 'Gene expression',
             id: 'Exp',
-            td: row => "A",
+            td: (row, $filter) => dataTypeWithFilters("Gene expression", row, $filter)
           }, {
             th: 'PExp',
-            toolTipText: 'Protein expression',
             id: 'pexp',
-            td: row => "A",
+            td: (row, $filter) => dataTypeWithFilters("Protein expression", row, $filter)
           }, {
             th: 'Meth',
-            toolTipText: 'DNA methylation',
             id: 'meth',
-            td: row => "A",
+            td: (row, $filter) => dataTypeWithFilters("DNA methylation", row, $filter)
           }, {
             th: 'Other',
             id: 'other',
-            td: row => "A",
+            td: (row, $filter) => dataTypeWithFilters("Other", row, $filter)
           }
         ]
       }, {

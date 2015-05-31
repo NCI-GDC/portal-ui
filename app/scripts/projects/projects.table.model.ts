@@ -25,13 +25,11 @@ module ngApp.projects.models {
       {
         th: "ID",
         id: "project_id",
-        td: (row) => {
-          return '<a data-ui-sref="project({projectId:\''+row.project_id+'\'})' + 
-                    '" data-tooltip="' + row.name +
-                    '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' + 
-                    row.project_id + 
-                  '</a>';
-        },
+        td: row => '<a href="projects/'+row.project_id + 
+                     '" data-tooltip="' + row.name +
+                     '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' + 
+                     row.project_id + 
+                   '</a>',
         sortable: true,
         hidden: false,
         draggable: true
@@ -121,10 +119,8 @@ module ngApp.projects.models {
         th: "Files",
         id: "summary.file_count",
         td: (row, $filter) => {
-          const filters = $filter("makeFilter")([{name: 'participants.project.project_id', value: row.project_id}], true);
-          const href = 'search/f?filters=' + filters;
-          const val = '{{' + row.summary.file_count + '|number:0}}'; 
-          return '<a href=' + href + '>' + val + '</a>';
+          const fs = [{name: 'participants.project.project_id', value: row.project_id}] 
+          return withFilter(row.summary.file_count, fs, $filter);
         },
         sortable: true,
         tdClassName: 'text-right'

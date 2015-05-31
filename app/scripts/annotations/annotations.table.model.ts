@@ -4,116 +4,93 @@ module ngApp.projects.models {
     var AnnotationsTableModel:TableiciousConfig = {
         title: "Annotations",
         order: ['annotation_id', 'participant_id', 'project.program.name', 'project.project_id', 'entity_type', 'entity_id', 'entity_submitter_id', 'category', 'classification', 'created_datetime', 'creator', 'status', 'notes'],
-        headings: [{
-            displayName: "ID",
+        rowId: 'annotation_id',
+        headings: [
+          {
+            th: "ID",
             id: "annotation_id",
-            sref: function (field) {
-                return {
-                    state: "/annotations/" + field.val
-                };
-            },
+            td: row => '<a href="annotations/'+row.annotation_id+'">' + row.annotation_id + '</a>',
             sortable: true,
-          fieldClass: 'truncated-cell'
-        },
+            tdClassName: 'truncated-cell'
+          },
         {
-            displayName: "Case ID",
+            th: "Case ID",
             id: "participant_id",
-            sref: function (field) {
-              return {
-                state: "/participants/" + field.val
-              }
-            },
+            td: row => '<a href="participants/'+row.participant_id+'">' + row.participant_id + '</a>',
             sortable: true,
-          fieldClass: 'truncated-cell'
+            tdClassName: 'truncated-cell'
         },
         {
-            displayName: "Program",
+            th: "Program",
             id: "project.program.name",
+            td: row => row.program.name,
             sortable: true,
             hidden:true
         },
         {
-            displayName: "Project",
+            th: "Project",
             id: "project.project_id",
-            compile: function ($scope) {
-                var project = _.result(_.findWhere($scope.row, {'id': 'project'}), 'val');
-                var htm = '<a data-ng-href="/projects/' + project.project_id + '" data-tooltip="' +
-                          project.name + '" tooltip-append-to-body="true" tooltip-placement="right">' +
-                          project.project_id + '</a>';
-                return htm;
-            },
+            td: row => '<a href="projects/'+row.project.project_id + 
+                         '" data-tooltip="' + row.project.name +
+                         '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' + 
+                         row.project.project_id + 
+                       '</a>',
             sortable: true
         },
         {
-            displayName: "Entity Type",
+            th: "Entity Type",
             id: "entity_type",
-            template: function (field, row, scope, $filter) {
-                return $filter("humanify")(field && field.val || "--");
-            },
+            td: row => row.entity_type,
             sortable: true
         },
         {
-            displayName: "Entity ID",
+            th: "Entity ID",
             id: "entity_id",
-            template: function (field) {
-                return field && field.val || "--";
-            },
+            td: row => row.entity_id,
             sortable: true,
-            fieldClass: 'truncated-cell'
+            tdClassName: 'truncated-cell'
         },
         {
-            displayName: "Entity Barcode",
+            th: "Entity Barcode",
             id: "entity_submitter_id",
             sortable: true,
-            template: function(field) {
-                return field && field.val || "--";
-            },
+            td: row => row.entity_submitter_id,
             hidden:true
         },
         {
-            displayName: "Category",
+            th: "Category",
             id: "category",
-            template: function(field,row,scope) {
-              return scope.$filter('ellipsicate')(field.val, 30);
-            },
+            td: row => row.category,
             sortable: true
         },
         {
-            displayName: "Classification",
+            th: "Classification",
             id: "classification",
-            template: function(field) {
-                var original = field.val;
-                original = original.split(/(?=[A-Z])/).join(" ");
-
-                return original;
-            },
+            td: row => row.classification,
             sortable: true
         },
         {
-            displayName: "Created Date",
+            th: "Created Date",
             id: "created_datetime",
-            template:function(field,row,scope, $filter){
-                // The value given appears to be in seconds rather than milliseconds
-                return $filter('date')(field.val * 1000);
-            }
+            td: row => '{{'+row.created_datetime*1000+'|date}}'
         },
         {
-            displayName: "Annotator",
+            th: "Annotator",
             id: "creator",
-            template: function(field, row, scope, $filter) {
-                return $filter("humanify")(field.val);
-            },
+            td: row => row.creator,
             sortable: true,
             hidden: true
         },
         {
-            displayName: "Status",
+            th: "Status",
             id: "status",
+            td: row => row.creator,
             sortable: true
         },
         {
-            displayName: "Notes",
+            th: "Notes",
             id: "notes",
+            td: row => row.notes,
             sortable: false,
             hidden: true
         }

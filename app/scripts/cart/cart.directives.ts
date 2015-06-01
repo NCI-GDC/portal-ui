@@ -122,7 +122,6 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-all.html",
       controller: function($scope: IAddToCartScope, CartService: ICartService, LocationService: ILocationService,
                            FilesService: IFilesService, UserService: IUserService) {
-  	     console.log($scope);
         $scope.CartService = CartService;
 
         $scope.removeAll  = function() {

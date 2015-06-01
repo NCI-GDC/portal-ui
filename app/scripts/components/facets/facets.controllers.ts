@@ -334,7 +334,6 @@ module ngApp.components.facets.controllers {
 
     search(): void {
       var actives = this.FacetService.getActivesWithValue(this.$scope.name);
-      //console.log("hi from search()");
       if (_.size(actives) > 0) {
         this.FacetService.removeTerm(this.name, undefined, '>=');
       }

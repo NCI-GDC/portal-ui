@@ -22,9 +22,27 @@ module ngApp.participants.controllers {
                 private config: IGDCConfig) {
       CoreService.setPageTitle("Case " + participant.participant_id);
 
-      this.annotationIds = _.map(this.participant.annotations, (annotation) => {
+      var annotationIds = _.map(this.participant.annotations, (annotation) => {
         return annotation.annotation_id;
       });
+
+      function checkAnnotations(item) {
+        _.forEach(item, function (obj) {
+          _.forEach(obj, function (val, key) {
+            if (key === "annotations") {
+              annotationIds = annotationIds.concat(_.pluck(val, "annotation_id"));
+            } else if (_.isArray(val)) {
+              checkAnnotations(val);
+            }
+          });
+        });
+      }
+
+      if (this.participant.samples) {
+        checkAnnotations(this.participant.samples);
+      }
+
+      this.annotationIds = annotationIds;
 
       var clinicalFile = _.find(this.participant.files, (file) => {
         return file.data_subtype.toLowerCase() === "clinical data";

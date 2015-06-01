@@ -29,8 +29,12 @@ module ngApp.search.models {
     rowId: 'file_id',
     headings: [
       {
-        th: "file_actions",
+        th: '<div add-to-cart-all files="data" paging="paging"></div>',
+        name: 'Add to Cart',
         id: "file_actions",
+        td: row => '<div add-to-cart-single file="arrayRow"></div>' +
+                    '<a class="btn btn-primary" download-button files=file>' +
+                    '<i class="fa fa-download"></i></a>',
         compile: function ($scope) {
           $scope.arrayRow = arrayToObject($scope.row);
           var htm = '<div add-to-cart-single file="arrayRow"></div>' +
@@ -41,12 +45,9 @@ module ngApp.search.models {
         compileHead: function ($scope) {
           var htm = '<div add-to-cart-all files="data" paging="paging"></div>';
           return htm;
-        },
-        fieldClass: "table-compile-cell",
-        noTitle: true,
-        visible: true
+        }
       }, {
-        th: "My Projects",
+        name: "My Projects",
         id: "my_projects",
         enabled: function (scope) {
           return scope.UserService.currentUser;
@@ -59,17 +60,17 @@ module ngApp.search.models {
           return UserService.isUserProject({participants: participants}) ? 'check' : 'close';
         }
       }, {
-        th: "Access",
+        name: "Access",
         id: "access",
-        td: row => '<i class="fa fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i> ' + row.access
+        td: row => '<i class="fa fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i> ' + row.access,
+        sortable: true
       }, {
-        th: "File Name",
+        name: "File Name",
         id: "file_name",
         td: row => '<a href="files/' + row.file_id + '">' + row.file_name + '</a>',
         sortable: true,
         tdClassName: 'truncated-cell'
       }, {
-        th: "Participants",
         name: "Cases",
         id: "participants",
         td: (row, $filter) => {
@@ -83,7 +84,7 @@ module ngApp.search.models {
         },
         tdClassName: 'truncated-cell text-right'
       }, {
-        th: "Project",
+        name: "Project",
         id: "participants.project.project_id",
         td: row => {
           return _.unique(_.map(row.participants, p => {
@@ -94,23 +95,23 @@ module ngApp.search.models {
         },
         sortable: true
       }, {
-        th: "Data Type",
+        name: "Data Type",
         id: "data_type",
         td: row => row.data_type,
         sortable: true
       }, {
-        th: "Data Format",
+        name: "Data Format",
         id: "data_format",
         td: row => row.data_format,
         sortable: true
       }, {
-        th: "Size",
+        name: "Size",
         id: "file_size",
         td: (row, $filter) => $filter("size")(row.file_size),
         sortable: true,
         tdClassName: 'text-right'
       }, {
-        th: "Annotations",
+        name: "Annotations",
         id: "annotations",
         td: (row, $filter) => {
           function getAnnotations(row, $filter) {

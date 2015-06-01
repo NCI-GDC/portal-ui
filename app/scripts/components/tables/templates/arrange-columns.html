@@ -27,7 +27,7 @@
               data-as-sortable-item>
               
               <i class="fa fa-stack fa-{{item.hidden ? 'square-o' : 'check-square-o'}}" data-ng-click="toggleVisibility(item)"></i>
-              {{ item.th | ellipsicate:18 }}
+              {{ item.name | ellipsicate:18 }}
               <i class="pull-right text-right fa fa-bars fa-stack" as-sortable-item-handle data-ng-class="{ 'fa-disabled': search.th }"></i>
               
           </li>

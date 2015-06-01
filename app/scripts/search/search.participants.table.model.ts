@@ -73,13 +73,7 @@ module ngApp.search.models {
         headings: [{
             th: "Add to Cart",
             id: "add_to_cart_filtered",
-            noTitle: true,
-            enabled: true,
-            compile:function($scope){
-                $scope.arrayRow = arrayToObject($scope.row);
-                var htm = '<div add-to-cart-filtered row="row"></div>';
-                return htm;
-            }
+            td: row => '<div add-to-cart-filtered row="row"></div>'
         }, {
             th: "My Projects",
             id: "my_projects",
@@ -105,8 +99,8 @@ module ngApp.search.models {
             td: row => '<a href="participants/'+row.participant_id + '">' +
                          row.participant_id + 
                        '</a>',
-            tdClassName: 'truncated-cell',
-            sortable: true
+            sortable: true,
+            tdClassName: 'truncated-cell'
         }, {
             th: "Project",
             id: "project.project_id",
@@ -124,7 +118,8 @@ module ngApp.search.models {
         }, {
             th: "Gender",
             id: "clinical.gender",
-            td: (row, $filter) => $filter("humanify")(row.clinical.gender)
+            td: (row, $filter) => $filter("humanify")(row.clinical.gender),
+            sortable: true
         }, {
 
             th: "Files",
@@ -184,21 +179,21 @@ module ngApp.search.models {
               }
             ]
         }, {
-            th: "Annotations",
-            id: "annotations",
-        td: (row, $filter) => {
-          function getAnnotations(row, $filter) {
-            return row.annotations.length == 1 ?
+          th: "Annotations",
+          id: "annotations",
+          td: (row, $filter) => {
+            function getAnnotations(row, $filter) {
+              return row.annotations.length == 1 ?
                      '<a href="annotations/' + row.annotations[0].annotation_id + '">' + row.annotations[0].annotation_id + '</a>' :
                      withAnnotationFilter(
                        row.annotations.length, 
                        [{name: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}], 
                        $filter);
-          }
-          
-          return row.annotations && row.annotations.length ? getAnnotations(row, $filter) : 0;
-        },
-        tdClassName: 'truncated-cell text-right'
+            }
+      
+            return row.annotations && row.annotations.length ? getAnnotations(row, $filter) : 0;
+          },
+          tdClassName: 'truncated-cell text-right'
         }],
         fields: [
           "participant_id",

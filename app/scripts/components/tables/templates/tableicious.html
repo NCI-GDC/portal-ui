@@ -21,7 +21,7 @@
       <td 
         data-cell="::h.td(d, filter)"
         data-ng-class="h.tdClassName"
-        data-ng-repeat="h in dataCols">
+        data-ng-repeat="h in dataCols track by h.id">
       </td>
     </tr>
   </tbody>

@@ -7,28 +7,28 @@ module ngApp.projects.models {
         rowId: 'annotation_id',
         headings: [
           {
-            th: "ID",
+            name: "ID",
             id: "annotation_id",
             td: row => '<a href="annotations/'+row.annotation_id+'">' + row.annotation_id + '</a>',
             sortable: true,
             tdClassName: 'truncated-cell'
           },
         {
-            th: "Case ID",
+            name: "Case ID",
             id: "participant_id",
             td: row => '<a href="participants/'+row.participant_id+'">' + row.participant_id + '</a>',
             sortable: true,
             tdClassName: 'truncated-cell'
         },
         {
-            th: "Program",
+            name: "Program",
             id: "project.program.name",
             td: row => row.program.name,
             sortable: true,
             hidden:true
         },
         {
-            th: "Project",
+            name: "Project",
             id: "project.project_id",
             td: row => '<a href="projects/'+row.project.project_id + 
                          '" data-tooltip="' + row.project.name +
@@ -38,57 +38,57 @@ module ngApp.projects.models {
             sortable: true
         },
         {
-            th: "Entity Type",
+            name: "Entity Type",
             id: "entity_type",
             td: row => row.entity_type,
             sortable: true
         },
         {
-            th: "Entity ID",
+            name: "Entity ID",
             id: "entity_id",
             td: row => row.entity_id,
             sortable: true,
             tdClassName: 'truncated-cell'
         },
         {
-            th: "Entity Barcode",
+            name: "Entity Barcode",
             id: "entity_submitter_id",
             sortable: true,
             td: row => row.entity_submitter_id,
             hidden:true
         },
         {
-            th: "Category",
+            name: "Category",
             id: "category",
             td: row => row.category,
             sortable: true
         },
         {
-            th: "Classification",
+            name: "Classification",
             id: "classification",
             td: row => row.classification,
             sortable: true
         },
         {
-            th: "Created Date",
+            name: "Created Date",
             id: "created_datetime",
             td: row => '{{'+row.created_datetime*1000+'|date}}'
         },
         {
-            th: "Annotator",
+            name: "Annotator",
             id: "creator",
             td: row => row.creator,
             sortable: true,
             hidden: true
         },
         {
-            th: "Status",
+            name: "Status",
             id: "status",
             td: row => row.creator,
             sortable: true
         },
         {
-            th: "Notes",
+            name: "Notes",
             id: "notes",
             td: row => row.notes,
             sortable: false,

@@ -2,16 +2,16 @@
   <thead>
     <tr>
       <th
-        data-cell="h.th ? h.th : h.name"
+        data-cell="::h.th ? h.th : h.name"
         data-ng-class="h.thClassName"
-        rowspan="{{h.children ? 1 : 2}}" 
-        colspan="{{h.children ? h.children.length : 1}}" 
+        rowspan="{{::h.children ? 1 : 2}}" 
+        colspan="{{::h.children ? h.children.length : 1}}" 
         data-ng-repeat="h in headings">
       </th>
     </tr>
     <tr>
       <th
-        data-cell="h.th"
+        data-cell="h.th ? h.th : h.name"
         data-ng-repeat="h in subHeaders">
       </th>
     </tr>
@@ -19,7 +19,7 @@
   <tbody>
     <tr data-ng-repeat="d in data track by d[rowId]">
       <td 
-        data-cell="h.td(d, filter)"
+        data-cell="::h.td(d, filter)"
         data-ng-class="h.tdClassName"
         data-ng-repeat="h in dataCols">
       </td>

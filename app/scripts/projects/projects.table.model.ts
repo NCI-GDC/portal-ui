@@ -3,7 +3,7 @@ module ngApp.projects.models {
     const filterString = $filter("makeFilter")(filters, true);
     const href = 'search/p?filters=' + filterString;
     const val = '{{' + value + '|number:0}}'; 
-    return "<a href='" + href + "'>" + val + '</a>';
+    return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
   }
   function getDataType(dataTypes: Object[], dataType:string): number {
     const data = _.find(dataTypes, {data_type: dataType});
@@ -23,7 +23,7 @@ module ngApp.projects.models {
     rowId: 'project_id',
     headings: [
       {
-        th: "ID",
+        name: "ID",
         id: "project_id",
         td: row => '<a href="projects/'+row.project_id + 
                      '" data-tooltip="' + row.name +
@@ -34,7 +34,7 @@ module ngApp.projects.models {
         hidden: false,
         draggable: true
       }, {
-        th: "Disease Type",
+        name: "Disease Type",
         id: "disease_type",
         tdClassName: 'truncated-cell',
         td: row => row.disease_type,
@@ -42,7 +42,7 @@ module ngApp.projects.models {
         hidden: false,
         draggable: true
       }, {
-        th: "Primary Site",
+        name: "Primary Site",
         id: "primary_site",
         tdClassName: 'truncated-cell',
         td: row => row.primary_site,
@@ -51,14 +51,14 @@ module ngApp.projects.models {
         canReorder: true,
         enabled: true
       }, {
-        th: "Program",
+        name: "Program",
         id: "program.name",
-        td: row => row.program.name,
+        td: row => row.program && row.program.name,
         sortable: true,
         hidden: false
       },
       {
-        th: "Cases",
+        name: "Cases",
         id: "summary.participant_count",
         td: (row, $filter) => {
           const fs = [{name: 'participants.project.project_id', value: row.project_id}] 
@@ -68,55 +68,65 @@ module ngApp.projects.models {
         hidden: false,
         tdClassName: 'text-right'
       }, {
-        th: "Available Cases per Data Type",
+        name: "Available Cases per Data Type",
         id: "data_types",
         thClassName: 'text-center',
         hidden: false,
         children: [
           {
-            th: 'Clinical',
+            name: 'Clinical',
             id: 'clinical',
-            td: (row, $filter) => dataTypeWithFilters("Clinical", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("Clinical", row, $filter),
+            tdClassName: 'text-right'
           }, {
-            th: 'Array',
+            name: 'Array',
             id: 'Array',
-            td: (row, $filter) => dataTypeWithFilters("Raw microarray data", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("Raw microarray data", row, $filter),
+            tdClassName: 'text-right'
           }, {
-            th: 'Seq',
+            name: 'Seq',
             id: 'Seq',
-            td: (row, $filter) => dataTypeWithFilters("Raw sequencing data", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("Raw sequencing data", row, $filter),
+            tdClassName: 'text-right'
           }, {
-            th: "SNV",
+            name: "SNV",
             id: "SNV",
-            td: (row, $filter) => dataTypeWithFilters("Simple nucleotide variation", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("Simple nucleotide variation", row, $filter),
+            tdClassName: 'text-right'
           }, {
-            th: 'CNV',
+            name: 'CNV',
             id: 'cnv',
-            td: (row, $filter) => dataTypeWithFilters("Copy number variation", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("Copy number variation", row, $filter),
+            tdClassName: 'text-right'
           }, {
-            th: 'SV',
+            name: 'SV',
             id: 'sv',
-            td: (row, $filter) => dataTypeWithFilters("Structural rearrangement", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("Structural rearrangement", row, $filter),
+            tdClassName: 'text-right'
           }, {
-            th: 'Exp',
+            name: 'Exp',
             id: 'Exp',
-            td: (row, $filter) => dataTypeWithFilters("Gene expression", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("Gene expression", row, $filter),
+            tdClassName: 'text-right'
           }, {
-            th: 'PExp',
+            name: 'PExp',
             id: 'pexp',
-            td: (row, $filter) => dataTypeWithFilters("Protein expression", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("Protein expression", row, $filter),
+            tdClassName: 'text-right'
           }, {
-            th: 'Meth',
+            name: 'Meth',
             id: 'meth',
-            td: (row, $filter) => dataTypeWithFilters("DNA methylation", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("DNA methylation", row, $filter),
+            tdClassName: 'text-right'
           }, {
-            th: 'Other',
+            name: 'Other',
             id: 'other',
-            td: (row, $filter) => dataTypeWithFilters("Other", row, $filter)
+            td: (row, $filter) => dataTypeWithFilters("Other", row, $filter),
+            tdClassName: 'text-right'
           }
         ]
       }, {
-        th: "Files",
+        name: "Files",
         id: "summary.file_count",
         td: (row, $filter) => {
           const fs = [{name: 'participants.project.project_id', value: row.project_id}] 
@@ -125,9 +135,9 @@ module ngApp.projects.models {
         sortable: true,
         tdClassName: 'text-right'
       }, {
-        th: "File Size",
+        name: "File Size",
         id: "file_size",
-        td: row => '{{' + row.summary.file_size + '|size}}',
+        td: row => row.summary && '{{' + row.summary.file_size + '|size}}',
         sortable: true,
         tdClassName: 'text-right'
       }
@@ -137,13 +147,13 @@ module ngApp.projects.models {
       "state",
       "primary_site",
       "project_id",
-      "name"
+      "name",
+      "program.name"
     ],
     expand: [
       "summary",
       "summary.data_types",
       "summary.experimental_strategies",
-      "program"
     ]
   };
   angular.module("projects.table.model", [])

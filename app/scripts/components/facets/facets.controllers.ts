@@ -235,7 +235,7 @@ module ngApp.components.facets.controllers {
       $scope.$on("$locationChangeSuccess", () => this.refresh());
 
       $scope.$watch("facet", (n, o) => {
-        if (n === o && ($scope.min !== undefined || $scope.max !== undefined)) {
+        if ((n === o && ($scope.min !== undefined || $scope.max !== undefined)) || n === undefined) {
           return;
         }
         $scope.min = _.min(n.buckets, (bucket) => {

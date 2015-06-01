@@ -6,14 +6,14 @@ module ngApp.projects.models {
     return "<a href='" + href + "'>" + val + '</a>';
   }
   function getDataType(dataTypes: Object[], dataType:string): number {
-    const data = _.find(dataTypes, {data_type: dataType})
+    const data = _.find(dataTypes, {data_type: dataType});
     return data ? data.participant_count : 0;
   }
   function dataTypeWithFilters(dataType: string, row: Object[], $filter: ng.IFilterService) {
     const fs = [
                   {name: 'participants.project.project_id', value: row.project_id},
                   {name: 'files.data_type', value: dataType}
-                ] 
+                ];
     return withFilter(getDataType(row.summary.data_types, dataType), fs, $filter);
   }
   

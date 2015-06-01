@@ -1,7 +1,19 @@
 module ngApp.search.models {
-  import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
-  import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
   import IUserService = ngApp.components.user.services.IUserService;
+
+  function withAnnotationFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
+    const filterString = $filter("makeFilter")(filters, true);
+    const href = 'annotations?filters=' + filterString;
+    const val = '{{' + value + '|number:0}}';
+    return "<a href='" + href + "'>" + val + '</a>';
+  }
+
+  function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
+    const filterString = $filter("makeFilter")(filters, true);
+    const href = 'search/p?filters=' + filterString;
+    const val = '{{' + value + '|number:0}}';
+    return "<a href='" + href + "'>" + val + '</a>';
+  }
 
   function arrayToObject(array) {
     var obj = {};
@@ -11,30 +23,13 @@ module ngApp.search.models {
     return obj;
   }
 
-  function getAnnotationsSref(data_type: string) {
-    return function annotationSref(field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope, $filter: ng.IFilterService) {
-      var projectId = _.find(row, function (elem) {
-        return elem.id === 'project_id';
-      }).val;
-
-      var filter = $filter("makeFilter")([{
-        name: 'participants.project.project_id',
-        value: projectId
-      }, {name: 'files.data_type', value: data_type}]);
-      return {
-        state: "/search/p",
-        filters: filter
-      };
-    }
-  }
-
-  var searchTableFilesModel: TableiciousConfig = {
+  var searchTableFilesModel = {
     title: 'Files',
     order: ['file_actions', 'my_projects', 'access', 'file_name', 'participants', 'participants.project.project_id', 'data_type', 'data_format', 'file_size', 'annotations'],
     rowId: 'file_id',
     headings: [
       {
-        displayName: "file_actions",
+        th: "file_actions",
         id: "file_actions",
         compile: function ($scope) {
           $scope.arrayRow = arrayToObject($scope.row);
@@ -51,7 +46,7 @@ module ngApp.search.models {
         noTitle: true,
         visible: true
       }, {
-        displayName: "My Projects",
+        th: "My Projects",
         id: "my_projects",
         enabled: function (scope) {
           return scope.UserService.currentUser;
@@ -64,186 +59,72 @@ module ngApp.search.models {
           return UserService.isUserProject({participants: participants}) ? 'check' : 'close';
         }
       }, {
-        displayName: "Access",
+        th: "Access",
         id: "access",
-        visible: true,
-        icon: function (field) {
-          return field && field.val === 'protected' ? "lock" : "unlock";
-        },
-        template: function () {
-          return '';
-        }
+        td: row => '<i class="fa fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i> ' + row.access
       }, {
-        displayName: "File Name",
+        th: "File Name",
         id: "file_name",
-        visible: true,
-        template: function (field, row, scope) {
-          return field && field.val;
-        },
-        sref: function (field, row) {
-          var uuid = _.find(row, function (a: TableiciousEntryDefinition) {
-            return a.id === 'file_id'
-          });
-          return {
-            state: "/files/" + uuid.val
-          };
-        },
+        td: row => '<a href="files/' + row.file_id + '">' + row.file_name + '</a>',
         sortable: true,
-        fieldClass: 'truncated-cell'
+        tdClassName: 'truncated-cell'
       }, {
-        displayName: "Cases",
+        th: "Participants",
+        name: "Cases",
         id: "participants",
-        visible: true,
-        template: function (field, row, scope) {
-          var participants = field.val;
-          if (participants) {
-            return participants.length;
-          }
-        },
-        sref: function (field, row, scope, $filter) {
-          var participants = field.val;
-          if (participants.length > 1) {
-            var file_id = _.find(row, (item) => {
-              return item.id === "file_id"
-            }).val;
-
-            var filters = $filter("makeFilter")([{name: "files.file_id", value: file_id}]);
-            return {
-              state: "/search/p",
-              filters: filters
-            };
+        td: (row, $filter) => {
+          function getParticipants(row, $filter) {
+            return row.participants.length == 1 ?
+                     '<a href="participants/' + row.participants[0].participant_id + '">' + row.participants[0].participant_id + '</a>' :
+                     withFilter(row.participants.length, [{name: "files.file_id", value: row.file_id}], $filter);
           }
 
-          if (participants) {
-            return {
-              state: "/participants/" + participants[0].participant_id
-            };
-          }
+          return row.participants && row.participants.length ? getParticipants(row, $filter) : 0;
         },
-        fieldClass: 'text-right'
+        tdClassName: 'truncated-cell text-right'
       }, {
-        displayName: "Project",
+        th: "Project",
         id: "participants.project.project_id",
-        visible: true,
-        template: function (field: TableiciousEntryDefinition, row: TableiciousEntryDefinition[], scope) {
-          var participants: TableiciousEntryDefinition = _.find(row, function (a: TableiciousEntryDefinition) {
-            return a.id === 'participants'
-          });
-          if (participants) {
-            if (participants.val.length === 1) {
-              return participants.val[0].project.project_id;
-            } else if (participants.val.length > 1) {
-              var projects = _.map(participants.val, (participant: any) => {
-                return {
-                  project_id: participant.project.project_id
-                };
-              });
-
-              var projectIds = _.unique(_.map(projects, (project) => {
-                return project.project_id;
-              }));
-
-              if (projectIds.length === 1) {
-                return projectIds[0];
-              }
-
-              return projectIds.length;
-            }
-          }
-        },
-        compile: function ($scope) {
-          var participants = _.result(_.findWhere($scope.row, {'id': 'participants'}), 'val'),
-              href, projectNames, projectVal;
-
-          if (participants.length === 1) {
-            href = "/projects/" + participants[0].project.project_id;
-            projectNames = participants[0].project.name;
-            projectVal = participants[0].project.project_id;
-          } else if (participants.val.length > 1) {
-            var projects = _.map(participants, (participant: TableicousEntryDefinition) => {
-              return {
-                project_id: participant.project.project_id
-              };
-            });
-
-            var projectId = _.unique(_.map(projects, (project) => {
-              return project.project_id;
-            }));
-
-            if (projectId.length === 1) {
-              href = "/projects/" + participants[0].project.project_id;
-              projectNames = participants[0].project.name;
-              projectVal = participants[0].project.project_id;
-            } else {
-              var filters = $filter("makeFilter")([{name: "project_id", value: projectId}]);
-
-              projectNames = _.map(participants, (participant: TableicousEntryDefinition) => {
-                return participant.project.name;
-              }).join("<br />");
-              projectVal = projectId.length;
-              href = "/projects/t?filters=" + angular.fromJson(filters);
-            }
-          }
-
-          var htm = '<a data-ng-href="' + href + '" data-tooltip="' + projectNames +
-                    '" tooltip-append-to-body="true" tooltip-placement="right">' + projectVal + '</a>';
-          return htm;
+        td: row => {
+          return _.unique(_.map(row.participants, p => {
+            return '<a href="projects/' + p.project.project_id +
+                    '" data-tooltip="' + p.project.name +
+                    '" data-tooltip-append-to-body="true" data-tooltip-placement="right">'+ p.project.project_id + '</a>';
+          })).join('<br>');
         },
         sortable: true
       }, {
-        displayName: "Data Type",
+        th: "Data Type",
         id: "data_type",
-        visible: true,
+        td: row => row.data_type,
         sortable: true
       }, {
-        displayName: "Data Format",
+        th: "Data Format",
         id: "data_format",
-        visible: true,
+        td: row => row.data_format,
         sortable: true
       }, {
-        displayName: "Size",
+        th: "Size",
         id: "file_size",
-        visible: true,
-        template: function (field, row, scope) {
-          return scope.$filter('size')(field.val);
-        },
+        td: (row, $filter) => $filter("size")(row.file_size),
         sortable: true,
-        fieldClass: 'text-right'
+        tdClassName: 'text-right'
       }, {
-        displayName: "Annotations",
+        th: "Annotations",
         id: "annotations",
-        visible: true,
-        template: function (field, row) {
-          var ret = field && field.val ? field.val.length : "0";
-
-          return ret;
-        },
-        sref: function (field, row, scope, $filter) {
-          var annotations = _.find(row, (item) => {
-            return item.id === "annotations";
-          });
-
-          if (!annotations) {
-            return;
+        td: (row, $filter) => {
+          function getAnnotations(row, $filter) {
+            return row.annotations.length == 1 ?
+                     '<a href="annotations/' + row.annotations[0].annotation_id + '">' + row.annotations[0].annotation_id + '</a>' :
+                     withAnnotationFilter(
+                       row.annotations.length,
+                       [{name: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
+                       $filter);
           }
 
-          var annotationIds = _.map(annotations.val, (annotation: any) => {
-            return annotation.annotation_id;
-          });
-
-          if (annotationIds.length > 1) {
-            var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
-            return {
-              state: "/annotations",
-              filters: filter
-            };
-          } else if (annotationIds.length === 1) {
-            return {
-              state: "/annotations/" + annotationIds[0]
-            };
-          }
+          return row.annotations && row.annotations.length ? getAnnotations(row, $filter) : 0;
         },
-        fieldClass: 'text-right'
+        tdClassName: 'truncated-cell text-right'
       }],
     fields: [
       "access",

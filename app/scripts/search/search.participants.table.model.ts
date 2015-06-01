@@ -2,6 +2,32 @@ module ngApp.search.models {
     import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
     import TableiciousEntryDefinition = ngApp.components.tables.directives.tableicious.TableiciousEntryDefinition;
 
+    function withAnnotationFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
+        const filterString = $filter("makeFilter")(filters, true);
+        const href = 'annotations?filters=' + filterString;
+        const val = '{{' + value + '|number:0}}'; 
+        return "<a href='" + href + "'>" + val + '</a>';
+    }
+
+    function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
+        const filterString = $filter("makeFilter")(filters, true);
+        const href = 'search/f?filters=' + filterString;
+        const val = '{{' + value + '|number:0}}'; 
+        return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
+    }
+    function getDataType(dataTypes: Object[], dataType:string): number {
+        const data = _.find(dataTypes, {data_type: dataType});
+        return data ? data.file_count : 0;
+    }
+    function dataTypeWithFilters(dataType: string, row: Object[], $filter: ng.IFilterService) {
+        const fs = [
+          {name: 'participants.participant_id', value: row.participant_id},
+          {name: 'files.data_type', value: dataType}
+        ]; 
+        return withFilter(getDataType(row.summary.data_types, dataType), fs, $filter);
+    }
+
+
     function arrayToObject(array){
         var obj = {};
         array.forEach(function(elem){
@@ -45,7 +71,7 @@ module ngApp.search.models {
         order: ['add_to_cart_filtered', 'my_projects', 'participant_id', 'project.project_id', 'project.primary_site', 'clinical.gender', 'files', 'summary.data_types', 'annotations'],
         rowId: 'participant_id',
         headings: [{
-            displayName: "Add to Cart",
+            th: "Add to Cart",
             id: "add_to_cart_filtered",
             noTitle: true,
             enabled: true,
@@ -55,7 +81,7 @@ module ngApp.search.models {
                 return htm;
             }
         }, {
-            displayName: "My Projects",
+            th: "My Projects",
             id: "my_projects",
             enabled: function (scope) {
               return scope.UserService.currentUser;
@@ -74,298 +100,105 @@ module ngApp.search.models {
               }) ? 'check' : 'close';
             }
         }, {
-            displayName: "Case ID",
+            th: "Case ID",
             id: "participant_id",
-            enabled: true,
-            sref:function(elem,row,scope){
-                var uuid:TableiciousEntryDefinition = _.find(row,function(elem:TableiciousEntryDefinition){
-                    return elem.id === "participant_id";
-                });
-
-                return {
-                    state: "/participants/" + uuid.val
-                };
-            },
+            td: row => '<a href="participants/'+row.participant_id + '">' +
+                         row.participant_id + 
+                       '</a>',
+            tdClassName: 'truncated-cell',
             sortable: true
         }, {
-            displayName: "Project",
+            th: "Project",
             id: "project.project_id",
-            enabled: true,
+            td: row => '<a href="projects/'+row.project.project_id + 
+                     '" data-tooltip="' + row.project.name +
+                     '" data-tooltip-append-to-body="true">' + 
+                     row.project.project_id + 
+                   '</a>',
             sortable: true,
-            compile: function ($scope) {
-              var project = _.result(_.findWhere($scope.row, {'id': 'project'}), 'val');
-              var htm = '<a data-ng-href="/projects/' + project.project_id + '" data-tooltip="' +
-                        project.name + '" tooltip-append-to-body="true" tooltip-placement="right">' +
-                        project.project_id + '</a>';
-              return htm;
-            }
         }, {
-            displayName: "Primary Site",
+            th: "Primary Site",
             id: "project.primary_site",
-            enabled: true,
+            td: row => row.project.primary_site,
             sortable: true
         }, {
-            displayName: "Gender",
+            th: "Gender",
             id: "clinical.gender",
-            template: function(field, row, scope, $filter) {
-                var clinical = _.find(row, (item) => {
-                    return item.id === "clinical";
-                });
-                return $filter("humanify")(clinical.val.gender);
-            },
-            enabled: true
+            td: (row, $filter) => $filter("humanify")(row.clinical.gender)
         }, {
 
-            displayName: "Files",
+            th: "Files",
             id: "files",
-            fieldClass: 'text-right',
             enabled: true,
-            template:function(field, row){
-                var fileCount = 0;
-                var summary = _.find(row, (item) => {
-                    return item.id === "summary";
-                }).val;
-
-                _.forEach(summary.data_types, (dType) => {
-                    fileCount += dType.file_count;
-                });
-
-                return fileCount;
+            td: (row, $filter) => {
+                const fs = [{name: 'participants.participant_id', value: row.participant_id}]
+                const sum = _.sum(_.pluck(row.summary.data_types, 'file_count')) 
+                return withFilter(sum, fs, $filter);
             },
-            sref: function(field, row, scope, $filter) {
-                var uuid:TableiciousEntryDefinition = _.find(row,function(elem:TableiciousEntryDefinition){
-                    return elem.id === "participant_id";
-                }).val;
-
-                var filter = $filter("makeFilter")([
-                    {name: "participants.participant_id", value: uuid}
-                ]);
-                return {
-                    state: "/search/f",
-                    filters: filter
-                };
-            }
+            tdClassName: 'text-right'
         }, {
-            displayName: "Available Files per Data Type",
+            th: "Available Files per Data Type",
             id: "summary.data_types",
-            headingClass:'text-center',
-            enabled: true,
+            thClassName:'text-center',
             children: [
-                {
-                    displayName: 'Clinical',
-                    id: 'clinical',
-                    enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x:any){
-                            return x.data_type === 'Clinical';
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    fieldClass: 'text-right',
-                    sref: getFileSref('Clinical')
-                },  {
-                    displayName: 'Array',
-                    toolTipText: 'Raw microarray data',
-                    id: 'Array',
-                    enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x: any){
-                            return x.data_type === 'Raw microarray data';
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    fieldClass: 'text-right',
-                    sref: getFileSref('Raw microarray data')
-                }, {
-                    displayName: 'Seq',
-                    id: 'Seq',
-                    toolTipText: 'Raw sequencing data',
-                    enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x: any){
-                            return x.data_type === 'Raw sequencing data';
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    fieldClass: 'text-right',
-                    sref: getFileSref('Raw sequencing data')
-                }, {
-                    displayName: "SNV",
-                    id: "SNV",
-                    toolTipText: "Simple nucleotide variation",
-                    enabled: true,
-                    fieldClass: "text-right",
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x: any){
-                            return x.data_type === "Simple nucleotide variation";
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    sref: getFileSref("Simple nucleotide variation")
-                }, {
-                    displayName: 'CNV',
-                    id: 'cnv',
-                    toolTipText: 'Copy number variation',
-                    enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x: any){
-                            return x.data_type === 'Copy number variation';
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    fieldClass: 'text-right',
-                    sref: getFileSref('Copy number variation')
-                }, {
-                    displayName: 'SV',
-                    toolTipText: 'Structural rearrangement',
-                    id: 'sv',
-                    enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x: any){
-                            return x.data_type === 'Structural rearrangement';
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    fieldClass: 'text-right',
-                    sref: getFileSref('Structural rearrangement')
-                }, {
-                    displayName: 'Exp',
-                    toolTipText: 'Gene expression',
-                    id: 'Exp',
-                    enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x: any){
-                            return x.data_type === 'Gene expression';
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    fieldClass: 'text-right',
-                    sref: getFileSref('Gene expression')
-                }, {
-                    displayName: 'PExp',
-                    id: 'pexp',
-                    toolTipText: 'Protein expression',
-                    enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x: any){
-                            return x.data_type === 'Protein expression';
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    fieldClass: 'text-right',
-                    sref: getFileSref('Protein expression')
-                }, {
-                    displayName: 'Meth',
-                    id: 'meth',
-                    toolTipText: 'DNA methylation',
-                    enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x: any){
-                            return x.data_type === 'DNA methylation';
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    fieldClass: 'text-right',
-                    sref: getFileSref('DNA methylation')
-                }, {
-                    displayName: 'Other',
-                    id: 'other',
-                    enabled: true,
-                    template: function (field:TableiciousEntryDefinition,row,scope, $filter) {
-                        var summary:TableiciousEntryDefinition = _.find(row,function(x:TableiciousEntryDefinition){
-                            return x.id === 'summary';
-                        });
-
-                        var data = _.find(summary.val.data_types, function(x: any){
-                            return x.data_type === 'Other';
-                        });
-
-                        return $filter("number")(data && data.file_count ? data.file_count : 0);
-                    },
-                    fieldClass: 'text-right',
-                    sref: getFileSref('Other')
-                }
+              {
+                th: 'Clinical',
+                id: 'clinical',
+                td: (row, $filter) => dataTypeWithFilters("Clinical", row, $filter)
+              }, {
+                th: 'Array',
+                id: 'Array',
+                td: (row, $filter) => dataTypeWithFilters("Raw microarray data", row, $filter)
+              }, {
+                th: 'Seq',
+                id: 'Seq',
+                td: (row, $filter) => dataTypeWithFilters("Raw sequencing data", row, $filter)
+              }, {
+                th: "SNV",
+                id: "SNV",
+                td: (row, $filter) => dataTypeWithFilters("Simple nucleotide variation", row, $filter)
+              }, {
+                th: 'CNV',
+                id: 'cnv',
+                td: (row, $filter) => dataTypeWithFilters("Copy number variation", row, $filter)
+              }, {
+                th: 'SV',
+                id: 'sv',
+                td: (row, $filter) => dataTypeWithFilters("Structural rearrangement", row, $filter)
+              }, {
+                th: 'Exp',
+                id: 'Exp',
+                td: (row, $filter) => dataTypeWithFilters("Gene expression", row, $filter)
+              }, {
+                th: 'PExp',
+                id: 'pexp',
+                td: (row, $filter) => dataTypeWithFilters("Protein expression", row, $filter)
+              }, {
+                th: 'Meth',
+                id: 'meth',
+                td: (row, $filter) => dataTypeWithFilters("DNA methylation", row, $filter)
+              }, {
+                th: 'Other',
+                id: 'other',
+                td: (row, $filter) => dataTypeWithFilters("Other", row, $filter)
+              }
             ]
         }, {
-            displayName: "Annotations",
+            th: "Annotations",
             id: "annotations",
-            visible: true,
-            template: function(field, row) {
-                var ret = field && field.val ? field.val.length : "0";
-
-                return ret;
-            },
-            sref: function(field, row, scope, $filter) {
-                var annotations = _.find(row, (item) => {
-                    return item.id === "annotations";
-                });
-
-                if (!annotations) {
-                    return;
-                }
-
-                var annotationIds = _.map(annotations.val, (annotation: any) => {
-                    return annotation.annotation_id;
-                });
-
-                if (annotationIds.length > 1) {
-                  var filter = $filter("makeFilter")([{name: 'annotation_id', value: annotationIds}]);
-                  return {
-                    state: "/annotations",
-                    filters: filter
-                  };
-                } else if (annotationIds.length === 1) {
-                  return {
-                    state: "/annotations/" + annotationIds[0]
-                  };
-                }
-            },
-            fieldClass: 'text-right'
+        td: (row, $filter) => {
+          function getAnnotations(row, $filter) {
+            return row.annotations.length == 1 ?
+                     '<a href="annotations/' + row.annotations[0].annotation_id + '">' + row.annotations[0].annotation_id + '</a>' :
+                     withAnnotationFilter(
+                       row.annotations.length, 
+                       [{name: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}], 
+                       $filter);
+          }
+          
+          return row.annotations && row.annotations.length ? getAnnotations(row, $filter) : 0;
+        },
+        tdClassName: 'truncated-cell text-right'
         }],
         fields: [
           "participant_id",

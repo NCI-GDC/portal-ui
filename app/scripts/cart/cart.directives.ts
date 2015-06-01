@@ -122,7 +122,7 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-all.html",
       controller: function($scope: IAddToCartScope, CartService: ICartService, LocationService: ILocationService,
                            FilesService: IFilesService, UserService: IUserService) {
-
+  	     console.log($scope);
         $scope.CartService = CartService;
 
         $scope.removeAll  = function() {
@@ -319,7 +319,7 @@ module ngApp.cart.directives {
             filters.content = [];
           }
 
-          var uuid = _.find($scope.row,function(elem){return elem.id === "participant_id"}).val;
+          var uuid = $scope.row.participant_id;
 
           filters.content.push({
             content: {

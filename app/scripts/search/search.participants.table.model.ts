@@ -59,7 +59,6 @@ module ngApp.search.models {
             td: row => '<a href="participants/'+row.participant_id + '">' +
                          row.participant_id +
                        '</a>',
-            sortable: true,
             tdClassName: 'truncated-cell'
         }, {
             name: "Project",

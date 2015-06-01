@@ -23,6 +23,7 @@ module ngApp.components.tables.directives {
           $window.localStorage.setItem($scope.title + '-col', angular.toJson(save));
         }
         
+        var defaults = _.cloneDeep($scope.headings);
         var decompressed = $window.localStorage.getItem($scope.title + '-col');
         var saved = decompressed ? JSON.parse(decompressed) : [];
         
@@ -30,11 +31,16 @@ module ngApp.components.tables.directives {
           _.map(saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
           $scope.headings;
         
+        $scope.restoreDefaults = function() {
+          $scope.headings = _.cloneDeep(defaults); 
+        } 
         $scope.toggleVisibility = function (item) { 
           item.hidden = !item.hidden;
           saveSettings(); 
         };
-        $scope.sortOptions = { orderChanged: saveSettings };
+        $scope.sortOptions = { 
+          orderChanged: saveSettings 
+        };
       }
     };
   }

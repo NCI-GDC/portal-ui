@@ -233,7 +233,6 @@ module ngApp.components.tables.controllers {
       if (this.$scope.clientSide) {
         this.$scope.paging.from = newPaging.from;
         this.$scope.paging.size = newPaging.size;
-        this.$scope.paging.count = this.$scope.paging.size;
         this.$scope.paging.pages = Math.ceil(this.$scope.data.length /
                                              this.$scope.paging.size);
         this.$scope.paging.total = this.$scope.data.length;
@@ -256,6 +255,7 @@ module ngApp.components.tables.controllers {
       } else {
         this.displayedData = this.$scope.data;
       }
+      this.$scope.paging.count = this.displayedData.length;
     }
   }
 

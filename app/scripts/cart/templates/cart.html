@@ -3,7 +3,6 @@
       <div class="col-lg-8" data-ng-if="!cc.files.length">
         <h2 data-translate>Your Cart is empty.</h2>
       </div>
-      
       <div data-ng-if="cc.files.length">
         <div class="col-lg-3 col-sm-6">
           <count-card title="Files" icon="fa-file-o" data="cc.files.length | number"></count-card>
@@ -73,7 +72,7 @@
              data-config="cc.cartTableConfig"
              data-paging="cc.pagination"
              data-page="cart"
-             data-heading="Cart Items"
+             data-heading="cart items"
              data-id="cart-table"
              data-client-side="cc.processPaging"
              class="cart-table">

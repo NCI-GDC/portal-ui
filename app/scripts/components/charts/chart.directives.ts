@@ -12,6 +12,7 @@ module ngApp.components.charts {
   function PieChart($window: IGDCWindowService, $state: ng.ui.IStateService): ng.IDirective {
     return {
       restrict: "EA",
+      replace: true,
       scope: {
         data: "=",
         height: "@",

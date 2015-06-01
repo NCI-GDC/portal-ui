@@ -20,7 +20,7 @@ module ngApp.participants.controllers {
                 private CoreService: ICoreService,
                 private LocationService: ILocationService,
                 private config: IGDCConfig) {
-      CoreService.setPageTitle("Participant " + participant.participant_id);
+      CoreService.setPageTitle("Case " + participant.participant_id);
 
       this.annotationIds = _.map(this.participant.annotations, (annotation) => {
         return annotation.annotation_id;

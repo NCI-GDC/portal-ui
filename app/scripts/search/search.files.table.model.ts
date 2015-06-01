@@ -90,7 +90,7 @@ module ngApp.search.models {
         sortable: true,
         fieldClass: 'truncated-cell'
       }, {
-        displayName: "Participants",
+        displayName: "Cases",
         id: "participants",
         visible: true,
         template: function (field, row, scope) {

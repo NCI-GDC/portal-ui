@@ -7,20 +7,34 @@ module ngApp.components.tables.directives {
   }
 
   /* @ngInject */
-  function ArrangeColumns(): ng.IDirective {
+  function ArrangeColumns($window): ng.IDirective {
 
     return {
       restrict: "EA",
       scope: {
+        title: "@",
         headings:"="
       },
       replace: true,
       templateUrl: "components/tables/templates/arrange-columns.html",
-//      controller: "ArrangeColumnsController as acc",
-      link:function($scope:any) {
-        $scope.toggleVisibility = function (item) {
-          item.hidden = !item.hidden
+      link:function($scope) {
+        function saveSettings() {
+          var save = _.map($scope.headings, h => _.pick(h, 'id', 'hidden'));
+          $window.localStorage.setItem($scope.title + '-col', angular.toJson(save));
         }
+        
+        var decompressed = $window.localStorage.getItem($scope.title + '-col');
+        var saved = decompressed ? JSON.parse(decompressed) : [];
+        
+        $scope.headings = saved.length ? 
+          _.map(saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
+          $scope.headings;
+        
+        $scope.toggleVisibility = function (item) { 
+          item.hidden = !item.hidden;
+          saveSettings(); 
+        };
+        $scope.sortOptions = { orderChanged: saveSettings };
       }
     };
   }

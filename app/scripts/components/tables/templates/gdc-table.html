@@ -19,7 +19,8 @@
                     data-update="clientSide"
                     data-data="data"
                     data-paging="paging" data-page="{{ page }}"></sort-table>
-        <arrange-columns data-headings="config.headings"></arrange-columns>
+        <arrange-columns data-title="{{ config.title }}"
+                         data-headings="config.headings"></arrange-columns>
         <export-table data-endpoint="{{ endpoint }}" data-size="{{ paging.total }}"
                       data-fields="config.fields" data-ng-if="endpoint"></export-table>
       </div>

@@ -28,7 +28,6 @@ module ngApp.components.tables.directives.tableicious {
                         _.map(hs, (h: IHeading): IHeading[] | IHeading => {
                             return hasChildren(h) ? h.children : h;
                     }));
-                    console.log($scope.dataCols);    
                 }
                 
                 $scope.$watchCollection('headings', (n: IHeading[], o: IHeading[]) => {

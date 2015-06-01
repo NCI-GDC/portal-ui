@@ -36,23 +36,13 @@ module ngApp.search.models {
         }, {
             name: "My Projects",
             id: "my_projects",
-            enabled: function (scope) {
-              return scope.UserService.currentUser;
+            td: (row, $scope) => {
+                const fakeFile = {participants: [{project: row.project}]};
+                const isUserProject = $scope.UserService.isUserProject(fakeFile);
+                const icon = isUserProject ? 'check-square-o' : 'square-o';
+                return '<i class="fa fa-' + icon + '"></i>';
             },
-            icon: function (field, row, scope) {
-              var project = _.find(row, function (elem) {
-                return elem.id === 'project'
-              }).val;
-              var UserService: IUserService = scope.UserService;
-              return UserService.isUserProject({
-                participants: [
-                    {
-                        project: project
-                    }
-                ]
-              }) ? 'check' : 'close';
-            },
-            hidden: () => false
+            inactive: $scope => !$scope.UserService.currentUser
         }, {
             name: "Case ID",
             id: "participant_id",
@@ -77,17 +67,16 @@ module ngApp.search.models {
         }, {
             name: "Gender",
             id: "clinical.gender",
-            td: (row, $filter) => row.clinical && $filter("humanify")(row.clinical.gender),
+            td: (row, $scope) => row.clinical && $scope.$filter("humanify")(row.clinical.gender),
             sortable: true
         }, {
 
             name: "Files",
             id: "files",
-            enabled: true,
-            td: (row, $filter) => {
+            td: (row, $scope) => {
                 const fs = [{name: 'participants.participant_id', value: row.participant_id}]
                 const sum = _.sum(_.pluck(row.summary.data_types, 'file_count'))
-                return withFilter(sum, fs, $filter);
+                return withFilter(sum, fs, $scope.$filter);
             },
             tdClassName: 'text-right'
         }, {
@@ -98,59 +87,59 @@ module ngApp.search.models {
               {
                 name: 'Clinical',
                 id: 'clinical',
-                td: (row, $filter) => dataTypeWithFilters("Clinical", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("Clinical", row, $scope.$filter),
                 tdClassName: 'text-right'
               }, {
                 name: 'Array',
                 id: 'Array',
-                td: (row, $filter) => dataTypeWithFilters("Raw microarray data", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("Raw microarray data", row, $scope.$filter),
                 tdClassName: 'text-right'
               }, {
                 name: 'Seq',
                 id: 'Seq',
-                td: (row, $filter) => dataTypeWithFilters("Raw sequencing data", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("Raw sequencing data", row, $scope.$filter),
                 tdClassName: 'text-right'
               }, {
                 name: "SNV",
                 id: "SNV",
-                td: (row, $filter) => dataTypeWithFilters("Simple nucleotide variation", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("Simple nucleotide variation", row, $scope.$filter),
                 tdClassName: 'text-right'
               }, {
                 name: 'CNV',
                 id: 'cnv',
-                td: (row, $filter) => dataTypeWithFilters("Copy number variation", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("Copy number variation", row, $scope.$filter),
                 tdClassName: 'text-right'
               }, {
                 name: 'SV',
                 id: 'sv',
-                td: (row, $filter) => dataTypeWithFilters("Structural rearrangement", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("Structural rearrangement", row, $scope.$filter),
                 tdClassName: 'text-right'
               }, {
                 name: 'Exp',
                 id: 'Exp',
-                td: (row, $filter) => dataTypeWithFilters("Gene expression", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("Gene expression", row, $scope.$filter),
                 tdClassName: 'text-right'
               }, {
                 name: 'PExp',
                 id: 'pexp',
-                td: (row, $filter) => dataTypeWithFilters("Protein expression", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("Protein expression", row, $scope.$filter),
                 tdClassName: 'text-right'
               }, {
                 name: 'Meth',
                 id: 'meth',
-                td: (row, $filter) => dataTypeWithFilters("DNA methylation", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("DNA methylation", row, $scope.$filter),
                 tdClassName: 'text-right'
               }, {
                 name: 'Other',
                 id: 'other',
-                td: (row, $filter) => dataTypeWithFilters("Other", row, $filter),
+                td: (row, $scope) => dataTypeWithFilters("Other", row, $scope.$filter),
                 tdClassName: 'text-right'
               }
             ]
         }, {
           name: "Annotations",
           id: "annotations",
-          td: (row, $filter) => {
+          td: (row, $scope) => {
             function getAnnotations(row, $filter) {
               return row.annotations.length == 1 ?
                      '<a href="annotations/' + row.annotations[0].annotation_id + '">' + row.annotations[0].annotation_id + '</a>' :
@@ -160,7 +149,7 @@ module ngApp.search.models {
                        $filter);
             }
 
-            return row.annotations && row.annotations.length ? getAnnotations(row, $filter) : 0;
+            return row.annotations && row.annotations.length ? getAnnotations(row, $scope.$filter) : 0;
           },
           tdClassName: 'truncated-cell text-right'
         }],

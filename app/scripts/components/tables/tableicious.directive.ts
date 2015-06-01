@@ -1,7 +1,7 @@
 module ngApp.components.tables.directives.tableicious {
 
     /* @ngInject */
-    function Tableicious($filter: ng.IFilterService): ITableicious {
+    function Tableicious($filter: ng.IFilterService, UserService): ITableicious {
         return {
             restrict: "E",
             scope: {
@@ -13,26 +13,33 @@ module ngApp.components.tables.directives.tableicious {
             replace: true,
             templateUrl: "components/tables/templates/tableicious.html",
             link: function($scope: ITableiciousScope) {
-                $scope.filter = $filter;
-
+                $scope.$filter = $filter;
+                $scope.UserService = UserService;
+                $scope.getCell = function(h, d) {
+                    return h.td(d, $scope);
+                }
                 function hasChildren(h: IHeading): boolean {
                     return h.children && h.children.length > 0;
                 }
                 
                 function refresh(hs: IHeading[]): void {
+                    $scope.enabledHeadings = _.reject(hs, h => {
+                        return h.hidden || (h.inactive && h.inactive($scope))
+                    });
                     $scope.subHeaders = _.flatten<IHeading>(
-                    _.pluck(_.filter(hs, (h) => {
-                        return hasChildren(h);
+                        _.pluck(_.filter($scope.enabledHeadings, (h) => {
+                            return hasChildren(h);
                     }), 'children'));
                     $scope.dataCols = _.flatten<IHeading>(
-                        _.map(hs, (h: IHeading): IHeading[] | IHeading => {
+                        _.map($scope.enabledHeadings, (h: IHeading): IHeading[] | IHeading => {
                             return hasChildren(h) ? h.children : h;
                     }));
                 }
                 
-                $scope.$watchCollection('headings', (n: IHeading[], o: IHeading[]) => {
+                $scope.$watch('headings', (n: IHeading[], o: IHeading[]) => {
+                   if (_.isEqual(n,o)) return;
                    refresh(n); 
-                });
+                }, true);
                 
                 refresh($scope.headings);
             }
@@ -46,12 +53,15 @@ module ngApp.components.tables.directives.tableicious {
     interface ITableiciousScope extends ng.IScope {
         data: any[];
         headings: IHeading[];
-        filter: ng.IFilterService;
+        enabledHeadings: IHeading[];
         subHeaders: IHeading[];
         dataCols: IHeading[];
         rowId: string;
         hasChildren(h: IHeading): boolean;
         refresh(h: IHeading[]): void;
+        getCell(h, d): string;
+        $filter: ng.IFilterService;
+        UserService:any;
     }
 
     interface IConfig {
@@ -68,6 +78,7 @@ module ngApp.components.tables.directives.tableicious {
         td(row:any, filter: ng.IFilterService): string;
         sortable: boolean;
         hidden: boolean;
+        inactive($scope): boolean;
         children: IHeading[];
     }
 

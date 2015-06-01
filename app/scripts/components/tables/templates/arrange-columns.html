@@ -26,8 +26,7 @@
           <li data-ng-repeat="item in headings | filter:search:strict"
               data-as-sortable-item
               data-dragEnd
-              >
-              
+              data-ng-hide="item.inactive(this)">
               <i class="fa fa-stack fa-{{item.hidden ? 'square-o' : 'check-square-o'}}" data-ng-click="toggleVisibility(item)"></i>
               {{ item.name | ellipsicate:18 }}
               <i class="pull-right text-right fa fa-bars fa-stack" 

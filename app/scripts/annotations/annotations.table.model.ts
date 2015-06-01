@@ -1,7 +1,5 @@
 module ngApp.projects.models {
-    import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
-
-    var AnnotationsTableModel:TableiciousConfig = {
+    var AnnotationsTableModel = {
         title: "Annotations",
         order: ['annotation_id', 'participant_id', 'project.program.name', 'project.project_id', 'entity_type', 'entity_id', 'entity_submitter_id', 'category', 'classification', 'created_datetime', 'creator', 'status', 'notes'],
         rowId: 'annotation_id',
@@ -23,14 +21,14 @@ module ngApp.projects.models {
         {
             name: "Program",
             id: "project.program.name",
-            td: row => row.program.name,
+            td: row => row.project && row.project.program && row.project.program.name,
             sortable: true,
-            hidden:true
+            hidden: true
         },
         {
             name: "Project",
             id: "project.project_id",
-            td: row => '<a href="projects/'+row.project.project_id + 
+            td: row => row.project && '<a href="projects/'+row.project.project_id + 
                          '" data-tooltip="' + row.project.name +
                          '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' + 
                          row.project.project_id + 
@@ -53,9 +51,9 @@ module ngApp.projects.models {
         {
             name: "Entity Barcode",
             id: "entity_submitter_id",
-            sortable: true,
             td: row => row.entity_submitter_id,
-            hidden:true
+            sortable: true,
+            hidden: true
         },
         {
             name: "Category",
@@ -78,14 +76,14 @@ module ngApp.projects.models {
             name: "Annotator",
             id: "creator",
             td: row => row.creator,
-            sortable: true,
-            hidden: true
+            sortable: true
         },
         {
             name: "Status",
             id: "status",
-            td: row => row.creator,
-            sortable: true
+            td: row => row.status,
+            sortable: true,
+            hidden: true
         },
         {
             name: "Notes",
@@ -107,7 +105,8 @@ module ngApp.projects.models {
           "notes",
           "classification",
           "participant_id",
-          "notes"
+          "notes",
+          "project.program.name"
         ],
         expand: [
           "project"

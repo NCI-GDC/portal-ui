@@ -34,31 +34,17 @@ module ngApp.search.models {
         id: "file_actions",
         td: row => '<div add-to-cart-single file="arrayRow"></div>' +
                     '<a class="btn btn-primary" download-button files=file>' +
-                    '<i class="fa fa-download"></i></a>',
-        compile: function ($scope) {
-          $scope.arrayRow = arrayToObject($scope.row);
-          var htm = '<div add-to-cart-single file="arrayRow"></div>' +
-                    '<a class="btn btn-primary" download-button files=file>' +
-                    '<i class="fa fa-download"></i></a>';
-          return htm;
-        },
-        compileHead: function ($scope) {
-          var htm = '<div add-to-cart-all files="data" paging="paging"></div>';
-          return htm;
-        }
+                    '<i class="fa fa-download"></i></a>'
       }, {
         name: "My Projects",
         id: "my_projects",
-        enabled: function (scope) {
-          return scope.UserService.currentUser;
+        td: (row, $scope) => {
+            const isUserProject = $scope.UserService.isUserProject(row);
+            const icon = isUserProject ? 'check-square-o' : 'square-o';
+            return '<i class="fa fa-' + icon + '"></i>';
         },
-        icon: function (field, row, scope) {
-          var participants = _.find(row, function (elem) {
-            return elem.id === 'participants'
-          }).val;
-          var UserService: IUserService = scope.UserService;
-          return UserService.isUserProject({participants: participants}) ? 'check' : 'close';
-        }
+        inactive: $scope => !$scope.UserService.currentUser,
+        hidden: false
       }, {
         name: "Access",
         id: "access",
@@ -73,14 +59,14 @@ module ngApp.search.models {
       }, {
         name: "Cases",
         id: "participants",
-        td: (row, $filter) => {
+        td: (row, $scope) => {
           function getParticipants(row, $filter) {
             return row.participants.length == 1 ?
                      '<a href="participants/' + row.participants[0].participant_id + '">' + row.participants[0].participant_id + '</a>' :
                      withFilter(row.participants.length, [{name: "files.file_id", value: row.file_id}], $filter);
           }
 
-          return row.participants && row.participants.length ? getParticipants(row, $filter) : 0;
+          return row.participants && row.participants.length ? getParticipants(row, $scope.$filter) : 0;
         },
         tdClassName: 'truncated-cell text-right'
       }, {
@@ -107,23 +93,23 @@ module ngApp.search.models {
       }, {
         name: "Size",
         id: "file_size",
-        td: (row, $filter) => $filter("size")(row.file_size),
+        td: (row, $scope) => $scope.$filter("size")(row.file_size),
         sortable: true,
         tdClassName: 'text-right'
       }, {
         name: "Annotations",
         id: "annotations",
-        td: (row, $filter) => {
-          function getAnnotations(row, $filter) {
+        td: (row, $scope) => {
+          function getAnnotations(row, $scope) {
             return row.annotations.length == 1 ?
                      '<a href="annotations/' + row.annotations[0].annotation_id + '">' + row.annotations[0].annotation_id + '</a>' :
                      withAnnotationFilter(
                        row.annotations.length,
                        [{name: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
-                       $filter);
+                       $scope.$filter);
           }
 
-          return row.annotations && row.annotations.length ? getAnnotations(row, $filter) : 0;
+          return row.annotations && row.annotations.length ? getAnnotations(row, $scope) : 0;
         },
         tdClassName: 'truncated-cell text-right'
       }],

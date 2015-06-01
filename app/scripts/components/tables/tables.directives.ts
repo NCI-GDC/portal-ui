@@ -7,7 +7,7 @@ module ngApp.components.tables.directives {
   }
 
   /* @ngInject */
-  function ArrangeColumns($window): ng.IDirective {
+  function ArrangeColumns($window, UserService): ng.IDirective {
 
     return {
       restrict: "EA",
@@ -18,6 +18,7 @@ module ngApp.components.tables.directives {
       replace: true,
       templateUrl: "components/tables/templates/arrange-columns.html",
       link:function($scope) {
+        $scope.UserService = UserService;
         function saveSettings() {
           var save = _.map($scope.headings, h => _.pick(h, 'id', 'hidden'));
           $window.localStorage.setItem($scope.title + '-col', angular.toJson(save));
@@ -91,19 +92,7 @@ module ngApp.components.tables.directives {
       },
       replace: true,
       templateUrl: "components/tables/templates/gdc-table.html",
-      controller: "GDCTableController as gtc",
-      link: function($scope) {
-        function refresh(hs) {
-          $scope.visibleColumns = _.filter(hs, h => !h.hidden);
-        }
-        
-        $scope.$watch('config.headings', (n: IHeading[], o: IHeading[]) => {
-          if (_.isEqual(n,o)) return;
-          refresh(n); 	
-        }, true);
-        
-        refresh($scope.config.headings);
-      }
+      controller: "GDCTableController as gtc"
     }
   }
 

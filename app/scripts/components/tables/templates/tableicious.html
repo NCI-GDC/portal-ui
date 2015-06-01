@@ -6,7 +6,7 @@
         data-ng-class="h.thClassName"
         rowspan="{{::h.children ? 1 : 2}}" 
         colspan="{{::h.children ? h.children.length : 1}}" 
-        data-ng-repeat="h in headings">
+        data-ng-repeat="h in enabledHeadings">
       </th>
     </tr>
     <tr>
@@ -19,7 +19,7 @@
   <tbody>
     <tr data-ng-repeat="d in data track by d[rowId]">
       <td 
-        data-cell="::h.td(d, filter)"
+        data-cell="::getCell(h,d)"
         data-ng-class="h.tdClassName"
         data-ng-repeat="h in dataCols track by h.id">
       </td>

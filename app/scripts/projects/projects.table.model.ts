@@ -60,9 +60,9 @@ module ngApp.projects.models {
       {
         name: "Cases",
         id: "summary.participant_count",
-        td: (row, $filter) => {
+        td: (row, $scope) => {
           const fs = [{name: 'participants.project.project_id', value: row.project_id}] 
-          return withFilter(row.summary.participant_count, fs, $filter);
+          return withFilter(row.summary.participant_count, fs, $scope.$filter);
         },
         sortable: true,
         hidden: false,
@@ -76,61 +76,61 @@ module ngApp.projects.models {
           {
             name: 'Clinical',
             id: 'clinical',
-            td: (row, $filter) => dataTypeWithFilters("Clinical", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("Clinical", row, $scope.$filter),
             tdClassName: 'text-right'
           }, {
             name: 'Array',
             id: 'Array',
-            td: (row, $filter) => dataTypeWithFilters("Raw microarray data", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("Raw microarray data", row, $scope.$filter),
             tdClassName: 'text-right'
           }, {
             name: 'Seq',
             id: 'Seq',
-            td: (row, $filter) => dataTypeWithFilters("Raw sequencing data", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("Raw sequencing data", row, $scope.$filter),
             tdClassName: 'text-right'
           }, {
             name: "SNV",
             id: "SNV",
-            td: (row, $filter) => dataTypeWithFilters("Simple nucleotide variation", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("Simple nucleotide variation", row, $scope.$filter),
             tdClassName: 'text-right'
           }, {
             name: 'CNV',
             id: 'cnv',
-            td: (row, $filter) => dataTypeWithFilters("Copy number variation", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("Copy number variation", row, $scope.$filter),
             tdClassName: 'text-right'
           }, {
             name: 'SV',
             id: 'sv',
-            td: (row, $filter) => dataTypeWithFilters("Structural rearrangement", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("Structural rearrangement", row, $scope.$filter),
             tdClassName: 'text-right'
           }, {
             name: 'Exp',
             id: 'Exp',
-            td: (row, $filter) => dataTypeWithFilters("Gene expression", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("Gene expression", row, $scope.$filter),
             tdClassName: 'text-right'
           }, {
             name: 'PExp',
             id: 'pexp',
-            td: (row, $filter) => dataTypeWithFilters("Protein expression", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("Protein expression", row, $scope.$filter),
             tdClassName: 'text-right'
           }, {
             name: 'Meth',
             id: 'meth',
-            td: (row, $filter) => dataTypeWithFilters("DNA methylation", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("DNA methylation", row, $scope.$filter),
             tdClassName: 'text-right'
           }, {
             name: 'Other',
             id: 'other',
-            td: (row, $filter) => dataTypeWithFilters("Other", row, $filter),
+            td: (row, $scope) => dataTypeWithFilters("Other", row, $scope.$filter),
             tdClassName: 'text-right'
           }
         ]
       }, {
         name: "Files",
         id: "summary.file_count",
-        td: (row, $filter) => {
+        td: (row, $scope) => {
           const fs = [{name: 'participants.project.project_id', value: row.project_id}] 
-          return withFilter(row.summary.file_count, fs, $filter);
+          return withFilter(row.summary.file_count, fs, $scope.$filter);
         },
         sortable: true,
         tdClassName: 'text-right'

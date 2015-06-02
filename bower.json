@@ -30,7 +30,8 @@
     "ng-table": "0.5.4",
     "lz-string": "~1.4.4",
     "angular-lz-string": "1.0.1",
-    "angular-input-masks": "1.4.2"
+    "angular-input-masks": "1.4.2",
+    "ng-sortable": "~1.2.2"
   },
   "resolutions": {
     "angular": "~1.3.15",

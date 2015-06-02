@@ -31,6 +31,7 @@ module ngApp.files {
               "participants.participant_id",
               "participants.project.project_id",
               "annotations.annotation_id",
+              "annotations.entity_id",
               "tags",
               "origin"
             ],

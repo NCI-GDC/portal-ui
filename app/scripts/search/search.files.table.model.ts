@@ -37,7 +37,8 @@ module ngApp.search.models {
       }, {
         name: "Access",
         id: "access",
-        td: row => '<i class="fa fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i> ' + row.access,
+        td: row => '<i class="fa fa-lg fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i>',
+        tdClassName: "text-center",
         sortable: true
       }, {
         name: "File Name",

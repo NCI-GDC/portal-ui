@@ -41,8 +41,8 @@ module ngApp.files.controllers {
       }
 
       _.every(file.associated_entities, (entity) => {
-        entity.annotations = _.find(file.annotations, (annotation) => {
-          return annotation.annotation_id === entity.entity_id;
+        entity.annotations = _.filter(file.annotations, (annotation) => {
+          return annotation.entity_id === entity.entity_id;
         });
 
         if (entity.annotations) {

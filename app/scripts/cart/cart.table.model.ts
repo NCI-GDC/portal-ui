@@ -20,7 +20,8 @@ module ngApp.cart.models {
       {
         name: "Action",
         id: "file_actions",
-        td: row =>"<button class='btn btn-primary' download-button files='row' style='margin-right: 10%'>" +
+        td: row => '<button data-tooltip-popup-delay=1000 data-tooltip="Download"' + 
+                    "class='btn btn-primary' download-button files='row' style='margin-right: 10%'>" +
                     "<i class='fa fa-download'></i></button>" +
                     "<button class='btn btn-default' remove-single-cart file='row'>" +
                     "<i class='fa fa-trash-o'></i></button>",
@@ -38,9 +39,8 @@ module ngApp.cart.models {
       }, {
         name: "Access",
         id: "access",
-        td: row => '<i class="fa fa-lg fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i>',
-        sortable: true,
-        tdClassName: "text-center"
+        td: row => '<i class="fa fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i> ' + row.access,
+        sortable: true
       }, {
         name: "File Name",
         id: "file_name",

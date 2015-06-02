@@ -55,6 +55,7 @@ module ngApp.search.models {
             id: "project.project_id",
             td: row => '<a href="projects/'+row.project.project_id +
                      '" data-tooltip="' + row.project.name +
+                     '" data-tooltip-popup-delay=1000' +
                      '" data-tooltip-append-to-body="true">' +
                      row.project.project_id +
                    '</a>',

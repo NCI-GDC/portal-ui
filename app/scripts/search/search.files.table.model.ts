@@ -21,8 +21,8 @@ module ngApp.search.models {
         th: '<div add-to-cart-all files="data" paging="paging"></div>',
         name: 'Add to Cart',
         id: "file_actions",
-        td: row => '<span add-to-cart-single file="row" style="margin-right:5px"></span>' +
-                    '<a class="btn btn-primary" download-button files="row">' +
+        td: row => '<span data-tooltip-popup-delay=1000 data-tooltip="Add to Cart" add-to-cart-single file="row" style="margin-right:5px"></span>' +
+                    '<a  data-tooltip="Download" data-tooltip-popup-delay=1000 class="btn btn-primary" download-button files="row">' +
                     '<i class="fa fa-download"></i></a>'
       }, {
         name: "My Projects",
@@ -37,9 +37,8 @@ module ngApp.search.models {
       }, {
         name: "Access",
         id: "access",
-        td: row => '<i class="fa fa-lg fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i>',
-        sortable: true,
-        tdClassName: "text-center"
+        td: row => '<i class="fa fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i> ' + row.access,
+        sortable: true
       }, {
         name: "File Name",
         id: "file_name",
@@ -66,7 +65,8 @@ module ngApp.search.models {
           return _.unique(_.map(row.participants, p => {
             return '<a href="projects/' + p.project.project_id +
                     '" data-tooltip="' + p.project.name +
-                    '" data-tooltip-append-to-body="true" data-tooltip-placement="right">'+ p.project.project_id + '</a>';
+                    '" data-tooltip-popup-delay=1000' +
+                    '" data-tooltip-append-to-body="true">'+ p.project.project_id + '</a>';
           })).join('<br>');
         },
         sortable: true

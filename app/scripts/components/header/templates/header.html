@@ -43,7 +43,11 @@
         </li>
         <li>
           <a quick-search>
-            <i class="fa fa-search stock-icon"></i>
+            <i class="fa fa-search stock-icon hidden-xs"></i>
+            <div class="visible-xs">
+              <i class="fa fa-search stock-icon"></i>
+              <span data-translate>Quick Search</span>
+            </div>
           </a>
         </li>
         <li data-ng-if="!hc.UserService.currentUser" id="header-login">
@@ -60,7 +64,7 @@
             <span data-translate>Only My Projects</span>
           </label>
         </li>
-        <li data-ng-if="hc.UserService.currentUser">
+        <li data-ng-if="hc.UserService.currentUser" class="hidden-xs">
           <ul class="nav navbar-nav">
             <li class="btn-group" data-dropdown>
               <a href="" class="dropdown-toggle" dropdown-toggle aria-expanded="false">
@@ -82,6 +86,18 @@
               </ul>
             </li>
           </ul>
+        </li>
+        <li id="header-token" data-ng-if="hc.UserService.currentUser" class="visible-xs">
+          <a data-ng-click="hc.getToken()">
+            <i class="fa fa-file-zip-o stock-icon"></i>
+            <span data-translate>Download Token</span>
+          </a>
+        </li>
+        <li id="header-logout" data-ng-if="hc.UserService.currentUser" class="visible-xs">
+          <a auth-button data-redirect="https://gdc.nci.nih.gov/logout">
+            <i class="fa fa-sign-out stock-icon"></i>
+            <span data-translate>Logout</span>
+          </a>
         </li>
         <li ui-sref-active="active" class="nav-cart">
           <a ui-sref="cart">

@@ -4,14 +4,14 @@
   </div>-->
 
   <div class="panel-heading clearfix">
+    <div class="pull-left">
     <h3 class="panel-title table-heading">
       {{ heading | translate | humanify }}
     </h3>
-
     <pagination-heading data-page="{{ page }}" data-paging="paging" data-update="clientSide" data-title="{{ heading }}"
                         data-ng-if="page && paging && page !== 'projects'">
     </pagination-heading>
-
+    </div>
     <div class="pull-right" data-ng-if="endpoint || sortColumns || gtc.sortingHeadings.length">
       <div class="btn-group" role="group" aria-label="Filter, sort or export table">
         <sort-table data-ng-if="gtc.sortingHeadings"

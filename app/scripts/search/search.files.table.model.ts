@@ -32,7 +32,7 @@ module ngApp.search.models {
         th: '<div add-to-cart-all files="data" paging="paging"></div>',
         name: 'Add to Cart',
         id: "file_actions",
-        td: row => '<div add-to-cart-single file="row"></div>' +
+        td: row => '<span add-to-cart-single file="row" style="margin-right:5px"></span>' +
                     '<a class="btn btn-primary" download-button files="row">' +
                     '<i class="fa fa-download"></i></a>'
       }, {

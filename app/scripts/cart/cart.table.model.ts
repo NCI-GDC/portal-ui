@@ -24,7 +24,7 @@ module ngApp.cart.models {
                     "<i class='fa fa-download'></i></button>" +
                     "<button class='btn btn-default' remove-single-cart file='row'>" +
                     "<i class='fa fa-trash-o'></i></button>",
-        tdClassName: "table-compile-cell text-center"
+        tdClassName: "text-center"
       },{
         name: "My Projects",
         id: "my_projects",
@@ -38,8 +38,9 @@ module ngApp.cart.models {
       }, {
         name: "Access",
         id: "access",
-        td: row => '<i class="fa fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i> ' + row.access,
-        sortable: true
+        td: row => '<i class="fa fa-lg fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i>',
+        sortable: true,
+        tdClassName: "text-center"
       }, {
         name: "File Name",
         id: "file_name",
@@ -91,7 +92,6 @@ module ngApp.cart.models {
         id: "annotations",
         td: (row, $scope) => {
           function getAnnotations(row, $scope) {
-            console.log('here?');
             return row.annotationIds.length == 1 ?
                      '<a href="annotations/' + row.annotationIds[0] + '">' + row.annotationIds[0] + '</a>' :
                      withAnnotationFilter(

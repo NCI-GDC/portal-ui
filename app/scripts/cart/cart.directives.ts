@@ -347,19 +347,31 @@ module ngApp.cart.directives {
               fields: [
                 "participant_id",
                 "submitter_id",
-                "annotations.annotation_id"
-              ],
-              expand: [
-                "files"
+                "annotations.annotation_id",
+                "project.project_id",
+                "project.name",
+                'files.access', 
+                'files.file_name', 
+                'files.file_id', 
+                'files.file_size', 
+                'files.data_type', 
+                'files.data_format'
               ]
             }).then((data) => {
-
               if ($scope.areFiltersApplied) {
                 $scope.retreivingFiles = $scope.filteredRelatedFiles ? false: true;
               } else {
                 $scope.retreivingFiles = false;
               }
-
+              var fs = _.map(data.files, f => {
+                f.participants = [{
+                  participant_id:data.participant_id,
+                  project: {
+                    project_id: data.project.project_id,
+                    name: data.project.name
+                  }
+                }];
+              });
               $scope.files = data.files;
             });
           }

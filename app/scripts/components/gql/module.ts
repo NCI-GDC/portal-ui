@@ -26,8 +26,8 @@ module ngApp.components.gql {
         return element.selectionStart;
       } else if (this.$document['selection']) {
         element.focus();
-        const sel: any = this.$document['selection'].createRange();
-        const selLen: number = this.$document['selection'].createRange().text.length;
+        var sel: any = this.$document['selection'].createRange();
+        var selLen: number = this.$document['selection'].createRange().text.length;
         sel.moveStart('character', -element.value.length);
         return sel.text.length - selLen;
       }
@@ -35,7 +35,7 @@ module ngApp.components.gql {
 
     setPos(element: any, caretPos: number): void {
       if (element.createTextRange) {
-        const range = element.createTextRange();
+        var range = element.createTextRange();
         range.move('character', caretPos);
         range.select();
       } else {
@@ -56,14 +56,14 @@ module ngApp.components.gql {
     }
 
     isUnbalanced(stack: string, start: string, end: string): boolean {
-      const numStart = this.countNeedle(stack, start);
-      const numEnd = this.countNeedle(stack, end);
+      var numStart = this.countNeedle(stack, start);
+      var numEnd = this.countNeedle(stack, end);
       return numStart > numEnd;
     }
     
     contains(phrase: string, sub: string): boolean {
       if (sub.length === 0) return true;
-      const phraseStr = (phrase + this.GqlTokens.NOTHING).toLowerCase();
+      var phraseStr = (phrase + this.GqlTokens.NOTHING).toLowerCase();
       return phraseStr.indexOf((sub + this.GqlTokens.NOTHING).toLowerCase()) > -1;
     }
 
@@ -114,7 +114,7 @@ module ngApp.components.gql {
     }
     
     splitField(s: string): IFieldParts {
-      const xs = s.split(this.GqlTokens.PERIOD);
+      var xs = s.split(this.GqlTokens.PERIOD);
       
       return {
         docType: xs.shift(),
@@ -123,9 +123,9 @@ module ngApp.components.gql {
     }
     
     ajaxRequest(field: string): ng.IPromise<IDdItem[]> {
-      const parts = this.splitField(field);
+      var parts = this.splitField(field);
       
-      const params = {
+      var params = {
         facets: [parts.facet],
         size: 0,
         filters: {}

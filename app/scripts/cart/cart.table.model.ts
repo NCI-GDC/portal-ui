@@ -1,15 +1,15 @@
 module ngApp.cart.models {
    function withAnnotationFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
-    const filterString = $filter("makeFilter")(filters, true);
-    const href = 'annotations?filters=' + filterString;
-    const val = '{{' + value + '|number:0}}';
+    var filterString = $filter("makeFilter")(filters, true);
+    var href = 'annotations?filters=' + filterString;
+    var val = '{{' + value + '|number:0}}';
     return "<a href='" + href + "'>" + val + '</a>';
   }
 
   function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
-    const filterString = $filter("makeFilter")(filters, true);
-    const href = 'search/p?filters=' + filterString;
-    const val = '{{' + value + '|number:0}}';
+    var filterString = $filter("makeFilter")(filters, true);
+    var href = 'search/p?filters=' + filterString;
+    var val = '{{' + value + '|number:0}}';
     return "<a href='" + href + "'>" + val + '</a>';
   }
   
@@ -30,8 +30,8 @@ module ngApp.cart.models {
         name: "My Projects",
         id: "my_projects",
         td: (row, $scope) => {
-            const isUserProject = $scope.UserService.isUserProject(row);
-            const icon = isUserProject ? 'check-square-o' : 'square-o';
+            var isUserProject = $scope.UserService.isUserProject(row);
+            var icon = isUserProject ? 'check-square-o' : 'square-o';
             return '<i class="fa fa-' + icon + '"></i>';
         },
         inactive: $scope => !$scope.UserService.currentUser,

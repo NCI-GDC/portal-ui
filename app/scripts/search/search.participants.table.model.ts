@@ -1,23 +1,23 @@
 module ngApp.search.models {
     function withAnnotationFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
-        const filterString = $filter("makeFilter")(filters, true);
-        const href = 'annotations?filters=' + filterString;
-        const val = '{{' + value + '|number:0}}';
+        var filterString = $filter("makeFilter")(filters, true);
+        var href = 'annotations?filters=' + filterString;
+        var val = '{{' + value + '|number:0}}';
         return "<a href='" + href + "'>" + val + '</a>';
     }
 
     function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
-        const filterString = $filter("makeFilter")(filters, true);
-        const href = 'search/f?filters=' + filterString;
-        const val = '{{' + value + '|number:0}}';
+        var filterString = $filter("makeFilter")(filters, true);
+        var href = 'search/f?filters=' + filterString;
+        var val = '{{' + value + '|number:0}}';
         return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
     }
     function getDataType(dataTypes: Object[], dataType:string): number {
-        const data = _.find(dataTypes, {data_type: dataType});
+        var data = _.find(dataTypes, {data_type: dataType});
         return data ? data.file_count : 0;
     }
     function dataTypeWithFilters(dataType: string, row: Object[], $filter: ng.IFilterService) {
-        const fs = [
+        var fs = [
           {name: 'participants.participant_id', value: row.participant_id},
           {name: 'files.data_type', value: dataType}
         ];
@@ -37,9 +37,9 @@ module ngApp.search.models {
             name: "My Projects",
             id: "my_projects",
             td: (row, $scope) => {
-                const fakeFile = {participants: [{project: row.project}]};
-                const isUserProject = $scope.UserService.isUserProject(fakeFile);
-                const icon = isUserProject ? 'check-square-o' : 'square-o';
+                var fakeFile = {participants: [{project: row.project}]};
+                var isUserProject = $scope.UserService.isUserProject(fakeFile);
+                var icon = isUserProject ? 'check-square-o' : 'square-o';
                 return '<i class="fa fa-' + icon + '"></i>';
             },
             inactive: $scope => !$scope.UserService.currentUser
@@ -75,8 +75,8 @@ module ngApp.search.models {
             name: "Files",
             id: "files",
             td: (row, $scope) => {
-                const fs = [{name: 'participants.participant_id', value: row.participant_id}]
-                const sum = _.sum(_.pluck(row.summary.data_types, 'file_count'))
+                var fs = [{name: 'participants.participant_id', value: row.participant_id}]
+                var sum = _.sum(_.pluck(row.summary.data_types, 'file_count'))
                 return withFilter(sum, fs, $scope.$filter);
             },
             tdClassName: 'text-right'

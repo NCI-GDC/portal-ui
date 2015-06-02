@@ -8,11 +8,16 @@ module ngApp.components.tables.directives.tableicious {
                 rowId: "@",
                 data: "=",
                 paging: "=",
-                headings: "="
+                headings: "=",
+                refreshEvents: "="
             },
             replace: true,
             templateUrl: "components/tables/templates/tableicious.html",
             link: function($scope: ITableiciousScope) {
+                var refreshEvents = $scope.refreshEvents || [
+                    "gdc-user-reset"
+                ];
+
                 $scope.$filter = $filter;
                 $scope.UserService = UserService;
                 $scope.getCell = function(h, d) {
@@ -35,6 +40,12 @@ module ngApp.components.tables.directives.tableicious {
                             return hasChildren(h) ? h.children : h;
                     }));
                 }
+
+                _.forEach(refreshEvents, (event) => {
+                    $scope.$on(event, () => {
+                        refresh($scope.headings);
+                    });
+                });
                 
                 $scope.$watch('headings', (n: IHeading[], o: IHeading[]) => {
                    if (_.isEqual(n,o)) return;

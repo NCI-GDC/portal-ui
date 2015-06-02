@@ -40,8 +40,9 @@ module ngApp.search.models {
                 var fakeFile = {participants: [{project: row.project}]};
                 var isUserProject = $scope.UserService.isUserProject(fakeFile);
                 var icon = isUserProject ? 'check-square-o' : 'square-o';
-                return '<i class="fa fa-' + icon + '"></i>';
+                return '<i class="fa fa-lg fa-' + icon + '"></i>';
             },
+            tdClassName: "text-center",
             inactive: $scope => !$scope.UserService.currentUser
         }, {
             name: "Case ID",

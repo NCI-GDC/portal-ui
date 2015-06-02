@@ -30,8 +30,9 @@ module ngApp.search.models {
         td: (row, $scope) => {
             var isUserProject = $scope.UserService.isUserProject(row);
             var icon = isUserProject ? 'check-square-o' : 'square-o';
-            return '<i class="fa fa-' + icon + '"></i>';
+            return '<i class="fa fa-lg fa-' + icon + '"></i>';
         },
+        tdClassName: "text-center",
         inactive: $scope => !$scope.UserService.currentUser,
         hidden: false
       }, {

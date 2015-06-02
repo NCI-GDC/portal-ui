@@ -84,58 +84,66 @@ module ngApp.search.models {
             id: "summary.data_types",
             thClassName:'text-center',
             children: [
-              {
-                name: 'Clinical',
-                id: 'clinical',
-                td: (row, $scope) => dataTypeWithFilters("Clinical", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }, {
-                name: 'Array',
-                id: 'Array',
-                td: (row, $scope) => dataTypeWithFilters("Raw microarray data", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }, {
-                name: 'Seq',
-                id: 'Seq',
-                td: (row, $scope) => dataTypeWithFilters("Raw sequencing data", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }, {
-                name: "SNV",
-                id: "SNV",
-                td: (row, $scope) => dataTypeWithFilters("Simple nucleotide variation", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }, {
-                name: 'CNV',
-                id: 'cnv',
-                td: (row, $scope) => dataTypeWithFilters("Copy number variation", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }, {
-                name: 'SV',
-                id: 'sv',
-                td: (row, $scope) => dataTypeWithFilters("Structural rearrangement", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }, {
-                name: 'Exp',
-                id: 'Exp',
-                td: (row, $scope) => dataTypeWithFilters("Gene expression", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }, {
-                name: 'PExp',
-                id: 'pexp',
-                td: (row, $scope) => dataTypeWithFilters("Protein expression", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }, {
-                name: 'Meth',
-                id: 'meth',
-                td: (row, $scope) => dataTypeWithFilters("DNA methylation", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }, {
-                name: 'Other',
-                id: 'other',
-                td: (row, $scope) => dataTypeWithFilters("Other", row, $scope.$filter),
-                tdClassName: 'text-right'
-              }
-            ]
+          {
+            name: 'Clinical',
+            id: 'clinical',
+            td: (row, $scope) => dataTypeWithFilters("Clinical", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }, {
+            name: 'Array',
+            th: '<abbr data-tooltip="Raw microarray data">Array</abbr>',
+            id: 'Array',
+            td: (row, $scope) => dataTypeWithFilters("Raw microarray data", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }, {
+            name: 'Seq',
+            th: '<abbr data-tooltip="Raw sequencing data">Seq</abbr>',
+            id: 'Seq',
+            td: (row, $scope) => dataTypeWithFilters("Raw sequencing data", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }, {
+            name: "SNV",
+            th: '<abbr data-tooltip="Simple nucleotide variation">SNV</abbr>',
+            id: "SNV",
+            td: (row, $scope) => dataTypeWithFilters("Simple nucleotide variation", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }, {
+            name: 'CNV',
+            th: '<abbr data-tooltip="Copy number variation">CNV</abbr>',
+            id: 'cnv',
+            td: (row, $scope) => dataTypeWithFilters("Copy number variation", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }, {
+            name: 'SV',
+            th: '<abbr data-tooltip="Structural rearrangement">SV</abbr>',
+            id: 'sv',
+            td: (row, $scope) => dataTypeWithFilters("Structural rearrangement", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }, {
+            name: 'Exp',
+            th: '<abbr data-tooltip="Gene expression">Exp</abbr>',
+            id: 'Exp',
+            td: (row, $scope) => dataTypeWithFilters("Gene expression", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }, {
+            name: 'PExp',
+            th: '<abbr data-tooltip="Protein expression">PExp</abbr>',
+            id: 'pexp',
+            td: (row, $scope) => dataTypeWithFilters("Protein expression", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }, {
+            name: 'Meth',
+            th: '<abbr data-tooltip="DNA methylation">Meth</abbr>',
+            id: 'meth',
+            td: (row, $scope) => dataTypeWithFilters("DNA methylation", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }, {
+            name: 'Other',
+            id: 'other',
+            td: (row, $scope) => dataTypeWithFilters("Other", row, $scope.$filter),
+            tdClassName: 'text-right'
+          }
+        ]
         }, {
           name: "Annotations",
           id: "annotations",

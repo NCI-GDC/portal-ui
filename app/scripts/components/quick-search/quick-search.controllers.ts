@@ -99,8 +99,12 @@ module ngApp.components.quickSearch.controllers {
     }
 
     goTo(entity, id) {
-      var options = {};
+      if (this.$state.params[entity + "Id"] === id) {
+        this.$modalInstance.close();
+        return;
+      }
 
+      var options = {};
       options[entity + "Id"] = id;
       this.$state.go(entity, options, { inherit: false });
     }

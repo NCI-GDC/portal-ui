@@ -87,6 +87,15 @@ function appRun(gettextCatalog: any,
     if (+data.version !== +config.supportedAPI) {
       config.apiIsMismatched = true;
     }
+  }, function(response) {
+    notify.config({ duration: 60000 });
+    notify.closeAll();
+    notify({
+      message: "",
+      messageTemplate: "<span>Unable to connect to the GDC API. Make sure you have accepted the Security Certificate. <br>If not, please click <a href='https://portal.gdc.nci.nih.gov/status'>here</a> and accept the Security Certificate</span>",
+      container: "#notification",
+      classes: "alert-danger"
+    });
   });
 
   UserService.login();

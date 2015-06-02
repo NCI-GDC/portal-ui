@@ -12,7 +12,7 @@ module ngApp.cart.models {
     var val = '{{' + value + '|number:0}}';
     return "<a href='" + href + "'>" + val + '</a>';
   }
-  
+
   var CartTableModel = {
     title: 'Cart',
     rowId: 'file_id',

@@ -96,7 +96,6 @@ module ngApp.cart.services {
     }
 
     addFiles(files: IFile[]): void {
-      //var addedFiles:IFile[] = [];
       this.lastModifiedFiles = [];
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
@@ -111,7 +110,7 @@ module ngApp.cart.services {
                 id: p.project.project_id,
                 name: p.project.name
               };
-            }));
+            }), 'id');
             cartItem.related_ids = file.related_ids || _.pluck(file.related_files, "file_id")
             this.lastModifiedFiles.push(cartItem);
         } else {

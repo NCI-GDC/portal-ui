@@ -12,63 +12,6 @@ module ngApp.cart.directives {
     removeFromCart(files: IFile[]): void;
   }
 
-  function SelectAllCart(): ng.IDirective {
-    return {
-      restrict: "AE",
-      replace: true,
-      scope: {
-        paging: "="
-      },
-      templateUrl: "cart/templates/select-all.html",
-      controller: function($scope, CartService: ICartService) {
-        $scope.files = CartService.getFiles();
-
-        function getVisible() {
-          var p = $scope.paging;
-          var visible = $scope.files.slice(p.from - 1, p.from + p.count - 1);
-          return visible;
-        }
-
-        $scope.CartService = CartService;
-        $scope.selectAll = function(visibleOnly) {
-          var visible = getVisible();
-          var iteratee = visibleOnly ? visible : $scope.files;
-          _.each(iteratee,(file: IFile): void => {
-              file.selected = true;
-          });
-        };
-
-        $scope.deselectAll = function(visibleOnly) {
-          var visible = getVisible();
-          var iteratee = visibleOnly ? visible : $scope.files;
-          _.each(iteratee, (file: IFile): void => {
-            file.selected = false;
-          });
-        };
-
-        $scope.all = function(visibleOnly) {
-          var visible = getVisible();
-          var iteratee = visibleOnly ? visible : $scope.files;
-          return _.every(iteratee, {selected: true});
-        };
-      }
-    }
-  }
-
-  function SelectSingleCart(): ng.IDirective {
-    return {
-      restrict: "AE",
-      replace: true,
-      scope: {
-        file: "="
-      },
-      templateUrl: "cart/templates/select-single.html",
-      controller: function($scope, CartService) {
-        $scope.CartService = CartService;
-      }
-    };
-  }
-
   function RemoveSingleCart(): ng.IDirective {
     return {
       restrict: "A",
@@ -200,21 +143,13 @@ module ngApp.cart.directives {
   function DownloadButtonAllCart() {
     return {
       restrict:"AE",
-      scope: {
-        selectedOnly: "@"
-      },
       controller:function($scope,FilesService,UserService,CartService,$modal,$element){
         $element.on('click',function checkCartForClosedFiles() {
           var scope = $scope;
           var isLoggedIn = UserService.currentUser;
-          function isSelected(a){return a.selected};
+
           var authorizedInCart = CartService.getAuthorizedFiles();
           var unauthorizedInCart = CartService.getUnauthorizedFiles();
-
-          if ($scope.selectedOnly) {
-            authorizedInCart = authorizedInCart.filter(isSelected);
-            unauthorizedInCart = unauthorizedInCart.filter(isSelected);
-          }
 
           scope.meta = {
             unauthorized: unauthorizedInCart,
@@ -499,8 +434,6 @@ module ngApp.cart.directives {
     .directive("downloadButtonAllCart", DownloadButtonAllCart)
     .directive("cartDisplayingPieChart", CartDisplayingPieChart)
     .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton)
-    .directive("selectSingleCart", SelectSingleCart)
     .directive("removeSingleCart", RemoveSingleCart)
-    .directive("selectAllCart", SelectAllCart);
 }
 

@@ -101,24 +101,17 @@ module ngApp.cart.services {
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_id)) {
-          var projectIds = [];
-          var participantIds = [];
-          _.forEach(file.participants, (participant) => {
-            participantIds.push(participant.participant_id);
-            projectIds.push(participant.project.project_id);
-          });
-          this.lastModifiedFiles.push({
-                  'access': file.access,
-                  'file_name': file.file_name,
-                  'file_id': file.file_id,
-                  'annotationIds': _.pluck(file.annotations, 'annotation_id'),
-                  'projects': projectIds,
-                  'participantIds': participantIds,
-                  'data_type': file.data_type,
-                  'data_format': file.data_format,
-                  'file_size': file.file_size,
-                  'related_ids': file.related_ids || _.pluck(file.related_files, "file_id")
-                  });
+            var cartItem = _.omit(file, 'annotations', 'participants', 'related_files');
+            cartItem.annotationIds = _.pluck(file.annotations, 'annotation_id');
+            cartItem.participantIds = _.map(file.participants, p => p.participant_id);
+            cartItem.projects = _.unique(_.map(file.participants, p => {
+              return {
+                id: p.project.project_id,
+                name: p.project.name
+              };
+            }));
+            cartItem.related_ids = file.related_ids || _.pluck(file.related_files, "file_id")
+            this.lastModifiedFiles.push(cartItem);
         } else {
           alreadyIn.push(file);
         }

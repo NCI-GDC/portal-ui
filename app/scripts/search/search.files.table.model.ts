@@ -1,6 +1,4 @@
 module ngApp.search.models {
-  import IUserService = ngApp.components.user.services.IUserService;
-
   function withAnnotationFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     const filterString = $filter("makeFilter")(filters, true);
     const href = 'annotations?filters=' + filterString;
@@ -15,17 +13,8 @@ module ngApp.search.models {
     return "<a href='" + href + "'>" + val + '</a>';
   }
 
-  function arrayToObject(array) {
-    var obj = {};
-    array.forEach(function (elem) {
-      obj[elem.id] = elem.val;
-    })
-    return obj;
-  }
-
   var searchTableFilesModel = {
     title: 'Files',
-    order: ['file_actions', 'my_projects', 'access', 'file_name', 'participants', 'participants.project.project_id', 'data_type', 'data_format', 'file_size', 'annotations'],
     rowId: 'file_id',
     headings: [
       {

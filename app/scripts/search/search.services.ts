@@ -1,6 +1,7 @@
 module ngApp.search.services {
 
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface ITab {
     active: boolean;
@@ -67,10 +68,12 @@ module ngApp.search.services {
   class SearchService implements ISearchService {
 
     /* @ngInject */
-    constructor(private Restangular: restangular.IService, private LocationService: ILocationService) {
+    constructor(private Restangular: restangular.IService, private LocationService: ILocationService,
+                private UserService: IUserService) {
     }
 
     getSummary(filters: Object = this.LocationService.filters()) {
+      filters = this.UserService.addMyProjectsFilter(filters, "participants.project.project_id");
       return this.Restangular.all("ui/search/summary")
       .post({ filters: filters }, undefined, { 'Content-Type': 'application/json' })
       .then((response) => {

@@ -98,7 +98,7 @@ module ngApp.cart.models {
         td: (row, $scope) => {
           function getAnnotations(row, $scope) {
             return row.annotationIds.length == 1 ?
-                     '<a href="annotations/' + row.annotationIds[0] + '">' + row.annotationIds[0] + '</a>' :
+                     '<a href="annotations/' + row.annotationIds[0] + '">' + 1 + '</a>' :
                      withAnnotationFilter(
                        row.annotationIds.length,
                        [{name: "annotation_id", value: row.annotationIds}],

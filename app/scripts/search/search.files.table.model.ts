@@ -21,7 +21,7 @@ module ngApp.search.models {
         th: '<div add-to-cart-all files="data" paging="paging"></div>',
         name: 'Add to Cart',
         id: "file_actions",
-        td: row => '<span data-tooltip-popup-delay=1000 data-tooltip="Add to Cart" add-to-cart-single file="row" style="margin-right:5px"></span>' +
+        td: row => '<span add-to-cart-single file="row" style="margin-right:5px"></span>' +
                     '<a  data-tooltip="Download" data-tooltip-popup-delay=1000 class="btn btn-primary" download-button files="row">' +
                     '<i class="fa fa-download"></i></a>'
       }, {

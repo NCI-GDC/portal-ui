@@ -100,17 +100,17 @@ module ngApp.cart.services {
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_id)) {
-            var cartItem = _.pick(file, 
+            var cartItem = _.pick(file,
             'access', 'file_name', 'file_id', 'file_size', 'data_type', 'data_format'
             );
             cartItem.annotationIds = file.annotationIds || _.pluck(file.annotations, 'annotation_id');
             cartItem.participantIds = file.participantIds || _.map(file.participants, p => p.participant_id);
             cartItem.projects = file.projects || _.unique(_.map(file.participants, p => {
               return {
-                id: p.project.project_id,
+                project_id: p.project.project_id,
                 name: p.project.name
               };
-            }), 'id');
+            }), 'project_id');
             cartItem.related_ids = file.related_ids || _.pluck(file.related_files, "file_id")
             this.lastModifiedFiles.push(cartItem);
         } else {

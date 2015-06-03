@@ -28,10 +28,22 @@ module ngApp.components.ui.biospecimen.controllers {
         return file.data_subtype.toLowerCase() === "biospecimen data";
       });
 
-      if(biospecimenFile) {
+      if (biospecimenFile) {
         this.bioSpecimenFileId = biospecimenFile.file_id;
       }
 
+      // Checks for "orphan" aliquots which happen only on TARGET projects.
+      _.forEach($scope.participant.samples, (sample) => {
+        _.forEach(sample.portions, (portion) => {
+          if (!portion.submitter_id && portion.analytes && portion.analytes.length) {
+            _.forEach(portion.analytes, (analyte) => {
+              if (!analyte.submitter_id && analyte.aliquots && analyte.aliquots.length) {
+                sample.aliquots = (sample.aliquots || []).concat(analyte.aliquots);
+              }
+            });
+          }
+        });
+      });
     }
 
     displayBioSpecimenDocument(event: any, doc: any, type: string): void {

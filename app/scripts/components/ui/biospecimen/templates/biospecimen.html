@@ -25,7 +25,7 @@
           <!-- Start of Samples List -->
           <div data-ng-repeat="sample in participant.samples"
                data-ng-if="participant.samples.expanded">
-            <div data-ng-if="sample.submitter_id" class="biospecimen-row document">
+            <div class="biospecimen-row document">
               <i class="fa fa-plus-square-o action" data-ng-if="!sample.expanded"
                  data-ng-click="expandTree($event, sample)"
                  data-ng-keypress="expandTree($event, sample)"
@@ -44,7 +44,7 @@
                 {{ sample.submitter_id }}
               </span>
 
-              <div data-ng-if="sample.portions.length" data-ng-class="{ hidden: !sample.expanded }"
+              <div data-ng-if="sample.portions.length && !sample.aliquots.length" data-ng-class="{ hidden: !sample.expanded }"
                    aria-expanded="sample.expanded">
                 <div class="biospecimen-row section">
                   <i class="fa fa-plus-square-o action" data-ng-if="!sample.portions.expanded"
@@ -193,6 +193,33 @@
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div data-ng-if="sample.aliquots.length" data-ng-class="{ hidden: !sample.expanded }"
+                   aria-expanded="sample.expanded">
+                <div class="biospecimen-row section">
+                  <i class="fa fa-plus-square-o action" data-ng-if="!sample.aliquots.expanded"
+                     data-ng-click="expandTree($event, sample.aliquots)"
+                     data-ng-keypress="expandTree($event, sample.aliquots)"
+                     aria-label="Expand Aliquots for {{ sample.submitter_id }}"></i>
+                  <i class="fa fa-minus-square-o action" data-ng-if="sample.aliquots.expanded"
+                     data-ng-click="expandTree($event, sample.aliquots)"
+                     data-ng-keypress="expandTree($event, sample.aliquots)"
+                     aria-label="Collapse Aliquots for {{ sample.submitter_id }}"></i>
+                  <i class="fa fa-folder-o" data-ng-if="!sample.aliquots.expanded"></i>
+                  <i class="fa fa-folder-open-o" data-ng-if="sample.aliquots.expanded"></i>
+                  &nbsp;
+                  <span class="h5" data-translate>Aliquots</span>
+
+                  <div data-ng-repeat="aliquot in sample.aliquots" class="biospecimen-row document biospecimen-id"
+                       data-ng-click="bc.displayBioSpecimenDocument($event, aliquot, 'aliquot')"
+                       data-ng-keypress="bc.displayBioSpecimenDocument($event, aliquot, 'aliquot')"
+                       data-ng-if="sample.aliquots.expanded"
+                       class="biospecimen-id"
+                       data-ng-class="{ selected: aliquot === bc.activeBioSpecimenDoc }">
+                    <i class="fa fa-file-o"></i>
+                    {{ aliquot.submitter_id }}
                   </div>
                 </div>
               </div>

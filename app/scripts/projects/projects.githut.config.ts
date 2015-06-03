@@ -48,7 +48,16 @@ angular.module('projects.githut.config',[])
   }
 })
 .service("ProjectsGithutColumns",function($state, $filter){
-  function participant_sref(d) {
+  function projectSref(d) {
+    var filter = $filter("makeFilter")([{
+      name: 'participants.project.project_id',
+      value: d.lang
+    }]);
+
+    $state.go("search.participants", { filters:JSON.parse(filter) });
+  }
+
+  function dataTypeSref(d) {
     var filter = $filter("makeFilter")([{
       name: 'participants.project.project_id',
       value: d.lang
@@ -72,7 +81,8 @@ angular.module('projects.githut.config',[])
       display_name:["Case","Count"],
       scale:'ordinal',
       dimensional:true,
-      colorgroup:'participant_count'
+      colorgroup:'participant_count',
+      href: projectSref
     },
     {
       id:'Clinical',
@@ -81,7 +91,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'Raw microarray data',
@@ -90,7 +100,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'Raw sequencing data',
@@ -99,7 +109,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'Simple nucleotide variation',
@@ -108,7 +118,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'Copy number variation',
@@ -117,7 +127,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'Structural rearrangement',
@@ -126,7 +136,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'Gene expression',
@@ -135,7 +145,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'Protein expression',
@@ -144,7 +154,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'DNA methylation',
@@ -153,7 +163,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'Other',
@@ -162,7 +172,7 @@ angular.module('projects.githut.config',[])
       is_subtype:true,
       dimensional:true,
       colorgroup:'participant_count',
-      href:participant_sref
+      href: dataTypeSref
     },
     {
       id:'file_count',

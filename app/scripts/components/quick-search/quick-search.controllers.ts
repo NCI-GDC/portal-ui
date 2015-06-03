@@ -26,7 +26,7 @@ module ngApp.components.quickSearch.controllers {
                 private AnnotationsTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService) {}
 
-    getMatchingTerms(obj, matchedTerms) {
+    getMatchingTerms(obj, matchedTerms, baseId) {
       var skipKeys = [
         "_index",
         "_score",
@@ -37,22 +37,18 @@ module ngApp.components.quickSearch.controllers {
         if (obj.hasOwnProperty(key) && skipKeys.indexOf(key) === -1) {
           if (_.isArray(obj[key])) {
             for (var i = 0; i < obj[key].length; i++) {
-              this.getMatchingTerms(obj[key][i], matchedTerms);
+              this.getMatchingTerms(obj[key][i], matchedTerms, baseId);
             }
           }
 
           // Array check first here is important to distingquish types.
           if (_.isObject(obj[key])) {
-            this.getMatchingTerms(obj[key], matchedTerms);
+            this.getMatchingTerms(obj[key], matchedTerms, baseId);
           }
 
-          if (typeof obj === "string") {
-            if (obj.indexOf(this.searchQuery) > -1) {
+          if (typeof obj === "string" && obj !== baseId) {
+            if (obj.toLowerCase().indexOf(this.searchQuery.toLowerCase()) > -1) {
               matchedTerms.push(obj);
-            }
-          } else if (typeof obj[key] === "string") {
-            if (obj[key].indexOf(this.searchQuery) > -1) {
-              matchedTerms.push(obj[key]);
             }
           }
         }
@@ -233,7 +229,7 @@ module ngApp.components.quickSearch.controllers {
 
         for (var i = 0; i < data.hits.length; i++) {
           var matchedTerms = [];
-          this.getMatchingTerms(data.hits[i], matchedTerms);
+          this.getMatchingTerms(data.hits[i], matchedTerms, data.hits[i]._id);
           matchedTerms = _.uniq(matchedTerms);
 
           // Three is just an arbitrary number I picked based on space.

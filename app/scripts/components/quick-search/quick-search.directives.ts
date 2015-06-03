@@ -75,7 +75,7 @@ module ngApp.components.quickSearch.directives {
           if (newVal) {
             var boldedQuery = "<span class='bolded'>" + $scope.query + "</span>";
             var boldedTerms = [];
-            var regex = new RegExp("[" + $scope.query + "]{" + $scope.query.length + "}", "g");
+            var regex = new RegExp("[" + $scope.query.replace(/\-/g, "\\-") + "]{" + $scope.query.length + "}", "gi");
             _.forEach(newVal, (item) => {
               boldedTerms.push(item.replace(regex, boldedQuery));
             });

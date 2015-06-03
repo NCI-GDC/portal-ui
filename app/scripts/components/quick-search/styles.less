@@ -1,6 +1,18 @@
 #quick-search-modal {
+  padding: 0;
+  
+  input {
+    border: 0;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  
+  #quick-search-list {
+    padding-right: 0;
+  }
+  
   .quick-search-result {
-    padding: 10px;
+    padding: 16px 0;
 
     i.fa, img {
       margin-right: 5px;
@@ -21,14 +33,18 @@
   }
 
   .matched-term {
-    margin-left: 20px;
-    padding-top: 5px;
     font-style: italic;
     font-size: 0.9em;
-    word-wrap: break-word;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 
     .bolded {
       font-weight: 700;
     }
+  }
+  
+  table {
+    margin: 0;
   }
 }

@@ -1,5 +1,5 @@
 <div class="modal-body" id="quick-search-modal">
-  <div class="input-group search-input">
+  <div class="input-group search-input" style="padding: 20px; border-bottom: 1px solid #ccc; border-radius: 0">
     <span class="fa fa-search"></span>
     <input type="text" 
            placeholder="{{ 'Search for IDs..' | translate }}"
@@ -8,22 +8,24 @@
            data-ng-change="qsmc.search()"
            autofocus>
   </div>
-  <div class="row" data-ng-show="qsmc.results">
+  <div style="position: relative" class="row" data-ng-show="qsmc.results">
     <div class="col-lg-5" id="quick-search-list">
-      <div data-ng-repeat="item in qsmc.results.hits track by $index"
-           data-ng-class="{ selected: $first }" class="quick-search-result"
+      <div data-ng-repeat="item in qsmc.results.hits track by item._id"
+           data-ng-class="{ selected: $first }" class="quick-search-result clearfix"
            data-ng-click="qsmc.goTo(item._type, item._id)"
            data-ng-mouseover="qsmc.itemHover($event, item)">
-        <i class="fa fa-user" data-ng-if="item._type === 'participant'"></i>
-        <i class="fa fa-file-o" data-ng-if="item._type === 'file'"></i>
-        <img src="/images/icon-projects-large.png" width="30" height="30"
-             data-ng-if="item._type === 'project'"/>
-        {{ item._id }}
-
-        <matched-terms data-terms="item.matchedTerms" data-query="qsmc.searchQuery"></matched-terms>
+         <div class="col-xs-2">
+           <i style="height: 30px;width: 30px;" class="fa fa-user fa-2x" data-ng-if="item._type === 'participant'"></i>
+           <i style="height: 30px;width: 30px;" class="fa fa-file-o fa-2x" data-ng-if="item._type === 'file'"></i>
+           <i style="height: 30px;width: 30px;" class="fa fa-files-o fa-2x" data-ng-if="item._type === 'project'"/></i>
+         </div>
+        <div class="col-xs-10">
+          {{ item._id }}
+          <matched-terms data-terms="item.matchedTerms" data-query="qsmc.searchQuery"></matched-terms>
+        </div>
       </div>
     </div>
-    <div class="col-lg-7" data-ng-if="qsmc.selectedItem">
+    <div class="col-lg-7" style="border-left: 1px solid #ccc; padding-left: 0" data-ng-if="qsmc.selectedItem">
       <div data-ng-include="'components/quick-search/templates/file.html'"
            data-ng-show="qsmc.selectedItem._type === 'file'"></div>
       <div data-ng-include="'components/quick-search/templates/participant.html'"

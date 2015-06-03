@@ -81,7 +81,9 @@ module ngApp.components.user.services {
 
       // Support multiple use cases
       if (file.projects) {
-        projectIds = _.unique(file.projects);
+        projectIds = _.unique(_.map(file.projects, (project) => {
+          return project.id;
+        }));
       } else {
         projectIds = _.unique(_.map(file.participants, (participant) => {
           return participant.project.project_id;

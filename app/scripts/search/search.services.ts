@@ -87,9 +87,8 @@ module ngApp.search.services {
         sortKey: "doc_count",
         defaultText: "project",
         pluralDefaultText: "projects",
-        state: {
+        filters: {
           "default": {
-            name: "search.files",
             params: {
               filters: function(value) {
                 return $filter("makeFilter")([
@@ -109,9 +108,8 @@ module ngApp.search.services {
         sortKey: "doc_count",
         defaultText: "primary site",
         pluralDefaultText: "primary sites",
-        state: {
+        filters: {
           "default": {
-            name: "search.files",
             params: {
               filters: function(value) {
                 return $filter("makeFilter")([
@@ -131,9 +129,8 @@ module ngApp.search.services {
         sortKey: "doc_count",
         defaultText: "access level",
         pluralDefaultText: "access levels",
-        state: {
+        filters: {
           open: {
-            name: "search.files",
             params: {
               filters: $filter("makeFilter")([
                 {
@@ -150,7 +147,6 @@ module ngApp.search.services {
             }
           },
           "protected": {
-            name: "search.files",
             params: {
               filters: $filter("makeFilter")([
                 {
@@ -172,9 +168,8 @@ module ngApp.search.services {
         sortKey: "doc_count",
         defaultText: "data type",
         pluralDefaultText: "data types",
-        state: {
+        filters: {
           "default": {
-            name: "search.files",
             params: {
               filters: function(value) {
                 return $filter("makeFilter")([
@@ -194,9 +189,8 @@ module ngApp.search.services {
         sortKey: "doc_count",
         defaultText: "data format",
         pluralDefaultText: "data formats",
-        state: {
+        filters: {
           "default": {
-            name: "search.files",
             params: {
               filters: function(value) {
                 return $filter("makeFilter")([
@@ -216,9 +210,8 @@ module ngApp.search.services {
         sortKey: "doc_count",
         defaultText: "experimental strategy",
         pluralDefaultText: "experimental strategies",
-        state: {
+        filters: {
           "default": {
-            name: "search.files",
             params: {
               filters: function(value) {
                 return $filter("makeFilter")([

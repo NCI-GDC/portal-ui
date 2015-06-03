@@ -1,5 +1,6 @@
 module ngApp.components.charts {
   import IGDCWindowService = ngApp.core.models.IGDCWindowService;
+  import ILocationService = ngApp.components.location.services.ILocationService;
 
   interface IDonutChartScope extends ng.IScope {
     data: any;
@@ -9,7 +10,7 @@ module ngApp.components.charts {
   }
 
   /* @ngInject */
-  function PieChart($window: IGDCWindowService, $state: ng.ui.IStateService): ng.IDirective {
+  function PieChart($window: IGDCWindowService, LocationService: ILocationService): ng.IDirective {
     return {
       restrict: "EA",
       replace: true,
@@ -61,8 +62,7 @@ module ngApp.components.charts {
           var config = $scope.config;
 
           var color = d3.scale.category20();
-          var outerRadius = height / 2 - 20,
-              cornerRadius = 10;
+          var outerRadius = height / 2 + 10;
 
           var pie = d3.layout.pie()
               .sort(null)
@@ -110,7 +110,7 @@ module ngApp.components.charts {
               .attr("state", function(d) {
                 return config.state ? "true" : "false";
               })
-              .on("click", goToState)
+              .on("click", setFilters)
               .on("mouseover.text", function(d) {
                 $scope.showDefault = false;
                 $scope.hoverKey = d.data.key;
@@ -132,29 +132,55 @@ module ngApp.components.charts {
           $scope.legendData = legendData;
           
           if (data.length > 1) {
-            gPath.on("mouseover.tween", arcTween(outerRadius - 10, 0))
+            gPath.on("mouseover.tween", arcTween(outerRadius - 15, 0))
                  .on("mouseout.tween", arcTween(outerRadius - 20, 150));
           }
 
-          function goToState(d) {
-            if (!config.state || (!config.state[d.data.key] &&
-                !config.state["default"])) {
+          function setFilters(d) {
+            var params;
+
+            if (!config.filters || (!config.filters[d.data.key] &&
+                !config.filters["default"])) {
               return;
             }
 
-            if (config.state[d.data.key]) {
-              var state = config.state[d.data.key];
-
-              $state.go(state.name, state.params, {inherit: false});
-              return;
+            if (config.filters[d.data.key]) {
+              var filters = config.filters[d.data.key];
+              params = filters.params;
+            } else {
+              params = {
+                filters: config.filters["default"].params.filters(d.data.key)
+              };
             }
 
-            var state = config.state["default"],
-                params = {
-                  filters: state.params.filters(d.data.key)
-                };
+            var filters = LocationService.filters();
 
-            $state.go(state.name, params, {inherit: false});
+            if (!filters.content) {
+              filters.content = [];
+              filters.op = "and";
+            }
+
+            var newFilters = angular.fromJson(params.filters);
+
+            _.forEach(newFilters.content, (filter) => {
+              var oldFilter = _.find(filters.content, (oFilter) => {
+                return oFilter.content.field === filter.content.field;
+              });
+
+              if (oldFilter) {
+                // Playing with the idea that if attempting to add the exact same
+                // value then we should remove it as a "reverse"
+                if (!_.isEqual(oldFilter.content.value, filter.content.value)) {
+                  oldFilter.content.value.concat(filter.content.value);
+                } else {
+                  filters.content.splice(filters.content.indexOf(filter), 1);
+                }
+              } else {
+                filters.content.push(filter);
+              }
+            });
+
+            LocationService.setFilters(filters);
           }
 
           function arcTween(outerRadius, delay) {
@@ -224,14 +250,10 @@ module ngApp.components.charts {
             $scope.displayedData = $scope.data.data.slice(0, 10);
 
             _.defer(() => {
-              var top;
+              var top = 0;
 
               if (elem.height() < $scope.data.parent.height()) {
                 top = ($scope.data.parent.height() - elem.height()) / 2;
-              }
-
-              if (elem.height() > $scope.data.parent.height()) {
-                top = 0;
               }
 
               elem.css("top", top + "px");
@@ -244,8 +266,10 @@ module ngApp.components.charts {
     }
   }
 
-  angular.module("components.charts", [])
-      .directive("chartLegend", ChartLegend)
-      .directive("pieChart", PieChart);
+  angular.module("components.charts", [
+      "location.services"
+    ])
+    .directive("chartLegend", ChartLegend)
+    .directive("pieChart", PieChart);
 }
 

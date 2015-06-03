@@ -1,7 +1,7 @@
 module ngApp.components.user.services {
   import IUser = ngApp.components.user.models.IUser;
   import IFile = ngApp.files.models.IFile;
-  import ILocationService = ngApp.components.location.services.ILocationService;
+  import ILocationService = ngApp.components.location.ILocationService;
   import IGDCConfig = ngApp.IGDCConfig;
 
   export interface IUserService {

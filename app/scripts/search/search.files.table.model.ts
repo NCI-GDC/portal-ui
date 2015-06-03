@@ -29,15 +29,19 @@ module ngApp.search.models {
         id: "my_projects",
         td: (row, $scope) => {
             var isUserProject = $scope.UserService.isUserProject(row);
-            var icon = isUserProject ? 'check-square-o' : 'square-o';
+            var icon = isUserProject ? 'check' : 'remove';
             return '<i class="fa fa-' + icon + '"></i>';
         },
-        inactive: $scope => !$scope.UserService.currentUser,
-        hidden: false
+        inactive: $scope => !$scope.UserService.currentUser || $scope.UserService.currentUser.isFiltered,
+        hidden: false,
+        tdClassName: "text-center"
       }, {
         name: "Access",
         id: "access",
-        td: row => '<i class="fa fa-lg fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i>',
+        td: (row, $scope) => {
+          var val = $scope.$filter("humanify")(row.access);
+          return '<i class="fa fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i> ' + val;
+        }, 
         tdClassName: "text-center",
         sortable: true
       }, {

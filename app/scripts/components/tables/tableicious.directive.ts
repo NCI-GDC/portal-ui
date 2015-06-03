@@ -24,7 +24,7 @@ module ngApp.components.tables.directives.tableicious {
                 
                 function refresh(hs: IHeading[]): void {
                     $scope.enabledHeadings = _.reject(hs, h => {
-                        return h.hidden || (h.inactive && h.inactive($scope))
+                        return h.hidden;// || (h.inactive && h.inactive($scope))
                     });
                     $scope.subHeaders = _.flatten<IHeading>(
                         _.pluck(_.filter($scope.enabledHeadings, (h) => {

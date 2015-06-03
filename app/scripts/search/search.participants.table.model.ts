@@ -39,10 +39,12 @@ module ngApp.search.models {
             td: (row, $scope) => {
                 var fakeFile = {participants: [{project: row.project}]};
                 var isUserProject = $scope.UserService.isUserProject(fakeFile);
-                var icon = isUserProject ? 'check-square-o' : 'square-o';
+                var icon = isUserProject ? 'check' : 'remove';
                 return '<i class="fa fa-' + icon + '"></i>';
             },
-            inactive: $scope => !$scope.UserService.currentUser
+            inactive: $scope => !$scope.UserService.currentUser || $scope.UserService.currentUser.isFiltered,
+            hidden: false,
+            tdClassName: "text-center"
         }, {
             name: "Case ID",
             id: "participant_id",

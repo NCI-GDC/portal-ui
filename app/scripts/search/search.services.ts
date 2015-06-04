@@ -137,12 +137,6 @@ module ngApp.search.services {
             params: {
               filters: $filter("makeFilter")([
                 {
-                  name: "files.file_id",
-                  value: _.pluck(_.filter(this.files, (file) => {
-                    return file.access === "open";
-                  }), "file_id")
-                },
-                {
                   name: "files.access",
                   value: "open"
                 }
@@ -152,12 +146,6 @@ module ngApp.search.services {
           "protected": {
             params: {
               filters: $filter("makeFilter")([
-                {
-                  name: "files.file_id",
-                  value: _.pluck(_.filter(this.files, (file) => {
-                    return file.access === "protected";
-                  }), "file_id")
-                },
                 {
                   name: "files.access",
                   value: "protected"

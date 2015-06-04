@@ -46,10 +46,11 @@ module ngApp.files.services {
     download(endpoint: string, ids: Array<string>) {
       var abort = this.$q.defer();
       var params = { "ids": ids };
-      this.RestFullResponse.all(endpoint)
+      this.RestFullResponse.all(endpoint + "?annotations=true")
         .withHttpConfig({
           timeout: abort.promise,
-          responseType: "blob"
+          responseType: "blob",
+          withCredentials: true
         })
         .post(params, undefined, { 'Content-Type': 'application/json' })
         .then((response) => {

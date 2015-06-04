@@ -22,17 +22,18 @@
         <arrange-columns data-title="{{ config.title }}"
                          data-saved="saved"
                          data-headings="config.headings"></arrange-columns>
-        <export-table data-endpoint="{{ endpoint }}" data-size="{{ paging.total }}"
-                      data-fields="config.fields" data-ng-if="endpoint"></export-table>
+        <export-table data-size="{{ paging.total }}"
+                      data-endpoint="{{ endpoint }}"
+                      data-headings="config.headings" data-ng-if="endpoint"></export-table>
       </div>
     </div>
   </div>
   <div class="table-responsive" data-nng-show="gtc.tableRendered">
-    <tableicious 
+    <tableicious
         id="{{ id }}"
         data-row-id="{{ config.rowId }}"
       	data-headings="config.headings"
-        data-data="gtc.displayedData" 
+        data-data="gtc.displayedData"
         data-title="{{config.title}}"
         data-saved="saved"
         data-paging="paging"></tableicious>

@@ -16,19 +16,19 @@ module ngApp.projects.models {
                 ];
     return withFilter(getDataType(row.summary.data_types, dataType), fs, $filter);
   }
-  
+
   var projectTableModel = {
     title: 'Projects',
-    order: ['project_id', 'disease_type', 'primary_site', 'program.name', 'summary.participant_count', 'data_types', 'summary.file_count', 'file_size'],
     rowId: 'project_id',
+
     headings: [
       {
         name: "ID",
         id: "project_id",
-        td: row => '<a href="projects/'+row.project_id + 
+        td: row => '<a href="projects/'+row.project_id +
                      '" data-tooltip="' + row.name +
-                     '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' + 
-                     row.project_id + 
+                     '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' +
+                     row.project_id +
                    '</a>',
         sortable: true,
         hidden: false,
@@ -69,7 +69,7 @@ module ngApp.projects.models {
         tdClassName: 'text-right'
       }, {
         name: "Available Cases per Data Type",
-        id: "data_types",
+        id: "summary.data_types",
         thClassName: 'text-center',
         hidden: false,
         children: [

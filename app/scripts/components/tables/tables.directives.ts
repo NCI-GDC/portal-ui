@@ -20,25 +20,25 @@ module ngApp.components.tables.directives {
       templateUrl: "components/tables/templates/arrange-columns.html",
       link:function($scope) {
         $scope.UserService = UserService;
+
         function saveSettings() {
           var save = _.map($scope.headings, h => _.pick(h, 'id', 'hidden'));
           $window.localStorage.setItem($scope.title + '-col', angular.toJson(save));
         }
-        
+
         var defaults = _.cloneDeep($scope.headings);
         $scope.headings = $scope.saved.length ? 
           _.map($scope.saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
           $scope.headings;
-        
         $scope.restoreDefaults = function() {
-          $scope.headings = _.cloneDeep(defaults); 
-        } 
-        $scope.toggleVisibility = function (item) { 
+          $scope.headings = _.cloneDeep(defaults);
+        }
+        $scope.toggleVisibility = function (item) {
           item.hidden = !item.hidden;
-          saveSettings(); 
+          saveSettings();
         };
-        $scope.sortOptions = { 
-          orderChanged: saveSettings 
+        $scope.sortOptions = {
+          orderChanged: saveSettings
         };
       }
     };
@@ -48,9 +48,9 @@ module ngApp.components.tables.directives {
     return {
       restrict: "EA",
       scope: {
-        endpoint:"@",
         size: "@",
-        fields: "="
+        headings: "=",
+        endpoint: "@"
       },
       replace: true,
       templateUrl: "components/tables/templates/export-table.html",

@@ -93,7 +93,7 @@ module ngApp.search.models {
         tdClassName: 'text-right'
       }, {
         name: "Annotations",
-        id: "annotations",
+        id: "annotations.annotation_id",
         td: (row, $scope) => {
           function getAnnotations(row, $scope) {
             return row.annotations.length == 1 ?

@@ -26,7 +26,6 @@ module ngApp.search.models {
 
     var searchParticipantsModel = {
         title: 'Cases',
-        order: ['add_to_cart_filtered', 'my_projects', 'participant_id', 'project.project_id', 'project.primary_site', 'clinical.gender', 'files', 'summary.data_types', 'annotations'],
         rowId: 'participant_id',
         headings: [{
             name: "Cart",
@@ -48,7 +47,7 @@ module ngApp.search.models {
         }, {
             name: "Case ID",
             id: "participant_id",
-            td: row => '<a href="participants/'+row.participant_id + '">' +
+            td: row => '<a href="participants/'+ row.participant_id + '">' +
                          row.participant_id +
                        '</a>',
             tdClassName: 'truncated-cell'
@@ -149,7 +148,7 @@ module ngApp.search.models {
         ]
         }, {
           name: "Annotations",
-          id: "annotations",
+          id: "annotations.annotation_id",
           td: (row, $scope) => {
             function getAnnotations(row, $filter) {
               return row.annotations.length == 1 ?

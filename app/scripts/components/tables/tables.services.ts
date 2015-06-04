@@ -285,5 +285,5 @@ module ngApp.components.tables.services {
 
 angular
     .module("tables.services",[])
-    .service("TableService", TableService)
+    .service("TableService", TableService);
 }

@@ -23,7 +23,7 @@ module ngApp.components.tables.directives.tableicious {
                 function hasChildren(h: IHeading): boolean {
                     return h.children && h.children.length > 0;
                 }
-                
+
                 function refresh(hs: IHeading[]): void {
                     $scope.enabledHeadings = _.reject(hs, h => {
                         return h.hidden;// || (h.inactive && h.inactive($scope))
@@ -37,12 +37,12 @@ module ngApp.components.tables.directives.tableicious {
                             return hasChildren(h) ? h.children : h;
                     }));
                 }
-                
+
                 $scope.$watch('headings', (n: IHeading[], o: IHeading[]) => {
                    if (_.isEqual(n,o)) return;
-                   refresh(n); 
+                   refresh(n);
                 }, true);
-                
+
                 
                 $scope.headings = $scope.saved.length ? 
                   _.map($scope.saved, (s: IHeading): IHeading => _.merge(_.find($scope.headings, {id: s.id}), s)) :
@@ -79,7 +79,7 @@ module ngApp.components.tables.directives.tableicious {
         headings: IHeading[];
         render(row: any): string;
     }
-    
+
     interface IHeading {
         th: string;
         id: string;
@@ -111,7 +111,7 @@ module ngApp.components.tables.directives.tableicious {
     interface ICell extends ng.IDirective {
         link(scope: ICellScope, element: ng.IAugmentedJQuery): void;
     }
-    
+
     interface ICellScope extends ng.IScope {
         cell: string;
     }

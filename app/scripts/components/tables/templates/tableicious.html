@@ -6,7 +6,7 @@
         data-data="data"
         data-paging="paging"
         data-ng-class="h.thClassName"
-        rowspan="{{::h.children ? 1 : 2}}" 
+        rowspan="{{::h.children ? 1 : 2}}"
         colspan="{{::h.children ? h.children.length : 1}}"
         data-ng-hide="h.inactive(this)"
         data-ng-repeat="h in enabledHeadings">
@@ -21,7 +21,7 @@
   </thead>
   <tbody>
     <tr data-ng-repeat="d in data track by d[rowId]">
-      <td 
+      <td
         data-cell="::getCell(h,d)"
         data-row="d"
         data-ng-class="h.tdClassName"

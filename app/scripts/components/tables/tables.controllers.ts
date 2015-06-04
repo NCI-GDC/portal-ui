@@ -289,6 +289,16 @@ module ngApp.components.tables.controllers {
       };
 
       var filters: Object = this.LocationService.filters();
+      var fieldsAndExpand = _.reduce(this.$scope.headings, (result, field) => {
+                              if(!_.get(field, 'hidden', false)) {
+                                if(_.get(field, 'children')) {
+                                  result.expand.push(field.id);
+                                } else {
+                                  result.fields.push(field.id);
+                                }
+                              }
+                              return result;
+                            }, {'fields': [], 'expand': []});
       var url = this.LocationService.getHref();
       var abort = this.$q.defer();
       var modalInstance;
@@ -300,12 +310,12 @@ module ngApp.components.tables.controllers {
       if (this.$window.URL && this.$window.URL.createObjectURL) {
         var params = {
           filters: filters,
-          fields: this.$scope.fields.join(),
+          fields: fieldsAndExpand.fields.join(),
+          expand: fieldsAndExpand.expand.join(),
           attachment: true,
           format: fileType,
           size: this.$scope.size
         };
-
         modalInstance = this.$modal.open({
           templateUrl: "components/tables/templates/export-modal.html",
           controller: "ExportTableModalController as etmc",
@@ -321,7 +331,6 @@ module ngApp.components.tables.controllers {
             }
           }
         });
-
 
         this.Restangular.all(this.$scope.endpoint)
         .withHttpConfig({
@@ -357,122 +366,10 @@ module ngApp.components.tables.controllers {
     }
   }
 
-  interface IArrangeColumnsScope extends ng.IScope {
-      dndList: any;
-      list: any;
-      order: any;
-      config: any;
-  }
-
-  class ArrangeColumnsController {
-    /* @ngInject */
-    constructor(private $scope: IArrangeColumnsScope, private $window: IGDCWindowService, private LZString) {
-      if (!this.restoreFromLocalStorage()) {
-        this.initListMap();
-      }
-    }
-
-    /**
-      @return true if restored
-    **/
-    restoreFromLocalStorage(): boolean {
-      var decompressed = this.LZString.decompress(this.$window.localStorage.getItem(this.$scope.config.title + '-col'));
-      var saved = decompressed ? JSON.parse(decompressed) : null;
-      if (saved) {
-        var reordered = [];
-        // don't use lodash for this because iteration order is not guaranteed in _.map
-        for(var i = 0; i < saved.length; i++) {
-          var found = _.find(this.$scope.list, (lItem) => {
-            return saved[i].id === lItem.id;
-          });
-          if (found) {
-            found.hidden = saved[i].hidden;
-            found.canReorder = saved[i].canReorder;
-            saved[i].name = found.name;
-            this.updateChildrenVisibility(found);
-          }
-          reordered.push(found);
-        }
-        this.$scope.dndList = saved;
-        this.$scope.list = reordered;
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    saveToLocalStorage(): void {
-      var save = _.reduce(this.$scope.dndList, (result, item) => {
-        result.push({'id': item.id, 'hidden': item.hidden ? 1 : 0, 'canReorder': item.canReorder ? 1 : 0});
-        return result;
-      }, []);
-      this.$window.localStorage.setItem(this.$scope.config.title + '-col', this.LZString.compress(angular.toJson(save)));
-    }
-
-    onMoved($index): void {
-      this.$scope.dndList.splice($index,1);
-      var list = this.$scope.list;
-      this.$scope.list = this.$scope.dndList.map(function(elem){
-        return _.find(list, function(li){
-          return li.id === elem.id;
-        });
-      });
-      this.saveToLocalStorage();
-    }
-
-    toggleVisibility(index: int): void {
-      this.$scope.dndList[index].hidden = !this.$scope.dndList[index].hidden;
-      var itemId = this.$scope.dndList[index].id;
-      var matchingHeader = _.find(this.$scope.list, function(li) {
-        return li.id === itemId;
-      });
-      if (matchingHeader) {
-        matchingHeader.hidden = this.$scope.dndList[index].hidden;
-        this.updateChildrenVisibility(matchingHeader);
-      }
-      this.saveToLocalStorage();
-    }
-
-    updateChildrenVisibility(parentCol: any): void {
-      if (parentCol.children) {
-          _.forEach(parentCol.children, (childCol) => { childCol.hidden = parentCol.hidden; });
-      }
-    }
-
-    reset(): void {
-      var reordered = _.map(this.$scope.config.order, (id) => {
-          var found = _.find(this.$scope.list, (li) => {
-            return id === li.id;
-          });
-          if (found) {
-            found.hidden = false;
-            found.canReorder = true;
-            this.updateChildrenVisibility(found);
-          }
-          return found;
-        });
-      this.$scope.list = reordered;
-      this.initListMap();
-      this.$window.localStorage.removeItem(this.$scope.config.title + '-col');
-    }
-
-    initListMap() {
-     this.$scope.dndList = this.$scope.list.map(function (elem) {
-              var composite = _.pick(elem, "id", "name", "hidden", "canReorder");
-              if (composite.canReorder !== false) {
-                composite.canReorder = true;
-              }
-              return composite;
-        });
-    }
-
-  }
-
   angular.module("tables.controllers", ["location.services", "user.services"])
       .controller("TableSortController", TableSortController)
       .controller("GDCTableController", GDCTableController)
       .controller("ExportTableModalController", ExportTableModalController)
-      .controller("ArrangeColumnsController", ArrangeColumnsController)
       .controller("ExportTableController", ExportTableController);
 }
 

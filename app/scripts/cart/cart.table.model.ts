@@ -70,9 +70,9 @@ module ngApp.cart.models {
         id: "participants.project.project_id",
         td: row => {
           return _.map(row.projects, p => {
-            return ('<a href="projects/' + p.id +
+            return ('<a href="projects/' + p.project_id +
                     '" data-tooltip="' + p.name +
-                    '" data-tooltip-append-to-body="true" data-tooltip-placement="right">'+ p.id + '</a>');
+                    '" data-tooltip-append-to-body="true" data-tooltip-placement="right">'+ p.project_id + '</a>');
           }).join('<br>');
         },
         sortable: true

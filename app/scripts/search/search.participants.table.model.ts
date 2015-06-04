@@ -153,7 +153,7 @@ module ngApp.search.models {
           td: (row, $scope) => {
             function getAnnotations(row, $filter) {
               return row.annotations.length == 1 ?
-                     '<a href="annotations/' + row.annotations[0].annotation_id + '">' + row.annotations[0].annotation_id + '</a>' :
+                     '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>' :
                      withAnnotationFilter(
                        row.annotations.length,
                        [{name: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],

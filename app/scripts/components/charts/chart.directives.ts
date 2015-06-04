@@ -218,12 +218,11 @@ module ngApp.components.charts {
           }
 
           var parent = $scope.data.parent.find(".chart-container");
-          var width = $scope.data.elem[0].getBoundingClientRect().width;
           var LEGEND_WIDTH = elem.width();
           var offset = $scope.data.elem.offset();
-          var left = width + ((parent.width() - width) / 2) + 20;
+          var left = parent.width() + 15;
 
-          if (width + offset.left + LEGEND_WIDTH < $window.innerWidth) {
+          if (left + offset.left + LEGEND_WIDTH < $window.innerWidth) {
             elem.css("left", left + "px");
           } else {
             elem.css("right", left + "px");

@@ -140,7 +140,10 @@ module ngApp.search.controllers {
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
-        if (!_.isEqual(this.files, data)) {
+        this.files = this.files || {};
+        this.files.aggregations = data.aggregations;
+
+        if (!_.isEqual(this.files.hits, data.hits)) {
           this.files = data;
           this.tabSwitch = false;
           if (this.SearchState.tabs.files.active) {
@@ -154,7 +157,10 @@ module ngApp.search.controllers {
       });
 
       this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
-        if (!_.isEqual(this.participants, data)) {
+        this.participants = this.participants || {};
+        this.participants.aggregations = data.aggregations;
+
+        if (!_.isEqual(this.participants.hits, data.hits)) {
           this.participants = data;
           this.tabSwitch = false;
           if (this.SearchState.tabs.participants.active) {

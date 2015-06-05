@@ -1,14 +1,16 @@
 module ngApp.components.tables.directives.tableicious {
 
     /* @ngInject */
-    function Tableicious($filter: ng.IFilterService, UserService): ITableicious {
+    function Tableicious($filter: ng.IFilterService, UserService, $window: ng.IWindowService): ITableicious {
         return {
             restrict: "E",
             scope: {
                 rowId: "@",
                 data: "=",
                 paging: "=",
-                headings: "="
+                headings: "=",
+                title: "@",
+                saved: "="
             },
             replace: true,
             templateUrl: "components/tables/templates/tableicious.html",
@@ -41,6 +43,11 @@ module ngApp.components.tables.directives.tableicious {
                    refresh(n); 
                 }, true);
                 
+                
+                $scope.headings = $scope.saved.length ? 
+                  _.map($scope.saved, (s: IHeading): IHeading => _.merge(_.find($scope.headings, {id: s.id}), s)) :
+                  $scope.headings;
+                
                 refresh($scope.headings);
             }
         }
@@ -62,6 +69,7 @@ module ngApp.components.tables.directives.tableicious {
         getCell(h, d): string;
         $filter: ng.IFilterService;
         UserService:any;
+        saved: string[];
     }
 
     interface IConfig {

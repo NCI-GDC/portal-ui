@@ -13,7 +13,8 @@ module ngApp.components.tables.directives {
       restrict: "EA",
       scope: {
         title: "@",
-        headings:"="
+        headings:"=",
+        saved: "="
       },
       replace: true,
       templateUrl: "components/tables/templates/arrange-columns.html",
@@ -25,11 +26,8 @@ module ngApp.components.tables.directives {
         }
         
         var defaults = _.cloneDeep($scope.headings);
-        var decompressed = $window.localStorage.getItem($scope.title + '-col');
-        var saved = decompressed ? JSON.parse(decompressed) : [];
-        
-        $scope.headings = saved.length ? 
-          _.map(saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
+        $scope.headings = $scope.saved.length ? 
+          _.map($scope.saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
           $scope.headings;
         
         $scope.restoreDefaults = function() {

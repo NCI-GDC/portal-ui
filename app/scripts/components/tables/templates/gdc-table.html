@@ -20,6 +20,7 @@
                     data-data="data"
                     data-paging="paging" data-page="{{ page }}"></sort-table>
         <arrange-columns data-title="{{ config.title }}"
+                         data-saved="saved"
                          data-headings="config.headings"></arrange-columns>
         <export-table data-endpoint="{{ endpoint }}" data-size="{{ paging.total }}"
                       data-fields="config.fields" data-ng-if="endpoint"></export-table>
@@ -32,6 +33,8 @@
         data-row-id="{{ config.rowId }}"
       	data-headings="config.headings"
         data-data="gtc.displayedData" 
+        data-title="{{config.title}}"
+        data-saved="saved"
         data-paging="paging"></tableicious>
   </div>
   <div class="panel-footer clearfix" data-ng-if="page && paging && page !== 'projects'"

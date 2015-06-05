@@ -41,16 +41,23 @@ module ngApp.core.filters {
   class MakeDownloadLink {
     constructor($rootScope: IRootScope) {
       return function (ids: string[],
-                      annotations : boolean = true) {
-
-        var baseUrl = $rootScope.config.api;
+                      annotations : boolean = true,
+                      relatedFiles: boolean = true
+                      ) {
+        var baseUrl: string = $rootScope.config.api;
         ids = _.compact(ids);
-        var url = baseUrl + "/data/" + ids.join(",");
+        var url :string = baseUrl + "/data/" + ids.join(",");
+        var flags: string[] = [];
         if (annotations) {
-          url+= "?annotations=1";
+          flags.push("annotations=1");
         }
-        return url;
-
+        if (relatedFiles) {
+          flags.push("related_files=1");
+        }
+        if (flags.length) {
+          url += "?";
+        }
+        return url + flags.join("&");
       };
     }
   }

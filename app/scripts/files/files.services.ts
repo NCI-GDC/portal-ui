@@ -40,13 +40,17 @@ module ngApp.files.services {
     }
 
     downloadFiles(_ids) {
-      this.download("/data", _ids);
+      if(_ids.length == 1) {
+        this.$window.location = this.$filter('makeDownloadLink')(_ids);
+      } else {
+        this.download("/data", _ids);
+      }
     }
 
     download(endpoint: string, ids: Array<string>) {
       var abort = this.$q.defer();
       var params = { "ids": ids };
-      this.RestFullResponse.all(endpoint + "?annotations=true")
+      this.RestFullResponse.all(endpoint + "?annotations=true&related_files=true")
         .withHttpConfig({
           timeout: abort.promise,
           responseType: "blob",

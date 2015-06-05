@@ -13,8 +13,7 @@ module ngApp.files.directives {
             files = [files];
           }
           if (UserService.userCanDownloadFiles(files)) {
-            var file_ids = _.pluck(files, "file_id").concat($scope.files.related_ids);
-            FilesService.downloadFiles(file_ids);
+            FilesService.downloadFiles(_.pluck(files, "file_id"));
           } else {
             var template = UserService.currentUser ?
                 "core/templates/request-access-to-download-single.html" :

@@ -72,8 +72,11 @@ module ngApp.search.services {
                 private UserService: IUserService) {
     }
 
-    getSummary(filters: Object = this.LocationService.filters()) {
-      filters = this.UserService.addMyProjectsFilter(filters, "participants.project.project_id");
+    getSummary(filters: Object = this.LocationService.filters(), ignoreUserProjects: boolean = false) {
+      if (!ignoreUserProjects) {
+        filters = this.UserService.addMyProjectsFilter(filters, "participants.project.project_id");
+      }
+
       return this.Restangular.all("ui/search/summary")
       .post({ filters: filters }, undefined, { 'Content-Type': 'application/json' })
       .then((response) => {

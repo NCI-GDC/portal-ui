@@ -112,7 +112,7 @@ module ngApp.cart.controllers {
         ]
       };
 
-      this.SearchService.getSummary(filters).then((data) => {
+      this.SearchService.getSummary(filters, true).then((data) => {
         this.summary = data;
       });
     }

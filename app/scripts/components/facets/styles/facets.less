@@ -12,6 +12,17 @@
   .filter {
     margin-right: 5px;
 
+    span.facet-block {
+      display: inline-block;
+      line-height: 2rem;
+    }
+
+    // This is applied to only immediate child spans to prevent
+    // extra padding added
+    ~ span {
+      padding: 5px;
+    }
+
     .facet-name:hover ~ .terms-container .term-container,
     .facet-name:focus ~ .terms-container .term-container {
       text-decoration: line-through;
@@ -20,7 +31,8 @@
 
     .facet-name, .facet-term {
       cursor: pointer;
-      line-height: 3rem;
+      line-height: 2rem;
+      padding: 4px 5px;
 
       &:hover, &:focus {
         text-decoration: line-through;
@@ -30,6 +42,11 @@
 
     .terms-container {
       white-space: inherit;
+      padding: 5px 0;
+
+      .term-container {
+        padding: 0;
+      }
 
       .term-separator {
         color: @orange;
@@ -46,11 +63,6 @@
         margin-left: 5px;
       }
     }
-  }
-
-
-  .label.and {
-    margin-left: 5px;
   }
 
   .in, .is {

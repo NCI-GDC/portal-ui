@@ -9,36 +9,39 @@
     </span>
 
     <span class="filter" data-ng-repeat="filter in cfc.currentFilters">
-      <span class="label label-primary facet-name"
+      <span class="facet-block label label-primary facet-name"
             data-ng-click="cfc.removeTerm(filter.content.field, null, $event, filter.op)"
             data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event, filter.op)">
         {{ filter.content.field | translate | humanify }}
       </span>
       <span data-ng-switch="filter.op">
         <span data-ng-switch-when="in">
-          <span data-ng-if="filter.content.value.length === 1" class="is label label-danger">is</span>
-          <span data-ng-if="filter.content.value.length > 1" class="in label label-danger">in</span>
+          <span data-ng-if="filter.content.value.length === 1" class="facet-block is label label-danger">is</span>
+          <span data-ng-if="filter.content.value.length > 1" class="facet-block in label label-danger">in</span>
         </span>
         <span data-ng-switch-default>
-          <span class="range label label-danger">{{ filter.op }} </span>
+          <span class="facet-block range label label-danger">{{ filter.op }} </span>
         </span>
       </span>
-      <span class="terms-container"
+      <span class="facet-block terms-container"
             data-ng-class="{ multiterm: filter.content.value.length > 1 }">
-        <span data-ng-repeat="v in filter.content.value">
-          <span data-ng-hide="$index > 1 && !filter.expanded" class="label label-success term-container">
-            <span class="facet-term"
+        <span data-ng-repeat="v in filter.content.value" class="facet-block">
+          <span data-ng-hide="$index > 1 && !filter.expanded"
+                class="facet-block label label-success term-container">
+            <span class="facet-block facet-term"
                   data-ng-click="cfc.removeTerm(filter.content.field, v, $event, filter.op)"
                   data-ng-keypress="cfc.removeTerm(filter.content.field, v, $event, filter.op)">
-              <span data-ng-if="filter.content.field.toLowerCase().indexOf('datetime') > -1"> {{ v*1000 | date }} </span>
-              <span data-ng-if="filter.content.field.toLowerCase().indexOf('datetime') === -1">{{ v | translate | humanify }}</span>
+              <span data-ng-if="filter.content.field.toLowerCase().indexOf('datetime') > -1"
+                    class="facet-block"> {{ v*1000 | date }} </span>
+              <span data-ng-if="filter.content.field.toLowerCase().indexOf('datetime') === -1"
+                    class="facet-block">{{ v | translate | humanify }}</span>
             </span>
-            <span data-ng-if="cfc.isInMyProjects(filter) && $last" data-ng-translate>
+            <span class="facet-block" data-ng-if="cfc.isInMyProjects(filter) && $last" data-ng-translate>
               and in My Projects
             </span>
           </span>
           <span data-ng-if="!$last" data-ng-hide="$index > 1 && !filter.expanded"
-                class="term-separator">, </span>
+                class="facet-block term-separator">, </span>
         </span>
         <span data-ng-if="!filter.expanded && filter.content.value.length > 2" class="expand-terms"
               data-ng-click="cfc.expandTerms($event, filter)"
@@ -47,7 +50,7 @@
               data-ng-click="cfc.expandTerms($event, filter)"
               data-ng-keypress="cfc.expandTerms($event, filter)"> ... Less</span>
       </span>
-      <span class="label label-warning and" data-ng-if="!$last">AND</span>
+      <span class="facet-block label label-warning and" data-ng-if="!$last">AND</span>
     </span>
 
 </div>

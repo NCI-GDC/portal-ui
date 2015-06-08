@@ -97,11 +97,13 @@ module ngApp.components.quickSearch.controllers {
     goTo(entity, id) {
       if (this.$state.params[entity + "Id"] === id) {
         this.$modalInstance.close();
+        angular.element(this.$window.document).off("keydown");
         return;
       }
 
       var options = {};
       options[entity + "Id"] = id;
+      angular.element(this.$window.document).off("keydown");
       this.$state.go(entity, options, { inherit: false });
     }
 
@@ -158,6 +160,7 @@ module ngApp.components.quickSearch.controllers {
       }
 
       if (e.which === 27) {
+        angular.element(this.$window.document).off("keydown");
         this.$modalInstance.close();
         return;
       }

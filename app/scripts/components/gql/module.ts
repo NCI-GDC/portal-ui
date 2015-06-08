@@ -252,7 +252,8 @@ module ngApp.components.gql {
     
     rhsRewrite(right: string): string {
       var rFirstSpace = right.indexOf(this.GqlTokens.SPACE);
-      return right.substring(rFirstSpace);
+      var tokenIndex = rFirstSpace === -1 ? right.length : rFirstSpace;
+      return right.substring(tokenIndex);
     }
     
     lhsRewriteQuoted(left: string): string {

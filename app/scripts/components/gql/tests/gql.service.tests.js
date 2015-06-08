@@ -251,6 +251,7 @@ describe("GQL Parser", function() {
         expect(GqlService.lhsRewrite("f1 = ", 2)).to.eq("f1 = ");
         expect(GqlService.lhsRewrite("(f1 = ", 2)).to.eq("(f1 = ");
         expect(GqlService.lhsRewrite("f1 = va", 2)).to.eq("f1 = ");
+        expect(GqlService.lhsRewrite("access = pr", 2)).to.eq("access = ");
         expect(GqlService.lhsRewrite("f1 = val and f2 = va", 2)).to.eq("f1 = val and f2 = ");
       }));
       it("get left hand side query when field", inject(function (GqlService) {
@@ -262,6 +263,10 @@ describe("GQL Parser", function() {
     describe("rhsRewrite", function () {
       it("get right hand side query", inject(function (GqlService) {
         expect(GqlService.rhsRewrite("lue and a is b")).to.eq(" and a is b");
+      }));
+      it("[OICR-911] return empty string when just unquoted value", inject(function (GqlService) {
+        // Fixes https://jira.opensciencedatacloud.org/browse/OICR-911
+        expect(GqlService.rhsRewrite("otected")).to.eq("");
       }));
     });
     describe("lhsRewriteQuoted", function () {

@@ -315,11 +315,11 @@ gulp.task('protractor', ['webdriver'], function () {
 // </tests>
 
 // <typescript>
-gulp.task('ts:lint', function () {
-  return gulp.src('app/scripts/**/*.ts')
-      .pipe($.tslint())
-      .pipe($.tslint.report('prose', {emitError: true}));
-});
+//gulp.task('ts:lint', function () {
+//  return gulp.src('app/scripts/**/*.ts')
+//      .pipe($.tslint())
+//      .pipe($.tslint.report('prose', {emitError: true}));
+//});
 
 var tsProject = $.typescript.createProject({
     "target": "es6",

@@ -314,11 +314,17 @@ module ngApp.components.gql {
           $scope.right = $scope.query.substring(index);
           var left = $scope.left;
           var right = $scope.right;
-
+	        
           if ($scope.Error && _.some($scope.Error.expected, (e): boolean => {
                 return [T.IN, T.AND].indexOf(e.value.toString()) !== -1;
               })) {
             $scope.mode = Mode.Op;
+  	        
+            $scope.ddItems = GqlService.parseGrammarError(left, $scope.Error)
+          } else if ($scope.Error && _.some($scope.Error.expected, (e): boolean => {
+                return [T.MISSING].indexOf(e.value.toString()) !== -1;
+              })) {
+            $scope.mode = Mode.Unquoted;
   	        
             $scope.ddItems = GqlService.parseGrammarError(left, $scope.Error)
           } else {
@@ -509,7 +515,8 @@ module ngApp.components.gql {
       SPACE: ' ',
       COMMA: ',',
       NOTHING: '',
-      PERIOD: '.'
+      PERIOD: '.',
+      MISSING: "missing"
     }
     
   angular.module("components.gql", [])
@@ -576,6 +583,7 @@ module ngApp.components.gql {
     COMMA: string;
     NOTHING: string;
     PERIOD: string;
+    MISSING: string;
   }
   
   interface IGqlFilters {

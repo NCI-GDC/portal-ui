@@ -97,23 +97,34 @@ module ngApp.cart.directives {
           });
         };
 
-        $scope.addAll = function(){
+        $scope.addAll = function() {
           var filters = LocationService.filters();
           filters = UserService.addMyProjectsFilter(filters, "participants.project.project_id");
-
           if ($scope.paging.total >= CartService.getMaxSize()) {
             CartService.sizeWarning();
             return;
           }
-
           FilesService.getFiles({
-            fields: SearchTableFilesModel.fields,
-            expand: SearchTableFilesModel.expand,
+            fields: ["access",
+                     "file_name",
+                     "file_id",
+                     "file_size",
+                     "data_type",
+                     "data_format",
+                     "annotations.annotation_id",
+                     "participants.participant_id",
+                     "participants.project.project_id",
+                     "participants.project.name"
+                     ],
             filters: filters,
+            sort: "",
             size: $scope.paging.total,
             from: 0
-          }).then((data) => this.CartService.addFiles(data.hits));
+          }).then((data) => {
+            this.CartService.addFiles(data.hits)
+          });
         }
+
       }
     }
   }

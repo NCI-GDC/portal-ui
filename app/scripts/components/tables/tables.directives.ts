@@ -22,21 +22,25 @@ module ngApp.components.tables.directives {
         $scope.UserService = UserService;
 
         function saveSettings() {
-          var save = _.map($scope.headings, h => _.pick(h, 'id', 'hidden'));
+          var save = _.map($scope.headings, h => _.pick(h, 'id', 'hidden', 'sort', 'order'));
           $window.localStorage.setItem($scope.title + '-col', angular.toJson(save));
         }
 
         var defaults = _.cloneDeep($scope.headings);
+        
         $scope.headings = $scope.saved.length ? 
           _.map($scope.saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
           $scope.headings;
+          
         $scope.restoreDefaults = function() {
           $scope.headings = _.cloneDeep(defaults);
         }
+        
         $scope.toggleVisibility = function (item) {
           item.hidden = !item.hidden;
           saveSettings();
         };
+        
         $scope.sortOptions = {
           orderChanged: saveSettings
         };
@@ -66,7 +70,8 @@ module ngApp.components.tables.directives {
         page: "@",
         config: '=',
         update: "=",
-        data: "="
+        data: "=",
+        saved: "="
       },
       replace: true,
       templateUrl: "components/tables/templates/sort-table.html",

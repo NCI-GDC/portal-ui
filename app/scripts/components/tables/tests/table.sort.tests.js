@@ -1,7 +1,7 @@
 describe('Tables:', function () {
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngApp.components', 'location.services', 'lz-string'));
+  beforeEach(module('ngApp.components', 'location.services'));
 
   describe('TableSortController:', function () {
 
@@ -12,8 +12,9 @@ describe('Tables:', function () {
 
     it('should process sorting from url on load', inject(function ($rootScope, $controller, LocationService) {
       var scope = $rootScope.$new();
+      scope.saved= [];
       scope.paging = {
-        sort: "file_size:asc,file_name:desc"
+        sort: "file_size:asc,file_name:desc",
       };
       scope.config = {
         title: 'test',
@@ -40,6 +41,7 @@ describe('Tables:', function () {
     it('should update sorting', inject(function ($rootScope, $controller, LocationService) {
       var scope = $rootScope.$new();
       scope.paging = {};
+      scope.saved = [];
       scope.page = "test";
       scope.config = {
         title: "test",

@@ -25,11 +25,15 @@ module ngApp.components.tables.controllers {
     paging: IPagination;
 
     /* @ngInject */
-    constructor(private $scope: ITableScope, private LocationService: ILocationService, private $window: IGDCWindowService, private LZString) {
+    constructor(private $scope: ITableScope, private LocationService: ILocationService, private $window: IGDCWindowService) {
       this.paging = $scope.paging;
       var currentSorting = $scope.paging.sort;
-
-      $scope.sortColumns = _.reduce($scope.config.headings, (cols,col) => {
+      
+      var headings = $scope.saved.length ? 
+          _.map($scope.saved, s => _.merge(_.find($scope.config.headings, {id: s.id}), s)) :
+          $scope.config.headings;
+          
+      $scope.sortColumns = _.reduce(headings, (cols,col) => {
 
         if (col.sortable) {
           var obj = {
@@ -67,8 +71,6 @@ module ngApp.components.tables.controllers {
           this.clientSorting();
         }
       }
-
-      this.restoreFromLocalStorage();
     }
 
     clientSorting(): void {
@@ -118,37 +120,8 @@ module ngApp.components.tables.controllers {
     }
 
     saveToLocalStorage(): void {
-      var toSave = _.reduce(this.$scope.sortColumns, (result, col) => {
-                            var picked = _.pick(col, ['id', 'sort', 'order']);
-                            if (picked && _.has(picked, 'sort')) {
-                              var saveObj = {
-                                             'id': picked['id'],
-                                             'sort': picked['sort'] ? 1 : 0,
-                                             }
-                              if (picked['sort']) {
-                                saveObj['order'] = picked['order'];
-                              }
-                              result.push(saveObj);
-                            }
-                            return result;
-                          }, []);
-
-      this.$window.localStorage.setItem(this.$scope.config.title + '-sort',
-                                        this.LZString.compress(JSON.stringify(toSave)));
-    }
-
-    restoreFromLocalStorage(): void {
-      var decompressed = this.LZString.decompress(this.$window.localStorage.getItem(this.$scope.config.title + '-sort'));
-      var sortColumnsSaved = decompressed ? JSON.parse(decompressed) : null;
-      _.each(sortColumnsSaved, (savedCol: Object) => {
-        if (savedCol) {
-          var sortObj = _.find(this.$scope.sortColumns, (col: Object) => { return col.id === savedCol.id; });
-          if (sortObj) {
-            sortObj.sort = savedCol.sort ? true : false;
-            sortObj.order = savedCol.order;
-          }
-        }
-      });
+      var save = _.map(this.$scope.config.headings, h => _.pick(h, 'id', 'hidden', 'sort', 'order'));
+      this.$window.localStorage.setItem(this.$scope.config.title + '-col', angular.toJson(save));
     }
 
     updateSorting(): void {

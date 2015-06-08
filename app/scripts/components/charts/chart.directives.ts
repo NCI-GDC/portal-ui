@@ -79,6 +79,19 @@ module ngApp.components.charts {
             return;
           }
 
+          // Ensure pie chart data is always sorted highest to lowest
+          data.sort(function(a, b) {
+            if (a.doc_count > b.doc_count) {
+              return -1;
+            }
+
+            if (b.doc_count > a.doc_count) {
+              return 1;
+            }
+
+            return 0;
+          });
+
           var svg = d3.select(element.find(".chart-container")[0]).append("svg")
               .attr("width", width)
               .attr("height", height)
@@ -233,18 +246,6 @@ module ngApp.components.charts {
           if (newVal) {
             $window.$($window).off("resize" + id);
             $window.$($window).on("resize" + id, calculateLeft);
-
-            $scope.data.data.sort(function(a, b) {
-              if (a.data.doc_count < b.data.doc_count) {
-                return 1;
-              }
-
-              if (a.data.doc_count > b.data.doc_count) {
-                return -1;
-              }
-
-              return 0;
-            });
 
             $scope.displayedData = $scope.data.data.slice(0, 10);
 

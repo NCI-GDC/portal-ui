@@ -239,5 +239,19 @@ describe("GQL Parser", function() {
         });
       }));
     });
+    describe("lhsTokenField", function () {
+      it("get left hand side query", inject(function (GqlService) {
+        expect(GqlService.lhsRewrite("f1 = ", "unquoted")).to.eq("f1 = ");
+        expect(GqlService.lhsRewrite("f1 = va", "unquoted")).to.eq("f1 = ");
+        expect(GqlService.lhsRewrite("f1 = val and f2 = va", "unquoted")).to.eq("f1 = val and f2 = ");
+      }));
+    });
+    describe("lhsRewrite", function () {
+      it("get left hand side query", inject(function (GqlService) {
+        expect(GqlService.lhsRewrite("f1 = ", "unquoted")).to.eq("f1 = ");
+        expect(GqlService.lhsRewrite("f1 = va", "unquoted")).to.eq("f1 = ");
+        expect(GqlService.lhsRewrite("f1 = val and f2 = va", "unquoted")).to.eq("f1 = val and f2 = ");
+      }));
+    });
   });
 });

@@ -235,6 +235,49 @@ module ngApp.components.gql {
         }), 10);
       });
     }
+    
+     lhsTokenField(left: string): number {
+      // Fields can happen after a space ' ' or a paren '('
+      var lLastSpace = left.lastIndexOf(this.GqlTokens.SPACE);
+      var lLastParen = left.lastIndexOf(this.GqlTokens.LPARENS);
+      return lLastSpace > lLastParen ? lLastSpace : lLastParen;
+    }
+    
+    lhsRewrite(left: string, mode: Mode): string {
+      var lLastToken: number = mode === Mode.Field ?
+         this.lhsTokenField(left) :
+         left.lastIndexOf(this.GqlTokens.SPACE);
+      return left.substring(0, lLastToken + 1);
+    }
+    
+    rhsRewrite(right: string): string {
+      var rFirstSpace = right.indexOf(this.GqlTokens.SPACE);
+      return right.substring(rFirstSpace);
+    }
+    
+    lhsRewriteQuoted(left: string): string {
+      var lLastQuote = left.lastIndexOf(this.GqlTokens.QUOTE);
+      return left.substring(0, lLastQuote);
+    }
+    
+    rhsRewriteQuoted(right: string): string {
+      var rFirstSpace = right.search(/[a-z]"/i);
+      return right.substring(rFirstSpace + 2);
+    }
+    
+    lhsRewriteList(left: string): string {
+      var lLastBracket = left.lastIndexOf(this.GqlTokens.LBRACKET);
+      var lLastComma = left.lastIndexOf(this.GqlTokens.COMMA);
+      var lLastToken = lLastComma > lLastBracket ? lLastComma : lLastBracket;
+      return left.substring(0, lLastToken + 1);
+    }
+    
+    rhsRewriteList(right: string): string {
+      var rFirstBracket = right.indexOf(this.GqlTokens.RBRACKET);
+      var rFirstComma = right.indexOf(this.GqlTokens.COMMA);
+      var rFirstToken = rFirstComma < rFirstBracket ? rFirstComma : rFirstBracket;
+      return right.substring(rFirstToken);
+    }
   }
   
   /* @ngInject */
@@ -268,28 +311,30 @@ module ngApp.components.gql {
           var index = GqlService.getPos(element[0]);
           $scope.left = $scope.query.substring(0, index);
           $scope.right = $scope.query.substring(index);
+          var left = $scope.left;
+          var right = $scope.right;
 
           if ($scope.Error && _.some($scope.Error.expected, (e): boolean => {
                 return [T.IN, T.AND].indexOf(e.value.toString()) !== -1;
               })) {
             $scope.mode = Mode.Op;
   	        
-            $scope.ddItems = GqlService.parseGrammarError($scope.left, $scope.Error)
+            $scope.ddItems = GqlService.parseGrammarError(left, $scope.Error)
           } else {
-            if (GqlService.isUnbalanced($scope.left, T.LBRACKET, T.RBRACKET)) {
+            if (GqlService.isUnbalanced(left, T.LBRACKET, T.RBRACKET)) {
               // in_list_of_values
               $scope.mode = Mode.List;
-              GqlService.parseList($scope.left, $scope.right).then((d) => {
+              GqlService.parseList(left, right).then((d) => {
                 $scope.ddItems = d;
               });
-            } else if (GqlService.isCountOdd($scope.left, T.QUOTE)) {
+            } else if (GqlService.isCountOdd(left, T.QUOTE)) {
               //in_quoted_string
               $scope.mode = Mode.Quoted;
-              GqlService.parseQuoted($scope.left).then((d) => {
+              GqlService.parseQuoted(left).then((d) => {
                 $scope.ddItems = d;
               });
             } else {
-              var parts = GqlService.getParts($scope.left);
+              var parts = GqlService.getParts(left);
               
               if ((parts.needle && !parts.op) || [T.AND, T.OR].indexOf(parts.op) !== -1) { 
                 // is_field_string
@@ -401,41 +446,21 @@ module ngApp.components.gql {
           var right = $scope.right;
 
           if ([Mode.Field, Mode.Op, Mode.Unquoted].indexOf($scope.mode) !== -1) {
-            var lLastToken: number;
-            if ($scope.mode === Mode.Field) {
-              // Fields can happen after a space ' ' or a paren '('
-              var lLastSpace = left.lastIndexOf(T.SPACE);
-              var lLastParen = left.lastIndexOf(T.LPARENS);
-              lLastToken = lLastSpace > lLastParen ? lLastSpace : lLastParen;
-            }
-            else lLastToken = left.lastIndexOf(T.SPACE);
-            var newLeft = left.substring(0, lLastToken + 1);
-
-            var rFirstSpace = right.indexOf(T.SPACE);
-            var newRight = right.substring(rFirstSpace);
-
+            var newLeft = GqlService.lhsRewrite(left, $scope.mode);
+            var newRight = GqlService.rhsRewrite(right);
+      
             $scope.query = newLeft + item.full + newRight;
             GqlService.setPos(element[0], (newLeft + item.full).length);
           } else if ($scope.mode === Mode.Quoted) {
-            var lLastQuote = left.lastIndexOf(T.QUOTE);
-            var newLeft = left.substring(0, lLastQuote);
-
-            var rFirstSpace = right.search(/[a-z]"/i);
-            var newRight = right.substring(rFirstSpace + 2);
+            var newLeft = GqlService.lhsRewriteQuoted(left);
+            var newRight = GqlService.rhsRewriteQuoted(right);
 
             $scope.query = newLeft + item.full + newRight;
             GqlService.setPos(element[0], (newLeft + item.full).length);
           } else if ($scope.mode === Mode.List) {
-            var lLastBracket = left.lastIndexOf(T.LBRACKET);
-            var lLastComma = left.lastIndexOf(T.COMMA);
-            var lLastToken = lLastComma > lLastBracket ? lLastComma : lLastBracket;
-            var newLeft = left.substring(0, lLastToken + 1);
-
-            var rFirstBracket = right.indexOf(T.RBRACKET);
-            var rFirstComma = right.indexOf(T.COMMA);
-            var rFirstToken = rFirstComma < rFirstBracket ? rFirstComma : rFirstBracket;
-            var newRight = right.substring(rFirstToken);
-
+            var newLeft = GqlService.lhsRewriteList(left);
+            var newRight = GqlService.rhsRewriteList(right);
+      
             $scope.query = newLeft + item.full + newRight;
             GqlService.setPos(element[0], (newLeft + item.full).length);
           }
@@ -526,6 +551,13 @@ module ngApp.components.gql {
     parseList(left: string, right: string): ng.IPromise<IDdItem[]>;
     parseQuoted(left: string): ng.IPromise<IDdItem[]>;
     ajaxRequest(field: string): ng.IPromise<IDdItem[]>;
+    lhsRewrite(left: string, mode: Mode): string;
+    rhsRewrite(left: string): string;
+    lhsTokenField(left: string): number;
+    lhsRewriteQuoted(left: string): string;
+    lhsRewriteList(left: string): string;
+    rhsRewriteQuoted(left: string): string;
+    rhsRewriteList(left: string): string;
   }
 
   interface ITokens {

@@ -344,7 +344,7 @@ module ngApp.components.gql {
                   return GqlService.contains(m.full, parts.needle.replace(T.LPARENS, T.NOTHING)) && GqlService.clean(m.full);
                 }), 10);
               } else if ([T.EQ, T.NE].indexOf(parts.op) !== -1) { 
-                // is_value_string
+                // is_value_string is_unquoted_string
                 $scope.mode = Mode.Unquoted;
 
                 GqlService.ajaxRequest(parts.field).then((d)=> {
@@ -412,7 +412,7 @@ module ngApp.components.gql {
             case KeyCode.Space:
               if ($scope.mode !== Mode.Quoted) {
                 $scope.ddItems = [];
-                $scope.onChange();
+                gqlParse();
               }
               break;
             case KeyCode.Esc:

@@ -43,7 +43,7 @@ module ngApp.cart.services {
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
                 private notify: INotifyService, private UserService, private $rootScope,
-                private LZString, private gettextCatalog) {
+                private gettextCatalog) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
 

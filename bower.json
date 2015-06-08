@@ -28,7 +28,6 @@
     "ng-tags-input": "2.3.0",
     "restangular": "1.5.1",
     "ng-table": "0.5.4",
-    "lz-string": "~1.4.4",
     "angular-lz-string": "1.0.1",
     "angular-input-masks": "1.4.2",
     "ng-sortable": "~1.2.2"
@@ -46,7 +45,6 @@
     "angular-ui-router": "~0.2.15",
     "immutable": "~3.7.3",
     "lodash": "~3.9.3",
-    "moment": "~2.10.3",
-    "lz-string": "~1.4.4"
+    "moment": "~2.10.3"
   }
 }

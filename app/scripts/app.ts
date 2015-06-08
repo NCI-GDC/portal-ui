@@ -139,7 +139,6 @@ angular
       "restangular",
       "gettext",
       "ngTagsInput",
-      "lz-string",
       "ui.utils.masks",
       "ui.sortable",
 

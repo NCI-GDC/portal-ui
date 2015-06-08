@@ -91,8 +91,8 @@ module ngApp.cart.controllers {
         textFilter: "size",
         label: "file",
         sortKey: "doc_count",
-        defaultText: "access level",
-        pluralDefaultText: "access levels"
+        defaultText: "authorization level",
+        pluralDefaultText: "authorization levels"
       };
 
       this.getSummary();
@@ -115,6 +115,28 @@ module ngApp.cart.controllers {
       this.SearchService.getSummary(filters, true).then((data) => {
         this.summary = data;
       });
+
+      var UserService = this.UserService;
+      var authCountAndFileSizes = _.reduce(this.files, (result, file) => {
+        var canDownloadKey = UserService.userCanDownloadFile(file) ? 'authorized' : 'unauthorized';
+        result[canDownloadKey].count += 1;
+        result[canDownloadKey].file_size += file.file_size;
+        return result;
+      }, { 'authorized': { 'count': 0, 'file_size': 0 }, 'unauthorized': {'count': 0, 'file_size': 0 } });
+
+      this.fileCountChartData = [
+        {
+          key: 'authorized',
+          doc_count: authCountAndFileSizes.authorized.count || 0,
+          file_size: { value: authCountAndFileSizes.authorized.file_size }
+        },
+        {
+          key: 'unauthorized',
+          doc_count: authCountAndFileSizes.unauthorized.count || 0,
+          file_size: { value: authCountAndFileSizes.unauthorized.file_size }
+        }
+      ];
+
     }
 
     setState(tab: string) {

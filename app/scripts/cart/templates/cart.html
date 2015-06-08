@@ -12,16 +12,16 @@
         <div class="col-lg-3 col-sm-6">
           <pie-chart data="cc.summary.participants['participants.project.project_id'].buckets"
                      height="177"
-                     data-filter="true" 
+                     data-filter="true"
                      config="cc.projectCountChartConfig"
                      data-title="File Counts by Project"></pie-chart>
         </div>
         <div class="col-lg-3 col-sm-6">
-          <pie-chart data="cc.summary.access.buckets"
+          <pie-chart data-data="cc.fileCountChartData"
                      height="177"
-                     data-filter="true" 
+                     data-filter="true"
                      config="cc.fileCountChartConfig"
-                     data-title="File Counts by Access"></pie-chart>
+                     data-title="File Counts by Authorization Levels"></pie-chart>
         </div>
         <div class="col-lg-3 col-sm-6">
           <div class="panel panel-default">

@@ -285,11 +285,11 @@ module ngApp.cart.directives {
                 "annotations.annotation_id",
                 "project.project_id",
                 "project.name",
-                'files.access', 
-                'files.file_name', 
-                'files.file_id', 
-                'files.file_size', 
-                'files.data_type', 
+                'files.access',
+                'files.file_name',
+                'files.file_id',
+                'files.file_size',
+                'files.data_type',
                 'files.data_format'
               ]
             }).then((data) => {
@@ -325,103 +325,6 @@ module ngApp.cart.directives {
     }
   }
 
-
-  /** Directive which can be placed anywhere, that displays a pie chart of the contents of the cart **/
-  function CartDisplayingPieChart($filter: ng.IFilterService) {
-    return {
-      restrict:"AE",
-      template:'<div pie-chart ng-if=chartData data-data=chartData data-config=chartConfig> </div>',
-      controller:function(CartService,UserService,$scope){
-        $scope.$watch(function () {
-          return {
-            l: CartService.getFiles().length,
-            u: UserService.currentUser
-          };
-        }, function () {
-          updateChartData();
-        }, true);
-
-        function updateChartData() {
-          var files = CartService.getFiles();
-          var accessCount = _.countBy(files, function (f) {
-            return UserService.userCanDownloadFiles([f]);
-          });
-
-          var data = [
-            {
-              access: 'open',
-              count: accessCount['true'] || 0,
-              state: {
-                name: "search.files",
-                params: {
-                  filters: $filter("makeFilter")([
-                    {
-                      name: "files.file_id",
-                      value: _.pluck(_.filter(files, (file) => {
-                        return file.access === "open";
-                      }), "file_id")
-                    },
-                    {
-                      name: "files.access",
-                      value: "open"
-                    }
-                  ], true)
-                }
-              }
-            },
-            {
-              access: 'protected',
-              count: accessCount['false'] || 0,
-              state: {
-                name: "search.files",
-                params: {
-                  filters: $filter("makeFilter")([
-                    {
-                      name: "files.file_id",
-                      value: _.pluck(_.filter(files, (file) => {
-                        return file.access === "protected";
-                      }), "file_id")
-                    },
-                    {
-                      name: "files.access",
-                      value: "protected"
-                    }
-                  ], true)
-                }
-              }
-            }
-          ];
-
-          $scope.chartConfig = {
-            legend: {
-              open: '%!% ' + $filter("translate")("file(s) you are authorized to download"),
-              protected: '%!% ' + $filter("translate")("file(s) you are not authorized to download")
-            }
-          };
-
-          if (_.find(data, function (a) {
-                return a.count > 0;
-              })) {
-            $scope.chartData = data.map(function (a) {
-              var ret = {
-                key: a.access,
-                value: a.count
-              };
-
-              if (a.state) {
-                ret.state = a.state;
-              }
-              return ret;
-            });
-          } else {
-            $scope.chartData = undefined;
-          }
-        }
-      }
-    }
-  }
-
-
   angular.module("cart.directives", [
       "user.services",
       "location.services",
@@ -432,7 +335,6 @@ module ngApp.cart.directives {
     .directive("addToCartAll", AddToCartAll)
     .directive("addToCartFiltered", AddToCartFiltered)
     .directive("downloadButtonAllCart", DownloadButtonAllCart)
-    .directive("cartDisplayingPieChart", CartDisplayingPieChart)
     .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton)
     .directive("removeSingleCart", RemoveSingleCart)
 }

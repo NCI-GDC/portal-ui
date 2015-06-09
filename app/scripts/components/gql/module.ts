@@ -72,7 +72,8 @@ module ngApp.components.gql {
     }
     
     getStartOfList(s: string): number {
-      return s.lastIndexOf(this.GqlTokens.LBRACKET) + 1;
+      var bracket = s.lastIndexOf(this.GqlTokens.LBRACKET);
+      return bracket === -1 ? s.length : bracket + 1;
     }
     
     getEndOfList(s: string): number {
@@ -95,6 +96,12 @@ module ngApp.components.gql {
       var needle = parts[parts.length - 1];
       var op = parts[parts.length - 2];
       var field = parts[parts.length - 3];
+      
+      // Checks for NOT IN
+      if (op === this.GqlTokens.IN && field === this.GqlTokens.NOT) {
+        op = field + this.GqlTokens.SPACE + op;
+        field = parts[parts.length - 4]
+      }
       if (field) {
         field = field.replace(this.GqlTokens.LPARENS, this.GqlTokens.NOTHING); 
       }
@@ -321,6 +328,7 @@ module ngApp.components.gql {
           $scope.right = $scope.query.substring(index);
           var left = $scope.left;
           var right = $scope.right;
+          var parts = GqlService.getParts(left);
 	        
           if ($scope.Error && _.some($scope.Error.expected, (e): boolean => {
                 return [T.IN, T.AND].indexOf(e.value.toString()) !== -1;
@@ -335,7 +343,8 @@ module ngApp.components.gql {
   	        
             $scope.ddItems = GqlService.parseGrammarError(left, $scope.Error)
           } else {
-            if (GqlService.isUnbalanced(left, T.LBRACKET, T.RBRACKET)) {
+            if ([T.IN, T.NOT + T.SPACE + T.IN].indexOf(parts.op) !== -1 || 
+            GqlService.isUnbalanced(left, T.LBRACKET, T.RBRACKET)) {
               // in_list_of_values
               $scope.mode = Mode.List;
               GqlService.parseList(left, right).then((d) => {
@@ -348,8 +357,6 @@ module ngApp.components.gql {
                 $scope.ddItems = d;
               });
             } else {
-              var parts = GqlService.getParts(left);
-              
               if ((parts.needle && !parts.op) || [T.AND, T.OR].indexOf(parts.op) !== -1) { 
                 // is_field_string
                 $scope.mode = Mode.Field;
@@ -366,14 +373,6 @@ module ngApp.components.gql {
                 // is_value_string is_unquoted_string
                 $scope.mode = Mode.Unquoted;
 
-                GqlService.ajaxRequest(parts.field).then((d)=> {
-                  $scope.ddItems = _.take(_.filter(d, (m) => {
-                    return m && m.full && GqlService.contains(m.full.toString(), parts.needle) && GqlService.clean(m.full.toString());
-                  }), 10);
-                });
-              } else if ([T.IN].indexOf(parts.op) !== -1) {
-                $scope.mode = Mode.List;
-                
                 GqlService.ajaxRequest(parts.field).then((d)=> {
                   $scope.ddItems = _.take(_.filter(d, (m) => {
                     return m && m.full && GqlService.contains(m.full.toString(), parts.needle) && GqlService.clean(m.full.toString());
@@ -525,6 +524,7 @@ module ngApp.components.gql {
       EQ: "=",
       NE: "!=",
       IN: "in",
+      NOT: "not",
       OR: "or",
       AND: "and",
       LBRACKET: '[',
@@ -592,6 +592,7 @@ module ngApp.components.gql {
   interface ITokens {
     EQ: string;
     NE: string;
+    NOT: string;
     IN: string;
     AND: string;
     OR: string;

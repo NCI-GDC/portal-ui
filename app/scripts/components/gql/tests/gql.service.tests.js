@@ -92,6 +92,9 @@ describe("GQL Parser", function() {
         expect(GqlService.getStartOfList("this is a [phrase")).to.eq(11);
         expect(GqlService.getStartOfList("this [is] a [phrase")).to.eq(13);
       }));
+      it("return string length if no [", inject(function (GqlService) {
+        expect(GqlService.getStartOfList("this is a phrase")).to.eq(16);
+      }));
     });
     describe("getEndOfList", function() {
       it("returns index of first ]", inject(function (GqlService) {
@@ -158,6 +161,18 @@ describe("GQL Parser", function() {
         expect(GqlService.getParts("")).to.eql({
           field: undefined,
           op: undefined,
+          needle: ""
+        });
+      }));
+      it("[OICR-926] handles NOT IN", inject(function (GqlService) {
+        expect(GqlService.getParts("participants.clinical.gender not in value")).to.eql({
+          field: "participants.clinical.gender",
+          op: "not in",
+          needle: "value"
+        });
+        expect(GqlService.getParts("participants.clinical.gender not in ")).to.eql({
+          field: "participants.clinical.gender",
+          op: "not in",
           needle: ""
         });
       }));

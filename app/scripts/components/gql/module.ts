@@ -68,7 +68,7 @@ module ngApp.components.gql {
     }
 
     clean(e:string): boolean {
-      return (e !== undefined) && ['[A-Za-z0-9\\-_.]', '[0-9]', '[ \\t\\r\\n]', this.GqlTokens.QUOTE, this.GqlTokens.LPARENS].indexOf(e) == -1;
+      return (e !== undefined) && ['[A-Za-z0-9\\-_.]', '[0-9]', '[ \\t\\r\\n]', '_missing', this.GqlTokens.QUOTE, this.GqlTokens.LPARENS].indexOf(e) == -1;
     }
     
     getStartOfList(s: string): number {

@@ -24,6 +24,14 @@ describe("GQL Parser", function() {
   }));
 
   describe("Service", function() {
+    describe("clean", function() {
+      it("do not clean good words", inject(function (GqlService) {
+        expect(GqlService.clean("good")).to.be.true;
+      }));
+      it("[OICR-916] clean _missing", inject(function (GqlService) {
+        expect(GqlService.clean("_missing")).to.be.false;
+      }));
+    });
     describe("countNeedle", function() {
       it("return the number of times the needle is found in the stack", inject(function (GqlService) {
         expect(GqlService.countNeedle("abcdabcdaa", "a")).to.eq(4);

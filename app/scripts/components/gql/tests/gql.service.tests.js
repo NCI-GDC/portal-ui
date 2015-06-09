@@ -333,6 +333,9 @@ describe("GQL Parser", function() {
         expect(GqlService.rhsRewriteList('ue, value] and a is b')).to.eq(", value] and a is b");
         expect(GqlService.rhsRewriteList('ue asdf", value] and a is b')).to.eq(", value] and a is b");
       }));
+      it("[OICR-928] return empty string when just unquoted value", inject(function (GqlService) {
+        expect(GqlService.rhsRewriteList("otected")).to.eq("");
+      }));
     });
   });
 });

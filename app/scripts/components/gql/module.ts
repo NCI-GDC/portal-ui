@@ -291,6 +291,7 @@ module ngApp.components.gql {
       var rFirstBracket = right.indexOf(this.GqlTokens.RBRACKET);
       var rFirstComma = right.indexOf(this.GqlTokens.COMMA);
       var rFirstToken = rFirstComma < rFirstBracket ? rFirstComma : rFirstBracket;
+      rFirstToken = rFirstToken === -1 ? right.length : rFirstToken;
       return right.substring(rFirstToken);
     }
   }

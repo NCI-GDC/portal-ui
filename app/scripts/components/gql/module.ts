@@ -122,6 +122,10 @@ module ngApp.components.gql {
       }
     }
     
+    isQuoted(s: string): boolean {
+      return s.toString().indexOf(this.GqlTokens.SPACE) !== -1
+    }
+    
     ajaxRequest(field: string): ng.IPromise<IDdItem[]> {
       var parts = this.splitField(field);
       
@@ -199,9 +203,9 @@ module ngApp.components.gql {
       return this.ajaxRequest(parts.field).then((d) => {
         return _.take(_.filter(d, (m) => {
           // Filter out values that are already in the list
-          return listValues.indexOf(m.field) === -1 && 
-            this.contains(m.full, parts.needle) && 
-            this.clean(m.full);
+          return m && m.full && listValues.indexOf(m.field.toString()) === -1 && 
+            this.contains(m.full.toString(), parts.needle) && 
+            this.clean(m.full.toString());
         }), 10)
       });
     }
@@ -230,8 +234,8 @@ module ngApp.components.gql {
       // Autocomplete suggestions
       return this.ajaxRequest(parts.field).then((d)=> {
         return _.take(_.filter(d, (m) => {
-          return this.contains(m.full, parts.needle) &&
-          this.clean(m.full);
+          return m && m.full && this.contains(m.full.toString(), parts.needle) &&
+          this.clean(m.full.toString());
         }), 10);
       });
     }
@@ -348,7 +352,12 @@ module ngApp.components.gql {
                 $scope.mode = Mode.Field;
                 
                 $scope.ddItems = _.take(_.filter(mapping, (m: IDdItem) => {
-                  return GqlService.contains(m.full, parts.needle.replace(T.LPARENS, T.NOTHING)) && GqlService.clean(m.full);
+                  return (
+                    m && 
+                    m.full && 
+                    GqlService.contains(m.full.toString(), parts.needle.replace(T.LPARENS, T.NOTHING)) && 
+                    GqlService.clean(m.full.toString())
+                  );
                 }), 10);
               } else if ([T.EQ, T.NE].indexOf(parts.op) !== -1) { 
                 // is_value_string is_unquoted_string
@@ -356,7 +365,7 @@ module ngApp.components.gql {
 
                 GqlService.ajaxRequest(parts.field).then((d)=> {
                   $scope.ddItems = _.take(_.filter(d, (m) => {
-                    return GqlService.contains(m.full, parts.needle) && GqlService.clean(m.full);
+                    return m && m.full && GqlService.contains(m.full.toString(), parts.needle) && GqlService.clean(m.full.toString());
                   }), 10);
                 });
               }
@@ -442,9 +451,9 @@ module ngApp.components.gql {
 
         $scope.enter = function(item: IDdItem): void {
           item = item || $scope.ddItems[$scope.active];
-
+  	      
           // Quote the value if it has a space so the parse can handle it  
-          if (item.full.indexOf(T.SPACE) !== -1) item.full = T.QUOTE + item.full + T.QUOTE;
+          if (GqlService.isQuoted(item.full)) item.full = T.QUOTE + item.full + T.QUOTE;
           
           // After selecting a value close the autocomplete
           clearActive();
@@ -566,6 +575,7 @@ module ngApp.components.gql {
     lhsRewriteList(left: string): string;
     rhsRewriteQuoted(left: string): string;
     rhsRewriteList(left: string): string;
+    isQuoted(s: string | number): boolean;
   }
 
   interface ITokens {
@@ -615,8 +625,8 @@ module ngApp.components.gql {
   }
 
   interface IDdItem {
-    field: string;
-    full: string;
+    field: string | number;
+    full: string | number;
     active?: boolean;
   }
 

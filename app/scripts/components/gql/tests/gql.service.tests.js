@@ -32,6 +32,17 @@ describe("GQL Parser", function() {
         expect(GqlService.clean("_missing")).to.be.false;
       }));
     });
+    describe("isQuoted", function() {
+      it("return true when space found", inject(function (GqlService) {
+        expect(GqlService.isQuoted("val val")).to.be.true;
+      }));
+      it("return false when space not found", inject(function (GqlService) {
+        expect(GqlService.isQuoted("val")).to.be.false;
+      }));
+      it("[OICR-910] handle numbers", inject(function (GqlService) {
+        expect(GqlService.isQuoted(11)).to.be.false;
+      }));
+    });
     describe("countNeedle", function() {
       it("return the number of times the needle is found in the stack", inject(function (GqlService) {
         expect(GqlService.countNeedle("abcdabcdaa", "a")).to.eq(4);

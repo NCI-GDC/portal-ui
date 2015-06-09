@@ -19,20 +19,20 @@ module ngApp.core.controllers {
                 private $cookies: ng.cookies.ICookiesService,
                 private $modal: any) {
 
-      var showWarning = $location.search()["showWarning"];
-
-      if (showWarning || !showWarning && !$cookies["NCI-Warning"]) {
+      if (!$cookies.get("NCI-Warning")) {
         var modalInstance = this.$modal.open({
           templateUrl: "core/templates/warning.html",
-          controller: "WarningController as wc",
+          controller: "WarningController",
+          controllerAs: "wc",
           backdrop: "static",
           keyboard: false,
           backdropClass: "warning-backdrop",
+          animation: false,
           size: "lg"
         });
 
         modalInstance.result.then(() => {
-          this.$cookies["NCI-Warning"] = true;
+          this.$cookies.put("NCI-Warning", "true");
         });
       }
 
@@ -58,7 +58,7 @@ module ngApp.core.controllers {
       }
       this.$rootScope.closeWarning = () => {
         this.$rootScope.showWarning = false;
-        this.$cookies["NCI-Warning"] = true;
+        this.$cookies.put("NCI-Warning", "true");
       };
 
     }

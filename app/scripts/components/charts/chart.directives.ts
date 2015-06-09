@@ -18,7 +18,8 @@ module ngApp.components.charts {
         data: "=",
         height: "@",
         config: "=",
-        title: "@"
+        title: "@",
+        legendLimit: "@"
       },
       templateUrl: "components/charts/templates/pie-chart.html",
       link: function($scope: IPieChartScope, element: ng.IAugmentedJQuery) {
@@ -29,6 +30,7 @@ module ngApp.components.charts {
           updateChart();
         });
 
+        $scope.legendLimit = $window.parseInt($scope.legendLimit);
         $scope.showDefault = true;
         function getNestedValue(item, path) {
           if (path.length === 1) {
@@ -78,19 +80,6 @@ module ngApp.components.charts {
           if (!data || !data.length) {
             return;
           }
-
-          // Ensure pie chart data is always sorted highest to lowest
-          data.sort(function(a, b) {
-            if (a.doc_count > b.doc_count) {
-              return -1;
-            }
-
-            if (b.doc_count > a.doc_count) {
-              return 1;
-            }
-
-            return 0;
-          });
 
           var svg = d3.select(element.find(".chart-container")[0]).append("svg")
               .attr("width", width)
@@ -223,8 +212,6 @@ module ngApp.components.charts {
       link: function($scope, elem) {
         var id = "." + $window.Math.round($window.Math.random() * 120000);
 
-        $scope.limit = 10;
-
         function calculateLeft() {
           if (!$scope.data.parent.find(".chart-container").is(":visible")) {
             return;
@@ -233,8 +220,10 @@ module ngApp.components.charts {
           var parent = $scope.data.parent.find(".chart-container");
           var LEGEND_WIDTH = elem.width();
           var offset = $scope.data.elem.offset();
-          var left = parent.width() + 15;
-
+          var width = $scope.data.elem[0].getBoundingClientRect().width;
+          var diff = parent.width() - width;
+          var left = width + (diff / 2) + 5;
+console.log(left)
           if (left + offset.left + LEGEND_WIDTH < $window.innerWidth) {
             elem.css("left", left + "px");
           } else {
@@ -247,18 +236,19 @@ module ngApp.components.charts {
             $window.$($window).off("resize" + id);
             $window.$($window).on("resize" + id, calculateLeft);
 
-            $scope.displayedData = $scope.data.data.slice(0, 10);
+            $scope.displayedData = $scope.data.data;
 
             _.defer(() => {
               var top = 0;
+              var containerHeight = $scope.data.parent.find(".chart-container").height();
 
-              if (elem.height() < $scope.data.parent.height()) {
-                top = ($scope.data.parent.height() - elem.height()) / 2;
+              if (elem.height() < containerHeight) {
+                top = (containerHeight - elem.height()) / 2;
               }
 
               elem.css("top", top + "px");
 
-              calculateLeft(elem, $scope.data.parent.find(".chart-container"));
+              calculateLeft();
             });
           }
         });

@@ -42,7 +42,9 @@ module ngApp.cart.services {
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
-                private notify: INotifyService, private UserService, private $rootScope,
+                private notify: INotifyService,
+                private UserService,
+                private $rootScope,
                 private gettextCatalog) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
@@ -146,16 +148,16 @@ module ngApp.cart.services {
     }
 
     buildAddedMsg(added: Array<Object>, alreadyIn: Array<Object>): string {
-      var message = "<span>Added ";
-      if (added.length === 1) {
-        message += "file <b>" + added[0].file_name + "</b>";
-      } else {
-        message += "<b>" + added.length + "</b> files";
+      var message = this.gettextCatalog.getPlural(added.length,
+                                                          "<span>Added <strong>" + _.get(_.first(added), "file_name") + "</strong> to the cart.",
+                                                          "<span>Added <strong>" + added.length + "</strong> files to the cart.");
+
+      if(alreadyIn.length) {
+        message += this.gettextCatalog.getPlural(alreadyIn.length,
+                                                "<br />The file was already in cart, not added.",
+                                                "<br /><strong>" + alreadyIn.length + "</strong> files were already in cart, not added");
       }
-      message += " to the cart.";
-      if(alreadyIn.length > 0) {
-        message += "<br /><b>" + alreadyIn.length + "</b> files already in cart, not added.";
-      }
+
       if(added.length !== 0) {
         message += "<br /> <a data-ng-click='undoClicked(\"added\")'><i class='fa fa-undo'></i> Undo</a>";
       }
@@ -163,13 +165,10 @@ module ngApp.cart.services {
     }
 
     buildRemovedMsg(removedFiles: IFile[]): string {
-      var message = "<span>Removed ";
-      if (removedFiles.length === 1) {
-        message += "file <b>" + removedFiles[0].file_name + "</b>";
-      } else {
-        message += "<b>" + removedFiles.length + "</b> files";
-      }
-      message += " from the cart.";
+      var message = this.gettextCatalog.getPlural(removedFiles.length,
+                                                    "<span>Removed <strong>" + _.get(_.first(removedFiles), "file_name") + "</strong> from the cart.",
+                                                    "<span>Removed <strong>" + removedFiles.length + "</strong> files from the cart.");
+
       if(removedFiles.length !== 0) {
         message += "<br /> <a data-ng-click='undoClicked(\"removed\")'><i class='fa fa-undo'></i> Undo</a>";
       }

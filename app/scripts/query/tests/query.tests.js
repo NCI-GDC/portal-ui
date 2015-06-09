@@ -1,8 +1,7 @@
 describe('Query:', function () {
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngApp.query', 'ngProgressLite', 'lz-string',
-                    "core.filters"));
+  beforeEach(module('ngApp.query', 'ngProgressLite', "core.filters"));
 
   beforeEach(module(function ($provide) {
       $provide.value('RestFullResponse', {});

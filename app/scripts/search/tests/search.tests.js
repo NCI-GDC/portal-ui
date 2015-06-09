@@ -1,8 +1,7 @@
 describe('Search:', function () {
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngApp.search', 'cgNotify', 'ngProgressLite', 'lz-string',
-                    "core.filters"));
+  beforeEach(module('ngApp.search', 'cgNotify', 'ngProgressLite', "core.filters"));
 
   beforeEach(module(function ($provide) {
       $provide.value('RestFullResponse', {});

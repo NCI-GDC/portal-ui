@@ -3,7 +3,7 @@ describe('Cart:', function () {
   var CartService, controller, httpBackend;
 
   // Initialization of the AngularJS application before each test case
-  beforeEach(module('ngProgressLite', 'ngApp.cart', 'core.filters', 'lz-string'));
+  beforeEach(module('ngProgressLite', 'ngApp.cart', 'core.filters'));
 
   beforeEach(module(function ($provide) {
       $provide.value('RestFullResponse', {});

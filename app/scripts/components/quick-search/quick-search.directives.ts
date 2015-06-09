@@ -5,8 +5,6 @@ module ngApp.components.quickSearch.directives {
       restrict: "A",
       controller: function($scope) {
         var modalInstance;
-        var docElem = angular.element($window.document);
-        var modalElem = angular.element("#quick-search-modal");
 
         $scope.$on("$stateChangeStart", () => {
           if (modalInstance) {
@@ -23,21 +21,12 @@ module ngApp.components.quickSearch.directives {
 
           modalInstance = $modal.open({
             templateUrl: "components/quick-search/templates/quick-search-modal.html",
-            controller: "QuickSearchModalController as qsmc",
-            backdrop: "static",
+            controller: "QuickSearchModalController",
+            controllerAs: "qsmc",
+            backdrop: true,
             size: "lg",
-            keyboard: true
-          });
-
-          modalInstance.opened.then(() => {
-            // Apparently the Modal should support this by default but I'm running
-            // into cases where it is not.
-            docElem.on("click", (e) => {
-              if (angular.element(e.target).find("#quick-search-modal").length) {
-                e.preventDefault();
-                modalInstance.close();
-              }
-            });
+            keyboard: true,
+            animation: false
           });
         };
       },
@@ -47,7 +36,6 @@ module ngApp.components.quickSearch.directives {
         });
 
         angular.element($window.document).on("keypress", (e) => {
-          var modalElem = angular.element("#quick-search-modal");
           var validSpaceKeys = [
             0, // Webkit
             96 // Firefox

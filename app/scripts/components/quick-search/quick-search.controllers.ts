@@ -18,7 +18,7 @@ module ngApp.components.quickSearch.controllers {
     displayItem: any;
 
     /* @ngInject */
-    constructor(private $modalInstance, private FacetService, private $window,
+    constructor(private $modalInstance, private FacetService,
                 private FilesService, private ParticipantsService, private ProjectsService,
                 private SearchTableFilesModel: TableiciousConfig,
                 private SearchTableParticipantsModel: TableiciousConfig,
@@ -136,7 +136,6 @@ module ngApp.components.quickSearch.controllers {
         self.getDetails(self.selectedItem._type, self.selectedItem._id);
       }
 
-      var modalInput = angular.element("#quick-search-modal input")
       // Down Key
       if (e.which === 40) {
         e.preventDefault();
@@ -157,8 +156,15 @@ module ngApp.components.quickSearch.controllers {
         return;
       }
 
+      // ESC Key
       if (e.which === 27) {
         this.$modalInstance.close();
+        return;
+      }
+
+      // TAB Key. Prevent tab removing focus on input
+      if (e.which === 9) {
+        e.preventDefault();
         return;
       }
 
@@ -169,34 +175,13 @@ module ngApp.components.quickSearch.controllers {
         20, // CAPS
         17, // Control
         18, // Alt/Option
-        9, // Tab
         39, // Right Key
         37 // Left Key
       ];
 
-      if (ignoredKeys.indexOf(e.which) === -1 && !modalInput.is(":focus")) {
-        // Focus input and add that value
-        modalInput.focus();
+      if (ignoredKeys.indexOf(e.which) === -1) {
+        this.search();
       }
-    }
-
-    setupListeners() {
-      if (!this.results.hits.length) {
-        return;
-      }
-
-      this.results.hits[0].selected = true;
-      this.selectedItem = this.results.hits[0];
-
-      this.getDetails(this.selectedItem._type, this.selectedItem._id)
-        .then((data) => {
-          // Race condition can occur with quick responses. Just always clear
-          // active event listeners here.
-          angular.element(this.$window.document).off("keydown");
-          angular.element(this.$window.document).on("keydown", (e) => {
-            this.keyboardListener(e);
-          });
-        });
     }
 
     itemHover(e: any, item: any) {
@@ -211,14 +196,14 @@ module ngApp.components.quickSearch.controllers {
     }
 
     search() {
-      if (!this.searchQuery || !this.searchQuery.trim()) {
+      this.searchQuery = this.searchQuery.trim();
+
+      if (!this.searchQuery || this.searchQuery.length < 2) {
         this.results = [];
         this.selectedItem = null;
         this.displayItem = null;
         return;
       }
-
-      angular.element(this.$window.document).off("keydown");
 
       this.FacetService.searchAll(this.searchQuery.trim())
       .then((data) => {
@@ -255,7 +240,15 @@ module ngApp.components.quickSearch.controllers {
         }
 
         this.results = _.assign({}, data);
-        this.setupListeners();
+
+        if (!this.results.hits.length) {
+          return;
+        }
+
+        this.results.hits[0].selected = true;
+        this.selectedItem = this.results.hits[0];
+
+        this.getDetails(this.selectedItem._type, this.selectedItem._id);
       });
     }
   }

@@ -675,7 +675,7 @@ module ngApp.components.githut.controllers {
           .attr("y", -8)
           .attr("height", 15)
           .on("click", function(z, i, m) {
-            if (z.href) {
+            if (z.href && z.value) {
               z.href(z);
             }
           });

@@ -26,8 +26,8 @@ module ngApp.components.tables.controllers {
 
     /* @ngInject */
     constructor(private $scope: ITableScope, private LocationService: ILocationService, private $window: IGDCWindowService) {
-      this.paging = $scope.paging;
-      var currentSorting = $scope.paging.sort;
+      this.paging = $scope.paging || {size: 20};
+      var currentSorting = this.paging.sort || '';
       
       var headings = $scope.saved.length ? 
           _.map($scope.saved, s => _.merge(_.find($scope.config.headings, {id: s.id}), s)) :
@@ -233,7 +233,8 @@ module ngApp.components.tables.controllers {
       } else {
         this.displayedData = this.$scope.data;
       }
-      this.$scope.paging.count = this.displayedData.length;
+      if (this.$scope.paging) 
+        this.$scope.paging.count = this.displayedData && this.displayedData.length;
     }
   }
 

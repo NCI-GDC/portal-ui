@@ -271,10 +271,13 @@ module ngApp.components.gql {
     }
     
     lhsRewriteList(left: string): string {
-      var lLastBracket = left.lastIndexOf(this.GqlTokens.LBRACKET);
-      var lLastComma = left.lastIndexOf(this.GqlTokens.COMMA);
-      var lLastToken = lLastComma > lLastBracket ? lLastComma : lLastBracket;
-      return left.substring(0, lLastToken + 1);
+      var lastBracket = left.lastIndexOf(this.GqlTokens.LBRACKET);
+      if (lastBracket === -1) {
+        return left.substring(0, left.lastIndexOf(this.GqlTokens.SPACE)) + " ["; 
+      }
+      var lastComma = left.lastIndexOf(this.GqlTokens.COMMA);
+      var lastToken = lastComma > lastBracket ? lastComma : lastBracket;
+      return left.substring(0, lastToken + 1);
     }
     
     rhsRewriteList(right: string): string {
@@ -363,6 +366,14 @@ module ngApp.components.gql {
                 // is_value_string is_unquoted_string
                 $scope.mode = Mode.Unquoted;
 
+                GqlService.ajaxRequest(parts.field).then((d)=> {
+                  $scope.ddItems = _.take(_.filter(d, (m) => {
+                    return m && m.full && GqlService.contains(m.full.toString(), parts.needle) && GqlService.clean(m.full.toString());
+                  }), 10);
+                });
+              } else if ([T.IN].indexOf(parts.op) !== -1) {
+                $scope.mode = Mode.List;
+                
                 GqlService.ajaxRequest(parts.field).then((d)=> {
                   $scope.ddItems = _.take(_.filter(d, (m) => {
                     return m && m.full && GqlService.contains(m.full.toString(), parts.needle) && GqlService.clean(m.full.toString());

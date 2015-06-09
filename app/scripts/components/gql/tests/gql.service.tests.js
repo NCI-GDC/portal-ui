@@ -284,7 +284,6 @@ describe("GQL Parser", function() {
         expect(GqlService.rhsRewrite("lue and a is b")).to.eq(" and a is b");
       }));
       it("[OICR-911] return empty string when just unquoted value", inject(function (GqlService) {
-        // Fixes https://jira.opensciencedatacloud.org/browse/OICR-911
         expect(GqlService.rhsRewrite("otected")).to.eq("");
       }));
     });
@@ -303,6 +302,15 @@ describe("GQL Parser", function() {
         expect(GqlService.lhsRewriteList('a in [val')).to.eq("a in [");
         expect(GqlService.lhsRewriteList('a in [value, val')).to.eq("a in [value,");
         expect(GqlService.lhsRewriteList('a in [value, "val1 val')).to.eq("a in [value,");
+      }));
+      it("work with not in", inject(function (GqlService) {
+        expect(GqlService.lhsRewriteList('a not in [val')).to.eq("a not in [");
+        expect(GqlService.lhsRewriteList('a not in [value, val')).to.eq("a not in [value,");
+        expect(GqlService.lhsRewriteList('a not in [value, "val1 val')).to.eq("a not in [value,");
+      }));
+      it("[OICR-925] add missing opening bracket", inject(function (GqlService) {
+        expect(GqlService.lhsRewriteList('a in val')).to.eq("a in [");
+        expect(GqlService.lhsRewriteList('a not in val')).to.eq("a not in [");
       }));
     });
     describe("rhsRewriteList", function () {

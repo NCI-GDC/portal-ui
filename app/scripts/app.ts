@@ -56,7 +56,19 @@ function appRun(gettextCatalog: any,
                 notify: INotifyService,
                 $cookies: ng.cookies.ICookiesService,
                 UserService: IUserService,
-                ProjectsService: IProjectsService) {
+                ProjectsService: IProjectsService,
+                $window: ng.IWindowService) {
+                  
+  if ($cookies.get("GDC-Portal-Sha") !== config.commitHash) {
+    $cookies.put("GDC-Portal-Sha", config.commitHash);
+    $window.localStorage.removeItem("Projects-col");
+    $window.localStorage.removeItem("Annotations-col");
+    $window.localStorage.removeItem("Files-col");
+    $window.localStorage.removeItem("Cases-col");
+    $window.localStorage.removeItem("Cart-col");
+    $window.localStorage.removeItem("gdc-cart-items");
+    $window.localStorage.removeItem("gdc-cart-updated");
+  }
   gettextCatalog.debug = true;
 
   $rootScope.config = config;

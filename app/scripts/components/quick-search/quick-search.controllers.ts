@@ -152,6 +152,10 @@ module ngApp.components.quickSearch.controllers {
 
       // Enter Key
       if (e.which === 13) {
+        if (!this.selectedItem) {
+          return;
+        }
+
         this.goTo(this.selectedItem._type, this.selectedItem._id);
         return;
       }
@@ -166,21 +170,6 @@ module ngApp.components.quickSearch.controllers {
       if (e.which === 9) {
         e.preventDefault();
         return;
-      }
-
-      // Ignored Keys
-      var ignoredKeys = [
-        91, // Left Command/Meta
-        93, // Right Command/Meta
-        20, // CAPS
-        17, // Control
-        18, // Alt/Option
-        39, // Right Key
-        37 // Left Key
-      ];
-
-      if (ignoredKeys.indexOf(e.which) === -1) {
-        this.search();
       }
     }
 

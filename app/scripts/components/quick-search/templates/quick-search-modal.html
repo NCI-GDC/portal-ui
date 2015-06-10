@@ -5,6 +5,7 @@
            placeholder="{{ 'Search for IDs..' | translate }}"
            class="form-control"
            data-ng-model="qsmc.searchQuery"
+           data-ng-change="qsmc.search()"
            data-ng-keydown="qsmc.keyboardListener($event)"
            autofocus>
   </div>

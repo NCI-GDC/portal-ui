@@ -65,6 +65,19 @@ SORT
 }
 
 start
+  = _* filters:filters
+  {
+    var r = {};
+    if (filters) {
+      r.filters = filters;
+    }
+    
+    return r;
+  }
+  / _* { return {}; }
+  / EOF { return {}; }
+
+start1
   = (WHERE _+ )? _* filters:filters aggs:(_+ aggs)? sort:(_+ sort)? _*
   {
     var r = {};

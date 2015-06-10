@@ -40,7 +40,7 @@ module ngApp.search.models {
         id: "access",
         td: (row, $scope) => {
           var val = $scope.$filter("humanify")(row.access);
-          return '<i class="fa fa-'+ (row.access === 'protected' ? 'lock' : 'unlock-alt') +'"></i> ' + val;
+          return '<i class="fa fa-'+ (row.access === 'controlled' ? 'lock' : 'unlock-alt') +'"></i> ' + val;
         }, 
         tdClassName: "text-center",
         sortable: true

@@ -146,12 +146,12 @@ module ngApp.search.services {
               ], true)
             }
           },
-          "protected": {
+          "controlled": {
             params: {
               filters: $filter("makeFilter")([
                 {
                   name: "files.access",
-                  value: "protected"
+                  value: "controlled"
                 }
               ], true)
             }

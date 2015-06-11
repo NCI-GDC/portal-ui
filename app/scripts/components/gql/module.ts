@@ -116,9 +116,7 @@ module ngApp.components.gql {
     
     getComplexParts(s: string, n: number): IParts {
       var parts = this.getParts(s.substring(0, n));
-      
       parts.needle = this.getNeedleFromList(s.substring(n));
-      console.log('here', parts);
       return parts;
     }
     
@@ -284,11 +282,14 @@ module ngApp.components.gql {
     }
     
     rhsRewriteList(right: string): string {
-      var rFirstBracket = right.indexOf(this.GqlTokens.RBRACKET);
-      var rFirstComma = right.indexOf(this.GqlTokens.COMMA);
-      var rFirstToken = rFirstComma < rFirstBracket ? rFirstComma : rFirstBracket;
-      rFirstToken = rFirstToken === -1 ? right.length : rFirstToken;
-      return right.substring(rFirstToken);
+      var bracket = right.indexOf(this.GqlTokens.RBRACKET);
+      var comma = right.indexOf(this.GqlTokens.COMMA);
+      // is there a comma before the ] - if yes use that
+      var pos = comma >= 0 && comma < bracket ? comma : bracket;
+      // other wise is there a ] at all - then use that
+      // else end of line
+      pos = pos === -1 ? right.length : pos;
+      return right.substring(pos);
     }
   }
   
@@ -472,7 +473,7 @@ module ngApp.components.gql {
 
           var left = $scope.left;
           var right = $scope.right;
-  	      console.log('her?E?RE');
+
           if ([Mode.Field, Mode.Op, Mode.Unquoted].indexOf($scope.mode) !== -1) {
             var newLeft = GqlService.lhsRewrite(left, needleLength);
             var newRight = GqlService.rhsRewrite(right);

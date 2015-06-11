@@ -362,6 +362,10 @@ describe("GQL Parser", function() {
       it("[OICR-928] return empty string when just unquoted value", inject(function (GqlService) {
         expect(GqlService.rhsRewriteList("otected")).to.eq("");
       }));
+      it("[OICR-940] not remove trailing list items", inject(function (GqlService) {
+        expect(GqlService.rhsRewriteList("trolled]")).to.eq("]");
+        expect(GqlService.rhsRewriteList("en, controlled]")).to.eq(", controlled]");
+      }));
     });
   });
 });

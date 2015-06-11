@@ -235,6 +235,22 @@ describe("GQL Parser", function() {
           ]);
       }));
     });
+    describe("parseQuoted", function() {
+      it("handles quoted string", inject(function (GqlService) {
+        expect(GqlService.parseQuoted('FIELD IN "one')).to.eql({
+          field: "FIELD",
+          op: "IN",
+          needle: "one"
+        });
+      }));
+      it("handles quoted string with space", inject(function (GqlService) {
+        expect(GqlService.parseQuoted('FIELD IN "one two')).to.eql({
+          field: "FIELD",
+          op: "IN",
+          needle: "one two"
+        });
+      }));
+    });
     describe("parseList", function() {
       it("handles list", inject(function (GqlService) {
         sinon.spy(GqlService, 'getComplexParts');

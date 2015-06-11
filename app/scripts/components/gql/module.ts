@@ -214,7 +214,7 @@ module ngApp.components.gql {
       });
     }
     
-    parseQuoted(left: string): ng.IPromise<IDdItem[]> {
+    parseQuoted(left: string): IParts {
        /*
       * ... FIELD OP "nnn nnn|xxx ...
       * FIELD = field searching on
@@ -233,8 +233,10 @@ module ngApp.components.gql {
       var lastQuote = left.lastIndexOf(this.GqlTokens.QUOTE);
       
       // Get all the fields needed for Ajax
-      var parts = this.getComplexParts(left, lastQuote);
-      
+      return this.getComplexParts(left, lastQuote);
+    }
+    
+    ajaxQuoted(parts: IParts): ng.IPromise<IDdItem[]> {
       // Autocomplete suggestions
       return this.ajaxRequest(parts.field).then((d)=> {
         return _.take(_.filter(d, (m) => {
@@ -244,7 +246,7 @@ module ngApp.components.gql {
       });
     }
     
-     lhsTokenField(left: string): number {
+    lhsTokenField(left: string): number {
       // Fields can happen after a space ' ' or a paren '('
       var lLastSpace = left.lastIndexOf(this.GqlTokens.SPACE);
       var lLastParen = left.lastIndexOf(this.GqlTokens.LPARENS);
@@ -352,7 +354,8 @@ module ngApp.components.gql {
             } else if (GqlService.isCountOdd(left, T.QUOTE)) {
               //in_quoted_string
               $scope.mode = Mode.Quoted;
-              GqlService.parseQuoted(left).then((d) => {
+              parts = GqlService.parseQuoted(left);
+              GqlService.ajaxQuoted(parts).then((d) => {
                 $scope.ddItems = d;
               });
             } else {
@@ -578,7 +581,8 @@ module ngApp.components.gql {
     getParts(s: string): IParts;
     parseGrammarError(left: string, error: IGqlSyntaxError): IDdItem[];
     parseList(left: string, right: string): ng.IPromise<IDdItem[]>;
-    parseQuoted(left: string): ng.IPromise<IDdItem[]>;
+    parseQuoted(left: string): IParts;
+    ajaxQuoted(parts: IParts): ng.IPromise<IDdItem[]>;
     ajaxRequest(field: string): ng.IPromise<IDdItem[]>;
     lhsRewrite(left: string, mode: Mode): string;
     rhsRewrite(left: string): string;

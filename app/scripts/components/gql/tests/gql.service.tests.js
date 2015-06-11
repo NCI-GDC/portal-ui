@@ -104,6 +104,44 @@ describe("GQL Parser", function() {
       it("handles no match", inject(function (GqlService) {
         expect(GqlService.getEndOfList("this is a phrase")).to.eq(16);
       }));
+      it("handles empty string", inject(function (GqlService) {
+        expect(GqlService.getEndOfList("")).to.eq(0);
+      }));
+      it("handles empty list", inject(function (GqlService) {
+        expect(GqlService.getEndOfList("[]")).to.eq(1);
+      }));
+    });
+    describe("getLastComma", function() {
+      it("returns index of last ,", inject(function (GqlService) {
+        expect(GqlService.getLastComma("this is a ,phrase")).to.eq(11);
+        expect(GqlService.getLastComma("this ,is, a ,phrase")).to.eq(13);
+      }));
+      it("return 0 if no ,", inject(function (GqlService) {
+        expect(GqlService.getLastComma("this is a phrase")).to.eq(0);
+      }));
+    });
+    describe("getFirstComma", function() {
+      it("returns index of first ,", inject(function (GqlService) {
+        expect(GqlService.getFirstComma("this is a phrase,")).to.eq(16);
+        expect(GqlService.getFirstComma("this is, a phrase,")).to.eq(7);
+      }));
+      it("handles no match", inject(function (GqlService) {
+        expect(GqlService.getEndOfList("this is a phrase")).to.eq(16);
+      }));
+    });
+    describe("getListContent", function() {
+      it("returns string between [ in first string and ] in the second", inject(function (GqlService) {
+        expect(GqlService.getListContent("field in [one,two,three", 10, ",four,five]"))
+          .to.eq("one,two,four,five");
+      }));
+      it("handle no closing [", inject(function (GqlService) {
+        expect(GqlService.getListContent("field in [one,two,three", 10, ",four,five"))
+          .to.eq("one,two,four,five");
+      }));
+      it("handle empty list", inject(function (GqlService) {
+        expect(GqlService.getListContent("field in [", 10, "]")).to.eq("");
+        expect(GqlService.getListContent("field in [", 10, "")).to.eq("");
+      }));
     });
     describe("getValuesOfList", function() {
       it("returns array of values", inject(function (GqlService) {
@@ -253,40 +291,40 @@ describe("GQL Parser", function() {
     });
     describe("parseList", function() {
       it("handles list", inject(function (GqlService) {
-        sinon.spy(GqlService, 'getComplexParts');
-        GqlService.parseList("FIELD IN [one","]");
-        expect(GqlService.getComplexParts).to.have.returned({
+        var ret = GqlService.parseList("FIELD IN [one","]");
+        expect(ret.parts).to.eql({
           field: "FIELD",
           op: "IN",
           needle: "one"
         });
+        expect(ret.listValues).to.eql([""]);
       }));
       it("handles list with multiple items", inject(function (GqlService) {
-        sinon.spy(GqlService, 'getComplexParts');
-        GqlService.parseList("FIELD IN [one,two,three",",four,five]");
-        expect(GqlService.getComplexParts).to.have.returned({
+        var ret = GqlService.parseList("FIELD IN [one,two,three",",four,five]");
+        expect(ret.parts).to.eql({
           field: "FIELD",
           op: "IN",
           needle: "three"
         });
+        expect(ret.listValues).to.eql(["one","two","four","five"]);
       }));
       it("handles unfinished list", inject(function (GqlService) {
-        sinon.spy(GqlService, 'getComplexParts');
-        GqlService.parseList("FIELD IN [one,two,three",",four,five");
-        expect(GqlService.getComplexParts).to.have.returned({
+        var ret = GqlService.parseList("FIELD IN [one,two,three",",four,five");
+        expect(ret.parts).to.eql({
           field: "FIELD",
           op: "IN",
           needle: "three"
         });
+        expect(ret.listValues).to.eql(["one","two","four","five"]);
       }));
       it("handles cursor inside a value", inject(function (GqlService) {
-        sinon.spy(GqlService, 'getComplexParts');
-        GqlService.parseList("FIELD IN [one,two,thr","ee,four,five");
-        expect(GqlService.getComplexParts).to.have.returned({
+        var ret = GqlService.parseList("FIELD IN [one,two,thr","ee,four,five");
+        expect(ret.parts).to.eql({
           field: "FIELD",
           op: "IN",
           needle: "thr"
         });
+        expect(ret.listValues).to.eql(["one","two","four","five"]);
       }));
     });
     describe("lhsTokenField", function () {

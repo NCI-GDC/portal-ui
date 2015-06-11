@@ -173,7 +173,23 @@ module ngApp.components.gql {
       });
     }
     
-    parseList(left: string, right: string): ng.IPromise<IDdItem[]> {
+    getLastComma(s: string): number {
+      return s.lastIndexOf(this.GqlTokens.COMMA) + 1;
+    }
+    
+    getFirstComma(s: string): number {
+      return s.indexOf(this.GqlTokens.COMMA);
+    }
+    
+    getListContent(left: string, listStart: number, right: string): string {
+      var lComma = this.getLastComma(left);
+      lComma = lComma === 0 ? listStart : lComma;
+      var rComma = this.getFirstComma(right);
+      var listEnd = this.getEndOfList(right);
+      return left.substring(listStart, lComma) + right.substring(rComma + 1, listEnd);
+    }
+    
+    parseList(left: string, right: string): { parts: IParts; listValues: string[] } {
       /*
       * ... FIELD OP [vvv, vvv, nnn|xxx, vvv, vvv] ...
       * FIELD = field searching on
@@ -194,15 +210,19 @@ module ngApp.components.gql {
       */
       // Get the beginning of the list
       var listStart = this.getStartOfList(left);
-      // Get the end of the list
-      var listEnd = this.getEndOfList(right)
       // Get the values of the list
-      var listContent = left.substring(listStart) + right.substring(listEnd);
+      var listContent = this.getListContent(left, listStart, right);
       // Get array of list values
       var listValues = this.getValuesOfList(listContent); 
       // Get all the fields needed for Ajax
-      var parts = this.getComplexParts(left, listStart);
       
+      return { 
+        parts: this.getComplexParts(left, listStart),
+        listValues: listValues 
+      }
+    }
+    
+    ajaxList(parts: IParts, listValues): ng.IPromise<IDdItem[]> {
       // Autocomplete suggestions
       return this.ajaxRequest(parts.field).then((d) => {
         return _.take(_.filter(d, (m) => {
@@ -322,7 +342,6 @@ module ngApp.components.gql {
         $scope.active = INACTIVE;
         
         $scope.onChange = function() {
-          console.log('on chage');
           gqlParse();
           var index = GqlService.getPos(element[0]);
           $scope.left = $scope.query.substring(0, index);
@@ -348,7 +367,8 @@ module ngApp.components.gql {
             GqlService.isUnbalanced(left, T.LBRACKET, T.RBRACKET)) {
               // in_list_of_values
               $scope.mode = Mode.List;
-              GqlService.parseList(left, right).then((d) => {
+              var ret: { parts: IParts; listValues: string[] } = GqlService.parseList(left, right); 
+              GqlService.ajaxList(ret.parts, ret.listValues).then((d) => {
                 $scope.ddItems = d;
               });
             } else if (GqlService.isCountOdd(left, T.QUOTE)) {
@@ -574,13 +594,15 @@ module ngApp.components.gql {
     clean(e: string): boolean;
     getStartOfList(s: string): number;
     getEndOfList(s: string): number;
+    getListContent(left: string, listStart: number, right: string): string;
     getValuesOfList(s: string): string[];
     getNeedleFromList(s: string): string;
     getComplexParts(s: string, n: number): IParts;
     splitField(s: string): IFieldParts;
     getParts(s: string): IParts;
     parseGrammarError(left: string, error: IGqlSyntaxError): IDdItem[];
-    parseList(left: string, right: string): ng.IPromise<IDdItem[]>;
+    parseList(left: string, right: string): { parts: IParts; listValues: string[] };
+    ajaxList(parts: IParts, listValues: string[]): ng.IPromise<IDdItem[]>;
     parseQuoted(left: string): IParts;
     ajaxQuoted(parts: IParts): ng.IPromise<IDdItem[]>;
     ajaxRequest(field: string): ng.IPromise<IDdItem[]>;

@@ -292,8 +292,12 @@ module ngApp.components.tables.controllers {
         };
         modalInstance = this.$modal.open({
           templateUrl: "components/tables/templates/export-modal.html",
-          controller: "ExportTableModalController as etmc",
-          backdrop: 'static'
+          controller: "ExportTableModalController",
+          controllerAs: "etmc",
+          backdrop: true,
+          keyboard: true,
+          animation: false,
+          size: "lg"
         });
 
         modalInstance.result.then((data) => {

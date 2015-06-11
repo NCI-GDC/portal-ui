@@ -194,12 +194,13 @@ module ngApp.cart.directives {
           function showLoginModal() {
             var modalInstance = $modal.open({
               templateUrl: "core/templates/login-to-download.html",
-              controller: "LoginToDownloadController as wc",
-              backdrop: "static",
-              keyboard: false,
+              controller: "LoginToDownloadController",
+              controllerAs: "wc",
+              backdrop: true,
+              keyboard: true,
               scope: scope,
-              backdropClass: "warning-backdrop",
-              size: "lg"
+              size: "lg",
+              animation: false
             });
 
             modalInstance.result.then((a) => {
@@ -213,12 +214,13 @@ module ngApp.cart.directives {
           function showRequestAccessModal() {
             var modalInstance = $modal.open({
               templateUrl: "core/templates/request-access-to-download.html",
-              controller: "LoginToDownloadController as wc",
-              backdrop: "static",
-              keyboard: false,
+              controller: "LoginToDownloadController",
+              controllerAs: "wc",
+              backdrop: true,
+              keyboard: true,
               scope: scope,
-              backdropClass: "warning-backdrop",
-              size: "lg"
+              size: "lg",
+              animation: false
             });
 
             modalInstance.result.then((a) => {

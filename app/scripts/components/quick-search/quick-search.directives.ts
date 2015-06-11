@@ -24,9 +24,9 @@ module ngApp.components.quickSearch.directives {
             controller: "QuickSearchModalController",
             controllerAs: "qsmc",
             backdrop: true,
-            size: "lg",
             keyboard: true,
-            animation: false
+            animation: false,
+            size: "lg"
           });
         };
       },

@@ -22,11 +22,11 @@ module ngApp.files.directives {
             $log.log("File not authorized.");
             $modal.open({
               templateUrl: template,
-              controller: "LoginToDownloadController as wc",
-              backdrop: "static",
-              keyboard: false,
-              scope: $scope,
-              backdropClass: "warning-backdrop",
+              controller: "LoginToDownloadController",
+              controllerAs: "wc",
+              backdrop: true,
+              keyboard: true,
+              animation: false,
               size: "lg"
             });
           }

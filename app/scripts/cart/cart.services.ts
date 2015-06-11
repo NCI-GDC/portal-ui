@@ -120,6 +120,7 @@ module ngApp.cart.services {
         }
       });
       this.files = this.files.concat(this.lastModifiedFiles);
+      this.$rootScope.$broadcast("cart-update");
       this._sync();
       this.notify.config({ duration: 5000 });
       this.notify.closeAll();

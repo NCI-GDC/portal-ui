@@ -241,7 +241,7 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
       controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
                           FilesService: IFilesService,
-                          ParticipantsService){
+                          ParticipantsService) {
         $scope.files = [];
         var content = LocationService.filters().content;
         $scope.areFiltersApplied = content && _.find(content, (item) => {
@@ -319,6 +319,7 @@ module ngApp.cart.directives {
                 }];
               });
               $scope.files = data.files;
+              $scope.calculateFileCount();
             });
           }
         };
@@ -330,6 +331,15 @@ module ngApp.cart.directives {
         $scope.addRelatedFiles = function() {
           CartService.addFiles($scope.files);
         };
+
+        $scope.removeRelatedFiles = function() {
+          CartService.remove($scope.inBoth);
+        };
+
+        $scope.calculateFileCount = function() {
+          $scope.inBoth = _.intersection(_.pluck(CartService.getFiles(), "file_id"),
+                                         _.pluck($scope.files, "file_id"));
+        }
 
         $scope.CartService = CartService;
       }

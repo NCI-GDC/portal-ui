@@ -1,4 +1,7 @@
-<div class="btn-group" data-dropdown dropdown-append-to-body>
+<div class="btn-group"
+     data-dropdown 
+     data-dropdown-append-to-body 
+     data-on-toggle="calculateFileCount()">
     <button type="button"
             class="btn btn-default dropdown-toggle"
             dropdown-toggle
@@ -14,6 +17,10 @@
             <a data-ng-click="addRelatedFiles()" data-ng-if="files.length">
                 <i class="fa fa-shopping-cart fa-stack"></i>
                 <span data-translate>Add all Case files to the Cart</span> ({{ files.length }})
+            </a>
+            <a data-ng-click="removeRelatedFiles()" data-ng-if="inBoth.length">
+                <i class="fa fa-trash-o fa-stack"></i>
+                <span data-translate>Remove all Case files from the Cart</span> ({{ inBoth.length }})
             </a>
             <a data-ng-if="!files.length">
                 <span class="fa-stack">

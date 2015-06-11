@@ -209,7 +209,7 @@ describe("GQL Parser", function() {
     });
     describe("parseGrammarError", function() {
       it("returns a list of values from errors", inject(function (GqlService) {
-        expect(GqlService.parseGrammarError("FIELD = VALUE AND FIELD ", {
+        expect(GqlService.parseGrammarError("", {
           expected: [
             { "description": "=", "type": "literal", "value": "=" },
             { "description": "!=", "type": "literal", "value": "!=" },
@@ -223,7 +223,7 @@ describe("GQL Parser", function() {
           ]);
       }));
       it("filters list by needle", inject(function (GqlService) {
-        expect(GqlService.parseGrammarError("FIELD = VALUE AND FIELD =", {
+        expect(GqlService.parseGrammarError("=", {
           expected: [
             { "description": "=", "type": "literal", "value": "=" },
             { "description": "!=", "type": "literal", "value": "!=" },

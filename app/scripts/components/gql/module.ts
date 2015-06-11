@@ -161,11 +161,8 @@ module ngApp.components.gql {
       }
     }
     
-    parseGrammarError(left: string, error: IGqlSyntaxError): IDdItem[] {
+    parseGrammarError(needle: string, error: IGqlSyntaxError): IDdItem[] {
       // Handles GQL Parser errors
-      var parts = left.split(this.GqlTokens.SPACE);
-      var needle = parts[parts.length - 1];
-
       return _.map(_.filter(error.expected, (e) => {
         return this.contains(e.value, needle) && this.clean(e.value);
       }), (m) => {
@@ -336,13 +333,13 @@ module ngApp.components.gql {
               })) {
             $scope.mode = Mode.Op;
   	        
-            $scope.ddItems = GqlService.parseGrammarError(left, $scope.Error)
+            $scope.ddItems = GqlService.parseGrammarError(parts.needle, $scope.Error)
           } else if ($scope.Error && _.some($scope.Error.expected, (e): boolean => {
                 return [T.MISSING].indexOf(e.value.toString()) !== -1;
               })) {
             $scope.mode = Mode.Unquoted;
   	        
-            $scope.ddItems = GqlService.parseGrammarError(left, $scope.Error)
+            $scope.ddItems = GqlService.parseGrammarError(parts.needle, $scope.Error)
           } else {
             if ([T.IN, T.NOT + T.SPACE + T.IN].indexOf(parts.op) !== -1 || 
             GqlService.isUnbalanced(left, T.LBRACKET, T.RBRACKET)) {

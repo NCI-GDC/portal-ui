@@ -7,7 +7,7 @@ module ngApp.components.gql {
   import IFacet = ngApp.core.models.IFacet;
   import IBucket = ngApp.core.models.IBucket;
 
-  enum KeyCode { Space = 32, Enter = 13, Esc = 27, Up = 38, Down = 40 }
+  enum KeyCode { Space = 32, Enter = 13, Esc = 27, Left = 37, Right = 39, Up = 38, Down = 40 }
   enum Mode { Field, Quoted, Unquoted, List, Op }
   enum Cycle { Up = -1, Down = 1 }	
   
@@ -320,6 +320,7 @@ module ngApp.components.gql {
         $scope.active = INACTIVE;
         
         $scope.onChange = function() {
+          console.log('on chage');
           gqlParse();
           var index = GqlService.getPos(element[0]);
           $scope.left = $scope.query.substring(0, index);
@@ -443,6 +444,8 @@ module ngApp.components.gql {
               clearActive();
               break;
           
+            case KeyCode.Left:
+            case KeyCode.Right:
             default:
               $scope.onChange();
               break;

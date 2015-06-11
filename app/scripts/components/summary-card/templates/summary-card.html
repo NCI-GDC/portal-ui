@@ -3,17 +3,22 @@
     <h4 class="panel-title pull-left" title="{{ title | translate }}">
       {{ title | translate }}
     </h4>
-    <div class="pull-right">
+    <div class="pull-right" data-ng-show="data.length">
       <i class="fa fa-pie-chart" data-ng-show="mode === 'table'"
          data-ng-click="mode = 'graph'"></i>
       <i class="fa fa-table" data-ng-show="mode === 'graph'"
          data-ng-click="mode = 'table'"></i>
     </div>
   </div>
-  <pie-chart data="data" height="{{ height }}" config="config" data-title="{{ title }}"
-             data-ng-if="mode === 'graph'" legend-limit="4"></pie-chart>
 
-  <div class="card-table table-responsive" data-ng-if="mode === 'table'">
+  <div data-ng-if="!data.length" class="no-results" data-translate>
+    No Results in Query
+  </div>
+
+  <pie-chart data="data" height="{{ height }}" config="config" data-title="{{ title }}"
+             data-ng-if="mode === 'graph' && data.length" legend-limit="4"></pie-chart>
+
+  <div class="card-table table-responsive" data-ng-if="mode === 'table' && data.length">
     <table class="table table-striped table-hover table-condensed table-bordered">
       <thead>
         <tr>

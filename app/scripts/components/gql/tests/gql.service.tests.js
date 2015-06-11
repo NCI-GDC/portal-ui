@@ -327,24 +327,17 @@ describe("GQL Parser", function() {
         expect(ret.listValues).to.eql(["one","two","four","five"]);
       }));
     });
-    describe("lhsTokenField", function () {
-      it("get position of token used to split string", inject(function (GqlService) {
-        expect(GqlService.lhsTokenField("f1 = ")).to.eq(4);
-        expect(GqlService.lhsTokenField("f1 = va")).to.eq(4);
-        expect(GqlService.lhsTokenField("f1 = val and f2 = va")).to.eq(17);
-      }));
-    });
     describe("lhsRewrite", function () {
       it("get left hand side query", inject(function (GqlService) {
-        expect(GqlService.lhsRewrite("f1 = ", 2)).to.eq("f1 = ");
-        expect(GqlService.lhsRewrite("(f1 = ", 2)).to.eq("(f1 = ");
+        expect(GqlService.lhsRewrite("f1 = ", 0)).to.eq("f1 = ");
+        expect(GqlService.lhsRewrite("(f1 = ", 0)).to.eq("(f1 = ");
         expect(GqlService.lhsRewrite("f1 = va", 2)).to.eq("f1 = ");
         expect(GqlService.lhsRewrite("access = pr", 2)).to.eq("access = ");
         expect(GqlService.lhsRewrite("f1 = val and f2 = va", 2)).to.eq("f1 = val and f2 = ");
       }));
       it("get left hand side query when field", inject(function (GqlService) {
-        expect(GqlService.lhsRewrite("f1 is b and a", 0)).to.eq("f1 is b and ");
-        expect(GqlService.lhsRewrite("f2 is b and (a", 0)).to.eq("f2 is b and (");
+        expect(GqlService.lhsRewrite("f1 is b and a", 1)).to.eq("f1 is b and ");
+        expect(GqlService.lhsRewrite("f2 is b and (a", 1)).to.eq("f2 is b and (");
         expect(GqlService.lhsRewrite("f3 is b and (a", 2)).to.eq("f3 is b and ");
       }));
     });
@@ -356,30 +349,9 @@ describe("GQL Parser", function() {
         expect(GqlService.rhsRewrite("otected")).to.eq("");
       }));
     });
-    describe("lhsRewriteQuoted", function () {
-      it("get left hand side query when quoted string", inject(function (GqlService) {
-        expect(GqlService.lhsRewriteQuoted('a is "value val')).to.eq("a is ");
-      }));
-    });
     describe("rhsRewriteQuoted", function () {
       it("get right hand side query when quoted string", inject(function (GqlService) {
         expect(GqlService.rhsRewriteQuoted('lue value" and a is b')).to.eq(" and a is b");
-      }));
-    });
-    describe("lhsRewriteList", function () {
-      it("get left hand side query when list", inject(function (GqlService) {
-        expect(GqlService.lhsRewriteList('a in [val')).to.eq("a in [");
-        expect(GqlService.lhsRewriteList('a in [value, val')).to.eq("a in [value,");
-        expect(GqlService.lhsRewriteList('a in [value, "val1 val')).to.eq("a in [value,");
-      }));
-      it("work with not in", inject(function (GqlService) {
-        expect(GqlService.lhsRewriteList('a not in [val')).to.eq("a not in [");
-        expect(GqlService.lhsRewriteList('a not in [value, val')).to.eq("a not in [value,");
-        expect(GqlService.lhsRewriteList('a not in [value, "val1 val')).to.eq("a not in [value,");
-      }));
-      it("[OICR-925] add missing opening bracket", inject(function (GqlService) {
-        expect(GqlService.lhsRewriteList('a in val')).to.eq("a in [");
-        expect(GqlService.lhsRewriteList('a not in val')).to.eq("a not in [");
       }));
     });
     describe("rhsRewriteList", function () {

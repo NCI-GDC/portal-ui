@@ -9,10 +9,11 @@
            data-ng-keydown="qsmc.keyboardListener($event)"
            autofocus>
   </div>
-  <div style="position: relative" class="row" data-ng-show="qsmc.results.hits.length">
-    <ul class="col-lg-5" id="quick-search-list">
+  <div class="clearfix" data-ng-show="qsmc.results.hits.length">
+    <ul class="col-md-5 col-sm-12" id="quick-search-list">
       <li data-ng-repeat="item in qsmc.results.hits track by item._id"
-           data-ng-class="{ selected: $first }" class="quick-search-result clearfix"
+           data-ng-class="{ selected: $first }" class="quick-search-result row"
+           style="margin-right: 0"
            data-ng-click="qsmc.goTo(item._type, item._id)"
            data-ng-mouseover="qsmc.itemHover($event, item)">
         <div class="col-xs-2">
@@ -26,7 +27,7 @@
         </div>
       </li>
     </ul>
-    <div class="col-lg-7" style="border-left: 1px solid #ccc; padding-left: 0" data-ng-if="qsmc.selectedItem">
+    <div class="col-md-7 hidden-sm hidden-xs" style="border-left: 1px solid #ccc;" data-ng-if="qsmc.selectedItem">
       <div data-ng-include="'components/quick-search/templates/file.html'"
            data-ng-show="qsmc.selectedItem._type === 'file'"></div>
       <div data-ng-include="'components/quick-search/templates/participant.html'"

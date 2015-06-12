@@ -317,7 +317,7 @@ module ngApp.components.tables.controllers {
         })
         .get('', params).then((file) => {
           modalInstance.close({cancel: true});
-          this.$window.saveAs(file, this.$scope.endpoint + "." +
+          this.$window.saveAs(file.data, this.$scope.endpoint + "." +
                               this.$window.moment().format() + "." +
                               fileType.toLowerCase());
         });

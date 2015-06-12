@@ -63,8 +63,13 @@ module ngApp.cart.directives {
         }
       },
       templateUrl: "cart/templates/add-to-cart-button-all.html",
-      controller: function($scope: IAddToCartScope, CartService: ICartService, LocationService: ILocationService,
-                           FilesService: IFilesService, UserService: IUserService) {
+      controller: function($scope: IAddToCartScope,
+                           CartService: ICartService,
+                           LocationService: ILocationService,
+                           FilesService: IFilesService,
+                           UserService: IUserService,
+                           $timeout: ng.ITimeoutService,
+                           notify: INotifyService) {
         $scope.CartService = CartService;
 
         $scope.removeAll  = function() {
@@ -100,10 +105,20 @@ module ngApp.cart.directives {
         $scope.addAll = function() {
           var filters = LocationService.filters();
           filters = UserService.addMyProjectsFilter(filters, "participants.project.project_id");
-          if ($scope.paging.total >= CartService.getMaxSize()) {
+          if ($scope.paging.total >= CartService.getCartVacancySize()) {
             CartService.sizeWarning();
             return;
           }
+
+          var addingMsgPromise = $timeout(() => {
+            notify({
+              message: "",
+              messageTemplate: "<span data-translate>Adding <strong>" + $scope.paging.total + "</strong> files to cart</span>",
+              container: "#notification",
+              classes: "alert-info"
+            });
+          }, 1000);
+
           FilesService.getFiles({
             fields: ["access",
                      "file_name",
@@ -121,7 +136,8 @@ module ngApp.cart.directives {
             size: $scope.paging.total,
             from: 0
           }).then((data) => {
-            this.CartService.addFiles(data.hits)
+            this.CartService.addFiles(data.hits, false);
+            $timeout.cancel(addingMsgPromise);
           });
         }
 
@@ -359,13 +375,14 @@ module ngApp.cart.directives {
       "user.services",
       "location.services",
       "files.services",
-      "search.table.files.model"
+      "search.table.files.model",
+      "cgNotify"
     ])
     .directive("addToCartSingle", AddToCartSingle)
     .directive("addToCartAll", AddToCartAll)
     .directive("addToCartFiltered", AddToCartFiltered)
     .directive("downloadButtonAllCart", DownloadButtonAllCart)
     .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton)
-    .directive("removeSingleCart", RemoveSingleCart)
+    .directive("removeSingleCart", RemoveSingleCart);
 }
 

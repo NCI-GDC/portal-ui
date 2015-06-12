@@ -28,11 +28,11 @@ module ngApp.components.tables.controllers {
     constructor(private $scope: ITableScope, private LocationService: ILocationService, private $window: IGDCWindowService) {
       this.paging = $scope.paging || {size: 20};
       var currentSorting = this.paging.sort || '';
-      
+
       var headings = $scope.saved.length ? 
           _.map($scope.saved, s => _.merge(_.find($scope.config.headings, {id: s.id}), s)) :
           $scope.config.headings;
-          
+
       $scope.sortColumns = _.reduce(headings, (cols,col) => {
 
         if (col.sortable) {

@@ -58,7 +58,7 @@ function appRun(gettextCatalog: any,
                 UserService: IUserService,
                 ProjectsService: IProjectsService,
                 $window: ng.IWindowService) {
-                  
+
   if ($cookies.get("GDC-Portal-Sha") !== config.commitHash) {
     $cookies.put("GDC-Portal-Sha", config.commitHash);
     $window.localStorage.removeItem("Projects-col");

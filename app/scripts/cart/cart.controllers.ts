@@ -189,6 +189,8 @@ module ngApp.cart.controllers {
   }
 
   class LoginToDownloadController {
+
+    /* @ngInject */
     constructor (private $modalInstance) {}
 
     cancel() :void {

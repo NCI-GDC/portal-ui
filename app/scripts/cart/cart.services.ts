@@ -14,7 +14,7 @@ module ngApp.cart.services {
     getFiles(): IFile[];
     getFileIds(): string[];
     add(file: IFile): void;
-    addFiles(files: IFile[]): void;
+    addFiles(files: IFile[], displayAddingNotification: boolean): void;
     isInCart(fileId: string): boolean;
     areInCart(files: IFile[]): boolean;
     removeAll(): void;
@@ -45,7 +45,8 @@ module ngApp.cart.services {
                 private notify: INotifyService,
                 private UserService,
                 private $rootScope,
-                private gettextCatalog) {
+                private gettextCatalog,
+                private $timeout: ng.ITimeoutService) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
 
@@ -97,7 +98,18 @@ module ngApp.cart.services {
       this.addFiles([file]);
     }
 
-    addFiles(files: IFile[]): void {
+    addFiles(files: IFile[], displayAddingNotification: boolean = true): void {
+      if (displayAddingNotification) {
+        var addingMsgPromise = this.$timeout(() => {
+          this.notify({
+            message: "",
+            messageTemplate: "<span data-translate>Adding <strong>" + files.length + "</strong> files to cart</span>",
+            container: "#notification",
+            classes: "alert-info"
+          });
+        }, 1000);
+      }
+
       this.lastModifiedFiles = [];
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
@@ -120,10 +132,13 @@ module ngApp.cart.services {
         }
       });
       this.files = this.files.concat(this.lastModifiedFiles);
+      if (addingMsgPromise) {
+        this.$timeout.cancel(addingMsgPromise);
+      }
       this.$rootScope.$broadcast("cart-update");
       this._sync();
-      this.notify.config({ duration: 5000 });
       this.notify.closeAll();
+      this.notify.config({ duration: 5000 });
       this.notify({
         message: "",
         messageTemplate: this.buildAddedMsg(this.lastModifiedFiles, alreadyIn),
@@ -222,7 +237,7 @@ module ngApp.cart.services {
     }
 
     undoRemoved(): void {
-      this.addFiles(this.lastModifiedFiles);
+      this.addFiles(this.lastModifiedFiles, false);
     }
 
     _sync(): void {

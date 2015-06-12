@@ -2,7 +2,7 @@
   <div class="col-lg-8">
     <div class="panel panel-default">
       
-      <div data-ng-if="!sb.gql.filters && !!sb.Error" style="padding: 1rem;" class="alert-danger">
+      <div data-ng-if="!sb.gql.filters && !!sb.Error" style="padding: 1rem;" class="text-danger">
         <i class="fa fa-exclamation-circle"></i> 
           <span data-ng-hide="showErrors">Invalid Query</span></span>  
           <span data-ng-show="showErrors">{{sb.Error.line}} : {{sb.Error.column}} - {{sb.Error.message}}</span>

@@ -95,7 +95,6 @@ module ngApp.components.charts {
 
           var gPath = g.append("path");
           var legendData = {
-            title: $scope.title,
             elem: element.find(".chart-container > svg > g"),
             parent: element,
             data: []
@@ -223,7 +222,7 @@ module ngApp.components.charts {
           var width = $scope.data.elem[0].getBoundingClientRect().width;
           var diff = parent.width() - width;
           var left = width + (diff / 2) + 5;
-console.log(left)
+
           if (left + offset.left + LEGEND_WIDTH < $window.innerWidth) {
             elem.css("left", left + "px");
           } else {

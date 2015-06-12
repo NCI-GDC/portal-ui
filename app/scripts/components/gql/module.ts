@@ -291,6 +291,18 @@ module ngApp.components.gql {
       pos = pos === -1 ? right.length : pos;
       return right.substring(pos);
     }
+    
+    humanError(s: string, e: IGqlSyntaxError): string {
+      var right = s.substring(e.offset);
+      var space = right.indexOf(this.GqlTokens.SPACE);
+      space = space === -1 ? right.length : space;
+      var token = right.substring(0, space);
+      var found = e.found ? "'" + token + "'" : "end of input";
+      return e.line + " : " + e.column + " - Expected '" + 
+        _.pluck(e.expected, 'value').join("', '") +
+        "' but " + found + " found.";
+            
+    }
   }
   
   /* @ngInject */
@@ -391,6 +403,7 @@ module ngApp.components.gql {
             $scope.gql = $window.gql.parse($scope.query);
             $scope.error = null;
           } catch (Error) {
+            Error.human = GqlService.humanError($scope.query, Error); 
             $scope.error = Error;
             $scope.gql = null;
           }
@@ -601,6 +614,7 @@ module ngApp.components.gql {
     rhsRewriteQuoted(left: string): string;
     rhsRewriteList(left: string): string;
     isQuoted(s: string | number): boolean;
+    humanError(s: string, e: IGqlSyntaxError): string;
   }
 
   interface ITokens {
@@ -639,6 +653,7 @@ module ngApp.components.gql {
     message: string;
     name: string;
     offset: number;
+    human?: string;
   }
 
   interface IGqlExpected {

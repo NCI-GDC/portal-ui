@@ -367,5 +367,43 @@ describe("GQL Parser", function() {
         expect(GqlService.rhsRewriteList("en, controlled]")).to.eq(", controlled]");
       }));
     });
+    describe("humanError", function () {
+      it("return message", inject(function (GqlService) {
+        expect(GqlService.humanError("primary_site a", {
+          offset: 13,
+          found: "a",
+          line: 1,
+          column: 13,
+          expected: [{value:"="}, {value: "!="}]
+        })).to.eq("1 : 13 - Expected '=', '!=' but 'a' found.");
+      }));
+      it("[OICR-949] return message with full found value", inject(function (GqlService) {
+        expect(GqlService.humanError("primary_site access", {
+          offset: 13,
+          found: "a",
+          line: 1,
+          column: 13,
+          expected: [{value:"="}, {value: "!="}]
+        })).to.eq("1 : 13 - Expected '=', '!=' but 'access' found.");
+      }));
+      it("return message with full found value in longer query", inject(function (GqlService) {
+        expect(GqlService.humanError("primary_site access and other = thing", {
+          offset: 13,
+          found: "a",
+          line: 1,
+          column: 13,
+          expected: [{value:"="}, {value: "!="}]
+        })).to.eq("1 : 13 - Expected '=', '!=' but 'access' found.");
+      }));
+      it("handle end of input", inject(function (GqlService) {
+        expect(GqlService.humanError("primary_site ", {
+          offset: 13,
+          found: null,
+          line: 1,
+          column: 13,
+          expected: [{value:"="}, {value: "!="}]
+        })).to.eq("1 : 13 - Expected '=', '!=' but end of input found.");
+      }));
+    });
   });
 });

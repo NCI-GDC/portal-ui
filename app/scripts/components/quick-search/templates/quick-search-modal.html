@@ -1,7 +1,7 @@
 <div class="modal-body" id="quick-search-modal">
   <div class="input-group search-input" style="padding: 20px; border-bottom: 1px solid #ccc; border-radius: 0">
     <span class="fa fa-search"></span>
-    <input type="text" 
+    <input type="text"
            placeholder="{{ 'Search for IDs..' | translate }}"
            class="form-control"
            data-ng-model="qsmc.searchQuery"
@@ -9,30 +9,33 @@
            data-ng-keydown="qsmc.keyboardListener($event)"
            autofocus>
   </div>
-  <div style="position: relative" class="row" data-ng-show="qsmc.results.hits.length">
-    <ul class="col-lg-5" id="quick-search-list">
-      <li data-ng-repeat="item in qsmc.results.hits track by item._id"
-           data-ng-class="{ selected: $first }" class="quick-search-result clearfix"
-           data-ng-click="qsmc.goTo(item._type, item._id)"
-           data-ng-mouseover="qsmc.itemHover($event, item)">
-        <div class="col-xs-2">
-          <i style="height: 30px;width: 30px;" class="fa fa-user fa-2x" data-ng-if="item._type === 'participant'"></i>
-          <i style="height: 30px;width: 30px;" class="fa fa-file-o fa-2x" data-ng-if="item._type === 'file'"></i>
-          <i style="height: 30px;width: 30px;" class="fa fa-files-o fa-2x" data-ng-if="item._type === 'project'"/></i>
-        </div>
-        <div class="col-xs-10">
-          <span class="entity-id">{{ item._id }}</span>
-          <matched-terms data-terms="item.matchedTerms" data-query="qsmc.searchQuery"></matched-terms>
-        </div>
-      </li>
-    </ul>
-    <div class="col-lg-7" style="border-left: 1px solid #ccc; padding-left: 0" data-ng-if="qsmc.selectedItem">
-      <div data-ng-include="'components/quick-search/templates/file.html'"
-           data-ng-show="qsmc.selectedItem._type === 'file'"></div>
-      <div data-ng-include="'components/quick-search/templates/participant.html'"
-           data-ng-show="qsmc.selectedItem._type === 'participant'"></div>
-      <div data-ng-include="'components/quick-search/templates/project.html'"
-           data-ng-show="qsmc.selectedItem._type === 'project'"></div>
+  <div style="position: relative" class="" data-ng-show="qsmc.results.hits.length">
+      <div id="quick-search-list">
+        <ul>
+          <li data-ng-repeat="item in qsmc.results.hits track by item._id"
+               data-ng-class="{ selected: $first }" class="quick-search-result clearfix"
+               data-ng-click="qsmc.goTo(item._type, item._id)"
+               data-ng-mouseover="qsmc.itemHover($event, item)">
+            <div class="col-xs-2">
+              <i style="height: 30px;width: 30px;" class="fa fa-user fa-2x" data-ng-if="item._type === 'participant'"></i>
+              <i style="height: 30px;width: 30px;" class="fa fa-file-o fa-2x" data-ng-if="item._type === 'file'"></i>
+              <i style="height: 30px;width: 30px;" class="fa fa-files-o fa-2x" data-ng-if="item._type === 'project'"/></i>
+            </div>
+            <div class="col-xs-10">
+              <span class="entity-id">{{ item._id }}</span>
+              <matched-terms data-terms="item.matchedTerms" data-query="qsmc.searchQuery"></matched-terms>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="" id="quick-search-info" data-ng-if="qsmc.selectedItem">
+        <div data-ng-include="'components/quick-search/templates/file.html'"
+             data-ng-show="qsmc.selectedItem._type === 'file'"></div>
+        <div data-ng-include="'components/quick-search/templates/participant.html'"
+             data-ng-show="qsmc.selectedItem._type === 'participant'"></div>
+        <div data-ng-include="'components/quick-search/templates/project.html'"
+             data-ng-show="qsmc.selectedItem._type === 'project'"></div>
+      </div>
     </div>
   </div>
 </div>

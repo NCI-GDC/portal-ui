@@ -1,16 +1,30 @@
 #quick-search-modal {
   padding: 0;
-  
+
+  th {
+    width: 25%;
+  }
+
   input {
     border: 0;
     box-shadow: none;
     border-radius: 0;
   }
-  
+
   #quick-search-list {
+    margin-left: 0;
+    padding-left: 0;
     padding-right: 0;
+    display: table-cell;
+    width: 42%;
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
   }
-  
+
   .quick-search-result {
     padding: 15px 5px;
     list-style: none;
@@ -48,8 +62,19 @@
       font-weight: 700;
     }
   }
-  
+
+  #quick-search-info {
+    border-left: 1px solid #ccc;
+    display: table-cell;
+    padding-left: 0;
+    padding-right: 0;
+    height: 100%;
+    width: 58%;
+    vertical-align: middle;
+  }
+
   table {
     margin: 0;
   }
+
 }

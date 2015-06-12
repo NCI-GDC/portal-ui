@@ -393,7 +393,6 @@ module ngApp.components.gql {
             $scope.error = Error;
             $scope.gql = null;
           }
-          console.log($scope.error && $scope.error.message);
         }
 
         $scope.setActive = function(active: number): void {
@@ -419,7 +418,6 @@ module ngApp.components.gql {
 
         $scope.showResults = function(): boolean {
           var results = $scope.ddItems ? !!$scope.ddItems.length : false;
-          console.log($scope.focus, $scope.query.length > 0,results);
           return !!($scope.focus && $scope.query.length > 0 && results);
         };
 
@@ -429,15 +427,23 @@ module ngApp.components.gql {
           switch (key) {
             case KeyCode.Enter:
               e.preventDefault();
-              $scope.enter();
+              if ($scope.showResults()) {
+                $scope.enter();
+              }
               break;
             case KeyCode.Up:
               e.preventDefault();
-              $scope.cycle(Cycle.Up);
+              if ($scope.showResults()) {
+                $scope.cycle(Cycle.Up);
+              }
               break;
             case KeyCode.Down:
               e.preventDefault();
-              $scope.cycle(Cycle.Down);
+              if ($scope.showResults()) {
+                $scope.cycle(Cycle.Down);
+              } else {
+                $scope.onChange();
+              }
               break;
             case KeyCode.Space:
               if ($scope.mode !== Mode.Quoted) {
@@ -466,7 +472,7 @@ module ngApp.components.gql {
         }
 
         $scope.enter = function(item: IDdItem): void {
-          item = item || $scope.ddItems[$scope.active];
+          item = item || $scope.active === INACTIVE ? $scope.ddItems[0] : $scope.ddItems[$scope.active];
   	      var needleLength = $scope.parts.needle.length;
           // Quote the value if it has a space so the parse can handle it  
           if (GqlService.isQuoted(item.full)) item.full = T.QUOTE + item.full + T.QUOTE;

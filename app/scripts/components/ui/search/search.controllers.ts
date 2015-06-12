@@ -46,6 +46,7 @@ module ngApp.components.ui.search.controllers {
       this.LocationService.clear();
       this.query = "";
       this.gql = null;
+      this.Error = null;
     }
   }
 

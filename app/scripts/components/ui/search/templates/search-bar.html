@@ -3,7 +3,10 @@
     <div class="panel panel-default">
       
       <div data-ng-if="!sb.gql.filters && !!sb.Error" style="padding: 1rem;" class="alert-danger">
-        <i class="fa fa-exclamation-circle"></i> {{sb.Error.line}} : {{sb.Error.column}} - {{sb.Error.message}}
+        <i class="fa fa-exclamation-circle"></i> 
+          <span data-ng-hide="showErrors">Invalid Query</span></span>  
+          <span data-ng-show="showErrors">{{sb.Error.line}} : {{sb.Error.column}} - {{sb.Error.message}}</span>
+            (<a href="" data-ng-click="showErrors = !showErrors">{{showErrors ? "hide" : "see"}} errors</a>)
       </div>
       <div data-ng-if="!sb.Error" style="padding: 1rem;" class="text-success">
         <i class="fa fa-check-circle"></i> Valid Query

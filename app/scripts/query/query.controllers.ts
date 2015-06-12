@@ -94,30 +94,44 @@ module ngApp.query.controllers {
         this.summary = data;
       });
 
-      this.FilesService.getFiles({
+      var fileOptions = {
         fields: this.SearchTableFilesModel.fields,
         expand: this.SearchTableFilesModel.expand
-      }).then((data) => {
-        if (this.QState.tabs.files.active) {
-          this.QState.setActive("files", "hasLoadedOnce");
-        }
-        this.files = data;
+      };
 
-        for(var i = 0; i < this.files.hits.length; i++) {
-          this.files.hits[i].related_ids = _.pluck(this.files.hits[i].related_files, "file_id");
-        }
+      var participantOptions = {
+        fields: this.SearchTableParticipantsModel.fields,
+        expand: this.SearchTableParticipantsModel.expand,
+      };
 
+      this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
+        this.files = this.files || {};
+        this.files.aggregations = data.aggregations;
+
+        if (!_.isEqual(this.files.hits, data.hits)) {
+          this.files = data;
+          this.tabSwitch = false;
+          if (this.QState.tabs.files.active) {
+            this.QState.setActive("files", "hasLoadedOnce");
+          }
+
+          for (var i = 0; i < this.files.hits.length; i++) {
+            this.files.hits[i].related_ids = _.pluck(this.files.hits[i].related_files, "file_id");
+          }
+        }
       });
 
-      this.ParticipantsService.getParticipants({
-        fields: this.SearchTableParticipantsModel.fields,
-        expand: this.SearchTableParticipantsModel.expand
-      }).then((data: IFiles) => {
-        if (this.QState.tabs.participants.active) {
-          this.QState.setActive("participants", "hasLoadedOnce");
-        }
+      this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
+        this.participants = this.participants || {};
+        this.participants.aggregations = data.aggregations;
 
-        this.participants = data;
+        if (!_.isEqual(this.participants.hits, data.hits)) {
+          this.participants = data;
+          this.tabSwitch = false;
+          if (this.QState.tabs.participants.active) {
+            this.QState.setActive("participants", "hasLoadedOnce");
+          }
+        }
       });
     }
 

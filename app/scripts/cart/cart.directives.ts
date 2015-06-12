@@ -245,25 +245,32 @@ module ngApp.cart.directives {
                           FilesService: IFilesService,
                           ParticipantsService) {
         $scope.files = [];
-        var content = LocationService.filters().content;
-        $scope.areFiltersApplied = content && _.find(content, (item) => {
-          return item.content.field.indexOf("files.") === 0;
-        });
+        
+        function areFiltersApplied(content): boolean {
+          return content && _.some(content, (item) => {
+            var content = item.hasOwnProperty('content') ? item.content : item;
+            return content.field.indexOf("files.") === 0;
+          });
+        }
+        
+        function getContent(): any[] {
+          LocationService.filters().content;
+          return content && !Array.isArray(content) ? [content] : content;
+        }
+        
+        var content = getContent();
+        $scope.areFiltersApplied = areFiltersApplied(content);
 
         $scope.$on("$locationChangeSuccess", () => {
-          var content = LocationService.filters().content;
-          $scope.areFiltersApplied = content && _.find(content, (item) => {
-            return item.content.field.indexOf("files.") === 0;
-          });
+          var content = getContent();
+          $scope.areFiltersApplied = areFiltersApplied(content);
         });
 
         $scope.getFiles = function() {
           $scope.retreivingFiles = true;
           var filters = LocationService.filters();
-
-          if (!filters.content) {
-            filters.op = "and";
-            filters.content = [];
+          if (filters.op !== "and") {
+            filters = {op: "and", content: [filters]};
           }
 
           var uuid = $scope.row.participant_id;

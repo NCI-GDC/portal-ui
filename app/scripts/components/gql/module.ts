@@ -320,6 +320,7 @@ module ngApp.components.gql {
         $scope.active = INACTIVE;
         
         $scope.onChange = function() {
+          $scope.focus = true;
           gqlParse();
           var index = GqlService.getPos(element[0]);
           $scope.left = $scope.query.substring(0, index);
@@ -328,18 +329,18 @@ module ngApp.components.gql {
           var right = $scope.right;
           $scope.parts = GqlService.getParts(left);
 	        
-          if ($scope.Error && _.some($scope.Error.expected, (e): boolean => {
+          if ($scope.error && _.some($scope.error.expected, (e): boolean => {
                 return [T.IN, T.AND].indexOf(e.value.toString()) !== -1;
               })) {
             $scope.mode = Mode.Op;
   	        
-            $scope.ddItems = GqlService.parseGrammarError($scope.parts.needle, $scope.Error)
-          } else if ($scope.Error && _.some($scope.Error.expected, (e): boolean => {
+            $scope.ddItems = GqlService.parseGrammarError($scope.parts.needle, $scope.error)
+          } else if ($scope.error && _.some($scope.error.expected, (e): boolean => {
                 return [T.MISSING].indexOf(e.value.toString()) !== -1;
               })) {
             $scope.mode = Mode.Unquoted;
   	        
-            $scope.ddItems = GqlService.parseGrammarError($scope.parts.needle, $scope.Error)
+            $scope.ddItems = GqlService.parseGrammarError($scope.parts.needle, $scope.error)
           } else {
             if ([T.IN, T.NOT + T.SPACE + T.IN].indexOf($scope.parts.op) !== -1 || 
             GqlService.isUnbalanced(left, T.LBRACKET, T.RBRACKET)) {
@@ -387,11 +388,12 @@ module ngApp.components.gql {
         function gqlParse() {
           try {
             $scope.gql = $window.gql.parse($scope.query);
-            $scope.Error = null;
+            $scope.error = null;
           } catch (Error) {
-            $scope.Error = Error;
+            $scope.error = Error;
             $scope.gql = null;
           }
+          console.log($scope.error && $scope.error.message);
         }
 
         $scope.setActive = function(active: number): void {
@@ -415,8 +417,9 @@ module ngApp.components.gql {
           $scope.setActive(active);
         };
 
-        $scope.showResults = function() {
+        $scope.showResults = function(): boolean {
           var results = $scope.ddItems ? !!$scope.ddItems.length : false;
+          console.log($scope.focus, $scope.query.length > 0,results);
           return !!($scope.focus && $scope.query.length > 0 && results);
         };
 
@@ -655,12 +658,12 @@ module ngApp.components.gql {
     left: string;
     right: string;
     query: string;
-    Error: IGqlSyntaxError;
+    error: IGqlSyntaxError;
     ddItems: IDdItem[];
     gql: IGqlResult;
     setActive(active: number): void;
     cycle(val: Cycle): void;
-    showResults(): void;
+    showResults(): boolean;
     enter(item?: IDdItem): void;
     keypress(e: KeyboardEvent): void;
     focus: boolean;

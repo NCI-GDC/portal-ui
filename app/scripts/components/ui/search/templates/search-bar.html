@@ -1,37 +1,32 @@
 <div class="row search-bar">
   <div class="col-lg-8">
     <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title" data-translate>Query Builder</h3>
+      
+      <div data-ng-if="!sb.gql.filters && !!sb.Error" style="padding: 1rem;" class="alert-danger">
+        <i class="fa fa-exclamation-circle"></i> {{sb.Error.line}} : {{sb.Error.column}} - {{sb.Error.message}}
       </div>
-
-      <div style="position: relative">
-        <gql data-gql="sb.gql" data-query="sb.query" data-error="sb.Error"></gql>
-        <span style="position: absolute; top: 5px;left:10px">
-          <span data-ng-if="sb.gql.filters"><i class="text-success fa fa-check-square"></i></span>
-          <span data-ng-if="!sb.gql.filters"><i class="text-danger fa fa-remove"></i></span>
-        </span>
-        <div data-ng-if="!sb.gql.filters && !!sb.Error" style="padding: 1rem;" class="alert-danger"><i class="text-danger fa fa-warning"></i> {{sb.Error.line}} : {{sb.Error.column}} - {{sb.Error.message}}</div>
+      <div data-ng-if="!sb.Error" style="padding: 1rem;" class="text-success">
+        <i class="fa fa-check-circle"></i> Valid Query
       </div>
-
-
+      
+      <gql data-gql="sb.gql" data-query="sb.query" data-error="sb.Error"></gql>
       <div class="panel-footer text-right">
-            <a
-
-                data-ui-sref="search.files" style="margin-right: 15px"
-                    data-ng-disabled="sb.query" data-translate>
-              Basic
-            </a>
-            <a style="margin-right: 15px"
-                    data-ng-click="sb.resetQuery()"
-                    aria-label="{{ 'Clear Query' | translate }}">
-              Reset
-            </a>
-            <button
-                data-ng-disabled="!sb.gql.filters"
-                class="btn btn-success" data-ng-click="sb.sendQuery()">
-              <i class="fa fa-search"></i> Search
-            </button>
+        <a data-ui-sref="search.files" style="margin-right: 15px"
+           data-ng-disabled="sb.query" data-translate>
+          Basic
+        </a>
+        <a style="margin-right: 15px"
+                data-ng-click="sb.resetQuery()"
+                aria-label="{{ 'Clear Query' | translate }}">
+          Reset
+        </a>
+        <button
+            data-ng-disabled="sb.Error"
+            class="btn"
+            ng-class="{'btn-success': !sb.Error}" 
+            data-ng-click="sb.sendQuery()">
+          <i class="fa fa-search"></i> Search
+        </button>
       </div>
     </div>
   </div>

@@ -55,6 +55,21 @@ module ngApp.components.summaryCard.controllers {
 
       this.LocationService.setFilters(filters);
     }
+
+    clearFilters() {
+      var filters = this.LocationService.filters();
+
+      filters.content = _.reject(filters.content, (filter) => {
+        return filter.content.field === this.$scope.config.filterKey;
+      });
+
+      if (filters.content.length) {
+        this.LocationService.setFilters(filters);
+        return;
+      }
+
+      this.LocationService.clear();
+    }
   }
 
   angular

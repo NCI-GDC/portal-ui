@@ -1,6 +1,7 @@
 module ngApp.components.summaryCard.directives {
+  import ILocationService = ngApp.components.location.services.ILocationService;
 
-  function SummaryCard(): ng.IDirective {
+  function SummaryCard(LocationService: ILocationService): ng.IDirective {
     return {
       restrict: "E",
       templateUrl: "components/summary-card/templates/summary-card.html",
@@ -13,8 +14,21 @@ module ngApp.components.summaryCard.directives {
         mode: "@"
       },
       link: function($scope) {
-        $scope.mode = $scope.mode || "graph";
         var config = $scope.config;
+        $scope.mode = $scope.mode || "graph";
+
+        function checkFilters() {
+          var filters = LocationService.filters();
+          $scope.activeFilters = _.some(filters.content, (filter) => {
+            return filter.content.field === config.filterKey;
+          });
+        }
+
+        checkFilters();
+
+        $scope.$on("$locationChangeSuccess", () => {
+          checkFilters();
+        });
 
         $scope.$watch("data", function(newVal){
           if (newVal) {
@@ -44,6 +58,8 @@ module ngApp.components.summaryCard.directives {
   }
 
   angular
-    .module("summaryCard.directives", [])
+    .module("summaryCard.directives", [
+      "location.services"
+    ])
     .directive("summaryCard", SummaryCard);
 }

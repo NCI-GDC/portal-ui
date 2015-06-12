@@ -4,6 +4,8 @@
       {{ title | translate }}
     </h4>
     <div class="pull-right" data-ng-show="data.length">
+      <i class="fa fa-eraser" data-ng-show="activeFilters"
+         data-ng-click="sc.clearFilters()" data-ng-keypress="sc.clearFilters()"></i>
       <i class="fa fa-pie-chart" data-ng-show="mode === 'table'"
          data-ng-click="mode = 'graph'"></i>
       <i class="fa fa-table" data-ng-show="mode === 'graph'"

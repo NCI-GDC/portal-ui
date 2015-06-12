@@ -169,13 +169,7 @@ module ngApp.components.charts {
               });
 
               if (oldFilter) {
-                // Playing with the idea that if attempting to add the exact same
-                // value then we should remove it as a "reverse"
-                if (!_.isEqual(oldFilter.content.value, filter.content.value)) {
-                  oldFilter.content.value.concat(filter.content.value);
-                } else {
-                  filters.content.splice(filters.content.indexOf(filter), 1);
-                }
+                oldFilter.content.value.concat(filter.content.value);
               } else {
                 filters.content.push(filter);
               }

@@ -90,6 +90,7 @@ module ngApp.search.services {
     /* @ngInject */
     constructor($filter: ng.IFilterService) {
       this.projectIdChartConfig = {
+        filterKey: "participants.project.project_id",
         sortKey: "doc_count",
         defaultText: "project",
         pluralDefaultText: "projects",
@@ -111,6 +112,7 @@ module ngApp.search.services {
         }
       };
       this.primarySiteChartConfig = {
+        filterKey: "participants.project.primary_site",
         sortKey: "doc_count",
         defaultText: "primary site",
         pluralDefaultText: "primary sites",
@@ -132,6 +134,7 @@ module ngApp.search.services {
         }
       };
       this.accessChartConfig = {
+        filterKey: "files.access",
         sortKey: "doc_count",
         defaultText: "access level",
         pluralDefaultText: "access levels",
@@ -159,6 +162,7 @@ module ngApp.search.services {
         }
       };
       this.dataTypeChartConfig = {
+        filterKey: "files.data_type",
         sortKey: "doc_count",
         defaultText: "data type",
         pluralDefaultText: "data types",
@@ -180,6 +184,7 @@ module ngApp.search.services {
         }
       };
       this.dataFormatChartConfig = {
+        filterKey: "files.data_format",
         sortKey: "doc_count",
         defaultText: "data format",
         pluralDefaultText: "data formats",
@@ -201,6 +206,7 @@ module ngApp.search.services {
         }
       };
       this.expStratChartConfig = {
+        filterKey: "files.experimental_strategy",
         sortKey: "doc_count",
         defaultText: "experimental strategy",
         pluralDefaultText: "experimental strategies",

@@ -321,6 +321,7 @@ module ngApp.components.gql {
         
         $scope.onChange = function() {
           $scope.focus = true;
+          $scope.active = INACTIVE;
           gqlParse();
           var index = GqlService.getPos(element[0]);
           $scope.left = $scope.query.substring(0, index);

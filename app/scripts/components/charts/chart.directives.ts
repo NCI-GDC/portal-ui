@@ -138,6 +138,7 @@ module ngApp.components.charts {
           }
 
           function setFilters(d) {
+            if (LocationService.path().startsWith('/query')) return;
             var params;
 
             if (!config.filters || (!config.filters[d.data.key] &&

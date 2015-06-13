@@ -126,7 +126,7 @@ module ngApp.cart.controllers {
         return result;
       }, { 'authorized': { 'count': 0, 'file_size': 0 }, 'unauthorized': {'count': 0, 'file_size': 0 } });
 
-      this.fileCountChartData = [
+      this.fileCountChartData = _.filter([
         {
           key: 'authorized',
           doc_count: authCountAndFileSizes.authorized.count || 0,
@@ -137,7 +137,7 @@ module ngApp.cart.controllers {
           doc_count: authCountAndFileSizes.unauthorized.count || 0,
           file_size: { value: authCountAndFileSizes.unauthorized.file_size }
         }
-      ];
+      ], (i) => i.doc_count);
 
     }
 

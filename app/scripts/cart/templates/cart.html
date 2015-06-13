@@ -10,18 +10,16 @@
           <count-card title="File Size" icon="fa-save" data="cc.summary.fs.value | size"></count-card>
         </div>
         <div class="col-lg-3 col-sm-6">
-          <pie-chart data="cc.summary.participants['participants.project.project_id'].buckets"
-                     height="177"
-                     data-filter="true"
-                     config="cc.projectCountChartConfig"
-                     data-title="File Counts by Project"></pie-chart>
+          <summary-card data="cc.summary.participants['participants.project.project_id'].buckets"
+                        height="177" 
+                        config="cc.projectCountChartConfig"
+                        data-title="File Counts by Project"></summary-card>
         </div>
         <div class="col-lg-3 col-sm-6">
-          <pie-chart data-data="cc.fileCountChartData"
-                     height="177"
-                     data-filter="true"
-                     config="cc.fileCountChartConfig"
-                     data-title="File Counts by Authorization Levels"></pie-chart>
+           <summary-card data="cc.fileCountChartData"
+                  height="177" 
+                  config="cc.fileCountChartConfig"
+                  data-title="File Counts by Authorization Levels"></summary-card>
         </div>
         <div class="col-lg-3 col-sm-6">
           <div class="panel panel-default">

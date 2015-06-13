@@ -1,3 +1,125 @@
+<a name"0.2.13-spr4"></a>
+### 0.2.13-spr4 (2015-06-12)
+
+
+#### Bug Fixes
+
+* **add-to-cart:** use gettext getPlural for msgs ([501dfaeb](https://github.com/NCI-GDC/portal-ui/commit/501dfaeb), closes [OICR-927](https://jira.opensciencedatacloud.org/browse/OICR-927))
+* **app:**
+  * Ensure all models remove backdrop. ([f019c4f1](https://github.com/NCI-GDC/portal-ui/commit/f019c4f1), closes [OICR-938](https://jira.opensciencedatacloud.org/browse/OICR-938))
+  * Fix random infinite loops ([bbba42f9](https://github.com/NCI-GDC/portal-ui/commit/bbba42f9))
+* **auth:** Fix token download. ([120a1237](https://github.com/NCI-GDC/portal-ui/commit/120a1237), closes [OICR-743](https://jira.opensciencedatacloud.org/browse/OICR-743))
+* **build:** Fix production builds ([cca3a9e6](https://github.com/NCI-GDC/portal-ui/commit/cca3a9e6))
+* **cart:**
+  * add filtered works with gql ([c5df14ed](https://github.com/NCI-GDC/portal-ui/commit/c5df14ed), closes [OICR-918](https://jira.opensciencedatacloud.org/browse/OICR-918))
+  * correct case count ([c8f13ccf](https://github.com/NCI-GDC/portal-ui/commit/c8f13ccf), closes [OICR-894](https://jira.opensciencedatacloud.org/browse/OICR-894))
+  * speed up add all to cart ([b10e16c6](https://github.com/NCI-GDC/portal-ui/commit/b10e16c6), closes [OICR-886](https://jira.opensciencedatacloud.org/browse/OICR-886))
+  * Don't apply myproject filter for chart. ([e8b1474b](https://github.com/NCI-GDC/portal-ui/commit/e8b1474b), closes [OICR-881](https://jira.opensciencedatacloud.org/browse/OICR-881))
+  * ui updates ([9a909383](https://github.com/NCI-GDC/portal-ui/commit/9a909383), closes [OICR-883](https://jira.opensciencedatacloud.org/browse/OICR-883))
+  * cart item project id label ([4b23990e](https://github.com/NCI-GDC/portal-ui/commit/4b23990e), closes [OICR-870](https://jira.opensciencedatacloud.org/browse/OICR-870))
+  * don't rename project_id to id ([6415191f](https://github.com/NCI-GDC/portal-ui/commit/6415191f))
+  * update my projects col ([5e0dba20](https://github.com/NCI-GDC/portal-ui/commit/5e0dba20))
+  * renames remove cart tooltip. ([065156a7](https://github.com/NCI-GDC/portal-ui/commit/065156a7), closes [OICR-856](https://jira.opensciencedatacloud.org/browse/OICR-856))
+  * download button ([098df6e9](https://github.com/NCI-GDC/portal-ui/commit/098df6e9), closes [OICR-824](https://jira.opensciencedatacloud.org/browse/OICR-824))
+  * fixes cart actions ([c0bb48a8](https://github.com/NCI-GDC/portal-ui/commit/c0bb48a8))
+  * rm lzcompress from cart, too slow ([5d39d070](https://github.com/NCI-GDC/portal-ui/commit/5d39d070), closes [OICR-737](https://jira.opensciencedatacloud.org/browse/OICR-737))
+  * Use proper directive for login. ([1219e89c](https://github.com/NCI-GDC/portal-ui/commit/1219e89c), closes [OICR-741](https://jira.opensciencedatacloud.org/browse/OICR-741))
+  * Retrieve files before decompress ([82cf62c8](https://github.com/NCI-GDC/portal-ui/commit/82cf62c8))
+* **cart-graphs:** authorization instead of access ([0f148edc](https://github.com/NCI-GDC/portal-ui/commit/0f148edc), closes [OICR-879](https://jira.opensciencedatacloud.org/browse/OICR-879))
+* **chart:**
+  * stop click on chart in query ([96c3d36e](https://github.com/NCI-GDC/portal-ui/commit/96c3d36e), closes [OICR-953](https://jira.opensciencedatacloud.org/browse/OICR-953))
+  * Ensure chart data is always sorted. ([87b4f17b](https://github.com/NCI-GDC/portal-ui/commit/87b4f17b), closes [OICR-890](https://jira.opensciencedatacloud.org/browse/OICR-890))
+* **charts:** Ignore resize when not rendered. ([1c475570](https://github.com/NCI-GDC/portal-ui/commit/1c475570), closes [OICR-842](https://jira.opensciencedatacloud.org/browse/OICR-842))
+* **config:** Move to a simpler config ([04c74e47](https://github.com/NCI-GDC/portal-ui/commit/04c74e47))
+* **download:**
+  * 1 file -> GET & related_files flag ([6dcb1a8d](https://github.com/NCI-GDC/portal-ui/commit/6dcb1a8d), closes [OICR-888](https://jira.opensciencedatacloud.org/browse/OICR-888))
+  * send credentials ([244e413a](https://github.com/NCI-GDC/portal-ui/commit/244e413a))
+* **export:** export non hidden fields ([f72155d7](https://github.com/NCI-GDC/portal-ui/commit/f72155d7), closes [OICR-875](https://jira.opensciencedatacloud.org/browse/OICR-875))
+* **facets:**
+  * Fix flow issue on smaller screens. ([f0851393](https://github.com/NCI-GDC/portal-ui/commit/f0851393), closes [OICR-863](https://jira.opensciencedatacloud.org/browse/OICR-863))
+  * project.name -> disease_type ([e893d286](https://github.com/NCI-GDC/portal-ui/commit/e893d286), closes [OICR-815](https://jira.opensciencedatacloud.org/browse/OICR-815))
+* **file:**
+  * don't overlap when resize ([1d1c5aea](https://github.com/NCI-GDC/portal-ui/commit/1d1c5aea), closes [OICR-939](https://jira.opensciencedatacloud.org/browse/OICR-939))
+  * Properly show assoc entity annotations. ([aab4f423](https://github.com/NCI-GDC/portal-ui/commit/aab4f423), closes [OICR-679](https://jira.opensciencedatacloud.org/browse/OICR-679))
+* **files:** Size filter handles undefined val. ([0509a52f](https://github.com/NCI-GDC/portal-ui/commit/0509a52f), closes [OICR-835](https://jira.opensciencedatacloud.org/browse/OICR-835))
+* **githut:** hide tooltip on click ([33bd9f18](https://github.com/NCI-GDC/portal-ui/commit/33bd9f18), closes [OICR-827](https://jira.opensciencedatacloud.org/browse/OICR-827))
+* **githut-graph:** 0 not clickable ([93bf8c84](https://github.com/NCI-GDC/portal-ui/commit/93bf8c84), closes [OICR-897](https://jira.opensciencedatacloud.org/browse/OICR-897))
+* **gql:**
+  * updates error message ([83ce2223](https://github.com/NCI-GDC/portal-ui/commit/83ce2223), closes [OICR-946](https://jira.opensciencedatacloud.org/browse/OICR-946))
+  * always start dd selection at top ([e733f022](https://github.com/NCI-GDC/portal-ui/commit/e733f022), closes [OICR-947](https://jira.opensciencedatacloud.org/browse/OICR-947))
+  * better handling of default input with AS ([60bf0c96](https://github.com/NCI-GDC/portal-ui/commit/60bf0c96), closes [OICR-941](https://jira.opensciencedatacloud.org/browse/OICR-941))
+  * better handling of trailing val in list ([b2d93bcc](https://github.com/NCI-GDC/portal-ui/commit/b2d93bcc), closes [OICR-940](https://jira.opensciencedatacloud.org/browse/OICR-940))
+  * removes trailing value in list using AS ([0ede9274](https://github.com/NCI-GDC/portal-ui/commit/0ede9274), closes [OICR-928](https://jira.opensciencedatacloud.org/browse/OICR-928))
+  * handle NOT IN in query and auto suggest ([4a639a1f](https://github.com/NCI-GDC/portal-ui/commit/4a639a1f), closes [OICR-926](https://jira.opensciencedatacloud.org/browse/OICR-926))
+  * automatically add [ to list auto suggest ([ac52db7a](https://github.com/NCI-GDC/portal-ui/commit/ac52db7a), closes [OICR-925](https://jira.opensciencedatacloud.org/browse/OICR-925))
+  * handles numbers in auto suggest ([bc86e48f](https://github.com/NCI-GDC/portal-ui/commit/bc86e48f), closes [OICR-910](https://jira.opensciencedatacloud.org/browse/OICR-910))
+  * removes _missing from suggest ([aa9ead6e](https://github.com/NCI-GDC/portal-ui/commit/aa9ead6e), closes [OICR-916](https://jira.opensciencedatacloud.org/browse/OICR-916))
+  * adds autosuggest support for missing ([5c2640ae](https://github.com/NCI-GDC/portal-ui/commit/5c2640ae), closes [OICR-912](https://jira.opensciencedatacloud.org/browse/OICR-912))
+  * remove old value ([e89845af](https://github.com/NCI-GDC/portal-ui/commit/e89845af), closes [OICR-911](https://jira.opensciencedatacloud.org/browse/OICR-911))
+  * removes second auto suggest on space ([2212e5de](https://github.com/NCI-GDC/portal-ui/commit/2212e5de), closes [OICR-898](https://jira.opensciencedatacloud.org/browse/OICR-898))
+* **header:** Don't use dropdown on xs view. ([dd3cef5a](https://github.com/NCI-GDC/portal-ui/commit/dd3cef5a), closes [OICR-744](https://jira.opensciencedatacloud.org/browse/OICR-744))
+* **ie:** Remove usage of const. ([a1d6efd5](https://github.com/NCI-GDC/portal-ui/commit/a1d6efd5), closes [OICR-838](https://jira.opensciencedatacloud.org/browse/OICR-838), [OICR-805](https://jira.opensciencedatacloud.org/browse/OICR-805))
+* **participant:**
+  * Don't expand default sample. ([c0ec6998](https://github.com/NCI-GDC/portal-ui/commit/c0ec6998), closes [OICR-943](https://jira.opensciencedatacloud.org/browse/OICR-943))
+  * Make TARGET data accessible. ([e9250bb1](https://github.com/NCI-GDC/portal-ui/commit/e9250bb1), closes [OICR-826](https://jira.opensciencedatacloud.org/browse/OICR-826))
+* **query:**
+  * switch case and files tab order ([800d6df5](https://github.com/NCI-GDC/portal-ui/commit/800d6df5), closes [OICR-909](https://jira.opensciencedatacloud.org/browse/OICR-909))
+  * Ensure summary graphs load. ([3675cb41](https://github.com/NCI-GDC/portal-ui/commit/3675cb41), closes [OICR-908](https://jira.opensciencedatacloud.org/browse/OICR-908))
+  * fixes range queries ([37376e71](https://github.com/NCI-GDC/portal-ui/commit/37376e71), closes [OICR-820](https://jira.opensciencedatacloud.org/browse/OICR-820))
+  * fixes summary tab ([946b0408](https://github.com/NCI-GDC/portal-ui/commit/946b0408))
+  * Fix tab loading. ([ee1c0dc9](https://github.com/NCI-GDC/portal-ui/commit/ee1c0dc9))
+* **quick:** Ensure modal backdrop disappears. ([05354be6](https://github.com/NCI-GDC/portal-ui/commit/05354be6), closes [OICR-921](https://jira.opensciencedatacloud.org/browse/OICR-921), [OICR-907](https://jira.opensciencedatacloud.org/browse/OICR-907))
+* **range:** min and max issues ([839cb8ce](https://github.com/NCI-GDC/portal-ui/commit/839cb8ce), closes [OICR-829](https://jira.opensciencedatacloud.org/browse/OICR-829), [OICR-804](https://jira.opensciencedatacloud.org/browse/OICR-804))
+* **range-facet:** fix n undefined error ([0f05aa22](https://github.com/NCI-GDC/portal-ui/commit/0f05aa22))
+* **range-ui:** only allow num & don't show weeks ([93f06756](https://github.com/NCI-GDC/portal-ui/commit/93f06756))
+* **search:**
+  * Ensure facet selections always update ([0d141b76](https://github.com/NCI-GDC/portal-ui/commit/0d141b76), closes [OICR-882](https://jira.opensciencedatacloud.org/browse/OICR-882))
+  * fix access pie click ([97c5a5e2](https://github.com/NCI-GDC/portal-ui/commit/97c5a5e2), closes [OICR-887](https://jira.opensciencedatacloud.org/browse/OICR-887))
+  * Case insensitive term match/highlight ([9bc4ded6](https://github.com/NCI-GDC/portal-ui/commit/9bc4ded6))
+  * Close modal if on that entity page. ([96053443](https://github.com/NCI-GDC/portal-ui/commit/96053443), closes [OICR-854](https://jira.opensciencedatacloud.org/browse/OICR-854))
+  * Cases loading is much quicker. ([54b3e22d](https://github.com/NCI-GDC/portal-ui/commit/54b3e22d), closes [OICR-831](https://jira.opensciencedatacloud.org/browse/OICR-831))
+  * Fix matched term highlighting ([d928cbe3](https://github.com/NCI-GDC/portal-ui/commit/d928cbe3))
+  * Reduce spacing on action buttons. ([195cc91a](https://github.com/NCI-GDC/portal-ui/commit/195cc91a), closes [OICR-795](https://jira.opensciencedatacloud.org/browse/OICR-795))
+  * Remove all files button working. ([a119aa3c](https://github.com/NCI-GDC/portal-ui/commit/a119aa3c), closes [OICR-797](https://jira.opensciencedatacloud.org/browse/OICR-797))
+* **summary:**
+  * Add UI for no results in cards. ([ce96782a](https://github.com/NCI-GDC/portal-ui/commit/ce96782a), closes [OICR-892](https://jira.opensciencedatacloud.org/browse/OICR-892))
+  * Apply my projects filters. ([9085c148](https://github.com/NCI-GDC/portal-ui/commit/9085c148), closes [OICR-866](https://jira.opensciencedatacloud.org/browse/OICR-866))
+* **table:**
+  * fixes empty pagination ([12fbfc00](https://github.com/NCI-GDC/portal-ui/commit/12fbfc00), closes [OICR-914](https://jira.opensciencedatacloud.org/browse/OICR-914))
+  * save table sort settings ([5361cd9a](https://github.com/NCI-GDC/portal-ui/commit/5361cd9a), closes [OICR-873](https://jira.opensciencedatacloud.org/browse/OICR-873))
+* **tableicious:**
+  * table not respecting LS ([7eace6c8](https://github.com/NCI-GDC/portal-ui/commit/7eace6c8))
+  * autorefresh inactive headers ([863b64dc](https://github.com/NCI-GDC/portal-ui/commit/863b64dc))
+* **tables:** Fix export functionality ([963490fe](https://github.com/NCI-GDC/portal-ui/commit/963490fe))
+* **token:** Fix token downloading. ([d8f6ade4](https://github.com/NCI-GDC/portal-ui/commit/d8f6ade4), closes [OICR-743](https://jira.opensciencedatacloud.org/browse/OICR-743))
+* **user:** fixes file project check ([c033946f](https://github.com/NCI-GDC/portal-ui/commit/c033946f))
+
+
+#### Features
+
+* **add-to-cart:** show adding toast after 1s ([ec8eeee5](https://github.com/NCI-GDC/portal-ui/commit/ec8eeee5), closes [OICR-860](https://jira.opensciencedatacloud.org/browse/OICR-860))
+* **annotations:** add notes as hidden tbl field ([a4c64093](https://github.com/NCI-GDC/portal-ui/commit/a4c64093), closes [OICR-811](https://jira.opensciencedatacloud.org/browse/OICR-811))
+* **app:** pagination heading control ([f3c9566b](https://github.com/NCI-GDC/portal-ui/commit/f3c9566b), closes [OICR-810](https://jira.opensciencedatacloud.org/browse/OICR-810))
+* **cart:** merge tabs, rename btns, clickable pie ([a62a2c5b](https://github.com/NCI-GDC/portal-ui/commit/a62a2c5b), closes [OICR-808](https://jira.opensciencedatacloud.org/browse/OICR-808))
+* **cart-directives:** remove frm cart in dropdown ([31a69526](https://github.com/NCI-GDC/portal-ui/commit/31a69526), closes [OICR-900](https://jira.opensciencedatacloud.org/browse/OICR-900))
+* **charts:** Legend on hover ([c1408023](https://github.com/NCI-GDC/portal-ui/commit/c1408023))
+* **fql:** more info in error msg ([2430bb8a](https://github.com/NCI-GDC/portal-ui/commit/2430bb8a), closes [OICR-949](https://jira.opensciencedatacloud.org/browse/OICR-949))
+* **gql:** update gql error report ([274b86f7](https://github.com/NCI-GDC/portal-ui/commit/274b86f7))
+* **projects:** Case Count is clickable to project ([13adb164](https://github.com/NCI-GDC/portal-ui/commit/13adb164), closes [OICR-861](https://jira.opensciencedatacloud.org/browse/OICR-861))
+* **quick:**
+  * remove details on mobile views ([177c9428](https://github.com/NCI-GDC/portal-ui/commit/177c9428), closes [OICR-935](https://jira.opensciencedatacloud.org/browse/OICR-935))
+  * update UI ([26f36148](https://github.com/NCI-GDC/portal-ui/commit/26f36148))
+* **search:**
+  * Create summary card w/ tables. ([7c1d8712](https://github.com/NCI-GDC/portal-ui/commit/7c1d8712), closes [OICR-852](https://jira.opensciencedatacloud.org/browse/OICR-852))
+  * UI Updates for Data page. ([3629723e](https://github.com/NCI-GDC/portal-ui/commit/3629723e), closes [OICR-807](https://jira.opensciencedatacloud.org/browse/OICR-807))
+  * Charts navigate to file tab filtered ([da5e1878](https://github.com/NCI-GDC/portal-ui/commit/da5e1878), closes [OICR-776](https://jira.opensciencedatacloud.org/browse/OICR-776))
+  * Quick Search prototype ([1ce98acd](https://github.com/NCI-GDC/portal-ui/commit/1ce98acd), closes [OICR-702](https://jira.opensciencedatacloud.org/browse/OICR-702))
+* **summary:** Add clear active filters button. ([721b1d10](https://github.com/NCI-GDC/portal-ui/commit/721b1d10), closes [OICR-944](https://jira.opensciencedatacloud.org/browse/OICR-944))
+* **table:**
+  * adds tooltips to icons ([e897aac5](https://github.com/NCI-GDC/portal-ui/commit/e897aac5))
+  * adds table tooltips ([ffb2fa6d](https://github.com/NCI-GDC/portal-ui/commit/ffb2fa6d))
+
+
 <a name"0.2.13-spr3"></a>
 ### 0.2.13-spr3 (2015-05-14)
 

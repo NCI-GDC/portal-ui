@@ -231,6 +231,7 @@ module ngApp.components.facets.controllers {
                 private LocationService: ILocationService,
                 private FacetService: IFacetService) {
 
+      $scope.data = [];
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
 
@@ -238,6 +239,7 @@ module ngApp.components.facets.controllers {
         if ((n === o && ($scope.min !== undefined || $scope.max !== undefined)) || n === undefined) {
           return;
         }
+        $scope.data = n.buckets;
         $scope.min = _.min(n.buckets, (bucket) => {
           return bucket.key === '_missing' ? Number.POSITIVE_INFINITY : parseInt(bucket.key, 10);
         }).key;

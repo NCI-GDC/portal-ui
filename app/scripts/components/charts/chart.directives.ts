@@ -84,12 +84,12 @@ module ngApp.components.charts {
           var svg = d3.select(element.find(".chart-container")[0]).append("svg")
               .attr("width", width)
               .attr("height", height)
-            .append("g")
+              .append("g")
               .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
           var g = svg.selectAll(".arc")
               .data(pie(data))
-            .enter().append("g")
+              .enter().append("g")
               .each(function(d) { d.outerRadius = outerRadius - 20; })
               .attr("class", "arc");
 
@@ -131,7 +131,6 @@ module ngApp.components.charts {
               });
 
           $scope.legendData = legendData;
-          
           if (data.length > 1) {
             gPath.on("mouseover.tween", arcTween(outerRadius - 15, 0))
                  .on("mouseout.tween", arcTween(outerRadius - 20, 150));
@@ -250,10 +249,119 @@ module ngApp.components.charts {
     }
   }
 
+  interface IBarChartScope extends ng.IScope {
+    data: Array<{ key: number; doc_count: number }>;
+    height: number;
+    maxNumBars: number;
+  }
+
+  function BarChart($window: IGDCWindowService): ng.IDirective {
+    return {
+      restrict: "EA",
+      replace: true,
+      scope: {
+        data: "=",
+        height: "@",
+        maxNumBars: "@",
+      },
+      templateUrl: "components/charts/templates/bar-chart.html",
+      link: function($scope: IBarChartScope, element: ng.IAugmentedJQuery) {
+        var sortedData = [];
+        $scope.maxNumBars = $scope.maxNumBars || Number.POSITIVE_INFINITY;
+
+        var margin = { right: 10, left: 10 };
+        var width = element.parent().parent()[0].clientWidth - margin.left - margin.right;
+        createChart();
+
+        // Used to namespace each resize event
+        var id = "." + $window.Math.round($window.Math.random() * 120000);
+        $window.$($window).on("resize" + id, _.debounce(() => {
+          resizeChart();
+        }, 150));
+
+        $scope.$watch("data", (n, o) => {
+          if (n !== o) {
+            if (n.length != 0) {
+              var noMissing = _.reject(n, (datum) => { return datum.key === "_missing"; });
+              sortedData = _.sortBy(noMissing, (n) => { return n.key; });
+              if (sortedData.length > $scope.maxNumBars) {
+                var chunked = _.chunk(sortedData, sortedData.length/$scope.maxNumBars);
+                sortedData = _.map(chunked, (chunk) => {
+                                    var keys = _.pluck(chunk, "key");
+                                    return { "doc_count": _.sum(chunk, "doc_count"),
+                                             "key": keys.length > 1 ? _.min(keys) + "-" + _.max(keys) : _.first(keys)
+                                            };
+                                  });
+              }
+              drawBars();
+            }
+          }
+        });
+
+        function resizeChart() {
+          if (element.find(".chart-container").is(":visible")) {
+            width = element.parent().parent()[0].clientWidth - margin.left - margin.right;
+            d3.select(element.find(".chart-container > svg")[0])
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", $scope.height);
+              drawBars();
+            }
+        }
+
+        function createChart() {
+          var height = $scope.height;
+
+          var chart = d3.select(element.find(".chart-container")[0])
+                        .append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height)
+                        .append("g")
+                        .attr("transform", "translate(-10,0)");
+        }
+
+        function drawBars() {
+          var x = d3.scale.ordinal()
+                  .domain(_.pluck(sortedData, "key"))
+                  .rangeRoundBands([0, width], 0);
+
+          var y = d3.scale.linear()
+                  .domain([0, _.max(_.pluck(sortedData, "doc_count"))])
+                  .range([$scope.height, 0]);
+
+          var chart = d3.select(element.find(".chart-container > svg")[0]);
+          chart.selectAll("g").remove();
+
+          var elements = chart.selectAll("g")
+                        .data(sortedData);
+
+          var tip = d3.tip()
+                    .attr("class", "tooltip")
+                    .offset([-5, 0])
+                    .html(function(d) {
+                            return d.key + ": " + d.doc_count;
+                          });
+
+          var bars =elements
+               .enter().append("g")
+              .attr("transform", (d) => { return "translate(" + x(d.key) + ",0)"; })
+              .append("rect")
+              .attr("y", (d) => { return y(d.doc_count); })
+              .attr("height", (d) => { return $scope.height - y(d.doc_count); })
+              .attr("width", x.rangeBand())
+              .attr("class", "bar")
+              .call(tip)
+              .on('mouseover', tip.show)
+              .on('mouseout', tip.hide);
+            }
+      }
+    }
+  }
+
   angular.module("components.charts", [
       "location.services"
     ])
     .directive("chartLegend", ChartLegend)
-    .directive("pieChart", PieChart);
+    .directive("pieChart", PieChart)
+    .directive("barChart", BarChart);
 }
 

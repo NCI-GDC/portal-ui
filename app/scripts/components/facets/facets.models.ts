@@ -32,6 +32,7 @@ module ngApp.components.facets.models {
     ranges: {lower?: number; upper?: number; checked: boolean}[];
     max: number;
     min: number;
+    data: any;
   }
 
   export interface IDateFacetScope extends ng.IScope {

@@ -486,7 +486,7 @@ module ngApp.components.gql {
         }
 
         $scope.enter = function(item: IDdItem): void {
-          item = item || $scope.active === INACTIVE ? $scope.ddItems[0] : $scope.ddItems[$scope.active];
+          item = item || ($scope.active === INACTIVE ? $scope.ddItems[0] : $scope.ddItems[$scope.active]);
   	      var needleLength = $scope.parts.needle.length;
           // Quote the value if it has a space so the parse can handle it  
           if (GqlService.isQuoted(item.full)) item.full = T.QUOTE + item.full + T.QUOTE;

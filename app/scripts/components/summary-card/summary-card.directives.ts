@@ -18,9 +18,10 @@ module ngApp.components.summaryCard.directives {
         $scope.mode = $scope.mode || "graph";
 
         function checkFilters() {
+          if (LocationService.path().startsWith('/query')) return;
           var filters = LocationService.filters();
           $scope.activeFilters = _.some(filters.content, (filter) => {
-            return filter.content.field === config.filterKey;
+            return filter.content && filter.content.field === config.filterKey;
           });
         }
 

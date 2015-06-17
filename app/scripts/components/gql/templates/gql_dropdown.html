@@ -1,17 +1,24 @@
-<ul class="list-unstyled Gql_dropdown" data-ng-show="showResults()">
+<ul class="list-unstyled Gql_dropdown Gql_dropdown-{{mode}}" data-ng-show="showResults()">
+  <li class="Gql_dropdown_arrow" ng-if="offset > 0">
+    <i class="fa fa-sort-asc"></i>
+  </li>
   <li class="Gql_dropdown_item"
       data-ng-click="click(e)"
+      data-ng-mouseenter="mouseIn($index)"
       data-ng-class="{true:'Gql_dropdown_item-active'}[e.active]"
-      data-ng-repeat="e in ddItems track by e.full">
+      data-ng-repeat="e in ddItems | limitTo:limit:offset track by e.full">
     <i class="fa"
        data-ng-if="e.doc_type"
-       style="margin-right: 10px;background: #5b5151;padding: 1rem;color: #fff;"
+       style="margin-right: 10px;background: #5b5151;padding: 1rem;color: #fff; width: 3.2rem"
         data-ng-class="{'files':'fa-file', 'participants':'fa-user', '':'fa-square'}[e.doc_type]">
     </i>
     <i class="fa fa-square"
        data-ng-if="!e.doc_type"
        style="margin-right: 10px;background: #5b5151;padding: 1rem;color: #fff;">
     </i>
-    {{::e.field}}
+    {{::e.field}}<i data-ng-if="e.doc_type" style="color:#888"> - this is a description</i>
+  </li>
+  <li class="Gql_dropdown_arrow" ng-if="ddItems.length > offset + limit">
+    <i class="fa fa-sort-desc"></i>
   </li>
 </ul>

@@ -225,12 +225,12 @@ module ngApp.components.gql {
     ajaxList(parts: IParts, listValues): ng.IPromise<IDdItem[]> {
       // Autocomplete suggestions
       return this.ajaxRequest(parts.field).then((d) => {
-        return _.take(_.filter(d, (m) => {
+        return _.filter(d, (m) => {
           // Filter out values that are already in the list
           return m && m.full && listValues.indexOf(m.field.toString()) === -1 && 
             this.contains(m.full.toString(), parts.needle) && 
             this.clean(m.full.toString());
-        }), 10)
+        });
       });
     }
     
@@ -259,10 +259,10 @@ module ngApp.components.gql {
     ajaxQuoted(parts: IParts): ng.IPromise<IDdItem[]> {
       // Autocomplete suggestions
       return this.ajaxRequest(parts.field).then((d)=> {
-        return _.take(_.filter(d, (m) => {
+        return _.filter(d, (m) => {
           return m && m.full && this.contains(m.full.toString(), parts.needle) &&
           this.clean(m.full.toString());
-        }), 10);
+        });
       });
     }
     
@@ -330,6 +330,8 @@ module ngApp.components.gql {
         ds.get('_mapping', {}).then(m => mapping = m);
               
         $scope.active = INACTIVE;
+        $scope.offset = 0;
+        $scope.limit = 10;
         
         $scope.onChange = function() {
           $scope.focus = true;
@@ -376,22 +378,22 @@ module ngApp.components.gql {
                 // is_field_string
                 $scope.mode = Mode.Field;
                 
-                $scope.ddItems = _.take(_.filter(mapping, (m: IDdItem) => {
+                $scope.ddItems = _.filter(mapping, (m: IDdItem) => {
                   return (
                     m && 
                     m.full && 
                     GqlService.contains(m.full.toString(), $scope.parts.needle.replace(T.LPARENS, T.NOTHING)) && 
                     GqlService.clean(m.full.toString())
                   );
-                }), 10);
+                });
               } else if ([T.EQ, T.NE].indexOf($scope.parts.op) !== -1) { 
                 // is_value_string is_unquoted_string
                 $scope.mode = Mode.Unquoted;
 
                 GqlService.ajaxRequest($scope.parts.field).then((d)=> {
-                  $scope.ddItems = _.take(_.filter(d, (m) => {
+                  $scope.ddItems = _.filter(d, (m) => {
                     return m && m.full && GqlService.contains(m.full.toString(), $scope.parts.needle) && GqlService.clean(m.full.toString());
-                  }), 10);
+                  });
                 });
               }
             }
@@ -417,22 +419,31 @@ module ngApp.components.gql {
 
         $scope.cycle = (val: Cycle): void => {
           $scope.showResults();
-
+          
           var active = $scope.active + val;
-
+  
           if (active >= $scope.ddItems.length) {
-            // TODO ajax for more things
             active = 0;
+            $scope.offset = 0;
           } else if (active < 0) {
             active = $scope.ddItems.length - 1;
-          }
+            if ($scope.ddItems.length > $scope.limit) {
+              $scope.offset = $scope.ddItems.length - $scope.limit
+            }
+          } else if (active >= $scope.offset + $scope.limit) {
+            $scope.offset++;
+          } else if (active < $scope.offset) {
+            $scope.offset--;
+          } 
 
           $scope.setActive(active);
         };
 
         $scope.showResults = function(): boolean {
           var results = $scope.ddItems ? !!$scope.ddItems.length : false;
-          return !!($scope.focus && $scope.query.length > 0 && results);
+          var bool = !!($scope.focus && $scope.query.length > 0 && results);
+          if (!bool) $scope.offset = 0;
+          return bool;
         };
 
         $scope.keypress = function(e: KeyboardEvent): void {
@@ -478,8 +489,9 @@ module ngApp.components.gql {
         }
 
         function clearActive() {
-          if ($scope.ddItems[$scope.active])
+          if ($scope.ddItems && $scope.ddItems[$scope.active]) {
             $scope.ddItems[$scope.active].active = false;
+          }
           $scope.ddItems = [];
           $scope.active = INACTIVE;
           $scope.focus = false;
@@ -523,7 +535,7 @@ module ngApp.components.gql {
         };
 
         function blur() {
-          $scope.focus = false;
+          clearActive();
         }
 
         gqlParse();
@@ -536,7 +548,7 @@ module ngApp.components.gql {
   }
 
   /* @ngInject */
-  function gqlDropdown(): ng.IDirective {
+  function gqlDropdown($interval: ng.IIntervalService): ng.IDirective {
     return {
       restrict: 'E',
       replace: true,
@@ -545,10 +557,13 @@ module ngApp.components.gql {
         $scope.click = function (item) {
           $scope.enter(item)
         };
+        $scope.mouseIn = function(idx) {
+          $scope.setActive(idx + $scope.offset);
+        }
       }
     };
   }
-  
+      
   var Tokens: ITokens = {
       EQ: "=",
       NE: "!=",
@@ -674,6 +689,8 @@ module ngApp.components.gql {
   }
 
   interface IGqlScope extends ng.IScope {
+    offset: number;
+    limit: number;
     mode: Mode;
     parts: IParts;
     mapping: IDdItem[];

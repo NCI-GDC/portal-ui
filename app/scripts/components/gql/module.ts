@@ -511,6 +511,8 @@ module ngApp.components.gql {
             GqlService.setPos(element[0], (newLeft + item.full).length);
           } else if ($scope.mode === Mode.List) {
             if (GqlService.isCountOdd(left, T.QUOTE)) needleLength++;
+            // [OICR-925] Auto insert [ if not there already
+            if (left.substr(-4) === T.SPACE + T.IN + T.SPACE) left += T.LBRACKET;
             var newLeft = GqlService.lhsRewrite(left, needleLength);
             var newRight = GqlService.rhsRewriteList(right);
       

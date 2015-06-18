@@ -201,10 +201,8 @@ module ngApp.components.tables.controllers {
       });
 
       this.setDisplayedData();
-      
       var decompressed = $window.localStorage.getItem($scope.config.title + '-col');
       $scope.saved = decompressed ? JSON.parse(decompressed) : [];
-                
     }
 
     setDisplayedData(newPaging: any = this.$scope.paging) {

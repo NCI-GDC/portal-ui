@@ -1,21 +1,26 @@
 #quick-search-modal {
   padding: 0;
-  
-  input {
-    border: 0;
-    box-shadow: none;
-    border-radius: 0;
-  }
 
   .search-input {
-    padding: 20px;
     border-bottom: 1px solid #ccc;
     border-radius: 0;
+    padding: 0 20px;
+
+    .fa.fa-search {
+      padding-top: 20px;
+    }
+
+    #quick-search-input {
+      margin-bottom: 20px;
+      border: 0;
+      box-shadow: none;
+      border-radius: 0;
+    }
   }
 
   .quick-search-list-container {
     border-top: 1px solid #ccc;
-    margin-top: 23px;
+    margin-top: 38px;
     margin-left: -20px;
     margin-right: -20px;
   }
@@ -65,12 +70,9 @@
     }
   }
 
-  #quick-search-input {
-    margin-bottom: 5px;
-  }
-
   .details-container {
     border-left: 1px solid #ccc;
+    min-height: 350px;
   }
 
   .icon-row {

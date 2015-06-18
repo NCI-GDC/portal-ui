@@ -5,21 +5,21 @@
 </div>
 <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
   <tbody>
-    <tr data-ng-if="displayItem.file_id">
+    <tr data-ng-if="selectedItem.file_id">
       <th scope="row" data-translate>File UUID</th>
-      <td>{{ displayItem.file_id }}</td>
+      <td>{{ selectedItem.file_id }}</td>
     </tr>
-    <tr data-ng-if="displayItem.file_name">
+    <tr data-ng-if="selectedItem.file_name">
       <th scope="row" data-translate>File Name</th>
-      <td>{{ displayItem.file_name }}</td>
+      <td>{{ selectedItem.file_name }}</td>
     </tr>
-    <tr data-ng-if="displayItem.data_type">
+    <tr data-ng-if="selectedItem.data_type">
       <th scope="row" data-translate>Data Type</th>
-      <td>{{ displayItem.data_type }}</td>
+      <td>{{ selectedItem.data_type }}</td>
     </tr>
-    <tr data-ng-if="displayItem.file_size">
+    <tr data-ng-if="selectedItem.file_size">
       <th scope="row" data-translate>Size</th>
-      <td>{{ displayItem.file_size | size }}</td>
+      <td>{{ selectedItem.file_size | size }}</td>
     </tr>
   </tbody>
 </table>

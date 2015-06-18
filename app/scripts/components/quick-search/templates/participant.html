@@ -5,21 +5,49 @@
 </div>
 <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
   <tbody>
-    <tr data-ng-if="displayItem.participant_id">
+    <tr data-ng-if="selectedItem.participant_id">
       <th scope="row" data-translate>Case UUID</th>
-      <td>{{ displayItem.participant_id }}</td>
+      <td>{{ selectedItem.participant_id }}</td>
     </tr>
-    <tr data-ng-if="displayItem.project.project_id">
+    <tr data-ng-if="selectedItem.project.project_id">
       <th scope="row" data-translate>Project</th>
-      <td>{{ displayItem.project.project_id }}</td>
+      <td>{{ selectedItem.project.name }}</td>
     </tr>
-    <tr data-ng-if="displayItem.clinical.gender">
+    <tr data-ng-if="selectedItem.clinical.gender">
       <th scope="row" data-translate>Gender</th>
-      <td>{{ displayItem.clinical.gender | humanify }}</td>
+      <td>{{ selectedItem.clinical.gender | humanify }}</td>
     </tr>
-    <tr data-ng-if="displayItem.project.primary_site">
+    <tr data-ng-if="selectedItem.project.primary_site">
       <th scope="row" data-translate>Primary Site</th>
-      <td>{{ displayItem.project.primary_site | humanify }}</td>
+      <td>{{ selectedItem.project.primary_site | humanify }}</td>
+    </tr>
+    <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.sample_id">
+      <th scope="row" data-translate>Sample UUID</th>
+      <td>{{ selectedItem.bioSpecimen.sample_id }}</td>
+    </tr>
+    <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.sample_type">
+      <th scope="row" data-translate>Sample Type</th>
+      <td>{{ selectedItem.bioSpecimen.sample_type }}</td>
+    </tr>
+    <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.portion_id">
+      <th scope="row" data-translate>Portion UUID</th>
+      <td>{{ selectedItem.bioSpecimen.portion_id }}</td>
+    </tr>
+    <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.analyte_id">
+      <th scope="row" data-translate>Analyte UUID</th>
+      <td>{{ selectedItem.bioSpecimen.analyte_id }}</td>
+    </tr>
+    <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.analyte_type">
+      <th scope="row" data-translate>Analyte Type</th>
+      <td>{{ selectedItem.bioSpecimen.analyte_type }}</td>
+    </tr>
+    <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.aliquot_id">
+      <th scope="row" data-translate>Aliquot UUID</th>
+      <td>{{ selectedItem.bioSpecimen.aliquot_id }}</td>
+    </tr>
+    <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.submitter_id">
+      <th scope="row" data-translate>Submitter ID</th>
+      <td>{{ selectedItem.bioSpecimen.submitter_id }}</td>
     </tr>
   </tbody>
 </table>

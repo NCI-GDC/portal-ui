@@ -5,17 +5,17 @@
 </div>
 <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
   <tbody>
-    <tr data-ng-if="displayItem.project_id">
+    <tr data-ng-if="selectedItem.project_id">
       <th scope="row" data-translate>Project ID</th>
-      <td>{{ displayItem.project_id }}</td>
+      <td>{{ selectedItem.project_id }}</td>
     </tr>
-    <tr data-ng-if="displayItem.name">
+    <tr data-ng-if="selectedItem.name">
       <th scope="row" data-translate>Project Name</th>
-      <td>{{ displayItem.name }}</td>
+      <td>{{ selectedItem.name }}</td>
     </tr>
-    <tr data-ng-if="displayItem.primary_site">
+    <tr data-ng-if="selectedItem.primary_site">
       <th scope="row" data-translate>Primary Site</th>
-      <td>{{ displayItem.primary_site | humanify }}</td>
+      <td>{{ selectedItem.primary_site | humanify }}</td>
     </tr>
   </tbody>
 </table>

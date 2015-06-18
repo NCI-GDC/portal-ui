@@ -223,7 +223,7 @@ module ngApp.search.models {
           "project.name",
           "project.primary_site",
           "project.program.name",
-          "project.disease_type",
+          "project.disease_type"
         ],
         expand: [
           "summary.data_types",

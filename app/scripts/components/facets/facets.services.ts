@@ -44,16 +44,22 @@ module ngApp.components.facets.services {
       });
     }
 
-    searchAll(query: string): ng.IPromise<any> {
+    searchAll(params: any): ng.IPromise<any> {
+      if (params.hasOwnProperty("fields")) {
+        params["fields"] = params["fields"].join();
+      }
+
+      if (params.hasOwnProperty("expand")) {
+        params["expand"] = params["expand"].join();
+      }
+
       var abort = this.$q.defer();
       var prom: ng.IPromise<any> = this.Restangular.all("all")
       .withHttpConfig({
         timeout: abort.promise
       })
-      .get("", {
-        query: query
-      }).then((data) => {
-        return data.data.hits;
+      .get("", params).then((data) => {
+        return data;
       });
 
       return prom;

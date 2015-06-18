@@ -12,7 +12,7 @@ module ngApp.components.quickSearch.directives {
 
   /* @ngInject */
   function QuickSearch($modal: any, $window: ng.IWindowService, $modalStack): ng.IDirective {
-    return {
+    return { 
       restrict: "A",
       controller: function($scope) {
         var modalInstance;
@@ -71,12 +71,42 @@ module ngApp.components.quickSearch.directives {
   /* @ngInject */
   function QuickSearchInput(QuickSearchService: IQuickSearchService, FacetService,
                             $compile: ng.ICompileService, $modalStack): ng.IDirective {
+
     return {
       restrict: "E",
       replace: true,
       templateUrl: "components/quick-search/templates/quick-search-input.html",
       link: function($scope, element) {
         $scope.results = [];
+
+        function setBioSpecimen(result) {
+          if (result._type !== "participant") {
+            return;
+          }
+
+          function findMatch(obj) {
+            for (var key in obj) {
+              if (obj.hasOwnProperty(key)) {
+                if (_.isString(obj[key])) {
+                  if (obj[key].toLowerCase().indexOf($scope.searchQuery.toLowerCase()) === 0) {
+                    result.bioSpecimen = obj;
+                    return;
+                  }
+                } else if (_.isArray(obj[key])) {
+                  _.forEach(obj[key], (item) => {
+                    findMatch(item);
+                  });
+                }
+              }
+            }
+          }
+
+          _.forEach(result.samples, (sample) => {
+            if (!result.bioSpecimen) {
+              findMatch(sample);
+            }
+          });
+        }
 
         $scope.keyboardListener = function(e: any) {
           function selectItem(dir) {
@@ -98,10 +128,6 @@ module ngApp.components.quickSearch.directives {
             $scope.selectedItem.selected = false;
             $scope.results.hits[newIndex].selected = true;
             $scope.selectedItem = $scope.results.hits[newIndex];
-            QuickSearchService.getDetails($scope.selectedItem._type, $scope.selectedItem._id)
-              .then((data) => {
-                $scope.displayItem = data;
-              });
           }
 
           var key = e.which || e.keyCode
@@ -136,10 +162,10 @@ module ngApp.components.quickSearch.directives {
           $scope.selectedItem.selected = false;
           item.selected = true;
           $scope.selectedItem = item;
-          QuickSearchService.getDetails($scope.selectedItem._type, $scope.selectedItem._id)
-            .then((data) => {
-              $scope.displayItem = data;
-            });
+        };
+
+        $scope.goTo = function(entity: string, id: string) {
+          QuickSearchService.goTo(entity, id);
         };
 
         $scope.search = function() {
@@ -152,25 +178,63 @@ module ngApp.components.quickSearch.directives {
             return;
           }
 
-          FacetService.searchAll($scope.searchQuery)
-          .then((data) => {
-            if (!data.length) {
-              $scope.selectedItem = null;
-            }
+          var params = {
+            query: $scope.searchQuery,
+            fields: [
+              "project_id",
+              "name",
+              "disease_type",
+              "primary_site",
+              "project.project_id",
+              "project.name",
+              "project.disease_type",
+              "project.primary_site",
+              "aliquot_ids",
+              "submitter_aliquot_ids",
+              "analyte_ids",
+              "submitter_analyte_ids",
+              "participant_id",
+              "submitter_id",
+              "portion_ids",
+              "submitter_portion_ids",
+              "sample_ids",
+              "submitter_sample_ids",
+              "file_id",
+              "file_name",
+              "file_size",
+              "data_type",
+              "clinical.gender",
+              "samples.sample_id",
+              "samples.submitter_id",
+              "samples.sample_type",
+              "samples.portions.portion_id",
+              "samples.portions.submitter_id",
+              "samples.portions.analytes.analyte_id",
+              "samples.portions.analytes.submitter_id",
+              "samples.portions.analytes.analyte_type",
+              "samples.portions.analytes.aliquots.aliquot_id",
+              "samples.portions.analytes.aliquots.submitter_id"
+            ]
+          };
+
+          FacetService.searchAll(params)
+          .then((res) => {
+            var data = res.data;
+
+            data.hits = _.map(data.hits, (hit) => {
+              setBioSpecimen(hit);
+              return hit;
+            });
 
             $scope.results = _.assign({}, data);
 
             if (!$scope.results.hits.length) {
+              $scope.selectedItem = null;
               return;
             }
 
             $scope.results.hits[0].selected = true;
             $scope.selectedItem = $scope.results.hits[0];
-
-            QuickSearchService.getDetails($scope.selectedItem._type, $scope.selectedItem._id)
-              .then((data) => {
-                $scope.displayItem = data;
-              });
           });
         };
 
@@ -186,19 +250,36 @@ module ngApp.components.quickSearch.directives {
           return "";
         }
 
-        var regex = new RegExp("[" + query.replace(/\-/g, "\\-") + "]{" + query.length + "}", "gi");
+        var regex = new RegExp("[" + query.replace(/\-/g, "\\-") + "]{" + query.length + "}", "i");
 
-        var matchedText = value.match(regex);
-
-        if (!matchedText) {
-          return "";
+        if (!_.isArray(value)) {
+          value = [value];
         }
 
-        matchedText = matchedText[0];
-        var boldedQuery = "<span class='bolded'>" + matchedText + "</span>";
-        value = value.replace(regex, boldedQuery);
+        var html = "";
+        // Only ever show the top matched term in the arrays returned.
+        var term = _.filter(value, (item) => {
+          var matchedText = item.match(regex);
 
-        return value;
+          if (matchedText) {
+            matchedText = matchedText[0];
+
+            return matchedText.toLowerCase() === query.toLowerCase();
+          }
+
+          return false;
+        }).sort((a, b) => {
+          return a.match(regex).length - b.match(regex).length;
+        })[0];
+
+        if (term) {
+          var matchedText = term.match(regex);
+          matchedText = matchedText[0];
+          var boldedQuery = "<span class='bolded'>" + matchedText + "</span>";
+          html = term.replace(regex, boldedQuery);
+        }
+
+        return html;
       };
     }
   }

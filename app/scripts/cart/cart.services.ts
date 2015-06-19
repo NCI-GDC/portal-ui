@@ -46,6 +46,7 @@ module ngApp.cart.services {
                 private UserService,
                 private $rootScope,
                 private gettextCatalog,
+                private $filter: ng.IFilterService,
                 private $timeout: ng.ITimeoutService) {
       var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
@@ -148,10 +149,16 @@ module ngApp.cart.services {
     }
 
     sizeWarning() {
-      var template = "<span>" + this.gettextCatalog.getString("Only") + " " +
-                     this.getCartVacancySize() + " "  +
-                     this.gettextCatalog.getString("more files can be added") +
-                     " " + this.gettextCatalog.getString("to the cart") + ".</span>";
+      var template = [this.$filter("number")(this.getCartVacancySize())];
+
+      if (this.getFiles().length !== 0) {
+        template.unshift("Only");
+        template.push("more");
+      }
+
+      template.push("files can be added to the cart.");
+
+      template = "<span>" + this.gettextCatalog.getString(template.join(" ")) + "</span>";
 
       this.notify.config({ duration: 5000 });
       this.notify.closeAll();
@@ -165,16 +172,16 @@ module ngApp.cart.services {
 
     buildAddedMsg(added: Array<Object>, alreadyIn: Array<Object>): string {
       var message = this.gettextCatalog.getPlural(added.length,
-                                                          "<span>Added <strong>" + _.get(_.first(added), "file_name") + "</strong> to the cart.",
-                                                          "<span>Added <strong>" + added.length + "</strong> files to the cart.");
+                    "<span>Added <strong>" + _.get(_.first(added), "file_name") + "</strong> to the cart.",
+                    "<span>Added <strong>" + added.length + "</strong> files to the cart.");
 
-      if(alreadyIn.length) {
+      if (alreadyIn.length) {
         message += this.gettextCatalog.getPlural(alreadyIn.length,
-                                                "<br />The file was already in cart, not added.",
-                                                "<br /><strong>" + alreadyIn.length + "</strong> files were already in cart, not added");
+                   "<br />The file was already in cart, not added.",
+                   "<br /><strong>" + alreadyIn.length + "</strong> files were already in cart, not added");
       }
 
-      if(added.length !== 0) {
+      if (added.length !== 0) {
         message += "<br /> <a data-ng-click='undoClicked(\"added\")'><i class='fa fa-undo'></i> Undo</a>";
       }
       return message + "</span>";
@@ -182,10 +189,10 @@ module ngApp.cart.services {
 
     buildRemovedMsg(removedFiles: IFile[]): string {
       var message = this.gettextCatalog.getPlural(removedFiles.length,
-                                                    "<span>Removed <strong>" + _.get(_.first(removedFiles), "file_name") + "</strong> from the cart.",
-                                                    "<span>Removed <strong>" + removedFiles.length + "</strong> files from the cart.");
+                    "<span>Removed <strong>" + _.get(_.first(removedFiles), "file_name") + "</strong> from the cart.",
+                    "<span>Removed <strong>" + removedFiles.length + "</strong> files from the cart.");
 
-      if(removedFiles.length !== 0) {
+      if (removedFiles.length !== 0) {
         message += "<br /> <a data-ng-click='undoClicked(\"removed\")'><i class='fa fa-undo'></i> Undo</a>";
       }
       return message + "</span>";
@@ -282,4 +289,3 @@ module ngApp.cart.services {
       .service("CartState", State)
       .service("CartService", CartService);
 }
-

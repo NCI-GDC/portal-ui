@@ -12,9 +12,13 @@
         access levels.
       </p>
 
+      <p class="pull-right">
+        <export-table data-text="Export Report" data-size="{{ rsc.reports.pagination.total }}"
+                        data-endpoint="reports/data-download-statistics"
+                        data-expand="rsc.reportServiceExpand"
+                        data-headings="config.headings">
+        </export-table>
       <p>
-        <button class='btn btn-primary' ng-click=reportExport()>Export Report</button>
-      </p>
     </section>
     <section id="projectLevel" style="padding-top: 40px; margin-top: -40px;">
       <h2>Project</h2>
@@ -22,11 +26,11 @@
       <div class="panel panel-default" data-ng-if="githutData">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
-            Downloads by Project and Data Type 
+            Downloads by Project and Data Type
           </h4>
         </div>
 
-        <git-hut data="githutData" config="githutConfig"></git-hut>
+        <git-hut data-data="githutData" data-config="githutConfig"></git-hut>
       </div>
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -34,7 +38,7 @@
            Downloads by Project
           </h4>
         </div>
-        <table class="table table-striped table-hover table-condensed table-bordered">
+        <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
           <thead>
           <tr>
             <th data-translate>
@@ -43,27 +47,27 @@
             <th data-translate>
               Project Name
             </th>
-            <th>
-              # of files
+            <th data-translate>
+              # Requests
             </th>
-            <th>
+            <th data-translate>
               File Size
             </th>
           </tr>
           </thead>
           <tbody>
-          <tr data-ng-repeat="project in byProject | orderBy:'values.file_count':true">
+          <tr data-ng-repeat="project in rsc.byProject | orderBy:'values.file_count':true">
             <th>
-              {{project.key}}
+              {{ project.key }}
             </th>
               <td>
-              {{project.values.project_name}}
+              {{ project.values.project_name }}
             </td>
             <td>
-              {{project.values.file_count | number }}
+              {{ project.values.file_count | number }}
             </td>
             <td>
-              {{project.values.file_size * 1e6 | size}}
+              {{ project.values.file_size * 1e6 | size}}
             </td>
           </tr>
           </tbody>
@@ -77,30 +81,30 @@
                 Downloads by Disease Type
               </h4>
             </div>
-            <table class="table table-striped table-hover table-condensed table-bordered">
+            <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
                 <th data-translate>
                   Disease Type
                 </th>
-                <th>
-                  # of files
+                <th data-translate>
+                  # Requests
                 </th>
-                <th>
+                <th data-translate>
                   File Size
                 </th>
               </tr>
               </thead>
               <tbody>
-              <tr data-ng-repeat="project in byDisease  | orderBy:'values.file_count':true">
-                <th>
-                  {{project.key || '(none specified)'}}
+              <tr data-ng-repeat="project in rsc.byDisease  | orderBy:'values.file_count':true">
+                <th class="truncated-cell">
+                  {{ project.key || '(none specified)'}}
                 </th>
                 <td>
-                  {{project.values.file_count | number }}
+                  {{ project.values.file_count | number }}
                 </td>
                 <td>
-                  {{project.values.file_size * 1e6 | size}}
+                  {{ project.values.file_size * 1e6 | size}}
                 </td>
               </tr>
               </tbody>
@@ -115,30 +119,30 @@
                Downloads by Program
               </h4>
             </div>
-            <table class="table table-striped table-hover table-condensed table-bordered">
+            <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
                 <th data-translate>
                   Program
                 </th>
-                <th>
-                  # of files
+                <th data-translate>
+                  # Requests
                 </th>
-                <th>
+                <th data-translate>
                   File Size
                 </th>
               </tr>
               </thead>
               <tbody>
-              <tr data-ng-repeat="project in byProgram | orderBy:'values.file_count':true">
+              <tr data-ng-repeat="project in rsc.byProgram | orderBy:'values.file_count':true">
                 <th>
-                  {{project.key || '(none specified)'}}
+                  {{ project.key || '(none specified)'}}
                 </th>
                 <td>
-                  {{project.values.file_count | number }}
+                  {{ project.values.file_count | number }}
                 </td>
                 <td>
-                  {{project.values.file_size * 1e6 | size}}
+                  {{ project.values.file_size * 1e6 | size}}
                 </td>
               </tr>
               </tbody>
@@ -155,33 +159,33 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
-          Downloads by Data Type
+            Downloads by Data Type
           </h4>
         </div>
-        <table class="table table-striped table-hover table-condensed table-bordered">
+        <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
           <thead>
           <tr>
             <th data-translate>
               Data Type
             </th>
-            <th>
-              # of files
+            <th data-translate>
+              # Requests
             </th>
-            <th>
+            <th data-translate>
               File Size
             </th>
           </tr>
           </thead>
           <tbody>
-          <tr data-ng-repeat="project in byDataType | orderBy:'values.file_count':true ">
+          <tr data-ng-repeat="project in rsc.byDataType | orderBy:'values.file_count':true ">
             <th>
-              {{project.key}}
+              {{ project.key }}
             </th>
             <td>
-              {{project.values.file_count | number }}
+              {{ project.values.file_count | number }}
             </td>
             <td>
-              {{project.values.file_size * 1e6 | size}}
+              {{ project.values.file_size * 1e6 | size }}
             </td>
           </tr>
           </tbody>
@@ -196,30 +200,30 @@
                Downloads by Data Subtype
               </h4>
             </div>
-            <table class="table table-striped table-hover table-condensed table-bordered">
+            <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
                 <th data-translate>
                   Data Subtype
                 </th>
-                <th>
-                  # of files
+                <th data-translate>
+                  # Requests
                 </th>
-                <th>
+                <th data-translate>
                   File Size
                 </th>
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat='p in bySubtype'>
+              <tr ng-repeat='p in rsc.bySubtype'>
                 <th>
-                  {{p.key}}
+                  {{ p.key }}
                 </th>
                 <td>
-                  {{p.values.file_count | number}}
+                  {{ p.values.file_count | number }}
                 </td>
                 <td>
-                  {{p.values.file_size | size}}
+                  {{ p.values.file_size | size }}
                 </td>
               </tr>
               </tbody>
@@ -234,30 +238,30 @@
             Downloads by Experimental Strategy
               </h4>
             </div>
-            <table class="table table-striped table-hover table-condensed table-bordered">
+            <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
                 <th data-translate>
                   Experimental Strategy
                 </th>
-                <th>
-                  # of files
+                <th data-translate>
+                  # Requests
                 </th>
-                <th>
+                <th data-translate>
                   File Size
                 </th>
               </tr>
               </thead>
               <tbody>
-              <tr data-ng-repeat="project in byStrat | orderBy:'values.file_count':true">
+              <tr data-ng-repeat="project in rsc.byStrat | orderBy:'values.file_count':true">
                 <th>
-                  {{project.key || '(none specified)'}}
+                  {{ project.key || '(none specified)' }}
                 </th>
                 <td>
-                  {{project.values.file_count | number }}
+                  {{ project.values.file_count | number }}
                 </td>
                 <td>
-                  {{project.values.file_size * 1e6 | size}}
+                  {{ project.values.file_size * 1e6 | size }}
                 </td>
               </tr>
               </tbody>
@@ -274,14 +278,14 @@
               Downloads by Data Level
               </h4>
             </div>
-            <table class="table table-striped table-hover table-condensed table-bordered">
+            <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
                 <th data-translate>
                   Data Level
                 </th>
-                <th>
-                  # of files
+                <th data-translate>
+                  # Requests
                 </th>
                 <th>
                   File Size
@@ -312,14 +316,14 @@
                Downloads by Data Access
               </h4>
             </div>
-            <table class="table table-striped table-hover table-condensed table-bordered">
+            <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
                 <th data-translate>
                   Data Access
                 </th>
-                <th>
-                  # of files
+                <th data-translate>
+                  # Requests
                 </th>
                 <th>
                   File Size
@@ -327,15 +331,15 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat='p in byDataAccess'>
+              <tr ng-repeat='p in rsc.byDataAccess'>
                 <th>
-                  {{p.key}}
+                  {{ p.key }}
                 </th>
                 <td>
-                   {{p.values.file_count | number}}
+                   {{ p.values.file_count | number }}
                 </td>
                 <td>
-                  {{p.values.file_size | size}}
+                  {{ p.values.file_size | size }}
                 </td>
               </tr>
               </tbody>
@@ -358,70 +362,67 @@
            Downloads by User Access Type
           </h4>
         </div>
-        <table class="table table-striped table-hover table-condensed table-bordered">
+        <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
           <thead>
           <tr>
             <th data-translate>
               Access Type
             </th>
-            <th>
-              # of files
+            <th data-translate>
+              # Requests
             </th>
-            <th>
+            <th data-translate>
               File Size
             </th>
           </tr>
           </thead>
           <tbody>
-          <tr data-ng-repeat="x in byUserType | orderBy:'values.file_count':true">
+          <tr data-ng-repeat="x in rsc.byUserType | orderBy:'values.file_count':true">
             <th>
-              {{x.key}}
+              {{ x.key }}
             </th>
             <td>
-              {{x.values.file_count | number }}
+              {{ x.values.file_count | number }}
             </td>
             <td>
-              {{x.values.file_size * 1e6 | size}}
+              {{ x.values.file_size * 1e6 | size }}
             </td>
           </tr>
           </tbody>
         </table>
       </div>
-          
         </div>
          <div class="col-sm-6">
-          
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
-
           Downloads by Access Location
           </h4>
         </div>
-        <table class="table table-striped table-hover table-condensed table-bordered">
+        <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
           <thead>
           <tr>
             <th data-translate>
               Access Location
             </th>
-            <th>
-              # of files
+            <th data-translate>
+              # Requests
             </th>
-            <th>
+            <th data-translate>
               File Size
             </th>
           </tr>
           </thead>
           <tbody>
-          <tr data-ng-repeat="x in byLocation | orderBy:'values.file_count':true">
+          <tr data-ng-repeat="x in rsc.byLocation | orderBy:'values.file_count':true">
             <th>
-              {{x.key}}
+              {{ x.key }}
             </th>
             <td>
-              {{x.values.file_count | number }}
+              {{ x.values.file_count | number }}
             </td>
             <td>
-              {{x.values.file_size * 1e6 | size}}
+              {{ x.values.file_size * 1e6 | size }}
             </td>
           </tr>
           </tbody>
@@ -429,7 +430,6 @@
       </div>
         </div>
       </div>
-     
 
     </section>
   </div>

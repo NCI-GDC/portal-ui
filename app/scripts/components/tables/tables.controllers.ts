@@ -242,6 +242,8 @@ module ngApp.components.tables.controllers {
     endpoint: string;
     size: number;
     fields: string[];
+    text: string;
+    expand: string[];
   }
 
   interface IExportTableController {
@@ -284,8 +286,8 @@ module ngApp.components.tables.controllers {
       if (this.$window.URL && this.$window.URL.createObjectURL) {
         var params = {
           filters: filters,
-          fields: fieldsAndExpand.fields.join(),
-          expand: fieldsAndExpand.expand.join(),
+          fields: fieldsAndExpand.fields.concat(this.$scope.fields || []).join(),
+          expand: fieldsAndExpand.expand.concat(this.$scope.expand || []).join(),
           attachment: true,
           format: fileType,
           size: this.$scope.size

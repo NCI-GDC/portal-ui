@@ -6,14 +6,14 @@ angular.module("reports.githut.config",[])
         order = ["Clinical", "Array", "Seq", "SNV", "CNV", "SV", "Exp", "PExp", "Meth", "Other"],
         dataTypesMap = {
                   "Clinical": "Clinical",
-                  "Array": "Raw microarray data",
-                  "Seq": "Raw sequencing data",
-                  "SNV": "Simple nucleotide variation",
-                  "CNV": "Copy number variation",
-                  "SV": "Structural rearrangement",
-                  "Exp": "Gene expression",
-                  "PExp": "Protein expression",
-                  "Meth": "DNA methylation",
+                  "Raw microarray data": "Array",
+                  "Raw sequencing data": "Seq",
+                  "Simple nucleotide variation": "SNV",
+                  "Copy number variation": "CNV" ,
+                  "Structural rearrangement": "SV",
+                  "Gene expression": "Exp",
+                  "Protein expression": "PExp",
+                  "DNA methylation":  "Meth",
                   "Other": "Other"
                   },
         primary_sites = [];
@@ -33,30 +33,40 @@ angular.module("reports.githut.config",[])
         });
       } else {
         a[b.project_id] = {
-          file_size:b.size,
-          project_id:b.project_id,
-          name:b.name,
-          primary_site:b.primary_site,
-          file_count:b.count,
-          colorgroup:"file_count"
+          file_size: b.size,
+          project_id: b.project_id,
+          name: b.disease_type,
+          primary_site: b.primary_site,
+          file_count: b.count,
+          colorgroup: "file_count"
         };
 
-        b.data_types.forEach(function(d){
-          a[b.project_id][d.data_type] = d.count;
-        });
+        if(b.data_types) {
+          b.data_types.forEach((d) => {
+            a[b.project_id][d.data_type] = d.count;
+          });
+        }
       }
-
       return a;
-    },{});
+    }, {});
 
-    var data_types = data.reduce(function(a,b){return a.concat(b.data_types)}, []);
-    var nest = d3.nest().key(function(a){return a.data_type}).entries(data_types);
+    var data_types = data.reduce((result, datum) => {
+                                                      if (datum.data_types) {
+                                                        result = result.concat(datum.data_types);
+                                                      }
+                                                      return result;
+                                                    }, []);
+    var nest = d3.nest().key((a) => {
+                  if (a) {
+                    return a.data_type;
+                  }
+                }).entries(data_types);
 
-    var types = nest.map(function(a){
+    var types = nest.map((a) => {
       return {
         id: a.key,
-        tool_tip_text: dataTypesMap[a.key],
-        display_name: [a.key],
+        tool_tip_text: a.key,
+        display_name: [dataTypesMap[a.key]],
         colorgroup: "file_count",
         scale: "ordinal",
         dimensional: true,
@@ -73,30 +83,30 @@ angular.module("reports.githut.config",[])
     ReportsGithutConfig.superhead = {
       start: types[types.length - 1].id,
       end: types[0].id,
-      text: "File count per data type"
+      text: "# Requests per data type"
     };
 
-    ReportsGithutConfig.columns = columns.map(function(c){return c.id});
-    ReportsGithutConfig.scale_map = columns.reduce(function(a, b) {
+    ReportsGithutConfig.columns = columns.map((c) => { return c.id; });
+    ReportsGithutConfig.scale_map = columns.reduce((a, b) => {
       a[b.id] = b.scale || "ordinal";
       return a;
-    },{});
+    }, {});
 
-    ReportsGithutConfig.color_group_map = columns.reduce(function(a,b){
+    ReportsGithutConfig.color_group_map = columns.reduce((a,b) => {
       a[b.id] = b.colorgroup;
       return a;
-    },{});
+    }, {});
 
-    ReportsGithutConfig.column_map = columns.reduce(function(a,b){
+    ReportsGithutConfig.column_map = columns.reduce((a,b) => {
       a[b.id] = b.display_name || ["Untitled"];
       return a;
-    },{});
+    }, {});
 
-    ReportsGithutConfig.dimensions = columns.filter(function(c){return c.dimensional}).map(function(c){return c.id});
+    ReportsGithutConfig.dimensions = _.map(_.filter(columns, (column) => { return column.dimensional; }), (column) => { return column.id; });
 
     return {
-      data:d3.values(aggregations),
-      config:ReportsGithutConfig
+      data: d3.values(aggregations),
+      config: ReportsGithutConfig
     }
   }
 })
@@ -109,7 +119,7 @@ angular.module("reports.githut.config",[])
   },
   {
     id:"file_count",
-    display_name:["File","Count"],
+    display_name:["# Requests"],
     scale:"ordinal",
     dimensional:true,
     colorgroup:"file_count"

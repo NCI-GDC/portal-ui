@@ -27,7 +27,7 @@ module ngApp.components.tables.directives {
         }
 
         var defaults = _.cloneDeep($scope.headings);
-        
+
         $scope.headings = $scope.saved.length ? 
           _.map($scope.saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
           $scope.headings;
@@ -52,9 +52,11 @@ module ngApp.components.tables.directives {
     return {
       restrict: "EA",
       scope: {
+        text: "@",
         size: "@",
         headings: "=",
-        endpoint: "@"
+        endpoint: "@",
+        expand: "="
       },
       replace: true,
       templateUrl: "components/tables/templates/export-table.html",

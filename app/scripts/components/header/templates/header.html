@@ -16,21 +16,31 @@
       <ul class="nav navbar-nav">
         <li data-ng-class="{ active: hc.$state.includes('projects') }"
             id="header-projects">
-          <a ui-sref="projects.table"><i class="fa fa-folder-o"></i> Projects</a>
+          <a ui-sref="projects.table"><i class="fa fa-folder-o"></i>
+            <span class="hidden-sm" data-translate>Projects</span>
+          </a>
         </li>
         <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
             id="header-data">
-          <a ui-sref="search.summary"><i class="fa fa-database"></i> Data</a>
+          <a ui-sref="search.summary"><i class="fa fa-database"></i>
+            <span class="hidden-sm" data-translate>Data</span>
+          </a>
         </li>
         <li ui-sref-active="active" id="header-annotations">
-          <a ui-sref="annotations"><i class="fa fa-align-left"></i> Annotations</a>
+          <a ui-sref="annotations"><i class="fa fa-align-left"></i> 
+            <span class="hidden-sm" data-translate>Annotations</span>
+          </a>
         </li>
         <li ui-sref-active="active" id="header-reports">
-          <a ui-sref="reports"><i class="fa fa-cube"></i> Reports</a>
+          <a ui-sref="reports"><i class="fa fa-cube"></i> 
+            <span class="hidden-sm" data-translate>Reports</span>
+          </a>
         </li>
         <li>
           <a target="_blank" href="https://beta-edits-gdc.oicr.on.ca/gdc-data-portal-users-guide">
-            <i style="text-indent: 0" class="fa fa-question"></i> Help</a>
+            <i style="text-indent: 0; text-align:center" class="fa fa-question"></i>
+              <span class="hidden-sm" data-translate>Help</span> 
+          </a>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -43,17 +53,14 @@
         </li>
         <li>
           <a quick-search>
-            <i class="fa fa-search stock-icon hidden-xs"></i>
-            <div class="visible-xs">
-              <i class="fa fa-search stock-icon"></i>
-              <span data-translate>Quick Search</span>
-            </div>
+            <i class="fa fa-search stock-icon"></i>
+            <span class="hidden-md hidden-sm" data-translate>Quick Search</span>
           </a>
         </li>
         <li data-ng-if="!hc.UserService.currentUser" id="header-login">
           <a auth-button data-redirect="https://gdc.nci.nih.gov">
             <i class="fa fa-sign-in"></i>
-            <span data-translate>Login</span>
+            <span class="hidden-md hidden-sm" data-translate>Login</span>
           </a>
         </li>
         <li class="MyProjects" data-ng-if="hc.UserService.currentUser">
@@ -102,7 +109,7 @@
         <li ui-sref-active="active" class="nav-cart">
           <a ui-sref="cart">
             <i class="fa fa-shopping-cart"></i>
-            <span data-translate>Cart</span>
+            <span class="hidden-md hidden-sm" data-translate>Cart</span>
             <span class="label label-primary">{{ hc.getNumCartItems() }}</span>
           </a>
         </li>

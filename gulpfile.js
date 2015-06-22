@@ -136,6 +136,7 @@ gulp.task("config", function () {
       content = content.replace(/__VERSION__/g, packageJSON.version);
       content = content.replace(/__COMMIT__/g, stdout.replace(/[\r\n]/, ""));
       content = content.replace(/__API__/, env.api);
+      content = content.replace(/__PRODUCTION__/, production);
 
       // Ensures path is in place, as I've had occurances where it may not be.
       mkdirp("dist/js", function (err) {

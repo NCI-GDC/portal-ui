@@ -6,5 +6,6 @@ angular.module("ngApp.config", [])
     "commitHash": "__COMMIT__",
     "api": "__API__",
     "supportedAPI": "1",
-    "tag": "https://github.com/NCI-GDC/portal-ui/releases/tag/__VERSION__"
+    "tag": "https://github.com/NCI-GDC/portal-ui/releases/tag/__VERSION__",
+    "production": __PRODUCTION__
   });

@@ -36,8 +36,11 @@ import IProjectsService = ngApp.projects.services.IProjectsService;
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    $locationProvider: ng.ILocationProvider,
                    RestangularProvider: restangular.IProvider,
-                   config: IGDCConfig
+                   config: IGDCConfig,
+                   $compileProvider: ng.ICompileService
                    ) {
+
+  $compileProvider.debugInfoEnabled(!config.production);
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/projects");
   RestangularProvider.setBaseUrl(config.api);

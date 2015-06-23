@@ -253,7 +253,7 @@ module ngApp.components.tables.controllers {
     /* @ngInject */
     constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig,
                 private $modal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
-                private $window: ng.IWindowService, private UserService: IUserService) {}
+                private $window: ng.IWindowService, private UserService: IUserService, private $timeout: ng.ITimeoutService) {}
 
     exportTable(fileType: string): void {
       var projectsKeys = {
@@ -290,37 +290,49 @@ module ngApp.components.tables.controllers {
           format: fileType,
           size: this.$scope.size
         };
-        modalInstance = this.$modal.open({
-          templateUrl: "components/tables/templates/export-modal.html",
-          controller: "ExportTableModalController",
-          controllerAs: "etmc",
-          backdrop: true,
-          keyboard: true,
-          animation: false,
-          size: "lg"
-        });
 
-        modalInstance.result.then((data) => {
-          if (data.cancel) {
-            if (abort) {
-              abort.resolve();
-            } else {
-              this.LocationService.setHref(url);
+        var modalOpenPromise = this.$timeout(() => {
+          modalInstance = this.$modal.open({
+            templateUrl: "components/tables/templates/export-modal.html",
+            controller: "ExportTableModalController",
+            controllerAs: "etmc",
+            backdrop: true,
+            keyboard: true,
+            animation: false,
+            size: "lg"
+          });
+
+          modalInstance.result.then((data) => {
+            if (data.cancel) {
+              if (abort) {
+                abort.resolve();
+              } else {
+                this.LocationService.setHref(url);
+              }
             }
-          }
-        });
+          });
+        }, 500);
 
         this.Restangular.all(this.$scope.endpoint)
         .withHttpConfig({
           timeout: abort.promise,
           responseType: "blob"
         })
-        .get('', params).then((file) => {
-          modalInstance.close({cancel: true});
+        .get('', params)
+        .then((file) => {
+          if (modalOpenPromise) {
+            this.$timeout.cancel(modalOpenPromise);
+          }
           this.$window.saveAs(file.data, this.$scope.endpoint + "." +
                               this.$window.moment().format() + "." +
                               fileType.toLowerCase());
+        })
+        .finally(() => {
+          if (modalInstance) {
+            modalInstance.close({ cancel: true });
+          }
         });
+
       } else {
         this.LocationService.setHref(this.config.api + "/" +
                                      this.$scope.endpoint +

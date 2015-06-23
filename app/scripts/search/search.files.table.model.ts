@@ -107,6 +107,36 @@ module ngApp.search.models {
           return row.annotations && row.annotations.length ? getAnnotations(row, $scope) : 0;
         },
         tdClassName: 'truncated-cell text-right'
+      }, {
+        name: "Data Subtype",
+        id: "data_subtype",
+        td: (row, $scope) => row.data_subtype && $scope.$filter("humanify")(row.data_subtype),
+        sortable: false,
+        hidden: true
+      }, {
+        name: "Experimental Strategy",
+        id: "experimental_strategy",
+        td: (row, $scope) => row.experimental_strategy && $scope.$filter("humanify")(row.experimental_strategy),
+        sortable: false,
+        hidden: true
+      }, {
+        name: "Platform",
+        id: "platform",
+        td: (row, $scope) => row.platform && $scope.$filter("humanify")(row.platform),
+        sortable: false,
+        hidden: true
+      }, {
+        name: "Data Submitter",
+        id: "center.name",
+        td: (row, $scope) => row.center && $scope.$filter("humanify")(row.center.name),
+        sortable: false,
+        hidden: true
+      }, {
+        name: "Tags",
+        id: "tags",
+        td: row => (row.tags && row.tags.join(", ")) || "--",
+        sortable: false,
+        hidden: true
       }],
     fields: [
       "access",
@@ -120,7 +150,10 @@ module ngApp.search.models {
       "platform",
       "annotations.annotation_id",
       "related_files.file_id",
-      "archive.archive_id"
+      "archive.archive_id",
+      "experimental_strategy",
+      "center.name",
+      "tags"
     ],
     expand: [
       "participants",

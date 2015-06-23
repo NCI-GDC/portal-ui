@@ -72,7 +72,6 @@ module ngApp.search.models {
             td: (row, $scope) => row.clinical && $scope.$filter("humanify")(row.clinical.gender),
             sortable: true
         }, {
-
             name: "Files",
             id: "files",
             td: (row, $scope) => {
@@ -162,17 +161,73 @@ module ngApp.search.models {
             return row.annotations && row.annotations.length ? getAnnotations(row, $scope.$filter) : 0;
           },
           tdClassName: 'truncated-cell text-right'
+        }, {
+            name: 'Program',
+            id: 'project.program.name',
+            td: (row, $scope) => row.project && $scope.$filter("humanify")(row.project.program.name),
+            sortable: false,
+            hidden: true
+        }, {
+            name: 'Disease Type',
+            id: 'project.disease_type',
+            td: (row, $scope) => row.project && $scope.$filter("humanify")(row.project.disease_type),
+            sortable: false,
+            hidden: true
+        }, {
+            name: 'Age at diagnosis',
+            id: 'clinical.age_at_diagnosis',
+            td: (row, $scope) => (row.clinical && row.clinical.age_at_diagnosis) || "--",
+            sortable: false,
+            hidden: true
+        }, {
+            name: 'Days to death',
+            id: 'clinical.days_to_death',
+            td: (row, $scope) => (row.clinical && $scope.$filter("number")(row.clinical.days_to_death, 0)) || "--",
+            sortable: false,
+            hidden: true
+        }, {
+            name: 'Vital Status',
+            id: 'clinical.vital_status',
+            td: (row, $scope) => row.clinical && $scope.$filter("humanify")(row.clinical.vital_status),
+            sortable: false,
+            hidden: true
+        }, {
+            name: 'Year of diagnosis',
+            id: 'clinical.year_of_diagnosis',
+            td: (row, $scope) => (row.clinical && row.clinical.year_of_diagnosis) || "--",
+            sortable: false,
+            hidden: true
+        }, {
+            name: 'ICD-10',
+            id: 'icd_10',
+            td: (row, $scope) => (row.clinical && row.clinical.icd_10) || "--",
+            sortable: false,
+            hidden: true
+        }, {
+            name: 'Ethnicity',
+            id: 'clinical.ethnicity',
+            td: (row, $scope) => row.clinical && $scope.$filter("humanify")(row.clinical.ethnicity),
+            sortable: false,
+            hidden: true
+        }, {
+            name: 'Race',
+            id: 'clinical.race',
+            td: (row, $scope) => row.clinical && $scope.$filter("humanify")(row.clinical.race),
+            sortable: false,
+            hidden: true
         }],
         fields: [
           "participant_id",
           "annotations.annotation_id",
-          "clinical.gender",
           "project.project_id",
           "project.name",
           "project.primary_site",
+          "project.program.name",
+          "project.disease_type",
         ],
         expand: [
-          "summary.data_types"
+          "summary.data_types",
+          "clinical"
         ]
     };
     angular.module("search.table.participants.model", [])

@@ -9,7 +9,8 @@ module ngApp.components.ui.countCard.directives {
       scope: {
         title: "@",
         icon: "@",
-        data: "="
+        data: "=",
+        sref: "@"
       }
     };
   }

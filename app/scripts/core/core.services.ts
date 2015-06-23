@@ -63,9 +63,65 @@ module ngApp.core.services {
 
   }
 
+  var dataNames = [
+    'Clinical',
+    'Raw microarray data',
+    'Raw sequencing data',
+    'Simple nucleotide variation',
+    'Copy number variation',
+    'Structural rearrangement',
+    'Gene expression',
+    'Protein expression',
+    'DNA methylation',
+    'Other'
+  ];
+
+  var expNames = [
+    "Genotyping Array",
+    "Gene Expression Array",
+    "Exon Array",
+    "miRNA Expression Array",
+    "Methylation Array",
+    "CGH Array",
+    "MSI-Mono-Dinucleotide Assay",
+    "WGS",
+    "WGA",
+    "WXS",
+    "RNA-Seq",
+    "miRNA-Seq",
+    "ncRNA-Seq",
+    "WCS",
+    "CLONE",
+    "POOLCLONE",
+    "AMPLICON",
+    "CLONEEND",
+    "FINISHING",
+    "ChIP-Seq",
+    "MNase-Seq",
+    "DNase-Hypersensitivity",
+    "Bisulfite-Seq",
+    "EST",
+    "FL-cDNA",
+    "CTS",
+    "MRE-Seq",
+    "MeDIP-Seq",
+    "MBD-Seq",
+    "Tn-Seq",
+    "FAIRE-seq",
+    "SELEX",
+    "RIP-Seq",
+    "ChIA-PET",
+    "DNA-Seq",
+    "Total RNA-Seq",
+    "VALIDATION",
+    "OTHER"
+  ];
+
   angular
       .module("core.services", [
         "gettext"
       ])
+      .value("DataTypeNames", dataNames)
+      .value("ExperimentalStrategyNames", expNames)
       .service("CoreService", CoreService);
 }

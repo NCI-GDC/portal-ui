@@ -83,6 +83,8 @@ module ngApp.cart.controllers {
         textFilter: "size",
         label: "file",
         sortKey: "doc_count",
+        displayKey: "key",
+        sortData: true,
         defaultText: "project",
         pluralDefaultText: "projects",
       };
@@ -92,6 +94,8 @@ module ngApp.cart.controllers {
         textFilter: "size",
         label: "file",
         sortKey: "doc_count",
+        displayKey: "key",
+        sortData: true,
         defaultText: "authorization level",
         pluralDefaultText: "authorization levels"
       };

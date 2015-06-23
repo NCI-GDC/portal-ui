@@ -4,7 +4,7 @@
       {{ title | translate }}
     </h4>
     <div class="pull-right" data-ng-show="data.length">
-      <i class="fa fa-eraser" data-ng-show="activeFilters"
+      <i class="fa fa-eraser" data-ng-show="activeFilters && config.filterKey"
          data-ng-click="sc.clearFilters()" data-ng-keypress="sc.clearFilters()"></i>
       <i class="fa fa-pie-chart" data-ng-show="mode === 'table'"
          data-ng-click="mode = 'graph'"></i>
@@ -14,7 +14,7 @@
   </div>
 
   <div data-ng-if="!data.length" class="no-results" data-translate>
-    No Results in Query
+    {{ config.noResultsText || 'No Results in Query' }}
   </div>
 
   <pie-chart data="data" height="{{ height }}" config="config" data-title="{{ title }}"
@@ -26,17 +26,29 @@
         <tr>
           <th></th>
           <th data-translate>Files</th>
-          <th data-translate>File Size</th>
+          <th data-translate data-ng-if="config.showParticipant">Cases</th>
+          <th data-translate data-ng-if="!config.hideFileSize">File Size</th>
         </tr>
       </thead>
       <tbody>
-        <tr data-ng-repeat="item in tableData track by $index" data-ng-click="sc.addFilters(item)">
+        <tr data-ng-repeat="item in tableData track by $index">
           <th scope="row" class="truncated-cell">
             <div class="item-color" style="background-color: {{ item.color }};"></div>
-            {{ item.key | humanify }}
+            {{ item[config.displayKey] | humanify }}
           </th>
-          <td class="text-right">{{ item.doc_count | number }}</td>
-          <td class="text-right">{{ item.file_size.value | size }}</td>
+          <td class="text-right">
+            <a data-ng-if="item[config.sortKey]" data-ng-click="sc.addFilters(item)">
+              {{ item[config.sortKey] | number }}
+            </a>
+            <span data-ng-if="!item[config.sortKey]">0</span>
+          </td>
+          <td class="text-right" data-ng-if="config.showParticipant">
+            <a data-ng-if="item.participant_count" data-ng-click="sc.addFilters(item, 'search.participants')">
+              {{ item.participant_count | number }}
+            </a>
+            <span data-ng-if="!item.participant_count">0</span>
+          </td>
+          <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.file_size.value | size }}</td>
         </tr>
       </tbody>
     </table>

@@ -99,55 +99,10 @@ module ngApp.components.tables.directives {
     }
   }
 
-  function EntityPageCountsTable(): ng.IDirective {
-    return {
-      restrict: "EA",
-      scope: {
-        type: "@",
-        parentFieldName: "@",
-        parentId: "@",
-        data: "=",
-        showParticipants: "="
-      },
-      replace: true,
-      templateUrl: "components/tables/templates/entity-page-counts-table.html",
-      controller: function($scope,$element){
-                    $scope.keyName = "data_type";
-                    $scope.tableId = "available-data-table";
-                    if($scope.type === "experimental-strategy") {
-                      $scope.keyName= "experimental_strategy";
-                      $scope.tableId = "experimental-strategy-table";
-                    }
-                    $scope.names = ['Clinical',
-                            'Raw microarray data',
-                            'Raw sequencing data',
-                            'Simple nucleotide variation',
-                            'Copy number variation',
-                            'Structural rearrangement',
-                            'Gene expression',
-                            'Protein expression',
-                            'DNA methylation',
-                            'Other'];
-
-                    if($scope.type === "experimental-strategy") {
-                      $scope.names = _.uniq($scope.data.map(function(d){return d.experimental_strategy}));
-                    }
-
-        $scope.dataTransformed = _.reduce($scope.data, function(result, dataType) {
-        result[dataType[$scope.keyName]] = {"file_count": dataType['file_count'],
-                                                     "participant_count": dataType['participant_count']
-                                                    };
-        return result;
-      }, {});
-      }
-    }
-  }
-
   angular.module("tables.directives", ["tables.controllers"])
       .directive("exportTable", ExportTable)
       .directive("sortTable", SortTable)
       .directive("gdcTable", GDCTable)
-      .directive("arrangeColumns", ArrangeColumns)
-      .directive("entityPageCountsTable", EntityPageCountsTable);
+      .directive("arrangeColumns", ArrangeColumns);
 }
 

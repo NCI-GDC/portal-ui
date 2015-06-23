@@ -92,8 +92,10 @@ module ngApp.search.services {
       this.projectIdChartConfig = {
         filterKey: "participants.project.project_id",
         sortKey: "doc_count",
+        displayKey: "key",
         defaultText: "project",
         pluralDefaultText: "projects",
+        sortData: true,
         filters: {
           "default": {
             params: {
@@ -114,8 +116,10 @@ module ngApp.search.services {
       this.primarySiteChartConfig = {
         filterKey: "participants.project.primary_site",
         sortKey: "doc_count",
+        displayKey: "key",
         defaultText: "primary site",
         pluralDefaultText: "primary sites",
+        sortData: true,
         filters: {
           "default": {
             params: {
@@ -136,8 +140,10 @@ module ngApp.search.services {
       this.accessChartConfig = {
         filterKey: "files.access",
         sortKey: "doc_count",
+        displayKey: "key",
         defaultText: "access level",
         pluralDefaultText: "access levels",
+        sortData: true,
         filters: {
           open: {
             params: {
@@ -164,8 +170,10 @@ module ngApp.search.services {
       this.dataTypeChartConfig = {
         filterKey: "files.data_type",
         sortKey: "doc_count",
+        displayKey: "key",
         defaultText: "data type",
         pluralDefaultText: "data types",
+        sortData: true,
         filters: {
           "default": {
             params: {
@@ -186,8 +194,10 @@ module ngApp.search.services {
       this.dataFormatChartConfig = {
         filterKey: "files.data_format",
         sortKey: "doc_count",
+        displayKey: "key",
         defaultText: "data format",
         pluralDefaultText: "data formats",
+        sortData: true,
         filters: {
           "default": {
             params: {
@@ -208,8 +218,10 @@ module ngApp.search.services {
       this.expStratChartConfig = {
         filterKey: "files.experimental_strategy",
         sortKey: "doc_count",
+        displayKey: "key",
         defaultText: "experimental strategy",
         pluralDefaultText: "experimental strategies",
+        sortData: true,
         filters: {
           "default": {
             params: {

@@ -6,24 +6,32 @@ module ngApp.components.summaryCard.controllers {
   class SummaryCardController implements ISummaryCardController {
 
     /* @ngInject */
-    constructor(private $scope, private LocationService: ILocationService) {}
+    constructor(private $scope, private LocationService: ILocationService,
+                private $state: ng.ui.IStateService) {}
 
-    addFilters(item: any) {
+    addFilters(item: any, state: string) {
       var params;
       var config = this.$scope.config;
 
-      if (!config.filters || (!config.filters[item.key] &&
+      if (!config.filters || (!config.filters[item[config.displayKey]] &&
           !config.filters["default"])) {
         return;
       }
 
-      if (config.filters[item.key]) {
-        var filters = config.filters[item.key];
+      if (config.filters[item[config.displayKey]]) {
+        var filters = config.filters[item[config.displayKey]];
         params = filters.params;
       } else {
         params = {
-          filters: config.filters["default"].params.filters(item.key)
+          filters: config.filters["default"].params.filters(item[config.displayKey])
         };
+      }
+
+      if (config.state) {
+        this.$state.go(state || config.state.name, {
+          filters: params.filters
+        }, {inherit: false});
+        return;
       }
 
       var filters = this.LocationService.filters();

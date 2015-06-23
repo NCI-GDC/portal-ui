@@ -114,8 +114,110 @@ module ngApp.projects.controllers {
   class ProjectController implements IProjectController {
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService,
-                private AnnotationsService: IAnnotationsService) {
+                private AnnotationsService: IAnnotationsService,
+                private ExperimentalStrategyNames,
+                private DataTypeNames,
+                private $filter: ng.ui.IFilterService) {
       CoreService.setPageTitle("Project " + project.project_id);
+
+      this.experimentalStrategies = _.reduce(ExperimentalStrategyNames.slice(), function(result, name) {
+        var strat = _.find(project.summary.experimental_strategies, (item) => {
+          return item.experimental_strategy.toLowerCase() === name.toLowerCase();
+        });
+
+        if (strat) {
+          result.push(strat);
+        }
+
+        return result;
+      }, []);
+
+      this.dataTypes = _.reduce(DataTypeNames.slice(), function(result, name) {
+        var type = _.find(project.summary.data_types, (item) => {
+          return item.data_type.toLowerCase() === name.toLowerCase();
+        });
+
+        if (type) {
+          result.push(type);
+        } else {
+          result.push({
+            data_type: name,
+            file_count: 0,
+            participant_count: 0
+          });
+        }
+
+        return result;
+      }, []);
+
+      this.expStratConfig = {
+        sortKey: "file_count",
+        showParticipant: true,
+        displayKey: "experimental_strategy",
+        defaultText: "experimental strategy",
+        pluralDefaultText: "experimental strategies",
+        hideFileSize: true,
+        noResultsText: "No files with Experimental Strategies",
+        state: {
+          name: "search.files"
+        },
+        filters: {
+          "default": {
+            params: {
+              filters: function(value) {
+                return $filter("makeFilter")([
+                  {
+                    name: "participants.project.project_id",
+                    value: [
+                      project.project_id
+                    ]
+                  },
+                  {
+                    name: "files.experimental_strategy",
+                    value: [
+                      value
+                    ]
+                  }
+                ], true);
+              }
+            }
+          }
+        }
+      };
+
+      this.dataTypesConfig = {
+        sortKey: "file_count",
+        showParticipant: true,
+        displayKey: "data_type",
+        defaultText: "data type",
+        hideFileSize: true,
+        pluralDefaultText: "data types",
+        state: {
+          name: "search.files"
+        },
+        filters: {
+          "default": {
+            params: {
+              filters: function(value) {
+                return $filter("makeFilter")([
+                  {
+                    name: "participants.project.project_id",
+                    value: [
+                      project.project_id
+                    ]
+                  },
+                  {
+                    name: "files.data_type",
+                    value: [
+                      value
+                    ]
+                  }
+                ], true);
+              }
+            }
+          }
+        }
+      };
 
       AnnotationsService.getAnnotations({
         filters: {
@@ -132,7 +234,7 @@ module ngApp.projects.controllers {
         },
         size: 0
       }).then((data) => {
-        this.project.annotations = data.pagination.total;
+        this.project.annotations = data;
       });
     }
   }

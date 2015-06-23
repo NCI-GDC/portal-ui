@@ -18,7 +18,10 @@ module ngApp.components.summaryCard.directives {
         $scope.mode = $scope.mode || "graph";
 
         function checkFilters() {
-          if (LocationService.path().startsWith('/query')) return;
+          if (LocationService.path().startsWith('/query')) {
+            return;
+          }
+
           var filters = LocationService.filters();
           $scope.activeFilters = _.some(filters.content, (filter) => {
             return filter.content && filter.content.field === config.filterKey;
@@ -34,17 +37,19 @@ module ngApp.components.summaryCard.directives {
         $scope.$watch("data", function(newVal){
           if (newVal) {
             // Ensure pie chart data is always sorted highest to lowest
-            newVal.sort(function(a, b) {
-              if (a[config.sortKey] > b[config.sortKey]) {
-                return -1;
-              }
+            if (config.sortData) {
+              newVal.sort(function(a, b) {
+                if (a[config.sortKey] > b[config.sortKey]) {
+                  return -1;
+                }
 
-              if (b[config.sortKey] > a[config.sortKey]) {
-                return 1;
-              }
+                if (b[config.sortKey] > a[config.sortKey]) {
+                  return 1;
+                }
 
-              return 0;
-            });
+                return 0;
+              });
+            }
 
             var color = d3.scale.category20();
             _.forEach(newVal, (item, index) => {

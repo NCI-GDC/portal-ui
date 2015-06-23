@@ -4,17 +4,21 @@
       <tr>
         <th></th>
         <th data-translate>Files</th>
-        <th data-translate>File Size</th>
+        <th data-translate data-ng-if="config.showParticipant">Cases</th>
+        <th data-translate data-ng-if="!config.hideFileSize">File Size</th>
       </tr>
     </thead>
     <tbody>
       <tr data-ng-repeat="item in displayedData track by $index">
         <th scope="row">
           <div class="chart-color" style="background-color: {{ item.color }};"></div>
-          {{ item.data.key | humanify }}
+          {{ item.data[config.displayKey] | humanify }}
         </th>
-        <td class="text-right">{{ item.data.doc_count | number }}</td>
-        <td class="text-right">{{ item.data.file_size.value | size }}</td>
+        <td class="text-right">{{ item.data[config.sortKey] | number }}</td>
+        <td class="text-right" data-ng-if="config.showParticipant">
+          {{ item.data.participant_count | number }}
+        </td>
+        <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.data.file_size.value | size }}</td>
       </tr>
     </tbody>
   </table>

@@ -10,7 +10,8 @@ module ngApp.components.charts {
   }
 
   /* @ngInject */
-  function PieChart($window: IGDCWindowService, LocationService: ILocationService): ng.IDirective {
+  function PieChart($window: IGDCWindowService, LocationService: ILocationService,
+                    $state: ng.ui.IStateService): ng.IDirective {
     return {
       restrict: "EA",
       replace: true,
@@ -114,9 +115,13 @@ module ngApp.components.charts {
               .on("click", setFilters)
               .on("mouseover.text", function(d) {
                 $scope.showDefault = false;
-                $scope.hoverKey = d.data.key;
-                $scope.hoverCount = d.data.doc_count;
-                $scope.hoverSize = d.data.file_size.value;
+                $scope.hoverKey = d.data[config.displayKey];
+                $scope.hoverCount = d.data[config.sortKey];
+
+                if (!config.hideFileSize) {
+                  $scope.hoverSize = d.data.file_size.value;
+                }
+
                 $scope.$apply();
               })
               .on("mouseout.text", function() {
@@ -140,18 +145,25 @@ module ngApp.components.charts {
             if (LocationService.path().startsWith('/query')) return;
             var params;
 
-            if (!config.filters || (!config.filters[d.data.key] &&
+            if (!config.filters || (!config.filters[d.data[config.displayKey]] &&
                 !config.filters["default"])) {
               return;
             }
 
-            if (config.filters[d.data.key]) {
-              var filters = config.filters[d.data.key];
+            if (config.filters[d.data[config.displayKey]]) {
+              var filters = config.filters[d.data[config.displayKey]];
               params = filters.params;
             } else {
               params = {
-                filters: config.filters["default"].params.filters(d.data.key)
+                filters: config.filters["default"].params.filters(d.data[config.displayKey])
               };
+            }
+
+            if (config.state) {
+              $state.go(config.state.name, {
+                filters: params.filters
+              }, {inherit: false});
+              return;
             }
 
             var filters = LocationService.filters();
@@ -199,7 +211,8 @@ module ngApp.components.charts {
       restrict: "A",
       replace: true,
       scope: {
-        data: "="
+        data: "=",
+        config: "="
       },
       templateUrl: "components/charts/templates/chart-legend.html",
       link: function($scope, elem) {

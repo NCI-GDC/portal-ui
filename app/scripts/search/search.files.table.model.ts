@@ -18,7 +18,7 @@ module ngApp.search.models {
     rowId: 'file_id',
     headings: [
       {
-        th: '<div add-to-cart-all files="data" paging="paging"></div>',
+        th: '<div add-to-cart-all files="data" data-size="{{paging.total}}"></div>',
         name: 'Add to Cart',
         id: "file_actions",
         td: row => '<span add-to-cart-single file="row" style="margin-right:5px"></span>' +

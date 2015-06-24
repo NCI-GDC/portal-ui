@@ -52,8 +52,9 @@ module ngApp.cart.directives {
     return {
       restrict: "AE",
       scope:{
-        paging: "=",
         files: "=",
+        filter: "@", // defaults to use location if undefined
+        size: "@",
         removeAllInSearchResult: "&",
         addAllOnly: "@"
       },
@@ -71,11 +72,11 @@ module ngApp.cart.directives {
                            $timeout: ng.ITimeoutService,
                            notify: INotifyService) {
         $scope.CartService = CartService;
-
         $scope.removeAll  = function() {
           // Query ES using the current filter and the file uuids in the Cart
           // If an id is in the result, then it is both in the Cart and in the current Search query
-          var filters = LocationService.filters();
+
+          var filters = $scope.filter || LocationService.filters();
           var size: number = CartService.getFiles().length;
           if (!filters.content) {
             filters.op = "and";
@@ -103,9 +104,10 @@ module ngApp.cart.directives {
         };
 
         $scope.addAll = function() {
-          var filters = LocationService.filters();
+          var filters = $scope.filter || LocationService.filters();
+          console.log(filters);
           filters = UserService.addMyProjectsFilter(filters, "participants.project.project_id");
-          if ($scope.paging.total >= CartService.getCartVacancySize()) {
+          if ($scope.size >= CartService.getCartVacancySize()) {
             CartService.sizeWarning();
             return;
           }
@@ -113,12 +115,14 @@ module ngApp.cart.directives {
           var addingMsgPromise = $timeout(() => {
             notify({
               message: "",
-              messageTemplate: "<span data-translate>Adding <strong>" + $scope.paging.total + "</strong> files to cart</span>",
+              messageTemplate: "<span data-translate>Adding <strong>" + $scope.size + "</strong> files to cart</span>",
               container: "#notification",
               classes: "alert-info"
             });
           }, 1000);
 
+          console.log($scope.size);
+          console.log(filters);
           FilesService.getFiles({
             fields: ["access",
                      "file_name",
@@ -133,7 +137,7 @@ module ngApp.cart.directives {
                      ],
             filters: filters,
             sort: "",
-            size: $scope.paging.total,
+            size: $scope.size,
             from: 0
           }).then((data) => {
             this.CartService.addFiles(data.hits, false);
@@ -148,8 +152,8 @@ module ngApp.cart.directives {
   /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/  
   function RemoveUnauthorizedFilesButton() {
     return {
-      restrict:"AE",
-      templateUrl:"cart/templates/remove-unauthorized-files.button.html",
+      restrict: "AE",
+      templateUrl: "cart/templates/remove-unauthorized-files.button.html",
       replace: true,
       controller:function($scope,$element,UserService,CartService,FilesService){
          //todo

@@ -63,7 +63,7 @@ module ngApp.components.ui.string {
 
   class Titlefy {
     constructor() {
-      return function(s){
+      return function(s) {
         s = ( s === undefined || s === null ) ? '' : s;
         return s.toString().toLowerCase().replace( /\b([a-z])/g, function(ch) {
           return ch.toUpperCase();
@@ -80,9 +80,27 @@ module ngApp.components.ui.string {
     }
   }
 
+  class AgeDisplay {
+    constructor(gettextCatalog: any) {
+      return function(ageInDays: number) {
+        if (ageInDays < 365) {
+          var daysText = gettextCatalog.getPlural(ageInDays, "d", "ds");
+          return ageInDays + daysText;
+        } else {
+          var ageInYears = Math.floor(ageInDays / 365);
+          var remainderDays = Math.ceil(ageInDays % 365);
+          var yearsText = gettextCatalog.getPlural(ageInYears, "y", "ys");
+          var daysText = gettextCatalog.getPlural(remainderDays, "d", "ds");
+          return ageInYears + yearsText + (remainderDays ? " " + remainderDays + daysText : "");
+        }
+      };
+    }
+  }
+
   angular.module("string.filters", [])
       .filter("ellipsicate", Ellipsicate)
       .filter("titlefy", Titlefy)
       .filter("spaceReplace", SpaceReplace)
-      .filter("humanify", Humanify);
+      .filter("humanify", Humanify)
+      .filter("ageDisplay", AgeDisplay);
 }

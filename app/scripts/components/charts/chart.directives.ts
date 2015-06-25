@@ -293,7 +293,7 @@ module ngApp.components.charts {
         }, 150));
 
         $scope.$watch("data", (n, o) => {
-          if (n !== o) {
+          if (n !== o || sortedData.length === 0) {
             if (n.length != 0) {
               var noMissing = _.reject(n, (datum) => { return datum.key === "_missing"; });
               sortedData = _.sortBy(noMissing, (n) => { return n.key; });
@@ -307,6 +307,15 @@ module ngApp.components.charts {
                                   });
               }
               drawBars();
+            } else {
+              var chart = d3.select(element.find(".chart-container > svg")[0]);
+              chart.selectAll("g").remove();
+
+              chart.append("g").append("text")
+              .attr("x", 20)
+              .attr("y", 20)
+              .text("no data to graph");
+
             }
           }
         });
@@ -354,8 +363,8 @@ module ngApp.components.charts {
                             return d.key + ": " + d.doc_count;
                           });
 
-          var bars =elements
-               .enter().append("g")
+          var bars = elements
+              .enter().append("g")
               .attr("transform", (d) => { return "translate(" + x(d.key) + ",0)"; })
               .append("rect")
               .attr("y", (d) => { return y(d.doc_count); })

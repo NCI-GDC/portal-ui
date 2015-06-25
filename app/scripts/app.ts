@@ -155,7 +155,6 @@ angular
       "restangular",
       "gettext",
       "ngTagsInput",
-      "ui.utils.masks",
       "ui.sortable",
 
       "ngApp.core",

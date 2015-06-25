@@ -28,7 +28,6 @@
     "ng-tags-input": "2.3.0",
     "restangular": "1.5.1",
     "ng-table": "0.5.4",
-    "angular-input-masks": "~1.5.1",
     "ng-sortable": "~1.2.2"
   },
   "resolutions": {

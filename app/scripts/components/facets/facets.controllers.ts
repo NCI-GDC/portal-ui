@@ -232,6 +232,21 @@ module ngApp.components.facets.controllers {
                 private FacetService: IFacetService) {
 
       $scope.data = [];
+      $scope.dataUnitConverted = [];
+      $scope.lowerBoundOriginalDays = null;
+      $scope.upperBoundOriginalDays = null;
+      $scope.unitsMap = [
+                          {
+                            "label": "days",
+                            "conversionDivisor": 1,
+                          }, {
+                            "label": "years",
+                            "conversionDivisor": 365,
+                          }
+                        ];
+
+      $scope.selectedUnit = $scope.unitsMap[0];
+
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
 
@@ -239,35 +254,82 @@ module ngApp.components.facets.controllers {
         if ((n === o && ($scope.min !== undefined || $scope.max !== undefined)) || n === undefined) {
           return;
         }
-        $scope.data = n.buckets;
-        $scope.min = _.min(n.buckets, (bucket) => {
-          return bucket.key === '_missing' ? Number.POSITIVE_INFINITY : parseInt(bucket.key, 10);
-        }).key;
-        if ($scope.min === '_missing') {
-          $scope.min = null;
-        }
-        $scope.max = _.max(n.buckets, (bucket) => {
-          return bucket.key === '_missing' ? Number.NEGATIVE_INFINITY : parseInt(bucket.key, 10);
-        }).key;
-        if ($scope.max === '_missing') {
-          $scope.max = null;
-        }
+
+        $scope.data = _.reject(n.buckets, (bucket) => { return bucket.key === "_missing"; });
+        $scope.dataUnitConverted = this.unitConversion($scope.data);
+        this.getMaxMin($scope.dataUnitConverted);
       });
 
+      var _this = this;
+      $scope.unitClicked = function() {
+        $scope.dataUnitConverted = _this.unitConversion($scope.data);
+        _this.getMaxMin($scope.dataUnitConverted);
+        _this.$scope.lowerBound = _this.$scope.lowerBoundOriginalDays ? Math.floor(_this.$scope.lowerBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
+        _this.$scope.upperBound = _this.$scope.upperBoundOriginalDays ? Math.ceil(_this.$scope.upperBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
+      };
+
+    }
+
+    unitConversion(data: Object[]): Object[] {
+      return _.reduce(data, (result, datum) => {
+        var newKey = Math.floor(datum.key/this.$scope.selectedUnit.conversionDivisor);
+        var summed = _.find(result, _.matchesProperty('key', newKey));
+        if (summed) {
+          summed.doc_count = summed.doc_count + datum.doc_count;
+        } else {
+          result.push({
+            "key": newKey,
+            "doc_count": datum.doc_count
+          });
+        }
+        return result;
+      }, []);
+    }
+
+    getMaxMin(data: Object[]): void {
+      this.$scope.min = _.min(data, (bucket) => {
+          return bucket.key === '_missing' ? Number.POSITIVE_INFINITY : parseInt(bucket.key, 10);
+        }).key;
+        if (this.$scope.min === '_missing') {
+          this.$scope.min = null;
+        }
+        this.$scope.max = _.max(data, (bucket) => {
+          return bucket.key === '_missing' ? Number.NEGATIVE_INFINITY : parseInt(bucket.key, 10);
+        }).key;
+        if (this.$scope.max === '_missing') {
+          this.$scope.max = null;
+        }
     }
 
     refresh(): void {
       this.activesWithOperator = this.FacetService.getActivesWithOperator(this.$scope.field);
       if (_.has(this.activesWithOperator, '>=')) {
-        this.$scope.lowerBound = this.activesWithOperator['>='];
+        this.$scope.lowerBound = Math.floor(this.activesWithOperator['>='] / this.$scope.selectedUnit.conversionDivisor);
       } else {
         this.$scope.lowerBound = null;
       }
       if (_.has(this.activesWithOperator, '<=')) {
-        this.$scope.upperBound = this.activesWithOperator['<='];
+        this.$scope.upperBound = Math.ceil(this.activesWithOperator['<='] / this.$scope.selectedUnit.conversionDivisor);
       } else {
         this.$scope.upperBound = null;
       }
+    }
+
+    inputChanged() {
+      var numRegex = /^\d+$/;
+      if (this.$scope.lowerBound) {
+        if(!numRegex.test(this.$scope.lowerBound)) {
+          this.$scope.lowerBound = 0;
+        }
+      }
+
+      if (this.$scope.upperBound) {
+        if(!numRegex.test(this.$scope.upperBound)) {
+          this.$scope.upperBound = 0;
+        }
+      }
+      this.$scope.lowerBoundOriginalDays = this.$scope.lowerBound * this.$scope.selectedUnit.conversionDivisor;
+      this.$scope.upperBoundOriginalDays = this.$scope.upperBound * this.$scope.selectedUnit.conversionDivisor;
     }
 
     setBounds() {
@@ -275,7 +337,7 @@ module ngApp.components.facets.controllers {
         if (_.has(this.activesWithOperator, '>=')) {
           this.FacetService.removeTerm(this.$scope.field, null, ">=");
         }
-        this.FacetService.addTerm(this.$scope.field, this.$scope.lowerBound, ">=");
+        this.FacetService.addTerm(this.$scope.field, this.$scope.lowerBound * this.$scope.selectedUnit.conversionDivisor, ">=");
       } else {
         this.FacetService.removeTerm(this.$scope.field, null, ">=");
       }
@@ -283,12 +345,11 @@ module ngApp.components.facets.controllers {
         if (_.has(this.activesWithOperator, '<=')) {
           this.FacetService.removeTerm(this.$scope.field, null, "<=");
         }
-        this.FacetService.addTerm(this.$scope.field, this.$scope.upperBound, "<=");
+        this.FacetService.addTerm(this.$scope.field, this.$scope.upperBound * this.$scope.selectedUnit.conversionDivisor, "<=");
       } else {
         this.FacetService.removeTerm(this.$scope.field, null, "<=");
       }
     }
-
   }
 
   interface IDateFacetController {

@@ -33,6 +33,7 @@ module ngApp.components.facets.models {
     max: number;
     min: number;
     data: any;
+    unitsMap: Object[];
   }
 
   export interface IDateFacetScope extends ng.IScope {

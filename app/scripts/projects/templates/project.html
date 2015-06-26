@@ -63,9 +63,9 @@
                     {{ [{ name: 'project.project_id', value: prc.project.project_id }] | makeFilter }} })"></count-card>
             <count-card data-ng-if="prc.project.annotations.pagination.total === 1" title="Annotations" icon="fa-edit"
                         data="prc.project.annotations.pagination.total | number"
-                        data-sref="annotation({ annotationId: prc.project.annotations.hits[0].annotation_id })"></count-card>
+                        data-sref="annotation({ annotationId: '{{ prc.project.annotations.hits[0].annotation_id }}' })"></count-card>
             <count-card data-ng-if="!prc.project.annotations.pagination.total" title="Annotations" icon="fa-edit"
-                        data="prc.project.annotations.pagination.total | number"></count-card>
+                        data="0"></count-card>
           </div>
         </div>
       </div>
@@ -75,14 +75,14 @@
       <div class="col-md-6">
         <summary-card data-data="prc.experimentalStrategies"
                       height="250"
-                      data-mode="table" 
+                      data-mode="table"
                       data-config="prc.expStratConfig"
                       data-title="Experimental Strategy"></summary-card>
       </div>
       <div class="col-md-6">
         <summary-card data-data="prc.dataTypes"
                       height="250"
-                      data-mode="table" 
+                      data-mode="table"
                       data-config="prc.dataTypesConfig"
                       data-title="Available Data"></summary-card>
       </div>

@@ -59,9 +59,13 @@
         <div class="row">
           <div class="col-sm-12">
             <count-card title="Files" icon="fa-file-o" data="pc.participant.files.length | number"
+                        data-ng-if="pc.participant.files.length > 1"
                         data-sref="search.files({ 'filters':
                   {{ [{ name: 'participants.participant_id', value: pc.participant.participant_id}] | makeFilter }}
                 })"></count-card>
+            <count-card title="Files" icon="fa-file-o" data="pc.participant.files.length | number"
+                        data-ng-if="pc.participant.files.length === 1"
+                        data-sref="file({ fileId: '{{ pc.participant.files[0].file_id }}' })"></count-card>
           </div>
         </div>
         <div class="row">
@@ -72,9 +76,9 @@
                     {{ [{ name: 'annotation_id', value: pc.annotationIds }] | makeFilter }} })"></count-card>
             <count-card data-ng-if="pc.annotationIds.length === 1" title="Annotations" icon="fa-edit"
                         data="pc.annotationIds.length | number"
-                        data-sref="annotation({ annotationId: {{ pc.annotationIds }} })"></count-card>
+                        data-sref="annotation({ annotationId: '{{ pc.annotationIds[0] }}' })"></count-card>
             <count-card data-ng-if="!pc.annotationIds.length" title="Annotations" icon="fa-edit"
-                        data="pc.annotationIds.length | number"></count-card>
+                        data="0"></count-card>
           </div>
         </div>
       </div>
@@ -84,14 +88,14 @@
       <div class="col-md-6">
         <summary-card data-data="pc.experimentalStrategies"
                       height="250"
-                      data-mode="table" 
+                      data-mode="table"
                       data-config="pc.expStratConfig"
                       data-title="Experimental Strategy"></summary-card>
       </div>
       <div class="col-md-6">
         <summary-card data-data="pc.dataTypes"
                       height="250"
-                      data-mode="table" 
+                      data-mode="table"
                       data-config="pc.dataTypesConfig"
                       data-title="Available Data"></summary-card>
       </div>

@@ -31,6 +31,7 @@ function exceptionDecorator($provide: ng.auto.IProvideService) {
         $log.debug("ERROR", post);
         var Restangular: restangular.IService = $injector.get("Restangular");
         Restangular.all('errors').post(post);
+        $window.alert(exception.message + ". Error report sent.");
         $delegate(exception, cause);
       };
     }

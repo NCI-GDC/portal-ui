@@ -7,6 +7,7 @@ declare module ngApp {
     commitLink: string;
     commitHash: string;
     api: string;
+    auth: string;
     apiVersion: string;
     apiCommitHash: string;
     apiCommitLink: string;
@@ -174,6 +175,11 @@ angular
     .factory('RestFullResponse', function(Restangular: restangular.IService) {
       return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
         RestangularConfigurer.setFullResponse(true);
+      });
+    })
+    .factory('AuthRestangular', function(Restangular: restangular.IService, config: IGDCConfig) {
+      return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
+        RestangularConfigurer.setBaseUrl(config.auth);
       });
     })
     .run(appRun);

@@ -13,6 +13,7 @@ var mkdirp = require("mkdirp");
 
 var env = {
   api: process.env.GDC_API || "http://localhost:5000",
+  auth: process.env.GDC_AUTH || "https://gdc.nci.nih.gov",
   base: process.env.GDC_BASE || "/"
 };
 
@@ -136,6 +137,7 @@ gulp.task("config", function () {
       content = content.replace(/__VERSION__/g, packageJSON.version);
       content = content.replace(/__COMMIT__/g, stdout.replace(/[\r\n]/, ""));
       content = content.replace(/__API__/, env.api);
+      content = content.replace(/__AUTH__/, env.auth);
       content = content.replace(/__PRODUCTION__/, production);
 
       // Ensures path is in place, as I've had occurances where it may not be.

@@ -27,8 +27,6 @@ module ngApp.files.controllers {
 
       CoreService.setPageTitle("File", file.file_name);
 
-      this.file.related_ids = _.pluck(this.file.related_files, 'file_id');
-
       if (this.file.archive) {
         this.FilesService.getFiles({
           fields: [
@@ -49,6 +47,12 @@ module ngApp.files.controllers {
           entity.annotations = _.pluck(entity.annotations, "annotation_id");
         }
       });
+
+      //insert cases into related_files for checking isUserProject when downloading
+      _.forEach(file.related_files, (related_file) => {
+        related_file['cases'] = file.cases;
+      });
+
     }
 
     isInCart(): boolean {

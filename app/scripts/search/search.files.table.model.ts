@@ -25,6 +25,12 @@ module ngApp.search.models {
                     '<a  data-tooltip="Download" data-tooltip-popup-delay=1000 class="btn btn-primary" download-button files="row">' +
                     '<i class="fa fa-download"></i></a>'
       }, {
+        name: "File UUID",
+        id: "file_id",
+        td: row => row.file_id,
+        sortable: true,
+        hidden: true
+      }, {
         name: "My Projects",
         id: "my_projects",
         td: (row, $scope) => {

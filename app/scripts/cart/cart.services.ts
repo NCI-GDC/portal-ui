@@ -177,7 +177,7 @@ module ngApp.cart.services {
 
       if (alreadyIn.length) {
         message += this.gettextCatalog.getPlural(alreadyIn.length,
-                   "<br />The file was already in cart, not added.",
+                   added.length === 0 ? "<br />The file was already in cart, not added." : "<strong>" + _.get(_.first(added), "file_name") + "</strong> already in cart, not added",
                    "<br /><strong>" + alreadyIn.length + "</strong> files were already in cart, not added");
       }
 

@@ -21,7 +21,7 @@ module ngApp.search.models {
           {name: 'participants.participant_id', value: row.participant_id},
           {name: 'files.data_type', value: dataType}
         ];
-        return withFilter(getDataType(row.summary.data_types, dataType), fs, $filter);
+        return withFilter(getDataType(row.summary ? row.summary.data_types : [], dataType), fs, $filter);
     }
 
     var searchParticipantsModel = {
@@ -69,14 +69,14 @@ module ngApp.search.models {
         }, {
             name: "Gender",
             id: "clinical.gender",
-            td: (row, $scope) => row.clinical && $scope.$filter("humanify")(row.clinical.gender),
+            td: (row, $scope) => row.clinical && $scope.$filter("humanify")(row.clinical.gender) || '--',
             sortable: true
         }, {
             name: "Files",
             id: "files",
             td: (row, $scope) => {
                 var fs = [{name: 'participants.participant_id', value: row.participant_id}]
-                var sum = _.sum(_.pluck(row.summary.data_types, 'file_count'))
+                var sum = _.sum(_.pluck(row.summary ? row.summary.data_types : [], 'file_count'))
                 return withFilter(sum, fs, $scope.$filter);
             },
             tdClassName: 'text-right'

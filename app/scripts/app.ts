@@ -177,10 +177,19 @@ angular
         RestangularConfigurer.setFullResponse(true);
       });
     })
-    .factory('AuthRestangular', function(Restangular: restangular.IService, config: IGDCConfig) {
+    .run(appRun)
+    .factory('AuthRestangular', function(Restangular: restangular.IService, config: IGDCConfig, CoreService: ICoreService) {
       return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
-        RestangularConfigurer.setBaseUrl(config.auth);
-      });
+          RestangularConfigurer.setBaseUrl(config.auth)})
+        .addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
+        // Ajax
+        CoreService.xhrDone();
+        if (response.headers('content-disposition')) {
+          return deferred.resolve({ 'data': data, 'headers': response.headers()});
+        } else {
+          return deferred.resolve(data);
+        }
+        ;
+        });
     })
-    .run(appRun);
 

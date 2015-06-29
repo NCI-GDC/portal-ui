@@ -3,6 +3,10 @@ describe('Header:', function () {
   // Initialization of the AngularJS application before each test case
   beforeEach(module('ngApp.components', 'ngApp.cart', 'ngProgressLite', 'ui.bootstrap'));
 
+  beforeEach(module(function ($provide) {
+     $provide.value('AuthRestangular', {});
+  }));
+
   describe('Controller:', function () {
     beforeEach(inject(function ($window) {
       // Clear localStorage system to prevent oddities from tests.

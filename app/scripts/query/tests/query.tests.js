@@ -7,6 +7,10 @@ describe('Query:', function () {
       $provide.value('RestFullResponse', {});
   }));
 
+  beforeEach(module(function ($provide) {
+      $provide.value('AuthRestangular', {});
+  }));
+
   describe('Controller:', function () {
     it('should have participants', inject(function ($rootScope, $controller) {
       var scope = $rootScope.$new();

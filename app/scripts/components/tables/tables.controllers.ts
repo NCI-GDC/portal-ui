@@ -290,6 +290,8 @@ module ngApp.components.tables.controllers {
           expand: fieldsAndExpand.expand.concat(this.$scope.expand || []).join(),
           attachment: true,
           format: fileType,
+          flatten: true,
+          pretty: true,
           size: this.$scope.size
         };
 

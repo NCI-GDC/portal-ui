@@ -27,9 +27,10 @@ module ngApp.search.models {
       }, {
         name: "File UUID",
         id: "file_id",
-        td: row => row.file_id,
+        td: row => '<a href="files/' + row.file_id + '">' + row.file_id + '</a>',
         sortable: true,
-        hidden: true
+        hidden: true,
+        tdClassName: 'truncated-cell'
       }, {
         name: "My Projects",
         id: "my_projects",

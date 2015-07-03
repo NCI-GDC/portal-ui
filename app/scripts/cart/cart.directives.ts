@@ -197,18 +197,8 @@ module ngApp.cart.directives {
             }
           }
 
-          //FIXME clean up
           function download() {
-            var file_ids = []
-            _.forEach(authorizedInCart, (f) => {
-
-              if (f.hasOwnProperty('related_ids') && f.related_ids) {
-                file_ids = file_ids.concat(f.related_ids)
-              }
-              file_ids.push(f.file_id)
-            });
-
-            FilesService.downloadFiles(file_ids);
+            FilesService.downloadFiles(_.pluck(authorizedInCart, "file_id"));
           }
 
           function showLoginModal() {

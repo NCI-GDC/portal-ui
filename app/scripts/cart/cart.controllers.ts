@@ -179,15 +179,7 @@ module ngApp.cart.controllers {
     getManifest(selectedOnly: boolean = false) {
       var authorizedInCart = this.CartService.getAuthorizedFiles();
 
-      var file_ids = [];
-      _.forEach(authorizedInCart, (f) => {
-        if (f.hasOwnProperty('related_ids') && f.related_ids) {
-          file_ids = file_ids.concat(f.related_ids)
-        }
-        file_ids.push(f.file_id)
-      });
-
-      this.FilesService.downloadManifest(file_ids);
+      this.FilesService.downloadManifest(_.pluck(authorizedInCart, "file_id"));
     }
 
   }

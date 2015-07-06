@@ -6,6 +6,7 @@ module ngApp.components.summaryCard.directives {
       restrict: "E",
       templateUrl: "components/summary-card/templates/summary-card.html",
       controller: "SummaryCardController as sc",
+      replace: true,
       scope: {
         data: "=",
         height: "@",

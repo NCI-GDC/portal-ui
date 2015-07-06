@@ -157,6 +157,7 @@ module ngApp.projects.controllers {
         defaultText: "experimental strategy",
         pluralDefaultText: "experimental strategies",
         hideFileSize: true,
+        tableTitle: "Case and File Counts by Experimental Strategy",
         noResultsText: "No files with Experimental Strategies",
         state: {
           name: "search.files"
@@ -191,6 +192,7 @@ module ngApp.projects.controllers {
         displayKey: "data_type",
         defaultText: "data type",
         hideFileSize: true,
+        tableTitle: "Case and File Counts by Data Type",
         pluralDefaultText: "data types",
         state: {
           name: "search.files"

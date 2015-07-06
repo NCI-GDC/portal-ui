@@ -1,7 +1,11 @@
 <div class="panel panel-default summary-card">
   <div class="panel-heading clearfix">
-    <h4 class="panel-title pull-left" title="{{ title | translate }}">
+    <h4 data-ng-if="!config.tableTitle || mode === 'graph'" class="panel-title pull-left" title="{{ title | translate }}">
       {{ title | translate }}
+    </h4>
+    <h4 data-ng-if="config.tableTitle && mode === 'table'" class="panel-title pull-left"
+        title="{{ config.tableTitle | translate }}">
+      {{ config.tableTitle | translate }}
     </h4>
     <div class="pull-right" data-ng-show="data.length">
       <i class="fa fa-eraser" data-ng-show="activeFilters && config.filterKey"

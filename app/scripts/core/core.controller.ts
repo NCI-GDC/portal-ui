@@ -2,6 +2,7 @@ module ngApp.core.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import INotifyService = ng.cgNotify.INotifyService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import ILocationService = ngApp.components.location.services.ILocationService;
 
   export interface ICoreController {
     showWarning: boolean;
@@ -74,15 +75,15 @@ module ngApp.core.controllers {
   }
 
   angular
-      .module("core.controller", ["ngCookies", "user.services"])
+      .module("core.controller", ["ngCookies", "user.services", "location.services"])
       .controller("WarningController", WarningController)
-      .directive('authButton', function(){
+      .directive('authButton', function(LocationService: ILocationService, $window: ng.IWindowService){
         return {
           restrict:'A',
           scope: {
             redirect: "@"
           },
-          controller:function($scope,$element,$window){
+          controller:function($scope,$element){
             $element.on('click',function(){
               var authQuery;
 
@@ -92,8 +93,22 @@ module ngApp.core.controllers {
                 authQuery = "?next=" + $window.location.pathname;
               }
 
-              $window.location = $scope.redirect + authQuery;
+              if (!_.isEmpty(LocationService.search())) {
+                authQuery += "?";
+                _.each(LocationService.search(), (v, k) => {
+                  authQuery += k + "=";
 
+                  if (_.isObject(angular.fromJson(v))) {
+                    authQuery += $window.encodeURIComponent(v);
+                  } else {
+                    authQuery += v;
+                  }
+
+                  authQuery += "&";
+                });
+              }
+
+              $window.location = $scope.redirect + authQuery;
             });
           }
         }

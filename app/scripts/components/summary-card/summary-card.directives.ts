@@ -38,6 +38,7 @@ module ngApp.components.summaryCard.directives {
         $scope.$watch("data", function(newVal){
           if (newVal) {
             // Ensure pie chart data is always sorted highest to lowest
+            // for tables
             if (config.sortData) {
               newVal.sort(function(a, b) {
                 if (a[config.sortKey] > b[config.sortKey]) {

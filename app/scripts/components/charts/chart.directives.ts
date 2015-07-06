@@ -64,6 +64,26 @@ module ngApp.components.charts {
           var data = $scope.data;
           var config = $scope.config;
 
+          if (!data || !data.length) {
+            return;
+          }
+
+          data = data.slice();
+
+          $scope.prunedData = data = _.filter(data.sort(function(a, b) {
+            if (a[config.sortKey] > b[config.sortKey]) {
+              return -1;
+            }
+
+            if (b[config.sortKey] > a[config.sortKey]) {
+              return 1;
+            }
+
+            return 0;
+          }), (datum) => {
+            return datum[config.sortKey] !== 0;
+          });
+
           var color = d3.scale.category20();
           var outerRadius = height / 2 + 10;
 
@@ -76,11 +96,6 @@ module ngApp.components.charts {
           var arc = d3.svg.arc()
               .padRadius(outerRadius)
               .innerRadius(0);
-          var data = $scope.data;
-
-          if (!data || !data.length) {
-            return;
-          }
 
           var svg = d3.select(element.find(".chart-container")[0]).append("svg")
               .attr("width", width)

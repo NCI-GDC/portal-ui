@@ -3,15 +3,15 @@
     <div class="col-lg-12 col-md-12 chart-container"></div>
   </div>
   <div chart-legend class="chart-legend" data="legendData" config="config"
-       data-ng-if="data.length <= legendLimit"></div>
+       data-ng-if="prunedData.length <= legendLimit"></div>
 
   <div class="panel-footer text-center pie-chart-footer">
     <span data-ng-if="showDefault">
-      {{ data.length | number }}
-      <span data-ng-if="data.length === 1">
+      {{ prunedData.length | number }}
+      <span data-ng-if="prunedData.length === 1">
         {{ config.defaultText | translate | humanify }}
       </span>
-      <span data-ng-if="data.length > 1">
+      <span data-ng-if="prunedData.length > 1">
         {{ config.pluralDefaultText | translate | humanify }}
       </span>
     </span>

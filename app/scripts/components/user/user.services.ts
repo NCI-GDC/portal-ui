@@ -27,7 +27,7 @@ module ngApp.components.user.services {
                 private $log: ng.ILogService) {}
 
     login(): void {
-      this.AuthRestangular.all("projects")
+      this.AuthRestangular.all("user")
       .withHttpConfig({
         withCredentials: true
       })

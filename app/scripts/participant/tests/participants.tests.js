@@ -5,6 +5,10 @@ describe('Participants:', function () {
   // Initialization of the AngularJS application before each test case
   beforeEach(module('ngApp.participants', 'core.services', 'ngProgressLite'));
 
+  beforeEach(module(function ($provide) {
+     $provide.value('AuthRestangular', {});
+  }));
+
   // Injection of dependencies, $http will be mocked with $httpBackend
   beforeEach(inject(function ($httpBackend) {
     httpBackend = $httpBackend;

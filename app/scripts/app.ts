@@ -7,6 +7,7 @@ declare module ngApp {
     commitLink: string;
     commitHash: string;
     api: string;
+    auth: string;
     apiVersion: string;
     apiCommitHash: string;
     apiCommitLink: string;
@@ -176,5 +177,19 @@ angular
         RestangularConfigurer.setFullResponse(true);
       });
     })
-    .run(appRun);
+    .run(appRun)
+    .factory('AuthRestangular', function(Restangular: restangular.IService, config: IGDCConfig, CoreService: ICoreService) {
+      return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
+          RestangularConfigurer.setBaseUrl(config.auth)})
+        .addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
+        // Ajax
+        CoreService.xhrDone();
+        if (response.headers('content-disposition')) {
+          return deferred.resolve({ 'data': data, 'headers': response.headers()});
+        } else {
+          return deferred.resolve(data);
+        }
+        ;
+        });
+    })
 

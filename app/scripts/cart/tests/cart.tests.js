@@ -9,6 +9,10 @@ describe('Cart:', function () {
       $provide.value('RestFullResponse', {});
   }));
 
+  beforeEach(module(function ($provide) {
+      $provide.value('AuthRestangular', {});
+  }));
+
   // Injection of dependencies, $http will be mocked with $httpBackend
   beforeEach(inject(function ($httpBackend) {
     httpBackend = $httpBackend;

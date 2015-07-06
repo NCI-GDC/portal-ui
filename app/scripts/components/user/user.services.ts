@@ -19,7 +19,7 @@ module ngApp.components.user.services {
     currentUser: IUser;
 
     /* @ngInject */
-    constructor(private Restangular: restangular.IService,
+    constructor(private AuthRestangular: restangular.IService,
                 private $rootScope: ng.IRootScopeService,
                 private LocationService: ILocationService,
                 private $cookies: ng.cookies.ICookiesService,
@@ -27,7 +27,7 @@ module ngApp.components.user.services {
                 private $log: ng.ILogService) {}
 
     login(): void {
-      this.Restangular.all("auth/login")
+      this.AuthRestangular.all("user")
       .withHttpConfig({
         withCredentials: true
       })
@@ -49,7 +49,7 @@ module ngApp.components.user.services {
       // that will work with IE9 when auth tokens are required.
       // TODO: Make this code reusable.
       if (this.$window.URL && this.$window.URL.createObjectURL) {
-        this.Restangular.all("auth/token")
+        this.AuthRestangular.all("token")
         .withHttpConfig({
           responseType: "blob",
           withCredentials: true

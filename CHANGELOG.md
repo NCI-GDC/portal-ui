@@ -1,3 +1,29 @@
+<a name"0.2.13-spr6"></a>
+### 0.2.13-spr6 (2015-07-06)
+
+
+#### Bug Fixes
+
+* **cart:** pie charts updated to summary card ([aff638b9](https://github.com/NCI-GDC/portal-ui/commit/aff638b9))
+* **export-tbl:** close modal properly ([a72a1964](https://github.com/NCI-GDC/portal-ui/commit/a72a1964), closes [OICR-955](https://jira.opensciencedatacloud.org/browse/OICR-955))
+* **gql:**
+  * auto-insert [ if missing ([75d6b415](https://github.com/NCI-GDC/portal-ui/commit/75d6b415), closes [OICR-925](https://jira.opensciencedatacloud.org/browse/OICR-925))
+  * mouse selects correct item ([da127155](https://github.com/NCI-GDC/portal-ui/commit/da127155))
+* **participant:** correct sref to 1 annotation ([a936822d](https://github.com/NCI-GDC/portal-ui/commit/a936822d))
+* **search:** Maintain bolded case in matched terms ([8c7e146f](https://github.com/NCI-GDC/portal-ui/commit/8c7e146f))
+* **summary-card:** needs graph for some reason ([8f0e30c1](https://github.com/NCI-GDC/portal-ui/commit/8f0e30c1))
+
+
+#### Features
+
+* **case:** add cart button ([43f8e825](https://github.com/NCI-GDC/portal-ui/commit/43f8e825), closes [OICR-965](https://jira.opensciencedatacloud.org/browse/OICR-965))
+* **export-tables:** flatten, discard parent keys ([35b74bb2](https://github.com/NCI-GDC/portal-ui/commit/35b74bb2), closes [OICR-990](https://jira.opensciencedatacloud.org/browse/OICR-990))
+* **gql:** adds scroll to dropdown ([29f98823](https://github.com/NCI-GDC/portal-ui/commit/29f98823), closes [OICR-987](https://jira.opensciencedatacloud.org/browse/OICR-987))
+* **login:** 	- Add Restangular service for auth 	- Use Auth Restangular for token and login ([9c00533f](https://github.com/NCI-GDC/portal-ui/commit/9c00533f))
+* **range-facets:** display barchart ontop of range facets ([1e1af03b](https://github.com/NCI-GDC/portal-ui/commit/1e1af03b), closes [OICR-853](https://jira.opensciencedatacloud.org/browse/OICR-853))
+* **reports:** hook up reports ([9b9c2dda](https://github.com/NCI-GDC/portal-ui/commit/9b9c2dda), closes [OICR-891](https://jira.opensciencedatacloud.org/browse/OICR-891))
+
+
 <a name"0.2.13-spr4"></a>
 ### 0.2.13-spr4 (2015-06-12)
 

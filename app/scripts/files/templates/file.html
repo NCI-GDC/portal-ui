@@ -4,12 +4,12 @@
       <i class="fa fa-file-o"></i>
       {{ ::fc.file.file_id }}
       <span class="btn-group pull-right" style="margin-top: .3em">
-        <button type="button" class="btn btn-primary" data-ng-click="fc.handleCartButton()">
+        <button id="cart-button" type="button" class="btn btn-primary" data-ng-click="fc.handleCartButton()">
           <i class="fa fa-shopping-cart"></i>
           <span data-ng-if="fc.isInCart(fc.file.file_id)" data-translate>Remove from Cart</span>
           <span data-ng-if="!fc.isInCart(fc.file.file_id)" data-translate>Add to Cart</span>
         </button>
-        <a data-download-button class="btn btn-primary" data-files=fc.file>
+        <a id="download-button" data-download-button class="btn btn-primary" data-files=fc.file>
           <i class="fa fa-cloud-download"></i> Download
         </a>
       </span>
@@ -140,7 +140,7 @@
               <h4 class="list-group-item-heading">No participants found.</h4>
             </div>
 
-            <table id="participants-table" class="table table-striped table-hover table-condensed table-bordered"
+            <table id="associated-cases-biospecimen-table" class="table table-striped table-hover table-condensed table-bordered"
                    data-ng-if="fc.file.associated_entities.length">
               <thead>
               <tr>

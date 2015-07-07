@@ -45,18 +45,21 @@
   <section class="row items-pane" data-ng-if="cc.files.length">
     <div class="col-xs-12 button-row">
         <a type="button"
-                class="btn btn-primary"
-                data-ng-click="cc.getManifest(true)">
+           class="btn btn-primary"
+           data-ng-click="cc.getManifest(true)"
+           id="manifest-button">
           <i class="fa fa-file-code-o"></i>
           <span data-translate>Manifest for Fast Download Tool</span>
         </a>
         <a type="button"
-                download-button-all-cart
-                class="btn btn-primary">
+           download-button-all-cart
+           id="download-all-button"
+           class="btn btn-primary">
           <i class="fa fa-cloud-download"></i> <span data-translate>Download Cart (web browser)</span>
         </a>
         <button type="button"
                 class="btn btn-danger"
+                id="clear-button"
                 data-ng-click="cc.removeAll()">
           <i class="fa fa-remove"></i>
           <span data-translate>Clear Cart</span>

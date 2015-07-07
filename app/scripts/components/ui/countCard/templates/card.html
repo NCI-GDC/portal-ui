@@ -1,10 +1,10 @@
-<div class="panel panel-default CountCard">
+<div class="panel panel-default CountCard" id="{{title | spaceReplace:'-' | lowercase}}-count-card">
   <div class="row">
     <div class="col-xs-10 col-sm-8">
       <div class="CountCard-title">{{ title | translate }}</div>
       <div class="CountCard-data" data-ng-if="!sref">{{ data }}</div>
       <div class="CountCard-data" data-ng-if="sref">
-        <a data-ui-sref="{{ sref }}">
+        <a id="{{title | spaceReplace:'-' | lowercase }}-count-link" data-ui-sref="{{ sref }}">
           {{ data }}
         </a>
       </div>

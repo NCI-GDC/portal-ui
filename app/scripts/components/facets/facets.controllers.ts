@@ -235,17 +235,10 @@ module ngApp.components.facets.controllers {
       $scope.dataUnitConverted = [];
       $scope.lowerBoundOriginalDays = null;
       $scope.upperBoundOriginalDays = null;
-      $scope.unitsMap = [
-                          {
-                            "label": "days",
-                            "conversionDivisor": 1,
-                          }, {
-                            "label": "years",
-                            "conversionDivisor": 365,
-                          }
-                        ];
 
-      $scope.selectedUnit = $scope.unitsMap[0];
+      if($scope.unitsMap) {
+        $scope.selectedUnit = $scope.unitsMap[0];
+      }
 
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
@@ -271,19 +264,23 @@ module ngApp.components.facets.controllers {
     }
 
     unitConversion(data: Object[]): Object[] {
-      return _.reduce(data, (result, datum) => {
-        var newKey = Math.floor(datum.key/this.$scope.selectedUnit.conversionDivisor);
-        var summed = _.find(result, _.matchesProperty('key', newKey));
-        if (summed) {
-          summed.doc_count = summed.doc_count + datum.doc_count;
-        } else {
-          result.push({
-            "key": newKey,
-            "doc_count": datum.doc_count
-          });
-        }
-        return result;
-      }, []);
+      if(this.$scope.unitsMap) {
+        return _.reduce(data, (result, datum) => {
+          var newKey = Math.floor(datum.key/this.$scope.selectedUnit.conversionDivisor);
+          var summed = _.find(result, _.matchesProperty('key', newKey));
+          if (summed) {
+            summed.doc_count = summed.doc_count + datum.doc_count;
+          } else {
+            result.push({
+              "key": newKey,
+              "doc_count": datum.doc_count
+            });
+          }
+          return result;
+        }, []);
+      } else {
+        return data;
+      }
     }
 
     getMaxMin(data: Object[]): void {

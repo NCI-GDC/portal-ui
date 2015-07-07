@@ -9,7 +9,8 @@
     {{ title | translate }}
   </h4>
   <div data-ng-show="!rfc.collapsed">
-      <div class="radio-inline" data-ng-repeat="unitMap in unitsMap">
+    <div class="radio-inline"
+         data-ng-repeat="unitMap in unitsMap">
         <label class="">
           <input type="radio"
                  name={{field}}

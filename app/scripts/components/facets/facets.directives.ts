@@ -79,6 +79,7 @@ module ngApp.components.facets.directives {
         facet: "=",
         title: "@",
         field: "@",
+        unitsMap: "="
       },
       replace: true,
       templateUrl: "components/facets/templates/range-facet.html",

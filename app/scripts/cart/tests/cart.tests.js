@@ -32,13 +32,13 @@ describe('Cart:', function () {
           file_id: "AAA",
           file_size: 20,
           file_url: "urlA",
-          participantId: []
+          caseId: []
         },
         {
           file_id: "BBB",
           file_size: 10,
           file_url: "urlB",
-          participantId: []
+          caseId: []
         }
       ];
 
@@ -58,13 +58,13 @@ describe('Cart:', function () {
       file_id: "AAA",
       file_size: 20,
       file_url: "urlA",
-      participantId: []
+      caseId: []
     };
     var fileB = {
       file_id: "BBB",
       file_size: 10,
       file_url: "urlB",
-      participantId: []
+      caseId: []
     };
 
     beforeEach(inject(function ($window) {

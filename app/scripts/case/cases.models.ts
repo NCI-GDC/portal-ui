@@ -1,4 +1,4 @@
-module ngApp.participants.models {
+module ngApp.cases.models {
   import ICollection = ngApp.core.models.ICollection;
   import IAnnotation = ngApp.annotations.models.IAnnotation;
   import IFile = ngApp.files.models.IFile;
@@ -6,12 +6,12 @@ module ngApp.participants.models {
   import IAdmin = ngApp.core.models.IAdmin;
   import IEntity = ngApp.core.models.IEntity;
 
-  export interface IParticipants extends ICollection {
-    hits: IParticipant[];
+  export interface ICases extends ICollection {
+    hits: ICase[];
   }
 
-  export interface IParticipant extends IEntity {
-    participant_id: string;
+  export interface ICase extends IEntity {
+    case_id: string;
     age_at_initial_pathologic_diagnosis: number;
     bcr_patient_uuid: string;
     bcr_patient_code: string;

@@ -160,7 +160,7 @@ angular
       "ngApp.core",
       "ngApp.search",
       "ngApp.query",
-      "ngApp.participants",
+      "ngApp.cases",
       "ngApp.files",
       "ngApp.annotations",
       "ngApp.projects",

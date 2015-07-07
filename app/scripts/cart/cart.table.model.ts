@@ -54,20 +54,20 @@ module ngApp.cart.models {
         tdClassName: 'truncated-cell'
       }, {
         name: "Cases",
-        id: "participants",
+        id: "cases",
         td: (row, $scope) => {
-          function getParticipants(row, $filter) {
-            return row.participantIds.length == 1 ?
-                     '<a href="participants/' + row.participantIds[0] + '">' + row.participantIds[0] + '</a>' :
-                     withFilter(row.participantIds.length, [{name: "files.file_id", value: row.file_id}], $filter);
+          function getCases(row, $filter) {
+            return row.caseIds.length == 1 ?
+                     '<a href="cases/' + row.caseIds[0] + '">' + row.caseIds[0] + '</a>' :
+                     withFilter(row.caseIds.length, [{name: "files.file_id", value: row.file_id}], $filter);
           }
 
-          return row.participantIds.length ? getParticipants(row, $scope.$filter) : 0;
+          return row.caseIds.length ? getCases(row, $scope.$filter) : 0;
         },
         tdClassName: 'truncated-cell text-right'
       }, {
         name: "Project",
-        id: "participants.project.project_id",
+        id: "cases.project.project_id",
         td: row => {
           return _.map(row.projects, p => {
             return ('<a href="projects/' + p.project_id +

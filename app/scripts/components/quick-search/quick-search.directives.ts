@@ -80,7 +80,7 @@ module ngApp.components.quickSearch.directives {
         $scope.results = [];
 
         function setBioSpecimen(result) {
-          if (result._type !== "participant") {
+          if (result._type !== "case") {
             return;
           }
 
@@ -193,7 +193,7 @@ module ngApp.components.quickSearch.directives {
               "submitter_aliquot_ids",
               "analyte_ids",
               "submitter_analyte_ids",
-              "participant_id",
+              "case_id",
               "submitter_id",
               "portion_ids",
               "submitter_portion_ids",

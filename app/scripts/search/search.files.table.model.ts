@@ -59,22 +59,22 @@ module ngApp.search.models {
         tdClassName: 'truncated-cell'
       }, {
         name: "Cases",
-        id: "participants",
+        id: "cases",
         td: (row, $scope) => {
-          function getParticipants(row, $filter) {
-            return row.participants.length == 1 ?
-                     '<a href="participants/' + row.participants[0].participant_id + '">' + row.participants[0].participant_id + '</a>' :
-                     withFilter(row.participants.length, [{name: "files.file_id", value: row.file_id}], $filter);
+          function getCases(row, $filter) {
+            return row.cases.length == 1 ?
+                     '<a href="cases/' + row.cases[0].case_id + '">' + row.cases[0].case_id + '</a>' :
+                     withFilter(row.cases.length, [{name: "files.file_id", value: row.file_id}], $filter);
           }
 
-          return row.participants && row.participants.length ? getParticipants(row, $scope.$filter) : 0;
+          return row.cases && row.cases.length ? getCases(row, $scope.$filter) : 0;
         },
         tdClassName: 'truncated-cell'
       }, {
         name: "Project",
-        id: "participants.project.project_id",
+        id: "cases.project.project_id",
         td: row => {
-          return _.unique(_.map(row.participants, p => {
+          return _.unique(_.map(row.cases, p => {
             return '<a href="projects/' + p.project.project_id +
                     '" data-tooltip="' + p.project.name +
                     '" data-tooltip-popup-delay=1000' +
@@ -163,9 +163,9 @@ module ngApp.search.models {
       "tags"
     ],
     expand: [
-      "participants",
-      "participants.project",
-      "participants.clinical"
+      "cases",
+      "cases.project",
+      "cases.clinical"
     ]
   };
   angular.module("search.table.files.model", [])

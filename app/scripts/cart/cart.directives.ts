@@ -106,7 +106,7 @@ module ngApp.cart.directives {
         $scope.addAll = function() {
           var filters = $scope.filter || LocationService.filters();
           console.log(filters);
-          filters = UserService.addMyProjectsFilter(filters, "participants.project.project_id");
+          filters = UserService.addMyProjectsFilter(filters, "cases.project.project_id");
           if ($scope.size >= CartService.getCartVacancySize()) {
             CartService.sizeWarning();
             return;
@@ -131,9 +131,9 @@ module ngApp.cart.directives {
                      "data_type",
                      "data_format",
                      "annotations.annotation_id",
-                     "participants.participant_id",
-                     "participants.project.project_id",
-                     "participants.project.name"
+                     "cases.case_id",
+                     "cases.project.project_id",
+                     "cases.project.name"
                      ],
             filters: filters,
             sort: "",
@@ -253,7 +253,7 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
       controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
                           FilesService: IFilesService,
-                          ParticipantsService) {
+                          CasesService) {
         $scope.files = [];
         
         function areFiltersApplied(content): boolean {
@@ -283,11 +283,11 @@ module ngApp.cart.directives {
             filters = {op: "and", content: [filters]};
           }
 
-          var uuid = $scope.row.participant_id;
+          var uuid = $scope.row.case_id;
 
           filters.content.push({
             content: {
-              field: "files.participants.participant_id",
+              field: "files.cases.case_id",
               value: [
                 uuid
               ]
@@ -308,9 +308,9 @@ module ngApp.cart.directives {
           }
 
           if (!$scope.files.length) {
-            ParticipantsService.getParticipant(uuid, {
+            CasesService.getCase(uuid, {
               fields: [
-                "participant_id",
+                "case_id",
                 "submitter_id",
                 "annotations.annotation_id",
                 "project.project_id",
@@ -329,8 +329,8 @@ module ngApp.cart.directives {
                 $scope.retreivingFiles = false;
               }
               var fs = _.map(data.files, f => {
-                f.participants = [{
-                  participant_id:data.participant_id,
+                f.cases = [{
+                  case_id:data.case_id,
                   project: {
                     project_id: data.project.project_id,
                     name: data.project.name

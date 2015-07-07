@@ -2,9 +2,9 @@ describe("GQL Parser", function() {
   // Initialization of the AngularJS application before each test case
   beforeEach(module("components.gql", function ($provide) {
     $provide.value('FilesService', { getFiles: function (params) {}});
-    $provide.value('ParticipantsService', { getParticipants: function (params) {}});
+    $provide.value('CasesService', { getCases: function (params) {}});
   }));
-  beforeEach(inject(function($q, FilesService, ParticipantsService) {
+  beforeEach(inject(function($q, FilesService, CasesService) {
     function promise() {
       var deferred = $q.defer();
        deferred.resolve([{
@@ -20,7 +20,7 @@ describe("GQL Parser", function() {
       return deferred.promise;
     }
     sinon.stub(FilesService, "getFiles", promise);
-    sinon.stub(ParticipantsService, "getParticipants", promise);
+    sinon.stub(CasesService, "getCases", promise);
   }));
 
   describe("Service", function() {
@@ -203,13 +203,13 @@ describe("GQL Parser", function() {
         });
       }));
       it("[OICR-926] handles NOT IN", inject(function (GqlService) {
-        expect(GqlService.getParts("participants.clinical.gender not in value")).to.eql({
-          field: "participants.clinical.gender",
+        expect(GqlService.getParts("cases.clinical.gender not in value")).to.eql({
+          field: "cases.clinical.gender",
           op: "not in",
           needle: "value"
         });
-        expect(GqlService.getParts("participants.clinical.gender not in ")).to.eql({
-          field: "participants.clinical.gender",
+        expect(GqlService.getParts("cases.clinical.gender not in ")).to.eql({
+          field: "cases.clinical.gender",
           op: "not in",
           needle: ""
         });
@@ -237,12 +237,12 @@ describe("GQL Parser", function() {
       }));
     });
     describe("ajaxRequest", function() {
-      it("determines if it should call files or participants", inject(function (GqlService) {
+      it("determines if it should call files or cases", inject(function (GqlService) {
         var params = {facets: ["field"],size: 0,filters: {}};
         GqlService.ajaxRequest("files.field");
         expect(GqlService.FilesService.getFiles).to.be.calledWith(params);
-        GqlService.ajaxRequest("participants.field");
-        expect(GqlService.ParticipantsService.getParticipants).to.be.calledWith(params);
+        GqlService.ajaxRequest("cases.field");
+        expect(GqlService.CasesService.getCases).to.be.calledWith(params);
       }));
     });
     describe("parseGrammarError", function() {

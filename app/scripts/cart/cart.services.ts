@@ -119,8 +119,8 @@ module ngApp.cart.services {
             'access', 'file_name', 'file_id', 'file_size', 'data_type', 'data_format'
             );
             cartItem.annotationIds = file.annotationIds || _.pluck(file.annotations, 'annotation_id');
-            cartItem.participantIds = file.participantIds || _.map(file.participants, p => p.participant_id);
-            cartItem.projects = file.projects || _.unique(_.map(file.participants, p => {
+            cartItem.caseIds = file.caseIds || _.map(file.cases, p => p.case_id);
+            cartItem.projects = file.projects || _.unique(_.map(file.cases, p => {
               return {
                 project_id: p.project.project_id,
                 name: p.project.name

@@ -1,10 +1,10 @@
 module ngApp.query.controllers {
   import IFacet = ngApp.core.models.IFacet;
   import IFilesService = ngApp.files.services.IFilesService;
-  import IParticipantsService = ngApp.participants.services.IParticipantsService;
+  import ICasesService = ngApp.cases.services.ICasesService;
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
-  import IParticipants = ngApp.participants.models.IParticipants;
+  import ICases = ngApp.cases.models.ICases;
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
   import IQueryState = ngApp.query.services.IQueryState;
@@ -16,7 +16,7 @@ module ngApp.query.controllers {
 
   export interface IQueryController {
     files: IFiles;
-    participants: IParticipants;
+    cases: ICases;
     QState: IQueryState;
     CartService: ICartService;
     addFilesKeyPress(event: any, type: string): void;
@@ -32,12 +32,12 @@ module ngApp.query.controllers {
 
   interface IQueryScope extends ng.IScope {
     fileTableConfig:TableiciousConfig;
-    participantTableConfig:TableiciousConfig;
+    caseTableConfig:TableiciousConfig;
   }
 
   class QueryController implements IQueryController {
     files: IFiles;
-    participants: IParticipants;
+    cases: ICases;
     query: string = "";
     tabSwitch: boolean = false;
     projectIdChartConfig: any;
@@ -50,12 +50,12 @@ module ngApp.query.controllers {
                 public CartService: ICartService,
                 public SearchService: ISearchService,
                 public FilesService: IFilesService,
-                public ParticipantsService: IParticipantsService,
+                public CasesService: ICasesService,
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 private CoreService: ICoreService,
                 private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig,
+                private SearchTableCasesModel: TableiciousConfig,
                 SearchChartConfigs) {
       var data = $state.current.data || {};
       this.QState.setActive(data.tab, "active");
@@ -71,7 +71,7 @@ module ngApp.query.controllers {
       });
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
-      $scope.participantTableConfig = this.SearchTableParticipantsModel;
+      $scope.caseTableConfig = this.SearchTableCasesModel;
 
       this.refresh();
       this.chartConfigs = SearchChartConfigs;
@@ -79,8 +79,8 @@ module ngApp.query.controllers {
 
     refresh() {
       if (this.tabSwitch) {
-        if (this.QState.tabs.participants.active) {
-          this.QState.setActive("participants", "hasLoadedOnce");
+        if (this.QState.tabs.cases.active) {
+          this.QState.setActive("cases", "hasLoadedOnce");
         }
 
         if (this.QState.tabs.files.active) {
@@ -99,9 +99,9 @@ module ngApp.query.controllers {
         expand: this.SearchTableFilesModel.expand
       };
 
-      var participantOptions = {
-        fields: this.SearchTableParticipantsModel.fields,
-        expand: this.SearchTableParticipantsModel.expand,
+      var caseOptions = {
+        fields: this.SearchTableCasesModel.fields,
+        expand: this.SearchTableCasesModel.expand,
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
@@ -121,15 +121,15 @@ module ngApp.query.controllers {
         }
       });
 
-      this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
-        this.participants = this.participants || {};
-        this.participants.aggregations = data.aggregations;
+      this.CasesService.getCases(caseOptions).then((data: ICases) => {
+        this.cases = this.cases || {};
+        this.cases.aggregations = data.aggregations;
 
-        if (!_.isEqual(this.participants.hits, data.hits)) {
-          this.participants = data;
+        if (!_.isEqual(this.cases.hits, data.hits)) {
+          this.cases = data;
           this.tabSwitch = false;
-          if (this.QState.tabs.participants.active) {
-            this.QState.setActive("participants", "hasLoadedOnce");
+          if (this.QState.tabs.cases.active) {
+            this.QState.setActive("cases", "hasLoadedOnce");
           }
         }
       });
@@ -181,9 +181,9 @@ module ngApp.query.controllers {
         "location.services",
         "cart.services",
         "core.services",
-        "participants.services",
+        "cases.services",
         "search.table.files.model",
-        'search.table.participants.model',
+        'search.table.cases.model',
         "files.services"
       ])
       .controller("QueryController", QueryController);

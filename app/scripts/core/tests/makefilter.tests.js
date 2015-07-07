@@ -1,7 +1,7 @@
 describe("makeFilter Filter:", function () {
   var baseFields = [
     {
-      "name": "participants.bcr_patient_uuid",
+      "name": "cases.bcr_patient_uuid",
       "value":"b64bfca1-033c-4501-a900-103ac105c084"
     },
     {
@@ -16,7 +16,7 @@ describe("makeFilter Filter:", function () {
       {
         "op": "in",
         "content": {
-          "field": "participants.bcr_patient_uuid",
+          "field": "cases.bcr_patient_uuid",
           "value":["b64bfca1-033c-4501-a900-103ac105c084"]
         }
       },

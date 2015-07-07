@@ -11,7 +11,7 @@ module ngApp.components.ui.biospecimen.directives {
       restrict: "E",
       replace: true,
       scope: {
-        participant: "=",
+        case: "=",
         expanded: "="
       },
       templateUrl: "components/ui/biospecimen/templates/biospecimen.html",

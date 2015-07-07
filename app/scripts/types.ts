@@ -9,7 +9,7 @@
 /// <reference path="../scripts/core/module"/>
 /// <reference path="../scripts/files/module"/>
 /// <reference path="../scripts/home/module"/>
-/// <reference path="../scripts/participant/module"/>
+/// <reference path="../scripts/case/module"/>
 /// <reference path="../scripts/projects/module"/>
 /// <reference path="../scripts/query/module"/>
 /// <reference path="../scripts/reports/module"/>

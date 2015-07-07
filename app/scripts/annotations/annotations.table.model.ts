@@ -12,8 +12,8 @@ module ngApp.projects.models {
           },
         {
             name: "Case ID",
-            id: "participant_id",
-            td: row => '<a href="participants/'+row.participant_id+'">' + row.participant_id + '</a>',
+            id: "case_id",
+            td: row => '<a href="cases/'+row.case_id+'">' + row.case_id + '</a>',
             sortable: true,
             tdClassName: 'truncated-cell'
         },
@@ -104,7 +104,7 @@ module ngApp.projects.models {
           "entity_submitter_id",
           "notes",
           "classification",
-          "participant_id",
+          "case_id",
           "notes",
           "project.program.name"
         ],

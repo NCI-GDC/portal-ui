@@ -143,7 +143,7 @@ module ngApp.projects.controllers {
           result.push({
             data_type: name,
             file_count: 0,
-            participant_count: 0
+            case_count: 0
           });
         }
 
@@ -152,7 +152,7 @@ module ngApp.projects.controllers {
 
       this.expStratConfig = {
         sortKey: "file_count",
-        showParticipant: true,
+        showCase: true,
         displayKey: "experimental_strategy",
         defaultText: "experimental strategy",
         pluralDefaultText: "experimental strategies",
@@ -167,7 +167,7 @@ module ngApp.projects.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.project.project_id",
+                    name: "cases.project.project_id",
                     value: [
                       project.project_id
                     ]
@@ -187,7 +187,7 @@ module ngApp.projects.controllers {
 
       this.dataTypesConfig = {
         sortKey: "file_count",
-        showParticipant: true,
+        showCase: true,
         displayKey: "data_type",
         defaultText: "data type",
         hideFileSize: true,
@@ -201,7 +201,7 @@ module ngApp.projects.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.project.project_id",
+                    name: "cases.project.project_id",
                     value: [
                       project.project_id
                     ]

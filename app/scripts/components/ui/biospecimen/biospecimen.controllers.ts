@@ -1,5 +1,5 @@
 module ngApp.components.ui.biospecimen.controllers {
-  import IParticipant = ngApp.participants.models.IParticipant;
+  import ICase = ngApp.cases.models.ICase;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IGDCConfig = ngApp.IGDCConfig;
 
@@ -7,7 +7,7 @@ module ngApp.components.ui.biospecimen.controllers {
     activeBioSpecimenDoc: any;
     activeBioSpecimenDocType: string;
     displayBioSpecimenDocument(event: any, doc: any, type: string): void;
-    downloadBiospecimenXML(participant_id: string): void;
+    downloadBiospecimenXML(case_id: string): void;
     bioSpecimenFileId: string;
   }
 
@@ -19,11 +19,11 @@ module ngApp.components.ui.biospecimen.controllers {
     /* @ngInject */
     constructor(private LocationService: ILocationService,
                 private config: IGDCConfig, $scope) {
-      $scope.participant.samples.expanded = true;
-      this.activeBioSpecimenDoc = $scope.participant.samples[0];
+      $scope.case.samples.expanded = true;
+      this.activeBioSpecimenDoc = $scope.case.samples[0];
       this.activeBioSpecimenDocType = "sample";
 
-      var biospecimenFile =  _.find($scope.participant.files, (file) => {
+      var biospecimenFile =  _.find($scope.case.files, (file) => {
         return file.data_subtype.toLowerCase() === "biospecimen data";
       });
 

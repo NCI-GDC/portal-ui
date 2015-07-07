@@ -7,11 +7,11 @@ module ngApp.projects.models {
   }
   function getDataType(dataTypes: Object[], dataType:string): number {
     var data = _.find(dataTypes, {data_type: dataType});
-    return data ? data.participant_count : 0;
+    return data ? data.case_count : 0;
   }
   function dataTypeWithFilters(dataType: string, row: Object[], $filter: ng.IFilterService) {
     var fs = [
-                  {name: 'participants.project.project_id', value: row.project_id},
+                  {name: 'cases.project.project_id', value: row.project_id},
                   {name: 'files.data_type', value: dataType}
                 ];
     return withFilter(getDataType(row.summary.data_types, dataType), fs, $filter);
@@ -59,10 +59,10 @@ module ngApp.projects.models {
       },
       {
         name: "Cases",
-        id: "summary.participant_count",
+        id: "summary.case_count",
         td: (row, $scope) => {
-          var fs = [{name: 'participants.project.project_id', value: row.project_id}] 
-          return withFilter(row.summary.participant_count, fs, $scope.$filter);
+          var fs = [{name: 'cases.project.project_id', value: row.project_id}] 
+          return withFilter(row.summary.case_count, fs, $scope.$filter);
         },
         sortable: true,
         hidden: false,
@@ -137,7 +137,7 @@ module ngApp.projects.models {
         name: "Files",
         id: "summary.file_count",
         td: (row, $scope) => {
-          var fs = [{name: 'participants.project.project_id', value: row.project_id}] 
+          var fs = [{name: 'cases.project.project_id', value: row.project_id}] 
           return withFilter(row.summary.file_count, fs, $scope.$filter);
         },
         sortable: true,

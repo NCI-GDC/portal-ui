@@ -31,7 +31,7 @@ module ngApp.cart.controllers {
     projectCountChartConfig: any;
     fileCountChartConfig: any;
     helpHidden: boolean = false;
-    participantCount: number;
+    caseCount: number;
 
     /* @ngInject */
     constructor(private $scope: ng.IScope,
@@ -104,7 +104,7 @@ module ngApp.cart.controllers {
     }
 
     getSummary() {
-      this.participantCount = _.unique(_.flatten(_.pluck(this.files, "participantIds"))).length;
+      this.caseCount = _.unique(_.flatten(_.pluck(this.files, "caseIds"))).length;
       var filters = {
         op: "and",
         content: [

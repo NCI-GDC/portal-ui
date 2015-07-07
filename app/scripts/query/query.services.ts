@@ -5,7 +5,7 @@ module ngApp.query.services {
   }
 
   export interface ITabs {
-    participants: ITab;
+    cases: ITab;
     files: ITab;
   }
 
@@ -20,7 +20,7 @@ module ngApp.query.services {
         active: false,
         hasLoadedOnce: false
       },
-      participants: {
+      cases: {
         active: false,
         hasLoadedOnce: false
       },

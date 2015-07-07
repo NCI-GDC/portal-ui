@@ -149,14 +149,24 @@ module ngApp.cart.services {
     }
 
     sizeWarning() {
-      var template = [this.$filter("number")(this.getCartVacancySize())];
+      var cartAvailable = this.getCartVacancySize(),
+          template = ["Only", this.$filter("number")(cartAvailable)];
 
-      if (this.getFiles().length !== 0) {
-        template.unshift("Only");
-        template.push("more");
+      if (cartAvailable !== this.getMaxSize()) {
+        if (cartAvailable > 1) {
+          template.push("more");
+          template.push("files");
+        } else if (cartAvailable === 1) {
+          template.push("more");
+          template.push("file");
+        } else {
+          template = ["No more files"];
+        }
+      } else {
+        template.push("files");
       }
 
-      template.push("files can be added to the cart.");
+      template.push("can be added to the cart.");
 
       template = "<span>" + this.gettextCatalog.getString(template.join(" ")) + "</span>";
 

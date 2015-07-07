@@ -34,7 +34,7 @@ module ngApp.components.facets.services {
         return filter.content.field === field;
       });
 
-      if (filters.content) {
+      if (filters.content && filters.content.length > 0) {
         filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[entity]);
         options.filters = filters;
       }

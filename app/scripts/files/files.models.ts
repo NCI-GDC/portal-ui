@@ -2,7 +2,7 @@ module ngApp.files.models {
   import IFacet = ngApp.core.models.IFacet;
   import ICollection = ngApp.core.models.ICollection;
   import IEntity = ngApp.core.models.IEntity;
-  import IParticipant = ngApp.participants.models.IParticipant;
+  import ICase = ngApp.cases.models.ICase;
 
   export interface IFiles extends ICollection {
     hits: IFile[];
@@ -39,7 +39,7 @@ module ngApp.files.models {
     file_id: string;
     platform: string;
     updated: any;
-    participants: IParticipant[];
+    cases: ICase[];
     related_files: IFile[];
     related_ids: string[];
     archive?: IArchive;

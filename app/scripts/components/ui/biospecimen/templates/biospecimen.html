@@ -11,20 +11,20 @@
       </div>
       <div class="panel-body">
         <div class="col-lg-5 col-md-5">
-          <i class="fa fa-plus-square-o action" data-ng-if="!participant.samples.expanded"
-             data-ng-click="expandTree($event, participant.samples)"
-             data-ng-keypress="expandTree($event, participant.samples)"
+          <i class="fa fa-plus-square-o action" data-ng-if="!case.samples.expanded"
+             data-ng-click="expandTree($event, case.samples)"
+             data-ng-keypress="expandTree($event, case.samples)"
              aria-label="Expand Portions for {{ sample.submitter_id }}"></i>
-          <i class="fa fa-minus-square-o action" data-ng-if="participant.samples.expanded"
-             data-ng-click="expandTree($event, participant.samples)"
-             data-ng-keypress="expandTree($event, participant.samples)"
-             aria-label="Collapse Samples for {{ participant.participant_id }}"></i>
-          <i class="fa fa-folder-o" data-ng-if="!participant.samples.expanded"></i>
-          <i class="fa fa-folder-open-o" data-ng-if="participant.samples.expanded"></i>
+          <i class="fa fa-minus-square-o action" data-ng-if="case.samples.expanded"
+             data-ng-click="expandTree($event, case.samples)"
+             data-ng-keypress="expandTree($event, case.samples)"
+             aria-label="Collapse Samples for {{ case.case_id }}"></i>
+          <i class="fa fa-folder-o" data-ng-if="!case.samples.expanded"></i>
+          <i class="fa fa-folder-open-o" data-ng-if="case.samples.expanded"></i>
           &nbsp;<span class="h5" data-translate>Samples</span>
           <!-- Start of Samples List -->
-          <div data-ng-repeat="sample in participant.samples"
-               data-ng-if="participant.samples.expanded">
+          <div data-ng-repeat="sample in case.samples"
+               data-ng-if="case.samples.expanded">
             <div data-ng-if="sample.submitter_id" class="biospecimen-row document">
               <i class="fa fa-plus-square-o action" data-ng-if="!sample.expanded"
                  data-ng-click="expandTree($event, sample)"

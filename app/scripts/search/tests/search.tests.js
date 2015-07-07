@@ -13,9 +13,9 @@ describe('Search:', function () {
 
 
   describe('Controller:', function () {
-    it('should have participants', inject(function ($rootScope, $controller) {
+    it('should have cases', inject(function ($rootScope, $controller) {
       var scope = $rootScope.$new();
-      var wc = $controller('SearchController', {$scope: scope, data: {tab: "participants"}});
+      var wc = $controller('SearchController', {$scope: scope, data: {tab: "cases"}});
     }));
     it('should have files', inject(function ($rootScope, $controller) {
       var scope = $rootScope.$new();

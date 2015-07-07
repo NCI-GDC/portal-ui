@@ -2,8 +2,8 @@
   <div class="row search-panel">
     <div class="col-lg-3 col-md-4 facets-sidebar">
       <tabset>
-        <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
-          <div data-ng-include="'search/templates/search.participants.facets.html'"
+        <tab heading="{{ 'Cases' | translate }}" active="true" id="cases-facets-tab">
+          <div data-ng-include="'search/templates/search.cases.facets.html'"
                class="facet-section" role="form"></div>
         </tab>
         <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
@@ -40,10 +40,10 @@
           <a>{{ 'Summary' | translate }}</a>
         </li>
         <li role="presentation"
-            data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
-            data-ng-click="sc.select('tabs', 'participants')"
-            id="search-participants">
-          <a>{{ 'Cases' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
+            data-ng-class="{ active: sc.SearchState.tabs.cases.active }"
+            data-ng-click="sc.select('tabs', 'cases')"
+            id="search-cases">
+          <a>{{ 'Cases' | translate }} ({{sc.cases.pagination.total| number:0}})</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: sc.SearchState.tabs.files.active }"
@@ -58,8 +58,8 @@
       <div class="pane-section" data-ng-if="sc.SearchState.tabs.summary.active">
         <div data-ng-include="'search/templates/search.summary.html'"></div>
       </div>
-      <div class="pane-section" data-ng-show="sc.SearchState.tabs.participants.active">
-        <div data-ng-include="'search/templates/search.participants.html'"></div>
+      <div class="pane-section" data-ng-show="sc.SearchState.tabs.cases.active">
+        <div data-ng-include="'search/templates/search.cases.html'"></div>
       </div>
       <div class="pane-section"
            data-ng-show="sc.SearchState.tabs.files.active">

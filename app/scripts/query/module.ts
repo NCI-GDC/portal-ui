@@ -21,10 +21,10 @@ module ngApp.query {
       reloadOnSearch: false
     });
 
-    $stateProvider.state("query.participants", {
+    $stateProvider.state("query.cases", {
       url: "/p",
       data: {
-        tab: "participants"
+        tab: "cases"
       },
       reloadOnQuery: false
     });

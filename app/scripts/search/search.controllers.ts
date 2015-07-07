@@ -3,9 +3,9 @@ module ngApp.search.controllers {
   import IFilesService = ngApp.files.services.IFilesService;
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
-  import IParticipantsService = ngApp.participants.services.IParticipantsService;
-  import IParticipants = ngApp.participants.models.IParticipants;
-  import IParticipant = ngApp.participants.models.IParticipant;
+  import ICasesService = ngApp.cases.services.ICasesService;
+  import ICases = ngApp.cases.models.ICases;
+  import ICase = ngApp.cases.models.ICase;
   import IAnnotations = ngApp.annotations.models.IAnnotations;
   import ICoreService = ngApp.core.services.ICoreService;
   import ICartService = ngApp.cart.services.ICartService;
@@ -17,7 +17,7 @@ module ngApp.search.controllers {
 
   export interface ISearchController {
     files: IFiles;
-    participants: IParticipants;
+    cases: ICases;
     summary: any;
     SearchState: ISearchState;
     CartService: ICartService;
@@ -32,12 +32,12 @@ module ngApp.search.controllers {
 
   interface ISearchScope extends ng.IScope {
     fileTableConfig:TableiciousConfig;
-    participantTableConfig:TableiciousConfig;
+    caseTableConfig:TableiciousConfig;
   }
 
   class SearchController implements ISearchController {
     files: IFiles;
-    participants: IParticipants;
+    cases: ICases;
     summary: any;
     tabSwitch: boolean = false;
     projectIdChartConfig: any;
@@ -50,12 +50,12 @@ module ngApp.search.controllers {
                 public CartService: ICartService,
                 public SearchService: ISearchService,
                 public FilesService: IFilesService,
-                public ParticipantsService: IParticipantsService,
+                public CasesService: ICasesService,
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 public CoreService: ICoreService,
                 private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig,
+                private SearchTableCasesModel: TableiciousConfig,
                 public FacetService,
                 SearchChartConfigs) {
       var data = $state.current.data || {};
@@ -78,7 +78,7 @@ module ngApp.search.controllers {
       });
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
-      $scope.participantTableConfig = this.SearchTableParticipantsModel;
+      $scope.caseTableConfig = this.SearchTableCasesModel;
 
       this.refresh();
       this.chartConfigs = SearchChartConfigs;
@@ -86,8 +86,8 @@ module ngApp.search.controllers {
 
     refresh() {
       if (this.tabSwitch) {
-        if (this.SearchState.tabs.participants.active) {
-          this.SearchState.setActive("tabs", "participants", "hasLoadedOnce");
+        if (this.SearchState.tabs.cases.active) {
+          this.SearchState.setActive("tabs", "cases", "hasLoadedOnce");
         }
 
         if (this.SearchState.tabs.files.active) {
@@ -121,9 +121,9 @@ module ngApp.search.controllers {
         ]
       };
 
-      var participantOptions = {
-        fields: this.SearchTableParticipantsModel.fields,
-        expand: this.SearchTableParticipantsModel.expand,
+      var caseOptions = {
+        fields: this.SearchTableCasesModel.fields,
+        expand: this.SearchTableCasesModel.expand,
         facets: [
           "clinical.icd_10",
           "clinical.ethnicity",
@@ -156,15 +156,15 @@ module ngApp.search.controllers {
         }
       });
 
-      this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
-        this.participants = this.participants || {};
-        this.participants.aggregations = data.aggregations;
+      this.CasesService.getCases(caseOptions).then((data: ICases) => {
+        this.cases = this.cases || {};
+        this.cases.aggregations = data.aggregations;
 
-        if (!_.isEqual(this.participants.hits, data.hits)) {
-          this.participants = data;
+        if (!_.isEqual(this.cases.hits, data.hits)) {
+          this.cases = data;
           this.tabSwitch = false;
-          if (this.SearchState.tabs.participants.active) {
-            this.SearchState.setActive("tabs", "participants", "hasLoadedOnce");
+          if (this.SearchState.tabs.cases.active) {
+            this.SearchState.setActive("tabs", "cases", "hasLoadedOnce");
           }
         }
       });
@@ -227,9 +227,9 @@ module ngApp.search.controllers {
         "location.services",
         "cart.services",
         "core.services",
-        "participants.services",
+        "cases.services",
         "search.table.files.model",
-        "search.table.participants.model",
+        "search.table.cases.model",
         "files.services",
         "facets.services"
       ])

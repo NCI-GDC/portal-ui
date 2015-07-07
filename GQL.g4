@@ -158,7 +158,7 @@ ORDER : [Oo][Rr][Dd][Ee][Rr][ ][Bb][Yy] ;
 MISSING : [Mm][Ii][Ss][Ss][Ii][Nn][Gg] ;
 
 // GQL Functions - proof of concept
-PROJECTS_FIELD : 'participants.project_code' ;
+PROJECTS_FIELD : 'cases.project_code' ;
 MY_PROJECTS_FUNC : 'myProjects()' ;
 DATE_FIELD : 'files.' ('createdAt' | 'lastModified' ) ;
 NOW_FUNC : 'now()' ;

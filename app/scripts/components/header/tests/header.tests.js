@@ -16,7 +16,7 @@ describe('Header:', function () {
     it('should get cart count', inject(function ($controller, CartService) {
       var wc = $controller('HeaderController', { gettextCatalog: {} });
       expect(wc.getNumCartItems()).to.equal(0);
-      CartService.add({ id: 'AAA', participantId: [] });
+      CartService.add({ id: 'AAA', caseId: [] });
       expect(wc.getNumCartItems()).to.equal(1);
     }));
 

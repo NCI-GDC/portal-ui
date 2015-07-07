@@ -7,13 +7,13 @@ chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 expect = chai.expect;
 
-var ParticipantsPage = require('./pages/participants.po.js');
+var CasesPage = require('./pages/cases.po.js');
 
-describe('Participants:', function () {
+describe('Cases:', function () {
   var page;
 
   before(function () {
-    page = new ParticipantsPage();
+    page = new CasesPage();
     ptor = protractor.getInstance();
   });
 
@@ -25,17 +25,17 @@ describe('Participants:', function () {
 
   it('should have a header', function () {
     page.header.getText().then(function (text) {
-      expect(text).to.equal('Participants');
+      expect(text).to.equal('Cases');
     });
   });
 
   describe('List:', function () {
-    it('should show a list participants', function () {
-      page.participants.then(function (rows) {
+    it('should show a list cases', function () {
+      page.cases.then(function (rows) {
         expect(rows.length).to.equal(5);
       });
 
-      page.participant(0, 'id').getText().then(function (row) {
+      page.case(0, 'id').getText().then(function (row) {
         expect(row).to.equal('P1');
       });
     });

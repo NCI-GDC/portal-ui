@@ -60,7 +60,7 @@ module ngApp.projects.services {
       var defaults = {
         size: paging.size || 20,
         from: paging.from || 1,
-        sort: paging.sort || "summary.participant_count:desc",
+        sort: paging.sort || "summary.case_count:desc",
         filters: this.LocationService.filters()
       };
 

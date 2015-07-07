@@ -7,13 +7,13 @@ chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 expect = chai.expect;
 
-var ParticipantPage = require('./pages/participant.po.js');
+var CasePage = require('./pages/case.po.js');
 
-describe('Participant:', function () {
+describe('Case:', function () {
   var page;
 
   before(function () {
-    page = new ParticipantPage();
+    page = new CasePage();
     ptor = protractor.getInstance();
   });
 

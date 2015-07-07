@@ -1,9 +1,9 @@
 module ngApp.components.gql {
   import IGDCWindowService = ngApp.core.models.IGDCWindowService;
   import IFilesService = ngApp.files.services.IFilesService;
-  import IParticipantsService = ngApp.participants.services.IParticipantsService;
+  import ICasesService = ngApp.cases.services.ICasesService;
   import IFiles = ngApp.files.models.IFiles;
-  import IParticipants = ngApp.participants.models.IParticipants;
+  import ICases = ngApp.cases.models.ICases;
   import IFacet = ngApp.core.models.IFacet;
   import IBucket = ngApp.core.models.IBucket;
 
@@ -17,7 +17,7 @@ module ngApp.components.gql {
       private $timeout: ng.ITimeoutService,
       private $document: ng.IDocumentService,
       private FilesService: IFilesService,
-      private ParticipantsService: IParticipantsService,
+      private CasesService: ICasesService,
       private GqlTokens: ITokens
     ) {    }
     
@@ -151,8 +151,8 @@ module ngApp.components.gql {
             });
           });
       } else {
-        return this.ParticipantsService.getParticipants(params)
-          .then((fs: IParticipants): IDdItem[] => {
+        return this.CasesService.getCases(params)
+          .then((fs: ICases): IDdItem[] => {
             var f: IFacet = fs.aggregations[parts.facet];
             return _.map(f.buckets, (b) => {
               return {field: b.key, full: b.key};

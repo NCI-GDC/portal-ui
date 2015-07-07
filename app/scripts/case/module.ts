@@ -1,20 +1,20 @@
-module ngApp.participants {
+module ngApp.cases {
   "use strict";
 
-  import IParticipantsService = ngApp.participants.services.IParticipantsService;
-  import IParticipant = ngApp.participants.models.IParticipant;
+  import ICasesService = ngApp.cases.services.ICasesService;
+  import ICase = ngApp.cases.models.ICase;
 
   /* @ngInject */
-  function participantsConfig($stateProvider: ng.ui.IStateProvider) {
-    $stateProvider.state("participant", {
-      url: "/participants/:participantId",
-      controller: "ParticipantController as pc",
-      templateUrl: "participant/templates/participant.html",
+  function casesConfig($stateProvider: ng.ui.IStateProvider) {
+    $stateProvider.state("case", {
+      url: "/cases/:caseId",
+      controller: "CaseController as pc",
+      templateUrl: "case/templates/case.html",
       resolve: {
-        participant: ($stateParams: ng.ui.IStateParamsService, ParticipantsService: IParticipantsService): ng.IPromise<IParticipant> => {
-          return ParticipantsService.getParticipant($stateParams["participantId"], {
+        case: ($stateParams: ng.ui.IStateParamsService, CasesService: ICasesService): ng.IPromise<ICase> => {
+          return CasesService.getCase($stateParams["caseId"], {
             fields: [
-              "participant_id",
+              "case_id",
               "submitter_id",
               "annotations.annotation_id"
            ],
@@ -44,9 +44,9 @@ module ngApp.participants {
   }
 
   angular
-      .module("ngApp.participants", [
-        "participants.controller",
+      .module("ngApp.cases", [
+        "cases.controller",
         "ui.router.state"
       ])
-      .config(participantsConfig);
+      .config(casesConfig);
 }

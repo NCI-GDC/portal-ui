@@ -12,10 +12,10 @@
           <a>{{ 'Summary' | translate }}</a>
         </li>
         <li role="presentation"
-            data-ng-class="{ active: qc.QState.tabs.participants.active }"
-            data-ng-click="qc.select('participants')"
-            id="query-participants">
-          <a>{{ 'Cases' | translate }} ({{qc.participants.pagination.total| number:0}})</a>
+            data-ng-class="{ active: qc.QState.tabs.cases.active }"
+            data-ng-click="qc.select('cases')"
+            id="query-cases">
+          <a>{{ 'Cases' | translate }} ({{qc.cases.pagination.total| number:0}})</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: qc.QState.tabs.files.active }"
@@ -27,8 +27,8 @@
       <div class="pane-section" data-ng-if="qc.QState.tabs.summary.active">
         <div data-ng-include="'query/templates/query.summary.html'"></div>
       </div>
-      <div class="pane-section" data-ng-show="qc.QState.tabs.participants.active">
-        <div data-ng-include="'query/templates/query.participants.html'"></div>
+      <div class="pane-section" data-ng-show="qc.QState.tabs.cases.active">
+        <div data-ng-include="'query/templates/query.cases.html'"></div>
       </div>
       <div class="pane-section"
            data-ng-show="qc.QState.tabs.files.active">

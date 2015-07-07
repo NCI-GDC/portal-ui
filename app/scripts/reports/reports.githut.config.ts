@@ -166,7 +166,7 @@ angular.module("reports.githut.config",[])
     color_groups:{
       "file_count":color(0),
       "file_size":color(1),
-      "participant_count":color(2)
+      "case_count":color(2)
     },
     dimensions:undefined,
     duration:1000,

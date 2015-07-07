@@ -4,19 +4,19 @@ module ngApp.projects.models {
 
   export interface IExperimentalStrategies {
     file_count: number;
-    participant_count: number;
+    case_count: number;
     experimental_strategy: string;
   }
 
   export interface IDataTypes {
     data_type: string;
     file_count: number;
-    participant_count: number;
+    case_count: number;
   }
 
   export interface ISummary {
     file_count: number;
-    participant_count: number;
+    case_count: number;
     file_size: number;
     data_types: IDataTypes[];
     experimental_strategies: IExperimentalStrategies[];

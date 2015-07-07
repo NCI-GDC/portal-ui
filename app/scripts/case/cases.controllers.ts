@@ -1,35 +1,35 @@
-module ngApp.participants.controllers {
-  import IParticipant = ngApp.participants.models.IParticipant;
-  import IParticipants = ngApp.participants.models.IParticipants;
+module ngApp.cases.controllers {
+  import ICase = ngApp.cases.models.ICase;
+  import ICases = ngApp.cases.models.ICases;
   import ICoreService = ngApp.core.services.ICoreService;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IGDCConfig = ngApp.IGDCConfig;
 
-  export interface IParticipantController {
-    participant: IParticipant;
+  export interface ICaseController {
+    kase: ICase;
     annotationIds: string[];
     clinicalFileId: string;
     DownloadClinicalXML(): void;
   }
 
-  class ParticipantController implements IParticipantController {
+  class CaseController implements ICaseController {
     annotationIds: string[];
     clinicalFileId: string;
     /* @ngInject */
-    constructor(public participant: IParticipant,
+    constructor(public kase: ICase,
                 private CoreService: ICoreService,
                 private LocationService: ILocationService,
                 private $filter: ng.IFilterService,
                 private ExperimentalStrategyNames,
                 private DataTypeNames,
                 private config: IGDCConfig) {
-      CoreService.setPageTitle("Case " + participant.participant_id);
+      CoreService.setPageTitle("Case " + kase.case_id);
 
-      this.annotationIds = _.map(this.participant.annotations, (annotation) => {
+      this.annotationIds = _.map(this.kase.annotations, (annotation) => {
         return annotation.annotation_id;
       });
 
-      var clinicalFile = _.find(this.participant.files, (file) => {
+      var clinicalFile = _.find(this.kase.files, (file) => {
         return file.data_subtype.toLowerCase() === "clinical data";
       });
 
@@ -38,7 +38,7 @@ module ngApp.participants.controllers {
       }
 
       this.experimentalStrategies = _.reduce(ExperimentalStrategyNames.slice(), function(result, name) {
-        var strat = _.find(participant.summary.experimental_strategies, (item) => {
+        var strat = _.find(kase.summary.experimental_strategies, (item) => {
           return item.experimental_strategy.toLowerCase() === name.toLowerCase();
         });
 
@@ -50,7 +50,7 @@ module ngApp.participants.controllers {
       }, []);
 
       this.dataTypes = _.reduce(DataTypeNames.slice(), function(result, name) {
-        var type = _.find(participant.summary.data_types, (item) => {
+        var type = _.find(kase.summary.data_types, (item) => {
           return item.data_type.toLowerCase() === name.toLowerCase();
         });
 
@@ -82,9 +82,9 @@ module ngApp.participants.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.participant_id",
+                    name: "cases.case_id",
                     value: [
-                      participant.participant_id
+                      kase.case_id
                     ]
                   },
                   {
@@ -115,9 +115,9 @@ module ngApp.participants.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.participant_id",
+                    name: "cases.case_id",
                     value: [
-                      participant.participant_id
+                      kase.case_id
                     ]
                   },
                   {
@@ -138,9 +138,9 @@ module ngApp.participants.controllers {
   }
 
   angular
-      .module("participants.controller", [
-        "participants.services",
+      .module("cases.controller", [
+        "cases.services",
         "core.services"
       ])
-      .controller("ParticipantController", ParticipantController);
+      .controller("CaseController", CaseController);
 }

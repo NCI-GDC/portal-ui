@@ -6,11 +6,11 @@
       <div data-ng-if="cc.files.length">
         <div class="col-lg-3 col-sm-6">
           <count-card title="Files" icon="fa-file-o" data="cc.files.length | number"></count-card>
-          <count-card title="Cases" icon="fa-user" data="cc.participantCount | number"></count-card>
+          <count-card title="Cases" icon="fa-user" data="cc.caseCount | number"></count-card>
           <count-card title="File Size" icon="fa-save" data="cc.summary.fs.value | size"></count-card>
         </div>
         <div class="col-lg-3 col-sm-6">
-          <summary-card data-data="cc.summary.participants['participants.project.project_id'].buckets"
+          <summary-card data-data="cc.summary.cases['cases.project.project_id'].buckets"
                         height="177"
                         data-mode="graph" 
                         data-config="cc.projectCountChartConfig"

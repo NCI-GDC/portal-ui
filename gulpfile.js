@@ -13,8 +13,9 @@ var mkdirp = require("mkdirp");
 
 var env = {
   api: process.env.GDC_API || "http://localhost:5000",
-  auth: process.env.GDC_AUTH || "http://localhost:8000",
-  base: process.env.GDC_BASE || "/"
+  auth: process.env.GDC_AUTH || "https://gdc.nci.nih.gov",
+  base: process.env.GDC_BASE || "/",
+  port: process.env.GDC_PORT || 3000
 };
 
 var AUTOPREFIXER_BROWSERS = [
@@ -393,6 +394,7 @@ gulp.task('serve:web', function (cb) {
       ],
       baseDir: 'dist'
     },
+    port: env.port,
     host: "portal.gdc.nci.nih.gov"
 //    open: "external"
   };

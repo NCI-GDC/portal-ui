@@ -45,7 +45,7 @@ module ngApp.search.models {
             hidden: false,
             tdClassName: "text-center"
         }, {
-            name: "Case ID",
+            name: "Case UUID",
             id: "participant_id",
             td: row => '<a href="participants/'+ row.participant_id + '">' +
                          row.participant_id +

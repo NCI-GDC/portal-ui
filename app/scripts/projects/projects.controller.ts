@@ -118,7 +118,7 @@ module ngApp.projects.controllers {
                 private ExperimentalStrategyNames,
                 private DataTypeNames,
                 private $filter: ng.ui.IFilterService) {
-      CoreService.setPageTitle("Project " + project.project_id);
+      CoreService.setPageTitle("Project", project.project_id);
 
       this.experimentalStrategies = _.reduce(ExperimentalStrategyNames.slice(), function(result, name) {
         var strat = _.find(project.summary.experimental_strategies, (item) => {

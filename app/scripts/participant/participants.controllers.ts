@@ -23,7 +23,7 @@ module ngApp.participants.controllers {
                 private ExperimentalStrategyNames,
                 private DataTypeNames,
                 private config: IGDCConfig) {
-      CoreService.setPageTitle("Case " + participant.participant_id);
+      CoreService.setPageTitle("Case", participant.participant_id);
 
       this.annotationIds = _.map(this.participant.annotations, (annotation) => {
         return annotation.annotation_id;

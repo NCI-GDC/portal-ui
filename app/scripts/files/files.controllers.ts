@@ -25,7 +25,7 @@ module ngApp.files.controllers {
                 private FilesService: IFilesService
                 ) {
 
-      CoreService.setPageTitle("File " + file.file_name);
+      CoreService.setPageTitle("File", file.file_name);
 
       this.file.related_ids = _.pluck(this.file.related_files, 'file_id');
 

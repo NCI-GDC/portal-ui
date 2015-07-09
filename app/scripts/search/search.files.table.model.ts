@@ -58,7 +58,7 @@ module ngApp.search.models {
         sortable: true,
         tdClassName: 'truncated-cell'
       }, {
-        name: "Cases",
+        name: "Case UUIDs",
         id: "participants",
         td: (row, $scope) => {
           function getParticipants(row, $filter) {

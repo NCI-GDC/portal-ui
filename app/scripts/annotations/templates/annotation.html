@@ -12,11 +12,11 @@
       <table id="summary-table" class="table table-striped table-hover table-condensed table-bordered table-vertical">
         <tbody>
           <tr>
-            <th data-translate scope="row">Annotation ID</th>
+            <th data-translate scope="row">Annotation UUID</th>
             <td>{{ ::ac.annotation.annotation_id  }}</td>
           </tr>
           <tr>
-            <th data-translate scope="row">Entity ID</th>
+            <th data-translate scope="row">Entity UUID</th>
             <td>{{ ::ac.annotation.entity_id || "--" }}</td>
           </tr>
           <tr>
@@ -28,7 +28,7 @@
             <td>{{ ::ac.annotation.entity_type | humanify }}</td>
           </tr>
           <tr>
-            <th data-translate scope="row">Case ID</th>
+            <th data-translate scope="row">Case UUID</th>
             <td>
               <a data-ui-sref="participant({ participantId: ac.annotation.participant_id })">
                 {{ ::ac.annotation.participant_id }}

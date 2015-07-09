@@ -11,7 +11,7 @@ module ngApp.projects.models {
             tdClassName: 'truncated-cell'
           },
         {
-            name: "Case ID",
+            name: "Case UUID",
             id: "participant_id",
             td: row => '<a href="participants/'+row.participant_id+'">' + row.participant_id + '</a>',
             sortable: true,

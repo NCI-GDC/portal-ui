@@ -1,7 +1,7 @@
 module ngApp.core.services {
 
   export interface ICoreService {
-    setPageTitle(title: string, id?: any): void;
+    setPageTitle(title: string, id?: string): void;
     setLoadedState(state: boolean): void;
     setSearchModelState(state: boolean): void;
     xhrSent(): void;
@@ -32,7 +32,7 @@ module ngApp.core.services {
       this.$rootScope.loaded = state;
     }
 
-    setPageTitle(title: string, id?: any): void {
+    setPageTitle(title: string, id?: string): void {
       // TODO - this could probably be done when the function is called
       var formattedTitle: string = this.gettextCatalog.getString(title);
       formattedTitle = id ? formattedTitle + " - " + id : formattedTitle;

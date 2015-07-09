@@ -215,6 +215,12 @@ module ngApp.search.models {
             td: (row, $scope) => row.clinical && $scope.$filter("humanify")(row.clinical.race),
             sortable: false,
             hidden: true
+        }, {
+            name: 'Submitter ID',
+            id: 'submitter_id',
+            td: (row, $scope) => row.submitter_id,
+            sortable: false,
+            hidden: true
         }],
         fields: [
           "participant_id",
@@ -223,7 +229,8 @@ module ngApp.search.models {
           "project.name",
           "project.primary_site",
           "project.program.name",
-          "project.disease_type"
+          "project.disease_type",
+          "submitter_id"
         ],
         expand: [
           "summary.data_types",

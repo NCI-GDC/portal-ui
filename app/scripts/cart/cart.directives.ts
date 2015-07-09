@@ -264,7 +264,7 @@ module ngApp.cart.directives {
         }
         
         function getContent(): any[] {
-          LocationService.filters().content;
+          var content = LocationService.filters().content;
           return content && !Array.isArray(content) ? [content] : content;
         }
         

@@ -47,10 +47,10 @@
             <span data-ng-if="!item[config.sortKey]">0</span>
           </td>
           <td class="text-right" data-ng-if="config.showParticipant">
-            <a data-ng-if="item.participant_count" data-ng-click="sc.addFilters(item, 'search.participants')">
-              {{ item.participant_count | number }}
+            <a data-ng-if="item.case_count" data-ng-click="sc.addFilters(item, 'search.participants')">
+              {{ item.case_count | number }}
             </a>
-            <span data-ng-if="!item.participant_count">0</span>
+            <span data-ng-if="!item.case_count">0</span>
           </td>
           <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.file_size.value | size }}</td>
         </tr>

@@ -143,7 +143,7 @@ module ngApp.projects.controllers {
           result.push({
             data_type: name,
             file_count: 0,
-            participant_count: 0
+            case_count: 0
           });
         }
 

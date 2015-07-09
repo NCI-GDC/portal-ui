@@ -90,7 +90,7 @@ module ngApp.search.services {
     /* @ngInject */
     constructor($filter: ng.IFilterService) {
       this.projectIdChartConfig = {
-        filterKey: "participants.project.project_id",
+        filterKey: "cases.project.project_id",
         sortKey: "doc_count",
         displayKey: "key",
         defaultText: "project",
@@ -102,7 +102,7 @@ module ngApp.search.services {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.project.project_id",
+                    name: "cases.project.project_id",
                     value: [
                       value
                     ]
@@ -114,7 +114,7 @@ module ngApp.search.services {
         }
       };
       this.primarySiteChartConfig = {
-        filterKey: "participants.project.primary_site",
+        filterKey: "cases.project.primary_site",
         sortKey: "doc_count",
         displayKey: "key",
         defaultText: "primary site",
@@ -126,7 +126,7 @@ module ngApp.search.services {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.project.primary_site",
+                    name: "cases.project.primary_site",
                     value: [
                       value
                     ]

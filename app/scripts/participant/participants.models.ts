@@ -11,7 +11,7 @@ module ngApp.participants.models {
   }
 
   export interface IParticipant extends IEntity {
-    participant_id: string;
+    case_id: string;
     age_at_initial_pathologic_diagnosis: number;
     bcr_patient_uuid: string;
     bcr_patient_code: string;

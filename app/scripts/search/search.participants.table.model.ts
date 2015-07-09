@@ -18,7 +18,7 @@ module ngApp.search.models {
     }
     function dataTypeWithFilters(dataType: string, row: Object[], $filter: ng.IFilterService) {
         var fs = [
-          {name: 'participants.participant_id', value: row.participant_id},
+          {name: 'cases.case_id', value: row.case_id},
           {name: 'files.data_type', value: dataType}
         ];
         return withFilter(getDataType(row.summary ? row.summary.data_types : [], dataType), fs, $filter);
@@ -26,7 +26,7 @@ module ngApp.search.models {
 
     var searchParticipantsModel = {
         title: 'Cases',
-        rowId: 'participant_id',
+        rowId: 'case_id',
         headings: [{
             name: "Cart",
             id: "add_to_cart_filtered",
@@ -46,9 +46,9 @@ module ngApp.search.models {
             tdClassName: "text-center"
         }, {
             name: "Case UUID",
-            id: "participant_id",
-            td: row => '<a href="participants/'+ row.participant_id + '">' +
-                         row.participant_id +
+            id: "case_id",
+            td: row => '<a href="cases/'+ row.case_id + '">' +
+                         row.case_id +
                        '</a>',
             tdClassName: 'truncated-cell'
         }, {
@@ -75,7 +75,7 @@ module ngApp.search.models {
             name: "Files",
             id: "files",
             td: (row, $scope) => {
-                var fs = [{name: 'participants.participant_id', value: row.participant_id}]
+                var fs = [{name: 'cases.case_id', value: row.case_id}]
                 var sum = _.sum(_.pluck(row.summary ? row.summary.data_types : [], 'file_count'))
                 return withFilter(sum, fs, $scope.$filter);
             },
@@ -223,7 +223,7 @@ module ngApp.search.models {
             hidden: true
         }],
         fields: [
-          "participant_id",
+          "case_id",
           "annotations.annotation_id",
           "project.project_id",
           "project.name",

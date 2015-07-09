@@ -19,7 +19,7 @@ describe('Participants:', function () {
       sinon.spy(ParticipantsService.ds, 'get');
 
       var fs = {hits: [], facets: [], pagination: {}};
-      httpBackend.whenGET("/participants?filters=%7B%7D&from=1&size=20&sort=participant_id:asc").respond(fs);
+      httpBackend.whenGET("/cases?filters=%7B%7D&from=1&size=20&sort=case_id:asc").respond(fs);
 
       ParticipantsService.getParticipants();
       httpBackend.flush();
@@ -32,7 +32,7 @@ describe('Participants:', function () {
       sinon.spy(ParticipantsService.ds, 'get');
 
       var f = {};
-      httpBackend.whenGET("/participants/1").respond(f);
+      httpBackend.whenGET("/cases/1").respond(f);
 
       ParticipantsService.getParticipant(1);
       httpBackend.flush();

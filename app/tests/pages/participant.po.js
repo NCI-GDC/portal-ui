@@ -1,7 +1,7 @@
 'use strict';
 
 var ParticipantPage = function () {
-  browser.get('participants/P1');
+  browser.get('cases/P1');
 };
 
 ParticipantPage.prototype = Object.create({}, {

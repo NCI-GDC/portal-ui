@@ -18,7 +18,7 @@ module ngApp.participants.services {
     constructor(Restangular: restangular.IService, private LocationService: ILocationService,
                 private UserService: IUserService, private CoreService: ICoreService,
                 private $rootScope: IRootScope, private $q: ng.IQService) {
-      this.ds = Restangular.all("participants");
+      this.ds = Restangular.all("cases");
     }
 
     getParticipant(id: string, params: Object = {}): ng.IPromise<IParticipant> {
@@ -59,7 +59,7 @@ module ngApp.participants.services {
       var defaults = {
         size: paging.size,
         from: paging.from,
-        sort: paging.sort || 'participant_id:asc',
+        sort: paging.sort || 'case_id:asc',
         filters: this.LocationService.filters()
       };
 

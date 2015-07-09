@@ -6,7 +6,7 @@
          data-ng-switch="item._type"
          data-ng-mouseover="itemHover(item)">
       <div class="col-xs-2">
-        <i class="fa fa-user fa-2x" data-ng-switch-when="participant"></i>
+        <i class="fa fa-user fa-2x" data-ng-switch-when="case"></i>
         <i class="fa fa-file-o fa-2x" data-ng-switch-when="file"></i>
         <i class="fa fa-files-o fa-2x" data-ng-switch-when="project"/></i>
       </div>
@@ -21,8 +21,8 @@
           <li data-ng-bind-html="item.name | highlight:searchQuery"></li>
           <li data-ng-bind-html="item.primary_site | highlight:searchQuery"></li>
         </ul>
-        <ul class="highlighted-terms" data-ng-switch-when="participant">
-          <li data-ng-bind-html="item.participant_id | highlight:searchQuery"></li>
+        <ul class="highlighted-terms" data-ng-switch-when="case">
+          <li data-ng-bind-html="item.case_id | highlight:searchQuery"></li>
           <li data-ng-bind-html="item.project.project_id | highlight:searchQuery"></li>
           <li data-ng-if="item.bioSpecimen.sample_id"
               data-ng-bind-html="item.sample_ids | highlight:searchQuery"></li>
@@ -48,7 +48,7 @@
     <div data-ng-include="'components/quick-search/templates/file.html'"
          data-ng-show="selectedItem._type === 'file'"></div>
     <div data-ng-include="'components/quick-search/templates/participant.html'"
-         data-ng-show="selectedItem._type === 'participant'"></div>
+         data-ng-show="selectedItem._type === 'case'"></div>
     <div data-ng-include="'components/quick-search/templates/project.html'"
          data-ng-show="selectedItem._type === 'project'"></div>
   </div>

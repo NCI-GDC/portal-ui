@@ -23,7 +23,7 @@ module ngApp.participants.controllers {
                 private ExperimentalStrategyNames,
                 private DataTypeNames,
                 private config: IGDCConfig) {
-      CoreService.setPageTitle("Case", participant.participant_id);
+      CoreService.setPageTitle("Case", participant.case_id);
 
       this.annotationIds = _.map(this.participant.annotations, (annotation) => {
         return annotation.annotation_id;
@@ -82,9 +82,9 @@ module ngApp.participants.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.participant_id",
+                    name: "cases.case_id",
                     value: [
-                      participant.participant_id
+                      participant.case_id
                     ]
                   },
                   {
@@ -115,9 +115,9 @@ module ngApp.participants.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.participant_id",
+                    name: "cases.case_id",
                     value: [
-                      participant.participant_id
+                      participant.case_id
                     ]
                   },
                   {

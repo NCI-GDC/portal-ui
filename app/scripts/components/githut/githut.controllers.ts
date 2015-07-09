@@ -58,7 +58,7 @@ module ngApp.components.githut.controllers {
               });
               r.project_id = leaves[0]["project_id"];
               r.file_count = leaves[0]["file_count"];
-              r.participant_count = leaves[0]["participant_count"];
+              r.case_count = leaves[0]["case_count"];
               r.primary_site = leaves[0]["primary_site"];
               r.file_size = leaves[0]["file_size"];
               r.name = leaves[0]["name"];

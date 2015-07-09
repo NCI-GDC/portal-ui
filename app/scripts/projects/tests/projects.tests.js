@@ -33,7 +33,7 @@ describe('Projects:', function () {
       sinon.spy(ProjectsService.ds, 'get');
 
       var fs = {data: { hits: [], facets: [], pagination: {} }};
-      httpBackend.whenGET("/projects?filters=%7B%7D&from=1&size=20&sort=summary.participant_count:desc").respond(fs);
+      httpBackend.whenGET("/projects?filters=%7B%7D&from=1&size=20&sort=summary.case_count:desc").respond(fs);
 
       ProjectsService.getProjects();
       httpBackend.flush();

@@ -27,14 +27,14 @@ angular.module('projects.githut.config',[])
         primary_site: group.primary_site,
         file_count: group.summary.file_count,
         file_size: group.summary.file_size,
-        participant_count: group.summary.participant_count
+        case_count: group.summary.case_count
       };
 
       ProjectsGithutColumns
           .filter(function(c){return c.is_subtype})
           .forEach(function(s){
               var thing = findTheThing(types,s.id,"data_type");
-              the_returned[s.id] = thing ? thing.participant_count : 0;
+              the_returned[s.id] = thing ? thing.case_count : 0;
           })
 
       a[key] = the_returned;
@@ -50,7 +50,7 @@ angular.module('projects.githut.config',[])
 .service("ProjectsGithutColumns",function($state, $filter){
   function projectSref(d) {
     var filter = $filter("makeFilter")([{
-      name: 'participants.project.project_id',
+      name: 'cases.project.project_id',
       value: d.lang
     }]);
 
@@ -59,7 +59,7 @@ angular.module('projects.githut.config',[])
 
   function dataTypeSref(d) {
     var filter = $filter("makeFilter")([{
-      name: 'participants.project.project_id',
+      name: 'cases.project.project_id',
       value: d.lang
     }, {name: 'files.data_type', value: d.column}]);
 
@@ -77,11 +77,11 @@ angular.module('projects.githut.config',[])
       }
     },
     {
-      id:'participant_count',
+      id:'case_count',
       display_name:["Case","Count"],
       scale:'ordinal',
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: projectSref
     },
     {
@@ -90,7 +90,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -99,7 +99,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -108,7 +108,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -117,7 +117,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -126,7 +126,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -135,7 +135,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -144,7 +144,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -153,7 +153,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -162,7 +162,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -171,7 +171,7 @@ angular.module('projects.githut.config',[])
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
-      colorgroup:'participant_count',
+      colorgroup:'case_count',
       href: dataTypeSref
     },
     {
@@ -181,7 +181,7 @@ angular.module('projects.githut.config',[])
       dimensional:true,
       colorgroup:'file_count',
       href:function(d) {
-          var filter = $filter("makeFilter")([{name: 'participants.project.project_id', value: d.lang}], true);
+          var filter = $filter("makeFilter")([{name: 'cases.project.project_id', value: d.lang}], true);
           $state.go("search.files", { filters:filter });
       }
     },
@@ -247,7 +247,7 @@ angular.module('projects.githut.config',[])
         "project_id":"project_id"
       },
       sorter:{
-        "project_id": "participant_count"
+        "project_id": "case_count"
       },
       color_group_map: columns.reduce(function(a,b){
          a[b.id] = b.colorgroup;
@@ -256,7 +256,7 @@ angular.module('projects.githut.config',[])
       color_groups: {
         'file_count':color(0),
         'file_size':color(1),
-        'participant_count':color(2)
+        'case_count':color(2)
       },
 
       /**

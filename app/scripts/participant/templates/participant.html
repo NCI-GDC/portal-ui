@@ -1,11 +1,11 @@
 <div class="container entity">
   <h1 class="col-lg-12">
     <i class="fa fa-user"></i>
-    {{ ::pc.participant.participant_id }}
+    {{ ::pc.participant.case_id }}
     <div id="add-to-cart-button"
         data-add-to-cart-all
         data-filter='{{ [
-          { name: "participants.participant_id", value: pc.participant.participant_id }
+          { name: "cases.case_id", value: pc.participant.case_id }
          ] | makeFilter:true }}'
         data-size="{{ pc.participant.summary.file_count }}"
         data-add-all-only=true
@@ -23,7 +23,7 @@
             <tbody>
               <tr>
                 <th scope="row" data-translate>Case UUID</th>
-                <td>{{ ::pc.participant.participant_id }}</td>
+                <td>{{ ::pc.participant.case_id }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Case Barcode</th>
@@ -63,7 +63,7 @@
             <count-card title="Files" icon="fa-file-o" data="pc.participant.files.length | number"
                         data-ng-if="pc.participant.files.length > 1"
                         data-sref="search.files({ 'filters':
-                  {{ [{ name: 'participants.participant_id', value: pc.participant.participant_id}] | makeFilter }}
+                  {{ [{ name: 'cases.case_id', value: pc.participant.case_id}] | makeFilter }}
                 })"></count-card>
             <count-card title="Files" icon="fa-file-o" data="pc.participant.files.length | number"
                         data-ng-if="pc.participant.files.length === 1"

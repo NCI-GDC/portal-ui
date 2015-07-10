@@ -15,7 +15,7 @@ module ngApp.components.ui.string {
   class Humanify {
     constructor() {
       return function (original: any, capitalize: boolean = true, facetTerm: boolean = false) {
-        // use `--` for null, undefined and empty string 
+        // use `--` for null, undefined and empty string
         if (original === null || original === undefined || (angular.isString(original) && original.length === 0)) {
           return '--';
         // return all other non-strings 
@@ -27,7 +27,7 @@ module ngApp.components.ui.string {
           // Splits on capital letters followed by lowercase letters to find
           // words squished together in a string.
           original = original.split(/(?=[A-Z][a-z])/).join(" ");
-          humanified = original.replace(/\./g, " ").trim();
+          humanified = original.replace(/\./g, " ").replace(/_/g, " ").trim();
         } else {
           var split = original.split(".");
           humanified = split[split.length - 1].replace(/_/g, " ").trim();
@@ -38,14 +38,43 @@ module ngApp.components.ui.string {
             humanified = split[split.length - 2] + " " + humanified;
           }
         }
-        
-        return capitalize 
-          ? humanified.split(' ').map(function (word) {
-              return word.indexOf("miRNA") === -1 
+
+        return capitalize
+          ? Capitalize()(humanified): humanified;
+      };
+    }
+  }
+
+  class FacetTitlefy {
+    constructor() {
+      return function(original: string) {
+        // chop string until last biospec entity
+        var biospecEntities = ['samples', 'portions', 'slides', 'analytes', 'aliquots'];
+        var startAt = biospecEntities.reduce((lastIndex, b) => {
+          var indexOf = original.indexOf(b);
+          return indexOf > lastIndex ? indexOf : lastIndex;
+        }, 0);
+        var chopped = original.substring(startAt);
+        // Splits on capital letters followed by lowercase letters to find
+        // words squished together in a string.
+        return Capitalize()(chopped.split(/(?=[A-Z][a-z])/)
+                                   .join(" ")
+                                   .replace(/\./g, ' ')
+                                   .replace(/_/g, ' ')
+                                   .trim());
+      }
+    }
+  }
+
+  // differs from angular's uppercase by not uppering miRNA
+  class Capitalize {
+    constructor() {
+      return function(original: string) {
+        return original.split(' ').map(function (word) {
+              return word.indexOf("miRNA") === -1
                 ? word.charAt(0).toUpperCase() + word.slice(1)
                 : word
-            }).join(' ')
-          : humanified;
+            }).join(' ');
       };
     }
   }
@@ -69,6 +98,23 @@ module ngApp.components.ui.string {
     }
   }
 
+  class DotReplace {
+    constructor() {
+      return function(s: string, replaceWith: string) {
+        return s.toString().replace(/\.+/g, replaceWith || '');
+      };
+    }
+  }
+
+  class Replace {
+    constructor() {
+      return function(s: string, substr: string, newSubstr: string) {
+        return s.toString().replace(substr, newSubstr);
+      };
+    }
+  }
+
+
   class AgeDisplay {
     constructor(gettextCatalog: any) {
       return function(ageInDays: number) {
@@ -90,6 +136,10 @@ module ngApp.components.ui.string {
       .filter("ellipsicate", Ellipsicate)
       .filter("titlefy", Titlefy)
       .filter("spaceReplace", SpaceReplace)
+      .filter("dotReplace", DotReplace)
+      .filter("replace", Replace)
       .filter("humanify", Humanify)
+      .filter("facetTitlefy", FacetTitlefy)
+      .filter("capitalize", Capitalize)
       .filter("ageDisplay", AgeDisplay);
 }

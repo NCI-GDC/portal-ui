@@ -3,12 +3,31 @@
     <div class="col-lg-3 col-md-4 facets-sidebar">
       <tabset>
         <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
-          <div data-ng-include="'search/templates/search.participants.facets.html'"
-               class="facet-section" role="form"></div>
+          <div class="facet-section panel-default">
+            <div class="list-group">
+              <add-custom-facets-panel
+                 aggregations="sc.participants.aggregations"
+                 data-doc-type="cases">
+              </add-custom-facets-panel>
+              <facets-section facets-config="sc.SearchTableParticipantsModel.facets"
+                              doctype="cases"
+                              aggregations="sc.participants.aggregations">
+              </facets-section>
+            </div>
+          </div>
         </tab>
         <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
-          <div data-ng-include="'search/templates/search.files.facets.html'"
-               class="facet-section" role="form"></div>
+          <div class="facet-section panel-default">
+            <div class="list-group">
+              <add-custom-facets-panel
+                 aggregations="sc.files.aggregations"
+                 data-doc-type="files">
+              </add-custom-facets-panel>
+              <facets-section doctype="files"
+                              aggregations="sc.files.aggregations">
+              </facets-section>
+            </div>
+          </div>
         </tab>
       </tabset>
     </div>

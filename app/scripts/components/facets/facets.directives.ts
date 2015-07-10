@@ -3,6 +3,8 @@ module ngApp.components.facets.directives {
   import IProjectsService = ngApp.projects.services.IProjectsService;
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import ITermsController = ngApp.components.facets.controllers.ITermsController;
+  import ICustomFacetsService = ngApp.components.facets.services.ICustomFacetsService;
+  import IFacetsConfigService = ngApp.components.facets.models.IFacetsService;
 
   /* @ngInject */
   function Terms(ProjectsService: IProjectsService): ng.IDirective {
@@ -14,7 +16,9 @@ module ngApp.components.facets.directives {
         expanded: "@",
         displayCount: "@",
         title: "@",
-        name: "@"
+        name: "@",
+        removeFunction: "&",
+        removable: "@"
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
@@ -63,7 +67,10 @@ module ngApp.components.facets.directives {
       restrict: "EA",
       scope: {
         title: "@",
-        name: "@"
+        name: "@",
+        collapsed: '@',
+        removable: '@',
+        removeFunction: '&'
       },
       replace: true,
       templateUrl: "components/facets/templates/facets-date.html",
@@ -80,12 +87,28 @@ module ngApp.components.facets.directives {
         facet: "=",
         title: "@",
         field: "@",
-        unitsMap: "="
+        unitsMap: "=",
+        hasGraph: "@",
+        removable: "@",
+        removeFunction: "&",
       },
       replace: true,
       templateUrl: "components/facets/templates/range-facet.html",
       controller: "rangeFacetCtrl as rfc"
     };
+  }
+
+  /* @ngInject */
+  function AddCustomFacetsPanel($modal: any, $modalStack: any): ng.IDirective {
+    return {
+      restrict: "E",
+      scope: {
+        docType: "@",
+        aggregations: "="
+      },
+      templateUrl: "components/facets/templates/add-custom-facets-panel.html",
+      controller: "addCustomFacetsPanelController as acfc"
+    }
   }
 
   /* @ngInject */
@@ -97,11 +120,37 @@ module ngApp.components.facets.directives {
     };
   }
 
-  angular.module("facets.directives", ["facets.controllers"])
+  /* @ngInject */
+  function FacetsSection(FacetService: IFacetService,
+                         FacetsConfigService: IFacetsConfigService): ng.IDirective {
+    return {
+      restrict: "E",
+      templateUrl: "components/facets/templates/facets-section.html",
+      scope: {
+        doctype: "@",
+        aggregations: "="
+      },
+      link: ($scope: ng.IScope) => {
+        $scope.$watch( () => { return FacetsConfigService.fieldsMap[$scope.doctype]; }, function (config) {
+          $scope.facetsConfig = config;
+        });
+
+        $scope.facetsConfig = FacetsConfigService.fieldsMap[$scope.doctype];
+
+        $scope.removeFacet = function(name: string) {
+          FacetsConfigService.removeField($scope.doctype, name);
+          FacetService.removeTerm($scope.doctype + "." + name);
+        }
+      }
+    }
+  }
+
+  angular.module("facets.directives", ["facets.controllers", "facets.services"])
       .directive("terms", Terms)
       .directive("currentFilters", CurrentFilters)
       .directive("rangeFacet", RangeFacet)
       .directive("dateFacet", DateFacet)
+      .directive("addCustomFacetsPanel", AddCustomFacetsPanel)
+      .directive("facetsSection", FacetsSection)
       .directive("facetsFreeText", FacetsFreeText);
 }
-

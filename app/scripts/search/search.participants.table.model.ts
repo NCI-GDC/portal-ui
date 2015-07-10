@@ -247,6 +247,28 @@ module ngApp.search.models {
         expand: [
           "summary.data_types",
           "clinical"
+        ],
+        facets: [
+            {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "Case Barcode or Uuid"},
+            {name: "project.primary_site", title: "Primary Site", collapsed: false, facetType: "terms"},
+            {name: "project.program.name", title: "Cancer Program", collapsed: false, facetType: "terms"},
+            {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms"},
+            {name: "project.disease_type", title: "Disease Type", collapsed: false, facetType: "terms"},
+            {name: "clinical.gender", title: "Gender", collapsed: true, facetType: "terms"},
+            {name: "clinical.age_at_diagnosis", title: "Age at diagnosis", hasGraph: true, collapsed: false, facetType: "range", unitsMap: [
+                            {
+                              "label": "years",
+                              "conversionDivisor": 365,
+                            },
+                            {
+                              "label": "days",
+                              "conversionDivisor": 1,
+                            }
+                            ]},
+            {name: "clinical.vital_status", title: "Access Level", collapsed: false, facetType: "terms"},
+            {name: "clinical.days_to_death", title: "Days to Death", collapsed: true, facetType: "range", hasGraph: true},
+            {name: "clinical.race", title: "Race", collapsed: true, facetType: "terms"},
+            {name: "clinical.ethincity", title: "Ethnicity", collapsed: true, facetType: "terms"}
         ]
     };
     angular.module("search.table.participants.model", [])

@@ -28,19 +28,19 @@ module ngApp.components.tables.directives {
 
         var defaults = _.cloneDeep($scope.headings);
 
-        $scope.headings = $scope.saved.length ? 
+        $scope.headings = $scope.saved.length ?
           _.map($scope.saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
           $scope.headings;
-          
+
         $scope.restoreDefaults = function() {
           $scope.headings = _.cloneDeep(defaults);
         }
-        
+
         $scope.toggleVisibility = function (item) {
           item.hidden = !item.hidden;
           saveSettings();
         };
-        
+
         $scope.sortOptions = {
           orderChanged: saveSettings
         };

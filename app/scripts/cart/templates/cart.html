@@ -1,34 +1,34 @@
 <div class="container-fluid cart full-page">
   <section class="row">
-      <div class="col-lg-8" data-ng-if="!cc.files.length">
-        <h2 data-translate>Your Cart is empty.</h2>
+    <div class="col-lg-8" data-ng-if="!cc.files.length">
+      <h2 data-translate>Your Cart is empty.</h2>
+    </div>
+    <div data-ng-if="cc.files.length">
+      <div class="col-lg-3 col-sm-6">
+        <count-card title="Files" icon="fa-file-o" data="cc.files.length | number"></count-card>
+        <count-card title="Cases" icon="fa-user" data="cc.participantCount | number"></count-card>
+        <count-card title="File Size" icon="fa-save" data="cc.summary.fs.value | size"></count-card>
       </div>
-      <div data-ng-if="cc.files.length">
-        <div class="col-lg-3 col-sm-6">
-          <count-card title="Files" icon="fa-file-o" data="cc.files.length | number"></count-card>
-          <count-card title="Cases" icon="fa-user" data="cc.participantCount | number"></count-card>
-          <count-card title="File Size" icon="fa-save" data="cc.summary.fs.value | size"></count-card>
-        </div>
-        <div class="col-lg-3 col-sm-6">
-          <summary-card data-data="cc.summary.cases['cases.project.project_id'].buckets"
-                        height="177"
-                        data-mode="graph" 
-                        data-config="cc.projectCountChartConfig"
-                        data-title="File Counts by Project"></summary-card>
-        </div>
-        <div class="col-lg-3 col-sm-6">
-           <summary-card data-data="cc.fileCountChartData"
-                  height="177"
-                  data-mode="graph" 
-                  data-config="cc.fileCountChartConfig"
-                  data-title="File Counts by Authorization Levels"></summary-card>
-        </div>
-        <div class="col-lg-3 col-sm-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h4 class="panel-title" data-translate>How to download files in my Cart?</h4>
-            </div>
-            <div style="padding: 10px">
+      <div class="col-lg-3 col-sm-6">
+        <summary-card data-data="cc.summary.cases['cases.project.project_id'].buckets"
+                      height="177"
+                      data-mode="graph" 
+                      data-config="cc.projectCountChartConfig"
+                      data-title="File Counts by Project"></summary-card>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+         <summary-card data-data="cc.fileCountChartData"
+                height="177"
+                data-mode="graph" 
+                data-config="cc.fileCountChartConfig"
+                data-title="File Counts by Authorization Levels"></summary-card>
+      </div>
+      <div class="col-lg-3 col-sm-6">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title" data-translate>How to download files in my Cart?</h4>
+          </div>
+          <div style="padding: 10px">
             <p data-translate>
               <strong>Manifest for Fast Download tool</strong>: Download a manifest file and use it with GDC High Performance Download Client. For more info on Fast Download, click
                <a target="_blank" href="https://beta-edits-gdc.oicr.on.ca/access-data/gdc-high-performance-download-client">here</a>.
@@ -36,10 +36,20 @@
             <p data-translate>
               <strong>Download Cart (web browser)</strong>: Download Files in your Cart directly from Web-browser (recommended for small file size).
             </p>
-            </div>
+          </div>
+        </div>
+        <div class="panel panel-default" data-ng-if="cc.UserService.currentUser">
+          <div class="panel-heading">
+            <h4 class="panel-title" data-translate>Notes</h4>
+          </div>
+          <div style="padding: 10px">
+            <p data-translate>
+              <strong>My Projects Filter</strong>: Please note that it does not affect the files shown in your cart below.
+            </p>
           </div>
         </div>
       </div>
+    </div>
   </section>
 
   <section class="row items-pane" data-ng-if="cc.files.length">

@@ -3,12 +3,15 @@
     <div class="col-lg-3 col-md-4 facets-sidebar">
       <tabset>
         <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
+          <a add-customizable-facets data-doc-type="cases">Add a Case Filter</a>
           <div data-ng-include="'search/templates/search.participants.facets.html'"
                class="facet-section" role="form"></div>
         </tab>
         <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
-          <div data-ng-include="'search/templates/search.files.facets.html'"
-               class="facet-section" role="form"></div>
+          <a add-customizable-facets data-doc-type="files">Add a File Filter</a>
+          <facets-section facets-config="sc.SearchTableFilesModel.facets"></facets-section>
+          <!--<div data-ng-include="'search/templates/search.files.facets.html'"-->
+               <!--class="facet-section" role="form"></div>-->
         </tab>
       </tabset>
     </div>

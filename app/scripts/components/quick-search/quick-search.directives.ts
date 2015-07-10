@@ -12,7 +12,7 @@ module ngApp.components.quickSearch.directives {
 
   /* @ngInject */
   function QuickSearch($modal: any, $window: ng.IWindowService, $modalStack): ng.IDirective {
-    return { 
+    return {
       restrict: "A",
       controller: function($scope) {
         var modalInstance;
@@ -131,7 +131,6 @@ module ngApp.components.quickSearch.directives {
           }
 
           var key = e.which || e.keyCode
-          
           switch (key) {
             case KeyCode.Enter:
               e.preventDefault();

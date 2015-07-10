@@ -235,6 +235,19 @@ module ngApp.search.models {
         expand: [
           "summary.data_types",
           "clinical"
+        ],
+        facets: [
+          "clinical.icd_10",
+          "clinical.ethnicity",
+          "clinical.gender",
+          "clinical.vital_status",
+          "clinical.days_to_death",
+          "clinical.race",
+          "clinical.age_at_diagnosis",
+          "project.name",
+          "project.project_id",
+          "project.primary_site",
+          "project.program.name"
         ]
     };
     angular.module("search.table.participants.model", [])

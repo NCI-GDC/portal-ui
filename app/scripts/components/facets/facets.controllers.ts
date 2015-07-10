@@ -1,4 +1,15 @@
 module ngApp.components.facets.controllers {
+  enum KeyCode {
+    Space = 32,
+    Enter = 13,
+    Esc = 27,
+    Left = 37,
+    Right = 39,
+    Up = 38,
+    Down = 40,
+    Tab = 9
+  }
+
 
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import IFacetService = ngApp.components.facets.services.IFacetService;
@@ -402,10 +413,127 @@ module ngApp.components.facets.controllers {
 
   }
 
+  class CustomFacetsController {
+    private ds: restangular.IElement;
+    public selectedIndex: number;
+    private offsets: Array<number>;
+
+      /* @ngInject */
+      constructor(public facetFields: any,
+                  private $scope: ng.IScope,
+                  private $modalInstance,
+                  private $window: IGDCWindowService,
+                  private Restangular: restangular.IService,
+                  private $filter: any) {
+
+      this.selectedIndex = 0;
+
+      this.offsets = [];
+
+      var _this = this;
+      $scope.keyboardListener = function(e: any) {
+        var key = e.which || e.keyCode
+        switch (key) {
+            case KeyCode.Enter:
+              e.preventDefault();
+              //if (!$scope.selectedItem) {
+                //return;
+              //}
+              //add the facet here
+              break;
+            case KeyCode.Up:
+              e.preventDefault();
+              _this.setSelectedIndex("up");
+              //_this.selectedIndex--;
+              _this.scrollToSelected(true);
+              break;
+            case KeyCode.Down:
+              e.preventDefault();
+              _this.setSelectedIndex("down");
+              //_this.selectedIndex++;
+              //_this.scrollToSelected(false);
+              break;
+            case KeyCode.Esc:
+              _this.$modalStack.dismissAll();
+              break;
+            case KeyCode.Tab:
+              e.preventDefault();
+              break;
+          }
+      };
+
+      $scope.itemHover = function(index: number) {
+        _this.selectedIndex = index;
+      };
+
+    }
+
+    closeModal(): void {
+      this.$modalInstance.dismiss('cancel');
+    }
+
+    addFacet(field: Object) {
+      this.$modalInstance.dismiss('added facet');
+    }
+
+    setSelectedIndex(direction: string) {
+      if(direction == "up") {
+        if (this.selectedIndex === 0) {
+          this.selectedIndex = (this.facetFields.length - 1);
+          document.getElementById('add-facets-modal').scrollTop = document.getElementById(this.$filter('dotReplace')(this.facetFields[this.selectedIndex].field, '-')).offsetTop;
+        } else {
+          this.selectedIndex--;
+          this.scrollToSelected("up");
+        }
+      }
+      if (direction == "down") {
+        if (this.selectedIndex  === (this.facetFields.length - 1)) {
+          this.selectedIndex = 0;
+          document.getElementById('add-facets-modal').scrollTop = 0;
+        } else {
+          this.selectedIndex++;
+          this.scrollToSelected("down");
+        }
+      }
+    }
+
+    scrollToSelected(direction: string) {
+      var modalElement = document.getElementById('add-facets-modal')
+      var selectedElement = document.getElementById(this.$filter('dotReplace')(this.facetFields[this.selectedIndex].field, '-'));
+      this.offsets = [];
+      for(var i = 0; i < this.facetFields.length; i++) {
+        this.offsets.push(document.getElementById(this.$filter('dotReplace')(this.facetFields[i].field, '-')).offsetTop);
+      }
+      var currentTopPos = modalElement.scrollTop;
+      var nearestIndex = -1;
+      var minDiff = Number.MAX_VALUE;
+      for(var i = 0; i < this.offsets.length; i++) {
+        var currentDiff = Math.abs(currentTopPos - this.offsets[i]);
+        if (currentDiff < minDiff) {
+          minDiff = currentDiff;
+          nearestIndex = i;
+        }
+      }
+
+      if (direction === "up") {
+        if (selectedElement.offsetTop < modalElement.scrollTop) {
+          modalElement.scrollTop = this.offsets[nearestIndex-1];
+        }
+      } else {
+        if (selectedElement.offsetTop + 4 > modalElement.scrollTop + modalElement.clientHeight) {
+          modalElement.scrollTop = this.offsets[nearestIndex+1];
+        }
+      }
+
+    }
+
+  }
+
   angular.module("facets.controllers", ["facets.services", "user.services"])
-      .controller("currentFiltersCtrl", CurrentFiltersController)
-      .controller("freeTextCtrl", FreeTextController)
-      .controller("rangeFacetCtrl", RangeFacetController)
-      .controller("dateFacetCtrl", DateFacetController)
-      .controller("termsCtrl", TermsController);
+        .controller("currentFiltersCtrl", CurrentFiltersController)
+        .controller("freeTextCtrl", FreeTextController)
+        .controller("rangeFacetCtrl", RangeFacetController)
+        .controller("dateFacetCtrl", DateFacetController)
+        .controller("customFacetsCtrl", CustomFacetsController)
+        .controller("termsCtrl", TermsController);
 }

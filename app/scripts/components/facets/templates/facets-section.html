@@ -1,0 +1,12 @@
+<div data-ng-repeat="f in facetsConfig">
+  {{ f.facetType }}
+  <div data-ng-if="f.facetType === 'free-text'">
+    <facets-free-text data-title="File" placeholder="{{ 'File name or ID' | translate }}"
+                  data-field="files.file_id"
+                  data-entity="files"
+                  data-template="components/facets/templates/typeahead-files.html"></facets-free-text>
+  </div>
+  <div data-ng-if="f.facetType === 'terms'">
+    <terms data-name="files.state" data-title="File Status" data-facet="sc.files.aggregations.state" data-collapsed="true"></terms>
+  </div>
+</div>

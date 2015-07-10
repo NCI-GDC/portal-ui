@@ -36,6 +36,7 @@ module ngApp.participants.services {
     }
 
     getParticipants(params: Object = {}): ng.IPromise<IParticipants> {
+      console.log(params);
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }

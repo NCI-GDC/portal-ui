@@ -166,6 +166,30 @@ module ngApp.search.models {
       "cases",
       "cases.project",
       "cases.clinical"
+    ],
+    facets: [
+      {name: "file_id", title: "File", collapsed: false, facetType: "free-text", placeholder: "{{ 'File name or ID' | translate }}"},
+      {name: "data_type", title: "Data Type", collapsed: false, facetType: "terms"},
+      {name: "data_subtype", title: "Data Subtype", collapsed: false, facetType: "terms"},
+      {name: "experimental_strategy", title: "Experimental Strategy", collapsed: false, facetType: "terms"},
+      {name: "data_format", title: "Data Format", collapsed: false, facetType: "terms"},
+      {name: "origin", title: "File Origin", collapsed: true, facetType: "terms"},
+      {name: "platform", title: "Platform", collapsed: true, facetType: "terms"},
+      {name: "access", title: "Access Level", collapsed: true, facetType: "terms"},
+      {name: "center.name", title: "Data Submitter", collapsed: true, facetType: "terms"},
+      {name: "state", title: "File Status", collapsed: true, facetType: "terms"},
+      {name: "tags", title: "Tags", collapsed: true, facetType: "terms"}
+      //"data_type",
+      //"experimental_strategy",
+      //"data_format",
+      //"platform",
+      //"archive.revision",
+      //"access",
+      //"state",
+      //"origin",
+      //"data_format",
+      //"center.name",
+      //"tags"
     ]
   };
   angular.module("search.table.files.model", [])

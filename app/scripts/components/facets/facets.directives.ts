@@ -3,6 +3,7 @@ module ngApp.components.facets.directives {
   import IProjectsService = ngApp.projects.services.IProjectsService;
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import ITermsController = ngApp.components.facets.controllers.ITermsController;
+  import ICustomFacetsService = ngApp.components.facets.services.ICustomFacetsService;
 
   /* @ngInject */
   function Terms(ProjectsService: IProjectsService): ng.IDirective {
@@ -88,6 +89,49 @@ module ngApp.components.facets.directives {
   }
 
   /* @ngInject */
+  function AddCustomizableFacets($modal: any, $window: ng.IWindowService, $modalStack): ng.IDirective {
+    return {
+      restrict: "A",
+      scope: {
+        docType: "@"
+      },
+      controller: function($scope, $modalStack, $modal) {
+        var modalInstance;
+        $scope.$on("$stateChangeStart", () => {
+          if (modalInstance) {
+            modalInstance.close();
+          }
+        });
+        this.openModal = () => {
+          // Modal stack is a helper service. Used to figure out if one is currently
+          // open already.
+          if ($modalStack.getTop()) {
+            return;
+          }
+          modalInstance = $modal.open({
+            templateUrl: "components/facets/templates/add-facets-modal.html",
+            backdrop: true,
+            controller: "customFacetsCtrl as cufc",
+            keyboard: true,
+            animation: false,
+            size: "lg",
+            resolve: {
+                facetFields: (CustomFacetsService: ICustomFacetsService): ng.IPromise<any> => {
+                  return CustomFacetsService.getFacetFields($scope.docType);
+                }
+              }
+          });
+        };
+      },
+      link: function($scope, $element, attrs, ctrl) {
+        $element.on("click", function() {
+          ctrl.openModal();
+        });
+      }
+    }
+  }
+
+  /* @ngInject */
   function CurrentFilters(): ng.IDirective {
     return {
       restrict: "E",
@@ -96,11 +140,24 @@ module ngApp.components.facets.directives {
     };
   }
 
+  /* @ngInject */
+  function FacetsSection(): ng.IDirective {
+    return {
+      restrict: "E",
+      templateUrl: "components/facets/templates/facets-section.html",
+      scope: {
+        facetsConfig: "="
+      }
+    }
+  }
+
   angular.module("facets.directives", ["facets.controllers"])
       .directive("terms", Terms)
       .directive("currentFilters", CurrentFilters)
       .directive("rangeFacet", RangeFacet)
       .directive("dateFacet", DateFacet)
+      .directive("addCustomizableFacets", AddCustomizableFacets)
+      .directive("facetsSection", FacetsSection)
       .directive("facetsFreeText", FacetsFreeText);
 }
 

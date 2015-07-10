@@ -193,7 +193,35 @@ module ngApp.components.facets.services {
       this.LocationService.setFilters(filters);
     }
   }
+
+  export interface ICustomFacetsService {
+    getFacetFields(docType: string): ng.IPromise<any>;
+  }
+
+  class CustomFacetsService implements ICustomFacetsService {
+    private ds: restangular.IElement;
+
+    constructor(private Restangular: restangular.IService,
+                private SearchTableFilesModel: TableiciousConfig,
+                private SearchTableParticipantsModel: TableiciousConfig) {
+      this.ds = Restangular.all("gql/_mapping");
+    }
+
+    getFacetFields(docType: string): ng.IPromise<any> {
+      return this.ds.getList().then((data) => {
+        return _.filter(data, (datum) => {
+          return datum.doc_type === docType &&
+                 datum.field !== 'archive.revision' &&
+                 !_.includes(datum.field, "_id") &&
+                 !_.includes(docType === 'files' ? this.SearchTableFilesModel.facets : this.SearchTableParticipantsModel.facets, datum.field);
+        });
+      });
+    }
+
+  }
+
   angular.
       module("facets.services", ["location.services", "restangular", "user.services"])
+      .service("CustomFacetsService", CustomFacetsService)
       .service("FacetService", FacetService);
 }

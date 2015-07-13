@@ -48,7 +48,7 @@ module ngApp.participants.services {
         params["facets"] = params["facets"].join();
       }
 
-      var paging = angular.fromJson(this.LocationService.pagination()["participants"]);
+      var paging = angular.fromJson(this.LocationService.pagination()["cases"]);
 
       // Testing is expecting these values in URL, so this is needed.
       paging = paging || {

@@ -13,7 +13,7 @@ var mkdirp = require("mkdirp");
 
 var env = {
   api: process.env.GDC_API || "http://localhost:5000",
-  auth: process.env.GDC_AUTH || "https://gdc.nci.nih.gov",
+  auth: process.env.GDC_AUTH || "https://gdc-portal.nci.nih.gov/auth",
   base: process.env.GDC_BASE || "/",
   port: process.env.GDC_PORT || 3000
 };

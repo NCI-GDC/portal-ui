@@ -58,7 +58,7 @@
           </a>
         </li>
         <li data-ng-if="!hc.UserService.currentUser" id="header-login">
-          <a auth-button data-redirect="https://gdc.nci.nih.gov">
+          <a auth-button>
             <i class="fa fa-sign-in"></i>
             <span class="hidden-md hidden-sm" data-translate>Login</span>
           </a>
@@ -85,7 +85,7 @@
                   </a>
                 </li>
                 <li id="header-logout">
-                  <a auth-button data-redirect="https://gdc.nci.nih.gov/logout">
+                  <a auth-button data-redirect="logout">
                     <i class="fa fa-sign-out stock-icon"></i>
                     <span data-translate>Logout</span>
                   </a>
@@ -101,7 +101,7 @@
           </a>
         </li>
         <li id="header-logout" data-ng-if="hc.UserService.currentUser" class="visible-xs">
-          <a auth-button data-redirect="https://gdc.nci.nih.gov/logout">
+          <a auth-button data-redirect="logout">
             <i class="fa fa-sign-out stock-icon"></i>
             <span data-translate>Logout</span>
           </a>

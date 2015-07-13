@@ -8,7 +8,7 @@ module ngApp.search.models {
 
   function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     var filterString = $filter("makeFilter")(filters, true);
-    var href = 'search/p?filters=' + filterString;
+    var href = 'search/c?filters=' + filterString;
     var val = '{{' + value + '|number:0}}';
     return "<a href='" + href + "'>" + val + '</a>';
   }
@@ -48,7 +48,7 @@ module ngApp.search.models {
         td: (row, $scope) => {
           var val = $scope.$filter("humanify")(row.access);
           return '<i class="fa fa-'+ (row.access === 'controlled' ? 'lock' : 'unlock-alt') +'"></i> ' + val;
-        }, 
+        },
         tdClassName: "text-center",
         sortable: true
       }, {

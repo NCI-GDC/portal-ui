@@ -8,7 +8,7 @@ module ngApp.cart.models {
 
   function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     var filterString = $filter("makeFilter")(filters, true);
-    var href = 'search/p?filters=' + filterString;
+    var href = 'search/c?filters=' + filterString;
     var val = '{{' + value + '|number:0}}';
     return "<a href='" + href + "'>" + val + '</a>';
   }
@@ -20,7 +20,7 @@ module ngApp.cart.models {
       {
         name: "Action",
         id: "file_actions",
-        td: row => '<button data-tooltip-popup-delay=1000 data-tooltip="Download"' + 
+        td: row => '<button data-tooltip-popup-delay=1000 data-tooltip="Download"' +
                     "class='btn btn-primary' download-button files='row' style='margin-right: 10%'>" +
                     "<i class='fa fa-download'></i></button>" +
                     "<button class='btn btn-default' remove-single-cart file='row'>" +
@@ -43,7 +43,7 @@ module ngApp.cart.models {
         td: (row, $scope) => {
           var val = $scope.$filter("humanify")(row.access);
           return '<i class="fa fa-'+ (row.access === 'controlled' ? 'lock' : 'unlock-alt') +'"></i> ' + val;
-        }, 
+        },
         tdClassName: "text-center",
         sortable: true
       }, {

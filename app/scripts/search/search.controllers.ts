@@ -83,15 +83,21 @@ module ngApp.search.controllers {
       this.refresh();
       this.chartConfigs = SearchChartConfigs;
       this.ageAtDiagnosisUnitsMap = [
-                            {
-                              "label": "years",
-                              "conversionDivisor": 365,
-                            },
-                            {
-                              "label": "days",
-                              "conversionDivisor": 1,
-                            }
-                          ];
+        {
+          "label": "years",
+          "conversionDivisor": 365,
+        },
+        {
+          "label": "days",
+          "conversionDivisor": 1,
+        }
+      ];
+      this.daysToDeathUnitsMap = [
+        {
+          "label": "days",
+          "conversionDivisor": 1,
+        }
+      ];
 
     }
 

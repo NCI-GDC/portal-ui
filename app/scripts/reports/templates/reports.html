@@ -1,7 +1,7 @@
 <div class="container-fluid full-page entity">
   <h1 data-scroll-fix=85>
     <img src="/images/icon-reports-large.png" width="30" height="30"/>
-    Data download statistics
+    <span data-translate>Data Download Statistics</span>
   </h1>
 
   <div class="col-lg-12">
@@ -12,11 +12,17 @@
         access levels.
       </p>
 
+      <p>
+        <strong>Data as of {{ rsc.reportDate }}</strong>.
+      </p>
+
       <p class="pull-right">
         <export-table data-text="Export Report" data-size="{{ rsc.reports.pagination.total }}"
                         data-endpoint="reports/data-download-statistics"
                         data-expand="rsc.reportServiceExpand"
-                        data-headings="config.headings">
+                        data-headings="config.headings"
+                        data-formats="tsv"
+                        data-export-title="report-data-download-statistics_">
         </export-table>
       <p>
     </section>
@@ -275,44 +281,6 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title" data-translate>
-              Downloads by Data Level
-              </h4>
-            </div>
-            <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
-              <thead>
-              <tr>
-                <th data-translate>
-                  Data Level
-                </th>
-                <th data-translate>
-                  # Requests
-                </th>
-                <th>
-                  File Size
-                </th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <th>
-                  --
-                </th>
-                <td>
-                  --
-                </td>
-                <td>
-                  --
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div class="col-lg-6">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h4 class="panel-title" data-translate>
                Downloads by Data Access
               </h4>
             </div>
@@ -346,7 +314,6 @@
             </table>
           </div>
         </div>
-
       </div>
 
     </section>

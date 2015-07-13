@@ -29,7 +29,7 @@ module ngApp.components.tables.controllers {
       this.paging = $scope.paging || {size: 20};
       var currentSorting = this.paging.sort || '';
 
-      var headings = $scope.saved.length ? 
+      var headings = $scope.saved.length ?
           _.map($scope.saved, s => _.merge(_.find($scope.config.headings, {id: s.id}), s)) :
           $scope.config.headings;
 
@@ -201,10 +201,10 @@ module ngApp.components.tables.controllers {
       });
 
       this.setDisplayedData();
-      
+
       var decompressed = $window.localStorage.getItem($scope.config.title + '-col');
       $scope.saved = decompressed ? JSON.parse(decompressed) : [];
-                
+
     }
 
     setDisplayedData(newPaging: any = this.$scope.paging) {
@@ -233,7 +233,7 @@ module ngApp.components.tables.controllers {
       } else {
         this.displayedData = this.$scope.data;
       }
-      if (this.$scope.paging) 
+      if (this.$scope.paging)
         this.$scope.paging.count = this.displayedData && this.displayedData.length;
     }
   }
@@ -259,8 +259,8 @@ module ngApp.components.tables.controllers {
 
     exportTable(fileType: string): void {
       var projectsKeys = {
-        "files": "participants.project.project_id",
-        "participants": "project.project_id",
+        "files": "cases.project.project_id",
+        "cases": "project.project_id",
         "projects": "project_id"
       };
 
@@ -366,4 +366,3 @@ module ngApp.components.tables.controllers {
       .controller("ExportTableModalController", ExportTableModalController)
       .controller("ExportTableController", ExportTableController);
 }
-

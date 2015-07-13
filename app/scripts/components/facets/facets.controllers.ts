@@ -79,7 +79,7 @@ module ngApp.components.facets.controllers {
     refresh(terms) {
       var projectCodeKeys = [
         "project_id",
-        "participants.project.project_id",
+        "cases.project.project_id",
         "annotations.project.project_id",
         "project.project_id"
       ];
@@ -135,7 +135,7 @@ module ngApp.components.facets.controllers {
     isInMyProjects(filter: any) {
       var validCodes = [
         "project_id",
-        "participants.project.project_id"
+        "cases.project.project_id"
       ];
 
       return validCodes.indexOf(filter.content.field) !== -1 && this.UserService.currentUser &&
@@ -409,4 +409,3 @@ module ngApp.components.facets.controllers {
       .controller("dateFacetCtrl", DateFacetController)
       .controller("termsCtrl", TermsController);
 }
-

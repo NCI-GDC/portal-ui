@@ -1,8 +1,8 @@
 module ngApp.projects.models {
   function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     var filterString = $filter("makeFilter")(filters, true);
-    var href = 'search/p?filters=' + filterString;
-    var val = '{{' + value + '|number:0}}'; 
+    var href = 'search/c?filters=' + filterString;
+    var val = '{{' + value + '|number:0}}';
     return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
   }
   function getDataType(dataTypes: Object[], dataType:string): number {
@@ -61,7 +61,7 @@ module ngApp.projects.models {
         name: "Cases",
         id: "summary.case_count",
         td: (row, $scope) => {
-          var fs = [{name: 'cases.project.project_id', value: row.project_id}] 
+          var fs = [{name: 'cases.project.project_id', value: row.project_id}]
           return withFilter(row.summary.case_count, fs, $scope.$filter);
         },
         sortable: true,
@@ -137,7 +137,7 @@ module ngApp.projects.models {
         name: "Files",
         id: "summary.file_count",
         td: (row, $scope) => {
-          var fs = [{name: 'cases.project.project_id', value: row.project_id}] 
+          var fs = [{name: 'cases.project.project_id', value: row.project_id}]
           return withFilter(row.summary.file_count, fs, $scope.$filter);
         },
         sortable: true,

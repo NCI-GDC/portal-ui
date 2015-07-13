@@ -74,7 +74,7 @@ module ngApp.search.services {
 
     getSummary(filters: Object = this.LocationService.filters(), ignoreUserProjects: boolean = false) {
       if (!ignoreUserProjects) {
-        filters = this.UserService.addMyProjectsFilter(filters, "participants.project.project_id");
+        filters = this.UserService.addMyProjectsFilter(filters, "cases.project.project_id");
       }
 
       return this.Restangular.all("ui/search/summary")

@@ -7,12 +7,12 @@ module ngApp.participants {
   /* @ngInject */
   function participantsConfig($stateProvider: ng.ui.IStateProvider) {
     $stateProvider.state("case", {
-      url: "/cases/:participantId",
+      url: "/cases/:caseId",
       controller: "ParticipantController as pc",
       templateUrl: "participant/templates/participant.html",
       resolve: {
         participant: ($stateParams: ng.ui.IStateParamsService, ParticipantsService: IParticipantsService): ng.IPromise<IParticipant> => {
-          return ParticipantsService.getParticipant($stateParams["participantId"], {
+          return ParticipantsService.getParticipant($stateParams["caseId"], {
             fields: [
               "case_id",
               "submitter_id",

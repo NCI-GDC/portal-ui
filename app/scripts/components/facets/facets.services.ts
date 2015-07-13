@@ -21,8 +21,8 @@ module ngApp.components.facets.services {
 
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any> {
       var projectsKeys = {
-        "files": "participants.project.project_id",
-        "participants": "project.project_id",
+        "files": "cases.project.project_id",
+        "cases": "project.project_id",
         "projects": "project_id"
       };
       var options: any = {

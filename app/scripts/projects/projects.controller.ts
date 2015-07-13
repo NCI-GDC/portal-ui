@@ -168,7 +168,7 @@ module ngApp.projects.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.project.project_id",
+                    name: "cases.project.project_id",
                     value: [
                       project.project_id
                     ]
@@ -203,7 +203,7 @@ module ngApp.projects.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "participants.project.project_id",
+                    name: "cases.project.project_id",
                     value: [
                       project.project_id
                     ]
@@ -252,4 +252,3 @@ module ngApp.projects.controllers {
       .controller("ProjectsController", ProjectsController)
       .controller("ProjectController", ProjectController);
 }
-

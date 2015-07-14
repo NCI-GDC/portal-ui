@@ -32,15 +32,13 @@
       <ul class="nav nav-tabs">
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.table.active }"
-            data-ng-click="prsc.select('tabs', 'table')"
             id="projects-table">
-          <a>{{ 'Table' | translate }}</a>
+          <a data-ng-href="/projects/t{{ prsc.params }}" data-ng-click="prsc.setState()">{{ 'Table' | translate }}</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.graph.active }"
-            data-ng-click="prsc.select('tabs', 'graph')"
             id="projects-graph">
-          <a>{{ 'Graph' | translate }}</a>
+          <a data-ng-href="/projects/g{{ prsc.params }}" data-ng-click="prsc.setState()">{{ 'Graph' | translate }}</a>
         </li>
       </ul>
       <div class="pane-section" data-ng-show="prsc.ProjectsState.tabs.table.active">

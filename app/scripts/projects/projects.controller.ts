@@ -55,6 +55,17 @@ module ngApp.projects.controllers {
     }
 
     refresh() {
+      var search = this.LocationService.search();
+      this.params = "?";
+
+      _.each(search, (value, key, index) => {
+        this.params += key + "=" + value;
+
+        if (index !== _.keys(search).length - 1) {
+          this.params += "&";
+        }
+      });
+
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
           fields: this.ProjectTableModel.fields,
@@ -91,19 +102,9 @@ module ngApp.projects.controllers {
       this.githutConfig = githut.config;
     }
 
-    select(section: string, tab: string) {
-      this.ProjectsState.setActive(section, tab);
-      this.setState(tab);
-    }
-
     // TODO Load data lazily based on active tab
-    setState(tab: string) {
-      // Changing tabs and then navigating to another page
-      // will cause this to fire.
-      if (tab && (this.$state.current.name.match("projects."))) {
-        this.tabSwitch = true;
-        this.$state.go("projects." + tab, this.LocationService.search(), {inherit: false});
-      }
+    setState() {
+      this.tabSwitch = true;
     }
     
     gotoQuery() {

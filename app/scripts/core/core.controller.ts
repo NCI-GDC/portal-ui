@@ -76,7 +76,7 @@ module ngApp.core.controllers {
   angular
       .module("core.controller", ["ngCookies", "user.services"])
       .controller("WarningController", WarningController)
-      .directive('authButton', function(){
+      .directive('authButton', function(config){
         return {
           restrict:'A',
           scope: {
@@ -84,7 +84,12 @@ module ngApp.core.controllers {
           },
           controller:function($scope,$element,$window){
             $element.on('click',function(){
+              var redirect = config.auth;
               var authQuery;
+
+              if ($scope.redirect) {
+                redirect += "/" + $scope.redirect;
+              }
 
               if ($window.location.port) {
                 authQuery = "?next=" + ":" + $window.location.port + $window.location.pathname;
@@ -92,7 +97,7 @@ module ngApp.core.controllers {
                 authQuery = "?next=" + $window.location.pathname;
               }
 
-              $window.location = $scope.redirect + authQuery;
+              $window.location = redirect + authQuery;
 
             });
           }

@@ -23,7 +23,7 @@ module ngApp.reports {
       controller: "ReportsController as rsc",
       templateUrl: "reports/templates/reports.html",
       resolve: {
-        reports: (ReportsService: IReportsService) => {
+        data: (ReportsService: IReportsService) => {
           return ReportsService.getReports({
             expand: reportServiceExpand
           });

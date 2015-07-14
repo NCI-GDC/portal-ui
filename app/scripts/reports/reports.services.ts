@@ -42,8 +42,7 @@ module ngApp.reports.services {
           timeout: abort.promise
         })
         .get("", angular.extend(defaults, params)).then((response): IReports => {
-          response.data.settings = response.settings;
-          return response["data"];
+          return response;
         });
         return prom;
     }

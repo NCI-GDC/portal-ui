@@ -31,12 +31,14 @@ module ngApp.reports.controllers {
     byLocation: any;
 
     /* @ngInject */
-    constructor(public reports: IReports, private CoreService: ICoreService,
+    constructor(public data, private CoreService: ICoreService,
                 public $scope: ng.IScope, private $timeout: ng.ITimeoutService,
                 private ReportsGithutColumns, private ReportsGithut, public reportServiceExpand: string[],
                 private $window: IGDCWindowService, private ProjectsService: IProjectsService) {
 
-      this.reportDate = $window.moment(new Date(parseInt(reports.settings.creation_date))).format("YYYY-MM-DD");
+      var reports = this.reports = data.data;
+
+      this.reportDate = $window.moment(new Date(parseInt(data.settings.creation_date))).format("YYYY-MM-DD");
 
       CoreService.setPageTitle("Reports");
 

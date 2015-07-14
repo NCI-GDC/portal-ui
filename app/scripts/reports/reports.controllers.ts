@@ -34,7 +34,7 @@ module ngApp.reports.controllers {
     constructor(public reports: IReports, private CoreService: ICoreService,
                 public $scope: ng.IScope, private $timeout: ng.ITimeoutService,
                 private ReportsGithutColumns, private ReportsGithut, public reportServiceExpand: string[],
-                private $window: IGDCWindowService) {
+                private $window: IGDCWindowService, private ProjectsService: IProjectsService) {
 
       this.reportDate = $window.moment(new Date(parseInt(reports.settings.creation_date))).format("YYYY-MM-DD");
 
@@ -61,11 +61,11 @@ module ngApp.reports.controllers {
     dataNest(key: string): any {
       return d3.nest()
           .key(function(d){return d[key]})
-          .rollup(function(d){
+          .rollup((d) => {
             return {
               file_count: d3.sum(d.map(function(x){return x.count})),
               file_size: d3.sum(d.map(function(x){return x.size})),
-              project_name:d[0].disease_type
+              project_name: this.ProjectsService.projectIdMapping[d[0].project_id]
             }
           })
           .sortValues(function(a,b){return a.file_count - b.file_count});
@@ -85,6 +85,7 @@ module ngApp.reports.controllers {
   angular
       .module("reports.controller", [
         "reports.services",
+        "projects.services",
         "core.services",
         "reports.githut.config"
       ])

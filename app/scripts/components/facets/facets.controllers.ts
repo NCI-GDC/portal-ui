@@ -204,8 +204,11 @@ module ngApp.components.facets.controllers {
       }
     }
 
-    autoComplete(query: string): ng.IPromise<any> {
-      return this.FacetService.autoComplete(this.$scope.entity, query, this.$scope.field);
+    autoComplete() {
+      this.FacetService.autoComplete(this.$scope.entity, this.query, this.$scope.field)
+        .then((response) => {
+          this.results = response;
+        });
     }
 
     remove(term: string): void {

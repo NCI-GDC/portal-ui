@@ -217,8 +217,12 @@ module ngApp.components.quickSearch.directives {
             ]
           };
 
+          $scope.activeQuery = true;
+
           FacetService.searchAll(params)
           .then((res) => {
+            $scope.activeQuery = false;
+
             var data = res.data;
 
             data.hits = _.map(data.hits, (hit) => {

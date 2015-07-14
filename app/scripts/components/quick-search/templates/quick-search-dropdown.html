@@ -1,5 +1,5 @@
-<div class="clearfix quick-search-list-container" data-ng-show="results.hits.length">
-  <ul class="col-md-5 col-sm-12" id="quick-search-list">
+<div class="clearfix quick-search-list-container">
+  <ul class="col-md-5 col-sm-12" id="quick-search-list" data-ng-show="results.hits.length">
     <li data-ng-repeat="item in results.hits track by item._id"
          data-ng-class="{ selected: item.selected }" class="quick-search-result row"
          data-ng-click="goTo(item._type, item._id)"
@@ -51,5 +51,8 @@
          data-ng-show="selectedItem._type === 'case'"></div>
     <div data-ng-include="'components/quick-search/templates/project.html'"
          data-ng-show="selectedItem._type === 'project'"></div>
+  </div>
+  <div class="no-results" data-ng-if="!results.hits.length && searchQuery && !activeQuery" data-translate>
+    No Results
   </div>
 </div>

@@ -9,7 +9,7 @@ module ngApp.components.facets.controllers {
     Down = 40,
     Tab = 9
   }
-
+  enum Cycle { Up = -1, Down = 1 }	
 
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import IFacetService = ngApp.components.facets.services.IFacetService;
@@ -443,15 +443,11 @@ module ngApp.components.facets.controllers {
               break;
             case KeyCode.Up:
               e.preventDefault();
-              _this.setSelectedIndex("up");
-              //_this.selectedIndex--;
-              _this.scrollToSelected(true);
+              _this.setSelectedIndex(Cycle.Up);
               break;
             case KeyCode.Down:
               e.preventDefault();
-              _this.setSelectedIndex("down");
-              //_this.selectedIndex++;
-              //_this.scrollToSelected(false);
+              _this.setSelectedIndex(Cycle.Down);
               break;
             case KeyCode.Esc:
               _this.$modalStack.dismissAll();
@@ -476,55 +472,59 @@ module ngApp.components.facets.controllers {
       this.$modalInstance.dismiss('added facet');
     }
 
-    setSelectedIndex(direction: string) {
-      if(direction == "up") {
+    setSelectedIndex(direction: Cycle) {
+      if(direction == Cycle.Up) {
         if (this.selectedIndex === 0) {
-          this.selectedIndex = (this.facetFields.length - 1);
-          document.getElementById('add-facets-modal').scrollTop = document.getElementById(this.$filter('dotReplace')(this.facetFields[this.selectedIndex].field, '-')).offsetTop;
+          this.selectedIndex = (this.$scope.filteredFields.length - 1);
+          document.getElementById('add-facets-modal').scrollTop = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-')).offsetTop;
         } else {
           this.selectedIndex--;
-          this.scrollToSelected("up");
+          this.scrollToSelected(Cycle.Up);
         }
       }
-      if (direction == "down") {
-        if (this.selectedIndex  === (this.facetFields.length - 1)) {
+      if (direction == Cycle.Down) {
+        if (this.selectedIndex  === (this.$scope.filteredFields.length - 1)) {
           this.selectedIndex = 0;
           document.getElementById('add-facets-modal').scrollTop = 0;
         } else {
           this.selectedIndex++;
-          this.scrollToSelected("down");
+          this.scrollToSelected(Cycle.Down);
         }
       }
     }
 
-    scrollToSelected(direction: string) {
+    scrollToSelected(direction: Cycle) {
       var modalElement = document.getElementById('add-facets-modal')
-      var selectedElement = document.getElementById(this.$filter('dotReplace')(this.facetFields[this.selectedIndex].field, '-'));
+      var selectedElement = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-'));
       this.offsets = [];
-      for(var i = 0; i < this.facetFields.length; i++) {
-        this.offsets.push(document.getElementById(this.$filter('dotReplace')(this.facetFields[i].field, '-')).offsetTop);
+      for(var i = 0; i < this.$scope.filteredFields.length; i++) {
+        this.offsets.push(document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[i].field, '-')).offsetTop);
       }
       var currentTopPos = modalElement.scrollTop;
       var nearestIndex = -1;
       var minDiff = Number.MAX_VALUE;
-      for(var i = 0; i < this.offsets.length; i++) {
+      for (var i = 0; i < this.offsets.length; i++) {
         var currentDiff = Math.abs(currentTopPos - this.offsets[i]);
         if (currentDiff < minDiff) {
           minDiff = currentDiff;
           nearestIndex = i;
         }
       }
-
-      if (direction === "up") {
+      if (direction === Cycle.Up) {
         if (selectedElement.offsetTop < modalElement.scrollTop) {
-          modalElement.scrollTop = this.offsets[nearestIndex-1];
+          modalElement.scrollTop = this.offsets[nearestIndex-1]
         }
-      } else {
+      } else if (direction === Cycle.Down) {
         if (selectedElement.offsetTop + 4 > modalElement.scrollTop + modalElement.clientHeight) {
           modalElement.scrollTop = this.offsets[nearestIndex+1];
         }
       }
+    }
 
+    inputChanged() {
+      if (this.$scope.filteredFields.length < this.selectedIndex) {
+        this.selectedIndex = 0;
+      }
     }
 
   }

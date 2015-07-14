@@ -360,7 +360,7 @@ module ngApp.components.gql {
               // in_list_of_values
               $scope.mode = Mode.List;
               var ret: { parts: IParts; listValues: string[] } = GqlService.parseList(left, right);
-              $scope.parts = ret.parts; 
+              $scope.parts = ret.parts;
               GqlService.ajaxList($scope.parts, ret.listValues).then((d) => {
                 $scope.ddItems = d;
               });

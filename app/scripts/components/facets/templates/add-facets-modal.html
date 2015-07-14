@@ -11,19 +11,19 @@
        class="form-control"
        id="quick-search-input"
        data-ng-model="q"
+       data-ng-change="cufc.inputChanged()"
        data-ng-keydown="keyboardListener($event)"
        autofocus />
   </div>
 </div>
 <div class="modal-body" id="add-facets-modal" style="max-height: 500px; overflow-y: auto;">
     <div id="facets-list" class="quick-search-list-container">
-    <ul class="list-unstyled" data-ng-repeat="field in cufc.facetFields | filter: q as results">
+    <ul class="list-unstyled" data-ng-repeat="field in (filteredFields = (cufc.facetFields | filter: q ))">
       <li id="{{::field.field | dotReplace:'-' }}"
           class="custom-facet-item"
           data-ng-mouseover="itemHover($index)"
           data-ng-keydown="keyboardListener($event)"
           data-ng-class="{'add-facet-selected': $index === cufc.selectedIndex }" data-ng-click="cufc.addFacet(field)">
-        {{ $index }}
         <i class="fa"
            data-ng-if="field.doc_type"
            style="margin-right: 10px;padding: 1rem; width: 3.2rem"

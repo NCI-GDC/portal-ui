@@ -58,7 +58,7 @@ module ngApp.cart.models {
         td: (row, $scope) => {
           function getParticipants(row, $filter) {
             return row.caseIds.length == 1 ?
-                     '<a href="cases/' + row.caseIds[0] + '">' + row.caseIds[0] + '</a>' :
+                     '<a href="cases/' + row.caseIds[0] + '">1</a>' :
                      withFilter(row.caseIds.length, [{name: "files.file_id", value: row.file_id}], $filter);
           }
 

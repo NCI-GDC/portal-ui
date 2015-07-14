@@ -63,7 +63,7 @@ module ngApp.search.models {
         td: (row, $scope) => {
           function getParticipants(row, $filter) {
             return row.cases.length == 1 ?
-                     '<a href="cases/' + row.cases[0].case_id + '">' + row.cases[0].case_id + '</a>' :
+                     '<a href="cases/' + row.cases[0].case_id + '">1</a>' :
                      withFilter(row.cases.length, [{name: "files.file_id", value: row.file_id}], $filter);
           }
 

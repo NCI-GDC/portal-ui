@@ -61,8 +61,7 @@ The following command should work:
 In order to support local use of the login system we need to add the following
 to your `/etc/hosts` file:
 
-`127.0.0.1 portal.gdc.nci.nih.gov`
-`192.170.230.212 gdc.nci.nih.gov`
+`127.0.0.1 gdc-portal.nci.nih.gov`
 
 ### ElasticSearch
 Edit path-to-elastic-search/config/elasticsearch.yml, find the line with http.max_content_length, add
@@ -118,26 +117,12 @@ Using ChromeDriver directly...
 The development server is setup using Browsersync
 
 ```
-❯ npm start
+❯ GDC_API="http://gdc-portal.nci.nih.gov:5000" npm start
 [16:47:02] Environment Development
 ...
 [BS] Local URL: http://localhost:3000
-[BS] External URL: http://192.168.1.42:3000
+[BS] External URL: http://gdc-portal.nci.nih.gov:3000
 [BS] Serving files from: dist
-```
-
-# Connecting to UChi System
-
-Port forward the api at localhost:5000
-
-```
-ssh -L 5000:0:443 -N 172.17.0.64
-```
-
-Start npm with GDC_API=https://localhost:5000
-
-```
-GDC_API=https://localhost:5000 npm start
 ```
 
 # Contributing

@@ -395,7 +395,7 @@ gulp.task('serve:web', function (cb) {
       baseDir: 'dist'
     },
     port: env.port,
-    host: "portal.gdc.nci.nih.gov"
+    host: "gdc-portal.nci.nih.gov"
 //    open: "external"
   };
 //    bsOpts.tunnel = production ? 'oicrgdcdev' : false;

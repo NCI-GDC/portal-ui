@@ -15,15 +15,14 @@ module ngApp.components.facets.directives {
         expanded: "@",
         displayCount: "@",
         title: "@",
-        name: "@"
+        name: "@",
+        removeFunction: "&"
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
       controller: "termsCtrl as tc",
       link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: ITermsController) => {
-        console.log("test");
-        console.log($scope.facet);
-
+        console.log($scope.removeFunction);
         $scope.ProjectsService = ProjectsService;
 
         $scope.add = (facet: string, term: string, event: any) => {
@@ -96,7 +95,8 @@ module ngApp.components.facets.directives {
     return {
       restrict: "A",
       scope: {
-        docType: "@"
+        docType: "@",
+        facetsConfig: "="
       },
       controller: function($scope, $modalStack, $modal) {
         var modalInstance;
@@ -121,7 +121,8 @@ module ngApp.components.facets.directives {
             resolve: {
                 facetFields: (CustomFacetsService: ICustomFacetsService): ng.IPromise<any> => {
                   return CustomFacetsService.getFacetFields($scope.docType);
-                }
+                },
+                facetsConfig: () => { return $scope.facetsConfig }
               }
           });
         };
@@ -152,6 +153,13 @@ module ngApp.components.facets.directives {
         doctype: "@",
         facetsConfig: "=",
         aggregations: "="
+      },
+      link: ($scope: ng.IScope) => {
+        $scope.removeFacet = function(name: string) {
+            $scope.facetsConfig = _.reject($scope.facetsConfig, (facet) => {
+            return facet.name === name;
+          });
+        }
       }
     }
   }

@@ -419,12 +419,13 @@ module ngApp.components.facets.controllers {
     private offsets: Array<number>;
 
       /* @ngInject */
-      constructor(public facetFields: any,
+      constructor(public facetFields: Array<Object>,
                   private $scope: ng.IScope,
                   private $modalInstance,
                   private $window: IGDCWindowService,
                   private Restangular: restangular.IService,
-                  private $filter: any) {
+                  private $filter: any,
+                  private facetsConfig: any) {
 
       this.selectedIndex = 0;
 
@@ -436,10 +437,7 @@ module ngApp.components.facets.controllers {
         switch (key) {
             case KeyCode.Enter:
               e.preventDefault();
-              //if (!$scope.selectedItem) {
-                //return;
-              //}
-              //add the facet here
+              _this.addFacet();
               break;
             case KeyCode.Up:
               e.preventDefault();
@@ -468,9 +466,21 @@ module ngApp.components.facets.controllers {
       this.$modalInstance.dismiss('cancel');
     }
 
-    addFacet(field: Object) {
+    addFacet() {
+      var selectedField = this.facetFields[this.selectedIndex];
+      this.facetsConfig.push(
+        {name: selectedField['field'], title: selectedField['field'], collapsed: false, facetType: "terms"}
+      );
       this.$modalInstance.dismiss('added facet');
+      console.log("addFacet" + selectedField['field']);
+      console.log(this.facetsConfig);
     }
+
+    //removeFacet(name: string) {
+      //this.facetsConfig = _.reject(this.facetsConfig, (facet) => {
+        //return facet.name === name;
+      //});
+    //}
 
     setSelectedIndex(direction: Cycle) {
       if(direction == Cycle.Up) {

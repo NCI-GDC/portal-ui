@@ -12,7 +12,11 @@
                class="facet-section" role="form"></div>
         </tab>
         <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
-          <a add-customizable-facets data-doc-type="files">Add a File Filter</a>
+          <a add-customizable-facets
+             data-facets-config="sc.SearchTableFilesModel.facets"
+             data-doc-type="files">
+             Add a File Filter
+           </a>
           <facets-section facets-config="sc.SearchTableFilesModel.facets"
                           doctype="files"
                           aggregations="sc.files.aggregations">

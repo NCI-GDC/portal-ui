@@ -1,12 +1,18 @@
 <div class="list-group-item" data-ng-show="tc.terms.length" id="{{ title | lowercase | spaceReplace:'-' }}-facet-list-group">
-  <h4 class="list-group-item-heading facet-title"
-       data-ng-click="tc.toggle($event, 'collapsed')"
-       data-ng-keypress="tc.toggle($event, 'collapsed')"
-       aria-expanded="{{ !tc.collapsed }}"
-       aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
-       role="button">
-    <i class="fa" data-ng-class="{ 'fa-angle-down': !tc.collapsed, 'fa-angle-right': tc.collapsed }"></i>
-    {{ ::tc.title | translate }}
+  <h4 class="list-group-item-heading facet-title">
+     <span data-ng-click="tc.toggle($event, 'collapsed')"
+           role="button"
+           aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
+           aria-expanded="{{ !tc.collapsed }}"
+           data-ng-keypress="tc.toggle($event, 'collapsed')">
+      <i class="fa" data-ng-class="{ 'fa-angle-down': !tc.collapsed, 'fa-angle-right': tc.collapsed }"></i>
+      {{ ::tc.title | translate }}
+    </span>
+
+    <span class="pull-right" data-ng-click="removeFunction()">
+      <i class="fa fa-times"></i>
+    </span>
+
   </h4>
 
   <div data-ng-show="!tc.collapsed">

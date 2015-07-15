@@ -8,5 +8,6 @@
          data-name="{{doctype}}.{{f.name}}"
          data-title="{{f.title}}"
          data-facet="aggregations[f.name]"
-         data-collapsed="{{ f.collapsed }}"></terms>
+         data-collapsed="{{ f.collapsed }}"
+         data-remove-function="removeFacet(f.name)"></terms>
 </div>

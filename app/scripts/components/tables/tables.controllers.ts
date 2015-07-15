@@ -256,7 +256,7 @@ module ngApp.components.tables.controllers {
     constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig,
                 private $modal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
                 private $window: ng.IWindowService, private UserService: IUserService, private $timeout: ng.ITimeoutService) {
-      this.formats = $scope.formats.toUpperCase().split(",") || [
+      this.formats = $scope.formats && $scope.formats.toUpperCase().split(",") || [
         "TSV",
         "CSV",
         "JSON",

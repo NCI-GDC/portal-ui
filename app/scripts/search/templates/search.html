@@ -4,14 +4,19 @@
       <tabset>
         <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
           <a add-customizable-facets data-doc-type="cases">Add a Case Filter</a>
+          <!--<facets-section facets-config="sc.SearchTableParticipantsModel.facets"-->
+                          <!--doctype="cases"-->
+                          <!--aggregations="sc.cases.aggregations">-->
+          <!--</facets-section>-->
           <div data-ng-include="'search/templates/search.participants.facets.html'"
                class="facet-section" role="form"></div>
         </tab>
         <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
           <a add-customizable-facets data-doc-type="files">Add a File Filter</a>
-          <facets-section facets-config="sc.SearchTableFilesModel.facets"></facets-section>
-          <!--<div data-ng-include="'search/templates/search.files.facets.html'"-->
-               <!--class="facet-section" role="form"></div>-->
+          <facets-section facets-config="sc.SearchTableFilesModel.facets"
+                          doctype="files"
+                          aggregations="sc.files.aggregations">
+          </facets-section>
         </tab>
       </tabset>
     </div>

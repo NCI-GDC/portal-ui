@@ -168,7 +168,7 @@ module ngApp.search.models {
       "cases.clinical"
     ],
     facets: [
-      {name: "file_id", title: "File", collapsed: false, facetType: "free-text", placeholder: "{{ 'File name or ID' | translate }}"},
+      {name: "file_id", title: "File", collapsed: false, facetType: "free-text", placeholder: "File name or ID"},
       {name: "data_type", title: "Data Type", collapsed: false, facetType: "terms"},
       {name: "data_subtype", title: "Data Subtype", collapsed: false, facetType: "terms"},
       {name: "experimental_strategy", title: "Experimental Strategy", collapsed: false, facetType: "terms"},

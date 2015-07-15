@@ -61,7 +61,7 @@ module ngApp.components.facets.controllers {
     /* @ngInject */
     constructor(private $scope: IFacetScope, private FacetService: IFacetService,
                 private UserService: IUserService) {
-      this.collapsed = !!$scope.collapsed;
+      this.collapsed = $scope.collapsed === 'true' ? true : false;
       this.expanded = !!$scope.expanded;
       this.displayCount = this.originalDisplayCount = $scope.displayCount || 5;
       this.title = $scope.title;

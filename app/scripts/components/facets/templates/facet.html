@@ -24,7 +24,7 @@
           {{ ::term.key | translate | humanify:true:true }}
         </span>
       </span>
-      <span class="label label-primary pull-right">{{ term.doc_count | number:0}}</span>
+      <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
     </p>
 
     <p data-ng-repeat="term in tc.inactives | limitTo: tc.displayCount track by term.key"
@@ -42,7 +42,7 @@
           {{ ::term.key | translate | humanify: true:true }}
         </span>
       </span>
-      <span class="label label-primary pull-right">{{ term.doc_count | number:0}}</span>
+      <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
     </p>
 
     <div class="text-right">

@@ -122,13 +122,13 @@ module ngApp.search.controllers {
       var fileOptions = {
         fields: this.SearchTableFilesModel.fields,
         expand: this.SearchTableFilesModel.expand,
-        facets: this.SearchTableFilesModel.facets
+        facets: _.pluck(this.SearchTableFilesModel.facets, 'name')
       };
 
       var participantOptions = {
         fields: this.SearchTableParticipantsModel.fields,
         expand: this.SearchTableParticipantsModel.expand,
-        facets: this.SearchTableParticipantsModel.facets
+        facets: _.pluck(this.SearchTableParticipantsModel.facets, 'name')
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {

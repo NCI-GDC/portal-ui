@@ -21,6 +21,9 @@ module ngApp.components.facets.directives {
       templateUrl: "components/facets/templates/facet.html",
       controller: "termsCtrl as tc",
       link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: ITermsController) => {
+        console.log("test");
+        console.log($scope.facet);
+
         $scope.ProjectsService = ProjectsService;
 
         $scope.add = (facet: string, term: string, event: any) => {
@@ -146,7 +149,9 @@ module ngApp.components.facets.directives {
       restrict: "E",
       templateUrl: "components/facets/templates/facets-section.html",
       scope: {
-        facetsConfig: "="
+        doctype: "@",
+        facetsConfig: "=",
+        aggregations: "="
       }
     }
   }

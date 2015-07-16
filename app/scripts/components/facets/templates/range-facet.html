@@ -1,12 +1,19 @@
 <div class="list-group-item">
-  <h4 class="list-group-item-heading facet-title"
-       data-ng-click="rfc.toggle($event, 'collapsed')"
-       data-ng-keypress="rfc.toggle($event, 'collapsed')"
-       aria-expanded="{{ !rfc.collapsed }}"
-       aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
-       role="button">
-    <i class="fa" data-ng-class="{ 'fa-angle-down': !rfc.collapsed, 'fa-angle-right': rfc.collapsed }"></i>
-    {{ title | translate }}
+  <h4 class="list-group-item-heading facet-title">
+    <span data-ng-click="rfc.toggle($event, 'collapsed')"
+          data-ng-keypress="rfc.toggle($event, 'collapsed')"
+          aria-expanded="{{ !rfc.collapsed }}"
+          aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
+          role="button">
+      <i class="fa" data-ng-class="{ 'fa-angle-down': !rfc.collapsed, 'fa-angle-right': rfc.collapsed }"></i>
+      {{ title | translate }}
+    </span>
+
+    <span class="pull-right"
+          data-ng-if="removable === 'true'"
+          data-ng-click="removeFunction()">
+      <i class="fa fa-times"></i>
+    </span>
   </h4>
   <div data-ng-show="!rfc.collapsed">
     <div class="radio-inline"
@@ -21,7 +28,8 @@
             {{ unitMap.label | humanify }}
         </label>
       </div>
-    <bar-chart data-data="dataUnitConverted"
+    <bar-chart data-ng-if="hasGraph === 'true'"
+               data-data="dataUnitConverted"
                data-max-num-bars="30"
                data-height="35">
     </bar-chart>

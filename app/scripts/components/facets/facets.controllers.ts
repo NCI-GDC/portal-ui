@@ -249,9 +249,16 @@ module ngApp.components.facets.controllers {
       $scope.lowerBoundOriginalDays = null;
       $scope.upperBoundOriginalDays = null;
 
-      if($scope.unitsMap) {
-        $scope.selectedUnit = $scope.unitsMap[0];
+      if(!$scope.unitsMap) {
+        $scope.unitsMap = [
+              {
+                "label": "none",
+                "conversionDivisor": 1,
+              }
+            ];
       }
+
+      $scope.selectedUnit = $scope.unitsMap[0];
 
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
@@ -482,8 +489,14 @@ module ngApp.components.facets.controllers {
         _.assign(this.aggregations, data.aggregations);
       });
 
-      this.facetsConfig.push(
-        {name: selectedField['field'], title: selectedField['field'], collapsed: false, facetType: "terms", removable: true}
+      this.facetsConfig.unshift(
+        {
+          name: selectedField['field'],
+          title: selectedField['field'],
+          collapsed: false,
+          facetType: selectedField['type'] === 'long' ? "range" : "terms",
+          removable: true
+        }
       );
 
       this.$modalInstance.dismiss('added facet');

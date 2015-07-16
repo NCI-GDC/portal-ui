@@ -4,11 +4,21 @@
                   data-field="{{f.doctype}}.{{f.name}}"
                   data-entity="{{f.doctype}}"
                   data-template="components/facets/templates/typeahead-files.html"></facets-free-text>
+
   <terms data-ng-if="f.facetType === 'terms'"
          data-name="{{doctype}}.{{f.name}}"
-         data-title="{{f.title}}"
+         data-title="{{f.title | humanify }}"
          data-facet="aggregations[f.name]"
          data-collapsed="{{ f.collapsed }}"
          data-removable="{{ f.removable }}"
          data-remove-function="removeFacet(f.name)"></terms>
+
+  <range-facet data-ng-if="f.facetType === 'range'"
+               data-field="{{doctype}}.{{f.name}}"
+               data-title="{{ f.title | humanify }}"
+               data-facet="aggregations[f.name]"
+               data-has-graph="false"
+               data-remove-function="removeFacet(f.name)"
+               data-removable="{{ f.removable }}"
+               data-collapsed="{{ f.collapsed }}"></range-facet>
 </div>

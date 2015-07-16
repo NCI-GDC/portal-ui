@@ -213,7 +213,7 @@ module ngApp.components.facets.services {
           return datum.doc_type === docType &&
                  datum.field !== 'archive.revision' &&
                  !_.includes(datum.field, "_id") &&
-                 !_.includes(docType === 'files' ? this.SearchTableFilesModel.facets : this.SearchTableParticipantsModel.facets, datum.field);
+                 !_.includes(docType === 'files' ? _.pluck(this.SearchTableFilesModel.facets, "name") : _.pluck(this.SearchTableParticipantsModel.facets, "name"), datum.field);
         });
       });
     }

@@ -170,16 +170,15 @@ module ngApp.search.models {
     facets: [
       {name: "file_id", title: "File", collapsed: false, facetType: "free-text", placeholder: "File name or ID", removable: false },
       {name: "data_type", title: "Data Type", collapsed: false, facetType: "terms", removable: false },
-      //{name: "data_subtype", title: "Data Subtype", collapsed: false, facetType: "terms", removable: false },
-      //{name: "experimental_strategy", title: "Experimental Strategy", collapsed: false, facetType: "terms", removable: false },
-      //{name: "data_format", title: "Data Format", collapsed: false, facetType: "terms", removable: false },
-      //{name: "origin", title: "File Origin", collapsed: true, facetType: "terms", removable: false },
-      //{name: "platform", title: "Platform", collapsed: true, facetType: "terms", removable: false },
-     // {name: "access", title: "Access Level", collapsed: true, facetType: "terms", removable: false },
-      //{name: "center.name", title: "Data Submitter", collapsed: true, facetType: "terms", removable: false },
-      //{name: "state", title: "File Status", collapsed: true, facetType: "terms", removable: false },
-      //{name: "tags", title: "Tags", collapsed: true, facetType: "terms", removable: false }
-
+      {name: "data_subtype", title: "Data Subtype", collapsed: false, facetType: "terms", removable: false },
+      {name: "experimental_strategy", title: "Experimental Strategy", collapsed: false, facetType: "terms", removable: false },
+      {name: "data_format", title: "Data Format", collapsed: false, facetType: "terms", removable: false },
+      {name: "origin", title: "File Origin", collapsed: true, facetType: "terms", removable: false },
+      {name: "platform", title: "Platform", collapsed: true, facetType: "terms", removable: false },
+      {name: "access", title: "Access Level", collapsed: true, facetType: "terms", removable: false },
+      {name: "center.name", title: "Data Submitter", collapsed: true, facetType: "terms", removable: false },
+      {name: "state", title: "File Status", collapsed: true, facetType: "terms", removable: false },
+      {name: "tags", title: "Tags", collapsed: true, facetType: "terms", removable: false }
       //"data_type",
       //"experimental_strategy",
       //"data_format",

@@ -167,12 +167,12 @@ module ngApp.components.facets.services {
       this.LocationService.setFilters(filters);
     }
 
-    removeTerm(facet: string, term: string, op: string = 'in') {
+    removeTerm(facet: string, term: string, op: string) {
       var filters = this.ensurePath(this.LocationService.filters());
       var cs = filters["content"];
       for (var i = 0; i < cs.length; i++) {
         var c = cs[i]["content"];
-        if (c["field"] === facet && cs[i]["op"] === op) {
+        if (c["field"] === facet && (!op || cs[i]["op"] === op)) {
           if (!term) {
             cs.splice(i, 1);
           } else {
@@ -192,6 +192,7 @@ module ngApp.components.facets.services {
       }
       this.LocationService.setFilters(filters);
     }
+
   }
 
   export interface ICustomFacetsService {

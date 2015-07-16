@@ -150,7 +150,7 @@ module ngApp.components.facets.directives {
   }
 
   /* @ngInject */
-  function FacetsSection(): ng.IDirective {
+  function FacetsSection(FacetService: IFacetService): ng.IDirective {
     return {
       restrict: "E",
       templateUrl: "components/facets/templates/facets-section.html",
@@ -164,12 +164,13 @@ module ngApp.components.facets.directives {
             $scope.facetsConfig = _.reject($scope.facetsConfig, (facet) => {
             return facet.name === name;
           });
+          FacetService.removeTerm($scope.doctype + "." + name);
         }
       }
     }
   }
 
-  angular.module("facets.directives", ["facets.controllers"])
+  angular.module("facets.directives", ["facets.controllers", "facets.services"])
       .directive("terms", Terms)
       .directive("currentFilters", CurrentFilters)
       .directive("rangeFacet", RangeFacet)

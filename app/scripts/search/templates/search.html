@@ -3,7 +3,9 @@
     <div class="col-lg-3 col-md-4 facets-sidebar">
       <tabset>
         <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
+          <div class="list-group-item" style="text-align: right">
           <a add-customizable-facets data-doc-type="cases">Add a Case Filter</a>
+          </div>
           <!--<facets-section facets-config="sc.SearchTableParticipantsModel.facets"-->
                           <!--doctype="cases"-->
                           <!--aggregations="sc.cases.aggregations">-->
@@ -12,12 +14,13 @@
                class="facet-section" role="form"></div>
         </tab>
         <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
-          <a add-customizable-facets
+          <div class="list-group-item" style="text-align: right">
+          <add-customizable-facets
              data-facets-config="sc.SearchTableFilesModel.facets"
              aggregations="sc.files.aggregations"
              data-doc-type="files">
-             Add a File Filter
-           </a>
+           </add-customizable-facets>
+           </div>
           <facets-section facets-config="sc.SearchTableFilesModel.facets"
                           doctype="files"
                           aggregations="sc.files.aggregations">

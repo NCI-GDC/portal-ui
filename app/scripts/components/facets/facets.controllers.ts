@@ -131,8 +131,10 @@ module ngApp.components.facets.controllers {
     currentFilters: any = [];
 
     /* @ngInject */
-    constructor($scope: ng.IScope, private LocationService: ILocationService,
-                private FacetService: IFacetService, private UserService: IUserService) {
+    constructor($scope: ng.IScope,
+                private LocationService: ILocationService,
+                private FacetService: IFacetService,
+                private UserService: IUserService) {
 
       this.build();
 
@@ -498,7 +500,6 @@ module ngApp.components.facets.controllers {
           removable: true
         }
       );
-
       this.$modalInstance.dismiss('added facet');
     }
 
@@ -556,6 +557,56 @@ module ngApp.components.facets.controllers {
         this.selectedIndex = 0;
       }
     }
+  }
+
+  class AddCustomFacetsController {
+    private modalInstance: any;
+    public defaultConfig: Array<Object>;
+
+    /* @ngInject */
+    constructor(private $scope: ng.IScope,
+                private $modalStack,
+                private $modal,
+                private LocationService: ILocationService) {
+
+      this.defaultConfig = _.clone($scope.facetsConfig, true);
+      $scope.$on("$stateChangeStart", () => {
+        if (this.modalInstance) {
+          this.modalInstance.close();
+        }
+      });
+
+    }
+
+    openModal(): void {
+      // Modal stack is a helper service. Used to figure out if one is currently
+      // open already.
+      if (this.$modalStack.getTop()) {
+        return;
+      }
+
+      this.modalInstance = this.$modal.open({
+        templateUrl: "components/facets/templates/add-facets-modal.html",
+        backdrop: true,
+        controller: "customFacetsCtrl as cufc",
+        keyboard: true,
+        animation: false,
+        size: "lg",
+        resolve: {
+            /** @ngInject */
+            facetFields: (CustomFacetsService: ICustomFacetsService): ng.IPromise<any> => {
+              return CustomFacetsService.getFacetFields(this.$scope.docType);
+            },
+            facetsConfig: () => { return this.$scope.facetsConfig; },
+            aggregations: () => { return this.$scope.aggregations; }
+          }
+      });
+    }
+
+    reset(): void {
+      this.LocationService.clear();
+      this.$scope.facetsConfig = _.clone(this.defaultConfig, true);
+    }
 
   }
 
@@ -565,5 +616,6 @@ module ngApp.components.facets.controllers {
         .controller("rangeFacetCtrl", RangeFacetController)
         .controller("dateFacetCtrl", DateFacetController)
         .controller("customFacetsCtrl", CustomFacetsController)
+        .controller("addCustomFacetsController", AddCustomFacetsController)
         .controller("termsCtrl", TermsController);
 }

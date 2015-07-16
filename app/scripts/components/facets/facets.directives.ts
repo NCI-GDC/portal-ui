@@ -94,49 +94,16 @@ module ngApp.components.facets.directives {
   }
 
   /* @ngInject */
-  function AddCustomizableFacets($modal: any, $window: ng.IWindowService, $modalStack): ng.IDirective {
+  function AddCustomizableFacets($modal: any, $modalStack: any): ng.IDirective {
     return {
-      restrict: "A",
+      restrict: "E",
       scope: {
         docType: "@",
         facetsConfig: "=",
         aggregations: "="
       },
-      controller: function($scope, $modalStack, $modal) {
-        var modalInstance;
-        $scope.$on("$stateChangeStart", () => {
-          if (modalInstance) {
-            modalInstance.close();
-          }
-        });
-        this.openModal = () => {
-          // Modal stack is a helper service. Used to figure out if one is currently
-          // open already.
-          if ($modalStack.getTop()) {
-            return;
-          }
-          modalInstance = $modal.open({
-            templateUrl: "components/facets/templates/add-facets-modal.html",
-            backdrop: true,
-            controller: "customFacetsCtrl as cufc",
-            keyboard: true,
-            animation: false,
-            size: "lg",
-            resolve: {
-                facetFields: (CustomFacetsService: ICustomFacetsService): ng.IPromise<any> => {
-                  return CustomFacetsService.getFacetFields($scope.docType);
-                },
-                facetsConfig: () => { return $scope.facetsConfig; },
-                aggregations: () => { return $scope.aggregations; }
-              }
-          });
-        };
-      },
-      link: function($scope, $element, attrs, ctrl) {
-        $element.on("click", function() {
-          ctrl.openModal();
-        });
-      }
+      templateUrl: "components/facets/templates/add-customizable-facets.html",
+      controller: "addCustomFacetsController as acfc"
     }
   }
 

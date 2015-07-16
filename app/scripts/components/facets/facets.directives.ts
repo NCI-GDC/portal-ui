@@ -16,13 +16,13 @@ module ngApp.components.facets.directives {
         displayCount: "@",
         title: "@",
         name: "@",
-        removeFunction: "&"
+        removeFunction: "&",
+        removable: "@"
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
       controller: "termsCtrl as tc",
       link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: ITermsController) => {
-        console.log($scope.removeFunction);
         $scope.ProjectsService = ProjectsService;
 
         $scope.add = (facet: string, term: string, event: any) => {
@@ -96,7 +96,8 @@ module ngApp.components.facets.directives {
       restrict: "A",
       scope: {
         docType: "@",
-        facetsConfig: "="
+        facetsConfig: "=",
+        aggregations: "="
       },
       controller: function($scope, $modalStack, $modal) {
         var modalInstance;
@@ -122,7 +123,8 @@ module ngApp.components.facets.directives {
                 facetFields: (CustomFacetsService: ICustomFacetsService): ng.IPromise<any> => {
                   return CustomFacetsService.getFacetFields($scope.docType);
                 },
-                facetsConfig: () => { return $scope.facetsConfig }
+                facetsConfig: () => { return $scope.facetsConfig; },
+                aggregations: () => { return $scope.aggregations; }
               }
           });
         };

@@ -98,7 +98,6 @@ module ngApp.search.controllers {
           "conversionDivisor": 1,
         }
       ];
-
     }
 
     refresh() {

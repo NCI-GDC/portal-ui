@@ -7,12 +7,14 @@
            data-ng-keypress="tc.toggle($event, 'collapsed')">
       <i class="fa" data-ng-class="{ 'fa-angle-down': !tc.collapsed, 'fa-angle-right': tc.collapsed }"></i>
       {{ ::tc.title | translate }}
+
     </span>
 
-    <span class="pull-right" data-ng-click="removeFunction()">
+    <span class="pull-right"
+          data-ng-if="removable === 'true'"
+          data-ng-click="removeFunction()">
       <i class="fa fa-times"></i>
     </span>
-
   </h4>
 
   <div data-ng-show="!tc.collapsed">

@@ -1,4 +1,6 @@
 module ngApp.components.facets.controllers {
+  import IFilesService = ngApp.files.services.IFilesService;
+
   enum KeyCode {
     Space = 32,
     Enter = 13,
@@ -424,8 +426,10 @@ module ngApp.components.facets.controllers {
                   private $modalInstance,
                   private $window: IGDCWindowService,
                   private Restangular: restangular.IService,
+                  private FilesService: IFilesService,
                   private $filter: any,
-                  private facetsConfig: any) {
+                  private facetsConfig: any,
+                  private aggregations: any) {
 
       this.selectedIndex = 0;
 
@@ -467,23 +471,26 @@ module ngApp.components.facets.controllers {
     }
 
     addFacet() {
-      var selectedField = this.facetFields[this.selectedIndex];
+      var selectedField = this.$scope.filteredFields[this.selectedIndex];
+      var fileOptions = {
+        fields: [],
+        expand: [],
+        facets: [selectedField['field']]
+      };
+
+      this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
+        _.assign(this.aggregations, data.aggregations);
+      });
+
       this.facetsConfig.push(
-        {name: selectedField['field'], title: selectedField['field'], collapsed: false, facetType: "terms"}
+        {name: selectedField['field'], title: selectedField['field'], collapsed: false, facetType: "terms", removable: true}
       );
+
       this.$modalInstance.dismiss('added facet');
-      console.log("addFacet" + selectedField['field']);
-      console.log(this.facetsConfig);
     }
 
-    //removeFacet(name: string) {
-      //this.facetsConfig = _.reject(this.facetsConfig, (facet) => {
-        //return facet.name === name;
-      //});
-    //}
-
     setSelectedIndex(direction: Cycle) {
-      if(direction == Cycle.Up) {
+      if (direction == Cycle.Up) {
         if (this.selectedIndex === 0) {
           this.selectedIndex = (this.$scope.filteredFields.length - 1);
           document.getElementById('add-facets-modal').scrollTop = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-')).offsetTop;
@@ -507,7 +514,7 @@ module ngApp.components.facets.controllers {
       var modalElement = document.getElementById('add-facets-modal')
       var selectedElement = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-'));
       this.offsets = [];
-      for(var i = 0; i < this.$scope.filteredFields.length; i++) {
+      for (var i = 0; i < this.$scope.filteredFields.length; i++) {
         this.offsets.push(document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[i].field, '-')).offsetTop);
       }
       var currentTopPos = modalElement.scrollTop;
@@ -539,7 +546,7 @@ module ngApp.components.facets.controllers {
 
   }
 
-  angular.module("facets.controllers", ["facets.services", "user.services"])
+  angular.module("facets.controllers", ["facets.services", "user.services", "files.services"])
         .controller("currentFiltersCtrl", CurrentFiltersController)
         .controller("freeTextCtrl", FreeTextController)
         .controller("rangeFacetCtrl", RangeFacetController)

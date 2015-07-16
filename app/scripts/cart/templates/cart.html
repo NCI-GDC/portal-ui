@@ -30,11 +30,11 @@
           </div>
           <div style="padding: 10px">
             <p data-translate>
-              <strong>Manifest for Fast Download tool</strong>: Download a manifest file and use it with GDC High Performance Download Client. For more info on Fast Download, click
+              <strong>Download Manifest File</strong>: Downloading and analyzing large BAMs or large number of files can be very resource intensive. The GDC High-Performance Download Client, called Parcel, provides such means of transferring large amounts of data across high-speed networks in the most efficient manner possible. Download the manifest file and use it with the GDC High-Performance Download Client. For more info, click
                <a target="_blank" href="https://beta-edits-gdc.oicr.on.ca/access-data/gdc-high-performance-download-client">here</a>.
             </p>
             <p data-translate>
-              <strong>Download Cart (web browser)</strong>: Download Files in your Cart directly from Web-browser (recommended for small file size).
+              <strong>Download Cart (Web Browser)</strong>: Download Files in your Cart directly from the Web Browser.
             </p>
           </div>
         </div>
@@ -53,19 +53,19 @@
   </section>
 
   <section class="row items-pane" data-ng-if="cc.files.length">
-    <div class="col-xs-12 button-row">
+    <div class="button-row pull-right">
         <a type="button"
            class="btn btn-primary"
            data-ng-click="cc.getManifest(true)"
            id="manifest-button">
           <i class="fa fa-file-code-o"></i>
-          <span data-translate>Manifest for Fast Download Tool</span>
+          <span data-translate>Download Manifest File</span>
         </a>
         <a type="button"
            download-button-all-cart
            id="download-all-button"
            class="btn btn-primary">
-          <i class="fa fa-cloud-download"></i> <span data-translate>Download Cart (web browser)</span>
+          <i class="fa fa-cloud-download"></i> <span data-translate>Download Cart (Web Browser)</span>
         </a>
         <button type="button"
                 class="btn btn-danger"

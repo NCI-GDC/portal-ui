@@ -1,7 +1,6 @@
 <div class="row search-bar">
   <div class="col-lg-8">
     <div class="panel panel-default">
-      
       <div data-ng-if="!sb.gql.filters && !!sb.Error" style="padding: 1rem;" class="text-danger">
         <i class="fa fa-exclamation-circle"></i> 
           <span data-ng-hide="showErrors">Invalid Query</span></span>  
@@ -11,10 +10,8 @@
       <div data-ng-if="!sb.Error" style="padding: 1rem;" class="text-success">
         <i class="fa fa-check-circle"></i> Valid Query
       </div>
-      
       <gql data-gql="sb.gql" data-query="sb.query" data-error="sb.Error"></gql>
       <div class="panel-footer text-right">
-         
         <a target="_blank" 
           href="https://beta-edits-gdc.oicr.on.ca/access-data/gdc-data-portal-users-guide/5-formulating-queries-using-gdc-data-portal" style="margin-right: 15px"
            data-translate>

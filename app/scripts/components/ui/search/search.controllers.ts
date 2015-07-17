@@ -30,7 +30,7 @@ module ngApp.components.ui.search.controllers {
     sendQuery() {
       this.LocationService.setSearch({
         query: this.query,
-        filters: angular.toJson(this.gql.filters)
+        filters: angular.toJson({"op":"and", "content": [this.gql.filters]})
       });
     }
 

@@ -436,8 +436,10 @@ module ngApp.components.facets.controllers {
                   private $window: IGDCWindowService,
                   private Restangular: restangular.IService,
                   private FilesService: IFilesService,
+                  private ParticipantsService: IParticipantsService,
                   private $filter: any,
                   private facetsConfig: any,
+                  private LocationService: ILocationService,
                   private aggregations: any) {
 
       this.selectedIndex = 0;
@@ -484,22 +486,27 @@ module ngApp.components.facets.controllers {
       var fileOptions = {
         fields: [],
         expand: [],
-        facets: [selectedField['field']]
+        facets: [selectedField['field']],
+        filters: this.LocationService.filters()
       };
 
-      this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
-        _.assign(this.aggregations, data.aggregations);
-      });
+      if (selectedField['doc_type'] === "files") {
+        this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
+          _.assign(this.aggregations, data.aggregations);
+        });
+      } else if (selectedField['doc_type'] === "cases") {
+        this.ParticipantsService.getParticipants(fileOptions).then((data: IParticipant) => {
+          _.assign(this.aggregations, data.aggregations);
+        });
+      }
 
-      this.facetsConfig.unshift(
-        {
+      this.facetsConfig.unshift({
           name: selectedField['field'],
           title: selectedField['field'],
           collapsed: false,
           facetType: selectedField['type'] === 'long' ? "range" : "terms",
           removable: true
-        }
-      );
+      });
       this.$modalInstance.dismiss('added facet');
     }
 

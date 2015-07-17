@@ -243,7 +243,7 @@ module ngApp.search.models {
             {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms"},
             {name: "project.disease_type", title: "Disease Type", collapsed: false, facetType: "terms"},
             {name: "clinical.gender", title: "Gender", collapsed: true, facetType: "terms"},
-            {name: "clinical.age_at_diagnosis", title: "Age at diagnosis", collapsed: false, facetType: "range", unitsMap: [
+            {name: "clinical.age_at_diagnosis", title: "Age at diagnosis", hasGraph: true, collapsed: false, facetType: "range", unitsMap: [
                             {
                               "label": "years",
                               "conversionDivisor": 365,
@@ -254,7 +254,7 @@ module ngApp.search.models {
                             }
                             ]},
             {name: "clinical.vital_status", title: "Access Level", collapsed: false, facetType: "terms"},
-            {name: "clinical.days_to_death", title: "Days to Death", collapsed: true, facetType: "range", unitsMap: []},
+            {name: "clinical.days_to_death", title: "Days to Death", collapsed: true, facetType: "range", hasGraph: true},
             {name: "clinical.race", title: "Race", collapsed: true, facetType: "terms"},
             {name: "clinical.ethincity", title: "Ethnicity", collapsed: true, facetType: "terms"}
         //  "clinical.icd_10",

@@ -3,24 +3,22 @@
     <div class="col-lg-3 col-md-4 facets-sidebar">
       <tabset>
         <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
-          <div class="list-group-item" style="text-align: right">
-          <a add-customizable-facets data-doc-type="cases">Add a Case Filter</a>
-          </div>
-          <!--<facets-section facets-config="sc.SearchTableParticipantsModel.facets"-->
-                          <!--doctype="cases"-->
-                          <!--aggregations="sc.cases.aggregations">-->
-          <!--</facets-section>-->
-          <div data-ng-include="'search/templates/search.participants.facets.html'"
-               class="facet-section" role="form"></div>
+          <add-customizable-facets
+             data-facets-config="sc.SearchTableParticipantsModel.facets"
+             aggregations="sc.participants.aggregations"
+             data-doc-type="cases">
+          </add-customizable-facets>
+          <facets-section facets-config="sc.SearchTableParticipantsModel.facets"
+                          doctype="cases"
+                          aggregations="sc.participants.aggregations">
+          </facets-section>
         </tab>
         <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
-          <div class="list-group-item" style="text-align: right">
           <add-customizable-facets
              data-facets-config="sc.SearchTableFilesModel.facets"
              aggregations="sc.files.aggregations"
              data-doc-type="files">
-           </add-customizable-facets>
-           </div>
+          </add-customizable-facets>
           <facets-section facets-config="sc.SearchTableFilesModel.facets"
                           doctype="files"
                           aggregations="sc.files.aggregations">

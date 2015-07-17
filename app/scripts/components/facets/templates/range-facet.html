@@ -28,10 +28,9 @@
             {{ unitMap.label | humanify }}
         </label>
       </div>
-    <bar-chart data-ng-if="hasGraph === 'true'"
-               data-data="dataUnitConverted"
+    <bar-chart data-ng-if="hasGraph === 'true'" data-data="dataUnitConverted"
                data-max-num-bars="30"
-               data-height="35">
+               data-height="60">
     </bar-chart>
     <div class="input-group">
       <span class="input-group-addon">From:</span>

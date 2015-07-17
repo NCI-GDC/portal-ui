@@ -1,10 +1,11 @@
-<span data-ng-if="facetsConfig.length !== acfc.defaultConfig.length">
-  <a data-ng-click="acfc.reset()">
-  Reset
+<div class="list-group-item" style="text-align: right">
+  <span data-ng-if="facetsConfig.length !== acfc.defaultConfig.length">
+    <a data-ng-click="acfc.reset()">
+    Reset
+    </a>
+    |
+  </span>
+  <a data-ng-click="acfc.openModal()">
+      Add a {{ docType | titlefy }} Filter
   </a>
-  |
-</span>
-<a data-ng-click="acfc.openModal()">
-    Add a {{ docType | titlefy }} Filter
-</a>
-
+</div>

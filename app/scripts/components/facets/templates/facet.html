@@ -1,4 +1,4 @@
-<div class="list-group-item" data-ng-show="tc.terms.length" id="{{ title | lowercase | spaceReplace:'-' }}-facet-list-group">
+<div class="list-group-item" id="{{ title | lowercase | spaceReplace:'-' }}-facet-list-group">
   <h4 class="list-group-item-heading facet-title">
      <span data-ng-click="tc.toggle($event, 'collapsed')"
            role="button"
@@ -18,7 +18,10 @@
   </h4>
 
   <div data-ng-show="!tc.collapsed">
-    <p data-ng-repeat="term in tc.actives track by term.key"
+    <p data-ng-show="!tc.terms.length">
+      None
+    </p>
+    <p data-ng-show="tc.terms.length" data-ng-repeat="term in tc.actives track by term.key"
        class="list-group-item-text">
       <span data-ng-click="tc.remove(tc.name, term.key)"
             data-ng-keypress="remove(tc.name, term.key, $event)"

@@ -27,7 +27,7 @@ module ngApp.components.charts {
         // Used to namespace each resize event
         var id = "." + $window.Math.round($window.Math.random() * 120000);
 
-        $scope.$watch('data',function(a){
+        $scope.$watch('data', function(a){
           updateChart();
         });
 
@@ -299,6 +299,11 @@ module ngApp.components.charts {
 
         var margin = { right: 10, left: 10 };
         var width = element.parent().parent()[0].clientWidth - margin.left - margin.right;
+        //make sure width is never neg
+        if(width <= 0) {
+          width = 300;
+        }
+
         createChart();
 
         // Used to namespace each resize event
@@ -357,6 +362,7 @@ module ngApp.components.charts {
         }
 
         function drawBars() {
+          console.log("drawBars");
           var x = d3.scale.ordinal()
                   .domain(_.pluck(sortedData, "key"))
                   .rangeRoundBands([0, width], 0);
@@ -380,7 +386,7 @@ module ngApp.components.charts {
 
           var bars = elements
               .enter().append("g")
-              .attr("transform", (d) => { return "translate(" + x(d.key) + ",0)"; })
+              .attr("transform", (d) => { console.log(d.key + ": " + x(d.key)); return "translate(" + x(d.key) + ",0)"; })
               .append("rect")
               .attr("y", (d) => { return y(d.doc_count); })
               .attr("height", (d) => { return $scope.height - y(d.doc_count); })

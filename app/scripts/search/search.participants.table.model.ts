@@ -176,7 +176,7 @@ module ngApp.search.models {
         }, {
             name: 'Age at diagnosis',
             id: 'clinical.age_at_diagnosis',
-            td: (row, $scope) => (row.clinical && row.clinical.age_at_diagnosis) || "--",
+            td: (row, $scope) => (row.clinical && $scope.$filter("ageDisplay")(row.clinical.age_at_diagnosis)) || "--",
             sortable: false,
             hidden: true
         }, {

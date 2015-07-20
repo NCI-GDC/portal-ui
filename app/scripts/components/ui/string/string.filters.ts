@@ -84,14 +84,14 @@ module ngApp.components.ui.string {
     constructor(gettextCatalog: any) {
       return function(ageInDays: number) {
         if (ageInDays < 365) {
-          var daysText = gettextCatalog.getPlural(ageInDays, "d", "ds");
-          return ageInDays + daysText;
+          var daysText = gettextCatalog.getPlural(ageInDays, "day", "days");
+          return ageInDays + " " + daysText;
         } else {
           var ageInYears = Math.floor(ageInDays / 365);
           var remainderDays = Math.ceil(ageInDays % 365);
-          var yearsText = gettextCatalog.getPlural(ageInYears, "y", "ys");
-          var daysText = gettextCatalog.getPlural(remainderDays, "d", "ds");
-          return ageInYears + yearsText + (remainderDays ? " " + remainderDays + daysText : "");
+          var yearsText = gettextCatalog.getPlural(ageInYears, "year", "years");
+          var daysText = gettextCatalog.getPlural(remainderDays, "day", "days");
+          return ageInYears + " " + yearsText + (remainderDays ? " " + remainderDays + " " + daysText : "");
         }
       };
     }

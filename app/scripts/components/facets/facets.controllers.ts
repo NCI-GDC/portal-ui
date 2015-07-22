@@ -440,7 +440,8 @@ module ngApp.components.facets.controllers {
                   private $filter: any,
                   private facetsConfig: any,
                   private LocationService: ILocationService,
-                  private aggregations: any) {
+                  private aggregations: any,
+                  public docType: string) {
 
       this.selectedIndex = 0;
 
@@ -605,7 +606,8 @@ module ngApp.components.facets.controllers {
               return CustomFacetsService.getFacetFields(this.$scope.docType);
             },
             facetsConfig: () => { return this.$scope.facetsConfig; },
-            aggregations: () => { return this.$scope.aggregations; }
+            aggregations: () => { return this.$scope.aggregations; },
+            docType: () => { return this.$scope.docType; }
           }
       });
     }

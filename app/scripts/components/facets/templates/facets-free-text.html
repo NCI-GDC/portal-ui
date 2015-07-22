@@ -18,15 +18,15 @@
     </span>
   </p>
 
-  <div class="input-group search-input" data-ng-if="!ftc.collapsed"
-       data-ng-class="{ 'has-error': !ftc.results.length && ftc.query }">
+  <div>
+  </div>
+  <div class="input-group search-input" data-ng-if="!ftc.collapsed">
     <span class="fa fa-search"></span>
-    <input type="text" data-ng-model="ftc.query"
+    <input type="text" data-ng-model="ftc.searchTerm"
            placeholder="{{ 'Search for' | translate }} {{ placeholder | translate }}"
-           data-typeahead="id for id in ftc.results | limitTo: 10"
+           data-typeahead="id for id in ftc.autoComplete($viewValue) | limitTo: 10"
            data-typeahead-on-select="ftc.termSelected()"
            data-typeahead-min-length="2"
-           data-ng-change="ftc.autoComplete()"
            maxlength="100"
            id="{{ 'autocomplete-' + title }}"
            typeahead-template-url="{{ template }}"

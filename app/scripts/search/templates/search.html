@@ -4,7 +4,6 @@
       <tabset>
         <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
           <add-customizable-facets
-             data-facets-config="sc.SearchTableParticipantsModel.facets"
              aggregations="sc.participants.aggregations"
              data-doc-type="cases">
           </add-customizable-facets>
@@ -15,12 +14,10 @@
         </tab>
         <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
           <add-customizable-facets
-             data-facets-config="sc.SearchTableFilesModel.facets"
              aggregations="sc.files.aggregations"
              data-doc-type="files">
           </add-customizable-facets>
-          <facets-section facets-config="sc.SearchTableFilesModel.facets"
-                          doctype="files"
+          <facets-section doctype="files"
                           aggregations="sc.files.aggregations">
           </facets-section>
         </tab>

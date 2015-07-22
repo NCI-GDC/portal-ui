@@ -202,6 +202,7 @@ module ngApp.components.facets.services {
   class CustomFacetsService implements ICustomFacetsService {
     private ds: restangular.IElement;
 
+    /* @ngInject */
     constructor(private Restangular: restangular.IService,
                 private SearchTableFilesModel: TableiciousConfig,
                 private SearchTableParticipantsModel: TableiciousConfig) {
@@ -221,8 +222,44 @@ module ngApp.components.facets.services {
 
   }
 
+  export interface IFacetsConfigService {
+    getFields(docType: string): Array<Object>;
+    addField(field: Object): void;
+    reset(docType: string): void;
+  }
+
+  class FacetsConfigService implements IFacetsConfigServce {
+    fieldsMap: any = {};
+    defaultFieldsMap: any = {};
+
+     /* @ngInject */
+    constructor() {}
+
+    setFields(docType: string, fields: Array<Object>) {
+      this.fieldsMap[docType] = fields;
+      console.log(this.fieldsMap[docType]);
+      this.defaultFieldsMap[docType] = _.clone(fields, true);
+    }
+
+    getFields(docType: string): Array<Object> {
+      return this.fieldsMap[docType];
+    }
+
+    addField(docType: string, field: Object): void {
+      this.fieldsMap[docType].unshift(field);
+    }
+
+    reset(docType: string): void {
+      this.fieldsMap[docType] = _.clone(this.defaultFieldsMap[docType], true);
+      console.log("reset");
+    }
+
+ }
+
   angular.
       module("facets.services", ["location.services", "restangular", "user.services"])
       .service("CustomFacetsService", CustomFacetsService)
+      .service("FacetsConfigService", FacetsConfigService)
       .service("FacetService", FacetService);
 }
+

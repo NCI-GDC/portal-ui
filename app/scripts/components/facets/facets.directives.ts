@@ -4,6 +4,7 @@ module ngApp.components.facets.directives {
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import ITermsController = ngApp.components.facets.controllers.ITermsController;
   import ICustomFacetsService = ngApp.components.facets.services.ICustomFacetsService;
+  import IFacetsConfigService = ngApp.components.facets.models.IFacetsService;
 
   /* @ngInject */
   function Terms(ProjectsService: IProjectsService): ng.IDirective {
@@ -99,7 +100,7 @@ module ngApp.components.facets.directives {
       restrict: "E",
       scope: {
         docType: "@",
-        facetsConfig: "=",
+        //facetsConfig: "=",
         aggregations: "="
       },
       templateUrl: "components/facets/templates/add-customizable-facets.html",
@@ -117,16 +118,19 @@ module ngApp.components.facets.directives {
   }
 
   /* @ngInject */
-  function FacetsSection(FacetService: IFacetService): ng.IDirective {
+  function FacetsSection(FacetService: IFacetService,
+                         FacetsConfigService: IFacetsConfigService): ng.IDirective {
     return {
       restrict: "E",
       templateUrl: "components/facets/templates/facets-section.html",
       scope: {
         doctype: "@",
-        facetsConfig: "=",
+      //  facetsConfig: "=",
         aggregations: "="
       },
       link: ($scope: ng.IScope) => {
+        $scope.facetsConfig = FacetsConfigService.getFields($scope.doctype);
+
         $scope.removeFacet = function(name: string) {
             $scope.facetsConfig = _.reject($scope.facetsConfig, (facet) => {
             return facet.name === name;

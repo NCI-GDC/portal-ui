@@ -14,6 +14,7 @@ module ngApp.search.controllers {
   import ISearchService = ngApp.search.services.ISearchService;
   import ISearchState = ngApp.search.services.ISearchState;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
+  import IFacetsConfigService = ngApp.components.facets.models.IFacetsService;
 
   export interface ISearchController {
     files: IFiles;
@@ -56,6 +57,7 @@ module ngApp.search.controllers {
                 public CoreService: ICoreService,
                 public SearchTableFilesModel: TableiciousConfig,
                 public SearchTableParticipantsModel: TableiciousConfig,
+                private FacetsConfigService: IFacetsConfigService,
                 public FacetService,
                 SearchChartConfigs) {
       var data = $state.current.data || {};
@@ -118,10 +120,12 @@ module ngApp.search.controllers {
         this.tabSwitch = false;
       });
 
+      this.FacetsConfigService.setFields('files', this.SearchTableFilesModel.facets);
+      console.log("hi");
       var fileOptions = {
         fields: this.SearchTableFilesModel.fields,
         expand: this.SearchTableFilesModel.expand,
-        facets: _.pluck(this.SearchTableFilesModel.facets, 'name')
+        facets: _.pluck(this.FacetsConfigService.getFields('files'), 'name')
       };
 
       var participantOptions = {

@@ -56,7 +56,8 @@ gulp.task('logs', function () {
     version: packageJSON.version,
     issueLink: function (id) {
       return '[OICR-' + id + '](https://jira.opensciencedatacloud.org/browse/OICR-' + id + ')'
-    }
+    },
+    from: "4beacf83844e5e5b6436bf7f8c4f437e3d87a65d"
   }, function (err, log) {
     fs.writeFile('CHANGELOG.md', log);
   });

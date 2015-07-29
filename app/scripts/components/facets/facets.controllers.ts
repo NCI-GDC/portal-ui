@@ -1,4 +1,17 @@
 module ngApp.components.facets.controllers {
+  import IFilesService = ngApp.files.services.IFilesService;
+
+  enum KeyCode {
+    Space = 32,
+    Enter = 13,
+    Esc = 27,
+    Left = 37,
+    Right = 39,
+    Up = 38,
+    Down = 40,
+    Tab = 9
+  }
+  enum Cycle { Up = -1, Down = 1 }	
 
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import IFacetService = ngApp.components.facets.services.IFacetService;
@@ -50,7 +63,7 @@ module ngApp.components.facets.controllers {
     /* @ngInject */
     constructor(private $scope: IFacetScope, private FacetService: IFacetService,
                 private UserService: IUserService) {
-      this.collapsed = !!$scope.collapsed;
+      this.collapsed = $scope.collapsed === 'true' ? true : false;
       this.expanded = !!$scope.expanded;
       this.displayCount = this.originalDisplayCount = $scope.displayCount || 5;
       this.title = $scope.title;
@@ -118,8 +131,10 @@ module ngApp.components.facets.controllers {
     currentFilters: any = [];
 
     /* @ngInject */
-    constructor($scope: ng.IScope, private LocationService: ILocationService,
-                private FacetService: IFacetService, private UserService: IUserService) {
+    constructor($scope: ng.IScope,
+                private LocationService: ILocationService,
+                private FacetService: IFacetService,
+                private UserService: IUserService) {
 
       this.build();
 
@@ -236,9 +251,16 @@ module ngApp.components.facets.controllers {
       $scope.lowerBoundOriginalDays = null;
       $scope.upperBoundOriginalDays = null;
 
-      if($scope.unitsMap) {
-        $scope.selectedUnit = $scope.unitsMap[0];
+      if(!$scope.unitsMap) {
+        $scope.unitsMap = [
+              {
+                "label": "none",
+                "conversionDivisor": 1,
+              }
+            ];
       }
+
+      $scope.selectedUnit = $scope.unitsMap[0];
 
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
@@ -402,10 +424,207 @@ module ngApp.components.facets.controllers {
 
   }
 
-  angular.module("facets.controllers", ["facets.services", "user.services"])
-      .controller("currentFiltersCtrl", CurrentFiltersController)
-      .controller("freeTextCtrl", FreeTextController)
-      .controller("rangeFacetCtrl", RangeFacetController)
-      .controller("dateFacetCtrl", DateFacetController)
-      .controller("termsCtrl", TermsController);
+  class CustomFacetsController {
+    private ds: restangular.IElement;
+    public selectedIndex: number;
+    private offsets: Array<number>;
+
+      /* @ngInject */
+      constructor(public facetFields: Array<Object>,
+                  private $scope: ng.IScope,
+                  private $modalInstance,
+                  private $window: IGDCWindowService,
+                  private Restangular: restangular.IService,
+                  private FilesService: IFilesService,
+                  private ParticipantsService: IParticipantsService,
+                  private $filter: any,
+                  private facetsConfig: any,
+                  private LocationService: ILocationService,
+                  private aggregations: any,
+                  public docType: string) {
+
+      this.selectedIndex = 0;
+
+      this.offsets = [];
+
+      var _this = this;
+      $scope.keyboardListener = function(e: any) {
+        var key = e.which || e.keyCode
+        switch (key) {
+            case KeyCode.Enter:
+              e.preventDefault();
+              _this.addFacet();
+              break;
+            case KeyCode.Up:
+              e.preventDefault();
+              _this.setSelectedIndex(Cycle.Up);
+              break;
+            case KeyCode.Down:
+              e.preventDefault();
+              _this.setSelectedIndex(Cycle.Down);
+              break;
+            case KeyCode.Esc:
+              _this.$modalStack.dismissAll();
+              break;
+            case KeyCode.Tab:
+              e.preventDefault();
+              break;
+          }
+      };
+
+      $scope.itemHover = function(index: number) {
+        _this.selectedIndex = index;
+      };
+
+    }
+
+    closeModal(): void {
+      this.$modalInstance.dismiss('cancel');
+    }
+
+    addFacet() {
+      var selectedField = this.$scope.filteredFields[this.selectedIndex];
+      var fileOptions = {
+        fields: [],
+        expand: [],
+        facets: [selectedField['field']],
+        filters: this.LocationService.filters()
+      };
+
+      if (selectedField['doc_type'] === "files") {
+        this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
+          _.assign(this.aggregations, data.aggregations);
+        });
+      } else if (selectedField['doc_type'] === "cases") {
+        this.ParticipantsService.getParticipants(fileOptions).then((data: IParticipant) => {
+          _.assign(this.aggregations, data.aggregations);
+        });
+      }
+
+      this.facetsConfig.unshift({
+          name: selectedField['field'],
+          title: selectedField['field'],
+          collapsed: false,
+          facetType: selectedField['type'] === 'long' ? "range" : "terms",
+          removable: true
+      });
+      this.$modalInstance.dismiss('added facet');
+    }
+
+    setSelectedIndex(direction: Cycle) {
+      if (direction == Cycle.Up) {
+        if (this.selectedIndex === 0) {
+          this.selectedIndex = (this.$scope.filteredFields.length - 1);
+          document.getElementById('add-facets-modal').scrollTop = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-')).offsetTop;
+        } else {
+          this.selectedIndex--;
+          this.scrollToSelected(Cycle.Up);
+        }
+      }
+      if (direction == Cycle.Down) {
+        if (this.selectedIndex  === (this.$scope.filteredFields.length - 1)) {
+          this.selectedIndex = 0;
+          document.getElementById('add-facets-modal').scrollTop = 0;
+        } else {
+          this.selectedIndex++;
+          this.scrollToSelected(Cycle.Down);
+        }
+      }
+    }
+
+    scrollToSelected(direction: Cycle) {
+      var modalElement = document.getElementById('add-facets-modal')
+      var selectedElement = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-'));
+      this.offsets = [];
+      for (var i = 0; i < this.$scope.filteredFields.length; i++) {
+        this.offsets.push(document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[i].field, '-')).offsetTop);
+      }
+      var currentTopPos = modalElement.scrollTop;
+      var nearestIndex = -1;
+      var minDiff = Number.MAX_VALUE;
+      for (var i = 0; i < this.offsets.length; i++) {
+        var currentDiff = Math.abs(currentTopPos - this.offsets[i]);
+        if (currentDiff < minDiff) {
+          minDiff = currentDiff;
+          nearestIndex = i;
+        }
+      }
+      if (direction === Cycle.Up) {
+        if (selectedElement.offsetTop < modalElement.scrollTop) {
+          modalElement.scrollTop = this.offsets[nearestIndex-1]
+        }
+      } else if (direction === Cycle.Down) {
+        if (selectedElement.offsetTop + 4 > modalElement.scrollTop + modalElement.clientHeight) {
+          modalElement.scrollTop = this.offsets[nearestIndex+1];
+        }
+      }
+    }
+
+    inputChanged() {
+      if (this.$scope.filteredFields.length < this.selectedIndex) {
+        this.selectedIndex = 0;
+      }
+    }
+  }
+
+  class AddCustomFacetsController {
+    private modalInstance: any;
+    public defaultConfig: Array<Object>;
+
+    /* @ngInject */
+    constructor(private $scope: ng.IScope,
+                private $modalStack,
+                private $modal,
+                private LocationService: ILocationService) {
+
+      this.defaultConfig = _.clone($scope.facetsConfig, true);
+      $scope.$on("$stateChangeStart", () => {
+        if (this.modalInstance) {
+          this.modalInstance.close();
+        }
+      });
+
+    }
+
+    openModal(): void {
+      // Modal stack is a helper service. Used to figure out if one is currently
+      // open already.
+      if (this.$modalStack.getTop()) {
+        return;
+      }
+
+      this.modalInstance = this.$modal.open({
+        templateUrl: "components/facets/templates/add-facets-modal.html",
+        backdrop: true,
+        controller: "customFacetsCtrl as cufc",
+        keyboard: true,
+        animation: false,
+        size: "lg",
+        resolve: {
+            /** @ngInject */
+            facetFields: (CustomFacetsService: ICustomFacetsService): ng.IPromise<any> => {
+              return CustomFacetsService.getFacetFields(this.$scope.docType);
+            },
+            facetsConfig: () => { return this.$scope.facetsConfig; },
+            aggregations: () => { return this.$scope.aggregations; },
+            docType: () => { return this.$scope.docType; }
+          }
+      });
+    }
+
+    reset(): void {
+      this.LocationService.clear();
+      this.$scope.facetsConfig = _.clone(this.defaultConfig, true);
+    }
+
+  }
+
+  angular.module("facets.controllers", ["facets.services", "user.services", "files.services"])
+        .controller("currentFiltersCtrl", CurrentFiltersController)
+        .controller("freeTextCtrl", FreeTextController)
+        .controller("rangeFacetCtrl", RangeFacetController)
+        .controller("dateFacetCtrl", DateFacetController)
+        .controller("customFacetsCtrl", CustomFacetsController)
+        .controller("addCustomFacetsController", AddCustomFacetsController)
+        .controller("termsCtrl", TermsController);
 }

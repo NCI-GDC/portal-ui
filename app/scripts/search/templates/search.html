@@ -3,12 +3,23 @@
     <div class="col-lg-3 col-md-4 facets-sidebar">
       <tabset>
         <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
-          <div data-ng-include="'search/templates/search.participants.facets.html'"
-               class="facet-section" role="form"></div>
+          <add-customizable-facets
+             aggregations="sc.participants.aggregations"
+             data-doc-type="cases">
+          </add-customizable-facets>
+          <facets-section facets-config="sc.SearchTableParticipantsModel.facets"
+                          doctype="cases"
+                          aggregations="sc.participants.aggregations">
+          </facets-section>
         </tab>
         <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
-          <div data-ng-include="'search/templates/search.files.facets.html'"
-               class="facet-section" role="form"></div>
+          <add-customizable-facets
+             aggregations="sc.files.aggregations"
+             data-doc-type="files">
+          </add-customizable-facets>
+          <facets-section doctype="files"
+                          aggregations="sc.files.aggregations">
+          </facets-section>
         </tab>
       </tabset>
     </div>

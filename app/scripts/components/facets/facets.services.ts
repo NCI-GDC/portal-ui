@@ -167,12 +167,12 @@ module ngApp.components.facets.services {
       this.LocationService.setFilters(filters);
     }
 
-    removeTerm(facet: string, term: string, op: string = 'in') {
+    removeTerm(facet: string, term: string, op: string) {
       var filters = this.ensurePath(this.LocationService.filters());
       var cs = filters["content"];
       for (var i = 0; i < cs.length; i++) {
         var c = cs[i]["content"];
-        if (c["field"] === facet && cs[i]["op"] === op) {
+        if (c["field"] === facet && (!op || cs[i]["op"] === op)) {
           if (!term) {
             cs.splice(i, 1);
           } else {
@@ -192,8 +192,74 @@ module ngApp.components.facets.services {
       }
       this.LocationService.setFilters(filters);
     }
+
   }
+
+  export interface ICustomFacetsService {
+    getFacetFields(docType: string): ng.IPromise<any>;
+  }
+
+  class CustomFacetsService implements ICustomFacetsService {
+    private ds: restangular.IElement;
+
+    /* @ngInject */
+    constructor(private Restangular: restangular.IService,
+                private SearchTableFilesModel: TableiciousConfig,
+                private SearchTableParticipantsModel: TableiciousConfig) {
+      this.ds = Restangular.all("gql/_mapping");
+    }
+
+    getFacetFields(docType: string): ng.IPromise<any> {
+      return this.ds.getList().then((data) => {
+        return _.filter(data, (datum) => {
+          return datum.doc_type === docType &&
+                 datum.field !== 'archive.revision' &&
+                 !_.includes(datum.field, "_id") &&
+                 !_.includes(docType === 'files' ? _.pluck(this.SearchTableFilesModel.facets, "name") : _.pluck(this.SearchTableParticipantsModel.facets, "name"), datum.field);
+        });
+      });
+    }
+
+  }
+
+  export interface IFacetsConfigService {
+    getFields(docType: string): Array<Object>;
+    addField(field: Object): void;
+    reset(docType: string): void;
+  }
+
+  class FacetsConfigService implements IFacetsConfigServce {
+    fieldsMap: any = {};
+    defaultFieldsMap: any = {};
+
+     /* @ngInject */
+    constructor() {}
+
+    setFields(docType: string, fields: Array<Object>) {
+      this.fieldsMap[docType] = fields;
+      console.log(this.fieldsMap[docType]);
+      this.defaultFieldsMap[docType] = _.clone(fields, true);
+    }
+
+    getFields(docType: string): Array<Object> {
+      return this.fieldsMap[docType];
+    }
+
+    addField(docType: string, field: Object): void {
+      this.fieldsMap[docType].unshift(field);
+    }
+
+    reset(docType: string): void {
+      this.fieldsMap[docType] = _.clone(this.defaultFieldsMap[docType], true);
+      console.log("reset");
+    }
+
+ }
+
   angular.
       module("facets.services", ["location.services", "restangular", "user.services"])
+      .service("CustomFacetsService", CustomFacetsService)
+      .service("FacetsConfigService", FacetsConfigService)
       .service("FacetService", FacetService);
 }
+

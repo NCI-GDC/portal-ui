@@ -80,6 +80,15 @@ module ngApp.components.ui.string {
     }
   }
 
+  class DotReplace {
+    constructor() {
+      return function(s: string, replaceWith: string) {
+        return s.toString().replace(/\.+/g, replaceWith || '');
+      };
+    }
+  }
+
+
   class AgeDisplay {
     constructor(gettextCatalog: any) {
       return function(ageInDays: number) {
@@ -101,6 +110,7 @@ module ngApp.components.ui.string {
       .filter("ellipsicate", Ellipsicate)
       .filter("titlefy", Titlefy)
       .filter("spaceReplace", SpaceReplace)
+      .filter("dotReplace", DotReplace)
       .filter("humanify", Humanify)
       .filter("ageDisplay", AgeDisplay);
 }

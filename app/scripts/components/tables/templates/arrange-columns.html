@@ -15,19 +15,17 @@
           </span>
           <input
            type="text" class="form-control Columns-dropdown-search-input" placeholder="Filter columns"
-                 data-ng-model="search.th" />
+                 data-ng-model="search.name" />
         </div>
         </li>
         <li class="Columns-dropdown-reset">
-          <a href=""
-
-          data-ng-click="restoreDefaults()" data-translate>
+          <a href="" data-ng-click="restoreDefaults()" data-translate>
             Restore Defaults
           </a>
       </li>
        <li>
          <ul data-as-sortable="sortOptions" data-ng-model="headings" class="Columns-dropdown-headings">
-          <li data-ng-repeat="item in headings | filter:search:strict"
+          <li data-ng-repeat="item in headings | filter:search"
               data-as-sortable-item
               data-dragEnd
               data-ng-hide="item.inactive(this)">
@@ -35,7 +33,7 @@
               {{ item.name | ellipsicate:18 }}
               <i class="pull-right text-right fa fa-bars fa-stack"
                 as-sortable-item-handle 
-                data-ng-class="{ 'fa-disabled': search.th }"></i>
+                data-ng-class="{ 'fa-disabled': search.name }"></i>
           </li>
          </ul>
        </li>

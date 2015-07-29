@@ -345,7 +345,11 @@ module ngApp.components.githut.controllers {
             .attr("class","title");
 
           svg.append("rect")
-            .attr("width", xscale(options.superhead.end) - xscale(options.superhead.start))
+            .attr("width", () => {
+              var width = xscale(options.superhead.end) - xscale(options.superhead.start);
+              // no neg widths
+              return width > 0 ? width : 0;
+             } )
             .attr("height", 1)
             .attr("y", 15)
             .attr("x", xscale(options.superhead.start) + padding.left + margins.left);
@@ -528,13 +532,15 @@ module ngApp.components.githut.controllers {
           .select("rect")
           .transition()
           .duration(options.duration)
-          .attr("x", function(d) {
+          .attr("x", (d) => {
             return -width_scales[d.column](d.value /
                    ((options.dimensions.indexOf(d.column) > -1) ? 1 : d.ref)) / 2;
           })
-          .attr("width",function(d){
-            return width_scales[d.column](d.value /
+          .attr("width", (d) => {
+            var width = width_scales[d.column](d.value /
                    ((options.dimensions.indexOf(d.column) > -1) ? 1 : d.ref));
+            // no neg widths
+            return width > 0 ? width : 0;
           });
       }
 

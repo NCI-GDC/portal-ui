@@ -31,38 +31,43 @@ module ngApp.reports.controllers {
     byLocation: any;
 
     /* @ngInject */
-    constructor(public reports: IReports, private CoreService: ICoreService,
+    constructor(public data, private CoreService: ICoreService,
                 public $scope: ng.IScope, private $timeout: ng.ITimeoutService,
-                private ReportsGithutColumns, private ReportsGithut, public reportServiceExpand: string[]) {
+                private ReportsGithutColumns, private ReportsGithut, public reportServiceExpand: string[],
+                private $window: IGDCWindowService, private ProjectsService: IProjectsService) {
 
-        CoreService.setPageTitle("Reports");
+      var reports = this.reports = data.data;
 
-        var dataNoZeros = _.reject(reports.hits, (hit) => { return hit.count === 0 && hit.size ===0; });
-        this.byProject = this.dataNest("project_id").entries(dataNoZeros);
-        this.byDisease = this.dataNest("disease_type").entries(dataNoZeros);
-        this.byProgram = this.dataNest("program").entries(dataNoZeros);
-        this.byDataType = this.dataNest("data_type").entries(this.reduceBy(dataNoZeros, "data_types"));
-        this.bySubtype = this.dataNest("data_subtype").entries(this.reduceBy(dataNoZeros, "data_subtypes"));
-        this.byStrat = this.dataNest("experimental_strategy").entries(this.reduceBy(dataNoZeros, "experimental_strategies"));
-        this.byDataAccess = this.dataNest("access").entries(this.reduceBy(dataNoZeros, "data_access"));
-        this.byUserType = this.dataNest("user_access_type").entries(this.reduceBy(dataNoZeros, "user_access_types"));
-        this.byLocation = this.dataNest("country").entries(this.reduceBy(dataNoZeros, "countries"));
+      this.reportDate = $window.moment(new Date(parseInt(data.settings.creation_date))).format("YYYY-MM-DD");
 
-        $timeout(() => {
-          var githut = ReportsGithut(dataNoZeros);
-          $scope.githutData = githut.data;
-          $scope.githutConfig = githut.config;
-        }, 500);
+      CoreService.setPageTitle("Reports");
+
+      var dataNoZeros = _.reject(reports.hits, (hit) => { return hit.count === 0 && hit.size ===0; });
+      this.byProject = this.dataNest("project_id").entries(dataNoZeros);
+      this.byDisease = this.dataNest("disease_type").entries(dataNoZeros);
+      this.byProgram = this.dataNest("program").entries(dataNoZeros);
+      this.byDataType = this.dataNest("data_type").entries(this.reduceBy(dataNoZeros, "data_types"));
+      this.bySubtype = this.dataNest("data_subtype").entries(this.reduceBy(dataNoZeros, "data_subtypes"));
+      this.byStrat = this.dataNest("experimental_strategy").entries(this.reduceBy(dataNoZeros, "experimental_strategies"));
+      this.byDataAccess = this.dataNest("access").entries(this.reduceBy(dataNoZeros, "data_access"));
+      this.byUserType = this.dataNest("user_access_type").entries(this.reduceBy(dataNoZeros, "user_access_types"));
+      this.byLocation = this.dataNest("country").entries(this.reduceBy(dataNoZeros, "countries"));
+
+      $timeout(() => {
+        var githut = ReportsGithut(dataNoZeros);
+        $scope.githutData = githut.data;
+        $scope.githutConfig = githut.config;
+      }, 500);
     }
 
     dataNest(key: string): any {
       return d3.nest()
           .key(function(d){return d[key]})
-          .rollup(function(d){
+          .rollup((d) => {
             return {
               file_count: d3.sum(d.map(function(x){return x.count})),
               file_size: d3.sum(d.map(function(x){return x.size})),
-              project_name:d[0].disease_type
+              project_name: this.ProjectsService.projectIdMapping[d[0].project_id]
             }
           })
           .sortValues(function(a,b){return a.file_count - b.file_count});
@@ -82,6 +87,7 @@ module ngApp.reports.controllers {
   angular
       .module("reports.controller", [
         "reports.services",
+        "projects.services",
         "core.services",
         "reports.githut.config"
       ])

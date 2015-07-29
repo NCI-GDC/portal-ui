@@ -255,7 +255,14 @@ module ngApp.components.tables.controllers {
     /* @ngInject */
     constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig,
                 private $modal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
-                private $window: ng.IWindowService, private UserService: IUserService, private $timeout: ng.ITimeoutService) {}
+                private $window: ng.IWindowService, private UserService: IUserService, private $timeout: ng.ITimeoutService) {
+      this.formats = $scope.formats && $scope.formats.toUpperCase().split(",") || [
+        "TSV",
+        "CSV",
+        "JSON",
+        "XML"
+      ];
+    }
 
     exportTable(fileType: string): void {
       var projectsKeys = {
@@ -327,9 +334,17 @@ module ngApp.components.tables.controllers {
           if (modalOpenPromise) {
             this.$timeout.cancel(modalOpenPromise);
           }
-          this.$window.saveAs(file.data, this.$scope.endpoint + "." +
-                              this.$window.moment().format() + "." +
-                              fileType.toLowerCase());
+
+          var title = this.$scope.endpoint + "." +
+                      this.$window.moment().format() + "." +
+                      fileType.toLowerCase();
+
+          if (this.$scope.exportTitle) {
+            title = this.$scope.exportTitle + this.$window.moment().format("YYYY-MM-DD") + "." +
+                    fileType.toLowerCase();
+          }
+
+          this.$window.saveAs(file.data, title);
         })
         .finally(() => {
           if (modalInstance) {

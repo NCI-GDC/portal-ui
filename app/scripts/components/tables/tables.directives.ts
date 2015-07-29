@@ -56,7 +56,9 @@ module ngApp.components.tables.directives {
         size: "@",
         headings: "=",
         endpoint: "@",
-        expand: "="
+        expand: "=",
+        formats: "@",
+        exportTitle: "@"
       },
       replace: true,
       templateUrl: "components/tables/templates/export-table.html",

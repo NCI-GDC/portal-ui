@@ -6,13 +6,19 @@
           data-dropdown-toggle aria-expanded="false">
           <span class="fa fa-table"></span>
   </button>
-  <button data-ng-if="text" type="button" class="btn btn-primary dropdown-toggle"
+  <button type="button" class="btn btn-primary dropdown-toggle"
           data-dropdown-toggle
+          data-ng-if="etc.formats.length > 1 && text"
           data-aria-expanded="false">
           {{ text }}
   </button>
-  <ul class="dropdown-menu pull-right" role="menu">
-    <li>
+  <button type="button" class="btn btn-primary"
+          data-ng-if="etc.formats.length === 1 && text"
+          data-ng-click="etc.exportTable(etc.formats[0])">
+          {{ text }}
+  </button>
+  <ul class="dropdown-menu pull-right" role="menu" data-ng-if="etc.formats.length > 1">
+    <li data-ng-if="etc.formats.indexOf('JSON') !== -1">
       <a data-ng-click="etc.exportTable('JSON')">
         <span class="fa-stack">
           <span class="fa-stack-1x filetype-text">JSON</span>
@@ -21,7 +27,7 @@
         <span data-translate>JSON</span>
       </a>
     </li>
-    <li>
+    <li data-ng-if="etc.formats.indexOf('XML') !== -1">
       <a data-ng-click="etc.exportTable('XML')">
         <span class="fa-stack">
           <span class="fa-stack-1x filetype-text">XML</span>
@@ -30,7 +36,7 @@
         <span data-translate>XML</span>
       </a>
     </li>
-    <li>
+    <li data-ng-if="etc.formats.indexOf('CSV') !== -1">
       <a data-ng-click="etc.exportTable('CSV')">
         <span class="fa-stack">
           <span class="fa-stack-1x filetype-text">CSV</span>
@@ -39,7 +45,7 @@
         <span data-translate>CSV</span>
       </a>
     </li>
-    <li>
+    <li data-ng-if="etc.formats.indexOf('TSV') !== -1">
       <a data-ng-click="etc.exportTable('TSV')">
         <span class="fa-stack">
           <span class="fa-stack-1x filetype-text">TSV</span>

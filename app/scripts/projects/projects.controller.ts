@@ -136,17 +136,9 @@ module ngApp.projects.controllers {
         var type = _.find(project.summary.data_types, (item) => {
           return item.data_type.toLowerCase() === name.toLowerCase();
         });
-
         if (type) {
           result.push(type);
-        } else {
-          result.push({
-            data_type: name,
-            file_count: 0,
-            case_count: 0
-          });
         }
-
         return result;
       }, []);
 
@@ -158,7 +150,7 @@ module ngApp.projects.controllers {
         pluralDefaultText: "experimental strategies",
         hideFileSize: true,
         tableTitle: "Case and File Counts by Experimental Strategy",
-        noResultsText: "No files with Experimental Strategies",
+        noResultsText: "No files or cases with Experimental Strategies",
         state: {
           name: "search.files"
         },
@@ -194,6 +186,7 @@ module ngApp.projects.controllers {
         hideFileSize: true,
         tableTitle: "Case and File Counts by Data Type",
         pluralDefaultText: "data types",
+        noResultsText: "No files or cases with Data Types",
         state: {
           name: "search.files"
         },

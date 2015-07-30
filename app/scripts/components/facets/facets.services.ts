@@ -40,7 +40,7 @@ module ngApp.components.facets.services {
       }
 
       return this.Restangular.all(entity + "/ids").get("", options).then((data) => {
-        return data.data.hits;
+        return data.data.hits.length ? data.data.hits : [{'warning': 'No Results Found'}];
       });
     }
 

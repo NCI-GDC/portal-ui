@@ -1,4 +1,4 @@
-<a>
+<a data-ng-if="!match.model.warning">
   <div class="typeahead-row">
     <div class="icon-container">
       <i class="fa fa-file-o"></i>
@@ -13,3 +13,10 @@
     </div>
   </div>
 </a>
+<span data-ng-if="match.model.warning">
+  <div class="typeahead-row">
+    <em class="text-muted">
+    {{ match.model.warning }}
+    </em>
+  </div>
+</span>

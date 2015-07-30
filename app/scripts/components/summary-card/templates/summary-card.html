@@ -25,7 +25,7 @@
              data-ng-if="mode === 'graph' && data.length" legend-limit="6"></pie-chart>
 
   <div class="card-table table-responsive" data-ng-if="mode === 'table' && data.length">
-    <table id="{{title | spaceReplace:'-' | lowercase }}-summary-card-table" class="table table-striped table-hover table-condensed table-bordered">
+    <table id="{{ tableId ? tableId : title | spaceReplace:'-' | lowercase }}{{tableId ? '' : '-summary-card-table'}}" class="table table-striped table-hover table-condensed table-bordered">
       <thead>
         <tr>
           <th></th>

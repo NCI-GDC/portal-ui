@@ -2,8 +2,8 @@
   <div class="row">
     <div class="col-xs-10 col-sm-8">
       <div class="CountCard-title">{{ title | translate }}</div>
-      <div class="CountCard-data" data-ng-if="!sref">{{ data }}</div>
-      <div class="CountCard-data" data-ng-if="sref">
+      <div class="CountCard-data" data-ng-if="data === '0' || !sref">{{ data }}</div>
+      <div class="CountCard-data" data-ng-if="data !== '0' && sref">
         <a id="{{title | spaceReplace:'-' | lowercase }}-count-link" data-ui-sref="{{ sref }}">
           {{ data }}
         </a>

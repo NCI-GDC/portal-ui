@@ -48,7 +48,8 @@ module ngApp.components.facets.directives {
         placeholder: "@",
         field: "@",
         entity: "@",
-        template: "@"
+        template: "@",
+        autocomplete: "@"
       },
       replace: true,
       templateUrl: "components/facets/templates/facets-free-text.html",

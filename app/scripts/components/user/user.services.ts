@@ -98,7 +98,7 @@ module ngApp.components.user.services {
 
       return _.filter(terms, (term) => {
         return this.isUserProject({
-          participants: [
+          cases: [
             {
               project: {
                 project_id: term.key

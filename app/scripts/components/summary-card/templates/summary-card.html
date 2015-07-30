@@ -25,7 +25,7 @@
              data-ng-if="mode === 'graph' && data.length" legend-limit="6"></pie-chart>
 
   <div class="card-table table-responsive" data-ng-if="mode === 'table' && data.length">
-    <table id="{{title | spaceReplace:'-' | lowercase }}-summary-card-table" class="table table-striped table-hover table-condensed table-bordered">
+    <table id="{{ tableId ? tableId : title | spaceReplace:'-' | lowercase }}{{tableId ? '' : '-summary-card-table'}}" class="table table-striped table-hover table-condensed table-bordered">
       <thead>
         <tr>
           <th></th>
@@ -41,9 +41,13 @@
             {{ item[config.displayKey] | humanify }}
           </th>
           <td class="text-right">
-            <a data-ng-if="item[config.sortKey]" data-ng-click="sc.addFilters(item)">
+            <a data-ng-if="sc.LocationService.path().startsWith('/query')" data-tooltip-html-unsafe="Further filtering in this view can <br>be performed using the <br>Advanced Search above">
               {{ item[config.sortKey] | number }}
             </a>
+            <a data-ng-if="item[config.sortKey] && !sc.LocationService.path().startsWith('/query')" data-ng-click="sc.addFilters(item)">
+              {{ item[config.sortKey] | number }}
+            </a>
+
             <span data-ng-if="!item[config.sortKey]">0</span>
           </td>
           <td class="text-right" data-ng-if="config.showParticipant">

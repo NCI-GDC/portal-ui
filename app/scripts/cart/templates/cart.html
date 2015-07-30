@@ -53,28 +53,31 @@
   </section>
 
   <section class="row items-pane" data-ng-if="cc.files.length">
-    <div class="button-row pull-right">
-        <a type="button"
-           class="btn btn-primary"
-           data-ng-click="cc.getManifest(true)"
-           id="manifest-button">
-          <i class="fa fa-file-code-o"></i>
-          <span data-translate>Download Manifest File</span>
-        </a>
-        <a type="button"
-           download-button-all-cart
-           id="download-all-button"
-           class="btn btn-primary">
-          <i class="fa fa-cloud-download"></i> <span data-translate>Download Cart (Web Browser)</span>
-        </a>
-        <button type="button"
-                class="btn btn-danger"
-                id="clear-button"
-                data-ng-click="cc.removeAll()">
-          <i class="fa fa-remove"></i>
-          <span data-translate>Clear Cart</span>
-        </button>
-        <div remove-unauthorized-files-button data-ng-if="cc.CartService.getUnauthorizedFiles().length"></div>
+    <div class="col-md-12 col-lg-12 col-sm-12">
+      <div class="pull-right">
+          <a type="button"
+             class="btn btn-primary"
+             data-ng-click="cc.getManifest(true)"
+             id="manifest-button">
+            <i class="fa fa-file-code-o"></i>
+            <span data-translate>Download Manifest File</span>
+          </a>
+          <a type="button"
+             download-button-all-cart
+             id="download-all-button"
+             class="btn btn-primary">
+            <i class="fa fa-cloud-download"></i> <span data-translate>Download Cart (Web Browser)</span>
+          </a>
+
+          <a type="button"
+                  class="btn btn-danger"
+                  id="clear-button"
+                  data-ng-click="cc.removeAll()">
+            <i class="fa fa-remove"></i>
+            <span data-translate>Clear Cart</span>
+          </a>
+          <remove-unauthorized-files-button data-ng-if="cc.CartService.getUnauthorizedFiles().length"></remove-unauthorized-files-button>
+        </div>
     </div>
   </section>
 

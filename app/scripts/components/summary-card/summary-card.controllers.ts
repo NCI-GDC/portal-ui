@@ -6,7 +6,7 @@ module ngApp.components.summaryCard.controllers {
   class SummaryCardController implements ISummaryCardController {
 
     /* @ngInject */
-    constructor(private $scope, private LocationService: ILocationService,
+    constructor(private $scope, public LocationService: ILocationService,
                 private $state: ng.ui.IStateService) {}
 
     addFilters(item: any, state: string) {

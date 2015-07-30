@@ -38,9 +38,9 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    $locationProvider: ng.ILocationProvider,
                    RestangularProvider: restangular.IProvider,
                    config: IGDCConfig,
-                   $compileProvider: ng.ICompileService
+                   $compileProvider: ng.ICompileService,
+                   $httpProvider: ng.IHttpProvider
                    ) {
-
   $compileProvider.debugInfoEnabled(!config.production);
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/projects");
@@ -48,6 +48,16 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
   RestangularProvider.setDefaultHttpFields({
     cache: true
   });
+
+  /**
+  The regex is from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie in Example #2.
+  Cookies are stored in document.cookie as "cookieName1=cookieValue; cookieName2=cookieValue" 
+  so the capturing group after the "csrftoken=" captures the value and places it into var csrftoken.
+  Unable to use $cookies because services can't be injected in config step
+  **/
+  var csrftoken = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  $httpProvider.defaults.headers.common['X-Csrf-Token'] = csrftoken;
+
 }
 
 /* @ngInject */

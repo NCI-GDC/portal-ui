@@ -2,9 +2,13 @@
 - [Version Control](#version-control)
 
 # Development Practices
+- [Git Templates](#git-templates)
 - [Feature Pattern](#feature-pattern)
 - [Page Object Pattern](#page-object-pattern)
 - [SUIT CSS naming conventions](#suit-css-naming-conventions)
+
+## Git Templates
+Use the general [git templates](https://github.com/NCI-GDC/git-templates) for NCI-GDC project. Follow the instruction [here](https://github.com/NCI-GDC/git-templates#setup-git-templates) to setup for global config or for this particular repo. It contains git hooks to do security scanning for each commit, as well as other type checkings to insure the consistency of coding format.
 
 ## Feature Pattern
 
@@ -238,7 +242,7 @@ To git@github.com:nci-gdc/portal-ui.git
 ```
 
 ## Workflow
-
+0. clone the repo, git init with [template](#git-templates)
 0. create a new [branch](#branches)
 0. do some [work](#development-practices)
 0. [commit](#commits) your changes

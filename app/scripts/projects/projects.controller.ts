@@ -109,7 +109,6 @@ module ngApp.projects.controllers {
     gotoQuery() {
       var stateParams = {};
       var f = this.LocationService.filters();
-      console.log(f);
       var prefixed = {
         "op": "and",
         "content": _.map(f.content, x => ({

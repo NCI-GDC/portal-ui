@@ -32,7 +32,6 @@ module ngApp.projects.models {
       field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
       value: x.content.value  
     }));
-    console.log(value, fs);
     return withFilter(value, fs, $filter);
   }
 

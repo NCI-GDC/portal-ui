@@ -109,7 +109,6 @@ module ngApp.components.tables.directives.tableicious {
                 paging: "="
             },
             link: function ($scope: ICellScope, element: ng.IAugmentedJQuery) {
-                console.log(2);
                 element.html($scope.cell).show();
                 $compile(element.contents())($scope);
             }

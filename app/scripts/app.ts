@@ -56,7 +56,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
   Unable to use $cookies because services can't be injected in config step
   **/
   var csrftoken = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-  $httpProvider.defaults.headers.common['X-Csrf-Token'] = csrftoken;
+  $httpProvider.defaults.headers.common['X-CSRFToken'] = csrftoken;
 
 }
 

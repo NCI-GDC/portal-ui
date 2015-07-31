@@ -40,6 +40,15 @@ module ngApp.components.location.services {
       } else {
         delete search.filters;
       }
+
+      //move the user back to pg1
+      var paging = this.pagination();
+      if (paging) {
+        _.each(paging, (page) => {
+          page.from = 0;
+        });
+        search['pagination'] = paging;
+      }
       return this.setSearch(search);
     }
 
@@ -60,13 +69,13 @@ module ngApp.components.location.services {
     }
 
     pagination(): any {
-      var f = this.search()["pagination"];
-      return f ? angular.fromJson(f) : {};
+      var f = _.get(this.search(), "pagination", "{}");
+      return angular.fromJson(f);
     }
 
     setPaging(pagination: {[key: string]: string}): ng.ILocationService {
       var search: ISearch = this.search();
-      
+
       if (pagination) {
         search.pagination = angular.toJson(pagination);
       } else if (_.isEmpty(search.pagination)) {

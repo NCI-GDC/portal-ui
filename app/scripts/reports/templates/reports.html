@@ -47,10 +47,10 @@
             <th data-translate>
               Project Name
             </th>
-            <th data-translate>
+            <th class="text-right" data-translate>
               # Requests
             </th>
-            <th data-translate>
+            <th class="text-right" data-translate>
               File Size
             </th>
           </tr>
@@ -60,13 +60,13 @@
             <th>
               {{ project.key }}
             </th>
-              <td>
+            <td>
               {{ project.values.project_name }}
             </td>
-            <td>
+            <td class="text-right">
               {{ project.values.file_count | number }}
             </td>
-            <td>
+            <td class="text-right">
               {{ project.values.file_size * 1e6 | size}}
             </td>
           </tr>
@@ -87,10 +87,10 @@
                 <th data-translate>
                   Disease Type
                 </th>
-                <th data-translate>
+                <th class="text-right" data-translate>
                   # Requests
                 </th>
-                <th data-translate>
+                <th class="text-right" data-translate>
                   File Size
                 </th>
               </tr>
@@ -100,10 +100,10 @@
                 <th class="truncated-cell">
                   {{ project.key || '(none specified)'}}
                 </th>
-                <td>
+                <td class="text-right">
                   {{ project.values.file_count | number }}
                 </td>
-                <td>
+                <td class="text-right">
                   {{ project.values.file_size * 1e6 | size}}
                 </td>
               </tr>
@@ -125,10 +125,10 @@
                 <th data-translate>
                   Program
                 </th>
-                <th data-translate>
+                <th class="text-right" data-translate>
                   # Requests
                 </th>
-                <th data-translate>
+                <th class="text-right" data-translate>
                   File Size
                 </th>
               </tr>
@@ -138,10 +138,10 @@
                 <th>
                   {{ project.key || '(none specified)'}}
                 </th>
-                <td>
+                <td class="text-right">
                   {{ project.values.file_count | number }}
                 </td>
-                <td>
+                <td class="text-right">
                   {{ project.values.file_size * 1e6 | size}}
                 </td>
               </tr>
@@ -168,10 +168,10 @@
             <th data-translate>
               Data Type
             </th>
-            <th data-translate>
+            <th class="text-right" data-translate>
               # Requests
             </th>
-            <th data-translate>
+            <th class="text-right" data-translate>
               File Size
             </th>
           </tr>
@@ -181,10 +181,10 @@
             <th>
               {{ project.key }}
             </th>
-            <td>
+            <td class="text-right">
               {{ project.values.file_count | number }}
             </td>
-            <td>
+            <td class="text-right">
               {{ project.values.file_size * 1e6 | size }}
             </td>
           </tr>
@@ -206,10 +206,10 @@
                 <th data-translate>
                   Data Subtype
                 </th>
-                <th data-translate>
+                <th class="text-right" data-translate>
                   # Requests
                 </th>
-                <th data-translate>
+                <th class="text-right" data-translate>
                   File Size
                 </th>
               </tr>
@@ -219,10 +219,10 @@
                 <th>
                   {{ p.key }}
                 </th>
-                <td>
+                <td class="text-right">
                   {{ p.values.file_count | number }}
                 </td>
-                <td>
+                <td class="text-right">
                   {{ p.values.file_size | size }}
                 </td>
               </tr>
@@ -244,10 +244,10 @@
                 <th data-translate>
                   Experimental Strategy
                 </th>
-                <th data-translate>
+                <th  class="text-right"data-translate>
                   # Requests
                 </th>
-                <th data-translate>
+                <th  class="text-right"data-translate>
                   File Size
                 </th>
               </tr>
@@ -257,10 +257,10 @@
                 <th>
                   {{ project.key || '(none specified)' }}
                 </th>
-                <td>
+                <td class="text-right">
                   {{ project.values.file_count | number }}
                 </td>
-                <td>
+                <td class="text-right">
                   {{ project.values.file_size * 1e6 | size }}
                 </td>
               </tr>
@@ -284,10 +284,10 @@
                 <th data-translate>
                   Data Level
                 </th>
-                <th data-translate>
+                <th class="text-right" data-translate>
                   # Requests
                 </th>
-                <th>
+                <th class="text-right">
                   File Size
                 </th>
               </tr>
@@ -322,10 +322,10 @@
                 <th data-translate>
                   Data Access
                 </th>
-                <th data-translate>
+                <th class="text-right" data-translate>
                   # Requests
                 </th>
-                <th>
+                <th class="text-right">
                   File Size
                 </th>
               </tr>
@@ -335,10 +335,10 @@
                 <th>
                   {{ p.key }}
                 </th>
-                <td>
+                <td class="text-right">
                    {{ p.values.file_count | number }}
                 </td>
-                <td>
+                <td class="text-right">
                   {{ p.values.file_size | size }}
                 </td>
               </tr>
@@ -368,10 +368,10 @@
             <th data-translate>
               Access Type
             </th>
-            <th data-translate>
+            <th class="text-right" data-translate>
               # Requests
             </th>
-            <th data-translate>
+            <th class="text-right" data-translate>
               File Size
             </th>
           </tr>
@@ -381,10 +381,10 @@
             <th>
               {{ x.key }}
             </th>
-            <td>
+            <td class="text-right">
               {{ x.values.file_count | number }}
             </td>
-            <td>
+            <td class="text-right">
               {{ x.values.file_size * 1e6 | size }}
             </td>
           </tr>
@@ -405,10 +405,10 @@
             <th data-translate>
               Access Location
             </th>
-            <th data-translate>
+            <th class="text-right" data-translate>
               # Requests
             </th>
-            <th data-translate>
+            <th class="text-right" data-translate>
               File Size
             </th>
           </tr>
@@ -418,10 +418,10 @@
             <th>
               {{ x.key }}
             </th>
-            <td>
+            <td class="text-right">
               {{ x.values.file_count | number }}
             </td>
-            <td>
+            <td class="text-right">
               {{ x.values.file_size * 1e6 | size }}
             </td>
           </tr>

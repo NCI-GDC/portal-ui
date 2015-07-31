@@ -102,7 +102,7 @@ module ngApp.search.services {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "cases.project.project_id",
+                    field: "cases.project.project_id",
                     value: [
                       value
                     ]
@@ -126,7 +126,7 @@ module ngApp.search.services {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "cases.project.primary_site",
+                    field: "cases.project.primary_site",
                     value: [
                       value
                     ]
@@ -149,7 +149,7 @@ module ngApp.search.services {
             params: {
               filters: $filter("makeFilter")([
                 {
-                  name: "files.access",
+                  field: "files.access",
                   value: "open"
                 }
               ], true)
@@ -159,7 +159,7 @@ module ngApp.search.services {
             params: {
               filters: $filter("makeFilter")([
                 {
-                  name: "files.access",
+                  field: "files.access",
                   value: "controlled"
                 }
               ], true)
@@ -180,7 +180,7 @@ module ngApp.search.services {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "files.data_type",
+                    field: "files.data_type",
                     value: [
                       value
                     ]
@@ -204,7 +204,7 @@ module ngApp.search.services {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "files.data_format",
+                    field: "files.data_format",
                     value: [
                       value
                     ]
@@ -228,7 +228,7 @@ module ngApp.search.services {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "files.experimental_strategy",
+                    field: "files.experimental_strategy",
                     value: [
                       value
                     ]

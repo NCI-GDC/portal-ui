@@ -2,7 +2,7 @@ module ngApp.core.filters {
 
   class MakeFilter {
     constructor() {
-      return function (fields: { name: string; value: string }[], noEscape: boolean) {
+      return function (fields: { field: string; value: string }[], noEscape: boolean) {
         var contentArray = _.map(fields, function (item) {
           var value;
 
@@ -15,7 +15,7 @@ module ngApp.core.filters {
           return {
             "op": "in",
             "content": {
-              "field": item.name,
+              "field": item.field,
               "value": value
             }
           };

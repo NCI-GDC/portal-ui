@@ -1,11 +1,11 @@
 describe("makeFilter Filter:", function () {
   var baseFields = [
     {
-      "name": "participants.bcr_patient_uuid",
+      "field": "participants.bcr_patient_uuid",
       "value":"b64bfca1-033c-4501-a900-103ac105c084"
     },
     {
-      "name":"files.data_type",
+      "field":"files.data_type",
       "value":"DNA methylation"
     }
   ];

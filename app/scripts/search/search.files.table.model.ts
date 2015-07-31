@@ -2,14 +2,14 @@ module ngApp.search.models {
   function withAnnotationFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     var filterString = $filter("makeFilter")(filters, true);
     var href = 'annotations?filters=' + filterString;
-    var val = '{{' + value + '|number:0}}';
+    var val = $filter("number")(value);
     return "<a href='" + href + "'>" + val + '</a>';
   }
 
   function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     var filterString = $filter("makeFilter")(filters, true);
     var href = 'search/c?filters=' + filterString;
-    var val = '{{' + value + '|number:0}}';
+    var val = $filter("number")(value);
     return "<a href='" + href + "'>" + val + '</a>';
   }
 
@@ -108,7 +108,7 @@ module ngApp.search.models {
                      '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>' :
                      withAnnotationFilter(
                        row.annotations.length,
-                       [{name: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
+                       [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
                        $scope.$filter);
           }
 

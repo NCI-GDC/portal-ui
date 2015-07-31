@@ -13,19 +13,16 @@
       </tabset>
     </div>
     <div class="col-lg-9 col-md-8 content">
-
       <div class="alert alert-info clearfix">
         <div class="col-sm-10">
           <current-filters></current-filters>
           <span data-ng-if="!cfc.currentFilters.length" style="line-height: 3.4rem">
-            <i class="fa fa-long-arrow-left"></i>
             <span data-translate>
               Start searching by selecting a facet or try the Advanced Search
             </span>
-            <i class="fa fa-long-arrow-right"></i>
           </span>
         </div>
-        <div class="col-sm-2 ">
+        <div class="col-sm-2 text-right">
           <a class="btn btn-primary" data-translate data-ng-click="sc.gotoQuery()">
             <i class="fa fa-gears"></i> <span data-translate>Advanced</span>
           </a>

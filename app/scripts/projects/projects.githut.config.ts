@@ -50,7 +50,7 @@ angular.module('projects.githut.config',[])
 .service("ProjectsGithutColumns",function($state, $filter){
   function projectSref(d) {
     var filter = $filter("makeFilter")([{
-      name: 'cases.project.project_id',
+      field: 'cases.project.project_id',
       value: d.lang
     }]);
 
@@ -59,9 +59,9 @@ angular.module('projects.githut.config',[])
 
   function dataTypeSref(d) {
     var filter = $filter("makeFilter")([{
-      name: 'cases.project.project_id',
+      field: 'cases.project.project_id',
       value: d.lang
-    }, {name: 'files.data_type', value: d.column}]);
+    }, {field: 'files.data_type', value: d.column}]);
 
     $state.go("search.participants", { filters:JSON.parse(filter) });
   }
@@ -181,7 +181,7 @@ angular.module('projects.githut.config',[])
       dimensional:true,
       colorgroup:'file_count',
       href:function(d) {
-          var filter = $filter("makeFilter")([{name: 'cases.project.project_id', value: d.lang}], true);
+          var filter = $filter("makeFilter")([{field: 'cases.project.project_id', value: d.lang}], true);
           $state.go("search.files", { filters:filter });
       }
     },

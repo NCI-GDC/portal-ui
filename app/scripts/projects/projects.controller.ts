@@ -5,7 +5,7 @@ module ngApp.projects.controllers {
   import ICoreService = ngApp.core.services.ICoreService;
   import ITableService = ngApp.components.tables.services.ITableService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
-  import ILocationService = ngApp.components.location.services.ILocationService;
+  import ILocationService = ngApp.components.location.ILocationService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
   import IProjectsState = ngApp.projects.services.IProjectsState;
 
@@ -105,6 +105,29 @@ module ngApp.projects.controllers {
         this.$state.go("projects." + tab, this.LocationService.search(), {inherit: false});
       }
     }
+    
+    gotoQuery() {
+      var stateParams = {};
+      var f = this.LocationService.filters();
+      console.log(f);
+      var prefixed = {
+        "op": "and",
+        "content": _.map(f.content, x => ({
+          op: "in",
+          content: {
+            field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
+            value: x.content.value  
+          }
+        }))
+      }
+      if (f) {
+        stateParams = {
+          filters: angular.toJson(prefixed)
+        };
+      }
+
+      this.$state.go("search.participants", stateParams, { inherit: true });
+    }
   }
 
   export interface IProjectController {
@@ -160,13 +183,13 @@ module ngApp.projects.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "cases.project.project_id",
+                    field: "cases.project.project_id",
                     value: [
                       project.project_id
                     ]
                   },
                   {
-                    name: "files.experimental_strategy",
+                    field: "files.experimental_strategy",
                     value: [
                       value
                     ]
@@ -196,13 +219,13 @@ module ngApp.projects.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "cases.project.project_id",
+                    field: "cases.project.project_id",
                     value: [
                       project.project_id
                     ]
                   },
                   {
-                    name: "files.data_type",
+                    field: "files.data_type",
                     value: [
                       value
                     ]

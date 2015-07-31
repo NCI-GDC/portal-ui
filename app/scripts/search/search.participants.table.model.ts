@@ -18,8 +18,8 @@ module ngApp.search.models {
     }
     function dataTypeWithFilters(dataType: string, row: Object[], $filter: ng.IFilterService) {
         var fs = [
-          {name: 'cases.case_id', value: row.case_id},
-          {name: 'files.data_type', value: dataType}
+          {field: 'cases.case_id', value: row.case_id},
+          {field: 'files.data_type', value: dataType}
         ];
         return withFilter(getDataType(row.summary ? row.summary.data_types : [], dataType), fs, $filter);
     }
@@ -165,7 +165,7 @@ module ngApp.search.models {
                      '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>' :
                      withAnnotationFilter(
                        row.annotations.length,
-                       [{name: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
+                       [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
                        $filter);
             }
 

@@ -33,6 +33,26 @@ module ngApp.core.controllers {
         });
       }
 
+      if (!$cookies.get("browser-checked")) {
+        if(bowser.msie && bowser.version <= 9) {
+          var bowserWarningModal = this.$modal.open({
+            templateUrl: "core/templates/browser-check-warning.html",
+            controller: "WarningController",
+            controllerAs: "wc",
+            backdrop: "static",
+            keyboard: false,
+            backdropClass: "warning-backdrop",
+            animation: false,
+            size: "lg"
+          });
+          bowserWarningModal.result.then(() => {
+            this.$cookies.put("browser-checked", "true");
+          });
+        } else {
+            this.$cookies.put("browser-checked", "true");
+        }
+      }
+
       if (!$cookies.get("NCI-Warning")) {
         var modalInstance = this.$modal.open({
           templateUrl: "core/templates/warning.html",

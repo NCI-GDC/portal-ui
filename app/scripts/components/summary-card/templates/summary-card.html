@@ -41,10 +41,10 @@
             {{ item[config.displayKey] | humanify }}
           </th>
           <td class="text-right">
-            <a data-ng-if="sc.LocationService.path().startsWith('/query')" data-tooltip-html-unsafe="Further filtering in this view can <br>be performed using the <br>Advanced Search above">
+            <a data-ng-if="sc.LocationService.path().indexOf('/query') === 0" data-tooltip-html-unsafe="Further filtering in this view can <br>be performed using the <br>Advanced Search above">
               {{ item[config.sortKey] | number }}
             </a>
-            <a data-ng-if="item[config.sortKey] && !sc.LocationService.path().startsWith('/query')" data-ng-click="sc.addFilters(item)">
+            <a data-ng-if="item[config.sortKey] && sc.LocationService.path().indexOf('/query') !== 0" data-ng-click="sc.addFilters(item)">
               {{ item[config.sortKey] | number }}
             </a>
 

@@ -20,7 +20,7 @@ module ngApp.components.summaryCard.directives {
         $scope.mode = $scope.mode || "graph";
 
         function checkFilters() {
-          if (LocationService.path().startsWith('/query')) {
+          if (LocationService.path().indexOf('/query') === 0) {
             return;
           }
 

@@ -166,7 +166,7 @@ module ngApp.components.charts {
           }
 
           function setFilters(d) {
-            if (LocationService.path().startsWith('/query')) {
+            if (LocationService.path().indexOf('/query') === 0) {
               tip.show();
               return;
             }

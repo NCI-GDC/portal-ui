@@ -13,13 +13,15 @@
   <div data-ng-show="!dfc.collapsed" class="row">
       <div class="col-sm-12">
           <div class="input-group">
-          <input type="text" class="form-control" data-ng-change="dfc.datePicked()"
-                                                  data-datepicker-popup="MM/DD/YYYY"
-                                                  data-datepicker-options="dateOptions"
-                                                  data-ng-model="date"
-                                                  data-is-open="opened"
-                                                  data-ng-required="true"
-                                                  data-close-text="Close" />
+          <input type="text" class="form-control" 
+            data-ng-change="dfc.datePicked()"
+            id="{{ 'autocomplete-' + title }}"
+            data-datepicker-popup="MM/DD/YYYY"
+            data-datepicker-options="dateOptions"
+            data-ng-model="date"
+            data-is-open="opened"
+            data-ng-required="true"
+            data-close-text="Close" />
             <span class="input-group-btn">
               <button type="button" class="btn btn-default" ng-click="dfc.open($event)"><i class="fa fa-calendar"></i> <span class="caret"></span> </button>
               <button class="btn btn-default" type="button" data-ng-click="dfc.search()">Go!</button>

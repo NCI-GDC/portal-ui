@@ -8,7 +8,7 @@
             (<a href="" data-ng-click="showErrors = !showErrors">{{showErrors ? "hide" : "see"}} errors</a>)
       </div>
       <div data-ng-if="!sb.Error" style="padding: 1rem;" class="text-success">
-        <i class="fa fa-check-circle"></i> Valid Query
+        <label for="gql"><i class="fa fa-check-circle"></i> Valid Query</label>
       </div>
       <gql data-gql="sb.gql" data-query="sb.query" data-error="sb.Error"></gql>
       <div class="panel-footer text-right">

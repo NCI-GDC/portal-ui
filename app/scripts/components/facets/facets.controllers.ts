@@ -225,6 +225,9 @@ module ngApp.components.facets.controllers {
     }
 
     setTerm(): void {
+      if (this.searchTerm === "") {
+        return;
+      }
       this.FacetService.addTerm(this.$scope.field, this.searchTerm);
       this.actives.push(this.searchTerm);
       this.searchTerm = "";

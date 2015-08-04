@@ -48,7 +48,7 @@
            class="form-control"
            style="border-radius: 0px;">
     <span class="input-group-btn" data-ng-if="!ftc.autocomplete">
-        <button class="btn btn-default" type="button" data-ng-click="ftc.setTerm()">Go!</button>
+      <button class="btn btn-default" type="button" data-ng-click="ftc.setTerm()" data-ng-class="{'disabled' : ftc.searchTerm === ''}">Go!</button>
     </span>
   </div>
 </div>

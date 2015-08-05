@@ -12,12 +12,9 @@
     <div class="radio-inline"
          data-ng-if="unitsMap.length > 1"
          data-ng-repeat="unitMap in unitsMap">
-        <label class="">
+        <label data-ng-click="$parent.unitClicked(unitMap)">
           <input type="radio"
-                 name={{field}}
-                 data-ng-model="$parent.selectedUnit"
-                 data-ng-value="unitMap"
-                 data-ng-change="$parent.unitClicked()">
+                 name="{{field}}">
             {{ unitMap.label | humanify }}
         </label>
       </div>

@@ -283,8 +283,9 @@ module ngApp.components.facets.controllers {
       });
 
       var _this = this;
-      $scope.unitClicked = function() {
-        $scope.dataUnitConverted = _this.unitConversion($scope.data);
+      $scope.unitClicked = function(selectedUnitMap: Object) {
+        $scope.selectedUnit = selectedUnitMap;
+        _this.$scope.dataUnitConverted = _this.unitConversion($scope.data);
         _this.getMaxMin($scope.dataUnitConverted);
         _this.$scope.lowerBound = _this.$scope.lowerBoundOriginalDays ? Math.floor(_this.$scope.lowerBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
         _this.$scope.upperBound = _this.$scope.upperBoundOriginalDays ? Math.ceil(_this.$scope.upperBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;

@@ -40,7 +40,7 @@ module ngApp.components.facets.services {
       }
 
       return this.Restangular.all(entity + "/ids").get("", options).then((data) => {
-        return data.data.hits;
+        return data.data.hits.length ? data.data.hits : [{'warning': 'No Results Found'}];
       });
     }
 
@@ -140,6 +140,7 @@ module ngApp.components.facets.services {
 
     addTerm(facet: string, term: string, op: string = 'in') {
       var filters = this.ensurePath(this.LocationService.filters());
+
       // TODO - not like this
       var found = false;
       var cs = filters["content"];

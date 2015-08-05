@@ -2,14 +2,14 @@ module ngApp.search.models {
   function withAnnotationFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     var filterString = $filter("makeFilter")(filters, true);
     var href = 'annotations?filters=' + filterString;
-    var val = '{{' + value + '|number:0}}';
+    var val = $filter("number")(value);
     return "<a href='" + href + "'>" + val + '</a>';
   }
 
   function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     var filterString = $filter("makeFilter")(filters, true);
     var href = 'search/c?filters=' + filterString;
-    var val = '{{' + value + '|number:0}}';
+    var val = $filter("number")(value);
     return "<a href='" + href + "'>" + val + '</a>';
   }
 
@@ -49,7 +49,6 @@ module ngApp.search.models {
           var val = $scope.$filter("humanify")(row.access);
           return '<i class="fa fa-'+ (row.access === 'controlled' ? 'lock' : 'unlock-alt') +'"></i> ' + val;
         },
-        tdClassName: "text-center",
         sortable: true
       }, {
         name: "File Name",
@@ -58,7 +57,7 @@ module ngApp.search.models {
         sortable: true,
         tdClassName: 'truncated-cell'
       }, {
-        name: "Case UUIDs",
+        name: "Cases",
         id: "cases",
         td: (row, $scope) => {
           function getParticipants(row, $filter) {
@@ -69,7 +68,8 @@ module ngApp.search.models {
 
           return row.cases && row.cases.length ? getParticipants(row, $scope.$filter) : 0;
         },
-        tdClassName: 'truncated-cell'
+        thClassName: 'text-right',
+        tdClassName: 'text-right'
       }, {
         name: "Project",
         id: "cases.project.project_id",
@@ -97,6 +97,7 @@ module ngApp.search.models {
         id: "file_size",
         td: (row, $scope) => $scope.$filter("size")(row.file_size),
         sortable: true,
+        thClassName: 'text-right',
         tdClassName: 'text-right'
       }, {
         name: "Annotations",
@@ -107,13 +108,14 @@ module ngApp.search.models {
                      '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>' :
                      withAnnotationFilter(
                        row.annotations.length,
-                       [{name: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
+                       [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
                        $scope.$filter);
           }
 
           return row.annotations && row.annotations.length ? getAnnotations(row, $scope) : 0;
         },
-        tdClassName: 'truncated-cell text-right'
+        thClassName: 'text-right',
+        tdClassName: 'text-right'
       }, {
         name: "Data Subtype",
         id: "data_subtype",

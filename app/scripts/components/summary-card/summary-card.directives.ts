@@ -12,14 +12,15 @@ module ngApp.components.summaryCard.directives {
         height: "@",
         config: "=",
         title: "@",
-        mode: "@"
+        mode: "@",
+        tableId: "@"
       },
       link: function($scope) {
         var config = $scope.config;
         $scope.mode = $scope.mode || "graph";
 
         function checkFilters() {
-          if (LocationService.path().startsWith('/query')) {
+          if (LocationService.path().indexOf('/query') === 0) {
             return;
           }
 

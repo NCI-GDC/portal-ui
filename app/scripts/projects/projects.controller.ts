@@ -5,7 +5,7 @@ module ngApp.projects.controllers {
   import ICoreService = ngApp.core.services.ICoreService;
   import ITableService = ngApp.components.tables.services.ITableService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
-  import ILocationService = ngApp.components.location.services.ILocationService;
+  import ILocationService = ngApp.components.location.ILocationService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
   import IProjectsState = ngApp.projects.services.IProjectsState;
 
@@ -55,6 +55,17 @@ module ngApp.projects.controllers {
     }
 
     refresh() {
+      var search = this.LocationService.search();
+      this.params = "?";
+
+      _.each(search, (value, key, index) => {
+        this.params += key + "=" + value;
+
+        if (index !== _.keys(search).length - 1) {
+          this.params += "&";
+        }
+      });
+
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
           fields: this.ProjectTableModel.fields,
@@ -91,19 +102,31 @@ module ngApp.projects.controllers {
       this.githutConfig = githut.config;
     }
 
-    select(section: string, tab: string) {
-      this.ProjectsState.setActive(section, tab);
-      this.setState(tab);
-    }
-
     // TODO Load data lazily based on active tab
-    setState(tab: string) {
-      // Changing tabs and then navigating to another page
-      // will cause this to fire.
-      if (tab && (this.$state.current.name.match("projects."))) {
-        this.tabSwitch = true;
-        this.$state.go("projects." + tab, this.LocationService.search(), {inherit: false});
+    setState() {
+      this.tabSwitch = true;
+    }
+    
+    gotoQuery() {
+      var stateParams = {};
+      var f = this.LocationService.filters();
+      var prefixed = {
+        "op": "and",
+        "content": _.map(f.content, x => ({
+          op: "in",
+          content: {
+            field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
+            value: x.content.value  
+          }
+        }))
       }
+      if (f) {
+        stateParams = {
+          filters: angular.toJson(prefixed)
+        };
+      }
+
+      this.$state.go("search.participants", stateParams, { inherit: true });
     }
   }
 
@@ -136,17 +159,9 @@ module ngApp.projects.controllers {
         var type = _.find(project.summary.data_types, (item) => {
           return item.data_type.toLowerCase() === name.toLowerCase();
         });
-
         if (type) {
           result.push(type);
-        } else {
-          result.push({
-            data_type: name,
-            file_count: 0,
-            case_count: 0
-          });
         }
-
         return result;
       }, []);
 
@@ -158,7 +173,7 @@ module ngApp.projects.controllers {
         pluralDefaultText: "experimental strategies",
         hideFileSize: true,
         tableTitle: "Case and File Counts by Experimental Strategy",
-        noResultsText: "No files with Experimental Strategies",
+        noResultsText: "No files or cases with Experimental Strategies",
         state: {
           name: "search.files"
         },
@@ -168,13 +183,13 @@ module ngApp.projects.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "cases.project.project_id",
+                    field: "cases.project.project_id",
                     value: [
                       project.project_id
                     ]
                   },
                   {
-                    name: "files.experimental_strategy",
+                    field: "files.experimental_strategy",
                     value: [
                       value
                     ]
@@ -194,6 +209,7 @@ module ngApp.projects.controllers {
         hideFileSize: true,
         tableTitle: "Case and File Counts by Data Type",
         pluralDefaultText: "data types",
+        noResultsText: "No files or cases with Data Types",
         state: {
           name: "search.files"
         },
@@ -203,13 +219,13 @@ module ngApp.projects.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "cases.project.project_id",
+                    field: "cases.project.project_id",
                     value: [
                       project.project_id
                     ]
                   },
                   {
-                    name: "files.data_type",
+                    field: "files.data_type",
                     value: [
                       value
                     ]

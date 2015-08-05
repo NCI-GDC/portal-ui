@@ -13,19 +13,16 @@
       </tabset>
     </div>
     <div class="col-lg-9 col-md-8 content">
-
       <div class="alert alert-info clearfix">
         <div class="col-sm-10">
           <current-filters></current-filters>
           <span data-ng-if="!cfc.currentFilters.length" style="line-height: 3.4rem">
-            <i class="fa fa-long-arrow-left"></i>
             <span data-translate>
               Start searching by selecting a facet or try the Advanced Search
             </span>
-            <i class="fa fa-long-arrow-right"></i>
           </span>
         </div>
-        <div class="col-sm-2 ">
+        <div class="col-sm-2 text-right">
           <a class="btn btn-primary" data-translate data-ng-click="sc.gotoQuery()">
             <i class="fa fa-gears"></i> <span data-translate>Advanced</span>
           </a>
@@ -35,21 +32,18 @@
       <ul class="nav nav-tabs">
         <li role="presentation"
             data-ng-class="{ active: sc.SearchState.tabs.summary.active }"
-            data-ng-click="sc.select('tabs', 'summary')"
             id="search-summary">
-          <a>{{ 'Summary' | translate }}</a>
+          <a data-ng-href="/search/s{{ sc.params }}" data-ng-click="sc.setState()">{{ 'Summary' | translate }}</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
-            data-ng-click="sc.select('tabs', 'participants')"
             id="search-participants">
-          <a>{{ 'Cases' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
+          <a data-ng-href="/search/c{{ sc.params }}" data-ng-click="sc.setState()">{{ 'Cases' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: sc.SearchState.tabs.files.active }"
-            data-ng-click="sc.select('tabs', 'files')"
             id="search-files">
-          <a>{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
+          <a data-ng-href="/search/f{{ sc.params }}" data-ng-click="sc.setState()">{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
         </li>
       </ul>
       <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the

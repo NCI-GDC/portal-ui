@@ -19,6 +19,40 @@ module ngApp.core.controllers {
                 private $cookies: ng.cookies.ICookiesService,
                 private $modal: any) {
 
+      // display login failed warning
+      if(_.get($location.search(), 'error') === 'You are not authorized to gdc services') {
+        var loginWarningModal = this.$modal.open({
+          templateUrl: "core/templates/login-failed-warning.html",
+          controller: "WarningController",
+          controllerAs: "wc",
+          backdrop: "static",
+          keyboard: false,
+          backdropClass: "warning-backdrop",
+          animation: false,
+          size: "lg"
+        });
+      }
+
+      if (!$cookies.get("browser-checked")) {
+        if(bowser.msie && bowser.version <= 9) {
+          var bowserWarningModal = this.$modal.open({
+            templateUrl: "core/templates/browser-check-warning.html",
+            controller: "WarningController",
+            controllerAs: "wc",
+            backdrop: "static",
+            keyboard: false,
+            backdropClass: "warning-backdrop",
+            animation: false,
+            size: "lg"
+          });
+          bowserWarningModal.result.then(() => {
+            this.$cookies.put("browser-checked", "true");
+          });
+        } else {
+            this.$cookies.put("browser-checked", "true");
+        }
+      }
+
       if (!$cookies.get("NCI-Warning")) {
         var modalInstance = this.$modal.open({
           templateUrl: "core/templates/warning.html",

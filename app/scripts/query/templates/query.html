@@ -7,21 +7,18 @@
       <ul class="nav nav-tabs">
         <li role="presentation"
             data-ng-class="{ active: qc.QState.tabs.summary.active }"
-            data-ng-click="qc.select('summary')"
             id="query-summary">
-          <a>{{ 'Summary' | translate }}</a>
+          <a data-ng-href="/query/s{{ qc.params }}" data-ng-click="qc.setState()">{{ 'Summary' | translate }}</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: qc.QState.tabs.participants.active }"
-            data-ng-click="qc.select('participants')"
             id="query-participants">
-          <a>{{ 'Cases' | translate }} ({{qc.participants.pagination.total| number:0}})</a>
+          <a data-ng-href="/query/c{{ qc.params }}" data-ng-click="qc.setState()">{{ 'Cases' | translate }} ({{qc.participants.pagination.total| number:0}})</a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: qc.QState.tabs.files.active }"
-            data-ng-click="qc.select('files')"
             id="query-files">
-          <a>{{ 'Files' | translate }} ({{qc.files.pagination.total| number:0}})</a>
+          <a data-ng-href="/query/f{{ qc.params }}" data-ng-click="qc.setState()">{{ 'Files' | translate }} ({{qc.files.pagination.total| number:0}})</a>
         </li>
       </ul>
       <div class="pane-section" data-ng-if="qc.QState.tabs.summary.active">

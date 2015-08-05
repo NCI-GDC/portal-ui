@@ -22,8 +22,7 @@ module ngApp.search.controllers {
     SearchState: ISearchState;
     CartService: ICartService;
     addFilesKeyPress(event: any, type: string): void;
-    setState(tab: string, next: string): void;
-    select(section: string, tab: string): void;
+    setState(): void;
     removeFiles(files: IFile[]): void;
     tabSwitch: boolean;
     projectIdChartConfig: any;
@@ -102,6 +101,17 @@ module ngApp.search.controllers {
     }
 
     refresh() {
+      var search = this.LocationService.search();
+      this.params = "?";
+
+      _.each(search, (value, key, index) => {
+        this.params += key + "=" + value;
+
+        if (index !== _.keys(search).length - 1) {
+          this.params += "&";
+        }
+      });
+
       if (this.tabSwitch) {
         if (this.SearchState.tabs.participants.active) {
           this.SearchState.setActive("tabs", "participants", "hasLoadedOnce");
@@ -187,18 +197,8 @@ module ngApp.search.controllers {
       });
     }
 
-    setState(tab: string) {
-      // Changing tabs and then navigating to another page
-      // will cause this to fire.
-      if (tab && (this.$state.current.name.match("search."))) {
-        this.tabSwitch = true;
-        this.$state.go("search." + tab, this.LocationService.search(), {inherit: false});
-      }
-    }
-
-    select(section: string, tab: string) {
-      this.SearchState.setActive(section, tab, "active");
-      this.setState(tab);
+    setState() {
+      this.tabSwitch = true;
     }
 
     addFilesKeyPress(event: any, type: string) {

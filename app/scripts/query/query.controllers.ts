@@ -20,8 +20,7 @@ module ngApp.query.controllers {
     QState: IQueryState;
     CartService: ICartService;
     addFilesKeyPress(event: any, type: string): void;
-    setState(tab: string, next: string): void;
-    select(section: string, tab: string): void;
+    setState(): void;
     removeFiles(files: IFile[]): void;
     isUserProject(file: IFile): boolean;
     tabSwitch: boolean;
@@ -78,6 +77,17 @@ module ngApp.query.controllers {
     }
 
     refresh() {
+      var search = this.LocationService.search();
+      this.params = "?";
+
+      _.each(search, (value, key, index) => {
+        this.params += key + "=" + value;
+
+        if (index !== _.keys(search).length - 1) {
+          this.params += "&";
+        }
+      });
+
       if (this.tabSwitch) {
         if (this.QState.tabs.participants.active) {
           this.QState.setActive("participants", "hasLoadedOnce");
@@ -137,22 +147,11 @@ module ngApp.query.controllers {
 
     // TODO Load data lazily based on active tab
     setState(tab: string) {
-      // Changing tabs and then navigating to another page
-      // will cause this to fire.
-      if (tab && (this.$state.current.name.match("query."))) {
-        this.tabSwitch = true;
-        this.$state.go('query.' + tab, this.LocationService.search(), {inherit: false});
-      }
+      this.tabSwitch = true;
     }
 
     isUserProject(file: IFile): boolean {
       return this.UserService.isUserProject(file);
-    }
-
-
-    select(tab: string) {
-      this.QState.setActive(tab, "active");
-      this.setState(tab);
     }
 
     addFilesKeyPress(event: any, type: string) {

@@ -1,7 +1,13 @@
 module ngApp.components.tables.directives.tableicious {
 
+    import ILocationService = ngApp.components.location.ILocationService;
+
     /* @ngInject */
-    function Tableicious($filter: ng.IFilterService, UserService, $window: ng.IWindowService): ITableicious {
+    function Tableicious(
+        $filter: ng.IFilterService, 
+        LocationService: ILocationService, 
+        UserService: IUserService, 
+        $window: ng.IWindowService): ITableicious {
         return {
             restrict: "E",
             scope: {
@@ -17,6 +23,7 @@ module ngApp.components.tables.directives.tableicious {
             link: function($scope: ITableiciousScope) {
                 $scope.$filter = $filter;
                 $scope.UserService = UserService;
+                $scope.LocationService = LocationService;
                 $scope.getCell = function(h, d) {
                     return h.td(d, $scope);
                 }
@@ -68,7 +75,8 @@ module ngApp.components.tables.directives.tableicious {
         refresh(h: IHeading[]): void;
         getCell(h, d): string;
         $filter: ng.IFilterService;
-        UserService:any;
+        UserService:IUserService;
+        LocationService:ILocationService;
         saved: string[];
     }
 

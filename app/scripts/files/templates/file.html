@@ -78,7 +78,7 @@
                   {{ ::fc.file.archive.archive_id || '--' }}
                   <span data-ng-if="fc.file.archive">
                     (<a data-ui-sref="search.files({ 'filters': {{
-                      [{ name: 'files.archive.archive_id', value: fc.file.archive.archive_id }] | makeFilter }}
+                      [{ field: 'files.archive.archive_id', value: fc.file.archive.archive_id }] | makeFilter }}
                       })">
                     {{ fc.archiveCount }} files
                   </a>)
@@ -161,7 +161,7 @@
                 </td>
                 <td class="text-right">
                   <a data-ui-sref="annotations({ 'filters':
-                       {{ [{name: 'annotation_id', value: e.annotations }] | makeFilter }} })"
+                       {{ [{field: 'annotation_id', value: e.annotations }] | makeFilter }} })"
                      data-ng-if="e.annotations.length > 1">
                     {{ e.annotations.length }}
                   </a>

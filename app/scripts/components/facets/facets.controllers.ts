@@ -164,19 +164,26 @@ module ngApp.components.facets.controllers {
     actives: string[];
     searchTerm: string;
     termSelected(): void;
+    setTerm(): void;
     remove(term: string): void;
     refresh(): void;
     autoComplete(query: string): ng.IPromise<any>;
+    autocomplete: boolean;
   }
 
   class FreeTextController extends Toggleable implements IFreeTextController {
     searchTerm: string = "";
     actives: string[] = [];
+    autocomplete: boolean = true;
+    lastInput: string = "";
 
     /* @ngInject */
     constructor(private $scope: IFreeTextFacetsScope,
                 private LocationService: ILocationService,
                 private FacetService: IFacetService) {
+
+      this.autocomplete = $scope.autocomplete !== 'false';
+
       this.refresh();
       $scope.$watch("searchTerm", (n, o) => {
         if (n === o) {
@@ -188,7 +195,15 @@ module ngApp.components.facets.controllers {
       $scope.$on("$locationChangeSuccess", () => this.refresh());
     }
 
-    termSelected(): void {
+    saveInput(): void {
+      this.lastInput = this.searchTerm;
+    }
+
+    termSelected(addTerm: boolean = true): void {
+      if(!addTerm) {
+        this.searchTerm = this.lastInput;
+        return;
+      }
       var parts = this.$scope.field.split(".");
       var field = parts.length > 1 ? parts[parts.length - 1] : parts[0];
 
@@ -196,12 +211,26 @@ module ngApp.components.facets.controllers {
         var term = this.searchTerm;
         term = term[field];
 
+        if (!term) {
+          this.searchTerm = this.lastInput;
+          return;
+        }
+
         this.FacetService.addTerm(this.$scope.field, term);
         this.actives.push(this.searchTerm);
         this.searchTerm = "";
       } else {
         this.searchTerm = "";
       }
+    }
+
+    setTerm(): void {
+      if (this.searchTerm === "") {
+        return;
+      }
+      this.FacetService.addTerm(this.$scope.field, this.searchTerm);
+      this.actives.push(this.searchTerm);
+      this.searchTerm = "";
     }
 
     autoComplete(query: string): ng.IPromise<any> {

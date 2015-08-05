@@ -48,7 +48,7 @@ module ngApp.cart.directives {
     }
   }
 
-  function AddToCartAll(SearchTableFilesModel: TableiciousConfig): ng.IDirective {
+  function AddToCartAll(SearchTableFilesModel: TableiciousConfig) {
     return {
       restrict: "AE",
       scope:{
@@ -105,7 +105,7 @@ module ngApp.cart.directives {
 
         $scope.addAll = function() {
           var filters = $scope.filter || LocationService.filters();
-          console.log(filters);
+          
           filters = UserService.addMyProjectsFilter(filters, "cases.project.project_id");
           if ($scope.size >= CartService.getCartVacancySize()) {
             CartService.sizeWarning();
@@ -121,8 +121,6 @@ module ngApp.cart.directives {
             });
           }, 1000);
 
-          console.log($scope.size);
-          console.log(filters);
           FilesService.getFiles({
             fields: ["access",
                      "file_name",

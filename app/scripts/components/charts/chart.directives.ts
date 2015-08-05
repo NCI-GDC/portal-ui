@@ -24,6 +24,13 @@ module ngApp.components.charts {
       },
       templateUrl: "components/charts/templates/pie-chart.html",
       link: function($scope: IPieChartScope, element: ng.IAugmentedJQuery) {
+        var tip = d3.tip()
+                    .attr("class", "tooltip")
+                    .offset([-5, 0])
+                    .html(function(d) {
+                          return "Further filtering in this view can be performed using the Advanced Search above";
+                          });
+
         // Used to namespace each resize event
         var id = "." + $window.Math.round($window.Math.random() * 120000);
 
@@ -148,7 +155,9 @@ module ngApp.components.charts {
               })
               .on("mouseout.legend", function() {
                 element.find(".chart-legend").addClass("invisible");
-              });
+              })
+              .call(tip)
+              .on('mouseout', tip.hide);
 
           $scope.legendData = legendData;
           if (data.length > 1) {
@@ -157,7 +166,10 @@ module ngApp.components.charts {
           }
 
           function setFilters(d) {
-            if (LocationService.path().startsWith('/query')) return;
+            if (LocationService.path().indexOf('/query') === 0) {
+              tip.show();
+              return;
+            }
             var params;
 
             if (!config.filters || (!config.filters[d.data[config.displayKey]] &&

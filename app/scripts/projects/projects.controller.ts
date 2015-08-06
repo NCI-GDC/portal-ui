@@ -105,7 +105,7 @@ module ngApp.projects.controllers {
         this.$state.go("projects." + tab, this.LocationService.search(), {inherit: false});
       }
     }
-    
+
     gotoQuery() {
       var stateParams = {};
       var f = this.LocationService.filters();
@@ -139,6 +139,7 @@ module ngApp.projects.controllers {
                 private AnnotationsService: IAnnotationsService,
                 private ExperimentalStrategyNames,
                 private DataTypeNames,
+                public $state: ng.ui.IStateService,
                 private $filter: ng.ui.IFilterService) {
       CoreService.setPageTitle("Project", project.project_id);
 

@@ -3,7 +3,7 @@ module ngApp.components.location.services {
   class LocationService implements ILocationService {
     /* @ngInject */
     constructor(
-      private $location: ng.ILocationService, 
+      private $location: ng.ILocationService,
       private $window: ngApp.core.models.IGDCWindowService
     ) {}
 

@@ -14,6 +14,8 @@
          data-ng-repeat="unitMap in unitsMap">
         <label data-ng-click="$parent.unitClicked(unitMap)">
           <input type="radio"
+                 data-ng-model="$parent.selectedUnit"
+                 data-ng-value="unitMap"
                  name="{{field}}">
             {{ unitMap.label | humanify }}
         </label>

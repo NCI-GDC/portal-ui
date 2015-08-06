@@ -5,6 +5,7 @@ module ngApp.cart.directives {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
   import IFile = ngApp.files.models.IFile;
+  import ILocalStorageService = ngApp.components.localStorage.ILocalStorage;
 
   interface IAddToCartScope extends ng.IScope {
     CartService: ICartService;
@@ -39,7 +40,7 @@ module ngApp.cart.directives {
       controller: function($scope: IAddToCartScope, CartService: ICartService) {
         $scope.CartService = CartService;
         $scope.addToCart = function(files: IFile[]) {
-          CartService.addFiles(files)
+          CartService.addFiles(files);
         };
         $scope.removeFromCart = function(files: IFile[]) {
           CartService.removeFiles(files);
@@ -70,7 +71,8 @@ module ngApp.cart.directives {
                            FilesService: IFilesService,
                            UserService: IUserService,
                            $timeout: ng.ITimeoutService,
-                           notify: INotifyService) {
+                           notify: INotifyService,
+                           LocalStorageService: ILocalStorageService) {
         $scope.CartService = CartService;
         $scope.removeAll  = function() {
           // Query ES using the current filter and the file uuids in the Cart
@@ -102,6 +104,12 @@ module ngApp.cart.directives {
             CartService.remove(_.pluck(data.hits, "file_id"));
           });
         };
+        
+        $scope.buildLocalStorageQuery = function(){
+          
+          LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
+          
+        }
 
         $scope.addAll = function() {
           var filters = $scope.filter || LocationService.filters();
@@ -251,8 +259,10 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
       controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
                           FilesService: IFilesService,
-                          ParticipantsService) {
+                          ParticipantsService,
+                          LocalStorageService: ILocalStorageService) {
         $scope.files = [];
+        $scope.contentArray = [];
         
         function areFiltersApplied(content): boolean {
           return content && _.some(content, (item) => {
@@ -347,6 +357,17 @@ module ngApp.cart.directives {
 
         $scope.addRelatedFiles = function() {
           CartService.addFiles($scope.files);
+          
+          var obj;
+          
+          $scope.files.forEach(element => {
+            obj = {"op": "is", "content":{"field": "participant_id", "value": element.file_id}};
+            $scope.contentArray.push(obj);
+          });
+          
+          console.log($scope.contentArray);
+          
+          //TO IMPLEMENT: LocalStorageService.removeFromStorage();
         };
 
         $scope.removeRelatedFiles = function() {

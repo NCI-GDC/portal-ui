@@ -5,7 +5,7 @@ module ngApp.components.localStorage.services {
 		constructor(private $window: ngApp.core.models.IGDCWindowService,
 					private $location: ng.ILocationService){}
 					
-		private LocalStorageArray_Added: Array<string> = new Array<string>();
+		private LocalStorageArray_Added: Array<any> = new Array<any>();
 		private LocalStorageArray_Removed: Array<any> = new Array<any>();
 		private cartAddedUUIDs: Array<string> = new Array<string>();
 		private cartRemovedUUIDs: Array<string> = new Array<string>();
@@ -16,10 +16,18 @@ module ngApp.components.localStorage.services {
 		
 		cartAddedQuery(obj: string): void {
 			if(this.hasLocalStorage()){
-				var tmp = JSON.parse(obj);
-				//this.LocalStorageArray_Added.push("");
-				var newObj = {"op": "OR", content: tmp.content[0].content.value};
 				this.$window.localStorage.removeItem("cartAddedQuery");
+				//We can used the parsed value if we only
+				//want the filters from the array and not the entire
+				//json object
+				
+				//var tmp = JSON.parse(obj);
+				//tmp.content[0].content.value
+				
+				//Push the current filter to the content list
+				//this.LocalStorageArray_Added.push();
+				var newObj = {"op": "OR", content: [JSON.parse(obj)]};
+				
 				this.$window.localStorage.setItem("cartAddedQuery", JSON.stringify(newObj));
 			}
 		}
@@ -27,8 +35,10 @@ module ngApp.components.localStorage.services {
 		cartRemovedQuery(uuid: string): void {
 		  
 		  if(this.hasLocalStorage()){
-				var newObj = {"op": "is", "content":{"field": "participant_id", "value": uuid}};
-				this.LocalStorageArray_Removed.push(newObj);
+				this.$window.localStorage.removeItem("cartRemovedQuery");
+				
+				var contentList = {"op": "is", "content":{"field": "participant_id", "value": uuid}};
+				this.LocalStorageArray_Removed.push(contentList);
 				var filter = {"op": "OR", content: this.LocalStorageArray_Removed};
 				this.$window.localStorage.setItem("cartRemovedQuery", JSON.stringify(filter));
 			}

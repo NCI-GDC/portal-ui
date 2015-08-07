@@ -110,12 +110,6 @@ module ngApp.cart.directives {
             CartService.remove(_.pluck(data.hits, "file_id"));
           });
         };
-        
-        $scope.buildLocalStorageQuery = function(){
-          
-          LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
-         
-        }
 
         $scope.addAll = function() {
           var filters = $scope.filter || LocationService.filters();
@@ -125,6 +119,8 @@ module ngApp.cart.directives {
             CartService.sizeWarning();
             return;
           }
+          
+          LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
 
           var addingMsgPromise = $timeout(() => {
             notify({

@@ -37,13 +37,19 @@ module ngApp.cart.directives {
         file: "=",
       },
       templateUrl: "cart/templates/add-to-cart-button-single.html",
-      controller: function($scope: IAddToCartScope, CartService: ICartService) {
+      controller: function($scope: IAddToCartScope,
+                           CartService: ICartService,
+                           LocalStorageService: ILocalStorageService) {
         $scope.CartService = CartService;
+        
+        
         $scope.addToCart = function(files: IFile[]) {
           CartService.addFiles(files);
+          LocalStorageService.cartAddedFiles(files[0].file_id);
         };
         $scope.removeFromCart = function(files: IFile[]) {
           CartService.removeFiles(files);
+          LocalStorageService.cartRemovedFiles(files[0].file_id);
         };
       }
     }
@@ -108,7 +114,7 @@ module ngApp.cart.directives {
         $scope.buildLocalStorageQuery = function(){
           
           LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
-          
+         
         }
 
         $scope.addAll = function() {
@@ -277,6 +283,8 @@ module ngApp.cart.directives {
         }
         
         var content = getContent();
+        var uuid;
+        
         $scope.areFiltersApplied = areFiltersApplied(content);
 
         $scope.$on("$locationChangeSuccess", () => {
@@ -291,7 +299,7 @@ module ngApp.cart.directives {
             filters = {op: "and", content: [filters]};
           }
 
-          var uuid = $scope.row.case_id;
+          uuid = $scope.row.case_id;
 
           filters.content.push({
             content: {
@@ -358,20 +366,13 @@ module ngApp.cart.directives {
         $scope.addRelatedFiles = function() {
           CartService.addFiles($scope.files);
           
-          var obj;
+          LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
           
-          $scope.files.forEach(element => {
-            obj = {"op": "is", "content":{"field": "participant_id", "value": element.file_id}};
-            $scope.contentArray.push(obj);
-          });
-          
-          console.log($scope.contentArray);
-          
-          //TO IMPLEMENT: LocalStorageService.removeFromStorage();
         };
 
         $scope.removeRelatedFiles = function() {
           CartService.remove($scope.inBoth);
+          LocalStorageService.cartRemovedQuery(uuid);
         };
 
         $scope.calculateFileCount = function() {

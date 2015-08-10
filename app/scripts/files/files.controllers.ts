@@ -56,14 +56,14 @@ module ngApp.files.controllers {
     }
 
     isInCart(): boolean {
-      return this.CartService.isInCart(this.file.file_uuid);
+      return this.CartService.isInCart(this.file.file_id);
     }
 
     handleCartButton(): void {
-      if (!this.CartService.isInCart(this.file.file_uuid)) {
-        this.CartService.addFiles([this.file]);
+      if (this.CartService.isInCart(this.file.file_id)) {
+        this.CartService.remove([this.file.file_id]);
       } else {
-        this.CartService.remove([this.file.file_uuid]);
+        this.CartService.addFiles([this.file], true);
       }
     }
 

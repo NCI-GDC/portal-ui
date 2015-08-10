@@ -4,7 +4,7 @@
       <i class="fa fa-file-o"></i>
       {{ ::fc.file.file_id }}
       <span class="btn-group pull-right" style="margin-top: .3em">
-        <button id="cart-button" type="button" class="btn btn-primary" data-ng-click="fc.handleCartButton()">
+        <button id="cart-button" type="button" ng-class="{'btn':true, 'btn-primary': true, active: fc.isInCart(fc.file.file_id)}" data-ng-click="fc.handleCartButton()">
           <i class="fa fa-shopping-cart"></i>
           <span data-ng-if="fc.isInCart(fc.file.file_id)" data-translate>Remove from Cart</span>
           <span data-ng-if="!fc.isInCart(fc.file.file_id)" data-translate>Add to Cart</span>

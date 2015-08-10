@@ -36,20 +36,26 @@ module ngApp.files.services {
     }
 
     downloadManifest(_ids) {
-      this.download("/manifest", _ids);
+      this.download("/manifest", _ids, (status)=>{});
     }
 
-    downloadFiles(_ids) {
+    downloadFiles(_ids, callback: any) {
       if(_ids.length == 1) {
-        this.$window.location = this.$filter('makeDownloadLink')(_ids);
+        //this.$window.location = this.$filter('makeDownloadLink')(_ids);
+        this.download("/data", _ids, (status)=>{
+          if(status === "OK"){
+            if(callback) callback(true);
+          }
+        });
       } else {
-        this.download("/data", _ids);
+        this.download("/data", _ids, (status)=>{});
       }
     }
 
-    download(endpoint: string, ids: Array<string>) {
+    download(endpoint: string, ids: Array<string>, callback: any) {
       var abort = this.$q.defer();
       var params = { "ids": ids };
+      
       this.RestFullResponse.all(endpoint + "?annotations=true&related_files=true")
         .withHttpConfig({
           timeout: abort.promise,
@@ -60,6 +66,7 @@ module ngApp.files.services {
         .then((response) => {
           var filename: string = response.headers['content-disposition'].match(/filename=(.*)/i)[1];
           this.$window.saveAs(response.data, filename);
+          if(callback) callback("OK");
         });
     }
 

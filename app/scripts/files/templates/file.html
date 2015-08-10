@@ -9,9 +9,7 @@
           <span data-ng-if="fc.isInCart(fc.file.file_id)" data-translate>Remove from Cart</span>
           <span data-ng-if="!fc.isInCart(fc.file.file_id)" data-translate>Add to Cart</span>
         </button>
-        <a id="download-button" data-download-button class="btn btn-primary" data-files=fc.file>
-          <i class="fa fa-cloud-download"></i> Download
-        </a>
+        <download-button data-files=fc.file data-copy="Download" data-dlcopy="Downloading"></download-button>
       </span>
     </h1>
   </div>

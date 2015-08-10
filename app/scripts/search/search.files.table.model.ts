@@ -22,8 +22,7 @@ module ngApp.search.models {
         name: 'Add to Cart',
         id: "file_actions",
         td: row => '<span add-to-cart-single file="row" style="margin-right:5px"></span>' +
-                    '<a  data-tooltip="Download" data-tooltip-popup-delay=1000 class="btn btn-primary" download-button files="row">' +
-                    '<i class="fa fa-download"></i></a>'
+                    '<download-button data-tooltip="Download" data-tooltip-popup-delay=1000 files="row"></download-button>'
       }, {
         name: "File UUID",
         id: "file_id",

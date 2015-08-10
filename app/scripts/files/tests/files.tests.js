@@ -17,7 +17,41 @@ describe('Files:', function () {
   beforeEach(inject(function ($httpBackend) {
     httpBackend = $httpBackend;
   }));
-
+  
+  describe('Directives: ', function(){
+    
+    describe("download-button", function(){
+      
+      var scope, $compile, element;
+  
+      beforeEach(inject(function ($injector) {
+        
+        $compile = $injector.get('$compile');
+        var $rootScope = $injector.get('$rootScope');
+    
+        scope = $rootScope.$new();
+        element = angular.element('<download-button data-files=fc.file data-copy="Download" data-classes="fa fa-download"><span ng-transclude></span></download-button>');
+        $compile(element)(scope);
+        
+      }));
+      
+      afterEach(function () {
+        scope.$destroy();
+      });
+    
+      it('should compile', function () {
+        scope.$digest();
+        expect(element).to.be.an('object');
+      });
+      
+      it('should contain fa-download class', function () {
+        scope.$digest();
+        expect(element.html()).to.have.string('fa fa-download');
+      });
+    });
+    
+  });
+  
   describe('Service:', function () {
 
     it('should get all files', inject(function (FilesService) {

@@ -30,12 +30,12 @@
         data-ng-repeat="h in dataCols track by h.id">
       </td>
     </tr>
-    <tr>
+    <!--<tr>
       <td data-ng-repeat="h in dataCols track by h.name"
           data-ng-if="h.total"
           colspan="{{h.colSpan}}"
           data-ng-class="h.tdClassName"
           ng-bind-html="h.total(data, this)"></td>
-    </tr>
+    </tr>-->
   </tbody>
 </table>

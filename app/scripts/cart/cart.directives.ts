@@ -5,6 +5,7 @@ module ngApp.cart.directives {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
   import IFile = ngApp.files.models.IFile;
+  import ILocalStorageService = ngApp.components.localStorage.ILocalStorage;
 
   interface IAddToCartScope extends ng.IScope {
     CartService: ICartService;
@@ -36,13 +37,19 @@ module ngApp.cart.directives {
         file: "=",
       },
       templateUrl: "cart/templates/add-to-cart-button-single.html",
-      controller: function($scope: IAddToCartScope, CartService: ICartService) {
+      controller: function($scope: IAddToCartScope,
+                           CartService: ICartService,
+                           LocalStorageService: ILocalStorageService) {
         $scope.CartService = CartService;
+        
+        
         $scope.addToCart = function(files: IFile[]) {
-          CartService.addFiles(files)
+          CartService.addFiles(files);
+          LocalStorageService.cartAddedFiles(files[0].file_id);
         };
         $scope.removeFromCart = function(files: IFile[]) {
           CartService.removeFiles(files);
+          LocalStorageService.cartRemovedFiles(files[0].file_id);
         };
       }
     }
@@ -70,7 +77,8 @@ module ngApp.cart.directives {
                            FilesService: IFilesService,
                            UserService: IUserService,
                            $timeout: ng.ITimeoutService,
-                           notify: INotifyService) {
+                           notify: INotifyService,
+                           LocalStorageService: ILocalStorageService) {
         $scope.CartService = CartService;
         $scope.removeAll  = function() {
           // Query ES using the current filter and the file uuids in the Cart
@@ -111,6 +119,8 @@ module ngApp.cart.directives {
             CartService.sizeWarning();
             return;
           }
+          
+          LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
 
           var addingMsgPromise = $timeout(() => {
             notify({
@@ -251,8 +261,10 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
       controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
                           FilesService: IFilesService,
-                          ParticipantsService) {
+                          ParticipantsService,
+                          LocalStorageService: ILocalStorageService) {
         $scope.files = [];
+        $scope.contentArray = [];
         
         function areFiltersApplied(content): boolean {
           return content && _.some(content, (item) => {
@@ -267,6 +279,8 @@ module ngApp.cart.directives {
         }
         
         var content = getContent();
+        var uuid;
+        
         $scope.areFiltersApplied = areFiltersApplied(content);
 
         $scope.$on("$locationChangeSuccess", () => {
@@ -281,7 +295,7 @@ module ngApp.cart.directives {
             filters = {op: "and", content: [filters]};
           }
 
-          var uuid = $scope.row.case_id;
+          uuid = $scope.row.case_id;
 
           filters.content.push({
             content: {
@@ -347,10 +361,14 @@ module ngApp.cart.directives {
 
         $scope.addRelatedFiles = function() {
           CartService.addFiles($scope.files);
+          
+          LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
+          
         };
 
         $scope.removeRelatedFiles = function() {
           CartService.remove($scope.inBoth);
+          LocalStorageService.cartRemovedQuery(uuid);
         };
 
         $scope.calculateFileCount = function() {

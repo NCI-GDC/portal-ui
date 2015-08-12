@@ -4,6 +4,7 @@ module ngApp.files.controllers {
   import ICoreService = ngApp.core.services.ICoreService;
   import ICartService = ngApp.cart.services.ICartService;
   import IFilesService = ngApp.files.services.IFilesService;
+  import ILocalStorageService = ngApp.components.localStorage.ILocalStorage;
 
   export interface IFileController {
     file: IFile;
@@ -22,8 +23,8 @@ module ngApp.files.controllers {
                 public $scope: ng.IScope,
                 private CoreService: ICoreService,
                 private CartService: ICartService,
-                private FilesService: IFilesService
-                ) {
+                private FilesService: IFilesService,
+                private LocalStorageService: ILocalStorageService) {
 
       CoreService.setPageTitle("File", file.file_name);
 
@@ -60,10 +61,15 @@ module ngApp.files.controllers {
     }
 
     handleCartButton(): void {
+      //this.file.file_uuid => fild_id
       if (!this.CartService.isInCart(this.file.file_uuid)) {
         this.CartService.addFiles([this.file]);
+        this.LocalStorageService.cartAddedFiles(this.file.file_id);
+        
       } else {
+        //this block is not hit
         this.CartService.remove([this.file.file_uuid]);
+        //this.LocalStorageService.cartRemovedFiles(this.file.file_id);
       }
     }
 

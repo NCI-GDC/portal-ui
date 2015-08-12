@@ -9,6 +9,7 @@
 /// <reference path="user/module"/>
 /// <reference path="githut/module"/>
 /// <reference path="gql/module"/>
+/// <reference path="localStorage/module"/>
 
 declare module ngApp.components {
 }
@@ -27,5 +28,6 @@ angular
       "components.githut",
       "components.gql",
       "components.quickSearch",
-      "components.summaryCard"
+      "components.summaryCard",
+      "components.localStorage"
     ]);

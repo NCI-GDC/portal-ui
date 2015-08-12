@@ -75,7 +75,7 @@ module ngApp.search.models {
             name: "Files",
             id: "files",
             td: (row, $scope) => {
-                var fs = [{name: 'cases.case_id', value: row.case_id}]
+                var fs = [{field: 'cases.case_id', value: row.case_id}]
                 var sum = _.sum(_.pluck(row.summary ? row.summary.data_types : [], 'file_count'))
                 return withFilter(sum, fs, $scope.$filter);
             },

@@ -79,7 +79,7 @@ module ngApp.projects.models {
         name: "Cases",
         id: "summary.case_count",
         td: (row, $scope) => {
-          var fs = [{name: 'cases.project.project_id', value: row.project_id}]
+          var fs = [{field: 'cases.project.project_id', value: row.project_id}]
           return withFilter(row.summary.case_count, fs, $scope.$filter);
         },
         sortable: true,

@@ -58,12 +58,12 @@ We use the component naming system for css classes based on SUIT CSS.
 - [Workflow](#workflow)
 
 ## Branches
-All development should happen on a branch not on master. Branches should formatted as `type/GDC-##-couple-words` or `type/very-short-description`.
+All development should happen on a branch not on develop. Branches should formatted as `type/##-couple-words` or `type/very-short-description`.
 
 This branch structure is similar to git flow but customized for our use cases. Also we are not using git flow directly because it has an inflexible release process.
 
 ```
-❯ git checkout -b feat/GDC-11-my-feature
+❯ git checkout -b <feat/##-my-feature>
 ```
 
 *References*

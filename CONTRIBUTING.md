@@ -117,7 +117,14 @@ Any branches containing significant work need to be reviewed and signed-off befo
 *References*
 
 ```
-❯ git rebase -i master
+❯ git checkout develop
+❯ git pull origin develop
+❯ git checkout <feature_branch>
+❯ git rebase -i develop
+❯ git push <feature_branch> --force-with-lease
+❯ git checkout develop
+❯ git merge <feature_branch>
+❯ git push origin develop
 ```
 
 - https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase-i

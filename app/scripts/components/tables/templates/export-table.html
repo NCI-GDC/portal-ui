@@ -6,11 +6,48 @@
           data-dropdown-toggle aria-expanded="false">
           <span class="fa fa-table"></span>
   </button>
-  <button data-ng-if="text" type="button" class="btn btn-primary"
+  <button data-ng-if="text" type="button" class="btn btn-primary dropdown-toggle"
           data-dropdown-toggle
-          data-ng-click="etc.exportTable('TSV')"
           data-aria-expanded="false">
           {{ text }}
   </button>
+  <ul class="dropdown-menu pull-right" role="menu">
+    <li>
+      <a data-ng-click="etc.exportTable('JSON')">
+        <span class="fa-stack">
+          <span class="fa-stack-1x filetype-text">JSON</span>
+          <i class="fa fa-file-o fa-stack-2x"></i>
+        </span>
+        <span data-translate>JSON</span>
+      </a>
+    </li>
+    <li>
+      <a data-ng-click="etc.exportTable('XML')">
+        <span class="fa-stack">
+          <span class="fa-stack-1x filetype-text">XML</span>
+          <i class="fa fa-file-o fa-stack-2x"></i>
+        </span>
+        <span data-translate>XML</span>
+      </a>
+    </li>
+    <li>
+      <a data-ng-click="etc.exportTable('CSV')">
+        <span class="fa-stack">
+          <span class="fa-stack-1x filetype-text">CSV</span>
+          <i class="fa fa-file-o fa-stack-2x"></i>
+        </span>
+        <span data-translate>CSV</span>
+      </a>
+    </li>
+    <li>
+      <a data-ng-click="etc.exportTable('TSV')">
+        <span class="fa-stack">
+          <span class="fa-stack-1x filetype-text">TSV</span>
+          <i class="fa fa-file-o fa-stack-2x"></i>
+        </span>
+        <span data-translate>TSV</span>
+      </a>
+    </li>
+  </ul>
 </div>
 

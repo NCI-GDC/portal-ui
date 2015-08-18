@@ -327,8 +327,8 @@ module ngApp.components.tables.controllers {
           if (modalOpenPromise) {
             this.$timeout.cancel(modalOpenPromise);
           }
-          this.$window.saveAs(file.data, this.$scope.endpoint + "." +
-                              this.$window.moment().format() + "." +
+          this.$window.saveAs(file.data, this.$scope.endpoint + "_" +
+                              this.$window.moment().format('YYYY-MM-DD') + "." +
                               fileType.toLowerCase());
         })
         .finally(() => {

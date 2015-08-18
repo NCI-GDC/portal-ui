@@ -63,6 +63,22 @@ module ngApp.components.tables.directives {
       controller: "ExportTableController as etc"
     };
   }
+  
+  function ReportsExportTable(): ng.IDirective {
+    return {
+      restrict: "EA",
+      scope: {
+        text: "@",
+        size: "@",
+        headings: "=",
+        endpoint: "@",
+        expand: "="
+      },
+      replace: true,
+      templateUrl: "components/tables/templates/reports-export-table.html",
+      controller: "ExportTableController as etc"
+    };
+  }
 
   function SortTable(): ng.IDirective {
     return {
@@ -103,6 +119,7 @@ module ngApp.components.tables.directives {
 
   angular.module("tables.directives", ["tables.controllers"])
       .directive("exportTable", ExportTable)
+      .directive("reportsExportTable", ReportsExportTable)
       .directive("sortTable", SortTable)
       .directive("gdcTable", GDCTable)
       .directive("arrangeColumns", ArrangeColumns);

@@ -82,13 +82,13 @@ module ngApp.participants.controllers {
               filters: function(value) {
                 return $filter("makeFilter")([
                   {
-                    name: "cases.case_id",
+                    field: "cases.case_id",
                     value: [
                       participant.case_id
                     ]
                   },
                   {
-                    name: "files.experimental_strategy",
+                    field: "files.experimental_strategy",
                     value: [
                       value
                     ]

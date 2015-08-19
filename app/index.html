@@ -92,7 +92,7 @@
       </div>
       <div>
         UI <a href= "{{ config.tag }}">{{ config.version }}</a> @ <a href="{{ config.commitLink }}">{{ config.commitHash }}</a>, 
-        API <a href= "{{ config.apiTag }}">{{ config.apiVersion }}</a> @ <a href="{{ config.apiCommitLink }}">{{ config.apiCommitHash | limitTo: 7 }}</a>
+        API <a href= "{{ config.apiTag }}">{{ config.apiVersion }}</a><span ng-if="{{ config.apiCommitHash }}"> @ <a href="{{ config.apiCommitLink }}">{{ config.apiCommitHash | limitTo: 7 }}</a></span>
       </div>
     </div>
   </footer>

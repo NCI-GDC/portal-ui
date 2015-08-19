@@ -28,7 +28,7 @@
       <label for="from-{{title}}" class="input-group-addon">From:</label>
       <input id="from-{{title}}" type="text" class="form-control" style="border-radius: 0px;" placeholder="{{ min }}" data-ng-model="lowerBound" aria-label="Min {{ field }}" data-ng-change="rfc.inputChanged()">
       <label for="to-{{title}}" class="input-group-addon" style="border-radius: 0px; border-right: 0px; border-left: 0px">To:</label>
-      <input for="to-{{title}}" type="text" class="form-control" style="border-radius: 0px" placeholder="{{ max }}" data-ng-model="upperBound" aria-label="Max {{ field }}" data-ng-change="rfc.inputChanged()">
+      <input id="to-{{title}}" type="text" class="form-control" style="border-radius: 0px" placeholder="{{ max }}" data-ng-model="upperBound" aria-label="Max {{ field }}" data-ng-change="rfc.inputChanged()">
       <span class="input-group-btn">
         <button class="btn btn-default" type="button" data-ng-click="rfc.setBounds()">Go!</button>
       </span>

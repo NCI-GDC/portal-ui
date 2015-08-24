@@ -207,9 +207,7 @@
                 <td>{{ ::f.type }}</td>
                 <td>{{ ::f.md5sum || '--' }}</td>
                 <td>
-                  <a data-download-button data-files=f>
-                    Download
-                  </a>
+                  <data-download-button data-classes="btn" data-files=f data-copy="Download" data-dlcopy="Downloading" />
                 </td>
               </tr>
               </tbody>

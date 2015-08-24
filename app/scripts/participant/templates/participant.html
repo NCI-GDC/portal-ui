@@ -111,11 +111,7 @@
             <h3 class="panel-title pull-left" data-translate>
               Clinical
             </h3>
-            <a class="btn btn-default pull-right"
-               data-ng-if="pc.clinicalFileId"
-               target="_blank"
-               data-ng-href="{{ [pc.clinicalFileId] | makeDownloadLink:false }}"
-               data-translate>Download Clinical XML</a>
+               <data-download-button ng-if="pc.clinicalFile" data-files=pc.clinicalFile data-copy="Download Clinical XML" data-dlcopy="Downloading" data-classes="btn pull-right" />
           </div>
 
           <table id="clinical-table"

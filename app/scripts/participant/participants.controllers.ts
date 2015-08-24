@@ -29,13 +29,9 @@ module ngApp.participants.controllers {
         return annotation.annotation_id;
       });
 
-      var clinicalFile = _.find(this.participant.files, (file) => {
+      this.clinicalFile = _.find(this.participant.files, (file) => {
         return file.data_subtype.toLowerCase() === "clinical data";
       });
-
-      if (clinicalFile) {
-        this.clinicalFileId = clinicalFile.file_id;
-      }
 
       this.experimentalStrategies = _.reduce(ExperimentalStrategyNames.slice(), function(result, name) {
         var strat = _.find(participant.summary.experimental_strategies, (item) => {

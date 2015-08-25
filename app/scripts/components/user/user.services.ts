@@ -33,9 +33,13 @@ module ngApp.components.user.services {
       })
       .post({}, {})
       .then((data) => {
+          console.log("a");
+          console.log(data);
           data.isFiltered = true;
           this.setUser(data);
       }, (response) => {
+        console.log("b");
+        console.log(response);
         if(response.status === 401) {
           return;
         } else {
@@ -64,6 +68,8 @@ module ngApp.components.user.services {
     }
 
     setUser(user: IUser): void {
+      console.log("c");
+      console.log(user);
       this.currentUser = user;
       this.$rootScope.$broadcast("gdc-user-reset");
     }

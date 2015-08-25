@@ -42,7 +42,6 @@ module ngApp.cart.models {
           var val = $scope.$filter("humanify")(row.access);
           return '<i class="fa fa-'+ (row.access === 'controlled' ? 'lock' : 'unlock-alt') +'"></i> ' + val;
         },
-        tdClassName: "text-center",
         sortable: true
       }, {
         name: "File Name",
@@ -62,7 +61,8 @@ module ngApp.cart.models {
 
           return row.caseIds.length ? getParticipants(row, $scope.$filter) : 0;
         },
-        tdClassName: 'truncated-cell text-right'
+        thClassName: 'text-right',
+        tdClassName: 'text-right'
       }, {
         name: "Project",
         id: "cases.project.project_id",
@@ -89,6 +89,7 @@ module ngApp.cart.models {
         id: "file_size",
         td: (row, $scope) => $scope.$filter("size")(row.file_size),
         sortable: true,
+        thClassName: 'text-right',
         tdClassName: 'text-right'
       }, {
         name: "Annotations",
@@ -105,7 +106,8 @@ module ngApp.cart.models {
 
           return row.annotationIds.length ? getAnnotations(row, $scope) : 0;
         },
-        tdClassName: 'truncated-cell text-right'
+        thClassName: 'text-right',
+        tdClassName: 'text-right'
       }
     ]
   };

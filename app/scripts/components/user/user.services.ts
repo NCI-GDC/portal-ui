@@ -24,6 +24,7 @@ module ngApp.components.user.services {
                 private LocationService: ILocationService,
                 private $cookies: ng.cookies.ICookiesService,
                 private $window: ng.IWindowService,
+                private $modal: any,
                 private $log: ng.ILogService) {}
 
     login(): void {
@@ -37,7 +38,15 @@ module ngApp.components.user.services {
           this.setUser(data);
       }, (response) => {
         if(response.status === 401) {
-          return;
+          // users with eRA accounts with no dbgap access only receive an "Unauthorized" response from /auth/user
+          // but newuser cookie is set to user's username and SMSESSION is LOGGEDOFF
+          // these cookies are used to display the user as logged in, with My Projects filters off and allowing logout if desired
+          var username:string = this.$cookies.get("newuser");
+          if(username && this.$cookies.get("SMSESSION") !== "LOGGEDOFF") {
+            this.setUser({username: username,
+                          projects: {gdc_ids: [], phs_ids: []},
+                          isFiltered: false});
+          }
         } else {
           this.$log.error("Error logging in, response status " + response.status);
         }
@@ -59,6 +68,21 @@ module ngApp.components.user.services {
           // This endpoint receives the header 'content-disposition' which our Restangular
           // setup alters the data.
           this.$window.saveAs(file.data, "gdc-user-token." + this.$window.moment().format() + ".txt");
+        }, (response) => {
+          if(response.status === 401) {
+            var loginWarningModal = this.$modal.open({
+              templateUrl: "core/templates/request-access-to-download-single.html",
+              controller: "WarningController",
+              controllerAs: "wc",
+              backdrop: "static",
+              keyboard: false,
+              backdropClass: "warning-backdrop",
+              animation: false,
+              size: "lg"
+            });
+          } else {
+            this.$log.error("Error logging in, response status " + response.status);
+          }
         });
       }
     }
@@ -177,6 +201,6 @@ module ngApp.components.user.services {
   }
 
   angular
-      .module("user.services", ["restangular", "location.services", "ngCookies"])
+      .module("user.services", ["restangular", "location.services", "ngCookies", "ui.bootstrap"])
       .service("UserService", UserService);
 }

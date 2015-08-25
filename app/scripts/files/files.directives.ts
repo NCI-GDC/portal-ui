@@ -33,6 +33,10 @@ module ngApp.files.directives {
               if(complete){
                 $scope.active = false;
                 $element.removeAttr("disabled");
+              } else {
+                //Download Failed
+                $scope.active = false;
+                $element.removeAttr("disabled");
               }
               
             });

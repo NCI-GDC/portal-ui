@@ -177,7 +177,11 @@ module ngApp.cart.controllers {
     }
 
     getManifest(selectedOnly: boolean = false) {
-      this.FilesService.downloadManifest(_.pluck(this.CartService.getFiles(), "file_id"));
+      this.FilesService.downloadManifest(_.pluck(this.CartService.getFiles(), "file_id"), (complete)=>{
+        if(complete) {
+          return true;
+        }
+      });
     }
 
   }

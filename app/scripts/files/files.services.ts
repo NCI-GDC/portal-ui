@@ -9,6 +9,7 @@ module ngApp.files.services {
   export interface IFilesService {
     getFile(id: string, params: Object): ng.IPromise<IFile>;
     getFiles(params?: Object): ng.IPromise<IFiles>;
+    downloadManifest(ids: Array<string>, callback: any)
   }
 
   class FilesService implements IFilesService {
@@ -16,7 +17,7 @@ module ngApp.files.services {
 
     /* @ngInject */
     constructor(private Restangular: restangular.IService, private LocationService: ILocationService,
-                private UserService: IUserService, private CoreService: ICoreService,
+                private UserService: IUserService, private CoreService: ICoreService, private $modal: any,
                 private $rootScope: IRootScope, private $q: ng.IQService, private $filter, private $window, private RestFullResponse: any) {
       this.ds = Restangular.all("files");
     }
@@ -35,21 +36,16 @@ module ngApp.files.services {
       });
     }
 
-    downloadManifest(_ids) {
-      this.download("/manifest", _ids, (status)=>{});
+    downloadManifest(_ids, callback: any) {
+      this.download("/manifest", _ids, (status)=>{
+        if(callback) callback(status);
+      });
     }
 
     downloadFiles(_ids, callback: any) {
-      if(_ids.length == 1) {
-        //this.$window.location = this.$filter('makeDownloadLink')(_ids);
-        this.download("/data", _ids, (status)=>{
-          if(status === "OK"){
-            if(callback) callback(true);
-          }
-        });
-      } else {
-        this.download("/data", _ids, (status)=>{});
-      }
+      this.download("/data", _ids, (status)=>{
+        if(callback) callback(status);
+      });
     }
 
     download(endpoint: string, ids: Array<string>, callback: any) {
@@ -66,7 +62,19 @@ module ngApp.files.services {
         .then((response) => {
           var filename: string = response.headers['content-disposition'].match(/filename=(.*)/i)[1];
           this.$window.saveAs(response.data, filename);
-          if(callback) callback("OK");
+          if(callback) callback(true);  
+        }, (response)=>{
+          //Download Failed
+          this.$modal.open({
+            templateUrl: 'core/templates/download-failed.html',
+            controller: "LoginToDownloadController",
+            controllerAs: "wc",
+            backdrop: true,
+            keyboard: true,
+            animation: false,
+            size: "lg"
+          });
+          if(callback) callback(false);
         });
     }
 

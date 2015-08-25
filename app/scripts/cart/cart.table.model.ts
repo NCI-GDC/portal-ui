@@ -57,7 +57,7 @@ module ngApp.cart.models {
           function getParticipants(row, $filter) {
             return row.caseIds.length == 1 ?
                      '<a href="cases/' + row.caseIds[0] + '">1</a>' :
-                     withFilter(row.caseIds.length, [{name: "files.file_id", value: row.file_id}], $filter);
+                     withFilter(row.caseIds.length, [{field: "files.file_id", value: row.file_id}], $filter);
           }
 
           return row.caseIds.length ? getParticipants(row, $scope.$filter) : 0;
@@ -99,7 +99,7 @@ module ngApp.cart.models {
                      '<a href="annotations/' + row.annotationIds[0] + '">' + 1 + '</a>' :
                      withAnnotationFilter(
                        row.annotationIds.length,
-                       [{name: "annotation_id", value: row.annotationIds}],
+                       [{field: "annotation_id", value: row.annotationIds}],
                        $scope.$filter);
           }
 

@@ -4,5 +4,6 @@ module ngApp.components.user.models {
     projects: {gdc_ids: string[]};
     token: string;
     isFiltered: boolean;
+    hasDbGap: boolean;
   }
 }

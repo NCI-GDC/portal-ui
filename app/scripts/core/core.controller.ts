@@ -22,7 +22,7 @@ module ngApp.core.controllers {
       // display login failed warning
       if(_.get($location.search(), 'error') === 'You are not authorized to gdc services') {
         var loginWarningModal = this.$modal.open({
-          templateUrl: "core/templates/login-failed-warning.html",
+          templateUrl: "core/templates/dbgap-warning.html",
           controller: "WarningController",
           controllerAs: "wc",
           backdrop: "static",

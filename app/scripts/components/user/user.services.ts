@@ -13,6 +13,7 @@ module ngApp.components.user.services {
     currentUser: IUser;
     userCanDownloadFiles(files: IFile[]): boolean;
     getToken(): void;
+    hasDbGap(): boolean;
   }
 
   class UserService implements IUserService {
@@ -35,19 +36,24 @@ module ngApp.components.user.services {
       .post({}, {})
       .then((data) => {
           data.isFiltered = true;
-          this.setUser(data);
+          this.setUser(_.assign(data, { hasDbGap: true }));
       }, (response) => {
         if(response.status === 401) {
           var username:string = this.$cookies.get("newuser");
           if(username && this.$cookies.get("SMSESSION") !== "LOGGEDOFF") {
-            this.setUser({username: username,
-                          projects: {gdc_ids: [], phs_ids: []},
-                          isFiltered: false});
+            this.setUser({ username: username,
+                           projects: { gdc_ids: [], phs_ids: [] },
+                           hasDbGap: false,
+                           isFiltered: false });
           }
         } else {
           this.$log.error("Error logging in, response status " + response.status);
         }
       });
+    }
+
+    hasDbGap(): boolean {
+      return this.currentUser ? this.currentUser.hasDbGap : false;
     }
 
     getToken(): void {
@@ -68,7 +74,7 @@ module ngApp.components.user.services {
         }, (response) => {
           if(response.status === 401) {
             var loginWarningModal = this.$modal.open({
-              templateUrl: "core/templates/login-failed-warning.html",
+              templateUrl: "core/templates/dbgap-warning.html",
               controller: "WarningController",
               controllerAs: "wc",
               backdrop: "static",

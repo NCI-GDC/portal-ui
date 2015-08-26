@@ -13,33 +13,34 @@ module ngApp.files.directives {
 	              '<i class="fa fa-download" ng-class="{\'fa-spinner\': active, \'fa-pulse\': active}"></i>' +
 	              '<span ng-if="copy"><span ng-if="!active"> {{copy}}</span><span ng-if="active"> {{dlcopy}}</span></span></a>',
       link: function($scope, $element, $attrs){
-                
+
         var files = $scope.files;
         $scope.active = false;
-        
+
         $element.on("click", function(a) {
-          
+
           if (!_.isArray(files)) {
             files = [files];
           }
           if (UserService.userCanDownloadFiles(files)) {
-            
             $scope.active = true;
             $attrs.$set("disabled", "disabled");
-            
+
             FilesService.downloadFiles(_.pluck(files, "file_id"), (complete)=>{
-              
+
               if(complete){
                 $scope.active = false;
                 $element.removeAttr("disabled");
               }
-              
             });
 
           } else {
-            var template = UserService.currentUser ?
-                "core/templates/request-access-to-download-single.html" :
-                "core/templates/login-to-download-single.html";
+            var template: string = "core/templates/login-to-download-single.html";
+            if (UserService.currentUser) {
+              template = "core/templates/request-access-to-download-single.html";
+            } else if (!UserService.hasDbGap()) {
+              template = "core/templates/dbgap-warning.html";
+            }
 
             $log.log("File not authorized.");
             $modal.open({

@@ -104,7 +104,7 @@ module ngApp.cart.controllers {
     }
 
     getSummary() {
-      this.participantCount = _.unique(_.flatten(_.pluck(this.files, "participantIds"))).length;
+      this.participantCount = _.unique(_.flatten(_.pluck(this.files, "caseIds"))).length;
       var filters = {
         op: "and",
         content: [

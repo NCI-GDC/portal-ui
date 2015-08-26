@@ -24,6 +24,7 @@ module ngApp.components.user.services {
                 private LocationService: ILocationService,
                 private $cookies: ng.cookies.ICookiesService,
                 private $window: ng.IWindowService,
+                private $modal: any,
                 private $log: ng.ILogService) {}
 
     login(): void {
@@ -33,15 +34,16 @@ module ngApp.components.user.services {
       })
       .post({}, {})
       .then((data) => {
-          console.log("a");
-          console.log(data);
           data.isFiltered = true;
           this.setUser(data);
       }, (response) => {
-        console.log("b");
-        console.log(response);
         if(response.status === 401) {
-          return;
+          var username:string = this.$cookies.get("newuser");
+          if(username && this.$cookies.get("SMSESSION") !== "LOGGEDOFF") {
+            this.setUser({username: username,
+                          projects: {gdc_ids: [], phs_ids: []},
+                          isFiltered: false});
+          }
         } else {
           this.$log.error("Error logging in, response status " + response.status);
         }
@@ -63,13 +65,26 @@ module ngApp.components.user.services {
           // This endpoint receives the header 'content-disposition' which our Restangular
           // setup alters the data.
           this.$window.saveAs(file.data, "gdc-user-token." + this.$window.moment().format() + ".txt");
+        }, (response) => {
+          if(response.status === 401) {
+            var loginWarningModal = this.$modal.open({
+              templateUrl: "core/templates/login-failed-warning.html",
+              controller: "WarningController",
+              controllerAs: "wc",
+              backdrop: "static",
+              keyboard: false,
+              backdropClass: "warning-backdrop",
+              animation: false,
+              size: "lg"
+            });
+          } else {
+            this.$log.error("Error logging in, response status " + response.status);
+          }
         });
       }
     }
 
     setUser(user: IUser): void {
-      console.log("c");
-      console.log(user);
       this.currentUser = user;
       this.$rootScope.$broadcast("gdc-user-reset");
     }

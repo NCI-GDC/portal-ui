@@ -198,6 +198,6 @@ module ngApp.components.user.services {
   }
 
   angular
-      .module("user.services", ["restangular", "location.services", "ngCookies"])
+      .module("user.services", ["restangular", "location.services", "ngCookies", "ui.bootstrap"])
       .service("UserService", UserService);
 }

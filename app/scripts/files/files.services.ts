@@ -55,7 +55,7 @@ module ngApp.files.services {
     download(endpoint: string, ids: Array<string>, callback: any) {
       var abort = this.$q.defer();
       var params = { "ids": ids };
-      
+
       this.RestFullResponse.all(endpoint + "?annotations=true&related_files=true")
         .withHttpConfig({
           timeout: abort.promise,

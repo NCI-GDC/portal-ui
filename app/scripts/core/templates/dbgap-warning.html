@@ -8,5 +8,9 @@
   </p>
 </div>
 <div class="modal-footer">
-  <button class="btn btn-primary" data-ng-click="wc.acceptWarning()" data-translate>OK</button>
+  <button auth-button class="btn btn-primary" data-redirect="logout">
+    <i class="fa fa-sign-out stock-icon"></i>
+    <span data-translate>Logout from eRA commons</span>
+  </button>
+  <button class="btn btn-primary" data-ng-click="wc.acceptWarning()" data-translate>Continue Browsing</button>
 </div>

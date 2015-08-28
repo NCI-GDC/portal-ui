@@ -47,7 +47,7 @@ module ngApp.components.location.services {
         _.each(paging, (page) => {
           page.from = 0;
         });
-        search['pagination'] = paging;
+        search['pagination'] = angular.toJson(paging);
       }
       return this.setSearch(search);
     }
@@ -103,7 +103,6 @@ module ngApp.components.location.services {
 
       return q.join(" and ");
     }
-
 
   }
 

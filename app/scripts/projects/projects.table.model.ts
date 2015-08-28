@@ -1,6 +1,14 @@
 module ngApp.projects.models {
   import ILocationService = ngApp.components.location.ILocationService;
   
+  // TODO integrate this better 
+  function withFilterF(value: number, filters: Object[], $filter: ng.IFilterService): string {
+    var filterString = $filter("makeFilter")(filters, true);
+    var href = 'search/f?filters=' + filterString;
+    var val = $filter("number")(value);
+    return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
+  }
+  
   function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     var filterString = $filter("makeFilter")(filters, true);
     var href = 'search/c?filters=' + filterString;
@@ -178,7 +186,7 @@ module ngApp.projects.models {
         id: "summary.file_count",
         td: (row, $scope) => {
           var fs = [{field: 'cases.project.project_id', value: row.project_id}]
-          return withFilter(row.summary.file_count, fs, $scope.$filter);
+          return withFilterF(row.summary.file_count, fs, $scope.$filter);
         },
         sortable: true,
         thClassName: 'text-right',

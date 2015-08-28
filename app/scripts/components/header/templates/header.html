@@ -63,7 +63,7 @@
             <span class="hidden-md hidden-sm" data-translate>Login</span>
           </a>
         </li>
-        <li class="MyProjects" data-ng-if="hc.UserService.currentUser">
+        <li class="MyProjects" data-ng-if="hc.UserService.currentUser && hc.UserService.hasProjects()">
           <label class="MyProjects__label navbar-text">
             <input type="checkbox"
                    data-ng-change="hc.UserService.toggleFilter()"

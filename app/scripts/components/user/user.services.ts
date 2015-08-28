@@ -13,6 +13,7 @@ module ngApp.components.user.services {
     currentUser: IUser;
     userCanDownloadFiles(files: IFile[]): boolean;
     getToken(): void;
+    hasProjects(): boolean;
   }
 
   class UserService implements IUserService {
@@ -94,6 +95,14 @@ module ngApp.components.user.services {
 
     toggleFilter(): void {
       this.$rootScope.$broadcast("gdc-user-reset");
+    }
+
+    hasProjects(): boolean {
+      if(!this.currentUser) {
+        return false;
+      }
+      var projects = _.get(this.currentUser.projects, 'gdc_ids', []);
+      return projects.length > 0;
     }
 
     isUserProject(file: IFile): boolean {

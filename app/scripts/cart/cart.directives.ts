@@ -105,7 +105,6 @@ module ngApp.cart.directives {
 
         $scope.addAll = function() {
           var filters = $scope.filter || LocationService.filters();
-          
           filters = UserService.addMyProjectsFilter(filters, "cases.project.project_id");
           if ($scope.size >= CartService.getCartVacancySize()) {
             CartService.sizeWarning();
@@ -243,7 +242,7 @@ module ngApp.cart.directives {
                 size: "lg",
                 animation: false
               });
-  
+
               modalInstance.result.then((a) => {
                 if (a && authorizedInCart.length > 0) {
                   download();
@@ -253,11 +252,8 @@ module ngApp.cart.directives {
                   $element.removeAttr("disabled");
                 }
               });
-              
-              
-  
             }
-  
+
             function showRequestAccessModal() {
               var modalInstance = $modal.open({
                 templateUrl: "core/templates/request-access-to-download.html",
@@ -269,7 +265,7 @@ module ngApp.cart.directives {
                 size: "lg",
                 animation: false
               });
-  
+
               modalInstance.result.then((a) => {
                 if (a && authorizedInCart.length > 0) {
                   download();

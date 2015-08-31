@@ -39,15 +39,7 @@ module ngApp.components.user.services {
           this.setUser(data);
       }, (response) => {
         if(response.status === 401) {
-          // users with eRA accounts with no dbgap access only receive an "Unauthorized" response from /auth/user
-          // but newuser cookie is set to user's username and SMSESSION is LOGGEDOFF
-          // these cookies are used to display the user as logged in, with My Projects filters off and allowing logout if desired
-          var username:string = this.$cookies.get("newuser");
-          if(username && this.$cookies.get("SMSESSION") !== "LOGGEDOFF") {
-            this.setUser({username: username,
-                          projects: {gdc_ids: [], phs_ids: []},
-                          isFiltered: false});
-          }
+          return;
         } else {
           this.$log.error("Error logging in, response status " + response.status);
         }
@@ -73,7 +65,7 @@ module ngApp.components.user.services {
           if(response.status === 401) {
             var loginWarningModal = this.$modal.open({
               templateUrl: "core/templates/request-access-to-download-single.html",
-              controller: "WarningController",
+              controller: "LoginToDownloadController",
               controllerAs: "wc",
               backdrop: "static",
               keyboard: false,
@@ -164,7 +156,7 @@ module ngApp.components.user.services {
 
     addMyProjectsFilter(filters: any, key: string): any {
       if (this.currentUser && this.currentUser.isFiltered &&
-          this.currentUser.projects.gdc_ids.length) {
+          _.get(this.currentUser.projects, "gdc_ids", []).length) {
         var userProjects = {
           content: {
             field: key,

@@ -23,14 +23,9 @@ module ngApp.components.ui.biospecimen.controllers {
       this.activeBioSpecimenDoc = $scope.participant.samples[0];
       this.activeBioSpecimenDocType = "sample";
 
-      var biospecimenFile =  _.find($scope.participant.files, (file) => {
+      this.bioSpecimenFile =  _.find($scope.participant.files, (file) => {
         return file.data_subtype.toLowerCase() === "biospecimen data";
       });
-
-      if(biospecimenFile) {
-        this.bioSpecimenFileId = biospecimenFile.file_id;
-      }
-
     }
 
     displayBioSpecimenDocument(event: any, doc: any, type: string): void {

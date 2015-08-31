@@ -7,11 +7,12 @@ module ngApp.files.directives {
       scope: {
         files:"=",
         copy: "@",
-        dlcopy: "@"
+        dlcopy: "@",
+        classes: "@"
       },
-      template: '<a class="btn btn-primary">' +
-	              '<i class="fa fa-download" ng-class="{\'fa-spinner\': active, \'fa-pulse\': active}"></i>' +
-	              '<span ng-if="copy"><span ng-if="!active"> {{copy}}</span><span ng-if="active"> {{dlcopy}}</span></span></a>',
+      template: "<a ng-class=\"[classes || 'btn btn-primary']\">" +
+	              "<i class=\"fa fa-download\" ng-class=\"{'fa-spinner': active, 'fa-pulse': active}\"></i>" +
+	              "<span ng-if=\"copy\"><span ng-if=\"!active\">&nbsp;{{copy}}</span><span ng-if=\"active\">&nbsp;{{dlcopy}}</span></span></a>",
       link: function($scope, $element, $attrs){
                 
         var files = $scope.files;
@@ -26,10 +27,14 @@ module ngApp.files.directives {
             
             $scope.active = true;
             $attrs.$set("disabled", "disabled");
-            
+
             FilesService.downloadFiles(_.pluck(files, "file_id"), (complete)=>{
               
               if(complete){
+                $scope.active = false;
+                $element.removeAttr("disabled");
+              } else {
+                //Download Failed
                 $scope.active = false;
                 $element.removeAttr("disabled");
               }

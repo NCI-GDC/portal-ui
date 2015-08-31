@@ -36,7 +36,7 @@ module ngApp.search.models {
             name: "My Projects",
             id: "my_projects",
             td: (row, $scope) => {
-                var fakeFile = {participants: [{project: row.project}]};
+                var fakeFile = {cases: [{project: row.project}]};
                 var isUserProject = $scope.UserService.isUserProject(fakeFile);
                 var icon = isUserProject ? 'check' : 'remove';
                 return '<i class="fa fa-' + icon + '"></i>';

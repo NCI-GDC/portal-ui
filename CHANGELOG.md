@@ -1,3 +1,36 @@
+<a name"0.2.15-spr2"></a>
+### 0.2.15-spr2 (2015-08-31)
+
+
+#### Bug Fixes
+
+* **UserService:** set unauthed user from cookie ([1773393c](https://github.com/NCI-GDC/portal-ui/commit/1773393c), closes [OICR-1174](https://jira.opensciencedatacloud.org/browse/OICR-1174))
+* **cart:**
+  * fixes summary case count ([9789abfe](https://github.com/NCI-GDC/portal-ui/commit/9789abfe), closes [OICR-1183](https://jira.opensciencedatacloud.org/browse/OICR-1183))
+  * table column alignments ([3f64a247](https://github.com/NCI-GDC/portal-ui/commit/3f64a247), closes [OICR-1093](https://jira.opensciencedatacloud.org/browse/OICR-1093))
+  * fixes case/annotation links ([ccd24b88](https://github.com/NCI-GDC/portal-ui/commit/ccd24b88), closes [OICR-1181](https://jira.opensciencedatacloud.org/browse/OICR-1181))
+* **case:** missed name->field rename ([dfb93e4d](https://github.com/NCI-GDC/portal-ui/commit/dfb93e4d))
+* **header:** hide MyProjects btn when 0 projects ([b74c7b9b](https://github.com/NCI-GDC/portal-ui/commit/b74c7b9b))
+* **projects:**
+  * fixes links to search tabs ([805ba74a](https://github.com/NCI-GDC/portal-ui/commit/805ba74a), closes [OICR-1187](https://jira.opensciencedatacloud.org/browse/OICR-1187))
+  * missed name->field rename ([48b7c956](https://github.com/NCI-GDC/portal-ui/commit/48b7c956))
+* **search:** missed name->field rename ([8ff104a5](https://github.com/NCI-GDC/portal-ui/commit/8ff104a5))
+* **search.cases:** correctly check my projects ([f91a9d7b](https://github.com/NCI-GDC/portal-ui/commit/f91a9d7b), closes [OICR-1165](https://jira.opensciencedatacloud.org/browse/OICR-1165))
+* **table:** revert table sum row ([f8aca3d0](https://github.com/NCI-GDC/portal-ui/commit/f8aca3d0))
+
+
+#### Features
+
+* **cart:**
+  * spinner stops on fail, alerts user ([797d84cb](https://github.com/NCI-GDC/portal-ui/commit/797d84cb), closes [OICR-1182](https://jira.opensciencedatacloud.org/browse/OICR-1182))
+  * download btn in cart has spinning indicator ([0eac1155](https://github.com/NCI-GDC/portal-ui/commit/0eac1155))
+* **files:** spinning indication on download buttons ([ec2c623e](https://github.com/NCI-GDC/portal-ui/commit/ec2c623e))
+* **reports:**
+  * export btn is independent template ([d22020f6](https://github.com/NCI-GDC/portal-ui/commit/d22020f6))
+  * oicr-1020 minor UI changes ([3a254662](https://github.com/NCI-GDC/portal-ui/commit/3a254662))
+* **search:** copy change in autocomplete ([0337963b](https://github.com/NCI-GDC/portal-ui/commit/0337963b))
+
+
 <a name"0.2.15-spr1"></a>
 ### 0.2.15-spr1 (2015-08-07)
 

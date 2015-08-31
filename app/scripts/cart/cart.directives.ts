@@ -168,78 +168,117 @@ module ngApp.cart.directives {
       }
     }
   }
-
-  function DownloadButtonAllCart() {
+  
+  function DownloadManifestCart(FilesService: IFilesService, UserService, CartService, $modal) {
     return {
       restrict:"AE",
-      controller:function($scope,FilesService,UserService,CartService,$modal,$element){
-        $element.on('click',function checkCartForClosedFiles() {
+      scope: true,
+      link: function($scope, $element, $attrs){
+        
+        $element.on('click',function DownloadManifestFiles(){
+          
           var scope = $scope;
-          var isLoggedIn = UserService.currentUser;
-
-          var authorizedInCart = CartService.getAuthorizedFiles();
-          var unauthorizedInCart = CartService.getUnauthorizedFiles();
-
-          scope.meta = {
-            unauthorized: unauthorizedInCart,
-            authorized: authorizedInCart
-          };
-
-          if (unauthorizedInCart.length === 0) {
-            download();
-          } else {
-            if (isLoggedIn) {
-              showRequestAccessModal();
-            } else {
-              showLoginModal();
-            }
-          }
-
-          function download() {
-            FilesService.downloadFiles(_.pluck(authorizedInCart, "file_id"));
-          }
-
-          function showLoginModal() {
-            var modalInstance = $modal.open({
-              templateUrl: "core/templates/login-to-download.html",
-              controller: "LoginToDownloadController",
-              controllerAs: "wc",
-              backdrop: true,
-              keyboard: true,
-              scope: scope,
-              size: "lg",
-              animation: false
-            });
-
-            modalInstance.result.then((a) => {
-              if (a && authorizedInCart.length > 0) {
-                download();
-              }
-            });
-
-          }
-
-          function showRequestAccessModal() {
-            var modalInstance = $modal.open({
-              templateUrl: "core/templates/request-access-to-download.html",
-              controller: "LoginToDownloadController",
-              controllerAs: "wc",
-              backdrop: true,
-              keyboard: true,
-              scope: scope,
-              size: "lg",
-              animation: false
-            });
-
-            modalInstance.result.then((a) => {
-              if (a && authorizedInCart.length > 0) {
-                download();
-              }
-            });
-          }
-        })
+          
+          scope.active = true;
+          $attrs.$set("disabled", "disabled");
+        
+          FilesService.downloadManifest(_.pluck(CartService.getFiles(), "file_id"), (complete)=>{
+              scope.active = false;
+              $element.removeAttr("disabled");
+          });
+          
+        });
       }
     }
+  }
+
+  function DownloadButtonAllCart(FilesService, UserService, CartService, $modal) {
+    return {
+      restrict:"AE",
+      scope: true,
+      link: function($scope, $element, $attrs){
+        
+        $element.on('click',function checkCartForClosedFiles() {
+            
+            var scope = $scope;
+            var isLoggedIn = UserService.currentUser;
+  
+            var authorizedInCart = CartService.getAuthorizedFiles();
+            var unauthorizedInCart = CartService.getUnauthorizedFiles();
+  
+            scope.meta = {
+              unauthorized: unauthorizedInCart,
+              authorized: authorizedInCart
+            };
+  
+            if (unauthorizedInCart.length === 0) {
+              download();
+            } else {
+              if (isLoggedIn) {
+                showRequestAccessModal();
+              } else {
+                showLoginModal();
+              }
+            }
+  
+            function download() {
+              
+              $scope.active = true;
+              $attrs.$set("disabled", "disabled");
+              
+              FilesService.downloadFiles(_.pluck(authorizedInCart, "file_id"), (complete)=>{
+                  $scope.active = false;
+                  $element.removeAttr("disabled");
+              });
+            }
+  
+            function showLoginModal() {
+              var modalInstance = $modal.open({
+                templateUrl: "core/templates/login-to-download.html",
+                controller: "LoginToDownloadController",
+                controllerAs: "wc",
+                backdrop: true,
+                keyboard: true,
+                scope: scope,
+                size: "lg",
+                animation: false
+              });
+  
+              modalInstance.result.then((a) => {
+                if (a && authorizedInCart.length > 0) {
+                  download();
+                } else if(!a) {
+                  //Cancel Pressed
+                  $scope.active = false;
+                  $element.removeAttr("disabled");
+                }
+              });
+              
+              
+  
+            }
+  
+            function showRequestAccessModal() {
+              var modalInstance = $modal.open({
+                templateUrl: "core/templates/request-access-to-download.html",
+                controller: "LoginToDownloadController",
+                controllerAs: "wc",
+                backdrop: true,
+                keyboard: true,
+                scope: scope,
+                size: "lg",
+                animation: false
+              });
+  
+              modalInstance.result.then((a) => {
+                if (a && authorizedInCart.length > 0) {
+                  download();
+                }
+              });
+            }
+          })
+        }
+      }
   }
 
   function AddToCartFiltered(SearchTableFilesModel: TableiciousConfig): ng.IDirective {
@@ -374,6 +413,7 @@ module ngApp.cart.directives {
     .directive("addToCartAll", AddToCartAll)
     .directive("addToCartFiltered", AddToCartFiltered)
     .directive("downloadButtonAllCart", DownloadButtonAllCart)
+    .directive("downloadManifestCart", DownloadManifestCart)
     .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton)
     .directive("removeSingleCart", RemoveSingleCart);
 }

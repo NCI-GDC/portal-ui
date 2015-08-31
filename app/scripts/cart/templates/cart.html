@@ -55,18 +55,18 @@
   <section class="row items-pane" data-ng-if="cc.files.length">
     <div class="col-md-12 col-lg-12 col-sm-12">
       <div class="pull-right">
-          <a type="button"
+          <a download-manifest-cart
+             type="button"
              class="btn btn-primary"
-             data-ng-click="cc.getManifest(true)"
              id="manifest-button">
-            <i class="fa fa-file-code-o"></i>
+            <i class="fa" ng-class="{'fa-file-code-o': !active, 'fa-spinner fa-pulse': active}"></i>
             <span data-translate>Download Manifest File</span>
           </a>
           <a type="button"
              download-button-all-cart
              id="download-all-button"
              class="btn btn-primary">
-            <i class="fa fa-cloud-download"></i> <span data-translate>Download Cart (Web Browser)</span>
+            <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i> <span data-translate>Download Cart (Web Browser)</span>
           </a>
 
           <a type="button"

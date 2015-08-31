@@ -71,7 +71,8 @@ function appRun(gettextCatalog: any,
                 $cookies: ng.cookies.ICookiesService,
                 UserService: IUserService,
                 ProjectsService: IProjectsService,
-                $window: ng.IWindowService) {
+                $window: ng.IWindowService,
+                $modal: any) {
 
   if ($cookies.get("GDC-Portal-Sha") !== config.commitHash) {
     $cookies.put("GDC-Portal-Sha", config.commitHash);
@@ -88,6 +89,18 @@ function appRun(gettextCatalog: any,
   $rootScope.config = config;
   Restangular.setErrorInterceptor((response) => {
     CoreService.xhrDone();
+    if (response.status === 500) {
+      $modal.open({
+                templateUrl: "core/templates/internal-server-error.html",
+                controller: "WarningController",
+                controllerAs: "wc",
+                backdrop: "static",
+                keyboard: false,
+                backdropClass: "warning-backdrop",
+                animation: false,
+                size: "lg"
+      });
+    }
     // TODO more than just 404
     //$state.go("404", {}, {inherit: true});
   });

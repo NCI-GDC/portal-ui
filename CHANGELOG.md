@@ -1,3 +1,15 @@
+<a name"0.2.15-spr3"></a>
+### 0.2.15-spr3 (2015-09-30)
+
+
+#### Bug Fixes
+
+* **pagination:** toJson before setting ([b6de0f76](https://github.com/NCI-GDC/portal-ui/commit/b6de0f76), closes [OICR-1184](https://jira.opensciencedatacloud.org/browse/OICR-1184))
+* **reports:** remove * 1e6 ([b7facccd](https://github.com/NCI-GDC/portal-ui/commit/b7facccd), closes [OICR-1207](https://jira.opensciencedatacloud.org/browse/OICR-1207))
+* **search:** added aria-label attributes ([65a74a98](https://github.com/NCI-GDC/portal-ui/commit/65a74a98), closes [OICR-1134](https://jira.opensciencedatacloud.org/browse/OICR-1134), [OICR-1133](https://jira.opensciencedatacloud.org/browse/OICR-1133), [OICR-1136](https://jira.opensciencedatacloud.org/browse/OICR-1136))
+* **user:** don't use newuser cookie on 401 ([edc7880b](https://github.com/NCI-GDC/portal-ui/commit/edc7880b), closes [OICR-1189](https://jira.opensciencedatacloud.org/browse/OICR-1189))
+
+
 <a name"0.2.15-spr2"></a>
 ### 0.2.15-spr2 (2015-08-31)
 

@@ -10,7 +10,7 @@ describe("Date Filter:", function () {
   it("should filter date with no given format", inject(function ($filter) {
     var date = new Date();
     var day = (date.getDate() < 10 ? '0' : '') + date.getDate();
-    var month = (date.getMonth() < 10 ? '0' : '') + (date.getMonth() + 1);
+    var month = (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1);
     var formattedDate = $filter("date")(date.toString());
     var expectedDate = month + "/" + day + "/" + date.getFullYear();
 

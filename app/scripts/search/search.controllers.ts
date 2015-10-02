@@ -152,7 +152,7 @@ module ngApp.search.controllers {
           "project.name",
           "project.project_id",
           "project.primary_site",
-          "project.program.name"
+          "project.disease_type"
         ]
       };
 

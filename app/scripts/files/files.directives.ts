@@ -8,39 +8,60 @@ module ngApp.files.directives {
         files:"=",
         copy: "@",
         dlcopy: "@",
-        classes: "@"
+        classes: "@",
+        icon: "@"
       },
       template: "<a ng-class=\"[classes || 'btn btn-primary']\">" +
-	              "<i class=\"fa fa-download\" ng-class=\"{'fa-spinner': active, 'fa-pulse': active}\"></i>" +
-	              "<span ng-if=\"copy\"><span ng-if=\"!active\">&nbsp;{{copy}}</span><span ng-if=\"active\">&nbsp;{{dlcopy}}</span></span></a>",
+                "<i class=\"fa {{icon || 'fa-download'}}\" ng-class=\"{'fa-spinner': active, 'fa-pulse': active}\"></i>" +
+                "<span ng-if=\"copy\"><span ng-if=\"!active\">&nbsp;{{copy}}</span><span ng-if=\"active\">&nbsp;{{dlcopy}}</span></span></a>",
       link: function($scope, $element, $attrs){
-                
         var files = $scope.files;
         $scope.active = false;
-        
         $element.on("click", function(a) {
-          
+
           if (!_.isArray(files)) {
             files = [files];
           }
           if (UserService.userCanDownloadFiles(files)) {
-            
             $scope.active = true;
             $attrs.$set("disabled", "disabled");
-
-            FilesService.downloadFiles(_.pluck(files, "file_id"), (complete)=>{
-              
-              if(complete){
-                $scope.active = false;
-                $element.removeAttr("disabled");
-              } else {
-                //Download Failed
-                $scope.active = false;
-                $element.removeAttr("disabled");
-              }
-              
-            });
-
+            var turnSpinnerOff = function() {
+              $scope.active = false;
+              $element.removeAttr("disabled");
+            };
+            if ($scope.copy === "Download") {
+              FilesService.downloadFiles(_.pluck(files, "file_id"), (complete)=>{
+                if(complete){
+                  turnSpinnerOff();
+                } else {
+                  //Download Failed
+                  turnSpinnerOff();
+                }
+              });
+            } else {
+              var bamModal = $modal.open({
+                templateUrl: "files/templates/bam-slicing.html",
+                controller: "BAMSlicingController",
+                controllerAs: "bamc",
+                backdrop: true,
+                keyboard: true,
+                animation: false,
+                size: "lg",
+                resolve: {
+                  fileID: function () {
+                    return _.first(_.pluck(files, "file_id"));
+                  },
+                  completeCallback: function() {
+                    return turnSpinnerOff;
+                  }
+                }
+              });
+              bamModal.result.then(turnSpinnerOff, function(reason) {
+                if (reason !== 'slicing') {
+                  turnSpinnerOff();
+                }
+              });
+            }
           } else {
             var template = UserService.currentUser ?
                 "core/templates/request-access-to-download-single.html" :
@@ -63,6 +84,6 @@ module ngApp.files.directives {
   }
 
   angular
-    .module("files.directives", ["restangular", "components.location", "user.services", "core.services", "ui.bootstrap"])
+    .module("files.directives", ["restangular", "components.location", "user.services", "core.services", "ui.bootstrap", "files.controller"])
     .directive("downloadButton", DownloadButton);
 }

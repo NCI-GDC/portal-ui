@@ -67,12 +67,60 @@ module ngApp.files.controllers {
       }
     }
 
+    canBAMSlice(): boolean {
+      return this.file.data_type.toLowerCase() === "raw sequencing data" &&
+             this.file.data_subtype.toLowerCase() === "aligned reads" &&
+             _.indexOf(_.pluck(this.file.related_files, 'type'), "bai") !== -1;
+    }
+
   }
+
+  class BAMSlicingController {
+
+    /* @ngInject */
+    constructor (private $modalInstance,
+                 private $scope: ng.IScope,
+                 private FilesService: IFilesService,
+                 public fileID: string,
+                 public completeCallback: any) {}
+
+    submit(): void {
+      if(this.$scope.bedModel) {
+        this.FilesService.sliceBAM(this.fileID, this.$scope.bedModel, this.completeCallback);
+        this.$modalInstance.dismiss('slicing');
+      } else {
+        this.$modalInstance.dismiss('cancelled');
+      }
+    }
+
+    closeModal(): void {
+      this.$modalInstance.dismiss('cancelled');
+    }
+  }
+
+  class BAMFailedModalController {
+    public errorBlobString: string;
+    /* @ngInject */
+    constructor(private $modalInstance,
+                public errorStatus: string,
+                public errorMsg: string,
+                private errorBlob: any) {
+      this.errorBlobString = "";
+      var reader = new FileReader();
+      reader.addEventListener("loadend", () => {
+        this.errorBlobString = _.get(JSON.parse(reader.result), "error", "Error slicing");
+      });
+      reader.readAsText(errorBlob);
+    }
+  }
+
 
   angular
       .module("files.controller", [
         "files.services"
       ])
+      .controller("BAMSlicingController", BAMSlicingController)
+      .controller("BAMFailedModalController", BAMFailedModalController)
       .controller("FileController", FileController);
 }
 

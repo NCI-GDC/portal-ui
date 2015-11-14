@@ -1,0 +1,13 @@
+<div class="modal-header">
+  <h4 data-translate>BAM Slicing {{bamc.fileID}}</h4>
+</div>
+<div class="modal-body">
+  Please enter a genome coordinate below (in <a href="https://genome.ucsc.edu/FAQ/FAQformat.html#format1">BED</a> format).
+  <textarea id="bed" class="form-control" data-ng-model="bedModel"></textarea>
+</div>
+<div class="modal-footer">
+  <span style="float: left">
+    <!--or <button class="btn btn-warning" ng-click="bamc.cancel()" data-translate>Upload a BED file</button>-->
+   </span>
+ <button class="btn btn-warning" ng-click="bamc.submit()" data-translate>Submit</button>
+</div>

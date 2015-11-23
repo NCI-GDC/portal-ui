@@ -10,7 +10,7 @@
           <span data-ng-if="!fc.isInCart(fc.file.file_id)" data-translate>Add to Cart</span>
         </button>
         <download-button data-icon="fa-download" data-files=fc.file data-copy="Download" data-dlcopy="Downloading"></download-button>
-        <download-button data-icon="fa-cutlery" data-files=fc.file data-copy="BAM Slicing" data-dlcopy="Slicing BAM" data-ng-if="fc.canBAMSlice()"></download-button>
+        <bam-slicing-button data-icon="fa-cutlery" data-files=fc.file data-copy="BAM Slicing" data-dlcopy="Slicing BAM" data-ng-if="fc.canBAMSlice()"></download-button>
       </span>
     </h1>
   </div>

@@ -51,7 +51,6 @@ module ngApp.files.services {
     download(endpoint: string, ids: Array<string>, callback: any) {
       var abort = this.$q.defer();
       var params = { "ids": ids };
-      
       this.RestFullResponse.all(endpoint + "?annotations=true&related_files=true")
         .withHttpConfig({
           timeout: abort.promise,
@@ -62,7 +61,7 @@ module ngApp.files.services {
         .then((response) => {
           var filename: string = response.headers['content-disposition'].match(/filename=(.*)/i)[1];
           this.$window.saveAs(response.data, filename);
-          if(callback) callback(true);  
+          if(callback) callback(true);
         }, (response)=>{
           //Download Failed
           this.$modal.open({
@@ -73,6 +72,54 @@ module ngApp.files.services {
             keyboard: true,
             animation: false,
             size: "lg"
+          });
+          if(callback) callback(false);
+        });
+    }
+
+    processBED(bedTSV: string): Object {
+      var lines = bedTSV.split("\n");
+      return {"regions": _.map(lines, (line) => {
+        var region = line.split("\t");
+        var regionString = region[0];
+        if (region.length > 1) {
+          regionString += ":" + region[1];
+          if (region.length > 2) {
+            regionString += "-" + region[2];
+          }
+        }
+        return regionString;
+      })};
+    }
+
+    sliceBAM(fileID: string, bedTSV: string, callback: any) {
+      var abort = this.$q.defer();
+      var params = this.processBED(bedTSV);
+      this.RestFullResponse.all("/v0/slicing/view/" + fileID)
+        .withHttpConfig({
+          timeout: abort.promise,
+          responseType: "blob",
+          withCredentials: true,
+        })
+        .post(params, undefined, { 'Content-Type': 'application/json' })
+        .then((response) => {
+          this.$window.saveAs(response, fileID + '-sliced.bam');
+          if(callback) callback(true);
+        }, (response)=>{
+          //Slicing Failed
+          this.$modal.open({
+            templateUrl: 'files/templates/bam-slicing-failed.html',
+            controller: "BAMFailedModalController",
+            controllerAs: "bamfc",
+            backdrop: true,
+            keyboard: true,
+            animation: false,
+            size: "lg",
+            resolve: {
+              errorStatus: () => { return response.status; },
+              errorMsg: () => { return response.statusText; },
+              errorBlob: () => { return response.data; }
+            }
           });
           if(callback) callback(false);
         });

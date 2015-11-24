@@ -100,7 +100,7 @@ module ngApp.core.controllers {
 
   class WarningController {
     /* @ngInject */
-    constructor(private $modalInstance){}
+    constructor(private $modalInstance) {}
 
     acceptWarning(): void {
       this.$modalInstance.close();

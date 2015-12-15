@@ -1,3 +1,22 @@
+<a name"0.2.18"></a>
+### 0.2.18 (2015-12-15)
+
+
+#### Bug Fixes
+
+* **files:** seperate directives for dl & slicing ([d6c4dde6](https://github.com/NCI-GDC/portal-ui/commit/d6c4dde6))
+* **search:** disease_type doesn't autofilter ([21ed658e](https://github.com/NCI-GDC/portal-ui/commit/21ed658e), closes [OICR-1206](https://jira.opensciencedatacloud.org/browse/OICR-1206))
+
+
+#### Features
+
+* **file:** bam slicing ui ([18177049](https://github.com/NCI-GDC/portal-ui/commit/18177049), closes [OICR-1432](https://jira.opensciencedatacloud.org/browse/OICR-1432))
+
+
+<a name"0.2.18"></a>
+### 0.2.18 (2015-12-15)
+
+
 <a name"0.2.18-spr3"></a>
 ### 0.2.18-spr3 (2015-11-25)
 

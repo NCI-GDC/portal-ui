@@ -85,12 +85,8 @@ module ngApp.files.controllers {
                  public completeCallback: any) {}
 
     submit(): void {
-      if(this.$scope.bedModel) {
-        this.FilesService.sliceBAM(this.fileID, this.$scope.bedModel, this.completeCallback);
-        this.$modalInstance.dismiss('slicing');
-      } else {
-        this.$modalInstance.dismiss('cancelled');
-      }
+      this.FilesService.sliceBAM(this.fileID, this.$scope.bedModel, this.completeCallback);
+      this.$modalInstance.dismiss('slicing');
     }
 
     closeModal(): void {

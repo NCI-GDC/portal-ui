@@ -1,11 +1,13 @@
 <div class="btn-group" data-dropdown auto-close="outsideClick">
-  <button type="button" class="btn btn-default dropdown-toggle"
+  <button type="button"
+          class="btn btn-default dropdown-toggle fa fa-sort-alpha-asc"
           data-tooltip="Sort Table"
           data-tooltip-popup-delay=1000
           data-tooltip-append-to-body="true"
           dropdown-toggle aria-expanded="false"
+          title="Sort Table"
           aria-label="Sort Table">
-    <span class="fa fa-sort-alpha-asc"></span>
+    <span class="icon-btn-label">Sort Table</span>
   </button>
 
   <ul class="dropdown-menu pull-right Columns-dropdown Columns-dropdown-headings" role="menu">
@@ -17,6 +19,7 @@
 
           <i class="fa fa-sort-alpha-asc"></i>
           <input type="radio" aria-label="Sort Data Ascending" value="asc"
+              title="Sort Data Ascending"
               data-ng-model="item.order" data-ng-change="tsc.updateSorting()"
               data-ng-checked="!item.order || item.order === 'asc'"
               name="{{ item.id }}-sort-order">

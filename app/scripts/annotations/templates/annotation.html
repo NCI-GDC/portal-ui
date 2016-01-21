@@ -53,8 +53,7 @@
           </tr>
           <tr>
             <th data-translate scope="row">Created On</th>
-            <td>{{ ::ac.annotation.created_datetime * 1000 | date }}</td>
-          </tr>
+            <td>{{ ::ac.annotation.created_datetime | date:'YYYY-MM-DD' }}</td>
           <tr>
             <th data-translate scope="row">Created By</th>
             <td>{{ ::ac.annotation.creator | humanify }}</td>

@@ -70,7 +70,7 @@ module ngApp.projects.models {
         {
             name: "Created Date",
             id: "created_datetime",
-            td: row => '{{'+row.created_datetime*1000+'|date:\'YYYY-MM-DD\'}}'
+            td: (row, $scope) => row.created_datetime && $scope.$filter('date')(row.created_datetime, 'YYYY-MM-DD'),
         },
         {
             name: "Annotator",

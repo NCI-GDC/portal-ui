@@ -26,7 +26,24 @@ module ngApp.components.user.services {
                 private $cookies: ng.cookies.ICookiesService,
                 private $window: ng.IWindowService,
                 private $modal: any,
-                private $log: ng.ILogService) {}
+                private config: IGDCConfig,
+                private $log: ng.ILogService) {
+      if (config.fake_auth) {
+        this.setUser({
+          username: "DEV_USER",
+          projects: {
+            phs_ids: {
+              phs000178: ["_member_", "read", "delete"]
+            },
+            gdc_ids: {
+              "TCGA-LAML": ["read", "delete", "read_report", "_member_"],
+              "CGCI-BLGSP": ["read_report"],
+              "TCGA-DEV1": ["read", "delete", "_member_"]
+            }
+          }
+        });
+      }
+    }
 
     login(): void {
       this.AuthRestangular.all("user")
@@ -81,7 +98,15 @@ module ngApp.components.user.services {
     }
 
     setUser(user: IUser): void {
-      this.currentUser = user;
+      this.currentUser = { username: user.username,
+                           projects: {
+                            gdc_ids: _.reduce(user.projects.gdc_ids || {}, (acc, p, key) => {
+                             if (p.indexOf("_member_") !== -1) {
+                              acc.push(key);
+                             }
+                             return acc;
+                           }, [])}
+                         };
       this.$rootScope.$broadcast("gdc-user-reset");
     }
 

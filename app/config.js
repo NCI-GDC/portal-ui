@@ -8,5 +8,6 @@ angular.module("ngApp.config", [])
     "auth":"__AUTH__",
     "supportedAPI": "1",
     "tag": "https://github.com/NCI-GDC/portal-ui/releases/tag/__VERSION__",
-    "production": __PRODUCTION__
+    "production": __PRODUCTION__,
+    "fake_auth": __FAKE_AUTH__,
   });

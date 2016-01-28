@@ -1,6 +1,6 @@
 <div class="container entity">
   <h1 class="col-lg-12">
-    <img src="/images/icon-annotations-large.png" width="30" height="30"/>
+    <i class="fa fa-custom fa-annotations"></i>
     {{ ::ac.annotation.annotation_id }}
   </h1>
 
@@ -53,8 +53,7 @@
           </tr>
           <tr>
             <th data-translate scope="row">Created On</th>
-            <td>{{ ::ac.annotation.created_datetime * 1000 | date }}</td>
-          </tr>
+            <td>{{ ::ac.annotation.created_datetime | date:'YYYY-MM-DD' }}</td>
           <tr>
             <th data-translate scope="row">Created By</th>
             <td>{{ ::ac.annotation.creator | humanify }}</td>

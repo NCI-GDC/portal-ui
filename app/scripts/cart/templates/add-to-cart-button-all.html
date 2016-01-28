@@ -1,15 +1,22 @@
 <div data-ng-if="!addAllOnly" class="btn-group" data-dropdown>
-  <button data-ng-if="CartService.areInCart(files)" type="button" class="btn btn-success"
+  <button data-ng-if="CartService.areInCart(files)"
+          type="button"
+          class="btn btn-success fa fa-shopping-cart"
           data-ng-click="CartService.removeFiles(files)">
-    <i class="fa fa-shopping-cart"></i>
+    <span class="icon-btn-label">Add to Cart</span>
   </button>
-  <button data-ng-if="!CartService.areInCart(files)" type="button" class="btn btn-primary"
+  <button data-ng-if="!CartService.areInCart(files)"
+          type="button"
+          class="btn btn-primary fa fa-shopping-cart"
           data-ng-click="CartService.addFiles(files)"
           data-ng-disabled="(CartService.getFiles().length + files.length) > CartService.getMaxSize()">
-    <i class="fa fa-shopping-cart"></i>
+    <span class="icon-btn-label">Add to Cart</span>
   </button>
-  <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+  <button type="button"
+          class="btn btn-default dropdown-toggle"
+          dropdown-toggle>
     <span class="caret"></span>
+    <span class="icon-btn-label">Cart dropdown</span>
   </button>
   <ul class="dropdown-menu" role="menu">
     <li>

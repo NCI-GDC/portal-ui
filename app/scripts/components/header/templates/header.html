@@ -7,7 +7,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a id="gdc-logo" class="navbar-brand" data-ui-sref="projects" data-translate>GDC Data Portal</a>
+      <a id="gdc-logo" class="navbar-brand" data-ui-sref="projects" data-translate tabindex="0">GDC Data Portal</a>
     </div>
     <nav class="navbar-collapse collapse navbar-responsive-collapse" data-collapse="hc.isCollapsed"
          role="navigation" data-ng-click="hc.collapse($event)"
@@ -16,30 +16,30 @@
       <ul class="nav navbar-nav">
         <li data-ng-class="{ active: hc.$state.includes('projects') }"
             id="header-projects">
-          <a ui-sref="projects.table"><i class="fa fa-folder-o"></i>
+          <a ui-sref="projects.table" tabindex="0"><i class="fa fa-folder-o"></i>
             <span class="hidden-sm" data-translate>Projects</span>
           </a>
         </li>
         <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
             id="header-data">
-          <a ui-sref="search.summary"><i class="fa fa-database"></i>
+          <a ui-sref="search.summary" tabindex="0"><i class="fa fa-database"></i>
             <span class="hidden-sm" data-translate>Data</span>
           </a>
         </li>
         <li ui-sref-active="active" id="header-annotations">
-          <a ui-sref="annotations"><i class="fa fa-align-left"></i> 
+          <a ui-sref="annotations" tabindex="0"><i class="fa fa-align-left"></i>
             <span class="hidden-sm" data-translate>Annotations</span>
           </a>
         </li>
         <li ui-sref-active="active" id="header-reports">
-          <a ui-sref="reports"><i class="fa fa-cube"></i> 
+          <a ui-sref="reports" tabindex="0"><i class="fa fa-cube"></i> 
             <span class="hidden-sm" data-translate>Reports</span>
           </a>
         </li>
         <li>
-          <a target="_blank" href="https://gdc.nci.nih.gov/access-data/gdc-data-portal">
+          <a target="_blank" href="https://gdc.nci.nih.gov/access-data/gdc-data-portal" tabindex="0">
             <i style="text-indent: 0; text-align:center" class="fa fa-question"></i>
-              <span class="hidden-sm" data-translate>Help</span> 
+              <span class="hidden-sm" data-translate>Help</span>
           </a>
         </li>
       </ul>
@@ -52,13 +52,13 @@
           </select>
         </li>
         <li>
-          <a quick-search>
+          <a quick-search tabindex="0">
             <i class="fa fa-search stock-icon"></i>
             <span class="hidden-md hidden-sm" data-translate>Quick Search</span>
           </a>
         </li>
         <li data-ng-if="!hc.UserService.currentUser" id="header-login">
-          <a auth-button>
+          <a auth-button tabindex="0">
             <i class="fa fa-sign-in"></i>
             <span class="hidden-md hidden-sm" data-translate>Login</span>
           </a>
@@ -107,7 +107,7 @@
           </a>
         </li>
         <li ui-sref-active="active" class="nav-cart">
-          <a ui-sref="cart">
+          <a ui-sref="cart" tabindex="0">
             <i class="fa fa-shopping-cart"></i>
             <span class="hidden-md hidden-sm" data-translate>Cart</span>
             <span class="label label-primary">{{ hc.getNumCartItems() }}</span>

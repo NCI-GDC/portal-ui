@@ -78,18 +78,21 @@ module ngApp.files.services {
     }
 
     processBED(bedTSV: string): Object {
-      var lines = bedTSV.split("\n");
-      return {"regions": _.map(lines, (line) => {
-        var region = line.split("\t");
-        var regionString = region[0];
-        if (region.length > 1) {
-          regionString += ":" + region[1];
-          if (region.length > 2) {
-            regionString += "-" + region[2];
+      if (bedTSV) {
+        var lines = bedTSV.split("\n");
+        return {"regions": _.map(lines, (line) => {
+          var region = line.split("\t");
+          var regionString = region[0];
+          if (region.length > 1) {
+            regionString += ":" + region[1];
+            if (region.length > 2) {
+              regionString += "-" + region[2];
+            }
           }
-        }
-        return regionString;
-      })};
+          return regionString;
+        })};
+      }
+      return {};
     }
 
     sliceBAM(fileID: string, bedTSV: string, callback: any) {

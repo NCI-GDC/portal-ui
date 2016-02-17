@@ -65,7 +65,7 @@ module ngApp.files.controllers {
       if (!this.CartService.isInCart(this.file.file_uuid)) {
         this.CartService.addFiles([this.file]);
         this.LocalStorageService.cartAddedFiles(this.file.file_id);
-        
+
       } else {
         //this block is not hit
         this.CartService.remove([this.file.file_uuid]);

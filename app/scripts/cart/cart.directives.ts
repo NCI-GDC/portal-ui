@@ -41,8 +41,7 @@ module ngApp.cart.directives {
                            CartService: ICartService,
                            LocalStorageService: ILocalStorageService) {
         $scope.CartService = CartService;
-        
-        
+
         $scope.addToCart = function(files: IFile[]) {
           CartService.addFiles(files);
           LocalStorageService.cartAddedFiles(files[0].file_id);
@@ -113,13 +112,11 @@ module ngApp.cart.directives {
 
         $scope.addAll = function() {
           var filters = $scope.filter || LocationService.filters();
-          
           filters = UserService.addMyProjectsFilter(filters, "cases.project.project_id");
           if ($scope.size >= CartService.getCartVacancySize()) {
             CartService.sizeWarning();
             return;
           }
-          
           LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
 
           var addingMsgPromise = $timeout(() => {
@@ -265,22 +262,22 @@ module ngApp.cart.directives {
                           LocalStorageService: ILocalStorageService) {
         $scope.files = [];
         $scope.contentArray = [];
-        
+
         function areFiltersApplied(content): boolean {
           return content && _.some(content, (item) => {
             var content = item.hasOwnProperty('content') ? item.content : item;
             return content.field.indexOf("files.") === 0;
           });
         }
-        
+
         function getContent(): any[] {
           var content = LocationService.filters().content;
           return content && !Array.isArray(content) ? [content] : content;
         }
-        
+
         var content = getContent();
         var uuid;
-        
+
         $scope.areFiltersApplied = areFiltersApplied(content);
 
         $scope.$on("$locationChangeSuccess", () => {
@@ -361,9 +358,7 @@ module ngApp.cart.directives {
 
         $scope.addRelatedFiles = function() {
           CartService.addFiles($scope.files);
-          
           LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
-          
         };
 
         $scope.removeRelatedFiles = function() {
@@ -395,4 +390,3 @@ module ngApp.cart.directives {
     .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton)
     .directive("removeSingleCart", RemoveSingleCart);
 }
-

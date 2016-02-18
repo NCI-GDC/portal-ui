@@ -14,25 +14,22 @@ module ngApp.components.ui.string {
 
   class Humanify {
     constructor() {
-      return function (original: string, capitalize: boolean = true, facetTerm: boolean = false) {
-        if (!angular.isDefined(original) || (angular.isString(original) && !original.length)) {
+      return function (original: any, capitalize: boolean = true, facetTerm: boolean = false) {
+        // use `--` for null, undefined and empty string 
+        if (original === null || original === undefined || (angular.isString(original) && original.length === 0)) {
           return '--';
-        }
-        if (!angular.isString(original) || original.length <= 1) {
-          return original;
-        }
+        // return all other non-strings 
+        } else if (!angular.isString(original)) return original;
 
-        var split;
-        var humanified;
+        var humanified = "";
 
         if (facetTerm) {
           // Splits on capital letters followed by lowercase letters to find
           // words squished together in a string.
           original = original.split(/(?=[A-Z][a-z])/).join(" ");
-
           humanified = original.replace(/\./g, " ").trim();
         } else {
-          split = original.split(".");
+          var split = original.split(".");
           humanified = split[split.length - 1].replace(/_/g, " ").trim();
 
           // Special case 'name' to include any parent nested for sake of
@@ -41,22 +38,14 @@ module ngApp.components.ui.string {
             humanified = split[split.length - 2] + " " + humanified;
           }
         }
-
-        var words = humanified.split(' '),
-            cWords = [];
-
-        if (capitalize) {
-          words.forEach(function (word) {
-            // Specialcase miRNA instances
-            if (word.indexOf("miRNA") === -1) {
-              cWords.push(word.charAt(0).toUpperCase() + word.slice(1));
-            } else {
-              cWords.push(word);
-            }
-          });
-          humanified = cWords.join(' ');
-        }
-        return humanified;
+        
+        return capitalize 
+          ? humanified.split(' ').map(function (word) {
+              return word.indexOf("miRNA") === -1 
+                ? word.charAt(0).toUpperCase() + word.slice(1)
+                : word
+            }).join(' ')
+          : humanified;
       };
     }
   }

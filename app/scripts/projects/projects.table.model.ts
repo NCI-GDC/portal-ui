@@ -1,6 +1,6 @@
 module ngApp.projects.models {
   import ILocationService = ngApp.components.location.ILocationService;
-  
+
   function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
     var filterString = $filter("makeFilter")(filters, true);
     var href = 'search/c?filters=' + filterString;
@@ -20,17 +20,17 @@ module ngApp.projects.models {
   function dataTypeTotalWithFilters(dataType: string, data: Object[], $filter: ng.IFilterService, LocationService: ILocationService) {
     var fs = _.map(LocationService.filters().content, x => ({
       field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
-      value: x.content.value  
+      value: x.content.value
     }));
     fs.push({field: 'files.data_type', value: [dataType]});
-    
+
     return withFilter(_.sum(_.map(data, row => getDataType(row.summary.data_types, dataType))), fs, $filter);
   }
 
   function withCurrentFilters(value: number, $filter: ng.IFilterService, LocationService: ILocationService) {
     var fs = _.map(LocationService.filters().content, x => ({
       field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
-      value: x.content.value  
+      value: x.content.value
     }));
     return withFilter(value, fs, $filter);
   }

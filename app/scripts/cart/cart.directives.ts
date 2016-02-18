@@ -44,11 +44,11 @@ module ngApp.cart.directives {
 
         $scope.addToCart = function(files: IFile[]) {
           CartService.addFiles(files);
-          LocalStorageService.cartAddedFiles(files[0].file_id);
+          //LocalStorageService.cartAddedFiles(files[0].file_id);
         };
         $scope.removeFromCart = function(files: IFile[]) {
           CartService.removeFiles(files);
-          LocalStorageService.cartRemovedFiles(files[0].file_id);
+          //LocalStorageService.cartRemovedFiles(files[0].file_id);
         };
       }
     }
@@ -111,14 +111,16 @@ module ngApp.cart.directives {
         };
 
         $scope.addAll = function() {
+          console.log('hi');
           var filters = $scope.filter || LocationService.filters();
           filters = UserService.addMyProjectsFilter(filters, "cases.project.project_id");
-          if ($scope.size >= CartService.getCartVacancySize()) {
-            CartService.sizeWarning();
-            return;
-          }
-          LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
+//          if ($scope.size >= CartService.getCartVacancySize()) {
+            //CartService.sizeWarning();
+            //return;
+//          }
+          //LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
 
+          CartService.addQuery(filters);
           var addingMsgPromise = $timeout(() => {
             notify({
               message: "",
@@ -358,17 +360,19 @@ module ngApp.cart.directives {
 
         $scope.addRelatedFiles = function() {
           CartService.addFiles($scope.files);
-          LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
+          //LocalStorageService.cartAddedQuery(LocationService.search()['filters']);
         };
 
         $scope.removeRelatedFiles = function() {
           CartService.remove($scope.inBoth);
-          LocalStorageService.cartRemovedQuery(uuid);
+          //LocalStorageService.cartRemovedQuery(uuid);
         };
 
         $scope.calculateFileCount = function() {
-          $scope.inBoth = _.intersection(_.pluck(CartService.getFiles(), "file_id"),
-                                         _.pluck($scope.files, "file_id"));
+          //TODO
+          //$scope.inBoth = _.intersection(_.pluck(CartService.getFiles(), "file_id"),
+                                         //_.pluck($scope.files, "file_id"));
+          $scope.inBoth = 1;
         }
 
         $scope.CartService = CartService;

@@ -105,7 +105,7 @@ module ngApp.projects.controllers {
         this.$state.go("projects." + tab, this.LocationService.search(), {inherit: false});
       }
     }
-    
+
     gotoQuery() {
       var stateParams = {};
       var f = this.LocationService.filters();

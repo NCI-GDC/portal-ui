@@ -24,13 +24,38 @@ module ngApp.components.header.controllers {
       "fr": "French",
       "es": "Spanish"
     };
+    cartSize: number = 0;
 
     /* @ngInject */
     constructor(private gettextCatalog, private CartService: ICartService,
+                private $scope: ng.IScope,
                 private $state: ng.ui.IStateService,
                 private UserService: IUserService, private $modal: any,
                 private $window: ng.IWindowService) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
+
+      CartService.getFiles().then((data) => {
+        this.cartSize = (data.pagination || {total: 0}).total;
+      });
+
+      $scope.$on("gdc-user-reset", () => {
+        CartService.getFiles().then((data) => {
+          this.cartSize = (data.pagination || {total: 0}).total;
+        });
+      });
+
+      $scope.$on("undo", () => {
+        CartService.getFiles().then((data) => {
+          this.cartSize = (data.pagination || {total: 0}).total;
+        });
+      });
+
+      $scope.$on("cart-update", () => {
+        CartService.getFiles().then((data) => {
+          this.cartSize = (data.pagination || {total: 0}).total;
+        });
+      });
+
     }
 
     getToken(): void {
@@ -52,7 +77,7 @@ module ngApp.components.header.controllers {
     }
 
     getNumCartItems(): number {
-      return this.CartService.getFiles().length;
+      return this.cartSize;
     }
 
   }

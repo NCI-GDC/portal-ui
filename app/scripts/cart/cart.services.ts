@@ -11,8 +11,9 @@ module ngApp.cart.services {
   export interface ICartService {
     files: IFile[];
     lastModified: Moment;
-    getFiles(): IFile[];
+    getFiles(): ng.IPromise<IFile>;
     getFileIds(): string[];
+    addQuery(query: Object): void;
     add(file: IFile): void;
     addFiles(files: IFile[], displayAddingNotification: boolean): void;
     isInCart(fileId: string): boolean;
@@ -40,19 +41,32 @@ module ngApp.cart.services {
     private static GDC_CART_UPDATE = "gdc-cart-updated";
     private static MAX_SIZE: number = 10000;
 
+    private static GDC_CART_QUERY = "gdc-cart-query";
+
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
                 private notify: INotifyService,
                 private UserService,
                 private $rootScope,
                 private gettextCatalog,
+                private FilesService: IFilesService,
                 private $filter: ng.IFilterService,
                 private $timeout: ng.ITimeoutService) {
-      var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
+      //var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
       var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
 
       this.lastModified = local_time ? $window.moment(local_time) : $window.moment();
-      this.files = local_files ? JSON.parse(local_files) : [];
+      this.files = [];
+      //this.files = local_files ? JSON.parse(local_files) : [];
+
+    }
+
+    addQuery(query: Object): void {
+      var oldQuery = JSON.parse(this.$window.localStorage.getItem(CartService.GDC_CART_QUERY)) || {"op": "or", content: []};
+      var newQuery = {"op": "or", content: oldQuery.content.concat(query)};
+      this.$window.localStorage.setItem(CartService.GDC_CART_QUERY, JSON.stringify(newQuery));
+      this.$rootScope.$broadcast("cart-update");
+      this._sync();
     }
 
     getMaxSize(): number {
@@ -67,9 +81,31 @@ module ngApp.cart.services {
       return this.getMaxSize() - this.getFiles().length;
     }
 
-    getFiles(): IFile[] {
-      return this.files;
+    getFiles(): ng.IPromise<IFile> {
+      var filters = JSON.parse(this.$window.localStorage.getItem(CartService.GDC_CART_QUERY));
+      return this.FilesService.getFiles({
+            fields: ["access",
+                     "file_name",
+                     "file_id",
+                     "file_size",
+                     "data_type",
+                     "data_format",
+                     "annotations.annotation_id",
+                     "cases.case_id",
+                     "cases.project.project_id",
+                     "cases.project.name"
+                     ],
+            filters: filters,
+            size: 20,
+            from: 0
+          }).then((data): IFile => {
+            return data;
+          });
     }
+
+    //getFiles(): IFile[] {
+      //return this.files;
+    //}
 
     getFile(fileId: string) {
       return _.find(this.getFiles(), { "file_id": fileId });
@@ -260,7 +296,7 @@ module ngApp.cart.services {
     _sync(): void {
       this.lastModified = this.$window.moment();
       this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
-      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
+      //this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
     }
 
   }

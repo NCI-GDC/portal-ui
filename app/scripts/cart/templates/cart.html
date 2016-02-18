@@ -81,15 +81,13 @@
     </div>
   </section>
 
-
-  <gdc-table data-ng-if="cc.files.length"
-             data-data="cc.files"
+  <gdc-table data-ng-if="cc.files.hits.length"
+             data-data="cc.files.hits"
              data-config="cc.cartTableConfig"
-             data-paging="cc.pagination"
+             data-paging="cc.files.pagination"
              data-page="cart"
              data-heading="cart items"
              data-id="cart-table"
-             data-client-side="cc.processPaging"
              class="cart-table">
   </gdc-table>
 </div>

@@ -48,7 +48,7 @@ module ngApp.cart.controllers {
                 private CartState) {
       var data = $state.current.data || {};
       this.CartState.setActive("tabs", data.tab);
-      CoreService.setPageTitle("Cart", "(" + this.files.length + ")");
+      //CoreService.setPageTitle("Cart", "(" + this.files.length + ")");
       this.lastModified = this.CartService.lastModified;
       this.cartTableConfig = CartTableModel;
 
@@ -57,26 +57,53 @@ module ngApp.cart.controllers {
         size: 20,
         count: 10,
         page: 1,
-        pages: Math.ceil(files.length / 10),
-        total: files.length,
+        pages: 99999,
+        //pages: Math.ceil(files.length / 10),
+        total: 999999,
+        //total: files.length,
         sort: ""
       };
 
-      $scope.$on("gdc-user-reset", () => {
-        this.files = CartService.getFiles();
-        this.getSummary();
-      });
+      //$scope.$on("gdc-user-reset", () => {
+        //CartService.getFiles().then((data) => {
+          //console.log('a');
+          //this.files = data;
+          //this.getSummary();
+        //});
+      //});
 
-      $scope.$on("undo", () => {
-        this.files = CartService.getFiles();
-        this.getSummary();
-      });
+      //$scope.$on("undo", () => {
+        //CartService.getFiles().then((data) => {
+          //console.log('b');
+          //this.files = data;
+          //this.getSummary();
+        //});
+      //});
 
-      $scope.$on("cart-update", () => {
-        this.lastModified = this.CartService.lastModified;
-        this.files = CartService.getFiles();
-        this.getSummary();
-      });
+      //$scope.$on("cart-update", () => {
+        //CartService.getFiles().then((data) => {
+          //console.log('c');
+          //this.lastModified = this.CartService.lastModified;
+          //this.files = data;
+          //this.getSummary();
+        //});
+      //});
+
+      //$scope.$on("gdc-user-reset", () => {
+        //this.files = CartService.getFiles();
+        //this.getSummary();
+      //});
+
+      //$scope.$on("undo", () => {
+        //this.files = CartService.getFiles();
+        //this.getSummary();
+      //});
+
+      //$scope.$on("cart-update", () => {
+        //this.lastModified = this.CartService.lastModified;
+        //this.files = CartService.getFiles();
+        //this.getSummary();
+      //});
 
       this.projectCountChartConfig = {
         textValue: "file_size.value",

@@ -49,7 +49,7 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Data format</th>
-                <td>{{ ::fc.file.data_format }}</td>
+                <td>{{ ::fc.file.data_format || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>File Size</th>
@@ -98,11 +98,11 @@
               <tbody>
               <tr>
                 <th scope="row" data-translate>Data Type</th>
-                <td>{{ ::fc.file.data_type | titlefy }}</td>
+                <td>{{ ::fc.file.data_type || '--' | titlefy }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Data Subtype</th>
-                <td>{{ ::fc.file.data_subtype | titlefy }}</td>
+                <td>{{ ::fc.file.data_subtype || '--' | titlefy }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Experimental Strategy</th>
@@ -110,11 +110,11 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Platform</th>
-                <td>{{ ::fc.file.platform }}</td>
+                <td>{{ ::fc.file.platform || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Data Submitter</th>
-                <td>{{ ::fc.file.center.short_name }}</td>
+                <td>{{ ::fc.file.center.short_name || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Tag</th>

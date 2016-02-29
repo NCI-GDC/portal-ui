@@ -37,14 +37,15 @@ module ngApp.cart.services {
     lastModified: Moment;
     lastModifiedFiles: IFile[];
 
-    private static GDC_CART_KEY = "gdc-cart-items";
-    private static GDC_CART_UPDATE = "gdc-cart-updated";
+    private static GDC_CART_KEY: string = "gdc-cart-items";
+    private static GDC_CART_UPDATE: string = "gdc-cart-updated";
     private static MAX_SIZE: number = 10000;
 
-    private static GDC_CART_QUERY = "gdc-cart-query";
+    private static GDC_CART_QUERY: string = "gdc-cart-query";
 
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
+                private $q: ng.IQService,
                 private notify: INotifyService,
                 private UserService,
                 private $rootScope,
@@ -83,24 +84,28 @@ module ngApp.cart.services {
 
     getFiles(): ng.IPromise<IFile> {
       var filters = JSON.parse(this.$window.localStorage.getItem(CartService.GDC_CART_QUERY));
-      return this.FilesService.getFiles({
-            fields: ["access",
-                     "file_name",
-                     "file_id",
-                     "file_size",
-                     "data_type",
-                     "data_format",
-                     "annotations.annotation_id",
-                     "cases.case_id",
-                     "cases.project.project_id",
-                     "cases.project.name"
-                     ],
-            filters: filters,
-            size: 20,
-            from: 0
-          }).then((data): IFile => {
-            return data;
-          });
+      if (filters) {
+        return this.FilesService.getFiles({
+              fields: ["access",
+                       "file_name",
+                       "file_id",
+                       "file_size",
+                       "data_type",
+                       "data_format",
+                       "annotations.annotation_id",
+                       "cases.case_id",
+                       "cases.project.project_id",
+                       "cases.project.name"
+                       ],
+              filters: filters,
+              size: 20,
+              from: 0
+            }).then((data): IFile => {
+              return data;
+            });
+      } else {
+        return this.$q((resolve) => resolve({hits: [], pagination: { total: 0}}));
+      }
     }
 
     //getFiles(): IFile[] {

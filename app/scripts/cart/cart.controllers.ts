@@ -64,30 +64,31 @@ module ngApp.cart.controllers {
         sort: ""
       };
 
-      //$scope.$on("gdc-user-reset", () => {
-        //CartService.getFiles().then((data) => {
-          //console.log('a');
-          //this.files = data;
-          //this.getSummary();
-        //});
-      //});
+      this.getSummary();
+      $scope.$on("gdc-user-reset", () => {
+        CartService.getFiles().then((data) => {
+          console.log('a');
+          this.files = data;
+          this.getSummary();
+        });
+      });
 
-      //$scope.$on("undo", () => {
-        //CartService.getFiles().then((data) => {
-          //console.log('b');
-          //this.files = data;
-          //this.getSummary();
-        //});
-      //});
+      $scope.$on("undo", () => {
+        CartService.getFiles().then((data) => {
+          console.log('b');
+          this.files = data;
+          this.getSummary();
+        });
+      });
 
-      //$scope.$on("cart-update", () => {
-        //CartService.getFiles().then((data) => {
-          //console.log('c');
-          //this.lastModified = this.CartService.lastModified;
-          //this.files = data;
-          //this.getSummary();
-        //});
-      //});
+      $scope.$on("cart-update", () => {
+        CartService.getFiles().then((data) => {
+          console.log('c');
+          this.lastModified = this.CartService.lastModified;
+          this.files = data;
+          this.getSummary();
+        });
+      });
 
       //$scope.$on("gdc-user-reset", () => {
         //this.files = CartService.getFiles();
@@ -131,7 +132,7 @@ module ngApp.cart.controllers {
     }
 
     getSummary() {
-      this.participantCount = _.unique(_.flatten(_.pluck(this.files, "participantIds"))).length;
+      this.participantCount = this.files.hits.reduce((arr, h) => arr.concat(h.cases.map(c => c.case_id)), []).length;
       var filters = {
         op: "and",
         content: [
@@ -139,7 +140,7 @@ module ngApp.cart.controllers {
             op: "in",
             content: {
               field: "files.file_id",
-              value: _.pluck(this.files, "file_id")
+              value: _.pluck(this.files.hits, "file_id")
             }
           }
         ]
@@ -150,7 +151,7 @@ module ngApp.cart.controllers {
       });
 
       var UserService = this.UserService;
-      var authCountAndFileSizes = _.reduce(this.files, (result, file) => {
+      var authCountAndFileSizes = _.reduce(this.files.hits, (result, file) => {
         var canDownloadKey = UserService.userCanDownloadFile(file) ? 'authorized' : 'unauthorized';
         result[canDownloadKey].count += 1;
         result[canDownloadKey].file_size += file.file_size;

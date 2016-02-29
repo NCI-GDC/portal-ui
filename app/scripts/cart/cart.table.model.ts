@@ -69,7 +69,8 @@ module ngApp.cart.models {
         name: "Project",
         id: "cases.project.project_id",
         td: row => {
-          return row.cases.map(c => c.project).map(p => {
+          debugger
+          return _.unique(row.cases.map(c => c.project), 'project_id').map(p => {
             return ('<a href="projects/' + p.project_id +
                     '" data-tooltip="' + p.name +
                     '" data-tooltip-append-to-body="true" data-tooltip-placement="right">'+ p.project_id + '</a>');

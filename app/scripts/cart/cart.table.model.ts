@@ -21,8 +21,7 @@ module ngApp.cart.models {
         name: "Action",
         id: "file_actions",
         td: row => '<download-button data-tooltip="Download" data-tooltip-popup-delay=1000 files="row" style="margin-right: 10%"></download-button>' +
-                    "<button class='btn btn-default' remove-single-cart file='row'>" +
-                    "<i class='fa fa-trash-o'></i></button>",
+                   '<remove-single-cart file="row" />',
         tdClassName: "text-center"
       },{
         name: "My Projects",

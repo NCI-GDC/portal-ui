@@ -33,6 +33,18 @@ import INotifyService = ng.cgNotify.INotifyService;
 import IUserService = ngApp.components.user.services.IUserService;
 import IProjectsService = ngApp.projects.services.IProjectsService;
 
+// Cross-Site Request Forgery (CSRF) Prevention
+// https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#General_Recommendation:_Synchronizer_Token_Pattern
+function addTokenToRequest (element, operation, route, url, headers, params, httpConfig) {
+  var csrftoken = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  return {
+    element: element,
+    headers: _.extend(headers, { 'X-CSRFToken': csrftoken }),
+    params: params,
+    httpConfig: httpConfig
+  };
+}
+
 /* @ngInject */
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    $locationProvider: ng.ILocationProvider,
@@ -51,7 +63,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
 
   /**
   The regex is from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie in Example #2.
-  Cookies are stored in document.cookie as "cookieName1=cookieValue; cookieName2=cookieValue" 
+  Cookies are stored in document.cookie as "cookieName1=cookieValue; cookieName2=cookieValue"
   so the capturing group after the "csrftoken=" captures the value and places it into var csrftoken.
   Unable to use $cookies because services can't be injected in config step
   **/
@@ -87,6 +99,7 @@ function appRun(gettextCatalog: any,
   gettextCatalog.debug = true;
 
   $rootScope.config = config;
+  Restangular.addFullRequestInterceptor(addTokenToRequest);
   Restangular.setErrorInterceptor((response) => {
     CoreService.xhrDone();
     if (response.status === 500) {
@@ -200,21 +213,22 @@ angular
     .factory('RestFullResponse', function(Restangular: restangular.IService) {
       return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
         RestangularConfigurer.setFullResponse(true);
-      });
+      })
+      .addFullRequestInterceptor(addTokenToRequest);
     })
     .run(appRun)
     .factory('AuthRestangular', function(Restangular: restangular.IService, config: IGDCConfig, CoreService: ICoreService) {
       return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
-          RestangularConfigurer.setBaseUrl(config.auth)})
+        RestangularConfigurer.setBaseUrl(config.auth)
+      })
+        .addFullRequestInterceptor(addTokenToRequest)
         .addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
-        // Ajax
-        CoreService.xhrDone();
-        if (response.headers('content-disposition')) {
-          return deferred.resolve({ 'data': data, 'headers': response.headers()});
-        } else {
-          return deferred.resolve(data);
-        }
-
+          // Ajax
+          CoreService.xhrDone();
+          if (response.headers('content-disposition')) {
+            return deferred.resolve({ 'data': data, 'headers': response.headers() });
+          } else {
+            return deferred.resolve(data);
+          }
         });
-    })
-
+    });

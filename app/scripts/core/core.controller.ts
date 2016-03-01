@@ -1,7 +1,6 @@
 module ngApp.core.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import INotifyService = ng.cgNotify.INotifyService;
-  import IUserService = ngApp.components.user.services.IUserService;
 
   export interface ICoreController {
     showWarning: boolean;
@@ -110,32 +109,5 @@ module ngApp.core.controllers {
   angular
       .module("core.controller", ["ngCookies", "user.services"])
       .controller("WarningController", WarningController)
-      .directive('authButton', function(config){
-        return {
-          restrict:'A',
-          scope: {
-            redirect: "@"
-          },
-          controller:function($scope,$element,$window){
-            $element.on('click',function(){
-              var redirect = config.auth;
-              var authQuery;
-
-              if ($scope.redirect) {
-                redirect += "/" + $scope.redirect;
-              }
-
-              if ($window.location.port) {
-                authQuery = "?next=" + ":" + $window.location.port + $window.location.pathname;
-              } else {
-                authQuery = "?next=" + $window.location.pathname;
-              }
-
-              $window.location = redirect + authQuery;
-
-            });
-          }
-        }
-      })
       .controller("CoreController", CoreController);
 }

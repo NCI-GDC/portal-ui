@@ -58,12 +58,12 @@ We use the component naming system for css classes based on SUIT CSS.
 - [Workflow](#workflow)
 
 ## Branches
-All development should happen on a branch not on master. Branches should formatted as `type/GDC-##-couple-words` or `type/very-short-description`.
+All development should happen on a branch not on develop. Branches should formatted as `type/##-couple-words` or `type/very-short-description`.
 
 This branch structure is similar to git flow but customized for our use cases. Also we are not using git flow directly because it has an inflexible release process.
 
 ```
-❯ git checkout -b feat/GDC-11-my-feature
+❯ git checkout -b <feat/##-my-feature>
 ```
 
 *References*
@@ -117,7 +117,14 @@ Any branches containing significant work need to be reviewed and signed-off befo
 *References*
 
 ```
-❯ git rebase -i master
+❯ git checkout develop
+❯ git pull origin develop
+❯ git checkout <feature_branch>
+❯ git rebase -i develop
+❯ git push <feature_branch> --force-with-lease
+❯ git checkout develop
+❯ git merge <feature_branch>
+❯ git push origin develop
 ```
 
 - https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase-i

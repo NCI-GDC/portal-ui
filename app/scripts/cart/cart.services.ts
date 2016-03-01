@@ -8,6 +8,102 @@ module ngApp.cart.services {
   import IGDCWindowService = ngApp.core.models.IGDCWindowService;
   import INotifyService = ng.cgNotify.INotifyService;
 
+  export interface IQueryCartService {
+    files: IFiles;
+    pushAddedQuery(query: Object): void;
+    pushRemovedQuery(query: Object): void;
+    addFile(): void;
+    isInCart(fileId: string): boolean;
+  }
+
+  class QueryCartService implements IQueryCartService {
+    private static GDC_CART_ADDED_QUERY: string = "gdc-cart-added-query";
+    private static GDC_CART_REMOVED_QUERY: string = "gdc-cart-removed-query";
+    private static GDC_CART_ADDED_FILES: string = "gdc-cart-added-files";
+    private static GDC_CART_REMOVED_FILES: string = "gdc-cart-removed-files";
+
+    public files: IFiles;
+    /* @ngInject */
+    constructor(private $window: IGDCWindowService,
+                private $q: ng.IQService,
+                private FilesService: IFilesService) {
+                this.files = { hits: [],
+                              pagination: { total: 0 }
+                            };
+                this.getFiles();
+    }
+
+    pushAddedQuery(query: Object): void {
+      var oldQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_QUERY)) || {"op": "or", content: []};
+      // if user clicked add all and the query is empty
+      var newQuery = {"op": "or", content: Object.keys(query).length ? oldQuery.content.concat(query) : []};
+      this.$window.localStorage.setItem(QueryCartService.GDC_CART_ADDED_QUERY, JSON.stringify(newQuery));
+      this.getFiles();
+    }
+
+    pushRemovedQuery(query: Object): void {
+      var oldQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_QUERY)) || {"op": "or", content: []};
+      var newQuery = {"op": "or", content: oldQuery.content.concat(query)};
+      this.$window.localStorage.setItem(QueryCartService.GDC_CART_REMOVED_QUERY, JSON.stringify(newQuery));
+      this.getFiles();
+    }
+
+    pushAddedFiles(fileIds: string[]): void {
+      var oldFileIds = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_FILES)) || [];
+      this.$window.localStorage.setItem(QueryCartService.GDC_CART_ADDED_FILES, JSON.stringify(oldFileIds.concat(fileIds)));
+      this.getFiles();
+    }
+
+    pushRemovedFiles(fileIds: string[]): void {
+      var oldFileIds = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_FILES)) || [];
+      this.$window.localStorage.setItem(QueryCartService.GDC_CART_REMOVED_FILES, JSON.stringify(oldFileIds.concat(fileIds)));
+      this.getFiles();
+    }
+
+    isInCart(fileId: string): boolean {
+      //todo: better way to do this that includes the files defined by addedQuery
+      var fileIds= JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_FILES)) || [];
+      return fileIds.find(f => f === fileId) ? true : false;
+    }
+
+    getFiles(): ng.IPromise<IFile> {
+      var addedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_QUERY));
+      var removedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_QUERY));
+      //incomplete
+      var filters = removedQuery ? {"op":"and","content":[addedQuery, removedQuery]} : addedQuery;
+      console.log(filters);
+      if (filters) {
+        return this.FilesService.getFiles({
+              fields: ["access",
+                       "file_name",
+                       "file_id",
+                       "file_size",
+                       "data_type",
+                       "data_format",
+                       "annotations.annotation_id",
+                       "cases.case_id",
+                       "cases.project.project_id",
+                       "cases.project.name"
+                       ],
+              filters: filters.content.length ? filters : '', // empty content gives api error so send no filter
+              size: 20,
+              from: 0
+            }).then((data): IFile => {
+              this.files = data;
+              return data;
+            });
+      } else {
+        // if there was no filter sending an empty query to ES returns everything
+        // so don't send a request but return an empty promise
+        return this.$q((resolve) => {
+          var data = {hits: [], pagination: { total: 0}}
+          this.files = data;
+          resolve(data)
+        });
+      }
+    }
+  }
+
   export interface ICartService {
     files: IFile[];
     lastModified: Moment;
@@ -297,5 +393,6 @@ module ngApp.cart.services {
         "cgNotify"
       ])
       .service("CartState", State)
+      .service("QueryCartService", QueryCartService)
       .service("CartService", CartService);
 }

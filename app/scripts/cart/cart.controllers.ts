@@ -177,7 +177,7 @@ module ngApp.cart.controllers {
     }
 
     getManifest(selectedOnly: boolean = false) {
-      this.FilesService.downloadManifest(_.pluck(this.CartService.getFiles(), "file_id"), (complete)=>{
+      this.FilesService.downloadManifest(_.pluck(this.CartService.getFiles(), "file_id"), (complete) => {
         if(complete) {
           return true;
         }
@@ -187,7 +187,6 @@ module ngApp.cart.controllers {
   }
 
   class LoginToDownloadController {
-
     /* @ngInject */
     constructor (private $modalInstance) {}
 
@@ -200,6 +199,83 @@ module ngApp.cart.controllers {
     }
   }
 
+  class AddToCartSingleCtrl {
+    /* @ngInject */
+    QueryCartService: IQueryCartService;
+    constructor(private QueryCartService: IQueryCartService) {
+      this.QueryCartService = QueryCartService;
+    }
+
+    addToCart(): void {
+      this.QueryCartService.pushAddedFiles([this.file.file_id]);
+    }
+
+    removeFromCart(): void{
+      this.QueryCartService.pushRemovedFiles([this.file.file_id]);
+    }
+  }
+
+  class AddToCartAllCtrl {
+    CartService: ICartService;
+    /* @ngInject */
+    constructor(public CartService: ICartService,
+                private QueryCartService: IQueryCartService,
+                public LocationService: ILocationService,
+                public FilesService: IFilesService,
+                public UserService: IUserService,
+                public $timeout: ng.ITimeoutService,
+                public notify: INotifyService) {
+                  this.CartService = CartService;
+    }
+
+    removeAll(): void {
+      var filters = (this.filter ? JSON.parse(this.filter) : undefined) || this.LocationService.filters();
+        filters = this.UserService.addMyProjectsFilter(filters, "cases.project.project_id");
+        this.QueryCartService.pushRemovedQuery(filters);
+    }
+
+    addAll(): void {
+        var filters = (this.filter ? JSON.parse(this.filter) : undefined) || this.LocationService.filters();
+        filters = this.UserService.addMyProjectsFilter(filters, "cases.project.project_id");
+        this.QueryCartService.pushAddedQuery(filters);
+
+        //if (this.size >= this.CartService.getCartVacancySize()) {
+          //this.CartService.sizeWarning();
+          //return;
+        //}
+
+//        var addingMsgPromise = this.$timeout(() => {
+          //this.notify({
+            //message: "",
+            //messageTemplate: "<span data-translate>Adding <strong>" + this.size + "</strong> files to cart</span>",
+            //container: "#notification",
+            //classes: "alert-info"
+          //});
+        //}, 1000);
+
+        //this.FilesService.getFiles({
+          //fields: ["access",
+                   //"file_name",
+                   //"file_id",
+                   //"file_size",
+                   //"data_type",
+                   //"data_format",
+                   //"annotations.annotation_id",
+                   //"cases.case_id",
+                   //"cases.project.project_id",
+                   //"cases.project.name"
+                   //],
+          //filters: filters,
+          //sort: "",
+          //size: this.size,
+          //from: 0
+        //}).then((data) => {
+          //this.CartService.addFiles(data.hits, false);
+          //this.$timeout.cancel(addingMsgPromise);
+        //});
+      }
+  }
+
   angular
       .module("cart.controller", [
         "cart.services",
@@ -209,6 +285,7 @@ module ngApp.cart.controllers {
         "search.services"
       ])
       .controller("LoginToDownloadController", LoginToDownloadController )
+      .controller("AddToCartAllCtrl", AddToCartAllCtrl)
+      .controller("AddToCartSingleCtrl", AddToCartSingleCtrl)
       .controller("CartController", CartController);
 }
-

@@ -6,147 +6,237 @@ module ngApp.cart.directives {
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
   import IFile = ngApp.files.models.IFile;
 
-  interface IAddToCartScope extends ng.IScope {
-    CartService: ICartService;
-    addToCart(files: IFile[]): void;
-    removeFromCart(files: IFile[]): void;
-  }
-
+  // remove from cart page
   function RemoveSingleCart(): ng.IDirective {
     return {
-      restrict: "A",
+      restrict: "E",
       replace: true,
-      scope: {
-        file: "="
+      scope: {},
+      bindToController: {
+        file: '='
       },
       templateUrl: "cart/templates/remove-single.html",
-      controller: function($scope, CartService: ICartService) {
-        $scope.remove = function(id: string) {
-          CartService.remove([id]);
+      controllerAs: 'ctrl',
+      controller: function($scope: ng.IScope, CartService: ICartService) {
+        this.remove = function() {
+          CartService.remove([this.file.file_id]);
           $scope.$emit("cart-update");
         }
       }
     };
   }
 
-  function AddToCartSingle(): ng.IDirective {
+  // add/remove to cart on file search page
+  function AddToCartSingleIcon(): ng.IDirective {
     return {
-      restrict: "AE",
-      scope:{
-        file: "=",
+      restrict: 'E',
+      scope: {},
+      bindToController: {
+        file: '='
       },
-      templateUrl: "cart/templates/add-to-cart-button-single.html",
-      controller: function($scope: IAddToCartScope, CartService: ICartService) {
-        $scope.CartService = CartService;
-        $scope.addToCart = function(files: IFile[]) {
-          CartService.addFiles(files)
-        };
-        $scope.removeFromCart = function(files: IFile[]) {
-          CartService.removeFiles(files);
-        };
-      }
-    }
+      templateUrl: 'cart/templates/add-to-cart-button-single.html',
+      controller: 'AddToCartSingleCtrl as ctrl'
+    };
   }
 
-  function AddToCartAll(SearchTableFilesModel: TableiciousConfig) {
+  // add/remove to cart on file entity page
+  function AddToCartSingleLabelled(): ng.IDirective {
     return {
-      restrict: "AE",
-      scope:{
-        files: "=",
-        filter: "@", // defaults to use location if undefined
-        size: "@",
-        removeAllInSearchResult: "&",
-        addAllOnly: "@"
+      restrict: 'E',
+      scope: {},
+      replace: true,
+      bindToController: {
+        file: '='
       },
-      compile: function(element, attrs) {
-        if (!attrs.addAllOnly) {
-          attrs.addAllOnly = false;
-        }
+      templateUrl: 'cart/templates/add-to-cart-button-labelled.html',
+      controller: 'AddToCartSingleCtrl as ctrl'
+    };
+  }
+
+
+  // add to cart on summary
+  function AddToCartAllButton(SearchTableFilesModel: TableiciousConfig) {
+    return {
+      restrict: 'E',
+      scope: {},
+      bindToController: {
+      files: '=',
+      filter: '@',
+      size: '@'
       },
-      templateUrl: "cart/templates/add-to-cart-button-all.html",
-      controller: function($scope: IAddToCartScope,
+      templateUrl: "cart/templates/add-to-cart-all-button.html",
+      controller: "AddToCartAllCtrl as ctrl"
+    };
+  }
+
+  // add to cart dropdown on top of file search
+  function AddToCartAllDropDown(SearchTableFilesModel: TableiciousConfig) {
+    return {
+      restrict: 'E',
+      scope: {},
+      bindToController: {
+        files: '=',
+        size: '@'
+      },
+      templateUrl: "cart/templates/add-to-cart-all-dropdown.html",
+      controller: "AddToCartAllCtrl as ctrl"
+    };
+  }
+
+  // add to cart dropdown on cases search table
+  function AddToCartFiltered(SearchTableFilesModel: TableiciousConfig): ng.IDirective {
+    return {
+      restrict: "E",
+      scope: {},
+      bindToController: {
+        row: "="
+      },
+      controllerAs: 'ctrl',
+      templateUrl: "cart/templates/add-to-cart-button-filtered.html",
+      controller: function($scope: ng.IScope,
                            CartService: ICartService,
+                           QueryCartService: IQueryCartService,
                            LocationService: ILocationService,
                            FilesService: IFilesService,
-                           UserService: IUserService,
-                           $timeout: ng.ITimeoutService,
-                           notify: INotifyService) {
-        $scope.CartService = CartService;
-        $scope.removeAll  = function() {
-          // Query ES using the current filter and the file uuids in the Cart
-          // If an id is in the result, then it is both in the Cart and in the current Search query
+                           ParticipantsService) {
+        this.files = [];
+        this.CartService = CartService;
 
-          var filters = $scope.filter || LocationService.filters();
-          var size: number = CartService.getFiles().length;
-          if (!filters.content) {
-            filters.op = "and";
-            filters.content = [];
+        function areFiltersApplied(content): boolean {
+          return content && _.some(content, (item) => {
+            var content = item.hasOwnProperty('content') ? item.content : item;
+            return content.field.indexOf("files.") === 0;
+          });
+        }
+
+        function getContent(): any[] {
+          var content = LocationService.filters().content;
+          return content && !Array.isArray(content) ? [content] : content;
+        }
+
+        var content = getContent();
+        this.areFiltersApplied = areFiltersApplied(content);
+
+        $scope.$on("$locationChangeSuccess", () => {
+          var content = getContent();
+          this.areFiltersApplied = areFiltersApplied(content);
+        });
+
+        this.getFiles = function() {
+          this.retreivingFiles = true;
+          var filters = LocationService.filters();
+          if (filters.op !== "and") {
+            filters = {op: "and", content: [filters]};
           }
+
+          var uuid = this.row.case_id;
 
           filters.content.push({
             content: {
-              field: "files.file_id",
-              value: _.pluck(CartService.getFiles(), "file_id")
+              field: "files.cases.case_id",
+              value: [
+                uuid
+              ]
             },
             op: "in"
           });
 
-          FilesService.getFiles({
-            fields:[
-              "file_id"
-            ],
-            filters: filters,
-            size: size,
-            from: 0
-          }).then((data) => {
-            CartService.remove(_.pluck(data.hits, "file_id"));
-          });
-        };
-
-        $scope.addAll = function() {
-          var filters = $scope.filter || LocationService.filters();
-          filters = UserService.addMyProjectsFilter(filters, "cases.project.project_id");
-          if ($scope.size >= CartService.getCartVacancySize()) {
-            CartService.sizeWarning();
-            return;
+          if (this.areFiltersApplied) {
+            FilesService.getFiles({
+              fields: SearchTableFilesModel.fields,
+              expand: SearchTableFilesModel.expand,
+              filters: filters,
+              size: CartService.getCartVacancySize()
+            }).then((data) => {
+              this.retreivingFiles = $scope.files.length ? false : true;
+              this.filteredRelatedFiles = data;
+            });
           }
 
-          var addingMsgPromise = $timeout(() => {
-            notify({
-              message: "",
-              messageTemplate: "<span data-translate>Adding <strong>" + $scope.size + "</strong> files to cart</span>",
-              container: "#notification",
-              classes: "alert-info"
+          if (!this.files.length) {
+            ParticipantsService.getParticipant(uuid, {
+              fields: [
+                "case_id",
+                "submitter_id",
+                "annotations.annotation_id",
+                "project.project_id",
+                "project.name",
+                'files.access',
+                'files.file_name',
+                'files.file_id',
+                'files.file_size',
+                'files.data_type',
+                'files.data_format'
+              ]
+            }).then((data) => {
+              if (this.areFiltersApplied) {
+                this.retreivingFiles = this.filteredRelatedFiles ? false: true;
+              } else {
+                this.retreivingFiles = false;
+              }
+              var fs = _.map(data.files, f => {
+                f.cases = [{
+                  case_id: data.case_id,
+                  project: {
+                    project_id: data.project.project_id,
+                    name: data.project.name
+                  }
+                }];
+              });
+              this.files = data.files;
+              this.calculateFileCount();
             });
-          }, 1000);
+          }
+        };
 
-          FilesService.getFiles({
-            fields: ["access",
-                     "file_name",
-                     "file_id",
-                     "file_size",
-                     "data_type",
-                     "data_format",
-                     "annotations.annotation_id",
-                     "cases.case_id",
-                     "cases.project.project_id",
-                     "cases.project.name"
-                     ],
-            filters: filters,
-            sort: "",
-            size: $scope.size,
-            from: 0
-          }).then((data) => {
-            this.CartService.addFiles(data.hits, false);
-            $timeout.cancel(addingMsgPromise);
+        this.addFilteredRelatedFiles = function()  {
+          var filters = LocationService.filters();
+          if (filters.op !== "and") {
+            filters = {op: "and", content: [filters]};
+          }
+          var uuid = this.row.case_id;
+
+          filters.content.push({
+            content: {
+              field: "files.cases.case_id",
+              value: [
+                uuid
+              ]
+            },
+            op: "in"
           });
-        }
+          QueryCartService.pushAddedQuery(filters);
+          //CartService.addFiles(this.filteredRelatedFiles.hits);
+        };
 
+        this.addRelatedFiles = function() {
+          var uuid = this.row.case_id;
+          QueryCartService.pushAddedQuery({
+            content: {
+              field: "files.cases.case_id",
+              value: [
+                uuid
+              ]
+            },
+            op: "in"
+          });
+          //CartService.addFiles(this.files);
+        };
+
+        this.removeRelatedFiles = function() {
+          CartService.remove(this.inBoth);
+        };
+
+        this.calculateFileCount = function() {
+          this.inBoth = _.intersection(_.pluck(CartService.getFiles(), "file_id"),
+                                         _.pluck(this.files, "file_id"));
+        }
       }
     }
   }
 
-  /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/
+
+  /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/  
   function RemoveUnauthorizedFilesButton() {
     return {
       restrict: "AE",
@@ -277,127 +367,6 @@ module ngApp.cart.directives {
       }
   }
 
-  function AddToCartFiltered(SearchTableFilesModel: TableiciousConfig): ng.IDirective {
-    return {
-      restrict:"AE",
-      scope:{
-        row: "="
-      },
-      templateUrl: "cart/templates/add-to-cart-button-filtered.html",
-      controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
-                          FilesService: IFilesService,
-                          ParticipantsService) {
-        $scope.files = [];
-
-        function areFiltersApplied(content): boolean {
-          return content && _.some(content, (item) => {
-            var content = item.hasOwnProperty('content') ? item.content : item;
-            return content.field.indexOf("files.") === 0;
-          });
-        }
-
-        function getContent(): any[] {
-          var content = LocationService.filters().content;
-          return content && !Array.isArray(content) ? [content] : content;
-        }
-
-        var content = getContent();
-        $scope.areFiltersApplied = areFiltersApplied(content);
-
-        $scope.$on("$locationChangeSuccess", () => {
-          var content = getContent();
-          $scope.areFiltersApplied = areFiltersApplied(content);
-        });
-
-        $scope.getFiles = function() {
-          $scope.retreivingFiles = true;
-          var filters = LocationService.filters();
-          if (filters.op !== "and") {
-            filters = {op: "and", content: [filters]};
-          }
-
-          var uuid = $scope.row.case_id;
-
-          filters.content.push({
-            content: {
-              field: "files.cases.case_id",
-              value: [
-                uuid
-              ]
-            },
-            op: "in"
-          });
-
-          if ($scope.areFiltersApplied) {
-            FilesService.getFiles({
-              fields: SearchTableFilesModel.fields,
-              expand: SearchTableFilesModel.expand,
-              filters: filters,
-              size: CartService.getCartVacancySize()
-            }).then((data) => {
-              $scope.retreivingFiles = $scope.files.length ? false : true;
-              $scope.filteredRelatedFiles = data;
-            });
-          }
-
-          if (!$scope.files.length) {
-            ParticipantsService.getParticipant(uuid, {
-              fields: [
-                "case_id",
-                "submitter_id",
-                "annotations.annotation_id",
-                "project.project_id",
-                "project.name",
-                'files.access',
-                'files.file_name',
-                'files.file_id',
-                'files.file_size',
-                'files.data_type',
-                'files.data_format'
-              ]
-            }).then((data) => {
-              if ($scope.areFiltersApplied) {
-                $scope.retreivingFiles = $scope.filteredRelatedFiles ? false: true;
-              } else {
-                $scope.retreivingFiles = false;
-              }
-              var fs = _.map(data.files, f => {
-                f.cases = [{
-                  case_id: data.case_id,
-                  project: {
-                    project_id: data.project.project_id,
-                    name: data.project.name
-                  }
-                }];
-              });
-              $scope.files = data.files;
-              $scope.calculateFileCount();
-            });
-          }
-        };
-
-        $scope.addFilteredRelatedFiles = function()  {
-          CartService.addFiles($scope.filteredRelatedFiles.hits);
-        };
-
-        $scope.addRelatedFiles = function() {
-          CartService.addFiles($scope.files);
-        };
-
-        $scope.removeRelatedFiles = function() {
-          CartService.remove($scope.inBoth);
-        };
-
-        $scope.calculateFileCount = function() {
-          $scope.inBoth = _.intersection(_.pluck(CartService.getFiles(), "file_id"),
-                                         _.pluck($scope.files, "file_id"));
-        }
-
-        $scope.CartService = CartService;
-      }
-    }
-  }
-
   angular.module("cart.directives", [
       "user.services",
       "location.services",
@@ -405,8 +374,10 @@ module ngApp.cart.directives {
       "search.table.files.model",
       "cgNotify"
     ])
-    .directive("addToCartSingle", AddToCartSingle)
-    .directive("addToCartAll", AddToCartAll)
+    .directive("addToCartSingleIcon", AddToCartSingleIcon)
+    .directive("addToCartSingleLabelled", AddToCartSingleLabelled)
+    .directive("addToCartAllDropdown", AddToCartAllDropDown)
+    .directive("addToCartAllButton", AddToCartAllButton)
     .directive("addToCartFiltered", AddToCartFiltered)
     .directive("downloadButtonAllCart", DownloadButtonAllCart)
     .directive("downloadManifestCart", DownloadManifestCart)

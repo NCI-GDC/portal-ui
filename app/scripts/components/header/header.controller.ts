@@ -1,6 +1,7 @@
 module ngApp.components.header.controllers {
 
   import ICartService = ngApp.cart.services.ICartService;
+  import IQueryCartService = ngApp.cart.services.IQueryCartService;
   import ICoreService = ngApp.core.services.ICoreService;
   import IUserService = ngApp.components.user.services.IUserService;
 
@@ -26,7 +27,9 @@ module ngApp.components.header.controllers {
     };
 
     /* @ngInject */
-    constructor(private gettextCatalog, private CartService: ICartService,
+    constructor(private gettextCatalog,
+                private QueryCartService: IQueryCartService,
+                private CartService: ICartService,
                 private $state: ng.ui.IStateService,
                 private UserService: IUserService, private $modal: any,
                 private $window: ng.IWindowService) {
@@ -52,7 +55,8 @@ module ngApp.components.header.controllers {
     }
 
     getNumCartItems(): number {
-      return this.CartService.getFiles().length;
+      return this.QueryCartService.files.length;
+    //return this.CartService.getFiles().length;
     }
 
   }

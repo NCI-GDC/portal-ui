@@ -30,7 +30,7 @@ module ngApp.search.models {
         headings: [{
             name: "Cart",
             id: "add_to_cart_filtered",
-            td: row => '<div add-to-cart-filtered row="row"></div>',
+            td: row => '<add-to-cart-filtered row="row"></add-to-cart-filtered>',
             tdClassName: 'text-center'
         }, {
             name: "My Projects",

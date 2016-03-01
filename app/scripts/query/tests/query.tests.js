@@ -9,6 +9,7 @@ describe('Query:', function () {
 
   beforeEach(module(function ($provide) {
       $provide.value('AuthRestangular', {});
+      $provide.value('config', {});
   }));
 
   describe('Controller:', function () {

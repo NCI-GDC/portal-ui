@@ -8,6 +8,7 @@ describe('Projects:', function () {
 
   beforeEach(module(function ($provide) {
       $provide.value('AuthRestangular', {});
+      $provide.value('config', {});
   }));
 
   // Injection of dependencies, $http will be mocked with $httpBackend

@@ -146,7 +146,7 @@ module ngApp.cart.directives {
     }
   }
 
-  /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/  
+  /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/
   function RemoveUnauthorizedFilesButton() {
     return {
       restrict: "AE",
@@ -167,25 +167,25 @@ module ngApp.cart.directives {
       }
     }
   }
-  
+
   function DownloadManifestCart(FilesService: IFilesService, UserService, CartService, $modal) {
     return {
       restrict:"AE",
       scope: true,
       link: function($scope, $element, $attrs){
-        
+
         $element.on('click',function DownloadManifestFiles(){
-          
+
           var scope = $scope;
-          
+
           scope.active = true;
           $attrs.$set("disabled", "disabled");
-        
+
           FilesService.downloadManifest(_.pluck(CartService.getFiles(), "file_id"), (complete)=>{
               scope.active = false;
               $element.removeAttr("disabled");
           });
-          
+
         });
       }
     }
@@ -196,20 +196,20 @@ module ngApp.cart.directives {
       restrict:"AE",
       scope: true,
       link: function($scope, $element, $attrs){
-        
+
         $element.on('click',function checkCartForClosedFiles() {
-            
+
             var scope = $scope;
             var isLoggedIn = UserService.currentUser;
-  
+
             var authorizedInCart = CartService.getAuthorizedFiles();
             var unauthorizedInCart = CartService.getUnauthorizedFiles();
-  
+
             scope.meta = {
               unauthorized: unauthorizedInCart,
               authorized: authorizedInCart
             };
-  
+
             if (unauthorizedInCart.length === 0) {
               download();
             } else {
@@ -219,18 +219,18 @@ module ngApp.cart.directives {
                 showLoginModal();
               }
             }
-  
+
             function download() {
-              
+
               $scope.active = true;
               $attrs.$set("disabled", "disabled");
-              
+
               FilesService.downloadFiles(_.pluck(authorizedInCart, "file_id"), (complete)=>{
                   $scope.active = false;
                   $element.removeAttr("disabled");
               });
             }
-  
+
             function showLoginModal() {
               var modalInstance = $modal.open({
                 templateUrl: "core/templates/login-to-download.html",
@@ -288,19 +288,19 @@ module ngApp.cart.directives {
                           FilesService: IFilesService,
                           ParticipantsService) {
         $scope.files = [];
-        
+
         function areFiltersApplied(content): boolean {
           return content && _.some(content, (item) => {
             var content = item.hasOwnProperty('content') ? item.content : item;
             return content.field.indexOf("files.") === 0;
           });
         }
-        
+
         function getContent(): any[] {
           var content = LocationService.filters().content;
           return content && !Array.isArray(content) ? [content] : content;
         }
-        
+
         var content = getContent();
         $scope.areFiltersApplied = areFiltersApplied(content);
 

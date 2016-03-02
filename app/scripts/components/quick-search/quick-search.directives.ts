@@ -131,6 +131,7 @@ module ngApp.components.quickSearch.directives {
           }
 
           var key = e.which || e.keyCode
+
           switch (key) {
             case KeyCode.Enter:
               e.preventDefault();
@@ -248,7 +249,7 @@ module ngApp.components.quickSearch.directives {
 
   class Highlight {
     constructor($rootScope: ng.IScope) {
-      return function (value: string, query: string) {
+      return function (value: any, query: string = "") {
         if (!value) {
           return "";
         }

@@ -7,9 +7,23 @@
       </div>
       <div class="panel-body">
         <div class="col-lg-5 col-md-5">
-          <button class="expand-collapse btn btn-default" data-ng-click="expandAll($event, participant, !participant.biospecimenTreeExpanded)">
-            {{ participant.biospecimenTreeExpanded ? 'Collapse All' : 'Expand All' }}
-          </button>
+          <div class="row biospecimen-tree-action-bar">
+            <div class="col-xs-8">
+              <div class="input-group">
+                <span class="input-group-addon"><span class="fa fa-search"></span></span>
+                <input type="text" class="form-control"
+                  placeholder="Search.."
+                  data-ng-change="search(searchTerm, participant)"
+                  data-ng-model="searchTerm"
+                />
+              </div>
+            </div>
+            <div class="col-xs-4">
+              <button class="btn btn-default pull-right" data-ng-click="expandAll($event, participant, !participant.biospecimenTreeExpanded)">
+                {{ participant.biospecimenTreeExpanded ? 'Collapse All' : 'Expand All' }}
+              </button>
+            </div>
+          </div>
           <i class="fa fa-plus-square-o action" data-ng-if="!participant.samples.expanded"
              data-ng-click="expandTree($event, participant.samples)"
              data-ng-keypress="expandTree($event, participant.samples)"
@@ -39,8 +53,8 @@
               <span data-ng-click="bc.displayBioSpecimenDocument($event, sample, 'sample')"
                     data-ng-keypress="bc.displayBioSpecimenDocument($event, sample, 'sample')"
                     class="biospecimen-id"
-                    data-ng-class="{ selected: sample === bc.activeBioSpecimenDoc }">
-                {{ sample.submitter_id }}
+                    data-ng-class="{ selected: sample === bc.activeBioSpecimenDoc, highlighted: foundBySearch(sample.submitter_id) }"
+                    data-ng-bind-html="(sample.submitter_id | highlight:searchTerm ) || sample.submitter_id">
               </span>
 
               <div data-ng-if="sample.portions.length" data-ng-class="{ hidden: !sample.expanded }"
@@ -78,7 +92,10 @@
                             data-ng-keypress="bc.displayBioSpecimenDocument($event, portion, 'portion')"
                             class="biospecimen-id"
                             data-ng-class="{ selected: portion === bc.activeBioSpecimenDoc }">
-                        <span data-ng-if="portion.submitter_id">{{ portion.submitter_id }}</span>
+                        <span data-ng-if="portion.submitter_id"
+                              data-ng-class="{ highlighted: foundBySearch(portion.submitter_id) }"
+                              data-ng-bind-html="(portion.submitter_id | highlight:searchTerm) || portion.submitter_id">
+                        </span>
                         <span data-ng-if="!portion.submitter_id">
                           <span data-translate>TARGET Portion</span>
                           {{ $index + 1 }}
@@ -107,7 +124,9 @@
                                data-ng-if="portion.slides.expanded"
                                data-ng-class="{ selected: slide === bc.activeBioSpecimenDoc }">
                             <i class="fa fa-file-o"></i>
-                            <span data-ng-if="slide.submitter_id">{{ slide.submitter_id }}</span>
+                            <span data-ng-if="slide.submitter_id"
+                                  data-ng-class="{ highlighted: foundBySearch(slide.submitter_id) }"
+                                  data-ng-bind-html="(slide.submitter_id | highlight:searchTerm) || slide.submitter_id"></span>
                             <span data-ng-if="!slide.submitter_id">
                               <span data-translate>TARGET Slide</span>
                               {{ $index + 1 }}
@@ -150,7 +169,10 @@
                                   data-ng-if="portion.analytes.expanded"
                                   class="biospecimen-id"
                                   data-ng-class="{ selected: analyte === bc.activeBioSpecimenDoc }">
-                              <span data-ng-if="analyte.submitter_id">{{ analyte.submitter_id }}</span>
+                              <span data-ng-if="analyte.submitter_id"
+                                    data-ng-class="{ highlighted: foundBySearch(analyte.submitter_id) }"
+                                    data-ng-bind-html="(analyte.submitter_id | highlight:searchTerm) || analyte.submitter_id">
+                              </span>
                               <span data-ng-if="!analyte.submitter_id">
                                 <span data-translate>TARGET Analyte</span>
                                 {{ $index + 1 }}
@@ -180,7 +202,10 @@
                                      class="biospecimen-id"
                                      data-ng-class="{ selected: aliquot === bc.activeBioSpecimenDoc }">
                                   <i class="fa fa-file-o"></i>
-                                  <span data-ng-if="aliquot.submitter_id">{{ aliquot.submitter_id }}</span>
+                                  <span data-ng-if="aliquot.submitter_id"
+                                        data-ng-class="{ highlighted: foundBySearch(aliquot.submitter_id) }"
+                                        data-ng-bind-html="(aliquot.submitter_id | highlight:searchTerm) || aliquot.submitter_id">
+                                  </span>
                                   <span data-ng-if="!aliquot.submitter_id">
                                     <span data-translate>TARGET Aliquot</span>
                                     {{ $index + 1 }}

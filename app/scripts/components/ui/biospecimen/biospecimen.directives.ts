@@ -3,6 +3,7 @@ module ngApp.components.ui.biospecimen.directives {
 
   interface IBiospecimenScope extends ng.IScope {
     expandTree(event: any, doc: any): void;
+    expandAll(event: any, participant: any, expand: boolean): void;
   }
 
   /* @ngInject */
@@ -23,6 +24,23 @@ module ngApp.components.ui.biospecimen.directives {
             event.target.focus();
           }
         };
+
+        $scope.expandAll = (event: any, participant: any, expand: boolean) => {
+          participant.biospecimenTreeExpanded = expand;
+          if (event.which === 1 || event.which === 13) {
+            participant.samples.expanded = expand;
+            (participant.samples || []).forEach(sample => {
+              sample.portions.expanded = sample.expanded = expand;
+              (sample.portions || []).forEach(portion => {
+                portion.analytes.expanded = portion.expanded = expand;
+                (portion.analytes || []).forEach(analyte => {
+                  analyte.aliquots.expanded = analyte.expanded = true;
+                  (analyte.aliquots || []).forEach(aliquots => aliquots.expanded = true);
+                });
+              });
+            });
+          }
+        };
       }
     };
   }
@@ -30,4 +48,3 @@ module ngApp.components.ui.biospecimen.directives {
   angular.module("biospecimen.directives", ["biospecimen.controllers"])
       .directive("biospecimen", Biospecimen);
 }
-

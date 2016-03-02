@@ -7,6 +7,9 @@
       </div>
       <div class="panel-body">
         <div class="col-lg-5 col-md-5">
+          <button class="expand-collapse btn btn-default" data-ng-click="expandAll($event, participant, !participant.biospecimenTreeExpanded)">
+            {{ participant.biospecimenTreeExpanded ? 'Collapse All' : 'Expand All' }}
+          </button>
           <i class="fa fa-plus-square-o action" data-ng-if="!participant.samples.expanded"
              data-ng-click="expandTree($event, participant.samples)"
              data-ng-keypress="expandTree($event, participant.samples)"

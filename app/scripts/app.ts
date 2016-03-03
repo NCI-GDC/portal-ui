@@ -43,7 +43,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    ) {
   $compileProvider.debugInfoEnabled(!config.production);
   $locationProvider.html5Mode(true);
-  $urlRouterProvider.otherwise("/projects");
+  $urlRouterProvider.otherwise("/");
   RestangularProvider.setBaseUrl(config.api);
   RestangularProvider.setDefaultHttpFields({
     cache: true
@@ -188,6 +188,7 @@ angular
       "ngApp.participants",
       "ngApp.files",
       "ngApp.annotations",
+      "ngApp.home",
       "ngApp.projects",
       "ngApp.components",
       "ngApp.cart",
@@ -213,7 +214,7 @@ angular
         } else {
           return deferred.resolve(data);
         }
-        ;
+
         });
     })
 

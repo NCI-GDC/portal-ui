@@ -18,10 +18,10 @@ module ngApp.search.models {
     rowId: 'file_id',
     headings: [
       {
-        th: '<div add-to-cart-all files="data" data-size="{{paging.total}}"></div>',
+        th: '<add-to-cart-all-dropdown data-files="data" data-size="{{paging.total}}" />',
         name: 'Add to Cart',
         id: "file_actions",
-        td: row => '<span add-to-cart-single file="row" style="margin-right:5px"></span>' +
+        td: row => '<add-to-cart-single-icon file="row" style="margin-right:5px"></add-to-cart-single-icon>' +
                     '<download-button data-tooltip="Download" data-tooltip-popup-delay=1000 files="row"></download-button>'
       }, {
         name: "File UUID",

@@ -177,7 +177,7 @@ module ngApp.cart.controllers {
     }
 
     getManifest(selectedOnly: boolean = false) {
-      this.FilesService.downloadManifest(_.pluck(this.CartService.getFiles(), "file_id"), (complete)=>{
+      this.FilesService.downloadManifest(_.pluck(this.CartService.getFiles(), "file_id"), (complete) => {
         if(complete) {
           return true;
         }
@@ -187,7 +187,6 @@ module ngApp.cart.controllers {
   }
 
   class LoginToDownloadController {
-
     /* @ngInject */
     constructor (private $modalInstance) {}
 
@@ -200,6 +199,105 @@ module ngApp.cart.controllers {
     }
   }
 
+  class AddToCartSingleCtrl {
+    /* @ngInject */
+    constructor(private CartService: ICartService) {}
+
+    addToCart(): void {
+      console.log(this.file.file_id);
+      this.CartService.addFiles([this.file], true);
+    }
+
+    removeFromCart(): void {
+      this.CartService.removeFiles([this.file]);
+    }
+  }
+
+  class AddToCartAllCtrl {
+    CartService: ICartService;
+    /* @ngInject */
+    constructor(public CartService: ICartService,
+    //private QueryCartService: IQueryCartService,
+                private UserService: IUserService,
+                public LocationService: ILocationService,
+                public FilesService: IFilesService,
+                public UserService: IUserService,
+                public $timeout: ng.ITimeoutService,
+                public notify: INotifyService) {
+                  this.CartService = CartService;
+    }
+
+    removeAll(): void {
+      // Query ES using the current filter and the file uuids in the Cart
+      // If an id is in the result, then it is both in the Cart and in the current Search query
+      var filters = this.filter || this.LocationService.filters();
+      var size: number = this.CartService.getFiles().length;
+      if (!filters.content) {
+        filters.op = "and";
+        filters.content = [];
+      }
+
+      filters.content.push({
+        content: {
+          field: "files.file_id",
+          value: _.pluck(this.CartService.getFiles(), "file_id")
+        },
+        op: "in"
+      });
+
+      this.FilesService.getFiles({
+        fields:[
+          "file_id"
+        ],
+        filters: filters,
+        size: size,
+        from: 0
+      }).then((data) => {
+        this.CartService.remove(_.pluck(data.hits, "file_id"));
+      });
+    }
+
+    addAll(): void {
+      var filters = (this.filter ? JSON.parse(this.filter) : undefined) || this.LocationService.filters();
+      filters = this.UserService.addMyProjectsFilter(filters, "cases.project.project_id");
+
+      if (this.size >= this.CartService.getCartVacancySize()) {
+        this.CartService.sizeWarning();
+        return;
+      }
+
+      var addingMsgPromise = this.$timeout(() => {
+        this.notify({
+          message: "",
+          messageTemplate: "<span data-translate>Adding <strong>" + this.size + "</strong> files to cart</span>",
+          container: "#notification",
+          classes: "alert-info"
+        });
+      }, 1000);
+
+      this.FilesService.getFiles({
+        fields: ["access",
+                 "file_name",
+                 "file_id",
+                 "file_size",
+                 "data_type",
+                 "data_format",
+                 "annotations.annotation_id",
+                 "cases.case_id",
+                 "cases.project.project_id",
+                 "cases.project.name"
+                 ],
+        filters: filters,
+        sort: "",
+        size: this.size,
+        from: 0
+      }).then((data) => {
+        this.CartService.addFiles(data.hits, false);
+        this.$timeout.cancel(addingMsgPromise);
+      });
+    }
+  }
+
   angular
       .module("cart.controller", [
         "cart.services",
@@ -209,6 +307,7 @@ module ngApp.cart.controllers {
         "search.services"
       ])
       .controller("LoginToDownloadController", LoginToDownloadController )
+      .controller("AddToCartAllCtrl", AddToCartAllCtrl)
+      .controller("AddToCartSingleCtrl", AddToCartSingleCtrl)
       .controller("CartController", CartController);
 }
-

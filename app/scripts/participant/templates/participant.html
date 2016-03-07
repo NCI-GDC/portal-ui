@@ -2,14 +2,12 @@
   <h1 class="col-lg-12">
     <i class="fa fa-user"></i>
     {{ ::pc.participant.case_id }}
-    <div id="add-to-cart-button"
-        data-add-to-cart-all
-        data-filter='{{ [
+    <add-to-cart-all-button
+       class="pull-right"
+       data-filter='{{ [
           { field: "cases.case_id", value: pc.participant.case_id }
-         ] | makeFilter:true }}'
-        data-size="{{ pc.participant.summary.file_count }}"
-        data-add-all-only=true
-        class="pull-right"></div>
+          ] | makeFilter:true }}'
+       data-size="{{ pc.participant.summary.file_count }}" />
   </h1>
   <div class="col-lg-12">
     <section class="row" id="summary">

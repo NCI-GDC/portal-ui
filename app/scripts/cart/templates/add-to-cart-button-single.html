@@ -1,7 +1,7 @@
 <button
   aria-label="Add to Cart"
   data-tooltip-popup-delay=1000 data-tooltip="Add to Cart"
-  data-ng-if="!ctrl.QueryCartService.isInCart(ctrl.file.file_id)"
+  data-ng-if="!ctrl.CartService.isInCart(ctrl.file.file_id)"
   type="button"
   class="btn btn-default fa fa-shopping-cart"
         data-ng-click="ctrl.addToCart()">
@@ -11,7 +11,7 @@
   aria-label="Remove from Cart"
   data-tooltip-popup-delay=1000
   data-tooltip="Remove from Cart"
-  data-ng-if="ctrl.QueryCartService.isInCart(ctrl.file.file_id)"
+  data-ng-if="ctrl.CartService.isInCart(ctrl.file.file_id)"
   type="button"
   class="btn btn-success fa fa-shopping-cart"
   data-ng-click="ctrl.removeFromCart()">

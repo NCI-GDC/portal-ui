@@ -95,7 +95,7 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
       controller: function($scope: ng.IScope,
                            CartService: ICartService,
-                           QueryCartService: IQueryCartService,
+                           //QueryCartService: IQueryCartService,
                            LocationService: ILocationService,
                            FilesService: IFilesService,
                            ParticipantsService) {
@@ -148,7 +148,7 @@ module ngApp.cart.directives {
               filters: filters,
               size: CartService.getCartVacancySize()
             }).then((data) => {
-              this.retreivingFiles = $scope.files.length ? false : true;
+              this.retreivingFiles = this.files.length ? false : true;
               this.filteredRelatedFiles = data;
             });
           }
@@ -205,22 +205,22 @@ module ngApp.cart.directives {
             },
             op: "in"
           });
-          QueryCartService.pushAddedQuery(filters);
-          //CartService.addFiles(this.filteredRelatedFiles.hits);
+          //QueryCartService.pushAddedQuery(filters);
+          CartService.addFiles(this.filteredRelatedFiles.hits);
         };
 
         this.addRelatedFiles = function() {
           var uuid = this.row.case_id;
-          QueryCartService.pushAddedQuery({
-            content: {
-              field: "files.cases.case_id",
-              value: [
-                uuid
-              ]
-            },
-            op: "in"
-          });
-          //CartService.addFiles(this.files);
+          //QueryCartService.pushAddedQuery({
+            //content: {
+              //field: "files.cases.case_id",
+              //value: [
+                //uuid
+              //]
+            //},
+            //op: "in"
+          //});
+          CartService.addFiles(this.files);
         };
 
         this.removeRelatedFiles = function() {

@@ -1,4 +1,4 @@
-/// <reference path="./types"/>
+/// <reference path="./types.ts"/>
 
 declare module ngApp {
   export interface IGDCConfig {

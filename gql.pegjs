@@ -1,21 +1,10 @@
 // Define a grammar called GQL
 /*
 -- Input
-SELECT
- f1,f3
-where
  f1 > 1 and f2 in [D-D, "DD sdf", D2D3D]
-AGGREGATE ON
- f1, f2, p1.p2.f4
-SORT
- f1, f2:desc
 
  -- Output
 {
-   "fields": [
-      "f1",
-      "f3"
-   ],
    "filters": {
       "op": "and",
       "content": [
@@ -38,16 +27,7 @@ SORT
             }
          }
       ]
-   },
-   "aggs": [
-      "f1",
-      "f2",
-      "p1.p2.f4"
-   ],
-   "sort": [
-      "f1",
-      "f2:desc"
-   ]
+   }
 }
 */
 // grammar GQL
@@ -64,86 +44,30 @@ SORT
   }
 }
 
-start
-  = _* filters:filters
+Start
+  = _* filters:FiltersExpr _*
   {
-    var r = {};
-    if (filters) {
-      r.filters = filters;
-    }
-    
-    return r;
+    return filters ? {filters: filters} : {};
   }
   / _* { return {}; }
   / EOF { return {}; }
-
-start1
-  = (WHERE _+ )? _* filters:filters aggs:(_+ aggs)? sort:(_+ sort)? _*
-  {
-    var r = {};
-    if (filters) {
-      r.filters = filters;
-    }
-    if (aggs) {
-      r.aggs = aggs[1];
-    }
-    if (sort) {
-      r.sort = sort[1];
-    }
-    return r;
-  }
-  / select:select _+ filters:(WHERE _+ filters)? aggs:(_+ aggs)? sort:(_+ sort)? _*
-  {
-    var r = {};
-    if (select) {
-      r.fields = select;
-    }
-    if (filters) {
-      r.filters = filters[2];
-    }
-    if (aggs) {
-      r.aggs = aggs[1];
-    }
-    if (sort) {
-      r.sort = sort[1];
-    }
-    return r;
-  }
-  / _* { return {}; }
-  / EOF { return {}; }
-
-
-// Fields
-select
-  = SELECT _+ fields:fields
-  {
-    return fields;
-  }
-
-// Aggregations
-aggs
-  = AGGS _+ fields:fields
-  {
-    return fields;
-  }
-
 
 // Filters
-filters
-  = condition_expression / expression
+FiltersExpr
+  = GroupExpr / Expr
 
-par_expression
-  = LPAR _* filters:filters _* RPAR { return filters; }
+ParenExpr
+  = LPAR _* filters:FiltersExpr _* RPAR { return filters; }
 
-expression
-  = equality_expression
-  / compare_expression
-  / missing_expression
-  / list_expression
-  / par_expression
+Expr
+  = EqualityExpr
+  / CompareExpr
+  / MissingExpr
+  / ListExpr
+  / ParenExpr
 
-condition_expression
-  = left:expression operator:condition_operator right:filters
+GroupExpr
+  = left:Expr operator:GroupOp right:FiltersExpr
   {
     return {
       op: operator,
@@ -151,139 +75,123 @@ condition_expression
     };
   }
 
-equality_expression
-  = field:field operator:equality_operator term:term
+EqualityExpr
+  = field:Field operator:EqualityOp term:Term
   {
     return term_response(operator,field,term);
   }
 
-
-compare_expression
-  = field:field _* operator:compare_operator _* term:comparable
+MissingExpr
+  = field:Field operator:MissingOp term:MISSING
   {
     return term_response(operator,field,term);
   }
 
-
-missing_expression
-  = field:field operator:is_operator term:MISSING
+CompareExpr
+  = field:Field _* operator:CompareOp _* term:Comparable
   {
     return term_response(operator,field,term);
   }
 
-
-list_expression
-  = field:field operator:list_operator LBRACK _* terms:terms _* RBRACK
+ListExpr
+  = field:Field operator:ListOp LBRACK _* terms:Terms _* RBRACK
   {
     return term_response(operator,field,terms);
   }
+  
+Comparable
+  = INTEGER
 
+Fields
+  = x:Field xs:FieldsRest* { return [x].concat(xs); }
 
-// Sort
-sort
-  = SORT xs:sort_columns { return xs; }
+FieldsRest
+  = _* COMMA _* f:Field { return f; }
 
-// Types
-sort_columns
-  = x:sort_column xs:_sort_columns* { xs.unshift(x); return xs; }
-
-_sort_columns
-  = xs:(_* COMMA _* sort_column) { return xs[3]}
-
-sort_column
-  = _* field:field order:(_* COLON _* order)?
-  {
-    order = order ? ":" + order[3] : "";
-    return field + order ;
-  }
-
-order
-  = ASC
-  / DESC
-
-
-comparable
-  = DATE
-  / INTEGER
-
-fields
-  = x:field xs:_fields* { xs.unshift(x); return xs; }
-
-_fields
-  = xs:(_* COMMA _* term) { return xs[3]; }
-
-field
+Field "field"
   = UNQUOTED_STRING
 
-terms
-  = x:term xs:_terms* { xs.unshift(x); return xs; }
+Terms
+  = x:Term xs:TermsRest* { return [x].concat(xs); }
 
-_terms
-  = ts:(_* COMMA _* term) { return ts[3]; }
+TermsRest
+  = _* COMMA _* t:Term { return t; }
 
-term
+Term "term"
   = UNQUOTED_STRING
   / QUOTED_STRING
   / INTEGER
-  / DATE
 
 // Operators
-condition_operator = _+ op:(OR / AND) _+ { return op; }
-is_operator = _+ op:(IS_NOT / IS) _+ { return op; }
-list_operator = _+ op:(NOT_IN / IN) _+ { return op; }
-equality_operator = _* op:(EQUAL / NEQ) _* { return op; }
-compare_operator = _* op:(GTE / GT / LTE / LT) _* { return op; }
+GroupOp 
+  = _+ op:(OR / AND) _+ { return op; }
 
-// Fragments
-DIGIT = [0-9]
-ALPHA = [A-Za-z]
-ALPHA_NUM = ALPHA / DIGIT
-SEP = "_" / "-" / "."
+MissingOp 
+  = _+ op:( NOT / IS ) _+ { return op; }
+  
+ListOp 
+  = _+ op:(IN / EXCLUDE) _+ { return op; }
+
+EqualityOp 
+  = _+ op:(EQUAL / NEQ) _+ { return op; }
+
+CompareOp 
+  = _+ op:(GTE / GT / LTE / LT) _+ { return op; }
 
 // Symbols
+DIGIT "number" = [0-9]
 INTEGER = $DIGIT+
 REAL = DIGIT* "." DIGIT+
-COMMA = ","
-COLON = ":"
-SEMI = ";"
-EQUAL = "="
-NEQ = "!="
-GT = ">"
-GTE = ">="
-LT = "<"
-LTE = "<="
-LPAR = "("
-RPAR = ")"
-LBRACE = "{"
-RBRACE = "}"
-LBRACK = "["
-RBRACK = "]"
+COMMA "," = ","
+COLON ":" = ":"
+EQUAL "=" = "="
+NEQ "!=" = "!="
+GT ">" = ">"
+GTE ">=" = ">="
+LT "<" = "<"
+LTE "<=" = "<="
+LPAR "(" = "("
+RPAR ")" = ")"
+LBRACE "{" = "{"
+RBRACE "}" = "}"
+LBRACK "[" = "["
+RBRACK "]" = "]"
 DBLQ = '"'
 
 // GQL Keywords
-SELECT = "select"i { return "select"; }
-AND = "and"i { return "and"; }
-ASC = "asc"i { return "asc"; }
-DESC = "desc"i { return "desc"; }
-IN = "in"i { return "in"; }
-IS = "is"i { return "is"; }
-NOT = "not"i { return "not"; }
-IS_NOT = IS _+ NOT { return "is not"; }
-NOT_IN = NOT _+ IN { return "not in"; }
-OR = "or"i { return "or"; }
-MISSING = "missing"i { return "missing"; }
-SORT = "sort"i { return "sort"; }
-AGGS = "aggregate on"i { return "aggregate"; }
-WHERE = "where"i { return "where"; }
+AND "AND" = "and"i
+OR "OR" = "or"i
+IN "IN" = "in"i
+EXCLUDE "EXCLUDE" = "exclude"i
+ISNT "ISNT" = IS _+ "not"i
+IS "IS" = "is"i
+NOT "NOT" = "not"i
+MISSING "MISSING" = "missing"i
 
 // Values
-UNQUOTED_STRING = x:(!('and'/'or'/'(') $[A-Za-z0-9\-\_\.]+)
-{
-  return x[1];
-}
-QUOTED_STRING = DBLQ s:$[^"]+ DBLQ { return s; }
-DATE = $(DIGIT DIGIT DIGIT DIGIT ("-"/"/") DIGIT DIGIT ("-"/"/") DIGIT DIGIT)
+UNQUOTED_STRING 
+  = x:(!('and'/'or'/'(') $[A-Za-z0-9\-\_\.]+)
+  {
+    return x[1];
+  }
+QUOTED_STRING 
+  = DBLQ s:$[^"]+ DBLQ { return s; }
 
 // Extra
-_ = [ \t\r\n]
-EOF = !.
+_
+  = ( WhiteSpace / NewLine )
+
+NewLine "newline"
+  = "\r\n"
+  / "\r"
+  / "\n"
+  / "\u2028"
+  / "\u2029"
+
+WhiteSpace "whitespace"
+  = " "
+  / "\t"
+  / "\v"
+  / "\f"
+  
+EOF "end of input" = !.

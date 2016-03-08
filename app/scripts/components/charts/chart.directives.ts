@@ -411,11 +411,219 @@ module ngApp.components.charts {
     }
   }
 
+  interface IMarkFunction {
+    (data: { key: number; doc_count: number }): boolean;
+  }
+
+  interface IMarkedBarChartScope extends ng.IScope {
+    title?: string;
+    markedLegendLabel?: string;
+    chartClasses?: string;
+    data: Array<{ key: number; doc_count: number }>;
+    margins?: { top: number; bottom: number; left: number; right: number; };
+    width?: number;
+    markFn?: IMarkFunction;
+  }
+
+  /* @ngInject */
+  function MarkedBarChart($window: IGDCWindowService): ng.IDirective {
+
+    return {
+      restrict: "EA",
+      replace: true,
+      scope: {
+        title: "@",
+        markedLegendLabel: "@",
+        chartClasses: "@",
+        data: "=",
+        margins: "=",
+        width: "@",
+        markFn: "&"
+      },
+      templateUrl: "components/charts/templates/marked-bar-chart.html",
+      link: function ($scope: IMarkedBarChartScope, element: ng.IAugmentedJQuery) {
+
+        var ASPECT_RATIO = 1.33,
+            CLAMP_WIDTH = Number.POSITIVE_INFINITY; //470;
+
+        var _data,
+            _svg,
+            _barChartBoundingBox,
+            _barChartCanvas,
+            _barChartTitle,
+            _barChartCaption,
+            _chartMargin,
+            _width,
+            _height,
+            _postFixID = _getUniqueChartID(8);
+
+        function _getUniqueChartID(size) {
+          var text = "";
+          var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+          for (var i=0; i < size; i++ ) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+          }
+
+          return text;
+        }
+
+
+        function _initChartSize() {
+          _width = Math.min(CLAMP_WIDTH, +($scope.width  || element.parent().outerWidth()));
+          _height = Math.round(_width / ASPECT_RATIO);
+
+          if (! _svg) {
+
+            // This is the first time the chart is being initializes so
+            // set the default values for our elements
+            _svg = d3.select(element[0]).select("svg.marked-bar-chart-component")
+              .attr("viewPort", "0 0 " + _width + " " + _height);
+
+            _barChartTitle = _svg.select("g.chart-title-container")
+              .classed("marked-bar-chart-title", true)
+              .append("text")
+              .attr("y", _chartMargin.top);
+
+            _barChartCaption = _svg.select("g.chart-title-container")
+              .append("text")
+              .classed("marked-bar-chart-title-label", true)
+              .attr("y", _chartMargin.top + 30);
+
+
+            _barChartBoundingBox = _svg.select(".chart-canvas-area > rect");
+
+            _barChartBoundingBox.attr("x", _chartMargin.left)
+              .attr("y", _chartMargin.top + 60);
+          }
+
+          // Set the new svg height and width
+          _svg.attr("width", _width)
+            .attr("height", _height);
+
+          // Calculate the new center of the title if there is one
+          if ($scope.title) {
+            _barChartTitle
+              .text($scope.title)
+              .attr("text-anchor", "middle")
+              .transition()
+              .attr("x", Math.round(_width / 2));
+          }
+
+          // Calculate the new center of the legend caption if there is one
+          if ($scope.markedLegendLabel) {
+            _barChartCaption
+              .text($scope.markedLegendLabel)
+              .attr("text-anchor", "middle")
+              .transition()
+              .attr("x", Math.round(_width / 2))
+          }
+
+          // Calculate the new bounding box
+          _barChartBoundingBox
+            .attr("width", _width - _chartMargin.left - _chartMargin.right)
+            .attr("height", _height - _chartMargin.top - _chartMargin.bottom - 60);
+        }
+
+        function _renderBars() {
+
+          var x = d3.scale.ordinal()
+            .domain(_.pluck(sortedData, "key"))
+            .rangeRoundBands([0, width], 0);
+
+          var y = d3.scale.linear()
+            .domain([0, _.max(_.pluck(sortedData, "doc_count"))])
+            .range([$scope.height, 0]);
+
+          var chart = d3.select(element.find(".chart-container > svg")[0]);
+          chart.selectAll("g").remove();
+
+          var elements = chart.selectAll("g")
+            .data(sortedData);
+
+          var tip = d3.tip()
+            .attr("class", "tooltip")
+            .offset([-5, 0])
+            .html(function(d) {
+              return d.key + ": " + d.doc_count;
+            });
+
+          var bars = elements
+            .enter().append("g")
+            .attr("transform", (d) => { return "translate(" + x(d.key) + ",0)"; })
+            .append("rect")
+            .attr("y", (d) => { return y(d.doc_count); })
+            .attr("height", (d) => { return $scope.height - y(d.doc_count); })
+            .attr("width", x.rangeBand())
+            .attr("class", "bar")
+            .call(tip)
+            .on("mouseover", tip.show)
+            .on("mouseout", tip.hide);
+
+        }
+
+        function _initListeners() {
+
+          // Add listener to respond to window resize events (i.e. redraw visualization)
+          jQuery(window).on("resize." + _postFixID, _.debounce(() => {
+            _initChartSize();
+          }, 150));
+
+
+          $scope.$watch(function() {
+              return $scope.data;
+          },
+          function(newData, oldData){
+
+            if (! newData || newData == oldData || newData.length === 0) {
+
+              _barChartCanvas
+                .append("g")
+                .classed("message", true)
+                .append("text")
+                .attr("x", Math.round(_width / 2))
+                .attr("y", 200)
+                .attr("text-anchor", "middle")
+                .text("No Data...");
+              return;
+            }
+
+          });
+        }
+
+        function _initChart() {
+
+
+          _chartMargin = $scope.margins || {top: 40, bottom: 20, left: 20, right: 20};
+
+          _initChartSize();
+
+
+          _barChartCanvas = _svg.select("g.bar-chart-canvas");
+
+          var boundClipPathID = "boundRect-" + _postFixID;
+
+          _svg.select("clipPath").attr("id", boundClipPathID);
+          _barChartCanvas.attr("clip-path", "url(#" + boundClipPathID + ")");
+
+
+          _initListeners();
+
+        }
+
+        _initChart();
+
+      }
+    };
+
+  }
+
   angular.module("components.charts", [
       "location.services"
     ])
     .directive("chartLegend", ChartLegend)
     .directive("pieChart", PieChart)
-    .directive("barChart", BarChart);
+    .directive("barChart", BarChart)
+    .directive("markedBarChart", MarkedBarChart);
 }
 

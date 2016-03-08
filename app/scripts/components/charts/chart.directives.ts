@@ -421,7 +421,7 @@ module ngApp.components.charts {
   }
 
   /* @ngInject */
-  function MarkedBarChart($window: IGDCWindowService): ng.IDirective {
+  function MarkedBarChart(): ng.IDirective {
 
     return {
       restrict: "EA",
@@ -521,7 +521,7 @@ module ngApp.components.charts {
         }
 
         function _renderBars() {
-
+/*
           var x = d3.scale.ordinal()
             .domain(_.pluck(sortedData, "key"))
             .rangeRoundBands([0, width], 0);
@@ -554,7 +554,7 @@ module ngApp.components.charts {
             .call(tip)
             .on("mouseover", tip.show)
             .on("mouseout", tip.hide);
-
+*/
         }
 
         function _initListeners() {
@@ -570,7 +570,7 @@ module ngApp.components.charts {
           },
           function(newData, oldData){
 
-            if (! newData || newData == oldData || newData.length === 0) {
+            if (! _.isArray(newData) || newData.length === 0 || (newData === oldData && _data)) {
 
               _barChartCanvas
                 .append("g")
@@ -580,8 +580,18 @@ module ngApp.components.charts {
                 .attr("y", 200)
                 .attr("text-anchor", "middle")
                 .text("No Data...");
+
               return;
             }
+
+            // Delete any messages
+            _svg.selectAll('.message').remove();
+
+            _data = newData;
+
+            _renderBars();
+
+
 
           });
         }

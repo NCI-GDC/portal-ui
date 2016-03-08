@@ -244,6 +244,7 @@ module ngApp.components.tables.controllers {
     fields: string[];
     text: string;
     expand: string[];
+    downloadInProgress: boolean;
   }
 
   interface IExportTableController {
@@ -255,9 +256,11 @@ module ngApp.components.tables.controllers {
     /* @ngInject */
     constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig,
                 private $uibModal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
-                private $window: ng.IWindowService, private UserService: IUserService, private $timeout: ng.ITimeoutService) {}
+                private $window: ng.IWindowService, private UserService: IUserService, private $timeout: ng.ITimeoutService) {
+      $scope.downloadInProgress = false;
+    }
 
-    exportTable(fileType: string): void {
+    exportTable(fileType: string, download): void {
       var projectsKeys = {
         "files": "cases.project.project_id",
         "cases": "project.project_id",
@@ -283,68 +286,21 @@ module ngApp.components.tables.controllers {
         filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[this.$scope.endpoint]);
       }
 
-      if (this.$window.URL && this.$window.URL.createObjectURL) {
-        var params = {
-          filters: filters,
-          fields: fieldsAndExpand.fields.concat(this.$scope.fields || []).join(),
-          expand: fieldsAndExpand.expand.concat(this.$scope.expand || []).join(),
-          attachment: true,
-          format: fileType,
-          flatten: true,
-          pretty: true,
-          size: this.$scope.size
-        };
+      var params = {
+        filters: filters,
+        fields: fieldsAndExpand.fields.concat(this.$scope.fields || []).join(),
+        expand: fieldsAndExpand.expand.concat(this.$scope.expand || []).join(),
+        attachment: true,
+        format: fileType,
+        flatten: true,
+        pretty: true,
+        size: this.$scope.size
+      };
 
-        var modalOpenPromise = this.$timeout(() => {
-          modalInstance = this.$uibModal.open({
-            templateUrl: "components/tables/templates/export-modal.html",
-            controller: "ExportTableModalController",
-            controllerAs: "etmc",
-            backdrop: true,
-            keyboard: true,
-            animation: false,
-            size: "lg"
-          });
+      const inProgress = (state) => (() => { this.$scope.downloadInProgress = state; }).bind(this);
 
-          modalInstance.result.then((data) => {
-            if (data.cancel) {
-              if (abort) {
-                abort.resolve();
-              } else {
-                this.LocationService.setHref(url);
-              }
-            }
-          });
-        }, 500);
-
-        this.Restangular.all(this.$scope.endpoint)
-        .withHttpConfig({
-          timeout: abort.promise,
-          responseType: "blob"
-        })
-        .get('', params)
-        .then((file) => {
-          if (modalOpenPromise) {
-            this.$timeout.cancel(modalOpenPromise);
-          }
-          this.$window.saveAs(file.data, this.$scope.endpoint + "_" +
-                              this.$window.moment().format('YYYY-MM-DD') + "." +
-                              fileType.toLowerCase());
-        })
-        .finally(() => {
-          if (modalInstance) {
-            modalInstance.close({ cancel: true });
-          }
-        });
-
-      } else {
-        this.LocationService.setHref(this.config.api + "/" +
-                                     this.$scope.endpoint +
-                                     "?attachment=true&format=" + fileType +
-                                     "&fields=" + this.$scope.fields.join() +
-                                     "&size=" + this.$scope.size +
-                                     "&filters=" + JSON.stringify(filters));
-      }
+      const checkProgress = download(params, '' + this.config.api + '/' + this.$scope.endpoint, (e) => e.parent());
+      checkProgress(inProgress(true), inProgress(false));
     }
 
   }

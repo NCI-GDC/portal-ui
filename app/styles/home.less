@@ -12,6 +12,15 @@
   // Marked Bar Chart Widget
   .marked-bar-chart {
 
+    .marked-bar-chart-component {
+      margin: 0 auto;
+      display: inherit;
+    }
+
+    .marked-bar-chart-marker {
+      fill: #0097A2;
+    }
+
     .chart-title-container {
       font-size: 3rem;
       fill: #6b6262;
@@ -24,7 +33,32 @@
     .message {
       font-size: 3rem;
       fill: #beb5b5;
+      fill-opacity: 0.8;
     }
+
+    .bar-item {
+      stroke: none;
+      cursor: pointer;
+    }
+
+    .axis path {
+      fill: none;
+      stroke-width: 2px;
+      stroke: #ccc;
+      shape-rendering: crispEdges;
+    }
+
+    .axis line,
+    .axis .tick {
+      fill: none;
+      stroke: none;
+    }
+
+    .axis text {
+      fill: none;
+      stroke: none;
+    }
+
   }
 
   /////////////////////////

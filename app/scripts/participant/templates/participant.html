@@ -29,7 +29,11 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Project ID</th>
-                <td>{{ ::pc.participant.project.project_id}}</td>
+                <td>
+                  <a href="projects/{{ ::pc.participant.project.project_id}}">
+                     {{::pc.participant.project.project_id}}
+                  </a>
+                  </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Project Name</th>

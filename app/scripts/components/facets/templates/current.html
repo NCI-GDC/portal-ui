@@ -32,7 +32,7 @@
                   data-ng-click="cfc.removeTerm(filter.content.field, v, $event, filter.op)"
                   data-ng-keypress="cfc.removeTerm(filter.content.field, v, $event, filter.op)">
               <span data-ng-if="filter.content.field.toLowerCase().indexOf('datetime') > -1"
-                    class="facet-block"> {{ v | date }} </span>
+                    class="facet-block"> {{ v | date:'yyyy-MM-dd'}} </span>
               <span data-ng-if="filter.content.field.toLowerCase().indexOf('datetime') === -1"
                     class="facet-block">{{ v | translate | humanify }}</span>
             </span>

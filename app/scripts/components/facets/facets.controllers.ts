@@ -424,23 +424,20 @@ module ngApp.components.facets.controllers {
   }
 
   class DateFacetController extends Toggleable implements IDateFacetController {
-    /* @ngInject */
     active: boolean = false;
     name: string = "";
 
-    constructor(private $scope: IDateFacetScope, private $window: IGDCWindowService, private FacetService: IFacetService) {
-      this.$scope.date = $window.moment().format("MM/DD/YYYY");
+    /* @ngInject */
+    constructor(private $scope: IDateFacetScope,
+                private $window: IGDCWindowService,
+                private FacetService: IFacetService,
+                private uibDateParser: any) {
+      this.$scope.date = new Date();
 
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
       this.$scope.opened = false;
       this.$scope.dateOptions = {
-          formatDay: "DD",
-          formatMonth: "MMMM",
-          formatDayHeader: "dd",
-          formatDayTitle: "MMMM YYYY",
-          formatYear: "YYYY",
-          formatMonthTitle: "YYYY",
           showWeeks: false,
           startingDay: 1
       };
@@ -450,7 +447,7 @@ module ngApp.components.facets.controllers {
     refresh(): void {
       var actives = this.FacetService.getActivesWithValue(this.$scope.name);
       if (_.size(actives) > 0) {
-        this.$scope.date = this.$window.moment(actives[this.$scope.name]);
+        this.$scope.date = this.$window.moment(actives[this.$scope.name]).toDate();
       }
     }
 
@@ -478,7 +475,7 @@ module ngApp.components.facets.controllers {
       /* @ngInject */
       constructor(public facetFields: Array<Object>,
                   private $scope: ng.IScope,
-                  private $modalInstance,
+                  private $uibModalInstance,
                   private $window: IGDCWindowService,
                   private Restangular: restangular.IService,
                   private FilesService: IFilesService,
@@ -509,7 +506,7 @@ module ngApp.components.facets.controllers {
               _this.setSelectedIndex(Cycle.Down);
               break;
             case KeyCode.Esc:
-              _this.$modalStack.dismissAll();
+              _this.$uibModalStack.dismissAll();
               break;
             case KeyCode.Tab:
               e.preventDefault();
@@ -524,7 +521,7 @@ module ngApp.components.facets.controllers {
     }
 
     closeModal(): void {
-      this.$modalInstance.dismiss('cancel');
+      this.$uibModalInstance.dismiss('cancel');
     }
 
     addFacet() {
@@ -553,7 +550,7 @@ module ngApp.components.facets.controllers {
       }
 
       this.FacetsConfigService.addField(selectedField['doc_type'], selectedField['field'], selectedField['type']);
-      this.$modalInstance.dismiss('added facet');
+      this.$uibModalInstance.dismiss('added facet');
     }
 
     setSelectedIndex(direction: Cycle) {
@@ -619,8 +616,8 @@ module ngApp.components.facets.controllers {
 
     /* @ngInject */
     constructor(private $scope: ng.IScope,
-                private $modalStack,
-                private $modal,
+                private $uibModalStack: any,
+                private $uibModal: any,
                 private FacetsConfigService: IFacetsConfigService,
                 private LocationService: ILocationService) {
 
@@ -635,11 +632,11 @@ module ngApp.components.facets.controllers {
     openModal(): void {
       // Modal stack is a helper service. Used to figure out if one is currently
       // open already.
-      if (this.$modalStack.getTop()) {
+      if (this.$uibModalStack.getTop()) {
         return;
       }
 
-      this.modalInstance = this.$modal.open({
+      this.modalInstance = this.$uibModal.open({
         templateUrl: "components/facets/templates/add-facets-modal.html",
         backdrop: true,
         controller: "customFacetsModalController as cufc",
@@ -661,6 +658,7 @@ module ngApp.components.facets.controllers {
     reset(): void {
       this.LocationService.clear();
       this.$scope.facetsConfig = _.clone(this.defaultConfig, true);
+      this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date), '>=');
     }
 
   }

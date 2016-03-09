@@ -57,11 +57,11 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Published</th>
-                <td>{{ ::fc.file.creation_datetime | date }}</td>
+                <td>{{ ::fc.file.creation_datetime | date:'yyyy-MM-dd' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Uploaded</th>
-                <td>{{ ::fc.file.uploaded | date }}</td>
+                <td>{{ ::fc.file.uploaded | date:'yyyy-MM-dd' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>State</th>

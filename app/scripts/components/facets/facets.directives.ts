@@ -99,7 +99,7 @@ module ngApp.components.facets.directives {
   }
 
   /* @ngInject */
-  function AddCustomFacetsPanel($modal: any, $modalStack: any): ng.IDirective {
+  function AddCustomFacetsPanel($uibModal: any, $uibModalStack: any): ng.IDirective {
     return {
       restrict: "E",
       scope: {

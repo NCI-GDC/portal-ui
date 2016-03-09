@@ -17,11 +17,11 @@ module ngApp.core.controllers {
                 private notify: INotifyService,
                 $location: ng.ILocationService,
                 private $cookies: ng.cookies.ICookiesService,
-                private $modal: any) {
+                private $uibModal: any) {
 
       // display login failed warning
       if(_.get($location.search(), 'error') === 'You are not authorized to gdc services') {
-        var loginWarningModal = this.$modal.open({
+        var loginWarningModal = this.$uibModal.open({
           templateUrl: "core/templates/login-failed-warning.html",
           controller: "WarningController",
           controllerAs: "wc",
@@ -35,7 +35,7 @@ module ngApp.core.controllers {
 
       if (!$cookies.get("browser-checked")) {
         if(bowser.msie && bowser.version <= 9) {
-          var bowserWarningModal = this.$modal.open({
+          var bowserWarningModal = this.$uibModal.open({
             templateUrl: "core/templates/browser-check-warning.html",
             controller: "WarningController",
             controllerAs: "wc",
@@ -54,7 +54,7 @@ module ngApp.core.controllers {
       }
 
       if (!$cookies.get("NCI-Warning")) {
-        var modalInstance = this.$modal.open({
+        var modalInstance = this.$uibModal.open({
           templateUrl: "core/templates/warning.html",
           controller: "WarningController",
           controllerAs: "wc",
@@ -100,10 +100,10 @@ module ngApp.core.controllers {
 
   class WarningController {
     /* @ngInject */
-    constructor(private $modalInstance) {}
+    constructor(private $uibModalInstance) {}
 
     acceptWarning(): void {
-      this.$modalInstance.close();
+      this.$uibModalInstance.close();
     }
   }
 

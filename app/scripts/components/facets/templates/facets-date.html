@@ -15,15 +15,15 @@
       <i class="fa fa-times"></i>
     </span>
   </h4>
-
   <div data-ng-show="!dfc.collapsed" class="row">
       <div class="col-sm-12">
           <div class="input-group">
           <span class="input-group-addon">since</span>
           <input type="text" class="form-control"
-            data-ng-change="dfc.datePicked()"
-            id="{{ 'autocomplete-' + title }}"
-            data-datepicker-popup="MM/DD/YYYY"
+            id="{{ 'input-'+title }}"
+            data-datepicker-template-url="components/facets/templates/datepicker.html"
+            data-datepicker-popup-template-url="components/facets/templates/template-datepicker-popup.html"
+            data-uib-datepicker-popup
             data-datepicker-options="dateOptions"
             data-ng-model="date"
             data-is-open="opened"

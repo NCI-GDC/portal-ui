@@ -11,7 +11,7 @@ module ngApp.components.quickSearch.directives {
   }
 
   /* @ngInject */
-  function QuickSearch($modal: any, $window: ng.IWindowService, $modalStack): ng.IDirective {
+  function QuickSearch($uibModal: any, $window: ng.IWindowService, $uibModalStack): ng.IDirective {
     return {
       restrict: "A",
       controller: function($scope) {
@@ -26,11 +26,11 @@ module ngApp.components.quickSearch.directives {
         this.openModal = () => {
           // Modal stack is a helper service. Used to figure out if one is currently
           // open already.
-          if ($modalStack.getTop()) {
+          if ($uibModalStack.getTop()) {
             return;
           }
 
-          modalInstance = $modal.open({
+          modalInstance = $uibModal.open({
             templateUrl: "components/quick-search/templates/quick-search-modal.html",
             backdrop: true,
             keyboard: true,
@@ -70,7 +70,7 @@ module ngApp.components.quickSearch.directives {
 
   /* @ngInject */
   function QuickSearchInput(QuickSearchService: IQuickSearchService, FacetService,
-                            $compile: ng.ICompileService, $modalStack): ng.IDirective {
+                            $compile: ng.ICompileService, $uibModalStack): ng.IDirective {
 
     return {
       restrict: "E",
@@ -150,7 +150,7 @@ module ngApp.components.quickSearch.directives {
               selectItem("down");
               break;
             case KeyCode.Esc:
-              $modalStack.dismissAll();
+              $uibModalStack.dismissAll();
               break;
             case KeyCode.Tab:
               e.preventDefault();

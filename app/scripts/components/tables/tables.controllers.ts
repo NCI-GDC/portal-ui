@@ -254,7 +254,7 @@ module ngApp.components.tables.controllers {
 
     /* @ngInject */
     constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig,
-                private $modal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
+                private $uibModal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
                 private $window: ng.IWindowService, private UserService: IUserService, private $timeout: ng.ITimeoutService) {}
 
     exportTable(fileType: string): void {
@@ -296,7 +296,7 @@ module ngApp.components.tables.controllers {
         };
 
         var modalOpenPromise = this.$timeout(() => {
-          modalInstance = this.$modal.open({
+          modalInstance = this.$uibModal.open({
             templateUrl: "components/tables/templates/export-modal.html",
             controller: "ExportTableModalController",
             controllerAs: "etmc",
@@ -352,9 +352,9 @@ module ngApp.components.tables.controllers {
   class ExportTableModalController {
 
     /* @ngInject */
-    constructor(private $modalInstance) {}
+    constructor(private $uibModalInstance) {}
     cancel(): void {
-      this.$modalInstance.close({
+      this.$uibModalInstance.close({
         cancel: true
       });
     }

@@ -17,7 +17,7 @@ module ngApp.files.services {
 
     /* @ngInject */
     constructor(private Restangular: restangular.IService, private LocationService: ILocationService,
-                private UserService: IUserService, private CoreService: ICoreService, private $modal: any,
+                private UserService: IUserService, private CoreService: ICoreService, private $uibModal: any,
                 private $rootScope: IRootScope, private $q: ng.IQService, private $filter, private $window, private RestFullResponse: any) {
       this.ds = Restangular.all("files");
     }
@@ -64,7 +64,7 @@ module ngApp.files.services {
           if(callback) callback(true);
         }, (response)=>{
           //Download Failed
-          this.$modal.open({
+          this.$uibModal.open({
             templateUrl: 'core/templates/download-failed.html',
             controller: "LoginToDownloadController",
             controllerAs: "wc",
@@ -110,7 +110,7 @@ module ngApp.files.services {
           if(callback) callback(true);
         }, (response)=>{
           //Slicing Failed
-          this.$modal.open({
+          this.$uibModal.open({
             templateUrl: 'files/templates/bam-slicing-failed.html',
             controller: "BAMFailedModalController",
             controllerAs: "bamfc",

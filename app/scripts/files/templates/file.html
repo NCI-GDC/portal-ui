@@ -4,11 +4,7 @@
       <i class="fa fa-file-o"></i>
       {{ ::fc.file.file_id }}
       <span class="btn-group pull-right" style="margin-top: .3em">
-        <button id="cart-button" type="button" ng-class="{'btn':true, 'btn-primary': true, active: fc.isInCart(fc.file.file_id)}" data-ng-click="fc.handleCartButton()">
-          <i class="fa fa-shopping-cart"></i>
-          <span data-ng-if="fc.isInCart(fc.file.file_id)" data-translate>Remove from Cart</span>
-          <span data-ng-if="!fc.isInCart(fc.file.file_id)" data-translate>Add to Cart</span>
-        </button>
+        <add-to-cart-single-labelled file="fc.file"></add-to-cart-single-labelled>
         <download-button data-icon="fa-download" data-files=fc.file data-copy="Download" data-dlcopy="Downloading"></download-button>
         <bam-slicing-button data-icon="fa-cutlery" data-files=fc.file data-copy="BAM Slicing" data-dlcopy="Slicing BAM" data-ng-if="fc.canBAMSlice()"></download-button>
       </span>
@@ -49,7 +45,7 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Data format</th>
-                <td>{{ ::fc.file.data_format }}</td>
+                <td>{{ ::fc.file.data_format || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>File Size</th>
@@ -98,11 +94,11 @@
               <tbody>
               <tr>
                 <th scope="row" data-translate>Data Type</th>
-                <td>{{ ::fc.file.data_type | titlefy }}</td>
+                <td>{{ ::fc.file.data_type || '--' | titlefy }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Data Subtype</th>
-                <td>{{ ::fc.file.data_subtype | titlefy }}</td>
+                <td>{{ ::fc.file.data_subtype || '--' | titlefy }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Experimental Strategy</th>
@@ -110,11 +106,11 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Platform</th>
-                <td>{{ ::fc.file.platform }}</td>
+                <td>{{ ::fc.file.platform || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Data Submitter</th>
-                <td>{{ ::fc.file.center.short_name }}</td>
+                <td>{{ ::fc.file.center.short_name || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Tag</th>

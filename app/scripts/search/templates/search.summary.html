@@ -1,8 +1,9 @@
 <div class="panel panel-default summary-panel">
   <div class="row">
     <div class="col-lg-12">
-      <div data-add-to-cart-all data-files="sc.files" data-size="{{ sc.files.pagination.total }}"
-         data-add-all-only=true></div>
+      <add-to-cart-all-button
+         data-files="sc.files"
+         data-size="{{ sc.files.pagination.total }}" />
     </div>
   </div>
 </div>
@@ -23,41 +24,47 @@
   <div class="col-lg-4 col-sm-6">
     <summary-card data-data="sc.summary.cases['cases.project.project_id'].buckets"
                   height="177"
-                  data-mode="graph" 
+                  data-mode="graph"
                   data-config="sc.chartConfigs.projectIdChartConfig"
+                  data-grouping-title="Project"
                   data-title="File Counts by Project"></summary-card>
   </div>
   <div class="col-lg-4 col-sm-6">
     <summary-card data-data="sc.summary.cases['cases.project.primary_site'].buckets"
                   height="177"
-                  data-mode="graph" 
+                  data-mode="graph"
+                  data-grouping-title="Primary Site"
                   data-config="sc.chartConfigs.primarySiteChartConfig"
                   data-title="File Counts by Primary Site"></summary-card>
   </div>
   <div class="col-lg-4 col-sm-6">
     <summary-card data-data="sc.summary.access.buckets"
-                  height="177" 
+                  height="177"
                   data-mode="graph"
+                  data-grouping-title="Level"
                   data-config="sc.chartConfigs.accessChartConfig"
                   data-title="File Counts by Access Level"></summary-card>
   </div>
   <div class="col-lg-4 col-sm-6">
     <summary-card data-data="sc.summary.data_type.buckets"
-                  height="177" 
+                  height="177"
                   data-mode="graph"
+                  data-grouping-title="Data Type"
                   data-config="sc.chartConfigs.dataTypeChartConfig"
                   data-title="File Counts by Data Type"></summary-card>
   </div>
   <div class="col-lg-4 col-sm-6">
     <summary-card data-data="sc.summary.data_format.buckets"
                   height="177"
-                  data-mode="graph" 
+                  data-mode="graph"
+                  data-grouping-title="Data Format"
                   data-config="sc.chartConfigs.dataFormatChartConfig"
                   data-title="File Counts by Data Format"></summary-card>
   </div>
   <div class="col-lg-4 col-sm-6">
     <summary-card data-data="sc.summary.experimental_strategy.buckets"
-                  height="177" 
+                  height="177"
+                  data-grouping-title="Experimental Strategy"
                   data-mode="graph"
                   data-config="sc.chartConfigs.expStratChartConfig"
                   data-title="File Counts by Experimental Strategy"></summary-card>

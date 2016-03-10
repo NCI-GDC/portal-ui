@@ -68,8 +68,8 @@ module ngApp.files.controllers {
     }
 
     canBAMSlice(): boolean {
-      return this.file.data_type.toLowerCase() === "raw sequencing data" &&
-             this.file.data_subtype.toLowerCase() === "aligned reads" &&
+      return (this.file.data_type || '').toLowerCase() === "raw sequencing data" &&
+             (this.file.data_subtype || '').toLowerCase() === "aligned reads" &&
              _.indexOf(_.pluck(this.file.related_files, 'type'), "bai") !== -1;
     }
 

@@ -3,9 +3,11 @@ module ngApp.files.models {
   import ICollection = ngApp.core.models.ICollection;
   import IEntity = ngApp.core.models.IEntity;
   import IParticipant = ngApp.participants.models.IParticipant;
+  import IPagination = ngApp.components.tables.pagination.models.IPagination;
 
   export interface IFiles extends ICollection {
     hits: IFile[];
+    pagination: IPagination;
   }
 
   export interface IArchive {

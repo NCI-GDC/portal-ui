@@ -1,19 +1,19 @@
 <button
   aria-label="Add to Cart"
   data-tooltip-popup-delay=1000 data-tooltip="Add to Cart"
-  data-ng-if="!CartService.isInCart(file.file_id)"
+  data-ng-if="!ctrl.CartService.isInCart(ctrl.file.file_id)"
   type="button"
   class="btn btn-default fa fa-shopping-cart"
-        data-ng-click="addToCart([file])">
+        data-ng-click="ctrl.addToCart()">
   <span class="icon-btn-label">Add to Cart</span>
 <!-- this need to connect or we get a &nbsp in the markup -->
 </button><button
   aria-label="Remove from Cart"
   data-tooltip-popup-delay=1000
   data-tooltip="Remove from Cart"
-  data-ng-if="CartService.isInCart(file.file_id)"
+  data-ng-if="ctrl.CartService.isInCart(ctrl.file.file_id)"
   type="button"
   class="btn btn-success fa fa-shopping-cart"
-  data-ng-click="removeFromCart([file])">
+  data-ng-click="ctrl.removeFromCart()">
   <span class="icon-btn-label">Remove from Cart</span>
 </button>

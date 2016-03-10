@@ -30,7 +30,7 @@ module ngApp.participants.controllers {
       });
 
       this.clinicalFile = _.find(this.participant.files, (file) => {
-        return file.data_subtype.toLowerCase() === "clinical data";
+        return (file.data_subtype || '').toLowerCase() === "clinical data";
       });
 
       this.experimentalStrategies = _.reduce(ExperimentalStrategyNames.slice(), function(result, name) {

@@ -278,13 +278,45 @@
 
     .info-table {
       vertical-align: top;
-      overflow: auto;
+      overflow: visible;
       min-width: 42rem;
       padding-right: 1rem;
+
+      .panel {
+        height: 28.2rem;
+      }
     }
 
     .info-table:last-child {
       margin-right: 0rem;
+    }
+
+    .gdc-apps {
+
+      td {
+        background-color: #fff;
+        border: none;
+        font-size: 1.2rem;
+        text-align: center;
+        padding-top: 1rem;
+
+        a {
+          &:hover {
+            text-decoration: none;
+          }
+
+          color: inherit;
+        }
+      }
+
+      tr:last-child td {
+        padding-top: 0rem;
+      }
+
+
+      .icon {
+        font-size: 3rem;
+      }
     }
 
   }

@@ -2,7 +2,7 @@
   <div class="showcase-container row-layout col-md-12 row">
     <div class="col-lg-6 col-md-7 quick-search-component component">
       <em>A unique tool to foster important discoveries in Cancer Research</em>
-      <h3>Progressive, Harmonized, Centralized</h3>
+      <h3>Harmonized Cancer Datasets</h3>
       <h1>Genomic Data Commons Data Portal</h1>
       <div class="quick-search-container">
         <i class="fa fa-search search-input-icon"></i>
@@ -11,34 +11,21 @@
       <div class="query-list-container">
         <em>Easily search and download data using queries such as:</em>
         <table class="query-list-table">
-          <tr>
+          <tr data-ng-repeat="query in hc.getExampleSearchQueries()">
             <td>
               <ul>
-                <li>
-                  Brain cancer cases over the age of 40 at diagnosis
+                <li data-ng-bind="query.description">
                 </li>
               </ul>
             </td>
             <td>
-              <a class="btn btn-primary " href="">803 Cases</a>
+              <a class="btn btn-primary"
+                 href="/search/c?filters={{query.filters}}"><span data-ng-bind="query.caseCount | number"></span> Cases</a>
             </td>
             <td>
-              <a class="btn btn-primary " href="">42,973 Files</a>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <ul>
-                <li>
-                  All female cases from the <span>TARGET-NBL</span> project
-                </li>
-              </ul>
-            </td>
-            <td>
-              <a class="btn btn-primary " href="">506 Cases</a>
-            </td>
-            <td>
-              <a class="btn btn-primary " href="">731 Files</a>
+              <a class="btn btn-primary"
+                 href="/search/f?filters={{query.filters}}"
+              ><span data-ng-bind="query.fileCount | number"></span> Files</a>
             </td>
           </tr>
         </table>
@@ -51,7 +38,7 @@
               data-title="Browse by Primary Site"
               data-tool-tip-fn="hc.getChartTooltipFunction()"
               data-marked-legend-label="Recently Updated"
-              data-height="355"
+              data-height="397"
               data-margin="barChartMargins"
 
       ></marked-bar-chart>
@@ -63,43 +50,15 @@
       <h2>The Data</h2>
       <em>Constantly evolving into a smarter, more comprehensive knowledge base.</em>
       <div class="data-stats-list-container col-md-12">
-        <div class="data-stats-block" data-ng-repeat-placeholder>
-          <div class="stats-block-header" data-ng-bind-placholder>Projects</div>
+        <div data-ng-if="stat.value > 0" class="data-stats-block" data-ng-repeat="stat in hc.getProjectStatsList()">
+          <div class="stats-block-header" data-ng-bind="stat.title"></div>
           <div class="stats-block-body">
-            <i class="fa fa-files-o {{}}"></i>
-            <a href="#" data-ng-bind-placholder>48</a>
-          </div>
-        </div>
-        <div class="data-stats-block">
-          <div class="stats-block-header">Cases</div>
-          <div class="stats-block-body">
-            <i class="fa fa-user"></i>
-            <a href="#">14,614</a>
-          </div>
-        </div>
-        <div class="data-stats-block">
-          <div class="stats-block-header">Files</div>
-          <div class="stats-block-body">
-            <i class="fa fa-file-o"></i>
-            <a href="#">583,311</a>
-          </div>
-        </div>
-        <div class="data-stats-block">
-          <div class="stats-block-header">Cancer Types</div>
-          <div class="stats-block-body">
-            <i class="fa fa-heartbeat"></i>
-            <a href="#">28</a>
-          </div>
-        </div>
-        <div class="data-stats-block">
-          <div class="stats-block-header">Downloads to Date</div>
-          <div class="stats-block-body">
-            <i class="fa fa-download"></i>
-            <a href="#">504</a>
+            <i class="fa {{stat.icon}}"></i>
+            <a href="{{stat.url}}" data-ng-bind="stat.value|number"></a>
           </div>
         </div>
       </div>
-      <div>Latest Release <span></span> - <span></span> <a href="">View Release Details <i class="fa fa-angle-double-right"></i></a></div>
+      <div>Latest Release <span data-ng-bind-placholder="">#7</span> - <span data-ng-bind-placholder="" style="margin-right: 1rem">March 10, 2016</span> <a href="">View Release Details <i class="fa fa-angle-double-right"></i></a></div>
     </div>
   </div>
 
@@ -130,15 +89,15 @@
               </tr>
               <tr>
                 <th>Pipeline</th>
-                <td >Live (updated: )</td>
+                <td >Live (updated: 03/10/2016)</td>
               </tr>
               <tr class="info">
                 <th>Submissions System</th>
-                <td>Under Maintenance</td>
+                <td><strong style="color: #C10E41">Under Maintenance</strong></td>
               </tr>
               <tr>
                 <th>GDC API</th>
-                <td>Live (updated: )</td>
+                <td>Live (updated: 03/10/2016)</td>
               </tr>
             </tbody>
           </table>
@@ -161,28 +120,28 @@
             <tbody>
             <tr>
               <td>
-                <a href="">Searching Data with Facets and Smart Search Technology</a>
+                <a href="http://gdc-docs-dev.nci.nih.gov/Data_Portal/Users_Guide/Advanced_Search/" target="_blank">Searching Data with Facets and Smart Search Technology</a>
               </td>
             </tr>
             <tr>
               <td>
-                <a href="">Downloading files with the Personalized Cart</a>
+                <a href="http://gdc-docs-dev.nci.nih.gov/Data_Portal/Users_Guide/Cart/" target="_blank">Downloading files with the Personalized Cart</a>
               </td>
             </tr>
             <tr>
               <td>
-                <a href="">Data Portal Troubleshooting Tips</a>
+                <a href="http://gdc-docs-dev.nci.nih.gov/" target="_blank">Data Portal Troubleshooting Tips</a>
                 </li>
               </td>
             </tr>
             <tr>
               <td>
-                <a href="">Controlled Access Data</a>
+                <a href="http://gdc-docs-dev.nci.nih.gov/Commons/About_the_Data/#controlled-access-data" target="_blank">Controlled Access Data</a>
               </td>
             </tr>
             <tr>
               <td>
-                <a href=""><strong>Visit the Documentation Website <i class="fa fa-angle-double-right"></i></strong></a>
+                <a href="http://gdc-docs-dev.nci.nih.gov/" target="_blank"><strong>Visit the Documentation Website <i class="fa fa-angle-double-right"></i></strong></a>
               </td>
             </tr>
             </tbody>

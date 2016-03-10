@@ -12,7 +12,8 @@ module ngApp.home.controllers {
     getChartFilteredData() : any[];
     getChartTooltipFunction(): any;
     setChartDataFilter(): void;
-    getProjectStats(): any;
+    getProjectStatsList(): any[];
+    getExampleSearchQueries(): any[];
     refresh(): void
   }
 
@@ -22,15 +23,18 @@ module ngApp.home.controllers {
   class HomeController implements IHomeController {
 
     projectData: IProjects;
-    projectStats: any;
+    projectStatsOrdering: any;
+    projectStatsList: any[];
     projectChartData: any[];
     numberFilter: any;
     tooltipFn: any;
+    exampleSearchQueries: any[];
 
     /* @ngInject */
     constructor(private $scope: IHomeScope, private ProjectsService: IProjectsService,
                 private ProjectTableModel: TableiciousConfig, private CoreService: ICoreService,
                 private $filter: ng.ui.IFilterService) {
+
       CoreService.setPageTitle("Welcome to The Genomics Data Commons Data Portal");
 
 
@@ -44,21 +48,57 @@ module ngApp.home.controllers {
         }
 
         str = "<h4>" + d._key + "</h4>\n<p>" +
-          this.numberFilter(d._count) + " cases (" + this.numberFilter(d._fileCount) + " files)\n" +
+          this.numberFilter(d._count) + " cases (" + this.numberFilter(d.fileCount) + " files)\n" +
           "</p>";
 
         return str;
       }, this);
 
+
+      this.projectStatsList = [
+        {title: "Projects", value: 0, icon: "fa-files-o", url: "/projects/t"},
+        {title: "Cases", value: 0, icon: "fa-user", url: "/search/c"},
+        {title: "Files", value: 0, icon: "fa-file-o", url: "/search/f"},
+        {title: "Cancer Types", value: 0, icon: "fa-heartbeat", url: "/projects/t"},
+        {title: "Downloads to Date", value: 0, icon: "fa-download", url: "#"}
+      ];
+
+
+      this.projectStatsOrdering = {projects: 0, cases: 1, files: 2, cancerTypes: 3, downloads: 4};
+
+      this.exampleSearchQueries = [
+        {
+          description: "Brain cancer cases over the age of 40 at diagnosis",
+          filters: "%7B%22op%22:%22and%22,%22content%22:%5B%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.project.primary_site%22,%22value%22:%5B%22Brain%22%5D%7D%7D,%7B%22op%22:%22%3E%3D%22,%22content%22:%7B%22field%22:%22cases.clinical.age_at_diagnosis%22,%22value%22:%5B14965%5D%7D%7D%5D%7D",
+          caseCount: 78,
+          fileCount: 41890
+        },
+        {
+          description: "All female cases from the TARGET-NBL project",
+          filters: "%7B%22op%22:%22and%22,%22content%22:%5B%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.project.project_id%22,%22value%22:%5B%22TARGET-NBL%22%5D%7D%7D,%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.clinical.gender%22,%22value%22:%5B%22female%22%5D%7D%7D%5D%7D",
+          caseCount: 506,
+          fileCount: 731
+        },
+        {
+          description: "All Asian cases with disease type Thyroid Carcinoma project",
+          filters: "%7B%22op%22:%22and%22,%22content%22:%5B%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.project.disease_type%22,%22value%22:%5B%22Thyroid%20Carcinoma%22%5D%7D%7D,%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.clinical.race%22,%22value%22:%5B%22asian%22%5D%7D%7D%5D%7D",
+          caseCount: 52,
+          fileCount: 3171
+        },
+      ];
+
       this.refresh();
 
-      //this.projectData = null;
-      this.projectStats = null;
+    }
+
+    getExampleSearchQueries() {
+      return this.exampleSearchQueries;
     }
 
 
-    transformProjectDataToChartData(data) {
-      var hits = _.get(data, 'hits', false);
+    transformProjectData(data) {
+      var _controller = this,
+          hits = _.get(data, 'hits', false);
 
       if (! hits) {
         return;
@@ -70,9 +110,11 @@ module ngApp.home.controllers {
 
         var primarySite = project.primary_site;
 
+        _controller.projectStatsList[_controller.projectStatsOrdering.projects].value += 1;
+
         if (! primarySite) {
-          console.warn("Project has no primary site: ", project);
-          return primarySiteData;
+          console.warn("Project has no primary site using project id instead: ", project);
+          primarySite = project.project_id;
         }
 
         if (! _.isArray(primarySiteData[primarySite])) {
@@ -94,7 +136,8 @@ module ngApp.home.controllers {
 
       console.log(primarySiteIDs);
 
-      this.projectChartData = _.map(primarySiteIDs, function(pID) {
+      _controller.projectChartData = _.filter(
+        _.map(primarySiteIDs, function(pID) {
 
 
           var primarySiteData =  primarySites[pID],
@@ -102,15 +145,28 @@ module ngApp.home.controllers {
               fileCount = 0;
 
           for (var i = 0; i < primarySiteData.length; i++) {
-            caseCount += _.get(primarySiteData[i], 'summary.case_count', 0);
-            fileCount +=  _.get(primarySiteData[i], 'summary.file_count', 0);
+            caseCount += +(_.get(primarySiteData[i], 'summary.case_count', 0));
+            fileCount += +(_.get(primarySiteData[i], 'summary.file_count', 0));
           }
 
-          console.log(caseCount);
-          return {_key: pID, values: primarySiteData, _count: caseCount, _fileCount: fileCount}
-      });
 
-      console.log( this.projectChartData);
+          _controller.projectStatsList[_controller.projectStatsOrdering.cases].value += caseCount;
+          _controller.projectStatsList[_controller.projectStatsOrdering.files].value += fileCount;
+
+
+
+          console.log(_controller.projectStatsList[_controller.projectStatsOrdering.cases]);
+          /* _key and _count are required data properties for the marked bar chart */
+          return {_key: pID, values: primarySiteData, _count: caseCount, fileCount: fileCount}
+      }), function(d) { return d._count > 0; });
+
+
+      _controller.projectStatsList[_controller.projectStatsOrdering.cancerTypes].value += primarySiteIDs.length;
+
+
+
+
+      console.log( _controller.projectStatsList);
 
 
     }
@@ -128,8 +184,8 @@ module ngApp.home.controllers {
 
     }
 
-    getProjectStats() {
-      return this.projectStats;
+    getProjectStatsList() {
+      return this.projectStatsList;
     }
 
     refresh() {
@@ -149,7 +205,7 @@ module ngApp.home.controllers {
       })
         .then((data) => {
         this.projectData = data;
-        this.chartData = this.transformProjectDataToChartData(data);
+        this.chartData = this.transformProjectData(data);
 
       });
 

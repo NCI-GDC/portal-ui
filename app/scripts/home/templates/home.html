@@ -19,13 +19,12 @@
               </ul>
             </td>
             <td>
-              <a class="btn btn-primary"
-                 href="/search/c?filters={{query.filters}}"><span data-ng-bind="query.caseCount | number"></span> Cases</a>
+              <a class="btn btn-primary" href="/search/c?filters={{query.filters}}">
+                <span data-ng-bind="query.caseCount | number"></span> Cases</a>
             </td>
             <td>
-              <a class="btn btn-primary"
-                 href="/search/f?filters={{query.filters}}"
-              ><span data-ng-bind="query.fileCount | number"></span> Files</a>
+              <a class="btn btn-primary" href="/search/f?filters={{query.filters}}">
+                <span data-ng-bind="query.fileCount | number"></span> Files</a>
             </td>
           </tr>
         </table>
@@ -58,6 +57,7 @@
           </div>
         </div>
       </div>
+      <!-- TODO: Remove hardcoding when backend endpoints become available -->
       <div>Latest Release <span data-ng-bind-placholder="">#7</span> - <span data-ng-bind-placholder="" style="margin-right: 1rem">March 10, 2016</span> <a href="">View Release Details <i class="fa fa-angle-double-right"></i></a></div>
     </div>
   </div>
@@ -66,6 +66,7 @@
     <div class="table-container component col-md-12">
 
       <!-- Infrastructure Table -->
+      <!-- TODO: Remove hardcoding when backend endpoints become available -->
       <div class="info-table col-lg-4 col-md-6 col-sm-12">
         <div class="panel panel-default">
           <div class="panel-heading clearfix">

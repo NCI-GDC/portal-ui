@@ -510,7 +510,7 @@ module ngApp.components.charts {
               .classed("marked-bar-chart-legend", true);
 
             _barChartMarkerGroup = _barChartLegend.append("g")
-              .attr("transform", "translate(" + (_width/2  - 85)+ ", 55)");
+              .attr("transform", "translate(-25, 55)");
 
             _barChartMarkerGroup.append("circle")
               .classed("marked-bar-chart-marker", true)
@@ -553,11 +553,14 @@ module ngApp.components.charts {
           // Calculate the new center of the legend caption if there is one
           if ($scope.markedLegendLabel) {
             _barChartCaption
-              .text($scope.markedLegendLabel)
-              .attr("text-anchor", "middle")
+              .text($scope.markedLegendLabel);
+              //.attr("text-anchor", "middle")
+
+            _barChartLegend
               .transition()
-              .attr("x", Math.round(_width / 2))
+              .attr("transform", "translate(" + (Math.round((_width - _barChartLegend.node().getBBox().width)/2) + _chartMargin.left) + ", 0)")
           }
+
 
           // Calculate the new bounding box
           _barChartBoundingBox
@@ -582,7 +585,7 @@ module ngApp.components.charts {
 
 
           var bars = barGroups.selectAll("rect.bar-item")
-            .data(function(d) { console.log(d); return [d]; });
+            .data(function(d) { return [d]; });
 
 
           bars.enter().append("rect")
@@ -606,7 +609,6 @@ module ngApp.components.charts {
             .attr("height", function(d) { return  _yScale(d._count); })
             .attr("fill", function(d) {
               d._colour = _colourScale(barCounter++);
-              console.log(d);
               return d._colour;
             })
             .call(_tipFn)

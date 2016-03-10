@@ -41,7 +41,9 @@ module ngApp.components.facets.services {
       }
 
       return this.Restangular.all(entity + "/ids").get("", options).then((data) => {
-        return data.data.hits.length ? data.data.hits : [{'warning': 'No Results Found'}];
+        var model = {};
+        model[field.split(".").pop()] = query + "*";
+        return [model].concat(data.data.hits);
       });
     }
 
@@ -144,19 +146,21 @@ module ngApp.components.facets.services {
 
       // TODO - not like this
       var found = false;
-      var cs = filters["content"];
+      var cs = filters.content;
+
       for (var i = 0; i < cs.length; i++) {
-        var c = cs[i]["content"];
-        if (c["field"] === facet && cs[i]["op"] === op) {
+        var c = cs[i].content;
+        if (c.field === facet && cs[i].op === op) {
           found = true;
-          if (c["value"].indexOf(term) === -1) {
-            c["value"].push(term);
+          if (c.value.indexOf(term) === -1) {
+            c.value.push(term);
           } else {
             return;
           }
           break;
         }
       }
+
       if (!found) {
         cs.push({
           op: op,
@@ -166,6 +170,7 @@ module ngApp.components.facets.services {
           }
         });
       }
+
       this.LocationService.setFilters(filters);
     }
 

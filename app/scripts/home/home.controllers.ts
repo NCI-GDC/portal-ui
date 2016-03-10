@@ -154,8 +154,6 @@ module ngApp.home.controllers {
           _controller.projectStatsList[_controller.projectStatsOrdering.files].value += fileCount;
 
 
-
-          console.log(_controller.projectStatsList[_controller.projectStatsOrdering.cases]);
           /* _key and _count are required data properties for the marked bar chart */
           return {_key: pID, values: primarySiteData, _count: caseCount, fileCount: fileCount}
       }), function(d) { return d._count > 0; });

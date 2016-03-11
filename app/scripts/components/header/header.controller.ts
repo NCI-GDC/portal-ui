@@ -13,6 +13,7 @@ module ngApp.components.header.controllers {
     addedLanguages: boolean;
     setLanguage(): void;
     getNumCartItems(): number;
+    shouldShowOption(option: string): boolean;
   }
 
   class HeaderController implements IHeaderController {
@@ -53,6 +54,23 @@ module ngApp.components.header.controllers {
 
     getNumCartItems(): number {
       return this.CartService.getFiles().length;
+    }
+
+    shouldShowOption(option: string): boolean {
+      var showOption = true,
+          currentState = _.get(this.$state, 'current.name', '').toLowerCase();
+
+      switch(option.toLowerCase()) {
+        case 'quick-search':
+          if (currentState === 'home') {
+            showOption = false;
+          }
+          break;
+        default:
+          break;
+      }
+
+      return showOption;
     }
 
   }

@@ -26,7 +26,9 @@
             </td>
             <td>
               <a class="btn btn-primary" href="/search/f?filters={{query.filters}}">
-                <span data-ng-bind="query.fileCount | number"></span> Files</a>
+                <span data-ng-if="query.fileCount" data-ng-bind="query.fileCount | number"></span>
+                <span data-ng-if="! query.fileCount"><i class="fa fa-spinner fa-spin"></i></span>
+                Files</a>
             </td>
           </tr>
         </table>

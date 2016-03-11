@@ -8,7 +8,7 @@ module ngApp.files.services {
 
   export interface IFilesService {
     getFile(id: string, params: Object): ng.IPromise<IFile>;
-    getFiles(params?: Object): ng.IPromise<IFiles>;
+    getFiles(params?: Object, method?: string): ng.IPromise<IFiles>;
     downloadManifest(ids: Array<string>, callback: any)
   }
 
@@ -128,7 +128,7 @@ module ngApp.files.services {
         });
     }
 
-    getFiles(params: Object = {}): ng.IPromise<IFiles> {
+    getFiles(params: Object = {}, method: string = 'GET'): ng.IPromise<IFiles> {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
@@ -163,13 +163,21 @@ module ngApp.files.services {
       this.CoreService.setSearchModelState(false);
 
       var abort = this.$q.defer();
-      var prom: ng.IPromise<IFiles> = this.ds.withHttpConfig({
-        timeout: abort.promise
-      })
-      .get("", angular.extend(defaults, params)).then((response): IFiles => {
-        this.CoreService.setSearchModelState(true);
-        return response["data"];
-      });
+      if (method === 'POST') {
+        var prom: ng.IPromise<IFiles> = this.ds.withHttpConfig({
+          timeout: abort.promise
+        }).post(angular.extend(defaults, params), undefined, {'Content-Type': 'application/json'}).then((response): IFiles => {
+          this.CoreService.setSearchModelState(true);
+          return response["data"];
+        });
+      } else {
+        var prom: ng.IPromise<IFiles> = this.ds.withHttpConfig({
+          timeout: abort.promise
+        }).get("", angular.extend(defaults, params)).then((response): IFiles => {
+          this.CoreService.setSearchModelState(true);
+          return response["data"];
+        });
+      }
 
       var eventCancel = this.$rootScope.$on("gdc-cancel-request", () => {
         abort.resolve();
@@ -179,6 +187,7 @@ module ngApp.files.services {
 
       return prom;
     }
+
   }
 
   angular

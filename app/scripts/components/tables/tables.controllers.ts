@@ -186,12 +186,6 @@ module ngApp.components.tables.controllers {
         return heading && heading.sortable;
       });
 
-      if ($scope.clientSide) {
-        $scope.$on("cart-paging-update", (event: any, newPaging: any) => {
-          this.setDisplayedData(newPaging);
-        });
-      }
-
       $scope.$watch("data", ()=> {
         this.setDisplayedData();
       }, true);

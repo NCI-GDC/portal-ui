@@ -205,21 +205,11 @@ module ngApp.cart.directives {
             },
             op: "in"
           });
-          //QueryCartService.pushAddedQuery(filters);
           CartService.addFiles(this.filteredRelatedFiles.hits);
         };
 
         this.addRelatedFiles = function() {
           var uuid = this.row.case_id;
-          //QueryCartService.pushAddedQuery({
-            //content: {
-              //field: "files.cases.case_id",
-              //value: [
-                //uuid
-              //]
-            //},
-            //op: "in"
-          //});
           CartService.addFiles(this.files);
         };
 
@@ -251,7 +241,7 @@ module ngApp.cart.directives {
         },true);
 
         $scope.remove = function() {
-              CartService.removeFiles($scope.files);
+          CartService.removeFiles($scope.files);
         }
 
       }

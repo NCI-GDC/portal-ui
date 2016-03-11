@@ -71,7 +71,6 @@ module ngApp.cart.services {
       var removedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_QUERY));
       //incomplete
       var filters = removedQuery ? {"op":"and","content":[addedQuery, removedQuery]} : addedQuery;
-      console.log(filters);
       if (filters) {
         return this.FilesService.getFiles({
               fields: ["access",
@@ -211,19 +210,7 @@ module ngApp.cart.services {
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_id)) {
-            var cartItem = _.pick(file,
-            'access', 'file_name', 'file_id', 'file_size', 'data_type', 'data_format'
-            );
-            cartItem.annotationIds = file.annotationIds || _.pluck(file.annotations, 'annotation_id');
-            cartItem.caseIds = file.caseIds || _.map(file.cases, c => c.case_id);
-            cartItem.projects = file.projects || _.unique(_.map(file.cases, p => {
-              return {
-                project_id: p.project.project_id,
-                name: p.project.name
-              };
-            }), 'project_id');
-            cartItem.related_ids = file.related_ids || _.pluck(file.related_files, "file_id")
-            this.lastModifiedFiles.push(cartItem);
+            this.lastModifiedFiles.push(file);
         } else {
           alreadyIn.push(file);
         }
@@ -232,7 +219,6 @@ module ngApp.cart.services {
       if (addingMsgPromise) {
         this.$timeout.cancel(addingMsgPromise);
       }
-      this.$rootScope.$broadcast("cart-update");
       this._sync();
       this.notify.closeAll();
       this.notify.config({ duration: 5000 });
@@ -332,8 +318,6 @@ module ngApp.cart.services {
       });
       this.files = remaining;
       this._sync();
-
-      this.$rootScope.$broadcast("cart-update");
     }
 
     removeFiles(files: IFile[]): void {
@@ -354,9 +338,10 @@ module ngApp.cart.services {
     }
 
     _sync(): void {
+      this.$rootScope.$broadcast("cart-update");
       this.lastModified = this.$window.moment();
       this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
-      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
+      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files.map(f => {return { access: f.access, file_id: f.file_id, file_size: f.file_size, projects: _.map(f.cases, c => c.project.project_id) }})));
     }
 
   }

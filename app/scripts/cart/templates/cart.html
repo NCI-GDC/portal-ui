@@ -1,11 +1,15 @@
 <div class="container-fluid cart full-page">
   <section class="row">
-    <div class="col-lg-8" data-ng-if="!cc.files.length">
-      <h2 data-translate>Your Cart is empty.</h2>
+    <div class="col-lg-8" data-ng-if="!cc.files.hits.length">
+      <h2 data-translate data-ng-if="!cc.CartService.getFileIds().length">Your Cart is empty.</h2>
+      <h2 data-translate data-ng-if="cc.CartService.getFileIds().length">
+        <i class="fa fa-spinner fa-spin"></i>
+        Your Cart is loading.
+      </h2>
     </div>
-    <div data-ng-if="cc.files.length">
+    <div data-ng-if="cc.files.hits.length">
       <div class="col-lg-3 col-sm-6">
-        <count-card title="Files" icon="fa-file-o" data="cc.files.length | number"></count-card>
+        <count-card title="Files" icon="fa-file-o" data="cc.files.pagination.total | number"></count-card>
         <count-card title="Cases" icon="fa-user" data="cc.participantCount | number"></count-card>
         <count-card title="File Size" icon="fa-save" data="cc.summary.fs.value | size"></count-card>
       </div>
@@ -54,7 +58,7 @@
     </div>
   </section>
 
-  <section class="row items-pane" data-ng-if="cc.files.length">
+  <section class="row items-pane" data-ng-if="cc.files.hits.length">
     <div class="col-md-12 col-lg-12 col-sm-12">
       <div class="pull-right">
           <a download-manifest-cart data-downloader
@@ -83,15 +87,15 @@
     </div>
   </section>
 
-
-  <gdc-table data-ng-if="cc.files.length"
-             data-data="cc.files"
-             data-config="cc.cartTableConfig"
-             data-paging="cc.pagination"
-             data-page="cart"
-             data-heading="cart items"
-             data-id="cart-table"
-             data-client-side="cc.processPaging"
-             class="cart-table">
+  <gdc-table data-ng-if="cc.files.hits.length"
+           data-data="cc.files.hits"
+           data-config="cc.cartTableConfig"
+           data-paging="cc.files.pagination"
+           data-page="files"
+           data-heading="cart items"
+           id="cart-table"
+           class="cart-table"
+           data-endpoint="files">
   </gdc-table>
+
 </div>

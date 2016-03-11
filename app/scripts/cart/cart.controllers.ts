@@ -5,7 +5,8 @@ module ngApp.cart.controllers {
   import ICoreService = ngApp.core.services.ICoreService;
   import IUserService = ngApp.components.user.services.IUserService;
   import ISearchService = ngApp.search.services.ISearchService;
-  import IPagination = ngApp.components.tables.pagination.models.IPagination;
+  import IParticipantsService = ngApp.participants.services.IParticipantsService;
+  import IFilesService = ngApp.files.services.IFilesService;
 
   export interface ICartController {
     files: IFile[];
@@ -13,8 +14,6 @@ module ngApp.cart.controllers {
     getTotalSize(): number;
     getFileIds(): string[];
     getRelatedFileIds(): string[];
-    processPaging: boolean;
-    pagination: IPagination;
     cartTableConfig: any;
     projectCountChartConfig: any;
     fileCountChartConfig: any;
@@ -22,8 +21,6 @@ module ngApp.cart.controllers {
 
   class CartController implements ICartController {
     lastModified: Moment;
-    pagination: any = {};
-    processPaging: boolean = true;
     displayedFiles: IFile[];
     numberFilesGraph: any;
     sizeFilesGraph: any;
@@ -44,7 +41,8 @@ module ngApp.cart.controllers {
                 private CartTableModel,
                 private Restangular,
                 private SearchService: ISearchService,
-                private FilesService,
+                private FilesService: IFilesService,
+                private ParticipantsService: IParticipantsService,
                 private CartState) {
       var data = $state.current.data || {};
       this.CartState.setActive("tabs", data.tab);
@@ -52,30 +50,16 @@ module ngApp.cart.controllers {
       this.lastModified = this.CartService.lastModified;
       this.cartTableConfig = CartTableModel;
 
-      this.pagination = {
-        from: 1,
-        size: 20,
-        count: 10,
-        page: 1,
-        pages: Math.ceil(files.length / 10),
-        total: files.length,
-        sort: ""
-      };
+      this.refresh();
 
-      $scope.$on("gdc-user-reset", () => {
-        this.files = CartService.getFiles();
-        this.getSummary();
+      $scope.$on("$locationChangeSuccess", (event, next: string) => {
+        if (next.indexOf("cart") !== -1) {
+          this.refresh();
+        }
       });
 
-      $scope.$on("undo", () => {
-        this.files = CartService.getFiles();
-        this.getSummary();
-      });
-
-      $scope.$on("cart-update", () => {
-        this.lastModified = this.CartService.lastModified;
-        this.files = CartService.getFiles();
-        this.getSummary();
+      $scope.$on("cart-update", (event) => {
+          this.refresh();
       });
 
       this.projectCountChartConfig = {
@@ -100,11 +84,9 @@ module ngApp.cart.controllers {
         pluralDefaultText: "authorization levels"
       };
 
-      this.getSummary();
     }
 
     getSummary() {
-      this.participantCount = _.unique(_.flatten(_.pluck(this.files, "caseIds"))).length;
       var filters = {
         op: "and",
         content: [
@@ -112,7 +94,7 @@ module ngApp.cart.controllers {
             op: "in",
             content: {
               field: "files.file_id",
-              value: _.pluck(this.files, "file_id")
+              value: this.CartService.getFileIds()
             }
           }
         ]
@@ -123,7 +105,7 @@ module ngApp.cart.controllers {
       });
 
       var UserService = this.UserService;
-      var authCountAndFileSizes = _.reduce(this.files, (result, file) => {
+      var authCountAndFileSizes = _.reduce(this.CartService.getFiles(), (result, file) => {
         var canDownloadKey = UserService.userCanDownloadFile(file) ? 'authorized' : 'unauthorized';
         result[canDownloadKey].count += 1;
         result[canDownloadKey].file_size += file.file_size;
@@ -142,15 +124,26 @@ module ngApp.cart.controllers {
           file_size: { value: authCountAndFileSizes.unauthorized.file_size }
         }
       ], (i) => i.doc_count);
-
     }
 
-    setState(tab: string) {
-      // Changing tabs and then navigating to another page
-      // will cause this to fire.
-      if (tab && (this.$state.current.name.match("cart."))) {
-        this.$state.go("cart." + tab, {}, {inherit: false});
-      }
+    refresh(): void {
+      var filters = {'content': [{'content': {'field': 'files.file_id', 'value': this.CartService.getFileIds()}, 'op': 'in'}], 'op': 'and'};
+      var fileOptions = {
+        filters: filters,
+        fields: ['access', 'file_name', 'file_id', 'data_type', 'data_format', 'file_size', 'annotations.annotation_id'],
+        expand: ['cases', 'cases.project'],
+        facets: ['cases.case_id'],
+      };
+      this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
+        this.files = this.files || {};
+        if (!_.isEqual(this.files.hits, data.hits)) {
+          this.files = data;
+          this.getSummary();
+        }
+      });
+      this.ParticipantsService.getParticipants({filters: filters}, 'POST').then((data: IParticipants) => {
+        this.participantCount = data.pagination.total;
+      });
     }
 
     getTotalSize(): number {
@@ -204,7 +197,6 @@ module ngApp.cart.controllers {
     constructor(private CartService: ICartService) {}
 
     addToCart(): void {
-      console.log(this.file.file_id);
       this.CartService.addFiles([this.file], true);
     }
 
@@ -277,15 +269,9 @@ module ngApp.cart.controllers {
 
       this.FilesService.getFiles({
         fields: ["access",
-                 "file_name",
                  "file_id",
                  "file_size",
-                 "data_type",
-                 "data_format",
-                 "annotations.annotation_id",
-                 "cases.case_id",
                  "cases.project.project_id",
-                 "cases.project.name"
                  ],
         filters: filters,
         sort: "",

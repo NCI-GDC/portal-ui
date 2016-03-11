@@ -25,7 +25,7 @@ module ngApp.components.user.services {
                 private LocationService: ILocationService,
                 private $cookies: ng.cookies.ICookiesService,
                 private $window: ng.IWindowService,
-                private $modal: any,
+                private $uibModal: any,
                 private config: IGDCConfig,
                 private $log: ng.ILogService) {
       if (config.fake_auth) {
@@ -80,7 +80,7 @@ module ngApp.components.user.services {
           this.$window.saveAs(file.data, "gdc-user-token." + this.$window.moment().format() + ".txt");
         }, (response) => {
           if(response.status === 401) {
-            var loginWarningModal = this.$modal.open({
+            var loginWarningModal = this.$uibModal.open({
               templateUrl: "core/templates/request-access-to-download-single.html",
               controller: "LoginToDownloadController",
               controllerAs: "wc",

@@ -14,6 +14,7 @@ module ngApp.search.controllers {
   import ISearchService = ngApp.search.services.ISearchService;
   import ISearchState = ngApp.search.services.ISearchState;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
+  import IFacetsConfigService = ngApp.components.facets.services.IFacetsConfigService;
 
   export interface ISearchController {
     files: IFiles;
@@ -54,8 +55,9 @@ module ngApp.search.controllers {
                 private LocationService: ILocationService,
                 private UserService: IUserService,
                 public CoreService: ICoreService,
-                private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig,
+                public SearchTableFilesModel: TableiciousConfig,
+                public SearchTableParticipantsModel: TableiciousConfig,
+                private FacetsConfigService: IFacetsConfigService,
                 public FacetService,
                 SearchChartConfigs) {
       var data = $state.current.data || {};
@@ -98,7 +100,6 @@ module ngApp.search.controllers {
           "conversionDivisor": 1,
         }
       ];
-
     }
 
     refresh() {
@@ -119,41 +120,18 @@ module ngApp.search.controllers {
         this.tabSwitch = false;
       });
 
+      this.FacetsConfigService.setFields('files', this.SearchTableFilesModel.facets);
       var fileOptions = {
         fields: this.SearchTableFilesModel.fields,
         expand: this.SearchTableFilesModel.expand,
-        facets: [
-          "data_subtype",
-          "data_type",
-          "experimental_strategy",
-          "data_format",
-          "platform",
-          "archive.revision",
-          "access",
-          "state",
-          "origin",
-          "data_format",
-          "center.name",
-          "tags"
-        ]
+        facets: _.pluck(this.FacetsConfigService.fieldsMap['files'], 'name')
       };
 
+      this.FacetsConfigService.setFields('cases', this.SearchTableParticipantsModel.facets);
       var participantOptions = {
         fields: this.SearchTableParticipantsModel.fields,
         expand: this.SearchTableParticipantsModel.expand,
-        facets: [
-          "clinical.icd_10",
-          "clinical.ethnicity",
-          "clinical.gender",
-          "clinical.vital_status",
-          "clinical.days_to_death",
-          "clinical.race",
-          "clinical.age_at_diagnosis",
-          "project.name",
-          "project.project_id",
-          "project.primary_site",
-          "project.disease_type"
-        ]
+        facets: _.pluck(this.FacetsConfigService.fieldsMap['cases'], 'name')
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {

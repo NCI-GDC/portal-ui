@@ -168,12 +168,12 @@ module ngApp.components.facets.services {
       this.LocationService.setFilters(filters);
     }
 
-    removeTerm(facet: string, term: string, op: string = 'in') {
+    removeTerm(facet: string, term: string, op: string) {
       var filters = this.ensurePath(this.LocationService.filters());
       var cs = filters["content"];
       for (var i = 0; i < cs.length; i++) {
         var c = cs[i]["content"];
-        if (c["field"] === facet && cs[i]["op"] === op) {
+        if (c["field"] === facet && (!op || cs[i]["op"] === op)) {
           if (!term) {
             cs.splice(i, 1);
           } else {
@@ -191,10 +191,108 @@ module ngApp.components.facets.services {
           break;
         }
       }
-      this.LocationService.setFilters(filters);
+      if (_.get(filters, "content", []).length === 0) {
+        this.LocationService.clear();
+      } else {
+        this.LocationService.setFilters(filters);
+      }
     }
+
   }
+
+  export interface ICustomFacetsService {
+    getFacetFields(docType: string): ng.IPromise<any>;
+  }
+
+  class CustomFacetsService implements ICustomFacetsService {
+    private ds: restangular.IElement;
+
+    /* @ngInject */
+    constructor(private Restangular: restangular.IService,
+                private SearchTableFilesModel: TableiciousConfig,
+                private SearchTableParticipantsModel: TableiciousConfig,
+                private FacetsConfigService: IFacetsConfigService) {
+      this.ds = Restangular.all("gql/_mapping");
+    }
+
+    getFacetFields(docType: string): ng.IPromise<any> {
+      return this.ds.getList().then((data) => {
+        var current = _.pluck(this.FacetsConfigService.fieldsMap[docType], "name");
+        return _.filter(data, (datum) => {
+          return datum.doc_type === docType &&
+                 datum.field !== 'archive.revision' &&
+                 !_.includes(datum.field, "_id") &&
+                 !_.includes(current, datum.field) &&
+                 !_.includes(docType === 'files' ? _.pluck(this.SearchTableFilesModel.facets, "name") : _.pluck(this.SearchTableParticipantsModel.facets, "name"), datum.field);
+        });
+      });
+    }
+
+  }
+
+  export interface IFacetsConfigService {
+    getFields(docType: string): Array<Object>;
+    addField(field: Object): void;
+    reset(docType: string): void;
+  }
+
+  class FacetsConfigService implements IFacetsConfigServce {
+    public fieldsMap: any = {};
+    defaultFieldsMap: any = {};
+    FACET_CONFIG_KEY: string = "gdc-facet-config";
+
+     /* @ngInject */
+    constructor(private $window: ng.IWindowService) {
+    }
+
+    setFields(docType: string, fields: Array<Object>) {
+      var saved = _.get(JSON.parse(this.$window.localStorage.getItem(this.FACET_CONFIG_KEY)), docType, null);
+      if(!saved) {
+        this.fieldsMap[docType] = fields;
+        this.save();
+      } else {
+        this.fieldsMap[docType] = saved;
+      }
+      this.defaultFieldsMap[docType] = _.clone(fields, true);
+    }
+
+    addField(docType: string, fieldName: string, fieldType: string): void {
+      this.fieldsMap[docType].unshift({
+          name: fieldName,
+          title: fieldName,
+          collapsed: false,
+          facetType: fieldType === 'long' ? 'range' : fieldName.includes('datetime') ? 'datetime' : 'terms',
+          removable: true
+      });
+      this.save();
+    }
+
+    removeField(docType: string, fieldName: string): void {
+      this.fieldsMap[docType ]= _.reject(this.fieldsMap[docType], (facet) => {
+        return facet.name === fieldName;
+      });
+      this.save();
+    }
+
+    reset(docType: string): void {
+      this.fieldsMap[docType] = _.clone(this.defaultFieldsMap[docType], true);
+      this.save();
+    }
+
+    isDefault(docType: string): boolean {
+      return this.fieldsMap[docType].length === this.defaultFieldsMap[docType].length;
+    }
+
+    save(): void {
+      this.$window.localStorage.setItem(this.FACET_CONFIG_KEY, angular.toJson(this.fieldsMap));
+    }
+
+ }
+
   angular.
       module("facets.services", ["location.services", "restangular", "user.services"])
+      .service("CustomFacetsService", CustomFacetsService)
+      .service("FacetsConfigService", FacetsConfigService)
       .service("FacetService", FacetService);
 }
+

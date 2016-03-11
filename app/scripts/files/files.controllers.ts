@@ -78,7 +78,7 @@ module ngApp.files.controllers {
   class BAMSlicingController {
 
     /* @ngInject */
-    constructor (private $modalInstance,
+    constructor (private $uibModalInstance,
                  private $scope: ng.IScope,
                  private FilesService: IFilesService,
                  public fileID: string,
@@ -86,18 +86,18 @@ module ngApp.files.controllers {
 
     submit(): void {
       this.FilesService.sliceBAM(this.fileID, this.$scope.bedModel, this.completeCallback);
-      this.$modalInstance.dismiss('slicing');
+      this.$uibModalInstance.dismiss('slicing');
     }
 
     closeModal(): void {
-      this.$modalInstance.dismiss('cancelled');
+      this.$uibModalInstance.dismiss('cancelled');
     }
   }
 
   class BAMFailedModalController {
     public errorBlobString: string;
     /* @ngInject */
-    constructor(private $modalInstance,
+    constructor(private $uibModalInstance,
                 public errorStatus: string,
                 public errorMsg: string,
                 private errorBlob: any) {

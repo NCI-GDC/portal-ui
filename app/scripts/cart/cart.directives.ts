@@ -258,7 +258,7 @@ module ngApp.cart.directives {
     }
   }
 
-  function DownloadManifestCart(FilesService: IFilesService, UserService, CartService, $modal) {
+  function DownloadManifestCart(FilesService: IFilesService, UserService, CartService, $uibModal) {
     return {
       restrict:"AE",
       scope: true,
@@ -281,7 +281,7 @@ module ngApp.cart.directives {
     }
   }
 
-  function DownloadButtonAllCart(FilesService, UserService, CartService, $modal) {
+  function DownloadButtonAllCart(FilesService, UserService, CartService, $uibModal) {
     return {
       restrict:"AE",
       scope: true,
@@ -322,7 +322,7 @@ module ngApp.cart.directives {
             }
 
             function showLoginModal() {
-              var modalInstance = $modal.open({
+              var modalInstance = $uibModal.open({
                 templateUrl: "core/templates/login-to-download.html",
                 controller: "LoginToDownloadController",
                 controllerAs: "wc",
@@ -345,7 +345,7 @@ module ngApp.cart.directives {
             }
 
             function showRequestAccessModal() {
-              var modalInstance = $modal.open({
+              var modalInstance = $uibModal.open({
                 templateUrl: "core/templates/request-access-to-download.html",
                 controller: "LoginToDownloadController",
                 controllerAs: "wc",

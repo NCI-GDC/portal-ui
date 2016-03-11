@@ -1,6 +1,6 @@
 module ngApp.files.directives {
 
-  function DownloadButton($log: ng.ILogService, FilesService, UserService, $modal): ng.IDirective {
+  function DownloadButton($log: ng.ILogService, FilesService, UserService, $uibModal): ng.IDirective {
     return {
       restrict: "E",
       replace: true,
@@ -43,7 +43,7 @@ module ngApp.files.directives {
                 "core/templates/login-to-download-single.html";
 
             $log.log("File not authorized.");
-            $modal.open({
+            $uibModal.open({
               templateUrl: template,
               controller: "LoginToDownloadController",
               controllerAs: "wc",
@@ -58,7 +58,7 @@ module ngApp.files.directives {
     }
   }
 
-  function BAMSlicingButton($log: ng.ILogService, FilesService, UserService, $modal): ng.IDirective {
+  function BAMSlicingButton($log: ng.ILogService, FilesService, UserService, $uibModal): ng.IDirective {
     return {
       restrict: "E",
       replace: true,
@@ -87,7 +87,7 @@ module ngApp.files.directives {
               $scope.active = false;
               $element.removeAttr("disabled");
             };
-            var bamModal = $modal.open({
+            var bamModal = $uibModal.open({
               templateUrl: "files/templates/bam-slicing.html",
               controller: "BAMSlicingController",
               controllerAs: "bamc",
@@ -115,7 +115,7 @@ module ngApp.files.directives {
                 "core/templates/login-to-download-single.html";
 
             $log.log("File not authorized.");
-            $modal.open({
+            $uibModal.open({
               templateUrl: template,
               controller: "LoginToDownloadController",
               controllerAs: "wc",

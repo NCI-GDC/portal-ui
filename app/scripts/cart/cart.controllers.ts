@@ -188,14 +188,14 @@ module ngApp.cart.controllers {
 
   class LoginToDownloadController {
     /* @ngInject */
-    constructor (private $modalInstance) {}
+    constructor (private $uibModalInstance) {}
 
     cancel() :void {
-      this.$modalInstance.close(false);
+      this.$uibModalInstance.close(false);
     }
 
     goAuth() :void {
-      this.$modalInstance.close(true);
+      this.$uibModalInstance.close(true);
     }
   }
 

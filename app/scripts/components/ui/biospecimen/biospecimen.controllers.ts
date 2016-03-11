@@ -9,6 +9,7 @@ module ngApp.components.ui.biospecimen.controllers {
     displayBioSpecimenDocument(event: any, doc: any, type: string): void;
     downloadBiospecimenXML(participant_id: string): void;
     bioSpecimenFileId: string;
+    bioSpecimenFile: any;
   }
 
   class BiospecimenController implements IBiospecimenController {

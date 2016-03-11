@@ -34,7 +34,7 @@ module ngApp.components.charts {
         // Used to namespace each resize event
         var id = "." + $window.Math.round($window.Math.random() * 120000);
 
-        $scope.$watch('data',function(a){
+        $scope.$watch('data', function(a){
           updateChart();
         });
 
@@ -311,6 +311,11 @@ module ngApp.components.charts {
 
         var margin = { right: 10, left: 10 };
         var width = element.parent().parent()[0].clientWidth - margin.left - margin.right;
+        //make sure width is never neg
+        if(width <= 0) {
+          width = 300;
+        }
+
         createChart();
 
         // Used to namespace each resize event

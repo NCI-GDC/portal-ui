@@ -11,8 +11,8 @@ module ngApp.components.quickSearch.directives {
   }
 
   /* @ngInject */
-  function QuickSearch($modal: any, $window: ng.IWindowService, $modalStack): ng.IDirective {
-    return { 
+  function QuickSearch($uibModal: any, $window: ng.IWindowService, $uibModalStack): ng.IDirective {
+    return {
       restrict: "A",
       controller: function($scope) {
         var modalInstance;
@@ -26,11 +26,11 @@ module ngApp.components.quickSearch.directives {
         this.openModal = () => {
           // Modal stack is a helper service. Used to figure out if one is currently
           // open already.
-          if ($modalStack.getTop()) {
+          if ($uibModalStack.getTop()) {
             return;
           }
 
-          modalInstance = $modal.open({
+          modalInstance = $uibModal.open({
             templateUrl: "components/quick-search/templates/quick-search-modal.html",
             backdrop: true,
             keyboard: true,
@@ -116,6 +116,7 @@ module ngApp.components.quickSearch.directives {
             }
           }
         });
+
 
         $scope.selectedItem.selected = false;
         $scope.results.hits[newIndex].selected = true;
@@ -243,21 +244,20 @@ module ngApp.components.quickSearch.directives {
 
   /* @ngInject */
   function QuickSearchInput(QuickSearchService: IQuickSearchService, FacetService,
-                            $compile: ng.ICompileService, $modalStack): ng.IDirective {
+                            $compile: ng.ICompileService, $uibModalStack): ng.IDirective {
 
     return {
       restrict: "E",
       replace: true,
       templateUrl: "components/quick-search/templates/quick-search-input.html",
       link: function($scope, element) {
-        QuickSearchInputBaseLogicFn.call(this, $scope, element, QuickSearchService, FacetService, $modalStack);
+        QuickSearchInputBaseLogicFn.call(this, $scope, element, QuickSearchService, FacetService, $uibModalStack);
         element.after($compile("<quick-search-dropdown></quick-search-dropdown>")($scope));
       }
     };
   }
 
-  function QuickSearchInputHome(QuickSearchService: IQuickSearchService, FacetService,
-                                $compile: ng.ICompileService, $modalStack): ng.IDirective {
+  function QuickSearchInputHome(QuickSearchService: IQuickSearchService, FacetService): ng.IDirective {
     return {
       restrict: "EA",
       replace: true,
@@ -273,7 +273,7 @@ module ngApp.components.quickSearch.directives {
 
   class Highlight {
     constructor($rootScope: ng.IScope) {
-      return function (value: string, query: string) {
+      return function (value: any, query: string = "") {
         if (!value) {
           return "";
         }

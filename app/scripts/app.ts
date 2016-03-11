@@ -72,7 +72,7 @@ function appRun(gettextCatalog: any,
                 UserService: IUserService,
                 ProjectsService: IProjectsService,
                 $window: ng.IWindowService,
-                $modal: any) {
+                $uibModal: any) {
 
   if ($cookies.get("GDC-Portal-Sha") !== config.commitHash) {
     $cookies.put("GDC-Portal-Sha", config.commitHash);
@@ -90,7 +90,7 @@ function appRun(gettextCatalog: any,
   Restangular.setErrorInterceptor((response) => {
     CoreService.xhrDone();
     if (response.status === 500) {
-      $modal.open({
+      $uibModal.open({
                 templateUrl: "core/templates/internal-server-error.html",
                 controller: "WarningController",
                 controllerAs: "wc",

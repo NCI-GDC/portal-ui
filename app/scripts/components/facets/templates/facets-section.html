@@ -1,9 +1,9 @@
 <div data-ng-repeat="f in facetsConfig">
   <facets-free-text data-ng-if="f.facetType === 'free-text'"
                   data-title="{{f.title}}" placeholder="{{ f.placeholder | translate }}"
-                  data-field="{{f.doctype}}.{{f.name}}"
-                  data-entity="{{f.doctype}}"
-                  data-template="components/facets/templates/typeahead-files.html"></facets-free-text>
+                  data-field="{{doctype}}.{{f.name}}"
+                  data-entity="{{doctype}}"
+                  data-template="components/facets/templates/typeahead-{{doctype}}.html"></facets-free-text>
 
   <terms data-ng-if="f.facetType === 'terms'"
          data-name="{{doctype}}.{{f.name}}"

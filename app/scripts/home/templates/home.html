@@ -20,7 +20,10 @@
             </td>
             <td>
               <a class="btn btn-primary" href="/search/c?filters={{query.filters}}">
-                <span data-ng-bind="query.caseCount | number"></span> Cases</a>
+                <span data-ng-if="query.caseCount" data-ng-bind="query.caseCount | number"></span>
+                <span data-ng-if="! query.caseCount"><i class="fa fa-spinner fa-spin"></i></span>
+                Cases
+              </a>
             </td>
             <td>
               <a class="btn btn-primary" href="/search/f?filters={{query.filters}}">
@@ -34,7 +37,7 @@
       <marked-bar-chart
               data-ng-show="hc.getChartFilteredData()"
               data-data="hc.getChartFilteredData()"
-              data-title="Browse by Primary Site"
+              data-title="Primary Site Case Count"
               data-tool-tip-fn="hc.getChartTooltipFunction()"
               data-marked-legend-label="Recently Updated"
               data-height="397"

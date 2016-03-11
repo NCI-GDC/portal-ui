@@ -4,7 +4,7 @@ module ngApp.home.controllers {
   import IProjects = ngApp.projects.models.IProjects;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
 
-  import IProjectsService = ngApp.projects.services.IProjectsService;
+  import IHomeService = ngApp.home.services.IHomeService;
 
 
 
@@ -14,11 +14,12 @@ module ngApp.home.controllers {
     setChartDataFilter(): void;
     getProjectStatsList(): any[];
     getExampleSearchQueries(): any[];
-    refresh(): void
+    refresh(): void;
   }
 
+  /*
   export interface IHomeScope extends ng.IScope {
-  }
+  }*/
 
   class HomeController implements IHomeController {
 
@@ -29,11 +30,11 @@ module ngApp.home.controllers {
     numberFilter: any;
     tooltipFn: any;
     exampleSearchQueries: any[];
+    defaultParams: any;
 
     /* @ngInject */
-    constructor(private $scope: IHomeScope, private ProjectsService: IProjectsService,
-                private ProjectTableModel: TableiciousConfig, private CoreService: ICoreService,
-                private $filter: ng.ui.IFilterService) {
+    constructor(private HomeService: IHomeService, private ProjectTableModel: TableiciousConfig,
+                private CoreService: ICoreService, private $filter: ng.ui.IFilterService) {
 
       CoreService.setPageTitle("Welcome to The Genomics Data Commons Data Portal");
 
@@ -59,8 +60,8 @@ module ngApp.home.controllers {
         {title: "Projects", value: 0, icon: "icon-gdc-projects", url: "/projects/t"},
         {title: "Cases", value: 0, icon: "icon-gdc-cases", url: "/search/c"},
         {title: "Files", value: 0, icon: "fa fa-file-o", url: "/search/f"},
-        //{title: "Cancer Types", value: 0, icon: "cancer_type_hardcode", url: "/projects/t"},
-        {title: "Cancer Types", value: 0, icon: "fa fa-heartbeat", url: "/projects/t"},
+        {title: "Primary Sites", value: 0, icon: "cancer_type_hardcode", url: "/projects/t"},
+        //{title: "Cancer Types", value: 0, icon: "fa fa-heartbeat", url: "/projects/t"},
         {title: "Downloads to Date", value: 0, icon: "fa fa-download", url: "#"}
       ];
 
@@ -70,26 +71,71 @@ module ngApp.home.controllers {
       this.exampleSearchQueries = [
         {
           description: "Brain cancer cases over the age of 40 at diagnosis",
-          filters: "%7B%22op%22:%22and%22,%22content%22:%5B%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.project.primary_site%22,%22value%22:%5B%22Brain%22%5D%7D%7D,%7B%22op%22:%22%3E%3D%22,%22content%22:%7B%22field%22:%22cases.clinical.age_at_diagnosis%22,%22value%22:%5B14965%5D%7D%7D%5D%7D",
-          caseCount: 78,
-          fileCount: 41890
+          filters: {"op":"and","content":[{"op":"in","content":{"field":"cases.project.primary_site","value":["Brain"]}},{"op":">=","content":{"field":"cases.clinical.age_at_diagnosis","value":[14965]}}]},
+          caseCount: null,
+          fileCount: null
         },
         {
           description: "All female cases from the TARGET-NBL project",
-          filters: "%7B%22op%22:%22and%22,%22content%22:%5B%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.project.project_id%22,%22value%22:%5B%22TARGET-NBL%22%5D%7D%7D,%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.clinical.gender%22,%22value%22:%5B%22female%22%5D%7D%7D%5D%7D",
-          caseCount: 506,
-          fileCount: 731
+          filters: {"op":"and","content":[{"op":"in","content":{"field":"cases.project.project_id","value":["TARGET-NBL"]}},{"op":"in","content":{"field":"cases.clinical.gender","value":["female"]}}]},
+          caseCount: null,
+          fileCount: null
         },
         {
           description: "All Asian cases with disease type Thyroid Carcinoma project",
-          filters: "%7B%22op%22:%22and%22,%22content%22:%5B%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.project.disease_type%22,%22value%22:%5B%22Thyroid%20Carcinoma%22%5D%7D%7D,%7B%22op%22:%22in%22,%22content%22:%7B%22field%22:%22cases.clinical.race%22,%22value%22:%5B%22asian%22%5D%7D%7D%5D%7D",
-          caseCount: 52,
-          fileCount: 3171
+          filters: {"op":"and","content":[{"op":"in","content":{"field":"cases.project.disease_type","value":["Thyroid Carcinoma"]}},{"op":"in","content":{"field":"cases.clinical.race","value":["asian"]}}]},
+          caseCount: null,
+          fileCount: null
         },
       ];
 
+
+      this.defaultParams =  {
+        fields: this.ProjectTableModel.fields,
+        expand: this.ProjectTableModel.expand,
+        facets: [
+          "disease_type",
+          "program.name",
+          "project_id",
+          "primary_site",
+          "summary.experimental_strategies.experimental_strategy",
+          "summary.data_types.data_type"
+        ],
+        size: 100
+      };
+
       this.refresh();
 
+    }
+
+    fetchExampleSearchQueryStats() {
+      var _controller = this,
+          exampleQueries = _controller.exampleSearchQueries,
+          defaultParams = _controller.defaultParams;
+
+      for (var i = 0; i < exampleQueries.length; i++) {
+        var query = exampleQueries[i];
+
+       (function(q) {
+
+         var params = _.cloneDeep(defaultParams);
+         params.filters = q.filters;
+         _controller.HomeService.getParticipants(params).then(
+            function (projectData) {
+              q.caseCount = _.get(projectData, 'pagination.total', 0);
+            }
+          );
+
+         _controller.HomeService.getFiles(params).then(
+           function (projectData) {
+             q.fileCount = _.get(projectData, 'pagination.total', 0);
+           }
+         );
+
+
+        })(query);
+
+      }
     }
 
     getExampleSearchQueries() {
@@ -134,8 +180,6 @@ module ngApp.home.controllers {
       if (primarySiteIDs.length === 0) {
         return;
       }
-
-      console.log(primarySiteIDs);
 
       _controller.projectChartData = _.filter(
         _.map(primarySiteIDs, function(pID) {
@@ -187,26 +231,29 @@ module ngApp.home.controllers {
       return this.projectStatsList;
     }
 
+    getProjects(filters:Object = null) {
+
+     var params = this.defaultParams;
+
+      if (filters) {
+        params.filters = filters;
+      }
+
+      return this.HomeService.getProjects(params);
+    }
+
+    fetchAllProjects() {
+      this.getProjects()
+        .then((projectData) => {
+          this.projectData = projectData;
+          this.chartData = this.transformProjectData(projectData);
+        });
+    }
+
     refresh() {
 
-      this.ProjectsService.getProjects({
-        fields: this.ProjectTableModel.fields,
-        expand: this.ProjectTableModel.expand,
-        facets: [
-          "disease_type",
-          "program.name",
-          "project_id",
-          "primary_site",
-          "summary.experimental_strategies.experimental_strategy",
-          "summary.data_types.data_type"
-        ],
-        size: 100
-      })
-        .then((data) => {
-        this.projectData = data;
-        this.chartData = this.transformProjectData(data);
-
-      });
+      this.fetchExampleSearchQueryStats();
+      this.fetchAllProjects();
 
     }
 

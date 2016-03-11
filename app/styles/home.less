@@ -5,12 +5,39 @@
 
 @HOME_PLACEHOLDER_FONT_SIZE: 1.2rem;
 
-.gdc-apps-menu-container {
+.navbar-nav > li > .dropdown-menu.gdc-apps-menu-container {
   padding: 0.5rem 0.5rem;
+  margin-top: 1rem;
+
+  &:before {
+    width: 0;
+    height: 0;
+    top: -10px;
+    right: 40px;
+    position: absolute;
+    content: ' ';
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #ccc;
+  }
 
   .gdc-apps-menu-grid {
+
     text-align: center;
     font-size: 1.2rem;
+
+
+    &:before {
+      width: 0;
+      height: 0;
+      top: -9px;
+      right: 40px;
+      position: absolute;
+      content: ' ';
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid #fff;
+    }
 
     .icon {
       font-size: 2rem;
@@ -21,7 +48,7 @@
     }
 
     td {
-      padding: 0.5rem;
+      padding: 0.25rem;
     }
 
     a {

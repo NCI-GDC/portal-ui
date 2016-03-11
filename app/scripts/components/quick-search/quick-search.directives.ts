@@ -247,6 +247,20 @@ module ngApp.components.quickSearch.directives {
     };
   }
 
+  function QuickSearchInputHome(QuickSearchService: IQuickSearchService, FacetService,
+                                $compile: ng.ICompileService, $modalStack): ng.IDirective {
+    return {
+      restrict: "EA",
+      replace: true,
+      templateUrl: "components/quick-search/templates/quick-search-input-home.html",
+      link: function ($scope, element) {
+
+      }
+    };
+  }
+
+
+
   class Highlight {
     constructor($rootScope: ng.IScope) {
       return function (value: any, query: string = "") {
@@ -297,5 +311,7 @@ module ngApp.components.quickSearch.directives {
     .filter("highlight", Highlight)
     .directive("quickSearchDropdown", QuickSearchDropdown)
     .directive("quickSearchInput", QuickSearchInput)
+    .directive("quickSearchInputHome", QuickSearchInputHome)
     .directive("quickSearch", QuickSearch);
+
 }

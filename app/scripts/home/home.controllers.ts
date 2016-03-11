@@ -59,7 +59,8 @@ module ngApp.home.controllers {
         {title: "Projects", value: 0, icon: "icon-gdc-projects", url: "/projects/t"},
         {title: "Cases", value: 0, icon: "icon-gdc-cases", url: "/search/c"},
         {title: "Files", value: 0, icon: "fa fa-file-o", url: "/search/f"},
-        {title: "Cancer Types", value: 0, icon: "cancer_type_hardcode", url: "/projects/t"},
+        //{title: "Cancer Types", value: 0, icon: "cancer_type_hardcode", url: "/projects/t"},
+        {title: "Cancer Types", value: 0, icon: "fa fa-heartbeat", url: "/projects/t"},
         {title: "Downloads to Date", value: 0, icon: "fa fa-download", url: "#"}
       ];
 

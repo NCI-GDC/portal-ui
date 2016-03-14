@@ -32,7 +32,7 @@
           </div>
           <div style="padding: 10px">
             <p data-translate>
-              <strong>Download Manifest File</strong>: Downloading and analyzing large BAMs or large number of files can be very resource intensive and so it is recommended to use the GDC Client for this purpose. The GDC Client provides several different download modes to provide the most efficient transfer possible. For more info, click 
+              <strong>Download Manifest File</strong>: Downloading and analyzing large BAMs or large number of files can be very resource intensive and so it is recommended to use the GDC Client for this purpose. The GDC Client provides several different download modes to provide the most efficient transfer possible. For more info, click
                <a target="_blank" href="https://gdc.nci.nih.gov/node/7967">here</a>.
             </p>
             <p data-translate>
@@ -57,7 +57,7 @@
   <section class="row items-pane" data-ng-if="cc.files.length">
     <div class="col-md-12 col-lg-12 col-sm-12">
       <div class="pull-right">
-          <a download-manifest-cart
+          <a download-manifest-cart data-downloader
              type="button"
              class="btn btn-primary"
              id="manifest-button">
@@ -65,7 +65,7 @@
             <span data-translate>Download Manifest File</span>
           </a>
           <a type="button"
-             download-button-all-cart
+             download-button-all-cart data-downloader
              id="download-all-button"
              class="btn btn-primary">
             <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i> <span data-translate>Download Cart (Web Browser)</span>

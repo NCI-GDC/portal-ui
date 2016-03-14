@@ -236,7 +236,7 @@ module ngApp.cart.directives {
   }
 
 
-  /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/  
+  /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/
   function RemoveUnauthorizedFilesButton() {
     return {
       restrict: "AE",
@@ -258,113 +258,112 @@ module ngApp.cart.directives {
     }
   }
 
-  function DownloadManifestCart(FilesService: IFilesService, UserService, CartService, $uibModal) {
+  function DownloadManifestCart(CartService, $uibModal, config: IGDCConfig) {
     return {
       restrict:"AE",
       scope: true,
-      link: function($scope, $element, $attrs){
+      link: ($scope, $element, $attrs) => {
+        const scope = $scope;
+        scope.active = false;
 
-        $element.on('click',function DownloadManifestFiles(){
-
-          var scope = $scope;
-
+        const inProgress = () => {
           scope.active = true;
-          $attrs.$set("disabled", "disabled");
+          $attrs.$set('disabled', 'disabled');
+        };
+        const done = () => {
+          scope.active = false;
+          $element.removeAttr('disabled');
+        };
+        const files = [].concat(CartService.getFiles());
+        const params = { ids: files.map(f => f.file_id) };
+        const url = config.api + '/manifest?annotations=true&related_files=true';
+        const clickHandler = () => {
+          const checkProgress = scope.download(params, url, () => $element, 'POST');
+          checkProgress(inProgress, done);
+        };
 
-          FilesService.downloadManifest(_.pluck(CartService.getFiles(), "file_id"), (complete)=>{
-              scope.active = false;
-              $element.removeAttr("disabled");
-          });
-
-        });
+        $element.on('click', clickHandler);
       }
-    }
+    };
   }
 
-  function DownloadButtonAllCart(FilesService, UserService, CartService, $uibModal) {
+  function DownloadButtonAllCart(UserService, CartService, $uibModal, config: IGDCConfig) {
     return {
       restrict:"AE",
       scope: true,
-      link: function($scope, $element, $attrs){
+      link: ($scope, $element, $attrs) => {
+        const scope = $scope;
+        const isLoggedIn = UserService.currentUser;
+        const authorizedInCart = CartService.getAuthorizedFiles();
+        const unauthorizedInCart = CartService.getUnauthorizedFiles();
 
-        $element.on('click',function checkCartForClosedFiles() {
+        scope.active = false;
+        scope.meta = {
+          unauthorized: unauthorizedInCart,
+          authorized: authorizedInCart
+        };
 
-            var scope = $scope;
-            var isLoggedIn = UserService.currentUser;
+        const inProgress = () => {
+          scope.active = true;
+          $attrs.$set('disabled', 'disabled');
+        };
+        const done = () => {
+          scope.active = false;
+          $element.removeAttr('disabled');
+        };
+        const files = [].concat(authorizedInCart);
+        const params = { ids: files.map(f => f.file_id) };
+        const url = config.api + '/data?annotations=true&related_files=true';
 
-            var authorizedInCart = CartService.getAuthorizedFiles();
-            var unauthorizedInCart = CartService.getUnauthorizedFiles();
+        const download = () => {
+          const checkProgress = scope.download(params, url, () => $element, 'POST');
+          checkProgress(inProgress, done);
+        };
+        const showLoginModal = () => {
+          var modalInstance = $uibModal.open({
+            templateUrl: "core/templates/login-to-download.html",
+            controller: "LoginToDownloadController",
+            controllerAs: "wc",
+            backdrop: true,
+            keyboard: true,
+            scope: scope,
+            size: "lg",
+            animation: false
+          });
 
-            scope.meta = {
-              unauthorized: unauthorizedInCart,
-              authorized: authorizedInCart
-            };
-
-            if (unauthorizedInCart.length === 0) {
+          modalInstance.result.then((a) => {
+            if (a && authorizedInCart.length > 0) {
               download();
-            } else {
-              if (isLoggedIn) {
-                showRequestAccessModal();
-              } else {
-                showLoginModal();
-              }
+            } else if (!a) {
+              // Cancel Pressed
+              done();
             }
+          });
+        };
+        const showRequestAccessModal = () => {
+          var modalInstance = $uibModal.open({
+            templateUrl: "core/templates/request-access-to-download.html",
+            controller: "LoginToDownloadController",
+            controllerAs: "wc",
+            backdrop: true,
+            keyboard: true,
+            scope: scope,
+            size: "lg",
+            animation: false
+          });
 
-            function download() {
-
-              $scope.active = true;
-              $attrs.$set("disabled", "disabled");
-
-              FilesService.downloadFiles(_.pluck(authorizedInCart, "file_id"), (complete)=>{
-                  $scope.active = false;
-                  $element.removeAttr("disabled");
-              });
+          modalInstance.result.then((a) => {
+            if (a && authorizedInCart.length > 0) {
+              download();
             }
+          });
+        };
+        const checkCartForClosedFiles = (unauthorizedInCart.length > 0) ?
+          (isLoggedIn ? showRequestAccessModal : showLoginModal) : download;
 
-            function showLoginModal() {
-              var modalInstance = $uibModal.open({
-                templateUrl: "core/templates/login-to-download.html",
-                controller: "LoginToDownloadController",
-                controllerAs: "wc",
-                backdrop: true,
-                keyboard: true,
-                scope: scope,
-                size: "lg",
-                animation: false
-              });
-
-              modalInstance.result.then((a) => {
-                if (a && authorizedInCart.length > 0) {
-                  download();
-                } else if(!a) {
-                  //Cancel Pressed
-                  $scope.active = false;
-                  $element.removeAttr("disabled");
-                }
-              });
-            }
-
-            function showRequestAccessModal() {
-              var modalInstance = $uibModal.open({
-                templateUrl: "core/templates/request-access-to-download.html",
-                controller: "LoginToDownloadController",
-                controllerAs: "wc",
-                backdrop: true,
-                keyboard: true,
-                scope: scope,
-                size: "lg",
-                animation: false
-              });
-
-              modalInstance.result.then((a) => {
-                if (a && authorizedInCart.length > 0) {
-                  download();
-                }
-              });
-            }
-          })
-        }
+        $element.on('click', checkCartForClosedFiles);
       }
+    };
   }
 
   angular.module("cart.directives", [
@@ -384,4 +383,3 @@ module ngApp.cart.directives {
     .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton)
     .directive("removeSingleCart", RemoveSingleCart);
 }
-

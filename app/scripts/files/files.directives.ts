@@ -1,6 +1,6 @@
 module ngApp.files.directives {
 
-  function DownloadButton($log: ng.ILogService, FilesService, UserService, $uibModal): ng.IDirective {
+  function DownloadButton($log: ng.ILogService, UserService, $uibModal, config: IGDCConfig): ng.IDirective {
     return {
       restrict: "E",
       replace: true,
@@ -11,51 +11,50 @@ module ngApp.files.directives {
         classes: "@",
         icon: "@"
       },
-      template: "<a ng-class=\"[classes || 'btn btn-primary']\">" +
+      template: "<a ng-class=\"[classes || 'btn btn-primary']\" data-downloader>" +
                 "<i class=\"fa {{icon || 'fa-download'}}\" ng-class=\"{'fa-spinner': active, 'fa-pulse': active}\"></i>" +
                 "<span ng-if=\"copy\"><span ng-if=\"!active\">&nbsp;{{copy}}</span><span ng-if=\"active\">&nbsp;{{dlcopy}}</span></span></a>",
-      link: function($scope, $element, $attrs){
-        var files = $scope.files;
+      link: ($scope, $element, $attrs) => {
         $scope.active = false;
-        $element.on("click", function(a) {
+        const inProgress = () => {
+          $scope.active = true;
+          $attrs.$set('disabled', 'disabled');
+        };
+        const done = () => {
+          $scope.active = false;
+          $element.removeAttr('disabled');
+        };
+        const url = config.api + '/data?annotations=true&related_files=true';
 
-          if (!_.isArray(files)) {
-            files = [files];
-          }
+        const clickHandler = () => {
+          const files = [].concat($scope.files);
+
           if (UserService.userCanDownloadFiles(files)) {
-            $scope.active = true;
-            $attrs.$set("disabled", "disabled");
-            var turnSpinnerOff = function() {
-              $scope.active = false;
-              $element.removeAttr("disabled");
-            };
-            FilesService.downloadFiles(_.pluck(files, "file_id"), (complete)=>{
-              if(complete){
-                turnSpinnerOff();
-              } else {
-                //Download Failed
-                turnSpinnerOff();
-              }
-            });
-          } else {
-            var template = UserService.currentUser ?
-                "core/templates/request-access-to-download-single.html" :
-                "core/templates/login-to-download-single.html";
+            const params = { ids: files.map(f => f.file_id) };
+            const checkProgress = $scope.download(params, url, () => $element, 'POST');
 
-            $log.log("File not authorized.");
+            checkProgress(inProgress, done);
+          } else {
+            $log.log('Files not authorized.');
+            const template = UserService.currentUser ?
+              'core/templates/request-access-to-download-single.html' :
+              'core/templates/login-to-download-single.html';
+
             $uibModal.open({
               templateUrl: template,
-              controller: "LoginToDownloadController",
-              controllerAs: "wc",
+              controller: 'LoginToDownloadController',
+              controllerAs: 'wc',
               backdrop: true,
               keyboard: true,
               animation: false,
-              size: "lg"
+              size: 'lg'
             });
           }
-        });
+        };
+
+        $element.on('click', clickHandler);
       }
-    }
+    };
   }
 
   function BAMSlicingButton($log: ng.ILogService, FilesService, UserService, $uibModal): ng.IDirective {

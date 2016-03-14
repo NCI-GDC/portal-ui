@@ -1,12 +1,46 @@
 angular.module('projects.githut.config',[])
 .factory("ProjectsGithut",function(ProjectsGithutConfig, ProjectsGithutColumns) {
   return function(data) {
-    var hits = data.hits;
+    var hits = filterData(data.hits);
     var primary_sites = [];
 
     function findTheThing(array,data_type,propname){
       return _.find(array,function(type){return type[propname] === data_type});
     }
+
+    // Gracefully handle bad data if present
+    function filterData(data) {
+
+      var filteredData = [],
+          DEFAULT_UNKNOWN_VAL = 'Unknown';
+
+      if (! _.isArray(data)) {
+        return filteredData;
+      }
+
+      filteredData = _.reduce(data, function(projectList, project) {
+
+        // If the Project doesn't have a name then it's invalid for use in the graph
+        // but for now we will be nice and show it robustly so the problem can
+        // be identified and fixed on the backend where the fix belongs...
+        if (! _.isObject(project)) {
+          return projectList;
+        }
+
+        _.map(['name', 'project_id', 'primary_site'], function(key) {
+          if (! _.has(project, key)) {
+            project[key] = DEFAULT_UNKNOWN_VAL;
+          }
+        });
+
+        projectList.push(project);
+
+        return projectList;
+      }, []);
+
+      return filteredData;
+    }
+
 
     var project_ids = hits.reduce(function(a,b) {
       a[b.project_id] = b;

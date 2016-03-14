@@ -69,6 +69,7 @@ module ngApp.components.quickSearch.directives {
   }
 
   function QuickSearchInputBaseLogicFn($scope, element, QuickSearchService, FacetService, $uibModalStack) {
+
     $scope.results = [];
 
     function setBioSpecimen(result) {
@@ -143,6 +144,7 @@ module ngApp.components.quickSearch.directives {
           selectItem("down");
           break;
         case KeyCode.Esc:
+
           if ($uibModalStack) {
             $uibModalStack.dismissAll();
           }
@@ -257,8 +259,8 @@ module ngApp.components.quickSearch.directives {
     };
   }
 
-  function QuickSearchInputHome(QuickSearchService: IQuickSearchService, FacetService,
-                                $compile: ng.ICompileService, $uibModalStack): ng.IDirective {
+
+  function QuickSearchInputHome(QuickSearchService: IQuickSearchService, FacetService): ng.IDirective {
     return {
       restrict: "EA",
       replace: true,

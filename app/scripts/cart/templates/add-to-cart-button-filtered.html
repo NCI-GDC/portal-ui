@@ -1,17 +1,17 @@
 <div class="btn-group"
-     data-dropdown
+     data-uib-dropdown
      data-dropdown-append-to-body
      data-on-toggle="ctrl.calculateFileCount()">
     <button type="button"
             class="btn btn-default dropdown-toggle fa fa-shopping-cart"
             style="line-height: 1.42"
-            dropdown-toggle
+            uib-dropdown-toggle
             data-ng-click="ctrl.getFiles()"
             aria-label="Case Actions">
         <span class="caret" style="margin-left: 0.5rem"></span>
         <span class="icon-btn-label">Case Actions</span>
     </button>
-    <ul class="dropdown-menu" role="menu">
+    <ul uib-dropdown-menu role="menu">
         <li aria-label="{{ 'Add all related files' | translate }}"
             role="button"
             data-ng-class="{ disabled: !ctrl.files.length }">

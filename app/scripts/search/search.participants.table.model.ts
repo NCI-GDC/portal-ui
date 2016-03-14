@@ -55,7 +55,7 @@ module ngApp.search.models {
             name: "Project",
             id: "project.project_id",
             td: row => '<a href="projects/'+row.project.project_id +
-                     '" data-tooltip="' + row.project.name +
+                     '" data-uib-tooltip="' + row.project.name +
                      '" data-tooltip-popup-delay=1000' +
                      '" data-tooltip-append-to-body="true">' +
                      row.project.project_id +
@@ -94,56 +94,56 @@ module ngApp.search.models {
             tdClassName: 'text-right'
           }, {
             name: 'Array',
-            th: '<abbr data-tooltip="Raw microarray data">Array</abbr>',
+            th: '<abbr data-uib-tooltip="Raw microarray data">Array</abbr>',
             id: 'Array',
             td: (row, $scope) => dataTypeWithFilters("Raw microarray data", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'Seq',
-            th: '<abbr data-tooltip="Raw sequencing data">Seq</abbr>',
+            th: '<abbr data-uib-tooltip="Raw sequencing data">Seq</abbr>',
             id: 'Seq',
             td: (row, $scope) => dataTypeWithFilters("Raw sequencing data", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: "SNV",
-            th: '<abbr data-tooltip="Simple nucleotide variation">SNV</abbr>',
+            th: '<abbr data-uib-tooltip="Simple nucleotide variation">SNV</abbr>',
             id: "SNV",
             td: (row, $scope) => dataTypeWithFilters("Simple nucleotide variation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'CNV',
-            th: '<abbr data-tooltip="Copy number variation">CNV</abbr>',
+            th: '<abbr data-uib-tooltip="Copy number variation">CNV</abbr>',
             id: 'cnv',
             td: (row, $scope) => dataTypeWithFilters("Copy number variation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'SV',
-            th: '<abbr data-tooltip="Structural rearrangement">SV</abbr>',
+            th: '<abbr data-uib-tooltip="Structural rearrangement">SV</abbr>',
             id: 'sv',
             td: (row, $scope) => dataTypeWithFilters("Structural rearrangement", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'Exp',
-            th: '<abbr data-tooltip="Gene expression">Exp</abbr>',
+            th: '<abbr data-uib-tooltip="Gene expression">Exp</abbr>',
             id: 'Exp',
             td: (row, $scope) => dataTypeWithFilters("Gene expression", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'PExp',
-            th: '<abbr data-tooltip="Protein expression">PExp</abbr>',
+            th: '<abbr data-uib-tooltip="Protein expression">PExp</abbr>',
             id: 'pexp',
             td: (row, $scope) => dataTypeWithFilters("Protein expression", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'Meth',
-            th: '<abbr data-tooltip="DNA methylation">Meth</abbr>',
+            th: '<abbr data-uib-tooltip="DNA methylation">Meth</abbr>',
             id: 'meth',
             td: (row, $scope) => dataTypeWithFilters("DNA methylation", row, $scope.$filter),
             thClassName: 'text-right',

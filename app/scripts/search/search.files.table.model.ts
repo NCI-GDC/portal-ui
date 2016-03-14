@@ -22,7 +22,7 @@ module ngApp.search.models {
         name: 'Add to Cart',
         id: "file_actions",
         td: row => '<add-to-cart-single-icon file="row" style="margin-right:5px"></add-to-cart-single-icon>' +
-                    '<download-button data-tooltip="Download" data-tooltip-popup-delay=1000 files="row"></download-button>'
+                    '<download-button data-uib-tooltip="Download" data-tooltip-popup-delay=1000 files="row"></download-button>'
       }, {
         name: "File UUID",
         id: "file_id",
@@ -75,7 +75,7 @@ module ngApp.search.models {
         td: row => {
           return _.unique(_.map(row.cases, p => {
             return '<a href="projects/' + p.project.project_id +
-                    '" data-tooltip="' + p.project.name +
+                    '" data-uib-tooltip="' + p.project.name +
                     '" data-tooltip-popup-delay=1000' +
                     '" data-tooltip-append-to-body="true">'+ p.project.project_id + '</a>';
           })).join('<br>');

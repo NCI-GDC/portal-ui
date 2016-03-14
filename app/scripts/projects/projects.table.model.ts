@@ -31,7 +31,6 @@ module ngApp.projects.models {
       value: x.content.value  
     }));
     fs.push({field: 'files.data_type', value: [dataType]});
-    
     return withFilter(_.sum(_.map(data, row => getDataType(row.summary.data_types, dataType))), fs, $filter);
   }
 
@@ -51,7 +50,7 @@ module ngApp.projects.models {
         name: "ID",
         id: "project_id",
         td: row => '<a href="projects/'+row.project_id +
-                     '" data-tooltip="' + row.name +
+                     '" data-uib-tooltip="' + row.name +
                      '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' +
                      row.project_id +
                    '</a>',
@@ -110,7 +109,7 @@ module ngApp.projects.models {
             total: (data, $scope) => dataTypeTotalWithFilters('Clinical', data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'Array',
-            th: '<abbr data-tooltip="Raw microarray data">Array</abbr>',
+            th: '<abbr data-uib-tooltip="Raw microarray data">Array</abbr>',
             id: 'Array',
             td: (row, $scope) => dataTypeWithFilters("Raw microarray data", row, $scope.$filter),
             thClassName: 'text-right',
@@ -118,7 +117,7 @@ module ngApp.projects.models {
             total: (data, $scope) => dataTypeTotalWithFilters("Raw microarray data", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'Seq',
-            th: '<abbr data-tooltip="Raw sequencing data">Seq</abbr>',
+            th: '<abbr data-uib-tooltip="Raw sequencing data">Seq</abbr>',
             id: 'Seq',
             td: (row, $scope) => dataTypeWithFilters("Raw sequencing data", row, $scope.$filter),
             thClassName: 'text-right',
@@ -126,7 +125,7 @@ module ngApp.projects.models {
             total: (data, $scope) => dataTypeTotalWithFilters("Raw sequencing data", data, $scope.$filter, $scope.LocationService)
           }, {
             name: "SNV",
-            th: '<abbr data-tooltip="Simple nucleotide variation">SNV</abbr>',
+            th: '<abbr data-uib-tooltip="Simple nucleotide variation">SNV</abbr>',
             id: "SNV",
             td: (row, $scope) => dataTypeWithFilters("Simple nucleotide variation", row, $scope.$filter),
             thClassName: 'text-right',
@@ -134,7 +133,7 @@ module ngApp.projects.models {
             total: (data, $scope) => dataTypeTotalWithFilters("Simple nucleotide variation", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'CNV',
-            th: '<abbr data-tooltip="Copy number variation">CNV</abbr>',
+            th: '<abbr data-uib-tooltip="Copy number variation">CNV</abbr>',
             id: 'cnv',
             td: (row, $scope) => dataTypeWithFilters("Copy number variation", row, $scope.$filter),
             thClassName: 'text-right',
@@ -142,7 +141,7 @@ module ngApp.projects.models {
             total: (data, $scope) => dataTypeTotalWithFilters("Copy number variation", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'SV',
-            th: '<abbr data-tooltip="Structural rearrangement">SV</abbr>',
+            th: '<abbr data-uib-tooltip="Structural rearrangement">SV</abbr>',
             id: 'sv',
             td: (row, $scope) => dataTypeWithFilters("Structural rearrangement", row, $scope.$filter),
             thClassName: 'text-right',
@@ -150,7 +149,7 @@ module ngApp.projects.models {
             total: (data, $scope) => dataTypeTotalWithFilters("Structural rearrangement", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'Exp',
-            th: '<abbr data-tooltip="Gene expression">Exp</abbr>',
+            th: '<abbr data-uib-tooltip="Gene expression">Exp</abbr>',
             id: 'Exp',
             td: (row, $scope) => dataTypeWithFilters("Gene expression", row, $scope.$filter),
             thClassName: 'text-right',
@@ -158,7 +157,7 @@ module ngApp.projects.models {
             total: (data, $scope) => dataTypeTotalWithFilters("Gene expression", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'PExp',
-            th: '<abbr data-tooltip="Protein expression">PExp</abbr>',
+            th: '<abbr data-uib-tooltip="Protein expression">PExp</abbr>',
             id: 'pexp',
             td: (row, $scope) => dataTypeWithFilters("Protein expression", row, $scope.$filter),
             thClassName: 'text-right',
@@ -166,7 +165,7 @@ module ngApp.projects.models {
             total: (data, $scope) => dataTypeTotalWithFilters("Protein expression", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'Meth',
-            th: '<abbr data-tooltip="DNA methylation">Meth</abbr>',
+            th: '<abbr data-uib-tooltip="DNA methylation">Meth</abbr>',
             id: 'meth',
             td: (row, $scope) => dataTypeWithFilters("DNA methylation", row, $scope.$filter),
             thClassName: 'text-right',

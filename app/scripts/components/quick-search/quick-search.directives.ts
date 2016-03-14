@@ -251,7 +251,7 @@ module ngApp.components.quickSearch.directives {
       replace: true,
       templateUrl: "components/quick-search/templates/quick-search-input.html",
       link: function($scope, element) {
-        QuickSearchInputBaseLogicFn.call(this, $scope, element, QuickSearchService, FacetService, $modalStack);
+        QuickSearchInputBaseLogicFn.call(this, $scope, element, QuickSearchService, FacetService, $uibModalStack);
         element.after($compile("<quick-search-dropdown></quick-search-dropdown>")($scope));
       }
     };

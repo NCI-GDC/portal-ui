@@ -62,7 +62,7 @@ module ngApp.home.controllers {
         {title: "Files", value: 0, icon: "fa fa-file-o", url: "/search/f"},
         {title: "Primary Sites", value: 0, icon: "cancer_type_hardcode", url: "/projects/t"},
         //{title: "Cancer Types", value: 0, icon: "fa fa-heartbeat", url: "/projects/t"},
-        {title: "Downloads to Date", value: 0, icon: "fa fa-download", url: "#"}
+        {title: "Downloads to Date", value: 0, icon: "fa fa-download", url: "/reports/data-download-statistics"}
       ];
 
 
@@ -242,19 +242,41 @@ module ngApp.home.controllers {
       return this.HomeService.getProjects(params);
     }
 
-    fetchAllProjects() {
-      this.getProjects()
+    fetchAllStatsData() {
+      var _controller = this;
+
+      _controller.getProjects()
         .then((projectData) => {
-          this.projectData = projectData;
-          this.chartData = this.transformProjectData(projectData);
-        });
+          _controller.projectData = projectData;
+          _controller.chartData = _controller.transformProjectData(projectData);
+        })
+        .then(() => {
+          _controller.fetchReportData({size: _controller.projectStatsList[_controller.projectStatsOrdering.projects].value});
+      });
+    }
+
+    fetchReportData(params: Object = {}) {
+      var _controller = this;
+
+      _controller.HomeService.getReports(params).then(function(reportData) {
+        var hits = _.get(reportData, 'hits', false);
+
+        if (! hits) {
+          return;
+        }
+
+        _controller.projectStatsList[_controller.projectStatsOrdering.downloads].value = 0;
+
+        _controller.projectStatsList[_controller.projectStatsOrdering.downloads].value = _.reduce(hits, function(total, hit) {
+          return total + parseInt(_.get(hit, "count", 0));
+        }, 0);
+
+      })
     }
 
     refresh() {
-
       this.fetchExampleSearchQueryStats();
-      this.fetchAllProjects();
-
+      this.fetchAllStatsData();
     }
 
   }

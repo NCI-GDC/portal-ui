@@ -6,10 +6,14 @@ module ngApp.home.services {
   import IParticipants = ngApp.participants.IParticipant;
   import IFiles = ngApp.files.models.IFiles;
 
+  import IReportsService = ngApp.reports.services.IReportsService;
+  import IReports = ngApp.reports.models.IReports;
+
   export interface IHomeService {
     getProjects(params?: Object): ng.IPromise<IProjects>;
     getParticipants(params: Object = {}): ng.IPromise<IParticipants>;
     getFiles(params: Object = {}): ng.IPromise<IFiles>;
+    getReports(params: Object = {}): ng.IPromise<IReports>;
   }
 
   class HomeService implements IHomeService {
@@ -19,7 +23,7 @@ module ngApp.home.services {
     private filesDataStore: restangular.IElement;
 
     /* @ngInject */
-    constructor(Restangular: restangular.IService, private LocationService: ILocationService,
+    constructor(Restangular: restangular.IService, private ReportsService: IReportsService, private LocationService: ILocationService,
                 private $rootScope: IRootScope, private $q: ng.IQService) {
       this.projectsDataSource = Restangular.all("projects");
       this.participantsDataSource = Restangular.all("cases");
@@ -146,11 +150,34 @@ module ngApp.home.services {
       return prom;
     }
 
+    getReports(params: Object = {}): ng.IPromise<IReports> {
+
+      var defaultOptions = {
+        expand: [
+        "data_access",
+        "data_subtypes",
+        "tags",
+        "countries",
+        "data_formats",
+        "experimental_strategies",
+        "platforms",
+        "user_access_types",
+        "data_types",
+        "centers"
+      ]},
+      options = {};
+
+      _.assign(options, defaultOptions, params);
+
+      return this.ReportsService.getReports(options);
+    }
+
+
 
 
   }
 
   angular
-    .module("home.services", [])
+    .module("home.services", ["reports.services"])
     .service("HomeService", HomeService);
 }

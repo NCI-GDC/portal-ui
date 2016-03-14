@@ -1,0 +1,65 @@
+<div class="quick-search-directive-container">
+  <i class="fa fa-search search-input-icon"></i>
+  <label for="quick-search" class="hidden">Quick Search:&nbsp;</label>
+  <input id="quick-search" class="form-control search-input" type="text"
+         placeholder="Search by disease type, primary site, project name..."
+         data-ng-model="searchQuery"
+         data-ng-change="search()"
+         data-ng-keydown="keyboardListener($event)"
+         autofocus
+         title="Search for IDs">
+  <div class="quick-search-results-container" data-ng-show="results.hits">
+    <div class="quick-search-result-listing-container">
+      <ul class="quick-search-results-listing">
+        <li tab-index="0"
+            data-ng-repeat="item in results.hits track by item._id"
+            data-ng-class="{ selected: item.selected }" class="quick-search-result row"
+            data-ng-click="goTo(item._type, item._id)"
+            data-ng-switch="item._type"
+            data-ng-mouseover="itemHover(item)">
+          <div class="col-xs-2">
+            <div class="icon-container">
+              <div class="outline"></div>
+              <i class="fa fa-user fa-2x icon" data-ng-switch-when="case"></i>
+              <i class="fa fa-file-o fa-2x icon " data-ng-switch-when="file"></i>
+              <i class="fa fa-files-o fa-2x icon" data-ng-switch-when="project"/></i>
+            </div>
+          </div>
+          <div class="col-xs-10">
+            <div class="entity-id">{{ item._id }}</div>
+            <div class="highlighted-terms" data-ng-switch-when="file">
+              <div data-ng-bind-html="item.file_name | highlight:searchQuery"></div>
+              <div data-ng-bind-html="item.file_id | highlight:searchQuery"></div>
+            </div>
+            <div class="highlighted-terms" data-ng-switch-when="project">
+              <divi data-ng-bind-html="item.project_id | highlight:searchQuery"></divi>
+              <div data-ng-bind-html="item.name | highlight:searchQuery"></div>
+              <div data-ng-bind-html="item.primary_site | highlight:searchQuery"></div>
+            </div>
+            <div class="highlighted-terms" data-ng-switch-when="case">
+              <div data-ng-bind-html="item.case_id | highlight:searchQuery"></div>
+              <div data-ng-bind-html="item.project.project_id | highlight:searchQuery"></div>
+              <div data-ng-if="item.bioSpecimen.sample_id"
+                  data-ng-bind-html="item.sample_ids | highlight:searchQuery"></div>
+              <div data-ng-if="item.bioSpecimen.sample_id"
+                  data-ng-bind-html="item.submitter_sample_ids | highlight:searchQuery"></div>
+              <div data-ng-if="item.bioSpecimen.portion_id"
+                  data-ng-bind-html="item.portion_ids | highlight:searchQuery"></div>
+              <div data-ng-if="item.bioSpecimen.portion_id"
+                  data-ng-bind-html="item.submitter_portion_ids | highlight:searchQuery"></div>
+              <div data-ng-if="item.bioSpecimen.analyte_id"
+                  data-ng-bind-html="item.analyte_ids | highlight:searchQuery"></div>
+              <div data-ng-if="item.bioSpecimen.analyte_id"
+                  data-ng-bind-html="item.submitter_analyte_ids | highlight:searchQuery"></div>
+              <div data-ng-if="item.bioSpecimen.aliquot_id"
+                  data-ng-bind-html="item.aliquot_ids | highlight:searchQuery"></div>
+              <div data-ng-if="item.bioSpecimen.aliquot_id"
+                  data-ng-bind-html="item.submitter_aliquot_ids | highlight:searchQuery"></div>
+            </div>
+          </div>
+        </li>
+        <li><div class="result-summary"> Total of <strong data-ng-bind="results.hits.length"></strong> Result(s) Found...</div></li>
+      </ul>
+    </div>
+  </div>
+</div>

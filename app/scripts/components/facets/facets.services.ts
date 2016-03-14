@@ -25,6 +25,7 @@ module ngApp.components.facets.services {
         "cases": "project.project_id",
         "projects": "project_id"
       };
+
       var options: any = {
         query: query
       };
@@ -295,4 +296,3 @@ module ngApp.components.facets.services {
       .service("FacetsConfigService", FacetsConfigService)
       .service("FacetService", FacetService);
 }
-

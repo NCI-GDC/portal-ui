@@ -383,13 +383,16 @@ module ngApp.components.gql {
               if (($scope.parts.needle.toUpperCase() && !$scope.parts.op) || [T.AND, T.OR].indexOf($scope.parts.op) !== -1) {
                 // is_field_string
                 $scope.mode = Mode.Field;
-                
                 $scope.ddItems = _.filter(mapping, (m: IDdItem) => {
                   return (
                     m && 
-                    m.full && 
-                    GqlService.contains(m.full.toString(), $scope.parts.needle.replace(T.LPARENS, T.NOTHING)) && 
-                    GqlService.clean(m.full.toString())
+                    m.full &&
+                    GqlService.clean(m.full.toString()) && 
+                    (
+                        GqlService.contains(m.full.toString(), $scope.parts.needle.replace(T.LPARENS, T.NOTHING)) ||
+                        GqlService.contains(m.type, $scope.parts.needle.replace(T.LPARENS, T.NOTHING))
+                    ) 
+                    
                   );
                 });
               } else if ([T.EQ, T.NE].indexOf($scope.parts.op) !== -1) {
@@ -413,7 +416,6 @@ module ngApp.components.gql {
           } catch (Error) {
             Error.human = GqlService.humanError($scope.query, Error); 
             $scope.error = Error;
-            console.log($scope.error);
             $scope.gql = null;
           }
         }
@@ -535,10 +537,6 @@ module ngApp.components.gql {
                             item.full;   
             
             $scope.query = newLeft + insert + newRight;
-            console.log($scope.parts);
-            console.log(left, right);
-            console.log(newLeft, newRight);
-            console.log(item.full, insert, $scope.query);
             GqlService.setPos(element[0], (newLeft + insert).length);
           } else if ($scope.mode === Mode.Quoted) {
             var newLeft = GqlService.lhsRewrite(left, needleLength + 1);
@@ -624,8 +622,7 @@ module ngApp.components.gql {
     }
     
   angular.module("components.gql", [
-      "gql.lexer",
-      "gql.parser"
+      "gql.filters",
   ])
     .service("GqlService", GqlService)
     .directive("gql", gqlInput)
@@ -731,6 +728,7 @@ module ngApp.components.gql {
     description?: string;
     value?: string;
     type?: string;
+    doc_type?: string;
     icon?: string;
     active?: boolean;
     text: string;
@@ -739,6 +737,8 @@ module ngApp.components.gql {
   interface IDdItem {
     field: string | number;
     full: string | number;
+    description?: string;
+    type?: string;
     active?: boolean;
   }
 

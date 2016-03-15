@@ -314,6 +314,7 @@ module ngApp.components.quickSearch.directives {
       };
     }
   }
+  
 
   angular
     .module("quickSearch.directives", [

@@ -16,7 +16,8 @@
        data-ng-if="!e.doc_type"
        style="margin-right: 10px;background: #5b5151;padding: 1rem;color: #fff;">
     </i>
-    {{::e.field}}<i data-ng-if="e.doc_type" style="color:#888"> - Description to come</i>
+    <span data-ng-bind-html="e.field | gqlHighlight:query"></span>
+    <span data-ng-if="e.doc_type" style="color:#888" data-ng-bind-html="e.type | gqlHighlight:query"></span>
   </li>
   <li data-ng-click="handleOnClickDownArrow()" class="Gql_dropdown_arrow">
     <i ng-style="{color: ddItems.length > offset + limit ? '#333' : '#ccc'}" class="fa fa-sort-desc"></i>

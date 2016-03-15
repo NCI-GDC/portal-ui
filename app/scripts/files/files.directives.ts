@@ -95,8 +95,8 @@ module ngApp.files.directives {
               animation: false,
               size: "lg",
               resolve: {
-                fileID: function () {
-                  return _.first(_.pluck(files, "file_id"));
+                file: function() {
+                  return _.first(files);
                 },
                 completeCallback: function() {
                   return turnSpinnerOff;

@@ -332,8 +332,8 @@ module ngApp.components.gql {
         var INACTIVE = -1;
         var T = GqlTokens;
         var ds = Restangular.all("gql");
-        var mapping;
-        ds.get('_mapping', {}).then(m => mapping = m);
+        var mapping: IDdItem[];
+        ds.get('_mapping', {}).then((m: IDdItem[]) => mapping = m);
               
         $scope.active = INACTIVE;
         $scope.offset = 0;
@@ -354,8 +354,20 @@ module ngApp.components.gql {
                 return [T.IN, T.AND].indexOf(e.description) !== -1;
               })) {           
             $scope.mode = Mode.Op;
-  	        
-            $scope.ddItems = GqlService.parseGrammarError($scope.parts.needle, $scope.error)
+            
+            $scope.ddItems = _.filter(
+                GqlService.parseGrammarError($scope.parts.needle, $scope.error), 
+                (item: IDdItem): boolean => {
+                    var op: IDdItem = mapping[$scope.parts.op.toLowerCase()] || {}; 
+                    if ((op.type || '') === 'long' || (op.full || '').toString().indexOf('datetime') != -1) {
+                        return [T.EQ, T.NE, T.GT, T.GTE, T.LT, T.LTE, T.IS, T.NOT].indexOf(item.full.toString()) != -1
+                    } else if (op.type === 'string') {
+                        return [T.EQ, T.NE, T.IN, T.EXCLUDE, T.IS, T.NOT].indexOf(item.full.toString()) != -1
+                    } else {
+                        return false;
+                    } 
+                }
+            );
           }  else if ($scope.error && _.some($scope.error.expected, (e): boolean => {
                 return [T.MISSING].indexOf(e.description) !== -1;
               })) {
@@ -603,6 +615,10 @@ module ngApp.components.gql {
   var Tokens: ITokens = {
       EQ: "=",
       NE: "!=",
+      GT: ">",
+      GTE: ">=",
+      LT: "<",
+      LTE: "<=",
       IN: "IN",
       EXCLUDE: "EXCLUDE",
       OR: "OR",
@@ -683,6 +699,10 @@ module ngApp.components.gql {
     OR: string;
     IS: string;
     NOT: string;
+    GT: string;
+    GTE: string;
+    LT: string;
+    LTE: string;  
     MISSING: string;
     LBRACKET: string;
     RBRACKET: string;

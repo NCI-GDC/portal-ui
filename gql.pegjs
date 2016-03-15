@@ -88,7 +88,7 @@ MissingExpr
   }
 
 CompareExpr
-  = field:Field _* operator:CompareOp _* term:Comparable
+  = field:Field operator:CompareOp term:Comparable
   {
     return term_response(operator,field,term);
   }

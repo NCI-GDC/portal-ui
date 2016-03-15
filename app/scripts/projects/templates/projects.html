@@ -19,11 +19,14 @@
             </span>
           </span>
         </div>
-        <!--<div class="col-sm-2 text-right">
+      </div>
+
+      <div class="row" data-ng-if="cfc.currentFilters.length">
+        <div class="col-sm-12 text-right">
           <a class="btn btn-primary" data-translate data-ng-click="prsc.gotoQuery()">
-            <i class="fa fa-gears"></i> <span data-translate>Data Search</span>
+            <i class="fa fa-gears"></i> <span data-translate>Open Query in Data Page</span>
           </a>
-        </div>-->
+        </div>
       </div>
 
       <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0" data-translate>

@@ -1,20 +1,23 @@
 module ngApp.projects.models {
   import ILocationService = ngApp.components.location.ILocationService;
+
+  export type IWithFilterFn = (value: number, filters: Object[], $filter: ng.IFilterService) => string;
+
   
-  // TODO integrate this better 
-  function withFilterF(value: number, filters: Object[], $filter: ng.IFilterService): string {
-    var filterString = $filter("makeFilter")(filters, true);
-    var href = 'search/f?filters=' + filterString;
-    var val = $filter("number")(value);
-    return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
+  // TODO integrate this better
+
+  function filterFactory(url: string) : IWithFilterFn {
+      return function(value: number, filters: Object[], $filter: ng.IFilterService)  {
+        var filterString = _.isObject(filters) ? $filter("makeFilter")(filters, true) : null;
+        var href = url + (filterString ? "?filters=" + filterString : "");
+        var val = $filter("number")(value);
+        return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
+      };
   }
-  
-  function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
-    var filterString = $filter("makeFilter")(filters, true);
-    var href = 'search/c?filters=' + filterString;
-    var val = $filter("number")(value);
-    return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
-  }
+
+  var withFilterF : IWithFilterFn = filterFactory("search/f"),
+      withFilter : IWithFilterFn = filterFactory("search/c");
+
   function getDataType(dataTypes: Object[], dataType:string): number {
     var data = _.find(dataTypes, {data_type: dataType});
     return data ? data.case_count : 0;
@@ -40,6 +43,61 @@ module ngApp.projects.models {
       value: x.content.value  
     }));
     return withFilter(value, fs, $filter);
+  }
+
+  function hasFilters(LocationService: ILocationService) : boolean {
+    var filters = _.get(LocationService.filters(), 'content', null),
+        hasFiltersFlag = false;
+
+    if (! filters) {
+      return hasFiltersFlag;
+    }
+
+    for (var i = 0; i < filters.length; i++) {
+      var field = _.get(filters[i], 'content.field', false);
+
+      if (! field) {
+        continue;
+      }
+
+      hasFiltersFlag = true;
+      break;
+    }
+
+    return hasFiltersFlag;
+  }
+
+  function withProjectFilters(data: Object[], $filter: ng.IFilterService, LocationService: ILocationService, withFilterFn?: IWithFilterFn) : string {
+
+    var projectIDs = [],
+        totalCount = 0,
+        wFilterFn : IWithFilterFn = withFilterFn || withFilter,
+        fs = [];
+
+    _.map(data, function(d) {
+
+
+      if (! _.has(d, 'project_id')) {
+        return;
+      }
+
+      projectIDs.push(d.project_id);
+
+      var countKey = 'summary.case_count';
+
+      if ( withFilterFn !== withFilter ) {
+        countKey = 'summary.file_count';
+      }
+
+      totalCount += _.get(d, countKey, 0);
+
+    });
+
+    if (hasFilters(LocationService) && projectIDs.length) {
+      fs.push({field: 'cases.project.project_id', value: projectIDs});
+    }
+
+    return wFilterFn(totalCount, fs, $filter);
   }
 
   var projectTableModel = {
@@ -93,7 +151,7 @@ module ngApp.projects.models {
         hidden: false,
         thClassName: 'text-right',
         tdClassName: 'text-right',
-        total: (data, $scope) => withCurrentFilters(_.sum(_.pluck(data, "summary.case_count")), $scope.$filter, $scope.LocationService)
+        total: (data, $scope) => withProjectFilters(data, $scope.$filter, $scope.LocationService, withFilter)
       }, {
         name: "Available Cases per Data Type",
         id: "summary.data_types",
@@ -190,7 +248,7 @@ module ngApp.projects.models {
         sortable: true,
         thClassName: 'text-right',
         tdClassName: 'text-right',
-        total: (data, $scope) => withCurrentFilters(_.sum(_.pluck(data, "summary.file_count")), $scope.$filter, $scope.LocationService)
+        total: (data, $scope) =>  withProjectFilters(data, $scope.$filter, $scope.LocationService, withFilterF)
       }, {
         name: "File Size",
         id: "file_size",

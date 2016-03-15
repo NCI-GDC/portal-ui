@@ -82,7 +82,7 @@ module ngApp.home.controllers {
           fileCount: null
         },
         {
-          description: "All Asian cases with disease type Thyroid Carcinoma project",
+          description: "All Asian cases with disease type Thyroid Carcinoma",
           filters: {"op":"and","content":[{"op":"in","content":{"field":"cases.project.disease_type","value":["Thyroid Carcinoma"]}},{"op":"in","content":{"field":"cases.clinical.race","value":["asian"]}}]},
           caseCount: null,
           fileCount: null

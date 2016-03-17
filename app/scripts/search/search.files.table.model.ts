@@ -31,6 +31,13 @@ module ngApp.search.models {
         hidden: true,
         tdClassName: 'truncated-cell'
       }, {
+        name: "File Submitter ID",
+        id: "submitter_id",
+        td: row => row.submitter_id,
+        sortable: true,
+        hidden: true,
+        tdClassName: 'truncated-cell'
+      }, {
         name: "My Projects",
         id: "my_projects",
         td: (row, $scope) => {
@@ -82,9 +89,9 @@ module ngApp.search.models {
         },
         sortable: true
       }, {
-        name: "Data Type",
-        id: "data_type",
-        td: row => row.data_type,
+        name: "Data Category",
+        id: "data_category",
+        td: row => row.data_category,
         sortable: true
       }, {
         name: "Data Format",
@@ -116,9 +123,9 @@ module ngApp.search.models {
         thClassName: 'text-right',
         tdClassName: 'text-right'
       }, {
-        name: "Data Subtype",
-        id: "data_subtype",
-        td: (row, $scope) => row.data_subtype && $scope.$filter("humanify")(row.data_subtype),
+        name: "Data Type",
+        id: "data_type",
+        td: (row, $scope) => row.data_type && $scope.$filter("humanify")(row.data_type),
         sortable: false,
         hidden: true
       }, {
@@ -151,7 +158,7 @@ module ngApp.search.models {
       "state",
       "file_name",
       "data_type",
-      "data_subtype",
+      "data_category",
       "data_format",
       "file_size",
       "file_id",
@@ -170,11 +177,10 @@ module ngApp.search.models {
     ],
     facets: [
       {name: "file_id", title: "File", collapsed: false, facetType: "free-text", placeholder: "File name or ID", removable: false },
+      {name: "data_category", title: "Data Category", collapsed: false, facetType: "terms", removable: false },
       {name: "data_type", title: "Data Type", collapsed: false, facetType: "terms", removable: false },
-      {name: "data_subtype", title: "Data Subtype", collapsed: false, facetType: "terms", removable: false },
       {name: "experimental_strategy", title: "Experimental Strategy", collapsed: false, facetType: "terms", removable: false },
       {name: "data_format", title: "Data Format", collapsed: false, facetType: "terms", removable: false },
-      {name: "origin", title: "File Origin", collapsed: true, facetType: "terms", removable: false },
       {name: "platform", title: "Platform", collapsed: true, facetType: "terms", removable: false },
       {name: "access", title: "Access Level", collapsed: true, facetType: "terms", removable: false },
       {name: "center.name", title: "Data Submitter", collapsed: true, facetType: "terms", removable: false },

@@ -203,6 +203,7 @@ angular
       "ngApp.annotations",
       "ngApp.home",
       "ngApp.projects",
+      "ngApp.cases",
       "ngApp.components",
       "ngApp.cart",
       "ngApp.notFound",

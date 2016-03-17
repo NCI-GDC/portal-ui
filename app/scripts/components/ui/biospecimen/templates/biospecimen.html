@@ -3,7 +3,17 @@
     <div class="panel panel-default">
       <div class="panel-heading clearfix">
         <h3 class="panel-title pull-left" data-translate>Biospecimen</h3>
-        <data-download-button ng-if="bc.bioSpecimenFile" data-files=bc.bioSpecimenFile data-copy="Download Biospecimen XML" data-dlcopy="Downloading" data-classes="btn pull-right" />
+
+        <export-cases-button
+          ng-disabled="bc.hasBiospecimen"
+          data-filter-key-values=bc.biospecimenDataExportFilters
+          data-expands=bc.biospecimenDataExportExpands
+          data-filename=bc.biospecimenDataExportFileName
+          data-size=1
+          data-text-normal="Download JSON"
+          data-text-in-progress="Processing"
+          data-style-class="btn pull-right">
+        </export-cases-button>
       </div>
       <div class="panel-body">
         <div class="col-lg-5 col-md-5">

@@ -115,7 +115,7 @@ module ngApp.projects.controllers {
           op: "in",
           content: {
             field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
-            value: x.content.value  
+            value: x.content.value
           }
         }))
       }
@@ -242,6 +242,21 @@ module ngApp.projects.controllers {
           }
         }
       };
+
+      const projectId = project.project_id;
+      this.clinicalDataExportFilters = this.biospecimenDataExportFilters = {
+        'project.project_id': projectId
+      };
+      // TODO: Change `clinical` to those clinical objects (5 of them) once the data model change occurs.
+      this.clinicalDataExportExpands = ['clinical'];
+      this.clinicalDataExportFileName = 'clinical.project-' + projectId;
+
+      this.biospecimenDataExportExpands =
+        ['samples','samples.portions','samples.portions.analytes','samples.portions.analytes.aliquots',
+        'samples.portions.analytes.aliquots.annotations','samples.portions.analytes.annotations',
+        'samples.portions.submitter_id','samples.portions.slides','samples.portions.annotations',
+        'samples.portions.center'];
+      this.biospecimenDataExportFileName = 'biospecimen.project-' + projectId;
 
       AnnotationsService.getAnnotations({
         filters: {

@@ -84,6 +84,19 @@ module ngApp.cart.controllers {
         pluralDefaultText: "authorization levels"
       };
 
+      this.clinicalDataExportFilters = this.biospecimenDataExportFilters = {
+        'files.file_id': this.CartService.getFileIds()
+      };
+      // TODO: Change `clinical` to those clinical objects (5 of them) once the data model change occurs.
+      this.clinicalDataExportExpands = ['clinical'];
+      this.clinicalDataExportFileName = 'clinical.cart';
+
+      this.biospecimenDataExportExpands =
+        ['samples','samples.portions','samples.portions.analytes','samples.portions.analytes.aliquots',
+        'samples.portions.analytes.aliquots.annotations','samples.portions.analytes.annotations',
+        'samples.portions.submitter_id','samples.portions.slides','samples.portions.annotations',
+        'samples.portions.center'];
+      this.biospecimenDataExportFileName = 'biospecimen.cart';
     }
 
     getSummary() {
@@ -127,7 +140,14 @@ module ngApp.cart.controllers {
     }
 
     refresh(): void {
-      var filters = {'content': [{'content': {'field': 'files.file_id', 'value': this.CartService.getFileIds()}, 'op': 'in'}], 'op': 'and'};
+      const fileIds = this.CartService.getFileIds();
+      // in the event that our cart is empty
+      if (fileIds.length < 1) {
+        this.files = {};
+        return;
+      }
+
+      var filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
       var fileOptions = {
         filters: filters,
         fields: ['access', 'file_name', 'file_id', 'data_type', 'data_format', 'file_size', 'annotations.annotation_id'],
@@ -141,7 +161,7 @@ module ngApp.cart.controllers {
           this.getSummary();
         }
       });
-      this.ParticipantsService.getParticipants({filters: filters}, 'POST').then((data: IParticipants) => {
+      this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
         this.participantCount = data.pagination.total;
       });
     }

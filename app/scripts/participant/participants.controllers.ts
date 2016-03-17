@@ -45,6 +45,14 @@ module ngApp.participants.controllers {
         return result;
       }, []);
 
+      this.hasClinical = !participant.clinical;
+      this.clinicalDataExportFilters = {
+        'cases.case_id': participant.case_id
+      };
+      // TODO: Change `clinical` to those clinical objects (5 of them) once the data model change occurs.
+      this.clinicalDataExportExpands = ['clinical'];
+      this.clinicalDataExportFileName = 'clinical.case-' + participant.case_id;
+
       this.dataCategories = _.reduce(DataCategoryNames.slice(), function(result, name) {
         var type = _.find(participant.summary.data_categories, (item) => {
           return item.data_category.toLowerCase() === name.toLowerCase();

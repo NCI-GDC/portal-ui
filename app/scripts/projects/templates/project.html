@@ -2,6 +2,24 @@
   <h1 class="col-lg-12">
     <i class="fa fa-custom fa-annotations"></i>
     {{ ::prc.project.project_id }}
+
+    <export-cases-button
+      data-filter-key-values=prc.biospecimenDataExportFilters
+      data-expands=prc.biospecimenDataExportExpands
+      data-filename=prc.biospecimenDataExportFileName
+      data-text-normal="Download Biospecimen JSON"
+      data-text-in-progress="Processing"
+      data-style-class="btn pull-right">
+    </export-cases-button>
+
+    <export-cases-button
+      data-filter-key-values=prc.clinicalDataExportFilters
+      data-expands=prc.clinicalDataExportExpands
+      data-filename=prc.clinicalDataExportFileName
+      data-text-normal="Download Clinical JSON"
+      data-text-in-progress="Processing"
+      data-style-class="btn pull-right">
+    </export-cases-button>
   </h1>
 
   <div class="col-lg-12">

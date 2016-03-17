@@ -25,8 +25,20 @@ module ngApp.components.ui.biospecimen.controllers {
       this.activeBioSpecimenDocType = "sample";
 
       this.bioSpecimenFile =  _.find($scope.participant.files, (file) => {
-        return file.data_subtype.toLowerCase() === "biospecimen data";
+        return (file.data_subtype || '').toLowerCase() === "biospecimen data";
       });
+
+      const participant = $scope.participant;
+      this.hasBiospecimen = !participant.samples;
+      this.biospecimenDataExportFilters = {
+        'cases.case_id': participant.case_id
+      };
+      this.biospecimenDataExportExpands =
+        ['samples','samples.portions','samples.portions.analytes','samples.portions.analytes.aliquots',
+        'samples.portions.analytes.aliquots.annotations','samples.portions.analytes.annotations',
+        'samples.portions.submitter_id','samples.portions.slides','samples.portions.annotations',
+        'samples.portions.center'];
+      this.biospecimenDataExportFileName = 'biospecimen.case-' + participant.case_id;
     }
 
     displayBioSpecimenDocument(event: any, doc: any, type: string): void {

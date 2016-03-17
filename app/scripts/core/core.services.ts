@@ -71,7 +71,7 @@ module ngApp.core.services {
     'Structural Rearrangement',
     'DNA Methylation',
     'Clinical',
-    'Biospecimen',
+    'Biospecimen'
   ];
 
   var expNames = [

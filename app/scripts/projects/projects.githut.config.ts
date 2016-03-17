@@ -119,25 +119,7 @@ angular.module('projects.githut.config',[])
       href: projectSref
     },
     {
-      id:'Clinical',
-      display_name:['Clinical'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Raw microarray data',
-      display_name:['Array'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Raw sequencing data',
+      id:'Sequencing Data',
       display_name:['Seq'],
       scale:'ordinal',
       is_subtype:true,
@@ -146,34 +128,7 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
-      id:'Simple nucleotide variation',
-      display_name:['SNV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Copy number variation',
-      display_name:['CNV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Structural rearrangement',
-      display_name:['SV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Gene expression',
+      id:'Transcriptome Profiling',
       display_name:['Exp'],
       scale:'ordinal',
       is_subtype:true,
@@ -182,8 +137,8 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
-      id:'Protein expression',
-      display_name:['PExp'],
+      id:'Simple Nucleotide Variation',
+      display_name:['SNV'],
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
@@ -191,7 +146,25 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
-      id:'DNA methylation',
+      id:'Copy Number Variation',
+      display_name:['CNV'],
+      scale:'ordinal',
+      is_subtype:true,
+      dimensional:true,
+      colorgroup:'case_count',
+      href: dataTypeSref
+    },
+    {
+      id:'Structural Rearrangement',
+      display_name:['SV'],
+      scale:'ordinal',
+      is_subtype:true,
+      dimensional:true,
+      colorgroup:'case_count',
+      href: dataTypeSref
+    },
+    {
+      id:'DNA Methylation',
       display_name:['Meth'],
       scale:'ordinal',
       is_subtype:true,
@@ -200,8 +173,17 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
-      id:'Other',
-      display_name:['Other'],
+      id:'Clinical',
+      display_name:['Clin.'],
+      scale:'ordinal',
+      is_subtype:true,
+      dimensional:true,
+      colorgroup:'case_count',
+      href: dataTypeSref
+    },
+    {
+      id:'Biospecimen',
+      display_name:['Bio.'],
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,

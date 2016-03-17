@@ -30,8 +30,8 @@
         <tr>
           <th data-ng-if="groupingTitle" data-translate>{{::groupingTitle}}</th>
           <td data-ng-if="!groupingTitle"></td>
+          <th data-translate>Cases</th>
           <th data-translate>Files</th>
-          <th data-translate data-ng-if="config.showParticipant">Cases</th>
           <th data-translate data-ng-if="!config.hideFileSize">File Size</th>
         </tr>
       </thead>
@@ -42,6 +42,12 @@
             {{ item[config.displayKey] | humanify }}
           </th>
           <td class="text-right">
+            <a data-ng-if="item.case_count" data-ng-click="sc.addFilters(item, 'search.participants')">
+              {{ item.case_count | number }}
+            </a>
+            <span data-ng-if="!item.case_count">0</span>
+          </td>
+          <td class="text-right">
             <a data-ng-if="sc.LocationService.path().indexOf('/query') === 0" data-uib-tooltip-html-unsafe="Further filtering in this view can <br>be performed using the <br>Advanced Search above">
               {{ item[config.sortKey] | number }}
             </a>
@@ -50,12 +56,6 @@
             </a>
 
             <span data-ng-if="!item[config.sortKey]">0</span>
-          </td>
-          <td class="text-right" data-ng-if="config.showParticipant">
-            <a data-ng-if="item.case_count" data-ng-click="sc.addFilters(item, 'search.participants')">
-              {{ item.case_count | number }}
-            </a>
-            <span data-ng-if="!item.case_count">0</span>
           </td>
           <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.file_size.value | size }}</td>
         </tr>

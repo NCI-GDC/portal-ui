@@ -18,8 +18,8 @@
   <div data-ng-show="!dfc.collapsed" class="row">
       <div class="col-sm-12">
           <div class="input-group">
-          <span class="input-group-addon">since</span>
-          <input type="text" class="form-control"
+            <label for="{{::facet.value}}-date-input" class="input-group-addon">since</label>
+            <input id="{{::facet.value}}-date-input" type="text" class="form-control"
             id="{{ 'input-'+title }}"
             data-datepicker-template-url="components/facets/templates/datepicker.html"
             data-datepicker-popup-template-url="components/facets/templates/template-datepicker-popup.html"

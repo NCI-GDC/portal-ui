@@ -27,7 +27,7 @@
             {{ unitMap.label | humanify }}
         </label>
       </div>
-    <bar-chart data-ng-if="hasGraph === 'true'" data-data="dataUnitConverted"
+      <bar-chart data-ng-if="hasGraph === 'true' && !(!data.length && !rfc.error)" data-data="dataUnitConverted"
                data-max-num-bars="30"
                data-height="35">
     </bar-chart>
@@ -44,7 +44,7 @@
              class="form-control"
              style="border-radius: 0px;"
              placeholder="{{ min }}"
-             data-ng-model="lowerBound"
+             data-ng-model="rfc.lowerBound"
              aria-label="Min {{ field }}"
              data-ng-change="rfc.inputChanged()">
       <label for="to-{{title}}" class="input-group-addon" style="border-radius: 0px; border-right: 0px; border-left: 0px">To:</label>
@@ -53,7 +53,7 @@
              class="form-control"
              style="border-radius: 0px"
              placeholder="{{ max }}"
-             data-ng-model="upperBound"
+             data-ng-model="rfc.upperBound"
              aria-label="Max {{ field }}"
              data-ng-change="rfc.inputChanged()">
       <span class="input-group-btn">

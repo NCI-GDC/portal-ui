@@ -65,7 +65,7 @@ module ngApp.projects.controllers {
             "project_id",
             "primary_site",
             "summary.experimental_strategies.experimental_strategy",
-            "summary.data_types.data_type"
+            "summary.data_categories.data_category"
           ],
           size: 100
         }).then((data) => {
@@ -137,8 +137,8 @@ module ngApp.projects.controllers {
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService,
                 private AnnotationsService: IAnnotationsService,
-                private ExperimentalStrategyNames,
-                private DataTypeNames,
+                private ExperimentalStrategyNames: string[],
+                private DataCategoryNames: string[],
                 public $state: ng.ui.IStateService,
                 private $filter: ng.ui.IFilterService) {
       CoreService.setPageTitle("Project", project.project_id);
@@ -155,13 +155,19 @@ module ngApp.projects.controllers {
         return result;
       }, []);
 
-      this.dataTypes = _.reduce(DataTypeNames.slice(), function(result, name) {
-        var type = _.find(project.summary.data_types, (item) => {
-          return item.data_type.toLowerCase() === name.toLowerCase();
+      this.dataCategories = _.reduce(DataCategoryNames.slice(), function(result, name) {
+        var type = _.find(project.summary.data_categories, (item) => {
+          return item.data_category.toLowerCase() === name.toLowerCase();
         });
         if (type) {
           result.push(type);
+        } else {
+          result.push({
+            data_category: name,
+            file_count: 0
+          });
         }
+
         return result;
       }, []);
 
@@ -201,15 +207,15 @@ module ngApp.projects.controllers {
         }
       };
 
-      this.dataTypesConfig = {
+      this.dataCategoriesConfig = {
         sortKey: "file_count",
         showParticipant: true,
-        displayKey: "data_type",
-        defaultText: "data type",
+        displayKey: "data_category",
+        defaultText: "data category",
         hideFileSize: true,
-        tableTitle: "Case and File Counts by Data Type",
-        pluralDefaultText: "data types",
-        noResultsText: "No files or cases with Data Types",
+        tableTitle: "Case and File Counts by Data Category",
+        pluralDefaultText: "data categories",
+        noResultsText: "No files or cases with Data Categories",
         state: {
           name: "search.files"
         },
@@ -225,7 +231,7 @@ module ngApp.projects.controllers {
                     ]
                   },
                   {
-                    field: "files.data_type",
+                    field: "files.data_category",
                     value: [
                       value
                     ]

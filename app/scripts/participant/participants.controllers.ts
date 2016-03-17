@@ -20,8 +20,8 @@ module ngApp.participants.controllers {
                 private CoreService: ICoreService,
                 private LocationService: ILocationService,
                 private $filter: ng.IFilterService,
-                private ExperimentalStrategyNames,
-                private DataTypeNames,
+                private ExperimentalStrategyNames: string[],
+                private DataCategoryNames: string[],
                 private config: IGDCConfig) {
       CoreService.setPageTitle("Case", participant.case_id);
 
@@ -45,16 +45,16 @@ module ngApp.participants.controllers {
         return result;
       }, []);
 
-      this.dataTypes = _.reduce(DataTypeNames.slice(), function(result, name) {
-        var type = _.find(participant.summary.data_types, (item) => {
-          return item.data_type.toLowerCase() === name.toLowerCase();
+      this.dataCategories = _.reduce(DataCategoryNames.slice(), function(result, name) {
+        var type = _.find(participant.summary.data_categories, (item) => {
+          return item.data_category.toLowerCase() === name.toLowerCase();
         });
 
         if (type) {
           result.push(type);
         } else {
           result.push({
-            data_type: name,
+            data_category: name,
             file_count: 0
           });
         }
@@ -96,12 +96,12 @@ module ngApp.participants.controllers {
         }
       };
 
-      this.dataTypesConfig = {
+      this.dataCategoriesConfig = {
         sortKey: "file_count",
-        displayKey: "data_type",
-        defaultText: "data type",
+        displayKey: "data_category",
+        defaultText: "data category",
         hideFileSize: true,
-        pluralDefaultText: "data types",
+        pluralDefaultText: "data categories",
         state: {
           name: "search.files"
         },
@@ -117,7 +117,7 @@ module ngApp.participants.controllers {
                     ]
                   },
                   {
-                    field: "files.data_type",
+                    field: "files.data_category",
                     value: [
                       value
                     ]

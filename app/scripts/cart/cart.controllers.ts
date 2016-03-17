@@ -244,7 +244,7 @@ module ngApp.cart.controllers {
         filters: filters,
         size: size,
         from: 0
-      }).then((data) => {
+      }, 'POST').then((data) => {
         this.CartService.remove(_.pluck(data.hits, "file_id"));
       });
     }

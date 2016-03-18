@@ -88,17 +88,17 @@
         <div class="col-lg-5 col-md-5">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class="panel-title" data-translate>Data Category/Data Type</h3>
+              <h3 class="panel-title" data-translate>Data Information</h3>
             </div>
             <table id="data-information-table" class="table table-striped table-hover table-condensed table-bordered">
               <tbody>
               <tr>
-                <th scope="row" data-translate>Data Type</th>
-                <td>{{ ::fc.file.data_type || '--' | titlefy }}</td>
+                <th scope="row" data-translate>Data Category</th>
+                <td>{{ ::fc.file.data_category || '--' | titlefy }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>Data Subtype</th>
-                <td>{{ ::fc.file.data_subtype || '--' | titlefy }}</td>
+                <th scope="row" data-translate>Data Type</th>
+                <td>{{ ::fc.file.data_type || '--' | titlefy }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Experimental Strategy</th>
@@ -107,6 +107,17 @@
               <tr>
                 <th scope="row" data-translate>Platform</th>
                 <td>{{ ::fc.file.platform || '--' }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Data Submitter</th>
+                <td>{{ ::fc.file.center.short_name || '--' }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Tag</th>
+                <td>
+                  <span data-ng-if="!fc.file.tags">--</span>
+                  <span data-ng-if="fc.file.tags">{{ fc.file.tags.join(", ") }}</span>
+                </td>
               </tr>
               </tbody>
             </table>

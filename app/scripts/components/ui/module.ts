@@ -20,6 +20,7 @@ module ngApp.components.ui {
     "ui.file",
     "ui.search",
     "ui.string",
+    "ui.control",
     "ui.biospecimen",
     "ui.count-card"
   ]);

@@ -1,0 +1,22 @@
+<div tabindex="0" class="btn-group btn-split-control" data-uib-dropdown data-keyboard-nav data-is-open="uiControl.isOpen">
+
+  <!-- Make a split control -->
+  <a data-ng-if="uiControl.shouldSplitControl" id="{{uiControl.id}}" class="download-button-default btn btn-primary" href="javascript:void(0)">
+    <i data-ng-if="uiControl.iconClasses" class="{{uiControl.iconClasses}}" data-ng-class="{'fa-spinner fa-pulse': uiControl.isLoading}"></i>
+    <span data-translate>{{uiControl.controlLabelText}}</span>
+  </a>
+  <a data-ng-if="uiControl.shouldSplitControl" class="btn btn-primary" href="javascript:void(0)" data-uib-dropdown-toggle>
+    <span class="caret"></span>
+    <span class="sr-only" data-ng-bind="uiControl.srLabel"></span>
+  </a>
+
+  <!-- Merge the split control into one -->
+  <a data-ng-if="! uiControl.shouldSplitControl" id="{{uiControl.id}}" href="javascript:void(0)" class="download-button-default btn btn-primary" data-uib-dropdown-toggle>
+    <i data-ng-if="uiControl.iconClasses" class="{{uiControl.iconClasses}}" data-ng-class="{'fa-spinner fa-pulse': uiControl.isLoading}"></i>
+    <span data-translate>{{uiControl.controlLabelText}}</span>&nbsp;
+    <span class="caret"></span>
+  </a>
+
+  <ul data-uib-dropdown-menu role="menu" aria-labelledby="{{uiControl.id}}" data-ng-transclude>
+  </ul>
+</div>

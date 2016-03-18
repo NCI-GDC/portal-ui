@@ -61,20 +61,19 @@
   <section class="row items-pane" data-ng-if="cc.files.hits.length">
     <div class="col-md-12 col-lg-12 col-sm-12">
       <div class="pull-right">
-          <a download-manifest-cart data-downloader
-             type="button"
-             class="btn btn-primary"
-             id="manifest-button">
-            <i class="fa" ng-class="{'fa-file-code-o': !active, 'fa-spinner fa-pulse': active}"></i>
-            <span data-translate>Download Manifest File</span>
-          </a>
-          <a type="button"
-             download-button-all-cart data-downloader
-             id="download-all-button"
-             class="btn btn-primary">
-            <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i> <span data-translate>Download Cart (Web Browser)</span>
-          </a>
-
+          <split-control data-control-label-text="Download Metadata" data-no-split="true" data-icon-classes="fa fa-download">
+              <split-control-option data-option-label-text="Download Manifest File">
+                <a data-download-manifest-cart data-downloader id="manifest-button" href="javascript:void(0)">
+                  <i class="fa" ng-class="{'fa-file-code-o': !active, 'fa-spinner fa-pulse': active}"></i>
+                  <span data-translate>Download Manifest File</span>
+                </a>
+              </split-control-option>
+              <split-control-option data-option-label-text="Download Cart (Web Browser)">
+                <a download-button-all-cart data-downloader id="download-all-button" href="javascript:void(0)">
+                  <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i> <span data-translate>Download Cart (Web Browser)</span>
+                </a>
+              </split-control-option>
+          </split-control>
           <a type="button"
                   class="btn btn-danger"
                   id="clear-button"

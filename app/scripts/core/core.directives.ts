@@ -8,7 +8,7 @@ module ngApp.core.directives {
       scope: {
         redirect: "@"
       },
-      controller: function($scope, $element, $window){
+      controller: function($scope, $element, $window) {
         $element.on('click', function(){
           var redirect = config.auth;
           var authQuery = "";
@@ -28,7 +28,6 @@ module ngApp.core.directives {
           var interval = setInterval(() => {
             try {
               if (win.document && win.document.URL.indexOf($window.location.pathname) > -1) {
-                var nextUrl = win.document.URL;
                 win.close();
                 setTimeout(() => {
                   clearInterval(interval);
@@ -52,8 +51,8 @@ module ngApp.core.directives {
       scope: {
         redirect: "@"
       },
-      controller: function($scope,$element,$window){
-        $element.on('click', function(){
+      controller: function($scope, $element, $window) {
+        $element.on('click',function() {
           var redirect = config.auth;
           var authQuery = "";
 
@@ -67,16 +66,7 @@ module ngApp.core.directives {
             authQuery = "?next=" + $window.location.pathname;
           }
 
-          var win = open(redirect + authQuery, 'Auth', 'width=800, height=600');
-
-          var interval = setInterval(() => {
-            var nextUrl = win.document.URL;
-            win.close();
-            setTimeout(() => {
-              $window.location.href = nextUrl;
-              clearInterval(interval);
-            }, 1000);
-          }, 500);
+          $window.location = redirect + authQuery;
         });
       }
     }

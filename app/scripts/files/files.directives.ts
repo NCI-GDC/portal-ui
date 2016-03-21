@@ -1,4 +1,73 @@
 module ngApp.files.directives {
+  import IUserService = ngApp.components.user.services.IUserService;
+  import ICartService = ngApp.cart.services.ICartService;
+
+  function DownloadMetadataButton(): ng.IDirective {
+    return {
+      restrict: "E",
+      replace: true,
+      scope: {
+        filename: '@',
+        textNormal: '@',
+        textInProgress: '@',
+        styleClass: '@',
+        icon: '@'
+      },
+      template: '<a ng-class="[styleClass || \'btn btn-primary\']" data-downloader ng-click="ctrl.onClick()"> \
+              <i class="fa {{icon || \'fa-download\'}}" ng-class="{\'fa-spinner\': active, \'fa-pulse\': active}" /> \
+              <span ng-if="textNormal"><span ng-if="! active">&nbsp;{{ ::textNormal }}</span> \
+              <span ng-if="active">&nbsp;{{ ::textInProgress }}</span></span></a>',
+      controllerAs: 'ctrl',
+      controller: function($scope: ng.IScope, $attrs, $element, $uibModal, CartService: ICartService, UserService: IUserService, config: IGDCConfig) {
+        const url = config.api + '/files';
+
+        const inProgress = () => {
+          $scope.active = true;
+          $attrs.$set('disabled', 'disabled');
+        };
+
+        const done = () => {
+          $scope.active = false;
+          $element.removeAttr('disabled');
+        };
+
+        const isLoggedIn = UserService.currentUser;
+        const authorizedInCart = CartService.getAuthorizedFiles();
+        const unauthorizedInCart = CartService.getUnauthorizedFiles();
+
+        const fileIds = CartService.getFileIds();
+        const filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
+        const params = _.merge({
+          attachment: true,
+          filters: filters,
+          expand: [
+            'annotations',
+            'archive',
+            'associated_entities',
+            'center',
+            'analysis',
+            'analysis.input_files',
+            'analysis.metadata',
+            'analysis.metadata_files',
+            'analysis.downstream_analyses',
+            'analysis.downstream_analyses.output_files',
+            'reference_genome',
+            'index_file'
+          ],
+          format: 'JSON',
+          pretty: true,
+          size: fileIds.length,
+        }, $scope.filename ? {filename: $scope.filename} : {});
+
+        this.onClick = () => {
+          const checkProgress = $scope.download(params, url, () => $element, 'POST');
+          checkProgress(inProgress, done);
+        };
+        $scope.active = false;
+      }
+
+    };
+  }
 
   function DownloadButton($log: ng.ILogService, UserService, $uibModal, config: IGDCConfig): ng.IDirective {
     return {
@@ -132,5 +201,6 @@ module ngApp.files.directives {
   angular
     .module("files.directives", ["restangular", "components.location", "user.services", "core.services", "ui.bootstrap", "files.controller"])
     .directive("downloadButton", DownloadButton)
+    .directive("downloadMetadataButton", DownloadMetadataButton)
     .directive("bamSlicingButton", BAMSlicingButton);
 }

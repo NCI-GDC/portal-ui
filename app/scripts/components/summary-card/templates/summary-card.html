@@ -57,7 +57,7 @@
 
             <span data-ng-if="!item[config.sortKey]">0</span>
           </td>
-          <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.file_size.value | size }}</td>
+          <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.file_size | size }}</td>
         </tr>
       </tbody>
     </table>

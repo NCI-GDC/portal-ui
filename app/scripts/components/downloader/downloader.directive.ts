@@ -26,6 +26,11 @@ module ngApp.components.downloader.directive {
       $timeout(checker, waitTime);
     };
 
+    const toHtml = (key, value) =>
+      '<input type="hidden" name="' + key + '" value="' +
+      (_.isPlainObject(value) ? JSON.stringify(value).replace(/"/g, '&quot;') : value) +
+      '" />';
+
     return {
       restrict: 'A',
       link: (scope, element) => {
@@ -35,9 +40,7 @@ module ngApp.components.downloader.directive {
           const downloadToken = _.uniqueId('' + (+ new Date()) + '-');
 
           const fields = _.reduce (params, (result, value, key) => {
-            return result + '<input type="hidden" name="' + key + '" value="' +
-              (_.isPlainObject(value) ? JSON.stringify(value).replace(/"/g, '&quot;') : value) +
-              '" />';
+            return result + [].concat(value).reduce((acc, v) => acc + toHtml(key, v), '');
           }, '');
           const $_ = $window.jQuery;
 

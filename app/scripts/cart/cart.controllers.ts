@@ -46,7 +46,6 @@ module ngApp.cart.controllers {
                 private CartState) {
       var data = $state.current.data || {};
       this.CartState.setActive("tabs", data.tab);
-      CoreService.setPageTitle("Cart", "(" + this.files.length + ")");
       this.lastModified = this.CartService.lastModified;
       this.cartTableConfig = CartTableModel;
 
@@ -141,6 +140,7 @@ module ngApp.cart.controllers {
 
     refresh(): void {
       const fileIds = this.CartService.getFileIds();
+      this.CoreService.setPageTitle("Cart", "(" + fileIds.length + ")");
       // in the event that our cart is empty
       if (fileIds.length < 1) {
         this.files = {};
@@ -221,7 +221,7 @@ module ngApp.cart.controllers {
     }
 
     removeFromCart(): void {
-      this.CartService.removeFiles([this.file]);
+      this.CartService.remove([this.file]);
     }
   }
 
@@ -259,13 +259,14 @@ module ngApp.cart.controllers {
 
       this.FilesService.getFiles({
         fields:[
-          "file_id"
+          "file_id",
+          "file_name"
         ],
         filters: filters,
         size: size,
         from: 0
       }, 'POST').then((data) => {
-        this.CartService.remove(_.pluck(data.hits, "file_id"));
+        this.CartService.remove(data.hits);
       });
     }
 

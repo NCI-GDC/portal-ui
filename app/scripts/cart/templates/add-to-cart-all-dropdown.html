@@ -2,7 +2,7 @@
   <button data-ng-if="ctrl.CartService.areInCart(ctrl.files)"
           type="button"
           class="btn btn-success fa fa-shopping-cart"
-          data-ng-click="ctrl.CartService.removeFiles(ctrl.files)">
+          data-ng-click="ctrl.CartService.remove(ctrl.files)">
     <span class="icon-btn-label">Add to Cart</span>
   </button>
   <button data-ng-if="!ctrl.CartService.areInCart(ctrl.files)"

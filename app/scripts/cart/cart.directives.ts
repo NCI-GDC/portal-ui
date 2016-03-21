@@ -18,9 +18,11 @@ module ngApp.cart.directives {
       templateUrl: "cart/templates/remove-single.html",
       controllerAs: 'ctrl',
       controller: function($scope: ng.IScope, CartService: ICartService) {
+        disabled: boolean = false;
         this.remove = function() {
-          CartService.remove([this.file.file_id]);
-          $scope.$emit("cart-update");
+          CartService.remove([{file_id: this.file.file_id,
+                               file_name: this.file.file_name }]);
+          this.disabled = true;
         }
       }
     };
@@ -218,8 +220,12 @@ module ngApp.cart.directives {
         };
 
         this.calculateFileCount = function() {
-          this.inBoth = _.intersection(_.pluck(CartService.getFiles(), "file_id"),
-                                         _.pluck(this.files, "file_id"));
+          this.inBoth = this.files.reduce((acc, f) => {
+            if (CartService.getFiles().find(cartF => cartF.file_id === f.file_id)){
+              return acc.concat(f);
+            }
+            return acc;
+          }, []);
         }
       }
     }
@@ -241,7 +247,7 @@ module ngApp.cart.directives {
         },true);
 
         $scope.remove = function() {
-          CartService.removeFiles($scope.files);
+          CartService.remove($scope.files);
         }
 
       }

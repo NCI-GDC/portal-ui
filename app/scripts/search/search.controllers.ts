@@ -195,7 +195,7 @@ module ngApp.search.controllers {
     }
 
     removeFiles(files: IFile[]): void {
-      this.CartService.remove(_.pluck(files, "file_id"));
+      this.CartService.remove(files);
     }
 
     gotoQuery() {

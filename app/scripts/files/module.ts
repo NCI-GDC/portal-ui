@@ -21,6 +21,7 @@ module ngApp.files {
               "data_type",
               "data_subtype",
               "data_format",
+              "data_category",
               "file_name",
               "file_size",
               "file_id",
@@ -40,6 +41,7 @@ module ngApp.files {
               "archive",
               "related_files",
               "metadata_files",
+              "downstream_analyses",
               "associated_entities"
             ]
           });

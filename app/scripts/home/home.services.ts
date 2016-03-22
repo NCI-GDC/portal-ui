@@ -1,6 +1,7 @@
 module ngApp.home.services {
 
   import IProjects = ngApp.projects.models.IProjects;
+  import ISearchService = ngApp.search.services.ISearchService;
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IRootScope = ngApp.IRootScope;
   import IParticipants = ngApp.participants.IParticipant;
@@ -14,6 +15,7 @@ module ngApp.home.services {
     getParticipants(params: Object = {}): ng.IPromise<IParticipants>;
     getFiles(params: Object = {}): ng.IPromise<IFiles>;
     getReports(params: Object = {}): ng.IPromise<IReports>;
+    getSummary(): any;
   }
 
   class HomeService implements IHomeService {
@@ -23,7 +25,7 @@ module ngApp.home.services {
     private filesDataStore: restangular.IElement;
 
     /* @ngInject */
-    constructor(Restangular: restangular.IService, private ReportsService: IReportsService, private LocationService: ILocationService,
+    constructor(Restangular: restangular.IService, private ReportsService: IReportsService,  public SearchService: ISearchService, private LocationService: ILocationService,
                 private $rootScope: IRootScope, private $q: ng.IQService) {
       this.projectsDataSource = Restangular.all("projects");
       this.participantsDataSource = Restangular.all("cases");
@@ -172,7 +174,9 @@ module ngApp.home.services {
       return this.ReportsService.getReports(options);
     }
 
-
+    getSummary() {
+      return this.SearchService.getSummary();
+    }
 
 
   }

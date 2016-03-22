@@ -271,7 +271,16 @@ module ngApp.home.controllers {
           _controller.chartData = _controller.transformProjectData(projectData);
         })
         .then(() => {
+          _controller.fetchSummaryData();
           _controller.fetchReportData({size: _controller.projectStatsList[_controller.projectStatsOrdering.projects].value});
+        });
+    }
+
+    fetchSummaryData() {
+      var _controller = this;
+
+      _controller.HomeService.getSummary().then((summaryData) => {
+        _controller.projectStats.summaryData = summaryData;
       });
     }
 

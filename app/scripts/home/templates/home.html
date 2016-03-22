@@ -105,8 +105,13 @@
           <table class="table-responsive table table-striped table-hover table-condensed">
             <tbody>
               <tr data-ng-repeat-placeholder>
-                <th data-ng-bind-placholder>Storage Infrastructure</th>
-                <td data-ng-bind-placholder>1.x PB used</td>
+                <th>Storage Infrastructure</th>
+                <td>
+                  <span data-ng-if="! hc.getProjectStats().summaryData"><i class="fa fa-spinner fa-spin"></i></span>
+                  <span data-ng-if="hc.getProjectStats().summaryData">
+                    <span data-ng-bind="hc.getProjectStats().summaryData.fs.value | size"></span> used
+                  </span>
+                </td>
                 <td>0.3 PB available</td>
               </tr>
               <tr>

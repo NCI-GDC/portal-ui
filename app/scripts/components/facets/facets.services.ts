@@ -224,13 +224,13 @@ module ngApp.components.facets.services {
     getFacetFields(docType: string): ng.IPromise<any> {
       return this.ds.getList().then((data) => {
         var current = _.pluck(this.FacetsConfigService.fieldsMap[docType], "name");
-        return _.filter(data, (datum) => {
+        return _.map(_.filter(data, (datum) => {
           return datum.doc_type === docType &&
                  datum.field !== 'archive.revision' &&
                  !_.includes(datum.field, "_id") &&
                  !_.includes(current, datum.field) &&
                  !_.includes(docType === 'files' ? _.pluck(this.SearchTableFilesModel.facets, "name") : _.pluck(this.SearchTableParticipantsModel.facets, "name"), datum.field);
-        });
+                 }), f => _.merge(f, {'description': 'this is a description'}));
       });
     }
 

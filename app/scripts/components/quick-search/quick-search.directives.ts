@@ -308,7 +308,9 @@ module ngApp.components.quickSearch.directives {
           matchedText = matchedText[0];
           var boldedQuery = "<span class='bolded'>" + matchedText + "</span>";
           html = term.replace(regex, boldedQuery);
-        }
+          } else {
+            html = value;
+          }
 
         return html;
       };

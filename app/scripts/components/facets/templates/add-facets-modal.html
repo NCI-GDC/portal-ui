@@ -7,7 +7,7 @@
   </div>
   <div>
   <input type="text"
-        placeholder="search"
+       placeholder="search"
        class="form-control"
        id="quick-search-input"
        data-ng-model="q"
@@ -24,14 +24,30 @@
           class="custom-facet-item"
           data-ng-mouseover="itemHover($index)"
           data-ng-keydown="keyboardListener($event)"
-          data-ng-class="{'add-facet-selected': $index === cufc.selectedIndex }" data-ng-click="cufc.addFacet(field)">
-        <i class="fa"
-           data-ng-if="field.doc_type"
-           style="margin-right: 10px;padding: 1rem; width: 3.2rem"
-           data-ng-class="{'files':'fa-file-o', 'cases':'fa-user', '':'fa-square'}[field.doc_type]">
-        </i>
-        {{ ::field.field }}<br />
-        <i data-ng-if="field.doc_type" style="color:#888">this is a description</i>
+          data-ng-class="{'add-facet-selected': $index === cufc.selectedIndex }"
+          data-ng-click="cufc.addFacet(field)">
+        <div class="row">
+          <div class="col-xs-1">
+            <i class="fa"
+               data-ng-if="field.doc_type"
+               style="padding: 1rem; width: 3.2rem"
+               data-ng-class="{'files':'fa-file-o', 'cases':'fa-user', '':'fa-square'}[field.doc_type]">
+            </i>
+          </div>
+          <div class="col-xs-11"
+               style="line-height: 32px; vertical-align: middle"
+               data-ng-bind-html="field.field | highlight:q">
+          </div>
+        </div>
+
+        <div class="row">
+          <i data-ng-if="field.doc_type"
+             class="col-xs-12"
+             style="color:#888"
+             data-ng-bind-html="field.description | highlight:q">
+          </i>
+        </div>
+
       </li>
     </ul>
   </div>

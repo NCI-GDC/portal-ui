@@ -174,26 +174,26 @@ module ngApp.search.models {
             hidden: true
         }, {
             name: 'Age at diagnosis',
-            id: 'diagnosis.age_at_diagnosis',
-            td: (row, $scope) => (row.diagnosis && $scope.$filter("ageDisplay")(row.diagnosis.age_at_diagnosis)) || "--",
+            id: 'diagnoses.age_at_diagnosis',
+            td: (row, $scope) => (row.diagnoses && $scope.$filter("ageDisplay")(row.diagnoses.age_at_diagnosis)) || "--",
             sortable: false,
             hidden: true
         }, {
             name: 'Days to death',
-            id: 'diagnosis.days_to_death',
-            td: (row, $scope) => (row.diagnosis && $scope.$filter("number")(row.diagnosis.days_to_death, 0)) || "--",
+            id: 'diagnoses.days_to_death',
+            td: (row, $scope) => (row.diagnoses && $scope.$filter("number")(row.diagnoses.days_to_death, 0)) || "--",
             sortable: false,
             hidden: true
         }, {
             name: 'Vital Status',
-            id: 'diagnosis.vital_status',
-            td: (row, $scope) => row.diagnosis && $scope.$filter("humanify")(row.diagnosis.vital_status),
+            id: 'diagnoses.vital_status',
+            td: (row, $scope) => row.diagnoses && $scope.$filter("humanify")(row.diagnoses.vital_status),
             sortable: false,
             hidden: true
         }, {
             name: 'Year of diagnosis',
-            id: 'diagnosis.year_of_diagnosis',
-            td: (row, $scope) => (row.diagnosis && row.diagnosis.year_of_diagnosis) || "--",
+            id: 'diagnoses.year_of_diagnosis',
+            td: (row, $scope) => (row.diagnoses && row.diagnoses.year_of_diagnosis) || "--",
             sortable: false,
             hidden: true
         }, {
@@ -235,7 +235,7 @@ module ngApp.search.models {
           "summary.data_categories",
           "clinical",
           "demographic",
-          "diagnosis"
+          "diagnoses"
         ],
         facets: [
             {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "Case Barcode or Uuid"},
@@ -244,7 +244,7 @@ module ngApp.search.models {
             {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms"},
             {name: "project.disease_type", title: "Disease Type", collapsed: false, facetType: "terms"},
             {name: "demographic.gender", title: "Gender", collapsed: true, facetType: "terms"},
-            {name: "diagnosis.age_at_diagnosis", title: "Age at diagnosis", hasGraph: true, collapsed: false, facetType: "range", unitsMap: [
+            {name: "diagnoses.age_at_diagnosis", title: "Age at diagnosis", hasGraph: true, collapsed: false, facetType: "range", unitsMap: [
                             {
                               "label": "years",
                               "conversionDivisor": 365,
@@ -254,10 +254,10 @@ module ngApp.search.models {
                               "conversionDivisor": 1,
                             }
                             ]},
-            {name: "diagnosis.vital_status", title: "Vital Status", collapsed: false, facetType: "terms"},
-            {name: "diagnosis.days_to_death", title: "Days to Death", collapsed: true, facetType: "range", hasGraph: true},
+            {name: "diagnoses.vital_status", title: "Vital Status", collapsed: false, facetType: "terms"},
+            {name: "diagnoses.days_to_death", title: "Days to Death", collapsed: true, facetType: "range", hasGraph: true},
             {name: "demographic.race", title: "Race", collapsed: true, facetType: "terms"},
-            {name: "demographic.ethincity", title: "Ethnicity", collapsed: true, facetType: "terms"}
+            {name: "demographic.ethnicity", title: "Ethnicity", collapsed: true, facetType: "terms"}
         ]
     };
     angular.module("search.table.participants.model", [])

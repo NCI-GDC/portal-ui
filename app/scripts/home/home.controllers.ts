@@ -13,6 +13,7 @@ module ngApp.home.controllers {
     getChartTooltipFunction(): any;
     setChartDataFilter(): void;
     getProjectStatsList(): any[];
+    getProjectStats(): any;
     getExampleSearchQueries(): any[];
     refresh(): void;
   }
@@ -26,6 +27,7 @@ module ngApp.home.controllers {
     projectData: IProjects;
     projectStatsOrdering: any;
     projectStatsList: any[];
+    projectStats: any;
     projectChartData: any[];
     numberFilter: any;
     tooltipFn: any;
@@ -57,16 +59,24 @@ module ngApp.home.controllers {
 
 
       this.projectStatsList = [
-        {title: "Projects", value: 0, icon: "icon-gdc-projects", url: "/projects/t"},
-        {title: "Cases", value: 0, icon: "icon-gdc-cases", url: "/search/c"},
-        {title: "Files", value: 0, icon: "fa fa-file-o", url: "/search/f"},
+        {title: "Projects", value: 0, icon: "icon-gdc-projects project-icon", url: "/projects/t"},
         {title: "Primary Sites", value: 0, icon: "cancer_type_hardcode", url: "/projects/t"},
+        {title: "Cases", value: 0, icon: "icon-gdc-cases data-icon", url: "/search/c"},
+        {title: "Files", value: 0, icon: "fa fa-file-o data-icon", url: "/search/f"},
+
         //{title: "Cancer Types", value: 0, icon: "fa fa-heartbeat", url: "/projects/t"},
-        {title: "Downloads to Date", value: 0, icon: "fa fa-download", url: "/reports/data-download-statistics"}
+        //{title: "Downloads to Date", value: 0, icon: "fa fa-download", url: "/reports/data-download-statistics"}
       ];
 
+      this.projectStats = {
+        downloads: {
+          totalDownloads: null,
+          totalDownloadSizeBytes : null
+        }
+      };
 
-      this.projectStatsOrdering = {projects: 0, cases: 1, files: 2, cancerTypes: 3, downloads: 4};
+
+      this.projectStatsOrdering = {projects: 0, cases: 2, files: 3, cancerTypes: 1, downloads: 4};
 
       this.exampleSearchQueries = [
         {
@@ -123,12 +133,18 @@ module ngApp.home.controllers {
          _controller.HomeService.getParticipants(params).then(
             function (projectData) {
               q.caseCount = _.get(projectData, 'pagination.total', 0);
-            }
+            },
+           function () {
+             q.caseCount = '--';
+           }
           );
 
          _controller.HomeService.getFiles(params).then(
            function (projectData) {
              q.fileCount = _.get(projectData, 'pagination.total', 0);
+           },
+           function () {
+             q.fileCount = '--';
            }
          );
 
@@ -227,6 +243,10 @@ module ngApp.home.controllers {
 
     }
 
+    getProjectStats() {
+      return this.projectStats;
+    }
+
     getProjectStatsList() {
       return this.projectStatsList;
     }
@@ -265,13 +285,18 @@ module ngApp.home.controllers {
           return;
         }
 
-        _controller.projectStatsList[_controller.projectStatsOrdering.downloads].value = 0;
+        var totalDownloads = 0,
+            totalSizeInBytes = 0;
 
-        _controller.projectStatsList[_controller.projectStatsOrdering.downloads].value = _.reduce(hits, function(total, hit) {
-          return total + parseInt(_.get(hit, "count", 0));
-        }, 0);
+        _.map(hits, function(hit) {
+          totalDownloads += parseInt(_.get(hit, "count", 0));
+          totalSizeInBytes += parseInt(_.get(hit, "size", 0))
+        });
 
-      })
+        _controller.projectStats.downloads.totalDownloads = totalDownloads;
+        _controller.projectStats.downloads.totalDownloadSizeBytes = totalSizeInBytes;
+        
+      });
     }
 
     refresh() {

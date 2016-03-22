@@ -463,6 +463,7 @@ module ngApp.components.charts {
             _barChartLegend,
             _barChartMarkerGroup,
             _barChartCaption,
+            _barChartBG,
             _chartMargin,
             _width,
             _height,
@@ -488,11 +489,11 @@ module ngApp.components.charts {
 
         function _initChartSize() {
           _height = Math.min(CLAMP_HEIGHT, $scope.height || element.parent().outerHeight());
-          _width =  Math.min(CLAMP_WIDTH, $scope.width || element.parent().outerWidth());
+          _width = Math.min(CLAMP_WIDTH, $scope.width || element.parent().outerWidth());
 
-            //Math.round(_height * ASPECT_RATIO);
+          //Math.round(_height * ASPECT_RATIO);
 
-          if (! _svg) {
+          if (!_svg) {
 
             // This is the first time the chart is being initializes so
             // set the default values for our elements
@@ -535,6 +536,8 @@ module ngApp.components.charts {
 
             _barChartBoundingBox.attr("x", _chartMargin.left)
               .attr("y", _chartMargin.top + 50);
+
+            _barChartBG = _svg.select(".bg");
           }
 
           // Set the new svg height and width
@@ -554,13 +557,17 @@ module ngApp.components.charts {
           if ($scope.markedLegendLabel) {
             _barChartCaption
               .text($scope.markedLegendLabel);
-              //.attr("text-anchor", "middle")
+            //.attr("text-anchor", "middle")
 
             _barChartLegend
               .transition()
-              .attr("transform", "translate(" + (Math.round((_width - _barChartLegend.node().getBBox().width)/2) + _chartMargin.left) + ", 0)")
+              .attr("transform", "translate(" + (Math.round((_width - _barChartLegend.node().getBBox().width) / 2) + _chartMargin.left) + ", 0)")
           }
 
+          if (_barChartBG) {
+            _barChartBG.transition()
+              .attr("transform", "translate(" + (Math.round((_width - _barChartBG.node().getBBox().width) / 2) + 100) + ", 0)");
+          }
 
           // Calculate the new bounding box
           _barChartBoundingBox

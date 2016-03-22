@@ -1,6 +1,6 @@
 <div class="marked-bar-chart-container marked-bar-chart">
     <svg class="marked-bar-chart-component"
-         preserveAspectRatio2="xMidYMid meet">
+         preserveAspectRatio="xMidYMid meet">
         <defs>
             <clipPath class="chart-canvas-area">
                 <rect></rect>
@@ -57,7 +57,7 @@
                         <clipPath id="SVGID_2_">
                             <use xlink:href="#SVGID_1_"  overflow="visible"/>
                         </clipPath>
-                        <g clip-path="url(#SVGID_2_)">
+                        <g clip-path="url(#SVGID_2_)" overflow="visible">
                             <g>
                                 <g>
                                     <g>
@@ -7087,7 +7087,7 @@
                 </g>
             </g>
         </defs>
-        <use xlink:href="#background"></use>
+        <g class="bg"><use xlink:href="#background"></use></g>
         <g class="chart-title-container"></g>
         <g class="bar-chart-canvas"></g>
     </svg>

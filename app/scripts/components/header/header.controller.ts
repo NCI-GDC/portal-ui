@@ -66,6 +66,11 @@ module ngApp.components.header.controllers {
             showOption = false;
           }
           break;
+        case 'my-projects':
+          if (currentState === 'home') {
+            showOption = false;
+          }
+          break;
         default:
           break;
       }

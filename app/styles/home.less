@@ -1,7 +1,10 @@
 @HOME_BLUE: #2571A5;
 @HOME_DARK_GRAY: #5B5151;
 @HOME_EM_COLOUR: #a9d8e1;
-@HOME_GRAY: #ccc;
+@HOME_GRAY: #d3e5e7;
+
+@DATA_COLOUR: #30b3cb;
+@PROJECT_COLOUR: #01b987;
 
 @HOME_PLACEHOLDER_FONT_SIZE: 1.2rem;
 
@@ -69,6 +72,67 @@
 .home-container {
 
   background-color: #fff;
+
+  .btn-primary {
+    background-color: @DATA_COLOUR;
+
+    &:hover {
+      background-color: #257e93;
+    }
+  }
+
+  .data-icon {
+    color: @DATA_COLOUR;
+  }
+
+  .btn.btn-lg {
+    display: inline-block;
+    width: 100%;
+    padding: 0.5rem 0.5rem;
+    text-align: left;
+    font-size: 2rem;
+    margin: 0rem 0rem;
+    margin-top: 1rem;
+    height: 5.6rem;
+  }
+
+  .btn.btn-lg > i {
+    display: inline-block;
+    background-color: rgba(255,255,255,0.35);
+    border-radius: 0.5rem;
+    padding: 1rem 1.5rem;
+    font-size: 2.4rem;
+  }
+
+  .btn-projects {
+    background-color: @PROJECT_COLOUR;
+  }
+
+  .btn.btn-projects:hover {
+    background-color: #019978;
+  }
+  
+  .data-icon {
+    color: @DATA_COLOUR !important;
+  }
+
+  .project-icon {
+    color: @PROJECT_COLOUR !important;
+  }
+
+  .icon-gdc-cancer-types {
+
+    .path1:before {
+      content: "\e94d";
+      color: @PROJECT_COLOUR;
+    }
+
+    .path2:before {
+      content: "\e94e";
+      margin-left: -0.94921875em;
+      color: @PROJECT_COLOUR;
+    }
+  }
 
   // Marked Bar Chart Widget
   .marked-bar-chart {
@@ -138,7 +202,7 @@
   }
 
   .btn-primary:hover {
-    background: #09818a;
+    background: #43a2d5;
   }
 
 
@@ -258,6 +322,7 @@
 
         td {
           padding-right: 1rem;
+          border-bottom: solid 2px #3D7FAF;
         }
 
         a {
@@ -265,9 +330,6 @@
           width: 100%;
         }
 
-        tr:nth-child(even) {
-          background-color: #3D7FAF;
-        }
 
       }
 
@@ -282,6 +344,76 @@
   .browser-vis {
     background: #fff;
     padding: 0px;
+    position: relative;
+
+    .filter-container {
+      position: absolute;
+      width: 100%;
+      height: 15rem;
+      font-size: 1.5rem;
+      text-align: center;
+      margin-top: 2.5rem;
+
+      .filter-bubble {
+        background-color: #eef8fa;
+        border: solid 1px #b2c5c9;
+        display: inline-block;
+        position: relative;
+        padding: 1rem 2rem;
+        width: 50%;
+        color: #777;
+        border-radius: 0.5rem;
+        -webkit-transition: margin 0.2s ease-in-out;
+        -moz-transition: margin 0.2s ease-in-out;
+        -ms-transition: margin 0.2s ease-in-out;
+        -o-transition: margin 0.2s ease-in-out;
+        transition: margin 0.2s ease-in-out;
+        -webkit-box-shadow: 0px 4px 26px -5px rgba(178,197,201,1);
+        -moz-box-shadow: 0px 4px 26px -5px rgba(178,197,201,1);
+        box-shadow: 0px 4px 26px -5px rgba(178,197,201,1);
+
+        a {
+          display: block;
+          color: inherit;
+          text-decoration: none;
+        }
+
+        &:hover {
+          background-color: #dfe9eb;
+          margin-top: 1rem;
+
+          .arrow {
+            &:after {
+              border-top-color: #dfe9eb;
+            }
+          }
+        }
+
+        .arrow {
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-top: 10px solid #b2c5c9;
+          left: 47%;
+          bottom: -1rem;
+
+          &:after {
+            position: absolute;
+            display: block;
+            content: ' ';
+            width: 0;
+            height: 0;
+            bottom: 0.1rem;
+            left: -1rem;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #eef8fa;
+          }
+        }
+      }
+    }
   }
 
   ///
@@ -291,7 +423,7 @@
   .data-display-container {
     width: 100%;
     text-align: center;
-    background: #dfdfdf;
+    background: #eef8fa;
 
     h2 {
       margin-top: 0rem;
@@ -309,7 +441,7 @@
         display: inline-block;
         text-transform: uppercase;
         padding: 1rem 1rem;
-        border-right: solid 2px #aaa;
+        border-right: solid 2px #d3e5e7;
         font-size: 1.5rem;
         min-width: 20rem;
         width: 20%;
@@ -341,25 +473,40 @@
       vertical-align: top;
       overflow: visible;
       min-width: 42rem;
-      padding-right: 1rem;
-
-      .panel {
-        height: 28.2rem;
-      }
+      padding-right: 0.5rem;
+      padding-left: 0.5rem;
     }
 
     .info-table:last-child {
       margin-right: 0rem;
     }
 
+    .gdc-docs {
+      .panel-heading {
+        height: 14.4rem;
+        line-height: 2rem;
+      }
+    }
+
+    .gdc-infras {
+      .panel-heading {
+        height: 14.4rem;
+        line-height: 2rem;
+      }
+    }
+
     .gdc-apps {
+
+      .panel-heading {
+        height: 14.4rem;
+      }
 
       td {
         background-color: #fff;
         border: none;
         font-size: 1.2rem;
         text-align: center;
-        padding-top: 1rem;
+        padding: 1rem 0.3rem 0.2rem 0.3rem;
 
         a {
           &:hover {

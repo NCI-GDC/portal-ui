@@ -134,6 +134,7 @@ module ngApp.projects.models {
         id: "disease_type",
         tdClassName: 'truncated-cell',
         td: row => row.disease_type,
+        toolTipText: row => row.disease_type,
         sortable: true,
         hidden: false,
         draggable: true

@@ -315,9 +315,14 @@
               </thead>
               <tbody>
               <tr data-ng-repeat="f in fc.file.metadata_files track by f.file_id">
-                <td class="truncated-cell">
+                <td class="truncated-cell"
+                    data-uib-tooltip="{{::f.file_name}}"
+                    data-tooltip-append-to-body="true"
+                    data-tooltip-popup-delay="1000"
+                    data-container="body"
+                    >
                   <i class="fa fa-{{(f.access === 'controlled' ? 'lock' : 'unlock-alt')}}"></i>
-                    {{ ::f.file_name }}
+                    {{::f.file_name}}
                 </td>
                 <td>{{ ::f.data_category || '--' }}</td>
                 <td>{{ ::f.data_type || '--' }}</td>

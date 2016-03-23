@@ -47,19 +47,14 @@ module ngApp.search.models {
         }, {
             name: "Case UUID",
             id: "case_id",
-            td: row => '<a href="cases/'+ row.case_id + '">' +
-                         row.case_id +
-                       '</a>',
+            toolTipText: row => row.case_id,
+            td: row => '<a href="cases/'+ row.case_id + '">' + row.case_id + '</a>',
             tdClassName: 'truncated-cell'
         }, {
             name: "Project",
             id: "project.project_id",
-            td: row => '<a href="projects/'+row.project.project_id +
-                     '" data-uib-tooltip="' + row.project.name +
-                     '" data-tooltip-popup-delay=1000' +
-                     '" data-tooltip-append-to-body="true">' +
-                     row.project.project_id +
-                   '</a>',
+            toolTipText: row => row.project.name,
+            td: row => '<a href="projects/'+row.project.project_id + '">' + row.project.project_id + '</a>',
             sortable: true,
         }, {
             name: "Primary Site",

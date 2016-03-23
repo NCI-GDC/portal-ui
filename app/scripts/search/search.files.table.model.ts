@@ -26,6 +26,7 @@ module ngApp.search.models {
       }, {
         name: "File UUID",
         id: "file_id",
+        toolTipText: row => row.file_id,
         td: row => '<a href="files/' + row.file_id + '">' + row.file_id + '</a>',
         sortable: true,
         hidden: true,
@@ -33,6 +34,7 @@ module ngApp.search.models {
       }, {
         name: "File Submitter ID",
         id: "submitter_id",
+        toolTipText: row => row.submitter_id,
         td: row => row.submitter_id,
         sortable: true,
         hidden: true,
@@ -59,6 +61,7 @@ module ngApp.search.models {
       }, {
         name: "File Name",
         id: "file_name",
+        toolTipText: row => row.file_name,
         td: row => '<a href="files/' + row.file_id + '">' + row.file_name + '</a>',
         sortable: true,
         tdClassName: 'truncated-cell'
@@ -79,12 +82,11 @@ module ngApp.search.models {
       }, {
         name: "Project",
         id: "cases.project.project_id",
+        toolTipText: row => _.unique(_.map(row.cases, p => p.project.name)).join(', '),
         td: row => {
           return _.unique(_.map(row.cases, p => {
             return '<a href="projects/' + p.project.project_id +
-                    '" data-uib-tooltip="' + p.project.name +
-                    '" data-tooltip-popup-delay=1000' +
-                    '" data-tooltip-append-to-body="true">'+ p.project.project_id + '</a>';
+                    '">'+ p.project.project_id + '</a>';
           })).join('<br>');
         },
         sortable: true
@@ -168,7 +170,8 @@ module ngApp.search.models {
       "archive.archive_id",
       "experimental_strategy",
       "center.name",
-      "tags"
+      "tags",
+      "submitter_id"
     ],
     expand: [
       "cases",

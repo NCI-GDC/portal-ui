@@ -32,6 +32,10 @@ module ngApp.projects.controllers {
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
                 private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut) {
 
+      this.person = {
+          fname: 'fname',
+          lname: 'blah'
+      }
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
         if (next.indexOf("projects") !== -1) {
@@ -142,7 +146,7 @@ module ngApp.projects.controllers {
                 public $state: ng.ui.IStateService,
                 private $filter: ng.ui.IFilterService) {
       CoreService.setPageTitle("Project", project.project_id);
-
+      
       this.experimentalStrategies = _.reduce(ExperimentalStrategyNames.slice(), function(result, name) {
         var strat = _.find(project.summary.experimental_strategies, (item) => {
           return item.experimental_strategy.toLowerCase() === name.toLowerCase();

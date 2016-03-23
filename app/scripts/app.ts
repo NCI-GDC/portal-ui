@@ -194,6 +194,7 @@ angular
       "gettext",
       "ngTagsInput",
       "ui.sortable",
+      "react",
 
       "ngApp.core",
       "ngApp.search",
@@ -208,7 +209,8 @@ angular
       "ngApp.cart",
       "ngApp.notFound",
       "ngApp.reports",
-      "templates"
+      "templates",
+      'react.components'
     ])
     .config(appConfig)
     .factory('RestFullResponse', function(Restangular: restangular.IService) {

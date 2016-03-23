@@ -26,6 +26,8 @@ module ngApp.components.facets.services {
         "projects": "project_id"
       };
 
+      query = query.replace(/\*/g, '');
+
       var options: any = {
         query: query
       };
@@ -42,8 +44,11 @@ module ngApp.components.facets.services {
 
       return this.Restangular.all(entity + "/ids").get("", options).then((data) => {
         var model = {};
-        model[field.split(".").pop()] = query + "*";
-        return [model].concat(data.data.hits);
+        var mainField = field.split(".").pop();
+        mainField = mainField === 'project_id' ? 'name' : mainField;
+        model[mainField] = query + "*";
+        model.warning = data.data.hits.length ? "" : "No results found";
+        return (data.data.hits.length !== 1 ? [model] : []).concat(data.data.hits);
       });
     }
 

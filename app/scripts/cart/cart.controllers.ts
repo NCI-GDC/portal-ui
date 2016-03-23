@@ -86,8 +86,7 @@ module ngApp.cart.controllers {
       this.clinicalDataExportFilters = this.biospecimenDataExportFilters = {
         'files.file_id': this.CartService.getFileIds()
       };
-      // TODO: Change `clinical` to those clinical objects (5 of them) once the data model change occurs.
-      this.clinicalDataExportExpands = ['clinical'];
+      this.clinicalDataExportExpands = ['demographic', 'diagnoses', 'family_histories', 'exposures'];
       this.clinicalDataExportFileName = 'clinical.cart';
 
       this.biospecimenDataExportExpands =

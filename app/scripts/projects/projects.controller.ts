@@ -247,8 +247,7 @@ module ngApp.projects.controllers {
       this.clinicalDataExportFilters = this.biospecimenDataExportFilters = {
         'project.project_id': projectId
       };
-      // TODO: Change `clinical` to those clinical objects (5 of them) once the data model change occurs.
-      this.clinicalDataExportExpands = ['clinical'];
+      this.clinicalDataExportExpands = ['demographic', 'diagnoses', 'family_histories', 'exposures'];
       this.clinicalDataExportFileName = 'clinical.project-' + projectId;
 
       this.biospecimenDataExportExpands =

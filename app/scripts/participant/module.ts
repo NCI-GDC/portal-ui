@@ -19,7 +19,10 @@ module ngApp.participants {
               "annotations.annotation_id"
            ],
            expand: [
-            "clinical",
+            "demographic",
+            "diagnoses",
+            "exposures",
+            "family_histories",
             "files",
             "project",
             "project.program",

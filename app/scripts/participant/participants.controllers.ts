@@ -25,6 +25,14 @@ module ngApp.participants.controllers {
                 private config: IGDCConfig) {
       CoreService.setPageTitle("Case", participant.case_id);
 
+      this.participant = participant;
+      this.pluck = (array, property) => array.map(x => x[property]);
+
+      this.activeClinicalTab = 'demographic';
+      this.setClinicalTab = (tab) => {
+        this.activeClinicalTab = tab;
+      };
+
       this.annotationIds = _.map(this.participant.annotations, (annotation) => {
         return annotation.annotation_id;
       });
@@ -45,12 +53,11 @@ module ngApp.participants.controllers {
         return result;
       }, []);
 
-      this.hasClinical = !participant.clinical;
       this.clinicalDataExportFilters = {
         'cases.case_id': participant.case_id
       };
-      // TODO: Change `clinical` to those clinical objects (5 of them) once the data model change occurs.
-      this.clinicalDataExportExpands = ['clinical'];
+      this.clinicalDataExportExpands = ['demographic', 'diagnoses', 'family_histories', 'exposures'];
+      this.hasNoClinical = _.all(this.clinicalDataExportExpands, (field) => ! _.has(participant, field));
       this.clinicalDataExportFileName = 'clinical.case-' + participant.case_id;
 
       this.dataCategories = _.reduce(DataCategoryNames.slice(), function(result, name) {

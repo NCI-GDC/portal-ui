@@ -283,6 +283,34 @@ module ngApp.cart.directives {
     };
   }
 
+  function DownloadMetadataFiles(CartService, $uibModal, config: IGDCConfig) {
+    return {
+      restrict:"AE",
+      scope: true,
+      link: (scope, $element, $attrs) => {
+        scope.active = false;
+
+        const inProgress = () => {
+          scope.active = true;
+          $attrs.$set('disabled', 'disabled');
+        };
+        const done = () => {
+          scope.active = false;
+          $element.removeAttr('disabled');
+        };
+        const files = [].concat(CartService.getFiles());
+        const params = { ids: files.map(f => f.file_id) };
+        const url = config.api + '/data/metadata_files';
+        const clickHandler = () => {
+          const checkProgress = scope.download(params, url, () => $element, 'POST');
+          checkProgress(inProgress, done);
+        };
+
+        $element.on('click', clickHandler);
+      }
+    };
+  }
+
   function DownloadButtonAllCart(UserService, CartService, $uibModal, config: IGDCConfig) {
     return {
       restrict:"AE",
@@ -372,6 +400,7 @@ module ngApp.cart.directives {
     .directive("addToCartSingleIcon", AddToCartSingleIcon)
     .directive("addToCartSingleLabelled", AddToCartSingleLabelled)
     .directive("addToCartAllDropdown", AddToCartAllDropDown)
+    .directive("downloadMetadataFiles", DownloadMetadataFiles)
     .directive("addToCartAllButton", AddToCartAllButton)
     .directive("addToCartFiltered", AddToCartFiltered)
     .directive("downloadButtonAllCart", DownloadButtonAllCart)

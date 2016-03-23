@@ -68,6 +68,7 @@
                   <span data-translate>Manifest</span>
                 </a>
               </split-control-option>
+
               <split-control-option data-option-label-text="Download Cart (Web Browser)">
                 <a download-button-all-cart data-downloader id="download-all-button" href="javascript:void(0)">
                   <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i> <span data-translate>Cart</span>
@@ -78,10 +79,10 @@
 
               <split-control-option data-option-label-text="Download Clinical">
                 <export-cases-button
-                  data-filter-key-values=cc.clinicalDataExportFilters
-                  data-expands=cc.clinicalDataExportExpands
-                  data-filename=cc.clinicalDataExportFileName
-                  data-size=cc.participantCount
+                  data-filter-key-values="cc.clinicalDataExportFilters"
+                  data-expands="cc.clinicalDataExportExpands"
+                  data-filename="cc.clinicalDataExportFileName"
+                  data-size="cc.participantCount"
                   data-text-normal="Clinical"
                   data-text-in-progress="Processing"
                   data-style-class="true"> <!-- this overrides the bootstrap button style -->
@@ -90,15 +91,23 @@
 
               <split-control-option data-option-label-text="Download Biospecimen">
                 <export-cases-button
-                  data-filter-key-values=cc.biospecimenDataExportFilters
-                  data-expands=cc.biospecimenDataExportExpands
-                  data-filename=cc.biospecimenDataExportFileName
-                  data-size=cc.participantCount
+                  data-filter-key-values="cc.biospecimenDataExportFilters"
+                  data-expands="cc.biospecimenDataExportExpands"
+                  data-filename="cc.biospecimenDataExportFileName"
+                  data-size="cc.participantCount"
                   data-text-normal="Biospecimen"
                   data-text-in-progress="Processing"
                   data-style-class="true"> <!-- this overrides the bootstrap button style -->
                 </export-cases-button>
               </split-control-option>
+
+              <split-control-option data-option-label-text="Download Metadata Files">
+                <a data-download-metadata-files data-downloader id="download-metadata-files-button" href="javascript:void(0)">
+                  <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i>
+                  <span data-translate>&nbsp;SRA XML</span>
+                </a>
+              </split-control-option>
+
               <split-control-option data-option-label-text="Download Metadata">
                 <download-metadata-button
                   data-text-normal="File Metadata"
@@ -112,15 +121,15 @@
           <split-control data-control-label-text="Remove From Cart"
             data-btn-type="danger"
             data-no-split="true" data-icon-classes="fa fa-trash-o">
-            <split-control-option data-option-label-text="Download Metadata">
+            <split-control-option data-option-label-text="Remove All Files">
               <a type="button"
                   id="clear-button"
                   data-ng-click="cc.removeAll()">
                 <i class="fa fa-remove"></i>
-                <span data-translate>All Files</span>
+                <span data-translate>All Files ({{cc.files.hits.length}})</span>
               </a>
             </split-control-option>
-            <split-control-option data-option-label-text="Download Metadata">
+            <split-control-option data-option-label-text="Remove Unauthorized Files">
               <remove-unauthorized-files-button data-ng-if="cc.CartService.getUnauthorizedFiles().length"></remove-unauthorized-files-button>
             </split-control-option>
           </split-control>

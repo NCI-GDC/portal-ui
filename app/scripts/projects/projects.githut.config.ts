@@ -49,7 +49,7 @@ angular.module('projects.githut.config',[])
 
     var aggregations = d3.keys(project_ids).reduce(function(a,key){
       var group = project_ids[key];
-      var types = group.summary.data_types;
+      var types = group.summary.data_categories;
 
       if (!_.contains(primary_sites,group.primary_site)){
         primary_sites.push(group.primary_site);
@@ -67,7 +67,7 @@ angular.module('projects.githut.config',[])
       ProjectsGithutColumns
           .filter(function(c){return c.is_subtype})
           .forEach(function(s){
-              var thing = findTheThing(types,s.id,"data_type");
+              var thing = findTheThing(types,s.id,"data_category");
               the_returned[s.id] = thing ? thing.case_count : 0;
           })
 

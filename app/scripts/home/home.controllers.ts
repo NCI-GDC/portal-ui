@@ -109,7 +109,7 @@ module ngApp.home.controllers {
           "project_id",
           "primary_site",
           "summary.experimental_strategies.experimental_strategy",
-          "summary.data_types.data_type"
+          "summary.data_categories.data_category"
         ],
         size: 100
       };

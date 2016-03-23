@@ -155,14 +155,14 @@ module ngApp.home.services {
       var defaultOptions = {
         expand: [
         "data_access",
-        "data_subtypes",
+        "data_types",
         "tags",
         "countries",
         "data_formats",
         "experimental_strategies",
         "platforms",
         "user_access_types",
-        "data_types",
+        "data_categories",
         "centers"
       ]},
       options = {};

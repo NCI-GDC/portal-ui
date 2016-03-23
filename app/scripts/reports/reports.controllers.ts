@@ -41,8 +41,8 @@ module ngApp.reports.controllers {
         this.byProject = this.dataNest("project_id").entries(dataNoZeros);
         this.byDisease = this.dataNest("disease_type").entries(dataNoZeros);
         this.byProgram = this.dataNest("program").entries(dataNoZeros);
-        this.byDataType = this.dataNest("data_type").entries(this.reduceBy(dataNoZeros, "data_types"));
-        this.bySubtype = this.dataNest("data_subtype").entries(this.reduceBy(dataNoZeros, "data_subtypes"));
+        this.byDataType = this.dataNest("data_categories").entries(this.reduceBy(dataNoZeros, "data_categories"));
+        this.bySubtype = this.dataNest("data_type").entries(this.reduceBy(dataNoZeros, "data_types"));
         this.byStrat = this.dataNest("experimental_strategy").entries(this.reduceBy(dataNoZeros, "experimental_strategies"));
         this.byDataAccess = this.dataNest("access").entries(this.reduceBy(dataNoZeros, "data_access"));
         this.byUserType = this.dataNest("user_access_type").entries(this.reduceBy(dataNoZeros, "user_access_types"));

@@ -64,12 +64,12 @@ module ngApp.core.services {
   }
 
   var dataNames = [
-    'Sequencing Data',
-    'Transcriptome Profiling',
-    'Simple Nucleotide Variation',
-    'Copy Number Variation',
-    'Structural Rearrangement',
-    'DNA Methylation',
+    'Raw sequencing data',
+    'Gene expression',
+    'Simple nucleotide variation',
+    'Copy number variation',
+    'Structural rearrangement',
+    'DNA methylation',
     'Clinical',
     'Biospecimen'
   ];

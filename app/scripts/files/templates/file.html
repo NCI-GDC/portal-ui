@@ -201,16 +201,13 @@
               <tr data-ng-repeat="f in fc.file.metadata_files track by f.file_id">
                 <td class="truncated-cell">
                   <i class="fa fa-{{(f.access === 'controlled' ? 'lock' : 'unlock-alt')}}"></i>
-                  <a href="files/{{ ::f.file_id }}">
                     {{ ::f.file_name }}
-                  </a>
                 </td>
                 <td>{{ ::f.data_category || '--' }}</td>
                 <td>{{ ::f.data_type || '--' }}</td>
                 <td>{{ ::f.data_format || '--' }}</td>
                 <td>{{ ::f.file_size | size }}</td>
                 <td>
-                  <add-to-cart-single-labelled file="f" style="margin: 0.5rem"></add-to-cart-single-labelled>
                   <data-download-button data-files=f data-copy="Download" data-dlcopy="Downloading" />
                 </td>
               </tr>

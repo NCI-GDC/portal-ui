@@ -36,11 +36,11 @@
           </div>
           <div style="padding: 10px">
             <p data-translate>
-              <strong>Download Manifest File</strong>: Downloading and analyzing large BAMs or large number of files can be very resource intensive and so it is recommended to use the GDC Client for this purpose. The GDC Client provides several different download modes to provide the most efficient transfer possible. For more info, click
+              <strong>Download Manifest</strong>: Downloading and analyzing large BAMs or large number of files can be very resource intensive and so it is recommended to use the GDC Client for this purpose. The GDC Client provides several different download modes to provide the most efficient transfer possible. For more info, click
                <a target="_blank" href="https://gdc.nci.nih.gov/node/7967">here</a>.
             </p>
             <p data-translate>
-              <strong>Download Cart (Web Browser)</strong>: Download Files in your Cart directly from the Web Browser.
+              <strong>Download Cart</strong>: Download Files in your Cart directly from the Web Browser.
             </p>
           </div>
         </div>
@@ -64,15 +64,17 @@
           <split-control data-control-label-text="Download" data-no-split="true" data-icon-classes="fa fa-download">
               <split-control-option data-option-label-text="Download Manifest File">
                 <a data-download-manifest-cart data-downloader id="manifest-button" href="javascript:void(0)">
-                  <i class="fa" ng-class="{'fa-file-code-o': !active, 'fa-spinner fa-pulse': active}"></i>
-                  <span data-translate>Download Manifest File</span>
+                  <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i>
+                  <span data-translate>Manifest</span>
                 </a>
               </split-control-option>
               <split-control-option data-option-label-text="Download Cart (Web Browser)">
                 <a download-button-all-cart data-downloader id="download-all-button" href="javascript:void(0)">
-                  <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i> <span data-translate>Download Cart (Web Browser)</span>
+                  <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i> <span data-translate>Cart</span>
                 </a>
               </split-control-option>
+
+              <hr class="dropdown-rule" />
 
               <split-control-option data-option-label-text="Download Clinical">
                 <export-cases-button
@@ -80,7 +82,7 @@
                   data-expands=cc.clinicalDataExportExpands
                   data-filename=cc.clinicalDataExportFileName
                   data-size=cc.participantCount
-                  data-text-normal="Download Clinical"
+                  data-text-normal="Clinical"
                   data-text-in-progress="Processing"
                   data-style-class="true"> <!-- this overrides the bootstrap button style -->
                 </export-cases-button>
@@ -92,14 +94,14 @@
                   data-expands=cc.biospecimenDataExportExpands
                   data-filename=cc.biospecimenDataExportFileName
                   data-size=cc.participantCount
-                  data-text-normal="Download Biospecimen"
+                  data-text-normal="Biospecimen"
                   data-text-in-progress="Processing"
                   data-style-class="true"> <!-- this overrides the bootstrap button style -->
                 </export-cases-button>
               </split-control-option>
               <split-control-option data-option-label-text="Download Metadata">
                 <download-metadata-button
-                  data-text-normal="Download Metadata"
+                  data-text-normal="File Metadata"
                   data-filename="metadata.cart"
                   data-text-in-progress="Processing"
                   data-style-class="true">
@@ -107,14 +109,21 @@
               </split-control-option>
           </split-control>
 
-          <a type="button"
-                  class="btn btn-danger"
+          <split-control data-control-label-text="Remove From Cart"
+            data-btn-type="danger"
+            data-no-split="true" data-icon-classes="fa fa-trash-o">
+            <split-control-option data-option-label-text="Download Metadata">
+              <a type="button"
                   id="clear-button"
                   data-ng-click="cc.removeAll()">
-            <i class="fa fa-remove"></i>
-            <span data-translate>Clear Cart</span>
-          </a>
-          <remove-unauthorized-files-button data-ng-if="cc.CartService.getUnauthorizedFiles().length"></remove-unauthorized-files-button>
+                <i class="fa fa-remove"></i>
+                <span data-translate>All Files</span>
+              </a>
+            </split-control-option>
+            <split-control-option data-option-label-text="Download Metadata">
+              <remove-unauthorized-files-button data-ng-if="cc.CartService.getUnauthorizedFiles().length"></remove-unauthorized-files-button>
+            </split-control-option>
+          </split-control>
         </div>
     </div>
   </section>

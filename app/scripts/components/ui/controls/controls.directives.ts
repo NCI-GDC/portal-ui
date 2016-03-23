@@ -74,7 +74,8 @@ module ngApp.components.ui.control.directives {
             controlLabelText: $attrs.controlLabelText || 'Action Label',
             srLabel: $attrs.srLabel || 'Split Control',
             shouldSplitControl: $attrs.noSplit === 'true' ? false : true,
-            iconClasses: $attrs.iconClasses || false
+            iconClasses: $attrs.iconClasses || false,
+            btnType: $attrs.btnType || 'primary'
           };
 
           _initListeners();

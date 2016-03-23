@@ -80,20 +80,20 @@ module ngApp.home.controllers {
 
       this.exampleSearchQueries = [
         {
-          description: "Brain cancer cases over the age of 40 at diagnosis",
-          filters: {"op":"and","content":[{"op":"in","content":{"field":"cases.project.primary_site","value":["Brain"]}},{"op":">=","content":{"field":"cases.clinical.age_at_diagnosis","value":[14965]}}]},
+          description: "Kidney cancer cases under the age of 20 at diagnosis",
+          filters: {"op":"and","content":[{"op":"<=","content":{"field":"cases.clinical.age_at_diagnosis","value":[14600]}},{"op":"in","content":{"field":"cases.project.primary_site","value":["Kidney"]}}]},
           caseCount: null,
           fileCount: null
         },
         {
-          description: "All female cases from the TARGET-NBL project",
-          filters: {"op":"and","content":[{"op":"in","content":{"field":"cases.project.project_id","value":["TARGET-NBL"]}},{"op":"in","content":{"field":"cases.clinical.gender","value":["female"]}}]},
+          description: "CNV data of female brain cancer cases",
+          filters: {"op":"and","content":[{"op":"in","content":{"field":"files.data_category","value":["Copy number variation"]}},{"op":"in","content":{"field":"cases.project.primary_site","value":["Brain"]}},{"op":"in","content":{"field":"cases.demographic.gender","value":["female"]}}]},
           caseCount: null,
           fileCount: null
         },
         {
-          description: "All Asian cases with disease type Thyroid Carcinoma",
-          filters: {"op":"and","content":[{"op":"in","content":{"field":"cases.project.disease_type","value":["Thyroid Carcinoma"]}},{"op":"in","content":{"field":"cases.clinical.race","value":["asian"]}}]},
+          description: "Germline mutation data in TCGA-OV project",
+          filters: {"op":"and","content":[{"op":"in","content":{"field":"files.data_type","value":["Simple nucleotide variation"]}},{"op":"in","content":{"field":"cases.project.project_id","value":["TCGA-OV"]}}]},
           caseCount: null,
           fileCount: null
         },

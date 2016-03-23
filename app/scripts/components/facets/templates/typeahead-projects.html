@@ -1,17 +1,17 @@
 <a data-ng-if="!match.model.warning">
   <div class="typeahead-row">
     <div class="icon-container">
-      <i class="fa fa-folder-o"></i>
+      <i class="fa fa-{{match.model.name === 'No results found' ? 'warning' : 'folder-o'}}"></i>
     </div>
     <div class="data-container">
       <div class="data-row">
         <span class="uuid">{{ match.model.name }}</span>
       </div>
       <div class="data-row sub-item">
-        {{ match.model.program.name }} - {{ match.model.project_id }}
+        {{ match.model.project_id }}
       </div>
       <div class="data-row sub-item">
-        {{ match.model.primary_site }}
+        {{ match.model.primary_site || (match.model.name === "No results found" ? "Please try another term" : 'Prefix search') }}
       </div>
     </div>
   </div>

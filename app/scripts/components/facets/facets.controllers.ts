@@ -230,12 +230,13 @@ module ngApp.components.facets.controllers {
         this.searchTerm = this.lastInput;
         return;
       }
+
       var parts = this.$scope.field.split(".");
       var field = parts.length > 1 ? parts[parts.length - 1] : parts[0];
 
       if (this.actives.indexOf(this.searchTerm[field]) === -1) {
         var term = this.searchTerm;
-        term = term[field];
+        term = term[field === 'project_id' ? 'name' : field];
 
         if (!term) {
           this.searchTerm = this.lastInput;

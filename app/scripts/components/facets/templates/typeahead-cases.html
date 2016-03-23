@@ -1,14 +1,14 @@
 <a data-ng-if="!match.model.warning">
   <div class="typeahead-row">
     <div class="icon-container">
-      <i class="fa fa-user"></i>
+      <i class="fa fa-{{match.model.case_id === 'No results found' ? 'warning' : 'user'}}"></i>
     </div>
     <div class="data-container">
       <div class="data-row">
         <span class="uuid">{{ match.model.case_id }}</span>
       </div>
       <div class="data-row sub-item">
-        {{ match.model.submitter_id || 'Prefix search' }}
+        {{ match.model.submitter_id || (match.model.case_id === "No results found" ? "Please try another term" : 'Prefix search') }}
       </div>
     </div>
   </div>

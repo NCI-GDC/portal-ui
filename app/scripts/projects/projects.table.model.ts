@@ -174,50 +174,50 @@ module ngApp.projects.models {
             name: 'Seq',
             th: '<abbr data-uib-tooltip="Sequencing Data">Seq</abbr>',
             id: 'Seq',
-            td: (row, $scope) => dataCategoryWithFilters("Sequencing Data", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Raw sequencing data", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Sequencing Data", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Raw sequencing data", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'Exp',
             th: '<abbr data-uib-tooltip="Transcriptome Profiling">Exp</abbr>',
             id: 'Exp',
-            td: (row, $scope) => dataCategoryWithFilters("Transcriptome Profiling", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Gene expression", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Transcriptome Profiling", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Gene expression", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'SNV',
             th: '<abbr data-uib-tooltip="Simple Nucleotide Variation">SNV</abbr>',
             id: 'SNV',
-            td: (row, $scope) => dataCategoryWithFilters("Simple Nucleotide Variation", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Simple nucleotide variation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Simple Nucleotide Variation", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Simple nucleotide variation", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'CNV',
             th: '<abbr data-uib-tooltip="Copy Number Variation">CNV</abbr>',
             id: 'CNV',
-            td: (row, $scope) => dataCategoryWithFilters("Copy Number Variation", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Copy number variation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Copy Number Variation", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Copy number variation", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'SV',
             th: '<abbr data-uib-tooltip="Structural Rearrangement">SV</abbr>',
             id: 'SV',
-            td: (row, $scope) => dataCategoryWithFilters("Structural Rearrangement", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Structural rearrangement", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Structural Rearrangement", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Structural rearrangement", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'Meth',
             th: '<abbr data-uib-tooltip="DNA Methylation">Meth</abbr>',
             id: 'Meth',
-            td: (row, $scope) => dataCategoryWithFilters("DNA Methylation", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("DNA methylation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("DNA Methylation", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("DNA methylation", data, $scope.$filter, $scope.LocationService)
           }, {
             name: 'Clinical',
             id: 'clinical',
@@ -228,10 +228,10 @@ module ngApp.projects.models {
           }, {
             name: 'Biospecimen',
             id: 'biospecimen',
-            td: (row, $scope) => dataCategoryWithFilters("Biospecimen", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Other", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters('Biospecimen', data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters('Other', data, $scope.$filter, $scope.LocationService)
           }
         ]
       }, {

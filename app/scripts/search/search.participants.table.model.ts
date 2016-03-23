@@ -90,42 +90,42 @@ module ngApp.search.models {
             name: 'Seq',
             th: '<abbr data-uib-tooltip="Sequencing data">Seq</abbr>',
             id: 'Seq',
-            td: (row, $scope) => dataCategoryWithFilters("Sequencing data", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Raw sequencing data", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: "Exp",
             th: '<abbr data-uib-tooltip="Transcriptome Profiling">Exp</abbr>',
             id: "Exp",
-            td: (row, $scope) => dataCategoryWithFilters("Transcriptome Profiling", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Gene expression", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'SNV',
             th: '<abbr data-uib-tooltip="Simple Nucleotide Variation">SNV</abbr>',
             id: 'SNV',
-            td: (row, $scope) => dataCategoryWithFilters("Simple Nucleotide Variation", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Simple nucleotide variation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'CNV',
             th: '<abbr data-uib-tooltip="Copy Number Variation">CNV</abbr>',
             id: 'cnv',
-            td: (row, $scope) => dataCategoryWithFilters("Copy Number Variation", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Copy number variation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'SV',
             th: '<abbr data-uib-tooltip="Structural Rearrangement">SV</abbr>',
             id: 'SV',
-            td: (row, $scope) => dataCategoryWithFilters("Structural Rearrangement", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Structural rearrangement", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
             name: 'Meth',
             th: '<abbr data-uib-tooltip="DNA Methylation">Meth</abbr>',
             id: 'meth',
-            td: (row, $scope) => dataCategoryWithFilters("DNA Methylation", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("DNA methylation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {
@@ -138,7 +138,7 @@ module ngApp.search.models {
           }, {
             name: 'Biospecimen',
             id: 'biospecimen',
-            td: (row, $scope) => dataCategoryWithFilters("Biospecimen", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Other", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }

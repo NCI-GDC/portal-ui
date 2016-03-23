@@ -537,7 +537,7 @@ module ngApp.components.charts {
             _barChartBoundingBox.attr("x", _chartMargin.left)
               .attr("y", _chartMargin.top + 50);
 
-            _barChartBG = _svg.select(".bg");
+            //_barChartBG = _svg.select(".bg");
           }
 
           // Set the new svg height and width
@@ -564,10 +564,10 @@ module ngApp.components.charts {
               .attr("transform", "translate(" + (Math.round((_width - _barChartLegend.node().getBBox().width) / 2) + _chartMargin.left) + ", 0)")
           }
 
-          if (_barChartBG) {
-            _barChartBG.transition()
-              .attr("transform", "translate(" + (Math.round((_width - _barChartBG.node().getBBox().width) / 2) + 100) + ", 0)");
-          }
+          // if (_barChartBG) {
+          //   _barChartBG.transition()
+          //     .attr("transform", "translate(" + (Math.round((_width - _barChartBG.node().getBBox().width) / 2) + 100) + ", 0)");
+          // }
 
           // Calculate the new bounding box
           _barChartBoundingBox

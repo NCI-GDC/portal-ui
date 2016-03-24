@@ -676,12 +676,18 @@ module ngApp.components.charts {
 
         function _initListeners() {
 
+          var hoverEventName = "resize." + _postFixID;
+
           // Add listener to respond to window resize events (i.e. redraw visualization)
-          jQuery(window).on("resize." + _postFixID, _.debounce(() => {
+          jQuery(window).on(hoverEventName, _.debounce(() => {
             _initChartSize();
             _renderBars();
           }, 200));
 
+
+          $scope.$on("$destroy", function () {
+            jQuery(window).unbind(hoverEventName);
+          });
 
           $scope.$watch(function() {
               return $scope.data;

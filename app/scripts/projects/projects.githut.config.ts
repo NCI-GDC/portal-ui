@@ -5,7 +5,14 @@ angular.module('projects.githut.config',[])
     var primary_sites = [];
 
     function findTheThing(array,data_type,propname){
-      return _.find(array,function(type){return type[propname] === data_type});
+
+      var normalize = (str) => {
+        return str.toLowerCase().replace(/\s+/g,'');
+      };
+
+      var normalizedDataType = normalize(data_type);
+
+      return _.find(array,function(type){return normalize(type[propname]) === normalizedDataType});
     }
 
     // Gracefully handle bad data if present
@@ -119,7 +126,7 @@ angular.module('projects.githut.config',[])
       href: projectSref
     },
     {
-      id:'Sequencing Data',
+      id:'Raw Sequencing Data',
       display_name:['Seq'],
       scale:'ordinal',
       is_subtype:true,
@@ -128,7 +135,7 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
-      id:'Transcriptome Profiling',
+      id:'Protein Expression',
       display_name:['Exp'],
       scale:'ordinal',
       is_subtype:true,
@@ -181,8 +188,9 @@ angular.module('projects.githut.config',[])
       colorgroup:'case_count',
       href: dataTypeSref
     },
+    // Biospecimen
     {
-      id:'Biospecimen',
+      id:'Other',
       display_name:['Bio.'],
       scale:'ordinal',
       is_subtype:true,

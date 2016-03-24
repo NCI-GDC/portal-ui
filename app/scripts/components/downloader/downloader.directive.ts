@@ -35,6 +35,11 @@ module ngApp.components.downloader.directive {
       restrict: 'A',
       link: (scope, element) => {
         scope.download = (params, apiEndpoint, target = () => element, method = 'GET') => {
+          params = Object.keys(params).reduce((acc, key) => {
+            acc[key] = _.isArray(params[key]) ? params[key].join(',') : params[key];
+            return acc;
+          }, {});
+
           const domTarget = target(element);
           // a cookie value that the server will remove as a download-ready indicator
           const downloadToken = _.uniqueId('' + (+ new Date()) + '-');

@@ -233,7 +233,7 @@ module ngApp.search.models {
           "diagnoses"
         ],
         facets: [
-            {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "Case Submitter ID or Uuid"},
+            {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "Case UUID"},
             {name: "project.primary_site", title: "Primary Site", collapsed: false, facetType: "terms"},
             {name: "project.program.name", title: "Cancer Program", collapsed: false, facetType: "terms"},
             {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms"},

@@ -236,7 +236,7 @@ module ngApp.components.facets.controllers {
 
       if (this.actives.indexOf(this.searchTerm[field]) === -1) {
         var term = this.searchTerm;
-        term = term[field === 'project_id' ? 'name' : field];
+        term = term[field];
 
         if (!term) {
           this.searchTerm = this.lastInput;
@@ -262,6 +262,13 @@ module ngApp.components.facets.controllers {
 
     autoComplete(query: string): ng.IPromise<any> {
       return this.FacetService.autoComplete(this.$scope.entity, query, this.$scope.field);
+    }
+
+    prefixValue(query: string): ng.IPromise<any> {
+      term = query.replace(/\*/g, '') + '*';
+      var model = { term: term };
+      model[this.$scope.field.split('.').pop()] = term;
+      return [model];
     }
 
     remove(term: string): void {

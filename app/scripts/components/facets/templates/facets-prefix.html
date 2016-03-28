@@ -1,0 +1,41 @@
+<div class="list-group-item" id="{{ title | lowercase | spaceReplace:'-' }}-facet-list-group">
+  <label class="list-group-item-heading h4 facet-title"
+      data-ng-click="ftc.toggle($event, 'collapsed')"
+      data-ng-keypress="ftc.toggle($event, 'collapsed')"
+      aria-expanded="{{ !ftc.collapsed }}"
+      aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
+      role="button"
+      for="{{ 'autocomplete-' + title }}">
+    <i class="fa" data-ng-class="{ 'fa-angle-down': !ftc.collapsed, 'fa-angle-right': ftc.collapsed }"></i>
+    {{ title | translate }}
+  </label>
+
+  <p class="text-success facet-title" data-ng-repeat="active in ftc.actives">
+    <span data-ng-click="ftc.remove(active)"
+          data-ng-keypress="ftc.remove(active)">
+      <i class="fa fa-check-circle-o" aria-controls="data-table" aria-checked="true"></i>
+        {{ active }}
+    </span>
+  </p>
+
+  <div class="input-group" data-ng-if="!ftc.collapsed && !ftc.actives.length">
+    <span class="input-group-addon">
+      <span class="fa fa-search"></span>
+    </span>
+    <input data-ng-if="ftc.autocomplete"
+           type="text" data-ng-model="ftc.searchTerm"
+           placeholder="{{ 'Search for' | translate }} {{ placeholder | translate }}"
+           data-uib-typeahead="id for id in ftc.prefixValue($viewValue)"
+           data-typeahead-on-select="ftc.termSelected()"
+           data-ng-change="ftc.saveInput()"
+           data-typeahead-min-length="2"
+           maxlength="100"
+           id="{{ 'autocomplete-' + title }}"
+           data-typeahead-template-url="{{ template }}"
+           class="form-control"
+           style="border-radius: 0px;">
+    <span class="input-group-btn">
+      <button class="btn btn-default" type="button" data-ng-click="ftc.setTerm()" data-ng-class="{'disabled' : ftc.searchTerm === ''}">Go!</button>
+    </span>
+  </div>
+</div>

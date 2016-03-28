@@ -100,7 +100,8 @@ ListExpr
   }
   
 Comparable
-  = INTEGER
+  = DATE
+  / INTEGER
 
 Fields
   = x:Field xs:FieldsRest* { return [x].concat(xs); }
@@ -121,6 +122,7 @@ Term "term"
   = UNQUOTED_STRING
   / QUOTED_STRING
   / INTEGER
+  
 
 // Operators
 GroupOp 
@@ -142,6 +144,7 @@ CompareOp
 DIGIT "number" = [0-9]
 INTEGER = $DIGIT+
 REAL = DIGIT* "." DIGIT+
+DASH = "-"
 COMMA "," = ","
 COLON ":" = ":"
 EQUAL "=" = "="
@@ -176,7 +179,11 @@ UNQUOTED_STRING
   }
 QUOTED_STRING 
   = DBLQ s:$[^"]+ DBLQ { return s; }
-
+DATE 
+  = x:(DIGIT DIGIT DIGIT DIGIT DASH DIGIT DIGIT DASH DIGIT DIGIT)
+  {
+    return x.join('');
+  }
 // Extra
 _
   = ( WhiteSpace / NewLine )

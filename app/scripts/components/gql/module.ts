@@ -358,9 +358,11 @@ module ngApp.components.gql {
             $scope.ddItems = _.filter(
                 GqlService.parseGrammarError($scope.parts.needle, $scope.error), 
                 (item: IDdItem): boolean => {
-                    var op: IDdItem = mapping[$scope.parts.op.toLowerCase()] || {}; 
-                    if ((op.type || '') === 'long' || (op.full || '').toString().indexOf('datetime') != -1) {
+                    var op: IDdItem = mapping[$scope.parts.op.toLowerCase()] || {};
+                    if (['long', 'integer'].indexOf(op.type || '') !== -1) {
                         return [T.EQ, T.NE, T.GT, T.GTE, T.LT, T.LTE, T.IS, T.NOT].indexOf(item.full.toString()) != -1
+                    } else if ((op.full || '').toString().indexOf('datetime') != -1) {
+                        return [T.GT, T.GTE, T.LT, T.LTE, T.IS, T.NOT].indexOf(item.full.toString()) != -1
                     } else if (op.type === 'string') {
                         return [T.EQ, T.NE, T.IN, T.EXCLUDE, T.IS, T.NOT].indexOf(item.full.toString()) != -1
                     } else {

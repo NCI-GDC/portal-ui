@@ -142,18 +142,6 @@ module ngApp.search.models {
         td: (row, $scope) => row.platform && $scope.$filter("humanify")(row.platform),
         sortable: false,
         hidden: true
-      }, {
-        name: "Data Submitter",
-        id: "center.name",
-        td: (row, $scope) => row.center && $scope.$filter("humanify")(row.center.name),
-        sortable: false,
-        hidden: true
-      }, {
-        name: "Tags",
-        id: "tags",
-        td: row => (row.tags && row.tags.join(", ")) || "--",
-        sortable: false,
-        hidden: true
       }],
     fields: [
       "access",
@@ -170,7 +158,6 @@ module ngApp.search.models {
       "archive.archive_id",
       "experimental_strategy",
       "center.name",
-      "tags",
       "submitter_id"
     ],
     expand: [
@@ -186,9 +173,7 @@ module ngApp.search.models {
       {name: "data_format", title: "Data Format", collapsed: false, facetType: "terms", removable: false },
       {name: "platform", title: "Platform", collapsed: true, facetType: "terms", removable: false },
       {name: "access", title: "Access Level", collapsed: true, facetType: "terms", removable: false },
-      {name: "center.name", title: "Data Submitter", collapsed: true, facetType: "terms", removable: false },
       {name: "state", title: "File Status", collapsed: true, facetType: "terms", removable: false },
-      {name: "tags", title: "Tags", collapsed: true, facetType: "terms", removable: false }
     ]
   };
   angular.module("search.table.files.model", [])

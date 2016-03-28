@@ -1,17 +1,18 @@
 module ngApp.core.models {
   import IPagination = ngApp.components.tables.pagination.models.IPagination;
-
+  
   export interface IEntity {
     uuid: any;
   }
 
   export interface IGDCWindowService extends ng.IWindowService {
     LoadXMLString: any;
-    moment: MomentStatic;
+    moment: moment.MomentStatic;
     jQuery: JQueryStatic;
     scrollY: number;
     c3: any;
     gql: any;
+    chevrotain: any
   }
 
   export interface ICollection {

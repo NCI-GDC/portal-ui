@@ -64,16 +64,14 @@ module ngApp.core.services {
   }
 
   var dataNames = [
-    'Clinical',
-    'Raw microarray data',
     'Raw sequencing data',
+    'Gene expression',
     'Simple nucleotide variation',
     'Copy number variation',
     'Structural rearrangement',
-    'Gene expression',
-    'Protein expression',
     'DNA methylation',
-    'Other'
+    'Clinical',
+    'Biospecimen'
   ];
 
   var expNames = [
@@ -121,7 +119,7 @@ module ngApp.core.services {
       .module("core.services", [
         "gettext"
       ])
-      .value("DataTypeNames", dataNames)
+      .value("DataCategoryNames", dataNames)
       .value("ExperimentalStrategyNames", expNames)
       .service("CoreService", CoreService);
 }

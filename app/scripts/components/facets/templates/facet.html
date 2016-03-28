@@ -1,17 +1,30 @@
-<div class="list-group-item" data-ng-show="tc.terms.length" id="{{ title | lowercase | spaceReplace:'-' }}-facet-list-group">
+<div class="list-group-item" id="{{ title | lowercase | spaceReplace:'-' }}-facet-list-group">
   <h4 class="list-group-item-heading facet-title"
-       data-ng-click="tc.toggle($event, 'collapsed')"
-       data-ng-keypress="tc.toggle($event, 'collapsed')"
-       aria-expanded="{{ !tc.collapsed }}"
-       aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
-       tabindex="0"
-       role="button">
-    <i class="fa" data-ng-class="{ 'fa-angle-down': !tc.collapsed, 'fa-angle-right': tc.collapsed }"></i>
-    {{ ::tc.title | translate }}
+      tabindex="0">
+     <span data-ng-click="tc.toggle($event, 'collapsed')"
+           role="button"
+           aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
+           aria-expanded="{{ !tc.collapsed }}"
+           data-ng-keypress="tc.toggle($event, 'collapsed')">
+      <i class="fa" data-ng-class="{ 'fa-angle-down': !tc.collapsed, 'fa-angle-right': tc.collapsed }"></i>
+      {{ ::tc.title | translate }}
+    </span>
+
+    <span class="pull-right"
+          data-ng-if="removable === 'true'"
+          data-ng-click="removeFunction()">
+      <i class="fa fa-times"></i>
+    </span>
   </h4>
 
   <div data-ng-show="!tc.collapsed">
-    <p data-ng-repeat="term in tc.actives track by term.key"
+    <p data-ng-show="!tc.terms.length && !tc.error">
+      None
+    </p>
+    <p data-ng-show="tc.error">
+      {{tc.error}}
+    </p>
+    <p data-ng-show="tc.terms.length" data-ng-repeat="term in tc.actives track by term.key"
        class="list-group-item-text">
       <span data-ng-click="tc.remove(tc.name, term.key)"
             data-ng-keypress="remove(tc.name, term.key, $event)"
@@ -19,14 +32,14 @@
             class="facet-term-label">
         <i class="fa fa-check-square-o" aria-controls="data-table" aria-checked="false"></i>
         <span data-ng-if="tc.name.indexOf('project_id') !== -1"
-              data-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
+              data-uib-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"
               data-tooltip-placement="right">{{ ::term.key.toUpperCase() }}</span>
         <span data-ng-if="tc.name.indexOf('project_id') === -1">
           {{ ::term.key | translate | humanify:true:true }}
         </span>
       </span>
-      <span class="label label-primary pull-right">{{ term.doc_count | number:0}}</span>
+      <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
     </p>
 
     <p data-ng-repeat="term in tc.inactives | limitTo: tc.displayCount track by term.key"
@@ -45,7 +58,7 @@
           {{ ::term.key | translate | humanify: true:true }}
         </span>
       </span>
-      <span class="label label-primary pull-right">{{ term.doc_count | number:0}}</span>
+      <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
     </p>
 
     <div class="text-right">

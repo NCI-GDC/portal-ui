@@ -12,6 +12,7 @@ module ngApp.home {
 
   angular
       .module("ngApp.home", [
+        "home.services",
         "home.controller",
         "ui.router.state"
       ])

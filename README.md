@@ -47,7 +47,30 @@ Confirming Node is installed...                             OK
 Installing NPM dependencies...
 ...
 Setup Successful!
+
 ```
+
+### Running Locally
+#### Remote API & ElasticSearch, Local UI
+Connect to VPN and run ui with
+```
+GDC_API=https://gdc-portal.nci.nih.gov/auth/api/v0 GDC_FAKE_AUTH=true npm start
+```
+
+#### Local API, Remote ElastiSearch and Local UI
+Connect to VPN and run api with
+```
+GDC_ES_INDEX=gdc_from_graph GDC_ES_HOST=ip GDC_ES_USER=user GDC_ES_PASS=pw GDC_PORTAL_ENDPOINT=http://localhost:3000 GDC_FAKE_DOWNLOAD=True python run.py
+```
+ES creds can be found on any API machine in `/var/www/gdcapi/gdcapi.wsgi`
+
+UI can simply be run as usual with
+```
+npm start
+```
+
+#### Local API, ElasticSearch and UI
+Not recommended, would require loading local ES with data.
 
 ### Authentication
 In order to properly run the UI and login to test the auth you will need to run the application
@@ -64,7 +87,7 @@ to your `/etc/hosts` file:
 `127.0.0.1 gdc-portal.nci.nih.gov`
 
 ### ElasticSearch
-Edit path-to-elastic-search/config/elasticsearch.yml, find the line with http.max_content_length, add
+If you are connecting to a local ES, edit path-to-elastic-search/config/elasticsearch.yml, find the line with http.max_content_length, add
 ```
 http.max_initial_line_length: 1000mb
 ```

@@ -18,15 +18,22 @@ module ngApp.search.models {
     rowId: 'file_id',
     headings: [
       {
-        th: '<div add-to-cart-all files="data" data-size="{{paging.total}}"></div>',
+        th: '<add-to-cart-all-dropdown data-files="data" data-size="{{paging.total}}" />',
         name: 'Add to Cart',
         id: "file_actions",
-        td: row => '<span add-to-cart-single file="row" style="margin-right:5px"></span>' +
-                    '<download-button data-tooltip="Download" data-tooltip-popup-delay=1000 files="row"></download-button>'
+        td: row => '<add-to-cart-single-icon file="row" style="margin-right:5px"></add-to-cart-single-icon>' +
+                    '<download-button data-uib-tooltip="Download" data-tooltip-popup-delay=1000 files="row"></download-button>'
       }, {
         name: "File UUID",
         id: "file_id",
         td: row => '<a href="files/' + row.file_id + '">' + row.file_id + '</a>',
+        sortable: true,
+        hidden: true,
+        tdClassName: 'truncated-cell'
+      }, {
+        name: "File Submitter ID",
+        id: "submitter_id",
+        td: row => row.submitter_id,
         sortable: true,
         hidden: true,
         tdClassName: 'truncated-cell'
@@ -75,16 +82,16 @@ module ngApp.search.models {
         td: row => {
           return _.unique(_.map(row.cases, p => {
             return '<a href="projects/' + p.project.project_id +
-                    '" data-tooltip="' + p.project.name +
+                    '" data-uib-tooltip="' + p.project.name +
                     '" data-tooltip-popup-delay=1000' +
                     '" data-tooltip-append-to-body="true">'+ p.project.project_id + '</a>';
           })).join('<br>');
         },
         sortable: true
       }, {
-        name: "Data Type",
-        id: "data_type",
-        td: row => row.data_type,
+        name: "Data Category",
+        id: "data_category",
+        td: row => row.data_category,
         sortable: true
       }, {
         name: "Data Format",
@@ -116,9 +123,9 @@ module ngApp.search.models {
         thClassName: 'text-right',
         tdClassName: 'text-right'
       }, {
-        name: "Data Subtype",
-        id: "data_subtype",
-        td: (row, $scope) => row.data_subtype && $scope.$filter("humanify")(row.data_subtype),
+        name: "Data Type",
+        id: "data_type",
+        td: (row, $scope) => row.data_type && $scope.$filter("humanify")(row.data_type),
         sortable: false,
         hidden: true
       }, {
@@ -151,7 +158,7 @@ module ngApp.search.models {
       "state",
       "file_name",
       "data_type",
-      "data_subtype",
+      "data_category",
       "data_format",
       "file_size",
       "file_id",
@@ -167,6 +174,18 @@ module ngApp.search.models {
       "cases",
       "cases.project",
       "cases.clinical"
+    ],
+    facets: [
+      {name: "file_id", title: "File", collapsed: false, facetType: "free-text", placeholder: "File name or ID", removable: false },
+      {name: "data_category", title: "Data Category", collapsed: false, facetType: "terms", removable: false },
+      {name: "data_type", title: "Data Type", collapsed: false, facetType: "terms", removable: false },
+      {name: "experimental_strategy", title: "Experimental Strategy", collapsed: false, facetType: "terms", removable: false },
+      {name: "data_format", title: "Data Format", collapsed: false, facetType: "terms", removable: false },
+      {name: "platform", title: "Platform", collapsed: true, facetType: "terms", removable: false },
+      {name: "access", title: "Access Level", collapsed: true, facetType: "terms", removable: false },
+      {name: "center.name", title: "Data Submitter", collapsed: true, facetType: "terms", removable: false },
+      {name: "state", title: "File Status", collapsed: true, facetType: "terms", removable: false },
+      {name: "tags", title: "Tags", collapsed: true, facetType: "terms", removable: false }
     ]
   };
   angular.module("search.table.files.model", [])

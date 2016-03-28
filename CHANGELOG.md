@@ -1,3 +1,84 @@
+<a name"0.3.24.2-rc1"></a>
+### 0.3.24.2-rc1 (2016-03-28)
+
+
+#### Bug Fixes
+
+* **app:** more uib fixes ([aa2eec61](https://github.com/NCI-GDC/portal-ui/commit/aa2eec61), closes [PGDC-1762](https://jira.opensciencedatacloud.org/browse/PGDC-1762))
+* **cart:**
+  * fix project chart ([b1e269a0](https://github.com/NCI-GDC/portal-ui/commit/b1e269a0))
+  * remove and undo updates properly ([b9266983](https://github.com/NCI-GDC/portal-ui/commit/b9266983), closes [PGDC-1857](https://jira.opensciencedatacloud.org/browse/PGDC-1857))
+  * change removeAll to POST ([36993573](https://github.com/NCI-GDC/portal-ui/commit/36993573), closes [PGDC-912](https://jira.opensciencedatacloud.org/browse/PGDC-912))
+  * 508 on remove from cart button ([b82d698a](https://github.com/NCI-GDC/portal-ui/commit/b82d698a), closes [PGDC-931](https://jira.opensciencedatacloud.org/browse/PGDC-931))
+* **components:**
+  * conditionally show case column ([31876aff](https://github.com/NCI-GDC/portal-ui/commit/31876aff))
+  * touchup prefix search ([168085b6](https://github.com/NCI-GDC/portal-ui/commit/168085b6), closes [PGDC-1866](https://jira.opensciencedatacloud.org/browse/PGDC-1866), [PGDC-1869](https://jira.opensciencedatacloud.org/browse/PGDC-1869))
+  * file size in summary_card ([252ae45c](https://github.com/NCI-GDC/portal-ui/commit/252ae45c))
+  * use correct font in dropdown ([29610b4f](https://github.com/NCI-GDC/portal-ui/commit/29610b4f))
+  * uib- prefix for nav collapse ([9194eecd](https://github.com/NCI-GDC/portal-ui/commit/9194eecd))
+  * use new auth directive ([ce96e6ea](https://github.com/NCI-GDC/portal-ui/commit/ce96e6ea), closes [PGDC-1819](https://jira.opensciencedatacloud.org/browse/PGDC-1819))
+  * fix missing entity (doctype) ([3e93a302](https://github.com/NCI-GDC/portal-ui/commit/3e93a302))
+* **download:** send ids for form post ([475ee1cc](https://github.com/NCI-GDC/portal-ui/commit/475ee1cc), closes [PGDC-1861](https://jira.opensciencedatacloud.org/browse/PGDC-1861))
+* **facets:**
+  * label for date input ([7e0db0bb](https://github.com/NCI-GDC/portal-ui/commit/7e0db0bb), closes [PGDC-482](https://jira.opensciencedatacloud.org/browse/PGDC-482))
+  * range facet input bug ([f1237778](https://github.com/NCI-GDC/portal-ui/commit/f1237778), closes [PGDC-1794](https://jira.opensciencedatacloud.org/browse/PGDC-1794))
+* **file:**
+  * line between top buttons ([76e62a5d](https://github.com/NCI-GDC/portal-ui/commit/76e62a5d), closes [PGDC-620](https://jira.opensciencedatacloud.org/browse/PGDC-620))
+  * metadata, remove link and add to chart ([56007c78](https://github.com/NCI-GDC/portal-ui/commit/56007c78), closes [PGDC-1465](https://jira.opensciencedatacloud.org/browse/PGDC-1465))
+  * keep tag, data submitter ([842970d9](https://github.com/NCI-GDC/portal-ui/commit/842970d9), closes [PGDC-1465](https://jira.opensciencedatacloud.org/browse/PGDC-1465))
+* **filter:** return default if null ([fb992694](https://github.com/NCI-GDC/portal-ui/commit/fb992694), closes [PGDC-596](https://jira.opensciencedatacloud.org/browse/PGDC-596))
+* **githut-graph:** Robustly handle bad data ([c863115c](https://github.com/NCI-GDC/portal-ui/commit/c863115c), closes [PGDC-1042](https://jira.opensciencedatacloud.org/browse/PGDC-1042))
+* **search:** field name typos ([a7de75ea](https://github.com/NCI-GDC/portal-ui/commit/a7de75ea), closes [PGDC-1878](https://jira.opensciencedatacloud.org/browse/PGDC-1878))
+* **style:** modal z-above searchbar ([0ddcae4d](https://github.com/NCI-GDC/portal-ui/commit/0ddcae4d))
+* **summaryCards:** header for col1 ([a450ac2a](https://github.com/NCI-GDC/portal-ui/commit/a450ac2a), closes [PGDC-807](https://jira.opensciencedatacloud.org/browse/PGDC-807))
+
+
+#### Features
+
+* **621:** show case_count in summary table ([cbce3a73](https://github.com/NCI-GDC/portal-ui/commit/cbce3a73), closes [PGDC-621](https://jira.opensciencedatacloud.org/browse/PGDC-621))
+* **advanced-search:** Change Search Button Names ([286fc9fd](https://github.com/NCI-GDC/portal-ui/commit/286fc9fd), closes [PGDC-1359](https://jira.opensciencedatacloud.org/browse/PGDC-1359))
+* **app:**
+  * add favicon ([48cfba96](https://github.com/NCI-GDC/portal-ui/commit/48cfba96), closes [PGDC-824](https://jira.opensciencedatacloud.org/browse/PGDC-824))
+  * project & case entity page updates ([37f53efc](https://github.com/NCI-GDC/portal-ui/commit/37f53efc), closes [PGDC-1743](https://jira.opensciencedatacloud.org/browse/PGDC-1743))
+  * open new tab ([e5a176ed](https://github.com/NCI-GDC/portal-ui/commit/e5a176ed), closes [PGDC-753](https://jira.opensciencedatacloud.org/browse/PGDC-753))
+* **auth:** login/logout through popup ([b7f3a3c7](https://github.com/NCI-GDC/portal-ui/commit/b7f3a3c7), closes [PGDC-633](https://jira.opensciencedatacloud.org/browse/PGDC-633))
+* **bam:** allow tab, add examples ([39d7ccb2](https://github.com/NCI-GDC/portal-ui/commit/39d7ccb2), closes [PGDC-163](https://jira.opensciencedatacloud.org/browse/PGDC-163))
+* **cart:**
+  * metadata files DL cart, remove counts ([aa5f8189](https://github.com/NCI-GDC/portal-ui/commit/aa5f8189), closes [PGDC-1469](https://jira.opensciencedatacloud.org/browse/PGDC-1469))
+  * download metadata ([3c2a2dcd](https://github.com/NCI-GDC/portal-ui/commit/3c2a2dcd), closes [PGDC-1800](https://jira.opensciencedatacloud.org/browse/PGDC-1800))
+  * Redesign Download buttons ([1e907b1f](https://github.com/NCI-GDC/portal-ui/commit/1e907b1f), closes [PGDC-1783](https://jira.opensciencedatacloud.org/browse/PGDC-1783))
+  * only store ids & size, access ([fc6def88](https://github.com/NCI-GDC/portal-ui/commit/fc6def88), closes [PGDC-1463](https://jira.opensciencedatacloud.org/browse/PGDC-1463))
+* **case:** link project id ([a9838ed9](https://github.com/NCI-GDC/portal-ui/commit/a9838ed9), closes [PGDC-688](https://jira.opensciencedatacloud.org/browse/PGDC-688))
+* **clinical:** updated case entity page ([438dd4e7](https://github.com/NCI-GDC/portal-ui/commit/438dd4e7), closes [PGDC-1464](https://jira.opensciencedatacloud.org/browse/PGDC-1464), [PGDC-1653](https://jira.opensciencedatacloud.org/browse/PGDC-1653))
+* **components:** consolidate cart actions ([149346b2](https://github.com/NCI-GDC/portal-ui/commit/149346b2), closes [PGDC-1469](https://jira.opensciencedatacloud.org/browse/PGDC-1469))
+* **download:**
+  * cart downloads via post ([f5980a3f](https://github.com/NCI-GDC/portal-ui/commit/f5980a3f), closes [PGDC-1047](https://jira.opensciencedatacloud.org/browse/PGDC-1047))
+  * improved download experience ([f150457e](https://github.com/NCI-GDC/portal-ui/commit/f150457e), closes [PGDC-822](https://jira.opensciencedatacloud.org/browse/PGDC-822))
+* **entity:**
+  * search & highlight biospecimen tree ([9224e4b7](https://github.com/NCI-GDC/portal-ui/commit/9224e4b7), closes [PGDC-812](https://jira.opensciencedatacloud.org/browse/PGDC-812))
+  * expand/collapse all biospecimen tree ([4bffa19d](https://github.com/NCI-GDC/portal-ui/commit/4bffa19d), closes [PGDC-812](https://jira.opensciencedatacloud.org/browse/PGDC-812))
+* **export:** download clinical & biospec ([f3c382ba](https://github.com/NCI-GDC/portal-ui/commit/f3c382ba), closes [PGDC-1466](https://jira.opensciencedatacloud.org/browse/PGDC-1466))
+* **facets:** search on description & highlight ([7d85eb0a](https://github.com/NCI-GDC/portal-ui/commit/7d85eb0a), closes [PGDC-1462](https://jira.opensciencedatacloud.org/browse/PGDC-1462))
+* **file:** common changes for index update ([ecd393c6](https://github.com/NCI-GDC/portal-ui/commit/ecd393c6), closes [PGDC-1465](https://jira.opensciencedatacloud.org/browse/PGDC-1465))
+* **file-entity:** File Entity Page Changes ([c359bb6e](https://github.com/NCI-GDC/portal-ui/commit/c359bb6e))
+* **gql:**
+  * filter operators by field type ([5d5eafb2](https://github.com/NCI-GDC/portal-ui/commit/5d5eafb2), closes [PGDC-1195](https://jira.opensciencedatacloud.org/browse/PGDC-1195))
+  * highlight query match ([9c940bf3](https://github.com/NCI-GDC/portal-ui/commit/9c940bf3), closes [PGDC-1461](https://jira.opensciencedatacloud.org/browse/PGDC-1461), [PGDC-1045](https://jira.opensciencedatacloud.org/browse/PGDC-1045))
+  * update and improve GQL UX ([b66690ba](https://github.com/NCI-GDC/portal-ui/commit/b66690ba), closes [PGDC-639](https://jira.opensciencedatacloud.org/browse/PGDC-639), [PGDC-750](https://jira.opensciencedatacloud.org/browse/PGDC-750), [PGDC-114](https://jira.opensciencedatacloud.org/browse/PGDC-114), [PGDC-375](https://jira.opensciencedatacloud.org/browse/PGDC-375))
+* **home:**
+  * Home page feedback changes from demo ([af0b23df](https://github.com/NCI-GDC/portal-ui/commit/af0b23df))
+  * Change Home Advanced Queries ([3a4f7386](https://github.com/NCI-GDC/portal-ui/commit/3a4f7386), closes [PGDC-1885](https://jira.opensciencedatacloud.org/browse/PGDC-1885))
+  * Update Home Page ([9c52f243](https://github.com/NCI-GDC/portal-ui/commit/9c52f243), closes [PGDC-1825](https://jira.opensciencedatacloud.org/browse/PGDC-1825))
+  * Add download stats ([75cf3f85](https://github.com/NCI-GDC/portal-ui/commit/75cf3f85))
+* **projects:**
+  * update to use data categories ([e77d3da0](https://github.com/NCI-GDC/portal-ui/commit/e77d3da0), closes [PGDC-1755](https://jira.opensciencedatacloud.org/browse/PGDC-1755))
+  * Project links & minor home updates ([7d748895](https://github.com/NCI-GDC/portal-ui/commit/7d748895), closes [PGDC-738](https://jira.opensciencedatacloud.org/browse/PGDC-738), [PGDC-1359](https://jira.opensciencedatacloud.org/browse/PGDC-1359))
+* **search:**
+  * facets/table changes for new index ([4e4bd9b6](https://github.com/NCI-GDC/portal-ui/commit/4e4bd9b6), closes [PGDC-1757](https://jira.opensciencedatacloud.org/browse/PGDC-1757))
+  * can search with prefix wildcard ([350fcce3](https://github.com/NCI-GDC/portal-ui/commit/350fcce3), closes [PGDC-631](https://jira.opensciencedatacloud.org/browse/PGDC-631))
+  * add custom facet support ([b7a93b9a](https://github.com/NCI-GDC/portal-ui/commit/b7a93b9a), closes [PGDC-714](https://jira.opensciencedatacloud.org/browse/PGDC-714))
+
+
 <a name"0.2.18"></a>
 ### 0.2.18 (2015-12-15)
 

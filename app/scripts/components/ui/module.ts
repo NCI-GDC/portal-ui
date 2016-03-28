@@ -17,10 +17,10 @@ module ngApp.components.ui {
 
   angular.module("components.ui", [
     "ui.scroll",
-    "ui.date",
     "ui.file",
     "ui.search",
     "ui.string",
+    "ui.control",
     "ui.biospecimen",
     "ui.count-card"
   ]);

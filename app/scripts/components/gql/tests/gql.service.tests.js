@@ -178,13 +178,13 @@ describe("GQL Parser", function() {
           needle: "VALUE"
         });
         expect(GqlService.getParts("FIELD OP")).to.eql({
-          field: undefined,
+          field: '',
           op: "FIELD",
           needle: "OP"
         });
         expect(GqlService.getParts("FIELD")).to.eql({
-          field: undefined,
-          op: undefined,
+          field: '',
+          op: '',
           needle: "FIELD"
         });
       }));
@@ -197,20 +197,8 @@ describe("GQL Parser", function() {
       }));
       it("handles empty string", inject(function (GqlService) {
         expect(GqlService.getParts("")).to.eql({
-          field: undefined,
-          op: undefined,
-          needle: ""
-        });
-      }));
-      it("[OICR-926] handles NOT IN", inject(function (GqlService) {
-        expect(GqlService.getParts("participants.clinical.gender not in value")).to.eql({
-          field: "participants.clinical.gender",
-          op: "not in",
-          needle: "value"
-        });
-        expect(GqlService.getParts("participants.clinical.gender not in ")).to.eql({
-          field: "participants.clinical.gender",
-          op: "not in",
+          field: "",
+          op: "",
           needle: ""
         });
       }));
@@ -251,13 +239,11 @@ describe("GQL Parser", function() {
           expected: [
             { "description": "=", "type": "literal", "value": "=" },
             { "description": "!=", "type": "literal", "value": "!=" },
-            { "description": "in", "type": "literal", "value": "is" },
-            { "description": "is", "type": "literal", "value": "in" }
+            { "description": "IN", "type": "literal", "value": "IN" }
           ]})).to.eql([
             { field: "=", full: "=" },
             { field: "!=", full: "!=" },
-            { field: "is", full: "is" },
-            { field: "in", full: "in" }
+            { field: "IN", full: "IN" }
           ]);
       }));
       it("filters list by needle", inject(function (GqlService) {
@@ -265,8 +251,7 @@ describe("GQL Parser", function() {
           expected: [
             { "description": "=", "type": "literal", "value": "=" },
             { "description": "!=", "type": "literal", "value": "!=" },
-            { "description": "in", "type": "literal", "value": "is" },
-            { "description": "is", "type": "literal", "value": "in" }
+            { "description": "IN", "type": "literal", "value": "IN" }
           ]})).to.eql([
             { field: "=", full: "=" },
             { field: "!=", full: "!=" }
@@ -370,39 +355,59 @@ describe("GQL Parser", function() {
     describe("humanError", function () {
       it("return message", inject(function (GqlService) {
         expect(GqlService.humanError("primary_site a", {
-          offset: 13,
           found: "a",
-          line: 1,
-          column: 13,
+          message: 'Expected =, != but "a" found.',
+          location: {
+            start: {
+                offset: 13,
+                line: 1,
+                column: 13
+            }
+          },
           expected: [{value:"="}, {value: "!="}]
-        })).to.eq("1 : 13 - Expected '=', '!=' but 'a' found.");
+        })).to.eq('1 : 13 - Expected =, != but "a" found.');
       }));
       it("[OICR-949] return message with full found value", inject(function (GqlService) {
         expect(GqlService.humanError("primary_site access", {
-          offset: 13,
           found: "a",
-          line: 1,
-          column: 13,
+          message: 'Expected =, != but "a" found.',
+          location: {
+            start: {
+                offset: 13,
+                line: 1,
+                column: 13
+            },    
+          },
           expected: [{value:"="}, {value: "!="}]
-        })).to.eq("1 : 13 - Expected '=', '!=' but 'access' found.");
+        })).to.eq('1 : 13 - Expected =, != but "access" found.');
       }));
       it("return message with full found value in longer query", inject(function (GqlService) {
         expect(GqlService.humanError("primary_site access and other = thing", {
-          offset: 13,
           found: "a",
-          line: 1,
-          column: 13,
+          message: 'Expected =, != but "a" found.',
+          location: {
+            start: {
+                offset: 13,
+                line: 1,
+                column: 13
+            },    
+          },
           expected: [{value:"="}, {value: "!="}]
-        })).to.eq("1 : 13 - Expected '=', '!=' but 'access' found.");
+        })).to.eq('1 : 13 - Expected =, != but "access" found.');
       }));
       it("handle end of input", inject(function (GqlService) {
         expect(GqlService.humanError("primary_site ", {
-          offset: 13,
           found: null,
-          line: 1,
-          column: 13,
+          message: 'Expected =, != but end of input found.',
+          location: {
+            start: {
+                offset: 13,
+                line: 1,
+                column: 13
+            },    
+          },
           expected: [{value:"="}, {value: "!="}]
-        })).to.eq("1 : 13 - Expected '=', '!=' but end of input found.");
+        })).to.eq('1 : 13 - Expected =, != but end of input found.');
       }));
     });
   });

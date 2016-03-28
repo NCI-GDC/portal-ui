@@ -1,0 +1,35 @@
+<div data-ng-repeat="f in facetsConfig">
+  <facets-free-text data-ng-if="f.facetType === 'free-text'"
+                  data-title="{{f.title}}" placeholder="{{ f.placeholder | translate }}"
+                  data-field="{{doctype}}.{{f.name}}"
+                  data-entity="{{doctype}}"
+                  data-template="components/facets/templates/typeahead-{{doctype}}.html"></facets-free-text>
+
+  <terms data-ng-if="f.facetType === 'terms'"
+         data-name="{{doctype}}.{{f.name}}"
+         data-title="{{f.title | facetTitlefy }}"
+         data-facet="aggregations[f.name]"
+         data-collapsed="{{ f.collapsed }}"
+         data-removable="{{ f.removable }}"
+         data-remove-function="removeFacet(f.name)"></terms>
+
+  <range-facet data-ng-if="f.facetType === 'range'"
+               data-field="{{doctype}}.{{f.name}}"
+               data-title="{{ f.title | facetTitlefy }}"
+               data-facet="aggregations[f.name]"
+               data-has-graph="{{ f.hasGraph || false }}"
+               data-remove-function="removeFacet(f.name)"
+               data-units-map="f.unitsMap"
+               data-removable="{{ f.removable }}"
+               data-collapsed="{{ f.collapsed }}"
+               ></range-facet>
+
+  <date-facet data-ng-if="f.facetType === 'datetime'"
+              data-name="{{doctype}}.{{f.name}}"
+              data-title="{{ f.title | replace:'datetime':'' | facetTitlefy }}"
+              data-facet="aggregations[f.name]"
+              data-remove-function="removeFacet(f.name)"
+              data-removable="{{ f.removable }}"
+              data-collapsed="{{ f.collapsed }}"
+              ></date-facet>
+</div>

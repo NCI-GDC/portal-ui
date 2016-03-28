@@ -1,12 +1,19 @@
 <div class="list-group-item">
-  <h4 class="list-group-item-heading facet-title"
-       data-ng-click="rfc.toggle($event, 'collapsed')"
-       data-ng-keypress="rfc.toggle($event, 'collapsed')"
-       aria-expanded="{{ !rfc.collapsed }}"
-       aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
-       role="button">
-    <i class="fa" data-ng-class="{ 'fa-angle-down': !rfc.collapsed, 'fa-angle-right': rfc.collapsed }"></i>
-    {{ title | translate }}
+  <h4 class="list-group-item-heading facet-title">
+    <span data-ng-click="rfc.toggle($event, 'collapsed')"
+          data-ng-keypress="rfc.toggle($event, 'collapsed')"
+          aria-expanded="{{ !rfc.collapsed }}"
+          aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
+          role="button">
+      <i class="fa" data-ng-class="{ 'fa-angle-down': !rfc.collapsed, 'fa-angle-right': rfc.collapsed }"></i>
+      {{ title | translate }}
+    </span>
+
+    <span class="pull-right"
+          data-ng-if="removable === 'true'"
+          data-ng-click="removeFunction()">
+      <i class="fa fa-times"></i>
+    </span>
   </h4>
   <div data-ng-show="!rfc.collapsed">
     <div class="radio-inline"
@@ -20,15 +27,35 @@
             {{ unitMap.label | humanify }}
         </label>
       </div>
-    <bar-chart data-data="dataUnitConverted"
+      <bar-chart data-ng-if="hasGraph === 'true' && !(!data.length && !rfc.error)" data-data="dataUnitConverted"
                data-max-num-bars="30"
                data-height="35">
     </bar-chart>
-    <div class="input-group">
+    <p data-ng-if="!data.length && !rfc.error">
+      None
+    </p>
+    <p data-ng-if="rfc.error">
+      {{rfc.error}}
+    </p>
+    <div class="input-group" data-ng-if="data.length">
       <label for="from-{{title}}" class="input-group-addon">From:</label>
-      <input id="from-{{title}}" type="text" class="form-control" style="border-radius: 0px;" placeholder="{{ min }}" data-ng-model="lowerBound" aria-label="Min {{ field }}" data-ng-change="rfc.inputChanged()">
+      <input id="from-{{title}}"
+             type="text"
+             class="form-control"
+             style="border-radius: 0px;"
+             placeholder="{{ min }}"
+             data-ng-model="rfc.lowerBound"
+             aria-label="Min {{ field }}"
+             data-ng-change="rfc.inputChanged()">
       <label for="to-{{title}}" class="input-group-addon" style="border-radius: 0px; border-right: 0px; border-left: 0px">To:</label>
-      <input id="to-{{title}}" type="text" class="form-control" style="border-radius: 0px" placeholder="{{ max }}" data-ng-model="upperBound" aria-label="Max {{ field }}" data-ng-change="rfc.inputChanged()">
+      <input id="to-{{title}}"
+             type="text"
+             class="form-control"
+             style="border-radius: 0px"
+             placeholder="{{ max }}"
+             data-ng-model="rfc.upperBound"
+             aria-label="Max {{ field }}"
+             data-ng-change="rfc.inputChanged()">
       <span class="input-group-btn">
         <button class="btn btn-default" type="button" data-ng-click="rfc.setBounds()">Go!</button>
       </span>

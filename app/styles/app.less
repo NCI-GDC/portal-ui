@@ -14,6 +14,9 @@
 @import "dnd.less";
 @import "tooltip.less";
 @import "search.less";
+@import "home.less";
+@import "fonts.less";
+@import "modal.less";
 @import "../scripts/components/styles.less";
 
 html, body {
@@ -37,7 +40,7 @@ abbr {
 }
 .navbar-nav > li > a {
   padding-left: 13px;
-  padding-right: 13px;  
+  padding-right: 13px;
 }
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
@@ -325,8 +328,8 @@ p, ul, ol {
 }
 
 dt {
-  font-weight: bold; 
-  color:#66581c; 
+  font-weight: bold;
+  color:#66581c;
 }
 
 dd {
@@ -748,6 +751,10 @@ pre code {
 .btn-primary {
   background-color: #0d95a1;
   border-color: transparent;
+}
+
+.btn-primary,
+.btn-danger {
   color: #fff!important;
 }
 
@@ -789,6 +796,17 @@ pre code {
   box-shadow: none;
 }
 
+.btn-bordered,
+.btn-bordered:hover,
+.btn-bordered:focus,
+.btn-bordered:active,
+.btn-bordered.focus,
+.btn-bordered.active,
+{
+  border-color: #F5F5F5 !important;
+  background-color: #0d95a1;
+}
+
 .cg-notify-message {
   word-break: break-all;
 }
@@ -798,4 +816,42 @@ pre code {
   height: 1px;
   overflow: hidden;
   display: block;
+}
+
+.dropdown-rule {
+  margin: 0.6rem 0;
+  border: 1px solid #d9d8d8;
+}
+
+.dropdown-menu > li > span {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.42857143;
+  color: #333333;
+  white-space: nowrap;
+}
+
+.dropdown-menu > li > span:hover, .dropdown-menu > li > span:focus {
+  color: #262626;
+  background-color: #f5f5f5;
+}
+
+.dropdown-menu > li > span a {
+  color: #333333;
+  text-decoration: none;
+}
+
+#clinical-table .tab-content {
+  display: inline-block;
+  width: 83%;
+}
+
+#clinical-table .nav-pills {
+  display: inline-block;
+  width: 14%;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  vertical-align: top;
 }

@@ -13,7 +13,9 @@ module ngApp.components.summaryCard.directives {
         config: "=",
         title: "@",
         mode: "@",
-        tableId: "@"
+        tableId: "@",
+        groupingTitle: "@",
+        showCases: "="
       },
       link: function($scope) {
         var config = $scope.config;

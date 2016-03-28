@@ -27,5 +27,6 @@ angular
       "components.githut",
       "components.gql",
       "components.quickSearch",
-      "components.summaryCard"
+      "components.summaryCard",
+      "components.downloader"
     ]);

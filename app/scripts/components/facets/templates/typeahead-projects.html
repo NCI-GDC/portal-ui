@@ -8,10 +8,10 @@
         <span class="uuid">{{ match.model.name }}</span>
       </div>
       <div class="data-row sub-item">
-        {{ match.model.program.name }} - {{ match.model.project_id }}
+        {{ match.model.project_id }}
       </div>
       <div class="data-row sub-item">
-        {{ match.model.primary_site }}
+        {{ match.model.primary_site || 'Prefix search' }}
       </div>
     </div>
   </div>

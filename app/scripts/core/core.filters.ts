@@ -21,6 +21,11 @@ module ngApp.core.filters {
           };
         });
 
+
+        if (contentArray.length === 0) {
+          return angular.toJson({});
+        }
+
         var ret = angular.toJson({
           "op": "and",
           "content": contentArray

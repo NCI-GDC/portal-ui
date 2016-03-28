@@ -1,26 +1,26 @@
-<div data-ng-if="!addAllOnly" class="btn-group" data-dropdown>
-  <button data-ng-if="CartService.areInCart(files)"
+<div class="btn-group" data-uib-dropdown>
+  <button data-ng-if="ctrl.CartService.areInCart(ctrl.files)"
           type="button"
           class="btn btn-success fa fa-shopping-cart"
-          data-ng-click="CartService.removeFiles(files)">
+          data-ng-click="ctrl.CartService.remove(ctrl.files)">
     <span class="icon-btn-label">Add to Cart</span>
   </button>
-  <button data-ng-if="!CartService.areInCart(files)"
+  <button data-ng-if="!ctrl.CartService.areInCart(ctrl.files)"
           type="button"
           class="btn btn-primary fa fa-shopping-cart"
-          data-ng-click="CartService.addFiles(files)"
-          data-ng-disabled="(CartService.getFiles().length + files.length) > CartService.getMaxSize()">
+          data-ng-click="ctrl.CartService.addFiles(ctrl.files)"
+          data-ng-disabled="(ctrl.CartService.getFiles().length + ctrl.files.length) > CartService.getMaxSize()">
     <span class="icon-btn-label">Add to Cart</span>
   </button>
   <button type="button"
           class="btn btn-default dropdown-toggle"
-          dropdown-toggle>
+          data-uib-dropdown-toggle>
     <span class="caret"></span>
     <span class="icon-btn-label">Cart dropdown</span>
   </button>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a data-ng-click="addAll()">
+      <a data-ng-click="ctrl.addAll()">
           <span class="fa-stack">
             <i class="fa fa-shopping-cart fa-stack-1x"></i>
           </span>
@@ -28,7 +28,7 @@
       </a>
     </li>
     <li>
-      <a data-ng-click="removeAll()">
+      <a data-ng-click="ctrl.removeAll()">
         <span class="fa-stack">
           <i class="fa fa-trash fa-stack-1x"></i>
         </span>
@@ -36,12 +36,4 @@
       </a>
     </li>
   </ul>
-</div>
-<div data-ng-if="addAllOnly">
-  <button class="btn btn-primary" data-ng-click="addAll()">
-    <span class="fa-stack">
-      <i class="fa fa-shopping-cart fa-stack-1x"></i>
-    </span>
-    <span data-translate>Add all files to the Cart</span>
-  </button>
 </div>

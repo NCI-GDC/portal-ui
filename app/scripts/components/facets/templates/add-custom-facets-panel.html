@@ -1,0 +1,11 @@
+<div class="list-group-item" style="text-align: right">
+  <span data-ng-if="!acfc.FacetsConfigService.isDefault(docType)">
+    <a data-ng-click="acfc.FacetsConfigService.reset(docType)">
+    Reset
+    </a>
+    |
+  </span>
+  <a data-ng-click="acfc.openModal()">
+      Add a {{ docType | titlefy }} Filter
+  </a>
+</div>

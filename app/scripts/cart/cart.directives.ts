@@ -6,317 +6,132 @@ module ngApp.cart.directives {
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
   import IFile = ngApp.files.models.IFile;
 
-  interface IAddToCartScope extends ng.IScope {
-    CartService: ICartService;
-    addToCart(files: IFile[]): void;
-    removeFromCart(files: IFile[]): void;
-  }
-
+  // remove from cart page
   function RemoveSingleCart(): ng.IDirective {
     return {
-      restrict: "A",
+      restrict: "E",
       replace: true,
-      scope: {
-        file: "="
+      scope: {},
+      bindToController: {
+        file: '='
       },
       templateUrl: "cart/templates/remove-single.html",
-      controller: function($scope, CartService: ICartService) {
-        $scope.remove = function(id: string) {
-          CartService.remove([id]);
-          $scope.$emit("cart-update");
+      controllerAs: 'ctrl',
+      controller: function($scope: ng.IScope, CartService: ICartService) {
+        disabled: boolean = false;
+        this.remove = function() {
+          CartService.remove([{file_id: this.file.file_id,
+                               file_name: this.file.file_name }]);
+          this.disabled = true;
         }
       }
     };
   }
 
-  function AddToCartSingle(): ng.IDirective {
+  // add/remove to cart on file search page
+  function AddToCartSingleIcon(): ng.IDirective {
     return {
-      restrict: "AE",
-      scope:{
-        file: "=",
+      restrict: 'E',
+      scope: {},
+      bindToController: {
+        file: '='
       },
-      templateUrl: "cart/templates/add-to-cart-button-single.html",
-      controller: function($scope: IAddToCartScope, CartService: ICartService) {
-        $scope.CartService = CartService;
-        $scope.addToCart = function(files: IFile[]) {
-          CartService.addFiles(files)
-        };
-        $scope.removeFromCart = function(files: IFile[]) {
-          CartService.removeFiles(files);
-        };
-      }
-    }
+      templateUrl: 'cart/templates/add-to-cart-button-single.html',
+      controller: 'AddToCartSingleCtrl as ctrl'
+    };
   }
 
-  function AddToCartAll(SearchTableFilesModel: TableiciousConfig) {
+  // add/remove to cart on file entity page
+  function AddToCartSingleLabelled(): ng.IDirective {
     return {
-      restrict: "AE",
-      scope:{
-        files: "=",
-        filter: "@", // defaults to use location if undefined
-        size: "@",
-        removeAllInSearchResult: "&",
-        addAllOnly: "@"
-      },
-      compile: function(element, attrs) {
-        if (!attrs.addAllOnly) {
-          attrs.addAllOnly = false;
-        }
-      },
-      templateUrl: "cart/templates/add-to-cart-button-all.html",
-      controller: function($scope: IAddToCartScope,
-                           CartService: ICartService,
-                           LocationService: ILocationService,
-                           FilesService: IFilesService,
-                           UserService: IUserService,
-                           $timeout: ng.ITimeoutService,
-                           notify: INotifyService) {
-        $scope.CartService = CartService;
-        $scope.removeAll  = function() {
-          // Query ES using the current filter and the file uuids in the Cart
-          // If an id is in the result, then it is both in the Cart and in the current Search query
-
-          var filters = $scope.filter || LocationService.filters();
-          var size: number = CartService.getFiles().length;
-          if (!filters.content) {
-            filters.op = "and";
-            filters.content = [];
-          }
-
-          filters.content.push({
-            content: {
-              field: "files.file_id",
-              value: _.pluck(CartService.getFiles(), "file_id")
-            },
-            op: "in"
-          });
-
-          FilesService.getFiles({
-            fields:[
-              "file_id"
-            ],
-            filters: filters,
-            size: size,
-            from: 0
-          }).then((data) => {
-            CartService.remove(_.pluck(data.hits, "file_id"));
-          });
-        };
-
-        $scope.addAll = function() {
-          var filters = $scope.filter || LocationService.filters();
-          filters = UserService.addMyProjectsFilter(filters, "cases.project.project_id");
-          if ($scope.size >= CartService.getCartVacancySize()) {
-            CartService.sizeWarning();
-            return;
-          }
-
-          var addingMsgPromise = $timeout(() => {
-            notify({
-              message: "",
-              messageTemplate: "<span data-translate>Adding <strong>" + $scope.size + "</strong> files to cart</span>",
-              container: "#notification",
-              classes: "alert-info"
-            });
-          }, 1000);
-
-          FilesService.getFiles({
-            fields: ["access",
-                     "file_name",
-                     "file_id",
-                     "file_size",
-                     "data_type",
-                     "data_format",
-                     "annotations.annotation_id",
-                     "cases.case_id",
-                     "cases.project.project_id",
-                     "cases.project.name"
-                     ],
-            filters: filters,
-            sort: "",
-            size: $scope.size,
-            from: 0
-          }).then((data) => {
-            this.CartService.addFiles(data.hits, false);
-            $timeout.cancel(addingMsgPromise);
-          });
-        }
-
-      }
-    }
-  }
-
-  /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/  
-  function RemoveUnauthorizedFilesButton() {
-    return {
-      restrict: "AE",
-      templateUrl: "cart/templates/remove-unauthorized-files.button.html",
+      restrict: 'E',
+      scope: {},
       replace: true,
-      controller:function($scope,$element,UserService,CartService,FilesService){
-         //todo
-        $scope.$watch(function(){
-          return CartService.getUnauthorizedFiles();
-        },function(f){
-          $scope.files = f;
-        },true);
-
-        $scope.remove = function() {
-              CartService.removeFiles($scope.files);
-        }
-
-      }
-    }
+      bindToController: {
+        file: '='
+      },
+      templateUrl: 'cart/templates/add-to-cart-button-labelled.html',
+      controller: 'AddToCartSingleCtrl as ctrl'
+    };
   }
-  
-  function DownloadManifestCart(FilesService: IFilesService, UserService, CartService, $modal) {
+
+
+  // add to cart on summary
+  function AddToCartAllButton(SearchTableFilesModel: TableiciousConfig) {
     return {
-      restrict:"AE",
-      scope: true,
-      link: function($scope, $element, $attrs){
-        
-        $element.on('click',function DownloadManifestFiles(){
-          
-          var scope = $scope;
-          
-          scope.active = true;
-          $attrs.$set("disabled", "disabled");
-        
-          FilesService.downloadManifest(_.pluck(CartService.getFiles(), "file_id"), (complete)=>{
-              scope.active = false;
-              $element.removeAttr("disabled");
-          });
-          
-        });
-      }
-    }
+      restrict: 'E',
+      scope: {},
+      bindToController: {
+      files: '=',
+      filter: '@',
+      size: '@'
+      },
+      templateUrl: "cart/templates/add-to-cart-all-button.html",
+      controller: "AddToCartAllCtrl as ctrl"
+    };
   }
 
-  function DownloadButtonAllCart(FilesService, UserService, CartService, $modal) {
+  // add to cart dropdown on top of file search
+  function AddToCartAllDropDown(SearchTableFilesModel: TableiciousConfig) {
     return {
-      restrict:"AE",
-      scope: true,
-      link: function($scope, $element, $attrs){
-        
-        $element.on('click',function checkCartForClosedFiles() {
-            
-            var scope = $scope;
-            var isLoggedIn = UserService.currentUser;
-  
-            var authorizedInCart = CartService.getAuthorizedFiles();
-            var unauthorizedInCart = CartService.getUnauthorizedFiles();
-  
-            scope.meta = {
-              unauthorized: unauthorizedInCart,
-              authorized: authorizedInCart
-            };
-  
-            if (unauthorizedInCart.length === 0) {
-              download();
-            } else {
-              if (isLoggedIn) {
-                showRequestAccessModal();
-              } else {
-                showLoginModal();
-              }
-            }
-  
-            function download() {
-              
-              $scope.active = true;
-              $attrs.$set("disabled", "disabled");
-              
-              FilesService.downloadFiles(_.pluck(authorizedInCart, "file_id"), (complete)=>{
-                  $scope.active = false;
-                  $element.removeAttr("disabled");
-              });
-            }
-  
-            function showLoginModal() {
-              var modalInstance = $modal.open({
-                templateUrl: "core/templates/login-to-download.html",
-                controller: "LoginToDownloadController",
-                controllerAs: "wc",
-                backdrop: true,
-                keyboard: true,
-                scope: scope,
-                size: "lg",
-                animation: false
-              });
-
-              modalInstance.result.then((a) => {
-                if (a && authorizedInCart.length > 0) {
-                  download();
-                } else if(!a) {
-                  //Cancel Pressed
-                  $scope.active = false;
-                  $element.removeAttr("disabled");
-                }
-              });
-            }
-
-            function showRequestAccessModal() {
-              var modalInstance = $modal.open({
-                templateUrl: "core/templates/request-access-to-download.html",
-                controller: "LoginToDownloadController",
-                controllerAs: "wc",
-                backdrop: true,
-                keyboard: true,
-                scope: scope,
-                size: "lg",
-                animation: false
-              });
-
-              modalInstance.result.then((a) => {
-                if (a && authorizedInCart.length > 0) {
-                  download();
-                }
-              });
-            }
-          })
-        }
-      }
+      restrict: 'E',
+      scope: {},
+      bindToController: {
+        files: '=',
+        size: '@'
+      },
+      templateUrl: "cart/templates/add-to-cart-all-dropdown.html",
+      controller: "AddToCartAllCtrl as ctrl"
+    };
   }
 
+  // add to cart dropdown on cases search table
   function AddToCartFiltered(SearchTableFilesModel: TableiciousConfig): ng.IDirective {
     return {
-      restrict:"AE",
-      scope:{
+      restrict: "E",
+      scope: {},
+      bindToController: {
         row: "="
       },
+      controllerAs: 'ctrl',
       templateUrl: "cart/templates/add-to-cart-button-filtered.html",
-      controller:function($scope: ng.IScope, CartService: ICartService, LocationService: ILocationService,
-                          FilesService: IFilesService,
-                          ParticipantsService) {
-        $scope.files = [];
-        
+      controller: function($scope: ng.IScope,
+                           CartService: ICartService,
+                           //QueryCartService: IQueryCartService,
+                           LocationService: ILocationService,
+                           FilesService: IFilesService,
+                           ParticipantsService) {
+        this.files = [];
+        this.CartService = CartService;
+
         function areFiltersApplied(content): boolean {
           return content && _.some(content, (item) => {
             var content = item.hasOwnProperty('content') ? item.content : item;
             return content.field.indexOf("files.") === 0;
           });
         }
-        
+
         function getContent(): any[] {
           var content = LocationService.filters().content;
           return content && !Array.isArray(content) ? [content] : content;
         }
-        
+
         var content = getContent();
-        $scope.areFiltersApplied = areFiltersApplied(content);
+        this.areFiltersApplied = areFiltersApplied(content);
 
         $scope.$on("$locationChangeSuccess", () => {
           var content = getContent();
-          $scope.areFiltersApplied = areFiltersApplied(content);
+          this.areFiltersApplied = areFiltersApplied(content);
         });
 
-        $scope.getFiles = function() {
-          $scope.retreivingFiles = true;
+        this.getFiles = function() {
+          this.retreivingFiles = true;
           var filters = LocationService.filters();
           if (filters.op !== "and") {
             filters = {op: "and", content: [filters]};
           }
 
-          var uuid = $scope.row.case_id;
+          var uuid = this.row.case_id;
 
           filters.content.push({
             content: {
@@ -328,19 +143,19 @@ module ngApp.cart.directives {
             op: "in"
           });
 
-          if ($scope.areFiltersApplied) {
+          if (this.areFiltersApplied) {
             FilesService.getFiles({
               fields: SearchTableFilesModel.fields,
               expand: SearchTableFilesModel.expand,
               filters: filters,
               size: CartService.getCartVacancySize()
             }).then((data) => {
-              $scope.retreivingFiles = $scope.files.length ? false : true;
-              $scope.filteredRelatedFiles = data;
+              this.retreivingFiles = this.files.length ? false : true;
+              this.filteredRelatedFiles = data;
             });
           }
 
-          if (!$scope.files.length) {
+          if (!this.files.length) {
             ParticipantsService.getParticipant(uuid, {
               fields: [
                 "case_id",
@@ -356,10 +171,10 @@ module ngApp.cart.directives {
                 'files.data_format'
               ]
             }).then((data) => {
-              if ($scope.areFiltersApplied) {
-                $scope.retreivingFiles = $scope.filteredRelatedFiles ? false: true;
+              if (this.areFiltersApplied) {
+                this.retreivingFiles = this.filteredRelatedFiles ? false: true;
               } else {
-                $scope.retreivingFiles = false;
+                this.retreivingFiles = false;
               }
               var fs = _.map(data.files, f => {
                 f.cases = [{
@@ -370,32 +185,209 @@ module ngApp.cart.directives {
                   }
                 }];
               });
-              $scope.files = data.files;
-              $scope.calculateFileCount();
+              this.files = data.files;
+              this.calculateFileCount();
             });
           }
         };
 
-        $scope.addFilteredRelatedFiles = function()  {
-          CartService.addFiles($scope.filteredRelatedFiles.hits);
+        this.addFilteredRelatedFiles = function()  {
+          var filters = LocationService.filters();
+          if (filters.op !== "and") {
+            filters = {op: "and", content: [filters]};
+          }
+          var uuid = this.row.case_id;
+
+          filters.content.push({
+            content: {
+              field: "files.cases.case_id",
+              value: [
+                uuid
+              ]
+            },
+            op: "in"
+          });
+          CartService.addFiles(this.filteredRelatedFiles.hits);
         };
 
-        $scope.addRelatedFiles = function() {
-          CartService.addFiles($scope.files);
+        this.addRelatedFiles = function() {
+          var uuid = this.row.case_id;
+          CartService.addFiles(this.files);
         };
 
-        $scope.removeRelatedFiles = function() {
-          CartService.remove($scope.inBoth);
+        this.removeRelatedFiles = function() {
+          CartService.remove(this.inBoth);
         };
 
-        $scope.calculateFileCount = function() {
-          $scope.inBoth = _.intersection(_.pluck(CartService.getFiles(), "file_id"),
-                                         _.pluck($scope.files, "file_id"));
+        this.calculateFileCount = function() {
+          this.inBoth = this.files.reduce((acc, f) => {
+            if (CartService.getFiles().find(cartF => cartF.file_id === f.file_id)){
+              return acc.concat(f);
+            }
+            return acc;
+          }, []);
         }
-
-        $scope.CartService = CartService;
       }
     }
+  }
+
+
+  /** This directive, which can be placed anywhere, removes any unauthorized files from the cart **/
+  function RemoveUnauthorizedFilesButton() {
+    return {
+      restrict: "AE",
+      templateUrl: "cart/templates/remove-unauthorized-files.button.html",
+      replace: true,
+      controller:function($scope,$element,UserService,CartService,FilesService){
+         //todo
+        $scope.$watch(function(){
+          return CartService.getUnauthorizedFiles();
+        },function(f){
+          $scope.files = f;
+        },true);
+
+        $scope.remove = function() {
+          CartService.remove($scope.files);
+        }
+
+      }
+    }
+  }
+
+  function DownloadManifestCart(CartService, $uibModal, config: IGDCConfig) {
+    return {
+      restrict:"AE",
+      scope: true,
+      link: ($scope, $element, $attrs) => {
+        const scope = $scope;
+        scope.active = false;
+
+        const inProgress = () => {
+          scope.active = true;
+          $attrs.$set('disabled', 'disabled');
+        };
+        const done = () => {
+          scope.active = false;
+          $element.removeAttr('disabled');
+        };
+        const files = [].concat(CartService.getFiles());
+        const params = { ids: files.map(f => f.file_id) };
+        const url = config.api + '/manifest?annotations=true&related_files=true';
+        const clickHandler = () => {
+          const checkProgress = scope.download(params, url, () => $element, 'POST');
+          checkProgress(inProgress, done);
+        };
+
+        $element.on('click', clickHandler);
+      }
+    };
+  }
+
+  function DownloadMetadataFiles(CartService, $uibModal, config: IGDCConfig) {
+    return {
+      restrict:"AE",
+      scope: true,
+      link: (scope, $element, $attrs) => {
+        scope.active = false;
+
+        const inProgress = () => {
+          scope.active = true;
+          $attrs.$set('disabled', 'disabled');
+        };
+        const done = () => {
+          scope.active = false;
+          $element.removeAttr('disabled');
+        };
+        const files = [].concat(CartService.getFiles());
+        const params = { ids: files.map(f => f.file_id) };
+        const url = config.api + '/data/metadata_files';
+        const clickHandler = () => {
+          const checkProgress = scope.download(params, url, () => $element, 'POST');
+          checkProgress(inProgress, done);
+        };
+
+        $element.on('click', clickHandler);
+      }
+    };
+  }
+
+  function DownloadButtonAllCart(UserService, CartService, $uibModal, config: IGDCConfig) {
+    return {
+      restrict:"AE",
+      scope: true,
+      link: ($scope, $element, $attrs) => {
+        const scope = $scope;
+        const isLoggedIn = UserService.currentUser;
+        const authorizedInCart = CartService.getAuthorizedFiles();
+        const unauthorizedInCart = CartService.getUnauthorizedFiles();
+
+        scope.active = false;
+        scope.meta = {
+          unauthorized: unauthorizedInCart,
+          authorized: authorizedInCart
+        };
+
+        const inProgress = () => {
+          scope.active = true;
+          $attrs.$set('disabled', 'disabled');
+        };
+        const done = () => {
+          scope.active = false;
+          $element.removeAttr('disabled');
+        };
+        const files = [].concat(authorizedInCart);
+        const params = { ids: files.map(f => f.file_id) };
+        const url = config.api + '/data?annotations=true&related_files=true';
+
+        const download = () => {
+          const checkProgress = scope.download(params, url, () => $element, 'POST');
+          checkProgress(inProgress, done);
+        };
+        const showLoginModal = () => {
+          var modalInstance = $uibModal.open({
+            templateUrl: "core/templates/login-to-download.html",
+            controller: "LoginToDownloadController",
+            controllerAs: "wc",
+            backdrop: true,
+            keyboard: true,
+            scope: scope,
+            size: "lg",
+            animation: false
+          });
+
+          modalInstance.result.then((a) => {
+            if (a && authorizedInCart.length > 0) {
+              download();
+            } else if (!a) {
+              // Cancel Pressed
+              done();
+            }
+          });
+        };
+        const showRequestAccessModal = () => {
+          var modalInstance = $uibModal.open({
+            templateUrl: "core/templates/request-access-to-download.html",
+            controller: "LoginToDownloadController",
+            controllerAs: "wc",
+            backdrop: true,
+            keyboard: true,
+            scope: scope,
+            size: "lg",
+            animation: false
+          });
+
+          modalInstance.result.then((a) => {
+            if (a && authorizedInCart.length > 0) {
+              download();
+            }
+          });
+        };
+        const checkCartForClosedFiles = (unauthorizedInCart.length > 0) ?
+          (isLoggedIn ? showRequestAccessModal : showLoginModal) : download;
+
+        $element.on('click', checkCartForClosedFiles);
+      }
+    };
   }
 
   angular.module("cart.directives", [
@@ -405,12 +397,14 @@ module ngApp.cart.directives {
       "search.table.files.model",
       "cgNotify"
     ])
-    .directive("addToCartSingle", AddToCartSingle)
-    .directive("addToCartAll", AddToCartAll)
+    .directive("addToCartSingleIcon", AddToCartSingleIcon)
+    .directive("addToCartSingleLabelled", AddToCartSingleLabelled)
+    .directive("addToCartAllDropdown", AddToCartAllDropDown)
+    .directive("downloadMetadataFiles", DownloadMetadataFiles)
+    .directive("addToCartAllButton", AddToCartAllButton)
     .directive("addToCartFiltered", AddToCartFiltered)
     .directive("downloadButtonAllCart", DownloadButtonAllCart)
     .directive("downloadManifestCart", DownloadManifestCart)
     .directive("removeUnauthorizedFilesButton", RemoveUnauthorizedFilesButton)
     .directive("removeSingleCart", RemoveSingleCart);
 }
-

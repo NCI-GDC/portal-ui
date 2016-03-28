@@ -8,6 +8,101 @@ module ngApp.cart.services {
   import IGDCWindowService = ngApp.core.models.IGDCWindowService;
   import INotifyService = ng.cgNotify.INotifyService;
 
+  export interface IQueryCartService {
+    files: IFiles;
+    pushAddedQuery(query: Object): void;
+    pushRemovedQuery(query: Object): void;
+    addFile(): void;
+    isInCart(fileId: string): boolean;
+  }
+
+  class QueryCartService implements IQueryCartService {
+    private static GDC_CART_ADDED_QUERY: string = "gdc-cart-added-query";
+    private static GDC_CART_REMOVED_QUERY: string = "gdc-cart-removed-query";
+    private static GDC_CART_ADDED_FILES: string = "gdc-cart-added-files";
+    private static GDC_CART_REMOVED_FILES: string = "gdc-cart-removed-files";
+
+    public files: IFiles;
+    /* @ngInject */
+    constructor(private $window: IGDCWindowService,
+                private $q: ng.IQService,
+                private FilesService: IFilesService) {
+                this.files = { hits: [],
+                              pagination: { total: 0 }
+                            };
+                this.getFiles();
+    }
+
+    pushAddedQuery(query: Object): void {
+      var oldQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_QUERY)) || {"op": "or", content: []};
+      // if user clicked add all and the query is empty
+      var newQuery = {"op": "or", content: Object.keys(query).length ? oldQuery.content.concat(query) : []};
+      this.$window.localStorage.setItem(QueryCartService.GDC_CART_ADDED_QUERY, JSON.stringify(newQuery));
+      this.getFiles();
+    }
+
+    pushRemovedQuery(query: Object): void {
+      var oldQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_QUERY)) || {"op": "or", content: []};
+      var newQuery = {"op": "or", content: oldQuery.content.concat(query)};
+      this.$window.localStorage.setItem(QueryCartService.GDC_CART_REMOVED_QUERY, JSON.stringify(newQuery));
+      this.getFiles();
+    }
+
+    pushAddedFiles(fileIds: string[]): void {
+      var oldFileIds = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_FILES)) || [];
+      this.$window.localStorage.setItem(QueryCartService.GDC_CART_ADDED_FILES, JSON.stringify(oldFileIds.concat(fileIds)));
+      this.getFiles();
+    }
+
+    pushRemovedFiles(fileIds: string[]): void {
+      var oldFileIds = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_FILES)) || [];
+      this.$window.localStorage.setItem(QueryCartService.GDC_CART_REMOVED_FILES, JSON.stringify(oldFileIds.concat(fileIds)));
+      this.getFiles();
+    }
+
+    isInCart(fileId: string): boolean {
+      //todo: better way to do this that includes the files defined by addedQuery
+      var fileIds= JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_FILES)) || [];
+      return fileIds.find(f => f === fileId) ? true : false;
+    }
+
+    getFiles(): ng.IPromise<IFile> {
+      var addedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_QUERY));
+      var removedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_QUERY));
+      //incomplete
+      var filters = removedQuery ? {"op":"and","content":[addedQuery, removedQuery]} : addedQuery;
+      if (filters) {
+        return this.FilesService.getFiles({
+              fields: ["access",
+                       "file_name",
+                       "file_id",
+                       "file_size",
+                       "data_type",
+                       "data_format",
+                       "annotations.annotation_id",
+                       "cases.case_id",
+                       "cases.project.project_id",
+                       "cases.project.name"
+                       ],
+              filters: filters.content.length ? filters : '', // empty content gives api error so send no filter
+              size: 20,
+              from: 0
+            }).then((data): IFile => {
+              this.files = data;
+              return data;
+            });
+      } else {
+        // if there was no filter sending an empty query to ES returns everything
+        // so don't send a request but return an empty promise
+        return this.$q((resolve) => {
+          var data = {hits: [], pagination: { total: 0}}
+          this.files = data;
+          resolve(data)
+        });
+      }
+    }
+  }
+
   export interface ICartService {
     files: IFile[];
     lastModified: Moment;
@@ -18,8 +113,7 @@ module ngApp.cart.services {
     isInCart(fileId: string): boolean;
     areInCart(files: IFile[]): boolean;
     removeAll(): void;
-    remove(fileIds: string[]): void;
-    removeFiles(files: IFile[]): void;
+    remove(files: IFile[]): void;
     buildAddedMsg(added: Array<Object>, alreadyIn: Array<Object>): string;
     buildRemovedMsg(removedFiles: IFile[]): string;
     undoAdded(): void;
@@ -115,19 +209,7 @@ module ngApp.cart.services {
       var alreadyIn:IFile[] = [];
       _.forEach(files, (file) => {
         if (!this.isInCart(file.file_id)) {
-            var cartItem = _.pick(file,
-            'access', 'file_name', 'file_id', 'file_size', 'data_type', 'data_format'
-            );
-            cartItem.annotationIds = file.annotationIds || _.pluck(file.annotations, 'annotation_id');
-            cartItem.caseIds = file.caseIds || _.map(file.cases, c => c.case_id);
-            cartItem.projects = file.projects || _.unique(_.map(file.cases, p => {
-              return {
-                project_id: p.project.project_id,
-                name: p.project.name
-              };
-            }), 'project_id');
-            cartItem.related_ids = file.related_ids || _.pluck(file.related_files, "file_id")
-            this.lastModifiedFiles.push(cartItem);
+            this.lastModifiedFiles.push(file);
         } else {
           alreadyIn.push(file);
         }
@@ -136,7 +218,6 @@ module ngApp.cart.services {
       if (addingMsgPromise) {
         this.$timeout.cancel(addingMsgPromise);
       }
-      this.$rootScope.$broadcast("cart-update");
       this._sync();
       this.notify.closeAll();
       this.notify.config({ duration: 5000 });
@@ -209,24 +290,18 @@ module ngApp.cart.services {
     }
 
     removeAll(): void {
-      this.notify.closeAll();
-      this.notify({
-        message: "",
-        messageTemplate: this.buildRemovedMsg(this.files),
-        container: "#notification",
-        classes: "alert-warning"
-      });
-      this.lastModifiedFiles = this.files;
-      this.files = [];
-      this._sync();
+      this.remove(this.files);
     }
 
-    remove(fileIds: string[]): void {
-      var remaining = _.reject(this.files, function (hit: IFile) {
-        return fileIds.indexOf(hit.file_id) !== -1;
-      });
-      this.lastModifiedFiles = _.difference(this.files, remaining);
-      this._sync();
+    remove(filesToRemove: IFile[]): void {
+        var partitioned = this.files.reduce((acc, f) => {
+        var fileToRemove = _.find(filesToRemove, f2r => f2r.file_id === f.file_id);
+        if (fileToRemove) {
+          return { remaining: acc.remaining, removed: acc.removed.concat(fileToRemove)};
+        }
+        return { remaining: acc.remaining.concat(f), removed: acc.removed};
+      } ,{ remaining: [], removed: [] });
+      this.lastModifiedFiles = partitioned.removed;
       this.notify.closeAll();
       this.notify({
         message: "",
@@ -234,15 +309,8 @@ module ngApp.cart.services {
         container: "#notification",
         classes: "alert-warning"
       });
-      this.files = remaining;
+      this.files = partitioned.remaining;
       this._sync();
-
-      this.$rootScope.$broadcast("cart-update");
-    }
-
-    removeFiles(files: IFile[]): void {
-      var ids: string[] = _.pluck(files, "file_id");
-      this.remove(ids);
     }
 
     getFileIds(): string[] {
@@ -250,7 +318,7 @@ module ngApp.cart.services {
     }
 
     undoAdded(): void {
-      this.removeFiles(this.lastModifiedFiles);
+      this.remove(this.lastModifiedFiles);
     }
 
     undoRemoved(): void {
@@ -258,9 +326,10 @@ module ngApp.cart.services {
     }
 
     _sync(): void {
+      this.$rootScope.$broadcast("cart-update");
       this.lastModified = this.$window.moment();
       this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
-      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files));
+      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files.map(f => {return { access: f.access, file_id: f.file_id, file_size: f.file_size, projects: _.map(f.cases, c => c.project.project_id) }})));
     }
 
   }
@@ -297,5 +366,6 @@ module ngApp.cart.services {
         "cgNotify"
       ])
       .service("CartState", State)
+      .service("QueryCartService", QueryCartService)
       .service("CartService", CartService);
 }

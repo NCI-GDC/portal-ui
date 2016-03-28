@@ -2,11 +2,11 @@
   <div class="number-results pull-left">
     <span data-translate>Show</span>
 
-    <div class="btn-group dropup" dropdown>
-      <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+    <div class="btn-group dropup" data-uib-dropdown>
+      <button type="button" class="btn btn-default" data-uib-dropdown-toggle>
         {{ paging.size }} <span class="caret"></span>
       </button>
-      <ul class="dropdown-menu" role="menu">
+      <ul uib-dropdown-menu role="menu">
         <li data-ng-click="pc.setCount($event, 20)"
             data-ng-keypress="pc.setCount($event, 20)"
             role="button"
@@ -37,7 +37,7 @@
     <span data-translate>entries</span>
   </div>
 
-  <pagination boundary-links="true"
+  <uib-pagination boundary-links="true"
               total-items="paging.total"
               data-ng-model="paging.page"
               items-per-page="paging.size"
@@ -49,5 +49,5 @@
               previous-text="&lsaquo;"
               next-text="&rsaquo;"
               first-text="&laquo;"
-              last-text="&raquo;"></pagination>
+              last-text="&raquo;"></uib-pagination>
 </div>

@@ -1,6 +1,6 @@
 <ul class="list-unstyled Gql_dropdown Gql_dropdown-{{mode}}" data-ng-show="showResults()">
-  <li class="Gql_dropdown_arrow" ng-if="offset > 0">
-    <i class="fa fa-sort-asc"></i>
+  <li data-ng-click="handleOnClickUpArrow()" class="Gql_dropdown_arrow">
+    <i ng-style="{color: offset > 0 ? '#333' : '#ccc'}" class="fa fa-sort-asc"></i>
   </li>
   <li class="Gql_dropdown_item"
       data-ng-click="click(e)"
@@ -16,9 +16,10 @@
        data-ng-if="!e.doc_type"
        style="margin-right: 10px;background: #5b5151;padding: 1rem;color: #fff;">
     </i>
-    {{::e.field}}<i data-ng-if="e.doc_type" style="color:#888"> - Description to come</i>
+    <span data-ng-bind-html="e.field | gqlHighlight:query"></span>
+    <span data-ng-if="e.doc_type" style="color:#888" data-ng-bind-html="e.type | gqlHighlight:query"></span>
   </li>
-  <li class="Gql_dropdown_arrow" ng-if="ddItems.length > offset + limit">
-    <i class="fa fa-sort-desc"></i>
+  <li data-ng-click="handleOnClickDownArrow()" class="Gql_dropdown_arrow">
+    <i ng-style="{color: ddItems.length > offset + limit ? '#333' : '#ccc'}" class="fa fa-sort-desc"></i>
   </li>
 </ul>

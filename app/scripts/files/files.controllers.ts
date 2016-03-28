@@ -4,6 +4,7 @@ module ngApp.files.controllers {
   import ICoreService = ngApp.core.services.ICoreService;
   import ICartService = ngApp.cart.services.ICartService;
   import IFilesService = ngApp.files.services.IFilesService;
+  import IGqlService = ngApp.components.gql.IGqlService;
 
   export interface IFileController {
     file: IFile;
@@ -68,46 +69,61 @@ module ngApp.files.controllers {
     }
 
     canBAMSlice(): boolean {
-      return this.file.data_type.toLowerCase() === "raw sequencing data" &&
-             this.file.data_subtype.toLowerCase() === "aligned reads" &&
-             _.indexOf(_.pluck(this.file.related_files, 'type'), "bai") !== -1;
+      return (this.file.data_type || '').toLowerCase() === 'aligned reads' &&
+             (this.file.data_format || '').toLowerCase() === 'bam';
     }
 
   }
 
   class BAMSlicingController {
 
+    exampleShowing: boolean = false;
     /* @ngInject */
-    constructor (private $modalInstance,
+    constructor (private $uibModalInstance,
                  private $scope: ng.IScope,
                  private FilesService: IFilesService,
-                 public fileID: string,
-                 public completeCallback: any) {}
+                 public file: any,
+                 private GqlService: IGqlService,
+                 public completeCallback: any) {
+       this.$scope.bedModel = "";
+     }
 
     submit(): void {
-      this.FilesService.sliceBAM(this.fileID, this.$scope.bedModel, this.completeCallback);
-      this.$modalInstance.dismiss('slicing');
+      this.FilesService.sliceBAM(this.file.file_id, this.$scope.bedModel, this.completeCallback);
+      this.$uibModalInstance.dismiss('slicing');
+    }
+
+    allowTab($event: any): void {
+      if (event.keyCode === 9) {
+        event.preventDefault();
+
+        // current caret pos
+        var start = $event.target.selectionStart;
+        var end = $event.target.selectionEnd;
+
+        var oldValue = this.$scope.bedModel;
+        this.$scope.bedModel = oldValue.substring(0, start) + '\t' + oldValue.substring(end);
+        // put caret in correct place
+        this.GqlService.setPos($event.target, start+1);
+      }
+    }
+
+    toggleExample() {
+      this.exampleShowing = !this.exampleShowing;
     }
 
     closeModal(): void {
-      this.$modalInstance.dismiss('cancelled');
+      this.$uibModalInstance.dismiss('cancelled');
     }
   }
 
   class BAMFailedModalController {
-    public errorBlobString: string;
+    msg: string = "Invalid BED Format. Please refer to the examples described in the BAM Slicing pop-up.";
     /* @ngInject */
-    constructor(private $modalInstance,
+    constructor(private $uibModalInstance,
                 public errorStatus: string,
                 public errorMsg: string,
-                private errorBlob: any) {
-      this.errorBlobString = "";
-      var reader = new FileReader();
-      reader.addEventListener("loadend", () => {
-        this.errorBlobString = _.get(JSON.parse(reader.result), "error", "Error slicing");
-      });
-      reader.readAsText(errorBlob);
-    }
+                private errorBlob: any) {}
   }
 
 

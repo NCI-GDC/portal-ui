@@ -1,4 +1,4 @@
-/// <reference path="./types"/>
+/// <reference path="./types.ts"/>
 
 declare module ngApp {
   export interface IGDCConfig {
@@ -33,6 +33,18 @@ import INotifyService = ng.cgNotify.INotifyService;
 import IUserService = ngApp.components.user.services.IUserService;
 import IProjectsService = ngApp.projects.services.IProjectsService;
 
+// Cross-Site Request Forgery (CSRF) Prevention
+// https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#General_Recommendation:_Synchronizer_Token_Pattern
+function addTokenToRequest (element, operation, route, url, headers, params, httpConfig) {
+  var csrftoken = document.cookie.replace(/(?:(?:^|.*;\s*)csrftoken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+  return {
+    element: element,
+    headers: _.extend(headers, { 'X-CSRFToken': csrftoken }),
+    params: params,
+    httpConfig: httpConfig
+  };
+}
+
 /* @ngInject */
 function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    $locationProvider: ng.ILocationProvider,
@@ -43,7 +55,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    ) {
   $compileProvider.debugInfoEnabled(!config.production);
   $locationProvider.html5Mode(true);
-  $urlRouterProvider.otherwise("/projects");
+  $urlRouterProvider.otherwise("/");
   RestangularProvider.setBaseUrl(config.api);
   RestangularProvider.setDefaultHttpFields({
     cache: true
@@ -51,7 +63,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
 
   /**
   The regex is from https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie in Example #2.
-  Cookies are stored in document.cookie as "cookieName1=cookieValue; cookieName2=cookieValue" 
+  Cookies are stored in document.cookie as "cookieName1=cookieValue; cookieName2=cookieValue"
   so the capturing group after the "csrftoken=" captures the value and places it into var csrftoken.
   Unable to use $cookies because services can't be injected in config step
   **/
@@ -72,7 +84,7 @@ function appRun(gettextCatalog: any,
                 UserService: IUserService,
                 ProjectsService: IProjectsService,
                 $window: ng.IWindowService,
-                $modal: any) {
+                $uibModal: any) {
 
   if ($cookies.get("GDC-Portal-Sha") !== config.commitHash) {
     $cookies.put("GDC-Portal-Sha", config.commitHash);
@@ -87,10 +99,11 @@ function appRun(gettextCatalog: any,
   gettextCatalog.debug = true;
 
   $rootScope.config = config;
+  Restangular.addFullRequestInterceptor(addTokenToRequest);
   Restangular.setErrorInterceptor((response) => {
     CoreService.xhrDone();
     if (response.status === 500) {
-      $modal.open({
+      $uibModal.open({
                 templateUrl: "core/templates/internal-server-error.html",
                 controller: "WarningController",
                 controllerAs: "wc",
@@ -188,7 +201,9 @@ angular
       "ngApp.participants",
       "ngApp.files",
       "ngApp.annotations",
+      "ngApp.home",
       "ngApp.projects",
+      "ngApp.cases",
       "ngApp.components",
       "ngApp.cart",
       "ngApp.notFound",
@@ -199,21 +214,22 @@ angular
     .factory('RestFullResponse', function(Restangular: restangular.IService) {
       return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
         RestangularConfigurer.setFullResponse(true);
-      });
+      })
+      .addFullRequestInterceptor(addTokenToRequest);
     })
     .run(appRun)
     .factory('AuthRestangular', function(Restangular: restangular.IService, config: IGDCConfig, CoreService: ICoreService) {
       return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
-          RestangularConfigurer.setBaseUrl(config.auth)})
+        RestangularConfigurer.setBaseUrl(config.auth)
+      })
+        .addFullRequestInterceptor(addTokenToRequest)
         .addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
-        // Ajax
-        CoreService.xhrDone();
-        if (response.headers('content-disposition')) {
-          return deferred.resolve({ 'data': data, 'headers': response.headers()});
-        } else {
-          return deferred.resolve(data);
-        }
-        ;
+          // Ajax
+          CoreService.xhrDone();
+          if (response.headers('content-disposition')) {
+            return deferred.resolve({ 'data': data, 'headers': response.headers() });
+          } else {
+            return deferred.resolve(data);
+          }
         });
-    })
-
+    });

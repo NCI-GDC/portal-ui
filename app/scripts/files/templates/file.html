@@ -4,13 +4,9 @@
       <i class="fa fa-file-o"></i>
       {{ ::fc.file.file_id }}
       <span class="btn-group pull-right" style="margin-top: .3em">
-        <button id="cart-button" type="button" ng-class="{'btn':true, 'btn-primary': true, active: fc.isInCart(fc.file.file_id)}" data-ng-click="fc.handleCartButton()">
-          <i class="fa fa-shopping-cart"></i>
-          <span data-ng-if="fc.isInCart(fc.file.file_id)" data-translate>Remove from Cart</span>
-          <span data-ng-if="!fc.isInCart(fc.file.file_id)" data-translate>Add to Cart</span>
-        </button>
-        <download-button data-icon="fa-download" data-files=fc.file data-copy="Download" data-dlcopy="Downloading"></download-button>
-        <bam-slicing-button data-icon="fa-cutlery" data-files=fc.file data-copy="BAM Slicing" data-dlcopy="Slicing BAM" data-ng-if="fc.canBAMSlice()"></download-button>
+        <add-to-cart-single-labelled class="btn-bordered" file="fc.file"></add-to-cart-single-labelled>
+        <download-button class="btn-bordered" data-icon="fa-download" data-files=fc.file data-copy="Download" data-dlcopy="Downloading"></download-button>
+        <bam-slicing-button class="btn-bordered" data-icon="fa-cutlery" data-files=fc.file data-copy="BAM Slicing" data-dlcopy="Slicing BAM" data-ng-if="fc.canBAMSlice()"></download-button>
       </span>
     </h1>
   </div>
@@ -27,11 +23,11 @@
                    class="table table-striped table-hover table-condensed table-bordered table-vertical">
               <tbody>
               <tr>
-                <th scope="row" data-translate>File Name</th>
+                <th scope="row" data-translate>Name</th>
                 <td>{{ ::fc.file.file_name }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>File Access</th>
+                <th scope="row" data-translate>Access</th>
                 <td>
                   <i data-ng-if="fc.file.access !== 'open'" class="fa fa-lock"></i>
                   <i data-ng-if="fc.file.access === 'open'" class="fa fa-unlock"></i>
@@ -44,28 +40,28 @@
                 <td>{{ ::fc.file.file_id }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>File Origin</th>
-                <td>{{ ::fc.file.origin | humanify }}</td>
+                <th scope="row" data-translate>Submitter ID</th>
+                <td>{{ ::fc.file.submitter_id || '--'}}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Data format</th>
-                <td>{{ ::fc.file.data_format }}</td>
+                <td>{{ ::fc.file.data_format || '--' }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>File Size</th>
+                <th scope="row" data-translate>Size</th>
                 <td>{{ ::fc.file.file_size | size }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>Checksum</th>
+                <th scope="row" data-translate>MD5 Checksum</th>
                 <td>{{ ::fc.file.md5sum }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Published</th>
-                <td>{{ ::fc.file.creation_datetime | date }}</td>
+                <td>{{ ::fc.file.created_datetime || '--' | date:'yyyy-MM-dd' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Uploaded</th>
-                <td>{{ ::fc.file.uploaded | date }}</td>
+                <td>{{ ::fc.file.uploaded_datetime || '--' | date:'yyyy-MM-dd' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>State</th>
@@ -97,12 +93,12 @@
             <table id="data-information-table" class="table table-striped table-hover table-condensed table-bordered">
               <tbody>
               <tr>
-                <th scope="row" data-translate>Data Type</th>
-                <td>{{ ::fc.file.data_type | titlefy }}</td>
+                <th scope="row" data-translate>Data Category</th>
+                <td>{{ ::fc.file.data_category || '--' | titlefy }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>Data Subtype</th>
-                <td>{{ ::fc.file.data_subtype | titlefy }}</td>
+                <th scope="row" data-translate>Data Type</th>
+                <td>{{ ::fc.file.data_type || '--' | titlefy }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Experimental Strategy</th>
@@ -110,11 +106,11 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Platform</th>
-                <td>{{ ::fc.file.platform }}</td>
+                <td>{{ ::fc.file.platform || '--' }}</td>
               </tr>
-              <tr>
+              <!--tr>
                 <th scope="row" data-translate>Data Submitter</th>
-                <td>{{ ::fc.file.center.short_name }}</td>
+                <td>{{ ::fc.file.center.short_name || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Tag</th>
@@ -122,7 +118,7 @@
                   <span data-ng-if="!fc.file.tags">--</span>
                   <span data-ng-if="fc.file.tags">{{ fc.file.tags.join(", ") }}</span>
                 </td>
-              </tr>
+              </tr -->
               </tbody>
             </table>
           </div>
@@ -178,38 +174,199 @@
         </div>
       </section>
 
+      <!-- Workflow / Reference Genome Split Row Section -->
+      <section class="row" id="workflow-split-ref-genome">
+        <!-- Workflow Table -->
+        <div class="col-lg-6 col-md-6">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Workflow</h3>
+            </div>
+
+            <div class="panel-body" data-ng-if="false && !fc.file.workflows.length">
+              <h4 class="list-group-item-heading">No Workflow found.</h4>
+            </div>
+
+            <table id="workflow-files-table" class="table table-striped table-hover table-condensed table-bordered"
+                   data-ng-if2="fc.file.workflows.length">
+              <tbody>
+              <tr>
+                <th data-translate scope="row">Workflow ID</th>
+                <td style="width: 64%">--</td>
+              </tr>
+              <tr>
+                <th data-translate scope="row">Workflow</th>
+                <td>--</td>
+              </tr>
+              <tr>
+                <th data-translate scope="row">Workflow Version</th>
+                <td>--</td>
+              </tr>
+              <tr>
+                <th data-translate scope="row">Workflow Completion Date</th>
+                <td>--</td>
+              </tr>
+              <tr>
+                <th data-translate scope="row">Source Files</th>
+                <td>--</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Reference Genome Table -->
+        <div class="col-lg-6 col-md-6">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Reference Genome</h3>
+            </div>
+
+            <div class="panel-body" data-ng-if="false && !fc.file.referenceGenome.length">
+              <h4 class="list-group-item-heading">No Reference Genome found.</h4>
+            </div>
+
+            <table id="reference-genome-files-table" class="table table-striped table-hover table-condensed table-bordered"
+                   data-ng-if2="fc.file.referenceGenome.length">
+              <thead>
+              </thead>
+              <tbody>
+              <tr>
+                <th data-translate style="width: 22%">Genome ID</th>
+                <td>--</td>
+              </tr>
+              <tr>
+                <th data-translate>Genome Build</th>
+                <td>--</td>
+              </tr>
+              <tr>
+                <th data-translate>Genome Name</th>
+                <td>--</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Read Group Row Section -->
+      <section class="row" id="readgroup-file">
+        <!-- Read Group Table -->
+        <div class="col-lg-12 col-md-12">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Read Groups</h3>
+            </div>
+
+            <div class="panel-body" data-ng-if="false && !fc.file.readgroups.length">
+              <h4 class="list-group-item-heading">No Read Groups found.</h4>
+            </div>
+
+            <table id="readgroup-files-table" class="table table-striped table-hover table-condensed table-bordered"
+                   data-ng-if2="fc.file.workflows.length">
+              <thead>
+                <tr>
+                  <th>Read Group ID</th>
+                  <th>Is Paired End</th>
+                  <th>Read Length</th>
+                  <th>Base Caller Name</th>
+                  <th>Library Name</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section class="row" id="files">
         <div class="col-lg-12 col-md-12">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class="panel-title">Related Files</h3>
+              <h3 class="panel-title">Metadata Files</h3>
             </div>
 
-            <div class="panel-body" data-ng-if="!fc.file.related_files.length">
-              <h4 class="list-group-item-heading">No related files found.</h4>
+            <div class="panel-body" data-ng-if="!fc.file.metadata_files.length">
+              <h4 class="list-group-item-heading">No metadata files found.</h4>
             </div>
 
-            <table id="related-files-table" class="table table-striped table-hover table-condensed table-bordered"
-                   data-ng-if="fc.file.related_files.length">
+            <table id="metadata-files-table" class="table table-striped table-hover table-condensed table-bordered"
+                   data-ng-if="fc.file.metadata_files.length">
               <thead>
-              <tr>
-                <th scope="col" data-translate>File Name</th>
-                <th scope="col" data-translate>File Type</th>
-                <th scope="col" data-translate>Checksum</th>
-                <th scope="col" data-translate>Action</th>
-              </tr>
+                <tr>
+                  <th scope="col" data-translate>File Name</th>
+                  <th scope="col" data-translate>Data Category</th>
+                  <th scope="col" data-translate>Data Type</th>
+                  <th scope="col" data-translate>Data Format</th>
+                  <th scope="col" data-translate>File Size</th>
+                  <th scope="col" data-translate>Action</th>
+                </tr>
               </thead>
               <tbody>
-              <tr data-ng-repeat="f in fc.file.related_files track by f.file_id">
+              <tr data-ng-repeat="f in fc.file.metadata_files track by f.file_id">
                 <td class="truncated-cell">
                   <i class="fa fa-{{(f.access === 'controlled' ? 'lock' : 'unlock-alt')}}"></i>
-                  {{ ::f.file_name }}
+                    {{ ::f.file_name }}
                 </td>
-                <td>{{ ::f.type }}</td>
-                <td>{{ ::f.md5sum || '--' }}</td>
+                <td>{{ ::f.data_category || '--' }}</td>
+                <td>{{ ::f.data_type || '--' }}</td>
+                <td>{{ ::f.data_format || '--' }}</td>
+                <td>{{ ::f.file_size | size }}</td>
                 <td>
-                  <data-download-button data-classes="btn" data-files=f data-copy="Download" data-dlcopy="Downloading" />
+                  <data-download-button data-files=f data-copy="Download" data-dlcopy="Downloading" />
                 </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Downstream Analysis Files Section -->
+      <section class="row" id="downstream-analysis-file">
+        <!-- Downstream Analysis Files Table -->
+        <div class="col-lg-12 col-md-12">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Downstream Analysis Files</h3>
+            </div>
+
+            <div class="panel-body" data-ng-if="false && !fc.file.downstreamFiles.length">
+              <h4 class="list-group-item-heading">No Downstream Analysis Files Found.</h4>
+            </div>
+
+            <table id="downstream-files-table" class="table table-striped table-hover table-condensed table-bordered"
+                   data-ng-if2="fc.file.downstreamFiles.length">
+              <thead>
+                <tr>
+                  <th data-translate>File Name</th>
+                  <th data-translate>Data Category</th>
+                  <th data-translate>Data Type</th>
+                  <th data-translate>Analysis Workflow</th>
+                  <th data-translate>File Size</th>
+                  <th data-translate>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
               </tr>
               </tbody>
             </table>

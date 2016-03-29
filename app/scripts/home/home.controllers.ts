@@ -50,8 +50,8 @@ module ngApp.home.controllers {
           return str;
         }
 
-        str = "<h4>" + d._key + "</h4>\n<p>" +
-          this.numberFilter(d._count) + " cases (" + this.numberFilter(d.fileCount) + " files)\n" +
+        str = "<h4>" + d.projectID + " (" + d.primarySite + ")</h4>\n<p>" +
+          this.numberFilter(d.caseCount) + " cases (" + this.numberFilter(d.fileCount) + " files)\n" +
           "</p>";
 
         return str;
@@ -197,7 +197,8 @@ module ngApp.home.controllers {
         return;
       }
 
-      _controller.projectChartData = _.filter(
+
+      var firstPassProjectData = _.filter(
         _.map(primarySiteIDs, function(pID) {
 
 
@@ -210,22 +211,63 @@ module ngApp.home.controllers {
             fileCount += +(_.get(primarySiteData[i], 'summary.file_count', 0));
           }
 
-
           _controller.projectStatsList[_controller.projectStatsOrdering.cases].value += caseCount;
           _controller.projectStatsList[_controller.projectStatsOrdering.files].value += fileCount;
 
 
           /* _key and _count are required data properties for the marked bar chart */
           return {_key: pID, values: primarySiteData, _count: caseCount, fileCount: fileCount}
-      }), function(d) { return d._count > 0; });
+      }), function(d) { return d._count > 0; })
+      .sort(function (primarySiteA, primarySiteB) {
+          return primarySiteB._count - primarySiteA._count;
+      });
 
 
       _controller.projectStatsList[_controller.projectStatsOrdering.cancerTypes].value += primarySiteIDs.length;
 
 
+      _controller.projectChartData = _.map(firstPassProjectData, function(primarySite) {
+
+        var dataStack : any = {};
+
+        var primarySiteTotal = 0;
+
+        _.assign(dataStack, primarySite);
+
+        var sortedProjects = primarySite.values.sort(function(a,b) { return a.summary.case_count - b.summary.case_count; });
+
+        dataStack.stacks =  _.map(sortedProjects, function (project) {
+
+          // Make sure previous site y1 > y0
+          if (primarySiteTotal > 0) {
+            primarySiteTotal++;
+          }
+
+          var newPrimarySiteTotal = primarySiteTotal + project.summary.case_count;
+
+          var stack = {
+            _key: primarySite._key,
+            primarySite: primarySite._key,
+            y0: primarySiteTotal,
+            y1: newPrimarySiteTotal,
+            projectID: project.project_id,
+            caseCount: project.summary.case_count,
+            fileCount: project.summary.file_count
+          };
+
+          primarySiteTotal = newPrimarySiteTotal;
+
+          return stack;
+        });
+
+        dataStack._maxY = primarySiteTotal;
+
+        return dataStack;
+
+      });
 
 
-      console.log( _controller.projectStatsList);
+      //console.log( _controller.projectChartData);
 
 
     }

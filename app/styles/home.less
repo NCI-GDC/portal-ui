@@ -166,6 +166,7 @@
       cursor: pointer;
     }
 
+    .axis line,
     .axis path {
       fill: none;
       stroke-width: 2px;
@@ -173,16 +174,25 @@
       shape-rendering: crispEdges;
     }
 
+    .x.axis .tick text:hover {
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .axis .tick line {
+      fill: none;
+      stroke-width: 2px;
+      stroke: #ccc;
+      shape-rendering: crispEdges;
+    }
+
+    /*
     .axis line,
     .axis .tick {
       fill: none;
       stroke: none;
     }
-
-    .axis text {
-      fill: none;
-      stroke: none;
-    }
+    */
 
   }
 
@@ -254,7 +264,7 @@
   }
 
   .showcase-container {
-    background: #fff;
+    background: #2571A5;
   }
   // Row 1: Quick search
   .quick-search-component {
@@ -349,7 +359,7 @@
     .filter-container {
       position: absolute;
       width: 100%;
-      height: 15rem;
+      height: 5.5rem;
       font-size: 1.5rem;
       text-align: center;
       margin-top: 2.5rem;

@@ -21,28 +21,30 @@
       </div>
       <div class="query-list-container">
         <em>Perform Advanced Search Queries, such as:</em>
-        <table class="query-list-table">
-          <tr data-ng-repeat="query in hc.getExampleSearchQueries()">
-            <td>
-              <ul>
-                <li data-ng-bind="query.description">
-                </li>
-              </ul>
-            </td>
-            <td>
-              <a class="btn btn-primary" href="/search/c?filters={{query.filters}}">
-                <span data-ng-if="query.caseCount >= 0" data-ng-bind="query.caseCount | number"></span>
-                <span data-ng-if="query.caseCount === null"><i class="fa fa-spinner fa-spin"></i></span>
-                Cases
-              </a>
-            </td>
-            <td>
-              <a class="btn btn-primary" href="/search/f?filters={{query.filters}}">
-                <span data-ng-if="query.fileCount >= 0" data-ng-bind="query.fileCount | number"></span>
-                <span data-ng-if="query.fileCount === null"><i class="fa fa-spinner fa-spin"></i></span>
-                Files</a>
-            </td>
-          </tr>
+        <table class="query-list-table" role="presentation">
+          <tbody>
+            <tr data-ng-repeat="query in hc.getExampleSearchQueries()">
+              <td>
+                <ul>
+                  <li data-ng-bind="query.description">
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <a class="btn btn-primary" href="/search/c?filters={{query.filters}}">
+                  <span data-ng-if="query.caseCount >= 0" data-ng-bind="query.caseCount | number"></span>
+                  <span data-ng-if="query.caseCount === null"><i class="fa fa-spinner fa-spin"></i></span>
+                  Cases
+                </a>
+              </td>
+              <td>
+                <a class="btn btn-primary" href="/search/f?filters={{query.filters}}">
+                  <span data-ng-if="query.fileCount >= 0" data-ng-bind="query.fileCount | number"></span>
+                  <span data-ng-if="query.fileCount === null"><i class="fa fa-spinner fa-spin"></i></span>
+                  Files</a>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>

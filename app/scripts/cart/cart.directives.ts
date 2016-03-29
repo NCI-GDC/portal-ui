@@ -289,7 +289,7 @@ module ngApp.cart.directives {
       scope: true,
       link: (scope, $element, $attrs) => {
         scope.active = false;
-
+        
         const inProgress = () => {
           scope.active = true;
           $attrs.$set('disabled', 'disabled');

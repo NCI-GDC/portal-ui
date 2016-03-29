@@ -34,18 +34,16 @@ module ngApp.projects.models {
     var data = _.find(dataCategories, {data_category: dataCategory});
     return data ? data.case_count : 0;
   }
-  function dataCategoryWithFilters(dataCategory: string, row: Row, $filter: ng.IFilterService) {
+
+  function dataCategoryWithFilters(dataCategory: string, row: Row, $filter: ng.IFilterService): string {
     var fs = [{field: 'cases.project.project_id', value: row.project_id},
               {field: 'files.data_category', value: dataCategory}];
     return withFilter(getdataCategory(row.summary.data_categories, dataCategory), fs, $filter);
   }
 
-  function dataCategoryTotalWithFilters(dataCategory: string, data: Rows, $filter: ng.IFilterService, LocationService: ILocationService) {
-    var fs = _.map(LocationService.filters().content, x => ({
-      field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
-      value: x.content.value
-    }));
-    fs.push({field: 'files.data_category', value: [dataCategory]});
+  function dataCategoryTotalWithFilters(dataCategory: string, data: Rows, $filter: ng.IFilterService): string {
+  var fs = [{field: 'files.data_category', value: [dataCategory]},
+            {field: 'cases.project.project_id', value: data.map(d => d.project_id)}];
     return withFilter(_.sum(_.map(data, row => getdataCategory(row.summary.data_categories, dataCategory))), fs, $filter);
   }
 
@@ -178,7 +176,7 @@ module ngApp.projects.models {
             td: (row, $scope) => dataCategoryWithFilters("Raw sequencing data", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Raw sequencing data", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Raw sequencing data", data, $scope.$filter)
           }, {
             name: 'Exp',
             th: '<abbr data-uib-tooltip="Transcriptome Profiling">Exp</abbr>',
@@ -186,7 +184,7 @@ module ngApp.projects.models {
             td: (row, $scope) => dataCategoryWithFilters("Gene expression", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Gene expression", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Gene expression", data, $scope.$filter)
           }, {
             name: 'SNV',
             th: '<abbr data-uib-tooltip="Simple Nucleotide Variation">SNV</abbr>',
@@ -194,7 +192,7 @@ module ngApp.projects.models {
             td: (row, $scope) => dataCategoryWithFilters("Simple nucleotide variation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Simple nucleotide variation", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Simple nucleotide variation", data, $scope.$filter)
           }, {
             name: 'CNV',
             th: '<abbr data-uib-tooltip="Copy Number Variation">CNV</abbr>',
@@ -202,7 +200,7 @@ module ngApp.projects.models {
             td: (row, $scope) => dataCategoryWithFilters("Copy number variation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Copy number variation", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Copy number variation", data, $scope.$filter)
           }, {
             name: 'SV',
             th: '<abbr data-uib-tooltip="Structural Rearrangement">SV</abbr>',
@@ -210,7 +208,7 @@ module ngApp.projects.models {
             td: (row, $scope) => dataCategoryWithFilters("Structural rearrangement", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Structural rearrangement", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Structural rearrangement", data, $scope.$filter)
           }, {
             name: 'Meth',
             th: '<abbr data-uib-tooltip="DNA Methylation">Meth</abbr>',
@@ -218,21 +216,21 @@ module ngApp.projects.models {
             td: (row, $scope) => dataCategoryWithFilters("DNA methylation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("DNA methylation", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("DNA methylation", data, $scope.$filter)
           }, {
             name: 'Clinical',
             id: 'clinical',
             td: (row, $scope) => dataCategoryWithFilters("Clinical", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters('Clinical', data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters('Clinical', data, $scope.$filter)
           }, {
             name: 'Biospecimen',
             id: 'biospecimen',
             td: (row, $scope) => dataCategoryWithFilters("Other", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters('Other', data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters('Other', data, $scope.$filter)
           }
         ]
       }, {

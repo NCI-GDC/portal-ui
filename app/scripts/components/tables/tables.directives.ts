@@ -63,7 +63,7 @@ module ngApp.components.tables.directives {
       controller: "ExportTableController as etc"
     };
   }
-  
+
   function ReportsExportTable(): ng.IDirective {
     return {
       restrict: "EA",
@@ -124,4 +124,3 @@ module ngApp.components.tables.directives {
       .directive("gdcTable", GDCTable)
       .directive("arrangeColumns", ArrangeColumns);
 }
-

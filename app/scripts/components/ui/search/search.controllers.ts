@@ -28,10 +28,14 @@ module ngApp.components.ui.search.controllers {
     }
 
     sendQuery() {
-      this.LocationService.setSearch({
-        query: this.query,
-        filters: angular.toJson({"op":"and", "content": [this.gql.filters]})
-      });
+      if (this.query.length) {
+        this.LocationService.setSearch({
+            query: this.query,
+            filters: angular.toJson({"op":"and", "content": [this.gql.filters]})
+        });
+      } else {
+          this.LocationService.setSearch({});
+      }
     }
 
     setQuery() {

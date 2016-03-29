@@ -468,7 +468,8 @@ module ngApp.components.facets.controllers {
       if (_.size(actives) > 0) {
         this.FacetService.removeTerm(this.name, undefined, '>=');
       }
-      this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date).format(), '>=');
+      
+      this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date).format('YYYY-MM-DD'), '>=');
     }
 
   }

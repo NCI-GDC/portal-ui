@@ -229,27 +229,27 @@
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Age at Diagnosis</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].age_at_diagnosis | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].age_at_diagnosis | ageDisplay }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Birth</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_birth | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_birth | number }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Death</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_death | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_death | number }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Last Followup</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_follow_up | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_follow_up | number }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Last Known Disease Status</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_known_disease_status | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_known_disease_status | number }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Recurrence</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_recurrence | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_recurrence | number }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Last Known Disease Status</th>

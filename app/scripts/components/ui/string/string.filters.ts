@@ -18,7 +18,7 @@ module ngApp.components.ui.string {
         // use `--` for null, undefined and empty string
         if (original === null || original === undefined || (angular.isString(original) && original.length === 0)) {
           return '--';
-        // return all other non-strings 
+        // return all other non-strings
         } else if (!angular.isString(original)) return original;
 
         var humanified = "";
@@ -122,8 +122,8 @@ module ngApp.components.ui.string {
           var daysText = gettextCatalog.getPlural(ageInDays, "day", "days");
           return ageInDays + " " + daysText;
         } else {
-          var ageInYears = Math.floor(ageInDays / 365);
-          var remainderDays = Math.ceil(ageInDays % 365);
+          var ageInYears = Math.floor(ageInDays / 365.25);
+          var remainderDays = Math.ceil(ageInDays % 365.25);
           var yearsText = gettextCatalog.getPlural(ageInYears, "year", "years");
           var daysText = gettextCatalog.getPlural(remainderDays, "day", "days");
           return ageInYears + " " + yearsText + (remainderDays ? " " + remainderDays + " " + daysText : "");

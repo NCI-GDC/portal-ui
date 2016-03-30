@@ -23,6 +23,9 @@ module ngApp.search.models {
         ];
         return withFilter(getDataCategory(row.summary ? row.summary.data_categories : [], dataCategory), fs, $filter);
     }
+    function youngestDiagnosis(p: { age_at_diagnosis: number }, c: { age_at_diagnosis: number }): { age_at_diagnosis: number } {
+      return c.age_at_diagnosis < p.age_at_diagnosis ? c : p
+    }
 
     var searchParticipantsModel = {
         title: 'Cases',
@@ -172,27 +175,39 @@ module ngApp.search.models {
             id: 'diagnoses.age_at_diagnosis',
             td: (row, $scope) => {
               // Use diagnosis with minimum age
-              const age = row.diagnoses.reduce((p, c) => c.age_at_diagnosis < p ? c.age_at_diagnosis : p, Infinity);
-              return (row.diagnoses && $scope.$filter("ageDisplay")(age)) || "--"
+              const age = (row.diagnoses || []).reduce((p, c) => c.age_at_diagnosis < p ? c.age_at_diagnosis : p, Infinity);
+              return age !== Infinity && row.diagnoses ? $scope.$filter("ageDisplay")(age) : "--";
             },
             sortable: false,
             hidden: true
         }, {
             name: 'Days to death',
             id: 'diagnoses.days_to_death',
-            td: (row, $scope) => (row.diagnoses && $scope.$filter("number")(row.diagnoses.days_to_death, 0)) || "--",
+            td: (row, $scope) => {
+              const primaryDiagnosis = (row.diagnoses || [])
+                .reduce(youngestDiagnosis, { age_at_diagnosis: Infinity });
+              return (row.diagnoses && $scope.$filter("number")(primaryDiagnosis.days_to_death, 0)) || "--"
+            },
             sortable: false,
             hidden: true
         }, {
             name: 'Vital Status',
             id: 'diagnoses.vital_status',
-            td: (row, $scope) => row.diagnoses && $scope.$filter("humanify")(row.diagnoses.vital_status),
+            td: (row, $scope) => {
+              const primaryDiagnosis = (row.diagnoses || [])
+                .reduce(youngestDiagnosis, { age_at_diagnosis: Infinity });
+              return row.diagnoses && $scope.$filter("humanify")(primaryDiagnosis.vital_status)
+            },
             sortable: false,
             hidden: true
         }, {
             name: 'Year of diagnosis',
             id: 'diagnoses.year_of_diagnosis',
-            td: (row, $scope) => (row.diagnoses && row.diagnoses.year_of_diagnosis) || "--",
+            td: (row, $scope) => {
+              const primaryDiagnosis = (row.diagnoses || [])
+                .reduce(youngestDiagnosis, { age_at_diagnosis: Infinity });
+              return (row.diagnoses && primaryDiagnosis.year_of_diagnosis) || "--"
+            },
             sortable: false,
             hidden: true
         }, {

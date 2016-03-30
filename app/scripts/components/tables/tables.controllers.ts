@@ -227,8 +227,9 @@ module ngApp.components.tables.controllers {
       } else {
         this.displayedData = this.$scope.data;
       }
-      if (this.$scope.paging)
+      if (this.$scope.paging) {
         this.$scope.paging.count = this.displayedData && this.displayedData.length;
+      }
     }
   }
 

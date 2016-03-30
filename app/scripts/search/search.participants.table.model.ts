@@ -170,7 +170,11 @@ module ngApp.search.models {
         }, {
             name: 'Age at diagnosis',
             id: 'diagnoses.age_at_diagnosis',
-            td: (row, $scope) => (row.diagnoses && $scope.$filter("ageDisplay")(row.diagnoses.age_at_diagnosis)) || "--",
+            td: (row, $scope) => {
+              // Use diagnosis with minimum age
+              const age = row.diagnoses.reduce((p, c) => c.age_at_diagnosis < p ? c.age_at_diagnosis : p, Infinity);
+              return (row.diagnoses && $scope.$filter("ageDisplay")(age)) || "--"
+            },
             sortable: false,
             hidden: true
         }, {

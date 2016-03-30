@@ -53,7 +53,7 @@ module ngApp.components.tables.directives.tableicious {
                    refresh(n);
                 }, true);
 
-                $scope.headings = $scope.saved.length ? 
+                $scope.headings = $scope.saved.length ?
                   _.map($scope.saved, (s: IHeading): IHeading => _.merge(_.find($scope.headings, {id: s.id}), s)) :
                   $scope.headings;
 

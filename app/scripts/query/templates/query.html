@@ -4,50 +4,56 @@
 
       <search-bar></search-bar>
 
-      <ul class="nav nav-tabs">
-        <li role="presentation"
-            data-ng-class="{ active: qc.QState.tabs.summary.active }"
-            data-ng-click="qc.select('summary')"
-            id="query-summary">
+      <h3 class="col-lg-9 col-md-8" data-ng-if="!qc.participants.hits.length && !qc.files.hits.length" data-translate>
+        No results found using those filters.
+      </h3>
+
+      <div data-ng-if="qc.participants.hits.length || qc.files.hits.length">
+        <ul class="nav nav-tabs">
+          <li role="presentation"
+              data-ng-class="{ active: qc.QState.tabs.summary.active }"
+              data-ng-click="qc.select('summary')"
+              id="query-summary">
+              <a
+                data-ng-href="{{
+                qc.$state.href('query.summary', qc.LocationService.search().filters
+                )}}">
+              {{ 'Summary' | translate }}
+            </a>
+          </li>
+          <li role="presentation"
+              data-ng-class="{ active: qc.QState.tabs.participants.active }"
+              data-ng-click="qc.select('participants')"
+              id="query-participants">
             <a
-              data-ng-href="{{
-              qc.$state.href('query.summary', qc.LocationService.search().filters
-              )}}">
-            {{ 'Summary' | translate }}
-          </a>
-        </li>
-        <li role="presentation"
-            data-ng-class="{ active: qc.QState.tabs.participants.active }"
-            data-ng-click="qc.select('participants')"
-            id="query-participants">
-          <a
-              data-ng-href="{{
-              qc.$state.href('query.participants', qc.LocationService.search().filters
-              )}}">
-            {{ 'Cases' | translate }} ({{qc.participants.pagination.total| number:0}})
-          </a>
-        </li>
-        <li role="presentation"
-            data-ng-class="{ active: qc.QState.tabs.files.active }"
-            data-ng-click="qc.select('files')"
-            id="query-files">
-          <a
-              data-ng-href="{{
-              qc.$state.href('query.files', qc.LocationService.search().filters
-              )}}">
-            {{ 'Files' | translate }} ({{qc.files.pagination.total| number:0}})
-          </a>
-        </li>
-      </ul>
-      <div class="pane-section" data-ng-if="qc.QState.tabs.summary.active">
-        <div data-ng-include="'query/templates/query.summary.html'"></div>
-      </div>
-      <div class="pane-section" data-ng-show="qc.QState.tabs.participants.active">
-        <div data-ng-include="'query/templates/query.participants.html'"></div>
-      </div>
-      <div class="pane-section"
-           data-ng-show="qc.QState.tabs.files.active">
-        <div data-ng-include="'query/templates/query.files.html'"></div>
+                data-ng-href="{{
+                qc.$state.href('query.participants', qc.LocationService.search().filters
+                )}}">
+              {{ 'Cases' | translate }} ({{qc.participants.pagination.total| number:0}})
+            </a>
+          </li>
+          <li role="presentation"
+              data-ng-class="{ active: qc.QState.tabs.files.active }"
+              data-ng-click="qc.select('files')"
+              id="query-files">
+            <a
+                data-ng-href="{{
+                qc.$state.href('query.files', qc.LocationService.search().filters
+                )}}">
+              {{ 'Files' | translate }} ({{qc.files.pagination.total| number:0}})
+            </a>
+          </li>
+        </ul>
+        <div class="pane-section" data-ng-if="qc.QState.tabs.summary.active">
+          <div data-ng-include="'query/templates/query.summary.html'"></div>
+        </div>
+        <div class="pane-section" data-ng-show="qc.QState.tabs.participants.active">
+          <div data-ng-include="'query/templates/query.participants.html'"></div>
+        </div>
+        <div class="pane-section"
+             data-ng-show="qc.QState.tabs.files.active">
+          <div data-ng-include="'query/templates/query.files.html'"></div>
+        </div>
       </div>
     </div>
   </div>

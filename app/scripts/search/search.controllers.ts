@@ -230,4 +230,3 @@ module ngApp.search.controllers {
       ])
       .controller("SearchController", SearchController);
 }
-

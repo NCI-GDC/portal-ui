@@ -48,54 +48,60 @@
         </div>
       </div>
 
-      <ul class="nav nav-tabs">
-        <li role="presentation"
-            data-ng-class="{ active: sc.SearchState.tabs.summary.active }"
-            data-ng-click="sc.select('tabs', 'summary')"
-            id="search-summary">
-            <a
-              data-ng-href="{{
-              sc.$state.href('search.summary', sc.LocationService.search().filters
-              )}}">
-              {{ 'Summary' | translate }}
-            </a>
-        </li>
-        <li role="presentation"
-            data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
-            data-ng-click="sc.select('tabs', 'participants')"
-            id="search-participants">
-            <a
-              data-ng-href="{{
-              sc.$state.href('search.participants', sc.LocationService.search().filters
-              )}}">
-                {{ 'Cases' | translate }} ({{sc.participants.pagination.total| number:0}})
-            </a>
-        </li>
-        <li role="presentation"
-            data-ng-class="{ active: sc.SearchState.tabs.files.active }"
-            data-ng-click="sc.select('tabs', 'files')"
-            id="search-files">
-            <a
-              data-ng-href="{{
-              sc.$state.href('search.files', sc.LocationService.search().filters
-              )}}">
-              {{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})
-            </a>
+      <h3 class="col-lg-9 col-md-8" data-ng-if="!sc.participants.hits.length && !sc.files.hits.length" data-translate>
+        No results found using those filters.
+      </h3>
 
-        </li>
-      </ul>
-      <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the
-           container will not be the expected size for the graphs.
-        -->
-      <div class="pane-section" data-ng-if="sc.SearchState.tabs.summary.active">
-        <div data-ng-include="'search/templates/search.summary.html'"></div>
-      </div>
-      <div class="pane-section" data-ng-show="sc.SearchState.tabs.participants.active">
-        <div data-ng-include="'search/templates/search.participants.html'"></div>
-      </div>
-      <div class="pane-section"
-           data-ng-show="sc.SearchState.tabs.files.active">
-        <div data-ng-include="'search/templates/search.files.html'"></div>
+      <div data-ng-if="sc.participants.hits.length || sc.files.hits.length">
+        <ul class="nav nav-tabs">
+          <li role="presentation"
+              data-ng-class="{ active: sc.SearchState.tabs.summary.active }"
+              data-ng-click="sc.select('tabs', 'summary')"
+              id="search-summary">
+              <a
+                data-ng-href="{{
+                sc.$state.href('search.summary', sc.LocationService.search().filters
+                )}}">
+                {{ 'Summary' | translate }}
+              </a>
+          </li>
+          <li role="presentation"
+              data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
+              data-ng-click="sc.select('tabs', 'participants')"
+              id="search-participants">
+              <a
+                data-ng-href="{{
+                sc.$state.href('search.participants', sc.LocationService.search().filters
+                )}}">
+                  {{ 'Cases' | translate }} ({{sc.participants.pagination.total| number:0}})
+              </a>
+          </li>
+          <li role="presentation"
+              data-ng-class="{ active: sc.SearchState.tabs.files.active }"
+              data-ng-click="sc.select('tabs', 'files')"
+              id="search-files">
+              <a
+                data-ng-href="{{
+                sc.$state.href('search.files', sc.LocationService.search().filters
+                )}}">
+                {{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})
+              </a>
+
+          </li>
+        </ul>
+        <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the
+             container will not be the expected size for the graphs.
+          -->
+        <div class="pane-section" data-ng-if="sc.SearchState.tabs.summary.active">
+          <div data-ng-include="'search/templates/search.summary.html'"></div>
+        </div>
+        <div class="pane-section" data-ng-show="sc.SearchState.tabs.participants.active">
+          <div data-ng-include="'search/templates/search.participants.html'"></div>
+        </div>
+        <div class="pane-section"
+             data-ng-show="sc.SearchState.tabs.files.active">
+          <div data-ng-include="'search/templates/search.files.html'"></div>
+        </div>
       </div>
     </div>
   </div>

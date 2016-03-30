@@ -13,7 +13,7 @@
       <div class="alert alert-info clearfix">
         <div class="col-sm-12">
           <current-filters></current-filters>
-          <span data-ng-if="!cfc.currentFilters.length"  style="line-height: 3.4rem"> 
+          <span data-ng-if="!cfc.currentFilters.length"  style="line-height: 3.4rem">
             <span data-translate>
               Start searching by selecting a facet or try the Data Search
             </span>
@@ -29,10 +29,10 @@
         </div>
       </div>
 
-      <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0" data-translate>
+      <h3 class="col-lg-9 col-md-8" data-ng-if="!prsc.projects.hits.length" data-translate>
         No projects found using those filters.
       </h3>
-      <ul class="nav nav-tabs">
+      <ul class="nav nav-tabs" data-ng-if="prsc.projects.hits.length">
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.table.active }"
             data-ng-click="prsc.select('tabs', 'table')"
@@ -83,4 +83,3 @@
     </div>
   </div>
 </div>
-

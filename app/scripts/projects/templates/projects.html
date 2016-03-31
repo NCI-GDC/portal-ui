@@ -29,9 +29,14 @@
         </div>
       </div>
 
-      <h3 class="col-lg-9 col-md-8" data-ng-if="!prsc.projects.hits.length" data-translate>
+      <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.loading" data-translate>
+        Loading, please wait.. <i class="fa fa-spinner fa-spin"></i>
+      </h3>
+
+      <h3 class="col-lg-9 col-md-8" data-ng-if="!prsc.projects.hits.length && !prsc.loading" data-translate>
         No projects found using those filters.
       </h3>
+
       <ul class="nav nav-tabs" data-ng-if="prsc.projects.hits.length">
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.table.active }"

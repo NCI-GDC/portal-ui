@@ -48,7 +48,11 @@
         </div>
       </div>
 
-      <h3 class="col-lg-9 col-md-8" data-ng-if="!sc.participants.hits.length && !sc.files.hits.length" data-translate>
+      <h3 class="col-lg-9 col-md-8" data-ng-if="sc.participantsLoading && sc.filesLoading" data-translate>
+        Loading, please wait.. <i class="fa fa-spinner fa-spin"></i>
+      </h3>
+
+      <h3 class="col-lg-9 col-md-8" data-ng-if="!sc.participants.hits.length && !sc.files.hits.length && !sc.participantsLoading && !sc.filesLoading" data-translate>
         No results found using those filters.
       </h3>
 

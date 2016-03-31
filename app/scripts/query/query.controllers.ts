@@ -38,6 +38,8 @@ module ngApp.query.controllers {
   class QueryController implements IQueryController {
     files: IFiles;
     participants: IParticipants;
+    participantsLoading: boolean = true;
+    filesLoading: boolean = true;
     query: string = "";
     tabSwitch: boolean = false;
     projectIdChartConfig: any;
@@ -78,6 +80,9 @@ module ngApp.query.controllers {
     }
 
     refresh() {
+      this.participantsLoading = true;
+      this.filesLoading = true;
+
       if (this.tabSwitch) {
         if (this.QState.tabs.participants.active) {
           this.QState.setActive("participants", "hasLoadedOnce");
@@ -105,6 +110,7 @@ module ngApp.query.controllers {
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
+        this.filesLoading = false;
         this.files = this.files || {};
         this.files.aggregations = data.aggregations;
 
@@ -122,6 +128,7 @@ module ngApp.query.controllers {
       });
 
       this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
+        this.participantsLoading = false;
         this.participants = this.participants || {};
         this.participants.aggregations = data.aggregations;
 

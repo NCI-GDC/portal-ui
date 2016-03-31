@@ -39,6 +39,8 @@ module ngApp.search.controllers {
   class SearchController implements ISearchController {
     files: IFiles;
     participants: IParticipants;
+    participantsLoading: boolean = true;
+    filesLoading: boolean = true;
     summary: any;
     tabSwitch: boolean = false;
     projectIdChartConfig: any;
@@ -103,6 +105,9 @@ module ngApp.search.controllers {
     }
 
     refresh() {
+      this.filesLoading = true;
+      this.participantsLoading = true;
+
       if (this.tabSwitch) {
         if (this.SearchState.tabs.participants.active) {
           this.SearchState.setActive("tabs", "participants", "hasLoadedOnce");
@@ -135,6 +140,7 @@ module ngApp.search.controllers {
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
+        this.filesLoading = false;
         this.files = this.files || {};
         this.files.aggregations = data.aggregations;
 
@@ -152,6 +158,7 @@ module ngApp.search.controllers {
       });
 
       this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
+        this.participantsLoading = false;
         this.participants = this.participants || {};
         this.participants.aggregations = data.aggregations;
 

@@ -25,6 +25,7 @@ module ngApp.projects.controllers {
     projectColumns: any[];
     tabSwitch: boolean = false;
     numPrimarySites: number = 0;
+    loading: boolean = true;
 
     /* @ngInject */
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
@@ -55,6 +56,7 @@ module ngApp.projects.controllers {
     }
 
     refresh() {
+      this.loading = true;
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
           fields: this.ProjectTableModel.fields,
@@ -69,6 +71,7 @@ module ngApp.projects.controllers {
           ],
           size: 100
         }).then((data) => {
+          this.loading = false;
           this.projects = data;
           if (this.ProjectsState.tabs.graph.active) {
             this.drawGraph(this.projects);

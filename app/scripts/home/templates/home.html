@@ -24,12 +24,12 @@
         <table class="query-list-table" role="presentation">
           <tbody>
             <tr data-ng-repeat="query in hc.getExampleSearchQueries()">
-              <td>
+              <th scope="row">
                 <ul>
                   <li data-ng-bind="query.description">
                   </li>
                 </ul>
-              </td>
+              </th>
               <td>
                 <a class="btn btn-primary" href="/search/c?filters={{query.filters}}">
                   <span data-ng-if="query.caseCount >= 0" data-ng-bind="query.caseCount | number"></span>

@@ -51,7 +51,7 @@
             <a data-ng-if="sc.LocationService.path().indexOf('/query') === 0" data-uib-tooltip-html-unsafe="Further filtering in this view can <br>be performed using the <br>Advanced Search above">
               {{ item[config.sortKey] | number }}
             </a>
-            <a data-ng-if="item[config.sortKey] && sc.LocationService.path().indexOf('/query') !== 0" data-ng-click="sc.addFilters(item)">
+            <a data-ng-if="item[config.sortKey] && sc.LocationService.path().indexOf('/query') !== 0" data-ng-click="sc.addFilters(item, 'search.files')">
               {{ item[config.sortKey] | number }}
             </a>
 

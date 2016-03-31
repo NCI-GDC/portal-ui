@@ -58,7 +58,6 @@ module ngApp.cart.models {
                      '<a href="cases/' + row.cases[0].case_id + '">1</a>' :
                      withFilter(row.cases.length, [{field: "files.file_id", value: row.file_id}], $filter);
           }
-          //debugger
           return row.cases.length ? getParticipants(row, $scope.$filter) : 0;
         },
         thClassName: 'text-right',

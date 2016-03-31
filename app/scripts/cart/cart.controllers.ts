@@ -29,6 +29,7 @@ module ngApp.cart.controllers {
     fileCountChartConfig: any;
     helpHidden: boolean = false;
     participantCount: number;
+    isFetchingCart: boolean = false;
 
     /* @ngInject */
     constructor(private $scope: ng.IScope,
@@ -138,31 +139,41 @@ module ngApp.cart.controllers {
     }
 
     refresh(): void {
-      const fileIds = this.CartService.getFileIds();
-      this.CoreService.setPageTitle("Cart", "(" + fileIds.length + ")");
-      // in the event that our cart is empty
-      if (fileIds.length < 1) {
-        this.files = {};
-        return;
-      }
-
-      var filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
-      var fileOptions = {
-        filters: filters,
-        fields: ['access', 'file_name', 'file_id', 'data_type', 'data_format', 'file_size', 'annotations.annotation_id'],
-        expand: ['cases', 'cases.project'],
-        facets: ['cases.case_id'],
-      };
-      this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
-        this.files = this.files || {};
-        if (!_.isEqual(this.files.hits, data.hits)) {
-          this.files = data;
-          this.getSummary();
+      if(!this.isFetchingCart) {
+        this.isFetchingCart = true;
+        const fileIds = this.CartService.getFileIds();
+        this.CoreService.setPageTitle("Cart", "(" + fileIds.length + ")");
+        // in the event that our cart is empty
+        if (fileIds.length < 1) {
+          this.files = {};
+          return;
         }
-      });
-      this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
-        this.participantCount = data.pagination.total;
-      });
+        var filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
+        var fileOptions = {
+          filters: filters,
+          fields: ['access',
+                   'file_name',
+                   'file_id',
+                   'data_type',
+                   'data_format',
+                   'file_size',
+                   'annotations.annotation_id',
+                   'cases.case_id',
+                   'cases.project.project_id',
+                   'cases.project.name']
+        };
+        this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
+          this.files = this.files || {};
+          if (!_.isEqual(this.files.hits, data.hits)) {
+            this.files = data;
+            this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
+              this.participantCount = data.pagination.total;
+              })
+            .finally(() => this.getSummary() );
+          }
+        })
+        .finally(() => this.isFetchingCart = false);
+      }
     }
 
     getTotalSize(): number {

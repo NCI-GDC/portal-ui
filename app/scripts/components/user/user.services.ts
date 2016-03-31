@@ -19,6 +19,7 @@ module ngApp.components.user.services {
 
   class UserService implements IUserService {
     currentUser: IUser;
+    isFetching: boolean = false;
 
     /* @ngInject */
     constructor(private AuthRestangular: restangular.IService,
@@ -48,29 +49,33 @@ module ngApp.components.user.services {
     }
 
     login(): void {
-      this.AuthRestangular.all("user")
-      .withHttpConfig({
-        withCredentials: true
-      })
-      .post({}, {})
-      .then((data) => {
-          data.isFiltered = true;
-          this.setUser(data);
-      }, (response) => {
-        if(response.status === 401) {
-          if (this.currentUser) {
-            this.currentUser = undefined;
-            this.notify({
-              message: "",
-              messageTemplate: "<span data-translate>Session expired or unauthorized.</span>",
-              container: "#notification",
-              classes: "alert-warning"
-            });
+      if (!this.isFetching) {
+        this.isFetching = true;
+        this.AuthRestangular.all("user")
+        .withHttpConfig({
+          withCredentials: true
+        })
+        .post({}, {})
+        .then((data) => {
+            data.isFiltered = true;
+            this.setUser(data);
+        }, (response) => {
+          if(response.status === 401) {
+            if (this.currentUser) {
+              this.currentUser = undefined;
+              this.notify({
+                message: "",
+                messageTemplate: "<span data-translate>Session expired or unauthorized.</span>",
+                container: "#notification",
+                classes: "alert-warning"
+              });
+            }
+          } else {
+            this.$log.error("Error logging in, response status " + response.status);
           }
-        } else {
-          this.$log.error("Error logging in, response status " + response.status);
-        }
-      });
+        })
+        .finally(() => this.isFetching = false);
+      }
     }
 
     getToken(): void {

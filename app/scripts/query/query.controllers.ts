@@ -80,9 +80,6 @@ module ngApp.query.controllers {
     }
 
     refresh() {
-      this.participantsLoading = true;
-      this.filesLoading = true;
-
       if (this.tabSwitch) {
         if (this.QState.tabs.participants.active) {
           this.QState.setActive("participants", "hasLoadedOnce");
@@ -94,6 +91,9 @@ module ngApp.query.controllers {
         this.tabSwitch = false;
         return;
       }
+
+      this.participantsLoading = true;
+      this.filesLoading = true;
 
       this.SearchService.getSummary().then((data) => {
         this.summary = data;

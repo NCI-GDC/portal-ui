@@ -105,9 +105,6 @@ module ngApp.search.controllers {
     }
 
     refresh() {
-      this.filesLoading = true;
-      this.participantsLoading = true;
-
       if (this.tabSwitch) {
         if (this.SearchState.tabs.participants.active) {
           this.SearchState.setActive("tabs", "participants", "hasLoadedOnce");
@@ -119,6 +116,9 @@ module ngApp.search.controllers {
         this.tabSwitch = false;
         return;
       }
+
+      this.filesLoading = true;
+      this.participantsLoading = true;
 
       this.SearchService.getSummary().then((data) => {
         this.summary = data;

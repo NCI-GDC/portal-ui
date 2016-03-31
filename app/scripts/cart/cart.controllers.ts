@@ -185,7 +185,6 @@ module ngApp.cart.controllers {
       this.CartService.removeAll();
       this.lastModified = this.CartService.lastModified;
       this.files = this.CartService.getFiles();
-      this.getSummary();
     }
 
     getManifest(selectedOnly: boolean = false) {

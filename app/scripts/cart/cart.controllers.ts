@@ -227,6 +227,10 @@ module ngApp.cart.controllers {
     constructor(private CartService: ICartService) {}
 
     addToCart(): void {
+      if (this.CartService.getCartVacancySize() < 1) {
+        this.CartService.sizeWarning();
+        return;
+      }
       this.CartService.addFiles([this.file], true);
     }
 

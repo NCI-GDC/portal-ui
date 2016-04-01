@@ -126,7 +126,7 @@
                   id="clear-button"
                   data-ng-click="cc.removeAll()">
                 <i class="fa fa-remove"></i>
-                <span data-translate>All Files ({{cc.files.hits.length}})</span>
+                <span data-translate>All Files ({{cc.CartService.getFiles().length}})</span>
               </a>
             </split-control-option>
             <split-control-option data-option-label-text="Remove Unauthorized Files">

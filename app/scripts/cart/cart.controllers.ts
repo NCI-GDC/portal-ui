@@ -9,7 +9,7 @@ module ngApp.cart.controllers {
   import IFilesService = ngApp.files.services.IFilesService;
 
   export interface ICartController {
-    files: IFile[];
+    files: IFiles;
     lastModified: Moment;
     getTotalSize(): number;
     getFileIds(): string[];
@@ -30,11 +30,24 @@ module ngApp.cart.controllers {
     helpHidden: boolean = false;
     participantCount: number;
 
+    defaultFiles: IFiles = {
+      hits: [],
+      pagination: {
+        count: 0,
+        total: 0,
+        size: 0,
+        from: 0,
+        page: 0,
+        pages: 0,
+        sort: '',
+      }
+    };
+
     /* @ngInject */
     constructor(private $scope: ng.IScope,
                 private $state: ng.ui.IStateService,
                 private $filter: ng.IFilterService,
-                public files: IFile[],
+                public files: IFiles,
                 private CoreService: ICoreService,
                 private CartService: ICartService,
                 private UserService: IUserService,
@@ -150,16 +163,18 @@ module ngApp.cart.controllers {
       var filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
       var fileOptions = {
         filters: filters,
-        fields: ['access',
-                 'file_name',
-                 'file_id',
-                 'data_type',
-                 'data_format',
-                 'file_size',
-                 'annotations.annotation_id',
-                 'cases.case_id',
-                 'cases.project.project_id',
-                 'cases.project.name']
+        fields: [
+          'access',
+          'file_name',
+          'file_id',
+          'data_type',
+          'data_format',
+          'file_size',
+          'annotations.annotation_id',
+          'cases.case_id',
+          'cases.project.project_id',
+          'cases.project.name'
+        ]
       };
       this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
         this.files = this.files || {};

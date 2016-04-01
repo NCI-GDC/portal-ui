@@ -89,7 +89,7 @@ module ngApp.search.controllers {
       this.ageAtDiagnosisUnitsMap = [
         {
           "label": "years",
-          "conversionDivisor": 365,
+          "conversionDivisor": 365.25,
         },
         {
           "label": "days",

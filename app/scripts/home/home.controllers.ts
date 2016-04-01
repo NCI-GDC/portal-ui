@@ -78,10 +78,12 @@ module ngApp.home.controllers {
 
       this.projectStatsOrdering = {projects: 0, cases: 2, files: 3, cancerTypes: 1, downloads: 4};
 
+      const yearsToDays = year => year * 365.25;
+
       this.exampleSearchQueries = [
         {
           description: "Kidney cancer cases under the age of 20 at diagnosis",
-          filters: {"op":"and","content":[{"op":"<=","content":{"field":"cases.clinical.age_at_diagnosis","value":[14600]}},{"op":"in","content":{"field":"cases.project.primary_site","value":["Kidney"]}}]},
+          filters: {"op":"and","content":[{"op":"<=","content":{"field":"cases.clinical.age_at_diagnosis","value":[yearsToDays(20)]}},{"op":"in","content":{"field":"cases.project.primary_site","value":["Kidney"]}}]},
           caseCount: null,
           fileCount: null
         },
@@ -276,7 +278,7 @@ module ngApp.home.controllers {
     getChartFilteredData() {
       return this.projectChartData;
     }
-    
+
     getChartTooltipFunction() {
       return this.tooltipFn;
     }
@@ -346,7 +348,7 @@ module ngApp.home.controllers {
 
         _controller.projectStats.downloads.totalDownloads = totalDownloads;
         _controller.projectStats.downloads.totalDownloadSizeBytes = totalSizeInBytes;
-        
+
       });
     }
 

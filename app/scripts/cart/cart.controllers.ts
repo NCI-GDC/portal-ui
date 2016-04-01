@@ -152,8 +152,7 @@ module ngApp.cart.controllers {
         var fileOptions = {
           filters: filters,
           fields: ['access', 'file_name', 'file_id', 'data_type', 'data_format', 'file_size', 'annotations.annotation_id'],
-          expand: ['cases', 'cases.project'],
-          facets: ['cases.case_id'],
+          expand: ['cases', 'cases.project']
         };
         this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
           this.files = this.files || {};

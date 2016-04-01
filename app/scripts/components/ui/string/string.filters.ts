@@ -118,6 +118,9 @@ module ngApp.components.ui.string {
   class AgeDisplay {
     constructor(gettextCatalog: any) {
       return function(ageInDays: number) {
+        if (!ageInDays) {
+          return '--';
+        }
         if (ageInDays < 365.25) {
           var daysText = gettextCatalog.getPlural(ageInDays, "day", "days");
           return ageInDays + " " + daysText;

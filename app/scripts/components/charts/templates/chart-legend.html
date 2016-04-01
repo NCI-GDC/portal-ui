@@ -18,7 +18,7 @@
         <td class="text-right" data-ng-if="config.showParticipant">
           {{ item.data.case_count | number }}
         </td>
-        <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.data.file_size.value | size }}</td>
+        <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.data.file_size | size }}</td>
       </tr>
     </tbody>
   </table>

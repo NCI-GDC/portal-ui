@@ -141,7 +141,7 @@ module ngApp.components.charts {
                 $scope.hoverCount = d.data[config.sortKey];
 
                 if (!config.hideFileSize) {
-                  $scope.hoverSize = d.data.file_size.value;
+                  $scope.hoverSize = d.data.file_size;
                 }
 
                 $scope.$apply();

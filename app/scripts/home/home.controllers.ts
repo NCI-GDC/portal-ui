@@ -1,12 +1,8 @@
 module ngApp.home.controllers {
+
   import ICoreService = ngApp.core.services.ICoreService;
-
   import IProjects = ngApp.projects.models.IProjects;
-  import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
-
   import IHomeService = ngApp.home.services.IHomeService;
-
-
 
   export interface IHomeController {
     getChartFilteredData() : any[];
@@ -17,10 +13,6 @@ module ngApp.home.controllers {
     getExampleSearchQueries(): any[];
     refresh(): void;
   }
-
-  /*
-  export interface IHomeScope extends ng.IScope {
-  }*/
 
   class HomeController implements IHomeController {
 
@@ -63,9 +55,6 @@ module ngApp.home.controllers {
         {title: "Primary Sites", value: 0, icon: "cancer_type_hardcode", url: "/projects/t"},
         {title: "Cases", value: 0, icon: "icon-gdc-cases data-icon", url: "/search/c"},
         {title: "Files", value: 0, icon: "fa fa-file-o data-icon", url: "/search/f"},
-
-        //{title: "Cancer Types", value: 0, icon: "fa fa-heartbeat", url: "/projects/t"},
-        //{title: "Downloads to Date", value: 0, icon: "fa fa-download", url: "/reports/data-download-statistics"}
       ];
 
       this.projectStats = {
@@ -74,7 +63,6 @@ module ngApp.home.controllers {
           totalDownloadSizeBytes : null
         }
       };
-
 
       this.projectStatsOrdering = {projects: 0, cases: 2, files: 3, cancerTypes: 1, downloads: 4};
 
@@ -100,7 +88,6 @@ module ngApp.home.controllers {
           fileCount: null
         },
       ];
-
 
       this.defaultParams =  {
         fields: this.ProjectTableModel.fields,
@@ -267,11 +254,6 @@ module ngApp.home.controllers {
         return dataStack;
 
       });
-
-
-      //console.log( _controller.projectChartData);
-
-
     }
 
 

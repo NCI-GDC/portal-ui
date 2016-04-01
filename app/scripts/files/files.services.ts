@@ -128,20 +128,18 @@ module ngApp.files.services {
         });
     }
 
-    getFiles(params: Object = {}, method: string = 'GET'): ng.IPromise<IFiles> {
-      if (params.hasOwnProperty("fields")) {
-        params["fields"] = params["fields"].join();
-      }
+    getFiles(
+      params: { fields?: any; expand?: any; facets?: any; raw?: any } = {},
+      method: string = 'GET'
+    ): ng.IPromise<IFiles> {
 
-      if (params.hasOwnProperty("expand")) {
-        params["expand"] = params["expand"].join();
-      }
+      var modifiedParams = _.extend({}, params, {
+        fields: params.fields && params.fields.join(),
+        expands: params.expand && params.expand.join(),
+        facets: params.facets && params.facets.join()
+      });
 
-      if (params.hasOwnProperty("facets")) {
-        params["facets"] = params["facets"].join();
-      }
-
-      var paging = angular.fromJson(this.LocationService.pagination()["files"]);
+      var paging = angular.fromJson(this.LocationService.pagination().files);
 
       // Testing is expecting these values in URL, so this is needed.
       paging = paging || {
@@ -156,7 +154,7 @@ module ngApp.files.services {
         filters: this.LocationService.filters()
       };
 
-      if (!params.hasOwnProperty("raw")) {
+      if (!params.raw) {
         defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "cases.project.project_id");
       }
 
@@ -166,16 +164,16 @@ module ngApp.files.services {
       if (method === 'POST') {
         var prom: ng.IPromise<IFiles> = this.ds.withHttpConfig({
           timeout: abort.promise
-        }).post(angular.extend(defaults, params), undefined, {'Content-Type': 'application/json'}).then((response): IFiles => {
+        }).post(angular.extend(defaults, modifiedParams), undefined, {'Content-Type': 'application/json'}).then((response): IFiles => {
           this.CoreService.setSearchModelState(true);
-          return response["data"];
+          return response.data;
         });
       } else {
         var prom: ng.IPromise<IFiles> = this.ds.withHttpConfig({
           timeout: abort.promise
-        }).get("", angular.extend(defaults, params)).then((response): IFiles => {
+        }).get("", angular.extend(defaults, modifiedParams)).then((response): IFiles => {
           this.CoreService.setSearchModelState(true);
-          return response["data"];
+          return response.data;
         });
       }
 

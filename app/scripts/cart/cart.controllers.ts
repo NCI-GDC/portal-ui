@@ -9,7 +9,7 @@ module ngApp.cart.controllers {
   import IFilesService = ngApp.files.services.IFilesService;
 
   export interface ICartController {
-    files: IFile[];
+    files: IFiles;
     lastModified: Moment;
     getTotalSize(): number;
     getFileIds(): string[];
@@ -31,11 +31,24 @@ module ngApp.cart.controllers {
     participantCount: number;
     isFetchingCart: boolean = false;
 
+    defaultFiles: IFiles = {
+      hits: [],
+      pagination: {
+        count: 0,
+        total: 0,
+        size: 0,
+        from: 0,
+        page: 0,
+        pages: 0,
+        sort: '',
+      }
+    };
+
     /* @ngInject */
     constructor(private $scope: ng.IScope,
                 private $state: ng.ui.IStateService,
                 private $filter: ng.IFilterService,
-                public files: IFile[],
+                public files: IFiles,
                 private CoreService: ICoreService,
                 private CartService: ICartService,
                 private UserService: IUserService,
@@ -146,7 +159,7 @@ module ngApp.cart.controllers {
         this.CoreService.setPageTitle("Cart", "(" + fileIds.length + ")");
         // in the event that our cart is empty
         if (fileIds.length < 1) {
-          this.files = {};
+          this.files = this.defaultFiles;
           return;
         }
         var filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
@@ -164,7 +177,7 @@ module ngApp.cart.controllers {
                    'cases.project.name']
         };
         this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
-          this.files = this.files || {};
+          this.files = this.files || this.defaultFiles;;
           if (!_.isEqual(this.files.hits, data.hits)) {
             this.files = data;
             this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {

@@ -11,7 +11,7 @@
     <tbody>
       <tr data-ng-repeat="item in displayedData track by $index">
         <th scope="row">
-          <div class="chart-color" style="background-color: {{ item.color }};"></div>
+          <div class="chart-color" data-ng-style="{ 'background-color': item.color }"></div>
           {{ item.data[config.displayKey] | humanify }}
         </th>
         <td class="text-right">{{ item.data[config.sortKey] | number }}</td>

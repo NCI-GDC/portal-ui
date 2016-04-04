@@ -86,7 +86,7 @@ function appRun(gettextCatalog: any,
                 $window: ng.IWindowService,
                 $uibModal: any) {
 
-  if ($cookies.get("GDC-Portal-Sha") !== config.commitHash) {
+  if (navigator.cookieEnabled && $cookies.get("GDC-Portal-Sha") !== config.commitHash) {
     $cookies.put("GDC-Portal-Sha", config.commitHash);
     $window.localStorage.removeItem("Projects-col");
     $window.localStorage.removeItem("Annotations-col");
@@ -111,7 +111,10 @@ function appRun(gettextCatalog: any,
                 keyboard: false,
                 backdropClass: "warning-backdrop",
                 animation: false,
-                size: "lg"
+                size: "lg",
+                resolve: {
+                  warning: null
+                }
       });
     }
     // TODO more than just 404

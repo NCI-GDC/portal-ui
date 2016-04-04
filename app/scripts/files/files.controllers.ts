@@ -98,6 +98,7 @@ module ngApp.files.controllers {
 
     canBAMSlice(): boolean {
       return (this.file.data_type || '').toLowerCase() === 'aligned reads' &&
+             (this.file.index_files || []).length != 0 &&
              (this.file.data_format || '').toLowerCase() === 'bam';
     }
 
@@ -155,12 +156,20 @@ module ngApp.files.controllers {
   }
 
   class BAMFailedModalController {
-    msg: string = "Invalid BED Format. Please refer to the examples described in the BAM Slicing pop-up.";
+    errorBlobString: string;
+    msg400: string = "Invalid BED Format. Please refer to the examples described in the BAM Slicing pop-up.";
     /* @ngInject */
     constructor(private $uibModalInstance,
                 public errorStatus: string,
-                public errorMsg: string,
-                private errorBlob: any) {}
+                public errorStatusText: string,
+                private errorBlob: Blob) {
+      this.errorBlobString = "";
+      var reader = new FileReader();
+      reader.addEventListener("loadend", () => {
+        this.errorBlobString = _.get(JSON.parse(reader.result), "error", "Error slicing");
+      });
+      reader.readAsText(errorBlob);
+    }
   }
 
   angular

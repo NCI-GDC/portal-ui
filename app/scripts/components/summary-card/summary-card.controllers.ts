@@ -1,36 +1,38 @@
 module ngApp.components.summaryCard.controllers {
 
   interface ISummaryCardController {
-    addFilters(item: any, state: string): void;
+    addFilters(item: any): void;
     clearFilters(): void;
   }
 
   class SummaryCardController implements ISummaryCardController {
 
     /* @ngInject */
-    constructor(private $scope,
-                public LocationService: ILocationService,
-                private $state: ng.ui.IStateService) {}
+    constructor(
+      private $scope,
+      private LocationService: ILocationService
+    ) {}
 
-    addFilters(item: any, state: string) {
-      var params: {};
+    addFilters(item: any) {
       var config = this.$scope.config;
+      var filters = this.ensurePath(this.LocationService.filters());
 
-      if (!config.filters || (!config.filters[item[config.displayKey]] &&
-          !config.filters.default)) {
+      if (!config.filters ||
+        (!config.filters[item[config.displayKey]] && !config.filters.default)) {
         return;
       }
 
-      if (config.filters[item[config.displayKey]]) {
-        var filters = config.filters[item[config.displayKey]];
-        params = filters.params;
-      } else {
-        params = {
-          filters: config.filters.default.params.filters(item[config.displayKey])
-        };
-      }
+      var params = config.filters[item[config.displayKey]]
+        ? config.filters[item[config.displayKey]].params
+        : { filters: config.filters.default.params.filters(item[config.displayKey]) };
 
-      this.$state.go(state, { filters: params.filters }, { inherit: false });
+      var newFilter = JSON.parse(params.filters).content[0]; // there is always just one
+
+      filters.content = filters.content.some(filter => _.isEqual(filter, newFilter))
+        ? filters.content.filter(filter => !_.isEqual(filter, newFilter))
+        : filters.content.concat(newFilter);
+
+      this.LocationService.setFilters(filters.content.length ? filters : null);
     }
 
     clearFilters() {
@@ -46,6 +48,13 @@ module ngApp.components.summaryCard.controllers {
       }
 
       this.LocationService.clear();
+    }
+
+    ensurePath(filters: Object): Object {
+      if (!filters.content) {
+        filters = {op: "and", content: []};
+      }
+      return filters;
     }
   }
 

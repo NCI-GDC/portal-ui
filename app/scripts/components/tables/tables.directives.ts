@@ -29,7 +29,7 @@ module ngApp.components.tables.directives {
 
         var defaults = $scope.defaultHeadings;
 
-        $scope.headings = $scope.saved.length ?
+        $scope.headings = ($scope.saved || []).length ?
           _.map($scope.saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
           $scope.headings;
 
@@ -64,7 +64,7 @@ module ngApp.components.tables.directives {
       controller: "ExportTableController as etc"
     };
   }
-  
+
   function ReportsExportTable(): ng.IDirective {
     return {
       restrict: "EA",
@@ -125,4 +125,3 @@ module ngApp.components.tables.directives {
       .directive("gdcTable", GDCTable)
       .directive("arrangeColumns", ArrangeColumns);
 }
-

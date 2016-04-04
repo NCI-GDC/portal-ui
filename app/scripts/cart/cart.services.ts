@@ -67,8 +67,14 @@ module ngApp.cart.services {
     }
 
     getFiles(): ng.IPromise<IFile> {
-      var addedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_QUERY));
-      var removedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_QUERY));
+      var addedQuery, removedQuery;
+
+      try {
+        addedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_QUERY));
+        removedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_QUERY));
+      } catch (e) {
+        console.log(e);
+      }
       //incomplete
       var filters = removedQuery ? {"op":"and","content":[addedQuery, removedQuery]} : addedQuery;
       if (filters) {
@@ -143,7 +149,7 @@ module ngApp.cart.services {
                 private gettextCatalog,
                 private $filter: ng.IFilterService,
                 private $timeout: ng.ITimeoutService) {
-                this.reloadFromLocalStorage();
+      this.reloadFromLocalStorage();
     }
 
     reloadFromLocalStorage(): void {
@@ -333,8 +339,12 @@ module ngApp.cart.services {
     _sync(): void {
       this.$rootScope.$broadcast("cart-update");
       this.lastModified = this.$window.moment();
-      this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
-      this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files.map(f => {return { access: f.access, file_id: f.file_id, file_size: f.file_size, projects: _.map(f.cases, c => c.project.project_id) }})));
+      try {
+        this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
+        this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files.map(f => {return { access: f.access, file_id: f.file_id, file_size: f.file_size, projects: _.map(f.cases, c => c.project.project_id) }})));
+      } catch (e) {
+        console.log(e);
+      }
     }
 
   }

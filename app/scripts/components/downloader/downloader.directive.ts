@@ -17,7 +17,7 @@ module ngApp.components.downloader.directive {
     const showErrorModal = (error: Object): void => {
       const hasWarning = _.has(error, 'warning');
       $uibModal.open({
-        templateUrl: 'core/templates/' + (hasWarning ? 'download-warning' : 'internal-server-error') + '.html',
+        templateUrl: 'core/templates/' + (hasWarning ? 'generic-warning' : 'internal-server-error') + '.html',
         controller: 'WarningController',
         controllerAs: 'wc',
         backdrop: 'static',

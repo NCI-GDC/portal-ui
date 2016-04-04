@@ -88,13 +88,19 @@ function appRun(gettextCatalog: any,
 
   if (navigator.cookieEnabled && $cookies.get("GDC-Portal-Sha") !== config.commitHash) {
     $cookies.put("GDC-Portal-Sha", config.commitHash);
-    $window.localStorage.removeItem("Projects-col");
-    $window.localStorage.removeItem("Annotations-col");
-    $window.localStorage.removeItem("Files-col");
-    $window.localStorage.removeItem("Cases-col");
-    $window.localStorage.removeItem("Cart-col");
-    $window.localStorage.removeItem("gdc-cart-items");
-    $window.localStorage.removeItem("gdc-cart-updated");
+
+    // For disabled cookies / local / session storage
+    try {
+      $window.localStorage.removeItem("Projects-col");
+      $window.localStorage.removeItem("Annotations-col");
+      $window.localStorage.removeItem("Files-col");
+      $window.localStorage.removeItem("Cases-col");
+      $window.localStorage.removeItem("Cart-col");
+      $window.localStorage.removeItem("gdc-cart-items");
+      $window.localStorage.removeItem("gdc-cart-updated");
+    } catch (e) {
+      console.log(e);
+    }
   }
   gettextCatalog.debug = true;
 
@@ -104,17 +110,17 @@ function appRun(gettextCatalog: any,
     CoreService.xhrDone();
     if (response.status === 500) {
       $uibModal.open({
-                templateUrl: "core/templates/internal-server-error.html",
-                controller: "WarningController",
-                controllerAs: "wc",
-                backdrop: "static",
-                keyboard: false,
-                backdropClass: "warning-backdrop",
-                animation: false,
-                size: "lg",
-                resolve: {
-                  warning: null
-                }
+        templateUrl: "core/templates/internal-server-error.html",
+        controller: "WarningController",
+        controllerAs: "wc",
+        backdrop: "static",
+        keyboard: false,
+        backdropClass: "warning-backdrop",
+        animation: false,
+        size: "lg",
+        resolve: {
+          warning: null
+        }
       });
     }
     // TODO more than just 404

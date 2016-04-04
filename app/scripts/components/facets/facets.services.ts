@@ -250,7 +250,13 @@ module ngApp.components.facets.services {
     }
 
     setFields(docType: string, fields: Array<Object>) {
-      var saved = _.get(JSON.parse(this.$window.localStorage.getItem(this.FACET_CONFIG_KEY)), docType, null);
+      var saved;
+
+      try {
+        saved = _.get(JSON.parse(this.$window.localStorage.getItem(this.FACET_CONFIG_KEY)), docType, null);
+      } catch (e) {
+        console.log(e);
+      }
       if(!saved) {
         this.fieldsMap[docType] = fields;
         this.save();
@@ -288,7 +294,11 @@ module ngApp.components.facets.services {
     }
 
     save(): void {
-      this.$window.localStorage.setItem(this.FACET_CONFIG_KEY, angular.toJson(this.fieldsMap));
+      try {
+        this.$window.localStorage.setItem(this.FACET_CONFIG_KEY, angular.toJson(this.fieldsMap));
+      } catch (e) {
+        console.log(e);
+      }
     }
 
  }

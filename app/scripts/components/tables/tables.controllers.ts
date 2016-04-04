@@ -29,7 +29,7 @@ module ngApp.components.tables.controllers {
       this.paging = $scope.paging || {size: 20};
       var currentSorting = this.paging.sort || '';
 
-      var headings = $scope.saved.length ?
+      var headings = ($scope.saved || []).length ?
           _.map($scope.saved, s => _.merge(_.find($scope.config.headings, {id: s.id}), s)) :
           $scope.config.headings;
 
@@ -121,7 +121,11 @@ module ngApp.components.tables.controllers {
 
     saveToLocalStorage(): void {
       var save = _.map(this.$scope.config.headings, h => _.pick(h, 'id', 'hidden', 'sort', 'order'));
-      this.$window.localStorage.setItem(this.$scope.config.title + '-col', angular.toJson(save));
+      try {
+        this.$window.localStorage.setItem(this.$scope.config.title + '-col', angular.toJson(save));
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     updateSorting(): void {
@@ -199,8 +203,12 @@ module ngApp.components.tables.controllers {
 
       this.setDisplayedData();
 
-      var decompressed = $window.localStorage.getItem($scope.config.title + '-col');
-      $scope.saved = decompressed ? JSON.parse(decompressed) : [];
+      try {
+        var decompressed = $window.localStorage.getItem($scope.config.title + '-col');
+        $scope.saved = decompressed ? JSON.parse(decompressed) : [];
+      } catch (e) {
+        console.log(e);
+      }
 
     }
 

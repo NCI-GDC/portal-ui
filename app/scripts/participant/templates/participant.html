@@ -190,11 +190,11 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Created</th>
-                <td>{{ ::demo.created_datetime | date }}</td>
+                <td>{{ ::demo.created_datetime || '--' | date }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Updated</th>
-                <td>{{ ::demo.updated_datetime | date }}</td>
+                <td>{{ ::demo.updated_datetime || '--' | date }}</td>
               </tr>
             </tbody>
           </table>
@@ -233,23 +233,23 @@
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Birth</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_birth | number }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_birth | number | humanify}}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Death</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_death | number }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_death | number | humanify}}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Last Followup</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_follow_up | number }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_follow_up | number | humanify}}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Last Known Disease Status</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_known_disease_status | number }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_known_disease_status | number | humanify}}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Days to Recurrence</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_recurrence | number }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_recurrence | number | humanify}}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Last Known Disease Status</th>
@@ -301,17 +301,17 @@
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Created</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].created_datetime | date }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].created_datetime || '--' | date }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Updated</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].updated_datetime | date }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].updated_datetime || '--' | date }}</td>
                     </tr>
                   </tbody>
                 </table>
 
                 <div ng-if="pc.participant.diagnoses[ $index ].treatments.length">
-                  <strong>Treatments</strong> ({{ ::pc.participant.diagnoses[ $index ].treatments.length | number }})
+                  <strong>Treatments</strong> ({{ ::pc.participant.diagnoses[ $index ].treatments.length | number | humanify}})
 
                   <table class="table table-striped table-hover table-condensed table-bordered">
                     <thead>
@@ -355,10 +355,10 @@
                           {{ ::t.days_to_treatment }}
                         </td>
                         <td>
-                          {{ ::t.created_datetime | date }}
+                          {{ ::t.created_datetime || '--' | date }}
                         </td>
                         <td>
-                          {{ ::t.updated_datetime | date }}
+                          {{ ::t.updated_datetime || '--' | date }}
                         </td>
                       </tr>
                     </tbody>
@@ -402,7 +402,7 @@
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Relationship Age at Diagnosis</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].relationship_age_at_diagnosis | number }}</td>
+                     <td>{{ ::pc.participant.family_histories[ $index ].relationship_age_at_diagnosis | ageDisplay }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Relationship Gender</th>
@@ -430,11 +430,11 @@
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Created</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].created_datetime | date }}</td>
+                     <td>{{ ::pc.participant.family_histories[ $index ].created_datetime || '--' | date }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Updated</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].updated_datetime | date }}</td>
+                     <td>{{ ::pc.participant.family_histories[ $index ].updated_datetime || '--' | date }}</td>
                    </tr>
                  </tbody>
                </table>
@@ -479,23 +479,23 @@
                    </tr>
                    <tr>
                      <th scope="row" data-translate>BMI</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].bmi | number }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].bmi | number | humanify }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Cigarettes per Day</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].cigarettes_per_day | number }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].cigarettes_per_day | number | humanify }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Height</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].height | number }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].height | number | humanify }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Weight</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].weight | number }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].weight | number | humanify }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Years Smoked</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].years_smoked | number }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].years_smoked | number | humanify }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>State</th>
@@ -507,11 +507,11 @@
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Created</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].created_datetime | date }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].created_datetime || '--' | date }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Updated</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].updated_datetime | date }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].updated_datetime || '--'| date }}</td>
                    </tr>
                  </tbody>
                </table>

@@ -3,6 +3,10 @@ describe("AgeDisplay Filter:", function() {
 
   var age = 20
 
+  it ("it should display '--' for undefined days", inject(function ($filter) {
+    expect($filter("ageDisplay")(undefined)).to.equal('--');
+  }));
+
   it ("should display ages less than 365 days in days", inject(function ($filter) {
     expect($filter("ageDisplay")(age)).to.equal(age + " days");
     age = 364;

@@ -10,7 +10,7 @@ module ngApp.query {
       url: "/query?query&filters&pagination",
       controller: "QueryController as qc",
       templateUrl: "query/templates/query.html",
-      reloadOnQuery: false
+      reloadOnSearch: false
     });
 
     $stateProvider.state("query.summary", {
@@ -26,7 +26,7 @@ module ngApp.query {
       data: {
         tab: "participants"
       },
-      reloadOnQuery: false
+      reloadOnSearch: false
     });
 
     $stateProvider.state("query.files", {
@@ -34,7 +34,7 @@ module ngApp.query {
       data: {
         tab: "files"
       },
-      reloadOnQuery: false
+      reloadOnSearch: false
     });
 
   }

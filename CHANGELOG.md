@@ -1,3 +1,57 @@
+<a name"0.3.24.2"></a>
+### 0.3.24.2 (2016-04-04)
+
+
+#### Bug Fixes
+
+* **app:**
+  * favicon shows up on ie11 ([3a6bd7ae](https://github.com/NCI-GDC/portal-ui/commit/3a6bd7ae), closes [PGDC-1948](https://jira.opensciencedatacloud.org/browse/PGDC-1948))
+  * put login() back in appRun ([699513e5](https://github.com/NCI-GDC/portal-ui/commit/699513e5))
+  * correct spinner show/hide ([fdce0079](https://github.com/NCI-GDC/portal-ui/commit/fdce0079))
+  * handle stale tokens ([657e11cf](https://github.com/NCI-GDC/portal-ui/commit/657e11cf), closes [PGDC-23](https://jira.opensciencedatacloud.org/browse/PGDC-23))
+  * handle no results in ui ([93db2b93](https://github.com/NCI-GDC/portal-ui/commit/93db2b93), closes [PGDC-1841](https://jira.opensciencedatacloud.org/browse/PGDC-1841))
+* **cart:**
+  * size check for add single file ([5c77bc99](https://github.com/NCI-GDC/portal-ui/commit/5c77bc99), closes [PGDC-1957](https://jira.opensciencedatacloud.org/browse/PGDC-1957))
+  * fix charts ([0a92e463](https://github.com/NCI-GDC/portal-ui/commit/0a92e463))
+  * faster loading ([8eacc2e0](https://github.com/NCI-GDC/portal-ui/commit/8eacc2e0), closes [PGDC-1956](https://jira.opensciencedatacloud.org/browse/PGDC-1956))
+  * remove unnecessary call to summary ([f48cb16d](https://github.com/NCI-GDC/portal-ui/commit/f48cb16d), closes [PGDC-1947](https://jira.opensciencedatacloud.org/browse/PGDC-1947))
+* **case:** blanks as '--' always ([476143f8](https://github.com/NCI-GDC/portal-ui/commit/476143f8), closes [PGDC-1927](https://jira.opensciencedatacloud.org/browse/PGDC-1927))
+* **charts:** display icon colour in ie11 ([fa0ee350](https://github.com/NCI-GDC/portal-ui/commit/fa0ee350), closes [PGDC-1953](https://jira.opensciencedatacloud.org/browse/PGDC-1953))
+* **components:** format facet date in filters ([9e9243d2](https://github.com/NCI-GDC/portal-ui/commit/9e9243d2))
+* **download:**
+  * use iframe for downloads ([9b2b5fa6](https://github.com/NCI-GDC/portal-ui/commit/9b2b5fa6), closes [PGDC-1772](https://jira.opensciencedatacloud.org/browse/PGDC-1772))
+  * api expecting csv not array ([0830c633](https://github.com/NCI-GDC/portal-ui/commit/0830c633))
+  * pass download function ([5dddfe50](https://github.com/NCI-GDC/portal-ui/commit/5dddfe50), closes [PGDC-1915](https://jira.opensciencedatacloud.org/browse/PGDC-1915))
+* **graphs:** Githut and Home Page fixes ([ceefcdb1](https://github.com/NCI-GDC/portal-ui/commit/ceefcdb1), closes [PGDC-117](https://jira.opensciencedatacloud.org/browse/PGDC-117))
+* **header:** tabindex issues ([30b5d147](https://github.com/NCI-GDC/portal-ui/commit/30b5d147), closes [PGDC-1803](https://jira.opensciencedatacloud.org/browse/PGDC-1803))
+* **home:**
+  * use leap year in yearToDay ([f8a1b279](https://github.com/NCI-GDC/portal-ui/commit/f8a1b279), closes [PGDC-1974](https://jira.opensciencedatacloud.org/browse/PGDC-1974))
+  * add TH ([28285989](https://github.com/NCI-GDC/portal-ui/commit/28285989), closes [PGDC-1933](https://jira.opensciencedatacloud.org/browse/PGDC-1933))
+  * 508, remove hidden section ([776cce4a](https://github.com/NCI-GDC/portal-ui/commit/776cce4a), closes [PGDC-1801](https://jira.opensciencedatacloud.org/browse/PGDC-1801))
+* **index:** add href on anchor ([9b67d53e](https://github.com/NCI-GDC/portal-ui/commit/9b67d53e), closes [PGDC-1939](https://jira.opensciencedatacloud.org/browse/PGDC-1939))
+* **participant:** ageDisplay for diagnoses ([7801e243](https://github.com/NCI-GDC/portal-ui/commit/7801e243), closes [PGDC-1842](https://jira.opensciencedatacloud.org/browse/PGDC-1842))
+* **projects:** total links - include project_ids ([8ace1e99](https://github.com/NCI-GDC/portal-ui/commit/8ace1e99), closes [PGDC-1913](https://jira.opensciencedatacloud.org/browse/PGDC-1913))
+* **query:**
+  * do not refresh when paging ([3bbfac78](https://github.com/NCI-GDC/portal-ui/commit/3bbfac78))
+  * fix cases table pagination settings ([0ac5208f](https://github.com/NCI-GDC/portal-ui/commit/0ac5208f), closes [PGDC-1955](https://jira.opensciencedatacloud.org/browse/PGDC-1955))
+  * handle search with empty query ([fd28fabf](https://github.com/NCI-GDC/portal-ui/commit/fd28fabf), closes [PGDC-1787](https://jira.opensciencedatacloud.org/browse/PGDC-1787))
+* **search:**
+  * get min age_at_diagnosis ([0e7870a0](https://github.com/NCI-GDC/portal-ui/commit/0e7870a0), closes [PGDC-911](https://jira.opensciencedatacloud.org/browse/PGDC-911))
+  * leave facet link active ([e08fa2be](https://github.com/NCI-GDC/portal-ui/commit/e08fa2be), closes [PGDC-1897](https://jira.opensciencedatacloud.org/browse/PGDC-1897))
+  * fixes project charts on Adv. Search ([a57b7aeb](https://github.com/NCI-GDC/portal-ui/commit/a57b7aeb), closes [PGDC-1900](https://jira.opensciencedatacloud.org/browse/PGDC-1900))
+
+
+#### Features
+
+* **app:**
+  * loading spinners main views ([5efd8893](https://github.com/NCI-GDC/portal-ui/commit/5efd8893))
+  * tooltips where class=truncated-cell ([5c9512e0](https://github.com/NCI-GDC/portal-ui/commit/5c9512e0), closes [PGDC-808](https://jira.opensciencedatacloud.org/browse/PGDC-808))
+* **components:** transition to tab from table ([cd8e5e61](https://github.com/NCI-GDC/portal-ui/commit/cd8e5e61), closes [PGDC-1839](https://jira.opensciencedatacloud.org/browse/PGDC-1839))
+* **facets:** submitter_id facet free search ([7c05815d](https://github.com/NCI-GDC/portal-ui/commit/7c05815d), closes [PGDC-1869](https://jira.opensciencedatacloud.org/browse/PGDC-1869), [PGDC-1908](https://jira.opensciencedatacloud.org/browse/PGDC-1908))
+* **gql:** add date support to gql ([e306bfbf](https://github.com/NCI-GDC/portal-ui/commit/e306bfbf), closes [PGDC-719](https://jira.opensciencedatacloud.org/browse/PGDC-719))
+* **home:** Modify Bar Chart ([4dbd8532](https://github.com/NCI-GDC/portal-ui/commit/4dbd8532), closes [PGDC-1909](https://jira.opensciencedatacloud.org/browse/PGDC-1909))
+
+
 <a name"0.3.24.2-rc1"></a>
 ### 0.3.24.2-rc1 (2016-03-28)
 

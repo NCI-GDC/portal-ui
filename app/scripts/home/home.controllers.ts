@@ -1,12 +1,8 @@
 module ngApp.home.controllers {
+
   import ICoreService = ngApp.core.services.ICoreService;
-
   import IProjects = ngApp.projects.models.IProjects;
-  import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
-
   import IHomeService = ngApp.home.services.IHomeService;
-
-
 
   export interface IHomeController {
     getChartFilteredData() : any[];
@@ -17,10 +13,6 @@ module ngApp.home.controllers {
     getExampleSearchQueries(): any[];
     refresh(): void;
   }
-
-  /*
-  export interface IHomeScope extends ng.IScope {
-  }*/
 
   class HomeController implements IHomeController {
 
@@ -63,9 +55,6 @@ module ngApp.home.controllers {
         {title: "Primary Sites", value: 0, icon: "cancer_type_hardcode", url: "/projects/t"},
         {title: "Cases", value: 0, icon: "icon-gdc-cases data-icon", url: "/search/c"},
         {title: "Files", value: 0, icon: "fa fa-file-o data-icon", url: "/search/f"},
-
-        //{title: "Cancer Types", value: 0, icon: "fa fa-heartbeat", url: "/projects/t"},
-        //{title: "Downloads to Date", value: 0, icon: "fa fa-download", url: "/reports/data-download-statistics"}
       ];
 
       this.projectStats = {
@@ -75,13 +64,14 @@ module ngApp.home.controllers {
         }
       };
 
-
       this.projectStatsOrdering = {projects: 0, cases: 2, files: 3, cancerTypes: 1, downloads: 4};
+
+      const yearsToDays = year => year * 365.25;
 
       this.exampleSearchQueries = [
         {
           description: "Kidney cancer cases under the age of 20 at diagnosis",
-          filters: {"op":"and","content":[{"op":"<=","content":{"field":"cases.clinical.age_at_diagnosis","value":[14600]}},{"op":"in","content":{"field":"cases.project.primary_site","value":["Kidney"]}}]},
+          filters: {"op":"and","content":[{"op":"<=","content":{"field":"cases.clinical.age_at_diagnosis","value":[yearsToDays(20)]}},{"op":"in","content":{"field":"cases.project.primary_site","value":["Kidney"]}}]},
           caseCount: null,
           fileCount: null
         },
@@ -98,7 +88,6 @@ module ngApp.home.controllers {
           fileCount: null
         },
       ];
-
 
       this.defaultParams =  {
         fields: this.ProjectTableModel.fields,
@@ -265,18 +254,13 @@ module ngApp.home.controllers {
         return dataStack;
 
       });
-
-
-      //console.log( _controller.projectChartData);
-
-
     }
 
 
     getChartFilteredData() {
       return this.projectChartData;
     }
-    
+
     getChartTooltipFunction() {
       return this.tooltipFn;
     }
@@ -346,7 +330,7 @@ module ngApp.home.controllers {
 
         _controller.projectStats.downloads.totalDownloads = totalDownloads;
         _controller.projectStats.downloads.totalDownloadSizeBytes = totalSizeInBytes;
-        
+
       });
     }
 

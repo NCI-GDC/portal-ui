@@ -261,7 +261,7 @@ module ngApp.search.models {
             {name: "diagnoses.age_at_diagnosis", title: "Age at diagnosis", hasGraph: true, collapsed: false, facetType: "range", unitsMap: [
                             {
                               "label": "years",
-                              "conversionDivisor": 365,
+                              "conversionDivisor": 365.25,
                             },
                             {
                               "label": "days",

@@ -95,7 +95,7 @@ module ngApp.files.services {
       return {};
     }
 
-    sliceBAM(fileID: string, bedTSV: string, callback: any) {
+    sliceBAM(fileID: string, bedTSV: string, completeCallback: () => void) {
       var abort = this.$q.defer();
       var params = this.processBED(bedTSV);
       this.RestFullResponse.all("/v0/slicing/view/" + fileID)
@@ -107,9 +107,12 @@ module ngApp.files.services {
         .post(params, undefined, { 'Content-Type': 'application/json' })
         .then((response) => {
           this.$window.saveAs(response, fileID + '-sliced.bam');
-          if(callback) callback(true);
-        }, (response)=>{
+        }, (response) => {
           //Slicing Failed
+          if (response.status === 500) {
+            // 500s show default app 500 error only
+            return;
+          }
           this.$uibModal.open({
             templateUrl: 'files/templates/bam-slicing-failed.html',
             controller: "BAMFailedModalController",
@@ -120,11 +123,15 @@ module ngApp.files.services {
             size: "lg",
             resolve: {
               errorStatus: () => { return response.status; },
-              errorMsg: () => { return response.statusText; },
-              errorBlob: () => { return response.data; }
+              errorStatusText: () => { return response.statusText || 'Error'; },
+              errorBlob: () => { return response.data || new Blob([JSON.stringify({error: 'Unexpected Error'})]); }
             }
           });
-          if(callback) callback(false);
+        })
+        .finally(() => {
+          if (completeCallback) {
+            completeCallback();
+          }
         });
     }
 

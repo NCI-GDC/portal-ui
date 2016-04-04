@@ -2,36 +2,38 @@
 <html lang="en" data-ng-app="ngApp"
       data-ng-controller="CoreController as corec"
       data-ng-click="handleApplicationClick()"
+      tabindex="-1"
       data-ng-strict-di>
 <head>
   <base href="__BASE__">
 
   <meta charset="utf-8">
+  <link rel="icon" href="/images/favicon.ico">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+  <meta name="description" content="A unique tool to foster important discoveries in Cancer Research">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title data-ng-bind="pageTitle + ' | GDC'"></title>
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes">
-  <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+  <link rel="icon" sizes="192x192" href="images/favicon-192x192.png">
 
   <!-- Add to homescreen for Safari on iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="Web Starter Kit">
-  <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="images/favicon-152x152.png">
 
   <!-- Tile icon for Win8 (144x144 + tile color) -->
-  <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+  <meta name="msapplication-TileImage" content="images/favicon-144x144.png">
   <meta name="msapplication-TileColor" content="#3372DF">
   <link rel="stylesheet" href="libs/angular-notify/dist/angular-notify.css">
   <link rel="stylesheet" href="libs/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="libs/ngprogress-lite/ngprogress-lite.css">
   <link rel="stylesheet" href="libs/xmldisplay/xmldisplay.css">
   <link rel="stylesheet" href="libs/ng-tags-input/ng-tags-input.css">
-  
+
   <link rel="stylesheet" href="libs/ng-sortable/dist/ng-sortable.css"></link>
 <!--  <link rel="stylesheet" href="libs/ng-sortable/dist/ng-sortable.style.css"></link>-->
   <!-- build:css css/styles.css -->
@@ -41,15 +43,15 @@
 </head>
 
 <body>
+<a href="#skip" tabindex="1" class="skip-to-content" data-translate>Skip to Main Content</a>
 <div class="alert alert-warning m-margin-bottom-0 ng-cloak" ng-if="config.apiIsMismatched">
-  <a onclick="window.location.reload()">
+  <a onclick="window.location.reload()" href="#">
     A newer version of this software is available. Click here to refresh the page. <i class="fa fa-lg fa-refresh"></i>
   </a>
 </div>
 <div id="notification"></div>
-<a href="#skip" tabindex="1" class="skip-to-content" data-translate>Skip to Main Content</a>
 
-<div id="wrapper" aria-busy="true" aria-live="assertive" tabindex="0">
+<div id="wrapper" aria-busy="true" aria-live="assertive">
   <!--<div data-ng-if="!loaded || !modelLoaded" class="app-loading">-->
     <!--<i class="fa fa-spinner fa-spin fa-5x" data-ng-click="cancelRequest()"></i>-->
   <!--</div>-->
@@ -76,7 +78,7 @@
   <footer id="footer">
     <div class="container" role="contentinfo">
       <div>
-        <a href="projects/t">Site Home</a>
+        <a href="/">Site Home</a>
          | <a href="http://www.cancer.gov/global/web/policies">Policies</a>
          | <a href="http://www.cancer.gov/global/web/policies/accessibility">Accessibility</a>
          | <a href="http://www.cancer.gov/global/web/policies/foia">FOIA</a>
@@ -105,8 +107,6 @@
 
 <!-- Vendor Files -->
 <!-- build:js js/vendor.js -->
-<script src="libs/immutable/dist/immutable.js"></script>
-<!-- <script src="libs/xmldisplay/xmldisplay.js"></script> -->
 <script src="libs/file-saver/FileSaver.min.js"></script>
 <script src="libs/moment/moment.js"></script>
 <script src="libs/d3/d3.js"></script>

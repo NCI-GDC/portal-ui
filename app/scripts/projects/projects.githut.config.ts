@@ -1,12 +1,53 @@
 angular.module('projects.githut.config',[])
 .factory("ProjectsGithut",function(ProjectsGithutConfig, ProjectsGithutColumns) {
   return function(data) {
-    var hits = data.hits;
+    var hits = filterData(data.hits);
     var primary_sites = [];
 
     function findTheThing(array,data_type,propname){
-      return _.find(array,function(type){return type[propname] === data_type});
+
+      var normalize = (str) => {
+        return str.toLowerCase().replace(/\s+/g,'');
+      };
+
+      var normalizedDataType = normalize(data_type);
+
+      return _.find(array,function(type){return normalize(type[propname]) === normalizedDataType});
     }
+
+    // Gracefully handle bad data if present
+    function filterData(data) {
+
+      var filteredData = [],
+          DEFAULT_UNKNOWN_VAL = 'Unknown';
+
+      if (! _.isArray(data)) {
+        return filteredData;
+      }
+
+      filteredData = _.reduce(data, function(projectList, project) {
+
+        // If the Project doesn't have a name then it's invalid for use in the graph
+        // but for now we will be nice and show it robustly so the problem can
+        // be identified and fixed on the backend where the fix belongs...
+        if (! _.isObject(project)) {
+          return projectList;
+        }
+
+        _.map(['name', 'project_id', 'primary_site'], function(key) {
+          if (! _.has(project, key)) {
+            project[key] = DEFAULT_UNKNOWN_VAL;
+          }
+        });
+
+        projectList.push(project);
+
+        return projectList;
+      }, []);
+
+      return filteredData;
+    }
+
 
     var project_ids = hits.reduce(function(a,b) {
       a[b.project_id] = b;
@@ -15,7 +56,7 @@ angular.module('projects.githut.config',[])
 
     var aggregations = d3.keys(project_ids).reduce(function(a,key){
       var group = project_ids[key];
-      var types = group.summary.data_types;
+      var types = group.summary.data_categories;
 
       if (!_.contains(primary_sites,group.primary_site)){
         primary_sites.push(group.primary_site);
@@ -33,7 +74,7 @@ angular.module('projects.githut.config',[])
       ProjectsGithutColumns
           .filter(function(c){return c.is_subtype})
           .forEach(function(s){
-              var thing = findTheThing(types,s.id,"data_type");
+              var thing = findTheThing(types,s.id,"data_category");
               the_returned[s.id] = thing ? thing.case_count : 0;
           })
 
@@ -85,25 +126,7 @@ angular.module('projects.githut.config',[])
       href: projectSref
     },
     {
-      id:'Clinical',
-      display_name:['Clinical'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Raw microarray data',
-      display_name:['Array'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Raw sequencing data',
+      id:'Raw Sequencing Data',
       display_name:['Seq'],
       scale:'ordinal',
       is_subtype:true,
@@ -112,34 +135,7 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
-      id:'Simple nucleotide variation',
-      display_name:['SNV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Copy number variation',
-      display_name:['CNV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Structural rearrangement',
-      display_name:['SV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Gene expression',
+      id:'Protein Expression',
       display_name:['Exp'],
       scale:'ordinal',
       is_subtype:true,
@@ -148,8 +144,8 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
-      id:'Protein expression',
-      display_name:['PExp'],
+      id:'Simple Nucleotide Variation',
+      display_name:['SNV'],
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
@@ -157,7 +153,25 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
-      id:'DNA methylation',
+      id:'Copy Number Variation',
+      display_name:['CNV'],
+      scale:'ordinal',
+      is_subtype:true,
+      dimensional:true,
+      colorgroup:'case_count',
+      href: dataTypeSref
+    },
+    {
+      id:'Structural Rearrangement',
+      display_name:['SV'],
+      scale:'ordinal',
+      is_subtype:true,
+      dimensional:true,
+      colorgroup:'case_count',
+      href: dataTypeSref
+    },
+    {
+      id:'DNA Methylation',
       display_name:['Meth'],
       scale:'ordinal',
       is_subtype:true,
@@ -166,8 +180,18 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
+      id:'Clinical',
+      display_name:['Clin.'],
+      scale:'ordinal',
+      is_subtype:true,
+      dimensional:true,
+      colorgroup:'case_count',
+      href: dataTypeSref
+    },
+    // Biospecimen
+    {
       id:'Other',
-      display_name:['Other'],
+      display_name:['Bio.'],
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,

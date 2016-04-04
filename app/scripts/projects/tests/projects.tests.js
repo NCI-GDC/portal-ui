@@ -8,6 +8,7 @@ describe('Projects:', function () {
 
   beforeEach(module(function ($provide) {
       $provide.value('AuthRestangular', {});
+      $provide.value('notify', {});
       $provide.value('config', {});
   }));
 

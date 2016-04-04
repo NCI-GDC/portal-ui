@@ -1,46 +1,113 @@
 module ngApp.projects.models {
   import ILocationService = ngApp.components.location.ILocationService;
-  
-  // TODO integrate this better 
-  function withFilterF(value: number, filters: Object[], $filter: ng.IFilterService): string {
-    var filterString = $filter("makeFilter")(filters, true);
-    var href = 'search/f?filters=' + filterString;
-    var val = $filter("number")(value);
-    return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
-  }
-  
-  function withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
-    var filterString = $filter("makeFilter")(filters, true);
-    var href = 'search/c?filters=' + filterString;
-    var val = $filter("number")(value);
-    return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
-  }
-  function getDataType(dataTypes: Object[], dataType:string): number {
-    var data = _.find(dataTypes, {data_type: dataType});
-    return data ? data.case_count : 0;
-  }
-  function dataTypeWithFilters(dataType: string, row: Object[], $filter: ng.IFilterService) {
-    var fs = [{field: 'cases.project.project_id', value: row.project_id},
-              {field: 'files.data_type', value: dataType}];
-    return withFilter(getDataType(row.summary.data_types, dataType), fs, $filter);
+
+  type IWithFilterFn = (value: number, filters: Object[], $filter: ng.IFilterService) => string;
+
+  type DataCategory = {
+    case_count: number
   }
 
-  function dataTypeTotalWithFilters(dataType: string, data: Object[], $filter: ng.IFilterService, LocationService: ILocationService) {
-    var fs = _.map(LocationService.filters().content, x => ({
-      field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
-      value: x.content.value  
-    }));
-    fs.push({field: 'files.data_type', value: [dataType]});
-    
-    return withFilter(_.sum(_.map(data, row => getDataType(row.summary.data_types, dataType))), fs, $filter);
+  type Summary = {
+    data_categories: DataCategory[]
+  }
+
+  type Row = {
+    project_id: string;
+    summary: Summary;
+  }
+
+  type Rows = Row[];
+
+  function filterFactory(url: string) : IWithFilterFn {
+      return function(value: number, filters: Object[], $filter: ng.IFilterService)  {
+        var filterString = _.isObject(filters) ? $filter("makeFilter")(filters, true) : null;
+        var href = url + (filterString ? "?filters=" + filterString : "");
+        var val = $filter("number")(value);
+        return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
+      };
+  }
+
+  var withFilterF : IWithFilterFn = filterFactory("search/f"),
+      withFilter : IWithFilterFn = filterFactory("search/c");
+
+  function getdataCategory(dataCategories: DataCategory[], dataCategory:string): number {
+    var data = _.find(dataCategories, {data_category: dataCategory});
+    return data ? data.case_count : 0;
+  }
+
+  function dataCategoryWithFilters(dataCategory: string, row: Row, $filter: ng.IFilterService): string {
+    var fs = [{field: 'cases.project.project_id', value: row.project_id},
+              {field: 'files.data_category', value: dataCategory}];
+    return withFilter(getdataCategory(row.summary.data_categories, dataCategory), fs, $filter);
+  }
+
+  function dataCategoryTotalWithFilters(dataCategory: string, data: Rows, $filter: ng.IFilterService): string {
+  var fs = [{field: 'files.data_category', value: [dataCategory]},
+            {field: 'cases.project.project_id', value: data.map(d => d.project_id)}];
+    return withFilter(_.sum(_.map(data, row => getdataCategory(row.summary.data_categories, dataCategory))), fs, $filter);
   }
 
   function withCurrentFilters(value: number, $filter: ng.IFilterService, LocationService: ILocationService) {
     var fs = _.map(LocationService.filters().content, x => ({
       field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
-      value: x.content.value  
+      value: x.content.value
     }));
     return withFilter(value, fs, $filter);
+  }
+
+  function hasFilters(LocationService: ILocationService) : boolean {
+    var filters = _.get(LocationService.filters(), 'content', null),
+        hasFiltersFlag = false;
+
+    if (! filters) {
+      return hasFiltersFlag;
+    }
+
+    for (var i = 0; i < filters.length; i++) {
+      var field = _.get(filters[i], 'content.field', false);
+
+      if (! field) {
+        continue;
+      }
+
+      hasFiltersFlag = true;
+      break;
+    }
+
+    return hasFiltersFlag;
+  }
+
+  function withProjectFilters(data: Object[], $filter: ng.IFilterService, LocationService: ILocationService, withFilterFn?: IWithFilterFn) : string {
+
+    var projectIDs = [],
+        totalCount = 0,
+        wFilterFn : IWithFilterFn = withFilterFn || withFilter,
+        fs = [];
+
+    _.map(data, function(d) {
+
+
+      if (! _.has(d, 'project_id')) {
+        return;
+      }
+
+      projectIDs.push(d.project_id);
+
+      var countKey = 'summary.case_count';
+
+      if ( withFilterFn !== withFilter ) {
+        countKey = 'summary.file_count';
+      }
+
+      totalCount += _.get(d, countKey, 0);
+
+    });
+
+    if (hasFilters(LocationService) && projectIDs.length) {
+      fs.push({field: 'cases.project.project_id', value: projectIDs});
+    }
+
+    return wFilterFn(totalCount, fs, $filter);
   }
 
   var projectTableModel = {
@@ -51,7 +118,7 @@ module ngApp.projects.models {
         name: "ID",
         id: "project_id",
         td: row => '<a href="projects/'+row.project_id +
-                     '" data-tooltip="' + row.name +
+                     '" data-uib-tooltip="' + row.name +
                      '" data-tooltip-append-to-body="true" data-tooltip-placement="right">' +
                      row.project_id +
                    '</a>',
@@ -65,6 +132,7 @@ module ngApp.projects.models {
         id: "disease_type",
         tdClassName: 'truncated-cell',
         td: row => row.disease_type,
+        toolTipText: row => row.disease_type,
         sortable: true,
         hidden: false,
         draggable: true
@@ -94,91 +162,75 @@ module ngApp.projects.models {
         hidden: false,
         thClassName: 'text-right',
         tdClassName: 'text-right',
-        total: (data, $scope) => withCurrentFilters(_.sum(_.pluck(data, "summary.case_count")), $scope.$filter, $scope.LocationService)
+        total: (data, $scope) => withProjectFilters(data, $scope.$filter, $scope.LocationService, withFilter)
       }, {
-        name: "Available Cases per Data Type",
-        id: "summary.data_types",
+        name: "Available Cases per Data Category",
+        id: "summary.data_categories",
         thClassName: 'text-center',
         hidden: false,
         children: [
           {
-            name: 'Clinical',
-            id: 'clinical',
-            td: (row, $scope) => dataTypeWithFilters("Clinical", row, $scope.$filter),
-            thClassName: 'text-right',
-            tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters('Clinical', data, $scope.$filter, $scope.LocationService)
-          }, {
-            name: 'Array',
-            th: '<abbr data-tooltip="Raw microarray data">Array</abbr>',
-            id: 'Array',
-            td: (row, $scope) => dataTypeWithFilters("Raw microarray data", row, $scope.$filter),
-            thClassName: 'text-right',
-            tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters("Raw microarray data", data, $scope.$filter, $scope.LocationService)
-          }, {
             name: 'Seq',
-            th: '<abbr data-tooltip="Raw sequencing data">Seq</abbr>',
+            th: '<abbr data-uib-tooltip="Sequencing Data">Seq</abbr>',
             id: 'Seq',
-            td: (row, $scope) => dataTypeWithFilters("Raw sequencing data", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Raw sequencing data", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters("Raw sequencing data", data, $scope.$filter, $scope.LocationService)
-          }, {
-            name: "SNV",
-            th: '<abbr data-tooltip="Simple nucleotide variation">SNV</abbr>',
-            id: "SNV",
-            td: (row, $scope) => dataTypeWithFilters("Simple nucleotide variation", row, $scope.$filter),
-            thClassName: 'text-right',
-            tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters("Simple nucleotide variation", data, $scope.$filter, $scope.LocationService)
-          }, {
-            name: 'CNV',
-            th: '<abbr data-tooltip="Copy number variation">CNV</abbr>',
-            id: 'cnv',
-            td: (row, $scope) => dataTypeWithFilters("Copy number variation", row, $scope.$filter),
-            thClassName: 'text-right',
-            tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters("Copy number variation", data, $scope.$filter, $scope.LocationService)
-          }, {
-            name: 'SV',
-            th: '<abbr data-tooltip="Structural rearrangement">SV</abbr>',
-            id: 'sv',
-            td: (row, $scope) => dataTypeWithFilters("Structural rearrangement", row, $scope.$filter),
-            thClassName: 'text-right',
-            tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters("Structural rearrangement", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Raw sequencing data", data, $scope.$filter)
           }, {
             name: 'Exp',
-            th: '<abbr data-tooltip="Gene expression">Exp</abbr>',
+            th: '<abbr data-uib-tooltip="Transcriptome Profiling">Exp</abbr>',
             id: 'Exp',
-            td: (row, $scope) => dataTypeWithFilters("Gene expression", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Gene expression", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters("Gene expression", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Gene expression", data, $scope.$filter)
           }, {
-            name: 'PExp',
-            th: '<abbr data-tooltip="Protein expression">PExp</abbr>',
-            id: 'pexp',
-            td: (row, $scope) => dataTypeWithFilters("Protein expression", row, $scope.$filter),
+            name: 'SNV',
+            th: '<abbr data-uib-tooltip="Simple Nucleotide Variation">SNV</abbr>',
+            id: 'SNV',
+            td: (row, $scope) => dataCategoryWithFilters("Simple nucleotide variation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters("Protein expression", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("Simple nucleotide variation", data, $scope.$filter)
+          }, {
+            name: 'CNV',
+            th: '<abbr data-uib-tooltip="Copy Number Variation">CNV</abbr>',
+            id: 'CNV',
+            td: (row, $scope) => dataCategoryWithFilters("Copy number variation", row, $scope.$filter),
+            thClassName: 'text-right',
+            tdClassName: 'text-right',
+            total: (data, $scope) => dataCategoryTotalWithFilters("Copy number variation", data, $scope.$filter)
+          }, {
+            name: 'SV',
+            th: '<abbr data-uib-tooltip="Structural Rearrangement">SV</abbr>',
+            id: 'SV',
+            td: (row, $scope) => dataCategoryWithFilters("Structural rearrangement", row, $scope.$filter),
+            thClassName: 'text-right',
+            tdClassName: 'text-right',
+            total: (data, $scope) => dataCategoryTotalWithFilters("Structural rearrangement", data, $scope.$filter)
           }, {
             name: 'Meth',
-            th: '<abbr data-tooltip="DNA methylation">Meth</abbr>',
-            id: 'meth',
-            td: (row, $scope) => dataTypeWithFilters("DNA methylation", row, $scope.$filter),
+            th: '<abbr data-uib-tooltip="DNA Methylation">Meth</abbr>',
+            id: 'Meth',
+            td: (row, $scope) => dataCategoryWithFilters("DNA methylation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters("DNA methylation", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters("DNA methylation", data, $scope.$filter)
           }, {
-            name: 'Other',
-            id: 'other',
-            td: (row, $scope) => dataTypeWithFilters("Other", row, $scope.$filter),
+            name: 'Clinical',
+            id: 'clinical',
+            td: (row, $scope) => dataCategoryWithFilters("Clinical", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataTypeTotalWithFilters("Other", data, $scope.$filter, $scope.LocationService)
+            total: (data, $scope) => dataCategoryTotalWithFilters('Clinical', data, $scope.$filter)
+          }, {
+            name: 'Biospecimen',
+            id: 'biospecimen',
+            td: (row, $scope) => dataCategoryWithFilters("Other", row, $scope.$filter),
+            thClassName: 'text-right',
+            tdClassName: 'text-right',
+            total: (data, $scope) => dataCategoryTotalWithFilters('Other', data, $scope.$filter)
           }
         ]
       }, {
@@ -191,7 +243,7 @@ module ngApp.projects.models {
         sortable: true,
         thClassName: 'text-right',
         tdClassName: 'text-right',
-        total: (data, $scope) => withCurrentFilters(_.sum(_.pluck(data, "summary.file_count")), $scope.$filter, $scope.LocationService)
+        total: (data, $scope) =>  withProjectFilters(data, $scope.$filter, $scope.LocationService, withFilterF)
       }, {
         name: "File Size",
         id: "file_size",
@@ -212,7 +264,7 @@ module ngApp.projects.models {
     ],
     expand: [
       "summary",
-      "summary.data_types",
+      "summary.data_categories",
       "summary.experimental_strategies",
     ]
   };

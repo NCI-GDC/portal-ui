@@ -7,11 +7,11 @@ module ngApp.components.quickSearch.services {
 
   class QuickSearchService implements IQuickSearchService {
     /* @ngInject */
-    constructor(private $state: ng.ui.IStateService, private $modalStack) {}
+    constructor(private $state: ng.ui.IStateService, private $uibModalStack) {}
 
     goTo(entity: string, id: string): void {
       if (this.$state.params[entity + "Id"] === id) {
-        this.$modalStack.dismissAll();
+        this.$uibModalStack.dismissAll();
         return;
       }
 

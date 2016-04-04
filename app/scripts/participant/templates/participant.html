@@ -2,14 +2,12 @@
   <h1 class="col-lg-12">
     <i class="fa fa-user"></i>
     {{ ::pc.participant.case_id }}
-    <div id="add-to-cart-button"
-        data-add-to-cart-all
-        data-filter='{{ [
+    <add-to-cart-all-button
+       class="pull-right"
+       data-filter='{{ [
           { field: "cases.case_id", value: pc.participant.case_id }
-         ] | makeFilter:true }}'
-        data-size="{{ pc.participant.summary.file_count }}"
-        data-add-all-only=true
-        class="pull-right"></div>
+          ] | makeFilter:true }}'
+       data-size="{{ pc.participant.summary.file_count }}" />
   </h1>
   <div class="col-lg-12">
     <section class="row" id="summary">
@@ -26,12 +24,16 @@
                 <td>{{ ::pc.participant.case_id }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>Case Barcode</th>
+                <th scope="row" data-translate>Case Submitter ID</th>
                 <td>{{ ::pc.participant.submitter_id }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Project ID</th>
-                <td>{{ ::pc.participant.project.project_id}}</td>
+                <td>
+                  <a href="projects/{{ ::pc.participant.project.project_id}}">
+                     {{::pc.participant.project.project_id}}
+                  </a>
+                  </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Project Name</th>
@@ -93,62 +95,437 @@
                       data-mode="table"
                       class="no-ellipsis"
                       data-config="pc.expStratConfig"
+                      data-grouping-title="Experimental Strategy"
                       data-title="File Counts by Experimental Strategy"></summary-card>
       </div>
       <div class="col-md-6">
-        <summary-card data-data="pc.dataTypes"
+        <summary-card data-data="pc.dataCategories"
                       height="250"
                       data-mode="table"
-                      data-config="pc.dataTypesConfig"
-                      data-title="File Counts by Data Type"></summary-card>
+                      data-config="pc.dataCategoriesConfig"
+                      data-grouping-title="Data Category"
+                      data-title="File Counts by Data Category"></summary-card>
       </div>
     </section>
 
     <section class="row" id="clinical">
       <div class="col-lg-12 col-md-12">
-        <div class="panel panel-default">
-          <div class="panel-heading clearfix">
+        <div class="panel panel-default" style="margin-bottom: 0;">
+          <div class="panel-heading clearfix" style="border-width: 0">
             <h3 class="panel-title pull-left" data-translate>
               Clinical
             </h3>
-               <data-download-button ng-if="pc.clinicalFile" data-files=pc.clinicalFile data-copy="Download Clinical XML" data-dlcopy="Downloading" data-classes="btn pull-right" />
+
+            <export-cases-button
+              ng-disabled="pc.hasNoClinical"
+              data-filter-key-values=pc.clinicalDataExportFilters
+              data-expands=pc.clinicalDataExportExpands
+              data-filename=pc.clinicalDataExportFileName
+              data-size=1
+              data-text-normal="Export"
+              data-text-in-progress="Processing"
+              data-style-class="btn pull-right">
+            </export-cases-button>
           </div>
 
-          <table id="clinical-table"
-                 class="table table-striped table-hover table-condensed table-bordered table-vertical">
-            <tbody>
-            <tr>
-              <th scope="row" data-translate>Gender</th>
-              <td>{{ ::pc.participant.clinical.gender | humanify }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Age at Diagnosis</th>
-              <td>{{ ::pc.participant.clinical.age_at_diagnosis | ageDisplay }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Vital Status</th>
-              <td>{{ ::pc.participant.clinical.vital_status | humanify }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Days to death</th>
-              <td>{{ ::pc.participant.clinical.days_to_death | humanify }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>ICD10</th>
-              <td>{{ pc.participant.clinical.icd_10 || '--' }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Ethnicity</th>
-              <td>{{ pc.participant.clinical.ethnicity | humanify }}</td>
-            </tr>
-            <tr>
-              <th scope="row" data-translate>Race</th>
-              <td>{{ pc.participant.clinical.race | humanify }}</td>
-            </tr>
+          <ul class="nav nav-tabs" style="border-bottom: 0">
+            <li role="presentation"
+              style="outline: none;"
+              data-ng-class="{ active: pc.activeClinicalTab === 'demographic' }"
+              data-ng-click="pc.setClinicalTab('demographic')">
+              <a>Demographic</a>
+            </li>
+            <li data-ng-repeat="clinicalTab in ['diagnoses', 'family_histories', 'exposures']"
+              style="outline: none;"
+              role="presentation"
+              data-ng-class="{ active: pc.activeClinicalTab === clinicalTab }"
+              data-ng-click="pc.setClinicalTab(clinicalTab)">
+              <a>{{ ::clinicalTab | humanify }} ({{ ::pc.participant[ clinicalTab ].length || 0 }})</a>
+            </li>
+          </ul>
+        </div>
 
+        <div id="clinical-table"
+          ng-if="pc.activeClinicalTab === 'demographic'"
+          ng-init="demo = pc.participant.demographic"
+          class="table table-striped table-hover table-condensed table-bordered table-vertical"
+          style="padding: 1rem; border-top: 0">
+          <table class="table table-striped table-hover table-condensed table-bordered table-vertical">
+            <tbody>
+              <tr>
+                <th scope="row" data-translate>ID</th>
+                <td>{{ ::demo.demographic_id }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Project ID</th>
+                <td>{{ ::demo.project_id | humanify }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Ethnicity</th>
+                <td>{{ ::demo.ethnicity | humanify }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Gender</th>
+                <td>{{ ::demo.gender | humanify }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Race</th>
+                <td>{{ ::demo.race | humanify }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>State</th>
+                <td>{{ ::demo.state | humanify }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Submitter ID</th>
+                <td>{{ ::demo.submitter_id | humanify }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Year of Birth</th>
+                <td>{{ ::demo.year_of_birth | humanify }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Year of Death</th>
+                <td>{{ ::demo.year_of_death | humanify }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Created</th>
+                <td>{{ ::demo.created_datetime || '--' | date }}</td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Updated</th>
+                <td>{{ ::demo.updated_datetime || '--' | date }}</td>
+              </tr>
             </tbody>
           </table>
         </div>
+
+        <div id="clinical-table"
+          ng-if="pc.activeClinicalTab === 'diagnoses' && pc.participant.diagnoses.length"
+          class="table table-striped table-hover table-condensed table-bordered table-vertical"
+          style="border-top: 0; padding-top: 1rem">
+          <uib-tabset vertical="true" type="pills">
+            <uib-tab ng-repeat="id in pc.pluck(pc.participant.diagnoses, 'diagnosis_id')"
+              heading="{{ ::id }}">
+              <div>
+                <table style="border-top: 0"
+                  class="table table-striped table-hover table-condensed table-bordered table-vertical">
+                  <tbody>
+                    <tr>
+                      <th scope="row" data-translate>ID</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].diagnosis_id }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Project ID</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].project_id | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Classification of Tumor</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].classification_of_tumor | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Alcohol Intensity</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].alcohol_intensity | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Age at Diagnosis</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].age_at_diagnosis | ageDisplay }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Days to Birth</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_birth | number | humanify}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Days to Death</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_death | number | humanify}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Days to Last Followup</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_follow_up | number | humanify}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Days to Last Known Disease Status</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_last_known_disease_status | number | humanify}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Days to Recurrence</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].days_to_recurrence | number | humanify}}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Last Known Disease Status</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].last_known_disease_status | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Morphology</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].morphology | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Primary Diagnosis</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].primary_diagnosis | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Prior Malignancy</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].prior_malignancy | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Progression or Recurrence</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].progression_or_recurrence | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Site of Resection or Biopsy</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].site_of_resection_or_biopsy | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Tissue or Organ of Origin</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].tissue_or_organ_of_origin | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Tumor Grade</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].tumor_grade | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Tumor Stage</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].tumor_stage | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Vital Status</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].vital_status | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>state</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].state | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Submitter ID</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].submitter_id | humanify }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Created</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].created_datetime || '--' | date }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row" data-translate>Updated</th>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].updated_datetime || '--' | date }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div ng-if="pc.participant.diagnoses[ $index ].treatments.length">
+                  <strong>Treatments</strong> ({{ ::pc.participant.diagnoses[ $index ].treatments.length | number | humanify}})
+
+                  <table class="table table-striped table-hover table-condensed table-bordered">
+                    <thead>
+                      <tr>
+                        <th data-translate>ID</th>
+                        <th data-translate>Project ID</th>
+                        <th data-translate>State</th>
+                        <th data-translate>Therapeutic Agents</th>
+                        <th data-translate>Treatment Intent Type</th>
+                        <th data-translate>Treatment or Therapy</th>
+                        <th data-translate>Days to Treatment</th>
+                        <th data-translate>Submitter ID</th>
+                        <th data-translate>Created</th>
+                        <th data-translate>Updated</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr data-ng-repeat="t in pc.participant.diagnoses[ $index ].treatments">
+                        <td><span style="overflow: hidden; text-overflow: ellipsis; max-width: 100px">
+                          {{ ::t.treatment_id }}
+                        </span></td>
+                        <td>
+                          {{ ::t.project_id }}
+                        </td>
+                        <td>
+                          {{ ::t.state }}
+                        </td>
+                        <td>
+                          {{ ::t.submitter_id }}
+                        </td>
+                        <td>
+                          {{ ::t.therapeutic_agents }}
+                        </td>
+                        <td>
+                          {{ ::t.treatment_intent_type }}
+                        </td>
+                        <td>
+                          {{ ::t.treatment_or_therapy }}
+                        </td>
+                        <td class="text-right">
+                          {{ ::t.days_to_treatment }}
+                        </td>
+                        <td>
+                          {{ ::t.created_datetime || '--' | date }}
+                        </td>
+                        <td>
+                          {{ ::t.updated_datetime || '--' | date }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                </div>
+                <div ng-if="! pc.participant.diagnoses[ $index ].treatments.length"
+                  style="margin-bottom: 1rem;">
+                  <strong>No treatments found.</strong>
+                </div>
+              </div>
+            </uib-tab>
+          </uib-tabset>
+        </div>
+        <div id="clinical-table"
+          ng-if="pc.activeClinicalTab === 'diagnoses' && ! pc.participant.diagnoses.length"
+          class="table table-striped table-hover table-condensed table-bordered table-vertical"
+          style="border-top: 0; padding-top: 1rem; padding-left: 1rem">
+          <h2>No diagnoses found.</h2>
+        </div>
+
+        <div id="clinical-table"
+          ng-if="pc.activeClinicalTab === 'family_histories' && pc.participant.family_histories.length"
+          class="table table-striped table-hover table-condensed table-bordered table-vertical"
+          style="border-top: 0; padding-top: 1rem">
+          <uib-tabset vertical="true" type="pills">
+           <uib-tab ng-repeat="id in pc.pluck(pc.participant.family_histories, 'family_history_id')"
+             heading="{{ ::id }}">
+             <div>
+               <table
+                 class="table table-striped table-hover table-condensed table-bordered table-vertical"
+                 style="border-top: 0">
+                 <tbody>
+                   <tr>
+                     <th scope="row" data-translate>ID</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].family_history_id }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Project ID</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].project_id | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Relationship Age at Diagnosis</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].relationship_age_at_diagnosis | ageDisplay }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Relationship Gender</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].relationship_gender | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Relationship Primary Diagnosis</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].relationship_primary_diagnosis | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Relationship Type</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].relationship_type | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Relative with Cancer History</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].relative_with_cancer_history | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>State</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].state | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Submitter ID</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].submitter_id | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Created</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].created_datetime || '--' | date }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Updated</th>
+                     <td>{{ ::pc.participant.family_histories[ $index ].updated_datetime || '--' | date }}</td>
+                   </tr>
+                 </tbody>
+               </table>
+             </div>
+           </uib-tab>
+          </uib-tabset>
+        </div>
+        <div id="clinical-table"
+          ng-if="pc.activeClinicalTab === 'family_histories' && ! pc.participant.family_histories.length"
+          class="table table-striped table-hover table-condensed table-bordered table-vertical"
+          style="border-top: 0; padding-top: 1rem; padding-left: 1rem">
+          <h2>No family histories found.</h2>
+        </div>
+
+        <div id="clinical-table"
+          ng-if="pc.activeClinicalTab === 'exposures' && pc.participant.exposures.length"
+          class="table table-striped table-hover table-condensed table-bordered table-vertical"
+          style="border-top: 0; padding-top: 1rem">
+          <uib-tabset vertical="true" type="pills">
+           <uib-tab ng-repeat="id in pc.pluck(pc.participant.exposures, 'exposure_id')"
+             heading="{{ ::id }}">
+             <div>
+               <table
+                 class="table table-striped table-hover table-condensed table-bordered table-vertical"
+                 style="border-top: 0">
+                 <tbody>
+                   <tr>
+                     <th scope="row" data-translate>ID</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].exposure_id }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Project ID</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].project_id | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Alcohol History</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].alcohol_history | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Alcohol Intensity</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].alcohol_intensity | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>BMI</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].bmi | number | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Cigarettes per Day</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].cigarettes_per_day | number | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Height</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].height | number | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Weight</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].weight | number | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Years Smoked</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].years_smoked | number | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>State</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].state | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Submitter ID</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].submitter_id | humanify }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Created</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].created_datetime || '--' | date }}</td>
+                   </tr>
+                   <tr>
+                     <th scope="row" data-translate>Updated</th>
+                     <td>{{ ::pc.participant.exposures[ $index ].updated_datetime || '--'| date }}</td>
+                   </tr>
+                 </tbody>
+               </table>
+             </div>
+           </uib-tab>
+          </uib-tabset>
+        </div>
+        <div id="clinical-table"
+          ng-if="pc.activeClinicalTab === 'exposures' && ! pc.participant.exposures.length"
+          class="table table-striped table-hover table-condensed table-bordered table-vertical"
+          style="border-top: 0; padding-top: 1rem; padding-left: 1rem">
+          <h2>No exposures found.</h2>
+        </div>
+
       </div>
     </section>
 

@@ -6,6 +6,7 @@ describe('Annotations:', function () {
   beforeEach(module('ngApp.annotations', 'core.services', 'ngProgressLite'));
   beforeEach(module(function ($provide) {
      $provide.value('AuthRestangular', {});
+     $provide.value('notify', {});
      $provide.value('config', {});
   }));
 

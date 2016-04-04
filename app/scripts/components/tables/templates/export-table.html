@@ -1,54 +1,47 @@
-<div class="btn-group" data-dropdown>
-  <button data-ng-if="!text" type="button"
+<div class="btn-group" data-uib-dropdown>
+  <button data-ng-if="!text && !downloadInProgress" type="button"
           class="btn btn-default dropdown-toggle fa fa-table"
-          data-tooltip="Export Table"
-          data-tooltip-popup-delay=1000
-          data-tooltip-append-to-body="true"
-          data-dropdown-toggle aria-expanded="false">
+          data-uib-tooltip="Export Table"
+          data-popover-popup-delay=1000
+          data-popover-append-to-body="true"
+          data-uib-dropdown-toggle aria-expanded="false">
     <span class="icon-btn-label">Export Table</span>
   </button>
-  <button data-ng-if="text" type="button" class="btn btn-primary dropdown-toggle"
-          data-dropdown-toggle
+  <button data-ng-if="text && !downloadInProgress" type="button"
+          class="btn btn-primary dropdown-toggle"
+          data-uib-dropdown-toggle
           data-aria-expanded="false">
           {{ text }}
   </button>
+
+  <button data-ng-if="!text && downloadInProgress"
+          type="button"
+          class="btn btn-default dropdown-toggle"
+          data-uib-tooltip="Processing..."
+          data-popover-popup-delay=1000
+          data-uib-tooltip-append-to-body="true"
+          aria-expanded="false"
+          style="cursor: wait; width: 38px; height: 35px">
+    <span class="btn fa fa-spinner fa-spin fa-5x"
+      style="padding: 0; cursor: wait;" />
+  </button>
+  <button data-ng-if="text && downloadInProgress"
+          type="button"
+          class="btn btn-primary dropdown-toggle"
+          data-aria-expanded="false"
+          style="cursor: wait;">
+          Processing...
+  </button>
+
   <ul class="dropdown-menu pull-right" role="menu">
-    <li>
-      <a data-ng-click="etc.exportTable('JSON')">
+    <li data-ng-repeat="fileType in ['JSON', 'XML', 'CSV', 'TSV']" data-downloader>
+      <a data-ng-click="etc.exportTable(fileType, download)">
         <span class="fa-stack">
-          <span class="fa-stack-1x filetype-text">JSON</span>
+          <span class="fa-stack-1x filetype-text">{{ ::fileType }}</span>
           <i class="fa fa-file-o fa-stack-2x"></i>
         </span>
-        <span data-translate>JSON</span>
-      </a>
-    </li>
-    <li>
-      <a data-ng-click="etc.exportTable('XML')">
-        <span class="fa-stack">
-          <span class="fa-stack-1x filetype-text">XML</span>
-          <i class="fa fa-file-o fa-stack-2x"></i>
-        </span>
-        <span data-translate>XML</span>
-      </a>
-    </li>
-    <li>
-      <a data-ng-click="etc.exportTable('CSV')">
-        <span class="fa-stack">
-          <span class="fa-stack-1x filetype-text">CSV</span>
-          <i class="fa fa-file-o fa-stack-2x"></i>
-        </span>
-        <span data-translate>CSV</span>
-      </a>
-    </li>
-    <li>
-      <a data-ng-click="etc.exportTable('TSV')">
-        <span class="fa-stack">
-          <span class="fa-stack-1x filetype-text">TSV</span>
-          <i class="fa fa-file-o fa-stack-2x"></i>
-        </span>
-        <span data-translate>TSV</span>
+        <span data-translate>{{ ::fileType }}</span>
       </a>
     </li>
   </ul>
 </div>
-

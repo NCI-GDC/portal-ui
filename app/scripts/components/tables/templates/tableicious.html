@@ -27,15 +27,20 @@
         data-row="d"
         data-ng-class="h.tdClassName"
         data-ng-hide="h.inactive(this)"
+        data-uib-tooltip="{{::getToolTipText(h,d)}}"
+        data-tooltip-enable="h.toolTipText"
+        data-tooltip-append-to-body="true"
+        data-tooltip-popup-delay="1000"
+        data-container="body"
         data-ng-repeat="h in dataCols track by h.id">
       </td>
     </tr>
-    <!--<tr>
+    <tr>
       <td data-ng-repeat="h in dataCols track by h.name"
           data-ng-if="h.total"
           colspan="{{h.colSpan}}"
           data-ng-class="h.tdClassName"
           ng-bind-html="h.total(data, this)"></td>
-    </tr>-->
+    </tr>
   </tbody>
 </table>

@@ -41,7 +41,6 @@ module ngApp.components.tables.pagination.controllers {
         return this.LocationService.setPaging(pagination);
       }
 
-      this.$scope.$emit(this.$scope.page + "-paging-update", obj);
     }
   }
 

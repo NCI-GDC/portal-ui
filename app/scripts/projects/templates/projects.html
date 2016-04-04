@@ -13,34 +13,52 @@
       <div class="alert alert-info clearfix">
         <div class="col-sm-12">
           <current-filters></current-filters>
-          <span data-ng-if="!cfc.currentFilters.length"  style="line-height: 3.4rem"> 
+          <span data-ng-if="!cfc.currentFilters.length"  style="line-height: 3.4rem">
             <span data-translate>
               Start searching by selecting a facet or try the Data Search
             </span>
           </span>
         </div>
-        <!--<div class="col-sm-2 text-right">
-          <a class="btn btn-primary" data-translate data-ng-click="prsc.gotoQuery()">
-            <i class="fa fa-gears"></i> <span data-translate>Data Search</span>
-          </a>
-        </div>-->
       </div>
 
-      <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.projects.hits.length === 0" data-translate>
+      <div class="row" data-ng-if="cfc.currentFilters.length">
+        <div class="col-sm-12 text-right">
+          <a class="btn btn-primary" data-translate data-ng-click="prsc.gotoQuery()">
+            <i class="fa fa-gears"></i> <span data-translate>Open Query in Data Page</span>
+          </a>
+        </div>
+      </div>
+
+      <h3 class="col-lg-9 col-md-8" data-ng-if="prsc.loading" data-translate>
+        Loading, please wait.. <i class="fa fa-spinner fa-spin"></i>
+      </h3>
+
+      <h3 class="col-lg-9 col-md-8" data-ng-if="!prsc.projects.hits.length && !prsc.loading" data-translate>
         No projects found using those filters.
       </h3>
-      <ul class="nav nav-tabs">
+
+      <ul class="nav nav-tabs" data-ng-if="prsc.projects.hits.length">
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.table.active }"
             data-ng-click="prsc.select('tabs', 'table')"
             id="projects-table">
-          <a>{{ 'Table' | translate }}</a>
+            <a
+              data-ng-href="{{
+              prsc.$state.href('projects.table', prsc.LocationService.search().filters
+              )}}">
+              {{ 'Table' | translate }}
+            </a>
         </li>
         <li role="presentation"
             data-ng-class="{ active: prsc.ProjectsState.tabs.graph.active }"
             data-ng-click="prsc.select('tabs', 'graph')"
             id="projects-graph">
-          <a>{{ 'Graph' | translate }}</a>
+            <a
+              data-ng-href="{{
+              prsc.$state.href('projects.graph', prsc.LocationService.search().filters
+              )}}">
+              {{ 'Graph' | translate }}
+            </a>
         </li>
       </ul>
       <div class="pane-section" data-ng-show="prsc.ProjectsState.tabs.table.active">
@@ -70,4 +88,3 @@
     </div>
   </div>
 </div>
-

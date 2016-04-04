@@ -1,4 +1,18 @@
 module ngApp.components.facets.controllers {
+  import IFilesService = ngApp.files.services.IFilesService;
+
+  enum KeyCode {
+    Space = 32,
+    Enter = 13,
+    Esc = 27,
+    Left = 37,
+    Right = 39,
+    Up = 38,
+    Down = 40,
+    Tab = 9
+  }
+
+  enum Cycle { Up = -1, Down = 1 }
 
   import IFacetScope = ngApp.components.facets.models.IFacetScope;
   import IFacetService = ngApp.components.facets.services.IFacetService;
@@ -8,6 +22,7 @@ module ngApp.components.facets.controllers {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IUserService = ngApp.components.user.services.IUserService;
   import IGDCWindowService = ngApp.core.models.IGDCWindowService;
+  import IFacetsConfigService = ngApp.components.facets.services.IFacetsConfigService;
 
   class Toggleable {
 
@@ -46,25 +61,34 @@ module ngApp.components.facets.controllers {
     expanded: boolean = false;
     actives: string[] = [];
     inactives: string[] = [];
+    error: string = undefined;
 
     /* @ngInject */
     constructor(private $scope: IFacetScope, private FacetService: IFacetService,
                 private UserService: IUserService) {
-      this.collapsed = !!$scope.collapsed;
+      this.collapsed = $scope.collapsed === 'true' ? true : false;
       this.expanded = !!$scope.expanded;
       this.displayCount = this.originalDisplayCount = $scope.displayCount || 5;
       this.title = $scope.title;
       // TODO api should re-format the facets
       this.name = $scope.name;
       if ($scope.facet) {
-        this.refresh($scope.facet.buckets);
+        if ($scope.facet.buckets) {
+          this.refresh($scope.facet.buckets);
+        } else {
+          this.error = $scope.facet;
+        }
       }
 
       $scope.$watch("facet", (n, o) => {
         if (n === o) {
           return;
         }
-        this.refresh(n.buckets);
+        if (n.buckets) {
+          this.refresh(n.buckets);
+        } else {
+          this.error = n;
+        }
       });
     }
 
@@ -118,8 +142,10 @@ module ngApp.components.facets.controllers {
     currentFilters: any = [];
 
     /* @ngInject */
-    constructor($scope: ng.IScope, private LocationService: ILocationService,
-                private FacetService: IFacetService, private UserService: IUserService) {
+    constructor($scope: ng.IScope,
+                private LocationService: ILocationService,
+                private FacetService: IFacetService,
+                private UserService: IUserService) {
 
       this.build();
 
@@ -204,6 +230,7 @@ module ngApp.components.facets.controllers {
         this.searchTerm = this.lastInput;
         return;
       }
+
       var parts = this.$scope.field.split(".");
       var field = parts.length > 1 ? parts[parts.length - 1] : parts[0];
 
@@ -237,6 +264,13 @@ module ngApp.components.facets.controllers {
       return this.FacetService.autoComplete(this.$scope.entity, query, this.$scope.field);
     }
 
+    prefixValue(query: string): ng.IPromise<any> {
+      term = query.replace(/\*/g, '') + '*';
+      var model = { term: term };
+      model[this.$scope.field.split('.').pop()] = term;
+      return [model];
+    }
+
     remove(term: string): void {
       this.FacetService.removeTerm(this.$scope.field, term);
       this.refresh();
@@ -248,12 +282,11 @@ module ngApp.components.facets.controllers {
 
   }
 
-  interface IRangeFacetController {
-    boundChange(upperOrLower: string): void;
-  }
-
-  class RangeFacetController extends Toggleable implements IRangeFacetController {
+  class RangeFacetController extends Toggleable {
     activesWithOperator: Object;
+    error: string = undefined;
+    lowerBound: number = null;
+    upperBound: number = null;
 
     /* @ngInject */
     constructor(private $scope: IRangeFacetScope,
@@ -265,9 +298,16 @@ module ngApp.components.facets.controllers {
       $scope.lowerBoundOriginalDays = null;
       $scope.upperBoundOriginalDays = null;
 
-      if($scope.unitsMap) {
-        $scope.selectedUnit = $scope.unitsMap[0];
+      if(!$scope.unitsMap) {
+        $scope.unitsMap = [
+              {
+                "label": "none",
+                "conversionDivisor": 1,
+              }
+            ];
       }
+
+      $scope.selectedUnit = $scope.unitsMap[0];
 
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
@@ -277,9 +317,13 @@ module ngApp.components.facets.controllers {
           return;
         }
 
-        $scope.data = _.reject(n.buckets, (bucket) => { return bucket.key === "_missing"; });
-        $scope.dataUnitConverted = this.unitConversion($scope.data);
-        this.getMaxMin($scope.dataUnitConverted);
+        if(n.buckets) {
+          $scope.data = _.reject(n.buckets, (bucket) => { return bucket.key === "_missing"; });
+          $scope.dataUnitConverted = this.unitConversion($scope.data);
+          this.getMaxMin($scope.dataUnitConverted);
+          } else {
+            this.error = n;
+          }
       });
 
       var _this = this;
@@ -287,8 +331,8 @@ module ngApp.components.facets.controllers {
         $scope.selectedUnit = selectedUnitMap;
         _this.$scope.dataUnitConverted = _this.unitConversion($scope.data);
         _this.getMaxMin($scope.dataUnitConverted);
-        _this.$scope.lowerBound = _this.$scope.lowerBoundOriginalDays ? Math.floor(_this.$scope.lowerBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
-        _this.$scope.upperBound = _this.$scope.upperBoundOriginalDays ? Math.ceil(_this.$scope.upperBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
+        _this.lowerBound = _this.$scope.lowerBoundOriginalDays ? Math.floor(_this.$scope.lowerBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
+        _this.upperBound = _this.$scope.upperBoundOriginalDays ? Math.ceil(_this.$scope.upperBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
       };
 
     }
@@ -331,48 +375,48 @@ module ngApp.components.facets.controllers {
     refresh(): void {
       this.activesWithOperator = this.FacetService.getActivesWithOperator(this.$scope.field);
       if (_.has(this.activesWithOperator, '>=')) {
-        this.$scope.lowerBound = Math.floor(this.activesWithOperator['>='] / this.$scope.selectedUnit.conversionDivisor);
+        this.lowerBound = Math.floor(this.activesWithOperator['>='] / this.$scope.selectedUnit.conversionDivisor);
       } else {
-        this.$scope.lowerBound = null;
+        this.lowerBound = null;
       }
       if (_.has(this.activesWithOperator, '<=')) {
-        this.$scope.upperBound = Math.ceil(this.activesWithOperator['<='] / this.$scope.selectedUnit.conversionDivisor);
+        this.upperBound = Math.ceil(this.activesWithOperator['<='] / this.$scope.selectedUnit.conversionDivisor);
       } else {
-        this.$scope.upperBound = null;
+        this.upperBound = null;
       }
     }
 
     inputChanged() {
       var numRegex = /^\d+$/;
-      if (this.$scope.lowerBound) {
-        if(!numRegex.test(this.$scope.lowerBound)) {
-          this.$scope.lowerBound = 0;
+      if (this.lowerBound) {
+        if(!numRegex.test(this.lowerBound)) {
+          this.lowerBound = 0;
         }
       }
 
-      if (this.$scope.upperBound) {
-        if(!numRegex.test(this.$scope.upperBound)) {
-          this.$scope.upperBound = 0;
+      if (this.upperBound) {
+        if(!numRegex.test(this.upperBound)) {
+          this.upperBound = 0;
         }
       }
-      this.$scope.lowerBoundOriginalDays = this.$scope.lowerBound * this.$scope.selectedUnit.conversionDivisor;
-      this.$scope.upperBoundOriginalDays = this.$scope.upperBound * this.$scope.selectedUnit.conversionDivisor;
+      this.$scope.lowerBoundOriginalDays = this.lowerBound * this.$scope.selectedUnit.conversionDivisor;
+      this.$scope.upperBoundOriginalDays = this.upperBound * this.$scope.selectedUnit.conversionDivisor;
     }
 
     setBounds() {
-      if (this.$scope.lowerBound) {
+      if (this.lowerBound) {
         if (_.has(this.activesWithOperator, '>=')) {
           this.FacetService.removeTerm(this.$scope.field, null, ">=");
         }
-        this.FacetService.addTerm(this.$scope.field, this.$scope.lowerBound * this.$scope.selectedUnit.conversionDivisor, ">=");
+        this.FacetService.addTerm(this.$scope.field, this.lowerBound * this.$scope.selectedUnit.conversionDivisor, ">=");
       } else {
         this.FacetService.removeTerm(this.$scope.field, null, ">=");
       }
-      if (this.$scope.upperBound) {
+      if (this.upperBound) {
         if (_.has(this.activesWithOperator, '<=')) {
           this.FacetService.removeTerm(this.$scope.field, null, "<=");
         }
-        this.FacetService.addTerm(this.$scope.field, this.$scope.upperBound * this.$scope.selectedUnit.conversionDivisor, "<=");
+        this.FacetService.addTerm(this.$scope.field, this.upperBound * this.$scope.selectedUnit.conversionDivisor, "<=");
       } else {
         this.FacetService.removeTerm(this.$scope.field, null, "<=");
       }
@@ -386,23 +430,20 @@ module ngApp.components.facets.controllers {
   }
 
   class DateFacetController extends Toggleable implements IDateFacetController {
-    /* @ngInject */
     active: boolean = false;
     name: string = "";
 
-    constructor(private $scope: IDateFacetScope, private $window: IGDCWindowService, private FacetService: IFacetService) {
-      this.$scope.date = $window.moment().format("MM/DD/YYYY");
+    /* @ngInject */
+    constructor(private $scope: IDateFacetScope,
+                private $window: IGDCWindowService,
+                private FacetService: IFacetService,
+                private uibDateParser: any) {
+      this.$scope.date = new Date();
 
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
       this.$scope.opened = false;
       this.$scope.dateOptions = {
-          formatDay: "DD",
-          formatMonth: "MMMM",
-          formatDayHeader: "dd",
-          formatDayTitle: "MMMM YYYY",
-          formatYear: "YYYY",
-          formatMonthTitle: "YYYY",
           showWeeks: false,
           startingDay: 1
       };
@@ -412,7 +453,7 @@ module ngApp.components.facets.controllers {
     refresh(): void {
       var actives = this.FacetService.getActivesWithValue(this.$scope.name);
       if (_.size(actives) > 0) {
-        this.$scope.date = this.$window.moment(actives[this.$scope.name] * 1000);
+        this.$scope.date = this.$window.moment(actives[this.$scope.name]).toDate();
       }
     }
 
@@ -427,15 +468,214 @@ module ngApp.components.facets.controllers {
       if (_.size(actives) > 0) {
         this.FacetService.removeTerm(this.name, undefined, '>=');
       }
-      this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date).format('X'), '>=');
+      
+      this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date).format('YYYY-MM-DD'), '>=');
     }
 
   }
 
-  angular.module("facets.controllers", ["facets.services", "user.services"])
-      .controller("currentFiltersCtrl", CurrentFiltersController)
-      .controller("freeTextCtrl", FreeTextController)
-      .controller("rangeFacetCtrl", RangeFacetController)
-      .controller("dateFacetCtrl", DateFacetController)
-      .controller("termsCtrl", TermsController);
+  class CustomFacetsModalController {
+    private ds: restangular.IElement;
+    public selectedIndex: number;
+    private offsets: Array<number>;
+
+      /* @ngInject */
+      constructor(public facetFields: Array<Object>,
+                  private $scope: ng.IScope,
+                  private $uibModalInstance,
+                  private $window: IGDCWindowService,
+                  private Restangular: restangular.IService,
+                  private FilesService: IFilesService,
+                  private ParticipantsService: IParticipantsService,
+                  private $filter: any,
+                  private facetsConfig: any,
+                  private LocationService: ILocationService,
+                  private FacetsConfigService: IFacetsConfigService,
+                  private aggregations: any,
+                  public docType: string) {
+
+      this.selectedIndex = 0;
+
+      var _this = this;
+      $scope.keyboardListener = function(e: any) {
+        var key = e.which || e.keyCode
+        switch (key) {
+            case KeyCode.Enter:
+              e.preventDefault();
+              _this.addFacet();
+              break;
+            case KeyCode.Up:
+              e.preventDefault();
+              _this.setSelectedIndex(Cycle.Up);
+              break;
+            case KeyCode.Down:
+              e.preventDefault();
+              _this.setSelectedIndex(Cycle.Down);
+              break;
+            case KeyCode.Esc:
+              _this.$uibModalStack.dismissAll();
+              break;
+            case KeyCode.Tab:
+              e.preventDefault();
+              break;
+          }
+      };
+
+      $scope.itemHover = function(index: number) {
+        _this.selectedIndex = index;
+      };
+
+    }
+
+    closeModal(): void {
+      this.$uibModalInstance.dismiss('cancel');
+    }
+
+    addFacet() {
+      var selectedField = this.$scope.filteredFields[this.selectedIndex];
+      var fileOptions = {
+        fields: [],
+        expand: [],
+        facets: [selectedField['field']],
+        filters: this.LocationService.filters()
+      };
+
+      if (selectedField['doc_type'] === "files") {
+        this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
+          _.assign(this.aggregations, data.aggregations);
+          }, (response) => {
+            this.aggregations[selectedField['field']] = 'error';
+            return this.aggregations;
+          });
+      } else if (selectedField['doc_type'] === "cases") {
+        this.ParticipantsService.getParticipants(fileOptions).then((data: IParticipant) => {
+          _.assign(this.aggregations, data.aggregations);
+          }, (response) => {
+            this.aggregations[selectedField['field']] = 'error';
+            return this.aggregations;
+          });
+      }
+
+      this.FacetsConfigService.addField(selectedField['doc_type'], selectedField['field'], selectedField['type']);
+      this.$uibModalInstance.dismiss('added facet');
+    }
+
+    setSelectedIndex(direction: Cycle) {
+      if (direction == Cycle.Up) {
+        if (this.selectedIndex === 0) {
+          this.selectedIndex = (this.$scope.filteredFields.length - 1);
+          document.getElementById('add-facets-modal').scrollTop = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-')).offsetTop;
+        } else {
+          this.selectedIndex--;
+          this.scrollToSelected(Cycle.Up);
+        }
+      }
+      if (direction == Cycle.Down) {
+        if (this.selectedIndex  === (this.$scope.filteredFields.length - 1)) {
+          this.selectedIndex = 0;
+          document.getElementById('add-facets-modal').scrollTop = 0;
+        } else {
+          this.selectedIndex++;
+          this.scrollToSelected(Cycle.Down);
+        }
+      }
+    }
+
+    scrollToSelected(direction: Cycle) {
+      var modalElement = document.getElementById('add-facets-modal')
+      var selectedElement = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-'));
+      var offsets = _.sortBy(this.$scope.filteredFields.map(f => document.getElementById(this.$filter('dotReplace')(f.field, '-')).offsetTop));
+
+      //don't want to jump selectedElement to the top when scrolling up and down
+      //so set scrollTop to the element that's nearest to the top instead
+      var currentTopPos = modalElement.scrollTop;
+      var minDiff = Number.MAX_VALUE;
+      var nearestIndex = offsets.reduce((acc, offset, i) => {
+        var currentDiff = Math.abs(currentTopPos - offset);
+        if (currentDiff < minDiff) {
+          minDiff = currentDiff;
+          return i;
+        }
+        return acc;
+      }, -1);
+
+      if (direction === Cycle.Up) {
+        if (selectedElement.offsetTop < modalElement.scrollTop) {
+          modalElement.scrollTop = offsets[nearestIndex-1]
+        }
+      } else if (direction === Cycle.Down) {
+        if (selectedElement.offsetTop + 4 > modalElement.scrollTop + modalElement.clientHeight) {
+          modalElement.scrollTop = offsets[nearestIndex+1];
+        }
+      }
+    }
+
+    inputChanged() {
+      if (this.$scope.filteredFields.length < this.selectedIndex) {
+        this.selectedIndex = 0;
+      }
+    }
+  }
+
+  class AddCustomFacetsPanelController {
+    private modalInstance: any;
+    public defaultConfig: Array<Object>;
+
+    /* @ngInject */
+    constructor(private $scope: ng.IScope,
+                private $uibModalStack: any,
+                private $uibModal: any,
+                private FacetsConfigService: IFacetsConfigService,
+                private LocationService: ILocationService) {
+
+      $scope.$on("$stateChangeStart", () => {
+        if (this.modalInstance) {
+          this.modalInstance.close();
+        }
+      });
+
+    }
+
+    openModal(): void {
+      // Modal stack is a helper service. Used to figure out if one is currently
+      // open already.
+      if (this.$uibModalStack.getTop()) {
+        return;
+      }
+
+      this.modalInstance = this.$uibModal.open({
+        templateUrl: "components/facets/templates/add-facets-modal.html",
+        backdrop: true,
+        controller: "customFacetsModalController as cufc",
+        keyboard: true,
+        animation: false,
+        size: "lg",
+        resolve: {
+            /** @ngInject */
+            facetFields: (CustomFacetsService: ICustomFacetsService): ng.IPromise<any> => {
+              return CustomFacetsService.getFacetFields(this.$scope.docType);
+            },
+            facetsConfig: () => { return this.$scope.facetsConfig; },
+            aggregations: () => { return this.$scope.aggregations; },
+            docType: () => { return this.$scope.docType; }
+          }
+      });
+    }
+
+    reset(): void {
+      this.LocationService.clear();
+      this.$scope.facetsConfig = _.clone(this.defaultConfig, true);
+      this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date), '>=');
+    }
+
+  }
+
+  angular.module("facets.controllers", ["facets.services", "user.services", "files.services"])
+        .controller("currentFiltersCtrl", CurrentFiltersController)
+        .controller("freeTextCtrl", FreeTextController)
+        .controller("rangeFacetCtrl", RangeFacetController)
+        .controller("dateFacetCtrl", DateFacetController)
+        .controller("customFacetsModalController", CustomFacetsModalController)
+        .controller("addCustomFacetsPanelController", AddCustomFacetsPanelController)
+        .controller("termsCtrl", TermsController);
 }

@@ -21,8 +21,7 @@ module ngApp.cart.models {
         name: "Action",
         id: "file_actions",
         td: row => '<download-button data-tooltip="Download" data-tooltip-popup-delay=1000 files="row" style="margin-right: 10%"></download-button>' +
-                    "<button class='btn btn-default' remove-single-cart file='row'>" +
-                    "<i class='fa fa-trash-o'></i></button>",
+                   '<remove-single-cart file="row" />',
         tdClassName: "text-center"
       },{
         name: "My Projects",
@@ -32,7 +31,7 @@ module ngApp.cart.models {
             var icon = isUserProject ? 'check' : 'remove';
             return '<i class="fa fa-' + icon + '"></i>';
         },
-        inactive: $scope => !$scope.UserService.currentUser || $scope.UserService.currentUser.isFiltered,
+        inactive: $scope => !$scope.UserService.currentUser,
         hidden: false,
         tdClassName: "text-center"
       }, {
@@ -46,6 +45,7 @@ module ngApp.cart.models {
       }, {
         name: "File Name",
         id: "file_name",
+        toolTipText: row => row.file_name,
         td: row => '<a href="files/' + row.file_id + '">' + row.file_name + '</a>',
         sortable: true,
         tdClassName: 'truncated-cell'
@@ -54,12 +54,11 @@ module ngApp.cart.models {
         id: "cases",
         td: (row, $scope) => {
           function getParticipants(row, $filter) {
-            return row.caseIds.length == 1 ?
-                     '<a href="cases/' + row.caseIds[0] + '">1</a>' :
-                     withFilter(row.caseIds.length, [{field: "files.file_id", value: row.file_id}], $filter);
+            return row.cases.length == 1 ?
+                     '<a href="cases/' + row.cases[0].case_id + '">1</a>' :
+                     withFilter(row.cases.length, [{field: "files.file_id", value: row.file_id}], $filter);
           }
-
-          return row.caseIds.length ? getParticipants(row, $scope.$filter) : 0;
+          return row.cases.length ? getParticipants(row, $scope.$filter) : 0;
         },
         thClassName: 'text-right',
         tdClassName: 'text-right'
@@ -67,10 +66,10 @@ module ngApp.cart.models {
         name: "Project",
         id: "cases.project.project_id",
         td: row => {
-          return _.map(row.projects, p => {
-            return ('<a href="projects/' + p.project_id +
-                    '" data-tooltip="' + p.name +
-                    '" data-tooltip-append-to-body="true" data-tooltip-placement="right">'+ p.project_id + '</a>');
+          return _.unique(row.cases, c => c.project.project_id).map(c => {
+            return ('<a href="projects/' + c.project.project_id +
+                    '" data-tooltip="' + c.project.name +
+                    '" data-tooltip-append-to-body="true" data-tooltip-placement="right">'+ c.project.project_id + '</a>');
           }).join('<br>');
         },
         sortable: true
@@ -96,15 +95,14 @@ module ngApp.cart.models {
         id: "annotations",
         td: (row, $scope) => {
           function getAnnotations(row, $scope) {
-            return row.annotationIds.length == 1 ?
-                     '<a href="annotations/' + row.annotationIds[0] + '">' + 1 + '</a>' :
+            return row.annotations.length === 1 ?
+                     '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>' :
                      withAnnotationFilter(
-                       row.annotationIds.length,
-                       [{field: "annotation_id", value: row.annotationIds}],
+                       row.annotations.length,
+                       [{field: "annotation_id", value: row.annotations.map(a => a.annotation_id)}],
                        $scope.$filter);
           }
-
-          return row.annotationIds.length ? getAnnotations(row, $scope) : 0;
+          return row.annotations ? getAnnotations(row, $scope) : 0;
         },
         thClassName: 'text-right',
         tdClassName: 'text-right'

@@ -4,9 +4,9 @@ module ngApp.components.tables.directives.tableicious {
 
     /* @ngInject */
     function Tableicious(
-        $filter: ng.IFilterService, 
-        LocationService: ILocationService, 
-        UserService: IUserService, 
+        $filter: ng.IFilterService,
+        LocationService: ILocationService,
+        UserService: IUserService,
         $window: ng.IWindowService): ITableicious {
         return {
             restrict: "E",
@@ -27,6 +27,9 @@ module ngApp.components.tables.directives.tableicious {
                 $scope.getCell = function(h, d) {
                     return h.td(d, $scope);
                 }
+                $scope.getToolTipText = function(h, d) {
+                  return h.toolTipText ? h.toolTipText(d, $scope) : '';
+                };
                 function hasChildren(h: IHeading): boolean {
                     return h.children && h.children.length > 0;
                 }
@@ -50,11 +53,10 @@ module ngApp.components.tables.directives.tableicious {
                    refresh(n);
                 }, true);
 
-                
-                $scope.headings = $scope.saved.length ? 
+                $scope.headings = $scope.saved.length ?
                   _.map($scope.saved, (s: IHeading): IHeading => _.merge(_.find($scope.headings, {id: s.id}), s)) :
                   $scope.headings;
-                
+
                 refresh($scope.headings);
             }
         }

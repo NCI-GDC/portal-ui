@@ -3,7 +3,7 @@ module ngApp.components.location.services {
   class LocationService implements ILocationService {
     /* @ngInject */
     constructor(
-      private $location: ng.ILocationService, 
+      private $location: ng.ILocationService,
       private $window: ngApp.core.models.IGDCWindowService
     ) {}
 
@@ -16,10 +16,9 @@ module ngApp.components.location.services {
     }
 
     setSearch(search: ISearch): ng.ILocationService {
-      var propsWithValues = _.pick(search, function(v) { 
+      var propsWithValues = _.pick(search, function(v) {
         return !_.isEmpty(v) && v !== "{}"
       });
-
       return this.$location.search(propsWithValues);
     }
 

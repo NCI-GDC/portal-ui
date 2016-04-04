@@ -38,6 +38,8 @@ module ngApp.query.controllers {
   class QueryController implements IQueryController {
     files: IFiles;
     participants: IParticipants;
+    participantsLoading: boolean = true;
+    filesLoading: boolean = true;
     query: string = "";
     tabSwitch: boolean = false;
     projectIdChartConfig: any;
@@ -90,6 +92,9 @@ module ngApp.query.controllers {
         return;
       }
 
+      this.participantsLoading = true;
+      this.filesLoading = true;
+
       this.SearchService.getSummary().then((data) => {
         this.summary = data;
       });
@@ -105,6 +110,7 @@ module ngApp.query.controllers {
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
+        this.filesLoading = false;
         this.files = this.files || {};
         this.files.aggregations = data.aggregations;
 
@@ -122,6 +128,7 @@ module ngApp.query.controllers {
       });
 
       this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
+        this.participantsLoading = false;
         this.participants = this.participants || {};
         this.participants.aggregations = data.aggregations;
 
@@ -171,7 +178,7 @@ module ngApp.query.controllers {
     }
 
     removeFiles(files: IFile[]): void {
-      this.CartService.remove(_.pluck(files, "file_id"));
+      this.CartService.remove(files);
     }
   }
   angular

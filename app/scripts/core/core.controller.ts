@@ -17,11 +17,16 @@ module ngApp.core.controllers {
                 private notify: INotifyService,
                 $location: ng.ILocationService,
                 private $cookies: ng.cookies.ICookiesService,
-                private $modal: any) {
+                UserService: IUserService,
+                private $uibModal: any) {
+
+      $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
+          UserService.login();
+      });
 
       // display login failed warning
       if(_.get($location.search(), 'error') === 'You are not authorized to gdc services') {
-        var loginWarningModal = this.$modal.open({
+        var loginWarningModal = this.$uibModal.open({
           templateUrl: "core/templates/login-failed-warning.html",
           controller: "WarningController",
           controllerAs: "wc",
@@ -35,7 +40,7 @@ module ngApp.core.controllers {
 
       if (!$cookies.get("browser-checked")) {
         if(bowser.msie && bowser.version <= 9) {
-          var bowserWarningModal = this.$modal.open({
+          var bowserWarningModal = this.$uibModal.open({
             templateUrl: "core/templates/browser-check-warning.html",
             controller: "WarningController",
             controllerAs: "wc",
@@ -54,7 +59,7 @@ module ngApp.core.controllers {
       }
 
       if (!$cookies.get("NCI-Warning")) {
-        var modalInstance = this.$modal.open({
+        var modalInstance = this.$uibModal.open({
           templateUrl: "core/templates/warning.html",
           controller: "WarningController",
           controllerAs: "wc",
@@ -100,42 +105,15 @@ module ngApp.core.controllers {
 
   class WarningController {
     /* @ngInject */
-    constructor(private $modalInstance) {}
+    constructor(private $uibModalInstance) {}
 
     acceptWarning(): void {
-      this.$modalInstance.close();
+      this.$uibModalInstance.close();
     }
   }
 
   angular
       .module("core.controller", ["ngCookies", "user.services"])
       .controller("WarningController", WarningController)
-      .directive('authButton', function(config){
-        return {
-          restrict:'A',
-          scope: {
-            redirect: "@"
-          },
-          controller:function($scope,$element,$window){
-            $element.on('click',function(){
-              var redirect = config.auth;
-              var authQuery;
-
-              if ($scope.redirect) {
-                redirect += "/" + $scope.redirect;
-              }
-
-              if ($window.location.port) {
-                authQuery = "?next=" + ":" + $window.location.port + $window.location.pathname;
-              } else {
-                authQuery = "?next=" + $window.location.pathname;
-              }
-
-              $window.location = redirect + authQuery;
-
-            });
-          }
-        }
-      })
       .controller("CoreController", CoreController);
 }

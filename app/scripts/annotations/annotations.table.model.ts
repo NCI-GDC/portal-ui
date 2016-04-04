@@ -28,7 +28,7 @@ module ngApp.projects.models {
             name: "Project",
             id: "project.project_id",
             td: row => row.project && '<a href="projects/'+row.project.project_id +
-                         '" data-tooltip="' + row.project.name +
+                         '" data-uib-tooltip="' + row.project.name +
                          '" data-tooltip-popup-delay=1000' +
                          '" data-tooltip-append-to-body="true">' +
                          row.project.project_id +
@@ -70,7 +70,7 @@ module ngApp.projects.models {
         {
             name: "Created Date",
             id: "created_datetime",
-            td: (row, $scope) => row.created_datetime && $scope.$filter('date')(row.created_datetime, 'YYYY-MM-DD'),
+            td: (row, $scope) => row.created_datetime && $scope.$filter('date')(row.created_datetime, 'yyyy-MM-dd'),
         },
         {
             name: "Annotator",

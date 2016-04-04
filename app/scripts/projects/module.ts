@@ -47,7 +47,7 @@ module ngApp.projects {
             ],
             expand: [
               "summary",
-              "summary.data_types",
+              "summary.data_categories",
               "summary.experimental_strategies"
             ]
           });

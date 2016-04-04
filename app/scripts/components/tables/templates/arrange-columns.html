@@ -1,9 +1,10 @@
-<div class="btn-group Columns" data-dropdown auto-close="outsideClick">
+<div class="btn-group Columns" data-uib-dropdown auto-close="outsideClick">
     <button type="button"
-            class="btn btn-default dropdown-toggle fa fa-bars"
-            dropdown-toggle aria-expanded="false"
+            class="btn btn-default fa fa-bars"
+            data-uib-dropdown-toggle
+            aria-expanded="false"
             data-tooltip-popup-delay=1000
-            data-tooltip="Arrange Columns"
+            data-uib-tooltip="Arrange Columns"
             data-tooltip-append-to-body="true"
             aria-label="Arrange Columns">
       <span class="icon-btn-label">Arrange Columns</span>
@@ -18,7 +19,9 @@
           <input
            title="Filter columns"
            type="text" class="form-control Columns-dropdown-search-input" placeholder="Filter columns"
-                 data-ng-model="search.name" />
+                 data-ng-model="search.name"
+                 data-ng-click="$event.stopPropagation()"
+                 />
         </div>
         </li>
         <li class="Columns-dropdown-reset">

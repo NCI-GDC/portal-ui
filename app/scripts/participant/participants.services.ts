@@ -8,7 +8,7 @@ module ngApp.participants.services {
 
   export interface IParticipantsService {
     getParticipant(id: string, params: Object): ng.IPromise<IParticipant>;
-    getParticipants(params?: Object, paginationKey?: string): ng.IPromise<IParticipants>;
+    getParticipants(params?: Object, method?: string): ng.IPromise<IParticipants>;
   }
 
   class ParticipantsService implements IParticipantsService {
@@ -35,7 +35,7 @@ module ngApp.participants.services {
       });
     }
 
-    getParticipants(params: Object = {}): ng.IPromise<IParticipants> {
+    getParticipants(params: Object = {}, method: string = 'GET'): ng.IPromise<IParticipants> {
       if (params.hasOwnProperty("fields")) {
         params["fields"] = params["fields"].join();
       }
@@ -69,13 +69,23 @@ module ngApp.participants.services {
       this.CoreService.setSearchModelState(false);
 
       var abort = this.$q.defer();
-      var prom: ng.IPromise<IParticipants> = this.ds.withHttpConfig({
-        timeout: abort.promise
-      })
-      .get("", angular.extend(defaults, params)).then((response): IParticipants => {
-        this.CoreService.setSearchModelState(true);
-        return response["data"];
-      });
+      if (method === 'POST') {
+        var prom: ng.IPromise<IParticipants> = this.ds.withHttpConfig({
+          timeout: abort.promise
+        })
+        .post(angular.extend(defaults, params), undefined, {'Content-Type': 'application/json'}).then((response): IParticipants => {
+          this.CoreService.setSearchModelState(true);
+          return response["data"];
+        });
+      } else {
+        var prom: ng.IPromise<IParticipants> = this.ds.withHttpConfig({
+          timeout: abort.promise
+        })
+        .get("", angular.extend(defaults, params)).then((response): IParticipants => {
+          this.CoreService.setSearchModelState(true);
+          return response["data"];
+        });
+      }
 
       var eventCancel = this.$rootScope.$on("gdc-cancel-request", () => {
         abort.resolve();

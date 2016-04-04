@@ -21,23 +21,27 @@ module ngApp.files {
               "data_type",
               "data_subtype",
               "data_format",
+              "data_category",
               "file_name",
               "file_size",
               "file_id",
               "platform",
               "experimental_strategy",
               "center.short_name",
-              "creation_datetime",
+              "created_datetime",
+              "uploaded_datetime",
               "cases.case_id",
               "cases.project.project_id",
               "annotations.annotation_id",
               "annotations.entity_id",
               "tags",
-              "origin"
+              "submitter_id"
             ],
             expand: [
               "archive",
               "related_files",
+              "metadata_files",
+              "downstream_analyses",
               "associated_entities"
             ]
           });

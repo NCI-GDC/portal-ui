@@ -8,8 +8,8 @@ module ngApp.projects.models {
     experimental_strategy: string;
   }
 
-  export interface IDataTypes {
-    data_type: string;
+  export interface IDataCategories {
+    data_category: string;
     file_count: number;
     case_count: number;
   }
@@ -18,7 +18,7 @@ module ngApp.projects.models {
     file_count: number;
     case_count: number;
     file_size: number;
-    data_types: IDataTypes[];
+    data_categories: IDataCategories[];
     experimental_strategies: IExperimentalStrategies[];
   }
 

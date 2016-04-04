@@ -1,16 +1,35 @@
 <div class="container-fluid full-page search">
   <div class="row search-panel">
     <div class="col-lg-3 col-md-4 facets-sidebar">
-      <tabset>
-        <tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
-          <div data-ng-include="'search/templates/search.participants.facets.html'"
-               class="facet-section" role="form"></div>
-        </tab>
-        <tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
-          <div data-ng-include="'search/templates/search.files.facets.html'"
-               class="facet-section" role="form"></div>
-        </tab>
-      </tabset>
+      <uib-tabset>
+        <uib-tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
+          <div class="facet-section panel-default">
+            <div class="list-group">
+              <add-custom-facets-panel
+                 aggregations="sc.participants.aggregations"
+                 data-doc-type="cases">
+              </add-custom-facets-panel>
+              <facets-section facets-config="sc.SearchTableParticipantsModel.facets"
+                              doctype="cases"
+                              aggregations="sc.participants.aggregations">
+              </facets-section>
+            </div>
+          </div>
+        </uib-tab>
+        <uib-tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
+          <div class="facet-section panel-default">
+            <div class="list-group">
+              <add-custom-facets-panel
+                 aggregations="sc.files.aggregations"
+                 data-doc-type="files">
+              </add-custom-facets-panel>
+              <facets-section doctype="files"
+                              aggregations="sc.files.aggregations">
+              </facets-section>
+            </div>
+          </div>
+        </uib-tab>
+      </uib-tabset>
     </div>
     <div class="col-lg-9 col-md-8 content">
       <div class="alert alert-info clearfix">
@@ -29,38 +48,64 @@
         </div>
       </div>
 
-      <ul class="nav nav-tabs">
-        <li role="presentation"
-            data-ng-class="{ active: sc.SearchState.tabs.summary.active }"
-            data-ng-click="sc.select('tabs', 'summary')"
-            id="search-summary">
-          <a>{{ 'Summary' | translate }}</a>
-        </li>
-        <li role="presentation"
-            data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
-            data-ng-click="sc.select('tabs', 'participants')"
-            id="search-participants">
-          <a>{{ 'Cases' | translate }} ({{sc.participants.pagination.total| number:0}})</a>
-        </li>
-        <li role="presentation"
-            data-ng-class="{ active: sc.SearchState.tabs.files.active }"
-            data-ng-click="sc.select('tabs', 'files')"
-            id="search-files">
-          <a>{{ 'Files' | translate }} ({{sc.files.pagination.total| number:0}})</a>
-        </li>
-      </ul>
-      <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the
-           container will not be the expected size for the graphs.
-        -->
-      <div class="pane-section" data-ng-if="sc.SearchState.tabs.summary.active">
-        <div data-ng-include="'search/templates/search.summary.html'"></div>
-      </div>
-      <div class="pane-section" data-ng-show="sc.SearchState.tabs.participants.active">
-        <div data-ng-include="'search/templates/search.participants.html'"></div>
-      </div>
-      <div class="pane-section"
-           data-ng-show="sc.SearchState.tabs.files.active">
-        <div data-ng-include="'search/templates/search.files.html'"></div>
+      <h3 class="col-lg-9 col-md-8" data-ng-if="sc.participantsLoading && sc.filesLoading" data-translate>
+        Loading, please wait.. <i class="fa fa-spinner fa-spin"></i>
+      </h3>
+
+      <h3 class="col-lg-9 col-md-8" data-ng-if="!sc.participants.hits.length && !sc.files.hits.length && !sc.participantsLoading && !sc.filesLoading" data-translate>
+        No results found using those filters.
+      </h3>
+
+      <div data-ng-if="sc.participants.hits.length || sc.files.hits.length">
+        <ul class="nav nav-tabs">
+          <li role="presentation"
+              data-ng-class="{ active: sc.SearchState.tabs.summary.active }"
+              data-ng-click="sc.select('tabs', 'summary')"
+              id="search-summary">
+              <a
+                data-ng-href="{{
+                sc.$state.href('search.summary', sc.LocationService.search().filters
+                )}}">
+                {{ 'Summary' | translate }}
+              </a>
+          </li>
+          <li role="presentation"
+              data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
+              data-ng-click="sc.select('tabs', 'participants')"
+              id="search-participants">
+              <a
+                data-ng-href="{{
+                sc.$state.href('search.participants', sc.LocationService.search().filters
+                )}}">
+                  {{ 'Cases' | translate }} ({{ sc.participants.pagination.total | number:0 }})
+              </a>
+          </li>
+          <li role="presentation"
+              data-ng-class="{ active: sc.SearchState.tabs.files.active }"
+              data-ng-click="sc.select('tabs', 'files')"
+              id="search-files">
+              <a
+                data-ng-href="{{
+                sc.$state.href('search.files', sc.LocationService.search().filters
+                )}}">
+                {{ 'Files' | translate }} ({{ sc.files.pagination.total | number:0 }})
+              </a>
+
+          </li>
+        </ul>
+        <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the
+             container will not be the expected size for the graphs.
+          -->
+        <div class="pane-section" data-ng-if="sc.SearchState.tabs.summary.active">
+          <div data-ng-include="'search/templates/search.summary.html'"></div>
+        </div>
+        <div class="pane-section" data-ng-show="sc.SearchState.tabs.participants.active">
+          <div data-ng-include="'search/templates/search.participants.html'"></div>
+        </div>
+        <div class="pane-section"
+             data-ng-show="sc.SearchState.tabs.files.active">
+          <div data-ng-include="'search/templates/search.files.html'"></div>
+        </div>
       </div>
     </div>
   </div>

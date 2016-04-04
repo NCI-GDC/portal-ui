@@ -1,16 +1,19 @@
-<div class="btn-group" data-dropdown auto-close="outsideClick">
+<div class="btn-group" data-uib-dropdown auto-close="outsideClick">
   <button type="button"
-          class="btn btn-default dropdown-toggle fa fa-sort-alpha-asc"
-          data-tooltip="Sort Table"
-          data-tooltip-popup-delay=1000
-          data-tooltip-append-to-body="true"
-          dropdown-toggle aria-expanded="false"
+          class="btn btn-default fa fa-sort-alpha-asc"
+          data-uib-tooltip="Sort Table"
+          data-tooltip-popup-delay="1000"
+          data-tooltip-trigger="mouseenter"
+          data-uib-dropdown-toggle
+          aria-expanded="false"
           title="Sort Table"
           aria-label="Sort Table">
     <span class="icon-btn-label">Sort Table</span>
   </button>
 
-  <ul class="dropdown-menu pull-right Columns-dropdown Columns-dropdown-headings" role="menu">
+  <ul class="pull-right Columns-dropdown Columns-dropdown-headings"
+      data-uib-dropdown-menu
+      role="menu">
     <li data-ng-repeat="item in sortColumns">
       <div class="sort-item">
         <i class="fa fa-{{item.sort ? 'check-square-o' : 'square-o'}} fa-stack" ng-click="tsc.toggleSorting(item)"></i>

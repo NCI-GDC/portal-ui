@@ -34,7 +34,7 @@ module ngApp.components.charts {
         // Used to namespace each resize event
         var id = "." + $window.Math.round($window.Math.random() * 120000);
 
-        $scope.$watch('data',function(a){
+        $scope.$watch("data", function(a){
           updateChart();
         });
 
@@ -141,7 +141,7 @@ module ngApp.components.charts {
                 $scope.hoverCount = d.data[config.sortKey];
 
                 if (!config.hideFileSize) {
-                  $scope.hoverSize = d.data.file_size.value;
+                  $scope.hoverSize = d.data.file_size;
                 }
 
                 $scope.$apply();
@@ -157,7 +157,7 @@ module ngApp.components.charts {
                 element.find(".chart-legend").addClass("invisible");
               })
               .call(tip)
-              .on('mouseout', tip.hide);
+              .on("mouseout", tip.hide);
 
           $scope.legendData = legendData;
           if (data.length > 1) {
@@ -166,7 +166,7 @@ module ngApp.components.charts {
           }
 
           function setFilters(d) {
-            if (LocationService.path().indexOf('/query') === 0) {
+            if (LocationService.path().indexOf("/query") === 0) {
               tip.show();
               return;
             }
@@ -311,6 +311,11 @@ module ngApp.components.charts {
 
         var margin = { right: 10, left: 10 };
         var width = element.parent().parent()[0].clientWidth - margin.left - margin.right;
+        //make sure width is never neg
+        if(width <= 0) {
+          width = 300;
+        }
+
         createChart();
 
         // Used to namespace each resize event
@@ -399,11 +404,484 @@ module ngApp.components.charts {
               .attr("width", x.rangeBand())
               .attr("class", "bar")
               .call(tip)
-              .on('mouseover', tip.show)
-              .on('mouseout', tip.hide);
+              .on("mouseover", tip.show)
+              .on("mouseout", tip.hide);
             }
       }
     }
+  }
+
+  interface IMarkFunction {
+    (data: { key: number; doc_count: number }): boolean;
+  }
+
+  interface ID3ToolTipFunction {
+    (data: any): string;
+  }
+
+  interface IMarkedBarChartScope extends ng.IScope {
+    title?: string;
+    markedLegendLabel?: string;
+    chartClasses?: string;
+    data: Array<{ key: number; doc_count: number }>;
+    margins?: { top: number; bottom: number; left: number; right: number; };
+    height?: number;
+    width?: number;
+    toolTipFn?: ID3ToolTipFunction;
+    markFn?: IMarkFunction;
+  }
+
+  /* @ngInject */
+  function MarkedBarChart($state: ng.ui.IStateService): ng.IDirective {
+
+    return {
+      restrict: "EA",
+      replace: true,
+      scope: {
+        title: "@",
+        markedLegendLabel: "@",
+        chartClasses: "@",
+        data: "=",
+        margins: "=",
+        height: "@",
+        width: "@",
+        toolTipFn: "=",
+        markFn: "&"
+      },
+      templateUrl: "components/charts/templates/marked-bar-chart.html",
+      link: function ($scope: IMarkedBarChartScope, element: ng.IAugmentedJQuery) {
+
+        var ASPECT_RATIO = 1.33,
+            CLAMP_HEIGHT = Number.POSITIVE_INFINITY, //470;
+            CLAMP_WIDTH = Number.POSITIVE_INFINITY,
+            NUM_Y_TICKS = 4,
+            PADDING = 25;
+
+        var _data,
+            _svg,
+            _barChartBoundingBox,
+            _barChartCanvas,
+            _barChartTitle,
+            _barChartLegend,
+            //_barChartMarkerGroup,
+            _barChartCaption,
+            //_barChartBG,
+            _chartMargin,
+            _width,
+            _height,
+            _tipFn,
+            _axisTipFn,
+            _xScale,
+            _yScale,
+            _invYScale,
+            _xAxis,
+            _yAxis,
+            _xAxisGroup,
+            _yAxisGroup,
+            _colourScale,
+            _postFixID = _getUniqueChartID(8);
+
+        function _getUniqueChartID(size) {
+          var text = "";
+          var possibleVals = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+          for (var i=0; i < size; i++ ) {
+            text += possibleVals.charAt(Math.floor(Math.random() * possibleVals.length));
+          }
+
+          return text;
+        }
+
+
+        function _initChartSize() {
+          _height = Math.min(CLAMP_HEIGHT, $scope.height || element.parent().outerHeight());
+          _width = Math.min(CLAMP_WIDTH, $scope.width || element.parent().outerWidth());
+
+          if (! _svg) {
+
+            // This is the first time the chart is being initializes so
+            // set the default values for our elements
+            _svg = d3.select(element[0]).select("svg.marked-bar-chart-component")
+              .attr("viewPort", "0 0 " + _width + " " + _height);
+
+            _xAxisGroup = _svg.append("g")
+              .classed("x axis", true);
+
+            _yAxisGroup = _svg.append("g")
+              .classed("y axis", true);
+
+            _barChartCanvas = _svg.append("g")
+              .classed("bar-chart-canvas", true);
+
+            _barChartTitle = _svg.select("g.chart-title-container")
+              .append("g")
+              .classed("marked-bar-chart-title", true)
+              .append("text")
+              .attr("y", _chartMargin.top);
+
+            _barChartLegend = _svg.select("g.chart-title-container")
+              .append("g")
+              .classed("marked-bar-chart-legend", true);
+
+            /*
+            _barChartMarkerGroup = _barChartLegend.append("g")
+              .attr("transform", "translate(-25, 55)");
+
+            _barChartMarkerGroup.append("circle")
+              .classed("marked-bar-chart-marker", true)
+              .attr("cx", 10)
+              .attr("cy", 10)
+              .attr("r", 8);
+
+            _barChartMarkerGroup.append("use")
+              .attr("xlink:href", "#bar-chart-marker-symbol")
+              .attr("fill", "#fff")
+              .attr("x", 115)
+              .attr("y", 95)
+              .attr("transform", "scale(0.030, 0.030)");
+            */
+
+            _barChartCaption = _barChartLegend.append("text")
+              .classed("marked-bar-chart-title-label", true)
+              .attr("y", _chartMargin.top + 30);
+
+
+            _barChartBoundingBox = _svg.select(".chart-canvas-area > rect");
+
+            _barChartBoundingBox.attr("x", _chartMargin.left)
+              .attr("y", _chartMargin.top + 50);
+
+            //_barChartBG = _svg.select(".bg");
+          }
+
+          // Set the new svg height and width
+          _svg.attr("width", _width)
+            .attr("height", _height + 60);
+
+          // Calculate the new center of the title if there is one
+          if ($scope.title) {
+            _barChartTitle
+              .text($scope.title)
+              .attr("text-anchor", "middle")
+              .transition()
+              .attr("x", Math.round(_width / 2));
+          }
+
+          // Calculate the new center of the legend caption if there is one
+          if ($scope.markedLegendLabel) {
+            _barChartCaption
+              .text($scope.markedLegendLabel);
+            //.attr("text-anchor", "middle")
+
+            _barChartLegend
+              .transition()
+              .attr("transform", "translate(" + (Math.round((_width - _barChartLegend.node().getBBox().width) / 2) + _chartMargin.left) + ", 0)")
+          }
+
+          // if (_barChartBG) {
+          //   _barChartBG.transition()
+          //     .attr("transform", "translate(" + (Math.round((_width - _barChartBG.node().getBBox().width) / 2) + 100) + ", 0)");
+          // }
+
+          // Calculate the new bounding box
+          _barChartBoundingBox
+            .attr("width", _width - _chartMargin.left - _chartMargin.right)
+            .attr("height", _height - _chartMargin.top - _chartMargin.bottom - 40);
+        }
+
+        function _renderBars() {
+
+          _xScale.rangeRoundBands([ _chartMargin.left, (_width - _chartMargin.right - _chartMargin.left)], 0.3);
+          _yScale.range([0, _barChartBoundingBox.attr("height")]);
+          _invYScale.range([_barChartBoundingBox.attr("height"), 0]);
+
+          _xAxis = d3.svg.axis()
+            .scale(_xScale)
+            .orient("bottom")
+            .ticks(_data.length)
+            .outerTickSize(0);
+
+
+          _yAxis = d3.svg.axis()
+            .scale(_invYScale)
+            .orient("left")
+            .ticks(NUM_Y_TICKS)
+            .tickSize(0,0);
+
+          _yAxisGroup
+            .attr("transform", "translate(" + Math.round(_chartMargin.left + PADDING) + ", " + Math.round(_chartMargin.top + 50) + ")")
+            .call(_yAxis)
+            .selectAll("text")
+            .style({
+              "text-anchor": "end",
+              "font-size":"0.8rem",
+              "font-family": "Lucida Grande",
+            });
+
+
+          var yGridLines = _barChartCanvas.selectAll("line.horizontalGrid").data(_invYScale.ticks(NUM_Y_TICKS));
+
+          yGridLines.enter()
+            .append("line")
+            .classed("horizontalGrid", true);
+
+          yGridLines.attr({
+
+              "x1" : "-2",
+              "x2" : +_barChartBoundingBox.attr("width") - 20,
+              "y1" : function(d){ return _invYScale(d);},
+              "y2" : function(d){ return _invYScale(d);},
+              "fill" : "none",
+              "shape-rendering" : "crispEdges",
+              "stroke" : "#eee",
+              "stroke-width" : function(d) {
+       
+                if(_invYScale(d) === _barChartBoundingBox.attr("height") || d === 0){
+                  return "0px";
+                }
+                return "1px";
+              },
+              "transform": "translate(" + Math.round(_chartMargin.left + PADDING) + ", " + Math.round(_chartMargin.top + 50) + ")"
+            });
+
+
+          _xAxisGroup
+            .attr("transform", "translate(" + Math.round((_chartMargin.left - _xScale.rangeBand()) / 2 + PADDING) + ", " + Math.round(_height - (_chartMargin.bottom / 2 )) + ")")
+            .call(_xAxis)
+            .selectAll("text")
+            .style({
+              "text-anchor": "end",
+              "font-size":"8px",
+              "font-family": "Lucida Grande",
+            })
+            .attr("dy", "0rem")
+            .attr("dx", "-12px")
+            .attr("transform", "rotate(-65)")
+            .call(_axisTipFn)
+            .on("mouseover", function (d) {
+              var tick = d3.select(this);
+
+              tick.style({"font-size":"8.5px", "fill":  d3.hsl(_colourScale(d)).darker(1)});
+
+              _axisTipFn.show(tick.data())
+
+            })
+            .on("mouseout", function () {
+              var tick = d3.select(this);
+
+              _axisTipFn.hide();
+
+              tick.style({"font-size":"8px", "fill": ""});
+            })
+            .on("click", function () {
+              var tick = d3.select(this);
+              var filters = {
+                "op":"and",
+                "content":[
+                  {
+                    "op":"in", "content": {"field":"primary_site","value":tick.data()}
+                  }
+                ]};
+
+
+              _axisTipFn.hide();
+
+              $state.go("projects.table", {
+                  filters: JSON.stringify(filters)
+                },
+                {
+                  inherit: false
+                }
+              );
+            });
+
+
+          var barGroups = _barChartCanvas.selectAll("g.stacked-rect")
+            .data(_data);
+
+          barGroups.enter().append("g").classed("stacked-rect", true);
+
+          barGroups
+            .attr("transform", function(d) { return "translate(" + (_xScale(d._key) - (_xScale.rangeBand() * 4)) + ", " + _height + ")"; })
+            .transition()
+            .delay(function(d, i) {
+              return i / _data.length * 500;
+            })
+            .attr("transform", function(d) { return "translate(" + (_xScale(d._key) + PADDING) + ", " +
+              (_height - _yScale(d._count) - _chartMargin.bottom + 10) + ")"; });
+
+
+          var stackedBars = barGroups.selectAll("rect.stacked-bar-item")
+            .data(function(d) { return d.stacks; });
+
+
+          stackedBars.enter().append("rect")
+            .classed("bar-item stacked-bar-item", true)
+            .attr("x", 0)
+            .attr("y", 0);
+
+
+          stackedBars
+            .attr("y", function(d) { return _yScale(d.y0); })
+            .attr("width", _xScale.rangeBand())
+            .attr("height", function(d) { return _yScale(d.y1) - _yScale(d.y0); })
+            .attr("fill", function(d, i) {
+
+
+              d._colour = _colourScale(d._key);
+
+              if (i > 0) {
+                d._colour = d3.hsl(d._colour).darker(i%(Math.random()*2) + 0.1*i, -0.2).toString();
+              }
+
+              //console.log(d._colour);
+              return d._colour;
+            })
+            .call(_tipFn)
+            .on("click", function(d) {
+
+              _tipFn.hide(d);
+
+              $state.go("project", {
+                projectId: d.projectID
+              }, {inherit: false});
+            })
+            .on("mouseover", function(d) {
+
+              var bar = d3.select(this),
+                  barColour = bar.attr("fill");
+
+              bar.interrupt()
+                .transition()
+                .attr("fill", d3.hsl(barColour).darker(1));
+
+              _tipFn.show(d);
+
+            })
+            .on("mouseout", function(d) {
+
+              var bar = d3.select(this),
+                  barColour = d._colour;
+
+              bar.interrupt()
+                .transition()
+                .attr("fill", barColour)
+                .attr("transform", "translate(0, 0)");
+
+              _tipFn.hide(d);
+            });
+
+
+          yGridLines.exit().remove();
+          stackedBars.exit().remove();
+          barGroups.exit().remove();
+
+        }
+
+        function _initListeners() {
+
+          var hoverEventName = "resize." + _postFixID;
+
+          // Add listener to respond to window resize events (i.e. redraw visualization)
+          jQuery(window).on(hoverEventName, _.debounce(() => {
+            _initChartSize();
+            _renderBars();
+          }, 200));
+
+
+          $scope.$on("$destroy", function () {
+            jQuery(window).unbind(hoverEventName);
+          });
+
+          $scope.$watch(function() {
+              return $scope.data;
+          },
+          function(newData, oldData){
+
+            if (! _.isArray(newData) || newData.length === 0 || (newData === oldData && _data)) {
+
+              _barChartCanvas
+                .append("g")
+                .classed("message", true)
+                .append("text")
+                .attr("x", Math.round(_width / 2))
+                .attr("y", 200)
+                .attr("text-anchor", "middle")
+                .text("No Data...");
+
+              return;
+            }
+
+            // Delete any messages
+            _svg.selectAll(".message").remove();
+
+            // Make original data read only...
+            _data = _.cloneDeep(newData);
+
+            _xScale = d3.scale.ordinal()
+               .domain(_.map(_data, function(d) { return d._key; }));
+
+            _yScale = d3.scale.linear()
+              .clamp(true)
+              .domain([0, d3.max(_data, function(d) { return d._maxY; })]);
+
+            _invYScale = d3.scale.linear()
+              .clamp(true)
+              .domain([0, d3.max(_data, function(d) { return d._maxY; })]);
+
+            _colourScale = d3.scale.category20c()
+              .domain(_.map(_data, function(d) { return d._key; }));
+
+            _renderBars();
+
+
+          });
+        }
+
+        function _initChart() {
+
+
+          _chartMargin = $scope.margins || {top: 40, bottom: 40, left: 20, right: 20};
+
+          _initChartSize();
+
+          var boundClipPathID = "boundRect-" + _postFixID;
+
+          _svg.select("clipPath").attr("id", boundClipPathID);
+          _barChartCanvas.attr("clip-path", "url(#" + boundClipPathID + ")");
+
+          var tipFn = function (d) {
+            return "<h4>" + d._key + "</h4><p>" + d._count + "</p>";
+          };
+
+
+          // Ensure that the tip function (if included) returns a string
+          if (_.isFunction($scope.toolTipFn)) {
+            tipFn = $scope.toolTipFn;
+          }
+
+          // Initialize the tip function
+          _tipFn = d3.tip()
+            .attr("class", "tooltip")
+            .offset([-5, 0])
+            .html(tipFn);
+
+          _axisTipFn = d3.tip()
+            .attr("class", "tooltip")
+            .offset([-30, 10])
+            .html(function(d) {
+              return d;
+            });
+
+          _initListeners();
+
+        }
+
+        _initChart();
+
+      }
+    };
+
   }
 
   angular.module("components.charts", [
@@ -411,6 +889,7 @@ module ngApp.components.charts {
     ])
     .directive("chartLegend", ChartLegend)
     .directive("pieChart", PieChart)
-    .directive("barChart", BarChart);
+    .directive("barChart", BarChart)
+    .directive("markedBarChart", MarkedBarChart);
 }
 

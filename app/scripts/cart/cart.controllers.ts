@@ -29,7 +29,6 @@ module ngApp.cart.controllers {
     fileCountChartConfig: any;
     helpHidden: boolean = false;
     participantCount: number;
-    isFetchingCart: boolean = false;
 
     /* @ngInject */
     constructor(private $scope: ng.IScope,
@@ -140,41 +139,37 @@ module ngApp.cart.controllers {
     }
 
     refresh(): void {
-      if(!this.isFetchingCart) {
-        this.isFetchingCart = true;
-        const fileIds = this.CartService.getFileIds();
-        this.CoreService.setPageTitle("Cart", "(" + fileIds.length + ")");
-        // in the event that our cart is empty
-        if (fileIds.length < 1) {
-          this.files = {};
-          return;
-        }
-        var filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
-        var fileOptions = {
-          filters: filters,
-          fields: ['access',
-                   'file_name',
-                   'file_id',
-                   'data_type',
-                   'data_format',
-                   'file_size',
-                   'annotations.annotation_id',
-                   'cases.case_id',
-                   'cases.project.project_id',
-                   'cases.project.name']
-        };
-        this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
-          this.files = this.files || {};
-          if (!_.isEqual(this.files.hits, data.hits)) {
-            this.files = data;
-            this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
-              this.participantCount = data.pagination.total;
-              })
-            .finally(() => this.getSummary() );
-          }
-        })
-        .finally(() => this.isFetchingCart = false);
+      const fileIds = this.CartService.getFileIds();
+      this.CoreService.setPageTitle("Cart", "(" + fileIds.length + ")");
+      // in the event that our cart is empty
+      if (fileIds.length < 1) {
+        this.files = {};
+        return;
       }
+      var filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
+      var fileOptions = {
+        filters: filters,
+        fields: ['access',
+                 'file_name',
+                 'file_id',
+                 'data_type',
+                 'data_format',
+                 'file_size',
+                 'annotations.annotation_id',
+                 'cases.case_id',
+                 'cases.project.project_id',
+                 'cases.project.name']
+      };
+      this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
+        this.files = this.files || {};
+        if (!_.isEqual(this.files.hits, data.hits)) {
+          this.files = data;
+          this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
+            this.participantCount = data.pagination.total;
+            })
+          .finally(() => this.getSummary() );
+        }
+      });
     }
 
     getTotalSize(): number {
@@ -194,9 +189,17 @@ module ngApp.cart.controllers {
     }
 
     removeAll() {
-      this.CartService.removeAll();
+      // edge case where there is only 1 file in the cart,
+      // need to pass the file to CartService.remove because CartService
+      // does not store file names and the file name is displayed in
+      // remove notification
+      if (this.files.pagination.count === 1) {
+        this.CartService.remove(this.files.hits);
+      } else {
+        this.CartService.removeAll();
+      }
       this.lastModified = this.CartService.lastModified;
-      this.files = this.CartService.getFiles();
+      this.files = {};
     }
 
     getManifest(selectedOnly: boolean = false) {

@@ -29,7 +29,7 @@ module ngApp.components.ui.biospecimen.controllers {
       });
 
       const participant = $scope.participant;
-      this.hasBiospecimen = !participant.samples;
+      this.hasNoBiospecimen = _.size(participant.samples) < 1;
       this.biospecimenDataExportFilters = {
         'cases.case_id': participant.case_id
       };

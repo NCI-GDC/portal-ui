@@ -49,6 +49,7 @@ module ngApp.cart.controllers {
       this.lastModified = this.CartService.lastModified;
       this.cartTableConfig = CartTableModel;
 
+      this.CartService.reloadFromLocalStorage();
       this.refresh();
 
       $scope.$on("$locationChangeSuccess", (event, next: string) => {

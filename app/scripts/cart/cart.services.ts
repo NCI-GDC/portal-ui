@@ -123,6 +123,7 @@ module ngApp.cart.services {
     getCartVacancySize(): number;
     getAuthorizedFiles(): IFile[];
     getUnauthorizedFiles(): IFile[];
+    reloadFromLocalStorage(): void;
   }
 
   class CartService implements ICartService {
@@ -142,10 +143,14 @@ module ngApp.cart.services {
                 private gettextCatalog,
                 private $filter: ng.IFilterService,
                 private $timeout: ng.ITimeoutService) {
-      var local_files = $window.localStorage.getItem(CartService.GDC_CART_KEY);
-      var local_time = $window.localStorage.getItem(CartService.GDC_CART_UPDATE);
+                this.reloadFromLocalStorage();
+    }
 
-      this.lastModified = local_time ? $window.moment(local_time) : $window.moment();
+    reloadFromLocalStorage(): void {
+      var local_files = this.$window.localStorage.getItem(CartService.GDC_CART_KEY);
+      var local_time = this.$window.localStorage.getItem(CartService.GDC_CART_UPDATE);
+
+      this.lastModified = local_time ? this.$window.moment(local_time) :this.$window.moment();
       this.files = local_files ? JSON.parse(local_files) : [];
     }
 

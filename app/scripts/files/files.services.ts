@@ -135,7 +135,7 @@ module ngApp.files.services {
 
       var modifiedParams = _.extend({}, params, {
         fields: params.fields && params.fields.join(),
-        expands: params.expand && params.expand.join(),
+        expand: params.expand && params.expand.join(),
         facets: params.facets && params.facets.join()
       });
 

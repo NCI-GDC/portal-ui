@@ -1,6 +1,7 @@
 module ngApp.components.facets.services {
 
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import ILocalStorageService = ngApp.core.services.ILocalStorageService;
   import ISearch = ngApp.components.location.services.ISearch;
   import ICartService = ngApp.cart.services.ICartService;
   import IUserService = ngApp.components.user.services.IUserService;
@@ -235,28 +236,25 @@ module ngApp.components.facets.services {
   }
 
   export interface IFacetsConfigService {
-    getFields(docType: string): Array<Object>;
-    addField(field: Object): void;
+    addField(docType: string, fieldName: string, fieldType: string): void;
+    removeField(docType: string, fieldName: string, fieldType: string): void;
     reset(docType: string): void;
+    isDefault(docType: string): boolean;
+    save(): void;
   }
 
-  class FacetsConfigService implements IFacetsConfigServce {
+  class FacetsConfigService implements IFacetsConfigService {
     public fieldsMap: any = {};
     defaultFieldsMap: any = {};
     FACET_CONFIG_KEY: string = "gdc-facet-config";
 
      /* @ngInject */
-    constructor(private $window: ng.IWindowService) {
-    }
+    constructor(private $window: ng.IWindowService,
+                private LocalStorageService: ILocalStorageService) {}
 
     setFields(docType: string, fields: Array<Object>) {
-      var saved;
+      var saved = _.get(this.LocalStorageService.getItem(this.FACET_CONFIG_KEY), docType, null);
 
-      try {
-        saved = _.get(JSON.parse(this.$window.localStorage.getItem(this.FACET_CONFIG_KEY)), docType, null);
-      } catch (e) {
-        console.log(e);
-      }
       if(!saved) {
         this.fieldsMap[docType] = fields;
         this.save();
@@ -294,17 +292,13 @@ module ngApp.components.facets.services {
     }
 
     save(): void {
-      try {
-        this.$window.localStorage.setItem(this.FACET_CONFIG_KEY, angular.toJson(this.fieldsMap));
-      } catch (e) {
-        console.log(e);
-      }
+      this.LocalStorageService.setItem(this.FACET_CONFIG_KEY, this.fieldsMap);
     }
 
  }
 
   angular.
-      module("facets.services", ["location.services", "restangular", "user.services"])
+      module("facets.services", ["location.services", "restangular", "user.services", "ngApp.core"])
       .service("CustomFacetsService", CustomFacetsService)
       .service("FacetsConfigService", FacetsConfigService)
       .service("FacetService", FacetService);

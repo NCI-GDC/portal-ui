@@ -32,6 +32,7 @@ import IGDCConfig = ngApp.IGDCConfig;
 import INotifyService = ng.cgNotify.INotifyService;
 import IUserService = ngApp.components.user.services.IUserService;
 import IProjectsService = ngApp.projects.services.IProjectsService;
+import ILocalStorageService = ngApp.core.services.ILocalStorageService;
 
 // Cross-Site Request Forgery (CSRF) Prevention
 // https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#General_Recommendation:_Synchronizer_Token_Pattern
@@ -51,8 +52,7 @@ function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
                    RestangularProvider: restangular.IProvider,
                    config: IGDCConfig,
                    $compileProvider: ng.ICompileService,
-                   $httpProvider: ng.IHttpProvider
-                   ) {
+                   $httpProvider: ng.IHttpProvider) {
   $compileProvider.debugInfoEnabled(!config.production);
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/");
@@ -84,23 +84,15 @@ function appRun(gettextCatalog: any,
                 UserService: IUserService,
                 ProjectsService: IProjectsService,
                 $window: ng.IWindowService,
-                $uibModal: any) {
+                $uibModal: any,
+                LocalStorageService: ILocalStorageService
+                ) {
 
   if (navigator.cookieEnabled && $cookies.get("GDC-Portal-Sha") !== config.commitHash) {
     $cookies.put("GDC-Portal-Sha", config.commitHash);
-
-    // For disabled cookies / local / session storage
-    try {
-      $window.localStorage.removeItem("Projects-col");
-      $window.localStorage.removeItem("Annotations-col");
-      $window.localStorage.removeItem("Files-col");
-      $window.localStorage.removeItem("Cases-col");
-      $window.localStorage.removeItem("Cart-col");
-      $window.localStorage.removeItem("gdc-cart-items");
-      $window.localStorage.removeItem("gdc-cart-updated");
-    } catch (e) {
-      console.log(e);
-    }
+    [ "Projects-col", "Annotations-col", "Files-col", "Cases-col",
+      "Cart-col", "gdc-cart-items", "gdc-cart-updated"
+    ].forEach(item => LocalStorageService.removeItem(item))
   }
   gettextCatalog.debug = true;
 

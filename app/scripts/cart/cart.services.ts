@@ -3,6 +3,7 @@ module ngApp.cart.services {
   import IFiles = ngApp.files.models.IFiles;
   import IFile = ngApp.files.models.IFile;
   import IFilesService = ngApp.files.services.IFilesService;
+  import ILocalStorageService = ngApp.core.services.ILocalStorageService;
   import ITabs = ngApp.search.services.ITabs;
   import ITab = ngApp.search.services.ITab;
   import IGDCWindowService = ngApp.core.models.IGDCWindowService;
@@ -26,7 +27,8 @@ module ngApp.cart.services {
     /* @ngInject */
     constructor(private $window: IGDCWindowService,
                 private $q: ng.IQService,
-                private FilesService: IFilesService) {
+                private FilesService: IFilesService,
+                private LocalStorageService: ILocalStorageService) {
                 this.files = { hits: [],
                               pagination: { total: 0 }
                             };
@@ -34,47 +36,41 @@ module ngApp.cart.services {
     }
 
     pushAddedQuery(query: Object): void {
-      var oldQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_QUERY)) || {"op": "or", content: []};
+      var oldQuery = this.LocalStorageService.getItem(QueryCartService.GDC_CART_ADDED_QUERY, {"op": "or", content: []});
       // if user clicked add all and the query is empty
       var newQuery = {"op": "or", content: Object.keys(query).length ? oldQuery.content.concat(query) : []};
-      this.$window.localStorage.setItem(QueryCartService.GDC_CART_ADDED_QUERY, JSON.stringify(newQuery));
+      this.LocalStorageService.setItem(QueryCartService.GDC_CART_ADDED_QUERY, newQuery);
       this.getFiles();
     }
 
     pushRemovedQuery(query: Object): void {
-      var oldQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_QUERY)) || {"op": "or", content: []};
+      var oldQuery = this.LocalStorageService.getItem(QueryCartService.GDC_CART_REMOVED_QUERY, {"op": "or", content: []});
       var newQuery = {"op": "or", content: oldQuery.content.concat(query)};
-      this.$window.localStorage.setItem(QueryCartService.GDC_CART_REMOVED_QUERY, JSON.stringify(newQuery));
+      this.LocalStorageService.setItem(QueryCartService.GDC_CART_REMOVED_QUERY, newQuery);
       this.getFiles();
     }
 
     pushAddedFiles(fileIds: string[]): void {
-      var oldFileIds = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_FILES)) || [];
-      this.$window.localStorage.setItem(QueryCartService.GDC_CART_ADDED_FILES, JSON.stringify(oldFileIds.concat(fileIds)));
+      var oldFileIds = this.LocalStorageService.getItem(QueryCartService.GDC_CART_ADDED_FILES, []);
+      this.LocalStorageService.setItem(QueryCartService.GDC_CART_ADDED_FILES, oldFileIds.concat(fileIds));
       this.getFiles();
     }
 
     pushRemovedFiles(fileIds: string[]): void {
-      var oldFileIds = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_FILES)) || [];
-      this.$window.localStorage.setItem(QueryCartService.GDC_CART_REMOVED_FILES, JSON.stringify(oldFileIds.concat(fileIds)));
+      var oldFileIds = this.LocalStorageService.getItem(QueryCartService.GDC_CART_REMOVED_FILES, []);
+      this.LocalStorageService.setItem(QueryCartService.GDC_CART_REMOVED_FILES, oldFileIds.concat(fileIds));
       this.getFiles();
     }
 
     isInCart(fileId: string): boolean {
       //todo: better way to do this that includes the files defined by addedQuery
-      var fileIds= JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_FILES)) || [];
+      var fileIds = this.LocalStorageService.getItem(QueryCartService.GDC_CART_ADDED_FILES, []);
       return fileIds.find(f => f === fileId) ? true : false;
     }
 
     getFiles(): ng.IPromise<IFile> {
-      var addedQuery, removedQuery;
-
-      try {
-        addedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_ADDED_QUERY));
-        removedQuery = JSON.parse(this.$window.localStorage.getItem(QueryCartService.GDC_CART_REMOVED_QUERY));
-      } catch (e) {
-        console.log(e);
-      }
+      var addedQuery = this.LocalStorageService.getItem(QueryCartService.GDC_CART_ADDED_QUERY);
+      var removedQuery = this.LocalStorageService.getItem(QueryCartService.GDC_CART_REMOVED_QUERY);
       //incomplete
       var filters = removedQuery ? {"op":"and","content":[addedQuery, removedQuery]} : addedQuery;
       if (filters) {
@@ -145,6 +141,7 @@ module ngApp.cart.services {
     constructor(private $window: IGDCWindowService,
                 private notify: INotifyService,
                 private UserService,
+                private LocalStorageService: ILocalStorageService,
                 private $rootScope,
                 private gettextCatalog,
                 private $filter: ng.IFilterService,
@@ -153,11 +150,9 @@ module ngApp.cart.services {
     }
 
     reloadFromLocalStorage(): void {
-      var local_files = this.$window.localStorage.getItem(CartService.GDC_CART_KEY);
-      var local_time = this.$window.localStorage.getItem(CartService.GDC_CART_UPDATE);
-
-      this.lastModified = local_time ? this.$window.moment(local_time) :this.$window.moment();
-      this.files = local_files ? JSON.parse(local_files) : [];
+      var localTime = this.LocalStorageService.getItem(CartService.GDC_CART_UPDATE);
+      this.lastModified = localTime ? this.$window.moment(localTime) : this.$window.moment();
+      this.files = this.LocalStorageService.getItem(CartService.GDC_CART_KEY, []);
     }
 
     getMaxSize(): number {
@@ -217,18 +212,23 @@ module ngApp.cart.services {
       }
 
       this.lastModifiedFiles = [];
+
       var alreadyIn:IFile[] = [];
-      _.forEach(files, (file) => {
+
+      files.forEach(file => {
         if (!this.isInCart(file.file_id)) {
             this.lastModifiedFiles.push(file);
         } else {
           alreadyIn.push(file);
         }
       });
+
       this.files = this.files.concat(this.lastModifiedFiles);
+
       if (addingMsgPromise) {
         this.$timeout.cancel(addingMsgPromise);
       }
+
       this._sync();
       this.notify.closeAll();
       this.notify.config({ duration: 5000 });
@@ -339,14 +339,19 @@ module ngApp.cart.services {
     _sync(): void {
       this.$rootScope.$broadcast("cart-update");
       this.lastModified = this.$window.moment();
-      try {
-        this.$window.localStorage.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
-        this.$window.localStorage.setItem(CartService.GDC_CART_KEY, JSON.stringify(this.files.map(f => {return { access: f.access, file_id: f.file_id, file_size: f.file_size, projects: _.map(f.cases, c => c.project.project_id) }})));
-      } catch (e) {
-        console.log(e);
-      }
-    }
 
+      var filesArray = this.files.map(f => {
+        return {
+          access: f.access,
+          file_id: f.file_id,
+          file_size: f.file_size,
+          projects: _.map(f.cases, c => c.project.project_id)
+        }
+      });
+
+      this.LocalStorageService.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
+      this.LocalStorageService.setItem(CartService.GDC_CART_KEY, filesArray);
+    }
   }
 
   export interface ICartState {
@@ -377,6 +382,7 @@ module ngApp.cart.services {
 
   angular
       .module("cart.services", [
+        "ngApp.core",
         "ngApp.files",
         "cgNotify"
       ])

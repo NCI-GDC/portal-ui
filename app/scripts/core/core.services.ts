@@ -63,6 +63,49 @@ module ngApp.core.services {
 
   }
 
+  export interface ILocalStorageService {
+    removeItem(item: string);
+    getItem(item: string, defaultResponse?: any);
+    setItem(key: string, item: any);
+  }
+
+  class LocalStorageService implements ILocalStorageService {
+    /* @ngInject */
+    constructor(private $window) {}
+
+    removeItem(item: string) {
+      try {
+        this.$window.localStorage.removeItem(item);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    getItem(item: string, defaultResponse?: any) {
+      var result;
+      try {
+        try {
+          result = JSON.parse(this.$window.localStorage.getItem(item)) || defaultResponse || {};
+        } catch (e) {
+          result = this.$window.localStorage.getItem(item) || defaultResponse || {};
+        }
+      } catch (e) {
+        console.log(e);
+        result = defaultResponse || {};
+      }
+      return result;
+    }
+
+    setItem(key: string, item: any) {
+      try {
+        // always stringify so can always parse
+        this.$window.localStorage.setItem(key, JSON.stringify(item));
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
+
   var dataNames = [
     'Raw sequencing data',
     'Gene expression',
@@ -121,5 +164,6 @@ module ngApp.core.services {
       ])
       .value("DataCategoryNames", dataNames)
       .value("ExperimentalStrategyNames", expNames)
-      .service("CoreService", CoreService);
+      .service("CoreService", CoreService)
+      .service("LocalStorageService", LocalStorageService);
 }

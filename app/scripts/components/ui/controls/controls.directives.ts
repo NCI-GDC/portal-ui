@@ -29,47 +29,23 @@ module ngApp.components.ui.control.directives {
         const scope = $scope;
 
         function _initListeners() {
-          var _timeOutHandle = null;
-
-          $element.focus(
-            () => {
-              scope.$evalAsync(() => {
-                scope.uiControl.isOpen = true;
-                $element.find('#' + $scope.uiControl.id).focus();
-              });
-
-              if (_timeOutHandle) {
-                clearTimeout(_timeOutHandle);
-                _timeOutHandle = null;
+          $element.keydown(function(e){
+              if(e.which == 13){ // enter key
+                  e.preventDefault();
+                  $element.find('#' + $scope.uiControl.id).click();
               }
-            });
+          });
 
-          /*$element.blur(() => {
-              _timeOutHandle = setTimeout(() => {
-
-                scope.$evalAsync(() => {
-                  scope.uiControl.isOpen = false;
-                });
-
-              }, 500)
-            });*/
-
-            // if (typeof scope[$attrs.isLoadingIndicatorFlag] === 'undefined') {
-            //   $scope[$attrs.isLoadingIndicatorFlag] = false;
-            // }
-
-            scope.$watch(() => {
-              return  scope[$attrs.isLoadingIndicatorFlag];
-            }, (isLoading) => {
-              scope.uiControl.isLoading = isLoading;
-            });
-
+          scope.$watch(() => {
+            return  scope[$attrs.isLoadingIndicatorFlag];
+          }, (isLoading) => {
+            scope.uiControl.isLoading = isLoading;
+          });
         }
 
         function _init() {
           scope.uiControl = {
             id: 'split-control-' + (new Date().getTime()),
-            isOpen: false,
             isLoading: false,
             controlLabelText: $attrs.controlLabelText || 'Action Label',
             srLabel: $attrs.srLabel || 'Split Control',

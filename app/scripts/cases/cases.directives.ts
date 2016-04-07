@@ -15,7 +15,7 @@ module ngApp.cases.directives {
       icon: '@',
       ngDisabled: '='
     },
-    template: '<a ng-class="[styleClass || \'btn btn-primary\']" data-downloader> \
+    template: '<a tabindex="0" ng-class="[styleClass || \'btn btn-primary\']" data-downloader> \
               <i class="fa {{icon || \'fa-download\'}}" ng-class="{\'fa-spinner\': active, \'fa-pulse\': active}" /> \
               <span ng-if="textNormal"><span ng-if="! active">&nbsp;{{ ::textNormal }}</span> \
               <span ng-if="active">&nbsp;{{ ::textInProgress }}</span></span></a>',

@@ -1,8 +1,10 @@
 <span>
-  <a id="remove-unauthorized-files-button"
+  <button id="remove-unauthorized-files-button"
      tabindex="0"
-     data-ng-if="files[0]" ng-click="remove()" type="button">
+     data-ng-if="files[0]"
+     data-ng-click="remove()"
+     >
     <i class="fa fa-remove"></i>
     <span data-translate>Unauthorized Files ({{ files.length }})</span>
-  </a>
+  </button>
 </span>

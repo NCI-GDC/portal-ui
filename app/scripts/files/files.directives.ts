@@ -13,10 +13,10 @@ module ngApp.files.directives {
         styleClass: '@',
         icon: '@'
       },
-      template: '<a tabindex="0" data-ng-class="[styleClass || \'btn btn-primary\']" data-downloader ng-click="ctrl.onClick()"> \
+      template: '<button tabindex="0" data-ng-class="[styleClass || \'btn btn-primary\']" data-downloader ng-click="ctrl.onClick()"> \
               <i class="fa {{icon || \'fa-download\'}}" ng-class="{\'fa-spinner\': active, \'fa-pulse\': active}" /> \
               <span ng-if="textNormal"><span ng-if="! active">&nbsp;{{ ::textNormal }}</span> \
-              <span ng-if="active">&nbsp;{{ ::textInProgress }}</span></span></a>',
+              <span ng-if="active">&nbsp;{{ ::textInProgress }}</span></span></button>',
       controllerAs: 'ctrl',
       controller: function($scope: ng.IScope, $attrs, $element, $uibModal, CartService: ICartService, UserService: IUserService, config: IGDCConfig) {
         const url = config.api + '/files';

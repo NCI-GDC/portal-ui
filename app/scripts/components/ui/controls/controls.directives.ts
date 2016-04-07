@@ -31,7 +31,6 @@ module ngApp.components.ui.control.directives {
         function _initListeners() {
           $element.keydown(function(e){
               if(e.which == 13){ // enter key
-                  e.preventDefault();
                   $element.find('#' + $scope.uiControl.id).click();
               }
           });

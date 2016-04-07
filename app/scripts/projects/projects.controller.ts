@@ -80,6 +80,7 @@ module ngApp.projects.controllers {
           }
         });
       } else {
+        this.loading = false;
         this.tabSwitch = false;
         if (this.ProjectsState.tabs.graph.active) {
           this.drawGraph(this.projects);

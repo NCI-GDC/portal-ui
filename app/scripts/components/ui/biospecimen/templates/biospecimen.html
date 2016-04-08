@@ -40,11 +40,11 @@
               </button>
             </div>
           </div>
-          <i class="fa fa-plus-square-o action" data-ng-if="!participant.samples.expanded"
+          <i class="fa fa-plus-square action" data-ng-if="!participant.samples.expanded"
              data-ng-click="expandTree($event, participant.samples)"
              data-ng-keypress="expandTree($event, participant.samples)"
              aria-label="Expand Portions for {{ sample.submitter_id }}"></i>
-          <i class="fa fa-minus-square-o action" data-ng-if="participant.samples.expanded"
+          <i class="fa fa-minus-square action" data-ng-if="participant.samples.expanded"
              data-ng-click="expandTree($event, participant.samples)"
              data-ng-keypress="expandTree($event, participant.samples)"
              aria-label="Collapse Samples for {{ participant.case_id }}"></i>
@@ -55,11 +55,11 @@
           <div data-ng-repeat="sample in participant.samples"
                data-ng-if="participant.samples.expanded">
             <div data-ng-if="sample.submitter_id" class="biospecimen-row document">
-              <i class="fa fa-plus-square-o action" data-ng-if="!sample.expanded"
+              <i class="fa fa-plus-square action" data-ng-if="!sample.expanded"
                  data-ng-click="expandTree($event, sample)"
                  data-ng-keypress="expandTree($event, sample)"
                  aria-label="Expand Sample {{ sample.submitter_id }}"></i>
-              <i class="fa fa-minus-square-o action" data-ng-if="sample.expanded"
+              <i class="fa fa-minus-square action" data-ng-if="sample.expanded"
                  data-ng-click="expandTree($event, sample)"
                  data-ng-keypress="expandTree($event, sample)"
                  aria-label="Collapse Sample {{ sample.submitter_id }}"></i>
@@ -76,11 +76,11 @@
               <div data-ng-if="sample.portions.length" data-ng-class="{ hidden: !sample.expanded }"
                    aria-expanded="sample.expanded">
                 <div class="biospecimen-row section">
-                  <i class="fa fa-plus-square-o action" data-ng-if="!sample.portions.expanded"
+                  <i class="fa fa-plus-square action" data-ng-if="!sample.portions.expanded"
                      data-ng-click="expandTree($event, sample.portions)"
                      data-ng-keypress="expandTree($event, sample.portions)"
                      aria-label="Expand Portions for {{ sample.submitter_id }}"></i>
-                  <i class="fa fa-minus-square-o action" data-ng-if="sample.portions.expanded"
+                  <i class="fa fa-minus-square action" data-ng-if="sample.portions.expanded"
                      data-ng-click="expandTree($event, sample.portions)"
                      data-ng-keypress="expandTree($event, sample.portions)"
                      aria-label="Collapse Portions for {{ sample.submitter_id }}"></i>
@@ -91,12 +91,12 @@
                   <!-- Start of Portions List -->
                   <div data-ng-repeat="portion in sample.portions" data-ng-if="sample.portions.expanded">
                     <div class="biospecimen-row">
-                      <i class="fa fa-plus-square-o action"
+                      <i class="fa fa-plus-square action"
                          data-ng-if="!portion.expanded && (portion.slides.length || portion.analytes.length)"
                          data-ng-click="expandTree($event, portion)"
                          data-ng-keypress="expandTree($event, portion)"
                          aria-label="Expand Portion {{ portion.submitter_id }}"></i>
-                      <i class="fa fa-minus-square-o action"
+                      <i class="fa fa-minus-square action"
                          data-ng-if="portion.expanded && (portion.slides.length || portion.analytes.length)"
                          data-ng-click="expandTree($event, portion)"
                          data-ng-keypress="expandTree($event, portion)"
@@ -112,20 +112,20 @@
                               data-ng-class="{ highlighted: foundBySearch(portion.submitter_id) }"
                               data-ng-bind-html="(portion.submitter_id | highlight:searchTerm) || portion.submitter_id">
                         </span>
-                        <span data-ng-if="!portion.submitter_id">
-                          <span data-translate>TARGET Portion</span>
-                          {{ $index + 1 }}
+                        <span data-ng-if="!portion.submitter_id"
+                          data-ng-class="{ highlighted: foundBySearch(portion.portion_id) }"
+                          data-ng-bind-html="(portion.portion_id | highlight:searchTerm) || portion.portion_id">
                         </span>
                       </span>
 
                       <div data-ng-if="portion.slides.length" data-ng-class="{ hidden: !portion.expanded }"
                            aria-expanded="portion.expanded">
                         <div class="biospecimen-row section">
-                          <i class="fa fa-plus-square-o action" data-ng-if="!portion.slides.expanded"
+                          <i class="fa fa-plus-square action" data-ng-if="!portion.slides.expanded"
                              data-ng-click="expandTree($event, portion.slides)"
                              data-ng-keypress="expandTree($event, portion.slides)"
                              aria-label="Expand Slides for {{ portion.submitter_id }}"></i>
-                          <i class="fa fa-minus-square-o action" data-ng-if="portion.slides.expanded"
+                          <i class="fa fa-minus-square action" data-ng-if="portion.slides.expanded"
                              data-ng-click="expandTree($event, portion.slides)"
                              data-ng-keypress="expandTree($event, portion.slides)"
                              aria-label="Collapse Slides for {{ portion.submitter_id }}"></i>
@@ -143,9 +143,9 @@
                             <span data-ng-if="slide.submitter_id"
                                   data-ng-class="{ highlighted: foundBySearch(slide.submitter_id) }"
                                   data-ng-bind-html="(slide.submitter_id | highlight:searchTerm) || slide.submitter_id"></span>
-                            <span data-ng-if="!slide.submitter_id">
-                              <span data-translate>TARGET Slide</span>
-                              {{ $index + 1 }}
+                            <span data-ng-if="!slide.submitter_id"
+                              data-ng-class="{ highlighted: foundBySearch(slide.slide_id) }"
+                              data-ng-bind-html="(slide.slide_id | highlight:searchTerm) || slide.slide_id">
                             </span>
                           </div>
                         </div>
@@ -154,11 +154,11 @@
                       <div data-ng-if="portion.analytes.length" data-ng-class="{ hidden: !portion.expanded }"
                            aria-expanded="portion.expanded">
                         <div class="biospecimen-row section">
-                          <i class="fa fa-plus-square-o action" data-ng-if="!portion.analytes.expanded"
+                          <i class="fa fa-plus-square action" data-ng-if="!portion.analytes.expanded"
                              data-ng-click="expandTree($event, portion.analytes)"
                              data-ng-keypress="expandTree($event, portion.analytes)"
                              aria-label="Expand Portions for {{ sample.submitter_id }}"></i>
-                          <i class="fa fa-minus-square-o action" data-ng-if="portion.analytes.expanded"
+                          <i class="fa fa-minus-square action" data-ng-if="portion.analytes.expanded"
                              data-ng-click="expandTree($event, portion.analytes)"
                              data-ng-keypress="expandTree($event, portion.analytes)"
                              aria-label="Collapse Portions for {{ sample.submitter_id }}"></i>
@@ -169,11 +169,11 @@
 
                           <div data-ng-repeat="analyte in portion.analytes" class="biospecimen-row"
                                data-ng-if="portion.analytes.expanded">
-                            <i class="fa fa-plus-square-o" data-ng-if="!analyte.expanded"
+                            <i class="fa fa-plus-square" data-ng-if="!analyte.expanded"
                                data-ng-click="expandTree($event, analyte)"
                                data-ng-keypress="expandTree($event, analyte)"
                                aria-label="Expand Analytes {{ portion.submitter_id }}"></i>
-                            <i class="fa fa-minus-square-o" data-ng-if="analyte.expanded"
+                            <i class="fa fa-minus-square" data-ng-if="analyte.expanded"
                                data-ng-click="expandTree($event, analyte)"
                                data-ng-keypress="expandTree($event, analyte)"
                                aria-label="Collapse Analytes {{ portion.submitter_id }}"></i>
@@ -189,20 +189,20 @@
                                     data-ng-class="{ highlighted: foundBySearch(analyte.submitter_id) }"
                                     data-ng-bind-html="(analyte.submitter_id | highlight:searchTerm) || analyte.submitter_id">
                               </span>
-                              <span data-ng-if="!analyte.submitter_id">
-                                <span data-translate>TARGET Analyte</span>
-                                {{ $index + 1 }}
+                              <span data-ng-if="!analyte.submitter_id"
+                                data-ng-class="{ highlighted: foundBySearch(analyte.analyte_id) }"
+                                data-ng-bind-html="(analyte.analyte_id | highlight:searchTerm) || analyte.analyte_id">
                               </span>
                             </span>
 
                             <div data-ng-if="analyte.aliquots.length" data-ng-class="{ hidden: !analyte.expanded }"
                                  aria-expanded="analyte.expanded">
                               <div class="biospecimen-row section">
-                                <i class="fa fa-plus-square-o action" data-ng-if="!analyte.aliquots.expanded"
+                                <i class="fa fa-plus-square action" data-ng-if="!analyte.aliquots.expanded"
                                    data-ng-click="expandTree($event, analyte.aliquots)"
                                    data-ng-keypress="expandTree($event, analyte.aliquots)"
                                    aria-label="Expand Aliquots for {{ analyte.submitter_id }}"></i>
-                                <i class="fa fa-minus-square-o action" data-ng-if="analyte.aliquots.expanded"
+                                <i class="fa fa-minus-square action" data-ng-if="analyte.aliquots.expanded"
                                    data-ng-click="expandTree($event, analyte.aliquots)"
                                    data-ng-keypress="expandTree($event, analyte.aliquots)"
                                    aria-label="Collapse Aliquots for {{ analyte.submitter_id }}"></i>
@@ -222,9 +222,9 @@
                                         data-ng-class="{ highlighted: foundBySearch(aliquot.submitter_id) }"
                                         data-ng-bind-html="(aliquot.submitter_id | highlight:searchTerm) || aliquot.submitter_id">
                                   </span>
-                                  <span data-ng-if="!aliquot.submitter_id">
-                                    <span data-translate>TARGET Aliquot</span>
-                                    {{ $index + 1 }}
+                                  <span data-ng-if="!aliquot.submitter_id"
+                                    data-ng-class="{ highlighted: foundBySearch(aliquot.aliquot_id) }"
+                                    data-ng-bind-html="(aliquot.aliquot_id | highlight:searchTerm) || aliquot.aliquot_id">
                                   </span>
                                 </div>
                               </div>

@@ -23,11 +23,11 @@
   <tbody>
     <tr data-ng-repeat="d in data track by d[rowId]">
       <td
-        data-cell="::getCell(h,d)"
+        data-cell="getCell(h,d)"
         data-row="d"
         data-ng-class="h.tdClassName"
         data-ng-hide="h.inactive(this)"
-        data-uib-tooltip="{{::getToolTipText(h,d)}}"
+        data-uib-tooltip="{{getToolTipText(h,d)}}"
         data-tooltip-enable="h.toolTipText"
         data-tooltip-append-to-body="true"
         data-tooltip-popup-delay="1000"

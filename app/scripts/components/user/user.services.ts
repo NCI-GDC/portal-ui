@@ -74,7 +74,7 @@ module ngApp.components.user.services {
             this.$log.error("Error logging in, response status " + response.status);
           }
         })
-        .finally(() => this.isFetching = false);
+        .finally(() => this.isFetching = false );
       }
     }
 
@@ -114,6 +114,8 @@ module ngApp.components.user.services {
                            }, [])}
                          };
       this.$rootScope.$broadcast("gdc-user-reset");
+      console.log('setUser');
+      console.log(user);
     }
 
     toggleFilter(): void {

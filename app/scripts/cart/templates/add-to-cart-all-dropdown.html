@@ -28,7 +28,8 @@
       </a>
     </li>
     <li>
-      <a data-ng-click="ctrl.removeAll()">
+      <a data-ng-click="ctrl.removeAll()"
+         data-ng-if="ctrl.CartService.getFiles().length">
         <span class="fa-stack">
           <i class="fa fa-trash fa-stack-1x"></i>
         </span>

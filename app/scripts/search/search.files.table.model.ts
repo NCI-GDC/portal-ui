@@ -43,9 +43,7 @@ module ngApp.search.models {
         name: "My Projects",
         id: "my_projects",
         td: (row, $scope) => {
-            console.log(row);
             var isUserProject = $scope.UserService.isUserProject(row);
-            console.log(isUserProject);
             var icon = isUserProject ? 'check' : 'remove';
             return '<i class="fa fa-' + icon + '"></i>';
         },

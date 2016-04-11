@@ -17,6 +17,7 @@ module ngApp.cart.controllers {
     cartTableConfig: any;
     projectCountChartConfig: any;
     fileCountChartConfig: any;
+    fileCountChartData: any[];
   }
 
   class CartController implements ICartController {
@@ -27,6 +28,7 @@ module ngApp.cart.controllers {
     cartTableConfig: any;
     projectCountChartConfig: any;
     fileCountChartConfig: any;
+    fileCountChartData: Object[];
     helpHidden: boolean = false;
     participantCount: number;
 
@@ -187,9 +189,8 @@ module ngApp.cart.controllers {
           this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
             this.participantCount = data.pagination.total;
             })
-          .finally(() => this.getSummary() );
         }
-      });
+      }).finally(() => this.getSummary() );
     }
 
     getTotalSize(): number {

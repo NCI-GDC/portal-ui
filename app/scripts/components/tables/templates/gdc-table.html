@@ -19,7 +19,8 @@
     <div class="pull-right" data-ng-if="endpoint || sortColumns || gtc.sortingHeadings.length">
       <div class="btn-group" role="group" aria-label="Filter, sort or export table">
         <sort-table data-ng-if="gtc.sortingHeadings"
-                    data-config="config"
+                    data-headings="gtc.displayedHeadings"
+                    data-title="{{ config.title }}"
                     data-update="clientSide"
                     data-data="data"
                     data-saved="saved"
@@ -27,12 +28,12 @@
         <arrange-columns data-title="{{ config.title }}"
                          data-saved="saved"
                          data-default-headings="gtc.defaultHeadings"
-                         data-headings="config.headings"></arrange-columns>
+                         data-headings="gtc.displayedHeadings"></arrange-columns>
         <export-table
           data-ng-if="paging.total < 2000"
           data-size="{{ paging.total }}"
           data-endpoint="{{ endpoint }}"
-          data-headings="config.headings" data-ng-if="endpoint"></export-table>
+          data-headings="gtc.displayedHeadings" data-ng-if="endpoint"></export-table>
       </div>
     </div>
   </div>
@@ -40,7 +41,7 @@
     <tableicious
         id="{{ id }}"
         data-row-id="{{ config.rowId }}"
-        data-headings="config.headings"
+        data-headings="gtc.displayedHeadings"
         data-data="gtc.displayedData"
         data-title="{{config.title}}"
         data-saved="saved"

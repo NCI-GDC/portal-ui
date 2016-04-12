@@ -53,11 +53,11 @@ module ngApp.components.tables.directives.tableicious {
                    refresh(n);
                 }, true);
 
-                $scope.headings = ($scope.saved || []).length ?
+                var loadedHeadings = ($scope.saved || []).length ?
                   _.map($scope.saved, (s: IHeading): IHeading => _.merge(_.find($scope.headings, {id: s.id}), s)) :
-                  $scope.headings;
+                  _.cloneDeep($scope.headings);
 
-                refresh($scope.headings);
+                refresh(loadedHeadings);
             }
         }
     }

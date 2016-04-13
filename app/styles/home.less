@@ -29,7 +29,14 @@
 
     text-align: center;
     font-size: 1.2rem;
+    display: flex;
+    justify-content: space-between;
 
+    .menu-column {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: column;
+    }
 
     &:before {
       width: 0;
@@ -51,8 +58,11 @@
       background-color: #ccc;
     }
 
-    td {
-      padding: 0.25rem;
+    .menu-item {
+      padding: 0.5rem;
+      white-space: nowrap;
+      margin: 0.25rem;
+      flex: 1;
     }
 
     a {

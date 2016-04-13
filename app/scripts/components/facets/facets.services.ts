@@ -5,6 +5,7 @@ module ngApp.components.facets.services {
   import ISearch = ngApp.components.location.services.ISearch;
   import ICartService = ngApp.cart.services.ICartService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import IFilters = ngApp.components.location.IFilters;
 
   export interface IFacetService {
     addTerm(facet: string, term: string, op?:string): void;
@@ -12,7 +13,9 @@ module ngApp.components.facets.services {
     getActives(facet: string, terms: any[]): string[];
     getActiveIDs(facet: string): string[];
     getActivesWithOperator(facet: string): any;
+    getActivesWithOperator(facet: string): any;
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any>;
+    ensurePath(filters: IFilters): IFilters;
   }
 
   class FacetService implements IFacetService {
@@ -133,11 +136,8 @@ module ngApp.components.facets.services {
       return xs;
     }
 
-    ensurePath(filters: Object): Object {
-      if (!filters.hasOwnProperty("content")) {
-        filters = {op: "and", content: []};
-      }
-      return filters;
+    ensurePath(filters: IFilters): IFilters {
+      return filters.content ? filters : { op: "and", content: [] };
     }
 
     addTerm(facet: string, term: string, op: string = 'in') {

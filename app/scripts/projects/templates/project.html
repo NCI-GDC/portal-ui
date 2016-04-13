@@ -93,26 +93,30 @@
 
     <section class="row" id="graphs">
       <div class="col-md-6">
-        <summary-card data-data="prc.experimentalStrategies"
-                      height="250"
-                      data-mode="table"
-                      class="no-ellipsis"
-                      data-show-cases="true"
-                      data-config="prc.expStratConfig"
-                      data-table-id="file-case-counts-by-experimental-strategy-summary-card-table"
-                      data-grouping-title="Experimental Strategy"
-                      data-title="File Counts by Experimental Strategy"></summary-card>
+        <project-summary-card
+          data-data="prc.experimentalStrategies"
+          height="250"
+          data-mode="table"
+          class="no-ellipsis"
+          data-show-cases="true"
+          data-config="prc.expStratConfig"
+          data-table-id="file-case-counts-by-experimental-strategy-summary-card-table"
+          data-grouping-title="Experimental Strategy"
+          data-title="File Counts by Experimental Strategy">
+        </project-summary-card>
       </div>
       <div class="col-md-6">
-        <summary-card data-data="prc.dataCategories"
-                      height="250"
-                      data-mode="table"
-                      data-show-cases="true"
-                      class="no-ellipsis"
-                      data-config="prc.dataCategoriesConfig"
-                      data-table-id="file-case-counts-by-data-category-summary-card-table"
-                      data-grouping-title="Data Category"
-                      data-title="File Counts by Data Category"></summary-card>
+        <project-summary-card
+          data-data="prc.dataCategories"
+          height="250"
+          data-mode="table"
+          data-show-cases="true"
+          class="no-ellipsis"
+          data-config="prc.dataCategoriesConfig"
+          data-table-id="file-case-counts-by-data-category-summary-card-table"
+          data-grouping-title="Data Category"
+          data-title="File Counts by Data Category">
+        </project-summary-card>
       </div>
     </section>
   </div>

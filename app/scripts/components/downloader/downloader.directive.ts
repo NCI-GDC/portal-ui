@@ -8,8 +8,10 @@ module ngApp.components.downloader.directive {
     $uibModal: any,
     notify: INotifyService,
     $rootScope: IRootScope,
-    $log: ng.ILogService): ng.IDirective {
+    $log: ng.ILogService
+  ): ng.IDirective {
 
+    const cookiePath = document.querySelector('base').getAttribute('href');
     const _$ = $window.jQuery;
     const iFrameIdPrefix = '__downloader_iframe__';
     const formIdPrefix = '__downloader_form__';
@@ -156,7 +158,10 @@ module ngApp.components.downloader.directive {
             Math.abs(hashString(JSON.stringify(params) + downloadToken)).toString(16) : null;
           if (cookieKey) {
             $cookies.put(cookieKey, downloadToken);
-            _.assign(params, {downloadCookieKey: cookieKey});
+            _.assign(params, {
+              downloadCookieKey: cookieKey,
+              downloadCookiePath: cookiePath
+            });
           }
 
           const fields = _.reduce(params, (result, value, key) => {

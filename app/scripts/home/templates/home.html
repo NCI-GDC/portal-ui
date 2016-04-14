@@ -81,7 +81,8 @@
             <span data-ng-if="stat.icon === 'cancer_type_hardcode'" class="icon-gdc-cancer-types project-icon">
               <span class="path1"></span><span class="path2"></span><span class="path3" style="color: #fff;"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span>
             </span>
-            <a href="{{stat.url}}" data-ng-bind="stat.value|number"></a>
+            <span data-ng-if="stat.icon === 'cancer_type_hardcode'" href="{{stat.url}}" data-ng-bind="stat.value|number"></span>
+            <a data-ng-if="stat.icon !== 'cancer_type_hardcode'" href="{{stat.url}}" data-ng-bind="stat.value|number"></a>
           </div>
         </div>
       </div>

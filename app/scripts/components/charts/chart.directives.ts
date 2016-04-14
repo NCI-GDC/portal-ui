@@ -631,7 +631,7 @@ module ngApp.components.charts {
             .style({
               "text-anchor": "end",
               "font-size":"0.8rem",
-              "font-family": "Lucida Grande",
+              "font-family": "Lucida Grande, Lucida Sans Unicode, Arial, sans-serif",
             });
 
 
@@ -667,17 +667,17 @@ module ngApp.components.charts {
             .selectAll("text")
             .style({
               "text-anchor": "end",
-              "font-size":"8px",
-              "font-family": "Lucida Grande",
+              "font-size":"10px",
+              "font-family": "Lucida Grande, Lucida Sans Unicode, Arial, sans-serif",
             })
             .attr("dy", "0rem")
             .attr("dx", "-12px")
-            .attr("transform", "rotate(-65)")
+            .attr("transform", "rotate(-55)")
             .call(_axisTipFn)
             .on("mouseover", function (d) {
               var tick = d3.select(this);
 
-              tick.style({"font-size":"8.5px", "fill":  d3.hsl(_colourScale(d)).darker(1)});
+              tick.style({"font-size":"10px", "fill":  d3.hsl(_colourScale(d)).darker(1)});
 
               _axisTipFn.show(tick.data())
 
@@ -687,7 +687,7 @@ module ngApp.components.charts {
 
               _axisTipFn.hide();
 
-              tick.style({"font-size":"8px", "fill": ""});
+              tick.style({"font-size":"10px", "fill": ""});
             })
             .on("click", function () {
               var tick = d3.select(this);

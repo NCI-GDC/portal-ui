@@ -5,3 +5,32 @@
 .search-panel {
   min-width: 900px;
 }
+
+.summary-cards .flex-column + .flex-column {
+  margin-left: 30px;
+}
+
+.summary-cards.flex-visible-sm .flex-column {
+  width: ~"calc(50% - 15px)";
+}
+
+.summary-cards.flex-visible-lg .flex-column {
+  width: ~"calc(33% - 15px)";
+}
+
+.flex-visible-sm,
+.flex-visible-lg {
+  display: none !important;
+}
+
+@media (max-width: 991px) {
+  .flex-visible-sm {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .flex-visible-lg {
+    display: flex !important;
+  }
+}

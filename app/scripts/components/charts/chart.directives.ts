@@ -35,7 +35,9 @@ module ngApp.components.charts {
         var id = "." + $window.Math.round($window.Math.random() * 120000);
 
         $scope.$watch("data", function(a){
-          updateChart();
+          if (element.find(".chart-container").is(":visible")) {
+            updateChart();
+          }
         });
 
         $scope.legendLimit = $window.parseInt($scope.legendLimit);
@@ -52,14 +54,6 @@ module ngApp.components.charts {
         }
 
         function updateChart() {
-          $window.$($window).off("resize" + id);
-
-          $window.$($window).on("resize" + id, _.debounce(() => {
-            if (element.find(".chart-container").is(":visible")) {
-              updateChart();
-            }
-          }, 150));
-
           if (element.find(".chart-container > svg").length) {
             d3.select(element.find(".chart-container > svg")[0]).remove();
           }
@@ -227,7 +221,17 @@ module ngApp.components.charts {
           }
         }
 
-        updateChart();
+        if (element.find(".chart-container").is(":visible")) {
+          updateChart();
+        }
+
+        $window.$($window).off("resize" + id);
+
+        $window.$($window).on("resize" + id, _.debounce(() => {
+          if (element.find(".chart-container").is(":visible")) {
+            updateChart();
+          }
+        }, 150));
       }
     };
   }
@@ -647,7 +651,7 @@ module ngApp.components.charts {
               "shape-rendering" : "crispEdges",
               "stroke" : "#eee",
               "stroke-width" : function(d) {
-       
+
                 if(_invYScale(d) === _barChartBoundingBox.attr("height") || d === 0){
                   return "0px";
                 }
@@ -904,4 +908,3 @@ module ngApp.components.charts {
     .directive("barChart", BarChart)
     .directive("markedBarChart", MarkedBarChart);
 }
-

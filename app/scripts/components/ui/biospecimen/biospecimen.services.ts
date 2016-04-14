@@ -6,7 +6,7 @@ module ngApp.components.ui.biospecimen.services {
     hierarchy: [[{}]]
     expandAll(event: any, participant: any, expand: boolean): void;
     allExpanded(participant): boolean;
-    search(searchTerm: string, participant: any): any[]
+    search(searchTerm: string, participant: any, fields: string[]): any[]
   }
 
   class BiospecimenService implements IBiospecimenService {
@@ -45,14 +45,14 @@ module ngApp.components.ui.biospecimen.services {
         })(participant, 0);
     }
 
-    search(searchTerm: string, participant: any) {
+    search(searchTerm: string, participant: any, fields: string[]) {
       var self = this;
       var found = [];
       var loweredSearchTerm = searchTerm.toLowerCase();
 
       function search (entity, type, parents, depth) {
         if (depth === self.hierarchy.length + 1) return;
-        if ((entity.submitter_id || '').toLowerCase().indexOf(loweredSearchTerm) > -1) {
+        if (fields.some(f => (entity[f] || '').toLowerCase().indexOf(loweredSearchTerm) > -1)) {
           parents.forEach(p => p.expanded = true);
           entity.expanded = true;
           found.push({ entity: entity, type: type });

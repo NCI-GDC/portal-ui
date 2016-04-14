@@ -19,8 +19,7 @@ module ngApp.cases.directives {
               <i class="fa {{icon || \'fa-download\'}}" ng-class="{\'fa-spinner\': active, \'fa-pulse\': active}" /> \
               <span ng-if="textNormal"><span ng-if="! active">&nbsp;{{ ::textNormal }}</span> \
                 <span ng-if="active">&nbsp;{{ ::textInProgress }}</span></span></button>',
-    link: ($scope, $element, $attrs) => {
-      const scope = $scope;
+    link: (scope, $element, $attrs) => {
       const inProgress = () => {
         scope.active = true;
         $attrs.$set('disabled', 'disabled');

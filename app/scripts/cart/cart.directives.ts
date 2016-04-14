@@ -382,10 +382,14 @@ module ngApp.cart.directives {
             }
           });
         };
-        const checkCartForClosedFiles = (unauthorizedInCart.length > 0) ?
-          (isLoggedIn ? showRequestAccessModal : showLoginModal) : download;
 
-        $element.on('click', checkCartForClosedFiles);
+        $element.on('click', () => {
+          if (CartService.getUnauthorizedFiles().length) {
+            if (isLoggedIn) showRequestAccessModal();
+            else showLoginModal();
+          }
+          else download();
+        });
       }
     };
   }

@@ -16,16 +16,16 @@ module ngApp.reports.services {
     }
 
     getReports(params: Object = {}): ng.IPromise<IReports> {
-      if (params.hasOwnProperty("fields")) {
-        params["fields"] = params["fields"].join();
+      if (params.fields) {
+        params.fields = params.fields.join();
       }
 
-      if (params.hasOwnProperty("expand")) {
-        params["expand"] = params["expand"].join();
+      if (params.expand) {
+        params.expand = params.expand.join();
       }
 
-      if (params.hasOwnProperty("facets")) {
-        params["facets"] = params["facets"].join();
+      if (params.facets) {
+        params.facets = params.facets.join();
       }
 
       var size = 999999;
@@ -42,7 +42,7 @@ module ngApp.reports.services {
           timeout: abort.promise
         })
         .get("", angular.extend(defaults, params)).then((response): IReports => {
-          return response["data"];
+          return response.data;
         });
         return prom;
     }

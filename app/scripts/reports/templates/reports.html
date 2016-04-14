@@ -163,14 +163,14 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title" data-translate>
-            Downloads by Data Type
+            Downloads by Data Category
           </h4>
         </div>
         <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
           <thead>
           <tr>
             <th data-translate>
-              Data Type
+              Data Category
             </th>
             <th class="text-right" data-translate>
               # Requests
@@ -181,7 +181,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr data-ng-repeat="project in rsc.byDataType | orderBy:'values.file_count':true ">
+          <tr data-ng-repeat="project in rsc.byDataCategory | orderBy:'values.file_count':true ">
             <th>
               {{ project.key }}
             </th>
@@ -201,14 +201,14 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h4 class="panel-title" data-translate>
-               Downloads by Data Subtype
+               Downloads by Data Type
               </h4>
             </div>
             <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
                 <th data-translate>
-                  Data Subtype
+                  Data Type
                 </th>
                 <th class="text-right" data-translate>
                   # Requests
@@ -219,7 +219,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr ng-repeat='p in rsc.bySubtype'>
+              <tr ng-repeat='p in rsc.byDataType'>
                 <th>
                   {{ p.key }}
                 </th>

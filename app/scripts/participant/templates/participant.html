@@ -90,21 +90,25 @@
 
     <section class="row" id="graphs">
       <div class="col-md-6">
-        <summary-card data-data="pc.experimentalStrategies"
-                      height="250"
-                      data-mode="table"
-                      class="no-ellipsis"
-                      data-config="pc.expStratConfig"
-                      data-grouping-title="Experimental Strategy"
-                      data-title="File Counts by Experimental Strategy"></summary-card>
+        <case-summary-card
+          data-data="pc.experimentalStrategies"
+          height="250"
+          data-mode="table"
+          class="no-ellipsis"
+          data-config="pc.expStratConfig"
+          data-grouping-title="Experimental Strategy"
+          data-title="File Counts by Experimental Strategy">
+        </case-summary-card>
       </div>
       <div class="col-md-6">
-        <summary-card data-data="pc.dataCategories"
-                      height="250"
-                      data-mode="table"
-                      data-config="pc.dataCategoriesConfig"
-                      data-grouping-title="Data Category"
-                      data-title="File Counts by Data Category"></summary-card>
+        <case-summary-card
+          data-data="pc.dataCategories"
+          height="250"
+          data-mode="table"
+          data-config="pc.dataCategoriesConfig"
+          data-grouping-title="Data Category"
+          data-title="File Counts by Data Category">
+        </case-summary-card>
       </div>
     </section>
 
@@ -124,7 +128,7 @@
               data-size=1
               data-text-normal="Export"
               data-text-in-progress="Processing"
-              data-style-class="btn pull-right">
+              data-style-class="btn pull-right btn-primary">
             </export-cases-button>
           </div>
 

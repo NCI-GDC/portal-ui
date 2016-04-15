@@ -1,5 +1,8 @@
 module ngApp.components.summaryCard.controllers {
 
+  import IFacetService = ngApp.components.facets.services.IFacetService;
+  import ILocationService = ngApp.components.location.services.ILocationService;
+
   interface ISummaryCardController {
     addFilters(item: any): void;
     clearFilters(): void;
@@ -10,12 +13,13 @@ module ngApp.components.summaryCard.controllers {
     /* @ngInject */
     constructor(
       private $scope,
-      private LocationService: ILocationService
+      private LocationService: ILocationService,
+      private FacetService: IFacetService
     ) {}
 
     addFilters(item: any) {
       var config = this.$scope.config;
-      var filters = this.ensurePath(this.LocationService.filters());
+      var filters = this.FacetService.ensurePath(this.LocationService.filters());
 
       if (!config.filters ||
         (!config.filters[item[config.displayKey]] && !config.filters.default)) {
@@ -29,13 +33,13 @@ module ngApp.components.summaryCard.controllers {
       var newFilter = JSON.parse(params.filters).content[0]; // there is always just one
 
       filters.content = filters.content.some(filter => _.isEqual(filter, newFilter))
-        ? filters.content.filter(filter => !_.isEqual(filter, newFilter))
+        ? filters.content
         : filters.content.concat(newFilter);
 
       this.LocationService.setFilters(filters.content.length ? filters : null);
     }
 
-    clearFilters() {
+    clearFilters(): void {
       var filters = this.LocationService.filters();
 
       filters.content = _.reject(filters.content, (filter) => {
@@ -48,13 +52,6 @@ module ngApp.components.summaryCard.controllers {
       }
 
       this.LocationService.clear();
-    }
-
-    ensurePath(filters: Object): Object {
-      if (!filters.content) {
-        filters = {op: "and", content: []};
-      }
-      return filters;
     }
   }
 

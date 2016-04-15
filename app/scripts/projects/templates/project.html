@@ -3,23 +3,25 @@
     <i class="fa fa-custom fa-annotations"></i>
     {{ ::prc.project.project_id }}
 
-    <export-cases-button
-      data-filter-key-values=prc.biospecimenDataExportFilters
-      data-expands=prc.biospecimenDataExportExpands
-      data-filename=prc.biospecimenDataExportFileName
-      data-text-normal="Download Biospecimen JSON"
-      data-text-in-progress="Processing"
-      data-style-class="btn pull-right">
-    </export-cases-button>
+    <span class="btn-row">
+      <export-cases-button
+        data-filter-key-values=prc.biospecimenDataExportFilters
+        data-expands=prc.biospecimenDataExportExpands
+        data-filename=prc.biospecimenDataExportFileName
+        data-text-normal="Download Biospecimen JSON"
+        data-text-in-progress="Processing"
+        data-style-class="btn pull-right btn-primary">
+      </export-cases-button>
 
-    <export-cases-button
-      data-filter-key-values=prc.clinicalDataExportFilters
-      data-expands=prc.clinicalDataExportExpands
-      data-filename=prc.clinicalDataExportFileName
-      data-text-normal="Download Clinical JSON"
-      data-text-in-progress="Processing"
-      data-style-class="btn pull-right">
-    </export-cases-button>
+      <export-cases-button
+        data-filter-key-values=prc.clinicalDataExportFilters
+        data-expands=prc.clinicalDataExportExpands
+        data-filename=prc.clinicalDataExportFileName
+        data-text-normal="Download Clinical JSON"
+        data-text-in-progress="Processing"
+        data-style-class="btn pull-right btn-primary">
+      </export-cases-button>
+    </span>
   </h1>
 
   <div class="col-lg-12">
@@ -91,26 +93,30 @@
 
     <section class="row" id="graphs">
       <div class="col-md-6">
-        <summary-card data-data="prc.experimentalStrategies"
-                      height="250"
-                      data-mode="table"
-                      class="no-ellipsis"
-                      data-show-cases="true"
-                      data-config="prc.expStratConfig"
-                      data-table-id="file-case-counts-by-experimental-strategy-summary-card-table"
-                      data-grouping-title="Experimental Strategy"
-                      data-title="File Counts by Experimental Strategy"></summary-card>
+        <project-summary-card
+          data-data="prc.experimentalStrategies"
+          height="250"
+          data-mode="table"
+          class="no-ellipsis"
+          data-show-cases="true"
+          data-config="prc.expStratConfig"
+          data-table-id="file-case-counts-by-experimental-strategy-summary-card-table"
+          data-grouping-title="Experimental Strategy"
+          data-title="File Counts by Experimental Strategy">
+        </project-summary-card>
       </div>
       <div class="col-md-6">
-        <summary-card data-data="prc.dataCategories"
-                      height="250"
-                      data-mode="table"
-                      data-show-cases="true"
-                      class="no-ellipsis"
-                      data-config="prc.dataCategoriesConfig"
-                      data-table-id="file-case-counts-by-data-category-summary-card-table"
-                      data-grouping-title="Data Category"
-                      data-title="File Counts by Data Category"></summary-card>
+        <project-summary-card
+          data-data="prc.dataCategories"
+          height="250"
+          data-mode="table"
+          data-show-cases="true"
+          class="no-ellipsis"
+          data-config="prc.dataCategoriesConfig"
+          data-table-id="file-case-counts-by-data-category-summary-card-table"
+          data-grouping-title="Data Category"
+          data-title="File Counts by Data Category">
+        </project-summary-card>
       </div>
     </section>
   </div>

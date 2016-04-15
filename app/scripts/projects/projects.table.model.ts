@@ -171,7 +171,7 @@ module ngApp.projects.models {
         children: [
           {
             name: 'Seq',
-            th: '<abbr data-uib-tooltip="Sequencing Data">Seq</abbr>',
+            th: '<abbr data-uib-tooltip="Raw Sequencing Data">Seq</abbr>',
             id: 'Seq',
             td: (row, $scope) => dataCategoryWithFilters("Raw sequencing data", row, $scope.$filter),
             thClassName: 'text-right',
@@ -201,23 +201,7 @@ module ngApp.projects.models {
             thClassName: 'text-right',
             tdClassName: 'text-right',
             total: (data, $scope) => dataCategoryTotalWithFilters("Copy number variation", data, $scope.$filter)
-          }, {
-            name: 'SV',
-            th: '<abbr data-uib-tooltip="Structural Rearrangement">SV</abbr>',
-            id: 'SV',
-            td: (row, $scope) => dataCategoryWithFilters("Structural rearrangement", row, $scope.$filter),
-            thClassName: 'text-right',
-            tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("Structural rearrangement", data, $scope.$filter)
-          }, {
-            name: 'Meth',
-            th: '<abbr data-uib-tooltip="DNA Methylation">Meth</abbr>',
-            id: 'Meth',
-            td: (row, $scope) => dataCategoryWithFilters("DNA methylation", row, $scope.$filter),
-            thClassName: 'text-right',
-            tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters("DNA methylation", data, $scope.$filter)
-          }, {
+          },{
             name: 'Clinical',
             id: 'clinical',
             td: (row, $scope) => dataCategoryWithFilters("Clinical", row, $scope.$filter),

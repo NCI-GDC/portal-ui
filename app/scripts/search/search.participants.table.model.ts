@@ -86,7 +86,7 @@ module ngApp.search.models {
             children: [
           {
             name: 'Seq',
-            th: '<abbr data-uib-tooltip="Sequencing data">Seq</abbr>',
+            th: '<abbr data-uib-tooltip="Raw Sequencing data">Seq</abbr>',
             id: 'Seq',
             td: (row, $scope) => dataCategoryWithFilters("Raw sequencing data", row, $scope.$filter),
             thClassName: 'text-right',
@@ -110,20 +110,6 @@ module ngApp.search.models {
             th: '<abbr data-uib-tooltip="Copy Number Variation">CNV</abbr>',
             id: 'cnv',
             td: (row, $scope) => dataCategoryWithFilters("Copy number variation", row, $scope.$filter),
-            thClassName: 'text-right',
-            tdClassName: 'text-right'
-          }, {
-            name: 'SV',
-            th: '<abbr data-uib-tooltip="Structural Rearrangement">SV</abbr>',
-            id: 'SV',
-            td: (row, $scope) => dataCategoryWithFilters("Structural rearrangement", row, $scope.$filter),
-            thClassName: 'text-right',
-            tdClassName: 'text-right'
-          }, {
-            name: 'Meth',
-            th: '<abbr data-uib-tooltip="DNA Methylation">Meth</abbr>',
-            id: 'meth',
-            td: (row, $scope) => dataCategoryWithFilters("DNA methylation", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }, {

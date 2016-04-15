@@ -260,12 +260,11 @@ module ngApp.projects.models {
       "primary_site",
       "project_id",
       "name",
-      "program.name"
-    ],
-    expand: [
-      "summary",
-      "summary.data_categories",
-      "summary.experimental_strategies",
+      "program.name",
+      "summary.case_count",
+      "summary.file_count",
+      "summary.data_categories.data_category",
+      "summary.data_categories.case_count",
     ],
     facets: [
       {

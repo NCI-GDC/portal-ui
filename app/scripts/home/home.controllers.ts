@@ -91,7 +91,6 @@ module ngApp.home.controllers {
 
       this.defaultParams =  {
         fields: this.ProjectTableModel.fields,
-        expand: this.ProjectTableModel.expand,
         facets: [
           "disease_type",
           "program.name",
@@ -164,7 +163,7 @@ module ngApp.home.controllers {
 
         _controller.projectStatsList[_controller.projectStatsOrdering.projects].value += 1;
 
-        if (! primarySite) {
+        if (!primarySite) {
           console.warn("Project has no primary site using project id instead: ", project);
           primarySite = project.project_id;
         }

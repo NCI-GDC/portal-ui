@@ -100,13 +100,11 @@ module ngApp.query.controllers {
       });
 
       var fileOptions = {
-        fields: this.SearchTableFilesModel.fields,
-        expand: this.SearchTableFilesModel.expand
+        fields: this.SearchTableFilesModel.fields
       };
 
       var participantOptions = {
         fields: this.SearchTableParticipantsModel.fields,
-        expand: this.SearchTableParticipantsModel.expand,
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {

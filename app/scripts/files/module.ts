@@ -35,14 +35,15 @@ module ngApp.files {
               "annotations.annotation_id",
               "annotations.entity_id",
               "tags",
-              "submitter_id"
-            ],
-            expand: [
-              "archive",
-              "related_files",
-              "metadata_files",
-              "downstream_analyses",
-              "associated_entities"
+              "submitter_id",
+              "archive.archive_id",
+              "metadata_files.data_category",
+              "metadata_files.data_type",
+              "metadata_files.data_format",
+              "metadata_files.file_size",
+              "associated_entities.entity_id",
+              "associated_entities.entity_type",
+              "associated_entities.case_id",
             ]
           });
         }

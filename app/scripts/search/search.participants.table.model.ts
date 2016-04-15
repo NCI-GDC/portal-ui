@@ -243,13 +243,18 @@ module ngApp.search.models {
           "project.primary_site",
           "project.program.name",
           "project.disease_type",
-          "submitter_id"
+          "submitter_id",
+          "clinical.icd_10",
+          "demographic.gender",
+          "demographic.race",
+          "demographic.ethnicity",
+          "diagnoses.year_of_diagnosis",
+          "diagnoses.vital_status",
+          "diagnoses.days_to_death",
+          "diagnoses.age_at_diagnosis"
         ],
         expand: [
           "summary.data_categories",
-          "clinical",
-          "demographic",
-          "diagnoses"
         ],
         facets: [
             {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "Case UUID"},

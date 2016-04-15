@@ -41,7 +41,6 @@ module ngApp.annotations.controllers {
     refresh() {
       this.AnnotationsService.getAnnotations({
         fields: this.AnnotationsTableModel.fields,
-        expand: this.AnnotationsTableModel.expand,
         facets: this.FacetService.filterFacets(this.AnnotationsTableModel.facets)
       }).then((data) => {
         if (!data.hits.length) {

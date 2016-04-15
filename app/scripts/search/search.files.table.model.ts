@@ -158,12 +158,10 @@ module ngApp.search.models {
       "archive.archive_id",
       "experimental_strategy",
       "center.name",
-      "submitter_id"
-    ],
-    expand: [
-      "cases",
-      "cases.project",
-      "cases.clinical"
+      "submitter_id",
+      "cases.case_id",
+      "cases.project.project_id",
+      "cases.project.name"
     ],
     facets: [
       {name: "file_id", title: "File", collapsed: false, facetType: "free-text", placeholder: "File name or ID", removable: false },

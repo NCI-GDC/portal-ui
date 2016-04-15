@@ -16,6 +16,7 @@ module ngApp.components.facets.services {
     getActivesWithOperator(facet: string): any;
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any>;
     ensurePath(filters: IFilters): IFilters;
+    filterFacets(facets: Object[]): string[];
   }
 
   class FacetService implements IFacetService {
@@ -203,6 +204,11 @@ module ngApp.components.facets.services {
       }
     }
 
+    filterFacets(facets: Object[]): string[] {
+      return _.filter(facets || [],
+        f => _.includes(['terms', 'range'], f.facetType))
+      .map(f => f.name);
+    }
   }
 
   export interface ICustomFacetsService {

@@ -8,6 +8,7 @@ module ngApp.projects.controllers {
   import ILocationService = ngApp.components.location.ILocationService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
   import IProjectsState = ngApp.projects.services.IProjectsState;
+  import IFacetService = ngApp.components.facets.services.IFacetService;
 
   export interface IProjectsController {
     projects: IProjects;
@@ -31,8 +32,9 @@ module ngApp.projects.controllers {
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut) {
-
+                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut,
+                private FacetService: IFacetService
+    ) {
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
         if (next.indexOf("projects") !== -1) {
@@ -61,14 +63,7 @@ module ngApp.projects.controllers {
         this.ProjectsService.getProjects({
           fields: this.ProjectTableModel.fields,
           expand: this.ProjectTableModel.expand,
-          facets: [
-            "disease_type",
-            "program.name",
-            "project_id",
-            "primary_site",
-            "summary.experimental_strategies.experimental_strategy",
-            "summary.data_categories.data_category"
-          ],
+          facets: this.FacetService.filterFacets(this.ProjectTableModel.facets),
           size: 100
         }).then((data) => {
           this.loading = false;

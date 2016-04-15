@@ -266,7 +266,27 @@ module ngApp.projects.models {
       "summary",
       "summary.data_categories",
       "summary.experimental_strategies",
-    ]
+    ],
+    facets: [
+      {
+        name: 'project_id',
+        facetType: 'free-text'
+      }, {
+        name: 'disease_type',
+        facetType: 'terms'
+      }, {
+        name: 'program.name',
+        facetType: 'terms'
+      }, {
+        name: 'primary_site',
+        facetType: 'terms'
+      }, {
+        name: 'summary.experimental_strategies.experimental_strategy',
+        facetType: 'terms'
+      }, {
+        name: 'summary.data_categories.data_category',
+        facetType: 'terms'
+    }]
   };
   angular.module("projects.table.model", [])
       .value("ProjectTableModel", projectTableModel);

@@ -40,19 +40,25 @@
     <div class="input-group" data-ng-if="data.length">
       <label for="from-{{title}}" class="input-group-addon">From:</label>
       <input id="from-{{title}}"
-             type="text"
+             type="number"
              class="form-control"
              style="border-radius: 0px;"
              placeholder="{{ min }}"
+             min="{{ min }}"
+             max="{{ max }}"
+             title="Min: {{min | number}}; Max: {{ max | number}}"
              data-ng-model="rfc.lowerBound"
              aria-label="Min {{ field }}"
              data-ng-change="rfc.inputChanged()">
       <label for="to-{{title}}" class="input-group-addon" style="border-radius: 0px; border-right: 0px; border-left: 0px">To:</label>
       <input id="to-{{title}}"
-             type="text"
+             type="number"
              class="form-control"
              style="border-radius: 0px"
              placeholder="{{ max }}"
+             max="{{ max }}"
+             min="{{ min }}"
+             title="Min: {{min | number}}; Max: {{max | number}}"
              data-ng-model="rfc.upperBound"
              aria-label="Max {{ field }}"
              data-ng-change="rfc.inputChanged()">
@@ -62,4 +68,3 @@
     </div>
   </div>
 </div>
-

@@ -24,7 +24,6 @@ module ngApp.annotations {
               fields: [
                 "annotation_id",
                 "category",
-                "creator",
                 "status",
                 "entity_type",
                 "entity_id",

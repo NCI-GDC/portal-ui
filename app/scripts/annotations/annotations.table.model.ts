@@ -73,12 +73,6 @@ module ngApp.projects.models {
               td: (row, $scope) => row.created_datetime && $scope.$filter('date')(row.created_datetime, 'yyyy-MM-dd'),
           },
           {
-              name: "Annotator",
-              id: "creator",
-              td: row => row.creator,
-              sortable: true
-          },
-          {
               name: "Status",
               id: "status",
               td: row => row.status,
@@ -97,7 +91,6 @@ module ngApp.projects.models {
           "annotation_id",
           "category",
           "created_datetime",
-          "creator",
           "status",
           "entity_type",
           "entity_id",
@@ -122,9 +115,6 @@ module ngApp.projects.models {
           }, {
             name: 'created_datetime',
             facetType: 'range'
-          }, {
-            name: 'creator',
-            facetType: 'terms'
           }, {
             name: 'status',
             facetType: 'terms'

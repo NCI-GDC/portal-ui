@@ -262,7 +262,7 @@ module ngApp.search.models {
             {name: "project.program.name", title: "Cancer Program", collapsed: false, facetType: "terms"},
             {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms"},
             {name: "project.disease_type", title: "Disease Type", collapsed: false, facetType: "terms"},
-            {name: "demographic.gender", title: "Gender", collapsed: true, facetType: "terms"},
+            {name: "demographic.gender", title: "Gender", collapsed: false, facetType: "terms"},
             {name: "diagnoses.age_at_diagnosis", title: "Age at diagnosis", hasGraph: true, collapsed: false, facetType: "range", unitsMap: [
                             {
                               "label": "years",
@@ -274,9 +274,9 @@ module ngApp.search.models {
                             }
                             ]},
             {name: "diagnoses.vital_status", title: "Vital Status", collapsed: false, facetType: "terms"},
-            {name: "diagnoses.days_to_death", title: "Days to Death", collapsed: true, facetType: "range", hasGraph: true},
-            {name: "demographic.race", title: "Race", collapsed: true, facetType: "terms"},
-            {name: "demographic.ethnicity", title: "Ethnicity", collapsed: true, facetType: "terms"}
+            {name: "diagnoses.days_to_death", title: "Days to Death", collapsed: false, facetType: "range", hasGraph: true},
+            {name: "demographic.race", title: "Race", collapsed: false, facetType: "terms"},
+            {name: "demographic.ethnicity", title: "Ethnicity", collapsed: false, facetType: "terms"}
         ]
     };
     angular.module("search.table.participants.model", [])

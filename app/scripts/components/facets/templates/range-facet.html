@@ -27,17 +27,10 @@
             {{ unitMap.label | humanify }}
         </label>
       </div>
-      <bar-chart data-ng-if="hasGraph === 'true' && !(!data.length && !rfc.error)" data-data="dataUnitConverted"
-               data-max-num-bars="30"
-               data-height="35">
-    </bar-chart>
-    <p data-ng-if="!data.length && !rfc.error">
-      None
-    </p>
     <p data-ng-if="rfc.error">
       {{rfc.error}}
     </p>
-    <div class="input-group" data-ng-if="data.length">
+    <div class="input-group" data-ng-if="data">
       <label for="from-{{title}}" class="input-group-addon">From:</label>
       <input id="from-{{title}}"
              type="number"

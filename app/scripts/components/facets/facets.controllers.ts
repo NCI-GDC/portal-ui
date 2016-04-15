@@ -295,7 +295,7 @@ module ngApp.components.facets.controllers {
                 private LocationService: ILocationService,
                 private FacetService: IFacetService) {
 
-      $scope.data = [];
+      $scope.data = {};
       $scope.dataUnitConverted = [];
       $scope.lowerBoundOriginalDays = null;
       $scope.upperBoundOriginalDays = null;
@@ -318,14 +318,13 @@ module ngApp.components.facets.controllers {
         if ((n === o && ($scope.min !== undefined || $scope.max !== undefined)) || n === undefined) {
           return;
         }
-
-        if(n.buckets) {
-          $scope.data = _.reject(n.buckets, (bucket) => { return bucket.key === "_missing"; });
+        if(n) {
+          $scope.data = n;
           $scope.dataUnitConverted = this.unitConversion($scope.data);
           this.getMaxMin($scope.dataUnitConverted);
-          } else {
-            this.error = n;
-          }
+        } else {
+          this.error = n;
+        }
       });
 
       var _this = this;
@@ -341,37 +340,18 @@ module ngApp.components.facets.controllers {
 
     unitConversion(data: Object[]): Object[] {
       if(this.$scope.unitsMap) {
-        return _.reduce(data, (result, datum) => {
-          var newKey = Math.floor(datum.key/this.$scope.selectedUnit.conversionDivisor);
-          var summed = _.find(result, _.matchesProperty('key', newKey));
-          if (summed) {
-            summed.doc_count = summed.doc_count + datum.doc_count;
-          } else {
-            result.push({
-              "key": newKey,
-              "doc_count": datum.doc_count
-            });
-          }
-          return result;
-        }, []);
+        return _.reduce(data, (acc, v, k) => {
+          acc[k] = Math.floor(v/this.$scope.selectedUnit.conversionDivisor);
+          return acc;
+        }, {});
       } else {
         return data;
       }
     }
 
     getMaxMin(data: Object[]): void {
-      this.$scope.min = _.min(data, (bucket) => {
-          return bucket.key === '_missing' ? Number.POSITIVE_INFINITY : parseInt(bucket.key, 10);
-        }).key;
-        if (this.$scope.min === '_missing') {
-          this.$scope.min = null;
-        }
-        this.$scope.max = _.max(data, (bucket) => {
-          return bucket.key === '_missing' ? Number.NEGATIVE_INFINITY : parseInt(bucket.key, 10);
-        }).key;
-        if (this.$scope.max === '_missing') {
-          this.$scope.max = null;
-        }
+      this.$scope.min = data.min;
+      this.$scope.max = data.max;
     }
 
     refresh(): void {

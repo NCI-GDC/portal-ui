@@ -106,7 +106,6 @@ module ngApp.components.facets.directives {
         title: "@",
         field: "@",
         unitsMap: "=",
-        hasGraph: "@",
         removable: "@",
         removeFunction: "&",
       },

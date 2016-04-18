@@ -736,7 +736,7 @@ module ngApp.components.githut.controllers {
                 return commify(d.value);
               }
             } else {
-              var t = d.value;
+              var t = d.value || "";
               if (t.length > 18) {
                 t = t.slice(0,15).concat("...");
               }
@@ -747,7 +747,7 @@ module ngApp.components.githut.controllers {
             // the following code block is unreachable
             if (d.column === "primary_site") {
               return d.value;
-            } else if (d.column ==="Simple nucleotide variation") {
+            } else if (d.column === "Simple nucleotide variation") {
               return d.value;
             } else if(options.formats[d.column]) {
               return d3.format(options.formats[d.column])(d.value);
@@ -933,4 +933,3 @@ module ngApp.components.githut.controllers {
       .module("githut.controllers", [])
       .controller("GitHutController", GitHutController);
 }
-

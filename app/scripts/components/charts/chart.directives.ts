@@ -395,18 +395,30 @@ module ngApp.components.charts {
                             return d.key + ": " + d.doc_count;
                           });
 
-          var bars = elements
+          var g = elements
               .enter().append("g")
-              .attr("transform", (d) => { return "translate(" + x(d.key) + ",0)"; })
-              .append("rect")
+              .attr("transform", (d) => { return "translate(" + x(d.key) + ",0)"; });
+
+              // an invisible bar with tooltip behind the real bar
+              // so that very short bars still display tooltip
+              g.append("rect")
+              .attr("y", () => 0)
+              .attr("height", () => $scope.height)
+              .attr("width", x.rangeBand())
+              .attr("class", "invisible-bar")
+              .call(tip)
+              .on("mouseover", tip.show)
+              .on("mouseout", tip.hide);
+
+              g.append("rect")
               .attr("y", (d) => { return y(d.doc_count); })
               .attr("height", (d) => { return $scope.height - y(d.doc_count); })
               .attr("width", x.rangeBand())
               .attr("class", "bar")
-              .call(tip)
               .on("mouseover", tip.show)
               .on("mouseout", tip.hide);
-            }
+
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 <div class="container-fluid full-page search">
-  <div class="row search-panel">
-    <div class="col-lg-3 col-md-4 facets-sidebar">
+  <div class="search-panel">
+    <div class="facets-sidebar">
       <uib-tabset>
         <uib-tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
           <div class="facet-section panel-default">
@@ -31,7 +31,7 @@
         </uib-tab>
       </uib-tabset>
     </div>
-    <div class="col-lg-9 col-md-8 content">
+    <div class="content">
       <div class="alert alert-info clearfix">
         <div class="col-sm-10">
           <current-filters></current-filters>
@@ -48,7 +48,9 @@
         </div>
       </div>
 
-      <h3 class="col-lg-9 col-md-8" data-ng-if="sc.participantsLoading && sc.filesLoading" data-translate>
+      <h3 class="col-lg-9 col-md-8"
+        data-ng-if="sc.participantsLoading && sc.filesLoading && !sc.participants.hits.length && !sc.files.hits.length"
+        data-translate>
         Loading, please wait.. <i class="fa fa-spinner fa-spin"></i>
       </h3>
 

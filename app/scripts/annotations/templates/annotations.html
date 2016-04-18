@@ -1,13 +1,13 @@
 <div class="container-fluid full-page">
-  <div class="row search-panel">
-    <div class="col-lg-3 col-md-4 facets-sidebar">
+  <div class="search-panel">
+    <div class="facets-sidebar">
       <div class="panel panel-default">
         <div class="list-group" data-ng-include="'annotations/templates/annotations.facets.html'" class="facet-section" role="form">
         </div>
       </div>
 
     </div>
-    <div class="col-lg-9 col-md-8">
+    <div class="content">
 
       <div class="alert alert-info clearfix">
         <span data-ng-if="!cfc.currentFilters.length">

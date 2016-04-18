@@ -53,7 +53,7 @@ module ngApp.components.tables.directives.tableicious {
                    refresh(n);
                 }, true);
 
-                $scope.headings = $scope.saved.length ?
+                $scope.headings = ($scope.saved || []).length ?
                   _.map($scope.saved, (s: IHeading): IHeading => _.merge(_.find($scope.headings, {id: s.id}), s)) :
                   $scope.headings;
 
@@ -111,8 +111,11 @@ module ngApp.components.tables.directives.tableicious {
                 paging: "="
             },
             link: function ($scope: ICellScope, element: ng.IAugmentedJQuery) {
-                element.html($scope.cell).show();
-                $compile(element.contents())($scope);
+              $scope.$watch('cell', function(value) {
+                  element.html(value);
+                  $compile(element.contents())($scope);
+                }
+              );
             }
 
         }

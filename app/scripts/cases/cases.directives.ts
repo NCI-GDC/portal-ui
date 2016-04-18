@@ -12,12 +12,13 @@ module ngApp.cases.directives {
       textNormal: '@',
       textInProgress: '@',
       styleClass: '@',
-      icon: '@'
+      icon: '@',
+      ngDisabled: '='
     },
-    template: '<a ng-class="[styleClass || \'btn btn-primary\']" data-downloader> \
+    template: '<button tabindex="0" ng-class="[styleClass || \'btn btn-primary\']" data-downloader> \
               <i class="fa {{icon || \'fa-download\'}}" ng-class="{\'fa-spinner\': active, \'fa-pulse\': active}" /> \
               <span ng-if="textNormal"><span ng-if="! active">&nbsp;{{ ::textNormal }}</span> \
-              <span ng-if="active">&nbsp;{{ ::textInProgress }}</span></span></a>',
+                <span ng-if="active">&nbsp;{{ ::textInProgress }}</span></span></button>',
     link: ($scope, $element, $attrs) => {
       const scope = $scope;
       const inProgress = () => {
@@ -50,11 +51,13 @@ module ngApp.cases.directives {
         size: scope.size || 10000
       }, scope.filename ? {filename: scope.filename} : {});
 
-      $element.on('click', () => {
-        const checkProgress = scope.download(params, url, () => $element, 'POST');
+      if (! scope.ngDisabled) {
+        $element.on('click', () => {
+          const checkProgress = scope.download(params, url, () => $element, 'POST');
 
-        checkProgress(inProgress, done);
-      });
+          checkProgress(inProgress, done);
+        });
+      }
       scope.active = false;
     }
   });

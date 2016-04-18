@@ -77,6 +77,7 @@ module ngApp.search.controllers {
           this.SearchState.setActive("tabs", toState.name.split(".")[1], "active");
         }
       });
+
       $scope.$on("gdc-user-reset", () => {
         this.refresh();
       });

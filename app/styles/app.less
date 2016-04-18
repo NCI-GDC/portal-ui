@@ -3,6 +3,7 @@
 @icon-font-path: "../../libs/bootstrap/dist/fonts/";
 
 @import "colours.less";
+@import "buttons.less";
 @import "globals.less";
 @import "cart.less";
 @import "utils.less";
@@ -103,6 +104,11 @@ h3.panel-title {
 .content .nav.nav-tabs {
   border-bottom: 0;
   cursor: pointer;
+}
+
+.content {
+  width: 70%;
+  float: left;
 }
 
 //bootcard override
@@ -711,6 +717,12 @@ pre code {
 }
 
 /* Left Panal sidebar */
+.facets-sidebar {
+  width: 30%;
+  float: left;
+  padding: 0 15px;
+}
+
 .facets-sidebar .nav-tabs > li.active > a,
 .facets-sidebar .nav-tabs > li.active > a:hover,
 .facets-sidebar .nav-tabs > li.active > a:focus {
@@ -726,6 +738,10 @@ pre code {
 }
 .list-group-item p.ng-scope:first-child {
   margin-top:10px;
+}
+
+.list-group-item {
+    border: 1px solid #c4c4c4;
 }
 
 .input-group-addon:not(:first-child):not(:last-child),
@@ -828,8 +844,11 @@ pre code {
   border: 1px solid #d9d8d8;
 }
 
-.dropdown-menu > li > span {
+.dropdown-menu > li > span,
+.dropdown-menu > li > button {
   display: block;
+  width: 100%;
+  text-align: left;
   padding: 3px 20px;
   clear: both;
   font-weight: normal;
@@ -838,7 +857,10 @@ pre code {
   white-space: nowrap;
 }
 
-.dropdown-menu > li > span:hover, .dropdown-menu > li > span:focus {
+.dropdown-menu > li > span:hover,
+.dropdown-menu > li > span:focus,
+.dropdown-menu > li > button:hover,
+.dropdown-menu > li > button:focus {
   color: #262626;
   background-color: #f5f5f5;
 }

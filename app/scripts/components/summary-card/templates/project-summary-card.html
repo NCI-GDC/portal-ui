@@ -31,33 +31,34 @@
         <tr>
           <th data-ng-if="groupingTitle" data-translate>{{::groupingTitle}}</th>
           <td data-ng-if="!groupingTitle"></td>
-          <th data-translate data-ng-if="showCases">Cases</th>
+          <th data-translate>Cases</th>
           <th data-translate>Files</th>
           <th data-translate data-ng-if="!config.hideFileSize">File Size</th>
         </tr>
       </thead>
       <tbody>
-        <tr data-ng-repeat="item in tableData track by $index" data-ng-click="sc.addFilters(item)">
+        <tr data-ng-repeat="item in tableData track by $index">
           <th scope="row" class="truncated-cell">
             <div class="item-color" data-ng-style="{ 'background-color': item.color }"></div>
-            <a href="#">{{ item[config.displayKey] | humanify }}</a>
+            <span>{{ item[config.displayKey] | humanify }}</span>
           </th>
-          <td class="text-right" data-ng-if="showCases">
-            <span data-ng-if="item.case_count">
+          <td class="text-right">
+            <a
+              ng-if="item.case_count"
+              href="/search/c?filters={{config.filters.default.params.filters(item[config.displayKey])}}"
+            >
               {{ item.case_count | number }}
-            </span>
-            <span data-ng-if="!item.case_count">0</span>
+            </a>
+            <span ng-if="!item.case_count">0</span>
           </td>
           <td class="text-right">
-            <span data-ng-if="sc.LocationService.path().indexOf('/query') === 0"
-              data-uib-tooltip-html-unsafe="Further filtering in this view can <br>be performed using the <br>Advanced Search above">
+            <a
+              ng-if="item[config.sortKey]"
+              href="/search/f?filters={{config.filters.default.params.filters(item[config.displayKey])}}"
+            >
               {{ item[config.sortKey] | number }}
-            </span>
-            <span data-ng-if="item[config.sortKey] && sc.LocationService.path().indexOf('/query') !== 0">
-              {{ item[config.sortKey] | number }}
-            </span>
-
-            <span data-ng-if="!item[config.sortKey]">0</span>
+            </a>
+            <span ng-if="!item[config.sortKey]">0</span>
           </td>
           <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.file_size | size }}</td>
         </tr>

@@ -14,6 +14,7 @@ module ngApp.components.tables.directives {
       scope: {
         title: "@",
         headings:"=",
+        defaultHeadings: "=",
         saved: "="
       },
       replace: true,
@@ -26,9 +27,9 @@ module ngApp.components.tables.directives {
           $window.localStorage.setItem($scope.title + '-col', angular.toJson(save));
         }
 
-        var defaults = _.cloneDeep($scope.headings);
+        var defaults = $scope.defaultHeadings;
 
-        $scope.headings = $scope.saved.length ?
+        $scope.headings = ($scope.saved || []).length ?
           _.map($scope.saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
           $scope.headings;
 
@@ -63,7 +64,7 @@ module ngApp.components.tables.directives {
       controller: "ExportTableController as etc"
     };
   }
-  
+
   function ReportsExportTable(): ng.IDirective {
     return {
       restrict: "EA",
@@ -124,4 +125,3 @@ module ngApp.components.tables.directives {
       .directive("gdcTable", GDCTable)
       .directive("arrangeColumns", ArrangeColumns);
 }
-

@@ -1,9 +1,11 @@
 module ngApp.components.facets.services {
 
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import ILocalStorageService = ngApp.core.services.ILocalStorageService;
   import ISearch = ngApp.components.location.services.ISearch;
   import ICartService = ngApp.cart.services.ICartService;
   import IUserService = ngApp.components.user.services.IUserService;
+  import IFilters = ngApp.components.location.IFilters;
 
   export interface IFacetService {
     addTerm(facet: string, term: string, op?:string): void;
@@ -11,7 +13,9 @@ module ngApp.components.facets.services {
     getActives(facet: string, terms: any[]): string[];
     getActiveIDs(facet: string): string[];
     getActivesWithOperator(facet: string): any;
+    getActivesWithOperator(facet: string): any;
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any>;
+    ensurePath(filters: IFilters): IFilters;
   }
 
   class FacetService implements IFacetService {
@@ -132,11 +136,8 @@ module ngApp.components.facets.services {
       return xs;
     }
 
-    ensurePath(filters: Object): Object {
-      if (!filters.hasOwnProperty("content")) {
-        filters = {op: "and", content: []};
-      }
-      return filters;
+    ensurePath(filters: IFilters): IFilters {
+      return filters.content ? filters : { op: "and", content: [] };
     }
 
     addTerm(facet: string, term: string, op: string = 'in') {
@@ -235,22 +236,25 @@ module ngApp.components.facets.services {
   }
 
   export interface IFacetsConfigService {
-    getFields(docType: string): Array<Object>;
-    addField(field: Object): void;
+    addField(docType: string, fieldName: string, fieldType: string): void;
+    removeField(docType: string, fieldName: string, fieldType: string): void;
     reset(docType: string): void;
+    isDefault(docType: string): boolean;
+    save(): void;
   }
 
-  class FacetsConfigService implements IFacetsConfigServce {
+  class FacetsConfigService implements IFacetsConfigService {
     public fieldsMap: any = {};
     defaultFieldsMap: any = {};
     FACET_CONFIG_KEY: string = "gdc-facet-config";
 
      /* @ngInject */
-    constructor(private $window: ng.IWindowService) {
-    }
+    constructor(private $window: ng.IWindowService,
+                private LocalStorageService: ILocalStorageService) {}
 
     setFields(docType: string, fields: Array<Object>) {
-      var saved = _.get(JSON.parse(this.$window.localStorage.getItem(this.FACET_CONFIG_KEY)), docType, null);
+      var saved = _.get(this.LocalStorageService.getItem(this.FACET_CONFIG_KEY), docType, null);
+
       if(!saved) {
         this.fieldsMap[docType] = fields;
         this.save();
@@ -288,13 +292,13 @@ module ngApp.components.facets.services {
     }
 
     save(): void {
-      this.$window.localStorage.setItem(this.FACET_CONFIG_KEY, angular.toJson(this.fieldsMap));
+      this.LocalStorageService.setItem(this.FACET_CONFIG_KEY, this.fieldsMap);
     }
 
  }
 
   angular.
-      module("facets.services", ["location.services", "restangular", "user.services"])
+      module("facets.services", ["location.services", "restangular", "user.services", "ngApp.core"])
       .service("CustomFacetsService", CustomFacetsService)
       .service("FacetsConfigService", FacetsConfigService)
       .service("FacetService", FacetService);

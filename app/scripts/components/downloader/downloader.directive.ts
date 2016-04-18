@@ -8,12 +8,30 @@ module ngApp.components.downloader.directive {
     $uibModal: any,
     notify: INotifyService,
     $rootScope: IRootScope,
-    $log: ng.ILogService): ng.IDirective {
+    $log: ng.ILogService
+  ): ng.IDirective {
 
+    const cookiePath = document.querySelector('base').getAttribute('href');
     const _$ = $window.jQuery;
     const iFrameIdPrefix = '__downloader_iframe__';
     const formIdPrefix = '__downloader_form__';
-    const waitTime = 2000; // 2 seconds
+    const getIframeResponse = (iFrame: ng.IAugmentedJQuery): Object => JSON.parse(iFrame.contents().find('body pre').text());
+    const showErrorModal = (error: Object): void => {
+      const hasWarning = _.has(error, 'warning');
+      $uibModal.open({
+        templateUrl: 'core/templates/' + (hasWarning ? 'generic-warning' : 'internal-server-error') + '.html',
+        controller: 'WarningController',
+        controllerAs: 'wc',
+        backdrop: 'static',
+        keyboard: false,
+        backdropClass: 'warning-backdrop',
+        animation: false,
+        size: 'lg',
+        resolve: {
+          warning: () => hasWarning ? error.warning : null
+        }
+      });
+    };
     notify.config({ duration: 20000 });
 
     const progressChecker = (
@@ -21,21 +39,21 @@ module ngApp.components.downloader.directive {
       cookieKey: string,
       downloadToken: string,
       inProgress: () => {},
-      done: () => {}): void => {
+      done: () => {}
+    ): void => {
 
       inProgress();
+      const waitTime = 1000; // 1 second
       const timeoutInterval = 6;
       var attempts = 0;
       var timeoutPromise = null;
 
       const cookieStillThere = (): boolean => downloadToken === $cookies.get(cookieKey);
-      const handleError = (): string => {
-        const getMessage = (): string => JSON.parse(iFrame.contents().find('body pre').text()).message;
-        const errorMessage = _.flow(
-          _.attempt,
-          (e) => _.isError(e) ? 'GDC download service is currently experiencing issues.' : e)(getMessage);
-        $log.error('Download failed: ', errorMessage);
-        return errorMessage;
+      const handleError = (): Object => {
+        const error = _.flow(_.attempt,
+          (e) => _.isError(e) ? {message: 'GDC download service is currently experiencing issues.'} : e)(_.partial(getIframeResponse, iFrame));
+        $log.error('Download failed: ', error);
+        return error;
       };
       const notifyScope = $rootScope.$new();
       const finished = (): void => {
@@ -55,20 +73,10 @@ module ngApp.components.downloader.directive {
         if (iFrame[0].__frame__loaded) {
           // The downloadToken cookie is removed before the server sends the response
           if (cookieStillThere()) {
-            handleError();
+            const error = handleError();
             $cookies.remove(cookieKey);
             finished();
-
-            $uibModal.open({
-              templateUrl: 'core/templates/internal-server-error.html',
-              controller: 'WarningController',
-              controllerAs: 'wc',
-              backdrop: 'static',
-              keyboard: false,
-              backdropClass: 'warning-backdrop',
-              animation: false,
-              size: 'lg'
-            });
+            showErrorModal(error);
           } else {
             // A download should be now initiated.
             finished();
@@ -97,7 +105,39 @@ module ngApp.components.downloader.directive {
       timeoutPromise = $timeout(checker, waitTime);
     };
 
-    const hashString = (s) => s.split('').reduce((acc, c) => ((acc << 5) - acc) + c.charCodeAt(0), 0);
+    const cookielessChecker = (
+      iFrame: ng.IAugmentedJQuery,
+      inProgress: any, // not used but obligated to the interface
+      done: () => {}
+    ): void => {
+
+      const waitTime = 5000; // 5 seconds
+      const finished = (): void => {
+        iFrame.remove();
+        done();
+      };
+      var attempts = 30;
+      const checker = (): void => {
+        // Here we simply try to read the error message if the iFrame DOM is reloaded; for a successful download,
+        // the error message is not in the DOM therefore #getIframeResponse will return a JS error.
+        const error = _.attempt(_.partial(getIframeResponse, iFrame));
+        if (_.isError(error)) {
+          // Keep waiting until we exhaust `attempts` then we do the cleanup.
+          if (--attempts < 0) {
+            finished();
+          } else {
+            $timeout(checker, waitTime);
+          }
+        } else {
+          finished();
+          showErrorModal(error);
+        }
+      };
+
+      $timeout(checker, waitTime);
+    };
+
+    const hashString = (s: string): number => s.split('').reduce((acc, c) => ((acc << 5) - acc) + c.charCodeAt(0), 0);
     const toHtml = (key, value): string =>
       '<input type="hidden" name="' + key + '" value="' +
       (_.isPlainObject(value) ? JSON.stringify(value).replace(/"/g, '&quot;') : value) +
@@ -110,14 +150,21 @@ module ngApp.components.downloader.directive {
       restrict: 'A',
       link: (scope, element) => {
         scope.download = (params, apiEndpoint, target = () => element, method = 'GET') => {
-          // a cookie value that the server will remove as a download-ready indicator
           const downloadToken = _.uniqueId('' + (+ new Date()) + '-');
-          const cookieKey = hashString(JSON.stringify(params)) + '-' + downloadToken;
           const iFrameId = iFrameIdPrefix + downloadToken;
           const formId = formIdPrefix + downloadToken;
-          $cookies.put(cookieKey, downloadToken);
+          // a cookie value that the server will remove as a download-ready indicator
+          const cookieKey = navigator.cookieEnabled ?
+            Math.abs(hashString(JSON.stringify(params) + downloadToken)).toString(16) : null;
+          if (cookieKey) {
+            $cookies.put(cookieKey, downloadToken);
+            _.assign(params, {
+              downloadCookieKey: cookieKey,
+              downloadCookiePath: cookiePath
+            });
+          }
 
-          const fields = _.reduce(_.assign(params, {downloadCookieKey: cookieKey}), (result, value, key) => {
+          const fields = _.reduce(params, (result, value, key) => {
             const paramValue = arrayToStringOnFields(key, value, arrayToStringFields);
             return result + [].concat(paramValue).reduce((acc, v) => acc + toHtml(key, v), '');
           }, '');
@@ -139,7 +186,8 @@ module ngApp.components.downloader.directive {
             form.submit();
           });
 
-          return _.partial(progressChecker, iFrame, cookieKey, downloadToken);
+          return cookieKey ? _.partial(progressChecker, iFrame, cookieKey, downloadToken) :
+            _.partial(cookielessChecker, iFrame);
         };
       }
     };

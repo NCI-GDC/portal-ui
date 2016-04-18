@@ -9,7 +9,7 @@ module ngApp.cart.controllers {
   import IFilesService = ngApp.files.services.IFilesService;
 
   export interface ICartController {
-    files: IFile[];
+    files: IFiles;
     lastModified: Moment;
     getTotalSize(): number;
     getFileIds(): string[];
@@ -17,6 +17,7 @@ module ngApp.cart.controllers {
     cartTableConfig: any;
     projectCountChartConfig: any;
     fileCountChartConfig: any;
+    fileCountChartData: any[];
   }
 
   class CartController implements ICartController {
@@ -27,15 +28,28 @@ module ngApp.cart.controllers {
     cartTableConfig: any;
     projectCountChartConfig: any;
     fileCountChartConfig: any;
+    fileCountChartData: Object[];
     helpHidden: boolean = false;
     participantCount: number;
-    isFetchingCart: boolean = false;
+
+    defaultFiles: IFiles = {
+      hits: [],
+      pagination: {
+        count: 0,
+        total: 0,
+        size: 0,
+        from: 0,
+        page: 0,
+        pages: 0,
+        sort: '',
+      }
+    };
 
     /* @ngInject */
     constructor(private $scope: ng.IScope,
                 private $state: ng.ui.IStateService,
                 private $filter: ng.IFilterService,
-                public files: IFile[],
+                public files: IFiles,
                 private CoreService: ICoreService,
                 private CartService: ICartService,
                 private UserService: IUserService,
@@ -50,6 +64,7 @@ module ngApp.cart.controllers {
       this.lastModified = this.CartService.lastModified;
       this.cartTableConfig = CartTableModel;
 
+      this.CartService.reloadFromLocalStorage();
       this.refresh();
 
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
@@ -60,6 +75,10 @@ module ngApp.cart.controllers {
 
       $scope.$on("cart-update", (event) => {
           this.refresh();
+      });
+
+      $scope.$on("gdc-user-reset", () => {
+        this.refresh();
       });
 
       this.projectCountChartConfig = {
@@ -140,41 +159,38 @@ module ngApp.cart.controllers {
     }
 
     refresh(): void {
-      if(!this.isFetchingCart) {
-        this.isFetchingCart = true;
-        const fileIds = this.CartService.getFileIds();
-        this.CoreService.setPageTitle("Cart", "(" + fileIds.length + ")");
-        // in the event that our cart is empty
-        if (fileIds.length < 1) {
-          this.files = {};
-          return;
-        }
-        var filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
-        var fileOptions = {
-          filters: filters,
-          fields: ['access',
-                   'file_name',
-                   'file_id',
-                   'data_type',
-                   'data_format',
-                   'file_size',
-                   'annotations.annotation_id',
-                   'cases.case_id',
-                   'cases.project.project_id',
-                   'cases.project.name']
-        };
-        this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
-          this.files = this.files || {};
-          if (!_.isEqual(this.files.hits, data.hits)) {
-            this.files = data;
-            this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
-              this.participantCount = data.pagination.total;
-              })
-            .finally(() => this.getSummary() );
-          }
-        })
-        .finally(() => this.isFetchingCart = false);
+      const fileIds = this.CartService.getFileIds();
+      this.CoreService.setPageTitle("Cart", "(" + fileIds.length + ")");
+      // in the event that our cart is empty
+      if (fileIds.length < 1) {
+        this.files = {};
+        return;
       }
+      var filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
+      var fileOptions = {
+        filters: filters,
+        fields: [
+          'access',
+          'file_name',
+          'file_id',
+          'data_type',
+          'data_format',
+          'file_size',
+          'annotations.annotation_id',
+          'cases.case_id',
+          'cases.project.project_id',
+          'cases.project.name'
+        ]
+      };
+      this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
+        this.files = this.files || {};
+        if (!_.isEqual(this.files.hits, data.hits)) {
+          this.files = data;
+          this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
+            this.participantCount = data.pagination.total;
+            })
+        }
+      }).finally(() => this.getSummary() );
     }
 
     getTotalSize(): number {
@@ -194,9 +210,17 @@ module ngApp.cart.controllers {
     }
 
     removeAll() {
-      this.CartService.removeAll();
+      // edge case where there is only 1 file in the cart,
+      // need to pass the file to CartService.remove because CartService
+      // does not store file names and the file name is displayed in
+      // remove notification
+      if (this.files.pagination.count === 1) {
+        this.CartService.remove(this.files.hits);
+      } else {
+        this.CartService.removeAll();
+      }
       this.lastModified = this.CartService.lastModified;
-      this.files = this.CartService.getFiles();
+      this.files = {};
     }
 
     getManifest(selectedOnly: boolean = false) {

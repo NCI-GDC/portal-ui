@@ -12,6 +12,7 @@ module ngApp.search.models {
         var val = '{{' + value + '|number:0}}';
         return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
     }
+
     function getDataCategory(dataCategories: Object[], dataCategory: string): number {
         var data = _.find(dataCategories, {data_category: dataCategory});
         return data ? data.file_count : 0;

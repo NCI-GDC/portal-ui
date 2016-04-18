@@ -12,21 +12,40 @@ module ngApp.files.controllers {
     handleCartButton(): void;
     archiveCount: number;
     annotationIds: string[];
+    tablesToDisplay: string[];
+    makeSearchPageLink(files: IFile[]): string;
   }
 
   class FileController implements IFileController {
     archiveCount: number = 0;
     annotationIds: string[] = [];
+    tablesToDisplay: string[];
 
     /* @ngInject */
     constructor(public file: IFile,
                 public $scope: ng.IScope,
                 private CoreService: ICoreService,
                 private CartService: ICartService,
-                private FilesService: IFilesService
+                private FilesService: IFilesService,
+                private $filter: ng.IFilterService
                 ) {
 
       CoreService.setPageTitle("File", file.file_name);
+
+      var toDisplayLogic = {
+        'Raw Sequencing Data': ['workflow', 'referenceGenome', 'readGroup', 'downstreamAnalysis'],
+        'Transcriptome Profiling': ['workflow', 'referenceGenome', 'downstreamAnalysis'],
+        'Simple Nucleotide Variation': ['workflow', 'referenceGenome', 'downstreamAnalysis'],
+        'Copy Number Variation': ['workflow', 'referenceGenome', 'downstreamAnalysis'],
+        'Structural Rearrangement': ['workflow', 'referenceGenome', 'downstreamAnalysis'],
+        'DNA Methylation': ['workflow', 'referenceGenome', 'downstreamAnalysis'],
+        'Clinical': [],
+        'Biospecimen': []
+      }
+      this.tablesToDisplay = (toDisplayLogic[file.data_category] || []).reduce((acc, t) => {
+        acc[t] = true;
+        return acc;
+      }, {});
 
       if (this.file.archive) {
         this.FilesService.getFiles({
@@ -71,6 +90,15 @@ module ngApp.files.controllers {
     canBAMSlice(): boolean {
       return (this.file.data_type || '').toLowerCase() === 'aligned reads' &&
              (this.file.data_format || '').toLowerCase() === 'bam';
+    }
+
+    makeSearchPageLink(files: IFile[] = []): string {
+      if (!files.length) {
+        return 0;
+      }
+      var filterString = this.$filter("makeFilter")([{field: 'file_id', value: files.map(f => f.file_id)}], true);
+      var href = 'search/f?filters=' + filterString;
+      return files.length ? "<a href='" + href + "'>" + files.length + '</a>' : '0';
     }
 
   }
@@ -125,7 +153,6 @@ module ngApp.files.controllers {
                 public errorMsg: string,
                 private errorBlob: any) {}
   }
-
 
   angular
       .module("files.controller", [

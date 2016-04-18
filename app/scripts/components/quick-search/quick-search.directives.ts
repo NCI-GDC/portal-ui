@@ -272,59 +272,12 @@ module ngApp.components.quickSearch.directives {
     };
   }
 
-
-
-  class Highlight {
-    constructor($rootScope: ng.IScope) {
-      return function (value: any, query: string = "") {
-        if (!value) {
-          return "";
-        }
-
-        var regex = new RegExp("[" + query.replace(/\-/g, "\\-") + "]{" + query.length + "}", "i");
-
-        if (!_.isArray(value)) {
-          value = [value];
-        }
-
-        var html = "";
-        // Only ever show the top matched term in the arrays returned.
-        var term = _.filter(value, (item) => {
-          var matchedText = item.match(regex);
-
-          if (matchedText) {
-            matchedText = matchedText[0];
-
-            return matchedText.toLowerCase() === query.toLowerCase();
-          }
-
-          return false;
-        }).sort((a, b) => {
-          return a.match(regex).length - b.match(regex).length;
-        })[0];
-
-        if (term) {
-          var matchedText = term.match(regex);
-          matchedText = matchedText[0];
-          var boldedQuery = "<span class='bolded'>" + matchedText + "</span>";
-          html = term.replace(regex, boldedQuery);
-          } else {
-            html = value;
-          }
-
-        return html;
-      };
-    }
-  }
-  
-
   angular
     .module("quickSearch.directives", [
       "ui.bootstrap.modal",
       "facets.services",
       "quickSearch.services"
     ])
-    .filter("highlight", Highlight)
     .directive("quickSearchDropdown", QuickSearchDropdown)
     .directive("quickSearchInput", QuickSearchInput)
     .directive("quickSearchInputHome", QuickSearchInputHome)

@@ -32,29 +32,37 @@
               <div data-ng-bind-html="item.file_id | highlight:searchQuery"></div>
             </div>
             <div class="highlighted-terms" data-ng-switch-when="project">
-              <divi data-ng-bind-html="item.project_id | highlight:searchQuery"></divi>
+              <div data-ng-bind-html="item.project_id | highlight:searchQuery"></div>
               <div data-ng-bind-html="item.name | highlight:searchQuery"></div>
               <div data-ng-bind-html="item.primary_site | highlight:searchQuery"></div>
             </div>
             <div class="highlighted-terms" data-ng-switch-when="case">
               <div data-ng-bind-html="item.case_id | highlight:searchQuery"></div>
               <div data-ng-bind-html="item.project.project_id | highlight:searchQuery"></div>
-              <div data-ng-if="item.bioSpecimen.sample_id"
-                  data-ng-bind-html="item.sample_ids | highlight:searchQuery"></div>
-              <div data-ng-if="item.bioSpecimen.sample_id"
-                  data-ng-bind-html="item.submitter_sample_ids | highlight:searchQuery"></div>
-              <div data-ng-if="item.bioSpecimen.portion_id"
-                  data-ng-bind-html="item.portion_ids | highlight:searchQuery"></div>
-              <div data-ng-if="item.bioSpecimen.portion_id"
-                  data-ng-bind-html="item.submitter_portion_ids | highlight:searchQuery"></div>
-              <div data-ng-if="item.bioSpecimen.analyte_id"
-                  data-ng-bind-html="item.analyte_ids | highlight:searchQuery"></div>
-              <div data-ng-if="item.bioSpecimen.analyte_id"
-                  data-ng-bind-html="item.submitter_analyte_ids | highlight:searchQuery"></div>
-              <div data-ng-if="item.bioSpecimen.aliquot_id"
-                  data-ng-bind-html="item.aliquot_ids | highlight:searchQuery"></div>
-              <div data-ng-if="item.bioSpecimen.aliquot_id"
-                  data-ng-bind-html="item.submitter_aliquot_ids | highlight:searchQuery"></div>
+              <div
+                data-ng-if="item.bioSpecimen.sample_id"
+                data-ng-bind-html="item.sample_ids | highlight:searchQuery"></div>
+              <div
+                data-ng-if="item.bioSpecimen.sample_id"
+                data-ng-bind-html="item.submitter_sample_ids | highlight:searchQuery"></div>
+              <div
+                data-ng-if="item.bioSpecimen.portion_id"
+                data-ng-bind-html="item.portion_ids | highlight:searchQuery"></div>
+              <div
+                data-ng-if="item.bioSpecimen.portion_id"
+                data-ng-bind-html="item.submitter_portion_ids | highlight:searchQuery"></div>
+              <div
+                data-ng-if="item.bioSpecimen.analyte_id"
+                data-ng-bind-html="item.analyte_ids | highlight:searchQuery"></div>
+              <div
+                data-ng-if="item.bioSpecimen.analyte_id"
+                data-ng-bind-html="item.submitter_analyte_ids | highlight:searchQuery"></div>
+              <div
+                data-ng-if="item.bioSpecimen.aliquot_id"
+                data-ng-bind-html="item.aliquot_ids | highlight:searchQuery"></div>
+              <div
+                data-ng-if="item.bioSpecimen.aliquot_id"
+                data-ng-bind-html="item.submitter_aliquot_ids | highlight:searchQuery"></div>
             </div>
           </div>
         </li>

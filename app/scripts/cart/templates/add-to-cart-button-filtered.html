@@ -28,7 +28,8 @@
                     <i class="fa fa-shopping-cart fa-stack-1x"></i>
                     <i class="fa fa-ban fa-stack-2x"></i>
                 </span>
-                <span data-translate data-ng-if="ctrl.retreivingFiles">Loading...</span>
+                <span data-translate data-ng-if="ctrl.retrievingFiles">Loading...</span>
+                <span data-translate data-ng-if="!ctrl.retrievingFiles">No files.</span>
             </a>
         </li>
         <li aria-label="{{ 'Add filtered related files' | translate }}"
@@ -43,7 +44,7 @@
                     <i class="fa fa-shopping-cart fa-stack-1x"></i>
                     <i class="fa fa-ban fa-stack-2x"></i>
                 </span>
-                <span data-translate data-ng-if="ctrl.retreivingFiles">Loading...</span>
+                <span data-translate data-ng-if="ctrl.retrievingFiles">Loading...</span>
             </a>
         </li>
     </ul>

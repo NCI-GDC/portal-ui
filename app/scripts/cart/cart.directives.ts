@@ -125,7 +125,7 @@ module ngApp.cart.directives {
         });
 
         this.getFiles = function() {
-          this.retreivingFiles = true;
+          this.retrievingFiles = true;
           var filters = LocationService.filters();
           if (filters.op !== "and") {
             filters = {op: "and", content: [filters]};
@@ -150,7 +150,7 @@ module ngApp.cart.directives {
               filters: filters,
               size: CartService.getCartVacancySize()
             }).then((data) => {
-              this.retreivingFiles = this.files.length ? false : true;
+              this.retrievingFiles = this.files.length ? false : true;
               this.filteredRelatedFiles = data;
             });
           }
@@ -172,9 +172,9 @@ module ngApp.cart.directives {
               ]
             }).then((data) => {
               if (this.areFiltersApplied) {
-                this.retreivingFiles = this.filteredRelatedFiles ? false: true;
+                this.retrievingFiles = this.filteredRelatedFiles ? false: true;
               } else {
-                this.retreivingFiles = false;
+                this.retrievingFiles = false;
               }
               var fs = _.map(data.files, f => {
                 f.cases = [{

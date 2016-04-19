@@ -559,7 +559,7 @@ module ngApp.components.charts {
 
             _barChartCaption = _barChartLegend.append("text")
               .classed("marked-bar-chart-title-label", true)
-              .attr("y", _chartMargin.top + 30);
+              .attr("y", _chartMargin.top + 0);
 
 
             _barChartBoundingBox = _svg.select(".chart-canvas-area > rect");
@@ -672,23 +672,23 @@ module ngApp.components.charts {
             })
             .attr("dy", "0rem")
             .attr("dx", "-12px")
-            .attr("transform", "rotate(-55)")
-            .call(_axisTipFn)
-            .on("mouseover", function (d) {
-              var tick = d3.select(this);
+            .attr("transform", "rotate(-45)")
+            // .call(_axisTipFn)
+            // .on("mouseover", function (d) {
+            //   var tick = d3.select(this);
 
-              tick.style({"font-size":"10px", "fill":  d3.hsl(_colourScale(d)).darker(1)});
+            //   tick.style({"font-size":"10px", "fill":  d3.hsl(_colourScale(d)).darker(1)});
 
-              _axisTipFn.show(tick.data())
+            //   _axisTipFn.show(tick.data())
 
-            })
-            .on("mouseout", function () {
-              var tick = d3.select(this);
+            // })
+            // .on("mouseout", function () {
+            //   var tick = d3.select(this);
 
-              _axisTipFn.hide();
+            //   _axisTipFn.hide();
 
-              tick.style({"font-size":"10px", "fill": ""});
-            })
+            //   tick.style({"font-size":"10px", "fill": ""});
+            // })
             .on("click", function () {
               var tick = d3.select(this);
               var filters = {
@@ -823,7 +823,7 @@ module ngApp.components.charts {
                 .attr("x", Math.round(_width / 2))
                 .attr("y", 200)
                 .attr("text-anchor", "middle")
-                .text("No Data...");
+                .text("Loading...");
 
               return;
             }
@@ -857,7 +857,7 @@ module ngApp.components.charts {
         function _initChart() {
 
 
-          _chartMargin = $scope.margins || {top: 40, bottom: 40, left: 20, right: 20};
+          _chartMargin = $scope.margins || {top: 0, bottom: 40, left: 20, right: 20};
 
           _initChartSize();
 
@@ -882,12 +882,12 @@ module ngApp.components.charts {
             .offset([-5, 0])
             .html(tipFn);
 
-          _axisTipFn = d3.tip()
-            .attr("class", "tooltip")
-            .offset([-30, 10])
-            .html(function(d) {
-              return d;
-            });
+          // _axisTipFn = d3.tip()
+          //   .attr("class", "tooltip")
+          //   .offset([-30, 10])
+          //   .html(function(d) {
+          //     return d;
+          //   });
 
           _initListeners();
 

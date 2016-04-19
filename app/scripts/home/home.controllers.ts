@@ -70,7 +70,7 @@ module ngApp.home.controllers {
 
       this.exampleSearchQueries = [
         {
-          description: "Kidney cancer cases under the age of 20 at diagnosis",
+          description: "Cases of kidney cancer diagnosed at the age of 20 and below",
           filters: {"op":"and","content":[{"op":"<=","content":{"field":"cases.clinical.age_at_diagnosis","value":[yearsToDays(20)]}},{"op":"in","content":{"field":"cases.project.primary_site","value":["Kidney"]}}]},
           caseCount: null,
           fileCount: null
@@ -163,17 +163,13 @@ module ngApp.home.controllers {
 
         _controller.projectStatsList[_controller.projectStatsOrdering.projects].value += 1;
 
-        if (!primarySite) {
-          console.warn("Project has no primary site using project id instead: ", project);
-          primarySite = project.project_id;
+        if (primarySite) {
+          if (! _.isArray(primarySiteData[primarySite])) {
+            primarySiteData[primarySite] = [];
+          }
+
+          primarySiteData[primarySite].push(project);
         }
-
-        if (! _.isArray(primarySiteData[primarySite])) {
-          primarySiteData[primarySite] = [];
-        }
-
-        primarySiteData[primarySite].push(project);
-
 
         return primarySiteData;
 

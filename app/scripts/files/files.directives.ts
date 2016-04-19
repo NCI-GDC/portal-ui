@@ -21,13 +21,19 @@ module ngApp.files.directives {
       controller: function($scope: ng.IScope, $attrs, $element, $uibModal, CartService: ICartService, UserService: IUserService, config: IGDCConfig) {
         const url = config.api + '/files';
 
+        const reportStatus = _.isFunction($scope.$parent.reportStatus) ?
+          _.partial($scope.$parent.reportStatus, $scope.$id) :
+          () => {};
+
         const inProgress = () => {
           $scope.active = true;
+          reportStatus($scope.active);
           $attrs.$set('disabled', 'disabled');
         };
 
         const done = () => {
           $scope.active = false;
+          reportStatus($scope.active);
           $element.removeAttr('disabled');
         };
 

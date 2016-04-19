@@ -262,12 +262,18 @@ module ngApp.cart.directives {
         const scope = $scope;
         scope.active = false;
 
+        const reportStatus = _.isFunction(scope.$parent.reportStatus) ?
+          _.partial(scope.$parent.reportStatus, scope.$id) :
+          () => {};
+
         const inProgress = () => {
           scope.active = true;
+          reportStatus(scope.active);
           $attrs.$set('disabled', 'disabled');
         };
         const done = () => {
           scope.active = false;
+          reportStatus(scope.active);
           $element.removeAttr('disabled');
         };
         const files = [].concat(CartService.getFiles());
@@ -290,12 +296,18 @@ module ngApp.cart.directives {
       link: (scope, $element, $attrs) => {
         scope.active = false;
 
+        const reportStatus = _.isFunction(scope.$parent.reportStatus) ?
+          _.partial(scope.$parent.reportStatus, scope.$id) :
+          () => {};
+
         const inProgress = () => {
           scope.active = true;
+          reportStatus(scope.active);
           $attrs.$set('disabled', 'disabled');
         };
         const done = () => {
           scope.active = false;
+          reportStatus(scope.active);
           $element.removeAttr('disabled');
         };
         const files = [].concat(CartService.getFiles());
@@ -327,12 +339,18 @@ module ngApp.cart.directives {
           authorized: authorizedInCart
         };
 
+        const reportStatus = _.isFunction(scope.$parent.reportStatus) ?
+          _.partial(scope.$parent.reportStatus, scope.$id) :
+          () => {};
+
         const inProgress = () => {
           scope.active = true;
+          reportStatus(scope.active);
           $attrs.$set('disabled', 'disabled');
         };
         const done = () => {
           scope.active = false;
+          reportStatus(scope.active);
           $element.removeAttr('disabled');
         };
         const files = [].concat(authorizedInCart);

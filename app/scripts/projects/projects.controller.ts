@@ -217,6 +217,7 @@ module ngApp.projects.controllers {
         state: {
           name: "search.files"
         },
+        blacklist: ["structural rearrangement", "dna methylation"],
         filters: {
           "default": {
             params: {

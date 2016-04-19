@@ -109,6 +109,7 @@ module ngApp.components.summaryCard.directives {
           if (newVal) {
             // Ensure pie chart data is always sorted highest to lowest
             // for tables
+
             if (config.sortData) {
               newVal.sort(function(a, b) {
                 if (a[config.sortKey] > b[config.sortKey]) {
@@ -128,7 +129,11 @@ module ngApp.components.summaryCard.directives {
               item.color = color(index);
             });
 
-            $scope.tableData = newVal;
+            $scope.tableData = newVal.filter(x =>
+              !config.blacklist.some(y =>
+                y.toLowerCase() === x.data_category.toLowerCase()
+              )
+            );
           }
         });
       }
@@ -195,7 +200,11 @@ module ngApp.components.summaryCard.directives {
               item.color = color(index);
             });
 
-            $scope.tableData = newVal;
+            $scope.tableData = newVal.filter(x =>
+              !config.blacklist.some(y =>
+                y.toLowerCase() === x.data_category.toLowerCase()
+              )
+            );
           }
         });
       }

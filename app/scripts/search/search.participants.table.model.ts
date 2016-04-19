@@ -122,7 +122,7 @@ module ngApp.search.models {
           }, {
             name: 'Biospecimen',
             id: 'biospecimen',
-            td: (row, $scope) => dataCategoryWithFilters("Other", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Biospecimen", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right'
           }

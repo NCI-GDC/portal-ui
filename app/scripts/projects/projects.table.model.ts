@@ -211,10 +211,10 @@ module ngApp.projects.models {
           }, {
             name: 'Biospecimen',
             id: 'biospecimen',
-            td: (row, $scope) => dataCategoryWithFilters("Other", row, $scope.$filter),
+            td: (row, $scope) => dataCategoryWithFilters("Biospecimen", row, $scope.$filter),
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => dataCategoryTotalWithFilters('Other', data, $scope.$filter)
+            total: (data, $scope) => dataCategoryTotalWithFilters('Biospecimen', data, $scope.$filter)
           }
         ]
       }, {

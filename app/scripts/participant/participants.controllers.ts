@@ -120,6 +120,7 @@ module ngApp.participants.controllers {
         state: {
           name: "search.files"
         },
+        blacklist: ["structural rearrangement", "dna methylation"],
         filters: {
           "default": {
             params: {

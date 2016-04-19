@@ -163,7 +163,7 @@ angular.module('projects.githut.config', [])
     },
     {
       id:'Clinical',
-      display_name:['Clin.'],
+      display_name:['Clinical'],
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
@@ -172,8 +172,8 @@ angular.module('projects.githut.config', [])
     },
     // Biospecimen
     {
-      id:'Other',
-      display_name:['Bio.'],
+      id:'Biospecimen',
+      display_name:['Biospecimen'],
       scale:'ordinal',
       is_subtype:true,
       dimensional:true,
@@ -275,7 +275,7 @@ angular.module('projects.githut.config', [])
       },
       superhead:{
         start:'Clinical',
-        end:'Other',
+        end:'Biospecimen',
         text: ProjectsService.getTableHeading() //Case count per data type
       },
 

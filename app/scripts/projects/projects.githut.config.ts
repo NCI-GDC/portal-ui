@@ -1,10 +1,10 @@
-angular.module('projects.githut.config',[])
-.factory("ProjectsGithut",function(ProjectsGithutConfig, ProjectsGithutColumns) {
+angular.module('projects.githut.config', [])
+.factory("ProjectsGithut", function(ProjectsGithutConfig, ProjectsGithutColumns) {
   return function(data) {
     var hits = filterData(data.hits);
     var primary_sites = [];
 
-    function findTheThing(array,data_type,propname){
+    function findTheThing(array, data_type, propname) {
 
       var normalize = (str) => {
         return str.toLowerCase().replace(/\s+/g,'');
@@ -162,24 +162,6 @@ angular.module('projects.githut.config',[])
       href: dataTypeSref
     },
     {
-      id:'Structural Rearrangement',
-      display_name:['SV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'DNA Methylation',
-      display_name:['Meth'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
       id:'Clinical',
       display_name:['Clin.'],
       scale:'ordinal',
@@ -294,7 +276,7 @@ angular.module('projects.githut.config',[])
       superhead:{
         start:'Clinical',
         end:'Other',
-        text: ProjectsService.getTableHeading() //Case count per data type 
+        text: ProjectsService.getTableHeading() //Case count per data type
       },
 
       /**

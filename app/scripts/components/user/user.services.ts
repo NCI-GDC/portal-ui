@@ -104,15 +104,18 @@ module ngApp.components.user.services {
     }
 
     setUser(user: IUser): void {
-      this.currentUser = { username: user.username,
-                           projects: {
-                            gdc_ids: _.reduce(user.projects.gdc_ids || {}, (acc, p, key) => {
-                             if (p.indexOf("_member_") !== -1) {
-                              acc.push(key);
-                             }
-                             return acc;
-                           }, [])}
-                         };
+      this.currentUser = {
+        username: user.username,
+        projects: {
+          gdc_ids: _.reduce(user.projects.gdc_ids || {}, (acc, p, key) => {
+            if (p.indexOf("_member_") !== -1) {
+              acc.push(key);
+            }
+            return acc;
+          }, [])
+        }
+      };
+
       this.$rootScope.$broadcast("gdc-user-reset");
     }
 

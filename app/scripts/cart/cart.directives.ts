@@ -354,13 +354,8 @@ module ngApp.cart.directives {
           $element.removeAttr('disabled');
         };
         const files = [].concat(authorizedInCart);
-        const params = { ids: files.map(f => f.file_id) };
         const url = config.api + '/data?annotations=true&related_files=true';
 
-        const download = () => {
-          const checkProgress = scope.download(params, url, () => $element, 'POST');
-          checkProgress(inProgress, done);
-        };
         const showLoginModal = () => {
           var modalInstance = $uibModal.open({
             templateUrl: "core/templates/login-to-download.html",
@@ -406,7 +401,12 @@ module ngApp.cart.directives {
             if (isLoggedIn) showRequestAccessModal();
             else showLoginModal();
           }
-          else download();
+          else {
+            const files = [].concat(CartService.getAuthorizedFiles());
+            const params = { ids: files.map(f => f.file_id) };
+            const checkProgress = scope.download(params, url, () => $element, 'POST');
+            checkProgress(inProgress, done);
+          }
         });
       }
     };

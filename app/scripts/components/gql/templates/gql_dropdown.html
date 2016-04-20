@@ -18,7 +18,7 @@
     </i>
     <span data-ng-bind-html="e.field | gqlHighlight:query"></span>
     <em data-ng-if="e.doc_type" style="color:#888" data-ng-bind-html="e.type | gqlHighlight:query"></em>
-    <div data-ng-if="e.active" data-ng-bind-html="e.description | gqlHighlight:query"></em>
+    <div><em data-ng-bind-html="e.description | gqlHighlight:query"></em></div>
   </li>
   <li data-ng-click="handleOnClickDownArrow()" class="Gql_dropdown_arrow">
     <i ng-style="{color: ddItems.length > offset + limit ? '#333' : '#ccc'}" class="fa fa-sort-desc"></i>

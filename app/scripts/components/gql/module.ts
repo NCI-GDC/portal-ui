@@ -404,7 +404,8 @@ module ngApp.components.gql {
                     GqlService.clean(m.full.toString()) && 
                     (
                         GqlService.contains(m.full.toString(), $scope.parts.needle.replace(T.LPARENS, T.NOTHING)) ||
-                        GqlService.contains(m.type, $scope.parts.needle.replace(T.LPARENS, T.NOTHING))
+                        GqlService.contains(m.type, $scope.parts.needle.replace(T.LPARENS, T.NOTHING)) ||
+                        GqlService.contains(m.description, $scope.parts.needle.replace(T.LPARENS, T.NOTHING))
                     ) 
                     
                   );

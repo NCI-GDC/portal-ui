@@ -34,6 +34,40 @@ import IUserService = ngApp.components.user.services.IUserService;
 import IProjectsService = ngApp.projects.services.IProjectsService;
 import ILocalStorageService = ngApp.core.services.ILocalStorageService;
 
+function logVersionInfo (config) {
+  console.groupCollapsed(
+    "%c★ UI Git Info\n"
+  + "=============",
+    "color: rgb(173, 30, 30); font-weight: bold;"
+  )
+
+  console.info("%cTag: %c" + config.tag,
+    "font-weight: bold;", "color: rgb(89, 139, 214);"
+  )
+
+  console.info("%cCommit Link: %c" + config.commitLink,
+    "font-weight: bold;", "color: rgb(89, 139, 214);"
+  )
+
+  console.groupEnd()
+
+  console.groupCollapsed(
+    "%c★ API Git Info\n"
+  + "==============",
+    "color: rgb(173, 30, 30); font-weight: bold;"
+  )
+
+  console.info("%cTag: %c" + config.apiTag,
+    "font-weight: bold;", "color: rgb(89, 139, 214);"
+  )
+
+  console.info("%cCommit Link: %c" + config.apiCommitLink,
+    "font-weight: bold;", "color: rgb(89, 139, 214);"
+  )
+
+  console.groupEnd()
+}
+
 // Cross-Site Request Forgery (CSRF) Prevention
 // https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet#General_Recommendation:_Synchronizer_Token_Pattern
 function addTokenToRequest (element, operation, route, url, headers, params, httpConfig) {
@@ -137,6 +171,8 @@ function appRun(gettextCatalog: any,
     config.apiTag = "https://github.com/NCI-GDC/gdcapi/releases/tag/" + config.apiVersion;
     config.apiCommitLink ="https://github.com/NCI-GDC/gdcapi/commit/" + config.apiCommitHash;
 
+    logVersionInfo(config)
+
     if (+data.version !== +config.supportedAPI) {
       config.apiIsMismatched = true;
     }
@@ -177,7 +213,6 @@ function appRun(gettextCatalog: any,
     // Page change
     CoreService.setLoadedState(true);
   });
-
 }
 
 angular

@@ -245,7 +245,7 @@
             <tbody>
               <tr>
                 <th scope="row" data-translate>Submitter ID</th>
-                <td>{{ bc.activeBioSpecimenDoc.submitter_id }}</td>
+                <td>{{ bc.activeBioSpecimenDoc.submitter_id || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>{{ bc.activeBioSpecimenDocType | humanify | translate }} ID</th>

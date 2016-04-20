@@ -4,7 +4,11 @@
     Data Download Statistics
   </h1>
 
-  <div class="col-lg-12">
+  <div class="col-lg-12" data-ng-if="!rsc.reports.hits.length">
+    No downloads to date.
+  </div>
+
+  <div class="col-lg-12" data-ng-if="rsc.reports.hits.length">
     <section>
       <p>
         This report depicts statistics describing data download since the GDC Data Portal launch. Represented GDC data

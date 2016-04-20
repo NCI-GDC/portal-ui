@@ -37,22 +37,24 @@ module ngApp.reports.controllers {
 
         CoreService.setPageTitle("Reports");
 
-        var dataNoZeros = _.reject(reports.hits, (hit) => { return hit.count === 0 && hit.size ===0; });
-        this.byProject = this.dataNest("project_id").entries(dataNoZeros);
-        this.byDisease = this.dataNest("disease_type").entries(dataNoZeros);
-        this.byProgram = this.dataNest("program").entries(dataNoZeros);
-        this.byDataType = this.dataNest("data_categories").entries(this.reduceBy(dataNoZeros, "data_categories"));
-        this.bySubtype = this.dataNest("data_type").entries(this.reduceBy(dataNoZeros, "data_types"));
-        this.byStrat = this.dataNest("experimental_strategy").entries(this.reduceBy(dataNoZeros, "experimental_strategies"));
-        this.byDataAccess = this.dataNest("access").entries(this.reduceBy(dataNoZeros, "data_access"));
-        this.byUserType = this.dataNest("user_access_type").entries(this.reduceBy(dataNoZeros, "user_access_types"));
-        this.byLocation = this.dataNest("country").entries(this.reduceBy(dataNoZeros, "countries"));
+        if (reports.hits.length) {
+          var dataNoZeros = _.reject(reports.hits, (hit) => { return hit.count === 0 && hit.size ===0; });
+          this.byProject = this.dataNest("project_id").entries(dataNoZeros);
+          this.byDisease = this.dataNest("disease_type").entries(dataNoZeros);
+          this.byProgram = this.dataNest("program").entries(dataNoZeros);
+          this.byDataType = this.dataNest("data_categories").entries(this.reduceBy(dataNoZeros, "data_categories"));
+          this.bySubtype = this.dataNest("data_type").entries(this.reduceBy(dataNoZeros, "data_types"));
+          this.byStrat = this.dataNest("experimental_strategy").entries(this.reduceBy(dataNoZeros, "experimental_strategies"));
+          this.byDataAccess = this.dataNest("access").entries(this.reduceBy(dataNoZeros, "data_access"));
+          this.byUserType = this.dataNest("user_access_type").entries(this.reduceBy(dataNoZeros, "user_access_types"));
+          this.byLocation = this.dataNest("country").entries(this.reduceBy(dataNoZeros, "countries"));
 
-        $timeout(() => {
-          var githut = ReportsGithut(dataNoZeros);
-          $scope.githutData = githut.data;
-          $scope.githutConfig = githut.config;
-        }, 500);
+          $timeout(() => {
+            var githut = ReportsGithut(dataNoZeros);
+            $scope.githutData = githut.data;
+            $scope.githutConfig = githut.config;
+          }, 500);
+        }
     }
 
     dataNest(key: string): any {
@@ -87,4 +89,3 @@ module ngApp.reports.controllers {
       ])
       .controller("ReportsController", ReportsController);
 }
-

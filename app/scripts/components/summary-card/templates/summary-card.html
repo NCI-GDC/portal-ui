@@ -40,7 +40,10 @@
         <tr data-ng-repeat="item in tableData track by $index" data-ng-click="sc.addFilters(item)">
           <th scope="row" class="truncated-cell">
             <div class="item-color" data-ng-style="{ 'background-color': item.color }"></div>
-            <a href="#">{{ item[config.displayKey] | humanify }}</a>
+            <a href="#"
+               data-uib-tooltip="{{::ProjectsService.projectIdMapping[item[config.displayKey]] }}">
+              {{ item[config.displayKey] | humanify }}
+            </a>
           </th>
           <td class="text-right" data-ng-if="showCases">
             <span data-ng-if="item.case_count">

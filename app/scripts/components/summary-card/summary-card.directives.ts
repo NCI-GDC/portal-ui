@@ -1,7 +1,8 @@
 module ngApp.components.summaryCard.directives {
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IProjectsService = ngApp.projects.services.IProjectsService;
 
-  function SummaryCard(LocationService: ILocationService): ng.IDirective {
+  function SummaryCard(LocationService: ILocationService, ProjectsService: IProjectsService): ng.IDirective {
     return {
       restrict: "E",
       templateUrl: "components/summary-card/templates/summary-card.html",
@@ -18,6 +19,7 @@ module ngApp.components.summaryCard.directives {
         showCases: "="
       },
       link: function($scope) {
+        $scope.ProjectsService = ProjectsService;
         var config = $scope.config;
         $scope.mode = $scope.mode || "graph";
 

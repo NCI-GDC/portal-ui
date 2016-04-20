@@ -9,6 +9,7 @@ describe('Search:', function () {
 
   beforeEach(module(function ($provide) {
       $provide.value('AuthRestangular', {});
+      $provide.value('ProjectsService', {});
       $provide.value('config', {});
   }));
 

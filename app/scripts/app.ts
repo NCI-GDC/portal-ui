@@ -125,7 +125,7 @@ function appRun(gettextCatalog: any,
   if (navigator.cookieEnabled && $cookies.get("GDC-Portal-Sha") !== config.commitHash) {
     $cookies.put("GDC-Portal-Sha", config.commitHash);
     [ "Projects-col", "Annotations-col", "Files-col", "Cases-col",
-      "Cart-col", "gdc-cart-items", "gdc-cart-updated"
+      "Cart-col", "gdc-cart-items", "gdc-cart-updated", "gdc-facet-config"
     ].forEach(item => LocalStorageService.removeItem(item))
   }
   gettextCatalog.debug = true;

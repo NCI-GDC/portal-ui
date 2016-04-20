@@ -17,6 +17,7 @@
          data-facet="aggregations[f.name]"
          data-collapsed="{{ f.collapsed }}"
          data-removable="{{ f.removable }}"
+         data-show-tooltip="{{ f.showTooltip }}"
          data-remove-function="removeFacet(f.name)"></terms>
 
   <range-facet data-ng-if="f.facetType === 'range'"

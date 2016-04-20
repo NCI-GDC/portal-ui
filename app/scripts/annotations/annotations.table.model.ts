@@ -8,14 +8,16 @@ module ngApp.projects.models {
             id: "annotation_id",
             td: row => '<a href="annotations/'+row.annotation_id+'">' + row.annotation_id + '</a>',
             sortable: true,
-            tdClassName: 'truncated-cell'
+            tdClassName: 'truncated-cell',
+            toolTipText: row => row.annotation_id
           },
           {
               name: "Case UUID",
               id: "case_id",
               td: row => '<a href="cases/'+row.case_id+'">' + row.case_id + '</a>',
               sortable: true,
-              tdClassName: 'truncated-cell'
+              tdClassName: 'truncated-cell',
+              toolTipText: row => row.case_id
           },
           {
               name: "Program",
@@ -28,12 +30,9 @@ module ngApp.projects.models {
               name: "Project",
               id: "project.project_id",
               td: row => row.project && '<a href="projects/'+row.project.project_id +
-                           '" data-uib-tooltip="' + row.project.name +
-                           '" data-tooltip-popup-delay=1000' +
-                           '" data-tooltip-append-to-body="true">' +
-                           row.project.project_id +
-                         '</a>',
-              sortable: true
+                         '">' + row.project.project_id + '</a>',
+              sortable: true,
+              toolTipText: row => row.project.name
           },
           {
               name: "Entity Type",
@@ -46,7 +45,8 @@ module ngApp.projects.models {
               id: "entity_id",
               td: row => row.entity_id,
               sortable: true,
-              tdClassName: 'truncated-cell'
+              tdClassName: 'truncated-cell',
+              toolTipText: row => row.entity_id
           },
           {
               name: "Entity Barcode",
@@ -100,7 +100,8 @@ module ngApp.projects.models {
           "case_id",
           "notes",
           "project.program.name",
-          "project.project_id"
+          "project.project_id",
+          "project.name",
         ],
         facets: [
           {

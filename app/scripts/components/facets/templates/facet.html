@@ -51,10 +51,17 @@
             class="facet-term-label">
         <i class="fa fa-square-o" aria-controls="data-table" aria-checked="false"></i>
         <span data-ng-if="tc.name.indexOf('project_id') !== -1"
-              data-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
+              data-uib-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"
-              data-tooltip-placement="right">{{ ::term.key.toUpperCase() }}</span>
-        <span data-ng-if="tc.name.indexOf('project_id') === -1">
+              data-tooltip-placement="right">
+          {{ ::term.key.toUpperCase() }}
+        </span>
+        <span data-ng-if="tc.name.indexOf('project_id') === -1 && showTooltip"
+              data-tooltip-append-to-body="true"
+              data-uib-tooltip="{{::term.key}}">
+          {{ ::term.key | translate | humanify: true:true }}
+        </span>
+        <span data-ng-if="tc.name.indexOf('project_id') === -1 && !showTooltip">
           {{ ::term.key | translate | humanify: true:true }}
         </span>
       </span>

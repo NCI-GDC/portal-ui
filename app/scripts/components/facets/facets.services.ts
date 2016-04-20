@@ -235,7 +235,7 @@ module ngApp.components.facets.services {
                  !_.includes(datum.field, "_id") &&
                  !_.includes(current, datum.field) &&
                  !_.includes(docType === 'files' ? _.pluck(this.SearchTableFilesModel.facets, "name") : _.pluck(this.SearchTableParticipantsModel.facets, "name"), datum.field);
-                 }), f => _.merge(f, {'description': 'this is a description'}));
+                 }), f => f);
       });
     }
 

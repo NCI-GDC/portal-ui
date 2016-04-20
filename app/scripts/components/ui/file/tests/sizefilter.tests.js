@@ -40,11 +40,11 @@ describe("File Size Filter:", function () {
   it("should filter MB when 999500000 > size >= 999500 bytes ", inject(function ($filter) {
     var formattedSize;
     formattedSize = $filter("size")(999500);
-    expect(formattedSize).to.equal("1 MB");
+    expect(formattedSize).to.equal("1.00 MB");
     formattedSize = $filter("size")(1000000);
-    expect(formattedSize).to.equal("1 MB");
+    expect(formattedSize).to.equal("1.00 MB");
     formattedSize = $filter("size")(999499999);
-    expect(formattedSize).to.equal("999 MB");
+    expect(formattedSize).to.equal("999.50 MB");
   }));
 
   it("should filter KB when 999499 > size >= 1000 bytes ", inject(function ($filter) {

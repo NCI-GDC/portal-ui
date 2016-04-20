@@ -241,32 +241,27 @@ module ngApp.cart.services {
     }
 
     sizeWarning() {
-      var cartAvailable = this.getCartVacancySize(),
-          template = ["Only", this.$filter("number")(cartAvailable)];
+      var cartAvailable = this.getCartVacancySize()
+      var template = [
+        "The cart is limited to " + this.$filter("number")(this.getMaxSize()) + " files.",
+        !this.files.length
+          ? "Please narrow down your search criteria to be able to add files to your cart."
+          : this.files.length < this.getMaxSize()
+            ? this.$filter("number")(cartAvailable) + getRemaining() + "can be added to the cart."
+            : "You cannot add anymore files to the cart."
+      ];
 
-      if (cartAvailable !== this.getMaxSize()) {
-        if (cartAvailable > 1) {
-          template.push("more");
-          template.push("files");
-        } else if (cartAvailable === 1) {
-          template.push("more");
-          template.push("file");
-        } else {
-          template = ["No more files"];
-        }
-      } else {
-        template.push("files");
+      function getRemaining() {
+        return cartAvailable > 1 ? " more files " : " more file ";
       }
 
-      template.push("can be added to the cart.");
-
-      template = "<span>" + this.gettextCatalog.getString(template.join(" ")) + "</span>";
+      var messageTemplate = "<span>" + this.gettextCatalog.getString(template.join(" ")) + "</span>";
 
       this.notify.config({ duration: 5000 });
       this.notify.closeAll();
       this.notify({
         message: "",
-        messageTemplate: template,
+        messageTemplate: messageTemplate,
         container: "#notification",
         classes: "alert-warning"
       });

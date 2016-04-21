@@ -348,7 +348,7 @@ module ngApp.components.githut.controllers {
             .attr("width", () => {
               var width = xscale(options.superhead.end) - xscale(options.superhead.start);
               // no neg widths
-              return width > 0 ? width : 0;
+              return Math.max(0, width);
              } )
             .attr("height", 1)
             .attr("y", 15)
@@ -533,14 +533,15 @@ module ngApp.components.githut.controllers {
           .transition()
           .duration(options.duration)
           .attr("x", (d) => {
-            return -width_scales[d.column](d.value /
-                   ((options.dimensions.indexOf(d.column) > -1) ? 1 : d.ref)) / 2;
+            var value = d.value / ((options.dimensions.indexOf(d.column) > -1) ? 1 : d.ref || 1);
+            var x = -width_scales[d.column](value) / 2;
+            return isNaN(x) ? 0 : x;
           })
           .attr("width", (d) => {
             var width = width_scales[d.column](d.value /
-                   ((options.dimensions.indexOf(d.column) > -1) ? 1 : d.ref));
+                   ((options.dimensions.indexOf(d.column) > -1) ? 1 : d.ref || 1));
             // no neg widths
-            return width > 0 ? width : 0;
+            return isNaN(width) ? 0 : Math.max(0, width);
           });
       }
 
@@ -795,10 +796,10 @@ module ngApp.components.githut.controllers {
               }
             })
             .attr("width", function(d) {
-              if (d.column == options.title_column) {
+              if (d.column === options.title_column) {
                 return (padding.left + margins.left);
               } else {
-                return d.marker_width + 20;
+                return isNaN(d.marker_width) ? 20 : d.marker_width + 20;
               }
             });
 
@@ -820,7 +821,7 @@ module ngApp.components.githut.controllers {
               y = yscales[d.column](d.value / d.ref);
             }
 
-            return "translate(" + (x - d.marker_width / 2 - d.text_width / 2 - 10) + "," + y + ")";
+            return "translate(" + (x - (isNaN(d.marker_width) ? 20 : d.marker_width) / 2 - d.text_width / 2 - 10) + "," + y + ")";
           });
 
         labels

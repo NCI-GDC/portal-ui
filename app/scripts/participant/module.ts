@@ -21,6 +21,7 @@ module ngApp.participants {
            expand: [
             "demographic",
             "diagnoses",
+            "diagnoses.treatments",
             "exposures",
             "family_histories",
             "files",

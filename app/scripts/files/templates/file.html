@@ -56,14 +56,6 @@
                 <td>{{ ::fc.file.md5sum }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>Published</th>
-                <td>{{ ::fc.file.created_datetime || '--' | date:'yyyy-MM-dd' }}</td>
-              </tr>
-              <tr>
-                <th scope="row" data-translate>Uploaded</th>
-                <td>{{ ::fc.file.uploaded_datetime || '--' | date:'yyyy-MM-dd' }}</td>
-              </tr>
-              <tr>
                 <th scope="row" data-translate>State</th>
                 <td>{{ ::fc.file.state | humanify }}</td>
               </tr>

@@ -28,8 +28,6 @@ module ngApp.files {
               "platform",
               "experimental_strategy",
               "center.short_name",
-              "created_datetime",
-              "uploaded_datetime",
               "cases.case_id",
               "cases.project.project_id",
               "annotations.annotation_id",

@@ -182,7 +182,7 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Submitter ID</th>
-                <td>{{ ::demo.submitter_id | humanify }}</td>
+                <td>{{ ::demo.submitter_id || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Year of Birth</th>
@@ -194,11 +194,11 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Created</th>
-                <td>{{ ::demo.created_datetime || '--' | date }}</td>
+                <td>{{ ::demo.created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Updated</th>
-                <td>{{ ::demo.updated_datetime || '--' | date }}</td>
+                <td>{{ ::demo.updated_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
               </tr>
             </tbody>
           </table>
@@ -265,7 +265,7 @@
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Primary Diagnosis</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].primary_diagnosis | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].primary_diagnosis || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Prior Malignancy</th>
@@ -277,11 +277,11 @@
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Site of Resection or Biopsy</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].site_of_resection_or_biopsy | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].site_of_resection_or_biopsy || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Tissue or Organ of Origin</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].tissue_or_organ_of_origin | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].tissue_or_organ_of_origin || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Tumor Grade</th>
@@ -289,27 +289,27 @@
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Tumor Stage</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].tumor_stage | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].tumor_stage || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Vital Status</th>
                       <td>{{ ::pc.participant.diagnoses[ $index ].vital_status | humanify }}</td>
                     </tr>
                     <tr>
-                      <th scope="row" data-translate>state</th>
+                      <th scope="row" data-translate>State</th>
                       <td>{{ ::pc.participant.diagnoses[ $index ].state | humanify }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Submitter ID</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].submitter_id | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].submitter_id || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Created</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].created_datetime || '--' | date }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Updated</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].updated_datetime || '--' | date }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].updated_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -344,7 +344,7 @@
                           {{ ::t.state }}
                         </td>
                         <td>
-                          {{ ::t.submitter_id }}
+                          {{ ::t.submitter_id || '--' }}
                         </td>
                         <td>
                           {{ ::t.therapeutic_agents }}
@@ -359,10 +359,10 @@
                           {{ ::t.days_to_treatment }}
                         </td>
                         <td>
-                          {{ ::t.created_datetime || '--' | date }}
+                          {{ ::t.created_datetime || '--' | date: 'yyyy-MM-dd' }}
                         </td>
                         <td>
-                          {{ ::t.updated_datetime || '--' | date }}
+                          {{ ::t.updated_datetime || '--' | date: 'yyyy-MM-dd' }}
                         </td>
                       </tr>
                     </tbody>
@@ -430,15 +430,15 @@
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Submitter ID</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].submitter_id | humanify }}</td>
+                     <td>{{ ::pc.participant.family_histories[ $index ].submitter_id || '--' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Created</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].created_datetime || '--' | date }}</td>
+                     <td>{{ ::pc.participant.family_histories[ $index ].created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Updated</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].updated_datetime || '--' | date }}</td>
+                     <td>{{ ::pc.participant.family_histories[ $index ].updated_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
                    </tr>
                  </tbody>
                </table>
@@ -507,15 +507,15 @@
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Submitter ID</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].submitter_id | humanify }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].submitter_id || '--' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Created</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].created_datetime || '--' | date }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Updated</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].updated_datetime || '--'| date }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].updated_datetime || '--'| date: 'yyyy-MM-dd' }}</td>
                    </tr>
                  </tbody>
                </table>

@@ -73,6 +73,15 @@ module ngApp.files.controllers {
         related_file['cases'] = file.cases;
       });
 
+      if (file.downstream_analyses) {
+        file.downstream_analyses = file.downstream_analyses.reduce(
+          (prev, curr) =>
+            prev.concat((curr.output_files || []).map(x =>
+              _.extend({}, x, { workflow_type: curr.workflow_type }))
+            ),
+          []
+        );
+      }
     }
 
     isInCart(): boolean {
@@ -162,4 +171,3 @@ module ngApp.files.controllers {
       .controller("BAMFailedModalController", BAMFailedModalController)
       .controller("FileController", FileController);
 }
-

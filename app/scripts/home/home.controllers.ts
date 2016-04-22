@@ -90,7 +90,7 @@ module ngApp.home.controllers {
       ];
 
       this.defaultParams =  {
-        fields: this.ProjectTableModel.fields,
+        fields: this.ProjectTableModel.model().fields,
         facets: [
           "disease_type",
           "program.name",

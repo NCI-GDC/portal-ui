@@ -247,6 +247,14 @@ angular
       "templates"
     ])
     .config(appConfig)
+    .constant('DATA_CATEGORIES', {
+      SEQ: { full: "Raw Sequencing Data", abbr: "Seq" },
+      EXP: { full: "Gene Expression", abbr: "Exp" },
+      SNV: { full: "Simple Nucleotide Variation", abbr: "SNV" },
+      CNV: { full: "Copy Number Variation", abbr: "CNV" },
+      CLINICAL: { full: "Clinical", abbr: "Clinical" },
+      BIOSPECIMEN: { full: "Biospecimen", abbr: "Biospecimen" },
+    })
     .factory('RestFullResponse', function(Restangular: restangular.IService) {
       return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
         RestangularConfigurer.setFullResponse(true);

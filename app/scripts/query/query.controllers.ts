@@ -73,7 +73,7 @@ module ngApp.query.controllers {
       });
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
-      $scope.participantTableConfig = this.SearchTableParticipantsModel;
+      $scope.participantTableConfig = this.SearchTableParticipantsModel.model();
 
       this.refresh();
       this.chartConfigs = SearchChartConfigs;
@@ -100,11 +100,11 @@ module ngApp.query.controllers {
       });
 
       var fileOptions = {
-        fields: this.SearchTableFilesModel.fields
+        fields: this.SearchTableFilesModel.model().fields
       };
 
       var participantOptions = {
-        fields: this.SearchTableParticipantsModel.fields,
+        fields: this.SearchTableParticipantsModel.model().fields,
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {

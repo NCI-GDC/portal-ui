@@ -83,7 +83,7 @@ module ngApp.search.controllers {
       });
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
-      $scope.participantTableConfig = this.SearchTableParticipantsModel;
+      $scope.participantTableConfig = this.SearchTableParticipantsModel.model();
 
       this.refresh();
       this.chartConfigs = SearchChartConfigs;
@@ -132,10 +132,10 @@ module ngApp.search.controllers {
         facets: this.FacetService.filterFacets(this.FacetsConfigService.fieldsMap['files'])
       };
 
-      this.FacetsConfigService.setFields('cases', this.SearchTableParticipantsModel.facets);
+      this.FacetsConfigService.setFields('cases', this.SearchTableParticipantsModel.model().facets);
       var participantOptions = {
-        fields: this.SearchTableParticipantsModel.fields,
-        expand: this.SearchTableParticipantsModel.expand,
+        fields: this.SearchTableParticipantsModel.model().fields,
+        expand: this.SearchTableParticipantsModel.model().expand,
         facets: this.FacetService.filterFacets(this.FacetsConfigService.fieldsMap['cases'])
       };
 

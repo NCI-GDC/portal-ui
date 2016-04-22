@@ -52,7 +52,7 @@ module ngApp.projects.controllers {
 
       var data = $state.current.data || {};
       this.ProjectsState.setActive("tabs", data.tab);
-      $scope.tableConfig = ProjectTableModel;
+      $scope.tableConfig = ProjectTableModel.model();
 
       this.refresh();
     }
@@ -61,8 +61,8 @@ module ngApp.projects.controllers {
       this.loading = true;
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
-          fields: this.ProjectTableModel.fields,
-          facets: this.FacetService.filterFacets(this.ProjectTableModel.facets),
+          fields: this.ProjectTableModel.model().fields,
+          facets: this.FacetService.filterFacets(this.ProjectTableModel.model().facets),
           size: 100
         }).then((data) => {
           this.loading = false;

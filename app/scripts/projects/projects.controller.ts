@@ -30,7 +30,7 @@ module ngApp.projects.controllers {
 
     /* @ngInject */
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
-                private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
+                private CoreService: ICoreService, private ProjectsTableService: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
                 private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut,
                 private FacetService: IFacetService
@@ -52,17 +52,18 @@ module ngApp.projects.controllers {
 
       var data = $state.current.data || {};
       this.ProjectsState.setActive("tabs", data.tab);
-      $scope.tableConfig = ProjectTableModel;
+      $scope.tableConfig = this.ProjectsTableService.model();
 
       this.refresh();
     }
 
     refresh() {
       this.loading = true;
+      var projectsTableModel = this.ProjectsTableService.model();
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
-          fields: this.ProjectTableModel.fields,
-          facets: this.FacetService.filterFacets(this.ProjectTableModel.facets),
+          fields: projectsTableModel.fields,
+          facets: this.FacetService.filterFacets(projectsTableModel.facets),
           size: 100
         }).then((data) => {
           this.loading = false;
@@ -280,7 +281,7 @@ module ngApp.projects.controllers {
       .module("projects.controller", [
         "projects.services",
         "core.services",
-        "projects.table.model",
+        "projects.table.service",
         "projects.githut.config",
         "annotations.services"
       ])

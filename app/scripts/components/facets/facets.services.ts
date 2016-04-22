@@ -221,7 +221,7 @@ module ngApp.components.facets.services {
     /* @ngInject */
     constructor(private Restangular: restangular.IService,
                 private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig,
+                private SearchCasesTableService: TableiciousConfig,
                 private FacetsConfigService: IFacetsConfigService) {
       this.ds = Restangular.all("gql/_mapping");
     }
@@ -234,7 +234,9 @@ module ngApp.components.facets.services {
                  datum.field !== 'archive.revision' &&
                  !_.includes(datum.field, "_id") &&
                  !_.includes(current, datum.field) &&
-                 !_.includes(docType === 'files' ? _.pluck(this.SearchTableFilesModel.facets, "name") : _.pluck(this.SearchTableParticipantsModel.facets, "name"), datum.field);
+                 !_.includes(docType === 'files'
+                  ? _.pluck(this.SearchTableFilesModel.facets, "name")
+                  : _.pluck(this.SearchCasesTableService.model().facets, "name"), datum.field);
                  }), f => f);
       });
     }

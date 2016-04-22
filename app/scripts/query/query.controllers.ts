@@ -57,7 +57,7 @@ module ngApp.query.controllers {
                 private UserService: IUserService,
                 private CoreService: ICoreService,
                 private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig,
+                private SearchCasesTableService: TableiciousConfig,
                 SearchChartConfigs) {
       var data = $state.current.data || {};
       this.QState.setActive(data.tab, "active");
@@ -73,7 +73,7 @@ module ngApp.query.controllers {
       });
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
-      $scope.participantTableConfig = this.SearchTableParticipantsModel;
+      $scope.participantTableConfig = this.SearchCasesTableService.model();
 
       this.refresh();
       this.chartConfigs = SearchChartConfigs;
@@ -99,12 +99,14 @@ module ngApp.query.controllers {
         this.summary = data;
       });
 
+      var casesTableModel = this.SearchCasesTableService.model();
+
       var fileOptions = {
         fields: this.SearchTableFilesModel.fields
       };
 
       var participantOptions = {
-        fields: this.SearchTableParticipantsModel.fields,
+        fields: casesTableModel.fields,
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
@@ -190,7 +192,7 @@ module ngApp.query.controllers {
         "core.services",
         "participants.services",
         "search.table.files.model",
-        'search.table.participants.model',
+        "search.cases.table.service",
         "files.services"
       ])
       .controller("QueryController", QueryController);

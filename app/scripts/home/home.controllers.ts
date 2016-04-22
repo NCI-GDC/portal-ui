@@ -27,7 +27,7 @@ module ngApp.home.controllers {
     defaultParams: any;
 
     /* @ngInject */
-    constructor(private HomeService: IHomeService, private ProjectTableModel: TableiciousConfig,
+    constructor(private HomeService: IHomeService, private ProjectsTableService: TableiciousConfig,
                 private CoreService: ICoreService, private $filter: ng.ui.IFilterService) {
 
       CoreService.setPageTitle("Welcome to The Genomics Data Commons Data Portal");
@@ -90,7 +90,7 @@ module ngApp.home.controllers {
       ];
 
       this.defaultParams =  {
-        fields: this.ProjectTableModel.fields,
+        fields: this.ProjectsTableService.model().fields,
         facets: [
           "disease_type",
           "program.name",

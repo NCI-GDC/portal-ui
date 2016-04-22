@@ -58,7 +58,7 @@ module ngApp.search.controllers {
                 private UserService: IUserService,
                 public CoreService: ICoreService,
                 public SearchTableFilesModel: TableiciousConfig,
-                public SearchTableParticipantsModel: TableiciousConfig,
+                public SearchCasesTableService: TableiciousConfig,
                 private FacetsConfigService: IFacetsConfigService,
                 public FacetService,
                 SearchChartConfigs) {
@@ -83,7 +83,7 @@ module ngApp.search.controllers {
       });
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
-      $scope.participantTableConfig = this.SearchTableParticipantsModel;
+      $scope.participantTableConfig = this.SearchCasesTableService.model();
 
       this.refresh();
       this.chartConfigs = SearchChartConfigs;
@@ -118,6 +118,8 @@ module ngApp.search.controllers {
         return;
       }
 
+      const casesTableModel = this.SearchCasesTableService.model();
+
       this.filesLoading = true;
       this.participantsLoading = true;
 
@@ -132,10 +134,10 @@ module ngApp.search.controllers {
         facets: this.FacetService.filterFacets(this.FacetsConfigService.fieldsMap['files'])
       };
 
-      this.FacetsConfigService.setFields('cases', this.SearchTableParticipantsModel.facets);
+      this.FacetsConfigService.setFields('cases', casesTableModel.facets);
       var participantOptions = {
-        fields: this.SearchTableParticipantsModel.fields,
-        expand: this.SearchTableParticipantsModel.expand,
+        fields: casesTableModel.fields,
+        expand: casesTableModel.expand,
         facets: this.FacetService.filterFacets(this.FacetsConfigService.fieldsMap['cases'])
       };
 
@@ -233,7 +235,7 @@ module ngApp.search.controllers {
         "core.services",
         "participants.services",
         "search.table.files.model",
-        "search.table.participants.model",
+        "search.cases.table.service",
         "files.services",
         "facets.services"
       ])

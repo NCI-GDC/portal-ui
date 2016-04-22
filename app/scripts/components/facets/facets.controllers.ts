@@ -495,7 +495,7 @@ module ngApp.components.facets.controllers {
               _this.setSelectedIndex(Cycle.Down);
               break;
             case KeyCode.Esc:
-              _this.$uibModalStack.dismissAll();
+              if (_this.$uibModalStack) _this.$uibModalStack.dismissAll();
               break;
             case KeyCode.Tab:
               e.preventDefault();

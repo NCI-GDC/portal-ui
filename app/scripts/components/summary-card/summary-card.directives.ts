@@ -129,11 +129,13 @@ module ngApp.components.summaryCard.directives {
               item.color = color(index);
             });
 
-            $scope.tableData = newVal.filter(x =>
-              !config.blacklist.some(y =>
-                y.toLowerCase() === x.data_category.toLowerCase()
-              )
-            );
+            $scope.tableData = config.blacklist
+              ? newVal.filter(x =>
+                  !config.blacklist.some(y =>
+                    y.toLowerCase() === x.data_category.toLowerCase()
+                  )
+                )
+              : newVal;
           }
         });
       }
@@ -200,11 +202,13 @@ module ngApp.components.summaryCard.directives {
               item.color = color(index);
             });
 
-            $scope.tableData = newVal.filter(x =>
-              !config.blacklist.some(y =>
-                y.toLowerCase() === x.data_category.toLowerCase()
-              )
-            );
+            $scope.tableData = config.blacklist
+              ? newVal.filter(x =>
+                  !config.blacklist.some(y =>
+                    y.toLowerCase() === x.data_category.toLowerCase()
+                  )
+                )
+              : newVal;
           }
         });
       }

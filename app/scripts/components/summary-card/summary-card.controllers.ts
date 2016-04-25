@@ -32,7 +32,7 @@ module ngApp.components.summaryCard.controllers {
 
       var newFilter = JSON.parse(params.filters).content[0]; // there is always just one
 
-      filters.content = filters.content.some(filter => _.isEqual(filter, newFilter))
+      filters.content = (filters.content || []).some(filter => _.isEqual(filter, newFilter))
         ? filters.content
         : filters.content.concat(newFilter);
 

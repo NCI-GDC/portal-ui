@@ -52,7 +52,7 @@ module ngApp.components.ui.biospecimen.services {
 
       function search (entity, type, parents, depth) {
         if (depth === self.hierarchy.length + 1) return;
-        if (fields.some(f => (entity[f] || '').toLowerCase().indexOf(loweredSearchTerm) > -1)) {
+        if ((fields || []).some(f => (entity[f] || '').toLowerCase().indexOf(loweredSearchTerm) > -1)) {
           parents.forEach(p => p.expanded = true);
           entity.expanded = true;
           found.push({ entity: entity, type: type });

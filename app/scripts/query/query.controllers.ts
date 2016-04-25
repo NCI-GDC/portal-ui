@@ -107,6 +107,7 @@ module ngApp.query.controllers {
 
       var participantOptions = {
         fields: casesTableModel.fields,
+        expand: casesTableModel.expand,
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
@@ -133,7 +134,7 @@ module ngApp.query.controllers {
         this.participants = this.participants || {};
         this.participants.aggregations = data.aggregations;
         this.participants.pagination = data.pagination
-        
+
         if (!_.isEqual(this.participants.hits, data.hits)) {
           this.participants.hits = data.hits;
           this.tabSwitch = false;

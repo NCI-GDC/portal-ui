@@ -275,7 +275,7 @@ module ngApp.components.facets.services {
           name: fieldName,
           title: fieldName,
           collapsed: false,
-          facetType: fieldType === 'long' ? 'range' : fieldName.includes('datetime') ? 'datetime' : 'terms',
+          facetType: fieldType === 'long' ? 'range' : _.includes(fieldName, 'datetime') ? 'datetime' : 'terms',
           removable: true
       });
       this.save();

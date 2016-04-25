@@ -106,16 +106,17 @@ module ngApp.search.cases.table.service {
             name: "Annotations",
             id: "annotations.annotation_id",
             td: (row, $scope) => {
-              function getAnnotations(row, $filter) {
-                return row.annotations.length == 1 ?
-                       '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>' :
-                       this.withAnnotationFilter(
-                         row.annotations.length,
-                         [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
-                         $filter);
+              var getAnnotations = (row, $filter) => {
+                return row.annotations.length === 1
+                  ? '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>'
+                  : this.withAnnotationFilter(
+                      row.annotations.length,
+                      [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
+                      $filter
+                    );
               }
 
-              return row.annotations && row.annotations.length ? getAnnotations(row, $scope.$filter) : 0;
+              return (row.annotations || []).length && getAnnotations(row, $scope.$filter);
             },
             thClassName: 'text-right',
             tdClassName: 'text-right'

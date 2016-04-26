@@ -8,6 +8,7 @@ describe('Annotations:', function () {
      $provide.value('AuthRestangular', {});
      $provide.value('notify', {});
      $provide.value('config', {});
+     $provide.value('ProjectsService', {});
   }));
 
   // Injection of dependencies, $http will be mocked with $httpBackend

@@ -5,6 +5,7 @@ module ngApp.annotations.controllers {
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
   import IFacetService = ngApp.components.facets.services.IFacetService;
+  import IProjectsService = ngApp.projects.services.IProjectsService;
 
 
   export interface IAnnotationsController {
@@ -58,7 +59,9 @@ module ngApp.annotations.controllers {
 
   class AnnotationController implements IAnnotationController {
     /* @ngInject */
-    constructor(public annotation: IAnnotation, private CoreService: ICoreService) {
+    constructor(public annotation: IAnnotation,
+                public ProjectsService: IProjectsService,
+                private CoreService: ICoreService) {
       CoreService.setPageTitle("Annotation", annotation.annotation_id);
     }
   }

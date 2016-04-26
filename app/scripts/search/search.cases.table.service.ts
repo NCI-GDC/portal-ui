@@ -163,19 +163,14 @@ module ngApp.search.cases.table.service {
               sortable: false,
               hidden: true
           }, {
-              name: 'Year of diagnosis',
-              id: 'diagnoses.year_of_diagnosis',
+              name: 'Primary Diagnosis',
+              id: 'diagnoses.primary_diagnosis',
               td: (row, $scope) => {
+                console.log(this.DATA_CATEGORIES)
                 const primaryDiagnosis = (row.diagnoses || [])
                   .reduce(this.youngestDiagnosis, { age_at_diagnosis: Infinity });
-                return (row.diagnoses && primaryDiagnosis.year_of_diagnosis) || "--"
+                return (row.diagnoses && primaryDiagnosis.primary_diagnosis) || "--"
               },
-              sortable: false,
-              hidden: true
-          }, {
-              name: 'ICD-10',
-              id: 'icd_10',
-              td: (row, $scope) => (row.clinical && row.clinical.icd_10) || "--",
               sortable: false,
               hidden: true
           }, {
@@ -206,11 +201,10 @@ module ngApp.search.cases.table.service {
             "project.program.name",
             "project.disease_type",
             "submitter_id",
-            "clinical.icd_10",
             "demographic.gender",
             "demographic.race",
             "demographic.ethnicity",
-            "diagnoses.year_of_diagnosis",
+            "diagnoses.primary_diagnosis",
             "diagnoses.vital_status",
             "diagnoses.days_to_death",
             "diagnoses.age_at_diagnosis"

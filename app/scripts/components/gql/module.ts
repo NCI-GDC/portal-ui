@@ -151,7 +151,7 @@ module ngApp.components.gql {
       if (parts.docType === "files") {
         return this.FilesService.getFiles(params)
           .then((fs: IFiles): IDdItem[] => {
-            var f: IFacet = fs.aggregations[parts.facet];
+            var f: IFacet = (fs.aggregations || {})[parts.facet] || [];
             return _.map(f.buckets, (b) => {
               return {field: b.key, full: b.key};
             });
@@ -159,7 +159,7 @@ module ngApp.components.gql {
       } else {
         return this.ParticipantsService.getParticipants(params)
           .then((fs: IParticipants): IDdItem[] => {
-            var f: IFacet = fs.aggregations[parts.facet];
+            var f: IFacet = (fs.aggregations || {})[parts.facet] || [];
             return _.map(f.buckets, (b) => {
               return {field: b.key, full: b.key};
             });

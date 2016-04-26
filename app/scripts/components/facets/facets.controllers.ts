@@ -515,6 +515,7 @@ module ngApp.components.facets.controllers {
 
     addFacet() {
       var selectedField = this.$scope.filteredFields[this.selectedIndex];
+      if (!selectedField) return;
       var fileOptions = {
         fields: [],
         expand: [],

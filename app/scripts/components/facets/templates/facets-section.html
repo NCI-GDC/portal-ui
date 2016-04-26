@@ -1,4 +1,4 @@
-<div data-ng-repeat="f in facetsConfig track by $index">
+<div data-ng-repeat="f in facetsConfig track by f.title">
   <facets-free-text data-ng-if="f.facetType === 'free-text'"
                   data-title="{{f.title}}" placeholder="{{ f.placeholder | translate }}"
                   data-field="{{doctype}}.{{f.name}}"

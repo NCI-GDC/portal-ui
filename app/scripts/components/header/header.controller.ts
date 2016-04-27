@@ -27,11 +27,17 @@ module ngApp.components.header.controllers {
     };
 
     /* @ngInject */
-    constructor(private gettextCatalog, private CartService: ICartService,
+    constructor(private gettextCatalog,
+                private $rootScope,
+                private CartService: ICartService,
                 private $state: ng.ui.IStateService,
                 private UserService: IUserService, private $uibModal: any,
                 private $window: ng.IWindowService) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
+
+      $rootScope.$on('requestTakingTooLong', (event, takingTooLong) => {
+        this.veryLongRequest = takingTooLong;
+      });
     }
 
     getToken(): void {

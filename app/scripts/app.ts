@@ -131,7 +131,26 @@ function appRun(gettextCatalog: any,
   gettextCatalog.debug = true;
 
   $rootScope.config = config;
+  $rootScope.pendingRequests = [];
   Restangular.addFullRequestInterceptor(addTokenToRequest);
+
+  Restangular.addFullRequestInterceptor(function startRequestTimer (element, operation, route, url, headers, params, httpConfig) {
+    setTimeout(() => {
+      if ($rootScope.pendingRequests.length) {
+        $rootScope.$emit('requestTakingTooLong', true);
+      }
+    }, 5000)
+
+    $rootScope.pendingRequests.push(url);
+
+    return {
+      element: element,
+      headers: headers,
+      params: params,
+      httpConfig: httpConfig
+    };
+  });
+
   Restangular.setErrorInterceptor((response) => {
     CoreService.xhrDone();
     if (response.status === 500) {
@@ -152,8 +171,13 @@ function appRun(gettextCatalog: any,
     // TODO more than just 404
     //$state.go("404", {}, {inherit: true});
   });
+
   Restangular.addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
     // Ajax
+    $rootScope.$emit('requestTakingTooLong', false);
+
+    $rootScope.pendingRequests = $rootScope.pendingRequests.filter(u => u !== url);
+
     CoreService.xhrDone();
     if (response.headers('content-disposition')) {
       return deferred.resolve({ 'data': data, 'headers': response.headers()});

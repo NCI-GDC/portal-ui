@@ -293,32 +293,31 @@ module ngApp.cart.directives {
     return {
       restrict:"AE",
       scope: true,
-      link: (scope, $element, $attrs) => {
-        scope.active = false;
+      link: ($scope, $element, $attrs) => {
+        $element.on('click', () => {
 
-        const reportStatus = _.isFunction(scope.$parent.reportStatus) ?
-          _.partial(scope.$parent.reportStatus, scope.$id) :
-          () => {};
+          $scope.active = false;
 
-        const inProgress = () => {
-          scope.active = true;
-          reportStatus(scope.active);
-          $attrs.$set('disabled', 'disabled');
-        };
-        const done = () => {
-          scope.active = false;
-          reportStatus(scope.active);
-          $element.removeAttr('disabled');
-        };
-        const files = [].concat(CartService.getFiles());
-        const params = { ids: files.map(f => f.file_id) };
-        const url = config.api + '/data/metadata_files';
-        const clickHandler = () => {
-          const checkProgress = scope.download(params, url, () => $element, 'POST');
+          const reportStatus = _.isFunction($scope.$parent.reportStatus)
+            ? _.partial($scope.$parent.reportStatus, $scope.$id)
+            : () => {};
+
+          const inProgress = () => {
+            $scope.active = true;
+            reportStatus($scope.active);
+            $attrs.$set('disabled', 'disabled');
+          };
+          const done = () => {
+            $scope.active = false;
+            reportStatus($scope.active);
+            $element.removeAttr('disabled');
+          };
+          const files = [].concat(CartService.getFiles());
+          const params = { ids: files.map(f => f.file_id) };
+          const url = config.api + '/data/metadata_files';
+          const checkProgress = $scope.download(params, url, () => $element, 'POST');
           checkProgress(inProgress, done);
-        };
-
-        $element.on('click', clickHandler);
+        });
       }
     };
   }

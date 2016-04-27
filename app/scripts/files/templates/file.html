@@ -86,11 +86,11 @@
               <tbody>
               <tr>
                 <th scope="row" data-translate>Data Category</th>
-                <td>{{ ::fc.file.data_category || '--' | titlefy }}</td>
+                <td>{{ ::fc.file.data_category || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Data Type</th>
-                <td>{{ ::fc.file.data_type || '--' | titlefy }}</td>
+                <td>{{ ::fc.file.data_type || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Experimental Strategy</th>
@@ -353,12 +353,12 @@
               </thead>
               <tbody>
               <tr data-ng-repeat="outf in fc.file.downstream_analyses track by outf.file_id">
-                <td>{{outf.file_name || '--'}}</td>
-                <td>{{outf.data_category | humanify}}</td>
-                <td>{{outf.data_type | humanify}}</td>
-                <td>{{outf.data_format | humanify}}</td>
-                <td>{{outf.workflow_type | humanify}}</td>
-                <td>{{outf.file_size | size}}</td>
+                <td>{{ ::outf.file_name || '--' }}</td>
+                <td>{{ ::outf.data_category || '--' }}</td>
+                <td>{{ ::outf.data_type || '--' }}</td>
+                <td>{{ ::outf.data_format || '--' }}</td>
+                <td>{{ ::outf.workflow_type || '--' }}</td>
+                <td>{{ ::outf.file_size | size }}</td>
                 <td>
                   <download-button class="btn-bordered" data-icon="fa-download" data-files="outf"></download-button>
                   <add-to-cart-single-icon data-file="outf"></add-to-cart-single-icon>

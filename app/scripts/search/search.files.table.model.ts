@@ -67,7 +67,7 @@ module ngApp.search.models {
         tdClassName: 'truncated-cell'
       }, {
         name: "Cases",
-        id: "cases",
+        id: "cases.case_id",
         td: (row, $scope) => {
           function getParticipants(row, $filter) {
             return row.cases.length == 1 ?

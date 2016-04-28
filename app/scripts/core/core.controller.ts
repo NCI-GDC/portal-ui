@@ -5,10 +5,15 @@ module ngApp.core.controllers {
 
   export interface ICoreController {
     showWarning: boolean;
+    loading: boolean;
   }
 
   class CoreController implements ICoreController {
     showWarning: boolean = false;
+    loading: boolean;
+    loading5s: boolean;
+    loading8s: boolean;
+    loadingTimers: Promise<any>[];
 
     /* @ngInject */
     constructor(public $scope: ng.IScope,
@@ -18,10 +23,25 @@ module ngApp.core.controllers {
                 $location: ng.ILocationService,
                 private $cookies: ng.cookies.ICookiesService,
                 UserService: IUserService,
-                private $uibModal: any) {
+                private $uibModal: any,
+                private $timeout
+              ) {
 
-      $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) {
-          UserService.login();
+      this.loadingTimers = [];
+
+      this.$rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams, options) => {
+        UserService.login();
+        this.$rootScope.$emit('ShowLoadingScreen');
+      });
+
+      this.$rootScope.$on('$stateChangeSuccess', () => this.$rootScope.$emit('ClearLoadingScreen'));
+
+      this.$rootScope.$on('ShowLoadingScreen', (data, throttleMs) => {
+        this.loadingTimers.push(this.$timeout(() => this.showLoadingScreen(), throttleMs || 500));
+      });
+
+      this.$rootScope.$on('ClearLoadingScreen', () => {
+        this.clearLoadingScreen();
       });
 
       // display login failed warning
@@ -109,6 +129,21 @@ module ngApp.core.controllers {
         this.$cookies.put("NCI-Warning", "true");
       };
 
+    }
+
+    showLoadingScreen() {
+      this.loading = true;
+      this.loadingTimers = this.loadingTimers.concat(
+        this.$timeout(() => this.loading5s = true, 5000),
+        this.$timeout(() => this.loading8s = true, 8000)
+      );
+    }
+
+    clearLoadingScreen() {
+      this.loading = false
+      this.loading5s = false;
+      this.loading8s = false;
+      this.loadingTimers.forEach(x => this.$timeout.cancel(x));
     }
   }
 

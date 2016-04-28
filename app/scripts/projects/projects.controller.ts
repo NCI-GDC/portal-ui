@@ -9,6 +9,7 @@ module ngApp.projects.controllers {
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
   import IProjectsState = ngApp.projects.services.IProjectsState;
   import IFacetService = ngApp.components.facets.services.IFacetService;
+  import IParticipantsService = ngApp.participants.services.IParticipantsService;
 
   export interface IProjectsController {
     projects: IProjects;
@@ -139,12 +140,18 @@ module ngApp.projects.controllers {
 
   export interface IProjectController {
     project: IProject;
+    biospecimenCount: number;
+    clinicalCount: number;
   }
 
   class ProjectController implements IProjectController {
+    biospecimenCount: number = 0;
+    clinicalCount: number = 0;
+
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService,
                 private AnnotationsService: IAnnotationsService,
+                private ParticipantsService: IParticipantsService,
                 private ExperimentalStrategyNames: string[],
                 private DATA_CATEGORIES,
                 public $state: ng.ui.IStateService,
@@ -278,6 +285,77 @@ module ngApp.projects.controllers {
       }).then((data) => {
         this.project.annotations = data;
       });
+
+      var missingBiospecFilter = {
+          content: [
+            {
+              content: {
+                field: "project.project_id",
+                value: project.project_id
+              },
+              op: "="
+            },
+            {
+              content: {
+                field: "samples.sample_id",
+                value: "MISSING"
+              },
+              op: "NOT"
+            }
+          ],
+          op: "AND"
+      };
+      ParticipantsService.getParticipants({
+        filters: missingBiospecFilter,
+        size: 0,
+        }).then(data => this.biospecimenCount = data.pagination.total);
+
+      var missingClinicalFilter = {
+          content: [
+            {
+              content: {
+                field: "project.project_id",
+                value: project.project_id
+              },
+              op: "="
+            },
+            {
+              content: [
+                {
+                  content: {
+                    field: "demographic.demographic_id",
+                    value: "MISSING"
+                  },
+                  op: "NOT"
+                }, {
+                  content: {
+                    field: "diagnoses.diagnosis_id",
+                    value: "MISSING"
+                  },
+                  op: "NOT"
+                }, {
+                  content: {
+                    field: "family_histories.family_history_id",
+                    value: "MISSING"
+                  },
+                  op: "NOT"
+                }, {
+                  content: {
+                    field: "exposures.exposure_id",
+                    value: "MISSING"
+                  },
+                  op: "NOT"
+                }
+              ],
+              op: "OR"
+            }
+          ],
+          op: "AND"
+      };
+      ParticipantsService.getParticipants({
+        filters: missingClinicalFilter,
+        size: 0
+      }).then(data => this.clinicalCount = data.pagination.total);
     }
   }
 

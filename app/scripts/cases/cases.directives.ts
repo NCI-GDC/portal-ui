@@ -17,11 +17,11 @@ module ngApp.cases.directives {
     },
     template: '<button tabindex="0" ng-class="[styleClass || \'btn btn-primary\']" data-downloader> \
               <i class="fa {{icon || \'fa-download\'}}" ng-class="{\'fa-spinner\': active, \'fa-pulse\': active}" /> \
-              <span ng-if="textNormal"><span ng-if="! active">&nbsp;{{ ::textNormal }}</span> \
+              <span ng-if="textNormal"><span ng-if="! active">&nbsp;{{ textNormal }}</span> \
                 <span ng-if="active">&nbsp;{{ ::textInProgress }}</span></span></button>',
     link: (scope, $element, $attrs) => {
-      if (! scope.ngDisabled) {
-        $element.on('click', () => {
+      $element.on('click', () => {
+        if (!scope.ngDisabled) {
           const reportStatus = _.isFunction(scope.$parent.reportStatus)
             ? _.partial(scope.$parent.reportStatus, scope.$id)
             : () => {};
@@ -64,8 +64,8 @@ module ngApp.cases.directives {
           const checkProgress = scope.download(params, url, () => $element, 'POST');
 
           checkProgress(inProgress, done);
-        });
-      }
+        }
+      });
       scope.active = false;
     }
   });

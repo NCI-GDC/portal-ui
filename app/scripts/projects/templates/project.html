@@ -5,19 +5,21 @@
 
     <span class="btn-row">
       <export-cases-button
+        data-ng-disabled="prc.biospecimenCount === 0"
         data-filter-key-values=prc.biospecimenDataExportFilters
         data-expands=prc.biospecimenDataExportExpands
         data-filename=prc.biospecimenDataExportFileName
-        data-text-normal="Download Biospecimen JSON"
+        data-text-normal="{{prc.biospecimenCount === 0 ? 'No Biospecimen Data' : 'Download Biospecimen'}}"
         data-text-in-progress="Processing"
         data-style-class="btn pull-right btn-primary">
       </export-cases-button>
 
       <export-cases-button
+        data-ng-disabled="prc.clinicalCount === 0"
         data-filter-key-values=prc.clinicalDataExportFilters
         data-expands=prc.clinicalDataExportExpands
         data-filename=prc.clinicalDataExportFileName
-        data-text-normal="Download Clinical JSON"
+        data-text-normal="{{prc.clinicalCount === 0 ? 'No Clinical Data' : 'Download Clinical' }}"
         data-text-in-progress="Processing"
         data-style-class="btn pull-right btn-primary">
       </export-cases-button>

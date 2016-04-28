@@ -172,7 +172,6 @@ module ngApp.search.models {
       {name: "data_format", title: "Data Format", collapsed: false, facetType: "terms", removable: false },
       {name: "platform", title: "Platform", collapsed: false, facetType: "terms", removable: false },
       {name: "access", title: "Access Level", collapsed: false, facetType: "terms", removable: false },
-      {name: "state", title: "File Status", collapsed: false, facetType: "terms", removable: false },
     ]
   };
   angular.module("search.table.files.model", [])

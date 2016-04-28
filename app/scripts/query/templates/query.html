@@ -4,12 +4,6 @@
 
       <search-bar></search-bar>
 
-      <h3 class="col-lg-9 col-md-8"
-        data-ng-if="qc.participantsLoading && qc.filesLoading && !qc.participants.hits.length && !qc.files.hits.length"
-        data-translate>
-        Loading, please wait.. <i class="fa fa-spinner fa-spin"></i>
-      </h3>
-
       <h3 class="col-lg-9 col-md-8" data-ng-if="!qc.participants.hits.length && !qc.files.hits.length && !qc.participantsLoading && !qc.filesLoading" data-translate>
         No results found using those filters.
       </h3>

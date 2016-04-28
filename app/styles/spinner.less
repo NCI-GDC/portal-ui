@@ -1,0 +1,185 @@
+.loading-overlay {
+  pointer-events: none;
+  position: fixed;
+  background-color: rgba(241, 241, 241, 0.8);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  transition: opacity 0.2s ease;
+  opacity: 0;
+}
+
+.loading-overlay.active {
+  opacity: 1;
+  pointer-events: visible;
+}
+
+.loading-message {
+  position: fixed;
+  top: 41%;
+  left: 46%;
+  font-size: 2rem;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.loading-message.active {
+  pointer-events: visible;
+  opacity: 1;
+  left: 42%;
+}
+
+.long-loading-message {
+  font-size: 1.5rem;
+  padding: 0.5rem 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.long-loading-message.active {
+  opacity: 1;
+}
+
+.spinParticleContainer {
+  position: fixed;
+  width: 4rem;
+  height: 4rem;
+  left: 45%;
+  top: 40%;
+  display: block;
+  -webkit-animation: Rotate 2.0s infinite linear;
+  animation: Rotate 2.0s infinite linear;
+  transition: all 0.3s ease;
+}
+
+.spinParticleContainer.active {
+  left: 36%;
+}
+
+.spinParticle.endLoad {
+  -webkit-animation: BlowUp 1s 1 ease-out;
+  animation: BlowUp 1s 1 ease-out;
+}
+
+.spinParticle {
+  width: 4rem;
+  height: 4rem;
+  position: fixed;
+  left: 40%;
+  top: 40%;
+  z-index: 900000;
+  /* display: block; */
+  display: none;
+  -moz-animation: Rotate 2.0s infinite linear;
+  -webkit-animation: Rotate 2.0s infinite linear;
+  animation: Rotate 2.0s infinite linear;
+}
+
+.particle {
+  width: 60%;
+  height: 60%;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  background-color: #000;
+  border-radius: 100%;
+
+  -webkit-animation: Scale 2.0s infinite ease-in-out;
+  animation: Scale 2.0s infinite ease-in-out;
+}
+
+.other-particle {
+  top: auto;
+  bottom: 0;
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+.other-other-particle {
+  top: 0;
+  bottom: auto;
+  margin-left: 2.2rem;
+  -webkit-animation-delay: -1.2s;
+  animation-delay: -1.2s;
+}
+
+.particle.grey {
+  background-color: #6b6262
+}
+
+.particle.red {
+  background-color: #c31547;
+}
+
+.particle.blue {
+  background-color: #123e57;
+}
+
+@-webkit-keyframes Rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes Rotate {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@-webkit-keyframes Scale {
+  0%, 100% {
+    -webkit-transform: scale(0.0);
+  }
+  50% {
+    -webkit-transform: scale(1.5);
+  }
+}
+
+@keyframes Scale {
+  0%, 100% {
+    -webkit-transform: scale(0.0);
+    transform: scale(0.0);
+  }
+  50% {
+      -webkit-transform: scale(1.0);
+      transform: scale(1.0);
+    }
+}
+
+
+@-webkit-keyframes BlowUp {
+  0% {
+    -webkit-transform: scale(1, 1);
+    transform: scale(1, 1);
+    opacity: 1.0;
+  }
+  100% {
+    -webkit-transform: scale(3, 3);
+    transform: scale(3, 3);
+    opacity: 0.0;
+  }
+}
+
+@keyframes BlowUp {
+  0% {
+    -webkit-transform: scale(1, 1);
+    transform: scale(1, 1);
+    opacity: 1.0;
+  }
+  100% {
+    -webkit-transform: scale(3, 3);
+    transform: scale(3, 3);
+    opacity: 0.0;
+  }
+}

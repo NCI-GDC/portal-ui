@@ -20,7 +20,8 @@ module ngApp.annotations.controllers {
     annotations: IAnnotations;
 
     /* @ngInject */
-    constructor(private $scope: IAnnotationsScope, private AnnotationsService: IAnnotationsService,
+    constructor(private $scope: IAnnotationsScope, private $rootScope: IRootScope,
+                private AnnotationsService: IAnnotationsService,
                 private CoreService: ICoreService, private AnnotationsTableModel:TableiciousConfig,
                 private FacetService: IFacetService
     ) {
@@ -40,10 +41,12 @@ module ngApp.annotations.controllers {
     }
 
     refresh() {
+      this.$rootScope.$emit('ShowLoadingScreen');
       this.AnnotationsService.getAnnotations({
         fields: this.AnnotationsTableModel.fields,
         facets: this.FacetService.filterFacets(this.AnnotationsTableModel.facets)
       }).then((data) => {
+        this.$rootScope.$emit('ClearLoadingScreen');
         if (!data.hits.length) {
           this.CoreService.setSearchModelState(true);
         }

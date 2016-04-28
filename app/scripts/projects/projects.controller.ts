@@ -29,10 +29,12 @@ module ngApp.projects.controllers {
     loading: boolean = true;
 
     /* @ngInject */
-    constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
+    constructor(private $scope: IProjectScope, private $rootScope: IRootScope,
+                private ProjectsService: IProjectsService,
                 private CoreService: ICoreService, private ProjectsTableService: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut,
+                private LocationService: ILocationService, private $filter,
+                private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut,
                 private FacetService: IFacetService
     ) {
       CoreService.setPageTitle("Projects");
@@ -59,6 +61,7 @@ module ngApp.projects.controllers {
 
     refresh() {
       this.loading = true;
+      this.$rootScope.$emit('ShowLoadingScreen');
       var projectsTableModel = this.ProjectsTableService.model();
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
@@ -67,6 +70,7 @@ module ngApp.projects.controllers {
           size: 100
         }).then((data) => {
           this.loading = false;
+          this.$rootScope.$emit('ClearLoadingScreen');
           this.projects = data;
           if (this.ProjectsState.tabs.graph.active) {
             this.drawGraph(this.projects);
@@ -76,6 +80,7 @@ module ngApp.projects.controllers {
         });
       } else {
         this.loading = false;
+        this.$rootScope.$emit('ClearLoadingScreen');
         this.tabSwitch = false;
         if (this.ProjectsState.tabs.graph.active) {
           this.drawGraph(this.projects);

@@ -363,10 +363,8 @@ module ngApp.components.gql {
                         return [T.EQ, T.NE, T.GT, T.GTE, T.LT, T.LTE, T.IS, T.NOT].indexOf(item.full.toString()) != -1
                     } else if ((op.full || '').toString().indexOf('datetime') != -1) {
                         return [T.GT, T.GTE, T.LT, T.LTE, T.IS, T.NOT].indexOf(item.full.toString()) != -1
-                    } else if (op.type === 'string') {
-                        return [T.EQ, T.NE, T.IN, T.EXCLUDE, T.IS, T.NOT].indexOf(item.full.toString()) != -1
                     } else {
-                        return false;
+                        return [T.EQ, T.NE, T.IN, T.EXCLUDE, T.IS, T.NOT].indexOf(item.full.toString()) != -1
                     } 
                 }
             );

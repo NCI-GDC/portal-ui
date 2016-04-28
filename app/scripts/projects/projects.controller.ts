@@ -137,7 +137,7 @@ module ngApp.projects.controllers {
     constructor(public project: IProject, private CoreService: ICoreService,
                 private AnnotationsService: IAnnotationsService,
                 private ExperimentalStrategyNames: string[],
-                private DataCategoryNames: string[],
+                private DATA_CATEGORIES,
                 public $state: ng.ui.IStateService,
                 private $filter: ng.ui.IFilterService) {
       CoreService.setPageTitle("Project", project.project_id);
@@ -154,20 +154,15 @@ module ngApp.projects.controllers {
         return result;
       }, []);
 
-      this.dataCategories = _.reduce(DataCategoryNames.slice(), function(result, name) {
+      this.dataCategories = Object.keys(this.DATA_CATEGORIES).reduce((acc, key) => {
         var type = _.find(project.summary.data_categories, (item) => {
-          return item.data_category.toLowerCase() === name.toLowerCase();
+          return item.data_category === this.DATA_CATEGORIES[key].full;
         });
-        if (type) {
-          result.push(type);
-        } else {
-          result.push({
-            data_category: name,
-            file_count: 0
-          });
-        }
 
-        return result;
+        return acc.concat(type || {
+          data_category: this.DATA_CATEGORIES[key].full,
+          file_count: 0
+        });
       }, []);
 
       this.expStratConfig = {

@@ -21,7 +21,7 @@ module ngApp.participants.controllers {
                 private LocationService: ILocationService,
                 private $filter: ng.IFilterService,
                 private ExperimentalStrategyNames: string[],
-                private DataCategoryNames: string[],
+                private DATA_CATEGORIES,
                 private config: IGDCConfig) {
       CoreService.setPageTitle("Case", participant.case_id);
 
@@ -60,21 +60,15 @@ module ngApp.participants.controllers {
       this.hasNoClinical = ! this.clinicalDataExportExpands.some((field) => (participant[field] || []).length > 0);
       this.clinicalDataExportFileName = 'clinical.case-' + participant.case_id;
 
-      this.dataCategories = _.reduce(DataCategoryNames.slice(), function(result, name) {
-        var type = _.find(participant.summary.data_categories, (item) => {
-          return item.data_category.toLowerCase() === name.toLowerCase();
+      this.dataCategories = Object.keys(this.DATA_CATEGORIES).reduce((acc, key) => {
+        var type = _.find(participant.summary.data_categories, (item) =>
+          item.data_category === this.DATA_CATEGORIES[key].full
+        );
+
+        return acc.concat(type || {
+          data_category: this.DATA_CATEGORIES[key].full,
+          file_count: 0
         });
-
-        if (type) {
-          result.push(type);
-        } else {
-          result.push({
-            data_category: name,
-            file_count: 0
-          });
-        }
-
-        return result;
       }, []);
 
       this.expStratConfig = {

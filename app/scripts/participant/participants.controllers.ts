@@ -57,7 +57,7 @@ module ngApp.participants.controllers {
         'cases.case_id': participant.case_id
       };
       this.clinicalDataExportExpands = ['demographic', 'diagnoses', 'diagnoses.treatments', 'family_histories', 'exposures'];
-      this.hasNoClinical = _.all(this.clinicalDataExportExpands, (field) => ! _.has(participant, field));
+      this.hasNoClinical = ! this.clinicalDataExportExpands.some((field) => (participant[field] || []).length > 0);
       this.clinicalDataExportFileName = 'clinical.case-' + participant.case_id;
 
       this.dataCategories = _.reduce(DataCategoryNames.slice(), function(result, name) {

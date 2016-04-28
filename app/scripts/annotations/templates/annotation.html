@@ -38,7 +38,9 @@
           <tr>
             <th data-translate scope="row">Project ID</th>
             <td>
-              <a data-ui-sref="project({ projectId: ac.annotation.project.project_id })">
+              <a data-ui-sref="project({ projectId: ac.annotation.project.project_id })"
+                data-uib-tooltip="{{ ::ac.ProjectsService.projectIdMapping[ ac.annotation.project.project_id ] }}"
+               >
                 {{ ::ac.annotation.project.project_id }}
               </a>
             </td>

@@ -10,34 +10,40 @@ module ngApp.core.directives {
       },
       controller: function($scope, $element, $window) {
         $element.on('click', function(){
-          var redirect = config.auth;
-          var authQuery = "";
+          const returningPath = $window.location.pathname + '?' + (+new Date);
+          const redirectUrl = config.auth +
+            (p => p ? ('/' + p) : '')($scope.redirect) +
+            '?next=' +
+            (p => p ? (':' + p) : '')($window.location.port) +
+            returningPath;
 
-          if ($scope.redirect) {
-            redirect += "/" + $scope.redirect;
+          const closeLogin = (url) => {
+            if (url === redirectUrl) {
+              // Redirect hasn't happened yet so don't kill the login window.
+              return false;
+            } else {
+              return _.includes(url, returningPath);
+            }
           }
 
-          if ($window.location.port) {
-            authQuery = "?next=" + ":" + $window.location.port + $window.location.pathname;
-          } else {
-            authQuery = "?next=" + $window.location.pathname;
-          }
-
-          var win = open(redirect + authQuery, 'Auth', 'width=800, height=600');
-
-          var interval = setInterval(() => {
+          const win = open(redirectUrl, 'Auth', 'width=800, height=600');
+          const interval = setInterval(() => {
             try {
-              if (win.document && win.document.URL.indexOf($window.location.pathname) > -1) {
+              // Because the login window redirects to a different domain, checking win.document in IE11 throws
+              // exceptions right away, which prevents #clearInterval from ever getting called in this block.
+              // Must check this block (if the login window has been closed) first!
+              if (win.closed) {
+                clearInterval(interval);
+              }
+              else if (closeLogin(_.get(win, 'document.URL', ''))) {
                 win.close();
                 setTimeout(() => {
                   clearInterval(interval);
                   UserService.login();
                 }, 1000);
-              } else if (!win.document) { // window is closed
-                clearInterval(interval);
               }
             } catch (err) {
-              console.log(err);
+              console.log('Error while monitoring the Login window: ', err);
             }
           }, 500);
         });

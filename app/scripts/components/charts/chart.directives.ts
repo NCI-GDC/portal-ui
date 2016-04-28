@@ -691,6 +691,7 @@ module ngApp.components.charts {
             // })
             .on("click", function () {
               var tick = d3.select(this);
+              console.log('here: ', tick);
               var filters = {
                 "op":"and",
                 "content":[
@@ -698,9 +699,6 @@ module ngApp.components.charts {
                     "op":"in", "content": {"field":"primary_site","value":tick.data()}
                   }
                 ]};
-
-
-              _axisTipFn.hide();
 
               $state.go("projects.table", {
                   filters: JSON.stringify(filters)

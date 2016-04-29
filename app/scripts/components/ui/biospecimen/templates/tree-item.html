@@ -1,0 +1,36 @@
+<div class="biospecimen-row document">
+  <div data-ng-if="entity[type.s + '_id']">
+    <i
+      class="fa action"
+      data-ng-class="{
+        'fa-plus-square': !entity.expanded,
+        'fa-minus-square': entity.expanded
+      }"
+      data-ng-click="expandTree($event, entity)"
+      data-ng-keypress="expandTree($event, entity)"
+    ></i>
+    <i
+      class="fa"
+      data-ng-class="{
+        'fa-folder-o': !entity.expanded,
+        'fa-folder-open-o': entity.expanded
+      }"
+    ></i>
+    &nbsp;
+    <span
+      class="biospecimen-id"
+      data-ng-click="bc.displayBioSpecimenDocument($event, entity, type.s)"
+      data-ng-keypress="bc.displayBioSpecimenDocument($event, entity, type.s)"
+      data-ng-class="{
+        selected: entity === bc.activeBioSpecimenDoc,
+        highlighted: foundBySearch(
+          entity.submitter_id || entity[type.s + '_id'],
+          entity.submitter_id ? 'submitter_id' : type.s + '_id'
+        )
+      }"
+      data-ng-bind-html="(
+        (entity.submitter_id || entity[type.s + '_id']) | highlight:searchTerm
+      ) || (entity.submitter_id || entity[type.s + '_id'])">
+    </span>
+  </div>
+</div>

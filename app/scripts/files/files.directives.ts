@@ -2,6 +2,8 @@ module ngApp.files.directives {
   import IUserService = ngApp.components.user.services.IUserService;
   import ICartService = ngApp.cart.services.ICartService;
 
+  const hasControlledFiles = (files) => files.some((f) => f.access !== 'open');
+
   function DownloadMetadataButton(): ng.IDirective {
     return {
       restrict: "E",
@@ -44,7 +46,7 @@ module ngApp.files.directives {
 
           const fileIds = CartService.getFileIds();
           const filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
-          
+
           const params = _.merge({
             attachment: true,
             filters: filters,
@@ -77,6 +79,8 @@ module ngApp.files.directives {
   }
 
   function DownloadButton($log: ng.ILogService, UserService, $uibModal, config: IGDCConfig): ng.IDirective {
+    const hasAccess = (files) => files.every((f) => UserService.isUserProject(f));
+
     return {
       restrict: "E",
       replace: true,
@@ -101,39 +105,59 @@ module ngApp.files.directives {
           $element.removeAttr('disabled');
         };
         const url = config.api + '/data?annotations=true&related_files=true';
-
-        const clickHandler = () => {
-          const files = [].concat($scope.files);
-
-          if (UserService.userCanDownloadFiles(files)) {
+        const download = (files) => {
+          if ((files || []).length > 0) {
             const params = { ids: files.map(f => f.file_id) };
             const checkProgress = $scope.download(params, url, () => $element, 'POST');
-
             checkProgress(inProgress, done);
-          } else {
-            $log.log('Files not authorized.');
-            const template = UserService.currentUser ?
-              'core/templates/request-access-to-download-single.html' :
-              'core/templates/login-to-download-single.html';
-
-            $uibModal.open({
-              templateUrl: template,
-              controller: 'LoginToDownloadController',
-              controllerAs: 'wc',
-              backdrop: true,
-              keyboard: true,
-              animation: false,
-              size: 'lg'
-            });
           }
         };
+        const showModal = (template) => {
+          return $uibModal.open({
+            templateUrl: template,
+            controller: 'LoginToDownloadController',
+            controllerAs: 'wc',
+            backdrop: true,
+            keyboard: true,
+            animation: false,
+            size: 'lg'
+          });
+        };
 
-        $element.on('click', clickHandler);
+        $element.on('click', () => {
+          const files = [].concat($scope.files);
+
+          if (hasControlledFiles(files)) {
+            if (UserService.currentUser) {
+              // Makes sure the user session has not expired.
+              UserService.loginPromise().then(() => {
+                // Session is still active.
+                if (hasAccess(files)) {
+                  download(files);
+                } else {
+                  showModal('core/templates/request-access-to-download-single.html');
+                }
+              }, (response) => {
+                $log.log('User session has expired.', response);
+
+                showModal('core/templates/session-expired.html').result.then((a) => {
+                  UserService.logout();
+                });
+              });
+            } else {
+              showModal('core/templates/login-to-download-single.html');
+            }
+          } else {
+            download(files);
+          }
+        });
       }
     };
   }
 
   function BAMSlicingButton($log: ng.ILogService, FilesService, UserService, $uibModal): ng.IDirective {
+    const hasAccess = (files) => files.every((f) => UserService.isUserProject(f));
+
     return {
       restrict: "E",
       replace: true,
@@ -148,57 +172,78 @@ module ngApp.files.directives {
                 "<i class=\"fa {{icon || 'fa-download'}}\" ng-class=\"{'fa-spinner': active, 'fa-pulse': active}\"></i>" +
                 "<span ng-if=\"copy\"><span ng-if=\"!active\">&nbsp;{{copy}}</span><span ng-if=\"active\">&nbsp;{{dlcopy}}</span></span></a>",
       link: function($scope, $element, $attrs){
-        var files = $scope.files;
         $scope.active = false;
-        $element.on("click", function(a) {
+        const inProgress = () => {
+          $scope.active = true;
+          $attrs.$set('disabled', 'disabled');
+        };
+        const turnSpinnerOff = () => {
+          $scope.active = false;
+          $element.removeAttr('disabled');
+        };
+        const bamSlice = (files) => {
+          inProgress();
 
-          if (!_.isArray(files)) {
-            files = [files];
-          }
-          if (UserService.userCanDownloadFiles(files)) {
-            $scope.active = true;
-            $attrs.$set("disabled", "disabled");
-            var turnSpinnerOff = function() {
-              $scope.active = false;
-              $element.removeAttr("disabled");
-            };
-            var bamModal = $uibModal.open({
-              templateUrl: "files/templates/bam-slicing.html",
-              controller: "BAMSlicingController",
-              controllerAs: "bamc",
-              backdrop: true,
-              keyboard: true,
-              animation: false,
-              size: "lg",
-              resolve: {
-                file: function() {
-                  return _.first(files);
-                },
-                completeCallback: function() {
-                  return turnSpinnerOff;
+          var bamModal = $uibModal.open({
+            templateUrl: "files/templates/bam-slicing.html",
+            controller: "BAMSlicingController",
+            controllerAs: "bamc",
+            backdrop: true,
+            keyboard: true,
+            animation: false,
+            size: "lg",
+            resolve: {
+              file: function() {
+                return _.first(files);
+              },
+              completeCallback: function() {
+                return turnSpinnerOff;
+              }
+            }
+          });
+          bamModal.result.then(turnSpinnerOff, function(reason) {
+            if (reason !== 'slicing') {
+              turnSpinnerOff();
+            }
+          });
+        };
+        const showModal = (template) => {
+          return $uibModal.open({
+            templateUrl: template,
+            controller: 'LoginToDownloadController',
+            controllerAs: 'wc',
+            backdrop: true,
+            keyboard: true,
+            animation: false,
+            size: 'lg'
+          });
+        };
+
+        $element.on("click", (a) => {
+          const files = [].concat($scope.files);
+
+          if (hasControlledFiles(files)) {
+            if (UserService.currentUser) {
+              // Makes sure the user session has not expired.
+              UserService.loginPromise().then(() => {
+                // Session is still active.
+                if (hasAccess(files)) {
+                  bamSlice(files);
+                } else {
+                  showModal('core/templates/request-access-to-download-single.html');
                 }
-              }
-            });
-            bamModal.result.then(turnSpinnerOff, function(reason) {
-              if (reason !== 'slicing') {
-                turnSpinnerOff();
-              }
-            });
-          } else {
-            var template = UserService.currentUser ?
-                "core/templates/request-access-to-download-single.html" :
-                "core/templates/login-to-download-single.html";
+              }, (response) => {
+                $log.log('User session has expired.', response);
 
-            $log.log("File not authorized.");
-            $uibModal.open({
-              templateUrl: template,
-              controller: "LoginToDownloadController",
-              controllerAs: "wc",
-              backdrop: true,
-              keyboard: true,
-              animation: false,
-              size: "lg"
-            });
+                showModal('core/templates/session-expired.html').result.then((a) => {
+                  UserService.logout();
+                });
+              });
+            } else {
+              showModal('core/templates/login-to-download-single.html');
+            }
+          } else {
+            bamSlice(files);
           }
         });
       }

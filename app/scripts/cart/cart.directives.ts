@@ -326,20 +326,11 @@ module ngApp.cart.directives {
       scope: true,
       link: ($scope, $element, $attrs) => {
         const scope = $scope;
-        const isLoggedIn = UserService.currentUser;
-        const authorizedInCart = CartService.getAuthorizedFiles();
-        const unauthorizedInCart = CartService.getUnauthorizedFiles();
-
         scope.active = false;
-        scope.meta = {
-          unauthorized: unauthorizedInCart,
-          authorized: authorizedInCart
-        };
 
         const reportStatus = _.isFunction(scope.$parent.reportStatus) ?
           _.partial(scope.$parent.reportStatus, scope.$id) :
           () => {};
-
         const inProgress = () => {
           scope.active = true;
           reportStatus(scope.active);
@@ -350,59 +341,87 @@ module ngApp.cart.directives {
           reportStatus(scope.active);
           $element.removeAttr('disabled');
         };
-        const files = [].concat(authorizedInCart);
         const url = config.api + '/data?annotations=true&related_files=true';
-
-        const showLoginModal = () => {
-          var modalInstance = $uibModal.open({
-            templateUrl: "core/templates/login-to-download.html",
-            controller: "LoginToDownloadController",
-            controllerAs: "wc",
-            backdrop: true,
-            keyboard: true,
-            scope: scope,
-            size: "lg",
-            animation: false
-          });
-
-          modalInstance.result.then((a) => {
-            if (a && authorizedInCart.length > 0) {
-              download();
-            } else if (!a) {
-              // Cancel Pressed
-              done();
-            }
-          });
-        };
-        const showRequestAccessModal = () => {
-          var modalInstance = $uibModal.open({
-            templateUrl: "core/templates/request-access-to-download.html",
-            controller: "LoginToDownloadController",
-            controllerAs: "wc",
-            backdrop: true,
-            keyboard: true,
-            scope: scope,
-            size: "lg",
-            animation: false
-          });
-
-          modalInstance.result.then((a) => {
-            if (a && authorizedInCart.length > 0) {
-              download();
-            }
-          });
-        };
-
-        $element.on('click', () => {
-          if (CartService.getUnauthorizedFiles().length) {
-            if (isLoggedIn) showRequestAccessModal();
-            else showLoginModal();
-          }
-          else {
-            const files = [].concat(CartService.getAuthorizedFiles());
+        const download = (files) => {
+          if ((files || []).length > 0) {
             const params = { ids: files.map(f => f.file_id) };
             const checkProgress = scope.download(params, url, () => $element, 'POST');
             checkProgress(inProgress, done);
+          }
+        };
+
+        $element.on('click', () => {
+          const authorizedInCart = CartService.getAuthorizedFiles()
+          const unauthorizedInCart = CartService.getUnauthorizedFiles();
+          const files = [].concat(authorizedInCart);
+          // "meta" is referenced in the html templates used below.
+          scope.meta = {
+            unauthorized: unauthorizedInCart,
+            authorized: authorizedInCart
+          };
+
+          if (unauthorizedInCart.length) {
+            if (UserService.currentUser) {
+              // Makes sure the user session has not expired.
+              UserService.loginPromise().then(() => {
+                // Session is still active.
+                const modalInstance = $uibModal.open({
+                  templateUrl: "core/templates/request-access-to-download.html",
+                  controller: "LoginToDownloadController",
+                  controllerAs: "wc",
+                  backdrop: true,
+                  keyboard: true,
+                  scope: scope,
+                  size: "lg",
+                  animation: false
+                });
+
+                modalInstance.result.then((a) => {
+                  if (a) {
+                    download(files);
+                  }
+                });
+              }, (response) => {
+                console.log('User session has expired.', response);
+
+                const modalInstance = $uibModal.open({
+                  templateUrl: "core/templates/session-expired.html",
+                  controller: "LoginToDownloadController",
+                  controllerAs: "wc",
+                  backdrop: true,
+                  keyboard: true,
+                  scope: scope,
+                  size: "lg",
+                  animation: false
+                });
+
+                modalInstance.result.then((a) => {
+                  UserService.logout();
+                });
+              });
+
+            } else {
+              // User is NOT logged in.
+              const modalInstance = $uibModal.open({
+                templateUrl: "core/templates/login-to-download.html",
+                controller: "LoginToDownloadController",
+                controllerAs: "wc",
+                backdrop: true,
+                keyboard: true,
+                scope: scope,
+                size: "lg",
+                animation: false
+              });
+
+              modalInstance.result.then((a) => {
+                if (a) {
+                  download(files);
+                }
+              });
+            }
+          }
+          else {
+            download(files);
           }
         });
       }

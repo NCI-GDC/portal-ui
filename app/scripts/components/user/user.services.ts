@@ -17,9 +17,15 @@ module ngApp.components.user.services {
     hasProjects(): boolean;
   }
 
+  const broadcastReset = (context) => {
+    context.$rootScope.$broadcast("gdc-user-reset");
+  };
+
   class UserService implements IUserService {
     currentUser: IUser;
     isFetching: boolean = false;
+
+
 
     /* @ngInject */
     constructor(private AuthRestangular: restangular.IService,
@@ -77,6 +83,19 @@ module ngApp.components.user.services {
       }
     }
 
+    loginPromise() {
+      return this.AuthRestangular.all("user")
+        .withHttpConfig({
+          withCredentials: true
+        })
+        .post({}, {});
+    }
+
+    logout(): void {
+      broadcastReset(this);
+      this.currentUser = undefined;
+    }
+
     getToken(): void {
       // TODO: We need to come up with a solution for exporting/downloading
       // that will work with IE9 when auth tokens are required.
@@ -116,11 +135,11 @@ module ngApp.components.user.services {
         }
       };
 
-      this.$rootScope.$broadcast("gdc-user-reset");
+      broadcastReset(this);
     }
 
     toggleFilter(): void {
-      this.$rootScope.$broadcast("gdc-user-reset");
+      broadcastReset(this);
     }
 
     hasProjects(): boolean {

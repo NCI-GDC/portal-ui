@@ -340,7 +340,7 @@ module ngApp.cart.services {
           access: f.access,
           file_id: f.file_id,
           file_size: f.file_size,
-          projects: _.map(f.cases, c => c.project.project_id)
+          projects: f.projects || _.map(f.cases, c => c.project.project_id)
         }
       });
 

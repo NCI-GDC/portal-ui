@@ -140,7 +140,14 @@
               data-ng-click="pc.setClinicalTab('demographic')">
               <a>Demographic</a>
             </li>
-            <li data-ng-repeat="clinicalTab in ['diagnoses', 'family_histories', 'exposures']"
+            <li
+              style="outline: none;"
+              role="presentation"
+              data-ng-class="{ active: pc.activeClinicalTab === 'diagnoses' }"
+              data-ng-click="pc.setClinicalTab('diagnoses')">
+              <a>Diagnoses / Treatment ({{ ::pc.participant.diagnoses.length || 0 }})</a>
+            </li>
+            <li data-ng-repeat="clinicalTab in ['family_histories', 'exposures']"
               style="outline: none;"
               role="presentation"
               data-ng-class="{ active: pc.activeClinicalTab === clinicalTab }"
@@ -162,10 +169,6 @@
                 <td>{{ ::demo.demographic_id }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>Project ID</th>
-                <td>{{ ::demo.project_id | humanify }}</td>
-              </tr>
-              <tr>
                 <th scope="row" data-translate>Ethnicity</th>
                 <td>{{ ::demo.ethnicity | humanify }}</td>
               </tr>
@@ -178,14 +181,6 @@
                 <td>{{ ::demo.race | humanify }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>State</th>
-                <td>{{ ::demo.state | humanify }}</td>
-              </tr>
-              <tr>
-                <th scope="row" data-translate>Submitter ID</th>
-                <td>{{ ::demo.submitter_id || '--' }}</td>
-              </tr>
-              <tr>
                 <th scope="row" data-translate>Year of Birth</th>
                 <td>{{ ::demo.year_of_birth | humanify }}</td>
               </tr>
@@ -194,11 +189,11 @@
                 <td>{{ ::demo.year_of_death | humanify }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>Created</th>
+                <th scope="row" data-translate>Demographic Created</th>
                 <td>{{ ::demo.created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>Updated</th>
+                <th scope="row" data-translate>Demographic Updated</th>
                 <td>{{ ::demo.updated_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
               </tr>
             </tbody>
@@ -225,10 +220,6 @@
                     <tr>
                       <th scope="row" data-translate>ID</th>
                       <td>{{ ::pc.participant.diagnoses[ $index ].diagnosis_id }}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row" data-translate>Project ID</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].project_id | humanify }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Classification of Tumor</th>
@@ -303,14 +294,6 @@
                       <td>{{ ::pc.participant.diagnoses[ $index ].vital_status | humanify }}</td>
                     </tr>
                     <tr>
-                      <th scope="row" data-translate>State</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].state | humanify }}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row" data-translate>Submitter ID</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].submitter_id || '--' }}</td>
-                    </tr>
-                    <tr>
                       <th scope="row" data-translate>Created</th>
                       <td>{{ ::pc.participant.diagnoses[ $index ].created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
                     </tr>
@@ -328,7 +311,6 @@
                     <thead>
                       <tr>
                         <th data-translate>ID</th>
-                        <th data-translate>Project ID</th>
                         <th data-translate>State</th>
                         <th data-translate>Therapeutic Agents</th>
                         <th data-translate>Treatment Intent Type</th>
@@ -344,12 +326,6 @@
                         <td><span style="overflow: hidden; text-overflow: ellipsis; max-width: 100px">
                           {{ ::t.treatment_id }}
                         </span></td>
-                        <td>
-                          {{ ::t.project_id }}
-                        </td>
-                        <td>
-                          {{ ::t.state }}
-                        </td>
                         <td>
                           {{ ::t.submitter_id || '--' }}
                         </td>
@@ -408,10 +384,6 @@
                      <td>{{ ::pc.participant.family_histories[ $index ].family_history_id }}</td>
                    </tr>
                    <tr>
-                     <th scope="row" data-translate>Project ID</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].project_id | humanify }}</td>
-                   </tr>
-                   <tr>
                      <th scope="row" data-translate>Relationship Age at Diagnosis</th>
                      <td>{{ ::pc.participant.family_histories[ $index ].relationship_age_at_diagnosis | ageDisplay }}</td>
                    </tr>
@@ -430,14 +402,6 @@
                    <tr>
                      <th scope="row" data-translate>Relative with Cancer History</th>
                      <td>{{ ::pc.participant.family_histories[ $index ].relative_with_cancer_history | humanify }}</td>
-                   </tr>
-                   <tr>
-                     <th scope="row" data-translate>State</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].state | humanify }}</td>
-                   </tr>
-                   <tr>
-                     <th scope="row" data-translate>Submitter ID</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].submitter_id || '--' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Created</th>
@@ -477,10 +441,6 @@
                      <td>{{ ::pc.participant.exposures[ $index ].exposure_id }}</td>
                    </tr>
                    <tr>
-                     <th scope="row" data-translate>Project ID</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].project_id | humanify }}</td>
-                   </tr>
-                   <tr>
                      <th scope="row" data-translate>Alcohol History</th>
                      <td>{{ ::pc.participant.exposures[ $index ].alcohol_history | humanify }}</td>
                    </tr>
@@ -507,14 +467,6 @@
                    <tr>
                      <th scope="row" data-translate>Years Smoked</th>
                      <td>{{ ::pc.participant.exposures[ $index ].years_smoked | number | humanify }}</td>
-                   </tr>
-                   <tr>
-                     <th scope="row" data-translate>State</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].state | humanify }}</td>
-                   </tr>
-                   <tr>
-                     <th scope="row" data-translate>Submitter ID</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].submitter_id || '--' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Created</th>

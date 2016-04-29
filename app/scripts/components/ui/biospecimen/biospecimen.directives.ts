@@ -63,6 +63,51 @@ module ngApp.components.ui.biospecimen.directives {
     };
   }
 
+  function Tree() {
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'components/ui/biospecimen/templates/tree.html',
+      scope: {
+        entities: '=',
+        type: '=',
+      },
+      link: scope => {
+        scope.hasEntities = (entities, type) => entities.some(x => x[type.s + '_id']);
+      }
+    }
+  }
+
+  function TreeItem($compile) {
+    return {
+      restrict: 'E',
+      replace: true,
+      templateUrl: 'components/ui/biospecimen/templates/tree-item.html',
+      scope: {
+        entity: '=',
+        type: '=',
+      },
+      link: (scope, el, attrs) => {
+        el.append($compile([
+          '<tree',
+            'data-ng-repeat="childType in ',
+            '[',
+              '{ p: \'portions\', s: \'portion\' },',
+              '{ p: \'aliquots\', s: \'aliquot\' },',
+              '{ p: \'analytes\', s: \'analyte\' },',
+              '{ p: \'slides\', s: \'slide\' }',
+            ']"',
+            'entities="entity[childType.p]"',
+            'data-ng-if="entity[childType.p]"',
+            'type="childType"',
+          '></tree>'
+        ].join(' '))(scope))
+      }
+    }
+  }
+
   angular.module("biospecimen.directives", ["biospecimen.controllers", "biospecimen.services"])
-      .directive("biospecimen", Biospecimen);
+      .directive("biospecimen", Biospecimen)
+      .directive("tree", Tree)
+      .directive("treeItem", TreeItem)
 }

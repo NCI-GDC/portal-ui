@@ -1,0 +1,29 @@
+<div>
+  <div data-ng-if="hasEntities(entities, type)">
+    <i
+      class="fa action"
+      data-ng-class="{
+        'fa-plus-square': !entities.expanded,
+        'fa-minus-square': entities.expanded
+      }"
+      data-ng-click="expandTree($event, entities)"
+      data-ng-keypress="expandTree($event, entities)"
+    ></i>
+    <i
+      class="fa"
+      data-ng-class="{
+        'fa-folder-o': !entities.expanded,
+        'fa-folder-open-o': entities.expanded
+      }"
+    ></i>
+
+    &nbsp;<span class="h5" data-translate style="text-transform:capitalize">{{type.p}}</span>
+  </div>
+
+  <tree-item
+    ng-repeat="entity in entities"
+    data-ng-if="entities.expanded"
+    entity="entity"
+    type="type"
+  ></tree-item>
+</div>

@@ -5,6 +5,7 @@
 
     <span class="btn-row">
       <export-cases-button
+        data-ng-disabled="prc.biospecimenCount === 0"
         data-filter-key-values=prc.biospecimenDataExportFilters
         data-expands=prc.biospecimenDataExportExpands
         data-filename=prc.biospecimenDataExportFileName
@@ -14,6 +15,7 @@
       </export-cases-button>
 
       <export-cases-button
+        data-ng-disabled="prc.clinicalCount === 0"
         data-filter-key-values=prc.clinicalDataExportFilters
         data-expands=prc.clinicalDataExportExpands
         data-filename=prc.clinicalDataExportFileName
@@ -21,6 +23,7 @@
         data-text-in-progress="Processing"
         data-style-class="btn pull-right btn-primary">
       </export-cases-button>
+
     </span>
   </h1>
 

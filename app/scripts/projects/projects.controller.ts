@@ -9,6 +9,7 @@ module ngApp.projects.controllers {
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
   import IProjectsState = ngApp.projects.services.IProjectsState;
   import IFacetService = ngApp.components.facets.services.IFacetService;
+  import IParticipantsService = ngApp.participants.services.IParticipantsService;
 
   export interface IProjectsController {
     projects: IProjects;
@@ -130,12 +131,18 @@ module ngApp.projects.controllers {
 
   export interface IProjectController {
     project: IProject;
+    biospecimenCount: number;
+    clinicalCount: number;
   }
 
   class ProjectController implements IProjectController {
+    biospecimenCount: number = 0;
+    clinicalCount: number = 0;
+
     /* @ngInject */
     constructor(public project: IProject, private CoreService: ICoreService,
                 private AnnotationsService: IAnnotationsService,
+                private ParticipantsService: IParticipantsService,
                 private ExperimentalStrategyNames: string[],
                 private DATA_CATEGORIES,
                 public $state: ng.ui.IStateService,
@@ -269,6 +276,27 @@ module ngApp.projects.controllers {
       }).then((data) => {
         this.project.annotations = data;
       });
+
+      var filters = {
+          content: [
+            {
+              content: {
+                field: "project.project_id",
+                value: project.project_id
+              },
+              op: "in"
+            }
+          ],
+          op: "and"
+      };
+      ParticipantsService.getParticipants({
+        filters: filters,
+        fields: ['samples.sample_id'],
+        }).then(data => { this.biospecimenCount = data.hits.reduce((count, d) => count + Object.keys(d).length, 0) });
+      ParticipantsService.getParticipants({
+        filters: filters,
+        fields: ['demographic.demographic_id', 'diagnoses.diagnosis_id', 'family_histories.family_history_id', 'exposures.exposure_id']
+        }).then(data => { this.clinicalCount = data.hits.reduce((count, d) => count + Object.keys(d).length, 0) });
     }
   }
 

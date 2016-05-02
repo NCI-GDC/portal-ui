@@ -10,6 +10,8 @@ module ngApp.reports.models {
     id: string;
     name: string;
     charts: any;
+    count: number;
+    size: number;
   }
 
 }

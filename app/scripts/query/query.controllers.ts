@@ -57,7 +57,7 @@ module ngApp.query.controllers {
                 private UserService: IUserService,
                 private CoreService: ICoreService,
                 private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig,
+                private SearchCasesTableService: TableiciousConfig,
                 SearchChartConfigs) {
       var data = $state.current.data || {};
       this.QState.setActive(data.tab, "active");
@@ -73,7 +73,7 @@ module ngApp.query.controllers {
       });
 
       $scope.fileTableConfig = this.SearchTableFilesModel;
-      $scope.participantTableConfig = this.SearchTableParticipantsModel;
+      $scope.participantTableConfig = this.SearchCasesTableService.model();
 
       this.refresh();
       this.chartConfigs = SearchChartConfigs;
@@ -99,23 +99,25 @@ module ngApp.query.controllers {
         this.summary = data;
       });
 
+      var casesTableModel = this.SearchCasesTableService.model();
+
       var fileOptions = {
-        fields: this.SearchTableFilesModel.fields,
-        expand: this.SearchTableFilesModel.expand
+        fields: this.SearchTableFilesModel.fields
       };
 
       var participantOptions = {
-        fields: this.SearchTableParticipantsModel.fields,
-        expand: this.SearchTableParticipantsModel.expand,
+        fields: casesTableModel.fields,
+        expand: casesTableModel.expand,
       };
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
         this.filesLoading = false;
         this.files = this.files || {};
         this.files.aggregations = data.aggregations;
+        this.files.pagination = data.pagination;
 
         if (!_.isEqual(this.files.hits, data.hits)) {
-          this.files = data;
+          this.files.hits = data.hits;
           this.tabSwitch = false;
           if (this.QState.tabs.files.active) {
             this.QState.setActive("files", "hasLoadedOnce");
@@ -131,9 +133,10 @@ module ngApp.query.controllers {
         this.participantsLoading = false;
         this.participants = this.participants || {};
         this.participants.aggregations = data.aggregations;
+        this.participants.pagination = data.pagination
 
         if (!_.isEqual(this.participants.hits, data.hits)) {
-          this.participants = data;
+          this.participants.hits = data.hits;
           this.tabSwitch = false;
           if (this.QState.tabs.participants.active) {
             this.QState.setActive("participants", "hasLoadedOnce");
@@ -190,7 +193,7 @@ module ngApp.query.controllers {
         "core.services",
         "participants.services",
         "search.table.files.model",
-        'search.table.participants.model',
+        "search.cases.table.service",
         "files.services"
       ])
       .controller("QueryController", QueryController);

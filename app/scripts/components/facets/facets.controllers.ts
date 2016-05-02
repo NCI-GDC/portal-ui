@@ -114,7 +114,9 @@ module ngApp.components.facets.controllers {
 
       this.terms = terms;
       this.actives = this.FacetService.getActives(this.name, terms);
-      this.inactives = _.difference(terms, this.actives);
+      // TODO: Currently there is some complication supporting _missing properly thereby we're hiding
+      // _missing in facets. Once we fully support _missing, #reject should be removed.
+      this.inactives = _.reject(_.difference(terms, this.actives), (term) => term.key === '_missing');
     }
 
     toggle(event: any, property: string) {
@@ -293,7 +295,7 @@ module ngApp.components.facets.controllers {
                 private LocationService: ILocationService,
                 private FacetService: IFacetService) {
 
-      $scope.data = [];
+      $scope.data = {};
       $scope.dataUnitConverted = [];
       $scope.lowerBoundOriginalDays = null;
       $scope.upperBoundOriginalDays = null;
@@ -316,14 +318,13 @@ module ngApp.components.facets.controllers {
         if ((n === o && ($scope.min !== undefined || $scope.max !== undefined)) || n === undefined) {
           return;
         }
-
-        if(n.buckets) {
-          $scope.data = _.reject(n.buckets, (bucket) => { return bucket.key === "_missing"; });
+        if(n) {
+          $scope.data = n;
           $scope.dataUnitConverted = this.unitConversion($scope.data);
           this.getMaxMin($scope.dataUnitConverted);
-          } else {
-            this.error = n;
-          }
+        } else {
+          this.error = n;
+        }
       });
 
       var _this = this;
@@ -339,37 +340,18 @@ module ngApp.components.facets.controllers {
 
     unitConversion(data: Object[]): Object[] {
       if(this.$scope.unitsMap) {
-        return _.reduce(data, (result, datum) => {
-          var newKey = Math.floor(datum.key/this.$scope.selectedUnit.conversionDivisor);
-          var summed = _.find(result, _.matchesProperty('key', newKey));
-          if (summed) {
-            summed.doc_count = summed.doc_count + datum.doc_count;
-          } else {
-            result.push({
-              "key": newKey,
-              "doc_count": datum.doc_count
-            });
-          }
-          return result;
-        }, []);
+        return _.reduce(data, (acc, v, k) => {
+          acc[k] = Math.floor(v/this.$scope.selectedUnit.conversionDivisor);
+          return acc;
+        }, {});
       } else {
         return data;
       }
     }
 
     getMaxMin(data: Object[]): void {
-      this.$scope.min = _.min(data, (bucket) => {
-          return bucket.key === '_missing' ? Number.POSITIVE_INFINITY : parseInt(bucket.key, 10);
-        }).key;
-        if (this.$scope.min === '_missing') {
-          this.$scope.min = null;
-        }
-        this.$scope.max = _.max(data, (bucket) => {
-          return bucket.key === '_missing' ? Number.NEGATIVE_INFINITY : parseInt(bucket.key, 10);
-        }).key;
-        if (this.$scope.max === '_missing') {
-          this.$scope.max = null;
-        }
+      this.$scope.min = data.min;
+      this.$scope.max = data.max;
     }
 
     refresh(): void {
@@ -468,7 +450,7 @@ module ngApp.components.facets.controllers {
       if (_.size(actives) > 0) {
         this.FacetService.removeTerm(this.name, undefined, '>=');
       }
-      
+
       this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date).format('YYYY-MM-DD'), '>=');
     }
 
@@ -513,7 +495,7 @@ module ngApp.components.facets.controllers {
               _this.setSelectedIndex(Cycle.Down);
               break;
             case KeyCode.Esc:
-              _this.$uibModalStack.dismissAll();
+              if (_this.$uibModalStack) _this.$uibModalStack.dismissAll();
               break;
             case KeyCode.Tab:
               e.preventDefault();
@@ -533,6 +515,7 @@ module ngApp.components.facets.controllers {
 
     addFacet() {
       var selectedField = this.$scope.filteredFields[this.selectedIndex];
+      if (!selectedField) return;
       var fileOptions = {
         fields: [],
         expand: [],

@@ -17,6 +17,11 @@ describe('Biospecimen:', function () {
     }]
   };
 
+  var idFields = [
+    'submitter_id', 'sample_id', 'portion_id',
+    'analyte_id', 'slide_id', 'aliquot_id'
+  ];
+
   describe('Service:', function () {
     it('should exist', inject(function (BiospecimenService) {
       expect(BiospecimenService).to.exist;
@@ -55,7 +60,7 @@ describe('Biospecimen:', function () {
       it('should look through the biotree and push entities to the "found" array'
         + ' if the submitter_id contains the searchTerm',
         inject(function (BiospecimenService) {
-          var found = BiospecimenService.search('foo1', participant);
+          var found = BiospecimenService.search('foo1', participant, idFields);
           expect(found).to.have.lengthOf(2);
         })
       );

@@ -312,7 +312,7 @@ module ngApp.cart.controllers {
       var filters = (this.filter ? JSON.parse(this.filter) : undefined) || this.LocationService.filters();
       filters = this.UserService.addMyProjectsFilter(filters, "cases.project.project_id");
 
-      if (this.size >= this.CartService.getCartVacancySize()) {
+      if (this.size > this.CartService.getCartVacancySize()) {
         this.CartService.sizeWarning();
         return;
       }

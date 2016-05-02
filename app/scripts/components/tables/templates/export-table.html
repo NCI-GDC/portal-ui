@@ -34,7 +34,9 @@
   </button>
 
   <ul class="dropdown-menu pull-right" role="menu">
-    <li data-ng-repeat="fileType in ['JSON', 'XML', 'CSV', 'TSV']" data-downloader>
+    <!-- https://jira.opensciencedatacloud.org/browse/PGDC-2071
+      'XML', 'CSV', 'TSV' removed -->
+    <li data-ng-repeat="fileType in ['JSON']" data-downloader>
       <a data-ng-click="etc.exportTable(fileType, download)">
         <span class="fa-stack">
           <span class="fa-stack-1x filetype-text">{{ ::fileType }}</span>

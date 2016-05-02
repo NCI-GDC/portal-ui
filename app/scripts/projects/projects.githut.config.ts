@@ -1,10 +1,10 @@
-angular.module('projects.githut.config',[])
-.factory("ProjectsGithut",function(ProjectsGithutConfig, ProjectsGithutColumns) {
+angular.module('projects.githut.config', ['ngApp.core'])
+.factory("ProjectsGithut", function(ProjectsGithutConfig, ProjectsGithutColumns) {
   return function(data) {
     var hits = filterData(data.hits);
     var primary_sites = [];
 
-    function findTheThing(array,data_type,propname){
+    function findTheThing(array, data_type, propname) {
 
       var normalize = (str) => {
         return str.toLowerCase().replace(/\s+/g,'');
@@ -88,7 +88,7 @@ angular.module('projects.githut.config',[])
     }
   }
 })
-.service("ProjectsGithutColumns",function($state, $filter){
+.service("ProjectsGithutColumns", function($state, $filter, DATA_CATEGORIES){
   function projectSref(d) {
     var filter = $filter("makeFilter")([{
       field: 'cases.project.project_id',
@@ -102,12 +102,12 @@ angular.module('projects.githut.config',[])
     var filter = $filter("makeFilter")([{
       field: 'cases.project.project_id',
       value: d.lang
-    }, {field: 'files.data_type', value: d.column}]);
+    }, {field: 'files.data_category', value: d.column}]);
 
     $state.go("search.participants", { filters:JSON.parse(filter) });
   }
 
-  return [
+  var results = [
     {
       id: 'project_id',
       display_name: ["Project","ID"],
@@ -125,79 +125,19 @@ angular.module('projects.githut.config',[])
       colorgroup:'case_count',
       href: projectSref
     },
-    {
-      id:'Raw Sequencing Data',
-      display_name:['Seq'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Protein Expression',
-      display_name:['Exp'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Simple Nucleotide Variation',
-      display_name:['SNV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Copy Number Variation',
-      display_name:['CNV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Structural Rearrangement',
-      display_name:['SV'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'DNA Methylation',
-      display_name:['Meth'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    {
-      id:'Clinical',
-      display_name:['Clin.'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
-    // Biospecimen
-    {
-      id:'Other',
-      display_name:['Bio.'],
-      scale:'ordinal',
-      is_subtype:true,
-      dimensional:true,
-      colorgroup:'case_count',
-      href: dataTypeSref
-    },
+  ]
+
+  results = results.concat(Object.keys(DATA_CATEGORIES).map(key => ({
+    id: DATA_CATEGORIES[key].full,
+    display_name: [DATA_CATEGORIES[key].abbr],
+    scale:'ordinal',
+    is_subtype:true,
+    dimensional:true,
+    colorgroup:'case_count',
+    href: dataTypeSref
+  })));
+
+  results = results.concat([
     {
       id:'file_count',
       display_name:["File","Count"],
@@ -222,7 +162,9 @@ angular.module('projects.githut.config',[])
       scale:'linear',
       dimensional:true
     }
-  ]
+  ]);
+
+  return results;
 })
 .service("ProjectsGithutConfig",function(ProjectsService,ProjectsGithutColumns, $filter){
     var color = d3.scale.category10();
@@ -293,8 +235,8 @@ angular.module('projects.githut.config',[])
       },
       superhead:{
         start:'Clinical',
-        end:'Other',
-        text: ProjectsService.getTableHeading() //Case count per data type 
+        end:'Biospecimen',
+        text: ProjectsService.getTableHeading() //Case count per data type
       },
 
       /**

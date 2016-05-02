@@ -12,21 +12,40 @@ module ngApp.files.controllers {
     handleCartButton(): void;
     archiveCount: number;
     annotationIds: string[];
+    tablesToDisplay: string[];
+    makeSearchPageLink(files: IFile[]): string;
   }
 
   class FileController implements IFileController {
     archiveCount: number = 0;
     annotationIds: string[] = [];
+    tablesToDisplay: string[];
 
     /* @ngInject */
     constructor(public file: IFile,
                 public $scope: ng.IScope,
                 private CoreService: ICoreService,
                 private CartService: ICartService,
-                private FilesService: IFilesService
+                private FilesService: IFilesService,
+                private $filter: ng.IFilterService
                 ) {
 
       CoreService.setPageTitle("File", file.file_name);
+
+      var toDisplayLogic = {
+        'Raw Sequencing Data': ['analysis', 'referenceGenome', 'readGroup', 'downstreamAnalysis'],
+        'Transcriptome Profiling': ['analysis', 'referenceGenome', 'downstreamAnalysis'],
+        'Simple Nucleotide Variation': ['analysis', 'referenceGenome', 'downstreamAnalysis'],
+        'Copy Number Variation': ['analysis', 'referenceGenome', 'downstreamAnalysis'],
+        'Structural Rearrangement': ['analysis', 'referenceGenome', 'downstreamAnalysis'],
+        'DNA Methylation': ['analysis', 'referenceGenome', 'downstreamAnalysis'],
+        'Clinical': [],
+        'Biospecimen': []
+      }
+      this.tablesToDisplay = (toDisplayLogic[file.data_category] || []).reduce((acc, t) => {
+        acc[t] = true;
+        return acc;
+      }, {});
 
       if (this.file.archive) {
         this.FilesService.getFiles({
@@ -54,6 +73,15 @@ module ngApp.files.controllers {
         related_file['cases'] = file.cases;
       });
 
+      if (file.downstream_analyses) {
+        file.downstream_analyses = file.downstream_analyses.reduce(
+          (prev, curr) =>
+            prev.concat((curr.output_files || []).map(x =>
+              _.extend({}, x, { workflow_type: curr.workflow_type }))
+            ),
+          []
+        );
+      }
     }
 
     isInCart(): boolean {
@@ -70,7 +98,17 @@ module ngApp.files.controllers {
 
     canBAMSlice(): boolean {
       return (this.file.data_type || '').toLowerCase() === 'aligned reads' &&
+             (this.file.index_files || []).length != 0 &&
              (this.file.data_format || '').toLowerCase() === 'bam';
+    }
+
+    makeSearchPageLink(files: IFile[] = []): string {
+      if (!files.length) {
+        return 0;
+      }
+      var filterString = this.$filter("makeFilter")([{field: 'file_id', value: files.map(f => f.file_id)}], true);
+      var href = 'search/f?filters=' + filterString;
+      return files.length ? "<a href='" + href + "'>" + files.length + '</a>' : '0';
     }
 
   }
@@ -118,14 +156,21 @@ module ngApp.files.controllers {
   }
 
   class BAMFailedModalController {
-    msg: string = "Invalid BED Format. Please refer to the examples described in the BAM Slicing pop-up.";
+    errorBlobString: string;
+    msg400: string = "Invalid BED Format. Please refer to the examples described in the BAM Slicing pop-up.";
     /* @ngInject */
     constructor(private $uibModalInstance,
                 public errorStatus: string,
-                public errorMsg: string,
-                private errorBlob: any) {}
+                public errorStatusText: string,
+                private errorBlob: Blob) {
+      this.errorBlobString = "";
+      var reader = new FileReader();
+      reader.addEventListener("loadend", () => {
+        this.errorBlobString = _.get(JSON.parse(reader.result), "error", "Error slicing");
+      });
+      reader.readAsText(errorBlob);
+    }
   }
-
 
   angular
       .module("files.controller", [
@@ -135,4 +180,3 @@ module ngApp.files.controllers {
       .controller("BAMFailedModalController", BAMFailedModalController)
       .controller("FileController", FileController);
 }
-

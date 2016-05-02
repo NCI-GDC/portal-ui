@@ -65,9 +65,22 @@
       #loadingScreen { display: none; }
     </style>
     <div id="body" tabindex="0">
-      <p class="noscript">
-        Javascript is required to use the features of this website.
-      </p>
+      <header id="gdc-header" class="navbar navbar-default navbar-static-top" role="banner">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a id="gdc-logo" class="navbar-brand" data-ui-sref="home" data-translate="" tabindex="0" href="/">
+              <span class="ng-scope">GDC Data Portal</span>
+            </a>
+          </div>
+        </div>
+      </header>
+      <div class="container-fluid">
+        <div class="col-lg-8 col-lg-offset-2">
+            <div class="alert alert-info">
+                Javascript is required to use the features of this website. Please enable Javascript and reload the page.
+            </div>
+        </div>
+      </div>
     </div>
   </noscript>
 
@@ -78,7 +91,7 @@
   <footer id="footer">
     <div class="container" role="contentinfo">
       <div>
-        <a href="/">Site Home</a>
+        <a href="#">Site Home</a>
          | <a href="http://www.cancer.gov/global/web/policies">Policies</a>
          | <a href="http://www.cancer.gov/global/web/policies/accessibility">Accessibility</a>
          | <a href="http://www.cancer.gov/global/web/policies/foia">FOIA</a>
@@ -92,9 +105,11 @@
       <div>
         NIH... Turning Discovery Into Health &#174;
       </div>
-      <div>
-        UI <a href= "{{ config.tag }}">{{ config.version }}</a> @ <a href="{{ config.commitLink }}">{{ config.commitHash }}</a>, 
-        API <a href= "{{ config.apiTag }}">{{ config.apiVersion }}</a><span ng-if="config.apiCommitHash"> @ <a href="{{ config.apiCommitLink }}">{{ config.apiCommitHash | limitTo: 7 }}</a></span>
+
+      <div ng-cloak>
+        UI <strong>{{ ::config.version }}</strong> @ <strong>{{ ::config.commitHash }}</strong>,
+        API <strong>{{ ::config.apiVersion }}</strong>
+        <span ng-if="config.apiCommitHash"> @ <strong>{{ ::config.apiCommitHash | limitTo: 7 }}</strong></span>
       </div>
     </div>
   </footer>

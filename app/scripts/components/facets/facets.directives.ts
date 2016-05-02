@@ -18,7 +18,8 @@ module ngApp.components.facets.directives {
         title: "@",
         name: "@",
         removeFunction: "&",
-        removable: "@"
+        removable: "@",
+        showTooltip: "@"
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
@@ -106,7 +107,6 @@ module ngApp.components.facets.directives {
         title: "@",
         field: "@",
         unitsMap: "=",
-        hasGraph: "@",
         removable: "@",
         removeFunction: "&",
       },

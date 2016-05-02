@@ -43,10 +43,11 @@ module ngApp.projects {
               "program.name",
               "primary_site",
               "project_id",
-              "disease_type"
+              "disease_type",
+              "summary.case_count",
+              "summary.file_count"
             ],
             expand: [
-              "summary",
               "summary.data_categories",
               "summary.experimental_strategies"
             ]

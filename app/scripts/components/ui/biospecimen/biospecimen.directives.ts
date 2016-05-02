@@ -5,9 +5,9 @@ module ngApp.components.ui.biospecimen.directives {
   interface IBiospecimenScope extends ng.IScope {
     expandTree(event: any, doc: any): void;
     expandAll(event: any, participant: any, expand: boolean): void;
-    search(searchTerm: string, participant: any): void;
+    search(searchTerm: string, participant: any, field: string): void;
     searchTerm: string;
-    foundBySearch(submitter_id: string): boolean;
+    foundBySearch(term: string, field: string): boolean;
     found: any[];
   }
 
@@ -37,20 +37,27 @@ module ngApp.components.ui.biospecimen.directives {
           BiospecimenService.expandAll(event, participant, expand);
         };
 
+        var idFields = [
+          'submitter_id', 'sample_id', 'portion_id',
+          'analyte_id', 'slide_id', 'aliquot_id'
+        ];
+
         $scope.search = (searchTerm: string, participant: any) => {
-          $scope.found = BiospecimenService.search(searchTerm, participant);
-          if ($scope.found.length) {
-            ctrl.displayBioSpecimenDocument(
-              { which: 1 }, // https://github.com/angular/angular.js/issues/6370
-              $scope.found[0].entity, $scope.found[0].type
-            );
-            participant.biospecimenTreeExpanded = BiospecimenService.allExpanded(participant);
-          }
+          if (searchTerm) {
+            $scope.found = BiospecimenService.search(searchTerm, participant, idFields);
+            if ($scope.found.length) {
+              ctrl.displayBioSpecimenDocument(
+                { which: 1 }, // https://github.com/angular/angular.js/issues/6370
+                $scope.found[0].entity, $scope.found[0].type
+              );
+              participant.biospecimenTreeExpanded = BiospecimenService.allExpanded(participant);
+            }
+          } else $scope.found = [];
         };
 
-        $scope.foundBySearch = (submitter_id: string) => {
-          if (submitter_id === '') return false;
-          return ($scope.found || []).some(x => x.entity.submitter_id === submitter_id);
+        $scope.foundBySearch = (term: string, field: string) => {
+          if (term === '') return false;
+          return ($scope.found || []).some(x => x.entity[field] === term);
         };
       }
     };

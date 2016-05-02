@@ -149,5 +149,28 @@ describe('Cart:', function () {
       expect(returnValue).to.contain(fileB.file_id);
     }));
 
+    it('should correctly report space left in cart', inject(function (CartService) {
+      expect(CartService.getCartVacancySize()).to.eq(CartService.getMaxSize());
+      CartService.addFiles([fileA, fileB]);
+      expect(CartService.getCartVacancySize()).to.eq(CartService.getMaxSize() - 2);
+      var files = [];
+      for (var i = 0; i < CartService.getCartVacancySize(); i++) {
+        files.push({file_id : Math.random()});
+      }
+      CartService.addFiles(files);
+      expect(CartService.getCartVacancySize()).to.eq(0);
+
+    }));
+
+    it('should correctly determine fullness', inject(function (CartService) {
+      expect(CartService.isFull()).to.eq(false);
+      var files = [];
+      for (var i = 0; i < CartService.getMaxSize(); i++) {
+        files.push({file_id : Math.random()});
+      }
+      CartService.addFiles(files);
+      expect(CartService.isFull()).to.eq(true);
+    }));
+
   });
 });

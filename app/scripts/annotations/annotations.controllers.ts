@@ -4,6 +4,9 @@ module ngApp.annotations.controllers {
   import ICoreService = ngApp.core.services.ICoreService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
   import TableiciousConfig = ngApp.components.tables.directives.tableicious.TableiciousConfig;
+  import IFacetService = ngApp.components.facets.services.IFacetService;
+  import IProjectsService = ngApp.projects.services.IProjectsService;
+
 
   export interface IAnnotationsController {
     annotations: IAnnotations;
@@ -18,7 +21,9 @@ module ngApp.annotations.controllers {
 
     /* @ngInject */
     constructor(private $scope: IAnnotationsScope, private AnnotationsService: IAnnotationsService,
-                private CoreService: ICoreService, private AnnotationsTableModel:TableiciousConfig) {
+                private CoreService: ICoreService, private AnnotationsTableModel:TableiciousConfig,
+                private FacetService: IFacetService
+    ) {
       CoreService.setPageTitle("Annotations");
       $scope.$on("$locationChangeSuccess", (event, next: string) => {
         if (next.indexOf("annotations") !== -1) {
@@ -37,20 +42,7 @@ module ngApp.annotations.controllers {
     refresh() {
       this.AnnotationsService.getAnnotations({
         fields: this.AnnotationsTableModel.fields,
-        expand: this.AnnotationsTableModel.expand,
-        facets: [
-          "annotation_id",
-          "classification",
-          "category",
-          "created_datetime",
-          "creator",
-          "status",
-          "entity_type",
-          "classification",
-          "project.primary_site",
-          "project.program.name",
-          "project.project_id"
-        ]
+        facets: this.FacetService.filterFacets(this.AnnotationsTableModel.facets)
       }).then((data) => {
         if (!data.hits.length) {
           this.CoreService.setSearchModelState(true);
@@ -67,7 +59,9 @@ module ngApp.annotations.controllers {
 
   class AnnotationController implements IAnnotationController {
     /* @ngInject */
-    constructor(public annotation: IAnnotation, private CoreService: ICoreService) {
+    constructor(public annotation: IAnnotation,
+                public ProjectsService: IProjectsService,
+                private CoreService: ICoreService) {
       CoreService.setPageTitle("Annotation", annotation.annotation_id);
     }
   }

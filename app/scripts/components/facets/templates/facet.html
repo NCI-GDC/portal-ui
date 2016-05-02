@@ -36,7 +36,7 @@
               data-tooltip-append-to-body="true"
               data-tooltip-placement="right">{{ ::term.key.toUpperCase() }}</span>
         <span data-ng-if="tc.name.indexOf('project_id') === -1">
-          {{ ::term.key | translate | humanify:true:true }}
+          {{ ::term.key | translate }}
         </span>
       </span>
       <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
@@ -51,11 +51,18 @@
             class="facet-term-label">
         <i class="fa fa-square-o" aria-controls="data-table" aria-checked="false"></i>
         <span data-ng-if="tc.name.indexOf('project_id') !== -1"
-              data-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
+              data-uib-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"
-              data-tooltip-placement="right">{{ ::term.key.toUpperCase() }}</span>
-        <span data-ng-if="tc.name.indexOf('project_id') === -1">
-          {{ ::term.key | translate | humanify: true:true }}
+              data-tooltip-placement="right">
+          {{ ::term.key.toUpperCase() }}
+        </span>
+        <span data-ng-if="tc.name.indexOf('project_id') === -1 && showTooltip"
+              data-tooltip-append-to-body="true"
+              data-uib-tooltip="{{::term.key}}">
+          {{ ::term.key | translate }}
+        </span>
+        <span data-ng-if="tc.name.indexOf('project_id') === -1 && !showTooltip">
+          {{ ::term.key | translate }}
         </span>
       </span>
       <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>

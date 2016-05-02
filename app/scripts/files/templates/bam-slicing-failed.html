@@ -2,9 +2,17 @@
   <h4 data-translate>BAM Slicing Failed</h4>
 </div>
 <div class="modal-body text-danger">
-  <p data-translate>
-    {{ bamfc.msg }}
-  </p>
+  <span data-ng-if="bamfc.errorStatus === 400">
+    <p data-translate>
+      {{ bamfc.msg400 }}
+    </p>
+  </span>
+  <span data-ng-if="bamfc.errorStatus !== 400">
+    <h5>{{bamfc.errorStatus}}: {{ bamfc.errorStatusText }}</h5>
+    <p data-translate>
+      {{ bamfc.errorBlobString }}
+    </p>
+  </span>
 </div>
 <div class="modal-footer">
   <button class="btn btn-primary" data-ng-click="bamfc.$uibModalInstance.close()" data-translate>OK</button>

@@ -35,6 +35,7 @@ module ngApp.components.tables.directives {
 
         $scope.restoreDefaults = function() {
           $scope.headings = _.cloneDeep(defaults);
+          saveSettings();
         }
 
         $scope.toggleVisibility = function (item) {
@@ -87,7 +88,8 @@ module ngApp.components.tables.directives {
       scope: {
         paging: "=",
         page: "@",
-        config: '=',
+        headings: "=",
+        title: "@",
         update: "=",
         data: "=",
         saved: "="

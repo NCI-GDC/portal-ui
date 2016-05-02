@@ -13,6 +13,10 @@
       <th scope="row" data-translate>File Name</th>
       <td>{{ selectedItem.file_name }}</td>
     </tr>
+    <tr data-ng-if="selectedItem.submitter_id">
+      <th scope="row" data-translate>File Submitter ID</th>
+      <td>{{ selectedItem.submitter_id }}</td>
+    </tr>
     <tr data-ng-if="selectedItem.data_type">
       <th scope="row" data-translate>Data Type</th>
       <td>{{ selectedItem.data_type }}</td>

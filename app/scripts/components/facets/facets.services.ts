@@ -16,6 +16,7 @@ module ngApp.components.facets.services {
     getActivesWithOperator(facet: string): any;
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any>;
     ensurePath(filters: IFilters): IFilters;
+    filterFacets(facets: Object[]): string[];
   }
 
   class FacetService implements IFacetService {
@@ -203,6 +204,11 @@ module ngApp.components.facets.services {
       }
     }
 
+    filterFacets(facets: Object[]): string[] {
+      return _.filter(facets || [],
+        f => _.includes(['terms', 'range'], f.facetType))
+      .map(f => f.name);
+    }
   }
 
   export interface ICustomFacetsService {
@@ -215,7 +221,7 @@ module ngApp.components.facets.services {
     /* @ngInject */
     constructor(private Restangular: restangular.IService,
                 private SearchTableFilesModel: TableiciousConfig,
-                private SearchTableParticipantsModel: TableiciousConfig,
+                private SearchCasesTableService: TableiciousConfig,
                 private FacetsConfigService: IFacetsConfigService) {
       this.ds = Restangular.all("gql/_mapping");
     }
@@ -228,8 +234,10 @@ module ngApp.components.facets.services {
                  datum.field !== 'archive.revision' &&
                  !_.includes(datum.field, "_id") &&
                  !_.includes(current, datum.field) &&
-                 !_.includes(docType === 'files' ? _.pluck(this.SearchTableFilesModel.facets, "name") : _.pluck(this.SearchTableParticipantsModel.facets, "name"), datum.field);
-                 }), f => _.merge(f, {'description': 'this is a description'}));
+                 !_.includes(docType === 'files'
+                  ? _.pluck(this.SearchTableFilesModel.facets, "name")
+                  : _.pluck(this.SearchCasesTableService.model().facets, "name"), datum.field);
+                 }), f => f);
       });
     }
 
@@ -269,7 +277,7 @@ module ngApp.components.facets.services {
           name: fieldName,
           title: fieldName,
           collapsed: false,
-          facetType: fieldType === 'long' ? 'range' : fieldName.includes('datetime') ? 'datetime' : 'terms',
+          facetType: fieldType === 'long' ? 'range' : _.includes(fieldName, 'datetime') ? 'datetime' : 'terms',
           removable: true
       });
       this.save();

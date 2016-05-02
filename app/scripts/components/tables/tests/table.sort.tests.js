@@ -16,9 +16,8 @@ describe('Tables:', function () {
       scope.paging = {
         sort: "file_size:asc,file_name:desc",
       };
-      scope.config = {
-        title: 'test',
-        headings:[{
+      scope.title = 'test';
+      scope.headings = [{
           displayName: 'File Size',
           id:'file_size',
           sortable:true
@@ -27,8 +26,7 @@ describe('Tables:', function () {
           displayName: 'File Count',
           id: 'file_name',
           sortable: true
-        }]
-      };
+      }];
       var wc = $controller('TableSortController', { $scope: scope, LocationService: LocationService });
       var fileSizeSort = _.find(wc.$scope.sortColumns, function(col) { return col.id === 'file_size'; });
       var fileNameSort = _.find(wc.$scope.sortColumns, function(col) { return col.id === 'file_name'; });
@@ -43,9 +41,8 @@ describe('Tables:', function () {
       scope.paging = {};
       scope.saved = [];
       scope.page = "test";
-      scope.config = {
-        title: "test",
-        headings:[
+      scope.title = 'test';
+      scope.headings = [
           {
             displayName: 'File Size',
             id:'file_size',
@@ -56,9 +53,7 @@ describe('Tables:', function () {
             id:'file_name',
             sortable: true
           }
-        ]
-      };
-
+        ];
 
       var wc = $controller('TableSortController', { $scope: scope, LocationService: LocationService });
       wc.toggleSorting(wc.$scope.sortColumns[1]);

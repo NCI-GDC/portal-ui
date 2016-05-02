@@ -22,7 +22,7 @@ module ngApp.components.ui.file {
         } else if (val >= FileSize.BYTES_MB_LIMIT) {
           formattedVal = (val / FileSize.BYTES_GB).toFixed(2) + " GB";
         } else if (val >= FileSize.BYTES_KB_LIMIT) {
-          formattedVal = (val / FileSize.BYTES_MB).toFixed(0) + " MB";
+          formattedVal = (val / FileSize.BYTES_MB).toFixed(2) + " MB";
         } else if (val >= FileSize.BYTES_KB) {
           formattedVal = (val / FileSize.BYTES_KB).toFixed(0) + " KB";
         } else if (val) {

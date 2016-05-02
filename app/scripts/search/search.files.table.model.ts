@@ -21,8 +21,7 @@ module ngApp.search.models {
         th: '<add-to-cart-all-dropdown data-files="data" data-size="{{paging.total}}" />',
         name: 'Add to Cart',
         id: "file_actions",
-        td: row => '<add-to-cart-single-icon file="row" style="margin-right:5px"></add-to-cart-single-icon>' +
-                    '<download-button data-uib-tooltip="Download" data-tooltip-popup-delay=1000 files="row"></download-button>'
+        td: row => '<add-to-cart-single-icon file="row" style="margin-right:5px"></add-to-cart-single-icon>'
       }, {
         name: "File UUID",
         id: "file_id",
@@ -67,7 +66,7 @@ module ngApp.search.models {
         tdClassName: 'truncated-cell'
       }, {
         name: "Cases",
-        id: "cases",
+        id: "cases.case_id",
         td: (row, $scope) => {
           function getParticipants(row, $filter) {
             return row.cases.length == 1 ?
@@ -158,22 +157,20 @@ module ngApp.search.models {
       "archive.archive_id",
       "experimental_strategy",
       "center.name",
-      "submitter_id"
-    ],
-    expand: [
-      "cases",
-      "cases.project",
-      "cases.clinical"
+      "submitter_id",
+      "cases.case_id",
+      "cases.project.project_id",
+      "cases.project.name"
     ],
     facets: [
       {name: "file_id", title: "File", collapsed: false, facetType: "free-text", placeholder: "File name or ID", removable: false },
       {name: "data_category", title: "Data Category", collapsed: false, facetType: "terms", removable: false },
       {name: "data_type", title: "Data Type", collapsed: false, facetType: "terms", removable: false },
       {name: "experimental_strategy", title: "Experimental Strategy", collapsed: false, facetType: "terms", removable: false },
+      {name: "analysis.workflow_type", title: "Workflow Type", collapsed: false, facetType: "terms", removable: false },
       {name: "data_format", title: "Data Format", collapsed: false, facetType: "terms", removable: false },
-      {name: "platform", title: "Platform", collapsed: true, facetType: "terms", removable: false },
-      {name: "access", title: "Access Level", collapsed: true, facetType: "terms", removable: false },
-      {name: "state", title: "File Status", collapsed: true, facetType: "terms", removable: false },
+      {name: "platform", title: "Platform", collapsed: false, facetType: "terms", removable: false },
+      {name: "access", title: "Access Level", collapsed: false, facetType: "terms", removable: false },
     ]
   };
   angular.module("search.table.files.model", [])

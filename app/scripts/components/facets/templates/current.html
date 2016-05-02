@@ -34,7 +34,7 @@
               <span data-ng-if="filter.content.field.toLowerCase().indexOf('datetime') > -1"
                     class="facet-block"> {{ v }} </span>
               <span data-ng-if="filter.content.field.toLowerCase().indexOf('datetime') === -1"
-                    class="facet-block">{{ v | translate | humanify }}</span>
+                    class="facet-block">{{ v | translate }}</span>
             </span>
             <span class="facet-block" data-ng-if="cfc.isInMyProjects(filter) && $last" data-ng-translate>
               and in My Projects

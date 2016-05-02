@@ -8,6 +8,7 @@ module ngApp.projects.controllers {
   import ILocationService = ngApp.components.location.ILocationService;
   import IAnnotationsService = ngApp.annotations.services.IAnnotationsService;
   import IProjectsState = ngApp.projects.services.IProjectsState;
+  import IFacetService = ngApp.components.facets.services.IFacetService;
 
   export interface IProjectsController {
     projects: IProjects;
@@ -29,10 +30,11 @@ module ngApp.projects.controllers {
 
     /* @ngInject */
     constructor(private $scope: IProjectScope, private ProjectsService: IProjectsService,
-                private CoreService: ICoreService, private ProjectTableModel: TableiciousConfig,
+                private CoreService: ICoreService, private ProjectsTableService: TableiciousConfig,
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
-                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut) {
-
+                private LocationService: ILocationService, private $filter, private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut,
+                private FacetService: IFacetService
+    ) {
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
         if (next.indexOf("projects") !== -1) {
@@ -50,25 +52,18 @@ module ngApp.projects.controllers {
 
       var data = $state.current.data || {};
       this.ProjectsState.setActive("tabs", data.tab);
-      $scope.tableConfig = ProjectTableModel;
+      $scope.tableConfig = this.ProjectsTableService.model();
 
       this.refresh();
     }
 
     refresh() {
       this.loading = true;
+      var projectsTableModel = this.ProjectsTableService.model();
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
-          fields: this.ProjectTableModel.fields,
-          expand: this.ProjectTableModel.expand,
-          facets: [
-            "disease_type",
-            "program.name",
-            "project_id",
-            "primary_site",
-            "summary.experimental_strategies.experimental_strategy",
-            "summary.data_categories.data_category"
-          ],
+          fields: projectsTableModel.fields,
+          facets: this.FacetService.filterFacets(projectsTableModel.facets),
           size: 100
         }).then((data) => {
           this.loading = false;
@@ -142,7 +137,7 @@ module ngApp.projects.controllers {
     constructor(public project: IProject, private CoreService: ICoreService,
                 private AnnotationsService: IAnnotationsService,
                 private ExperimentalStrategyNames: string[],
-                private DataCategoryNames: string[],
+                private DATA_CATEGORIES,
                 public $state: ng.ui.IStateService,
                 private $filter: ng.ui.IFilterService) {
       CoreService.setPageTitle("Project", project.project_id);
@@ -159,20 +154,15 @@ module ngApp.projects.controllers {
         return result;
       }, []);
 
-      this.dataCategories = _.reduce(DataCategoryNames.slice(), function(result, name) {
+      this.dataCategories = Object.keys(this.DATA_CATEGORIES).reduce((acc, key) => {
         var type = _.find(project.summary.data_categories, (item) => {
-          return item.data_category.toLowerCase() === name.toLowerCase();
+          return item.data_category === this.DATA_CATEGORIES[key].full;
         });
-        if (type) {
-          result.push(type);
-        } else {
-          result.push({
-            data_category: name,
-            file_count: 0
-          });
-        }
 
-        return result;
+        return acc.concat(type || {
+          data_category: this.DATA_CATEGORIES[key].full,
+          file_count: 0
+        });
       }, []);
 
       this.expStratConfig = {
@@ -223,6 +213,7 @@ module ngApp.projects.controllers {
         state: {
           name: "search.files"
         },
+        blacklist: ["structural rearrangement", "dna methylation"],
         filters: {
           "default": {
             params: {
@@ -285,7 +276,7 @@ module ngApp.projects.controllers {
       .module("projects.controller", [
         "projects.services",
         "core.services",
-        "projects.table.model",
+        "projects.table.service",
         "projects.githut.config",
         "annotations.services"
       ])

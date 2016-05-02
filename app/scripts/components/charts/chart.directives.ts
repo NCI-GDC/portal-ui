@@ -35,7 +35,9 @@ module ngApp.components.charts {
         var id = "." + $window.Math.round($window.Math.random() * 120000);
 
         $scope.$watch("data", function(a){
-          updateChart();
+          if (element.find(".chart-container").is(":visible")) {
+            updateChart();
+          }
         });
 
         $scope.legendLimit = $window.parseInt($scope.legendLimit);
@@ -52,14 +54,6 @@ module ngApp.components.charts {
         }
 
         function updateChart() {
-          $window.$($window).off("resize" + id);
-
-          $window.$($window).on("resize" + id, _.debounce(() => {
-            if (element.find(".chart-container").is(":visible")) {
-              updateChart();
-            }
-          }, 150));
-
           if (element.find(".chart-container > svg").length) {
             d3.select(element.find(".chart-container > svg")[0]).remove();
           }
@@ -227,7 +221,17 @@ module ngApp.components.charts {
           }
         }
 
-        updateChart();
+        if (element.find(".chart-container").is(":visible")) {
+          updateChart();
+        }
+
+        $window.$($window).off("resize" + id);
+
+        $window.$($window).on("resize" + id, _.debounce(() => {
+          if (element.find(".chart-container").is(":visible")) {
+            updateChart();
+          }
+        }, 150));
       }
     };
   }
@@ -555,7 +559,7 @@ module ngApp.components.charts {
 
             _barChartCaption = _barChartLegend.append("text")
               .classed("marked-bar-chart-title-label", true)
-              .attr("y", _chartMargin.top + 30);
+              .attr("y", _chartMargin.top + 0);
 
 
             _barChartBoundingBox = _svg.select(".chart-canvas-area > rect");
@@ -627,7 +631,7 @@ module ngApp.components.charts {
             .style({
               "text-anchor": "end",
               "font-size":"0.8rem",
-              "font-family": "Lucida Grande",
+              "font-family": "Lucida Grande, Lucida Sans Unicode, Arial, sans-serif",
             });
 
 
@@ -647,7 +651,7 @@ module ngApp.components.charts {
               "shape-rendering" : "crispEdges",
               "stroke" : "#eee",
               "stroke-width" : function(d) {
-       
+
                 if(_invYScale(d) === _barChartBoundingBox.attr("height") || d === 0){
                   return "0px";
                 }
@@ -663,30 +667,31 @@ module ngApp.components.charts {
             .selectAll("text")
             .style({
               "text-anchor": "end",
-              "font-size":"8px",
-              "font-family": "Lucida Grande",
+              "font-size":"10px",
+              "font-family": "Lucida Grande, Lucida Sans Unicode, Arial, sans-serif",
             })
             .attr("dy", "0rem")
             .attr("dx", "-12px")
-            .attr("transform", "rotate(-65)")
-            .call(_axisTipFn)
-            .on("mouseover", function (d) {
-              var tick = d3.select(this);
+            .attr("transform", "rotate(-45)")
+            // .call(_axisTipFn)
+            // .on("mouseover", function (d) {
+            //   var tick = d3.select(this);
 
-              tick.style({"font-size":"8.5px", "fill":  d3.hsl(_colourScale(d)).darker(1)});
+            //   tick.style({"font-size":"10px", "fill":  d3.hsl(_colourScale(d)).darker(1)});
 
-              _axisTipFn.show(tick.data())
+            //   _axisTipFn.show(tick.data())
 
-            })
-            .on("mouseout", function () {
-              var tick = d3.select(this);
+            // })
+            // .on("mouseout", function () {
+            //   var tick = d3.select(this);
 
-              _axisTipFn.hide();
+            //   _axisTipFn.hide();
 
-              tick.style({"font-size":"8px", "fill": ""});
-            })
+            //   tick.style({"font-size":"10px", "fill": ""});
+            // })
             .on("click", function () {
               var tick = d3.select(this);
+              console.log('here: ', tick);
               var filters = {
                 "op":"and",
                 "content":[
@@ -694,9 +699,6 @@ module ngApp.components.charts {
                     "op":"in", "content": {"field":"primary_site","value":tick.data()}
                   }
                 ]};
-
-
-              _axisTipFn.hide();
 
               $state.go("projects.table", {
                   filters: JSON.stringify(filters)
@@ -819,7 +821,7 @@ module ngApp.components.charts {
                 .attr("x", Math.round(_width / 2))
                 .attr("y", 200)
                 .attr("text-anchor", "middle")
-                .text("No Data...");
+                .text("Loading...");
 
               return;
             }
@@ -853,7 +855,7 @@ module ngApp.components.charts {
         function _initChart() {
 
 
-          _chartMargin = $scope.margins || {top: 40, bottom: 40, left: 20, right: 20};
+          _chartMargin = $scope.margins || {top: 0, bottom: 40, left: 20, right: 20};
 
           _initChartSize();
 
@@ -878,12 +880,12 @@ module ngApp.components.charts {
             .offset([-5, 0])
             .html(tipFn);
 
-          _axisTipFn = d3.tip()
-            .attr("class", "tooltip")
-            .offset([-30, 10])
-            .html(function(d) {
-              return d;
-            });
+          // _axisTipFn = d3.tip()
+          //   .attr("class", "tooltip")
+          //   .offset([-30, 10])
+          //   .html(function(d) {
+          //     return d;
+          //   });
 
           _initListeners();
 
@@ -904,4 +906,3 @@ module ngApp.components.charts {
     .directive("barChart", BarChart)
     .directive("markedBarChart", MarkedBarChart);
 }
-

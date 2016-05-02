@@ -125,7 +125,7 @@ module ngApp.cart.directives {
         });
 
         this.getFiles = function() {
-          this.retreivingFiles = true;
+          this.retrievingFiles = true;
           var filters = LocationService.filters();
           if (filters.op !== "and") {
             filters = {op: "and", content: [filters]};
@@ -150,7 +150,7 @@ module ngApp.cart.directives {
               filters: filters,
               size: CartService.getCartVacancySize()
             }).then((data) => {
-              this.retreivingFiles = this.files.length ? false : true;
+              this.retrievingFiles = this.files.length ? false : true;
               this.filteredRelatedFiles = data;
             });
           }
@@ -172,9 +172,9 @@ module ngApp.cart.directives {
               ]
             }).then((data) => {
               if (this.areFiltersApplied) {
-                this.retreivingFiles = this.filteredRelatedFiles ? false: true;
+                this.retrievingFiles = this.filteredRelatedFiles ? false: true;
               } else {
-                this.retreivingFiles = false;
+                this.retrievingFiles = false;
               }
               var fs = _.map(data.files, f => {
                 f.cases = [{
@@ -262,12 +262,18 @@ module ngApp.cart.directives {
         const scope = $scope;
         scope.active = false;
 
+        const reportStatus = _.isFunction(scope.$parent.reportStatus) ?
+          _.partial(scope.$parent.reportStatus, scope.$id) :
+          () => {};
+
         const inProgress = () => {
           scope.active = true;
+          reportStatus(scope.active);
           $attrs.$set('disabled', 'disabled');
         };
         const done = () => {
           scope.active = false;
+          reportStatus(scope.active);
           $element.removeAttr('disabled');
         };
         const files = [].concat(CartService.getFiles());
@@ -287,26 +293,31 @@ module ngApp.cart.directives {
     return {
       restrict:"AE",
       scope: true,
-      link: (scope, $element, $attrs) => {
-        scope.active = false;
+      link: ($scope, $element, $attrs) => {
+        $element.on('click', () => {
 
-        const inProgress = () => {
-          scope.active = true;
-          $attrs.$set('disabled', 'disabled');
-        };
-        const done = () => {
-          scope.active = false;
-          $element.removeAttr('disabled');
-        };
-        const files = [].concat(CartService.getFiles());
-        const params = { ids: files.map(f => f.file_id) };
-        const url = config.api + '/data/metadata_files';
-        const clickHandler = () => {
-          const checkProgress = scope.download(params, url, () => $element, 'POST');
+          $scope.active = false;
+
+          const reportStatus = _.isFunction($scope.$parent.reportStatus)
+            ? _.partial($scope.$parent.reportStatus, $scope.$id)
+            : () => {};
+
+          const inProgress = () => {
+            $scope.active = true;
+            reportStatus($scope.active);
+            $attrs.$set('disabled', 'disabled');
+          };
+          const done = () => {
+            $scope.active = false;
+            reportStatus($scope.active);
+            $element.removeAttr('disabled');
+          };
+          const files = [].concat(CartService.getFiles());
+          const params = { ids: files.map(f => f.file_id) };
+          const url = config.api + '/data/metadata_files';
+          const checkProgress = $scope.download(params, url, () => $element, 'POST');
           checkProgress(inProgress, done);
-        };
-
-        $element.on('click', clickHandler);
+        });
       }
     };
   }
@@ -327,22 +338,23 @@ module ngApp.cart.directives {
           authorized: authorizedInCart
         };
 
+        const reportStatus = _.isFunction(scope.$parent.reportStatus) ?
+          _.partial(scope.$parent.reportStatus, scope.$id) :
+          () => {};
+
         const inProgress = () => {
           scope.active = true;
+          reportStatus(scope.active);
           $attrs.$set('disabled', 'disabled');
         };
         const done = () => {
           scope.active = false;
+          reportStatus(scope.active);
           $element.removeAttr('disabled');
         };
         const files = [].concat(authorizedInCart);
-        const params = { ids: files.map(f => f.file_id) };
         const url = config.api + '/data?annotations=true&related_files=true';
 
-        const download = () => {
-          const checkProgress = scope.download(params, url, () => $element, 'POST');
-          checkProgress(inProgress, done);
-        };
         const showLoginModal = () => {
           var modalInstance = $uibModal.open({
             templateUrl: "core/templates/login-to-download.html",
@@ -382,10 +394,19 @@ module ngApp.cart.directives {
             }
           });
         };
-        const checkCartForClosedFiles = (unauthorizedInCart.length > 0) ?
-          (isLoggedIn ? showRequestAccessModal : showLoginModal) : download;
 
-        $element.on('click', checkCartForClosedFiles);
+        $element.on('click', () => {
+          if (CartService.getUnauthorizedFiles().length) {
+            if (isLoggedIn) showRequestAccessModal();
+            else showLoginModal();
+          }
+          else {
+            const files = [].concat(CartService.getAuthorizedFiles());
+            const params = { ids: files.map(f => f.file_id) };
+            const checkProgress = scope.download(params, url, () => $element, 'POST');
+            checkProgress(inProgress, done);
+          }
+        });
       }
     };
   }

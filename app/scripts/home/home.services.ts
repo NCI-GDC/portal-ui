@@ -33,22 +33,11 @@ module ngApp.home.services {
     }
 
     prepParams(params:Object = {}) {
-
-      var p = _.cloneDeep(params);
-
-      if (_.has(p, "fields")) {
-        p["fields"] = p["fields"].join();
-      }
-
-      if (_.has(p, "expand")) {
-        p["expand"] = p["expand"].join();
-      }
-
-      if (_.has(params, "facets")) {
-        p["facets"] = p["facets"].join();
-      }
-
-      return p;
+      return _.extend({}, params, {
+        fields: params.fields && params.fields.join(),
+        expand: params.expand && params.expand.join(),
+        facets: params.facets && params.facets.join(),
+      })
     }
 
     getProjects(params:Object = {}):ng.IPromise<IProjects> {
@@ -57,9 +46,9 @@ module ngApp.home.services {
 
       // Testing is expecting these values in URL, so this is needed.
       var paging = params.paging || {
-          size: 20,
-          from: 1
-        };
+        size: 20,
+        from: 1
+      };
 
       var defaults = {
         size: params.size || paging.size,

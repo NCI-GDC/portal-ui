@@ -27,8 +27,9 @@ module ngApp.home.controllers {
     defaultParams: any;
 
     /* @ngInject */
-    constructor(private HomeService: IHomeService, private ProjectTableModel: TableiciousConfig,
-                private CoreService: ICoreService, private $filter: ng.ui.IFilterService) {
+    constructor(private HomeService: IHomeService, private ProjectsTableService: TableiciousConfig,
+                private CoreService: ICoreService, private $filter: ng.ui.IFilterService,
+                private DATA_CATEGORIES) {
 
       CoreService.setPageTitle("Welcome to The Genomics Data Commons Data Portal");
 
@@ -70,28 +71,88 @@ module ngApp.home.controllers {
 
       this.exampleSearchQueries = [
         {
-          description: "Kidney cancer cases under the age of 20 at diagnosis",
-          filters: {"op":"and","content":[{"op":"<=","content":{"field":"cases.clinical.age_at_diagnosis","value":[yearsToDays(20)]}},{"op":"in","content":{"field":"cases.project.primary_site","value":["Kidney"]}}]},
+          description: "Cases of kidney cancer diagnosed at the age of 20 and below",
+          filters: {
+            op: "and",
+            content: [
+              {
+                op: "<=",
+                content: {
+                  field: "cases.diagnoses.age_at_diagnosis",
+                  value: [ yearsToDays(20) ]
+                }
+              },
+              {
+                op: "in",
+                content: {
+                  field: "cases.project.primary_site",
+                  value: [ "Kidney" ]
+                }
+              }
+            ]
+          },
           caseCount: null,
           fileCount: null
         },
         {
           description: "CNV data of female brain cancer cases",
-          filters: {"op":"and","content":[{"op":"in","content":{"field":"files.data_category","value":["Copy number variation"]}},{"op":"in","content":{"field":"cases.project.primary_site","value":["Brain"]}},{"op":"in","content":{"field":"cases.demographic.gender","value":["female"]}}]},
+          filters: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "files.data_category",
+                  value: [ this.DATA_CATEGORIES.CNV.full ]
+                }
+              },
+              {
+                op: "in",
+                content: {
+                  field: "cases.project.primary_site",
+                  value: [ "Brain" ]
+                }
+              },
+              {
+                op: "in",
+                content: {
+                  field: "cases.demographic.gender",
+                  value: [ "female" ]
+                }
+              }
+            ]
+          },
           caseCount: null,
           fileCount: null
         },
         {
           description: "Germline mutation data in TCGA-OV project",
-          filters: {"op":"and","content":[{"op":"in","content":{"field":"files.data_type","value":["Simple nucleotide variation"]}},{"op":"in","content":{"field":"cases.project.project_id","value":["TCGA-OV"]}}]},
+          filters: {
+            op: "and",
+            content: [
+              {
+                op: "in",
+                content: {
+                  field: "files.data_category",
+                  value: [ this.DATA_CATEGORIES.SNV.full ]
+                }
+              },
+              {
+                op: "in",
+                content: {
+                  field: "cases.project.project_id",
+                  value: [ "TCGA-OV" ]
+                }
+              }
+            ]
+          },
           caseCount: null,
           fileCount: null
         },
       ];
 
       this.defaultParams =  {
-        fields: this.ProjectTableModel.fields,
-        expand: this.ProjectTableModel.expand,
+        fields: this.ProjectsTableService.model().fields,
         facets: [
           "disease_type",
           "program.name",
@@ -108,39 +169,21 @@ module ngApp.home.controllers {
     }
 
     fetchExampleSearchQueryStats() {
-      var _controller = this,
-          exampleQueries = _controller.exampleSearchQueries,
-          defaultParams = _controller.defaultParams;
+      var exampleQueries = this.exampleSearchQueries;
+      var defaultParams = this.defaultParams;
 
-      for (var i = 0; i < exampleQueries.length; i++) {
-        var query = exampleQueries[i];
+      exampleQueries.forEach(query => {
+        var params = _.cloneDeep(defaultParams);
+        params.filters = query.filters;
 
-       (function(q) {
+        this.HomeService.getParticipants(params).then(
+          projectData => query.caseCount = projectData.pagination.total
+        ).catch(() => query.fileCount = '--');
 
-         var params = _.cloneDeep(defaultParams);
-         params.filters = q.filters;
-         _controller.HomeService.getParticipants(params).then(
-            function (projectData) {
-              q.caseCount = _.get(projectData, 'pagination.total', 0);
-            },
-           function () {
-             q.caseCount = '--';
-           }
-          );
-
-         _controller.HomeService.getFiles(params).then(
-           function (projectData) {
-             q.fileCount = _.get(projectData, 'pagination.total', 0);
-           },
-           function () {
-             q.fileCount = '--';
-           }
-         );
-
-
-        })(query);
-
-      }
+        this.HomeService.getFiles(params).then(
+          projectData => query.fileCount = projectData.pagination.total
+        ).catch(() => query.fileCount = '--');
+      });
     }
 
     getExampleSearchQueries() {
@@ -164,17 +207,13 @@ module ngApp.home.controllers {
 
         _controller.projectStatsList[_controller.projectStatsOrdering.projects].value += 1;
 
-        if (! primarySite) {
-          console.warn("Project has no primary site using project id instead: ", project);
-          primarySite = project.project_id;
+        if (primarySite) {
+          if (! _.isArray(primarySiteData[primarySite])) {
+            primarySiteData[primarySite] = [];
+          }
+
+          primarySiteData[primarySite].push(project);
         }
-
-        if (! _.isArray(primarySiteData[primarySite])) {
-          primarySiteData[primarySite] = [];
-        }
-
-        primarySiteData[primarySite].push(project);
-
 
         return primarySiteData;
 
@@ -342,6 +381,6 @@ module ngApp.home.controllers {
   }
 
   angular
-      .module("home.controller", [])
+      .module("home.controller", ["ngApp.core"])
       .controller("HomeController", HomeController);
 }

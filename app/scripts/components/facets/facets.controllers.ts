@@ -369,18 +369,6 @@ module ngApp.components.facets.controllers {
     }
 
     inputChanged() {
-      var numRegex = /^\d+$/;
-      if (this.lowerBound) {
-        if(!numRegex.test(this.lowerBound)) {
-          this.lowerBound = 0;
-        }
-      }
-
-      if (this.upperBound) {
-        if(!numRegex.test(this.upperBound)) {
-          this.upperBound = 0;
-        }
-      }
       this.$scope.lowerBoundOriginalDays = this.lowerBound * this.$scope.selectedUnit.conversionDivisor;
       this.$scope.upperBoundOriginalDays = this.upperBound * this.$scope.selectedUnit.conversionDivisor;
     }

@@ -351,9 +351,6 @@
                           {{ ::t.state }}
                         </td>
                         <td>
-                          {{ ::t.submitter_id || '--' }}
-                        </td>
-                        <td>
                           {{ ::t.therapeutic_agents }}
                         </td>
                         <td>
@@ -363,7 +360,10 @@
                           {{ ::t.treatment_or_therapy }}
                         </td>
                         <td class="text-right">
-                          {{ ::t.days_to_treatment }}
+                          {{ ::t.days_to_treatment | number }}
+                        </td>
+                        <td>
+                          {{ ::t.submitter_id || '--' }}
                         </td>
                         <td>
                           {{ ::t.created_datetime || '--' | date: 'yyyy-MM-dd' }}

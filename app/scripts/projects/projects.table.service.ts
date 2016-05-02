@@ -216,6 +216,7 @@ module ngApp.projects.table.service {
           "program.name",
           "summary.case_count",
           "summary.file_count",
+          "summary.file_size",
           "summary.data_categories.data_category",
           "summary.data_categories.case_count",
         ],

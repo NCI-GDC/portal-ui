@@ -76,13 +76,30 @@
       </header>
       <div class="container-fluid">
         <div class="col-lg-8 col-lg-offset-2">
-            <div class="alert alert-info">
-                Javascript is required to use the features of this website. Please enable Javascript and reload the page.
+          <div class="alert alert-info">
+            <div>
+              Javascript is required to use the features of this website.
+              Please enable Javascript and reload the page.
             </div>
         </div>
       </div>
     </div>
   </noscript>
+
+  <div class="loading-overlay" ng-class="{ active: corec.loading }">
+    <div class="spinParticleContainer" ng-class="{ active: corec.loading5s }">
+      <div class="particle red"></div>
+      <div class="particle grey other-particle"></div>
+      <div class="particle blue other-other-particle"></div>
+    </div>
+    <div class="loading-message" ng-class="{ active: corec.loading5s }">
+      <div>Loading, please wait...</div>
+      <div class="long-loading-message" ng-class="{ active: corec.loading8s }">
+        <div>We are experiencing longer than normal load times.</div>
+        <div>Please contact <a target="_blank" href="https://gdc.nci.nih.gov/support#gdc-help-desk">GDC Support</a> if the problem persists.</div>
+      </div>
+    </div>
+  </div>
 
   <div id="skip" class="gdc-body" data-ui-view role="main" tabindex="0"></div>
 

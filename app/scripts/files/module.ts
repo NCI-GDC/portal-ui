@@ -13,6 +13,9 @@ module ngApp.files {
       resolve: {
         file: ($stateParams: ng.ui.IStateParamsService, FilesService: IFilesService): ng.IPromise<IFile> => {
           return FilesService.getFile($stateParams["fileId"], {
+            expand: [
+              "metadata_files",
+            ],
             fields: [
               "state",
               "md5sum",
@@ -33,10 +36,6 @@ module ngApp.files {
               "tags",
               "submitter_id",
               "archive.archive_id",
-              "metadata_files.data_category",
-              "metadata_files.data_type",
-              "metadata_files.data_format",
-              "metadata_files.file_size",
               "associated_entities.entity_id",
               "associated_entities.entity_type",
               "associated_entities.case_id",

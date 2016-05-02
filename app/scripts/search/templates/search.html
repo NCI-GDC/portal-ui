@@ -53,42 +53,47 @@
       </h3>
 
       <div data-ng-if="sc.participants.hits.length || sc.files.hits.length">
-        <ul class="nav nav-tabs">
-          <li role="presentation"
-              data-ng-class="{ active: sc.SearchState.tabs.summary.active }"
-              data-ng-click="sc.select('tabs', 'summary')"
-              id="search-summary">
-              <a
-                data-ng-href="{{
-                sc.$state.href('search.summary', sc.LocationService.search().filters
-                )}}">
-                {{ 'Summary' | translate }}
-              </a>
-          </li>
-          <li role="presentation"
-              data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
-              data-ng-click="sc.select('tabs', 'participants')"
-              id="search-participants">
-              <a
-                data-ng-href="{{
-                sc.$state.href('search.participants', sc.LocationService.search().filters
-                )}}">
-                  {{ 'Cases' | translate }} ({{ sc.participants.pagination.total | number:0 }})
-              </a>
-          </li>
-          <li role="presentation"
-              data-ng-class="{ active: sc.SearchState.tabs.files.active }"
-              data-ng-click="sc.select('tabs', 'files')"
-              id="search-files">
-              <a
-                data-ng-href="{{
-                sc.$state.href('search.files', sc.LocationService.search().filters
-                )}}">
-                {{ 'Files' | translate }} ({{ sc.files.pagination.total | number:0 }})
-              </a>
+        <div style="display: flex">
+          <ul class="nav nav-tabs">
+            <li role="presentation"
+                data-ng-class="{ active: sc.SearchState.tabs.summary.active }"
+                data-ng-click="sc.select('tabs', 'summary')"
+                id="search-summary">
+                <a
+                  data-ng-href="{{
+                  sc.$state.href('search.summary', sc.LocationService.search().filters
+                  )}}">
+                  {{ 'Summary' | translate }}
+                </a>
+            </li>
+            <li role="presentation"
+                data-ng-class="{ active: sc.SearchState.tabs.participants.active }"
+                data-ng-click="sc.select('tabs', 'participants')"
+                id="search-participants">
+                <a
+                  data-ng-href="{{
+                  sc.$state.href('search.participants', sc.LocationService.search().filters
+                  )}}">
+                    {{ 'Cases' | translate }} ({{ sc.participants.pagination.total | number:0 }})
+                </a>
+            </li>
+            <li role="presentation"
+                data-ng-class="{ active: sc.SearchState.tabs.files.active }"
+                data-ng-click="sc.select('tabs', 'files')"
+                id="search-files">
+                <a
+                  data-ng-href="{{
+                  sc.$state.href('search.files', sc.LocationService.search().filters
+                  )}}">
+                  {{ 'Files' | translate }} ({{ sc.files.pagination.total | number:0 }})
+                </a>
+            </li>
+          </ul>
+          <a ui-sref="annotations" style="margin-top: auto; margin-bottom: auto; margin-left: auto">
+           <span data-translate>Browse Annotations</span>
+          </a>
+        </div>
 
-          </li>
-        </ul>
         <!-- NOTE: 'ng-if' is used here intentionally. Otherwise the width of the
              container will not be the expected size for the graphs.
           -->

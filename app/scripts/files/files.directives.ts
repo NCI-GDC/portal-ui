@@ -19,53 +19,54 @@ module ngApp.files.directives {
               <span ng-if="active">&nbsp;{{ ::textInProgress }}</span></span></button>',
       controllerAs: 'ctrl',
       controller: function($scope: ng.IScope, $attrs, $element, $uibModal, CartService: ICartService, UserService: IUserService, config: IGDCConfig) {
-        const url = config.api + '/files';
-
-        const reportStatus = _.isFunction($scope.$parent.reportStatus) ?
-          _.partial($scope.$parent.reportStatus, $scope.$id) :
-          () => {};
-
-        const inProgress = () => {
-          $scope.active = true;
-          reportStatus($scope.active);
-          $attrs.$set('disabled', 'disabled');
-        };
-
-        const done = () => {
-          $scope.active = false;
-          reportStatus($scope.active);
-          $element.removeAttr('disabled');
-        };
-
-        const isLoggedIn = UserService.currentUser;
-        const authorizedInCart = CartService.getAuthorizedFiles();
-        const unauthorizedInCart = CartService.getUnauthorizedFiles();
-
-        const fileIds = CartService.getFileIds();
-        const filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
-        const params = _.merge({
-          attachment: true,
-          filters: filters,
-          expand: [
-            'annotations',
-            'archive',
-            'associated_entities',
-            'center',
-            'analysis',
-            'analysis.input_files',
-            'analysis.metadata',
-            'analysis.metadata_files',
-            'analysis.downstream_analyses',
-            'analysis.downstream_analyses.output_files',
-            'reference_genome',
-            'index_file'
-          ],
-          format: 'JSON',
-          pretty: true,
-          size: fileIds.length,
-        }, $scope.filename ? {filename: $scope.filename} : {});
-
         this.onClick = () => {
+          const url = config.api + '/files';
+
+          const reportStatus = _.isFunction($scope.$parent.reportStatus)
+            ? _.partial($scope.$parent.reportStatus, $scope.$id)
+            : () => {};
+
+          const inProgress = () => {
+            $scope.active = true;
+            reportStatus($scope.active);
+            $attrs.$set('disabled', 'disabled');
+          };
+
+          const done = () => {
+            $scope.active = false;
+            reportStatus($scope.active);
+            $element.removeAttr('disabled');
+          };
+
+          const isLoggedIn = UserService.currentUser;
+          const authorizedInCart = CartService.getAuthorizedFiles();
+          const unauthorizedInCart = CartService.getUnauthorizedFiles();
+
+          const fileIds = CartService.getFileIds();
+          const filters = {'content': [{'content': {'field': 'files.file_id', 'value': fileIds}, 'op': 'in'}], 'op': 'and'};
+          
+          const params = _.merge({
+            attachment: true,
+            filters: filters,
+            expand: [
+              'annotations',
+              'archive',
+              'associated_entities',
+              'center',
+              'analysis',
+              'analysis.input_files',
+              'analysis.metadata',
+              'analysis.metadata_files',
+              'analysis.downstream_analyses',
+              'analysis.downstream_analyses.output_files',
+              'reference_genome',
+              'index_file'
+            ],
+            format: 'JSON',
+            pretty: true,
+            size: fileIds.length,
+          }, $scope.filename ? {filename: $scope.filename} : {});
+
           const checkProgress = $scope.download(params, url, () => $element, 'POST');
           checkProgress(inProgress, done);
         };

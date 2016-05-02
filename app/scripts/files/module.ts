@@ -57,6 +57,7 @@ module ngApp.files {
               "downstream_analyses.output_files.data_format",
               "downstream_analyses.workflow_type",
               "downstream_analyses.output_files.file_size",
+              "index_files.file_id"
             ]
           });
         }

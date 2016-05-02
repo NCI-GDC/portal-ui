@@ -6,7 +6,7 @@
       <span class="btn-group pull-right" style="margin-top: .3em">
         <add-to-cart-single-labelled class="btn-bordered" file="fc.file"></add-to-cart-single-labelled>
         <download-button class="btn-bordered" data-icon="fa-download" data-files=fc.file data-copy="Download" data-dlcopy="Downloading"></download-button>
-        <bam-slicing-button class="btn-bordered" data-icon="fa-cutlery" data-files=fc.file data-copy="BAM Slicing" data-dlcopy="Slicing BAM" data-ng-if="fc.canBAMSlice()"></download-button>
+        <bam-slicing-button class="btn-bordered" data-icon="fa-cutlery" data-files=fc.file data-copy="BAM Slicing" data-dlcopy="Slicing BAM" data-ng-if="fc.canBAMSlice()"></bam-slicing-button>
       </span>
     </h1>
   </div>
@@ -86,11 +86,11 @@
               <tbody>
               <tr>
                 <th scope="row" data-translate>Data Category</th>
-                <td>{{ ::fc.file.data_category || '--' | titlefy }}</td>
+                <td>{{ ::fc.file.data_category || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Data Type</th>
-                <td>{{ ::fc.file.data_type || '--' | titlefy }}</td>
+                <td>{{ ::fc.file.data_type || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Experimental Strategy</th>
@@ -166,21 +166,21 @@
         </div>
       </section>
 
-      <!-- Workflow / Reference Genome Split Row Section -->
-      <section class="row" id="workflow-split-ref-genome">
-        <!-- Workflow Table -->
-        <div class="col-lg-6 col-md-6" data-ng-if="fc.tablesToDisplay.workflow">
+      <!-- Analysis/ Reference Genome Split Row Section -->
+      <section class="row" id="analysis-split-ref-genome">
+        <!-- analysis Table -->
+        <div class="col-lg-6 col-md-6" data-ng-if="fc.tablesToDisplay.analysis">
 
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h3 class="panel-title">Workflow</h3>
+              <h3 class="panel-title">Analysis</h3>
             </div>
 
             <div class="panel-body" data-ng-if="!fc.file.analysis">
-              <h4 class="list-group-item-heading">No Workflow found.</h4>
+              <h4 class="list-group-item-heading">No Analyses found.</h4>
             </div>
 
-            <table id="workflow-files-table" class="table table-striped table-hover table-condensed table-bordered"
+            <table id="-files-table" class="table table-striped table-hover table-condensed table-bordered"
                    data-ng-if="fc.file.analysis">
               <tbody>
               <tr>
@@ -346,19 +346,19 @@
                   <th data-translate>Data Category</th>
                   <th data-translate>Data Type</th>
                   <th data-translate>Data Format</th>
-                  <th data-translate>Analysis Workflow</th>
+                  <th data-translate>Analysis workflow</th>
                   <th data-translate>File Size</th>
                   <th data-translate>Action</th>
                 </tr>
               </thead>
               <tbody>
               <tr data-ng-repeat="outf in fc.file.downstream_analyses track by outf.file_id">
-                <td>{{outf.file_name || '--'}}</td>
-                <td>{{outf.data_category | humanify}}</td>
-                <td>{{outf.data_type | humanify}}</td>
-                <td>{{outf.data_format | humanify}}</td>
-                <td>{{outf.workflow_type | humanify}}</td>
-                <td>{{outf.file_size | size}}</td>
+                <td>{{ ::outf.file_name || '--' }}</td>
+                <td>{{ ::outf.data_category || '--' }}</td>
+                <td>{{ ::outf.data_type || '--' }}</td>
+                <td>{{ ::outf.data_format || '--' }}</td>
+                <td>{{ ::outf.workflow_type || '--' }}</td>
+                <td>{{ ::outf.file_size | size }}</td>
                 <td>
                   <download-button class="btn-bordered" data-icon="fa-download" data-files="outf"></download-button>
                   <add-to-cart-single-icon data-file="outf"></add-to-cart-single-icon>

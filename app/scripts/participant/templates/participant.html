@@ -113,7 +113,8 @@
     </section>
 
     <section class="row" id="clinical">
-      <div class="col-lg-12 col-md-12">
+      <div class="col-lg-12 col-md-12"
+        ng-if="! pc.hasNoClinical">
         <div class="panel panel-default" style="margin-bottom: 0;">
           <div class="panel-heading clearfix" style="border-width: 0">
             <h3 class="panel-title pull-left" data-translate>
@@ -150,7 +151,7 @@
         </div>
 
         <div id="clinical-table"
-          ng-if="pc.activeClinicalTab === 'demographic'"
+          ng-if="pc.activeClinicalTab === 'demographic' && pc.participant.demographic"
           ng-init="demo = pc.participant.demographic"
           class="table table-striped table-hover table-condensed table-bordered table-vertical"
           style="padding: 1rem; border-top: 0">
@@ -202,6 +203,12 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div id="clinical-table"
+          ng-if="pc.activeClinicalTab === 'demographic' && ! pc.participant.demographic"
+          class="table table-striped table-hover table-condensed table-bordered table-vertical"
+          style="border-top: 0; padding-top: 0.2rem; padding-left: 2rem">
+          <h3>No Demographic Data Found.</h3>
         </div>
 
         <div id="clinical-table"
@@ -371,7 +378,7 @@
                 </div>
                 <div ng-if="! pc.participant.diagnoses[ $index ].treatments.length"
                   style="margin-bottom: 1rem;">
-                  <h3>No treatments found.</h3>
+                  <h3>No Treatments Found.</h3>
                 </div>
               </div>
             </uib-tab>
@@ -381,7 +388,7 @@
           ng-if="pc.activeClinicalTab === 'diagnoses' && ! pc.participant.diagnoses.length"
           class="table table-striped table-hover table-condensed table-bordered table-vertical"
           style="border-top: 0; padding-top: 0.2rem; padding-left: 2rem">
-          <h3>No diagnoses found.</h3>
+          <h3>No Diagnoses Found.</h3>
         </div>
 
         <div id="clinical-table"
@@ -450,7 +457,7 @@
           ng-if="pc.activeClinicalTab === 'family_histories' && ! pc.participant.family_histories.length"
           class="table table-striped table-hover table-condensed table-bordered table-vertical"
           style="border-top: 0; padding-top: 0.2rem; padding-left: 2rem">
-          <h3>No family histories found.</h3>
+          <h3>No Family Histories Found.</h3>
         </div>
 
         <div id="clinical-table"
@@ -527,9 +534,25 @@
           ng-if="pc.activeClinicalTab === 'exposures' && ! pc.participant.exposures.length"
           class="table table-striped table-hover table-condensed table-bordered table-vertical"
           style="border-top: 0; padding-top: 0.2rem; padding-left: 2rem">
-          <h3>No exposures found.</h3>
+          <h3>No Exposures Found.</h3>
         </div>
 
+      </div>
+
+      <div class="col-lg-12 col-md-12"
+        ng-if="pc.hasNoClinical">
+        <div class="panel panel-default" style="margin-bottom: 0;">
+          <div class="panel-heading clearfix" style="border-width: 0">
+            <h3 class="panel-title pull-left" data-translate>
+              Clinical
+            </h3>
+          </div>
+        </div>
+        <div id="clinical-table"
+          class="table table-striped table-hover table-condensed table-bordered table-vertical"
+          style="border-top: 0; padding-top: 0.2rem; padding-left: 2rem">
+          <h3>No Clinical Data Found.</h3>
+        </div>
       </div>
     </section>
 

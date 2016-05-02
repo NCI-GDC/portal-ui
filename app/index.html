@@ -105,6 +105,12 @@
       <div>
         NIH... Turning Discovery Into Health &#174;
       </div>
+
+      <div ng-cloak>
+        UI <strong>{{ ::config.version }}</strong> @ <strong>{{ ::config.commitHash }}</strong>,
+        API <strong>{{ ::config.apiVersion }}</strong>
+        <span ng-if="config.apiCommitHash"> @ <strong>{{ ::config.apiCommitHash | limitTo: 7 }}</strong></span>
+      </div>
     </div>
   </footer>
 </div>

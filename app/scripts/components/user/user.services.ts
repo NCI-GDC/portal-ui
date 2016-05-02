@@ -57,7 +57,6 @@ module ngApp.components.user.services {
         })
         .post({}, {})
         .then((data) => {
-            data.isFiltered = true;
             this.setUser(data);
         }, (response) => {
           if(response.status === 401) {
@@ -106,6 +105,7 @@ module ngApp.components.user.services {
     setUser(user: IUser): void {
       this.currentUser = {
         username: user.username,
+        isFiltered: _.get(this, 'currentUser.isFiltered', true),
         projects: {
           gdc_ids: _.reduce(user.projects.gdc_ids || {}, (acc, p, key) => {
             if (p.indexOf("_member_") !== -1) {

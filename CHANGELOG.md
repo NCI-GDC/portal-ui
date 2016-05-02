@@ -1,3 +1,105 @@
+<a name"0.3.24.3"></a>
+### 0.3.24.3 (2016-04-29)
+
+
+#### Bug Fixes
+
+* **annotation:**
+  * add tooltip to project_id ([cf2c32a8](https://github.com/NCI-GDC/portal-ui/commit/cf2c32a8), closes [PGDC-2066](https://jira.opensciencedatacloud.org/browse/PGDC-2066))
+  * remove annotator ([d07075d6](https://github.com/NCI-GDC/portal-ui/commit/d07075d6), closes [PGDC-2106](https://jira.opensciencedatacloud.org/browse/PGDC-2106))
+* **app:**
+  * 2201 data_category >  summary cards ([e59ffa2f](https://github.com/NCI-GDC/portal-ui/commit/e59ffa2f), closes [PGDC-2201](https://jira.opensciencedatacloud.org/browse/PGDC-2201))
+  * 2073 hide git links in footer ([cb15d763](https://github.com/NCI-GDC/portal-ui/commit/cb15d763), closes [PGDC-2073](https://jira.opensciencedatacloud.org/browse/PGDC-2073))
+  * 2095 round mb to 2 decimal places ([539b686d](https://github.com/NCI-GDC/portal-ui/commit/539b686d), closes [PGDC-2095](https://jira.opensciencedatacloud.org/browse/PGDC-2095))
+  * don't use expand whenever possible ([3afc1934](https://github.com/NCI-GDC/portal-ui/commit/3afc1934), closes [PGDC-2023](https://jira.opensciencedatacloud.org/browse/PGDC-2023))
+* **bam:** 1888 error handling tweaks ([e7f2d13e](https://github.com/NCI-GDC/portal-ui/commit/e7f2d13e), closes [PGDC-1888](https://jira.opensciencedatacloud.org/browse/PGDC-1888))
+* **biospecimen:** 2239 add title to search input ([364d1a60](https://github.com/NCI-GDC/portal-ui/commit/364d1a60), closes [PGDC-2239](https://jira.opensciencedatacloud.org/browse/PGDC-2239))
+* **cart:**
+  * 2113 dont clobber project ids ([30b610a3](https://github.com/NCI-GDC/portal-ui/commit/30b610a3), closes [PGDC-2113](https://jira.opensciencedatacloud.org/browse/PGDC-2113))
+  * 2222 no undefined in notifications ([ca6efd95](https://github.com/NCI-GDC/portal-ui/commit/ca6efd95), closes [PGDC-2222](https://jira.opensciencedatacloud.org/browse/PGDC-2222))
+  * 2161 download metadata_files ([b614f352](https://github.com/NCI-GDC/portal-ui/commit/b614f352), closes [PGDC-2161](https://jira.opensciencedatacloud.org/browse/PGDC-2161))
+  * gather files in click handler ([4466c959](https://github.com/NCI-GDC/portal-ui/commit/4466c959))
+  * 2063 add all files off by one bug ([bdb0f455](https://github.com/NCI-GDC/portal-ui/commit/bdb0f455), closes [PGDC-2063](https://jira.opensciencedatacloud.org/browse/PGDC-2063))
+  * 1952 update cart limit warning ([ca3bb8a8](https://github.com/NCI-GDC/portal-ui/commit/ca3bb8a8), closes [PGDC-1952](https://jira.opensciencedatacloud.org/browse/PGDC-1952))
+  * 'No Files' when no files ([4f6053de](https://github.com/NCI-GDC/portal-ui/commit/4f6053de), closes [PGDC-1981](https://jira.opensciencedatacloud.org/browse/PGDC-1981))
+  * check for controlled files on click ([8de8c587](https://github.com/NCI-GDC/portal-ui/commit/8de8c587), closes [PGDC-2086](https://jira.opensciencedatacloud.org/browse/PGDC-2086))
+* **case:**
+  * 2199 better display for clinical data ([31ed1ecb](https://github.com/NCI-GDC/portal-ui/commit/31ed1ecb), closes [PGDC-2199](https://jira.opensciencedatacloud.org/browse/PGDC-2199))
+  * 2134 minor issues in case entity ([1facc757](https://github.com/NCI-GDC/portal-ui/commit/1facc757), closes [PGDC-2134](https://jira.opensciencedatacloud.org/browse/PGDC-2134))
+* **chart:** make barchart labels more readable ([38543a39](https://github.com/NCI-GDC/portal-ui/commit/38543a39), closes [PGDC-2042](https://jira.opensciencedatacloud.org/browse/PGDC-2042))
+* **charts:** remove undefined fn call ([5356b82e](https://github.com/NCI-GDC/portal-ui/commit/5356b82e), closes [PGDC-2197](https://jira.opensciencedatacloud.org/browse/PGDC-2197))
+* **chore:** 2163 null-safety when calling #some ([05d4462e](https://github.com/NCI-GDC/portal-ui/commit/05d4462e), closes [PGDC-2163](https://jira.opensciencedatacloud.org/browse/PGDC-2163))
+* **components:**
+  * 2181 don't humanify fields ([48276153](https://github.com/NCI-GDC/portal-ui/commit/48276153), closes [PGDC-2181](https://jira.opensciencedatacloud.org/browse/PGDC-2181))
+  * add track by for facetConfig ([ac275683](https://github.com/NCI-GDC/portal-ui/commit/ac275683))
+  * handle empty fields in gql/facets ([1078fae0](https://github.com/NCI-GDC/portal-ui/commit/1078fae0), closes [PGDC-2126](https://jira.opensciencedatacloud.org/browse/PGDC-2126), [PGDC-2124](https://jira.opensciencedatacloud.org/browse/PGDC-2124))
+  * if blacklist exists then  filter ([b863ba49](https://github.com/NCI-GDC/portal-ui/commit/b863ba49))
+  * 2067 remove GO btn from prefix ([32e75c52](https://github.com/NCI-GDC/portal-ui/commit/32e75c52), closes [PGDC-2067](https://jira.opensciencedatacloud.org/browse/PGDC-2067))
+* **css:** 2150 gdc-app menu layout issue in IE ([3056b212](https://github.com/NCI-GDC/portal-ui/commit/3056b212), closes [PGDC-2150](https://jira.opensciencedatacloud.org/browse/PGDC-2150))
+* **download:** 2056 displays progress in button ([b031a942](https://github.com/NCI-GDC/portal-ui/commit/b031a942), closes [PGDC-2056](https://jira.opensciencedatacloud.org/browse/PGDC-2056))
+* **entity:**
+  * 2136 displays treatments ([8bc81964](https://github.com/NCI-GDC/portal-ui/commit/8bc81964), closes [PGDC-2136](https://jira.opensciencedatacloud.org/browse/PGDC-2136))
+  * 2039 double dash when id is null ([a4c62b39](https://github.com/NCI-GDC/portal-ui/commit/a4c62b39), closes [PGDC-2039](https://jira.opensciencedatacloud.org/browse/PGDC-2039))
+* **exportTable:** 2220 include case_id ([b26021b6](https://github.com/NCI-GDC/portal-ui/commit/b26021b6), closes [PGDC-2220](https://jira.opensciencedatacloud.org/browse/PGDC-2220))
+* **facet:**
+  * 2171 custom facet not added in IE ([9596437d](https://github.com/NCI-GDC/portal-ui/commit/9596437d), closes [PGDC-2171](https://jira.opensciencedatacloud.org/browse/PGDC-2171))
+  * ignored missing in facets ([26920a00](https://github.com/NCI-GDC/portal-ui/commit/26920a00), closes [PGDC-2069](https://jira.opensciencedatacloud.org/browse/PGDC-2069))
+* **file:**
+  * 2198 displays file data as is ([636716eb](https://github.com/NCI-GDC/portal-ui/commit/636716eb), closes [PGDC-2198](https://jira.opensciencedatacloud.org/browse/PGDC-2198))
+  * 2140 remove date fields from table ([fc69f838](https://github.com/NCI-GDC/portal-ui/commit/fc69f838), closes [PGDC-2140](https://jira.opensciencedatacloud.org/browse/PGDC-2140))
+* **gdctable:** never mutate config.headings ([fdb72e08](https://github.com/NCI-GDC/portal-ui/commit/fdb72e08), closes [PGDC-1769](https://jira.opensciencedatacloud.org/browse/PGDC-1769))
+* **git:** 2241 reinstated commit info ([a17f9707](https://github.com/NCI-GDC/portal-ui/commit/a17f9707), closes [PGDC-2241](https://jira.opensciencedatacloud.org/browse/PGDC-2241))
+* **githut:**
+  * 2164 link add data_category filter ([9a797c38](https://github.com/NCI-GDC/portal-ui/commit/9a797c38), closes [PGDC-2164](https://jira.opensciencedatacloud.org/browse/PGDC-2164))
+  * handle NaN values ([75d5cdba](https://github.com/NCI-GDC/portal-ui/commit/75d5cdba))
+* **gql:** autocomplete with all OP by default ([416045b3](https://github.com/NCI-GDC/portal-ui/commit/416045b3), closes [PGDC-2195](https://jira.opensciencedatacloud.org/browse/PGDC-2195))
+* **header:**
+  * 2224 remove reports link ([b04663c6](https://github.com/NCI-GDC/portal-ui/commit/b04663c6), closes [PGDC-2224](https://jira.opensciencedatacloud.org/browse/PGDC-2224))
+  * use flexbox for gdc-apps-menu ([e402b168](https://github.com/NCI-GDC/portal-ui/commit/e402b168), closes [PGDC-1933](https://jira.opensciencedatacloud.org/browse/PGDC-1933))
+* **home:**
+  * update infra numbers ([8445c804](https://github.com/NCI-GDC/portal-ui/commit/8445c804), closes [PGDC-2234](https://jira.opensciencedatacloud.org/browse/PGDC-2234))
+  * 2178 adjust queries ([1dffaf61](https://github.com/NCI-GDC/portal-ui/commit/1dffaf61), closes [PGDC-2178](https://jira.opensciencedatacloud.org/browse/PGDC-2178))
+* **login:**
+  * 2221 retain my-project toggle state ([b373a26e](https://github.com/NCI-GDC/portal-ui/commit/b373a26e), closes [PGDC-2221](https://jira.opensciencedatacloud.org/browse/PGDC-2221))
+  * 2151 login not shown in IE ([ff5edebb](https://github.com/NCI-GDC/portal-ui/commit/ff5edebb), closes [PGDC-2151](https://jira.opensciencedatacloud.org/browse/PGDC-2151))
+* **projects:** 2172 missing line in facet section ([a69d1666](https://github.com/NCI-GDC/portal-ui/commit/a69d1666), closes [PGDC-2172](https://jira.opensciencedatacloud.org/browse/PGDC-2172))
+* **reports:**
+  * 2098 hide data category ([fefb57d4](https://github.com/NCI-GDC/portal-ui/commit/fefb57d4), closes [PGDC-2098](https://jira.opensciencedatacloud.org/browse/PGDC-2098))
+  * 2173 remove export btn ([0d3a0205](https://github.com/NCI-GDC/portal-ui/commit/0d3a0205), closes [PGDC-2173](https://jira.opensciencedatacloud.org/browse/PGDC-2173))
+  * 2137 handle no reports ([ad2d4d2c](https://github.com/NCI-GDC/portal-ui/commit/ad2d4d2c), closes [PGDC-2137](https://jira.opensciencedatacloud.org/browse/PGDC-2137))
+* **search:**
+  * remove file state from default facets ([311e764b](https://github.com/NCI-GDC/portal-ui/commit/311e764b), closes [PGDC-2208](https://jira.opensciencedatacloud.org/browse/PGDC-2208))
+  * 2177 ICD-10 to Primary Diagnoses ([8e0cfba8](https://github.com/NCI-GDC/portal-ui/commit/8e0cfba8), closes [PGDC-2177](https://jira.opensciencedatacloud.org/browse/PGDC-2177))
+  * fix pagination not updating ([45ffbbfb](https://github.com/NCI-GDC/portal-ui/commit/45ffbbfb), closes [PGDC-2185](https://jira.opensciencedatacloud.org/browse/PGDC-2185))
+  * pass expands fields to query ([1c4919c7](https://github.com/NCI-GDC/portal-ui/commit/1c4919c7))
+  * all facets open by default ([d34f69f6](https://github.com/NCI-GDC/portal-ui/commit/d34f69f6), closes [PGDC-2061](https://jira.opensciencedatacloud.org/browse/PGDC-2061))
+* **table:** 2229 update table column layout ([f70b9485](https://github.com/NCI-GDC/portal-ui/commit/f70b9485), closes [PGDC-2229](https://jira.opensciencedatacloud.org/browse/PGDC-2229))
+* **tables:** disable export > 2000 rows, exts ([e12dd529](https://github.com/NCI-GDC/portal-ui/commit/e12dd529), closes [PGDC-2071](https://jira.opensciencedatacloud.org/browse/PGDC-2071))
+
+
+#### Features
+
+* **app:**
+  * remove direct download links for files ([d9fd0af7](https://github.com/NCI-GDC/portal-ui/commit/d9fd0af7), closes [PGDC-2162](https://jira.opensciencedatacloud.org/browse/PGDC-2162))
+  * 1755 title case for data category ([58ca6f7c](https://github.com/NCI-GDC/portal-ui/commit/58ca6f7c), closes [PGDC-1755](https://jira.opensciencedatacloud.org/browse/PGDC-1755))
+  * 2066 tooltips ([475725b9](https://github.com/NCI-GDC/portal-ui/commit/475725b9), closes [PGDC-2066](https://jira.opensciencedatacloud.org/browse/PGDC-2066))
+  * blacklist data_categories in summary ([0a464140](https://github.com/NCI-GDC/portal-ui/commit/0a464140))
+  * update data_category fields ([e3467b9c](https://github.com/NCI-GDC/portal-ui/commit/e3467b9c), closes [PGDC-1755](https://jira.opensciencedatacloud.org/browse/PGDC-1755))
+  * add no js text ([8e069e65](https://github.com/NCI-GDC/portal-ui/commit/8e069e65))
+  * 2067 update id search facet text ([1ade49c0](https://github.com/NCI-GDC/portal-ui/commit/1ade49c0), closes [PGDC-2067](https://jira.opensciencedatacloud.org/browse/PGDC-2067))
+* **components:**
+  * file.submitter_id > quicksearch ([6aa13b34](https://github.com/NCI-GDC/portal-ui/commit/6aa13b34), closes [PGDC-1792](https://jira.opensciencedatacloud.org/browse/PGDC-1792))
+  * search bio id fields in tree ([3afd2127](https://github.com/NCI-GDC/portal-ui/commit/3afd2127))
+* **facets:** use max, min don't show bar graph ([6d0c2a55](https://github.com/NCI-GDC/portal-ui/commit/6d0c2a55), closes [PGDC-2097](https://jira.opensciencedatacloud.org/browse/PGDC-2097))
+* **file:**
+  * 2170 add workflow facet ([d3b3b956](https://github.com/NCI-GDC/portal-ui/commit/d3b3b956), closes [PGDC-2170](https://jira.opensciencedatacloud.org/browse/PGDC-2170))
+  * update genome name to GRCh38.d1.vd1 ([15a7de4e](https://github.com/NCI-GDC/portal-ui/commit/15a7de4e))
+  * downstream_analyses ([4123d50a](https://github.com/NCI-GDC/portal-ui/commit/4123d50a))
+  * 1470 entity pg updates ([75637e23](https://github.com/NCI-GDC/portal-ui/commit/75637e23), closes [PGDC-1470](https://jira.opensciencedatacloud.org/browse/PGDC-1470))
+* **gql:** 1045 support mapping description ([8baede1a](https://github.com/NCI-GDC/portal-ui/commit/8baede1a), closes [PGDC-1045](https://jira.opensciencedatacloud.org/browse/PGDC-1045))
+* **reports:** update fields ([f444fe99](https://github.com/NCI-GDC/portal-ui/commit/f444fe99))
+
+
 <a name"0.3.24.2"></a>
 ### 0.3.24.2 (2016-04-04)
 

@@ -14,5 +14,5 @@ angular
       SNV: { full: "Simple Nucleotide Variation", abbr: "SNV" },
       CNV: { full: "Copy Number Variation", abbr: "CNV" },
       CLINICAL: { full: "Clinical", abbr: "Clinical" },
-      BIOSPECIMEN: { full: "Biospecimen", abbr: "Biospecimen" },
+      BIOSPECIMEN: { full: "Biospecimen", abbr: "Bio" },
     });

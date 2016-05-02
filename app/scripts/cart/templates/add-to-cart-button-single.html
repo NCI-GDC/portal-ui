@@ -1,9 +1,6 @@
-<span style="display:inline-block;max-width:25px">
+<span>
   <button
     aria-label="Remove from Cart"
-    data-tooltip-popup-delay="400"
-    tooltip-class="raised-tooltip"
-    data-uib-tooltip="Remove from Cart"
     data-ng-if="ctrl.CartService.isInCart(ctrl.file.file_id)"
     type="button"
     class="btn btn-success fa fa-shopping-cart"
@@ -13,9 +10,6 @@
   </button>
   <button
     aria-label="Add to Cart"
-    data-tooltip-popup-delay="400"
-    tooltip-class="raised-tooltip"
-    data-uib-tooltip="Add to Cart"
     data-ng-if="!ctrl.CartService.isInCart(ctrl.file.file_id)"
     type="button"
     class="btn btn-default fa fa-shopping-cart"

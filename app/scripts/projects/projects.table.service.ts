@@ -203,6 +203,7 @@ module ngApp.projects.table.service {
             sortable: true,
             thClassName: 'text-right',
             tdClassName: 'text-right',
+            hidden: true,
             total: (data, $scope) => $scope.$filter("size")(_.sum(_.pluck(data, "summary.file_size")))
           }
         ],

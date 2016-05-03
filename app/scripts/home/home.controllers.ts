@@ -29,6 +29,7 @@ module ngApp.home.controllers {
     /* @ngInject */
     constructor(private HomeService: IHomeService, private ProjectsTableService: TableiciousConfig,
                 private CoreService: ICoreService, private $filter: ng.ui.IFilterService,
+                private DATA_TYPES,
                 private DATA_CATEGORIES) {
 
       CoreService.setPageTitle("Welcome to The Genomics Data Commons Data Portal");
@@ -126,15 +127,15 @@ module ngApp.home.controllers {
           fileCount: null
         },
         {
-          description: "Germline mutation data in TCGA-OV project",
+          description: "Gene expression quantification data in TCGA-OV project",
           filters: {
             op: "and",
             content: [
               {
                 op: "in",
                 content: {
-                  field: "files.data_category",
-                  value: [ this.DATA_CATEGORIES.SNV.full ]
+                  field: "files.data_type",
+                  value: [ this.DATA_TYPES.GEQ.full ]
                 }
               },
               {

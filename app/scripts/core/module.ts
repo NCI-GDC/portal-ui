@@ -8,6 +8,9 @@ angular
       "core.services",
       "core.filters"
     ])
+    .constant('DATA_TYPES', {
+      GEQ: { full: "Gene Expression Quantifcation", abbr: "GEQ" },
+    })
     .constant('DATA_CATEGORIES', {
       SEQ: { full: "Raw Sequencing Data", abbr: "Seq" },
       EXP: { full: "Transcriptome Profiling", abbr: "Exp" },

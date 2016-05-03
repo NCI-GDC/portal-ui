@@ -26,7 +26,7 @@ module ngApp.components.downloader.directive {
         keyboard: false,
         backdropClass: 'warning-backdrop',
         animation: false,
-        size: 'sm',
+        size: 'lg',
         resolve: {
           warning: () => hasWarning ? error.warning : null
         }

@@ -20,9 +20,11 @@ module ngApp.components.ui.biospecimen.controllers {
     /* @ngInject */
     constructor(private LocationService: ILocationService,
                 private config: IGDCConfig, $scope) {
-      $scope.participant.samples.expanded = true;
-      this.activeBioSpecimenDoc = $scope.participant.samples[0];
-      this.activeBioSpecimenDocType = "sample";
+      if ($scope.participant.samples) {
+        $scope.participant.samples.expanded = true;
+        this.activeBioSpecimenDoc = $scope.participant.samples[0];
+        this.activeBioSpecimenDocType = "sample";
+      }
 
       this.bioSpecimenFile =  _.find($scope.participant.files, (file) => {
         return (file.data_subtype || '').toLowerCase() === "biospecimen data";

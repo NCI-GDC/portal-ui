@@ -23,6 +23,7 @@ module ngApp.components.facets.controllers {
   import IUserService = ngApp.components.user.services.IUserService;
   import IGDCWindowService = ngApp.core.models.IGDCWindowService;
   import IFacetsConfigService = ngApp.components.facets.services.IFacetsConfigService;
+  import ICustomFacetsService = ngApp.components.facets.services.ICustomFacetsService;
 
   class Toggleable {
 
@@ -448,11 +449,11 @@ module ngApp.components.facets.controllers {
   class CustomFacetsModalController {
     private ds: restangular.IElement;
     public selectedIndex: number;
-    private offsets: Array<number>;
 
       /* @ngInject */
       constructor(public facetFields: Array<Object>,
                   private $scope: ng.IScope,
+                  private $rootScope: IRootScope,
                   private $uibModalInstance,
                   private $window: IGDCWindowService,
                   private Restangular: restangular.IService,
@@ -462,9 +463,9 @@ module ngApp.components.facets.controllers {
                   private facetsConfig: any,
                   private LocationService: ILocationService,
                   private FacetsConfigService: IFacetsConfigService,
+                  private CustomFacetsService: ICustomFacetsService,
                   private aggregations: any,
                   public docType: string) {
-
       this.selectedIndex = 0;
 
       var _this = this;
@@ -556,28 +557,15 @@ module ngApp.components.facets.controllers {
     scrollToSelected(direction: Cycle) {
       var modalElement = document.getElementById('add-facets-modal')
       var selectedElement = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-'));
-      var offsets = _.sortBy(this.$scope.filteredFields.map(f => document.getElementById(this.$filter('dotReplace')(f.field, '-')).offsetTop));
-
-      //don't want to jump selectedElement to the top when scrolling up and down
-      //so set scrollTop to the element that's nearest to the top instead
-      var currentTopPos = modalElement.scrollTop;
-      var minDiff = Number.MAX_VALUE;
-      var nearestIndex = offsets.reduce((acc, offset, i) => {
-        var currentDiff = Math.abs(currentTopPos - offset);
-        if (currentDiff < minDiff) {
-          minDiff = currentDiff;
-          return i;
-        }
-        return acc;
-      }, -1);
-
+      var styles = window.getComputedStyle(document.getElementById('facets-list'));
+      var marginHeight = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']) || 10;
       if (direction === Cycle.Up) {
         if (selectedElement.offsetTop < modalElement.scrollTop) {
-          modalElement.scrollTop = offsets[nearestIndex-1]
+          modalElement.scrollTop = modalElement.scrollTop - selectedElement.offsetHeight - marginHeight;
         }
       } else if (direction === Cycle.Down) {
-        if (selectedElement.offsetTop + 4 > modalElement.scrollTop + modalElement.clientHeight) {
-          modalElement.scrollTop = offsets[nearestIndex+1];
+        if (selectedElement.offsetTop + selectedElement.offsetHeight > modalElement.scrollTop + modalElement.clientHeight) {
+          modalElement.scrollTop = modalElement.scrollTop + selectedElement.offsetHeight + marginHeight;
         }
       }
     }
@@ -587,6 +575,26 @@ module ngApp.components.facets.controllers {
         this.selectedIndex = 0;
       }
     }
+
+    toggleEmpty() {
+      if (!this.CustomFacetsService.nonEmptyOnlyDisplayed) {
+          this.$rootScope.$emit('ShowLoadingScreen');
+          this.CustomFacetsService.getNonEmptyFacetFields(this.docType, this.facetFields)
+          .then(data => {
+            this.CustomFacetsService.nonEmptyOnlyDisplayed = true;
+            this.facetFields = this.CustomFacetsService.filterFields(this.docType, data);
+          }).finally(() => this.$rootScope.$emit('ClearLoadingScreen'));
+      } else {
+        this.$rootScope.$emit('ShowLoadingScreen');
+        this.CustomFacetsService.getFacetFields(this.$scope.docType)
+        .then(data => {
+          this.CustomFacetsService.nonEmptyOnlyDisplayed = false;
+          this.facetFields = this.CustomFacetsService.filterFields(this.docType, data);
+        })
+        .finally(() => this.$rootScope.$emit('ClearLoadingScreen'));
+      }
+    }
+
   }
 
   class AddCustomFacetsPanelController {
@@ -624,8 +632,16 @@ module ngApp.components.facets.controllers {
         size: "lg",
         resolve: {
             /** @ngInject */
-            facetFields: (CustomFacetsService: ICustomFacetsService): ng.IPromise<any> => {
-              return CustomFacetsService.getFacetFields(this.$scope.docType);
+            facetFields: (CustomFacetsService: ICustomFacetsService, $rootScope: IRootScope): ng.IPromise<any> => {
+              $rootScope.$emit('ShowLoadingScreen');
+              return CustomFacetsService.getFacetFields(this.$scope.docType)
+                     .then(data => {
+                        if (CustomFacetsService.nonEmptyOnlyDisplayed) {
+                          return CustomFacetsService.getNonEmptyFacetFields(this.$scope.docType, _.map(data, (v, k) => v));
+                        }
+                        return data;
+                      }).then(data => CustomFacetsService.filterFields(this.$scope.docType, data))
+                      .finally(() => $rootScope.$emit('ClearLoadingScreen'));
             },
             facetsConfig: () => { return this.$scope.facetsConfig; },
             aggregations: () => { return this.$scope.aggregations; },

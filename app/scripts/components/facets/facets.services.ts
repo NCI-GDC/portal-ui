@@ -6,6 +6,8 @@ module ngApp.components.facets.services {
   import ICartService = ngApp.cart.services.ICartService;
   import IUserService = ngApp.components.user.services.IUserService;
   import IFilters = ngApp.components.location.IFilters;
+  import IFilesService = ngApp.files.services.IFilesService;
+  import IParticipantsService = ngApp.participants.services.IParticipantsService;
 
   export interface IFacetService {
     addTerm(facet: string, term: string, op?:string): void;
@@ -212,35 +214,76 @@ module ngApp.components.facets.services {
   }
 
   export interface ICustomFacetsService {
+    nonEmptyOnlyDisplayed: boolean;
     getFacetFields(docType: string): ng.IPromise<any>;
+    getNonEmptyFacetFields(docType: string, fields: Array<Object>): ng.IPromise<any>;
+    filterFields(docType: String, data: Object): Array<Object>;
   }
 
   class CustomFacetsService implements ICustomFacetsService {
     private ds: restangular.IElement;
+    public nonEmptyOnlyDisplayed: boolean = false;
 
     /* @ngInject */
     constructor(private Restangular: restangular.IService,
                 private SearchTableFilesModel: TableiciousConfig,
                 private SearchCasesTableService: TableiciousConfig,
+                private FilesService: IFilesService,
+                private ParticipantsService: IParticipantsService,
+                private LocationService: ILocationService,
                 private FacetsConfigService: IFacetsConfigService) {
       this.ds = Restangular.all("gql/_mapping");
     }
 
-    getFacetFields(docType: string): ng.IPromise<any> {
-      return this.ds.getList().then((data) => {
-        var current = _.pluck(this.FacetsConfigService.fieldsMap[docType], "name");
-        return _.map(_.filter(data, (datum) => {
-          return datum.doc_type === docType &&
-                 datum.field !== 'archive.revision' &&
-                 !_.includes(datum.field, "_id") &&
-                 !_.includes(current, datum.field) &&
-                 !_.includes(docType === 'files'
-                  ? _.pluck(this.SearchTableFilesModel.facets, "name")
-                  : _.pluck(this.SearchCasesTableService.model().facets, "name"), datum.field);
-                 }), f => f);
-      });
+    // getFacetFields and getNonEmptyFacetFields do not call this to keep the facet fields sent the same in
+    // subsequent calls so Restangular/browser uses the cached version. Call this in the controller.
+    filterFields(docType: String, data: Object): Array<Object> {
+      var current = _.pluck(this.FacetsConfigService.fieldsMap[docType], "name");
+      return _.map(_.filter(data, (datum) => {
+        return datum.doc_type === docType &&
+               datum.field !== 'archive.revision' &&
+               !_.includes(datum.field, "_id") &&
+               !_.includes(current, datum.field) &&
+               !_.includes(docType === 'files'
+                ? _.pluck(this.SearchTableFilesModel.facets, "name")
+                : _.pluck(this.SearchCasesTableService.model().facets, "name"), datum.field);
+               }), f => f);
     }
 
+    getFacetFields(docType: string): ng.IPromise<any> {
+      return this.ds.getList().then((data) => data);
+    }
+
+    getNonEmptyFacetFields(docType: string, fields: Array<Object>): ng.IPromise<any> {
+      var facets = fields.reduce((acc, f) => {
+        if (f.doc_type === docType){
+          acc.push(f.field);
+        }
+        return acc;
+      }, []);
+      var options = { facets: facets,
+                      filters: this.LocationService.filters(),
+                      size: 0
+                    };
+      var getNonEmpty = (data) => { return _.reduce(data.aggregations, (acc, agg, key) => {
+        var field = _.find(fields, f => f.field === key);
+        var filteredBuckets = _.reject(agg.buckets || [], b => b.key === '_missing');
+          if (filteredBuckets.length !== 0) {
+              acc = acc.concat(field);
+          }
+          if (agg.max) {
+            acc = acc.concat(field);
+          }
+          return acc;
+        }, []);
+      };
+
+      if (docType === 'files') {
+        return this.FilesService.getFiles(options).then(data => getNonEmpty(data));
+      } else if (docType === 'cases') {
+        return this.ParticipantsService.getParticipants(options).then(data => getNonEmpty(data));
+      }
+    }
   }
 
   export interface IFacetsConfigService {

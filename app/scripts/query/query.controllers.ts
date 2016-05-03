@@ -73,6 +73,13 @@ module ngApp.query.controllers {
         this.refresh();
       });
 
+      $scope.$on("$stateChangeSuccess", (event, toState: any, toParams: any, fromState: any) => {
+        if (fromState.name.indexOf("query") === -1) {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        }
+      });
+
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchCasesTableService.model();
 

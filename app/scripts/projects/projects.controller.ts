@@ -43,9 +43,13 @@ module ngApp.projects.controllers {
           this.refresh();
         }
       });
-      $scope.$on("$stateChangeSuccess", (event, toState: any) => {
+      $scope.$on("$stateChangeSuccess", (event, toState: any, toParams: any, fromState: any) => {
         if (toState.name.indexOf("projects") !== -1) {
           this.ProjectsState.setActive("tabs", toState.name.split(".")[1], "active");
+        }
+        if (fromState.name.indexOf("projects") === -1) {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
         }
       });
       $scope.$on("gdc-user-reset", () => {

@@ -73,9 +73,13 @@ module ngApp.search.controllers {
           this.refresh();
         }
       });
-      $scope.$on("$stateChangeSuccess", (event, toState: any) => {
+      $scope.$on("$stateChangeSuccess", (event, toState: any, toParams: any, fromState: any) => {
         if (toState.name.indexOf("search") !== -1) {
           this.SearchState.setActive("tabs", toState.name.split(".")[1], "active");
+        }
+        if (fromState.name.indexOf("search") === -1) {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
         }
       });
 

@@ -84,34 +84,17 @@ module ngApp.projects.table.service {
 
     withProjectFilters(data: Object[], $filter: ng.IFilterService, LocationService: ILocationService, withFilterFn?: IWithFilterFn) : string {
 
-      var projectIDs = [],
-          totalCount = 0,
-          wFilterFn : IWithFilterFn = withFilterFn || this.withFilter,
-          fs = [];
+      var wFilterFn : IWithFilterFn = withFilterFn || this.withFilter;
+      var projectIDs = data.map(d => d.project_id);
 
-      _.map(data, function(d) {
+      var countKey = withFilterFn !== this.withFilter ? 'file_count' : 'case_count';
 
+      var fs = this.hasFilters(LocationService) && projectIDs.length
+        ? [{ field: 'cases.project.project_id', value: projectIDs }]
+        : [];
 
-        if (! _.has(d, 'project_id')) {
-          return;
-        }
-
-        projectIDs.push(d.project_id);
-
-        var countKey = 'summary.case_count';
-
-        if ( withFilterFn !== this.withFilter ) {
-          countKey = 'summary.file_count';
-        }
-
-        totalCount += _.get(d, countKey, 0);
-
-      });
-
-      if (this.hasFilters(LocationService) && projectIDs.length) {
-        fs.push({field: 'cases.project.project_id', value: projectIDs});
-      }
-
+      var totalCount = data.reduce((acc, val) => acc + val.summary[countKey], 0);
+      
       return wFilterFn(totalCount, fs, $filter);
     }
 

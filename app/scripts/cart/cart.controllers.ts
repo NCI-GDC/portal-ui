@@ -264,17 +264,20 @@ module ngApp.cart.controllers {
   }
 
   class AddToCartAllCtrl {
-    CartService: ICartService;
     /* @ngInject */
-    constructor(public CartService: ICartService,
-    //private QueryCartService: IQueryCartService,
-                private UserService: IUserService,
-                public LocationService: ILocationService,
-                public FilesService: IFilesService,
-                public UserService: IUserService,
-                public $timeout: ng.ITimeoutService,
-                public notify: INotifyService) {
-                  this.CartService = CartService;
+    constructor(
+      public CartService: ICartService,
+      private UserService: IUserService,
+      public LocationService: ILocationService,
+      public FilesService: IFilesService,
+      public UserService: IUserService,
+      public $timeout: ng.ITimeoutService,
+      public notify: INotifyService
+    ) {
+      this.CartService = CartService;
+
+      // if data-files= is not passed in, assume there are files
+      this.hasFiles = this.files ? !!this.files.length : true;
     }
 
     removeAll(): void {
@@ -282,6 +285,7 @@ module ngApp.cart.controllers {
       // If an id is in the result, then it is both in the Cart and in the current Search query
       var filters = this.filter || this.LocationService.filters();
       var size: number = this.CartService.getFiles().length;
+
       if (!filters.content) {
         filters.op = "and";
         filters.content = [];
@@ -296,10 +300,7 @@ module ngApp.cart.controllers {
       });
 
       this.FilesService.getFiles({
-        fields:[
-          "file_id",
-          "file_name"
-        ],
+        fields: [ "file_id", "file_name" ],
         filters: filters,
         size: size,
         from: 0
@@ -308,38 +309,44 @@ module ngApp.cart.controllers {
       });
     }
 
-    addAll(): void {
+    getFiles() {
       var filters = (this.filter ? JSON.parse(this.filter) : undefined) || this.LocationService.filters();
       filters = this.UserService.addMyProjectsFilter(filters, "cases.project.project_id");
 
-      if (this.size > this.CartService.getCartVacancySize()) {
-        this.CartService.sizeWarning();
-        return;
-      }
-
-      var addingMsgPromise = this.$timeout(() => {
-        this.notify({
-          message: "",
-          messageTemplate: "<span data-translate>Adding <strong>" + this.size + "</strong> files to cart</span>",
-          container: "#notification",
-          classes: "alert-info"
-        });
-      }, 1000);
-
-      this.FilesService.getFiles({
-        fields: ["access",
-                 "file_id",
-                 "file_size",
-                 "cases.project.project_id",
-                 ],
+      return this.FilesService.getFiles({
+        fields: [
+          "access",
+          "file_id",
+          "file_size",
+          "cases.project.project_id",
+        ],
         filters: filters,
         sort: "",
         size: this.size,
         from: 0
-      }).then((data) => {
-        this.CartService.addFiles(data.hits, false);
-        this.$timeout.cancel(addingMsgPromise);
       });
+    }
+
+    addAll(): void {
+      if ((this.files || []).length) {
+        this.CartService.addFiles(this.files, false);
+      } else if (this.size > this.CartService.getCartVacancySize()) {
+        this.CartService.sizeWarning();
+      } else {
+        var addingMsgPromise = this.$timeout(() => {
+          this.notify({
+            message: "",
+            messageTemplate: "<span data-translate>Adding <strong>" + this.size + "</strong> files to cart</span>",
+            container: "#notification",
+            classes: "alert-info"
+          });
+        }, 1000);
+
+        this.getFiles().then((data) => {
+          this.CartService.addFiles(data.hits, false);
+          this.$timeout.cancel(addingMsgPromise);
+        });
+      }
     }
   }
 

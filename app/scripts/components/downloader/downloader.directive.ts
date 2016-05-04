@@ -83,7 +83,6 @@ module ngApp.components.downloader.directive {
           }
         } else if (cookieStillThere()) {
           if (++attempts % timeoutInterval === 0) {
-            $log.warn('Download checker timed out.');
             notify.closeAll();
             notify({
               message: null,

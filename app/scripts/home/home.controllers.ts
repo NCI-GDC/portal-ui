@@ -4,7 +4,7 @@ module ngApp.home.controllers {
   import IProjects = ngApp.projects.models.IProjects;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
   import IFilesService = ngApp.files.services.IFilesService;
-    
+
   export interface IHomeController {
     getChartFilteredData() : any[];
     getChartTooltipFunction(): any;
@@ -24,7 +24,7 @@ module ngApp.home.controllers {
 
     /* @ngInject */
     constructor(private ProjectsTableService: TableiciousConfig,
-                private CoreService: ICoreService, 
+                private CoreService: ICoreService,
                 private $filter: ng.ui.IFilterService,
                 private ParticipantsService: IParticipantsService,
                 private FilesService: IFilesService,
@@ -111,7 +111,7 @@ module ngApp.home.controllers {
           fileCount: null
         },
         {
-          description: "Gene expression quantification data in TCGA-OV project",
+          description: "Gene expression quantification data in TCGA-GBM project",
           filters: {
             op: "and",
             content: [
@@ -126,7 +126,7 @@ module ngApp.home.controllers {
                 op: "in",
                 content: {
                   field: "cases.project.project_id",
-                  value: [ "TCGA-OV" ]
+                  value: [ "TCGA-GBM" ]
                 }
               }
             ]
@@ -308,7 +308,7 @@ module ngApp.home.controllers {
 
   angular
       .module("home.controller", [
-        "ngApp.core", 
+        "ngApp.core",
         "participants.services",
         "files.services"
         ])

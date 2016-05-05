@@ -353,7 +353,14 @@
               </thead>
               <tbody>
               <tr data-ng-repeat="outf in fc.file.downstream_analyses track by outf.file_id">
-                <td>{{ ::outf.file_name || '--' }}</td>
+                <td
+                  class="truncated-cell"
+                  data-uib-tooltip="{{outf.file_name}}"
+                  data-tooltip-append-to-body="true"
+                  data-tooltip-popup-delay="1000"
+                >
+                  <a data-ng-href="files/{{outf.file_id}}">{{ ::outf.file_name || '--' }}</a>
+                </td>
                 <td>{{ ::outf.data_category || '--' }}</td>
                 <td>{{ ::outf.data_type || '--' }}</td>
                 <td>{{ ::outf.data_format || '--' }}</td>

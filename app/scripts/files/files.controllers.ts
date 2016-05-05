@@ -102,13 +102,15 @@ module ngApp.files.controllers {
              (this.file.data_format || '').toLowerCase() === 'bam';
     }
 
-    makeSearchPageLink(files: IFile[] = []): string {
-      if (!files.length) {
-        return 0;
+    makeSearchPageLink(files: IFile[] = []): any {
+      if (files.length) {
+        var filterString = this.$filter("makeFilter")([{
+          field: 'files.file_id', 
+          value: files.map(f => f.file_id)
+        }], true);
+        var href = 'search/f?filters=' + filterString;
+        return files.length ? "<a href='" + href + "'>" + files.length + '</a>' : '0';
       }
-      var filterString = this.$filter("makeFilter")([{field: 'file_id', value: files.map(f => f.file_id)}], true);
-      var href = 'search/f?filters=' + filterString;
-      return files.length ? "<a href='" + href + "'>" + files.length + '</a>' : '0';
     }
 
   }

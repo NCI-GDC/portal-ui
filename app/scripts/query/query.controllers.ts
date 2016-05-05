@@ -47,6 +47,7 @@ module ngApp.query.controllers {
 
     /* @ngInject */
     constructor(private $scope: IQueryScope,
+                private $rootScope: IRootScope,
                 private $state: ng.ui.IStateService,
                 public QState: IQueryState,
                 public CartService: ICartService,
@@ -72,6 +73,13 @@ module ngApp.query.controllers {
         this.refresh();
       });
 
+      $scope.$on("$stateChangeSuccess", (event, toState: any, toParams: any, fromState: any) => {
+        if (fromState.name.indexOf("query") === -1) {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        }
+      });
+
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchCasesTableService.model();
 
@@ -92,6 +100,7 @@ module ngApp.query.controllers {
         return;
       }
 
+      this.$rootScope.$emit('ShowLoadingScreen');
       this.participantsLoading = true;
       this.filesLoading = true;
 
@@ -112,6 +121,11 @@ module ngApp.query.controllers {
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
         this.filesLoading = false;
+
+        if (!this.participantsLoading && !this.filesLoading) {
+          this.$rootScope.$emit('ClearLoadingScreen');
+        }
+
         this.files = this.files || {};
         this.files.aggregations = data.aggregations;
         this.files.pagination = data.pagination;
@@ -131,6 +145,11 @@ module ngApp.query.controllers {
 
       this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
         this.participantsLoading = false;
+
+        if (!this.participantsLoading && !this.filesLoading) {
+          this.$rootScope.$emit('ClearLoadingScreen');
+        }
+
         this.participants = this.participants || {};
         this.participants.aggregations = data.aggregations;
         this.participants.pagination = data.pagination

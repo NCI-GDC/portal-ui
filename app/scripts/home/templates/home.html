@@ -74,15 +74,34 @@
           <h3 style="margin:0 0 1rem 0; color: #333 !important">Data Portal Summary</h3>
           <em style="font-size:1.3rem;text-transform: none">Release <span data-ng-bind-placholder="">0.9</span> - <span data-ng-bind-placholder="" style="margin-right: 1rem">May 2, 2016</span></em>
         </div>
-        <div data-ng-if="stat.value > 0" class="data-stats-block" data-ng-repeat="stat in hc.getProjectStatsList()">
-          <div class="stats-block-header" data-ng-bind="stat.title"></div>
+        <div class="data-stats-block">
+          <div class="stats-block-header">Projects</div>
           <div class="stats-block-body">
-            <i data-ng-if="stat.icon !== 'cancer_type_hardcode'" class="{{stat.icon}}"></i>
-            <span data-ng-if="stat.icon === 'cancer_type_hardcode'" class="icon-gdc-cancer-types project-icon">
+            <i class="icon-gdc-projects project-icon"></i>
+            <a href="/projects/t" data-ng-bind="hc.projectData.pagination.total|number"></a>
+          </div>
+        </div>
+        <div class="data-stats-block">
+          <div class="stats-block-header">Primary Site</div>
+          <div class="stats-block-body">
+            <span class="icon-gdc-cancer-types project-icon">
               <span class="path1"></span><span class="path2"></span><span class="path3" style="color: #fff;"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span>
             </span>
-            <span style="color: #333" data-ng-if="stat.icon === 'cancer_type_hardcode'" href="{{stat.url}}" data-ng-bind="stat.value|number"></span>
-            <a data-ng-if="stat.icon !== 'cancer_type_hardcode'" href="{{stat.url}}" data-ng-bind="stat.value|number"></a>
+            <span style="color: #333" data-ng-bind="hc.projectData.aggregations.primary_site.buckets.length|number"></span>
+          </div>
+        </div>
+        <div class="data-stats-block">
+          <div class="stats-block-header">Cases</div>
+          <div class="stats-block-body">
+            <i class="icon-gdc-projects data-icon"></i>
+            <a href="/search/c" data-ng-bind="hc.caseData.pagination.total|number"></a>
+          </div>
+        </div>
+        <div class="data-stats-block">
+          <div class="stats-block-header">Files</div>
+          <div class="stats-block-body">
+            <i class="fa fa-file-o data-icon"></i>
+            <a href="/search/f" data-ng-bind="hc.fileData.pagination.total|number"></a>
           </div>
         </div>
       </div>
@@ -109,17 +128,14 @@
               <tr data-ng-repeat-placeholder>
                 <th>Storage Infrastructure</th>
                 <td>
-                  <span data-ng-if="! hc.getProjectStats().summaryData"><i class="fa fa-spinner fa-spin"></i></span>
-                  <span data-ng-if="hc.getProjectStats().summaryData">
                     5.12 PB used
-                  </span>
                 </td>
                 <td>5.92 PB available</td>
               </tr>
               <tr>
                 <th>Compute Infrastructure</th>
                 <td>12,800 Cores</td>
-                <td>87.96 GB RAM</td>
+                <td>87.96 TB RAM</td>
               </tr>
               <tr>
                 <th>Internet Bandwidth</th>
@@ -133,7 +149,7 @@
               </tr>
               <tr>
                 <th colspan="3"><a href="/reports/data-download-statistics">View Data Download Statistics Report >></a></th>
-                
+
               </tr>
             </tbody>
           </table>
@@ -145,12 +161,12 @@
         <div class="panel panel-default">
           <div class="panel-heading clearfix">
             <h3 class="panel-title table-heading">Documentation</h3>
-            
+
               <em>
                 Learn how to use the GDC Data Portal to its full potential with common
                 topics such as:
               </em>
-            
+
           </div>
           <table class="table-responsive table table-striped table-hover table-condensed">
             <tbody>
@@ -190,12 +206,12 @@
         <div class="panel panel-default">
           <div class="panel-heading clearfix">
             <h3 class="panel-title table-heading">GDC Applications</h3>
-            
+
               <em>
                 The GDC Data Portal is a robust data-driven platform that allows cancer researchers and
                 bioinformaticians to search and download cancer data for analysis. The GDC applications include:
               </em>
-            
+
           </div>
           <table class="table-responsive table table-striped table-hover table-condensed">
             <tbody>
@@ -261,17 +277,26 @@
                     <p>Website</p>
                   </a>
                 </div>
-               </td>
-               <td>
-                 <div data-uib-tooltip="GDC Legacy Archive">
-                   <a href="https://gdc-portal.nci.nih.gov/legacy-archive" target="_blank" title="GDC Legacy Archive">
-                     <span class="icon icon-gdc-legacy-archive">
-                         <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span>
-                      </span>
+              </td>
+              <td>
+                <div data-uib-tooltip="GDC Legacy Archive">
+                  <a href="https://gdc-portal.nci.nih.gov/legacy-archive" target="_blank" title="GDC Legacy Archive">
+                    <span class="icon icon-gdc-legacy-archive">
+                      <span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span><span class="path6"></span><span class="path7"></span><span class="path8"></span><span class="path9"></span><span class="path10"></span>
+                    </span>
                     <p>Legacy Archive</p>
-                   </a>
-                 </div>
-               </td>
+                  </a>
+                </div>
+              </td>
+              <td>
+                <div data-uib-tooltip="GDC cBio Portal">
+                  <a href="#" title="GDC cBio Portal" target="_blank" class="menu-item">
+                      <img src="images/icon-cBioPortal.svg" class="icon icon-gdc-cbio-portal" alt="GDC cBio Portal" />
+                      <p>GDC cBio Portal</p>
+                  </a>
+                </div>
+              </td>
+
               <td>&nbsp;</td>
             </tr>
             </tbody>

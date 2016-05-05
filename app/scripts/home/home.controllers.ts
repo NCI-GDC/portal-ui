@@ -2,14 +2,13 @@ module ngApp.home.controllers {
 
   import ICoreService = ngApp.core.services.ICoreService;
   import IProjects = ngApp.projects.models.IProjects;
-  import IHomeService = ngApp.home.services.IHomeService;
+  import IParticipantsService = ngApp.participants.services.IParticipantsService;
+  import IFilesService = ngApp.files.services.IFilesService;
 
   export interface IHomeController {
     getChartFilteredData() : any[];
     getChartTooltipFunction(): any;
     setChartDataFilter(): void;
-    getProjectStatsList(): any[];
-    getProjectStats(): any;
     getExampleSearchQueries(): any[];
     refresh(): void;
   }
@@ -17,9 +16,6 @@ module ngApp.home.controllers {
   class HomeController implements IHomeController {
 
     projectData: IProjects;
-    projectStatsOrdering: any;
-    projectStatsList: any[];
-    projectStats: any;
     projectChartData: any[];
     numberFilter: any;
     tooltipFn: any;
@@ -27,8 +23,13 @@ module ngApp.home.controllers {
     defaultParams: any;
 
     /* @ngInject */
-    constructor(private HomeService: IHomeService, private ProjectsTableService: TableiciousConfig,
-                private CoreService: ICoreService, private $filter: ng.ui.IFilterService,
+    constructor(private ProjectsTableService: TableiciousConfig,
+                private CoreService: ICoreService,
+                private $filter: ng.ui.IFilterService,
+                private ParticipantsService: IParticipantsService,
+                private FilesService: IFilesService,
+                private ProjectsService: IProjectsService,
+                private DATA_TYPES,
                 private DATA_CATEGORIES) {
 
       CoreService.setPageTitle("Welcome to The Genomics Data Commons Data Portal");
@@ -50,22 +51,6 @@ module ngApp.home.controllers {
         return str;
       }, this);
 
-
-      this.projectStatsList = [
-        {title: "Projects", value: 0, icon: "icon-gdc-projects project-icon", url: "/projects/t"},
-        {title: "Primary Sites", value: 0, icon: "cancer_type_hardcode", url: "/projects/t"},
-        {title: "Cases", value: 0, icon: "icon-gdc-cases data-icon", url: "/search/c"},
-        {title: "Files", value: 0, icon: "fa fa-file-o data-icon", url: "/search/f"},
-      ];
-
-      this.projectStats = {
-        downloads: {
-          totalDownloads: null,
-          totalDownloadSizeBytes : null
-        }
-      };
-
-      this.projectStatsOrdering = {projects: 0, cases: 2, files: 3, cancerTypes: 1, downloads: 4};
 
       const yearsToDays = year => year * 365.25;
 
@@ -126,22 +111,22 @@ module ngApp.home.controllers {
           fileCount: null
         },
         {
-          description: "Germline mutation data in TCGA-OV project",
+          description: "Gene expression quantification data in TCGA-GBM project",
           filters: {
             op: "and",
             content: [
               {
                 op: "in",
                 content: {
-                  field: "files.data_category",
-                  value: [ this.DATA_CATEGORIES.SNV.full ]
+                  field: "files.data_type",
+                  value: [ this.DATA_TYPES.GEQ.full ]
                 }
               },
               {
                 op: "in",
                 content: {
                   field: "cases.project.project_id",
-                  value: [ "TCGA-OV" ]
+                  value: [ "TCGA-GBM" ]
                 }
               }
             ]
@@ -152,16 +137,7 @@ module ngApp.home.controllers {
       ];
 
       this.defaultParams =  {
-        fields: this.ProjectsTableService.model().fields,
-        facets: [
-          "disease_type",
-          "program.name",
-          "project_id",
-          "primary_site",
-          "summary.experimental_strategies.experimental_strategy",
-          "summary.data_categories.data_category"
-        ],
-        size: 100
+        size: 0
       };
 
       this.refresh();
@@ -176,11 +152,11 @@ module ngApp.home.controllers {
         var params = _.cloneDeep(defaultParams);
         params.filters = query.filters;
 
-        this.HomeService.getParticipants(params).then(
+        this.ParticipantsService.getParticipants(params).then(
           projectData => query.caseCount = projectData.pagination.total
         ).catch(() => query.fileCount = '--');
 
-        this.HomeService.getFiles(params).then(
+        this.FilesService.getFiles(params).then(
           projectData => query.fileCount = projectData.pagination.total
         ).catch(() => query.fileCount = '--');
       });
@@ -205,8 +181,6 @@ module ngApp.home.controllers {
 
         var primarySite = project.primary_site;
 
-        _controller.projectStatsList[_controller.projectStatsOrdering.projects].value += 1;
-
         if (primarySite) {
           if (! _.isArray(primarySiteData[primarySite])) {
             primarySiteData[primarySite] = [];
@@ -229,8 +203,7 @@ module ngApp.home.controllers {
       var firstPassProjectData = _.filter(
         _.map(primarySiteIDs, function(pID) {
 
-
-          var primarySiteData =  primarySites[pID],
+          var primarySiteData = primarySites[pID],
               caseCount = 0,
               fileCount = 0;
 
@@ -239,20 +212,12 @@ module ngApp.home.controllers {
             fileCount += +(_.get(primarySiteData[i], 'summary.file_count', 0));
           }
 
-          _controller.projectStatsList[_controller.projectStatsOrdering.cases].value += caseCount;
-          _controller.projectStatsList[_controller.projectStatsOrdering.files].value += fileCount;
-
-
           /* _key and _count are required data properties for the marked bar chart */
           return {_key: pID, values: primarySiteData, _count: caseCount, fileCount: fileCount}
       }), function(d) { return d._count > 0; })
       .sort(function (primarySiteA, primarySiteB) {
           return primarySiteB._count - primarySiteA._count;
       });
-
-
-      _controller.projectStatsList[_controller.projectStatsOrdering.cancerTypes].value += primarySiteIDs.length;
-
 
       _controller.projectChartData = _.map(firstPassProjectData, function(primarySite) {
 
@@ -312,65 +277,26 @@ module ngApp.home.controllers {
       return this.projectStats;
     }
 
-    getProjectStatsList() {
-      return this.projectStatsList;
-    }
-
-    getProjects(filters:Object = null) {
-
-     var params = this.defaultParams;
-
-      if (filters) {
-        params.filters = filters;
-      }
-
-      return this.HomeService.getProjects(params);
-    }
-
     fetchAllStatsData() {
       var _controller = this;
 
-      _controller.getProjects()
+      this.FilesService.getFiles({size: 0}).then((d) => {
+        this.fileData = d;
+      });
+
+      this.ParticipantsService.getParticipants({size: 0}).then((d) => {
+        this.caseData = d;
+      });
+      this.ProjectsService.getProjects({
+        fields: ['primary_site', 'project_id', 'summary.case_count', 'summary.file_count'],
+        facets: ['primary_site'],
+        size: 1000
+      })
         .then((projectData) => {
           _controller.projectData = projectData;
+          _controller.projectData.aggregations.primary_site.buckets = projectData.aggregations.primary_site.buckets.filter(x => !(x.key === '_missing'));
           _controller.chartData = _controller.transformProjectData(projectData);
         })
-        .then(() => {
-          _controller.fetchSummaryData();
-          _controller.fetchReportData({size: _controller.projectStatsList[_controller.projectStatsOrdering.projects].value});
-        });
-    }
-
-    fetchSummaryData() {
-      var _controller = this;
-
-      _controller.HomeService.getSummary().then((summaryData) => {
-        _controller.projectStats.summaryData = summaryData;
-      });
-    }
-
-    fetchReportData(params: Object = {}) {
-      var _controller = this;
-
-      _controller.HomeService.getReports(params).then(function(reportData) {
-        var hits = _.get(reportData, 'hits', false);
-
-        if (! hits) {
-          return;
-        }
-
-        var totalDownloads = 0,
-            totalSizeInBytes = 0;
-
-        _.map(hits, function(hit) {
-          totalDownloads += parseInt(_.get(hit, "count", 0));
-          totalSizeInBytes += parseInt(_.get(hit, "size", 0))
-        });
-
-        _controller.projectStats.downloads.totalDownloads = totalDownloads;
-        _controller.projectStats.downloads.totalDownloadSizeBytes = totalSizeInBytes;
-
-      });
     }
 
     refresh() {
@@ -381,6 +307,10 @@ module ngApp.home.controllers {
   }
 
   angular
-      .module("home.controller", ["ngApp.core"])
+      .module("home.controller", [
+        "ngApp.core",
+        "participants.services",
+        "files.services"
+        ])
       .controller("HomeController", HomeController);
 }

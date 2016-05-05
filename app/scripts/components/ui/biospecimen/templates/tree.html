@@ -1,0 +1,38 @@
+<div ng-class="{ 'tree-indent': hasEntities(entities, type) }">
+  <div
+    class="tree"
+    data-ng-if="hasEntities(entities, type)"
+    data-ng-click="expandTree($event, entities)"
+    data-ng-keypress="expandTree($event, entities)"
+  >
+    <i
+      class="fa action"
+      data-ng-class="{
+        'fa-plus-square': !entities.expanded,
+        'fa-minus-square': entities.expanded
+      }"
+    ></i>
+
+    &nbsp;
+    <span
+      class="h5 type"
+      data-ng-class="{
+        'expanded': entities.expanded,
+        'collapsed': !entities.expanded
+      }"
+      data-translate style="text-transform:capitalize"
+    >
+      {{type.p}}
+    </span>
+  </div>
+
+  <tree-item
+    ng-repeat="entity in entities"
+    data-ng-if="entities.expanded"
+    entity="entity"
+    type="type"
+    depth="depth"
+    search-term="searchTerm"
+    active-doc="activeDoc"
+  ></tree-item>
+</div>

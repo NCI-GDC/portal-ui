@@ -48,6 +48,7 @@ module ngApp.search.controllers {
 
     /* @ngInject */
     constructor(private $scope: ISearchScope,
+                private $rootScope: IRootScope,
                 private $state: ng.ui.IStateService,
                 public SearchState: ISearchState,
                 public CartService: ICartService,
@@ -72,9 +73,13 @@ module ngApp.search.controllers {
           this.refresh();
         }
       });
-      $scope.$on("$stateChangeSuccess", (event, toState: any) => {
+      $scope.$on("$stateChangeSuccess", (event, toState: any, toParams: any, fromState: any) => {
         if (toState.name.indexOf("search") !== -1) {
           this.SearchState.setActive("tabs", toState.name.split(".")[1], "active");
+        }
+        if (fromState.name.indexOf("search") === -1) {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
         }
       });
 
@@ -120,6 +125,7 @@ module ngApp.search.controllers {
 
       const casesTableModel = this.SearchCasesTableService.model();
 
+      this.$rootScope.$emit('ShowLoadingScreen');
       this.filesLoading = true;
       this.participantsLoading = true;
 
@@ -143,6 +149,11 @@ module ngApp.search.controllers {
 
       this.FilesService.getFiles(fileOptions).then((data: IFiles) => {
         this.filesLoading = false;
+
+        if (!this.participantsLoading && !this.filesLoading) {
+          this.$rootScope.$emit('ClearLoadingScreen');
+        }
+
         this.files = this.files || {};
         this.files.aggregations = data.aggregations;
         this.files.pagination = data.pagination;
@@ -162,10 +173,15 @@ module ngApp.search.controllers {
 
       this.ParticipantsService.getParticipants(participantOptions).then((data: IParticipants) => {
         this.participantsLoading = false;
+
+        if (!this.participantsLoading && !this.filesLoading) {
+          this.$rootScope.$emit('ClearLoadingScreen');
+        }
+
         this.participants = this.participants || {};
         this.participants.aggregations = data.aggregations;
         this.participants.pagination = data.pagination;
-        
+
         if (!_.isEqual(this.participants.hits, data.hits)) {
           this.participants.hits = data.hits;
           this.tabSwitch = false;

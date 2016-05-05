@@ -170,7 +170,7 @@ module ngApp.components.quickSearch.directives {
     };
 
     $scope.search = function() {
-      $scope.searchQuery = $scope.searchQuery.trim();
+      $scope.searchQuery = $scope.searchQuery.trim().replace(/[^a-zA-Z0-9-_]/g, '');
 
       if (!$scope.searchQuery || $scope.searchQuery.length < 2) {
         $scope.results = [];

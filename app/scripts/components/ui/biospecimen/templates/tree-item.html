@@ -1,0 +1,22 @@
+<div class="biospecimen-row document tree-item">
+  <div class="biospecimen-row-entity" data-ng-if="entity[type.s + '_id']">
+    <i class="fa fa-flask tree-flask"></i>
+    &nbsp;
+    <span
+      class="biospecimen-id"
+      data-ng-click="displayBioSpecimenDocument($event, entity, type.s)"
+      data-ng-keypress="displayBioSpecimenDocument($event, entity, type.s)"
+      data-ng-class="{
+        selected: entity === activeDoc,
+        highlighted: searchTerm && (
+          entity.submitter_id.indexOf(searchTerm) > -1 ||
+          entity[type.s + '_id'].indexOf(searchTerm) > -1
+        )
+      }"
+      data-ng-bind-html="(
+        (entity.submitter_id || entity[type.s + '_id']) | highlight:searchTerm
+      ) || (entity.submitter_id || entity[type.s + '_id'])">
+    </span>
+    <i class="fa fa-caret-right" style="margin-left:0.3rem" ng-if="entity === activeDoc"></i>
+  </div>
+</div>

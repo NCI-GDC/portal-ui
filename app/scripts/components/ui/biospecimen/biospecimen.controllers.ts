@@ -6,7 +6,7 @@ module ngApp.components.ui.biospecimen.controllers {
   export interface IBiospecimenController {
     activeBioSpecimenDoc: any;
     activeBioSpecimenDocType: string;
-    displayBioSpecimenDocument(event: any, doc: any, type: string): void;
+    displayBioSpecimenDocument(doc: any, type: string): void;
     downloadBiospecimenXML(participant_id: string): void;
     bioSpecimenFileId: string;
     bioSpecimenFile: any;
@@ -18,34 +18,40 @@ module ngApp.components.ui.biospecimen.controllers {
     bioSpecimenFileId: string;
 
     /* @ngInject */
-    constructor(private LocationService: ILocationService,
-                private config: IGDCConfig, $scope) {
-      $scope.participant.samples.expanded = true;
-      this.activeBioSpecimenDoc = $scope.participant.samples[0];
-      this.activeBioSpecimenDocType = "sample";
+    constructor(
+      private LocationService: ILocationService,
+      private config: IGDCConfig,
+      $scope
+    ) {
+      if ($scope.participant.samples) {
+        $scope.participant.samples.expanded = true;
+        this.activeBioSpecimenDoc = $scope.participant.samples[0];
+        this.activeBioSpecimenDocType = "sample";
+      }
 
-      this.bioSpecimenFile =  _.find($scope.participant.files, (file) => {
+      this.bioSpecimenFile = _.find($scope.participant.files, (file) => {
         return (file.data_subtype || '').toLowerCase() === "biospecimen data";
       });
 
       const participant = $scope.participant;
       this.hasNoBiospecimen = _.size(participant.samples) < 1;
+
       this.biospecimenDataExportFilters = {
         'cases.case_id': participant.case_id
       };
+
       this.biospecimenDataExportExpands =
         ['samples','samples.portions','samples.portions.analytes','samples.portions.analytes.aliquots',
         'samples.portions.analytes.aliquots.annotations','samples.portions.analytes.annotations',
         'samples.portions.submitter_id','samples.portions.slides','samples.portions.annotations',
         'samples.portions.center'];
-      this.biospecimenDataExportFileName = 'biospecimen.case-' + participant.case_id;
-    }
 
-    displayBioSpecimenDocument(event: any, doc: any, type: string): void {
-      if (event.which === 1 || event.which === 13) {
-        this.activeBioSpecimenDocType = type;
-        this.activeBioSpecimenDoc = doc;
-      }
+      this.biospecimenDataExportFileName = 'biospecimen.case-' + participant.case_id;
+
+      $scope.$on('displayBioSpecimenDocument', (event, data) => {
+        this.activeBioSpecimenDocType = data.type;
+        this.activeBioSpecimenDoc = data.doc;
+      })
     }
 
     displayBioSpecimenDocumentRow(key, value): boolean {

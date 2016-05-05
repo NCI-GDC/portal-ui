@@ -6,10 +6,10 @@
    You are attempting to download files that you are not authorized to access.
  </p>
  <p>
-   <span class="label label-success">{{meta.authorized.length}}</span> open access files that you can download.
+   <span class="label label-success">{{meta.authorized.length}}</span> files that you are authorized to download.
  </p>
  <p>
-   <span class="label label-danger">{{meta.unauthorized.length}}</span> protected files that you are not authorized to download.
+   <span class="label label-danger">{{meta.unauthorized.length}}</span> files that you are not authorized to download.
  </p>
  <p>
    Please <a login-button ng-click="wc.cancel()">login <i class="fa fa-sign-in"></i>.</a>
@@ -17,6 +17,6 @@
 </div>
 <div class="modal-footer">
   <button class="btn btn-warning" ng-click="wc.cancel()" data-translate>Cancel</button>
-  <button class="btn btn-primary" ng-if="meta.authorized.length" ng-click="wc.goAuth()" data-translate>Download {{meta.authorized.length}} open access files</button>
+  <button class="btn btn-primary" ng-if="meta.authorized.length" ng-click="wc.goAuth()" data-translate>Download {{meta.authorized.length}} authorized files</button>
 
 </div>

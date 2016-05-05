@@ -166,7 +166,7 @@
             <tbody>
               <tr>
                 <th scope="row" data-translate>ID</th>
-                <td>{{ ::demo.demographic_id }}</td>
+                <td>{{ ::demo.demographic_id || '--' }}</td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Ethnicity</th>
@@ -219,15 +219,15 @@
                   <tbody>
                     <tr>
                       <th scope="row" data-translate>ID</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].diagnosis_id }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].diagnosis_id || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Classification of Tumor</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].classification_of_tumor | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].classification_of_tumor || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Alcohol Intensity</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].alcohol_intensity | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].alcohol_intensity || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Age at Diagnosis</th>
@@ -255,11 +255,11 @@
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Last Known Disease Status</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].last_known_disease_status | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].last_known_disease_status || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Morphology</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].morphology | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].morphology || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Primary Diagnosis</th>
@@ -267,11 +267,11 @@
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Prior Malignancy</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].prior_malignancy | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].prior_malignancy || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Progression or Recurrence</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].progression_or_recurrence | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].progression_or_recurrence || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Site of Resection or Biopsy</th>
@@ -283,7 +283,7 @@
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Tumor Grade</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].tumor_grade | humanify }}</td>
+                      <td>{{ ::pc.participant.diagnoses[ $index ].tumor_grade || '--' }}</td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Tumor Stage</th>
@@ -311,35 +311,35 @@
                     <thead>
                       <tr>
                         <th data-translate>ID</th>
-                        <th data-translate>State</th>
                         <th data-translate>Therapeutic Agents</th>
                         <th data-translate>Treatment Intent Type</th>
                         <th data-translate>Treatment or Therapy</th>
                         <th data-translate>Days to Treatment</th>
-                        <th data-translate>Submitter ID</th>
                         <th data-translate>Created</th>
                         <th data-translate>Updated</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr data-ng-repeat="t in pc.participant.diagnoses[ $index ].treatments">
-                        <td><span style="overflow: hidden; text-overflow: ellipsis; max-width: 100px">
-                          {{ ::t.treatment_id }}
-                        </span></td>
-                        <td>
-                          {{ ::t.therapeutic_agents }}
+                        <td
+                          class="truncated-cell"
+                          data-uib-tooltip="{{ ::t.treatment_id }}"
+                          data-tooltip-append-to-body="true"
+                          data-tooltip-popup-delay="1000"
+                        >
+                          {{ ::t.treatment_id || '--' }}
                         </td>
                         <td>
-                          {{ ::t.treatment_intent_type }}
+                          {{ ::t.therapeutic_agents || '--' }}
                         </td>
                         <td>
-                          {{ ::t.treatment_or_therapy }}
+                          {{ ::t.treatment_intent_type || '--' }}
+                        </td>
+                        <td>
+                          {{ ::t.treatment_or_therapy || '--' }}
                         </td>
                         <td class="text-right">
-                          {{ ::t.days_to_treatment | number }}
-                        </td>
-                        <td>
-                          {{ ::t.submitter_id || '--' }}
+                          {{ ::t.days_to_treatment || '--' | number }}
                         </td>
                         <td>
                           {{ ::t.created_datetime || '--' | date: 'yyyy-MM-dd' }}
@@ -438,35 +438,41 @@
                  <tbody>
                    <tr>
                      <th scope="row" data-translate>ID</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].exposure_id }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].exposure_id || '--' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Alcohol History</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].alcohol_history | humanify }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].alcohol_history || '--' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Alcohol Intensity</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].alcohol_intensity | humanify }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].alcohol_intensity || '--' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>BMI</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].bmi | number | humanify }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].bmi || '--' | number }}
+                       <!-- <span ng-if="pc.participant.exposures[ $index ].bmi">kg/m<sup>2</sup></span> -->
+                     </td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Cigarettes per Day</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].cigarettes_per_day | number | humanify }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].cigarettes_per_day || '--' | number }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Height</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].height | number | humanify }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].height || '--' }}
+                       <!-- <span ng-if="pc.participant.exposures[ $index ].height">cm</span> -->
+                    </td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Weight</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].weight | number | humanify }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].weight || '--' }}
+                       <!-- <span ng-if="pc.participant.exposures[ $index ].weight">kg</span> -->
+                    </td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Years Smoked</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].years_smoked | number | humanify }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].years_smoked || '--' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Created</th>
@@ -474,7 +480,7 @@
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Updated</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].updated_datetime || '--'| date: 'yyyy-MM-dd' }}</td>
+                     <td>{{ ::pc.participant.exposures[ $index ].updated_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
                    </tr>
                  </tbody>
                </table>

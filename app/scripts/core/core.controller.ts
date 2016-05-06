@@ -34,7 +34,13 @@ module ngApp.core.controllers {
         this.$rootScope.$emit('ShowLoadingScreen');
       });
 
-      this.$rootScope.$on('$stateChangeSuccess', () => this.$rootScope.$emit('ClearLoadingScreen'));
+      this.$rootScope.$on("$stateChangeSuccess", (event, toState: any, toParams: any, fromState: any) => {
+        this.$rootScope.$emit('ClearLoadingScreen');
+        if (Object.keys(toState.data || {}).indexOf('tab') === -1) {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        }
+      });
 
       this.$rootScope.$on('ShowLoadingScreen', (data, throttleMs) => {
         this.loadingTimers.push(this.$timeout(() => this.showLoadingScreen(), throttleMs || 500));

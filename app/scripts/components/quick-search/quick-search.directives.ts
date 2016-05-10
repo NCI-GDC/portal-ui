@@ -35,7 +35,10 @@ module ngApp.components.quickSearch.directives {
             backdrop: true,
             keyboard: true,
             animation: false,
-            size: "lg"
+            size: "lg",
+            controller: ($uibModalInstance, $scope) => {
+              $scope.close = () => $uibModalInstance.close();
+            }
           });
         };
       },

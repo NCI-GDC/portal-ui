@@ -39,7 +39,7 @@ module ngApp.projects.controllers {
     ) {
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
-        if (next.indexOf("projects") !== -1) {
+        if (next.indexOf("projects/t") !== -1 || next.indexOf("projects/g") !== -1) {
           this.refresh();
         }
       });

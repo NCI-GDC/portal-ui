@@ -151,14 +151,6 @@ h3.panel-title {
 //}
 //
 
-// --- ICONS
-.navbar-nav .fa {
-  display:inline-block;
-  text-indent:-10000px;
-  overflow:hidden;
-  width:19px;
-  height:14px;
-}
 /*---projects---*/
 .fa-custom {
   width: 30px;
@@ -580,6 +572,10 @@ pre code {
   border-color: #c4c4c4;
 }
 
+.navbar a {
+  outline: none;
+}
+
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:focus,
 .navbar-default .navbar-nav > .active > a:hover {
@@ -627,7 +623,7 @@ pre code {
 
 /* nav bar icon replacement (replacing font-awesome icons) */
 
-.navbar-nav .fa {
+.navbar-nav .fa-hidden {
   display:inline-block;
   text-indent:-10000px;
   overflow:hidden;

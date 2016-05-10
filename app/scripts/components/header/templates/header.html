@@ -15,15 +15,21 @@
          data-ng-keypress="hc.collapse($event)"
          aria-label="{{ 'Site Navigation' | translate }}">
       <ul class="nav navbar-nav">
+        <li data-ng-class="{ active: hc.$state.includes('home') }"
+            id="header-projects">
+          <a ui-sref="home" tabindex="0"><i class="fa fa-home"></i>
+            <span class="hidden-sm" data-translate>Home</span>
+          </a>
+        </li>
         <li data-ng-class="{ active: hc.$state.includes('projects') }"
             id="header-projects">
-          <a ui-sref="projects.table" tabindex="0"><i class="fa fa-folder-o"></i>
+          <a ui-sref="projects.table" tabindex="0"><i class="fa fa-folder-o fa-hidden"></i>
             <span class="hidden-sm" data-translate>Projects</span>
           </a>
         </li>
         <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
             id="header-data">
-          <a ui-sref="search.summary" tabindex="0"><i class="fa fa-database"></i>
+          <a ui-sref="search.summary" tabindex="0"><i class="fa fa-database fa-hidden"></i>
             <span class="hidden-sm" data-translate>Data</span>
           </a>
         </li>
@@ -44,7 +50,7 @@
         </li>
         <li data-ng-if="!hc.UserService.currentUser" id="header-login">
           <a login-button tabindex="0">
-            <i class="fa fa-sign-in"></i>
+            <i class="fa fa-sign-in fa-hidden"></i>
             <span class="hidden-md hidden-sm" data-translate>Login</span>
           </a>
         </li>
@@ -93,7 +99,7 @@
         </li>
         <li ui-sref-active="active" class="nav-cart">
           <a ui-sref="cart" tabindex="0">
-            <i class="fa fa-shopping-cart"></i>
+            <i class="fa fa-shopping-cart fa-hidden"></i>
             <span class="hidden-md hidden-sm" data-translate>Cart</span>
             <span class="label label-primary">{{ hc.getNumCartItems() }}</span>
           </a>

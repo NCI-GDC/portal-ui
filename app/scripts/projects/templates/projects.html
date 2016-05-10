@@ -11,7 +11,7 @@
 
     <div class="content">
       <div class="alert alert-info clearfix">
-        <div class="col-sm-12">
+        <div class="col-sm-12 col-lg-9">
           <current-filters></current-filters>
           <span data-ng-if="!cfc.currentFilters.length"  style="line-height: 3.4rem">
             <span data-translate>
@@ -19,15 +19,15 @@
             </span>
           </span>
         </div>
-      </div>
-
-      <div class="row" data-ng-if="cfc.currentFilters.length">
-        <div class="col-sm-12 text-right">
+        
+        <div class="col-sm-12 col-lg-3 text-right" data-ng-if="cfc.currentFilters.length">
           <a class="btn btn-primary" data-translate data-ng-click="prsc.gotoQuery()">
             <i class="fa fa-gears"></i> <span data-translate>Open Query in Data Page</span>
           </a>
         </div>
       </div>
+
+      
 
       <h3 class="col-lg-9 col-md-8" data-ng-if="!prsc.projects.hits.length && !prsc.loading" data-translate>
         No projects found using those filters.

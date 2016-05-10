@@ -81,12 +81,14 @@ function addTokenToRequest (element, operation, route, url, headers, params, htt
 }
 
 /* @ngInject */
-function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
-                   $locationProvider: ng.ILocationProvider,
-                   RestangularProvider: restangular.IProvider,
-                   config: IGDCConfig,
-                   $compileProvider: ng.ICompileService,
-                   $httpProvider: ng.IHttpProvider) {
+function appConfig(
+  $urlRouterProvider: ng.ui.IUrlRouterProvider,
+  $locationProvider: ng.ILocationProvider,
+  RestangularProvider: restangular.IProvider,
+  config: IGDCConfig,
+  $compileProvider: ng.ICompileService,
+  $httpProvider: ng.IHttpProvider
+) {
   $compileProvider.debugInfoEnabled(!config.production);
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/404");

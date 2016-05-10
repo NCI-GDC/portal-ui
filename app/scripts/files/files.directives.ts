@@ -168,10 +168,26 @@ module ngApp.files.directives {
         classes: "@",
         icon: "@"
       },
-      template: "<a ng-class=\"[classes || 'btn btn-primary']\" data-downloader>" +
-                "<i class=\"fa {{icon || 'fa-download'}}\" ng-class=\"{'fa-spinner': active, 'fa-pulse': active}\"></i>" +
-                "<span ng-if=\"copy\"><span ng-if=\"!active\">&nbsp;{{copy}}</span><span ng-if=\"active\">&nbsp;{{dlcopy}}</span></span></a>",
+      templateUrl: "files/templates/download-manifest-button.html",
       link: ($scope, $element, $attrs) => {
+
+        const togglePopover = shouldBeOpen => $scope.$apply(() => {
+          $scope.open = shouldBeOpen;
+          if (shouldBeOpen) {
+            setTimeout(() => {
+              $('.popover').mouseleave(() => {
+                $scope.$apply(() => $scope.open = false)
+              });
+            });
+          }
+        });
+
+        $element.on('mouseenter', () => togglePopover(true));
+
+        $element.on('mouseleave', _.debounce(() => {
+          if (!$('.popover').is(':hover')) togglePopover(false);
+        }, 700));
+
         $scope.active = false;
 
         const inProgress = () => {
@@ -192,6 +208,7 @@ module ngApp.files.directives {
             size: $scope.size,
             attachment: true,
             format: 'TSV',
+            fields: [ 'file_id' ],
             filters: $scope.projectId // on project page
               ? {
                   op: 'in',

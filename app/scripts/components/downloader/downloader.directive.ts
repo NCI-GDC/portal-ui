@@ -17,9 +17,9 @@ module ngApp.components.downloader.directive {
     const formIdPrefix = '__downloader_form__';
     const getIframeResponse = (iFrame: ng.IAugmentedJQuery): Object => JSON.parse(iFrame.contents().find('body pre').text());
     const showErrorModal = (error: Object): void => {
-      const hasWarning = _.has(error, 'warning');
+      const warning = error.warning || error.message;
       $uibModal.open({
-        templateUrl: 'core/templates/' + (hasWarning ? 'generic-warning' : 'internal-server-error') + '.html',
+        templateUrl: 'core/templates/' + (warning ? 'generic-warning' : 'internal-server-error') + '.html',
         controller: 'WarningController',
         controllerAs: 'wc',
         backdrop: 'static',
@@ -28,7 +28,7 @@ module ngApp.components.downloader.directive {
         animation: false,
         size: 'lg',
         resolve: {
-          warning: () => hasWarning ? error.warning : null
+          warning: () => warning
         }
       });
     };

@@ -314,7 +314,7 @@ module ngApp.cart.directives {
           const params = { ids: files.map(f => f.file_id) };
           const url = config.api + '/data/metadata_files';
           const checkProgress = $scope.download(params, url, () => $element, 'POST');
-          checkProgress(inProgress, done);
+          checkProgress(inProgress, done, true);
         });
       }
     };
@@ -346,7 +346,7 @@ module ngApp.cart.directives {
           if ((files || []).length > 0) {
             const params = { ids: files.map(f => f.file_id) };
             const checkProgress = scope.download(params, url, () => $element, 'POST');
-            checkProgress(inProgress, done);
+            checkProgress(inProgress, done, true);
           }
         };
 

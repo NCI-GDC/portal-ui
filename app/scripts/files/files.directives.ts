@@ -70,7 +70,7 @@ module ngApp.files.directives {
           }, $scope.filename ? {filename: $scope.filename} : {});
 
           const checkProgress = $scope.download(params, url, () => $element, 'POST');
-          checkProgress(inProgress, done);
+          checkProgress(inProgress, done, true);
         };
         $scope.active = false;
       }
@@ -109,7 +109,7 @@ module ngApp.files.directives {
           if ((files || []).length > 0) {
             const params = { ids: files.map(f => f.file_id) };
             const checkProgress = $scope.download(params, url, () => $element, 'POST');
-            checkProgress(inProgress, done);
+            checkProgress(inProgress, done, true);
           }
         };
         const showModal = (template) => {

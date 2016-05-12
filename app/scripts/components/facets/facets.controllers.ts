@@ -225,7 +225,7 @@ module ngApp.components.facets.controllers {
     }
 
     saveInput(): void {
-      this.searchTerm = this.searchTerm.replace(/[^a-zA-Z0-9-_]/g, '');
+      this.searchTerm = this.searchTerm.replace(/[^a-zA-Z0-9-_.]/g, '');
       this.lastInput = this.searchTerm;
     }
 

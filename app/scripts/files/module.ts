@@ -49,6 +49,7 @@ module ngApp.files {
               "analysis.metadata.read_groups.library_name",
               "analysis.metadata.read_groups.sequencing_center",
               "analysis.metadata.read_groups.sequencing_date",
+              "downstream_analyses.output_files.access",
               "downstream_analyses.output_files.file_id",
               "downstream_analyses.output_files.file_name",
               "downstream_analyses.output_files.data_category",

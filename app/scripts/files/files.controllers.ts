@@ -77,7 +77,10 @@ module ngApp.files.controllers {
         file.downstream_analyses = file.downstream_analyses.reduce(
           (prev, curr) =>
             prev.concat((curr.output_files || []).map(x =>
-              _.extend({}, x, { workflow_type: curr.workflow_type }))
+              _.extend({}, x, {
+                workflow_type: curr.workflow_type,
+                cases: file.cases.slice()
+              }))
             ),
           []
         );
@@ -105,7 +108,7 @@ module ngApp.files.controllers {
     makeSearchPageLink(files: IFile[] = []): any {
       if (files.length) {
         var filterString = this.$filter("makeFilter")([{
-          field: 'files.file_id', 
+          field: 'files.file_id',
           value: files.map(f => f.file_id)
         }], true);
         var href = 'search/f?filters=' + filterString;

@@ -1,0 +1,13 @@
+<a
+  data-uib-popover-template="'files/templates/download-manifest-info.html'"
+  data-popover-is-open="open"
+  ng-class="[classes || 'btn btn-primary']"
+  data-popover-placement="bottom"
+  data-downloader
+>
+  <i class="fa {{icon || 'fa-download'}}" ng-class="{'fa-spinner': active, 'fa-pulse': active}"></i>
+  <span ng-if="copy">
+    <span ng-if="!active">&nbsp;{{copy}}</span>
+    <span ng-if="active">&nbsp;{{dlcopy}}</span>
+  </span>
+</a>

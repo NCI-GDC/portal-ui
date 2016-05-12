@@ -155,7 +155,79 @@ module ngApp.files.directives {
     };
   }
 
-  function BAMSlicingButton($log: ng.ILogService, FilesService, UserService, $uibModal): ng.IDirective {
+  function DownloadManifestButton(FilesService, config: IGDCConfig, LocationService): ng.IDirective {
+
+    return {
+      restrict: "E",
+      replace: true,
+      scope: {
+        projectId: "=",
+        size: "=",
+        copy: "@",
+        dlcopy: "@",
+        classes: "@",
+        icon: "@"
+      },
+      templateUrl: "files/templates/download-manifest-button.html",
+      link: ($scope, $element, $attrs) => {
+
+        const togglePopover = shouldBeOpen => $scope.$apply(() => {
+          $scope.open = shouldBeOpen;
+          if (shouldBeOpen) {
+            setTimeout(() => {
+              $('.popover').mouseleave(() => {
+                $scope.$apply(() => $scope.open = false)
+              });
+            });
+          }
+        });
+
+        $element.on('mouseenter', () => togglePopover(true));
+
+        $element.on('mouseleave', _.debounce(() => {
+          if (!$('.popover').is(':hover')) togglePopover(false);
+        }, 700));
+
+        $scope.active = false;
+
+        const inProgress = () => {
+          $scope.active = true;
+          $attrs.$set('disabled', 'disabled');
+        };
+
+        const done = () => {
+          $scope.active = false;
+          $element.removeAttr('disabled');
+        };
+
+        $element.on('click', () => {
+          const url = config.api + '/files'
+
+          const params = {
+            return_type: 'manifest',
+            size: $scope.size,
+            attachment: true,
+            format: 'TSV',
+            fields: [ 'file_id' ],
+            filters: $scope.projectId // on project page
+              ? {
+                  op: 'in',
+                  content: {
+                    field: 'cases.project.project_id',
+                    value: $scope.projectId
+                  }
+                }
+              : LocationService.filters()
+          };
+
+          const checkProgress = $scope.download(params, url, () => $element, 'POST');
+          checkProgress(inProgress, done);
+        });
+      }
+    };
+  }
+
+  function BAMSlicingButton($log: ng.ILogService, UserService, $uibModal): ng.IDirective {
     const hasAccess = (files) => files.every((f) => UserService.isUserProject(f));
 
     return {
@@ -251,8 +323,12 @@ module ngApp.files.directives {
   }
 
   angular
-    .module("files.directives", ["restangular", "components.location", "user.services", "core.services", "ui.bootstrap", "files.controller"])
+    .module("files.directives", [
+      "restangular", "components.location", "user.services",
+      "core.services", "ui.bootstrap", "files.controller", "files.services"
+    ])
     .directive("downloadButton", DownloadButton)
     .directive("downloadMetadataButton", DownloadMetadataButton)
+    .directive("downloadManifestButton", DownloadManifestButton)
     .directive("bamSlicingButton", BAMSlicingButton);
 }

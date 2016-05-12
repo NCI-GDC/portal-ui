@@ -334,8 +334,13 @@ module ngApp.components.facets.controllers {
         $scope.selectedUnit = selectedUnitMap;
         _this.$scope.dataUnitConverted = _this.unitConversion($scope.data);
         _this.getMaxMin($scope.dataUnitConverted);
-        _this.lowerBound = _this.$scope.lowerBoundOriginalDays ? Math.floor(_this.$scope.lowerBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
-        _this.upperBound = _this.$scope.upperBoundOriginalDays ? Math.ceil(_this.$scope.upperBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
+        if (selectedUnitMap.label === 'years') {
+          _this.lowerBound = _this.$scope.lowerBoundOriginalDays ? Math.ceil(_this.$scope.lowerBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
+          _this.upperBound = _this.$scope.upperBoundOriginalDays ? Math.ceil((_this.$scope.upperBoundOriginalDays + 1 - _this.$scope.selectedUnit.conversionDivisor) / _this.$scope.selectedUnit.conversionDivisor) : null;
+        } else {
+          _this.lowerBound = _this.$scope.lowerBoundOriginalDays ? Math.floor(_this.$scope.lowerBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
+          _this.upperBound = _this.$scope.upperBoundOriginalDays ? Math.ceil(_this.$scope.upperBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
+        }
       };
 
     }
@@ -358,21 +363,31 @@ module ngApp.components.facets.controllers {
 
     refresh(): void {
       this.activesWithOperator = this.FacetService.getActivesWithOperator(this.$scope.field);
+      this.$scope.lowerBoundOriginalDays = this.activesWithOperator['>='] || null;
+      this.$scope.upperBoundOriginalDays = this.activesWithOperator['<='] || null;
       if (_.has(this.activesWithOperator, '>=')) {
-        this.lowerBound = Math.floor(this.activesWithOperator['>='] / this.$scope.selectedUnit.conversionDivisor);
+        this.lowerBound = Math.ceil(this.activesWithOperator['>='] / this.$scope.selectedUnit.conversionDivisor);
       } else {
         this.lowerBound = null;
       }
       if (_.has(this.activesWithOperator, '<=')) {
-        this.upperBound = Math.ceil(this.activesWithOperator['<='] / this.$scope.selectedUnit.conversionDivisor);
+        if (this.$scope.selectedUnit.label === 'years') {
+          this.upperBound = Math.ceil((this.activesWithOperator['<='] + 1 - this.$scope.selectedUnit.conversionDivisor) / this.$scope.selectedUnit.conversionDivisor);
+        } else {
+          this.upperBound = Math.ceil(this.activesWithOperator['<='] / this.$scope.selectedUnit.conversionDivisor);
+        }
       } else {
         this.upperBound = null;
       }
     }
 
     inputChanged() {
-      this.$scope.lowerBoundOriginalDays = this.lowerBound * this.$scope.selectedUnit.conversionDivisor;
-      this.$scope.upperBoundOriginalDays = this.upperBound * this.$scope.selectedUnit.conversionDivisor;
+      if (this.$scope.selectedUnit.label === 'years') {
+        this.$scope.upperBoundOriginalDays = this.upperBound ? Math.floor(this.upperBound * this.$scope.selectedUnit.conversionDivisor + this.$scope.selectedUnit.conversionDivisor - 1) : null;
+      } else {
+        this.$scope.upperBoundOriginalDays = this.upperBound ? Math.floor(this.upperBound * this.$scope.selectedUnit.conversionDivisor) : null;
+      }
+      this.$scope.lowerBoundOriginalDays = this.lowerBound ? Math.floor(this.lowerBound * this.$scope.selectedUnit.conversionDivisor) : null;
     }
 
     setBounds() {
@@ -380,7 +395,7 @@ module ngApp.components.facets.controllers {
         if (_.has(this.activesWithOperator, '>=')) {
           this.FacetService.removeTerm(this.$scope.field, null, ">=");
         }
-        this.FacetService.addTerm(this.$scope.field, this.lowerBound * this.$scope.selectedUnit.conversionDivisor, ">=");
+        this.FacetService.addTerm(this.$scope.field, this.$scope.lowerBoundOriginalDays, ">=");
       } else {
         this.FacetService.removeTerm(this.$scope.field, null, ">=");
       }
@@ -388,7 +403,7 @@ module ngApp.components.facets.controllers {
         if (_.has(this.activesWithOperator, '<=')) {
           this.FacetService.removeTerm(this.$scope.field, null, "<=");
         }
-        this.FacetService.addTerm(this.$scope.field, this.upperBound * this.$scope.selectedUnit.conversionDivisor, "<=");
+        this.FacetService.addTerm(this.$scope.field, this.$scope.upperBoundOriginalDays, "<=");
       } else {
         this.FacetService.removeTerm(this.$scope.field, null, "<=");
       }

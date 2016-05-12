@@ -193,16 +193,14 @@ function appRun(gettextCatalog: any,
 
   UserService.login();
 
-  ProjectsService.getProjects({
-    size: 100
-  })
-  .then((data) => {
-    var mapping = {};
-    _.each(data.hits, (project) => {
-      mapping[project.project_id] = project.name;
-    });
-    ProjectsService.projectIdMapping = mapping;
-  });
+  ProjectsService.getProjects({ size: 100 })
+    .then(data => {
+      ProjectsService.projectIdMapping =
+        data.hits.reduce((acc, project) => {
+          acc[project.project_id] = project.name;
+            return acc;
+          }, {});
+      });
 
   $rootScope.$on("$stateChangeStart", () => {
     // Page change

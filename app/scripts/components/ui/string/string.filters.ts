@@ -117,21 +117,19 @@ module ngApp.components.ui.string {
 
   class AgeDisplay {
     constructor(gettextCatalog: any) {
-      return function(ageInDays: number) {
-        if (!ageInDays) {
-          return '--';
-        }
-        if (ageInDays < 365.25) {
-          var daysText = gettextCatalog.getPlural(ageInDays, "day", "days");
-          return ageInDays + " " + daysText;
-        } else {
-          var ageInYears = Math.floor(ageInDays / 365.25);
-          var remainderDays = Math.ceil(ageInDays % 365.25);
-          var yearsText = gettextCatalog.getPlural(ageInYears, "year", "years");
-          var daysText = gettextCatalog.getPlural(remainderDays, "day", "days");
-          return ageInYears + " " + yearsText + (remainderDays ? " " + remainderDays + " " + daysText : "");
-        }
-      };
+      const oneYear = 365.25;
+      const leapThenPair = (years: number, days: number): number[] => (days === 365) ? [years + 1, 0] : [years, days];
+      const timeString = (number: number, singular: string, plural: string): string =>
+        number ? ('' + number + ' ' + gettextCatalog.getPlural(number, singular, plural || singular + 's')) : '';
+      // if ES6 is ever used, use `...` instead.
+      const _timeString = _.spread(timeString);
+
+      return (ageInDays: number): string => ageInDays ?
+        _.zip(leapThenPair(Math.floor(ageInDays / oneYear), Math.ceil(ageInDays % oneYear)), ['year', 'day'])
+          .filter(p => p[0] > 0)
+          .map(p => _timeString(p))
+          .join(' ') :
+        '--';
     }
   }
 

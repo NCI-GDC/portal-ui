@@ -38,7 +38,7 @@ module ngApp.cases.directives {
             $element.removeAttr('disabled');
           };
 
-          const url = config.api + '/cases';
+          const url = config.auth_api + '/cases';
 
           const filters = {
             op: 'and',

@@ -22,7 +22,7 @@ module ngApp.files.directives {
       controllerAs: 'ctrl',
       controller: function($scope: ng.IScope, $attrs, $element, $uibModal, CartService: ICartService, UserService: IUserService, config: IGDCConfig) {
         this.onClick = () => {
-          const url = config.api + '/files';
+          const url = config.auth_api + '/files';
 
           const reportStatus = _.isFunction($scope.$parent.reportStatus)
             ? _.partial($scope.$parent.reportStatus, $scope.$id)
@@ -104,7 +104,7 @@ module ngApp.files.directives {
           $scope.active = false;
           $element.removeAttr('disabled');
         };
-        const url = config.api + '/data?annotations=true&related_files=true';
+        const url = config.auth_api + '/data?annotations=true&related_files=true';
         const download = (files) => {
           if ((files || []).length > 0) {
             const params = { ids: files.map(f => f.file_id) };
@@ -201,7 +201,7 @@ module ngApp.files.directives {
         };
 
         $element.on('click', () => {
-          const url = config.api + '/files'
+          const url = config.auth_api + '/files'
 
           const params = {
             return_type: 'manifest',

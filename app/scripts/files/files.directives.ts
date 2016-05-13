@@ -104,7 +104,7 @@ module ngApp.files.directives {
           $scope.active = false;
           $element.removeAttr('disabled');
         };
-        const url = config.api + '/data?annotations=true&related_files=true';
+        const url = config.auth_api + '/data?annotations=true&related_files=true';
         const download = (files) => {
           if ((files || []).length > 0) {
             const params = { ids: files.map(f => f.file_id) };

@@ -49,7 +49,7 @@ module ngApp.core.filters {
                       annotations : boolean = true,
                       relatedFiles: boolean = true
                       ) {
-        var baseUrl: string = $rootScope.config.api;
+        var baseUrl: string = $rootScope.config.auth_api;
         ids = _.compact(ids);
         var url :string = baseUrl + "/data/" + ids.join(",");
         var flags: string[] = [];
@@ -70,7 +70,7 @@ module ngApp.core.filters {
   class MakeManifestLink {
     constructor($rootScope: ng.IScope) {
       return function (ids: string[],
-                      baseUrl: string = $rootScope.config.api) {
+                      baseUrl: string = $rootScope.config.auth_api) {
         return baseUrl + "/manifest/" + ids.join(",");
       };
     }

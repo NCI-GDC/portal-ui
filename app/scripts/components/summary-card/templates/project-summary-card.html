@@ -29,19 +29,17 @@
       class="table table-striped table-hover table-condensed table-bordered">
       <thead>
         <tr>
-          <th data-ng-if="groupingTitle" data-translate>{{::groupingTitle}}</th>
-          <td data-ng-if="!groupingTitle"></td>
-          <th data-translate>Cases</th>
-          <th data-translate>Files</th>
-          <th data-translate data-ng-if="!config.hideFileSize">File Size</th>
+          <th scope="col" data-translate>{{::groupingTitle}}</th>
+          <th scope="col" data-translate>Cases</th>
+          <th scope="col" data-translate>Files</th>
         </tr>
       </thead>
       <tbody>
         <tr data-ng-repeat="item in tableData track by $index">
-          <th scope="row" class="truncated-cell">
+          <td class="truncated-cell">
             <div class="item-color" data-ng-style="{ 'background-color': item.color }"></div>
             <span>{{ item[config.displayKey] | humanify }}</span>
-          </th>
+          </td>
           <td class="text-right">
             <a
               ng-if="item.case_count"
@@ -60,7 +58,6 @@
             </a>
             <span ng-if="!item[config.sortKey]">0</span>
           </td>
-          <td class="text-right" data-ng-if="!config.hideFileSize">{{ item.file_size | size }}</td>
         </tr>
       </tbody>
     </table>

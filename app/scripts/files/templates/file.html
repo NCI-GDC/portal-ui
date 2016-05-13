@@ -170,7 +170,6 @@
       <section class="row" id="analysis-split-ref-genome">
         <!-- analysis Table -->
         <div class="col-lg-6 col-md-6" data-ng-if="fc.tablesToDisplay.analysis">
-
           <div class="panel panel-default">
             <div class="panel-heading">
               <h3 class="panel-title">Analysis</h3>
@@ -222,11 +221,11 @@
               </thead>
               <tbody>
               <tr>
-                <th data-translate style="width: 22%">Genome Build</th>
+                <th scope="row" data-translate style="width: 22%">Genome Build</th>
                 <td>GRCh38.p0</td>
               </tr>
               <tr>
-                <th data-translate>Genome Name</th>
+                <th scope="row" data-translate>Genome Name</th>
                 <td>GRCh38.d1.vd1</td>
               </tr>
               </tbody>
@@ -343,13 +342,13 @@
                    data-ng-if="fc.file.downstream_analyses.length">
               <thead>
                 <tr>
-                  <th data-translate>File Name</th>
-                  <th data-translate>Data Category</th>
-                  <th data-translate>Data Type</th>
-                  <th data-translate>Data Format</th>
-                  <th data-translate>Analysis workflow</th>
-                  <th data-translate>File Size</th>
-                  <th data-translate>Action</th>
+                  <th scope="col" data-translate>File Name</th>
+                  <th scope="col" data-translate>Data Category</th>
+                  <th scope="col" data-translate>Data Type</th>
+                  <th scope="col" data-translate>Data Format</th>
+                  <th scope="col" data-translate>Analysis workflow</th>
+                  <th scope="col" data-translate>File Size</th>
+                  <th scope="col" data-translate>Action</th>
                 </tr>
               </thead>
               <tbody>

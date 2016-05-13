@@ -61,8 +61,9 @@
           </a>
         </li>
         <li class="MyProjects" data-ng-if="hc.UserService.currentUser && hc.UserService.hasProjects() && hc.shouldShowOption('my-projects')">
-          <label class="MyProjects__label navbar-text">
+          <label class="MyProjects__label navbar-text" for="my_projects">
             <input type="checkbox"
+                   id="my_projects"
                    data-ng-change="hc.UserService.toggleFilter()"
                    data-ng-model="hc.UserService.currentUser.isFiltered">
             <span data-translate>Only My Projects</span>

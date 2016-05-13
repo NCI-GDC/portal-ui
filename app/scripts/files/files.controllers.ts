@@ -6,6 +6,11 @@ module ngApp.files.controllers {
   import IFilesService = ngApp.files.services.IFilesService;
   import IGqlService = ngApp.components.gql.IGqlService;
 
+  interface ITableFilters {
+    assocEntity: string;
+    readGroup: string;
+  }
+
   export interface IFileController {
     file: IFile;
     isInCart(): boolean;
@@ -13,6 +18,7 @@ module ngApp.files.controllers {
     archiveCount: number;
     annotationIds: string[];
     tablesToDisplay: string[];
+    tableFilters: ITableFilters;
     makeSearchPageLink(files: IFile[]): string;
   }
 
@@ -20,6 +26,10 @@ module ngApp.files.controllers {
     archiveCount: number = 0;
     annotationIds: string[] = [];
     tablesToDisplay: string[];
+    tableFilters: ITableFilters = {
+      assocEntity: '',
+      readGroup: ''
+    };
 
     /* @ngInject */
     constructor(public file: IFile,

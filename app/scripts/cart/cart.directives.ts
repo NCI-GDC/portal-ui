@@ -145,7 +145,7 @@ module ngApp.cart.directives {
 
           if (this.areFiltersApplied) {
             FilesService.getFiles({
-              fields: ["file_name", "file_id"],
+              fields: ["file_name", "file_id", "cases.project_id", "access"],
               expand: [],
               filters: filters,
               size: CartService.getCartVacancySize()

@@ -25,9 +25,9 @@
                data-title="{{ f.title | facetTitlefy }}"
                data-facet="aggregations[f.name]"
                data-remove-function="removeFacet(f.name)"
-               data-units-map="f.unitsMap"
                data-removable="{{ f.removable }}"
                data-collapsed="{{ f.collapsed }}"
+               data-convert-days="{{ f.convertDays }}"
                ></range-facet>
 
   <date-facet data-ng-if="f.facetType === 'datetime'"

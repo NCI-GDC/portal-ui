@@ -16,18 +16,16 @@
     </span>
   </h4>
   <div data-ng-show="!rfc.collapsed">
-    <div class="radio-inline"
-         data-ng-if="unitsMap.length > 1"
-         data-ng-repeat="unitMap in unitsMap">
-        <label data-ng-click="$parent.unitClicked(unitMap)" for={{unitMap.label}}>
-          <input type="radio"
-                 data-ng-model="$parent.selectedUnit"
-                 data-ng-value="unitMap"
-                 id="{{unitMap.label}}"
-                 name="{{field}}">
-            {{ unitMap.label | humanify }}
-        </label>
-      </div>
+    <form name="{{field}}-radio" ng-if="convertDays">
+      <label for="{{field}}-years-radio">
+        <input type="radio" ng-model="rfc.selectedUnit" value="years" data-ng-change="rfc.unitClicked()" id="{{field}}-years-radio">
+          Years
+      </label>
+      <label for="{{field}}-days-radio">
+        <input type="radio" ng-model="rfc.selectedUnit" value="days" data-ng-change="rfc.unitClicked()" id="{{field}}-days-radio">
+          Days
+      </label><br/>
+    </form>
     <p data-ng-if="rfc.error">
       {{rfc.error}}
     </p>
@@ -37,8 +35,8 @@
              type="number"
              class="form-control"
              style="border-radius: 0px;"
-             placeholder="{{ min }}"
-             title="Min: {{min | number}}; Max: {{ max | number}}"
+             placeholder="{{ rfc.displayedMin }}"
+             title="Min: {{ rfc.displayedMin | number}}; Max: {{ rfc.displayedMax | number}}"
              data-ng-model="rfc.lowerBound"
              aria-label="Min {{ field }}"
              data-ng-change="rfc.inputChanged()">
@@ -47,8 +45,8 @@
              type="number"
              class="form-control"
              style="border-radius: 0px"
-             placeholder="{{ max }}"
-             title="Min: {{min | number}}; Max: {{max | number}}"
+             placeholder="{{ rfc.displayedMax }}"
+             title="Min: {{ rfc.displayedMin | number}}; Max: {{ rfc.displayedMax | number}}"
              data-ng-model="rfc.upperBound"
              aria-label="Max {{ field }}"
              data-ng-change="rfc.inputChanged()">

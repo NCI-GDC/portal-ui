@@ -34,6 +34,7 @@ module ngApp.components.facets.models {
     min: number;
     data: any;
     unitsMap: Object[];
+    convertDays: boolean;
   }
 
   export interface IDateFacetScope extends ng.IScope {

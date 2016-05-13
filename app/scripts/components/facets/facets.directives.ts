@@ -106,9 +106,9 @@ module ngApp.components.facets.directives {
         facet: "=",
         title: "@",
         field: "@",
-        unitsMap: "=",
+        convertDays: "@",
         removable: "@",
-        removeFunction: "&",
+        removeFunction: "&"
       },
       replace: true,
       templateUrl: "components/facets/templates/range-facet.html",

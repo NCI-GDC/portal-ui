@@ -23,19 +23,20 @@
         </li>
         <li data-ng-class="{ active: hc.$state.includes('projects') }"
             id="header-projects">
-          <a ui-sref="projects.table" tabindex="0"><i class="fa fa-folder-o fa-hidden"></i>
+          <a ui-sref="projects.table" tabindex="0"><i class="icon-gdc-projects"></i>
             <span class="hidden-sm" data-translate>Projects</span>
           </a>
         </li>
         <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
             id="header-data">
-          <a ui-sref="search.summary" tabindex="0"><i class="fa fa-database fa-hidden"></i>
+          <a ui-sref="search.summary" tabindex="0"><i class="icon-gdc-data"></i>
             <span class="hidden-sm" data-translate>Data</span>
           </a>
         </li>
         <li id="header-data">
+
           <a href="https://gdc.nci.nih.gov/access-data/analytical-tools" tabindex="0" target="_blank">
-            <img class="fa-hidden" src="images/icon-GDC-Analysis.svg" alt="GDC Analysis"/>
+            <i class="fa fa-bar-chart"></i>
             <span class="hidden-sm" data-translate>Analysis</span>
           </a>
         </li>
@@ -56,7 +57,7 @@
         </li>
         <li data-ng-if="!hc.UserService.currentUser" id="header-login">
           <a login-button tabindex="0">
-            <i class="fa fa-sign-in fa-hidden"></i>
+            <i class="fa fa-sign-in"></i>
             <span class="hidden-md hidden-sm" data-translate>Login</span>
           </a>
         </li>
@@ -106,7 +107,7 @@
         </li>
         <li ui-sref-active="active" class="nav-cart">
           <a ui-sref="cart" tabindex="0">
-            <i class="fa fa-shopping-cart fa-hidden"></i>
+            <i class="fa fa-shopping-cart"></i>
             <span class="hidden-md hidden-sm" data-translate>Cart</span>
             <span class="label label-primary">{{ hc.getNumCartItems() }}</span>
           </a>

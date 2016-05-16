@@ -89,13 +89,22 @@ describe('Cart:', function () {
       CartService.add(fileA);
       expect(addCallback).to.have.been.calledOnce;
       expect(CartService).to.have.property('files').to.have.length(1);
+      expect(CartService.isInCart(fileA.file_id));
     }));
 
-    it('should list of files in cart', inject(function (CartService) {
+    it('should check if an array of files are in the cart', inject(function (CartService) {
+      var addCallback = sinon.spy(CartService, 'add');
+      CartService.add(fileA);
+      CartService.add(fileB);
+      expect(CartService.areInCart([fileA, fileB]));
+    }));
+
+    it('should get list of files in cart', inject(function (CartService) {
       var addCallback = sinon.spy(CartService, 'add');
       CartService.add(fileA);
       expect(addCallback).to.have.been.calledOnce;
-      expect(CartService).to.have.property('files').to.have.length(1);
+      expect(CartService.getFiles().length).to.eq(1);
+      expect(CartService.getFiles()[0]).to.eq(fileA);
     }));
 
     it('should add a file to the cart', inject(function (CartService) {

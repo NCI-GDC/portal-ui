@@ -328,10 +328,10 @@ module ngApp.cart.controllers {
     }
 
     addAll(): void {
-      if ((this.files || []).length) {
-        this.CartService.addFiles(this.files, false);
-      } else if (this.size > this.CartService.getCartVacancySize()) {
+      if (this.files.length > this.CartService.getCartVacancySize()) {
         this.CartService.sizeWarning();
+      } else if ((this.files || []).length) {
+        this.CartService.addFiles(this.files, false);
       } else {
         var addingMsgPromise = this.$timeout(() => {
           this.notify({

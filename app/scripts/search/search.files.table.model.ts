@@ -138,7 +138,7 @@ module ngApp.search.models {
       }, {
         name: "Platform",
         id: "platform",
-        td: (row, $scope) => row.platform && $scope.$filter("humanify")(row.platform),
+        td: (row, $scope) => row.platform || '--',
         sortable: false,
         hidden: true
       }],

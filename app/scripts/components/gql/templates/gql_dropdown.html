@@ -7,10 +7,9 @@
       data-ng-mouseenter="mouseIn($index)"
       data-ng-class="{true:'Gql_dropdown_item-active'}[e.active]"
       data-ng-repeat="e in ddItems | limitTo:limit:offset track by e.full">
-    <i class="fa"
+    <i class="fa list-indent"
        data-ng-if="e.doc_type"
-       style="margin-right: 10px;background: #5b5151;padding: 1rem;color: #fff; width: 3.2rem"
-        data-ng-class="{'files':'fa-file', 'cases':'fa-user', '':'fa-square'}[e.doc_type]">
+       data-ng-class="{'files':'fa-file', 'cases':'fa-user', '':'fa-square'}[e.doc_type]">
     </i>
     <i class="fa fa-square"
        data-ng-if="!e.doc_type"

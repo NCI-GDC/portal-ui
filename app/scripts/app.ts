@@ -81,12 +81,14 @@ function addTokenToRequest (element, operation, route, url, headers, params, htt
 }
 
 /* @ngInject */
-function appConfig($urlRouterProvider: ng.ui.IUrlRouterProvider,
-                   $locationProvider: ng.ILocationProvider,
-                   RestangularProvider: restangular.IProvider,
-                   config: IGDCConfig,
-                   $compileProvider: ng.ICompileService,
-                   $httpProvider: ng.IHttpProvider) {
+function appConfig(
+  $urlRouterProvider: ng.ui.IUrlRouterProvider,
+  $locationProvider: ng.ILocationProvider,
+  RestangularProvider: restangular.IProvider,
+  config: IGDCConfig,
+  $compileProvider: ng.ICompileService,
+  $httpProvider: ng.IHttpProvider
+) {
   $compileProvider.debugInfoEnabled(!config.production);
   $locationProvider.html5Mode(true);
   $urlRouterProvider.otherwise("/404");
@@ -191,16 +193,14 @@ function appRun(gettextCatalog: any,
 
   UserService.login();
 
-  ProjectsService.getProjects({
-    size: 100
-  })
-  .then((data) => {
-    var mapping = {};
-    _.each(data.hits, (project) => {
-      mapping[project.project_id] = project.name;
-    });
-    ProjectsService.projectIdMapping = mapping;
-  });
+  ProjectsService.getProjects({ size: 100 })
+    .then(data => {
+      ProjectsService.projectIdMapping =
+        data.hits.reduce((acc, project) => {
+          acc[project.project_id] = project.name;
+            return acc;
+          }, {});
+      });
 
   $rootScope.$on("$stateChangeStart", () => {
     // Page change

@@ -78,7 +78,7 @@
           <div class="stats-block-header">Projects</div>
           <div class="stats-block-body">
             <i class="icon-gdc-projects project-icon"></i>
-            <a href="/projects/t" data-ng-bind="hc.projectData.pagination.total|number"></a>
+            <span style="color: #333" data-ng-bind="hc.projectData.pagination.total|number"></span>
           </div>
         </div>
         <div class="data-stats-block">
@@ -93,15 +93,15 @@
         <div class="data-stats-block">
           <div class="stats-block-header">Cases</div>
           <div class="stats-block-body">
-            <i class="icon-gdc-projects data-icon"></i>
-            <a href="/search/c" data-ng-bind="hc.caseData.pagination.total|number"></a>
+            <i class="icon-gdc-cases data-icon"></i>
+            <span style="color: #333" data-ng-bind="hc.caseData.pagination.total|number"></span>
           </div>
         </div>
         <div class="data-stats-block">
           <div class="stats-block-header">Files</div>
           <div class="stats-block-body">
             <i class="fa fa-file-o data-icon"></i>
-            <a href="/search/f" data-ng-bind="hc.fileData.pagination.total|number"></a>
+            <span style="color: #333" data-ng-bind="hc.fileData.pagination.total|number"></span>
           </div>
         </div>
       </div>
@@ -126,30 +126,24 @@
           <table class="table-responsive table table-striped table-hover table-condensed">
             <tbody>
               <tr data-ng-repeat-placeholder>
-                <th>Storage Infrastructure</th>
+                <th scope="row">Storage Infrastructure</th>
                 <td>
                     5.12 PB used
                 </td>
                 <td>5.92 PB available</td>
               </tr>
               <tr>
-                <th>Compute Infrastructure</th>
+                <th scope="row">Compute Infrastructure</th>
                 <td>12,800 Cores</td>
                 <td>87.96 TB RAM</td>
               </tr>
               <tr>
-                <th>Internet Bandwidth</th>
+                <th scope="row">Internet Bandwidth</th>
                 <td>60 Gbps Total</td>
                 <td>21.65 Gbps Utilized</td>
               </tr>
               <tr>
-                <th>Unique Visitors</th>
-                <td>20 daily</td>
-                <td>1500 Total</td>
-              </tr>
-              <tr>
-                <th colspan="3"><a href="/reports/data-download-statistics">View Data Download Statistics Report >></a></th>
-
+                <th scope="row" colspan="3"><a href="/reports/data-download-statistics">View Data Download Statistics Report >></a></th>
               </tr>
             </tbody>
           </table>
@@ -290,8 +284,9 @@
               </td>
               <td>
                 <div data-uib-tooltip="GDC cBio Portal">
-                  <a href="#" title="GDC cBio Portal" target="_blank" class="menu-item">
-                      <img src="images/icon-cBioPortal.svg" class="icon icon-gdc-cbio-portal" alt="GDC cBio Portal" />
+                  <a href="https://gdc-cbioportal.nci.nih.gov/" title="GDC cBio Portal" target="_blank" class="menu-item">
+                      <img
+                        src="images/icon-cBioPortal.svg" class="icon icon-gdc-cbio-portal home" alt="GDC cBio Portal" />
                       <p>GDC cBio Portal</p>
                   </a>
                 </div>

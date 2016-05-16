@@ -23,6 +23,7 @@ module ngApp.components.facets.controllers {
   import IUserService = ngApp.components.user.services.IUserService;
   import IGDCWindowService = ngApp.core.models.IGDCWindowService;
   import IFacetsConfigService = ngApp.components.facets.services.IFacetsConfigService;
+  import ICustomFacetsService = ngApp.components.facets.services.ICustomFacetsService;
 
   class Toggleable {
 
@@ -224,7 +225,7 @@ module ngApp.components.facets.controllers {
     }
 
     saveInput(): void {
-      this.searchTerm = this.searchTerm.replace(/[^a-zA-Z0-9-_]/g, '');
+      this.searchTerm = this.searchTerm.replace(/[^a-zA-Z0-9-_.]/g, '');
       this.lastInput = this.searchTerm;
     }
 
@@ -290,6 +291,10 @@ module ngApp.components.facets.controllers {
     error: string = undefined;
     lowerBound: number = null;
     upperBound: number = null;
+    conversionFactor: number = 365.25;
+    selectedUnit: string = 'years';
+    displayedMax: number = 0;
+    displayedMin: number = 0;
 
     /* @ngInject */
     constructor(private $scope: IRangeFacetScope,
@@ -297,81 +302,69 @@ module ngApp.components.facets.controllers {
                 private FacetService: IFacetService) {
 
       $scope.data = {};
-      $scope.dataUnitConverted = [];
       $scope.lowerBoundOriginalDays = null;
       $scope.upperBoundOriginalDays = null;
-
-      if(!$scope.unitsMap) {
-        $scope.unitsMap = [
-              {
-                "label": "none",
-                "conversionDivisor": 1,
-              }
-            ];
-      }
-
-      $scope.selectedUnit = $scope.unitsMap[0];
 
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
 
       $scope.$watch("facet", (n, o) => {
-        if ((n === o && ($scope.min !== undefined || $scope.max !== undefined)) || n === undefined) {
+        if (n === o) {
           return;
         }
-        if(n) {
+        if (n) {
           $scope.data = n;
-          $scope.dataUnitConverted = this.unitConversion($scope.data);
-          this.getMaxMin($scope.dataUnitConverted);
+          this.convertMaxMin();
         } else {
           this.error = n;
         }
       });
 
-      var _this = this;
-      $scope.unitClicked = function(selectedUnitMap: Object) {
-        $scope.selectedUnit = selectedUnitMap;
-        _this.$scope.dataUnitConverted = _this.unitConversion($scope.data);
-        _this.getMaxMin($scope.dataUnitConverted);
-        _this.lowerBound = _this.$scope.lowerBoundOriginalDays ? Math.floor(_this.$scope.lowerBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
-        _this.upperBound = _this.$scope.upperBoundOriginalDays ? Math.ceil(_this.$scope.upperBoundOriginalDays / _this.$scope.selectedUnit.conversionDivisor) : null;
-      };
-
     }
 
-    unitConversion(data: Object[]): Object[] {
-      if(this.$scope.unitsMap) {
-        return _.reduce(data, (acc, v, k) => {
-          acc[k] = Math.floor(v/this.$scope.selectedUnit.conversionDivisor);
-          return acc;
-        }, {});
-      } else {
-        return data;
+    // when textboxes change convert to days right away and store
+    // when conversions are done after, it's always from days.
+    inputChanged() {
+      if (this.selectedUnit === 'years') {
+        this.$scope.upperBoundOriginalDays = this.upperBound ? Math.floor(this.upperBound * this.conversionFactor + this.conversionFactor - 1) : null;
+        this.$scope.lowerBoundOriginalDays = this.lowerBound ? Math.floor(this.lowerBound * this.conversionFactor) : null;
+      } else if (this.selectedUnit === 'days'){
+        this.$scope.upperBoundOriginalDays = this.upperBound;
+        this.$scope.lowerBoundOriginalDays = this.lowerBound;
       }
     }
 
-    getMaxMin(data: Object[]): void {
-      this.$scope.min = data.min;
-      this.$scope.max = data.max;
+    unitClicked(): void {
+      this.convertUserInputs();
+      this.convertMaxMin();
+    }
+
+    convertUserInputs() {
+      if (this.selectedUnit === 'days') {
+        this.lowerBound = this.$scope.lowerBoundOriginalDays;
+        this.upperBound = this.$scope.upperBoundOriginalDays;
+      } else if (this.selectedUnit === 'years') {
+        this.lowerBound = this.$scope.lowerBoundOriginalDays ? Math.ceil(this.$scope.lowerBoundOriginalDays / this.conversionFactor) : null;
+        this.upperBound = this.$scope.upperBoundOriginalDays ? Math.ceil((this.$scope.upperBoundOriginalDays + 1 - this.conversionFactor) / this.conversionFactor) : null;
+      }
+    }
+
+    convertMaxMin() {
+      if (this.selectedUnit === 'days') {
+        this.displayedMin = this.$scope.data.min;
+        this.displayedMax = this.$scope.data.max;
+      } else if (this.selectedUnit === 'years') {
+        this.displayedMin = Math.floor(this.$scope.data.min / this.conversionFactor);
+        this.displayedMax = Math.floor(this.$scope.data.max / this.conversionFactor);
+      }
     }
 
     refresh(): void {
       this.activesWithOperator = this.FacetService.getActivesWithOperator(this.$scope.field);
-      if (_.has(this.activesWithOperator, '>=')) {
-        this.lowerBound = Math.floor(this.activesWithOperator['>='] / this.$scope.selectedUnit.conversionDivisor);
-      } else {
-        this.lowerBound = null;
-      }
-      if (_.has(this.activesWithOperator, '<=')) {
-        this.upperBound = Math.ceil(this.activesWithOperator['<='] / this.$scope.selectedUnit.conversionDivisor);
-      } else {
-        this.upperBound = null;
-      }
-    }
-
-    inputChanged() {
-      this.$scope.lowerBoundOriginalDays = this.lowerBound * this.$scope.selectedUnit.conversionDivisor;
-      this.$scope.upperBoundOriginalDays = this.upperBound * this.$scope.selectedUnit.conversionDivisor;
+      this.$scope.lowerBoundOriginalDays = this.activesWithOperator['>='] || null;
+      this.$scope.upperBoundOriginalDays = this.activesWithOperator['<='] || null;
+      this.convertMaxMin();
+      this.convertUserInputs();
     }
 
     setBounds() {
@@ -379,7 +372,7 @@ module ngApp.components.facets.controllers {
         if (_.has(this.activesWithOperator, '>=')) {
           this.FacetService.removeTerm(this.$scope.field, null, ">=");
         }
-        this.FacetService.addTerm(this.$scope.field, this.lowerBound * this.$scope.selectedUnit.conversionDivisor, ">=");
+        this.FacetService.addTerm(this.$scope.field, this.$scope.lowerBoundOriginalDays, ">=");
       } else {
         this.FacetService.removeTerm(this.$scope.field, null, ">=");
       }
@@ -387,7 +380,7 @@ module ngApp.components.facets.controllers {
         if (_.has(this.activesWithOperator, '<=')) {
           this.FacetService.removeTerm(this.$scope.field, null, "<=");
         }
-        this.FacetService.addTerm(this.$scope.field, this.upperBound * this.$scope.selectedUnit.conversionDivisor, "<=");
+        this.FacetService.addTerm(this.$scope.field, this.$scope.upperBoundOriginalDays, "<=");
       } else {
         this.FacetService.removeTerm(this.$scope.field, null, "<=");
       }
@@ -448,11 +441,11 @@ module ngApp.components.facets.controllers {
   class CustomFacetsModalController {
     private ds: restangular.IElement;
     public selectedIndex: number;
-    private offsets: Array<number>;
 
       /* @ngInject */
       constructor(public facetFields: Array<Object>,
                   private $scope: ng.IScope,
+                  private $rootScope: IRootScope,
                   private $uibModalInstance,
                   private $window: IGDCWindowService,
                   private Restangular: restangular.IService,
@@ -462,9 +455,9 @@ module ngApp.components.facets.controllers {
                   private facetsConfig: any,
                   private LocationService: ILocationService,
                   private FacetsConfigService: IFacetsConfigService,
+                  private CustomFacetsService: ICustomFacetsService,
                   private aggregations: any,
                   public docType: string) {
-
       this.selectedIndex = 0;
 
       var _this = this;
@@ -556,28 +549,15 @@ module ngApp.components.facets.controllers {
     scrollToSelected(direction: Cycle) {
       var modalElement = document.getElementById('add-facets-modal')
       var selectedElement = document.getElementById(this.$filter('dotReplace')(this.$scope.filteredFields[this.selectedIndex].field, '-'));
-      var offsets = _.sortBy(this.$scope.filteredFields.map(f => document.getElementById(this.$filter('dotReplace')(f.field, '-')).offsetTop));
-
-      //don't want to jump selectedElement to the top when scrolling up and down
-      //so set scrollTop to the element that's nearest to the top instead
-      var currentTopPos = modalElement.scrollTop;
-      var minDiff = Number.MAX_VALUE;
-      var nearestIndex = offsets.reduce((acc, offset, i) => {
-        var currentDiff = Math.abs(currentTopPos - offset);
-        if (currentDiff < minDiff) {
-          minDiff = currentDiff;
-          return i;
-        }
-        return acc;
-      }, -1);
-
+      var styles = window.getComputedStyle(document.getElementById('facets-list'));
+      var marginHeight = parseFloat(styles['marginTop']) + parseFloat(styles['marginBottom']) || 10;
       if (direction === Cycle.Up) {
         if (selectedElement.offsetTop < modalElement.scrollTop) {
-          modalElement.scrollTop = offsets[nearestIndex-1]
+          modalElement.scrollTop = modalElement.scrollTop - selectedElement.offsetHeight - marginHeight;
         }
       } else if (direction === Cycle.Down) {
-        if (selectedElement.offsetTop + 4 > modalElement.scrollTop + modalElement.clientHeight) {
-          modalElement.scrollTop = offsets[nearestIndex+1];
+        if (selectedElement.offsetTop + selectedElement.offsetHeight > modalElement.scrollTop + modalElement.clientHeight) {
+          modalElement.scrollTop = modalElement.scrollTop + selectedElement.offsetHeight + marginHeight;
         }
       }
     }
@@ -587,6 +567,26 @@ module ngApp.components.facets.controllers {
         this.selectedIndex = 0;
       }
     }
+
+    toggleEmpty() {
+      if (!this.CustomFacetsService.nonEmptyOnlyDisplayed) {
+          this.$rootScope.$emit('ShowLoadingScreen');
+          this.CustomFacetsService.getNonEmptyFacetFields(this.docType, this.facetFields)
+          .then(data => {
+            this.CustomFacetsService.nonEmptyOnlyDisplayed = true;
+            this.facetFields = this.CustomFacetsService.filterFields(this.docType, data);
+          }).finally(() => this.$rootScope.$emit('ClearLoadingScreen'));
+      } else {
+        this.$rootScope.$emit('ShowLoadingScreen');
+        this.CustomFacetsService.getFacetFields(this.$scope.docType)
+        .then(data => {
+          this.CustomFacetsService.nonEmptyOnlyDisplayed = false;
+          this.facetFields = this.CustomFacetsService.filterFields(this.docType, data);
+        })
+        .finally(() => this.$rootScope.$emit('ClearLoadingScreen'));
+      }
+    }
+
   }
 
   class AddCustomFacetsPanelController {
@@ -624,8 +624,16 @@ module ngApp.components.facets.controllers {
         size: "lg",
         resolve: {
             /** @ngInject */
-            facetFields: (CustomFacetsService: ICustomFacetsService): ng.IPromise<any> => {
-              return CustomFacetsService.getFacetFields(this.$scope.docType);
+            facetFields: (CustomFacetsService: ICustomFacetsService, $rootScope: IRootScope): ng.IPromise<any> => {
+              $rootScope.$emit('ShowLoadingScreen');
+              return CustomFacetsService.getFacetFields(this.$scope.docType)
+                     .then(data => {
+                        if (CustomFacetsService.nonEmptyOnlyDisplayed) {
+                          return CustomFacetsService.getNonEmptyFacetFields(this.$scope.docType, _.map(data, (v, k) => v));
+                        }
+                        return data;
+                      }).then(data => CustomFacetsService.filterFields(this.$scope.docType, data))
+                      .finally(() => $rootScope.$emit('ClearLoadingScreen'));
             },
             facetsConfig: () => { return this.$scope.facetsConfig; },
             aggregations: () => { return this.$scope.aggregations; },

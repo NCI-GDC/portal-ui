@@ -28,16 +28,16 @@
         <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
           <thead>
           <tr>
-            <th data-translate>
+            <th scope="col" data-translate>
               Project ID
             </th>
-            <th data-translate>
+            <th scope="col" data-translate>
               Project Name
             </th>
-            <th class="text-right" data-translate>
+            <th scope="col" class="text-right" data-translate>
               # Requests
             </th>
-            <th class="text-right" data-translate>
+            <th scope="col" class="text-right" data-translate>
               File Size
             </th>
           </tr>
@@ -71,22 +71,22 @@
             <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
-                <th data-translate>
+                <th scope="col" data-translate>
                   Disease Type
                 </th>
-                <th class="text-right" data-translate>
+                <th scope="col" class="text-right" data-translate>
                   # Requests
                 </th>
-                <th class="text-right" data-translate>
+                <th scope="col" class="text-right" data-translate>
                   File Size
                 </th>
               </tr>
               </thead>
               <tbody>
               <tr data-ng-repeat="project in rsc.byDisease  | orderBy:'values.file_count':true">
-                <th class="truncated-cell">
+                <td class="truncated-cell">
                   {{ project.key || '(none specified)'}}
-                </th>
+                </td>
                 <td class="text-right">
                   {{ project.values.file_count | number }}
                 </td>
@@ -109,22 +109,22 @@
             <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
-                <th data-translate>
+                <th scope="col" data-translate>
                   Program
                 </th>
-                <th class="text-right" data-translate>
+                <th scope="col" class="text-right" data-translate>
                   # Requests
                 </th>
-                <th class="text-right" data-translate>
+                <th scope="col" class="text-right" data-translate>
                   File Size
                 </th>
               </tr>
               </thead>
               <tbody>
               <tr data-ng-repeat="project in rsc.byProgram | orderBy:'values.file_count':true">
-                <th>
+                <td>
                   {{ project.key || '(none specified)'}}
-                </th>
+                </td>
                 <td class="text-right">
                   {{ project.values.file_count | number }}
                 </td>
@@ -154,22 +154,22 @@
             <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
-                <th data-translate>
+                <th scope="col" data-translate>
                   Experimental Strategy
                 </th>
-                <th  class="text-right"data-translate>
+                <th  scope="col" class="text-right"data-translate>
                   # Requests
                 </th>
-                <th  class="text-right"data-translate>
+                <th  scope="col" class="text-right"data-translate>
                   File Size
                 </th>
               </tr>
               </thead>
               <tbody>
               <tr data-ng-repeat="project in rsc.byStrat | orderBy:'values.file_count':true">
-                <th>
+                <td>
                   {{ project.key || '(none specified)' }}
-                </th>
+                </td>
                 <td class="text-right">
                   {{ project.values.file_count | number }}
                 </td>
@@ -192,22 +192,22 @@
             <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
               <thead>
               <tr>
-                <th data-translate>
+                <th scope="col" data-translate>
                   Data Access
                 </th>
-                <th class="text-right" data-translate>
+                <th scope="col" class="text-right" data-translate>
                   # Requests
                 </th>
-                <th class="text-right">
+                <th scope="col" class="text-right">
                   File Size
                 </th>
               </tr>
               </thead>
               <tbody>
               <tr ng-repeat='p in rsc.byDataAccess'>
-                <th>
+                <td>
                   {{ p.key }}
-                </th>
+                </td>
                 <td class="text-right">
                    {{ p.values.file_count | number }}
                 </td>
@@ -237,22 +237,22 @@
         <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
           <thead>
           <tr>
-            <th data-translate>
+            <th scope="col" data-translate>
               Access Type
             </th>
-            <th class="text-right" data-translate>
+            <th scope="col" class="text-right" data-translate>
               # Requests
             </th>
-            <th class="text-right" data-translate>
+            <th scope="col" class="text-right" data-translate>
               File Size
             </th>
           </tr>
           </thead>
           <tbody>
           <tr data-ng-repeat="x in rsc.byUserType | orderBy:'values.file_count':true">
-            <th>
+            <td>
               {{ x.key }}
-            </th>
+            </td>
             <td class="text-right">
               {{ x.values.file_count | number }}
             </td>
@@ -274,22 +274,22 @@
         <table class="table table-striped table-hover table-condensed table-bordered table-responsive">
           <thead>
           <tr>
-            <th data-translate>
+            <th scope="col" data-translate>
               Access Location
             </th>
-            <th class="text-right" data-translate>
+            <th scope="col" class="text-right" data-translate>
               # Requests
             </th>
-            <th class="text-right" data-translate>
+            <th scope="col" class="text-right" data-translate>
               File Size
             </th>
           </tr>
           </thead>
           <tbody>
           <tr data-ng-repeat="x in rsc.byLocation | orderBy:'values.file_count':true">
-            <th>
+            <td>
               {{ x.key }}
-            </th>
+            </td>
             <td class="text-right">
               {{ x.values.file_count | number }}
             </td>

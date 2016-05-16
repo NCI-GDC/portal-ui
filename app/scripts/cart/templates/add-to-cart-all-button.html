@@ -1,6 +1,9 @@
-<button id="add-to-cart-button" class="btn btn-primary" data-ng-click="ctrl.addAll()">
-  <span class="fa-stack">
-    <i class="fa fa-shopping-cart fa-stack-1x"></i>
-  </span>
+<button
+  id="add-to-cart-button"
+  class="btn btn-primary"
+  data-ng-click="ctrl.addAll()"
+  data-ng-disabled="!ctrl.hasFiles"
+>
+  <i class="fa fa-shopping-cart"></i>
   <span data-translate>Add all files to the Cart</span>
 </button>

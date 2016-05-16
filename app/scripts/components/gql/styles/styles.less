@@ -15,7 +15,8 @@
   position: absolute;
   z-index: 100000;
   background: white;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
+  max-width: 977px;
 }
 
 .Gql_dropdown_item {
@@ -25,9 +26,11 @@
 .Gql_dropdown_item:hover,
 .Gql_dropdown_item-active,
 .Gql_dropdown_item-active .Gql_dropdown_item--field,
-.Gql_dropdown_item-active .Gql_dropdown_item--description {
-  color: #fff;
-  background: #1f486c;
+.Gql_dropdown_item-active .Gql_dropdown_item--description,
+.Gql_dropdown_item:hover .Gql_dropdown_item--field,
+.Gql_dropdown_item:hover .Gql_dropdown_item--description {
+  color: #fff !important;
+  background: #1f486c !important;
 }
 
 .Gql_dropdown_item-active .Gql_dropdown_item--type {
@@ -36,6 +39,8 @@
 
 .Gql_dropdown_arrow {
   text-align: center;
+  border: 1px solid rgb(189, 189, 189);
+  background-color: rgb(237, 245, 245);
 }
 
 .Gql_dropdown_item--description {

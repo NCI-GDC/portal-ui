@@ -691,7 +691,6 @@ module ngApp.components.charts {
             // })
             .on("click", function () {
               var tick = d3.select(this);
-              console.log('here: ', tick);
               var filters = {
                 "op":"and",
                 "content":[
@@ -766,8 +765,21 @@ module ngApp.components.charts {
                   barColour = bar.attr("fill");
 
               bar.interrupt()
-                .transition()
-                .attr("fill", d3.hsl(barColour).darker(1));
+                .transition();
+
+              _svg.append('rect')
+                .classed('chart-focus', true)
+                .attr("transform", () => "translate(" + (_xScale(d._key) - (_xScale.rangeBand() * 4)) + ", " + _height + ")")
+                .attr('width', _xScale.rangeBand())
+                .attr('height', () => _yScale(d.y1) - _yScale(d.y0))
+                .attr('fill', 'none')
+                .attr('stroke', '#283e5d')
+                .attr('stroke-width', 2)
+                .attr('y', _yScale(d.y0))
+                .attr("transform", () => {
+                  var totalCount = _data.reduce((total, d2) => d2._key === d._key ? d2._count : total, 0);
+                  return "translate(" + (_xScale(d._key) + PADDING) + ", " + (_height - _yScale(totalCount) - _chartMargin.bottom + 10) + ")";
+                });
 
               _tipFn.show(d);
 
@@ -781,7 +793,7 @@ module ngApp.components.charts {
                 .transition()
                 .attr("fill", barColour)
                 .attr("transform", "translate(0, 0)");
-
+                _svg.selectAll('.chart-focus').remove();
               _tipFn.hide(d);
             });
 

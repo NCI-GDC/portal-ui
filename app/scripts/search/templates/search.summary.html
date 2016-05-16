@@ -1,9 +1,14 @@
 <div class="panel panel-default summary-panel">
   <div class="row">
-    <div class="col-lg-12">
-      <add-to-cart-all-button
-         data-files="sc.files"
-         data-size="{{ sc.files.pagination.total }}" />
+    <div class="col-lg-12 spacing-left">
+      <add-to-cart-all-button data-size="{{ sc.files.pagination.total }}"></add-to-cart-all-button>
+      <download-manifest-button
+        classes="btn btn-primary"
+        data-icon="fa-download"
+        data-copy="Download Manifest"
+        data-dlcopy="Downloading"
+        data-size="sc.files.pagination.total">
+      </download-manifest-button>
     </div>
   </div>
 </div>

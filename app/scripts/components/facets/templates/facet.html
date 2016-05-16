@@ -18,8 +18,8 @@
   </h4>
 
   <div data-ng-show="!tc.collapsed">
-    <p data-ng-show="!tc.terms.length && !tc.error">
-      None
+    <p data-ng-show="(!tc.terms.length && !tc.error) || (tc.terms.length === 1 && tc.terms[0].key === '_missing')">
+      No Data for this Field
     </p>
     <p data-ng-show="tc.error">
       {{tc.error}}

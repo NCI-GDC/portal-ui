@@ -301,7 +301,7 @@ module ngApp.components.tables.controllers {
 
       const inProgress = (state) => (() => { this.$scope.downloadInProgress = state; }).bind(this);
 
-      const checkProgress = download(params, '' + this.config.api + '/' + this.$scope.endpoint, (e) => e.parent());
+      const checkProgress = download(params, '' + this.config.auth_api + '/' + this.$scope.endpoint, (e) => e.parent());
       checkProgress(inProgress(true), inProgress(false));
     }
 

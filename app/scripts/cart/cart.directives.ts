@@ -145,7 +145,7 @@ module ngApp.cart.directives {
 
           if (this.areFiltersApplied) {
             FilesService.getFiles({
-              fields: ["file_name", "file_id"],
+              fields: ["file_name", "file_id", "cases.project_id", "access"],
               expand: [],
               filters: filters,
               size: CartService.getCartVacancySize()
@@ -278,7 +278,7 @@ module ngApp.cart.directives {
           };
           const files = [].concat(CartService.getFiles());
           const params = { ids: files.map(f => f.file_id) };
-          const url = config.api + '/manifest?annotations=true&related_files=true';
+          const url = config.auth_api + '/manifest?annotations=true&related_files=true';
 
           const checkProgress = $scope.download(params, url, () => $element, 'POST');
           checkProgress(inProgress, done);
@@ -312,9 +312,9 @@ module ngApp.cart.directives {
           };
           const files = [].concat(CartService.getFiles());
           const params = { ids: files.map(f => f.file_id) };
-          const url = config.api + '/data/metadata_files';
+          const url = config.auth_api + '/data/metadata_files';
           const checkProgress = $scope.download(params, url, () => $element, 'POST');
-          checkProgress(inProgress, done);
+          checkProgress(inProgress, done, true);
         });
       }
     };
@@ -341,12 +341,12 @@ module ngApp.cart.directives {
           reportStatus(scope.active);
           $element.removeAttr('disabled');
         };
-        const url = config.api + '/data?annotations=true&related_files=true';
+        const url = config.auth_api + '/data?annotations=true&related_files=true';
         const download = (files) => {
           if ((files || []).length > 0) {
             const params = { ids: files.map(f => f.file_id) };
             const checkProgress = scope.download(params, url, () => $element, 'POST');
-            checkProgress(inProgress, done);
+            checkProgress(inProgress, done, true);
           }
         };
 

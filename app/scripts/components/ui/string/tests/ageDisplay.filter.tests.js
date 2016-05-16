@@ -27,13 +27,14 @@ describe("AgeDisplay Filter:", function() {
     expect($filter("ageDisplay")(age)).to.equal(age + " days");
     age = 366;
     expect($filter("ageDisplay")(age)).to.equal("1 year 1 day");
+    age = 729;
+    expect($filter("ageDisplay")(age)).to.equal("1 year 364 days");
     age = 730;
-    expect($filter("ageDisplay")(age)).to.equal("1 year 365 days");
+    expect($filter("ageDisplay")(age)).to.equal("2 years");
     age = 730.5;
     expect($filter("ageDisplay")(age)).to.equal("2 years");
-    age = 731
+    age = 731;
     expect($filter("ageDisplay")(age)).to.equal("2 years 1 day");
-
   }));
 
 });

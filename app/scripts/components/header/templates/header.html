@@ -15,16 +15,29 @@
          data-ng-keypress="hc.collapse($event)"
          aria-label="{{ 'Site Navigation' | translate }}">
       <ul class="nav navbar-nav">
+        <li data-ng-class="{ active: hc.$state.includes('home') }"
+            id="header-projects">
+          <a ui-sref="home" tabindex="0"><i class="fa fa-home"></i>
+            <span class="hidden-sm" data-translate>Home</span>
+          </a>
+        </li>
         <li data-ng-class="{ active: hc.$state.includes('projects') }"
             id="header-projects">
-          <a ui-sref="projects.table" tabindex="0"><i class="fa fa-folder-o"></i>
+          <a ui-sref="projects.table" tabindex="0"><i class="icon-gdc-projects"></i>
             <span class="hidden-sm" data-translate>Projects</span>
           </a>
         </li>
         <li data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
             id="header-data">
-          <a ui-sref="search.summary" tabindex="0"><i class="fa fa-database"></i>
+          <a ui-sref="search.summary" tabindex="0"><i class="icon-gdc-data"></i>
             <span class="hidden-sm" data-translate>Data</span>
+          </a>
+        </li>
+        <li id="header-data">
+
+          <a href="https://gdc.nci.nih.gov/access-data/analytical-tools" tabindex="0" target="_blank">
+            <i class="fa fa-bar-chart"></i>
+            <span class="hidden-sm" data-translate>Analysis</span>
           </a>
         </li>
       </ul>
@@ -49,8 +62,9 @@
           </a>
         </li>
         <li class="MyProjects" data-ng-if="hc.UserService.currentUser && hc.UserService.hasProjects() && hc.shouldShowOption('my-projects')">
-          <label class="MyProjects__label navbar-text">
+          <label class="MyProjects__label navbar-text" for="my_projects">
             <input type="checkbox"
+                   id="my_projects"
                    data-ng-change="hc.UserService.toggleFilter()"
                    data-ng-model="hc.UserService.currentUser.isFiltered">
             <span data-translate>Only My Projects</span>
@@ -151,8 +165,8 @@
                   </span>
                     <p>Website</p>
                 </a>
-                <a href="#" title="GDC cBio Portal" target="_blank" class="menu-item">
-                    <img src="images/icon-cBioPortal.svg" class="icon icon-gdc-cbio-portal" alt="GDC cBio Portal" />
+                <a href="https://gdc-cbioportal.nci.nih.gov/" title="GDC cBio Portal" target="_blank" class="menu-item">
+                    <img src="images/icon-cBioPortal.svg" class="icon icon-gdc-cbio-portal header" alt="GDC cBio Portal" />
                     <p>GDC cBio Portal</p>
                 </a>
                 <span class="menu-item" style="height: 61px">&nbsp;</span>

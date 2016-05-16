@@ -17,9 +17,9 @@ module ngApp.components.downloader.directive {
     const formIdPrefix = '__downloader_form__';
     const getIframeResponse = (iFrame: ng.IAugmentedJQuery): Object => JSON.parse(iFrame.contents().find('body pre').text());
     const showErrorModal = (error: Object): void => {
-      const hasWarning = _.has(error, 'warning');
+      const warning = error.warning || error.message;
       $uibModal.open({
-        templateUrl: 'core/templates/' + (hasWarning ? 'generic-warning' : 'internal-server-error') + '.html',
+        templateUrl: 'core/templates/' + (warning ? 'generic-warning' : 'internal-server-error') + '.html',
         controller: 'WarningController',
         controllerAs: 'wc',
         backdrop: 'static',
@@ -28,7 +28,7 @@ module ngApp.components.downloader.directive {
         animation: false,
         size: 'lg',
         resolve: {
-          warning: () => hasWarning ? error.warning : null
+          warning: () => warning
         }
       });
     };
@@ -39,12 +39,13 @@ module ngApp.components.downloader.directive {
       cookieKey: string,
       downloadToken: string,
       inProgress: () => {},
-      done: () => {}
+      done: () => {},
+      altMessage: boolean
     ): void => {
 
       inProgress();
       const waitTime = 1000; // 1 second
-      const timeoutInterval = 6;
+      const timeoutInterval = 10;
       var attempts = 0;
       var timeoutPromise = null;
 
@@ -57,6 +58,7 @@ module ngApp.components.downloader.directive {
       };
       const notifyScope = $rootScope.$new();
       const finished = (): void => {
+        $log.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
         timeoutPromise = null;
         iFrame.remove();
         notify.closeAll();
@@ -69,6 +71,14 @@ module ngApp.components.downloader.directive {
         }
         finished();
       };
+
+      const simpleMessage = '<span>Download preparation in progress. Please wait…</span><br /><br /> \
+        <a data-ng-click="cancelDownload()"><i class="fa fa-times-circle-o"></i> Cancel Download</a>';
+
+      const detailedMessage = '<span>The download preparation can take time due to different factors (total file size, number of files, or number of concurrent users). \
+        We recommend that you use the <a href="https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool" target="_blank">GDC Data Transfer Tool</a> or cancel the download and try again later.</span><br /><br /> \
+        <a data-ng-click="cancelDownload()"><i class="fa fa-times-circle-o"></i> Cancel Download</a>';
+
       const checker = (): void => {
         if (iFrame[0].__frame__loaded) {
           // The downloadToken cookie is removed before the server sends the response
@@ -83,12 +93,10 @@ module ngApp.components.downloader.directive {
           }
         } else if (cookieStillThere()) {
           if (++attempts % timeoutInterval === 0) {
-            $log.warn('Download checker timed out.');
             notify.closeAll();
             notify({
               message: null,
-              messageTemplate: '<span>Hang in, download generation in progress...</span><br /><br /> \
-                <a data-ng-click="cancelDownload()"><i class="fa fa-times-circle-o"></i> Cancel Download</a>',
+              messageTemplate: (altMessage && attempts > timeoutInterval * 2) ? detailedMessage : simpleMessage,
               container: '#notification',
               classes: 'alert-warning',
               scope: notifyScope

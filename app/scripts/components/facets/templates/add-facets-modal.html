@@ -1,11 +1,11 @@
 <div class="modal-header">
-  <h2 class="modal-title" data-translate>Add a facet to the filter panel</h1>
-  <div class="pull-right">
-    <h4>
-    <a data-ng-click="cufc.closeModal()">Cancel</a>
-    </h4>
-  </div>
-  <div>
+  <h2 class="modal-title" data-translate>Add a {{cufc.docType | humanify}} Filter
+    <a style="font-size:1.5rem" class="pull-right" data-ng-click="cufc.closeModal()">Cancel</a>
+  </h2>
+  
+    
+  <div style="margin-bottom: 15px">
+    <label for="quick-search-input">Search for a field:</label>
   <input type="text"
        placeholder="search"
        class="form-control"
@@ -15,39 +15,53 @@
        data-ng-keydown="keyboardListener($event)"
        autofocus />
   </div>
-  <h3>{{ filteredFields.length }} {{ cufc.docType }} fields</h3>
+  <h3 style="display: inline">
+    {{ filteredFields.length }} {{ cufc.docType }} fields
+  </h3>
+  <span data-ng-click="cufc.toggleEmpty()"
+       class="pull-right"
+       tabindex="0">
+    <i class="fa fa-check-square-o"
+       ng-class="{'fa-check-square-o': cufc.CustomFacetsService.nonEmptyOnlyDisplayed,
+                  'fa-square-o': !cufc.CustomFacetsService.nonEmptyOnlyDisplayed
+                  }"
+       aria-checked="false"></i>
+    Only show fields with values
+  </span>
 </div>
-<div class="modal-body" id="add-facets-modal" style="max-height: 500px; overflow-y: auto;">
-    <div id="facets-list" class="quick-search-list-container">
-    <ul class="list-unstyled" data-ng-repeat="field in (filteredFields = (cufc.facetFields | filter: q ))">
-      <li id="{{::field.field | dotReplace:'-' }}"
-          class="custom-facet-item"
-          data-ng-mouseover="itemHover($index)"
-          data-ng-keydown="keyboardListener($event)"
-          data-ng-class="{'add-facet-selected': $index === cufc.selectedIndex }"
-          data-ng-click="cufc.addFacet(field)">
-        <div class="row">
-          <div class="col-xs-1">
-            <i class="fa"
-               data-ng-if="field.doc_type"
-               style="padding: 1rem; width: 3.2rem"
-               data-ng-class="{'files':'fa-file-o', 'cases':'fa-user', '':'fa-square'}[field.doc_type]">
-            </i>
-          </div>
-          <div class="col-xs-11"
-               style="line-height: 32px; vertical-align: middle"
-               data-ng-bind-html="field.field | highlight:q">
-          </div>
-        </div>
-
-        <div class="row">
-          <i data-ng-if="field.doc_type"
-             class="col-xs-12"
-             
-             data-ng-bind-html="field.description | highlight:q">
+<div class="modal-body no-pad" id="add-facets-modal" style="max-height: 500px; overflow-y: auto;">
+  <div class="quick-search-list-container">
+    <ul id="facets-list" class="list-unstyled">
+      <li
+        data-ng-repeat="field in (filteredFields = (cufc.facetFields | filter: q ))"
+        id="{{::field.field | dotReplace:'-' }}"
+        class="custom-facet-item"
+        data-ng-mouseover="itemHover($index)"
+        data-ng-keydown="keyboardListener($event)"
+        data-ng-class="{'add-facet-selected': $index === cufc.selectedIndex }"
+        data-ng-click="cufc.addFacet(field)"
+      >
+        <div>
+          <i
+            class="fa list-indent"
+            data-ng-if="field.doc_type"
+            style="padding: 1rem; width: 3.2rem"
+            data-ng-class="{'files':'fa-file-o', 'cases':'fa-user', '':'fa-square'}[field.doc_type]">
           </i>
+          <span data-ng-bind-html="field.field | highlight:q"></span>
+          <em
+            class="Gql_dropdown_item--type"
+            data-ng-if="field.doc_type"
+            data-ng-bind-html="field.type | highlight:q">
+          </em>
         </div>
 
+        <div
+          data-ng-if="field.doc_type && field.description"
+          class="custom-facet-description"
+         >
+          <em data-ng-bind-html="field.description | highlight:q"></em>
+        </div>
       </li>
     </ul>
   </div>

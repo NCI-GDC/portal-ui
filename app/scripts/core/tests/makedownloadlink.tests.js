@@ -16,7 +16,7 @@ describe("makeDownloadLink Filter:", function () {
     ];
 
     var apiUrl = "http://myapi";
-    $rootScope.config = { 'api': apiUrl };
+    $rootScope.config = { 'auth_api': apiUrl };
     var actual = $filter("makeDownloadLink")(ids);
     var expected = apiUrl + "/data/AAA,BBB,CCC?annotations=1&related_files=1";
 
@@ -32,7 +32,7 @@ describe("makeDownloadLink Filter:", function () {
     ];
 
     var apiUrl = "http://myapi";
-    $rootScope.config = { 'api': apiUrl };
+    $rootScope.config = { 'auth_api': apiUrl };
     var actual = $filter("makeDownloadLink")(ids, false, false);
     var expected = apiUrl + "/data/AAA,BBB,CCC";
     expect(actual).to.equal(expected);

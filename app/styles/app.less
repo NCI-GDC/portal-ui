@@ -151,14 +151,6 @@ h3.panel-title {
 //}
 //
 
-// --- ICONS
-.navbar-nav .fa {
-  display:inline-block;
-  text-indent:-10000px;
-  overflow:hidden;
-  width:19px;
-  height:14px;
-}
 /*---projects---*/
 .fa-custom {
   width: 30px;
@@ -580,6 +572,10 @@ pre code {
   border-color: #c4c4c4;
 }
 
+.navbar a {
+  outline: none;
+}
+
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:focus,
 .navbar-default .navbar-nav > .active > a:hover {
@@ -594,13 +590,15 @@ pre code {
 }
 
 .navbar-brand {
-  background:url(/images/logo-GDC-data-portal.png) no-repeat 10px 7px;
-  background-size: 100%;
+  background:url(/images/NHI_GDC_DataPortal-logo.svg) no-repeat;
   width: 275px;
-  height: 47px;
-  text-indent:-10000px;
-  overflow:hidden;
-  margin-right:0;
+  height: 50px;
+  text-indent: -10000px;
+  overflow: hidden;
+  margin-right: 0;
+  position: relative;
+  top: 6px;
+  left: 10px;
 }
 
 @media (min-width:768px) and (max-width: 991px) {
@@ -627,7 +625,7 @@ pre code {
 
 /* nav bar icon replacement (replacing font-awesome icons) */
 
-.navbar-nav .fa {
+.navbar-nav .fa-hidden {
   display:inline-block;
   text-indent:-10000px;
   overflow:hidden;
@@ -638,15 +636,6 @@ pre code {
 .navbar-nav .fa-folder-o {
   background:url(/images/icon-projects-off.png) no-repeat 2px 0;
 }
-
-/*---data---*/
-.navbar-nav .fa-database {
-  background:url(/images/icon-data-off.png) no-repeat 2px 3px;
-}
-.navbar-nav .active .fa-database {
-  background:url(/images/icon-data-on.png) no-repeat 2px 3px;
-}
-
 
 /*---annotations---*/
 .navbar-nav .fa-align-left {
@@ -664,22 +653,7 @@ pre code {
   background:url(/images/icon-reports-on.png) no-repeat 4px 2px;
 }
 
-/*---login---*/
-.navbar-nav .fa-sign-in {
-  background:url(/images/icon-login-off.png) no-repeat 3px 2px;
-}
-.navbar-nav .active .fa-sign-in {
-  background:url(/images/icon-login-on.png) no-repeat 3px 2px;
-}
-
 /*---cart---*/
-.navbar-nav .fa-shopping-cart {
-  background:url(/images/icon-cart-off.png) no-repeat 3px 2px;
-}
-.navbar-nav .active .fa-shopping-cart {
-  background:url(/images/icon-cart-on.png) no-repeat 3px 2px;
-}
-
 .navbar-nav .active.nav-cart .label-primary {
   background-color:#fff;
   color:#5b5151;

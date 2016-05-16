@@ -71,7 +71,12 @@ module ngApp.core.services {
 
   class LocalStorageService implements ILocalStorageService {
     /* @ngInject */
-    constructor(private $window) {}
+    constructor(
+      private $window,
+      private $uibModal,
+      private $uibModalStack,
+      private $timeout
+    ) {}
 
     removeItem(item: string) {
       try {
@@ -97,12 +102,34 @@ module ngApp.core.services {
     }
 
     setItem(key: string, item: any) {
+      var success = true;
       try {
         // always stringify so can always parse
         this.$window.localStorage.setItem(key, JSON.stringify(item));
       } catch (e) {
         console.log(e);
+
+        success = false;
+
+        if (key !== 'gdc-facet-config') {
+          this.$timeout(() => {
+            if (!this.$uibModalStack.getTop()) {
+              var modalInstance = this.$uibModal.open({
+                templateUrl: "core/templates/enable-cookies.html",
+                controller: "WarningController",
+                controllerAs: "wc",
+                backdrop: "static",
+                keyboard: false,
+                backdropClass: "warning-backdrop",
+                animation: false,
+                resolve: { warning: null }
+              });
+            }
+          });
+        }
       }
+
+      return success;
     }
   }
 
@@ -159,9 +186,7 @@ module ngApp.core.services {
   ];
 
   angular
-      .module("core.services", [
-        "gettext"
-      ])
+      .module("core.services", [ "gettext", "ui.bootstrap" ])
       .value("DataCategoryNames", dataNames)
       .value("ExperimentalStrategyNames", expNames)
       .service("CoreService", CoreService)

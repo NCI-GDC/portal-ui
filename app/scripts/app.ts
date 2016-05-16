@@ -121,6 +121,7 @@ function appRun(gettextCatalog: any,
                 ProjectsService: IProjectsService,
                 $window: ng.IWindowService,
                 $uibModal: any,
+                $uibModalStack,
                 LocalStorageService: ILocalStorageService
                 ) {
 
@@ -136,7 +137,7 @@ function appRun(gettextCatalog: any,
   Restangular.addFullRequestInterceptor(addTokenToRequest);
   Restangular.setErrorInterceptor((response) => {
     CoreService.xhrDone();
-    if (response.status === 500) {
+    if (response.status === 500 && !$uibModalStack.getTop()) {
       $uibModal.open({
         templateUrl: "core/templates/internal-server-error.html",
         controller: "WarningController",

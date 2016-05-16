@@ -74,6 +74,7 @@ module ngApp.files.services {
           if(callback) callback(true);
         }, (response)=>{
           //Download Failed
+
           this.$uibModal.open({
             templateUrl: 'core/templates/download-failed.html',
             controller: "LoginToDownloadController",

@@ -43,6 +43,15 @@
 </head>
 
 <body>
+  <div class="maintainence-banner" ng-class="{ active: corec.isUnderMaintainence }">
+    <span class="fa-stack fa-lg wrench">
+      <i class="fa fa-circle fa-stack-2x"></i>
+      <i class="fa fa-wrench fa-stack-1x" style="color:rgb(61, 117, 200);"></i>
+    </span>
+    <span data-ng-cloak>{{corec.maintainenceMessage}}</span>
+  </div>
+
+
 <a href="#skip" tabindex="1" class="skip-to-content" data-translate>Skip to Main Content</a>
 <div class="alert alert-warning m-margin-bottom-0 ng-cloak" ng-if="config.apiIsMismatched">
   <a onclick="window.location.reload()" href="#">

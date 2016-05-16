@@ -1,3 +1,72 @@
+<a name"1.0.0"></a>
+## 1.0.0 (2016-05-16)
+
+
+#### Bug Fixes
+
+* **508:** 2297 alt text on cbio logo ([5576c227](https://github.com/NCI-GDC/portal-ui/commit/5576c227), closes [PGDC-2297](https://jira.opensciencedatacloud.org/browse/PGDC-2297))
+* **app:**
+  * use auth endpoint for download links ([e941a310](https://github.com/NCI-GDC/portal-ui/commit/e941a310))
+  * 508 fixes across site ([f7f6811a](https://github.com/NCI-GDC/portal-ui/commit/f7f6811a), closes [PGDC-2390](https://jira.opensciencedatacloud.org/browse/PGDC-2390))
+  * 2348 cbio icon style ([31b13ebf](https://github.com/NCI-GDC/portal-ui/commit/31b13ebf), closes [PGDC-2348](https://jira.opensciencedatacloud.org/browse/PGDC-2348))
+  * 2330 allow dots in search ([0e3286b5](https://github.com/NCI-GDC/portal-ui/commit/0e3286b5), closes [PGDC-2330](https://jira.opensciencedatacloud.org/browse/PGDC-2330))
+  * 2307 scroll top unless has tabs ([4228cc62](https://github.com/NCI-GDC/portal-ui/commit/4228cc62), closes [PGDC-2307](https://jira.opensciencedatacloud.org/browse/PGDC-2307))
+  * update link to data-transfer tool ([1898606d](https://github.com/NCI-GDC/portal-ui/commit/1898606d))
+* **cart:**
+  * remove table export from cart ([9b1ffb17](https://github.com/NCI-GDC/portal-ui/commit/9b1ffb17), closes [PGDC-2377](https://jira.opensciencedatacloud.org/browse/PGDC-2377))
+  * 2404 cart required fields with filters ([cee197a8](https://github.com/NCI-GDC/portal-ui/commit/cee197a8), closes [PGDC-2404](https://jira.opensciencedatacloud.org/browse/PGDC-2404))
+  * 2372 hide sra/xml dl option ([7e4a1b85](https://github.com/NCI-GDC/portal-ui/commit/7e4a1b85), closes [PGDC-2372](https://jira.opensciencedatacloud.org/browse/PGDC-2372))
+  * 2237 disable add files btn if no files ([42049ebd](https://github.com/NCI-GDC/portal-ui/commit/42049ebd), closes [PGDC-2237](https://jira.opensciencedatacloud.org/browse/PGDC-2237))
+* **components:**
+  * reduce spacing in bio tree ([54365415](https://github.com/NCI-GDC/portal-ui/commit/54365415))
+  * 2362 check message key in resp ([36a0162e](https://github.com/NCI-GDC/portal-ui/commit/36a0162e), closes [PGDC-2362](https://jira.opensciencedatacloud.org/browse/PGDC-2362))
+* **file:**
+  * 2333 remove metadata files section ([70c5cdf8](https://github.com/NCI-GDC/portal-ui/commit/70c5cdf8), closes [PGDC-2333](https://jira.opensciencedatacloud.org/browse/PGDC-2333))
+  * 2265 analysis query, table links ([cfacb09c](https://github.com/NCI-GDC/portal-ui/commit/cfacb09c), closes [PGDC-2265](https://jira.opensciencedatacloud.org/browse/PGDC-2265))
+* **files:** 2378 case/project/access in ds analys ([65b0d9ba](https://github.com/NCI-GDC/portal-ui/commit/65b0d9ba), closes [PGDC-2378](https://jira.opensciencedatacloud.org/browse/PGDC-2378))
+* **formatting:** 2303 displays clinical data as-is ([24a34246](https://github.com/NCI-GDC/portal-ui/commit/24a34246), closes [PGDC-2303](https://jira.opensciencedatacloud.org/browse/PGDC-2303), [PGDC-2322](https://jira.opensciencedatacloud.org/browse/PGDC-2322), [PGDC-2352](https://jira.opensciencedatacloud.org/browse/PGDC-2352))
+* **home:**
+  * fix cases icon in summary ([9feca7c6](https://github.com/NCI-GDC/portal-ui/commit/9feca7c6))
+  * 2315 remove summary links ([322e1a98](https://github.com/NCI-GDC/portal-ui/commit/322e1a98), closes [PGDC-2315](https://jira.opensciencedatacloud.org/browse/PGDC-2315))
+  * 2306 sizing of bar chart header ([c1cac1ad](https://github.com/NCI-GDC/portal-ui/commit/c1cac1ad), closes [PGDC-2306](https://jira.opensciencedatacloud.org/browse/PGDC-2306))
+  * 2318 remove unique stat row ([1e861be6](https://github.com/NCI-GDC/portal-ui/commit/1e861be6), closes [PGDC-2318](https://jira.opensciencedatacloud.org/browse/PGDC-2318))
+  * fix GB -> TB RAM ([d1e17822](https://github.com/NCI-GDC/portal-ui/commit/d1e17822))
+  * change project in example query ([8cfdecdd](https://github.com/NCI-GDC/portal-ui/commit/8cfdecdd))
+* **logging:** removed download timeout warning. ([72f9ecf3](https://github.com/NCI-GDC/portal-ui/commit/72f9ecf3), closes [PGDC-2298](https://jira.opensciencedatacloud.org/browse/PGDC-2298))
+* **markedBarChart:** 2329 bold outline not darken ([2c80ac9c](https://github.com/NCI-GDC/portal-ui/commit/2c80ac9c), closes [PGDC-2329](https://jira.opensciencedatacloud.org/browse/PGDC-2329))
+* **project:**
+  * 2187 2313 disable export on no data ([949c584c](https://github.com/NCI-GDC/portal-ui/commit/949c584c), closes [PGDC-2187](https://jira.opensciencedatacloud.org/browse/PGDC-2187), [PGDC-2313](https://jira.opensciencedatacloud.org/browse/PGDC-2313))
+  * 2295 table summing function ([3ddab43c](https://github.com/NCI-GDC/portal-ui/commit/3ddab43c), closes [PGDC-2295](https://jira.opensciencedatacloud.org/browse/PGDC-2295))
+* **projects:**
+  * 2341 move link to data query ([864c908c](https://github.com/NCI-GDC/portal-ui/commit/864c908c), closes [PGDC-2341](https://jira.opensciencedatacloud.org/browse/PGDC-2341))
+  * 2345 fixes project list flash ([ab45c42d](https://github.com/NCI-GDC/portal-ui/commit/ab45c42d), closes [PGDC-2345](https://jira.opensciencedatacloud.org/browse/PGDC-2345))
+* **rangeFacet:**
+  * 2356 radios selected by default ([f265f404](https://github.com/NCI-GDC/portal-ui/commit/f265f404), closes [PGDC-2356](https://jira.opensciencedatacloud.org/browse/PGDC-2356))
+  * 2398 change year conversion rules ([4b8d29df](https://github.com/NCI-GDC/portal-ui/commit/4b8d29df), closes [PGDC-2398](https://jira.opensciencedatacloud.org/browse/PGDC-2398))
+* **searchBar:** 2311 make textarea resizable ([2f9b8c33](https://github.com/NCI-GDC/portal-ui/commit/2f9b8c33), closes [PGDC-2311](https://jira.opensciencedatacloud.org/browse/PGDC-2311))
+* **style:**
+  * 2374 prevent table exceeding 100% ([758f2a60](https://github.com/NCI-GDC/portal-ui/commit/758f2a60))
+  * 2374 smaller header in smaller width ([a04fa81c](https://github.com/NCI-GDC/portal-ui/commit/a04fa81c))
+* **styles:** use svg main logo ([c9b8b0ea](https://github.com/NCI-GDC/portal-ui/commit/c9b8b0ea))
+
+
+#### Features
+
+* **app:**
+  * 2338 link to analysis in nav ([65f16232](https://github.com/NCI-GDC/portal-ui/commit/65f16232), closes [PGDC-2338](https://jira.opensciencedatacloud.org/browse/PGDC-2338))
+  * 2342 popup info for manifest dl btn ([bf258629](https://github.com/NCI-GDC/portal-ui/commit/bf258629), closes [PGDC-2342](https://jira.opensciencedatacloud.org/browse/PGDC-2342))
+  * 2316 download all manifest button ([aac38053](https://github.com/NCI-GDC/portal-ui/commit/aac38053), closes [PGDC-2316](https://jira.opensciencedatacloud.org/browse/PGDC-2316))
+  * 2342 url in link to cbio portal ([cbacfbcf](https://github.com/NCI-GDC/portal-ui/commit/cbacfbcf), closes [PGDC-2343](https://jira.opensciencedatacloud.org/browse/PGDC-2343))
+  * 2363 add home btn ([4fd13d05](https://github.com/NCI-GDC/portal-ui/commit/4fd13d05), closes [PGDC-2363](https://jira.opensciencedatacloud.org/browse/PGDC-2363))
+* **components:** 2357 close modal btn ([e62d103d](https://github.com/NCI-GDC/portal-ui/commit/e62d103d), closes [PGDC-2357](https://jira.opensciencedatacloud.org/browse/PGDC-2357))
+* **customFacets:** 1858 filter empty checkbox ([62bd0d03](https://github.com/NCI-GDC/portal-ui/commit/62bd0d03), closes [PGDC-1858](https://jira.opensciencedatacloud.org/browse/PGDC-1858))
+* **downloader:** 2347 improved waiting message ([3147fc58](https://github.com/NCI-GDC/portal-ui/commit/3147fc58), closes [PGDC-2347](https://jira.opensciencedatacloud.org/browse/PGDC-2347))
+* **facets:** 2351 style custom facet list ([f37e84be](https://github.com/NCI-GDC/portal-ui/commit/f37e84be), closes [PGDC-2351](https://jira.opensciencedatacloud.org/browse/PGDC-2351))
+* **format:** 2396 '365 days' rounds up to a year ([37992e95](https://github.com/NCI-GDC/portal-ui/commit/37992e95), closes [PGDC-2396](https://jira.opensciencedatacloud.org/browse/PGDC-2396))
+* **header:** 2400 change / style nav icons ([3cd8f55a](https://github.com/NCI-GDC/portal-ui/commit/3cd8f55a), closes [PGDC-2400](https://jira.opensciencedatacloud.org/browse/PGDC-2400))
+* **query:** 2344 style fixes adv search dropdown ([61fbbabb](https://github.com/NCI-GDC/portal-ui/commit/61fbbabb), closes [PGDC-2344](https://jira.opensciencedatacloud.org/browse/PGDC-2344))
+
+
 <a name"0.3.24.3"></a>
 ### 0.3.24.3 (2016-04-29)
 

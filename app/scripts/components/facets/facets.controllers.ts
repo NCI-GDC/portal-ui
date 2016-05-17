@@ -301,15 +301,18 @@ module ngApp.components.facets.controllers {
                 private LocationService: ILocationService,
                 private FacetService: IFacetService) {
 
-      $scope.data = {};
       $scope.lowerBoundFinal = null;
       $scope.upperBoundFinal = null;
+      $scope.data = $scope.facet || { count: '0',
+                      max: '0',
+                      min: '0'
+                    };
 
       this.refresh();
       $scope.$on("$locationChangeSuccess", () => this.refresh());
 
       $scope.$watch("facet", (n, o) => {
-        if (n === o) {
+        if (n === o || n === undefined) {
           return;
         }
         if (n) {

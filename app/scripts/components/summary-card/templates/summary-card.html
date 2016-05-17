@@ -37,7 +37,7 @@
       </thead>
       <tbody>
         <tr data-ng-repeat="item in tableData track by $index" data-ng-click="sc.addFilters(item)">
-          <tdclass="truncated-cell">
+          <td class="truncated-cell">
             <div class="item-color" data-ng-style="{ 'background-color': item.color }"></div>
             <a href="#"
                data-uib-tooltip="{{::ProjectsService.projectIdMapping[item[config.displayKey]] }}">

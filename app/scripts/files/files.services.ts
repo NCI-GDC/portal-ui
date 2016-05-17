@@ -16,9 +16,19 @@ module ngApp.files.services {
     private ds: restangular.IElement;
 
     /* @ngInject */
-    constructor(private Restangular: restangular.IService, private LocationService: ILocationService,
-                private UserService: IUserService, private CoreService: ICoreService, private $uibModal: any,
-                private $rootScope: IRootScope, private $q: ng.IQService, private $filter, private $window, private RestFullResponse: any) {
+    constructor(
+      private Restangular: restangular.IService,
+      private LocationService: ILocationService,
+      private UserService: IUserService,
+      private CoreService: ICoreService,
+      private $uibModal: any,
+      private $rootScope: IRootScope,
+      private $q: ng.IQService,
+      private $filter,
+      private $window,
+      private RestFullResponse: any,
+      private AuthRestangular
+    ) {
       this.ds = Restangular.all("files");
     }
 
@@ -98,7 +108,8 @@ module ngApp.files.services {
     sliceBAM(fileID: string, bedTSV: string, completeCallback: () => void) {
       var abort = this.$q.defer();
       var params = this.processBED(bedTSV);
-      this.RestFullResponse.all("/v0/slicing/view/" + fileID)
+
+      this.AuthRestangular.all("/api/slicing/view/" + fileID)
         .withHttpConfig({
           timeout: abort.promise,
           responseType: "blob",

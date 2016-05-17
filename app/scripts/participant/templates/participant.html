@@ -338,8 +338,8 @@
                         <td>
                           {{ ::t.treatment_or_therapy || '--' }}
                         </td>
-                        <td class="text-right">
-                          {{ ::t.days_to_treatment || '--' | number }}
+                        <td ng-class="{ 'text-right': t.days_to_treatment }">
+                          {{ ::(t.days_to_treatment | number) || '--' }}
                         </td>
                         <td>
                           {{ ::t.created_datetime || '--' | date: 'yyyy-MM-dd' }}
@@ -450,13 +450,13 @@
                    </tr>
                    <tr>
                      <th scope="row" data-translate>BMI</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].bmi || '--' | number }}
+                     <td>{{ ::(pc.participant.exposures[ $index ].bmi | number) || '--' }}
                        <!-- <span ng-if="pc.participant.exposures[ $index ].bmi">kg/m<sup>2</sup></span> -->
                      </td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Cigarettes per Day</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].cigarettes_per_day || '--' | number }}</td>
+                     <td>{{ ::(pc.participant.exposures[ $index ].cigarettes_per_day | number) || '--' }}</td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Height</th>

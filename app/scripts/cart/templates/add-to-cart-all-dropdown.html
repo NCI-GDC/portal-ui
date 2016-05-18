@@ -8,7 +8,7 @@
   <button data-ng-if="!ctrl.CartService.areInCart(ctrl.files)"
           type="button"
           class="btn btn-primary fa fa-shopping-cart"
-          data-ng-click="ctrl.addAll()"
+          data-ng-click="ctrl.addAll(ctrl.files)"
           data-ng-disabled="ctrl.CartService.getCartVacancySize() < ctrl.files.length">
     <span class="icon-btn-label">Add to Cart</span>
   </button>
@@ -20,9 +20,7 @@
   </button>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a data-ng-click="ctrl.addAll()"
-          data-ng-if="!ctrl.CartService.areInCart(ctrl.files)"
-         >
+      <a data-ng-click="ctrl.addAll()">
           <span class="fa-stack">
             <i class="fa fa-shopping-cart fa-stack-1x"></i>
           </span>
@@ -30,8 +28,7 @@
       </a>
     </li>
     <li>
-      <a data-ng-click="ctrl.CartService.remove(ctrl.files)"
-         data-ng-if="ctrl.CartService.getFiles().length">
+      <a data-ng-click="ctrl.removeAll()">
         <span class="fa-stack">
           <i class="fa fa-trash fa-stack-1x"></i>
         </span>

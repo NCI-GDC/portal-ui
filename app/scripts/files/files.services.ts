@@ -179,6 +179,7 @@ module ngApp.files.services {
       this.CoreService.setSearchModelState(false);
 
       var abort = this.$q.defer();
+
       if (method === 'POST') {
         var prom: ng.IPromise<IFiles> = this.ds.withHttpConfig({
           timeout: abort.promise
@@ -196,11 +197,12 @@ module ngApp.files.services {
       }
 
       var eventCancel = this.$rootScope.$on("gdc-cancel-request", () => {
+        console.log('aborted')
         abort.resolve();
         eventCancel();
         this.CoreService.setSearchModelState(true);
       });
-
+      
       return prom;
     }
 

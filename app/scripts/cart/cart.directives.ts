@@ -395,9 +395,7 @@ module ngApp.cart.directives {
                   animation: false
                 });
 
-                modalInstance.result.then((a) => {
-                  UserService.logout();
-                });
+                modalInstance.result.then(() => UserService.logout());
               });
 
             } else {

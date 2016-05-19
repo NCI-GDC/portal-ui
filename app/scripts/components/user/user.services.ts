@@ -112,11 +112,20 @@ module ngApp.components.user.services {
           // setup alters the data.
           this.$window.saveAs(file.data, "gdc-user-token." + this.$window.moment().format() + ".txt");
         }, (response) => {
-          if(response.status === 401) {
-            this.login();
-          } else {
-            this.$log.error("Error logging in, response status " + response.status);
-          }
+          console.log('User session has expired.', response);
+
+          const modalInstance = $uibModal.open({
+            templateUrl: "core/templates/session-expired.html",
+            controller: "LoginToDownloadController",
+            controllerAs: "wc",
+            backdrop: true,
+            keyboard: true,
+            scope: scope,
+            size: "lg",
+            animation: false
+          });
+
+          modalInstance.result.then(() => UserService.logout());
         });
       }
     }

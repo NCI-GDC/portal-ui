@@ -482,6 +482,7 @@ module ngApp.components.facets.controllers {
                   private FacetsConfigService: IFacetsConfigService,
                   private CustomFacetsService: ICustomFacetsService,
                   private aggregations: any,
+                  private notify: INotifyService,
                   public docType: string,
                   public title: string) {
       this.selectedIndex = 0;
@@ -604,6 +605,12 @@ module ngApp.components.facets.controllers {
           .then(data => {
             this.CustomFacetsService.nonEmptyOnlyDisplayed = true;
             this.facetFields = this.CustomFacetsService.filterFields(this.docType, data);
+          }, error => {
+            this.notify({
+            message: "Error retriving fields",
+            container: "#notification",
+            classes: "alert-warning display-top"
+            });
           }).finally(() => this.$rootScope.$emit('ClearLoadingScreen'));
       } else {
         this.$rootScope.$emit('ShowLoadingScreen');
@@ -611,8 +618,13 @@ module ngApp.components.facets.controllers {
         .then(data => {
           this.CustomFacetsService.nonEmptyOnlyDisplayed = false;
           this.facetFields = this.CustomFacetsService.filterFields(this.docType, data);
-        })
-        .finally(() => this.$rootScope.$emit('ClearLoadingScreen'));
+        }, error => {
+          this.notify({
+          message: "Error retriving fields",
+          container: "#notification",
+          classes: "alert-warning display-top"
+          });
+        }).finally(() => this.$rootScope.$emit('ClearLoadingScreen'));
       }
     }
 

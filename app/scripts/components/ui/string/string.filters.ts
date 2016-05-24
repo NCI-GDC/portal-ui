@@ -120,16 +120,20 @@ module ngApp.components.ui.string {
       const oneYear = 365.25;
       const leapThenPair = (years: number, days: number): number[] => (days === 365) ? [years + 1, 0] : [years, days];
       const timeString = (number: number, singular: string, plural: string): string =>
-        number ? ('' + number + ' ' + gettextCatalog.getPlural(number, singular, plural || singular + 's')) : '';
+        ('' + number + ' ' + gettextCatalog.getPlural(number, singular, plural || singular + 's'));
       // if ES6 is ever used, use `...` instead.
       const _timeString = _.spread(timeString);
 
-      return (ageInDays: number): string => ageInDays ?
-        _.zip(leapThenPair(Math.floor(ageInDays / oneYear), Math.ceil(ageInDays % oneYear)), ['year', 'day'])
-          .filter(p => p[0] > 0)
-          .map(p => _timeString(p))
-          .join(' ') :
-        '--';
+      return (ageInDays: number, yearsOnly: boolean = false, defaultValue: string = '--'): string => {
+        if (!ageInDays) {
+          return defaultValue;
+        }
+        return _.zip(leapThenPair(Math.floor(ageInDays / oneYear), Math.ceil(ageInDays % oneYear)), ['year', 'day'])
+        .filter(p => yearsOnly ? p[1] === 'year' : p[0] > 0)
+        .map(p => !yearsOnly ? _timeString(p) : p[0])
+        .join(' ')
+        .trim();
+      }
     }
   }
 

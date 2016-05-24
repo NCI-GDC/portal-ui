@@ -298,6 +298,7 @@ module ngApp.components.facets.controllers {
 
     /* @ngInject */
     constructor(private $scope: IRangeFacetScope,
+                private $filter: ng.IFilterService,
                 private LocationService: ILocationService,
                 private FacetService: IFacetService) {
 
@@ -358,8 +359,8 @@ module ngApp.components.facets.controllers {
         this.displayedMin = this.$scope.data.min;
         this.displayedMax = this.$scope.data.max;
       } else if (this.selectedUnit === 'years') {
-        this.displayedMin = Math.floor(this.$scope.data.min / this.conversionFactor);
-        this.displayedMax = Math.floor(this.$scope.data.max / this.conversionFactor);
+        this.displayedMax = this.$filter("ageDisplay")(this.$scope.data.max, true, 0);
+        this.displayedMin = this.$filter("ageDisplay")(this.$scope.data.min, true, 0);
       }
     }
 

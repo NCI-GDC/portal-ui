@@ -10,8 +10,13 @@ module ngApp.components.charts {
   }
 
   /* @ngInject */
-  function PieChart($window: IGDCWindowService, LocationService: ILocationService,
-                    $state: ng.ui.IStateService): ng.IDirective {
+  function PieChart(
+    $window: IGDCWindowService,
+    LocationService: ILocationService,
+    $state: ng.ui.IStateService,
+    $rootScope,
+    $timeout
+  ): ng.IDirective {
     return {
       restrict: "EA",
       replace: true,
@@ -232,6 +237,10 @@ module ngApp.components.charts {
             updateChart();
           }
         }, 150));
+
+        $rootScope.$on("toggleFacets", () => {
+          $timeout(updateChart)
+        });
       }
     };
   }

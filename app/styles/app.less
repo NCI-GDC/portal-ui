@@ -126,6 +126,14 @@ h3.panel-title {
 .content {
   width: 70%;
   float: left;
+
+  &.expanded {
+    width: 100%;
+
+    .alert {
+      margin-left: 135px;
+    }
+  }
 }
 
 //bootcard override
@@ -724,6 +732,16 @@ pre code {
   width: 30%;
   float: left;
   padding: 0 15px;
+  overflow: hidden;
+
+  &.collapsed {
+    display: none;
+    padding: 0;
+  }
+}
+
+.list-group {
+  min-width: 250px;
 }
 
 .facets-sidebar .nav-tabs > li.active > a,
@@ -859,7 +877,7 @@ pre code {
   color: #333333;
   white-space: nowrap;
 }
-
+g
 .dropdown-menu > li > span:hover,
 .dropdown-menu > li > span:focus,
 .dropdown-menu > li > button:hover,

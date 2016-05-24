@@ -44,9 +44,9 @@
           </thead>
           <tbody>
           <tr data-ng-repeat="project in rsc.byProject | orderBy:'values.file_count':true">
-            <th>
+            <td>
               {{ project.key }}
-            </th>
+            </td>
             <td>
               {{ project.values.project_name }}
             </td>
@@ -157,10 +157,10 @@
                 <th scope="col" data-translate>
                   Experimental Strategy
                 </th>
-                <th  scope="col" class="text-right"data-translate>
+                <th scope="col" class="text-right"data-translate>
                   # Requests
                 </th>
-                <th  scope="col" class="text-right"data-translate>
+                <th scope="col" class="text-right"data-translate>
                   File Size
                 </th>
               </tr>

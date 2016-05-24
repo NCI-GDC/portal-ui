@@ -1,3 +1,38 @@
+.projects .facets-sidebar .nav-tabs,
+.annotations .facets-sidebar .nav-tabs {
+  border-bottom: none;
+}
+
+.collapse-facets-button {
+  float: right;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  outline: none;
+}
+
+.collapse-facets-button:hover {
+  background-color: #eeeeee;
+  border-color: #d9d8d8 #d9d8d8 #c4c4c4;
+}
+
+.expand-facets-button {
+  position: absolute;
+  left: 0;
+  background: white;
+  border: 1px solid #C4C4C4;
+  padding: 10px;
+  transition: all 0.6s ease;
+  transform: translateX(-100%);
+  cursor: pointer;
+  outline: none;
+  margin-top: 10px;
+
+  &.expanded {
+    transform: translateX(0);
+  }
+}
+
 .summary-panel {
   padding: 15px;
 }

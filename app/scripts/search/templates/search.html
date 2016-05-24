@@ -1,6 +1,6 @@
 <div class="container-fluid full-page search" data-autoscroll="false">
   <div class="search-panel">
-    <div class="facets-sidebar">
+    <div class="facets-sidebar" ng-class="{ collapsed: sc.facetsCollapsed }">
       <uib-tabset>
         <uib-tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
           <div class="facet-section panel-default">
@@ -28,9 +28,22 @@
             </div>
           </div>
         </uib-tab>
+        <div
+          class="collapse-facets-button"
+          ng-click="sc.facetsCollapsed = true"
+        >
+          <span class="fa fa-close" aria-hidden="true"></span>
+        </div>
       </uib-tabset>
     </div>
-    <div class="content">
+    <div
+      class="expand-facets-button"
+      ng-class="{ expanded: sc.facetsCollapsed }"
+      ng-click="sc.facetsCollapsed = false"
+    >
+      Expand Facets <span class="fa fa-arrow-right" aria-hidden="true"></span>
+    </div>
+    <div class="content" ng-class="{ expanded: sc.facetsCollapsed }">
       <div class="alert alert-info clearfix">
         <div class="col-sm-10">
           <current-filters></current-filters>
@@ -46,7 +59,7 @@
           </a>
         </div>
       </div>
-      
+
       <h3 class="col-lg-9 col-md-8" data-ng-if="!sc.participants.hits.length && !sc.files.hits.length && !sc.participantsLoading && !sc.filesLoading" data-translate>
         No results found using those filters.
       </h3>

@@ -1,6 +1,14 @@
-<div class="container-fluid full-page">
+<div class="container-fluid full-page projects">
   <div class="search-panel">
-    <div class="facets-sidebar">
+    <div class="facets-sidebar" ng-class="{ collapsed: prsc.facetsCollapsed }">
+      <uib-tabset>
+        <div
+          class="collapse-facets-button"
+          ng-click="prsc.facetsCollapsed = true"
+        >
+          <span class="fa fa-close" aria-hidden="true"></span>
+        </div>
+      </uib-tabset>
       <div class="panel panel-default">
         <div class="list-group">
           <div data-ng-include="'projects/templates/projects.facets.html'"
@@ -9,7 +17,15 @@
       </div>
     </div>
 
-    <div class="content">
+    <div
+      class="expand-facets-button"
+      ng-class="{ expanded: prsc.facetsCollapsed }"
+      ng-click="prsc.facetsCollapsed = false"
+    >
+      Expand Facets <span class="fa fa-arrow-right" aria-hidden="true"></span>
+    </div>
+
+    <div class="content" ng-class="{ expanded: prsc.facetsCollapsed }">
       <div class="alert alert-info clearfix">
         <div class="col-sm-12 col-lg-9">
           <current-filters></current-filters>
@@ -19,7 +35,7 @@
             </span>
           </span>
         </div>
-        
+
         <div class="col-sm-12 col-lg-3 text-right" data-ng-if="cfc.currentFilters.length">
           <a class="btn btn-primary" data-translate data-ng-click="prsc.gotoQuery()">
             <i class="fa fa-gears"></i> <span data-translate>Open Query in Data Page</span>
@@ -27,7 +43,7 @@
         </div>
       </div>
 
-      
+
 
       <h3 class="col-lg-9 col-md-8" data-ng-if="!prsc.projects.hits.length && !prsc.loading" data-translate>
         No projects found using those filters.

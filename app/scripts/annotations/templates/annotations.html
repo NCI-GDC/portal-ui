@@ -1,13 +1,30 @@
-<div class="container-fluid full-page">
+<div class="container-fluid full-page annotations">
   <div class="search-panel">
-    <div class="facets-sidebar">
+    <div class="facets-sidebar" ng-class="{ collapsed: asc.facetsCollapsed }">
+      <uib-tabset>
+        <div
+          class="collapse-facets-button"
+          ng-click="asc.facetsCollapsed = true"
+        >
+          <span class="fa fa-close" aria-hidden="true"></span>
+        </div>
+      </uib-tabset>
       <div class="panel panel-default">
         <div class="list-group" data-ng-include="'annotations/templates/annotations.facets.html'" class="facet-section" role="form">
         </div>
       </div>
 
     </div>
-    <div class="content">
+
+    <div
+      class="expand-facets-button"
+      ng-class="{ expanded: asc.facetsCollapsed }"
+      ng-click="asc.facetsCollapsed = false"
+    >
+      Expand Facets <span class="fa fa-arrow-right" aria-hidden="true"></span>
+    </div>
+
+    <div class="content" ng-class="{ expanded: asc.facetsCollapsed }">
 
       <div class="alert alert-info clearfix">
         <span data-ng-if="!cfc.currentFilters.length">

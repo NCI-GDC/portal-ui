@@ -185,6 +185,13 @@ module ngApp.cart.controllers {
       this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
         this.files = this.files || {};
         if (!_.isEqual(this.files.hits, data.hits)) {
+          // remove from Cart files that are no longer in db
+          const removedIds = _.difference(fileIds, _.pluck(data.hits, 'file_id'));
+          if (removedIds.length !== 0) {
+            this.CartService.remove(removedIds.map(r => { return {'file_id': r}; }),
+                                    ' No longer exists on the server.',
+                                    false);
+          }
           this.files = data;
           this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
             this.participantCount = data.pagination.total;

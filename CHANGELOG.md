@@ -1,3 +1,44 @@
+<a name"1.1.0"></a>
+## 1.1.0 (2016-05-24)
+
+
+#### Bug Fixes
+
+* **app:** 2497 img size with no css, th scope ([81487c95](https://github.com/NCI-GDC/portal-ui/commit/81487c95), closes [PGDC-2497](https://jira.opensciencedatacloud.org/browse/PGDC-2497))
+* **cart:**
+  * 2439 add all to cart options ([1ed3c081](https://github.com/NCI-GDC/portal-ui/commit/1ed3c081), closes [PGDC-2439](https://jira.opensciencedatacloud.org/browse/PGDC-2439))
+  * add all on page displays size warning ([b261f5ce](https://github.com/NCI-GDC/portal-ui/commit/b261f5ce), closes [PGDC-2409](https://jira.opensciencedatacloud.org/browse/PGDC-2409))
+* **components:**
+  * 2431 remove extra label ([967bbdfe](https://github.com/NCI-GDC/portal-ui/commit/967bbdfe), closes [PGDC-2431](https://jira.opensciencedatacloud.org/browse/PGDC-2431))
+  * 2420 padding 'and in my projects' ([c5ec4613](https://github.com/NCI-GDC/portal-ui/commit/c5ec4613), closes [PGDC-2420](https://jira.opensciencedatacloud.org/browse/PGDC-2420))
+* **files:**
+  * 2433 correct url for bam slice dl ([9e8dc53c](https://github.com/NCI-GDC/portal-ui/commit/9e8dc53c), closes [PGDC-2433](https://jira.opensciencedatacloud.org/browse/PGDC-2433))
+  * 2419 display platform ([e80697de](https://github.com/NCI-GDC/portal-ui/commit/e80697de), closes [PGDC-2419](https://jira.opensciencedatacloud.org/browse/PGDC-2419))
+* **login:** 2462 My Projects off by default ([094efd8f](https://github.com/NCI-GDC/portal-ui/commit/094efd8f), closes [PGDC-2462](https://jira.opensciencedatacloud.org/browse/PGDC-2462))
+* **participant:** 2416 use number filter !null ([367ea2fd](https://github.com/NCI-GDC/portal-ui/commit/367ea2fd), closes [PGDC-2416](https://jira.opensciencedatacloud.org/browse/PGDC-2416))
+* **rangeFacet:**
+  * no NaN, doesn't reset ([9de5f2ad](https://github.com/NCI-GDC/portal-ui/commit/9de5f2ad), closes [PGDC-2414](https://jira.opensciencedatacloud.org/browse/PGDC-2414))
+  * don't convert to days if not told ([9c9eb006](https://github.com/NCI-GDC/portal-ui/commit/9c9eb006), closes [PGDC-2444](https://jira.opensciencedatacloud.org/browse/PGDC-2444))
+* **report:** add scope to ths ([c4d5926c](https://github.com/NCI-GDC/portal-ui/commit/c4d5926c))
+* **tables:** 1771 improve sort ux ([ce53127e](https://github.com/NCI-GDC/portal-ui/commit/ce53127e), closes [PGDC-1771](https://jira.opensciencedatacloud.org/browse/PGDC-1771))
+
+
+#### Features
+
+* **app:** 2416 disable manifest dl if no files ([f3d32f54](https://github.com/NCI-GDC/portal-ui/commit/f3d32f54), closes [PGDC-2416](https://jira.opensciencedatacloud.org/browse/PGDC-2416))
+* **file:** 1993 filter / scroll entity table ([675b8936](https://github.com/NCI-GDC/portal-ui/commit/675b8936), closes [PGDC-1993](https://jira.opensciencedatacloud.org/browse/PGDC-1993))
+* **table:** added filter+scroll to long table. ([6e2cd6c0](https://github.com/NCI-GDC/portal-ui/commit/6e2cd6c0), closes [PGDC-1993](https://jira.opensciencedatacloud.org/browse/PGDC-1993))
+* **user:** 2455 show expiry modal on token dl ([a6940e7f](https://github.com/NCI-GDC/portal-ui/commit/a6940e7f), closes [PGDC-2455](https://jira.opensciencedatacloud.org/browse/PGDC-2455))
+
+
+<a name"1.0.1"></a>
+## 1.0.1 (2016-05-17)
+
+#### Bug Fixes
+
+* **files:** 2433 correct url for bam slice dl ([9e8dc53](https://github.com/NCI-GDC/portal-ui/commit/9e8dc53), closes [PGDC-2433](https://jira.opensciencedatacloud.org/browse/PGDC-2433))
+
+
 <a name"1.0.0"></a>
 ## 1.0.0 (2016-05-16)
 

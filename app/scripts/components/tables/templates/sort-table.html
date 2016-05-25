@@ -15,21 +15,42 @@
       data-uib-dropdown-menu
       role="menu">
     <li data-ng-repeat="item in sortColumns">
-      <div class="sort-item">
-        <i class="fa fa-{{item.sort ? 'check-square-o' : 'square-o'}} fa-stack" ng-click="tsc.toggleSorting(item)"></i>
-        <span>{{ item.name | translate }}</span>
-        <span class="pull-right text-right" data-ng-if="item.sort">
+      <div
+        style="display: flex;"
+        class="sort-item"
+        ng-click="tsc.toggleSorting(item)"
+      >
+        <span>
+          <i class="fa fa-{{item.sort ? 'check-square-o' : 'square-o'}} fa-stack"></i>
+          <span>{{ item.name | translate }}</span>
+        </span>
+
+        <span
+          style="
+            margin: 0 -10px 0 auto;
+            padding: 3px 10px;
+            background-color: white;
+            cursor: default;
+          "
+          class="text-right sorting-radio-buttons-container"
+        >
 
           <i class="fa fa-sort-alpha-asc"></i>
-          <input type="radio" aria-label="Sort Data Ascending" value="asc"
-              title="Sort Data Ascending"
-              data-ng-model="item.order" data-ng-change="tsc.updateSorting()"
-              data-ng-checked="!item.order || item.order === 'asc'"
-              name="{{ item.id }}-sort-order">
+          <input
+            type="radio" aria-label="Sort Data Ascending" value="asc"
+            style="cursor:pointer;"
+            title="Sort Data Ascending"
+            data-ng-model="item.order" data-ng-click="tsc.updateSorting($event)"
+            data-ng-checked="!item.order || item.order === 'asc'"
+            name="{{ item.id }}-sort-order"
+          >
           <i class="fa fa-sort-alpha-desc"></i>
-          <input type="radio" aria-label="Sort Data Descending" value="desc"
-                 data-ng-model="item.order" data-ng-change="tsc.updateSorting()"
-                 name="{{ item.id }}-sort-order">
+          <input
+            type="radio" aria-label="Sort Data Descending" value="desc"
+            style="cursor:pointer;"
+            data-ng-model="item.order" data-ng-click="tsc.updateSorting($event)"
+            name="{{ item.id }}-sort-order"
+          >
         </span>
       </div>
     </li>

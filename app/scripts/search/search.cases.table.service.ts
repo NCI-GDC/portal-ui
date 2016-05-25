@@ -158,7 +158,7 @@ module ngApp.search.cases.table.service {
               td: (row, $scope) => {
                 const primaryDiagnosis = (row.diagnoses || [])
                   .reduce(this.youngestDiagnosis, { age_at_diagnosis: Infinity });
-                return row.diagnoses && $scope.$filter("humanify")(primaryDiagnosis.vital_status)
+                return $scope.$filter("humanify")(primaryDiagnosis.vital_status);
               },
               sortable: false,
               hidden: true
@@ -169,20 +169,20 @@ module ngApp.search.cases.table.service {
                 console.log(this.DATA_CATEGORIES)
                 const primaryDiagnosis = (row.diagnoses || [])
                   .reduce(this.youngestDiagnosis, { age_at_diagnosis: Infinity });
-                return (row.diagnoses && primaryDiagnosis.primary_diagnosis) || "--"
+                return (row.diagnoses && primaryDiagnosis.primary_diagnosis) || "--";
               },
               sortable: false,
               hidden: true
           }, {
               name: 'Ethnicity',
               id: 'demographic.ethnicity',
-              td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.ethnicity),
+              td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.ethnicity) || '--',
               sortable: false,
               hidden: true
           }, {
               name: 'Race',
               id: 'demographic.race',
-              td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.race),
+              td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.race) || '--',
               sortable: false,
               hidden: true
           }, {

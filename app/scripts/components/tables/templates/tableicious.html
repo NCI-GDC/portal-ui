@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th
+        scope="{{::h.children ? 'colgroup' : 'col'}}"
         data-cell="::h.th ? h.th : h.name"
         data-data="data"
         data-paging="paging"
@@ -14,6 +15,7 @@
     </tr>
     <tr>
       <th
+        scope="col"
         data-cell="h.th ? h.th : h.name"
         data-ng-class="h.thClassName"
         data-ng-repeat="h in subHeaders">

@@ -327,25 +327,33 @@ module ngApp.cart.controllers {
       });
     }
 
-    addAll(): void {
-      if ((this.files || []).length) {
-        this.CartService.addFiles(this.files, false);
-      } else if (this.size > this.CartService.getCartVacancySize()) {
-        this.CartService.sizeWarning();
+    addAll(files = []): void {
+      if (files.length) {
+        if (files.length > this.CartService.getCartVacancySize()) {
+          this.CartService.sizeWarning();
+        } else {
+          this.CartService.addFiles(files, false);
+        }
       } else {
-        var addingMsgPromise = this.$timeout(() => {
-          this.notify({
-            message: "",
-            messageTemplate: "<span data-translate>Adding <strong>" + this.size + "</strong> files to cart</span>",
-            container: "#notification",
-            classes: "alert-info"
-          });
-        }, 1000);
 
-        this.getFiles().then((data) => {
-          this.CartService.addFiles(data.hits, false);
-          this.$timeout.cancel(addingMsgPromise);
-        });
+        if (this.size > this.CartService.getCartVacancySize()) {
+          this.CartService.sizeWarning();
+        } else {
+
+          var addingMsgPromise = this.$timeout(() => {
+            this.notify({
+              message: "",
+              messageTemplate: "<span data-translate>Adding <strong>" + this.size + "</strong> files to cart</span>",
+              container: "#notification",
+              classes: "alert-info"
+            });
+          }, 1000);
+
+          this.getFiles().then(data => {
+            this.CartService.addFiles(data.hits, false);
+            this.$timeout.cancel(addingMsgPromise);
+          }).catch(e => console.log(e));
+        }
       }
     }
   }

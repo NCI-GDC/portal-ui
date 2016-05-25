@@ -120,47 +120,83 @@
       <section class="row" id="participants">
         <div class="col-lg-12 col-md-12">
           <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">Associated Cases / Biospecimen</h3>
+            <div class="panel-heading panel-with-filter">
+              <span class="panel-title">Associated Cases / Biospecimen</span>
+
+              <span
+                class="input-group"
+                style="margin: 0 1.75rem 0 auto; width: 300px;"
+                data-ng-if="fc.file.associated_entities.length"
+              >
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                <input type="text"
+                  class="form-control"
+                  style="width: 28rem;"
+                  placeholder="Type to filter cases."
+                  title="Search…"
+                  data-ng-model="fc.tableFilters.assocEntity">
+              </span>
             </div>
+
             <div class="panel-body" data-ng-if="!fc.file.associated_entities.length">
               <h4 class="list-group-item-heading">No Cases Found.</h4>
             </div>
 
-            <table id="associated-cases-biospecimen-table" class="table table-striped table-hover table-condensed table-bordered"
-                   data-ng-if="fc.file.associated_entities.length">
-              <thead>
-              <tr>
-                <th scope="col" data-translate>Entity ID</th>
-                <th scope="col" data-translate>Entity Type</th>
-                <th scope="col" data-translate>Case UUID</th>
-                <th scope="col" data-translate>Annotations</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr data-ng-repeat="e in fc.file.associated_entities track by e.entity_id">
-                <td class="truncated-cell">{{ ::e.entity_id }}</td>
-                <td>{{ ::e.entity_type | humanify }}</td>
-                <td class="truncated-cell">
-                  <a data-ui-sref="case({ caseId : e.case_id })">
-                    {{ ::e.case_id }}
-                  </a>
-                </td>
-                <td class="text-right">
-                  <a data-ui-sref="annotations({ 'filters':
-                       {{ [{field: 'annotation_id', value: e.annotations }] | makeFilter }} })"
-                     data-ng-if="e.annotations.length > 1">
-                    {{ e.annotations.length }}
-                  </a>
-                  <a data-ui-sref="annotation({ annotationId: e.annotations[0] })"
-                     data-ng-if="e.annotations.length === 1">
-                    {{ e.annotations.length }}
-                  </a>
-                  <span data-ng-if="!e.annotations.length">0</span>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+            <div class="long-scrollable-table">
+              <div class="long-scrollable-table-container">
+                <table
+                  id="associated-cases-biospecimen-table"
+                  class="table table-striped table-hover table-condensed table-bordered"
+                  data-ng-if="fc.file.associated_entities.length"
+                  style="margin-bottom: 0;"
+                >
+                  <thead>
+                  <tr>
+                    <th class="sticky" scope="col" data-translate>
+                      Entity ID
+                      <div>Entity ID</div>
+                    </th>
+                    <th class="sticky" scope="col" data-translate>
+                      Entity Type
+                      <div>Entity Type</div>
+                      </th>
+                    <th class="sticky" scope="col" data-translate>
+                      Case UUID
+                      <div>Case UUID</div>
+                      </th>
+                    <th class="sticky" scope="col" data-translate>
+                      Annotations
+                      <div>Annotations</div>
+                      </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr data-ng-repeat="e in fc.file.associated_entities | filter:fc.tableFilters.assocEntity track by e.entity_id">
+                    <td class="truncated-cell">{{ ::e.entity_id }}</td>
+                    <td>{{ ::e.entity_type | humanify }}</td>
+                    <td class="truncated-cell">
+                      <a data-ui-sref="case({ caseId : e.case_id })">
+                        {{ ::e.case_id }}
+                      </a>
+                    </td>
+                    <td class="text-right">
+                      <a data-ui-sref="annotations({ 'filters':
+                           {{ [{field: 'annotation_id', value: e.annotations }] | makeFilter }} })"
+                         data-ng-if="e.annotations.length > 1">
+                        {{ e.annotations.length }}
+                      </a>
+                      <a data-ui-sref="annotation({ annotationId: e.annotations[0] })"
+                         data-ng-if="e.annotations.length === 1">
+                        {{ e.annotations.length }}
+                      </a>
+                      <span data-ng-if="!e.annotations.length">0</span>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -240,37 +276,78 @@
         <div class="col-lg-12 col-md-12">
 
           <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">Read Groups</h3>
+            <div class="panel-heading panel-with-filter">
+              <span class="panel-title">Read Groups</span>
+
+              <span
+                class="input-group"
+                style="margin: 0 1.75rem 0 auto; width: 300px;"
+                data-ng-if="fc.file.analysis.metadata.read_groups"
+              >
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                <input type="text"
+                  class="form-control"
+                  style="width: 28rem;"
+                  placeholder="Type to filter read groups."
+                  title="Search…"
+                  data-ng-model="fc.tableFilters.readGroup">
+              </span>
             </div>
 
             <div class="panel-body" data-ng-if="!fc.file.analysis.metadata.read_groups">
               <h4 class="list-group-item-heading">No Read Groups found.</h4>
             </div>
 
-            <table id="readgroup-files-table" class="table table-striped table-hover table-condensed table-bordered"
-                   data-ng-if="fc.file.analysis.metadata.read_groups">
-              <thead>
-                <tr>
-                  <th>Read Group ID</th>
-                  <th>Is Paired End</th>
-                  <th>Read Length</th>
-                  <th>Library Name</th>
-                  <th>Sequencing Center</th>
-                  <th>Sequencing Date</th>
-                </tr>
-              </thead>
-              <tbody>
-              <tr data-ng-repeat="r in fc.file.analysis.metadata.read_groups track by r.read_group_id">
-                <td>{{r.read_group_id || '--'}}</td>
-                <td>{{r.is_paired_end | humanify}}</td>
-                <td>{{r.read_length || '--'}}</td>
-                <td>{{r.library_name || '--'}}</td>
-                <td>{{r.sequencing_center | humanify}}</td>
-                <td>{{r.sequencing_date || '--' | date:'yyyy-MM-dd'}}</td>
-              </tr>
-              </tbody>
-            </table>
+            <div class="long-scrollable-table">
+              <div class="long-scrollable-table-container">
+                <table
+                  id="readgroup-files-table"
+                  class="table table-striped table-hover table-condensed table-bordered"
+                  data-ng-if="fc.file.analysis.metadata.read_groups"
+                  style="margin-bottom: 0;"
+                >
+                  <thead>
+                    <tr>
+                      <th class="sticky" scope="col" data-translate>
+                        Read Group ID
+                        <div>Read Group ID</div>
+                      </th>
+                      <th class="sticky" scope="col" data-translate>
+                        Is Paired End
+                        <div>Is Paired End</div>
+                      </th>
+                      <th class="sticky" scope="col" data-translate>
+                        Read Length
+                        <div>Read Length</div>
+                      </th>
+                      <th class="sticky" scope="col" data-translate>
+                        Library Name
+                        <div>Library Name</div>
+                      </th>
+                      <th class="sticky" scope="col" data-translate>
+                        Sequencing Center
+                        <div>Sequencing Center</div>
+                      </th>
+                      <th class="sticky" scope="col" data-translate>
+                        Sequencing Date
+                        <div>Sequencing Date</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <tr data-ng-repeat="r in fc.file.analysis.metadata.read_groups | filter:fc.tableFilters.readGroup track by r.read_group_id">
+                    <td>{{r.read_group_id || '--'}}</td>
+                    <td>{{r.is_paired_end | humanify}}</td>
+                    <td>{{r.read_length || '--'}}</td>
+                    <td>{{r.library_name || '--'}}</td>
+                    <td>{{r.sequencing_center | humanify}}</td>
+                    <td>{{r.sequencing_date || '--' | date:'yyyy-MM-dd'}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

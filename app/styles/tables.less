@@ -47,3 +47,43 @@ th.truncated-cell {
     word-break: break-all;
   }
 }
+
+.long-scrollable-table {
+  position: relative;
+  padding-top: 26px;
+  background-color: #dedddd;
+
+  .long-scrollable-table-container {
+    overflow-y: auto;
+    max-height: 200px;
+  }
+  table {
+    border-spacing: 0;
+    width:100%;
+  }
+
+  th.sticky {
+    height: 0;
+    line-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    color: transparent;
+    border: none;
+    white-space: nowrap;
+  }
+
+  th div {
+    position: absolute;
+    background: transparent;
+    color: rgb(61, 61, 61);
+    top: 0;
+    line-height: 28px;;
+  }
+}
+
+.Columns-dropdown-headings > li {
+  outline: none;
+}
+.Columns-dropdown-headings > li:hover .sorting-radio-buttons-container {
+  border-left: 2px solid rgb(28, 126, 198);
+}

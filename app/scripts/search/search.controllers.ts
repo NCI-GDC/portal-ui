@@ -90,24 +90,10 @@ module ngApp.search.controllers {
       $scope.fileTableConfig = this.SearchTableFilesModel;
       $scope.participantTableConfig = this.SearchCasesTableService.model();
 
+      this.FacetsConfigService.setFields('files', this.SearchTableFilesModel.facets);
+      this.FacetsConfigService.setFields('cases', this.SearchCasesTableService.model().facets);
       this.refresh();
       this.chartConfigs = SearchChartConfigs;
-      this.ageAtDiagnosisUnitsMap = [
-        {
-          "label": "years",
-          "conversionDivisor": 365.25,
-        },
-        {
-          "label": "days",
-          "conversionDivisor": 1,
-        }
-      ];
-      this.daysToDeathUnitsMap = [
-        {
-          "label": "days",
-          "conversionDivisor": 1,
-        }
-      ];
     }
 
     refresh() {
@@ -134,13 +120,11 @@ module ngApp.search.controllers {
         this.tabSwitch = false;
       });
 
-      this.FacetsConfigService.setFields('files', this.SearchTableFilesModel.facets);
       var fileOptions = {
         fields: this.SearchTableFilesModel.fields,
         facets: this.FacetService.filterFacets(this.FacetsConfigService.fieldsMap['files'])
       };
 
-      this.FacetsConfigService.setFields('cases', casesTableModel.facets);
       var participantOptions = {
         fields: casesTableModel.fields,
         expand: casesTableModel.expand,

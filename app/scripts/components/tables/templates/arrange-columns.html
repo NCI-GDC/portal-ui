@@ -31,13 +31,14 @@
       </li>
        <li>
          <ul data-as-sortable="sortOptions" data-ng-model="headings" class="Columns-dropdown-headings">
-          <li data-ng-repeat="item in headings | filter:search"
+          <li data-ng-click="toggleVisibility(item)"
+              data-ng-repeat="item in headings | filter:search"
               data-as-sortable-item
               data-dragEnd
               data-ng-hide="item.inactive(this)"
               style="display: flex; justify-content: space-between; align-items: center;"
               >
-              <i class="fa fa-stack fa-{{item.hidden ? 'square-o' : 'check-square-o'}}" data-ng-click="toggleVisibility(item)"></i>
+              <i class="fa fa-stack fa-{{item.hidden ? 'square-o' : 'check-square-o'}}"></i>
               <div style="flex: 1;">
                 {{ item.name | ellipsicate:18 }}
               </div>

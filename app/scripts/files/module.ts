@@ -12,6 +12,9 @@ module ngApp.files {
       templateUrl: "files/templates/file.html",
       resolve: {
         file: ($stateParams: ng.ui.IStateParamsService, FilesService: IFilesService): ng.IPromise<IFile> => {
+          if (! $stateParams.fileId) {
+            throw Error('Missing route parameter: fileId. Redirecting to 404 page.');
+          }
           return FilesService.getFile($stateParams["fileId"], {
             expand: [
               "metadata_files",

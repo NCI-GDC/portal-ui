@@ -12,6 +12,9 @@ module ngApp.participants {
       templateUrl: "participant/templates/participant.html",
       resolve: {
         participant: ($stateParams: ng.ui.IStateParamsService, ParticipantsService: IParticipantsService): ng.IPromise<IParticipant> => {
+          if (! $stateParams.caseId) {
+            throw Error('Missing route parameter: caseId. Redirecting to 404 page.');
+          }
           return ParticipantsService.getParticipant($stateParams["caseId"], {
             fields: [
               "case_id",

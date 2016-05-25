@@ -185,7 +185,7 @@ module ngApp.files.directives {
         $element.on('mouseenter', () => togglePopover(true));
 
         $element.on('mouseleave', _.debounce(() => {
-          if (!$('.popover').is(':hover')) togglePopover(false);
+          if ($('.popover#hover').length === 0) togglePopover(false);
         }, 700));
 
         $scope.active = false;

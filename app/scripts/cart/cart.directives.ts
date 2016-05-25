@@ -20,8 +20,7 @@ module ngApp.cart.directives {
       controller: function($scope: ng.IScope, CartService: ICartService) {
         disabled: boolean = false;
         this.remove = function() {
-          CartService.remove([{file_id: this.file.file_id,
-                               file_name: this.file.file_name }]);
+          CartService.remove([ this.file ]);
           this.disabled = true;
         }
       }

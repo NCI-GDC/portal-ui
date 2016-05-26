@@ -58,6 +58,7 @@ module ngApp.cart.controllers {
                 private SearchService: ISearchService,
                 private FilesService: IFilesService,
                 private ParticipantsService: IParticipantsService,
+                private gettextCatalog,
                 private CartState) {
       var data = $state.current.data || {};
       this.CartState.setActive("tabs", data.tab);
@@ -185,6 +186,16 @@ module ngApp.cart.controllers {
       this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
         this.files = this.files || {};
         if (!_.isEqual(this.files.hits, data.hits)) {
+          // remove from Cart files that are no longer in db
+          const removedIds = _.difference(fileIds, _.pluck(data.hits, 'file_id'));
+          if (removedIds.length !== 0) {
+            const msg = this.gettextCatalog.getPlural(removedIds.length,
+                                                      'It no longer exists on the server.',
+                                                      'They no longer exist on the server');
+            this.CartService.remove(removedIds.map(r => { return {'file_id': r}; }),
+                                    msg,
+                                    false);
+          }
           this.files = data;
           this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
             this.participantCount = data.pagination.total;

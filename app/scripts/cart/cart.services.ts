@@ -115,9 +115,9 @@ module ngApp.cart.services {
     isInCart(fileId: string): boolean;
     areInCart(files: IFile[]): boolean;
     removeAll(): void;
-    remove(files: IFile[]): void;
+    remove(filesToRemove: IFile[], additionalMsg?: string, allowUndo: boolean = true): void;
     buildAddedMsg(added: Array<Object>, alreadyIn: Array<Object>): string;
-    buildRemovedMsg(removedFiles: IFile[]): string;
+    buildRemovedMsg(removedFiles: IFile[], additionalMsg: string, allowUndo: boolean = true): string;
     undoAdded(): void;
     undoRemoved(): void;
     getMaxSize(): number;
@@ -284,22 +284,22 @@ module ngApp.cart.services {
       return message + "</span>";
     }
 
-    buildRemovedMsg(removedFiles: IFile[]): string {
+    buildRemovedMsg(removedFiles: IFile[], additionalMsg: string, allowUndo: boolean = true): string {
       var message = this.gettextCatalog.getPlural(removedFiles.length,
                     "<span>Removed <strong class='word-break-all'>" + _.get(_.first(removedFiles), "file_name", "1 file") + "</strong> from the cart.",
                     "<span>Removed <strong>" + removedFiles.length + "</strong> files from the cart.");
 
-      if (removedFiles.length !== 0) {
+      if (allowUndo && removedFiles.length !== 0) {
         message += "<br /> <a data-ng-click='undoClicked(\"removed\")'><i class='fa fa-undo'></i> Undo</a>";
       }
-      return message + "</span>";
+      return message + (additionalMsg ? ' ' + additionalMsg : '') + "</span>";
     }
 
     removeAll(): void {
       this.remove(this.files);
     }
 
-    remove(filesToRemove: IFile[]): void {
+    remove(filesToRemove: IFile[], additionalMsg?: string, allowUndo: boolean = true): void {
         var partitioned = this.files.reduce((acc, f) => {
         var fileToRemove = _.find(filesToRemove, f2r => f2r.file_id === f.file_id);
         if (fileToRemove) {
@@ -311,7 +311,7 @@ module ngApp.cart.services {
       this.notify.closeAll();
       this.notify({
         message: "",
-        messageTemplate: this.buildRemovedMsg(this.lastModifiedFiles),
+        messageTemplate: this.buildRemovedMsg(this.lastModifiedFiles, additionalMsg || '', allowUndo),
         container: "#notification",
         classes: "alert-warning"
       });

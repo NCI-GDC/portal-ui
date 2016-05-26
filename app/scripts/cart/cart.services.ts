@@ -115,7 +115,7 @@ module ngApp.cart.services {
     isInCart(fileId: string): boolean;
     areInCart(files: IFile[]): boolean;
     removeAll(): void;
-    remove(files: IFile[]): void;
+    remove(filesToRemove: IFile[], additionalMsg?: string, allowUndo: boolean = true): void;
     buildAddedMsg(added: Array<Object>, alreadyIn: Array<Object>): string;
     buildRemovedMsg(removedFiles: IFile[], additionalMsg: string, allowUndo: boolean = true): string;
     undoAdded(): void;
@@ -292,7 +292,7 @@ module ngApp.cart.services {
       if (allowUndo && removedFiles.length !== 0) {
         message += "<br /> <a data-ng-click='undoClicked(\"removed\")'><i class='fa fa-undo'></i> Undo</a>";
       }
-      return message + additionalMsg + "</span>";
+      return message + (additionalMsg ? ' ' + additionalMsg : '') + "</span>";
     }
 
     removeAll(): void {

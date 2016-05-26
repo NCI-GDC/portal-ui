@@ -16,13 +16,15 @@ module ngApp.participants.controllers {
     annotationIds: string[];
     clinicalFileId: string;
     /* @ngInject */
-    constructor(public participant: IParticipant,
-                private CoreService: ICoreService,
-                private LocationService: ILocationService,
-                private $filter: ng.IFilterService,
-                private ExperimentalStrategyNames: string[],
-                private DATA_CATEGORIES,
-                private config: IGDCConfig) {
+    constructor(
+      public participant: IParticipant,
+      private CoreService: ICoreService,
+      private LocationService: ILocationService,
+      private $filter: ng.IFilterService,
+      private ExperimentalStrategyNames: string[],
+      private DATA_CATEGORIES,
+      private config: IGDCConfig
+    ) {
       CoreService.setPageTitle("Case", participant.case_id);
 
       this.participant = participant;

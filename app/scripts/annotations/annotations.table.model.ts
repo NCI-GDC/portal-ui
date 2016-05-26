@@ -43,7 +43,10 @@ module ngApp.projects.models {
           {
               name: "Entity ID",
               id: "entity_id",
-              td: row => row.entity_id,
+              td: row =>
+                '<a data-ui-sref="case({ caseId: row.case_id, bioId: row.entity_id, \'#\': \'biospecimen\' })">'
+              + row.entity_id
+              + '</a>',
               sortable: true,
               tdClassName: 'truncated-cell',
               toolTipText: row => row.entity_id

@@ -172,10 +172,23 @@
                   </thead>
                   <tbody>
                   <tr data-ng-repeat="e in fc.file.associated_entities | filter:fc.tableFilters.assocEntity track by e.entity_id">
-                    <td class="truncated-cell">{{ ::e.entity_id }}</td>
+                    <td class="truncated-cell">
+                      <a
+                        data-ng-if="e.entity_type === 'case'"
+                        data-ui-sref="case({ caseId: e.case_id })"
+                      >
+                        {{ ::e.entity_id }}
+                      </a>
+                      <a
+                        data-ng-if="e.entity_type !== 'case'"
+                        data-ui-sref="case({ caseId: e.case_id, bioId: e.entity_id, '#': 'biospecimen' })"
+                      >
+                        {{ ::e.entity_id }}
+                      </a>
+                    </td>
                     <td>{{ ::e.entity_type | humanify }}</td>
                     <td class="truncated-cell">
-                      <a data-ui-sref="case({ caseId : e.case_id })">
+                      <a data-ui-sref="case({ caseId: e.case_id })">
                         {{ ::e.case_id }}
                       </a>
                     </td>

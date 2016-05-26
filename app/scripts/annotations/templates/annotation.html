@@ -17,7 +17,27 @@
           </tr>
           <tr>
             <th data-translate scope="row">Entity UUID</th>
-            <td>{{ ::ac.annotation.entity_id || "--" }}</td>
+            <td>
+              <a
+                data-ng-if="ac.annotation.entity_id !== 'case'"
+                data-ui-sref="case({
+                  caseId: ac.annotation.case_id,
+                  bioId: ac.annotation.entity_id,
+                  '#': 'biospecimen'
+                })"
+              >
+                {{ ::ac.annotation.entity_id }}
+              </a>
+              <a
+                data-ng-if="ac.annotation.entity_id === 'case'"
+                data-ui-sref="case({
+                  caseId: ac.annotation.case_id,
+                  bioId: ac.annotation.entity_id,
+                })"
+              >
+                {{ ::ac.annotation.entity_id }}
+              </a>
+            </td>
           </tr>
           <tr>
             <th data-translate scope="row">Entity Barcode</th>

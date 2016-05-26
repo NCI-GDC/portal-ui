@@ -8,14 +8,12 @@ module ngApp.components.ui.biospecimen.controllers {
     activeBioSpecimenDocType: string;
     displayBioSpecimenDocument(doc: any, type: string): void;
     downloadBiospecimenXML(participant_id: string): void;
-    bioSpecimenFileId: string;
     bioSpecimenFile: any;
   }
 
   class BiospecimenController implements IBiospecimenController {
     activeBioSpecimenDoc: any;
     activeBioSpecimenDocType: string;
-    bioSpecimenFileId: string;
 
     /* @ngInject */
     constructor(
@@ -23,6 +21,7 @@ module ngApp.components.ui.biospecimen.controllers {
       private config: IGDCConfig,
       $scope
     ) {
+
       if ($scope.participant.samples) {
         $scope.participant.samples.expanded = true;
         this.activeBioSpecimenDoc = $scope.participant.samples[0];

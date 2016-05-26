@@ -7,7 +7,7 @@ module ngApp.participants {
   /* @ngInject */
   function participantsConfig($stateProvider: ng.ui.IStateProvider) {
     $stateProvider.state("case", {
-      url: "/cases/:caseId",
+      url: "/cases/:caseId?{bioId:any}",
       controller: "ParticipantController as pc",
       templateUrl: "participant/templates/participant.html",
       resolve: {

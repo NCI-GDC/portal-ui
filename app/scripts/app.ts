@@ -214,7 +214,9 @@ function appRun(gettextCatalog: any,
     CoreService.setLoadedState(true);
   });
 
-  $rootScope.$on("$stateChangeError", () => $state.go("404"));
+  $rootScope.$on("$stateChangeError", () => {
+    $state.go("404", {}, { location: "replace" });
+  });
 
 }
 

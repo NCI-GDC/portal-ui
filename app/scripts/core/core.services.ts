@@ -9,17 +9,25 @@ module ngApp.core.services {
     activeRequests: boolean;
     finishedRequests: number;
     requestCount: number;
+    retryCount: number;
   }
 
   class CoreService implements ICoreService {
     activeRequests: boolean = false;
     finishedRequests: number = 0;
     requestCount: number = 0;
+    retryCounts: Object = {};
+    MAX_RETRIES: number = 5;
 
     /* @ngInject */
     constructor(private $rootScope: ngApp.IRootScope,
                 private $state: ng.ui.IStateService,
+                private $http: ng.IHttpService,
+                private Restangular: restangular.IProvider,
+                private config: IGDCConfig,
                 private ngProgressLite: ng.progressLite.INgProgressLite,
+                private $uibModal: any,
+                private $uibModalStack: any,
                 private gettextCatalog) {
       this.setLoadedState(true);
     }
@@ -59,6 +67,43 @@ module ngApp.core.services {
 
     setSearchModelState(state: boolean): void {
       this.$rootScope.modelLoaded = state;
+    }
+
+    retry(response: any, deferred: any) {
+      const stringified = JSON.stringify(response);
+      this.retryCounts[stringified] = this.retryCounts[stringified] || 0;
+      console.log('retrying ' + stringified + ': \n' + this.retryCounts[stringified] + '/' + this.MAX_RETRIES + ' retries');
+      if (this.retryCounts[stringified] < this.MAX_RETRIES) {
+        this.retryCounts[stringified]++;
+        const r = () => {
+                    this.Restangular.all(response.config.url.replace(this.config.api, ''))
+                     .getList(response.config.params)
+                     .then((res) => deferred.resolve(res),
+                     () => deferred.reject())
+                   };
+        setTimeout(r, 1000);
+        return false;
+      } else {
+        this.retryCounts[stringified] = 0;
+        deferred.reject('Ran out of retries');
+        this.$uibModalStack.dismissAll();
+        this.$uibModal.open({
+          templateUrl: "core/templates/internal-server-error.html",
+          controller: "WarningController",
+          controllerAs: "wc",
+          backdrop: "static",
+          keyboard: false,
+          backdropClass: "warning-backdrop",
+          animation: false,
+          size: "lg",
+          resolve: {
+            warning: null
+          }
+        });
+        this.$rootScope.$emit('ClearLoadingScreen');
+        return false;
+      }
+      return true;
     }
 
   }

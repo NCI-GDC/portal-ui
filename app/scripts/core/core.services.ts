@@ -19,9 +19,23 @@ module ngApp.core.services {
     /* @ngInject */
     constructor(private $rootScope: ngApp.IRootScope,
                 private $state: ng.ui.IStateService,
+                private $http: ng.IHttpService,
+                private Restangular: restangular.IProvider,
+                private config: IGDCConfig,
                 private ngProgressLite: ng.progressLite.INgProgressLite,
+                private $uibModal: any,
+                private $uibModalStack: any,
+                private Restangular: restangular.IProvider,
                 private gettextCatalog) {
       this.setLoadedState(true);
+      Restangular.setErrorInterceptor((response, deferred, responseHandler) => {
+        this.xhrDone();
+        if (response.status >= 500) {
+          console.log(`${JSON.stringify(response.config)} failed with response.status`);
+          return this.retry(response, deferred, responseHandler);
+        }
+        return true;
+      });
     }
 
     setLoadedState(state: boolean) {
@@ -59,6 +73,39 @@ module ngApp.core.services {
 
     setSearchModelState(state: boolean): void {
       this.$rootScope.modelLoaded = state;
+    }
+
+    retry(response: any, deferred: any, responseHandler: any) {
+      const r = () => {
+        this.$http(response.config)
+        .then(responseHandler,
+              (response) => {
+                if (response.config.url.indexOf(this.config.auth) !== -1) {
+                  return;
+                }
+                if (!this.$uibModalStack.getTop()) {
+                   response && this.$uibModal.open({
+                    templateUrl: "core/templates/internal-server-error.html",
+                    controller: "WarningController",
+                    controllerAs: "wc",
+                    backdrop: "static",
+                    keyboard: false,
+                    backdropClass: "warning-backdrop",
+                    animation: false,
+                    size: "lg",
+                    resolve: {
+                      warning: null
+                    }
+                  });
+                }
+                this.$rootScope.$emit('ClearLoadingScreen');
+                deferred.reject();
+              });
+      };
+      const timeOut = Math.floor((Math.random() * 5) + 1) * 1000;
+      console.log(`retrying in ${timeOut}ms`);
+      setTimeout(r, timeOut);
+      return false;
     }
 
   }

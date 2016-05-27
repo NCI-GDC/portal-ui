@@ -1,3 +1,12 @@
+<a name"1.1.1"></a>
+### 1.1.1 (2016-05-27)
+
+
+#### Bug Fixes
+
+* **home:** 2535 update infrastructure section ([7f29d31c](https://github.com/NCI-GDC/portal-ui/commit/7f29d31c), closes [PGDC-2535](https://jira.opensciencedatacloud.org/browse/PGDC-2535))
+
+
 <a name"1.1.0"></a>
 ## 1.1.0 (2016-05-25)
 

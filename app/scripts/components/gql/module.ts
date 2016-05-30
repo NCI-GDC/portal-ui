@@ -309,6 +309,26 @@ module ngApp.components.gql {
       }
       return e.location.start.line + " : " + e.location.start.column + " - " + e.message
     }
+
+    _isValidField = (validFields: string[] = [], node: IParts = {}): boolean =>
+      _.includes(validFields, (node.field || ''));
+
+    _findBogusFields = (gqlTree: any = {}, isValidField: (any) => boolean = () => false): string[] =>
+      [].concat(gqlTree).reduce((acc, g) => {
+        const content = g.content || {};
+        const newFinding = _.isArray (content) ?
+          // recursion ahead - if stack overflow is a concern here (it shouldn't be), rewrite this with proper tail call (for ES6).
+          this._findBogusFields(content, isValidField) :
+          (isValidField(content) ? '' : (content.field || ''));
+
+        return acc.concat(newFinding);
+      }, []);
+
+    findInvalidFields = (validFields: string[] = [], gqlTree: any = {}): string[] => {
+      const result = this._findBogusFields(gqlTree, _.partial(this._isValidField, validFields));
+      return _.unique(result)
+        .filter(f => f.length > 0);
+    };
   }
 
   /* @ngInject */
@@ -349,7 +369,12 @@ module ngApp.components.gql {
         var T = GqlTokens;
         var ds = Restangular.all("gql");
         var mapping: IDdItem[];
-        ds.get('_mapping', {}).then((m: IDdItem[]) => mapping = m);
+        var validFields = [];
+
+        ds.get('_mapping', {}).then((m: IDdItem[]) => {
+          mapping = m;
+          validFields = _.keys(mapping);
+        });
 
         $scope.active = INACTIVE;
         $scope.offset = 0;
@@ -427,7 +452,6 @@ module ngApp.components.gql {
               } else if ([T.EQ, T.NE].indexOf($scope.parts.op) !== -1) {
                 // is_value_string is_unquoted_string
                 $scope.mode = Mode.Unquoted;
-
                 GqlService.ajaxRequest($scope.parts.field).then((d)=> {
                   $scope.ddItems = _.filter(d, (m) => {
                     return m && m.full && GqlService.contains(m.full.toString(), $scope.parts.needle) && GqlService.clean(m.full.toString());
@@ -442,8 +466,19 @@ module ngApp.components.gql {
           try {
             $scope.gql = $window.gql.parse($scope.query);
             $scope.error = null;
+
+            const invalids = GqlService.findInvalidFields(validFields, $scope.gql.filters);
+            if (invalids.length > 0) {
+              throw new Error('' + invalids.length + ' invalid field' +
+                ((invalids.length > 1) ? 's' : '') +
+                ' found: ' + invalids.join(', ')
+              );
+            }
           } catch (Error) {
-            Error.human = GqlService.humanError($scope.query, Error);
+            Error.human = Error.location ?
+              GqlService.humanError($scope.query, Error) :
+              Error.message;
+
             $scope.error = Error;
             $scope.gql = null;
           }
@@ -546,7 +581,7 @@ module ngApp.components.gql {
 
         $scope.enter = function(item: IDdItem): void {
           item = item || ($scope.active === INACTIVE ? $scope.ddItems[0] : $scope.ddItems[$scope.active]);
-          var needleLength = $scope.parts.needle.length;
+  	      var needleLength = $scope.parts.needle.length;
           // Quote the value if it has a space so the parse can handle it
           if (GqlService.isQuoted(item.full)) item.full = T.QUOTE + item.full + T.QUOTE;
 
@@ -705,6 +740,7 @@ module ngApp.components.gql {
     rhsRewriteList(left: string): string;
     isQuoted(s: string | number): boolean;
     humanError(s: string, e: IGqlSyntaxError): string;
+    findInvalidFields(validFields: string[] = [], gqlTree: any = {}): string[];
   }
 
   interface ITokens {

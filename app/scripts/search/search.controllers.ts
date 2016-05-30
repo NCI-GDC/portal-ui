@@ -45,6 +45,7 @@ module ngApp.search.controllers {
     tabSwitch: boolean = false;
     projectIdChartConfig: any;
     primarySiteChartConfig: any;
+    facetsCollapsed: boolean = false;
 
     /* @ngInject */
     constructor(private $scope: ISearchScope,
@@ -223,6 +224,11 @@ module ngApp.search.controllers {
       }
 
       this.$state.go("query." + toTab, stateParams, { inherit: true });
+    }
+
+    toggleFacets(shouldCollapse) {
+      this.facetsCollapsed = shouldCollapse;
+      this.$rootScope.$emit("toggleFacets");
     }
 
   }

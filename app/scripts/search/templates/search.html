@@ -30,7 +30,7 @@
         </uib-tab>
         <div
           class="collapse-facets-button"
-          ng-click="sc.facetsCollapsed = true"
+          ng-click="sc.toggleFacets(true)"
         >
           <span class="fa fa-close" aria-hidden="true"></span>
         </div>
@@ -39,7 +39,7 @@
     <div
       class="expand-facets-button"
       ng-class="{ expanded: sc.facetsCollapsed }"
-      ng-click="sc.facetsCollapsed = false"
+      ng-click="sc.toggleFacets(false)"
     >
       Expand Facets <span class="fa fa-arrow-right" aria-hidden="true"></span>
     </div>

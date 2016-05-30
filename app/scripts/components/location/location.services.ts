@@ -96,7 +96,7 @@ module ngApp.components.location.services {
       var q: string[] = _.map(f.content, (ftr: IFilter) => {
         var c: IFilterValue = ftr.content;
         var o = ftr.op;
-        var v = ftr.op === "in" ? angular.toJson(c.value) : c.value 
+        var v = ftr.op === "in" ? angular.toJson(c.value) : c.value
         return [c.field, o, v].join(" ");
       });
 

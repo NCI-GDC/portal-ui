@@ -1,10 +1,13 @@
 <div class="btn-group" data-uib-dropdown>
-  <button data-ng-if="!text && !downloadInProgress" type="button"
-          class="btn btn-default dropdown-toggle fa fa-table"
+  <button data-ng-if="!text && !downloadInProgress"
+          type="button"
+          class="btn btn-default fa fa-download"
           data-uib-tooltip="Export Table"
           data-popover-popup-delay=1000
           data-popover-append-to-body="true"
-          data-uib-dropdown-toggle aria-expanded="false">
+          data-uib-dropdown-toggle
+          aria-label="Export Table"
+          aria-expanded="false">
     <span class="icon-btn-label">Export Table</span>
   </button>
   <button data-ng-if="text && !downloadInProgress" type="button"

@@ -69,6 +69,18 @@ module ngApp.core.services {
       this.$rootScope.modelLoaded = state;
     }
 
+    fib(n: number): number {
+      var a = 0;
+      var b = 1;
+      var f = 1;
+      for (var i = 2; i <= n; i++) {
+        f = a + b;
+        a = b;
+        b = f;
+      }
+      return n === 0 ? 0 : f;
+    }
+
     retry(response: any, deferred: any) {
       const stringified = JSON.stringify(response);
       this.retryCounts[stringified] = this.retryCounts[stringified] || 0;
@@ -81,7 +93,8 @@ module ngApp.core.services {
                      .then((res) => deferred.resolve(res),
                      () => deferred.reject())
                    };
-        setTimeout(r, 1000);
+        const timeOut = this.fib(this.retryCounts[stringified]) * 1000;
+        setTimeout(r, timeOut);
         return false;
       } else {
         this.retryCounts[stringified] = 0;

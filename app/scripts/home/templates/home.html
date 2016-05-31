@@ -26,8 +26,7 @@
             <tr data-ng-repeat="query in hc.getExampleSearchQueries()">
               <th scope="row" style="white-space: normal">
                 <ul>
-                  <li data-ng-bind="query.description">
-                  </li>
+                  <li data-ng-bind="query.description"></li>
                 </ul>
               </th>
               <td>
@@ -41,7 +40,8 @@
                 <a class="btn btn-primary" href="/search/f?filters={{query.filters}}">
                   <span data-ng-if="query.fileCount >= 0" data-ng-bind="query.fileCount | number"></span>
                   <span data-ng-if="query.fileCount === null"><i class="fa fa-spinner fa-spin"></i></span>
-                  Files</a>
+                  Files
+                </a>
               </td>
             </tr>
           </tbody>
@@ -72,7 +72,12 @@
             display: flex;
             flex-direction: column;">
           <h3 style="margin:0 0 1rem 0; color: #333 !important">Data Portal Summary</h3>
-          <em style="font-size:1.3rem;text-transform: none">Data Release <span data-ng-bind-placholder="">1.0</span> - <span data-ng-bind-placholder="" style="margin-right: 1rem">June 1, 2016</span></em>
+          <a href="https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/" target="_blank">
+            <em style="font-size:1.3rem;text-transform: none">
+              Data Release <span data-ng-bind-placholder="">1.0</span> -
+              <span style="margin-right: 1rem">June 6, 2016</span>
+            </em>
+          </a>
         </div>
         <div class="data-stats-block">
           <div class="stats-block-header">Projects</div>

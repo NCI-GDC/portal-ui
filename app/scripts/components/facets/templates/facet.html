@@ -10,10 +10,15 @@
       {{ ::tc.title | translate }}
     </span>
 
-    <span class="pull-right"
-          data-ng-if="removable === 'true'"
-          data-ng-click="removeFunction()">
-      <i class="fa fa-times"></i>
+    <span class="pull-right">
+      <i class="fa fa-history"
+        data-ng-if="tc.actives.length"
+        data-ng-click="tc.clear(tc.name)"
+      ></i>
+      <i class="fa fa-times"
+        data-ng-if="removable === 'true'"
+        data-ng-click="removeFunction()"
+      ></i>
     </span>
   </h4>
 

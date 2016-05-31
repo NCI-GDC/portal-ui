@@ -63,6 +63,7 @@ module ngApp.components.facets.controllers {
     actives: string[] = [];
     inactives: string[] = [];
     error: string = undefined;
+    terms: string[];
 
     /* @ngInject */
     constructor(private $scope: IFacetScope, private FacetService: IFacetService,
@@ -132,6 +133,10 @@ module ngApp.components.facets.controllers {
       if (property === "expanded") {
         this.displayCount = this.expanded ? this.inactives.length : this.originalDisplayCount;
       }
+    }
+
+    clear(facet: string) {
+      this.terms.forEach(term => this.FacetService.removeTerm(facet, term));
     }
   }
 

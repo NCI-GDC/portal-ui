@@ -39,9 +39,12 @@
     <div
       class="expand-facets-button"
       ng-class="{ expanded: sc.facetsCollapsed }"
-      ng-click="sc.toggleFacets(false)"
     >
-      <span class="fa fa-arrow-right" aria-hidden="true"></span>
+      <span
+        ng-click="sc.toggleFacets(false)"
+        class="fa fa-arrow-right"
+        aria-hidden="true">
+      </span>
     </div>
     <div class="content" ng-class="{ expanded: sc.facetsCollapsed }">
       <div class="alert alert-info clearfix">

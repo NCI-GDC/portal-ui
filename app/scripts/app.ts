@@ -120,7 +120,6 @@ function appRun(gettextCatalog: any,
                 UserService: IUserService,
                 ProjectsService: IProjectsService,
                 $window: ng.IWindowService,
-                $uibModal: any,
                 LocalStorageService: ILocalStorageService
                 ) {
 
@@ -134,25 +133,13 @@ function appRun(gettextCatalog: any,
 
   $rootScope.config = config;
   Restangular.addFullRequestInterceptor(addTokenToRequest);
-  Restangular.setErrorInterceptor((response) => {
+  Restangular.setErrorInterceptor((response, deferred) => {
     CoreService.xhrDone();
-    if (response.status === 500) {
-      $uibModal.open({
-        templateUrl: "core/templates/internal-server-error.html",
-        controller: "WarningController",
-        controllerAs: "wc",
-        backdrop: "static",
-        keyboard: false,
-        backdropClass: "warning-backdrop",
-        animation: false,
-        size: "lg",
-        resolve: {
-          warning: null
-        }
-      });
+    if (response.status !== 200) {
+      console.log(JSON.stringify(response.config) + ' failed with ' + response.status);
+      return CoreService.retry(response, deferred);
     }
-    // TODO more than just 404
-    //$state.go("404", {}, {inherit: true});
+    return true;
   });
   Restangular.addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
     // Ajax

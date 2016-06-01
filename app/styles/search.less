@@ -1,3 +1,53 @@
+.projects .facets-sidebar .nav-tabs,
+.annotations .facets-sidebar .nav-tabs {
+  border-bottom: none;
+}
+
+.tab-content {
+  height: 84vh;
+  overflow: auto;
+}
+
+.collapse-facets-button {
+  float: right;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  outline: none;
+}
+
+.collapse-facets-button:hover {
+  background-color: #eeeeee;
+  border-color: #d9d8d8 #d9d8d8 #c4c4c4;
+}
+
+.expand-facets-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  background: white;
+  border: 1px solid #C4C4C4;
+  padding: 10px;
+  transition: transform 0.6s ease;
+  transform: translateX(-100%);
+  cursor: pointer;
+  outline: none;
+  width: 50px;
+  height: 100vh;
+  background-color: #EFEFEF;
+  font-size: 2rem;
+
+  &.expanded {
+    transform: translateX(0);
+  }
+}
+
+.facet-spacer {
+  height: 120px;
+}
+
 .summary-panel {
   padding: 15px;
 }

@@ -41,6 +41,11 @@ abbr {
 #gdc-header {
   border: none;
 }
+
+.navbar {
+  margin-bottom: 0;
+}
+
 .navbar-nav > li > a {
   padding-left: 13px;
   padding-right: 13px;
@@ -53,7 +58,7 @@ abbr {
 
 
 .gdc-body {
-  padding-bottom: @FOOTER_HEIGHT + 20;
+  padding: 80px 0 @FOOTER_HEIGHT + 20 0;
   margin-top: -20px;
 }
 
@@ -118,8 +123,15 @@ h3.panel-title {
 }
 
 .content {
-  width: 70%;
+  width: ~"calc(100% - 385px)";
   float: left;
+  margin-left: 375px;
+  padding-bottom: 300px;
+
+  &.expanded {
+    width: ~"calc(100% - 70px)";
+    margin-left: 60px;
+  }
 }
 
 //bootcard override
@@ -528,7 +540,12 @@ pre code {
 /* Page Top & Bottom Regions STYLE
 /-------------------------------------------------------------- */
 #header {
-  border-top: 6px solid #2a72a4; /* New */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  border-top: 6px solid #2a72a4;
+  border-bottom: 1px solid #ebebeb;
   min-height: 57px;
   background-color: white;
 }
@@ -703,10 +720,20 @@ pre code {
 
 /* Left Panal sidebar */
 .facets-sidebar {
-  max-width: 375px;
-  width: 30%;
+  width: 375px;
   float: left;
   padding: 0 15px;
+  position: fixed;
+  overflow: hidden;
+
+  &.collapsed {
+    width: 0% !important;
+    padding: 0;
+  }
+}
+
+.list-group {
+  min-width: 250px;
 }
 
 .facets-sidebar .nav-tabs > li.active > a,

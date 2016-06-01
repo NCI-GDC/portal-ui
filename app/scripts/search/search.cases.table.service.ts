@@ -62,7 +62,7 @@ module ngApp.search.cases.table.service {
               id: "case_id",
               toolTipText: row => row.case_id,
               td: row => '<a href="cases/'+ row.case_id + '">' + row.case_id + '</a>',
-              tdClassName: 'truncated-cell'
+              tdClassName: 'id-cell'
           }, {
               name: "Project",
               id: "project.project_id",

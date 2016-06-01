@@ -8,7 +8,7 @@ module ngApp.projects.models {
             id: "annotation_id",
             td: row => '<a href="annotations/'+row.annotation_id+'">' + row.annotation_id + '</a>',
             sortable: true,
-            tdClassName: 'truncated-cell',
+            tdClassName: 'id-cell',
             toolTipText: row => row.annotation_id
           },
           {
@@ -16,7 +16,7 @@ module ngApp.projects.models {
               id: "case_id",
               td: row => '<a href="cases/'+row.case_id+'">' + row.case_id + '</a>',
               sortable: true,
-              tdClassName: 'truncated-cell',
+              tdClassName: 'id-cell',
               toolTipText: row => row.case_id
           },
           {
@@ -48,7 +48,7 @@ module ngApp.projects.models {
               + row.entity_id
               + '</a>',
               sortable: true,
-              tdClassName: 'truncated-cell',
+              tdClassName: 'id-cell',
               toolTipText: row => row.entity_id
           },
           {

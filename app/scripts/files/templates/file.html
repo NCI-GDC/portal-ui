@@ -185,7 +185,7 @@
                   </thead>
                   <tbody>
                   <tr data-ng-repeat="e in fc.file.associated_entities | filter:fc.tableFilters.assocEntity track by e.entity_id">
-                    <td class="truncated-cell">
+                    <td class="id-cell">
                       <a
                         data-ng-if="e.entity_type === 'case'"
                         data-ui-sref="case({ caseId: e.case_id })"
@@ -200,7 +200,7 @@
                       </a>
                     </td>
                     <td>{{ ::e.entity_type | humanify }}</td>
-                    <td class="truncated-cell">
+                    <td class="id-cell">
                       <a data-ui-sref="case({ caseId: e.case_id })">
                         {{ ::e.case_id }}
                       </a>
@@ -404,7 +404,7 @@
               </thead>
               <tbody>
               <tr data-ng-repeat="f in fc.file.metadata_files track by f.file_id">
-                <td class="truncated-cell"
+                <td class="id-cell"
                     data-uib-tooltip="{{::f.file_name}}"
                     data-tooltip-append-to-body="true"
                     data-tooltip-popup-delay="1000"
@@ -457,7 +457,7 @@
               <tbody>
               <tr data-ng-repeat="outf in fc.file.downstream_analyses track by outf.file_id">
                 <td
-                  class="truncated-cell"
+                  class="id-cell"
                   data-uib-tooltip="{{outf.file_name}}"
                   data-tooltip-append-to-body="true"
                   data-tooltip-popup-delay="1000"

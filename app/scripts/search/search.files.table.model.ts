@@ -29,7 +29,7 @@ module ngApp.search.models {
         td: row => '<a href="files/' + row.file_id + '">' + row.file_id + '</a>',
         sortable: true,
         hidden: true,
-        tdClassName: 'truncated-cell'
+        tdClassName: 'id-cell'
       }, {
         name: "File Submitter ID",
         id: "submitter_id",
@@ -37,7 +37,7 @@ module ngApp.search.models {
         td: row => row.submitter_id || '--',
         sortable: true,
         hidden: true,
-        tdClassName: 'truncated-cell'
+        tdClassName: 'id-cell'
       }, {
         name: "My Projects",
         id: "my_projects",
@@ -63,7 +63,7 @@ module ngApp.search.models {
         toolTipText: row => row.file_name,
         td: row => '<a href="files/' + row.file_id + '">' + row.file_name + '</a>',
         sortable: true,
-        tdClassName: 'truncated-cell'
+        tdClassName: 'id-cell'
       }, {
         name: "Cases",
         id: "cases.case_id",

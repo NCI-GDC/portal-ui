@@ -47,7 +47,7 @@ module ngApp.cart.models {
         toolTipText: row => row.file_name,
         td: row => '<a href="files/' + row.file_id + '">' + row.file_name + '</a>',
         sortable: true,
-        tdClassName: 'truncated-cell'
+        tdClassName: 'id-cell'
       }, {
         name: "Cases",
         id: "cases",

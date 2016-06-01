@@ -33,6 +33,17 @@ module ngApp.components.header.controllers {
                 private $window: ng.IWindowService) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
       this.cookieEnabled = navigator.cookieEnabled;
+
+      var lastOffset = $(window).scrollTop();
+
+      $(window).scroll(_.throttle(function () {
+        var currentOffset = $(this).scrollTop();
+
+        if (currentOffset > lastOffset) $('#header').addClass('hidden-header');
+        else $('#header').removeClass('hidden-header');
+
+        lastOffset = currentOffset
+      }, 200));
     }
 
     getToken(): void {

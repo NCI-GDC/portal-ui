@@ -41,10 +41,16 @@ abbr {
 #gdc-header {
   border: none;
 }
+
+.navbar {
+  margin-bottom: 0;
+}
+
 .navbar-nav > li > a {
   padding-left: 13px;
   padding-right: 13px;
 }
+
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
@@ -53,7 +59,7 @@ abbr {
 
 
 .gdc-body {
-  padding-bottom: @FOOTER_HEIGHT + 20;
+  padding: 80px 0 @FOOTER_HEIGHT + 20 0;
   margin-top: -20px;
 }
 
@@ -528,9 +534,20 @@ pre code {
 /* Page Top & Bottom Regions STYLE
 /-------------------------------------------------------------- */
 #header {
-  border-top: 6px solid #2a72a4; /* New */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  border-top: 6px solid #2a72a4;
+  border-bottom: 1px solid #ebebeb;
   min-height: 57px;
   background-color: white;
+  transform: translateY(0%);
+  transition: transform 0.3s ease;
+
+  &.hidden-header {
+    transform: translateY(-100%);
+  }
 }
 
 #footer {

@@ -11,6 +11,7 @@ module.exports = function (config) {
       'karma-chai-sinon'
     ],
     files: [
+      'bower_components/jquery/dist/jquery.js',
       'bower_components/angular/angular.js',
       'bower_components/angular-gettext/dist/angular-gettext.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',

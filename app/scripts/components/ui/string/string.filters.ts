@@ -137,6 +137,10 @@ module ngApp.components.ui.string {
     }
   }
 
+  function Superscript () {
+    return (original: string): string => original.replace(/\^(\d*)/, '<sup>$1</sup>');
+  }
+
   angular.module("string.filters", [])
       .filter("ellipsicate", Ellipsicate)
       .filter("titlefy", Titlefy)
@@ -146,5 +150,6 @@ module ngApp.components.ui.string {
       .filter("humanify", Humanify)
       .filter("facetTitlefy", FacetTitlefy)
       .filter("capitalize", Capitalize)
-      .filter("ageDisplay", AgeDisplay);
+      .filter("ageDisplay", AgeDisplay)
+      .filter("superscript", Superscript);
 }

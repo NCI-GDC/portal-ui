@@ -72,6 +72,19 @@
                   </span>
                 </td>
               </tr>
+              <tr>
+                <th scope="row" data-translate>Project ID</th>
+                <td>
+                  <span data-ng-repeat="p in fc.file.projects">
+                    <a data-ui-sref="project({ projectId: p })" >
+                      {{ p }}
+                    </a>{{$last ? '' : ', '}}
+                  </span>
+                  <span data-ng-if="fc.file.projects.length === 0">
+                    --
+                  </span>
+                </td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -159,15 +172,15 @@
                     <th class="sticky" scope="col" data-translate>
                       Entity Type
                       <div>Entity Type</div>
-                      </th>
+                    </th>
                     <th class="sticky" scope="col" data-translate>
                       Case UUID
                       <div>Case UUID</div>
-                      </th>
+                    </th>
                     <th class="sticky" scope="col" data-translate>
                       Annotations
                       <div>Annotations</div>
-                      </th>
+                    </th>
                   </tr>
                   </thead>
                   <tbody>

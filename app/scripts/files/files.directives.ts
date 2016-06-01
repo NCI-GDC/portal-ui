@@ -50,6 +50,7 @@ module ngApp.files.directives {
           const params = _.merge({
             attachment: true,
             filters: filters,
+            fields: 'cases.project.project_id',
             expand: [
               'annotations',
               'archive',

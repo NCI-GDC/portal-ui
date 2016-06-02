@@ -328,19 +328,22 @@ module ngApp.cart.directives {
         const scope = $scope;
         scope.active = false;
 
-        const reportStatus = _.isFunction(scope.$parent.reportStatus) ?
-          _.partial(scope.$parent.reportStatus, scope.$id) :
-          () => {};
+        const reportStatus = _.isFunction(scope.$parent.reportStatus)
+          ? _.partial(scope.$parent.reportStatus, scope.$id)
+          : () => {};
+
         const inProgress = () => {
           scope.active = true;
           reportStatus(scope.active);
           $attrs.$set('disabled', 'disabled');
         };
+
         const done = () => {
           scope.active = false;
           reportStatus(scope.active);
           $element.removeAttr('disabled');
         };
+
         const url = config.auth_api + '/data?annotations=true&related_files=true';
         const download = (files) => {
           if ((files || []).length > 0) {
@@ -360,7 +363,22 @@ module ngApp.cart.directives {
             authorized: authorizedInCart
           };
 
-          if (unauthorizedInCart.length) {
+          if (scope.$eval($attrs.hasBamFiles)) {
+            $uibModal.open({
+              templateUrl: 'core/templates/modal.html',
+              controller: 'WarningController',
+              controllerAs: 'wc',
+              backdrop: 'static',
+              keyboard: false,
+              backdropClass: 'warning-backdrop',
+              animation: false,
+              size: 'lg',
+              resolve: {
+                warning: () => "This cart contains .BAM files. "
+                + "Please download the manifest and use the GDC Data Transfer Tool to continue."
+              }
+            });
+          } else if (unauthorizedInCart.length) {
             if (UserService.currentUser) {
               // Makes sure the user session has not expired.
               UserService.loginPromise().then(() => {

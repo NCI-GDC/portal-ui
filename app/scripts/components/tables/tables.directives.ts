@@ -55,9 +55,9 @@ module ngApp.components.tables.directives {
       restrict: "EA",
       scope: {
         text: "@",
-        size: "@",
+        size: "=",
         headings: "=",
-        endpoint: "@",
+        endpoint: "=",
         expand: "="
       },
       replace: true,

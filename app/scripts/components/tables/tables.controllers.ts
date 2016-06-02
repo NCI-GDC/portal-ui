@@ -249,46 +249,51 @@ module ngApp.components.tables.controllers {
     text: string;
     expand: string[];
     downloadInProgress: boolean;
+    headings: { id: string; hidden?: boolean; children: {}[] }[];
   }
 
   interface IExportTableController {
-    exportTable(fileType: string): void;
+    exportTable(fileType: string, download): void;
   }
 
   class ExportTableController implements IExportTableController {
 
     /* @ngInject */
-    constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig,
-                private $uibModal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
-                private $window: ng.IWindowService, private UserService: IUserService, private $timeout: ng.ITimeoutService) {
+    constructor(
+      private $scope: IExportScope,
+      private LocationService: ILocationService,
+      private config: IGDCConfig,
+      private $uibModal: any,
+      private $q: ng.IQService,
+      private Restangular: restangular.IProvider,
+      private $window: ng.IWindowService,
+      private UserService: IUserService,
+      private $timeout: ng.ITimeoutService
+    ) {
       $scope.downloadInProgress = false;
     }
 
     exportTable(fileType: string, download): void {
       var projectsKeys = {
-        "files": "cases.project.project_id",
-        "cases": "project.project_id",
-        "projects": "project_id"
+        files: "cases.project.project_id",
+        cases: "project.project_id",
+        projects: "project_id"
       };
 
-      var filters: Object = this.LocationService.filters();
-      var fieldsAndExpand = _.reduce(this.$scope.headings, (result, field) => {
-                              if(!_.get(field, 'hidden', false)) {
-                                if(_.get(field, 'children')) {
-                                  result.expand.push(field.id);
-                                } else {
-                                  result.fields.push(field.id);
-                                }
-                              }
-                              return result;
-                            }, {'fields': [], 'expand': []});
-      var url = this.LocationService.getHref();
-      var abort = this.$q.defer();
-      var modalInstance;
+      var projectKey = projectsKeys[this.$scope.endpoint];
+      var baseFilters = this.LocationService.filters();
 
-      if (projectsKeys[this.$scope.endpoint]) {
-        filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[this.$scope.endpoint]);
-      }
+      var filters: Object = projectKey
+        ? this.UserService.addMyProjectsFilter(baseFilters, projectKey)
+        : baseFilters;
+
+      var fieldsAndExpand = this.$scope.headings.reduce((result, field) =>
+        field.hidden
+          ? result
+          : field.children
+            ? result.expand.concat(field.id)
+            : result.fields.concat(field.id)
+      , { fields: [], expand: [] });
 
       var params = {
         filters: filters,
@@ -303,7 +308,7 @@ module ngApp.components.tables.controllers {
 
       const inProgress = (state) => (() => { this.$scope.downloadInProgress = state; }).bind(this);
 
-      const checkProgress = download(params, '' + this.config.auth_api + '/' + this.$scope.endpoint, (e) => e.parent());
+      const checkProgress = download(params, this.config.auth_api + '/' + this.$scope.endpoint, (e) => e.parent());
       checkProgress(inProgress(true), inProgress(false));
     }
 

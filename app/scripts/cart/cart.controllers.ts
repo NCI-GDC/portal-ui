@@ -180,15 +180,16 @@ module ngApp.cart.controllers {
           'cases.case_id',
           'cases.project.project_id',
           'cases.project.name'
-        ]
+        ],
       };
       this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {
         this.files = this.files || {};
         if (!_.isEqual(this.files.hits, data.hits)) {
           this.files = data;
-          this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST').then((data: IParticipants) => {
-            this.participantCount = data.pagination.total;
-            })
+          this.ParticipantsService.getParticipants({filters: filters, size: 0}, 'POST')
+            .then((data: IParticipants) => {
+              this.participantCount = data.pagination.total;
+            });
         }
       }).finally(() => this.getSummary() );
     }

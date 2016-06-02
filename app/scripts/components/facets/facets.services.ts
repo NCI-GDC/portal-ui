@@ -242,7 +242,6 @@ module ngApp.components.facets.services {
       return _.map(_.filter(data, (datum) => {
         return datum.doc_type === docType &&
                datum.field !== 'archive.revision' &&
-               !_.includes(datum.field, "_id") &&
                !_.includes(current, datum.field) &&
                !_.includes(docType === 'files'
                 ? _.pluck(this.SearchTableFilesModel.facets, "name")
@@ -316,11 +315,19 @@ module ngApp.components.facets.services {
     }
 
     addField(docType: string, fieldName: string, fieldType: string): void {
+      var facetType = 'terms';
+      if (_.includes(fieldName, 'datetime')) {
+        facetType = 'datetime';
+      } else if (_.some(['_id', '_uuid', 'md5sum'], a => _.includes(fieldName, a))) {
+        facetType = 'id';
+      } else if (fieldType === 'long') {
+        facetType = 'range';
+      }
       this.fieldsMap[docType].unshift({
           name: fieldName,
           title: fieldName,
           collapsed: false,
-          facetType: fieldType === 'long' ? 'range' : _.includes(fieldName, 'datetime') ? 'datetime' : 'terms',
+          facetType: facetType,
           removable: true
       });
       this.save();

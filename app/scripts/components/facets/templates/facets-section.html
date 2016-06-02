@@ -1,15 +1,28 @@
 <div data-ng-repeat="f in facetsConfig track by f.title">
   <facets-free-text data-ng-if="f.facetType === 'free-text'"
-                  data-title="{{f.title}}" placeholder="{{ f.placeholder | translate }}"
+                  data-title="{{ f.title | facetTitlefy }}"
+                  placeholder="{{ f.name | facetTitlefy }}"
                   data-field="{{doctype}}.{{f.name}}"
                   data-entity="{{doctype}}"
+                  data-removable="{{ f.removable }}"
+                  data-remove-function="removeFacet(f.name)"
                   data-template="components/facets/templates/typeahead-{{doctype}}.html"></facets-free-text>
 
-  <facets-prefix data-ng-if="f.facetType === 'free-text' && doctype === 'cases'"
-                  data-title="Case Submitter ID Prefix" placeholder="e.g. TCGA-DD*"
-                  data-field="cases.submitter_id"
-                  data-entity="cases"
-                  data-template="components/facets/templates/typeahead-prefix.html"></facets-prefix>
+  <facets-free-text data-ng-if="f.facetType === 'id'"
+                  data-title="{{ f.title | facetTitlefy }}"
+                  placeholder="{{ f.name | humanify }}"
+                  data-field="{{doctype}}.{{f.name}}"
+                  data-entity="{{doctype}}"
+                  data-removable="{{ f.removable }}"
+                  data-autocomplete="{{false}}"
+                  data-remove-function="removeFacet(f.name)"></facets-free-text>
+
+  <facets-prefix data-ng-if="f.facetType === 'prefix'"
+                 data-title="{{ f.title | facetTitlefy }}"
+                 placeholder="{{ f.name | facetTitlefy }}"
+                 data-field="{{doctype}}.{{f.name}}"
+                 data-entity="{{doctype}}"
+                 data-template="components/facets/templates/typeahead-prefix.html"></facets-prefix>
 
   <terms data-ng-if="f.facetType === 'terms'"
          data-name="{{doctype}}.{{f.name}}"

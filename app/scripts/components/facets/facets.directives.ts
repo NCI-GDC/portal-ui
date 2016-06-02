@@ -54,7 +54,9 @@ module ngApp.components.facets.directives {
         field: "@",
         entity: "@",
         template: "@",
-        autocomplete: "@"
+        autocomplete: "@",
+        removeFunction: "&",
+        removable: "@",
       },
       replace: true,
       templateUrl: "components/facets/templates/facets-free-text.html",

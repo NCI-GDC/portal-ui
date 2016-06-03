@@ -17,6 +17,17 @@ describe('Biospecimen:', function () {
     }]
   };
 
+  var participantNoPortionsOnlyAliquots = {
+    samples: [{
+      submitter_id: 's-foo1',
+      portions: [{
+        analytes: [{
+          aliquots: [{ submitter_id: 'al-foo1' }]
+        }]
+      }]
+    }]
+  };
+
   var idFields = [
     'submitter_id', 'sample_id', 'portion_id',
     'analyte_id', 'slide_id', 'aliquot_id'
@@ -64,6 +75,40 @@ describe('Biospecimen:', function () {
           expect(found).to.have.lengthOf(2);
         })
       );
+    });
+
+    describe('expandFirstWithChildren:', function () {
+      it('should exist', inject(function (BiospecimenService) {
+        expect(BiospecimenService.expandFirstWithChildren).to.exist;
+      }));
+
+      it('should expand the entity categories after samples '
+        + 'up until it finds one with children with files', inject(function (BiospecimenService) {
+        BiospecimenService.expandFirstWithChildren(participantNoPortionsOnlyAliquots.samples);
+
+        var correctlyExpanded =
+          participantNoPortionsOnlyAliquots.samples.every(function (sample) {
+            return sample.portions.expanded;
+          })
+
+          &&
+
+          participantNoPortionsOnlyAliquots.samples.every(function (sample) {
+            return sample.portions.every(function (portion) {
+              return portion.analytes.expanded;
+            })
+
+            &&
+
+            sample.portions.every(function (portion) {
+              return portion.analytes.every(function (analyte) {
+                return !analyte.aliquots.expanded;
+              });
+            });
+          });
+
+        expect(correctlyExpanded).to.be.true;
+      }));
     });
   });
 });

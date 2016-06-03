@@ -32,6 +32,22 @@ module ngApp.components.ui.biospecimen.services {
       return participant;
     }
 
+    expandFirstWithChildren(entities) {
+      var self = this;
+      (function expandFirstWithChildren (entities, depth) {
+        if (depth === self.hierarchy.length - 1) return;
+        self.hierarchy[depth].forEach(type => {
+          (entities || []).forEach(entity => {
+            var hasFiles = (entity[type.p] || []).some(x => x[type.s + '_id']);
+            if (hasFiles) return;
+
+            (entity[type.p] || []).expanded = true;
+            expandFirstWithChildren((entity[type.p] || []), depth + 1);
+          });
+        });
+      })(entities, 1);
+    }
+
     allExpanded(participant: any): any {
       var self = this;
       return (function allExpanded (entity, depth) {

@@ -1,6 +1,11 @@
-<div class="modal-body">
-  <p data-translate data-ng-bind-html="wc.warning"></p>
-</div>
-<div class="modal-footer" style="border-top: 0">
-  <button class="btn btn-primary" data-ng-click="wc.acceptWarning()" data-translate>OK</button>
-</div>
+<div class="modal-body" style="display:flex;align-items:center;">
+   <span data-ng-bind-html="wc.warning"></span>
+   <button
+     class="btn btn-primary"
+     style="margin-left:auto;"
+     data-ng-click="wc.acceptWarning()"
+     data-translate
+   >
+     OK
+   </button>
+ </div>

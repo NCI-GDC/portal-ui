@@ -1,3 +1,20 @@
+<a name"1.1.2"></a>
+### 1.1.2 (2016-06-03)
+
+
+#### Bug Fixes
+
+* **cart:**
+  * cannot download cart with over 5gb ([83c40084](https://github.com/NCI-GDC/portal-ui/commit/83c40084))
+  * 2496 problem with undo removal ([04a150fe](https://github.com/NCI-GDC/portal-ui/commit/04a150fe), closes [PGDC-2496](https://jira.opensciencedatacloud.org/browse/PGDC-2496))
+* **files:** 2568 remove broken bam examples ([aa933c95](https://github.com/NCI-GDC/portal-ui/commit/aa933c95), closes [PGDC-2568](https://jira.opensciencedatacloud.org/browse/PGDC-2568))
+
+
+#### Features
+
+* **home:** 2507 add link to release notes ([fe174675](https://github.com/NCI-GDC/portal-ui/commit/fe174675), closes [PGDC-2507](https://jira.opensciencedatacloud.org/browse/PGDC-2507))
+
+
 <a name"1.1.1"></a>
 ### 1.1.1 (2016-05-27)
 

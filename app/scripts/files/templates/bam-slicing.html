@@ -4,14 +4,17 @@
 </div>
 <div class="modal-body">
   <label for="bed">
-    Please enter one or more slices' genome coordinates below in <a href="https://genome.ucsc.edu/FAQ/FAQformat.html#format1" target="_blank">BED</a> format. 
+    Please enter one or more slices' genome coordinates below in <a href="https://genome.ucsc.edu/FAQ/FAQformat.html#format1" target="_blank">BED</a> format.
     (<a data-ng-click="bamc.toggleExample()">{{bamc.exampleShowing ? 'Hide Example' : 'Show Example'}}</a>)
   </label>
   <div data-ng-if="bamc.exampleShowing">
-    <pre>7:140505783-140511649
+
+<!-- pre spaced like this to ensure starting at beginning of block -->
+<pre>
 chr7:140505783-140511649
-1	150505782	150511648
-chr1	150505782	150511648</pre>
+chr1&#09;150505782&#09;150511648
+</pre>
+<!-- -->
   </div>
   <textarea id="bed"
             class="form-control"

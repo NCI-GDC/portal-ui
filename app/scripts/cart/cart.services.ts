@@ -145,7 +145,10 @@ module ngApp.cart.services {
                 private $rootScope,
                 private gettextCatalog,
                 private $filter: ng.IFilterService,
-                private $timeout: ng.ITimeoutService) {
+                private $timeout: ng.ITimeoutService,
+                private $uibModal,
+                private $uibModalStack
+              ) {
       this.reloadFromLocalStorage();
     }
 
@@ -200,44 +203,62 @@ module ngApp.cart.services {
     }
 
     addFiles(files: IFile[], displayAddingNotification: boolean = true): void {
-      if (displayAddingNotification) {
-        var addingMsgPromise = this.$timeout(() => {
-          this.notify({
-            message: "",
-            messageTemplate: "<span data-translate>Adding <strong>" + files.length + "</strong> files to cart</span>",
-            container: "#notification",
-            classes: "alert-info"
-          });
-        }, 1000);
-      }
-
-      this.lastModifiedFiles = [];
-
-      var alreadyIn:IFile[] = [];
-
-      files.forEach(file => {
-        if (!this.isInCart(file.file_id)) {
-            this.lastModifiedFiles.push(file);
-        } else {
-          alreadyIn.push(file);
+      if (navigator.cookieEnabled) {
+        if (displayAddingNotification) {
+          var addingMsgPromise = this.$timeout(() => {
+            this.notify({
+              message: "",
+              messageTemplate: "<span data-translate>Adding <strong>" + files.length + "</strong> files to cart</span>",
+              container: "#notification",
+              classes: "alert-info"
+            });
+          }, 1000);
         }
-      });
 
-      this.files = this.files.concat(this.lastModifiedFiles);
+        this.lastModifiedFiles = [];
 
-      if (addingMsgPromise) {
-        this.$timeout.cancel(addingMsgPromise);
+        var alreadyIn:IFile[] = [];
+
+        files.forEach(file => {
+          if (!this.isInCart(file.file_id)) {
+              this.lastModifiedFiles.push(file);
+          } else {
+            alreadyIn.push(file);
+          }
+        });
+
+        this.files = this.files.concat(this.lastModifiedFiles);
+
+        if (addingMsgPromise) {
+          this.$timeout.cancel(addingMsgPromise);
+        }
+
+        this._sync();
+        this.notify.closeAll();
+
+        this.notify.config({ duration: 5000 });
+        this.notify({
+          message: "",
+          messageTemplate: this.buildAddedMsg(this.lastModifiedFiles, alreadyIn),
+          container: "#notification",
+          classes: "alert-success"
+        });
+      } else {
+        this.$timeout(() => {
+          if (!this.$uibModalStack.getTop()) {
+            var modalInstance = this.$uibModal.open({
+              templateUrl: "core/templates/enable-cookies.html",
+              controller: "WarningController",
+              controllerAs: "wc",
+              backdrop: "static",
+              keyboard: false,
+              backdropClass: "warning-backdrop",
+              animation: false,
+              resolve: { warning: null }
+            });
+          }
+        });
       }
-
-      this._sync();
-      this.notify.closeAll();
-      this.notify.config({ duration: 5000 });
-      this.notify({
-        message: "",
-        messageTemplate: this.buildAddedMsg(this.lastModifiedFiles, alreadyIn),
-        container: "#notification",
-        classes: "alert-success"
-      });
     }
 
     sizeWarning() {
@@ -300,23 +321,42 @@ module ngApp.cart.services {
     }
 
     remove(filesToRemove: IFile[]): void {
+      if (navigator.cookieEnabled) {
         var partitioned = this.files.reduce((acc, f) => {
-        var fileToRemove = _.find(filesToRemove, f2r => f2r.file_id === f.file_id);
-        if (fileToRemove) {
-          return { remaining: acc.remaining, removed: acc.removed.concat(fileToRemove)};
-        }
-        return { remaining: acc.remaining.concat(f), removed: acc.removed};
-      } , { remaining: [], removed: [] });
-      this.lastModifiedFiles = partitioned.removed;
-      this.notify.closeAll();
-      this.notify({
-        message: "",
-        messageTemplate: this.buildRemovedMsg(this.lastModifiedFiles),
-        container: "#notification",
-        classes: "alert-warning"
-      });
-      this.files = partitioned.remaining;
-      this._sync();
+          var fileToRemove = _.find(filesToRemove, f2r => f2r.file_id === f.file_id);
+          return fileToRemove
+            ? { remaining: acc.remaining, removed: acc.removed.concat(fileToRemove) }
+            : { remaining: acc.remaining.concat(f), removed: acc.removed};
+        } , { remaining: [], removed: [] });
+
+        this.lastModifiedFiles = partitioned.removed;
+        this.notify.closeAll();
+
+        this.notify({
+          message: "",
+          messageTemplate: this.buildRemovedMsg(this.lastModifiedFiles),
+          container: "#notification",
+          classes: "alert-warning"
+        });
+
+        this.files = partitioned.remaining;
+        this._sync();
+      } else {
+        this.$timeout(() => {
+          if (!this.$uibModalStack.getTop()) {
+            var modalInstance = this.$uibModal.open({
+              templateUrl: "core/templates/enable-cookies.html",
+              controller: "WarningController",
+              controllerAs: "wc",
+              backdrop: "static",
+              keyboard: false,
+              backdropClass: "warning-backdrop",
+              animation: false,
+              resolve: { warning: null }
+            });
+          }
+        });
+      }
     }
 
     getFileIds(): string[] {
@@ -345,7 +385,8 @@ module ngApp.cart.services {
       });
 
       this.LocalStorageService.setItem(CartService.GDC_CART_UPDATE, this.lastModified.toISOString());
-      this.LocalStorageService.setItem(CartService.GDC_CART_KEY, filesArray);
+      // if cookies disabled this will return false
+      return this.LocalStorageService.setItem(CartService.GDC_CART_KEY, filesArray);
     }
   }
 

@@ -24,6 +24,7 @@ module ngApp.core.controllers {
                 private $cookies: ng.cookies.ICookiesService,
                 UserService: IUserService,
                 private $uibModal: any,
+                private $uibModalStack,
                 private $timeout
               ) {
 
@@ -52,61 +53,72 @@ module ngApp.core.controllers {
 
       // display login failed warning
       if(_.get($location.search(), 'error') === 'You are not authorized to gdc services') {
-        var loginWarningModal = this.$uibModal.open({
-          templateUrl: "core/templates/login-failed-warning.html",
-          controller: "WarningController",
-          controllerAs: "wc",
-          backdrop: "static",
-          keyboard: false,
-          backdropClass: "warning-backdrop",
-          animation: false,
-          size: "lg",
-          resolve: {
-            warning: null
+        this.$timeout(() => {
+          if (!this.$uibModalStack.getTop()) {
+            var loginWarningModal = this.$uibModal.open({
+              templateUrl: "core/templates/login-failed-warning.html",
+              controller: "WarningController",
+              controllerAs: "wc",
+              backdrop: "static",
+              keyboard: false,
+              backdropClass: "warning-backdrop",
+              animation: false,
+              size: "lg",
+              resolve: {
+                warning: null
+              }
+            });
           }
         });
       }
 
       if (!$cookies.get("browser-checked")) {
-        if(bowser.msie && bowser.version <= 9) {
-          var bowserWarningModal = this.$uibModal.open({
-            templateUrl: "core/templates/browser-check-warning.html",
-            controller: "WarningController",
-            controllerAs: "wc",
-            backdrop: "static",
-            keyboard: false,
-            backdropClass: "warning-backdrop",
-            animation: false,
-            size: "lg",
-            resolve: {
-              warning: null
-            }
-          });
-          bowserWarningModal.result.then(() => {
-            this.$cookies.put("browser-checked", "true");
+        if (bowser.msie && bowser.version <= 9) {
+          this.$timeout(() => {
+            if (!this.$uibModalStack.getTop()) {
+              var bowserWarningModal = this.$uibModal.open({
+                templateUrl: "core/templates/browser-check-warning.html",
+                controller: "WarningController",
+                controllerAs: "wc",
+                backdrop: "static",
+                keyboard: false,
+                backdropClass: "warning-backdrop",
+                animation: false,
+                size: "lg",
+                resolve: {
+                  warning: null
+                }
+              });
+              bowserWarningModal.result.then(() => {
+                this.$cookies.put("browser-checked", "true");
+              });
+            };
           });
         } else {
-            this.$cookies.put("browser-checked", "true");
+          this.$cookies.put("browser-checked", "true");
         }
       }
-
       if (!$cookies.get("NCI-Warning")) {
-        var modalInstance = this.$uibModal.open({
-          templateUrl: "core/templates/warning.html",
-          controller: "WarningController",
-          controllerAs: "wc",
-          backdrop: "static",
-          keyboard: false,
-          backdropClass: "warning-backdrop",
-          animation: false,
-          size: "lg",
-          resolve: {
-            warning: null
-          }
-        });
+        this.$timeout(() => {
+          if (!this.$uibModalStack.getTop()) {
+            var modalInstance = this.$uibModal.open({
+              templateUrl: "core/templates/warning.html",
+              controller: "WarningController",
+              controllerAs: "wc",
+              backdrop: "static",
+              keyboard: false,
+              backdropClass: "warning-backdrop",
+              animation: false,
+              size: "lg",
+              resolve: {
+                warning: null
+              }
+            });
 
-        modalInstance.result.then(() => {
-          this.$cookies.put("NCI-Warning", "true");
+            modalInstance.result.then(() => {
+              this.$cookies.put("NCI-Warning", "true");
+            });
+          }
         });
       }
 

@@ -327,19 +327,24 @@ module ngApp.cart.directives {
         const scope = $scope;
         scope.active = false;
 
-        const reportStatus = _.isFunction(scope.$parent.reportStatus) ?
-          _.partial(scope.$parent.reportStatus, scope.$id) :
-          () => {};
+        const MAX_FILE_SIZE_ALLOWED = 5e+9;
+
+        const reportStatus = _.isFunction(scope.$parent.reportStatus)
+          ? _.partial(scope.$parent.reportStatus, scope.$id)
+          : () => {};
+
         const inProgress = () => {
           scope.active = true;
           reportStatus(scope.active);
           $attrs.$set('disabled', 'disabled');
         };
+
         const done = () => {
           scope.active = false;
           reportStatus(scope.active);
           $element.removeAttr('disabled');
         };
+
         const url = config.auth_api + '/data?annotations=true&related_files=true';
         const download = (files) => {
           if ((files || []).length > 0) {
@@ -416,8 +421,26 @@ module ngApp.cart.directives {
                 }
               });
             }
-          }
-          else {
+          } else if (authorizedInCart.reduce((acc, x) => acc + x.file_size, 0) > MAX_FILE_SIZE_ALLOWED) {
+            $uibModal.open({
+              templateUrl: 'core/templates/modal.html',
+              controller: 'WarningController',
+              controllerAs: 'wc',
+              backdrop: 'static',
+              keyboard: false,
+              backdropClass: 'warning-backdrop',
+              animation: false,
+              size: 'lg',
+              resolve: {
+                warning: () => "Your cart contains more than 5GBs of data. <br />"
+                + "Please select the \"Download > Manifest\" option and use the "
+                + "<a href='https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool' target='_blank'>"
+                +   "GDC Data Transfer Tool"
+                + "</a>"
+                + " to continue."
+              }
+            });
+          } else {
             download(files);
           }
         });

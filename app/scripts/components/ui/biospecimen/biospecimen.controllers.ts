@@ -27,7 +27,7 @@ module ngApp.components.ui.biospecimen.controllers {
         $scope.participant.samples.expanded = true;
         this.activeBioSpecimenDoc = $scope.participant.samples[0];
         this.activeBioSpecimenDocType = "sample";
-        this.BiospecimenService.expandFirstWithChildren($scope.participant.samples);
+        BiospecimenService.stitchPlaceholderChildrenToParents($scope.participant.samples);
       }
 
       this.bioSpecimenFile = _.find($scope.participant.files, (file) => {
@@ -47,7 +47,7 @@ module ngApp.components.ui.biospecimen.controllers {
         'samples.portions.submitter_id','samples.portions.slides','samples.portions.annotations',
         'samples.portions.center'];
 
-      this.biospecimenDataExportFileName = 'biospecimen.case-' + participant.case_id;
+      this.biospecimenDataExportFileName = `biospecimen.case-${participant.case_id}`;
 
       $scope.$on('displayBioSpecimenDocument', (event, data) => {
         this.activeBioSpecimenDocType = data.type;

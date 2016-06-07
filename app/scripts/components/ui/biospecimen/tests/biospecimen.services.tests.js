@@ -1,37 +1,29 @@
 describe('Biospecimen:', function () {
+  var idFields, participant;
 
   // Initialization of the AngularJS application before each test case
   beforeEach(module('biospecimen.services'));
 
-  var participant = {
-    samples: [{
-      submitter_id: 's-foo1',
-      portions: [{
-        submitter_id: 'p-foo2',
-        slides: [{ submitter_id: 'sl-foo2' }],
-        analytes: [{
-          submitter_id: 'an-foo2',
-          aliquots: [{ submitter_id: 'al-foo1' }]
+  beforeEach(function () {
+    idFields = [
+      'submitter_id', 'sample_id', 'portion_id',
+      'analyte_id', 'slide_id', 'aliquot_id'
+    ];
+
+    participant = {
+      samples: [{
+        submitter_id: 's-foo1',
+        portions: [{
+          submitter_id: 'p-foo2',
+          slides: [{ submitter_id: 'sl-foo2' }],
+          analytes: [{
+            submitter_id: 'an-foo2',
+            aliquots: [{ submitter_id: 'al-foo1' }]
+          }]
         }]
       }]
-    }]
-  };
-
-  var participantNoPortionsOnlyAliquots = {
-    samples: [{
-      submitter_id: 's-foo1',
-      portions: [{
-        analytes: [{
-          aliquots: [{ submitter_id: 'al-foo1' }]
-        }]
-      }]
-    }]
-  };
-
-  var idFields = [
-    'submitter_id', 'sample_id', 'portion_id',
-    'analyte_id', 'slide_id', 'aliquot_id'
-  ];
+    };
+  });
 
   describe('Service:', function () {
     it('should exist', inject(function (BiospecimenService) {
@@ -77,38 +69,87 @@ describe('Biospecimen:', function () {
       );
     });
 
-    describe('expandFirstWithChildren:', function () {
+    describe('stitchPlaceholderChildrenToParents:', function () {
       it('should exist', inject(function (BiospecimenService) {
-        expect(BiospecimenService.expandFirstWithChildren).to.exist;
+        expect(BiospecimenService.stitchPlaceholderChildrenToParents).to.exist;
       }));
 
-      it('should expand the entity categories after samples '
-        + 'up until it finds one with children with files', inject(function (BiospecimenService) {
-        BiospecimenService.expandFirstWithChildren(participantNoPortionsOnlyAliquots.samples);
+      it('should shift placeholder children to nearest parent with files',
+        inject(function (BiospecimenService) {
+          var actual = {
+            samples: [
+              {
+                submitter_id: 's-foo',
+                portions: [
+                  {
+                    analytes: [{
+                      aliquots: [{ submitter_id: 'al-foo1' }]
+                    }]
+                  },
+                  {
+                    analytes: [{
+                      aliquots: [{ submitter_id: 'al-foo2' }]
+                    }]
+                  }
+                ]
+              },
+              {
+                submitter_id: 's-bar',
+                portions: [
+                  {
+                    analytes: [{
+                      aliquots: [{ submitter_id: 'al-bar1' }]
+                    }]
+                  },
+                  {
+                    analytes: [{
+                      aliquots: [{ submitter_id: 'al-bar2' }]
+                    }]
+                  }
+                ]
+              }
+            ]
+          };
 
-        var correctlyExpanded =
-          participantNoPortionsOnlyAliquots.samples.every(function (sample) {
-            return sample.portions.expanded;
-          })
+          var expected = {
+            samples: [
+              {
+                submitter_id: 's-foo',
+                portions: [
+                  { analytes: [{ aliquots: [] }] },
+                  { analytes: [{ aliquots: [] }] }
+                ],
+                aliquots: [
+                  { submitter_id: 'al-foo1' },
+                  { submitter_id: 'al-foo2' }
+                ]
+              },
+              {
+                submitter_id: 's-bar',
+                portions: [
+                  { analytes: [{ aliquots: [] }] },
+                  { analytes: [{ aliquots: [] }] }
+                ],
+                aliquots: [
+                  { submitter_id: 'al-bar1' },
+                  { submitter_id: 'al-bar2' }
+                ]
+              }
+            ]
+          };
 
-          &&
+          BiospecimenService.stitchPlaceholderChildrenToParents(actual.samples);
+          expect(actual).to.deep.eq(expected);
+        })
+      );
 
-          participantNoPortionsOnlyAliquots.samples.every(function (sample) {
-            return sample.portions.every(function (portion) {
-              return portion.analytes.expanded;
-            })
-
-            &&
-
-            sample.portions.every(function (portion) {
-              return portion.analytes.every(function (analyte) {
-                return !analyte.aliquots.expanded;
-              });
-            });
-          });
-
-        expect(correctlyExpanded).to.be.true;
-      }));
+      it('should do nothing if no placeholders found',
+        inject(function (BiospecimenService) {
+          var expected = _.cloneDeep(participant);
+          BiospecimenService.stitchPlaceholderChildrenToParents(participant.samples);
+          expect(participant).to.deep.eq(expected);
+        })
+      );
     });
   });
 });

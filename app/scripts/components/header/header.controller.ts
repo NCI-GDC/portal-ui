@@ -39,7 +39,10 @@ module ngApp.components.header.controllers {
       $(window).scroll(_.throttle(function () {
         var currentOffset = $(this).scrollTop();
 
-        if (currentOffset > lastOffset) $('#header').addClass('hidden-header');
+        // at least beyond header height (times two) and scrolling down
+        if (currentOffset > 58 * 2 && currentOffset > lastOffset) {
+          $('#header').addClass('hidden-header');
+        }
         else $('#header').removeClass('hidden-header');
 
         lastOffset = currentOffset

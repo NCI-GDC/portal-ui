@@ -67,16 +67,14 @@ module ngApp.components.ui.string {
   }
 
   // differs from angular's uppercase by not uppering miRNA
-  class Capitalize {
-    constructor() {
-      return function(original: string) {
-        return original.split(' ').map(function (word) {
-              return word.indexOf("miRNA") === -1
-                ? word.charAt(0).toUpperCase() + word.slice(1)
-                : word
-            }).join(' ');
-      };
-    }
+  function Capitalize() {
+    return (original: string) => {
+      return original.split(' ').map(function (word) {
+        return word.indexOf("miRNA") === -1
+          ? word.charAt(0).toUpperCase() + word.slice(1)
+          : word
+      }).join(' ');
+    };
   }
 
   class Titlefy {
@@ -137,7 +135,7 @@ module ngApp.components.ui.string {
     }
   }
 
-  function Superscript () {
+  function Superscript() {
     return (original: string): string => original.replace(/\^(\d*)/, '<sup>$1</sup>');
   }
 

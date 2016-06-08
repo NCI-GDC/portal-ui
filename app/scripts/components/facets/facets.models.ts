@@ -39,10 +39,8 @@ module ngApp.components.facets.models {
 
   export interface IDateFacetScope extends ng.IScope {
     name: string;
-    date: Moment;
     opened: boolean;
     dateOptions: Object;
   }
 
 }
-

@@ -18,7 +18,6 @@ module ngApp.files.controllers {
     archiveCount: number;
     annotationIds: string[];
     tablesToDisplay: string[];
-    tableFilters: ITableFilters;
     makeSearchPageLink(files: IFile[]): string;
   }
 

@@ -184,9 +184,12 @@ function appRun(gettextCatalog: any,
     notify.closeAll();
     notify({
       message: "",
-      messageTemplate: "<span>Unable to connect to the GDC API. Make sure you have " +
-                       "accepted the Security Certificate. <br>If not, please click " +
-                       "<a target='_blank' href='"+config.api+"/status'>here</a> and accept the Security Certificate</span>",
+      messageTemplate:
+        `<span>
+          Unable to connect to the GDC API. Make sure you have accepted the Security Certificate. <br>
+          If not, please click <a target='_blank' href="${config.api}/status">here</a>
+          and accept the Security Certificate
+        </span>`,
       container: "#notification",
       classes: "alert-danger"
     });

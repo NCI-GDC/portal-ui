@@ -45,7 +45,7 @@
     "gulp-size": "1.2.1",
     "gulp-sourcemaps": "1.5.2",
     "gulp-tslint": "3.0.1-beta",
-    "gulp-typescript": "2.6.0",
+    "gulp-typescript": "2.13.6",
     "gulp-uglify": "1.2.0",
     "gulp-uncss": "1.0.1",
     "gulp-useref": "1.2.0",
@@ -70,8 +70,8 @@
     "run-sequence": "1.1.0",
     "sinon": "1.14.1",
     "sinon-chai": "2.8.0",
-    "typescript": "1.8.7",
-    "typings": "^0.7.3"
+    "typescript": "1.8.10",
+    "typings": "0.7.3"
   },
   "scripts": {
     "postinstall": "bower install --quiet && typings install",
@@ -81,6 +81,7 @@
     "start": "gulp serve",
     "prebuild": "npm install",
     "build": "gulp",
+    "ts": "gulp ts:compile",
     "upgrade": "npm-check-updates -u && bower-update && npm test"
   }
 }

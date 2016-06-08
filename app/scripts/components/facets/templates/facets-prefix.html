@@ -1,14 +1,22 @@
 <div class="list-group-item" id="{{ title | lowercase | spaceReplace:'-' }}-facet-list-group">
-  <label class="list-group-item-heading h4 facet-title"
-      data-ng-click="ftc.toggle($event, 'collapsed')"
-      data-ng-keypress="ftc.toggle($event, 'collapsed')"
-      aria-expanded="{{ !ftc.collapsed }}"
-      aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
-      role="button"
-      for="{{ 'autocomplete-' + title }}">
-    <i class="fa" data-ng-class="{ 'fa-angle-down': !ftc.collapsed, 'fa-angle-right': ftc.collapsed }"></i>
-    {{ title | translate }}
-  </label>
+  <h4 class="list-group-item-heading h4 facet-title">
+    <label
+        data-ng-click="ftc.toggle($event, 'collapsed')"
+        data-ng-keypress="ftc.toggle($event, 'collapsed')"
+        aria-expanded="{{ !ftc.collapsed }}"
+        aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
+        role="button"
+        for="{{ 'autocomplete-' + title }}">
+      <i class="fa" data-ng-class="{ 'fa-angle-down': !ftc.collapsed, 'fa-angle-right': ftc.collapsed }"></i>
+      {{ title | translate }}
+    </label>
+    <span class="pull-right">
+      <i class="fa fa-rotate-left"
+        data-ng-if="ftc.actives.length"
+        data-ng-click="ftc.clear()"
+      ></i>
+    </span>
+  </h4>
 
   <p class="text-success facet-title" data-ng-repeat="active in ftc.actives">
     <span data-ng-click="ftc.remove(active)"

@@ -63,7 +63,7 @@ module ngApp.cart.directives {
       bindToController: {
         files: '=',
         filter: '@',
-        size: '@'
+        size: '='
       },
       templateUrl: "cart/templates/add-to-cart-all-button.html",
       controller: "AddToCartAllCtrl as ctrl"

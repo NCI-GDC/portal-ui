@@ -273,9 +273,6 @@ module ngApp.cart.controllers {
       public notify: INotifyService
     ) {
       this.CartService = CartService;
-
-      // if data-files= is not passed in, assume there are files
-      this.hasFiles = this.files ? !!this.files.length : true;
     }
 
     removeAll(): void {

@@ -5,7 +5,7 @@
     <add-to-cart-all-button
       class="pull-right"
       data-filter='{{ [{ field: "cases.case_id", value: pc.participant.case_id }] | makeFilter:true }}'
-      data-size="{{ pc.participant.summary.file_count }}"
+      data-size="pc.participant.summary.file_count"
       data-files="pc.participant.files"
     />
   </h1>

@@ -8,6 +8,13 @@ module ngApp.components.facets.directives {
 
   /* @ngInject */
   function Terms(ProjectsService: IProjectsService): ng.IDirective {
+    const onEnterKeypress = (event, f) => {
+      if (event.which === 13) {
+        elem.closest(".list-group").focus();
+        f();
+      }
+    };
+
     return {
       restrict: "E",
       scope: {
@@ -28,17 +35,15 @@ module ngApp.components.facets.directives {
         $scope.ProjectsService = ProjectsService;
 
         $scope.add = (facet: string, term: string, event: any) => {
-          if (event.which === 13) {
-            elem.closest(".list-group").focus();
-            ctrl.add(facet, term);
-          }
+          onEnterKeypress(event, () => {ctrl.add(facet, term);});
+        };
+
+        $scope.addMissing = (facet: string, event: any) => {
+          onEnterKeypress(event, () => {ctrl.addMissing(facet);});
         };
 
         $scope.remove = (facet: string, term: string, event: any) => {
-          if (event.which === 13) {
-            elem.closest(".list-group").focus();
-            ctrl.remove(facet, term);
-          }
+          onEnterKeypress(event, () => {ctrl.remove(facet, term);});
         };
       }
     };

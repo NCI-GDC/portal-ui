@@ -30,28 +30,12 @@ module ngApp.components.summaryCard.controllers {
         ? config.filters[item[config.displayKey]].params
         : { filters: config.filters.default.params.filters(item[config.displayKey]) };
 
-      var newFilter = JSON.parse(params.filters).content[0]; // there is always just one
-
-      filters.content = (filters.content || []).some(filter => _.isEqual(filter, newFilter))
-        ? filters.content
-        : filters.content.concat(newFilter);
-
-      this.LocationService.setFilters(filters.content.length ? filters : null);
+      const newFilter = angular.fromJson(params.filters).content[0].content;
+      this.FacetService.addTerm(newFilter.field, newFilter.value[0]);
     }
 
     clearFilters(): void {
-      var filters = this.LocationService.filters();
-
-      filters.content = _.reject(filters.content, (filter) => {
-        return filter.content.field === this.$scope.config.filterKey;
-      });
-
-      if (filters.content.length) {
-        this.LocationService.setFilters(filters);
-        return;
-      }
-
-      this.LocationService.clear();
+      this.FacetService.removeFacet(this.$scope.config.filterKey);
     }
   }
 

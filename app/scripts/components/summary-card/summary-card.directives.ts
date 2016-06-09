@@ -1,8 +1,9 @@
 module ngApp.components.summaryCard.directives {
   import ILocationService = ngApp.components.location.services.ILocationService;
   import IProjectsService = ngApp.projects.services.IProjectsService;
+  import IFacetService = ngApp.components.facets.services.IFacetService;
 
-  function SummaryCard(LocationService: ILocationService, ProjectsService: IProjectsService): ng.IDirective {
+  function SummaryCard(LocationService: ILocationService, ProjectsService: IProjectsService, FacetService: IFacetService): ng.IDirective {
     return {
       restrict: "E",
       templateUrl: "components/summary-card/templates/summary-card.html",
@@ -28,12 +29,8 @@ module ngApp.components.summaryCard.directives {
             return;
           }
 
-          var filters = LocationService.filters();
-          $scope.activeFilters = _.some(filters.content, (filter) => {
-            return filter.content && filter.content.field === config.filterKey;
-          });
+          $scope.activeFilters = FacetService.isFacetActive(config.filterKey);
         }
-
         checkFilters();
 
         $scope.$on("$locationChangeSuccess", () => {
@@ -70,7 +67,7 @@ module ngApp.components.summaryCard.directives {
     };
   }
 
-  function CaseSummaryCard(LocationService: ILocationService): ng.IDirective {
+  function CaseSummaryCard(LocationService: ILocationService, FacetService: IFacetService): ng.IDirective {
     return {
       restrict: "E",
       templateUrl: "components/summary-card/templates/case-summary-card.html",
@@ -95,12 +92,8 @@ module ngApp.components.summaryCard.directives {
             return;
           }
 
-          var filters = LocationService.filters();
-          $scope.activeFilters = _.some(filters.content, (filter) => {
-            return filter.content && filter.content.field === config.filterKey;
-          });
+          $scope.activeFilters = FacetService.isFacetActive(config.filterKey);
         }
-
         checkFilters();
 
         $scope.$on("$locationChangeSuccess", () => {
@@ -144,7 +137,7 @@ module ngApp.components.summaryCard.directives {
     };
   }
 
-  function ProjectSummaryCard(LocationService: ILocationService): ng.IDirective {
+  function ProjectSummaryCard(LocationService: ILocationService, FacetService: IFacetService): ng.IDirective {
     return {
       restrict: "E",
       templateUrl: "components/summary-card/templates/project-summary-card.html",
@@ -169,12 +162,8 @@ module ngApp.components.summaryCard.directives {
             return;
           }
 
-          var filters = LocationService.filters();
-          $scope.activeFilters = _.some(filters.content, (filter) => {
-            return filter.content && filter.content.field === config.filterKey;
-          });
+          $scope.activeFilters = FacetService.isFacetActive(config.filterKey);
         }
-
         checkFilters();
 
         $scope.$on("$locationChangeSuccess", () => {

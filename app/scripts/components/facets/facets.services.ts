@@ -15,16 +15,31 @@ module ngApp.components.facets.services {
     getActives(facet: string, terms: any[]): string[];
     getActiveIDs(facet: string): string[];
     getActivesWithOperator(facet: string): any;
-    getActivesWithOperator(facet: string): any;
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any>;
     ensurePath(filters: IFilters): IFilters;
     filterFacets(facets: Object[]): string[];
   }
 
   class FacetService implements IFacetService {
+    private FilterFactory: Object;
+
     /* @ngInject */
     constructor(private LocationService: ILocationService, private Restangular: restangular.IService,
-                private UserService: IUserService, private $q: ng.IQService) {}
+                private UserService: IUserService, private $q: ng.IQService) {
+      // For filters that take two parameters: facet & value
+      this.FilterFactory = {
+        is: _.partial(this.createFilter, 'is'),
+        '<=': _.partial(this.createFilter, '<='),
+        '>=': _.partial(this.createFilter, '>='),
+        in: (facet, value) => ({
+          op: 'in',
+          content: {
+            field: facet,
+            value: [].concat(value)
+          }
+        })
+      };
+    }
 
     autoComplete(entity: string, query: string, field: string): ng.IPromise<any> {
       var projectsKeys = {
@@ -37,12 +52,10 @@ module ngApp.components.facets.services {
         query: query
       };
 
-      var filters = this.LocationService.filters();
-      _.remove(filters.content, (filter) => {
-        return filter.content.field === field;
-      });
+      var filters = this.ensurePath(this.LocationService.filters());
+      filters.content = filters.content.filter((f) => ! this.sameFacet (f, field));
 
-      if (filters.content && filters.content.length > 0) {
+      if (filters.content.length > 0) {
         filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[entity]);
         options.filters = filters;
       }
@@ -73,144 +86,232 @@ module ngApp.components.facets.services {
       return prom;
     }
 
-    getActives(facet: string, terms: any[]): string[] {
-      var filters = this.ensurePath(this.LocationService.filters());
-      var xs = [];
-      var cs = filters["content"];
-      for (var i = 0; i < filters["content"].length; i++) {
-        var c = cs[i]["content"];
-        if (facet === c["field"]) {
-          c["value"].forEach((v) => {
-            terms.forEach((t) => {
-              if (t.key === v) {
-                xs.push(t);
-              }
-            });
-          });
-          break;
-        }
+    // find out how many operators we're supporting.
+    createFilter = (op, facet, value) => ({
+      op: op,
+      content: {
+        field: facet,
+        value: value
       }
-      return xs;
+    })
+
+    OrFilter = (filters = []) => ({
+      op: 'or',
+      content: filters
+    })
+
+    AndFilter = (filters = []) => ({
+      op: 'and',
+      content: filters
+    })
+
+    sameFacet = (filter: Object, name: string): boolean => {
+      const content = filter.content;
+
+      return _.isArray(content) ?
+        this.sameFacet(content [0], name) :
+        content.field === name;
     }
 
-    getActiveIDs(facet: string): string[] {
-      var filters = this.ensurePath(this.LocationService.filters());
-      var xs = [];
-      var cs = filters["content"];
-      for (var i = 0; i < filters["content"].length; i++) {
-        var c = cs[i]["content"];
-        if (facet === c["field"]) {
-          c["value"].forEach((v) => {
-            xs.push(v);
-          });
-          break;
-        }
+    facetOpValueMap = (facet: string): Object => {
+      const filters = this.ensurePath(this.LocationService.filters());
+      // There should be only one match per facet.
+      const match = filters.content.filter(f => this.sameFacet(f, facet))[0];
+
+      if (! match) {
+        return {};
       }
-      return xs;
+
+      const content = match.content || {};
+
+      if (_.isArray(content)) {
+        return content.reduce((acc, n) => {
+          acc[n.op] = (acc[n.op] || []).concat(n.content.value);
+          return acc;
+        }, {});
+      }
+
+      const result = {};
+      result[match.op] = [].concat(content.value || []);
+      return result;
     }
 
-    getActivesWithOperator(facet: string): Object {
-      var filters = this.ensurePath(this.LocationService.filters());
-      var xs = {};
-      var cs = filters["content"];
-      for (var i = 0; i < filters["content"].length; i++) {
-        var c = cs[i]["content"];
-        if (facet === c["field"]) {
-          c["value"].forEach((v) => {
-            xs[cs[i]["op"]] = v;
-          });
-        }
-      }
-      return xs;
+    isFacetActive = (facet: string = ''): boolean => {
+      const filters = this.ensurePath(this.LocationService.filters()).content;
+
+      return filters.some(f =>
+        facet === _.get(f, (_.isArray(f.content) ? 'content[0].' : '') + 'content.field', undefined));
     }
 
-    getActivesWithValue(facet: string): any {
-      var filters = this.ensurePath(this.LocationService.filters());
-      var xs = {};
-      var cs = filters["content"];
-      for (var i = 0; i < filters["content"].length; i++) {
-        var c = cs[i]["content"];
-        if (facet === c["field"]) {
-          c["value"].forEach((v) => {
-            xs[facet] = v;
-          });
-        }
-      }
-      return xs;
+    getActives = (facet: string, terms: any[] = []): any[] => {
+      const values = this.getActiveIDs(facet);
+
+      return terms.filter(t =>
+        values.some(v => (t.key === v) || (t.key === '_missing' && v === 'MISSING')));
     }
+
+    getActiveIDs = (facet: string): string[] => _.unique(_.flatten(_.values(
+      this.facetOpValueMap(facet))));
 
     ensurePath(filters: IFilters): IFilters {
-      return filters.content ? filters : { op: "and", content: [] };
+      return filters.content ? filters : this.AndFilter();
     }
 
-    addTerm(facet: string, term: string, op: string = 'in') {
-      var filters = this.ensurePath(this.LocationService.filters());
+    addTerm = (facet: string, term: string, op: string = 'in'): void => {
+      const makeFilter = this.FilterFactory[op];
+      // Unsupported operator
+      if (! makeFilter) {
+        return;
+      }
 
-      // TODO - not like this
-      var found = false;
-      var cs = filters.content;
+      const filters = this.ensurePath(this.LocationService.filters()).content;
 
-      for (var i = 0; i < cs.length; i++) {
-        var c = cs[i].content;
-        if (c.field === facet && cs[i].op === op) {
-          found = true;
-          if (c.value.indexOf(term) === -1) {
-            c.value.push(term);
-          } else {
-            return;
-          }
-          break;
+      const partitioned = _.partition(filters, (f) => this.sameFacet (f, facet));
+      // Consider the first match only - there should be only one.
+      const match = partitioned[0][0];
+      const rest = partitioned[1];
+      const newbie = makeFilter(facet, term);
+
+      const newFilters = match ?
+        [].concat(this.mergeFilters(match, newbie), rest) :
+        filters.concat(newbie);
+
+      this.LocationService.setFilters(this.AndFilter(newFilters));
+    }
+
+    mergeFilters = (oldie, newbie) =>
+      (_.isArray(oldie.content) ? this.combineFilters : this.combineSimpleFilters) (oldie, newbie);
+
+    combineSimpleFilters = (oldie = {}, newbie = {}) => {
+      return [oldie, newbie].some(f => f.op !== 'in') ?
+        this.OrFilter([oldie, newbie]) :
+        this.FilterFactory.in(oldie.content.field, _.unique(oldie.content.value.concat(newbie.content.value)));
+    }
+
+    combineFilters = (oldie = {}, newbie = {}) => {
+      const siblings = oldie.content;
+
+      if (newbie.op !== 'in') {
+        return this.OrFilter(siblings.concat(newbie));
+      }
+
+      const partitioned = _.partition(siblings, (f) => f.op === 'in');
+      // Consider the first match only - there should be only one.
+      const match = partitioned[0][0];
+      const rest = partitioned[1];
+
+      return this.OrFilter([]
+        .concat(rest)
+        .concat(match ? this.combineSimpleFilters(match, newbie) : newbie));
+    }
+
+    removeTerm = (facet: string, term: string, op: string = 'in'): void => {
+      const makeFilter = this.FilterFactory[op];
+      // Unsupported operator
+      if (! makeFilter) {
+        return;
+      }
+
+      const filters = this.ensurePath(this.LocationService.filters()).content;
+
+      const partitioned = _.partition(filters, (f) => this.sameFacet(f, facet));
+      const matches = partitioned[0];
+
+      if (matches.length) {
+        const rest = partitioned[1];
+        const baddie = makeFilter(facet, term);
+        const newFilters = rest.concat(matches
+          .map(m => this.deleteFilter(m, baddie))
+          .filter(f => f !== null)
+        );
+
+        this.LocationService.setFilters(newFilters.length ? this.AndFilter(newFilters) : '');
+      }
+    }
+
+    deleteFilter = (oldie, baddie) =>
+      (_.isArray(oldie.content) ? this.removeFilter : this.removeSimpleFilter) (oldie, baddie);
+
+    removeSimpleFilter = (oldie = {}, baddie = {}) => {
+      if (oldie.op === baddie.op && oldie.content.field === baddie.content.field) {
+        if (baddie.op === 'in') {
+          const rest = oldie.content.value
+            .filter(v => ! _.includes(baddie.content.value, v));
+
+          return rest.length ?
+            this.FilterFactory.in(oldie.content.field, rest) :
+            null;
+        } else {
+          // Single-value operation
+          return (oldie.content.value === baddie.content.value) ? null : oldie;
         }
       }
 
-      if (!found) {
-        cs.push({
-          op: op,
-          content: {
-            field: facet,
-            value: [term]
-          }
-        });
-      }
-
-      this.LocationService.setFilters(filters);
+      return oldie;
     }
 
-    removeTerm(facet: string, term: string, op: string) {
-      var filters = this.ensurePath(this.LocationService.filters());
-      var cs = filters["content"];
-      for (var i = 0; i < cs.length; i++) {
-        var c = cs[i]["content"];
-        if (c["field"] === facet && (!op || cs[i]["op"] === op)) {
-          if (!term) {
-            cs.splice(i, 1);
-          } else {
-            var vs = c["value"];
-            vs.splice(vs.indexOf(term), 1);
-            if (vs.length === 0) {
-              cs.splice(i, 1);
-            }
-          }
+    removeFilter = (oldie = {}, baddie = {}) => {
+      const rest = oldie.content
+        .map(f => this.removeSimpleFilter(f, baddie))
+        .filter(f => f !== null);
 
-          if (cs.length === 0) {
-            filters = null;
-          }
+      const count = rest.length;
 
-          break;
-        }
-      }
-      if (_.get(filters, "content", []).length === 0) {
-        this.LocationService.clear();
+      if (count < 1) {
+        return null;
+      } else if (count === 1) {
+        return rest[0];
       } else {
-        this.LocationService.setFilters(filters);
+        return this.OrFilter(rest);
       }
     }
 
-    filterFacets(facets: Object[]): string[] {
-      return _.filter(facets || [],
-        f => _.includes(['terms', 'range'], f.facetType))
-      .map(f => f.name);
+    removeFacet = (facet: string): void => {
+      const filters = this.ensurePath(this.LocationService.filters()).content;
+      const rest = filters.filter((f) => ! this.sameFacet (f, facet));
+
+      this.LocationService.setFilters(rest.length ? this.AndFilter(rest) : '');
     }
+
+    removeOp = (facet: string, op: string): void => {
+      const filters = this.ensurePath(this.LocationService.filters()).content;
+      const partitioned = _.partition(filters, (f) => this.sameFacet(f, facet));
+      const matches = partitioned[0];
+
+      if (matches.length) {
+        const newFilters = partitioned[1].concat(matches
+          .map(m => this.deleteFilterOp(m, op))
+          .filter(f => f !== null)
+        );
+
+        this.LocationService.setFilters(newFilters.length ? this.AndFilter(newFilters) : '');
+      }
+    }
+
+    deleteFilterOp = (filter, op: string) =>
+      (_.isArray(filter.content) ? this.removeFilterOp : this.removeSimpleFilterOp) (filter, op);
+
+    removeSimpleFilterOp = (filter, op: string) => (filter.op === op) ? null : filter;
+
+    removeFilterOp = (filter, op: string) => {
+      const rest = filter.content
+        .map(f => this.removeSimpleFilterOp(f, op))
+        .filter(f => f !== null);
+
+      const count = rest.length;
+
+      if (count < 1) {
+        return null;
+      } else if (count === 1) {
+        return rest[0];
+      } else {
+        return this.OrFilter(rest);
+      }
+    }
+
+    filterFacets = (facets: Object[] = []): string[] => facets
+      .filter(f => _.includes(['terms', 'range'], f.facetType))
+      .map(f => f.name);
   }
 
   export interface ICustomFacetsService {

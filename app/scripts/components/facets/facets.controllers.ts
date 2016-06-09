@@ -43,6 +43,7 @@ module ngApp.components.facets.controllers {
 
    export interface ITermsController {
     add(facet: string, term: string): void;
+    addMissing(facet: string): void;
     remove(facet: string, term: string): void;
     actives: string[];
     inactives: string[];
@@ -98,8 +99,14 @@ module ngApp.components.facets.controllers {
       this.FacetService.addTerm(facet, term);
     }
 
+    addMissing(facet: string): void {
+      this.FacetService.addTerm(facet, 'MISSING', 'is');
+    }
+
     remove(facet: string, term: string): void {
-      this.FacetService.removeTerm(facet, term);
+      (term === '_missing') ?
+        this.FacetService.removeTerm(facet, 'MISSING', 'is') :
+        this.FacetService.removeTerm(facet, term);
     }
 
     refresh(terms) {
@@ -116,9 +123,7 @@ module ngApp.components.facets.controllers {
 
       this.terms = terms;
       this.actives = this.FacetService.getActives(this.name, terms);
-      // TODO: Currently there is some complication supporting _missing properly thereby we're hiding
-      // _missing in facets. Once we fully support _missing, #reject should be removed.
-      this.inactives = _.reject(_.difference(terms, this.actives), (term) => term.key === '_missing');
+      this.inactives = _.difference(terms, this.actives);
     }
 
     toggle(event: any, property: string) {
@@ -136,7 +141,7 @@ module ngApp.components.facets.controllers {
     }
 
     clear(facet: string) {
-      this.terms.forEach(term => this.FacetService.removeTerm(facet, term));
+      this.FacetService.removeFacet(facet);
     }
   }
 
@@ -160,9 +165,19 @@ module ngApp.components.facets.controllers {
       $scope.$on("$locationChangeSuccess", () => this.build());
     }
 
+    removeOp(facet: string, op: string, event: any) {
+      if (event.which === 1 || event.which === 13) {
+        this.FacetService.removeOp(facet, op);
+      }
+    }
+
     removeTerm(facet: string, term: string, event: any, op: string) {
       if (event.which === 1 || event.which === 13) {
-        this.FacetService.removeTerm(facet, term, op);
+        if (term === 'No Data') {
+          this.FacetService.removeTerm(facet, 'MISSING', 'is');
+        } else {
+          this.FacetService.removeTerm(facet, term, op);
+        }
       }
     }
 
@@ -187,9 +202,33 @@ module ngApp.components.facets.controllers {
     }
 
     build() {
-      this.currentFilters = _.sortBy(this.LocationService.filters().content, function(item: any) {
-        return item.content.field;
+      const missingAlias = 'No Data';
+      const isMissing = (filter) => (filter.op === 'is' && filter.content.value === 'MISSING');
+      // Since the UI cannot generate complex filter objects, the only exception we need to handle is having MISSING and `in` values together. We need to combine combine these values and push them up and make the operator an `in`.
+      // If, in the future, the UI can generate more complex filter object, such as adding support to `not`, then this piece needs to be revisited.
+      const filters = (this.LocationService.filters().content || []).map(f => {
+        if (f.op === 'or' && _.isArray(f.content) && f.content.length) {
+          return {
+            op: 'in',
+            content: {
+              field: f.content[0].content.field,
+              value: f.content.reduce((acc, o) => acc.concat(isMissing(o) ? missingAlias : o.content.value), [])
+            }
+          };
+        } else if (isMissing(f)) {
+          return {
+            op: 'in',
+            content: {
+              field: f.content.field,
+              value: [missingAlias]
+            }
+          };
+        } else {
+          return f;
+        }
       });
+
+      this.currentFilters = _.sortBy(filters, (item: any) => item.content.field);
     }
 
   }
@@ -370,29 +409,23 @@ module ngApp.components.facets.controllers {
     }
 
     refresh(): void {
-      this.activesWithOperator = this.FacetService.getActivesWithOperator(this.$scope.field);
-      this.$scope.lowerBoundFinal = this.activesWithOperator['>='] || null;
-      this.$scope.upperBoundFinal = this.activesWithOperator['<='] || null;
+      const opValueMap = this.FacetService.facetOpValueMap(this.$scope.field);
+
+      this.$scope.lowerBoundFinal = (opValueMap['>='] || [])[0] || null;
+      this.$scope.upperBoundFinal = (opValueMap['<='] || [])[0] || null;
       this.convertMaxMin();
       this.convertUserInputs();
     }
 
     setBounds() {
+      this.FacetService.removeOp(this.$scope.field, '>=');
       if (this.lowerBound) {
-        if (_.has(this.activesWithOperator, '>=')) {
-          this.FacetService.removeTerm(this.$scope.field, null, ">=");
-        }
         this.FacetService.addTerm(this.$scope.field, this.$scope.lowerBoundFinal, ">=");
-      } else {
-        this.FacetService.removeTerm(this.$scope.field, null, ">=");
       }
+
+      this.FacetService.removeOp(this.$scope.field, '<=');
       if (this.upperBound) {
-        if (_.has(this.activesWithOperator, '<=')) {
-          this.FacetService.removeTerm(this.$scope.field, null, "<=");
-        }
         this.FacetService.addTerm(this.$scope.field, this.$scope.upperBoundFinal, "<=");
-      } else {
-        this.FacetService.removeTerm(this.$scope.field, null, "<=");
       }
     }
   }
@@ -425,9 +458,10 @@ module ngApp.components.facets.controllers {
     }
 
     refresh(): void {
-      var actives = this.FacetService.getActivesWithValue(this.$scope.name);
-      if (_.size(actives) > 0) {
-        this.$scope.date = this.$window.moment(actives[this.$scope.name]).toDate();
+      const facet = this.$scope.name;
+      const actives = this.FacetService.getActiveIDs(facet);
+      if (actives.length) {
+        this.$scope.date = this.$window.moment(actives[0]).toDate();
       }
     }
 
@@ -438,11 +472,7 @@ module ngApp.components.facets.controllers {
     }
 
     search(): void {
-      var actives = this.FacetService.getActivesWithValue(this.$scope.name);
-      if (_.size(actives) > 0) {
-        this.FacetService.removeTerm(this.name, undefined, '>=');
-      }
-
+      this.FacetService.removeOp(this.name, '>=');
       this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date).format('YYYY-MM-DD'), '>=');
     }
 

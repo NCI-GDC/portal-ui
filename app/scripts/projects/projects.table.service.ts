@@ -53,34 +53,26 @@ module ngApp.projects.table.service {
     }
 
     withCurrentFilters(value: number, $filter: ng.IFilterService, LocationService: ILocationService) {
-      var fs = _.map(LocationService.filters().content, x => ({
-        field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
-        value: x.content.value
-      }));
-      return this.withFilter(value, fs, $filter);
-    }
+      const transformFacetName = (facet) => _.startsWith(facet, 'summary') ?
+        'files.' + facet.split('.')[2] :
+        'cases.project.' + facet;
 
-    hasFilters(LocationService: ILocationService) : boolean {
-      var filters = _.get(LocationService.filters(), 'content', null),
-          hasFiltersFlag = false;
-
-      if (! filters) {
-        return hasFiltersFlag;
-      }
-
-      for (var i = 0; i < filters.length; i++) {
-        var field = _.get(filters[i], 'content.field', false);
-
-        if (! field) {
-          continue;
+      var filters = this.LocationService.filters().content || [];
+      filters.forEach(filter => {
+        if (_.isArray(filter.content)) {
+          (filter.content || []).forEach(subFilter => {
+            subFilter.content.field = transformFacetName(subFilter.content.field);
+          });
+        } else {
+          filter.content.field = transformFacetName(filter.content.field);
         }
+      });
 
-        hasFiltersFlag = true;
-        break;
-      }
-
-      return hasFiltersFlag;
+      return this.withFilter(value, filters, $filter);
     }
+
+    hasFilters = (LocationService: ILocationService): boolean => (LocationService.filters().content || [])
+      .some(f => !! _.get(f, (_.isArray(f.content) ? 'content[0].' : '') + 'content.field', undefined));
 
     withProjectFilters(data: Object[], $filter: ng.IFilterService, LocationService: ILocationService, withFilterFn?: IWithFilterFn) : string {
 
@@ -94,7 +86,7 @@ module ngApp.projects.table.service {
         : [];
 
       var totalCount = data.reduce((acc, val) => acc + val.summary[countKey], 0);
-      
+
       return wFilterFn(totalCount, fs, $filter);
     }
 

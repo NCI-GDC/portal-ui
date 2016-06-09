@@ -10,8 +10,8 @@
 
     <span class="filter" data-ng-repeat="filter in cfc.currentFilters">
       <span class="facet-block label label-primary facet-name"
-            data-ng-click="cfc.removeTerm(filter.content.field, null, $event, filter.op)"
-            data-ng-keypress="cfc.removeTerm(filter.content.field, null, $event, filter.op)">
+            data-ng-click="cfc.removeOp(filter.content.field, filter.op, $event)"
+            data-ng-keypress="cfc.removeOp(filter.content.field, filter.op, $event)">
         {{ filter.content.field | translate | humanify }}
       </span>
       <span data-ng-switch="filter.op">

@@ -93,14 +93,18 @@ module ngApp.components.location.services {
     }
 
     filter2query(f: IFilters): string {
-      var q: string[] = _.map(f.content, (ftr: IFilter) => {
-        var c: IFilterValue = ftr.content;
-        var o = ftr.op;
-        var v = ftr.op === "in" ? angular.toJson(c.value) : c.value
-        return [c.field, o, v].join(" ");
-      });
+      const simpleFilterToString = (filter) => [
+        filter.content.field,
+        filter.op,
+        ((filter.op === 'in') ? angular.toJson : (v) => v) (filter.content.value)
+      ].join(' ');
 
-      return q.join(" and ");
+      return (f.content || [])
+        .map((ftr: IFilter) =>
+          _.isArray(ftr.content) ?
+            '(' + ftr.content.map(filter => simpleFilterToString(filter)).join(' ' + ftr.op + ' ') + ')' :
+            simpleFilterToString(ftr)
+        ).join(' and ');
     }
 
   }

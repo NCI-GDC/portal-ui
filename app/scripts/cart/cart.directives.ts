@@ -103,12 +103,10 @@ module ngApp.cart.directives {
         this.files = [];
         this.CartService = CartService;
 
-        function areFiltersApplied(content): boolean {
-          return content && _.some(content, (item) => {
-            var content = item.hasOwnProperty('content') ? item.content : item;
-            return content.field.indexOf("files.") === 0;
-          });
-        }
+        const hasFileFilter = (content: any[] = []): boolean => content.some(filter => {
+          const path = (_.isArray(filter.content) ? 'content[0].' : '') + 'content.field';
+          return _.startsWith(_.get(filter, path, ''), 'files.');
+        });
 
         function getContent(): any[] {
           var content = LocationService.filters().content;
@@ -116,11 +114,11 @@ module ngApp.cart.directives {
         }
 
         var content = getContent();
-        this.areFiltersApplied = areFiltersApplied(content);
+        this.areFiltersApplied = hasFileFilter(content);
 
         $scope.$on("$locationChangeSuccess", () => {
           var content = getContent();
-          this.areFiltersApplied = areFiltersApplied(content);
+          this.areFiltersApplied = hasFileFilter(content);
         });
 
         this.getFiles = function() {

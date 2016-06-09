@@ -1,6 +1,7 @@
 module ngApp.components.charts {
   import IGDCWindowService = ngApp.core.models.IGDCWindowService;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IFacetService = ngApp.components.facets.services.IFacetService;
 
   interface IDonutChartScope extends ng.IScope {
     data: any;
@@ -10,8 +11,12 @@ module ngApp.components.charts {
   }
 
   /* @ngInject */
-  function PieChart($window: IGDCWindowService, LocationService: ILocationService,
-                    $state: ng.ui.IStateService): ng.IDirective {
+  function PieChart(
+    $window: IGDCWindowService,
+    LocationService: ILocationService,
+    FacetService: IFacetService,
+    $state: ng.ui.IStateService
+  ): ng.IDirective {
     return {
       restrict: "EA",
       replace: true,
@@ -187,28 +192,8 @@ module ngApp.components.charts {
               return;
             }
 
-            var filters = LocationService.filters();
-
-            if (!filters.content) {
-              filters.content = [];
-              filters.op = "and";
-            }
-
-            var newFilters = angular.fromJson(params.filters);
-
-            _.forEach(newFilters.content, (filter) => {
-              var oldFilter = _.find(filters.content, (oFilter) => {
-                return oFilter.content.field === filter.content.field;
-              });
-
-              if (oldFilter) {
-                oldFilter.content.value.concat(filter.content.value);
-              } else {
-                filters.content.push(filter);
-              }
-            });
-
-            LocationService.setFilters(filters);
+            const newFilter = angular.fromJson(params.filters).content[0].content;
+            FacetService.addTerm(newFilter.field, newFilter.value[0]);
           }
 
           function arcTween(outerRadius, delay) {

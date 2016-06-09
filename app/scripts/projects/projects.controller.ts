@@ -116,22 +116,24 @@ module ngApp.projects.controllers {
     }
 
     gotoQuery() {
+      const transformFacetName = (facet) => _.startsWith(facet, 'summary') ?
+        'files.' + facet.split('.')[2] :
+        'cases.project.' + facet;
+
       var stateParams = {};
       var f = this.LocationService.filters();
-      var prefixed = {
-        "op": "and",
-        "content": _.map(f.content, x => ({
-          op: "in",
-          content: {
-            field: x.content.field.indexOf("summary") === 0 ? "files." + x.content.field.split(".")[2] : "cases.project." + x.content.field,
-            value: x.content.value
-          }
-        }))
-      }
       if (f) {
-        stateParams = {
-          filters: angular.toJson(prefixed)
-        };
+        const prefixed = _.cloneDeep(f);
+        (prefixed.content || []).forEach(filter => {
+          if (_.isArray(filter.content)) {
+            (filter.content || []).forEach(subFilter => {
+              subFilter.content.field = transformFacetName(subFilter.content.field);
+            });
+          } else {
+            filter.content.field = transformFacetName(filter.content.field);
+          }
+        });
+        stateParams.filters = angular.toJson(prefixed);
       }
 
       this.$state.go("search.participants", stateParams, { inherit: true });

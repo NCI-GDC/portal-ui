@@ -23,7 +23,7 @@
   </h4>
 
   <div data-ng-show="!tc.collapsed">
-    <p data-ng-show="(!tc.terms.length && !tc.error) || (tc.terms.length === 1 && tc.terms[0].key === '_missing')">
+    <p data-ng-show="(!tc.terms.length && !tc.error) ">
       No Data for this Field
     </p>
     <p data-ng-show="tc.error">
@@ -36,21 +36,22 @@
             tabindex="0"
             class="facet-term-label">
         <i class="fa fa-check-square-o" aria-controls="data-table" aria-checked="false"></i>
-        <span data-ng-if="tc.name.indexOf('project_id') !== -1"
+        <span data-ng-if="tc.name.indexOf('project_id') !== -1 && term.key !== '_missing'"
               data-uib-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"
               data-tooltip-placement="right">{{ ::term.key.toUpperCase() }}</span>
-        <span data-ng-if="tc.name.indexOf('project_id') === -1">
+        <span data-ng-if="tc.name.indexOf('project_id') === -1 && term.key !== '_missing'">
           {{ ::term.key | translate }}
         </span>
+        <span data-ng-if="term.key === '_missing'">No Data</span>
       </span>
       <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
     </p>
 
     <p data-ng-repeat="term in tc.inactives | limitTo: tc.displayCount track by term.key"
-       data-ng-if="term.key !== '_missing'"
        class="list-group-item-text">
-      <span data-ng-click="tc.add(tc.name, term.key)"
+      <span data-ng-if="term.key !== '_missing'"
+            data-ng-click="tc.add(tc.name, term.key)"
             data-ng-keypress="add(tc.name, term.key, $event)"
             tabindex="0"
             class="facet-term-label">
@@ -70,6 +71,16 @@
           {{ ::term.key | translate }}
         </span>
       </span>
+      <span data-ng-if="term.key === '_missing'"
+            data-ng-click="tc.addMissing(tc.name)"
+            data-ng-keypress="addMissing(tc.name, $event)"
+            tabindex="0"
+            class="facet-term-label">
+        <i class="fa fa-square-o" aria-controls="data-table" aria-checked="false"></i>
+
+        <span>No Data</span>
+      </span>
+
       <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
     </p>
 

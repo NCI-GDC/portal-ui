@@ -1,7 +1,7 @@
 module ngApp.components.facets.controllers {
   import IFilesService = ngApp.files.services.IFilesService;
 
-  enum KeyCode {
+  export enum KeyCode {
     Space = 32,
     Enter = 13,
     Esc = 27,

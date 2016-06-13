@@ -122,7 +122,8 @@ module ngApp.components.facets.directives {
       restrict: "E",
       scope: {
         docType: "@",
-        aggregations: "="
+        aggregations: "=",
+        title: "@",
       },
       templateUrl: "components/facets/templates/add-custom-facets-panel.html",
       controller: "addCustomFacetsPanelController as acfc"

@@ -37,15 +37,22 @@
   </button>
 
   <ul class="dropdown-menu pull-right" role="menu">
-    <!-- https://jira.opensciencedatacloud.org/browse/PGDC-2071
-      'XML', 'CSV', 'TSV' removed -->
-    <li data-ng-repeat="fileType in ['JSON']" data-downloader>
-      <a data-ng-click="etc.exportTable(fileType, download)">
+    <li data-downloader>
+      <a data-ng-click="etc.exportTable('JSON', download)">
         <span class="fa-stack">
-          <span class="fa-stack-1x filetype-text">{{ ::fileType }}</span>
+          <span class="fa-stack-1x filetype-text">JSON</span>
           <i class="fa fa-file-o fa-stack-2x"></i>
         </span>
-        <span data-translate>{{ ::fileType }}</span>
+        <span data-translate>JSON</span>
+      </a>
+    </li>
+    <li data-downloader>
+      <a data-ng-click="etc.exportTableTSV('TSV', download)">
+        <span class="fa-stack">
+          <span class="fa-stack-1x filetype-text">TSV</span>
+          <i class="fa fa-file-o fa-stack-2x"></i>
+        </span>
+        <span data-translate>TSV</span>
       </a>
     </li>
   </ul>

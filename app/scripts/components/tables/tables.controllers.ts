@@ -239,65 +239,43 @@ module ngApp.components.tables.controllers {
     fields: string[];
     text: string;
     expand: string[];
+    headings: any[];
     downloadInProgress: boolean;
   }
 
   interface IExportTableController {
-    exportTable(fileType: string): void;
+    exportTable(format: string, download): void;
   }
 
   class ExportTableController implements IExportTableController {
 
     /* @ngInject */
-    constructor(private $scope: IExportScope, private LocationService: ILocationService, private config: IGDCConfig,
-                private $uibModal: any, private $q: ng.IQService, private Restangular: restangular.IProvider,
-                private $window: ng.IWindowService, private UserService: IUserService, private $timeout: ng.ITimeoutService) {
-      $scope.downloadInProgress = false;
+    constructor(
+      private $scope: IExportScope,
+      private ExportTableService
+    ) {
+      this.$scope.downloadInProgress = false;
     }
 
-    exportTable(fileType: string, download): void {
-      var projectsKeys = {
-        "files": "cases.project.project_id",
-        "cases": "project.project_id",
-        "projects": "project_id"
-      };
+    exportTable(format: string, download): void {
+      const paramSpec = _.extend({}, this.$scope, { format });
+      const params = this.ExportTableService.buildParams(paramSpec);
 
-      var filters: Object = this.LocationService.filters();
-      var fieldsAndExpand = _.reduce(this.$scope.headings, (result, field) => {
-                              if(!_.get(field, 'hidden', false)) {
-                                if(_.get(field, 'children')) {
-                                  result.expand.push(field.id);
-                                } else {
-                                  result.fields.push(field.id);
-                                }
-                              }
-                              return result;
-                            }, {'fields': [], 'expand': []});
-      var url = this.LocationService.getHref();
-      var abort = this.$q.defer();
-      var modalInstance;
-
-      if (projectsKeys[this.$scope.endpoint]) {
-        filters = this.UserService.addMyProjectsFilter(filters, projectsKeys[this.$scope.endpoint]);
-      }
-
-      var params = {
-        filters: filters,
-        fields: fieldsAndExpand.fields.concat(this.$scope.fields || []).join(),
-        expand: fieldsAndExpand.expand.concat(this.$scope.expand || []).join(),
-        attachment: true,
-        format: fileType,
-        flatten: true,
-        pretty: true,
-        size: this.$scope.size
-      };
-
-      const inProgress = (state) => (() => { this.$scope.downloadInProgress = state; }).bind(this);
-
-      const checkProgress = download(params, '' + this.config.auth_api + '/' + this.$scope.endpoint, (e) => e.parent());
-      checkProgress(inProgress(true), inProgress(false));
+      const exportTableSpec = _.extend({}, this.$scope, { params, download })
+      this.ExportTableService.exportTable(exportTableSpec);
     }
 
+    exportTableTSV(format: string, download): void {
+      const paramSpec = _.extend({}, this.$scope, { format, sendAllFields: true });
+      const params = this.ExportTableService.buildParams(paramSpec);
+
+      const exportTableSpec = _.extend({}, this.$scope, {
+        endpoint: `${this.$scope.endpoint}/tsv`,
+        params,
+        download
+      })
+      this.ExportTableService.exportTable(exportTableSpec);
+    }
   }
 
   class ExportTableModalController {
@@ -311,7 +289,7 @@ module ngApp.components.tables.controllers {
     }
   }
 
-  angular.module("tables.controllers", ["location.services", "user.services", "ngApp.core"])
+  angular.module("tables.controllers", ["location.services", "user.services", "ngApp.core", "export-table.service"])
       .controller("TableSortController", TableSortController)
       .controller("GDCTableController", GDCTableController)
       .controller("ExportTableModalController", ExportTableModalController)

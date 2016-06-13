@@ -21,15 +21,17 @@ module ngApp.search.models {
         th: '<add-to-cart-all-dropdown data-files="data" data-size="{{paging.total}}" />',
         name: 'Add to Cart',
         id: "file_actions",
-        td: row => '<add-to-cart-single-icon file="row" style="margin-right:5px"></add-to-cart-single-icon>'
+        td: row => '<add-to-cart-single-icon file="row" style="margin-right:5px"></add-to-cart-single-icon>',
+        isField: false
       }, {
         name: "File UUID",
         id: "file_id",
         toolTipText: row => row.file_id,
-        td: row => '<a href="files/' + row.file_id + '">' + row.file_id + '</a>',
+        td: row => `<a href="files/${row.file_id}">${row.file_id}</a>`,
         sortable: true,
         hidden: true,
-        tdClassName: 'id-cell'
+        tdClassName: 'id-cell',
+        isField: true
       }, {
         name: "File Submitter ID",
         id: "submitter_id",
@@ -37,92 +39,104 @@ module ngApp.search.models {
         td: row => row.submitter_id || '--',
         sortable: true,
         hidden: true,
-        tdClassName: 'id-cell'
+        tdClassName: 'id-cell',
+        isField: true
       }, {
         name: "My Projects",
         id: "my_projects",
         td: (row, $scope) => {
             var isUserProject = $scope.UserService.isUserProject(row);
             var icon = isUserProject ? 'check' : 'remove';
-            return '<i class="fa fa-' + icon + '"></i>';
+            return `<i class="fa fa-${icon}"></i>`;
         },
         inactive: $scope => !$scope.UserService.currentUser || $scope.UserService.currentUser.isFiltered,
         hidden: false,
-        tdClassName: "text-center"
+        tdClassName: "text-center",
+        isField: false
       }, {
         name: "Access",
         id: "access",
         td: (row, $scope) => {
           var val = $scope.$filter("humanify")(row.access);
-          return '<i class="fa fa-'+ (row.access === 'controlled' ? 'lock' : 'unlock-alt') +'"></i> ' + val;
+          return `<i class="fa fa-${row.access === 'controlled' ? 'lock' : 'unlock-alt'}"></i> ${val}`;
         },
-        sortable: true
+        sortable: true,
+        isfield: true,
       }, {
         name: "File Name",
         id: "file_name",
         toolTipText: row => row.file_name,
-        td: row => '<a href="files/' + row.file_id + '">' + row.file_name + '</a>',
+        td: row => `<a href="files/${row.file_id}">${row.file_name}</a>`,
         sortable: true,
-        tdClassName: 'id-cell'
+        tdClassName: 'id-cell',
+        isField: true
       }, {
         name: "Cases",
         id: "cases.case_id",
         td: (row, $scope) => {
           function getParticipants(row, $filter) {
-            return row.cases.length == 1 ?
-                     '<a href="cases/' + row.cases[0].case_id + '">1</a>' :
-                     withFilter(row.cases.length, [{field: "files.file_id", value: row.file_id}], $filter);
+            return row.cases.length == 1
+              ? `<a href="cases/${row.cases[0].case_id}">1</a>`
+              :  withFilter(row.cases.length, [{field: "files.file_id", value: row.file_id}], $filter);
           }
 
           return row.cases && row.cases.length ? getParticipants(row, $scope.$filter) : 0;
         },
         thClassName: 'text-right',
-        tdClassName: 'text-right'
+        tdClassName: 'text-right',
+        isField: true
       }, {
         name: "Project",
         id: "cases.project.project_id",
         toolTipText: row => _.unique(_.map(row.cases, p => p.project.name)).join(', '),
         td: row => {
           return _.unique(_.map(row.cases, p => {
-            return '<a href="projects/' + p.project.project_id +
-                    '">'+ p.project.project_id + '</a>';
+            return (
+              `<a href="projects/'${p.project.project_id}">${p.project.project_id}</a>`
+            );
           })).join('<br>');
         },
-        sortable: true
+        sortable: true,
+        isField: true
       }, {
         name: "Data Category",
         id: "data_category",
         td: row => row.data_category || '--',
-        sortable: true
+        sortable: true,
+        isField: true,
       }, {
         name: "Data Format",
         id: "data_format",
         td: row => row.data_format || '--',
-        sortable: true
+        sortable: true,
+        isField: true,
       }, {
         name: "Size",
         id: "file_size",
         td: (row, $scope) => $scope.$filter("size")(row.file_size),
         sortable: true,
         thClassName: 'text-right',
-        tdClassName: 'text-right'
+        tdClassName: 'text-right',
+        isField: true,
       }, {
         name: "Annotations",
         id: "annotations.annotation_id",
         td: (row, $scope) => {
           function getAnnotations(row, $scope) {
-            return row.annotations.length == 1 ?
-                     '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>' :
-                     withAnnotationFilter(
-                       row.annotations.length,
-                       [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
-                       $scope.$filter);
+            return row.annotations.length == 1
+              ? `<a href="annotations/${row.annotations[0].annotation_id}">1</a>`
+              : withAnnotationFilter(
+                  row.annotations.length,
+                  [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
+                  $scope.$filter
+                );
           }
 
           return row.annotations && row.annotations.length ? getAnnotations(row, $scope) : 0;
         },
         thClassName: 'text-right',
-        tdClassName: 'text-right'
+        tdClassName: 'text-right',
+        isField: true
       }, {
         name: "Data Type",
         id: "data_type",

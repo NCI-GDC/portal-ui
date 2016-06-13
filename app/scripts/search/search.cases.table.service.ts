@@ -14,9 +14,9 @@ module ngApp.search.cases.table.service {
 
       withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
           var filterString = $filter("makeFilter")(filters, true);
-          var href = 'search/f?filters=' + filterString;
-          var val = '{{' + value + '|number:0}}';
-          return value ? "<a href='" + href + "'>" + val + '</a>' : '0';
+          var href = `search/f?filters=${filterString}`;
+          var val = `{{ ${value} | number: 0 }}`;
+          return value ? `<a href="${href}>${val}</a>` : '0';
       }
 
       getDataCategory(dataCategories: Object[], dataCategory: string): number {
@@ -44,7 +44,8 @@ module ngApp.search.cases.table.service {
               name: "Cart",
               id: "add_to_cart_filtered",
               td: row => '<add-to-cart-filtered row="row"></add-to-cart-filtered>',
-              tdClassName: 'text-center'
+              tdClassName: 'text-center',
+              isField: false,
           }, {
               name: "My Projects",
               id: "my_projects",
@@ -52,33 +53,38 @@ module ngApp.search.cases.table.service {
                   var fakeFile = {cases: [{project: row.project}]};
                   var isUserProject = $scope.UserService.isUserProject(fakeFile);
                   var icon = isUserProject ? 'check' : 'remove';
-                  return '<i class="fa fa-' + icon + '"></i>';
+                  return `<i class="fa fa-${icon}"></i>`;
               },
               inactive: $scope => !$scope.UserService.currentUser || $scope.UserService.currentUser.isFiltered,
               hidden: false,
-              tdClassName: "text-center"
+              tdClassName: "text-center",
+              isField: false
           }, {
               name: "Case UUID",
               id: "case_id",
               toolTipText: row => row.case_id,
               td: row => '<a href="cases/'+ row.case_id + '">' + row.case_id + '</a>',
-              tdClassName: 'id-cell'
+              tdClassName: 'id-cell',
+              isField: true
           }, {
               name: "Project",
               id: "project.project_id",
               toolTipText: row => row.project.name,
-              td: row => '<a href="projects/'+row.project.project_id + '">' + row.project.project_id + '</a>',
+              td: row => `<a href="projects/${row.project.project_id}">${row.project.project_id}</a>`,
               sortable: true,
+              isField: true
           }, {
               name: "Primary Site",
               id: "project.primary_site",
               td: row => row.project && row.project.primary_site,
-              sortable: true
+              sortable: true,
+              isField: true
           }, {
               name: "Gender",
               id: "demographic.gender",
               td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.gender) || '--',
-              sortable: true
+              sortable: true,
+              isField: true
           }, {
               name: "Files",
               id: "files",
@@ -88,27 +94,31 @@ module ngApp.search.cases.table.service {
                   return this.withFilter(sum, fs, $scope.$filter);
               },
               thClassName: 'text-right',
-              tdClassName: 'text-right'
+              tdClassName: 'text-right',
+              isField: true
           }, {
               name: "Available Files per Data Category",
               id: "summary.data_categories",
               thClassName:'text-center',
               children: Object.keys(this.DATA_CATEGORIES).map(key => ({
                 name: this.DATA_CATEGORIES[key].abbr,
-                th: '<abbr data-uib-tooltip="' + this.DATA_CATEGORIES[key].full + '">'
-                  + this.DATA_CATEGORIES[key].abbr + '</abbr>',
+                th:
+                  `<abbr data-uib-tooltip="${this.DATA_CATEGORIES[key].full}">
+                    ${this.DATA_CATEGORIES[key].abbr}
+                  </abbr>`,
                 id: this.DATA_CATEGORIES[key].abbr,
                 td: (row, $scope) => this.dataCategoryWithFilters(this.DATA_CATEGORIES[key].full, row, $scope.$filter),
                 thClassName: 'text-right',
                 tdClassName: 'text-right'
-              }))
+              })),
+              isField: true
           }, {
             name: "Annotations",
             id: "annotations.annotation_id",
             td: (row, $scope) => {
               var getAnnotations = (row, $filter) => {
                 return row.annotations.length === 1
-                  ? '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>'
+                  ? `<a href="annotations/${row.annotations[0].annotation_id}">1</a>`
                   : this.withAnnotationFilter(
                       row.annotations.length,
                       [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
@@ -119,19 +129,22 @@ module ngApp.search.cases.table.service {
               return (row.annotations || []).length && getAnnotations(row, $scope.$filter);
             },
             thClassName: 'text-right',
-            tdClassName: 'text-right'
+            tdClassName: 'text-right',
+            isField: true
           }, {
               name: 'Program',
               id: 'project.program.name',
               td: (row, $scope) => row.project && $scope.$filter("humanify")(row.project.program.name),
               sortable: false,
-              hidden: true
+              hidden: true,
+              isField: true
           }, {
               name: 'Disease Type',
               id: 'project.disease_type',
               td: (row, $scope) => row.project && $scope.$filter("humanify")(row.project.disease_type),
               sortable: false,
-              hidden: true
+              hidden: true,
+              isField: true
           }, {
               name: 'Age at diagnosis',
               id: 'diagnoses.age_at_diagnosis',
@@ -141,7 +154,8 @@ module ngApp.search.cases.table.service {
                 return age !== Infinity && row.diagnoses ? $scope.$filter("ageDisplay")(age) : "--";
               },
               sortable: false,
-              hidden: true
+              hidden: true,
+              isField: true
           }, {
               name: 'Days to death',
               id: 'diagnoses.days_to_death',
@@ -151,7 +165,8 @@ module ngApp.search.cases.table.service {
                 return (row.diagnoses && $scope.$filter("number")(primaryDiagnosis.days_to_death, 0)) || "--"
               },
               sortable: false,
-              hidden: true
+              hidden: true,
+              isField: true
           }, {
               name: 'Vital Status',
               id: 'diagnoses.vital_status',
@@ -161,7 +176,8 @@ module ngApp.search.cases.table.service {
                 return $scope.$filter("humanify")(primaryDiagnosis.vital_status);
               },
               sortable: false,
-              hidden: true
+              hidden: true,
+              isField: true
           }, {
               name: 'Primary Diagnosis',
               id: 'diagnoses.primary_diagnosis',
@@ -172,25 +188,29 @@ module ngApp.search.cases.table.service {
                 return (row.diagnoses && primaryDiagnosis.primary_diagnosis) || "--";
               },
               sortable: false,
-              hidden: true
+              hidden: true,
+              isField: true
           }, {
               name: 'Ethnicity',
               id: 'demographic.ethnicity',
               td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.ethnicity) || '--',
               sortable: false,
-              hidden: true
+              hidden: true,
+              isField: true
           }, {
               name: 'Race',
               id: 'demographic.race',
               td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.race) || '--',
               sortable: false,
-              hidden: true
+              hidden: true,
+              isField: true
           }, {
               name: 'Submitter ID',
               id: 'submitter_id',
               td: (row, $scope) => row.submitter_id,
               sortable: false,
-              hidden: true
+              hidden: true,
+              isField: true
           }],
           fields: [
             "case_id",

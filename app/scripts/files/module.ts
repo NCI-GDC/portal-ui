@@ -39,6 +39,8 @@ module ngApp.files {
               "tags",
               "submitter_id",
               "archive.archive_id",
+              "archive.submitter_id",
+              "archive.revision",
               "associated_entities.entity_id",
               "associated_entities.entity_type",
               "associated_entities.case_id",

@@ -61,15 +61,17 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Archive</th>
-                <td>
-                  {{ ::fc.file.archive.archive_id || '--' }}
-                  <span data-ng-if="fc.file.archive">
-                    (<a data-ui-sref="search.files({ 'filters': {{
+                <td data-ng-if="fc.file.archive">
+                  {{ ::fc.file.archive.submitter_id || '--' }}
+                  - rev {{ ::fc.file.archive.revision || '--'}}
+                  (<a data-ui-sref="search.files({ 'filters': {{
                       [{ field: 'files.archive.archive_id', value: fc.file.archive.archive_id }] | makeFilter }}
                       })">
                     {{ fc.archiveCount }} files
                   </a>)
-                  </span>
+                </td>
+                <td data-ng-if="!fc.file.archive">
+                  --
                 </td>
               </tr>
               <tr>

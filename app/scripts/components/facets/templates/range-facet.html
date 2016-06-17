@@ -1,26 +1,9 @@
 <div class="list-group-item">
-  <h4 class="list-group-item-heading facet-title">
-    <span data-ng-click="rfc.toggle($event, 'collapsed')"
-          data-ng-keypress="rfc.toggle($event, 'collapsed')"
-          aria-expanded="{{ !rfc.collapsed }}"
-          aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
-          role="button">
-      <i class="fa" data-ng-class="{ 'fa-angle-down': !rfc.collapsed, 'fa-angle-right': rfc.collapsed }"></i>
-      {{ title | translate }}
-    </span>
-
-    <span class="pull-right">
-      <i class="fa fa-rotate-left"
-        data-ng-if="rfc.lowerFacetAdded || rfc.upperFacetAdded"
-        data-ng-click="rfc.clear()"
-      ></i>
-      <i class="fa fa-times"
-        data-ng-if="removable === 'true'"
-        data-ng-click="removeFunction()"
-      ></i>
-    </span>
-  </h4>
-  <div data-ng-show="!rfc.collapsed">
+  <facets-heading has-actives="rfc.lowerFacetAdded || rfc.upperFacetAdded"
+                  remove-function="removeFunction()"
+                  clear-function="clear()"
+  ></facets-heading>
+  <div data-ng-show="!collapsed">
     <form name="{{field}}-radio" ng-if="convertDays">
       <label for="{{field}}-years-radio">
         <input type="radio" ng-model="rfc.selectedUnit" value="years" data-ng-change="rfc.unitClicked()" id="{{field}}-years-radio">

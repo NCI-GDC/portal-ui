@@ -213,18 +213,18 @@ module ngApp.search.cases.table.service {
             "summary.data_categories",
           ],
           facets: [
-            {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "UUID, Submitter ID"},
-            {name: "submitter_id", title: "Case Submitter ID Prefix", collapsed: false, facetType: "prefix", placeholder: "e.g. TCGA-DD*"},
-            {name: "project.primary_site", title: "Primary Site", collapsed: false, facetType: "terms"},
-            {name: "project.program.name", title: "Cancer Program", collapsed: false, facetType: "terms"},
-            {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms"},
-            {name: "project.disease_type", title: "Disease Type", collapsed: false, facetType: "terms"},
-            {name: "demographic.gender", title: "Gender", collapsed: false, facetType: "terms"},
-            {name: "diagnoses.age_at_diagnosis", title: "Age at diagnosis", collapsed: false, facetType: "range", convertDays: true},
-            {name: "diagnoses.vital_status", title: "Vital Status", collapsed: false, facetType: "terms"},
-            {name: "diagnoses.days_to_death", title: "Days to Death", collapsed: false, facetType: "range", hasGraph: true},
-            {name: "demographic.race", title: "Race", collapsed: false, facetType: "terms"},
-            {name: "demographic.ethnicity", title: "Ethnicity", collapsed: false, facetType: "terms"}
+            {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "UUID, Submitter ID", removable: false},
+            {name: "submitter_id", title: "Case Submitter ID Prefix", collapsed: false, facetType: "prefix", placeholder: "e.g. TCGA-DD*", removable: false},
+            {name: "project.primary_site", title: "Primary Site", collapsed: false, facetType: "terms", removable: false},
+            {name: "project.program.name", title: "Cancer Program", collapsed: false, facetType: "terms", removable: false},
+            {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms", removable: false},
+            {name: "project.disease_type", title: "Disease Type", collapsed: false, facetType: "terms", removable: false, showTooltip: true},
+            {name: "demographic.gender", title: "Gender", collapsed: false, facetType: "terms", removable: false},
+            {name: "diagnoses.age_at_diagnosis", title: "Age at diagnosis", collapsed: false, facetType: "range", convertDays: true, removable: false},
+            {name: "diagnoses.vital_status", title: "Vital Status", collapsed: false, facetType: "terms", removable: false},
+            {name: "diagnoses.days_to_death", title: "Days to Death", collapsed: false, facetType: "range", hasGraph: true, removable: false},
+            {name: "demographic.race", title: "Race", collapsed: false, facetType: "terms", removable: false},
+            {name: "demographic.ethnicity", title: "Ethnicity", collapsed: false, facetType: "terms", removable: false}
           ]
         };
       }

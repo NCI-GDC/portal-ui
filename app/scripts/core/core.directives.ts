@@ -64,7 +64,7 @@ module ngApp.core.directives {
                   keyboard: false,
                   backdropClass: "warning-backdrop",
                   animation: false,
-                  resolve: { warning: null }
+                  resolve: { warning: null, header: null }
                 });
               }
             });

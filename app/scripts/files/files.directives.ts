@@ -241,7 +241,7 @@ module ngApp.files.directives {
         classes: "@",
         icon: "@"
       },
-      template: "<a ng-class=\"[classes || 'btn btn-primary']\">" +
+      template: "<a ng-class=\"[classes || 'btn btn-primary']\" data-downloader>" +
                 "<i class=\"fa {{icon || 'fa-download'}}\" ng-class=\"{'fa-spinner': active, 'fa-pulse': active}\"></i>" +
                 "<span ng-if=\"copy\"><span ng-if=\"!active\">&nbsp;{{copy}}</span><span ng-if=\"active\">&nbsp;{{dlcopy}}</span></span></a>",
       link: function($scope, $element, $attrs){
@@ -250,13 +250,11 @@ module ngApp.files.directives {
           $scope.active = true;
           $attrs.$set('disabled', 'disabled');
         };
-        const turnSpinnerOff = () => {
+        const done = () => {
           $scope.active = false;
           $element.removeAttr('disabled');
         };
         const bamSlice = (files) => {
-          inProgress();
-
           var bamModal = $uibModal.open({
             templateUrl: "files/templates/bam-slicing.html",
             controller: "BAMSlicingController",
@@ -269,14 +267,9 @@ module ngApp.files.directives {
               file: function() {
                 return _.first(files);
               },
-              completeCallback: function() {
-                return turnSpinnerOff;
-              }
-            }
-          });
-          bamModal.result.then(turnSpinnerOff, function(reason) {
-            if (reason !== 'slicing') {
-              turnSpinnerOff();
+              completeCallback: () => done,
+              inProgress: () => inProgress,
+              downloader: () => $scope.download
             }
           });
         };

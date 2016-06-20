@@ -153,13 +153,21 @@ module ngApp.files.controllers {
                  private FilesService: IFilesService,
                  public file: any,
                  private GqlService: IGqlService,
-                 public completeCallback: any) {
-       this.$scope.bedModel = "";
-     }
+                 public completeCallback: any,
+                 private inProgress: any,
+                 private downloader: any
+    ) {
+      this.$scope.bedModel = "";
+    }
 
     submit(): void {
-      this.FilesService.sliceBAM(this.file.file_id, this.$scope.bedModel, this.completeCallback);
-      this.$uibModalInstance.dismiss('slicing');
+      this.FilesService.sliceBAM(
+        this.file.file_id,
+        this.$scope.bedModel,
+        this.completeCallback,
+        this.inProgress,
+        this.downloader);
+      this.$uibModalInstance.close('slicing');
     }
 
     allowTab($event: any): void {

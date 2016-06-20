@@ -252,7 +252,7 @@ module ngApp.cart.services {
               keyboard: false,
               backdropClass: "warning-backdrop",
               animation: false,
-              resolve: { warning: null }
+              resolve: { warning: null, header: null }
             });
           }
         });
@@ -350,7 +350,7 @@ module ngApp.cart.services {
               keyboard: false,
               backdropClass: "warning-backdrop",
               animation: false,
-              resolve: { warning: null }
+              resolve: { warning: null, header: null }
             });
           }
         });

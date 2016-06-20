@@ -369,7 +369,7 @@ module ngApp.cart.directives {
               // Makes sure the user session has not expired.
               UserService.loginPromise().then(() => {
                 // Session is still active.
-                
+
                 const modalInstance = $uibModal.open({
                   templateUrl: "core/templates/request-access-to-download.html",
                   controller: "LoginToDownloadController",
@@ -434,12 +434,13 @@ module ngApp.cart.directives {
               animation: false,
               size: 'lg',
               resolve: {
-                warning: () => "Your cart contains more than 5GBs of data. <br />"
-                + "Please select the \"Download > Manifest\" option and use the "
-                + "<a href='https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool' target='_blank'>"
-                +   "GDC Data Transfer Tool"
-                + "</a>"
-                + " to continue."
+                warning: () =>
+                  `Your cart contains more than 5GBs of data. <br />.
+                   Please select the "Download > Manifest" option and use the
+                   <a href='https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool' target='_blank'>
+                     GDC Data Transfer Tool
+                   </a> to continue.`,
+                header: null
               }
             });
           } else {

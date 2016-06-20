@@ -16,7 +16,7 @@ module ngApp.components.downloader.directive {
     const iFrameIdPrefix = '__downloader_iframe__';
     const formIdPrefix = '__downloader_form__';
     const getIframeResponse = (iFrame: ng.IAugmentedJQuery): Object => JSON.parse(iFrame.contents().find('body pre').text());
-    const showErrorModal = (error: Object): void => {
+    const showErrorModal = (error: Object, options: Object): void => {
       const warning = error.warning || error.message;
 
       $uibModal.open({
@@ -29,7 +29,8 @@ module ngApp.components.downloader.directive {
         animation: false,
         size: 'lg',
         resolve: {
-          warning: () => warning
+          header: () => options.warningHeader,
+          warning: () => (options.warningPrefix || '') + warning
         }
       });
     };
@@ -39,6 +40,7 @@ module ngApp.components.downloader.directive {
       iFrame: ng.IAugmentedJQuery,
       cookieKey: string,
       downloadToken: string,
+      options: Object,
       inProgress: () => {},
       done: () => {},
       altMessage: boolean
@@ -87,7 +89,7 @@ module ngApp.components.downloader.directive {
             const error = handleError();
             $cookies.remove(cookieKey);
             finished();
-            showErrorModal(error);
+            showErrorModal(error, options);
           } else {
             // A download should be now initiated.
             finished();
@@ -116,6 +118,7 @@ module ngApp.components.downloader.directive {
 
     const cookielessChecker = (
       iFrame: ng.IAugmentedJQuery,
+      options: Object,
       inProgress: any, // not used but obligated to the interface
       done: () => {}
     ): void => {
@@ -139,7 +142,7 @@ module ngApp.components.downloader.directive {
           }
         } else {
           finished();
-          showErrorModal(error);
+          showErrorModal(error, options);
         }
       };
 
@@ -152,13 +155,13 @@ module ngApp.components.downloader.directive {
       (_.isPlainObject(value) ? JSON.stringify(value).replace(/"/g, '&quot;') : value) +
       '" />';
     // TODO: this should probably be factored out.
-    const arrayToStringFields = ['expand', 'fields', 'facets'];
+    const arrayToStringFields = ['expand', 'fields', 'facets', 'regions'];
     const arrayToStringOnFields = (key, value, fields) => _.includes(fields, key) ? [].concat(value).join() : value;
 
     return {
       restrict: 'A',
       link: (scope, element) => {
-        scope.download = (params, apiEndpoint, target = () => element, method = 'GET') => {
+        scope.download = (params, apiEndpoint, target = () => element, method = 'GET', options = {}) => {
           const downloadToken = _.uniqueId('' + (+ new Date()) + '-');
           const iFrameId = iFrameIdPrefix + downloadToken;
           const formId = formIdPrefix + downloadToken;
@@ -195,8 +198,8 @@ module ngApp.components.downloader.directive {
             form.submit();
           });
 
-          return cookieKey ? _.partial(progressChecker, iFrame, cookieKey, downloadToken) :
-            _.partial(cookielessChecker, iFrame);
+          return cookieKey ? _.partial(progressChecker, iFrame, cookieKey, downloadToken, options) :
+            _.partial(cookielessChecker, iFrame, options);
         };
       }
     };

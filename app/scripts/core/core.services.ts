@@ -94,7 +94,8 @@ module ngApp.core.services {
                     animation: false,
                     size: "lg",
                     resolve: {
-                      warning: null
+                      warning: null,
+                      header: null
                     }
                   });
                 }
@@ -169,7 +170,7 @@ module ngApp.core.services {
                 keyboard: false,
                 backdropClass: "warning-backdrop",
                 animation: false,
-                resolve: { warning: null }
+                resolve: { warning: null, header: null }
               });
             }
           });

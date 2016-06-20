@@ -33,6 +33,16 @@
 // grammar GQL
 
 {
+  var units = ['KB', 'MB', 'GB', 'TB', 'PB'];
+
+  function toBytes(number, unit) {
+    var index = units.indexOf(unit.toUpperCase());
+    var multiplier = index < 0 ? 1 : Math.pow(2, (index + 1) * 10);
+    var result = Math.ceil(number * multiplier);
+
+    return '' + result;
+  }
+
   function term_response(op, f, t) {
     return {
       op: op,
@@ -98,10 +108,18 @@ ListExpr
   {
     return term_response(operator,field,terms);
   }
-  
+
+SizeUnit
+  = "KB" / "MB" / "GB" / "TB" / "PB" /
+    "kb" / "mb" / "gb" / "tb" / "pb"
+
+SizeExpr
+  = DBLQ _* number:POSITIVE_FLOAT _* unit:SizeUnit _* DBLQ { return toBytes(number, unit); }
+
 Comparable
   = DATE
   / INTEGER
+  / SizeExpr
 
 Fields
   = x:Field xs:FieldsRest* { return [x].concat(xs); }
@@ -122,25 +140,35 @@ Term "term"
   = UNQUOTED_STRING
   / QUOTED_STRING
   / INTEGER
-  
+
 
 // Operators
-GroupOp 
+GroupOp
   = _+ op:(OR / AND) _+ { return op; }
 
-MissingOp 
+MissingOp
   = _+ op:( NOT / IS ) _+ { return op; }
-  
-ListOp 
+
+ListOp
   = _+ op:(IN / EXCLUDE) _+ { return op; }
 
-EqualityOp 
+EqualityOp
   = _+ op:(EQUAL / NEQ) _+ { return op; }
 
-CompareOp 
+CompareOp
   = _+ op:(GTE / GT / LTE / LT) _+ { return op; }
 
 // Symbols
+DECIMAL_POINT = "."
+
+number_frac
+  = DECIMAL_POINT digits: [0-9]*
+    { return '.' + digits.join(''); }
+
+POSITIVE_FLOAT
+  = digits: [0-9]+ frac: number_frac?
+    { return parseFloat(digits.join('') + frac); }
+
 DIGIT "number" = [0-9]
 INTEGER = $DIGIT+
 REAL = DIGIT* "." DIGIT+
@@ -172,14 +200,14 @@ NOT "NOT" = "not"i
 MISSING "MISSING" = "missing"i
 
 // Values
-UNQUOTED_STRING 
+UNQUOTED_STRING
   = x:(!('and'/'or'/'(') $[A-Za-z0-9\-\_\.]+)
   {
     return x[1];
   }
-QUOTED_STRING 
+QUOTED_STRING
   = DBLQ s:$[^"]+ DBLQ { return s; }
-DATE 
+DATE
   = x:(DIGIT DIGIT DIGIT DIGIT DASH DIGIT DIGIT DASH DIGIT DIGIT)
   {
     return x.join('');
@@ -200,5 +228,5 @@ WhiteSpace "whitespace"
   / "\t"
   / "\v"
   / "\f"
-  
+
 EOF "end of input" = !.

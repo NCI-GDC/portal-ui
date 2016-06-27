@@ -6,7 +6,7 @@
         aria-expanded="{{ !ftc.collapsed }}"
         aria-label="{{ facet.value | translate }} Facet Collapse Toggle"
         role="button"
-        for="{{ 'autocomplete-' + title }}">
+        for="{{ 'autocomplete-' + field }}">
       <i class="fa" data-ng-class="{ 'fa-angle-down': !ftc.collapsed, 'fa-angle-right': ftc.collapsed }"></i>
       {{ title | translate }}
     </label>
@@ -37,7 +37,7 @@
            data-ng-change="ftc.saveInput()"
            data-typeahead-min-length="2"
            maxlength="100"
-           id="{{ 'autocomplete-' + title }}"
+           id="{{ 'autocomplete-' + field }}"
            data-typeahead-template-url="{{ template }}"
            class="form-control"
            style="border-radius: 0px;">

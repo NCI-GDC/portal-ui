@@ -35,7 +35,7 @@
             data-ng-keypress="remove(tc.name, term.key, $event)"
             tabindex="0"
             class="facet-term-label">
-        <i class="fa fa-check-square-o" aria-controls="data-table" aria-checked="true"></i>
+        <input class="hidden" type="checkbox" data-ng-checked="true"  />
         <span data-ng-if="tc.name.indexOf('project_id') !== -1"
               data-uib-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"
@@ -55,6 +55,7 @@
             tabindex="0"
             class="facet-term-label">
         <i class="fa fa-square-o" aria-controls="data-table" aria-checked="false"></i>
+        <input class="hidden" type="checkbox" data-ng-checked="false"  />
         <span data-ng-if="tc.name.indexOf('project_id') !== -1"
               data-uib-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"

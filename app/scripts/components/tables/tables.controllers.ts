@@ -119,6 +119,7 @@ module ngApp.components.tables.controllers {
         item.order = "asc";
       } else {
         item.sort = false;
+        item.order = null;
       }
       this.updateSorting();
     }
@@ -128,8 +129,15 @@ module ngApp.components.tables.controllers {
       this.LocalStorageService.setItem(this.$scope.title + '-col', save);
     }
 
-    updateSorting(event): void {
+    updateSorting(event, item, order): void {
       if (event) event.stopPropagation();
+
+      // Toggle sort when selecting direction as well
+
+      if (item && order) {
+        item.sort = true;
+        item.order = order;
+      }
 
       this.saveToLocalStorage();
 

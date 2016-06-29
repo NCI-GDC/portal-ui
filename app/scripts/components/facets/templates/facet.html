@@ -35,14 +35,15 @@
             data-ng-keypress="remove(tc.name, term.key, $event)"
             tabindex="0"
             class="facet-term-label">
-        <input class="hidden" type="checkbox" data-ng-checked="true"  />
-        <span data-ng-if="tc.name.indexOf('project_id') !== -1"
+        <input id="facet-checkbox-true-{{term.key}}" type="checkbox" data-ng-checked="true"  />
+        <label data-ng-if="tc.name.indexOf('project_id') !== -1"
               data-uib-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"
-              data-tooltip-placement="right">{{ ::term.key.toUpperCase() }}</span>
-        <span data-ng-if="tc.name.indexOf('project_id') === -1">
+              data-tooltip-placement="right"
+              for="facet-checkbox-true-{{term.key}}">{{ ::term.key.toUpperCase() }}</label>
+        <label data-ng-if="tc.name.indexOf('project_id') === -1" for="facet-checkbox-true-{{term.key}}">
           {{ ::term.key | translate }}
-        </span>
+        </label>
       </span>
       <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
     </p>
@@ -54,22 +55,23 @@
             data-ng-keypress="add(tc.name, term.key, $event)"
             tabindex="0"
             class="facet-term-label">
-        <i class="fa fa-square-o" aria-controls="data-table" aria-checked="false"></i>
-        <input class="hidden" type="checkbox" data-ng-checked="false"  />
-        <span data-ng-if="tc.name.indexOf('project_id') !== -1"
+        <input id="facet-checkbox-false-{{term.key}}" type="checkbox" data-ng-checked="false"  />
+        <label data-ng-if="tc.name.indexOf('project_id') !== -1"
               data-uib-tooltip="{{ ::ProjectsService.projectIdMapping[term.key] }}"
               data-tooltip-append-to-body="true"
-              data-tooltip-placement="right">
+              data-tooltip-placement="right"
+              for="facet-checkbox-false-{{term.key}}">
           {{ ::term.key.toUpperCase() }}
-        </span>
-        <span data-ng-if="tc.name.indexOf('project_id') === -1 && showTooltip"
+        </label>
+        <label data-ng-if="tc.name.indexOf('project_id') === -1 && showTooltip"
               data-tooltip-append-to-body="true"
-              data-uib-tooltip="{{::term.key}}">
+              data-uib-tooltip="{{::term.key}}"
+              for="facet-checkbox-false-{{term.key}}">
           {{ ::term.key | translate }}
-        </span>
-        <span data-ng-if="tc.name.indexOf('project_id') === -1 && !showTooltip">
+        </label>
+        <label data-ng-if="tc.name.indexOf('project_id') === -1 && !showTooltip" for="facet-checkbox-false-{{term.key}}">
           {{ ::term.key | translate }}
-        </span>
+        </label>
       </span>
       <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
     </p>

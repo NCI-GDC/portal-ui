@@ -1,0 +1,16 @@
+.dockerignore
+
+.idea/
+
+node_modules/
+bower_components/
+typings/
+npm-debug.log*
+.DS_Store
+
+.env
+translations/
+.tmp/
+coverage/
+report/
+

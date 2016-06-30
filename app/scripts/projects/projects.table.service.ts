@@ -115,7 +115,8 @@ module ngApp.projects.table.service {
             hidden: false,
             draggable: true,
             total: data => '<strong>Total</strong>',
-            colSpan: 4
+            colSpan: 4,
+            isField: true,
           }, {
             name: "Disease Type",
             id: "disease_type",
@@ -124,7 +125,8 @@ module ngApp.projects.table.service {
             toolTipText: row => row.disease_type,
             sortable: true,
             hidden: false,
-            draggable: true
+            draggable: true,
+            isField: true,
           }, {
             name: "Primary Site",
             id: "primary_site",
@@ -133,13 +135,15 @@ module ngApp.projects.table.service {
             sortable: true,
             hidden: false,
             canReorder: true,
-            enabled: true
+            enabled: true,
+            isField: true,
           }, {
             name: "Program",
             id: "program.name",
             td: row => row.program && row.program.name,
             sortable: true,
-            hidden: false
+            hidden: false,
+            isField: true,
           }, {
             name: "Cases",
             id: "summary.case_count",
@@ -151,7 +155,8 @@ module ngApp.projects.table.service {
             hidden: false,
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) => this.withProjectFilters(data, $scope.$filter, $scope.LocationService, this.withFilter)
+            total: (data, $scope) => this.withProjectFilters(data, $scope.$filter, $scope.LocationService, this.withFilter),
+            isField: true,
           }, {
             name: "Available Cases per Data Category",
             id: "summary.data_categories",
@@ -167,7 +172,8 @@ module ngApp.projects.table.service {
               thClassName: 'text-right',
               tdClassName: 'text-right',
               total: (data, $scope) => this.dataCategoryTotalWithFilters(this.DATA_CATEGORIES[key].full, data, $scope.$filter)
-            }))
+            })),
+            isField: true,
           }, {
             name: "Files",
             id: "summary.file_count",
@@ -178,16 +184,18 @@ module ngApp.projects.table.service {
             sortable: true,
             thClassName: 'text-right',
             tdClassName: 'text-right',
-            total: (data, $scope) =>  this.withProjectFilters(data, $scope.$filter, $scope.LocationService, this.withFilterF)
+            total: (data, $scope) =>  this.withProjectFilters(data, $scope.$filter, $scope.LocationService, this.withFilterF),
+            isField: true,
           }, {
             name: "File Size",
-            id: "file_size",
+            id: "summary.file_size",
             td: (row, $scope) => row.summary && $scope.$filter("size")(row.summary.file_size),
             sortable: true,
             thClassName: 'text-right',
             tdClassName: 'text-right',
             hidden: true,
-            total: (data, $scope) => $scope.$filter("size")(_.sum(_.pluck(data, "summary.file_size")))
+            total: (data, $scope) => $scope.$filter("size")(_.sum(_.pluck(data, "summary.file_size"))),
+            isField: true,
           }
         ],
         fields: [

@@ -16,6 +16,7 @@ module ngApp.components.exportTable.services {
       private LocationService,
       private SearchCasesTableService,
       private SearchTableFilesModel,
+      private ProjectsTableService,
       private DATA_CATEGORIES,
       private UserService,
       private config
@@ -34,6 +35,8 @@ module ngApp.components.exportTable.services {
           return this.SearchCasesTableService.model();
         case 'files':
           return this.SearchTableFilesModel
+        case 'projects':
+          return this.ProjectsTableService.model();
         default:
           return [];
       }
@@ -55,16 +58,23 @@ module ngApp.components.exportTable.services {
       var fieldsAndExpand = this.getFieldsAndExpand(headings);
       var model = this.getModel(endpoint);
 
-      var tsvHeadings = headings.reduce((acc, x) => ([
-        ...acc,
-        ...(!x.hidden && x.isField
-          ? x.id === `summary.data_categories`
-            ? Object.keys(this.DATA_CATEGORIES).map(k =>
-              `${this.DATA_CATEGORIES[k].abbr}~~~summary.data_categories.${this.DATA_CATEGORIES[k].full}`
-            )
-            : [`${x.name}~~~${x.id}`]
-          : []),
-      ]), []);
+      var tsvHeadings = headings.reduce((acc, x) => {
+        var keyValues
+
+        if (!x.hidden && x.isField) {
+          if (x.id === 'summary.data_categories') {
+            keyValues = Object.keys(this.DATA_CATEGORIES).reduce((acc, k) => ([
+              ...acc,
+              {
+                name: this.DATA_CATEGORIES[k].abbr,
+                id: `summary.data_categories.${this.DATA_CATEGORIES[k].full}`
+              }
+            ]), []);
+          } else keyValues = [{ name: x.name, id: x.id }];
+        }
+
+        return [...acc, ...(keyValues || [])];
+      }, []);
 
       fields = sendAllFields
         ? model.fields || []
@@ -77,7 +87,7 @@ module ngApp.components.exportTable.services {
       return {
         fields: fields.join(),
         expand: expand.join(),
-        headings: tsvHeadings.join(),
+        headings: { tsvHeadings },
         attachment: true,
         flatten: true,
         pretty: true,
@@ -94,7 +104,6 @@ module ngApp.components.exportTable.services {
       download
     }): void {
       const inProgress = (state) => (() => { downloadInProgress = state; }).bind(this);
-      // const checkProgress = download(params, `${this.config.auth_api}/${endpoint}`, (e) => e.parent());
       const checkProgress = download(params, `${this.config.api}/${endpoint}`, (e) => e.parent());
       checkProgress(inProgress(true), inProgress(false));
     }
@@ -107,6 +116,7 @@ angular
     "ngApp.core",
     "search.table.files.model",
     "search.cases.table.service",
+    "projects.table.service",
   ])
   .service("ExportTableService", ExportTableService);
 }

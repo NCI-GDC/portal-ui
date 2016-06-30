@@ -182,7 +182,6 @@ module ngApp.search.cases.table.service {
               name: 'Primary Diagnosis',
               id: 'diagnoses.primary_diagnosis',
               td: (row, $scope) => {
-                console.log(this.DATA_CATEGORIES)
                 const primaryDiagnosis = (row.diagnoses || [])
                   .reduce(this.youngestDiagnosis, { age_at_diagnosis: Infinity });
                 return (row.diagnoses && primaryDiagnosis.primary_diagnosis) || "--";

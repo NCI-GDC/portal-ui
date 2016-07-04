@@ -20,12 +20,8 @@
        class="pull-right"
        id="show-fields-checkbox"
        tabindex="0">
-    <i class="fa fa-check-square-o"
-       ng-class="{'fa-check-square-o': cufc.CustomFacetsService.nonEmptyOnlyDisplayed,
-                  'fa-square-o': !cufc.CustomFacetsService.nonEmptyOnlyDisplayed
-                  }"
-       aria-checked="false"></i>
-    Only show fields with values
+    <input id="show-facets-checkbox" type="checkbox" data-ng-checked="cufc.CustomFacetsService.nonEmptyOnlyDisplayed"  />
+    <label for="show-facets-checkbox">Only show fields with values</label>
   </span>
 </div>
 <div class="modal-body no-pad" id="add-facets-modal" style="max-height: 500px; overflow-y: auto;">

@@ -67,7 +67,6 @@ module ngApp.components.tables.directives.tableicious {
                 function setupFixedHeader() {
                   el.wrap('<div class="tableicious-container" />')
                   fixedEl = el.clone();
-                  console.log(fixedEl);
                   fixedEl.find('tbody').remove().end().addClass('fixed').insertBefore(el);
                   resizeFixed();
                 }
@@ -79,11 +78,11 @@ module ngApp.components.tables.directives.tableicious {
                 }
 
                 function scrollFixed() {
-                  var offset = $(window).scrollTop() + 57;
+                  var offset = $(window).scrollTop();
                   var tableOffsetTop = el.offset().top;
                   var tableOffsetBottom = tableOffsetTop + el.height() - el.find('thead').height();
 
-                  if (offset < tableOffsetTop || offset > tableOffsetBottom) {
+                  if (offset + 58 < tableOffsetTop || offset - 58 > tableOffsetBottom) {
                     fixedEl.hide();
                   } else if (offset >= tableOffsetTop && offset <= tableOffsetBottom && fixedEl.is(':hidden')) {
                     fixedEl.show();
@@ -93,7 +92,31 @@ module ngApp.components.tables.directives.tableicious {
                 $(window).resize(resizeFixed);
                 $(window).scroll(scrollFixed);
 
-                setTimeout(setupFixedHeader);
+                function setupStickyHeader () {
+                  setupFixedHeader();
+                  resizeFixed();
+                  scrollFixed();
+                  addTranslateClass();
+
+                  console.log(">>>", 'set me up!');
+                }
+
+                setTimeout(setupStickyHeader);
+
+                var lastOffset = $(window).scrollTop();
+
+                function addTranslateClass() {
+                  var currentOffset = $(this).scrollTop();
+
+                  if (currentOffset > 58 * 2 && currentOffset >= lastOffset) {
+                    $('.tableicious.fixed').addClass('hidden-header');
+                  }
+                  else $('.tableicious.fixed').removeClass('hidden-header');
+
+                  lastOffset = currentOffset
+                }
+
+                $(window).scroll(_.throttle(addTranslateClass, 200));
             }
         }
     }

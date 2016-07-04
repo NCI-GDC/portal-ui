@@ -109,4 +109,10 @@ th.id-cell {
   display:none;
   border:none;
   z-index: 10;
+  transform: translateY(0%);
+  transition: transform 0.3s ease;
+
+  &.hidden-header {
+    transform: translateY(-106%);
+  }
 }

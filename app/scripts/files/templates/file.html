@@ -157,12 +157,11 @@
               <h4 class="list-group-item-heading">No Cases Found.</h4>
             </div>
 
-            <div class="long-scrollable-table">
+            <div class="long-scrollable-table" data-ng-if="fc.file.associated_entities.length">
               <div class="long-scrollable-table-container">
                 <table
                   id="associated-cases-biospecimen-table"
                   class="table table-striped table-hover table-condensed table-bordered"
-                  data-ng-if="fc.file.associated_entities.length"
                   style="margin-bottom: 0;"
                 >
                   <thead>

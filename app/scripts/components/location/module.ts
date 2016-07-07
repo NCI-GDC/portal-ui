@@ -14,7 +14,7 @@ module ngApp.components.location {
     op: string;
     content: IFilterValue;
   }
-  
+
   export interface IFilterValue {
     field: string;
     value: string[];
@@ -35,7 +35,7 @@ module ngApp.components.location {
     getHref(): string;
     filter2query(f: any): string;
   }
-  
+
   angular.module("components.location", [
     "location.services"
   ]);

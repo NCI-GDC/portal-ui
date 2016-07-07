@@ -173,6 +173,10 @@ module ngApp.files.services {
         filters: this.LocationService.filters()
       };
 
+      if (this.LocationService.search().hasOwnProperty('multi_field_query')) {
+        modifiedParams['multi_field_query'] = this.LocationService.search()['multi_field_query'];
+      }
+
       if (!params.raw) {
         defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "cases.project.project_id");
       }
@@ -203,7 +207,6 @@ module ngApp.files.services {
         eventCancel();
         this.CoreService.setSearchModelState(true);
       });
-      
       return prom;
     }
 

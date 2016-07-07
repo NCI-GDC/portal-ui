@@ -196,6 +196,7 @@ module ngApp.components.tables.controllers {
 
     /* @ngInject */
     constructor(private $scope: IGDCTableScope,
+                private LocationService: ILocationService,
                 private LocalStorageService: ILocalStorageService) {
       this.displayedHeadings = _.cloneDeep($scope.config.headings);
       this.defaultHeadings = _.cloneDeep($scope.config.headings);
@@ -242,6 +243,38 @@ module ngApp.components.tables.controllers {
         this.$scope.paging.count = this.displayedData && this.displayedData.length;
       }
     }
+  }
+
+  class SearchTableController {
+    multiFieldQuery: string = "";
+
+    /* @ngInject */
+    constructor(private LocationService: ILocationService, private $scope: ng.IScope) {
+      this.refresh();
+      $scope.$on("$locationChangeSuccess", (event, next: string) => {
+        this.refresh();
+      });
+    }
+
+    refresh() {
+      let searchObj = this.LocationService.search();
+      this.multiFieldQuery = searchObj.multi_field_query || '';
+    }
+
+    multiFieldSearch() {
+      if (this.multiFieldQuery) {
+        let searchObj = this.LocationService.search();
+        searchObj['multi_field_query'] = this.multiFieldQuery;
+        this.LocationService.setSearch(searchObj);
+      }
+    }
+
+    clearMultiFieldQuery() {
+      let searchObj = this.LocationService.search();
+      this.multiFieldQuery = "";
+      this.LocationService.setSearch(_.omit(searchObj, 'multi_field_query'));
+    }
+
   }
 
   interface IExportScope extends ng.IScope {
@@ -326,5 +359,6 @@ module ngApp.components.tables.controllers {
       .controller("TableSortController", TableSortController)
       .controller("GDCTableController", GDCTableController)
       .controller("ExportTableModalController", ExportTableModalController)
+      .controller("SearchTableController", SearchTableController)
       .controller("ExportTableController", ExportTableController);
 }

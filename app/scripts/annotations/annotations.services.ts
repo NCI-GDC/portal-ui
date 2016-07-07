@@ -63,6 +63,10 @@ module ngApp.annotations.services {
         filters: this.LocationService.filters()
       };
 
+      if (this.LocationService.search().hasOwnProperty('multi_field_query')) {
+        params['multi_field_query'] = this.LocationService.search()['multi_field_query'];
+      }
+
       defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "annotations.project.project_id");
       this.CoreService.setSearchModelState(false);
 

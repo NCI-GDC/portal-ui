@@ -200,7 +200,8 @@ module ngApp.components.facets.services {
         }
       }
       if (_.get(filters, "content", []).length === 0) {
-        this.LocationService.clear();
+        this.LocationService.setFilters({});
+        //this.LocationService.clear();
       } else {
         this.LocationService.setFilters(filters);
       }

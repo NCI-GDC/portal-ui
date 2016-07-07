@@ -66,6 +66,18 @@ module ngApp.components.tables.directives {
     };
   }
 
+  function SearchTable(): ng.IDirective {
+    return {
+      restrict: "EA",
+      scope: {
+      },
+      replace: true,
+      templateUrl: "components/tables/templates/search-table.html",
+      controller: "SearchTableController as stc"
+    };
+  }
+
+
   function ReportsExportTable(): ng.IDirective {
     return {
       restrict: "EA",
@@ -125,5 +137,6 @@ module ngApp.components.tables.directives {
       .directive("reportsExportTable", ReportsExportTable)
       .directive("sortTable", SortTable)
       .directive("gdcTable", GDCTable)
+      .directive("searchTable", SearchTable)
       .directive("arrangeColumns", ArrangeColumns);
 }

@@ -77,8 +77,10 @@
     "postinstall": "bower install --quiet --allow-root && typings install",
     "test": "gulp test",
     "prot": "gulp protractor",
+    "prestart": "npm install",
     "start": "gulp serve",
     "build": "gulp",
+    "prebuild": "npm install",
     "ts": "gulp ts:compile",
     "upgrade": "npm-check-updates -u && bower-update && npm test"
   }

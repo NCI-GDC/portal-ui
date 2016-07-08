@@ -77,6 +77,7 @@ module ngApp.components.facets.services {
       var filters = this.ensurePath(this.LocationService.filters());
       var xs = [];
       var cs = filters["content"];
+
       for (var i = 0; i < filters["content"].length; i++) {
         var c = cs[i]["content"];
         if (facet === c["field"]) {
@@ -90,6 +91,7 @@ module ngApp.components.facets.services {
           break;
         }
       }
+
       return xs;
     }
 

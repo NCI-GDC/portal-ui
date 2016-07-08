@@ -51,6 +51,20 @@ abbr {
   padding-right: 13px;
 }
 
+@media (min-width: 768px) {
+  .navbar-nav {
+    float: left;
+    margin: 0 0 0 5px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .navbar-nav {
+    float: left;
+    margin: 0 0 0 20px;
+  }
+}
+
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
@@ -59,8 +73,7 @@ abbr {
 
 
 .gdc-body {
-  padding: 80px 0 @FOOTER_HEIGHT + 20 0;
-  margin-top: -20px;
+  padding: @header-height 0 @FOOTER_HEIGHT + 20 0;
 }
 
 body {
@@ -548,7 +561,7 @@ pre code {
   z-index: 100;
   border-top: 6px solid #2a72a4;
   border-bottom: 1px solid #ebebeb;
-  min-height: 57px;
+  min-height: @header-height;
   background-color: white;
   transform: translateY(0%);
   transition: transform 0.3s ease;
@@ -633,16 +646,6 @@ pre code {
   position: relative;
   top: 6px;
   left: 10px;
-}
-
-@media (min-width:768px) and (max-width: 991px) {
-  .navbar-header {
-    width: 100%;
-  }
-  .navbar-brand {
-    margin-bottom: 0.375em;
-    margin-left: -15px;
-  }
 }
 
 @media (min-width: 992px) {

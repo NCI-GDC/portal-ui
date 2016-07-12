@@ -147,6 +147,31 @@
   }
 }
 
+.clear-term-value-search {
+  position: absolute;
+  top: 43px;
+  right: 20px;
+  padding: 8px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: -1;
+  outline: 0;
+
+  &.active {
+    opacity: 1;
+    z-index: 20;
+  }
+
+  &:hover {
+    color: rgb(186, 37, 37);
+  }
+}
+
+.facet-actions {
+  display: flex;
+  align-items: center;
+}
+
 .typeahead-row {
   cursor: pointer;
   padding: 5px;

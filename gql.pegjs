@@ -37,10 +37,10 @@
 
   function toBytes(number, unit) {
     var index = units.indexOf(unit.toUpperCase());
-    var multiplier = index < 0 ? 1 : Math.pow(2, (index + 1) * 10);
+    var multiplier = index < 0 ? 1 : Math.pow(1000, index + 1);
     var result = Math.ceil(number * multiplier);
 
-    return '' + result;
+    return result;
   }
 
   function term_response(op, f, t) {

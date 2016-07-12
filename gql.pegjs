@@ -114,12 +114,12 @@ SizeUnit
     "kb" / "mb" / "gb" / "tb" / "pb"
 
 SizeExpr
-  = DBLQ _* number:POSITIVE_FLOAT _* unit:SizeUnit _* DBLQ { return toBytes(number, unit); }
+  = number:POSITIVE_FLOAT unit:SizeUnit { return toBytes(number, unit); }
 
 Comparable
   = DATE
-  / INTEGER
   / SizeExpr
+  / INTEGER
 
 Fields
   = x:Field xs:FieldsRest* { return [x].concat(xs); }
@@ -137,7 +137,8 @@ TermsRest
   = _* COMMA _* t:Term { return t; }
 
 Term "term"
-  = UNQUOTED_STRING
+  = SizeExpr
+  / UNQUOTED_STRING
   / QUOTED_STRING
   / INTEGER
 

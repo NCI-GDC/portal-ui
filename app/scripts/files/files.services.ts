@@ -109,13 +109,15 @@ module ngApp.files.services {
 
     sliceBAM(fileID: string, bedTSV: string, completeCallback: () => void, inProgress: () => void, downloader) {
       var params = this.processBED(bedTSV);
-      params['attachment'] = 'true';
+      params.attachment = 'true';
 
-      const url = `${ this.config.auth_api }/v0/slicing/view/${ fileID }`;
+      const url = `${this.config.auth_api}/v0/slicing/view/${fileID}`;
+      
       const customMessages = {
         warningHeader: 'BAM Slicing Failed',
         warningPrefix: 'Invalid BED Format (refer to the examples described in the BAM Slicing pop-up): '
       };
+
       const checkProgress = downloader(params, url, null, 'POST', customMessages);
       checkProgress(inProgress, completeCallback);
     }

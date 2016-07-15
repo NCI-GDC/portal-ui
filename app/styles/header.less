@@ -22,6 +22,7 @@
     cursor: pointer;
     white-space: nowrap;
     color: #fff;
+
   }
 
   .nav i {
@@ -29,4 +30,34 @@
     margin-right: 0.4rem;
   }
 
+  .navbar-right {
+    margin-right: -15px;
+  }
+
+}
+
+.navbar-nav.username-list {
+  margin: 0;
+}
+
+.username-icon {
+  display: none !important;
+}
+
+@media (max-width: 1330px) {
+  .username {
+    display: none !important;
+  }
+
+  .username-icon {
+    display: inline-block !important;
+  }
+}
+
+@media (max-width: 820px) {
+  .MyProjects__label {
+    span {
+      font-size: 1rem;
+    }
+  }
 }

@@ -7,7 +7,7 @@ module ngApp.search {
     $urlRouterProvider.when("/search", "/search/f");
 
     $stateProvider.state("search", {
-      url: "/search?{filters:any}&pagination",
+      url: "/search?{filters:any}&pagination&{facetTab:string}",
       controller: "SearchController as sc",
       templateUrl: "search/templates/search.html",
       reloadOnSearch: false

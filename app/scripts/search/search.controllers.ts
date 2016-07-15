@@ -46,24 +46,41 @@ module ngApp.search.controllers {
     projectIdChartConfig: any;
     primarySiteChartConfig: any;
     facetsCollapsed: boolean = false;
+    firstLoad: boolean = true;
+    facetTab: number;
 
     /* @ngInject */
-    constructor(private $scope: ISearchScope,
-                private $rootScope: IRootScope,
-                private $state: ng.ui.IStateService,
-                public SearchState: ISearchState,
-                public CartService: ICartService,
-                public SearchService: ISearchService,
-                public FilesService: IFilesService,
-                public ParticipantsService: IParticipantsService,
-                private LocationService: ILocationService,
-                private UserService: IUserService,
-                public CoreService: ICoreService,
-                public SearchTableFilesModel: TableiciousConfig,
-                public SearchCasesTableService: TableiciousConfig,
-                private FacetsConfigService: IFacetsConfigService,
-                public FacetService,
-                SearchChartConfigs) {
+    constructor(
+      private $scope: ISearchScope,
+      private $rootScope: IRootScope,
+      private $state: ng.ui.IStateService,
+      private $stateParams,
+      private $location,
+      public SearchState: ISearchState,
+      public CartService: ICartService,
+      public SearchService: ISearchService,
+      public FilesService: IFilesService,
+      public ParticipantsService: IParticipantsService,
+      private LocationService: ILocationService,
+      private UserService: IUserService,
+      public CoreService: ICoreService,
+      public SearchTableFilesModel: TableiciousConfig,
+      public SearchCasesTableService: TableiciousConfig,
+      private FacetsConfigService: IFacetsConfigService,
+      public FacetService,
+      SearchChartConfigs
+    ) {
+
+      // ui-bootstrap calls the tab select callback on page load
+      // and we don't want that, so we're using a flag to track the first load
+      this.firstLoad = true;
+
+      if (!this.$stateParams.facetTab) {
+        this.$location.search(`facetTab`, `cases`);
+      }
+
+      this.facetTab = this.$stateParams.facetTab === `files` ? 1 : 0;
+
       var data = $state.current.data || {};
       this.SearchState.setActive("tabs", data.tab, "active");
       this.SearchState.setActive("facets", data.tab, "active");
@@ -74,6 +91,7 @@ module ngApp.search.controllers {
           this.refresh();
         }
       });
+
       $scope.$on("$stateChangeSuccess", (event, toState: any, toParams: any, fromState: any) => {
         if (toState.name.indexOf("search") !== -1) {
           this.SearchState.setActive("tabs", toState.name.split(".")[1], "active");
@@ -175,6 +193,15 @@ module ngApp.search.controllers {
           }
         }
       });
+    }
+
+    setFacetTab(tab: string) {
+      // only change tab if user selects, not when the controller boots up
+      if (!this.firstLoad) {
+        this.$location.search(`facetTab`, tab);
+      } else {
+        this.firstLoad = false;
+      }
     }
 
     setState(tab: string) {

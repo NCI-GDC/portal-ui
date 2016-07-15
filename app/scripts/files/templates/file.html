@@ -259,7 +259,14 @@
               </tr>
               <tr>
                 <th data-translate scope="row">Source Files</th>
-                <td ng-bind-html="fc.makeSearchPageLink(fc.file.analysis.input_files)"></td>
+                <td
+                  data-ng-if="fc.file.analysis.input_files.length > 1"
+                  data-ng-bind-html="fc.makeSearchPageLink(fc.file.analysis.input_files)"
+                ></td>
+                <td data-ng-if="fc.file.analysis.input_files.length === 1">
+                  <a href="/files/{{fc.file.analysis.input_files[0].file_id}}">1</a>
+                </td>
+                <td data-ng-if="fc.file.analysis.input_files.length === 0">0</td>
               </tr>
               </tbody>
             </table>

@@ -36,26 +36,34 @@
     <span data-ng-if="ftc.autocomplete" class="input-group-addon">
       <span class="fa fa-search"></span>
     </span>
-    <input data-ng-if="ftc.autocomplete"
-           type="text" data-ng-model="ftc.searchTerm"
-           placeholder="{{ 'Search for' | translate }} {{ placeholder | translate }}"
-           data-uib-typeahead="id for id in ftc.autoComplete($viewValue)"
-           data-typeahead-on-select="ftc.termSelected()"
-           data-ng-change="ftc.saveInput()"
-           data-typeahead-min-length="2"
-           maxlength="100"
-           id="{{ 'autocomplete-' + field }}"
-           data-typeahead-template-url="{{ template }}"
-           class="form-control"
-           style="border-radius: 0px;">
-    <input data-ng-if="!ftc.autocomplete"
-           type="text" data-ng-model="ftc.searchTerm"
-           placeholder="{{ 'Enter' | translate }} {{ placeholder | translate }}"
-           data-ng-change="ftc.saveInput()"
-           maxlength="100"
-           id="{{ 'input-' + field }}"
-           class="form-control"
-           style="">
+
+    <input
+      typeahead-click-open
+      data-ng-if="ftc.autocomplete"
+      type="text" data-ng-model="ftc.searchTerm"
+      placeholder="{{ 'Search for' | translate }} {{ placeholder | translate }}"
+      data-uib-typeahead="id for id in ftc.autoComplete($viewValue)"
+      data-typeahead-on-select="ftc.termSelected()"
+      data-ng-focus="ftc.saveInput()"
+      data-typeahead-min-length="2"
+      maxlength="100"
+      id="{{ 'autocomplete-' + field }}"
+      data-typeahead-template-url="{{ template }}"
+      class="form-control"
+      style="border-radius: 0px;"
+    >
+
+    <input
+      data-ng-if="!ftc.autocomplete"
+      type="text" data-ng-model="ftc.searchTerm"
+      placeholder="{{ 'Enter' | translate }} {{ placeholder | translate }}"
+      data-ng-change="ftc.saveInput()"
+      maxlength="100"
+      id="{{ 'input-' + field }}"
+      class="form-control"
+      style=""
+    >
+
     <span class="input-group-btn" data-ng-if="!ftc.autocomplete">
       <button class="btn btn-default" type="button" data-ng-click="ftc.setTerm()" data-ng-class="{'disabled' : ftc.searchTerm === ''}">Go!</button>
     </span>

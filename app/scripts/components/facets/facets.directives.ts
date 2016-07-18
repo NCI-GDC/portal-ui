@@ -166,6 +166,28 @@ module ngApp.components.facets.directives {
     }
   }
 
+  // This directive is used to re-trigger the typeahead suggestions
+  // when user clicks on input field
+
+  function typeaheadClickOpen($timeout) {
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      link: ($scope, elem, attrs) => {
+        elem.bind('click', () => {
+          var ctrl = elem.controller('ngModel');
+          var prev = ctrl.$modelValue || '';
+          if (prev) {
+            ctrl.$setViewValue('');
+            $timeout(() => ctrl.$setViewValue(prev));
+          } else {
+            ctrl.$setViewValue(' ');
+          }
+        });
+      }
+    }
+  }
+
   angular.module("facets.directives", ["facets.controllers", "facets.services"])
       .directive("terms", Terms)
       .directive("currentFilters", CurrentFilters)
@@ -174,5 +196,6 @@ module ngApp.components.facets.directives {
       .directive("addCustomFacetsPanel", AddCustomFacetsPanel)
       .directive("facetsSection", FacetsSection)
       .directive("facetsFreeText", FacetsFreeText)
-      .directive("facetsPrefix", FacetsPrefix);
+      .directive("facetsPrefix", FacetsPrefix)
+      .directive("typeaheadClickOpen", typeaheadClickOpen);
 }

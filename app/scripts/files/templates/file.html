@@ -37,11 +37,25 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>UUID</th>
-                <td>{{ ::fc.file.file_id }}</td>
+                <td>
+                    {{ ::fc.file.file_id }}
+                    <clipboard-button
+                      target-id="file-uuid"
+                      target-content="fc.file.file_id"
+                    ></clipboard-button>
+                </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Submitter ID</th>
-                <td>{{ ::fc.file.submitter_id || '--'}}</td>
+                <td>
+                    {{ ::fc.file.submitter_id || '--'}}
+                    <span data-ng-if="fc.file.submitter_id">
+                      <clipboard-button
+                        target-id="file-submitter-id"
+                        target-content="fc.file.submitter_id"
+                      ></clipboard-button>
+                    </span>
+                </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Data format</th>
@@ -203,6 +217,11 @@
                       >
                         {{ ::e.entity_id }}
                       </a>
+                      <clipboard-button
+                        ng-if="e.entity_id"
+                        target-id="associated-entity-id-{{e.entity_id}}"
+                        target-content="e.entity_id"
+                      ></clipboard-button>
                     </td>
                     <td>{{ ::e.entity_type | humanify }}</td>
                     <td>{{ e.sample_type | humanify}}</td>
@@ -210,6 +229,11 @@
                       <a data-ui-sref="case({ caseId: e.case_id })">
                         {{ ::e.case_id }}
                       </a>
+                      <clipboard-button
+                        ng-if="e.case_id"
+                        target-id="associated-entity-case-id-{{e.case_id}}"
+                        target-content="e.case_id"
+                      ></clipboard-button>
                     </td>
                     <td class="text-right">
                       <a data-ui-sref="annotations({ 'filters':
@@ -252,7 +276,14 @@
               <tbody>
               <tr>
                 <th data-translate scope="row">Analysis ID</th>
-                <td style="width: 64%">{{fc.file.analysis.analysis_id || '--'}}</td>
+                <td style="width: 64%">
+                  {{fc.file.analysis.analysis_id || '--'}}
+                  <clipboard-button
+                    ng-if="fc.file.analysis.analysis_id"
+                    target-id="analysis-id-{{fc.file.analysis.analysis_id}}"
+                    target-content="fc.file.analysis.analysis_id"
+                  ></clipboard-button>
+                </td>
               </tr>
               <tr>
                 <th data-translate scope="row">Workflow Type</th>
@@ -375,7 +406,14 @@
                   </thead>
                   <tbody>
                   <tr data-ng-repeat="r in fc.file.analysis.metadata.read_groups | filter:fc.tableFilters.readGroup track by r.read_group_id">
-                    <td>{{r.read_group_id || '--'}}</td>
+                    <td>
+                      {{r.read_group_id || '--'}}
+                      <clipboard-button
+                        ng-if="r.read_group_id"
+                        target-id="read_group-id-{{r.read_group_id}}"
+                        target-content="r.read_group_id"
+                      ></clipboard-button>
+                    </td>
                     <td>{{r.is_paired_end | humanify}}</td>
                     <td>{{r.read_length || '--'}}</td>
                     <td>{{r.library_name || '--'}}</td>
@@ -477,6 +515,11 @@
                     data-tooltip-popup-delay="1000"
                   >
                     <a data-ng-href="files/{{outf.file_id}}">{{ ::outf.file_name || '--' }}</a>
+                    <clipboard-button
+                      ng-if="outf.file_name"
+                      target-id="downstream_analysis-id-{{outf.file_name}}"
+                      target-content="outf.file_name"
+                    ></clipboard-button>
                   </td>
                   <td>{{ ::outf.data_category || '--' }}</td>
                   <td>{{ ::outf.data_type || '--' }}</td>

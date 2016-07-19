@@ -48,7 +48,13 @@
             <tbody>
               <tr>
                 <th scope="row" data-translate>Project ID</th>
-                <td>{{ ::prc.project.project_id }}</td>
+                <td>
+                  {{ ::prc.project.project_id }}
+                  <clipboard-button
+                    target-id="project-id-{{prc.project.project_id}}"
+                    target-content="prc.project.project_id"
+                  ></clipboard-button>
+                </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Project Name</th>

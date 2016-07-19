@@ -1,0 +1,30 @@
+<span id="{{targetId}}" style="position:relative">
+  <span class="clipboard-target">{{::targetContent}}</span>
+  <span
+    class="clipboard-button"
+    data-ngclipboard
+    data-clipboard-target="#{{targetId}} .clipboard-target"
+  >
+    <img src="/images/clippy.svg" />
+  </span>
+  <span
+    class="clipboard-button-tooltip tooltip top"
+    style="
+      position: absolute;
+      background: white;
+      padding: 0.5rem;
+      border: 1px solid #b3b3b3;
+      white-space: nowrap;
+      transform: translateX(-50%);
+      left: 50%;
+      top: -210%;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: -100;
+      font-weight: 300;
+      font-size: 1.3rem;
+    "
+  >
+    {{tooltipText}}
+  </span>
+</span>

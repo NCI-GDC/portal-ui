@@ -25,16 +25,28 @@ module ngApp.search.models {
       }, {
         name: "File UUID",
         id: "file_id",
-        toolTipText: row => row.file_id,
-        td: row => '<a href="files/' + row.file_id + '">' + row.file_id + '</a>',
+        td: row => `
+          <span>
+            <a href="files/${row.file_id}">${row.file_id}</a>
+            <clipboard-button
+              target-id="case-file-id-${row.file_id}"
+              target-content="row.file_id"
+            ></clipboard-button>
+          </span>
+        `,
         sortable: true,
         hidden: true,
         tdClassName: 'id-cell'
       }, {
         name: "File Submitter ID",
         id: "submitter_id",
-        toolTipText: row => row.submitter_id,
-        td: row => row.submitter_id || '--',
+        td: row => !row.submitter_id ? '--' : `
+          ${row.submitter_id}
+          <clipboard-button
+            target-id="case-submitter-id-${row.submitter_id}"
+            target-content="row.submitter_id"
+          ></clipboard-button>
+        `,
         sortable: true,
         hidden: true,
         tdClassName: 'id-cell'

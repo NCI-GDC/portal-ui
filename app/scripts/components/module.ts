@@ -28,5 +28,6 @@ angular
       "components.gql",
       "components.quickSearch",
       "components.summaryCard",
-      "components.downloader"
+      "components.downloader",
+      "components.clipboardButton"
     ]);

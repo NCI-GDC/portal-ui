@@ -33,11 +33,7 @@ module ngApp.components.tables.controllers {
       this.paging = $scope.paging || {size: 20};
       var currentSorting = this.paging.sort || '';
 
-      var headings = ($scope.saved || []).length ?
-          _.map($scope.saved, s => _.merge(_.find($scope.headings, {id: s.id}), s)) :
-          $scope.headings;
-
-      $scope.sortColumns = _.reduce(headings, (cols,col) => {
+      $scope.sortColumns = _.reduce($scope.headings, (cols, col) => {
 
         if (col.sortable) {
           var obj = {
@@ -124,11 +120,6 @@ module ngApp.components.tables.controllers {
       this.updateSorting();
     }
 
-    saveToLocalStorage(): void {
-      var save = _.map(this.$scope.headings, h => _.pick(h, 'id', 'hidden', 'sort', 'order'));
-      this.LocalStorageService.setItem(this.$scope.title + '-col', save);
-    }
-
     updateSorting(event, item, order): void {
       if (event) event.stopPropagation();
 
@@ -138,8 +129,6 @@ module ngApp.components.tables.controllers {
         item.sort = true;
         item.order = order;
       }
-
-      this.saveToLocalStorage();
 
       if (this.$scope.update) {
         this.clientSorting();

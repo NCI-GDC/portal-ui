@@ -30,6 +30,8 @@ module ngApp.components.header.controllers {
     constructor(private gettextCatalog, private CartService: ICartService,
                 private $state: ng.ui.IStateService,
                 private UserService: IUserService, private $uibModal: any,
+                private $rootScope,
+                private $scope: ng.IScope,
                 private $window: ng.IWindowService) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
       this.cookieEnabled = navigator.cookieEnabled;
@@ -65,10 +67,6 @@ module ngApp.components.header.controllers {
 
     setLanguage() {
       this.gettextCatalog.setCurrentLanguage(this.currentLang);
-    }
-
-    getNumCartItems(): number {
-      return this.CartService.getFiles().length;
     }
 
     shouldShowOption(option: string): boolean {

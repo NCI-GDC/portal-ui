@@ -148,6 +148,13 @@ module ngApp.cart.services {
                 private $uibModalStack
               ) {
       this.reloadFromLocalStorage();
+
+      $window.addEventListener && $window.addEventListener('storage', (event) => {
+        console.log('storage!');
+        this.$rootScope.$broadcast("cart-update");
+        this.reloadFromLocalStorage();
+        console.log(this.files.length);
+      });
     }
 
     reloadFromLocalStorage(): void {
@@ -201,6 +208,7 @@ module ngApp.cart.services {
     }
 
     addFiles(files: IFile[], displayAddingNotification: boolean = true): void {
+      this.reloadFromLocalStorage();
       if (navigator.cookieEnabled) {
         if (displayAddingNotification) {
           var addingMsgPromise = this.$timeout(() => {
@@ -369,7 +377,7 @@ module ngApp.cart.services {
       this.addFiles(this.lastModifiedFiles, false);
     }
 
-    _sync(): void {
+    _sync(): boolean {
       this.$rootScope.$broadcast("cart-update");
       this.lastModified = this.$window.moment();
 

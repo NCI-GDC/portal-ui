@@ -17,7 +17,8 @@
         </pagination-heading>
       </div>
       <div class="pull-right" data-ng-if="endpoint || sortColumns || gtc.sortingHeadings.length">
-        <div class="btn-group" role="group" aria-label="Filter, sort or export table">
+          <search-table></search-table>
+          <div class="btn-group" role="group" aria-label="Filter, sort or export table">
           <sort-table data-ng-if="gtc.sortingHeadings"
                       data-headings="gtc.displayedHeadings"
                       data-title="{{ config.title }}"

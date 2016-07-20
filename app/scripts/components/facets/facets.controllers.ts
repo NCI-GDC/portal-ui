@@ -177,7 +177,7 @@ module ngApp.components.facets.controllers {
     }
 
     resetQuery() {
-      this.LocationService.clear();
+      this.LocationService.setFilters({});
     }
 
     expandTerms(event: any, filter: any) {

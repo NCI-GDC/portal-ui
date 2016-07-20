@@ -1,0 +1,10 @@
+<div class="input-group" style="width: 300px; padding-bottom: 5px">
+  <input type="text" class="form-control" placeholder="Search within table" data-ng-model="stc.multiFieldQuery">
+  <i class="fa fa-rotate-left"
+     data-ng-if="stc.multiFieldQuery"
+     data-ng-click="stc.clearMultiFieldQuery()"
+     style="cursor: pointer; color: #ccc; position: absolute; top: 10px; right: 55px; z-index: 99999"></i>
+  <span class="input-group-btn">
+    <button class="btn btn-default" type="button" data-ng-click="stc.multiFieldSearch()">Go!</button>
+  </span>
+</div>

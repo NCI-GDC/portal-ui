@@ -63,6 +63,10 @@ module ngApp.participants.services {
         filters: this.LocationService.filters()
       };
 
+      if (this.LocationService.search().hasOwnProperty('multi_field_query')) {
+        params['multi_field_query'] = this.LocationService.search()['multi_field_query'];
+      }
+
       if (!params.hasOwnProperty("raw")) {
         defaults.filters = this.UserService.addMyProjectsFilter(defaults.filters, "cases.project.project_id");
       }

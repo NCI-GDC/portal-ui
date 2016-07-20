@@ -149,11 +149,10 @@ module ngApp.cart.services {
               ) {
       this.reloadFromLocalStorage();
 
+      // storage event is *only* fired in the other tabs
       $window.addEventListener && $window.addEventListener('storage', (event) => {
-        console.log('storage!');
         this.$rootScope.$broadcast("cart-update");
         this.reloadFromLocalStorage();
-        console.log(this.files.length);
       });
     }
 
@@ -208,7 +207,6 @@ module ngApp.cart.services {
     }
 
     addFiles(files: IFile[], displayAddingNotification: boolean = true): void {
-      this.reloadFromLocalStorage();
       if (navigator.cookieEnabled) {
         if (displayAddingNotification) {
           var addingMsgPromise = this.$timeout(() => {

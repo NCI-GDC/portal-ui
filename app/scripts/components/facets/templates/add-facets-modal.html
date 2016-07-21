@@ -16,11 +16,10 @@
   <h3 style="display: inline">
     {{ filteredFields.length }} {{ cufc.docType }} fields
   </h3>
-  <span data-ng-click="cufc.toggleEmpty()"
-       class="pull-right"
+  <span class="pull-right"
        id="show-fields-checkbox"
        tabindex="0">
-    <input id="show-facets-checkbox" type="checkbox" data-ng-checked="cufc.CustomFacetsService.nonEmptyOnlyDisplayed"  />
+    <input data-ng-click="cufc.toggleEmpty()" id="show-facets-checkbox" type="checkbox" data-ng-checked="cufc.CustomFacetsService.nonEmptyOnlyDisplayed"  />
     <label for="show-facets-checkbox">Only show fields with values</label>
   </span>
 </div>

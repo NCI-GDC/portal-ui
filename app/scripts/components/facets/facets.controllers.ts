@@ -604,7 +604,7 @@ module ngApp.components.facets.controllers {
           this.CustomFacetsService.getNonEmptyFacetFields(this.docType, this.facetFields)
           .then(data => {
             this.CustomFacetsService.nonEmptyOnlyDisplayed = true;
-            this.facetFields = this.CustomFacetsService.filterFields(this.docType, data);
+            this.facetFields = data;
           }, error => {
             this.notify({
             message: "Error retriving fields",
@@ -614,10 +614,10 @@ module ngApp.components.facets.controllers {
           }).finally(() => this.$rootScope.$emit('ClearLoadingScreen'));
       } else {
         this.$rootScope.$emit('ShowLoadingScreen');
-        this.CustomFacetsService.getFacetFields(this.$scope.docType)
+        this.CustomFacetsService.getFacetFields(this.docType)
         .then(data => {
           this.CustomFacetsService.nonEmptyOnlyDisplayed = false;
-          this.facetFields = this.CustomFacetsService.filterFields(this.docType, data);
+          this.facetFields = data;
         }, error => {
           this.notify({
           message: "Error retriving fields",
@@ -670,11 +670,10 @@ module ngApp.components.facets.controllers {
               return CustomFacetsService.getFacetFields(this.$scope.docType)
                      .then(data => {
                         if (CustomFacetsService.nonEmptyOnlyDisplayed) {
-                          return CustomFacetsService.getNonEmptyFacetFields(this.$scope.docType, _.map(data, (v, k) => v));
+                          return CustomFacetsService.getNonEmptyFacetFields(this.$scope.docType, data);
                         }
                         return data;
-                      }).then(data => CustomFacetsService.filterFields(this.$scope.docType, data))
-                      .finally(() => $rootScope.$emit('ClearLoadingScreen'));
+                      }).finally(() => $rootScope.$emit('ClearLoadingScreen'));
             },
             facetsConfig: () => { return this.$scope.facetsConfig; },
             aggregations: () => { return this.$scope.aggregations; },

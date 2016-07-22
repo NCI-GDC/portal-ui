@@ -743,20 +743,33 @@ module ngApp.components.charts {
             .attr("y", 0);
 
 
+          let selectionColoursMap = {};
+          //http://stackoverflow.com/questions/1664140/js-function-to-calculate-complementary-colour
+          //convert to hsl, shift the hue 180, return hex string
+          let hueShift = (h,s) => { h += s; while (h >= 360.0) h -= 360.0; while (h < 0.0) h += 360.0; return h; }
+          let getReadableComplementaryColour = (colour: string): string => {
+            let c = d3.hsl(colour);
+            c.h = hueShift(c.h ? c.h : 0, 180);
+            // bump s & l for readability
+            if (c.s < 0.4) {
+              c.s += 0.5;
+            }
+            c.l = 0.5;
+            return c.toString();
+          }
+
           stackedBars
             .attr("y", function(d) { return _yScale(d.y0); })
             .attr("width", _xScale.rangeBand())
             .attr("height", function(d) { return _yScale(d.y1) - _yScale(d.y0); })
             .attr("fill", function(d, i) {
-
-
               d._colour = _colourScale(d._key);
-
+              if ( i === 0) {
+                selectionColoursMap[d._key] = getReadableComplementaryColour(d._colour);
+              }
               if (i > 0) {
                 d._colour = d3.hsl(d._colour).darker(i%(Math.random()*2) + 0.1*i, -0.2).toString();
               }
-
-              //console.log(d._colour);
               return d._colour;
             })
             .call(_tipFn)
@@ -769,20 +782,16 @@ module ngApp.components.charts {
               }, {inherit: false});
             })
             .on("mouseover", function(d) {
-
-              var bar = d3.select(this),
-                  barColour = bar.attr("fill");
-
+              let bar = d3.select(this);
               bar.interrupt()
                 .transition();
-
               _svg.append('rect')
                 .classed('chart-focus', true)
                 .attr("transform", () => "translate(" + (_xScale(d._key) - (_xScale.rangeBand() * 4)) + ", " + _height + ")")
                 .attr('width', _xScale.rangeBand())
                 .attr('height', () => _yScale(d.y1) - _yScale(d.y0))
                 .attr('fill', 'none')
-                .attr('stroke', '#283e5d')
+                .attr('stroke', selectionColoursMap[d._key])
                 .attr('stroke-width', 2)
                 .attr('y', _yScale(d.y0))
                 .attr("transform", () => {

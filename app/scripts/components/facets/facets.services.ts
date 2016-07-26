@@ -318,7 +318,7 @@ module ngApp.components.facets.services {
       var facetType = 'terms';
       if (_.includes(fieldName, 'datetime')) {
         facetType = 'datetime';
-      } else if (_.some(['_id', '_uuid', 'md5sum'], a => _.includes(fieldName, a))) {
+      } else if (_.some(['_id', '_uuid', 'md5sum', 'file_name'], a => _.includes(fieldName, a))) {
         facetType = 'id';
       } else if (fieldType === 'long') {
         facetType = 'range';

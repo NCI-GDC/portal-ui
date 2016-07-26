@@ -63,7 +63,7 @@ module ngApp.cart.directives {
       bindToController: {
         files: '=',
         filter: '@',
-        size: '@'
+        size: '='
       },
       templateUrl: "cart/templates/add-to-cart-all-button.html",
       controller: "AddToCartAllCtrl as ctrl"
@@ -369,6 +369,7 @@ module ngApp.cart.directives {
               // Makes sure the user session has not expired.
               UserService.loginPromise().then(() => {
                 // Session is still active.
+                
                 const modalInstance = $uibModal.open({
                   templateUrl: "core/templates/request-access-to-download.html",
                   controller: "LoginToDownloadController",
@@ -404,6 +405,7 @@ module ngApp.cart.directives {
 
             } else {
               // User is NOT logged in.
+
               const modalInstance = $uibModal.open({
                 templateUrl: "core/templates/login-to-download.html",
                 controller: "LoginToDownloadController",

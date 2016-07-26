@@ -50,6 +50,7 @@ module ngApp.files.directives {
           const params = _.merge({
             attachment: true,
             filters: filters,
+            fields: 'cases.project.project_id',
             expand: [
               'annotations',
               'archive',
@@ -185,7 +186,7 @@ module ngApp.files.directives {
         $element.on('mouseenter', () => togglePopover(true));
 
         $element.on('mouseleave', _.debounce(() => {
-          if (!$('.popover').is(':hover')) togglePopover(false);
+          if ($('.popover#hover').length === 0) togglePopover(false);
         }, 700));
 
         $scope.active = false;

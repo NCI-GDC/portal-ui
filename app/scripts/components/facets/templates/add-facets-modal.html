@@ -1,9 +1,7 @@
 <div class="modal-header">
-  <h2 class="modal-title" data-translate>Add a {{cufc.docType | humanify}} Filter
+  <h2 class="modal-title" data-translate>{{ cufc.title }}
     <a style="font-size:1.5rem" class="pull-right" data-ng-click="cufc.closeModal()">Cancel</a>
   </h2>
-  
-    
   <div style="margin-bottom: 15px">
     <label for="quick-search-input">Search for a field:</label>
   <input type="text"
@@ -20,6 +18,7 @@
   </h3>
   <span data-ng-click="cufc.toggleEmpty()"
        class="pull-right"
+       id="show-fields-checkbox"
        tabindex="0">
     <i class="fa fa-check-square-o"
        ng-class="{'fa-check-square-o': cufc.CustomFacetsService.nonEmptyOnlyDisplayed,
@@ -60,7 +59,7 @@
           data-ng-if="field.doc_type && field.description"
           class="custom-facet-description"
          >
-          <em data-ng-bind-html="field.description | highlight:q"></em>
+          <em data-ng-bind-html="field.description | highlight:q | superscript"></em>
         </div>
       </li>
     </ul>

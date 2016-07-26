@@ -120,7 +120,7 @@ function appRun(gettextCatalog: any,
                 UserService: IUserService,
                 ProjectsService: IProjectsService,
                 $window: ng.IWindowService,
-                $uibModal: any,
+                $uibModalStack,
                 LocalStorageService: ILocalStorageService
                 ) {
 
@@ -134,26 +134,6 @@ function appRun(gettextCatalog: any,
 
   $rootScope.config = config;
   Restangular.addFullRequestInterceptor(addTokenToRequest);
-  Restangular.setErrorInterceptor((response) => {
-    CoreService.xhrDone();
-    if (response.status === 500) {
-      $uibModal.open({
-        templateUrl: "core/templates/internal-server-error.html",
-        controller: "WarningController",
-        controllerAs: "wc",
-        backdrop: "static",
-        keyboard: false,
-        backdropClass: "warning-backdrop",
-        animation: false,
-        size: "lg",
-        resolve: {
-          warning: null
-        }
-      });
-    }
-    // TODO more than just 404
-    //$state.go("404", {}, {inherit: true});
-  });
   Restangular.addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
     // Ajax
     CoreService.xhrDone();
@@ -183,9 +163,12 @@ function appRun(gettextCatalog: any,
     notify.closeAll();
     notify({
       message: "",
-      messageTemplate: "<span>Unable to connect to the GDC API. Make sure you have " +
-                       "accepted the Security Certificate. <br>If not, please click " +
-                       "<a target='_blank' href='"+config.api+"/status'>here</a> and accept the Security Certificate</span>",
+      messageTemplate:
+        `<span>
+          Unable to connect to the GDC API. Make sure you have accepted the Security Certificate. <br>
+          If not, please click <a target='_blank' href="${config.api}/status">here</a>
+          and accept the Security Certificate
+        </span>`,
       container: "#notification",
       classes: "alert-danger"
     });
@@ -214,7 +197,9 @@ function appRun(gettextCatalog: any,
     CoreService.setLoadedState(true);
   });
 
-  $rootScope.$on("$stateChangeError", () => $state.go("404"));
+  $rootScope.$on("$stateChangeError", () => {
+    $state.go("404", {}, { location: "replace" });
+  });
 
 }
 

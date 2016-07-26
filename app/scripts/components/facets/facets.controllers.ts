@@ -1,7 +1,7 @@
 module ngApp.components.facets.controllers {
   import IFilesService = ngApp.files.services.IFilesService;
 
-  enum KeyCode {
+  export enum KeyCode {
     Space = 32,
     Enter = 13,
     Esc = 27,
@@ -63,6 +63,7 @@ module ngApp.components.facets.controllers {
     actives: string[] = [];
     inactives: string[] = [];
     error: string = undefined;
+    terms: string[];
 
     /* @ngInject */
     constructor(private $scope: IFacetScope, private FacetService: IFacetService,
@@ -132,6 +133,10 @@ module ngApp.components.facets.controllers {
       if (property === "expanded") {
         this.displayCount = this.expanded ? this.inactives.length : this.originalDisplayCount;
       }
+    }
+
+    clear(facet: string) {
+      this.terms.forEach(term => this.FacetService.removeTerm(facet, term));
     }
   }
 
@@ -284,6 +289,10 @@ module ngApp.components.facets.controllers {
       this.actives = this.FacetService.getActiveIDs(this.$scope.field);
     }
 
+    clear() {
+      this.actives.forEach(term => this.FacetService.removeTerm(this.$scope.field, term));
+    }
+
   }
 
   class RangeFacetController extends Toggleable {
@@ -298,6 +307,7 @@ module ngApp.components.facets.controllers {
 
     /* @ngInject */
     constructor(private $scope: IRangeFacetScope,
+                private $filter: ng.IFilterService,
                 private LocationService: ILocationService,
                 private FacetService: IFacetService) {
 
@@ -358,15 +368,15 @@ module ngApp.components.facets.controllers {
         this.displayedMin = this.$scope.data.min;
         this.displayedMax = this.$scope.data.max;
       } else if (this.selectedUnit === 'years') {
-        this.displayedMin = Math.floor(this.$scope.data.min / this.conversionFactor);
-        this.displayedMax = Math.floor(this.$scope.data.max / this.conversionFactor);
+        this.displayedMax = this.$filter("ageDisplay")(this.$scope.data.max, true, 0);
+        this.displayedMin = this.$filter("ageDisplay")(this.$scope.data.min, true, 0);
       }
     }
 
     refresh(): void {
       this.activesWithOperator = this.FacetService.getActivesWithOperator(this.$scope.field);
-      this.$scope.lowerBoundFinal = this.activesWithOperator['>='] || null;
-      this.$scope.upperBoundFinal = this.activesWithOperator['<='] || null;
+      this.$scope.lowerBoundFinal = this.lowerFacetAdded = this.activesWithOperator['>='] || null;
+      this.$scope.upperBoundFinal = this.upperFacetAdded = this.activesWithOperator['<='] || null;
       this.convertMaxMin();
       this.convertUserInputs();
     }
@@ -388,6 +398,12 @@ module ngApp.components.facets.controllers {
       } else {
         this.FacetService.removeTerm(this.$scope.field, null, "<=");
       }
+    }
+
+    clear() {
+      this.FacetService.removeTerm(this.$scope.field, null, ">=");
+      this.FacetService.removeTerm(this.$scope.field, null, "<=");
+      this.upperFacetAdded = this.lowerFacetAdded = false;
     }
   }
 
@@ -422,6 +438,7 @@ module ngApp.components.facets.controllers {
       var actives = this.FacetService.getActivesWithValue(this.$scope.name);
       if (_.size(actives) > 0) {
         this.$scope.date = this.$window.moment(actives[this.$scope.name]).toDate();
+        this.facetAdded = true;
       }
     }
 
@@ -436,8 +453,12 @@ module ngApp.components.facets.controllers {
       if (_.size(actives) > 0) {
         this.FacetService.removeTerm(this.name, undefined, '>=');
       }
-
       this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date).format('YYYY-MM-DD'), '>=');
+    }
+
+    clear() {
+      this.FacetService.removeTerm(this.name, this.$window.moment(this.$scope.date).format('YYYY-MM-DD'));
+      this.facetAdded = false;
     }
 
   }
@@ -461,7 +482,8 @@ module ngApp.components.facets.controllers {
                   private FacetsConfigService: IFacetsConfigService,
                   private CustomFacetsService: ICustomFacetsService,
                   private aggregations: any,
-                  public docType: string) {
+                  public docType: string,
+                  public title: string) {
       this.selectedIndex = 0;
 
       var _this = this;
@@ -484,7 +506,10 @@ module ngApp.components.facets.controllers {
               if (_this.$uibModalStack) _this.$uibModalStack.dismissAll();
               break;
             case KeyCode.Tab:
-              e.preventDefault();
+              const activeId = document.activeElement.id;
+              if (activeId !== 'show-fields-checkbox' && activeId !== 'quick-search-input') {
+                _this.setSelectedIndex(Cycle.Down);
+              }
               break;
           }
       };
@@ -641,7 +666,8 @@ module ngApp.components.facets.controllers {
             },
             facetsConfig: () => { return this.$scope.facetsConfig; },
             aggregations: () => { return this.$scope.aggregations; },
-            docType: () => { return this.$scope.docType; }
+            docType: () => { return this.$scope.docType; },
+            title: () => this.$scope.title,
           }
       });
     }

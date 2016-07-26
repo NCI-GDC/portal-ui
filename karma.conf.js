@@ -11,6 +11,7 @@ module.exports = function (config) {
       'karma-chai-sinon'
     ],
     files: [
+      'bower_components/jquery/dist/jquery.js',
       'bower_components/angular/angular.js',
       'bower_components/angular-gettext/dist/angular-gettext.js',
       'bower_components/angular-ui-router/release/angular-ui-router.js',
@@ -23,6 +24,11 @@ module.exports = function (config) {
       'bower_components/angular-notify/angular-notify.js',
       'bower_components/angular-cookies/angular-cookies.js',
       'bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js',
+      'bower_components/angular-animate/angular-animate.js',
+      'bower_components/angular-aria/angular-aria.js',
+      'bower_components/angular-sanitize/angular-sanitize.js',
+      'bower_components/ng-tags-input/ng-tags-input.js',
+      'bower_components/ng-sortable/dist/ng-sortable.js',
       '.tmp/scripts/**/*.js',
       'app/scripts/**/*.tests.js',
       'app/scripts/**/tests/*.js'

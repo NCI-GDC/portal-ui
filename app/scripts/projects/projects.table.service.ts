@@ -94,7 +94,7 @@ module ngApp.projects.table.service {
         : [];
 
       var totalCount = data.reduce((acc, val) => acc + val.summary[countKey], 0);
-      
+
       return wFilterFn(totalCount, fs, $filter);
     }
 

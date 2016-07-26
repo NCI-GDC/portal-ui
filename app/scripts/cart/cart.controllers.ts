@@ -10,7 +10,6 @@ module ngApp.cart.controllers {
 
   export interface ICartController {
     files: IFiles;
-    lastModified: Moment;
     getTotalSize(): number;
     getFileIds(): string[];
     getRelatedFileIds(): string[];
@@ -21,7 +20,6 @@ module ngApp.cart.controllers {
   }
 
   class CartController implements ICartController {
-    lastModified: Moment;
     displayedFiles: IFile[];
     numberFilesGraph: any;
     sizeFilesGraph: any;
@@ -271,14 +269,10 @@ module ngApp.cart.controllers {
       private UserService: IUserService,
       public LocationService: ILocationService,
       public FilesService: IFilesService,
-      public UserService: IUserService,
       public $timeout: ng.ITimeoutService,
       public notify: INotifyService
     ) {
       this.CartService = CartService;
-
-      // if data-files= is not passed in, assume there are files
-      this.hasFiles = this.files ? !!this.files.length : true;
     }
 
     removeAll(): void {

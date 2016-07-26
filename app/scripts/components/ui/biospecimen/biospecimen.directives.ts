@@ -11,7 +11,7 @@ module ngApp.components.ui.biospecimen.directives {
   }
 
   /* @ngInject */
-  function Biospecimen(BiospecimenService: IBiospecimenService): ng.IDirective {
+  function Biospecimen(BiospecimenService: IBiospecimenService, $stateParams): ng.IDirective {
     return {
       restrict: "E",
       replace: true,
@@ -53,6 +53,11 @@ module ngApp.components.ui.biospecimen.directives {
             }
           } else $scope.found = [];
         };
+
+        if ($stateParams.bioId) {
+          $scope.search($stateParams.bioId, $scope.participant);
+          $scope.searchTerm = $stateParams.bioId;
+        }
       }
     };
   }

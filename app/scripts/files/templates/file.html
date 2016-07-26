@@ -61,14 +61,29 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Archive</th>
-                <td>
-                  {{ ::fc.file.archive.archive_id || '--' }}
-                  <span data-ng-if="fc.file.archive">
-                    (<a data-ui-sref="search.files({ 'filters': {{
+                <td data-ng-if="fc.file.archive">
+                  {{ ::fc.file.archive.submitter_id || '--' }}
+                  - rev {{ ::fc.file.archive.revision || '--'}}
+                  (<a data-ui-sref="search.files({ 'filters': {{
                       [{ field: 'files.archive.archive_id', value: fc.file.archive.archive_id }] | makeFilter }}
                       })">
                     {{ fc.archiveCount }} files
                   </a>)
+                </td>
+                <td data-ng-if="!fc.file.archive">
+                  --
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" data-translate>Project ID</th>
+                <td>
+                  <span data-ng-repeat="p in fc.file.projects">
+                    <a data-ui-sref="project({ projectId: p })" >
+                      {{ p }}
+                    </a>{{$last ? '' : ', '}}
+                  </span>
+                  <span data-ng-if="fc.file.projects.length === 0">
+                    --
                   </span>
                 </td>
               </tr>
@@ -159,23 +174,36 @@
                     <th class="sticky" scope="col" data-translate>
                       Entity Type
                       <div>Entity Type</div>
-                      </th>
+                    </th>
                     <th class="sticky" scope="col" data-translate>
                       Case UUID
                       <div>Case UUID</div>
-                      </th>
+                    </th>
                     <th class="sticky" scope="col" data-translate>
                       Annotations
                       <div>Annotations</div>
-                      </th>
+                    </th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr data-ng-repeat="e in fc.file.associated_entities | filter:fc.tableFilters.assocEntity track by e.entity_id">
-                    <td class="truncated-cell">{{ ::e.entity_id }}</td>
+                    <td class="id-cell">
+                      <a
+                        data-ng-if="e.entity_type === 'case'"
+                        data-ui-sref="case({ caseId: e.case_id })"
+                      >
+                        {{ ::e.entity_id }}
+                      </a>
+                      <a
+                        data-ng-if="e.entity_type !== 'case'"
+                        data-ui-sref="case({ caseId: e.case_id, bioId: e.entity_id, '#': 'biospecimen' })"
+                      >
+                        {{ ::e.entity_id }}
+                      </a>
+                    </td>
                     <td>{{ ::e.entity_type | humanify }}</td>
-                    <td class="truncated-cell">
-                      <a data-ui-sref="case({ caseId : e.case_id })">
+                    <td class="id-cell">
+                      <a data-ui-sref="case({ caseId: e.case_id })">
                         {{ ::e.case_id }}
                       </a>
                     </td>
@@ -378,7 +406,7 @@
               </thead>
               <tbody>
               <tr data-ng-repeat="f in fc.file.metadata_files track by f.file_id">
-                <td class="truncated-cell"
+                <td class="id-cell"
                     data-uib-tooltip="{{::f.file_name}}"
                     data-tooltip-append-to-body="true"
                     data-tooltip-popup-delay="1000"
@@ -431,7 +459,7 @@
               <tbody>
               <tr data-ng-repeat="outf in fc.file.downstream_analyses track by outf.file_id">
                 <td
-                  class="truncated-cell"
+                  class="id-cell"
                   data-uib-tooltip="{{outf.file_name}}"
                   data-tooltip-append-to-body="true"
                   data-tooltip-popup-delay="1000"

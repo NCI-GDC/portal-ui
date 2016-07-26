@@ -29,15 +29,15 @@ module ngApp.search.models {
         td: row => '<a href="files/' + row.file_id + '">' + row.file_id + '</a>',
         sortable: true,
         hidden: true,
-        tdClassName: 'truncated-cell'
+        tdClassName: 'id-cell'
       }, {
         name: "File Submitter ID",
         id: "submitter_id",
         toolTipText: row => row.submitter_id,
-        td: row => row.submitter_id,
+        td: row => row.submitter_id || '--',
         sortable: true,
         hidden: true,
-        tdClassName: 'truncated-cell'
+        tdClassName: 'id-cell'
       }, {
         name: "My Projects",
         id: "my_projects",
@@ -63,7 +63,7 @@ module ngApp.search.models {
         toolTipText: row => row.file_name,
         td: row => '<a href="files/' + row.file_id + '">' + row.file_name + '</a>',
         sortable: true,
-        tdClassName: 'truncated-cell'
+        tdClassName: 'id-cell'
       }, {
         name: "Cases",
         id: "cases.case_id",
@@ -92,12 +92,12 @@ module ngApp.search.models {
       }, {
         name: "Data Category",
         id: "data_category",
-        td: row => row.data_category,
+        td: row => row.data_category || '--',
         sortable: true
       }, {
         name: "Data Format",
         id: "data_format",
-        td: row => row.data_format,
+        td: row => row.data_format || '--',
         sortable: true
       }, {
         name: "Size",
@@ -126,13 +126,13 @@ module ngApp.search.models {
       }, {
         name: "Data Type",
         id: "data_type",
-        td: (row, $scope) => row.data_type && $scope.$filter("humanify")(row.data_type),
+        td: (row, $scope) => $scope.$filter("humanify")(row.data_type),
         sortable: false,
         hidden: true
       }, {
         name: "Experimental Strategy",
         id: "experimental_strategy",
-        td: (row, $scope) => row.experimental_strategy && $scope.$filter("humanify")(row.experimental_strategy),
+        td: (row, $scope) => $scope.$filter("humanify")(row.experimental_strategy),
         sortable: false,
         hidden: true
       }, {

@@ -119,6 +119,7 @@ module ngApp.components.tables.controllers {
         item.order = "asc";
       } else {
         item.sort = false;
+        item.order = null;
       }
       this.updateSorting();
     }
@@ -128,8 +129,15 @@ module ngApp.components.tables.controllers {
       this.LocalStorageService.setItem(this.$scope.title + '-col', save);
     }
 
-    updateSorting(event): void {
+    updateSorting(event, item, order): void {
       if (event) event.stopPropagation();
+
+      // Toggle sort when selecting direction as well
+
+      if (item && order) {
+        item.sort = true;
+        item.order = order;
+      }
 
       this.saveToLocalStorage();
 
@@ -176,7 +184,6 @@ module ngApp.components.tables.controllers {
 
   interface IGDCTableController {
     setDisplayedData(newPaging?: any): void;
-    tableRendered: boolean;
     sortingHeadings: any[];
     displayedData: any[];
   }
@@ -184,7 +191,6 @@ module ngApp.components.tables.controllers {
   class GDCTableController implements IGDCTableController {
     sortingHeadings: any[] = [];
     displayedData: any[];
-    tableRendered: boolean = false;
     defaultHeadings: any[] = [];
     displayedHeadings: any[] = [];
 
@@ -201,10 +207,6 @@ module ngApp.components.tables.controllers {
       $scope.$watch("data", () => {
         this.setDisplayedData();
       }, true);
-
-      $scope.$on("tableicious-loaded", () => {
-        this.tableRendered = true;
-      });
 
       this.setDisplayedData();
       $scope.saved = this.LocalStorageService.getItem($scope.config.title + '-col', []);

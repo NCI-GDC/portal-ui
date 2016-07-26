@@ -41,10 +41,16 @@ abbr {
 #gdc-header {
   border: none;
 }
+
+.navbar {
+  margin-bottom: 0;
+}
+
 .navbar-nav > li > a {
   padding-left: 13px;
   padding-right: 13px;
 }
+
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
@@ -53,7 +59,7 @@ abbr {
 
 
 .gdc-body {
-  padding-bottom: @FOOTER_HEIGHT + 20;
+  padding: 80px 0 @FOOTER_HEIGHT + 20 0;
   margin-top: -20px;
 }
 
@@ -120,6 +126,14 @@ h3.panel-title {
 .content {
   width: 70%;
   float: left;
+
+  &.expanded {
+    width: 100%;
+
+    .alert {
+      margin-left: 135px;
+    }
+  }
 }
 
 //bootcard override
@@ -291,7 +305,7 @@ a:link {
 }
 
 a:visited {
-  color: #347cb0;
+  color: #1f547a;
 }
 
 a:hover,
@@ -528,9 +542,20 @@ pre code {
 /* Page Top & Bottom Regions STYLE
 /-------------------------------------------------------------- */
 #header {
-  border-top: 6px solid #2a72a4; /* New */
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  border-top: 6px solid #2a72a4;
+  border-bottom: 1px solid #ebebeb;
   min-height: 57px;
   background-color: white;
+  transform: translateY(0%);
+  transition: transform 0.3s ease;
+
+  &.hidden-header {
+    transform: translateY(-100%);
+  }
 }
 
 #footer {
@@ -707,6 +732,16 @@ pre code {
   width: 30%;
   float: left;
   padding: 0 15px;
+  overflow: hidden;
+
+  &.collapsed {
+    display: none;
+    padding: 0;
+  }
+}
+
+.list-group {
+  min-width: 250px;
 }
 
 .facets-sidebar .nav-tabs > li.active > a,
@@ -842,7 +877,7 @@ pre code {
   color: #333333;
   white-space: nowrap;
 }
-
+g
 .dropdown-menu > li > span:hover,
 .dropdown-menu > li > span:focus,
 .dropdown-menu > li > button:hover,
@@ -855,6 +890,25 @@ pre code {
 .dropdown-menu > li > span a {
   color: #333333;
   text-decoration: none;
+}
+
+// datpicker dropdown override
+
+.uib-datepicker-popup .btn-group {
+  width: auto;
+  padding: 0;
+}
+
+.uib-datepicker-popup .uib-close {
+  clear: none;
+  width: auto;
+  padding: 5px 10px;
+  color: white;
+
+  &:hover {
+    background-color: #1d421d;
+    color: white;
+  }
 }
 
 #clinical-table .tab-content {

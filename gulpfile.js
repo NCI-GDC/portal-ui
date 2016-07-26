@@ -260,20 +260,6 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
         .pipe($.replace('.css', '.min.css'))
         .pipe($.replace('src/css/bootcards-desktop.min.css', 'src/css/bootcards-desktop.css'))
         .pipe($.replace('ngprogress-lite.min.css', 'ngprogress-lite.css'));
-    // .pipe(
-    // $.cdnizer({
-    //   allowRev: true,
-    //   allowMin: true,
-    //   fallbackScript: "<script>function cdnizerLoad(u) {document.write('<scr'+'ipt src=\"'+u+'\"></scr'+'ipt>');}</script>",
-    //   fallbackTest: '<script>if(typeof ${ test } === "undefined") cdnizerLoad("${ filepath }");</script>',
-    //   files: [
-    //     'google:angular',
-    //     {
-    //       cdn: 'cdnjs:lodash.js',
-    //       package: 'lodash',
-    //       test: '_'
-    //     }
-    //   ]}))
   }
   return stream
       .pipe($.replace('__BASE__', env.base))
@@ -321,24 +307,16 @@ gulp.task('protractor', ['webdriver'], function () {
 // </tests>
 
 // <typescript>
-//gulp.task('ts:lint', function () {
-//  return gulp.src('app/scripts/**/*.ts')
-//      .pipe($.tslint())
-//      .pipe($.tslint.report('prose', {emitError: true}));
-//});
-
 var tsProject = $.typescript.createProject({
-    "target": "es6",
+    "target": "ES3",
 		"module": "commonjs",
-		"sortOutput": true,
-		"declarationFiles": true,
+		"declaration": true,
 		"noExternalResolve": false
 });
 
 gulp.task('ts:compile', function () {
   var f = production ? 'app.min.js' : 'app.js';
   var tsResult = gulp.src('app/**/*.ts')
-
       .pipe($.typescript(tsProject));
 
   tsResult.dts.pipe(gulp.dest('dist/dts'));

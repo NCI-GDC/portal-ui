@@ -17,7 +17,27 @@
           </tr>
           <tr>
             <th data-translate scope="row">Entity UUID</th>
-            <td>{{ ::ac.annotation.entity_id || "--" }}</td>
+            <td>
+              <a
+                data-ng-if="ac.annotation.entity_id !== 'case'"
+                data-ui-sref="case({
+                  caseId: ac.annotation.case_id,
+                  bioId: ac.annotation.entity_id,
+                  '#': 'biospecimen'
+                })"
+              >
+                {{ ::ac.annotation.entity_id }}
+              </a>
+              <a
+                data-ng-if="ac.annotation.entity_id === 'case'"
+                data-ui-sref="case({
+                  caseId: ac.annotation.case_id,
+                  bioId: ac.annotation.entity_id,
+                })"
+              >
+                {{ ::ac.annotation.entity_id }}
+              </a>
+            </td>
           </tr>
           <tr>
             <th data-translate scope="row">Entity Barcode</th>
@@ -30,9 +50,19 @@
           <tr>
             <th data-translate scope="row">Case UUID</th>
             <td>
-              <a data-ui-sref="case({ caseId: ac.annotation.case_id })">
+              <a data-ui-sref="case({ caseId: ac.annotation.case_id })" data-ng-if="ac.annotation.case_id">
                 {{ ::ac.annotation.case_id }}
               </a>
+              <span data-ng-if="!ac.annotation.case_id">--</span>
+            </td>
+          </tr>
+          <tr>
+            <th data-translate scope="row">Case Submitter ID</th>
+            <td>
+              <a data-ui-sref="case({ caseId: ac.annotation.case_id })" data-ng-if="ac.annotation.case_submitter_id">
+                {{ ::ac.annotation.case_submitter_id }}
+              </a>
+              <span data-ng-if="!ac.annotation.case_submitter_id">--</span>
             </td>
           </tr>
           <tr>

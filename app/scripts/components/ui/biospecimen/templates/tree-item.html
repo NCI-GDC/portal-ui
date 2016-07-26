@@ -8,8 +8,8 @@
       data-ng-class="{
         selected: entity === activeDoc,
         highlighted: searchTerm && (
-          entity.submitter_id.indexOf(searchTerm) > -1 ||
-          entity[type.s + '_id'].indexOf(searchTerm) > -1
+          entity.submitter_id.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
+          entity[type.s + '_id'].toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
         )
       }"
       data-ng-bind-html="(

@@ -18,7 +18,6 @@ module ngApp.files.controllers {
     archiveCount: number;
     annotationIds: string[];
     tablesToDisplay: string[];
-    tableFilters: ITableFilters;
     makeSearchPageLink(files: IFile[]): string;
   }
 
@@ -77,6 +76,10 @@ module ngApp.files.controllers {
           entity.annotations = _.pluck(entity.annotations, "annotation_id");
         }
       });
+
+      //insert project into top level because it's in the properties table
+      file.projects = _.reject(_.unique(file.cases.map(c => (c.project || {}).project_id)),
+                                  p => _.isUndefined(p) || _.isNull(p));
 
       //insert cases into related_files for checking isUserProject when downloading
       _.forEach(file.related_files, (related_file) => {

@@ -5,7 +5,7 @@
     <add-to-cart-all-button
       class="pull-right"
       data-filter='{{ [{ field: "cases.case_id", value: pc.participant.case_id }] | makeFilter:true }}'
-      data-size="{{ pc.participant.summary.file_count }}"
+      data-size="pc.participant.summary.file_count"
       data-files="pc.participant.files"
     />
   </h1>
@@ -322,7 +322,7 @@
                     <tbody>
                       <tr data-ng-repeat="t in pc.participant.diagnoses[ $index ].treatments">
                         <td
-                          class="truncated-cell"
+                          class="id-cell"
                           data-uib-tooltip="{{ ::t.treatment_id }}"
                           data-tooltip-append-to-body="true"
                           data-tooltip-popup-delay="1000"

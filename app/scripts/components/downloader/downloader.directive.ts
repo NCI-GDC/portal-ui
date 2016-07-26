@@ -18,6 +18,7 @@ module ngApp.components.downloader.directive {
     const getIframeResponse = (iFrame: ng.IAugmentedJQuery): Object => JSON.parse(iFrame.contents().find('body pre').text());
     const showErrorModal = (error: Object): void => {
       const warning = error.warning || error.message;
+
       $uibModal.open({
         templateUrl: 'core/templates/' + (warning ? 'generic-warning' : 'internal-server-error') + '.html',
         controller: 'WarningController',

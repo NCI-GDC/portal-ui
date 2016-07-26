@@ -21,7 +21,7 @@
       class="Gql_dropdown_item--description"
       data-ng-if="e.description"
     >
-      <em data-ng-bind-html="e.description | gqlHighlight:query"></em>
+      <em data-ng-bind-html="e.description | gqlHighlight:query | superscript"></em>
     </div>
   </li>
   <li data-ng-click="handleOnClickDownArrow()" class="Gql_dropdown_arrow">

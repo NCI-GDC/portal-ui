@@ -7,6 +7,10 @@ describe("AgeDisplay Filter:", function() {
     expect($filter("ageDisplay")(undefined)).to.equal('--');
   }));
 
+  it ("it should display supplied default value undefined days when default value supplied", inject(function ($filter) {
+    expect($filter("ageDisplay")(undefined, false, 0)).to.equal(0);
+  }));
+
   it ("should display ages less than 365 days in days", inject(function ($filter) {
     expect($filter("ageDisplay")(age)).to.equal(age + " days");
     age = 364;
@@ -36,5 +40,24 @@ describe("AgeDisplay Filter:", function() {
     age = 731;
     expect($filter("ageDisplay")(age)).to.equal("2 years 1 day");
   }));
+
+  it ("should display years only without units for that option", inject(function ($filter) {
+    age = 1;
+    expect($filter("ageDisplay")(age, true)).to.equal("0");
+    age = 2;
+    expect($filter("ageDisplay")(age, true)).to.equal("0");
+    age = 366;
+    expect($filter("ageDisplay")(age, true)).to.equal("1");
+    age = 729;
+    expect($filter("ageDisplay")(age, true)).to.equal("1");
+    age = 730;
+    expect($filter("ageDisplay")(age, true)).to.equal("2");
+    age = 730.5;
+    expect($filter("ageDisplay")(age, true)).to.equal("2");
+    age = 731;
+    expect($filter("ageDisplay")(age, true)).to.equal("2");
+  }));
+
+
 
 });

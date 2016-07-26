@@ -1,3 +1,53 @@
+.projects .facets-sidebar .nav-tabs,
+.annotations .facets-sidebar .nav-tabs {
+  border-bottom: none;
+}
+
+.collapse-facets-button {
+  float: right;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  outline: none;
+}
+
+.collapse-facets-button:hover {
+  background-color: #eeeeee;
+  border-color: #d9d8d8 #d9d8d8 #c4c4c4;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 10px 0px 29px -105px #2a72a4;
+  }
+  25% {
+    box-shadow: 10px 0px 29px -6px #2a72a4;
+  }
+  100% {
+    box-shadow: 10px 0px 29px -105px #2a72a4;
+  }
+}
+
+.expand-facets-button {
+  position: absolute;
+  left: 0;
+  background: white;
+  border: 1px solid #C4C4C4;
+  padding: 10px;
+  transition: transform 0.1s ease;
+  transform: translateX(-100%);
+  cursor: pointer;
+  outline: none;
+  margin-top: 10px;
+
+  &.expanded {
+    transform: translateX(0);
+    transition: transform 0.6s ease;
+    animation-name: glow;
+    animation-duration: 4s;
+  }
+}
+
 .summary-panel {
   padding: 15px;
 }

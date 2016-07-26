@@ -54,7 +54,9 @@ module ngApp.components.facets.directives {
         field: "@",
         entity: "@",
         template: "@",
-        autocomplete: "@"
+        autocomplete: "@",
+        removeFunction: "&",
+        removable: "@",
       },
       replace: true,
       templateUrl: "components/facets/templates/facets-free-text.html",
@@ -122,7 +124,8 @@ module ngApp.components.facets.directives {
       restrict: "E",
       scope: {
         docType: "@",
-        aggregations: "="
+        aggregations: "=",
+        title: "@",
       },
       templateUrl: "components/facets/templates/add-custom-facets-panel.html",
       controller: "addCustomFacetsPanelController as acfc"

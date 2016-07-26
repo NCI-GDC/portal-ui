@@ -65,7 +65,7 @@ module ngApp.components.user.services {
         .then((data) => {
             this.setUser(data);
         }, (response) => {
-          if(response.status === 401) {
+          if (response && response.status === 401) {
             if (this.currentUser) {
               this.currentUser = undefined;
               this.notify({
@@ -76,7 +76,8 @@ module ngApp.components.user.services {
               });
             }
           } else {
-            this.$log.error("Error logging in, response status " + response.status);
+            const status = (response || {status: undefined}).status;
+            this.$log.error(`Error logging in, response status ${status}`);
           }
         })
         .finally(() => this.isFetching = false);

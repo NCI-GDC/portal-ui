@@ -1,14 +1,5 @@
 module ngApp.components.quickSearch.directives {
-  enum KeyCode {
-    Space = 32,
-    Enter = 13,
-    Esc = 27,
-    Left = 37,
-    Right = 39,
-    Up = 38,
-    Down = 40,
-    Tab = 9
-  }
+  import KeyCode = ngApp.components.facets.controllers.KeyCode;
 
   /* @ngInject */
   function QuickSearch($uibModal: any, $window: ng.IWindowService, $uibModalStack): ng.IDirective {
@@ -43,19 +34,14 @@ module ngApp.components.quickSearch.directives {
         };
       },
       link: function($scope, $element, attrs, ctrl) {
-        $element.on("click", function() {
+        const openAndBlur = () => {
           ctrl.openModal();
-        });
-
-        angular.element($window.document).on("keypress", (e) => {
-          var validSpaceKeys = [
-            0, // Webkit
-            96 // Firefox
-          ];
-
-          if (e.ctrlKey && validSpaceKeys.indexOf(e.which) !== -1) {
-            e.preventDefault();
-            ctrl.openModal();
+          $element.blur();
+        };
+        $element.on('click', openAndBlur);
+        $element.on('keypress', (e) => {
+          if (e.keyCode === KeyCode.Enter) {
+            openAndBlur();
           }
         });
       }

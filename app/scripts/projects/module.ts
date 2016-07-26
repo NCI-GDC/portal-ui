@@ -37,6 +37,9 @@ module ngApp.projects {
       templateUrl: "projects/templates/project.html",
       resolve: {
         project: ($stateParams: ng.ui.IStateParamsService, ProjectsService: IProjectsService): ng.IPromise<IProject> => {
+          if (! $stateParams.projectId) {
+            throw Error('Missing route parameter: projectId. Redirecting to 404 page.');
+          }
           return ProjectsService.getProject($stateParams["projectId"], {
             fields: [
               "name",

@@ -19,6 +19,9 @@ module ngApp.annotations {
       templateUrl: "annotations/templates/annotation.html",
       resolve: {
         annotation: ($stateParams: ng.ui.IStateParamsService, AnnotationsService: IAnnotationsService): ng.IPromise<IAnnotation> => {
+          if (! $stateParams.annotationId) {
+            throw Error('Missing route parameter: annotationId. Redirecting to 404 page.');
+          }
           return AnnotationsService.getAnnotation($stateParams["annotationId"],
             {
               fields: [
@@ -33,7 +36,8 @@ module ngApp.annotations {
                 "notes",
                 "created_datetime",
                 "project.project_id",
-                "case_id"
+                "case_id",
+                "case_submitter_id",
               ]
             });
         }

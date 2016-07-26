@@ -62,7 +62,7 @@ module ngApp.search.cases.table.service {
               id: "case_id",
               toolTipText: row => row.case_id,
               td: row => '<a href="cases/'+ row.case_id + '">' + row.case_id + '</a>',
-              tdClassName: 'truncated-cell'
+              tdClassName: 'id-cell'
           }, {
               name: "Project",
               id: "project.project_id",
@@ -158,7 +158,7 @@ module ngApp.search.cases.table.service {
               td: (row, $scope) => {
                 const primaryDiagnosis = (row.diagnoses || [])
                   .reduce(this.youngestDiagnosis, { age_at_diagnosis: Infinity });
-                return row.diagnoses && $scope.$filter("humanify")(primaryDiagnosis.vital_status)
+                return $scope.$filter("humanify")(primaryDiagnosis.vital_status);
               },
               sortable: false,
               hidden: true
@@ -169,20 +169,20 @@ module ngApp.search.cases.table.service {
                 console.log(this.DATA_CATEGORIES)
                 const primaryDiagnosis = (row.diagnoses || [])
                   .reduce(this.youngestDiagnosis, { age_at_diagnosis: Infinity });
-                return (row.diagnoses && primaryDiagnosis.primary_diagnosis) || "--"
+                return (row.diagnoses && primaryDiagnosis.primary_diagnosis) || "--";
               },
               sortable: false,
               hidden: true
           }, {
               name: 'Ethnicity',
               id: 'demographic.ethnicity',
-              td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.ethnicity),
+              td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.ethnicity) || '--',
               sortable: false,
               hidden: true
           }, {
               name: 'Race',
               id: 'demographic.race',
-              td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.race),
+              td: (row, $scope) => row.demographic && $scope.$filter("humanify")(row.demographic.race) || '--',
               sortable: false,
               hidden: true
           }, {
@@ -214,6 +214,7 @@ module ngApp.search.cases.table.service {
           ],
           facets: [
             {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "UUID, Submitter ID"},
+            {name: "submitter_id", title: "Case Submitter ID Prefix", collapsed: false, facetType: "prefix", placeholder: "e.g. TCGA-DD*"},
             {name: "project.primary_site", title: "Primary Site", collapsed: false, facetType: "terms"},
             {name: "project.program.name", title: "Cancer Program", collapsed: false, facetType: "terms"},
             {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms"},

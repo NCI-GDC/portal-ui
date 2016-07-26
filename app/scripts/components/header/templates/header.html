@@ -81,13 +81,15 @@
               </a>
               <ul class="dropdown-menu" role="menu">
                 <li id="header-token">
-                  <a data-ng-click="hc.getToken()">
+                  <a data-ng-click="hc.getToken()"
+                     data-ng-keydown="$event.which === 13 && hc.getToken()"
+                     tabindex="0">
                     <i class="fa fa-file-zip-o stock-icon"></i>
                     <span data-translate>Download Token</span>
                   </a>
                 </li>
                 <li id="header-logout">
-                  <a logout-button data-redirect="logout">
+                  <a logout-button data-redirect="logout" tabindex="0">
                     <i class="fa fa-sign-out stock-icon"></i>
                     <span data-translate>Logout</span>
                   </a>
@@ -97,13 +99,17 @@
           </ul>
         </li>
         <li id="header-token" data-ng-if="hc.UserService.currentUser" class="visible-xs">
-          <a data-ng-click="hc.getToken()">
+          <a data-ng-click="hc.getToken()"
+             data-ng-keydown="$event.which === 13 && hc.getToken()"
+             tabindex="0"
+             >
             <i class="fa fa-file-zip-o stock-icon"></i>
             <span data-translate>Download Token</span>
           </a>
         </li>
         <li id="header-logout" data-ng-if="hc.UserService.currentUser" class="visible-xs">
-          <a logout-button data-redirect="logout">
+          <a logout-button data-redirect="logout"
+              tabindex="0">
             <i class="fa fa-sign-out stock-icon"></i>
             <span data-translate>Logout</span>
           </a>

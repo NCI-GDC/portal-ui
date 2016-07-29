@@ -33,11 +33,11 @@
 // grammar GQL
 
 {
-  var units = ['KB', 'MB', 'GB', 'TB', 'PB'];
+  var units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
 
   function toBytes(number, unit) {
     var index = units.indexOf(unit.toUpperCase());
-    var multiplier = index < 0 ? 1 : Math.pow(1000, index + 1);
+    var multiplier = index < 0 ? 1 : Math.pow(1000, index);
     var result = Math.ceil(number * multiplier);
 
     return result;
@@ -110,8 +110,8 @@ ListExpr
   }
 
 SizeUnit
-  = "KB" / "MB" / "GB" / "TB" / "PB" /
-    "kb" / "mb" / "gb" / "tb" / "pb"
+  = "B" / "KB" / "MB" / "GB" / "TB" / "PB" /
+    "b" / "kb" / "mb" / "gb" / "tb" / "pb"
 
 SizeExpr
   = number:POSITIVE_FLOAT unit:SizeUnit { return toBytes(number, unit); }

@@ -1,3 +1,12 @@
+<a name"1.1.3"></a>
+### 1.1.3 (2016-08-04)
+
+
+#### Features
+
+* **app:** PRTL-172 legacy data banner ([2d147ad3](https://github.com/NCI-GDC/portal-ui/commit/2d147ad3))
+
+
 <a name"1.1.2"></a>
 ### 1.1.2 (2016-06-03)
 
@@ -1832,11 +1841,11 @@
 * **facets:**
   * simplify facets directive, ts fixes ([ba3d210c](https://github.com/NCI-GDC/portal-ui/commit/ba3d210c253cef2feb3124e6552808a3843bbc9b))
   * Updates facet UI. ([455b82d0](https://github.com/NCI-GDC/portal-ui/commit/455b82d076e88c1e841eae76662e5decf385d86b), closes [OICR-63](https://jira.opensciencedatacloud.org/browse/OICR-63))
-* **header:** 
+* **header:**
 	* cart count in header tab ([1e43d4ce](https://github.com/NCI-GDC/portal-ui/commit/1e43d4ce4d9c39ef54eed6979ab0cc2d6db242d1), closes [OICR-59](https://jira.opensciencedatacloud.org/browse/OICR-59))
 	* highlight active header link ([9f04fb5c](https://github.com/NCI-GDC/portal-ui/commit/9f04fb5cb97ab19cf34a67d445e594cc3869798f))
 * **i18n:** Integrates i18n into application. ([e15366fa](https://github.com/NCI-GDC/portal-ui/commit/e15366faeeefe6da73f01478d6c2244591f621f0), closes [OICR-67](https://jira.opensciencedatacloud.org/browse/OICR-67))
-* **search:** 
+* **search:**
 	* Files can be added to cart. ([7437d426](https://github.com/NCI-GDC/portal-ui/commit/7437d4263e2700b6d6a3802ee844f7d82fc8288d), closes [OICR-61](https://jira.opensciencedatacloud.org/browse/OICR-61))
 	* updates search tables ([3aaf0b36](https://github.com/NCI-GDC/portal-ui/commit/3aaf0b367c83f0985bd206323d920a488866088a), closes [OICR-27](https://jira.opensciencedatacloud.org/browse/OICR-27))
 * **annotations:** Updates UI to new mockups. ([4e0347cd](https://github.com/NCI-GDC/portal-ui/commit/4e0347cda1750381024032e95cf32e037be96f06), closes [OICR-47](https://jira.opensciencedatacloud.org/browse/OICR-47))
@@ -1868,5 +1877,3 @@
   * Adds pagination controls. ([068b5467](https://github.com/NCI-GDC/portal-ui/commit/068b5467ce2ff25ba84a8213b9281e89979aa984))
   * Facets trigger updates to table data ([8438606e](https://github.com/NCI-GDC/portal-ui/commit/8438606eff43315a8f2461d609e19d3b2746fed6))
   * Adds basic search skeleton. ([23c7d4d4](https://github.com/NCI-GDC/portal-ui/commit/23c7d4d4615f249e689d92ecb903e933a3c19f07))
-
-

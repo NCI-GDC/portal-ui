@@ -1,17 +1,27 @@
-#nci-header {
-  background-colour: @NCI_COLOUR;
-  height: @NCI_HEADER_HEIGHT;
-  border: none;
+#header {
+  position: fixed;
+  top: 0;
   width: 100%;
-  padding: 0;
-  margin: 0;
+  z-index: 100;
+  border-bottom: 1px solid #ebebeb;
+  min-height: @header-height;
+  background-color: white;
+  transform: translateY(0%);
+  transition: transform 0.3s ease;
 
-  tr {
-    background-color: @NCI_COLOUR;
+  &.hidden-header {
+    transform: translateY(-100%);
   }
 }
 
 #gdc-header {
+
+  border-top: 6px solid #bf063b;
+  transition: all 0.25s ease;
+
+  &.blue {
+    border-top: 6px solid @blue;
+  }
 
   &.navbar-static-top {
     z-index: auto;
@@ -42,4 +52,49 @@
     margin-right: 0.4rem;
   }
 
+}
+
+.header-banner {
+  background-color: #bf063b;
+  color: white;
+  padding: 1rem 0.5rem 1rem;
+  transition: all 0.25s ease;
+
+  .fa-warning {
+    padding: 0 1rem;
+  }
+
+  &.dismissed {
+    height: 0px;
+    overflow: hidden;
+    padding: 0;
+  }
+}
+
+.header-banner-link {
+  margin-left: 0.6rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.header-banner-dismiss {
+  float: right;
+  margin: 0 1.5rem;
+  cursor: pointer;
+
+  &:hover {
+    border-bottom: 1px solid white;
+  }
+}
+
+.banner-title-link {
+  color: #bb0e3d;
+  font-size: 0.8em;
+  margin-left: 0.5rem;
+}
+
+.banner-modal .btn.btn-primary {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }

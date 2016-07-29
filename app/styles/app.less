@@ -53,8 +53,12 @@ abbr {
 
 
 .gdc-body {
-  padding-bottom: @FOOTER_HEIGHT + 20;
-  margin-top: -20px;
+  padding: @header-height 0 @FOOTER_HEIGHT + 20 0;
+  transition: padding 0.2s ease;
+
+  &.lowered {
+    padding: 91px 0 @FOOTER_HEIGHT + 20 0;
+  }
 }
 
 body {
@@ -527,11 +531,6 @@ pre code {
 
 /* Page Top & Bottom Regions STYLE
 /-------------------------------------------------------------- */
-#header {
-  border-top: 6px solid #2a72a4; /* New */
-  min-height: 57px;
-  background-color: white;
-}
 
 #footer {
   background-color: #123e57;

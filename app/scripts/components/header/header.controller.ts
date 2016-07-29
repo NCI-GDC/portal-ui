@@ -14,9 +14,11 @@ module ngApp.components.header.controllers {
     setLanguage(): void;
     getNumCartItems(): number;
     shouldShowOption(option: string): boolean;
+    bannerDismissed: boolean;
   }
 
   class HeaderController implements IHeaderController {
+    bannerDismissed: boolean;
     isCollapsed: boolean = true;
     currentLang: string = "en";
     addedLanguages: boolean = false;
@@ -27,11 +29,19 @@ module ngApp.components.header.controllers {
     };
 
     /* @ngInject */
-    constructor(private gettextCatalog, private CartService: ICartService,
-                private $state: ng.ui.IStateService,
-                private UserService: IUserService, private $uibModal: any,
-                private $window: ng.IWindowService) {
+    constructor(
+      private gettextCatalog,
+      private CartService: ICartService,
+      private $state: ng.ui.IStateService,
+      private UserService: IUserService,
+      private $uibModal: any,
+      private $window: ng.IWindowService,
+      private $rootScope,
+      private $uibModalStack,
+    ) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
+      this.cookieEnabled = navigator.cookieEnabled;
+      this.bannerDismissed = false;
     }
 
     getToken(): void {
@@ -76,6 +86,52 @@ module ngApp.components.header.controllers {
       }
 
       return showOption;
+    }
+
+    dismissBanner() {
+      this.bannerDismissed = true;
+      this.$rootScope.$emit('hideBanner');
+    }
+
+    showBannerModal() {
+      if (!this.$uibModalStack.getTop()) {
+        this.$uibModal.open({
+          templateUrl: "core/templates/modal.html",
+          controller: "WarningController",
+          controllerAs: "wc",
+          backdrop: "static",
+          keyboard: false,
+          backdropClass: "warning-backdrop",
+          animation: false,
+          size: "lg",
+          windowClass: "banner-modal",
+          resolve: {
+            warning: () => `
+              <div>
+                <h2 class="banner-title">
+                  Can't find your data?
+                  <span class="banner-title-link">
+                    You may be looking for the
+                    <a href="https://gdc-portal.nci.nih.gov/legacy-archive/search/f" target="_blank">GDC Legacy Archive</a>.
+                  </span>
+                </h2>
+                <div>
+                  Data in the GDC Data Portal
+                  has been harmonized using GDC Bioinformatics Pipelines whereas data in the
+                  GDC Legacy Archive is an unmodified copy of data that was previously stored
+                  in CGHub and in the TCGA Data Portal hosted by the TCGA Data Coordinating Center (DCC).
+                  Certain previously available data types and formats are not currently supported by
+                  the GDC Data Portal and are only distributed via the GDC Legacy Archive.
+                  <br>
+                  <br>
+                  Check the <a href="https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/" target="_blank">Data Release Notes</a> for additional details.
+                </div>
+              </div>
+            `,
+            header: null
+          }
+        });
+      }
     }
 
   }

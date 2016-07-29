@@ -1,3 +1,12 @@
+<a name"1.2.1"></a>
+### 1.2.1 (2016-08-03)
+
+
+#### Features
+
+* **app:** PRTL-172 legacy data banner ([4e93de12](https://github.com/NCI-GDC/portal-ui/commit/4e93de12))
+
+
 <a name"1.2.0"></a>
 ## 1.2.0 (2016-06-30)
 

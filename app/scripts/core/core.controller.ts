@@ -14,19 +14,23 @@ module ngApp.core.controllers {
     loading5s: boolean;
     loading8s: boolean;
     loadingTimers: Promise<any>[];
+    loweredBody: boolean;
 
     /* @ngInject */
-    constructor(public $scope: ng.IScope,
-                private $rootScope: ngApp.IRootScope,
-                private CartService: ICartService,
-                private notify: INotifyService,
-                $location: ng.ILocationService,
-                private $cookies: ng.cookies.ICookiesService,
-                UserService: IUserService,
-                private $uibModal: any,
-                private $uibModalStack,
-                private $timeout
-              ) {
+    constructor(
+      public $scope: ng.IScope,
+      private $rootScope: ngApp.IRootScope,
+      private CartService: ICartService,
+      private notify: INotifyService,
+      $location: ng.ILocationService,
+      private $cookies: ng.cookies.ICookiesService,
+      UserService: IUserService,
+      private $uibModal: any,
+      private $uibModalStack,
+      private $timeout
+    ) {
+      this.loweredBody = true;
+      this.$rootScope.$on('hideBanner', () => this.loweredBody = false);
 
       this.loadingTimers = [];
 

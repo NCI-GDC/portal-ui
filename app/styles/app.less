@@ -59,8 +59,12 @@ abbr {
 
 
 .gdc-body {
-  padding: 80px 0 @FOOTER_HEIGHT + 20 0;
-  margin-top: -20px;
+  padding: @header-height 0 @FOOTER_HEIGHT + 20 0;
+  transition: padding 0.2s ease;
+
+  &.lowered {
+    padding: 91px 0 @FOOTER_HEIGHT + 20 0;
+  }
 }
 
 body {
@@ -541,22 +545,6 @@ pre code {
 
 /* Page Top & Bottom Regions STYLE
 /-------------------------------------------------------------- */
-#header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 100;
-  border-top: 6px solid #2a72a4;
-  border-bottom: 1px solid #ebebeb;
-  min-height: 57px;
-  background-color: white;
-  transform: translateY(0%);
-  transition: transform 0.3s ease;
-
-  &.hidden-header {
-    transform: translateY(-100%);
-  }
-}
 
 #footer {
   background-color: #123e57;

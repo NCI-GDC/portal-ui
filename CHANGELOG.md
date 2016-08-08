@@ -1,3 +1,20 @@
+<a name"1.2.2"></a>
+### 1.2.2 (2016-08-09)
+
+
+#### Bug Fixes
+
+* **app:**
+  * remove transition from gdc-body ([2e55f363](https://github.com/NCI-GDC/portal-ui/commit/2e55f363))
+  * PRTL-226 add project info to files ([718d930c](https://github.com/NCI-GDC/portal-ui/commit/718d930c))
+
+
+#### Features
+
+* **app:** PRTL-172 legacy data banner ([868131d6](https://github.com/NCI-GDC/portal-ui/commit/868131d6))
+* **home:** update Data Release date ([bc1ed465](https://github.com/NCI-GDC/portal-ui/commit/bc1ed465))
+
+
 <a name"1.2.1"></a>
 ### 1.2.1 (2016-08-08)
 

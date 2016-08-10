@@ -1,11 +1,16 @@
 <header id="gdc-header" class="navbar navbar-default navbar-static-top"
-  data-ng-class="{ blue: hc.bannerDismissed }" 
+  data-ng-class="{ blue: hc.bannerDismissed }"
   role="banner">
     <div class="header-banner" data-ng-class="{ dismissed: hc.bannerDismissed }">
       <span class="fa fa-warning" aria-hidden="true"></span>
-      <strong>Can't find your data?</strong>
-      <span class="header-banner-link" data-ng-click="hc.showBannerModal()">
-        Click here for more information
+      <strong>GDC Service has been partially restored.</strong>
+      <br />
+      <span style="margin-left:38px">
+        While we work towards complete
+        restoration you may experience intermittent errors and specific data may be
+        unavailable for download.
+        <br />
+        <span style="margin-left:38px">Upload services are temporarily unavailable.</span>
       </span>
       <span class="header-banner-dismiss" data-ng-click="hc.dismissBanner()">
         Dismiss <span class="fa fa-close" aria-hidden="true"></span>

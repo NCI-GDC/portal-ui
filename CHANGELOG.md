@@ -1,3 +1,13 @@
+<a name"1.2.3"></a>
+### 1.2.3 (2016-08-10)
+
+
+#### Bug Fixes
+
+* **app:**
+  * PRTL-237 banner about portal status ([5384c825](https://github.com/NCI-GDC/portal-ui/commit/5384c825))
+
+
 <a name"1.2.2"></a>
 ### 1.2.2 (2016-08-09)
 

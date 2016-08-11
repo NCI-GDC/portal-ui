@@ -43,4 +43,14 @@
       </span>
     </div>
   </div>
+  <div style="margin-top: 10px; margin-bottom: 5px;"
+       class="alert alert-warning"
+       data-ng-show="(lowerBoundFinal >= rfc.warningDays) || (upperBoundFinal >= rfc.warningDays)"
+       data-ng-if="title.toLowerCase().indexOf('age') !== -1">
+    <p>
+      <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+      For health information privacy concerns, individuals over 89 will all appear as 90 years old. For more information,
+      click <a href="https://gdc.nci.nih.gov/about-gdc/gdc-faqs#collapsible-item-618-question" target="_blank">here</a>.
+    </p>
+  </div>
 </div>

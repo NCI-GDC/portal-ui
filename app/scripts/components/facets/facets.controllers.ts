@@ -292,6 +292,7 @@ module ngApp.components.facets.controllers {
     selectedUnit: string = 'years';
     displayedMax: number = 0;
     displayedMin: number = 0;
+    warningDays: number = Math.floor(90 * this.conversionFactor);
 
     /* @ngInject */
     constructor(private $scope: IRangeFacetScope,

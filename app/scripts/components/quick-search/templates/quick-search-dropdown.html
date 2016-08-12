@@ -38,11 +38,11 @@
               data-ng-bind-html="item.submitter_portion_ids | highlight:searchQuery"></li>
           <li data-ng-if="item.bioSpecimen.analyte_id"
               data-ng-bind-html="item.analyte_ids | highlight:searchQuery"></li>
-          <li data-ng-if="item.bioSpecimen.analyte_id"
+          <li id="anaylte_id" data-ng-if="item.bioSpecimen.analyte_id"
               data-ng-bind-html="item.submitter_analyte_ids | highlight:searchQuery"></li>
-          <li data-ng-if="item.bioSpecimen.aliquot_id"
+          <li id="aliquot_id" data-ng-if="item.bioSpecimen.aliquot_id"
               data-ng-bind-html="item.aliquot_ids | highlight:searchQuery"></li>
-          <li data-ng-if="item.bioSpecimen.aliquot_id"
+          <li id="submitter_aliquot_ids" data-ng-if="item.bioSpecimen.aliquot_id"
               data-ng-bind-html="item.submitter_aliquot_ids | highlight:searchQuery"></li>
         </ul>
       </div>

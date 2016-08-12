@@ -1,3 +1,12 @@
+<a name"1.2.4"></a>
+### 1.2.4 (2016-08-12)
+
+
+#### Bug Fixes
+
+* **app:** PRTL-237 can't find data banner ([b3808e45](https://github.com/NCI-GDC/portal-ui/commit/b3808e45))
+
+
 <a name"1.2.3"></a>
 ### 1.2.3 (2016-08-10)
 

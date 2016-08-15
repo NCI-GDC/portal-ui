@@ -141,6 +141,11 @@ module ngApp.participants.controllers {
         }
       };
 
+      // add project information to files for checking cart access
+      this.participant.files = this.participant.files.map(x =>
+        _.extend(x, { cases: [{ project: this.participant.project }] })
+      )
+
     }
 
   }

@@ -1,4 +1,20 @@
-<header id="gdc-header" class="navbar navbar-default navbar-static-top" role="banner">
+<header id="gdc-header" class="navbar navbar-default navbar-static-top"
+  data-ng-class="{ blue: hc.bannerDismissed }"
+  role="banner">
+    <div class="header-banner" data-ng-class="{ dismissed: hc.bannerDismissed }">
+      <span class="fa-stack">
+        <i class="fa fa-circle-o fa-stack-2x"></i>
+        <i class="fa fa-question fa-stack-1x"></i>
+      </span>
+      <strong>Can't find your data?</strong>
+      <span class="header-banner-link" data-ng-click="hc.showBannerModal()">
+        Click here for more information.
+      </span>
+      <span class="header-banner-dismiss" data-ng-click="hc.dismissBanner()">
+        Dismiss <span class="fa fa-close" aria-hidden="true"></span>
+      </span>
+    </div>
+  </div>
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-ng-click="hc.toggleCollapsed()">

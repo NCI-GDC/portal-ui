@@ -1,5 +1,15 @@
 module ngApp.core.directives {
   import IUserService = ngApp.components.user.services.IUserService;
+  enum KeyCode {
+      Space = 32,
+      Enter = 13,
+      Esc = 27,
+      Left = 37,
+      Right = 39,
+      Up = 38,
+      Down = 40,
+      Tab = 9
+  }
 
   /* @ngInject */
   function loginButton(
@@ -15,7 +25,8 @@ module ngApp.core.directives {
         redirect: "@"
       },
       controller: function($scope, $element, $window) {
-        $element.on('click', function(){
+
+        let openLogin = () => {
           if (navigator.cookieEnabled) {
             const returningPath = $window.location.pathname + '?' + (+new Date);
             const redirectUrl = config.auth +
@@ -64,12 +75,20 @@ module ngApp.core.directives {
                   keyboard: false,
                   backdropClass: "warning-backdrop",
                   animation: false,
-                  resolve: { warning: null }
+                  resolve: { warning: null, header: null }
                 });
               }
             });
           }
+        };
+
+        $element.on('keypress', (e) => {
+          if (e.keyCode === KeyCode.Enter) {
+            openLogin();
+          }
         });
+
+        $element.on('click', openLogin);
       }
     }
   }
@@ -81,7 +100,7 @@ module ngApp.core.directives {
         redirect: "@"
       },
       controller: function($scope, $element, $window) {
-        $element.on('click',function() {
+        let logout = () => {
           var redirect = config.auth;
           var authQuery = "";
 
@@ -94,9 +113,15 @@ module ngApp.core.directives {
           } else {
             authQuery = "?next=" + $window.location.pathname;
           }
-
           $window.location = redirect + authQuery;
+        };
+
+        $element.on('keypress', (e) => {
+          if (e.keyCode === KeyCode.Enter) {
+            logout();
+          }
         });
+        $element.on('click', logout);
       }
     }
   }

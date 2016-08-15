@@ -62,6 +62,7 @@ module ngApp.projects.models {
               name: "Category",
               id: "category",
               td: row => row.category,
+              tdClassName: 'white-space-wrap',
               sortable: true
           },
           {

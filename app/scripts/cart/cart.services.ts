@@ -148,6 +148,12 @@ module ngApp.cart.services {
                 private $uibModalStack
               ) {
       this.reloadFromLocalStorage();
+
+      // storage event is *only* fired in the other tabs
+      $window.addEventListener && $window.addEventListener('storage', (event) => {
+        this.$rootScope.$broadcast("cart-update");
+        this.reloadFromLocalStorage();
+      });
     }
 
     reloadFromLocalStorage(): void {
@@ -252,7 +258,7 @@ module ngApp.cart.services {
               keyboard: false,
               backdropClass: "warning-backdrop",
               animation: false,
-              resolve: { warning: null }
+              resolve: { warning: null, header: null }
             });
           }
         });
@@ -350,7 +356,7 @@ module ngApp.cart.services {
               keyboard: false,
               backdropClass: "warning-backdrop",
               animation: false,
-              resolve: { warning: null }
+              resolve: { warning: null, header: null }
             });
           }
         });
@@ -369,7 +375,7 @@ module ngApp.cart.services {
       this.addFiles(this.lastModifiedFiles, false);
     }
 
-    _sync(): void {
+    _sync(): boolean {
       this.$rootScope.$broadcast("cart-update");
       this.lastModified = this.$window.moment();
 

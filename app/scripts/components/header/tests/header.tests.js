@@ -8,17 +8,50 @@ describe('Header:', function () {
      $provide.value('config', {});
   }));
 
-  describe('Controller:', function () {
-    beforeEach(inject(function ($window) {
-      // Clear localStorage system to prevent oddities from tests.
-      $window.localStorage.setItem("gdc-cart-items", []);
-    }));
+  var scope, $compile, httpBackend;
+  beforeEach(module('header.directives'));
 
-    it('should get cart count', inject(function ($controller, CartService) {
-      var wc = $controller('HeaderController', { gettextCatalog: {} });
-      expect(wc.getNumCartItems()).to.equal(0);
-      CartService.add({ id: 'AAA', participantId: [] });
-      expect(wc.getNumCartItems()).to.equal(1);
+  beforeEach(module(function ($provide) {
+    $provide.value('$stateParams', {});
+  }));
+
+  beforeEach(inject(function ($injector) {
+    $compile = $injector.get('$compile');
+    var $rootScope = $injector.get('$rootScope');
+
+    scope = $rootScope.$new();
+  }));
+
+  beforeEach(inject(function ($httpBackend, $window) {
+    httpBackend = $httpBackend;
+    // Clear localStorage system to prevent oddities from tests.
+    $window.localStorage.setItem("gdc-cart-items", []);
+  }));
+
+  afterEach(function () {
+    scope.$destroy();
+  });
+
+  describe('Directive:', function () {
+    it('should exist', function () {
+      var el = $compile('<nga-header></nga-header>')(scope);
+      expect(el).to.exist;
+    });
+
+    it('should get cart count', inject(function(CartService, $httpBackend) {
+      httpBackend.whenGET("components/header/templates/header.html").respond(200, '');
+
+      var el = $compile('<nga-header></nga-header>')(scope);
+      scope.$digest();
+      httpBackend.flush();
+
+      expect(el.scope().cartSize).to.equal(0);
+      CartService.add({ id: 'AAA' });
+      expect(el.scope().cartSize).to.equal(1);
+      CartService.add({ id: 'BBB' });
+      expect(el.scope().cartSize).to.equal(2);
+      CartService.removeAll();
+      expect(el.scope().cartSize).to.equal(0);
     }));
 
   });

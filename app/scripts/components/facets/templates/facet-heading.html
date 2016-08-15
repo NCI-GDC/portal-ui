@@ -1,0 +1,29 @@
+<div class="list-group-item-heading facet-title">
+    <h4 class="list-group-item-heading h4 facet-title"
+        id="{{ ::$parent.title | lowercase | spaceReplace:'-' }}-facet-heading"
+    >
+      <label
+        data-ng-click="fhc.toggle($event, 'collapsed')"
+        data-ng-keypress="fhc.toggle($event, 'collapsed')"
+        aria-expanded="{{ !$parent.collapsed }}"
+        aria-label="{{ ::$parent.value | translate }} Facet Collapse Toggle"
+        role="button"
+        id="{{ ::$parent.title | lowercase | spaceReplace:'-' }}-facet-label"
+        for="{{ 'autocomplete-' + $parent.field }}"
+      >
+      <i class="fa" data-ng-class="{ 'fa-angle-down': !$parent.collapsed, 'fa-angle-right': $parent.collapsed }"></i>
+        {{ ::$parent.title | translate }}
+      </label>
+    </h4>
+    <div>
+      <i class="fa fa-rotate-left"
+        data-ng-if="hasActives"
+        data-ng-click="clearFunction($parent.name)"
+      ></i>
+      <i class="fa fa-times"
+        data-ng-if="$parent.removable"
+        data-ng-click="removeFunction()"
+      ></i>
+    </div>
+  </div>
+

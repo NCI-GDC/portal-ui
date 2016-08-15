@@ -376,7 +376,7 @@ describe("GQL Parser", function() {
                 offset: 13,
                 line: 1,
                 column: 13
-            },    
+            },
           },
           expected: [{value:"="}, {value: "!="}]
         })).to.eq('1 : 13 - Expected =, != but "access" found.');
@@ -390,7 +390,7 @@ describe("GQL Parser", function() {
                 offset: 13,
                 line: 1,
                 column: 13
-            },    
+            },
           },
           expected: [{value:"="}, {value: "!="}]
         })).to.eq('1 : 13 - Expected =, != but "access" found.');
@@ -404,11 +404,273 @@ describe("GQL Parser", function() {
                 offset: 13,
                 line: 1,
                 column: 13
-            },    
+            },
           },
           expected: [{value:"="}, {value: "!="}]
         })).to.eq('1 : 13 - Expected =, != but end of input found.');
       }));
+    });
+    describe("findInvalidFields", function () {
+      var validFields = ['cases.case_id'];
+
+      it("should find one invalid field", inject(function (GqlService) {
+        // gql is 'cases.case_id is MISSING and ( (cases.case_id is MISSING or c is missing) or (cases.case_id is MISSING or cases.case_id is missing))'
+        var gqlTree = {
+          "op": "and",
+          "content": [
+            {
+              "op": "is",
+              "content": {
+                "field": "cases.case_id",
+                "value": "MISSING"
+              }
+            },
+            {
+              "op": "or",
+              "content": [
+                {
+                  "op": "or",
+                  "content": [
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.case_id",
+                        "value": "MISSING"
+                      }
+                    },
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "c",
+                        "value": "missing"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "op": "or",
+                  "content": [
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.case_id",
+                        "value": "MISSING"
+                      }
+                    },
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.case_id",
+                        "value": "missing"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        };
+        var expected = ['c'];
+
+        var testResult = GqlService.findInvalidFields(validFields, gqlTree);
+        expect(testResult.length).to.eq(expected.length);
+        expected.forEach(function(s) {
+          expect(testResult).to.include(s);
+        });
+      }));
+      it("should find 5 invalid fields", inject(function (GqlService) {
+        // gql is 'case is MISSING and ( (foo is MISSING or foo1 is missing) or (bar is MISSING or bar2 is missing))'
+        var gqlTree = {
+          "op": "and",
+          "content": [
+            {
+              "op": "is",
+              "content": {
+                "field": "case",
+                "value": "MISSING"
+              }
+            },
+            {
+              "op": "or",
+              "content": [
+                {
+                  "op": "or",
+                  "content": [
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "foo",
+                        "value": "MISSING"
+                      }
+                    },
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "foo1",
+                        "value": "missing"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "op": "or",
+                  "content": [
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "bar",
+                        "value": "MISSING"
+                      }
+                    },
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "bar2",
+                        "value": "missing"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        };
+        var expected = ['case', 'foo', 'foo1', 'bar', 'bar2'];
+
+        var testResult = GqlService.findInvalidFields(validFields, gqlTree);
+        expect(testResult.length).to.eq(expected.length);
+        expected.forEach(function(s) {
+          expect(testResult).to.include(s);
+        });
+      }));
+      it("should find 2 UNIQUE invalid fields", inject(function (GqlService) {
+        // gql is 'cases.caseid is MISSING and ( (cases.caseid is MISSING or c is missing) or (cases.case_id is MISSING or cases.case_id is missing))'
+        var gqlTree = {
+          "op": "and",
+          "content": [
+            {
+              "op": "is",
+              "content": {
+                "field": "cases.caseid",
+                "value": "MISSING"
+              }
+            },
+            {
+              "op": "or",
+              "content": [
+                {
+                  "op": "or",
+                  "content": [
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.caseid",
+                        "value": "MISSING"
+                      }
+                    },
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "c",
+                        "value": "missing"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "op": "or",
+                  "content": [
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.case_id",
+                        "value": "MISSING"
+                      }
+                    },
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.case_id",
+                        "value": "missing"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        };
+        var expected = ['cases.caseid', 'c'];
+
+        var testResult = GqlService.findInvalidFields(validFields, gqlTree);
+        expect(testResult.length).to.eq(expected.length);
+        expected.forEach(function(s) {
+          expect(testResult).to.include(s);
+        });
+      }));
+      it("should NOT find any invalid field", inject(function (GqlService) {
+        // gql is 'cases.case_id is MISSING and ( (cases.case_id is MISSING or cases.case_id is missing) or (cases.case_id is MISSING or cases.case_id is missing))'
+        var gqlTree = {
+          "op": "and",
+          "content": [
+            {
+              "op": "is",
+              "content": {
+                "field": "cases.case_id",
+                "value": "MISSING"
+              }
+            },
+            {
+              "op": "or",
+              "content": [
+                {
+                  "op": "or",
+                  "content": [
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.case_id",
+                        "value": "MISSING"
+                      }
+                    },
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.case_id",
+                        "value": "missing"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "op": "or",
+                  "content": [
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.case_id",
+                        "value": "MISSING"
+                      }
+                    },
+                    {
+                      "op": "is",
+                      "content": {
+                        "field": "cases.case_id",
+                        "value": "missing"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        };
+
+        var testResult = GqlService.findInvalidFields(validFields, gqlTree);
+        expect(testResult.length).to.eq(0);
+      }));
+
+
     });
   });
 });

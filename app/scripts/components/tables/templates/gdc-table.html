@@ -30,7 +30,7 @@
                            data-default-headings="gtc.defaultHeadings"
                            data-headings="gtc.displayedHeadings"></arrange-columns>
           <export-table
-            data-ng-if="paging.total < 2000 && endpoint"
+            data-ng-if="endpoint"
             data-size="{{ paging.total }}"
             data-endpoint="{{ endpoint }}"
             data-headings="gtc.displayedHeadings"></export-table>

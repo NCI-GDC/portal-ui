@@ -51,6 +51,20 @@ abbr {
   padding-right: 13px;
 }
 
+@media (min-width: 768px) {
+  .navbar-nav {
+    float: left;
+    margin: 0 0 0 5px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .navbar-nav {
+    float: left;
+    margin: 0 0 0 20px;
+  }
+}
+
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
@@ -127,7 +141,7 @@ h3.panel-title {
 }
 
 .content {
-  width: 70%;
+  width: ~"calc(100% - 375px)";
   float: left;
 
   &.expanded {
@@ -622,16 +636,6 @@ pre code {
   left: 10px;
 }
 
-@media (min-width:768px) and (max-width: 991px) {
-  .navbar-header {
-    width: 100%;
-  }
-  .navbar-brand {
-    margin-bottom: 0.375em;
-    margin-left: -15px;
-  }
-}
-
 @media (min-width: 992px) {
   .navbar-header {
     width: auto;
@@ -715,8 +719,7 @@ pre code {
 
 /* Left Panal sidebar */
 .facets-sidebar {
-  max-width: 375px;
-  width: 30%;
+  width: 375px;
   float: left;
   padding: 0 15px;
   overflow: hidden;
@@ -913,4 +916,16 @@ g
 
 .not-found {
   padding: 5rem;
+}
+
+@media (max-width: 1225px) and (min-width: 1036px) {
+  .hidden-md {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1035px) and (min-width: 768px) {
+  .hidden-sm {
+    display: none !important;
+  }
 }

@@ -27,7 +27,8 @@ module ngApp.files.services {
       private $filter,
       private $window,
       private RestFullResponse: any,
-      private AuthRestangular
+      private AuthRestangular,
+      private config: IGDCConfig
     ) {
       this.ds = Restangular.all("files");
     }
@@ -106,45 +107,19 @@ module ngApp.files.services {
       return {};
     }
 
-    sliceBAM(fileID: string, bedTSV: string, completeCallback: () => void) {
-      var abort = this.$q.defer();
+    sliceBAM(fileID: string, bedTSV: string, completeCallback: () => void, inProgress: () => void, downloader) {
       var params = this.processBED(bedTSV);
+      params.attachment = 'true';
 
-      this.AuthRestangular.all("/api/v0/slicing/view/" + fileID)
-        .withHttpConfig({
-          timeout: abort.promise,
-          responseType: "blob",
-          withCredentials: true,
-        })
-        .post(params, undefined, { 'Content-Type': 'application/json' })
-        .then((response) => {
-          this.$window.saveAs(response, fileID + '-sliced.bam');
-        }, (response) => {
-          //Slicing Failed
-          if (response.status === 500) {
-            // 500s show default app 500 error only
-            return;
-          }
-          this.$uibModal.open({
-            templateUrl: 'files/templates/bam-slicing-failed.html',
-            controller: "BAMFailedModalController",
-            controllerAs: "bamfc",
-            backdrop: true,
-            keyboard: true,
-            animation: false,
-            size: "lg",
-            resolve: {
-              errorStatus: () => { return response.status; },
-              errorStatusText: () => { return response.statusText || 'Error'; },
-              errorBlob: () => { return response.data || new Blob([JSON.stringify({error: 'Unexpected Error'})]); }
-            }
-          });
-        })
-        .finally(() => {
-          if (completeCallback) {
-            completeCallback();
-          }
-        });
+      const url = `${this.config.auth_api}/v0/slicing/view/${fileID}`;
+      
+      const customMessages = {
+        warningHeader: 'BAM Slicing Failed',
+        warningPrefix: 'Invalid BED Format (refer to the examples described in the BAM Slicing pop-up): '
+      };
+
+      const checkProgress = downloader(params, url, null, 'POST', customMessages);
+      checkProgress(inProgress, completeCallback);
     }
 
     getFiles(
@@ -203,7 +178,7 @@ module ngApp.files.services {
         eventCancel();
         this.CoreService.setSearchModelState(true);
       });
-      
+
       return prom;
     }
 

@@ -1,4 +1,9 @@
-<div class="modal-body">
+<div class="modal-header">
+  <h4 data-translate>
+    {{ wc.header || 'Error' }}
+  </h4>
+</div>
+<div class="modal-body text-danger">
   <p data-translate>
     {{ wc.warning || 'The GDC service has encountered an error.' }}
   </p>

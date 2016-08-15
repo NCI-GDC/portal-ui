@@ -25,30 +25,27 @@ module ngApp.components.facets.controllers {
   import IFacetsConfigService = ngApp.components.facets.services.IFacetsConfigService;
   import ICustomFacetsService = ngApp.components.facets.services.ICustomFacetsService;
 
-  class Toggleable {
+  class FacetsHeadingCtrl {
+    constructor(private $scope: IFacetScope) {}
 
-      constructor(public collapsed: boolean) {
+    toggle(event: any, property: string) {
+      if (event.which === 1 || event.which === 13) {
+        this.$scope.$parent.collapsed = !this.$scope.$parent.collapsed;
       }
 
-      toggle(event: any, property: string) {
-        if (event.which === 1 || event.which === 13) {
-          this[property] = !this[property];
-        }
-
-        if (property === "collapsed") {
-          angular.element(event.target).attr("aria-collapsed", this.collapsed.toString());
-        }
+      if (property === "collapsed") {
+        angular.element(event.target).attr("aria-collapsed", this.$scope.$parent.collapsed.toString());
       }
     }
+  }
 
-   export interface ITermsController {
+  export interface ITermsController {
     add(facet: string, term: string): void;
     remove(facet: string, term: string): void;
     actives: string[];
     inactives: string[];
     displayCount: number;
     originalDisplayCount: number;
-    collapsed: boolean;
     expanded: boolean;
     toggle(event: any, property: string): void;
   }
@@ -58,7 +55,6 @@ module ngApp.components.facets.controllers {
     name: string = "";
     displayCount: number = 5;
     originalDisplayCount: number = 5;
-    collapsed: boolean = false;
     expanded: boolean = false;
     actives: string[] = [];
     inactives: string[] = [];
@@ -68,7 +64,6 @@ module ngApp.components.facets.controllers {
     /* @ngInject */
     constructor(private $scope: IFacetScope, private FacetService: IFacetService,
                 private UserService: IUserService) {
-      this.collapsed = $scope.collapsed === 'true' ? true : false;
       this.expanded = !!$scope.expanded;
       this.displayCount = this.originalDisplayCount = $scope.displayCount || 5;
       this.title = $scope.title;
@@ -126,18 +121,11 @@ module ngApp.components.facets.controllers {
         this[property] = !this[property];
       }
 
-      if (property === "collapsed") {
-        angular.element(event.target).attr("aria-collapsed", this.collapsed.toString());
-      }
-
       if (property === "expanded") {
         this.displayCount = this.expanded ? this.inactives.length : this.originalDisplayCount;
       }
     }
 
-    clear(facet: string) {
-      this.terms.forEach(term => this.FacetService.removeTerm(facet, term));
-    }
   }
 
   interface ICurrentFiltersController {
@@ -194,7 +182,7 @@ module ngApp.components.facets.controllers {
 
   }
 
-  interface IFreeTextController {
+  export interface IFreeTextController {
     actives: string[];
     searchTerm: string;
     termSelected(): void;
@@ -205,7 +193,7 @@ module ngApp.components.facets.controllers {
     autocomplete: boolean;
   }
 
-  class FreeTextController extends Toggleable implements IFreeTextController {
+  class FreeTextController implements IFreeTextController {
     searchTerm: string = "";
     actives: string[] = [];
     autocomplete: boolean = true;
@@ -295,7 +283,7 @@ module ngApp.components.facets.controllers {
 
   }
 
-  class RangeFacetController extends Toggleable {
+  class RangeFacetController {
     activesWithOperator: Object;
     error: string = undefined;
     lowerBound: number = null;
@@ -399,21 +387,15 @@ module ngApp.components.facets.controllers {
         this.FacetService.removeTerm(this.$scope.field, null, "<=");
       }
     }
-
-    clear() {
-      this.FacetService.removeTerm(this.$scope.field, null, ">=");
-      this.FacetService.removeTerm(this.$scope.field, null, "<=");
-      this.upperFacetAdded = this.lowerFacetAdded = false;
-    }
   }
 
-  interface IDateFacetController {
+  export interface IDateFacetController {
     open($event: any, startOrEnd: string): void;
     refresh(): void;
     search(): void;
   }
 
-  class DateFacetController extends Toggleable implements IDateFacetController {
+  class DateFacetController implements IDateFacetController {
     active: boolean = false;
     name: string = "";
 
@@ -455,12 +437,6 @@ module ngApp.components.facets.controllers {
       }
       this.FacetService.addTerm(this.name, this.$window.moment(this.$scope.date).format('YYYY-MM-DD'), '>=');
     }
-
-    clear() {
-      this.FacetService.removeTerm(this.name, this.$window.moment(this.$scope.date).format('YYYY-MM-DD'));
-      this.facetAdded = false;
-    }
-
   }
 
   class CustomFacetsModalController {
@@ -681,6 +657,7 @@ module ngApp.components.facets.controllers {
   }
 
   angular.module("facets.controllers", ["facets.services", "user.services", "files.services"])
+        .controller("facetsHeadingCtrl", FacetsHeadingCtrl)
         .controller("currentFiltersCtrl", CurrentFiltersController)
         .controller("freeTextCtrl", FreeTextController)
         .controller("rangeFacetCtrl", RangeFacetController)

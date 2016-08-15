@@ -7,7 +7,7 @@
   <tbody>
     <tr data-ng-if="selectedItem.case_id">
       <th scope="row" data-translate>Case UUID</th>
-      <td>{{ selectedItem.case_id }}</td>
+      <td data-ng-bind-html="selectedItem.case_id | highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.project.project_id">
       <th scope="row" data-translate>Project</th>
@@ -23,7 +23,7 @@
     </tr>
     <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.sample_id">
       <th scope="row" data-translate>Sample UUID</th>
-      <td>{{ selectedItem.bioSpecimen.sample_id }}</td>
+      <td data-ng-bind-html="selectedItem.bioSpecimen.sample_id | highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.sample_type">
       <th scope="row" data-translate>Sample Type</th>
@@ -31,11 +31,11 @@
     </tr>
     <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.portion_id">
       <th scope="row" data-translate>Portion UUID</th>
-      <td>{{ selectedItem.bioSpecimen.portion_id }}</td>
+      <td data-ng-if="selectedItem.bioSpecimen.portion_id | highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.analyte_id">
       <th scope="row" data-translate>Analyte UUID</th>
-      <td>{{ selectedItem.bioSpecimen.analyte_id }}</td>
+      <td data-ng-bind-html="selectedItem.bioSpecimen.analyte_id | highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.analyte_type">
       <th scope="row" data-translate>Analyte Type</th>
@@ -43,11 +43,11 @@
     </tr>
     <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.aliquot_id">
       <th scope="row" data-translate>Aliquot UUID</th>
-      <td>{{ selectedItem.bioSpecimen.aliquot_id }}</td>
+      <td data-ng-bind-html="selectedItem.bioSpecimen.aliquot_id | highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.submitter_id">
       <th scope="row" data-translate>Submitter ID</th>
-      <td>{{ selectedItem.bioSpecimen.submitter_id }}</td>
+      <td data-ng-bind-html="selectedItem.bioSpecimen.submitter_id | highlight:searchQuery"></td>
     </tr>
   </tbody>
 </table>

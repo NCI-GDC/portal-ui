@@ -69,7 +69,8 @@ module ngApp.core.controllers {
               animation: false,
               size: "lg",
               resolve: {
-                warning: null
+                warning: null,
+                header: null
               }
             });
           }
@@ -90,7 +91,8 @@ module ngApp.core.controllers {
                 animation: false,
                 size: "lg",
                 resolve: {
-                  warning: null
+                  warning: null,
+                  header: null
                 }
               });
               bowserWarningModal.result.then(() => {
@@ -115,7 +117,8 @@ module ngApp.core.controllers {
               animation: false,
               size: "lg",
               resolve: {
-                warning: null
+                warning: null,
+                header: null
               }
             });
 
@@ -171,7 +174,7 @@ module ngApp.core.controllers {
 
   class WarningController {
     /* @ngInject */
-    constructor(private $uibModalInstance, private warning) {}
+    constructor(private $uibModalInstance, private warning, private header) {}
 
     acceptWarning(): void {
       this.$uibModalInstance.close();

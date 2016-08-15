@@ -12,11 +12,13 @@ module ngApp.components.downloader.directive {
   ): ng.IDirective {
 
     const cookiePath = document.querySelector('base').getAttribute('href');
-    const _$ = $window.jQuery;
     const iFrameIdPrefix = '__downloader_iframe__';
     const formIdPrefix = '__downloader_form__';
-    const getIframeResponse = (iFrame: ng.IAugmentedJQuery): Object => JSON.parse(iFrame.contents().find('body pre').text());
-    const showErrorModal = (error: Object): void => {
+
+    const getIframeResponse = (iFrame: ng.IAugmentedJQuery): Object =>
+      JSON.parse(iFrame.contents().find('body pre').text());
+
+    const showErrorModal = (error: Object, options: Object): void => {
       const warning = error.warning || error.message;
 
       $uibModal.open({
@@ -29,7 +31,8 @@ module ngApp.components.downloader.directive {
         animation: false,
         size: 'lg',
         resolve: {
-          warning: () => warning
+          header: () => options.warningHeader,
+          warning: () => (options.warningPrefix || '') + warning
         }
       });
     };
@@ -39,6 +42,7 @@ module ngApp.components.downloader.directive {
       iFrame: ng.IAugmentedJQuery,
       cookieKey: string,
       downloadToken: string,
+      options: Object,
       inProgress: () => {},
       done: () => {},
       altMessage: boolean
@@ -51,13 +55,20 @@ module ngApp.components.downloader.directive {
       var timeoutPromise = null;
 
       const cookieStillThere = (): boolean => downloadToken === $cookies.get(cookieKey);
+
       const handleError = (): Object => {
         const error = _.flow(_.attempt,
-          (e) => _.isError(e) ? {message: 'GDC download service is currently experiencing issues.'} : e)(_.partial(getIframeResponse, iFrame));
+          (e) => _.isError(e)
+            ? { message: 'GDC download service is currently experiencing issues.' }
+            : e
+        )(_.partial(getIframeResponse, iFrame));
+
         $log.error('Download failed: ', error);
         return error;
       };
+
       const notifyScope = $rootScope.$new();
+
       const finished = (): void => {
         $log.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
         timeoutPromise = null;
@@ -66,6 +77,7 @@ module ngApp.components.downloader.directive {
         notifyScope.$destroy();
         done();
       };
+
       notifyScope.cancelDownload = (): void => {
         if (timeoutPromise) {
           $timeout.cancel(timeoutPromise);
@@ -73,12 +85,27 @@ module ngApp.components.downloader.directive {
         finished();
       };
 
-      const simpleMessage = '<span>Download preparation in progress. Please wait…</span><br /><br /> \
-        <a data-ng-click="cancelDownload()"><i class="fa fa-times-circle-o"></i> Cancel Download</a>';
+      const simpleMessage =
+        `<span>Download preparation in progress. Please wait…</span>
+        <br /><br />
+        <a data-ng-click="cancelDownload()">
+          <i class="fa fa-times-circle-o"></i> Cancel Download
+        </a>`;
 
-      const detailedMessage = '<span>The download preparation can take time due to different factors (total file size, number of files, or number of concurrent users). \
-        We recommend that you use the <a href="https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool" target="_blank">GDC Data Transfer Tool</a> or cancel the download and try again later.</span><br /><br /> \
-        <a data-ng-click="cancelDownload()"><i class="fa fa-times-circle-o"></i> Cancel Download</a>';
+      const detailedMessage =
+        `<span>
+          The download preparation can take time due to different factors
+          (total file size, number of files, or number of concurrent users).
+          We recommend that you use the
+          <a href="https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool" target="_blank">
+            GDC Data Transfer Tool
+          </a>
+          or cancel the download and try again later.
+        </span>
+        <br /><br />
+        <a data-ng-click="cancelDownload()">
+          <i class="fa fa-times-circle-o"></i> Cancel Download
+        </a>`;
 
       const checker = (): void => {
         if (iFrame[0].__frame__loaded) {
@@ -87,7 +114,7 @@ module ngApp.components.downloader.directive {
             const error = handleError();
             $cookies.remove(cookieKey);
             finished();
-            showErrorModal(error);
+            showErrorModal(error, options);
           } else {
             // A download should be now initiated.
             finished();
@@ -116,6 +143,7 @@ module ngApp.components.downloader.directive {
 
     const cookielessChecker = (
       iFrame: ng.IAugmentedJQuery,
+      options: Object,
       inProgress: any, // not used but obligated to the interface
       done: () => {}
     ): void => {
@@ -139,26 +167,37 @@ module ngApp.components.downloader.directive {
           }
         } else {
           finished();
-          showErrorModal(error);
+          showErrorModal(error, options);
         }
       };
 
       $timeout(checker, waitTime);
     };
 
-    const hashString = (s: string): number => s.split('').reduce((acc, c) => ((acc << 5) - acc) + c.charCodeAt(0), 0);
+    const hashString = (s: string): number => s.split('').reduce((acc, c) =>
+      ((acc << 5) - acc) + c.charCodeAt(0), 0
+    );
+
     const toHtml = (key, value): string =>
-      '<input type="hidden" name="' + key + '" value="' +
-      (_.isPlainObject(value) ? JSON.stringify(value).replace(/"/g, '&quot;') : value) +
-      '" />';
+      `<input
+        type="hidden"
+        name="${key}"
+        value="${
+          (_.isPlainObject(value) ? JSON.stringify(value).replace(/"/g, '&quot;') : value)
+        }"
+      />`;
+
     // TODO: this should probably be factored out.
     const arrayToStringFields = ['expand', 'fields', 'facets'];
-    const arrayToStringOnFields = (key, value, fields) => _.includes(fields, key) ? [].concat(value).join() : value;
+
+    const arrayToStringOnFields = (key, value, fields) => _.includes(fields, key)
+      ? [].concat(value).join()
+      : value;
 
     return {
       restrict: 'A',
       link: (scope, element) => {
-        scope.download = (params, apiEndpoint, target = () => element, method = 'GET') => {
+        scope.download = (params, apiEndpoint, target = () => element, method = 'GET', options = {}) => {
           const downloadToken = _.uniqueId('' + (+ new Date()) + '-');
           const iFrameId = iFrameIdPrefix + downloadToken;
           const formId = formIdPrefix + downloadToken;
@@ -177,16 +216,32 @@ module ngApp.components.downloader.directive {
             const paramValue = arrayToStringOnFields(key, value, arrayToStringFields);
             return result + [].concat(paramValue).reduce((acc, v) => acc + toHtml(key, v), '');
           }, '');
-          const formHtml = '<form method="' + method.toUpperCase() + '" id="' + formId +
-            '" action="' + apiEndpoint + '" style="display: none">' + fields + '</form>';
 
-          _$('<iframe id="' + iFrameId +
-            '" style="display: none" src="about:blank" onload="this.__frame__loaded = true;"></iframe>')
-            // Appending to document body to allow navigation away from the current page and downloads in the background
+          const formHtml =
+            `<form
+              method="${method.toUpperCase()}"
+              id="${formId}"
+              action="${apiEndpoint}"
+              style="display: none"
+            >
+              ${fields}
+            </form>`;
+
+          $(
+            `<iframe
+              id="${iFrameId}"
+              style="display: none"
+              src="about:blank"
+              onload="this.__frame__loaded = true;">
+            </iframe>`
+          )
+            // Appending to document body to allow navigation away from the current
+            // page and downloads in the background
             .appendTo('body');
 
-          const iFrame = _$('#' + iFrameId);
+          const iFrame = $('#' + iFrameId);
           iFrame[0].__frame__loaded = false;
+
           iFrame.ready(() => {
             const iFrameBody = iFrame.contents().find('body');
             iFrameBody.append(formHtml);
@@ -195,8 +250,9 @@ module ngApp.components.downloader.directive {
             form.submit();
           });
 
-          return cookieKey ? _.partial(progressChecker, iFrame, cookieKey, downloadToken) :
-            _.partial(cookielessChecker, iFrame);
+          return cookieKey
+            ? _.partial(progressChecker, iFrame, cookieKey, downloadToken, options)
+            : _.partial(cookielessChecker, iFrame, options);
         };
       }
     };

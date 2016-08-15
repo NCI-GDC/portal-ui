@@ -31,13 +31,26 @@ module ngApp.files.controllers {
     };
 
     /* @ngInject */
-    constructor(public file: IFile,
-                public $scope: ng.IScope,
-                private CoreService: ICoreService,
-                private CartService: ICartService,
-                private FilesService: IFilesService,
-                private $filter: ng.IFilterService
-                ) {
+    constructor(
+      public file: IFile,
+      public $scope: ng.IScope,
+      private CoreService: ICoreService,
+      private CartService: ICartService,
+      private FilesService: IFilesService,
+      private $filter: ng.IFilterService
+    ) {
+
+      setTimeout(() => {
+        // long-scrollable-table should become its own directive
+        // --
+        // this function moves the "sticky" header columns which do not scroll
+        // naturally with the table
+        $('.long-scrollable-table-container').scroll(function () {
+          let el = $(this);
+          let div = el.find('.sticky div');
+          div.css({ transform: `translateX(-${el.scrollLeft()}px)` });
+        });
+      });
 
       CoreService.setPageTitle("File", file.file_name);
 
@@ -140,13 +153,21 @@ module ngApp.files.controllers {
                  private FilesService: IFilesService,
                  public file: any,
                  private GqlService: IGqlService,
-                 public completeCallback: any) {
-       this.$scope.bedModel = "";
-     }
+                 public completeCallback: any,
+                 private inProgress: any,
+                 private downloader: any
+    ) {
+      this.$scope.bedModel = "";
+    }
 
     submit(): void {
-      this.FilesService.sliceBAM(this.file.file_id, this.$scope.bedModel, this.completeCallback);
-      this.$uibModalInstance.dismiss('slicing');
+      this.FilesService.sliceBAM(
+        this.file.file_id,
+        this.$scope.bedModel,
+        this.completeCallback,
+        this.inProgress,
+        this.downloader);
+      this.$uibModalInstance.close('slicing');
     }
 
     allowTab($event: any): void {

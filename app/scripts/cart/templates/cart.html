@@ -59,6 +59,11 @@
   <section class="row items-pane" data-ng-if="cc.files.hits.length">
     <div class="col-md-12 col-lg-12 col-sm-12">
       <div class="pull-right">
+          <download-metadata-button
+            data-text-normal="Metadata"
+            data-filename="metadata.cart"
+            data-text-in-progress="Processing">
+          </download-metadata-button>
           <split-control data-control-label-text="Download" data-no-split="true" data-icon-classes="fa fa-download">
               <split-control-option data-option-label-text="Download Manifest File">
                 <button data-download-manifest-cart data-downloader id="manifest-button">
@@ -72,41 +77,6 @@
                   <i class="fa" ng-class="{'fa-download': !active, 'fa-spinner fa-pulse': active}"></i>
                   <span data-translate>Cart</span>
                 </button>
-              </split-control-option>
-
-              <hr class="dropdown-rule" />
-
-              <split-control-option data-option-label-text="Download Clinical">
-                <export-cases-button
-                  data-filter-key-values="cc.clinicalDataExportFilters"
-                  data-expands="cc.clinicalDataExportExpands"
-                  data-filename="cc.clinicalDataExportFileName"
-                  data-size="cc.participantCount"
-                  data-text-normal="Clinical"
-                  data-text-in-progress="Processing"
-                  data-style-class="true"> <!-- this overrides the bootstrap button style -->
-                </export-cases-button>
-              </split-control-option>
-
-              <split-control-option data-option-label-text="Download Biospecimen">
-                <export-cases-button
-                  data-filter-key-values="cc.biospecimenDataExportFilters"
-                  data-expands="cc.biospecimenDataExportExpands"
-                  data-filename="cc.biospecimenDataExportFileName"
-                  data-size="cc.participantCount"
-                  data-text-normal="Biospecimen"
-                  data-text-in-progress="Processing"
-                  data-style-class="true"> <!-- this overrides the bootstrap button style -->
-                </export-cases-button>
-              </split-control-option>
-
-              <split-control-option data-option-label-text="Download Metadata">
-                <download-metadata-button
-                  data-text-normal="File Metadata"
-                  data-filename="metadata.cart"
-                  data-text-in-progress="Processing"
-                  data-style-class="true">
-                </download-metadata-button>
               </split-control-option>
           </split-control>
 

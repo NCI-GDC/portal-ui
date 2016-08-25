@@ -10,6 +10,9 @@
         rowspan="{{::h.children ? 1 : 2}}"
         colspan="{{::h.children ? h.children.length : 1}}"
         data-ng-hide="h.inactive(this)"
+        data-uib-popover="{{h.thToolTipText}}"
+        data-popover-placement="left"
+        data-popover-trigger="mouseenter"
         data-ng-repeat="h in enabledHeadings">
       </th>
     </tr>

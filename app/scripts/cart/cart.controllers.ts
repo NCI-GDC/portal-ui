@@ -177,7 +177,9 @@ module ngApp.cart.controllers {
           'annotations.annotation_id',
           'cases.case_id',
           'cases.project.project_id',
-          'cases.project.name'
+          'cases.project.name',
+          'associated_entities.entity_id',
+          'annotations.entity_id'
         ],
       };
       this.FilesService.getFiles(fileOptions, 'POST').then((data: IFiles) => {

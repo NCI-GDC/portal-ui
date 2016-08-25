@@ -3,6 +3,7 @@ module ngApp.participants.controllers {
   import IParticipants = ngApp.participants.models.IParticipants;
   import ICoreService = ngApp.core.services.ICoreService;
   import ILocationService = ngApp.components.location.services.ILocationService;
+  import IBiospecimenService = ngApp.components.ui.biospecimen.services.IBiospecimenService;
   import IGDCConfig = ngApp.IGDCConfig;
 
   export interface IParticipantController {
@@ -23,6 +24,7 @@ module ngApp.participants.controllers {
       private $filter: ng.IFilterService,
       private ExperimentalStrategyNames: string[],
       private DATA_CATEGORIES,
+      private BiospecimenService: IBiospecimenService,
       private config: IGDCConfig
     ) {
       CoreService.setPageTitle("Case", participant.case_id);
@@ -35,9 +37,7 @@ module ngApp.participants.controllers {
         this.activeClinicalTab = tab;
       };
 
-      this.annotationIds = _.map(this.participant.annotations, (annotation) => {
-        return annotation.annotation_id;
-      });
+      this.annotationIds = BiospecimenService.getAllAnnotations(participant).map(a => a.annotation_id);
 
       this.clinicalFile = _.find(this.participant.files, (file) => {
         return (file.data_subtype || '').toLowerCase() === "clinical data";

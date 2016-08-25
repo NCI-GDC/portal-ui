@@ -110,19 +110,21 @@ module ngApp.search.models {
         name: "Annotations",
         id: "annotations.annotation_id",
         td: (row, $scope) => {
-          function getAnnotations(row, $scope) {
-            return row.annotations.length == 1 ?
-                     '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>' :
+          // annotations directly on the file or on a biospec entity (ie not a case)
+          var directAnnotations = (row.annotations || []).filter(a => _.includes(_.pluck(row.associated_entities, 'entity_id'), a.entity_id) || a.entity_type === 'file');
+          function getAnnotationsLink(annotations) {
+                    return annotations.length == 1 ?
+                     '<a href="annotations/' + annotations[0].annotation_id + '">' + 1 + '</a>' :
                      withAnnotationFilter(
-                       row.annotations.length,
-                       [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
+                       annotations.length,
+                       [{field: "annotation_id", value: _.pluck(annotations, 'annotation_id')}],
                        $scope.$filter);
           }
-
-          return row.annotations && row.annotations.length ? getAnnotations(row, $scope) : 0;
+          return directAnnotations.length ? getAnnotationsLink(directAnnotations) : 0;
         },
         thClassName: 'text-right',
-        tdClassName: 'text-right'
+        tdClassName: 'text-right',
+        thToolTipText: 'Number of annotations referring to the file or any entities directly associated with it'
       }, {
         name: "Data Type",
         id: "data_type",
@@ -153,6 +155,8 @@ module ngApp.search.models {
       "file_id",
       "platform",
       "annotations.annotation_id",
+      "annotations.entity_id",
+      "associated_entities.entity_id",
       "related_files.file_id",
       "archive.archive_id",
       "experimental_strategy",

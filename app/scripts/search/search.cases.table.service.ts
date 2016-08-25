@@ -1,9 +1,10 @@
 module ngApp.search.cases.table.service {
+    import IBiospecimenService = ngApp.components.ui.biospecimen.services.IBiospecimenService;
 
     class SearchCasesTableService {
 
       /* @ngInject */
-      constructor(private DATA_CATEGORIES) {}
+      constructor(private DATA_CATEGORIES, private BiospecimenService: IBiospecimenService) {}
 
       withAnnotationFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
           var filterString = $filter("makeFilter")(filters, true);
@@ -105,18 +106,19 @@ module ngApp.search.cases.table.service {
           }, {
             name: "Annotations",
             id: "annotations.annotation_id",
+            thToolTipText: 'Number of annotations referring to the case, its associated biospecimen, or its files',
             td: (row, $scope) => {
+              const allAnnotations = this.BiospecimenService.getAllAnnotations(row);
               var getAnnotations = (row, $filter) => {
-                return row.annotations.length === 1
-                  ? '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>'
+                return allAnnotations.length === 1
+                  ? '<a href="annotations/' + allAnnotations.annotation_id + '">' + 1 + '</a>'
                   : this.withAnnotationFilter(
-                      row.annotations.length,
-                      [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
+                      allAnnotations.length,
+                      [{field: "annotation_id", value: _.pluck(allAnnotations, 'annotation_id')}],
                       $filter
                     );
               }
-
-              return (row.annotations || []).length && getAnnotations(row, $scope.$filter);
+              return (allAnnotations || []).length && getAnnotations(allAnnotations, $scope.$filter);
             },
             thClassName: 'text-right',
             tdClassName: 'text-right'
@@ -207,7 +209,12 @@ module ngApp.search.cases.table.service {
             "diagnoses.primary_diagnosis",
             "diagnoses.vital_status",
             "diagnoses.days_to_death",
-            "diagnoses.age_at_diagnosis"
+            "diagnoses.age_at_diagnosis",
+            "samples.annotations.annotation_id",
+            "samples.portions.annotations.annotation_id",
+            "samples.portions.slides.annotations.annotation_id",
+            "samples.portions.analytes.annotations.annotation_id",
+            "samples.portions.analytes.aliquots.annotations.annotation_id"
           ],
           expand: [
             "summary.data_categories",

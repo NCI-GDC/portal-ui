@@ -77,7 +77,8 @@
             <count-card data-ng-if="pc.annotationIds.length > 1" title="Annotations" icon="fa-edit"
                         data="pc.annotationIds.length | number"
                         data-sref="annotations({ 'filters':
-                    {{ [{ field: 'annotation_id', value: pc.annotationIds }] | makeFilter }} })"></count-card>
+                          {{ [{ field: 'annotation.case_id', value: pc.participant.case_id}] | makeFilter }}
+                        })"></count-card>
             <count-card data-ng-if="pc.annotationIds.length === 1" title="Annotations" icon="fa-edit"
                         data="pc.annotationIds.length | number"
                         data-sref="annotation({ annotationId: '{{ pc.annotationIds[0] }}' })"></count-card>

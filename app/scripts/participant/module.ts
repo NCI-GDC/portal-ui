@@ -19,7 +19,12 @@ module ngApp.participants {
             fields: [
               "case_id",
               "submitter_id",
-              "annotations.annotation_id"
+              "annotations.annotation_id",
+              "samples.annotations.annotation_id",
+              "samples.portions.annotations.annotation_id",
+              "samples.portions.slides.annotations.annotation_id",
+              "samples.portions.analytes.annotations.annotation_id",
+              "samples.portions.analytes.aliquots.annotations.annotation_id"
            ],
            expand: [
             "demographic",

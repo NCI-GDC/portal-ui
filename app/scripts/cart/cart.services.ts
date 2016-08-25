@@ -85,7 +85,7 @@ module ngApp.cart.services {
                        "cases.case_id",
                        "cases.project.project_id",
                        "cases.project.name"
-                       ],
+              ],
               filters: filters.content.length ? filters : '', // empty content gives api error so send no filter
               size: 20,
               from: 0

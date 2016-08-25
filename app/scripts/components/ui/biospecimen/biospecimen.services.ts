@@ -128,7 +128,6 @@ module ngApp.components.ui.biospecimen.services {
             stitchPlaceholderChildrenToParents(parent[childType.p]);
           }
         });
-        
         function stitchPlaceholderChildrenToParents (entities) {
           (entities || []).forEach((entity, i) => {
             self.entityTypes.forEach(childType => {
@@ -139,11 +138,36 @@ module ngApp.components.ui.biospecimen.services {
               } else {
                 stitchPlaceholderChildrenToParents(entity[childType.p]);
               }
-            });  
-          });  
+            });
+          });
         }
       });
     }
+
+    getAllAnnotations(participant: Object): void {
+      const biospecStructure = {
+          samples: {
+            portions: {
+              slides: {},
+              analytes: {
+                aliquots: {}
+              }
+            }
+          }
+        };
+        let annotations = [];
+        (function getAllAnnotations(typeStructure) {
+          return (entity) => {
+            if (entity.annotations) {
+              annotations = [...annotations, ...entity.annotations];
+            }
+            const nextTypes = Object.keys(typeStructure);
+            nextTypes.forEach((key) => (entity[key] || []).forEach(e2 => getAllAnnotations(typeStructure[key])(e2)));
+          };
+        })(biospecStructure)(participant);
+        return annotations;
+    }
+
   }
 
   angular

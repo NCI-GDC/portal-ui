@@ -175,14 +175,19 @@
                       <div>Entity Type</div>
                     </th>
                     <th class="sticky" scope="col" data-translate>
+                      Annotations
+                      <div
+                        data-tooltip-append-to-body="true"
+                        data-uib-tooltip="Number of annotations referring to the entity"
+                      >
+                        Entity Annotations
+                      </div>
+                    </th>
+                    <th class="sticky" scope="col" data-translate>
                       Case UUID
                       <div>Case UUID</div>
                     </th>
-                    <th class="sticky" scope="col" data-translate>
-                      Annotations
-                      <div>Annotations</div>
-                    </th>
-                  </tr>
+                    </tr>
                   </thead>
                   <tbody>
                   <tr data-ng-repeat="e in fc.file.associated_entities | filter:fc.tableFilters.assocEntity track by e.entity_id">
@@ -201,11 +206,6 @@
                       </a>
                     </td>
                     <td>{{ ::e.entity_type | humanify }}</td>
-                    <td class="id-cell">
-                      <a data-ui-sref="case({ caseId: e.case_id })">
-                        {{ ::e.case_id }}
-                      </a>
-                    </td>
                     <td class="text-right">
                       <a data-ui-sref="annotations({ 'filters':
                            {{ [{field: 'annotation_id', value: e.annotations }] | makeFilter }} })"
@@ -218,7 +218,12 @@
                       </a>
                       <span data-ng-if="!e.annotations.length">0</span>
                     </td>
-                  </tr>
+                    <td class="id-cell">
+                      <a data-ui-sref="case({ caseId: e.case_id })">
+                        {{ ::e.case_id }}
+                      </a>
+                    </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

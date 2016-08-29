@@ -1,28 +1,9 @@
 <div class="list-group-item" id="{{ title | lowercase | spaceReplace:'-' }}-facet-list-group">
-  <h4 class="list-group-item-heading facet-title"
-      tabindex="0">
-     <span data-ng-click="tc.toggle($event, 'collapsed')"
-           role="button"
-           aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
-           aria-expanded="{{ !tc.collapsed }}"
-           data-ng-keypress="tc.toggle($event, 'collapsed')">
-      <i class="fa" data-ng-class="{ 'fa-angle-down': !tc.collapsed, 'fa-angle-right': tc.collapsed }"></i>
-      {{ ::tc.title | translate }}
-    </span>
-
-    <span class="pull-right">
-      <i class="fa fa-rotate-left"
-        data-ng-if="tc.actives.length"
-        data-ng-click="tc.clear(tc.name)"
-      ></i>
-      <i class="fa fa-times"
-        data-ng-if="removable === 'true'"
-        data-ng-click="removeFunction()"
-      ></i>
-    </span>
-  </h4>
-
-  <div data-ng-show="!tc.collapsed">
+  <facets-heading has-actives="tc.actives.length !== 0"
+                  remove-function="removeFunction()"
+                  clear-function="clear(tc.name)"
+  ></facets-heading>
+  <div data-ng-hide="collapsed">
     <p data-ng-show="(!tc.terms.length && !tc.error) || (tc.terms.length === 1 && tc.terms[0].key === '_missing')">
       No Data for this Field
     </p>

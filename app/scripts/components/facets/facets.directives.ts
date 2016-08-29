@@ -7,24 +7,56 @@ module ngApp.components.facets.directives {
   import IFacetsConfigService = ngApp.components.facets.models.IFacetsService;
 
   /* @ngInject */
-  function Terms(ProjectsService: IProjectsService): ng.IDirective {
+  function FacetsHeading() {
+    return {
+      restrict: "E",
+      scope: {
+        hasActives: '=',
+        removeFunction: '&',
+        clearFunction: '&',
+      },
+      replace: true,
+      templateUrl: "components/facets/templates/facet-heading.html",
+      controller: 'facetsHeadingCtrl as fhc',
+    };
+  }
+
+  /* @ngInject */
+  function Terms(ProjectsService: IProjectsService,
+                 $timeout: ng.ITimeoutService,
+                 $compile: ng.ICompileService): ng.IDirective {
     return {
       restrict: "E",
       scope: {
         facet: "=",
-        collapsed: "@",
+        collapsed: "=?",
         expanded: "@",
         displayCount: "@",
         title: "@",
         name: "@",
         removeFunction: "&",
-        removable: "@",
+        removable: "=",
         showTooltip: "@"
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
       controller: "termsCtrl as tc",
       link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: ITermsController) => {
+
+        $scope.collapsed = angular.isDefined($scope.collapsed) ? $scope.collapsed : false;
+        //after directive has been rendered, check if text overflowed then add tooltip
+        $timeout(() => {
+          const label = document.getElementById(`${$scope.title.toLowerCase().replace(/\s+/g, '-')}-facet-label`);
+          if (label && label.offsetWidth < label.scrollWidth) {
+            label.setAttribute('uib-tooltip', $scope.title);
+            $compile(label)($scope);
+          }
+        });
+
+        $scope.clear = (facet: string) => {
+          ctrl.terms.forEach(term => ctrl.FacetService.removeTerm(facet, term));
+        };
+
         $scope.ProjectsService = ProjectsService;
 
         $scope.add = (facet: string, term: string, event: any) => {
@@ -56,11 +88,16 @@ module ngApp.components.facets.directives {
         template: "@",
         autocomplete: "@",
         removeFunction: "&",
-        removable: "@",
+        removable: "=",
       },
       replace: true,
       templateUrl: "components/facets/templates/facets-free-text.html",
-      controller: "freeTextCtrl as ftc"
+      controller: "freeTextCtrl as ftc",
+      link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: IFreeTextController) => {
+        $scope.clear = () => {
+          ctrl.actives.forEach(term => ctrl.FacetService.removeTerm($scope.field, term));
+        };
+      }
     };
   }
 
@@ -78,7 +115,12 @@ module ngApp.components.facets.directives {
       },
       replace: true,
       templateUrl: "components/facets/templates/facets-prefix.html",
-      controller: "freeTextCtrl as ftc"
+      controller: "freeTextCtrl as ftc",
+      link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: IFreeTextController) => {
+        $scope.clear = () => {
+          ctrl.actives.forEach(term => ctrl.FacetService.removeTerm($scope.field, term));
+        };
+      }
     };
   }
 
@@ -89,13 +131,20 @@ module ngApp.components.facets.directives {
       scope: {
         title: "@",
         name: "@",
-        collapsed: '@',
-        removable: '@',
+        collapsed: '=?',
+        removable: '=',
         removeFunction: '&'
       },
       replace: true,
       templateUrl: "components/facets/templates/facets-date.html",
-      controller: "dateFacetCtrl as dfc"
+      controller: "dateFacetCtrl as dfc",
+      link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: IDateFacetController) => {
+        $scope.collapsed = angular.isDefined($scope.collapsed) ? $scope.collapsed : false;
+        $scope.clear = () => {
+          ctrl.FacetService.removeTerm(ctrl.name, ctrl.$window.moment($scope.date).format('YYYY-MM-DD'));
+          ctrl.facetAdded = false;
+        };
+      }
     };
   }
 
@@ -104,17 +153,26 @@ module ngApp.components.facets.directives {
     return {
       restrict: "E",
       scope: {
-        collapsed: '@',
+        collapsed: '=?',
         facet: "=",
         title: "@",
         field: "@",
         convertDays: "@",
-        removable: "@",
+        removable: "=",
         removeFunction: "&"
       },
       replace: true,
       templateUrl: "components/facets/templates/range-facet.html",
-      controller: "rangeFacetCtrl as rfc"
+      controller: "rangeFacetCtrl as rfc",
+      link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: IRangeFacetController) => {
+        $scope.collapsed = angular.isDefined($scope.collapsed) ? $scope.collapsed : false;
+
+        $scope.clear = () => {
+          ctrl.FacetService.removeTerm($scope.field, null, ">=");
+          ctrl.FacetService.removeTerm($scope.field, null, "<=");
+          ctrl.upperFacetAdded = ctrl.lowerFacetAdded = false;
+        };
+      }
     };
   }
 
@@ -166,6 +224,28 @@ module ngApp.components.facets.directives {
     }
   }
 
+  // This directive is used to re-trigger the typeahead suggestions
+  // when user clicks on input field
+
+  function typeaheadClickOpen($timeout) {
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      link: ($scope, elem, attrs) => {
+        elem.bind('click', () => {
+          var ctrl = elem.controller('ngModel');
+          var prev = ctrl.$modelValue || '';
+          if (prev) {
+            ctrl.$setViewValue('');
+            $timeout(() => ctrl.$setViewValue(prev));
+          } else {
+            ctrl.$setViewValue(' ');
+          }
+        });
+      }
+    }
+  }
+
   angular.module("facets.directives", ["facets.controllers", "facets.services"])
       .directive("terms", Terms)
       .directive("currentFilters", CurrentFilters)
@@ -174,5 +254,7 @@ module ngApp.components.facets.directives {
       .directive("addCustomFacetsPanel", AddCustomFacetsPanel)
       .directive("facetsSection", FacetsSection)
       .directive("facetsFreeText", FacetsFreeText)
+      .directive("typeaheadClickOpen", typeaheadClickOpen)
+      .directive("facetsHeading", FacetsHeading)
       .directive("facetsPrefix", FacetsPrefix);
 }

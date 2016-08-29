@@ -4,7 +4,7 @@
                   placeholder="{{ f.name | facetTitlefy }}"
                   data-field="{{doctype}}.{{f.name}}"
                   data-entity="{{doctype}}"
-                  data-removable="{{ f.removable }}"
+                  data-removable="f.removable"
                   data-remove-function="removeFacet(f.name)"
                   data-template="components/facets/templates/typeahead-{{doctype}}.html"></facets-free-text>
 
@@ -13,7 +13,7 @@
                   placeholder="{{ f.name | humanify }}"
                   data-field="{{doctype}}.{{f.name}}"
                   data-entity="{{doctype}}"
-                  data-removable="{{ f.removable }}"
+                  data-removable="f.removable"
                   data-autocomplete="{{false}}"
                   data-remove-function="removeFacet(f.name)"></facets-free-text>
 
@@ -28,8 +28,8 @@
          data-name="{{doctype}}.{{f.name}}"
          data-title="{{f.title | facetTitlefy }}"
          data-facet="aggregations[f.name]"
-         data-collapsed="{{ f.collapsed }}"
-         data-removable="{{ f.removable }}"
+         data-collapsed="f.collapsed"
+         data-removable="f.removable"
          data-show-tooltip="{{ f.showTooltip }}"
          data-remove-function="removeFacet(f.name)"></terms>
 
@@ -38,8 +38,8 @@
                data-title="{{ f.title | facetTitlefy }}"
                data-facet="aggregations[f.name]"
                data-remove-function="removeFacet(f.name)"
-               data-removable="{{ f.removable }}"
-               data-collapsed="{{ f.collapsed }}"
+               data-removable="f.removable"
+               data-collapsed="f.collapsed"
                data-convert-days="{{ f.convertDays }}"
                ></range-facet>
 
@@ -48,7 +48,7 @@
               data-title="{{ f.title | replace:'datetime':'' | facetTitlefy }}"
               data-facet="aggregations[f.name]"
               data-remove-function="removeFacet(f.name)"
-              data-removable="{{ f.removable }}"
-              data-collapsed="{{ f.collapsed }}"
+              data-removable="f.removable"
+              data-collapsed="f.collapsed"
               ></date-facet>
 </div>

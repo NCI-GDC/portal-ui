@@ -50,8 +50,53 @@ module ngApp.files.directives {
           const params = _.merge({
             attachment: true,
             filters: filters,
-            fields: 'cases.project.project_id',
+            fields: [
+              "state",
+              "md5sum",
+              "access",
+              "data_format",
+              "data_type",
+              "data_category",
+              "file_name",
+              "file_size",
+              "file_id",
+              "platform",
+              "experimental_strategy",
+              "center.short_name",
+              "cases.case_id",
+              "cases.project.project_id",
+              "annotations.annotation_id",
+              "annotations.entity_id",
+              "tags",
+              "submitter_id",
+              "archive.archive_id",
+              "archive.submitter_id",
+              "archive.revision",
+              "associated_entities.entity_id",
+              "associated_entities.entity_type",
+              "associated_entities.case_id",
+              "analysis.analysis_id",
+              "analysis.workflow_type",
+              "analysis.updated_datetime",
+              "analysis.input_files.file_id",
+              "analysis.metadata.read_groups.read_group_id",
+              "analysis.metadata.read_groups.is_paired_end",
+              "analysis.metadata.read_groups.read_length",
+              "analysis.metadata.read_groups.library_name",
+              "analysis.metadata.read_groups.sequencing_center",
+              "analysis.metadata.read_groups.sequencing_date",
+              "downstream_analyses.output_files.access",
+              "downstream_analyses.output_files.file_id",
+              "downstream_analyses.output_files.file_name",
+              "downstream_analyses.output_files.data_category",
+              "downstream_analyses.output_files.data_type",
+              "downstream_analyses.output_files.data_format",
+              "downstream_analyses.workflow_type",
+              "downstream_analyses.output_files.file_size",
+              "index_files.file_id"
+            ],
             expand: [
+              "metadata_files",
               'annotations',
               'archive',
               'associated_entities',
@@ -63,7 +108,23 @@ module ngApp.files.directives {
               'analysis.downstream_analyses',
               'analysis.downstream_analyses.output_files',
               'reference_genome',
-              'index_file'
+              'index_file',
+              'cases',
+              'cases.demographic',
+              'cases.diagnoses',
+              'cases.diagnoses.treatments',
+              'cases.family_histories',
+              'cases.exposures',
+              'cases.samples',
+              'cases.samples.portions',
+              'cases.samples.portions.analytes',
+              'cases.samples.portions.analytes.aliquots',
+              'cases.samples.portions.analytes.aliquots.annotations',
+              'cases.samples.portions.analytes.annotations',
+              'cases.samples.portions.submitter_id',
+              'cases.samples.portions.slides',
+              'cases.samples.portions.annotations',
+              'cases.samples.portions.center'
             ],
             format: 'JSON',
             pretty: true,
@@ -241,7 +302,7 @@ module ngApp.files.directives {
         classes: "@",
         icon: "@"
       },
-      template: "<a ng-class=\"[classes || 'btn btn-primary']\">" +
+      template: "<a ng-class=\"[classes || 'btn btn-primary']\" data-downloader>" +
                 "<i class=\"fa {{icon || 'fa-download'}}\" ng-class=\"{'fa-spinner': active, 'fa-pulse': active}\"></i>" +
                 "<span ng-if=\"copy\"><span ng-if=\"!active\">&nbsp;{{copy}}</span><span ng-if=\"active\">&nbsp;{{dlcopy}}</span></span></a>",
       link: function($scope, $element, $attrs){
@@ -250,13 +311,11 @@ module ngApp.files.directives {
           $scope.active = true;
           $attrs.$set('disabled', 'disabled');
         };
-        const turnSpinnerOff = () => {
+        const done = () => {
           $scope.active = false;
           $element.removeAttr('disabled');
         };
         const bamSlice = (files) => {
-          inProgress();
-
           var bamModal = $uibModal.open({
             templateUrl: "files/templates/bam-slicing.html",
             controller: "BAMSlicingController",
@@ -269,14 +328,9 @@ module ngApp.files.directives {
               file: function() {
                 return _.first(files);
               },
-              completeCallback: function() {
-                return turnSpinnerOff;
-              }
-            }
-          });
-          bamModal.result.then(turnSpinnerOff, function(reason) {
-            if (reason !== 'slicing') {
-              turnSpinnerOff();
+              completeCallback: () => done,
+              inProgress: () => inProgress,
+              downloader: () => $scope.download
             }
           });
         };
@@ -294,6 +348,8 @@ module ngApp.files.directives {
 
         $element.on("click", (a) => {
           const files = [].concat($scope.files);
+
+          bamSlice(files);
 
           if (hasControlledFiles(files)) {
             if (UserService.currentUser) {

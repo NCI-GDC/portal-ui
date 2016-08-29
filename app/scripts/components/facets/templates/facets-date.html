@@ -1,26 +1,9 @@
 <div class="list-group-item">
-  <h4 class="list-group-item-heading facet-title">
-    <span data-ng-click="dfc.toggle($event, 'collapsed')"
-          data-ng-keypress="dfc.toggle($event, 'collapsed')"
-          aria-expanded="{{ !dfc.collapsed }}"
-          aria-label="{{ ::facet.value | translate }} Facet Collapse Toggle"
-          role="button">
-      <i class="fa" data-ng-class="{ 'fa-angle-down': !dfc.collapsed, 'fa-angle-right': dfc.collapsed }"></i>
-      {{ title | translate }}
-    </span>
-
-    <span class="pull-right">
-      <i class="fa fa-rotate-left"
-        data-ng-if="dfc.facetAdded"
-        data-ng-click="dfc.clear()"
-      ></i>
-      <i class="fa fa-times"
-        data-ng-if="removable === 'true'"
-        data-ng-click="removeFunction()"
-      ></i>
-    </span>
-  </h4>
-  <div data-ng-show="!dfc.collapsed" class="row">
+  <facets-heading has-actives="dfc.facetAdded"
+                  remove-function="removeFunction()"
+                  clear-function="clear()"
+  ></facets-heading>
+  <div data-ng-show="!collapsed" class="row">
       <div class="col-sm-12">
           <div class="input-group">
             <label for="{{::facet.value}}-date-input" class="input-group-addon">since</label>

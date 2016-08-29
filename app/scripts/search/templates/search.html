@@ -1,8 +1,10 @@
 <div class="container-fluid full-page search" data-autoscroll="false">
   <div class="search-panel">
     <div class="facets-sidebar" ng-class="{ collapsed: sc.facetsCollapsed }">
-      <uib-tabset>
-        <uib-tab heading="{{ 'Cases' | translate }}" active="true" id="participants-facets-tab">
+      <uib-tabset active="sc.facetTab">
+        <uib-tab heading="{{ 'Cases' | translate }}" id="participants-facets-tab"
+          index="0"
+          select="sc.setFacetTab('cases')">
           <div class="facet-section panel-default">
             <div class="list-group">
               <add-custom-facets-panel
@@ -16,7 +18,9 @@
             </div>
           </div>
         </uib-tab>
-        <uib-tab heading="{{ 'Files' | translate }}" id="files-facets-tab">
+        <uib-tab heading="{{ 'Files' | translate }}" id="files-facets-tab"
+          index="1"
+          select="sc.setFacetTab('files')">
           <div class="facet-section panel-default">
             <div class="list-group">
               <add-custom-facets-panel

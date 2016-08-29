@@ -1,7 +1,7 @@
 {
   "author": "OICR",
   "name": "gdc-portal-ui",
-  "version": "1.2.4",
+  "version": "1.3.0",
   "homepage": "",
   "description": "",
   "repository": "https://github.com/NCI-GDC/portal-ui",
@@ -74,13 +74,13 @@
     "typings": "0.7.3"
   },
   "scripts": {
-    "postinstall": "bower install --quiet && typings install",
+    "postinstall": "bower install --quiet --allow-root && typings install",
     "test": "gulp test",
     "prot": "gulp protractor",
     "prestart": "npm install",
     "start": "gulp serve",
-    "prebuild": "npm install",
     "build": "gulp",
+    "prebuild": "npm install",
     "ts": "gulp ts:compile",
     "upgrade": "npm-check-updates -u && bower-update && npm test"
   }

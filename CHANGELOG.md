@@ -1,3 +1,47 @@
+<a name"1.3.0"></a>
+## 1.3.0 (2016-08-29)
+
+
+#### Bug Fixes
+
+* **annotation:** PRTL-182 no word break in notes ([b808f199](https://github.com/NCI-GDC/portal-ui/commit/b808f199), closes [PGDC-182](https://jira.opensciencedatacloud.org/browse/PGDC-182))
+* **app:** PRTL-237 can't find data banner ([79d4e46b](https://github.com/NCI-GDC/portal-ui/commit/79d4e46b))
+* **cart:** PRTL-181 sync across tabs ([dad250d6](https://github.com/NCI-GDC/portal-ui/commit/dad250d6))
+* **customFacets:** PRTL-184 use actual checkbox ([8dac6140](https://github.com/NCI-GDC/portal-ui/commit/8dac6140), closes [PGDC-184](https://jira.opensciencedatacloud.org/browse/PGDC-184))
+* **deploy:** re-add prestart/prebuild ([8be9b418](https://github.com/NCI-GDC/portal-ui/commit/8be9b418))
+* **downloader:** do not send bam regions as csv ([ff186b71](https://github.com/NCI-GDC/portal-ui/commit/ff186b71))
+* **facet:** calc width facet sidebar ([a7916583](https://github.com/NCI-GDC/portal-ui/commit/a7916583))
+* **facets:** 508 label name correction ([98f4acdd](https://github.com/NCI-GDC/portal-ui/commit/98f4acdd))
+* **file:** PRTL-86 hide padding if 0 assoc cases ([81e3164f](https://github.com/NCI-GDC/portal-ui/commit/81e3164f), closes [PGDC-86](https://jira.opensciencedatacloud.org/browse/PGDC-86))
+* **gql:**
+  * correct toBytes equation ([b059c8f2](https://github.com/NCI-GDC/portal-ui/commit/b059c8f2))
+  * PRTL-123 PRTL-183 blur click outside,esc ([699245fd](https://github.com/NCI-GDC/portal-ui/commit/699245fd), closes [PGDC-123](https://jira.opensciencedatacloud.org/browse/PGDC-123), [PGDC-183](https://jira.opensciencedatacloud.org/browse/PGDC-183))
+* **header:**
+  * PRTL-179 conserve space in header ([393ffda2](https://github.com/NCI-GDC/portal-ui/commit/393ffda2))
+  * improve responsive style ([bc1582b3](https://github.com/NCI-GDC/portal-ui/commit/bc1582b3))
+* **quickSearch:** 617 highlight in pane ([9974c165](https://github.com/NCI-GDC/portal-ui/commit/9974c165), closes [PGDC-617](https://jira.opensciencedatacloud.org/browse/PGDC-617))
+* **table:**
+  * PRTL-96 correct sticky th ux ([1673d55e](https://github.com/NCI-GDC/portal-ui/commit/1673d55e))
+  * wrap text in annotation category cell ([1ad08aab](https://github.com/NCI-GDC/portal-ui/commit/1ad08aab))
+
+
+#### Features
+
+* **cart:** [PRTL-177] combine metadata downloads ([d3bb1afa](https://github.com/NCI-GDC/portal-ui/commit/d3bb1afa))
+* **download:** 2468 bam slicing dl enhancement ([2d6df6f0](https://github.com/NCI-GDC/portal-ui/commit/2d6df6f0), closes [PGDC-2468](https://jira.opensciencedatacloud.org/browse/PGDC-2468))
+* **export:** 1892 restored large-dataset download ([43501b69](https://github.com/NCI-GDC/portal-ui/commit/43501b69), closes [PGDC-1892](https://jira.opensciencedatacloud.org/browse/PGDC-1892))
+* **facet:** 2405 open typeahead on input click ([13e9d12f](https://github.com/NCI-GDC/portal-ui/commit/13e9d12f), closes [PGDC-2405](https://jira.opensciencedatacloud.org/browse/PGDC-2405))
+* **facets:** PRTL-104 ellipsis for overflow ([137ca40d](https://github.com/NCI-GDC/portal-ui/commit/137ca40d), closes [PGDC-104](https://jira.opensciencedatacloud.org/browse/PGDC-104))
+* **file:** PRTL-75 link to source if 1 file ([9b379784](https://github.com/NCI-GDC/portal-ui/commit/9b379784))
+* **gql:**
+  * support 'b/B' for bytes ([86aa94d4](https://github.com/NCI-GDC/portal-ui/commit/86aa94d4))
+  * do not require quotes for file size ([58fcbd2d](https://github.com/NCI-GDC/portal-ui/commit/58fcbd2d))
+  * 1778 allows file size unit ([90e181bf](https://github.com/NCI-GDC/portal-ui/commit/90e181bf), closes [PGDC-1778](https://jira.opensciencedatacloud.org/browse/PGDC-1778))
+  * 2350 find/report bogus fields. ([2fc71371](https://github.com/NCI-GDC/portal-ui/commit/2fc71371), closes [PGDC-2350](https://jira.opensciencedatacloud.org/browse/PGDC-2350))
+* **header:** PRTL-136 login opens on enter ([90dfab09](https://github.com/NCI-GDC/portal-ui/commit/90dfab09))
+* **search:** PRTL-147 save facet tab in url state ([ec51fc63](https://github.com/NCI-GDC/portal-ui/commit/ec51fc63))
+
+
 <a name"1.2.4"></a>
 ### 1.2.4 (2016-08-12)
 

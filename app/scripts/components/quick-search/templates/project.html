@@ -7,15 +7,15 @@
   <tbody>
     <tr data-ng-if="selectedItem.project_id">
       <th scope="row" data-translate>Project ID</th>
-      <td>{{ selectedItem.project_id }}</td>
+      <td data-ng-bind-html="selectedItem.project_id| highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.name">
       <th scope="row" data-translate>Project Name</th>
-      <td>{{ selectedItem.name }}</td>
+      <td data-ng-bind-html="selectedItem.name| highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.primary_site">
       <th scope="row" data-translate>Primary Site</th>
-      <td>{{ selectedItem.primary_site | humanify }}</td>
+      <td data-ng-bind-html="selectedItem.primary_site | humanify | highlight:searchQuery"></td>
     </tr>
   </tbody>
 </table>

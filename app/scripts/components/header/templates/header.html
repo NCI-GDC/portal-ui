@@ -65,7 +65,7 @@
                   ng-options="k as v for (k, v) in hc.languages">
           </select>
         </li>
-        <li data-ng-if2="hc.shouldShowOption('quick-search')">
+        <li>
           <a quick-search tabindex="0">
             <i class="fa fa-search stock-icon"></i>
             <span class="hidden-md hidden-sm" data-translate>Quick Search</span>
@@ -83,24 +83,29 @@
                    id="my_projects"
                    data-ng-change="hc.UserService.toggleFilter()"
                    data-ng-model="hc.UserService.currentUser.isFiltered">
-            <span data-translate>Only My Projects</span>
+            <span data-translate><span class="hidden-sm">Only</span> My Projects</span>
           </label>
         </li>
         <li data-ng-if="hc.UserService.currentUser" class="hidden-xs">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav username-list">
             <li class="btn-group" data-uib-dropdown>
-              <a href="" class="dropdown-toggle" data-uib-dropdown-toggle aria-expanded="false">
+              <a href="" class="dropdown-toggle username" data-uib-dropdown-toggle aria-expanded="false">
                 {{ hc.UserService.currentUser.username }} <span class="caret"></span>
+              </a>
+              <a href="" class="dropdown-toggle username-icon" data-uib-dropdown-toggle aria-expanded="false">
+                <span class="fa fa-user"></span> <span class="caret"></span>
               </a>
               <ul class="dropdown-menu" role="menu">
                 <li id="header-token">
-                  <a data-ng-click="hc.getToken()">
+                  <a data-ng-click="hc.getToken()"
+                     data-ng-keydown="$event.which === 13 && hc.getToken()"
+                     tabindex="0">
                     <i class="fa fa-file-zip-o stock-icon"></i>
                     <span data-translate>Download Token</span>
                   </a>
                 </li>
                 <li id="header-logout">
-                  <a logout-button data-redirect="logout">
+                  <a logout-button data-redirect="logout" tabindex="0">
                     <i class="fa fa-sign-out stock-icon"></i>
                     <span data-translate>Logout</span>
                   </a>
@@ -110,13 +115,17 @@
           </ul>
         </li>
         <li id="header-token" data-ng-if="hc.UserService.currentUser" class="visible-xs">
-          <a data-ng-click="hc.getToken()">
+          <a data-ng-click="hc.getToken()"
+             data-ng-keydown="$event.which === 13 && hc.getToken()"
+             tabindex="0"
+             >
             <i class="fa fa-file-zip-o stock-icon"></i>
             <span data-translate>Download Token</span>
           </a>
         </li>
         <li id="header-logout" data-ng-if="hc.UserService.currentUser" class="visible-xs">
-          <a logout-button data-redirect="logout">
+          <a logout-button data-redirect="logout"
+              tabindex="0">
             <i class="fa fa-sign-out stock-icon"></i>
             <span data-translate>Logout</span>
           </a>
@@ -125,7 +134,7 @@
           <a ui-sref="cart" tabindex="0">
             <i class="fa fa-shopping-cart"></i>
             <span class="hidden-md hidden-sm" data-translate>Cart</span>
-            <span class="label label-primary">{{ hc.getNumCartItems() }}</span>
+            <span class="label label-primary">{{ cartSize }}</span>
           </a>
         </li>
         <li data-uib-dropdown>

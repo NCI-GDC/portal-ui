@@ -149,7 +149,7 @@ Tags should be signed.
 ❯ brew install gpg 
 ❯ gpg --gen-key
 ❯ gpg --list-secret-keys | grep "^sec"
-[gpg-key-id]
+sub   XXX/[gpg-key-id] XXX-DATE
 ❯ git config user.signingkey [gpg-key-id]
 ```
 
@@ -157,7 +157,7 @@ Tags should be signed.
 ```
 ❯ gpg -a --export [gpg-key-id] | git hash-object -w --stdin
 [object SHA]
-❯ git tag -a [object SHA] maintainer-pgp-pub
+❯ git tag -a maintainer-pgp-pub [object SHA]
 ```
 
 *References*

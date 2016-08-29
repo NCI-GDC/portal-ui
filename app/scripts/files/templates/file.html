@@ -157,12 +157,11 @@
               <h4 class="list-group-item-heading">No Cases Found.</h4>
             </div>
 
-            <div class="long-scrollable-table">
+            <div class="long-scrollable-table" data-ng-if="fc.file.associated_entities.length">
               <div class="long-scrollable-table-container">
                 <table
                   id="associated-cases-biospecimen-table"
                   class="table table-striped table-hover table-condensed table-bordered"
-                  data-ng-if="fc.file.associated_entities.length"
                   style="margin-bottom: 0;"
                 >
                   <thead>
@@ -260,7 +259,14 @@
               </tr>
               <tr>
                 <th data-translate scope="row">Source Files</th>
-                <td ng-bind-html="fc.makeSearchPageLink(fc.file.analysis.input_files)"></td>
+                <td
+                  data-ng-if="fc.file.analysis.input_files.length > 1"
+                  data-ng-bind-html="fc.makeSearchPageLink(fc.file.analysis.input_files)"
+                ></td>
+                <td data-ng-if="fc.file.analysis.input_files.length === 1">
+                  <a href="/files/{{fc.file.analysis.input_files[0].file_id}}">1</a>
+                </td>
+                <td data-ng-if="fc.file.analysis.input_files.length === 0">0</td>
               </tr>
               </tbody>
             </table>
@@ -443,41 +449,43 @@
               <h4 class="list-group-item-heading">No Downstream Analyses Files Found.</h4>
             </div>
 
-            <table id="downstream-files-table" class="table table-striped table-hover table-condensed table-bordered"
-                   data-ng-if="fc.file.downstream_analyses.length">
-              <thead>
-                <tr>
-                  <th scope="col" data-translate>File Name</th>
-                  <th scope="col" data-translate>Data Category</th>
-                  <th scope="col" data-translate>Data Type</th>
-                  <th scope="col" data-translate>Data Format</th>
-                  <th scope="col" data-translate>Analysis workflow</th>
-                  <th scope="col" data-translate>File Size</th>
-                  <th scope="col" data-translate>Action</th>
+            <div style="overflow:auto;">
+              <table id="downstream-files-table" class="table table-striped table-hover table-condensed table-bordered"
+                     data-ng-if="fc.file.downstream_analyses.length">
+                <thead>
+                  <tr>
+                    <th scope="col" data-translate>File Name</th>
+                    <th scope="col" data-translate>Data Category</th>
+                    <th scope="col" data-translate>Data Type</th>
+                    <th scope="col" data-translate>Data Format</th>
+                    <th scope="col" data-translate>Analysis workflow</th>
+                    <th scope="col" data-translate>File Size</th>
+                    <th scope="col" data-translate>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="outf in fc.file.downstream_analyses track by outf.file_id">
+                  <td
+                    class="id-cell"
+                    data-uib-tooltip="{{outf.file_name}}"
+                    data-tooltip-append-to-body="true"
+                    data-tooltip-popup-delay="1000"
+                  >
+                    <a data-ng-href="files/{{outf.file_id}}">{{ ::outf.file_name || '--' }}</a>
+                  </td>
+                  <td>{{ ::outf.data_category || '--' }}</td>
+                  <td>{{ ::outf.data_type || '--' }}</td>
+                  <td>{{ ::outf.data_format || '--' }}</td>
+                  <td>{{ ::outf.workflow_type || '--' }}</td>
+                  <td>{{ ::outf.file_size | size }}</td>
+                  <td>
+                    <download-button class="btn-bordered" data-icon="fa-download" data-files="outf"></download-button>
+                    <add-to-cart-single-icon data-file="outf"></add-to-cart-single-icon>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-              <tr data-ng-repeat="outf in fc.file.downstream_analyses track by outf.file_id">
-                <td
-                  class="id-cell"
-                  data-uib-tooltip="{{outf.file_name}}"
-                  data-tooltip-append-to-body="true"
-                  data-tooltip-popup-delay="1000"
-                >
-                  <a data-ng-href="files/{{outf.file_id}}">{{ ::outf.file_name || '--' }}</a>
-                </td>
-                <td>{{ ::outf.data_category || '--' }}</td>
-                <td>{{ ::outf.data_type || '--' }}</td>
-                <td>{{ ::outf.data_format || '--' }}</td>
-                <td>{{ ::outf.workflow_type || '--' }}</td>
-                <td>{{ ::outf.file_size | size }}</td>
-                <td>
-                  <download-button class="btn-bordered" data-icon="fa-download" data-files="outf"></download-button>
-                  <add-to-cart-single-icon data-file="outf"></add-to-cart-single-icon>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>

@@ -7,15 +7,15 @@
   <tbody>
     <tr data-ng-if="selectedItem.file_id">
       <th scope="row" data-translate>File UUID</th>
-      <td>{{ selectedItem.file_id }}</td>
+      <td data-ng-bind-html="selectedItem.file_id | highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.file_name">
       <th scope="row" data-translate>File Name</th>
-      <td>{{ selectedItem.file_name }}</td>
+      <td data-ng-bind-html="selectedItem.file_name | highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.submitter_id">
       <th scope="row" data-translate>File Submitter ID</th>
-      <td>{{ selectedItem.submitter_id }}</td>
+      <td data-ng-bind-html="selectedItem.submitter_id | highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.data_type">
       <th scope="row" data-translate>Data Type</th>

@@ -62,10 +62,6 @@ module ngApp.components.header.controllers {
       this.gettextCatalog.setCurrentLanguage(this.currentLang);
     }
 
-    getNumCartItems(): number {
-      return this.CartService.getFiles().length;
-    }
-
     shouldShowOption(option: string): boolean {
       var showOption = true,
           currentState = _.get(this.$state, 'current.name', '').toLowerCase();

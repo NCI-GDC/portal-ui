@@ -28,7 +28,7 @@
       data-ng-focus="ftc.saveInput()"
       data-typeahead-min-length="2"
       maxlength="100"
-      id="{{ 'autocomplete-' + field }}"
+      id="{{ 'input-' + field }}"
       data-typeahead-template-url="{{ template }}"
       class="form-control"
       style="border-radius: 0px;"
@@ -44,7 +44,6 @@
       class="form-control"
       style=""
     >
-
     <span class="input-group-btn" data-ng-if="!ftc.autocomplete">
       <button class="btn btn-default" type="button" data-ng-click="ftc.setTerm()" data-ng-class="{'disabled' : ftc.searchTerm === ''}">Go!</button>
     </span>

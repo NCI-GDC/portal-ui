@@ -9,7 +9,7 @@
         aria-label="{{ ::$parent.value | translate }} Facet Collapse Toggle"
         role="button"
         id="{{ ::$parent.title | lowercase | spaceReplace:'-' }}-facet-label"
-        for="{{ 'autocomplete-' + $parent.field }}"
+        for="{{ 'input-' + $parent.field }}"
       >
       <i class="fa" data-ng-class="{ 'fa-angle-down': !$parent.collapsed, 'fa-angle-right': $parent.collapsed }"></i>
         {{ ::$parent.title | translate }}

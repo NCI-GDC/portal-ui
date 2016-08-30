@@ -77,15 +77,6 @@
             <span class="hidden-md hidden-sm" data-translate>Login</span>
           </a>
         </li>
-        <li class="MyProjects" data-ng-if="hc.UserService.currentUser && hc.UserService.hasProjects() && hc.shouldShowOption('my-projects')">
-          <label class="MyProjects__label navbar-text" for="my_projects">
-            <input type="checkbox"
-                   id="my_projects"
-                   data-ng-change="hc.UserService.toggleFilter()"
-                   data-ng-model="hc.UserService.currentUser.isFiltered">
-            <span data-translate><span class="hidden-sm">Only</span> My Projects</span>
-          </label>
-        </li>
         <li data-ng-if="hc.UserService.currentUser" class="hidden-xs">
           <ul class="nav navbar-nav username-list">
             <li class="btn-group" data-uib-dropdown>

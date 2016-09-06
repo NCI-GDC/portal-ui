@@ -188,14 +188,6 @@
                 <th scope="row" data-translate>Year of Death</th>
                 <td>{{ ::demo.year_of_death | humanify }}</td>
               </tr>
-              <tr>
-                <th scope="row" data-translate>Demographic Created</th>
-                <td>{{ ::demo.created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
-              </tr>
-              <tr>
-                <th scope="row" data-translate>Demographic Updated</th>
-                <td>{{ ::demo.updated_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -293,14 +285,6 @@
                       <th scope="row" data-translate>Vital Status</th>
                       <td>{{ ::pc.participant.diagnoses[ $index ].vital_status | humanify }}</td>
                     </tr>
-                    <tr>
-                      <th scope="row" data-translate>Created</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
-                    </tr>
-                    <tr>
-                      <th scope="row" data-translate>Updated</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].updated_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
-                    </tr>
                   </tbody>
                 </table>
 
@@ -315,8 +299,6 @@
                         <th scope="col" data-translate>Treatment Intent Type</th>
                         <th scope="col" data-translate>Treatment or Therapy</th>
                         <th scope="col" data-translate>Days to Treatment</th>
-                        <th scope="col" data-translate>Created</th>
-                        <th scope="col" data-translate>Updated</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -340,12 +322,6 @@
                         </td>
                         <td ng-class="{ 'text-right': t.days_to_treatment }">
                           {{ ::(t.days_to_treatment | number) || '--' }}
-                        </td>
-                        <td>
-                          {{ ::t.created_datetime || '--' | date: 'yyyy-MM-dd' }}
-                        </td>
-                        <td>
-                          {{ ::t.updated_datetime || '--' | date: 'yyyy-MM-dd' }}
                         </td>
                       </tr>
                     </tbody>
@@ -402,14 +378,6 @@
                    <tr>
                      <th scope="row" data-translate>Relative with Cancer History</th>
                      <td>{{ ::pc.participant.family_histories[ $index ].relative_with_cancer_history | humanify }}</td>
-                   </tr>
-                   <tr>
-                     <th scope="row" data-translate>Created</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
-                   </tr>
-                   <tr>
-                     <th scope="row" data-translate>Updated</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].updated_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
                    </tr>
                  </tbody>
                </table>
@@ -473,14 +441,6 @@
                    <tr>
                      <th scope="row" data-translate>Years Smoked</th>
                      <td>{{ ::pc.participant.exposures[ $index ].years_smoked || '--' }}</td>
-                   </tr>
-                   <tr>
-                     <th scope="row" data-translate>Created</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].created_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
-                   </tr>
-                   <tr>
-                     <th scope="row" data-translate>Updated</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].updated_datetime || '--' | date: 'yyyy-MM-dd' }}</td>
                    </tr>
                  </tbody>
                </table>

@@ -350,8 +350,6 @@ module ngApp.files.directives {
         $element.on("click", (a) => {
           const files = [].concat($scope.files);
 
-          bamSlice(files);
-
           if (hasControlledFiles(files)) {
             if (UserService.currentUser) {
               // Makes sure the user session has not expired.

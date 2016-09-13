@@ -5,6 +5,7 @@ describe('Query:', function () {
 
   beforeEach(module(function ($provide) {
       $provide.value('RestFullResponse', {});
+      $provide.value('BiospecimenService', {});
   }));
 
   beforeEach(module(function ($provide) {

@@ -4,9 +4,8 @@ import { h2, div, table, thead, tr, th, h } from 'react-hyperscript-helpers';
 import FileTBody from 'containers/FileTBody';
 import Pagination from 'containers/Pagination';
 
-export const FileTable = props => {
-  console.log('FileTable', props);
-  return div([
+export const FileTable = props => (
+  div([
     h2(`Files ${props.hits.pagination.count} : ${props.hits.pagination.total}`),
     table([
       thead([
@@ -23,8 +22,8 @@ export const FileTable = props => {
       h(FileTBody, { edges: props.hits.edges }),
     ]),
     h(Pagination, { pathname: '/files', pagination: props.hits.pagination }),
-  ]);
-};
+  ])
+);
 
 export default Relay.createContainer(FileTable, {
   initialVariables: {

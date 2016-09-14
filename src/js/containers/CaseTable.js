@@ -21,7 +21,7 @@ export const CaseTable = props => (
         })
       ))
     ),
-  ]),
+  ])
 );
 
 export default Relay.createContainer(CaseTable, {

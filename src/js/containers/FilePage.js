@@ -1,9 +1,8 @@
 import Relay from 'react-relay';
 import { div } from 'react-hyperscript-helpers';
 
-export const FilePage = props => {
-  console.log('FilePage', props);
-  return div([
+export const FilePage = props => (
+  div([
     div(props.node.file_id),
     div(props.node.file_name),
     div(props.node.file_size),
@@ -12,8 +11,8 @@ export const FilePage = props => {
     div(props.node.data_format),
     div(`${[...new Set(props.node.cases.map(c => c.project.project_id))]}`),
     div(props.node.platform),
-  ]);
-};
+  ])
+);
 
 export default Relay.createContainer(FilePage, {
   fragments: {

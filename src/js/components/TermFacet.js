@@ -10,9 +10,8 @@ const TermFacet = props => {
   return div([
     h3(dotField),
     div(props.buckets.map(bucket => {
-      const mergeFilters = (filters, b) => {
-        console.log(filters, b);
-        return {
+      const mergeFilters = (filters, b) => (
+        {
           op: 'and',
           content: [
             ...filters.content,
@@ -24,8 +23,8 @@ const TermFacet = props => {
               },
             },
           ],
-        };
-      };
+        }
+      );
 
       const mergedFilters = mergeFilters(props.params.filters || wrapAnd, bucket);
       return div([

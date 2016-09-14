@@ -4,8 +4,6 @@ import { div, h } from 'react-hyperscript-helpers';
 import { prepareJsonParam } from 'routes/utils';
 
 export const Pagination = props => {
-  console.log('Pagination', props);
-
   const filters = (
     props.relay.route.params.filters
       ? prepareJsonParam(props.relay.route.params.filters)
@@ -32,7 +30,7 @@ export const Pagination = props => {
     h(Link, { to: to(0) }, ' << '),
     h(Link, { to: to(params.offset - params.first) }, ' < '),
     h(Link, { to: to(params.offset + params.first) }, ' > '),
-    h(Link, { to: to(pagination.total - pagination.total % pagination.size) }, ' >> '),
+    h(Link, { to: to(pagination.total - (pagination.total % pagination.size)) }, ' >> '),
   ]);
 };
 

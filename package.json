@@ -22,7 +22,7 @@
     "react-hyperscript-helpers": "1.2.0"
   },
   "devDependencies": {
-    "frontend-dev-tools": "../../js/frontend-dev-tools"
+    "hobbes": "github:shanewilson/hobbes"
   },
   "engines": {
     "node": ">=5"

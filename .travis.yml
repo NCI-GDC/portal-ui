@@ -1,13 +1,17 @@
 language: node_js
 node_js:
-- 4
+- node
 sudo: required
+dist: trusty
 services:
 - docker
-after_script:
-- npm run build
-- docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" quay.io
-- bash docker.sh
+before_script:
+- make travis-before-script
+script:
+- make travis-script
+after_success:
+- make travis-after-success
+- make travis-docker-upload
 notifications:
   slack:
     secure: Njn9VjYMUJcb8jfvusetb13uC0rcQ1NN6KumKxc6/jBCRoQ7uhQbqhcemZDK/7s/jRUGYTkb72u5QJxgVHcYDMchO9aOCVI3xs8veQ6j6shOCJbSIHGby1nkuwDPNzyyYh5mjJVDiWbiIBOzOaMko0QT//Ce1IitBBkyTEtQPcg=

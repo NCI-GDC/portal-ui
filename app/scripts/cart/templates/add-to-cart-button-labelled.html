@@ -1,8 +1,0 @@
-<button id="cart-button"
-        type="button"
-        ng-class="{'btn':true, 'btn-primary': true, active: ctrl.CartService.isInCart(ctrl.file.file_id)}"
-        data-ng-click="ctrl.CartService.isInCart(ctrl.file.file_id) ? ctrl.removeFromCart() : ctrl.addToCart()">
-  <i class="fa fa-shopping-cart"></i>
-  <span data-ng-if="ctrl.CartService.isInCart(ctrl.file.file_id)" data-translate>Remove from Cart</span>
-  <span data-ng-if="!ctrl.CartService.isInCart(ctrl.file.file_id)" data-translate>Add to Cart</span>
-</button>

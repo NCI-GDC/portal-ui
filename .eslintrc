@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/frontend-dev-tools/.eslintrc.yml",
+  "extends": "./node_modules/hobbes/.eslintrc.yml",
   "globals": {
     "__API__": true,
     "__BASE__": true

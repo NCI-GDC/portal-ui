@@ -1,17 +1,14 @@
+import React from 'react';
 import Relay from 'react-relay';
-import { tbody, h } from 'react-hyperscript-helpers';
 
 import AnnotationTr from 'containers/AnnotationTr';
 
 export const AnnotationTBody = props => (
-  tbody(
-    props.edges.map(e => (
-      h(AnnotationTr, {
-        ...e,
-        key: e.node.id,
-      })
-    ))
-  )
+  <tbody>
+    {props.edges.map(e => (
+      <AnnotationTr {...e} key={e.node.id} />
+    ))}
+  </tbody>
 );
 
 export default Relay.createContainer(AnnotationTBody, {

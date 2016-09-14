@@ -1,5 +1,5 @@
+import React from 'react';
 import Relay from 'react-relay';
-import { div, h } from 'react-hyperscript-helpers';
 
 import TermFacet from 'components/TermFacet';
 
@@ -13,15 +13,19 @@ export const FilesAggregations = props => {
     'experimental_strategy',
     'platform',
   ];
-  return div([
-    facets.map(f => h(TermFacet, {
-      key: `${docType}.${f}`,
-      pathname: `/${docType}`,
-      field: `${docType}.${f}`,
-      params: props.relay.route.params,
-      buckets: props.aggregations[f].buckets,
-    })),
-  ]);
+  return (
+    <div>
+      {facets.map(f => (
+        <TermFacet
+          key={`${docType}.${f}`}
+          pathname={`/${docType}`}
+          field={`${docType}.${f}`}
+          params={props.relay.route.params}
+          buckets={props.aggregations[f].buckets}
+        />
+      ))}
+    </div>
+  );
 };
 
 export default Relay.createContainer(FilesAggregations, {

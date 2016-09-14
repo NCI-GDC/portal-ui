@@ -1,23 +1,21 @@
+import React from 'react';
 import Relay from 'react-relay';
-import { tr, td, h } from 'react-hyperscript-helpers';
 import { Link } from 'react-router';
 
 const FileTr = ({ node }) => (
-  tr([
-    td(node.access),
-    td([
-      h(Link, {
-        to: {
-          pathname: `/files/${node.file_id}`,
-        },
-      }, node.file_name),
-    ]),
-    td(`${node.cases.length}`),
-    td(`${[...new Set(node.cases.map(c => c.project.project_id))]}`),
-    td(node.data_category),
-    td(node.data_format),
-    td(`${node.file_size}B`),
-  ])
+  <tr>
+    <td>{node.access}</td>
+    <td>
+      <Link to={{ pathname: `/files/${node.file_id}` }}>
+        {node.file_name}
+      </Link>
+    </td>
+    <td>{node.cases.length}</td>
+    <td>{[...new Set(node.cases.map(c => c.project.project_id))]}</td>
+    <td>{node.data_category}</td>
+    <td>{node.data_format}</td>
+    <td>{`${node.file_size}B`}</td>
+  </tr>
 );
 
 export default Relay.createContainer(FileTr, {

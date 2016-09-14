@@ -1,5 +1,5 @@
+import React from 'react';
 import { Link } from 'react-router';
-import { div, span, h3, h } from 'react-hyperscript-helpers';
 
 const TermFacet = props => {
   const wrapAnd = {
@@ -7,41 +7,49 @@ const TermFacet = props => {
     content: [],
   };
   const dotField = props.field.replace(/__/g, '.');
-  return div([
-    h3(dotField),
-    div(props.buckets.map(bucket => {
-      const mergeFilters = (filters, b) => (
-        {
-          op: 'and',
-          content: [
-            ...filters.content,
+  return (
+    <div>
+      <h3>{dotField}</h3>
+      <div>
+        {props.buckets.map(bucket => {
+          const mergeFilters = (filters, b) => (
             {
-              op: 'in',
-              content: {
-                field: dotField,
-                value: [b.key],
-              },
-            },
-          ],
-        }
-      );
+              op: 'and',
+              content: [
+                ...filters.content,
+                {
+                  op: 'in',
+                  content: {
+                    field: dotField,
+                    value: [b.key],
+                  },
+                },
+              ],
+            }
+          );
 
-      const mergedFilters = mergeFilters(props.params.filters || wrapAnd, bucket);
-      return div([
-        h(Link, {
-          to: {
-            pathname: props.pathname,
-            query: {
-              ...props.params,
-              offset: 0,
-              filters: JSON.stringify(mergedFilters),
-            },
-          },
-        }, bucket.key),
-        span([bucket.doc_count]),
-      ]);
-    })),
-  ]);
+          const mergedFilters = mergeFilters(props.params.filters || wrapAnd, bucket);
+          return (
+            <div key={bucket.key.replace(' ', '_')}>
+              <Link
+                to={{
+                  pathname: props.pathname,
+                  query: {
+                    ...props.params,
+                    offset: 0,
+                    filters: JSON.stringify(mergedFilters),
+                  },
+                }}
+              >
+                {bucket.key}
+              </Link>
+              <span>{bucket.doc_count}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default TermFacet;

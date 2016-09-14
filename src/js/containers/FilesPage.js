@@ -1,16 +1,16 @@
+import React from 'react';
 import Relay from 'react-relay';
-import { div, h } from 'react-hyperscript-helpers';
 
 import CasesAggregations from 'containers/CasesAggregations';
 import FilesAggregations from 'containers/FilesAggregations';
 import FileTable from 'containers/FileTable';
 
 export const FilesPage = props => (
-  div([
-    h(CasesAggregations, { aggregations: props.viewer.cases.aggregations }),
-    h(FilesAggregations, { aggregations: props.viewer.files.aggregations }),
-    h(FileTable, { hits: props.viewer.files.hits }),
-  ])
+  <div>
+    <CasesAggregations aggregations={ props.viewer.cases.aggregations } />
+    <FilesAggregations aggregations={ props.viewer.files.aggregations } />
+    <FileTable hits={ props.viewer.files.hits } />
+  </div>
 );
 
 export default Relay.createContainer(FilesPage, {

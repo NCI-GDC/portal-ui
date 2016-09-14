@@ -1,20 +1,20 @@
+import React from 'react';
 import Relay from 'react-relay';
-import { div } from 'react-hyperscript-helpers';
 
 export const AnnotationPage = props => (
-  div([
-    div(props.node.annotation_id),
-    div(props.node.entity_id),
-    div(props.node.entity_submitter_id),
-    div(props.node.entity_type),
-    div(props.node.case_id),
-    div(props.node.project.project_id),
-    div(props.node.classification),
-    div(props.node.category),
-    div(props.node.created_datetime),
-    div(props.node.status),
-    div(props.node.notes),
-  ])
+  <div>
+    <div>{props.node.annotation_id}</div>
+    <div>{props.node.entity_id}</div>
+    <div>{props.node.entity_submitter_id}</div>
+    <div>{props.node.entity_type}</div>
+    <div>{props.node.case_id}</div>
+    <div>{props.node.project.project_id}</div>
+    <div>{props.node.classification}</div>
+    <div>{props.node.category}</div>
+    <div>{props.node.created_datetime}</div>
+    <div>{props.node.status}</div>
+    <div>{props.node.notes}</div>
+  </div>
 );
 
 export default Relay.createContainer(AnnotationPage, {

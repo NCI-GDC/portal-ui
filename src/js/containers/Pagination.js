@@ -1,6 +1,6 @@
+import React from 'react';
 import Relay from 'react-relay';
 import { Link } from 'react-router';
-import { div, h } from 'react-hyperscript-helpers';
 import { prepareJsonParam } from 'routes/utils';
 
 export const Pagination = props => {
@@ -26,12 +26,14 @@ export const Pagination = props => {
   const params = props.relay.route.params;
   const pagination = props.pagination;
 
-  return div([
-    h(Link, { to: to(0) }, ' << '),
-    h(Link, { to: to(params.offset - params.first) }, ' < '),
-    h(Link, { to: to(params.offset + params.first) }, ' > '),
-    h(Link, { to: to(pagination.total - (pagination.total % pagination.size)) }, ' >> '),
-  ]);
+  return (
+    <div>
+      <Link to={to(0)}>{' << '}</Link>
+      <Link to={to(params.offset - params.first)}>{' < '}</Link>
+      <Link to={to(params.offset + params.first)}>{' > '}</Link>
+      <Link to={to(pagination.total - (pagination.total % pagination.size))}>{' >> '}</Link>
+    </div>
+  );
 };
 
 export default Relay.createContainer(Pagination, {

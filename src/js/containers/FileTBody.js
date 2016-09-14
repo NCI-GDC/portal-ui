@@ -1,17 +1,14 @@
+import React from 'react';
 import Relay from 'react-relay';
-import { tbody, h } from 'react-hyperscript-helpers';
 
 import FileTr from 'containers/FileTr';
 
 export const FileTBody = props => (
-  tbody(
-    props.edges.map(e => (
-      h(FileTr, {
-        ...e,
-        key: e.node.id,
-      })
-    ))
-  )
+  <tbody>
+    {props.edges.map(e => (
+      <FileTr {...e} key={e.node.id} />
+    ))}
+  </tbody>
 );
 
 export default Relay.createContainer(FileTBody, {

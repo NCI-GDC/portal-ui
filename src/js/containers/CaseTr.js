@@ -1,13 +1,13 @@
+import React from 'react';
 import Relay from 'react-relay';
-import { tr, td } from 'react-hyperscript-helpers';
 
 const CaseTr = ({ kase }) => (
-  tr([
-    td(kase.case_id),
-    td(kase.project.project_id),
-    td(kase.project.primary_site),
-    td(kase.demographic.gender),
-  ])
+  <tr>
+    <td>{kase.case_id}</td>
+    <td>{kase.project.project_id}</td>
+    <td>{kase.project.primary_site}</td>
+    <td>{kase.demographic.gender}</td>
+  </tr>
 );
 
 export default Relay.createContainer(CaseTr, {

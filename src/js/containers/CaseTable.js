@@ -1,27 +1,26 @@
+import React from 'react';
 import Relay from 'react-relay';
-import { table, thead, tbody, tr, th, h } from 'react-hyperscript-helpers';
 
 import CaseTr from 'containers/CaseTr';
 
 export const CaseTable = props => (
-  table([
-    thead([
-      tr([
-        th('Case UUID'),
-        th('Project'),
-        th('Primary Site'),
-        th('Gender'),
-      ]),
-    ]),
-    tbody(
-      ((props.hits || {}).edges || []).map(e => (
-        h(CaseTr, {
-          key: e.node.id,
-          kase: e.node,
-        })
-      ))
-    ),
-  ])
+  <table>
+    <thead>
+      <tr>
+        <th>Case UUID</th>
+        <th>Project</th>
+        <th>Primary Site</th>
+        <th>Gender</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        ((props.hits || {}).edges || []).map(e => (
+          <CaseTr key={e.node.id} kase={e.node} />
+        ))
+      }
+    </tbody>
+  </table>
 );
 
 export default Relay.createContainer(CaseTable, {

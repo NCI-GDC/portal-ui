@@ -18,13 +18,16 @@
     "react-relay": "^0.9.3",
     "react-router": "3.0.0-alpha.3",
     "react-router-relay": "0.13.4",
-    "react-dom": "15.3.1",
-    "react-hyperscript-helpers": "1.2.0"
+    "react-dom": "15.3.1"
   },
   "devDependencies": {
     "hobbes": "github:shanewilson/hobbes"
   },
   "engines": {
     "node": ">=5"
+  },
+  "scripts": {
+    "start": "make server",
+    "test": "make test-once"
   }
 }

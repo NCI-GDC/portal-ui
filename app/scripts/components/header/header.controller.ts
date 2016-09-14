@@ -27,6 +27,7 @@ module ngApp.components.header.controllers {
       "fr": "French",
       "es": "Spanish"
     };
+    notifications: Array<Object> = [];
 
     /* @ngInject */
     constructor(
@@ -38,6 +39,7 @@ module ngApp.components.header.controllers {
       private $window: ng.IWindowService,
       private $rootScope,
       private $uibModalStack,
+      private Restangular: restangular.IService
     ) {
       this.addedLanguages = !!_.keys(gettextCatalog.strings).length;
       this.cookieEnabled = navigator.cookieEnabled;

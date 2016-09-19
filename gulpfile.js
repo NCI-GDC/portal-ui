@@ -279,7 +279,7 @@ gulp.task('plato', function () {
 
 gulp.task('karma:once', function () {
   // Be sure to return the stream
-  return gulp.src('app/scripts/*.js')
+  return gulp.src('path') // not a real path
       .pipe($.karma({
         configFile: 'karma.conf.js',
         action: 'run'
@@ -291,7 +291,7 @@ gulp.task('karma:once', function () {
 });
 
 gulp.task('karma:watch', function () {
-  return gulp.src('app/scripts/*.js')
+  return gulp.src('path') // not a real path
       .pipe($.karma({
         configFile: 'karma.conf.js',
         action: 'watch'
@@ -333,6 +333,25 @@ gulp.task('ts:compile', function () {
       .pipe($.size({title: 'typescript'}));
 });
 // </typescript>
+
+gulp.task('humanbody', function () {
+  return gulp.src('app/scripts/humanbody.js')
+    .pipe(gulp.dest('dist/js'))
+})
+
+gulp.task('babel', function() {
+  return gulp.src('app/react-components/*.js')
+    .pipe($.babel({
+      presets: ["stage-0", "react", "es2015"],
+      only: [
+        'app/react-components/*.js',
+      ],
+      compact: false
+    }))
+    .pipe($.concat('react-components.js'))
+    .pipe(gulp.dest('dist/js'));
+});
+
 
 // <ng-templates>
 gulp.task('ng:templates', function () {
@@ -389,6 +408,7 @@ gulp.task('serve:web', function (cb) {
     gulp.watch(['app/scripts/**/*.ts'], ['ts:compile', reload]);
     gulp.watch(['app/scripts/**/*.html'], ['ng:templates', reload]);
     gulp.watch(['app/images/**/*'], ['images', reload]);
+    gulp.watch(['app/react-components/*.js'], ['babel', reload]);
   }
 });
 
@@ -419,7 +439,18 @@ gulp.task('serve', function (cb) {
 
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['rev', 'images', 'fonts', 'vendor', 'ts:compile', 'i18n', 'config', 'pegjs'], cb);
+  runSequence('styles', [
+    'rev',
+    'images',
+    'fonts',
+    'vendor',
+    'ts:compile',
+    'babel',
+    'i18n',
+    'config',
+    'pegjs',
+    'humanbody'
+  ], cb);
 });
 
 // Run PageSpeed Insights

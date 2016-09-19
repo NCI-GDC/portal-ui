@@ -23,17 +23,20 @@ module ngApp.home.controllers {
     defaultParams: any;
 
     /* @ngInject */
-    constructor(private ProjectsTableService: TableiciousConfig,
-                private CoreService: ICoreService,
-                private $filter: ng.ui.IFilterService,
-                private ParticipantsService: IParticipantsService,
-                private FilesService: IFilesService,
-                private ProjectsService: IProjectsService,
-                private DATA_TYPES,
-                private DATA_CATEGORIES) {
+    constructor(
+      private ProjectsTableService: TableiciousConfig,
+      private CoreService: ICoreService,
+      private $filter: ng.ui.IFilterService,
+      private ParticipantsService: IParticipantsService,
+      private FilesService: IFilesService,
+      private ProjectsService: IProjectsService,
+      private DATA_TYPES,
+      private DATA_CATEGORIES,
+      private LocationService,
+      private $state,
+    ) {
 
       CoreService.setPageTitle("Welcome to The Genomic Data Commons Data Portal");
-
 
       this.numberFilter = $filter("number");
 
@@ -50,7 +53,6 @@ module ngApp.home.controllers {
 
         return str;
       }, this);
-
 
       const yearsToDays = year => year * 365.25;
 
@@ -140,8 +142,19 @@ module ngApp.home.controllers {
         size: 0
       };
 
+      this.loadingHumanBody = true;
+
       this.refresh();
 
+      this.renderReact();
+
+    }
+
+    renderReact() {
+      ReactDOM.render(
+        React.createElement(Home, { $scope: this }),
+        document.getElementById('react-root')
+      );
     }
 
     fetchExampleSearchQueryStats() {
@@ -152,13 +165,17 @@ module ngApp.home.controllers {
         var params = _.cloneDeep(defaultParams);
         params.filters = query.filters;
 
-        this.ParticipantsService.getParticipants(params).then(
-          projectData => query.caseCount = projectData.pagination.total
-        ).catch(() => query.fileCount = '--');
+        Promise.all([
+          this.ParticipantsService.getParticipants(params),
+          this.FilesService.getFiles(params),
+        ])
+          .then(projectData => {
+            query.caseCount = projectData[0].pagination.total
+            query.fileCount = projectData[1].pagination.total
 
-        this.FilesService.getFiles(params).then(
-          projectData => query.fileCount = projectData.pagination.total
-        ).catch(() => query.fileCount = '--');
+            this.renderReact();
+          });
+
       });
     }
 
@@ -258,8 +275,49 @@ module ngApp.home.controllers {
         return dataStack;
 
       });
+
+      this.loadingHumanBody = false;
+      this.renderReact();
+
+      setTimeout(() => {
+        let root = document.getElementById('human-body-root');
+        HumanBody.default({
+          clickHandler: this.setFilters.bind(this),
+          data: _controller.projectChartData.sort((a, b) => a._key > b._key ? 1 : -1),
+          selector: `#human-body-root`,
+          width: 380,
+          height: 435,
+          offsetLeft: root.offsetLeft,
+          offsetTop: root.offsetTop,
+          primarySiteKey: '_key',
+          caseCountKey: '_count',
+          fileCountKey: 'fileCount',
+        })
+      });
     }
 
+    setFilters(d) {
+
+      var filters = {
+        op: "and",
+        content: [{
+          op: "in",
+          content: {
+            field: "primary_site",
+            value: [d._key.replace(/-/g, ' ')],
+          }
+        }]
+      };
+
+      this.$state.go("projects.table",
+        {
+          filters: JSON.stringify(filters)
+        },
+        {
+          inherit: false
+        }
+      );
+    }
 
     getChartFilteredData() {
       return this.projectChartData;
@@ -267,10 +325,6 @@ module ngApp.home.controllers {
 
     getChartTooltipFunction() {
       return this.tooltipFn;
-    }
-
-    setChartDataFilter() {
-
     }
 
     getProjectStats() {

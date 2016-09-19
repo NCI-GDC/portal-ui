@@ -350,7 +350,10 @@ gulp.task('babel', function() {
     .pipe(gulp.dest('./dist/js'));
 });
 
-
+gulp.task('humanbody', function () {
+  return gulp.src('app/scripts/humanbody.js')
+    .pipe(gulp.dest('dist/js'))
+})
 
 // <ng-templates>
 gulp.task('ng:templates', function () {
@@ -448,6 +451,7 @@ gulp.task('default', ['clean'], function (cb) {
     'i18n',
     'config',
     'pegjs',
+    'humanbody'
   ], cb);
 });
 

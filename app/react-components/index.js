@@ -12,6 +12,5 @@ window.ReactComponents = {
   Gene,
 };
 
-window.Project = Project;
 window.ReactDOM = ReactDOM;
 window.React = React;

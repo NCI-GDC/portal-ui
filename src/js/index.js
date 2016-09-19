@@ -1,4 +1,5 @@
-import 'babel-polyfill';
+/* eslint better/no-ifs:0 */
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 

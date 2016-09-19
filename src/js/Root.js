@@ -1,9 +1,10 @@
-import { h } from 'react-hyperscript-helpers';
-import Relay from 'react-relay';
-import { applyRouterMiddleware, Router, browserHistory } from 'react-router';
-import useRelay from 'react-router-relay';
+/* eslint better/no-ifs:0 */
 
-import routes from './routes';
+import React from 'react';
+import Relay from 'react-relay';
+import { viewerQuery } from 'routes/queries';
+
+import App from 'containers/App';
 
 // Don't inject everytime file is hot-reloaded
 if (!Relay.Store._storeData._networkLayer._implementation) {
@@ -12,13 +13,18 @@ if (!Relay.Store._storeData._networkLayer._implementation) {
   );
 }
 
+const AppRoute = {
+  name: 'AppRoute',
+  queries: viewerQuery,
+  params: {},
+};
+
 const Root = () => (
-  h(Router, {
-    history: browserHistory,
-    routes,
-    render: applyRouterMiddleware(useRelay),
-    environment: Relay.Store,
-  })
+  <Relay.Renderer
+    Container={App}
+    queryConfig={AppRoute}
+    environment={Relay.Store}
+  />
 );
 
 export default Root;

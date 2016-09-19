@@ -12,13 +12,13 @@
     "url": "https://github.com/NCI-GDC/"
   },
   "dependencies": {
+    "history": "^4.0.0",
     "react": "15.3.1",
-    "recompose": "0.20.2",
-    "recompose-relay": "0.3.0",
+    "react-dom": "15.3.1",
     "react-relay": "^0.9.3",
-    "react-router": "3.0.0-alpha.3",
-    "react-router-relay": "0.13.4",
-    "react-dom": "15.3.1"
+    "react-router": "^4.0.0-alpha.3",
+    "recompose": "0.20.2",
+    "recompose-relay": "0.3.0"
   },
   "devDependencies": {
     "hobbes": "github:shanewilson/hobbes"

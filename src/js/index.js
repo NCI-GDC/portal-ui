@@ -1,3 +1,4 @@
+/* @flow */
 /* eslint better/no-ifs:0 */
 
 import React from 'react';
@@ -15,6 +16,7 @@ ReactDOM.render(
 );
 
 if (module.hot) {
+  // $FlowIgnore
   module.hot.accept(Root, () => {
     ReactDOM.render(
       <AppContainer><Root /></AppContainer>,

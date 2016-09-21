@@ -21,7 +21,7 @@
     "recompose-relay": "0.3.0"
   },
   "devDependencies": {
-    "hobbes": "github:shanewilson/hobbes"
+    "hobbes": "../../js/hobbes"
   },
   "engines": {
     "node": ">=5"

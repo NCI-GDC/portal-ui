@@ -1,3 +1,4 @@
+/* @flow */
 /* eslint better/no-ifs:0 */
 
 import React from 'react';

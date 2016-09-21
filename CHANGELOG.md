@@ -1,3 +1,11 @@
+<a name"1.3.1"></a>
+### 1.3.1 (2016-09-21)
+
+
+#### Features
+
+* **home:** PRTL-291 update data release date ([910359c3](https://github.com/NCI-GDC/portal-ui/commit/910359c3))
+
 <a name"1.3.0"></a>
 ## 1.3.0 (2016-08-29)
 

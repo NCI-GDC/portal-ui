@@ -5,6 +5,7 @@ module ngApp.files.controllers {
   import ICartService = ngApp.cart.services.ICartService;
   import IFilesService = ngApp.files.services.IFilesService;
   import IGqlService = ngApp.components.gql.IGqlService;
+  import IBiospecimenService = ngApp.components.ui.biospecimen.services.IBiospecimenService;
 
   interface ITableFilters {
     assocEntity: string;
@@ -37,7 +38,8 @@ module ngApp.files.controllers {
       private CoreService: ICoreService,
       private CartService: ICartService,
       private FilesService: IFilesService,
-      private $filter: ng.IFilterService
+      private $filter: ng.IFilterService,
+      private BiospecimenService: IBiospecimenService
     ) {
 
       setTimeout(() => {
@@ -80,7 +82,14 @@ module ngApp.files.controllers {
         this.archiveCount = 0;
       }
 
-      _.every(file.associated_entities, (entity) => {
+      _.forEach(file.associated_entities, (entity) => {
+        let found = BiospecimenService.search(entity.entity_id,
+        _.find(file.cases, {"case_id": entity.case_id}),
+       ['submitter_id', 'sample_id', 'portion_id',
+          'analyte_id', 'slide_id', 'aliquot_id']
+        )
+        entity.sample_type = (_.first(found) || {sample_type : '--'}).sample_type;
+
         entity.annotations = _.filter(file.annotations, (annotation) => {
           return annotation.entity_id === entity.entity_id;
         });

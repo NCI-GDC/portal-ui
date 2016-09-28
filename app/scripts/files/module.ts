@@ -17,7 +17,7 @@ module ngApp.files {
           }
           return FilesService.getFile($stateParams["fileId"], {
             expand: [
-              "metadata_files",
+            "metadata_files"
             ],
             fields: [
               "state",
@@ -34,6 +34,10 @@ module ngApp.files {
               "center.short_name",
               "cases.case_id",
               "cases.project.project_id",
+              "cases.samples.sample_type",
+              "cases.samples.portions.portion_id",
+              "cases.samples.portions.analytes.analyte_id",
+              "cases.samples.portions.analytes.aliquots.aliquot_id",
               "annotations.annotation_id",
               "annotations.entity_id",
               "tags",

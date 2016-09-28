@@ -154,7 +154,7 @@
             </div>
 
             <div class="panel-body" data-ng-if="!fc.file.associated_entities.length">
-              <h4 class="list-group-item-heading">No Cases Found.</h4>
+              <h4 class="list-group-item-heading">No Cases/Biospecimen Found.</h4>
             </div>
 
             <div class="long-scrollable-table" data-ng-if="fc.file.associated_entities.length">
@@ -173,6 +173,10 @@
                     <th class="sticky" scope="col" data-translate>
                       Entity Type
                       <div>Entity Type</div>
+                    </th>
+                    <th class="sticky" scope="col" data-translate>
+                      Sample Type
+                      <div>Sample Type</div>
                     </th>
                     <th class="sticky" scope="col" data-translate>
                       Case UUID
@@ -201,6 +205,7 @@
                       </a>
                     </td>
                     <td>{{ ::e.entity_type | humanify }}</td>
+                    <td>{{ e.sample_type | humanify}}</td>
                     <td class="id-cell">
                       <a data-ui-sref="case({ caseId: e.case_id })">
                         {{ ::e.case_id }}

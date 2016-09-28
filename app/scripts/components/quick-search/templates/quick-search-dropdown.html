@@ -9,9 +9,13 @@
         <i class="fa fa-user fa-2x" data-ng-switch-when="case"></i>
         <i class="fa fa-file-o fa-2x" data-ng-switch-when="file"></i>
         <i class="fa fa-files-o fa-2x" data-ng-switch-when="project"/></i>
+        <i class="fa fa-align-left fa-2x" data-ng-switch-when="annotation"/></i>
       </div>
       <div class="col-xs-10">
         <span class="entity-id">{{ item._id }}</span>
+        <ul class="highlighted-terms" data-ng-switch-when="annotation">
+          <li data-ng-bind-html="item.annotation_id| highlight:searchQuery"></li>
+        </ul>
         <ul class="highlighted-terms" data-ng-switch-when="file">
           <li data-ng-bind-html="item.file_name | highlight:searchQuery"></li>
           <li data-ng-bind-html="item.file_id | highlight:searchQuery"></li>
@@ -45,6 +49,8 @@
     </li>
   </ul>
   <div class="col-md-7 hidden-sm hidden-xs details-container" data-ng-if="selectedItem">
+    <div data-ng-include="'components/quick-search/templates/annotation.html'"
+         data-ng-show="selectedItem._type === 'annotation'"></div>
     <div data-ng-include="'components/quick-search/templates/file.html'"
          data-ng-show="selectedItem._type === 'file'"></div>
     <div data-ng-include="'components/quick-search/templates/participant.html'"

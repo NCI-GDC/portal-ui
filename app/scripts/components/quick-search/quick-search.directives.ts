@@ -203,7 +203,10 @@ module ngApp.components.quickSearch.directives {
           "samples.portions.analytes.submitter_id",
           "samples.portions.analytes.analyte_type",
           "samples.portions.analytes.aliquots.aliquot_id",
-          "samples.portions.analytes.aliquots.submitter_id"
+          "samples.portions.analytes.aliquots.submitter_id",
+          "annotation_id",
+          "entity_id",
+          "entity_submitter_id"
         ]
       };
 

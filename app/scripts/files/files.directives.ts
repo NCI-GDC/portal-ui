@@ -271,7 +271,6 @@ module ngApp.files.directives {
             size: $scope.size,
             attachment: true,
             format: 'TSV',
-            fields: [ 'file_id' ],
             filters: $scope.projectId // on project page
               ? {
                   op: 'in',

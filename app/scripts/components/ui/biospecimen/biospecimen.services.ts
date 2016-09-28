@@ -91,8 +91,14 @@ module ngApp.components.ui.biospecimen.services {
       function search (entity, type, parents) {
         if ((fields || []).some(f => (entity[f] || '').toLowerCase().indexOf(loweredSearchTerm) > -1)) {
           parents.forEach(p => p.expanded = true);
+          let sampleType = parents.reduce((s, p) => {
+            if (p.hasOwnProperty('sample_type')) {
+              return p.sample_type;
+            }
+            return s;
+          });
           entity.expanded = true;
-          found.push({ entity: entity, type: type });
+          found.push({ entity: entity, type: type, sample_type: sampleType });
         }
         (self.entityTypes || []).forEach(type => {
           (entity[type.p] || []).forEach(child => {

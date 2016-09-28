@@ -244,8 +244,9 @@ angular
     .run(appRun)
     .factory('AuthRestangular', function(Restangular: restangular.IService, config: IGDCConfig, CoreService: ICoreService) {
       return Restangular.withConfig(function(RestangularConfigurer: restangular.IProvider) {
-        RestangularConfigurer.setBaseUrl(config.auth)
-      })
+        RestangularConfigurer.setBaseUrl(config.auth);
+        RestangularConfigurer.setDefaultHttpFields({ cache: false });
+        })
         .addFullRequestInterceptor(addTokenToRequest)
         .addResponseInterceptor((data, operation: string, model: string, url, response, deferred) => {
           // Ajax

@@ -102,7 +102,7 @@ module ngApp.components.user.services {
       // that will work with IE9 when auth tokens are required.
       // TODO: Make this code reusable.
       if (this.$window.URL && this.$window.URL.createObjectURL) {
-        this.AuthRestangular.all("token")
+        this.AuthRestangular.all("token/refresh")
         .withHttpConfig({
           responseType: "blob",
           withCredentials: true
@@ -115,18 +115,17 @@ module ngApp.components.user.services {
         }, (response) => {
           console.log('User session has expired.', response);
 
-          const modalInstance = $uibModal.open({
+          const modalInstance = this.$uibModal.open({
             templateUrl: "core/templates/session-expired.html",
             controller: "LoginToDownloadController",
             controllerAs: "wc",
             backdrop: true,
             keyboard: true,
-            scope: scope,
             size: "lg",
             animation: false
           });
 
-          modalInstance.result.then(() => UserService.logout());
+          modalInstance.result.then(() => this.logout());
         });
       }
     }

@@ -5,11 +5,11 @@ import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 import Router from 'react-router/BrowserRouter';
-import Match from 'react-router/Match';
+// import Match from 'react-router/Match';
 
-import SearchRoute from 'routes/SearchRoute';
-import FileRoute from 'routes/FileRoute';
-import AnnotationsRoute from 'routes/AnnotationsRoute';
+// import SearchRoute from 'routes/SearchRoute';
+// import FileRoute from 'routes/FileRoute';
+// import AnnotationsRoute from 'routes/AnnotationsRoute';
 import HomeLink from 'components/Links/HomeLink';
 import SearchLink from 'components/Links/SearchLink';
 import FileLink from 'components/Links/FileLink';
@@ -27,9 +27,9 @@ const App = () => (
 
       <hr />
 
-      <Match pattern="/search" component={SearchRoute} />
+      {/* <Match pattern="/search" component={SearchRoute} />
       <Match pattern="/files/:id" component={FileRoute} />
-      <Match exactly pattern="/annotations" component={AnnotationsRoute} />
+      <Match exactly pattern="/annotations" component={AnnotationsRoute} /> */}
     </div>
   </Router>
 );

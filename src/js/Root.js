@@ -5,7 +5,7 @@ import React from 'react';
 import Relay from 'react-relay';
 import { viewerQuery } from 'routes/queries';
 
-import App from 'containers/App';
+import App from '@ncigdc/containers/App';
 
 // Don't inject everytime file is hot-reloaded
 if (!Relay.Store._storeData._networkLayer._implementation) {

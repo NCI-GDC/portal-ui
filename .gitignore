@@ -2,6 +2,8 @@
 logs
 *.log
 npm-debug.log*
+lerna-debug.log
+.history
 
 # Runtime data
 pids

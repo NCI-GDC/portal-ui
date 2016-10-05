@@ -49,8 +49,8 @@ module ngApp.components.tables.directives.tableicious {
                 }
 
                 $scope.$watch('headings', (n: IHeading[], o: IHeading[]) => {
-                   if (_.isEqual(n,o)) return;
-                   refresh(n);
+                  if (_.isEqual(n,o)) return;
+                  refresh(n);
                 }, true);
 
                 var loadedHeadings = ($scope.saved || []).length ?
@@ -58,6 +58,65 @@ module ngApp.components.tables.directives.tableicious {
                   _.cloneDeep($scope.headings);
 
                 refresh(loadedHeadings);
+
+                // For fixed table header when scrolling
+
+                var fixedEl;
+                var el = $('.tableicious');
+
+                function setupFixedHeader() {
+                  el.wrap('<div class="tableicious-container" />')
+                  fixedEl = el.clone();
+                  fixedEl.find('tbody').remove().end().addClass('fixed').insertBefore(el);
+                  resizeFixed();
+                }
+
+                function resizeFixed() {
+                  fixedEl.find('th').each(function(index) {
+                    $(this).css('width', el.find('th').eq(index).outerWidth() + 'px');
+                  });
+                }
+
+                function scrollFixed() {
+                  var offset = $(window).scrollTop();
+                  var tableOffsetTop = el.offset().top;
+                  var tableOffsetBottom = tableOffsetTop + el.height() - el.find('thead').height();
+
+                  if (offset + 58 < tableOffsetTop || offset - 58 > tableOffsetBottom) {
+                    fixedEl.hide();
+                  } else if (offset >= tableOffsetTop && offset <= tableOffsetBottom && fixedEl.is(':hidden')) {
+                    fixedEl.show();
+                  }
+                }
+
+                $(window).resize(resizeFixed);
+                $(window).scroll(scrollFixed);
+
+                function setupStickyHeader () {
+                  setupFixedHeader();
+                  resizeFixed();
+                  scrollFixed();
+                  addTranslateClass();
+
+                  console.log(">>>", 'set me up!');
+                }
+
+                setTimeout(setupStickyHeader);
+
+                var lastOffset = $(window).scrollTop();
+
+                function addTranslateClass() {
+                  var currentOffset = $(this).scrollTop();
+
+                  if (currentOffset > 58 * 2 && currentOffset >= lastOffset) {
+                    $('.tableicious.fixed').addClass('hidden-header');
+                  }
+                  else $('.tableicious.fixed').removeClass('hidden-header');
+
+                  lastOffset = currentOffset
+                }
+
+                $(window).scroll(_.throttle(addTranslateClass, 200));
             }
         }
     }

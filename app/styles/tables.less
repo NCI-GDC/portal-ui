@@ -102,3 +102,18 @@ th.id-cell {
 .Columns-dropdown-headings > li:hover .sorting-radio-buttons-container {
   border-left: 2px solid rgb(28, 126, 198);
 }
+
+.tableicious.fixed {
+  top:57px;
+  position:fixed;
+  width:auto;
+  display:none;
+  border:none;
+  z-index: 10;
+  transform: translateY(0%);
+  transition: transform 0.3s ease;
+
+  &.hidden-header {
+    transform: translateY(-106%);
+  }
+}

@@ -1,15 +1,19 @@
 {
-  "name": "components",
+  "name": "@ncigdc/components",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "React Components used by Genomic Data Commons",
+  "license": "Apache-2.0",
+  "repository": "NCI-GDC/portal-ui",
+  "engines": {
+    "node": ">=5"
   },
+  "author": {
+    "name": "OICR",
+    "url": "https://github.com/NCI-GDC/"
+  },
+  "main": "index.js",
   "peerDependencies": {
     "react": "^15.0.0",
     "react-router": "^4.0.0"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }

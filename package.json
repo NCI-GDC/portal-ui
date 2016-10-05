@@ -1,16 +1,15 @@
 {
-  "name": "gdc-portal-ui",
   "private": true,
   "version": "0.0.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/NCI-GDC/portal-ui.git"
+  "repository": "NCI-GDC/portal-ui",
+  "engines": {
+    "node": ">=5"
   },
-  "homepage": "https://gdc-portal.nci.nih.gov/",
   "author": {
     "name": "OICR",
     "url": "https://github.com/NCI-GDC/"
   },
+  "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
     "react": "15.3.2",
     "react-dom": "15.3.2",
@@ -22,9 +21,6 @@
   "devDependencies": {
     "@shanewilson/hobbes": "0.5.14",
     "lerna": "2.0.0-beta.29"
-  },
-  "engines": {
-    "node": ">=5"
   },
   "scripts": {
     "postinstall": "lerna bootstrap --yes",

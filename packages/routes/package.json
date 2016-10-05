@@ -1,18 +1,22 @@
 {
-  "name": "routes",
+  "name": "@ncigdc/routes",
+  "private": true,
   "version": "0.0.1",
-  "description": "",
-  "main": "AnnotationRoute.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "license": "Apache-2.0",
+  "repository": "NCI-GDC/portal-ui",
+  "engines": {
+    "node": ">=5"
   },
+  "author": {
+    "name": "OICR",
+    "url": "https://github.com/NCI-GDC/"
+  },
+  "main": "index.js",
   "dependencies": {
-    "containers": "0.0.1"
+    "@ncigdc/containers": "0.0.1"
   },
   "peerDependencies": {
     "react": "^15.0.0",
     "react-relay": "^0.9.0"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }

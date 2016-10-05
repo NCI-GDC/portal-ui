@@ -467,7 +467,6 @@ module ngApp.projects.controllers {
         geneTracks: geneTracks,
         geneOpacityFunc: geneOpacity
       };
-      console.log('1');
       var grid = new OncoGrid(params);
       grid.render();
       this.grid = grid;

@@ -5,8 +5,8 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import FilePage from 'containers/FilePage';
-import { prepareNodeParams } from 'routes/utils';
-import { nodeQuery } from 'routes/queries';
+import { prepareNodeParams } from './utils';
+import { nodeQuery } from './queries';
 
 class FileRoute extends Relay.Route {
   static routeName = 'FilePageRoute';

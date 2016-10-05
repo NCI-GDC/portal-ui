@@ -1,0 +1,18 @@
+{
+  "name": "routes",
+  "version": "0.0.1",
+  "description": "",
+  "main": "AnnotationRoute.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "containers": "0.0.1"
+  },
+  "peerDependencies": {
+    "react": "^15.0.0",
+    "react-relay": "^0.9.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

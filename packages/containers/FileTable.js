@@ -5,8 +5,8 @@ import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 
-import FileTBody from 'containers/FileTBody';
-import Pagination from 'containers/Pagination';
+import FileTBody from './FileTBody';
+import Pagination from './Pagination';
 
 type PropsType = {
   hits: {

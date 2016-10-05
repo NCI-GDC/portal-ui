@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import InternalLink from 'components/Links/InternalLink';
-import InternalLinkWithContext from 'components/Links/InternalLinkWithContext';
+import InternalLink from './InternalLink';
+import InternalLinkWithContext from './InternalLinkWithContext';
 
 import type { LinkPropsType } from './types';
 

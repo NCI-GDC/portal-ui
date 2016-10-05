@@ -5,8 +5,8 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import AnnotationsPage from 'containers/AnnotationsPage';
-import { prepareViewerParams } from 'routes/utils';
-import { viewerQuery } from 'routes/queries';
+import { prepareViewerParams } from './utils';
+import { viewerQuery } from './queries';
 
 class AnnotationsRoute extends Relay.Route {
   static routeName = 'AnnotationsRoute';

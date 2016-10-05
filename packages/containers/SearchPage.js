@@ -5,26 +5,26 @@ import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 
-import AnnotationTable from 'containers/AnnotationTable';
-import AnnotationsAggregations from 'containers/AnnotationsAggregations';
+import FileTable from './FileTable';
+import FilesAggregations from './FilesAggregations';
 
 type PropsType = {
   viewer: {
-    annotations: {
+    files: {
       aggregations: string,
       hits: string,
     },
   },
 };
 
-const AnnotationsPage = (props: PropsType) => (
+const FilesPage = (props: PropsType) => (
   <div>
-    <AnnotationsAggregations aggregations={props.viewer.annotations.aggregations} />
-    <AnnotationTable hits={props.viewer.annotations.hits} />
+    <FilesAggregations aggregations={props.viewer.files.aggregations} />
+    <FileTable hits={props.viewer.files.hits} />
   </div>
 );
 
-const AnnotationsPageQuery = {
+const FilesPageQuery = {
   initialVariables: {
     first: 0,
     offset: 0,
@@ -33,12 +33,12 @@ const AnnotationsPageQuery = {
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
-        annotations {
+        files {
           aggregations(filters: $filters) {
-            ${AnnotationsAggregations.getFragment('aggregations')}
+            ${FilesAggregations.getFragment('aggregations')}
           }
           hits(first: $first offset: $offset, filters: $filters) {
-            ${AnnotationTable.getFragment('hits')}
+            ${FileTable.getFragment('hits')}
           }
         }
       }
@@ -47,5 +47,5 @@ const AnnotationsPageQuery = {
 };
 
 export default compose(
-  createContainer(AnnotationsPageQuery)
-)(AnnotationsPage);
+  createContainer(FilesPageQuery)
+)(FilesPage);

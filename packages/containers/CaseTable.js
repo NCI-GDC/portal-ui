@@ -5,7 +5,7 @@ import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 
-import CaseTr from 'containers/CaseTr';
+import CaseTr from './CaseTr';
 
 type PropsType = {
   hits: ?{

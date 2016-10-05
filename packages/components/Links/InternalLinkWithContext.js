@@ -3,7 +3,7 @@
 import React from 'react';
 import { location as RRLocationPropType } from 'react-router/PropTypes';
 import { compose, getContext } from 'recompose';
-import InternalLink from 'components/Links/InternalLink';
+import InternalLink from './InternalLink';
 
 import type { LinkPropsType } from './types';
 

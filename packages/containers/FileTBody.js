@@ -5,7 +5,7 @@ import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 
-import AnnotationTr from 'containers/AnnotationTr';
+import FileTr from './FileTr';
 
 type PropsType = {
   edges: [{
@@ -15,21 +15,21 @@ type PropsType = {
   }],
 };
 
-const AnnotationTBody = (props: PropsType) => (
+const FileTBody = (props: PropsType) => (
   <tbody>
     {props.edges.map(e => (
-      <AnnotationTr {...e} key={e.node.id} />
+      <FileTr {...e} key={e.node.id} />
     ))}
   </tbody>
 );
 
-const AnnotationTBodyQuery = {
+const FileTBodyQuery = {
   fragments: {
     edges: () => Relay.QL`
-      fragment on AnnotationEdge @relay(plural: true){
+      fragment on FileEdge @relay(plural: true){
         node {
           id
-          ${AnnotationTr.getFragment('node')}
+          ${FileTr.getFragment('node')}
         }
       }
     `,
@@ -37,5 +37,5 @@ const AnnotationTBodyQuery = {
 };
 
 export default compose(
-  createContainer(AnnotationTBodyQuery)
-)(AnnotationTBody);
+  createContainer(FileTBodyQuery)
+)(FileTBody);

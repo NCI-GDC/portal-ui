@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import Link from 'components/Links/Link';
+import Link from './Link';
 
 import type { LinkPropsType } from './types';
 

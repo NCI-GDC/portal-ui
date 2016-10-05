@@ -12,7 +12,6 @@
     "url": "https://github.com/NCI-GDC/"
   },
   "dependencies": {
-    "history": "4.3.0",
     "react": "15.3.2",
     "react-dom": "15.3.2",
     "react-relay": "0.9.3",
@@ -21,7 +20,7 @@
     "recompose-relay": "0.3.0"
   },
   "devDependencies": {
-    "@shanewilson/hobbes": "0.5.13",
+    "@shanewilson/hobbes": "0.5.14",
     "lerna": "2.0.0-beta.29"
   },
   "engines": {

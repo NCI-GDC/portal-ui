@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.3",
   "license": "Apache-2.0",
   "repository": "NCI-GDC/portal-ui",
   "engines": {
@@ -13,9 +13,9 @@
   },
   "main": "index.js",
   "dependencies": {
-    "@ncigdc/containers": "0.0.1",
-    "@ncigdc/components": "0.0.1",
-    "@ncigdc/routes": "0.0.1"
+    "@ncigdc/containers": "^0.0.3",
+    "@ncigdc/components": "^0.0.3",
+    "@ncigdc/routes": "^0.0.3"
   },
   "peerDependencies": {
     "react": "^15.0.0",

@@ -1,3 +1,10 @@
+## [0.0.3](https://github.com/nci-gdc/portal-ui}/compare/1.3.0...0.0.3) (2016-10-05)
+
+### :package: Refactor
+
+- namespace npm stuff ([6ce6554](https://github.com/nci-gdc/portal-ui/commit/6ce65541b437dc216592ecedb7a77299a9d32a52))
+- more js into packages/ for lerna ([9a71451](https://github.com/nci-gdc/portal-ui/commit/9a7145189d73642cdc683f9ba5f584b770acd5af))
+
 <a name"1.3.0"></a>
 ## 1.3.0 (2016-08-29)
 

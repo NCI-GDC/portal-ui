@@ -8,7 +8,7 @@ import EditIcon from 'react-icons/lib/fa/edit';
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
 import Button from './Button';
-import OncoGridComponent from './OncoGridWrapper';
+import OncoGridWrapper from './OncoGridWrapper';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';
@@ -151,6 +151,7 @@ let Project = (() => {
           />
         </span>
       </Row>
+      <OncoGridWrapper $scope={$scope}/>
     </Column>
   );
 })()

@@ -19,7 +19,7 @@
     "recompose-relay": "0.3.0"
   },
   "devDependencies": {
-    "@shanewilson/hobbes": "0.5.14",
+    "@shanewilson/hobbes": "0.5.17",
     "lerna": "2.0.0-beta.29"
   },
   "scripts": {

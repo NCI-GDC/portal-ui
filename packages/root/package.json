@@ -15,7 +15,7 @@
   "dependencies": {
     "@ncigdc/containers": "0.0.1",
     "@ncigdc/components": "0.0.1",
-    "routes": "0.0.1"
+    "@ncigdc/routes": "0.0.1"
   },
   "peerDependencies": {
     "react": "^15.0.0",

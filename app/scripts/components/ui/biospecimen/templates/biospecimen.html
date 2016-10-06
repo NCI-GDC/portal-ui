@@ -59,11 +59,25 @@
             <tbody>
               <tr>
                 <th scope="row" data-translate>Submitter ID</th>
-                <td>{{ bc.activeBioSpecimenDoc.submitter_id || '--' }}</td>
+                <td>
+                  {{ bc.activeBioSpecimenDoc.submitter_id || '--' }}
+                  <clipboard-button
+                    ng-if="bc.activeBioSpecimenDoc.submitter_id"
+                    target-id="bio-submitter-id-{{bc.activeBioSpecimenDoc.submitter_id}}"
+                    target-content="bc.activeBioSpecimenDoc.submitter_id"
+                  ></clipboard-button>
+                </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>{{ bc.activeBioSpecimenDocType | humanify | translate }} ID</th>
-                <td>{{ bc.activeBioSpecimenDoc[bc.activeBioSpecimenDocType + '_id'] }}</td>
+                <td>
+                  {{ bc.activeBioSpecimenDoc[bc.activeBioSpecimenDocType + '_id'] || '--' }}
+                  <clipboard-button
+                    ng-if="bc.activeBioSpecimenDoc[bc.activeBioSpecimenDocType + '_id']"
+                    target-id="bio-entityType-id-{{bc.activeBioSpecimenDoc[bc.activeBioSpecimenDocType + '_id']}}"
+                    target-content="bc.activeBioSpecimenDoc[bc.activeBioSpecimenDocType + '_id']"
+                  ></clipboard-button>
+                </td>
               </tr>
               <tr data-ng-repeat="(key, value) in bc.activeBioSpecimenDoc"
                   data-ng-if="bc.displayBioSpecimenDocumentRow(key, value)">

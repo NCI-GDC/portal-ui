@@ -21,11 +21,23 @@
             <tbody>
               <tr>
                 <th scope="row" data-translate>Case UUID</th>
-                <td>{{ ::pc.participant.case_id }}</td>
+                <td>
+                  {{ ::pc.participant.case_id }}
+                  <clipboard-button
+                    target-id="case-case-id"
+                    target-content="pc.participant.case_id"
+                  ></clipboard-button>
+                </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Case Submitter ID</th>
-                <td>{{ ::pc.participant.submitter_id }}</td>
+                <td>
+                  {{ ::pc.participant.submitter_id }}
+                  <clipboard-button
+                    target-id="case-submitter-id"
+                    target-content="pc.participant.submitter_id"
+                  ></clipboard-button>
+                </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Project ID</th>
@@ -166,7 +178,14 @@
             <tbody>
               <tr>
                 <th scope="row" data-translate>ID</th>
-                <td>{{ ::demo.demographic_id || '--' }}</td>
+                <td>
+                  {{ ::demo.demographic_id || '--' }}
+                  <clipboard-button
+                    ng-if="demo.demographic_id"
+                    target-id="demographic-id-{{demo.demographic_id}}"
+                    target-content="demo.demographic_id"
+                  ></clipboard-button>
+                </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Ethnicity</th>
@@ -211,7 +230,14 @@
                   <tbody>
                     <tr>
                       <th scope="row" data-translate>ID</th>
-                      <td>{{ ::pc.participant.diagnoses[ $index ].diagnosis_id || '--' }}</td>
+                      <td>
+                        {{ ::pc.participant.diagnoses[$index].diagnosis_id || '--' }}
+                        <clipboard-button
+                          ng-if="pc.participant.diagnoses[$index].diagnosis_id"
+                          target-id="diagnoses-id-{{pc.participant.diagnoses[$index].diagnosis_id}}"
+                          target-content="pc.participant.diagnoses[$index].diagnosis_id"
+                        ></clipboard-button>
+                      </td>
                     </tr>
                     <tr>
                       <th scope="row" data-translate>Classification of Tumor</th>
@@ -310,6 +336,11 @@
                           data-tooltip-popup-delay="1000"
                         >
                           {{ ::t.treatment_id || '--' }}
+                          <clipboard-button
+                            ng-if="t.treatment_id"
+                            target-id="treatment-id-{{t.treatment_id}}"
+                            target-content="t.treatment_id"
+                          ></clipboard-button>
                         </td>
                         <td>
                           {{ ::t.therapeutic_agents || '--' }}
@@ -357,7 +388,14 @@
                  <tbody>
                    <tr>
                      <th scope="row" data-translate>ID</th>
-                     <td>{{ ::pc.participant.family_histories[ $index ].family_history_id }}</td>
+                     <td>
+                       {{ ::pc.participant.family_histories[$index].family_history_id || '--' }}
+                       <clipboard-button
+                         ng-if="pc.participant.family_histories[$index].family_history_id"
+                         target-id="family_histories-id-{{pc.participant.family_histories[$index].family_history_id}}"
+                         target-content="pc.participant.family_histories[$index].family_history_id"
+                       ></clipboard-button>
+                     </td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Relationship Age at Diagnosis</th>
@@ -406,7 +444,14 @@
                  <tbody>
                    <tr>
                      <th scope="row" data-translate>ID</th>
-                     <td>{{ ::pc.participant.exposures[ $index ].exposure_id || '--' }}</td>
+                     <td>
+                      {{ ::pc.participant.exposures[$index].exposure_id || '--' }}
+                      <clipboard-button
+                        ng-if="pc.participant.exposures[$index].exposure_id"
+                        target-id="exposures-id-{{pc.participant.exposures[$index].exposure_id}}"
+                        target-content="pc.participant.exposures[$index].exposure_id"
+                      ></clipboard-button>
+                    </td>
                    </tr>
                    <tr>
                      <th scope="row" data-translate>Alcohol History</th>

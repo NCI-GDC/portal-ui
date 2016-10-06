@@ -29,7 +29,9 @@
     "restangular": "1.5.2",
     "ng-table": "0.5.4",
     "ng-sortable": "~1.2.2",
-    "bowser": "1.0.0"
+    "bowser": "1.0.0",
+    "ngclipboard": "^1.1.1",
+    "clipboard": "^1.5.12"
   },
   "resolutions": {
     "angular": "~1.4.0",

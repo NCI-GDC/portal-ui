@@ -40,7 +40,8 @@ module ngApp.search.cases.table.service {
         return {
           title: 'Cases',
           rowId: 'case_id',
-          headings: [{
+          headings: [
+            {
               name: "Cart",
               id: "add_to_cart_filtered",
               td: row => '<add-to-cart-filtered row="row"></add-to-cart-filtered>',
@@ -48,16 +49,25 @@ module ngApp.search.cases.table.service {
           }, {
               name: "Case UUID",
               id: "case_id",
-              toolTipText: row => row.case_id,
-              td: row => '<a href="cases/'+ row.case_id + '">' + row.case_id + '</a>',
+              td: row => `
+                <span>
+                  <a href="cases/${row.case_id}">${row.case_id}</a>
+                  <clipboard-button
+                    target-id="case-id-${row.case_id}"
+                    target-content="row.case_id"
+                  ></clipboard-button>
+                </span>
+              `,
               tdClassName: 'id-cell'
-          }, {
+            },
+            {
               name: "Project",
               id: "project.project_id",
               toolTipText: row => row.project.name,
               td: row => '<a href="projects/'+row.project.project_id + '">' + row.project.project_id + '</a>',
               sortable: true,
-          }, {
+            },
+            {
               name: "Primary Site",
               id: "project.primary_site",
               td: row => row.project && row.project.primary_site,

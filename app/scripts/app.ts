@@ -218,6 +218,7 @@ angular
       "gettext",
       "ngTagsInput",
       "ui.sortable",
+      "ngclipboard",
 
       "ngApp.core",
       "ngApp.search",

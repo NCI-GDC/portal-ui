@@ -7,12 +7,12 @@ import { createContainer } from 'recompose-relay';
 import Router from 'react-router/BrowserRouter';
 import Match from 'react-router/Match';
 
-import SearchRoute from 'routes/SearchRoute';
-import FileRoute from 'routes/FileRoute';
-import AnnotationsRoute from 'routes/AnnotationsRoute';
-import HomeLink from 'components/Links/HomeLink';
-import SearchLink from 'components/Links/SearchLink';
-import FileLink from 'components/Links/FileLink';
+import SearchRoute from '@ncigdc/routes/SearchRoute';
+import FileRoute from '@ncigdc/routes/FileRoute';
+import AnnotationsRoute from '@ncigdc/routes/AnnotationsRoute';
+import HomeLink from '@ncigdc/components/Links/HomeLink';
+import SearchLink from '@ncigdc/components/Links/SearchLink';
+import FileLink from '@ncigdc/components/Links/FileLink';
 
 const App = () => (
   <Router>

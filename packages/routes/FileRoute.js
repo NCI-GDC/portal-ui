@@ -4,7 +4,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import FilePage from 'containers/FilePage';
+import FilePage from '@ncigdc/containers/FilePage';
 import { prepareNodeParams } from './utils';
 import { nodeQuery } from './queries';
 

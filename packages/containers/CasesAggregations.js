@@ -5,9 +5,9 @@ import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 
-import TermAggregation from 'components/Aggregations/TermAggregation';
+import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 
-import type { BucketType } from 'components/Aggregations/types';
+import type { BucketType } from '@ncigdc/components/Aggregations/types';
 import type { ViewerParamsType } from 'utils/uri/types';
 
 type PropsType = {

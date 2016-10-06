@@ -4,7 +4,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import AnnotationPage from 'containers/AnnotationPage';
+import AnnotationPage from '@ncigdc/containers/AnnotationPage';
 import { prepareNodeParams } from './utils';
 import { nodeQuery } from './queries';
 

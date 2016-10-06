@@ -3,7 +3,7 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { viewerQuery } from 'routes/queries';
+import { viewerQuery } from '@ncigdc/routes/queries';
 
 import App from './App';
 

@@ -4,7 +4,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import AnnotationsPage from 'containers/AnnotationsPage';
+import AnnotationsPage from '@ncigdc/containers/AnnotationsPage';
 import { prepareViewerParams } from './utils';
 import { viewerQuery } from './queries';
 

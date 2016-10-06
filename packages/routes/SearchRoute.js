@@ -4,7 +4,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import SearchPage from 'containers/SearchPage';
+import SearchPage from '@ncigdc/containers/SearchPage';
 import { prepareViewerParams } from './utils';
 import { viewerQuery } from './queries';
 

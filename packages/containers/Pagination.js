@@ -4,7 +4,7 @@ import React from 'react';
 import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
-import Link from 'components/Links/Link';
+import Link from '@ncigdc/components/Links/Link';
 
 type PropsType = {
   pagination: {

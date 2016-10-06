@@ -1,5 +1,5 @@
 {
-  "extends": "@shanewilson/hobbes-react",
+  "extends": "@ncigdc/buildjs-react",
   "globals": {
     "__API__": true,
     "__BASE__": true

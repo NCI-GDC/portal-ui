@@ -110,6 +110,9 @@ module ngApp.components.facets.controllers {
       }
 
       this.terms = terms;
+      if (this.terms.length >= 20) {
+        this.$scope.hasValueSearch = true;
+      }
       this.actives = this.FacetService.getActives(this.name, terms);
       // TODO: Currently there is some complication supporting _missing properly thereby we're hiding
       // _missing in facets. Once we fully support _missing, #reject should be removed.

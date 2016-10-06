@@ -215,10 +215,10 @@ module ngApp.search.cases.table.service {
           facets: [
             {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "UUID, Submitter ID", removable: false},
             {name: "submitter_id", title: "Case Submitter ID Prefix", collapsed: false, facetType: "prefix", placeholder: "e.g. TCGA-DD*", removable: false},
-            {name: "project.primary_site", title: "Primary Site", collapsed: false, facetType: "terms", removable: false},
+            {name: "project.primary_site", title: "Primary Site", collapsed: false, facetType: "terms", removable: false, hasValueSearch: true},
             {name: "project.program.name", title: "Cancer Program", collapsed: false, facetType: "terms", removable: false},
-            {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms", removable: false},
-            {name: "project.disease_type", title: "Disease Type", collapsed: false, facetType: "terms", removable: false, showTooltip: true},
+            {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms", removable: false, hasValueSearch: true},
+            {name: "project.disease_type", title: "Disease Type", collapsed: false, facetType: "terms", removable: false, showTooltip: true, hasValueSearch: true},
             {name: "demographic.gender", title: "Gender", collapsed: false, facetType: "terms", removable: false},
             {name: "diagnoses.age_at_diagnosis", title: "Age at diagnosis", collapsed: false, facetType: "range", convertDays: true, removable: false},
             {name: "diagnoses.vital_status", title: "Vital Status", collapsed: false, facetType: "terms", removable: false},

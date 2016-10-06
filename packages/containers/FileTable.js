@@ -8,7 +8,7 @@ import { createContainer } from 'recompose-relay';
 import FileTBody from './FileTBody';
 import Pagination from './Pagination';
 
-type PropsType = {
+type TProps = {
   hits: {
     edges: [],
     pagination: {
@@ -18,7 +18,7 @@ type PropsType = {
   },
 };
 
-const FileTable = (props: PropsType) => (
+const FileTable = (props: TProps) => (
   <div>
     <h2>{`Files ${props.hits.pagination.count} : ${props.hits.pagination.total}`}</h2>
     <table>

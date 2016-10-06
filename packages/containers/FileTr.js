@@ -6,7 +6,7 @@ import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 import { Link } from 'react-router';
 
-type PropsType = {
+type TProps = {
   node: {
     access: string,
     cases: {
@@ -22,7 +22,7 @@ type PropsType = {
   },
 };
 
-const FileTr = ({ node }: PropsType) => (
+const FileTr = ({ node }: TProps) => (
   <tr>
     <td>{node.access}</td>
     <td>

@@ -8,7 +8,7 @@ import { createContainer } from 'recompose-relay';
 import FileTable from './FileTable';
 import FilesAggregations from './FilesAggregations';
 
-type PropsType = {
+type TProps = {
   viewer: {
     files: {
       aggregations: string,
@@ -17,7 +17,7 @@ type PropsType = {
   },
 };
 
-const FilesPage = (props: PropsType) => (
+const FilesPage = (props: TProps) => (
   <div>
     <FilesAggregations aggregations={props.viewer.files.aggregations} />
     <FileTable hits={props.viewer.files.hits} />

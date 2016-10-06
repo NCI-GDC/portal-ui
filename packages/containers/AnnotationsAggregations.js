@@ -12,13 +12,13 @@ import type { TViewerParams } from 'utils/uri/types';
 
 export type TProps = {
   aggregations: {
-    category: { buckets: [BucketType] },
-    classification: { buckets: [BucketType] },
-    entity_type: { buckets: [BucketType] },
-    project__primary_site: { buckets: [BucketType] },
-    project__program__name: { buckets: [BucketType] },
-    project__project_id: { buckets: [BucketType] },
-    status: { buckets: [BucketType] },
+    category: { buckets: [TBucket] },
+    classification: { buckets: [TBucket] },
+    entity_type: { buckets: [TBucket] },
+    project__primary_site: { buckets: [TBucket] },
+    project__program__name: { buckets: [TBucket] },
+    project__project_id: { buckets: [TBucket] },
+    status: { buckets: [TBucket] },
   },
   relay: {
     route: {

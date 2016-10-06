@@ -7,27 +7,27 @@ import { createContainer } from 'recompose-relay';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 
-import type { BucketType } from '@ncigdc/components/Aggregations/types';
-import type { ViewerParamsType } from 'utils/uri/types';
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import type { TViewerParams } from 'utils/uri/types';
 
-type PropsType = {
+type TProps = {
   aggregations: {
-    demographic__ethnicity: { buckets: [BucketType] },
-    demographic__gender: { buckets: [BucketType] },
-    demographic__race: { buckets: [BucketType] },
-    diagnoses__vital_status: { buckets: [BucketType] },
-    project__disease_type: { buckets: [BucketType] },
-    project__primary_site: { buckets: [BucketType] },
-    project__project_id: { buckets: [BucketType] },
+    demographic__ethnicity: { buckets: [TBucket] },
+    demographic__gender: { buckets: [TBucket] },
+    demographic__race: { buckets: [TBucket] },
+    diagnoses__vital_status: { buckets: [TBucket] },
+    project__disease_type: { buckets: [TBucket] },
+    project__primary_site: { buckets: [TBucket] },
+    project__project_id: { buckets: [TBucket] },
   },
   relay: {
     route: {
-      params: ViewerParamsType,
+      params: TViewerParams,
     },
   },
 };
 
-const CasesAggregations = (props: PropsType) => {
+const CasesAggregations = (props: TProps) => {
   const docType = 'cases';
   const facets = [
     'demographic__ethnicity',

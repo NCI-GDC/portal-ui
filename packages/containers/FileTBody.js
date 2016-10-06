@@ -7,7 +7,7 @@ import { createContainer } from 'recompose-relay';
 
 import FileTr from './FileTr';
 
-type PropsType = {
+type TProps = {
   edges: [{
     node: {
       id: string,
@@ -15,7 +15,7 @@ type PropsType = {
   }],
 };
 
-const FileTBody = (props: PropsType) => (
+const FileTBody = (props: TProps) => (
   <tbody>
     {props.edges.map(e => (
       <FileTr {...e} key={e.node.id} />

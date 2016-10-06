@@ -5,7 +5,7 @@ import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 
-type PropsType = {
+type TProps = {
   node: {
     access: string,
     cases: {
@@ -22,7 +22,7 @@ type PropsType = {
   },
 };
 
-const FilePage = (props: PropsType) => (
+const FilePage = (props: TProps) => (
   <div>
     <div>{props.node.file_id}</div>
     <div>{props.node.file_name}</div>

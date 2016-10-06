@@ -7,26 +7,26 @@ import { createContainer } from 'recompose-relay';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 
-import type { BucketType } from '@ncigdc/components/Aggregations/types';
-import type { ViewerParamsType } from 'utils/uri/types';
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import type { TViewerParams } from 'utils/uri/types';
 
-type PropsType = {
+type TProps = {
   aggregations: {
-    access: { buckets: [BucketType] },
-    data_category: { buckets: [BucketType] },
-    data_format: { buckets: [BucketType] },
-    data_type: { buckets: [BucketType] },
-    experimental_strategy: { buckets: [BucketType] },
-    platform: { buckets: [BucketType] },
+    access: { buckets: [TBucket] },
+    data_category: { buckets: [TBucket] },
+    data_format: { buckets: [TBucket] },
+    data_type: { buckets: [TBucket] },
+    experimental_strategy: { buckets: [TBucket] },
+    platform: { buckets: [TBucket] },
   },
   relay: {
     route: {
-      params: ViewerParamsType,
+      params: TViewerParams,
     },
   },
 };
 
-const FilesAggregations = (props: PropsType) => {
+const FilesAggregations = (props: TProps) => {
   const docType = 'files';
   const facets = [
     'access',

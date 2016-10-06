@@ -7,7 +7,7 @@ import { createContainer } from 'recompose-relay';
 
 import CaseTr from './CaseTr';
 
-type PropsType = {
+type TProps = {
   hits: ?{
     edges: {
       node: {
@@ -23,7 +23,7 @@ type PropsType = {
   },
 };
 
-const CaseTable = (props: PropsType) => (
+const CaseTable = (props: TProps) => (
   <table>
     <thead>
       <tr>

@@ -5,7 +5,7 @@ import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 
-type PropsType = {
+type TProps = {
   kase: {
     case_id: string,
     demographic: {
@@ -18,7 +18,7 @@ type PropsType = {
   },
 };
 
-const CaseTr = ({ kase }: PropsType) => (
+const CaseTr = ({ kase }: TProps) => (
   <tr>
     <td>{kase.case_id}</td>
     <td>{kase.project.project_id}</td>

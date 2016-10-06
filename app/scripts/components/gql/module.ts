@@ -376,6 +376,7 @@ module ngApp.components.gql {
         Restangular.all('gql').get('_mapping', {}).then((m: IDdItem[]) => {
           mapping = m;
           validFields = _.keys(mapping);
+          gqlParse();
         });
 
         $scope.active = INACTIVE;
@@ -466,6 +467,7 @@ module ngApp.components.gql {
         };
 
         function gqlParse() {
+          if (validFields.length === 0) return;
           try {
             $scope.gql = $window.gql.parse($scope.query);
             $scope.error = null;

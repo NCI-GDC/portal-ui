@@ -3,6 +3,23 @@
                   remove-function="removeFunction()"
                   clear-function="clear(tc.name)"
   ></facets-heading>
+  <div data-ng-show="valueSearchActive">
+    <input type="text"
+           title="Search {{title | lowercase | spaceReplace:'-'}} values"
+           placeholder="search"
+           class="form-control"
+           style="margin-bottom: 10px"
+           data-ng-class="{ active: valueSearchActive}"
+           id="{{ title | lowercase | spaceReplace:'-' }}-facet-value-search"
+           data-ng-model="q" />
+    <span
+      aria-hidden="true"
+      class="fa fa-close clear-term-value-search"
+      data-ng-class="{ active: valueSearchActive && q}"
+      data-ng-click="q = ''"
+    ></span>
+  </div>
+
   <div data-ng-hide="collapsed">
     <p data-ng-show="(!tc.terms.length && !tc.error) || (tc.terms.length === 1 && tc.terms[0].key === '_missing')">
       No Data for this Field
@@ -29,7 +46,7 @@
       <span class="label label-primary pull-right">{{ term.doc_count | number:0 }}</span>
     </p>
 
-    <p data-ng-repeat="term in tc.inactives | limitTo: tc.displayCount track by term.key"
+    <p data-ng-repeat="term in (tc.inactives | filter: q | limitTo: tc.displayCount) track by term.key"
        data-ng-if="term.key !== '_missing'"
        class="list-group-item-text">
       <span data-ng-click="tc.add(tc.name, term.key)"
@@ -58,13 +75,13 @@
     </p>
 
     <div class="text-right">
-      <a data-ng-if="tc.inactives.length > tc.originalDisplayCount"
+      <a data-ng-if="(tc.inactives | filter: q).length > tc.originalDisplayCount"
          data-ng-click="tc.toggle($event, 'expanded')"
          data-ng-keypress="tc.toggle($event, 'expanded')"
          aria-label="Expanded Terms Toggle"
          tabindex="0"
          role="button">
-        <span data-ng-show="!tc.expanded">{{ tc.inactives.length - tc.displayCount }} More...</span>
+        <span data-ng-show="!tc.expanded">{{ (tc.inactives | filter:q).length - tc.displayCount }} More...</span>
         <span data-ng-show="tc.expanded">Less...</span>
       </a>
     </div>

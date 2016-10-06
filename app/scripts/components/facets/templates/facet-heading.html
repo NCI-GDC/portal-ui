@@ -16,6 +16,9 @@
       </label>
     </h4>
     <div>
+      <i class="fa fa-search"
+         data-ng-show="$parent.hasValueSearch"
+         data-ng-click="$parent.valueSearchActive = !$parent.valueSearchActive"></i>
       <i class="fa fa-rotate-left"
         data-ng-if="hasActives"
         data-ng-click="clearFunction($parent.name)"

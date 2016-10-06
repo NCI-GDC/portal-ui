@@ -10,6 +10,8 @@ var fs = require('graceful-fs');
 var packageJSON = require("./package.json");
 var modRewrite = require('connect-modrewrite');
 var mkdirp = require("mkdirp");
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
 
 var env = {
   api: process.env.GDC_API || "http://localhost:5000",
@@ -340,18 +342,12 @@ gulp.task('humanbody', function () {
 })
 
 gulp.task('babel', function() {
-  return gulp.src('app/react-components/*.js')
-    .pipe($.babel({
-      presets: ["stage-0", "react", "es2015"],
-      only: [
-        'app/react-components/*.js',
-      ],
-      compact: false
-    }))
-    .pipe($.concat('react-components.js'))
-    .pipe(gulp.dest('dist/js'));
+  return browserify('app/react-components/index.js')
+    .transform("babelify", { presets: ["stage-0", "react", "es2015"] })
+    .bundle()
+    .pipe(source('react-components.js'))
+    .pipe(gulp.dest('./dist/js'));
 });
-
 
 // <ng-templates>
 gulp.task('ng:templates', function () {

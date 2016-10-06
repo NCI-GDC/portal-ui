@@ -152,7 +152,7 @@ module ngApp.home.controllers {
 
     renderReact() {
       ReactDOM.render(
-        React.createElement(Home, { $scope: this }),
+        React.createElement(ReactComponents.Home, { $scope: this }),
         document.getElementById('react-root')
       );
     }

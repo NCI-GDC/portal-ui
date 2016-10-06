@@ -32,7 +32,7 @@ module ngApp.home.controllers {
                 private DATA_TYPES,
                 private DATA_CATEGORIES) {
 
-      CoreService.setPageTitle("Welcome to The Genomics Data Commons Data Portal");
+      CoreService.setPageTitle("Welcome to The Genomic Data Commons Data Portal");
 
 
       this.numberFilter = $filter("number");

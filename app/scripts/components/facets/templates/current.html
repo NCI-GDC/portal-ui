@@ -36,12 +36,6 @@
               <span data-ng-if="filter.content.field.toLowerCase().indexOf('datetime') === -1"
                     class="facet-block">{{ v | translate }}</span>
             </span>
-            <span
-              class="facet-block facet-term"
-              style="padding-left: 0;"
-              data-ng-if="cfc.isInMyProjects(filter) && $last" data-ng-translate>
-              and in My Projects
-            </span>
           </span>
           <span data-ng-if="!$last" data-ng-hide="$index > 1 && !filter.expanded"
                 class="facet-block term-separator">, </span>

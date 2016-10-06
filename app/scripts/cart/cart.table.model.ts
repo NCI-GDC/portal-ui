@@ -22,17 +22,6 @@ module ngApp.cart.models {
         id: "file_actions",
         td: row => '<remove-single-cart file="row" />',
         tdClassName: "text-center"
-      },{
-        name: "My Projects",
-        id: "my_projects",
-        td: (row, $scope) => {
-            var isUserProject = $scope.UserService.isUserProject(row);
-            var icon = isUserProject ? 'check' : 'remove';
-            return '<i class="fa fa-' + icon + '"></i>';
-        },
-        inactive: $scope => !$scope.UserService.currentUser,
-        hidden: false,
-        tdClassName: "text-center"
       }, {
         name: "Access",
         id: "access",

@@ -46,18 +46,6 @@ module ngApp.search.cases.table.service {
               td: row => '<add-to-cart-filtered row="row"></add-to-cart-filtered>',
               tdClassName: 'text-center'
           }, {
-              name: "My Projects",
-              id: "my_projects",
-              td: (row, $scope) => {
-                  var fakeFile = {cases: [{project: row.project}]};
-                  var isUserProject = $scope.UserService.isUserProject(fakeFile);
-                  var icon = isUserProject ? 'check' : 'remove';
-                  return '<i class="fa fa-' + icon + '"></i>';
-              },
-              inactive: $scope => !$scope.UserService.currentUser || $scope.UserService.currentUser.isFiltered,
-              hidden: false,
-              tdClassName: "text-center"
-          }, {
               name: "Case UUID",
               id: "case_id",
               toolTipText: row => row.case_id,

@@ -39,17 +39,6 @@ module ngApp.search.models {
         hidden: true,
         tdClassName: 'id-cell'
       }, {
-        name: "My Projects",
-        id: "my_projects",
-        td: (row, $scope) => {
-            var isUserProject = $scope.UserService.isUserProject(row);
-            var icon = isUserProject ? 'check' : 'remove';
-            return '<i class="fa fa-' + icon + '"></i>';
-        },
-        inactive: $scope => !$scope.UserService.currentUser || $scope.UserService.currentUser.isFiltered,
-        hidden: false,
-        tdClassName: "text-center"
-      }, {
         name: "Access",
         id: "access",
         td: (row, $scope) => {

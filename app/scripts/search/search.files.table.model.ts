@@ -167,7 +167,7 @@ module ngApp.search.models {
       {name: "data_category", title: "Data Category", collapsed: false, facetType: "terms", removable: false },
       {name: "data_type", title: "Data Type", collapsed: false, facetType: "terms", removable: false },
       {name: "experimental_strategy", title: "Experimental Strategy", collapsed: false, facetType: "terms", removable: false },
-      {name: "analysis.workflow_type", title: "Workflow Type", collapsed: false, facetType: "terms", removable: false },
+      {name: "analysis.workflow_type", title: "Workflow Type", collapsed: false, facetType: "terms", removable: false, hasValueSearch: true },
       {name: "data_format", title: "Data Format", collapsed: false, facetType: "terms", removable: false },
       {name: "platform", title: "Platform", collapsed: false, facetType: "terms", removable: false },
       {name: "access", title: "Access Level", collapsed: false, facetType: "terms", removable: false },

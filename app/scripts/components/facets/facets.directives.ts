@@ -36,7 +36,8 @@ module ngApp.components.facets.directives {
         name: "@",
         removeFunction: "&",
         removable: "=",
-        showTooltip: "@"
+        showTooltip: "@",
+        hasValueSearch: "=?"
       },
       replace: true,
       templateUrl: "components/facets/templates/facet.html",
@@ -44,6 +45,9 @@ module ngApp.components.facets.directives {
       link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: ITermsController) => {
 
         $scope.collapsed = angular.isDefined($scope.collapsed) ? $scope.collapsed : false;
+        $scope.hasValueSearch = angular.isDefined($scope.hasValueSearch) ? $scope.hasValueSearch: false;
+        $scope.valueSearchActive = false;
+
         //after directive has been rendered, check if text overflowed then add tooltip
         $timeout(() => {
           const label = document.getElementById(`${$scope.title.toLowerCase().replace(/\s+/g, '-')}-facet-label`);

@@ -4,12 +4,12 @@ import React from 'react';
 import { LocationSubscriber } from 'react-router/locationBroadcast';
 import InternalLink from './InternalLink';
 
-import type { LinkPropsType } from './types';
+import type { TLinkProps } from './types';
 
 const mergeQuery = () => ({});
 const diffQuery = () => ({});
 
-const InternalLinkWithContext = ({ pathname, query, merge, diff, ...rest }: LinkPropsType) => (
+const InternalLinkWithContext = ({ pathname, query, merge, diff, ...rest }: TLinkProps) => (
   <LocationSubscriber>{
     contextLocation => {
       const pn = pathname || contextLocation.pathname;

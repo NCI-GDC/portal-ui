@@ -8,7 +8,7 @@ import { createContainer } from 'recompose-relay';
 import AnnotationTBody from './AnnotationTBody';
 import Pagination from './Pagination';
 
-type PropsType = {
+type TProps = {
   hits: {
     edges: [],
     pagination: {
@@ -18,7 +18,7 @@ type PropsType = {
   },
 };
 
-const AnnotationTable = (props: PropsType) => (
+const AnnotationTable = (props: TProps) => (
   <div>
     <h2>{`Annotations ${props.hits.pagination.count} : ${props.hits.pagination.total}`}</h2>
     <table>

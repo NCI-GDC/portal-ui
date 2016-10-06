@@ -6,7 +6,7 @@ import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 import Link from '@ncigdc/components/Links/Link';
 
-type PropsType = {
+type TProps = {
   pagination: {
     count: number,
     offset: number,
@@ -26,7 +26,7 @@ type PropsType = {
   },
 };
 
-const Pagination = (props: PropsType) => {
+const Pagination = (props: TProps) => {
   const filters = (
     props.relay.route.params.filters
       ? props.relay.route.params.filters

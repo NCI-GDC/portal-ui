@@ -1,6 +1,6 @@
 /* @flow */
 
-export type LinkPropsType = {
+export type TLinkProps = {
   children?: mixed,
   diff?: boolean,
   merge?: boolean,

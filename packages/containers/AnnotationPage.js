@@ -5,7 +5,7 @@ import Relay from 'react-relay';
 import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 
-type PropsType = {
+type TProps = {
   node: {
     annotation_id: string,
     case_id: string,
@@ -23,7 +23,7 @@ type PropsType = {
   },
 };
 
-const AnnotationPage = (props: PropsType) => (
+const AnnotationPage = (props: TProps) => (
   <div>
     <div>{props.node.annotation_id}</div>
     <div>{props.node.entity_id}</div>

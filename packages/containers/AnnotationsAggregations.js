@@ -7,10 +7,10 @@ import { createContainer } from 'recompose-relay';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 
-import type { BucketType } from '@ncigdc/components/Aggregations/types';
-import type { ViewerParamsType } from 'utils/uri/types';
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import type { TViewerParams } from 'utils/uri/types';
 
-export type PropsType = {
+export type TProps = {
   aggregations: {
     category: { buckets: [BucketType] },
     classification: { buckets: [BucketType] },
@@ -22,12 +22,12 @@ export type PropsType = {
   },
   relay: {
     route: {
-      params: ViewerParamsType,
+      params: TViewerParams,
     },
   },
 };
 
-const AnnotationsAggregations = (props: PropsType) => {
+const AnnotationsAggregations = (props: TProps) => {
   const docType = 'annotations';
   const facets = [
     'classification',

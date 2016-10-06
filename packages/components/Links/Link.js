@@ -5,11 +5,11 @@ import React from 'react';
 import InternalLink from './InternalLink';
 import InternalLinkWithContext from './InternalLinkWithContext';
 
-import type { LinkPropsType } from './types';
+import type { TLinkProps } from './types';
 
 const needsContext = props => !props.pathname || props.merge || props.diff;
 
-const Link = (props: LinkPropsType) => {
+const Link = (props: TLinkProps) => {
   const LinkComponent = needsContext(props)
     ? InternalLinkWithContext
     : InternalLink;

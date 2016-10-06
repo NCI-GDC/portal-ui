@@ -6,7 +6,7 @@ import { compose } from 'recompose';
 import { createContainer } from 'recompose-relay';
 import { Link } from 'react-router';
 
-type PropsType = {
+type TProps = {
   node: {
     annotation_id: string,
     case_id: string,
@@ -21,7 +21,7 @@ type PropsType = {
   },
 };
 
-const AnnotationTr = ({ node }: PropsType) => (
+const AnnotationTr = ({ node }: TProps) => (
   <tr>
     <td>
       <Link to={{ pathname: `/annotations/${node.annotation_id}` }}>

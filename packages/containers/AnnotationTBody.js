@@ -7,7 +7,7 @@ import { createContainer } from 'recompose-relay';
 
 import AnnotationTr from './AnnotationTr';
 
-type PropsType = {
+type TProps = {
   edges: [{
     node: {
       id: string,
@@ -15,7 +15,7 @@ type PropsType = {
   }],
 };
 
-const AnnotationTBody = (props: PropsType) => (
+const AnnotationTBody = (props: TProps) => (
   <tbody>
     {props.edges.map(e => (
       <AnnotationTr {...e} key={e.node.id} />

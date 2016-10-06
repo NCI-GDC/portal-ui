@@ -3,9 +3,9 @@
 import React from 'react';
 import Link from 'react-router/Link';
 
-import type { LinkPropsType } from './types';
+import type { TLinkProps } from './types';
 
-const InternalLink = ({ pathname, query, state, ...rest }: LinkPropsType) => (
+const InternalLink = ({ pathname, query, state, ...rest }: TLinkProps) => (
   <Link
     to={{
       pathname,

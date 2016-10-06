@@ -8,7 +8,7 @@ import { createContainer } from 'recompose-relay';
 import AnnotationTable from './AnnotationTable';
 import AnnotationsAggregations from './AnnotationsAggregations';
 
-type PropsType = {
+type TProps = {
   viewer: {
     annotations: {
       aggregations: string,
@@ -17,7 +17,7 @@ type PropsType = {
   },
 };
 
-const AnnotationsPage = (props: PropsType) => (
+const AnnotationsPage = (props: TProps) => (
   <div>
     <AnnotationsAggregations aggregations={props.viewer.annotations.aggregations} />
     <AnnotationTable hits={props.viewer.annotations.hits} />

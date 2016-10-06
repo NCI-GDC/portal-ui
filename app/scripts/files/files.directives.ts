@@ -263,6 +263,7 @@ module ngApp.files.directives {
         };
 
         $element.on('click', () => {
+          if ($scope.active === true) return;
           const url = config.auth_api + '/files'
 
           const params = {

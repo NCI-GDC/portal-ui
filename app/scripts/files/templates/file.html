@@ -56,10 +56,6 @@
                 <td>{{ ::fc.file.md5sum }}</td>
               </tr>
               <tr>
-                <th scope="row" data-translate>State</th>
-                <td>{{ ::fc.file.state | humanify }}</td>
-              </tr>
-              <tr>
                 <th scope="row" data-translate>Archive</th>
                 <td data-ng-if="fc.file.archive">
                   {{ ::fc.file.archive.submitter_id || '--' }}

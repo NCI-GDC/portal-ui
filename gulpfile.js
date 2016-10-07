@@ -337,13 +337,6 @@ gulp.task('ts:compile', function () {
 });
 // </typescript>
 
-
-gulp.task('oncogrid', function () {
-  return gulp.src('node_modules/oncogrid/dist/oncogrid' + (production ? '.min' : '-debug') + '.js')
-    .pipe(rename('oncogrid.js'))
-    .pipe(gulp.dest('dist/js'))
-})
-
 gulp.task('babel', function() {
   return browserify('app/react-components/index.js')
     .transform("babelify", {presets: ["stage-0", "react", "es2015"]})
@@ -414,7 +407,7 @@ gulp.task('serve:web', function (cb) {
     gulp.watch(['app/scripts/**/*.ts'], ['ts:compile', reload]);
     gulp.watch(['app/scripts/**/*.html'], ['ng:templates', reload]);
     gulp.watch(['app/images/**/*'], ['images', reload]);
-    gulp.watch(['app/react-components/*.js'], ['babel', reload]);
+    gulp.watch(['app/react-components/**/*.js'], ['babel', reload]);
   }
 });
 
@@ -455,7 +448,6 @@ gulp.task('default', ['clean'], function (cb) {
     'i18n',
     'config',
     'pegjs',
-    'oncogrid'
   ], cb);
 });
 

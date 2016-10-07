@@ -10,6 +10,7 @@ import App from './App';
 // Don't inject everytime file is hot-reloaded
 if (!Relay.Store._storeData._networkLayer._implementation) {
   Relay.injectNetworkLayer(
+    // $FlowIgnore
     new Relay.DefaultNetworkLayer(`${__API__}graphql`)
   );
 }

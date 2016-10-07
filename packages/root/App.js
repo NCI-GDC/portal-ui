@@ -7,8 +7,11 @@ import Match from 'react-router/Match';
 import { stringify } from 'query-string';
 
 import SearchRoute from '@ncigdc/routes/SearchRoute';
-import FileRoute from '@ncigdc/routes/FileRoute';
 import AnnotationsRoute from '@ncigdc/routes/AnnotationsRoute';
+import FileRoute from '@ncigdc/routes/FileRoute';
+import CaseRoute from '@ncigdc/routes/CaseRoute';
+import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
+
 
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 import SearchLink from '@ncigdc/components/Links/SearchLink';
@@ -23,17 +26,19 @@ const AppComponent = () => (
     <div>
       <ul>
         <li><HomeLink /></li>
-        <li><HomeLink /></li>
-        <li><SearchLink id="blah">the search link</SearchLink></li>
+        <li><SearchLink>the search link</SearchLink></li>
+        <li><SearchLink>the search link</SearchLink></li>
         <li><FileLink merge id="fba0b6ac-7bbc-4caa-a195-785b50e1829a" query={{ offset: 3 }} /></li>
         <li><FileLink id="fba0b6ac-7bbc-4caa-a195-785b50e1829a" query={{ offset: 0 }}>the file link</FileLink></li>
       </ul>
 
       <hr />
 
-      <Match pattern="/search" component={SearchRoute} />
-      <Match pattern="/files/:id" component={FileRoute} />
+      <Match exactly pattern="/search" component={SearchRoute} />
       <Match exactly pattern="/annotations" component={AnnotationsRoute} />
+      <Match pattern="/files/:id" component={FileRoute} />
+      <Match pattern="/cases/:id" component={CaseRoute} />
+      <Match pattern="/annotations/:id" component={AnnotationRoute} />
     </div>
   </Router>
 );

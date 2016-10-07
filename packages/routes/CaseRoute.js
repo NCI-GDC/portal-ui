@@ -4,20 +4,20 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import AnnotationPage from '@ncigdc/containers/AnnotationPage';
+import CasePage from '@ncigdc/containers/CasePage';
 import { prepareNodeParams } from './utils';
 import { nodeQuery } from './queries';
 
-class AnnotationRoute extends Relay.Route {
-  static routeName = 'AnnotationPageRoute';
+class CaseRoute extends Relay.Route {
+  static routeName = 'CasePageRoute';
   static queries = nodeQuery;
-  static prepareParams = prepareNodeParams('Annotation');
+  static prepareParams = prepareNodeParams('Case');
 }
 
 export default (props: mixed) => (
   <Relay.Renderer
-    Container={AnnotationPage}
-    queryConfig={new AnnotationRoute(props)}
+    Container={CasePage}
+    queryConfig={new CaseRoute(props)}
     environment={Relay.Store}
   />
 );

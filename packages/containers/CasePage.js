@@ -20,7 +20,7 @@ export type TProps = {
   },
 };
 
-export const FilePageComponent = (props: TProps) => (
+export const CasePageComponent = (props: TProps) => (
   <div>
     <div>{props.node.file_id}</div>
     <div>{props.node.file_name}</div>
@@ -33,7 +33,7 @@ export const FilePageComponent = (props: TProps) => (
   </div>
 );
 
-export const FilePageQuery = {
+export const CasePageQuery = {
   fragments: {
     node: () => Relay.QL`
       fragment on File {
@@ -54,9 +54,9 @@ export const FilePageQuery = {
   },
 };
 
-const FilePage = Relay.createContainer(
-  FilePageComponent,
-  FilePageQuery
+const CasePage = Relay.createContainer(
+  CasePageComponent,
+  CasePageQuery
 );
 
-export default FilePage;
+export default CasePage;

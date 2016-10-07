@@ -3,7 +3,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-type TProps = {
+export type TProps = {
   node: {
     annotation_id: string,
     case_id: string,

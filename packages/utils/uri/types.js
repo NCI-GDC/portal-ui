@@ -15,5 +15,3 @@ export type TUriQuery = {|
   offset?: number,
   sort?: string,
 |};
-
-

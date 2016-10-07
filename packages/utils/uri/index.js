@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint flowtype/no-weak-types: 0 */
 
 type TIsEmptyArray = (x: mixed) => boolean;
 const isEmptyArray: TIsEmptyArray = x => !!(x && (Array.isArray(x) && x.length === 0));

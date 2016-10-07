@@ -19,12 +19,17 @@ const styles = {
   buttonActive: {
     backgroundColor: '#e6e6e6',
     borderColor: '#adadad',
+  },
+  td: {
+    padding: 6,
+  },
+  cell: {
+    paddingTop: 4,
+    paddingBottom: 4,
   }
 };
 
 function cleanActives() {
-  // $('#oncogrid-controls').show();
-  // $('#oncogrid-no-data').hide();
   // $('#og-crosshair-message').hide();
 };
 
@@ -58,14 +63,14 @@ const HeatMap = () => (
   <table id="og-heatmap-legend" className="onco-table">
     <tbody>
       <tr>
-        <td>Less</td>
-        <td>
+        <td style={styles.td}>Less</td>
+        <td style={styles.td}>
           <div className="onco-legend-square" style={{background:'#D33682', opacity: 0.25}}></div>
           <div className="onco-legend-square" style={{background:'#D33682', opacity: 0.50}}></div>
           <div className="onco-legend-square" style={{background:'#D33682', opacity: 0.75}}></div>
           <div className="onco-legend-square" style={{background:'#D33682', opacity: 1}}></div>
         </td>
-        <td>More Mutations</td>
+        <td style={styles.td}>More Mutations</td>
       </tr>
     </tbody>
   </table>
@@ -75,37 +80,37 @@ const Legend = () => (
   <table id="og-variant-legend" className="onco-table">
     <tbody>
       <tr>
-        <td>
-          <div>
+        <td style={styles.td}>
+          <div style={styles.cell}>
             <div className="onco-legend-square" style={{background:'#ff9b6c'}}></div>
             <small>missense variant</small>
           </div>
 
-          <div>
+          <div style={styles.cell}>
             <div className="onco-legend-square" style={{background:'#57dba4'}}></div>
             <small>frameshift variant</small>
           </div>
         </td>
         
-        <td>
-          <div>
+        <td style={styles.td}>
+          <div style={styles.cell}>
             <div className="onco-legend-square" style={{background:'#ff2323'}}></div>
             <small>start lost</small>
           </div>
 
-          <div>
+          <div style={styles.cell}>
             <div className="onco-legend-square" style={{background:'#d3ec00'}}></div>
             <small>stop lost</small>
           </div>
         </td>
 
-        <td>
-          <div>
+        <td style={styles.td}>
+          <div style={styles.cell}>
             <div className="onco-legend-square" style={{background:'#5abaff'}}></div>
             <small>initiator codon variant</small>
           </div>
 
-          <div>
+          <div style={styles.cell}>
             <div className="onco-legend-square" style={{background:'#af57db'}}></div>
             <small>stop gained</small>
           </div>
@@ -117,60 +122,72 @@ const Legend = () => (
 
 const OncoGridWrapper = ({gridState, dispatch}) => (
   <div id="oncogrid-container">
-    <Row id="oncogrid-controls" className="og-grid-align">
-      <div style={{flexGrow: 1}}>
-        {gridState.heatMapMode ? <HeatMap /> : <Legend />}
+    {!oncoGridController.hasNoData &&
+      <Row className="og-grid-align">
+        <div style={{flexGrow: 1}}>
+          {gridState.heatMapMode ? <HeatMap /> : <Legend />}
+        </div>
+        <span>
+          <Button
+            style={styles.button}
+            onClick={() => dispatch({type: 'reload'})}
+          >
+            <i className="fa fa-undo"></i>
+          </Button>
+          <Button
+            style={styles.button}
+            onClick={() => oncoGridController.cluster()}
+          >
+            <i className="fa fa-sort-amount-desc"></i>
+          </Button>
+          <Button
+            style={gridState.heatMapMode ? {...styles.button, ...styles.buttonActive} : styles.button}
+            onClick={() => dispatch({type: 'toggleHeatmap'})}
+          >
+            <i className="fa fa-fire"></i>
+          </Button>
+          <Button
+            style={gridState.gridActive ? {...styles.button, ...styles.buttonActive} : styles.button}
+            onClick={() => dispatch({type: 'toggleGridLines'})}
+          >
+            <i className="fa fa-th"></i>
+          </Button>
+          <Button
+            style={gridState.crosshairMode ? {...styles.button, ...styles.buttonActive} : styles.button}
+            onClick={() => dispatch({type: 'toggleCrosshair'})}
+          >
+            <i className="fa fa-crosshairs"></i>
+          </Button>
+          <Button
+            style={gridState.isFullScreen ? {...styles.button, ...styles.buttonActive} : styles.button}
+            onClick={() => {
+              if (gridState.isFullScreen) {
+                exitFullScreen();
+                dispatch({type: 'reload'});
+              } else {
+                enterFullScreen();
+                oncoGridController.resize(screen.width - 400, screen.height - 400, true);
+              }
+
+              dispatch({type: 'updateFullScreen'})
+            }}
+          >
+            <i className="fa fa-arrows-h"></i>
+          </Button>
+
+          {gridState.crosshairMode &&
+            <div id="og-crosshair-message">Click and drag to select a region on the OncoGrid to zoom in.</div>
+          }
+        </span>
+      </Row>
+    }
+    {oncoGridController.hasNoData &&
+      <div id="oncogrid-no-data" className="alert-error">
+        No result found.<br />
+        Please note that the analysis is filtering on high impact mutations only.<br />
+        Please change your donor or gene set and run the analysis again.
       </div>
-      <span>
-        <Button
-          style={styles.button}
-          onClick={() => dispatch({type: 'reload'})}
-        >
-          <i className="fa fa-undo"></i>
-        </Button>
-        <Button
-          style={styles.button}
-          onClick={() => oncoGridController.cluster()}
-        >
-          <i className="fa fa-sort-amount-desc"></i>
-        </Button>
-        <Button
-          style={gridState.heatMapMode ? {...styles.button, ...styles.buttonActive} : styles.button}
-          onClick={() => dispatch({type: 'toggleHeatmap'})}
-        >
-          <i className="fa fa-fire"></i>
-        </Button>
-        <Button
-          style={gridState.gridActive ? {...styles.button, ...styles.buttonActive} : styles.button}
-          onClick={() => dispatch({type: 'toggleGridLines'})}
-        >
-          <i className="fa fa-th"></i>
-        </Button>
-        <Button
-          style={gridState.crosshairMode ? {...styles.button, ...styles.buttonActive} : styles.button}
-          onClick={() => dispatch({type: 'toggleCrosshair'})}
-        >
-          <i className="fa fa-crosshairs"></i>
-        </Button>
-        <Button
-          style={gridState.isFullScreen ? {...styles.button, ...styles.buttonActive} : styles.button}
-          onClick={() => {
-            if (gridState.isFullScreen) {
-              exitFullScreen();
-              dispatch({type: 'reload'});
-            } else {
-              enterFullScreen();
-              oncoGridController.resize(screen.width - 400, screen.height - 400, true);
-            }
-
-            dispatch({type: 'updateFullScreen'})
-          }}
-        >
-          <i className="fa fa-arrows-h"></i>
-        </Button>
-      </span>
-    </Row>
-
+    }
     <div id="oncogrid-div" className={gridState.crosshairMode ? 'og-crosshair-mode' : 'og-pointer-mode'}/>
   </div>
 );
@@ -206,6 +223,7 @@ const gridReducer = (gridState, action) => {
     isFullScreen: isFullScreen(),
   };
 }
+
 const initialGridState = {
   heatMapMode: false,
   gridActive: true,
@@ -214,7 +232,12 @@ const initialGridState = {
 };
 
 const enhance = compose(
-  lifecycle({ componentDidMount() { oncoGridController.init(); } }),
+  lifecycle({
+    componentDidMount() {
+      oncoGridController.init();
+      this.forceUpdate();
+    }
+  }),
   withReducer('gridState', 'dispatch', gridReducer, initialGridState)
 );
 

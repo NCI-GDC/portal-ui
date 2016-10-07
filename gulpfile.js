@@ -348,6 +348,11 @@ gulp.task('babel', function() {
   return browserify('app/react-components/index.js')
     .transform("babelify", {presets: ["stage-0", "react", "es2015"]})
     .bundle()
+    .on('error', function (err) {
+        console.log(err.message);
+        console.log(err.stack);
+        this.emit("end");
+    })
     .pipe(source('react-components.js'))
     .pipe(gulp.dest('./dist/js'));
 });

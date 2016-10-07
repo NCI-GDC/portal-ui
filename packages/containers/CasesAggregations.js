@@ -2,14 +2,12 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
-type TProps = {
+export type TProps = {
   aggregations: {
     demographic__ethnicity: { buckets: [TBucket] },
     demographic__gender: { buckets: [TBucket] },
@@ -21,7 +19,7 @@ type TProps = {
   },
 };
 
-const CasesAggregations = (props: TProps) => {
+export const CasesAggregationsComponent = (props: TProps) => {
   const docType = 'cases';
   const facets = [
     'demographic__ethnicity',
@@ -45,7 +43,7 @@ const CasesAggregations = (props: TProps) => {
   );
 };
 
-const CasesAggregationsQuery = {
+export const CasesAggregationsQuery = {
   fragments: {
     aggregations: () => Relay.QL`
       fragment on CasesAgg {
@@ -96,6 +94,10 @@ const CasesAggregationsQuery = {
   },
 };
 
-export default compose(
-  createContainer(CasesAggregationsQuery)
-)(CasesAggregations);
+
+const CasesAggregations = Relay.createContainer(
+  CasesAggregationsComponent,
+  CasesAggregationsQuery
+);
+
+export default CasesAggregations;

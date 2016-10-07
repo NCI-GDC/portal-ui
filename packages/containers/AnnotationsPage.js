@@ -2,13 +2,11 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import AnnotationTable from './AnnotationTable';
 import AnnotationsAggregations from './AnnotationsAggregations';
 
-type TProps = {
+export type TProps = {
   viewer: {
     annotations: {
       aggregations: string,
@@ -17,14 +15,14 @@ type TProps = {
   },
 };
 
-const AnnotationsPage = (props: TProps) => (
+export const AnnotationsPageComponent = (props: TProps) => (
   <div>
     <AnnotationsAggregations aggregations={props.viewer.annotations.aggregations} />
     <AnnotationTable hits={props.viewer.annotations.hits} />
   </div>
 );
 
-const AnnotationsPageQuery = {
+export const AnnotationsPageQuery = {
   initialVariables: {
     first: 0,
     offset: 0,
@@ -46,6 +44,10 @@ const AnnotationsPageQuery = {
   },
 };
 
-export default compose(
-  createContainer(AnnotationsPageQuery)
-)(AnnotationsPage);
+const AnnotationsPage = Relay.createContainer(
+  AnnotationsPageComponent,
+  AnnotationsPageQuery
+);
+
+export default AnnotationsPage;
+

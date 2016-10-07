@@ -2,8 +2,6 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 type TProps = {
   node: {
@@ -23,7 +21,7 @@ type TProps = {
   },
 };
 
-const AnnotationPage = (props: TProps) => (
+export const AnnotationPageComponent = (props: TProps) => (
   <div>
     <div>{props.node.annotation_id}</div>
     <div>{props.node.entity_id}</div>
@@ -39,7 +37,7 @@ const AnnotationPage = (props: TProps) => (
   </div>
 );
 
-const AnnotationPageQuery = {
+export const AnnotationPageQuery = {
   fragments: {
     node: () => Relay.QL`
       fragment on Annotation {
@@ -61,6 +59,9 @@ const AnnotationPageQuery = {
   },
 };
 
-export default compose(
-  createContainer(AnnotationPageQuery)
-)(AnnotationPage);
+const AnnotationPage = Relay.createContainer(
+  AnnotationPageComponent,
+  AnnotationPageQuery
+);
+
+export default AnnotationPage;

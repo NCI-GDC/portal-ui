@@ -2,12 +2,10 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import Link from '@ncigdc/components/Links/Link';
 
-type TProps = {
+export type TProps = {
   pagination: {
     count: number,
     offset: number,
@@ -17,7 +15,7 @@ type TProps = {
   },
 };
 
-const Pagination = (props: TProps) => {
+export const PaginationComponent = (props: TProps) => {
   const pagination = props.pagination;
 
   return (
@@ -30,7 +28,7 @@ const Pagination = (props: TProps) => {
   );
 };
 
-const PaginationQuery = {
+export const PaginationQuery = {
   fragments: {
     pagination: () => Relay.QL`
       fragment on ESPagination {
@@ -44,6 +42,9 @@ const PaginationQuery = {
   },
 };
 
-export default compose(
-  createContainer(PaginationQuery)
-)(Pagination);
+const Pagination = Relay.createContainer(
+  PaginationComponent,
+  PaginationQuery
+);
+
+export default Pagination;

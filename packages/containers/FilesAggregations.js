@@ -2,14 +2,12 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
-type TProps = {
+export type TProps = {
   aggregations: {
     access: { buckets: [TBucket] },
     data_category: { buckets: [TBucket] },
@@ -20,7 +18,7 @@ type TProps = {
   },
 };
 
-const FilesAggregations = (props: TProps) => {
+export const FilesAggregationsComponent = (props: TProps) => {
   const docType = 'files';
   const facets = [
     'access',
@@ -43,7 +41,7 @@ const FilesAggregations = (props: TProps) => {
   );
 };
 
-const FilesAggregationsQuery = {
+export const FilesAggregationsQuery = {
   fragments: {
     aggregations: () => Relay.QL`
       fragment on FilesAgg {
@@ -88,6 +86,9 @@ const FilesAggregationsQuery = {
   },
 };
 
-export default compose(
-  createContainer(FilesAggregationsQuery)
-)(FilesAggregations);
+const FilesAggregations = Relay.createContainer(
+  FilesAggregationsComponent,
+  FilesAggregationsQuery
+);
+
+export default FilesAggregations;

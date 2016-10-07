@@ -2,8 +2,6 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 
@@ -21,7 +19,7 @@ export type TProps = {
   },
 };
 
-const AnnotationsAggregations = (props: TProps) => {
+export const AnnotationsAggregationsComponent = (props: TProps) => {
   const docType = 'annotations';
   const facets = [
     'classification',
@@ -47,7 +45,7 @@ const AnnotationsAggregations = (props: TProps) => {
 };
 
 
-const AnnotationsAggregationsQuery = {
+export const AnnotationsAggregationsQuery = {
   fragments: {
     aggregations: () => Relay.QL`
       fragment on AnnotationsAgg {
@@ -98,6 +96,10 @@ const AnnotationsAggregationsQuery = {
   },
 };
 
-export default compose(
-  createContainer(AnnotationsAggregationsQuery)
-)(AnnotationsAggregations);
+
+const AnnotationsAggregations = Relay.createContainer(
+  AnnotationsAggregationsComponent,
+  AnnotationsAggregationsQuery
+);
+
+export default AnnotationsAggregations;

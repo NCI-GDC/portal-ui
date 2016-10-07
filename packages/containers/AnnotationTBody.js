@@ -2,12 +2,10 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import AnnotationTr from './AnnotationTr';
 
-type TProps = {
+export type TProps = {
   edges: [{
     node: {
       id: string,
@@ -15,7 +13,7 @@ type TProps = {
   }],
 };
 
-const AnnotationTBody = (props: TProps) => (
+export const AnnotationTBodyComponent = (props: TProps) => (
   <tbody>
     {props.edges.map(e => (
       <AnnotationTr {...e} key={e.node.id} />
@@ -23,7 +21,7 @@ const AnnotationTBody = (props: TProps) => (
   </tbody>
 );
 
-const AnnotationTBodyQuery = {
+export const AnnotationTBodyQuery = {
   fragments: {
     edges: () => Relay.QL`
       fragment on AnnotationEdge @relay(plural: true){
@@ -36,6 +34,10 @@ const AnnotationTBodyQuery = {
   },
 };
 
-export default compose(
-  createContainer(AnnotationTBodyQuery)
-)(AnnotationTBody);
+const AnnotationTBody = Relay.createContainer(
+  AnnotationTBodyComponent,
+  AnnotationTBodyQuery
+);
+
+export default AnnotationTBody;
+

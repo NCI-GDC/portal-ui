@@ -2,12 +2,10 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import CaseTr from './CaseTr';
 
-type TProps = {
+export type TProps = {
   hits: ?{
     edges: {
       node: {
@@ -23,7 +21,7 @@ type TProps = {
   },
 };
 
-const CaseTable = (props: TProps) => (
+export const CaseTableComponent = (props: TProps) => (
   <table>
     <thead>
       <tr>
@@ -43,7 +41,7 @@ const CaseTable = (props: TProps) => (
   </table>
 );
 
-const CaseTableQuery = {
+export const CaseTableQuery = {
   fragments: {
     hits: () => Relay.QL`
       fragment on CaseConnection {
@@ -64,6 +62,9 @@ const CaseTableQuery = {
   },
 };
 
-export default compose(
-  createContainer(CaseTableQuery)
-)(CaseTable);
+const CaseTable = Relay.createContainer(
+  CaseTableComponent,
+  CaseTableQuery
+);
+
+export default CaseTable;

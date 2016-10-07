@@ -2,11 +2,10 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
-import { Link } from 'react-router';
 
-type TProps = {
+import FileLink from '@ncigdc/components/Links/FileLink';
+
+export type TProps = {
   node: {
     access: string,
     cases: {
@@ -22,13 +21,13 @@ type TProps = {
   },
 };
 
-const FileTr = ({ node }: TProps) => (
+export const FileTrComponent = ({ node }: TProps) => (
   <tr>
     <td>{node.access}</td>
     <td>
-      <Link to={{ pathname: `/files/${node.file_id}` }}>
+      <FileLink id={node.file_id}>
         {node.file_name}
-      </Link>
+      </FileLink>
     </td>
     <td>{node.cases.length}</td>
     <td>{new Set(node.cases.map(c => c.project.project_id))}</td>
@@ -38,7 +37,7 @@ const FileTr = ({ node }: TProps) => (
   </tr>
 );
 
-const FileTrQuery = {
+export const FileTrQuery = {
   fragments: {
     node: () => Relay.QL`
       fragment on File {
@@ -58,6 +57,9 @@ const FileTrQuery = {
   },
 };
 
-export default compose(
-  createContainer(FileTrQuery)
-)(FileTr);
+const FileTr = Relay.createContainer(
+  FileTrComponent,
+  FileTrQuery
+);
+
+export default FileTr;

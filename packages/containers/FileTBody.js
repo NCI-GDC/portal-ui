@@ -2,12 +2,10 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import FileTr from './FileTr';
 
-type TProps = {
+export type TProps = {
   edges: [{
     node: {
       id: string,
@@ -15,7 +13,7 @@ type TProps = {
   }],
 };
 
-const FileTBody = (props: TProps) => (
+export const FileTBodyComponent = (props: TProps) => (
   <tbody>
     {props.edges.map(e => (
       <FileTr {...e} key={e.node.id} />
@@ -36,6 +34,9 @@ const FileTBodyQuery = {
   },
 };
 
-export default compose(
-  createContainer(FileTBodyQuery)
-)(FileTBody);
+const FileTBody = Relay.createContainer(
+  FileTBodyComponent,
+  FileTBodyQuery
+);
+
+export default FileTBody;

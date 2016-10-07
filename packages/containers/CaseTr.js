@@ -2,10 +2,8 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
-type TProps = {
+export type TProps = {
   kase: {
     case_id: string,
     demographic: {
@@ -18,7 +16,7 @@ type TProps = {
   },
 };
 
-const CaseTr = ({ kase }: TProps) => (
+export const CaseTrComponent = ({ kase }: TProps) => (
   <tr>
     <td>{kase.case_id}</td>
     <td>{kase.project.project_id}</td>
@@ -27,7 +25,7 @@ const CaseTr = ({ kase }: TProps) => (
   </tr>
 );
 
-const CaseTrQuery = {
+export const CaseTrQuery = {
   fragments: {
     kase: () => Relay.QL`
       fragment on Case {
@@ -44,6 +42,9 @@ const CaseTrQuery = {
   },
 };
 
-export default compose(
-  createContainer(CaseTrQuery)
-)(CaseTr);
+const CaseTr = Relay.createContainer(
+  CaseTrComponent,
+  CaseTrQuery
+);
+
+export default CaseTr;

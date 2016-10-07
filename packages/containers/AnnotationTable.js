@@ -2,13 +2,11 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import AnnotationTBody from './AnnotationTBody';
 import Pagination from './Pagination';
 
-type TProps = {
+export type TProps = {
   hits: {
     edges: [],
     pagination: {
@@ -18,7 +16,7 @@ type TProps = {
   },
 };
 
-const AnnotationTable = (props: TProps) => (
+export const AnnotationTableComponent = (props: TProps) => (
   <div>
     <h2>{`Annotations ${props.hits.pagination.count} : ${props.hits.pagination.total}`}</h2>
     <table>
@@ -40,7 +38,7 @@ const AnnotationTable = (props: TProps) => (
   </div>
 );
 
-const AnnotationTableQuery = {
+export const AnnotationTableQuery = {
   initialVariables: {
     first: 0,
     offset: 0,
@@ -62,6 +60,10 @@ const AnnotationTableQuery = {
   },
 };
 
-export default compose(
-  createContainer(AnnotationTableQuery)
-)(AnnotationTable);
+const AnnotationTable = Relay.createContainer(
+  AnnotationTableComponent,
+  AnnotationTableQuery
+);
+
+export default AnnotationTable;
+

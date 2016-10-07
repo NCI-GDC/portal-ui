@@ -2,11 +2,10 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
-import { Link } from 'react-router';
 
-type TProps = {
+import CaseLink from '@ncigdc/components/Links/CaseLink';
+
+export type TProps = {
   node: {
     annotation_id: string,
     case_id: string,
@@ -21,12 +20,12 @@ type TProps = {
   },
 };
 
-const AnnotationTr = ({ node }: TProps) => (
+export const AnnotationTrComponent = ({ node }: TProps) => (
   <tr>
     <td>
-      <Link to={{ pathname: `/annotations/${node.annotation_id}` }}>
+      <CaseLink id={node.annotation_id}>
         {node.annotation_id}
-      </Link>
+      </CaseLink>
     </td>
     <td>{node.case_id}</td>
     <td>{node.project.project_id}</td>
@@ -38,7 +37,7 @@ const AnnotationTr = ({ node }: TProps) => (
   </tr>
 );
 
-const AnnotationTrQuery = {
+export const AnnotationTrQuery = {
   fragments: {
     node: () => Relay.QL`
       fragment on Annotation {
@@ -57,6 +56,9 @@ const AnnotationTrQuery = {
   },
 };
 
-export default compose(
-  createContainer(AnnotationTrQuery)
-)(AnnotationTr);
+const AnnotationTr = Relay.createContainer(
+  AnnotationTrComponent,
+  AnnotationTrQuery
+);
+
+export default AnnotationTr;

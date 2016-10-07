@@ -2,13 +2,11 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import FileTable from './FileTable';
 import FilesAggregations from './FilesAggregations';
 
-type TProps = {
+export type TProps = {
   viewer: {
     files: {
       aggregations: string,
@@ -17,14 +15,14 @@ type TProps = {
   },
 };
 
-const FilesPage = (props: TProps) => (
+export const SearchPageComponent = (props: TProps) => (
   <div>
     <FilesAggregations aggregations={props.viewer.files.aggregations} />
     <FileTable hits={props.viewer.files.hits} />
   </div>
 );
 
-const FilesPageQuery = {
+export const SearchPageQuery = {
   initialVariables: {
     first: 0,
     offset: 0,
@@ -46,6 +44,9 @@ const FilesPageQuery = {
   },
 };
 
-export default compose(
-  createContainer(FilesPageQuery)
-)(FilesPage);
+const SearchPage = Relay.createContainer(
+  SearchPageComponent,
+  SearchPageQuery
+);
+
+export default SearchPage;

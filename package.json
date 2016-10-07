@@ -11,12 +11,11 @@
   },
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
+    "jsurl": "0.1.4",
     "react": "15.3.2",
     "react-dom": "15.3.2",
     "react-relay": "0.9.3",
-    "react-router": "4.0.0-alpha.4",
-    "recompose": "0.20.2",
-    "recompose-relay": "0.3.0"
+    "react-router": "4.0.0-alpha.4"
   },
   "devDependencies": {
     "@ncigdc/buildjs": "0.1.0",

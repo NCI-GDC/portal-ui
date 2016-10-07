@@ -2,8 +2,6 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 import Router from 'react-router/BrowserRouter';
 import Match from 'react-router/Match';
 import { stringify } from 'query-string';
@@ -11,6 +9,7 @@ import { stringify } from 'query-string';
 import SearchRoute from '@ncigdc/routes/SearchRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import AnnotationsRoute from '@ncigdc/routes/AnnotationsRoute';
+
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 import SearchLink from '@ncigdc/components/Links/SearchLink';
 import FileLink from '@ncigdc/components/Links/FileLink';
@@ -19,7 +18,7 @@ const stringifyQuery = (query) => (
   stringify(query, { strict: false })
 );
 
-const App = () => (
+const AppComponent = () => (
   <Router stringifyQuery={stringifyQuery}>
     <div>
       <ul>
@@ -62,6 +61,9 @@ const AppQuery = {
   },
 };
 
-export default compose(
-  createContainer(AppQuery)
-)(App);
+const App = Relay.createContainer(
+  AppComponent,
+  AppQuery
+);
+
+export default App;

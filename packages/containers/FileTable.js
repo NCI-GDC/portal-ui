@@ -2,13 +2,11 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
 import FileTBody from './FileTBody';
 import Pagination from './Pagination';
 
-type TProps = {
+export type TProps = {
   hits: {
     edges: [],
     pagination: {
@@ -18,7 +16,7 @@ type TProps = {
   },
 };
 
-const FileTable = (props: TProps) => (
+export const FileTableComponent = (props: TProps) => (
   <div>
     <h2>{`Files ${props.hits.pagination.count} : ${props.hits.pagination.total}`}</h2>
     <table>
@@ -39,7 +37,7 @@ const FileTable = (props: TProps) => (
   </div>
 );
 
-const FileTableQuery = {
+export const FileTableQuery = {
   fragments: {
     hits: () => Relay.QL`
       fragment on FileConnection {
@@ -56,6 +54,9 @@ const FileTableQuery = {
   },
 };
 
-export default compose(
-  createContainer(FileTableQuery)
-)(FileTable);
+const FileTable = Relay.createContainer(
+  FileTableComponent,
+  FileTableQuery
+);
+
+export default FileTable;

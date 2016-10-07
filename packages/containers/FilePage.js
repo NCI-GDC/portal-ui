@@ -2,10 +2,8 @@
 
 import React from 'react';
 import Relay from 'react-relay';
-import { compose } from 'recompose';
-import { createContainer } from 'recompose-relay';
 
-type TProps = {
+export type TProps = {
   node: {
     access: string,
     cases: {
@@ -22,7 +20,7 @@ type TProps = {
   },
 };
 
-const FilePage = (props: TProps) => (
+export const FilePageComponent = (props: TProps) => (
   <div>
     <div>{props.node.file_id}</div>
     <div>{props.node.file_name}</div>
@@ -35,7 +33,7 @@ const FilePage = (props: TProps) => (
   </div>
 );
 
-const FilePageQuery = {
+export const FilePageQuery = {
   fragments: {
     node: () => Relay.QL`
       fragment on File {
@@ -55,6 +53,10 @@ const FilePageQuery = {
     `,
   },
 };
-export default compose(
-  createContainer(FilePageQuery)
-)(FilePage);
+
+const FilesAggregations = Relay.createContainer(
+  FilePageComponent,
+  FilePageQuery
+);
+
+export default FilesAggregations;

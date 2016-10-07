@@ -3,8 +3,9 @@ import { lifecycle, compose, withReducer } from 'recompose';
 import _ from 'lodash';
 
 import Button from './Button';
-import Row from './uikit/Flex/Row.js';
-import oncoGridController from './utils/oncoGridController.js';
+import Row from './uikit/Flex/Row';
+import oncoGridController from './utils/oncoGridController';
+import {isFullScreen, exitFullScreen, enterFullScreen} from './utils/fullscreen';
 
 const styles = {
   button: {
@@ -29,38 +30,8 @@ const styles = {
   }
 };
 
-function cleanActives() {
-  // $('#og-crosshair-message').hide();
-};
-
-function isFullScreen() {
-  return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
-}
-
-function exitFullScreen() {
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-    }
-};
-
-function enterFullScreen() {
-  const element = document.querySelector('#oncogrid-container');
-
-  if (element.requestFullscreen) {
-    element.requestFullscreen();
-  } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen();
-  } else if (element.webkitRequestFullScreen) {
-    element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-  }
-};
-
 const HeatMap = () => (
-  <table id="og-heatmap-legend" className="onco-table">
+  <table className="onco-table">
     <tbody>
       <tr>
         <td style={styles.td}>Less</td>
@@ -77,7 +48,7 @@ const HeatMap = () => (
 );
 
 const Legend = () => (
-  <table id="og-variant-legend" className="onco-table">
+  <table className="onco-table">
     <tbody>
       <tr>
         <td style={styles.td}>
@@ -123,7 +94,7 @@ const Legend = () => (
 const OncoGridWrapper = ({gridState, dispatch}) => (
   <div id="oncogrid-container">
     {!oncoGridController.hasNoData &&
-      <Row className="og-grid-align">
+      <Row style={{ marginLeft: 0, minHeight: '70px' }}>
         <div style={{flexGrow: 1}}>
           {gridState.heatMapMode ? <HeatMap /> : <Legend />}
         </div>
@@ -165,7 +136,7 @@ const OncoGridWrapper = ({gridState, dispatch}) => (
                 exitFullScreen();
                 dispatch({type: 'reload'});
               } else {
-                enterFullScreen();
+                enterFullScreen(document.querySelector('#oncogrid-container'));
                 oncoGridController.resize(screen.width - 400, screen.height - 400, true);
               }
 
@@ -176,19 +147,22 @@ const OncoGridWrapper = ({gridState, dispatch}) => (
           </Button>
 
           {gridState.crosshairMode &&
-            <div id="og-crosshair-message">Click and drag to select a region on the OncoGrid to zoom in.</div>
+            <div style={{ fontSize: '1.1rem', verticalAlign: 'top' }}>
+              Click and drag to select a region on the OncoGrid to zoom in.
+            </div>
           }
         </span>
       </Row>
     }
     {oncoGridController.hasNoData &&
-      <div id="oncogrid-no-data" className="alert-error">
+      <div style={{ width: '50%' }}>
         No result found.<br />
         Please note that the analysis is filtering on high impact mutations only.<br />
         Please change your donor or gene set and run the analysis again.
       </div>
     }
-    <div id="oncogrid-div" className={gridState.crosshairMode ? 'og-crosshair-mode' : 'og-pointer-mode'}/>
+
+    <div id="oncogrid-div" style={{cursor: gridState.crosshairMode ? 'crosshair' : 'pointer'}}/>
   </div>
 );
 
@@ -205,7 +179,6 @@ const gridReducer = (gridState, action) => {
       break;
     case 'reload':
       oncoGridController.reload();
-      // cleanActives();
 
       if (isFullScreen()) {
         setTimeout(function () {

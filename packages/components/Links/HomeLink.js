@@ -1,5 +1,14 @@
 /* @flow */
 
-import { makeLink } from './utils';
+import React from 'react';
+import Link from './Link';
 
-export default makeLink({ pathname: '/', children: 'Home' });
+type TProps = {|
+  children?: mixed,
+|};
+
+const HomeLink = (props: TProps) => (
+  <Link pathname="/">{props.children || 'home'}</Link>
+);
+
+export default HomeLink;

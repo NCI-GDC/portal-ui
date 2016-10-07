@@ -1,10 +1,16 @@
 /* @flow */
 
-export type TLinkProps = {
+import type { TUriQuery } from '@ncigdc/utils/uri/types';
+
+export type TListLinkProps = {
   children?: mixed,
-  diff?: boolean,
   merge?: boolean,
   pathname?: string,
-  query?: mixed,
-  state?: mixed,
+  query?: TUriQuery,
 };
+
+export type TIdLinkProps = {
+  id: string,
+} & TListLinkProps;
+
+export type TLinkProps = TListLinkProps | TIdLinkProps;

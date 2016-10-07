@@ -6,18 +6,18 @@ import InternalLink from './InternalLink';
 
 import type { TLinkProps } from './types';
 
-const mergeQuery = () => ({});
-const diffQuery = () => ({});
+const mergeQuery = (q, ctxq) => ({
+  ...ctxq,
+  ...q,
+});
 
-const InternalLinkWithContext = ({ pathname, query, merge, diff, ...rest }: TLinkProps) => (
+const InternalLinkWithContext = ({ pathname, query, merge, ...rest }: TLinkProps) => (
   <LocationSubscriber>{
     contextLocation => {
       const pn = pathname || contextLocation.pathname;
 
-      const q = (merge || diff)
-        ? merge
-          ? mergeQuery()
-          : diffQuery()
+      const q = merge
+        ? mergeQuery(query, contextLocation.query)
         : query;
 
       return (

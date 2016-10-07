@@ -40,11 +40,6 @@ const FileTable = (props: TProps) => (
 );
 
 const FileTableQuery = {
-  initialVariables: {
-    first: 0,
-    offset: 0,
-    filters: null,
-  },
   fragments: {
     hits: () => Relay.QL`
       fragment on FileConnection {

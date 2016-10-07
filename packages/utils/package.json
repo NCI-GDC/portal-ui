@@ -1,0 +1,14 @@
+{
+  "name": "@ncigdc/utils",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "repository": "NCI-GDC/portal-ui",
+  "engines": {
+    "node": ">=5"
+  },
+  "author": {
+    "name": "OICR",
+    "url": "https://github.com/NCI-GDC/"
+  },
+  "main": "index.js"
+}

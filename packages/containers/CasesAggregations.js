@@ -8,7 +8,6 @@ import { createContainer } from 'recompose-relay';
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
-import type { TViewerParams } from 'utils/uri/types';
 
 type TProps = {
   aggregations: {
@@ -19,11 +18,6 @@ type TProps = {
     project__disease_type: { buckets: [TBucket] },
     project__primary_site: { buckets: [TBucket] },
     project__project_id: { buckets: [TBucket] },
-  },
-  relay: {
-    route: {
-      params: TViewerParams,
-    },
   },
 };
 
@@ -43,9 +37,7 @@ const CasesAggregations = (props: TProps) => {
       {facets.map(f => (
         <TermAggregation
           key={`${docType}.${f}`}
-          pathname={'/files'}
           field={`${docType}.${f}`}
-          params={props.relay.route.params}
           buckets={props.aggregations[f].buckets}
         />
       ))}

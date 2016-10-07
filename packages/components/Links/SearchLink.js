@@ -1,5 +1,5 @@
 /* @flow */
 
-import { makeLink } from './utils';
+import { makeListLink } from './utils';
 
-export default makeLink({ pathname: '/search', children: 'Home' });
+export default makeListLink({ pathname: '/search', children: 'Home' });

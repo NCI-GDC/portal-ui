@@ -4,20 +4,16 @@ import React from 'react';
 
 import Link from './Link';
 
-import type { TLinkProps } from './types';
+import type { TListLinkProps, TIdLinkProps, TLinkProps } from './types';
 
 type TIdLinkConfig = {|
   pathname: string,
 |};
 
-type TLinkConfig = {|
+type TListLinkConfig = {|
   children: string,
   pathname: string,
 |};
-
-type TIdLinkProps = {
-  id: string,
-} & TLinkProps;
 
 type TMakeLinkBase = (p: TLinkProps) => React.Element<TLinkProps>;
 const makeLinkBase: TMakeLinkBase = props => <Link {...props} />;
@@ -36,6 +32,6 @@ export const makeIDLink: TMakeIdLink = config => props => {
   );
 };
 
-type TMakeLink = (c: TLinkConfig) => (p: TLinkProps) => React.Element<TLinkProps>;
-export const makeLink: TMakeLink = config => props => makeLinkBase({ ...config, ...props });
+type TMakeListLink = (c: TListLinkConfig) => (p: TListLinkProps) => React.Element<TListLinkProps>;
+export const makeListLink: TMakeListLink = config => props => makeLinkBase({ ...config, ...props });
 

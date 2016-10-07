@@ -99,6 +99,6 @@
     "react-dom": "^15.3.2",
     "react-fela": "^3.0.0",
     "react-icons": "^2.2.1",
-    "oncogrid": "git+ssh://git@github.com/icgc/oncogrid.git#develop"
+    "recompose": "^0.20.2"
   }
 }

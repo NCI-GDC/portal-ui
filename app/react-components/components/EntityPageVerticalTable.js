@@ -60,6 +60,7 @@ const EntityPageVerticalTable = ({ style, title, thToTd }) => {
                 style={{
                   ...styles.tr,
                   backgroundColor: i % 2 === 0 ? theme.greyScale6 : '#fff',
+                  textTransform: 'capitalize',
                 }}
               >
                 {d.th}

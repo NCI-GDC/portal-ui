@@ -22,10 +22,21 @@ export const CaseTableComponent = (props: TProps) => (
     <table>
       <thead>
         <tr>
-          <th>Case UUID</th>
-          <th>Project</th>
-          <th>Primary Site</th>
-          <th>Gender</th>
+          <th rowSpan="2">Case UUID</th>
+          <th rowSpan="2">Project</th>
+          <th rowSpan="2">Primary Site</th>
+          <th rowSpan="2">Gender</th>
+          <th rowSpan="2">Files</th>
+          <th colSpan="6">Available Cases per Data Category</th>
+          <th rowSpan="2">Annotations</th>
+        </tr>
+        <tr>
+          <th>Seq</th>
+          <th>Exp</th>
+          <th>SNV</th>
+          <th>CNV</th>
+          <th>Clinical</th>
+          <th>Bio</th>
         </tr>
       </thead>
       <CaseTBody edges={props.hits.edges} />

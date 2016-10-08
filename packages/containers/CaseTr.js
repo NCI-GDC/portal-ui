@@ -4,19 +4,29 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import CaseLink from '@ncigdc/components/Links/CaseLink';
+import { findDataCategory } from '@ncigdc/utils/data';
 
-export type TProps = {
-  node: {
+import type { TCategory } from '@ncigdc/utils/data';
+
+export type TProps = {|
+  node: {|
     case_id: string,
-    demographic: {
+    demographic: {|
       gender: string,
-    },
-    project: {
+    |},
+    project: {|
       primary_site: string,
       project_id: string,
-    },
-  },
-};
+    |},
+    summary: {|
+      data_categories: {|
+        data_category: TCategory,
+        file_count: number,
+      |}[],
+      file_count: number,
+    |},
+  |},
+|};
 
 export const CaseTrComponent = ({ node }: TProps) => (
   <tr>
@@ -24,6 +34,14 @@ export const CaseTrComponent = ({ node }: TProps) => (
     <td>{node.project.project_id}</td>
     <td>{node.project.primary_site}</td>
     <td>{node.demographic.gender}</td>
+    <td>files</td>
+    <td>{findDataCategory('Seq', node.summary.data_categories).file_count}</td>
+    <td>{findDataCategory('Exp', node.summary.data_categories).file_count}</td>
+    <td>{findDataCategory('SNV', node.summary.data_categories).file_count}</td>
+    <td>{findDataCategory('CNV', node.summary.data_categories).file_count}</td>
+    <td>{findDataCategory('Clinical', node.summary.data_categories).file_count}</td>
+    <td>{findDataCategory('Bio', node.summary.data_categories).file_count}</td>
+    <td>annotations</td>
   </tr>
 );
 
@@ -38,6 +56,13 @@ export const CaseTrQuery = {
         }
         demographic {
           gender
+        }
+        summary {
+          file_count
+          data_categories {
+            file_count
+            data_category
+          }
         }
       }
     `,

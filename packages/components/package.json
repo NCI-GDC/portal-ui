@@ -17,6 +17,7 @@
   },
   "peerDependencies": {
     "react": "^15.0.0",
-    "react-router": "^4.0.0"
+    "react-router": "^4.0.0",
+    "filesize": "^3.0.0"
   }
 }

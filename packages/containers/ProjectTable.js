@@ -22,10 +22,21 @@ export const ProjectTableComponent = (props: TProps) => (
     <table>
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Disease Type</th>
-          <th>Primary Site</th>
-          <th>Program</th>
+          <th rowSpan="2">ID</th>
+          <th rowSpan="2">Disease Type</th>
+          <th rowSpan="2">Primary Site</th>
+          <th rowSpan="2">Program</th>
+          <th rowSpan="2">Cases</th>
+          <th colSpan="6">Available Cases per Data Category</th>
+          <th rowSpan="2">Files</th>
+        </tr>
+        <tr>
+          <th>Seq</th>
+          <th>Exp</th>
+          <th>SNV</th>
+          <th>CNV</th>
+          <th>Clinical</th>
+          <th>Bio</th>
         </tr>
       </thead>
       <ProjectTBody edges={props.hits.edges} />

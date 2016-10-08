@@ -11,6 +11,7 @@
   },
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
+    "filesize": "3.3.0",
     "jsurl": "0.1.4",
     "react": "15.3.2",
     "react-dom": "15.3.2",

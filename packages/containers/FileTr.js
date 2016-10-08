@@ -4,6 +4,7 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import FileLink from '@ncigdc/components/Links/FileLink';
+import FileSize from '@ncigdc/components/FileSize';
 
 export type TProps = {
   node: {
@@ -33,7 +34,7 @@ export const FileTrComponent = ({ node }: TProps) => (
     <td>{new Set(node.cases.map(c => c.project.project_id))}</td>
     <td>{node.data_category}</td>
     <td>{node.data_format}</td>
-    <td>{`${node.file_size}B`}</td>
+    <td><FileSize bytes={node.file_size} /></td>
   </tr>
 );
 

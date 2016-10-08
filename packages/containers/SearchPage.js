@@ -3,11 +3,17 @@
 import React from 'react';
 import Relay from 'react-relay';
 
+import CaseTable from './CaseTable';
+import CaseAggregations from './CaseAggregations';
 import FileTable from './FileTable';
-import FilesAggregations from './FilesAggregations';
+import FileAggregations from './FileAggregations';
 
 export type TProps = {
   viewer: {
+    cases: {
+      aggregations: string,
+      hits: string,
+    },
     files: {
       aggregations: string,
       hits: string,
@@ -17,8 +23,10 @@ export type TProps = {
 
 export const SearchPageComponent = (props: TProps) => (
   <div>
-    <FilesAggregations aggregations={props.viewer.files.aggregations} />
+    <FileAggregations aggregations={props.viewer.files.aggregations} />
     <FileTable hits={props.viewer.files.hits} />
+    <CaseAggregations aggregations={props.viewer.cases.aggregations} />
+    <CaseTable hits={props.viewer.cases.hits} />
   </div>
 );
 
@@ -31,9 +39,17 @@ export const SearchPageQuery = {
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
+        cases {
+          aggregations(filters: $filters) {
+            ${CaseAggregations.getFragment('aggregations')}
+          }
+          hits(first: $first offset: $offset, filters: $filters) {
+            ${CaseTable.getFragment('hits')}
+          }
+        }
         files {
           aggregations(filters: $filters) {
-            ${FilesAggregations.getFragment('aggregations')}
+            ${FileAggregations.getFragment('aggregations')}
           }
           hits(first: $first offset: $offset, filters: $filters) {
             ${FileTable.getFragment('hits')}

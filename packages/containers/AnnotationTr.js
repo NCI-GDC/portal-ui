@@ -3,7 +3,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import CaseLink from '@ncigdc/components/Links/CaseLink';
+import AnnotationLink from '@ncigdc/components/Links/AnnotationLink';
 
 export type TProps = {
   node: {
@@ -23,9 +23,9 @@ export type TProps = {
 export const AnnotationTrComponent = ({ node }: TProps) => (
   <tr>
     <td>
-      <CaseLink id={node.annotation_id}>
+      <AnnotationLink id={node.annotation_id}>
         {node.annotation_id}
-      </CaseLink>
+      </AnnotationLink>
     </td>
     <td>{node.case_id}</td>
     <td>{node.project.project_id}</td>

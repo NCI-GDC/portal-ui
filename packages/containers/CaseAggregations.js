@@ -19,7 +19,7 @@ export type TProps = {
   },
 };
 
-export const CasesAggregationsComponent = (props: TProps) => {
+export const CaseAggregationsComponent = (props: TProps) => {
   const docType = 'cases';
   const facets = [
     'demographic__ethnicity',
@@ -43,10 +43,10 @@ export const CasesAggregationsComponent = (props: TProps) => {
   );
 };
 
-export const CasesAggregationsQuery = {
+export const CaseAggregationsQuery = {
   fragments: {
     aggregations: () => Relay.QL`
-      fragment on CasesAgg {
+      fragment on CaseAggregations {
         demographic__ethnicity {
           buckets {
             doc_count
@@ -95,9 +95,9 @@ export const CasesAggregationsQuery = {
 };
 
 
-const CasesAggregations = Relay.createContainer(
-  CasesAggregationsComponent,
-  CasesAggregationsQuery
+const CaseAggregations = Relay.createContainer(
+  CaseAggregationsComponent,
+  CaseAggregationsQuery
 );
 
-export default CasesAggregations;
+export default CaseAggregations;

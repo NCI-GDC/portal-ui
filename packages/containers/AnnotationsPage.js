@@ -4,7 +4,7 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import AnnotationTable from './AnnotationTable';
-import AnnotationsAggregations from './AnnotationsAggregations';
+import AnnotationAggregations from './AnnotationAggregations';
 
 export type TProps = {
   viewer: {
@@ -17,7 +17,7 @@ export type TProps = {
 
 export const AnnotationsPageComponent = (props: TProps) => (
   <div>
-    <AnnotationsAggregations aggregations={props.viewer.annotations.aggregations} />
+    <AnnotationAggregations aggregations={props.viewer.annotations.aggregations} />
     <AnnotationTable hits={props.viewer.annotations.hits} />
   </div>
 );
@@ -33,7 +33,7 @@ export const AnnotationsPageQuery = {
       fragment on Root {
         annotations {
           aggregations(filters: $filters) {
-            ${AnnotationsAggregations.getFragment('aggregations')}
+            ${AnnotationAggregations.getFragment('aggregations')}
           }
           hits(first: $first offset: $offset, filters: $filters) {
             ${AnnotationTable.getFragment('hits')}

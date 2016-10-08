@@ -30,9 +30,12 @@ export const prepareViewerParams: TPrepareViewerParams = ({ location: { query } 
 };
 
 type TPrepareNodeParams = (t: string) => (o: { location: { query: TRawQuery }, params: {id: string}}) => TRelayRouteParamsNode;
-export const prepareNodeParams: TPrepareNodeParams = type => ({ location: { query = {} }, params }) => ({
-  id: btoa(`${type}:${params.id}`),
-  offset: parseIntParam(query.offset, 0),
-  filters: parseFilterParam(query.filters, null),
-});
+export const prepareNodeParams: TPrepareNodeParams = type => ({ location: { query }, params }) => {
+  const q = query || {};
+  return ({
+    id: btoa(`${type}:${params.id}`),
+    offset: parseIntParam(q.offset, 0),
+    filters: parseFilterParam(q.filters, null),
+  });
+};
 

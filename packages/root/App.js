@@ -7,7 +7,9 @@ import Match from 'react-router/Match';
 import { stringify } from 'query-string';
 
 import SearchRoute from '@ncigdc/routes/SearchRoute';
+import ProjectsRoute from '@ncigdc/routes/ProjectsRoute';
 import AnnotationsRoute from '@ncigdc/routes/AnnotationsRoute';
+import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import CaseRoute from '@ncigdc/routes/CaseRoute';
 import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
@@ -15,7 +17,9 @@ import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
 
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 import SearchLink from '@ncigdc/components/Links/SearchLink';
-import FileLink from '@ncigdc/components/Links/FileLink';
+import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
+import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
+
 
 const stringifyQuery = (query) => (
   stringify(query, { strict: false })
@@ -26,16 +30,17 @@ const AppComponent = () => (
     <div>
       <ul>
         <li><HomeLink /></li>
-        <li><SearchLink>the search link</SearchLink></li>
-        <li><SearchLink>the search link</SearchLink></li>
-        <li><FileLink merge id="fba0b6ac-7bbc-4caa-a195-785b50e1829a" query={{ offset: 3 }} /></li>
-        <li><FileLink id="fba0b6ac-7bbc-4caa-a195-785b50e1829a" query={{ offset: 0 }}>the file link</FileLink></li>
+        <li><ProjectsLink /></li>
+        <li><SearchLink /></li>
+        <li><AnnotationsLink /></li>
       </ul>
 
       <hr />
 
       <Match exactly pattern="/search" component={SearchRoute} />
+      <Match exactly pattern="/projects" component={ProjectsRoute} />
       <Match exactly pattern="/annotations" component={AnnotationsRoute} />
+      <Match pattern="/projects/:id" component={ProjectRoute} />
       <Match pattern="/files/:id" component={FileRoute} />
       <Match pattern="/cases/:id" component={CaseRoute} />
       <Match pattern="/annotations/:id" component={AnnotationRoute} />

@@ -15,7 +15,7 @@ const TermAggregation = (props: TProps) => {
 
   return (
     <div>
-      <h3>dotField</h3>
+      <h3>{dotField}</h3>
       <div>{
         props.buckets.map(bucket => (
           <div key={bucket.key}>

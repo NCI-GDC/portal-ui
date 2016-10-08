@@ -13,7 +13,7 @@ const InternalLink = ({ pathname, query, ...rest }: TLinkProps) => {
   const f0 = q0.filters
     ? JSURL.stringify(q0.filters)
     : null;
-  console.log(f0);
+
   const q = removeEmptyKeys({
     ...q0,
     filters: f0,

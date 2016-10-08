@@ -15,10 +15,10 @@ type TListLinkConfig = {|
   pathname: string,
 |};
 
-type TMakeLinkBase = (p: TLinkProps) => React.Element<TLinkProps>;
+type TMakeLinkBase = (p: TLinkProps) => React.Element<>;
 const makeLinkBase: TMakeLinkBase = props => <Link {...props} />;
 
-type TMakeIdLink = (c: TIdLinkConfig) => (p: TIdLinkProps) => React.Element<TLinkProps>;
+type TMakeIdLink = (c: TIdLinkConfig) => (p: TIdLinkProps) => React.Element<>;
 export const makeIDLink: TMakeIdLink = config => props => {
   const pathname = `${config.pathname}/${props.id}`;
   const children = props.children || props.id;
@@ -32,6 +32,6 @@ export const makeIDLink: TMakeIdLink = config => props => {
   );
 };
 
-type TMakeListLink = (c: TListLinkConfig) => (p: TListLinkProps) => React.Element<TListLinkProps>;
+type TMakeListLink = (c: TListLinkConfig) => (p: TListLinkProps) => React.Element<>;
 export const makeListLink: TMakeListLink = config => props => makeLinkBase({ ...config, ...props });
 

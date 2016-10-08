@@ -3,7 +3,7 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import CaseTBody from './CaseTBody';
+import ProjectTBody from './ProjectTBody';
 import Pagination from './Pagination';
 
 export type TProps = {
@@ -16,44 +16,44 @@ export type TProps = {
   },
 };
 
-export const CaseTableComponent = (props: TProps) => (
+export const ProjectTableComponent = (props: TProps) => (
   <div>
-    <h2>{`Cases ${props.hits.pagination.count} : ${props.hits.pagination.total}`}</h2>
+    <h2>{`Projects ${props.hits.pagination.count} : ${props.hits.pagination.total}`}</h2>
     <table>
       <thead>
         <tr>
-          <th>Case UUID</th>
-          <th>Project</th>
+          <th>ID</th>
+          <th>Disease Type</th>
           <th>Primary Site</th>
-          <th>Gender</th>
+          <th>Program</th>
         </tr>
       </thead>
-      <CaseTBody edges={props.hits.edges} />
+      <ProjectTBody edges={props.hits.edges} />
     </table>
     <Pagination pagination={props.hits.pagination} />
   </div>
 );
 
-export const CaseTableQuery = {
+export const ProjectTableQuery = {
   fragments: {
     hits: () => Relay.QL`
-      fragment on CaseConnection {
+      fragment on ProjectConnection {
         pagination {
           count
           total
           ${Pagination.getFragment('pagination')}
         }
         edges {
-          ${CaseTBody.getFragment('edges')}
+          ${ProjectTBody.getFragment('edges')}
         }
       }
     `,
   },
 };
 
-const CaseTable = Relay.createContainer(
-  CaseTableComponent,
-  CaseTableQuery
+const ProjectTable = Relay.createContainer(
+  ProjectTableComponent,
+  ProjectTableQuery
 );
 
-export default CaseTable;
+export default ProjectTable;

@@ -5,50 +5,47 @@ import Relay from 'react-relay';
 
 export type TProps = {
   node: {
-    access: string,
-    cases: {
-      project: {
-        project_id: string,
+    case_id: string,
+    project: {
+      disease_type: string,
+      name: string,
+      primary_site: string,
+      program: {
+        name: string,
       },
-    }[],
-    data_category: string,
-    data_format: string,
-    file_id: string,
-    file_name: string,
-    file_size: number,
-    platform: string,
+      project_id: string,
+    },
+    submitter_id: string,
   },
 };
 
 export const CasePageComponent = (props: TProps) => (
   <div>
-    <div>{props.node.file_id}</div>
-    <div>{props.node.file_name}</div>
-    <div>{props.node.file_size}</div>
-    <div>{props.node.access}</div>
-    <div>{props.node.data_category}</div>
-    <div>{props.node.data_format}</div>
-    <div>{new Set(props.node.cases.map(c => c.project.project_id))}</div>
-    <div>{props.node.platform}</div>
+    <div>{props.node.case_id}</div>
+    <div>{props.node.submitter_id}</div>
+    <div>{props.node.project.project_id}</div>
+    <div>{props.node.project.name}</div>
+    <div>{props.node.project.disease_type}</div>
+    <div>{props.node.project.program.name}</div>
+    <div>{props.node.project.primary_site}</div>
   </div>
 );
 
 export const CasePageQuery = {
   fragments: {
     node: () => Relay.QL`
-      fragment on File {
-        file_id
-        file_name
-        file_size
-        access
-        data_category
-        data_format
-        cases {
-          project {
-            project_id
+      fragment on Case {
+        case_id
+        submitter_id
+        project {
+          project_id
+          name
+          disease_type
+          program {
+            name
           }
+          primary_site
         }
-        platform
       }
     `,
   },

@@ -34,7 +34,7 @@ export const AnnotationTableComponent = (props: TProps) => (
       </thead>
       <AnnotationTBody edges={props.hits.edges} />
     </table>
-    <Pagination pathname="/annotations" pagination={props.hits.pagination} />
+    <Pagination pagination={props.hits.pagination} />
   </div>
 );
 

@@ -19,7 +19,7 @@ export type TProps = {
   },
 };
 
-export const AnnotationsAggregationsComponent = (props: TProps) => {
+export const AnnotationAggregationsComponent = (props: TProps) => {
   const docType = 'annotations';
   const facets = [
     'classification',
@@ -45,10 +45,10 @@ export const AnnotationsAggregationsComponent = (props: TProps) => {
 };
 
 
-export const AnnotationsAggregationsQuery = {
+export const AnnotationAggregationsQuery = {
   fragments: {
     aggregations: () => Relay.QL`
-      fragment on AnnotationsAgg {
+      fragment on AnnotationAggregations {
         category {
           buckets {
             doc_count
@@ -97,9 +97,9 @@ export const AnnotationsAggregationsQuery = {
 };
 
 
-const AnnotationsAggregations = Relay.createContainer(
-  AnnotationsAggregationsComponent,
-  AnnotationsAggregationsQuery
+const AnnotationAggregations = Relay.createContainer(
+  AnnotationAggregationsComponent,
+  AnnotationAggregationsQuery
 );
 
-export default AnnotationsAggregations;
+export default AnnotationAggregations;

@@ -3,8 +3,10 @@
 import React from 'react';
 import Relay from 'react-relay';
 
+import CaseLink from '@ncigdc/components/Links/CaseLink';
+
 export type TProps = {
-  kase: {
+  node: {
     case_id: string,
     demographic: {
       gender: string,
@@ -16,18 +18,18 @@ export type TProps = {
   },
 };
 
-export const CaseTrComponent = ({ kase }: TProps) => (
+export const CaseTrComponent = ({ node }: TProps) => (
   <tr>
-    <td>{kase.case_id}</td>
-    <td>{kase.project.project_id}</td>
-    <td>{kase.project.primary_site}</td>
-    <td>{kase.demographic.gender}</td>
+    <td><CaseLink id={node.case_id} /></td>
+    <td>{node.project.project_id}</td>
+    <td>{node.project.primary_site}</td>
+    <td>{node.demographic.gender}</td>
   </tr>
 );
 
 export const CaseTrQuery = {
   fragments: {
-    kase: () => Relay.QL`
+    node: () => Relay.QL`
       fragment on Case {
         case_id
         project {

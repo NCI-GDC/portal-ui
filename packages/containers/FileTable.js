@@ -33,7 +33,7 @@ export const FileTableComponent = (props: TProps) => (
       </thead>
       <FileTBody edges={props.hits.edges} />
     </table>
-    <Pagination pathname="/files" pagination={props.hits.pagination} />
+    <Pagination pagination={props.hits.pagination} />
   </div>
 );
 

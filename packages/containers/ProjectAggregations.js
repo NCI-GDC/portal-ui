@@ -9,25 +9,26 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
 export type TProps = {
   aggregations: {
-    access: { buckets: [TBucket] },
-    data_category: { buckets: [TBucket] },
-    data_format: { buckets: [TBucket] },
-    data_type: { buckets: [TBucket] },
-    experimental_strategy: { buckets: [TBucket] },
-    platform: { buckets: [TBucket] },
+    disease_type: { buckets: [TBucket] },
+    primary_site: { buckets: [TBucket] },
+    program__name: { buckets: [TBucket] },
+    project_id: { buckets: [TBucket] },
+    summary__data_categories__data_category: { buckets: [TBucket] },
+    summary__experimental_strategies__experimental_strategy: { buckets: [TBucket] },
   },
 };
 
-export const FilesAggregationsComponent = (props: TProps) => {
-  const docType = 'files';
+export const ProjectAggregationsComponent = (props: TProps) => {
+  const docType = 'projects';
   const facets = [
-    'access',
-    'data_category',
-    'data_format',
-    'data_type',
-    'experimental_strategy',
-    'platform',
+    'disease_type',
+    'primary_site',
+    'program__name',
+    'project_id',
+    'summary__data_categories__data_category',
+    'summary__experimental_strategies__experimental_strategy',
   ];
+
   return (
     <div>
       {facets.map(f => (
@@ -41,41 +42,42 @@ export const FilesAggregationsComponent = (props: TProps) => {
   );
 };
 
-export const FilesAggregationsQuery = {
+
+export const ProjectAggregationsQuery = {
   fragments: {
     aggregations: () => Relay.QL`
-      fragment on FilesAgg {
-        access {
+      fragment on ProjectAggregations {
+        primary_site {
           buckets {
             doc_count
             key
           }
         }
-        data_category {
+        program__name {
           buckets {
             doc_count
             key
           }
         }
-        data_format {
+        disease_type {
           buckets {
             doc_count
             key
           }
         }
-        data_type {
+        project_id {
           buckets {
             doc_count
             key
           }
         }
-        experimental_strategy {
+        summary__experimental_strategies__experimental_strategy {
           buckets {
             doc_count
             key
           }
         }
-        platform {
+        summary__data_categories__data_category {
           buckets {
             doc_count
             key
@@ -86,9 +88,10 @@ export const FilesAggregationsQuery = {
   },
 };
 
-const FilesAggregations = Relay.createContainer(
-  FilesAggregationsComponent,
-  FilesAggregationsQuery
+
+const ProjectAggregations = Relay.createContainer(
+  ProjectAggregationsComponent,
+  ProjectAggregationsQuery
 );
 
-export default FilesAggregations;
+export default ProjectAggregations;

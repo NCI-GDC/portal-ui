@@ -7,10 +7,10 @@ module ngApp.search.cases.table.service {
       constructor(private DATA_CATEGORIES, private BiospecimenService: IBiospecimenService) {}
 
       withAnnotationFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
-          var filterString = $filter("makeFilter")(filters, true);
-          var href = 'annotations?filters=' + filterString;
-          var val = '{{' + value + '|number:0}}';
-          return "<a href='" + href + "'>" + val + '</a>';
+        var filterString = $filter("makeFilter")(filters, true);
+        var href = 'annotations?filters=' + filterString;
+        var val = '{{' + value + '|number:0}}';
+        return value? "<a href='" + href + "'>" + val + '</a>' : '0';
       }
 
       withFilter(value: number, filters: Object[], $filter: ng.IFilterService): string {
@@ -109,16 +109,12 @@ module ngApp.search.cases.table.service {
             thToolTipText: 'Number of annotations referring to the case, its associated biospecimen, or its files',
             td: (row, $scope) => {
               const allAnnotations = this.BiospecimenService.getAllAnnotations(row);
-              var getAnnotations = (row, $filter) => {
-                return allAnnotations.length === 1
-                  ? '<a href="annotations/' + allAnnotations.annotation_id + '">' + 1 + '</a>'
-                  : this.withAnnotationFilter(
-                      allAnnotations.length,
-                      [{field: "annotation_id", value: _.pluck(allAnnotations, 'annotation_id')}],
-                      $filter
-                    );
-              }
-              return (allAnnotations || []).length && getAnnotations(allAnnotations, $scope.$filter);
+              return allAnnotations.length === 1 ? `<a href="annotations/${allAnnotations[0].annotation_id}">${allAnnotations.length}</a>`:
+              this.withAnnotationFilter(
+                allAnnotations.length,
+                [{ field: 'annotation.case_id', value: row.case_id}],
+                $scope.$filter
+              );
             },
             thClassName: 'text-right',
             tdClassName: 'text-right'

@@ -20,6 +20,7 @@ let Project = (() => {
     container: {
       width: '80%',
       margin: 'auto',
+      position: 'static',
     },
     heading: {
       flexGrow: 1,
@@ -41,7 +42,6 @@ let Project = (() => {
       marginBottom: '2rem',
     },
     column: {
-      width: '100%',
       minWidth: 450,
     },
   }
@@ -151,7 +151,8 @@ let Project = (() => {
           />
         </span>
       </Row>
-      <OncoGridWrapper $scope={$scope}/>
+
+      <OncoGridWrapper />
     </Column>
   );
 })()

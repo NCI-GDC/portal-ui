@@ -4,10 +4,36 @@ import _ from 'lodash';
 
 import Button from './Button';
 import Row from './uikit/Flex/Row';
+import Column from './uikit/Flex/Column';
 import oncoGridController from './utils/oncoGridController';
 import {isFullScreen, exitFullScreen, enterFullScreen} from './utils/fullscreen';
 
+const GRID_ID = 'oncogrid-div';
+
+const colorMap = {
+  'missense_variant': '#ff9b6c',
+  'frameshift_variant': '#57dba4',
+  'start_lost': '#ff2323',
+  'stop_lost': '#d3ec00',
+  'initiator_codon_variant': '#5abaff',
+  'stop_gained': '#af57db',
+};
+
 const styles = {
+  container: {
+    overflow: 'visible',
+    maxWidth: 900,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  fullscreen: {
+    maxWidth: '100%',
+    width: '100%',
+    marginLeft: 0,
+    padding: '100px 100px 0',
+    overflow: 'scroll',
+    height: '100%',
+  },
   button: {
     color: '#333',
     backgroundColor: '#fff',
@@ -35,69 +61,65 @@ const styles = {
   }
 };
 
+const clickHandlers = {
+  donorHistogramClick: function (d) {
+    console.log('donorHistogramClick');
+  },
+
+  gridClick: function (o) {
+    console.log('gridClick');
+  },
+
+  geneHistogramClick: function (g) {
+    console.log('geneHistogramClick');
+  },
+
+  geneClick: function (g) {
+    console.log('geneClick'); // go to gene page
+  },
+
+  donorClick: function (d) {
+    console.log('donorClick') // go to case page
+  },
+}
+
 const HeatMap = () => (
-  <table className="onco-table">
-    <tbody>
-      <tr>
-        <td style={styles.td}>Less</td>
-        <td style={styles.td}>
-          <div className="onco-legend-square" style={{background:'#D33682', opacity: 0.25}}></div>
-          <div className="onco-legend-square" style={{background:'#D33682', opacity: 0.50}}></div>
-          <div className="onco-legend-square" style={{background:'#D33682', opacity: 0.75}}></div>
-          <div className="onco-legend-square" style={{background:'#D33682', opacity: 1}}></div>
-        </td>
-        <td style={styles.td}>More Mutations</td>
-      </tr>
-    </tbody>
-  </table>
+  <Row className="onco-table">
+    <Column style={styles.td}>Less</Column>
+    <Row style={styles.td}>
+      {
+        [0.25, 0.5, 0.75, 1]
+          .map((opacity) => (
+            <div className="onco-legend-square" style={{background:'#D33682', opacity: opacity}} key={opacity}></div>
+          ))
+      }
+    </Row>
+    <Column style={styles.td}>More Mutations</Column>
+  </Row>
 );
 
-const Legend = () => (
-  <table className="onco-table">
-    <tbody>
-      <tr>
-        <td style={styles.td}>
-          <div style={styles.cell}>
-            <div className="onco-legend-square" style={{background:'#ff9b6c'}}></div>
-            <small>missense variant</small>
-          </div>
+const Legend = () => {
+  const labels = _.map(colorMap, (color, key) => (
+    <div style={styles.cell} key={key}>
+      <div className="onco-legend-square" style={{background: color}}></div>
+      <span>{key.replace(/_/g, ' ')}</span>
+    </div>
+  ));
 
-          <div style={styles.cell}>
-            <div className="onco-legend-square" style={{background:'#57dba4'}}></div>
-            <small>frameshift variant</small>
-          </div>
-        </td>
-        
-        <td style={styles.td}>
-          <div style={styles.cell}>
-            <div className="onco-legend-square" style={{background:'#ff2323'}}></div>
-            <small>start lost</small>
-          </div>
-
-          <div style={styles.cell}>
-            <div className="onco-legend-square" style={{background:'#d3ec00'}}></div>
-            <small>stop lost</small>
-          </div>
-        </td>
-
-        <td style={styles.td}>
-          <div style={styles.cell}>
-            <div className="onco-legend-square" style={{background:'#5abaff'}}></div>
-            <small>initiator codon variant</small>
-          </div>
-
-          <div style={styles.cell}>
-            <div className="onco-legend-square" style={{background:'#af57db'}}></div>
-            <small>stop gained</small>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-);
+  return (
+    <Row className="onco-table">
+      <Column style={styles.td}>{labels.slice(0, 2)}</Column>
+      <Column style={styles.td}>{labels.slice(2, 4)}</Column>
+      <Column style={styles.td}>{labels.slice(4, 6)}</Column>
+    </Row>
+  );
+};
 
 const OncoGridWrapper = ({gridState, dispatch}) => (
-  <div id="oncogrid-container">
+  <div
+    id="oncogrid-container"
+    style={gridState.isFullScreen ? {...styles.container, ...styles.fullscreen} : styles.container}
+  >
     {!oncoGridController.hasNoData &&
       <Row style={{ marginLeft: 0, minHeight: '70px' }}>
         <div style={{flexGrow: 1}}>
@@ -167,7 +189,7 @@ const OncoGridWrapper = ({gridState, dispatch}) => (
       </div>
     }
 
-    <div id="oncogrid-div" style={{cursor: gridState.crosshairMode ? 'crosshair' : 'pointer'}}/>
+    <div id={GRID_ID} style={{cursor: gridState.crosshairMode ? 'crosshair' : 'pointer'}}/>
   </div>
 );
 
@@ -212,7 +234,12 @@ const initialGridState = {
 const enhance = compose(
   lifecycle({
     componentDidMount() {
-      oncoGridController.init();
+      oncoGridController.init({
+        colorMap,
+        clickHandlers,
+        element: `#${GRID_ID}`,
+      });
+
       this.forceUpdate();
     }
   }),

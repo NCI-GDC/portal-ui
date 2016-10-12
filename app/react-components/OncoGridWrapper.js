@@ -27,6 +27,11 @@ const styles = {
   cell: {
     paddingTop: 4,
     paddingBottom: 4,
+  },
+  hidden: {
+    width: 0,
+    height: 0,
+    overflow: 'hidden',
   }
 };
 
@@ -103,31 +108,31 @@ const OncoGridWrapper = ({gridState, dispatch}) => (
             style={styles.button}
             onClick={() => dispatch({type: 'reload'})}
           >
-            <i className="fa fa-undo"></i>
+            <i className="fa fa-undo"></i><span style={styles.hidden}>reload</span>
           </Button>
           <Button
             style={styles.button}
             onClick={() => oncoGridController.cluster()}
           >
-            <i className="fa fa-sort-amount-desc"></i>
+            <i className="fa fa-sort-amount-desc"></i><span style={styles.hidden}>sort</span>
           </Button>
           <Button
             style={gridState.heatMapMode ? {...styles.button, ...styles.buttonActive} : styles.button}
             onClick={() => dispatch({type: 'toggleHeatmap'})}
           >
-            <i className="fa fa-fire"></i>
+            <i className="fa fa-fire"></i><span style={styles.hidden}>toggle heatmap</span>
           </Button>
           <Button
             style={gridState.gridActive ? {...styles.button, ...styles.buttonActive} : styles.button}
             onClick={() => dispatch({type: 'toggleGridLines'})}
           >
-            <i className="fa fa-th"></i>
+            <i className="fa fa-th"></i><span style={styles.hidden}>toggle grid lines</span>
           </Button>
           <Button
             style={gridState.crosshairMode ? {...styles.button, ...styles.buttonActive} : styles.button}
             onClick={() => dispatch({type: 'toggleCrosshair'})}
           >
-            <i className="fa fa-crosshairs"></i>
+            <i className="fa fa-crosshairs"></i><span style={styles.hidden}>toggle crosshair mode</span>
           </Button>
           <Button
             style={gridState.isFullScreen ? {...styles.button, ...styles.buttonActive} : styles.button}
@@ -143,7 +148,7 @@ const OncoGridWrapper = ({gridState, dispatch}) => (
               dispatch({type: 'updateFullScreen'})
             }}
           >
-            <i className="fa fa-arrows-h"></i>
+            <i className="fa fa-arrows-h"></i><span style={styles.hidden}>toggle fullscreen</span>
           </Button>
 
           {gridState.crosshairMode &&

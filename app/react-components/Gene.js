@@ -44,12 +44,11 @@ let Gene = (() => {
       width: '100%',
       minWidth: 450,
     },
-  }
+  };
 
   const externalReferenceLinks = {
     hgnc: id => `http://www.genenames.org/data/hgnc_data.php?hgnc_id=${id}`,
     ensembl: id => `http://feb2014.archive.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=${id}`,
-    cosmic: id => `http://cancer.sanger.ac.uk/cosmic/gene/analysis?ln=${id}`,
     entrez_gene: id => `http://www.ncbi.nlm.nih.gov/gene/${id}`,
     omim_gene: id => `http://omim.org/entry/${id}`,
     uniprotkb_swissprot: id => `http://www.uniprot.org/uniprot/${id}`,
@@ -61,20 +60,11 @@ let Gene = (() => {
       <Row style={{
           justifyContent: 'space-between',
           marginTop: '1rem',
-          marginBottom: '2rem'
         }}>
           <h1 style={styles.heading}>
             <GeneIcon style={{ margin: '1rem' }}/>
             { gene.gene_id }
           </h1>
-        <Button
-          style={{...styles.buttons, marginTop: '1rem'}}
-          leftIcon={
-            <CartIcon />
-          }
-        >
-          Add All Files to the Cart
-        </Button>
       </Row>
       <Row spacing="2rem">
         <EntityPageVerticalTable
@@ -86,48 +76,21 @@ let Gene = (() => {
             { th: 'Type', td: gene.biotype},
             { th: 'Location', td: gene.chromosome },
             { th: 'Strand', td: gene.strand },
-            { th: 'Description', td: gene.description },
-          ]}
-          style={{...styles.summary, ...styles.column}}
-        />
-        <Column style={styles.column}>
-          <CountCard
-            title="CASES"
-            count="tbd"
-            icon={<CaseIcon style={{ width: '4rem', height: '4rem' }} />}
-            style={styles.countCard}
-          />
-
-          <CountCard
-            title="FILES"
-            count="tbd"
-            icon={<FileIcon style={{ width: '4rem', height: '4rem' }} />}
-            style={styles.countCard}
-          />
-
-          <CountCard
-            title="ANNOTATIONS"
-            count="tbd"
-            icon={<EditIcon style={{ width: '4rem', height: '4rem' }} />}
-            style={styles.countCard}
-          />
-        </Column>
-      </Row>
-      <Row>
-        <EntityPageVerticalTable
-          title="Annotation"
-          thToTd={[
-            { th: 'GO Terms', td: 'tbd' },
-            { th: 'Curated Gene Set', td: 'tbd'},
+            { th: 'Description',
+              collapsibleTd: gene.description,
+              style: {
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'breakWord',
+                lineHeight: '2.2rem',
+              }
+            },
           ]}
           style={{
             ...styles.summary,
             ...styles.column,
-            marginRight: '1rem',
             alignSelf: 'flex-start',
           }}
         />
-
         <EntityPageVerticalTable
           title="External References"
           thToTd={
@@ -140,7 +103,7 @@ let Gene = (() => {
                       </ExternalLink>
                   }))
           }
-          style={{...styles.summary, ...styles.column}}
+          style={{...styles.summary, ...styles.column, alignSelf: 'flex-start'}}
         />
       </Row>
     </Column>

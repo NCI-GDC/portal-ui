@@ -49,7 +49,6 @@ let Gene = (() => {
   const externalReferenceLinks = {
     hgnc: id => `http://www.genenames.org/data/hgnc_data.php?hgnc_id=${id}`,
     ensembl: id => `http://feb2014.archive.ensembl.org/Homo_sapiens/Gene/Summary?db=core;g=${id}`,
-    cosmic: id => `http://cancer.sanger.ac.uk/cosmic/gene/analysis?ln=${id}`,
     entrez_gene: id => `http://www.ncbi.nlm.nih.gov/gene/${id}`,
     omim_gene: id => `http://omim.org/entry/${id}`,
     uniprotkb_swissprot: id => `http://www.uniprot.org/uniprot/${id}`,
@@ -61,7 +60,6 @@ let Gene = (() => {
       <Row style={{
           justifyContent: 'space-between',
           marginTop: '1rem',
-          marginBottom: '2rem'
         }}>
           <h1 style={styles.heading}>
             <GeneIcon style={{ margin: '1rem' }}/>

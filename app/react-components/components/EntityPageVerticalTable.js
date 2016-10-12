@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import { Column } from '../uikit/Flex';
 import theme from '../theme';
-import Table, { Tr, Td, Th } from '../uikit/Table';
+import Table, { Tr, Td, Th, CollapsibleTd } from '../uikit/Table';
 
 // th are vertical
 const EntityPageVerticalTable = ({ style, title, thToTd }) => {
@@ -61,18 +61,32 @@ const EntityPageVerticalTable = ({ style, title, thToTd }) => {
                   ...styles.tr,
                   backgroundColor: i % 2 === 0 ? theme.greyScale6 : '#fff',
                   textTransform: 'capitalize',
+                  verticalAlign: 'top',
                 }}
               >
                 {d.th}
               </Th>
-              <Td
-                style={{
-                  ...styles.td,
-                  backgroundColor: i % 2 === 0 ? theme.greyScale6 : '#fff',
-                }}
-              >
-                {d.td || '--'}
-              </Td>
+              {d.collapsibleTd &&
+                (<CollapsibleTd
+                  style={{
+                    ...styles.td,
+                    backgroundColor: i % 2 === 0 ? theme.greyScale6 : '#fff',
+                    ...d.style,
+                  }}
+                  text={d.collapsibleTd || '--'}
+                />)
+              }
+              {d.td &&
+                (<Td
+                  style={{
+                    ...styles.td,
+                    backgroundColor: i % 2 === 0 ? theme.greyScale6 : '#fff',
+                    ...d.style,
+                  }}
+                >
+                  {d.td || '--'}
+                </Td>)
+              }
             </Tr>
           ))}
           </tbody>

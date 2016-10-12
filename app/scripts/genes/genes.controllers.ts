@@ -1,9 +1,16 @@
 module ngApp.genes.controllers {
 
+  import ICoreService = ngApp.core.services.ICoreService;
+
   class GeneController {
 
     /* @ngInject */
-    constructor(private gene: any, private $scope: ng.IScope) {
+    constructor(
+      private gene: any,
+      private $scope: ng.IScope,
+      private CoreService: ICoreService,
+    ) {
+      CoreService.setPageTitle("Gene", gene.gene_id);
       $scope.gene = gene;
       this.renderReact();
     }

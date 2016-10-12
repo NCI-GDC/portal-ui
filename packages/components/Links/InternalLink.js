@@ -4,20 +4,24 @@ import React from 'react';
 import Link from 'react-router/Link';
 import JSURL from 'jsurl';
 
-import { removeEmptyKeys } from '@ncigdc/utils/uri';
+import { removeEmptyKeys as rek } from '@ncigdc/utils/uri';
 
 import type { TLinkProps } from './types';
 
-const InternalLink = ({ pathname, query, ...rest }: TLinkProps) => {
+const InternalLink = ({ pathname, query, removeEmptyKeys, ...rest }: TLinkProps) => {
   const q0 = query || {};
   const f0 = q0.filters
     ? JSURL.stringify(q0.filters)
     : null;
 
-  const q = removeEmptyKeys({
+  const q1 = {
     ...q0,
     filters: f0,
-  });
+  };
+
+  const q = removeEmptyKeys
+    ? removeEmptyKeys(q1)
+    : q1;
 
   return (
     <Link
@@ -28,6 +32,10 @@ const InternalLink = ({ pathname, query, ...rest }: TLinkProps) => {
       {...rest}
     />
   );
+};
+
+InternalLink.defaultProps = { // eslint-disable-line fp/no-mutation
+  removeEmptyKeys: rek,
 };
 
 export default InternalLink;

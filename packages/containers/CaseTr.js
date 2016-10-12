@@ -6,7 +6,7 @@ import Relay from 'react-relay';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import { findDataCategory } from '@ncigdc/utils/data';
 
-import type { TCategory } from '@ncigdc/utils/data';
+import type { TCategory } from '@ncigdc/utils/data/types';
 
 export type TProps = {|
   node: {|

@@ -1,8 +1,10 @@
 /* @flow */
 
+import type { TRawQuery, TUriQuery } from '../uri/types';
+
 export type TValueContent = {|
   field: string,
-  value: mixed,
+  value: Array<mixed>,
 |};
 export type TValueOp = 'in';
 export type TValueFilter = {|
@@ -10,9 +12,21 @@ export type TValueFilter = {|
   op: TValueOp,
 |};
 
-export type TGroupContent = Array<?TValueFilter>;
+export type TGroupContent = Array<TValueFilter>;
 export type TGroupOp = 'and';
 export type TGroupFilter = {|
   content: TGroupContent,
   op: TGroupOp,
 |};
+
+export type TCombineValues = (x: TValueFilter, y: TValueFilter) => ?TValueFilter;
+
+export type TMergeFilters = (q: ?TGroupFilter, c: ?TGroupFilter) => ?TGroupFilter;
+
+export type TMergeEnum = boolean | 'toggle' | 'replace';
+
+export type TMergeFns = (v: TMergeEnum) => TMergeFilters;
+
+export type TMergeQuery = (q: TUriQuery, c: TRawQuery, t: TMergeEnum) => TUriQuery;
+
+export type TSortFilters = (a: TValueFilter, b: TValueFilter) => number;

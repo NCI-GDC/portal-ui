@@ -20,7 +20,6 @@ import SearchLink from '@ncigdc/components/Links/SearchLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 
-
 const stringifyQuery = (query) => (
   stringify(query, { strict: false })
 );

@@ -20,7 +20,7 @@ const TermAggregation = (props: TProps) => {
         props.buckets.map(bucket => (
           <div key={bucket.key}>
             <Link
-              merge
+              merge="toggle"
               query={{
                 offset: 0,
                 filters: {

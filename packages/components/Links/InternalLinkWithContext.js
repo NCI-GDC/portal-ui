@@ -2,22 +2,26 @@
 
 import React from 'react';
 import { LocationSubscriber } from 'react-router/locationBroadcast';
+
+import { mergeQuery as mq } from '@ncigdc/utils/filters';
+
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
+
 import InternalLink from './InternalLink';
 
 import type { TLinkProps } from './types';
 
-const mergeQuery = (q, ctxq) => ({
-  ...ctxq,
-  ...q,
-});
 
-const InternalLinkWithContext = ({ pathname, query, merge, ...rest }: TLinkProps) => (
+const InternalLinkWithContext = ({ pathname, query, merge, mergeQuery, ...rest }: TLinkProps) => (
   <LocationSubscriber>{
-    contextLocation => {
-      const pn = pathname || contextLocation.pathname;
+    (ctx: {| pathname: string, query: TRawQuery |}) => {
+      const pn = pathname || ctx.pathname;
 
-      const q = merge
-        ? mergeQuery(query, contextLocation.query)
+      const q = (merge && mergeQuery && query)
+        ? mergeQuery(
+          query,
+          ctx.query,
+          merge)
         : query;
 
       return (
@@ -30,5 +34,9 @@ const InternalLinkWithContext = ({ pathname, query, merge, ...rest }: TLinkProps
     }
   }</LocationSubscriber>
 );
+
+InternalLinkWithContext.defaultProps = { // eslint-disable-line fp/no-mutation
+  mergeQuery: mq,
+};
 
 export default InternalLinkWithContext;

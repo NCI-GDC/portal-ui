@@ -1,3 +1,4 @@
+import _ from 'lodash';
 
 /**
  * Binds mutation consequence mappings from SnpEff
@@ -10,6 +11,7 @@ var dataOrdered = [
   {id: 'initiator_codon_variant', label: 'Initiator Codon'},
   {id: 'stop_gained', label: 'Stop Gained'},
   {id: 'stop_lost', label: 'Stop Lost'},
+
   {id: 'exon_loss_variant', label: 'Exon Loss'},
   {id: 'splice_acceptor_variant', label: 'Splice Acceptor'},
   {id: 'splice_donor_variant', label: 'Splice Donor'},
@@ -44,20 +46,8 @@ var dataOrdered = [
   {id: '_missing', label: 'Missing'}
 ];
 
-var map = {};
-
-dataOrdered.forEach(function(consequence) {
-  map[consequence.id] = consequence.label;
-});
-
 export default {
   precedence: function() {
     return _.pluck(dataOrdered, 'id');
-  },
-  translate: function(id) {
-    return map[id]; 
-  },
-  tooltip: function(id) {
-    return 'SO term: ' + id;
   },
 }

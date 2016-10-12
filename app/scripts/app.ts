@@ -232,6 +232,7 @@ angular
       "ngApp.cart",
       "ngApp.notFound",
       "ngApp.reports",
+      "ngApp.genes",
       "templates"
     ])
     .config(appConfig)

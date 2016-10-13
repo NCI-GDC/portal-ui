@@ -88,6 +88,12 @@ let styles = {
     width: `100vw`,
     padding: `0 14rem`,
   },
+  gdcAppsLink: {
+    display: `flex`,
+    flexDirection: `column`,
+    alignItems: `center`,
+    textDecoration: `none`,
+  }
 }
 
 let Home = ({ $scope }) => (
@@ -140,7 +146,9 @@ let Home = ({ $scope }) => (
           <Row style={{ padding: `2rem`, alignItems: `baseline` }}>
             <div style={{ fontSize: `2.3rem`, color: `rgb(70, 70, 70)` }}>Data Portal Summary</div>
             <div style={{ fontSize: `1.3rem`, color: `rgb(37, 97, 122)`, marginLeft: `2rem` }}>
-              Data Release 3.0 - September 21, 2016
+              <a href="https://gdc-docs.nci.nih.gov/Data_Portal/Release_Notes/Data_Portal_Release_Notes/">
+                Data Release 3.0 - September 21, 2016
+              </a>
             </div>
           </Row>
           <Row>
@@ -221,7 +229,7 @@ let Home = ({ $scope }) => (
       <Row style={styles.gdcAppsRow}>
         <a
           href="#" title="Data Portal"
-          style={{ display: `flex`, flexDirection: `column`, alignItems: `center` }}
+          style={styles.gdcAppsLink}
         >
           <img
             width="35px"
@@ -235,7 +243,7 @@ let Home = ({ $scope }) => (
           href="https://gdc.nci.nih.gov/"
           target="_blank"
           title="GDC Website"
-          style={{ display: `flex`, flexDirection: `column`, alignItems: `center` }}
+          style={styles.gdcAppsLink}
         >
           <img
             width="35px"
@@ -249,7 +257,7 @@ let Home = ({ $scope }) => (
           href="https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool"
           target="_blank"
           title="GDC Data Transfer Tool"
-          style={{ display: `flex`, flexDirection: `column`, alignItems: `center` }}
+          style={styles.gdcAppsLink}
         >
           <span
             className="icon icon-gdc-data-transer-tool"
@@ -263,7 +271,7 @@ let Home = ({ $scope }) => (
           href="https://gdc.nci.nih.gov/developers/gdc-application-programming-interface-api"
           target="_blank"
           title="GDC API"
-          style={{ display: `flex`, flexDirection: `column`, alignItems: `center` }}
+          style={styles.gdcAppsLink}
         >
           <span
             className="icon icon-gdc-portal-api"
@@ -279,7 +287,7 @@ let Home = ({ $scope }) => (
           href="https://gdc-portal.nci.nih.gov/submission/"
           target="_blank"
           title="GDC Submission Portal"
-          style={{ display: `flex`, flexDirection: `column`, alignItems: `center` }}
+          style={styles.gdcAppsLink}
         >
           <span
             className="icon icon-gdc-submission-portal"
@@ -293,7 +301,7 @@ let Home = ({ $scope }) => (
           href="https://gdc-docs.nci.nih.gov/"
           target="_blank"
           title="GDC Docs"
-          style={{ display: `flex`, flexDirection: `column`, alignItems: `center` }}
+          style={styles.gdcAppsLink}
         >
           <span
             className="icon icon-gdc-docs"
@@ -307,7 +315,7 @@ let Home = ({ $scope }) => (
           href="https://gdc-portal.nci.nih.gov/legacy-archive"
           target="_blank"
           title="GDC Legacy Archive"
-          style={{ display: `flex`, flexDirection: `column`, alignItems: `center` }}
+          style={styles.gdcAppsLink}
         >
           <span
             className="icon icon-gdc-legacy-archive"
@@ -322,7 +330,7 @@ let Home = ({ $scope }) => (
           title="GDC cBio Portal"
           target="_blank"
           className="menu-item"
-          style={{ display: `flex`, flexDirection: `column`, alignItems: `center` }}
+          style={styles.gdcAppsLink}
         >
           <img
             width="35px"

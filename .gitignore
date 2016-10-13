@@ -7,6 +7,7 @@ bower_components/
 typings/
 npm-debug.log*
 .DS_Store
+testlogs
 
 .env
 dist/
@@ -14,4 +15,3 @@ translations/
 .tmp/
 coverage/
 report/
-

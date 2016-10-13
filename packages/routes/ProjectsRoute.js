@@ -5,7 +5,7 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import ProjectsPage from '@ncigdc/containers/ProjectsPage';
-import { prepareViewerParams } from './utils';
+import { prepareViewerParams } from '@ncigdc/utils/routes';
 import { viewerQuery } from './queries';
 
 class ProjectsRoute extends Relay.Route {

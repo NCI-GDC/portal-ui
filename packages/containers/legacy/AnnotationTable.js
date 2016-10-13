@@ -3,11 +3,11 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import Pagination from './Pagination';
+import Pagination from '../Pagination';
 
 import AnnotationTr from './AnnotationTr';
 
-import type { TTableProps } from './types';
+import type { TTableProps } from '../types';
 
 export const AnnotationTableComponent = (props: TTableProps) => (
   <div>

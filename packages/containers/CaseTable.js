@@ -3,22 +3,14 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import CaseTBody from './CaseTBody';
 import Pagination from './Pagination';
 
-export type TProps = {
-  hits: {
-    edges: [],
-    pagination: {
-      count: number,
-      total: number,
-    },
-  },
-};
+import CaseTr from './CaseTr';
 
-export const CaseTableComponent = (props: TProps) => (
+import type { TTableProps } from './types';
+
+export const CaseTableComponent = (props: TTableProps) => (
   <div>
-    <h2>{`Cases ${props.hits.pagination.count} : ${props.hits.pagination.total}`}</h2>
     <table>
       <thead>
         <tr>
@@ -39,7 +31,11 @@ export const CaseTableComponent = (props: TProps) => (
           <th>Bio</th>
         </tr>
       </thead>
-      <CaseTBody edges={props.hits.edges} />
+      <tbody>
+        {props.hits.edges.map(e => (
+          <CaseTr {...e} key={e.node.id} />
+        ))}
+      </tbody>
     </table>
     <Pagination pagination={props.hits.pagination} />
   </div>
@@ -50,12 +46,14 @@ export const CaseTableQuery = {
     hits: () => Relay.QL`
       fragment on CaseConnection {
         pagination {
-          count
-          total
+          sort
           ${Pagination.getFragment('pagination')}
         }
         edges {
-          ${CaseTBody.getFragment('edges')}
+          node {
+            id
+            ${CaseTr.getFragment('node')}
+          }
         }
       }
     `,

@@ -16,9 +16,13 @@ export type TProps = {
 };
 
 export const ProjectsPageComponent = (props: TProps) => (
-  <div>
-    <ProjectAggregations aggregations={props.viewer.projects.aggregations} />
-    <ProjectTable hits={props.viewer.projects.hits} />
+  <div style={{ flex: 1 }}>
+    <aside style={{ flex: '0 0 12em' }}>
+      <ProjectAggregations aggregations={props.viewer.projects.aggregations} />
+    </aside>
+    <section style={{ flex: 1 }}>
+      <ProjectTable hits={props.viewer.projects.hits} />
+    </section>
   </div>
 );
 

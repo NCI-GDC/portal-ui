@@ -5,7 +5,8 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import CasePage from '@ncigdc/containers/CasePage';
-import { prepareNodeParams } from './utils';
+import { prepareNodeParams } from '@ncigdc/utils/routes';
+
 import { nodeQuery } from './queries';
 
 class CaseRoute extends Relay.Route {

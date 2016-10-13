@@ -10,7 +10,7 @@ import { prepareViewerParams } from '@ncigdc/utils/routes';
 import { viewerQuery } from './queries';
 
 class AnnotationsRoute extends Relay.Route {
-  static routeName = 'AnnotationsRoute';
+  static routeName = 'LegacyAnnotationsRoute';
   static queries = viewerQuery;
   static prepareParams = prepareViewerParams;
 }

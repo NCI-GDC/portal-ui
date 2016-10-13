@@ -19,12 +19,20 @@
     "react-router": "4.0.0-alpha.4"
   },
   "devDependencies": {
-    "@ncigdc/buildjs": "0.1.0",
+    "@ncigdc/buildjs": "0.2.3",
     "lerna": "2.0.0-beta.29"
   },
   "scripts": {
     "postinstall": "lerna bootstrap --yes",
     "start": "make server",
     "test": "make test-once"
+  },
+  "buildjs": {
+    "config": {
+      "globals": {
+        "API": "/api/",
+        "LEGACY": false
+      }
+    }
   }
 }

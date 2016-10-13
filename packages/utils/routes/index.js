@@ -1,6 +1,6 @@
 /* @flow */
 
-import { parseIntParam, parseFilterParam } from '@ncigdc/utils/uri';
+import { parseIntParam, parseFilterParam } from '../uri';
 
 import type { TPrepareViewerParams, TPrepareNodeParams } from './types';
 

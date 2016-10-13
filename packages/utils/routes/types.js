@@ -1,7 +1,7 @@
 /* @flow */
 
-import type { TGroupFilter } from '@ncigdc/utils/filters/types';
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import type { TGroupFilter } from '../filters/types';
+import type { TRawQuery } from '../uri/types';
 
 export type TRelayRouteParamsViewer = {|
   filters: ?TGroupFilter,

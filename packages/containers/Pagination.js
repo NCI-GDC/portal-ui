@@ -5,15 +5,13 @@ import Relay from 'react-relay';
 
 import Link from '@ncigdc/components/Links/Link';
 
-export type TProps = {
-  pagination: {
-    count: number,
+export type TProps = {|
+  pagination: {|
     offset: number,
     size: number,
-    sort: string,
     total: number,
-  },
-};
+  |},
+|};
 
 export const PaginationComponent = (props: TProps) => {
   const pagination = props.pagination;
@@ -34,9 +32,7 @@ export const PaginationQuery = {
       fragment on ESPagination {
         total
         size
-        count
         offset
-        sort
       }
     `,
   },

@@ -3,11 +3,11 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import Pagination from './Pagination';
+import Pagination from '../Pagination';
 
 import FileTr from './FileTr';
 
-import type { TTableProps } from './types';
+import type { TTableProps } from '../types';
 
 export const FileTableComponent = (props: TTableProps) => (
   <div>

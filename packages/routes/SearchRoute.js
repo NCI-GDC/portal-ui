@@ -5,7 +5,8 @@ import React from 'react';
 import Relay from 'react-relay';
 
 import SearchPage from '@ncigdc/containers/SearchPage';
-import { prepareViewerParams } from './utils';
+import { prepareViewerParams } from '@ncigdc/utils/routes';
+
 import { viewerQuery } from './queries';
 
 class SearchRoute extends Relay.Route {

@@ -3,30 +3,39 @@
 
 import React from 'react';
 import Relay from 'react-relay';
+import Router from 'react-router/BrowserRouter';
+import { stringify } from 'query-string';
+
 import { viewerQuery } from '@ncigdc/routes/queries';
 
-import App from './App';
+const stringifyQuery = (query) => (
+  stringify(query, { strict: false })
+);
+
+// $FlowIgnore
+const Container = LEGACY ? require('./Legacy').default : require('./Portal').default;
 
 // Don't inject everytime file is hot-reloaded
 if (!Relay.Store._storeData._networkLayer._implementation) {
   Relay.injectNetworkLayer(
     // $FlowIgnore
-    new Relay.DefaultNetworkLayer(`${__API__}graphql`)
+    new Relay.DefaultNetworkLayer(`${API}graphql`)
   );
 }
 
-const AppRoute = {
-  name: 'AppRoute',
-  queries: viewerQuery,
-  params: {},
-};
+class Route extends Relay.Route {
+  static routeName = 'RootRoute';
+  static queries = viewerQuery;
+}
 
-const Root = () => (
-  <Relay.Renderer
-    Container={App}
-    queryConfig={AppRoute}
-    environment={Relay.Store}
-  />
+const Root = (props: mixed) => (
+  <Router stringifyQuery={stringifyQuery}>
+    <Relay.Renderer
+      Container={Container}
+      queryConfig={new Route(props)}
+      environment={Relay.Store}
+    />
+  </Router>
 );
 
 export default Root;

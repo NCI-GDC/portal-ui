@@ -4,21 +4,21 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import AnnotationsPage from '@ncigdc/containers/AnnotationsPage';
+import FilesPage from '@ncigdc/containers/legacy/FilesPage';
 import { prepareViewerParams } from '@ncigdc/utils/routes';
 
 import { viewerQuery } from './queries';
 
-class AnnotationsRoute extends Relay.Route {
-  static routeName = 'AnnotationsRoute';
+class FilesRoute extends Relay.Route {
+  static routeName = 'LegacyFilesPage';
   static queries = viewerQuery;
   static prepareParams = prepareViewerParams;
 }
 
 export default (props: mixed) => (
   <Relay.Renderer
-    Container={AnnotationsPage}
-    queryConfig={new AnnotationsRoute(props)}
+    Container={FilesPage}
+    queryConfig={new FilesRoute(props)}
     environment={Relay.Store}
   />
 );

@@ -3,22 +3,14 @@
 import React from 'react';
 import Relay from 'react-relay';
 
-import ProjectTBody from './ProjectTBody';
 import Pagination from './Pagination';
 
-export type TProps = {
-  hits: {
-    edges: [],
-    pagination: {
-      count: number,
-      total: number,
-    },
-  },
-};
+import ProjectTr from './ProjectTr';
 
-export const ProjectTableComponent = (props: TProps) => (
+import type { TTableProps } from './types';
+
+export const ProjectTableComponent = (props: TTableProps) => (
   <div>
-    <h2>{`Projects ${props.hits.pagination.count} : ${props.hits.pagination.total}`}</h2>
     <table>
       <thead>
         <tr>
@@ -39,7 +31,11 @@ export const ProjectTableComponent = (props: TProps) => (
           <th>Bio</th>
         </tr>
       </thead>
-      <ProjectTBody edges={props.hits.edges} />
+      <tbody>
+        {props.hits.edges.map(e => (
+          <ProjectTr {...e} key={e.node.id} />
+        ))}
+      </tbody>
     </table>
     <Pagination pagination={props.hits.pagination} />
   </div>
@@ -50,12 +46,14 @@ export const ProjectTableQuery = {
     hits: () => Relay.QL`
       fragment on ProjectConnection {
         pagination {
-          count
-          total
+          sort
           ${Pagination.getFragment('pagination')}
         }
-        edges {
-          ${ProjectTBody.getFragment('edges')}
+        edges @relay(plural: true) {
+          node {
+            id
+            ${ProjectTr.getFragment('node')}
+          }
         }
       }
     `,

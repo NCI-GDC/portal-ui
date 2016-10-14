@@ -74,8 +74,11 @@ abbr {
 
 
 .gdc-body {
-  padding: 0 0 @FOOTER_HEIGHT + 20 0;
-  transition: all 0.25s ease;
+  padding: @header-height 0 @FOOTER_HEIGHT + 20 0;
+
+  &.lowered {
+    padding: 103px 0 @FOOTER_HEIGHT + 20 0;
+  }
 }
 
 body {

@@ -364,7 +364,7 @@ module ngApp.projects.controllers {
 
     renderReact () {
       ReactDOM.render(
-        React.createElement(Project, { $scope: this }),
+        React.createElement(ReactComponents.Project, { $scope: this }),
         document.getElementById('react-root')
       );
     };

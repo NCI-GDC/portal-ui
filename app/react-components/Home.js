@@ -106,7 +106,7 @@ let Home = ({ $scope }) => (
         <Row>
           <a
             style={{ ...styles.bigButton, backgroundColor: `#01b987` }}
-            tabindex="0"
+            tabIndex="0"
             href="/projects/t"
           >
             <i style={styles.bigButtonIcon} className="icon-gdc-projects" />
@@ -114,7 +114,7 @@ let Home = ({ $scope }) => (
           </a>
           <a
             style={{ ...styles.bigButton, backgroundColor: `#30b3cb`, marginLeft: `4rem` }}
-            tabindex="0"
+            tabIndex="0"
             href="/search/s?facetTab=cases"
           >
             <i style={styles.bigButtonIcon} className="icon-gdc-data" />
@@ -125,18 +125,18 @@ let Home = ({ $scope }) => (
           <em>Perform Advanced Search Queries, such as:</em>
         </div>
         {$scope.exampleSearchQueries.map(x =>
-          <Row style={{ margin: `1rem 0`, alignItems: `center` }}>
+          <Row style={{ margin: `1rem 0`, alignItems: `center` }} key={x.description}>
             <div style={{ color: `white` }}>
               {x.description}
             </div>
             <div style={{ marginLeft: `auto` }}>
               <a style={styles.smallButton} href={`/search/c?filters=${JSON.stringify(x.filters)}`}>
-                {!x.caseCount && <span className="fa fa-spinner fa-spin" ariaHidden />}
-                {!!x.fileCount && `${x.caseCount} Cases`}
+                {!x.caseCount && <span className="fa fa-spinner fa-spin" />}
+                {!!x.fileCount && `${x.caseCount.toLocaleString()} Cases`}
               </a>
               <a style={styles.smallButton} href={`/search/f?filters=${JSON.stringify(x.filters)}`}>
-                {!x.fileCount && <span className="fa fa-spinner fa-spin" ariaHidden />}
-                {!!x.fileCount && `${x.fileCount} Files`}
+                {!x.fileCount && <span className="fa fa-spinner fa-spin" />}
+                {!!x.fileCount && `${x.fileCount.toLocaleString()} Files`}
               </a>
             </div>
           </Row>
@@ -146,7 +146,10 @@ let Home = ({ $scope }) => (
           <Row style={{ padding: `2rem`, alignItems: `baseline` }}>
             <div style={{ fontSize: `2.3rem`, color: `rgb(70, 70, 70)` }}>Data Portal Summary</div>
             <div style={{ fontSize: `1.3rem`, color: `rgb(37, 97, 122)`, marginLeft: `2rem` }}>
-              <a href="https://gdc-docs.nci.nih.gov/Data_Portal/Release_Notes/Data_Portal_Release_Notes/">
+              <a
+                target="_blank"
+                href="https://gdc-docs.nci.nih.gov/Data_Portal/Release_Notes/Data_Portal_Release_Notes/"
+              >
                 Data Release 3.0 - September 21, 2016
               </a>
             </div>
@@ -159,7 +162,7 @@ let Home = ({ $scope }) => (
                 <span style={{ fontSize: `2.5rem`, marginLeft: `0.5rem` }}>
                   {($scope.projectData || { pagination: { total: 0 }}).pagination.total > 0
                     ? ($scope.projectData || { pagination: { total: 0 }}).pagination.total.toLocaleString()
-                    : <span className="fa fa-spinner fa-spin" ariaHidden />
+                    : <span className="fa fa-spinner fa-spin" />
                   }
                 </span>
               </Row>
@@ -175,7 +178,7 @@ let Home = ({ $scope }) => (
                     ? ($scope.projectData || {
                       aggregations: { primary_site: { buckets: [] }}
                     }).aggregations.primary_site.buckets.length.toLocaleString()
-                    : <span className="fa fa-spinner fa-spin" ariaHidden />
+                    : <span className="fa fa-spinner fa-spin" />
                   }
                 </span>
               </Row>
@@ -187,7 +190,7 @@ let Home = ({ $scope }) => (
                 <span style={{ fontSize: `2.5rem`, marginLeft: `0.5rem` }}>
                   {($scope.caseData || { pagination: { total: 0 }}).pagination.total > 0
                     ? ($scope.caseData || { pagination: { total: 0 }}).pagination.total.toLocaleString()
-                    : <span className="fa fa-spinner fa-spin" ariaHidden />
+                    : <span className="fa fa-spinner fa-spin" />
                   }
                 </span>
               </Row>
@@ -199,7 +202,7 @@ let Home = ({ $scope }) => (
                 <span style={{ fontSize: `2.5rem`, marginLeft: `0.5rem` }}>
                   {($scope.fileData || { pagination: { total: 0 }}).pagination.total > 0
                     ? ($scope.fileData || { pagination: { total: 0 }}).pagination.total.toLocaleString()
-                    : <span className="fa fa-spinner fa-spin" ariaHidden />
+                    : <span className="fa fa-spinner fa-spin" />
                   }
                 </span>
               </Row>
@@ -212,7 +215,7 @@ let Home = ({ $scope }) => (
           <Row style={{ color: `white`, fontSize: `1.2em`, marginBottom: `1rem` }}>
             Loading, please wait...
           </Row>
-          <span style={{ color: `white` }} className="fa fa-spinner fa-spin fa-2x" ariaHidden />
+          <span style={{ color: `white` }} className="fa fa-spinner fa-spin fa-2x" />
         </Column>
       }
       {!$scope.loadingHumanBody &&
@@ -263,7 +266,7 @@ let Home = ({ $scope }) => (
             className="icon icon-gdc-data-transer-tool"
             style={{ fontSize: `29px`, marginBottom: `5px` }}
           >
-            {_.range(0, 9).map(x => <span className={`path${x}`} />)}
+            {_.range(0, 9).map(x => <span key={x} className={`path${x}`} />)}
           </span>
           <p>Data Transfer Tool</p>
         </a>
@@ -278,7 +281,7 @@ let Home = ({ $scope }) => (
             style={{ fontSize: `29px`, marginBottom: `5px` }}
           >
             {_.range(0, 11).map(x =>
-              <span className={`path${x}`} />
+              <span key={x} className={`path${x}`} />
             )}
           </span>
           <p>API</p>
@@ -293,7 +296,7 @@ let Home = ({ $scope }) => (
             className="icon icon-gdc-submission-portal"
             style={{ fontSize: `29px`, marginBottom: `5px` }}
           >
-            {_.range(0, 11).map(x => <span className={`path${x}`} />)}
+            {_.range(0, 11).map(x => <span key={x} className={`path${x}`} />)}
           </span>
           <p>Data Submission Portal</p>
         </a>
@@ -307,7 +310,7 @@ let Home = ({ $scope }) => (
             className="icon icon-gdc-docs"
             style={{ fontSize: `29px`, marginBottom: `5px` }}
           >
-            {_.range(0, 15).map(x => <span className={`path${x}`} />)}
+            {_.range(0, 15).map(x => <span key={x} className={`path${x}`} />)}
           </span>
           <p>Documentation</p>
         </a>
@@ -321,7 +324,7 @@ let Home = ({ $scope }) => (
             className="icon icon-gdc-legacy-archive"
             style={{ fontSize: `29px`, marginBottom: `5px` }}
           >
-            {_.range(0, 11).map(x => <span className={`path${x}`} />)}
+            {_.range(0, 11).map(x => <span key={x} className={`path${x}`} />)}
           </span>
           <p>Legacy Archive</p>
         </a>

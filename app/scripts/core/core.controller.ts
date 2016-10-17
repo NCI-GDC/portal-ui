@@ -14,7 +14,8 @@ module ngApp.core.controllers {
     loading5s: boolean;
     loading8s: boolean;
     loadingTimers: Promise<any>[];
-    loweredBody: boolean;
+    notifications: Array<Object> = [];
+    numDisplayedNotifications: number = 1; // the 1 is the hardcoded banner
 
     /* @ngInject */
     constructor(
@@ -27,10 +28,25 @@ module ngApp.core.controllers {
       UserService: IUserService,
       private $uibModal: any,
       private $uibModalStack,
-      private $timeout
+      private $timeout,
+      private $window: IGDCWindowService,
+      private $document: any,
+      private Restangular: restangular.IService
     ) {
-      this.loweredBody = true;
-      this.$rootScope.$on('hideBanner', () => this.loweredBody = false);
+      this.$rootScope.$on('hideBanner', () => this.numDisplayedNotifications = this.numDisplayedNotifications - 1);
+
+      Restangular.all('notifications').get('').then(notifications => {
+        const notifications = angular.fromJson(notifications.data)
+        .filter(n => _.includes(n.components, 'PORTAL') || _.includes(n.components, 'API'))
+        .map(n => {
+          n.dismissed = false;
+          return n;
+        });
+        this.notifications = _.sortBy(notifications, n => n.dismissible);
+        this.numDisplayedNotifications = this.numDisplayedNotifications + this.notifications.length;
+      }, (response) => {
+        console.log(`error getting notifications ${response}`);
+      });
 
       this.loadingTimers = [];
 

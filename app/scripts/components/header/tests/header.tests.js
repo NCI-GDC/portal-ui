@@ -41,17 +41,17 @@ describe('Header:', function () {
     it('should get cart count', inject(function(CartService, $httpBackend) {
       httpBackend.whenGET("components/header/templates/header.html").respond(200, '');
 
-      var el = $compile('<nga-header></nga-header>')(scope);
+      var el = $compile('<nga-header data-notifications="[]"></nga-header>')(scope);
       scope.$digest();
       httpBackend.flush();
 
-      expect(el.scope().cartSize).to.equal(0);
+      expect(el.isolateScope().cartSize).to.equal(0);
       CartService.add({ id: 'AAA' });
-      expect(el.scope().cartSize).to.equal(1);
+      expect(el.isolateScope().cartSize).to.equal(1);
       CartService.add({ id: 'BBB' });
-      expect(el.scope().cartSize).to.equal(2);
+      expect(el.isolateScope().cartSize).to.equal(2);
       CartService.removeAll();
-      expect(el.scope().cartSize).to.equal(0);
+      expect(el.isolateScope().cartSize).to.equal(0);
     }));
 
   });

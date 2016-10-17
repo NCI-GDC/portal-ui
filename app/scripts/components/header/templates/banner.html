@@ -1,0 +1,21 @@
+<div class="header-banner {{ level.toLowerCase() }}"
+     data-ng-class="{ dismissed: dismissed }"
+ >
+  <span
+     class="fa icon"
+     data-ng-class="{
+      'fa-question': level === 'INFO',
+      'fa-exclamation': level === 'WARNING',
+      'fa-exclamation-triangle': level === 'ERROR'
+     }"
+  >
+  </span>
+  <span class="message">
+    {{ message }}
+  </span>
+  <span data-ng-if="dismissible" class="header-banner-dismiss"
+        data-ng-click="dismiss()">
+      Dismiss <span class="fa fa-close" aria-hidden="true"></span>
+  </span>
+  </div>
+</div>

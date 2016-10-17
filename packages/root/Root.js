@@ -1,5 +1,5 @@
 /* @flow */
-/* eslint better/no-ifs:0 */
+/* eslint better/no-ifs:0, import/no-commonjs:0, fp/no-class:0 */
 
 import React from 'react';
 import Relay from 'react-relay';

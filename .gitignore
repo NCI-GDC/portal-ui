@@ -33,6 +33,7 @@ node_modules
 jspm_packages
 bower_components
 typings
+flow-typed
 
 # Optional npm cache directory
 .npm

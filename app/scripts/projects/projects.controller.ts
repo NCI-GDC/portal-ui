@@ -149,13 +149,15 @@ module ngApp.projects.controllers {
     clinicalCount: number = 0;
 
     /* @ngInject */
-    constructor(public project: IProject, private CoreService: ICoreService,
-                private AnnotationsService: IAnnotationsService,
-                private ParticipantsService: IParticipantsService,
-                private ExperimentalStrategyNames: string[],
-                private DATA_CATEGORIES,
-                public $state: ng.ui.IStateService,
-                private $filter: ng.ui.IFilterService) {
+    constructor(
+      public project: IProject, private CoreService: ICoreService,
+      private AnnotationsService: IAnnotationsService,
+      private ParticipantsService: IParticipantsService,
+      private ExperimentalStrategyNames: string[],
+      private DATA_CATEGORIES,
+      public $state: ng.ui.IStateService,
+      private $filter: ng.ui.IFilterService
+    ) {
       CoreService.setPageTitle("Project", project.project_id);
 
       this.experimentalStrategies = _.reduce(ExperimentalStrategyNames.slice(), function(result, name) {
@@ -356,7 +358,17 @@ module ngApp.projects.controllers {
         filters: missingClinicalFilter,
         size: 0
       }).then(data => this.clinicalCount = data.pagination.total);
+
+      this.renderReact();
     }
+
+    renderReact () {
+      ReactDOM.render(
+        React.createElement(Project, { $scope: this }),
+        document.getElementById('react-root')
+      );
+    };
+
   }
 
   angular

@@ -66,7 +66,6 @@
     "karma-mocha": "0.1.10",
     "karma-mocha-reporter": "1.0.2",
     "karma-phantomjs-launcher": "^1.0.2",
-    "lodash": "3.9.3",
     "mkdirp": "0.5.1",
     "mocha": "2.2.5",
     "node-uuid": "1.4.3",
@@ -93,6 +92,7 @@
     "upgrade": "npm-check-updates -u && bower-update && npm test"
   },
   "dependencies": {
+    "lodash": "3.9.3",
     "fela": "^1.2.0",
     "oncogrid": "^1.0.1",
     "radium": "^0.18.1",
@@ -100,6 +100,7 @@
     "react-dom": "^15.3.2",
     "react-fela": "^3.0.0",
     "react-icons": "^2.2.1",
-    "recompose": "^0.20.2"
+    "recompose": "^0.20.2",
+    "save-svg-as-png": "git@github.com:Jephuff/saveSvgAsPng.git"
   }
 }

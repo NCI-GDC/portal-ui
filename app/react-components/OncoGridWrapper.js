@@ -128,7 +128,21 @@ const OncoGridWrapper = ({gridState, dispatch}) => (
         <span>
           <Button
             style={styles.button}
-            onClick={() => dispatch({type: 'reload'})}
+            onClick={
+              () => {
+                downloadSvg({
+                  svg: document.querySelector(`#${GRID_ID} svg`),
+                  stylePrefix: `#${GRID_ID}`,
+                  fileName: 'grid.svg',
+                });
+              }
+            }
+          >
+            <i className="fa fa-download" /><span style={styles.hidden}>reload</span>
+          </Button>
+          <Button
+            style={styles.button}
+            onClick={() => dispatch({ type: 'reload' })}
           >
             <i className="fa fa-undo"></i><span style={styles.hidden}>reload</span>
           </Button>

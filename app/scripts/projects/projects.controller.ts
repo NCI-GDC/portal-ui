@@ -159,7 +159,6 @@ module ngApp.projects.controllers {
       private $filter: ng.ui.IFilterService
     ) {
       CoreService.setPageTitle("Project", project.project_id);
-
       this.experimentalStrategies = _.reduce(ExperimentalStrategyNames.slice(), function(result, name) {
         var strat = _.find(project.summary.experimental_strategies, (item) => {
           return item.experimental_strategy.toLowerCase() === name.toLowerCase();
@@ -270,23 +269,24 @@ module ngApp.projects.controllers {
         'samples.portions.center'];
       this.biospecimenDataExportFileName = 'biospecimen.project-' + projectId;
 
-      AnnotationsService.getAnnotations({
-        filters: {
-          content: [
-            {
-              content: {
-                field: "project.project_id",
-                value: project.project_id
-              },
-              op: "in"
-            }
-          ],
-          op: "and"
-        },
-        size: 0
-      }).then((data) => {
-        this.project.annotations = data;
-      });
+      const promises = [];
+      promises.push(
+        AnnotationsService.getAnnotations({
+          filters: {
+            content: [
+              {
+                content: {
+                  field: "project.project_id",
+                  value: project.project_id
+                },
+                op: "in"
+              }
+            ],
+            op: "and"
+          },
+          size: 0
+        }).then((data) => this.project.annotations = data)
+      )
 
       var missingBiospecFilter = {
           content: [
@@ -307,10 +307,13 @@ module ngApp.projects.controllers {
           ],
           op: "AND"
       };
-      ParticipantsService.getParticipants({
-        filters: missingBiospecFilter,
-        size: 0,
-        }).then(data => this.biospecimenCount = data.pagination.total);
+
+      promises.push(
+        ParticipantsService.getParticipants({
+          filters: missingBiospecFilter,
+          size: 0,
+          }).then(data => this.biospecimenCount = data.pagination.total)
+      );
 
       var missingClinicalFilter = {
           content: [
@@ -354,17 +357,23 @@ module ngApp.projects.controllers {
           ],
           op: "AND"
       };
-      ParticipantsService.getParticipants({
-        filters: missingClinicalFilter,
-        size: 0
-      }).then(data => this.clinicalCount = data.pagination.total);
 
-      this.renderReact();
+      promises.push(
+        ParticipantsService.getParticipants({
+          filters: missingClinicalFilter,
+          size: 0
+        }).then(data => this.clinicalCount = data.pagination.total)
+      );
+
+      Promise.all(promises).then(() => this.renderReact());
     }
 
     renderReact () {
       ReactDOM.render(
-        React.createElement(ReactComponents.Project, { $scope: this }),
+        React.createElement(ReactComponents.Project, {
+          $scope: this,
+          authApi: this.CoreService.config.auth_api; 
+        }),
         document.getElementById('react-root')
       );
     };

@@ -4,8 +4,10 @@ import { Row, Column } from '../uikit/Flex';
 import theme from '../theme';
 import Table, { Tr, Td, Th } from '../uikit/Table';
 
+const colors = d3.scale.category20();
+
 // th are horizontal
-const EntityPageHorizontalTable = ({ style, title, rightComponent, headings, data, emptyMessage}) => {
+const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, headings, data, emptyMessage}) => {
   const styles = {
     table: {
       borderCollapse: 'collapse',
@@ -35,21 +37,24 @@ const EntityPageHorizontalTable = ({ style, title, rightComponent, headings, dat
         ...style,
       }}
     >
-      <h3
-        style={{
-          color: theme.greyScale7,
-          width: '100%',
-          fontSize: '24px',
-          lineHeight: '1.4em',
-          fontWeight: 'normal',
-          marginTop: 0,
-          marginBottom: 0,
-          padding: '1rem',
-          backgroundColor: '#fff',
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >{title} {rightComponent}</h3>
+      {title &&
+        <h3
+          style={{
+            color: theme.greyScale7,
+            width: '100%',
+            fontSize: '24px',
+            lineHeight: '1.4em',
+            fontWeight: 'normal',
+            marginTop: 0,
+            marginBottom: 0,
+            padding: '1rem',
+            backgroundColor: '#fff',
+            display: 'flex',
+            justifyContent: 'space-between',
+            ...titleStyle, 
+          }}
+        >{title} {rightComponent}</h3>
+      }
       {data.length ? (
         <Table
           style={styles.table}
@@ -67,7 +72,8 @@ const EntityPageHorizontalTable = ({ style, title, rightComponent, headings, dat
                 >
                 {headings.map(h => (
                   <Td key={h.key} style={h.style || {}}>
-                    {d[h.key] || '--'}
+                    {h.color && <div className="item-color" style={{ backgroundColor: colors(i) }} />}
+                    {h.onClick && d[h.key] ? <a onClick={() => h.onClick(d)}>{d[h.key]}</a> : (d[h.key] || '--')}
                   </Td>
                 ))}
                 </Tr>);

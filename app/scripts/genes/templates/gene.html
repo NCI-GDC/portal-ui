@@ -1,1 +1,33 @@
+<style>
+#react-root {
+  min-height: 1400px;
+}
+#protein-viewer-root {
+  position: relative;
+}
+.tooltip {
+  position: absolute;
+  padding: 6px;
+  color: #FFFFFF;
+  background: #000000;
+  border-radius: 6px;
+  left: -9999px;
+  font-size: 10px;
+  opacity: 1;
+}
+.tooltip:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -8px;
+  width: 0; height: 0;
+  border-right: 8px solid #000000;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+</style>
+
+
 <div id="react-root"></div>
+<div class="tooltip"></div>

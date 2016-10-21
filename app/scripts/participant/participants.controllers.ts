@@ -19,6 +19,8 @@ module ngApp.participants.controllers {
     constructor(
       public participant: IParticipant,
       private CoreService: ICoreService,
+      public numCasesAggByProject: Array<Object>,
+      public frequentMutations: Array<Object>,
       private LocationService: ILocationService,
       private $filter: ng.IFilterService,
       private ExperimentalStrategyNames: string[],
@@ -146,6 +148,54 @@ module ngApp.participants.controllers {
         _.extend(x, { cases: [{ project: this.participant.project }] })
       )
 
+      this.renderReact();
+    }
+
+    jumpToAnchor(id) {
+      let getOffset = elem => {
+        let box = elem.getBoundingClientRect();
+
+        let body = document.body;
+        let docEl = document.documentElement;
+
+        let scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+        let clientTop = docEl.clientTop || body.clientTop || 0;
+
+        let top = box.top + scrollTop - clientTop;
+
+        return Math.round(top);
+      };
+
+      window.location.hash = id;
+      setTimeout(() => {
+        window.scrollTo(
+          0,
+          getOffset(document.getElementById(id)) - 160
+        );
+      }, 10);
+    }
+
+    renderReact () {
+      let numCasesAggByProject = this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {});
+      let totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
+
+      let frequentMutations = this.frequentMutations.map(g => Object.assign({}, g._source, { score: g._score })).map(x => Object.assign({}, x, {
+        num_affected_cases_project: x.occurrence.filter(x =>
+          x.case.project.project_id === this.participant.project.project_id).length,
+        num_affected_cases_all: x.occurrence.length,
+        consequence_type: x.consequence.find(x => x.transcript.is_canonical).transcript.consequence_type
+      }));
+
+      ReactDOM.render(
+        React.createElement(ReactComponents.FrequentMutations, {
+          $scope: this,
+          numCasesAggByProject,
+          frequentMutations,
+          totalNumCases,
+          project: this.participant.project.project_id,
+        }),
+        document.getElementById('frequent-mutations')
+      );
     }
 
   }

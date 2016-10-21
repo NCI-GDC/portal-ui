@@ -56,6 +56,48 @@ module ngApp.genes {
             throw Error('Missing route parameter: geneId. Redirecting to 404 page.');
           }
           return hit;
+        },
+
+        frequentMutations: (
+          $stateParams: ng.ui.IStateParamsService,
+          $http: ng.IHttpService,
+        ): ng.IPromise => {
+          return $http({
+            method: 'POST',
+            url: `${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`,
+            headers: {'Content-Type' : 'application/json'},
+            data: {
+              "query": {
+                "nested": {
+                  "path": "occurrence",
+                  "score_mode": "sum",
+                  "query": {
+                    "function_score": {
+                      "query": {
+                        "match_all": {}
+                      },
+                      "boost_mode": "replace",
+                      "script_score": {
+                        "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
+                      }
+                    }
+                  }
+                }
+              },
+              "post_filter": {
+                "nested": {
+                  "path": "consequence",
+                  "filter": {
+                    "term": {
+                      "consequence.transcript.gene.gene_id": "ENSG00000078808"
+                    }
+                  }
+                }
+              }
+            }
+          }).then(data => {
+            return data.data.hits.hits;
+          });
         }
       }
     });

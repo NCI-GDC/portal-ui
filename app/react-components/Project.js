@@ -13,6 +13,7 @@ import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';
 import DownloadButton from './components/DownloadButton';
+import FrequentMutations from './components/FrequentMutations';
 import makeFilter from './utils/makeFilter';
 import SummaryCard from './components/SummaryCard';
 import BarChart from './charts/BarChart';
@@ -70,7 +71,14 @@ function buildFilters(data) {
   };
 }
 
-const Project = ({ $scope, authApi, esHost, mutatedGenesProject, numCasesAggByProject }) => {
+const Project = ({
+  $scope,
+  authApi,
+  esHost,
+  mutatedGenesProject,
+  numCasesAggByProject,
+  frequentMutations: fm,
+}) => {
   const {
     project,
     clinicalCount,
@@ -97,16 +105,31 @@ const Project = ({ $scope, authApi, esHost, mutatedGenesProject, numCasesAggByPr
       'num_mutations': g.case.reduce((acc, c) =>  acc + c.ssm.length, 0),
     }
   ));
+
   const totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
+
+  const frequentMutations = fm.map(x => {
+    let consequence = x.consequence.find(x => x.transcript.is_canonical);
+
+    console.log(consequence)
+
+    return {
+      ...x,
+      num_affected_cases_project: x.occurrence.filter(x =>
+        x.case.project.project_id === $scope.project.project_id).length,
+      num_affected_cases_all: x.occurrence.length,
+      consequence_type:
+        <span>
+          <b>{_.startCase(consequence.transcript.consequence_type)}</b>
+          <span style={{marginLeft:'5px'}}>{consequence.transcript.gene_symbol}</span>
+          <span style={{marginLeft:'5px'}}>{consequence.transcript.aa_change}</span>
+        </span>
+    }
+  });
 
   return (
     <span>
-      <Row style={{ ...styles.margin, justifyContent: 'space-between' }} >
-        <h1 style={styles.heading} id="summary">
-          <i style={{ marginRight: 6 }} className="fa fa-align-left" />
-          {project.project_id}
-        </h1>
-
+      <Row style={{ ...styles.margin, flexDirection: 'row-reverse' }}>
         <DownloadButton
           disabled={!project.summary.file_count}
           url={`${authApi}/files`}
@@ -151,6 +174,7 @@ const Project = ({ $scope, authApi, esHost, mutatedGenesProject, numCasesAggByPr
       <Row style={{ flexWrap: 'wrap' }}>
         <span style={{ ...styles.column, ...styles.margin }}>
           <EntityPageVerticalTable
+            id="summary"
             className="summary-table"
             style={styles.summary}
             title="Summary"
@@ -318,12 +342,28 @@ const Project = ({ $scope, authApi, esHost, mutatedGenesProject, numCasesAggByPr
               }))}
           /></div>) : 'No mutated gene data to display'}
       </Column>
+
       <Column>
         <h1 style={styles.heading} id="oncogrid">
-          <i className="fa fa-th" style={{ paddingRight: `10px` }} />OncoGrid
+          <i className="fa fa-th" style={{ paddingRight: `10px` }} /> OncoGrid
         </h1>
       </Column>
+
       <OncoGridWrapper projectId={project.project_id} esHost={esHost} />
+
+      <Column>
+        <h1 style={styles.heading} id="frequent-mutations">
+          <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
+          Most Frequent Mutations
+        </h1>
+      </Column>
+
+      <FrequentMutations
+        frequentMutations={frequentMutations}
+        numCasesAggByProject={numCasesAggByProject}
+        totalNumCases={totalNumCases}
+        project={$scope.project.project_id}
+      />
     </span>
   );
 };
@@ -335,7 +375,4 @@ Project.propTypes = {
   numCasesAggByProject: React.PropTypes.object,
 };
 
-const enhance = compose(
-);
-
-export default enhance(Project);
+export default Project;

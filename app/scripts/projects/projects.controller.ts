@@ -99,7 +99,7 @@ module ngApp.projects.controllers {
           //get stackedbar chart data
          this.$http({
             method: 'POST',
-            url: `${this.config.es_host}/gdc-r1-gene-centric/gene-centric/_search`,
+            url: `${this.config.es_host}/${this.config.es_index_version}-gene-centric/gene-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
               "query": {
@@ -197,6 +197,7 @@ module ngApp.projects.controllers {
       public project: IProject,
       public mutatedGenesProject: Array<Object>,
       public numCasesAggByProject: Array<Object>,
+      public frequentMutations: Array<Object>,
       private CoreService: ICoreService,
       private AnnotationsService: IAnnotationsService,
       private ParticipantsService: IParticipantsService,
@@ -422,19 +423,23 @@ module ngApp.projects.controllers {
               { icon: 'table', title: 'Summary', id: 'summary' },
               { icon: 'bar-chart-o', title: 'Mutated Genes', id: 'mutated-genes' },
               { icon: 'th', title: 'OncoGrid', id: 'oncogrid' },
-            ]
+              { icon: 'bar-chart-o', title: 'Frequent Mutations', id: 'frequent-mutations' },
+            ],
+            title: this.project.project_id,
+            entityType: 'PR',
           },
           React.createElement(ReactComponents.Project, {
             $scope: this,
             mutatedGenesProject: this.mutatedGenesProject.map(g => g._source),
             numCasesAggByProject: this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {}),
             authApi: this.CoreService.config.auth_api,
-            esHost: this.CoreService.config.es_host
+            esHost: this.CoreService.config.es_host,
+            frequentMutations: this.frequentMutations.map(g => Object.assign({}, g._source, { score: g._score })),
           })
         ),
         document.getElementById('react-root')
       );
-    };
+    }
 
   }
 

@@ -18,7 +18,7 @@ const getNestedValue = (item, path) => {
 };
 
 const PieChart = ({ data, path = 'file_count', tooltipKey, height = 160, width = 160 }) => {
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
+  const color = d3.scaleOrdinal(d3.schemeCategory20);
   const outerRadius = height / 2 + 10;
 
   const node = ReactFauxDOM.createElement('div');

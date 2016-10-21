@@ -343,7 +343,7 @@ gulp.task('ts:compile', function () {
 
 gulp.task('babel', function() {
   return browserify('app/react-components/index.js')
-    .transform("babelify", {presets: ["stage-0", "react", "es2015"]})
+    .transform("babelify", {presets: ["react", "es2015", "stage-0"]})
     .transform('browserify-css', { autoInject: true })
     .bundle()
     .on('error', function (err) {
@@ -355,8 +355,8 @@ gulp.task('babel', function() {
     .pipe(gulp.dest('./dist/js'));
 });
 
-gulp.task('humanbody', function () {
-  return gulp.src('app/scripts/humanbody.js')
+gulp.task('vis', function () {
+  return gulp.src(['app/scripts/humanbody.js', 'app/scripts/protein-viewer.js'])
     .pipe(gulp.dest('dist/js'))
 })
 
@@ -456,7 +456,7 @@ gulp.task('default', ['clean'], function (cb) {
     'i18n',
     'config',
     'pegjs',
-    'humanbody'
+    'vis'
   ], cb);
 });
 

@@ -7,6 +7,7 @@ import Projects from './Projects';
 import Gene from './Gene';
 import Mutation from './Mutation';
 import SideNavLayout from './layouts/SideNavLayout'
+import FrequentMutations from './components/FrequentMutations'
 
 // expose to angular
 window.ReactComponents = {
@@ -16,6 +17,7 @@ window.ReactComponents = {
   Mutation,
   SideNavLayout,
   Projects,
+  FrequentMutations,
 };
 
 window.Project = Project;

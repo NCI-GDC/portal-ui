@@ -5,7 +5,7 @@ import theme from '../theme';
 import Table, { Tr, Td, Th, CollapsibleTd } from '../uikit/Table';
 
 // th are vertical
-const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle }) => {
+const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle, id }) => {
   const styles = {
     table: {
       borderCollapse: 'collapse',
@@ -27,6 +27,7 @@ const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle }
   };
   return (
     <Column
+      id={id}
       className={className}
       style={{
         flexWrap: 'wrap',

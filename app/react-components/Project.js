@@ -179,15 +179,17 @@ const Project = ({ $scope, authApi }) => {
             count={(project.annotations ? project.annotations.pagination.total : 0).toLocaleString()}
             icon={<EditIcon style={styles.icon} />}
             style={{ ...styles.countCard, marginBottom: 0 }}
-            onCountClick={project.annotations && project.annotations.pagination.total > 0 && function() {
-              if (project.annotations.pagination.total > 1) {
-                window.location = `/annotations?filters=${
-                  makeFilter([{ field: 'project.project_id', value: project.project_id }])
-                }`;
-              } else {
-                window.location = `/annotations?filters=annotationId=${project.annotations.hits[0].annotation_id}`;
-              }
-            }}
+            {
+              ...(project.annotations && project.annotations.pagination.total > 0 ? { onClick: () => {
+                if (project.annotations.pagination.total > 1) {
+                  window.location = `/annotations?filters=${
+                      makeFilter([{ field: 'project.project_id', value: project.project_id }])
+                  }`;
+                } else {
+                  window.location = `/annotations?filters=annotationId=${project.annotations.hits[0].annotation_id}`;
+                }
+              } } : {})
+            }
           />
         </Column>
       </Row>

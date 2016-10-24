@@ -22,7 +22,6 @@ const progressChecker = (
   inProgress,
   done,
 ) => {
-  console.log('1');
   inProgress();
   const waitTime = 1000;
   const timeoutInterval = 10;
@@ -43,7 +42,6 @@ const progressChecker = (
   };
 
   const finished = () => {
-    console.log('finish');
     // $log.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
     timeoutPromise = null;
     iFrame.remove();
@@ -52,7 +50,6 @@ const progressChecker = (
   };
 
   const cancelDownload = () => {
-    console.log('cancel');
     if (timeoutPromise) {
       clearTimeout(timeoutPromise);
       timeoutPromise = null;
@@ -116,7 +113,6 @@ const cookielessChecker = (
   inProgress,
   done,
 ) => {
-  console.log('2');
   const waitTime = 5000;
   let attempts = 30;
 
@@ -168,7 +164,6 @@ const download = ({
   params,
   method = 'GET',
 }) => {
-    console.log(arguments);
   const downloadToken = _.uniqueId(`${+new Date}-`);
   const iFrameId = iFrameIdPrefix + downloadToken;
   const formId = formIdPrefix + downloadToken;

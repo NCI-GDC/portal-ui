@@ -180,7 +180,7 @@ const Project = ({ $scope, authApi }) => {
             icon={<EditIcon style={styles.icon} />}
             style={{ ...styles.countCard, marginBottom: 0 }}
             {
-              ...(project.annotations && project.annotations.pagination.total > 0 ? { onClick: () => {
+              ...(project.annotations && project.annotations.pagination.total > 0 ? { onCountClick: () => {
                 if (project.annotations.pagination.total > 1) {
                   window.location = `/annotations?filters=${
                       makeFilter([{ field: 'project.project_id', value: project.project_id }])

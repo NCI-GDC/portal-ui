@@ -10,10 +10,13 @@ import _ from 'lodash';
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
+import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';
 import DownloadButton from './components/DownloadButton';
 import makeFilter from './utils/makeFilter';
 import SummaryCard from './components/SummaryCard';
+import BarChart from './charts/BarChart';
+import theme from './theme';
 
 const SPACING = '2rem';
 const HALF_SPACING = '1rem';
@@ -40,7 +43,6 @@ const styles = {
   column: {
     minWidth: 450,
     flexGrow: 1,
-    flexBasis: 1,
   },
   margin: {
     marginBottom: SPACING,
@@ -67,7 +69,7 @@ function buildFilters(data) {
   };
 }
 
-const Project = ({ $scope, authApi }) => {
+const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject }) => {
   const {
     project,
     clinicalCount,
@@ -83,6 +85,20 @@ const Project = ({ $scope, authApi }) => {
     dataCategories,
     dataCategoriesConfig,
   } = $scope;
+
+  const mutatedGenesChartData = mutatedGenesProject.map(g => (
+    {
+      'gene_id': g.gene_id,
+      'symbol': g.symbol,
+      'cytoband': 'tbd',
+      'num_affected_cases_project': g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
+      'num_affected_cases_all': g.case.length,
+      'mutsig_score': 'tbd',
+      'num_mutations': g.case.reduce((acc, c) =>  acc + c.ssm.length, 0),
+      'annotations': 'tbd',
+    }
+  ));
+  const totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
 
   return (
     <Column style={styles.container} className="project-page">
@@ -256,7 +272,49 @@ const Project = ({ $scope, authApi }) => {
           />
         </span>
       </Row>
+      <Column>
+          <h3>Most Frequently Mutated Genes</h3>
+      </Column>
+      <Column style={{...styles.column, paddingBottom: '2.5rem'}}>
+        {mutatedGenesChartData.length ? (<div><BarChart
+              data={mutatedGenesChartData.map(g => ({label: g.symbol, value: (g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100)}))}
+              yAxis={{ title: '% of Cases Affected' }}
+              styles={{
+                xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                bars: {fill: theme.secondary},
+                tooltips: {
+                  fill: '#fff',
+                  stroke: theme.greyScale4,
+                  textFill: theme.greyScale3
+                }
+              }}
+            />
 
+          <EntityPageHorizontalTable
+              headings={[
+                { key: 'symbol', title: 'Symbol' },
+                { key: 'cytoband', title: 'Cytoband' },
+                {
+                  key: 'num_affected_cases_project',
+                  title: (<span># Affected Cases<br />in {$scope.project.project_id}</span>),
+                },
+                {
+                  key: 'num_affected_cases_all',
+                  title: (<span># Affected Cases<br />in All Projects</span>),
+                },
+                { key: 'mutsig_score', title: 'MutSig Score'},
+                { key: 'num_mutations', title: '# Mutations'},
+                { key: 'annotations', title: 'Annotations'},
+              ]}
+              data={mutatedGenesChartData.map(g => ({
+                ...g,
+                symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
+                num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[$scope.project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[$scope.project.project_id]*100).toFixed(2)}%)`,
+                num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+              }))}
+          /></div>) : 'No mutated gene data to display'}
+      </Column>
     </Column>
   );
 };
@@ -264,6 +322,8 @@ const Project = ({ $scope, authApi }) => {
 Project.propTypes = {
   $scope: React.PropTypes.object,
   authApi: React.PropTypes.string,
+  mutatedGenesProject: React.PropTypes.array,
+  numCasesAggByProject: React.PropTypes.object,
 };
 
 const enhance = compose(

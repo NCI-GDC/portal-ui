@@ -5,7 +5,7 @@ module ngApp.projects {
   import IProject = ngApp.projects.models.IProject;
 
   /* ngInject */
-  function projectsConfig($stateProvider: ng.ui.IStateProvider, $urlRouterProvider: ng.ui.IUrlRouterProvider) {
+  function projectsConfig( $stateProvider: ng.ui.IStateProvider, $urlRouterProvider: ng.ui.IUrlRouterProvider) {
     $urlRouterProvider.when("/projects", "/projects/t");
 
     $stateProvider.state("projects", {
@@ -36,6 +36,63 @@ module ngApp.projects {
       controller: "ProjectController as prc",
       templateUrl: "projects/templates/project.html",
       resolve: {
+        mutatedGenesProject: (
+          $stateParams: ng.ui.IStateParamsService,
+          $http: ng.IHttpService,
+        ): ng.IPromise<IProject> => {
+          return $http({
+            method: 'POST',
+            url: 'http://localhost:9200/gdc-r1-gene-centric/gene-centric/_search',
+            headers: {'Content-Type' : 'application/json'},
+            data: {
+              "query": {
+                "nested": {
+                  "path": "case",
+                  "score_mode": "sum",
+                  "query": {
+                    "function_score": {
+                      "query": {
+                        "terms": {
+                          "case.project.project_id": [
+                            $stateParams["projectId"]
+                          ]
+                        }
+                      },
+                      "boost_mode": "replace",
+                      "script_score": {
+                        "script": "doc['case.project.project_id'].empty ? 0 : 1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }).then(data => {
+            return data.data.hits.hits;
+          });
+        },
+        numCasesAggByProject: (
+          $stateParams: ng.ui.IStateParamsService,
+          $http: ng.IHttpService,
+        ): ng.IPromise => {
+          return $http({
+            method: 'POST',
+            url: 'http://localhost:9200/gdc-r1-case-centric/case-centric/_search',
+            headers: {'Content-Type' : 'application/json'},
+            data: {
+              "aggs": {
+                "project_ids": {
+                  "terms": {
+                    "field": "project.project_id"
+                  }
+                }
+              }
+            }
+          }).then(data => {
+            return data.data.aggregations.project_ids.buckets;
+          });
+
+        },
         project: ($stateParams: ng.ui.IStateParamsService, ProjectsService: IProjectsService): ng.IPromise<IProject> => {
           if (! $stateParams.projectId) {
             throw Error('Missing route parameter: projectId. Redirecting to 404 page.');

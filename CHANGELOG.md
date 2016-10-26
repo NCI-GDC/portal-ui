@@ -1,3 +1,34 @@
+<a name"1.4.0"></a>
+## 1.4.0 (2016-10-26)
+
+
+#### Bug Fixes
+
+* **app:**
+  * [PRTL-292] remove state/status from entity pages ([3abc5ae9](https://github.com/NCI-GDC/portal-ui/commit/3abc5ae9))
+  * [PRTL-174] hide my projets filter (#1075) ([cdcd152b](https://github.com/NCI-GDC/portal-ui/commit/cdcd152b))
+  * fix page title [skip-ci] (#1088) ([82eb6fcd](https://github.com/NCI-GDC/portal-ui/commit/82eb6fcd))
+* **barChart:** PRTL-2 bar stroke complement colour ([e27de3f5](https://github.com/NCI-GDC/portal-ui/commit/e27de3f5))
+* **css:** [PRTL-275] fix css to hide static header ([89065961](https://github.com/NCI-GDC/portal-ui/commit/89065961))
+* **facets:** PRTL-290 not cutoff anymore in ff&ie (#1090) ([b4ae2360](https://github.com/NCI-GDC/portal-ui/commit/b4ae2360))
+* **gql:** [PRTL-283] accept negative integers ([3c9405d2](https://github.com/NCI-GDC/portal-ui/commit/3c9405d2))
+* **manifest:** dont allow DL when in progress (#1080) ([dc7334b8](https://github.com/NCI-GDC/portal-ui/commit/dc7334b8))
+* **smart:** [PRTL-284] fix smart search fieldcheck (#1079) ([5de4943a](https://github.com/NCI-GDC/portal-ui/commit/5de4943a))
+
+
+#### Features
+
+* **app:** PRTL-146 update dl manifest text ([dbc8d09b](https://github.com/NCI-GDC/portal-ui/commit/dbc8d09b))
+* **case:** [PRTL-3] remove dates from case page (#1076) ([8f6de535](https://github.com/NCI-GDC/portal-ui/commit/8f6de535))
+* **customFacets:** PRTL-67 filename as id facets ([b6241631](https://github.com/NCI-GDC/portal-ui/commit/b6241631))
+* **facets:** PRTL-21 term value search if n >= 20 (#1035) ([1c52a589](https://github.com/NCI-GDC/portal-ui/commit/1c52a589), closes [PGDC-21](https://jira.opensciencedatacloud.org/browse/PGDC-21))
+* **file:** PRTL-42 add sample type (#1048) ([005fcb95](https://github.com/NCI-GDC/portal-ui/commit/005fcb95))
+* **header:** PRTL-119 notifications from endpoint (#1084) ([0bf23b38](https://github.com/NCI-GDC/portal-ui/commit/0bf23b38))
+* **quicksearch:** PRTL-29 support annotations (#1068) ([f0c16db6](https://github.com/NCI-GDC/portal-ui/commit/f0c16db6))
+* **rangeFacet:** PRTL-77 show warning for age>=90 ([678aebf8](https://github.com/NCI-GDC/portal-ui/commit/678aebf8))
+* **user:** PRTL-278 dl refresh token (#1081) ([88dcb416](https://github.com/NCI-GDC/portal-ui/commit/88dcb416))
+
+
 <a name"1.3.1"></a>
 ### 1.3.1 (2016-09-21)
 

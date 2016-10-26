@@ -69,7 +69,7 @@ function buildFilters(data) {
   };
 }
 
-const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject }) => {
+const Project = ({ $scope, authApi, mutatedGenesProject, frequentMutations, numCasesAggByProject }) => {
   const {
     project,
     clinicalCount,
@@ -85,6 +85,8 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
     dataCategories,
     dataCategoriesConfig,
   } = $scope;
+
+  console.log('...', frequentMutations)
 
   const mutatedGenesChartData = mutatedGenesProject.map(g => (
     {
@@ -273,10 +275,12 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
         </span>
       </Row>
       <Column>
-          <h3>Most Frequently Mutated Genes</h3>
+        <h3>Most Frequently Mutated Genes</h3>
       </Column>
       <Column style={{...styles.column, paddingBottom: '2.5rem'}}>
-        {mutatedGenesChartData.length ? (<div><BarChart
+        {!!mutatedGenesChartData.length &&
+          <div>
+            <BarChart
               data={mutatedGenesChartData.map(g => ({
                 label: g.symbol,
                 value: (g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100),
@@ -295,7 +299,7 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
               }}
             />
 
-          <EntityPageHorizontalTable
+            <EntityPageHorizontalTable
               headings={[
                 { key: 'symbol', title: 'Symbol' },
                 { key: 'cytoband', title: 'Cytoband' },
@@ -317,7 +321,63 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
                 num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[$scope.project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[$scope.project.project_id]*100).toFixed(2)}%)`,
                 num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
               }))}
-          /></div>) : 'No mutated gene data to display'}
+            />
+          </div>
+        }
+        {!mutatedGenesChartData.length && 'No mutated gene data to display'}
+      </Column>
+      <Column>
+        <h3>Most Frequent Mutations</h3>
+      </Column>
+      <Column style={{...styles.column, paddingBottom: '2.5rem'}}>
+        {!!frequentMutations.length &&
+          <div>
+            <BarChart
+              data={frequentMutations.map(g => ({
+                label: g.ssm_id,
+                value: (g.score),
+                tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100).toFixed(2)}%`
+              }))}
+              yAxis={{ title: 'Cases' }}
+              height={300}
+              styles={{
+                xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                bars: {fill: theme.secondary},
+                tooltips: {
+                  fill: '#fff',
+                  stroke: theme.greyScale4,
+                  textFill: theme.greyScale3
+                }
+              }}
+            />
+
+            {/* <EntityPageHorizontalTable
+              headings={[
+                { key: 'symbol', title: 'Symbol' },
+                { key: 'cytoband', title: 'Cytoband' },
+                {
+                  key: 'num_affected_cases_project',
+                  title: (<span># Affected Cases<br />in {$scope.project.project_id}</span>),
+                },
+                {
+                  key: 'num_affected_cases_all',
+                  title: (<span># Affected Cases<br />in All Projects</span>),
+                },
+                { key: 'mutsig_score', title: 'MutSig Score'},
+                { key: 'num_mutations', title: '# Mutations'},
+                { key: 'annotations', title: 'Annotations'},
+              ]}
+              data={mutatedGenesChartData.map(g => ({
+                ...g,
+                symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
+                num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[$scope.project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[$scope.project.project_id]*100).toFixed(2)}%)`,
+                num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+              }))}
+            /> */}
+          </div>
+        }
+        {!frequentMutations.length && 'No mutation data to display'}
       </Column>
     </Column>
   );

@@ -152,6 +152,7 @@ module ngApp.projects.controllers {
     constructor(
       public project: IProject,
       public mutatedGenesProject: Array<Object>,
+      public frequentMutations: Array<Object>,
       public numCasesAggByProject: Array<Object>,
       private CoreService: ICoreService,
       private AnnotationsService: IAnnotationsService,
@@ -376,6 +377,7 @@ module ngApp.projects.controllers {
         React.createElement(ReactComponents.Project, {
           $scope: this,
           mutatedGenesProject: this.mutatedGenesProject.map(g => g._source),
+          frequentMutations: this.frequentMutations.map(g => Object.assign({}, g._source, { score: g._score })),
           numCasesAggByProject: this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {}),
           authApi: this.CoreService.config.auth_api
         }), document.getElementById('react-root')

@@ -7,13 +7,13 @@ import { compose, withState, pure } from 'recompose';
 // Custom
 import './style.css';
 let BarChart = (() => {
-  return ({ data, yAxis, styles, chart, setState }) => {
+  return ({ data, yAxis, styles, chart, setState, height: h }) => {
     const el = ReactFauxDOM.createElement('div')
 
     const margin = {top: 30, right: 50, bottom: 55, left: 30};
     const bandWidth = 36;
     const width = Object.keys(data).length * bandWidth + margin.left + margin.right;
-    const height = 200 - margin.top - margin.bottom;
+    const height = (h || 200) - margin.top - margin.bottom;
 
     const x = d3.scaleBand()
     .domain(data.map(d => d.label))

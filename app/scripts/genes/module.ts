@@ -40,9 +40,9 @@ module ngApp.genes {
                 }
               }
             }).then(
-            data2 => (Object.assign(
+            data => (Object.assign(
               gene,
-              { allCasesAgg: data2.data.aggregations.project_ids.buckets }
+              { allCasesAgg: data.data.aggregations.project_ids.buckets }
               ))
             );
           }, response => {

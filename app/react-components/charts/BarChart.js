@@ -87,7 +87,7 @@ let BarChart = (() => {
       .on('mouseenter', d => {
         d3.select('.global-tooltip')
           .classed('active', true)
-          .text(`${d.value.toFixed(2)}%`);
+          .html(d.tooltip);
       })
       .on('mouseleave', d => {
         d3.select('.global-tooltip')

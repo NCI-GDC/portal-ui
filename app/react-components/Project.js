@@ -277,7 +277,11 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
       </Column>
       <Column style={{...styles.column, paddingBottom: '2.5rem'}}>
         {mutatedGenesChartData.length ? (<div><BarChart
-              data={mutatedGenesChartData.map(g => ({label: g.symbol, value: (g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100)}))}
+              data={mutatedGenesChartData.map(g => ({
+                label: g.symbol,
+                value: (g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100),
+                tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100).toFixed(2)}%`
+              }))}
               yAxis={{ title: '% of Cases Affected' }}
               styles={{
                 xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},

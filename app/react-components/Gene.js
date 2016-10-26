@@ -142,7 +142,12 @@ let Gene = (() => {
         {sortedCancerDistData.length} projects
         <Column style={{...styles.column, paddingBottom: '2rem'}}>
           <BarChart
-            data={sortedCancerDistData.map(d => ({label: d.project_id, value: (d.freq * 100)}))}
+            data={sortedCancerDistData.map(d => ({
+              label: d.project_id,
+              value: (d.freq * 100),
+              tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`
+              }))
+            }
             yAxis={{ title: '% of Cases Affected' }}
             styles={{
               xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},

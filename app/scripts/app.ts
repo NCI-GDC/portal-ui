@@ -124,6 +124,15 @@ function appRun(gettextCatalog: any,
                 LocalStorageService: ILocalStorageService
                 ) {
 
+  // Make global tooltip always follow mouse
+
+  let globalTooltip = document.querySelector('.global-tooltip');
+
+  window.addEventListener('mousemove', event => {
+    globalTooltip.style.left = event.pageX + 'px';
+    globalTooltip.style.top = event.pageY - globalTooltip.offsetHeight - 15 + 'px';
+  });
+
   if (navigator.cookieEnabled && $cookies.get("GDC-Portal-Sha") !== config.commitHash) {
     $cookies.put("GDC-Portal-Sha", config.commitHash);
     [ "Projects-col", "Annotations-col", "Files-col", "Cases-col",

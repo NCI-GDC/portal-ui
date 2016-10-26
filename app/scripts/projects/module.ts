@@ -8,8 +8,7 @@ module ngApp.projects {
   /* ngInject */
   function projectsConfig(
     $stateProvider: ng.ui.IStateProvider,
-    $urlRouterProvider: ng.ui.IUrlRouterProvider,
-    config: IGDCConfig
+    $urlRouterProvider: ng.ui.IUrlRouterProvider
   ) {
     $urlRouterProvider.when("/projects", "/projects/t");
 

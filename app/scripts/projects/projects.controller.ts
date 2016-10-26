@@ -10,6 +10,7 @@ module ngApp.projects.controllers {
   import IProjectsState = ngApp.projects.services.IProjectsState;
   import IFacetService = ngApp.components.facets.services.IFacetService;
   import IParticipantsService = ngApp.participants.services.IParticipantsService;
+  import IGDCConfig = ngApp.IGDCConfig;
 
   export interface IProjectsController {
     projects: IProjects;
@@ -36,7 +37,9 @@ module ngApp.projects.controllers {
                 private $state: ng.ui.IStateService, public ProjectsState: IProjectsState,
                 private LocationService: ILocationService, private $filter,
                 private ProjectsGithutConfig, private ProjectsGithutColumns, private ProjectsGithut,
-                private FacetService: IFacetService
+                private FacetService: IFacetService,
+                private $http: ng.IHttpService,
+                private config: IGDCConfig,
     ) {
       CoreService.setPageTitle("Projects");
       $scope.$on("$locationChangeSuccess", (event, next) => {
@@ -64,10 +67,12 @@ module ngApp.projects.controllers {
       this.refresh();
     }
 
-    renderReact () {
+    renderReact (projects: Array<Object>, genes: Array<Object>) {
       ReactDOM.render(
       React.createElement(ReactComponents.Projects, {
-        projects: this.projects.hits || [],
+        projects: projects || [],
+        genes: genes || [],
+        FacetService: this.FacetService,
       }), document.getElementById('react-root')
       );
     };
@@ -90,8 +95,37 @@ module ngApp.projects.controllers {
           } else if(this.ProjectsState.tabs.summary.active || this.numPrimarySites === 0) {
             this.numPrimarySites = _.unique(this.projects.hits, (project) => { return project.primary_site; }).length;
           }
-          console.log(this.projects);
-          this.renderReact();
+          //get stackedbar chart data
+         this.$http({
+            method: 'POST',
+            url: `${this.config.es_host}/gdc-r1-gene-centric/gene-centric/_search`,
+            headers: {'Content-Type' : 'application/json'},
+            data: {
+              "query": {
+                "nested": {
+                  "path": "case",
+                  "score_mode": "sum",
+                  "query": {
+                    "function_score": {
+                      "query": {
+                        "terms": {
+                          "case.project.project_id": this.projects.hits.map(p => p.project_id)
+                        }
+                      },
+                      "boost_mode": "replace",
+                      "script_score": {
+                        "script": "doc['case.project.project_id'].empty ? 0 : 1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }).then(data => {
+            console.log(data);
+            const genes = (data.data.hits.hits || []).map(g => g._source);
+            this.renderReact(this.projects.hits, genes);
+          });
         });
       } else {
         this.loading = false;

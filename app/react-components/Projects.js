@@ -1,9 +1,13 @@
 // Vendor
 import React from 'react';
+import Measure from 'react-measure';
 
 // Custom
 import Column from './uikit/Flex/Column';
+import Row from './uikit/Flex/Row';
 import PieChart from './charts/PieChart';
+import StackedBarChart from './charts/StackedBarChart';
+import theme from './theme';
 
 let Projects = (() => {
   const styles = {
@@ -18,24 +22,63 @@ let Projects = (() => {
       marginTop: 7,
     },
     column: {
-      width: '100%',
       minWidth: 450,
     },
   };
 
-  return ({ projects }) => {
+  return ({ projects, genes, FacetService }) => {
+    const actives = FacetService.getActiveIDs('project_id');
+    console.log(actives);
+    const stackedBarData = genes.map(g => ({
+      symbol: g.symbol,
+      gene_id: g.gene_id,
+      ...g.case.reduce((acc, c) => ({
+      ...acc,
+      [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1,
+      total: acc.total + 1,
+      }), { total: 0 })
+    })).sort((a, b) => b.total - a.total);
     return  (
-      <Column style={styles.container}>
-        Case Distribution per Project
-        <PieChart
-          key='chart'
-          data={projects.map(p => ({...p, tooltip: `${p.project_id}: ${p.summary.case_count} cases`}))}
-          path='summary.case_count'
-          tooltipKey='tooltip'
-          height={250}
-          width={250}
-        />
+      <Row>
+        <Column style={{width: '70%', paddingRight: '10px', minWidth: '450px'}}>
+          <h4 style={{alignSelf: 'center'}}>Top Mutated Genes in Selected Projects</h4>
+        <Measure>
+          {({width}) => (
+          <StackedBarChart
+            width={width}
+            height={200}
+            data={stackedBarData}
+            yAxis={{ title: 'Cases Affected' }}
+            styles={{
+                xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+            }}
+          />)}
+          </Measure>
+        </Column>
+        <Column style={{width: '30%', minWidth: '200px'}}>
+          <h4 style={{alignSelf: 'center'}}>Case Distribution per Project</h4>
+          <PieChart
+            key='chart'
+            data={projects.map(p => ({
+              ...p,
+              tooltip: `<b>${p.project_id}</b><br/>${p.summary.case_count} cases`,
+              clickHandler: () => {
+                  if(FacetService.getActiveIDs('project_id').indexOf(p.project_id) !== 0) {
+                    FacetService.addTerm('project_id', p.project_id);
+                  } else {
+                    FacetService.removeTerm('project_id', p.project_id);
+                  }
+                }
+              })
+            )}
+            path='summary.case_count'
+            tooltipKey='tooltip'
+            height={250}
+            width={250}
+          />
       </Column>
+      </Row>
     );
   }
 })()

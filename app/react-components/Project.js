@@ -86,17 +86,14 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
     dataCategoriesConfig,
   } = $scope;
 
-  console.log(experimentalStrategies);
   const mutatedGenesChartData = mutatedGenesProject.map(g => (
     {
       'gene_id': g.gene_id,
       'symbol': g.symbol,
-      'cytoband': 'tbd',
+      'cytoband': g.cytoband,
       'num_affected_cases_project': g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
       'num_affected_cases_all': g.case.length,
-      'mutsig_score': 'tbd',
       'num_mutations': g.case.reduce((acc, c) =>  acc + c.ssm.length, 0),
-      'annotations': 'tbd',
     }
   ));
   const totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
@@ -310,9 +307,7 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
                   key: 'num_affected_cases_all',
                   title: (<span># Affected Cases<br />in All Projects</span>),
                 },
-                { key: 'mutsig_score', title: 'MutSig Score'},
                 { key: 'num_mutations', title: '# Mutations'},
-                { key: 'annotations', title: 'Annotations'},
               ]}
               data={mutatedGenesChartData.map(g => ({
                 ...g,

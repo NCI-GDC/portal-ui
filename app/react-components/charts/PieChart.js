@@ -26,7 +26,6 @@ const PieChart = ({ data, path = 'file_count', tooltipKey, height = 160, width =
   node.style.setProperty('justify-content', 'center');
 
   const pie = d3.pie()
-    // .sort(null)
     .value(d => getNestedValue(d, path.split('.')));
 
   const arc = d3.arc()
@@ -48,34 +47,23 @@ const PieChart = ({ data, path = 'file_count', tooltipKey, height = 160, width =
 
   const gPath = g.append('path');
 
-  gPath.attr('d', arc)
+  const fill = gPath.attr('d', arc)
     .style('fill', (d, i) => color(i));
 
-  const tip = g.append('g')
-      .attr('class', 'arc-tooltip');
+  if (tooltipKey) {
+    fill.on('mouseenter', d => {
+      d3.select('.global-tooltip')
+        .classed('active', true)
+        .html(d.data[tooltipKey]);
+    })
+    .on('mouseleave', d => {
+      d3.select('.global-tooltip')
+        .classed('active', false)
+    });
+  }
 
-    const tipHeight = 25;
-    const tipWidth = 120;
-    const getTipY = (d) => 0;
-    const getTipX = (d) => 0;
-    tip.append('rect')
-      .attr('fill', '#fff')
-      .attr('stroke', theme.greyScale4)
-      .attr('width', tipWidth)
-      .attr('height', tipHeight)
-      .attr('rx', 5)
-      .attr('ry', 5)
-      .attr("y", (d) => getTipY(d))
-      .attr("x", (d) => getTipX(d));
-
-    tip.append('text')
-      .attr("y", (d) =>  getTipY(d))
-      .attr("x", (d) => getTipX(d) + 5)
-      .attr("dy", "1.2em")
-      .style("text-anchor", "start")
-      .attr("font-size", "1em")
-      .attr('fill', theme.greyScale3)
-      .text(d => d.data[tooltipKey]);
+  fill
+  .on('mousedown', d => d.data.clickHandler && d.data.clickHandler())
 
   return node.toReact();
 };

@@ -130,7 +130,7 @@ function appRun(gettextCatalog: any,
 
   window.addEventListener('mousemove', event => {
     globalTooltip.style.left = event.pageX + 'px';
-    globalTooltip.style.top = event.pageY - 45 + 'px';
+    globalTooltip.style.top = event.pageY - globalTooltip.offsetHeight - 15 + 'px';
   });
 
   if (navigator.cookieEnabled && $cookies.get("GDC-Portal-Sha") !== config.commitHash) {

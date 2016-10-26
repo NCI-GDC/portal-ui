@@ -336,7 +336,7 @@ const Project = ({ $scope, authApi, mutatedGenesProject, frequentMutations, numC
               data={frequentMutations.map(g => ({
                 label: g.ssm_id,
                 value: (g.score),
-                tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100).toFixed(2)}%`
+                tooltip: `<b>${g.ssm_id}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100).toFixed(2)}%`
               }))}
               yAxis={{ title: 'Cases' }}
               height={300}
@@ -352,10 +352,12 @@ const Project = ({ $scope, authApi, mutatedGenesProject, frequentMutations, numC
               }}
             />
 
-            {/* <EntityPageHorizontalTable
+            <EntityPageHorizontalTable
               headings={[
-                { key: 'symbol', title: 'Symbol' },
-                { key: 'cytoband', title: 'Cytoband' },
+                { key: 'id', title: 'ID' },
+                { key: 'genomic_dna_change', title: 'DNA Change' },
+                { key: 'mutation_type', title: 'Type' },
+                { key: 'consequences', title: 'Consequences' },
                 {
                   key: 'num_affected_cases_project',
                   title: (<span># Affected Cases<br />in {$scope.project.project_id}</span>),
@@ -364,17 +366,15 @@ const Project = ({ $scope, authApi, mutatedGenesProject, frequentMutations, numC
                   key: 'num_affected_cases_all',
                   title: (<span># Affected Cases<br />in All Projects</span>),
                 },
-                { key: 'mutsig_score', title: 'MutSig Score'},
-                { key: 'num_mutations', title: '# Mutations'},
                 { key: 'annotations', title: 'Annotations'},
               ]}
-              data={mutatedGenesChartData.map(g => ({
+              data={frequentMutations.map(g => ({
                 ...g,
-                symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
-                num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[$scope.project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[$scope.project.project_id]*100).toFixed(2)}%)`,
-                num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+                id: <a href={`/genes/${g.gene_id}`}>{g.ssm_id}</a>,
+                // num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[$scope.project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[$scope.project.project_id]*100).toFixed(2)}%)`,
+                // num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
               }))}
-            /> */}
+            />
           </div>
         }
         {!frequentMutations.length && 'No mutation data to display'}

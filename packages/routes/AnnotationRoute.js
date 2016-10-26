@@ -2,6 +2,7 @@
 /* eslint fp/no-class:0 */
 
 import React from 'react';
+
 import Relay from 'react-relay';
 
 import AnnotationPage from '@ncigdc/containers/AnnotationPage';

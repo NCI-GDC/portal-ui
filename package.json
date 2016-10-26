@@ -19,8 +19,9 @@
     "react-router": "4.0.0-alpha.4"
   },
   "devDependencies": {
-    "@ncigdc/buildjs": "0.3.1",
-    "@ncigdc/dev-server": "0.3.0",
+    "@ncigdc/buildjs": "0.3.8",
+    "@ncigdc/buildjs-dev-server": "0.3.8",
+    "@ncigdc/buildjs-scripts": "0.3.8",
     "lerna": "2.0.0-beta.29"
   },
   "scripts": {

@@ -1,6 +1,7 @@
 .idea/
 .jest/
 .vscode/
+.history/
 
 node_modules/
 bower_components/

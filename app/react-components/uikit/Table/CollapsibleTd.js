@@ -16,11 +16,10 @@ const styles = {
 
 const enhance = withState('expanded', 'toggleExpand', false);
 const CollapsibleTd = enhance(({ style, text, expanded, toggleExpand, ...props }) => {
-  console.log(text);
   return (
   <td style={{ ...styles.td, ...style }} {...props}>
     <div>
-      {expanded ? text : `${text.substring(0, 250)}\u2026`}
+      {expanded || text.length <= 250 ? text : `${text.substring(0, 250)}\u2026`}
     </div>
     { text.length > 250 &&
       (<div style={{

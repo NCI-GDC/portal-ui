@@ -340,6 +340,7 @@ gulp.task('ts:compile', function () {
 gulp.task('babel', function() {
   return browserify('app/react-components/index.js')
     .transform("babelify", {presets: ["stage-0", "react", "es2015"]})
+    .transform('browserify-css', { autoInject: true })
     .bundle()
     .on('error', function (err) {
         console.log(err.message);

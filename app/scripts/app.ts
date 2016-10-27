@@ -242,6 +242,7 @@ angular
       "ngApp.notFound",
       "ngApp.reports",
       "ngApp.genes",
+      "ngApp.mutations",
       "templates"
     ])
     .config(appConfig)

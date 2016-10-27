@@ -135,6 +135,19 @@ module ngApp.projects {
             return data.data.hits.hits;
           });
         },
+        survivalData: (
+          $stateParams: ng.ui.IStateParamsService,
+          $http: ng.IHttpService,
+          config: IGDCConfig
+        ): ng.IPromise => {
+          return $http({
+            method: 'GET',
+            url: `${config.api}/analysis/survival?filters={"op":"=","content":{"field":"cases.project.project_id","value":"${$stateParams["projectId"]}"}}`,
+            headers: {'Content-Type' : 'application/json'},
+          }).then(data => {
+            return data.data;
+          });
+        },
         project: ($stateParams: ng.ui.IStateParamsService, ProjectsService: IProjectsService): ng.IPromise<IProject> => {
           if (! $stateParams.projectId) {
             throw Error('Missing route parameter: projectId. Redirecting to 404 page.');

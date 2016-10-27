@@ -203,6 +203,7 @@ module ngApp.projects.controllers {
       public mutatedGenesProject: Array<Object>,
       public numCasesAggByProject: Array<Object>,
       public frequentMutations: Array<Object>,
+      public survivalData: Array<Object>,
       private CoreService: ICoreService,
       private AnnotationsService: IAnnotationsService,
       private ParticipantsService: IParticipantsService,
@@ -427,6 +428,7 @@ module ngApp.projects.controllers {
             links: [
               { icon: 'table', title: 'Summary', id: 'summary' },
               { icon: 'bar-chart-o', title: 'Mutated Genes', id: 'mutated-genes' },
+              { icon: 'line-chart', title: 'Survival Plot', id: 'survival-plot' },
               { icon: 'th', title: 'OncoGrid', id: 'oncogrid' },
               { icon: 'bar-chart-o', title: 'Frequent Mutations', id: 'frequent-mutations' },
             ],
@@ -440,6 +442,7 @@ module ngApp.projects.controllers {
             authApi: this.CoreService.config.auth_api,
             esHost: this.CoreService.config.es_host,
             frequentMutations: this.frequentMutations.map(g => Object.assign({}, g._source, { score: g._score })),
+            survivalData: this.survivalData,
           })
         ),
         document.getElementById('react-root')

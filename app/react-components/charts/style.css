@@ -1,0 +1,12 @@
+.bar:hover {
+  fill: 'rgb(131,0,30)';
+}
+
+.bar-g .bar-tooltip {
+  visibility: hidden;
+}
+
+.bar-g:hover .bar-tooltip {
+  visibility: visible;
+
+}

@@ -10,6 +10,9 @@ var fs = require('graceful-fs');
 var packageJSON = require("./package.json");
 var modRewrite = require('connect-modrewrite');
 var mkdirp = require("mkdirp");
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+var rename = require('gulp-rename');
 
 var env = {
   api: process.env.GDC_API || "http://localhost:5000",
@@ -279,7 +282,7 @@ gulp.task('plato', function () {
 
 gulp.task('karma:once', function () {
   // Be sure to return the stream
-  return gulp.src('app/scripts/*.js')
+  return gulp.src('path') // not a real path
       .pipe($.karma({
         configFile: 'karma.conf.js',
         action: 'run'
@@ -291,7 +294,7 @@ gulp.task('karma:once', function () {
 });
 
 gulp.task('karma:watch', function () {
-  return gulp.src('app/scripts/*.js')
+  return gulp.src('path') // not a real path
       .pipe($.karma({
         configFile: 'karma.conf.js',
         action: 'watch'
@@ -333,6 +336,25 @@ gulp.task('ts:compile', function () {
       .pipe($.size({title: 'typescript'}));
 });
 // </typescript>
+
+gulp.task('babel', function() {
+  return browserify('app/react-components/index.js')
+    .transform("babelify", {presets: ["stage-0", "react", "es2015"]})
+    .transform('browserify-css', { autoInject: true })
+    .bundle()
+    .on('error', function (err) {
+        console.log(err.message);
+        console.log(err.stack);
+        this.emit("end");
+    })
+    .pipe(source('react-components.js'))
+    .pipe(gulp.dest('./dist/js'));
+});
+
+gulp.task('humanbody', function () {
+  return gulp.src('app/scripts/humanbody.js')
+    .pipe(gulp.dest('dist/js'))
+})
 
 // <ng-templates>
 gulp.task('ng:templates', function () {
@@ -389,6 +411,7 @@ gulp.task('serve:web', function (cb) {
     gulp.watch(['app/scripts/**/*.ts'], ['ts:compile', reload]);
     gulp.watch(['app/scripts/**/*.html'], ['ng:templates', reload]);
     gulp.watch(['app/images/**/*'], ['images', reload]);
+    gulp.watch(['app/react-components/**/*.js'], ['babel', reload]);
   }
 });
 
@@ -419,7 +442,18 @@ gulp.task('serve', function (cb) {
 
 // Build Production Files, the Default Task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['rev', 'images', 'fonts', 'vendor', 'ts:compile', 'i18n', 'config', 'pegjs'], cb);
+  runSequence('styles', [
+    'rev',
+    'images',
+    'fonts',
+    'vendor',
+    'ts:compile',
+    'babel',
+    'i18n',
+    'config',
+    'pegjs',
+    'humanbody'
+  ], cb);
 });
 
 // Run PageSpeed Insights

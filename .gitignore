@@ -9,6 +9,7 @@ typings/
 npm-debug.log*
 lerna-debug.log
 .DS_Store
+testlogs
 
 .env
 dist/
@@ -16,4 +17,3 @@ translations/
 .tmp/
 coverage/
 report/
-

@@ -153,9 +153,12 @@
 <!-- build:js js/vendor.js -->
 <script src="libs/file-saver/FileSaver.min.js"></script>
 <script src="libs/moment/moment.js"></script>
+
 <script src="libs/d3/d3.js"></script>
 <script src="libs/d3-tip/index.js"></script>
 <script src="libs/bowser/bowser.js"></script>
+<script src="libs/react/react.min.js"></script>
+<script src="libs/react/react-dom.min.js"></script>
 <!-- endbuild -->
 
 <!-- Angular Plugins -->
@@ -178,6 +181,8 @@
 
 <!-- App -->
 <!-- build:js js/app.js -->
+<script src="js/react-components.js"></script>
+<script src="js/humanbody.js"></script>
 <script src="js/gql.js"></script>
 <script src="js/templates.js"></script>
 <script src="js/translations.js"></script>
@@ -196,6 +201,6 @@
   ga('send', 'pageview');
 </script>
 -->
-
+  <div class="global-tooltip"></div>
 </body>
 </html>

@@ -3,9 +3,14 @@ module ngApp.projects {
 
   import IProjectsService = ngApp.projects.services.IProjectsService;
   import IProject = ngApp.projects.models.IProject;
+  import IGDCConfig = ngApp.IGDCConfig;
 
   /* ngInject */
-  function projectsConfig( $stateProvider: ng.ui.IStateProvider, $urlRouterProvider: ng.ui.IUrlRouterProvider) {
+  function projectsConfig(
+    $stateProvider: ng.ui.IStateProvider,
+    $urlRouterProvider: ng.ui.IUrlRouterProvider,
+    config: IGDCConfig,
+  ) {
     $urlRouterProvider.when("/projects", "/projects/t");
 
     $stateProvider.state("projects", {
@@ -42,7 +47,7 @@ module ngApp.projects {
         ): ng.IPromise<IProject> => {
           return $http({
             method: 'POST',
-            url: 'http://localhost:9200/gdc-r1-gene-centric/gene-centric/_search',
+            url: `${config.es_host}/gdc-r1-gene-centric/gene-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
               "query": {
@@ -77,7 +82,7 @@ module ngApp.projects {
         ): ng.IPromise => {
           return $http({
             method: 'POST',
-            url: 'http://localhost:9200/gdc-r1-case-centric/case-centric/_search',
+            url: `${config.es_host}/gdc-r1-case-centric/case-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
               "aggs": {

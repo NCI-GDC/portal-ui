@@ -1,3 +1,12 @@
+<a name"1.4.2"></a>
+### 1.4.2 (2016-10-28)
+
+
+#### Bug Fixes
+
+* **manifest:** API-81 remove fields parameter from manifest download (#1114) ([4f62fa00](https://github.com/NCI-GDC/portal-ui/commit/4f62fa00))
+
+
 <a name"1.4.1"></a>
 ### 1.4.1 (2016-10-28)
 

@@ -421,13 +421,15 @@ module ngApp.projects.controllers {
             links: [
               { icon: 'table', title: 'Summary', id: 'summary' },
               { icon: 'bar-chart-o', title: 'Mutated Genes', id: 'mutated-genes' },
+              { icon: 'th', title: 'OncoGrid', id: 'oncogrid' },
             ]
           },
           React.createElement(ReactComponents.Project, {
             $scope: this,
             mutatedGenesProject: this.mutatedGenesProject.map(g => g._source),
             numCasesAggByProject: this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {}),
-            authApi: this.CoreService.config.auth_api
+            authApi: this.CoreService.config.auth_api,
+            esHost: this.CoreService.config.es_host
           })
         ),
         document.getElementById('react-root')

@@ -17,6 +17,7 @@ import makeFilter from './utils/makeFilter';
 import SummaryCard from './components/SummaryCard';
 import BarChart from './charts/BarChart';
 import theme from './theme';
+import OncoGridWrapper from './oncogrid/OncoGridWrapper';
 
 const SPACING = '2rem';
 const HALF_SPACING = '1rem';
@@ -69,7 +70,7 @@ function buildFilters(data) {
   };
 }
 
-const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject }) => {
+const Project = ({ $scope, authApi, esHost, mutatedGenesProject, numCasesAggByProject }) => {
   const {
     project,
     clinicalCount,
@@ -279,8 +280,8 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
         {mutatedGenesChartData.length ? (<div><BarChart
               data={mutatedGenesChartData.map(g => ({
                 label: g.symbol,
-                value: (g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100),
-                tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100).toFixed(2)}%`
+                value: (g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100),
+                tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`
               }))}
               yAxis={{ title: '% of Cases Affected' }}
               styles={{
@@ -301,7 +302,7 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
                 { key: 'cytoband', title: 'Cytoband' },
                 {
                   key: 'num_affected_cases_project',
-                  title: (<span># Affected Cases<br />in {$scope.project.project_id}</span>),
+                  title: (<span># Affected Cases<br />in {project.project_id}</span>),
                 },
                 {
                   key: 'num_affected_cases_all',
@@ -312,11 +313,17 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
               data={mutatedGenesChartData.map(g => ({
                 ...g,
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
-                num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[$scope.project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[$scope.project.project_id]*100).toFixed(2)}%)`,
+                num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
                 num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
               }))}
           /></div>) : 'No mutated gene data to display'}
       </Column>
+      <Column>
+        <h1 style={styles.heading} id="oncogrid">
+          <i className="fa fa-th" style={{ paddingRight: `10px` }} />OncoGrid
+        </h1>
+      </Column>
+      <OncoGridWrapper projectId={project.project_id} esHost={esHost} />
     </span>
   );
 };

@@ -2,11 +2,11 @@
   fill: 'rgb(131,0,30)';
 }
 
-.bar-g .bar-tooltip {
+.bar-g .bar-tooltip, .arc .arc-tooltip {
   visibility: hidden;
 }
 
-.bar-g:hover .bar-tooltip {
+.bar-g:hover .bar-tooltip, .arc:hover .arc-tooltip {
   visibility: visible;
 
 }

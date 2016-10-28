@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 import { compose, withState } from 'recompose';
 
 // Custom
-import PieChart from './PieChart';
+import PieChart from '../charts/PieChart';
 import { Row, Column } from '../uikit/Flex';
 import Card from '../uikit/Card';
 import theme from '../theme';

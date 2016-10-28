@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 
 /*----------------------------------------------------------------------------*/
+import theme from '../theme';
 
 const getNestedValue = (item, path) => {
   if (path.length === 1) {
@@ -16,7 +17,7 @@ const getNestedValue = (item, path) => {
   return getNestedValue(nextItem, path);
 };
 
-const PieChart = ({ data, path = 'file_count', height = 160, width = 160 }) => {
+const PieChart = ({ data, path = 'file_count', tooltipKey, height = 160, width = 160 }) => {
   const color = d3.scaleOrdinal(d3.schemeCategory10);
   const outerRadius = height / 2 + 10;
 
@@ -50,6 +51,31 @@ const PieChart = ({ data, path = 'file_count', height = 160, width = 160 }) => {
   gPath.attr('d', arc)
     .style('fill', (d, i) => color(i));
 
+  const tip = g.append('g')
+      .attr('class', 'arc-tooltip');
+
+    const tipHeight = 25;
+    const tipWidth = 120;
+    const getTipY = (d) => 0;
+    const getTipX = (d) => 0;
+    tip.append('rect')
+      .attr('fill', '#fff')
+      .attr('stroke', theme.greyScale4)
+      .attr('width', tipWidth)
+      .attr('height', tipHeight)
+      .attr('rx', 5)
+      .attr('ry', 5)
+      .attr("y", (d) => getTipY(d))
+      .attr("x", (d) => getTipX(d));
+
+    tip.append('text')
+      .attr("y", (d) =>  getTipY(d))
+      .attr("x", (d) => getTipX(d) + 5)
+      .attr("dy", "1.2em")
+      .style("text-anchor", "start")
+      .attr("font-size", "1em")
+      .attr('fill', theme.greyScale3)
+      .text(d => d.data[tooltipKey]);
 
   return node.toReact();
 };

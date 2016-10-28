@@ -11,5 +11,5 @@ angular.module("ngApp.config", [])
     "tag": "https://github.com/NCI-GDC/portal-ui/releases/tag/__VERSION__",
     "production": __PRODUCTION__,
     "fake_auth": __FAKE_AUTH__,
-    "es_host": __ES_HOST__,
+    "es_host": "__ES_HOST__",
   });

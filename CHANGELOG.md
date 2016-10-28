@@ -1,3 +1,12 @@
+<a name"1.4.1"></a>
+### 1.4.1 (2016-10-28)
+
+
+#### Bug Fixes
+
+* **app:** PRTL-374, PRTL-377 ie padding, release date ([91e6e891](https://github.com/NCI-GDC/portal-ui/commit/91e6e891))
+
+
 <a name"1.4.0"></a>
 ## 1.4.0 (2016-10-26)
 

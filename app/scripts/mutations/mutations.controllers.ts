@@ -17,7 +17,13 @@ module ngApp.mutations.controllers {
 
     renderReact () {
       ReactDOM.render(
-        React.createElement(ReactComponents.Mutation, { mutation: this.mutation}),
+        React.createElement(ReactComponents.SideNavLayout, {
+            links: [
+              { id: 'summary', title: 'Summary', icon: 'table' },
+            ]
+          },
+          React.createElement(ReactComponents.Mutation, { mutation: this.mutation}),
+        ),
         document.getElementById('react-root')
       );
     };

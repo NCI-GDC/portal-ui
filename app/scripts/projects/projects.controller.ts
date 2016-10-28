@@ -373,12 +373,20 @@ module ngApp.projects.controllers {
 
     renderReact () {
       ReactDOM.render(
-      React.createElement(ReactComponents.Project, {
-        $scope: this,
-        mutatedGenesProject: this.mutatedGenesProject.map(g => g._source),
-        numCasesAggByProject: this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {}),
-        authApi: this.CoreService.config.auth_api
-      }), document.getElementById('react-root')
+        React.createElement(ReactComponents.SideNavLayout, {
+            links: [
+              { icon: 'table', title: 'Summary', id: 'summary' },
+              { icon: 'bar-chart-o', title: 'Mutated Genes', id: 'mutated-genes' },
+            ]
+          },
+          React.createElement(ReactComponents.Project, {
+            $scope: this,
+            mutatedGenesProject: this.mutatedGenesProject.map(g => g._source),
+            numCasesAggByProject: this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {}),
+            authApi: this.CoreService.config.auth_api
+          })
+        ),
+        document.getElementById('react-root')
       );
     };
 

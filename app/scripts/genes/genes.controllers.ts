@@ -17,7 +17,14 @@ module ngApp.genes.controllers {
 
     renderReact () {
       ReactDOM.render(
-        React.createElement(ReactComponents.Gene, { gene: this.gene }),
+        React.createElement(ReactComponents.SideNavLayout, {
+            links: [
+              { icon: 'table', id: 'summary', title: 'Summary' },
+              { icon: 'bar-chart-o', id: 'cancer-distribution', title: 'Cancer Distribution' },
+            ]
+          },
+          React.createElement(ReactComponents.Gene, { gene: this.gene })
+        ),
         document.getElementById('react-root')
       );
     };

@@ -60,12 +60,12 @@ let Mutation = (() => {
     const annotatedConsequence = _.find(mutation.consequence, c => Object.keys(c.transcript.annotation).length > 0)
     const functionalImpact = (annotatedConsequence || { transcript: { annotation: { impact: '' } } }).transcript.annotation.impact.toLowerCase();
     return (
-      <Column style={styles.container}>
+      <span>
         <Row style={{
             justifyContent: 'space-between',
             marginTop: '1rem',
           }}>
-            <h1 style={styles.heading}>
+            <h1 style={styles.heading} id="summary">
               { mutation.ssm_id }
             </h1>
         </Row>
@@ -104,7 +104,7 @@ let Mutation = (() => {
             style={{...styles.summary, ...styles.column, alignSelf: 'flex-start'}}
           />}
         </Row>
-      </Column>
+      </span>
     );
   }
 })()

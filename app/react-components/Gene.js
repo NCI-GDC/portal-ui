@@ -21,10 +21,6 @@ import externalReferenceLinks from './utils/externalReferenceLinks';
 
 let Gene = (() => {
   const styles = {
-    container: {
-      width: '80%',
-      margin: 'auto',
-    },
     heading: {
       flexGrow: 1,
       fontSize: '2rem',
@@ -70,12 +66,13 @@ let Gene = (() => {
       .map(k => ({project_id: k, ...cancerDistData[k]}))
       .sort((a, b) => b.freq - a.freq);
 
-    return  (<Column style={styles.container}>
+    return  (
+      <span>
         <Row style={{
             justifyContent: 'space-between',
             marginTop: '1rem',
           }}>
-            <h1 style={styles.heading}>
+            <h1 style={styles.heading} id="summary">
               <GeneIcon style={{ margin: '1rem' }}/>
               { gene.gene_id }
             </h1>
@@ -127,7 +124,10 @@ let Gene = (() => {
           />
         </Row>
         <Column>
-          <h3>Cancer Distribution</h3>
+          <h1 id="cancer-distribution" style={styles.heading}>
+            <i className="fa fa-bar-chart-o" style={{ marginRight: `1rem` }} />
+            Cancer Distribution
+          </h1>
         </Column>
         {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by&nbsp;
         {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across&nbsp;
@@ -170,7 +170,7 @@ let Gene = (() => {
             )}
           />
         </Column>
-      </Column>
+      </span>
     );
   }
 })()

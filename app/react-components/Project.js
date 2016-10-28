@@ -41,7 +41,7 @@ const styles = {
     color: '#6b6262',
   },
   column: {
-    minWidth: 450,
+    // minWidth: 450,
     flexGrow: 1,
   },
   margin: {
@@ -101,9 +101,9 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
   const totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
 
   return (
-    <Column style={styles.container} className="project-page">
+    <span>
       <Row style={{ ...styles.margin, justifyContent: 'space-between' }} >
-        <h1 style={styles.heading}>
+        <h1 style={styles.heading} id="summary">
           <i style={{ marginRight: 6 }} className="fa fa-align-left" />
           {project.project_id}
         </h1>
@@ -165,7 +165,7 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
           />
         </span>
 
-        <Column style={{ ...styles.column, ...styles.margin }}>
+        <Column style={{ ...styles.margin, width: '200px' }}>
           <CountCard
             title="CASES"
             count={project.summary.case_count.toLocaleString()}
@@ -273,7 +273,9 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
         </span>
       </Row>
       <Column>
-          <h3>Most Frequently Mutated Genes</h3>
+        <h1 style={styles.heading} id="mutated-genes">
+          <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />Most Frequently Mutated Genes
+        </h1>
       </Column>
       <Column style={{...styles.column, paddingBottom: '2.5rem'}}>
         {mutatedGenesChartData.length ? (<div><BarChart
@@ -319,7 +321,7 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
               }))}
           /></div>) : 'No mutated gene data to display'}
       </Column>
-    </Column>
+    </span>
   );
 };
 

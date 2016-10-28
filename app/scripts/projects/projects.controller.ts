@@ -23,7 +23,7 @@ module ngApp.projects.controllers {
   }
 
   class ProjectsController implements IProjectsController {
-    projects: IProjects;
+    projects: IProjects = [];
     projectColumns: any[];
     tabSwitch: boolean = false;
     numPrimarySites: number = 0;
@@ -64,6 +64,14 @@ module ngApp.projects.controllers {
       this.refresh();
     }
 
+    renderReact () {
+      ReactDOM.render(
+      React.createElement(ReactComponents.Projects, {
+        projects: this.projects.hits || [],
+      }), document.getElementById('react-root')
+      );
+    };
+
     refresh() {
       this.loading = true;
       this.$rootScope.$emit('ShowLoadingScreen');
@@ -82,6 +90,8 @@ module ngApp.projects.controllers {
           } else if(this.ProjectsState.tabs.summary.active || this.numPrimarySites === 0) {
             this.numPrimarySites = _.unique(this.projects.hits, (project) => { return project.primary_site; }).length;
           }
+          console.log(this.projects);
+          this.renderReact();
         });
       } else {
         this.loading = false;

@@ -86,6 +86,7 @@ const Project = ({ $scope, authApi, mutatedGenesProject, numCasesAggByProject })
     dataCategoriesConfig,
   } = $scope;
 
+  console.log(experimentalStrategies);
   const mutatedGenesChartData = mutatedGenesProject.map(g => (
     {
       'gene_id': g.gene_id,

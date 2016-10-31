@@ -7,6 +7,7 @@ module ngApp.mutations.controllers {
     /* @ngInject */
     constructor(
       private mutation: any,
+      private allCasesAgg: any,
       private $scope: ng.IScope,
       private CoreService: ICoreService,
     ) {
@@ -22,7 +23,7 @@ module ngApp.mutations.controllers {
               { id: 'summary', title: 'Summary', icon: 'table' },
             ]
           },
-          React.createElement(ReactComponents.Mutation, { mutation: this.mutation}),
+          React.createElement(ReactComponents.Mutation, { mutation: this.mutation, allCasesAgg: this.allCasesAgg }),
         ),
         document.getElementById('react-root')
       );

@@ -39,7 +39,6 @@ module ngApp.genes {
                   "project_ids": {
                     "terms": {
                       "field": "project.project_id",
-                      "size": 10
                     }
                   }
                 }

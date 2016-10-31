@@ -37,6 +37,23 @@ module ngApp.mutations {
             throw Error('Missing route parameter: mutationId. Redirecting to 404 page.');
           }
           return hit;
+          },
+        allCasesAgg: ($stateParams: ng.ui.IStateParamsService, $http: ng.IHttpService): Object => {
+          return $http({
+              method: 'POST',
+              url: 'http://localhost:9200/gdc-r1-case-centric/case-centric/_search',
+              headers: {'Content-Type' : 'application/json'},
+              data:{
+                "size": 0,
+                "aggs": {
+                  "project_ids": {
+                    "terms": {
+                      "field": "project.project_id",
+                    }
+                  }
+                }
+              }
+            }).then(data => data.data.aggregations.project_ids.buckets)
         }
       }
     });

@@ -16,6 +16,8 @@ import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';
 import { ExternalLink } from './uikit/Links';
 import externalReferenceLinks from './utils/externalReferenceLinks';
+import BarChart from './charts/BarChart';
+import theme from './theme';
 
 let Mutation = (() => {
   const styles = {
@@ -48,7 +50,8 @@ let Mutation = (() => {
     },
   };
 
-  return ({ mutation }) => {
+  return ({ mutation, allCasesAgg }) => {
+    const allCasesAggByProject = allCasesAgg.reduce((acc, bucket) => ({...acc, [bucket.key]: bucket.doc_count}), {});
     const externalDbIds = mutation.consequence.reduce(
       (acc, c) => {
         const edb = c.transcript.gene.external_db_ids;
@@ -59,6 +62,23 @@ let Mutation = (() => {
       }, {});
     const annotatedConsequence = _.find(mutation.consequence, c => Object.keys(c.transcript.annotation).length > 0)
     const functionalImpact = (annotatedConsequence || { transcript: { annotation: { impact: '' } } }).transcript.annotation.impact.toLowerCase();
+    const cancerDistData = mutation.occurrence.reduce(
+      (acc, o) => {
+        const cases = [...new Set([...(acc[o.case.project.project_id] || { cases: [] }).cases, o.case.case_id])];
+        return {...acc,
+          [o.case.project.project_id]: {
+          disease_type: o.case.project.disease_type,
+          cancer_type: o.case.project.cancer_type || 'tbd',
+          site: o.case.project.primary_site,
+          cases: cases,
+          freq: cases.length/allCasesAggByProject[o.case.project.project_id],
+          }
+        };
+      }, {});
+    const sortedCancerDistData = Object.keys(cancerDistData)
+      .map(k => ({project_id: k, ...cancerDistData[k]}))
+      .sort((a, b) => b.freq - a.freq);
+
     return (
       <span>
         <Row style={{
@@ -86,7 +106,7 @@ let Mutation = (() => {
               alignSelf: 'flex-start',
             }}
           />
-          {Object.keys(externalDbIds).length && <EntityPageVerticalTable
+          {Object.keys(externalDbIds) && <EntityPageVerticalTable
             title="External References"
             thToTd={
               Object.keys(externalDbIds)
@@ -104,6 +124,53 @@ let Mutation = (() => {
             style={{...styles.summary, ...styles.column, alignSelf: 'flex-start'}}
           />}
         </Row>
+        <Column>
+          <h1 id="cancer-distribution" style={styles.heading}>
+            <i className="fa fa-bar-chart-o" style={{ marginRight: `1rem` }} />
+            Cancer Distribution
+          </h1>
+        </Column>
+        <h5 style={{textTransform: 'uppercase'}}>
+        { mutation.ssm_id } affects&nbsp;
+        {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} distinct cases across&nbsp;
+        {sortedCancerDistData.length} cancer projects
+        </h5>
+        <Column style={{...styles.column, paddingBottom: '2rem'}}>
+          <BarChart
+            data={sortedCancerDistData.map(d => ({
+              label: d.project_id,
+              value: (d.freq * 100),
+              tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`
+              }))
+            }
+            yAxis={{ title: '% of Cases Affected' }}
+            styles={{
+              xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+              yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+              bars: {fill: theme.secondary},
+              tooltips: {
+                fill: '#fff',
+                stroke: theme.greyScale4,
+                textFill: theme.greyScale3
+              }
+            }}
+          />
+          <EntityPageHorizontalTable
+            headings={[
+              { key: 'project_id', title: 'Project ID' },
+              { key: 'disease_type', title: 'Disease Type' },
+              { key: 'site', title: 'Site' },
+              { key: 'num_affected_cases', title: '# Affected Cases'},
+            ]}
+            data={sortedCancerDistData.map(
+              d => ({
+                ...d,
+                project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
+                num_affected_cases: `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
+              })
+            )}
+          />
+        </Column>
       </span>
     );
   }

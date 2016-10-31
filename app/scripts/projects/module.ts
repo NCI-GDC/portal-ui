@@ -9,7 +9,7 @@ module ngApp.projects {
   function projectsConfig(
     $stateProvider: ng.ui.IStateProvider,
     $urlRouterProvider: ng.ui.IUrlRouterProvider,
-    config: IGDCConfig,
+    config: IGDCConfig
   ) {
     $urlRouterProvider.when("/projects", "/projects/t");
 

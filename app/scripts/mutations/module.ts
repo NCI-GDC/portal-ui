@@ -7,7 +7,7 @@ module ngApp.mutations {
   function mutationsConfig(
     $stateProvider: ng.ui.IStateProvider,
     $urlRouterProvider: ng.ui.IUrlRouterProvider,
-    config: IGDCConfig,
+    config: IGDCConfig
   ) {
     $stateProvider.state("mutation", {
       url: "/mutations/:mutationId",

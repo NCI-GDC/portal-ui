@@ -6,7 +6,7 @@ module ngApp.genes {
   function genesConfig(
     $stateProvider: ng.ui.IStateProvider,
     $urlRouterProvider: ng.ui.IUrlRouterProvider,
-    config: IGDCConfig,
+    config: IGDCConfig
   ) {
     $stateProvider.state("gene", {
       url: "/genes/:geneId",

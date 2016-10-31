@@ -1,8 +1,13 @@
 module ngApp.genes {
   "use strict";
-  /* ngInject */
 
-  function genesConfig($stateProvider: ng.ui.IStateProvider, $urlRouterProvider: ng.ui.IUrlRouterProvider) {
+  import IGDCConfig = ngApp.IGDCConfig;
+  /* ngInject */
+  function genesConfig(
+    $stateProvider: ng.ui.IStateProvider,
+    $urlRouterProvider: ng.ui.IUrlRouterProvider,
+    config: IGDCConfig
+  ) {
     $stateProvider.state("gene", {
       url: "/genes/:geneId",
       controller: "GeneController as gc",
@@ -11,7 +16,7 @@ module ngApp.genes {
         gene: ($stateParams: ng.ui.IStateParamsService, $http: ng.IHttpService): Object => {
           const hit = $http({
             method: 'POST',
-            url: 'http://localhost:9200/gdc-r1-gene-centric/gene-centric/_search',
+            url: `${config.es_host}/gdc-r1-gene-centric/gene-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
               "query": {
@@ -26,7 +31,7 @@ module ngApp.genes {
             const gene = data.data.hits.hits[0]._source || {};
             return $http({
               method: 'POST',
-              url: 'http://localhost:9200/gdc-r1-case-centric/case-centric/_search',
+              url: `${config.es_host}/gdc-r1-case-centric/case-centric/_search`,
               headers: {'Content-Type' : 'application/json'},
               data:{
                 "size": 0,

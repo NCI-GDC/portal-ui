@@ -2,8 +2,13 @@ module ngApp.mutations {
 
   "use strict";
 
+  import IGDCConfig = ngApp.IGDCConfig;
   /* ngInject */
-  function mutationsConfig($stateProvider: ng.ui.IStateProvider, $urlRouterProvider: ng.ui.IUrlRouterProvider) {
+  function mutationsConfig(
+    $stateProvider: ng.ui.IStateProvider,
+    $urlRouterProvider: ng.ui.IUrlRouterProvider,
+    config: IGDCConfig
+  ) {
     $stateProvider.state("mutation", {
       url: "/mutations/:mutationId",
       controller: "MutationController as mc",
@@ -12,7 +17,7 @@ module ngApp.mutations {
         mutation: ($stateParams: ng.ui.IStateParamsService, $http: ng.IHttpService): Object => {
           const hit = $http({
             method: 'POST',
-            url: 'http://localhost:9200/gdc-r1-ssm-centric/ssm-centric/_search',
+            url: `${config.es_host}/gdc-r1-ssm-centric/ssm-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
               "query": {

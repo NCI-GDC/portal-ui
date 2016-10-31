@@ -8,8 +8,7 @@ module ngApp.projects {
   /* ngInject */
   function projectsConfig(
     $stateProvider: ng.ui.IStateProvider,
-    $urlRouterProvider: ng.ui.IUrlRouterProvider,
-    config: IGDCConfig
+    $urlRouterProvider: ng.ui.IUrlRouterProvider
   ) {
     $urlRouterProvider.when("/projects", "/projects/t");
 
@@ -44,6 +43,7 @@ module ngApp.projects {
         mutatedGenesProject: (
           $stateParams: ng.ui.IStateParamsService,
           $http: ng.IHttpService,
+          config: IGDCConfig
         ): ng.IPromise<IProject> => {
           return $http({
             method: 'POST',
@@ -79,6 +79,7 @@ module ngApp.projects {
         numCasesAggByProject: (
           $stateParams: ng.ui.IStateParamsService,
           $http: ng.IHttpService,
+          config: IGDCConfig
         ): ng.IPromise => {
           return $http({
             method: 'POST',

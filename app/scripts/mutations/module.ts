@@ -41,7 +41,7 @@ module ngApp.mutations {
         allCasesAgg: ($stateParams: ng.ui.IStateParamsService, $http: ng.IHttpService): Object => {
           return $http({
               method: 'POST',
-              url: 'http://localhost:9200/gdc-r1-case-centric/case-centric/_search',
+              url: `${config.es_host}/${config.es_index_version}-case-centric/_search`,
               headers: {'Content-Type' : 'application/json'},
               data:{
                 "size": 0,

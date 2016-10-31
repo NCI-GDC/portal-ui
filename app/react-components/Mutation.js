@@ -5,6 +5,8 @@ import FileIcon from 'react-icons/lib/fa/file-o';
 import CaseIcon from 'react-icons/lib/fa/user';
 import EditIcon from 'react-icons/lib/fa/edit';
 import CartIcon from 'react-icons/lib/fa/shopping-cart';
+import MinusIcon from 'react-icons/lib/fa/minus';
+import PlusIcon from 'react-icons/lib/fa/plus';
 import _ from 'lodash';
 
 // Custom
@@ -43,6 +45,7 @@ let Mutation = (() => {
     },
     summary: {
       marginBottom: '2rem',
+      maxWidth: '550px',
     },
     column: {
       width: '100%',
@@ -54,12 +57,11 @@ let Mutation = (() => {
     const allCasesAggByProject = allCasesAgg.reduce((acc, bucket) => ({...acc, [bucket.key]: bucket.doc_count}), {});
     const externalDbIds = mutation.consequence.reduce(
       (acc, c) => {
-        const edb = c.transcript.gene.external_db_ids;
-        return Object.keys(edb || {}).reduce((newAcc, k) => Object.assign(
-          newAcc,
-          {[k]: [...new Set([...(acc[k] || []), ...edb[k]])]}),
-          {});
-      }, {});
+        if (c.transcript.is_canonical) {
+          return c.transcript.gene.external_db_ids;
+        }
+        return acc;
+    }, {});
     const annotatedConsequence = _.find(mutation.consequence, c => Object.keys(c.transcript.annotation).length > 0)
     const functionalImpact = (annotatedConsequence || { transcript: { annotation: { impact: '' } } }).transcript.annotation.impact.toLowerCase();
     const cancerDistData = mutation.occurrence.reduce(
@@ -78,6 +80,43 @@ let Mutation = (() => {
     const sortedCancerDistData = Object.keys(cancerDistData)
       .map(k => ({project_id: k, ...cancerDistData[k]}))
       .sort((a, b) => b.freq - a.freq);
+
+    const strandIconMap = {
+      '-1': <MinusIcon />,
+      '1': <PlusIcon />,
+    };
+    const consequenceData = mutation.consequence.reduce((acc, c) => {
+      const transcripts = [...new Set([...(acc[c.transcript.gene.gene_id] || { transcripts: [] }).transcripts, c.transcript.transcript_id])];
+      let canonicalOnly = {};
+      if (c.transcript.is_canonical) {
+        canonicalOnly = {
+          aa_change: c.transcript.aa_change,
+          coding_dna_change: c.transcript.annotation.hgvsc,
+          consequence: c.transcript.consequence_type,
+          strand: c.transcript.gene.gene_strand,
+        };
+      }
+      return {...acc,
+        [c.transcript.gene.gene_id]: {
+          ...acc[c.transcript.gene.gene_id],
+          gene_id: c.transcript.gene.gene_id,
+          gene_symbol: c.transcript.gene_symbol,
+          transcripts: transcripts,
+          ...canonicalOnly
+        }
+      };
+    }, {});
+    const consquenceDataMapped = Object.keys(consequenceData)
+    .map(d => ({
+      ...consequenceData[d],
+      transcripts: (
+        <ul style={{ listStyle: 'none', paddingLeft: 0, marginBottom: 0 }}>
+          {consequenceData[d].transcripts.map(t => <li key={t}>{t}</li>)}
+        </ul>
+      ),
+      strand: consequenceData[d].strand && strandIconMap[consequenceData[d].strand.toString(10)],
+    }))
+    .filter(d => d.gene_id);
 
     return (
       <span>
@@ -106,7 +145,7 @@ let Mutation = (() => {
               alignSelf: 'flex-start',
             }}
           />
-          {Object.keys(externalDbIds) && <EntityPageVerticalTable
+          {Object.keys(externalDbIds).length > 0 && <EntityPageVerticalTable
             title="External References"
             thToTd={
               Object.keys(externalDbIds)
@@ -124,6 +163,25 @@ let Mutation = (() => {
             style={{...styles.summary, ...styles.column, alignSelf: 'flex-start'}}
           />}
         </Row>
+        <Row>
+          <h1 id="consequences" style={styles.heading}>
+            Consequences
+          </h1>
+        </Row>
+        <Row style={{paddingBottom: '1.5rem'}}>
+          <EntityPageHorizontalTable
+            style={{width: '100%', minWidth: '450px'}}
+            headings={[
+              { key: 'gene_symbol', title: 'Gene' },
+              { key: 'aa_change', title: 'AA Change' },
+              { key: 'consequence', title: 'Consequence' },
+              { key: 'coding_dna_change', title: 'Coding DNA Change'},
+              { key: 'strand', title: 'Strand'},
+              { key: 'transcripts', title: 'Transcript(s)'},
+            ]}
+            data={consquenceDataMapped}
+          />
+        </Row>
         <Column>
           <h1 id="cancer-distribution" style={styles.heading}>
             <i className="fa fa-bar-chart-o" style={{ marginRight: `1rem` }} />
@@ -131,12 +189,13 @@ let Mutation = (() => {
           </h1>
         </Column>
         <h5 style={{textTransform: 'uppercase'}}>
-        { mutation.ssm_id } affects&nbsp;
+        This mutation affects&nbsp;
         {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} distinct cases across&nbsp;
         {sortedCancerDistData.length} cancer projects
         </h5>
         <Column style={{...styles.column, paddingBottom: '2rem'}}>
-          <BarChart
+          {sortedCancerDistData.length >= 5 && 
+            <BarChart
             data={sortedCancerDistData.map(d => ({
               label: d.project_id,
               value: (d.freq * 100),
@@ -154,7 +213,7 @@ let Mutation = (() => {
                 textFill: theme.greyScale3
               }
             }}
-          />
+          />}
           <EntityPageHorizontalTable
             headings={[
               { key: 'project_id', title: 'Project ID' },

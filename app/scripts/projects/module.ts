@@ -47,7 +47,7 @@ module ngApp.projects {
         ): ng.IPromise<IProject> => {
           return $http({
             method: 'POST',
-            url: `${config.es_host}/gdc-r1-gene-centric/gene-centric/_search`,
+            url: `${config.es_host}/${config.es_index_version}-gene-centric/gene-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
               "query": {
@@ -83,7 +83,7 @@ module ngApp.projects {
         ): ng.IPromise => {
           return $http({
             method: 'POST',
-            url: `${config.es_host}/gdc-r1-case-centric/case-centric/_search`,
+            url: `${config.es_host}/${config.es_index_version}-case-centric/case-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
               "aggs": {

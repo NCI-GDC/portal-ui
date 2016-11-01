@@ -16,7 +16,7 @@ module ngApp.genes {
         gene: ($stateParams: ng.ui.IStateParamsService, $http: ng.IHttpService): Object => {
           const hit = $http({
             method: 'POST',
-            url: `${config.es_host}/gdc-r1-gene-centric/gene-centric/_search`,
+            url: `${config.es_host}/${config.es_index_version}-gene-centric/gene-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
               "query": {
@@ -31,7 +31,7 @@ module ngApp.genes {
             const gene = data.data.hits.hits[0]._source || {};
             return $http({
               method: 'POST',
-              url: `${config.es_host}/gdc-r1-case-centric/case-centric/_search`,
+              url: `${config.es_host}/${config.es_index_version}-case-centric/case-centric/_search`,
               headers: {'Content-Type' : 'application/json'},
               data:{
                 "size": 0,

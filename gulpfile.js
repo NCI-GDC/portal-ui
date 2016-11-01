@@ -21,6 +21,7 @@ var env = {
   port: process.env.GDC_PORT || 3000,
   fake_auth: process.env.GDC_FAKE_AUTH || false,
   es_host: process.env.ES_HOST || "http://localhost:9200",
+  es_index_version: process.env.ES_INDEX_VERSION || "gdc-r2",
 };
 
 var AUTOPREFIXER_BROWSERS = [
@@ -148,6 +149,7 @@ gulp.task("config", function () {
       content = content.replace(/__PRODUCTION__/, production);
       content = content.replace(/__FAKE_AUTH__/, env.fake_auth);
       content = content.replace(/__ES_HOST__/, env.es_host);
+      content = content.replace(/__ES_INDEX_VERSION__/, env.es_index_version);
 
       // Ensures path is in place, as I've had occurances where it may not be.
       mkdirp("dist/js", function (err) {

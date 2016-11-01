@@ -12,4 +12,5 @@ angular.module("ngApp.config", [])
     "production": __PRODUCTION__,
     "fake_auth": __FAKE_AUTH__,
     "es_host": "__ES_HOST__",
+    "es_index_version": "__ES_INDEX_VERSION__",
   });

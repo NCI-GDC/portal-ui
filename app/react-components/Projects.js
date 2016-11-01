@@ -8,6 +8,7 @@ import Row from './uikit/Flex/Row';
 import PieChart from './charts/PieChart';
 import StackedBarChart from './charts/StackedBarChart';
 import theme from './theme';
+import SpinnerParticle from './uikit/SpinnerParticle';
 
 let Projects = (() => {
   const styles = {
@@ -26,9 +27,8 @@ let Projects = (() => {
     },
   };
 
-  return ({ projects, genes, FacetService }) => {
+  return ({ projects = [], genes = [], FacetService }) => {
     const actives = FacetService.getActiveIDs('project_id');
-    console.log(actives);
     const stackedBarData = genes.map(g => ({
       symbol: g.symbol,
       gene_id: g.gene_id,
@@ -42,41 +42,53 @@ let Projects = (() => {
       <Row>
         <Column style={{width: '70%', paddingRight: '10px', minWidth: '450px'}}>
           <h4 style={{alignSelf: 'center'}}>Top Mutated Genes in Selected Projects</h4>
-        <Measure>
-          {({width}) => (
-          <StackedBarChart
-            width={width}
-            height={200}
-            data={stackedBarData}
-            yAxis={{ title: 'Cases Affected' }}
-            styles={{
-                xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-            }}
-          />)}
-          </Measure>
+          { genes.length !== 0 ?
+            (<Measure>
+              {({width}) => (
+              <StackedBarChart
+                width={width}
+                height={200}
+                data={stackedBarData}
+                yAxis={{ title: 'Cases Affected' }}
+                styles={{
+                    xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                    yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                }}
+              />)}
+              </Measure>) : (
+                <Row style={{justifyContent: 'center', paddingTop: '2em', paddingBottom: '2em'}}>
+                  <SpinnerParticle />
+                </Row>
+              )
+          }
         </Column>
         <Column style={{width: '30%', minWidth: '200px'}}>
           <h4 style={{alignSelf: 'center'}}>Case Distribution per Project</h4>
-          <PieChart
-            key='chart'
-            data={projects.map(p => ({
-              ...p,
-              tooltip: `<b>${p.project_id}</b><br/>${p.summary.case_count} cases`,
-              clickHandler: () => {
-                  if(FacetService.getActiveIDs('project_id').indexOf(p.project_id) !== 0) {
-                    FacetService.addTerm('project_id', p.project_id);
-                  } else {
-                    FacetService.removeTerm('project_id', p.project_id);
+          { projects.length !== 0 ?
+            (<PieChart
+              key='chart'
+              data={projects.map(p => ({
+                ...p,
+                tooltip: `<b>${p.project_id}</b><br/>${p.summary.case_count} cases`,
+                clickHandler: () => {
+                    if(FacetService.getActiveIDs('project_id').indexOf(p.project_id) !== 0) {
+                      FacetService.addTerm('project_id', p.project_id);
+                    } else {
+                      FacetService.removeTerm('project_id', p.project_id);
+                    }
                   }
-                }
-              })
-            )}
-            path='summary.case_count'
-            tooltipKey='tooltip'
-            height={250}
-            width={250}
-          />
+                })
+              )}
+              path='summary.case_count'
+              tooltipKey='tooltip'
+              height={250}
+              width={250}
+            />) : (
+              <Row style={{justifyContent: 'center', paddingTop: '2em', paddingBottom: '2em'}}>
+                <SpinnerParticle />
+              </Row>
+            )
+          }
       </Column>
       </Row>
     );

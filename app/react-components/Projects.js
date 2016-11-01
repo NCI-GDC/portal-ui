@@ -5,7 +5,7 @@ import Measure from 'react-measure';
 // Custom
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
-import PieChart from './charts/PieChart';
+import DoubleRingChart from './charts/DoubleRingChart';
 import StackedBarChart from './charts/StackedBarChart';
 import theme from './theme';
 import SpinnerParticle from './uikit/SpinnerParticle';
@@ -40,6 +40,34 @@ let Projects = (() => {
       } : acc), { total: 0 })
     })).sort((a, b) => b.total - a.total);
     const uniqueCases = genes.reduce((acc, g) => [...new Set([...acc, ...g.case.map(c => c.case_id)])], []);
+    const doubleRingData = projects.reduce((acc, p) => {
+      return {...acc,
+        [p.primary_site]: {
+          value: acc[p.primary_site] ? acc[p.primary_site].value + p.summary.case_count : p.summary.case_count,
+          clickHandler: () => {
+            if(p.primary_site.reduce((acc, s) => acc + FacetService.getActiveIDs('primary_site').indexOf(s), 0) !== 0) {
+              p.primary_site.map(s => FacetService.addTerm('primary_site', s));
+            } else {
+              p.primary_site.map(s => FacetService.removeTerm('primary_site', s));
+            }
+          },
+          outer: [
+            ...(acc[p.primary_site] || {outer: []}).outer,
+            {
+              label: p.project_id,
+              value: p.summary.case_count,
+              clickHandler: () => {
+                if(FacetService.getActiveIDs('project_id').indexOf(p.project_id) !== 0) {
+                  FacetService.addTerm('project_id', p.project_id);
+                } else {
+                  FacetService.removeTerm('project_id', p.project_id);
+                }
+              }
+            }
+          ]
+        }
+      }
+    }, {});
     return  (
       <Row>
         <Column style={{width: '70%', paddingRight: '10px', minWidth: '450px'}}>
@@ -75,25 +103,17 @@ let Projects = (() => {
               <h5 style={{alignSelf: 'center'}} key='pie-subtitle'>
                 {projects.reduce((sum, p) => sum + p.summary.case_count, 0)} Cases across {projects.length} Projects
               </h5>,
-              <PieChart
+              <DoubleRingChart
               key='pie-chart'
-              data={projects.map(p => ({
-                ...p,
-                tooltip: `<b>${p.project_id}</b><br/>${p.summary.case_count} cases`,
-                clickHandler: () => {
-                    if(FacetService.getActiveIDs('project_id').indexOf(p.project_id) !== 0) {
-                      FacetService.addTerm('project_id', p.project_id);
-                    } else {
-                      FacetService.removeTerm('project_id', p.project_id);
-                    }
-                  }
-                })
+              data={Object.keys(doubleRingData)
+                .map(primary_site =>
+                 ({ label: primary_site,
+                  ...doubleRingData[primary_site],
+                 })
               )}
-              path='summary.case_count'
-              tooltipKey='tooltip'
               height={250}
               width={250}
-            />]) : (
+              />]) : (
               <Row style={{justifyContent: 'center', paddingTop: '2em', paddingBottom: '2em'}}>
                 <SpinnerParticle />
               </Row>

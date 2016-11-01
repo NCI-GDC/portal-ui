@@ -65,6 +65,7 @@ module ngApp.projects.controllers {
       $scope.tableConfig = this.ProjectsTableService.model();
 
       this.refresh();
+      this.renderReact([], []);
     }
 
     renderReact (projects: Array<Object>, genes: Array<Object>) {
@@ -122,7 +123,6 @@ module ngApp.projects.controllers {
               }
             }
           }).then(data => {
-            console.log(data);
             const genes = (data.data.hits.hits || []).map(g => g._source);
             this.renderReact(this.projects.hits, genes);
           });

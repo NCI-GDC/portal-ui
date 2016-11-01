@@ -11,8 +11,6 @@ let StackedBarChart = (() => {
     const el = ReactFauxDOM.createElement('div')
 
     const margin = {top: 10, right: 0, bottom: 55, left: 40};
-    console.log(width);
-    console.log(height);
     const x = d3.scaleBand()
       .rangeRound([0, width])
       .padding(0.1)

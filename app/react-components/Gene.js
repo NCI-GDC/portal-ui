@@ -129,9 +129,11 @@ let Gene = (() => {
             Cancer Distribution
           </h1>
         </Column>
-        {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by&nbsp;
-        {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across&nbsp;
-        {sortedCancerDistData.length} projects
+        <h5 style={{textTransform: 'uppercase'}}>
+          {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by&nbsp;
+          {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across&nbsp;
+          {sortedCancerDistData.length} projects
+        </h5>
         <Column style={{...styles.column, paddingBottom: '2rem'}}>
           <BarChart
             data={sortedCancerDistData.map(d => ({

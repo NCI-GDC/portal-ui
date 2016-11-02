@@ -7,6 +7,7 @@ module ngApp.mutations.controllers {
     /* @ngInject */
     constructor(
       private mutation: any,
+      private allCasesAgg: any,
       private $scope: ng.IScope,
       private CoreService: ICoreService,
     ) {
@@ -20,9 +21,11 @@ module ngApp.mutations.controllers {
         React.createElement(ReactComponents.SideNavLayout, {
             links: [
               { id: 'summary', title: 'Summary', icon: 'table' },
+              { icon: 'pencil', id: 'consequences', title: 'Consequences' },
+              { icon: 'bar-chart-o', id: 'cancer-distribution', title: 'Cancer Distribution' },
             ]
           },
-          React.createElement(ReactComponents.Mutation, { mutation: this.mutation}),
+          React.createElement(ReactComponents.Mutation, { mutation: this.mutation, allCasesAgg: this.allCasesAgg }),
         ),
         document.getElementById('react-root')
       );

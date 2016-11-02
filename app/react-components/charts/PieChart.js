@@ -51,6 +51,7 @@ const PieChart = ({ data, path = 'file_count', tooltipKey, height = 160, width =
     .style('fill', (d, i) => color(i));
 
   if (tooltipKey) {
+    fill.attr('class', 'pointer');
     fill.on('mouseenter', d => {
       d3.select('.global-tooltip')
         .classed('active', true)

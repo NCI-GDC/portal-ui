@@ -27,22 +27,24 @@ let Projects = (() => {
     },
   };
 
-  return ({ projects = [], genes = [], FacetService }) => {
+  return ({ projects = [], genes = [], FacetService, isFetching }) => {
     const actives = FacetService.getActiveIDs('project_id');
+    const projectIds = projects.map(p => p.project_id);
     const stackedBarData = genes.map(g => ({
       symbol: g.symbol,
       gene_id: g.gene_id,
-      ...g.case.reduce((acc, c) => ({
+      ...g.case.reduce((acc, c) => (projectIds.includes(c.project.project_id) ? {
       ...acc,
       [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1,
       total: acc.total + 1,
-      }), { total: 0 })
+      } : acc), { total: 0 })
     })).sort((a, b) => b.total - a.total);
+
     return  (
       <Row>
         <Column style={{width: '70%', paddingRight: '10px', minWidth: '450px'}}>
           <h4 style={{alignSelf: 'center'}}>Top Mutated Genes in Selected Projects</h4>
-          { genes.length !== 0 ?
+          { !isFetching ?
             (<Measure>
               {({width}) => (
               <StackedBarChart
@@ -64,7 +66,7 @@ let Projects = (() => {
         </Column>
         <Column style={{width: '30%', minWidth: '200px'}}>
           <h4 style={{alignSelf: 'center'}}>Case Distribution per Project</h4>
-          { projects.length !== 0 ?
+          { !isFetching ?
             (<PieChart
               key='chart'
               data={projects.map(p => ({

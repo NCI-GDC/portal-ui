@@ -46,7 +46,7 @@ let Mutation = (() => {
     },
     summary: {
       marginBottom: '2rem',
-      maxWidth: '550px',
+      minWidth: '450px',
     },
     column: {
       width: '100%',
@@ -172,6 +172,7 @@ let Mutation = (() => {
       const consquenceDataMapped = Object.keys(consequenceData)
         .map(d => ({
           ...consequenceData[d],
+          gene_symbol: <a href={`/genes/${consequenceData[d].gene_id}`}>{consequenceData[d].gene_symbol}</a>,
           transcripts: (
             <ul style={{ listStyle: 'none', paddingLeft: 0, marginBottom: 0 }}>
               {consequenceData[d].transcripts.map(t => <li key={t}>{t}</li>)}
@@ -183,7 +184,7 @@ let Mutation = (() => {
 
       return (
         <span>
-          <Row spacing="2rem">
+          <Row spacing="2rem" id="summary">
             <EntityPageVerticalTable
               id="Summary"
               title="Summary"

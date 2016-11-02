@@ -81,7 +81,7 @@ function getQueries(projectId, esHost) {
     url: `${esHost}/gdc-r2-gene-centric/gene-centric/_search`,
     data: {
       "size": 50,
-      "fields": ["_id", "case.case_id", "symbol"],
+      "fields": ["_id", "case.case_id", "symbol", "is_cancer_gene_census"],
       "query": {
         "nested": {
           "path": "case",

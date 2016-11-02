@@ -27,9 +27,6 @@ const colorMap = {
 const styles = {
   container: {
     overflow: 'visible',
-    maxWidth: 900,
-    marginLeft: 'auto',
-    marginRight: 'auto',
   },
   fullscreen: {
     maxWidth: '100%',
@@ -80,11 +77,11 @@ const clickHandlers = {
   },
 
   geneClick: function (g) {
-    console.log('geneClick'); // go to gene page
+    window.location = `/genes/${g.id}`;
   },
 
   donorClick: function (d) {
-    console.log('donorClick') // go to case page
+    window.location = `/cases/${d.id}`;
   },
 };
 
@@ -125,7 +122,7 @@ const OncoGridWrapper = ({
               }
             }
           >
-            <i className="fa fa-download" /><span style={styles.hidden}>reload</span>
+            <i className="fa fa-download" /><span style={styles.hidden}>download</span>
           </Button>
           <Button
             style={styles.button}
@@ -162,8 +159,7 @@ const OncoGridWrapper = ({
             onClick={() => {
               if (gridState.isFullScreen) {
                 exitFullScreen();
-                dispatch({ type: 'reload', 
-                 });
+                dispatch({ type: 'reload', grid });
               } else {
                 enterFullScreen(document.querySelector('#oncogrid-container'));
                 grid.resize(screen.width - 400, screen.height - 400, true);
@@ -206,10 +202,18 @@ OncoGridWrapper.propTypes = {
 
 const enhance = compose(
   lifecycle({
+    componentWillReceiveProps(nextProps) {
+      const { grid, gridPadding, gridHeight, gridContainer } = this.state;
+      grid.resize(gridContainer.offsetWidth - gridPadding, gridHeight);
+    },
     componentDidMount() {
       const { projectId, esHost } = this.props;
       getQueries(projectId, esHost)
         .then((responses) => {
+          const container = document.querySelector('#oncogrid-container');
+          const height = 150;
+          const padding = 306;
+
           const gridParams = oncoGridParams({
             colorMap,
             clickHandlers,
@@ -217,6 +221,8 @@ const enhance = compose(
             donorData: responses.cases,
             geneData: responses.genes,
             occurencesData: responses.occurences,
+            width: container.offsetWidth - padding,
+            height: height,
             addTrackFunc: (tracks, callback) => {
               this.setState({
                 showOverlay: true,
@@ -234,7 +240,15 @@ const enhance = compose(
           if (gridParams) {
             const grid = new OncoGrid(gridParams);
             grid.render();
-            this.setState({ grid });
+
+            this.setState({
+              grid,
+              gridHeight: height,
+              gridPadding: padding,
+              gridContainer: container,
+            });
+
+            document.querySelector('.og-tooltip-oncogrid').style.transform = 'translateY(-110px)'; // TODO: fix tooltip position inside oncogrid and remove this line 
           }
         });
     },

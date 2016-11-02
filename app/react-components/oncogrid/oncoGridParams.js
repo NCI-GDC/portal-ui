@@ -91,11 +91,10 @@ export default function ({
   clickHandlers = {},
   height = 150,
   width = 680,
-  curatedList = [],
   addTrackFunc,
 }) {
   let donors = mapDonors(donorData);
-  let genes = mapGenes(geneData, curatedList);
+  let genes = mapGenes(geneData);
   const observations = mapOccurences(occurencesData, donors, genes);
 
   if (observations.length === 0) {
@@ -164,6 +163,7 @@ export default function ({
     width: width,
     element: element,
     colorMap: colorMap,
+    scaleToFit: true,
 
     heatMap: false,
     grid: true,

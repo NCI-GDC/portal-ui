@@ -138,7 +138,7 @@ export const geneTracks = [
     color: 'mediumpurple',
   },
   {
-    name: 'Curated Gene Census ',
+    name: 'Cancer Gene Census ',
     fieldName: 'cgc',
     type: 'bool',
     sort: sortBool,

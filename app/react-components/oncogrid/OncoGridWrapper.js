@@ -159,8 +159,7 @@ const OncoGridWrapper = ({
             onClick={() => {
               if (gridState.isFullScreen) {
                 exitFullScreen();
-                dispatch({ type: 'reload', 
-                 });
+                dispatch({ type: 'reload', grid });
               } else {
                 enterFullScreen(document.querySelector('#oncogrid-container'));
                 grid.resize(screen.width - 400, screen.height - 400, true);

@@ -164,6 +164,7 @@ export default function ({
     width: width,
     element: element,
     colorMap: colorMap,
+    scaleToFit: true,
 
     heatMap: false,
     grid: true,

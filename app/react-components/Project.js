@@ -132,8 +132,6 @@ const Project = ({
   const frequentMutations = fm.map(x => {
     let consequence = x.consequence.find(x => x.transcript.is_canonical);
 
-    console.log(consequence)
-
     return {
       ...x,
       num_affected_cases_project: x.occurrence.filter(x =>
@@ -400,13 +398,6 @@ const Project = ({
             num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
           }))}
       /></div>) : 'No mutated gene data to display'}
-      <Column>
-        <h1 style={styles.heading} id="oncogrid">
-          <i className="fa fa-th" style={{ paddingRight: `10px` }} /> OncoGrid
-        </h1>
-      </Column>
-
-      <OncoGridWrapper projectId={project.project_id} esHost={esHost} />
 
       <Column>
         <h1 style={styles.heading} id="frequent-mutations">
@@ -421,6 +412,14 @@ const Project = ({
         totalNumCases={totalNumCases}
         project={$scope.project.project_id}
       />
+
+      <Column>
+        <h1 style={styles.heading} id="oncogrid">
+          <i className="fa fa-th" style={{ paddingRight: `10px` }} /> OncoGrid
+        </h1>
+      </Column>
+
+      <OncoGridWrapper projectId={project.project_id} esHost={esHost} width={width} />
     </span>
   );
 };

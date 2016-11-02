@@ -77,11 +77,11 @@ const clickHandlers = {
   },
 
   geneClick: function (g) {
-    console.log('geneClick'); // go to gene page
+    window.location = `/genes/${g.id}`;
   },
 
   donorClick: function (d) {
-    console.log('donorClick') // go to case page
+    window.location = `/cases/${d.id}`;
   },
 };
 

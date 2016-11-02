@@ -65,15 +65,16 @@ module ngApp.projects.controllers {
       $scope.tableConfig = this.ProjectsTableService.model();
 
       this.refresh();
-      this.renderReact([], []);
+      this.renderReact({ projects: [], genes: [], isFetching: true });
     }
 
-    renderReact (projects: Array<Object>, genes: Array<Object>) {
+    renderReact({ projects, genes, isFetching }: { projects: Array<Object>, genes: Array<Object>, isFetching: boolean }) {
       ReactDOM.render(
       React.createElement(ReactComponents.Projects, {
         projects: projects || [],
         genes: genes || [],
         FacetService: this.FacetService,
+        isFetching: isFetching,
       }), document.getElementById('react-root')
       );
     };
@@ -97,34 +98,38 @@ module ngApp.projects.controllers {
             this.numPrimarySites = _.unique(this.projects.hits, (project) => { return project.primary_site; }).length;
           }
           //get stackedbar chart data
-         this.$http({
+          const projectIds = this.projects.hits.map(p => p.project_id);
+          const docValue = projectIds.map(p => `doc['case.project.project_id'].value == '${p}'`);
+          const esScript = `${docValue.join(' || ')} ? 1 : 0`;
+          this.$http({
             method: 'POST',
             url: `${this.config.es_host}/${this.config.es_index_version}-gene-centric/gene-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
-              "query": {
-                "nested": {
-                  "path": "case",
-                  "score_mode": "sum",
-                  "query": {
-                    "function_score": {
-                      "query": {
-                        "terms": {
-                          "case.project.project_id": this.projects.hits.map(p => p.project_id)
+              "size": 20,
+               "query":{
+                  "nested":{
+                     "path":"case",
+                     "score_mode":"sum",
+                     "query":{
+                        "function_score":{
+                           "query":{
+                              "terms":{
+                                "case.project.project_id": this.projects.hits.map(p => p.project_id)
+                              }
+                           },
+                           "boost_mode":"replace",
+                           "script_score":{
+                             "script": esScript
+                           }
                         }
-                      },
-                      "boost_mode": "replace",
-                      "script_score": {
-                        "script": "doc['case.project.project_id'].empty ? 0 : 1"
-                      }
-                    }
+                     }
                   }
-                }
-              }
-            }
-          }).then(data => {
+               }
+             }
+           }).then(data => {
             const genes = (data.data.hits.hits || []).map(g => g._source);
-            this.renderReact(this.projects.hits, genes);
+            this.renderReact({ projects: this.projects.hits, genes: genes, isFetching: false });
           });
         });
       } else {

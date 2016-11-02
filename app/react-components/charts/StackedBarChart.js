@@ -1,13 +1,13 @@
 // Vender
-
 import React from 'react';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 
 // Custom
 import './style.css';
-let StackedBarChart = (() => {
-  return ({ data, yAxis, styles, width = 450, height = 200 }) => {
+import Row from '../uikit/Flex/Row';
+
+const drawChart = ({ data, yAxis, styles, width, height }) => {
     const el = ReactFauxDOM.createElement('div')
 
     const margin = {top: 10, right: 0, bottom: 55, left: 40};
@@ -30,7 +30,7 @@ let StackedBarChart = (() => {
 
     const g = d3.select(el)
     .append("svg")
-      .attr("width", width)
+      .attr("width", width + margin.right + margin.left)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -105,6 +105,15 @@ let StackedBarChart = (() => {
     .style("fill", (styles.yAxis || {textFill: 'black'}).textFill)
 
     return el.toReact();
+};
+
+let StackedBarChart = (() => {
+  return ({ data, yAxis, styles, width = 450, height = 200 }) => {
+    return Object.keys(data).length ?
+      drawChart({ data: data, yAxis: yAxis, styles: styles, width: width, height: height }) :
+      <Row style={{color: styles.xAxis.textFill, justifyContent: 'center' }}>
+        No data
+      </Row>
   }
 })();
 

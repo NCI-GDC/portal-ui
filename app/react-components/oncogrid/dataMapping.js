@@ -8,7 +8,6 @@ export const mapDonors = function(donors) {
 
     const source = d.fields;
 
-
     source['summary.data_categories.data_category'].forEach((cat, i) => {
       output[cat] = source['summary.data_categories.file_count'][i];
     });
@@ -35,7 +34,7 @@ export const mapGenes = function(genes, curatedList) {
       id: g._id,
       symbol: fields.symbol,
       totalDonors: fields['case.case_id'].length,
-      cgc: curatedList.indexOf(g._id) >= 0,
+      cgc: (fields.is_cancer_gene_census && fields.is_cancer_gene_census[0]) || false,
     };
   });
 }

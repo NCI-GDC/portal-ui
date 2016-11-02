@@ -32,7 +32,7 @@ export const StepLegend = ({steps = [0.25, 0.5, 0.75, 1], color = '#D33682', lef
     <Row style={styles.td}>
       {
         steps.map(opacity => (
-            <div style={{ ...color, background: color, opacity }} key={opacity} />
+            <div style={{ ...styles.color, background: color, opacity }} key={opacity} />
           ))
       }
     </Row>

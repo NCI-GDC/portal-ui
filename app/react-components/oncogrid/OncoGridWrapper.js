@@ -122,7 +122,7 @@ const OncoGridWrapper = ({
               }
             }
           >
-            <i className="fa fa-download" /><span style={styles.hidden}>reload</span>
+            <i className="fa fa-download" /><span style={styles.hidden}>download</span>
           </Button>
           <Button
             style={styles.button}

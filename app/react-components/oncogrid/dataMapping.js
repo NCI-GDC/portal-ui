@@ -26,7 +26,7 @@ export const mapDonors = function(donors) {
   });
 }
 
-export const mapGenes = function(genes, curatedList) {
+export const mapGenes = function(genes) {
   return _.map(genes, (g) => {
     const fields = g.fields;
 

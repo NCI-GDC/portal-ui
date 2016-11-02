@@ -1,6 +1,6 @@
 // Vendor
 import React from 'react';
-import { compose } from 'recompose';
+import { compose, withState, lifecycle } from 'recompose';
 import FileIcon from 'react-icons/lib/fa/file-o';
 import CaseIcon from 'react-icons/lib/fa/user';
 import EditIcon from 'react-icons/lib/fa/edit';
@@ -19,6 +19,9 @@ import SummaryCard from './components/SummaryCard';
 import BarChart from './charts/BarChart';
 import theme from './theme';
 import OncoGridWrapper from './oncogrid/OncoGridWrapper';
+import SurvivalPlotWrapper from './components/SurvivalPlotWrapper';
+import Button from './Button';
+import downloadSvg from './utils/download-svg';
 
 const SPACING = '2rem';
 const HALF_SPACING = '1rem';
@@ -56,6 +59,20 @@ const styles = {
     height: '4rem',
     color: '#888',
   },
+  button: {
+    color: '#333',
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    marginRight: 12,
+    minWidth: 46,
+    minHeight: 34,
+    display: 'inline-flex',
+  },
+  hidden: {
+    width: 0,
+    height: 0,
+    overflow: 'hidden',
+  },
 };
 
 function buildFilters(data) {
@@ -78,6 +95,10 @@ const Project = ({
   mutatedGenesProject,
   numCasesAggByProject,
   frequentMutations: fm,
+  survivalData,
+  setSurvivalGene,
+  survivalGene,
+  width,
 }) => {
   const {
     project,
@@ -295,54 +316,90 @@ const Project = ({
           />
         </span>
       </Row>
-      <Column>
-        <h1 style={styles.heading} id="mutated-genes">
-          <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />Most Frequently Mutated Genes
-        </h1>
-      </Column>
-      <Column style={{...styles.column, paddingBottom: '2.5rem'}}>
-        {mutatedGenesChartData.length ? (<div><BarChart
-              data={mutatedGenesChartData.map(g => ({
-                label: g.symbol,
-                value: (g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100),
-                tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`
-              }))}
-              yAxis={{ title: '% of Cases Affected' }}
-              styles={{
-                xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                bars: {fill: theme.secondary},
-                tooltips: {
-                  fill: '#fff',
-                  stroke: theme.greyScale4,
-                  textFill: theme.greyScale3
+      <Row style={{ flexWrap: 'wrap' }}>
+        <span style={{...styles.column, width: '50%', minWidth: 520}}>
+          <Column>
+            <h1 style={styles.heading} id="mutated-genes">
+              <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />Most Frequently Mutated Genes
+            </h1>
+            <span style={{textAlign: 'right', marginRight: 50, marginLeft: 30}}>
+              <Button
+                style={styles.button}
+                disabled={!mutatedGenesChartData.length}
+                onClick={
+                  () => {
+                    downloadSvg({
+                      svg: document.querySelector('#mutated-genes-chart svg'),
+                      // stylePrefix: '.survival-plot',
+                      fileName: 'bar-chart.svg',
+                    });
+                  }
                 }
-              }}
-            />
-
-          <EntityPageHorizontalTable
-              headings={[
-                { key: 'symbol', title: 'Symbol' },
-                { key: 'cytoband', title: 'Cytoband' },
-                {
-                  key: 'num_affected_cases_project',
-                  title: (<span># Affected Cases<br />in {project.project_id}</span>),
-                },
-                {
-                  key: 'num_affected_cases_all',
-                  title: (<span># Affected Cases<br />in All Projects</span>),
-                },
-                { key: 'num_mutations', title: '# Mutations'},
-              ]}
-              data={mutatedGenesChartData.map(g => ({
-                ...g,
-                symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
-                num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
-                num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
-              }))}
-          /></div>) : 'No mutated gene data to display'}
-      </Column>
-
+              >
+                <i className="fa fa-download" /><span style={styles.hidden}>reload</span>
+              </Button>
+            </span>
+          </Column>
+          <Column style={{...styles.column, paddingBottom: '2.5rem'}}>
+            {mutatedGenesChartData.length ? (<div id="mutated-genes-chart"><BarChart
+                  height={width < 1410 ? 200 : width * 0.16}
+                  data={mutatedGenesChartData.map(g => ({
+                    label: g.symbol,
+                    value: (g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100),
+                    tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100).toFixed(2)}%`
+                  }))}
+                  yAxis={{ title: '% of Cases Affected' }}
+                  styles={{
+                    xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                    yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                    bars: {fill: theme.secondary},
+                    tooltips: {
+                      fill: '#fff',
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3
+                    }
+                  }}
+                />
+              </div>) : 'No mutated gene data to display'}
+          </Column>
+        </span>
+        <span style={{...styles.column, width: '50%', minWidth: 500}}>
+          <SurvivalPlotWrapper
+            rawData={survivalData}
+            gene={survivalGene}
+            onReset={() => setSurvivalGene('')}
+            height={width < 1410 ? width * 0.25 : width * 0.16}
+            width={width}
+          />
+        </span>
+      </Row>
+      {mutatedGenesChartData.length ? (<div>
+      <EntityPageHorizontalTable
+          headings={[
+            { key: 'symbol', title: 'Symbol' },
+            { key: 'cytoband', title: 'Cytoband' },
+            {
+              key: 'num_affected_cases_project',
+              title: (<span># Affected Cases<br />in {$scope.project.project_id}</span>),
+            },
+            {
+              key: 'num_affected_cases_all',
+              title: (<span># Affected Cases<br />in All Projects</span>),
+            },
+            { key: 'num_mutations', title: '# Mutations'},
+            {
+              title: <i className="fa fa-bar-chart-o" />,
+              onClick: (d) => setSurvivalGene(d.gene_id === survivalGene ? '' : d.gene_id),
+              value: <i className="fa fa-bar-chart-o" />,
+            }
+          ]}
+          data={mutatedGenesChartData.map(g => ({
+            ...g,
+            symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
+            num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[$scope.project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[$scope.project.project_id]*100).toFixed(2)}%)`,
+            num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+          }))}
+      /></div>) : 'No mutated gene data to display'}
       <Column>
         <h1 style={styles.heading} id="oncogrid">
           <i className="fa fa-th" style={{ paddingRight: `10px` }} /> OncoGrid
@@ -375,4 +432,25 @@ Project.propTypes = {
   numCasesAggByProject: React.PropTypes.object,
 };
 
-export default Project;
+const enhance = compose(
+  withState('survivalGene', 'setSurvivalGene', ''),
+  lifecycle({
+    getInitialState: function() {
+      return { width: window.innerWidth };
+    },
+
+    componentDidMount: function() { 
+      this.onResize = _.debounce(() => {this.setState({
+        width: window.innerWidth,
+      })}, 100);
+
+      window.addEventListener('resize', this.onResize);
+    },
+
+    componentWillUnmount: function() {
+      window.removeEventListener('resize', this.onResize);
+    },
+  })
+);
+
+export default enhance(Project);

@@ -84,3 +84,98 @@
     stroke: black;
   }
 }
+
+.oncogrid-suggestions {
+  margin-top: 0rem;
+  & .cta {
+    display: inline-block;
+    padding: 0rem;
+
+    & .cta-detail,
+    & .cta-title {
+      color: #9b315b;
+    }
+
+    & .cta-title {
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.survival-plot {
+  @faded: #e6dede;
+  @selection: #edf8ff;
+
+  .axis {
+    path, line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    path {
+      stroke: @faded;
+    }
+
+    .tick text {
+      fill: #888;
+      font-size: 1.2ex;
+    }
+
+    .axis-label {
+      color: hsl(0, 0%, 60%);
+      font-size: 0.96rem;
+      fill: hsl(0, 0%, 60%);
+      font-weight: 300;
+    }
+
+    .minor line {
+      stroke: none;
+    }
+  }
+
+  .line {
+    fill: none;
+    stroke-width: 1.5px;
+  }
+
+  .serie {
+    .point {
+      r: 3;
+      transition: all 0.1s;
+      cursor: pointer;
+      stroke-width: none;
+      &:hover, &:active {
+        r: 5;
+      }
+      &[status="alive"] {
+        opacity: 0.5;
+      }
+      &[status="deceased"] {
+        opacity: 0;
+        transition: r 0.3s, opacity 0.3s;
+        r: 5;
+        &:hover, &:active {
+          opacity: 1;
+          r: 2;
+        }
+      }
+    }
+
+    .point-line {
+      cursor: pointer;
+      &[status="deceased"] {
+        opacity: 0;
+      }
+    }
+  }
+
+  .brush .extent {
+    stroke: #fff;
+    fill: @selection;
+    shape-rendering: crispEdges;
+    pointer-events: none;
+  }
+
+}

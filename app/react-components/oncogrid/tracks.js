@@ -17,6 +17,7 @@ export const clinicalDonorTracks = [
       male: '#420692',
       female: 'rgb(220, 96, 156)',
     },
+    collapsed: true,
   },
   {
     name: 'Race',
@@ -33,6 +34,7 @@ export const clinicalDonorTracks = [
     sort: sortByString,
     group: 'Clinical',
     color: random,
+    collapsed: true,
   },
   {
     name: 'Primary diagnosis',
@@ -41,6 +43,7 @@ export const clinicalDonorTracks = [
     sort: sortByString,
     group: 'Clinical',
     color: random,
+    collapsed: true,
   },
   {
     name: 'Age at Diagnosis',

@@ -20,9 +20,11 @@ let FrequentMutations = ({
             data={frequentMutations.map(x => ({
               label: x.genomic_dna_change,
               value: (x.score),
-              tooltip:
-                `<b>${x.genomic_dna_change}</b><br />
-                ${(x.num_affected_cases_project / numCasesAggByProject[project] * 100).toFixed(2)}%`
+              tooltip: project
+                ? `<b>${x.genomic_dna_change}</b><br />
+                  ${(x.num_affected_cases_project / numCasesAggByProject[project] * 100).toFixed(2)}%`
+                : `<b>${x.genomic_dna_change}</b><br />
+                  ${(x.num_affected_cases_all / totalNumCases * 100).toFixed(2)}%`
             }))}
             yAxis={{ title: 'Cases' }}
             height={300}
@@ -44,26 +46,27 @@ let FrequentMutations = ({
             { key: 'genomic_dna_change', title: 'DNA Change' },
             { key: 'mutation_subtype', title: 'Type' },
             { key: 'consequence_type', title: 'Consequences' },
-            {
+            ...(project ? [{
               key: 'num_affected_cases_project',
+              title: <span># Affected Cases<br />in {project}</span>
+            }] : []),
+            {
+              key: 'num_affected_cases_all',
               title: project
-                ? <span># Affected Cases<br />in {project}</span>
+                ? <span># Affected Cases<br />in All Projects</span>
                 : <span># Affected Cases</span>,
             },
-            ...(project ? {
-              key: 'num_affected_cases_all',
-              title: <span># Affected Cases<br />in All Projects</span>,
-            } : {}),
           ]}
           data={frequentMutations.map(x => ({
             ...x,
             genomic_dna_change: <a href={`/mutations/${x.ssm_id}`}>{x.genomic_dna_change}</a>,
-            num_affected_cases_project:
+            ...(project ? { num_affected_cases_project:
               `${x.num_affected_cases_project} / ${numCasesAggByProject[project]}
-              (${(x.num_affected_cases_project/numCasesAggByProject[project]*100).toFixed(2)}%)`,
+              (${(x.num_affected_cases_project / numCasesAggByProject[project] * 100).toFixed(2)}%)`
+            } : {}),
             num_affected_cases_all:
               `${x.num_affected_cases_all} / ${totalNumCases}
-              (${(x.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+              (${(x.num_affected_cases_all / totalNumCases * 100).toFixed(2)}%)`,
           }))}
         />
       </div>

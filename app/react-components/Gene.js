@@ -165,21 +165,19 @@ let Gene = (() => {
 
       const totalNumCases = Object.keys(allCasesAggByProject).reduce((sum, b) => sum + allCasesAggByProject[b], 0);
 
-      // const frequentMutations = fm.map(x => {
-      //   let consequence = x.consequence.find(x => x.transcript.is_canonical);
-      //   const cases = [...new Set([...(acc[x.case.project.project_id] || { cases: [] }).cases, x.case.case_id])];
-      //   return {
-      //     ...x,
-      //     num_affected_cases: cases,
-      //     num_affected_cases_all: x.occurrence.length,
-      //     consequence_type:
-      //       <span>
-      //         <b>{_.startCase(consequence.transcript.consequence_type)}</b>
-      //         <span style={{marginLeft:'5px'}}>{consequence.transcript.gene_symbol}</span>
-      //         <span style={{marginLeft:'5px'}}>{consequence.transcript.aa_change}</span>
-      //       </span>
-      //   };
-      // });
+      const frequentMutations = fm.map(x => {
+        let consequence = x.consequence.find(x => x.transcript.is_canonical);
+        return {
+          ...x,
+          num_affected_cases_all: x.occurrence.length,
+          consequence_type:
+            <span>
+              <b>{_.startCase(consequence.transcript.consequence_type)}</b>
+              <span style={{marginLeft:'5px'}}>{consequence.transcript.gene_symbol}</span>
+              <span style={{marginLeft:'5px'}}>{consequence.transcript.aa_change}</span>
+            </span>
+        };
+      });
 
       return (
         <span>
@@ -294,12 +292,10 @@ let Gene = (() => {
             </h1>
           </Column>
 
-          {/* <FrequentMutations
+          <FrequentMutations
             frequentMutations={frequentMutations}
-            numCasesAggByProject={allCasesAggByProject}
             totalNumCases={totalNumCases}
-            project={$scope.project.project_id}
-          /> */}
+          />
         </span>
       );
     }

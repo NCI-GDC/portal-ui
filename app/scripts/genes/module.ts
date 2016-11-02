@@ -89,7 +89,7 @@ module ngApp.genes {
                   "path": "consequence",
                   "filter": {
                     "term": {
-                      "consequence.transcript.gene.gene_id": "ENSG00000078808"
+                      "consequence.transcript.gene.gene_id": $stateParams.geneId
                     }
                   }
                 }

@@ -313,7 +313,7 @@ const Project = ({
       </Row>
 
       <Column style={styles.card}>
-        <Row>
+        <Row style={{paddingBottom: '2.5rem'}}>
           <span>
             <h1 style={{ ...styles.heading, padding: `1rem` }} id="mutated-genes">
               <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
@@ -366,7 +366,7 @@ const Project = ({
             <SurvivalPlotWrapper
               rawData={survivalData}
               gene={survivalGene}
-              onReset={() => setSurvivalGene('')}
+              onReset={() => setSurvivalGene(null)}
               height={width < 1410 ? width * 0.25 : width * 0.16}
               width={width}
             />
@@ -389,13 +389,14 @@ const Project = ({
                 { key: 'num_mutations', title: '# Mutations'},
                 {
                   title: <i className="fa fa-bar-chart-o" />,
-                  onClick: (d) => setSurvivalGene(d.gene_id === survivalGene ? '' : d.gene_id),
+                  onClick: (d) => setSurvivalGene(d === survivalGene ? null : d),
                   value: <i className="fa fa-bar-chart-o" />,
                 }
               ]}
               data={mutatedGenesChartData.map(g => ({
                 ...g,
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
+                geneSymbol: g.symbol,
                 num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
                 num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
               }))}
@@ -438,7 +439,7 @@ Project.propTypes = {
 };
 
 const enhance = compose(
-  withState('survivalGene', 'setSurvivalGene', ''),
+  withState('survivalGene', 'setSurvivalGene', null),
   lifecycle({
     getInitialState: function() {
       return { width: window.innerWidth };

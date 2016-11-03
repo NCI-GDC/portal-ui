@@ -317,7 +317,7 @@ const Project = ({
               <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
               Most Frequently Mutated Genes
             </h1>
-            <span style={{textAlign: 'right', marginRight: 50, marginLeft: 30}}>
+            <div style={{textAlign: 'right', marginRight: 50, marginLeft: 30}}>
               <Button
                 style={styles.button}
                 disabled={!mutatedGenesChartData.length}
@@ -332,7 +332,7 @@ const Project = ({
               >
                 <i className="fa fa-download" /><span style={styles.hidden}>reload</span>
               </Button>
-            </span>
+            </div>
 
             {!!mutatedGenesChartData.length &&
               <div>
@@ -344,6 +344,7 @@ const Project = ({
                       tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`
                     }))}
                     yAxis={{ title: '% of Cases Affected' }}
+                    height={240}
                     styles={{
                       xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
                       yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},

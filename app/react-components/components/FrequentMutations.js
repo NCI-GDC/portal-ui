@@ -27,6 +27,7 @@ let FrequentMutations = ({
                   ${(x.num_affected_cases_all / totalNumCases * 100).toFixed(2)}%`
             }))}
             margin={{ top: 30, right: 50, bottom: 105, left: 30 }}
+            height={250}
             yAxis={{ title: 'Cases' }}
             styles={{
               xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},

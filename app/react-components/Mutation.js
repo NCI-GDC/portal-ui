@@ -70,6 +70,24 @@ let Mutation = (() => {
 
     componentDidMount() {
       this.renderProteinLolliplot();
+
+      setTimeout(() => {
+        window.selectedMutation = document.querySelector('[filter="url(#drop-shadow)"]');
+
+        let d = this.props.$scope.proteinLolliplotData.mutations.find(x => x.id === this.props.mutation.ssm_id);
+
+        $('.global-tooltip')
+          .addClass('active')
+          .html(`
+            <div>DNA Change: ${d.genomic_dna_change}</div>
+            <div># of Cases: ${d.donors}</div>
+            <div>Functional Impact: ${d.impact}</div>
+          `);
+      }, 100)
+    }
+
+    componentWillUnmount() {
+      window.selectedMutation = null;
     }
 
     renderProteinLolliplot() {
@@ -79,6 +97,7 @@ let Mutation = (() => {
           selector: `#protein-viewer-root`,
           onMutationClick: d => window.location.href = `/mutations/${d.id}`,
           onMutationMouseover: d => {
+            if (d.id !== this.props.mutation.ssm_id) window.otherTooltip = true;
             $('.global-tooltip')
               .addClass('active')
               .html(`
@@ -87,8 +106,9 @@ let Mutation = (() => {
                 <div>Functional Impact: ${d.impact}</div>
               `);
           },
-          onMutationMouseout: () => $('.global-tooltip').removeClass('active'),
+          onMutationMouseout: () => window.otherTooltip = false,
           onProteinMouseover: d => {
+            window.otherTooltip = true;
             $('.global-tooltip')
               .addClass('active')
               .html(`
@@ -97,7 +117,7 @@ let Mutation = (() => {
                 <div><b>Click to zoom</b></div>
               `);
           },
-          onProteinMouseout: () => $('.global-tooltip').removeClass('active'),
+          onProteinMouseout: () => window.otherTooltip = false,
           height: 450,
           domainWidth: this.props.$scope.geneTranscript.length_amino_acid,
           mutationId: this.props.mutation.ssm_id,

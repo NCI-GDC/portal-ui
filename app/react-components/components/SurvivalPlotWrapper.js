@@ -2,9 +2,14 @@ import React, { Component } from 'react';
 import { SurvivalPlot } from './SurvivalPlot'; // this component should be merged into this one
 import { compose, lifecycle, withState } from 'recompose';
 import _ from 'lodash';
+import { scaleOrdinal, schemeCategory10 } from 'd3';
+
 import Column from '../uikit/Flex/Column';
+import Row from '../uikit/Flex/Row';
 import Button from '../Button';
 import downloadSvg from '../utils/download-svg';
+
+const colors = scaleOrdinal(schemeCategory10);
 
 const styles = {
   heading: {
@@ -27,6 +32,12 @@ const styles = {
     height: 0,
     overflow: 'hidden',
   },
+  pValue: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    fontSize: '1.1rem',
+  }
 }
 const map = {
   defaultId: 'b8a57661-67d1-45d2-a9aa-b9a7a12b12ff'
@@ -51,18 +62,27 @@ function buildData(props) {
       const { gene, rawData } = props;
 
       if(gene) {
-        return fetch(`https://dcc.icgc.org/api/v1/analysis/survival/${map[gene] || map.defaultId}`)
+        return fetch(`https://dcc.icgc.org/api/v1/analysis/survival/${map[gene.gene_id] || map.defaultId}`)
           .then(r => r.json())
-          .then(geneData => ({ data: [
-            processData(geneData.results[0].overall, `${gene}1`),
-            processData(geneData.results[1].overall, `${gene}2`),
-          ]}));
+          .then(geneData => ({ 
+            data: [
+              processData(geneData.results[0].overall, `${gene}1`),
+              processData(geneData.results[1].overall, `${gene}2`),
+            ],
+            legend: [
+              `${gene.geneSymbol} mutated cases`,
+              `${gene.geneSymbol} not mutated cases`,
+            ],
+            pValue: geneData.overallStats.pValue
+          }));
       }
 
       return {
         data: [
           processData(rawData, 'project'),
-        ]
+        ],
+        legend: ['all cases in project'],
+        pValue: '',
       };
     });
 }
@@ -76,6 +96,7 @@ class SurvivalPlotWrapper extends Component {
     this.state = {
       xDomain: undefined,
       stack: [],
+      palette: [colors(0), colors(1)],
     };
 
     buildData(this.props).then(d => this.setState(d));
@@ -113,7 +134,7 @@ class SurvivalPlotWrapper extends Component {
   }
 
   render() {
-    const { xDomain, data,  } = this.state;
+    const { xDomain, data, legend, pValue, palette } = this.state;
     const { height, width } = this.props;
 
     return (
@@ -148,16 +169,40 @@ class SurvivalPlotWrapper extends Component {
               <i className="fa fa-undo" /><span style={styles.hidden}>reload</span>
             </Button>
           </span>
+          {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue}</span>}
         </Column>
         {data &&
-          <SurvivalPlot
-            dataSets={data}
-            xDomain={xDomain}
-            onDomainChange={this.onDomainChange}
-            height={height}
-            width={width}
-          />
+          <div style={{position: 'relative'}}>
+            <SurvivalPlot
+              dataSets={data}
+              xDomain={xDomain}
+              onDomainChange={this.onDomainChange}
+              height={height}
+              width={width}
+              palette={palette}
+              margins={{
+                top: 15,
+                right: 20,
+                bottom: 40,
+                left: 50,
+              }}
+            />
+          </div>
         }
+        <Row style={{justifyContent: 'center', flexWrap: 'wrap'}}>
+          {legend &&
+            legend.map((text, i) => (
+              <div
+                key={text}
+                style={{
+                  color: palette[i],
+                  margin: '0 1rem',
+                  fontSize: '1.1rem',
+                }}
+              >{text}</div>
+            ))
+          }
+        </Row>
       </div>
     );
   }

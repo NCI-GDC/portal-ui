@@ -53,12 +53,7 @@ export class SurvivalPlot extends Component {
       onMouseLeaveDonor: this.props.onMouseLeaveDonor.bind(this),
       onClickDonor: this.props.onClickDonor,
       onDomainChange: this.props.onDomainChange,
-      margins: {
-        top: 20,
-        right: 20,
-        bottom: 46,
-        left: 60,
-      },
+      margins: this.props.margins,
     }, params))
   }
 

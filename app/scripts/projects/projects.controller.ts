@@ -65,23 +65,24 @@ module ngApp.projects.controllers {
       $scope.tableConfig = this.ProjectsTableService.model();
 
       this.refresh();
-      this.renderReact({ projects: [], genes: [], isFetching: true });
     }
 
-    renderReact({ projects, genes, isFetching }: { projects: Array<Object>, genes: Array<Object>, isFetching: boolean }) {
+    renderReact({ projects, genes, projectsIsFetching, genesIsFetching }: { projects: Array<Object>, genes: Array<Object>, projectsIsFetching: boolean, genesIsFetching: boolean  }) {
       ReactDOM.render(
       React.createElement(ReactComponents.Projects, {
         projects: projects || [],
         genes: genes || [],
         FacetService: this.FacetService,
-        isFetching: isFetching,
-      }), document.getElementById('react-root')
+        projectsIsFetching: projectsIsFetching,
+        genesIsFetching: genesIsFetching,
+      }), document.getElementById('react-projects-root')
       );
     };
 
     refresh() {
       this.loading = true;
       this.$rootScope.$emit('ShowLoadingScreen');
+      this.renderReact({ projects: [], genes: [], projectsIsFetching: true, genesIsFetching: true });
       var projectsTableModel = this.ProjectsTableService.model();
       if (!this.tabSwitch) {
         this.ProjectsService.getProjects({
@@ -92,6 +93,7 @@ module ngApp.projects.controllers {
           this.loading = false;
           this.$rootScope.$emit('ClearLoadingScreen');
           this.projects = data;
+          this.renderReact({ projects: this.projects.hits, genes: [], projectsIsFetching: false, genesIsFetching: true });
           if (this.ProjectsState.tabs.graph.active) {
             this.drawGraph(this.projects);
           } else if(this.ProjectsState.tabs.summary.active || this.numPrimarySites === 0) {
@@ -129,7 +131,7 @@ module ngApp.projects.controllers {
              }
            }).then(data => {
             const genes = (data.data.hits.hits || []).map(g => g._source);
-            this.renderReact({ projects: this.projects.hits, genes: genes, isFetching: false });
+            this.renderReact({ projects: this.projects.hits, genes: genes, projectsIsFetching: false, genesIsFetching: false });
           });
         });
       } else {

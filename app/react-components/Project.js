@@ -137,7 +137,9 @@ const Project = ({
       consequence_type:
         <span>
           <b>{_.startCase(consequence.transcript.consequence_type)}</b>
-          <span style={{marginLeft:'5px'}}>{consequence.transcript.gene_symbol}</span>
+          <span style={{marginLeft:'5px'}}>
+            <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
+          </span>
           <span style={{marginLeft:'5px'}}>{consequence.transcript.aa_change}</span>
         </span>
     }
@@ -403,7 +405,7 @@ const Project = ({
         </Column>
       </Column>
 
-      <Column style={{...styles.card, marginTop: `2rem` }}>
+      <Column style={{...styles.card, marginTop: `2rem`, position: 'static' }}>
         <h1 style={{...styles.heading, padding: `1rem` }} id="oncogrid">
           <i className="fa fa-th" style={{ paddingRight: `10px` }} />
           OncoGrid

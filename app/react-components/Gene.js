@@ -176,7 +176,9 @@ let Gene = (() => {
           consequence_type:
             <span>
               <b>{_.startCase(consequence.transcript.consequence_type)}</b>
-              <span style={{marginLeft:'5px'}}>{consequence.transcript.gene_symbol}</span>
+              <span style={{marginLeft:'5px'}}>
+                <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
+              </span>
               <span style={{marginLeft:'5px'}}>{consequence.transcript.aa_change}</span>
             </span>
         };

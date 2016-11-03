@@ -362,12 +362,12 @@ const Project = ({
               </div>
             }
           </span>
-          <span style={{...styles.column, width: '50%', minWidth: 500}}>
+          <span style={{ ...styles.column, width: '50%' }}>
             <SurvivalPlotWrapper
               rawData={survivalData}
               gene={survivalGene}
               onReset={() => setSurvivalGene(null)}
-              height={width < 1410 ? width * 0.25 : width * 0.16}
+              height={240}
               width={width}
             />
           </span>
@@ -411,7 +411,7 @@ const Project = ({
           <i className="fa fa-th" style={{ paddingRight: `10px` }} />
           OncoGrid
         </h1>
-        <OncoGridWrapper projectId={project.project_id} esHost={esHost} />
+        <OncoGridWrapper width={width} projectId={project.project_id} esHost={esHost} />
       </Column>
 
       <Column style={{...styles.card, marginTop: `2rem` }}>

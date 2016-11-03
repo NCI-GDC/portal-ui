@@ -70,8 +70,8 @@ function buildData(props) {
               processData(geneData.results[1].overall, `${gene}2`),
             ],
             legend: [
-              `${gene.geneSymbol} mutated cases`,
-              `${gene.geneSymbol} not mutated cases`,
+              `${gene.survivalId} mutated cases`,
+              `${gene.survivalId} not mutated cases`,
             ],
             pValue: geneData.overallStats.pValue
           }));
@@ -142,11 +142,7 @@ class SurvivalPlotWrapper extends Component {
         className="survival-plot"
         ref={el => this.container = el}
       >
-        <Column>
-          <h1 style={{...styles.heading, padding: `1rem` }} id="survival-plot">
-            <i className="fa fa-line-chart" style={{ paddingRight: `10px` }} />
-            Survival Plot
-          </h1>
+        <Column id="survival-plot">
           <span style={{textAlign: 'right'}}>
             <Button
               style={styles.button}

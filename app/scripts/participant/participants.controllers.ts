@@ -178,18 +178,23 @@ module ngApp.participants.controllers {
       let numCasesAggByProject = this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {});
       let totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
 
-      let el = document.getElementById('frequent-mutations');
-
       if (el) {
         ReactDOM.render(
-          React.createElement(ReactComponents.FrequentMutationsContainer, {
-            api: this.config.api,
-            numCasesAggByProject,
-            totalNumCases,
-            projectId: this.participant.project.project_id,
-            showSurvivalPlot: false,
-          }),
-          document.getElementById('frequent-mutations')
+          React.createElement(ReactComponents.SideNavLayout, {
+              links: [
+                { icon: 'table', id: 'summary', title: 'Summary' },
+                { icon: 'calendar-plus-o', id: 'clinical', title: 'Clinical' },
+                { icon: 'flask', id: 'biospecimen', title: 'Biospecimen' },
+                { icon: 'bar-chart-o', id: 'frequent-mutations', title: 'Frequent Mutations' },
+              ],
+              title: this.participant.case_id,
+              entityType: 'CA',
+            },
+            React.createElement(ReactComponents.Case, {
+              $scope: this,
+            })
+          ),
+          el
         );
       }
     }

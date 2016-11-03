@@ -20,7 +20,6 @@ module ngApp.participants.controllers {
       public participant: IParticipant,
       private CoreService: ICoreService,
       public numCasesAggByProject: Array<Object>,
-      public frequentMutations: Array<Object>,
       private LocationService: ILocationService,
       private $filter: ng.IFilterService,
       private ExperimentalStrategyNames: string[],
@@ -146,9 +145,43 @@ module ngApp.participants.controllers {
       // add project information to files for checking cart access
       this.participant.files = this.participant.files.map(x =>
         _.extend(x, { cases: [{ project: this.participant.project }] })
-      )
+      );
 
-      this.renderReact();
+      fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`, {
+        method: 'POST',
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({
+          "query": {
+            "nested": {
+              "path": "occurrence",
+              "score_mode": "sum",
+              "query": {
+                "function_score": {
+                  "query": {
+                    "terms": {
+                      "occurrence.case.project.project_id": [
+                        this.participant.project.project_id
+                      ]
+                    }
+                  },
+                  "boost_mode": "replace",
+                  "script_score": {
+                    "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
+                  }
+                }
+              }
+            }
+          }
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(">>>", data);
+          this.frequentMutations = data.hits.hits;
+          this.renderReact();
+        });
+
+
     }
 
     jumpToAnchor(id) {
@@ -186,16 +219,20 @@ module ngApp.participants.controllers {
         consequence_type: x.consequence.find(x => x.transcript.is_canonical).transcript.consequence_type
       }));
 
-      ReactDOM.render(
-        React.createElement(ReactComponents.FrequentMutations, {
-          $scope: this,
-          numCasesAggByProject,
-          frequentMutations,
-          totalNumCases,
-          project: this.participant.project.project_id,
-        }),
-        document.getElementById('frequent-mutations')
-      );
+      let el = document.getElementById('frequent-mutations');
+
+      if (el) {
+        ReactDOM.render(
+          React.createElement(ReactComponents.FrequentMutations, {
+            $scope: this,
+            numCasesAggByProject,
+            frequentMutations,
+            totalNumCases,
+            project: this.participant.project.project_id,
+          }),
+          document.getElementById('frequent-mutations')
+        );
+      }
     }
 
   }

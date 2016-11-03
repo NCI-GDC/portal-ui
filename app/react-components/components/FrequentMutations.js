@@ -72,7 +72,9 @@ let FrequentMutations = ({
         />
       </div>
     }
-    {!frequentMutations.length && 'No mutation data to display'}
+    {!frequentMutations.length &&
+      <span style={{padding: `2rem`}}>No mutation data to display</span>
+    }
   </Column>
 );
 

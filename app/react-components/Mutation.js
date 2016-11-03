@@ -52,6 +52,9 @@ let Mutation = (() => {
       width: '100%',
       minWidth: 450,
     },
+    card: {
+      backgroundColor: 'white',
+    },
   };
 
   return class Mutation extends Component {
@@ -222,78 +225,81 @@ let Mutation = (() => {
               style={{...styles.summary, ...styles.column, alignSelf: 'flex-start'}}
             />}
           </Row>
-          <Row>
-            <h1 id="consequences" style={styles.heading}>
+          <Column style={styles.card}>
+            <h1 id="consequences" style={{...styles.heading, padding: `1rem` }}>
               Consequences
             </h1>
-          </Row>
-          <Row style={{paddingBottom: '1.5rem'}}>
-            <EntityPageHorizontalTable
-              style={{width: '100%', minWidth: '450px'}}
-              headings={[
-                { key: 'gene_symbol', title: 'Gene' },
-                { key: 'aa_change', title: 'AA Change' },
-                { key: 'consequence', title: 'Consequence' },
-                { key: 'coding_dna_change', title: 'Coding DNA Change'},
-                { key: 'strand', title: 'Strand'},
-                { key: 'transcripts', title: 'Transcript(s)'},
-              ]}
-              data={consquenceDataMapped}
-            />
-          </Row>
-          <Column>
-            <h1 id="cancer-distribution" style={styles.heading}>
+            <Row>
+              <EntityPageHorizontalTable
+                style={{width: '100%', minWidth: '450px'}}
+                headings={[
+                  { key: 'gene_symbol', title: 'Gene' },
+                  { key: 'aa_change', title: 'AA Change' },
+                  { key: 'consequence', title: 'Consequence' },
+                  { key: 'coding_dna_change', title: 'Coding DNA Change'},
+                  { key: 'strand', title: 'Strand'},
+                  { key: 'transcripts', title: 'Transcript(s)'},
+                ]}
+                data={consquenceDataMapped}
+              />
+            </Row>
+          </Column>
+          <Column style={{...styles.card, marginTop: `2rem` }}>
+            <h1 id="cancer-distribution" style={{...styles.heading, padding: `1rem` }}>
               <i className="fa fa-bar-chart-o" style={{ marginRight: `1rem` }} />
               Cancer Distribution
             </h1>
-          </Column>
-          <h5 style={{textTransform: 'uppercase'}}>
-            This mutation affects&nbsp;
-            {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} distinct cases across&nbsp;
-            {sortedCancerDistData.length} cancer projects
-          </h5>
-          <Column style={{...styles.column, paddingBottom: '2rem'}}>
-            {sortedCancerDistData.length >= 5 &&
-              <BarChart
-              data={sortedCancerDistData.map(d => ({
-                label: d.project_id,
-                value: (d.freq * 100),
-                tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`
-                }))
+            <h5 style={{textTransform: 'uppercase', padding: `0 2rem`}}>
+              This mutation affects&nbsp;
+              {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} distinct cases across&nbsp;
+              {sortedCancerDistData.length} cancer projects
+            </h5>
+            <Column style={{...styles.column}}>
+              {sortedCancerDistData.length >= 5 &&
+                <BarChart
+                  data={sortedCancerDistData.map(d => ({
+                    label: d.project_id,
+                    value: (d.freq * 100),
+                    tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`
+                    }))
+                  }
+                  yAxis={{ title: '% of Cases Affected' }}
+                  styles={{
+                    xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                    yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                    bars: {fill: theme.secondary},
+                    tooltips: {
+                      fill: '#fff',
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3
+                    }
+                  }}
+                />
               }
-              yAxis={{ title: '% of Cases Affected' }}
-              styles={{
-                xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                bars: {fill: theme.secondary},
-                tooltips: {
-                  fill: '#fff',
-                  stroke: theme.greyScale4,
-                  textFill: theme.greyScale3
-                }
-              }}
-            />}
-            <EntityPageHorizontalTable
-              headings={[
-                { key: 'project_id', title: 'Project ID' },
-                { key: 'disease_type', title: 'Disease Type' },
-                { key: 'site', title: 'Site' },
-                { key: 'num_affected_cases', title: '# Affected Cases'},
-              ]}
-              data={sortedCancerDistData.map(
-                d => ({
-                  ...d,
-                  project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
-                  num_affected_cases: `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
-                })
-              )}
+              <EntityPageHorizontalTable
+                headings={[
+                  { key: 'project_id', title: 'Project ID' },
+                  { key: 'disease_type', title: 'Disease Type' },
+                  { key: 'site', title: 'Site' },
+                  { key: 'num_affected_cases', title: '# Affected Cases'},
+                ]}
+                data={sortedCancerDistData.map(
+                  d => ({
+                    ...d,
+                    project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
+                    num_affected_cases: `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
+                  })
+                )}
+              />
+            </Column>
+          </Column>
+          <Column style={{...styles.card, marginTop: `2rem` }}>
+            <ProteinLolliplotComponent
+              gene={gene}
+              $scope={$scope}
+              reset={this.state.ProteinLolliplot.reset}
             />
           </Column>
-          <ProteinLolliplotComponent
-            gene={gene}
-            $scope={$scope}
-            reset={this.state.ProteinLolliplot.reset}
-          />
         </span>
       );
     }

@@ -42,17 +42,11 @@ const styles = {
     width: 'auto',
     marginBottom: SPACING,
   },
-  summary: {
-    color: '#6b6262',
-  },
   column: {
-    // minWidth: 450,
     flexGrow: 1,
   },
   margin: {
     marginBottom: SPACING,
-    marginLeft: HALF_SPACING,
-    marginRight: HALF_SPACING,
   },
   icon: {
     width: '4rem',
@@ -72,6 +66,9 @@ const styles = {
     width: 0,
     height: 0,
     overflow: 'hidden',
+  },
+  card: {
+    backgroundColor: `white`,
   },
 };
 
@@ -190,13 +187,11 @@ const Project = ({
         />
       </Row>
 
-      <Row style={{ flexWrap: 'wrap' }}>
+      <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
         <span style={{ ...styles.column, ...styles.margin }}>
           <EntityPageVerticalTable
             id="summary"
-            className="summary-table"
-            style={styles.summary}
-            title="Summary"
+            title={<span><i className="fa fa-table" /> Summary</span>}
             thToTd={[
               { th: 'Project ID', td: project.project_id },
               { th: 'Project Name', td: project.name },
@@ -252,7 +247,7 @@ const Project = ({
         </Column>
       </Row>
 
-      <Row style={{ flexWrap: 'wrap' }}>
+      <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
         <span style={{ ...styles.column, ...styles.margin }}>
           <SummaryCard
             tableTitle="Cases and File Counts by Experimental Strategy"
@@ -314,11 +309,13 @@ const Project = ({
           />
         </span>
       </Row>
-      <Row style={{ flexWrap: 'wrap' }}>
-        <span style={{...styles.column, width: '50%', minWidth: 520}}>
-          <Column>
-            <h1 style={styles.heading} id="mutated-genes">
-              <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />Most Frequently Mutated Genes
+
+      <Column style={styles.card}>
+        <Row>
+          <span>
+            <h1 style={{ ...styles.heading, padding: `1rem` }} id="mutated-genes">
+              <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
+              Most Frequently Mutated Genes
             </h1>
             <span style={{textAlign: 'right', marginRight: 50, marginLeft: 30}}>
               <Button
@@ -328,7 +325,6 @@ const Project = ({
                   () => {
                     downloadSvg({
                       svg: document.querySelector('#mutated-genes-chart svg'),
-                      // stylePrefix: '.survival-plot',
                       fileName: 'bar-chart.svg',
                     });
                   }
@@ -337,89 +333,96 @@ const Project = ({
                 <i className="fa fa-download" /><span style={styles.hidden}>reload</span>
               </Button>
             </span>
-          </Column>
-          <Column style={{...styles.column, paddingBottom: '2.5rem'}}>
-            {mutatedGenesChartData.length ? (<div id="mutated-genes-chart"><BarChart
-                  height={width < 1410 ? 200 : width * 0.16}
-                  data={mutatedGenesChartData.map(g => ({
-                    label: g.symbol,
-                    value: (g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100),
-                    tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[$scope.project.project_id] * 100).toFixed(2)}%`
-                  }))}
-                  yAxis={{ title: '% of Cases Affected' }}
-                  styles={{
-                    xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                    yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                    bars: {fill: theme.secondary},
-                    tooltips: {
-                      fill: '#fff',
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3
-                    }
-                  }}
-                />
-              </div>) : 'No mutated gene data to display'}
-          </Column>
-        </span>
-        <span style={{...styles.column, width: '50%', minWidth: 500}}>
-          <SurvivalPlotWrapper
-            rawData={survivalData}
-            gene={survivalGene}
-            onReset={() => setSurvivalGene('')}
-            height={width < 1410 ? width * 0.25 : width * 0.16}
-            width={width}
-          />
-        </span>
-      </Row>
-      {mutatedGenesChartData.length ? (<div>
-      <EntityPageHorizontalTable
-          headings={[
-            { key: 'symbol', title: 'Symbol' },
-            { key: 'cytoband', title: 'Cytoband' },
-            {
-              key: 'num_affected_cases_project',
-              title: (<span># Affected Cases<br />in {$scope.project.project_id}</span>),
-            },
-            {
-              key: 'num_affected_cases_all',
-              title: (<span># Affected Cases<br />in All Projects</span>),
-            },
-            { key: 'num_mutations', title: '# Mutations'},
-            {
-              title: <i className="fa fa-bar-chart-o" />,
-              onClick: (d) => setSurvivalGene(d.gene_id === survivalGene ? '' : d.gene_id),
-              value: <i className="fa fa-bar-chart-o" />,
-            }
-          ]}
-          data={mutatedGenesChartData.map(g => ({
-            ...g,
-            symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
-            num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[$scope.project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[$scope.project.project_id]*100).toFixed(2)}%)`,
-            num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
-          }))}
-      /></div>) : 'No mutated gene data to display'}
 
-      <Column>
-        <h1 style={styles.heading} id="frequent-mutations">
+            {!!mutatedGenesChartData.length &&
+              <div>
+                <Row style={{ padding: `0 2rem` }}>
+                  <BarChart
+                    data={mutatedGenesChartData.map(g => ({
+                      label: g.symbol,
+                      value: (g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100),
+                      tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`
+                    }))}
+                    yAxis={{ title: '% of Cases Affected' }}
+                    styles={{
+                      xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                      yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                      bars: {fill: theme.secondary},
+                      tooltips: {
+                        fill: '#fff',
+                        stroke: theme.greyScale4,
+                        textFill: theme.greyScale3
+                      }
+                    }}
+                  />
+                </Row>
+              </div>
+            }
+          </span>
+          <span style={{...styles.column, width: '50%', minWidth: 500}}>
+            <SurvivalPlotWrapper
+              rawData={survivalData}
+              gene={survivalGene}
+              onReset={() => setSurvivalGene('')}
+              height={width < 1410 ? width * 0.25 : width * 0.16}
+              width={width}
+            />
+          </span>
+        </Row>
+        <Column>
+          {!!mutatedGenesChartData.length &&
+            <EntityPageHorizontalTable
+              headings={[
+                { key: 'symbol', title: 'Symbol' },
+                { key: 'cytoband', title: 'Cytoband' },
+                {
+                  key: 'num_affected_cases_project',
+                  title: (<span># Affected Cases<br />in {project.project_id}</span>),
+                },
+                {
+                  key: 'num_affected_cases_all',
+                  title: (<span># Affected Cases<br />in All Projects</span>),
+                },
+                { key: 'num_mutations', title: '# Mutations'},
+                {
+                  title: <i className="fa fa-bar-chart-o" />,
+                  onClick: (d) => setSurvivalGene(d.gene_id === survivalGene ? '' : d.gene_id),
+                  value: <i className="fa fa-bar-chart-o" />,
+                }
+              ]}
+              data={mutatedGenesChartData.map(g => ({
+                ...g,
+                symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
+                num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
+                num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+              }))}
+            />
+          }
+          {!mutatedGenesChartData.length && 'No mutated gene data to display'}
+        </Column>
+      </Column>
+
+      <Column style={{...styles.card, marginTop: `2rem` }}>
+        <h1 style={{...styles.heading, padding: `1rem` }} id="oncogrid">
+          <i className="fa fa-th" style={{ paddingRight: `10px` }} />
+          OncoGrid
+        </h1>
+        <OncoGridWrapper projectId={project.project_id} esHost={esHost} />
+      </Column>
+
+      <Column style={{...styles.card, marginTop: `2rem` }}>
+        <h1 style={{...styles.heading, padding: `1rem`}} id="frequent-mutations">
           <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
           Most Frequent Mutations
         </h1>
+
+        <FrequentMutations
+          frequentMutations={frequentMutations}
+          numCasesAggByProject={numCasesAggByProject}
+          totalNumCases={totalNumCases}
+          project={$scope.project.project_id}
+        />
       </Column>
-
-      <FrequentMutations
-        frequentMutations={frequentMutations}
-        numCasesAggByProject={numCasesAggByProject}
-        totalNumCases={totalNumCases}
-        project={$scope.project.project_id}
-      />
-
-      <Column>
-        <h1 style={styles.heading} id="oncogrid">
-          <i className="fa fa-th" style={{ paddingRight: `10px` }} /> OncoGrid
-        </h1>
-      </Column>
-
-      <OncoGridWrapper projectId={project.project_id} esHost={esHost} width={width} />
     </span>
   );
 };
@@ -438,7 +441,7 @@ const enhance = compose(
       return { width: window.innerWidth };
     },
 
-    componentDidMount: function() { 
+    componentDidMount: function() {
       this.onResize = _.debounce(() => {this.setState({
         width: window.innerWidth,
       })}, 100);

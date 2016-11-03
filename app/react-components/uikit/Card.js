@@ -9,11 +9,9 @@ import theme from '../theme';
 const styles = {
   card: {
     backgroundColor: 'white',
-    border: `1px solid ${theme.greyScale4}`,
   },
   header: {
     padding: '1rem',
-    borderBottom: `1px solid ${theme.greyScale4}`,
     color: theme.primary,
   },
 };

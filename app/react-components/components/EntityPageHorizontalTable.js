@@ -16,13 +16,10 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
       backgroundColor: '#fff',
     },
     tr: {
-      borderTop: `1px solid ${theme.greyScale5}`,
-      borderBottom: `1px solid ${theme.greyScale5}`,
-      borderRight: 0,
-      borderLeft: 0,
+      border: 'none !important',
     },
     td: {
-      borderRight: 0,
+      border: 'none !important',
     },
   };
   return (
@@ -30,10 +27,6 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
       style={{
         flexWrap: 'wrap',
         overflow: 'scroll',
-        borderRight: `1px solid ${theme.greyScale5}`,
-        borderTop: `1px solid ${theme.greyScale5}`,
-        borderLeft: `1px solid ${theme.greyScale5}`,
-        borderBottom: 0,
         ...style,
       }}
     >
@@ -51,9 +44,11 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
             backgroundColor: '#fff',
             display: 'flex',
             justifyContent: 'space-between',
-            ...titleStyle, 
+            ...titleStyle,
           }}
-        >{title} {rightComponent}</h3>
+        >
+          {title} {rightComponent}
+        </h3>
       }
       {data.length ? (
         <Table
@@ -61,27 +56,27 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
           headings={headings.map(h => <Th key={h.key || h.value}>{h.title}</Th>)}
           body={
             <tbody>
-            {data.map((d, i) => {
-              return (
-                <Tr
-                  style={{
-                    ...styles.tr,
-                    backgroundColor: i % 2 === 0 ? theme.greyScale6 : '#fff',
-                  }}
-                  key={i}
-                >
-                {headings.map(h => {
-                  const value = typeof d[h.key] !== 'undefined' ? d[h.key] : h.value;
+              {data.map((d, i) => {
+                return (
+                  <Tr
+                    style={{
+                      ...styles.tr,
+                      backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
+                    }}
+                    key={i}
+                  >
+                  {headings.map(h => {
+                    const value = typeof d[h.key] !== 'undefined' ? d[h.key] : h.value;
 
-                  return (
-                    <Td key={h.key || h.value} style={h.style || {}}>
-                      {h.color && <div className="item-color" style={{ backgroundColor: colors(i) }} />}
-                      {h.onClick && value ? <a onClick={() => h.onClick(d)}>{value}</a> : (value || '--')}
-                    </Td>
-                  );
-                })}
-                </Tr>);
-            })}
+                    return (
+                      <Td key={h.key || h.value} style={h.style || {}}>
+                        {h.color && <div className="item-color" style={{ backgroundColor: colors(i) }} />}
+                        {h.onClick && value ? <a onClick={() => h.onClick(d)}>{value}</a> : (value || '--')}
+                      </Td>
+                    );
+                  })}
+                  </Tr>);
+              })}
             </tbody>
         }
         />) : (

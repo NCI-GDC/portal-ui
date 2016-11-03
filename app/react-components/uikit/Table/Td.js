@@ -6,7 +6,6 @@ import React, { PropTypes } from 'react';
 const styles = {
   td: {
     padding: '3px',
-    border: '1px solid #ddd',
     whiteSpace: 'nowrap',
   },
 };

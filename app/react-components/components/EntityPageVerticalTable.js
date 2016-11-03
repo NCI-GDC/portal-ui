@@ -5,7 +5,7 @@ import theme from '../theme';
 import Table, { Tr, Td, Th, CollapsibleTd } from '../uikit/Table';
 
 // th are vertical
-const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle, id }) => {
+const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleStyle, id }) => {
   const styles = {
     table: {
       borderCollapse: 'collapse',
@@ -14,14 +14,11 @@ const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle, 
       backgroundColor: '#fff',
     },
     tr: {
-      borderTop: `1px solid ${theme.greyScale5}`,
-      borderBottom: `1px solid ${theme.greyScale5}`,
-      borderRight: 0,
-      borderLeft: 0,
+      border: 'none !important',
       color: theme.greyScale2,
     },
     td: {
-      borderRight: 0,
+      border: 'none !important',
       color: theme.greyScale2,
     },
   };
@@ -32,18 +29,14 @@ const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle, 
       style={{
         flexWrap: 'wrap',
         overflow: 'scroll',
-        borderRight: `1px solid ${theme.greyScale5}`,
-        borderTop: `1px solid ${theme.greyScale5}`,
-        borderLeft: `1px solid ${theme.greyScale5}`,
-        borderBottom: 0,
         ...style,
       }}
     >
-      <h3
+      <h1
         style={{
           color: theme.greyScale7,
           width: '100%',
-          fontSize: '24px',
+          fontSize: '2rem',
           lineHeight: '1.4em',
           fontWeight: 'normal',
           marginTop: 0,
@@ -52,7 +45,9 @@ const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle, 
           backgroundColor: '#fff',
           ...titleStyle
         }}
-      >{title}</h3>
+      >
+        {title}
+      </h1>
       <Table
         style={styles.table}
         body={
@@ -62,7 +57,7 @@ const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle, 
               <Th
                 style={{
                   ...styles.tr,
-                  backgroundColor: i % 2 === 0 ? theme.greyScale6 : '#fff',
+                  backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
                   textTransform: 'capitalize',
                   verticalAlign: 'top',
                 }}
@@ -73,7 +68,7 @@ const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle, 
                 (<CollapsibleTd
                   style={{
                     ...styles.td,
-                    backgroundColor: i % 2 === 0 ? theme.greyScale6 : '#fff',
+                    backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
                     ...d.style,
                   }}
                   text={d.collapsibleTd || '--'}
@@ -83,7 +78,7 @@ const EntityPageVerticalTable = ({ style, title, thToTd, className, titleStyle, 
                 (<Td
                   style={{
                     ...styles.td,
-                    backgroundColor: i % 2 === 0 ? theme.greyScale6 : '#fff',
+                    backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
                     ...d.style,
                   }}
                 >

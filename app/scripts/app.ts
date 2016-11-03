@@ -109,20 +109,21 @@ function appConfig(
 }
 
 /* @ngInject */
-function appRun(gettextCatalog: any,
-                Restangular: restangular.IProvider,
-                $state: ng.ui.IStateService,
-                CoreService: ICoreService,
-                $rootScope: IRootScope,
-                config: IGDCConfig,
-                notify: INotifyService,
-                $cookies: ng.cookies.ICookiesService,
-                UserService: IUserService,
-                ProjectsService: IProjectsService,
-                $window: ng.IWindowService,
-                $uibModalStack,
-                LocalStorageService: ILocalStorageService
-                ) {
+function appRun(
+  gettextCatalog: any,
+  Restangular: restangular.IProvider,
+  $state: ng.ui.IStateService,
+  CoreService: ICoreService,
+  $rootScope: IRootScope,
+  config: IGDCConfig,
+  notify: INotifyService,
+  $cookies: ng.cookies.ICookiesService,
+  UserService: IUserService,
+  ProjectsService: IProjectsService,
+  $window: ng.IWindowService,
+  $uibModalStack,
+  LocalStorageService: ILocalStorageService
+) {
 
   // Make global tooltip always follow mouse
 

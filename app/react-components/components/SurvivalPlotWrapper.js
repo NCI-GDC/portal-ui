@@ -30,7 +30,7 @@ const styles = {
 }
 const map = {
   defaultId: 'b8a57661-67d1-45d2-a9aa-b9a7a12b12ff'
-}; 
+};
 
 function processData(dataSet, id) {
   return {
@@ -77,7 +77,7 @@ class SurvivalPlotWrapper extends Component {
       xDomain: undefined,
       stack: [],
     };
-    
+
     buildData(this.props).then(d => this.setState(d));
   }
 
@@ -122,8 +122,9 @@ class SurvivalPlotWrapper extends Component {
         ref={el => this.container = el}
       >
         <Column>
-          <h1 style={styles.heading} id="survival-plot">
-            <i className="fa fa-line-chart" style={{ paddingRight: `10px` }} />Survival Plot
+          <h1 style={{...styles.heading, padding: `1rem` }} id="survival-plot">
+            <i className="fa fa-line-chart" style={{ paddingRight: `10px` }} />
+            Survival Plot
           </h1>
           <span style={{textAlign: 'right'}}>
             <Button

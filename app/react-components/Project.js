@@ -388,7 +388,7 @@ const Project = ({
                 },
                 { key: 'num_mutations', title: '# Mutations'},
                 {
-                  title: <i className="fa fa-bar-chart-o" />,
+                  title: <i className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></i>,
                   onClick: (d) => setSurvivalGene(d === survivalGene ? null : d),
                   value: <i className="fa fa-bar-chart-o" />,
                 }

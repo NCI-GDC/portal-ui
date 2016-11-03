@@ -34,42 +34,6 @@ module ngApp.participants {
           });
 
         },
-        frequentMutations: (
-          $stateParams: ng.ui.IStateParamsService,
-          $http: ng.IHttpService,
-          config: IGDCConfig
-        ): ng.IPromise => {
-          return $http({
-            method: 'POST',
-            url: `${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`,
-            headers: {'Content-Type' : 'application/json'},
-            data: {
-              "query": {
-                "nested": {
-                  "path": "occurrence",
-                  "score_mode": "sum",
-                  "query": {
-                    "function_score": {
-                      "query": {
-                        "terms": {
-                          "occurrence.case.project.project_id": [
-                            $stateParams.caseId // TODO GET PROJECT FROM THIS CASE
-                          ]
-                        }
-                      },
-                      "boost_mode": "replace",
-                      "script_score": {
-                        "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }).then(data => {
-            return data.data.hits.hits;
-          });
-        },
         participant: ($stateParams: ng.ui.IStateParamsService, ParticipantsService: IParticipantsService): ng.IPromise<IParticipant> => {
           if (! $stateParams.caseId) {
             throw Error('Missing route parameter: caseId. Redirecting to 404 page.');

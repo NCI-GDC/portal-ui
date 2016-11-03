@@ -109,28 +109,44 @@ function appConfig(
 }
 
 /* @ngInject */
-function appRun(gettextCatalog: any,
-                Restangular: restangular.IProvider,
-                $state: ng.ui.IStateService,
-                CoreService: ICoreService,
-                $rootScope: IRootScope,
-                config: IGDCConfig,
-                notify: INotifyService,
-                $cookies: ng.cookies.ICookiesService,
-                UserService: IUserService,
-                ProjectsService: IProjectsService,
-                $window: ng.IWindowService,
-                $uibModalStack,
-                LocalStorageService: ILocalStorageService
-                ) {
+function appRun(
+  gettextCatalog: any,
+  Restangular: restangular.IProvider,
+  $state: ng.ui.IStateService,
+  CoreService: ICoreService,
+  $rootScope: IRootScope,
+  config: IGDCConfig,
+  notify: INotifyService,
+  $cookies: ng.cookies.ICookiesService,
+  UserService: IUserService,
+  ProjectsService: IProjectsService,
+  $window: ng.IWindowService,
+  $uibModalStack,
+  LocalStorageService: ILocalStorageService
+) {
 
   // Make global tooltip always follow mouse
 
   let globalTooltip = document.querySelector('.global-tooltip');
 
+  if (window.location.pathname.includes('mutations')) {
+    let intervalId = setInterval(() => {
+      if (window.selectedMutation && !window.otherTooltip) {
+        globalTooltip.style.left = $(window.selectedMutation).position().left + 11 + 'px';
+        globalTooltip.style.top = $(window.selectedMutation).position().top - globalTooltip.offsetHeight - 15 + 'px';
+        clearInterval(intervalId);
+      }
+    }, 50)
+  }
+
   window.addEventListener('mousemove', event => {
-    globalTooltip.style.left = event.pageX + 'px';
-    globalTooltip.style.top = event.pageY - globalTooltip.offsetHeight - 15 + 'px';
+    if (window.selectedMutation && !window.otherTooltip) {
+      globalTooltip.style.left = $(window.selectedMutation).position().left + 11 + 'px';
+      globalTooltip.style.top = $(window.selectedMutation).position().top - globalTooltip.offsetHeight - 15 + 'px';
+    } else {
+      globalTooltip.style.left = event.pageX + 'px';
+      globalTooltip.style.top = event.pageY - globalTooltip.offsetHeight - 15 + 'px';
+    }
   });
 
   if (navigator.cookieEnabled && $cookies.get("GDC-Portal-Sha") !== config.commitHash) {
@@ -204,6 +220,13 @@ function appRun(gettextCatalog: any,
   $rootScope.$on("$stateChangeSuccess", () => {
     // Page change
     CoreService.setLoadedState(true);
+
+    setTimeout(() => {
+      if (!window.location.pathname.includes('mutations')) {
+        window.selectedMutation = null;
+        $('.global-tooltip').removeClass('active');
+      }
+    }, 50)
   });
 
   $rootScope.$on("$stateChangeError", () => {

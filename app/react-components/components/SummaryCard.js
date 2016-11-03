@@ -15,12 +15,10 @@ import EntityPageHorizontalTable from './EntityPageHorizontalTable';
 const styles = {
   header: {
     padding: '1rem',
-    borderBottom: `1px solid ${theme.greyScale4}`,
-    color: theme.primary,
+    color: theme.greyScale7,
   },
   footer: {
     padding: '1rem',
-    borderTop: `1px solid ${theme.greyScale4}`,
     ...center,
   },
 };
@@ -40,7 +38,7 @@ const SummaryCard = ({
   <Card style={style}>
     <Column>
       <Row style={styles.header}>
-        <span style={{ flexGrow: 1 }}>{(showTable ? tableTitle : pieChartTitle) || title}</span>
+        <span style={{ flexGrow: 1, fontSize: `1.7rem` }}>{(showTable ? tableTitle : pieChartTitle) || title}</span>
         <span onClick={() => setShowTable(!showTable)}>
           <i style={{ color: '#000' }} className={`fa ${showTable ? 'fa-pie-chart' : 'fa-table'}`} />
         </span>

@@ -79,6 +79,9 @@ let Gene = (() => {
       width: '100%',
       minWidth: 450,
     },
+    card: {
+      backgroundColor: `white`,
+    },
   };
 
   return class Gene extends Component {
@@ -173,7 +176,9 @@ let Gene = (() => {
           consequence_type:
             <span>
               <b>{_.startCase(consequence.transcript.consequence_type)}</b>
-              <span style={{marginLeft:'5px'}}>{consequence.transcript.gene_symbol}</span>
+              <span style={{marginLeft:'5px'}}>
+                <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
+              </span>
               <span style={{marginLeft:'5px'}}>{consequence.transcript.aa_change}</span>
             </span>
         };
@@ -184,7 +189,7 @@ let Gene = (() => {
           <Row spacing="2rem">
             <EntityPageVerticalTable
               id="summary"
-              title="Summary"
+              title={<span><i className="fa fa-table" /> Summary</span>}
               thToTd={[
                 { th: 'Symbol', td: gene.symbol },
                 { th: 'Name', td: gene.name },
@@ -217,85 +222,91 @@ let Gene = (() => {
               }}
             />
             <EntityPageVerticalTable
-              title="External References"
+              title={<span><i className="fa fa-book" /> External References</span>}
               thToTd={
-                Object.keys(gene.external_db_ids || {})
-                      .map(db => ({
-                        th: db.replace(/_/g, ' '),
-                        td: <ExternalLink
-                          href={externalReferenceLinks[db](gene.external_db_ids[db])}>
-                            {gene.external_db_ids[db]}
-                          </ExternalLink>
-                      }))
+                Object.keys(gene.external_db_ids || {}).map(db => ({
+                  th: db.replace(/_/g, ' '),
+                  td: <ExternalLink
+                    href={externalReferenceLinks[db](gene.external_db_ids[db])}>
+                      {gene.external_db_ids[db]}
+                    </ExternalLink>
+                }))
               }
               style={{...styles.summary, ...styles.column, alignSelf: 'flex-start'}}
             />
           </Row>
-          <Column>
-            <h1 style={styles.heading} id="cancer-distribution">
+
+          <Column style={styles.card}>
+            <h1 style={{...styles.heading, padding: `1rem` }} id="cancer-distribution">
               <i className="fa fa-bar-chart-o" style={{ marginRight: `1rem` }} />
               Cancer Distribution
             </h1>
+            <div style={{ padding: `0 1rem` }}>
+              {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by&nbsp;
+              {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across&nbsp;
+              {sortedCancerDistData.length} projects
+            </div>
+            <Column style={{...styles.column}}>
+              <div style={{ padding: `0 2rem` }}>
+                <BarChart
+                  data={sortedCancerDistData.map(d => ({
+                    label: d.project_id,
+                    value: (d.freq * 100),
+                    tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`
+                    }))
+                  }
+                  yAxis={{ title: '% of Cases Affected' }}
+                  styles={{
+                    xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                    yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
+                    bars: {fill: theme.secondary},
+                    tooltips: {
+                      fill: '#fff',
+                      stroke: theme.greyScale4,
+                      textFill: theme.greyScale3
+                    }
+                  }}
+                />
+              </div>
+              <EntityPageHorizontalTable
+                headings={[
+                  { key: 'project_id', title: 'Project ID' },
+                  { key: 'disease_type', title: 'Disease Type' },
+                  { key: 'site', title: 'Site' },
+                  { key: 'num_affected_cases', title: '# Affected Cases'},
+                  { key: 'num_mutations', title: '# Mutations'},
+                ]}
+                data={sortedCancerDistData.map(
+                  d => ({
+                    ...d,
+                    project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
+                    num_affected_cases: `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
+                    num_mutations: d.ssms.length,
+                  })
+                )}
+              />
+            </Column>
           </Column>
-          {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by&nbsp;
-          {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across&nbsp;
-          {sortedCancerDistData.length} projects
-          <Column style={{...styles.column, paddingBottom: '2rem'}}>
-            <BarChart
-              data={sortedCancerDistData.map(d => ({
-                label: d.project_id,
-                value: (d.freq * 100),
-                tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`
-                }))
-              }
-              yAxis={{ title: '% of Cases Affected' }}
-              styles={{
-                xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                bars: {fill: theme.secondary},
-                tooltips: {
-                  fill: '#fff',
-                  stroke: theme.greyScale4,
-                  textFill: theme.greyScale3
-                }
-              }}
-            />
-            <EntityPageHorizontalTable
-              headings={[
-                { key: 'project_id', title: 'Project ID' },
-                { key: 'disease_type', title: 'Disease Type' },
-                { key: 'site', title: 'Site' },
-                { key: 'num_affected_cases', title: '# Affected Cases'},
-                { key: 'num_mutations', title: '# Mutations'},
-              ]}
-              data={sortedCancerDistData.map(
-                d => ({
-                  ...d,
-                  project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
-                  num_affected_cases: `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
-                  num_mutations: d.ssms.length,
-                })
-              )}
+
+          <Column style={{...styles.card, marginTop: `2rem` }}>
+            <ProteinLolliplotComponent
+              gene={gene}
+              $scope={$scope}
+              reset={this.state.ProteinLolliplot.reset}
             />
           </Column>
 
-          <ProteinLolliplotComponent
-            gene={gene}
-            $scope={$scope}
-            reset={this.state.ProteinLolliplot.reset}
-          />
-
-          <Column>
-            <h1 style={styles.heading} id="frequent-mutations">
+          <Column style={{...styles.card, marginTop: `2rem`}}>
+            <h1 style={{...styles.heading, padding: `1rem` }} id="frequent-mutations">
               <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
               Most Frequent Mutations
             </h1>
-          </Column>
 
-          <FrequentMutations
-            frequentMutations={frequentMutations}
-            totalNumCases={totalNumCases}
-          />
+            <FrequentMutations
+              frequentMutations={frequentMutations}
+              totalNumCases={totalNumCases}
+            />
+          </Column>
         </span>
       );
     }

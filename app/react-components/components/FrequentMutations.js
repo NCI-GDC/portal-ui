@@ -12,10 +12,10 @@ let FrequentMutations = ({
   project,
   totalNumCases,
 }) => (
-  <Column style={{ paddingBottom: '2.5rem' }}>
+  <Column>
     {!!frequentMutations.length &&
       <div>
-        <div style={{ padding: `0 10px` }}>
+        <div style={{ padding: `0 2rem` }}>
           <BarChart
             data={frequentMutations.map(x => ({
               label: x.genomic_dna_change,
@@ -26,8 +26,9 @@ let FrequentMutations = ({
                 : `<b>${x.genomic_dna_change}</b><br />
                   ${(x.num_affected_cases_all / totalNumCases * 100).toFixed(2)}%`
             }))}
+            margin={{ top: 30, right: 50, bottom: 105, left: 30 }}
+            height={250}
             yAxis={{ title: 'Cases' }}
-            height={300}
             styles={{
               xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
               yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
@@ -71,7 +72,9 @@ let FrequentMutations = ({
         />
       </div>
     }
-    {!frequentMutations.length && 'No mutation data to display'}
+    {!frequentMutations.length &&
+      <span style={{padding: `2rem`}}>No mutation data to display</span>
+    }
   </Column>
 );
 

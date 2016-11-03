@@ -57,12 +57,12 @@ let ProteinLolliplot = ({
 }) => (
   <Column>
     <Row>
-      <h1 style={styles.heading} id="protein">
+      <h1 style={{...styles.heading, padding: `1rem`}} id="protein">
         <img src="images/double-helix.svg" alt="GDC cBio Portal" style={{ marginRight: '1rem', width: `12px` }} />
         Protein
       </h1>
     </Row>
-    <Row style={{ margin: '2rem 0' }} spacing="1rem">
+    <Row style={{ marginBottom: '2rem', padding: `0 2rem` }} spacing="1rem">
       <span style={{ alignSelf: 'center' }}>
         Transcript:
       </span>
@@ -177,7 +177,7 @@ let ProteinLolliplot = ({
         SVG
       </Button>
     </Row>
-    <div id="protein-viewer-root" />
+    <div style={{padding: `0 3rem` }} id="protein-viewer-root" />
   </Column>
 );
 

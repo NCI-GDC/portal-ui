@@ -124,7 +124,7 @@ module ngApp.genes.controllers {
               },
               { icon: 'bar-chart-o', id: 'frequent-mutations', title: 'Frequent Mutations' },
             ],
-            title: this.gene.gene_id,
+            title: this.gene.symbol,
             entityType: 'GE',
           },
           React.createElement(ReactComponents.Gene, {

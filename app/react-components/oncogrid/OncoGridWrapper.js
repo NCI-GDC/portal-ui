@@ -202,9 +202,15 @@ OncoGridWrapper.propTypes = {
 
 const enhance = compose(
   lifecycle({
+    getInitialState() {
+      return {};
+    },
     componentWillReceiveProps(nextProps) {
       const { grid, gridPadding, gridHeight, gridContainer } = this.state;
-      grid.resize(gridContainer.offsetWidth - gridPadding, gridHeight);
+
+      if(grid) {
+        grid.resize(gridContainer.offsetWidth - gridPadding, gridHeight);
+      }
     },
     componentDidMount() {
       const { projectId, esHost } = this.props;

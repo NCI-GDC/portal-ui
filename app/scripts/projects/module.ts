@@ -146,7 +146,7 @@ module ngApp.projects {
             headers: {'Content-Type' : 'application/json'},
           }).then(data => {
             return data.data;
-          });
+            }, (err) => []);
         },
         project: ($stateParams: ng.ui.IStateParamsService, ProjectsService: IProjectsService): ng.IPromise<IProject> => {
           if (! $stateParams.projectId) {

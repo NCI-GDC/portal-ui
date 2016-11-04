@@ -1,6 +1,7 @@
 import React from 'react';
+import downloadSvg from 'download-svg';
+
 import DropDownButton from './DropDownButton';
-import downloadSvg from '../utils/download-svg';
 import saveFile from '../utils/filesaver';
 import toTsvString, {mapArrayToTsvString} from '../utils/toTsvString';
 import Download from '../theme/icons/Download';

@@ -347,6 +347,7 @@ const Project = ({
               <div>
                 <Row style={{ padding: `0 2rem` }}>
                   <BarChart
+                    id="mutated-genes-chart"
                     data={mutatedGenesChartData.map(g => ({
                       label: g.symbol,
                       value: (g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100),

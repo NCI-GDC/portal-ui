@@ -2,9 +2,7 @@
   "private": true,
   "version": "0.0.3",
   "repository": "NCI-GDC/portal-ui",
-  "engines": {
-    "node": ">=5"
-  },
+
   "author": {
     "name": "OICR",
     "url": "https://github.com/NCI-GDC/"
@@ -19,18 +17,15 @@
     "react-router": "4.0.0-alpha.4"
   },
   "devDependencies": {
-    "@ncigdc/buildjs": "0.3.8",
-    "@ncigdc/buildjs-dev-server": "0.3.8",
-    "@ncigdc/buildjs-scripts": "0.3.8",
-    "lerna": "2.0.0-beta.29"
+    "@knit/knit": "0.0.1",
+    "@knit/mittens": "0.0.1"
   },
   "scripts": {
-    "postinstall": "lerna bootstrap --yes",
-    "start": "make server",
-    "test": "make test-once"
+    "start": "mittens play",
+    "test": "mittens test --watch"
   },
-  "buildjs": {
-    "config": {
+  "knit": {
+    "needle": {
       "globals": {
         "API": "/api/",
         "LEGACY": false

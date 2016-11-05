@@ -2,7 +2,11 @@
   "private": true,
   "version": "0.0.3",
   "repository": "NCI-GDC/portal-ui",
-
+  "eslintConfig": {
+    "extends": [
+      "@knit/socks-react"
+    ]
+  },
   "author": {
     "name": "OICR",
     "url": "https://github.com/NCI-GDC/"
@@ -14,19 +18,21 @@
     "react": "15.3.2",
     "react-dom": "15.3.2",
     "react-relay": "0.9.3",
-    "react-router": "4.0.0-alpha.4"
+    "react-router": "4.0.0-alpha.4",
+    "webpack": "2.1.0-beta.13"
   },
   "devDependencies": {
-    "@knit/knit": "0.0.1",
-    "@knit/mittens": "0.0.1"
+    "@knit/eslint-config-socks-react": "^0.0.7",
+    "@knit/knit": "^0.0.7",
+    "@knit/mittens": "^0.0.9"
   },
   "scripts": {
     "start": "mittens play",
-    "test": "mittens test --watch"
+    "test": "mittens test -- --watch"
   },
   "knit": {
     "needle": {
-      "globals": {
+      "env": {
         "API": "/api/",
         "LEGACY": false
       }

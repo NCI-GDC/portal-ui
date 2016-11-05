@@ -1,7 +1,11 @@
+[include]
+modules/node_modules/*.
+
 [ignore]
 .*\..*/.*
 .*/node_modules/npm/.*
 .*/node_modules/fbjs/.*
+.*/__tests__/.*
 
 [options]
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe

@@ -4,6 +4,7 @@ import { compose, withState, lifecycle } from 'recompose';
 import FileIcon from 'react-icons/lib/fa/file-o';
 import CaseIcon from 'react-icons/lib/fa/user';
 import EditIcon from 'react-icons/lib/fa/edit';
+import DownIcon from 'react-icons/lib/md/arrow-drop-down';
 import _ from 'lodash';
 
 // Custom
@@ -22,6 +23,7 @@ import OncoGridWrapper from './oncogrid/OncoGridWrapper';
 import SurvivalPlotWrapper from './components/SurvivalPlotWrapper';
 import Button from './Button';
 import downloadSvg from './utils/download-svg';
+import TogglableUl from './uikit/TogglableUl';
 
 const SPACING = '2rem';
 const HALF_SPACING = '1rem';
@@ -120,6 +122,11 @@ const Project = ({
       'cytoband': g.cytoband,
       'num_affected_cases_project': g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
       'num_affected_cases_all': g.case.length,
+      'num_affected_cases_by_project': g.case.reduce((acc, c) =>
+         ({
+          ...acc,
+          [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1
+         }), {}),
       'num_mutations': g.case.reduce((acc, c) =>  acc + c.ssm.length, 0),
     }
   ));
@@ -385,6 +392,7 @@ const Project = ({
                 {
                   key: 'num_affected_cases_all',
                   title: (<span># Affected Cases<br />in All Projects</span>),
+                  style: { minWidth: '210px' }
                 },
                 { key: 'num_mutations', title: '# Mutations'},
                 {
@@ -398,7 +406,14 @@ const Project = ({
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
                 survivalId: g.symbol,
                 num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
-                num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+                num_affected_cases_all:
+                  <TogglableUl
+                    items={[`${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+                      ...Object.keys(g.num_affected_cases_by_project)
+                        .map(k =>
+                          (`${k}: ${g.num_affected_cases_by_project[k]} / ${totalNumCases} (${(g.num_affected_cases_by_project[k]/totalNumCases * 100).toFixed(2)}%)`))
+                    ]}
+                  />
               }))}
             />
           }

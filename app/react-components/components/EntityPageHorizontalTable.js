@@ -26,7 +26,7 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
     <Column
       style={{
         flexWrap: 'wrap',
-        overflow: 'scroll',
+        overflow: 'auto',
         ...style,
       }}
     >

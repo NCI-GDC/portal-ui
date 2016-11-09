@@ -28,7 +28,7 @@ const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleSt
       className={className}
       style={{
         flexWrap: 'wrap',
-        overflow: 'scroll',
+        overflow: 'auto',
         ...style,
       }}
     >

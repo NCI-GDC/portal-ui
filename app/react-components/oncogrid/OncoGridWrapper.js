@@ -97,7 +97,7 @@ const OncoGridWrapper = ({
     id="oncogrid-container"
     style={{ ...styles.container, ...(gridState.isFullScreen && styles.fullscreen) }}
   >
-    <h5 style={{ textAlign: 'center' }}>OncoGrid - Top 50 Mutated Genes by High Impact Mutations</h5>
+    <h5 style={{ textAlign: 'center' }}>Top 50 Mutated Genes by High Impact Mutations</h5>
     {showOverlay &&
       <SelectOverlay
         options={trackOptions}

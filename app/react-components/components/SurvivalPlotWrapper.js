@@ -193,7 +193,7 @@ class SurvivalPlotWrapper extends Component {
             <ToolTip innerHTML="Reload SurvivalPlot">
               <Button
                 style={styles.button}
-                onClick={() => this.reset()}
+                onClick={() => this.setState(this.resetXDomain())}
               ><i className="fa fa-undo" /><div style={styles.hidden}>Reset</div></Button>
             </ToolTip>
           </span>

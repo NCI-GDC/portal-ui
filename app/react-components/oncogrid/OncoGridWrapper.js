@@ -234,7 +234,10 @@ const enhance = compose(
                 showOverlay: true,
                 trackOptions: tracks,
                 addTracksCallback: (selectedTracks) => {
-                  callback(selectedTracks);
+                  if(selectedTracks) {
+                    callback(selectedTracks);
+                  }
+
                   this.setState({
                     showOverlay: false,
                   });

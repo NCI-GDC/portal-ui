@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import { Row, Column } from '../uikit/Flex';
 import theme from '../theme';
 import Table, { Tr, Td, Th } from '../uikit/Table';
+import Tooltip from '../uikit/Tooltip';
 
 const colors = d3.scale.category20();
 
@@ -53,7 +54,20 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
       {data.length ? (
         <Table
           style={styles.table}
-          headings={headings.map(h => <Th key={h.key || h.value}>{h.title}</Th>)}
+          headings={headings.map(h => (
+            <Th key={h.key || h.value}>
+              {h.tooltip && 
+                <Tooltip innerHTML={h.tooltip}>
+                  {h.title}
+                </Tooltip>
+              }
+              {!h.tooltip &&
+                <span>
+                  {h.title}
+                </span>
+              }
+            </Th>
+          ))}
           body={
             <tbody>
               {data.map((d, i) => {

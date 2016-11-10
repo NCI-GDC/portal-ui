@@ -273,8 +273,8 @@ let Gene = (() => {
                   { key: 'project_id', title: 'Project ID' },
                   { key: 'disease_type', title: 'Disease Type' },
                   { key: 'site', title: 'Site' },
-                  { key: 'num_affected_cases', title: '# Affected Cases'},
-                  { key: 'num_mutations', title: '# Mutations'},
+                  { key: 'num_affected_cases', title: '# Affected Cases', tooltip: `Number of Cases where ${gene.symbol} contains SSM`},
+                  { key: 'num_mutations', title: '# Mutations', tooltip: `Number of SSM observed in ${gene.symbol}`},
                 ]}
                 data={sortedCancerDistData.map(
                   d => ({

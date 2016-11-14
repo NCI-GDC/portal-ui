@@ -7,7 +7,7 @@ import { compose, withState, pure } from 'recompose';
 // Custom
 import './style.css';
 let BarChart = (() => {
-  return ({ data, yAxis, styles, chart, setState, height: h, margin: m }) => {
+  return ({ data, title, yAxis, styles, chart, setState, height: h, margin: m }) => {
     const el = ReactFauxDOM.createElement('div')
 
     const margin = m || {top: 30, right: 50, bottom: 55, left: 30};
@@ -33,6 +33,16 @@ let BarChart = (() => {
       .attr("fill", "#fff")
       .attr("transform",
           "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.append("text")
+      .attr("y", 0 - margin.top)
+      .attr("x", width/2)
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .style("fontSize", "1rem")
+      .style("fontWeight", "300")
+      .attr("fill", (styles.yAxis || { textFill: 'black' }).textFill)
+      .text(title);
 
     const yG = svg.append("g")
       .call(d3.axisLeft(y)
@@ -72,12 +82,13 @@ let BarChart = (() => {
       xG.selectAll("line")
         .style("stroke", (styles.xAxis || {stroke: 'black'}).stroke);
 
-    const barG = svg.selectAll("g.chart")
+    const barGs = svg.selectAll("g.chart")
     .data(data)
     .enter().append("g")
     .attr("class", "bar-g");
 
-    barG.append("rect")
+    const drawBar = (barG) => {
+      barG.append("rect")
       .attr("class", "bar")
       .attr("fill", (styles.bars || { fill: 'steelblue'}).fill)
       .attr("width", x.bandwidth())
@@ -93,6 +104,17 @@ let BarChart = (() => {
         d3.select('.global-tooltip')
           .classed('active', false)
       });
+    };
+
+    barGs.each(function(d) {
+      if (d.href) {
+        const barA = d3.select(this).append('a')
+          .attr('xlink:href', d => d.href);
+          drawBar(barA);
+      } else {
+        drawBar(d3.select(this));
+      }
+    });
 
     return el.toReact();
   }

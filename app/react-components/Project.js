@@ -350,8 +350,12 @@ const Project = ({
                     data={mutatedGenesChartData.map(g => ({
                       label: g.symbol,
                       value: (g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100),
-                      tooltip: `<b>${g.symbol}</b><br /> ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`
+                      tooltip: `<b>${g.symbol}</b><br /> \
+                        ${g.num_affected_cases_project} Cases Affected in ${project.project_id}<br /> \
+                        ${g.num_affected_cases_project}/${numCasesAggByProject[project.project_id]} ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`,
+                      href: `genes/${g.gene_id}`
                     }))}
+                    title='Distribution of Most Frequently Mutated Genes'
                     yAxis={{ title: '% of Cases Affected' }}
                     height={240}
                     styles={{

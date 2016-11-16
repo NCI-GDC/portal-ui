@@ -173,6 +173,7 @@ let Mutation = (() => {
         '1': <PlusIcon />,
       };
 
+      console.log(mutation.consequence);
       const consequenceData = mutation.consequence.reduce((acc, c) => {
         const transcripts = [...new Set([...(acc[c.transcript.gene.gene_id] || { transcripts: [] }).transcripts, c.transcript.transcript_id])];
         let canonicalOnly = {};
@@ -182,6 +183,7 @@ let Mutation = (() => {
             coding_dna_change: c.transcript.annotation.hgvsc,
             consequence: c.transcript.consequence_type,
             strand: c.transcript.gene.gene_strand,
+            canonical_transcript_id: c.transcript.transcript_id,
           };
         }
         return {...acc,
@@ -194,6 +196,7 @@ let Mutation = (() => {
           }
         };
       }, {});
+      console.log(consequenceData);
 
       const consquenceDataMapped = Object.keys(consequenceData)
         .map(d => ({
@@ -201,7 +204,15 @@ let Mutation = (() => {
           gene_symbol: <a href={`/genes/${consequenceData[d].gene_id}`}>{consequenceData[d].gene_symbol}</a>,
           transcripts: (
             <ul style={{ listStyle: 'none', paddingLeft: 0, marginBottom: 0 }}>
-              {consequenceData[d].transcripts.map(t => <li key={t}>{t}</li>)}
+              {consequenceData[d].transcripts.map(t =>
+                  <li
+                    key={t}
+                    style={{fontWeight: t === consequenceData[d].canonical_transcript_id ? 'bold' : 'normal'}}
+                  >
+                    {t}
+                  </li>
+                )
+              }
             </ul>
           ),
           strand: consequenceData[d].strand && strandIconMap[consequenceData[d].strand.toString(10)],

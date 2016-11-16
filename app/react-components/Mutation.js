@@ -7,6 +7,9 @@ import EditIcon from 'react-icons/lib/fa/edit';
 import CartIcon from 'react-icons/lib/fa/shopping-cart';
 import MinusIcon from 'react-icons/lib/fa/minus';
 import PlusIcon from 'react-icons/lib/fa/plus';
+import TableIcon from 'react-icons/lib/fa/table';
+import BookIcon from 'react-icons/lib/fa/book';
+import ChartIcon from 'react-icons/lib/fa/bar-chart'
 import _ from 'lodash';
 
 // Custom
@@ -210,7 +213,7 @@ let Mutation = (() => {
           <Row spacing="2rem" id="summary">
             <EntityPageVerticalTable
               id="Summary"
-              title="Summary"
+              title={<span><TableIcon style={{ marginRight: '1rem' }}/>Summary</span>}
               thToTd={[
                 { th: 'ID', td: mutation.ssm_id },
                 { th: 'DNA change', td: `${mutation.chromosome}:g.${mutation.start_position}${mutation.reference_allele}>${mutation.tumor_allele}`},
@@ -227,7 +230,7 @@ let Mutation = (() => {
             />
             {!!Object.keys(externalDbIds).length &&
               <EntityPageVerticalTable
-                title="External References"
+                title={<span><BookIcon style={{ marginRight: '1rem' }}/> External References</span>}
                 thToTd={
                   Object.keys(externalDbIds).map(db => ({
                     th: db.replace(/_/g, ' '),
@@ -247,6 +250,7 @@ let Mutation = (() => {
           </Row>
           <Column style={styles.card}>
             <h1 id="consequences" style={{...styles.heading, padding: `1rem` }}>
+              <TableIcon style={{ marginRight: '1rem' }}/>
               Consequences
             </h1>
             <Row>
@@ -266,7 +270,7 @@ let Mutation = (() => {
           </Column>
           <Column style={{...styles.card, marginTop: `2rem` }}>
             <h1 id="cancer-distribution" style={{...styles.heading, padding: `1rem` }}>
-              <i className="fa fa-bar-chart-o" style={{ marginRight: `1rem` }} />
+              <ChartIcon style={{ marginRight: '1rem' }}/>
               Cancer Distribution
             </h1>
             <h5 style={{textTransform: 'uppercase', padding: `0 2rem`}}>

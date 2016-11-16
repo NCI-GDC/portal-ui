@@ -8,6 +8,9 @@ import CartIcon from 'react-icons/lib/fa/shopping-cart';
 import SearchIcon from 'react-icons/lib/fa/search';
 import MinusIcon from 'react-icons/lib/fa/minus';
 import PlusIcon from 'react-icons/lib/fa/plus';
+import TableIcon from 'react-icons/lib/fa/table';
+import BookIcon from 'react-icons/lib/fa/book';
+import ChartIcon from 'react-icons/lib/fa/bar-chart'
 import _ from 'lodash';
 
 // Custom
@@ -196,7 +199,7 @@ let Gene = (() => {
           <Row spacing="2rem">
             <EntityPageVerticalTable
               id="summary"
-              title={<span><i className="fa fa-table" /> Summary</span>}
+              title={<span><TableIcon style={{ marginRight: '1rem' }}/>Summary</span>}
               thToTd={[
                 { th: 'Symbol', td: gene.symbol },
                 { th: 'Name', td: gene.name },
@@ -229,7 +232,7 @@ let Gene = (() => {
               }}
             />
             <EntityPageVerticalTable
-              title={<span><i className="fa fa-book" /> External References</span>}
+              title={<span><BookIcon style={{ marginRight: '1rem' }}/> External References</span>}
               thToTd={
                 Object.keys(gene.external_db_ids || {}).map(db => ({
                   th: db.replace(/_/g, ' '),
@@ -245,7 +248,7 @@ let Gene = (() => {
 
           <Column style={styles.card}>
             <h1 style={{...styles.heading, padding: `1rem` }} id="cancer-distribution">
-              <i className="fa fa-bar-chart-o" style={{ marginRight: `1rem` }} />
+              <ChartIcon style={{ marginRight: '1rem' }}/>
               Cancer Distribution
             </h1>
             <div style={{ padding: `0 1rem` }}>
@@ -308,7 +311,7 @@ let Gene = (() => {
 
           <Column style={{...styles.card, marginTop: `2rem`}}>
             <h1 style={{...styles.heading, padding: `1rem` }} id="frequent-mutations">
-              <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
+              <ChartIcon style={{ marginRight: '1rem' }}/>
               Most Frequent Mutations
             </h1>
 

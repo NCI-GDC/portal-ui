@@ -133,7 +133,7 @@ module ngApp.mutations.controllers {
         React.createElement(ReactComponents.SideNavLayout, {
             links: [
               { id: 'summary', title: 'Summary', icon: 'table' },
-              { icon: 'pencil', id: 'consequences', title: 'Consequences' },
+              { icon: 'table', id: 'consequences', title: 'Consequences' },
               { icon: 'bar-chart-o', id: 'cancer-distribution', title: 'Cancer Distribution' },
               {
                 icon: React.createElement('img', {

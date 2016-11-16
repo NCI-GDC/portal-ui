@@ -6,6 +6,8 @@ import CaseIcon from 'react-icons/lib/fa/user';
 import EditIcon from 'react-icons/lib/fa/edit';
 import CartIcon from 'react-icons/lib/fa/shopping-cart';
 import SearchIcon from 'react-icons/lib/fa/search';
+import MinusIcon from 'react-icons/lib/fa/minus';
+import PlusIcon from 'react-icons/lib/fa/plus';
 import _ from 'lodash';
 
 // Custom
@@ -82,6 +84,11 @@ let Gene = (() => {
     card: {
       backgroundColor: `white`,
     },
+  };
+
+  const strandIconMap = {
+    '-1': <MinusIcon />,
+    '1': <PlusIcon />,
   };
 
   return class Gene extends Component {
@@ -205,7 +212,7 @@ let Gene = (() => {
                     `chr${gene.gene_chromosome}:${gene.gene_start}-${gene.gene_end}
                     (${(gene.case||[{ssm: [{ncbi_build: '--'}]}])[0].ssm[0].ncbi_build})`
                 },
-                { th: 'Strand', td: gene.gene_strand},
+                { th: 'Strand', td: gene.gene_strand ? strandIconMap[gene.gene_strand.toString(10)] : '--'},
                 { th: 'Description',
                   collapsibleTd: gene.description,
                   style: {

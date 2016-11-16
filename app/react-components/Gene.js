@@ -252,7 +252,10 @@ let Gene = (() => {
                   data={sortedCancerDistData.map(d => ({
                     label: d.project_id,
                     value: (d.freq * 100),
-                    tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`
+                    href: `projects/${d.project_id}`,
+                    tooltip: `DNA Change<br />\
+                      ${d.cases.length} Cases Affected in <b>${d.project_id}</b><br />\
+                      ${d.cases.length}/${allCasesAggByProject[d.project_id]}&nbsp;(${(d.freq * 100).toFixed(2)}%}`
                     }))
                   }
                   yAxis={{ title: '% of Cases Affected' }}

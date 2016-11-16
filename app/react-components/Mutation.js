@@ -209,7 +209,12 @@ let Mutation = (() => {
                     key={t}
                     style={{fontWeight: t === consequenceData[d].canonical_transcript_id ? 'bold' : 'normal'}}
                   >
-                    {t}
+                    <ExternalLink
+                      key={t}
+                      style={{ paddingRight: '0.5em' }}
+                      href={externalReferenceLinks.ensembl(t)}>
+                      {t}
+                    </ExternalLink>
                   </li>
                 )
               }

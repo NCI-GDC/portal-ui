@@ -28,7 +28,7 @@ module ngApp.core.directives {
 
         let openLogin = () => {
           if (navigator.cookieEnabled) {
-            const returningPath = $window.location.pathname + '?' + (+new Date);
+            const returningPath = $window.location.pathname + '?t=' + (+new Date);
             const redirectUrl = config.auth +
               (p => p ? ('/' + p) : '')($scope.redirect) +
               '?next=' +

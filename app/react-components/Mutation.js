@@ -21,6 +21,7 @@ import { ExternalLink } from './uikit/Links';
 import externalReferenceLinks from './utils/externalReferenceLinks';
 import BarChart from './charts/BarChart';
 import theme from './theme';
+import { toSingle } from './utils/aaNotationer';
 
 let Mutation = (() => {
   const styles = {
@@ -175,7 +176,7 @@ let Mutation = (() => {
         let canonicalOnly = {};
         if (c.transcript.is_canonical) {
           canonicalOnly = {
-            aa_change: c.transcript.aa_change,
+            aa_change: toSingle(c.transcript.aa_change),
             coding_dna_change: c.transcript.annotation.hgvsc,
             consequence: c.transcript.consequence_type,
             strand: c.transcript.gene.gene_strand,

@@ -9,9 +9,10 @@ import { exitFullScreen, enterFullScreen } from '../utils/fullscreen';
 import { StepLegend, SwatchLegend } from '../components/Legends';
 import getQueries from './getQueries';
 import SelectOverlay from './SelectOverlay';
-import downloadSvg from '../utils/download-svg';
 import oncoGridParams from './oncoGridParams';
 import { gridReducer, initialGridState } from './gridReducer';
+import DownloadVisualizationButton from '../components/DownloadVisualizationButton'
+import ToolTip from '../uikit/Tooltip';
 
 const GRID_ID = 'oncogrid-div';
 
@@ -40,7 +41,7 @@ const styles = {
     color: '#333',
     backgroundColor: '#fff',
     borderColor: '#ccc',
-    marginRight: 12,
+    margin: '0 12px 12px 0',
     minWidth: 46,
     minHeight: 34,
     display: 'inline-flex',
@@ -60,7 +61,7 @@ const styles = {
     width: 0,
     height: 0,
     overflow: 'hidden',
-  }
+  },
 };
 
 const clickHandlers = {
@@ -92,6 +93,7 @@ const OncoGridWrapper = ({
   trackOptions = [],
   addTracksCallback,
   grid,
+  gridData,
 }) => (
   <div
     id="oncogrid-container"
@@ -110,66 +112,61 @@ const OncoGridWrapper = ({
           {gridState.heatMapMode ? <StepLegend rightLabel="More Mutations" /> : <SwatchLegend colorMap={colorMap} />}
         </div>
         <span>
-          <Button
-            style={styles.button}
-            onClick={
-              () => {
-                downloadSvg({
-                  svg: document.querySelector(`#${GRID_ID} svg`),
-                  stylePrefix: `#${GRID_ID}`,
-                  fileName: 'grid.svg',
-                });
-              }
-            }
-          >
-            <i className="fa fa-download" /><span style={styles.hidden}>download</span>
-          </Button>
-          <Button
-            style={styles.button}
-            onClick={() => dispatch({ type: 'reload', grid })}
-          >
-            <i className="fa fa-undo" /><span style={styles.hidden}>reload</span>
-          </Button>
-          <Button
-            style={styles.button}
-            onClick={() => grid.cluster()}
-          >
-            <i className="fa fa-sort-amount-desc" /><span style={styles.hidden}>sort</span>
-          </Button>
-          <Button
-            style={{ ...styles.button, ...(gridState.heatMapMode && styles.buttonActive) }}
-            onClick={() => dispatch({ type: 'toggleHeatmap', grid })}
-          >
-            <i className="fa fa-fire" /><span style={styles.hidden}>toggle heatmap</span>
-          </Button>
-          <Button
-            style={{ ...styles.button, ...(gridState.gridActive && styles.buttonActive) }}
-            onClick={() => dispatch({ type: 'toggleGridLines', grid })}
-          >
-            <i className="fa fa-th" /><span style={styles.hidden}>toggle grid lines</span>
-          </Button>
-          <Button
-            style={{ ...styles.button, ...(gridState.crosshairMode && styles.buttonActive) }}
-            onClick={() => dispatch({ type: 'toggleCrosshair', grid })}
-          >
-            <i className="fa fa-crosshairs" /><span style={styles.hidden}>toggle crosshair mode</span>
-          </Button>
-          <Button
-            style={{ ...styles.button, ...(gridState.isFullScreen && styles.buttonActive) }}
-            onClick={() => {
-              if (gridState.isFullScreen) {
-                exitFullScreen();
-                dispatch({ type: 'reload', grid });
-              } else {
-                enterFullScreen(document.querySelector('#oncogrid-container'));
-                grid.resize(screen.width - 400, screen.height - 400, true);
-              }
+          <ToolTip innerHTML="Download OncoGrid data or image">
+            <DownloadVisualizationButton 
+              svg={`#${GRID_ID} svg`}
+              data={gridData}
+              stylePrefix={`#${GRID_ID}`}
+              slug="oncogrid"
+              noText={true}
+            />
+          </ToolTip>
+          <ToolTip innerHTML="Reload grid">
+            <Button
+              style={styles.button}
+              onClick={() => dispatch({ type: 'reload', grid })}
+            ><i className="fa fa-undo" /><span style={styles.hidden}>Reload</span></Button>
+          </ToolTip>
+          <ToolTip innerHTML="Cluster Data">
+            <Button
+              style={styles.button}
+              onClick={() => grid.cluster()}
+            ><i className="fa fa-sort-amount-desc" /><span style={styles.hidden}>Cluster</span></Button>
+          </ToolTip>
+          <ToolTip innerHTML="Toggle heatmap view">
+            <Button
+              style={{ ...styles.button, ...(gridState.heatMapMode && styles.buttonActive) }}
+              onClick={() => dispatch({ type: 'toggleHeatmap', grid })}
+            ><i className="fa fa-fire" /><span style={styles.hidden}>Heatmap</span></Button>
+          </ToolTip>
+          <ToolTip innerHTML="Toggle gridlines">
+            <Button
+              style={{ ...styles.button, ...(gridState.gridActive && styles.buttonActive) }}
+              onClick={() => dispatch({ type: 'toggleGridLines', grid })}
+            ><i className="fa fa-th" /><span style={styles.hidden}>Lines</span></Button>
+          </ToolTip>
+          <ToolTip innerHTML="Toggle crosshairs">
+            <Button
+              style={{ ...styles.button, ...(gridState.crosshairMode && styles.buttonActive) }}
+              onClick={() => dispatch({ type: 'toggleCrosshair', grid })}
+            ><i className="fa fa-crosshairs" /><span style={styles.hidden}>Crosshair</span></Button>
+          </ToolTip>
+          <ToolTip innerHTML="Fullscreen">
+            <Button
+              style={{ ...styles.button, ...(gridState.isFullScreen && styles.buttonActive) }}
+              onClick={() => {
+                if (gridState.isFullScreen) {
+                  exitFullScreen();
+                  dispatch({ type: 'reload', grid });
+                } else {
+                  enterFullScreen(document.querySelector('#oncogrid-container'));
+                  grid.resize(screen.width - 400, screen.height - 400, true);
+                }
 
-              dispatch({ type: 'updateFullScreen', grid });
-            }}
-          >
-            <i className="fa fa-arrows-h" /><span style={styles.hidden}>toggle fullscreen</span>
-          </Button>
+                dispatch({ type: 'updateFullScreen', grid });
+              }}
+            ><i className="fa fa-arrows-h" /><span style={styles.hidden}>Fullscreen</span></Button>
+          </ToolTip>
 
           {gridState.crosshairMode &&
             <div style={{ fontSize: '1.1rem', verticalAlign: 'top' }}>
@@ -252,6 +249,11 @@ const enhance = compose(
 
             this.setState({
               grid,
+              gridData: {
+                cases: gridParams.donors,
+                genes: gridParams.genes,
+                observations: gridParams.observations,
+              },
               gridHeight: height,
               gridPadding: padding,
               gridContainer: container,

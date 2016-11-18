@@ -11,6 +11,9 @@ const styles = {
     color: '#fff',
     backgroundColor: '#0d95a1',
     marginLeft: '0.2rem',
+    ':hover': {
+      backgroundColor: '#27AFBB',
+    }
   },
 };
 

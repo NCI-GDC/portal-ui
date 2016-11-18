@@ -1,5 +1,6 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
+import _ from 'lodash';
 
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
@@ -8,7 +9,7 @@ import theme from '../theme';
 import EntityPageHorizontalTable from './EntityPageHorizontalTable';
 import SurvivalPlotWrapper from './SurvivalPlotWrapper';
 import Button from '../uikit/Button';
-import downloadSvg from '../utils/download-svg';
+import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
 
 const styles = {
   button: {
@@ -43,19 +44,13 @@ let FrequentMutations = ({
         <Row style={{paddingBottom: '2.5rem'}}>
           <span>
             <div style={{textAlign: 'right', marginRight: 50, marginLeft: 30}}>
-              <Button
-                style={styles.button}
-                onClick={
-                  () => {
-                    downloadSvg({
-                      svg: document.querySelector('#mutation-chart svg'),
-                      fileName: 'bar-chart.svg',
-                    });
-                  }
-                }
-              >
-                <i className="fa fa-download" /><span style={styles.hidden}>reload</span>
-              </Button>
+              <DownloadVisualizationButton
+                svg="#mutation-chart svg"
+                data={frequentMutations.map(fm => _.omit(fm, 'consequence_type'))}
+                slug="bar-chart"
+                noText={true}
+                tooltipHTML="Download image or data"
+              />
             </div>
 
             <div id="mutation-chart">

@@ -17,12 +17,13 @@ import BarChart from './charts/BarChart';
 import theme from './theme';
 import OncoGridWrapper from './oncogrid/OncoGridWrapper';
 import SurvivalPlotWrapper from './components/SurvivalPlotWrapper';
-import downloadSvg from './utils/download-svg';
 import TogglableUl from './uikit/TogglableUl';
 import FileIcon from './theme/icons/File';
 import CaseIcon from './theme/icons/Case';
 import EditIcon from './theme/icons/Edit';
 import Button from './uikit/Button';
+import DownloadVisualizationButton from './components/DownloadVisualizationButton';
+import ToolTip from './uikit/Tooltip';
 
 const SPACING = '2rem';
 const HALF_SPACING = '1rem';
@@ -326,20 +327,15 @@ const Project = ({
         <Row style={{paddingBottom: '2.5rem'}}>
           <span>
             <div style={{textAlign: 'right', marginRight: 50, marginLeft: 30}}>
-              <Button
-                style={styles.button}
-                disabled={!mutatedGenesChartData.length}
-                onClick={
-                  () => {
-                    downloadSvg({
-                      svg: document.querySelector('#mutated-genes-chart svg'),
-                      fileName: 'bar-chart.svg',
-                    });
-                  }
-                }
-              >
-                <i className="fa fa-download" /><span style={styles.hidden}>reload</span>
-              </Button>
+              <ToolTip innerHTML="Download image or data">
+                <DownloadVisualizationButton
+                  disabled={!mutatedGenesChartData.length}
+                  svg="#mutated-genes-chart svg"
+                  data={mutatedGenesChartData}
+                  slug="bar-chart"
+                  noText={true}
+                />
+              </ToolTip>
             </div>
 
             {!!mutatedGenesChartData.length &&

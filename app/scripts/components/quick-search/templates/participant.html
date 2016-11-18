@@ -9,6 +9,10 @@
       <th scope="row" data-translate>Case UUID</th>
       <td data-ng-bind-html="selectedItem.case_id | highlight:searchQuery"></td>
     </tr>
+    <tr data-ng-if="selectedItem.submitter_id">
+      <th scope="row" data-translate>Case Submitter ID</th>
+      <td data-ng-bind-html="selectedItem.submitter_id | highlight:searchQuery"></td>
+    </tr>
     <tr data-ng-if="selectedItem.project.project_id">
       <th scope="row" data-translate>Project</th>
       <td>{{ selectedItem.project.name }}</td>
@@ -46,7 +50,7 @@
       <td data-ng-bind-html="selectedItem.bioSpecimen.aliquot_id | highlight:searchQuery"></td>
     </tr>
     <tr data-ng-if="selectedItem.bioSpecimen && selectedItem.bioSpecimen.submitter_id">
-      <th scope="row" data-translate>Submitter ID</th>
+      <th scope="row" data-translate>Biospecimen Submitter ID</th>
       <td data-ng-bind-html="selectedItem.bioSpecimen.submitter_id | highlight:searchQuery"></td>
     </tr>
   </tbody>

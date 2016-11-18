@@ -13,22 +13,21 @@
   },
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
-    "filesize": "3.3.0",
-    "jsurl": "0.1.4",
     "react": "15.3.2",
-    "react-dom": "15.3.2",
-    "react-relay": "0.9.3",
-    "react-router": "4.0.0-alpha.4",
-    "webpack": "2.1.0-beta.13"
+    "react-relay": "0.9.3"
   },
   "devDependencies": {
+    "filesize": "3.3.0",
+    "jsurl": "0.1.4",
+    "react-dom": "15.3.2",
+    "react-router": "4.0.0-alpha.4",
     "@knit/eslint-config-socks-react": "^0.0.7",
-    "@knit/knit": "^0.0.7",
-    "@knit/mittens": "^0.0.9"
+    "@knit/knit": "^0.0.23"
   },
   "scripts": {
-    "start": "mittens play",
-    "test": "mittens test -- --watch"
+    "knit": "knit",
+    "start": "knit dev server",
+    "test": "knit dev test -- --watch"
   },
   "knit": {
     "needle": {

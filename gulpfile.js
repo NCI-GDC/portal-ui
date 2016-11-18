@@ -13,6 +13,10 @@ var mkdirp = require("mkdirp");
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var rename = require('gulp-rename');
+var jest = require('jest-cli');
+var jestConfig = {
+    rootDir: 'app/react-components'
+};
 
 var env = {
   api: process.env.GDC_API || "http://localhost:5000",
@@ -275,8 +279,12 @@ gulp.task('html', ['js:bower', 'ng:templates'], function () {
 });
 
 // <tests>
-gulp.task('test', ['clean', 'ts:compile', 'ng:templates'], function () {
+gulp.task('test', ['clean', 'ts:compile', 'ng:templates', 'jest'], function () {
   runSequence('karma:once')
+});
+
+gulp.task('jest', function() {
+  jest.runCLI({ config : jestConfig }, ".");
 });
 
 gulp.task('plato', function () {
@@ -415,7 +423,7 @@ gulp.task('serve:web', function (cb) {
     gulp.watch(['app/scripts/**/*.ts'], ['ts:compile', reload]);
     gulp.watch(['app/scripts/**/*.html'], ['ng:templates', reload]);
     gulp.watch(['app/images/**/*'], ['images', reload]);
-    gulp.watch(['app/react-components/**/*.js'], ['babel', reload]);
+    gulp.watch(['app/react-components/**/*.js'], ['babel', 'jest', reload]);
   }
 });
 

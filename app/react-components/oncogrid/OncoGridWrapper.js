@@ -3,7 +3,7 @@ import { lifecycle, compose, withReducer } from 'recompose';
 import OncoGrid from 'oncogrid';
 import _ from 'lodash';
 
-import Button from '../Button';
+import Button from '../uikit/Button';
 import Row from '../uikit/Flex/Row';
 import { exitFullScreen, enterFullScreen } from '../utils/fullscreen';
 import { StepLegend, SwatchLegend } from '../components/Legends';

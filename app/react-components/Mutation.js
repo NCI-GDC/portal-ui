@@ -5,7 +5,7 @@ import _ from 'lodash';
 // Custom
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
-import Button from './Button';
+import Button from './uikit/Button';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import ProteinLolliplotComponent from './components/ProteinLolliplot';

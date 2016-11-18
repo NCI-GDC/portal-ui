@@ -5,9 +5,9 @@ import { renderPlot } from '@oncojs/survivalplot';
 
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
-import Button from '../Button';
 import downloadSvg from '../utils/download-svg';
 import { isFullScreen } from '../utils/fullscreen';
+import Button from '../uikit/Button';
 
 const colors = scaleOrdinal(schemeCategory10);
 

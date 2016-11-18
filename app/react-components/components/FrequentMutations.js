@@ -7,7 +7,7 @@ import BarChart from '../charts/BarChart';
 import theme from '../theme';
 import EntityPageHorizontalTable from './EntityPageHorizontalTable';
 import SurvivalPlotWrapper from './SurvivalPlotWrapper';
-import Button from '../Button';
+import Button from '../uikit/Button';
 import downloadSvg from '../utils/download-svg';
 
 const styles = {

@@ -17,12 +17,12 @@ import BarChart from './charts/BarChart';
 import theme from './theme';
 import OncoGridWrapper from './oncogrid/OncoGridWrapper';
 import SurvivalPlotWrapper from './components/SurvivalPlotWrapper';
-import Button from './Button';
 import downloadSvg from './utils/download-svg';
 import TogglableUl from './uikit/TogglableUl';
 import FileIcon from './theme/icons/File';
 import CaseIcon from './theme/icons/Case';
 import EditIcon from './theme/icons/Edit';
+import Button from './uikit/Button';
 
 const SPACING = '2rem';
 const HALF_SPACING = '1rem';

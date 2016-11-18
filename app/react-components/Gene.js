@@ -6,7 +6,7 @@ import _ from 'lodash';
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
 import withDropdown from './uikit/withDropdown';
-import Button from './Button';
+import Button from './uikit/Button';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';

@@ -3,7 +3,7 @@ import React from 'react';
 import { compose, withState } from 'recompose';
 
 import download from '../utils/download';
-import Button from '../Button';
+import Button from '../uikit/Button';
 
 const styles = {
   buttons: {

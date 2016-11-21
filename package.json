@@ -95,6 +95,7 @@
   "dependencies": {
     "@oncojs/sapien": "^0.3.1",
     "@oncojs/survivalplot": "^0.3.0",
+    "babel-polyfill": "^6.16.0",
     "d3": "^4.2.7",
     "fela": "3.0.1",
     "filesaver.js": "^0.2.0",
@@ -111,6 +112,7 @@
     "react-icons": "^2.2.1",
     "react-measure": "^1.3.1",
     "recompose": "^0.20.2",
-    "save-svg-as-png": "git+http://git@github.com/Jephuff/saveSvgAsPng.git#gh-pages"
+    "save-svg-as-png": "git+http://git@github.com/Jephuff/saveSvgAsPng.git#gh-pages",
+    "whatwg-fetch": "^1.0.0"
   }
 }

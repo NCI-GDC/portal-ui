@@ -23,6 +23,7 @@ import TogglableUl from './uikit/TogglableUl';
 import FileIcon from './theme/icons/File';
 import CaseIcon from './theme/icons/Case';
 import EditIcon from './theme/icons/Edit';
+import SurvivalIcon from './theme/icons/SurvivalIcon';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
 import Tooltip from './uikit/Tooltip';
 
@@ -74,6 +75,12 @@ const styles = {
   card: {
     backgroundColor: `white`,
   },
+  graphTitle: {
+    textAlign: 'center',
+    color: theme.greyScale3,
+    fontSize: '1rem',
+    fontWeight: 300,
+  }
 };
 
 function buildFilters(data) {
@@ -345,7 +352,7 @@ const Project = ({
                 tooltipHTML="Download image or data"
               />
             </div>
-
+            <div style={styles.graphTitle}>Distribution of Most Frequently Mutated Genes</div>
             {!!mutatedGenesChartData.length &&
               <div>
                 <Row style={{ padding: `0 2rem` }}>
@@ -358,7 +365,6 @@ const Project = ({
                         ${g.num_affected_cases_project}/${numCasesAggByProject[project.project_id]} ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`,
                       href: `genes/${g.gene_id}`
                     }))}
-                    title='Distribution of Most Frequently Mutated Genes'
                     yAxis={{ title: '% of Cases Affected' }}
                     height={240}
                     styles={{
@@ -403,9 +409,10 @@ const Project = ({
                 },
                 { key: 'num_mutations', title: '# Mutations'},
                 {
-                  title: <i className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></i>,
+                  title: 'Survival Analysis',
                   onClick: (d) => setSurvivalGene(survivalGene && d.survivalId === survivalGene.survivalId ? null : d),
-                  key: 'survivalAnalysis'
+                  key: 'survivalAnalysis',
+                  style: { width: 100 }
                 }
               ]}
               data={mutatedGenesChartData.map(g => ({
@@ -421,8 +428,8 @@ const Project = ({
                         .map(k =>
                           (`${k}: ${g.num_affected_cases_by_project[k]} (${(g.num_affected_cases_by_project[k]/totalNumCases * 100).toFixed(2)}%)`))
                     ]}
-                  />
-                survivalAnalysis: <i className="fa fa-bar-chart-o" style={{ color: colors(survivalGene && survivalGene.survivalId === g.symbol ? 1 : 0) }}/>,
+                  />,
+                survivalAnalysis: <div style={{ textAlign: 'center' }} ><SurvivalIcon style={{ color: colors(survivalGene && survivalGene.survivalId === g.symbol ? 1 : 0) }} /></div>,
               }))}
             />
           }

@@ -11,6 +11,7 @@ import EntityPageHorizontalTable from './EntityPageHorizontalTable';
 import SurvivalPlotWrapper from './SurvivalPlotWrapper';
 import Button from '../uikit/Button';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
+import SurvivalIcon from '../theme/icons/SurvivalIcon';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -28,6 +29,12 @@ const styles = {
     width: 0,
     height: 0,
     overflow: 'hidden',
+  },
+  graphTitle: {
+    textAlign: 'center',
+    color: theme.greyScale3,
+    fontSize: '1rem',
+    fontWeight: 300,
   },
 };
 
@@ -55,7 +62,7 @@ let FrequentMutations = ({
                 tooltipHTML="Download image or data"
               />
             </div>
-
+            <div style={styles.graphTitle}>Distribution of Most Frequent Mutations</div>
             <div id="mutation-chart">
               <BarChart
                 data={frequentMutations.map(x => ({
@@ -110,9 +117,10 @@ let FrequentMutations = ({
                 : <span># Affected Cases</span>,
             },
             {
-              title: <i className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></i>,
               key: 'survivalAnalysis',
+              title: 'Survival Analysis',
               onClick: (d) => setSurvivalMutation(survivalMutation && d.survivalId === survivalMutation.survivalId ? null : d),
+              style: { width: 100 },
             },
           ]}
           data={frequentMutations.map(x => ({

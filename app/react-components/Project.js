@@ -2,6 +2,7 @@
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import _ from 'lodash';
+import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 // Custom
 import Column from './uikit/Flex/Column';
@@ -24,6 +25,8 @@ import CaseIcon from './theme/icons/Case';
 import EditIcon from './theme/icons/Edit';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
 import Tooltip from './uikit/Tooltip';
+
+const colors = scaleOrdinal(schemeCategory10);
 
 const SPACING = '2rem';
 
@@ -401,8 +404,8 @@ const Project = ({
                 { key: 'num_mutations', title: '# Mutations'},
                 {
                   title: <i className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></i>,
-                  onClick: (d) => setSurvivalGene(d === survivalGene ? null : d),
-                  value: <i className="fa fa-bar-chart-o" />,
+                  onClick: (d) => setSurvivalGene(survivalGene && d.survivalId === survivalGene.survivalId ? null : d),
+                  key: 'survivalAnalysis'
                 }
               ]}
               data={mutatedGenesChartData.map(g => ({
@@ -419,6 +422,7 @@ const Project = ({
                           (`${k}: ${g.num_affected_cases_by_project[k]} (${(g.num_affected_cases_by_project[k]/totalNumCases * 100).toFixed(2)}%)`))
                     ]}
                   />
+                survivalAnalysis: <i className="fa fa-bar-chart-o" style={{ color: colors(survivalGene && survivalGene.survivalId === g.symbol ? 1 : 0) }}/>,
               }))}
             />
           }

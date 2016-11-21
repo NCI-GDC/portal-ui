@@ -13,16 +13,16 @@
   },
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
-    "react": "15.3.2",
+    "filesize": "3.3.0",
+    "jsurl": "0.1.4",
+    "react-router": "4.0.0-alpha.5",
+    "react": "^15.4.0",
     "react-relay": "0.9.3"
   },
   "devDependencies": {
-    "filesize": "3.3.0",
-    "jsurl": "0.1.4",
-    "react-dom": "15.3.2",
-    "react-router": "4.0.0-alpha.4",
-    "@knit/eslint-config-socks-react": "^0.0.7",
-    "@knit/knit": "^0.0.23"
+    "@knit/eslint-config-socks-react": "^0.0.23",
+    "@knit/knit": "^0.0.24",
+    "react-dom": "^15.4.0"
   },
   "scripts": {
     "knit": "knit",

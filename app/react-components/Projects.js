@@ -39,13 +39,17 @@ let Projects = (() => {
       total: acc.total + 1,
       } : acc), { total: 0 })
     })).sort((a, b) => b.total - a.total);
-
+    const uniqueCases = genes.reduce((acc, g) => [...new Set([...acc, ...g.case.map(c => c.case_id)])], []);
     return  (
       <Row>
         <Column style={{width: '70%', paddingRight: '10px', minWidth: '450px'}}>
           <h4 style={{alignSelf: 'center'}}>Top Mutated Genes in Selected Projects</h4>
           { !genesIsFetching ?
-            (<Measure>
+            ( [
+              <h5 style={{alignSelf: 'center'}} key='bar-subtitle'>
+                {uniqueCases.length} Unique SSM-tested Cases
+              </h5>,
+              <Measure key='bar-chart'>
               {({width}) => (
               <StackedBarChart
                 width={width}
@@ -57,7 +61,7 @@ let Projects = (() => {
                     yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
                 }}
               />)}
-              </Measure>) : (
+              </Measure>]) : (
                 <Row style={{justifyContent: 'center', paddingTop: '2em', paddingBottom: '2em'}}>
                   <SpinnerParticle />
                 </Row>
@@ -67,8 +71,12 @@ let Projects = (() => {
         <Column style={{width: '30%', minWidth: '200px'}}>
           <h4 style={{alignSelf: 'center'}}>Case Distribution per Project</h4>
           { !projectsIsFetching ?
-            (<PieChart
-              key='chart'
+            ([
+              <h5 style={{alignSelf: 'center'}} key='pie-subtitle'>
+                {projects.reduce((sum, p) => sum + p.summary.case_count, 0)} Cases across {projects.length} Projects
+              </h5>,
+              <PieChart
+              key='pie-chart'
               data={projects.map(p => ({
                 ...p,
                 tooltip: `<b>${p.project_id}</b><br/>${p.summary.case_count} cases`,
@@ -85,7 +93,7 @@ let Projects = (() => {
               tooltipKey='tooltip'
               height={250}
               width={250}
-            />) : (
+            />]) : (
               <Row style={{justifyContent: 'center', paddingTop: '2em', paddingBottom: '2em'}}>
                 <SpinnerParticle />
               </Row>

@@ -178,10 +178,7 @@ class SurvivalPlotWrapper extends Component {
     const { legend, pValue, palette } = this.state;
 
     return (
-      <div
-        className="survival-plot"
-        ref={(el) => { this.container = el; }}
-      >
+      <div className="survival-plot">
         <Column id="survival-plot">
           <span style={{ textAlign: 'right' }}>
             <Button
@@ -189,7 +186,7 @@ class SurvivalPlotWrapper extends Component {
               onClick={
                 () => {
                   downloadSvg({
-                    svg: this.container.querySelector('svg'),
+                    svg: this.survivalContainer.querySelector('svg'),
                     stylePrefix: '.survival-plot',
                     fileName: 'survival-plot.svg',
                   });

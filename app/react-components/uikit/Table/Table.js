@@ -14,12 +14,15 @@ const styles = {
   },
 };
 
-const Table = ({ style, body, headings, ...props }) => (
+const Table = ({ style, body, headings, subheadings, ...props }) => (
   <table style={{ ...styles.table, ...style }} {...props}>
     <thead>
       <Tr>
         {headings}
       </Tr>
+      {subheadings && <Tr>
+        {subheadings}
+      </Tr>}
     </thead>
     {body}
   </table>

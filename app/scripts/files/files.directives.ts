@@ -132,7 +132,7 @@ module ngApp.files.directives {
           }, $scope.filename ? {filename: $scope.filename} : {});
 
           const checkProgress = $scope.download(params, url, () => $element, 'POST');
-          checkProgress(inProgress, done, true);
+          checkProgress(inProgress, done, false);
         };
         $scope.active = false;
       }

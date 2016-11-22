@@ -430,7 +430,6 @@ module ngApp.projects.controllers {
             links: [
               { icon: 'table', title: 'Summary', id: 'summary' },
               { icon: 'bar-chart-o', title: 'Mutated Genes', id: 'mutated-genes' },
-              { icon: 'line-chart', title: 'Survival Plot', id: 'survival-plot' },
               { icon: 'th', title: 'OncoGrid', id: 'oncogrid' },
               { icon: 'bar-chart-o', title: 'Frequent Mutations', id: 'frequent-mutations' },
             ],

@@ -313,12 +313,12 @@ const Project = ({
       </Row>
 
       <Column style={styles.card}>
+        <h1 style={{ ...styles.heading, padding: `1rem` }} id="mutated-genes">
+          <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
+          Most Frequently Mutated Genes
+        </h1>
         <Row style={{paddingBottom: '2.5rem'}}>
           <span>
-            <h1 style={{ ...styles.heading, padding: `1rem` }} id="mutated-genes">
-              <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
-              Most Frequently Mutated Genes
-            </h1>
             <div style={{textAlign: 'right', marginRight: 50, marginLeft: 30}}>
               <Button
                 style={styles.button}
@@ -396,7 +396,7 @@ const Project = ({
               data={mutatedGenesChartData.map(g => ({
                 ...g,
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
-                geneSymbol: g.symbol,
+                survivalId: g.symbol,
                 num_affected_cases_project: `${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
                 num_affected_cases_all: `${g.num_affected_cases_all} / ${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
               }))}
@@ -419,12 +419,13 @@ const Project = ({
           <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
           Most Frequent Mutations
         </h1>
-
         <FrequentMutations
           frequentMutations={frequentMutations}
           numCasesAggByProject={numCasesAggByProject}
           totalNumCases={totalNumCases}
           project={$scope.project.project_id}
+          survivalData={survivalData}
+          width={width}
         />
       </Column>
     </span>

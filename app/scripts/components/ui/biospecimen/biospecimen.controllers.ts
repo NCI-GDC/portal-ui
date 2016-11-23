@@ -56,8 +56,11 @@ module ngApp.components.ui.biospecimen.controllers {
     }
 
     displayBioSpecimenDocumentRow(key, value): boolean {
-      const hiddenKeys = ['expanded', 'submitter_id', 'state', 'updated_datetime', 'created_datetime'];
-      if (hiddenKeys.indexOf(key.toLowerCase()) >= 0) {
+      if (key.toLowerCase() === "expanded") {
+        return false;
+      }
+
+      if (key.toLowerCase() === "submitter_id") {
         return false;
       }
 

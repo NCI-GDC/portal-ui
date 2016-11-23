@@ -5,9 +5,10 @@ import makeFilter from './utils/makeFilter';
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
 import CountCard from './components/CountCard';
+import SummaryCard from './components/SummaryCard';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
-import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
-import theme from './theme'
+import ClinicalCard from './components/ClinicalCard';
+import theme from './theme';
 
 let styles = {
   icon: {
@@ -18,10 +19,17 @@ let styles = {
 };
 
 let Case = ({ $scope }) => {
-  let { participant: p } = $scope;
+  let {
+    participant: p,
+    annotationIds,
+    experimentalStrategies,
+    expStratConfig,
+    dataCategories,
+    dataCategoriesConfig,
+  } = $scope;
 
   return (
-    <Column>
+    <Column spacing={theme.spacing}>
       <Row spacing={theme.spacing}>
         <EntityPageVerticalTable
           id="summary"
@@ -51,7 +59,7 @@ let Case = ({ $scope }) => {
           />
           <CountCard
             title="ANNOTATIONS"
-            count={p.annotationIds.length.toLocaleString()}
+            count={(annotationIds || []).length.toLocaleString()}
             icon={<i className="fa fa-edit" style={styles.icon} />}
             onCountClick={() => {
               window.location = `/search/f?filters=${
@@ -60,6 +68,57 @@ let Case = ({ $scope }) => {
             }}
           />
         </Column>
+      </Row>
+
+      <Row style={{ flexWrap: 'wrap' }} spacing={theme.spacing}>
+        <span style={{ flex: 1 }}>
+          <SummaryCard
+            tableTitle="File Counts by Experimental Strategy"
+            pieChartTitle="File Counts by Experimental Strategy"
+            data={experimentalStrategies}
+            footer={`${(experimentalStrategies || []).length} Experimental Strategies`}
+            path="file_count"
+            headings={[
+              { key: 'experimental_strategy', title: 'Experimental Strategy', color: true },
+              {
+                key: 'file_count',
+                title: 'Files',
+                onClick: (item) => {
+                  window.location = `/search/f?filters=${
+                    expStratConfig.filters.default.params.filters(item[expStratConfig.displayKey])
+                  }`;
+                },
+              },
+            ]}
+          />
+        </span>
+        <span style={{ flex: 1 }}>
+          <SummaryCard
+            tableTitle="File Counts by Data Category"
+            pieChartTitle="File Counts by Experimental Strategy"
+            data={dataCategories}
+            footer={`${(dataCategories || []).length} Experimental Strategies`}
+            path="file_count"
+            headings={[
+              { key: 'data_category', title: 'Data Category', color: true },
+              {
+                key: 'file_count',
+                title: 'Files',
+                onClick: (item) => {
+                  window.location = `/search/f?filters=${
+                    dataCategoriesConfig.filters.default.params.filters(
+                      item[dataCategoriesConfig.displayKey]
+                    )
+                  }`;
+                },
+              },
+            ]}
+          />
+        </span>
+      </Row>
+
+      <Row style={{ flexWrap: 'wrap' }} spacing={theme.spacing}>
+        <ClinicalCard p={p} />
       </Row>
     </Column>
   );

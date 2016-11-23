@@ -38,9 +38,14 @@ const SummaryCard = ({
   <Card style={style}>
     <Column>
       <Row style={styles.header}>
-        <span style={{ flexGrow: 1, fontSize: `1.7rem` }}>{(showTable ? tableTitle : pieChartTitle) || title}</span>
+        <span style={{ flexGrow: 1, fontSize: '1.7rem' }}>
+          {(showTable ? tableTitle : pieChartTitle) || title}
+        </span>
         <span onClick={() => setShowTable(!showTable)}>
-          <i style={{ color: '#000' }} className={`fa ${showTable ? 'fa-pie-chart' : 'fa-table'}`} />
+          <i
+            style={{ color: '#000' }}
+            className={`fa ${showTable ? 'fa-pie-chart' : 'fa-table'}`}
+          />
         </span>
       </Row>
 

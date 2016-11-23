@@ -9,6 +9,7 @@
   "devDependencies": {
     "@knit/babel-preset-socks-react": "0.0.46",
     "babel-jest": "^17.0.2",
+    "babel-eslint": "^7.1.1",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
@@ -24,6 +25,8 @@
     "connect-modrewrite": "0.8.1",
     "conventional-changelog": "0.0.17",
     "del": "1.2.0",
+    "eslint": "^3.10.2",
+    "eslint-plugin-react": "^6.7.1",
     "flow-bin": "^0.36.0",
     "graceful-fs": "3.0.8",
     "gulp": "3.9.0",
@@ -96,13 +99,15 @@
     "prebuild": "npm install",
     "ts": "gulp ts:compile",
     "upgrade": "npm-check-updates -u && bower-update && npm test",
-    "flow": "flow; test $? -eq 0 -o $? -eq 2"
+    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "lint": "eslint app/react-components"
   },
   "dependencies": {
     "@oncojs/lolliplot": "^0.4.0",
     "@oncojs/sapien": "^0.3.1",
     "@oncojs/survivalplot": "^0.3.2",
     "babel-polyfill": "^6.16.0",
+    "color": "^0.11.4",
     "d3": "^4.2.7",
     "d3-selection": "1.0.3",
     "download-svg": "0.0.7",

@@ -1,6 +1,5 @@
 import React from 'react';
 import FileIcon from 'react-icons/lib/fa/file-o';
-
 import makeFilter from './utils/makeFilter';
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
@@ -8,6 +7,7 @@ import CountCard from './components/CountCard';
 import SummaryCard from './components/SummaryCard';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import ClinicalCard from './components/ClinicalCard';
+import BiospecimenCard from './components/BiospecimenCard';
 import theme from './theme';
 
 let styles = {
@@ -119,6 +119,10 @@ let Case = ({ $scope }) => {
 
       <Row style={{ flexWrap: 'wrap' }} spacing={theme.spacing}>
         <ClinicalCard p={p} />
+      </Row>
+
+      <Row style={{ flexWrap: 'wrap' }} spacing={theme.spacing}>
+        <BiospecimenCard p={p} />
       </Row>
     </Column>
   );

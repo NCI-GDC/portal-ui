@@ -2,6 +2,7 @@ import React from 'react';
 import DropDownButton from './DropDownButton';
 import downloadSvg from '../utils/download-svg';
 import saveFile from '../utils/filesaver';
+import toTsvString, {mapArrayToTsvString} from '../utils/toTsvString';
 
 function getSelector(el) {
   return typeof el === 'string' ? document.querySelector(el) : el;
@@ -24,6 +25,7 @@ const DownloadVisualizationButton = ({
   disabled,
   style,
   noText,
+  tsvData,
 }) => (
   <DropDownButton
     disabled={disabled}
@@ -63,6 +65,18 @@ const DownloadVisualizationButton = ({
               JSON.stringify(data, null, 2),
               'JSON',
               `${slug}.json`
+            )
+          },
+        },
+      ] : []),
+      ...(tsvData ? [
+        {
+          text: 'TSV',
+          onClick: () => {
+            saveFile(
+              tsvData.forEach ? mapArrayToTsvString(tsvData) : toTsvString(tsvData),
+              'TSV',
+              `${slug}.tsv`
             )
           },
         },

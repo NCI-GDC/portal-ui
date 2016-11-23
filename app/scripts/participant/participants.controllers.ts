@@ -181,19 +181,18 @@ module ngApp.participants.controllers {
       if (el) {
         ReactDOM.render(
           React.createElement(ReactComponents.SideNavLayout, {
-              links: [
-                { icon: 'table', id: 'summary', title: 'Summary' },
-                { icon: 'calendar-plus-o', id: 'clinical', title: 'Clinical' },
-                { icon: 'flask', id: 'biospecimen', title: 'Biospecimen' },
-                { icon: 'bar-chart-o', id: 'frequent-mutations', title: 'Frequent Mutations' },
-              ],
-              title: this.participant.case_id,
-              entityType: 'CA',
-            },
-            React.createElement(ReactComponents.Case, {
-              $scope: this,
-            })
-          ),
+            links: [
+              { icon: 'table', id: 'summary', title: 'Summary' },
+              { icon: 'calendar-plus-o', id: 'clinical', title: 'Clinical' },
+              { icon: 'flask', id: 'biospecimen', title: 'Biospecimen' },
+              { icon: 'bar-chart-o', id: 'frequent-mutations', title: 'Frequent Mutations' },
+            ],
+            title: this.participant.case_id,
+            entityType: 'CA',
+          },
+          React.createElement(ReactComponents.Case, {
+            $scope: this,
+          })),
           el
         );
       }

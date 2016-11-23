@@ -11,6 +11,7 @@ import DownloadVisualizationButton from './DownloadVisualizationButton'
 import ToolTip from '../uikit/Tooltip';
 import theme from '../theme';
 import { graphTitle } from '../theme/mixins';
+import toMap from '../utils/toMap';
 
 const colors = scaleOrdinal(schemeCategory10);
 const palette = [colors(0), colors(1)]
@@ -51,11 +52,29 @@ class SurvivalPlotWrapper extends Component {
     this.state = {
       xDomain: undefined,
       stack: [],
+      ...this.handleProps(props),
+    };
+  }
+
+  handleProps(props) {
+    const { results = [], overallStats = {} } = props.rawData || {};
+    const pValue = overallStats.pValue;
+
+    return {
+      dataSets: results,
+      pValue: pValue && pValue.toExponential(2),
+      tsvData: results.reduce((data, set) => {
+        const mapData = set.donors.map((d) => toMap(d));
+        return [ ...data, ...(results.length > 1 ? mapData.map((m, idx) => m.set('mutated', !idx)) : mapData) ]
+      }, [])
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(this.resetXDomain());
+    this.setState({
+      ...this.resetXDomain(),
+      ...this.handleProps(nextProps),
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -78,11 +97,10 @@ class SurvivalPlotWrapper extends Component {
   }
 
   update() {
-    const { xDomain } = this.state;
+    const { xDomain, dataSets } = this.state;
     const {
       height = 0,
       getSetSymbol,
-      rawData = {},
       margins = {
         top: 15,
         right: 20,
@@ -94,11 +112,10 @@ class SurvivalPlotWrapper extends Component {
       onClickDonor,
     } = this.props;
 
-    const dataSets = rawData.results;
     const container = this.survivalContainer;
     const onDomainChange = this.onDomainChange.bind(this);
 
-    if (dataSets) {
+    if (dataSets.length) {
       renderPlot({
         container,
         dataSets,
@@ -131,9 +148,8 @@ class SurvivalPlotWrapper extends Component {
   }
 
   render() {
-    const { dataSets } = this.state;
-    const { height, width, legend, rawData = {} } = this.props;
-    const pValue = (rawData.overallStats || {}).pValue;
+    const { pValue, tsvData, dataSets } = this.state;
+    const { height, width, legend } = this.props;
 
     return (
       <div className="survival-plot">
@@ -146,6 +162,7 @@ class SurvivalPlotWrapper extends Component {
               slug="survival-plot"
               noText={true}
               tooltipHTML="Download SurvivalPlot data or image"
+              tsvData={tsvData}
             />
             <ToolTip innerHTML="Reload SurvivalPlot">
               <Button
@@ -155,7 +172,7 @@ class SurvivalPlotWrapper extends Component {
             </ToolTip>
           </span>
           <div style={graphTitle}>Overall Survival Plot</div>
-          {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue.toExponential(2)}</span>}
+          {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue}</span>}
         </Column>
         <div ref={(c) => { this.survivalContainer = c; }} />
         <Row style={{ justifyContent: 'center', flexWrap: 'wrap' }}>

@@ -133,7 +133,7 @@ function appRun(
     let intervalId = setInterval(() => {
       if (window.selectedMutation && !window.otherTooltip) {
         globalTooltip.style.left = $(window.selectedMutation).position().left + 11 + 'px';
-        globalTooltip.style.top = $(window.selectedMutation).position().top - globalTooltip.offsetHeight - 15 + 'px';
+        globalTooltip.style.top = $(window.selectedMutation).position().top + 'px';
         clearInterval(intervalId);
       }
     }, 50)
@@ -142,10 +142,10 @@ function appRun(
   window.addEventListener('mousemove', event => {
     if (window.selectedMutation && !window.otherTooltip) {
       globalTooltip.style.left = $(window.selectedMutation).position().left + 11 + 'px';
-      globalTooltip.style.top = $(window.selectedMutation).position().top - globalTooltip.offsetHeight - 15 + 'px';
+      globalTooltip.style.top = $(window.selectedMutation).position().top + 'px';
     } else {
       globalTooltip.style.left = event.pageX + 'px';
-      globalTooltip.style.top = event.pageY - globalTooltip.offsetHeight - 15 + 'px';
+      globalTooltip.style.top = event.pageY + 'px';
     }
   });
 

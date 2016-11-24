@@ -147,44 +147,67 @@
 }
 
 .global-tooltip {
+  @arrow-outer-size: 12px;
+  @arrow-inner-size: 8px;
+  @arrow-outer-color: #DEDEDE;
+  @arrow-inner-color: #FFFFFF;
+
   position: absolute;
   top: 0;
   left: 0;
   padding: 6px;
-  color: rgb(61, 61, 61);
-  background: #ffffff;
+  color: @grey-scale-2;
+  background: @arrow-inner-color;
   border-radius: 6px;
   font-size: 10px;
-  border: 2px solid #DEDEDE;
-  transform: translateX(-50%);
+  border: 2px solid @arrow-outer-color;
+  transform: translate(-50%, -100%);
   pointer-events: none;
   visibility: hidden;
-}
+  margin-top: -@arrow-outer-size;
 
-.global-tooltip.active {
-  visibility: visible;
-}
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0; height: 0;
+  }
 
-.global-tooltip:before {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -12px;
-  width: 0; height: 0;
-  border-top: 12px solid #DEDEDE;
-  border-right: 12px solid transparent;
-  border-left: 12px solid transparent;
-}
+  &:before {
+    margin-left: -@arrow-outer-size;
+    border-top: @arrow-outer-size solid @arrow-outer-color;
+    border-right: @arrow-outer-size solid transparent;
+    border-left: @arrow-outer-size solid transparent;
+  }
 
-.global-tooltip:after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -8px;
-  width: 0; height: 0;
-  border-top: 8px solid #FFFFFF;
-  border-right: 8px solid transparent;
-  border-left: 8px solid transparent;
+  &:after {
+    margin-left: -@arrow-inner-size;
+    border-top: @arrow-inner-size solid @arrow-inner-color;
+    border-right: @arrow-inner-size solid transparent;
+    border-left: @arrow-inner-size solid transparent;
+  }
+
+  &.down {
+    margin-top: @arrow-outer-size + 10px; // offset to move tooltip out from under the cursor
+    transform: translate(-50%, 0%);
+
+    &:before, &:after {
+      top: auto;
+      bottom: 100%;
+      border-top: none;
+    }
+
+    &:before {
+      border-bottom: @arrow-outer-size solid @arrow-outer-color;
+    }
+
+    &:after {
+      border-bottom: @arrow-inner-size solid @arrow-inner-color;
+    }
+  }
+
+  &.active {
+    visibility: visible;
+  }
 }

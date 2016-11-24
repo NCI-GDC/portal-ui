@@ -64,7 +64,7 @@ function buildData(props) {
       if(gene) {
         return fetch(`https://dcc.icgc.org/api/v1/analysis/survival/${map[gene.gene_id] || map.defaultId}`)
           .then(r => r.json())
-          .then(geneData => ({ 
+          .then(geneData => ({
             data: [
               processData(geneData.results[0].overall, `${gene}1`),
               processData(geneData.results[1].overall, `${gene}2`),
@@ -73,7 +73,7 @@ function buildData(props) {
               `${gene.survivalId} mutated cases`,
               `${gene.survivalId} not mutated cases`,
             ],
-            pValue: geneData.overallStats.pValue
+            pValue: geneData.overallStats.pValue.toExponential(2),
           }));
       }
 

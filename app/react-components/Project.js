@@ -177,7 +177,11 @@ const Project = ({
           filters={buildFilters(clinicalDataExportFilters)}
         />
 
-        <Tooltip dir="down" innerHTML='<div style="max-width: 250px">Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data.</div>'>
+        <Tooltip
+          dir="down"
+          innerHTML="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
+          maxWidth="250px"
+        >
           <DownloadButton
             disabled={!project.summary.file_count}
             url={`${authApi}/files`}

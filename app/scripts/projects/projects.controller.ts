@@ -67,14 +67,22 @@ module ngApp.projects.controllers {
       this.refresh();
     }
 
-    renderReact({ projects, genes, projectsIsFetching, genesIsFetching }: { projects: Array<Object>, genes: Array<Object>, projectsIsFetching: boolean, genesIsFetching: boolean  }) {
+    renderReact({
+      projects,
+      topGenesWithCasesPerProject,
+      projectsIsFetching,
+      genesIsFetching,
+      topGenesWithCasesPerProject,
+      numUniqueCases
+    }: { projects: Array<Object>, topGenesWithCasesPerProject: Object, projectsIsFetching: boolean, genesIsFetching: boolean, numUniqueCases: number  }) {
       ReactDOM.render(
       React.createElement(ReactComponents.Projects, {
         projects: projects || [],
-        genes: genes || [],
         FacetService: this.FacetService,
         projectsIsFetching: projectsIsFetching,
         genesIsFetching: genesIsFetching,
+        topGenesWithCasesPerProject: topGenesWithCasesPerProject,
+        numUniqueCases: numUniqueCases
       }), document.getElementById('react-projects-root')
       );
     };
@@ -101,37 +109,173 @@ module ngApp.projects.controllers {
           }
           //get stackedbar chart data
           const projectIds = this.projects.hits.map(p => p.project_id);
-          const docValue = projectIds.map(p => `doc['case.project.project_id'].value == '${p}'`);
-          const esScript = `${docValue.join(' || ')} ? 1 : 0`;
           this.$http({
             method: 'POST',
             url: `${this.config.es_host}/${this.config.es_index_version}-gene-centric/gene-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
               "size": 20,
-               "query":{
-                  "nested":{
-                     "path":"case",
-                     "score_mode":"sum",
-                     "query":{
-                        "function_score":{
-                           "query":{
-                              "terms":{
-                                "case.project.project_id": this.projects.hits.map(p => p.project_id)
+              "_source": ["gene_id", "symbol"],
+              "query": {
+                "nested": {
+                  "path": "case",
+                  "score_mode": "sum",
+                  "query": {
+                    "function_score": {
+                      "query": {
+                        "bool": {
+                          "must": [
+                            {
+                              "terms": {
+                                "case.project.project_id": projectIds
+                                }
+                            },
+                            {
+                              "nested": {
+                                "path": "case.ssm",
+                                "query": {
+                                  "nested": {
+                                    "path": "case.ssm.consequence",
+                                    "query": {
+                                      "bool": {
+                                        "must": [
+                                          {
+                                            "terms": {
+                                              "case.ssm.consequence.transcript.annotation.impact": [
+                                                "HIGH", "MODERATE"
+                                              ]
+                                            }
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  }
+                                }
                               }
-                           },
-                           "boost_mode":"replace",
-                           "script_score":{
-                             "script": esScript
-                           }
+                            }
+                          ]
                         }
-                     }
+                      },
+                      "boost_mode": "replace",
+                      "script_score": {
+                        "script": "doc['case.project.project_id'].empty ? 0 : 1"
+                      }
+                    }
                   }
-               }
-             }
+                }
+              }
+            }
            }).then(data => {
-            const genes = (data.data.hits.hits || []).map(g => g._source);
-            this.renderReact({ projects: this.projects.hits, genes: genes, projectsIsFetching: false, genesIsFetching: false });
+            const topGenesSource = (data.data.hits.hits || []).map(g => g._source);
+            this.$http({
+              method: 'POST',
+              url: `${this.config.es_host}/${this.config.es_index_version}-case-centric/case-centric/_search`,
+              headers: {'Content-Type' : 'application/json'},
+              data: {
+                "size": 0,
+                "query": {
+                  "nested": {
+                    "path": "gene",
+                    "score_mode": "sum",
+                    "query": {
+                      "function_score": {
+                        "query": {
+                          "bool": {
+                            "must": [
+                              {
+                                "terms": {
+                                  "gene.gene_id": topGenesSource.map(g => g.gene_id)
+                                }
+                              },
+                              {
+                                "nested": {
+                                  "path": "gene.ssm",
+                                  "query": {
+                                    "nested": {
+                                      "path": "gene.ssm.consequence",
+                                      "query": {
+                                        "bool": {
+                                          "must": [
+                                            {
+                                              "terms": {
+                                                "gene.ssm.consequence.transcript.annotation.impact": [
+                                                  "HIGH", "MODERATE"
+                                                ]
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        "boost_mode": "replace",
+                        "script_score": {
+                          "script": "doc['gene.gene_id'].empty ? 0 : 1"
+                        }
+                      }
+                    }
+                  }
+                },
+                "aggs": {
+                  "projects": {
+                    "terms": {
+                      "field": "project.project_id",
+                      "size": 20000
+                    },
+                    "aggs": {
+                      "genes": {
+                        "nested": {
+                          "path": "gene"
+                        },
+                        "aggs": {
+                          "my_genes": {
+                            "filter": {
+                              "terms": {
+                                "gene.gene_id": topGenesSource.map(g => g.gene_id)
+                              }
+                            },
+                            "aggs": {
+                              "gene_id": {
+                                "terms": {
+                                  "field": "gene.gene_id",
+                                  "size": 200
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }).then(caseData => {
+              const caseAggs = caseData.data.aggregations.projects.buckets
+                .filter(b => _.include(projectIds, b.key));
+              const caseAggsByProject = caseAggs.reduce((acc, b) => Object.assign(acc, {[b.key]: b.genes.my_genes.gene_id.buckets}), {});
+              const numUniqueCases = caseAggs.reduce((sum, b) => sum + b.doc_count, 0);
+              console.log(numUniqueCases);
+              const topGenesWithCasesPerProject = Object.keys(caseAggsByProject).reduce(
+                (acc, projectId) => {
+                  const agg = caseAggsByProject[projectId];
+                  const docCounts = agg.reduce((acc, a) => Object.assign(acc, {[a.key]: a.doc_count}), {});
+                  Object.keys(docCounts).map(
+                    (geneId) => acc[geneId] = acc[geneId] ?
+                      Object.assign(acc[geneId], { [projectId]: docCounts[geneId] }) :
+                      {
+                        [projectId]: docCounts[geneId],
+                        symbol: topGenesSource.reduce((symbol, g) => g.gene_id === geneId ? g.symbol : symbol, '')
+                      }
+                  );
+                  return acc;
+                }, {});
+                this.renderReact({ projects: this.projects.hits, topGenesWithCasesPerProject: topGenesWithCasesPerProject, numUniqueCases: numUniqueCases, projectsIsFetching: false, genesIsFetching: false });
+            });
           });
         });
       } else {

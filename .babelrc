@@ -1,0 +1,3 @@
+{
+  "presets": ["@knit/babel-preset-socks-react"]
+}

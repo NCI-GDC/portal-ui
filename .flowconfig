@@ -1,0 +1,16 @@
+[ignore]
+.*/node_modules/@oncojs/.*
+.*/node_modules/radium/.*
+.*/node_modules/bower-json/.*
+.*/node_modules/npm/.*
+
+[include]
+
+[libs]
+
+[options]
+esproposal.decorators=ignore
+module.system=node
+suppress_comment=.*\\$FlowIgnore.*
+suppress_comment=.*\\$FlowIssue.*
+module.name_mapper='^\(.*\)$' -> '<PROJECT_ROOT>/src/js/\1'

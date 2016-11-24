@@ -1,6 +1,6 @@
 // Vendor
 import React from 'react';
-import Radium from 'radium';
+import { style as styles, merge } from 'glamor' 
 
 // Custom
 import theme from '../theme';
@@ -8,30 +8,30 @@ import { center, margin } from '../theme/mixins';
 
 /*----------------------------------------------------------------------------*/
 
-const styles = {
-  button: {
-    ...center,
-    position: 'relative',
-    cursor: 'pointer',
-    padding: '6px 12px',
-    fontSize: '14px',
-    borderRadius: '4px',
-    borderColor: 'transparent',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    backgroundColor: '#ff0',
-    color: 'white',
-    transition: '0.25s ease',
-    ':hover': {
-      backgroundColor: theme.greyScale6,
-    },
-  }
-};
+const buttonStyles = styles({
+  ...center,
+  position: 'relative',
+  cursor: 'pointer',
+  padding: '6px 12px',
+  fontSize: '14px',
+  borderRadius: '4px',
+  borderColor: 'transparent',
+  borderWidth: 1,
+  borderStyle: 'solid',
+  backgroundColor: '#ff0',
+  color: 'white',
+  transition: '0.25s ease',
+  ':hover': {
+    backgroundColor: theme.greyScale6,
+  },
+});
+
+const centerStyles = styles(center);
 
 const Button = ({ style, children, rightIcon, leftIcon, ...props }) => (
-  <button style={{...styles.button, ...style}} {...props}>
+  <button {...merge(buttonStyles, styles(style))} {...props}>
     {leftIcon}
-    <span style={{ ...margin(leftIcon, rightIcon), ...center }}>{children}</span>
+    <span {...merge(styles(margin(leftIcon, rightIcon)), centerStyles)}>{children}</span>
     {rightIcon}
   </button>
 );
@@ -44,4 +44,4 @@ Button.propTypes = {
   onClick: React.PropTypes.func,
 };
 
-export default Radium(Button);
+export default Button;

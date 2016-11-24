@@ -21,6 +21,15 @@ const styles = {
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     transition: 'opacity 0.35s ease',
   },
+  show: {
+    opacity: 1,
+    pointerEvents: 'all',
+    cursor: 'default',
+  },
+  hide: {
+    opacity: 0,
+    pointerEvents: 'none',
+  },
 };
 
 const Overlay = ({ children, style, show, ...props }) => (
@@ -28,7 +37,7 @@ const Overlay = ({ children, style, show, ...props }) => (
     style={{
       ...styles.container,
       ...style,
-      ...(show ? { opacity: 1 } : { opacity: 0 }),
+      ...(show ? styles.show : styles.hide),
     }}
     {...props}
   >

@@ -4,7 +4,7 @@ import { compose, withState } from 'recompose';
 import Row from '../uikit/Flex/Row';
 import Column from '../uikit/Flex/Column';
 import Overlay from'../uikit/Overlay';
-import Button from '../Button';
+import Button from '../uikit/Button';
 
 const styles = {
   container: {

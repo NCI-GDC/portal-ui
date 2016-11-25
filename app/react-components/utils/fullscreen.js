@@ -1,8 +1,9 @@
 document.exitFullscreen = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen;
 
-export const isFullScreen = function() {
-  return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
-}
+export const isFullScreen = function(el) {
+  const fullScreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+  return el && fullScreenElement ? fullScreenElement === el : fullScreenElement;
+};
 
 export const exitFullScreen = function() {
   document.exitFullscreen && document.exitFullscreen();

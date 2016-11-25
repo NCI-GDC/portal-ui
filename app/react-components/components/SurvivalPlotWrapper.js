@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { SurvivalPlot } from './SurvivalPlot'; // this component should be merged into this one
-import { compose, lifecycle, withState } from 'recompose';
 import _ from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
+import { renderPlot } from '@oncojs/survivalplot';
 
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
 import Button from '../Button';
 import downloadSvg from '../utils/download-svg';
+import { isFullScreen } from '../utils/fullscreen';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -37,23 +37,20 @@ const styles = {
     bottom: 0,
     left: 0,
     fontSize: '1.1rem',
-  }
-}
-const map = {
-  defaultId: 'b8a57661-67d1-45d2-a9aa-b9a7a12b12ff'
+  },
 };
 
 function processData(dataSet, id) {
   return {
     meta: { id },
-    donors: _.flatten(dataSet.map(function (interval) {
-      return interval.donors.map(function (donor) {
-        return _.extend({}, donor, {
+    donors: _.flatten(dataSet.map(interval =>
+      interval.donors.map(donor =>
+        _.extend({}, donor, {
           survivalEstimate: interval.cumulativeSurvival,
-        });
-      });
-    })),
-  }
+        })
+      )
+    )),
+  };
 }
 
 function buildData(props) {
@@ -61,11 +58,11 @@ function buildData(props) {
     .then(() => {
       const { gene, rawData } = props;
 
-      if(gene) {
-        return fetch(`https://dcc.icgc.org/api/v1/analysis/survival/${map[gene.gene_id] || map.defaultId}`)
+      if (gene) {
+        return fetch('https://dcc.icgc.org/api/v1/analysis/survival/b8a57661-67d1-45d2-a9aa-b9a7a12b12ff')
           .then(r => r.json())
           .then(geneData => ({
-            data: [
+            dataSets: [
               processData(geneData.results[0].overall, `${gene}1`),
               processData(geneData.results[1].overall, `${gene}2`),
             ],
@@ -78,9 +75,7 @@ function buildData(props) {
       }
 
       return {
-        data: [
-          processData(rawData, 'project'),
-        ],
+        dataSets: [processData(rawData, 'project')],
         legend: ['all cases in project'],
         pValue: '',
       };
@@ -91,15 +86,36 @@ class SurvivalPlotWrapper extends Component {
   constructor(props) {
     super(props);
 
-    this.onDomainChange = this.onDomainChange.bind(this);
-
     this.state = {
       xDomain: undefined,
       stack: [],
       palette: [colors(0), colors(1)],
+      disabledDataSets: undefined,
+      dataSets: null,
     };
+  }
 
+  componentDidMount() {
     buildData(this.props).then(d => this.setState(d));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    buildData(nextProps).then((newState) => {
+      if (!_.isEqual(newState, this.state)) {
+        this.setState({
+          ...this.resetXDomain(),
+          ...newState,
+        });
+      }
+    });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState);
+  }
+
+  componentDidUpdate() {
+    this.update();
   }
 
   onDomainChange(xDomain) {
@@ -109,47 +125,68 @@ class SurvivalPlotWrapper extends Component {
     });
   }
 
-  resetXDomain() {
-    if(this.state.stack.length){
-      return {
-        stack: [],
-        xDomain: this.state.stack[0],
-      };
-    } else {
-      return {};
+  update() {
+    const { disabledDataSets, dataSets, palette, xDomain } = this.state;
+    const {
+      height = 0,
+      getSetSymbol,
+      margins = {
+        top: 15,
+        right: 20,
+        bottom: 40,
+        left: 50,
+      },
+    } = this.props;
+
+    const container = this.survivalContainer;
+    const onDomainChange = this.onDomainChange.bind(this);
+
+    if (dataSets) {
+      renderPlot({
+        container,
+        dataSets,
+        disabledDataSets,
+        palette,
+        xDomain,
+        xAxisLabel: 'Duration (days)',
+        yAxisLabel: 'Survival Rate',
+        height: isFullScreen(container) ? (window.innerHeight - 100) : height,
+        getSetSymbol,
+        onMouseEnterDonor: () => {},
+        onMouseLeaveDonor: () => {},
+        onClickDonor: () => {},
+        onDomainChange,
+        margins,
+      });
     }
+  }
+
+  resetXDomain() {
+    const { stack, xDomain } = this.state;
+
+    return {
+      stack: [],
+      xDomain: stack.length ? stack[0] : xDomain,
+    };
   }
 
   reset() {
     this.props.onReset();
   }
 
-  componentWillReceiveProps(nextProps) {
-    buildData(nextProps).then(newState => {
-      this.setState({
-        ...this.resetXDomain(),
-        ...newState,
-      });
-    });
-  }
-
   render() {
-    const { xDomain, data, legend, pValue, palette } = this.state;
-    const { height, width } = this.props;
+    const { legend, pValue, palette } = this.state;
 
     return (
-      <div
-        className="survival-plot"
-        ref={el => this.container = el}
-      >
+      <div className="survival-plot">
         <Column id="survival-plot">
-          <span style={{textAlign: 'right'}}>
+          <span style={{ textAlign: 'right' }}>
             <Button
               style={styles.button}
               onClick={
                 () => {
                   downloadSvg({
-                    svg: this.container.querySelector('svg'),
+                    svg: this.survivalContainer.querySelector('svg'),
                     stylePrefix: '.survival-plot',
                     fileName: 'survival-plot.svg',
                   });
@@ -167,25 +204,8 @@ class SurvivalPlotWrapper extends Component {
           </span>
           {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue}</span>}
         </Column>
-        {data &&
-          <div style={{position: 'relative'}}>
-            <SurvivalPlot
-              dataSets={data}
-              xDomain={xDomain}
-              onDomainChange={this.onDomainChange}
-              height={height}
-              width={width}
-              palette={palette}
-              margins={{
-                top: 15,
-                right: 20,
-                bottom: 40,
-                left: 50,
-              }}
-            />
-          </div>
-        }
-        <Row style={{justifyContent: 'center', flexWrap: 'wrap'}}>
+        <div ref={(c) => { this.survivalContainer = c; }} />
+        <Row style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
           {legend &&
             legend.map((text, i) => (
               <div
@@ -204,8 +224,15 @@ class SurvivalPlotWrapper extends Component {
   }
 }
 
+SurvivalPlotWrapper.propTypes = {
+  height: React.PropTypes.number,
+  getSetSymbol: React.PropTypes.func,
+  margins: React.PropTypes.shape({}),
+  onReset: React.PropTypes.func,
+};
+
 SurvivalPlotWrapper.defaultProps = {
-  onReset: () => {console.log('reset survival plot')},
-}
+  onReset: () => {},
+};
 
 export default SurvivalPlotWrapper;

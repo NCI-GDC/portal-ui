@@ -212,7 +212,7 @@ module ngApp.projects {
         ): ng.IPromise => {
           return $http({
             method: 'GET',
-            url: `${config.api}/analysis/survival?filters={"op":"=","content":{"field":"cases.project.project_id","value":"${$stateParams["projectId"]}"}}`,
+            url: `${config.api}/analysis/survival?filters=[{"op":"=","content":{"field":"project.project_id.raw","value":"${$stateParams["projectId"]}"}}]`,
             headers: {'Content-Type' : 'application/json'},
           }).then(data => {
             return data.data;

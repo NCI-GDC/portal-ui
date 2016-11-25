@@ -9,8 +9,11 @@ import { isFullScreen } from '../utils/fullscreen';
 import Button from '../uikit/Button';
 import DownloadVisualizationButton from './DownloadVisualizationButton'
 import ToolTip from '../uikit/Tooltip';
+import theme from '../theme';
+import { graphTitle } from '../theme/mixins';
 
 const colors = scaleOrdinal(schemeCategory10);
+const palette = [colors(0), colors(1)]
 
 const styles = {
   heading: {
@@ -41,48 +44,6 @@ const styles = {
   },
 };
 
-function processData(dataSet, id) {
-  return {
-    meta: { id },
-    donors: _.flatten(dataSet.map(interval =>
-      interval.donors.map(donor =>
-        _.extend({}, donor, {
-          survivalEstimate: interval.cumulativeSurvival,
-        })
-      )
-    )),
-  };
-}
-
-function buildData(props) {
-  return Promise.resolve()
-    .then(() => {
-      const { gene, rawData } = props;
-
-      if (gene) {
-        return fetch('https://dcc.icgc.org/api/v1/analysis/survival/b8a57661-67d1-45d2-a9aa-b9a7a12b12ff')
-          .then(r => r.json())
-          .then(geneData => ({
-            dataSets: [
-              processData(geneData.results[0].overall, `${gene}1`),
-              processData(geneData.results[1].overall, `${gene}2`),
-            ],
-            legend: [
-              `${gene.survivalId} mutated cases`,
-              `${gene.survivalId} not mutated cases`,
-            ],
-            pValue: geneData.overallStats.pValue.toExponential(2),
-          }));
-      }
-
-      return {
-        dataSets: [processData(rawData, 'project')],
-        legend: ['all cases in project'],
-        pValue: '',
-      };
-    });
-}
-
 class SurvivalPlotWrapper extends Component {
   constructor(props) {
     super(props);
@@ -90,25 +51,11 @@ class SurvivalPlotWrapper extends Component {
     this.state = {
       xDomain: undefined,
       stack: [],
-      palette: [colors(0), colors(1)],
-      disabledDataSets: undefined,
-      dataSets: null,
     };
   }
 
-  componentDidMount() {
-    buildData(this.props).then(d => this.setState(d));
-  }
-
   componentWillReceiveProps(nextProps) {
-    buildData(nextProps).then((newState) => {
-      if (!_.isEqual(newState, this.state)) {
-        this.setState({
-          ...this.resetXDomain(),
-          ...newState,
-        });
-      }
-    });
+    this.setState(this.resetXDomain());
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -116,6 +63,10 @@ class SurvivalPlotWrapper extends Component {
   }
 
   componentDidUpdate() {
+    this.update();
+  }
+
+  componentDidMount() {
     this.update();
   }
 
@@ -127,10 +78,11 @@ class SurvivalPlotWrapper extends Component {
   }
 
   update() {
-    const { disabledDataSets, dataSets, palette, xDomain } = this.state;
+    const { xDomain } = this.state;
     const {
       height = 0,
       getSetSymbol,
+      rawData = {},
       margins = {
         top: 15,
         right: 20,
@@ -139,6 +91,7 @@ class SurvivalPlotWrapper extends Component {
       },
     } = this.props;
 
+    const dataSets = rawData.results;
     const container = this.survivalContainer;
     const onDomainChange = this.onDomainChange.bind(this);
 
@@ -146,7 +99,6 @@ class SurvivalPlotWrapper extends Component {
       renderPlot({
         container,
         dataSets,
-        disabledDataSets,
         palette,
         xDomain,
         xAxisLabel: 'Duration (days)',
@@ -176,7 +128,9 @@ class SurvivalPlotWrapper extends Component {
   }
 
   render() {
-    const { legend, pValue, palette, dataSets } = this.state;
+    const { dataSets } = this.state;
+    const { height, width, legend, rawData = {} } = this.props;
+    const pValue = (rawData.overallStats || {}).pValue;
 
     return (
       <div className="survival-plot">
@@ -197,7 +151,8 @@ class SurvivalPlotWrapper extends Component {
               ><i className="fa fa-undo" /><div style={styles.hidden}>Reset</div></Button>
             </ToolTip>
           </span>
-          {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue}</span>}
+          <div style={graphTitle}>Overall Survival Plot</div>
+          {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue.toExponential(2)}</span>}
         </Column>
         <div ref={(c) => { this.survivalContainer = c; }} />
         <Row style={{ justifyContent: 'center', flexWrap: 'wrap' }}>

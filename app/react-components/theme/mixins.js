@@ -1,5 +1,7 @@
 import { css } from 'glamor';
 
+import theme from './index';
+
 export const center = {
   display: 'flex',
   alignItems: 'center',
@@ -27,6 +29,13 @@ export const dropdown = {
   textAlign: 'left',
   marginTop: '1rem',
   right: 0,
+};
+
+export const graphTitle = {
+  textAlign: 'center',
+  color: theme.greyScale3,
+  fontSize: '1rem',
+  fontWeight: 300,
 };
 
 export const margin = (left, right) => {

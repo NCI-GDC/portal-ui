@@ -327,15 +327,14 @@ const Project = ({
         <Row style={{paddingBottom: '2.5rem'}}>
           <span>
             <div style={{textAlign: 'right', marginRight: 50, marginLeft: 30}}>
-              <ToolTip innerHTML="Download image or data">
-                <DownloadVisualizationButton
-                  disabled={!mutatedGenesChartData.length}
-                  svg="#mutated-genes-chart svg"
-                  data={mutatedGenesChartData}
-                  slug="bar-chart"
-                  noText={true}
-                />
-              </ToolTip>
+              <DownloadVisualizationButton
+                disabled={!mutatedGenesChartData.length}
+                svg="#mutated-genes-chart svg"
+                data={mutatedGenesChartData}
+                slug="bar-chart"
+                noText={true}
+                tooltipHTML="Download image or data"
+              />
             </div>
 
             {!!mutatedGenesChartData.length &&

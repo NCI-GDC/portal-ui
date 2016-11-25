@@ -25,9 +25,9 @@ const DownloadVisualizationButton = ({
   style,
   noText,
   tsvData,
+  ...props
 }) => (
   <DropDownButton
-    disabled={disabled}
     icon={!noText && <Download/>}
     label={noText ? <span><Download/><div style={styles.hidden}>Download</div></span> : 'Download'}
     style={style}
@@ -81,6 +81,7 @@ const DownloadVisualizationButton = ({
         },
       ] : []),
     ]}
+    {...props}
   />
 );
 

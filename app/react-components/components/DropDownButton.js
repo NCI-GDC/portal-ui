@@ -4,6 +4,7 @@ import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
 import { dropdown } from '../theme/mixins'
 import theme from '../theme';
+import Tooltip from '../uikit/Tooltip';
 
 const styles = {
   button: {
@@ -34,15 +35,9 @@ const DropDownButton = ({
   label,
   options = [],
   disabled,
-}) => (
-  <span
-    style={{
-      position: 'relative',
-      ...style,
-    }}
-    onMouseDown={mouseDownHandler}
-    onMouseUp={mouseUpHandler}
-  >
+  tooltipHTML,
+}) => {
+  const button = (
     <Button
       style={styles.button}
       onClick={() => setActive(!active)}
@@ -51,21 +46,34 @@ const DropDownButton = ({
     >
       {label}
     </Button>
-    {active &&
-      <Column style={dropdown} >
-        {options.map(option => (
-          <Row
-            key={option.key || option.text}
-            style={styles.row}
-            onClick={() => {
-              setActive(false);
-              option.onClick();
-            }}
-          >{option.text}</Row>
-        ))}
-      </Column>
-    }
-  </span>
-);
+  );
+
+  return (
+    <span
+      style={{
+        position: 'relative',
+        ...style,
+      }}
+      onMouseDown={mouseDownHandler}
+      onMouseUp={mouseUpHandler}
+    >
+      {tooltipHTML ? <Tooltip innerHTML={tooltipHTML}>{button}</Tooltip> : button}
+      {active &&
+        <Column style={dropdown} >
+          {options.map(option => (
+            <Row
+              key={option.key || option.text}
+              style={styles.row}
+              onClick={() => {
+                setActive(false);
+                option.onClick();
+              }}
+            >{option.text}</Row>
+          ))}
+        </Column>
+      }
+    </span>
+  );
+}
 
 export default withDropdown(DropDownButton);

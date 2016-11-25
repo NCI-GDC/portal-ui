@@ -182,15 +182,14 @@ class SurvivalPlotWrapper extends Component {
       <div className="survival-plot">
         <Column id="survival-plot">
           <span style={{ textAlign: 'right' }}>
-            <ToolTip innerHTML="Download SurvivalPlot data or image">
-              <DownloadVisualizationButton 
-                svg={`.survival-plot svg`} // TODO: make sure this selects the correct survivalplot
-                data={dataSets}
-                stylePrefix=".survival-plot"
-                slug="survival-plot"
-                noText={true}
-              />
-            </ToolTip>
+            <DownloadVisualizationButton
+              svg={`.survival-plot svg`} // TODO: make sure this selects the correct survivalplot
+              data={dataSets}
+              stylePrefix=".survival-plot"
+              slug="survival-plot"
+              noText={true}
+              tooltipHTML="Download SurvivalPlot data or image"
+            />
             <ToolTip innerHTML="Reload SurvivalPlot">
               <Button
                 style={styles.button}

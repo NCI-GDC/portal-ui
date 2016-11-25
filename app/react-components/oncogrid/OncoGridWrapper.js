@@ -112,15 +112,14 @@ const OncoGridWrapper = ({
           {gridState.heatMapMode ? <StepLegend rightLabel="More Mutations" /> : <SwatchLegend colorMap={colorMap} />}
         </div>
         <span>
-          <ToolTip innerHTML="Download OncoGrid data or image">
-            <DownloadVisualizationButton 
-              svg={`#${GRID_ID} svg`}
-              data={gridData}
-              stylePrefix={`#${GRID_ID}`}
-              slug="oncogrid"
-              noText={true}
-            />
-          </ToolTip>
+          <DownloadVisualizationButton
+            svg={`#${GRID_ID} svg`}
+            data={gridData}
+            stylePrefix={`#${GRID_ID}`}
+            slug="oncogrid"
+            noText={true}
+            tooltipHTML="Download OncoGrid data or image"
+          />
           <ToolTip innerHTML="Reload grid">
             <Button
               style={styles.button}

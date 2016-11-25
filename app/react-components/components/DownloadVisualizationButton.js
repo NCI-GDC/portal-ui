@@ -3,6 +3,7 @@ import DropDownButton from './DropDownButton';
 import downloadSvg from '../utils/download-svg';
 import saveFile from '../utils/filesaver';
 import toTsvString, {mapArrayToTsvString} from '../utils/toTsvString';
+import Download from '../theme/icons/Download';
 
 function getSelector(el) {
   return typeof el === 'string' ? document.querySelector(el) : el;
@@ -14,8 +15,6 @@ const styles = {
     overflow: 'hidden',
   },
 };
-
-const icon = <i className={"fa fa-download"}/>;
 
 const DownloadVisualizationButton = ({
   svg,
@@ -29,8 +28,8 @@ const DownloadVisualizationButton = ({
 }) => (
   <DropDownButton
     disabled={disabled}
-    icon={!noText && icon}
-    label={noText ? <span>{icon}<div style={styles.hidden}>Download</div></span> : 'Download'}
+    icon={!noText && <Download/>}
+    label={noText ? <span><Download/><div style={styles.hidden}>Download</div></span> : 'Download'}
     style={style}
     options={[
       ...(svg ? [

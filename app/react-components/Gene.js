@@ -1,16 +1,5 @@
 // Vendor
 import React, { Component } from 'react';
-import GeneIcon from 'react-icons/lib/fa/google';
-import FileIcon from 'react-icons/lib/fa/file-o';
-import CaseIcon from 'react-icons/lib/fa/user';
-import EditIcon from 'react-icons/lib/fa/edit';
-import CartIcon from 'react-icons/lib/fa/shopping-cart';
-import SearchIcon from 'react-icons/lib/fa/search';
-import MinusIcon from 'react-icons/lib/fa/minus';
-import PlusIcon from 'react-icons/lib/fa/plus';
-import TableIcon from 'react-icons/lib/fa/table';
-import BookIcon from 'react-icons/lib/fa/book';
-import ChartIcon from 'react-icons/lib/fa/bar-chart'
 import _ from 'lodash';
 
 // Custom
@@ -28,6 +17,11 @@ import BarChart from './charts/BarChart';
 import theme from './theme';
 import externalReferenceLinks from './utils/externalReferenceLinks';
 import downloadSvg from './utils/download-svg';
+import MinusIcon from './theme/icons/Minus';
+import PlusIcon from './theme/icons/Plus';
+import TableIcon from './theme/icons/Table';
+import BookIcon from './theme/icons/Book';
+import ChartIcon from './theme/icons/BarChart';
 
 export const zDepth1 = {
   boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',

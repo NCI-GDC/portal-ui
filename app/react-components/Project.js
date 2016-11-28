@@ -1,10 +1,6 @@
 // Vendor
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
-import FileIcon from 'react-icons/lib/fa/file-o';
-import CaseIcon from 'react-icons/lib/fa/user';
-import EditIcon from 'react-icons/lib/fa/edit';
-import DownIcon from 'react-icons/lib/md/arrow-drop-down';
 import _ from 'lodash';
 
 // Custom
@@ -24,6 +20,9 @@ import SurvivalPlotWrapper from './components/SurvivalPlotWrapper';
 import Button from './Button';
 import downloadSvg from './utils/download-svg';
 import TogglableUl from './uikit/TogglableUl';
+import FileIcon from './theme/icons/File';
+import CaseIcon from './theme/icons/Case';
+import EditIcon from './theme/icons/Edit';
 
 const SPACING = '2rem';
 const HALF_SPACING = '1rem';
@@ -215,7 +214,7 @@ const Project = ({
           <CountCard
             title="CASES"
             count={project.summary.case_count.toLocaleString()}
-            icon={<CaseIcon style={styles.icon} />}
+            icon={<CaseIcon style={styles.icon} className="fa-3x" />}
             style={styles.countCard}
             onCountClick={() => {
               window.location = `/search/c?filters=${
@@ -227,7 +226,7 @@ const Project = ({
           <CountCard
             title="FILES"
             count={project.summary.file_count.toLocaleString()}
-            icon={<FileIcon style={styles.icon} />}
+            icon={<FileIcon style={styles.icon}  className="fa-3x" />}
             style={styles.countCard}
             onCountClick={() => {
               window.location = `/search/f?filters=${
@@ -239,7 +238,7 @@ const Project = ({
           <CountCard
             title="ANNOTATIONS"
             count={(project.annotations ? project.annotations.pagination.total : 0).toLocaleString()}
-            icon={<EditIcon style={styles.icon} />}
+            icon={<EditIcon style={styles.icon} className="fa-3x" />}
             style={{ ...styles.countCard, marginBottom: 0 }}
             {
               ...(project.annotations && project.annotations.pagination.total > 0 ? { onCountClick: () => {

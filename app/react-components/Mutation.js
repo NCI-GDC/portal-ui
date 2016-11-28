@@ -1,15 +1,5 @@
 // Vendor
 import React, { Component } from 'react';
-import GeneIcon from 'react-icons/lib/fa/google';
-import FileIcon from 'react-icons/lib/fa/file-o';
-import CaseIcon from 'react-icons/lib/fa/user';
-import EditIcon from 'react-icons/lib/fa/edit';
-import CartIcon from 'react-icons/lib/fa/shopping-cart';
-import MinusIcon from 'react-icons/lib/fa/minus';
-import PlusIcon from 'react-icons/lib/fa/plus';
-import TableIcon from 'react-icons/lib/fa/table';
-import BookIcon from 'react-icons/lib/fa/book';
-import ChartIcon from 'react-icons/lib/fa/bar-chart'
 import _ from 'lodash';
 
 // Custom
@@ -24,6 +14,11 @@ import { ExternalLink } from './uikit/Links';
 import externalReferenceLinks from './utils/externalReferenceLinks';
 import BarChart from './charts/BarChart';
 import theme from './theme';
+import MinusIcon from './theme/icons/Minus';
+import PlusIcon from './theme/icons/Plus';
+import TableIcon from './theme/icons/Table';
+import BookIcon from './theme/icons/Book';
+import ChartIcon from './theme/icons/BarChart';
 
 let Mutation = (() => {
   const styles = {
@@ -173,7 +168,6 @@ let Mutation = (() => {
         '1': <PlusIcon />,
       };
 
-      console.log(mutation.consequence);
       const consequenceData = mutation.consequence.reduce((acc, c) => {
         const transcripts = [...new Set([...(acc[c.transcript.gene.gene_id] || { transcripts: [] }).transcripts, c.transcript.transcript_id])];
         let canonicalOnly = {};
@@ -196,7 +190,6 @@ let Mutation = (() => {
           }
         };
       }, {});
-      console.log(consequenceData);
 
       const consquenceDataMapped = Object.keys(consequenceData)
         .map(d => ({

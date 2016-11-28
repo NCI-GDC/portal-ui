@@ -99,6 +99,43 @@ module ngApp.projects {
           });
 
         },
+        mostAffectedCases: (
+          $stateParams: ng.ui.IStateParamsService,
+          $http: ng.IHttpService,
+          config: IGDCConfig
+        ): ng.IPromise => {
+          return $http({
+            method: 'POST',
+            url: `${config.es_host}/${config.es_index_version}-case-centric/case-centric/_search`,
+            headers: {'Content-Type' : 'application/json'},
+            data: {
+              "post_filter": {
+                "terms": {
+                  "project.project_id": [$stateParams["projectId"]]
+                }
+              },
+              "query": {
+                "nested": {
+                  "path": "gene",
+                  "score_mode": "sum",
+                  "query": {
+                    "function_score": {
+                      "query": {
+                        "match_all": {}
+                      },
+                      "boost_mode": "replace",
+                      "script_score": {
+                        "script": "doc['gene.ssm.ssm_id'].empty ? 0 : 1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }).then(data => {
+            return data.data.hits.hits;
+          });
+        },
         frequentMutations: (
           $stateParams: ng.ui.IStateParamsService,
           $http: ng.IHttpService,

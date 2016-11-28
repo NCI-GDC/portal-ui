@@ -13,6 +13,7 @@ import CountCard from './components/CountCard';
 import ProteinLolliplotComponent from './components/ProteinLolliplot';
 import FrequentMutations from './components/FrequentMutations';
 import { ExternalLink } from './uikit/Links';
+import Tooltip from './uikit/Tooltip';
 import BarChart from './charts/BarChart';
 import theme from './theme';
 import externalReferenceLinks from './utils/externalReferenceLinks';
@@ -288,8 +289,12 @@ let Gene = (() => {
                   { key: 'project_id', title: 'Project ID' },
                   { key: 'disease_type', title: 'Disease Type' },
                   { key: 'site', title: 'Site' },
-                  { key: 'num_affected_cases', title: '# Affected Cases', tooltip: `Number of Cases where ${gene.symbol} contains SSM`},
-                  { key: 'num_mutations', title: '# Mutations', tooltip: `Number of SSM observed in ${gene.symbol}`},
+                  { key: 'num_affected_cases',
+                    title: <Tooltip innerHTML={`Number of Cases where ${gene.symbol} contains SSM`}># Affected Cases</Tooltip>
+                  },
+                  { key: 'num_mutations',
+                    title: <Tooltip innerHTML={`Number of SSM observed in ${gene.symbol}`}># Mutations</Tooltip>
+                  }
                 ]}
                 data={sortedCancerDistData.map(
                   d => ({

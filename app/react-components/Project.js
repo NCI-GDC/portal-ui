@@ -11,6 +11,7 @@ import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';
 import DownloadButton from './components/DownloadButton';
 import FrequentMutations from './components/FrequentMutations';
+import MostAffectedCases from './components/MostAffectedCases';
 import makeFilter from './utils/makeFilter';
 import SummaryCard from './components/SummaryCard';
 import BarChart from './charts/BarChart';
@@ -93,6 +94,7 @@ const Project = ({
   esHost,
   mutatedGenesProject,
   numCasesAggByProject,
+  mostAffectedCases,
   frequentMutations: fm,
   survivalData,
   setSurvivalGene,
@@ -403,7 +405,7 @@ const Project = ({
                 ...g,
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
                 survivalId: g.symbol,
-                geneSymbol: g.symbol,
+                cytoband: g.cytoband.join(', '),
                 num_affected_cases_project: `${g.num_affected_cases_project} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
                 num_affected_cases_all:
                   <TogglableUl
@@ -440,6 +442,17 @@ const Project = ({
           project={$scope.project.project_id}
           survivalData={survivalData}
           width={width}
+        />
+      </Column>
+      <Column style={{...styles.card, marginTop: `2rem` }}>
+        <h1 style={{...styles.heading, padding: `1rem`}} id="most-affected-cases">
+          <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
+          Most Affected Cases
+        </h1>
+
+        <MostAffectedCases
+          mostAffectedCases={_.sortBy(mostAffectedCases, c => c.gene.length).reverse()}
+          project={$scope.project.project_id}
         />
       </Column>
     </span>

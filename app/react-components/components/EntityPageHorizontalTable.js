@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import _ from 'lodash';
 
 import { Row, Column } from '../uikit/Flex';
 import theme from '../theme';
@@ -55,19 +56,15 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
         <Table
           style={styles.table}
           headings={headings.map(h => (
-            <Th key={h.key || h.value}>
-              {h.tooltip && 
-                <Tooltip innerHTML={h.tooltip}>
-                  {h.title}
-                </Tooltip>
-              }
-              {!h.tooltip &&
-                <span>
-                  {h.title}
-                </span>
-              }
+            <Th
+              rowSpan={h.subheadings ? 1 : 2}
+              colSpan={h.subheadings ? h.subheadings.length : 1}
+              key={h.key || h.value}
+            >
+              {h.title}
             </Th>
           ))}
+          subheadings={headings.map(h => h.subheadings && h.subheadings.map((s, i) => <Th key={`subheading-${i}`}>{s}</Th>))}
           body={
             <tbody>
               {data.map((d, i) => {
@@ -82,12 +79,12 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
                   {headings.map(h => {
                     const value = typeof d[h.key] !== 'undefined' ? d[h.key] : h.value;
 
-                    return (
-                      <Td key={h.key || h.value} style={h.style || {}}>
-                        {h.color && <div className="item-color" style={{ backgroundColor: colors(i) }} />}
-                        {h.onClick && value ? <a onClick={() => h.onClick(d)}>{value}</a> : (value || '--')}
-                      </Td>
-                    );
+                    const makeTd = (v, i) => (<Td key={`${h.key}-${i}`} style={h.style || {}}>
+                        {h.color && <div className="h-color" style={{ backgroundColor: colors(i) }} />}
+                        {h.onClick && v? <a onClick={() => h.onClick(d)}>{v}</a> : (v|| '--')}
+                      </Td>);
+
+                    return _.isArray(value) ? value.map((v, i) => makeTd(v, i)) : makeTd(value);
                   })}
                   </Tr>);
               })}

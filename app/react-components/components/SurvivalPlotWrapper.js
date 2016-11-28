@@ -5,9 +5,10 @@ import { renderPlot } from '@oncojs/survivalplot';
 
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
-import Button from '../Button';
-import downloadSvg from '../utils/download-svg';
 import { isFullScreen } from '../utils/fullscreen';
+import Button from '../uikit/Button';
+import DownloadVisualizationButton from './DownloadVisualizationButton'
+import ToolTip from '../uikit/Tooltip';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -175,32 +176,26 @@ class SurvivalPlotWrapper extends Component {
   }
 
   render() {
-    const { legend, pValue, palette } = this.state;
+    const { legend, pValue, palette, dataSets } = this.state;
 
     return (
       <div className="survival-plot">
         <Column id="survival-plot">
           <span style={{ textAlign: 'right' }}>
-            <Button
-              style={styles.button}
-              onClick={
-                () => {
-                  downloadSvg({
-                    svg: this.survivalContainer.querySelector('svg'),
-                    stylePrefix: '.survival-plot',
-                    fileName: 'survival-plot.svg',
-                  });
-                }
-              }
-            >
-              <i className="fa fa-download" /><span style={styles.hidden}>reload</span>
-            </Button>
-            <Button
-              style={styles.button}
-              onClick={() => this.reset()}
-            >
-              <i className="fa fa-undo" /><span style={styles.hidden}>reload</span>
-            </Button>
+            <DownloadVisualizationButton
+              svg={`.survival-plot svg`} // TODO: make sure this selects the correct survivalplot
+              data={dataSets}
+              stylePrefix=".survival-plot"
+              slug="survival-plot"
+              noText={true}
+              tooltipHTML="Download SurvivalPlot data or image"
+            />
+            <ToolTip innerHTML="Reload SurvivalPlot">
+              <Button
+                style={styles.button}
+                onClick={() => this.reset()}
+              ><i className="fa fa-undo" /><div style={styles.hidden}>Reset</div></Button>
+            </ToolTip>
           </span>
           {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue}</span>}
         </Column>

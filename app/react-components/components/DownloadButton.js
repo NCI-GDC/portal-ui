@@ -3,7 +3,7 @@ import React from 'react';
 import { compose, withState } from 'recompose';
 
 import download from '../utils/download';
-import Button from '../Button';
+import Button from '../uikit/Button';
 
 const styles = {
   buttons: {
@@ -11,6 +11,9 @@ const styles = {
     color: '#fff',
     backgroundColor: '#0d95a1',
     marginLeft: '0.2rem',
+    ':hover': {
+      backgroundColor: '#27AFBB',
+    }
   },
 };
 

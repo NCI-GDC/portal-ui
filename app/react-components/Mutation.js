@@ -5,7 +5,7 @@ import _ from 'lodash';
 // Custom
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
-import Button from './Button';
+import Button from './uikit/Button';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import ProteinLolliplotComponent from './components/ProteinLolliplot';
@@ -19,6 +19,7 @@ import PlusIcon from './theme/icons/Plus';
 import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
+import DownloadVisualizationButton from './components/DownloadVisualizationButton';
 
 let Mutation = (() => {
   const styles = {
@@ -277,11 +278,19 @@ let Mutation = (() => {
               />
             </Row>
           </Column>
-          <Column style={{...styles.card, marginTop: `2rem` }}>
-            <h1 id="cancer-distribution" style={{...styles.heading, padding: `1rem` }}>
-              <ChartIcon style={{ marginRight: '1rem' }}/>
-              Cancer Distribution
-            </h1>
+          <Column style={{...styles.card, marginTop: `2rem` }} id="cancer-distribution">
+            <Row>
+              <h1 style={{...styles.heading, padding: `1rem` }}>
+                <ChartIcon style={{ marginRight: '1rem' }}/>
+                Cancer Distribution
+              </h1>
+              <DownloadVisualizationButton
+                style={{ padding: '1rem' }}
+                svg={sortedCancerDistData.length >= 5 ? '#cancer-distribution svg' : ''}
+                data={sortedCancerDistData}
+                slug="bar-chart"
+              />
+            </Row>
             <h5 style={{textTransform: 'uppercase', padding: `0 2rem`}}>
               This mutation affects&nbsp;
               {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} distinct cases across&nbsp;

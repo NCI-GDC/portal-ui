@@ -1,11 +1,11 @@
 import React from 'react';
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
-import Button from '../Button';
+import Button from '../uikit/Button';
 import withDropdown from '../uikit/withDropdown';
-import downloadSvg from '../utils/download-svg';
 import saveFile from '../utils/filesaver';
 import moment from 'moment'
+import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
 
 export const zDepth1 = {
   boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
@@ -146,36 +146,12 @@ let ProteinLolliplot = ({
       >
         Reset
       </Button>
-      <Button
-        style={styles.button}
-        onClick={
-          () => {
-            saveFile(
-              JSON.stringify($scope.proteinLolliplotData, null, 2),
-              'JSON',
-              `protein_viewer-${gene.symbol}-${moment().format('YYYY-MM-DD')}`
-            )
-          }
-        }
-        leftIcon={<i className="fa fa-download" />}
-      >
-        JSON
-      </Button>
-      <Button
-        style={styles.button}
-        leftIcon={<i className="fa fa-download" />}
-        onClick={
-          () => {
-            downloadSvg({
-              svg: document.querySelector(`#protein-viewer-root svg.chart`),
-              stylePrefix: `#protein-viewer-root`,
-              fileName: 'protein-viewer.svg',
-            });
-          }
-        }
-      >
-        SVG
-      </Button>
+      <DownloadVisualizationButton 
+        svg="#protein-viewer-root svg.chart"
+        data={$scope.proteinLolliplotData}
+        stylePrefix="#protein-viewer-root"
+        slug={`protein_viewer-${gene.symbol}-${moment().format('YYYY-MM-DD')}`}
+      />
     </Row>
     <div style={{padding: `0 3rem` }} id="protein-viewer-root" />
   </Column>

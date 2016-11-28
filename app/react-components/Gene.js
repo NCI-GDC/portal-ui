@@ -6,7 +6,7 @@ import _ from 'lodash';
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
 import withDropdown from './uikit/withDropdown';
-import Button from './Button';
+import Button from './uikit/Button';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';
@@ -16,12 +16,13 @@ import { ExternalLink } from './uikit/Links';
 import BarChart from './charts/BarChart';
 import theme from './theme';
 import externalReferenceLinks from './utils/externalReferenceLinks';
-import downloadSvg from './utils/download-svg';
 import MinusIcon from './theme/icons/Minus';
 import PlusIcon from './theme/icons/Plus';
 import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
+import DownloadVisualizationButton from './components/DownloadVisualizationButton';
+
 
 export const zDepth1 = {
   boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
@@ -239,12 +240,19 @@ let Gene = (() => {
               style={{...styles.summary, ...styles.column, alignSelf: 'flex-start'}}
             />
           </Row>
-
-          <Column style={styles.card}>
-            <h1 style={{...styles.heading, padding: `1rem` }} id="cancer-distribution">
-              <ChartIcon style={{ marginRight: '1rem' }}/>
-              Cancer Distribution
-            </h1>
+          <Column style={styles.card} id="cancer-distribution">
+            <Row>
+              <h1 style={{...styles.heading, padding: `1rem` }}>
+                <ChartIcon style={{ marginRight: '1rem' }}/>
+                Cancer Distribution
+              </h1>
+              <DownloadVisualizationButton
+                style={{ padding: '1rem' }}
+                svg="#cancer-distribution svg"
+                data={sortedCancerDistData}
+                slug="bar-chart"
+              />
+            </Row>
             <div style={{ padding: `0 1rem` }}>
               {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by&nbsp;
               {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across&nbsp;

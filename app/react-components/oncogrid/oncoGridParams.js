@@ -180,6 +180,7 @@ export default function ({
       mainGridCrosshair: mainGridRollover,
       mainGrid: mainGridRollover,
     },
+    trackLegendLabel: '<i style="font-size: 13px; margin-left: 5px" class="fa fa-question-circle"></i>',
 
     donorTracks: donorTracks,
     donorOpacityFunc: donorOpacityFunc,

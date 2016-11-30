@@ -1,3 +1,5 @@
+// @flow
+
 // Vendor
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';

@@ -20,6 +20,7 @@ import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
+import Lolliplot from '@oncojs/lolliplot';
 
 let Mutation = (() => {
   const styles = {
@@ -69,18 +70,20 @@ let Mutation = (() => {
 
     componentDidMount() {
       this.renderProteinLolliplot();
+      this.globalTooltip = $('.global-tooltip');
 
       setTimeout(() => {
-        window.selectedMutation = document.querySelector('[filter="url(#drop-shadow)"]');
+        window.selectedMutation = document.querySelector('.selected-mutation');
 
-        let d = this.props.$scope.proteinLolliplotData.mutations.find(x => x.id === this.props.mutation.ssm_id);
+        this.selectedMutation = this.props.$scope.proteinLolliplotData.mutations
+          .find(x => x.id === this.props.mutation.ssm_id);
 
-        $('.global-tooltip')
+        this.globalTooltip
           .addClass('active')
           .html(`
-            <div>DNA Change: ${d.genomic_dna_change}</div>
-            <div># of Cases: ${d.donors}</div>
-            <div>Functional Impact: ${d.impact}</div>
+            <div>DNA Change: ${this.selectedMutation.genomic_dna_change}</div>
+            <div># of Cases: ${this.selectedMutation.donors}</div>
+            <div>Functional Impact: ${this.selectedMutation.impact}</div>
           `);
       }, 100)
     }
@@ -91,13 +94,13 @@ let Mutation = (() => {
 
     renderProteinLolliplot() {
       this.setState({
-        ProteinLolliplot: ProteinLolliplot.default({
+        ProteinLolliplot: Lolliplot({
           data: this.props.$scope.proteinLolliplotData,
           selector: `#protein-viewer-root`,
           onMutationClick: d => window.location.href = `/mutations/${d.id}`,
           onMutationMouseover: d => {
             if (d.id !== this.props.mutation.ssm_id) window.otherTooltip = true;
-            $('.global-tooltip')
+            this.globalTooltip
               .addClass('active')
               .html(`
                 <div>DNA Change: ${d.genomic_dna_change}</div>
@@ -105,7 +108,16 @@ let Mutation = (() => {
                 <div>Functional Impact: ${d.impact}</div>
               `);
           },
-          onMutationMouseout: () => window.otherTooltip = false,
+          onMutationMouseout: () => {
+            window.otherTooltip = false,
+            this.globalTooltip
+              .addClass('active')
+              .html(`
+                <div>DNA Change: ${this.selectedMutation.genomic_dna_change}</div>
+                <div># of Cases: ${this.selectedMutation.donors}</div>
+                <div>Functional Impact: ${this.selectedMutation.impact}</div>
+              `);
+          },
           onProteinMouseover: d => {
             window.otherTooltip = true;
             $('.global-tooltip')
@@ -116,7 +128,16 @@ let Mutation = (() => {
                 <div><b>Click to zoom</b></div>
               `);
           },
-          onProteinMouseout: () => window.otherTooltip = false,
+          onProteinMouseout: () => {
+            window.otherTooltip = false;
+            this.globalTooltip
+              .addClass('active')
+              .html(`
+                <div>DNA Change: ${this.selectedMutation.genomic_dna_change}</div>
+                <div># of Cases: ${this.selectedMutation.donors}</div>
+                <div>Functional Impact: ${this.selectedMutation.impact}</div>
+              `);
+          },
           height: 450,
           domainWidth: this.props.$scope.geneTranscript.length_amino_acid,
           mutationId: this.props.mutation.ssm_id,
@@ -149,13 +170,14 @@ let Mutation = (() => {
 
       const cancerDistData = mutation.occurrence.reduce((acc, o) => {
         const cases = [...new Set([...(acc[o.case.project.project_id] || { cases: [] }).cases, o.case.case_id])];
-        return {...acc,
+        return {
+          ...acc,
           [o.case.project.project_id]: {
-          disease_type: o.case.project.disease_type,
-          cancer_type: o.case.project.cancer_type || 'tbd',
-          site: o.case.project.primary_site,
-          cases: cases,
-          freq: cases.length/allCasesAggByProject[o.case.project.project_id],
+            disease_type: o.case.project.disease_type,
+            cancer_type: o.case.project.cancer_type || 'tbd',
+            site: o.case.project.primary_site,
+            cases: cases,
+            freq: cases.length/allCasesAggByProject[o.case.project.project_id],
           }
         };
       }, {});

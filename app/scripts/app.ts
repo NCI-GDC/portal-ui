@@ -132,7 +132,7 @@ function appRun(
     let intervalId = setInterval(() => {
       if (window.selectedMutation && !window.otherTooltip) {
         let pos = $(window.selectedMutation).position()
-        globalTooltipWrapper.style.transform = `translate(${pos.left + 11}px, ${pos.top}px)`
+        globalTooltipWrapper.style.transform = `translate(${pos.left + 11}px, ${pos.top - 200}px)`
         clearInterval(intervalId);
       }
     }, 50)

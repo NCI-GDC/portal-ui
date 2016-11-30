@@ -99,6 +99,7 @@
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "dependencies": {
+    "@oncojs/lolliplot": "^0.3.4",
     "@oncojs/sapien": "^0.3.1",
     "@oncojs/survivalplot": "^0.3.2",
     "babel-polyfill": "^6.16.0",
@@ -119,6 +120,8 @@
     "react-icons": "^2.2.1",
     "react-measure": "^1.3.1",
     "recompose": "^0.20.2",
+    "redux": "^3.6.0",
+    "redux-actions": "^1.1.0",
     "save-svg-as-png": "git+http://git@github.com/Jephuff/saveSvgAsPng.git#gh-pages",
     "whatwg-fetch": "^1.0.0"
   },

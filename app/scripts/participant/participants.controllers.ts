@@ -176,12 +176,9 @@ module ngApp.participants.controllers {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(">>>", data);
           this.frequentMutations = data.hits.hits;
           this.renderReact();
         });
-
-
     }
 
     jumpToAnchor(id) {
@@ -216,6 +213,11 @@ module ngApp.participants.controllers {
         num_affected_cases_project: x.occurrence.filter(x =>
           x.case.project.project_id === this.participant.project.project_id).length,
         num_affected_cases_all: x.occurrence.length,
+        num_affected_cases_by_project: x.occurrence.reduce((acc, o) =>
+          Object.assign({}, acc, {
+            [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1
+        }), {}),
+        impact: x.consequence.find(x => x.transcript.is_canonical).transcript.annotation.impact,
         consequence_type: x.consequence.find(x => x.transcript.is_canonical).transcript.consequence_type
       }));
 

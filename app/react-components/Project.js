@@ -22,12 +22,10 @@ import TogglableUl from './uikit/TogglableUl';
 import FileIcon from './theme/icons/File';
 import CaseIcon from './theme/icons/Case';
 import EditIcon from './theme/icons/Edit';
-import Button from './uikit/Button';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
-import ToolTip from './uikit/Tooltip';
+import Tooltip from './uikit/Tooltip';
 
 const SPACING = '2rem';
-const HALF_SPACING = '1rem';
 
 const styles = {
   container: {
@@ -158,21 +156,14 @@ const Project = ({
     <span>
       <Row style={{ ...styles.margin, flexDirection: 'row-reverse' }}>
         <DownloadButton
-          disabled={!project.summary.file_count}
-          url={`${authApi}/files`}
-          activeText="Downloading"
-          inactiveText="Download manifest"
-          fields={['file_id']}
-          size={project.summary.file_count}
-          returnType="manifest"
-          format="TSV"
-          filters={{
-            op: 'in',
-            content: {
-              field: 'cases.project.project_id',
-              value: project.project_id,
-            },
-          }}
+          disabled={biospecimenCount === 0}
+          filename={biospecimenDataExportFileName}
+          dataExportExpands={biospecimenDataExportExpands}
+          url={`${authApi}/cases`}
+          activeText="Processing"
+          inactiveText={biospecimenCount === 0 ? 'No Biospecimen Data' : 'Download Biospecimen'}
+          fields={['case_id']}
+          filters={buildFilters(biospecimenDataExportFilters)}
         />
 
         <DownloadButton
@@ -186,16 +177,29 @@ const Project = ({
           filters={buildFilters(clinicalDataExportFilters)}
         />
 
-        <DownloadButton
-          disabled={biospecimenCount === 0}
-          filename={biospecimenDataExportFileName}
-          dataExportExpands={biospecimenDataExportExpands}
-          url={`${authApi}/cases`}
-          activeText="Processing"
-          inactiveText={biospecimenCount === 0 ? 'No Biospecimen Data' : 'Download Biospecimen'}
-          fields={['case_id']}
-          filters={buildFilters(biospecimenDataExportFilters)}
-        />
+        <Tooltip
+          dir="down"
+          innerHTML="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
+          maxWidth="250px"
+        >
+          <DownloadButton
+            disabled={!project.summary.file_count}
+            url={`${authApi}/files`}
+            activeText="Downloading"
+            inactiveText="Download manifest"
+            fields={['file_id']}
+            size={project.summary.file_count}
+            returnType="manifest"
+            format="TSV"
+            filters={{
+              op: 'in',
+              content: {
+                field: 'cases.project.project_id',
+                value: project.project_id,
+              },
+            }}
+          />
+        </Tooltip>
       </Row>
 
       <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>

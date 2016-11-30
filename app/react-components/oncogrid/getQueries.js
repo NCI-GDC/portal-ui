@@ -17,58 +17,51 @@ function request(opts) {
     .then(d => d.hits.hits)
 }
 
-function getQueries(projectId, esHost) {
+function getQueries(projectId, esHost, esIndexVersion) {
   var geneIds = [];
   var responseData = {};
 
   const occurenceQuery = {
-    url: `${esHost}/gdc-r2-ssm_occurrence-centric/ssm_occurrence-centric/_search`,
+    url: `${esHost}/${esIndexVersion}-ssm_occurrence-centric/ssm_occurrence-centric/_search`,
     data: {
       "size": 8000,
+      "_source": ["ssm.consequence.transcript.consequence_type", "ssm.consequence.transcript.annotation.impact", "ssm.consequence.transcript.gene.gene_id", "ssm.ssm_id", "case.case_id"],
       "query": {
         "bool": {
           "must": [
             {
-              "query": {
-                "nested": {
-                  "path": "ssm.consequence",
-                  "query": {
-                    "terms": {
-                      "ssm.consequence.transcript.gene.gene_id": geneIds
-                    }
+              "nested": {
+                "path": "ssm.consequence",
+                "query": {
+                  "terms": {
+                    "ssm.consequence.transcript.gene.gene_id": geneIds
                   }
                 }
               }
             },
             {
-              "query": {
-                "nested": {
-                  "path": "ssm.consequence",
-                  "query": {
-                    "terms": {
-                      "ssm.consequence.transcript.annotation.impact": ["HIGH"]
-                    }
+              "nested": {
+                "path": "ssm.consequence",
+                "query": {
+                  "terms": {
+                    "ssm.consequence.transcript.annotation.impact": ["HIGH"]
                   }
                 }
               }
             },
             {
-              "query": {
-                "nested": {
-                  "path": "ssm.consequence",
-                  "query": {
-                    "terms": {
-                      "ssm.consequence.transcript.consequence_type": consequenceTypes
-                    }
+              "nested": {
+                "path": "ssm.consequence",
+                "query": {
+                  "terms": {
+                    "ssm.consequence.transcript.consequence_type": consequenceTypes
                   }
                 }
               }
             },
             {
-              "query": {
-                "terms": {
-                  "case.project.project_id": [projectId]
-                }
+              "terms": {
+                "case.project.project_id": [projectId]
               }
             }
           ]
@@ -78,10 +71,10 @@ function getQueries(projectId, esHost) {
   };
 
   const geneQuery = {
-    url: `${esHost}/gdc-r2-gene-centric/gene-centric/_search`,
+    url: `${esHost}/${esIndexVersion}-gene-centric/gene-centric/_search`,
     data: {
       "size": 50,
-      "fields": ["_id", "case.case_id", "symbol", "is_cancer_gene_census"],
+      "_source": ["_id", "case.case_id", "symbol", "is_cancer_gene_census"],
       "query": {
         "nested": {
           "path": "case",
@@ -92,12 +85,10 @@ function getQueries(projectId, esHost) {
                 "bool": {
                   "must": [
                     {
-                      "query": {
-                        "terms": {
-                          "case.project.project_id": [
-                            projectId
-                          ]
-                        }
+                      "terms": {
+                        "case.project.project_id": [
+                          projectId
+                        ]
                       }
                     },
                     {
@@ -143,10 +134,10 @@ function getQueries(projectId, esHost) {
   };
 
   const caseQuery = {
-    url: `${esHost}/gdc-r2-case-centric/case-centric/_search`,
+    url: `${esHost}/${esIndexVersion}-case-centric/case-centric/_search`,
     data: {
       "size": 10000,
-      "fields": ["diagnoses.days_to_death", "diagnoses.age_at_diagnosis", "diagnoses.vital_status", "diagnoses.primary_diagnosis", "demographic.gender", "demographic.race", "demographic.ethnicity", "case_id", "summary.data_categories.file_count", "summary.data_categories.data_category"],
+      "_source": ["diagnoses.days_to_death", "diagnoses.age_at_diagnosis", "diagnoses.vital_status", "diagnoses.primary_diagnosis", "demographic.gender", "demographic.race", "demographic.ethnicity", "case_id", "summary.data_categories.file_count", "summary.data_categories.data_category"],
       "query": {
         "nested": {
           "path": "gene",

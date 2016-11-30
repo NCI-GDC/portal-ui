@@ -16,7 +16,7 @@ import ToolTip from '../uikit/Tooltip';
 
 const GRID_ID = 'oncogrid-div';
 
-const colorMap = {
+const consequenceTypes = {
   'missense_variant': '#ff9b6c',
   'frameshift_variant': '#57dba4',
   'start_lost': '#ff2323',
@@ -109,7 +109,7 @@ const OncoGridWrapper = ({
     {grid &&
       <Row style={{ marginLeft: 0, minHeight: '70px' }}>
         <div style={{ flexGrow: 1 }}>
-          {gridState.heatMapMode ? <StepLegend rightLabel="More Mutations" /> : <SwatchLegend colorMap={colorMap} />}
+          {gridState.heatMapMode ? <StepLegend rightLabel="More Mutations" /> : <SwatchLegend colorMap={consequenceTypes} />}
         </div>
         <span>
           <DownloadVisualizationButton
@@ -209,15 +209,16 @@ const enhance = compose(
       }
     },
     componentDidMount() {
-      const { projectId, esHost } = this.props;
-      getQueries(projectId, esHost)
+      const { projectId, esHost, esIndexVersion } = this.props;
+
+      getQueries(projectId, esHost, esIndexVersion)
         .then((responses) => {
           const container = document.querySelector('#oncogrid-container');
           const height = 150;
           const padding = 306;
 
           const gridParams = oncoGridParams({
-            colorMap,
+            colorMap: consequenceTypes,
             clickHandlers,
             element: `#${GRID_ID}`,
             donorData: responses.cases,
@@ -240,6 +241,7 @@ const enhance = compose(
                 },
               });
             },
+            consequenceTypes: Object.keys(consequenceTypes),
           });
 
           if (gridParams) {

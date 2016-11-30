@@ -122,11 +122,10 @@ const Project = ({
       'cytoband': g.cytoband,
       'num_affected_cases_project': g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
       'num_affected_cases_all': g.case.length,
-      'num_affected_cases_by_project': g.case.reduce((acc, c) =>
-         ({
-          ...acc,
-          [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1
-         }), {}),
+      'num_affected_cases_by_project': g.case.reduce((acc, c) => ({
+        ...acc,
+        [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1
+      }), {}),
       'num_mutations': g.case.reduce((acc, c) =>  acc + c.ssm.length, 0),
     }
   ));
@@ -140,7 +139,12 @@ const Project = ({
       ...x,
       num_affected_cases_project: x.occurrence.filter(x =>
         x.case.project.project_id === $scope.project.project_id).length,
+      num_affected_cases_by_project: x.occurrence.reduce((acc, o) => ({
+        ...acc,
+        [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1
+      }), {}),
       num_affected_cases_all: x.occurrence.length,
+      impact: consequence.transcript.annotation.impact,
       consequence_type:
         <span>
           <b>{_.startCase(consequence.transcript.consequence_type)}</b>
@@ -409,7 +413,7 @@ const Project = ({
                 ...g,
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
                 survivalId: g.symbol,
-                cytoband: g.cytoband.join(', '),
+                cytoband: (g.cytoband || []).join(', '),
                 num_affected_cases_project: `${g.num_affected_cases_project} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
                 num_affected_cases_all:
                   <TogglableUl

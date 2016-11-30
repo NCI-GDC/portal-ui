@@ -364,7 +364,7 @@ gulp.task('babel', function() {
 });
 
 gulp.task('vis', function () {
-  return gulp.src(['app/scripts/humanbody.js', 'app/scripts/protein-viewer.js'])
+  return gulp.src(['app/scripts/humanbody.js'])
     .pipe(gulp.dest('dist/js'))
 })
 

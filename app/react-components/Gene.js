@@ -23,6 +23,7 @@ import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
+import Lolliplot from '@oncojs/lolliplot'
 
 
 export const zDepth1 = {
@@ -107,7 +108,7 @@ let Gene = (() => {
 
     renderProteinLolliplot() {
       this.setState({
-        ProteinLolliplot: ProteinLolliplot.default({
+        ProteinLolliplot: Lolliplot({
           data: this.props.$scope.proteinLolliplotData,
           selector: `#protein-viewer-root`,
           onMutationClick: d => window.location.href = `/mutations/${d.id}`,

@@ -2,6 +2,9 @@
   "private": true,
   "version": "0.0.3",
   "repository": "NCI-GDC/portal-ui",
+  "jest": {
+    "preset": "@knit/jest-config-socks"
+  },
   "eslintConfig": {
     "extends": [
       "@knit/socks-react"

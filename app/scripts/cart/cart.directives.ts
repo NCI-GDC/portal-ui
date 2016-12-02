@@ -435,7 +435,7 @@ module ngApp.cart.directives {
               size: 'lg',
               resolve: {
                 warning: () =>
-                  `Your cart contains more than 5GBs of data. <br />.
+                  `Your cart contains more than 5GBs of data. <br />
                    Please select the "Download > Manifest" option and use the
                    <a href='https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool' target='_blank'>
                      GDC Data Transfer Tool

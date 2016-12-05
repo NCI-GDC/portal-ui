@@ -17,13 +17,6 @@
                   data-autocomplete="{{false}}"
                   data-remove-function="removeFacet(f.name)"></facets-free-text>
 
-  <facets-prefix data-ng-if="f.facetType === 'prefix'"
-                 data-title="{{ f.title | facetTitlefy }}"
-                 placeholder="{{ f.name | facetTitlefy }}"
-                 data-field="{{doctype}}.{{f.name}}"
-                 data-entity="{{doctype}}"
-                 data-template="components/facets/templates/typeahead-prefix.html"></facets-prefix>
-
   <terms data-ng-if="f.facetType === 'terms'"
          data-name="{{doctype}}.{{f.name}}"
          data-title="{{f.title | facetTitlefy }}"

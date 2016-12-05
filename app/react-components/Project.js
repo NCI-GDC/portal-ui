@@ -90,6 +90,7 @@ const Project = ({
   $scope,
   authApi,
   esHost,
+  esIndexVersion,
   mutatedGenesProject,
   numCasesAggByProject,
   mostAffectedCases,
@@ -431,7 +432,7 @@ const Project = ({
           <i className="fa fa-th" style={{ paddingRight: `10px` }} />
           OncoGrid
         </h1>
-        <OncoGridWrapper width={width} projectId={project.project_id} esHost={esHost} />
+        <OncoGridWrapper width={width} projectId={project.project_id} esHost={esHost} esIndexVersion={esIndexVersion} />
       </Column>
 
       <Column style={{...styles.card, marginTop: `2rem` }}>

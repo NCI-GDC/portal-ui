@@ -92,10 +92,11 @@ export default function ({
   height = 150,
   width = 680,
   addTrackFunc,
+  consequenceTypes,
 }) {
   let donors = mapDonors(donorData);
   let genes = mapGenes(geneData);
-  const observations = mapOccurences(occurencesData, donors, genes);
+  const observations = mapOccurences(occurencesData, donors, genes, consequenceTypes);
 
   if (observations.length === 0) {
     return null;

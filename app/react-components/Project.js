@@ -409,7 +409,7 @@ const Project = ({
                 ...g,
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
                 survivalId: g.symbol,
-                cytoband: g.cytoband.join(', '),
+                cytoband: (g.cytoband || []).join(', '),
                 num_affected_cases_project: `${g.num_affected_cases_project} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
                 num_affected_cases_all:
                   <TogglableUl

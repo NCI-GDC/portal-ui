@@ -202,7 +202,7 @@ module ngApp.search.cases.table.service {
           ],
           facets: [
             {name: "case_id", title: "Case", collapsed: false, facetType: "free-text", placeholder: "UUID, Submitter ID", removable: false},
-            {name: "submitter_id", title: "Case Submitter ID Prefix", collapsed: false, facetType: "prefix", placeholder: "e.g. TCGA-DD*", removable: false},
+            {name: "submitter_id", title: "Case Submitter ID", collapsed: false, facetType: "id", placeholder: "e.g. TCGA-DD*", removable: false},
             {name: "project.primary_site", title: "Primary Site", collapsed: false, facetType: "terms", removable: false, hasValueSearch: true},
             {name: "project.program.name", title: "Cancer Program", collapsed: false, facetType: "terms", removable: false},
             {name: "project.project_id", title: "Project", collapsed: false, facetType: "terms", removable: false, hasValueSearch: true},

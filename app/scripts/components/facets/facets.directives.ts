@@ -106,29 +106,6 @@ module ngApp.components.facets.directives {
   }
 
   /* @ngInject */
-  function FacetsPrefix(): ng.IDirective {
-    return {
-      restrict: "EA",
-      scope: {
-        title: "@",
-        placeholder: "@",
-        field: "@",
-        entity: "@",
-        template: "@",
-        autocomplete: "@"
-      },
-      replace: true,
-      templateUrl: "components/facets/templates/facets-prefix.html",
-      controller: "freeTextCtrl as ftc",
-      link: ($scope: IFacetScope, elem: ng.IAugmentedJQuery, attr: ng.IAttributes, ctrl: IFreeTextController) => {
-        $scope.clear = () => {
-          ctrl.actives.forEach(term => ctrl.FacetService.removeTerm($scope.field, term));
-        };
-      }
-    };
-  }
-
-  /* @ngInject */
   function DateFacet(): ng.IDirective {
     return {
       restrict: "EA",
@@ -259,6 +236,5 @@ module ngApp.components.facets.directives {
       .directive("facetsSection", FacetsSection)
       .directive("facetsFreeText", FacetsFreeText)
       .directive("typeaheadClickOpen", typeaheadClickOpen)
-      .directive("facetsHeading", FacetsHeading)
-      .directive("facetsPrefix", FacetsPrefix);
+      .directive("facetsHeading", FacetsHeading);
 }

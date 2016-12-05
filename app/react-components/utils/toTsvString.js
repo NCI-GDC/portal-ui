@@ -9,7 +9,7 @@ export default (xs: Array<Object>): string => {
   return result;
 };
 
-export function mapArrayToTsvString(xs: Array<Map>): string {
+export function mapArrayToTsvString(xs: Array<Map<string, string>>): string {
   let result = ``;
   xs[0].forEach((val, key) => result += key + `\t`);
   result += `\n`;

@@ -108,7 +108,6 @@
     "lodash": "^3.9.3",
     "moment": "^2.15.2",
     "oncogrid": "^1.0.2",
-    "radium": "^0.18.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-faux-dom": "^3.0.0",

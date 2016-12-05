@@ -21,6 +21,7 @@ module ngApp.files {
             ],
             fields: [
               "state",
+              "file_state",
               "md5sum",
               "access",
               "data_format",
@@ -34,6 +35,7 @@ module ngApp.files {
               "center.short_name",
               "cases.case_id",
               "cases.project.project_id",
+              "acl",
               "cases.samples.sample_type",
               "cases.samples.portions.portion_id",
               "cases.samples.portions.analytes.analyte_id",

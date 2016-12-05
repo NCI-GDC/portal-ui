@@ -381,6 +381,9 @@ module ngApp.cart.services {
 
       var filesArray = this.files.map(f => {
         return {
+          acl: f.acl,
+          state: f.state,
+          file_state: f.file_state,
           access: f.access,
           file_id: f.file_id,
           file_size: f.file_size,

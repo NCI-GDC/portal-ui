@@ -141,7 +141,6 @@ module ngApp.files.directives {
   }
 
   function DownloadButton($log: ng.ILogService, UserService, $uibModal, config: IGDCConfig): ng.IDirective {
-    const hasAccess = (files) => files.every((f) => UserService.isUserProject(f));
 
     return {
       restrict: "E",
@@ -194,7 +193,7 @@ module ngApp.files.directives {
               // Makes sure the user session has not expired.
               UserService.loginPromise().then(() => {
                 // Session is still active.
-                if (hasAccess(files)) {
+                if (UserService.userCanDownloadFiles(files)) {
                   download(files);
                 } else {
                   showModal('core/templates/request-access-to-download-single.html');

@@ -8,6 +8,10 @@ describe('UserService:', function() {
   }));
 
   describe('isUserProject:', function () {
+    it('if the file has no projects then true', inject(function(UserService) {
+      expect(UserService.isUserProject({projects: []})).to.be.true;
+    }));
+
     it('should accept project ids as file.projects.project_id', inject(function(UserService) {
       expect(UserService.isUserProject({projects: [{project_id: 'TCGA-LAML'}]})).to.be.true;
       expect(UserService.isUserProject({projects: [{project_id: 'TCGA-LAML'}, {project_id: 'CGCI-BLGSP'}]})).to.be.true;

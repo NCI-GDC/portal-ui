@@ -25,8 +25,6 @@ module ngApp.components.user.services {
     currentUser: IUser;
     isFetching: boolean = false;
 
-
-
     /* @ngInject */
     constructor(private AuthRestangular: restangular.IService,
                 private $rootScope: ng.IRootScopeService,
@@ -85,7 +83,7 @@ module ngApp.components.user.services {
     }
 
     loginPromise() {
-      return this.AuthRestangular.all("user")
+      return this.config.fake_auth ? Promise.resolve(this.currentUser) : this.AuthRestangular.all("user")
         .withHttpConfig({
           withCredentials: true
         })
@@ -134,16 +132,11 @@ module ngApp.components.user.services {
       this.currentUser = {
         username: user.username,
         isFiltered: _.get(this, 'currentUser.isFiltered', false),
-        projects: {
-          gdc_ids: _.reduce(user.projects.gdc_ids || {}, (acc, p, key) => {
-            if (p.indexOf("_member_") !== -1) {
-              acc.push(key);
-            }
-            return acc;
-          }, [])
-        }
+        projects: Object.keys(user.projects).reduce((acc, k) => {
+          acc[k] = Object.keys(user.projects[k]).filter(project => user.projects[k][project].indexOf("_member_") !== -1)
+          return acc;
+        }, {})
       };
-
       broadcastReset(this);
     }
 
@@ -169,13 +162,13 @@ module ngApp.components.user.services {
       // Support multiple use cases
       if (file.projects) {
         projectIds = _.uniq(_.map(file.projects, p => p.project_id || p));
-      } else {
+      } else if (file.cases) {
         projectIds = _.uniq(_.map(file.cases, (participant) => {
           return participant.project.project_id;
         }));
       }
-
-      return !!_.intersection(projectIds, this.currentUser.projects.gdc_ids).length;
+      // [SV-506] return true if file has no projects, defer permission check to ACL instead of projects
+      return projectIds.length === 0 ? true : !!_.intersection(projectIds, this.currentUser.projects.gdc_ids).length;
     }
 
     setUserProjectsTerms(terms) {
@@ -205,13 +198,14 @@ module ngApp.components.user.services {
         if (file.access === "open") {
           return true;
         }
-
         if (file.access !== "open" && !this.currentUser) {
           return false;
         }
-
-        if (this.isUserProject(file)) {
+        const fileInCorrectState = (f) => f.state === 'submitted' && _.include(["submitted", "processing", "processed"], f.file_state);
+        if (this.isUserProject(file) && !!_.intersection(this.currentUser.projects.phs_ids || [], file.acl).length && fileInCorrectState(file)) {
           return true;
+        } else {
+          return false;
         }
       });
     }

@@ -344,7 +344,7 @@ const Project = ({
             </div>
 
             {!!mutatedGenesChartData.length &&
-              <div>
+              <div id="mutated-genes-chart">
                 <Row style={{ padding: `0 2rem` }}>
                   <BarChart
                     data={mutatedGenesChartData.map(g => ({

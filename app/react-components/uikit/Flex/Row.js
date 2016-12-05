@@ -1,6 +1,5 @@
 // Vendor
 import React, { PropTypes, Children, cloneElement } from 'react';
-import Radium from 'radium';
 
 /*----------------------------------------------------------------------------*/
 
@@ -49,4 +48,4 @@ Row.propTypes = {
 
 /*----------------------------------------------------------------------------*/
 
-export default Radium(Row);
+export default Row;

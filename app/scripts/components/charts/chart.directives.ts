@@ -345,7 +345,7 @@ module ngApp.components.charts {
               if (sortedData.length > $scope.maxNumBars) {
                 var chunked = _.chunk(sortedData, sortedData.length/$scope.maxNumBars);
                 sortedData = _.map(chunked, (chunk) => {
-                                    var keys = _.pluck(chunk, "key");
+                                    var keys = _.map(chunk, "key");
                                     return { "doc_count": _.sum(chunk, "doc_count"),
                                              "key": keys.length > 1 ? _.min(keys) + "-" + _.max(keys) : _.first(keys)
                                             };
@@ -388,11 +388,11 @@ module ngApp.components.charts {
 
         function drawBars() {
           var x = d3.scale.ordinal()
-                  .domain(_.pluck(sortedData, "key"))
+                  .domain(_.map(sortedData, "key"))
                   .rangeRoundBands([0, width], 0);
 
           var y = d3.scale.linear()
-                  .domain([0, _.max(_.pluck(sortedData, "doc_count"))])
+                  .domain([0, _.max(_.map(sortedData, "doc_count"))])
                   .range([$scope.height, 0]);
 
           var chart = d3.select(element.find(".chart-container > svg")[0]);

@@ -199,7 +199,7 @@ module ngApp.cart.controllers {
     }
 
     getFileIds(): string[] {
-      return _.pluck(this.files, "file_id");
+      return _.map(this.files, "file_id");
     }
 
     getRelatedFileIds(): string[] {
@@ -223,7 +223,7 @@ module ngApp.cart.controllers {
     }
 
     getManifest(selectedOnly: boolean = false) {
-      this.FilesService.downloadManifest(_.pluck(this.CartService.getFiles(), "file_id"), (complete) => {
+      this.FilesService.downloadManifest(_.map(this.CartService.getFiles(), "file_id"), (complete) => {
         if(complete) {
           return true;
         }
@@ -289,7 +289,7 @@ module ngApp.cart.controllers {
       filters.content.push({
         content: {
           field: "files.file_id",
-          value: _.pluck(this.CartService.getFiles(), "file_id")
+          value: _.map(this.CartService.getFiles(), "file_id")
         },
         op: "in"
       });

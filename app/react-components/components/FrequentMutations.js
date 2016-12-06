@@ -6,11 +6,29 @@ import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
 import BarChart from '../charts/BarChart';
 import theme from '../theme';
+import { clickable } from '../theme/mixins';
 import EntityPageHorizontalTable from './EntityPageHorizontalTable';
 import SurvivalPlotWrapper from './SurvivalPlotWrapper';
 import TogglableUl from '../uikit/TogglableUl';
 import Button from '../uikit/Button';
+import Tooltip from '../uikit/Tooltip';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
+
+let impactBubble = {
+  color: 'white',
+  padding: '2px 5px',
+  borderRadius: '8px',
+  fontSize: '10px',
+  fontWeight: 'bold',
+  display: 'inline-block',
+  width: '20px',
+}
+
+let impactColors = {
+  HIGH: 'rgb(185, 36, 36)',
+  MODERATE: 'rgb(193, 158, 54)',
+  LOW: 'rgb(49, 161, 60)',
+};
 
 const styles = {
   button: {
@@ -27,6 +45,20 @@ const styles = {
     height: 0,
     overflow: 'hidden',
   },
+  impact: {
+    HIGH: {
+      ...impactBubble,
+      backgroundColor: impactColors.HIGH,
+    },
+    MODERATE: {
+      ...impactBubble,
+      backgroundColor: impactColors.MODERATE,
+    },
+    LOW: {
+      ...impactBubble,
+      backgroundColor: impactColors.LOW,
+    },
+  }
 };
 
 let FrequentMutations = ({
@@ -114,12 +146,12 @@ let FrequentMutations = ({
               },
               {
                 key: 'impact',
-                title: 'Functional Impact'
+                title: 'Impact',
+                style: { textAlign: 'center' },
               },
               {
-                title: <i className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></i>,
-                onClick: setSurvivalMutation,
-                value: <i className="fa fa-bar-chart-o" />,
+                title: <span className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></span>,
+                key: 'survival_plot',
               },
             ]}
             data={frequentMutations.map(x => ({
@@ -137,7 +169,25 @@ let FrequentMutations = ({
                     ...Object.entries(x.num_affected_cases_by_project)
                       .map(([k, v]) => `${k}: ${v} (${(v / totalNumCases * 100).toFixed(2)}%)`)
                   ]}
-                />
+                />,
+              impact: !['LOW', 'MODERATE', 'HIGH'].includes(x.impact) ? null :
+                <Tooltip innerHTML={x.impact}>
+                  <span
+                    style={styles.impact[x.impact]}
+                  >
+                    {x.impact.slice(0, 1)}
+                  </span>
+                </Tooltip>,
+              survival_plot:
+                <Tooltip innerHTML={`Add ${x.genomic_dna_change} to surival plot`}>
+                  <span
+                    onClick={setSurvivalMutation}
+                  >
+                    <span className={`fa fa-bar-chart-o ${clickable}`}>
+                      <div style={styles.hidden}>add to survival plot</div>
+                    </span>
+                  </span>
+                </Tooltip>
             }))}
           />
         </div>

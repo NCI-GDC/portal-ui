@@ -1,3 +1,5 @@
+import { css } from 'glamor';
+
 export const center = {
   display: 'flex',
   alignItems: 'center',
@@ -37,3 +39,11 @@ export const margin = (left, right) => {
   }
   return {};
 };
+
+export const clickable = css({
+  color: 'rgb(38, 134, 195)',
+  cursor: 'pointer',
+  ':hover': {
+    color: 'rgb(35, 92, 124)',
+  },
+});

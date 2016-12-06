@@ -187,7 +187,7 @@ module ngApp.projects.table.service {
             thClassName: 'text-right',
             tdClassName: 'text-right',
             hidden: true,
-            total: (data, $scope) => $scope.$filter("size")(_.sum(_.pluck(data, "summary.file_size")))
+            total: (data, $scope) => $scope.$filter("size")(_.sum(_.map(data, "summary.file_size")))
           }
         ],
         fields: [

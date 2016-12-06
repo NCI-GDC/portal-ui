@@ -364,7 +364,7 @@ module ngApp.cart.services {
     }
 
     getFileIds(): string[] {
-      return _.pluck(this.files, "file_id");
+      return _.map(this.files, "file_id");
     }
 
     undoAdded(): void {

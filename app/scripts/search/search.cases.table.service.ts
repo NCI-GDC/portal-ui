@@ -72,7 +72,7 @@ module ngApp.search.cases.table.service {
               id: "files",
               td: (row, $scope) => {
                   var fs = [{field: 'cases.case_id', value: row.case_id}]
-                  var sum = _.sum(_.pluck(row.summary ? row.summary.data_categories : [], 'file_count'))
+                  var sum = _.sum(_.map(row.summary ? row.summary.data_categories : [], 'file_count'))
                   return this.withFilter(sum, fs, $scope.$filter);
               },
               thClassName: 'text-right',
@@ -99,7 +99,7 @@ module ngApp.search.cases.table.service {
                   ? '<a href="annotations/' + row.annotations[0].annotation_id + '">' + 1 + '</a>'
                   : this.withAnnotationFilter(
                       row.annotations.length,
-                      [{field: "annotation_id", value: _.pluck(row.annotations, 'annotation_id')}],
+                      [{field: "annotation_id", value: _.map(row.annotations, 'annotation_id')}],
                       $filter
                     );
               }

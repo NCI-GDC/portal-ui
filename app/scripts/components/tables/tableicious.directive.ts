@@ -39,7 +39,7 @@ module ngApp.components.tables.directives.tableicious {
                         return h.hidden;// || (h.inactive && h.inactive($scope))
                     });
                     $scope.subHeaders = _.flatten<IHeading>(
-                        _.pluck(_.filter($scope.enabledHeadings, (h) => {
+                        _.map(_.filter($scope.enabledHeadings, (h) => {
                             return hasChildren(h);
                     }), 'children'));
                     $scope.dataCols = _.flatten<IHeading>(

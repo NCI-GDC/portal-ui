@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import _ from 'lodash';
-
 import { Row, Column } from '../uikit/Flex';
 import theme from '../theme';
 import Table, { Tr, Td, Th } from '../uikit/Table';
@@ -8,22 +7,23 @@ import Tooltip from '../uikit/Tooltip';
 
 const colors = d3.scale.category20();
 
+const styles = {
+  table: {
+    borderCollapse: 'collapse',
+    borderSpacing: 0,
+    overflow: 'auto',
+    backgroundColor: '#fff',
+  },
+  tr: {
+    border: 'none !important',
+  },
+  td: {
+    border: 'none !important',
+  },
+};
+
 // th are horizontal
 const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, headings, data, emptyMessage}) => {
-  const styles = {
-    table: {
-      borderCollapse: 'collapse',
-      borderSpacing: 0,
-      overflow: 'auto',
-      backgroundColor: '#fff',
-    },
-    tr: {
-      border: 'none !important',
-    },
-    td: {
-      border: 'none !important',
-    },
-  };
   return (
     <Column
       style={{
@@ -52,7 +52,7 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
           {title} {rightComponent}
         </h3>
       }
-      {data.length ? (
+      {!!data.length &&
         <Table
           style={styles.table}
           headings={headings.map(h => (
@@ -60,6 +60,7 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
               rowSpan={h.subheadings ? 1 : 2}
               colSpan={h.subheadings ? h.subheadings.length : 1}
               key={h.key || h.value}
+              style={h.style || {}}
             >
               {h.title}
             </Th>
@@ -76,28 +77,30 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
                     }}
                     key={i}
                   >
-                  {headings.map(h => {
-                    const value = typeof d[h.key] !== 'undefined' ? d[h.key] : h.value;
-
-                    const makeTd = (v, i) => (<Td key={`${h.key}-${i}`} style={h.style || {}}>
-                        {h.color && <div className="h-color" style={{ backgroundColor: colors(i) }} />}
-                        {h.onClick && v? <a onClick={() => h.onClick(d)}>{v}</a> : (v|| '--')}
-                      </Td>);
-
-                    return _.isArray(value) ? value.map((v, i) => makeTd(v, i)) : makeTd(value);
-                  })}
-                  </Tr>);
+                    {headings.map(h => {
+                      const value = typeof d[h.key] !== 'undefined' ? d[h.key] : h.value;
+                      return [].concat(value).map((v, i) =>
+                        <Td key={`${h.key}-${i}`} style={h.style || {}}>
+                          {h.color && <div className="h-color" style={{ backgroundColor: colors(i) }} />}
+                          {v || '--'}
+                        </Td>
+                      );
+                    })}
+                  </Tr>
+                );
               })}
             </tbody>
-        }
-        />) : (
+          }
+        />
+      }
+      {!data.length &&
         <Row
           style={{
             borderBottom: `1px solid ${theme.greyScale5}`,
           }}
         >
           <h4 style={{ padding: '1rem' }}>{emptyMessage}</h4>
-        </Row>)
+        </Row>
       }
     </Column>
   );

@@ -211,8 +211,8 @@ const Project = ({
             thToTd={[
               { th: 'Project ID', td: project.project_id },
               { th: 'Project Name', td: project.name },
-              { th: `Disease Type${project.disease_type.length > 1 ? 's' : ''}`, td: project.disease_type.map(p => <div key={p}>{p}</div>) },
-              { th: `Primary Site${project.primary_site.length > 1 ? 's' : ''}`, td: project.primary_site.map(p => <div key={p}>{p}</div>) },
+              { th: 'Disease Type', td: (project.disease_type || []).map(p => <div key={p}>{p}</div>) },
+              { th: 'Primary Site', td: (project.primary_site || []).map(p => <div key={p}>{p}</div>) },
               { th: 'Program', td: project.program.name },
             ]}
           />

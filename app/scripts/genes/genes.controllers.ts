@@ -43,7 +43,7 @@ module ngApp.genes.controllers {
             "post_filter": {
               "nested": {
                 "path": "consequence",
-                "filter": {
+                "query": {
                   "term": {
                     "consequence.transcript.transcript_id": tid
                   }

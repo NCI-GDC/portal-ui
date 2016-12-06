@@ -87,7 +87,7 @@ module ngApp.genes {
               "post_filter": {
                 "nested": {
                   "path": "consequence",
-                  "filter": {
+                  "query": {
                     "term": {
                       "consequence.transcript.gene.gene_id": $stateParams.geneId
                     }

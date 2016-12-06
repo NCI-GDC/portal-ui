@@ -179,6 +179,11 @@ let Gene = (() => {
         return {
           ...x,
           num_affected_cases_all: x.occurrence.length,
+          num_affected_cases_by_project: x.occurrence.reduce((acc, o) => ({
+            ...acc,
+            [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1
+          }), {}),
+          impact: consequence.transcript.annotation.impact,
           consequence_type:
             <span>
               <b>{_.startCase(consequence.transcript.consequence_type)}</b>

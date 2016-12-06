@@ -1,6 +1,7 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
 import _ from 'lodash';
+import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
@@ -10,6 +11,9 @@ import EntityPageHorizontalTable from './EntityPageHorizontalTable';
 import SurvivalPlotWrapper from './SurvivalPlotWrapper';
 import Button from '../uikit/Button';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
+import SurvivalIcon from '../theme/icons/SurvivalIcon';
+
+const colors = scaleOrdinal(schemeCategory10);
 
 const styles = {
   button: {
@@ -25,6 +29,12 @@ const styles = {
     width: 0,
     height: 0,
     overflow: 'hidden',
+  },
+  graphTitle: {
+    textAlign: 'center',
+    color: theme.greyScale3,
+    fontSize: '1rem',
+    fontWeight: 300,
   },
 };
 
@@ -52,7 +62,7 @@ let FrequentMutations = ({
                 tooltipHTML="Download image or data"
               />
             </div>
-
+            <div style={styles.graphTitle}>Distribution of Most Frequent Mutations</div>
             <div id="mutation-chart">
               <BarChart
                 data={frequentMutations.map(x => ({
@@ -107,14 +117,15 @@ let FrequentMutations = ({
                 : <span># Affected Cases</span>,
             },
             {
-              title: <i className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></i>,
-              onClick: setSurvivalMutation,
-              value: <i className="fa fa-bar-chart-o" />,
+              key: 'survivalAnalysis',
+              title: 'Survival Analysis',
+              onClick: (d) => setSurvivalMutation(survivalMutation && d.survivalId === survivalMutation.survivalId ? null : d),
+              style: { width: 100 },
             },
           ]}
           data={frequentMutations.map(x => ({
             ...x,
-            survivalId: '',
+            survivalId: x.ssm_id,
             genomic_dna_change: <a href={`/mutations/${x.ssm_id}`}>{x.genomic_dna_change}</a>,
             ...(project ? { num_affected_cases_project:
               `${x.num_affected_cases_project} / ${numCasesAggByProject[project]}
@@ -123,6 +134,7 @@ let FrequentMutations = ({
             num_affected_cases_all:
               `${x.num_affected_cases_all} / ${totalNumCases}
               (${(x.num_affected_cases_all / totalNumCases * 100).toFixed(2)}%)`,
+            survivalAnalysis: <div style={{ textAlign: 'center' }} ><SurvivalIcon style={{ color: colors(survivalMutation && survivalMutation.survivalId === x.ssm_id ? 1 : 0) }} /></div>,
           }))}
         />
       </div>

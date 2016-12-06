@@ -9,6 +9,7 @@ import { isFullScreen } from '../utils/fullscreen';
 import Button from '../uikit/Button';
 import DownloadVisualizationButton from './DownloadVisualizationButton'
 import ToolTip from '../uikit/Tooltip';
+import theme from '../theme';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -38,6 +39,12 @@ const styles = {
     bottom: 0,
     left: 0,
     fontSize: '1.1rem',
+  },
+  graphTitle: {
+    textAlign: 'center',
+    color: theme.greyScale3,
+    fontSize: '1rem',
+    fontWeight: 300,
   },
 };
 
@@ -197,6 +204,7 @@ class SurvivalPlotWrapper extends Component {
               ><i className="fa fa-undo" /><div style={styles.hidden}>Reset</div></Button>
             </ToolTip>
           </span>
+          <div style={styles.graphTitle}>Overall Survival Plot</div>
           {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue}</span>}
         </Column>
         <div ref={(c) => { this.survivalContainer = c; }} />

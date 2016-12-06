@@ -131,8 +131,8 @@ function appRun(
   if (window.location.pathname.includes('mutations')) {
     let intervalId = setInterval(() => {
       if (window.selectedMutation && !window.otherTooltip) {
-        let pos = $(window.selectedMutation).position()
-        globalTooltipWrapper.style.transform = `translate(${pos.left + 11}px, ${pos.top - 200}px)`
+        let pos = $(window.selectedMutation).position();
+        globalTooltipWrapper.style.transform = `translate(${pos.left + 4}px, ${pos.top}px)`
         clearInterval(intervalId);
       }
     }, 50)
@@ -140,8 +140,8 @@ function appRun(
 
   window.addEventListener('mousemove', _.throttle(event => {
     if (window.selectedMutation && !window.otherTooltip) {
-      let pos = $(window.selectedMutation).position()
-      globalTooltipWrapper.style.transform = `translate(${pos.left + 11}px, ${pos.top}px)`
+      let pos = $(window.selectedMutation).position();
+      globalTooltipWrapper.style.transform = `translate(${pos.left + 4}px, ${pos.top}px)`
     } else {
       globalTooltipWrapper.style.transform = `translate(${event.pageX}px, ${ event.pageY}px)`
     }

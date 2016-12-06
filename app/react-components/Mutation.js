@@ -203,7 +203,8 @@ let Mutation = (() => {
             canonical_transcript_id: c.transcript.transcript_id,
           };
         }
-        return {...acc,
+        return {
+          ...acc,
           [c.transcript.gene.gene_id]: {
             ...acc[c.transcript.gene.gene_id],
             gene_id: c.transcript.gene.gene_id,
@@ -221,19 +222,18 @@ let Mutation = (() => {
           transcripts: (
             <ul style={{ listStyle: 'none', paddingLeft: 0, marginBottom: 0 }}>
               {consequenceData[d].transcripts.map(t =>
-                  <li
+                <li
+                  key={t}
+                  style={{ fontWeight: t === consequenceData[d].canonical_transcript_id ? 'bold' : 'normal' }}
+                >
+                  <ExternalLink
                     key={t}
-                    style={{fontWeight: t === consequenceData[d].canonical_transcript_id ? 'bold' : 'normal'}}
-                  >
-                    <ExternalLink
-                      key={t}
-                      style={{ paddingRight: '0.5em' }}
-                      href={externalReferenceLinks.ensembl(t)}>
-                      {t}
-                    </ExternalLink>
-                  </li>
-                )
-              }
+                    style={{ paddingRight: '0.5em' }}
+                    href={externalReferenceLinks.ensembl(t)}>
+                    {t}
+                  </ExternalLink>
+                </li>
+              )}
             </ul>
           ),
           strand: consequenceData[d].strand && strandIconMap[consequenceData[d].strand.toString(10)],
@@ -277,11 +277,11 @@ let Mutation = (() => {
                     )
                   }))
               }
-              style={{...styles.summary, ...styles.column, alignSelf: 'flex-start'}}
+              style={{ ...styles.summary, ...styles.column, alignSelf: 'flex-start' }}
             />}
           </Row>
           <Column style={styles.card}>
-            <h1 id="consequences" style={{...styles.heading, padding: `1rem` }}>
+            <h1 id="consequences" style={{ ...styles.heading, padding: `1rem` }}>
               <TableIcon style={{ marginRight: '1rem' }}/>
               Consequences
             </h1>
@@ -300,9 +300,9 @@ let Mutation = (() => {
               />
             </Row>
           </Column>
-          <Column style={{...styles.card, marginTop: `2rem` }} id="cancer-distribution">
+          <Column style={{ ...styles.card, marginTop: `2rem` }} id="cancer-distribution">
             <Row>
-              <h1 style={{...styles.heading, padding: `1rem` }}>
+              <h1 style={{ ...styles.heading, padding: `1rem` }}>
                 <ChartIcon style={{ marginRight: '1rem' }}/>
                 Cancer Distribution
               </h1>
@@ -345,19 +345,20 @@ let Mutation = (() => {
                   { key: 'project_id', title: 'Project ID' },
                   { key: 'disease_type', title: 'Disease Type' },
                   { key: 'site', title: 'Site' },
-                  { key: 'num_affected_cases', title: '# Affected Cases'},
+                  {
+                    key: 'num_affected_cases',
+                    title: '# Affected Cases',
+                  },
                 ]}
-                data={sortedCancerDistData.map(
-                  d => ({
-                    ...d,
-                    project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
-                    num_affected_cases: `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
-                  })
-                )}
+                data={sortedCancerDistData.map(d => ({
+                  ...d,
+                  project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
+                  num_affected_cases: `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
+                }))}
               />
             </Column>
           </Column>
-          <Column style={{...styles.card, marginTop: `2rem` }}>
+          <Column style={{ ...styles.card, marginTop: `2rem` }}>
             <ProteinLolliplotComponent
               gene={gene}
               $scope={$scope}

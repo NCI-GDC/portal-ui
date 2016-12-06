@@ -90,11 +90,12 @@ let BarChart = (() => {
     const drawBar = (barG) => {
       barG.append("rect")
       .attr("class", "bar")
-      .attr("fill", (styles.bars || { fill: 'steelblue'}).fill)
+      .attr("fill", (styles.bars || { fill: 'steelblue' }).fill)
       .attr("width", x.bandwidth())
       .attr("y", (d) => y(d.value))
       .attr("x", (d) => x(d.label))
       .attr("height", (d) => height - y(d.value))
+      .on('click', d => { if (d.href) window.location = d.href; })
       .on('mouseenter', d => {
         d3.select('.global-tooltip')
           .classed('active', true)
@@ -106,15 +107,7 @@ let BarChart = (() => {
       });
     };
 
-    barGs.each(function(d) {
-      if (d.href) {
-        const barA = d3.select(this).append('a')
-          .attr('xlink:href', d => d.href);
-          drawBar(barA);
-      } else {
-        drawBar(d3.select(this));
-      }
-    });
+    barGs.each(function(d) { drawBar(d3.select(this)); })
 
     return el.toReact();
   }

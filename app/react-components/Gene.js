@@ -86,6 +86,12 @@ let Gene = (() => {
     },
   };
 
+  let impactColors = {
+    HIGH: 'rgb(185, 36, 36)',
+    MODERATE: 'rgb(193, 158, 54)',
+    LOW: 'rgb(49, 161, 60)',
+  };
+
   const strandIconMap = {
     '-1': <MinusIcon />,
     '1': <PlusIcon />,
@@ -187,11 +193,13 @@ let Gene = (() => {
           impact: consequence.transcript.annotation.impact,
           consequence_type:
             <span>
-              <b>{_.startCase(consequence.transcript.consequence_type)}</b>
+              <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
               <span style={{marginLeft:'5px'}}>
                 <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
               </span>
-              <span style={{marginLeft:'5px'}}>{consequence.transcript.aa_change}</span>
+              <span style={{marginLeft:'5px', color: impactColors[consequence.transcript.annotation.impact] || 'inherit'}}>
+                {consequence.transcript.aa_change}
+              </span>
             </span>
         };
       });
@@ -299,7 +307,8 @@ let Gene = (() => {
                     title: <Tooltip innerHTML={`Number of Cases where ${gene.symbol} contains SSM`}># Affected Cases</Tooltip>
                   },
                   { key: 'num_mutations',
-                    title: <Tooltip innerHTML={`Number of SSM observed in ${gene.symbol}`}># Mutations</Tooltip>
+                    title: <Tooltip innerHTML={`Number of SSM observed in ${gene.symbol}`}># Mutations</Tooltip>,
+                    style: { textAlign: 'right' },
                   }
                 ]}
                 data={sortedCancerDistData.map(

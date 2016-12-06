@@ -48,6 +48,6 @@ var dataOrdered = [
 
 export default {
   precedence: function() {
-    return _.pluck(dataOrdered, 'id');
+    return _.map(dataOrdered, 'id');
   },
 }

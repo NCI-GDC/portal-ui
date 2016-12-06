@@ -18,6 +18,7 @@ import makeFilter from './utils/makeFilter';
 import SummaryCard from './components/SummaryCard';
 import BarChart from './charts/BarChart';
 import theme from './theme';
+import { clickable } from './theme/mixins';
 import OncoGridWrapper from './oncogrid/OncoGridWrapper';
 import SurvivalPlotWrapper from './components/SurvivalPlotWrapper';
 import TogglableUl from './uikit/TogglableUl';
@@ -73,6 +74,12 @@ const styles = {
   card: {
     backgroundColor: `white`,
   },
+};
+
+let impactColors = {
+  HIGH: 'rgb(185, 36, 36)',
+  MODERATE: 'rgb(193, 158, 54)',
+  LOW: 'rgb(49, 161, 60)',
 };
 
 function buildFilters(data) {
@@ -150,11 +157,13 @@ const Project = ({
       impact: consequence.transcript.annotation.impact,
       consequence_type:
         <span>
-          <b>{_.startCase(consequence.transcript.consequence_type)}</b>
+          <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
           <span style={{marginLeft:'5px'}}>
             <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
           </span>
-          <span style={{marginLeft:'5px'}}>{consequence.transcript.aa_change}</span>
+          <span style={{marginLeft:'5px', color: impactColors[consequence.transcript.annotation.impact] || 'inherit'}}>
+            {consequence.transcript.aa_change}
+          </span>
         </span>
     }
   });
@@ -282,6 +291,7 @@ const Project = ({
               {
                 key: 'case_count',
                 title: 'Cases',
+                style: { textAlign: 'right' },
                 onClick: (item) => {
                   window.location = `/search/c?filters=${
                     expStratConfig.filters.default.params.filters(item[expStratConfig.displayKey])
@@ -291,6 +301,7 @@ const Project = ({
               {
                 key: 'file_count',
                 title: 'Files',
+                style: { textAlign: 'right' },
                 onClick: (item) => {
                   window.location = `/search/f?filters=${
                     expStratConfig.filters.default.params.filters(item[expStratConfig.displayKey])
@@ -312,6 +323,7 @@ const Project = ({
               {
                 key: 'case_count',
                 title: 'Cases',
+                style: { textAlign: 'right' },
                 onClick: (item) => {
                   window.location = `/search/c?filters=${
                     dataCategoriesConfig.filters.default.params.filters(item[dataCategoriesConfig.displayKey])
@@ -321,6 +333,7 @@ const Project = ({
               {
                 key: 'file_count',
                 title: 'Files',
+                style: { textAlign: 'right' },
                 onClick: (item) => {
                   window.location = `/search/f?filters=${
                     dataCategoriesConfig.filters.default.params.filters(item[dataCategoriesConfig.displayKey])
@@ -405,11 +418,15 @@ const Project = ({
                   title: (<span># Affected Cases<br />in {totalNumCases} from All Projects</span>),
                   style: { minWidth: '210px' }
                 },
-                { key: 'num_mutations', title: '# Mutations'},
+                {
+                  key: 'num_mutations',
+                  title: '# Mutations',
+                  style: { textAlign: 'right' },
+                },
                 {
                   title: <i className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></i>,
-                  onClick: (d) => setSurvivalGene(d === survivalGene ? null : d),
-                  value: <i className="fa fa-bar-chart-o" />,
+                  key: 'survival_plot',
+                  style: { textAlign: 'center', width: '55px' },
                 }
               ]}
               data={mutatedGenesChartData.map(g => ({
@@ -425,7 +442,17 @@ const Project = ({
                         .map(k =>
                           (`${k}: ${g.num_affected_cases_by_project[k]} (${(g.num_affected_cases_by_project[k]/totalNumCases * 100).toFixed(2)}%)`))
                     ]}
-                  />
+                  />,
+                survival_plot:
+                  <Tooltip innerHTML={`Add ${g.symbol} to surival plot`}>
+                    <span
+                      onClick={d => setSurvivalGene(d === survivalGene ? null : d)}
+                    >
+                      <span className={`fa fa-bar-chart-o ${clickable}`}>
+                        <div style={styles.hidden}>add to survival plot</div>
+                      </span>
+                    </span>
+                  </Tooltip>
               }))}
             />
           }

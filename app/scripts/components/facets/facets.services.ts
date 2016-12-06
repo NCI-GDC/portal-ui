@@ -238,14 +238,14 @@ module ngApp.components.facets.services {
     // getFacetFields and getNonEmptyFacetFields do not call this to keep the facet fields sent the same in
     // subsequent calls so Restangular/browser uses the cached version. Call this in the controller.
     filterFields(docType: String, data: Object): Array<Object> {
-      var current = _.pluck(this.FacetsConfigService.fieldsMap[docType], "name");
+      var current = _.map(this.FacetsConfigService.fieldsMap[docType], "name");
       return _.map(_.filter(data, (datum) => {
         return datum.doc_type === docType &&
                datum.field !== 'archive.revision' &&
                !_.includes(current, datum.field) &&
                !_.includes(docType === 'files'
-                ? _.pluck(this.SearchTableFilesModel.facets, "name")
-                : _.pluck(this.SearchCasesTableService.model().facets, "name"), datum.field);
+                ? _.map(this.SearchTableFilesModel.facets, "name")
+                : _.map(this.SearchCasesTableService.model().facets, "name"), datum.field);
                }), f => f);
     }
 

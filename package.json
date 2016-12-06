@@ -99,13 +99,13 @@
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "dependencies": {
-    "@oncojs/lolliplot": "^0.3.4",
+    "@oncojs/lolliplot": "^0.4.0",
     "@oncojs/sapien": "^0.3.1",
     "@oncojs/survivalplot": "^0.3.2",
     "babel-polyfill": "^6.16.0",
     "d3": "^4.2.7",
-    "download-svg": "0.0.7",
     "d3-selection": "1.0.3",
+    "download-svg": "0.0.7",
     "fela": "3.0.1",
     "filesaver.js": "^0.2.0",
     "glamor": "^2.19.0",

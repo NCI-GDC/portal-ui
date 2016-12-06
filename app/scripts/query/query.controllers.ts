@@ -138,7 +138,7 @@ module ngApp.query.controllers {
           }
 
           for (var i = 0; i < this.files.hits.length; i++) {
-            this.files.hits[i].related_ids = _.pluck(this.files.hits[i].related_files, "file_id");
+            this.files.hits[i].related_ids = _.map(this.files.hits[i].related_files, "file_id");
           }
         }
       });

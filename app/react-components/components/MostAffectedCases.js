@@ -52,9 +52,12 @@ let MostAffectedCases = ({
               title: <Tooltip innerHTML='Survival (days)'>Survival</Tooltip>
             },
             { key: 'days_to_last_follow_up',
-              title: <Tooltip innerHTML='Days to Last Follow Up'>Last Follow<br />Up</Tooltip>},
+              title: <Tooltip innerHTML='Days to Last Follow Up'>Last Follow<br />Up</Tooltip>,
+              style: { textAlign: 'right' },
+            },
             { key: 'data_types',
               title: 'Available Files per Data Category',
+              style: { textAlign: 'right' },
               subheadings: Object.keys(DATA_CATEGORIES).map(
                 k => (
                   <abbr key={DATA_CATEGORIES[k].abbr}>
@@ -64,8 +67,14 @@ let MostAffectedCases = ({
                   </abbr>)
               )
             },
-            { key: 'num_mutations', title: '#Mutations'},
-            { key: 'num_genes', title: '#Genes'},
+            {
+              key: 'num_mutations', title: '#Mutations',
+              style: { textAlign: 'right' },
+            },
+            {
+              key: 'num_genes', title: '#Genes',
+              style: { textAlign: 'right' },
+            },
           ]}
           data={mostAffectedCases.map(c => {
             const dataCategorySummary = c.summary.data_categories.reduce((acc, c) => ({ ...acc, [c.data_category]: c.file_count }), {});

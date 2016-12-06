@@ -95,7 +95,7 @@ module ngApp.files.controllers {
         });
 
         if (entity.annotations) {
-          entity.annotations = _.pluck(entity.annotations, "annotation_id");
+          entity.annotations = _.map(entity.annotations, "annotation_id");
         }
       });
 

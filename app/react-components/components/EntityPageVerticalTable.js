@@ -67,25 +67,36 @@ const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleSt
                   {d.th}
                 </Th>
                 {d.collapsibleTd &&
-                  (<CollapsibleTd
+                  <CollapsibleTd
                     style={{
                       ...styles.td,
                       backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
                       ...d.style,
                     }}
-                    text={d.collapsibleTd || '--'}
-                  />)
+                    text={d.collapsibleTd}
+                  />
                 }
                 {d.td &&
-                  (<Td
+                  <Td
                     style={{
                       ...styles.td,
                       backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
                       ...d.style,
                     }}
                   >
-                    {d.td || '--'}
-                  </Td>)
+                    {d.td}
+                  </Td>
+                }
+                {!d.td && !d.collapsibleTd &&
+                  <Td
+                    style={{
+                      ...styles.td,
+                      backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
+                      ...d.style,
+                    }}
+                  >
+                    --
+                  </Td>
                 }
               </Tr>
             )}

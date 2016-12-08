@@ -1,7 +1,7 @@
 // Vendor
 import React, { Children, PropTypes } from 'react';
 import Color from 'color';
-import { style } from 'glamor';
+import { css } from 'glamor';
 
 // Custom
 import { Row, Column } from './Flex';
@@ -17,7 +17,7 @@ const tabBorder = {
   borderTop: borderStyle,
 };
 
-const baseTabStyle = style({
+const baseTabStyle = css({
   padding: '1.2rem 1.8rem',
   fontSize: '1.5rem',
   color: '#000',
@@ -34,7 +34,7 @@ const baseTabStyle = style({
 });
 
 const styles = {
-  active: style({
+  active: css({
     ...baseTabStyle,
     backgroundColor: '#fff',
     zIndex: 2,
@@ -43,7 +43,7 @@ const styles = {
       backgroundColor: 'white',
     },
   }),
-  inactive: style({
+  inactive: css({
     ':hover': {
       textDecoration: 'none',
       color: '#000',
@@ -51,7 +51,7 @@ const styles = {
       ...tabBorder,
     },
   }),
-  margin: style({
+  margin: css({
     marginLeft: '0.4rem',
   }),
   content: {
@@ -77,23 +77,42 @@ const Tabs = ({
   activeIndex,
   children,
   onTabClick,
-  ...props
+  side,
+  contentStyle,
+  ...props,
 }) => (
-  <Column style={style} {...props}>
-    <Row>
-      {Children.map(tabs, (child, i) =>
-        <Tab
-          onClick={() => onTabClick ? onTabClick(i) : (() => {})}
-          active={i === activeIndex}
-          sibling={i}
-        >
-          {child}
-        </Tab>
-      )}
+  side ?
+    <Row style={style} flex="1" {...props}>
+      <Column>
+        {Children.map(tabs, (child, i) =>
+          <Tab
+            onClick={() => onTabClick ? onTabClick(i) : (() => {})}
+            active={i === activeIndex}
+            sibling={i}
+          >
+            {child}
+          </Tab>
+        )}
+      </Column>
+      <Column style={{ ...styles.content, flex: 1, ...(contentStyle || {}) }}>{children}</Column>
     </Row>
-    <Column style={styles.content}>{children}</Column>
-  </Column>
+  :
+    <Column style={style} {...props}>
+      <Row>
+        {Children.map(tabs, (child, i) =>
+          <Tab
+            onClick={() => onTabClick ? onTabClick(i) : (() => {})}
+            active={i === activeIndex}
+            sibling={i}
+          >
+            {child}
+          </Tab>
+        )}
+      </Row>
+      <Column style={{ ...styles.content, ...(contentStyle || {}) }}>{children}</Column>
+    </Column>
 );
+
 
 Tabs.propTypes = {
   children: PropTypes.node,

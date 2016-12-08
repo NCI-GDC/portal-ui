@@ -16,7 +16,7 @@ module ngApp.components.location.services {
     }
 
     setSearch(search: ISearch): ng.ILocationService {
-      var propsWithValues = _.pick(search, function(v) {
+      const propsWithValues = _.pickBy(search, function(v) {
         return !_.isEmpty(v) && v !== "{}"
       });
       return this.$location.search(propsWithValues);

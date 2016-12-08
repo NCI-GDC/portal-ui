@@ -327,7 +327,7 @@ module ngApp.files.directives {
             size: "lg",
             resolve: {
               file: function() {
-                return _.first(files);
+                return _.head(files);
               },
               completeCallback: () => done,
               inProgress: () => inProgress,

@@ -327,7 +327,7 @@ module ngApp.components.gql {
 
     findInvalidFields = (validFields: string[] = [], gqlTree: any = {}): string[] => {
       const result = this._findBogusFields(gqlTree, _.partial(this._isValidField, validFields));
-      return _.unique(result)
+      return _.uniq(result)
         .filter(f => f.length > 0);
     };
   }

@@ -19,7 +19,7 @@ angular.module("reports.githut.config",[])
         primary_sites = [];
 
     var aggregations = data.reduce(function(a,b) {
-      if (!_.contains(primary_sites, b.primary_site)) {
+      if (!_.includes(primary_sites, b.primary_site)) {
         primary_sites.push(b.primary_site);
       }
 

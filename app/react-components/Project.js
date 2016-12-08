@@ -110,9 +110,9 @@ const Project = ({
   numCasesAggByProject,
   mostAffectedCases,
   frequentMutations: fm,
-  defaultSurvivalData,
-  setSurvivalData,
-  survivalData,
+  defaultSurvivalRawData,
+  setSelectedSurvivalData,
+  selectedSurvivalData,
   width,
 }) => {
   const {
@@ -131,12 +131,21 @@ const Project = ({
     dataCategoriesConfig,
   } = $scope;
 
+  const projectId = project.project_id;
+
+  const defaultSurvivalLegend = [`${numCasesAggByProject[projectId] || 0} cases on ${projectId}`];
+
+  const survivalData = {
+    legend: selectedSurvivalData.legend || defaultSurvivalLegend,
+    rawData: selectedSurvivalData.rawData || defaultSurvivalRawData,
+  }
+
   const mutatedGenesChartData = mutatedGenesProject.map(g => (
     {
       'gene_id': g.gene_id,
       'symbol': g.symbol,
       'cytoband': g.cytoband,
-      'num_affected_cases_project': g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
+      'num_affected_cases_project': g.case.filter(c => c.project.project_id === projectId).length,
       'num_affected_cases_all': g.case.length,
       'num_affected_cases_by_project': g.case.reduce((acc, c) => ({
         ...acc,
@@ -154,7 +163,7 @@ const Project = ({
     return {
       ...x,
       num_affected_cases_project: x.occurrence.filter(x =>
-        x.case.project.project_id === $scope.project.project_id).length,
+        x.case.project.project_id === projectId).length,
       num_affected_cases_by_project: x.occurrence.reduce((acc, o) => ({
         ...acc,
         [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1
@@ -217,7 +226,7 @@ const Project = ({
               op: 'in',
               content: {
                 field: 'cases.project.project_id',
-                value: project.project_id,
+                value: projectId,
               },
             }}
           />
@@ -230,7 +239,7 @@ const Project = ({
             id="summary"
             title={<span><i className="fa fa-table" /> Summary</span>}
             thToTd={[
-              { th: 'Project ID', td: project.project_id },
+              { th: 'Project ID', td: projectId },
               { th: 'Project Name', td: project.name },
               { th: 'Disease Type', td: [].concat(project.disease_type).map(p => <div key={p}>{p}</div>) },
               { th: 'Primary Site', td: [].concat(project.primary_site).map(p => <div key={p}>{p}</div>) },
@@ -247,7 +256,7 @@ const Project = ({
             style={styles.countCard}
             onCountClick={() => {
               window.location = `/search/c?filters=${
-                makeFilter([{ field: 'cases.project.project_id', value: project.project_id }])
+                makeFilter([{ field: 'cases.project.project_id', value: projectId }])
               }`;
             }}
           />
@@ -259,7 +268,7 @@ const Project = ({
             style={styles.countCard}
             onCountClick={() => {
               window.location = `/search/f?filters=${
-                makeFilter([{ field: 'cases.project.project_id', value: project.project_id }])
+                makeFilter([{ field: 'cases.project.project_id', value: projectId }])
               }`;
             }}
           />
@@ -273,7 +282,7 @@ const Project = ({
               ...(project.annotations && project.annotations.pagination.total > 0 ? { onCountClick: () => {
                 if (project.annotations.pagination.total > 1) {
                   window.location = `/annotations?filters=${
-                      makeFilter([{ field: 'project.project_id', value: project.project_id }])
+                      makeFilter([{ field: 'project.project_id', value: projectId }])
                   }`;
                 } else {
                   window.location = `/annotations?filters=annotationId=${project.annotations.hits[0].annotation_id}`;
@@ -400,12 +409,11 @@ const Project = ({
               </div>
             }
           </span>
-          {(defaultSurvivalData || survivalData) && (
+          {survivalData.rawData && (
             <span style={{ ...styles.column, width: '50%' }}>
               <SurvivalPlotWrapper
-                rawData={survivalData.rawData || defaultSurvivalData}
-                legend={survivalData.legend || ['all cases in project']}
-                onReset={() => setSurvivalData({})}
+                {...survivalData}
+                onReset={() => setSelectedSurvivalData({})}
                 height={240}
                 width={width}
               />
@@ -455,23 +463,23 @@ const Project = ({
                   <Tooltip innerHTML={`Add ${g.symbol} to surival plot`}>
                     <span
                       onClick={() => {
-                          if (g.symbol !== survivalData.id) {
+                          if (g.symbol !== selectedSurvivalData.id) {
                             getSurvivalCurves({
                               api,
-                              projectId: project.project_id,
+                              projectId: projectId,
                               field: 'gene.symbol',
                               value: g.symbol,
                             })
-                              .then(setSurvivalData);
+                              .then(setSelectedSurvivalData);
                           } else {
-                            setSurvivalData({});
+                            setSelectedSurvivalData({});
                           }
                         }
                       }
                     >
                       <span
                         style={{
-                          color: colors(survivalData.id === g.symbol ? 1 : 0),
+                          color: colors(selectedSurvivalData.id === g.symbol ? 1 : 0),
                           cursor: 'pointer'
                         }}
                       >
@@ -492,7 +500,7 @@ const Project = ({
           <i className="fa fa-th" style={{ paddingRight: `10px` }} />
           OncoGrid
         </h1>
-        <OncoGridWrapper width={width} projectId={project.project_id} esHost={esHost} esIndexVersion={esIndexVersion} />
+        <OncoGridWrapper width={width} projectId={projectId} esHost={esHost} esIndexVersion={esIndexVersion} />
       </Column>
 
       <Column style={{...styles.card, marginTop: `2rem` }}>
@@ -504,11 +512,12 @@ const Project = ({
           frequentMutations={frequentMutations}
           numCasesAggByProject={numCasesAggByProject}
           totalNumCases={totalNumCases}
-          project={$scope.project.project_id}
-          defaultSurvivalData={defaultSurvivalData}
+          project={projectId}
+          defaultSurvivalRawData={defaultSurvivalRawData}
+          defaultSurvivalLegend={defaultSurvivalLegend}
           width={width}
           api={api}
-          projectId={project.project_id}
+          projectId={projectId}
         />
       </Column>
       <Column style={{...styles.card, marginTop: `2rem` }}>
@@ -519,7 +528,7 @@ const Project = ({
 
         <MostAffectedCases
           mostAffectedCases={_.sortBy(mostAffectedCases, c => c.gene.length).reverse()}
-          project={$scope.project.project_id}
+          project={projectId}
         />
       </Column>
     </span>
@@ -534,7 +543,7 @@ Project.propTypes = {
 };
 
 const enhance = compose(
-  withState('survivalData', 'setSurvivalData', {}),
+  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
   lifecycle({
     getInitialState: function() {
       return { width: window.innerWidth };

@@ -52,7 +52,6 @@ let Projects = ({
       total: Object.keys(topGenesWithCasesPerProject[geneId]).filter(k => k !== 'symbol').reduce((sum, projectId) => sum + topGenesWithCasesPerProject[geneId][projectId], 0)
     })
   ).sort((a, b) => b.total - a.total);
-  //const caseCount = stackedBarData.reduce((sum, d) => sum + d.total, 0);
   const doubleRingData = projects.reduce((acc, p) => {
     return {...acc,
       [p.primary_site]: {
@@ -80,6 +79,8 @@ let Projects = ({
         ]
       }
     }}, {});
+
+    const totalCases = projects.reduce((sum, p) => sum + p.summary.case_count, 0);
     return  (
       <Row>
         <Column style={{width: '70%', paddingRight: '10px', minWidth: '450px'}}>
@@ -87,7 +88,7 @@ let Projects = ({
           { !genesIsFetching ?
             ( [
               <h5 style={{alignSelf: 'center'}} key='bar-subtitle'>
-                {numUniqueCases} Unique SSM-tested Cases
+                {`${numUniqueCases} Unique Case${numUniqueCases === 0 || numUniqueCases > 1 ? 's' : ''} with Mutation Data`}
               </h5>,
               <Measure key='bar-chart'>
               {({width}) => (
@@ -113,7 +114,7 @@ let Projects = ({
           { !projectsIsFetching ?
             ([
               <h5 style={{alignSelf: 'center'}} key='pie-subtitle'>
-                {projects.reduce((sum, p) => sum + p.summary.case_count, 0)} Cases across {projects.length} Projects
+                {`${totalCases} Case${totalCases === 0 || totalCases > 1 ? 's': ''} across ${projects.length} Project${projects.length === 0 || projects.length > 1 ? 's' : ''}`}
               </h5>,
               <DoubleRingChart
               key='pie-chart'

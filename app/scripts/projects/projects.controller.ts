@@ -172,79 +172,112 @@ module ngApp.projects.controllers {
               url: `${this.config.es_host}/${this.config.es_index_version}-case-centric/case-centric/_search`,
               headers: {'Content-Type' : 'application/json'},
               data: {
-                "size": 0,
-                "query": {
-                  "nested": {
-                    "path": "gene",
-                    "score_mode": "sum",
-                    "query": {
-                      "function_score": {
-                        "query": {
-                          "bool": {
-                            "must": [
-                              {
-                                "terms": {
-                                  "gene.gene_id": topGenesSource.map(g => g.gene_id)
-                                }
-                              },
-                              {
-                                "nested": {
-                                  "path": "gene.ssm",
-                                  "query": {
-                                    "nested": {
-                                      "path": "gene.ssm.consequence",
-                                      "query": {
-                                        "bool": {
-                                          "must": [
-                                            {
-                                              "terms": {
-                                                "gene.ssm.consequence.transcript.annotation.impact": [
-                                                  "HIGH", "MODERATE"
-                                                ]
-                                              }
+              "size": 0,
+              "query": {
+                "nested": {
+                  "path": "gene",
+                  "score_mode": "sum",
+                  "query": {
+                    "function_score": {
+                      "query": {
+                        "bool": {
+                          "must": [
+                            {
+                              "terms": {
+                                "gene.gene_id": topGenesSource.map(g => g.gene_id)
+                              }
+                            },
+                            {
+                              "nested": {
+                                "path": "gene.ssm",
+                                "query": {
+                                  "nested": {
+                                    "path": "gene.ssm.consequence",
+                                    "query": {
+                                      "bool": {
+                                        "must": [
+                                          {
+                                            "terms": {
+                                              "gene.ssm.consequence.transcript.annotation.impact": [
+                                                "HIGH",
+                                                "MODERATE"
+                                              ]
                                             }
-                                          ]
-                                        }
+                                          }
+                                        ]
                                       }
                                     }
                                   }
                                 }
                               }
-                            ]
-                          }
-                        },
-                        "boost_mode": "replace",
-                        "script_score": {
-                          "script": "doc['gene.gene_id'].empty ? 0 : 1"
+                            }
+                          ]
                         }
+                      },
+                      "boost_mode": "replace",
+                      "script_score": {
+                        "script": "doc['gene.gene_id'].empty ? 0 : 1"
                       }
                     }
                   }
-                },
-                "aggs": {
-                  "projects": {
-                    "terms": {
-                      "field": "project.project_id",
-                      "size": 20000
-                    },
-                    "aggs": {
-                      "genes": {
-                        "nested": {
-                          "path": "gene"
-                        },
-                        "aggs": {
-                          "my_genes": {
-                            "filter": {
-                              "terms": {
-                                "gene.gene_id": topGenesSource.map(g => g.gene_id)
-                              }
-                            },
-                            "aggs": {
-                              "gene_id": {
-                                "terms": {
-                                  "field": "gene.gene_id",
-                                  "size": 200
+                }
+              },
+              "aggs": {
+                "projects": {
+                  "terms": {
+                    "field": "project.project_id.raw",
+                    "size": 20000
+                  },
+                  "aggs": {
+                    "case_summary": {
+                      "nested": {
+                        "path": "summary.data_categories"
+                      },
+                      "aggs": {
+                        "case_with_ssm": {
+                          "filter": {
+                            "bool": {
+                              "must": [
+                                {
+                                  "term": {
+                                    "summary.data_categories.data_category": "Simple Nucleotide Variation"
+                                  }
+                                },
+                                {
+                                  "range": {
+                                    "summary.data_categories.file_count": {
+                                      "gt": 0
+                                    }
+                                  }
                                 }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "genes": {
+                      "nested": {
+                        "path": "gene"
+                      },
+                      "aggs": {
+                        "my_genes": {
+                          "filter": {
+                            "bool": {
+                              "must": [
+                                {
+                                  "terms": {
+                                    "gene.gene_id": topGenesSource.map(g => g.gene_id)
+                                  }
+                                }
+                              ]
+                            }
+                          },
+                          "aggs": {
+                            "gene_id": {
+                              "terms": {
+                                "field": "gene.gene_id",
+                                "size": 20000
                               }
                             }
                           }
@@ -254,22 +287,23 @@ module ngApp.projects.controllers {
                   }
                 }
               }
+              }
             }).then(caseData => {
               const caseAggs = caseData.data.aggregations.projects.buckets
                 .filter(b => _.includes(projectIds, b.key));
-              const caseAggsByProject = caseAggs.reduce((acc, b) => Object.assign(acc, {[b.key]: b.genes.my_genes.gene_id.buckets}), {});
-              const numUniqueCases = caseAggs.reduce((sum, b) => sum + b.doc_count, 0);
-              console.log(numUniqueCases);
+              const caseAggsByProject = caseAggs.reduce((acc, b) => Object.assign(acc, {[b.key]: {genes: b.genes.my_genes.gene_id.buckets, case_with_ssm: b.case_summary.case_with_ssm.doc_count}}), {});
+              const numUniqueCases = caseAggs.reduce((sum, b) => sum + b.case_summary.case_with_ssm.doc_count, 0);
+
               const topGenesWithCasesPerProject = Object.keys(caseAggsByProject).reduce(
                 (acc, projectId) => {
                   const agg = caseAggsByProject[projectId];
-                  const docCounts = agg.reduce((acc, a) => Object.assign(acc, {[a.key]: a.doc_count}), {});
+                  const docCounts = agg.genes.reduce((acc, a) => Object.assign(acc, {[a.key]: a.doc_count}), {});
                   Object.keys(docCounts).map(
                     (geneId) => acc[geneId] = acc[geneId] ?
                       Object.assign(acc[geneId], { [projectId]: docCounts[geneId] }) :
                       {
                         [projectId]: docCounts[geneId],
-                        symbol: topGenesSource.reduce((symbol, g) => g.gene_id === geneId ? g.symbol : symbol, '')
+                        symbol: topGenesSource.reduce((symbol, g) => g.gene_id === geneId ? g.symbol : symbol, ''),
                       }
                   );
                   return acc;
@@ -585,7 +619,7 @@ module ngApp.projects.controllers {
           React.createElement(ReactComponents.Project, {
             $scope: this,
             mutatedGenesProject: this.mutatedGenesProject.map(g => g._source),
-            numCasesAggByProject: this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {}),
+            numCasesAggByProject: this.numCasesAggByProject,
             authApi: this.CoreService.config.auth_api,
             esHost: this.CoreService.config.es_host,
             esIndexVersion: this.CoreService.config.es_index_version,

@@ -624,7 +624,7 @@ module ngApp.projects.controllers {
             esHost: this.CoreService.config.es_host,
             esIndexVersion: this.CoreService.config.es_index_version,
             frequentMutations: this.frequentMutations.map(g => Object.assign({}, g._source, { score: g._score })),
-            defaultSurvivalData: this.survivalData,
+            defaultSurvivalRawData: this.survivalData,
             mostAffectedCases: this.mostAffectedCases.map(c => c._source),
           })
         ),

@@ -71,13 +71,19 @@ let FrequentMutations = ({
   numCasesAggByProject,
   project,
   totalNumCases,
-  survivalData,
-  setSurvivalData,
-  defaultSurvivalData,
+  setSelectedSurvivalData,
+  selectedSurvivalData,
+  defaultSurvivalRawData,
   width,
   api,
-  projectId
+  projectId,
+  defaultSurvivalLegend,
 }) => {
+  const survivalData = {
+    legend: selectedSurvivalData.legend || defaultSurvivalLegend,
+    rawData: selectedSurvivalData.rawData || defaultSurvivalRawData,
+  };
+
   return (
     <Column>
       {!!frequentMutations.length &&
@@ -128,12 +134,11 @@ let FrequentMutations = ({
                 />
               </div>
             </span>
-            {(defaultSurvivalData || survivalData) && (
+            {survivalData.rawData && (
               <span style={{flexGrow: 1, width: '50%'}}>
                 <SurvivalPlotWrapper
-                  rawData={survivalData.rawData || defaultSurvivalData}
-                  legend={survivalData.legend || ['all cases in project']}
-                  onReset={() => setSurvivalData({})}
+                  {...survivalData}
+                  onReset={() => setSelectedSurvivalData({})}
                   height={240}
                   width={width}
                 />
@@ -193,7 +198,7 @@ let FrequentMutations = ({
                 <Tooltip innerHTML={`Add ${x.genomic_dna_change} to surival plot`}>
                   <span
                     onClick={() => {
-                        if (x.ssm_id !== survivalData.id) {
+                        if (x.ssm_id !== selectedSurvivalData.id) {
                           getSurvivalCurves({
                             field: 'gene.ssm.ssm_id',
                             value: x.ssm_id,
@@ -201,16 +206,16 @@ let FrequentMutations = ({
                             api,
                             projectId
                           })
-                            .then(setSurvivalData);
+                            .then(setSelectedSurvivalData);
                         } else {
-                          setSurvivalData({});
+                          setSelectedSurvivalData({});
                         }
                       }
                     }
                   >
                     <span
                       style={{
-                        color: colors(survivalData.id === x.ssm_id ? 1 : 0),
+                        color: colors(selectedSurvivalData.id === x.ssm_id ? 1 : 0),
                         cursor: 'pointer'
                       }}
                     >
@@ -231,7 +236,7 @@ let FrequentMutations = ({
 }
 
 const enhance = compose(
-  withState('survivalData', 'setSurvivalData', {}),
+  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
 );
 
 export default enhance(FrequentMutations);

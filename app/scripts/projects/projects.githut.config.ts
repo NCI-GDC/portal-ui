@@ -58,7 +58,7 @@ angular.module('projects.githut.config', ['ngApp.core'])
       var group = project_ids[key];
       var types = group.summary.data_categories;
 
-      if (!_.contains(primary_sites,group.primary_site)){
+      if (!_.includes(primary_sites,group.primary_site)){
         primary_sites.push(group.primary_site);
       }
 

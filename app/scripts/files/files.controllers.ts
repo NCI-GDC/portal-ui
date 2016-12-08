@@ -88,7 +88,7 @@ module ngApp.files.controllers {
        ['submitter_id', 'sample_id', 'portion_id',
           'analyte_id', 'slide_id', 'aliquot_id']
         )
-        entity.sample_type = (_.first(found) || {sample_type : '--'}).sample_type;
+        entity.sample_type = (_.head(found) || {sample_type : '--'}).sample_type;
 
         entity.annotations = _.filter(file.annotations, (annotation) => {
           return annotation.entity_id === entity.entity_id;
@@ -100,7 +100,7 @@ module ngApp.files.controllers {
       });
 
       //insert project into top level because it's in the properties table
-      file.projects = _.reject(_.unique(file.cases.map(c => (c.project || {}).project_id)),
+      file.projects = _.reject(_.uniq(file.cases.map(c => (c.project || {}).project_id)),
                                   p => _.isUndefined(p) || _.isNull(p));
 
       //insert cases into related_files for checking isUserProject when downloading

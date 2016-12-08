@@ -347,7 +347,7 @@ module ngApp.components.charts {
                 sortedData = _.map(chunked, (chunk) => {
                                     var keys = _.map(chunk, "key");
                                     return { "doc_count": _.sum(chunk, "doc_count"),
-                                             "key": keys.length > 1 ? _.min(keys) + "-" + _.max(keys) : _.first(keys)
+                                             "key": keys.length > 1 ? _.min(keys) + "-" + _.max(keys) : _.head(keys)
                                             };
                                   });
               }

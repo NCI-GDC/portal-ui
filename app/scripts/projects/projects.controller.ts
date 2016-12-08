@@ -105,7 +105,7 @@ module ngApp.projects.controllers {
           if (this.ProjectsState.tabs.graph.active) {
             this.drawGraph(this.projects);
           } else if(this.ProjectsState.tabs.summary.active || this.numPrimarySites === 0) {
-            this.numPrimarySites = _.unique(this.projects.hits, (project) => { return project.primary_site; }).length;
+            this.numPrimarySites = _.uniq(this.projects.hits, (project) => { return project.primary_site; }).length;
           }
           //get stackedbar chart data
           const projectIds = this.projects.hits.map(p => p.project_id);
@@ -256,7 +256,7 @@ module ngApp.projects.controllers {
               }
             }).then(caseData => {
               const caseAggs = caseData.data.aggregations.projects.buckets
-                .filter(b => _.include(projectIds, b.key));
+                .filter(b => _.includes(projectIds, b.key));
               const caseAggsByProject = caseAggs.reduce((acc, b) => Object.assign(acc, {[b.key]: b.genes.my_genes.gene_id.buckets}), {});
               const numUniqueCases = caseAggs.reduce((sum, b) => sum + b.doc_count, 0);
               console.log(numUniqueCases);

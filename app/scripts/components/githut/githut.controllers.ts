@@ -722,7 +722,7 @@ module ngApp.components.githut.controllers {
 
             var filter = options.filters[d.column] || undefined;
 
-            if (d.column === "primary_site" && _.contains(drawn_primary_sites, d.value)) {
+            if (d.column === "primary_site" && _.includes(drawn_primary_sites, d.value)) {
               return "";
             }
             if (d.column === "primary_site") {

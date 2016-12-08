@@ -294,12 +294,12 @@ module ngApp.cart.services {
 
     buildAddedMsg(added: Array<Object>, alreadyIn: Array<Object>): string {
       var message = this.gettextCatalog.getPlural(added.length,
-                    "<span>Added <strong class='word-break-all'>" + _.get(_.first(added), "file_name", "1 file") + "</strong> to the cart.",
+                    "<span>Added <strong class='word-break-all'>" + _.get(_.head(added), "file_name", "1 file") + "</strong> to the cart.",
                     "<span>Added <strong>" + added.length + "</strong> files to the cart.");
 
       if (alreadyIn.length) {
         message += this.gettextCatalog.getPlural(alreadyIn.length,
-                   added.length === 0 ? "<br />The file was already in cart, not added." : "<strong class='word-break-all'>" + _.get(_.first(added), "file_name") + "</strong> already in cart, not added",
+                   added.length === 0 ? "<br />The file was already in cart, not added." : "<strong class='word-break-all'>" + _.get(_.head(added), "file_name") + "</strong> already in cart, not added",
                    "<br /><strong>" + alreadyIn.length + "</strong> files were already in cart, not added");
       }
 
@@ -311,7 +311,7 @@ module ngApp.cart.services {
 
     buildRemovedMsg(removedFiles: IFile[]): string {
       var message = this.gettextCatalog.getPlural(removedFiles.length,
-                    "<span>Removed <strong class='word-break-all'>" + _.get(_.first(removedFiles), "file_name", "1 file") + "</strong> from the cart.",
+                    "<span>Removed <strong class='word-break-all'>" + _.get(_.head(removedFiles), "file_name", "1 file") + "</strong> from the cart.",
                     "<span>Removed <strong>" + removedFiles.length + "</strong> files from the cart.");
 
       if (removedFiles.length !== 0) {

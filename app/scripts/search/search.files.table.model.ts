@@ -70,9 +70,9 @@ module ngApp.search.models {
       }, {
         name: "Project",
         id: "cases.project.project_id",
-        toolTipText: row => _.unique(_.map(row.cases, p => p.project.name)).join(', '),
+        toolTipText: row => _.uniq(_.map(row.cases, p => p.project.name)).join(', '),
         td: row => {
-          return _.unique(_.map(row.cases, p => {
+          return _.uniq(_.map(row.cases, p => {
             return '<a href="projects/' + p.project.project_id +
                     '">'+ p.project.project_id + '</a>';
           })).join('<br>');

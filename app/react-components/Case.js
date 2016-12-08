@@ -83,6 +83,7 @@ let Case = ({ $scope }) => {
               {
                 key: 'file_count',
                 title: 'Files',
+                style: { textAlign: 'right' },
                 onClick: (item) => {
                   window.location = `/search/f?filters=${
                     expStratConfig.filters.default.params.filters(item[expStratConfig.displayKey])
@@ -104,6 +105,7 @@ let Case = ({ $scope }) => {
               {
                 key: 'file_count',
                 title: 'Files',
+                style: { textAlign: 'right' },
                 onClick: (item) => {
                   window.location = `/search/f?filters=${
                     dataCategoriesConfig.filters.default.params.filters(

@@ -30,5 +30,8 @@ export default {
    *  Dimensions
    */
 
+  spacing: '2rem',
+  halfSpacing: '1rem',
+
   facetsPanelWidth: '35rem',
 };

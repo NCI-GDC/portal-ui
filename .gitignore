@@ -17,3 +17,5 @@ translations/
 .tmp/
 coverage/
 report/
+
+yarn.lock

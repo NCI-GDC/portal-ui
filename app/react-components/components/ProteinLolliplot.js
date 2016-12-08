@@ -146,7 +146,7 @@ let ProteinLolliplot = ({
       >
         Reset
       </Button>
-      <DownloadVisualizationButton 
+      <DownloadVisualizationButton
         svg="#protein-viewer-root svg.chart"
         data={$scope.proteinLolliplotData}
         stylePrefix="#protein-viewer-root"

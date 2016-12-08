@@ -1,9 +1,9 @@
+/* global d3 */
+
 import React, { PropTypes } from 'react';
-import _ from 'lodash';
 import { Row, Column } from '../uikit/Flex';
 import theme from '../theme';
 import Table, { Tr, Td, Th } from '../uikit/Table';
-import Tooltip from '../uikit/Tooltip';
 
 const colors = d3.scale.category20();
 
@@ -23,7 +23,15 @@ const styles = {
 };
 
 // th are horizontal
-const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, headings, data, emptyMessage}) => {
+const EntityPageHorizontalTable = ({
+  style,
+  title,
+  titleStyle,
+  rightComponent,
+  headings,
+  data,
+  emptyMessage,
+}) => {
   return (
     <Column
       style={{
@@ -65,7 +73,11 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
               {h.title}
             </Th>
           ))}
-          subheadings={headings.map(h => h.subheadings && h.subheadings.map((s, i) => <Th key={`subheading-${i}`}>{s}</Th>))}
+          subheadings={
+            headings.map(h => h.subheadings && h.subheadings.map((s, i) =>
+              <Th key={`subheading-${i}`}>{s}</Th>)
+            )
+          }
           body={
             <tbody>
               {data.map((d, i) => {
@@ -81,7 +93,9 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
                       const value = typeof d[h.key] !== 'undefined' ? d[h.key] : h.value;
                       return [].concat(value).map((v, i) =>
                         <Td key={`${h.key}-${i}`} style={h.style || {}}>
-                          {h.color && <div className="h-color" style={{ backgroundColor: colors(i) }} />}
+                          {h.color &&
+                            <div className="h-color" style={{ backgroundColor: colors(i) }} />
+                          }
                           {v || '--'}
                         </Td>
                       );

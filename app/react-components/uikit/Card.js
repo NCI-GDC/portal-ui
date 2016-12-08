@@ -2,7 +2,7 @@
 import React, { PropTypes } from 'react';
 
 // Custom
-import theme from '../theme';
+import { cardTitle } from '../theme/mixins';
 
 /*----------------------------------------------------------------------------*/
 
@@ -10,15 +10,11 @@ const styles = {
   card: {
     backgroundColor: 'white',
   },
-  header: {
-    padding: '1rem',
-    color: theme.primary,
-  },
 };
 
-const Card = ({ style, children, title, ...props }) => (
+const Card = ({ style, children, title, headerStyle, ...props }) => (
   <div style={{ ...styles.card, ...style }} {...props}>
-    {title && <div style={styles.header}>{title}</div>}
+    {title && <div style={{ ...cardTitle, ...(headerStyle || {}) }}>{title}</div>}
     {children}
   </div>
 );

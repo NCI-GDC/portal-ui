@@ -1,4 +1,5 @@
 import { css } from 'glamor';
+import theme from './index';
 
 export const center = {
   display: 'flex',
@@ -47,3 +48,15 @@ export const clickable = css({
     color: 'rgb(35, 92, 124)',
   },
 });
+
+export const cardTitle = {
+  color: theme.greyScale7,
+  width: '100%',
+  fontSize: '2rem',
+  lineHeight: '1.4em',
+  fontWeight: 'normal',
+  marginTop: 0,
+  marginBottom: 0,
+  padding: '1rem',
+  backgroundColor: '#fff',
+};

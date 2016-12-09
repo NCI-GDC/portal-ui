@@ -1,10 +1,10 @@
+// @flow
+
 // Vendor
-import { PropTypes } from 'react';
 import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 
 /*----------------------------------------------------------------------------*/
-import theme from '../theme';
 
 const getNestedValue = (item, path) => {
   if (path.length === 1) {
@@ -19,7 +19,7 @@ const getNestedValue = (item, path) => {
 
 const PieChart = ({ data, path = 'file_count', tooltipKey, height = 160, width = 160 }) => {
   const color = d3.scaleOrdinal(d3.schemeCategory20);
-  const outerRadius = height / 2 + 10;
+  const outerRadius = (height / 2) + 10;
 
   const node = ReactFauxDOM.createElement('div');
   node.style.setProperty('display', 'flex');
@@ -57,7 +57,7 @@ const PieChart = ({ data, path = 'file_count', tooltipKey, height = 160, width =
         .classed('active', true)
         .html(d.data[tooltipKey]);
     })
-    .on('mouseleave', d => {
+    .on('mouseleave', () => {
       d3.select('.global-tooltip')
         .classed('active', false);
     });
@@ -67,10 +67,6 @@ const PieChart = ({ data, path = 'file_count', tooltipKey, height = 160, width =
   .on('mousedown', d => d.data.clickHandler && d.data.clickHandler());
 
   return node.toReact();
-};
-
-PieChart.propTypes = {
-  data: PropTypes.array,
 };
 
 /*----------------------------------------------------------------------------*/

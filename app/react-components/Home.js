@@ -1,3 +1,8 @@
+// @flow
+
+import React from 'react';
+import _ from 'lodash';
+
 const Row = ({ children, style, className }) =>
   <div className={className} style={{ display: 'flex', ...style }}>{children}</div>;
 
@@ -13,7 +18,8 @@ const center = {
 
 const styles = {
   container: {
-    background: 'radial-gradient(ellipse at center, rgba(147,206,222,1) 0%, rgba(117,189,209,1) 48%, rgba(73,129,189,1) 100%)',
+    background:
+      'radial-gradient(ellipse at center, rgba(147,206,222,1) 0%, rgba(117,189,209,1) 48%, rgba(73,129,189,1) 100%)',
   },
   insideContainer: {
     flex: 1,
@@ -96,7 +102,11 @@ const styles = {
   },
 };
 
-const Home = ({ $scope }) => (
+type TProps = {
+  $scope: Object,
+};
+
+const Home = ({ $scope }: TProps): React.Element<*> => (
   <Column>
     <Row style={styles.container}>
       <div style={styles.insideContainer}>
@@ -147,6 +157,7 @@ const Home = ({ $scope }) => (
             <div style={{ fontSize: '2.3rem', color: 'rgb(70, 70, 70)' }}>Data Portal Summary</div>
             <div style={{ fontSize: '1.3rem', color: 'rgb(37, 97, 122)', marginLeft: '2rem' }}>
               <a
+                rel="noopener noreferrer"
                 target="_blank"
                 href="https://gdc-docs.nci.nih.gov/Data_Portal/Release_Notes/Data_Portal_Release_Notes/"
               >
@@ -230,7 +241,7 @@ const Home = ({ $scope }) => (
         analysis. The GDC applications include:
       </Row>
       <Row style={styles.gdcAppsRow}>
-        <a
+        <span
           href="#" title="Data Portal"
           style={styles.gdcAppsLink}
         >
@@ -241,10 +252,11 @@ const Home = ({ $scope }) => (
             alt="GDC Data Portal"
           />
           <p>Data Portal</p>
-        </a>
+        </span>
         <a
           href="https://gdc.nci.nih.gov/"
           target="_blank"
+          rel="noopener noreferrer"
           title="GDC Website"
           style={styles.gdcAppsLink}
         >
@@ -259,6 +271,7 @@ const Home = ({ $scope }) => (
         <a
           href="https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool"
           target="_blank"
+          rel="noopener noreferrer"
           title="GDC Data Transfer Tool"
           style={styles.gdcAppsLink}
         >
@@ -273,6 +286,7 @@ const Home = ({ $scope }) => (
         <a
           href="https://gdc.nci.nih.gov/developers/gdc-application-programming-interface-api"
           target="_blank"
+          rel="noopener noreferrer"
           title="GDC API"
           style={styles.gdcAppsLink}
         >
@@ -289,6 +303,7 @@ const Home = ({ $scope }) => (
         <a
           href="https://gdc-portal.nci.nih.gov/submission/"
           target="_blank"
+          rel="noopener noreferrer"
           title="GDC Submission Portal"
           style={styles.gdcAppsLink}
         >
@@ -303,6 +318,7 @@ const Home = ({ $scope }) => (
         <a
           href="https://gdc-docs.nci.nih.gov/"
           target="_blank"
+          rel="noopener noreferrer"
           title="GDC Docs"
           style={styles.gdcAppsLink}
         >
@@ -317,6 +333,7 @@ const Home = ({ $scope }) => (
         <a
           href="https://gdc-portal.nci.nih.gov/legacy-archive"
           target="_blank"
+          rel="noopener noreferrer"
           title="GDC Legacy Archive"
           style={styles.gdcAppsLink}
         >
@@ -332,6 +349,7 @@ const Home = ({ $scope }) => (
           href="https://gdc-cbioportal.nci.nih.gov/"
           title="GDC cBio Portal"
           target="_blank"
+          rel="noopener noreferrer"
           className="menu-item"
           style={styles.gdcAppsLink}
         >
@@ -347,5 +365,6 @@ const Home = ({ $scope }) => (
     </Column>
   </Column>
 );
+
 
 export default Home;

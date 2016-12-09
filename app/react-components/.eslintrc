@@ -1,3 +1,9 @@
 {
-  "extends": ['@knit/socks-react']
+  "extends": ['@knit/socks-react'],
+  "rules": {
+    "camelcase": 0,
+    "fp/no-mutation": 0,
+    "fp/no-this": 0,
+    "react/prop-types": 0
+  }
 }

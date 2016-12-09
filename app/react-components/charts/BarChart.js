@@ -1,3 +1,5 @@
+// @flow
+
 // Vender
 import React from 'react';
 import * as d3 from 'd3';
@@ -6,12 +8,13 @@ import { compose, withState, pure } from 'recompose';
 
 // Custom
 import './style.css';
-const BarChart = (() => ({ data, title, yAxis, styles, chart, setState, height: h, margin: m }) => {
+
+const BarChart = (() => ({ data, title, yAxis, styles, height: h, margin: m }) => {
   const el = ReactFauxDOM.createElement('div');
 
   const margin = m || { top: 30, right: 50, bottom: 55, left: 30 };
   const bandWidth = 36;
-  const width = Object.keys(data).length * bandWidth + margin.left + margin.right;
+  const width = (Object.keys(data).length * bandWidth) + margin.left + margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
 
   const x = d3.scaleBand()
@@ -100,13 +103,13 @@ const BarChart = (() => ({ data, title, yAxis, styles, chart, setState, height: 
           .classed('active', true)
           .html(d.tooltip);
       })
-      .on('mouseleave', d => {
+      .on('mouseleave', () => {
         d3.select('.global-tooltip')
           .classed('active', false);
       });
   };
 
-  barGs.each(function (d) { drawBar(d3.select(this)); });
+  barGs.each(function t(): void { drawBar(d3.select(this)); });
 
   return el.toReact();
 })();

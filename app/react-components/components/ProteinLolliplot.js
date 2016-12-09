@@ -1,10 +1,9 @@
 import React from 'react';
+import moment from 'moment';
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
 import Button from '../uikit/Button';
 import withDropdown from '../uikit/withDropdown';
-import saveFile from '../utils/filesaver';
-import moment from 'moment';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
 
 export const zDepth1 = {

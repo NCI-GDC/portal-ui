@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 
 import { Column } from '../uikit/Flex';
 import theme from '../theme';
@@ -65,40 +65,33 @@ const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleSt
                   {d.th}
                 </Th>
                 {d.collapsibleTd &&
-                (<CollapsibleTd
-                  style={{
-                    ...styles.td,
-                    backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
-                    ...d.style,
-                  }}
-                  text={d.collapsibleTd || '--'}
-                />)
-              }
+                  <CollapsibleTd
+                    style={{
+                      ...styles.td,
+                      backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
+                      ...d.style,
+                    }}
+                    text={d.collapsibleTd || '--'}
+                  />
+                }
                 {d.td &&
-                (<Td
-                  style={{
-                    ...styles.td,
-                    backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
-                    ...d.style,
-                  }}
-                >
-                  {d.td || '--'}
-                </Td>)
-              }
+                  <Td
+                    style={{
+                      ...styles.td,
+                      backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
+                      ...d.style,
+                    }}
+                  >
+                    {d.td || '--'}
+                  </Td>
+                }
               </Tr>
-          ))}
+            ))}
           </tbody>
         }
       />
     </Column>
   );
-};
-
-EntityPageVerticalTable.propTypes = {
-  title: PropTypes.node,
-  style: PropTypes.object,
-  props: PropTypes.any,
-  thToTd: PropTypes.array,
 };
 
 export default EntityPageVerticalTable;

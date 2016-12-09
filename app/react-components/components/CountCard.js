@@ -1,5 +1,7 @@
+// @flow
+
 // Vendor
-import React, { PropTypes } from 'react';
+import React from 'react';
 
 // Custom
 import Card from '../uikit/Card';
@@ -20,17 +22,6 @@ const CountCard = ({ title, count, icon, style, onCountClick }) => (
     </Row>
   </Card>
 );
-
-CountCard.propTypes = {
-  title: PropTypes.string,
-  count: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
-  icon: PropTypes.node,
-  style: PropTypes.object,
-  onCountClick: PropTypes.func,
-};
 
 /*----------------------------------------------------------------------------*/
 

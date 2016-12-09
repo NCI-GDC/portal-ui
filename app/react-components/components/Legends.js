@@ -1,5 +1,5 @@
 import React from 'react';
-
+import _ from 'lodash';
 import Row from '../uikit/Flex/Row';
 import Column from '../uikit/Flex/Column';
 
@@ -26,14 +26,19 @@ const styles = {
   },
 };
 
-export const StepLegend = ({ steps = [0.25, 0.5, 0.75, 1], color = '#D33682', leftLabel = 'Less', rightLabel = 'More' }) => (
+export const StepLegend = ({
+  steps = [0.25, 0.5, 0.75, 1],
+  color = '#D33682',
+  leftLabel = 'Less',
+  rightLabel = 'More',
+}) => (
   <Row style={styles.table}>
     <Column style={styles.td}>{leftLabel}</Column>
     <Row style={styles.td}>
       {
         steps.map(opacity => (
           <div style={{ ...styles.color, background: color, opacity }} key={opacity} />
-          ))
+        ))
       }
     </Row>
     <Column style={styles.td}>{rightLabel}</Column>

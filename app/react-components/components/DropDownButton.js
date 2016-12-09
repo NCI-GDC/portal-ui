@@ -1,3 +1,7 @@
+// @flow
+
+import React from 'react';
+
 import Button from '../uikit/Button';
 import withDropdown from '../uikit/withDropdown';
 import Column from '../uikit/Flex/Column';

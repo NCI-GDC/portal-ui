@@ -1,5 +1,5 @@
 // Vendor
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { compose, withState } from 'recompose';
 
 // Custom
@@ -60,15 +60,6 @@ const SummaryCard = ({
     </Column>
   </Card>
 );
-
-SummaryCard.propTypes = {
-  style: PropTypes.object,
-  title: PropTypes.string,
-  data: PropTypes.array,
-  footer: PropTypes.node,
-  path: PropTypes.string,
-  table: PropTypes.object,
-};
 
 /*----------------------------------------------------------------------------*/
 

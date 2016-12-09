@@ -1,15 +1,18 @@
+/* global $ */
+
+// @flow
+
 // Vendor
 import React, { Component } from 'react';
 import _ from 'lodash';
 
 // Custom
+import Lolliplot from '@oncojs/lolliplot';
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
-import Button from './uikit/Button';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import ProteinLolliplotComponent from './components/ProteinLolliplot';
-import CountCard from './components/CountCard';
 import { ExternalLink } from './uikit/Links';
 import externalReferenceLinks from './utils/externalReferenceLinks';
 import BarChart from './charts/BarChart';
@@ -20,7 +23,6 @@ import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
-import Lolliplot from '@oncojs/lolliplot';
 
 const Mutation = (() => {
   const styles = {
@@ -58,15 +60,9 @@ const Mutation = (() => {
   };
 
   return class Mutation extends Component {
-    constructor() {
-      super();
-
-      this.state = {
-        ProteinLolliplot: {},
-      };
-
-      this.renderProteinLolliplot = this.renderProteinLolliplot.bind(this);
-    }
+    state = {
+      ProteinLolliplot: {},
+    };
 
     componentDidMount() {
       this.renderProteinLolliplot();
@@ -92,7 +88,7 @@ const Mutation = (() => {
       window.selectedMutation = null;
     }
 
-    renderProteinLolliplot() {
+    renderProteinLolliplot = () => {
       this.setState({
         ProteinLolliplot: Lolliplot({
           data: this.props.$scope.proteinLolliplotData,

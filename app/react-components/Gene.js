@@ -1,15 +1,16 @@
+/* global $ */
+
 // Vendor
 import React, { Component } from 'react';
 import _ from 'lodash';
 
 // Custom
+import Lolliplot from '@oncojs/lolliplot';
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
 import withDropdown from './uikit/withDropdown';
-import Button from './uikit/Button';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
-import CountCard from './components/CountCard';
 import ProteinLolliplotComponent from './components/ProteinLolliplot';
 import FrequentMutations from './components/FrequentMutations';
 import { ExternalLink } from './uikit/Links';
@@ -23,7 +24,6 @@ import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
-import Lolliplot from '@oncojs/lolliplot';
 
 
 export const zDepth1 = {
@@ -98,21 +98,15 @@ const Gene = (() => {
   };
 
   return class Gene extends Component {
-    constructor() {
-      super();
+    state = {
+      ProteinLolliplot: {},
+    };
 
-      this.state = {
-        ProteinLolliplot: {},
-      };
-
-      this.renderProteinLolliplot = this.renderProteinLolliplot.bind(this);
-    }
-
-    componentDidMount() {
+    componentDidMount(): void {
       this.renderProteinLolliplot();
     }
 
-    renderProteinLolliplot() {
+    renderProteinLolliplot = () => {
       this.setState({
         ProteinLolliplot: Lolliplot({
           data: this.props.$scope.proteinLolliplotData,
@@ -145,13 +139,9 @@ const Gene = (() => {
     }
 
     render() {
-      let {
+      const {
         gene,
         $scope,
-        setActive,
-        active,
-        mouseDownHandler,
-        mouseUpHandler,
         frequentMutations: fm,
       } = this.props;
 
@@ -182,7 +172,7 @@ const Gene = (() => {
       const totalNumCases = Object.keys(allCasesAggByProject).reduce((sum, b) => sum + allCasesAggByProject[b], 0);
 
       const frequentMutations = fm.map(x => {
-        const consequence = x.consequence.find(x => x.transcript.is_canonical);
+        const consequence = x.consequence.find(c => c.transcript.is_canonical);
         return {
           ...x,
           num_affected_cases_all: x.occurrence.length,
@@ -191,16 +181,22 @@ const Gene = (() => {
             [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1,
           }), {}),
           impact: consequence.transcript.annotation.impact,
-          consequence_type:
-  <span>
-    <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
-    <span style={{ marginLeft: '5px' }}>
-      <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
-    </span>
-    <span style={{ marginLeft: '5px', color: impactColors[consequence.transcript.annotation.impact] || 'inherit' }}>
-      {consequence.transcript.aa_change}
-    </span>
-  </span>,
+          consequence_type: (
+            <span>
+              <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
+              <span style={{ marginLeft: '5px' }}>
+                <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
+              </span>
+              <span
+                style={{
+                  marginLeft: '5px',
+                  color: impactColors[consequence.transcript.annotation.impact] || 'inherit',
+                }}
+              >
+                {consequence.transcript.aa_change}
+              </span>
+            </span>
+          ),
         };
       });
 
@@ -221,8 +217,9 @@ const Gene = (() => {
                   },
                 },
                 { th: 'Type', td: gene.biotype },
-                { th: 'Location', td:
-                    `chr${gene.gene_chromosome}:${gene.gene_start}-${gene.gene_end}
+                {
+                  th: 'Location',
+                  td: `chr${gene.gene_chromosome}:${gene.gene_start}-${gene.gene_end}
                     (${(gene.case || [{ ssm: [{ ncbi_build: '--' }] }])[0].ssm[0].ncbi_build})`,
                 },
                 { th: 'Strand', td: gene.gene_strand ? strandIconMap[gene.gene_strand.toString(10)] : '--' },
@@ -305,7 +302,11 @@ const Gene = (() => {
                   { key: 'disease_type', title: 'Disease Type' },
                   { key: 'site', title: 'Site' },
                   { key: 'num_affected_cases',
-                    title: <Tooltip innerHTML={`Number of Cases where ${gene.symbol} contains SSM`}># Affected Cases</Tooltip>,
+                    title: (
+                      <Tooltip innerHTML={`Number of Cases where ${gene.symbol} contains SSM`}>
+                        # Affected Cases
+                      </Tooltip>
+                    ),
                   },
                   { key: 'num_mutations',
                     title: <Tooltip innerHTML={`Number of SSM observed in ${gene.symbol}`}># Mutations</Tooltip>,
@@ -316,7 +317,8 @@ const Gene = (() => {
                   d => ({
                     ...d,
                     project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
-                    num_affected_cases: `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
+                    num_affected_cases:
+                      `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
                     num_mutations: d.ssms.length,
                   })
                 )}

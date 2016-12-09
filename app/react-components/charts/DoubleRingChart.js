@@ -1,3 +1,5 @@
+// @flow
+
 // Vendor
 import { PropTypes } from 'react';
 import * as d3 from 'd3';
@@ -6,8 +8,8 @@ import ReactFauxDOM from 'react-faux-dom';
 /*----------------------------------------------------------------------------*/
 const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 }) => {
   const color = d3.scaleOrdinal(d3.schemeCategory10);
-  const centerRingWidth = width - (outerRingWidth) * 2;
-  const centerRingHeight = height - (outerRingWidth) * 2;
+  const centerRingWidth = width - (outerRingWidth * 2);
+  const centerRingHeight = height - (outerRingWidth * 2);
   const centerRadius = Math.min(centerRingWidth, centerRingHeight) / 2;
   const radius = Math.min(width, height) / 2;
 
@@ -30,7 +32,7 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
     clickHandler: d.clickHandler,
   }));
   const innerPie = d3.pie().padAngle(HALF_DEGREE_IN_RAD * 2).value(d => d.v)(innerPieData);
-  const outerPieData = data.map((d, i) => ({
+  const outerPieData = data.map((d) => ({
     items: d.outer.map(p => ({ v: p.value, label: p.label, clickHandler: p.clickHandler })),
     innerRadius: centerRadius,
     outerRadius: radius,
@@ -39,7 +41,7 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
     (p, i) => d3.pie()
     .padAngle(HALF_DEGREE_IN_RAD)
     .startAngle(innerPie[i].startAngle)
-    .endAngle(innerPie[i].endAngle)(p.items.map(i => i.v))
+    .endAngle(innerPie[i].endAngle)(p.items.map(x => x.v))
   );
 
   const dataWithPie = [
@@ -74,7 +76,7 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
     .attr('d', d => d3.arc()
         .outerRadius(d.outerRadius)
         .innerRadius(d.innerRadius)(d.pie))
-    .style('fill', (d, i) => d.color);
+    .style('fill', (d) => d.color);
 
   fill
     .attr('class', 'pointer')
@@ -83,7 +85,7 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
         .classed('active', true)
         .html(`<b>${d.label}</b><br />${d.pie.value} cases`);
     })
-    .on('mouseleave', d => {
+    .on('mouseleave', () => {
       d3.select('.global-tooltip')
       .classed('active', false);
     })

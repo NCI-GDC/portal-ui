@@ -155,16 +155,17 @@ const Project = ({
       }), {}),
       num_affected_cases_all: x.occurrence.length,
       impact: consequence.transcript.annotation.impact,
-      consequence_type:
-  <span>
-    <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
-    <span style={{ marginLeft: '5px' }}>
-      <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
-    </span>
-    <span style={{ marginLeft: '5px', color: impactColors[consequence.transcript.annotation.impact] || 'inherit' }}>
-      {consequence.transcript.aa_change}
-    </span>
-  </span>,
+      consequence_type: (
+        <span>
+          <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
+          <span style={{ marginLeft: '5px' }}>
+            <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
+          </span>
+          <span style={{ marginLeft: '5px', color: impactColors[consequence.transcript.annotation.impact] || 'inherit' }}>
+            {consequence.transcript.aa_change}
+          </span>
+        </span>
+      ),
     };
   });
 

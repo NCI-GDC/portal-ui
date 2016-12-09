@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Column from '../uikit/Flex/Column';
-import Row from '../uikit/Flex/Row';
 import BarChart from '../charts/BarChart';
 import theme from '../theme';
 import EntityPageHorizontalTable from './EntityPageHorizontalTable';
@@ -12,7 +11,6 @@ import makeFilter from '../utils/makeFilter';
 
 const MostAffectedCases = ({
   mostAffectedCases,
-  project,
 }) => (
   <Column>
     {!!mostAffectedCases.length &&
@@ -58,26 +56,31 @@ const MostAffectedCases = ({
             { key: 'data_types',
               title: 'Available Files per Data Category',
               style: { textAlign: 'right' },
-              subheadings: Object.keys(DATA_CATEGORIES).map(
-                k => (
-                  <abbr key={DATA_CATEGORIES[k].abbr}>
-                    <Tooltip innerHTML={DATA_CATEGORIES[k].full}>
-                      {DATA_CATEGORIES[k].abbr}
-                    </Tooltip>
-                  </abbr>)
+              subheadings: Object.keys(DATA_CATEGORIES).map(k => (
+                <abbr key={DATA_CATEGORIES[k].abbr}>
+                  <Tooltip innerHTML={DATA_CATEGORIES[k].full}>
+                    {DATA_CATEGORIES[k].abbr}
+                  </Tooltip>
+                </abbr>)
               ),
             },
             {
-              key: 'num_mutations', title: '#Mutations',
+              key: 'num_mutations',
+              title: '#Mutations',
               style: { textAlign: 'right' },
             },
             {
-              key: 'num_genes', title: '#Genes',
+              key: 'num_genes',
+              title: '#Genes',
               style: { textAlign: 'right' },
             },
           ]}
           data={mostAffectedCases.map(c => {
-            const dataCategorySummary = c.summary.data_categories.reduce((acc, c) => ({ ...acc, [c.data_category]: c.file_count }), {});
+            const dataCategorySummary = c.summary.data_categories.reduce((acc, cat) => ({
+              ...acc,
+              [cat.data_category]: cat.file_count,
+            }), {});
+
             return {
               id: <a href={`/cases/${c.case_id}`}>{c.case_id}</a>,
               primary_site: c.project.primary_site,

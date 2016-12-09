@@ -1,3 +1,5 @@
+// @flow
+
 // Vender
 import React from 'react';
 import * as d3 from 'd3';
@@ -47,7 +49,8 @@ const drawChart = ({ data, yAxis, styles, width, height }) => {
       .attr('class', 'series')
     .selectAll('a')
     .data(d => d)
-    .enter().append('a')
+    .enter()
+    .append('a')
       .attr('xlink:href', d => `genes/${d[2].data.gene_id}`)
       .append('rect')
       .attr('x', d => x(d[2].data.symbol))
@@ -55,16 +58,16 @@ const drawChart = ({ data, yAxis, styles, width, height }) => {
       .attr('fill', d => colors(d[2].index))
       .attr('height', d => y(d[0]) - y(d[1]))
       .attr('width', x.bandwidth())
-      .on('mouseenter', (d, i, nodes) => {
+      .on('mouseenter', d => {
         d3.select('.global-tooltip')
           .classed('active', true)
           .html(`<b>${d[2].key}</b><br />${d[2].data[d[2].key]} cases affected`);
       })
-      .on('mouseleave', d => {
+      .on('mouseleave', () => {
         d3.select('.global-tooltip')
           .classed('active', false);
       })
-      .on('click', d => {
+      .on('click', () => {
         d3.select('.global-tooltip')
           .classed('active', false);
       });
@@ -107,10 +110,11 @@ const drawChart = ({ data, yAxis, styles, width, height }) => {
   return el.toReact();
 };
 
-const StackedBarChart = (() => ({ data, yAxis, styles, width = 450, height = 200 }) => Object.keys(data).length ?
-      drawChart({ data, yAxis, styles, width, height }) :
-      <Row style={{ color: styles.xAxis.textFill, justifyContent: 'center' }}>
+const StackedBarChart = ({ data, yAxis, styles, width = 450, height = 200 }) =>
+  Object.keys(data).length
+    ? drawChart({ data, yAxis, styles, width, height })
+    : <Row style={{ color: styles.xAxis.textFill, justifyContent: 'center' }}>
         No data
-      </Row>)();
+      </Row>;
 
 export default StackedBarChart;

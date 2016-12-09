@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-import Consequence from './Consequence';
-
 export const mapDonors = function (donors) {
   return donors.map((d) => {
     const { summary, demographic, case_id, diagnoses = [] } = d._source;

@@ -63,7 +63,7 @@ const getOffset = elem => {
   const scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
   const clientTop = docEl.clientTop || body.clientTop || 0;
 
-  const top = box.top + scrollTop - clientTop;
+  const top = (box.top + scrollTop) - clientTop;
 
   return Math.round(top);
 };

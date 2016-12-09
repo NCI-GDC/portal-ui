@@ -23,10 +23,15 @@
               <i class="fa fa-user fa-2x icon" data-ng-switch-when="case"></i>
               <i class="fa fa-file-o fa-2x icon " data-ng-switch-when="file"></i>
               <i class="fa fa-files-o fa-2x icon" data-ng-switch-when="project"/></i>
+              <i class="fa fa-files-o fa-2x icon" data-ng-switch-when="gene-centric"/></i>
+              <i class="fa fa-files-o fa-2x icon" data-ng-switch-when="ssm-centric"/></i>
             </div>
           </div>
           <div class="col-xs-10">
             <div class="entity-id">{{ item._id }}</div>
+            <div class="highlighted-terms" data-ng-switch-when="gene-centric">
+              <div data-ng-bind-html="item.symbol | highlight:searchQuery"></div>
+            </div>
             <div class="highlighted-terms" data-ng-switch-when="file">
               <div data-ng-bind-html="item.file_name | highlight:searchQuery"></div>
               <div data-ng-bind-html="item.file_id | highlight:searchQuery"></div>

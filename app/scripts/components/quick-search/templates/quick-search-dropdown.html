@@ -2,7 +2,7 @@
   <ul class="col-md-5 col-sm-12" id="quick-search-list" data-ng-show="results.hits.length">
     <li data-ng-repeat="item in results.hits track by item._id"
          data-ng-class="{ selected: item.selected }" class="quick-search-result row"
-         data-ng-click="goTo(item._type, item._id)"
+         data-ng-click="goTo(item._type.replace('-centric', ''), item._id)"
          data-ng-switch="item._type"
          data-ng-mouseover="itemHover(item)">
       <div class="col-xs-2">
@@ -10,40 +10,13 @@
         <i class="fa fa-file-o fa-2x" data-ng-switch-when="file"></i>
         <i class="fa fa-files-o fa-2x" data-ng-switch-when="project"/></i>
         <i class="fa fa-align-left fa-2x" data-ng-switch-when="annotation"/></i>
+        <span style="background-color: #265986;border-radius: 100px;font-size: 1.4rem;font-weight: bold;color: white;margin-right: 10px;display: flex;align-items: center;justify-content: center;width: 40px;transform: scale(0.85);height: 40px;" data-ng-switch-when="gene-centric">GE</span>
+        <span style="background-color: #265986;border-radius: 100px;font-size: 1.4rem;font-weight: bold;color: white;margin-right: 10px;display: flex;align-items: center;justify-content: center;width: 40px;transform: scale(0.85);height: 40px;" data-ng-switch-when="ssm-centric">MU</span>
       </div>
       <div class="col-xs-10">
         <span class="entity-id">{{ item._id }}</span>
-        <ul class="highlighted-terms" data-ng-switch-when="annotation">
-          <li data-ng-bind-html="item.annotation_id| highlight:searchQuery"></li>
-        </ul>
-        <ul class="highlighted-terms" data-ng-switch-when="file">
-          <li data-ng-bind-html="item.file_name | highlight:searchQuery"></li>
-          <li data-ng-bind-html="item.file_id | highlight:searchQuery"></li>
-        </ul>
-        <ul class="highlighted-terms" data-ng-switch-when="project">
-          <li data-ng-bind-html="item.project_id | highlight:searchQuery"></li>
-          <li data-ng-bind-html="item.name | highlight:searchQuery"></li>
-          <li data-ng-bind-html="item.primary_site | highlight:searchQuery"></li>
-        </ul>
-        <ul class="highlighted-terms" data-ng-switch-when="case">
-          <li data-ng-bind-html="item.case_id | highlight:searchQuery"></li>
-          <li data-ng-bind-html="item.project.project_id | highlight:searchQuery"></li>
-          <li data-ng-if="item.bioSpecimen.sample_id"
-              data-ng-bind-html="item.sample_ids | highlight:searchQuery"></li>
-          <li data-ng-if="item.bioSpecimen.sample_id"
-              data-ng-bind-html="item.submitter_sample_ids | highlight:searchQuery"></li>
-          <li data-ng-if="item.bioSpecimen.portion_id"
-              data-ng-bind-html="item.portion_ids | highlight:searchQuery"></li>
-          <li data-ng-if="item.bioSpecimen.portion_id"
-              data-ng-bind-html="item.submitter_portion_ids | highlight:searchQuery"></li>
-          <li data-ng-if="item.bioSpecimen.analyte_id"
-              data-ng-bind-html="item.analyte_ids | highlight:searchQuery"></li>
-          <li id="anaylte_id" data-ng-if="item.bioSpecimen.analyte_id"
-              data-ng-bind-html="item.submitter_analyte_ids | highlight:searchQuery"></li>
-          <li id="aliquot_id" data-ng-if="item.bioSpecimen.aliquot_id"
-              data-ng-bind-html="item.aliquot_ids | highlight:searchQuery"></li>
-          <li id="submitter_aliquot_ids" data-ng-if="item.bioSpecimen.aliquot_id"
-              data-ng-bind-html="item.submitter_aliquot_ids | highlight:searchQuery"></li>
+        <ul class="highlighted-terms">
+          <li data-ng-repeat="(k,v) in item._highlight | limitTo:1" data-ng-bind-html="v"></li>
         </ul>
       </div>
     </li>
@@ -57,6 +30,10 @@
          data-ng-show="selectedItem._type === 'case'"></div>
     <div data-ng-include="'components/quick-search/templates/project.html'"
          data-ng-show="selectedItem._type === 'project'"></div>
+    <div data-ng-include="'components/quick-search/templates/gene-centric.html'"
+         data-ng-show="selectedItem._type === 'gene-centric'"></div>
+    <div data-ng-include="'components/quick-search/templates/ssm-centric.html'"
+         data-ng-show="selectedItem._type === 'ssm-centric'"></div>
   </div>
   <div class="no-results" data-ng-if="!results.hits.length && searchQuery && !activeQuery" data-translate>
     No Results

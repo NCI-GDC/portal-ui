@@ -66,28 +66,14 @@ module ngApp.components.quickSearch.directives {
         return;
       }
 
-      function findMatch(obj) {
-        for (var key in obj) {
-          if (obj.hasOwnProperty(key)) {
-            if (_.isString(obj[key])) {
-              if (obj[key].toLowerCase().indexOf($scope.searchQuery.toLowerCase()) === 0) {
-                result.bioSpecimen = obj;
-                return;
-              }
-            } else if (_.isArray(obj[key])) {
-              _.forEach(obj[key], (item) => {
-                findMatch(item);
-              });
-            }
-          }
-        }
-      }
+      const ids = Object.keys(result._highlight).filter(k => k.indexOf('_ids') != -1).reduce((acc, k) => (
+        [...acc, ...result._highlight[k]]
+      ), []);
+      ids.sort();
 
-      _.forEach(result.samples, (sample) => {
-        if (!result.bioSpecimen) {
-          findMatch(sample);
-        }
-      });
+      if (ids.length) {
+        result._highlight = {ids: [ids[0]]};
+      }
     }
 
     $scope.keyboardListener = function(e: any) {
@@ -171,42 +157,60 @@ module ngApp.components.quickSearch.directives {
       var params = {
         query: $scope.searchQuery,
         fields: [
+          // project
           "project_id",
-          "name",
           "disease_type",
           "primary_site",
-          "project.project_id",
-          "project.name",
-          "project.disease_type",
-          "project.primary_site",
+          "name",
+
+          //case
+          "case_id",
+          "submitter_id",
+
+          // biospecimen
           "aliquot_ids",
           "submitter_aliquot_ids",
           "analyte_ids",
           "submitter_analyte_ids",
-          "case_id",
-          "submitter_id",
           "portion_ids",
           "submitter_portion_ids",
           "sample_ids",
           "submitter_sample_ids",
+          "slide_ids",
+          "submitter_slide_ids",
+
+          // file
           "file_id",
           "file_name",
-          "file_size",
+          "submitter_id",
+          "data_category",
           "data_type",
-          "clinical.gender",
-          "samples.sample_id",
-          "samples.submitter_id",
-          "samples.sample_type",
-          "samples.portions.portion_id",
-          "samples.portions.submitter_id",
-          "samples.portions.analytes.analyte_id",
-          "samples.portions.analytes.submitter_id",
-          "samples.portions.analytes.analyte_type",
-          "samples.portions.analytes.aliquots.aliquot_id",
-          "samples.portions.analytes.aliquots.submitter_id",
+          "experimental_strategy",
+          "md5sum",
+          "cases.case_id",
+
+          // annotation
           "annotation_id",
           "entity_id",
-          "entity_submitter_id"
+          "entity_submitter_id",
+
+          // gene
+          "symbol",
+          "synonyms",
+          "gene_id",
+          "transcripts.translation_id",
+          "transcripts.id",
+          "external_db_ids.entrez_gene",
+          "external_db_ids.hgnc",
+          "external_db_ids.omim_gene",
+          "external_db_ids.uniprotkb_swissprot",
+          "cytoband",
+
+          // ssm
+          "ssm_id",
+          "genomic_dna_change",
+          "consequence.transcript.gene_symbol",
+          "consequence.transcript.aa_change"
         ]
       };
 

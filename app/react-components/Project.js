@@ -4,6 +4,7 @@
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import _ from 'lodash';
+import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 // Custom
 import Column from './uikit/Flex/Column';
@@ -25,8 +26,12 @@ import TogglableUl from './uikit/TogglableUl';
 import FileIcon from './theme/icons/File';
 import CaseIcon from './theme/icons/Case';
 import EditIcon from './theme/icons/Edit';
+import SurvivalIcon from './theme/icons/SurvivalIcon';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
 import Tooltip from './uikit/Tooltip';
+import getSurvivalCurves from './utils/getSurvivalCurves';
+
+const colors = scaleOrdinal(schemeCategory10);
 
 const SPACING = '2rem';
 
@@ -74,6 +79,12 @@ const styles = {
   card: {
     backgroundColor: `white`,
   },
+  graphTitle: {
+    textAlign: 'center',
+    color: theme.greyScale3,
+    fontSize: '1rem',
+    fontWeight: 300,
+  }
 };
 
 let impactColors = {
@@ -98,15 +109,16 @@ function buildFilters(data) {
 const Project = ({
   $scope,
   authApi,
+  api,
   esHost,
   esIndexVersion,
   mutatedGenesProject,
   numCasesAggByProject,
   mostAffectedCases,
   frequentMutations: fm,
+  defaultSurvivalData,
+  setSurvivalData,
   survivalData,
-  setSurvivalGene,
-  survivalGene,
   width,
 }) => {
   const {
@@ -362,7 +374,7 @@ const Project = ({
                 tooltipHTML="Download image or data"
               />
             </div>
-
+            <div style={styles.graphTitle}>Distribution of Most Frequently Mutated Genes</div>
             {!!mutatedGenesChartData.length &&
               <div id="mutated-genes-chart">
                 <Row style={{ padding: `0 2rem` }}>
@@ -375,7 +387,6 @@ const Project = ({
                         ${g.num_affected_cases_project}/${numCasesAggByProject[project.project_id]} ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`,
                       href: `genes/${g.gene_id}`
                     }))}
-                    title='Distribution of Most Frequently Mutated Genes'
                     yAxis={{ title: '% of Cases Affected' }}
                     height={240}
                     styles={{
@@ -393,15 +404,17 @@ const Project = ({
               </div>
             }
           </span>
-          <span style={{ ...styles.column, width: '50%' }}>
-            <SurvivalPlotWrapper
-              rawData={survivalData}
-              gene={survivalGene}
-              onReset={() => setSurvivalGene(null)}
-              height={240}
-              width={width}
-            />
-          </span>
+          {(defaultSurvivalData || survivalData) && (
+            <span style={{ ...styles.column, width: '50%' }}>
+              <SurvivalPlotWrapper
+                rawData={survivalData.rawData || defaultSurvivalData}
+                legend={survivalData.legend || ['all cases in project']}
+                onReset={() => setSurvivalData({})}
+                height={240}
+                width={width}
+              />
+            </span>
+          )}
         </Row>
         <Column>
           {!!mutatedGenesChartData.length &&
@@ -424,15 +437,14 @@ const Project = ({
                   style: { textAlign: 'right' },
                 },
                 {
-                  title: <i className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></i>,
+                  title: 'Survival Analysis',
                   key: 'survival_plot',
-                  style: { textAlign: 'center', width: '55px' },
+                  style: { textAlign: 'center', width: '100px' },
                 }
               ]}
               data={mutatedGenesChartData.map(g => ({
                 ...g,
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
-                survivalId: g.symbol,
                 cytoband: (g.cytoband || []).join(', '),
                 num_affected_cases_project: `${g.num_affected_cases_project} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
                 num_affected_cases_all:
@@ -446,9 +458,28 @@ const Project = ({
                 survival_plot:
                   <Tooltip innerHTML={`Add ${g.symbol} to surival plot`}>
                     <span
-                      onClick={d => setSurvivalGene(d === survivalGene ? null : d)}
+                      onClick={() => {
+                          if (g.symbol !== survivalData.id) {
+                            getSurvivalCurves({
+                              api,
+                              projectId: project.project_id,
+                              field: 'gene.symbol',
+                              value: g.symbol,
+                            })
+                              .then(setSurvivalData);
+                          } else {
+                            setSurvivalData({});
+                          }
+                        }
+                      }
                     >
-                      <span className={`fa fa-bar-chart-o ${clickable}`}>
+                      <span
+                        style={{
+                          color: colors(survivalData.id === g.symbol ? 1 : 0),
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <SurvivalIcon />
                         <div style={styles.hidden}>add to survival plot</div>
                       </span>
                     </span>
@@ -478,8 +509,10 @@ const Project = ({
           numCasesAggByProject={numCasesAggByProject}
           totalNumCases={totalNumCases}
           project={$scope.project.project_id}
-          survivalData={survivalData}
+          defaultSurvivalData={defaultSurvivalData}
           width={width}
+          api={api}
+          projectId={project.project_id}
         />
       </Column>
       <Column style={{...styles.card, marginTop: `2rem` }}>
@@ -505,7 +538,7 @@ Project.propTypes = {
 };
 
 const enhance = compose(
-  withState('survivalGene', 'setSurvivalGene', null),
+  withState('survivalData', 'setSurvivalData', {}),
   lifecycle({
     getInitialState: function() {
       return { width: window.innerWidth };

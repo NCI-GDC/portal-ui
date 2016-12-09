@@ -1,6 +1,7 @@
 import React from 'react';
 import { compose, withState } from 'recompose';
 import _ from 'lodash';
+import { scaleOrdinal, schemeCategory10 } from 'd3';
 
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
@@ -13,6 +14,8 @@ import TogglableUl from '../uikit/TogglableUl';
 import Button from '../uikit/Button';
 import Tooltip from '../uikit/Tooltip';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
+import SurvivalIcon from '../theme/icons/SurvivalIcon';
+import getSurvivalCurves from '../utils/getSurvivalCurves';
 
 let impactBubble = {
   color: 'white',
@@ -29,6 +32,8 @@ let impactColors = {
   MODERATE: 'rgb(193, 158, 54)',
   LOW: 'rgb(49, 161, 60)',
 };
+
+const colors = scaleOrdinal(schemeCategory10);
 
 const styles = {
   button: {
@@ -58,7 +63,13 @@ const styles = {
       ...impactBubble,
       backgroundColor: impactColors.LOW,
     },
-  }
+  },
+  graphTitle: {
+    textAlign: 'center',
+    color: theme.greyScale3,
+    fontSize: '1rem',
+    fontWeight: 300,
+  },
 };
 
 let FrequentMutations = ({
@@ -66,10 +77,12 @@ let FrequentMutations = ({
   numCasesAggByProject,
   project,
   totalNumCases,
-  survivalMutation,
-  setSurvivalMutation,
   survivalData,
+  setSurvivalData,
+  defaultSurvivalData,
   width,
+  api,
+  projectId
 }) => {
   return (
     <Column>
@@ -87,6 +100,7 @@ let FrequentMutations = ({
                 />
               </div>
 
+              <div style={styles.graphTitle}>Distribution of Most Frequent Mutations</div>
               <div id="mutation-chart" style={{ padding:'10px' }}>
                 <BarChart
                   data={frequentMutations.map(x => ({
@@ -103,7 +117,6 @@ let FrequentMutations = ({
                   }))}
                   margin={{ top: 30, right: 50, bottom: 105, left: 40 }}
                   height={250}
-                  title="Distribution of Most Frequent Mutations"
                   yAxis={{ title: '# Affected Cases' }}
                   styles={{
                     xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
@@ -118,17 +131,18 @@ let FrequentMutations = ({
                 />
               </div>
             </span>
-            {survivalData && <span style={{flexGrow: 1, width: '50%', minWidth: 500}}>
-              <SurvivalPlotWrapper
-                rawData={survivalData}
-                gene={survivalMutation}
-                onReset={() => setSurvivalMutation(null)}
-                height={250}
-                width={width}
-              />
-            </span>}
+            {(defaultSurvivalData || survivalData) && (
+              <span style={{flexGrow: 1, width: '50%'}}>
+                <SurvivalPlotWrapper
+                  rawData={survivalData.rawData || defaultSurvivalData}
+                  legend={survivalData.legend || ['all cases in project']}
+                  onReset={() => setSurvivalData({})}
+                  height={240}
+                  width={width}
+                />
+              </span>
+            )}
           </Row>
-
           <EntityPageHorizontalTable
             headings={[
               { key: 'genomic_dna_change', title: 'DNA Change' },
@@ -150,13 +164,13 @@ let FrequentMutations = ({
                 style: { textAlign: 'center' },
               },
               {
-                title: <span className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></span>,
+                title: 'Survival Analysis',
                 key: 'survival_plot',
+                style: { textAlign: 'center', width: '100px' },
               },
             ]}
             data={frequentMutations.map(x => ({
               ...x,
-              survivalId: '',
               genomic_dna_change: <a href={`/mutations/${x.ssm_id}`}>{x.genomic_dna_change}</a>,
               ...(project ? { num_affected_cases_project:
                 `${x.num_affected_cases_project}
@@ -181,9 +195,29 @@ let FrequentMutations = ({
               survival_plot:
                 <Tooltip innerHTML={`Add ${x.genomic_dna_change} to surival plot`}>
                   <span
-                    onClick={setSurvivalMutation}
+                    onClick={() => {
+                        if (x.ssm_id !== survivalData.id) {
+                          getSurvivalCurves({
+                            field: 'gene.ssm.ssm_id',
+                            value: x.ssm_id,
+                            slug: x.genomic_dna_change,
+                            api,
+                            projectId
+                          })
+                            .then(setSurvivalData);
+                        } else {
+                          setSurvivalData({});
+                        }
+                      }
+                    }
                   >
-                    <span className={`fa fa-bar-chart-o ${clickable}`}>
+                    <span
+                      style={{
+                        color: colors(survivalData.id === x.ssm_id ? 1 : 0),
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <SurvivalIcon />
                       <div style={styles.hidden}>add to survival plot</div>
                     </span>
                   </span>
@@ -199,9 +233,8 @@ let FrequentMutations = ({
   );
 }
 
-
 const enhance = compose(
-  withState('survivalMutation', 'setSurvivalMutation', null),
+  withState('survivalData', 'setSurvivalData', {}),
 );
 
 export default enhance(FrequentMutations);

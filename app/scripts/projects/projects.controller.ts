@@ -587,10 +587,11 @@ module ngApp.projects.controllers {
             mutatedGenesProject: this.mutatedGenesProject.map(g => g._source),
             numCasesAggByProject: this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {}),
             authApi: this.CoreService.config.auth_api,
+            api: this.CoreService.config.api,
             esHost: this.CoreService.config.es_host,
             esIndexVersion: this.CoreService.config.es_index_version,
             frequentMutations: this.frequentMutations.map(g => Object.assign({}, g._source, { score: g._score })),
-            survivalData: this.survivalData,
+            defaultSurvivalData: this.survivalData,
             mostAffectedCases: this.mostAffectedCases.map(c => c._source),
           })
         ),

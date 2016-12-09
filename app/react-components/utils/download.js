@@ -20,7 +20,7 @@ const progressChecker = (
   cookieKey,
   downloadToken,
   inProgress,
-  done,
+  done
 ) => {
   inProgress();
   const waitTime = 1000;
@@ -111,7 +111,7 @@ const progressChecker = (
 const cookielessChecker = (
   iFrame,
   inProgress,
-  done,
+  done
 ) => {
   const waitTime = 5000;
   let attempts = 30;
@@ -164,7 +164,7 @@ const download = ({
   params,
   method = 'GET',
 }) => {
-  const downloadToken = _.uniqueId(`${+new Date}-`);
+  const downloadToken = _.uniqueId(`${+new Date()}-`);
   const iFrameId = iFrameIdPrefix + downloadToken;
   const formId = formIdPrefix + downloadToken;
   // a cookie value that the server will remove as a download-ready indicator

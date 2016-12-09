@@ -36,6 +36,6 @@ export const initialGridState = {
 };
 
 export default {
-    initialGridState,
-    gridReducer,
-}
+  initialGridState,
+  gridReducer,
+};

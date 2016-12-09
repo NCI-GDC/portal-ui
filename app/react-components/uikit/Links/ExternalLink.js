@@ -1,8 +1,8 @@
 import React from 'react';
 import ExternalLinkIcon from 'react-icons/lib/fa/external-link';
 
-export default function ExternalLink ({
-  href, children, style, title
+export default function ExternalLink({
+  href, children, style, title,
 }): React.Element {
   return (
     <a
@@ -11,8 +11,8 @@ export default function ExternalLink ({
       style={style}
       title={title}
     >
-      <ExternalLinkIcon style={{ marginRight: '0.5rem' }}/>
+      <ExternalLinkIcon style={{ marginRight: '0.5rem' }} />
       {children}
     </a>
   );
-};
+}

@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 
 import { Column } from '../uikit/Flex';
 import theme from '../theme';
@@ -43,7 +43,7 @@ const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleSt
           marginBottom: 0,
           padding: '1rem',
           backgroundColor: '#fff',
-          ...titleStyle
+          ...titleStyle,
         }}
       >
         {title}
@@ -52,53 +52,46 @@ const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleSt
         style={styles.table}
         body={
           <tbody>
-          {thToTd.map((d, i) => (
-            <Tr key={d.th}>
-              <Th
-                style={{
-                  ...styles.tr,
-                  backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
-                  textTransform: 'capitalize',
-                  verticalAlign: 'top',
-                }}
-              >
-                {d.th}
-              </Th>
-              {d.collapsibleTd &&
-                (<CollapsibleTd
+            {thToTd.map((d, i) => (
+              <Tr key={d.th}>
+                <Th
                   style={{
-                    ...styles.td,
+                    ...styles.tr,
                     backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
-                    ...d.style,
-                  }}
-                  text={d.collapsibleTd || '--'}
-                />)
-              }
-              {d.td &&
-                (<Td
-                  style={{
-                    ...styles.td,
-                    backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
-                    ...d.style,
+                    textTransform: 'capitalize',
+                    verticalAlign: 'top',
                   }}
                 >
-                  {d.td || '--'}
-                </Td>)
-              }
-            </Tr>
-          ))}
+                  {d.th}
+                </Th>
+                {d.collapsibleTd &&
+                  <CollapsibleTd
+                    style={{
+                      ...styles.td,
+                      backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
+                      ...d.style,
+                    }}
+                    text={d.collapsibleTd || '--'}
+                  />
+                }
+                {d.td &&
+                  <Td
+                    style={{
+                      ...styles.td,
+                      backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
+                      ...d.style,
+                    }}
+                  >
+                    {d.td || '--'}
+                  </Td>
+                }
+              </Tr>
+            ))}
           </tbody>
         }
       />
     </Column>
   );
-};
-
-EntityPageVerticalTable.propTypes = {
-  title: PropTypes.node,
-  style: PropTypes.object,
-  props: PropTypes.any,
-  thToTd: PropTypes.array,
 };
 
 export default EntityPageVerticalTable;

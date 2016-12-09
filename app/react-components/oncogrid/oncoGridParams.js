@@ -11,42 +11,42 @@ const donorTracks = [
 ];
 
 function clinicalLegend(maxDaysToDeath) {
-  return '<b>Clinical Data:</b><br>' +
+  return `${'<b>Clinical Data:</b><br>' +
 
     '<b>gender:</b> ' +
-    'Male: ' + getSquare({fieldName: 'gender', value: 'male'}) +
-    ' Female: ' + getSquare({fieldName: 'gender', value: 'female'}) + '<br>' +
+    'Male: '}${getSquare({ fieldName: 'gender', value: 'male' })
+    } Female: ${getSquare({ fieldName: 'gender', value: 'female' })}<br>` +
 
-    '<b>age (years): </b> 0 ' +
-    fadeSteps.reduce((html, opacity) => html + getSquare({fieldName: 'age', opacity: opacity}), '') +
-    ' 100+ <br>' +
+    `<b>age (years): </b> 0 ${
+    fadeSteps.reduce((html, opacity) => html + getSquare({ fieldName: 'age', opacity }), '')
+    } 100+ <br>` +
 
     '<b>vitalStatus:</b> ' +
-    'Deceased: ' + getSquare({fieldName: 'vitalStatus', value: false}) + ' ' +
-    'Alive: ' + getSquare({fieldName: 'vitalStatus', value: true}) + '<br>' +
+    `Deceased: ${getSquare({ fieldName: 'vitalStatus', value: false })} ` +
+    `Alive: ${getSquare({ fieldName: 'vitalStatus', value: true })}<br>` +
 
-    '<b>days to death: </b> 0 ' +
-    fadeSteps.reduce((html, opacity) => html + getSquare({fieldName: 'daysToDeath', opacity: opacity}), '') +
-    ' ' + maxDaysToDeath + '<br>';
+    `<b>days to death: </b> 0 ${
+    fadeSteps.reduce((html, opacity) => html + getSquare({ fieldName: 'daysToDeath', opacity }), '')
+    } ${maxDaysToDeath}<br>`;
 }
 
 function dataTypeLegend() {
   return dataTypeTracks.reduce((html, track) => (
-    html + getSquare({fieldName: track.fieldName}) + track.longName + ' <br>'
+    `${html + getSquare({ fieldName: track.fieldName }) + track.longName} <br>`
   ), '<b>Available Data Types:</b><br>');
 }
 
 function gdcLegend(max) {
   return fadeSteps.reduce(
-    (html, opacity) => html + getSquare({fieldName: 'totalDonors', opacity: opacity}),
+    (html, opacity) => html + getSquare({ fieldName: 'totalDonors', opacity }),
     '<b># of Cases Affected:</b><br>'
   ) + max;
 }
 
 function geneSetLegend() {
-  return '<b> Gene Sets: </b> <br>' + 
-    getSquare({fieldName: 'cgc'}) +
-    ' Gene belongs to Cancer Gene Census';
+  return `<b> Gene Sets: </b> <br>${
+    getSquare({ fieldName: 'cgc' })
+    } Gene belongs to Cancer Gene Census`;
 }
 
 // rollover templates
@@ -78,8 +78,8 @@ const fillFunc = (track) => {
 };
 
 function getSquare(field) {
-  const opacityStyle = typeof field.opacity === 'number' ? '; opacity: ' + field.opacity : '';
-  return '<div class="onco-track-legend" style="background: ' + fillFunc(field) + opacityStyle + '"></div>';
+  const opacityStyle = typeof field.opacity === 'number' ? `; opacity: ${field.opacity}` : '';
+  return `<div class="onco-track-legend" style="background: ${fillFunc(field)}${opacityStyle}"></div>`;
 }
 
 export default function ({
@@ -102,14 +102,14 @@ export default function ({
     return null;
   }
 
-  // Clean gene & donor data before using for oncogrid. 
+  // Clean gene & donor data before using for oncogrid.
   const donorObs = _.map(observations, 'donorId');
   const geneObs = _.map(observations, 'geneId');
-  donors = _.filter(donors, function(d) { return donorObs.indexOf(d.id) >= 0;});
-  genes = _.filter(genes, function(g) { return geneObs.indexOf(g.id) >= 0;});
+  donors = _.filter(donors, (d) => donorObs.indexOf(d.id) >= 0);
+  genes = _.filter(genes, (g) => geneObs.indexOf(g.id) >= 0);
 
-  const maxDaysToDeath = _.max(_.map(donors, function(d) { return d.daysToDeath; } ));
-  const maxDonorsAffected = _.max(genes, function (g) { return g.totalDonors; }).totalDonors;
+  const maxDaysToDeath = _.max(_.map(donors, (d) => d.daysToDeath));
+  const maxDonorsAffected = _.max(genes, (g) => g.totalDonors).totalDonors;
 
   const dataTypeMax = dataTypeTracks.reduce(
     (maxValues, track) => (
@@ -157,13 +157,13 @@ export default function ({
   };
 
   return {
-    donors: donors,
-    genes: genes,
-    observations: observations,
-    height: height,
-    width: width,
-    element: element,
-    colorMap: colorMap,
+    donors,
+    genes,
+    observations,
+    height,
+    width,
+    element,
+    colorMap,
     scaleToFit: true,
 
     heatMap: false,
@@ -171,10 +171,10 @@ export default function ({
     minCellHeight: 8,
     trackHeight: 12,
     trackLegends: {
-      'GDC': gdcLegend(maxDonorsAffected),
+      GDC: gdcLegend(maxDonorsAffected),
       'Gene Sets': geneSetLegend(),
 
-      'Clinical': clinicalLegend(maxDaysToDeath),
+      Clinical: clinicalLegend(maxDaysToDeath),
       'Data Types': dataTypeLegend(),
     },
     templates: {
@@ -183,11 +183,11 @@ export default function ({
     },
     trackLegendLabel: '<i style="font-size: 13px; margin-left: 5px" class="fa fa-question-circle"></i>',
 
-    donorTracks: donorTracks,
-    donorOpacityFunc: donorOpacityFunc,
+    donorTracks,
+    donorOpacityFunc,
     donorFillFunc: fillFunc,
 
-    geneTracks: geneTracks,
+    geneTracks,
     geneOpacityFunc: geneOpacity,
     geneFillFunc: fillFunc,
     expandableGroups: [

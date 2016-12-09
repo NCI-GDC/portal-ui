@@ -3,7 +3,7 @@ import { compose, withState } from 'recompose';
 
 import Row from '../uikit/Flex/Row';
 import Column from '../uikit/Flex/Column';
-import Overlay from'../uikit/Overlay';
+import Overlay from '../uikit/Overlay';
 import Button from '../uikit/Button';
 
 const styles = {
@@ -31,7 +31,7 @@ const styles = {
   },
 };
 
-const SelectOverlay = ({options = [], callback, selectedOptions, setSelectedOptions, show = true}) => (
+const SelectOverlay = ({ options = [], callback, selectedOptions, setSelectedOptions, show = true }) => (
   <Overlay
     show={show}
     onClick={() => callback()}
@@ -41,16 +41,20 @@ const SelectOverlay = ({options = [], callback, selectedOptions, setSelectedOpti
       style={styles.container}
       onClick={e => e.stopPropagation()}
     >
-      <Row style={{
-        ...styles.horizonalPadding,
-        borderBottom: '1px solid #e5e5e5',
-      }}>
+      <Row
+        style={{
+          ...styles.horizonalPadding,
+          borderBottom: '1px solid #e5e5e5',
+        }}
+      >
         <h2 style={{ marginTop: 0 }}>Select tracks to add</h2>
       </Row>
-      <div style={{
-        ...styles.horizonalPadding,
-        paddingTop: 10,
-      }}>
+      <div
+        style={{
+          ...styles.horizonalPadding,
+          paddingTop: 10,
+        }}
+      >
         {
           options.map((track, i) => (
             <Row key={track.name}>
@@ -63,11 +67,11 @@ const SelectOverlay = ({options = [], callback, selectedOptions, setSelectedOpti
                 onChange={() => {
                   const index = selectedOptions.indexOf(i);
 
-                  if(index >= 0) {
+                  if (index >= 0) {
                     selectedOptions.splice(index, 1);
                     setSelectedOptions(selectedOptions);
                   } else {
-                    setSelectedOptions([ ...selectedOptions, i ]);
+                    setSelectedOptions([...selectedOptions, i]);
                   }
                 }}
               />

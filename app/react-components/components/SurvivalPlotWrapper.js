@@ -7,7 +7,7 @@ import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
 import { isFullScreen } from '../utils/fullscreen';
 import Button from '../uikit/Button';
-import DownloadVisualizationButton from './DownloadVisualizationButton'
+import DownloadVisualizationButton from './DownloadVisualizationButton';
 import ToolTip from '../uikit/Tooltip';
 
 const colors = scaleOrdinal(schemeCategory10);
@@ -84,17 +84,13 @@ function buildData(props) {
 }
 
 class SurvivalPlotWrapper extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      xDomain: undefined,
-      stack: [],
-      palette: [colors(0), colors(1)],
-      disabledDataSets: undefined,
-      dataSets: null,
-    };
-  }
+  state = {
+    xDomain: undefined,
+    stack: [],
+    palette: [colors(0), colors(1)],
+    disabledDataSets: undefined,
+    dataSets: null,
+  };
 
   componentDidMount() {
     buildData(this.props).then(d => this.setState(d));
@@ -126,7 +122,7 @@ class SurvivalPlotWrapper extends Component {
     });
   }
 
-  update() {
+  update(): void {
     const { disabledDataSets, dataSets, palette, xDomain } = this.state;
     const {
       height = 0,
@@ -171,11 +167,11 @@ class SurvivalPlotWrapper extends Component {
     };
   }
 
-  reset() {
+  reset(): void {
     this.props.onReset();
   }
 
-  render() {
+  render(): React.Element {
     const { legend, pValue, palette, dataSets } = this.state;
 
     return (
@@ -183,11 +179,11 @@ class SurvivalPlotWrapper extends Component {
         <Column id="survival-plot">
           <span style={{ textAlign: 'right' }}>
             <DownloadVisualizationButton
-              svg={`.survival-plot svg`} // TODO: make sure this selects the correct survivalplot
+              svg={'.survival-plot svg'} // TODO: make sure this selects the correct survivalplot
               data={dataSets}
               stylePrefix=".survival-plot"
               slug="survival-plot"
-              noText={true}
+              noText
               tooltipHTML="Download SurvivalPlot data or image"
             />
             <ToolTip innerHTML="Reload SurvivalPlot">
@@ -218,13 +214,6 @@ class SurvivalPlotWrapper extends Component {
     );
   }
 }
-
-SurvivalPlotWrapper.propTypes = {
-  height: React.PropTypes.number,
-  getSetSymbol: React.PropTypes.func,
-  margins: React.PropTypes.shape({}),
-  onReset: React.PropTypes.func,
-};
 
 SurvivalPlotWrapper.defaultProps = {
   onReset: () => {},

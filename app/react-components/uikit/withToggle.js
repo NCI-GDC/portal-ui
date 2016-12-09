@@ -7,7 +7,7 @@ export default function withToggle(ComposedComponent) {
       this.state = { active: props.active || false };
     }
 
-    setActive = (active: bool): void => this.setState({ active });
+    setActive = (active: boolean): void => this.setState({ active });
     toggleActive = (): void => this.setState({ active: !this.state.active });
 
     render() {

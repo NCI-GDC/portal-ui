@@ -1,5 +1,5 @@
 // Vendor
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { compose, withState } from 'recompose';
 
 // Custom
@@ -38,7 +38,7 @@ const SummaryCard = ({
   <Card style={style}>
     <Column>
       <Row style={styles.header}>
-        <span style={{ flexGrow: 1, fontSize: `1.7rem` }}>{(showTable ? tableTitle : pieChartTitle) || title}</span>
+        <span style={{ flexGrow: 1, fontSize: '1.7rem' }}>{(showTable ? tableTitle : pieChartTitle) || title}</span>
         <span onClick={() => setShowTable(!showTable)}>
           <i style={{ color: '#000' }} className={`fa ${showTable ? 'fa-pie-chart' : 'fa-table'}`} />
         </span>
@@ -61,19 +61,10 @@ const SummaryCard = ({
   </Card>
 );
 
-SummaryCard.propTypes = {
-  style: PropTypes.object,
-  title: PropTypes.string,
-  data: PropTypes.array,
-  footer: PropTypes.node,
-  path: PropTypes.string,
-  table: PropTypes.object,
-};
-
 /*----------------------------------------------------------------------------*/
 
 const enhance = compose(
-  withState('showTable', 'setShowTable', true),
+  withState('showTable', 'setShowTable', true)
 );
 
 export default enhance(SummaryCard);

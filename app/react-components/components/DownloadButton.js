@@ -1,4 +1,5 @@
-import _ from 'lodash';
+// @flow
+
 import React from 'react';
 import { compose, withState } from 'recompose';
 
@@ -13,7 +14,7 @@ const styles = {
     marginLeft: '0.2rem',
     ':hover': {
       backgroundColor: '#27AFBB',
-    }
+    },
   },
 };
 
@@ -57,29 +58,13 @@ const DownloadButton = ({
         method: 'POST',
       })(
         () => {},
-        () => setActive(false),
+        () => setActive(false)
       );
     }}
   >
     {active ? activeText : inactiveText}
   </Button>
 );
-
-DownloadButton.propTypes = {
-  url: React.PropTypes.string,
-  active: React.PropTypes.bool,
-  disabled: React.PropTypes.bool,
-  filename: React.PropTypes.string,
-  dataExportExpands: React.PropTypes.array,
-  setActive: React.PropTypes.func,
-  activeText: React.PropTypes.string,
-  inactiveText: React.PropTypes.string,
-  returnType: React.PropTypes.string,
-  size: React.PropTypes.number,
-  format: React.PropTypes.string,
-  fields: React.PropTypes.array,
-  filters: React.PropTypes.object,
-};
 
 const enhance = compose(
   withState('active', 'setActive', false)

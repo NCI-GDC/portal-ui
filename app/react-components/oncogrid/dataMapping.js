@@ -1,8 +1,6 @@
 import _ from 'lodash';
 
-import Consequence from './Consequence';
-
-export const mapDonors = function(donors) {
+export const mapDonors = function (donors) {
   return donors.map((d) => {
     const { summary, demographic, case_id, diagnoses = [] } = d._source;
     const {
@@ -32,7 +30,7 @@ export const mapDonors = function(donors) {
   });
 };
 
-export const mapGenes = function(genes) {
+export const mapGenes = function (genes) {
   return _.map(genes, (g) => {
     const source = g._source;
 
@@ -45,7 +43,7 @@ export const mapGenes = function(genes) {
   });
 };
 
-export const mapOccurences = function(occurrences, donors, genes, consequenceTypes) {
+export const mapOccurences = function (occurrences, donors, genes, consequenceTypes) {
   const donorIds = donors.map(d => d.id);
   const geneIds = genes.map(g => g.id);
   const geneIdToSymbol = genes.reduce((acc, g) => ({ ...acc, [g.id]: g.symbol }), {});
@@ -68,7 +66,7 @@ export const mapOccurences = function(occurrences, donors, genes, consequenceTyp
 
 function expandObs(geneIdToSymbol) {
   return (occurrence) => {
-    const { ssm, case: casObj = {}} = occurrence._source;
+    const { ssm, case: casObj = {} } = occurrence._source;
 
     return ssm.consequence
       .map(c => c.transcript)
@@ -92,7 +90,7 @@ function expandObs(geneIdToSymbol) {
 }
 
 export default {
-    mapDonors,
-    mapGenes,
-    mapOccurences,
+  mapDonors,
+  mapGenes,
+  mapOccurences,
 };

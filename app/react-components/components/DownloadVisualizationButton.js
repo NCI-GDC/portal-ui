@@ -1,9 +1,11 @@
+// @flow
+
 import React from 'react';
 import downloadSvg from 'download-svg';
 
 import DropDownButton from './DropDownButton';
 import saveFile from '../utils/filesaver';
-import toTsvString, {mapArrayToTsvString} from '../utils/toTsvString';
+import toTsvString, { mapArrayToTsvString } from '../utils/toTsvString';
 import Download from '../theme/icons/Download';
 
 function getSelector(el) {
@@ -29,8 +31,8 @@ const DownloadVisualizationButton = ({
   ...props
 }) => (
   <DropDownButton
-    icon={!noText && <Download/>}
-    label={noText ? <span><Download/><div style={styles.hidden}>Download</div></span> : 'Download'}
+    icon={!noText && <Download />}
+    label={noText ? <span><Download /><div style={styles.hidden}>Download</div></span> : 'Download'}
     style={style}
     options={[
       ...(svg ? [
@@ -39,7 +41,7 @@ const DownloadVisualizationButton = ({
           onClick: () => {
             downloadSvg({
               svg: getSelector(svg),
-              stylePrefix: stylePrefix,
+              stylePrefix,
               fileName: `${slug}.svg`,
             });
           },
@@ -49,7 +51,7 @@ const DownloadVisualizationButton = ({
           onClick: () => {
             downloadSvg({
               svg: getSelector(svg),
-              stylePrefix: stylePrefix,
+              stylePrefix,
               fileName: `${slug}.png`,
               scale: 2,
               useCanvg: true,
@@ -65,7 +67,7 @@ const DownloadVisualizationButton = ({
               JSON.stringify(data, null, 2),
               'JSON',
               `${slug}.json`
-            )
+            );
           },
         },
       ] : []),
@@ -77,7 +79,7 @@ const DownloadVisualizationButton = ({
               tsvData.forEach ? mapArrayToTsvString(tsvData) : toTsvString(tsvData),
               'TSV',
               `${slug}.tsv`
-            )
+            );
           },
         },
       ] : []),

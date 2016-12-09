@@ -7,7 +7,7 @@ import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
 import { isFullScreen } from '../utils/fullscreen';
 import Button from '../uikit/Button';
-import DownloadVisualizationButton from './DownloadVisualizationButton'
+import DownloadVisualizationButton from './DownloadVisualizationButton';
 import ToolTip from '../uikit/Tooltip';
 
 const colors = scaleOrdinal(schemeCategory10);
@@ -183,11 +183,11 @@ class SurvivalPlotWrapper extends Component {
         <Column id="survival-plot">
           <span style={{ textAlign: 'right' }}>
             <DownloadVisualizationButton
-              svg={`.survival-plot svg`} // TODO: make sure this selects the correct survivalplot
+              svg={'.survival-plot svg'} // TODO: make sure this selects the correct survivalplot
               data={dataSets}
               stylePrefix=".survival-plot"
               slug="survival-plot"
-              noText={true}
+              noText
               tooltipHTML="Download SurvivalPlot data or image"
             />
             <ToolTip innerHTML="Reload SurvivalPlot">

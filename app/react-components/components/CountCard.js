@@ -10,7 +10,7 @@ const CountCard = ({ title, count, icon, style, onCountClick }) => (
     <Row>
       <Column>
         <Row style={{ fontSize: '1.1rem' }}>{title}</Row>
-        <Row style={{ fontSize: '2rem'}}>
+        <Row style={{ fontSize: '2rem' }}>
           {onCountClick ? <a onClick={onCountClick}>{count}</a> : count}
         </Row>
       </Column>

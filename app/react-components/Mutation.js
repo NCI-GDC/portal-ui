@@ -22,7 +22,7 @@ import ChartIcon from './theme/icons/BarChart';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
 import Lolliplot from '@oncojs/lolliplot';
 
-let Mutation = (() => {
+const Mutation = (() => {
   const styles = {
     container: {
       width: '80%',
@@ -62,7 +62,7 @@ let Mutation = (() => {
       super();
 
       this.state = {
-        ProteinLolliplot: {}
+        ProteinLolliplot: {},
       };
 
       this.renderProteinLolliplot = this.renderProteinLolliplot.bind(this);
@@ -85,7 +85,7 @@ let Mutation = (() => {
             <div># of Cases: ${this.selectedMutation.donors}</div>
             <div>Functional Impact: ${this.selectedMutation.impact}</div>
           `);
-      }, 100)
+      }, 100);
     }
 
     componentWillUnmount() {
@@ -96,7 +96,7 @@ let Mutation = (() => {
       this.setState({
         ProteinLolliplot: Lolliplot({
           data: this.props.$scope.proteinLolliplotData,
-          selector: `#protein-viewer-root`,
+          selector: '#protein-viewer-root',
           onMutationClick: d => window.location.href = `/mutations/${d.id}`,
           onMutationMouseover: d => {
             if (d.id !== this.props.mutation.ssm_id) window.otherTooltip = true;
@@ -146,11 +146,11 @@ let Mutation = (() => {
     }
 
     render() {
-      let { mutation, $scope, allCasesAgg } = this.props
-      let { gene } = $scope;
+      let { mutation, $scope, allCasesAgg } = this.props;
+      const { gene } = $scope;
 
       const allCasesAggByProject = allCasesAgg.reduce((acc, bucket) =>
-        ({...acc, [bucket.key]: bucket.doc_count}), {}
+        ({ ...acc, [bucket.key]: bucket.doc_count }), {}
       );
 
       const externalDbIds = mutation.consequence.reduce(
@@ -159,11 +159,11 @@ let Mutation = (() => {
             return c.transcript.gene.external_db_ids;
           }
           return acc;
-      }, {});
+        }, {});
 
       const annotatedConsequence = _.find(mutation.consequence, c =>
         Object.keys(c.transcript.annotation).length > 0
-      )
+      );
 
       const functionalImpact = (annotatedConsequence || { transcript: { annotation: { impact: '' } } })
         .transcript.annotation.impact.toLowerCase();
@@ -176,19 +176,19 @@ let Mutation = (() => {
             disease_type: o.case.project.disease_type,
             cancer_type: o.case.project.cancer_type || 'tbd',
             site: o.case.project.primary_site,
-            cases: cases,
-            freq: cases.length/allCasesAggByProject[o.case.project.project_id],
-          }
+            cases,
+            freq: cases.length / allCasesAggByProject[o.case.project.project_id],
+          },
         };
       }, {});
 
       const sortedCancerDistData = Object.keys(cancerDistData)
-        .map(k => ({project_id: k, ...cancerDistData[k]}))
+        .map(k => ({ project_id: k, ...cancerDistData[k] }))
         .sort((a, b) => b.freq - a.freq);
 
       const strandIconMap = {
         '-1': <MinusIcon />,
-        '1': <PlusIcon />,
+        1: <PlusIcon />,
       };
 
       const consequenceData = mutation.consequence.reduce((acc, c) => {
@@ -209,9 +209,9 @@ let Mutation = (() => {
             ...acc[c.transcript.gene.gene_id],
             gene_id: c.transcript.gene.gene_id,
             gene_symbol: c.transcript.gene_symbol,
-            transcripts: transcripts,
-            ...canonicalOnly
-          }
+            transcripts,
+            ...canonicalOnly,
+          },
         };
       }, {});
 
@@ -229,7 +229,8 @@ let Mutation = (() => {
                   <ExternalLink
                     key={t}
                     style={{ paddingRight: '0.5em' }}
-                    href={externalReferenceLinks.ensembl(t)}>
+                    href={externalReferenceLinks.ensembl(t)}
+                  >
                     {t}
                   </ExternalLink>
                 </li>
@@ -245,13 +246,13 @@ let Mutation = (() => {
           <Row spacing="2rem" id="summary">
             <EntityPageVerticalTable
               id="Summary"
-              title={<span><TableIcon style={{ marginRight: '1rem' }}/>Summary</span>}
+              title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
               thToTd={[
                 { th: 'ID', td: mutation.ssm_id },
-                { th: 'DNA change', td: `${mutation.chromosome}:g.${mutation.start_position}${mutation.reference_allele}>${mutation.tumor_allele}`},
-                { th: 'Type', td: mutation.variant_type || ''},
-                { th: 'Reference genome assembly', td: mutation.ncbi_build || ''},
-                { th: 'Allele in the reference assembly', td: mutation.reference_allele || ''},
+                { th: 'DNA change', td: `${mutation.chromosome}:g.${mutation.start_position}${mutation.reference_allele}>${mutation.tumor_allele}` },
+                { th: 'Type', td: mutation.variant_type || '' },
+                { th: 'Reference genome assembly', td: mutation.ncbi_build || '' },
+                { th: 'Allele in the reference assembly', td: mutation.reference_allele || '' },
                 { th: 'Functonal Impact', td: functionalImpact || '', style: { textTransform: 'capitalize' } },
               ]}
               style={{
@@ -262,7 +263,7 @@ let Mutation = (() => {
             />
             {!!Object.keys(externalDbIds).length &&
               <EntityPageVerticalTable
-                title={<span><BookIcon style={{ marginRight: '1rem' }}/> External References</span>}
+                title={<span><BookIcon style={{ marginRight: '1rem' }} /> External References</span>}
                 thToTd={
                   Object.keys(externalDbIds).map(db => ({
                     th: db.replace(/_/g, ' '),
@@ -274,36 +275,36 @@ let Mutation = (() => {
                       >
                         {id}
                       </ExternalLink>
-                    )
+                    ),
                   }))
               }
-              style={{ ...styles.summary, ...styles.column, alignSelf: 'flex-start' }}
-            />}
+                style={{ ...styles.summary, ...styles.column, alignSelf: 'flex-start' }}
+              />}
           </Row>
           <Column style={styles.card}>
-            <h1 id="consequences" style={{ ...styles.heading, padding: `1rem` }}>
-              <TableIcon style={{ marginRight: '1rem' }}/>
+            <h1 id="consequences" style={{ ...styles.heading, padding: '1rem' }}>
+              <TableIcon style={{ marginRight: '1rem' }} />
               Consequences
             </h1>
             <Row>
               <EntityPageHorizontalTable
-                style={{width: '100%', minWidth: '450px'}}
+                style={{ width: '100%', minWidth: '450px' }}
                 headings={[
                   { key: 'gene_symbol', title: 'Gene' },
                   { key: 'aa_change', title: 'AA Change' },
                   { key: 'consequence', title: 'Consequence' },
-                  { key: 'coding_dna_change', title: 'Coding DNA Change'},
-                  { key: 'strand', title: 'Strand'},
-                  { key: 'transcripts', title: 'Transcript(s)'},
+                  { key: 'coding_dna_change', title: 'Coding DNA Change' },
+                  { key: 'strand', title: 'Strand' },
+                  { key: 'transcripts', title: 'Transcript(s)' },
                 ]}
                 data={consquenceDataMapped}
               />
             </Row>
           </Column>
-          <Column style={{ ...styles.card, marginTop: `2rem` }} id="cancer-distribution">
+          <Column style={{ ...styles.card, marginTop: '2rem' }} id="cancer-distribution">
             <Row>
-              <h1 style={{ ...styles.heading, padding: `1rem` }}>
-                <ChartIcon style={{ marginRight: '1rem' }}/>
+              <h1 style={{ ...styles.heading, padding: '1rem' }}>
+                <ChartIcon style={{ marginRight: '1rem' }} />
                 Cancer Distribution
               </h1>
               <DownloadVisualizationButton
@@ -313,30 +314,30 @@ let Mutation = (() => {
                 slug="bar-chart"
               />
             </Row>
-            <h5 style={{textTransform: 'uppercase', padding: `0 2rem`}}>
+            <h5 style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
               This mutation affects&nbsp;
               {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} distinct cases across&nbsp;
               {sortedCancerDistData.length} cancer projects
             </h5>
-            <Column style={{...styles.column}}>
+            <Column style={{ ...styles.column }}>
               {sortedCancerDistData.length >= 5 &&
                 <BarChart
                   data={sortedCancerDistData.map(d => ({
                     label: d.project_id,
                     value: (d.freq * 100),
-                    tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`
-                    }))
+                    tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`,
+                  }))
                   }
                   yAxis={{ title: '% of Cases Affected' }}
                   styles={{
-                    xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                    yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                    bars: {fill: theme.secondary},
+                    xAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
+                    yAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
+                    bars: { fill: theme.secondary },
                     tooltips: {
                       fill: '#fff',
                       stroke: theme.greyScale4,
-                      textFill: theme.greyScale3
-                    }
+                      textFill: theme.greyScale3,
+                    },
                   }}
                 />
               }
@@ -358,7 +359,7 @@ let Mutation = (() => {
               />
             </Column>
           </Column>
-          <Column style={{ ...styles.card, marginTop: `2rem` }}>
+          <Column style={{ ...styles.card, marginTop: '2rem' }}>
             <ProteinLolliplotComponent
               gene={gene}
               $scope={$scope}
@@ -368,7 +369,7 @@ let Mutation = (() => {
         </span>
       );
     }
-  }
-})()
+  };
+})();
 
 export default Mutation;

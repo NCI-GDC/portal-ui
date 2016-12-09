@@ -1,13 +1,13 @@
 // Vendor
 import React, { PropTypes } from 'react';
 
-const DEFAULT_MAX_WIDTH = 'none'
+const DEFAULT_MAX_WIDTH = 'none';
 const DEFAULT_DIR = 'up';
 
 const Tooltip = ({ innerHTML, children, dir = DEFAULT_DIR, maxWidth = DEFAULT_MAX_WIDTH }) => (
-  <span 
-    onMouseOver={() => { 
-      let tooltip = document.querySelector('.global-tooltip')
+  <span
+    onMouseOver={() => {
+      const tooltip = document.querySelector('.global-tooltip');
 
       if (DEFAULT_DIR !== dir) {
         tooltip.classList.remove(DEFAULT_DIR);
@@ -19,7 +19,7 @@ const Tooltip = ({ innerHTML, children, dir = DEFAULT_DIR, maxWidth = DEFAULT_MA
       tooltip.classList.add('active');
     }}
     onMouseOut={() => {
-      let tooltip = document.querySelector('.global-tooltip')
+      const tooltip = document.querySelector('.global-tooltip');
 
       tooltip.classList.remove('active');
       tooltip.innerHTML = '';
@@ -40,6 +40,6 @@ Tooltip.propTypes = {
   children: PropTypes.node,
   dir: PropTypes.string,
   maxWidth: PropTypes.string,
-}
+};
 
 export default Tooltip;

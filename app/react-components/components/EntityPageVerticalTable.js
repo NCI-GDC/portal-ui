@@ -43,7 +43,7 @@ const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleSt
           marginBottom: 0,
           padding: '1rem',
           backgroundColor: '#fff',
-          ...titleStyle
+          ...titleStyle,
         }}
       >
         {title}
@@ -52,19 +52,19 @@ const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleSt
         style={styles.table}
         body={
           <tbody>
-          {thToTd.map((d, i) => (
-            <Tr key={d.th}>
-              <Th
-                style={{
-                  ...styles.tr,
-                  backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
-                  textTransform: 'capitalize',
-                  verticalAlign: 'top',
-                }}
-              >
-                {d.th}
-              </Th>
-              {d.collapsibleTd &&
+            {thToTd.map((d, i) => (
+              <Tr key={d.th}>
+                <Th
+                  style={{
+                    ...styles.tr,
+                    backgroundColor: i % 2 === 0 ? theme.blueGrey : '#fff',
+                    textTransform: 'capitalize',
+                    verticalAlign: 'top',
+                  }}
+                >
+                  {d.th}
+                </Th>
+                {d.collapsibleTd &&
                 (<CollapsibleTd
                   style={{
                     ...styles.td,
@@ -74,7 +74,7 @@ const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleSt
                   text={d.collapsibleTd || '--'}
                 />)
               }
-              {d.td &&
+                {d.td &&
                 (<Td
                   style={{
                     ...styles.td,
@@ -85,7 +85,7 @@ const EntityPageVerticalTable = ({ style = {}, title, thToTd, className, titleSt
                   {d.td || '--'}
                 </Td>)
               }
-            </Tr>
+              </Tr>
           ))}
           </tbody>
         }

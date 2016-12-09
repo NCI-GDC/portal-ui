@@ -15,24 +15,24 @@ const styles = {
 };
 
 const enhance = withState('expanded', 'toggleExpand', false);
-const CollapsibleTd = enhance(({ style, text, expanded, toggleExpand, ...props }) => {
-  return (
+const CollapsibleTd = enhance(({ style, text, expanded, toggleExpand, ...props }) => (
   <td style={{ ...styles.td, ...style }} {...props}>
     <div>
       {expanded || text.length <= 250 ? text : `${text.substring(0, 250)}\u2026`}
     </div>
     { text.length > 250 &&
-      (<div style={{
-        textAlign: 'right',
-        fontStyle: 'italic',
-        color: theme.primary,
-      }} onClick={() => toggleExpand(v => !v)}>
+      (<div
+        style={{
+          textAlign: 'right',
+          fontStyle: 'italic',
+          color: theme.primary,
+        }} onClick={() => toggleExpand(v => !v)}
+      >
         {expanded ? '\u25B4 less' : '\u25BE more'}
       </div>)
     }
   </td>
-  );
-});
+  ));
 
 CollapsibleTd.propTypes = {
   children: PropTypes.node,

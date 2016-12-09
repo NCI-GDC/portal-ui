@@ -1,6 +1,6 @@
 // Vendor
 import React from 'react';
-import { style as styles, merge } from 'glamor' 
+import { style as styles, merge } from 'glamor';
 
 // Custom
 import theme from '../theme';

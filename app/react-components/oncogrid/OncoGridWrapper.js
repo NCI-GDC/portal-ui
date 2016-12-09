@@ -11,18 +11,18 @@ import getQueries from './getQueries';
 import SelectOverlay from './SelectOverlay';
 import oncoGridParams from './oncoGridParams';
 import { gridReducer, initialGridState } from './gridReducer';
-import DownloadVisualizationButton from '../components/DownloadVisualizationButton'
+import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
 import ToolTip from '../uikit/Tooltip';
 
 const GRID_ID = 'oncogrid-div';
 
 const consequenceTypes = {
-  'missense_variant': '#ff9b6c',
-  'frameshift_variant': '#57dba4',
-  'start_lost': '#ff2323',
-  'stop_lost': '#d3ec00',
-  'initiator_codon_variant': '#5abaff',
-  'stop_gained': '#af57db',
+  missense_variant: '#ff9b6c',
+  frameshift_variant: '#57dba4',
+  start_lost: '#ff2323',
+  stop_lost: '#d3ec00',
+  initiator_codon_variant: '#5abaff',
+  stop_gained: '#af57db',
 };
 
 const styles = {
@@ -65,23 +65,23 @@ const styles = {
 };
 
 const clickHandlers = {
-  donorHistogramClick: function (d) {
+  donorHistogramClick(d) {
     console.log('donorHistogramClick');
   },
 
-  gridClick: function (o) {
+  gridClick(o) {
     console.log('gridClick');
   },
 
-  geneHistogramClick: function (g) {
+  geneHistogramClick(g) {
     console.log('geneHistogramClick');
   },
 
-  geneClick: function (g) {
+  geneClick(g) {
     window.location = `/genes/${g.id}`;
   },
 
-  donorClick: function (d) {
+  donorClick(d) {
     window.location = `/cases/${d.id}`;
   },
 };
@@ -117,7 +117,7 @@ const OncoGridWrapper = ({
             data={gridData}
             stylePrefix={`#${GRID_ID}`}
             slug="oncogrid"
-            noText={true}
+            noText
             tooltipHTML="Download OncoGrid data or image"
           />
           <ToolTip innerHTML="Reload grid">
@@ -204,7 +204,7 @@ const enhance = compose(
     componentWillReceiveProps(nextProps) {
       const { grid, gridPadding, gridHeight, gridContainer } = this.state;
 
-      if(grid) {
+      if (grid) {
         grid.resize(gridContainer.offsetWidth - gridPadding, gridHeight);
       }
     },
@@ -225,13 +225,13 @@ const enhance = compose(
             geneData: responses.genes,
             occurencesData: responses.occurences,
             width: container.offsetWidth - padding,
-            height: height,
+            height,
             addTrackFunc: (tracks, callback) => {
               this.setState({
                 showOverlay: true,
                 trackOptions: tracks,
                 addTracksCallback: (selectedTracks) => {
-                  if(selectedTracks) {
+                  if (selectedTracks) {
                     callback(selectedTracks);
                   }
 
@@ -260,7 +260,7 @@ const enhance = compose(
               gridContainer: container,
             });
 
-            document.querySelector('.og-tooltip-oncogrid').style.transform = 'translateY(-110px)'; // TODO: fix tooltip position inside oncogrid and remove this line 
+            document.querySelector('.og-tooltip-oncogrid').style.transform = 'translateY(-110px)'; // TODO: fix tooltip position inside oncogrid and remove this line
           }
         });
     },

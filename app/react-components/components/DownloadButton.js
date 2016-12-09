@@ -13,7 +13,7 @@ const styles = {
     marginLeft: '0.2rem',
     ':hover': {
       backgroundColor: '#27AFBB',
-    }
+    },
   },
 };
 
@@ -57,7 +57,7 @@ const DownloadButton = ({
         method: 'POST',
       })(
         () => {},
-        () => setActive(false),
+        () => setActive(false)
       );
     }}
   >

@@ -23,7 +23,7 @@ import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
-import Lolliplot from '@oncojs/lolliplot'
+import Lolliplot from '@oncojs/lolliplot';
 
 
 export const zDepth1 = {
@@ -44,7 +44,7 @@ export const dropdown = {
   overflow: 'auto',
 };
 
-let Gene = (() => {
+const Gene = (() => {
   const styles = {
     heading: {
       flexGrow: 1,
@@ -82,11 +82,11 @@ let Gene = (() => {
       minWidth: 450,
     },
     card: {
-      backgroundColor: `white`,
+      backgroundColor: 'white',
     },
   };
 
-  let impactColors = {
+  const impactColors = {
     HIGH: 'rgb(185, 36, 36)',
     MODERATE: 'rgb(193, 158, 54)',
     LOW: 'rgb(49, 161, 60)',
@@ -94,7 +94,7 @@ let Gene = (() => {
 
   const strandIconMap = {
     '-1': <MinusIcon />,
-    '1': <PlusIcon />,
+    1: <PlusIcon />,
   };
 
   return class Gene extends Component {
@@ -102,7 +102,7 @@ let Gene = (() => {
       super();
 
       this.state = {
-        ProteinLolliplot: {}
+        ProteinLolliplot: {},
       };
 
       this.renderProteinLolliplot = this.renderProteinLolliplot.bind(this);
@@ -116,7 +116,7 @@ let Gene = (() => {
       this.setState({
         ProteinLolliplot: Lolliplot({
           data: this.props.$scope.proteinLolliplotData,
-          selector: `#protein-viewer-root`,
+          selector: '#protein-viewer-root',
           onMutationClick: d => window.location.href = `/mutations/${d.id}`,
           onMutationMouseover: d => {
             $('.global-tooltip')
@@ -153,10 +153,10 @@ let Gene = (() => {
         mouseDownHandler,
         mouseUpHandler,
         frequentMutations: fm,
-      } = this.props
+      } = this.props;
 
       const allCasesAggByProject = gene.allCasesAgg.reduce((acc, bucket) =>
-        ({...acc, [bucket.key]: bucket.doc_count}), {}
+        ({ ...acc, [bucket.key]: bucket.doc_count }), {}
       );
 
       const cancerDistData = gene.case.reduce(
@@ -168,39 +168,39 @@ let Gene = (() => {
               disease_type: c.project.disease_type,
               cancer_type: c.project.cancer_type || 'tbd',
               site: c.project.primary_site,
-              cases: cases,
+              cases,
               ssms: [...new Set([...(acc[c.project.project_id] || { ssms: [] }).ssms, ...c.ssm.map(m => m.ssm_id)])],
-              freq: cases.length/allCasesAggByProject[c.project.project_id],
-            }
+              freq: cases.length / allCasesAggByProject[c.project.project_id],
+            },
           };
         }, {});
 
       const sortedCancerDistData = Object.keys(cancerDistData)
-        .map(k => ({project_id: k, ...cancerDistData[k]}))
+        .map(k => ({ project_id: k, ...cancerDistData[k] }))
         .sort((a, b) => b.freq - a.freq);
 
       const totalNumCases = Object.keys(allCasesAggByProject).reduce((sum, b) => sum + allCasesAggByProject[b], 0);
 
       const frequentMutations = fm.map(x => {
-        let consequence = x.consequence.find(x => x.transcript.is_canonical);
+        const consequence = x.consequence.find(x => x.transcript.is_canonical);
         return {
           ...x,
           num_affected_cases_all: x.occurrence.length,
           num_affected_cases_by_project: x.occurrence.reduce((acc, o) => ({
             ...acc,
-            [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1
+            [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1,
           }), {}),
           impact: consequence.transcript.annotation.impact,
           consequence_type:
-            <span>
-              <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
-              <span style={{marginLeft:'5px'}}>
-                <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
-              </span>
-              <span style={{marginLeft:'5px', color: impactColors[consequence.transcript.annotation.impact] || 'inherit'}}>
-                {consequence.transcript.aa_change}
-              </span>
-            </span>
+  <span>
+    <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
+    <span style={{ marginLeft: '5px' }}>
+      <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
+    </span>
+    <span style={{ marginLeft: '5px', color: impactColors[consequence.transcript.annotation.impact] || 'inherit' }}>
+      {consequence.transcript.aa_change}
+    </span>
+  </span>,
         };
       });
 
@@ -209,7 +209,7 @@ let Gene = (() => {
           <Row spacing="2rem">
             <EntityPageVerticalTable
               id="summary"
-              title={<span><TableIcon style={{ marginRight: '1rem' }}/>Summary</span>}
+              title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
               thToTd={[
                 { th: 'Symbol', td: gene.symbol },
                 { th: 'Name', td: gene.name },
@@ -218,21 +218,21 @@ let Gene = (() => {
                   style: {
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'breakWord',
-                  }
+                  },
                 },
                 { th: 'Type', td: gene.biotype },
                 { th: 'Location', td:
                     `chr${gene.gene_chromosome}:${gene.gene_start}-${gene.gene_end}
-                    (${(gene.case||[{ssm: [{ncbi_build: '--'}]}])[0].ssm[0].ncbi_build})`
+                    (${(gene.case || [{ ssm: [{ ncbi_build: '--' }] }])[0].ssm[0].ncbi_build})`,
                 },
-                { th: 'Strand', td: gene.gene_strand ? strandIconMap[gene.gene_strand.toString(10)] : '--'},
+                { th: 'Strand', td: gene.gene_strand ? strandIconMap[gene.gene_strand.toString(10)] : '--' },
                 { th: 'Description',
                   collapsibleTd: gene.description,
                   style: {
                     whiteSpace: 'pre-wrap',
                     wordBreak: 'breakWord',
                     lineHeight: '2.2rem',
-                  }
+                  },
                 },
               ]}
               style={{
@@ -242,23 +242,24 @@ let Gene = (() => {
               }}
             />
             <EntityPageVerticalTable
-              title={<span><BookIcon style={{ marginRight: '1rem' }}/> External References</span>}
+              title={<span><BookIcon style={{ marginRight: '1rem' }} /> External References</span>}
               thToTd={
                 Object.keys(gene.external_db_ids || {}).map(db => ({
                   th: db.replace(/_/g, ' '),
                   td: <ExternalLink
-                    href={externalReferenceLinks[db](gene.external_db_ids[db])}>
-                      {gene.external_db_ids[db]}
-                    </ExternalLink>
+                    href={externalReferenceLinks[db](gene.external_db_ids[db])}
+                  >
+                    {gene.external_db_ids[db]}
+                  </ExternalLink>,
                 }))
               }
-              style={{...styles.summary, ...styles.column, alignSelf: 'flex-start'}}
+              style={{ ...styles.summary, ...styles.column, alignSelf: 'flex-start' }}
             />
           </Row>
           <Column style={styles.card} id="cancer-distribution">
             <Row>
-              <h1 style={{...styles.heading, padding: `1rem` }}>
-                <ChartIcon style={{ marginRight: '1rem' }}/>
+              <h1 style={{ ...styles.heading, padding: '1rem' }}>
+                <ChartIcon style={{ marginRight: '1rem' }} />
                 Cancer Distribution
               </h1>
               <DownloadVisualizationButton
@@ -268,13 +269,13 @@ let Gene = (() => {
                 slug="bar-chart"
               />
             </Row>
-            <div style={{ padding: `0 1rem` }}>
+            <div style={{ padding: '0 1rem' }}>
               {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by&nbsp;
               {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across&nbsp;
               {sortedCancerDistData.length} projects
             </div>
-            <Column style={{...styles.column}}>
-              <div style={{ padding: `0 2rem` }}>
+            <Column style={{ ...styles.column }}>
+              <div style={{ padding: '0 2rem' }}>
                 <BarChart
                   data={sortedCancerDistData.map(d => ({
                     label: d.project_id,
@@ -282,19 +283,19 @@ let Gene = (() => {
                     href: `projects/${d.project_id}`,
                     tooltip: `DNA Change<br />\
                       ${d.cases.length} Cases Affected in <b>${d.project_id}</b><br />\
-                      ${d.cases.length}/${allCasesAggByProject[d.project_id]}&nbsp;(${(d.freq * 100).toFixed(2)}%}`
-                    }))
+                      ${d.cases.length}/${allCasesAggByProject[d.project_id]}&nbsp;(${(d.freq * 100).toFixed(2)}%}`,
+                  }))
                   }
                   yAxis={{ title: '% of Cases Affected' }}
                   styles={{
-                    xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                    yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                    bars: {fill: theme.secondary},
+                    xAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
+                    yAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
+                    bars: { fill: theme.secondary },
                     tooltips: {
                       fill: '#fff',
                       stroke: theme.greyScale4,
-                      textFill: theme.greyScale3
-                    }
+                      textFill: theme.greyScale3,
+                    },
                   }}
                 />
               </div>
@@ -304,12 +305,12 @@ let Gene = (() => {
                   { key: 'disease_type', title: 'Disease Type' },
                   { key: 'site', title: 'Site' },
                   { key: 'num_affected_cases',
-                    title: <Tooltip innerHTML={`Number of Cases where ${gene.symbol} contains SSM`}># Affected Cases</Tooltip>
+                    title: <Tooltip innerHTML={`Number of Cases where ${gene.symbol} contains SSM`}># Affected Cases</Tooltip>,
                   },
                   { key: 'num_mutations',
                     title: <Tooltip innerHTML={`Number of SSM observed in ${gene.symbol}`}># Mutations</Tooltip>,
                     style: { textAlign: 'right' },
-                  }
+                  },
                 ]}
                 data={sortedCancerDistData.map(
                   d => ({
@@ -323,7 +324,7 @@ let Gene = (() => {
             </Column>
           </Column>
 
-          <Column style={{...styles.card, marginTop: `2rem` }}>
+          <Column style={{ ...styles.card, marginTop: '2rem' }}>
             <ProteinLolliplotComponent
               gene={gene}
               $scope={$scope}
@@ -331,9 +332,9 @@ let Gene = (() => {
             />
           </Column>
 
-          <Column style={{...styles.card, marginTop: `2rem`}}>
-            <h1 style={{...styles.heading, padding: `1rem` }} id="frequent-mutations">
-              <ChartIcon style={{ marginRight: '1rem' }}/>
+          <Column style={{ ...styles.card, marginTop: '2rem' }}>
+            <h1 style={{ ...styles.heading, padding: '1rem' }} id="frequent-mutations">
+              <ChartIcon style={{ marginRight: '1rem' }} />
               Most Frequent Mutations
             </h1>
 
@@ -345,7 +346,7 @@ let Gene = (() => {
         </span>
       );
     }
-  }
-})()
+  };
+})();
 
 export default withDropdown(Gene);

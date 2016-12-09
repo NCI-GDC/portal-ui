@@ -59,12 +59,12 @@ const PieChart = ({ data, path = 'file_count', tooltipKey, height = 160, width =
     })
     .on('mouseleave', d => {
       d3.select('.global-tooltip')
-        .classed('active', false)
+        .classed('active', false);
     });
   }
 
   fill
-  .on('mousedown', d => d.data.clickHandler && d.data.clickHandler())
+  .on('mousedown', d => d.data.clickHandler && d.data.clickHandler());
 
   return node.toReact();
 };

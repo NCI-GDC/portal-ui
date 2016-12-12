@@ -1,8 +1,9 @@
+import React from 'react';
 import Button from '../uikit/Button';
 import withDropdown from '../uikit/withDropdown';
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
-import { dropdown } from '../theme/mixins'
+import { dropdown } from '../theme/mixins';
 import theme from '../theme';
 import Tooltip from '../uikit/Tooltip';
 
@@ -74,6 +75,6 @@ const DropDownButton = ({
       }
     </span>
   );
-}
+};
 
 export default withDropdown(DropDownButton);

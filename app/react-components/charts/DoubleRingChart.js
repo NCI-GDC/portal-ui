@@ -85,7 +85,10 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
     .on('mouseenter', d => {
       d3.select('.global-tooltip')
         .classed('active', true)
-        .html(`<b>${d.label}</b><br />${d.pie.value} cases`);
+        .html(`
+          <b>${d.label}</b><br />
+          ${d.pie.value} case${d.pie.value > 1 ? 's' : ''}
+        `);
     })
     .on('mouseleave', d => {
       d3.select('.global-tooltip')

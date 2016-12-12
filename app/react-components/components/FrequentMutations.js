@@ -94,11 +94,14 @@ let FrequentMutations = ({
                     value: (x.score),
                     tooltip: project
                       ? `<b>${x.genomic_dna_change}</b><br />
-                        <b>${x.num_affected_cases_project} cases affected in ${project}</b><br />
+                        <b>${x.num_affected_cases_project} Case${x.num_affected_cases_project > 1 ? 's' : ''}
+                          affected in ${project}</b><br />
                         <b>${x.num_affected_cases_project} / ${numCasesAggByProject[project]} (${(x.num_affected_cases_project / numCasesAggByProject[project] * 100).toFixed(2)}%)</b>`
                       : `<b>${x.genomic_dna_change}</b><br />
-                        <b>${x.num_affected_cases_all} cases affected in all projects</b><br />
-                        <b>${x.num_affected_cases_all} / ${totalNumCases} (${(x.num_affected_cases_all / totalNumCases * 100).toFixed(2)}%)`,
+                        <b>${x.num_affected_cases_all} Case${x.num_affected_cases_all > 1 ? 's' : ''}
+                          affected in all projects</b><br />
+                        <b>${x.num_affected_cases_all} / ${totalNumCases}
+                        (${(x.num_affected_cases_all / totalNumCases * 100).toFixed(2)}%)`,
                     href: `mutations/${x.ssm_id}`
                   }))}
                   margin={{ top: 30, right: 50, bottom: 105, left: 40 }}

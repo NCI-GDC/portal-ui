@@ -58,7 +58,10 @@ const drawChart = ({ data, yAxis, styles, width, height }) => {
       .on('mouseenter', (d, i, nodes) => {
         d3.select('.global-tooltip')
           .classed('active', true)
-          .html(`<b>${d[2].key}</b><br />${d[2].data[d[2].key]} cases affected`);
+          .html(`
+            <b>${d[2].key}</b><br />
+            ${d[2].data[d[2].key]} case${d[2].data[d[2].key] > 1 ? 's' : ''} affected
+          `);
       })
       .on('mouseleave', d => {
         d3.select('.global-tooltip')

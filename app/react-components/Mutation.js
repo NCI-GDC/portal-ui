@@ -186,6 +186,8 @@ let Mutation = (() => {
         .map(k => ({project_id: k, ...cancerDistData[k]}))
         .sort((a, b) => b.freq - a.freq);
 
+      const distinctCases = sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []);
+
       const strandIconMap = {
         '-1': <MinusIcon />,
         '1': <PlusIcon />,
@@ -315,7 +317,7 @@ let Mutation = (() => {
             </Row>
             <h5 style={{textTransform: 'uppercase', padding: `0 2rem`}}>
               This mutation affects&nbsp;
-              {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} distinct cases across&nbsp;
+              {distinctCases.length} distinct case{distinctCases.length > 1 ? 's' : ''} across&nbsp;
               {sortedCancerDistData.length} cancer projects
             </h5>
             <Column style={{...styles.column}}>

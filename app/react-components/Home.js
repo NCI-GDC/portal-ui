@@ -1,13 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
-
-const Row = ({ children, style, className }) =>
-  <div className={className} style={{ display: 'flex', ...style }}>{children}</div>;
-
-const Column = ({ children, style, className }) =>
-  <div className={className} style={{ display: 'flex', flexDirection: 'column', ...style }}>{children}</div>;
-
-const materializeShadow = { boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)' };
+import { Row, Column } from './uikit/Flex';
+import { zDepth1 } from './theme/mixins';
 
 const center = {
   alignItems: 'center',
@@ -70,7 +64,7 @@ const styles = {
     marginLeft: '1.3rem',
   },
   summaryBoxContainer: {
-    ...materializeShadow,
+    ...zDepth1,
     marginTop: '2rem',
     backgroundColor: 'white',
     borderTop: '3px solid rgb(37, 208, 182)',
@@ -155,7 +149,7 @@ const Home = ({ $scope }) => (
                 rel="noopener noreferrer"
                 href="https://gdc-docs.nci.nih.gov/Data_Portal/Release_Notes/Data_Portal_Release_Notes/"
               >
-                Data Release 3.0 - September 21, 2016
+                {$scope.config.data_release}
               </a>
             </div>
           </Row>

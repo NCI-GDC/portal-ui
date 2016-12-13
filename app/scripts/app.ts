@@ -2,6 +2,7 @@
 
 declare module ngApp {
   export interface IGDCConfig {
+    data_release: string;
     version: string;
     tag: string;
     commitLink: string;
@@ -169,21 +170,19 @@ function appRun(
   });
 
 
-  Restangular.all('status').get('').then(function(data){
-
-    config.apiVersion = data['tag'];
-    config.apiCommitHash = data['commit'];
+  Restangular.all('status').get('').then(data => {
+    config.data_release = data.data_release;
+    config.apiVersion = data.tag;
+    config.apiCommitHash = data.commit;
     config.apiTag = "https://github.com/NCI-GDC/gdcapi/releases/tag/" + config.apiVersion;
     config.apiCommitLink ="https://github.com/NCI-GDC/gdcapi/commit/" + config.apiCommitHash;
 
-    logVersionInfo(config)
+    logVersionInfo(config);
 
     if (+data.version !== +config.supportedAPI) {
       config.apiIsMismatched = true;
     }
-  }, function(response) {
-    console.log('error retriving status');
-  });
+  }, () => console.log('error retriving status'));
 
   UserService.login();
 

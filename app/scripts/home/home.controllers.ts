@@ -34,6 +34,7 @@ module ngApp.home.controllers {
       private DATA_CATEGORIES,
       private LocationService,
       private $state,
+      private config
     ) {
 
       CoreService.setPageTitle("Welcome to The Genomic Data Commons Data Portal");

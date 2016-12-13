@@ -413,11 +413,11 @@ const Project = ({
                 { key: 'cytoband', title: 'Cytoband' },
                 {
                   key: 'num_affected_cases_project',
-                  title: (<span># Affected Cases<br />in {numCasesAggByProject[project.project_id]} {project.project_id} Cases</span>),
+                  title: (<span># Affected Cases<br /></span>),
                 },
                 {
                   key: 'num_affected_cases_all',
-                  title: (<span># Affected Cases<br />in {totalNumCases} from All Projects</span>),
+                  title: (<span># Affected Cases<br /> Across all Projects</span>),
                   style: { minWidth: '210px' }
                 },
                 {
@@ -436,13 +436,13 @@ const Project = ({
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
                 survivalId: g.symbol,
                 cytoband: (g.cytoband || []).join(', '),
-                num_affected_cases_project: `${g.num_affected_cases_project} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
+                num_affected_cases_project: `${g.num_affected_cases_project}/${numCasesAggByProject[project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
                 num_affected_cases_all:
                   <TogglableUl
-                    items={[`${g.num_affected_cases_all} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+                    items={[`${g.num_affected_cases_all}/${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
                       ...Object.keys(g.num_affected_cases_by_project)
                         .map(k =>
-                          (`${k}: ${g.num_affected_cases_by_project[k]} (${(g.num_affected_cases_by_project[k]/totalNumCases * 100).toFixed(2)}%)`))
+                          (`${k}: ${g.num_affected_cases_by_project[k]}/${numCasesAggByProject[k]} (${(g.num_affected_cases_by_project[k]/numCasesAggByProject[k]* 100).toFixed(2)}%)`))
                     ]}
                   />,
                 survival_plot:

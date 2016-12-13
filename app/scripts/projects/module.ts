@@ -86,18 +86,51 @@ module ngApp.projects {
             url: `${config.es_host}/${config.es_index_version}-case-centric/case-centric/_search`,
             headers: {'Content-Type' : 'application/json'},
             data: {
+              "size": 0,
               "aggs": {
-                "project_ids": {
+                "projects": {
                   "terms": {
-                    "field": "project.project_id"
+                    "field": "project.project_id",
+                    "size": 20000
+                  },
+                  "aggs": {
+                    "case_summary": {
+                      "nested": {
+                        "path": "summary.data_categories"
+                      },
+                      "aggs": {
+                        "case_with_ssm": {
+                          "filter": {
+                            "bool": {
+                              "must": [
+                                {
+                                  "term": {
+                                    "summary.data_categories.data_category": "Simple Nucleotide Variation"
+                                  }
+                                },
+                                {
+                                  "range": {
+                                    "summary.data_categories.file_count": {
+                                      "gt": 0
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
             }
           }).then(data => {
-            return data.data.aggregations.project_ids.buckets;
+            return data.data.aggregations.projects.buckets.reduce((acc, b) => {
+              acc[b.key] = b.case_summary.case_with_ssm.doc_count;
+              return acc;
+            }, {});
           });
-
         },
         mostAffectedCases: (
           $stateParams: ng.ui.IStateParamsService,

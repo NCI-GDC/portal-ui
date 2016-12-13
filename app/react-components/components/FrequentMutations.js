@@ -11,7 +11,6 @@ import EntityPageHorizontalTable from './EntityPageHorizontalTable';
 import SurvivalPlotWrapper from './SurvivalPlotWrapper';
 import TogglableUl from '../uikit/TogglableUl';
 import Tooltip from '../uikit/Tooltip';
-import { withPagination, PaginationControls, PaginationHeader } from '../uikit/Pagination';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
 
 const impactBubble = {
@@ -76,10 +75,6 @@ const FrequentMutations = ({
     <Column>
       {!!frequentMutations.length &&
         <div>
-          <PaginationHeader
-            {...props}
-            entityType="mutations"
-          />
           <Row style={{ paddingBottom: '2.5rem' }}>
             <span>
               <div style={{ textAlign: 'right', marginRight: 50, marginLeft: 30 }}>
@@ -204,16 +199,6 @@ const FrequentMutations = ({
               ),
             }))}
           />
-          <Row spacing="2rem" style={{ padding: '2rem', alignItems: 'center' }}>
-            <div style={{ marginLeft: 'auto' }}>
-              <PaginationControls
-                update={props.update}
-                offset={props.offset}
-                first={props.first}
-                total={props.total}
-              />
-            </div>
-          </Row>
         </div>
       }
       {!frequentMutations.length &&
@@ -225,7 +210,6 @@ const FrequentMutations = ({
 
 const enhance = compose(
   withState('survivalMutation', 'setSurvivalMutation', null),
-  withPagination()
 );
 
 export default enhance(FrequentMutations);

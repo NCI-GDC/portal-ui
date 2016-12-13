@@ -8,6 +8,7 @@ import _ from 'lodash';
 // Custom
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
+import { PaginationContainer } from './uikit/Pagination';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';
@@ -125,47 +126,52 @@ const Project = ({
     dataCategoriesConfig,
   } = $scope;
 
-  const mutatedGenesChartData = mutatedGenesProject.map(g => (
-    {
-      'gene_id': g.gene_id,
-      'symbol': g.symbol,
-      'cytoband': g.cytoband,
-      'num_affected_cases_project': g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
-      'num_affected_cases_all': g.case.length,
-      'num_affected_cases_by_project': g.case.reduce((acc, c) => ({
-        ...acc,
-        [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1
-      }), {}),
-      'num_mutations': g.case.reduce((acc, c) =>  acc + c.ssm.length, 0),
-    }
-  ));
+  const mutatedGenesChartData = mutatedGenesProject.map(g => ({
+    gene_id: g.gene_id,
+    symbol: g.symbol,
+    cytoband: g.cytoband,
+    num_affected_cases_project: g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
+    num_affected_cases_all: g.case.length,
+    num_affected_cases_by_project: g.case.reduce((acc, c) => ({
+      ...acc,
+      [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1,
+    }), {}),
+    num_mutations: g.case.reduce((acc, c) => acc + c.ssm.length, 0),
+  }));
 
   const totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
 
   const frequentMutations = fm.hits.map(g => Object.assign({}, g._source, { score: g._score })).map(x => {
-    let consequence = x.consequence.find(x => x.transcript.is_canonical);
+    const consequence = x.consequence.find(c => c.transcript.is_canonical);
 
     return {
       ...x,
-      num_affected_cases_project: x.occurrence.filter(x =>
-        x.case.project.project_id === $scope.project.project_id).length,
+      num_affected_cases_project: x.occurrence.filter(o =>
+        o.case.project.project_id === $scope.project.project_id
+      ).length,
       num_affected_cases_by_project: x.occurrence.reduce((acc, o) => ({
         ...acc,
-        [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1
+        [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1,
       }), {}),
       num_affected_cases_all: x.occurrence.length,
       impact: consequence.transcript.annotation.impact,
-      consequence_type:
+      consequence_type: (
         <span>
           <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
-          <span style={{marginLeft:'5px'}}>
+          <span style={{ marginLeft: '5px' }}>
             <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
           </span>
-          <span style={{marginLeft:'5px', color: impactColors[consequence.transcript.annotation.impact] || 'inherit'}}>
+          <span
+            style={{
+              marginLeft: '5px',
+              color: impactColors[consequence.transcript.annotation.impact] || 'inherit',
+            }}
+          >
             {consequence.transcript.aa_change}
           </span>
         </span>
-    }
+      ),
+    };
   });
 
   return (
@@ -475,15 +481,16 @@ const Project = ({
           <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
           Most Frequent Mutations
         </h1>
-        <FrequentMutations
-          frequentMutations={frequentMutations}
-          numCasesAggByProject={numCasesAggByProject}
-          totalNumCases={totalNumCases}
-          project={$scope.project.project_id}
-          survivalData={survivalData}
-          width={width}
-          total={fm.total}
-        />
+        <PaginationContainer total={fm.total}>
+          <FrequentMutations
+            frequentMutations={frequentMutations}
+            numCasesAggByProject={numCasesAggByProject}
+            totalNumCases={totalNumCases}
+            project={$scope.project.project_id}
+            survivalData={survivalData}
+            width={width}
+          />
+        </PaginationContainer>
       </Column>
       <Column style={{...styles.card, marginTop: `2rem` }}>
         <h1 style={{...styles.heading, padding: `1rem`}} id="most-affected-cases">

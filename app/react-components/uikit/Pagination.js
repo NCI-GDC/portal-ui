@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { css } from 'glamor';
 import ButtonGroup from './ButtonGroup';
 import theme from '../theme';
+import { Row } from './Flex';
 
 const withPagination = (props = {}) => Wrapper => (
   class extends React.Component {
@@ -18,7 +19,7 @@ const withPagination = (props = {}) => Wrapper => (
         <Wrapper
           {...this.props}
           {...this.state}
-          update={this.update}
+          setPagination={this.setPagination}
         />
       );
     }
@@ -27,6 +28,7 @@ const withPagination = (props = {}) => Wrapper => (
 
 const styles = {
   tableActionButtons: css({
+    outline: 'none',
     padding: '0.6rem',
     backgroundColor: 'white',
     color: theme.greyScale1,
@@ -53,13 +55,13 @@ const PaginationHeader = props => (
     </strong>
     <span> of</span>
     <strong> {props.total.toLocaleString()}</strong>
-    <span>{props.entityType}</span>
+    <span style={{ marginLeft: '0.5rem' }}>{props.entityType}</span>
   </span>
 );
 
 const PaginationBtn = ({ className, children, ...props }) => (
   <button
-    className={`${styles.tableActionButtons} ${styles.inactive} ${className || ''}`}
+    className={`${styles.tableActionButtons} ${className || styles.inactive}`}
     {...props}
   >
     {children}
@@ -96,8 +98,25 @@ const PaginationControls = props => {
   );
 };
 
+const PaginationContainer = withPagination()(
+  props => (
+    <span>
+      <Row style={{ padding: '0 1rem' }}>
+        <PaginationHeader {...props} />
+      </Row>
+      {props.children}
+      <Row style={{ padding: '1rem', alignItems: 'center' }}>
+        <div style={{ marginLeft: 'auto' }}>
+          <PaginationControls {...props} />
+        </div>
+      </Row>
+    </span>
+  )
+);
+
 export {
   withPagination,
   PaginationHeader,
   PaginationControls,
+  PaginationContainer,
 };

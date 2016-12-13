@@ -12,7 +12,7 @@ import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';
 import DownloadButton from './components/DownloadButton';
-import FrequentMutations from './components/FrequentMutations';
+import FrequentMutationsContainer from './components/FrequentMutationsContainer';
 import MostAffectedCases from './components/MostAffectedCases';
 import makeFilter from './utils/makeFilter';
 import SummaryCard from './components/SummaryCard';
@@ -72,14 +72,8 @@ const styles = {
     overflow: 'hidden',
   },
   card: {
-    backgroundColor: `white`,
+    backgroundColor: 'white',
   },
-};
-
-let impactColors = {
-  HIGH: 'rgb(185, 36, 36)',
-  MODERATE: 'rgb(193, 158, 54)',
-  LOW: 'rgb(49, 161, 60)',
 };
 
 function buildFilters(data) {
@@ -103,7 +97,6 @@ const Project = ({
   mutatedGenesProject,
   numCasesAggByProject,
   mostAffectedCases,
-  frequentMutations: fm,
   survivalData,
   setSurvivalGene,
   survivalGene,
@@ -125,48 +118,20 @@ const Project = ({
     dataCategoriesConfig,
   } = $scope;
 
-  const mutatedGenesChartData = mutatedGenesProject.map(g => (
-    {
-      'gene_id': g.gene_id,
-      'symbol': g.symbol,
-      'cytoband': g.cytoband,
-      'num_affected_cases_project': g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
-      'num_affected_cases_all': g.case.length,
-      'num_affected_cases_by_project': g.case.reduce((acc, c) => ({
-        ...acc,
-        [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1
-      }), {}),
-      'num_mutations': g.case.reduce((acc, c) =>  acc + c.ssm.length, 0),
-    }
-  ));
+  const mutatedGenesChartData = mutatedGenesProject.map(g => ({
+    gene_id: g.gene_id,
+    symbol: g.symbol,
+    cytoband: g.cytoband,
+    num_affected_cases_project: g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
+    num_affected_cases_all: g.case.length,
+    num_affected_cases_by_project: g.case.reduce((acc, c) => ({
+      ...acc,
+      [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1,
+    }), {}),
+    num_mutations: g.case.reduce((acc, c) => acc + c.ssm.length, 0),
+  }));
 
   const totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
-
-  const frequentMutations = fm.map(x => {
-    let consequence = x.consequence.find(x => x.transcript.is_canonical);
-
-    return {
-      ...x,
-      num_affected_cases_project: x.occurrence.filter(x =>
-        x.case.project.project_id === $scope.project.project_id).length,
-      num_affected_cases_by_project: x.occurrence.reduce((acc, o) => ({
-        ...acc,
-        [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1
-      }), {}),
-      num_affected_cases_all: x.occurrence.length,
-      impact: consequence.transcript.annotation.impact,
-      consequence_type:
-        <span>
-          <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
-          <span style={{marginLeft:'5px'}}>
-            <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
-          </span>
-          <span style={{marginLeft:'5px', color: impactColors[consequence.transcript.annotation.impact] || 'inherit'}}>
-            {consequence.transcript.aa_change}
-          </span>
-        </span>
-    }
-  });
 
   return (
     <span>
@@ -195,7 +160,8 @@ const Project = ({
 
         <Tooltip
           dir="down"
-          innerHTML="Download a manifest for use with the GDC Data Transfer Tool. The GDC Data Transfer Tool is recommended for transferring large volumes of data."
+          innerHTML={`Download a manifest for use with the GDC Data Transfer Tool.
+            The GDC Data Transfer Tool is recommended for transferring large volumes of data.`}
           maxWidth="250px"
         >
           <DownloadButton
@@ -249,7 +215,7 @@ const Project = ({
           <CountCard
             title="FILES"
             count={project.summary.file_count.toLocaleString()}
-            icon={<FileIcon style={styles.icon}  className="fa-3x" />}
+            icon={<FileIcon style={styles.icon} className="fa-3x" />}
             style={styles.countCard}
             onCountClick={() => {
               window.location = `/search/f?filters=${
@@ -346,49 +312,50 @@ const Project = ({
       </Row>
 
       <Column style={styles.card}>
-        <h1 style={{ ...styles.heading, padding: `1rem` }} id="mutated-genes">
-          <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
+        <h1 style={{ ...styles.heading, padding: '1rem' }} id="mutated-genes">
+          <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
           Most Frequently Mutated Genes
         </h1>
-        <Row style={{paddingBottom: '2.5rem'}}>
+        <Row style={{ paddingBottom: '2.5rem' }}>
           <span>
-            <div style={{textAlign: 'right', marginRight: 50, marginLeft: 30}}>
+            <div style={{ textAlign: 'right', marginRight: 50, marginLeft: 30 }}>
               <DownloadVisualizationButton
                 disabled={!mutatedGenesChartData.length}
                 svg="#mutated-genes-chart svg"
                 data={mutatedGenesChartData}
                 slug="bar-chart"
-                noText={true}
                 tooltipHTML="Download image or data"
+                noText
               />
             </div>
 
             {!!mutatedGenesChartData.length &&
               <div id="mutated-genes-chart">
-                <Row style={{ padding: `0 2rem` }}>
+                <Row style={{ padding: '0 2rem' }}>
                   <BarChart
                     data={mutatedGenesChartData.map(g => ({
                       label: g.symbol,
-                      value: (g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100),
+                      value: ((g.num_affected_cases_project / numCasesAggByProject[project.project_id]) * 100),
                       tooltip: `<b>${g.symbol}</b><br />
                         ${g.num_affected_cases_project} Case${g.num_affected_cases_project > 1 ? 's' : ''}
                         Affected in ${project.project_id}<br />
                         ${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]}
-                        ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`,
-                      href: `genes/${g.gene_id}`
+                        ${((g.num_affected_cases_project / numCasesAggByProject[project.project_id]) * 100)
+                          .toFixed(2)}%`,
+                      href: `genes/${g.gene_id}`,
                     }))}
                     title='Distribution of Most Frequently Mutated Genes'
                     yAxis={{ title: '% of Cases Affected' }}
                     height={240}
                     styles={{
-                      xAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                      yAxis: {stroke: theme.greyScale4, textFill: theme.greyScale3},
-                      bars: {fill: theme.secondary},
+                      xAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
+                      yAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
+                      bars: { fill: theme.secondary },
                       tooltips: {
                         fill: '#fff',
                         stroke: theme.greyScale4,
-                        textFill: theme.greyScale3
-                      }
+                        textFill: theme.greyScale3,
+                      },
                     }}
                   />
                 </Row>
@@ -413,12 +380,12 @@ const Project = ({
                 { key: 'cytoband', title: 'Cytoband' },
                 {
                   key: 'num_affected_cases_project',
-                  title: (<span># Affected Cases<br /></span>),
+                  title: <span># Affected Cases<br /></span>,
                 },
                 {
                   key: 'num_affected_cases_all',
-                  title: (<span># Affected Cases<br /> Across all Projects</span>),
-                  style: { minWidth: '210px' }
+                  title: <span># Affected Cases<br /> Across all Projects</span>,
+                  style: { minWidth: '210px' },
                 },
                 {
                   key: 'num_mutations',
@@ -429,32 +396,39 @@ const Project = ({
                   title: <i className="fa fa-bar-chart-o"><div style={styles.hidden}>add to survival plot</div></i>,
                   key: 'survival_plot',
                   style: { textAlign: 'center', width: '55px' },
-                }
+                },
               ]}
               data={mutatedGenesChartData.map(g => ({
                 ...g,
                 symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
                 survivalId: g.symbol,
                 cytoband: (g.cytoband || []).join(', '),
-                num_affected_cases_project: `${g.num_affected_cases_project}/${numCasesAggByProject[project.project_id]} (${(g.num_affected_cases_project/numCasesAggByProject[project.project_id]*100).toFixed(2)}%)`,
-                num_affected_cases_all:
+                num_affected_cases_project:
+                  `${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]}
+                  (${((g.num_affected_cases_project / numCasesAggByProject[project.project_id]) * 100).toFixed(2)}%)`,
+                num_affected_cases_all: (
                   <TogglableUl
-                    items={[`${g.num_affected_cases_all}/${totalNumCases} (${(g.num_affected_cases_all/totalNumCases * 100).toFixed(2)}%)`,
+                    items={[
+                      `${g.num_affected_cases_all}/${totalNumCases}
+                      (${((g.num_affected_cases_all / totalNumCases) * 100).toFixed(2)}%)`,
                       ...Object.keys(g.num_affected_cases_by_project)
-                        .map(k =>
-                          (`${k}: ${g.num_affected_cases_by_project[k]}/${numCasesAggByProject[k]} (${(g.num_affected_cases_by_project[k]/numCasesAggByProject[k]* 100).toFixed(2)}%)`))
+                        .map(k => `
+                          ${k}: ${g.num_affected_cases_by_project[k]} / ${numCasesAggByProject[k]}
+                          (${((g.num_affected_cases_by_project[k] / numCasesAggByProject[k]) * 100).toFixed(2)}%)`),
                     ]}
-                  />,
-                survival_plot:
+                  />
+                ),
+                survival_plot: (
                   <Tooltip innerHTML={`Add ${g.symbol} to surival plot`}>
-                    <span
+                    <button
                       onClick={d => setSurvivalGene(d === survivalGene ? null : d)}
                     >
                       <span className={`fa fa-bar-chart-o ${clickable}`}>
                         <div style={styles.hidden}>add to survival plot</div>
                       </span>
-                    </span>
+                    </button>
                   </Tooltip>
+                ),
               }))}
             />
           }
@@ -462,31 +436,32 @@ const Project = ({
         </Column>
       </Column>
 
-      <Column style={{...styles.card, marginTop: `2rem`, position: 'static' }}>
-        <h1 style={{...styles.heading, padding: `1rem` }} id="oncogrid">
-          <i className="fa fa-th" style={{ paddingRight: `10px` }} />
+      <Column style={{ ...styles.card, marginTop: '2rem', position: 'static' }}>
+        <h1 style={{ ...styles.heading, padding: '1rem' }} id="oncogrid">
+          <i className="fa fa-th" style={{ paddingRight: '10px' }} />
           OncoGrid
         </h1>
         <OncoGridWrapper width={width} projectId={project.project_id} esHost={esHost} esIndexVersion={esIndexVersion} />
       </Column>
 
-      <Column style={{...styles.card, marginTop: `2rem` }}>
-        <h1 style={{...styles.heading, padding: `1rem`}} id="frequent-mutations">
-          <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
+      <Column style={{ ...styles.card, marginTop: '2rem' }}>
+        <h1 style={{ ...styles.heading, padding: '1rem' }} id="frequent-mutations">
+          <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
           Most Frequent Mutations
         </h1>
-        <FrequentMutations
-          frequentMutations={frequentMutations}
+
+        <FrequentMutationsContainer
+          $scope={$scope}
           numCasesAggByProject={numCasesAggByProject}
           totalNumCases={totalNumCases}
-          project={$scope.project.project_id}
           survivalData={survivalData}
           width={width}
         />
+
       </Column>
-      <Column style={{...styles.card, marginTop: `2rem` }}>
-        <h1 style={{...styles.heading, padding: `1rem`}} id="most-affected-cases">
-          <i className="fa fa-bar-chart-o" style={{ paddingRight: `10px` }} />
+      <Column style={{ ...styles.card, marginTop: '2rem' }}>
+        <h1 style={{ ...styles.heading, padding: '1rem' }} id="most-affected-cases">
+          <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
           Most Affected Cases
         </h1>
 
@@ -499,29 +474,24 @@ const Project = ({
   );
 };
 
-Project.propTypes = {
-  $scope: React.PropTypes.object,
-  authApi: React.PropTypes.string,
-  mutatedGenesProject: React.PropTypes.array,
-  numCasesAggByProject: React.PropTypes.object,
-};
-
 const enhance = compose(
   withState('survivalGene', 'setSurvivalGene', null),
   lifecycle({
-    getInitialState: function() {
+    getInitialState() {
       return { width: window.innerWidth };
     },
 
-    componentDidMount: function() {
-      this.onResize = _.debounce(() => {this.setState({
-        width: window.innerWidth,
-      })}, 100);
+    componentDidMount() {
+      this.onResize = _.debounce(() => {
+        this.setState({
+          width: window.innerWidth,
+        });
+      }, 100);
 
       window.addEventListener('resize', this.onResize);
     },
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
       window.removeEventListener('resize', this.onResize);
     },
   })

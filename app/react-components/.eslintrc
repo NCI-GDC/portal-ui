@@ -1,6 +1,7 @@
 {
   "extends": ['@knit/socks-react'],
   "rules": {
+    "arrow-body-style": 0,
     "camelcase": 0,
     "flowtype/require-valid-file-annotation": 0,
     "flowtype/require-return-type": 0,

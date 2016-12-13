@@ -69,7 +69,6 @@ const FrequentMutations = ({
   setSurvivalMutation,
   survivalData,
   width,
-  ...props
 }) => {
   return (
     <Column>
@@ -209,7 +208,7 @@ const FrequentMutations = ({
 };
 
 const enhance = compose(
-  withState('survivalMutation', 'setSurvivalMutation', null),
+  withState('survivalMutation', 'setSurvivalMutation', null)
 );
 
 export default enhance(FrequentMutations);

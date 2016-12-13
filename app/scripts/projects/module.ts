@@ -90,7 +90,7 @@ module ngApp.projects {
               "aggs": {
                 "projects": {
                   "terms": {
-                    "field": "project.project_id",
+                    "field": "project.project_id.raw",
                     "size": 20000
                   },
                   "aggs": {

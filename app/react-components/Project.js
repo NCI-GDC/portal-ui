@@ -348,13 +348,14 @@ const Project = ({
                   <BarChart
                     data={mutatedGenesChartData.map(g => ({
                       label: g.symbol,
-                      value: (g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100),
+                      value: ((g.num_affected_cases_project / numCasesAggByProject[project.project_id]) * 100),
                       tooltip: `<b>${g.symbol}</b><br />
                         ${g.num_affected_cases_project} Case${g.num_affected_cases_project > 1 ? 's' : ''}
                         Affected in ${project.project_id}<br />
                         ${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]}
-                        ${(g.num_affected_cases_project / numCasesAggByProject[project.project_id] * 100).toFixed(2)}%`,
-                      href: `genes/${g.gene_id}`
+                        ${((g.num_affected_cases_project / numCasesAggByProject[project.project_id]) * 100)
+                          .toFixed(2)}%`,
+                      href: `genes/${g.gene_id}`,
                     }))}
                     yAxis={{ title: '% of Cases Affected' }}
                     height={240}
@@ -365,8 +366,8 @@ const Project = ({
                       tooltips: {
                         fill: '#fff',
                         stroke: theme.greyScale4,
-                        textFill: theme.greyScale3
-                      }
+                        textFill: theme.greyScale3,
+                      },
                     }}
                   />
                 </Row>
@@ -397,7 +398,7 @@ const Project = ({
                 {
                   key: 'num_affected_cases_all',
                   title: <span># Affected Cases<br /> Across all Projects</span>,
-                  style: { minWidth: '210px' }
+                  style: { minWidth: '210px' },
                 },
                 {
                   key: 'num_mutations',

@@ -381,7 +381,6 @@ module ngApp.projects.controllers {
       public project: IProject,
       public mutatedGenesProject: Array<Object>,
       public numCasesAggByProject: Array<Object>,
-      public frequentMutations: Array<Object>,
       public mostAffectedCases: Array<Object>,
       public survivalData: Array<Object>,
       private CoreService: ICoreService,
@@ -390,7 +389,8 @@ module ngApp.projects.controllers {
       private ExperimentalStrategyNames: string[],
       private DATA_CATEGORIES,
       public $state: ng.ui.IStateService,
-      private $filter: ng.ui.IFilterService
+      private $filter: ng.ui.IFilterService,
+      private config
     ) {
       CoreService.setPageTitle("Project", project.project_id);
       this.experimentalStrategies = _.reduce(ExperimentalStrategyNames.slice(), function(result, name) {
@@ -623,7 +623,6 @@ module ngApp.projects.controllers {
             api: this.CoreService.config.api,
             esHost: this.CoreService.config.es_host,
             esIndexVersion: this.CoreService.config.es_index_version,
-            frequentMutations: this.frequentMutations,
             defaultSurvivalRawData: this.survivalData,
             mostAffectedCases: this.mostAffectedCases.map(c => c._source),
           })

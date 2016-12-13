@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { css } from 'glamor';
+import { lifecycle, compose } from 'recompose';
 import ButtonGroup from './ButtonGroup';
 import theme from '../theme';
 import { Row } from './Flex';
@@ -98,7 +99,16 @@ const PaginationControls = props => {
   );
 };
 
-const PaginationContainer = withPagination()(
+const PaginationContainer = compose(
+  withPagination(),
+  lifecycle({
+    componentWillReceiveProps(next) {
+      if (this.props.offset !== next.offset && this.props.onChange) {
+        this.props.onChange(next);
+      }
+    },
+  })
+)(
   props => (
     <span>
       <Row style={{ padding: '0 1rem' }}>

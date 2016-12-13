@@ -1,22 +1,20 @@
 /* @flow */
 export type TDonorInput = {
-  _source: {
-    summary: {
-      data_categories: Array<{data_category: string, file_count: number}>,
-    },
-    demographic: {
-      gender: string,
-      race: string,
-      ethnicity: string,
-    },
-    case_id: string,
-    diagnoses: Array<{
-      age_at_diagnosis: number,
-      vital_status: string,
-      days_to_death: number,
-      primary_diagnosis: string,
-    }>,
+  summary: {
+    data_categories: Array<{data_category: string, file_count: number}>,
   },
+  demographic: {
+    gender: string,
+    race: string,
+    ethnicity: string,
+  },
+  case_id: string,
+  diagnoses: Array<{
+    age_at_diagnosis: number,
+    vital_status: string,
+    days_to_death: number,
+    primary_diagnosis: string,
+  }>,
 };
 
 export type TDonor = {
@@ -31,8 +29,7 @@ export type TDonor = {
 };
 
 export const mapDonors = (donors: Array<TDonorInput>): Array<TDonor> => {
-  return donors.map(({ _source }: TDonorInput): TDonor => {
-    const { summary, demographic, case_id, diagnoses = [] } = _source;
+  return donors.map(({ summary, demographic, case_id, diagnoses = [] }): TDonor => {
     const { gender, race, ethnicity } = demographic;
     const {
       age_at_diagnosis = -777,
@@ -62,12 +59,10 @@ export const mapDonors = (donors: Array<TDonorInput>): Array<TDonor> => {
 };
 
 export type TGeneInput = {
-  _id: string,
-  _source: {
-    symbol: string,
-    case: Array<{}>,
-    is_cancer_gene_census: boolean,
-  },
+  gene_id: string,
+  symbol: string,
+  case: Array<{}>,
+  is_cancer_gene_census: boolean,
 };
 
 export type TGene = {
@@ -78,32 +73,30 @@ export type TGene = {
 };
 
 export const mapGenes = (genes: Array<TGeneInput>): Array<TGene> => (
-  genes.map(({ _id, _source }: TGeneInput): TGene => ({
-    id: _id,
-    symbol: _source.symbol,
-    totalDonors: _source.case.length,
-    cgc: _source.is_cancer_gene_census,
+  genes.map(({ gene_id, symbol, case: cases = [], is_cancer_gene_census }): TGene => ({
+    id: gene_id,
+    symbol,
+    totalDonors: cases.length,
+    cgc: is_cancer_gene_census,
   }))
 );
 
 export type TOccurenceInput = {
-  _source: {
-    ssm: {
-      ssm_id: string,
-      consequence: Array<{
-        transcript: {
-          consequence_type: string,
-          gene: {
-            gene_id: string,
-          },
-          annotation: {
-            impact: string,
-          },
-        }}>,
-    },
-    case: {
-      case_id: string,
-    },
+  ssm: {
+    ssm_id: string,
+    consequence: Array<{
+      transcript: {
+        consequence_type: string,
+        gene: {
+          gene_id: string,
+        },
+        annotation: {
+          impact: string,
+        },
+      }}>,
+  },
+  case: {
+    case_id: string,
   },
 };
 
@@ -117,9 +110,7 @@ export type TOccurence = {
 };
 
 function expandObs(geneIdToSymbol) {
-  return (occurrence: TOccurenceInput): Array<TOccurence> => {
-    const { ssm, case: casObj = {} } = occurrence._source;
-
+  return ({ ssm, case: casObj = {} }): Array<TOccurence> => {
     return ssm.consequence
       .map(c => c.transcript)
       .map((consequence): TOccurence => {

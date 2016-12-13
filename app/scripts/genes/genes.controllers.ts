@@ -11,114 +11,96 @@ module ngApp.genes.controllers {
       private config: IGDCConfig,
       private $stateParams
     ) {
-      fetch(`${config.es_host}/${config.es_index_version}-gene-centric/gene-centric/${this.$stateParams.geneId}`, {
+      fetch(`${config.api}/genes/${this.$stateParams.geneId}`, {
         headers: { 'Content-Type': `application/json` },
+        method: 'POST',
+        body: JSON.stringify({
+          expand: [
+            'external_db_ids',
+          ].join(),
+          fields: [
+            'description',
+            'gene_id',
+            'symbol',
+            'name',
+            'synonyms',
+            'biotype',
+            'gene_chromosome',
+            'gene_start',
+            'gene_end',
+            'gene_strand',
+            'canonical_transcript_id',
+            'transcripts.is_canonical',
+            'transcripts.id',
+            'transcripts.length_amino_acid',
+            'transcripts.domains.hit_name',
+            'transcripts.domains.start',
+            'transcripts.domains.end',
+            'case.case_id',
+            'case.project.project_id',
+            'case.project.disease_type',
+            'case.project.cancer_type',
+            'case.project.primary_site',
+            'case.ssm.ssm_id',
+            'case.ssm.ncbi_build',
+          ].join(),
+        }),
       })
       .then(res => res.json())
       .then(data => {
-        const gene = data._source || {};
-        return fetch(`${config.es_host}/${config.es_index_version}-case-centric/case-centric/_search`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({
-            "size": 0,
-            "aggs": {
-              "project_ids": {
-                "terms": {
-                  "field": "project.project_id.raw",
-                }
-              }
-            }
-          })
-        })
+        const gene = data.data || {};
+        return fetch(`${config.api}/case_ssms?facets=project.project_id.raw&size=0`)
         .then(res => res.json())
-        .then(data => {
-          this.gene = Object.assign(gene, { allCasesAgg: data.aggregations.project_ids.buckets });
+        .then(({ data }) => {
+          this.gene = Object.assign(gene, { allCasesAgg: data.aggregations['project.project_id.raw'].buckets });
           CoreService.setPageTitle("Gene", this.gene.gene_id);
 
           let tid = this.gene.transcripts.find(x => x.is_canonical).id;
 
-          fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`, {
+          fetch(`${config.api}/analysis/frequent_mutations_by_gene`, {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-              "query": {
-                "nested": {
-                  "path": "occurrence",
-                  "score_mode": "sum",
-                  "query": {
-                    "function_score": {
-                      "query": {
-                        "match_all": {}
-                      },
-                      "boost_mode": "replace",
-                      "script_score": {
-                        "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
-                      }
-                    }
-                  }
-                }
-              },
-              "post_filter": {
-                "nested": {
-                  "path": "consequence",
-                  "query": {
-                    "term": {
-                      "consequence.transcript.gene.gene_id": this.$stateParams.geneId
-                    }
-                  }
-                }
-              }
+              gene_id: this.$stateParams.geneId,
+              fields: [
+                'ssm_id',
+                'genomic_dna_change',
+                'occurrence.case.project.project_id',
+                'consequence.transcript.is_canonical',
+                'consequence.transcript.annotation.impact',
+                'consequence.transcript.consequence_type',
+                'consequence.transcript.gene_symbol',
+                'consequence.transcript.gene.gene_id',
+                'consequence.transcript.aa_change',
+                'consequence.transcript.transcript_id',
+                'consequence.transcript.aa_start',
+              ].join(),
             })
           })
           .then(res => res.json())
-          .then(data => {
-            this.frequentMutations = data.hits.hits;
+          .then(({ data }) => {
+            this.frequentMutations = data.hits;
 
-            fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`, {
+            fetch(`${config.api}/analysis/lolliplot`, {
               method: 'POST',
               headers: { 'Content-Type': `application/json` },
-              body: JSON.stringify(
-                {
-                  "size": 10000,
-                  "query": {
-                    "nested": {
-                      "path": "occurrence",
-                      "score_mode": "sum",
-                      "query": {
-                        "function_score": {
-                          "query": {
-                            "match_all": {}
-                          },
-                          "boost_mode": "replace",
-                          "script_score": {
-                            "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
-                          }
-                        }
-                      }
-                    }
-                  },
-                  "post_filter": {
-                    "nested": {
-                      "path": "consequence",
-                      "query": {
-                        "term": {
-                          "consequence.transcript.transcript_id": tid
-                        }
-                      }
-                    }
-                  }
-                }
-              )
+              body: JSON.stringify({
+                transcript_id: tid,
+                fields: [
+                  'ssm_id',
+                  'genomic_dna_change',
+                  'consequence.transcript.transcript_id',
+                  'consequence.transcript.aa_start',
+                  'consequence.transcript.consequence_type',
+                  'consequence.transcript.annotation.impact',
+                ].join(),
+              }),
             })
-            .then(res => res.json())
-            .then(data => {
-              this.proteinLolliplotData = this.buildProteinLolliplotData(
-                data.hits.hits, tid
-              );
-
-              this.renderReact();
-            });
+              .then(res => res.json())
+              .then(({ data }) => {
+                this.proteinLolliplotData = this.buildProteinLolliplotData(data.hits, tid);
+                this.renderReact();
+              });
           });
         });
       });
@@ -132,17 +114,17 @@ module ngApp.genes.controllers {
       return {
         mutations: mutations
           .filter(mutation => {
-            return mutation._source.consequence.find(c => c.transcript.transcript_id === tid)
+            return mutation.consequence.find(c => c.transcript.transcript_id === tid)
           })
           .map(mutation => {
-            let consequence = mutation._source.consequence.find(c => c.transcript.transcript_id === tid)
+            let consequence = mutation.consequence.find(c => c.transcript.transcript_id === tid)
             return {
-              id: mutation._source.ssm_id,
+              id: mutation.ssm_id,
               donors: mutation._score,
-              genomic_dna_change: mutation._source.genomic_dna_change,
+              genomic_dna_change: mutation.genomic_dna_change,
               x: consequence.transcript.aa_start,
               consequence: consequence.transcript.consequence_type,
-              impact: consequence.transcript.annotation.impact || 'UNKNOWN',
+              impact: (consequence.transcript.annotation || {}).impact || 'UNKNOWN',
             }
           })
           .filter(mutation => mutation.x),
@@ -190,7 +172,7 @@ module ngApp.genes.controllers {
           React.createElement(ReactComponents.Gene, {
             gene: this.gene,
             $scope: this,
-            frequentMutations: this.frequentMutations.map(g => Object.assign({}, g._source, { score: g._score })),
+            frequentMutations: this.frequentMutations,
           })
         ),
         el

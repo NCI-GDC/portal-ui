@@ -77,11 +77,11 @@ const OncoGridWrapper = ({
     ref={setOncoGridContainer}
   >
     <h5 style={{ textAlign: 'center' }}>Top 50 Mutated Genes by High Impact Mutations</h5>
-    {trackOptions && trackOptions.length && addTracksCallback &&
+    {trackOptions && trackOptions.length && addTracksCallback ?
       <SelectOverlay
         options={trackOptions}
         callback={addTracksCallback}
-      />
+      /> : null
     }
     {oncoGridData && !isLoading &&
       <Row style={{ marginLeft: 0, minHeight: '70px' }}>
@@ -187,7 +187,7 @@ const enhance = compose(
   withState('trackOptions', 'setTrackOptions', []),
   withState('addTracksCallback', 'setAddTracksCallback', null),
   withState('crosshairMode', 'setCrosshairMode', false),
-  withState('showGridLines', 'setShowGridLines', false),
+  withState('showGridLines', 'setShowGridLines', true),
   withState('heatMapMode', 'setHeatMapMode', false),
   withState('isLoading', 'setIsLoading', true),
   withProps({ oncoGridHeight: 150, oncoGridPadding: 306 }),
@@ -230,8 +230,9 @@ const enhance = compose(
       }
     },
     componentDidMount() {
-      const { projectId, esHost, esIndexVersion } = this.props;
-      getQueries(projectId, esHost, esIndexVersion)
+      const { projectId, api } = this.props;
+
+      getQueries({ projectId, api, consequenceTypes: Object.keys(consequenceTypes) })
         .then((responses) => {
           const {
             setOncoGrid,
@@ -254,7 +255,10 @@ const enhance = compose(
             width: oncoGridContainer.offsetWidth - oncoGridPadding,
             height: oncoGridHeight,
             addTrackFunc: (trackOptions, callback) => {
-              setAddTracksCallback(() => (tracks) => tracks && callback(tracks) && setAddTracksCallback(null));
+              setAddTracksCallback(() => (tracks) => {
+                if (tracks) callback(tracks);
+                setAddTracksCallback(null);
+              });
               setTrackOptions(trackOptions);
             },
             consequenceTypes: Object.keys(consequenceTypes),

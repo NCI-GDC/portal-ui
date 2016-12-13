@@ -124,7 +124,7 @@ const Projects = ({
           <div style={{ alignSelf: 'center', color: '#6b6262', fontSize: '1.2rem' }} key='bar-subtitle'>
             {`${numUniqueCases} Unique Case${numUniqueCases === 0 || numUniqueCases > 1 ? 's' : ''} with Mutation Data`}
           </div>,
-          <span style={{ transform: 'scale(0.9)' }}>
+          <span style={{ transform: 'scale(0.9)' }} key="bar-wrapper">
             <Measure key='bar-chart'>
               {({ width }) =>
                 <StackedBarChart
@@ -160,7 +160,7 @@ const Projects = ({
               across ${projects.length} Project${projects.length === 0 || projects.length > 1 ? 's' : ''}`
             }
           </div>,
-          <span style={{ transform: 'scale(0.75)' }}>
+          <span style={{ transform: 'scale(0.75)' }} key="circle-wrapper">
             <DoubleRingChart
               key='pie-chart'
               colors={primarySiteToColor}

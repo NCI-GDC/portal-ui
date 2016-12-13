@@ -17,20 +17,11 @@ module ngApp.participants {
           config: IGDCConfig
         ): ng.IPromise => {
           return $http({
-            method: 'POST',
-            url: `${config.es_host}/${config.es_index_version}-case-centric/case-centric/_search`,
+            method: 'GET',
+            url: `${config.api}/case_ssms?facets=project.project_id.raw&size=0`,
             headers: {'Content-Type' : 'application/json'},
-            data: {
-              "aggs": {
-                "project_ids": {
-                  "terms": {
-                    "field": "project.project_id.raw"
-                  }
-                }
-              }
-            }
-          }).then(data => {
-            return data.data.aggregations.project_ids.buckets;
+          }).then(({ data }) => {
+            return data.data.aggregations['project.project_id.raw'].buckets;
           });
 
         },

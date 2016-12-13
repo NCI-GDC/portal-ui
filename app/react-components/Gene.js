@@ -305,7 +305,7 @@ const Gene = (() => {
             </h1>
 
             <FrequentMutations
-              frequentMutations={frequentMutations}
+              frequentMutations={frequentMutations.map(m => ({ ...m, score: m._score }))}
               totalNumCases={totalNumCases}
               showSurvivalPlot={false}
             />

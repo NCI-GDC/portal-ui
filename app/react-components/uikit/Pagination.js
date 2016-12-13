@@ -11,7 +11,7 @@ const withPagination = (props = {}) => Wrapper => (
       offset: props.offset || 0,
     }
 
-    update = payload => this.setState(payload)
+    setPagination = payload => this.setState(payload)
 
     render() {
       return (
@@ -43,6 +43,20 @@ const styles = {
   }),
 };
 
+const PaginationHeader = props => (
+  <span>
+    <span>Showing </span>
+    <strong>
+      <span>{1 + (props.offset || 0)}</span>
+      <span style={{ margin: '0 0.5rem' }}>-</span>
+      <span>{props.offset + props.first}</span>
+    </strong>
+    <span> of</span>
+    <strong> {props.total.toLocaleString()}</strong>
+    <span>{props.entityType}</span>
+  </span>
+);
+
 const PaginationBtn = ({ className, children, ...props }) => (
   <button
     className={`${styles.tableActionButtons} ${styles.inactive} ${className || ''}`}
@@ -59,23 +73,23 @@ const PaginationControls = props => {
 
   return (
     <ButtonGroup>
-      <PaginationBtn onClick={() => props.update({ offset: 0 })}>{'<<'}</PaginationBtn>
-      <PaginationBtn onClick={() => props.update({ offset: props.offset - props.first })}>
+      <PaginationBtn onClick={() => props.setPagination({ offset: 0 })}>{'<<'}</PaginationBtn>
+      <PaginationBtn onClick={() => props.setPagination({ offset: props.offset - props.first })}>
         {'<'}
       </PaginationBtn>
       {_.range(1 + pageOffset, Math.min(11 + pageOffset, totalPages)).map(x =>
         <PaginationBtn
           key={x}
           className={currentPage === x ? styles.active : styles.inactive}
-          onClick={() => props.update({ offset: ((x - 1) * props.first) })}
+          onClick={() => props.setPagination({ offset: ((x - 1) * props.first) })}
         >
           {x}
         </PaginationBtn>
       )}
-      <PaginationBtn onClick={() => props.update({ offset: props.offset + props.first })}>
+      <PaginationBtn onClick={() => props.setPagination({ offset: props.offset + props.first })}>
         {'>'}
       </PaginationBtn>
-      <PaginationBtn onClick={() => props.update({ offset: (props.total - props.total) % props.size })}>
+      <PaginationBtn onClick={() => props.setPagination({ offset: (props.total - props.total) % props.size })}>
         {'>>'}
       </PaginationBtn>
     </ButtonGroup>
@@ -84,5 +98,6 @@ const PaginationControls = props => {
 
 export {
   withPagination,
+  PaginationHeader,
   PaginationControls,
 };

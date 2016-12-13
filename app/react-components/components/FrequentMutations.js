@@ -12,7 +12,7 @@ import EntityPageHorizontalTable from './EntityPageHorizontalTable';
 import SurvivalPlotWrapper from './SurvivalPlotWrapper';
 import TogglableUl from '../uikit/TogglableUl';
 import Tooltip from '../uikit/Tooltip';
-import { withPagination, PaginationControls } from '../uikit/Pagination';
+import { withPagination, PaginationControls, PaginationHeader } from '../uikit/Pagination';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
 import SurvivalIcon from '../theme/icons/SurvivalIcon';
 import getSurvivalCurves from '../utils/getSurvivalCurves';
@@ -89,16 +89,10 @@ const FrequentMutations = ({
     <Column>
       {!!frequentMutations.length &&
         <div>
-          <span>
-            <span>Showing </span>
-            <strong>
-              <span>{1 + (props.offset || 0)}</span>
-              <span style={{ margin: '0 0.5rem' }}>-</span>
-              <span>{props.offset + props.first}</span>
-            </strong>
-            <span> of</span>
-            <strong> {props.total.toLocaleString()}</strong>
-          </span>
+          <PaginationHeader
+            {...props}
+            entityType="mutations"
+          />
           <Row style={{ paddingBottom: '2.5rem' }}>
             <span>
               <div style={{ textAlign: 'right', marginRight: 50, marginLeft: 30 }}>

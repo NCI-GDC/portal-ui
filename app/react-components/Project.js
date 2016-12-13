@@ -142,7 +142,7 @@ const Project = ({
 
   const totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
 
-  const frequentMutations = fm.map(x => {
+  const frequentMutations = fm.hits.map(g => Object.assign({}, g._source, { score: g._score })).map(x => {
     let consequence = x.consequence.find(x => x.transcript.is_canonical);
 
     return {
@@ -482,6 +482,7 @@ const Project = ({
           project={$scope.project.project_id}
           survivalData={survivalData}
           width={width}
+          total={fm.total}
         />
       </Column>
       <Column style={{...styles.card, marginTop: `2rem` }}>

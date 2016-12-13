@@ -201,9 +201,7 @@ module ngApp.projects {
                 }
               }
             }
-          }).then(data => {
-            return data.data.hits.hits;
-          });
+          }).then(data => data.data.hits);
         },
         survivalData: (
           $stateParams: ng.ui.IStateParamsService,

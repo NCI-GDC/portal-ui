@@ -622,7 +622,7 @@ module ngApp.projects.controllers {
             authApi: this.CoreService.config.auth_api,
             esHost: this.CoreService.config.es_host,
             esIndexVersion: this.CoreService.config.es_index_version,
-            frequentMutations: this.frequentMutations.map(g => Object.assign({}, g._source, { score: g._score })),
+            frequentMutations: this.frequentMutations,
             survivalData: this.survivalData,
             mostAffectedCases: this.mostAffectedCases.map(c => c._source),
           })

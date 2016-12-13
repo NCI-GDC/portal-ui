@@ -19,7 +19,7 @@ import makeFilter from './utils/makeFilter';
 import SummaryCard from './components/SummaryCard';
 import BarChart from './charts/BarChart';
 import theme from './theme';
-import { clickable, graphTitle } from './theme/mixins';
+import { graphTitle } from './theme/mixins';
 import OncoGridWrapper from './oncogrid/OncoGridWrapper';
 import SurvivalPlotWrapper from './components/SurvivalPlotWrapper';
 import TogglableUl from './uikit/TogglableUl';
@@ -77,11 +77,11 @@ const styles = {
     overflow: 'hidden',
   },
   card: {
-    backgroundColor: `white`,
-  }
+    backgroundColor: 'white',
+  },
 };
 
-let impactColors = {
+const impactColors = {
   HIGH: 'rgb(185, 36, 36)',
   MODERATE: 'rgb(193, 158, 54)',
   LOW: 'rgb(49, 161, 60)',
@@ -138,32 +138,32 @@ const Project = ({
   const survivalData = {
     legend: selectedSurvivalData.legend || defaultSurvivalLegend,
     rawData: selectedSurvivalData.rawData || defaultSurvivalRawData,
-  }
+  };
 
   const mutatedGenesChartData = mutatedGenesProject.map(g => (
     {
-      'gene_id': g.gene_id,
-      'symbol': g.symbol,
-      'cytoband': g.cytoband,
-      'num_affected_cases_project': g.case.filter(c => c.project.project_id === projectId).length,
-      'num_affected_cases_all': g.case.length,
-      'num_affected_cases_by_project': g.case.reduce((acc, c) => ({
+      gene_id: g.gene_id,
+      symbol: g.symbol,
+      cytoband: g.cytoband,
+      num_affected_cases_project: g.case.filter(c => c.project.project_id === projectId).length,
+      num_affected_cases_all: g.case.length,
+      num_affected_cases_by_project: g.case.reduce((acc, c) => ({
         ...acc,
-        [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1
+        [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1,
       }), {}),
-      'num_mutations': g.case.reduce((acc, c) =>  acc + c.ssm.length, 0),
+      num_mutations: g.case.reduce((acc, c) => acc + c.ssm.length, 0),
     }
   ));
 
   const totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
 
-  const frequentMutations = fm.map(x => {
-    let consequence = x.consequence.find(x => x.transcript.is_canonical);
+  const frequentMutations = fm.hits.map(g => Object.assign({}, g._source, { score: g._score })).map(x => {
+    const consequence = x.consequence.find(c => c.transcript.is_canonical);
 
     return {
       ...x,
-      num_affected_cases_project: x.occurrence.filter(x =>
-        x.case.project.project_id === projectId).length,
+      num_affected_cases_project: x.occurrence.filter(o =>
+        o.case.project.project_id === projectId).length,
       num_affected_cases_by_project: x.occurrence.reduce((acc, o) => ({
         ...acc,
         [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1
@@ -264,7 +264,7 @@ const Project = ({
           <CountCard
             title="FILES"
             count={project.summary.file_count.toLocaleString()}
-            icon={<FileIcon style={styles.icon}  className="fa-3x" />}
+            icon={<FileIcon style={styles.icon} className="fa-3x" />}
             style={styles.countCard}
             onCountClick={() => {
               window.location = `/search/f?filters=${
@@ -518,6 +518,7 @@ const Project = ({
           width={width}
           api={api}
           projectId={projectId}
+          total={fm.total}
         />
       </Column>
       <Column style={{...styles.card, marginTop: `2rem` }}>

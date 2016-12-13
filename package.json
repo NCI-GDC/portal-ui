@@ -130,6 +130,7 @@
     "redux": "^3.6.0",
     "redux-actions": "^0.12.0",
     "save-svg-as-png": "git+http://git@github.com/Jephuff/saveSvgAsPng.git#gh-pages",
+    "style-builder": "^1.0.13",
     "whatwg-fetch": "^1.0.0"
   },
   "jest": {

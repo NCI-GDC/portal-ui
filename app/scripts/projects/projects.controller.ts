@@ -20,7 +20,7 @@ module ngApp.projects.controllers {
   }
 
   export interface IProjectScope extends ng.IScope {
-    tableConfig:TableiciousConfig ;
+    tableConfig:TableiciousConfig;
   }
 
   class ProjectsController implements IProjectsController {
@@ -293,7 +293,6 @@ module ngApp.projects.controllers {
                 .filter(b => _.includes(projectIds, b.key));
               const caseAggsByProject = caseAggs.reduce((acc, b) => Object.assign(acc, {[b.key]: {genes: b.genes.my_genes.gene_id.buckets, case_with_ssm: b.case_summary.case_with_ssm.doc_count}}), {});
               const numUniqueCases = caseAggs.reduce((sum, b) => sum + b.case_summary.case_with_ssm.doc_count, 0);
-
               const topGenesWithCasesPerProject = Object.keys(caseAggsByProject).reduce(
                 (acc, projectId) => {
                   const agg = caseAggsByProject[projectId];

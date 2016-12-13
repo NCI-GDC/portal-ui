@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import ReactFauxDOM from 'react-faux-dom';
 
 /*----------------------------------------------------------------------------*/
-const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 }) => {
+const DoubleRingChart = ({ data, colors, height = 160, width = 160, outerRingWidth = 30 }) => {
   const color = d3.scaleOrdinal(d3.schemeCategory10);
   const centerRingWidth = width - (outerRingWidth) * 2;
   const centerRingHeight = height - (outerRingWidth) * 2;
@@ -24,7 +24,8 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
   const HALF_DEGREE_IN_RAD = 0.00872665;
   const innerPieData = data.map(d => ({
     v: d.value,
-    label: d.label,
+    key: d.key,
+    tooltip: d.tooltip,
     innerRadius: 0,
     outerRadius: centerRadius - 5,
     clickHandler: d.clickHandler
@@ -32,7 +33,7 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
   const innerPie = d3.pie().padAngle(HALF_DEGREE_IN_RAD*2).value(d => d.v)(innerPieData);
   const outerPieData = data.map((d, i) => {
     return ({
-      items: d.outer.map(p => ({v: p.value, label: p.label, clickHandler: p.clickHandler})),
+      items: d.outer.map(p => ({ v: p.value, key: p.key, tooltip: p.tooltip, clickHandler: p.clickHandler })),
       innerRadius: centerRadius,
       outerRadius: radius,
     });
@@ -49,23 +50,24 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
       (p, i) => ({
         ...p,
         pie: innerPie[i],
-        color: color(i)
+        color: colors[innerPieData[i].key].color
       })
     ),
     outerPieData.reduce(
       (acc, p, i) => [
         ...acc,
-        ...p.items.map((items, j) => ({
+        ...p.items.map((item, j) => {
+          return {
           ...p,
           pie: outerPie[i][j],
-          v: items.v,
-          label: items.label,
-          color: d3.color(color(i)).brighter(0.5),
-          clickHandler: items.clickHandler,
-        }))
+          v: item.v,
+          key: item.key,
+          tooltip: item.tooltip,
+          color: colors[innerPieData[i].key].projects[item.key],
+          clickHandler: item.clickHandler,
+        };})
     ], [])
   ];
-
   const g = svg.selectAll('.g')
     .data(dataWithPie)
     .enter().append('g');
@@ -85,10 +87,7 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
     .on('mouseenter', d => {
       d3.select('.global-tooltip')
         .classed('active', true)
-        .html(`
-          <b>${d.label}</b><br />
-          ${d.pie.value} case${d.pie.value > 1 ? 's' : ''}
-        `);
+        .html(d.tooltip);
     })
     .on('mouseleave', d => {
       d3.select('.global-tooltip')
@@ -101,11 +100,12 @@ const DoubleRingChart = ({ data, height = 160, width = 160, outerRingWidth = 30 
 
 DoubleRingChart.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string,
+    key: PropTypes.string,
     value: PropTypes.number,
+    tooltip: PropTypes.string,
     clickHandler: PropTypes.func,
     outer: PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string,
+      key: PropTypes.string,
       value: PropTypes.number,
       clickHandler: PropTypes.func,
     }))

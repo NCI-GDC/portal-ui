@@ -259,8 +259,6 @@ const enhance = compose(
               gridPadding: padding,
               gridContainer: container,
             });
-
-            document.querySelector('.og-tooltip-oncogrid').style.transform = 'translateY(-110px)'; // TODO: fix tooltip position inside oncogrid and remove this line
           }
         });
     },

@@ -8,8 +8,9 @@ import Project from './Project';
 import Projects from './Projects';
 import Gene from './Gene';
 import Mutation from './Mutation';
-import SideNavLayout from './layouts/SideNavLayout'
-import FrequentMutations from './components/FrequentMutations'
+import SideNavLayout from './layouts/SideNavLayout';
+import FrequentMutations from './components/FrequentMutations';
+import FrequentMutationsContainer from './components/FrequentMutationsContainer';
 
 // expose to angular
 window.ReactComponents = {
@@ -20,6 +21,7 @@ window.ReactComponents = {
   SideNavLayout,
   Projects,
   FrequentMutations,
+  FrequentMutationsContainer,
 };
 
 window.Project = Project;

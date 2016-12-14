@@ -32,7 +32,7 @@ compose(
                   query: {
                     terms: {
                       'occurrence.case.project.project_id': [
-                        props.$scope.project.project_id,
+                        props.projectId,
                       ],
                     },
                   },
@@ -65,7 +65,7 @@ compose(
     return {
       ...x,
       num_affected_cases_project: x.occurrence.filter(o =>
-        o.case.project.project_id === props.$scope.project.project_id
+        o.case.project.project_id === props.projectId
       ).length,
       num_affected_cases_by_project: x.occurrence.reduce((acc, o) => ({
         ...acc,
@@ -103,12 +103,12 @@ compose(
         frequentMutations={frequentMutations}
         numCasesAggByProject={props.numCasesAggByProject}
         totalNumCases={props.totalNumCases}
-        project={props.$scope.project.project_id}
         projectId={props.projectId}
         defaultSurvivalRawData={props.defaultSurvivalRawData}
         defaultSurvivalLegend={props.defaultSurvivalLegend}
         api={props.api}
         width={props.width}
+        showSurvivalPlot={props.showSurvivalPlot}
       />
     </PaginationContainer>
   );

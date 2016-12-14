@@ -144,7 +144,7 @@ module ngApp.projects {
             data: {
               "post_filter": {
                 "terms": {
-                  "project.project_id": [$stateParams["projectId"]]
+                  "project.project_id.raw": [$stateParams["projectId"]]
                 }
               },
               "query": {

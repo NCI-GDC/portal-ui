@@ -77,7 +77,6 @@ const FrequentMutations = ({
   api,
   projectId,
   defaultSurvivalLegend,
-  ...props
 }) => {
   const survivalData = {
     legend: selectedSurvivalData.legend || defaultSurvivalLegend,

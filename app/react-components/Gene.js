@@ -25,7 +25,6 @@ import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
 
-
 export const zDepth1 = {
   boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
 };
@@ -155,21 +154,20 @@ const Gene = (() => {
         ({ ...acc, [bucket.key]: bucket.doc_count }), {}
       );
 
-      const cancerDistData = gene.case.reduce(
-        (acc, c) => {
-          const cases = [...new Set([...(acc[c.project.project_id] || { cases: [] }).cases, c.case_id])];
-          return {
-            ...acc,
-            [c.project.project_id]: {
-              disease_type: c.project.disease_type,
-              cancer_type: c.project.cancer_type || 'tbd',
-              site: c.project.primary_site,
-              cases,
-              ssms: [...new Set([...(acc[c.project.project_id] || { ssms: [] }).ssms, ...c.ssm.map(m => m.ssm_id)])],
-              freq: cases.length / allCasesAggByProject[c.project.project_id],
-            },
-          };
-        }, {});
+      const cancerDistData = gene.case.reduce((acc, c) => {
+        const cases = [...new Set([...(acc[c.project.project_id] || { cases: [] }).cases, c.case_id])];
+        return {
+          ...acc,
+          [c.project.project_id]: {
+            disease_type: c.project.disease_type,
+            cancer_type: c.project.cancer_type || 'tbd',
+            site: c.project.primary_site,
+            cases,
+            ssms: [...new Set([...(acc[c.project.project_id] || { ssms: [] }).ssms, ...c.ssm.map(m => m.ssm_id)])],
+            freq: cases.length / allCasesAggByProject[c.project.project_id],
+          },
+        };
+      }, {});
 
       const sortedCancerDistData = Object.keys(cancerDistData)
         .map(k => ({ project_id: k, ...cancerDistData[k] }))
@@ -274,14 +272,15 @@ const Gene = (() => {
                 slug="bar-chart"
               />
             </Row>
-            <div style={{ padding: '0 1rem' }}>
+            <div style={{ padding: '0 1rem', textAlign: 'center' }}>
               {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by&nbsp;
               {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across&nbsp;
               {sortedCancerDistData.length} projects
             </div>
             <Column style={{ ...styles.column }}>
-              <div style={{ padding: '0 2rem' }}>
+              <Row style={{ padding: '0 2rem', justifyContent: 'center' }}>
                 <BarChart
+                  bandwidth={50}
                   data={sortedCancerDistData.map(d => ({
                     label: d.project_id,
                     value: (d.freq * 100),
@@ -305,7 +304,7 @@ const Gene = (() => {
                     },
                   }}
                 />
-              </div>
+              </Row>
               <EntityPageHorizontalTable
                 headings={[
                   { key: 'project_id', title: 'Project ID' },

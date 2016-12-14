@@ -8312,9 +8312,9 @@ once@~1.3.0, once@~1.3.1, once@~1.3.3:
   dependencies:
     wrappy "1"
 
-oncogrid@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/oncogrid/-/oncogrid-1.0.2.tgz#7bdef00ffc8f149595cc700aab74904d92c66e1b"
+oncogrid@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/oncogrid/-/oncogrid-1.1.0.tgz#d266573748a9b53f8b6cd28d06a1fab9b6dadd61"
   dependencies:
     lodash.clonedeep "^4.5.0"
     lodash.uniq "^4.5.0"
@@ -9535,7 +9535,7 @@ request-replay@~0.2.0:
   dependencies:
     retry "~0.6.0"
 
-request@2, request@^2.47.0, request@^2.54.0, request@^2.55.0, request@^2.79.0, request@~2.79.0:
+request@2, request@^2.40.0, request@^2.47.0, request@^2.54.0, request@^2.55.0, request@^2.79.0, request@~2.79.0:
   version "2.79.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.79.0.tgz#4dfe5bf6be8b8cdc37fcf93e04b65577722710de"
   dependencies:
@@ -9560,7 +9560,7 @@ request@2, request@^2.47.0, request@^2.54.0, request@^2.55.0, request@^2.79.0, r
     tunnel-agent "~0.4.1"
     uuid "^3.0.0"
 
-request@2.53.0, request@^2.40.0, request@~2.53.0:
+request@2.53.0, request@~2.53.0:
   version "2.53.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.53.0.tgz#180a3ae92b7b639802e4f9545dd8fcdeb71d760c"
   dependencies:
@@ -10512,6 +10512,12 @@ strip-url-auth@^1.0.0:
 style-attr@^1.0.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/style-attr/-/style-attr-1.2.0.tgz#a54ce15210325dce7f3831daa2b8236878919f1f"
+
+style-builder@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/style-builder/-/style-builder-1.0.13.tgz#908f71f77c8ed62df80e20772a2325165f8d3687"
+  dependencies:
+    object-assign "^4.0.1"
 
 subarg@^1.0.0:
   version "1.0.0"

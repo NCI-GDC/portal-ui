@@ -77,7 +77,7 @@ const PaginationControls = props => {
   return (
     <ButtonGroup>
       <PaginationBtn onClick={() => props.setPagination({ offset: 0 })}>{'<<'}</PaginationBtn>
-      <PaginationBtn onClick={() => props.setPagination({ offset: props.offset - props.first })}>
+      <PaginationBtn onClick={() => props.setPagination({ offset: Math.max(0, props.offset - props.first) })}>
         {'<'}
       </PaginationBtn>
       {_.range(1 + pageOffset, Math.min(11 + pageOffset, totalPages)).map(x =>

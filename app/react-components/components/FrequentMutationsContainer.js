@@ -77,7 +77,9 @@ compose(
         <span>
           <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
           <span style={{ marginLeft: '5px' }}>
-            <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
+            <a href={`/genes/${consequence.transcript.gene.gene_id}`}>
+              {consequence.transcript.gene_symbol}
+            </a>
           </span>
           <span
             style={{
@@ -85,7 +87,7 @@ compose(
               color: impactColors[consequence.transcript.annotation.impact] || 'inherit',
             }}
           >
-            {consequence.transcript.aa_change}
+            {_.truncate(consequence.transcript.aa_change)}
           </span>
         </span>
       ),

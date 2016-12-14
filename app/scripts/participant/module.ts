@@ -24,7 +24,7 @@ module ngApp.participants {
               "aggs": {
                 "project_ids": {
                   "terms": {
-                    "field": "project.project_id"
+                    "field": "project.project_id.raw"
                   }
                 }
               }
@@ -80,15 +80,7 @@ module ngApp.participants {
             "summary",
             "summary.experimental_strategies",
             "summary.data_categories",
-            "samples.portions",
-            "samples.portions.analytes",
-            "samples.portions.analytes.aliquots",
-            "samples.portions.analytes.aliquots.annotations",
-            "samples.portions.analytes.annotations",
-            "samples.portions.submitter_id",
-            "samples.portions.slides",
-            "samples.portions.annotations",
-            "samples.portions.center",
+            "samples.portions.*",
            ]
           });
         }

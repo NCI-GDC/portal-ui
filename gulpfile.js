@@ -25,7 +25,7 @@ var env = {
   port: process.env.GDC_PORT || 3000,
   fake_auth: process.env.GDC_FAKE_AUTH || false,
   es_host: process.env.ES_HOST || "http://localhost:9200",
-  es_index_version: process.env.ES_INDEX_VERSION || "gdc-r2",
+  es_index_version: process.env.ES_INDEX_VERSION || "gdc-r7",
 };
 
 var AUTOPREFIXER_BROWSERS = [

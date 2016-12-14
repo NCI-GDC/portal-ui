@@ -49,16 +49,6 @@ function geneSetLegend() {
     ' Gene belongs to Cancer Gene Census';
 }
 
-// rollover templates
-const mainGridRollover = `
-  {{#observation}}
-    {{observation.id}}<br>
-    {{observation.geneSymbol}}<br>
-    {{observation.donorId}}<br>
-    {{observation.consequence}}<br>
-  {{/observation}}
-`;
-
 const trackColorMap = [
   ...donorTracks,
   ...geneTracks,
@@ -177,10 +167,6 @@ export default function ({
       'Clinical': clinicalLegend(maxDaysToDeath),
       'Data Types': dataTypeLegend(),
     },
-    templates: {
-      mainGridCrosshair: mainGridRollover,
-      mainGrid: mainGridRollover,
-    },
     trackLegendLabel: '<i style="font-size: 13px; margin-left: 5px" class="fa fa-question-circle"></i>',
 
     donorTracks: donorTracks,
@@ -194,7 +180,7 @@ export default function ({
       'Clinical',
     ],
 
-    margin: { top: 20, right: 0, bottom: 20, left: 0 },
+    margin: { top: 20, right: 5, bottom: 20, left: 0 },
     leftTextWidth: 120,
     addTrackFunc,
 

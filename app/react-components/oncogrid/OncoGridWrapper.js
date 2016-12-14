@@ -28,6 +28,7 @@ const consequenceTypes = {
 const styles = {
   container: {
     overflow: 'visible',
+    padding: '0 10px',
   },
   fullscreen: {
     maxWidth: '100%',
@@ -152,7 +153,11 @@ const OncoGridWrapper = ({
           </ToolTip>
           <ToolTip innerHTML="Fullscreen">
             <Button
-              style={{ ...styles.button, ...(gridState.isFullScreen && styles.buttonActive) }}
+              style={{
+                ...styles.button,
+                ...(gridState.isFullScreen && styles.buttonActive),
+                marginRight: 0,
+              }}
               onClick={() => {
                 if (gridState.isFullScreen) {
                   exitFullScreen();

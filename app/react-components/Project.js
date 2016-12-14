@@ -491,6 +491,7 @@ const Project = ({
           defaultSurvivalLegend={defaultSurvivalLegend}
           api={api}
           width={width}
+          showSurvivalPlot
         />
 
       </Column>

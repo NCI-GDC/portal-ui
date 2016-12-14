@@ -147,38 +147,7 @@ module ngApp.participants.controllers {
         _.extend(x, { cases: [{ project: this.participant.project }] })
       );
 
-      fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`, {
-        method: 'POST',
-        headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify({
-          "query": {
-            "nested": {
-              "path": "occurrence",
-              "score_mode": "sum",
-              "query": {
-                "function_score": {
-                  "query": {
-                    "terms": {
-                      "occurrence.case.project.project_id": [
-                        this.participant.project.project_id
-                      ]
-                    }
-                  },
-                  "boost_mode": "replace",
-                  "script_score": {
-                    "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
-                  }
-                }
-              }
-            }
-          }
-        })
-      })
-        .then(res => res.json())
-        .then(data => {
-          this.frequentMutations = data.hits.hits;
-          this.renderReact();
-        });
+      this.renderReact();
     }
 
     jumpToAnchor(id) {
@@ -209,28 +178,16 @@ module ngApp.participants.controllers {
       let numCasesAggByProject = this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {});
       let totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
 
-      let frequentMutations = this.frequentMutations.map(g => Object.assign({}, g._source, { score: g._score })).map(x => Object.assign({}, x, {
-        num_affected_cases_project: x.occurrence.filter(x =>
-          x.case.project.project_id === this.participant.project.project_id).length,
-        num_affected_cases_all: x.occurrence.length,
-        num_affected_cases_by_project: x.occurrence.reduce((acc, o) =>
-          Object.assign({}, acc, {
-            [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1
-        }), {}),
-        impact: x.consequence.find(x => x.transcript.is_canonical).transcript.annotation.impact,
-        consequence_type: x.consequence.find(x => x.transcript.is_canonical).transcript.consequence_type
-      }));
-
       let el = document.getElementById('frequent-mutations');
 
       if (el) {
         ReactDOM.render(
-          React.createElement(ReactComponents.FrequentMutations, {
+          React.createElement(ReactComponents.FrequentMutationsContainer, {
             $scope: this,
             numCasesAggByProject,
-            frequentMutations,
             totalNumCases,
-            project: this.participant.project.project_id,
+            projectId: this.participant.project.project_id,
+            showSurvivalPlot: false,
           }),
           document.getElementById('frequent-mutations')
         );

@@ -355,6 +355,7 @@ const Gene = (() => {
             <FrequentMutations
               frequentMutations={frequentMutations}
               totalNumCases={totalNumCases}
+              showSurvivalPlot={false}
             />
           </Column>
         </span>

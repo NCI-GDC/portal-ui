@@ -68,7 +68,6 @@ const styles = {
 const FrequentMutations = ({
   frequentMutations,
   numCasesAggByProject,
-  project,
   totalNumCases,
   setSelectedSurvivalData,
   selectedSurvivalData,
@@ -77,8 +76,9 @@ const FrequentMutations = ({
   api,
   projectId,
   defaultSurvivalLegend,
+  showSurvivalPlot,
 }) => {
-  const survivalData = {
+  const survivalData = showSurvivalPlot && {
     legend: selectedSurvivalData.legend || defaultSurvivalLegend,
     rawData: selectedSurvivalData.rawData || defaultSurvivalRawData,
   };
@@ -87,7 +87,12 @@ const FrequentMutations = ({
     <Column>
       {!!frequentMutations.length &&
         <div>
-          <Row style={{ paddingBottom: '2.5rem' }}>
+          <Row
+            style={{
+              paddingBottom: '2.5rem',
+              ...(!showSurvivalPlot ? { justifyContent: 'center' } : {}),
+            }}
+          >
             <span>
               <div style={{ textAlign: 'right', marginRight: 50, marginLeft: 30 }}>
                 <DownloadVisualizationButton
@@ -101,15 +106,16 @@ const FrequentMutations = ({
               <div style={graphTitle}>Distribution of Most Frequent Mutations</div>
               <div id="mutation-chart" style={{ padding: '10px' }}>
                 <BarChart
+                  bandwidth={!showSurvivalPlot && 60}
                   data={frequentMutations.map(x => ({
                     label: x.genomic_dna_change,
                     value: (x.score),
-                    tooltip: project
+                    tooltip: projectId
                       ? `<b>${x.genomic_dna_change}</b><br />
                         <b>${x.num_affected_cases_project} Case${x.num_affected_cases_project > 1 ? 's' : ''}
-                          affected in ${project}</b><br />
-                        <b>${x.num_affected_cases_project} / ${numCasesAggByProject[project]}
-                        (${((x.num_affected_cases_project / numCasesAggByProject[project]) * 100).toFixed(2)}%)</b>`
+                          affected in ${projectId}</b><br />
+                        <b>${x.num_affected_cases_project} / ${numCasesAggByProject[projectId]}
+                        (${((x.num_affected_cases_project / numCasesAggByProject[projectId]) * 100).toFixed(2)}%)</b>`
                       : `<b>${x.genomic_dna_change}</b><br />
                         <b>${x.num_affected_cases_all} Case${x.num_affected_cases_all > 1 ? 's' : ''}
                           affected in all projects</b><br />
@@ -133,7 +139,7 @@ const FrequentMutations = ({
                 />
               </div>
             </span>
-            {survivalData.rawData && (
+            {showSurvivalPlot && survivalData.rawData && (
               <span style={{ flexGrow: 1, width: '50%' }}>
                 <SurvivalPlotWrapper
                   {...survivalData}
@@ -154,13 +160,13 @@ const FrequentMutations = ({
               },
               { key: 'mutation_subtype', title: 'Type' },
               { key: 'consequence_type', title: 'Consequences' },
-              ...(project ? [{
+              ...(projectId ? [{
                 key: 'num_affected_cases_project',
-                title: <span># Affected Cases<br />in {numCasesAggByProject[project]} {project} Cases</span>,
+                title: <span># Affected Cases<br />in {numCasesAggByProject[projectId]} {projectId} Cases</span>,
               }] : []),
               {
                 key: 'num_affected_cases_all',
-                title: project
+                title: projectId
                   ? <span># Affected Cases<br />in {totalNumCases} from All Projects</span>
                   : <span># Affected Casesin {totalNumCases}</span>,
               },
@@ -169,18 +175,18 @@ const FrequentMutations = ({
                 title: 'Impact',
                 style: { textAlign: 'center' },
               },
-              {
+              ...(showSurvivalPlot ? [{
                 title: 'Survival Analysis',
                 key: 'survival_plot',
                 style: { textAlign: 'center', width: '100px' },
-              },
+              }] : []),
             ]}
             data={frequentMutations.map(x => ({
               ...x,
               genomic_dna_change: <a href={`/mutations/${x.ssm_id}`}>{x.genomic_dna_change}</a>,
-              ...(project ? { num_affected_cases_project:
+              ...(projectId ? { num_affected_cases_project:
                 `${x.num_affected_cases_project}
-                (${((x.num_affected_cases_project / numCasesAggByProject[project]) * 100).toFixed(2)}%)`,
+                (${((x.num_affected_cases_project / numCasesAggByProject[projectId]) * 100).toFixed(2)}%)`,
               } : {}),
               num_affected_cases_all: (
                 <TogglableUl
@@ -200,36 +206,38 @@ const FrequentMutations = ({
                   </span>
                 </Tooltip>
               ),
-              survival_plot: (
-                <Tooltip innerHTML={`Add ${x.genomic_dna_change} to surival plot`}>
-                  <button
-                    onClick={() => {
-                      if (x.ssm_id !== selectedSurvivalData.id) {
-                        getSurvivalCurves({
-                          field: 'gene.ssm.ssm_id',
-                          value: x.ssm_id,
-                          slug: x.genomic_dna_change,
-                          api,
-                          projectId,
-                        })
-                          .then(setSelectedSurvivalData);
-                      } else {
-                        setSelectedSurvivalData({});
-                      }
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: colors(selectedSurvivalData.id === x.ssm_id ? 1 : 0),
-                        cursor: 'pointer',
+              ...(showSurvivalPlot ? {
+                survival_plot: (
+                  <Tooltip innerHTML={`Add ${x.genomic_dna_change} to surival plot`}>
+                    <button
+                      onClick={() => {
+                        if (x.ssm_id !== selectedSurvivalData.id) {
+                          getSurvivalCurves({
+                            field: 'gene.ssm.ssm_id',
+                            value: x.ssm_id,
+                            slug: x.genomic_dna_change,
+                            api,
+                            projectId,
+                          })
+                            .then(setSelectedSurvivalData);
+                        } else {
+                          setSelectedSurvivalData({});
+                        }
                       }}
                     >
-                      <SurvivalIcon />
-                      <div style={styles.hidden}>add to survival plot</div>
-                    </span>
-                  </button>
-                </Tooltip>
-              ),
+                      <span
+                        style={{
+                          color: colors(selectedSurvivalData.id === x.ssm_id ? 1 : 0),
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <SurvivalIcon />
+                        <div style={styles.hidden}>add to survival plot</div>
+                      </span>
+                    </button>
+                  </Tooltip>
+                ),
+              } : {}),
             }))}
           />
         </div>
@@ -242,7 +250,7 @@ const FrequentMutations = ({
 };
 
 const enhance = compose(
-  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
+  withState('selectedSurvivalData', 'setSelectedSurvivalData', {})
 );
 
 export default enhance(FrequentMutations);

@@ -7,11 +7,11 @@ import { compose, withState, pure } from 'recompose';
 // Custom
 import './style.css';
 
-const BarChart = (() => ({ data, title, yAxis, styles, height: h, margin: m }) => {
+const BarChart = (() => ({ data, title, yAxis, styles, height: h, margin: m, bandwidth: bw }) => {
   const el = ReactFauxDOM.createElement('div');
 
   const margin = m || { top: 30, right: 50, bottom: 55, left: 30 };
-  const bandWidth = 36;
+  const bandWidth = bw || 36;
   const width = (Object.keys(data).length * bandWidth) + margin.left + margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
 

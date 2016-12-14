@@ -3,14 +3,14 @@ export default function({api, value, field, slug, projectId}) {
     {
       op: "and",
       content: [
-        { op: "=", content: { field: "project.project_id", value: projectId } },
+        { op: "=", content: { field: "project.project_id.raw", value: projectId } },
         { op: "=", content: { field, value } }
       ]
     },
     {
       op: "and",
       content: [
-        { op: "=", content: { field: "project.project_id", value: projectId } },
+        { op: "=", content: { field: "project.project_id.raw", value: projectId } },
         { op: "excludeifany", content: { field, value } },
       ]
     }

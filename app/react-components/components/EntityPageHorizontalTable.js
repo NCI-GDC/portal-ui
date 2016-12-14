@@ -79,7 +79,7 @@ const EntityPageHorizontalTable = ({ style, title, titleStyle, rightComponent, h
                   >
                     {headings.map(h => {
                       return [].concat(d[h.key]).map((v, i) =>
-                        <Td key={`${h.key}-${i}`} style={h.style || {}}>
+                        <Td key={`${h.key}-${i}`} style={h.style || {}} className={h.className || ''}>
                           {h.color && <div className="h-color" style={{ backgroundColor: colors(i) }} />}
                           {v || '--'}
                         </Td>

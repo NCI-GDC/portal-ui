@@ -147,7 +147,12 @@ const FrequentMutations = ({
           </Row>
           <EntityPageHorizontalTable
             headings={[
-              { key: 'genomic_dna_change', title: 'DNA Change' },
+              {
+                key: 'genomic_dna_change',
+                title: 'DNA Change',
+                className: 'id-cell',
+                style: { whiteSpace: 'pre-line' },
+              },
               { key: 'mutation_subtype', title: 'Type' },
               { key: 'consequence_type', title: 'Consequences' },
               ...(project ? [{

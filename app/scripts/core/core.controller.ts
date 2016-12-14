@@ -35,19 +35,6 @@ module ngApp.core.controllers {
     ) {
       this.$rootScope.$on('hideBanner', () => this.numDisplayedNotifications = this.numDisplayedNotifications - 1);
 
-      Restangular.all('notifications').get('').then(notifications => {
-        const notifications = angular.fromJson(notifications.data)
-        .filter(n => _.includes(n.components, 'PORTAL') || _.includes(n.components, 'API'))
-        .map(n => {
-          n.dismissed = false;
-          return n;
-        });
-        this.notifications = _.sortBy(notifications, n => n.dismissible);
-        this.numDisplayedNotifications = this.numDisplayedNotifications + this.notifications.length;
-      }, (response) => {
-        console.log(`error getting notifications ${response}`);
-      });
-
       this.loadingTimers = [];
 
       this.$rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams, options) => {

@@ -104,7 +104,10 @@ compose(
         numCasesAggByProject={props.numCasesAggByProject}
         totalNumCases={props.totalNumCases}
         project={props.$scope.project.project_id}
-        survivalData={props.survivalData}
+        projectId={props.projectId}
+        defaultSurvivalRawData={props.defaultSurvivalRawData}
+        defaultSurvivalLegend={props.defaultSurvivalLegend}
+        api={props.api}
         width={props.width}
       />
     </PaginationContainer>

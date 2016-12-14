@@ -188,7 +188,7 @@ function getQueries(projectId, esHost, esIndexVersion) {
       },
       "post_filter": {
         "terms": {
-          "project.project_id": [projectId]
+          "project.project_id.raw": [projectId]
         }
       }
     },

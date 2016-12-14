@@ -6,62 +6,122 @@ module ngApp.genes.controllers {
 
     /* @ngInject */
     constructor(
-      private gene: any,
       private $scope: ng.IScope,
       private CoreService: ICoreService,
       private config: IGDCConfig,
-      public frequentMutations: Array<Object>
+      private $stateParams
     ) {
-      CoreService.setPageTitle("Gene", gene.gene_id);
-      this.gene = gene;
-
-      let tid = gene.transcripts.find(x => x.is_canonical).id;
-
-      fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`, {
-        method: 'POST',
+      fetch(`${config.es_host}/${config.es_index_version}-gene-centric/gene-centric/${this.$stateParams.geneId}`, {
         headers: { 'Content-Type': `application/json` },
-        body: JSON.stringify(
-          {
-            "size": 10000,
-            "query": {
-              "nested": {
-                "path": "occurrence",
-                "score_mode": "sum",
-                "query": {
-                  "function_score": {
-                    "query": {
-                      "match_all": {}
-                    },
-                    "boost_mode": "replace",
-                    "script_score": {
-                      "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
+      })
+      .then(res => res.json())
+      .then(data => {
+        const gene = data._source || {};
+        return fetch(`${config.es_host}/${config.es_index_version}-case-centric/case-centric/_search`, {
+          method: 'POST',
+          headers: { 'Content-Type': `application/json` },
+          body: JSON.stringify({
+            "size": 0,
+            "aggs": {
+              "project_ids": {
+                "terms": {
+                  "field": "project.project_id.raw",
+                }
+              }
+            }
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          this.gene = Object.assign(gene, { allCasesAgg: data.aggregations.project_ids.buckets });
+          CoreService.setPageTitle("Gene", this.gene.gene_id);
+
+          let tid = this.gene.transcripts.find(x => x.is_canonical).id;
+
+          fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`, {
+            method: 'POST',
+            headers: { 'Content-Type': `application/json` },
+            body: JSON.stringify({
+              "query": {
+                "nested": {
+                  "path": "occurrence",
+                  "score_mode": "sum",
+                  "query": {
+                    "function_score": {
+                      "query": {
+                        "match_all": {}
+                      },
+                      "boost_mode": "replace",
+                      "script_score": {
+                        "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
+                      }
+                    }
+                  }
+                }
+              },
+              "post_filter": {
+                "nested": {
+                  "path": "consequence",
+                  "query": {
+                    "term": {
+                      "consequence.transcript.gene.gene_id": this.$stateParams.geneId
                     }
                   }
                 }
               }
-            },
-            "post_filter": {
-              "nested": {
-                "path": "consequence",
-                "query": {
-                  "term": {
-                    "consequence.transcript.transcript_id": tid
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            this.frequentMutations = data.hits.hits;
+
+            fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`, {
+              method: 'POST',
+              headers: { 'Content-Type': `application/json` },
+              body: JSON.stringify(
+                {
+                  "size": 10000,
+                  "query": {
+                    "nested": {
+                      "path": "occurrence",
+                      "score_mode": "sum",
+                      "query": {
+                        "function_score": {
+                          "query": {
+                            "match_all": {}
+                          },
+                          "boost_mode": "replace",
+                          "script_score": {
+                            "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "post_filter": {
+                    "nested": {
+                      "path": "consequence",
+                      "query": {
+                        "term": {
+                          "consequence.transcript.transcript_id": tid
+                        }
+                      }
+                    }
                   }
                 }
-              }
-            }
-          }
-        )
-      })
-        .then(res => res.json())
-        .then(data => {
-          this.proteinLolliplotData = this.buildProteinLolliplotData(
-            data.hits.hits, tid
-          );
+              )
+            })
+            .then(res => res.json())
+            .then(data => {
+              this.proteinLolliplotData = this.buildProteinLolliplotData(
+                data.hits.hits, tid
+              );
 
-          this.renderReact();
+              this.renderReact();
+            });
+          });
         });
-
+      });
     }
 
     buildProteinLolliplotData(mutations, tid) {

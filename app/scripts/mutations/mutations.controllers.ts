@@ -6,85 +6,98 @@ module ngApp.mutations.controllers {
 
     /* @ngInject */
     constructor(
-      private mutation: any,
-      private allCasesAgg: any,
       private $scope: ng.IScope,
       private CoreService: ICoreService,
-      private config: IGDCConfig
+      private config: IGDCConfig,
+      private $stateParams
     ) {
-      CoreService.setPageTitle("Mutation", mutation.ssm_id);
-      $scope.mutation = mutation;
+      fetch(`${config.es_host}/${config.es_index_version}-case-centric/_search`, {
+        method: 'POST',
+        headers: {'Content-Type' : 'application/json'},
+        body: JSON.stringify({
+          "size": 0,
+          "aggs": {
+            "project_ids": {
+              "terms": {
+                "field": "project.project_id.raw",
+              }
+            }
+          }
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          this.allCasesAgg = data.aggregations.project_ids.buckets;
 
-      let canonicalTranscript = mutation.consequence.find(x => x.transcript.is_canonical).transcript;
-      let tid = canonicalTranscript.transcript_id;
-      let geneId = canonicalTranscript.gene.gene_id;
+          fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/${this.$stateParams.mutationId}`, {
+            headers: {'Content-Type' : 'application/json'},
+          })
+          .then(res => res.json())
+          .then(data => {
+            this.mutation = data._source || {};
 
-      Promise.all([
-        fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify(
-            {
-              "size": 10000,
-              "query": {
-                "nested": {
-                  "path": "occurrence",
-                  "score_mode": "sum",
-                  "query": {
-                    "function_score": {
-                      "query": {
-                        "match_all": {}
-                      },
-                      "boost_mode": "replace",
-                      "script_score": {
-                        "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
+            CoreService.setPageTitle("Mutation", this.mutation.ssm_id);
+
+            let canonicalTranscript = this.mutation.consequence.find(x => x.transcript.is_canonical).transcript;
+            let tid = canonicalTranscript.transcript_id;
+            let geneId = canonicalTranscript.gene.gene_id;
+
+            Promise.all([
+              fetch(`${config.es_host}/${config.es_index_version}-ssm-centric/ssm-centric/_search`, {
+                method: 'POST',
+                headers: { 'Content-Type': `application/json` },
+                body: JSON.stringify(
+                  {
+                    "size": 10000,
+                    "query": {
+                      "nested": {
+                        "path": "occurrence",
+                        "score_mode": "sum",
+                        "query": {
+                          "function_score": {
+                            "query": {
+                              "match_all": {}
+                            },
+                            "boost_mode": "replace",
+                            "script_score": {
+                              "script": "doc['occurrence.case.project.project_id'].empty ? 0 : 1"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "post_filter": {
+                      "nested": {
+                        "path": "consequence",
+                        "query": {
+                          "term": {
+                            "consequence.transcript.transcript_id": tid
+                          }
+                        }
                       }
                     }
                   }
-                }
-              },
-              "post_filter": {
-                "nested": {
-                  "path": "consequence",
-                  "query": {
-                    "term": {
-                      "consequence.transcript.transcript_id": tid
-                    }
-                  }
-                }
-              }
-            }
-          )
-        })
-          .then(res => res.json()),
+                )
+              })
+                .then(res => res.json()),
 
-        fetch(`${config.es_host}/${config.es_index_version}-gene-centric/gene-centric/_search`, {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify(
-            {
-              "query": {
-                "term": {
-                  "gene_id": {
-                    "value": geneId
-                  }
-                }
-              }
-            }
-          )
-        })
-        .then(res => res.json())
-      ])
-        .then(results => {
-          let mutations = results[0].hits.hits;
-          this.gene = results[1].hits.hits[0]._source;
+              fetch(`${config.es_host}/${config.es_index_version}-gene-centric/gene-centric/${geneId}`, {
+                headers: { 'Content-Type': `application/json` },
+              })
+              .then(res => res.json())
+            ])
+              .then(results => {
+                let mutations = results[0].hits.hits;
+                this.gene = results[1]._source;
 
-          this.proteinLolliplotData = this.buildProteinLolliplotData(
-            mutations, tid
-          );
+                this.proteinLolliplotData = this.buildProteinLolliplotData(
+                  mutations, tid
+                );
 
-          this.renderReact();
-        });
+                this.renderReact();
+              });
+          });
+      });
     }
 
     buildProteinLolliplotData(mutations, tid) {

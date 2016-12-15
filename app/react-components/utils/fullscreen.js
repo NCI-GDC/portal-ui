@@ -1,15 +1,15 @@
 document.exitFullscreen = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen;
 
-export const isFullScreen = function(el) {
-  const fullScreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+export const isFullScreen = el => {
+  const fullScreenElement =
+    document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+
   return el && fullScreenElement ? fullScreenElement === el : fullScreenElement;
 };
 
-export const exitFullScreen = function() {
-  document.exitFullscreen && document.exitFullscreen();
-};
+export const exitFullScreen = () => document.exitFullscreen && document.exitFullscreen();
 
-export const enterFullScreen = function(element) {
+export const enterFullScreen = element => {
   if (element.requestFullscreen) {
     element.requestFullscreen();
   } else if (element.mozRequestFullScreen) {
@@ -18,4 +18,3 @@ export const enterFullScreen = function(element) {
     element.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
   }
 };
-

@@ -1,22 +1,22 @@
-export default function({api, value, field, slug, projectId}) {
+export default function ({ api, value, field, slug, projectId }) {
   const filters = [
     {
-      op: "and",
+      op: 'and',
       content: [
-        { op: "=", content: { field: "project.project_id.raw", value: projectId } },
-        { op: "=", content: { field, value } }
-      ]
+        { op: '=', content: { field: 'project.project_id.raw', value: projectId } },
+        { op: '=', content: { field, value } },
+      ],
     },
     {
-      op: "and",
+      op: 'and',
       content: [
-        { op: "=", content: { field: "project.project_id.raw", value: projectId } },
-        { op: "excludeifany", content: { field, value } },
-      ]
-    }
+        { op: '=', content: { field: 'project.project_id.raw', value: projectId } },
+        { op: 'excludeifany', content: { field, value } },
+      ],
+    },
   ];
 
-  const url = `${api}/analysis/survival?filters=${JSON.stringify(filters)}`
+  const url = `${api}/analysis/survival?filters=${JSON.stringify(filters)}`;
 
   return fetch(url)
     .then(r => r.json())
@@ -25,7 +25,7 @@ export default function({api, value, field, slug, projectId}) {
       id: value,
       legend: [
         `${slug || value} mutated cases`,
-        `${slug || value} not mutated cases`
-      ]
+        `${slug || value} not mutated cases`,
+      ],
     }));
 }

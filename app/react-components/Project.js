@@ -262,7 +262,18 @@ const Project = ({
           <SummaryCard
             tableTitle="Cases and File Counts by Experimental Strategy"
             pieChartTitle="File Counts by Experimental Strategy"
-            data={experimentalStrategies}
+            data={
+              experimentalStrategies.map((item) => {
+                const { filters, displayKey } = expStratConfig;
+                const builtFilters = filters.default.params.filters(item[displayKey]);
+
+                return {
+                  ...item,
+                  case_count: <a href={`/search/c?filters=${builtFilters}`} >{item.case_count.toLocaleString()}</a>,
+                  file_count: <a href={`/search/f?filters=${builtFilters}`} >{item.file_count.toLocaleString()}</a>,
+                };
+              })
+            }
             footer={`${experimentalStrategies.length} Experimental Strategies`}
             path="file_count"
             headings={[
@@ -271,21 +282,11 @@ const Project = ({
                 key: 'case_count',
                 title: 'Cases',
                 style: { textAlign: 'right' },
-                onClick: (item) => {
-                  window.location = `/search/c?filters=${
-                    expStratConfig.filters.default.params.filters(item[expStratConfig.displayKey])
-                  }`;
-                },
               },
               {
                 key: 'file_count',
                 title: 'Files',
                 style: { textAlign: 'right' },
-                onClick: (item) => {
-                  window.location = `/search/f?filters=${
-                    expStratConfig.filters.default.params.filters(item[expStratConfig.displayKey])
-                  }`;
-                },
               },
             ]}
           />
@@ -294,7 +295,18 @@ const Project = ({
           <SummaryCard
             tableTitle="Cases and File Counts by Data Category"
             pieChartTitle="File Counts by Experimental Strategy"
-            data={dataCategories}
+            data={
+              dataCategories.map((item) => {
+                const { filters, displayKey } = dataCategoriesConfig;
+                const builtFilters = filters.default.params.filters(item[displayKey]);
+
+                return {
+                  ...item,
+                  case_count: <a href={`/search/c?filters=${builtFilters}`}>{item.case_count.toLocaleString()}</a>,
+                  file_count: <a href={`/search/f?filters=${builtFilters}`}>{item.file_count.toLocaleString()}</a>,
+                };
+              })
+            }
             footer={`${dataCategories.length} Experimental Strategies`}
             path="file_count"
             headings={[
@@ -303,21 +315,11 @@ const Project = ({
                 key: 'case_count',
                 title: 'Cases',
                 style: { textAlign: 'right' },
-                onClick: (item) => {
-                  window.location = `/search/c?filters=${
-                    dataCategoriesConfig.filters.default.params.filters(item[dataCategoriesConfig.displayKey])
-                  }`;
-                },
               },
               {
                 key: 'file_count',
                 title: 'Files',
                 style: { textAlign: 'right' },
-                onClick: (item) => {
-                  window.location = `/search/f?filters=${
-                    dataCategoriesConfig.filters.default.params.filters(item[dataCategoriesConfig.displayKey])
-                  }`;
-                },
               },
             ]}
           />

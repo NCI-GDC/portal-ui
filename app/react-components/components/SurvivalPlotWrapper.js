@@ -48,16 +48,16 @@ function onClickDonor(e, donor) {
   window.location = `/cases/${donor.id}`;
 }
 
-const SurvivalPlotWrapper = ({ legend, rawData = {}, setXDomain, setSurvivalContainer }) => {
+const SurvivalPlotWrapper = ({ height = 0, legend, rawData = {}, setXDomain, setSurvivalContainer }) => {
   const { results = [], overallStats = {} } = rawData;
   const pValue = overallStats.pValue;
 
   return (
     <div className="survival-plot">
-      <Column id="survival-plot">
+      <Column>
         <span style={{ textAlign: 'right' }}>
           <DownloadVisualizationButton
-            svg={'.survival-plot svg'}
+            svg={'.survival-plot-container svg'}
             data={results}
             stylePrefix=".survival-plot"
             slug="survival-plot"
@@ -80,7 +80,11 @@ const SurvivalPlotWrapper = ({ legend, rawData = {}, setXDomain, setSurvivalCont
         <div style={graphTitle}>Overall Survival Plot</div>
         {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue.toExponential(2)}</span>}
       </Column>
-      <div ref={setSurvivalContainer} />
+      <div
+        className="survival-plot-container"
+        ref={setSurvivalContainer}
+        style={{ overflow: 'hidden', height, position: 'relative' }}
+      />
       <Row style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
         {legend &&
           legend.map((text, i) => (

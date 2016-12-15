@@ -1,11 +1,12 @@
 import React from 'react';
+import moment from 'moment';
+
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
 import Button from '../uikit/Button';
 import withDropdown from '../uikit/withDropdown';
-import saveFile from '../utils/filesaver';
-import moment from 'moment'
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
+import { visualizingButton } from '../theme/mixins';
 
 export const zDepth1 = {
   boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
@@ -34,16 +35,6 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
   },
-  button: {
-    color: '#333',
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    marginRight: 12,
-    minWidth: 46,
-    minHeight: 34,
-    display: 'inline-flex',
-    outline: 'none',
-  },
 };
 
 let ProteinLolliplot = ({
@@ -68,7 +59,7 @@ let ProteinLolliplot = ({
       </span>
       <Button
         style={{
-          ...styles.button,
+          ...visualizingButton,
           fontWeight: $scope.geneTranscript.id === gene.canonical_transcript_id
             ? 'bold' : 'initial'
         }}
@@ -140,7 +131,7 @@ let ProteinLolliplot = ({
         }
       </Button>
       <Button
-        style={styles.button}
+        style={visualizingButton}
         onClick={reset}
         leftIcon={<i className="fa fa-refresh" />}
       >

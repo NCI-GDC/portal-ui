@@ -3,20 +3,11 @@ import Button from '../uikit/Button';
 import withDropdown from '../uikit/withDropdown';
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
-import { dropdown } from '../theme/mixins';
+import { dropdown, visualizingButton } from '../theme/mixins';
 import theme from '../theme';
 import Tooltip from '../uikit/Tooltip';
 
 const styles = {
-  button: {
-    color: '#333',
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    marginRight: 12,
-    minWidth: 46,
-    minHeight: 34,
-    display: 'inline-flex',
-  },
   row: {
     padding: '0.6rem 1rem',
     cursor: 'pointer',
@@ -40,7 +31,7 @@ const DropDownButton = ({
 }) => {
   const button = (
     <Button
-      style={styles.button}
+      style={visualizingButton}
       onClick={() => setActive(!active)}
       leftIcon={icon}
       disabled={disabled || !options.length}

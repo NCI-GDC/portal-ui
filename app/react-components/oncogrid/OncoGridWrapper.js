@@ -13,6 +13,7 @@ import oncoGridParams from './oncoGridParams';
 import { gridReducer, initialGridState } from './gridReducer';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton'
 import ToolTip from '../uikit/Tooltip';
+import { visualizingButton } from '../theme/mixins';
 
 const GRID_ID = 'oncogrid-div';
 
@@ -39,13 +40,8 @@ const styles = {
     height: '100%',
   },
   button: {
-    color: '#333',
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    margin: '0 12px 12px 0',
-    minWidth: 46,
-    minHeight: 34,
-    display: 'inline-flex',
+    ...visualizingButton,
+    marginBottom: 12,
   },
   buttonActive: {
     backgroundColor: '#e6e6e6',

@@ -21,6 +21,7 @@ import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
 import DownloadVisualizationButton from './components/DownloadVisualizationButton';
+import CancerDistribution from './components/CancerDistribution';
 
 const Mutation = (() => {
   const globalTooltip = $('.global-tooltip');
@@ -313,58 +314,32 @@ const Mutation = (() => {
               <ChartIcon style={{ marginRight: '1rem' }} />
               Cancer Distribution
             </h1>
-            <DownloadVisualizationButton
-              style={{ padding: '1rem' }}
-              svg={sortedCancerDistData.length >= 5 ? '#cancer-distribution svg' : ''}
-              data={sortedCancerDistData}
-              slug="bar-chart"
-            />
           </Row>
-          <h5 style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
-            This mutation affects&nbsp;
-            {distinctCases.length} distinct case{distinctCases.length > 1 ? 's' : ''} across&nbsp;
-            {sortedCancerDistData.length} cancer projects
-          </h5>
-          <Column style={styles.column}>
-            {sortedCancerDistData.length >= 5 &&
-              <BarChart
-                data={sortedCancerDistData.map(d => ({
-                  label: d.project_id,
-                  value: (d.freq * 100),
-                  tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`,
-                }))
-                }
-                yAxis={{ title: '% of Cases Affected' }}
-                styles={{
-                  xAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
-                  yAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
-                  bars: { fill: theme.secondary },
-                  tooltips: {
-                    fill: '#fff',
-                    stroke: theme.greyScale4,
-                    textFill: theme.greyScale3,
-                  },
-                }}
-              />
-            }
-            <EntityPageHorizontalTable
-              headings={[
-                { key: 'project_id', title: 'Project ID' },
-                { key: 'disease_type', title: 'Disease Type' },
-                { key: 'site', title: 'Site' },
-                {
-                  key: 'num_affected_cases',
-                  title: '# Affected Cases',
-                },
-              ]}
-              data={sortedCancerDistData.map(d => ({
-                ...d,
-                project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
-                num_affected_cases:
-                  `${d.cases.length} / ${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
-              }))}
-            />
-          </Column>
+          <CancerDistribution
+            tableHeadings={[
+              { key: 'project_id', title: 'Project ID' },
+              { key: 'disease_type', title: 'Disease Type' },
+              { key: 'site', title: 'Site' },
+              {
+                key: 'num_affected_cases',
+                title: '# Affected Cases',
+              },
+            ]}
+            tableData={sortedCancerDistData.map(d => ({
+              ...d,
+              project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
+              num_affected_cases:
+                `${d.cases.length} / ${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
+            }))}
+            chartData={sortedCancerDistData.map(d => ({
+              label: d.project_id,
+              value: (d.freq * 100),
+              tooltip: `<b>${d.project_id}</b><br />${(d.freq * 100).toFixed(2)}%`,
+            }))}
+            tagline={`This mutation affects
+            ${distinctCases.length} distinct case${distinctCases.length > 1 ? 's' : ''} across
+            ${sortedCancerDistData.length} cancer projects`}
+          />
         </Column>
         <Column style={{ ...styles.card, marginTop: '2rem' }}>
           <ProteinLolliplotComponent

@@ -10,20 +10,17 @@ import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
 import withDropdown from './uikit/withDropdown';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
-import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import ProteinLolliplotComponent from './components/ProteinLolliplot';
 import FrequentMutations from './components/FrequentMutations';
 import { ExternalLink } from './uikit/Links';
-import Tooltip from './uikit/Tooltip';
-import BarChart from './charts/BarChart';
-import theme from './theme';
 import externalReferenceLinks from './utils/externalReferenceLinks';
 import MinusIcon from './theme/icons/Minus';
 import PlusIcon from './theme/icons/Plus';
 import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
-import DownloadVisualizationButton from './components/DownloadVisualizationButton';
+import CancerDistribution from './components/CancerDistribution';
+import Tooltip from './uikit/Tooltip';
 
 export const zDepth1 = {
   boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
@@ -249,76 +246,48 @@ const Gene = (() => {
                 <ChartIcon style={{ marginRight: '1rem' }} />
                 Cancer Distribution
               </h1>
-              <DownloadVisualizationButton
-                style={{ padding: '1rem' }}
-                svg="#cancer-distribution svg"
-                data={sortedCancerDistData}
-                slug="bar-chart"
-              />
             </Row>
-            <div style={{ padding: '0 1rem', textAlign: 'center' }}>
-              {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by&nbsp;
-              {sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across&nbsp;
-              {sortedCancerDistData.length} projects
-            </div>
-            <Column style={{ ...styles.column }}>
-              <Row style={{ padding: '0 2rem', justifyContent: 'center' }}>
-                <BarChart
-                  bandwidth={50}
-                  data={sortedCancerDistData.map(d => ({
-                    label: d.project_id,
-                    value: (d.freq * 100),
-                    href: `projects/${d.project_id}`,
-                    tooltip: `
-                      DNA Change<br />
-                      ${d.cases.length} Case${d.cases.length > 1 ? 's' : ''} Affected in <b>${d.project_id}</b><br />
-                      ${d.cases.length} / ${allCasesAggByProject[d.project_id]}&nbsp;(${(d.freq * 100).toFixed(2)}%}
-                    `,
-                  }))
-                  }
-                  yAxis={{ title: '% of Cases Affected' }}
-                  styles={{
-                    xAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
-                    yAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
-                    bars: { fill: theme.secondary },
-                    tooltips: {
-                      fill: '#fff',
-                      stroke: theme.greyScale4,
-                      textFill: theme.greyScale3,
-                    },
-                  }}
-                />
-              </Row>
-              <EntityPageHorizontalTable
-                headings={[
-                  { key: 'project_id', title: 'Project ID' },
-                  { key: 'disease_type', title: 'Disease Type' },
-                  { key: 'site', title: 'Site' },
-                  { key: 'num_affected_cases',
-                    title: (
-                      <Tooltip
-                        innerHTML={`Number of Cases where ${gene.symbol} contains SSM`}
-                      >
-                        # Affected Cases
-                      </Tooltip>
-                    ),
-                  },
-                  { key: 'num_mutations',
-                    title: <Tooltip innerHTML={`Number of SSM observed in ${gene.symbol}`}># Mutations</Tooltip>,
-                    style: { textAlign: 'right' },
-                  },
-                ]}
-                data={sortedCancerDistData.map(
-                  d => ({
-                    ...d,
-                    project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
-                    num_affected_cases:
-                      `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
-                    num_mutations: d.ssms.length,
-                  })
-                )}
-              />
-            </Column>
+            <CancerDistribution
+              tableHeadings={[
+                { key: 'project_id', title: 'Project ID' },
+                { key: 'disease_type', title: 'Disease Type' },
+                { key: 'site', title: 'Site' },
+                { key: 'num_affected_cases',
+                  title: (
+                    <Tooltip
+                      innerHTML={`Number of Cases where ${gene.symbol} contains SSM`}
+                    >
+                      # Affected Cases
+                    </Tooltip>
+                  ),
+                },
+                { key: 'num_mutations',
+                  title: <Tooltip innerHTML={`Number of SSM observed in ${gene.symbol}`}># Mutations</Tooltip>,
+                  style: { textAlign: 'right' },
+                },
+              ]}
+              tableData={sortedCancerDistData.map(d => ({
+                ...d,
+                project_id: <a href={`/projects/${d.project_id}`}>{d.project_id}</a>,
+                num_affected_cases:
+                  `${d.cases.length}/${allCasesAggByProject[d.project_id]} (${(d.freq * 100).toFixed(2)}%)`,
+                num_mutations: d.ssms.length,
+              }))}
+              chartData={sortedCancerDistData.map(d => ({
+                label: d.project_id,
+                value: (d.freq * 100),
+                href: `projects/${d.project_id}`,
+                tooltip: `
+                  DNA Change<br />
+                  ${d.cases.length} Case${d.cases.length > 1 ? 's' : ''} Affected in <b>${d.project_id}</b><br />
+                  ${d.cases.length} / ${allCasesAggByProject[d.project_id]}&nbsp;(${(d.freq * 100).toFixed(2)})%
+                `,
+              }))}
+              tagline={`${sortedCancerDistData.reduce((acc, d) => [...acc, ...d.cases], []).length} cases affected by
+                ${sortedCancerDistData.reduce((acc, d) => [...acc, ...d.ssms], []).length} mutations across
+                ${sortedCancerDistData.length} projects`
+              }
+            />
           </Column>
 
           <Column style={{ ...styles.card, marginTop: '2rem' }}>

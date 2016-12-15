@@ -1,14 +1,8 @@
 import _ from 'lodash';
 
-function makeFilter(fields: { field: string; value: string }[]) {
+function makeFilter(fields: { field: string; value: string }[], returnString: boolean = true) {
   const contentArray = _.map(fields, (item) => {
-    let value;
-
-    if (_.isArray(item.value)) {
-      value = item.value;
-    } else if (item.value) {
-      value = item.value.split(',');
-    }
+    const value = _.isArray(item.value) ? item.value : item.value.split(',');
 
     return {
       op: 'in',
@@ -19,10 +13,12 @@ function makeFilter(fields: { field: string; value: string }[]) {
     };
   });
 
-  return contentArray.length === 0 ? '{}' : JSON.stringify({
+  const filters = contentArray.length ? {
     op: 'and',
     content: contentArray,
-  });
+  } : {};
+
+  return returnString ? JSON.stringify(filters) : filters;
 }
 
 export default makeFilter;

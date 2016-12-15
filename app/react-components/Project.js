@@ -72,19 +72,6 @@ const styles = {
   },
 };
 
-function buildFilters(data) {
-  return {
-    op: 'and',
-    content: _.values(_.mapValues(data, (value, key) => ({
-      op: 'in',
-      content: {
-        field: key,
-        value: [].concat(value),
-      },
-    }))),
-  };
-}
-
 const Project = ({
   $scope,
   authApi,
@@ -148,7 +135,9 @@ const Project = ({
           activeText="Processing"
           inactiveText={biospecimenCount === 0 ? 'No Biospecimen Data' : 'Download Biospecimen'}
           fields={['case_id']}
-          filters={buildFilters(biospecimenDataExportFilters)}
+          filters={
+            makeFilter(_.values(_.mapValues(biospecimenDataExportFilters, (value, field) => ({ value, field }))), false)
+          }
         />
 
         <DownloadButton
@@ -159,7 +148,9 @@ const Project = ({
           activeText="Processing"
           inactiveText={clinicalCount === 0 ? 'No Clinical Data' : 'Download Clinical'}
           fields={['case_id']}
-          filters={buildFilters(clinicalDataExportFilters)}
+          filters={
+            makeFilter(_.values(_.mapValues(clinicalDataExportFilters, (value, field) => ({ value, field }))), false)
+          }
         />
 
         <Tooltip
@@ -177,13 +168,9 @@ const Project = ({
             size={project.summary.file_count}
             returnType="manifest"
             format="TSV"
-            filters={{
-              op: 'in',
-              content: {
-                field: 'cases.project.project_id',
-                value: projectId,
-              },
-            }}
+            filters={
+              makeFilter([{ field: 'cases.project.project_id', value: projectId }], false)
+            }
           />
         </Tooltip>
       </Row>

@@ -3,8 +3,9 @@ import { compose, withState } from 'recompose';
 
 import Row from '../uikit/Flex/Row';
 import Column from '../uikit/Flex/Column';
-import Overlay from'../uikit/Overlay';
+import Overlay from '../uikit/Overlay';
 import Button from '../uikit/Button';
+import { visualizingButton } from '../theme/mixins';
 
 const styles = {
   container: {
@@ -21,12 +22,7 @@ const styles = {
     paddingLeft: 20,
   },
   button: {
-    color: '#333',
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    minWidth: 46,
-    minHeight: 34,
-    display: 'inline-flex',
+    ...visualizingButton,
     minWidth: 100,
   },
 };
@@ -77,14 +73,14 @@ const SelectOverlay = ({options = [], callback, selectedOptions, setSelectedOpti
         }
         <Row style={{ justifyContent: 'center', marginTop: 10 }}>
           <Button
-            style={{
-              ...styles.button,
-              marginRight: 12,
-            }}
+            style={styles.button}
             onClick={() => callback(selectedOptions.map((i) => options[i]))}
           >Add Tracks</Button>
           <Button
-            style={styles.button}
+            style={{
+              ...styles.button,
+              marginRight: 0,
+            }}
             onClick={() => callback()}
           >Cancel</Button>
         </Row>

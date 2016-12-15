@@ -53,22 +53,6 @@ const Gene = (() => {
       display: 'flex',
       alignItems: 'center',
     },
-    buttons: {
-      flex: 'none',
-      color: '#fff',
-      backgroundColor: '#0d95a1',
-      marginLeft: '0.2rem',
-    },
-    button: {
-      color: '#333',
-      backgroundColor: '#fff',
-      borderColor: '#ccc',
-      marginRight: 12,
-      minWidth: 46,
-      minHeight: 34,
-      display: 'inline-flex',
-      outline: 'none',
-    },
     countCard: {
       width: 'auto',
       marginBottom: '2rem',

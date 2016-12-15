@@ -62,15 +62,6 @@ const styles = {
     height: '4rem',
     color: '#888',
   },
-  button: {
-    color: '#333',
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
-    marginRight: 12,
-    minWidth: 46,
-    minHeight: 34,
-    display: 'inline-flex',
-  },
   hidden: {
     width: 0,
     height: 0,

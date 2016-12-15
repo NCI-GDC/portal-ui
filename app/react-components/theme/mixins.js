@@ -38,6 +38,17 @@ export const graphTitle = {
   fontWeight: 300,
 };
 
+export const visualizingButton = {
+  color: '#333',
+  backgroundColor: '#fff',
+  borderColor: '#ccc',
+  marginRight: 12,
+  minWidth: 46,
+  minHeight: 34,
+  display: 'inline-flex',
+  outline: 'none',
+};
+
 export const margin = (left, right) => {
   if (left && right) {
     return { margin: '0 0.5rem' };

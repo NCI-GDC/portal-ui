@@ -12,9 +12,10 @@ const impactColors = {
 
 export default
 compose(
-  withState('fm', 'setState', {}),
+  withState('state', 'setState', { data: {}, loading: true }),
   withProps({
     fetchData: async ({ api, projectId, offset = 0, setState }) => {
+      setState(s => ({ ...s, loading: true }));
       const url = `${api}/analysis/frequent_mutations_by_project`;
       const res = await fetch(url, {
         method: 'POST',
@@ -37,7 +38,7 @@ compose(
         }),
       });
       const { data } = await res.json();
-      setState(() => data);
+      setState(s => ({ data, loading: false }));
     },
   }),
   lifecycle({
@@ -45,10 +46,10 @@ compose(
       this.props.fetchData(this.props);
     },
   })
-)(props => {
-  if (!props.fm.hits) return null;
+)(({ state, ...props }) => {
+  // if (!state.data.hits) return null;
 
-  const frequentMutations = props.fm.hits
+  const frequentMutations = state.data.hits
     .map((hit) => {
       const { transcript } = hit.consequence.find(c => c.transcript.is_canonical);
       const { annotation = {}, consequence_type, gene, gene_symbol, aa_change } = transcript;
@@ -89,9 +90,10 @@ compose(
 
   return (
     <PaginationContainer
-      total={props.fm.pagination.total}
+      total={state.data.pagination.total}
       onChange={pageInfo => props.fetchData({ ...props, ...pageInfo })}
       entityType="Mutations"
+      loading={state.loading}
     >
       <FrequentMutations
         frequentMutations={frequentMutations}

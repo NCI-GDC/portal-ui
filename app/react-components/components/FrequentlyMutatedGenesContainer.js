@@ -5,9 +5,11 @@ import { PaginationContainer } from '../uikit/Pagination';
 
 export default
 compose(
-  withState('data', 'setState', {}),
+  withState('state', 'setState', { data: { hits: [], total: 0 }, loading: true }),
   withProps({
     fetchData: async props => {
+      props.setState(s => ({ ...s, loading: true }));
+
       const url =
         `${props.config.es_host}/${props.config.es_index_version}-gene-centric/gene-centric/_search`;
 
@@ -15,6 +17,7 @@ compose(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          from: props.offset || 0,
           query: {
             nested: {
               path: 'case',
@@ -40,7 +43,7 @@ compose(
       });
 
       const { hits } = await res.json();
-      props.setState(() => hits);
+      props.setState(s => ({ ...s, data: hits, loading: false }));
     },
   }),
   lifecycle({
@@ -48,10 +51,8 @@ compose(
       this.props.fetchData(this.props);
     },
   })
-)(props => {
-  if (!props.data.hits) return null;
-
-  const mutatedGenesChartData = props.data.hits.map(({ _source: g }) => ({
+)(({ state, ...props }) => {
+  const mutatedGenesChartData = state.data.hits.map(({ _source: g }) => ({
     gene_id: g.gene_id,
     symbol: g.symbol,
     cytoband: g.cytoband,
@@ -66,9 +67,10 @@ compose(
 
   return (
     <PaginationContainer
-      total={props.fm.total}
+      total={state.data.total}
       onChange={pageInfo => props.fetchData({ ...props, ...pageInfo })}
       entityType="Genes"
+      loading={state.loading}
     >
       <FrequentlyMutatedGenes
         mutatedGenesChartData={mutatedGenesChartData}
@@ -76,9 +78,9 @@ compose(
         survivalData={props.survivalData}
         setSelectedSurvivalData={props.setSelectedSurvivalData}
         selectedSurvivalData={props.selectedSurvivalData}
-        width={props.width}
         totalNumCases={props.totalNumCases}
         projectId={props.projectId}
+        width={props.width}
         api={props.api}
       />
     </PaginationContainer>

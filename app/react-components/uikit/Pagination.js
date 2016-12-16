@@ -116,6 +116,7 @@ const PaginationContainer = compose(
       </Row>
       {props.children}
       <Row style={{ padding: '1rem', alignItems: 'center' }}>
+        {props.loading && <span className="fa fa-spinner fa-spin" />}
         <div style={{ marginLeft: 'auto' }}>
           <PaginationControls {...props} />
         </div>

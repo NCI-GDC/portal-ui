@@ -306,11 +306,15 @@ const Project = ({
           Most Frequently Mutated Genes
         </h1>
         <FrequentlyMutatedGenesContainer
+          numCasesAggByProject={numCasesAggByProject}
           survivalData={survivalData}
           setSelectedSurvivalData={setSelectedSurvivalData}
+          selectedSurvivalData={selectedSurvivalData}
           totalNumCases={totalNumCases}
-          api={api}
+          projectId={projectId}
           width={width}
+          api={api}
+          config={$scope.config}
         />
       </Column>
 

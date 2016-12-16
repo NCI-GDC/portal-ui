@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { insertRule } from 'glamor';
 
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
@@ -7,6 +8,12 @@ import Button from '../uikit/Button';
 import withDropdown from '../uikit/withDropdown';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
 import { visualizingButton } from '../theme/mixins';
+
+const rootId = 'protein-viewer-root';
+
+insertRule(`
+  #${rootId} text { user-select: none; }
+`);
 
 export const zDepth1 = {
   boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
@@ -37,7 +44,7 @@ const styles = {
   },
 };
 
-let ProteinLolliplot = ({
+const ProteinLolliplot = ({
   active,
   setActive,
   mouseDownHandler,
@@ -48,12 +55,12 @@ let ProteinLolliplot = ({
 }) => (
   <Column>
     <Row>
-      <h1 style={{...styles.heading, padding: `1rem`}} id="protein">
-        <img src="images/double-helix.svg" alt="GDC cBio Portal" style={{ marginRight: '1rem', width: `12px` }} />
+      <h1 style={{ ...styles.heading, padding: '1rem' }} id="protein">
+        <img src="images/double-helix.svg" alt="GDC cBio Portal" style={{ marginRight: '1rem', width: '12px' }} />
         Protein
       </h1>
     </Row>
-    <Row style={{ marginBottom: '2rem', padding: `0 2rem` }} spacing="1rem">
+    <Row style={{ marginBottom: '2rem', padding: '0 2rem' }} spacing="1rem">
       <span style={{ alignSelf: 'center' }}>
         Transcript:
       </span>
@@ -61,7 +68,7 @@ let ProteinLolliplot = ({
         style={{
           ...visualizingButton,
           fontWeight: $scope.geneTranscript.id === gene.canonical_transcript_id
-            ? 'bold' : 'initial'
+            ? 'bold' : 'initial',
         }}
         onClick={() => setActive(true)}
         rightIcon={<i className="fa fa-caret-down" />}
@@ -86,14 +93,14 @@ let ProteinLolliplot = ({
                   ...($scope.geneTranscript.id === t.id
                     ? {
                       backgroundColor: 'rgb(44, 136, 170)',
-                      color: `white`,
+                      color: 'white',
                     }
-                    : {})
+                    : {}),
                 }}
                 onClick={
                   () => {
                     $scope.selectTranscript(t.id);
-                    setTimeout(() => setActive(false))
+                    setTimeout(() => setActive(false));
                   }
                 }
               >
@@ -113,14 +120,14 @@ let ProteinLolliplot = ({
                   ...($scope.geneTranscript.id === t.id
                     ? {
                       backgroundColor: 'rgb(44, 136, 170)',
-                      color: `white`,
+                      color: 'white',
                     }
-                    : {})
+                    : {}),
                 }}
                 onClick={
                   () => {
                     $scope.selectTranscript(t.id);
-                    setTimeout(() => setActive(false))
+                    setTimeout(() => setActive(false));
                   }
                 }
               >
@@ -137,14 +144,14 @@ let ProteinLolliplot = ({
       >
         Reset
       </Button>
-      <DownloadVisualizationButton 
+      <DownloadVisualizationButton
         svg="#protein-viewer-root svg.chart"
         data={$scope.proteinLolliplotData}
         stylePrefix="#protein-viewer-root"
         slug={`protein_viewer-${gene.symbol}-${moment().format('YYYY-MM-DD')}`}
       />
     </Row>
-    <div style={{padding: `0 3rem` }} id="protein-viewer-root" />
+    <div style={{ padding: '0 3rem' }} id={rootId} />
   </Column>
 );
 

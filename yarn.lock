@@ -50,9 +50,9 @@
   dependencies:
     read-pkg-up "2.0.0"
 
-"@oncojs/lolliplot@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@oncojs/lolliplot/-/lolliplot-0.4.0.tgz#adb0bb9f4816985e6ad4459f9f67d85a5712da74"
+"@oncojs/lolliplot@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@oncojs/lolliplot/-/lolliplot-0.4.1.tgz#2f8dd147e8247eb71eaf347413198490b68c3320"
   dependencies:
     lodash "^4.17.2"
 

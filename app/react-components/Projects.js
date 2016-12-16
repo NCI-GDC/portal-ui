@@ -21,7 +21,11 @@ const Projects = ({
   numUniqueCases,
 }: {
     numUniqueCases: number,
-    FacetService: any,
+    FacetService: {
+      getActiveIDs: (facet: string) => Array<string>,
+      addTerm: (facet: string, term: string, op: ?string) => void,
+      removeTerm: (facet: string, term: string, op: ?string) => void,
+    },
     genesIsFetching: boolean,
     projects: Array<{ primary_site: string, summary: { case_count: number }, project_id: string }>,
     topGenesWithCasesPerProject: { [gene_id: string]: { [project_id: string]: number, symbol: string}},

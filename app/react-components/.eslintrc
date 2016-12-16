@@ -7,9 +7,6 @@
     "flowtype/require-return-type": 0,
     "flowtype/require-parameter-type": 0,
     "flowtype/sort-keys": 0,
-    "flowtype/no-weak-types": [2, {
-      "any": false
-    }],
     "fp/no-let": 0,
     "fp/no-mutation": 0,
     "fp/no-mutating-methods": 0,

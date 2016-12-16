@@ -1,3 +1,4 @@
+/* @flow */
 const consequenceTypes = [
   "missense_variant",
   "frameshift_variant",

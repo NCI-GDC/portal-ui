@@ -1,9 +1,13 @@
+/* @flow */
+import { scaleOrdinal, schemeCategory20 } from 'd3';
+
 import { sortInt, sortByString, sortBool } from './sort';
 
-const colors = d3.scale.category20();
+const colors = scaleOrdinal(schemeCategory20);
 
-function random(track) {
-  return colors(('' + track.value).split('').reduce((h, c) => (h + c.charCodeAt(0)), 0));
+
+function random({ value }) {
+  return colors(`${value}`.split('').reduce((h, c) => (h + c.charCodeAt(0)), 0));
 }
 
 export const clinicalDonorTracks = [

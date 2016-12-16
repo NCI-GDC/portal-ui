@@ -1,6 +1,6 @@
-import _ from 'lodash';
-
+/* @flow */
 import { mapDonors, mapGenes, mapOccurences } from './dataMapping';
+import type { TDonor, TGene, TOccurence, TDonorInput, TGeneInput, TOccurenceInput } from './dataMapping';
 import { clinicalDonorTracks, dataTypeTracks, geneTracks } from './tracks';
 
 const fadeSteps = [0.05, 0.4, 0.7, 1];
@@ -10,51 +10,12 @@ const donorTracks = [
   ...dataTypeTracks,
 ];
 
-function clinicalLegend(maxDaysToDeath) {
-  return '<b>Clinical Data:</b><br>' +
-
-    '<b>gender:</b> ' +
-    'Male: ' + getSquare({fieldName: 'gender', value: 'male'}) +
-    ' Female: ' + getSquare({fieldName: 'gender', value: 'female'}) + '<br>' +
-
-    '<b>age (years): </b> 0 ' +
-    fadeSteps.reduce((html, opacity) => html + getSquare({fieldName: 'age', opacity: opacity}), '') +
-    ' 100+ <br>' +
-
-    '<b>vitalStatus:</b> ' +
-    'Deceased: ' + getSquare({fieldName: 'vitalStatus', value: false}) + ' ' +
-    'Alive: ' + getSquare({fieldName: 'vitalStatus', value: true}) + '<br>' +
-
-    '<b>days to death: </b> 0 ' +
-    fadeSteps.reduce((html, opacity) => html + getSquare({fieldName: 'daysToDeath', opacity: opacity}), '') +
-    ' ' + maxDaysToDeath + '<br>';
-}
-
-function dataTypeLegend() {
-  return dataTypeTracks.reduce((html, track) => (
-    html + getSquare({fieldName: track.fieldName}) + track.longName + ' <br>'
-  ), '<b>Available Data Types:</b><br>');
-}
-
-function gdcLegend(max) {
-  return fadeSteps.reduce(
-    (html, opacity) => html + getSquare({fieldName: 'totalDonors', opacity: opacity}),
-    '<b># of Cases Affected:</b><br>'
-  ) + max;
-}
-
-function geneSetLegend() {
-  return '<b> Gene Sets: </b> <br>' + 
-    getSquare({fieldName: 'cgc'}) +
-    ' Gene belongs to Cancer Gene Census';
-}
-
 const trackColorMap = [
   ...donorTracks,
   ...geneTracks,
-].reduce((map, t) => ({ ...map, [t.fieldName]: t.color }), {});
+].reduce((acc, t) => ({ ...acc, [t.fieldName]: t.color }), {});
 
-const fillFunc = (track) => {
+const fillFunc = (track: {fieldName: string, value?: mixed}) => {
   const color = trackColorMap[track.fieldName] || '';
 
   switch (typeof color) {
@@ -68,8 +29,52 @@ const fillFunc = (track) => {
 };
 
 function getSquare(field) {
-  const opacityStyle = typeof field.opacity === 'number' ? '; opacity: ' + field.opacity : '';
-  return '<div class="onco-track-legend" style="background: ' + fillFunc(field) + opacityStyle + '"></div>';
+  const opacityStyle = typeof field.opacity === 'number' ? `; opacity: ${field.opacity}` : '';
+  return `<div class="onco-track-legend" style="background: ${fillFunc(field)}${opacityStyle}"></div>`;
+}
+
+function clinicalLegend(maxDaysToDeath) {
+  return `
+    <b>Clinical Data:</b><br>
+
+    <b>gender:</b> Male: ${
+      getSquare({ fieldName: 'gender', value: 'male' })
+    } Female: ${
+      getSquare({ fieldName: 'gender', value: 'female' })
+    }<br>
+
+    <b>age (years): </b> 0 ${
+      fadeSteps.reduce((html, opacity) => html + getSquare({ fieldName: 'age', opacity }), '')
+    } 100+<br>
+
+    <b>vitalStatus:</b> Deceased: ${
+      getSquare({ fieldName: 'vitalStatus', value: false })
+    } Alive: ${
+      getSquare({ fieldName: 'vitalStatus', value: true })
+    }<br>
+
+    <b>days to death: </b> 0 ${
+      fadeSteps.reduce((html, opacity) => html + getSquare({ fieldName: 'daysToDeath', opacity }), '')
+    } ${
+      maxDaysToDeath
+    }<br>
+  `;
+}
+
+function dataTypeLegend() {
+  return `<b>Available Data Types:</b><br>${
+    dataTypeTracks.map(({ fieldName, longName }) => `${getSquare({ fieldName })}${longName}`).join('<br>')
+  }`;
+}
+
+function gdcLegend(maxValue) {
+  return `<b># of Cases Affected:</b><br>${
+    fadeSteps.map((opacity) => getSquare({ fieldName: 'totalDonors', opacity })).join('')
+  }${maxValue}`;
+}
+
+function geneSetLegend() {
+  return `<b> Gene Sets: </b><br>${getSquare({ fieldName: 'cgc' })} Gene belongs to Cancer Gene Census`;
 }
 
 export default function ({
@@ -78,46 +83,49 @@ export default function ({
   occurencesData,
   colorMap,
   element,
-  clickHandlers = {},
   height = 150,
   width = 680,
   addTrackFunc,
   consequenceTypes,
+}: {
+  donorData: Array<TDonorInput>,
+  geneData: Array<TGeneInput>,
+  occurencesData: Array<TOccurenceInput>,
+  colorMap: Array<string>,
+  element: string,
+  height: number,
+  width: number,
+  addTrackFunc: (trackOptions: Array<{name: string}>, callback: (t: Array<{name: string}>) => void) => void,
+  consequenceTypes: Array<string>,
 }) {
-  let donors = mapDonors(donorData);
-  let genes = mapGenes(geneData);
-  const observations = mapOccurences(occurencesData, donors, genes, consequenceTypes);
+  let donors: Array<TDonor> = mapDonors(donorData);
+  let genes: Array<TGene> = mapGenes(geneData);
+  const observations: Array<TOccurence> = mapOccurences(occurencesData, donors, genes, consequenceTypes);
 
-  if (observations.length === 0) {
-    return null;
-  }
+  if (observations.length === 0) return null;
 
-  // Clean gene & donor data before using for oncogrid. 
-  const donorObs = _.map(observations, 'donorId');
-  const geneObs = _.map(observations, 'geneId');
-  donors = _.filter(donors, function(d) { return donorObs.indexOf(d.id) >= 0;});
-  genes = _.filter(genes, function(g) { return geneObs.indexOf(g.id) >= 0;});
+  // Clean gene & donor data before using for oncogrid.
+  const donorObs = observations.map(o => o.donorId);
+  const geneObs = observations.map(o => o.geneId);
+  donors = donors.filter(d => donorObs.indexOf(d.id) >= 0);
+  genes = genes.filter(g => geneObs.indexOf(g.id) >= 0);
 
-  const maxDaysToDeath = _.max(_.map(donors, function(d) { return d.daysToDeath; } ));
-  const maxDonorsAffected = _.max(genes, function (g) { return g.totalDonors; }).totalDonors;
+  const maxDaysToDeath = Math.max(...donors.map((d) => d.daysToDeath));
+  const maxDonorsAffected = Math.max(...genes.map(g => g.totalDonors));
 
   const dataTypeMax = dataTypeTracks.reduce(
-    (maxValues, track) => (
+    (maxValues, { fieldName }) => (
       {
         ...maxValues,
-        [track.fieldName]: donors.reduce(
-          (max, d) => (
-            Math.max(max, d[track.fieldName])
-          ), 0
-        ),
+        [fieldName]: Math.max(0, ...donors.map(d => d[fieldName])),
       }
     )
   );
 
-  const donorOpacityFunc = function (d) {
-    switch (d.type) {
+  const donorOpacityFunc = ({ type, value, fieldName }: { type: string, value: number, fieldName: string }) => {
+    switch (type) {
       case 'int':
-        return d.value / 100;
+        return value / 100;
       case 'vital':
       case 'gender':
       case 'ethnicity':
@@ -125,65 +133,62 @@ export default function ({
       case 'primary_diagnosi':
         return 1;
       case 'bool':
-        return d.value ? 1 : 0;
+        return value ? 1 : 0;
       case 'days_to_death':
-        return d.value / maxDaysToDeath;
+        return value / maxDaysToDeath;
       case 'dataType':
-        return d.value / dataTypeMax[d.fieldName];
+        return value / dataTypeMax[fieldName];
       default:
         return 0;
     }
   };
 
-  const geneOpacity = function (g) {
-    switch (g.type) {
+  const geneOpacity = ({ type, value }: {type: string, value: number}) => {
+    switch (type) {
       case 'int':
-        return g.value / maxDonorsAffected;
+        return value / maxDonorsAffected;
       case 'bool':
-        return g.value ? 1 : 0;
+        return value ? 1 : 0;
       default:
         return 1;
     }
   };
 
   return {
-    donors: donors,
-    genes: genes,
-    observations: observations,
-    height: height,
-    width: width,
-    element: element,
-    colorMap: colorMap,
+    donors,
+    genes,
+    observations,
+    height,
+    width,
+    element,
+    colorMap,
     scaleToFit: true,
-
     heatMap: false,
     grid: true,
     minCellHeight: 8,
     trackHeight: 12,
     trackLegends: {
-      'GDC': gdcLegend(maxDonorsAffected),
+      GDC: gdcLegend(maxDonorsAffected),
       'Gene Sets': geneSetLegend(),
 
-      'Clinical': clinicalLegend(maxDaysToDeath),
+      Clinical: clinicalLegend(maxDaysToDeath),
       'Data Types': dataTypeLegend(),
     },
     trackLegendLabel: '<i style="font-size: 13px; margin-left: 5px" class="fa fa-question-circle"></i>',
-
-    donorTracks: donorTracks,
-    donorOpacityFunc: donorOpacityFunc,
+    donorTracks,
+    donorOpacityFunc,
     donorFillFunc: fillFunc,
-
-    geneTracks: geneTracks,
+    geneTracks,
     geneOpacityFunc: geneOpacity,
     geneFillFunc: fillFunc,
-    expandableGroups: [
-      'Clinical',
-    ],
-
+    expandableGroups: ['Clinical'],
     margin: { top: 20, right: 5, bottom: 20, left: 0 },
     leftTextWidth: 120,
     addTrackFunc,
-
-    ...clickHandlers,
+    donorHistogramClick: (d: {}) => console.log('donorHistogramClick: ', d),
+    gridClick: (o: {}) => console.log('gridClick: ', o),
+    geneHistogramClick: (g: {}) => console.log('geneHistogramClick: ', g),
+    geneClick: ({ id }: { id: string}) => { window.location = `/genes/${id}`; },
+    donorClick: ({ id }: { id: string }) => { window.location = `/cases/${id}`; },
   };
 }

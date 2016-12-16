@@ -20,12 +20,12 @@ const Projects = ({
   genesIsFetching,
   numUniqueCases,
 }: {
-    projects: Array<Object>,
-    topGenesWithCasesPerProject: { [gene_id: string]: { [project_id: string]: number, symbol: string}},
     numUniqueCases: number,
     FacetService: any,
-    projectsIsFetching: boolean,
     genesIsFetching: boolean,
+    projects: Array<{ primary_site: string, summary: { case_count: number }, project_id: string }>,
+    topGenesWithCasesPerProject: { [gene_id: string]: { [project_id: string]: number, symbol: string}},
+    projectsIsFetching: boolean,
   }) => {
   const stackedBarData = Object.keys(topGenesWithCasesPerProject).map(geneId => ({
     symbol: topGenesWithCasesPerProject[geneId].symbol,
@@ -46,7 +46,8 @@ const Projects = ({
         value: primarySiteCasesCount,
         tooltip: `<b>${p.primary_site}</b><br />${primarySiteCasesCount} case${primarySiteCasesCount > 1 ? 's' : ''}`,
         clickHandler: () => {
-          if (p.primary_site.reduce((acc, s) => acc + FacetService.getActiveIDs('primary_site').indexOf(s), 0) !== 0) {
+          if (p.primary_site.reduce(
+            (acc2, s) => acc2 + FacetService.getActiveIDs('primary_site').indexOf(s), 0) !== 0) {
             p.primary_site.map(s => FacetService.addTerm('primary_site', s));
           } else {
             p.primary_site.map(s => FacetService.removeTerm('primary_site', s));
@@ -106,8 +107,8 @@ const Projects = ({
     ...acc,
     [primarySite]: {
       ...primarySiteProjects[primarySite],
-      projects: primarySiteProjects[primarySite].projects.reduce((acc, project_id, i) => ({
-        ...acc,
+      projects: primarySiteProjects[primarySite].projects.reduce((acc2, project_id, i) => ({
+        ...acc2,
         [project_id]: d3.color(primarySiteProjects[primarySite].color)
           .brighter((1 / primarySiteProjects[primarySite].projects.length) * i),
       }), {}),

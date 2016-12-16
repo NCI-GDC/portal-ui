@@ -5,6 +5,7 @@ import { insertRule } from 'glamor';
 import Column from '../uikit/Flex/Column';
 import Row from '../uikit/Flex/Row';
 import Button from '../uikit/Button';
+import Dropdown from '../uikit/Dropdown';
 import withDropdown from '../uikit/withDropdown';
 import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
 import { visualizingButton } from '../theme/mixins';
@@ -45,10 +46,6 @@ const styles = {
 };
 
 const ProteinLolliplot = ({
-  active,
-  setActive,
-  mouseDownHandler,
-  mouseUpHandler,
   gene,
   $scope,
   reset,
@@ -64,79 +61,52 @@ const ProteinLolliplot = ({
       <span style={{ alignSelf: 'center' }}>
         Transcript:
       </span>
-      <Button
-        style={{
-          ...visualizingButton,
-          fontWeight: $scope.geneTranscript.id === gene.canonical_transcript_id
-            ? 'bold' : 'initial',
-        }}
-        onClick={() => setActive(true)}
-        rightIcon={<i className="fa fa-caret-down" />}
-      >
-        {$scope.geneTranscript.id} ({$scope.geneTranscript.length_amino_acid} aa)
-        {active &&
-          <Column
-            style={{ ...dropdown, width: '22rem' }}
-            onMouseDown={mouseDownHandler}
-            onMouseUp={mouseUpHandler}
+      <Dropdown
+        selected={
+          <span
+            style={{
+              fontWeight: $scope.geneTranscript.id === gene.canonical_transcript_id
+                ? 'bold' : 'initial',
+            }}
           >
-            {$scope.transcripts
-            .filter(t => t.id === gene.canonical_transcript_id)
-            .map(t =>
-              <div
-                key={t.id}
-                className="dropdown-item"
-                style={{
-                  padding: '0.3rem 0.6rem',
-                  cursor: 'pointer',
-                  fontWeight: 'bold',
-                  ...($scope.geneTranscript.id === t.id
-                    ? {
-                      backgroundColor: 'rgb(44, 136, 170)',
-                      color: 'white',
-                    }
-                    : {}),
-                }}
-                onClick={
-                  () => {
-                    $scope.selectTranscript(t.id);
-                    setTimeout(() => setActive(false));
-                  }
-                }
-              >
-                {t.id} ({t.length_amino_acid} aa)
-              </div>
-            )}
-            {$scope.transcripts
-            .filter(t => t.length_amino_acid && t.id !== gene.canonical_transcript_id)
-            .map(t =>
-              <div
-                key={t.id}
-                className="dropdown-item"
-                style={{
-                  padding: '0.3rem 0.6rem',
-                  cursor: 'pointer',
-                  fontWeight: 'normal',
-                  ...($scope.geneTranscript.id === t.id
-                    ? {
-                      backgroundColor: 'rgb(44, 136, 170)',
-                      color: 'white',
-                    }
-                    : {}),
-                }}
-                onClick={
-                  () => {
-                    $scope.selectTranscript(t.id);
-                    setTimeout(() => setActive(false));
-                  }
-                }
-              >
-                {t.id} ({t.length_amino_acid} aa)
-              </div>
-            )}
-          </Column>
+            {$scope.geneTranscript.id} ({$scope.geneTranscript.length_amino_acid} aa)
+          </span>
         }
-      </Button>
+      >
+        {$scope.transcripts
+        .filter(t => t.id === gene.canonical_transcript_id)
+        .map(t =>
+          <Row
+            key={t.id}
+            style={{
+              fontWeight: 'bold',
+              ...($scope.geneTranscript.id === t.id && {
+                backgroundColor: 'rgb(44, 136, 170)',
+                color: 'white',
+              }),
+            }}
+            onClick={() => $scope.selectTranscript(t.id)}
+          >
+            {t.id} ({t.length_amino_acid} aa)
+          </Row>
+        )}
+        {$scope.transcripts
+        .filter(t => t.length_amino_acid && t.id !== gene.canonical_transcript_id)
+        .map(t =>
+          <Row
+            key={t.id}
+            style={{
+              ...($scope.geneTranscript.id === t.id && {
+                backgroundColor: 'rgb(44, 136, 170)',
+                color: 'white',
+              }),
+            }}
+            onClick={() => $scope.selectTranscript(t.id)}
+          >
+            {t.id} ({t.length_amino_acid} aa)
+          </Row>
+        )}
+      </Dropdown>
       <Button
         style={visualizingButton}
         onClick={reset}

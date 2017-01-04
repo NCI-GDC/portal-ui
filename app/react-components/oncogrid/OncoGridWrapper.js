@@ -1,29 +1,29 @@
+/* @flow */
 import React from 'react';
-import { lifecycle, compose, withReducer } from 'recompose';
+import { lifecycle, compose, withState, withProps } from 'recompose';
 import OncoGrid from 'oncogrid';
-import _ from 'lodash';
+import { uniqueId } from 'lodash';
 
 import Button from '../uikit/Button';
 import Row from '../uikit/Flex/Row';
-import { exitFullScreen, enterFullScreen } from '../utils/fullscreen';
+import { exitFullScreen, enterFullScreen, isFullScreen } from '../utils/fullscreen';
 import { StepLegend, SwatchLegend } from '../components/Legends';
 import getQueries from './getQueries';
-import SelectOverlay from './SelectOverlay';
+import SelectOverlay from '../components/SelectOverlay';
 import oncoGridParams from './oncoGridParams';
-import { gridReducer, initialGridState } from './gridReducer';
-import DownloadVisualizationButton from '../components/DownloadVisualizationButton'
+import DownloadVisualizationButton from '../components/DownloadVisualizationButton';
 import ToolTip from '../uikit/Tooltip';
 import { visualizingButton } from '../theme/mixins';
 
-const GRID_ID = 'oncogrid-div';
+const GRID_CLASS = 'oncogrid-wrapper';
 
 const consequenceTypes = {
-  'missense_variant': '#ff9b6c',
-  'frameshift_variant': '#57dba4',
-  'start_lost': '#ff2323',
-  'stop_lost': '#d3ec00',
-  'initiator_codon_variant': '#5abaff',
-  'stop_gained': '#af57db',
+  missense_variant: '#ff9b6c',
+  frameshift_variant: '#57dba4',
+  start_lost: '#ff2323',
+  stop_lost: '#d3ec00',
+  initiator_codon_variant: '#5abaff',
+  stop_gained: '#af57db',
 };
 
 const styles = {
@@ -47,13 +47,6 @@ const styles = {
     backgroundColor: '#e6e6e6',
     borderColor: '#adadad',
   },
-  td: {
-    padding: 6,
-  },
-  cell: {
-    paddingTop: 4,
-    paddingBottom: 4,
-  },
   hidden: {
     width: 0,
     height: 0,
@@ -61,114 +54,103 @@ const styles = {
   },
 };
 
-const clickHandlers = {
-  donorHistogramClick: function (d) {
-    console.log('donorHistogramClick');
-  },
-
-  gridClick: function (o) {
-    console.log('gridClick');
-  },
-
-  geneHistogramClick: function (g) {
-    console.log('geneHistogramClick');
-  },
-
-  geneClick: function (g) {
-    window.location = `/genes/${g.id}`;
-  },
-
-  donorClick: function (d) {
-    window.location = `/cases/${d.id}`;
-  },
-};
-
 const OncoGridWrapper = ({
-  gridState,
-  dispatch,
-  showOverlay = false,
-  trackOptions = [],
+  trackOptions,
   addTracksCallback,
-  grid,
-  gridData,
+  oncoGrid,
+  oncoGridData,
+  oncoGridContainer,
+  setOncoGridContainer,
+  heatMapMode,
+  setHeatMapMode,
+  showGridLines,
+  setShowGridLines,
+  crosshairMode,
+  setCrosshairMode,
+  refreshGridState,
+  setOncoGridWrapper,
+  uniqueGridClass,
+  isLoading,
 }) => (
   <div
-    id="oncogrid-container"
-    style={{ ...styles.container, ...(gridState.isFullScreen && styles.fullscreen) }}
+    style={{ ...styles.container, ...(isFullScreen() && styles.fullscreen) }}
+    ref={setOncoGridContainer}
   >
     <h5 style={{ textAlign: 'center' }}>Top 50 Mutated Genes by High Impact Mutations</h5>
-    {showOverlay &&
+    {trackOptions && trackOptions.length && addTracksCallback &&
       <SelectOverlay
         options={trackOptions}
         callback={addTracksCallback}
       />
     }
-    {grid &&
+    {oncoGridData && !isLoading &&
       <Row style={{ marginLeft: 0, minHeight: '70px' }}>
         <div style={{ flexGrow: 1 }}>
-          {gridState.heatMapMode ? <StepLegend rightLabel="More Mutations" /> : <SwatchLegend colorMap={consequenceTypes} />}
+          {heatMapMode ? <StepLegend rightLabel="More Mutations" /> : <SwatchLegend colorMap={consequenceTypes} />}
         </div>
         <span>
           <DownloadVisualizationButton
-            svg={`#${GRID_ID} svg`}
-            data={gridData}
-            stylePrefix={`#${GRID_ID}`}
+            svg={`.${uniqueGridClass} svg`}
+            data={oncoGridData}
+            stylePrefix={`.${GRID_CLASS}`}
             slug="oncogrid"
-            noText={true}
+            noText
             tooltipHTML="Download OncoGrid data or image"
           />
           <ToolTip innerHTML="Reload grid">
             <Button
               style={styles.button}
-              onClick={() => dispatch({ type: 'reload', grid })}
+              onClick={() => {
+                oncoGrid.reload();
+                refreshGridState();
+              }}
             ><i className="fa fa-undo" /><span style={styles.hidden}>Reload</span></Button>
           </ToolTip>
           <ToolTip innerHTML="Cluster Data">
             <Button
               style={styles.button}
-              onClick={() => grid.cluster()}
+              onClick={() => oncoGrid.cluster()}
             ><i className="fa fa-sort-amount-desc" /><span style={styles.hidden}>Cluster</span></Button>
           </ToolTip>
           <ToolTip innerHTML="Toggle heatmap view">
             <Button
-              style={{ ...styles.button, ...(gridState.heatMapMode && styles.buttonActive) }}
-              onClick={() => dispatch({ type: 'toggleHeatmap', grid })}
+              style={{ ...styles.button, ...(heatMapMode && styles.buttonActive) }}
+              onClick={() => setHeatMapMode(!heatMapMode)}
             ><i className="fa fa-fire" /><span style={styles.hidden}>Heatmap</span></Button>
           </ToolTip>
           <ToolTip innerHTML="Toggle gridlines">
             <Button
-              style={{ ...styles.button, ...(gridState.gridActive && styles.buttonActive) }}
-              onClick={() => dispatch({ type: 'toggleGridLines', grid })}
+              style={{ ...styles.button, ...(showGridLines && styles.buttonActive) }}
+              onClick={() => setShowGridLines(!showGridLines)}
             ><i className="fa fa-th" /><span style={styles.hidden}>Lines</span></Button>
           </ToolTip>
           <ToolTip innerHTML="Toggle crosshairs">
             <Button
-              style={{ ...styles.button, ...(gridState.crosshairMode && styles.buttonActive) }}
-              onClick={() => dispatch({ type: 'toggleCrosshair', grid })}
+              style={{ ...styles.button, ...(crosshairMode && styles.buttonActive) }}
+              onClick={() => setCrosshairMode(!crosshairMode)}
             ><i className="fa fa-crosshairs" /><span style={styles.hidden}>Crosshair</span></Button>
           </ToolTip>
           <ToolTip innerHTML="Fullscreen">
             <Button
               style={{
                 ...styles.button,
-                ...(gridState.isFullScreen && styles.buttonActive),
+                ...(isFullScreen() && styles.buttonActive),
                 marginRight: 0,
               }}
               onClick={() => {
-                if (gridState.isFullScreen) {
+                if (isFullScreen()) {
                   exitFullScreen();
-                  dispatch({ type: 'reload', grid });
+                  oncoGrid.reload();
+                  refreshGridState();
                 } else {
-                  enterFullScreen(document.querySelector('#oncogrid-container'));
-                  grid.resize(screen.width - 400, screen.height - 400, true);
+                  enterFullScreen(oncoGridContainer);
+                  oncoGrid.resize(screen.width - 400, screen.height - 400, true);
                 }
-
-                dispatch({ type: 'updateFullScreen', grid });
               }}
             ><i className="fa fa-arrows-h" /><span style={styles.hidden}>Fullscreen</span></Button>
           </ToolTip>
 
-          {gridState.crosshairMode &&
+          {crosshairMode &&
             <div style={{ fontSize: '1.1rem', verticalAlign: 'top' }}>
               Click and drag to select a region on the OncoGrid to zoom in.
             </div>
@@ -176,7 +158,7 @@ const OncoGridWrapper = ({
         </span>
       </Row>
     }
-    {!grid &&
+    {!oncoGridData && !isLoading &&
       <div style={{ width: '50%' }}>
         No result found.<br />
         Please note that the analysis is filtering on high impact mutations only.<br />
@@ -184,63 +166,96 @@ const OncoGridWrapper = ({
       </div>
     }
 
-    <div id={GRID_ID} style={{ cursor: gridState.crosshairMode ? 'crosshair' : 'pointer' }} />
+    {isLoading && <div style={{ padding: 10, textAlign: 'center' }}>Loading OncoGrid...</div>}
+
+    <div
+      className={`${GRID_CLASS} ${uniqueGridClass}`}
+      ref={setOncoGridWrapper}
+      style={{
+        cursor: crosshairMode ? 'crosshair' : 'pointer',
+        visibility: isLoading ? 'hidden' : 'visible',
+      }}
+    />
   </div>
 );
 
-OncoGridWrapper.propTypes = {
-  gridState: React.PropTypes.object,
-  dispatch: React.PropTypes.func,
-  showOverlay: React.PropTypes.bool,
-  trackOptions: React.PropTypes.array,
-  addTracksCallback: React.PropTypes.func,
-  grid: React.PropTypes.object,
-};
-
 const enhance = compose(
+  withState('oncoGrid', 'setOncoGrid', null),
+  withState('oncoGridData', 'setOncoGridData', {}),
+  withState('oncoGridContainer', 'setOncoGridContainer', null),
+  withState('oncoGridWrapper', 'setOncoGridWrapper', null),
+  withState('trackOptions', 'setTrackOptions', []),
+  withState('addTracksCallback', 'setAddTracksCallback', null),
+  withState('crosshairMode', 'setCrosshairMode', false),
+  withState('showGridLines', 'setShowGridLines', false),
+  withState('heatMapMode', 'setHeatMapMode', false),
+  withState('isLoading', 'setIsLoading', true),
+  withProps({ oncoGridHeight: 150, oncoGridPadding: 306 }),
   lifecycle({
     getInitialState() {
-      return {};
+      return {
+        uniqueGridClass: GRID_CLASS + uniqueId(),
+        refreshGridState: () => {
+          const { oncoGrid, setHeatMapMode, setShowGridLines, setCrosshairMode } = this.props;
+          setHeatMapMode(oncoGrid.heatMapMode);
+          setShowGridLines(oncoGrid.drawGridLines);
+          setCrosshairMode(oncoGrid.crosshairMode);
+        },
+      };
     },
     componentWillReceiveProps(nextProps) {
-      const { grid, gridPadding, gridHeight, gridContainer } = this.state;
+      const {
+        crosshairMode: lastCrosshairMode,
+        showGridLines: lastShowGridLines,
+        heatMapMode: lastHeadMapMode,
+        width: lastWidth,
+      } = this.props;
 
-      if(grid) {
-        grid.resize(gridContainer.offsetWidth - gridPadding, gridHeight);
+      const {
+        oncoGrid,
+        oncoGridPadding,
+        oncoGridHeight,
+        oncoGridContainer,
+        crosshairMode,
+        showGridLines,
+        heatMapMode,
+        width,
+      } = nextProps;
+
+      if (oncoGrid) {
+        if (lastCrosshairMode !== crosshairMode) oncoGrid.toggleCrosshair();
+        if (lastShowGridLines !== showGridLines) oncoGrid.toggleGridLines();
+        if (lastHeadMapMode !== heatMapMode) oncoGrid.toggleHeatmap();
+        if (width !== lastWidth) oncoGrid.resize(oncoGridContainer.offsetWidth - oncoGridPadding, oncoGridHeight);
       }
     },
     componentDidMount() {
       const { projectId, esHost, esIndexVersion } = this.props;
-
       getQueries(projectId, esHost, esIndexVersion)
         .then((responses) => {
-          const container = document.querySelector('#oncogrid-container');
-          const height = 150;
-          const padding = 306;
+          const {
+            setOncoGrid,
+            setOncoGridData,
+            setTrackOptions,
+            setAddTracksCallback,
+            oncoGridPadding,
+            oncoGridHeight,
+            oncoGridContainer,
+            oncoGridWrapper,
+            setIsLoading,
+          } = this.props;
 
           const gridParams = oncoGridParams({
             colorMap: consequenceTypes,
-            clickHandlers,
-            element: `#${GRID_ID}`,
+            element: oncoGridWrapper,
             donorData: responses.cases,
             geneData: responses.genes,
             occurencesData: responses.occurences,
-            width: container.offsetWidth - padding,
-            height: height,
-            addTrackFunc: (tracks, callback) => {
-              this.setState({
-                showOverlay: true,
-                trackOptions: tracks,
-                addTracksCallback: (selectedTracks) => {
-                  if(selectedTracks) {
-                    callback(selectedTracks);
-                  }
-
-                  this.setState({
-                    showOverlay: false,
-                  });
-                },
-              });
+            width: oncoGridContainer.offsetWidth - oncoGridPadding,
+            height: oncoGridHeight,
+            addTrackFunc: (trackOptions, callback) => {
+              setAddTracksCallback(() => (tracks) => tracks && callback(tracks) && setAddTracksCallback(null));
+              setTrackOptions(trackOptions);
             },
             consequenceTypes: Object.keys(consequenceTypes),
           });
@@ -248,23 +263,15 @@ const enhance = compose(
           if (gridParams) {
             const grid = new OncoGrid(gridParams);
             grid.render();
-
-            this.setState({
-              grid,
-              gridData: {
-                cases: gridParams.donors,
-                genes: gridParams.genes,
-                observations: gridParams.observations,
-              },
-              gridHeight: height,
-              gridPadding: padding,
-              gridContainer: container,
-            });
+            setOncoGrid(grid);
+            setOncoGridData(responses);
+            this.state.refreshGridState();
           }
+
+          setIsLoading(false);
         });
     },
-  }),
-  withReducer('gridState', 'dispatch', gridReducer, initialGridState)
+  })
 );
 
 export default (enhance(OncoGridWrapper));

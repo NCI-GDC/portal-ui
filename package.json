@@ -97,7 +97,7 @@
     "prot": "gulp protractor",
     "start": "gulp serve",
     "build": "gulp",
-    "prebuild": "npm install",
+    "prebuild": "npm install --no-optional",
     "ts": "gulp ts:compile",
     "upgrade": "npm-check-updates -u && bower-update && npm test",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",

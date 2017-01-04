@@ -1,3 +1,4 @@
 {
- preset: ["@knit/socks"]
+ "presets": ["@knit/socks-react"],
+ "plugins": ["@knit/babel-plugin-socks-relay"]
 }

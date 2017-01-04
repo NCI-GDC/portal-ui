@@ -5,11 +5,6 @@
   "jest": {
     "preset": "@knit/jest-config-socks"
   },
-  "eslintConfig": {
-    "extends": [
-      "@knit/socks-react"
-    ]
-  },
   "author": {
     "name": "OICR",
     "url": "https://github.com/NCI-GDC/"
@@ -17,20 +12,28 @@
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
     "filesize": "3.3.0",
-    "jsurl": "0.1.4",
-    "react-router": "4.0.0-alpha.5",
-    "react": "^15.4.0",
-    "react-relay": "0.9.3"
+    "jsurl": "^0.1.5",
+    "react": "^15.4.1",
+    "react-relay": "^0.10.0",
+    "react-router": "4.0.0-alpha.5"
   },
   "devDependencies": {
-    "@knit/eslint-config-socks-react": "^0.0.23",
-    "@knit/knit": "^0.0.24",
-    "react-dom": "^15.4.0"
+    "@knit/babel-plugin-socks-relay": "^0.0.43",
+    "@knit/babel-preset-socks-react": "^0.0.46",
+    "@knit/eslint-config-socks-react": "^0.0.43",
+    "@knit/jest-config-socks": "^0.0.43",
+    "@knit/knit": "^0.0.49",
+    "eslint": "^3.12.2",
+    "flow-bin": "^0.37.4",
+    "jest": "^18.1.0",
+    "react-dom": "^15.4.1"
   },
   "scripts": {
     "knit": "knit",
-    "start": "knit dev server",
-    "test": "knit dev test -- --watch"
+    "start": "knit server",
+    "test": "jest",
+    "lint": "eslint --ext .js modules/node_modules || exit 0",
+    "flow": "flow check || exit 0"
   },
   "knit": {
     "needle": {

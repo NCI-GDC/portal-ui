@@ -50,11 +50,16 @@
   dependencies:
     read-pkg-up "2.0.0"
 
-"@oncojs/lolliplot@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@oncojs/lolliplot/-/lolliplot-0.4.1.tgz#2f8dd147e8247eb71eaf347413198490b68c3320"
+"@oncojs/lolliplot@^0.5.5":
+  version "0.5.5"
+  resolved "https://registry.yarnpkg.com/@oncojs/lolliplot/-/lolliplot-0.5.5.tgz#483c81ca9cc31e6f1abcb7d2ab025142a758a490"
   dependencies:
-    lodash "^4.17.2"
+    d3-selection "^1.0.3"
+    lodash.countby "^4.6.0"
+    lodash.range "^3.2.0"
+    lodash.startcase "^4.4.0"
+    redux "^3.6.0"
+    redux-actions "^1.2.0"
 
 "@oncojs/sapien@^0.3.1":
   version "0.3.2"
@@ -3010,7 +3015,7 @@ d3-scale@1.0.4:
     d3-time "1"
     d3-time-format "2"
 
-d3-selection@1, d3-selection@1.0.3:
+d3-selection@1, d3-selection@1.0.3, d3-selection@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/d3-selection/-/d3-selection-1.0.3.tgz#e63e51416172427854c1bcdfa066eb5fe872c108"
 
@@ -5975,7 +5980,7 @@ intersect@~0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/intersect/-/intersect-0.0.3.tgz#c1a4a5e5eac6ede4af7504cc07e0ada7bc9f4920"
 
-invariant@^2.2.0:
+invariant@^2.2.0, invariant@^2.2.1:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
   dependencies:
@@ -7168,6 +7173,10 @@ lodash.cond@^4.3.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/lodash.cond/-/lodash.cond-4.5.2.tgz#f471a1da486be60f6ab955d17115523dd1d255d5"
 
+lodash.countby@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.countby/-/lodash.countby-4.6.0.tgz#5351f24de16724a0059b561f920b0d80af78a33c"
+
 lodash.debounce@^3.0.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-3.1.1.tgz#812211c378a94cc29d5aa4e3346cf0bfce3a7df5"
@@ -7314,9 +7323,17 @@ lodash.pickby@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.pickby/-/lodash.pickby-4.6.0.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
 
+lodash.range@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.range/-/lodash.range-3.2.0.tgz#f461e588f66683f7eadeade513e38a69a565a15d"
+
 lodash.restparam@^3.0.0:
   version "3.6.1"
   resolved "https://registry.yarnpkg.com/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
+
+lodash.startcase@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lodash.startcase/-/lodash.startcase-4.4.0.tgz#9436e34ed26093ed7ffae1936144350915d9add8"
 
 lodash.template@^2.4.1:
   version "2.4.1"
@@ -9397,6 +9414,14 @@ redux-actions@^0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/redux-actions/-/redux-actions-0.12.0.tgz#8a4f0114f1bde2e6b61d5b7205d4818004c67461"
   dependencies:
+    lodash "^4.13.1"
+    reduce-reducers "^0.1.0"
+
+redux-actions@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/redux-actions/-/redux-actions-1.2.0.tgz#4f421f1aa74c827d5e8abce6c009d5872c4af3e6"
+  dependencies:
+    invariant "^2.2.1"
     lodash "^4.13.1"
     reduce-reducers "^0.1.0"
 

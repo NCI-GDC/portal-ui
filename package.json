@@ -105,7 +105,7 @@
     "lint-fix": "eslint --fix app/react-components"
   },
   "dependencies": {
-    "@oncojs/lolliplot": "^0.5.5",
+    "@oncojs/lolliplot": "^0.5.6",
     "@oncojs/sapien": "^0.3.1",
     "@oncojs/survivalplot": "^0.3.2",
     "babel-polyfill": "^6.16.0",

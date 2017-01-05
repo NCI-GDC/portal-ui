@@ -1,17 +1,14 @@
+git:
+  depth: 10
 language: node_js
 node_js:
-- node
-sudo: required
-dist: trusty
-services:
-- docker
-before_script:
-- make travis-before-script
+  - "6"
+cache: yarn
 script:
-- make travis-script
-after_success:
-- make travis-after-success
-- make travis-docker-upload
+- yarn knit -- validate --verbose
+- yarn lint
+- yarn flow
+- yarn test -- --no-cache
 notifications:
   slack:
     secure: Njn9VjYMUJcb8jfvusetb13uC0rcQ1NN6KumKxc6/jBCRoQ7uhQbqhcemZDK/7s/jRUGYTkb72u5QJxgVHcYDMchO9aOCVI3xs8veQ6j6shOCJbSIHGby1nkuwDPNzyyYh5mjJVDiWbiIBOzOaMko0QT//Ce1IitBBkyTEtQPcg=

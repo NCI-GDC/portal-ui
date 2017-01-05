@@ -1,9 +1,9 @@
 // Vendor
 import React from 'react';
-import _ from 'lodash';
 import Lolliplot from '@oncojs/lolliplot';
 import { withState, withProps, lifecycle, compose } from 'recompose';
 import $ from 'jquery';
+import * as d3 from 'd3';
 
 // Custom
 import Column from './uikit/Flex/Column';
@@ -13,14 +13,11 @@ import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import ProteinLolliplotComponent from './components/ProteinLolliplot';
 import { ExternalLink } from './uikit/Links';
 import externalReferenceLinks from './utils/externalReferenceLinks';
-import BarChart from './charts/BarChart';
-import theme from './theme';
 import MinusIcon from './theme/icons/Minus';
 import PlusIcon from './theme/icons/Plus';
 import TableIcon from './theme/icons/Table';
 import BookIcon from './theme/icons/Book';
 import ChartIcon from './theme/icons/BarChart';
-import DownloadVisualizationButton from './components/DownloadVisualizationButton';
 import CancerDistribution from './components/CancerDistribution';
 
 const Mutation = (() => {
@@ -67,6 +64,7 @@ const Mutation = (() => {
       renderProteinLolliplot: props => {
         props.setState({
           ProteinLolliplot: Lolliplot({
+            d3,
             data: props.$scope.proteinLolliplotData,
             selector: '#protein-viewer-root',
             onMutationClick: d => { window.location.href = `/mutations/${d.id}`; },
@@ -156,8 +154,8 @@ const Mutation = (() => {
       return acc;
     }, {});
 
-    const annotatedConsequence = _.find(mutation.consequence, c =>
-      Object.keys(c.transcript.annotation).length > 0
+    const annotatedConsequence = mutation.consequence.find(c =>
+      Object.keys(((c.transcript || {}).annotation || {})).length
     );
 
     const functionalImpact = (annotatedConsequence || { transcript: { annotation: { impact: '' } } })

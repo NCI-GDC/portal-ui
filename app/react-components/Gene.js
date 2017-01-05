@@ -3,9 +3,10 @@
 // Vendor
 import React, { Component } from 'react';
 import _ from 'lodash';
+import Lolliplot from '@oncojs/lolliplot';
+import * as d3 from 'd3';
 
 // Custom
-import Lolliplot from '@oncojs/lolliplot';
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
 import withDropdown from './uikit/withDropdown';
@@ -95,6 +96,7 @@ const Gene = (() => {
     renderProteinLolliplot() {
       this.setState({
         ProteinLolliplot: Lolliplot({
+          d3,
           data: this.props.$scope.proteinLolliplotData,
           selector: '#protein-viewer-root',
           onMutationClick: d => { window.location.href = `/mutations/${d.id}`; },

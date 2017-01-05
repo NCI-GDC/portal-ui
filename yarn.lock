@@ -50,9 +50,9 @@
   dependencies:
     read-pkg-up "2.0.0"
 
-"@oncojs/lolliplot@^0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@oncojs/lolliplot/-/lolliplot-0.5.5.tgz#483c81ca9cc31e6f1abcb7d2ab025142a758a490"
+"@oncojs/lolliplot@^0.5.6":
+  version "0.5.6"
+  resolved "https://registry.yarnpkg.com/@oncojs/lolliplot/-/lolliplot-0.5.6.tgz#9da6c5c8c602124d7dead423e21ba2ed43b7a37b"
   dependencies:
     d3-selection "^1.0.3"
     lodash.countby "^4.6.0"

@@ -1,8 +1,6 @@
 import { css } from 'glamor';
 import theme from './index';
 
-import theme from './index';
-
 export const center = {
   display: 'flex',
   alignItems: 'center',

@@ -178,24 +178,24 @@ module ngApp.participants.controllers {
       let numCasesAggByProject = this.numCasesAggByProject.reduce((acc, b) => Object.assign(acc, {[b.key]: b.doc_count}), {});
       let totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
 
-      if (el) {
-        ReactDOM.render(
-          React.createElement(ReactComponents.SideNavLayout, {
-            links: [
-              { icon: 'table', id: 'summary', title: 'Summary' },
-              { icon: 'calendar-plus-o', id: 'clinical', title: 'Clinical' },
-              { icon: 'flask', id: 'biospecimen', title: 'Biospecimen' },
-              { icon: 'bar-chart-o', id: 'frequent-mutations', title: 'Frequent Mutations' },
-            ],
-            title: this.participant.case_id,
-            entityType: 'CA',
-          },
-          React.createElement(ReactComponents.Case, {
-            $scope: this,
-          })),
-          el
-        );
-      }
+      ReactDOM.render(
+        React.createElement(ReactComponents.SideNavLayout, {
+          links: [
+            { icon: 'table', id: 'summary', title: 'Summary' },
+            { icon: 'calendar-plus-o', id: 'clinical', title: 'Clinical' },
+            { icon: 'flask', id: 'biospecimen', title: 'Biospecimen' },
+            { icon: 'bar-chart-o', id: 'frequent-mutations', title: 'Frequent Mutations' },
+          ],
+          title: this.participant.case_id,
+          entityType: 'CA',
+        },
+        React.createElement(ReactComponents.Case, {
+          $scope: this,
+          numCasesAggByProject,
+          totalNumCases,
+        })),
+        document.getElementById('react-root');
+      );
     }
 
   }

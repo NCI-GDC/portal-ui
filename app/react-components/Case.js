@@ -8,24 +8,39 @@ import SummaryCard from './components/SummaryCard';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
 import ClinicalCard from './components/ClinicalCard';
 import BiospecimenCard from './components/BiospecimenCard';
+import FrequentMutationsContainer from './components/FrequentMutationsContainer';
 import theme from './theme';
 
-let styles = {
+const styles = {
   icon: {
     width: '4rem',
     height: '4rem',
     color: '#888',
   },
+  card: {
+    backgroundColor: 'white',
+  },
+  heading: {
+    flexGrow: 1,
+    fontSize: '2rem',
+    marginBottom: 7,
+    marginTop: 7,
+  },
 };
 
-let Case = ({ $scope }) => {
-  let {
+const Case = ({
+  $scope,
+  numCasesAggByProject,
+  totalNumCases,
+}) => {
+  const {
     participant: p,
     annotationIds,
     experimentalStrategies,
     expStratConfig,
     dataCategories,
     dataCategoriesConfig,
+    config: { api },
   } = $scope;
 
   return (
@@ -119,13 +134,29 @@ let Case = ({ $scope }) => {
         </span>
       </Row>
 
-      <Row style={{ flexWrap: 'wrap' }} spacing={theme.spacing}>
+      <Row id="clinical" style={{ flexWrap: 'wrap' }} spacing={theme.spacing}>
         <ClinicalCard p={p} />
       </Row>
 
-      <Row style={{ flexWrap: 'wrap' }} spacing={theme.spacing}>
+      <Row id="biospecimen" style={{ flexWrap: 'wrap' }} spacing={theme.spacing}>
         <BiospecimenCard p={p} />
       </Row>
+
+      <Column style={{ ...styles.card, marginTop: '2rem' }}>
+        <h1 style={{ ...styles.heading, padding: '1rem' }} id="frequent-mutations">
+          <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
+          Most Frequent Mutations
+        </h1>
+
+        <FrequentMutationsContainer
+          numCasesAggByProject={numCasesAggByProject}
+          totalNumCases={totalNumCases}
+          projectId={p.project.project_id}
+          api={api}
+          showSurvivalPlot={false}
+        />
+
+      </Column>
     </Column>
   );
 };

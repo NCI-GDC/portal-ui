@@ -21,9 +21,6 @@ import ChartIcon from './theme/icons/BarChart';
 import CancerDistribution from './components/CancerDistribution';
 
 const Mutation = (() => {
-  const globalTooltip = $('.global-tooltip');
-  let selectedMutation;
-
   const styles = {
     container: {
       width: '80%',
@@ -62,57 +59,37 @@ const Mutation = (() => {
     withState('ProteinLolliplot', 'setState', {}),
     withProps({
       renderProteinLolliplot: props => {
-        props.setState({
-          ProteinLolliplot: Lolliplot({
-            d3,
-            data: props.$scope.proteinLolliplotData,
-            selector: '#protein-viewer-root',
-            onMutationClick: d => { window.location.href = `/mutations/${d.id}`; },
-            onMutationMouseover: d => {
-              if (d.id !== props.mutation.ssm_id) window.otherTooltip = true;
-              globalTooltip
-                .addClass('active')
-                .html(`
-                  <div>DNA Change: ${d.genomic_dna_change}</div>
-                  <div># of Cases: ${d.donors}</div>
-                  <div>Functional Impact: ${d.impact}</div>
-                `);
-            },
-            onMutationMouseout: () => {
-              window.otherTooltip = false;
-              globalTooltip
-                .addClass('active')
-                .html(`
-                  <div>DNA Change: ${props.selectedMutation.genomic_dna_change}</div>
-                  <div># of Cases: ${props.selectedMutation.donors}</div>
-                  <div>Functional Impact: ${props.selectedMutation.impact}</div>
-                `);
-            },
-            onProteinMouseover: d => {
-              window.otherTooltip = true;
-              $('.global-tooltip')
-                .addClass('active')
-                .html(`
-                  <div>${d.id}</div>
-                  <div>${d.description}</div>
-                  <div><b>Click to zoom</b></div>
-                `);
-            },
-            onProteinMouseout: () => {
-              window.otherTooltip = false;
-              globalTooltip
-                .addClass('active')
-                .html(`
-                  <div>DNA Change: ${selectedMutation.genomic_dna_change}</div>
-                  <div># of Cases: ${selectedMutation.donors}</div>
-                  <div>Functional Impact: ${selectedMutation.impact}</div>
-                `);
-            },
-            height: 450,
-            domainWidth: props.$scope.geneTranscript.length_amino_acid,
-            mutationId: props.mutation.ssm_id,
-          }),
-        });
+        props.setState(() => Lolliplot({
+          d3,
+          data: props.$scope.proteinLolliplotData,
+          selector: '#protein-viewer-root',
+          onMutationClick: d => { window.location.href = `/mutations/${d.id}`; },
+          onMutationMouseover: d => {
+            if (d.id !== props.mutation.ssm_id) window.otherTooltip = true;
+            $('.global-tooltip')
+              .addClass('active')
+              .html(`
+                <div>DNA Change: ${d.genomic_dna_change}</div>
+                <div># of Cases: ${d.donors}</div>
+                <div>Functional Impact: ${d.impact}</div>
+              `);
+          },
+          onMutationMouseout: () => $('.global-tooltip').removeClass('active'),
+          onProteinMouseover: d => {
+            window.otherTooltip = true;
+            $('.global-tooltip')
+              .addClass('active')
+              .html(`
+                <div>${d.id}</div>
+                <div>${d.description}</div>
+                <div><b>Click to zoom</b></div>
+              `);
+          },
+          onProteinMouseout: () => $('.global-tooltip').removeClass('active'),
+          height: 450,
+          domainWidth: props.$scope.geneTranscript.length_amino_acid,
+          mutationId: props.mutation.ssm_id,
+        }));
       },
     }),
     lifecycle({
@@ -121,17 +98,6 @@ const Mutation = (() => {
 
         setTimeout(() => {
           window.selectedMutation = document.querySelector('.selected-mutation');
-
-          selectedMutation = this.props.$scope.proteinLolliplotData.mutations
-            .find(x => x.id === this.props.mutation.ssm_id);
-
-          globalTooltip
-            .addClass('active')
-            .html(`
-              <div>DNA Change: ${selectedMutation.genomic_dna_change}</div>
-              <div># of Cases: ${selectedMutation.donors}</div>
-              <div>Functional Impact: ${selectedMutation.impact}</div>
-            `);
         }, 100);
       },
 

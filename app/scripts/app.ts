@@ -129,23 +129,8 @@ function appRun(
   // Make global tooltip always follow mouse
   let globalTooltipWrapper = document.querySelector('.global-tooltip-wrapper');
 
-  if (window.location.pathname.includes('mutations')) {
-    let intervalId = setInterval(() => {
-      if (window.selectedMutation && !window.otherTooltip) {
-        let pos = $(window.selectedMutation).position();
-        globalTooltipWrapper.style.transform = `translate(${pos.left + 4}px, ${pos.top}px)`
-        clearInterval(intervalId);
-      }
-    }, 50)
-  }
-
   window.addEventListener('mousemove', _.throttle(event => {
-    if (window.selectedMutation && !window.otherTooltip) {
-      let pos = $(window.selectedMutation).position();
-      globalTooltipWrapper.style.transform = `translate(${pos.left + 4}px, ${pos.top}px)`
-    } else {
-      globalTooltipWrapper.style.transform = `translate(${event.pageX}px, ${ event.pageY}px)`
-    }
+    globalTooltipWrapper.style.transform = `translate(${event.pageX}px, ${event.pageY}px)`;
   }, 20));
 
   if (navigator.cookieEnabled && $cookies.get("GDC-Portal-Sha") !== config.commitHash) {

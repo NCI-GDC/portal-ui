@@ -47,33 +47,20 @@ module ngApp.projects {
         ): ng.IPromise<IProject> => {
           return $http({
             method: 'POST',
-            url: `${config.es_host}/${config.es_index_version}-gene-centric/gene-centric/_search`,
+            url: `${config.api}/analysis/top_mutated_genes_by_project`,
             headers: {'Content-Type' : 'application/json'},
             data: {
-              "query": {
-                "nested": {
-                  "path": "case",
-                  "score_mode": "sum",
-                  "query": {
-                    "function_score": {
-                      "query": {
-                        "terms": {
-                          "case.project.project_id": [
-                            $stateParams["projectId"]
-                          ]
-                        }
-                      },
-                      "boost_mode": "replace",
-                      "script_score": {
-                        "script": "doc['case.project.project_id'].empty ? 0 : 1"
-                      }
-                    }
-                  }
-                }
-              }
+              project_id: $stateParams["projectId"],
+              fields: [
+                'gene_id',
+                'symbol',
+                'cytoband',
+                'case.project.project_id',
+                'case.ssm.ssm_id',
+              ].join(),
             }
-          }).then(data => {
-            return data.data.hits.hits;
+          }).then(({data}) => {
+            return data.data.hits;
           });
         },
         numCasesAggByProject: (
@@ -82,49 +69,9 @@ module ngApp.projects {
           config: IGDCConfig
         ): ng.IPromise => {
           return $http({
-            method: 'POST',
-            url: `${config.es_host}/${config.es_index_version}-case-centric/case-centric/_search`,
+            method: 'GET',
+            url: `${config.api}/analysis/mutated_cases_count_by_project`,
             headers: {'Content-Type' : 'application/json'},
-            data: {
-              "size": 0,
-              "aggs": {
-                "projects": {
-                  "terms": {
-                    "field": "project.project_id.raw",
-                    "size": 20000
-                  },
-                  "aggs": {
-                    "case_summary": {
-                      "nested": {
-                        "path": "summary.data_categories"
-                      },
-                      "aggs": {
-                        "case_with_ssm": {
-                          "filter": {
-                            "bool": {
-                              "must": [
-                                {
-                                  "term": {
-                                    "summary.data_categories.data_category": "Simple Nucleotide Variation"
-                                  }
-                                },
-                                {
-                                  "range": {
-                                    "summary.data_categories.file_count": {
-                                      "gt": 0
-                                    }
-                                  }
-                                }
-                              ]
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
           }).then(data => {
             return data.data.aggregations.projects.buckets.reduce((acc, b) => {
               acc[b.key] = b.case_summary.case_with_ssm.doc_count;
@@ -139,34 +86,22 @@ module ngApp.projects {
         ): ng.IPromise => {
           return $http({
             method: 'POST',
-            url: `${config.es_host}/${config.es_index_version}-case-centric/case-centric/_search`,
+            url: `${config.api}/analysis/top_mutated_cases_by_project`,
             headers: {'Content-Type' : 'application/json'},
             data: {
-              "post_filter": {
-                "terms": {
-                  "project.project_id.raw": [$stateParams["projectId"]]
-                }
-              },
-              "query": {
-                "nested": {
-                  "path": "gene",
-                  "score_mode": "sum",
-                  "query": {
-                    "function_score": {
-                      "query": {
-                        "match_all": {}
-                      },
-                      "boost_mode": "replace",
-                      "script_score": {
-                        "script": "doc['gene.ssm.ssm_id'].empty ? 0 : 1"
-                      }
-                    }
-                  }
-                }
-              }
+              project_id: $stateParams["projectId"],
+              fields: [
+                'case_id',
+                'gene.ssm.ssm_id',
+                'summary.data_categories.data_category',
+                'summary.data_categories.file_count',
+                'project.primary_site',
+                'demographic.gender',
+                'diagnoses.days_to_last_follow_up',
+              ].join()
             }
-          }).then(data => {
-            return data.data.hits.hits;
+          }).then(({data}) => {
+            return data.data.hits;
           });
         },
         survivalData: (

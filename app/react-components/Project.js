@@ -76,7 +76,6 @@ const Project = ({
   $scope,
   authApi,
   api,
-  esHost,
   esIndexVersion,
   mutatedGenesProject,
   numCasesAggByProject,
@@ -452,7 +451,7 @@ const Project = ({
           <i className="fa fa-th" style={{ paddingRight: '10px' }} />
           OncoGrid
         </h1>
-        <OncoGridWrapper width={width} projectId={projectId} esHost={esHost} esIndexVersion={esIndexVersion} />
+        <OncoGridWrapper width={width} projectId={projectId} api={api} />
       </Column>
 
       <Column style={{ ...styles.card, marginTop: '2rem' }}>
@@ -462,7 +461,6 @@ const Project = ({
         </h1>
 
         <FrequentMutationsContainer
-          $scope={$scope}
           numCasesAggByProject={numCasesAggByProject}
           totalNumCases={totalNumCases}
           projectId={projectId}

@@ -14,41 +14,30 @@ export default
 compose(
   withState('fm', 'setState', {}),
   withProps({
-    fetchData: async props => {
-      const url =
-        `${props.$scope.config.es_host}/${props.$scope.config.es_index_version}-ssm-centric/ssm-centric/_search`;
-
+    fetchData: async ({ api, projectId, offset = 0, setState }) => {
+      const url = `${api}/analysis/frequent_mutations_by_project`;
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: props.offset || 0,
-          query: {
-            nested: {
-              path: 'occurrence',
-              score_mode: 'sum',
-              query: {
-                function_score: {
-                  query: {
-                    terms: {
-                      'occurrence.case.project.project_id': [
-                        props.projectId,
-                      ],
-                    },
-                  },
-                  boost_mode: 'replace',
-                  script_score: {
-                    script: "doc['occurrence.case.project.project_id'].empty ? 0 : 1",
-                  },
-                },
-              },
-            },
-          },
+          project_id: projectId,
+          offset,
+          fields: [
+            'genomic_dna_change',
+            'mutation_subtype',
+            'ssm_id',
+            'consequence.transcript.is_canonical',
+            'impact',
+            'consequence.transcript.consequence_type',
+            'consequence.transcript.gene.gene_id',
+            'consequence.transcript.gene_symbol',
+            'consequence.transcript.aa_change',
+            'occurrence.case.project.project_id',
+          ].join(),
         }),
       });
-
-      const { hits } = await res.json();
-      props.setState(() => hits);
+      const { data } = await res.json();
+      setState(() => data);
     },
   }),
   lifecycle({
@@ -59,43 +48,48 @@ compose(
 )(props => {
   if (!props.fm.hits) return null;
 
-  const frequentMutations = props.fm.hits.map(g => Object.assign({}, g._source, { score: g._score })).map(x => {
-    const consequence = x.consequence.find(c => c.transcript.is_canonical);
+  const frequentMutations = props.fm.hits
+    .map((hit) => {
+      const { transcript } = hit.consequence.find(c => c.transcript.is_canonical);
+      const { annotation = {}, consequence_type, gene, gene_symbol, aa_change } = transcript;
+      const impact = annotation.impact;
 
-    return {
-      ...x,
-      num_affected_cases_project: x.occurrence.filter(o =>
-        o.case.project.project_id === props.projectId
-      ).length,
-      num_affected_cases_by_project: x.occurrence.reduce((acc, o) => ({
-        ...acc,
-        [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1,
-      }), {}),
-      num_affected_cases_all: x.occurrence.length,
-      impact: consequence.transcript.annotation.impact,
-      consequence_type: (
-        <span>
-          <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
-          <span style={{ marginLeft: '5px' }}>
-            <a href={`/genes/${consequence.transcript.gene.gene_id}`}>
-              {consequence.transcript.gene_symbol}
-            </a>
+      return {
+        ...hit,
+        score: hit._score,
+        num_affected_cases_all: hit.occurrence.length,
+        num_affected_cases_project: hit.occurrence.filter(o =>
+          o.case.project.project_id === props.projectId
+        ).length,
+        num_affected_cases_by_project: hit.occurrence.reduce((acc, o) => ({
+          ...acc,
+          [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1,
+        }), {}),
+        impact,
+        consequence_type: (
+          <span>
+            <b>{_.startCase(consequence_type.replace('variant', ''))}</b>
+            <span style={{ marginLeft: '5px' }}>
+              <a href={`/genes/${gene.gene_id}`}>
+                {gene_symbol}
+              </a>
+            </span>
+            <span
+              style={{
+                marginLeft: '5px',
+                color: impactColors[impact] || 'inherit',
+              }}
+            >
+              {_.truncate(aa_change)}
+            </span>
           </span>
-          <span
-            style={{
-              marginLeft: '5px',
-              color: impactColors[consequence.transcript.annotation.impact] || 'inherit',
-            }}
-          >
-            {_.truncate(consequence.transcript.aa_change)}
-          </span>
-        </span>
-      ),
-    };
-  });
+        ),
+      };
+    });
+
   return (
     <PaginationContainer
-      total={props.fm.total}
+      total={props.fm.pagination.total}
       onChange={pageInfo => props.fetchData({ ...props, ...pageInfo })}
       entityType="Mutations"
     >

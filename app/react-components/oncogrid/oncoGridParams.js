@@ -91,7 +91,7 @@ export default function ({
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
   occurencesData: Array<TOccurenceInput>,
-  colorMap: Array<string>,
+  colorMap: {[key: string]: string},
   element: string,
   height: number,
   width: number,

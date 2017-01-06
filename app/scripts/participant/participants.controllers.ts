@@ -183,7 +183,7 @@ module ngApp.participants.controllers {
       if (el) {
         ReactDOM.render(
           React.createElement(ReactComponents.FrequentMutationsContainer, {
-            $scope: this,
+            api: this.config.api,
             numCasesAggByProject,
             totalNumCases,
             projectId: this.participant.project.project_id,

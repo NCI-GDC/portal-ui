@@ -10,9 +10,17 @@ const impactColors = {
   LOW: 'rgb(49, 161, 60)',
 };
 
+const initialState = {
+  data: {
+    hits: [],
+    pagination: { total: 0 },
+  },
+  loading: true,
+};
+
 export default
 compose(
-  withState('state', 'setState', { data: {}, loading: true }),
+  withState('state', 'setState', initialState),
   withProps({
     fetchData: async ({ api, projectId, offset = 0, setState }) => {
       setState(s => ({ ...s, loading: true }));
@@ -38,7 +46,7 @@ compose(
         }),
       });
       const { data } = await res.json();
-      setState(s => ({ data, loading: false }));
+      setState(() => ({ data, loading: false }));
     },
   }),
   lifecycle({
@@ -47,8 +55,6 @@ compose(
     },
   })
 )(({ state, ...props }) => {
-  // if (!state.data.hits) return null;
-
   const frequentMutations = state.data.hits
     .map((hit) => {
       const { transcript } = hit.consequence.find(c => c.transcript.is_canonical);

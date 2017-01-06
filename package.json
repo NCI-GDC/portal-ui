@@ -11,11 +11,15 @@
   },
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
+    "babel-polyfill": "^6.20.0",
     "filesize": "3.3.0",
+    "glamor": "^2.20.20",
     "jsurl": "^0.1.5",
     "react": "^15.4.1",
+    "react-icons": "^2.2.3",
     "react-relay": "^0.10.0",
-    "react-router": "4.0.0-alpha.5"
+    "react-router": "4.0.0-alpha.5",
+    "recompose": "^0.21.2"
   },
   "devDependencies": {
     "@knit/babel-plugin-socks-relay": "^0.0.43",

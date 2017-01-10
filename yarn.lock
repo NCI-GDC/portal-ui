@@ -208,6 +208,10 @@
     redux "^3.6.0"
     redux-actions "^1.2.0"
 
+"@oncojs/sapien@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@oncojs/sapien/-/sapien-0.3.2.tgz#8da501ba19d660ee90214bc3a6cea437026f1803"
+
 "@oncojs/survivalplot@^0.3.6":
   version "0.3.6"
   resolved "https://registry.yarnpkg.com/@oncojs/survivalplot/-/survivalplot-0.3.6.tgz#77dd12174faead1d228bedd82894c843d8c9d7e5"

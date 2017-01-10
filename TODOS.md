@@ -1,5 +1,7 @@
 ## TODOS / MISSING FEATURES
 
+#### LOGIN STUFF
+
 #### HOME PAGE
 * relay container(s)
 
@@ -8,6 +10,7 @@
 
 #### REPOSITORY (cases + files)
 * custom facets
+* summary section
 
 #### ENTITY PAGES
 * relay container(s)
@@ -17,3 +20,5 @@
 * cart buttons on various pages
 
 #### SMART SEARCH
+
+#### QUICK SEARCH

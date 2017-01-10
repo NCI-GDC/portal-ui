@@ -118,14 +118,17 @@ module ngApp.mutations.controllers {
             return mutation.consequence.find(c => c.transcript.transcript_id === tid)
           })
           .map(mutation => {
-            let consequence = mutation.consequence.find(c => c.transcript.transcript_id === tid)
+            const consequence = mutation.consequence.find(c => c.transcript.transcript_id === tid)
+            const transcript = consequence.transcript || {};
+            const annotation = transcript.annotation || {};
+
             return {
               id: mutation.ssm_id,
               donors: mutation._score,
-              x: consequence.transcript.aa_start,
+              x: transcript.aa_start,
               genomic_dna_change: mutation.genomic_dna_change,
-              consequence: consequence.transcript.consequence_type,
-              impact: consequence.transcript.annotation.impact || 'UNKNOWN',
+              consequence: transcript.consequence_type,
+              impact: annotation.impact || 'UNKNOWN',
             }
           })
           .filter(mutation => mutation.x),

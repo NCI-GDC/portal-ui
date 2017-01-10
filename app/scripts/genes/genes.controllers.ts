@@ -90,6 +90,7 @@ module ngApp.genes.controllers {
                   'ssm_id',
                   'genomic_dna_change',
                   'consequence.transcript.transcript_id',
+                  'consequence.transcript.aa_change',
                   'consequence.transcript.aa_start',
                   'consequence.transcript.consequence_type',
                   'consequence.transcript.annotation.impact',
@@ -125,6 +126,7 @@ module ngApp.genes.controllers {
               x: consequence.transcript.aa_start,
               consequence: consequence.transcript.consequence_type,
               impact: (consequence.transcript.annotation || {}).impact || 'UNKNOWN',
+              aa_change: consequence.transcript.aa_change,
             }
           })
           .filter(mutation => mutation.x),

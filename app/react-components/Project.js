@@ -4,7 +4,7 @@
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import _ from 'lodash';
-import { scaleOrdinal, schemeCategory10 } from 'd3';
+import { scaleOrdinal, schemeCategory10, schemeCategory20 } from 'd3';
 
 // Custom
 import Column from './uikit/Flex/Column';
@@ -32,6 +32,7 @@ import Tooltip from './uikit/Tooltip';
 import getSurvivalCurves from './utils/getSurvivalCurves';
 
 const colors = scaleOrdinal(schemeCategory10);
+const colors20 = scaleOrdinal(schemeCategory20);
 
 const SPACING = '2rem';
 
@@ -70,13 +71,18 @@ const styles = {
   card: {
     backgroundColor: 'white',
   },
+  coloredSquare: {
+    display: 'inline-block',
+    width: 10,
+    height: 10,
+    marginRight: 5,
+  },
 };
 
 const Project = ({
   $scope,
   authApi,
   api,
-  esIndexVersion,
   mutatedGenesProject,
   numCasesAggByProject,
   mostAffectedCases,
@@ -240,19 +246,24 @@ const Project = ({
             tableTitle="Cases and File Counts by Experimental Strategy"
             pieChartTitle="File Counts by Experimental Strategy"
             data={
-              experimentalStrategies.map((item) => {
+              experimentalStrategies.map((item, i) => {
                 const { filters, displayKey } = expStratConfig;
                 const builtFilters = filters.default.params.filters(item[displayKey]);
-
                 return {
-                  ...item,
+                  experimental_strategy: (
+                    <span>
+                      <div style={{ ...styles.coloredSquare, backgroundColor: colors20(i) }} />
+                      {item.experimental_strategy}
+                    </span>
+                  ),
                   case_count: <a href={`/search/c?filters=${builtFilters}`} >{item.case_count.toLocaleString()}</a>,
                   file_count: <a href={`/search/f?filters=${builtFilters}`} >{item.file_count.toLocaleString()}</a>,
+                  file_count_value: item.file_count,
                 };
               })
             }
             footer={`${experimentalStrategies.length} Experimental Strategies`}
-            path="file_count"
+            path="file_count_value"
             headings={[
               { key: 'experimental_strategy', title: 'Experimental Strategy', color: true },
               {
@@ -273,19 +284,25 @@ const Project = ({
             tableTitle="Cases and File Counts by Data Category"
             pieChartTitle="File Counts by Experimental Strategy"
             data={
-              dataCategories.map((item) => {
+              dataCategories.map((item, i) => {
                 const { filters, displayKey } = dataCategoriesConfig;
                 const builtFilters = filters.default.params.filters(item[displayKey]);
 
                 return {
-                  ...item,
+                  data_category: (
+                    <span>
+                      <div style={{ ...styles.coloredSquare, backgroundColor: colors20(i) }} />
+                      {item.data_category}
+                    </span>
+                  ),
                   case_count: <a href={`/search/c?filters=${builtFilters}`}>{item.case_count.toLocaleString()}</a>,
                   file_count: <a href={`/search/f?filters=${builtFilters}`}>{item.file_count.toLocaleString()}</a>,
+                  file_count_value: item.file_count,
                 };
               })
             }
             footer={`${dataCategories.length} Experimental Strategies`}
-            path="file_count"
+            path="file_count_value"
             headings={[
               { key: 'data_category', title: 'Data Category', color: true },
               {

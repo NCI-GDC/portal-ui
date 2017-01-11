@@ -139,7 +139,7 @@ const FrequentlyMutatedGenes = ({
                 />
               ),
               survival_plot: (
-                <Tooltip innerHTML={`Add ${g.symbol} to surival plot`}>
+                <Tooltip innerHTML={`Click icon to plot ${g.symbol}`}>
                   <button
                     onClick={() => {
                       if (g.symbol !== selectedSurvivalData.id) {

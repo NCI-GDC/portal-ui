@@ -4,34 +4,25 @@
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import _ from 'lodash';
-import { scaleOrdinal, schemeCategory10, schemeCategory20 } from 'd3';
+import { scaleOrdinal, schemeCategory20 } from 'd3';
 
 // Custom
 import Column from './uikit/Flex/Column';
 import Row from './uikit/Flex/Row';
 import EntityPageVerticalTable from './components/EntityPageVerticalTable';
-import EntityPageHorizontalTable from './components/EntityPageHorizontalTable';
 import CountCard from './components/CountCard';
 import DownloadButton from './components/DownloadButton';
 import FrequentMutationsContainer from './components/FrequentMutationsContainer';
+import FrequentlyMutatedGenesContainer from './components/FrequentlyMutatedGenesContainer';
 import MostAffectedCases from './components/MostAffectedCases';
 import makeFilter from './utils/makeFilter';
 import SummaryCard from './components/SummaryCard';
-import BarChart from './charts/BarChart';
-import theme from './theme';
-import { graphTitle } from './theme/mixins';
 import OncoGridWrapper from './oncogrid/OncoGridWrapper';
-import SurvivalPlotWrapper from './components/SurvivalPlotWrapper';
-import TogglableUl from './uikit/TogglableUl';
 import FileIcon from './theme/icons/File';
 import CaseIcon from './theme/icons/Case';
 import EditIcon from './theme/icons/Edit';
-import SurvivalIcon from './theme/icons/SurvivalIcon';
-import DownloadVisualizationButton from './components/DownloadVisualizationButton';
 import Tooltip from './uikit/Tooltip';
-import getSurvivalCurves from './utils/getSurvivalCurves';
 
-const colors = scaleOrdinal(schemeCategory10);
 const colors20 = scaleOrdinal(schemeCategory20);
 
 const SPACING = '2rem';
@@ -83,7 +74,6 @@ const Project = ({
   $scope,
   authApi,
   api,
-  mutatedGenesProject,
   numCasesAggByProject,
   mostAffectedCases,
   defaultSurvivalRawData,
@@ -113,19 +103,6 @@ const Project = ({
     legend: selectedSurvivalData.legend || defaultSurvivalLegend,
     rawData: selectedSurvivalData.rawData || defaultSurvivalRawData,
   };
-
-  const mutatedGenesChartData = mutatedGenesProject.map(g => ({
-    gene_id: g.gene_id,
-    symbol: g.symbol,
-    cytoband: g.cytoband,
-    num_affected_cases_project: g.case.filter(c => c.project.project_id === $scope.project.project_id).length,
-    num_affected_cases_all: g.case.length,
-    num_affected_cases_by_project: g.case.reduce((acc, c) => ({
-      ...acc,
-      [c.project.project_id]: acc[c.project.project_id] ? acc[c.project.project_id] + 1 : 1,
-    }), {}),
-    num_mutations: g.case.reduce((acc, c) => acc + c.ssm.length, 0),
-  }));
 
   const totalNumCases = Object.keys(numCasesAggByProject).reduce((sum, b) => sum + numCasesAggByProject[b], 0);
 
@@ -325,142 +302,17 @@ const Project = ({
           <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
           Most Frequently Mutated Genes
         </h1>
-        <Row style={{ paddingBottom: '2.5rem' }}>
-          <span>
-            <div style={{ textAlign: 'right', marginRight: 50, marginLeft: 30 }}>
-              <DownloadVisualizationButton
-                disabled={!mutatedGenesChartData.length}
-                svg="#mutated-genes-chart svg"
-                data={mutatedGenesChartData}
-                slug="bar-chart"
-                tooltipHTML="Download image or data"
-                noText
-              />
-            </div>
-            <div style={graphTitle}>Distribution of Most Frequently Mutated Genes</div>
-            {!!mutatedGenesChartData.length &&
-              <div id="mutated-genes-chart">
-                <Row style={{ padding: '0 2rem' }}>
-                  <BarChart
-                    data={mutatedGenesChartData.map(g => ({
-                      label: g.symbol,
-                      value: ((g.num_affected_cases_project / numCasesAggByProject[project.project_id]) * 100),
-                      tooltip: `<b>${g.symbol}</b><br />
-                        ${g.num_affected_cases_project} Case${g.num_affected_cases_project > 1 ? 's' : ''}
-                        Affected in ${project.project_id}<br />
-                        ${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]}
-                        ${((g.num_affected_cases_project / numCasesAggByProject[project.project_id]) * 100)
-                          .toFixed(2)}%`,
-                      href: `genes/${g.gene_id}`,
-                    }))}
-                    yAxis={{ title: '% of Cases Affected' }}
-                    height={240}
-                    styles={{
-                      xAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
-                      yAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
-                      bars: { fill: theme.secondary },
-                      tooltips: {
-                        fill: '#fff',
-                        stroke: theme.greyScale4,
-                        textFill: theme.greyScale3,
-                      },
-                    }}
-                  />
-                </Row>
-              </div>
-            }
-          </span>
-          {survivalData.rawData && (
-            <span style={{ ...styles.column, width: '50%' }}>
-              <SurvivalPlotWrapper
-                {...survivalData}
-                onReset={() => setSelectedSurvivalData({})}
-                height={240}
-                width={width}
-              />
-            </span>
-          )}
-        </Row>
-        <Column>
-          {!!mutatedGenesChartData.length &&
-            <EntityPageHorizontalTable
-              headings={[
-                { key: 'symbol', title: 'Symbol' },
-                { key: 'cytoband', title: 'Cytoband' },
-                {
-                  key: 'num_affected_cases_project',
-                  title: <span># Affected Cases<br /></span>,
-                },
-                {
-                  key: 'num_affected_cases_all',
-                  title: <span># Affected Cases<br /> Across all Projects</span>,
-                  style: { minWidth: '210px' },
-                },
-                {
-                  key: 'num_mutations',
-                  title: '# Mutations',
-                  style: { textAlign: 'right' },
-                },
-                {
-                  title: 'Survival Analysis',
-                  key: 'survival_plot',
-                  style: { textAlign: 'center', width: '100px' },
-                },
-              ]}
-              data={mutatedGenesChartData.map(g => ({
-                ...g,
-                symbol: <a href={`/genes/${g.gene_id}`}>{g.symbol}</a>,
-                cytoband: (g.cytoband || []).join(', '),
-                num_affected_cases_project:
-                  `${g.num_affected_cases_project} / ${numCasesAggByProject[project.project_id]}
-                  (${((g.num_affected_cases_project / numCasesAggByProject[project.project_id]) * 100).toFixed(2)}%)`,
-                num_affected_cases_all: (
-                  <TogglableUl
-                    items={[
-                      `${g.num_affected_cases_all}/${totalNumCases}
-                      (${((g.num_affected_cases_all / totalNumCases) * 100).toFixed(2)}%)`,
-                      ...Object.keys(g.num_affected_cases_by_project)
-                        .map(k => `
-                          ${k}: ${g.num_affected_cases_by_project[k]} / ${numCasesAggByProject[k]}
-                          (${((g.num_affected_cases_by_project[k] / numCasesAggByProject[k]) * 100).toFixed(2)}%)`),
-                    ]}
-                  />
-                ),
-                survival_plot: (
-                  <Tooltip innerHTML={`Add ${g.symbol} to surival plot`}>
-                    <button
-                      onClick={() => {
-                          if (g.symbol !== selectedSurvivalData.id) {
-                            getSurvivalCurves({
-                              api,
-                              projectId: projectId,
-                              field: 'gene.symbol',
-                              value: g.symbol,
-                            })
-                              .then(setSelectedSurvivalData);
-                          } else {
-                            setSelectedSurvivalData({});
-                          }
-                        }
-                      }
-                    >
-                      <span
-                        style={{
-                          color: colors(selectedSurvivalData.id === g.symbol ? 1 : 0),
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <SurvivalIcon />
-                        <div style={styles.hidden}>add to survival plot</div>
-                      </span>
-                    </button>
-                  </Tooltip>
-                ),
-              }))}
-            />
-          }
-          {!mutatedGenesChartData.length && 'No mutated gene data to display'}
-        </Column>
+        <FrequentlyMutatedGenesContainer
+          numCasesAggByProject={numCasesAggByProject}
+          survivalData={survivalData}
+          setSelectedSurvivalData={setSelectedSurvivalData}
+          selectedSurvivalData={selectedSurvivalData}
+          totalNumCases={totalNumCases}
+          projectId={projectId}
+          width={width}
+          api={api}
+          config={$scope.config}
+        />
       </Column>
 
       <Column style={{ ...styles.card, marginTop: '2rem', position: 'static' }}>

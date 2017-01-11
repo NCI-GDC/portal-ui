@@ -210,7 +210,6 @@ module ngApp.projects.controllers {
     /* @ngInject */
     constructor(
       public project: IProject,
-      public mutatedGenesProject: Array<Object>,
       public numCasesAggByProject: Array<Object>,
       public mostAffectedCases: Array<Object>,
       public survivalData: Array<Object>,

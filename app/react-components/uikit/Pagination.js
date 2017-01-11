@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Children, cloneElement } from 'react';
 import _ from 'lodash';
 import { css } from 'glamor';
 import { lifecycle, compose } from 'recompose';
@@ -92,7 +92,7 @@ const PaginationControls = props => {
       <PaginationBtn onClick={() => props.setPagination({ offset: props.offset + props.first })}>
         {'>'}
       </PaginationBtn>
-      <PaginationBtn onClick={() => props.setPagination({ offset: (props.total - props.total) % props.size })}>
+      <PaginationBtn onClick={() => props.setPagination({ offset: props.total - (props.total % props.first) })}>
         {'>>'}
       </PaginationBtn>
     </ButtonGroup>
@@ -114,8 +114,12 @@ const PaginationContainer = compose(
       <Row style={{ padding: '0 1rem' }}>
         <PaginationHeader {...props} />
       </Row>
-      {props.children}
+      {Children.map(props.children, child => cloneElement(child, {
+        ...child.props,
+        ...props,
+      }))}
       <Row style={{ padding: '1rem', alignItems: 'center' }}>
+        {props.loading && <span className="fa fa-spinner fa-spin" />}
         <div style={{ marginLeft: 'auto' }}>
           <PaginationControls {...props} />
         </div>

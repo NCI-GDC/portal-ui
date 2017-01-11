@@ -10,18 +10,27 @@ const impactColors = {
   LOW: 'rgb(49, 161, 60)',
 };
 
+const initialState = {
+  data: {
+    hits: [],
+    pagination: { total: 0 },
+  },
+  loading: true,
+};
+
 export default
 compose(
-  withState('fm', 'setState', {}),
+  withState('state', 'setState', initialState),
   withProps({
     fetchData: async ({ api, projectId, offset = 0, setState }) => {
+      setState(s => ({ ...s, loading: true }));
       const url = `${api}/analysis/frequent_mutations_by_project`;
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           project_id: projectId,
-          offset,
+          from: offset,
           fields: [
             'genomic_dna_change',
             'mutation_subtype',
@@ -37,7 +46,7 @@ compose(
         }),
       });
       const { data } = await res.json();
-      setState(() => data);
+      setState(() => ({ data, loading: false }));
     },
   }),
   lifecycle({
@@ -45,10 +54,8 @@ compose(
       this.props.fetchData(this.props);
     },
   })
-)(props => {
-  if (!props.fm.hits) return null;
-
-  const frequentMutations = props.fm.hits
+)(({ state, ...props }) => {
+  const frequentMutations = state.data.hits
     .map((hit) => {
       const { transcript } = hit.consequence.find(c => c.transcript.is_canonical);
       const { annotation = {}, consequence_type, gene, gene_symbol, aa_change } = transcript;
@@ -89,9 +96,10 @@ compose(
 
   return (
     <PaginationContainer
-      total={props.fm.pagination.total}
+      total={state.data.pagination.total}
       onChange={pageInfo => props.fetchData({ ...props, ...pageInfo })}
       entityType="Mutations"
+      loading={state.loading}
     >
       <FrequentMutations
         frequentMutations={frequentMutations}

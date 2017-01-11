@@ -9,17 +9,17 @@
     rgbcolor "0.0.4"
     stackblur "^1.0.0"
 
-"@knit/babel-plugin-socks-relay@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/babel-plugin-socks-relay/-/babel-plugin-socks-relay-0.1.0.tgz#5b8a8af208df0253e84cd5a0270575659e7eaf43"
+"@knit/babel-plugin-socks-relay@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/babel-plugin-socks-relay/-/babel-plugin-socks-relay-0.1.4.tgz#c9ea2b3ff918ab3fe5fb66bbdb962f45afa91820"
   dependencies:
-    "@knit/needle" "0.1.0"
+    "@knit/needle" "0.1.4"
     babel-relay-plugin "^0.10.0"
     chalk "1.1.3"
 
-"@knit/babel-preset-socks-react@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/babel-preset-socks-react/-/babel-preset-socks-react-0.1.0.tgz#a53c82947abf723b945bf5dcd98d2207fc8cc01c"
+"@knit/babel-preset-socks-react@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/babel-preset-socks-react/-/babel-preset-socks-react-0.1.4.tgz#af09c9c8949983ec793a3fd8255d80a8cddd50c7"
   dependencies:
     babel-plugin-transform-class-properties "^6.19.0"
     babel-plugin-transform-object-rest-spread "^6.20.2"
@@ -29,40 +29,40 @@
     babel-preset-react "6.16.0"
     react-hot-loader "3.0.0-beta.6"
 
-"@knit/common-tasks@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@knit/common-tasks/-/common-tasks-0.1.1.tgz#a0b7c958df3a783996d50636a655df38f3e92711"
+"@knit/common-tasks@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/common-tasks/-/common-tasks-0.1.4.tgz#f16bfb9d9ed374b7d291d8a0a915953a5efe2839"
   dependencies:
-    "@knit/knit-core" "0.1.1"
-    "@knit/needle" "0.1.0"
+    "@knit/knit-core" "0.1.4"
+    "@knit/needle" "0.1.4"
     execa "0.5.0"
     fs-extra "1.0.0"
     semver "5.3.0"
 
-"@knit/depcheck@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/depcheck/-/depcheck-0.1.0.tgz#1d2e44326a07a649d572d42a98091afc39da9feb"
+"@knit/depcheck@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/depcheck/-/depcheck-0.1.4.tgz#ad8ce32a29124e8ecfbac5d0b7483ee366e65015"
   dependencies:
-    "@knit/needle" "0.1.0"
+    "@knit/needle" "0.1.4"
     babylon "6.14.1"
     depcheck "^0.6.7"
     lodash "4.17.2"
     pify "2.3.0"
 
-"@knit/eslint-config-socks-react@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/eslint-config-socks-react/-/eslint-config-socks-react-0.1.0.tgz#b4bf0ae73bd2e964130ba24dd71299b9d7b0d24d"
+"@knit/eslint-config-socks-react@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/eslint-config-socks-react/-/eslint-config-socks-react-0.1.4.tgz#f6422f5ee10cdb3f6f104d2b48b4a682681e4c39"
   dependencies:
-    "@knit/eslint-config-socks" "0.1.0"
+    "@knit/eslint-config-socks" "0.1.4"
     babel-eslint "^7.1.1"
     eslint-config-airbnb "13.0.0"
     eslint-plugin-jsx "0.0.2"
     eslint-plugin-jsx-a11y "^3.0.2"
     eslint-plugin-react "^6.8.0"
 
-"@knit/eslint-config-socks@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/eslint-config-socks/-/eslint-config-socks-0.1.0.tgz#f9b90c352e65ac80d4c913bd8d39654a9a5b702e"
+"@knit/eslint-config-socks@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/eslint-config-socks/-/eslint-config-socks-0.1.4.tgz#bec8626c2cf060a11ed5740a76ecce007401ce1d"
   dependencies:
     babel-eslint "^7.1.1"
     eslint-config-airbnb-base "^11.0.0"
@@ -72,37 +72,37 @@
     eslint-plugin-fp "2.2.0"
     eslint-plugin-import "2.2.0"
 
-"@knit/html-remove-webpack-plugin@0.0.44":
-  version "0.0.44"
-  resolved "https://registry.yarnpkg.com/@knit/html-remove-webpack-plugin/-/html-remove-webpack-plugin-0.0.44.tgz#ff02ad3996e1196f057a530c320101c6e73778b6"
+"@knit/html-remove-webpack-plugin@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/html-remove-webpack-plugin/-/html-remove-webpack-plugin-0.1.4.tgz#f94b063fe262ba380031677ea6608ebf6990b969"
 
-"@knit/jest-config-socks@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@knit/jest-config-socks/-/jest-config-socks-0.1.1.tgz#c4a4e00f39e3836a4722a2876b0b024714970b5f"
+"@knit/jest-config-socks@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/jest-config-socks/-/jest-config-socks-0.1.4.tgz#56b47090f6d465c477c8af0bc8befdc694097148"
   dependencies:
-    "@knit/needle" "0.1.0"
+    "@knit/needle" "0.1.4"
 
-"@knit/knit-core@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@knit/knit-core/-/knit-core-0.1.1.tgz#d1fc53ca4aceee91082aea9f28cb4add86bd45bd"
+"@knit/knit-core@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/knit-core/-/knit-core-0.1.4.tgz#1c5620ea78302b42373027eaf3d97944fe05ba34"
   dependencies:
-    "@knit/depcheck" "0.1.0"
-    "@knit/needle" "0.1.0"
+    "@knit/depcheck" "0.1.4"
+    "@knit/needle" "0.1.4"
     execa "0.5.0"
     fs-extra "1.0.0"
     read-pkg "2.0.0"
 
-"@knit/knit@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@knit/knit/-/knit-0.1.1.tgz#8a88ef71970fe77dc91feb1252b4034f9aee202a"
+"@knit/knit@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/knit/-/knit-0.1.4.tgz#fb672a29392498f3d27a2b24cc635ccf971cd21f"
   dependencies:
-    "@knit/common-tasks" "0.1.1"
-    "@knit/knit-core" "0.1.1"
-    "@knit/logger" "0.1.0"
-    "@knit/needle" "0.1.0"
-    "@knit/nice-errors" "0.1.0"
-    "@knit/webpack-config-socks-app" "0.1.0"
-    "@knit/webpack-config-socks-lib" "0.1.0"
+    "@knit/common-tasks" "0.1.4"
+    "@knit/knit-core" "0.1.4"
+    "@knit/logger" "0.1.4"
+    "@knit/needle" "0.1.4"
+    "@knit/nice-errors" "0.1.4"
+    "@knit/webpack-config-socks-app" "0.1.4"
+    "@knit/webpack-config-socks-lib" "0.1.4"
     "@reactivex/rxjs" "^5.0.1"
     chalk "1.1.3"
     connect-gzip-static "1.0.0"
@@ -124,36 +124,36 @@
     write-pkg "2.0.0"
     yargs "^6.5.0"
 
-"@knit/logger@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/logger/-/logger-0.1.0.tgz#51ef711ea55d53af17ab710fa8b8fd1454d9c34a"
+"@knit/logger@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/logger/-/logger-0.1.4.tgz#dcf48867b95a02db991d605a542f4ff096e341f1"
   dependencies:
     chalk "1.1.3"
     listr-silent-renderer "^1.1.1"
     listr-update-renderer "0.1.2"
     listr-verbose-renderer "^0.2.1"
 
-"@knit/needle@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/needle/-/needle-0.1.0.tgz#f83d94941148a2fb9b99d650fa39c7777bced8e6"
+"@knit/needle@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/needle/-/needle-0.1.4.tgz#a5608e2fea157c3c673b16b4bd9694dc30819028"
   dependencies:
     read-pkg-up "2.0.0"
 
-"@knit/nice-errors@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/nice-errors/-/nice-errors-0.1.0.tgz#9923b144d8bb36e166b7eb7025730b1b0f6a92b5"
+"@knit/nice-errors@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/nice-errors/-/nice-errors-0.1.4.tgz#42a03e4c2718a9126b39e270ad4a757fa6ebe1af"
   dependencies:
-    "@knit/logger" "0.1.0"
+    "@knit/logger" "0.1.4"
     chalk "1.1.3"
     serialize-error "^2.1.0"
 
-"@knit/webpack-config-socks-app@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/webpack-config-socks-app/-/webpack-config-socks-app-0.1.0.tgz#123eadbe8cd9a1a3e152145b50c2baefc70ef640"
+"@knit/webpack-config-socks-app@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/webpack-config-socks-app/-/webpack-config-socks-app-0.1.4.tgz#642b4ad020a69db986ad73f8a3c65d69d8f2d13b"
   dependencies:
-    "@knit/html-remove-webpack-plugin" "0.0.44"
-    "@knit/needle" "0.1.0"
-    "@knit/webpack-config-socks" "0.1.0"
+    "@knit/html-remove-webpack-plugin" "0.1.4"
+    "@knit/needle" "0.1.4"
+    "@knit/webpack-config-socks" "0.1.4"
     babel-loader "^6.2.10"
     css-loader "^0.26.1"
     file-loader "0.9.0"
@@ -166,12 +166,12 @@
     webpack-hot-middleware "2.13.2"
     webpack-merge "^1.1.1"
 
-"@knit/webpack-config-socks-lib@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/webpack-config-socks-lib/-/webpack-config-socks-lib-0.1.0.tgz#05bf1d1dd9bb0de5835f1b0b9d1d791d5b64a045"
+"@knit/webpack-config-socks-lib@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/webpack-config-socks-lib/-/webpack-config-socks-lib-0.1.4.tgz#7e6f05cb9a1eadd10e23941672f3fb326e015855"
   dependencies:
-    "@knit/needle" "0.1.0"
-    "@knit/webpack-config-socks" "0.1.0"
+    "@knit/needle" "0.1.4"
+    "@knit/webpack-config-socks" "0.1.4"
     babel-loader "^6.2.10"
     css-loader "^0.26.1"
     file-loader "0.9.0"
@@ -180,11 +180,11 @@
     url-loader "0.5.7"
     webpack-merge "^1.1.1"
 
-"@knit/webpack-config-socks@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@knit/webpack-config-socks/-/webpack-config-socks-0.1.0.tgz#c33a1883c30caeee800b6d0932a94dd97ad93bd7"
+"@knit/webpack-config-socks@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@knit/webpack-config-socks/-/webpack-config-socks-0.1.4.tgz#6f526d5deec6f71ec5eb09092d0d33c1de3207f7"
   dependencies:
-    "@knit/needle" "0.1.0"
+    "@knit/needle" "0.1.4"
     babel-loader "^6.2.10"
     case-sensitive-paths-webpack-plugin "1.1.4"
     compression-webpack-plugin "0.3.2"
@@ -209,9 +209,9 @@
     redux "^3.6.0"
     redux-actions "^1.2.0"
 
-"@oncojs/sapien@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@oncojs/sapien/-/sapien-0.3.2.tgz#8da501ba19d660ee90214bc3a6cea437026f1803"
+"@oncojs/sapien@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@oncojs/sapien/-/sapien-0.4.1.tgz#b3a173ff46bb5b434e4583e2e6ec984ff83905ab"
 
 "@oncojs/survivalplot@^0.3.6":
   version "0.3.6"

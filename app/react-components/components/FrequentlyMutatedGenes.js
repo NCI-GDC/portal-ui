@@ -53,7 +53,7 @@ const FrequentlyMutatedGenes = ({
           <div style={graphTitle}>Distribution of Most Frequently Mutated Genes</div>
           {!!mutatedGenesChartData.length &&
             <div id="mutated-genes-chart">
-              <Row style={{ padding: '0 2rem' }}>
+              <Row style={{ padding: '2rem 2rem 0' }}>
                 <BarChart
                   data={mutatedGenesChartData.map(g => ({
                     label: g.symbol,
@@ -67,7 +67,7 @@ const FrequentlyMutatedGenes = ({
                     href: `genes/${g.gene_id}`,
                   }))}
                   yAxis={{ title: '% of Cases Affected' }}
-                  height={240}
+                  height={260}
                   styles={{
                     xAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },
                     yAxis: { stroke: theme.greyScale4, textFill: theme.greyScale3 },

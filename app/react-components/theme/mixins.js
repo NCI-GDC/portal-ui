@@ -47,17 +47,18 @@ export const dropdownLink = {
 export const graphTitle = {
   textAlign: 'center',
   color: theme.greyScale3,
-  fontSize: '1rem',
+  fontSize: '1.4rem',
   fontWeight: 300,
 };
 
 export const visualizingButton = {
+  padding: 0,
   color: '#333',
   backgroundColor: '#fff',
   borderColor: '#ccc',
   marginRight: 12,
-  minWidth: 46,
-  minHeight: 34,
+  minWidth: 40,
+  minHeight: 28,
   display: 'inline-flex',
   outline: 'none',
 };

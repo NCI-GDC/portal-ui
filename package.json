@@ -42,11 +42,11 @@
     "style-builder": "^1.0.13"
   },
   "devDependencies": {
-    "@knit/babel-plugin-socks-relay": "^0.1.4",
-    "@knit/babel-preset-socks-react": "^0.1.4",
-    "@knit/eslint-config-socks-react": "^0.1.4",
-    "@knit/jest-config-socks": "^0.1.4",
-    "@knit/knit": "^0.1.4",
+    "@knit/babel-plugin-socks-relay": "^0.1.6",
+    "@knit/babel-preset-socks-react": "^0.1.6",
+    "@knit/eslint-config-socks-react": "^0.1.6",
+    "@knit/jest-config-socks": "^0.1.6",
+    "@knit/knit": "^0.1.6",
     "eslint": "^3.13.1",
     "flow-bin": "^0.37.4",
     "jest": "^18.1.0",

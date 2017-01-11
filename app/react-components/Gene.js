@@ -104,6 +104,7 @@ const Gene = (() => {
             $('.global-tooltip')
               .addClass('active')
               .html(`
+                <div>AA Change: ${d.aa_change}</div>
                 <div>DNA Change: ${d.genomic_dna_change}</div>
                 <div># of Cases: ${d.donors}</div>
                 <div>Functional Impact: ${d.impact}</div>
@@ -160,6 +161,8 @@ const Gene = (() => {
 
       const frequentMutations = fm.map(x => {
         const consequence = x.consequence.find(c => c.transcript.is_canonical);
+        const transcript = consequence.transcript || {};
+        const annotation = transcript.annotation || {};
         return {
           ...x,
           num_affected_cases_all: x.occurrence.length,
@@ -167,20 +170,20 @@ const Gene = (() => {
             ...acc,
             [o.case.project.project_id]: acc[o.case.project.project_id] ? acc[o.case.project.project_id] + 1 : 1,
           }), {}),
-          impact: consequence.transcript.annotation.impact,
+          impact: annotation.impact,
           consequence_type: (
             <span>
-              <b>{_.startCase(consequence.transcript.consequence_type.replace('variant', ''))}</b>
+              <b>{_.startCase(transcript.consequence_type.replace('variant', ''))}</b>
               <span style={{ marginLeft: '5px' }}>
-                <a href={`/genes/${consequence.transcript.gene.gene_id}`}>{consequence.transcript.gene_symbol}</a>
+                <a href={`/genes/${transcript.gene.gene_id}`}>{transcript.gene_symbol}</a>
               </span>
               <span
                 style={{
                   marginLeft: '5px',
-                  color: impactColors[consequence.transcript.annotation.impact] || 'inherit',
+                  color: impactColors[annotation.impact] || 'inherit',
                 }}
               >
-                {consequence.transcript.aa_change}
+                {transcript.aa_change}
               </span>
             </span>
           ),

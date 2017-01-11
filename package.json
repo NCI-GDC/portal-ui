@@ -25,10 +25,10 @@
     "js-cookie": "^2.1.3",
     "jsurl": "^0.1.5",
     "oncogrid": "^1.1.0",
-    "react": "^15.4.1",
+    "react": "^15.4.2",
     "react-faux-dom": "^3.0.0",
     "react-icons": "^2.2.3",
-    "react-redux": "^5.0.1",
+    "react-redux": "^5.0.2",
     "react-relay": "^0.10.0",
     "react-router": "4.0.0-alpha.5",
     "recompose": "^0.21.2",
@@ -40,15 +40,15 @@
     "style-builder": "^1.0.13"
   },
   "devDependencies": {
-    "@knit/babel-plugin-socks-relay": "^0.0.43",
-    "@knit/babel-preset-socks-react": "^0.0.46",
-    "@knit/eslint-config-socks-react": "^0.0.43",
-    "@knit/jest-config-socks": "^0.0.43",
-    "@knit/knit": "^0.0.49",
-    "eslint": "^3.12.2",
+    "@knit/babel-plugin-socks-relay": "^0.1.0",
+    "@knit/babel-preset-socks-react": "^0.1.0",
+    "@knit/eslint-config-socks-react": "^0.1.0",
+    "@knit/jest-config-socks": "^0.1.0",
+    "@knit/knit": "^0.1.0",
+    "eslint": "^3.13.1",
     "flow-bin": "^0.37.4",
     "jest": "^18.1.0",
-    "react-dom": "^15.4.1"
+    "react-dom": "^15.4.2"
   },
   "scripts": {
     "knit": "knit",

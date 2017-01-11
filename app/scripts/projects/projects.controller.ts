@@ -447,7 +447,6 @@ module ngApp.projects.controllers {
           },
           React.createElement(ReactComponents.Project, {
             $scope: this,
-            mutatedGenesProject: this.mutatedGenesProject,
             numCasesAggByProject: this.numCasesAggByProject,
             authApi: this.CoreService.config.auth_api,
             api: this.CoreService.config.api,

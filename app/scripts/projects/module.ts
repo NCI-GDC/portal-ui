@@ -40,29 +40,6 @@ module ngApp.projects {
       controller: "ProjectController as prc",
       templateUrl: "projects/templates/project.html",
       resolve: {
-        mutatedGenesProject: (
-          $stateParams: ng.ui.IStateParamsService,
-          $http: ng.IHttpService,
-          config: IGDCConfig
-        ): ng.IPromise<IProject> => {
-          return $http({
-            method: 'POST',
-            url: `${config.api}/analysis/top_mutated_genes_by_project`,
-            headers: {'Content-Type' : 'application/json'},
-            data: {
-              project_id: $stateParams["projectId"],
-              fields: [
-                'gene_id',
-                'symbol',
-                'cytoband',
-                'case.project.project_id',
-                'case.ssm.ssm_id',
-              ].join(),
-            }
-          }).then(({data}) => {
-            return data.data.hits;
-          });
-        },
         numCasesAggByProject: (
           $stateParams: ng.ui.IStateParamsService,
           $http: ng.IHttpService,

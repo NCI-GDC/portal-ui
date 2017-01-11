@@ -16,7 +16,7 @@ compose(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          offset: props.offset || 0,
+          from: props.offset || 0,
           project_id: props.projectId,
           fields: [
             'gene_id',

@@ -30,7 +30,7 @@ compose(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           project_id: projectId,
-          offset,
+          from: offset,
           fields: [
             'genomic_dna_change',
             'mutation_subtype',

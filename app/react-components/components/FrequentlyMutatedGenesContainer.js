@@ -5,45 +5,32 @@ import { PaginationContainer } from '../uikit/Pagination';
 
 export default
 compose(
-  withState('state', 'setState', { data: { hits: [], total: 0 }, loading: true }),
+  withState('state', 'setState', { data: { hits: [], pagination: { total: 0 } }, loading: true }),
   withProps({
     fetchData: async props => {
       props.setState(s => ({ ...s, loading: true }));
 
-      const url =
-        `${props.config.es_host}/${props.config.es_index_version}-gene-centric/gene-centric/_search`;
+      const url = `${props.config.api}/analysis/top_mutated_genes_by_project`;
 
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: props.offset || 0,
-          query: {
-            nested: {
-              path: 'case',
-              score_mode: 'sum',
-              query: {
-                function_score: {
-                  query: {
-                    terms: {
-                      'case.project.project_id': [
-                        props.projectId,
-                      ],
-                    },
-                  },
-                  boost_mode: 'replace',
-                  script_score: {
-                    script: "doc['case.project.project_id'].empty ? 0 : 1",
-                  },
-                },
-              },
-            },
-          },
+          offset: props.offset || 0,
+          project_id: props.projectId,
+          fields: [
+            'gene_id',
+            'symbol',
+            'cytoband',
+            'case.project.project_id',
+            'case.ssm.ssm_id',
+          ].join(),
         }),
       });
 
-      const { hits } = await res.json();
-      props.setState(s => ({ ...s, data: hits, loading: false }));
+      const { data } = await res.json();
+
+      props.setState(s => ({ ...s, data, loading: false }));
     },
   }),
   lifecycle({
@@ -52,7 +39,7 @@ compose(
     },
   })
 )(({ state, ...props }) => {
-  const mutatedGenesChartData = state.data.hits.map(({ _source: g }) => ({
+  const mutatedGenesChartData = state.data.hits.map(g => ({
     gene_id: g.gene_id,
     symbol: g.symbol,
     cytoband: g.cytoband,
@@ -67,7 +54,7 @@ compose(
 
   return (
     <PaginationContainer
-      total={state.data.total}
+      total={state.data.pagination.total}
       onChange={pageInfo => props.fetchData({ ...props, ...pageInfo })}
       entityType="Genes"
       loading={state.loading}

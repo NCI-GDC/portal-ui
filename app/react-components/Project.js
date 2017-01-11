@@ -4,7 +4,7 @@
 import React from 'react';
 import { compose, withState, lifecycle } from 'recompose';
 import _ from 'lodash';
-import { scaleOrdinal, schemeCategory10, schemeCategory20 } from 'd3';
+import { scaleOrdinal, schemeCategory20 } from 'd3';
 
 // Custom
 import Column from './uikit/Flex/Column';
@@ -22,9 +22,7 @@ import FileIcon from './theme/icons/File';
 import CaseIcon from './theme/icons/Case';
 import EditIcon from './theme/icons/Edit';
 import Tooltip from './uikit/Tooltip';
-import getSurvivalCurves from './utils/getSurvivalCurves';
 
-const colors = scaleOrdinal(schemeCategory10);
 const colors20 = scaleOrdinal(schemeCategory20);
 
 const SPACING = '2rem';
@@ -76,7 +74,6 @@ const Project = ({
   $scope,
   authApi,
   api,
-  mutatedGenesProject,
   numCasesAggByProject,
   mostAffectedCases,
   defaultSurvivalRawData,

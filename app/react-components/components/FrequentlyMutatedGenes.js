@@ -103,7 +103,7 @@ const FrequentlyMutatedGenes = ({
               { key: 'cytoband', title: 'Cytoband' },
               {
                 key: 'num_affected_cases_project',
-                title: <span># Affected Cases<br /></span>,
+                title: <span># Affected Cases<br />in {projectId}</span>,
               },
               {
                 key: 'num_affected_cases_all',

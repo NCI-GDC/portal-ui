@@ -3,6 +3,7 @@
 import React from 'react';
 import Measure from 'react-measure';
 import * as d3 from 'd3';
+import {isArray} from 'lodash';
 
 // Custom
 import Column from './uikit/Flex/Column';
@@ -46,10 +47,12 @@ const Projects = ({
         value: primarySiteCasesCount,
         tooltip: `<b>${p.primary_site}</b><br />${primarySiteCasesCount} case${primarySiteCasesCount > 1 ? 's' : ''}`,
         clickHandler: () => {
-          if (p.primary_site.reduce((acc, s) => acc + FacetService.getActiveIDs('primary_site').indexOf(s), 0) !== 0) {
-            p.primary_site.map(s => FacetService.addTerm('primary_site', s));
+          const primarySite = [].concat(p.primary_site);
+
+          if (primarySite.every((s) => FacetService.getActiveIDs('primary_site').indexOf(s) >= 0)) {
+            primarySite.map(s => FacetService.removeTerm('primary_site', s));
           } else {
-            p.primary_site.map(s => FacetService.removeTerm('primary_site', s));
+            primarySite.map(s => FacetService.addTerm('primary_site', s));
           }
         },
         outer: [

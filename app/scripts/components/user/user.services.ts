@@ -167,8 +167,7 @@ module ngApp.components.user.services {
           return participant.project.project_id;
         }));
       }
-      // [SV-506] return true if file has no projects, defer permission check to ACL instead of projects
-      return projectIds.length === 0 ? true : !!_.intersection(projectIds, this.currentUser.projects.gdc_ids).length;
+      return _.intersection(projectIds, this.currentUser.projects.gdc_ids).length !== 0;
     }
 
     setUserProjectsTerms(terms) {
@@ -201,8 +200,9 @@ module ngApp.components.user.services {
         if (file.access !== "open" && !this.currentUser) {
           return false;
         }
-        const fileInCorrectState = (f) => f.state === 'submitted' && _.include(["submitted", "processing", "processed"], f.file_state);
-        if (this.isUserProject(file) && !!_.intersection(this.currentUser.projects.phs_ids || [], file.acl).length && fileInCorrectState(file)) {
+        const fileInCorrectState = (f: IFile): boolean => f.state === 'submitted' && _.includes(["submitted", "processing", "processed"], f.file_state);
+        const intersectsWithFileAcl = (file: IFile): boolean => _.intersection(this.currentUser.projects.phs_ids || [], file.acl).length !== 0;
+        if ((this.isUserProject(file) || intersectsWithFileAcl(file)) && fileInCorrectState(file)) {
           return true;
         } else {
           return false;

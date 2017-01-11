@@ -24,6 +24,7 @@ compose(
             'cytoband',
             'case.project.project_id',
             'case.ssm.ssm_id',
+            'name',
           ].join(),
         }),
       });
@@ -40,6 +41,7 @@ compose(
   })
 )(({ state, ...props }) => {
   const mutatedGenesChartData = state.data.hits.map(g => ({
+    name: g.name,
     gene_id: g.gene_id,
     symbol: g.symbol,
     cytoband: g.cytoband,

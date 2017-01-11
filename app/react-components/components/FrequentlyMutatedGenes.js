@@ -98,6 +98,7 @@ const FrequentlyMutatedGenes = ({
         {!!mutatedGenesChartData.length &&
           <EntityPageHorizontalTable
             headings={[
+              { key: 'name', title: 'Name' },
               { key: 'symbol', title: 'Symbol' },
               { key: 'cytoband', title: 'Cytoband' },
               {

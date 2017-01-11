@@ -259,7 +259,7 @@ const Project = ({
         <span style={{ ...styles.column, ...styles.margin }}>
           <SummaryCard
             tableTitle="Cases and File Counts by Data Category"
-            pieChartTitle="File Counts by Experimental Strategy"
+            pieChartTitle="File Counts by Data Category"
             data={
               dataCategories.map((item, i) => {
                 const { filters, displayKey } = dataCategoriesConfig;
@@ -278,7 +278,7 @@ const Project = ({
                 };
               })
             }
-            footer={`${dataCategories.length} Experimental Strategies`}
+            footer={`${dataCategories.length} Data Categories`}
             path="file_count_value"
             headings={[
               { key: 'data_category', title: 'Data Category', color: true },

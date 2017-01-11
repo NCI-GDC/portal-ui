@@ -108,12 +108,10 @@ const FrequentlyMutatedGenes = ({
               {
                 key: 'num_affected_cases_all',
                 title: <span># Affected Cases<br /> Across all Projects</span>,
-                style: { minWidth: '210px' },
               },
               {
                 key: 'num_mutations',
                 title: '# Mutations',
-                style: { textAlign: 'right' },
               },
               {
                 title: 'Survival Analysis',

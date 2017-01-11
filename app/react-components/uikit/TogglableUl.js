@@ -21,8 +21,8 @@ const TogglableUl = ({ active, toggleActive, items }) => (
         onClick={() => toggleActive()}
       />
     </li>
-    {active && items.slice(1).map(r => (
-      <li key={r}>{r}</li>
+    {items.slice(1).map(r => (
+      <li key={r} style={{ height: active ? 'auto' : 0, overflow: 'hidden' }}>{r}</li>
     ))}
   </ul>
 );

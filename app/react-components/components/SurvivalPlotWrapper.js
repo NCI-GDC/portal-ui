@@ -22,10 +22,9 @@ const styles = {
     overflow: 'hidden',
   },
   pValue: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
     fontSize: '1.1rem',
+    height: '1.5rem',
+    marginTop: '0.5rem',
   },
 };
 
@@ -78,27 +77,31 @@ const SurvivalPlotWrapper = ({ height = 0, legend, rawData = {}, setXDomain, set
           </ToolTip>
         </span>
         <div style={graphTitle}>Overall Survival Plot</div>
-        {pValue && <span style={styles.pValue}>Log-Rank Test P-Value = {pValue.toExponential(2)}</span>}
+        <Row style={{ justifyContent: 'center', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+          {legend &&
+            legend.map((text, i) => (
+              <div
+                key={text}
+                style={{
+                  color: palette[i],
+                  margin: '0 1rem',
+                  fontSize: '1.1rem',
+                }}
+              >{text}</div>
+            ))
+          }
+        </Row>
+        {
+          <span style={styles.pValue}>
+            {pValue && `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+          </span>
+        }
       </Column>
       <div
         className="survival-plot-container"
         ref={setSurvivalContainer}
         style={{ overflow: 'hidden', height, position: 'relative' }}
       />
-      <Row style={{ justifyContent: 'center', flexWrap: 'wrap' }}>
-        {legend &&
-          legend.map((text, i) => (
-            <div
-              key={text}
-              style={{
-                color: palette[i],
-                margin: '0 1rem',
-                fontSize: '1.1rem',
-              }}
-            >{text}</div>
-          ))
-        }
-      </Row>
     </div>
   );
 };

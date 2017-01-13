@@ -12,7 +12,7 @@
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
     "@oncojs/lolliplot": "^0.5.8",
-    "@oncojs/sapien": "^0.4.1",
+    "@oncojs/sapien": "^0.4.2",
     "@oncojs/survivalplot": "^0.3.6",
     "babel-polyfill": "^6.20.0",
     "d3": "^4.4.1",
@@ -44,9 +44,9 @@
   "devDependencies": {
     "@knit/babel-plugin-socks-relay": "^0.1.6",
     "@knit/babel-preset-socks-react": "^0.1.6",
-    "@knit/eslint-config-socks-react": "^0.1.6",
+    "@knit/eslint-config-socks-react": "^0.2.0",
     "@knit/jest-config-socks": "^0.1.6",
-    "@knit/knit": "^0.1.6",
+    "@knit/knit": "0.1.6",
     "eslint": "^3.13.1",
     "flow-bin": "^0.37.4",
     "jest": "^18.1.0",
@@ -57,6 +57,7 @@
     "start": "knit server",
     "test": "jest",
     "lint": "eslint --ext .js modules/node_modules || exit 0",
+    "lint-fix": "eslint --ext .js modules/node_modules --fix || exit 0",
     "flow": "flow check || exit 0"
   },
   "knit": {

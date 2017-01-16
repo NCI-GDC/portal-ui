@@ -13,7 +13,7 @@
   "dependencies": {
     "@oncojs/lolliplot": "^0.5.8",
     "@oncojs/sapien": "^0.4.2",
-    "@oncojs/survivalplot": "^0.3.6",
+    "@oncojs/survivalplot": "0.4.1",
     "babel-polyfill": "^6.20.0",
     "d3": "^4.4.1",
     "download-svg": "^0.0.7",

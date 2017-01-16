@@ -213,9 +213,9 @@
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/@oncojs/sapien/-/sapien-0.4.2.tgz#1cfb4ab1412035aa2c526466e76276f741a40b00"
 
-"@oncojs/survivalplot@^0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@oncojs/survivalplot/-/survivalplot-0.3.6.tgz#77dd12174faead1d228bedd82894c843d8c9d7e5"
+"@oncojs/survivalplot@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@oncojs/survivalplot/-/survivalplot-0.4.1.tgz#01e813ac69ec702610c49dcbde75cc58554132a1"
   dependencies:
     lodash.defaultsdeep "^4.6.0"
     lodash.inrange "^3.3.6"
@@ -1872,11 +1872,7 @@ d3-interpolate@1, d3-interpolate@1.1.2:
   dependencies:
     d3-color "1"
 
-d3-path@1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/d3-path/-/d3-path-1.0.2.tgz#9941a472daed62084e5ecf4394987bcadc8c39a7"
-
-d3-path@1.0.3:
+d3-path@1, d3-path@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/d3-path/-/d3-path-1.0.3.tgz#60103d0dea9a6cd6ca58de86c6d56724002d3fde"
 

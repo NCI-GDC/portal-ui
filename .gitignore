@@ -30,7 +30,6 @@ coverage
 # IDEs
 .idea
 *.iml
-.vscode
 
 # build folders
 dist

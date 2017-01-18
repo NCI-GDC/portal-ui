@@ -679,18 +679,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__annotations__notes",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "annotations__annotation_id",
               "type": {
                 "kind": "OBJECT",
@@ -812,18 +800,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "annotations__updated_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "samples__portions__created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -1244,6 +1220,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__slides__annotations__legacy_created_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__tumor_stage",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -1963,6 +1951,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "samples__portions__analytes__aliquots__annotations__notes",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "samples__annotations__category",
               "type": {
                 "kind": "OBJECT",
@@ -2060,18 +2060,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__sample_type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__annotations__annotation_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -2192,18 +2180,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__analytes__aliquots__amount",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "samples__portions__annotations__case_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -2552,6 +2528,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__days_to_collection",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__days_to_recurrence",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -4375,7 +4363,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__analysis__input_files__submitter_id",
+              "name": "samples__portions__analytes__aliquots__annotations__annotation_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -4459,7 +4447,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__state",
+              "name": "samples__portions__created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -4471,7 +4459,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__tumor_stage",
+              "name": "samples__portions__analytes__state",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -4519,7 +4507,19 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__days_to_recurrence",
+              "name": "samples__portions__annotations__case_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__analysis__input_files__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -14449,6 +14449,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "analysis__metadata__read_groups__library_name",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "downstream_analyses__output_files__state",
               "type": {
                 "kind": "OBJECT",
@@ -14641,18 +14653,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "annotations__status",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "archive__file_name",
               "type": {
                 "kind": "OBJECT",
@@ -14678,18 +14678,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "downstream_analyses__output_files__file_size",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "analysis__metadata__read_groups__library_name",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -14750,18 +14738,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "archive__md5sum",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "analysis__metadata__read_groups__created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -14941,7 +14917,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "data_type",
+              "name": "annotations__status",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -15026,6 +15002,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "analysis__workflow_link",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "data_type",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -15421,6 +15409,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "analysis__metadata__read_groups__created_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "analysis__metadata__read_groups__read_group_id",
               "type": {
                 "kind": "OBJECT",
@@ -15625,6 +15625,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "cases__samples__portions__analytes__annotations__case_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "origin",
               "type": {
                 "kind": "OBJECT",
@@ -15638,6 +15650,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "file_size",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "center__center_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -16069,18 +16093,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__annotations__case_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "archive__state_comment",
               "type": {
                 "kind": "OBJECT",
@@ -16333,7 +16345,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "center__center_id",
+              "name": "downstream_analyses__analysis_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -17126,18 +17138,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "analysis__metadata__read_groups__read_group_qcs__sequence_duplication_levels",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "downstream_analyses__analysis_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -23192,7 +23192,19 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "legacy_created_datetime",
+              "name": "project__name",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "project__program__dbgap_accession_number",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -23324,18 +23336,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "project__program__dbgap_accession_number",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "notes",
               "type": {
                 "kind": "OBJECT",
@@ -23396,7 +23396,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "project__name",
+              "name": "legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -24180,18 +24180,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__annotations__notes",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "annotations__annotation_id",
               "type": {
                 "kind": "OBJECT",
@@ -24313,18 +24301,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "annotations__updated_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "samples__portions__created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -24745,6 +24721,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__slides__annotations__legacy_created_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__tumor_stage",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -25464,6 +25452,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "samples__portions__analytes__aliquots__annotations__notes",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "samples__annotations__category",
               "type": {
                 "kind": "OBJECT",
@@ -25561,18 +25561,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__sample_type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__annotations__annotation_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -25693,18 +25681,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__analytes__aliquots__amount",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "samples__portions__annotations__case_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -26053,6 +26029,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__days_to_collection",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__days_to_recurrence",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -27876,7 +27864,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__analysis__input_files__submitter_id",
+              "name": "samples__portions__analytes__aliquots__annotations__annotation_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -27960,7 +27948,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__state",
+              "name": "samples__portions__created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -27972,7 +27960,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__tumor_stage",
+              "name": "samples__portions__analytes__state",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -28020,7 +28008,19 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__days_to_recurrence",
+              "name": "samples__portions__annotations__case_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__analysis__input_files__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -39385,6 +39385,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "analysis__metadata__read_groups__library_name",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "downstream_analyses__output_files__state",
               "type": {
                 "kind": "OBJECT",
@@ -39577,18 +39589,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "annotations__status",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "archive__file_name",
               "type": {
                 "kind": "OBJECT",
@@ -39614,18 +39614,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "downstream_analyses__output_files__file_size",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "analysis__metadata__read_groups__library_name",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -39686,18 +39674,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "archive__md5sum",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "analysis__metadata__read_groups__created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -39877,7 +39853,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "data_type",
+              "name": "annotations__status",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -39962,6 +39938,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "analysis__workflow_link",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "data_type",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -40357,6 +40345,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "analysis__metadata__read_groups__created_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "analysis__metadata__read_groups__read_group_id",
               "type": {
                 "kind": "OBJECT",
@@ -40561,6 +40561,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "cases__samples__portions__analytes__annotations__case_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "origin",
               "type": {
                 "kind": "OBJECT",
@@ -40574,6 +40586,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "file_size",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "center__center_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -41005,18 +41029,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__annotations__case_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "archive__state_comment",
               "type": {
                 "kind": "OBJECT",
@@ -41269,7 +41281,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "center__center_id",
+              "name": "downstream_analyses__analysis_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -42062,18 +42074,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "analysis__metadata__read_groups__read_group_qcs__sequence_duplication_levels",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "downstream_analyses__analysis_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -49808,6 +49808,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "exposures__weight",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "samples__portions__annotations__updated_datetime",
               "type": {
                 "kind": "OBJECT",
@@ -49844,30 +49856,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "gene__ssm__observation__read_depth__n_depth",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "exposures__weight",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "files__index_files__submitter_id",
               "type": {
                 "kind": "OBJECT",
@@ -49881,18 +49869,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "annotations__submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__annotations__notes",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -50084,7 +50060,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__created_datetime",
+              "name": "gene__ssm__consequence__transcript__annotation__impact",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -50228,6 +50204,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "exposures__submitter_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "samples__annotations__annotation_id",
               "type": {
                 "kind": "OBJECT",
@@ -50301,6 +50289,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__center__namespace",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "exposures__exposure_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -50397,18 +50397,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__slides__annotations__notes",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene__ssm__observation__validation__validation_method",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -50624,6 +50612,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "diagnoses__tumor_stage",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__downstream_analyses__output_files__file_id",
               "type": {
                 "kind": "OBJECT",
@@ -50708,6 +50708,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene__transcripts__exons__cdna_end",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "summary__file_size",
               "type": {
                 "kind": "OBJECT",
@@ -50781,6 +50793,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__analytes__aliquots__annotations__entity_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "exposures__height",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -51092,6 +51116,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene__transcripts__end",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__analysis__metadata__read_groups__submitter_id",
               "type": {
                 "kind": "OBJECT",
@@ -51260,6 +51296,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene__ssm__consequence__transcript__annotation__transcript_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__cases__samples__portions__analytes__submitter_id",
               "type": {
                 "kind": "OBJECT",
@@ -51356,18 +51404,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "gene__ssm__consequence__transcript__aa_start",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "samples__portions__analytes__aliquots__center__namespace",
               "type": {
                 "kind": "OBJECT",
@@ -51392,6 +51428,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene__cytoband",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "samples__portions__center__code",
               "type": {
                 "kind": "OBJECT",
@@ -51405,6 +51453,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "demographic__gender",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "samples__portions__analytes__aliquots__annotations__notes",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -51524,42 +51584,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__annotations__annotation_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene__ssm__observation__mutation_status",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene__description",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
@@ -51656,6 +51680,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "project__program__dbgap_accession_number",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "samples__portions__center__name",
               "type": {
                 "kind": "OBJECT",
@@ -51692,6 +51728,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene__description",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "demographic__race",
               "type": {
                 "kind": "OBJECT",
@@ -51717,30 +51765,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__analytes__aliquots__amount",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "samples__portions__annotations__case_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene__ssm__ssm_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -51861,6 +51885,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "gene__external_db_ids__hgnc",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "project__dbgap_accession_number",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -52052,6 +52088,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene__ssm__observation__mutation_status",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "gene__ssm__mutation_subtype",
               "type": {
                 "kind": "OBJECT",
@@ -52112,7 +52160,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "project__program__dbgap_accession_number",
+              "name": "samples__portions__slides__annotations__status",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -52124,7 +52172,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__slides__annotations__status",
+              "name": "gene__is_cancer_gene_census",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -52208,6 +52256,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "diagnoses__days_to_recurrence",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "gene__ssm__observation__validation__tumor_validation_allele1",
               "type": {
                 "kind": "OBJECT",
@@ -52256,7 +52316,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "gene__ssm__consequence__transcript__is_canonical",
+              "name": "gene__ssm__consequence__transcript__annotation__existing_variation",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -52376,6 +52436,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "exposures__created_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "samples__portions__creation_datetime",
               "type": {
                 "kind": "OBJECT",
@@ -52484,18 +52556,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "gene__transcripts__end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "gene__ssm__consequence__transcript__annotation__swissprot",
               "type": {
                 "kind": "OBJECT",
@@ -52592,6 +52652,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "exposures__bmi",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "samples__portions__slides__annotations__category",
               "type": {
                 "kind": "OBJECT",
@@ -52652,6 +52724,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "exposures__years_smoked",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "project__primary_site",
               "type": {
                 "kind": "OBJECT",
@@ -52701,18 +52785,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__analytes__aliquots__source_center",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "exposures__height",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -52796,18 +52868,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "exposures__exposure_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "diagnoses__days_to_last_follow_up",
               "type": {
                 "kind": "OBJECT",
@@ -52821,18 +52881,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__slides__annotations__entity_submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene__ssm__consequence__transcript__annotation__impact",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -53252,7 +53300,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "exposures__bmi",
+              "name": "samples__portions__slides__created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -53264,7 +53312,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__slides__created_datetime",
+              "name": "gene__ssm__observation__read_depth__n_depth",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -53312,31 +53360,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "gene__ssm__consequence__transcript__annotation__existing_variation",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "tissue_source_site__code",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "exposures__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -53384,7 +53408,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "gene__ssm__observation__sample__tumor_sample_uuid",
+              "name": "gene__ssm__ssm_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -53396,7 +53420,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "exposures__created_datetime",
+              "name": "gene__ssm__observation__sample__tumor_sample_uuid",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -53529,18 +53553,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__slides__annotations__case_submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "exposures__years_smoked",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -53840,18 +53852,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "gene__transcripts__exons__cdna_end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "gene__transcripts__domains__start",
               "type": {
                 "kind": "OBJECT",
@@ -53961,18 +53961,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "annotations__entity_submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene__ssm__consequence__transcript__aa_end",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -54104,18 +54092,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "project__dbgap_accession_number",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "samples__is_ffpe",
               "type": {
                 "kind": "OBJECT",
@@ -54129,18 +54105,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "sample_ids",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene__ssm__consequence__transcript__annotation__transcript_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -54764,6 +54728,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "gene__ssm__observation__validation__validation_method",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "diagnoses__site_of_resection_or_biopsy",
               "type": {
                 "kind": "OBJECT",
@@ -54932,7 +54908,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__analysis__input_files__submitter_id",
+              "name": "samples__portions__analytes__aliquots__annotations__annotation_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -55040,7 +55016,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__state",
+              "name": "samples__portions__created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -55052,7 +55028,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__tumor_stage",
+              "name": "samples__portions__analytes__state",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -55100,7 +55076,19 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__days_to_recurrence",
+              "name": "samples__portions__annotations__case_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__analysis__input_files__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -55237,18 +55225,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "exposures",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CohortcasesExposures",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "diagnoses",
               "type": {
                 "kind": "LIST",
@@ -55263,7 +55239,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "sample_ids",
               "type": {
@@ -55275,7 +55251,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "portion_ids",
               "type": {
@@ -55299,7 +55275,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "slide_ids",
               "type": {
@@ -55311,7 +55287,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "submitter_portion_ids",
               "type": {
@@ -55323,7 +55299,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "submitter_analyte_ids",
               "type": {
@@ -55335,7 +55311,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "analyte_ids",
               "type": {
@@ -55347,7 +55323,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "submitter_id",
               "type": {
@@ -55371,7 +55347,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "submitter_slide_ids",
               "type": {
@@ -55383,7 +55359,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "case_id",
               "type": {
@@ -55395,7 +55371,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "submitter_aliquot_ids",
               "type": {
@@ -55407,7 +55383,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "submitter_sample_ids",
               "type": {
@@ -55435,24 +55411,24 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "aliquot_ids",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "summary",
               "type": {
                 "kind": "OBJECT",
                 "name": "CohortcasesSummary",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "text",
+              "isDeprecated": false,
+              "name": "aliquot_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -55479,161 +55455,6 @@
           ],
           "kind": "OBJECT",
           "name": "CohortCase",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "cigarettes_per_day",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "weight",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "updated_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "alcohol_history",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "alcohol_intensity",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "bmi",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "years_smoked",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "height",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "created_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "exposure_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "submitter_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CohortcasesExposures",
           "possibleTypes": null
         },
         {
@@ -55870,18 +55691,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "dbgap_accession_number",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "text",
               "isDeprecated": false,
               "name": "disease_type",
@@ -55954,7 +55763,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "name",
               "type": {
@@ -56024,24 +55833,24 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "description",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "external_db_ids",
               "type": {
                 "kind": "OBJECT",
                 "name": "CohortcasesGeneExternalDbIds",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "cytoband",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -56075,6 +55884,18 @@
               "description": "keyword",
               "isDeprecated": false,
               "name": "gene_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "name",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -56118,6 +55939,18 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "boolean",
+              "isDeprecated": false,
+              "name": "is_cancer_gene_census",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -56190,7 +56023,7 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "name",
+              "name": "description",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -56869,36 +56702,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "aa_start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
               "name": "consequence_type",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "aa_end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
                 "ofType": null
               }
             },
@@ -56923,18 +56732,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "boolean",
-              "isDeprecated": false,
-              "name": "is_canonical",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -57776,9 +57573,13 @@
               "isDeprecated": false,
               "name": "data_categories",
               "type": {
-                "kind": "OBJECT",
-                "name": "CohortcasesSummaryDataCategories",
-                "ofType": null
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CohortcasesSummaryDataCategories",
+                  "ofType": null
+                }
               }
             }
           ],
@@ -58164,6 +57965,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "case__ssm__consequence__transcript__annotation__existing_variation",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "case__ssm__observation__sample__matched_norm_sample_barcode",
               "type": {
                 "kind": "OBJECT",
@@ -58212,7 +58025,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__ssm__consequence__transcript__aa_end",
+              "name": "gene_start",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -58392,18 +58205,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__ssm__chromosome",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "case__ssm__consequence__transcript__annotation__uniparc",
               "type": {
                 "kind": "OBJECT",
@@ -58536,6 +58337,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "cytoband",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "case__ssm__observation__validation__tumor_validation_allele2",
               "type": {
                 "kind": "OBJECT",
@@ -58561,42 +58374,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "case__diagnoses__morphology",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__demographic__submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__exposures__height",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__ssm__observation__read_depth__t_depth",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -58668,30 +58445,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__exposures__created_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__exposures__alcohol_history",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "case__diagnoses__submitter_id",
               "type": {
                 "kind": "OBJECT",
@@ -58729,30 +58482,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "case__project__primary_site",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "external_db_ids__omim_gene",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__ssm__consequence__transcript__aa_start",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -58872,6 +58601,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "external_db_ids__omim_gene",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "case__project__released",
               "type": {
                 "kind": "OBJECT",
@@ -58968,18 +58709,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__ssm__consequence__transcript__annotation__existing_variation",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "case__ssm__consequence__transcript__annotation__polyphen",
               "type": {
                 "kind": "OBJECT",
@@ -58992,7 +58721,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__exposures__cigarettes_per_day",
+              "name": "case__diagnoses__days_to_death",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59004,7 +58733,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__diagnoses__days_to_death",
+              "name": "name",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59064,18 +58793,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "name",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "case__diagnoses__updated_datetime",
               "type": {
                 "kind": "OBJECT",
@@ -59089,18 +58806,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "transcripts__cdna_coding_start",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__ssm__observation__sample__tumor_sample_uuid",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59173,30 +58878,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "case__ssm__consequence__transcript__annotation__cds_position",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__ssm__consequence__transcript__is_canonical",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__exposures__updated_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59352,7 +59033,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__exposures__alcohol_intensity",
+              "name": "case__ssm__observation__input_bam_file__normal_bam_uuid",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59389,6 +59070,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "case__ssm__consequence__transcript__gene_symbol",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "case__demographic__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59460,18 +59153,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__exposures__submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "external_db_ids__uniprotkb_swissprot",
               "type": {
                 "kind": "OBJECT",
@@ -59508,6 +59189,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "is_cancer_gene_census",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "case__ssm__consequence__transcript__ref_seq_accession",
               "type": {
                 "kind": "OBJECT",
@@ -59521,18 +59214,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "case__demographic__demographic_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__ssm__mutation_type",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59640,6 +59321,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "case__ssm__chromosome",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "transcripts__translation_id",
               "type": {
                 "kind": "OBJECT",
@@ -59653,18 +59346,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "transcripts__coding_region_end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__exposures__state",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59772,43 +59453,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__exposures__weight",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "case__ssm__consequence__transcript__annotation__codons",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "biotype",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene_end",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59832,7 +59477,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__ssm__mutation_subtype",
+              "name": "case__ssm__observation__sample__tumor_sample_uuid",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59845,18 +59490,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "transcripts__cdna_coding_end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__exposures__bmi",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59952,7 +59585,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__exposures__years_smoked",
+              "name": "biotype",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -59965,18 +59598,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "transcripts__seq_exon_end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__ssm__genomic_dna_change",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -60036,7 +59657,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__ssm__observation__input_bam_file__normal_bam_uuid",
+              "name": "case__ssm__observation__read_depth__t_depth",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -60048,7 +59669,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "case__exposures__exposure_id",
+              "name": "gene_end",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -60097,30 +59718,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "case__ssm__observation__sample__tumor_sample_barcode",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "gene_start",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "case__project__dbgap_accession_number",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -60319,24 +59916,24 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "description",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "external_db_ids",
               "type": {
                 "kind": "OBJECT",
                 "name": "CohortgenesExternalDbIds",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "text",
+              "isDeprecated": false,
+              "name": "cytoband",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -60379,6 +59976,18 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "text",
+              "isDeprecated": false,
+              "name": "name",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
               "name": "gene_chromosome",
@@ -60391,12 +60000,24 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "synonyms",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "boolean",
+              "isDeprecated": false,
+              "name": "is_cancer_gene_census",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -60443,7 +60064,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "canonical_transcript_id",
               "type": {
@@ -60467,9 +60088,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
-              "name": "name",
+              "name": "description",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -60660,18 +60281,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "exposures",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CohortgenesCaseExposures",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
               "name": "submitter_aliquot_ids",
@@ -60740,18 +60349,6 @@
           "description": null,
           "enumValues": null,
           "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "dbgap_accession_number",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
             {
               "args": [],
               "deprecationReason": null,
@@ -61152,18 +60749,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "mutation_subtype",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "long",
               "isDeprecated": false,
               "name": "end_position",
@@ -61247,30 +60832,6 @@
                   "name": "CohortgenesCaseSsmConsequence",
                   "ofType": null
                 }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "genomic_dna_change",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "mutation_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
               }
             },
             {
@@ -61723,36 +61284,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "aa_start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
               "name": "consequence_type",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "aa_end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
                 "ofType": null
               }
             },
@@ -61777,18 +61314,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "boolean",
-              "isDeprecated": false,
-              "name": "is_canonical",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -62141,168 +61666,17 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "cigarettes_per_day",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "weight",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "updated_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "alcohol_history",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "alcohol_intensity",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "bmi",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "years_smoked",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "height",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "created_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "exposure_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "submitter_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CohortgenesCaseExposures",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "data_categories",
               "type": {
-                "kind": "OBJECT",
-                "name": "CohortgenesCaseSummaryDataCategories",
-                "ofType": null
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CohortgenesCaseSummaryDataCategories",
+                  "ofType": null
+                }
               }
             }
           ],
@@ -62461,7 +61835,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "entrez_gene",
               "type": {
@@ -62473,7 +61847,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "uniprotkb_swissprot",
               "type": {
@@ -62485,7 +61859,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "hgnc",
               "type": {
@@ -62497,7 +61871,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "omim_gene",
               "type": {
@@ -63148,18 +62522,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__length_cds",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "consequence__transcript__gene_symbol",
               "type": {
                 "kind": "OBJECT",
@@ -63184,43 +62546,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__start_phase",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "consequence__transcript__annotation__uniparc",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__height",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__alcohol_intensity",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -63292,6 +62618,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "occurrence__case__diagnoses__tumor_stage",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "occurrence__case__observation__read_depth__n_depth",
               "type": {
                 "kind": "OBJECT",
@@ -63340,18 +62678,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__diagnoses__days_to_last_follow_up",
               "type": {
                 "kind": "OBJECT",
@@ -63388,30 +62714,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__coding_region_start",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__cdna_coding_start",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "consequence__transcript__annotation__dbsnp_rs",
               "type": {
                 "kind": "OBJECT",
@@ -63424,31 +62726,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "consequence__transcript__is_canonical",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__seq_exon_end",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -63484,18 +62762,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__domains__end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__diagnoses__days_to_birth",
               "type": {
                 "kind": "OBJECT",
@@ -63508,55 +62774,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "occurrence__case__exposures__submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__cdna_end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__created_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__project__state",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__alcohol_history",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -63592,31 +62810,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__symbol",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__state",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__diagnoses__tumor_stage",
+              "name": "occurrence__case__demographic__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -63629,18 +62823,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "occurrence__case__observation__src_vcf_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__length_amino_acid",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -63713,42 +62895,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "occurrence__case__diagnoses__morphology",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__demographic__submitter_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__description",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__genomic_coding_start",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -63868,18 +63014,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__name",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "consequence__transcript__annotation__ccds",
               "type": {
                 "kind": "OBJECT",
@@ -63940,30 +63074,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__is_canonical",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__bmi",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "consequence__transcript__annotation__amino_acids",
               "type": {
                 "kind": "OBJECT",
@@ -64000,7 +63110,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__cdna_coding_end",
+              "name": "consequence__transcript__gene__cytoband",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -64036,30 +63146,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__domains__description",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__length",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__case_id",
               "type": {
                 "kind": "OBJECT",
@@ -64084,18 +63170,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__name",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__observation__center",
               "type": {
                 "kind": "OBJECT",
@@ -64108,7 +63182,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__genomic_coding_end",
+              "name": "chromosome",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -64157,6 +63231,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "consequence__transcript__annotation__codons",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "consequence__transcript__gene__is_cancer_gene_census",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -64228,18 +63314,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__cdna_coding_start",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__diagnoses__last_known_disease_status",
               "type": {
                 "kind": "OBJECT",
@@ -64300,31 +63374,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__cdna_coding_end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__demographic__demographic_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__biotype",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -64348,43 +63398,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__domains__hit_name",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__project__dbgap_accession_number",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "consequence__transcript__aa_change",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__translation_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -64432,18 +63446,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__domains__start",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "consequence__transcript__annotation__hgvsp_short",
               "type": {
                 "kind": "OBJECT",
@@ -64457,18 +63459,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "occurrence__case__submitter_sample_ids",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__start",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -64516,30 +63506,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "occurrence__case__exposures__weight",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__biotype",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "consequence__transcript__annotation__transcript_id",
               "type": {
                 "kind": "OBJECT",
@@ -64553,18 +63519,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "occurrence__case__sample_ids",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__end_exon",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -64636,18 +63590,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "chromosome",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__diagnoses__prior_malignancy",
               "type": {
                 "kind": "OBJECT",
@@ -64661,42 +63603,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "occurrence__case__project__program__program_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__cigarettes_per_day",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__updated_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -64744,30 +63650,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__coding_region_end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__years_smoked",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__observation__validation__validation_method",
               "type": {
                 "kind": "OBJECT",
@@ -64781,18 +63663,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "occurrence__case__observation__variant_calling__variant_caller",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__seq_exon_start",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -64877,18 +63747,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "occurrence__case__observation__sample__tumor_sample_barcode",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__cdna_start",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -65020,18 +63878,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__number_of_exons",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__project__program__dbgap_accession_number",
               "type": {
                 "kind": "OBJECT",
@@ -65045,18 +63891,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "consequence__transcript__annotation__cds_end",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__domains__gff_source",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -65116,31 +63950,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__start_exon",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__diagnoses__primary_diagnosis",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "occurrence__case__exposures__exposure_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -65200,43 +64010,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__start",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "occurrence__case__diagnoses__progression_or_recurrence",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__domains__interpro_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "consequence__transcript__gene__transcripts__exons__end_phase",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -65499,7 +64273,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "genomic_dna_change",
               "type": {
@@ -65739,18 +64513,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "exposures",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CohortssmsOccurrenceCaseExposures",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
               "name": "submitter_aliquot_ids",
@@ -65824,18 +64586,6 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
-              "name": "dbgap_accession_number",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "text",
-              "isDeprecated": false,
               "name": "disease_type",
               "type": {
                 "kind": "SCALAR",
@@ -65882,7 +64632,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "keyword",
               "isDeprecated": false,
               "name": "primary_site",
               "type": {
@@ -65894,7 +64644,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "keyword",
               "isDeprecated": false,
               "name": "project_id",
               "type": {
@@ -66711,168 +65461,17 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "cigarettes_per_day",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "weight",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "updated_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "alcohol_history",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "alcohol_intensity",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "bmi",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "years_smoked",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "height",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "created_datetime",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "exposure_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "submitter_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CohortssmsOccurrenceCaseExposures",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "data_categories",
               "type": {
-                "kind": "OBJECT",
-                "name": "CohortssmsOccurrenceCaseSummaryDataCategories",
-                "ofType": null
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "CohortssmsOccurrenceCaseSummaryDataCategories",
+                  "ofType": null
+                }
               }
             }
           ],
@@ -66983,7 +65582,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "gene_symbol",
               "type": {
@@ -67031,7 +65630,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "text",
               "isDeprecated": false,
               "name": "aa_change",
               "type": {
@@ -67078,18 +65677,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "description",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "external_db_ids",
@@ -67102,24 +65689,24 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "long",
+              "description": "keyword",
               "isDeprecated": false,
-              "name": "gene_start",
+              "name": "cytoband",
               "type": {
                 "kind": "SCALAR",
-                "name": "Float",
+                "name": "String",
                 "ofType": null
               }
             },
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "long",
               "isDeprecated": false,
-              "name": "symbol",
+              "name": "gene_start",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -67162,12 +65749,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "boolean",
               "isDeprecated": false,
-              "name": "biotype",
+              "name": "is_cancer_gene_census",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -67181,22 +65768,6 @@
                 "kind": "SCALAR",
                 "name": "Float",
                 "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "transcripts",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CohortssmsConsequenceTranscriptGeneTranscripts",
-                  "ofType": null
-                }
               }
             },
             {
@@ -67220,18 +65791,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
                 "ofType": null
               }
             }
@@ -67299,491 +65858,6 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "CohortssmsConsequenceTranscriptGeneExternalDbIds",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "coding_region_start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "exons",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CohortssmsConsequenceTranscriptGeneTranscriptsExons",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "seq_exon_end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "length_amino_acid",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "translation_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "cdna_coding_start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "coding_region_end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "length",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "seq_exon_start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "biotype",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "length_cds",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "number_of_exons",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "end_exon",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "boolean",
-              "isDeprecated": false,
-              "name": "is_canonical",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Boolean",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "domains",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CohortssmsConsequenceTranscriptGeneTranscriptsDomains",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "cdna_coding_end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "start_exon",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CohortssmsConsequenceTranscriptGeneTranscripts",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "cdna_end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "start_phase",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "cdna_start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "cdna_coding_start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "cdna_coding_end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "genomic_coding_end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "genomic_coding_start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "end_phase",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CohortssmsConsequenceTranscriptGeneTranscriptsExons",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "end",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "description",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "long",
-              "isDeprecated": false,
-              "name": "start",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "gff_source",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "interpro_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "hit_name",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CohortssmsConsequenceTranscriptGeneTranscriptsDomains",
           "possibleTypes": null
         },
         {
@@ -68295,7 +66369,19 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "legacy_created_datetime",
+              "name": "project__name",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "project__program__dbgap_accession_number",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -68427,18 +66513,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "project__program__dbgap_accession_number",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "notes",
               "type": {
                 "kind": "OBJECT",
@@ -68499,7 +66573,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "project__name",
+              "name": "legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -69308,18 +67382,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "released",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "dbgap_accession_number",
               "type": {
                 "kind": "OBJECT",
@@ -69333,6 +67395,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "summary__experimental_strategies__experimental_strategy",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "released",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",

@@ -1962,6 +1962,10 @@ d3-zoom@1.1.1:
     d3-selection "1"
     d3-transition "1"
 
+d3@3.5.17:
+  version "3.5.17"
+  resolved "https://registry.yarnpkg.com/d3/-/d3-3.5.17.tgz#bc46748004378b21a360c9fc7cf5231790762fb8"
+
 d3@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/d3/-/d3-4.4.1.tgz#2cbb08f92970364076ffe91ab83ef66b80610785"
@@ -4551,10 +4555,11 @@ once@~1.3.3:
   dependencies:
     wrappy "1"
 
-oncogrid@^1.1.0:
+"oncogrid@git+https://github.com/oncojs/oncogrid.git#c17ef56f1bc4733a5aae90b617b8aba4e9a45827":
   version "1.1.0"
-  resolved "https://registry.yarnpkg.com/oncogrid/-/oncogrid-1.1.0.tgz#d266573748a9b53f8b6cd28d06a1fab9b6dadd61"
+  resolved "git+https://github.com/oncojs/oncogrid.git#c17ef56f1bc4733a5aae90b617b8aba4e9a45827"
   dependencies:
+    d3 "3.5.17"
     lodash.clonedeep "^4.5.0"
     lodash.uniq "^4.5.0"
     mustache "^2.2.1"

@@ -56,11 +56,15 @@
               </tr>
               <tr>
                 <th scope="row" data-translate>Disease Type</th>
-                <td>{{ ::prc.project.disease_type }}</td>
+                <td>
+                  <div ng-repeat="type in [].concat(prc.project.disease_type || [])">{{ ::type }}</div>
+                </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Primary Site</th>
-                <td>{{ ::prc.project.primary_site }}</td>
+                <td>
+                  <div ng-repeat="site in [].concat(prc.project.primary_site || [])">{{ ::site }}</div>
+                </td>
               </tr>
               <tr>
                 <th scope="row" data-translate>Program</th>

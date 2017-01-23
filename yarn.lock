@@ -5210,6 +5210,10 @@ react-measure@^1.4.5:
     get-node-dimensions "^1.2.0"
     resize-observer-polyfill "1.3.1"
 
+react-progress@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/react-progress/-/react-progress-0.0.12.tgz#386194cdfebaa65b452494284a9677cea3980bba"
+
 react-proxy@^3.0.0-alpha.0:
   version "3.0.0-alpha.1"
   resolved "https://registry.yarnpkg.com/react-proxy/-/react-proxy-3.0.0-alpha.1.tgz#4400426bcfa80caa6724c7755695315209fa4b07"

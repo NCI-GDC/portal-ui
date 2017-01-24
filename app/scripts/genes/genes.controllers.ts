@@ -61,7 +61,7 @@ module ngApp.genes.controllers {
             method: 'POST',
             headers: { 'Content-Type': `application/json` },
             body: JSON.stringify({
-              gene_id: this.$stateParams.geneId,
+              gene_ids: this.$stateParams.geneId,
               fields: [
                 'ssm_id',
                 'genomic_dna_change',

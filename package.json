@@ -27,6 +27,7 @@
     "oncogrid": "git+https://github.com/oncojs/oncogrid.git#c17ef56f1bc4733a5aae90b617b8aba4e9a45827",
     "react": "^15.4.2",
     "react-faux-dom": "^3.0.0",
+    "react-highlighter": "^0.3.3",
     "react-icons": "^2.2.3",
     "react-measure": "^1.4.5",
     "react-redux": "^5.0.2",

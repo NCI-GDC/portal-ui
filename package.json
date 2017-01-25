@@ -29,6 +29,7 @@
     "react-faux-dom": "^3.0.0",
     "react-icons": "^2.2.3",
     "react-measure": "^1.4.5",
+    "react-progress": "^0.0.12",
     "react-redux": "^5.0.2",
     "react-relay": "^0.10.0",
     "react-router": "4.0.0-alpha.5",

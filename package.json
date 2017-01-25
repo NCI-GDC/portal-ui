@@ -54,6 +54,7 @@
   },
   "scripts": {
     "knit": "knit",
+    "build": "knit build --skip-preflight --verbose",
     "start": "knit server",
     "test": "jest",
     "lint": "eslint --ext .js modules/node_modules || exit 0",

@@ -34,7 +34,7 @@
     "react-measure": "^1.4.5",
     "react-redux": "^5.0.2",
     "react-relay": "^0.10.0",
-    "react-router": "4.0.0-alpha.5",
+    "react-router": "4.0.0-alpha.6",
     "recompose": "^0.21.2",
     "redux": "^3.6.0",
     "redux-actions": "^1.2.0",

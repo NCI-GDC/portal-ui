@@ -30,7 +30,9 @@ module ngApp.home.controllers {
                 private FilesService: IFilesService,
                 private ProjectsService: IProjectsService,
                 private DATA_TYPES,
-                private DATA_CATEGORIES) {
+                private DATA_CATEGORIES,
+                private config: IGDCConfig
+                ) {
 
       CoreService.setPageTitle("Welcome to The Genomic Data Commons Data Portal");
 

@@ -148,6 +148,7 @@ function appRun(gettextCatalog: any,
 
   Restangular.all('status').get('').then(function(data){
 
+    config.data_release = data.data_release;
     config.apiVersion = data['tag'];
     config.apiCommitHash = data['commit'];
     config.apiTag = "https://github.com/NCI-GDC/gdcapi/releases/tag/" + config.apiVersion;

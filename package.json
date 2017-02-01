@@ -52,7 +52,8 @@
     "eslint": "^3.13.1",
     "flow-bin": "^0.37.4",
     "jest": "^18.1.0",
-    "react-dom": "^15.4.2"
+    "react-dom": "^15.4.2",
+    "react-modal": "1.6.5"
   },
   "scripts": {
     "knit": "knit",

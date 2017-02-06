@@ -209,9 +209,9 @@
     redux "^3.6.0"
     redux-actions "^1.2.0"
 
-"@oncojs/sapien@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@oncojs/sapien/-/sapien-0.4.2.tgz#1cfb4ab1412035aa2c526466e76276f741a40b00"
+"@oncojs/sapien@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@oncojs/sapien/-/sapien-0.4.3.tgz#e175a97f4c4e4827b701343ff491839c1fe03508"
 
 "@oncojs/survivalplot@0.4.1":
   version "0.4.1"
@@ -5277,6 +5277,10 @@ react-moment-proptypes@^1.2.1:
 react-portal@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-portal/-/react-portal-3.0.0.tgz#9304fce836e8a3216b22588f8dc91b447728f0ae"
+
+react-progress@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/react-progress/-/react-progress-0.0.12.tgz#386194cdfebaa65b452494284a9677cea3980bba"
 
 react-proxy@^3.0.0-alpha.0:
   version "3.0.0-alpha.1"

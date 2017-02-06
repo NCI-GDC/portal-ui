@@ -11,7 +11,7 @@
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
     "@oncojs/lolliplot": "^0.5.8",
-    "@oncojs/sapien": "^0.4.2",
+    "@oncojs/sapien": "^0.4.3",
     "@oncojs/survivalplot": "0.4.1",
     "babel-polyfill": "^6.20.0",
     "d3": "^4.4.1",
@@ -33,6 +33,7 @@
     "react-highlighter": "^0.3.3",
     "react-icons": "^2.2.3",
     "react-measure": "^1.4.5",
+    "react-progress": "^0.0.12",
     "react-redux": "^5.0.2",
     "react-relay": "^0.10.0",
     "react-router-dom": "4.0.0-beta.4",

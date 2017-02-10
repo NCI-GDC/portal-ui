@@ -19,7 +19,7 @@
               }
             }
           ],
-          "description": "Directs the executor to include this field or fragment only when the `if` argument is true.",
+          "description": null,
           "locations": [
             "FIELD",
             "FRAGMENT_SPREAD",
@@ -44,33 +44,13 @@
               }
             }
           ],
-          "description": "Directs the executor to skip this field or fragment when the `if` argument is true.",
+          "description": null,
           "locations": [
             "FIELD",
             "FRAGMENT_SPREAD",
             "INLINE_FRAGMENT"
           ],
           "name": "skip"
-        },
-        {
-          "args": [
-            {
-              "defaultValue": "\"No longer supported\"",
-              "description": "Explains why this element was deprecated, usually also including a suggestion for how toaccess supported similar data. Formatted in [Markdown](https://daringfireball.net/projects/markdown/).",
-              "name": "reason",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            }
-          ],
-          "description": "Marks an element of a GraphQL schema as no longer supported.",
-          "locations": [
-            "FIELD_DEFINITION",
-            "ENUM_VALUE"
-          ],
-          "name": "deprecated"
         }
       ],
       "mutationType": null,
@@ -784,10 +764,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "demographic__year_of_birth",
+              "name": "demographic__state",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -808,10 +788,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "demographic__state",
+              "name": "demographic__year_of_birth",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -1192,7 +1172,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__annotations__submitter_id",
+              "name": "samples__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -1240,7 +1220,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__annotations__legacy_created_datetime",
+              "name": "samples__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -1564,18 +1544,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__state",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "samples__portions__analytes__aliquots__center__code",
               "type": {
                 "kind": "OBJECT",
@@ -1672,10 +1640,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__source_center",
+              "name": "samples__portions__analytes__aliquots__amount",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -1708,10 +1676,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__amount",
+              "name": "samples__portions__analytes__aliquots__state",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -1721,6 +1689,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "samples__portions__analytes__aliquots__aliquot_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "samples__portions__analytes__aliquots__analyte_type_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -1744,7 +1724,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__analyte_type_id",
+              "name": "samples__portions__analytes__aliquots__source_center",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -1876,7 +1856,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__annotations__submitter_id",
+              "name": "samples__portions__analytes__aliquots__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -1924,7 +1904,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__aliquots__annotations__legacy_created_datetime",
+              "name": "samples__portions__analytes__aliquots__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -2128,7 +2108,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__annotations__submitter_id",
+              "name": "samples__portions__analytes__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -2176,7 +2156,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__analytes__annotations__legacy_created_datetime",
+              "name": "samples__portions__analytes__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -2236,7 +2216,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__slides__percent_monocyte_infiltration",
+              "name": "samples__portions__slides__percent_eosinophil_infiltration",
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
@@ -2380,7 +2360,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__slides__annotations__submitter_id",
+              "name": "samples__portions__slides__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -2428,7 +2408,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__slides__annotations__legacy_created_datetime",
+              "name": "samples__portions__slides__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -2488,7 +2468,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__slides__percent_eosinophil_infiltration",
+              "name": "samples__portions__slides__percent_monocyte_infiltration",
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
@@ -2800,7 +2780,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__annotations__submitter_id",
+              "name": "samples__portions__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -2848,7 +2828,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "samples__portions__annotations__legacy_created_datetime",
+              "name": "samples__portions__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -3088,7 +3068,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "annotations__submitter_id",
+              "name": "annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -3136,7 +3116,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "annotations__legacy_created_datetime",
+              "name": "annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -3256,10 +3236,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "exposures__submitter_id",
+              "name": "exposures__height",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -3304,10 +3284,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "exposures__height",
+              "name": "exposures__submitter_id",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -3940,7 +3920,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__archive__error_type",
+              "name": "files__archive__md5sum",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -4000,7 +3980,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__archive__md5sum",
+              "name": "files__archive__error_type",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -4588,10 +4568,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__demographic__year_of_birth",
+              "name": "files__cases__demographic__state",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -4612,10 +4592,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__demographic__state",
+              "name": "files__cases__demographic__year_of_birth",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -4996,7 +4976,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__annotations__submitter_id",
+              "name": "files__cases__samples__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5044,7 +5024,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__annotations__legacy_created_datetime",
+              "name": "files__cases__samples__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5368,7 +5348,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__analytes__aliquots__source_center",
+              "name": "files__cases__samples__portions__analytes__aliquots__aliquot_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5476,10 +5456,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__analytes__aliquots__amount",
+              "name": "files__cases__samples__portions__analytes__aliquots__analyte_type_id",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -5512,10 +5492,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__analytes__aliquots__state",
+              "name": "files__cases__samples__portions__analytes__aliquots__amount",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -5524,7 +5504,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__analytes__aliquots__aliquot_id",
+              "name": "files__cases__samples__portions__analytes__aliquots__state",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5548,7 +5528,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__analytes__aliquots__analyte_type_id",
+              "name": "files__cases__samples__portions__analytes__aliquots__source_center",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5680,7 +5660,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__analytes__aliquots__annotations__submitter_id",
+              "name": "files__cases__samples__portions__analytes__aliquots__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5728,7 +5708,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__analytes__aliquots__annotations__legacy_created_datetime",
+              "name": "files__cases__samples__portions__analytes__aliquots__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5932,7 +5912,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__analytes__annotations__submitter_id",
+              "name": "files__cases__samples__portions__analytes__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -5980,7 +5960,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__analytes__annotations__legacy_created_datetime",
+              "name": "files__cases__samples__portions__analytes__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -6040,7 +6020,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__slides__percent_eosinophil_infiltration",
+              "name": "files__cases__samples__portions__slides__percent_monocyte_infiltration",
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
@@ -6184,7 +6164,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__slides__annotations__submitter_id",
+              "name": "files__cases__samples__portions__slides__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -6232,7 +6212,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__slides__annotations__legacy_created_datetime",
+              "name": "files__cases__samples__portions__slides__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -6292,7 +6272,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__slides__percent_monocyte_infiltration",
+              "name": "files__cases__samples__portions__slides__percent_eosinophil_infiltration",
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
@@ -6604,7 +6584,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__annotations__submitter_id",
+              "name": "files__cases__samples__portions__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -6652,7 +6632,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__samples__portions__annotations__legacy_created_datetime",
+              "name": "files__cases__samples__portions__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -6892,7 +6872,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__annotations__submitter_id",
+              "name": "files__cases__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -6940,7 +6920,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__annotations__legacy_created_datetime",
+              "name": "files__cases__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -7060,10 +7040,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__exposures__submitter_id",
+              "name": "files__cases__exposures__height",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -7108,10 +7088,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__exposures__height",
+              "name": "files__cases__exposures__submitter_id",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -7252,7 +7232,19 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__family_histories__updated_datetime",
+              "name": "files__cases__family_histories__relationship_age_at_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__family_histories__relative_with_cancer_history",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -7276,19 +7268,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__family_histories__relationship_primary_diagnosis",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__family_histories__relative_with_cancer_history",
+              "name": "files__cases__family_histories__updated_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -7360,10 +7340,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__family_histories__relationship_age_at_diagnosis",
+              "name": "files__cases__family_histories__relationship_primary_diagnosis",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -7564,6 +7544,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "files__cases__diagnoses__treatments__days_to_treatment",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__cases__diagnoses__treatments__updated_datetime",
               "type": {
                 "kind": "OBJECT",
@@ -7577,18 +7569,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "files__cases__diagnoses__treatments__created_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__treatments__therapeutic_agents",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -7636,10 +7616,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__diagnoses__treatments__days_to_treatment",
+              "name": "files__cases__diagnoses__treatments__therapeutic_agents",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -7736,18 +7716,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__disease_type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -7961,18 +7929,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "files__cases__aliquot_ids",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__primary_site",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -8632,7 +8588,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__analysis__metadata__read_groups__includes_spike_ins",
+              "name": "files__analysis__metadata__read_groups__base_caller_name",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -9160,7 +9116,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__analysis__metadata__read_groups__target_capture_kit_vendor",
+              "name": "files__analysis__metadata__read_groups__sequencing_center",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -9196,7 +9152,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__analysis__metadata__read_groups__base_caller_name",
+              "name": "files__analysis__metadata__read_groups__includes_spike_ins",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -9244,7 +9200,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__analysis__metadata__read_groups__sequencing_center",
+              "name": "files__analysis__metadata__read_groups__target_capture_kit_vendor",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -9328,7 +9284,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "family_histories__updated_datetime",
+              "name": "family_histories__relative_with_cancer_history",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -9352,7 +9308,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "family_histories__relative_with_cancer_history",
+              "name": "family_histories__updated_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -9364,10 +9320,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "family_histories__relationship_age_at_diagnosis",
+              "name": "family_histories__relationship_primary_diagnosis",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -9424,10 +9380,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "family_histories__relationship_primary_diagnosis",
+              "name": "family_histories__relationship_age_at_diagnosis",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -9628,6 +9584,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "diagnoses__treatments__days_to_treatment",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "diagnoses__treatments__updated_datetime",
               "type": {
                 "kind": "OBJECT",
@@ -9641,18 +9609,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "diagnoses__treatments__created_datetime",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__treatments__therapeutic_agents",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -9700,10 +9656,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__treatments__days_to_treatment",
+              "name": "diagnoses__treatments__therapeutic_agents",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -9800,18 +9756,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "disease_type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -10025,18 +9969,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "aliquot_ids",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "primary_site",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -10461,7 +10393,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "updated_datetime",
               "type": {
@@ -10473,7 +10405,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_analyte_ids",
               "type": {
@@ -10485,7 +10417,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "analyte_ids",
               "type": {
@@ -10497,7 +10429,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_id",
               "type": {
@@ -10509,7 +10441,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "sample_ids",
               "type": {
@@ -10521,7 +10453,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "portion_ids",
               "type": {
@@ -10533,7 +10465,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_portion_ids",
               "type": {
@@ -10545,7 +10477,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "created_datetime",
               "type": {
@@ -10557,7 +10489,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "slide_ids",
               "type": {
@@ -10581,7 +10513,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state",
               "type": {
@@ -10593,7 +10525,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "case_id",
               "type": {
@@ -10605,7 +10537,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_sample_ids",
               "type": {
@@ -10617,7 +10549,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_aliquot_ids",
               "type": {
@@ -10629,7 +10561,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "aliquot_ids",
               "type": {
@@ -10641,7 +10573,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_slide_ids",
               "type": {
@@ -10862,12 +10794,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Numeric value to represent the calendar year in which an individual was born.",
+              "description": "The current state of the object.\n",
               "isDeprecated": false,
-              "name": "year_of_birth",
+              "name": "state",
               "type": {
                 "kind": "SCALAR",
-                "name": "Float",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -10886,12 +10818,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The current state of the object.\n",
+              "description": "Numeric value to represent the calendar year in which an individual was born.",
               "isDeprecated": false,
-              "name": "state",
+              "name": "year_of_birth",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -10910,7 +10842,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "demographic_id",
               "type": {
@@ -11048,7 +10980,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_category",
               "type": {
@@ -11095,7 +11027,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "experimental_strategy",
               "type": {
@@ -11118,7 +11050,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "project_id",
               "type": {
@@ -11130,7 +11062,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "disease_type",
               "type": {
@@ -11142,7 +11074,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "released",
               "type": {
@@ -11154,7 +11086,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state",
               "type": {
@@ -11166,7 +11098,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "primary_site",
               "type": {
@@ -11178,7 +11110,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "dbgap_accession_number",
               "type": {
@@ -11190,7 +11122,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "name",
               "type": {
@@ -11261,7 +11193,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "program_id",
               "type": {
@@ -11399,7 +11331,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "tissue_source_site_id",
               "type": {
@@ -12187,7 +12119,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "archive__md5sum",
+              "name": "archive__error_type",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -12247,7 +12179,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "archive__error_type",
+              "name": "archive__md5sum",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -12739,7 +12671,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "annotations__submitter_id",
+              "name": "annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -12787,7 +12719,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "annotations__legacy_created_datetime",
+              "name": "annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -13039,10 +12971,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__demographic__state",
+              "name": "cases__demographic__year_of_birth",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -13063,10 +12995,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__demographic__year_of_birth",
+              "name": "cases__demographic__state",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -13435,7 +13367,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__annotations__submitter_id",
+              "name": "cases__samples__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -13495,7 +13427,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__annotations__legacy_created_datetime",
+              "name": "cases__samples__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -13819,7 +13751,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__aliquots__aliquot_id",
+              "name": "cases__samples__portions__analytes__aliquots__state",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -13927,7 +13859,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__aliquots__analyte_type_id",
+              "name": "cases__samples__portions__analytes__aliquots__source_center",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -13975,7 +13907,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__aliquots__state",
+              "name": "cases__samples__portions__analytes__aliquots__aliquot_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -13999,7 +13931,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__aliquots__source_center",
+              "name": "cases__samples__portions__analytes__aliquots__analyte_type_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -14119,7 +14051,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__aliquots__annotations__submitter_id",
+              "name": "cases__samples__portions__analytes__aliquots__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -14179,7 +14111,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__aliquots__annotations__legacy_created_datetime",
+              "name": "cases__samples__portions__analytes__aliquots__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -14371,7 +14303,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__annotations__submitter_id",
+              "name": "cases__samples__portions__analytes__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -14431,7 +14363,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__analytes__annotations__legacy_created_datetime",
+              "name": "cases__samples__portions__analytes__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -14491,7 +14423,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__slides__percent_monocyte_infiltration",
+              "name": "cases__samples__portions__slides__percent_eosinophil_infiltration",
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
@@ -14539,7 +14471,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__slides__percent_eosinophil_infiltration",
+              "name": "cases__samples__portions__slides__percent_monocyte_infiltration",
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
@@ -14791,7 +14723,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__slides__annotations__submitter_id",
+              "name": "cases__samples__portions__slides__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -14851,7 +14783,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__slides__annotations__legacy_created_datetime",
+              "name": "cases__samples__portions__slides__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -15043,7 +14975,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__annotations__submitter_id",
+              "name": "cases__samples__portions__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -15103,7 +15035,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__samples__portions__annotations__legacy_created_datetime",
+              "name": "cases__samples__portions__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -15331,7 +15263,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__annotations__submitter_id",
+              "name": "cases__annotations__legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -15391,7 +15323,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__annotations__legacy_created_datetime",
+              "name": "cases__annotations__submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -15511,10 +15443,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__exposures__submitter_id",
+              "name": "cases__exposures__height",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -15559,10 +15491,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__exposures__height",
+              "name": "cases__exposures__submitter_id",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -15703,19 +15635,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__family_histories__relationship_age_at_diagnosis",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__family_histories__relative_with_cancer_history",
+              "name": "cases__family_histories__updated_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -15739,7 +15659,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__family_histories__updated_datetime",
+              "name": "cases__family_histories__relationship_primary_diagnosis",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -15751,10 +15671,22 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__family_histories__relationship_primary_diagnosis",
+              "name": "cases__family_histories__relative_with_cancer_history",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__family_histories__relationship_age_at_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -16015,18 +15947,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__diagnoses__treatments__days_to_treatment",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "cases__diagnoses__treatments__updated_datetime",
               "type": {
                 "kind": "OBJECT",
@@ -16040,6 +15960,18 @@
               "description": null,
               "isDeprecated": false,
               "name": "cases__diagnoses__treatments__created_datetime",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__treatments__therapeutic_agents",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -16087,10 +16019,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__diagnoses__treatments__therapeutic_agents",
+              "name": "cases__diagnoses__treatments__days_to_treatment",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -16187,18 +16119,6 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__disease_type",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -16412,18 +16332,6 @@
               "description": null,
               "isDeprecated": false,
               "name": "cases__aliquot_ids",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__primary_site",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -16783,7 +16691,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "analysis__metadata__read_groups__base_caller_name",
+              "name": "analysis__metadata__read_groups__includes_spike_ins",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -17299,7 +17207,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "analysis__metadata__read_groups__sequencing_center",
+              "name": "analysis__metadata__read_groups__target_capture_kit_vendor",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -17335,7 +17243,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "analysis__metadata__read_groups__includes_spike_ins",
+              "name": "analysis__metadata__read_groups__base_caller_name",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -17383,7 +17291,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "analysis__metadata__read_groups__target_capture_kit_vendor",
+              "name": "analysis__metadata__read_groups__sequencing_center",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -17938,7 +17846,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "origin",
               "type": {
@@ -17950,7 +17858,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "file_name",
               "type": {
@@ -17962,7 +17870,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_id",
               "type": {
@@ -17986,7 +17894,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "created_datetime",
               "type": {
@@ -17998,7 +17906,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "error_type",
               "type": {
@@ -18010,7 +17918,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "access",
               "type": {
@@ -18022,7 +17930,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "platform",
               "type": {
@@ -18034,7 +17942,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state",
               "type": {
@@ -18046,7 +17954,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "type",
               "type": {
@@ -18058,7 +17966,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "file_state",
               "type": {
@@ -18070,7 +17978,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "experimental_strategy",
               "type": {
@@ -18082,7 +17990,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_type",
               "type": {
@@ -18094,7 +18002,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "file_id",
               "type": {
@@ -18106,7 +18014,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state_comment",
               "type": {
@@ -18118,7 +18026,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "md5sum",
               "type": {
@@ -18130,7 +18038,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "updated_datetime",
               "type": {
@@ -18142,7 +18050,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_format",
               "type": {
@@ -18154,7 +18062,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "acl",
               "type": {
@@ -18166,7 +18074,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_category",
               "type": {
@@ -18343,7 +18251,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "archive_id",
               "type": {
@@ -18355,9 +18263,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The 128-bit hash value expressed as a 32 digit hexadecimal number used as a file's digital fingerprint. \n",
+              "description": "Type of error for the data file object. \n",
               "isDeprecated": false,
-              "name": "md5sum",
+              "name": "error_type",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -18415,9 +18323,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Type of error for the data file object. \n",
+              "description": "The 128-bit hash value expressed as a 32 digit hexadecimal number used as a file's digital fingerprint. \n",
               "isDeprecated": false,
-              "name": "error_type",
+              "name": "md5sum",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -18582,7 +18490,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "center_id",
               "type": {
@@ -18825,7 +18733,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "entity_id",
               "type": {
@@ -18837,7 +18745,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "case_id",
               "type": {
@@ -18849,7 +18757,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "entity_submitter_id",
               "type": {
@@ -18861,7 +18769,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "entity_type",
               "type": {
@@ -18890,7 +18798,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "analysis_id",
               "type": {
@@ -18902,7 +18810,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "updated_datetime",
               "type": {
@@ -18914,7 +18822,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "created_datetime",
               "type": {
@@ -18926,7 +18834,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_id",
               "type": {
@@ -18938,7 +18846,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state",
               "type": {
@@ -18950,7 +18858,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_end_datetime",
               "type": {
@@ -18962,7 +18870,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_link",
               "type": {
@@ -18974,7 +18882,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "analysis_type",
               "type": {
@@ -18986,7 +18894,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_type",
               "type": {
@@ -18998,7 +18906,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_start_datetime",
               "type": {
@@ -19010,7 +18918,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_version",
               "type": {
@@ -19426,7 +19334,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "library_name",
               "type": {
@@ -19438,7 +19346,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "is_paired_end",
               "type": {
@@ -19450,7 +19358,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "size_selection_range",
               "type": {
@@ -19462,7 +19370,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "adapter_sequence",
               "type": {
@@ -19474,7 +19382,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "library_strand",
               "type": {
@@ -19486,7 +19394,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_id",
               "type": {
@@ -19498,7 +19406,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "library_preparation_kit_name",
               "type": {
@@ -19510,7 +19418,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "to_trim_adapter_sequence",
               "type": {
@@ -19522,7 +19430,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "target_capture_kit_name",
               "type": {
@@ -19534,7 +19442,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "base_caller_version",
               "type": {
@@ -19546,9 +19454,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
-              "name": "base_caller_name",
+              "name": "includes_spike_ins",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -19558,7 +19466,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "library_preparation_kit_version",
               "type": {
@@ -19570,7 +19478,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "spike_ins_concentration",
               "type": {
@@ -19594,7 +19502,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "created_datetime",
               "type": {
@@ -19606,7 +19514,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "sequencing_date",
               "type": {
@@ -19618,7 +19526,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "updated_datetime",
               "type": {
@@ -19630,7 +19538,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "spike_ins_fasta",
               "type": {
@@ -19642,7 +19550,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "platform",
               "type": {
@@ -19654,7 +19562,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state",
               "type": {
@@ -19666,7 +19574,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "library_selection",
               "type": {
@@ -19678,7 +19586,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "library_strategy",
               "type": {
@@ -19690,7 +19598,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "library_preparation_kit_catalog_number",
               "type": {
@@ -19702,7 +19610,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "target_capture_kit_target_region",
               "type": {
@@ -19714,7 +19622,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "target_capture_kit_version",
               "type": {
@@ -19726,7 +19634,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "read_group_name",
               "type": {
@@ -19738,7 +19646,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "library_preparation_kit_vendor",
               "type": {
@@ -19750,9 +19658,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
-              "name": "sequencing_center",
+              "name": "target_capture_kit_vendor",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -19762,7 +19670,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "target_capture_kit_catalog_number",
               "type": {
@@ -19774,7 +19682,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "instrument_model",
               "type": {
@@ -19786,9 +19694,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
-              "name": "includes_spike_ins",
+              "name": "base_caller_name",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -19810,7 +19718,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "experiment_name",
               "type": {
@@ -19822,7 +19730,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "flow_cell_barcode",
               "type": {
@@ -19834,9 +19742,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
-              "name": "target_capture_kit_vendor",
+              "name": "sequencing_center",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -19846,7 +19754,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "read_group_id",
               "type": {
@@ -19858,7 +19766,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "adapter_name",
               "type": {
@@ -20129,7 +20037,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "encoding",
               "type": {
@@ -20141,7 +20049,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "sequence_duplication_levels",
               "type": {
@@ -20153,7 +20061,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_id",
               "type": {
@@ -20165,7 +20073,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "basic_statistics",
               "type": {
@@ -20177,7 +20085,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "per_base_sequence_content",
               "type": {
@@ -20189,7 +20097,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "kmer_content",
               "type": {
@@ -20213,7 +20121,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "per_tile_sequence_quality",
               "type": {
@@ -20225,7 +20133,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "created_datetime",
               "type": {
@@ -20237,7 +20145,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "read_group_qc_id",
               "type": {
@@ -20249,7 +20157,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "updated_datetime",
               "type": {
@@ -20261,7 +20169,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "per_sequence_gc_content",
               "type": {
@@ -20273,7 +20181,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state",
               "type": {
@@ -20285,7 +20193,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "per_base_n_content",
               "type": {
@@ -20297,7 +20205,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_end_datetime",
               "type": {
@@ -20309,7 +20217,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "adapter_content",
               "type": {
@@ -20321,7 +20229,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "per_base_sequence_quality",
               "type": {
@@ -20333,7 +20241,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "fastq_name",
               "type": {
@@ -20345,7 +20253,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_link",
               "type": {
@@ -20369,7 +20277,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "sequence_length_distribution",
               "type": {
@@ -20381,7 +20289,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "per_sequence_quality_score",
               "type": {
@@ -20393,7 +20301,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_type",
               "type": {
@@ -20405,7 +20313,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "overrepresented_sequences",
               "type": {
@@ -20417,7 +20325,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_start_datetime",
               "type": {
@@ -20429,7 +20337,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_version",
               "type": {
@@ -20688,7 +20596,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "analysis_id",
               "type": {
@@ -20700,7 +20608,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "updated_datetime",
               "type": {
@@ -20712,7 +20620,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "created_datetime",
               "type": {
@@ -20724,7 +20632,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_id",
               "type": {
@@ -20736,7 +20644,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state",
               "type": {
@@ -20748,7 +20656,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_end_datetime",
               "type": {
@@ -20760,7 +20668,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_link",
               "type": {
@@ -20772,7 +20680,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "analysis_type",
               "type": {
@@ -20784,7 +20692,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_type",
               "type": {
@@ -20796,7 +20704,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_start_datetime",
               "type": {
@@ -20808,7 +20716,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "workflow_version",
               "type": {
@@ -21173,7 +21081,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "md5sum",
               "type": {
@@ -21185,7 +21093,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_type",
               "type": {
@@ -21197,7 +21105,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "updated_datetime",
               "type": {
@@ -21209,7 +21117,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "created_datetime",
               "type": {
@@ -21221,7 +21129,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "file_name",
               "type": {
@@ -21233,7 +21141,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "error_type",
               "type": {
@@ -21245,7 +21153,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_format",
               "type": {
@@ -21257,7 +21165,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "submitter_id",
               "type": {
@@ -21269,7 +21177,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "access",
               "type": {
@@ -21281,7 +21189,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "platform",
               "type": {
@@ -21293,7 +21201,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state",
               "type": {
@@ -21305,7 +21213,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "file_id",
               "type": {
@@ -21317,7 +21225,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_category",
               "type": {
@@ -21341,7 +21249,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "experimental_strategy",
               "type": {
@@ -21353,7 +21261,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state_comment",
               "type": {
@@ -21365,7 +21273,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "file_state",
               "type": {
@@ -21626,7 +21534,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_type",
               "type": {
@@ -21686,7 +21594,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_format",
               "type": {
@@ -21710,7 +21618,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "access",
               "type": {
@@ -21746,7 +21654,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "file_id",
               "type": {
@@ -21758,7 +21666,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "data_category",
               "type": {
@@ -21782,7 +21690,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "type",
               "type": {
@@ -22050,7 +21958,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "submitter_id",
+              "name": "legacy_created_datetime",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -22230,7 +22138,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "legacy_created_datetime",
+              "name": "submitter_id",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -22389,7 +22297,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "category",
               "type": {
@@ -22401,7 +22309,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "legacy_updated_datetime",
               "type": {
@@ -22413,7 +22321,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "entity_id",
               "type": {
@@ -22425,7 +22333,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "classification",
               "type": {
@@ -22437,7 +22345,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "updated_datetime",
               "type": {
@@ -22449,7 +22357,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "created_datetime",
               "type": {
@@ -22461,7 +22369,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "entity_submitter_id",
               "type": {
@@ -22473,7 +22381,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "notes",
               "type": {
@@ -22485,7 +22393,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "entity_type",
               "type": {
@@ -22497,55 +22405,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
-              "isDeprecated": false,
-              "name": "submitter_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "text",
-              "isDeprecated": false,
-              "name": "case_id",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "status",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "legacy_created_datetime",
               "type": {
@@ -22557,7 +22417,55 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
+              "isDeprecated": false,
+              "name": "state",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "case_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "status",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "submitter_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
               "isDeprecated": false,
               "name": "annotation_id",
               "type": {
@@ -22569,7 +22477,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "case_submitter_id",
               "type": {
@@ -22924,7 +22832,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "sample_id",
               "type": {
@@ -23485,7 +23393,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "portion_id",
               "type": {
@@ -23912,7 +23820,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "analyte_id",
               "type": {
@@ -24231,18 +24139,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The current state of the object.\n",
-              "isDeprecated": false,
-              "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
               "isDeprecated": false,
               "name": "updated_datetime",
@@ -24267,12 +24163,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Name of the center that provided the item.\n",
+              "description": "Weight in grams or volume in mL.\n",
               "isDeprecated": false,
-              "name": "source_center",
+              "name": "amount",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -24303,21 +24199,33 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Weight in grams or volume in mL.\n",
+              "description": "The current state of the object.\n",
               "isDeprecated": false,
-              "name": "amount",
+              "name": "state",
               "type": {
                 "kind": "SCALAR",
-                "name": "Float",
+                "name": "String",
                 "ofType": null
               }
             },
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "aliquot_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Single letter BCR code for the analyte type.\n",
+              "isDeprecated": false,
+              "name": "analyte_type_id",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -24339,9 +24247,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Single letter BCR code for the analyte type.\n",
+              "description": "Name of the center that provided the item.\n",
               "isDeprecated": false,
-              "name": "analyte_type_id",
+              "name": "source_center",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -24634,9 +24542,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Percent of cells identified as monocyte infiltration.\n",
+              "description": "Percent of cells identified as eosinophil infiltration.\n",
               "isDeprecated": false,
-              "name": "percent_monocyte_infiltration",
+              "name": "percent_eosinophil_infiltration",
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
@@ -24682,9 +24590,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Percent of cells identified as eosinophil infiltration.\n",
+              "description": "Percent of cells identified as monocyte infiltration.\n",
               "isDeprecated": false,
-              "name": "percent_eosinophil_infiltration",
+              "name": "percent_monocyte_infiltration",
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
@@ -24754,7 +24662,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "slide_id",
               "type": {
@@ -25171,12 +25079,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": null,
+              "description": "The height of the patient in centimeters.",
               "isDeprecated": false,
-              "name": "submitter_id",
+              "name": "height",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -25207,7 +25115,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "exposure_id",
               "type": {
@@ -25219,12 +25127,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "The height of the patient in centimeters.",
+              "description": null,
               "isDeprecated": false,
-              "name": "height",
+              "name": "submitter_id",
               "type": {
                 "kind": "SCALAR",
-                "name": "Float",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -25636,7 +25544,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "diagnosis_id",
               "type": {
@@ -25981,6 +25889,18 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "Number of days from date of initial pathologic diagnosis that treatment began.",
+              "isDeprecated": false,
+              "name": "days_to_treatment",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
               "isDeprecated": false,
               "name": "updated_datetime",
@@ -26005,18 +25925,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text identification of the individual agent(s) used as part of a prior treatment regimen. \n",
-              "isDeprecated": false,
-              "name": "therapeutic_agents",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "submitter_id",
@@ -26029,7 +25937,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "treatment_id",
               "type": {
@@ -26053,12 +25961,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Number of days from date of initial pathologic diagnosis that treatment began.",
+              "description": "Text identification of the individual agent(s) used as part of a prior treatment regimen. \n",
               "isDeprecated": false,
-              "name": "days_to_treatment",
+              "name": "therapeutic_agents",
               "type": {
                 "kind": "SCALAR",
-                "name": "Float",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -29797,7 +29705,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "project_id",
               "type": {
@@ -29809,7 +29717,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "disease_type",
               "type": {
@@ -29821,7 +29729,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "released",
               "type": {
@@ -29833,7 +29741,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "state",
               "type": {
@@ -29845,7 +29753,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "primary_site",
               "type": {
@@ -29857,7 +29765,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "string",
               "isDeprecated": false,
               "name": "dbgap_accession_number",
               "type": {
@@ -29869,7 +29777,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
+              "description": "string",
               "isDeprecated": false,
               "name": "name",
               "type": {
@@ -30714,72 +30622,6 @@
               "description": "Location adjacent to an inline fragment.",
               "isDeprecated": false,
               "name": "INLINE_FRAGMENT"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to a schema definition.",
-              "isDeprecated": false,
-              "name": "SCHEMA"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to a scalar definition.",
-              "isDeprecated": false,
-              "name": "SCALAR"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an object definition.",
-              "isDeprecated": false,
-              "name": "OBJECT"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to a field definition.",
-              "isDeprecated": false,
-              "name": "FIELD_DEFINITION"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an argument definition.",
-              "isDeprecated": false,
-              "name": "ARGUMENT_DEFINITION"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an interface definition.",
-              "isDeprecated": false,
-              "name": "INTERFACE"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to a union definition.",
-              "isDeprecated": false,
-              "name": "UNION"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an enum definition.",
-              "isDeprecated": false,
-              "name": "ENUM"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an enum value definition.",
-              "isDeprecated": false,
-              "name": "ENUM_VALUE"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an input object definition.",
-              "isDeprecated": false,
-              "name": "INPUT_OBJECT"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an input object field definition.",
-              "isDeprecated": false,
-              "name": "INPUT_FIELD_DEFINITION"
             }
           ],
           "fields": null,

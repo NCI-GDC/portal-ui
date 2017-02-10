@@ -25,6 +25,7 @@
     "jsurl": "^0.1.5",
     "moment": "2.17.1",
     "oncogrid": "git+https://github.com/oncojs/oncogrid.git#c17ef56f1bc4733a5aae90b617b8aba4e9a45827",
+    "query-string": "^4.3.1",
     "react": "15.4.2",
     "react-addons-shallow-compare": "15.4.2",
     "react-dates": "4.3.2",

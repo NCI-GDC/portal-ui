@@ -18069,18 +18069,6 @@
               "deprecationReason": null,
               "description": "string",
               "isDeprecated": false,
-              "name": "acl",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "string",
-              "isDeprecated": false,
               "name": "data_category",
               "type": {
                 "kind": "SCALAR",
@@ -18098,6 +18086,22 @@
                 "kind": "SCALAR",
                 "name": "Float",
                 "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "acl",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               }
             },
             {

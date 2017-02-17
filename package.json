@@ -76,7 +76,9 @@
       "env": {
         "API": "/api/",
         "GDC_AUTH": "/auth/",
-        "LEGACY": false
+        "LEGACY": false,
+        "COMMIT_HASH": "",
+        "COMMIT_TAG": ""
       }
     }
   }

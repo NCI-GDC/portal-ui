@@ -117,7 +117,7 @@ module ngApp.components.header.controllers {
                   the GDC Data Portal and are only distributed via the GDC Legacy Archive.
                   <br>
                   <br>
-                  Check the <a href="https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/" target="_blank">Data Release Notes</a> for additional details.
+                  Check the <a href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/" target="_blank">Data Release Notes</a> for additional details.
                 </div>
               </div>
             `,

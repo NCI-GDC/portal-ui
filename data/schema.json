@@ -418,6 +418,16 @@
                 {
                   "defaultValue": null,
                   "description": null,
+                  "name": "query",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
                   "name": "offset",
                   "type": {
                     "kind": "SCALAR",
@@ -10742,6 +10752,18 @@
                 "name": "Genes",
                 "ofType": null
               }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "ssm",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Ssms",
+                "ofType": null
+              }
             }
           ],
           "inputFields": null,
@@ -11069,18 +11091,6 @@
               "deprecationReason": null,
               "description": "string",
               "isDeprecated": false,
-              "name": "disease_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "string",
-              "isDeprecated": false,
               "name": "released",
               "type": {
                 "kind": "SCALAR",
@@ -11094,18 +11104,6 @@
               "description": "string",
               "isDeprecated": false,
               "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "string",
-              "isDeprecated": false,
-              "name": "primary_site",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -11134,6 +11132,38 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "disease_type",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "primary_site",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               }
             },
             {
@@ -22551,6 +22581,16 @@
                 {
                   "defaultValue": null,
                   "description": null,
+                  "name": "query",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
                   "name": "offset",
                   "type": {
                     "kind": "SCALAR",
@@ -28279,18 +28319,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
-              "isDeprecated": false,
-              "name": "synonyms",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "boolean",
               "isDeprecated": false,
               "name": "is_cancer_gene_census",
@@ -28377,6 +28405,22 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "synonyms",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "canonical_transcript_length",
               "type": {
                 "kind": "SCALAR",
@@ -28428,7 +28472,7 @@
               "name": "case",
               "type": {
                 "kind": "OBJECT",
-                "name": "RepositoryCases",
+                "name": "CohortCases",
                 "ofType": null
               }
             },
@@ -28530,6 +28574,133 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "_ExternalDbId",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "filters",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "FiltersArgument",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "aggregations",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CaseAggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "score",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "offset",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "sort",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "filters",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "FiltersArgument",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "before",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "after",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "first",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "last",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "hits",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CaseConnection",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "CohortCases",
           "possibleTypes": null
         },
         {
@@ -29229,180 +29400,6 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "_Domain",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CohortCases",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "genes",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Genes",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "ssms",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Ssms",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "Cohort",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "filters",
-                  "type": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "FiltersArgument",
-                    "ofType": null
-                  }
-                }
-              ],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "aggregations",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CaseAggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "score",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "offset",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "sort",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "filters",
-                  "type": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "FiltersArgument",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "before",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "after",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "first",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
-                  "name": "last",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "Int",
-                    "ofType": null
-                  }
-                }
-              ],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "hits",
-              "type": {
-                "kind": "OBJECT",
-                "name": "CaseConnection",
-                "ofType": null
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CohortCases",
           "possibleTypes": null
         },
         {
@@ -31324,6 +31321,22 @@
               "isDeprecated": false,
               "name": "occurrence",
               "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "_Occurrence",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "observation",
+              "type": {
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
@@ -31368,6 +31381,304 @@
           ],
           "kind": "OBJECT",
           "name": "Ssm",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "case",
+              "type": {
+                "kind": "OBJECT",
+                "name": "_Case",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "_Occurrence",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "updated_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "submitter_analyte_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "analyte_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "submitter_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "sample_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "portion_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "submitter_portion_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "created_datetime",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "slide_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "long",
+              "isDeprecated": false,
+              "name": "days_to_index",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "state",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "case_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "submitter_sample_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "submitter_aliquot_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "aliquot_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "string",
+              "isDeprecated": false,
+              "name": "submitter_slide_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "disease_type",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "primary_site",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "demographic",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Demographic",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "summary",
+              "type": {
+                "kind": "OBJECT",
+                "name": "_CaseSummary",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "project",
+              "type": {
+                "kind": "OBJECT",
+                "name": "_Project",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "tissue_source_site",
+              "type": {
+                "kind": "OBJECT",
+                "name": "TissueSourceSite",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "_Case",
           "possibleTypes": null
         },
         {
@@ -31615,18 +31926,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "text",
-              "isDeprecated": false,
-              "name": "synonyms",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": "boolean",
               "isDeprecated": false,
               "name": "is_cancer_gene_census",
@@ -31706,6 +32005,22 @@
                 "kind": "OBJECT",
                 "name": "_ExternalDbId",
                 "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "synonyms",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               }
             },
             {
@@ -32072,6 +32387,53 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "_Annotation",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CohortCases",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "genes",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Genes",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "ssms",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Ssms",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "Cohort",
           "possibleTypes": null
         },
         {
@@ -32575,18 +32937,6 @@
               "deprecationReason": null,
               "description": "string",
               "isDeprecated": false,
-              "name": "disease_type",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "string",
-              "isDeprecated": false,
               "name": "released",
               "type": {
                 "kind": "SCALAR",
@@ -32600,18 +32950,6 @@
               "description": "string",
               "isDeprecated": false,
               "name": "state",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "string",
-              "isDeprecated": false,
-              "name": "primary_site",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -32640,6 +32978,38 @@
                 "kind": "SCALAR",
                 "name": "String",
                 "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "disease_type",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "primary_site",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               }
             },
             {

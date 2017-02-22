@@ -58,6 +58,7 @@
     "@knit/knit": "0.1.6",
     "eslint": "^3.13.1",
     "flow-bin": "^0.37.4",
+    "isomorphic-fetch": "^2.2.1",
     "jest": "^18.1.0",
     "react-dom": "^15.4.2",
     "react-modal": "1.6.5"

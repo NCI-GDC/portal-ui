@@ -97,7 +97,7 @@ module ngApp.components.downloader.directive {
           The download preparation can take time due to different factors
           (total file size, number of files, or number of concurrent users).
           We recommend that you use the
-          <a href="https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool" target="_blank">
+          <a href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool" target="_blank">
             GDC Data Transfer Tool
           </a>
           or cancel the download and try again later.

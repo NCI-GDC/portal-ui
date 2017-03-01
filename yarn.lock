@@ -4617,9 +4617,9 @@ once@~1.3.3:
   dependencies:
     wrappy "1"
 
-"oncogrid@git+https://github.com/oncojs/oncogrid.git#c17ef56f1bc4733a5aae90b617b8aba4e9a45827":
+"oncogrid@git+https://github.com/oncojs/oncogrid.git#develop":
   version "1.1.0"
-  resolved "git+https://github.com/oncojs/oncogrid.git#c17ef56f1bc4733a5aae90b617b8aba4e9a45827"
+  resolved "git+https://github.com/oncojs/oncogrid.git#d94abcc9615b683249bc816d95f057e04a3ef593"
   dependencies:
     d3 "3.5.17"
     lodash.clonedeep "^4.5.0"

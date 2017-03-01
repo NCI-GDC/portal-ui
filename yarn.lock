@@ -213,9 +213,9 @@
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@oncojs/sapien/-/sapien-0.4.3.tgz#e175a97f4c4e4827b701343ff491839c1fe03508"
 
-"@oncojs/survivalplot@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@oncojs/survivalplot/-/survivalplot-0.4.1.tgz#01e813ac69ec702610c49dcbde75cc58554132a1"
+"@oncojs/survivalplot@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@oncojs/survivalplot/-/survivalplot-0.4.2.tgz#ecf1bc818bd61e39d688c9ba6be303183e245ba5"
   dependencies:
     lodash.defaultsdeep "^4.6.0"
     lodash.inrange "^3.3.6"

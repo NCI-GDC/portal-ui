@@ -360,7 +360,7 @@
             },
             {
               "kind": "OBJECT",
-              "name": "Occurrence",
+              "name": "SsmOccurrence",
               "ofType": null
             },
             {
@@ -556,9 +556,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -11687,6 +11691,142 @@
         {
           "description": null,
           "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "field",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "order",
+              "type": {
+                "kind": "ENUM",
+                "name": "Order",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "mode",
+              "type": {
+                "kind": "ENUM",
+                "name": "Mode",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "missing",
+              "type": {
+                "kind": "ENUM",
+                "name": "Missing",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "Sort",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "asc"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "desc"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "Order",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "avg"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "max"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "min"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "sum"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "Mode",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "first"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "last"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "Missing",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": null,
           "fields": [
             {
               "args": [],
@@ -12958,9 +13098,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -20772,9 +20916,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -21234,9 +21382,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -21373,9 +21525,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -22076,9 +22232,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -22635,9 +22795,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -23026,9 +23190,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -23120,9 +23288,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -23561,9 +23733,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -24001,9 +24177,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -24821,9 +25001,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -25430,9 +25614,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -25833,9 +26021,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -26296,9 +26488,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -26711,9 +26907,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -27176,9 +27376,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -27605,9 +27809,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -28538,9 +28746,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -28976,9 +29188,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -31484,9 +31700,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -31578,9 +31798,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -32310,9 +32534,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -34200,7 +34428,7 @@
               "name": "occurrence",
               "type": {
                 "kind": "OBJECT",
-                "name": "Occurrences",
+                "name": "SsmOccurrences",
                 "ofType": null
               }
             },
@@ -34238,6 +34466,39 @@
                 {
                   "defaultValue": null,
                   "description": null,
+                  "name": "filters",
+                  "type": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "FiltersArgument",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "aggregations",
+              "type": {
+                "kind": "OBJECT",
+                "name": "GeneAggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "score",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
                   "name": "offset",
                   "type": {
                     "kind": "SCALAR",
@@ -34250,9 +34511,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -34312,7 +34577,7 @@
               "name": "hits",
               "type": {
                 "kind": "OBJECT",
-                "name": "OccurrenceConnection",
+                "name": "SsmOccurrenceConnection",
                 "ofType": null
               }
             }
@@ -34320,7 +34585,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "Occurrences",
+          "name": "SsmOccurrences",
           "possibleTypes": null
         },
         {
@@ -34370,7 +34635,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "OccurrenceEdge",
+                  "name": "SsmOccurrenceEdge",
                   "ofType": null
                 }
               }
@@ -34379,7 +34644,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "OccurrenceConnection",
+          "name": "SsmOccurrenceConnection",
           "possibleTypes": null
         },
         {
@@ -34410,7 +34675,7 @@
               "name": "node",
               "type": {
                 "kind": "OBJECT",
-                "name": "Occurrence",
+                "name": "SsmOccurrence",
                 "ofType": null
               }
             }
@@ -34418,7 +34683,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "OccurrenceEdge",
+          "name": "SsmOccurrenceEdge",
           "possibleTypes": null
         },
         {
@@ -34444,12 +34709,48 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "ssm_occurrence_id",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "score",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "case",
               "type": {
                 "kind": "OBJECT",
                 "name": "Case",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "ssm",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Ssm",
                 "ofType": null
               }
             }
@@ -34463,7 +34764,7 @@
             }
           ],
           "kind": "OBJECT",
-          "name": "Occurrence",
+          "name": "SsmOccurrence",
           "possibleTypes": null
         },
         {
@@ -34487,9 +34788,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {
@@ -35489,9 +35794,13 @@
                   "description": null,
                   "name": "sort",
                   "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "Sort",
+                      "ofType": null
+                    }
                   }
                 },
                 {

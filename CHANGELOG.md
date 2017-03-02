@@ -1,3 +1,13 @@
+<a name"1.5.0"></a>
+### 1.5.0 (2017-02-23)
+
+
+#### Features
+
+* **project:**  [PRTL-371] support multiple primary site and disease types (#1216) ([68e901b](https://github.com/NCI-GDC/portal-ui/commit/68e901b))
+* **home:**  [API-216] use release date from api (#1238) ([f512701](https://github.com/NCI-GDC/portal-ui/commit/f512701))
+
+
 <a name"1.4.3"></a>
 ### 1.4.3 (2017-02-23)
 

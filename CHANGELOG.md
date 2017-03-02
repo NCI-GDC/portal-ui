@@ -1,3 +1,12 @@
+<a name"1.4.3"></a>
+### 1.4.3 (2017-02-23)
+
+
+#### Bug Fixes
+
+* **homepage:**  [PRTL-517] Homepage - Broken site links update (#1267) ([9488d8a](https://github.com/NCI-GDC/portal-ui/commit/9488d8a))
+
+
 <a name"1.4.2"></a>
 ### 1.4.2 (2016-10-28)
 

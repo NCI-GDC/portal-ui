@@ -14,7 +14,7 @@
   },
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
-    "@oncojs/lolliplot": "^0.5.8",
+    "@oncojs/lolliplot": "^0.5.9",
     "@oncojs/sapien": "^0.4.3",
     "@oncojs/survivalplot": "0.5.0",
     "babel-polyfill": "^6.20.0",

@@ -1,3 +1,11 @@
+<a name"1.5.1"></a>
+### 1.5.1 (2017-03-09)
+
+#### Bug Fixes
+
+* **app:** fix/app correct gdc.cancer.gov urls
+
+
 <a name"1.5.0"></a>
 ### 1.5.0 (2017-02-23)
 

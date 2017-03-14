@@ -171,7 +171,7 @@ POSITIVE_FLOAT
     { return parseFloat(digits.join('') + frac); }
 
 DIGIT "number" = [0-9]
-INTEGER = $ DASH? DIGIT+
+INTEGER = x:($ DASH? DIGIT+) { return parseInt(x[0] + x[1].join(''), 10) }
 REAL = DIGIT* "." DIGIT+
 DASH = "-"
 COMMA "," = ","

@@ -197,9 +197,9 @@
     webpack "2.1.0-beta.22"
     webpack-merge "^1.1.1"
 
-"@oncojs/lolliplot@^0.5.10":
-  version "0.5.10"
-  resolved "https://registry.yarnpkg.com/@oncojs/lolliplot/-/lolliplot-0.5.10.tgz#e767a90807d57a0bf8f89adbeca7f268698735f3"
+"@oncojs/lolliplot@^0.5.11":
+  version "0.5.11"
+  resolved "https://registry.yarnpkg.com/@oncojs/lolliplot/-/lolliplot-0.5.11.tgz#c74eb11c5283796c4acf21132330e17cf7fd1f32"
   dependencies:
     d3-selection "^1.0.3"
     invariant "^2.2.2"

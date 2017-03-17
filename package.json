@@ -80,7 +80,7 @@
     "needle": {
       "env": {
         "API": "/api/",
-        "GDC_AUTH": "/auth/",
+        "GDC_AUTH": "/api/",
         "LEGACY": false,
         "COMMIT_HASH": "",
         "COMMIT_TAG": ""

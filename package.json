@@ -50,7 +50,8 @@
     "redux-api-middleware": "^1.0.2",
     "redux-persist": "^4.0.1",
     "redux-thunk": "^2.1.0",
-    "style-builder": "^1.0.13"
+    "style-builder": "^1.0.13",
+    "url-join": "1.1.0"
   },
   "devDependencies": {
     "@knit/babel-plugin-socks-relay": "^0.1.6",

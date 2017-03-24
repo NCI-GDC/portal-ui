@@ -36,3 +36,7 @@ dist
 
 # OS
 .DS_Store
+
+# Relay Schema
+data/schema.json
+data/version.json

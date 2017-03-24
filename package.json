@@ -71,7 +71,7 @@
   "scripts": {
     "knit": "knit",
     "build": "knit build --skip-preflight --verbose",
-    "start": "knit server",
+    "start": "rm data/schema.json&&rm data/version.json&&knit schema&&knit server",
     "test": "jest",
     "lint": "eslint --ext .js modules/node_modules || exit 0",
     "lint-fix": "eslint --ext .js modules/node_modules --fix || exit 0",

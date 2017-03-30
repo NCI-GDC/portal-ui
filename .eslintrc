@@ -1,6 +1,8 @@
 {
   "extends": ["@knit/socks-react"],
   "rules": {
-    "flowtype/no-weak-types": 0
+    "flowtype/no-weak-types": 0,
+    "fp/no-this": 0,
+    "no-invalid-this": 2
   }
 }

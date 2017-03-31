@@ -515,7 +515,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -582,7 +582,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -649,101 +649,10 @@
           "description": null,
           "enumValues": null,
           "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "op",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "content",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "FiltersValueArgument",
-                  "ofType": null
-                }
-              }
-            }
-          ],
+          "inputFields": null,
           "interfaces": null,
-          "kind": "INPUT_OBJECT",
+          "kind": "SCALAR",
           "name": "FiltersArgument",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "op",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "content",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "FiltersContentValueArgument",
-                "ofType": null
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "FiltersValueArgument",
-          "possibleTypes": null
-        },
-        {
-          "description": null,
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "field",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "value",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "FiltersContentValueArgument",
           "possibleTypes": null
         },
         {
@@ -13083,7 +12992,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -13140,7 +13049,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -20958,7 +20867,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -21424,7 +21333,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -21567,7 +21476,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -22274,7 +22183,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -22837,7 +22746,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -23232,7 +23141,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -23330,7 +23239,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -23775,7 +23684,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -24172,7 +24081,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -24219,7 +24128,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -25043,7 +24952,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -25656,7 +25565,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -26063,7 +25972,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -26530,7 +26439,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -26949,7 +26858,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -27418,7 +27327,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -27851,7 +27760,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -28788,7 +28697,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -29173,7 +29082,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -29230,7 +29139,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -31689,7 +31598,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -31746,7 +31655,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -31844,7 +31753,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -32523,7 +32432,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -32580,7 +32489,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -34500,7 +34409,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -34557,7 +34466,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -34858,7 +34767,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -35839,7 +35748,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -35896,7 +35805,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }
@@ -36540,7 +36449,7 @@
                   "description": null,
                   "name": "filters",
                   "type": {
-                    "kind": "INPUT_OBJECT",
+                    "kind": "SCALAR",
                     "name": "FiltersArgument",
                     "ofType": null
                   }

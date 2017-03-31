@@ -18,6 +18,7 @@
     "@oncojs/sapien": "^0.4.3",
     "@oncojs/survivalplot": "0.5.0",
     "babel-polyfill": "^6.20.0",
+    "blueimp-md5": "^2.7.0",
     "d3": "^4.4.1",
     "download-svg": "^0.0.7",
     "draft-js": "^0.9.1",

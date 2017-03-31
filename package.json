@@ -22,6 +22,7 @@
     "d3": "^4.4.1",
     "download-svg": "^0.0.7",
     "draft-js": "^0.9.1",
+    "fbemitter": "^2.1.1",
     "filesaver.js": "^0.2.0",
     "filesize": "3.3.0",
     "glamor": "^2.20.22",

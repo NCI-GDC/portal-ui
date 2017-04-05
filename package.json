@@ -6,6 +6,9 @@
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
+    },
+    "globals": {
+      "LEGACY": false
     }
   },
   "author": {
@@ -64,6 +67,7 @@
     "@knit/eslint-config-socks-react": "^0.2.0",
     "@knit/jest-config-socks": "^0.1.6",
     "@knit/knit": "0.1.6",
+    "babel-jest": "18.0.0",
     "eslint": "^3.13.1",
     "flow-bin": "^0.37.4",
     "isomorphic-fetch": "^2.2.1",

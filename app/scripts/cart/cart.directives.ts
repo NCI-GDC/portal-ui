@@ -369,7 +369,6 @@ module ngApp.cart.directives {
               // Makes sure the user session has not expired.
               UserService.loginPromise().then(() => {
                 // Session is still active.
-
                 const modalInstance = $uibModal.open({
                   templateUrl: "core/templates/request-access-to-download.html",
                   controller: "LoginToDownloadController",

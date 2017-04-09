@@ -24,4 +24,45 @@ describe('UserService:', function() {
       expect(UserService.isUserProject({cases: [{'project': {'project_id': 'TCGA-BRCA'}}]})).to.be.false;
     }));
   });
+
+  describe('userCanDownloadFiles:', function () {
+    it('can download file in user projects in correct file state', inject(function(UserService) {
+      expect(UserService.userCanDownloadFiles([{
+        projects: ['TCGA-LAML'],
+        acl: [],
+        state: 'submitted',
+        file_state: 'submitted'}
+      ])).to.be.true;
+    }));
+    it('can download file with no projects but in acl in correct file state', inject(function(UserService) {
+      expect(UserService.userCanDownloadFiles([{
+        projects: [],
+        acl: ['phs000178'],
+        state: 'submitted',
+        file_state: 'submitted'
+      }])).to.be.true;
+    }));
+   it('cannot download file not in user projects', inject(function(UserService) {
+      expect(UserService.userCanDownloadFiles([{
+        projects: ['TCGA-DOES-NOT-EXIST'],
+        state: 'submitted',
+        file_state: 'submitted'}
+      ])).to.be.false;
+    }));
+  it('cannot download file with no projects not in acl', inject(function(UserService) {
+      expect(UserService.userCanDownloadFiles([{
+        projects: [],
+        acl: ['does-not-exist'],
+        state: 'submitted',
+        file_state: 'submitted'}
+      ])).to.be.false;
+    }));
+  it('cannot download file in incorrect state', inject(function(UserService) {
+      expect(UserService.userCanDownloadFiles([{
+        projects: ['TCGA-LAML'],
+        state: 'submitted',
+        file_state: 'redacted'}
+      ])).to.be.false;
+    }));
+  });
 });

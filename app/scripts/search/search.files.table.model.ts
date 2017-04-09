@@ -149,7 +149,9 @@ module ngApp.search.models {
       "submitter_id",
       "cases.case_id",
       "cases.project.project_id",
-      "cases.project.name"
+      "cases.project.name",
+      "file_state",
+      "acl",
     ],
     facets: [
       {name: "file_id", title: "File", collapsed: false, facetType: "free-text", placeholder: "File name or ID", removable: false },

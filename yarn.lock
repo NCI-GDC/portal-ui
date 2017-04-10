@@ -197,17 +197,15 @@
     webpack "2.1.0-beta.22"
     webpack-merge "^1.1.1"
 
-"@oncojs/lolliplot@^0.5.12":
-  version "0.5.12"
-  resolved "https://registry.yarnpkg.com/@oncojs/lolliplot/-/lolliplot-0.5.12.tgz#b2e6b1ee940d7777e257c7cd6a74b91ecf82100d"
+"@oncojs/react-lolliplot@^0.6.2":
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/@oncojs/react-lolliplot/-/react-lolliplot-0.6.2.tgz#f96a79025106201593e3a3521de47a9da69699a8"
   dependencies:
     d3-selection "^1.0.3"
     invariant "^2.2.2"
-    lodash.countby "^4.6.0"
     lodash.range "^3.2.0"
-    lodash.startcase "^4.4.0"
-    redux "^3.6.0"
-    redux-actions "^1.2.0"
+    react "^15.4.1"
+    react-faux-dom "^3.0.1"
 
 "@oncojs/sapien@^0.4.3":
   version "0.4.3"
@@ -4199,10 +4197,6 @@ lodash.cond@^4.3.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/lodash.cond/-/lodash.cond-4.5.2.tgz#f471a1da486be60f6ab955d17115523dd1d255d5"
 
-lodash.countby@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.countby/-/lodash.countby-4.6.0.tgz#5351f24de16724a0059b561f920b0d80af78a33c"
-
 lodash.defaultsdeep@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.defaultsdeep/-/lodash.defaultsdeep-4.6.0.tgz#bec1024f85b1bd96cbea405b23c14ad6443a6f81"
@@ -4277,10 +4271,6 @@ lodash.pickby@^4.6.0:
 lodash.range@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/lodash.range/-/lodash.range-3.2.0.tgz#f461e588f66683f7eadeade513e38a69a565a15d"
-
-lodash.startcase@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/lodash.startcase/-/lodash.startcase-4.4.0.tgz#9436e34ed26093ed7ffae1936144350915d9add8"
 
 lodash.unionwith@^4.6.0:
   version "4.6.0"
@@ -5376,6 +5366,13 @@ react-faux-dom@^3.0.0:
     query-selector "^1.0.9"
     style-attr "^1.0.1"
 
+react-faux-dom@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-faux-dom/-/react-faux-dom-3.0.1.tgz#1e9f9c9cc0c0d9a4dbd694bd123d1b4bd2783f5a"
+  dependencies:
+    query-selector "^1.0.9"
+    style-attr "^1.0.1"
+
 react-highlighter@^0.3.3:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/react-highlighter/-/react-highlighter-0.3.3.tgz#92f8a9e3948c503a215d8eb9a778cabac2fd0ea4"
@@ -5490,7 +5487,7 @@ react-static-container@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-static-container/-/react-static-container-1.0.1.tgz#694c0dd68a896b879519afb548399cc1989c9ab0"
 
-react@15.4.2:
+react@15.4.2, react@^15.4.1:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react/-/react-15.4.2.tgz#41f7991b26185392ba9bae96c8889e7e018397ef"
   dependencies:

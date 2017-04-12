@@ -5587,6 +5587,12 @@ rechoir@^0.6.2:
   dependencies:
     resolve "^1.1.6"
 
+recompose-relay@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/recompose-relay/-/recompose-relay-0.3.1.tgz#68c3cd48ba927567c4ecf20c72299d537198b06e"
+  dependencies:
+    lodash "^4.0.0"
+
 recompose@0.22.0:
   version "0.22.0"
   resolved "https://registry.yarnpkg.com/recompose/-/recompose-0.22.0.tgz#f099d18385882ca41d9eec891718dadddc3204ef"

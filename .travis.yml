@@ -13,7 +13,7 @@ script:
 # - yarn flow
 - yarn test -- --no-cache
 after_script:
-- NODE_ENV=production COMMIT_HASH=$TRAVIS_COMMIT yarn knit -- build --skip-preflight --verbose
+- NODE_ENV=production COMMIT_HASH=$TRAVIS_COMMIT yarn build
 - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" quay.io
 - bash docker.sh
 before_install:

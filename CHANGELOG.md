@@ -1,3 +1,11 @@
+<a name"1.5.2"></a>
+### 1.5.2 (2017-04-18)
+
+#### Bug Fixes
+
+* **app:** PRTL-1081 remove data statistics link
+
+
 <a name"1.5.1"></a>
 ### 1.5.1 (2017-03-09)
 

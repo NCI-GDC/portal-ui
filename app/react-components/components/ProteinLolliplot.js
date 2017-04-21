@@ -116,7 +116,12 @@ const ProteinLolliplot = ({
       </Button>
       <DownloadVisualizationButton
         svg="#protein-viewer-root svg.chart"
-        data={$scope.proteinLolliplotData}
+        data={Object.keys($scope.proteinLolliplotData)
+          .reduce((acc, key) => ({
+            ...acc,
+            [key === 'donors' ? 'cases' : key]: $scope.proteinLolliplotData[key],
+          }), {})
+        }
         stylePrefix="#protein-viewer-root"
         slug={`protein_viewer-${gene.symbol}-${moment().format('YYYY-MM-DD')}`}
       />

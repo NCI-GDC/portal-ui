@@ -17,7 +17,7 @@ compose(
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           from: props.offset || 0,
-          project_id: props.projectId,
+          project_ids: props.projectId,
           fields: [
             'gene_id',
             'symbol',

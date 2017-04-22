@@ -29,7 +29,7 @@ compose(
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          project_id: projectId,
+          project_ids: projectId,
           from: offset,
           fields: [
             'genomic_dna_change',

@@ -9,8 +9,8 @@ function getQueries({
   consequenceTypes: Array<string>,
 }) {
   const urlBase = `${api}/analysis/oncogrid/`;
-  const consequenceParam = `consequence_type=${consequenceTypes.join(',')}`;
-  const projectParam = `project_id=${projectId}`;
+  const consequenceParam = `consequence_types=${consequenceTypes.join(',')}`;
+  const projectParam = `project_ids=${projectId}`;
   const geneQuery = `${urlBase}genes?${projectParam}&${consequenceParam}&fields=${
     [
       'gene_id',
@@ -24,17 +24,27 @@ function getQueries({
     .then(r => r.json())
     .then(({ data }) => {
       const genes = data.hits;
-      const geneParam = `gene_id=${genes.map(gene => gene.gene_id).join(',')}`;
+      const geneIds = genes.map(gene => gene.gene_id);
+      const geneParam = `gene_ids=${geneIds.join(',')}`;
 
-      const occurenceQuery = `${urlBase}occurences?${projectParam}&${consequenceParam}&${geneParam}&fields=${
-        [
-          'ssm.consequence.transcript.consequence_type',
-          'ssm.consequence.transcript.annotation.impact',
-          'ssm.consequence.transcript.gene.gene_id',
-          'ssm.ssm_id',
-          'case.case_id',
-        ].join()
-      }`;
+      const occurenceQuery = `${api}/ssm_occurrences?size=8000&filters=${JSON.stringify({
+        op: 'AND',
+        content: [
+          { op: 'in', content: { field: 'ssm.consequence.transcript.gene.gene_id', value: geneIds } },
+          { op: 'in', content: { field: 'ssm.consequence.transcript.annotation.impact', value: ['HIGH'] } },
+          {
+            op: 'in',
+            content: { field: 'ssm.consequence.transcript.consequence_type', value: consequenceTypes },
+          },
+          projectId && { op: '=', content: { field: 'case.project.project_id', value: projectId } },
+        ].filter(Boolean),
+      })}&fields=${[
+        'ssm.consequence.transcript.consequence_type',
+        'ssm.consequence.transcript.annotation.impact',
+        'ssm.consequence.transcript.gene.gene_id',
+        'ssm.ssm_id',
+        'case.case_id',
+      ].join()}`;
 
       const caseQuery = `${urlBase}cases?${projectParam}&${geneParam}&fields=${
         [

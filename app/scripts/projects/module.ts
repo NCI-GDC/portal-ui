@@ -66,7 +66,7 @@ module ngApp.projects {
             url: `${config.api}/analysis/top_mutated_cases_by_project`,
             headers: {'Content-Type' : 'application/json'},
             data: {
-              project_id: $stateParams["projectId"],
+              project_ids: $stateParams["projectId"],
               fields: [
                 'case_id',
                 'gene.ssm.ssm_id',

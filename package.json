@@ -79,7 +79,7 @@
   },
   "scripts": {
     "knit": "knit",
-    "clear": "rm -rf node_modules && yarn && knit -- schema",
+    "update-schema": "rm -rf node_modules && yarn && knit -- schema",
     "build": "knit build --skip-preflight --verbose",
     "start": "knit server",
     "test": "jest",

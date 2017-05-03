@@ -232,10 +232,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "viz_analysis",
+              "name": "analysis",
               "type": {
                 "kind": "OBJECT",
-                "name": "VizAnalysis",
+                "name": "Analysis",
                 "ofType": null
               }
             }
@@ -25862,7 +25862,7 @@
               "name": "analysis",
               "type": {
                 "kind": "OBJECT",
-                "name": "Analysis",
+                "name": "FileAnalysis",
                 "ofType": null
               }
             },
@@ -26163,7 +26163,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "Analysis",
+          "name": "FileAnalysis",
           "possibleTypes": null
         },
         {
@@ -48441,10 +48441,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "lolliplot",
+              "name": "protein_mutations",
               "type": {
                 "kind": "OBJECT",
-                "name": "Lolliplot",
+                "name": "ProteinMutations",
                 "ofType": null
               }
             }
@@ -48452,7 +48452,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "VizAnalysis",
+          "name": "Analysis",
           "possibleTypes": null
         },
         {
@@ -48534,17 +48534,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "Lolliplot",
-          "possibleTypes": null
-        },
-        {
-          "description": "JSON String",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "SCALAR",
-          "name": "JSONString",
+          "name": "ProteinMutations",
           "possibleTypes": null
         },
         {

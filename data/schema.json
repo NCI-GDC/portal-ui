@@ -669,6 +669,16 @@
                 {
                   "defaultValue": null,
                   "description": null,
+                  "name": "query",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
                   "name": "offset",
                   "type": {
                     "kind": "SCALAR",
@@ -18584,6 +18594,16 @@
                 {
                   "defaultValue": null,
                   "description": null,
+                  "name": "query",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
                   "name": "offset",
                   "type": {
                     "kind": "SCALAR",
@@ -31176,6 +31196,16 @@
                 {
                   "defaultValue": null,
                   "description": null,
+                  "name": "query",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
                   "name": "offset",
                   "type": {
                     "kind": "SCALAR",
@@ -36584,6 +36614,16 @@
                 {
                   "defaultValue": null,
                   "description": null,
+                  "name": "query",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
                   "name": "offset",
                   "type": {
                     "kind": "SCALAR",
@@ -41396,6 +41436,16 @@
                   "defaultValue": null,
                   "description": null,
                   "name": "score",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "query",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
@@ -46831,6 +46881,16 @@
                 {
                   "defaultValue": null,
                   "description": null,
+                  "name": "query",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
                   "name": "offset",
                   "type": {
                     "kind": "SCALAR",
@@ -47700,6 +47760,16 @@
                   "defaultValue": null,
                   "description": null,
                   "name": "score",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "query",
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",

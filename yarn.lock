@@ -197,9 +197,9 @@
     webpack "2.1.0-beta.22"
     webpack-merge "^1.1.1"
 
-"@oncojs/react-lolliplot@^0.6.3":
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/@oncojs/react-lolliplot/-/react-lolliplot-0.6.3.tgz#35d39d1915532f2916786630687e66e83c5ee648"
+"@oncojs/react-lolliplot@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@oncojs/react-lolliplot/-/react-lolliplot-0.9.0.tgz#5b626a1d126e3880e26e319c397c22c73b19682c"
   dependencies:
     d3-selection "^1.0.3"
     invariant "^2.2.2"

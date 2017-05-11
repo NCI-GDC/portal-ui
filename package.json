@@ -53,7 +53,7 @@
     "react-modal": "1.7.7",
     "react-progress": "^0.0.12",
     "react-redux": "^5.0.2",
-    "react-relay": "^0.10.0",
+    "react-relay": "dev",
     "react-relay-network-layer": "^2.0.1",
     "react-router": "4.0.0-beta.4",
     "react-router-dom": "4.0.0-beta.4",
@@ -74,10 +74,12 @@
     "@knit/jest-config-socks": "^0.1.6",
     "@knit/knit": "0.1.6",
     "babel-jest": "18.0.0",
+    "babel-plugin-relay": "dev",
     "eslint": "^3.13.1",
     "flow-bin": "^0.37.4",
     "isomorphic-fetch": "^2.2.1",
-    "jest": "^18.1.0"
+    "jest": "^18.1.0",
+    "relay-compiler": "dev"
   },
   "scripts": {
     "knit": "knit",
@@ -87,7 +89,8 @@
     "test": "jest",
     "lint": "eslint --ext .js modules/node_modules || exit 0",
     "lint-fix": "eslint --ext .js modules/node_modules --fix || exit 0",
-    "flow": "flow check || exit 0"
+    "flow": "flow check || exit 0",
+    "relay": "relay-compiler --src ./modules/node_modules --schema ./data/schema.json"
   },
   "knit": {
     "needle": {

@@ -48534,16 +48534,6 @@
                 {
                   "defaultValue": null,
                   "description": null,
-                  "name": "transcriptId",
-                  "type": {
-                    "kind": "SCALAR",
-                    "name": "String",
-                    "ofType": null
-                  }
-                },
-                {
-                  "defaultValue": null,
-                  "description": null,
                   "name": "first",
                   "type": {
                     "kind": "SCALAR",
@@ -48586,6 +48576,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "String",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "filters",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "FiltersArgument",
                     "ofType": null
                   }
                 }

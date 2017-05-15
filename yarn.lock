@@ -1197,6 +1197,10 @@ base64-js@^1.0.2:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.2.0.tgz#a39992d723584811982be5e290bb6a53d86700f1"
 
+base64toblob@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/base64toblob/-/base64toblob-0.0.1.tgz#c4fd4d575487594af3eff5f6e37b8fbc29e6ef79"
+
 batch-processor@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/batch-processor/-/batch-processor-1.0.0.tgz#75c95c32b748e0850d10c2b168f6bdbe9891ace8"
@@ -2387,12 +2391,13 @@ dot-prop@^4.1.0:
   dependencies:
     is-obj "^1.0.0"
 
-download-svg@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/download-svg/-/download-svg-0.0.7.tgz#c3793c997962cc3d7702119853b8a35d0555a907"
+download-svg@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/download-svg/-/download-svg-0.1.0.tgz#6484ff361c76de8fa54f7f74b07e8f0635f5f723"
   dependencies:
     "@jephuff/canvg" "1.0.0"
-    save-svg-as-png "git+http://git@github.com/Jephuff/saveSvgAsPng.git#gh-pages"
+    base64toblob "0.0.1"
+    save-svg-as-png "1.2.0"
 
 duplexer3@^0.1.4:
   version "0.1.4"
@@ -4486,6 +4491,10 @@ lodash.uniqueid@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/lodash.uniqueid/-/lodash.uniqueid-4.0.1.tgz#3268f26a7c88e4f4b1758d679271814e31fa5b26"
 
+lodash.values@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/lodash.values/-/lodash.values-4.3.0.tgz#a3a6c2b0ebecc5c2cba1c17e6e620fe81b53d347"
+
 lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.5.1:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
@@ -4914,13 +4923,14 @@ once@^1.3.0, once@^1.3.3, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-oncogrid@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/oncogrid/-/oncogrid-1.2.0.tgz#d917ead8234234c6cde32b68b4d00ef35f669a41"
+oncogrid@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/oncogrid/-/oncogrid-1.2.1.tgz#3a28178e1e4f582955f97b547acd0653675d1d56"
   dependencies:
     d3 "3.5.17"
     lodash.clonedeep "^4.5.0"
     lodash.uniq "^4.5.0"
+    lodash.values "^4.3.0"
     mustache "^2.2.1"
 
 onetime@^1.0.0:
@@ -6143,9 +6153,9 @@ sane@~1.6.0:
     walker "~1.0.5"
     watch "~0.10.0"
 
-"save-svg-as-png@git+http://git@github.com/Jephuff/saveSvgAsPng.git#gh-pages":
-  version "1.1.0"
-  resolved "git+http://git@github.com/Jephuff/saveSvgAsPng.git#9ff57434acbe33ad355c3653708ba4570ad71686"
+save-svg-as-png@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/save-svg-as-png/-/save-svg-as-png-1.2.0.tgz#b09a5e8bea5ba57ccd8d269ef92c00d894cf6b1c"
 
 sax@^1.2.1, sax@~1.2.1:
   version "1.2.2"

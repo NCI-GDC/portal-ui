@@ -17,6 +17,7 @@
   },
   "homepage": "https://gdc-portal.nci.nih.gov/",
   "dependencies": {
+    "@knit/webpack-dev-server-config": "^0.4.0",
     "@oncojs/react-lolliplot": "^0.9.0",
     "@oncojs/sapien": "^0.4.3",
     "@oncojs/survivalplot": "0.5.0",

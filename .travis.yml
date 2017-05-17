@@ -7,21 +7,18 @@ cache: yarn
 sudo: required
 services:
 - docker
-script:
-# - yarn knit -- validate --verbose
-# - yarn lint
-# - yarn flow
-- yarn test -- --no-cache
-after_success:
-- NODE_ENV=production COMMIT_HASH=$TRAVIS_COMMIT yarn build
-- docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" quay.io
-- bash docker.sh
-before_install:
-- yarn --version
-- curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 0.21.3
-- export PATH="$HOME/.yarn/bin:$PATH"
-- yarn --version
+jobs:
+  include:
+    - stage: test
+      script:
+        - yarn test -- --no-cache
+    - stage: deploy
+      script:
+        - NODE_ENV=production COMMIT_HASH=$TRAVIS_COMMIT yarn build
+        - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" quay.io
+        - bash docker.sh
 notifications:
+  email: false
   slack:
     secure: Njn9VjYMUJcb8jfvusetb13uC0rcQ1NN6KumKxc6/jBCRoQ7uhQbqhcemZDK/7s/jRUGYTkb72u5QJxgVHcYDMchO9aOCVI3xs8veQ6j6shOCJbSIHGby1nkuwDPNzyyYh5mjJVDiWbiIBOzOaMko0QT//Ce1IitBBkyTEtQPcg=
 env:

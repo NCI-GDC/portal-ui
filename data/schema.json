@@ -11533,6 +11533,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "key_as_string",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             }
           ],
           "inputFields": null,
@@ -44508,18 +44520,6 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
-              "isDeprecated": false,
-              "name": "gene_aa_change",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
               "name": "external_db_ids",
@@ -44559,6 +44559,22 @@
               "description": null,
               "isDeprecated": false,
               "name": "cosmic_id",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "gene_aa_change",
               "type": {
                 "kind": "LIST",
                 "name": null,

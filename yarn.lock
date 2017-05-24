@@ -1117,7 +1117,7 @@ babel-runtime@^5.8.25:
   dependencies:
     core-js "^1.0.0"
 
-babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0:
+babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.6.1:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.23.0.tgz#0a9489f144de70efb3ce4300accdb329e2fc543b"
   dependencies:
@@ -5677,15 +5677,13 @@ react-relay-network-layer@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-relay-network-layer/-/react-relay-network-layer-2.0.1.tgz#6db91b199f74733e980d0776ec6fa7961e0154d0"
 
-react-relay@dev:
-  version "1.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-1.0.0-rc.3.tgz#72b5c478c294aa28c6f42dae24fe666b0f3b9487"
+react-relay@0.10:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/react-relay/-/react-relay-0.10.0.tgz#4b19c4450e0140b9f04fd6fe96d8f451f0804078"
   dependencies:
-    babel-runtime "^6.23.0"
+    babel-runtime "^6.6.1"
     fbjs "^0.8.1"
-    prop-types "^15.5.8"
     react-static-container "^1.0.1"
-    relay-runtime "1.0.0-rc.3"
 
 react-router-dom@4.0.0-beta.4:
   version "4.0.0-beta.4"

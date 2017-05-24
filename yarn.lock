@@ -251,14 +251,13 @@
   dependencies:
     execa "^0.6.0"
 
-"@oncojs/react-lolliplot@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@oncojs/react-lolliplot/-/react-lolliplot-0.9.0.tgz#5b626a1d126e3880e26e319c397c22c73b19682c"
+"@oncojs/react-lolliplot@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@oncojs/react-lolliplot/-/react-lolliplot-0.10.2.tgz#5915a17ca60237075db96decdfdac79469a6e5bc"
   dependencies:
     d3-selection "^1.0.3"
     invariant "^2.2.2"
     lodash.range "^3.2.0"
-    react "^15.4.1"
     react-faux-dom "^3.0.1"
 
 "@oncojs/sapien@0.4.3":
@@ -1135,7 +1134,7 @@ babel-template@^6.16.0, babel-template@^6.24.1:
     babylon "^6.11.0"
     lodash "^4.2.0"
 
-babel-traverse@6.23.1:
+babel-traverse@6.23.1, babel-traverse@^6.23.1:
   version "6.23.1"
   resolved "https://registry.yarnpkg.com/babel-traverse/-/babel-traverse-6.23.1.tgz#d3cb59010ecd06a97d81310065f966b699e14f48"
   dependencies:
@@ -1149,7 +1148,7 @@ babel-traverse@6.23.1:
     invariant "^2.2.0"
     lodash "^4.2.0"
 
-babel-traverse@^6.18.0, babel-traverse@^6.23.1, babel-traverse@^6.24.1, babel-traverse@^6.7.3:
+babel-traverse@^6.18.0, babel-traverse@^6.24.1, babel-traverse@^6.7.3:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-traverse/-/babel-traverse-6.24.1.tgz#ab36673fd356f9a0948659e7b338d5feadb31695"
   dependencies:
@@ -1181,11 +1180,11 @@ babel-types@^6.18.0, babel-types@^6.19.0, babel-types@^6.24.1:
     lodash "^4.2.0"
     to-fast-properties "^1.0.1"
 
-babylon@6.16.1, babylon@^6.11.0, babylon@^6.13.0, babylon@^6.15.0:
+babylon@6.16.1:
   version "6.16.1"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.16.1.tgz#30c5a22f481978a9e7f8cdfdf496b11d94b404d3"
 
-babylon@^6.1.21, babylon@^6.16.1, babylon@^6.17.0:
+babylon@^6.1.21, babylon@^6.11.0, babylon@^6.13.0, babylon@^6.15.0, babylon@^6.16.1, babylon@^6.17.0:
   version "6.17.1"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.17.1.tgz#17f14fddf361b695981fe679385e4f1c01ebd86f"
 
@@ -5724,7 +5723,7 @@ react-static-container@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-static-container/-/react-static-container-1.0.1.tgz#694c0dd68a896b879519afb548399cc1989c9ab0"
 
-react@15.5.4, react@^15.4.1:
+react@15.5.4:
   version "15.5.4"
   resolved "https://registry.yarnpkg.com/react/-/react-15.5.4.tgz#fa83eb01506ab237cdc1c8c3b1cea8de012bf047"
   dependencies:

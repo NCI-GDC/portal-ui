@@ -10,6 +10,8 @@ const config = merge(
   webpackConfig,
   {
     devServer: {
+      host: '0.0.0.0',
+      disableHostCheck: true,
       proxy: {
         '/api': {
           target: `${host}:${port}`,

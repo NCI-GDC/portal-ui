@@ -11,7 +11,6 @@ import LoginIcon from "react-icons/lib/fa/sign-in";
 import { fetchUser } from "@ncigdc/dux/auth";
 import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
 import styled from "@ncigdc/theme/styled";
-import { center } from "@ncigdc/theme/mixins";
 
 /*----------------------------------------------------------------------------*/
 

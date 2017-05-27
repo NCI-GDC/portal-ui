@@ -96,7 +96,6 @@ const Header = compose(
         style={{ outline: "none" }}
         className="navbar-collapse collapse navbar-responsive-collapse"
         data-uib-collapse="hc.isCollapsed"
-        role="navigation"
         data-ng-click="hc.collapse($event)"
         tabIndex="-1"
         data-ng-keypress="hc.collapse($event)"

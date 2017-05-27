@@ -25,8 +25,6 @@ import { visualizingButton } from "@ncigdc/theme/mixins";
 import Button from "@ncigdc/uikit/Button";
 import Emitter from "@ncigdc/utils/emitter";
 
-declare var API: string;
-
 const styles = {
   button: {
     color: "#333",
@@ -87,7 +85,7 @@ const BiospecimenCard = ({
           <DownloadButton
             style={visualizingButton}
             filename={`biospecimen.case-${p.case_id}`}
-            url={urlJoin(API, "cases")}
+            url={urlJoin(process.env.REACT_APP_API, "cases")}
             activeText="Processing"
             inactiveText="Export"
             filters={makeFilter(

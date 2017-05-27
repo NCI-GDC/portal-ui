@@ -3,50 +3,40 @@
  *   relay-compiler
  *
  * @providesModule ProjectTable_projects.graphql
- * @generated SignedSource<<000d08b7054cfcb93b85007412457e0c>>
+ * @generated SignedSource<<ddf27073b94680c762b0db730e54698e>>
  * @flow
  * @nogrep
  */
+
+/* eslint-disable */
 
 "use strict";
 
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
-export type ProjectTable_projects = {
-  total: number;
-  edges?: ?Array<?ProjectTable_projects_edges>;
-};
-
-export type ProjectTable_projects_edges_node_program = {
-  name?: ?string;
-};
-
-export type ProjectTable_projects_edges_node_summary_data_categories = {
-  case_count?: ?number;
-  data_category?: ?string;
-};
-
-export type ProjectTable_projects_edges_node_summary = {
-  case_count?: ?number;
-  data_categories?: ?Array<?ProjectTable_projects_edges_node_summary_data_categories>;
-  file_count?: ?number;
-};
-
-export type ProjectTable_projects_edges_node = {
-  id: string;
-  project_id?: ?string;
-  disease_type?: ?Array<?string>;
-  program?: ?ProjectTable_projects_edges_node_program;
-  primary_site?: ?Array<?string>;
-  summary?: ?ProjectTable_projects_edges_node_summary;
-};
-
-export type ProjectTable_projects_edges = {
-  node?: ?ProjectTable_projects_edges_node;
-};
+export type ProjectTable_projects = {|
+  +total: number;
+  +edges: ?$ReadOnlyArray<?{|
+    +node: ?{|
+      +id: string;
+      +project_id: ?string;
+      +disease_type: ?$ReadOnlyArray<?string>;
+      +program: ?{|
+        +name: ?string;
+      |};
+      +primary_site: ?$ReadOnlyArray<?string>;
+      +summary: ?{|
+        +case_count: ?number;
+        +data_categories: ?$ReadOnlyArray<?{|
+          +case_count: ?number;
+          +data_category: ?string;
+        |}>;
+        +file_count: ?number;
+      |};
+    |};
+  |}>;
+|};
 */
-
-/* eslint-disable comma-dangle, quotes */
 
 const fragment /*: ConcreteFragment*/ = {
   argumentDefinitions: [],

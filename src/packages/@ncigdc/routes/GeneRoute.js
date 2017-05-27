@@ -10,7 +10,6 @@ import { handleStateChange } from "@ncigdc/dux/relayProgress";
 import GenePage from "@ncigdc/containers/GenePage";
 import { parseIntParam, parseFilterParam } from "@ncigdc/utils/uri";
 import NotFound from "@ncigdc/components/NotFound";
-import Loader from "@ncigdc/uikit/Loaders/Loader";
 
 import { nodeAndViewerQuery } from "./queries";
 

@@ -3,54 +3,40 @@
  *   relay-compiler
  *
  * @providesModule CartPage_viewer.graphql
- * @generated SignedSource<<83c2118fa12a5d066ffe7c657746614a>>
+ * @generated SignedSource<<57c41cc3d33a0b09478cae9c2164cab6>>
  * @flow
  * @nogrep
  */
+
+/* eslint-disable */
 
 "use strict";
 
 /*::
 import type {ConcreteFragment} from 'relay-runtime';
-export type CartPage_viewer = {
-  summary?: ?CartPage_viewer_summary;
-  repository?: ?CartPage_viewer_repository;
-};
-
-export type CartPage_viewer_summary_aggregations_project__project_id_buckets = {
-  case_count?: ?number;
-  doc_count?: ?number;
-  file_size?: ?number;
-  key?: ?string;
-};
-
-export type CartPage_viewer_summary_aggregations_project__project_id = {
-  buckets?: ?Array<?CartPage_viewer_summary_aggregations_project__project_id_buckets>;
-};
-
-export type CartPage_viewer_summary_aggregations_fs = {
-  value?: ?number;
-};
-
-export type CartPage_viewer_summary_aggregations = {
-  project__project_id?: ?CartPage_viewer_summary_aggregations_project__project_id;
-  fs?: ?CartPage_viewer_summary_aggregations_fs;
-};
-
-export type CartPage_viewer_summary = {
-  aggregations?: ?CartPage_viewer_summary_aggregations;
-};
-
-export type CartPage_viewer_repository_files = {
-  hits?: ?any;
-};
-
-export type CartPage_viewer_repository = {
-  files?: ?CartPage_viewer_repository_files;
-};
+export type CartPage_viewer = {|
+  +summary: ?{|
+    +aggregations: ?{|
+      +project__project_id: ?{|
+        +buckets: ?$ReadOnlyArray<?{|
+          +case_count: ?number;
+          +doc_count: ?number;
+          +file_size: ?number;
+          +key: ?string;
+        |}>;
+      |};
+      +fs: ?{|
+        +value: ?number;
+      |};
+    |};
+  |};
+  +repository: ?{|
+    +files: ?{|
+      +hits: ?{| |};
+    |};
+  |};
+|};
 */
-
-/* eslint-disable comma-dangle, quotes */
 
 const fragment /*: ConcreteFragment*/ = {
   argumentDefinitions: [

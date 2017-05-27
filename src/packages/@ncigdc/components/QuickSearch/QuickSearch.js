@@ -7,7 +7,6 @@ import styled from "@ncigdc/theme/styled";
 import QuickSearchResults from "./QuickSearchResults";
 import { withSearch } from "@ncigdc/utils/withSearch";
 import namespace from "@ncigdc/utils/namespace";
-import type { TSearchHit } from "./types";
 import withSelectableList from "@ncigdc/utils/withSelectableList";
 
 const styles = {
@@ -52,17 +51,6 @@ const SearchInput = styled.input({
     boxShadow: "0px 0px 22px 0px rgba(18, 147, 219, 0.75)"
   }
 });
-
-const TYPE_PATHS_MAP = {
-  annotation: "/annotations",
-  case: "/cases",
-  file: "/files",
-  gene_centric: "/genes",
-  occurrence: "/occurrence",
-  project: "/projects",
-  report: "/report",
-  ssm_centric: "/ssms"
-};
 
 export default compose(
   namespace("search", withSearch()),

@@ -16,8 +16,6 @@ import DownloadTableToTsvButton
   from "@ncigdc/components/DownloadTableToTsvButton";
 import type { TGroupFilter } from "@ncigdc/utils/filters/types";
 
-declare var API: string;
-
 type TProps = {
   prefix: string,
   total: number,
@@ -66,7 +64,7 @@ const TableActions = (
               }
               disabled={!total}
               filename={prefix}
-              url={urlJoin(API, endpoint)}
+              url={urlJoin(process.env.REACT_APP_API, endpoint)}
               fields={downloadFields}
               style={visualizingButton}
               size={total}

@@ -20,18 +20,11 @@ import CaseAggregations from "@ncigdc/containers/CaseAggregations";
 import FileTable from "@ncigdc/containers/FileTable";
 import FileAggregations from "@ncigdc/containers/FileAggregations";
 import { fetchFilesAndAdd } from "@ncigdc/dux/cart";
-import {
-  ShoppingCartIcon,
-  FileIcon,
-  CaseIcon,
-  SaveIcon
-} from "@ncigdc/theme/icons";
+import { ShoppingCartIcon, SaveIcon } from "@ncigdc/theme/icons";
 import withFilters from "@ncigdc/utils/withFilters";
 import formatFileSize from "@ncigdc/utils/formatFileSize";
 import RepoCasesPies from "@ncigdc/components/TabPieCharts/RepoCasesPies";
 import RepoFilesPies from "@ncigdc/components/TabPieCharts/RepoFilesPies";
-
-declare var API: string;
 
 export type TProps = {
   relay: Object,
@@ -145,7 +138,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                 </Button>
                 <DownloadButton
                   disabled={!fileCount}
-                  url={urlJoin(API, "files")}
+                  url={urlJoin(process.env.REACT_APP_API, "files")}
                   activeText="Downloading"
                   inactiveText="Download Manifest"
                   fields={[

@@ -70,7 +70,7 @@ const styles = {
   }
 };
 
-const ResultIcon = ({ type, style }) => (
+const ResultIcon = ({ type, style }: { type: string, style: Object }) => (
   <span style={style}>{entityShortnameMapping[type] || type}</span>
 );
 
@@ -116,7 +116,15 @@ const findMatchingToken = (item, lq, value = "") => {
   return value;
 };
 
-const ResultHighlights = ({ item, query, style }) => {
+const ResultHighlights = ({
+  item,
+  query,
+  style
+}: {
+  item: string,
+  query: Ibject,
+  style: Object
+}) => {
   const lq = query.toLocaleLowerCase();
   const value = findMatchingToken(item, lq);
 
@@ -129,7 +137,7 @@ type TProps = {
   onSelectItem: Function,
   onActivateItem: Function,
   isLoading: boolean,
-  style: object
+  style: Object
 };
 
 export default ({

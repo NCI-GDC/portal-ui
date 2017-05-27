@@ -9,7 +9,7 @@ import { setModal } from "@ncigdc/dux/modal";
 
 const DismissibleBanner = ({ dispatch }) => (
   <Row>
-    <strong>{`Can\'t find your data?`}</strong>
+    <strong>{`Can't find your data?`}</strong>
     <span
       className="header-banner-link"
       onClick={() =>
@@ -18,7 +18,7 @@ const DismissibleBanner = ({ dispatch }) => (
             <div style={{ position: "relative", padding: "15px" }}>
               <h2 className="banner-title">
                 <span style={{ color: "#6b6262" }}>
-                  {`Can\'t find your data?`}
+                  {`Can't find your data?`}
                 </span>
                 <span className="banner-title-link">
                   You may be looking for the
@@ -26,6 +26,7 @@ const DismissibleBanner = ({ dispatch }) => (
                   <a
                     href="https://gdc-portal.nci.nih.gov/legacy-archive/search/f"
                     target="_blank"
+                    rel="noopener noreferrer"
                   >
                     GDC Legacy Archive
                   </a>
@@ -55,6 +56,7 @@ const DismissibleBanner = ({ dispatch }) => (
                   <a
                     href="https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/"
                     target="_blank"
+                    rel="noopener noreferrer"
                   >
                     Data Release Notes
                   </a>

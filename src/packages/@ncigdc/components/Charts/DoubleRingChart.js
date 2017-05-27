@@ -16,7 +16,6 @@ const DoubleRingChart = ({
   outerRingWidth = 30,
   setTooltip
 }) => {
-  const color = d3.scaleOrdinal(d3.schemeCategory10);
   const centerRingWidth = width - outerRingWidth * 2;
   const centerRingHeight = height - outerRingWidth * 2;
   const centerRadius = Math.min(centerRingWidth, centerRingHeight) / 2;

@@ -16,8 +16,6 @@ type TPropsMulti = {
   size?: number
 };
 
-declare var API: string;
-
 const MINIMUM_CASES = 10;
 
 const Symbol = styled.span({
@@ -36,7 +34,7 @@ async function fetchCurves(
     { filters: filters && JSON.stringify(filters), size },
     _.isNil
   );
-  const url = `${API}analysis/survival?${queryString.stringify(params)}`;
+  const url = `${process.env.REACT_APP_API}analysis/survival?${queryString.stringify(params)}`;
   const res = await fetch(url);
   const rawData = await res.json();
   return enoughData(rawData) ? rawData : { results: [] };

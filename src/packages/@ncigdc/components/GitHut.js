@@ -1,21 +1,4 @@
-/* @flow */
-/* global _ angular */
-/* eslint
-  fp/no-class:0,
-  fp/no-this:0,
-  fp/no-mutation:0,
-  class-methods-use-this:0,
-  react/prefer-stateless-function:0,
-  max-len:0,
-  flowtype/require-parameter-type:0,
-  flowtype/require-return-type:0,
-  no-param-reassign:0,
-  no-useless-escape:0,
-  no-unused-vars:1,
-  no-else-return:0,
-  react/prop-types:1,
-  no-restricted-globals: 0
-*/
+/* eslint-disable*/
 
 import React from "react";
 import JSURL from "jsurl";

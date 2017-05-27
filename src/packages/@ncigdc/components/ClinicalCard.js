@@ -15,7 +15,6 @@ import { visualizingButton } from "@ncigdc/theme/mixins";
 import EntityPageVerticalTable
   from "@ncigdc/components/EntityPageVerticalTable";
 
-declare var API: string;
 const ClinicalCard = ({
   p: {
     case_id: caseId,
@@ -41,7 +40,7 @@ const ClinicalCard = ({
         <DownloadButton
           style={visualizingButton}
           filename={`clinical.case-${caseId}`}
-          url={urlJoin(API, "cases")}
+          url={urlJoin(process.env.REACT_APP_API, "cases")}
           activeText="Processing"
           inactiveText="Export"
           filters={{

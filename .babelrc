@@ -1,4 +1,6 @@
 {
- "presets": ["@knit/socks-react"],
- "plugins": ["@knit/babel-plugin-socks-relay", ["relay", {"compat": true, "schema": "data/schema.json"}]]
+  "presets": ["react-app"],
+  "plugins": [
+    ["relay", {"compat": true, "schema": "data/schema.json"}]
+  ]
 }

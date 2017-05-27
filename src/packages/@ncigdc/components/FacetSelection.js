@@ -1,5 +1,9 @@
 /* @flow */
-/* eslint jsx-a11y/no-static-element-interactions: 0, max-len: 1, fp/no-this:1, jsx-a11y/label-has-for:1 */
+/* eslint
+jsx-a11y/no-static-element-interactions: 0,
+max-len: 0,
+jsx-a11y/label-has-for:0
+*/
 
 import React from "react";
 import _ from "lodash";
@@ -10,11 +14,9 @@ import {
   lifecycle,
   withProps,
   renameProps,
-  renameProp,
   withPropsOnChange,
   defaultProps,
-  withHandlers,
-  getContext
+  withHandlers
 } from "recompose";
 import { fetchApi } from "@ncigdc/utils/ajax";
 import entityShortnameMapping from "@ncigdc/utils/entityShortnameMapping";
@@ -26,11 +28,6 @@ const facetMatchesQuery = (facet, query) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>
     _.includes(searchTarget, query)
   );
-
-const getPreviousItem = (items, reference) =>
-  reference ? _.nth(items, items.indexOf(reference) - 1) : _.last(items);
-const getNextItem = (items, reference) =>
-  reference ? _.nth(items, items.indexOf(reference) + 1) : _.first(items);
 
 const styles = {
   header: {

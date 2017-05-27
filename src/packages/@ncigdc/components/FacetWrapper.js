@@ -1,5 +1,10 @@
 /* @flow */
-/* eslint fp/no-this: 0, jsx-a11y/no-static-element-interactions: 0, max-len: 1, no-else-return:1 */
+/* eslint
+fp/no-this: 0,
+jsx-a11y/no-static-element-interactions: 0,
+max-len: 1,
+no-else-return:1
+*/
 
 import React from "react";
 import _ from "lodash";
@@ -68,9 +73,8 @@ const getFacetType = facet => {
     return "exact";
   } else if (facet.type === "long") {
     return "range";
-  } else {
-    return "terms";
   }
+  return "terms";
 };
 
 const FacetWrapperDiv = styled.div({
@@ -87,7 +91,8 @@ const FacetWrapper = compose(
   }),
   lifecycle({
     componentWillMount(): void {
-      // strict equality check because we don't want to set variables that don't exist
+      // strict equality check because we don't want to set variables
+      // that don't exist
       if (
         this.props.relay.variables[
           `shouldShow_${escapeForRelay(this.props.facet.field)}`

@@ -1,20 +1,16 @@
 // @flow
 import React from "react";
-import _ from "lodash";
 import {
   RepositoryCasesLink,
   RepositoryFilesLink
 } from "@ncigdc/components/Links/RepositoryLink";
 import ProjectLink from "@ncigdc/components/Links/ProjectLink";
 import { Th, Td } from "@ncigdc/uikit/Table";
-import { findDataCategory } from "@ncigdc/utils/data";
 import { makeFilter } from "@ncigdc/utils/filters";
 import formatFileSize from "@ncigdc/utils/formatFileSize";
 import withRouter from "@ncigdc/utils/withRouter";
 import styled from "@ncigdc/theme/styled";
-import Tooltip from "@ncigdc/uikit/Tooltip/Tooltip";
-import { tableToolTipHint } from "@ncigdc/theme/mixins";
-import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
+import { createDataCategorySubColumns } from "./utils";
 
 const NumTh = styled(Th, { textAlign: "right" });
 const NumTd = styled(Td, { textAlign: "right" });
@@ -22,77 +18,7 @@ const NumTd = styled(Td, { textAlign: "right" });
 type TLinkProps = { node: Object, fields?: Array<Object>, children?: mixed };
 type TLink = (props: TLinkProps) => any;
 
-const dataCategorySubColumns = _.map(DATA_CATEGORIES, (category, key) => ({
-  name: category.abbr,
-  id: category.abbr,
-  subHeading: true,
-  parent: "data_category",
-  th: ({ columndDefinition }) => (
-    <NumTh>
-      <abbr>
-        <Tooltip Component={category.full} style={tableToolTipHint()}>
-          {category.abbr}
-        </Tooltip>
-      </abbr>
-    </NumTh>
-  ),
-  td: ({ node }) => (
-    <NumTd>
-      <CasesLink
-        node={node}
-        fields={[{ field: "files.data_category", value: category.full }]}
-      >
-        {findDataCategory(
-          category.abbr,
-          node.summary.data_categories
-        ).case_count.toLocaleString()}
-      </CasesLink>
-    </NumTd>
-  ),
-  total: ({ hits }) => (
-    <NumTd>
-      <RepositoryCasesLink
-        query={{
-          filters: makeFilter(
-            [
-              {
-                field: "cases.project.project_id",
-                value: hits.edges.map(({ node: p }) => p.project_id)
-              },
-              { field: "files.data_category", value: category.full }
-            ],
-            false
-          )
-        }}
-      >
-        {_.sumBy(
-          hits.edges,
-          x =>
-            findDataCategory(category.abbr, x.node.summary.data_categories)
-              .case_count
-        ).toLocaleString()}
-      </RepositoryCasesLink>
-    </NumTd>
-  )
-}));
-
-const dataCategoryColumns = [
-  {
-    name: "Data Categories",
-    id: "data_category",
-    th: () => (
-      <Th
-        key="data_category"
-        colSpan={dataCategorySubColumns.length}
-        style={{ textAlign: "center" }}
-      >
-        Available Cases per Data Category
-      </Th>
-    ),
-    subHeadingIds: dataCategorySubColumns.map(x => x.id)
-  },
-  ...dataCategorySubColumns
-];
+const dataCategorySubColumns = createDataCategorySubColumns("case");
 
 const CasesLink: TLink = ({ node, fields = [], children }) =>
   children === "0"
@@ -192,7 +118,23 @@ const projectsTableModel = [
       </NumTd>
     ))
   },
-  ...dataCategoryColumns,
+  ...[
+    {
+      name: "Data Categories",
+      id: "data_category",
+      th: () => (
+        <Th
+          key="data_category"
+          colSpan={dataCategorySubColumns.length}
+          style={{ textAlign: "center" }}
+        >
+          Available Cases per Data Category
+        </Th>
+      ),
+      subHeadingIds: dataCategorySubColumns.map(x => x.id)
+    },
+    ...dataCategorySubColumns
+  ],
   {
     name: "Files",
     id: "summary.file_count",

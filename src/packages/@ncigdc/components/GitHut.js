@@ -1,5 +1,4 @@
 /* @flow */
-/* global _ angular */
 /* eslint-disable */
 
 import React from "react";
@@ -8,6 +7,13 @@ import { compose } from "recompose";
 import { insertRule } from "glamor";
 
 import withRouter from "@ncigdc/utils/withRouter";
+
+declare var angular: { module: Function };
+declare var _: {
+  flatten: Function,
+  groupBy: Function,
+  tail: Function
+};
 
 // Append d3-tip for githut. Appending here to avoid issues in load order.
 const d3TipUrl =
@@ -54,7 +60,7 @@ export default compose(withRouter)(
           ($locationProvider, RestangularProvider) => {
             $locationProvider.html5Mode(false);
             RestangularProvider.setBaseUrl(process.env.REACT_APP_API);
-            // Previous process.env.REACT_APP_API treated "from=0" to be the same as "from=1", the current process.env.REACT_APP_API doesn't.
+            // Previous API treated "from=0" to be the same as "from=1", the current API doesn't.
             RestangularProvider.addFullRequestInterceptor(
               (element, operation, what, url, headers, query) => ({
                 params: Object.assign({}, query, {

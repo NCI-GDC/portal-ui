@@ -4,6 +4,7 @@
 import React from "react";
 import { compose, withState } from "recompose";
 import { connect } from "react-redux";
+import urlJoin from "url-join";
 
 import DownloadButton from "@ncigdc/components/DownloadButton";
 import NoAccessModal from "@ncigdc/components/Modals/NoAccessModal";
@@ -114,7 +115,7 @@ const downloadCart = (files, dispatch, setState) => {
     dispatch(setModal(null));
     setState(s => ({ ...s, cartDownloading: true }));
     download({
-      url: `${process.env.REACT_APP_GDC_AUTH}api/data`,
+      url: urlJoin(process.env.REACT_APP_GDC_AUTH, "api/data"),
       params: {
         ids: files.map(file => file.file_id)
       },
@@ -156,7 +157,7 @@ const CartDownloadDropdown = ({
       <Column>
         <DownloadButton
           style={styles.button(theme)}
-          url={`${process.env.REACT_APP_GDC_AUTH}api/manifest`}
+          url={urlJoin(process.env.REACT_APP_GDC_AUTH, "api/manifest")}
           activeText="Manifest"
           inactiveText="Manifest"
           altMessage={false}

@@ -5,6 +5,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import LoginIcon from "react-icons/lib/fa/sign-in";
+import urlJoin from "url-join";
 
 // Custom
 import { fetchUser } from "@ncigdc/dux/auth";
@@ -16,7 +17,10 @@ import styled from "@ncigdc/theme/styled";
 const openAuthWindow = ({ pathname, dispatch }) => {
   if (navigator.cookieEnabled) {
     const returningPath = `${pathname}?${+new Date()}`;
-    const redirectUrl = `${process.env.REACT_APP_GDC_AUTH}?next=${returningPath}`;
+    const redirectUrl = urlJoin(
+      process.env.REACT_APP_GDC_AUTH,
+      `?next=${returningPath}`
+    );
 
     const closeLogin = url =>
       url === redirectUrl ? false : url.includes(returningPath);

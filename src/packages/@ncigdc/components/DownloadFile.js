@@ -2,6 +2,7 @@
 import React from "react";
 import { compose } from "recompose";
 import { connect } from "react-redux";
+import urlJoin from "url-join";
 
 import DownloadButton from "@ncigdc/components/DownloadButton";
 import { userCanDownloadFile } from "@ncigdc/utils/auth";
@@ -30,7 +31,10 @@ function DownloadFile({
       <DownloadButton
         extraParams={{ ids: file.file_id }}
         filename={file.file_name}
-        url={`${process.env.REACT_APP_GDC_AUTH}api/data?annotations=true&related_files=true`}
+        url={urlJoin(
+          process.env.REACT_APP_GDC_AUTH,
+          "api/data?annotations=true&related_files=true"
+        )}
         activeText={activeText}
         inactiveText={inactiveText}
         style={style}

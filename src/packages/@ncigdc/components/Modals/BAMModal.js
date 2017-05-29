@@ -2,6 +2,7 @@
 
 import React from "react";
 import { compose, withState, pure } from "recompose";
+import urlJoin from "url-join";
 
 import { Row, Column } from "@ncigdc/uikit/Flex";
 import Button from "@ncigdc/uikit/Button";
@@ -16,7 +17,7 @@ type TProps = {
   setActive: Function
 };
 
-export const processBAMSliceInput = (userInput): Object => {
+export const processBAMSliceInput = (userInput: string): Object => {
   if (userInput) {
     const lines = userInput.split("\n");
     return {
@@ -106,7 +107,10 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
             setActive(true);
             download({
               params,
-              url: `${process.env.REACT_APP_GDC_AUTH}api/v0/slicing/view/${file.file_id}`,
+              url: urlJoin(
+                process.env.REACT_APP_GDC_AUTH,
+                `api/v0/slicing/view/${file.file_id}`
+              ),
               method: "POST"
             })(() => {}, () => setActive(false));
           }

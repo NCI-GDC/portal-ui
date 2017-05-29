@@ -33,7 +33,8 @@ const EntityPageHorizontalTable = ({
   data,
   emptyMessage,
   theme,
-  tableId
+  tableId,
+  idKey
 }) => (
   <Column
     style={{
@@ -88,7 +89,7 @@ const EntityPageHorizontalTable = ({
                   ...styles.tr,
                   backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff"
                 }}
-                key={i}
+                key={d[idKey] || i}
               >
                 {headings.map(h =>
                   [].concat(d[h.key]).map((v, j) => (

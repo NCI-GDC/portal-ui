@@ -195,6 +195,7 @@ const Component = compose(
           </Row>
         </Row>
         <EntityPageHorizontalTable
+          idKey="case_id"
           tableId="most-affected-cases-table"
           headings={[
             { key: "id", title: "UUID" },
@@ -286,6 +287,7 @@ const Component = compose(
                     .node;
 
                   return {
+                    ...c,
                     id: (
                       <span>
                         <CaseLink uuid={c.case_id}>

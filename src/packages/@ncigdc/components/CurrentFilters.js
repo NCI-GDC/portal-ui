@@ -172,15 +172,7 @@ const CurrentFilters = (
                   offset: 0,
                   filters: {
                     op: "and",
-                    content: [
-                      {
-                        op: "in",
-                        content: {
-                          field: filter.content.field,
-                          value: filter.content.value
-                        }
-                      }
-                    ]
+                    content: [filter]
                   }
                 }}
               >
@@ -205,15 +197,7 @@ const CurrentFilters = (
                     offset: 0,
                     filters: {
                       op: "and",
-                      content: [
-                        {
-                          op: "in",
-                          content: {
-                            field: filter.content.field,
-                            value: [value]
-                          }
-                        }
-                      ]
+                      content: [filter]
                     }
                   }}
                 >

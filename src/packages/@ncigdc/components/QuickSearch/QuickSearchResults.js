@@ -74,7 +74,7 @@ const ResultIcon = ({ type, style }) => (
   <span style={style}>{entityShortnameMapping[type] || type}</span>
 );
 
-const findMatchingToken = (item, lq, value = "") => {
+export const findMatchingToken = (item, lq, value = "") => {
   const ks = Object.keys(item);
 
   for (let i = 0; i < ks.length; i++) {
@@ -101,26 +101,35 @@ const findMatchingToken = (item, lq, value = "") => {
         continue;
       }
 
-      const tokens = term ? term.toLowerCase().split(" ") : [];
-      for (let k = 0; k < tokens.length; k++) {
-        const token = tokens[k].replace(/[()]/g, "");
-        if (token.indexOf(lq) === 0) {
-          if (!(value && value.length < term.length)) {
-            value = term;
-          }
-        }
-      }
+       if ((term || '').toLocaleLowerCase().replace(/[()]/g, '').indexOf(lq) !== -1) {
+          value = term;
+       }
     }
   }
 
   return value;
 };
 
-const ResultHighlights = ({ item, query, style }) => {
+const internalHighlight = (query, foundText) => {
+  const index = (foundText || '').toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
+  if (index !== -1) {
+    const seg1 = foundText.substring(0, index);
+    const foundQuery = foundText.substring(index, index + query.length);
+    const seg2 = foundText.substring(index + query.length);
+    return (
+      <span>{seg1}<b>{foundQuery}</b>{seg2}</span>
+    );
+  }
+  return (
+    <span>{foundText}</span>
+  );
+};
+
+const ResultHighlights = ({ item, query, style }: { item: Object, query: string, style: Object }) => {
   const lq = query.toLocaleLowerCase();
   const value = findMatchingToken(item, lq);
 
-  return <div style={style}>{value}</div>;
+  return <div style={style}>{internalHighlight(lq, value)}</div>;
 };
 
 type TProps = {

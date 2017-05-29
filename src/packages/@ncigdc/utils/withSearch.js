@@ -1,7 +1,6 @@
 // @flow
 import _ from "lodash";
 import withRouter from "@ncigdc/utils/withRouter";
-import { SEARCH_FIELDS } from "@ncigdc/utils/constants";
 import { fetchApi } from "@ncigdc/utils/ajax";
 import {
   compose,
@@ -47,7 +46,7 @@ export const withSearch = passedInState => {
       fetchResults: ({ handleResults }) => (query, timeOfRequest) =>
         throttledInvoker(() =>
           fetchApi(
-            `/all?fields=${SEARCH_FIELDS.join(",")}&query=${window.encodeURIComponent(query)}&size=5`
+            `/all?query=${window.encodeURIComponent(query)}&size=5`
           ).then(response =>
             handleResults(response.data.query.hits, timeOfRequest)
           )

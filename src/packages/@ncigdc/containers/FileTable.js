@@ -1,0 +1,200 @@
+/* @flow */
+
+import React from "react";
+import Relay from "react-relay/classic";
+
+import Pagination from "@ncigdc/components/Pagination";
+import Showing from "@ncigdc/components/Pagination/Showing";
+import AddToCartButtonAll from "@ncigdc/components/AddToCartButtonAll";
+import { Row } from "@ncigdc/uikit/Flex";
+import TableActions from "@ncigdc/components/TableActions";
+
+import { Tr, Th } from "@ncigdc/uikit/Table";
+
+import FileTr from "./FileTr";
+
+import type { TTableProps } from "./types";
+
+const styles = {
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    borderSpacing: 0
+  },
+  right: {
+    textAlign: "right"
+  }
+};
+
+export const FileTableComponent = ({
+  downloadable,
+  hits,
+  relay,
+  canAddToCart = true,
+  tableHeader
+}: TTableProps) => {
+  const prefix = "files";
+
+  return (
+    <div>
+      {tableHeader &&
+        <h3
+          className="panel-title"
+          style={{ padding: "1rem", marginTop: "-6rem" }}
+        >
+          {tableHeader}
+        </h3>}
+      <Row
+        style={{
+          backgroundColor: "white",
+          padding: "1rem",
+          justifyContent: "space-between"
+        }}
+      >
+        <Showing
+          docType="files"
+          prefix={prefix}
+          params={relay.route.params}
+          total={hits.total}
+        />
+        <TableActions
+          prefix={prefix}
+          total={hits.total}
+          sortKey="files_sort"
+          endpoint="files"
+          downloadable={downloadable}
+          downloadFields={[
+            "file_id",
+            "file_name",
+            "cases.project.project_id",
+            "cases.case_id",
+            "access",
+            "data_category",
+            "data_format",
+            "file_size"
+          ]}
+          sortOptions={[
+            {
+              id: "file_id",
+              name: "File UUID"
+            },
+            {
+              id: "submitter_id",
+              name: "File Submitter ID"
+            },
+            {
+              id: "access",
+              name: "Access"
+            },
+            {
+              id: "file_name",
+              name: "File Name"
+            },
+            {
+              id: "cases.project.project_id",
+              name: "Project"
+            },
+            {
+              id: "data_category",
+              name: "Data Category"
+            },
+            {
+              id: "data_format",
+              name: "Data Format"
+            },
+            {
+              id: "file_size",
+              name: "Size"
+            }
+          ]}
+          tsvSelector="#repository-files-table"
+          tsvFilename="repository-files-table.tsv"
+        />
+      </Row>
+      <div style={{ overflowX: "auto" }}>
+        <table style={styles.table} id="repository-files-table">
+          <thead>
+            <Tr>
+              <Th>
+                {canAddToCart &&
+                  <AddToCartButtonAll
+                    edges={hits.edges.map(e => e.node)}
+                    total={hits.total}
+                  />}
+              </Th>
+              <Th>Access</Th>
+              <Th>File Name</Th>
+              <Th style={styles.right}>Cases</Th>
+              <Th>Projects</Th>
+              <Th>Category</Th>
+              <Th>Format</Th>
+              <Th style={styles.right}>Size</Th>
+              <Th style={styles.right}>Annotations</Th>
+            </Tr>
+          </thead>
+          <tbody>
+            {hits.edges.map((e, i) => (
+              <FileTr
+                node={e.node}
+                key={e.node.id}
+                index={i}
+                canAddToCart={canAddToCart}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Pagination
+        prefix={prefix}
+        params={relay.route.params}
+        total={hits.total}
+      />
+    </div>
+  );
+};
+
+export const FileTableQuery = {
+  fragments: {
+    hits: () => Relay.QL`
+      fragment on FileConnection {
+        total
+        edges {
+          node {
+            id
+            file_id
+            file_name
+            file_size
+            access
+            file_state
+            state
+            acl
+            data_category
+            data_format
+            cases {
+              hits(first: 1) {
+                total
+                edges {
+                  node {
+                    case_id
+                    project {
+                      project_id
+                    }
+                  }
+                }
+              }
+            }
+            annotations {
+              hits(first:0) {
+                total
+              }
+            }
+          }
+        }
+      }
+    `
+  }
+};
+
+const FileTable = Relay.createContainer(FileTableComponent, FileTableQuery);
+
+export default FileTable;

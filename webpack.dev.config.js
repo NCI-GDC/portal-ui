@@ -22,4 +22,7 @@ const config = merge(
   }
 );
 
+const libs = config.entry.libs;
+libs.unshift(libs.splice(libs.indexOf('babel-polyfill'), 1)[0]);
+
 module.exports = config;

@@ -112,7 +112,7 @@ export const findMatchingToken = (item, lq, value = "") => {
 
 const internalHighlight = (query, foundText) => {
   const index = (foundText || '').toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
-  if (index !== -1) {
+  if (foundText && index !== -1) {
     const seg1 = foundText.substring(0, index);
     const foundQuery = foundText.substring(index, index + query.length);
     const seg2 = foundText.substring(index + query.length);

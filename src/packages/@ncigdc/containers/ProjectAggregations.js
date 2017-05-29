@@ -40,7 +40,7 @@ const projectFacets = [
     type: "keyword"
   },
   {
-    title: "Cancer Program",
+    title: "Program",
     field: "program.name",
     full: "projects.program.name",
     doc_type: "project",

@@ -23,6 +23,7 @@ import FrequentlyMutatedGenesChart
 import MutationsCount from "@ncigdc/containers/MutationsCount";
 
 import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
+import GeneSymbol from '@ncigdc/containers/GeneSymbol';
 
 export type TProps = {
   autocomplete: {
@@ -65,6 +66,7 @@ export type TProps = {
 
 export const ExplorePageComponent = (props: TProps) => (
   <SearchPage
+    geneSymbolFragment={get(props, 'viewer.geneSymbolFragment', {})}
     facetTabs={[
       {
         id: "cases",
@@ -86,6 +88,7 @@ export const ExplorePageComponent = (props: TProps) => (
         text: "Genes",
         component: (
           <GeneAggregations
+            geneSymbolFragment={get(props, 'viewer.geneSymbolFragment', {})}
             aggregations={props.viewer.explore.genes.aggregations}
             suggestions={get(props, "viewer.autocomplete_genes.hits", [])}
             setAutocomplete={(value, onReadyStateChange) =>
@@ -209,6 +212,9 @@ export const ExplorePageQuery = {
               ssm_id
             }
           }
+        }
+       geneSymbolFragment: explore {
+          ${GeneSymbol.getFragment('explore')}
         }
         frequentMutationsChartFragment: explore {
           ${FrequentMutationsChart.getFragment("explore")}

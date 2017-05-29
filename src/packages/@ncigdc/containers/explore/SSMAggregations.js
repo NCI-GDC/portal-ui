@@ -46,7 +46,7 @@ const presetFacets = [
     type: "terms"
   },
   {
-    title: "SSM Callers",
+    title: "Variant Caller",
     field: "occurrence.case.observation.variant_calling.variant_caller",
     full: "ssms.occurrence.case.observation.variant_calling.variant_caller",
     doc_type: "ssms",

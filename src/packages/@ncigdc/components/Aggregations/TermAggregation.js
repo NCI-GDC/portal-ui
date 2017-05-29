@@ -108,15 +108,9 @@ const TermAggregation = (props: TProps) => {
               <Column>
                 {filteredBuckets
                   .slice(0, props.showingMore ? Infinity : 5)
-                  .map(b => ({
-                    ...b,
-                    name: b.key === "1" &&
-                      props.field === "genes.is_cancer_gene_census"
-                      ? "Cancer Gene Census"
-                      : b.key
-                  })) // TODO: this needs to change in the data
+                  .map(b => ({ ...b, name: b.key_as_string || b.key }))
                   .map(bucket => (
-                    <BucketRow key={bucket.key}>
+                    <BucketRow key={bucket.name}>
                       <BucketLink
                         merge="toggle"
                         query={{
@@ -128,7 +122,7 @@ const TermAggregation = (props: TProps) => {
                                 op: "in",
                                 content: {
                                   field: dotField,
-                                  value: [bucket.key]
+                                  value: [bucket.name]
                                 }
                               }
                             ]
@@ -140,7 +134,7 @@ const TermAggregation = (props: TProps) => {
                           type="checkbox"
                           style={{ pointerEvents: "none", marginRight: "5px" }}
                           checked={inCurrentFilters({
-                            key: bucket.key,
+                            key: bucket.name,
                             dotField,
                             currentFilters
                           })}

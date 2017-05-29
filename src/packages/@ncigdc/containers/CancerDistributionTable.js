@@ -299,6 +299,7 @@ const CancerDistributionTableComponent = compose(
         </Row>
         <Column style={{ width: "100%", minWidth: 450 }}>
           <EntityPageHorizontalTable
+            idKey="project_id"
             tableId="cancer-distribution-table"
             headings={[
               { key: "project_id", title: "Project ID" },

@@ -358,6 +358,7 @@ const Component = compose(
           </Row>
         </Row>
         <EntityPageHorizontalTable
+          idKey="ssm_id"
           tableId="frequent-mutations-table"
           headings={[
             {

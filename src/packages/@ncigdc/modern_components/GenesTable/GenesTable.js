@@ -203,6 +203,7 @@ const Component = compose(
           </Row>
         </Row>
         <EntityPageHorizontalTable
+          idKey="gene_id"
           tableId="frequently-mutated-genes-table"
           headings={[
             { key: "symbol", title: "Symbol" },

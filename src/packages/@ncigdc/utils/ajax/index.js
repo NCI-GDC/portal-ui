@@ -1,5 +1,5 @@
 // @flow
-import { CALL_REACT_APP_API } from "redux-api-middleware";
+import { CALL_API } from "redux-api-middleware";
 import urlJoin from "url-join";
 
 const DEFAULTS = {
@@ -14,7 +14,7 @@ const DEFAULTS = {
 
 export function fetchAuth(options: { endpoint: string }): Object {
   return {
-    [CALL_REACT_APP_API]: {
+    [CALL_API]: {
       ...DEFAULTS,
       ...options,
       endpoint: urlJoin(process.env.REACT_APP_GDC_AUTH, options.endpoint)

@@ -592,7 +592,7 @@
 				"width": 1045,
 				"grid": 0,
 				"tags": [
-					"GDC-App-GDC-process.env.REACT_APP_API"
+					"GDC-App-GDC-API"
 				],
 				"colorPermutations": {
 					"11631621621163163163118918518512552552551": [

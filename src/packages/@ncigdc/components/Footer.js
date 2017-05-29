@@ -103,7 +103,7 @@ export default compose(
         <div style={styles.innerContainer}>
           <span> UI @ {uiVersion || (uiCommitHash || "").slice(0, 7)}</span>
 
-          <span>, process.env.REACT_APP_API {apiVersion}</span>
+          <span>, API {apiVersion}</span>
           {apiCommitHash && <span> @ {apiCommitHash.slice(0, 7)}</span>}
 
           <span>

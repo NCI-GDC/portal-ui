@@ -30,9 +30,11 @@ coverage
 # IDEs
 .idea
 *.iml
+.vscode
 
 # build folders
 dist
+build
 
 # OS
 .DS_Store

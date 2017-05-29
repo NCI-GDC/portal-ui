@@ -12,7 +12,7 @@ import FacetHeader from "@ncigdc/components/Aggregations/FacetHeader";
 import type { TBucket } from "@ncigdc/components/Aggregations/types";
 
 import { withTheme } from "@ncigdc/theme";
-import { Row, Column } from "@ncigdc/uikit/Flex";
+import { Column } from "@ncigdc/uikit/Flex";
 import escapeForRelay from "@ncigdc/utils/escapeForRelay";
 
 export type TProps = {

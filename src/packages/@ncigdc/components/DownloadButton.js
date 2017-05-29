@@ -17,6 +17,26 @@ const styles = {
   }
 };
 
+type TDownloadButton = {
+  url: string,
+  active: boolean,
+  disabled: boolean,
+  filename: string,
+  dataExportExpands: Array<string>,
+  setActive: () => {},
+  activeText: string,
+  inactiveText: string,
+  returnType: string,
+  size: number,
+  format: string,
+  fields: Array<string>,
+  filters: Object,
+  altMessage: boolean,
+  style: Object,
+  extraParams: Object,
+  setParentState: () => {}
+};
+
 const DownloadButton = ({
   url,
   disabled = false,
@@ -34,7 +54,7 @@ const DownloadButton = ({
   altMessage = false,
   style = {},
   extraParams = {}
-}) => {
+}: TDownloadButton) => {
   const icon = active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />;
   const text = active ? activeText : inactiveText;
 
@@ -73,26 +93,6 @@ const DownloadButton = ({
       {text || [icon, <Hidden key="hidden">download</Hidden>]}
     </Button>
   );
-};
-
-DownloadButton.propTypes = {
-  url: React.PropTypes.string,
-  active: React.PropTypes.bool,
-  disabled: React.PropTypes.bool,
-  filename: React.PropTypes.string,
-  dataExportExpands: React.PropTypes.array,
-  setActive: React.PropTypes.func,
-  activeText: React.PropTypes.string,
-  inactiveText: React.PropTypes.string,
-  returnType: React.PropTypes.string,
-  size: React.PropTypes.number,
-  format: React.PropTypes.string,
-  fields: React.PropTypes.array,
-  filters: React.PropTypes.object,
-  altMessage: React.PropTypes.bool,
-  style: React.PropTypes.object,
-  extraParams: React.PropTypes.object,
-  setParentState: React.PropTypes.func
 };
 
 const enhance = compose(

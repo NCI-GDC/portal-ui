@@ -51,7 +51,6 @@ const progressChecker = (
 ) => {
   inProgress();
   const waitTime = 1000;
-  const timeoutInterval = 10;
   let attempts = 0;
   let timeoutPromise = null;
 
@@ -105,6 +104,7 @@ const progressChecker = (
         We recommend that you use the <a
           href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
           target="_blank"
+          rel="noopener noreferrer"
         >
           {" "}GDC Data Transfer Tool
         </a> or cancel the download and try again later.
@@ -178,32 +178,28 @@ const progressChecker = (
 };
 
 const cookielessChecker = (iFrame, inProgress, done) => {
-  const waitTime = 5000;
-  let attempts = 30;
-
-  const finished = () => {
-    iFrame.remove();
-    done();
-  };
-
-  const checker = () => {
-    // Here we simply try to read the error message if the iFrame DOM is
-    // reloaded; for a successful download, the error message is not in the DOM
-    // therefore #getIframeResponse will return a JS error.
-    const error = _.attempt(_.partial(getIframeResponse, iFrame));
-    if (_.isError(error)) {
-      // Keep waiting until we exhaust `attempts` then we do the cleanup.
-      if (--attempts < 0) {
-        finished();
-      } else {
-        // setTimeout(checker, waitTime)
-      }
-    } else {
-      finished();
-      showErrorModal(error);
-    }
-  };
-
+  // let attempts = 30;
+  // const finished = () => {
+  //   iFrame.remove();
+  //   done();
+  // };
+  // const checker = () => {
+  //   // Here we simply try to read the error message if the iFrame DOM is
+  //   // reloaded; for a successful download, the error message is not in the DOM
+  //   // therefore #getIframeResponse will return a JS error.
+  //   const error = _.attempt(_.partial(getIframeResponse, iFrame));
+  //   if (_.isError(error)) {
+  //     // Keep waiting until we exhaust `attempts` then we do the cleanup.
+  //     if (--attempts < 0) {
+  //       finished();
+  //     } else {
+  //       // setTimeout(checker, waitTime)
+  //     }
+  //   } else {
+  //     finished();
+  //     showErrorModal(error);
+  //   }
+  // };
   // setTimeout(checker, waitTime);
 };
 

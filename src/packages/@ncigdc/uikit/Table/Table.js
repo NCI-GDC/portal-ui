@@ -1,10 +1,7 @@
 // @flow
 
-// Vendor
 import React from "react";
-import PropTypes from "prop-types";
 
-// Custom
 import Tr from "./Tr";
 import Th from "./Th";
 

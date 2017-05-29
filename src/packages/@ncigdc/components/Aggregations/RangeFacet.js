@@ -356,6 +356,7 @@ const RangeFacet = (props: TProps) => {
                 <a
                   href="https://gdc.nci.nih.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   here
                 </a>

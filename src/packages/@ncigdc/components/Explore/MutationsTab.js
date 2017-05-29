@@ -1,4 +1,3 @@
-/* global process.env.REACT_APP_API */
 // @flow
 import React from "react";
 import JSURL from "jsurl";
@@ -12,7 +11,7 @@ import {
 import { Column, Row } from "@ncigdc/uikit/Flex";
 import { getDefaultCurve } from "@ncigdc/utils/survivalplot";
 import withFilters from "@ncigdc/utils/withFilters";
-import { makeFilter, addInFilters, toggleFilters } from "@ncigdc/utils/filters";
+import { makeFilter, toggleFilters } from "@ncigdc/utils/filters";
 
 import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
 import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";

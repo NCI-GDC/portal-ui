@@ -1,5 +1,5 @@
 // @flow
-/* eslint react/prop-types:1 */
+/* eslint react/prop-types:0 */
 
 import React from "react";
 import _ from "lodash";

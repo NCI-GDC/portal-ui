@@ -4,7 +4,6 @@ import React from "react";
 import { createFragmentContainer, graphql } from "react-relay/compat";
 import { connect } from "react-redux";
 import { compose } from "recompose";
-import Showing from "@ncigdc/components/Pagination/Showing";
 import { Row } from "@ncigdc/uikit/Flex";
 import TableActions from "@ncigdc/components/TableActions";
 import tableModels from "@ncigdc/tableModels";

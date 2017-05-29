@@ -1,13 +1,7 @@
 /* @flow */
 
 import React from "react";
-import {
-  compose,
-  lifecycle,
-  defaultProps,
-  renameProps,
-  withState
-} from "recompose";
+import { compose, defaultProps } from "recompose";
 
 import { parseFilterParam } from "@ncigdc/utils/uri";
 import LocationSubscriber from "@ncigdc/components/LocationSubscriber";

@@ -3,7 +3,6 @@
 
 import React from "react";
 import Relay from "react-relay/classic";
-import _ from "lodash";
 import { compose, withState } from "recompose";
 
 import SuggestionFacet from "@ncigdc/components/Aggregations/SuggestionFacet";
@@ -15,7 +14,6 @@ import type { TBucket } from "@ncigdc/components/Aggregations/types";
 import { withTheme } from "@ncigdc/theme";
 import { Column } from "@ncigdc/uikit/Flex";
 import escapeForRelay from "@ncigdc/utils/escapeForRelay";
-import { makeFilter } from "@ncigdc/utils/filters";
 import NotMissingFacet from "@ncigdc/components/Aggregations/NotMissingFacet";
 
 const presetFacets = [
@@ -202,7 +200,9 @@ export const SSMAggregationsQuery = {
     ssms: () => Relay.QL`
       fragment on Ssms {
         cosmic_id_not_missing: hits(
-          filters: { op: "and", content: [{ op: "not", content: { field: "cosmic_id", value: ["MISSING"] } }] }
+          filters: { op: "and", content: [
+            { op: "not", content: { field: "cosmic_id", value: ["MISSING"] } }
+            ] }
         ) {
           total
         }
@@ -211,7 +211,10 @@ export const SSMAggregationsQuery = {
           {
             op: "and",
             content: [{
-              op: "not", content: { field: "consequence.transcript.annotation.dbsnp_rs", value: ["MISSING"] }
+              op: "not", content: {
+                field: "consequence.transcript.annotation.dbsnp_rs",
+                value: ["MISSING"]
+              }
             }]
           }
         ) {

@@ -1,6 +1,5 @@
 /* @flow */
 import React from "react";
-import styled from "@ncigdc/theme/styled";
 import { withTheme } from "@ncigdc/theme";
 
 type TNoResultsProps = {

@@ -14,8 +14,6 @@ import { Tr, Th } from "@ncigdc/uikit/Table";
 import { Tooltip } from "@ncigdc/uikit/Tooltip";
 import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
 import { tableToolTipHint } from "@ncigdc/theme/mixins";
-import DownloadTableToTsvButton
-  from "@ncigdc/components/DownloadTableToTsvButton";
 
 import CaseTr from "./CaseTr";
 

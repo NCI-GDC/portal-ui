@@ -1,10 +1,6 @@
 // @flow
 
-// Vendor
 import React from "react";
-import PropTypes from "prop-types";
-
-/*----------------------------------------------------------------------------*/
 
 const styles = {
   countBubble: {

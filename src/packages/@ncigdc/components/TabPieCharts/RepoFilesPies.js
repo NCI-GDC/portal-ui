@@ -54,7 +54,7 @@ const RepoFilesPiesComponent = ({
   return (
     <div>
       <BottomBorderedBox>
-        <WrappedRow style={{ maxWidth: `${width}px` }}>
+        <WrappedRow style={{ maxWidth: `${width}px`, width: "100%" }}>
           <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Primary Site</PieTitle>
             <SelfFilteringPie

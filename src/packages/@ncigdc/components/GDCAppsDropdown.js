@@ -1,58 +1,59 @@
 // @flow
 
-import React from 'react';
-import _ from 'lodash';
+import React from "react";
+import _ from "lodash";
 
-import Dropdown from '@ncigdc/uikit/Dropdown';
-import { ExternalLink } from '@ncigdc/uikit/Links';
+import Dropdown from "@ncigdc/uikit/Dropdown";
+import { ExternalLink } from "@ncigdc/uikit/Links";
 
-import styled from '@ncigdc/theme/styled';
-import dataPortalImg from '@ncigdc/theme/images/GDC-App-data-portal-blue.svg';
-import websiteImg from '@ncigdc/theme/images/GDC-App-website-blue.svg';
+import styled from "@ncigdc/theme/styled";
+import dataPortalImg from "@ncigdc/theme/images/GDC-App-data-portal-blue.svg";
+import websiteImg from "@ncigdc/theme/images/GDC-App-website-blue.svg";
 
-import Row from '@ncigdc/uikit/Flex/Row';
-import Column from '@ncigdc/uikit/Flex/Column';
+import Row from "@ncigdc/uikit/Flex/Row";
+import Column from "@ncigdc/uikit/Flex/Column";
 
-import './GDCAppsDropdown.css';
+import "./GDCAppsDropdown.css";
 
 const DropDownButton = styled.span({
-  padding: '15px 13px',
-  display: 'block',
-  ':hover': {
-    cursor: 'pointer',
-    color: '#333',
-    backgroundColor: '#dedddd',
-  },
+  padding: "15px 13px",
+  display: "block",
+  ":hover": {
+    cursor: "pointer",
+    color: "#333",
+    backgroundColor: "#dedddd"
+  }
 });
 
 const DropdownContent = styled(Row, {
-  position: 'absolute',
+  position: "absolute",
   zIndex: 1,
-  textAlign: 'center',
-  justifyContent: 'space-between',
-  width: 'initial',
+  textAlign: "center",
+  justifyContent: "space-between",
+  width: "initial"
 });
 
 const DropdownItem = styled(Row, {
-  whiteSpace: 'nowrap',
-  display: 'inline !important',
-  padding: '0.5rem',
-  margin: '0.25rem',
-  transition: 'background 0.25s ease-in-out',
-  fontWeight: 'normal',
-  backgroundColor: ({ theme, active }) => (active ? theme.greyScale6 : 'inherit'),
-  ' a': {
-    color: '#333',
-    fontWeight: 'normal',
-    fontSize: 'small',
-    display: 'block',
+  whiteSpace: "nowrap",
+  display: "inline !important",
+  padding: "0.5rem",
+  margin: "0.25rem",
+  transition: "background 0.25s ease-in-out",
+  fontWeight: "normal",
+  backgroundColor: ({ theme, active }) =>
+    active ? theme.greyScale6 : "inherit",
+  " a": {
+    color: "#333",
+    fontWeight: "normal",
+    fontSize: "small",
+    display: "block"
   },
-  ' .icon': {
-    fontSize: '2rem',
+  " .icon": {
+    fontSize: "2rem"
   },
-  ':hover': {
-    backgroundColor: '#ededed',
-  },
+  ":hover": {
+    backgroundColor: "#ededed"
+  }
 });
 
 const GDCAppsDropdown = () => (
@@ -60,18 +61,18 @@ const GDCAppsDropdown = () => (
     dropdownClassName="gdc-apps-menu-container"
     style={{
       margin: 0,
-      border: 'none',
-      color: '#767676',
-      display: 'block',
+      border: "none",
+      color: "#767676",
+      display: "block"
     }}
     dropdownStyle={{
-      marginTop: '15px',
-      borderBottomLeftRadius: '5px',
-      borderBottomRightRadius: '5px',
+      marginTop: "15px",
+      borderBottomLeftRadius: "5px",
+      borderBottomRightRadius: "5px"
     }}
     button={
       <DropDownButton>
-        <i className="icon-gdc-apps-menu" style={{ paddingRight: '4px' }} />
+        <i className="icon-gdc-apps-menu" style={{ paddingRight: "4px" }} />
         <span className="hidden-md hidden-sm" data-translate>GDC Apps</span>
       </DropDownButton>
     }
@@ -85,9 +86,10 @@ const GDCAppsDropdown = () => (
             title="Data Portal"
           >
             <img
-              style={{ width: '26px' }}
+              style={{ width: "26px" }}
               src={dataPortalImg}
-              className="icon icon-gdc-portal home" alt="GDC Data Portal"
+              className="icon icon-gdc-portal home"
+              alt="GDC Data Portal"
             />
             <p>Data Portal</p>
           </ExternalLink>
@@ -98,11 +100,9 @@ const GDCAppsDropdown = () => (
             href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
           >
             <span className="icon icon-gdc-portal-api">
-              {_.range(0, 11).map(x =>
-                <span key={x} className={`path${x}`} />
-              )}
+              {_.range(0, 11).map(x => <span key={x} className={`path${x}`} />)}
             </span>
-            <p>API</p>
+            <p>process.env.REACT_APP_API</p>
           </ExternalLink>
         </DropdownItem>
         <DropdownItem>
@@ -138,8 +138,10 @@ const GDCAppsDropdown = () => (
             href="https://gdc.cancer.gov/"
           >
             <img
-              style={{ width: '26px' }}
-              src={websiteImg} className="icon icon-gdc-portal home" alt="GDC Website"
+              style={{ width: "26px" }}
+              src={websiteImg}
+              className="icon icon-gdc-portal home"
+              alt="GDC Website"
             />
             <p>Website</p>
           </ExternalLink>

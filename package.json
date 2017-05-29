@@ -1,21 +1,34 @@
 {
-  "version": "0.0.3",
+  "version": "0.0.0",
   "repository": "NCI-GDC/portal-ui",
-  "jest": {
-    "preset": "@knit/jest-config-socks",
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
-    },
-    "globals": {
-      "LEGACY": false
-    }
-  },
   "author": {
     "name": "OICR",
     "url": "https://github.com/NCI-GDC/"
   },
   "homepage": "https://gdc-portal.nci.nih.gov/",
+  "scripts": {
+    "precommit": "lint-staged",
+    "start": "BROWSER=none node ./start.js",
+    "build": "node ./build.js",
+    "test": "react-scripts test --env=jsdom",
+    "knit": "knit",
+    "flow": "flow check",
+    "relay": "relay-compiler --src src --schema ./data/schema.json"
+  },
+  "proxy": {
+    "/api": {
+      "target": "http://localhost:5000",
+      "pathRewrite": {
+        "^/api": ""
+      }
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "dependencies": {
     "@oncojs/react-lolliplot": "^0.10.2",
     "@oncojs/sapien": "0.4.3",
@@ -36,7 +49,7 @@
     "memoizee": "0.4.5",
     "moment": "2.17.1",
     "oncogrid": "1.2.1",
-    "prop-types": "15.5.8",
+    "prop-types": "^15.5.10",
     "query-string": "4.3.4",
     "queue": "4.2.1",
     "react": "15.5.4",
@@ -44,13 +57,14 @@
     "react-dates": "4.3.2",
     "react-dom": "15.5.4",
     "react-faux-dom": "3.1.0",
-    "react-helmet": "5.0.3",
+    "react-helmet": "^5.1.3",
     "react-highlighter": "0.3.3",
+    "react-icons": "2.2.5",
     "react-measure": "1.4.5",
     "react-modal": "1.7.7",
     "react-progress": "0.0.12",
     "react-redux": "5.0.4",
-    "react-relay": "dev",
+    "react-relay": "^1.0.0",
     "react-relay-network-layer": "2.0.1",
     "react-router": "4.0.0-beta.4",
     "react-router-dom": "4.0.0-beta.4",
@@ -59,56 +73,28 @@
     "recompose": "0.23.1",
     "redux": "3.6.0",
     "redux-actions": "1.2.2",
-    "redux-api-middleware": "1.0.3",
+    "redux-api-middleware": "2.0.0-beta.2",
     "redux-persist": "4.8.0",
     "redux-thunk": "2.2.0",
     "style-builder": "1.0.13",
     "url-join": "1.1.0"
   },
   "devDependencies": {
-    "@knit/babel-plugin-socks-relay": "0.3.3",
-    "@knit/babel-preset-socks-react": "0.4.0",
-    "@knit/eslint-config-socks-react": "0.2.0",
-    "@knit/jest-config-socks": "0.3.3",
-    "@knit/knit": "0.4.1",
-    "@knit/webpack-config-socks": "0.4.0",
-    "@knit/webpack-dev-server-config": "0.4.0",
-    "babel-jest": "20.0.1",
-    "babel-plugin-relay": "dev",
-    "eslint": "3.19.0",
-    "flow-bin": "0.46.0",
-    "html-webpack-plugin": "2.28.0",
-    "html-webpack-template": "6.0.1",
-    "isomorphic-fetch": "2.2.1",
-    "jest": "20.0.1",
-    "json-loader": "0.5.4",
-    "react-icons": "2.2.5",
-    "relay-compiler": "dev",
-    "webpack": "2.5.1",
-    "webpack-bundle-analyzer": "2.8.1",
-    "webpack-dev-server": "2.4.5",
-    "webpack-merge": "4.1.0"
-  },
-  "scripts": {
-    "knit": "knit",
-    "update-schema": "rm -rf node_modules && yarn && knit -- schema",
-    "build": "rm -rf dist && webpack",
-    "start": "webpack-dev-server --config webpack.dev.config.js",
-    "test": "jest",
-    "lint": "eslint --ext .js modules/node_modules",
-    "lint-fix": "eslint --ext .js modules/node_modules --fix",
-    "flow": "flow check",
-    "relay": "relay-compiler --src ./modules/node_modules --schema ./data/schema.json"
-  },
-  "knit": {
-    "needle": {
-      "env": {
-        "API": "/api/",
-        "GDC_AUTH": "/auth/",
-        "LEGACY": false,
-        "COMMIT_HASH": "",
-        "COMMIT_TAG": ""
-      }
-    }
+    "@knit/babel-plugin-socks-relay": "^0.3.3",
+    "@knit/babel-preset-socks-react": "^0.5.0",
+    "@knit/webpack-dev-server-config": "^0.6.0",
+    "babel-plugin-relay": "^1.0.1",
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "babel-relay-plugin": "^0.11.0",
+    "eslint-config-prettier": "^2.1.1",
+    "eslint-plugin-prettier": "^2.1.1",
+    "flow-bin": "^0.47.0",
+    "husky": "^0.13.3",
+    "lint-staged": "^3.5.0",
+    "prettier": "^1.3.1",
+    "react-scripts": "1.0.6",
+    "relay-compiler": "^1.0.0",
+    "webpack-dev-server": "^2.4.5",
+    "webpack-merge": "^4.1.0"
   }
 }

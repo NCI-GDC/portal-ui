@@ -33,6 +33,7 @@ coverage
 
 # build folders
 dist
+build
 
 # OS
 .DS_Store

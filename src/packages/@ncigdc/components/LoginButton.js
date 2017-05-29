@@ -1,31 +1,29 @@
 // @flow
-/* global GDC_AUTH */
+/* eslint no-restricted-globals: 0 */
+/* global process.env.REACT_APP_GDC_AUTH */
 
 // Vendor
-import React from 'react';
-import { connect } from 'react-redux';
-import LoginIcon from 'react-icons/lib/fa/sign-in';
+import React from "react";
+import { connect } from "react-redux";
+import LoginIcon from "react-icons/lib/fa/sign-in";
 
 // Custom
-import { fetchUser } from '@ncigdc/dux/auth';
-import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
-import styled from '@ncigdc/theme/styled';
-import { center } from '@ncigdc/theme/mixins';
+import { fetchUser } from "@ncigdc/dux/auth";
+import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
+import styled from "@ncigdc/theme/styled";
+import { center } from "@ncigdc/theme/mixins";
 
 /*----------------------------------------------------------------------------*/
 
 const openAuthWindow = ({ pathname, dispatch }) => {
   if (navigator.cookieEnabled) {
     const returningPath = `${pathname}?${+new Date()}`;
-    const redirectUrl = `${GDC_AUTH}?next=${returningPath}`;
+    const redirectUrl = `${process.env.REACT_APP_GDC_AUTH}?next=${returningPath}`;
 
-    const closeLogin = url => (
-      url === redirectUrl
-        ? false
-        : url.includes(returningPath)
-    );
+    const closeLogin = url =>
+      url === redirectUrl ? false : url.includes(returningPath);
 
-    const win = open(redirectUrl, 'Auth', 'width=800, height=600');
+    const win = open(redirectUrl, "Auth", "width=800, height=600");
 
     const interval = setInterval(() => {
       try {
@@ -46,7 +44,7 @@ const openAuthWindow = ({ pathname, dispatch }) => {
           }, 1000);
         }
       } catch (err) {
-        console.log('Error while monitoring the Login window: ', err);
+        console.log("Error while monitoring the Login window: ", err);
       }
     }, 500);
   } else {
@@ -55,34 +53,35 @@ const openAuthWindow = ({ pathname, dispatch }) => {
 };
 
 const Link = styled.a({
-  textDecoration: 'none',
-  transition: 'background-color 0.2s ease',
-  cursor: 'pointer',
+  textDecoration: "none",
+  transition: "background-color 0.2s ease",
+  cursor: "pointer"
 });
 
 const styles = {
   marginLeft: {
-    marginLeft: '0.7rem',
-  },
+    marginLeft: "0.7rem"
+  }
 };
 
 type TLoginButtonProps = {
   children: mixed,
-  dispatch: Function,
+  dispatch: Function
 };
 const LoginButton = ({ children, dispatch }: TLoginButtonProps) => (
-  <LocationSubscriber>{({ pathname }) =>
-    <Link onClick={() => openAuthWindow({ pathname, dispatch })}>
-      {children ||
-        <span>
-          <LoginIcon />
-          <span style={styles.marginLeft}>Login</span>
-        </span>
-      }
-    </Link>
-  }</LocationSubscriber>
+  <LocationSubscriber>
+    {({ pathname }) => (
+      <Link onClick={() => openAuthWindow({ pathname, dispatch })}>
+        {children ||
+          <span>
+            <LoginIcon />
+            <span style={styles.marginLeft}>Login</span>
+          </span>}
+      </Link>
+    )}
+  </LocationSubscriber>
 );
 
- /*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 export default connect()(LoginButton);

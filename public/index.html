@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="theme-color" content="#000000">
+  <!--
+    manifest.json provides metadata used when your web app is added to the
+    homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+  -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+  <!--
+    Notice the use of %PUBLIC_URL% in the tags above.
+    It will be replaced with the URL of the `public` folder during the build.
+    Only files inside the `public` folder can be referenced from the HTML.
+
+    Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+    work correctly both with client-side routing and a non-root public URL.
+    Learn how to configure a non-root public URL by running `npm run build`.
+  -->
+  <title>%REACT_APP_WEBSITE_NAME%</title>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+<body>
+<noscript>
+  You need to enable JavaScript to run this app.
+</noscript>
+<div id="root"></div>
+<!--
+  This HTML file is a template.
+  If you open it directly in the browser, you will see an empty page.
+
+  You can add webfonts, meta tags, or analytics to this file.
+  The build step will place the bundled scripts into the <body> tag.
+
+  To begin the development, run `npm start` or `yarn start`.
+  To create a production bundle, use `npm run build` or `yarn build`.
+-->
+<!-- legacy Angular stuff -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.14/angular.min.js"></script>
+<script src="https://cdn.rawgit.com/cheapsteak/8a6e8386187d94a88e85ba6d2f723d0f/raw/0cf9772e8c9a5808c9c8ae25d53265631a2a33f6/gdc-ng-plugins.js"></script>
+<script src="https://cdn.rawgit.com/cheapsteak/55f2e30c7b4dd7da798ac5bac4b886e6/raw/66eb5cb26f1845e551a51e6ef78a214b563f00dc/gdc-gql.js"></script>
+<script src="https://cdn.rawgit.com/cheapsteak/a52552ae71ca19128794a4f85fffbfef/raw/9983caaaae19c70f07c6934085e3b7e6c4de6b85/gdc-templates.js"></script>
+<script src="https://cdn.rawgit.com/cheapsteak/55f2e30c7b4dd7da798ac5bac4b886e6/raw/28762390173decdf0dabec7de3b5ad4f553eafe0/gdc-config.js"></script>
+<script src="https://cdn.rawgit.com/cheapsteak/977a1cde44ea4ed6f9aab85de667881a/raw/ceabda258abcdb16e3dccd02ec7b18911087b377/gdc-app-modified.js"></script>
+<!-- END legacy Angular stuff-->
+
+<script language="JavaScript" type="text/javascript" src="https://static.cancer.gov/webanalytics/wa_gdc_pageload.js"></script>
+
+<!-- githut defer so it loads after bundle.js -->
+<script defer src="https://unpkg.com/lodash-aliases@1.2.0/dist/lodash-aliases.min.js"></script>
+<!-- END githut -->
+
+</body>
+</html>

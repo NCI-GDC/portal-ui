@@ -120,7 +120,7 @@ const PortalSummary = (props: TProps) => (
         <CountBox>
           <Title>Genes</Title>
           <Row>
-            <DoubleHelix color="#01b987" width="20px" />
+            <DoubleHelix color="#01b987" width="20px" height="35px" />
             <span style={{ fontSize: "2.5rem", marginLeft: "0.5rem" }}>
               <CasesCount hits={props.genesCountData} />
             </span>
@@ -129,7 +129,7 @@ const PortalSummary = (props: TProps) => (
         <CountBox>
           <Title>Mutations</Title>
           <Row>
-            <MutationIcon color="#01b987" width="32px" />
+            <MutationIcon color="#01b987" width="32px" height="39px" />
             <span style={{ fontSize: "2.5rem", marginLeft: "0.5rem" }}>
               <FilesCount hits={props.ssmsCountData} />
             </span>

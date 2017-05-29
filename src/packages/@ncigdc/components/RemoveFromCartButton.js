@@ -1,15 +1,12 @@
 // @flow
 
-// Vendor
 import React from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "recompose";
 import XIcon from "react-icons/lib/fa/close";
 import DownCaretIcon from "react-icons/lib/fa/caret-down";
 import TrashIcon from "react-icons/lib/fa/trash-o";
 
-// Custom
 import Button from "@ncigdc/uikit/Button";
 import Dropdown from "@ncigdc/uikit/Dropdown";
 import { Column, Row } from "@ncigdc/uikit/Flex";
@@ -17,8 +14,6 @@ import { Column, Row } from "@ncigdc/uikit/Flex";
 import { withTheme } from "@ncigdc/theme";
 
 import { toggleFilesInCart } from "@ncigdc/dux/cart";
-
-/*----------------------------------------------------------------------------*/
 
 const styles = {
   row: theme => ({

@@ -1,4 +1,3 @@
-/* global process.env.REACT_APP_API */
 // @flow
 import React from "react";
 import JSURL from "jsurl";

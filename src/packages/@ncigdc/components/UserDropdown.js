@@ -1,5 +1,4 @@
 // @flow
-/* global process.env.REACT_APP_GDC_AUTH */
 
 import React from "react";
 import { connect } from "react-redux";
@@ -10,7 +9,6 @@ import DropdownItem from "@ncigdc/uikit/DropdownItem";
 import styled from "@ncigdc/theme/styled";
 import DownloadIcon from "@ncigdc/theme/icons/Download";
 import { fetchToken } from "@ncigdc/dux/auth";
-import { setModal } from "@ncigdc/dux/modal";
 import { notify } from "@ncigdc/dux/notification";
 
 const NavLink = styled.a({

@@ -1,5 +1,5 @@
 /* @flow */
-/* eslint jsx-a11y/no-static-element-interactions: 0, max-len: 1, fp/no-this:1, jsx-a11y/label-has-for:1 */
+/* eslint-disable */
 
 import React from "react";
 import _ from "lodash";

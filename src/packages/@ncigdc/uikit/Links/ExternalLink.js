@@ -9,7 +9,13 @@ export default function ExternalLink({
   hasExternalIcon = true
 }): React.Element {
   return (
-    <a href={href} target="_blank" style={style} title={title}>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={style}
+      title={title}
+    >
       {hasExternalIcon &&
         <ExternalLinkIcon style={{ marginRight: "0.5rem" }} />}
       {children}

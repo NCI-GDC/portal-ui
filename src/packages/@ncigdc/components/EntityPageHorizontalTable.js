@@ -1,5 +1,3 @@
-/* global d3 */
-
 // @flow
 
 import React from "react";

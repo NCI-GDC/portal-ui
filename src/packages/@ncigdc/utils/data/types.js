@@ -14,9 +14,17 @@ export type TCategory =
   | "Simple Nucleotide Variation"
   | "Copy Number Variation"
   | "Clinical"
+  | "DNA Methylation"
   | "Biospecimen";
 
-export type TCategoryAbbr = "Seq" | "Exp" | "SNV" | "CNV" | "Clinical" | "Bio";
+export type TCategoryAbbr =
+  | "Seq"
+  | "Exp"
+  | "SNV"
+  | "CNV"
+  | "Clinical"
+  | "Bio"
+  | "Meth";
 
 export type TCategoryMap = { [k: TCategoryAbbr]: TCategory };
 

@@ -110,8 +110,8 @@ const createContainer = Component =>
     fragments: {
       viewer: () => Relay.QL`
         fragment on Root {
-            explore {
-            x: cases { hits(first: 0) { total }}
+          explore {
+            cases { hits(first: 0) { total }}
             filteredCases: cases {
               hits(first: 0 filters: $ssmCaseFilter) {
                 total
@@ -272,7 +272,7 @@ const Component = compose(
       showSurvivalPlot = false,
       selectedSurvivalData = { id: "" },
       setSelectedSurvivalData = () => {},
-      viewer: { explore: { ssms, filteredCases } },
+      viewer: { explore: { ssms, filteredCases, cases } },
       shouldShowGeneSymbol = true,
       relay,
       setSurvivalLoadingId,
@@ -494,6 +494,7 @@ const Component = compose(
                   false
                 )}
                 caseTotal={x.occurrence.hits.total}
+                gdcCaseTotal={cases.hits.total}
               />
             ),
             impact: !["LOW", "MODERATE", "HIGH", "MODIFIER"].includes(x.impact)

@@ -16,7 +16,6 @@ import Lolliplot from "@ncigdc/containers/Lolliplot";
 import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
 import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";
 import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
-import ProjectBreakdown from "@ncigdc/containers/ProjectBreakdown";
 import DoubleHelix from "@ncigdc/theme/icons/DoubleHelix";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 
@@ -199,7 +198,6 @@ export const GenePageQuery = {
         explore {
           ${FrequentMutationsChart.getFragment("explore")}
           ${CancerDistributionTable.getFragment("explore")}
-          ${ProjectBreakdown.getFragment("explore")}
           ssms {
             ${CancerDistributionChart.getFragment("ssms")}
           }

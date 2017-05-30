@@ -11,6 +11,8 @@ import { makeFilter } from "@ncigdc/utils/filters";
 import formatFileSize from "@ncigdc/utils/formatFileSize";
 import withRouter from "@ncigdc/utils/withRouter";
 import styled from "@ncigdc/theme/styled";
+import Tooltip from "@ncigdc/uikit/Tooltip/Tooltip";
+import { tableToolTipHint } from "@ncigdc/theme/mixins";
 
 const NumTh = styled(Th, { textAlign: "right" });
 const NumTd = styled(Td, { textAlign: "right" });
@@ -97,10 +99,7 @@ const projectsTableModel = [
     th: <NumTh key="cases" rowSpan="2">Cases</NumTh>,
     td: ({ node }) => (
       <NumTd key="cases">
-        <CasesLink
-          node={node}
-          fields={[{ field: "files.data_category", value: CATEGORY_MAP.Seq }]}
-        >
+        <CasesLink node={node}>
           {node.summary.case_count.toLocaleString()}
         </CasesLink>
       </NumTd>
@@ -123,18 +122,26 @@ const projectsTableModel = [
     name: "Data Categories",
     id: "data_category",
     th: (
-      <Th key="data_category" colSpan="6" style={{ textAlign: "center" }}>
+      <Th key="data_category" colSpan="7" style={{ textAlign: "center" }}>
         Available Cases per Data Category
       </Th>
     ),
-    subHeadingIds: ["seq", "exp", "snv", "cnv", "clinical", "bio"]
+    subHeadingIds: ["seq", "exp", "snv", "cnv", "meth", "clinical", "bio"]
   },
   {
     name: "Seq",
     id: "seq",
     subHeading: true,
     parent: "data_category",
-    th: <NumTh key="seq">Seq</NumTh>,
+    th: (
+      <NumTh key="seq">
+        <abbr>
+          <Tooltip Component={CATEGORY_MAP.Seq} style={tableToolTipHint()}>
+            Seq
+          </Tooltip>
+        </abbr>
+      </NumTh>
+    ),
     td: ({ node }) => (
       <NumTd key="seq">
         <CasesLink
@@ -182,7 +189,15 @@ const projectsTableModel = [
     id: "exp",
     subHeading: true,
     parent: "data_category",
-    th: <NumTh key="exp">Exp</NumTh>,
+    th: (
+      <NumTh key="exp">
+        <abbr>
+          <Tooltip Component={CATEGORY_MAP.Exp} style={tableToolTipHint()}>
+            Exp
+          </Tooltip>
+        </abbr>
+      </NumTh>
+    ),
     td: ({ node }) => (
       <NumTd key="exp">
         <CasesLink
@@ -230,7 +245,15 @@ const projectsTableModel = [
     id: "snv",
     subHeading: true,
     parent: "data_category",
-    th: <NumTh key="snv">SNV</NumTh>,
+    th: (
+      <NumTh key="snv">
+        <abbr>
+          <Tooltip Component={CATEGORY_MAP.SNV} style={tableToolTipHint()}>
+            SNV
+          </Tooltip>
+        </abbr>
+      </NumTh>
+    ),
     td: ({ node }) => (
       <NumTd key="snv">
         <CasesLink
@@ -278,7 +301,15 @@ const projectsTableModel = [
     id: "cnv",
     subHeading: true,
     parent: "data_category",
-    th: <NumTh key="cnv">CNV</NumTh>,
+    th: (
+      <NumTh key="cnv">
+        <abbr>
+          <Tooltip Component={CATEGORY_MAP.CNV} style={tableToolTipHint()}>
+            CNV
+          </Tooltip>
+        </abbr>
+      </NumTh>
+    ),
     td: ({ node }) => (
       <NumTd key="cnv">
         <CasesLink
@@ -322,11 +353,75 @@ const projectsTableModel = [
     )
   },
   {
+    name: "Meth",
+    id: "meth",
+    subHeading: true,
+    parent: "data_category",
+    th: (
+      <NumTh key="meth">
+        <abbr>
+          <Tooltip Component={CATEGORY_MAP.Meth} style={tableToolTipHint()}>
+            Meth
+          </Tooltip>
+        </abbr>
+      </NumTh>
+    ),
+    td: ({ node }) => (
+      <NumTd key="meth">
+        <CasesLink
+          node={node}
+          fields={[{ field: "files.data_category", value: CATEGORY_MAP.Meth }]}
+        >
+          {findDataCategory(
+            "Meth",
+            node.summary.data_categories
+          ).case_count.toLocaleString()}
+        </CasesLink>
+      </NumTd>
+    ),
+    total: ({ hits }) => (
+      <NumTd>
+        <RepositoryCasesLink
+          query={{
+            filters: makeFilter(
+              [
+                {
+                  field: "cases.project.project_id",
+                  value: hits.edges.map(({ node: p }) => p.project_id)
+                },
+                { field: "files.data_category", value: CATEGORY_MAP.Meth }
+              ],
+              false
+            )
+          }}
+        >
+          {hits.edges
+            .reduce(
+              (acc, val) =>
+                acc +
+                findDataCategory("Meth", val.node.summary.data_categories)
+                  .case_count,
+              0
+            )
+            .toLocaleString()}
+        </RepositoryCasesLink>
+      </NumTd>
+    )
+  },
+  {
     name: "Clinical",
     id: "clinical",
     subHeading: true,
     parent: "data_category",
-    th: <NumTh key="clinical">Clinical</NumTh>,
+    th: (
+      <NumTh key="clinical">
+        <abbr>
+          <Tooltip Component={CATEGORY_MAP.Clinical} style={tableToolTipHint()}>
+            Clinical
+          </Tooltip>
+        </abbr>
+      </NumTh>
+    ),
     td: ({ node }) => (
       <NumTd key="clinical">
         <CasesLink
@@ -376,7 +471,15 @@ const projectsTableModel = [
     id: "bio",
     subHeading: true,
     parent: "data_category",
-    th: <NumTh key="bio">Bio</NumTh>,
+    th: (
+      <NumTh key="bio">
+        <abbr>
+          <Tooltip Component={CATEGORY_MAP.Bio} style={tableToolTipHint()}>
+            Bio
+          </Tooltip>
+        </abbr>
+      </NumTh>
+    ),
     td: ({ node }) => (
       <NumTd key="bio">
         <CasesLink

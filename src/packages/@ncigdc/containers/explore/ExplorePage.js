@@ -18,12 +18,10 @@ import CaseTable from "@ncigdc/containers/explore/CaseTable";
 import CaseAggregations from "@ncigdc/containers/explore/CaseAggregations";
 import GeneAggregations from "@ncigdc/containers/explore/GeneAggregations";
 import SSMAggregations from "@ncigdc/containers/explore/SSMAggregations";
-import FrequentlyMutatedGenesChart
-  from "@ncigdc/containers/FrequentlyMutatedGenesChart";
 import MutationsCount from "@ncigdc/containers/MutationsCount";
 
 import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
-import GeneSymbol from '@ncigdc/containers/GeneSymbol';
+import GeneSymbol from "@ncigdc/containers/GeneSymbol";
 
 export type TProps = {
   autocomplete: {
@@ -66,7 +64,7 @@ export type TProps = {
 
 export const ExplorePageComponent = (props: TProps) => (
   <SearchPage
-    geneSymbolFragment={get(props, 'viewer.geneSymbolFragment', {})}
+    geneSymbolFragment={get(props, "viewer.geneSymbolFragment", {})}
     facetTabs={[
       {
         id: "cases",
@@ -88,7 +86,7 @@ export const ExplorePageComponent = (props: TProps) => (
         text: "Genes",
         component: (
           <GeneAggregations
-            geneSymbolFragment={get(props, 'viewer.geneSymbolFragment', {})}
+            geneSymbolFragment={get(props, "viewer.geneSymbolFragment", {})}
             aggregations={props.viewer.explore.genes.aggregations}
             suggestions={get(props, "viewer.autocomplete_genes.hits", [])}
             setAutocomplete={(value, onReadyStateChange) =>
@@ -214,13 +212,10 @@ export const ExplorePageQuery = {
           }
         }
        geneSymbolFragment: explore {
-          ${GeneSymbol.getFragment('explore')}
+          ${GeneSymbol.getFragment("explore")}
         }
         frequentMutationsChartFragment: explore {
           ${FrequentMutationsChart.getFragment("explore")}
-        }
-        frequentlyMutatedGenesChartFragment: explore {
-          ${FrequentlyMutatedGenesChart.getFragment("explore")}
         }
         explore {
           mutationsCountFragment: ssms {

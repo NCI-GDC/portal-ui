@@ -12,8 +12,8 @@ import { Row, Column } from "@ncigdc/uikit/Flex";
 import { getDefaultCurve } from "@ncigdc/utils/survivalplot";
 import withFilters from "@ncigdc/utils/withFilters";
 import SurvivalPlotWrapper from "@ncigdc/components/SurvivalPlotWrapper";
-import FrequentlyMutatedGenesChart
-  from "@ncigdc/containers/FrequentlyMutatedGenesChart";
+import GenesBarChart
+  from "@ncigdc/modern_components/GenesBarChart/GenesBarChart";
 import GenesTable from "@ncigdc/modern_components/GenesTable/GenesTable";
 import { makeFilter, toggleFilters } from "@ncigdc/utils/filters";
 
@@ -103,8 +103,7 @@ export default compose(
       <Column>
         <Row>
           <Column flex="none" style={{ width: "50%" }}>
-            <FrequentlyMutatedGenesChart
-              explore={viewer.frequentlyMutatedGenesChartFragment}
+            <GenesBarChart
               defaultFilters={filters}
               onClickGene={handleClickGene}
             />

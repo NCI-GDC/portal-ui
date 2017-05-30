@@ -34,9 +34,7 @@ class ExploreRoute extends Relay.Route {
       cases_sort: parseJSURLParam(q.cases_sort, null),
       files_offset: parseIntParam(q.files_offset, 0),
       files_size: parseIntParam(q.files_size, 20),
-      files_sort: parseJSURLParam(q.files_sort, null),
-      fmgTable_offset: parseIntParam(q.fmgTable_offset, 0),
-      fmgTable_size: parseIntParam(q.fmgTable_size, 20)
+      files_sort: parseJSURLParam(q.files_sort, null)
     };
   };
 }

@@ -1,12 +1,14 @@
 // @flow
+/* eslint fp/no-class:0 */
 
 import React from "react";
 import Relay from "react-relay/classic";
 import withSize from "@ncigdc/utils/withSize";
-import { compose, withPropsOnChange, withHandlers } from "recompose";
-import { isEqual } from "lodash";
+import { compose, withHandlers } from "recompose";
+import { parse } from "query-string";
 import withRouter from "@ncigdc/utils/withRouter";
 import { parseFilterParam } from "@ncigdc/utils/uri";
+import { viewerQuery } from "@ncigdc/routes/queries";
 import { makeFilter } from "@ncigdc/utils/filters";
 import Loader from "@ncigdc/uikit/Loaders/Loader";
 import { withTheme } from "@ncigdc/theme";
@@ -22,7 +24,93 @@ const CHART_HEIGHT = 285;
 const CHART_MARGINS = { top: 20, right: 50, bottom: 65, left: 55 };
 const MAX_BARS = 20;
 
-const FrequentlyMutatedGenesChartComponent = compose(
+const createRenderer = (Route, Container) =>
+  compose(withRouter)((props: mixed) => (
+    <Relay.Renderer
+      environment={Relay.Store}
+      queryConfig={new Route(props)}
+      Container={Container}
+      render={({ props: relayProps }) =>
+        relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
+      }
+    />
+  ));
+
+class Route extends Relay.Route {
+  static routeName = "GenesBarChartRoute";
+  static queries = viewerQuery;
+  static prepareParams = ({ location: { search }, defaultFilters = null }) => {
+    const q = parse(search);
+
+    return {
+      genesBarChart_filters: parseFilterParam(
+        q.genesBarChart_filters,
+        defaultFilters || null
+      )
+    };
+  };
+}
+
+const createContainer = Component =>
+  Relay.createContainer(Component, {
+    initialVariables: {
+      genesBarChart_filters: null,
+      score: "case.project.project_id",
+      ssmTested: makeFilter(
+        [
+          {
+            field: "cases.available_variation_data",
+            value: "ssm"
+          }
+        ],
+        false
+      )
+    },
+    fragments: {
+      viewer: () => Relay.QL`
+        fragment on Root {
+          explore {
+            cases {
+              aggregations(filters: $ssmTested) {
+                project__project_id {
+                  buckets {
+                    doc_count
+                    key
+                  }
+                }
+              }
+              hits(first: 0) { total }
+            }
+            filteredCases: cases {
+              hits(first: 0 filters: $genesBarChart_filters) {
+                total
+              }
+            }
+            genes {
+              hits (first: 20 filters: $genesBarChart_filters, score: $score) {
+                total
+                edges {
+                  node {
+                    id
+                    score
+                    symbol
+                    gene_id
+                    case {
+                      hits(first: 1) {
+                        total
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    }
+  });
+
+const Component = compose(
   withRouter,
   withHandlers({
     handleClickGene: ({ push, onClickGene }) => (gene, chartData) =>
@@ -30,21 +118,6 @@ const FrequentlyMutatedGenesChartComponent = compose(
         ? onClickGene(gene, chartData)
         : push(`/genes/${gene.gene_id}`)
   }),
-  withPropsOnChange(
-    (props, nextProps) =>
-      ["query", "projectId", "defaultFilters"].some(
-        propName => !isEqual(props[propName], nextProps[propName])
-      ),
-    ({ relay, query, defaultFilters }) => {
-      relay.setVariables({
-        fetchData: true,
-        fmgChart_filters: parseFilterParam(
-          query.fmgChart_filters,
-          defaultFilters || null
-        )
-      });
-    }
-  ),
   withTheme,
   withSize()
 )(
@@ -52,8 +125,9 @@ const FrequentlyMutatedGenesChartComponent = compose(
     projectId = "",
     theme,
     size: { width },
-    explore: { genes = { hits: { edges: [] } }, cases, filteredCases },
-    push,
+    viewer: {
+      explore: { genes = { hits: { edges: [] } }, cases, filteredCases }
+    },
     showSurvivalPlot = true,
     context = "explore",
     handleClickGene
@@ -194,66 +268,4 @@ const FrequentlyMutatedGenesChartComponent = compose(
   }
 );
 
-export const FrequentlyMutatedGenesChartQuery = {
-  initialVariables: {
-    fetchData: false,
-    fmgChart_filters: null,
-    score: "case.project.project_id",
-    ssmTested: makeFilter(
-      [
-        {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ],
-      false
-    )
-  },
-  fragments: {
-    explore: () => Relay.QL`
-      fragment on Explore {
-        cases {
-          aggregations(filters: $ssmTested) {
-            project__project_id {
-              buckets {
-                doc_count
-                key
-              }
-            }
-          }
-          hits(first: 0) { total }
-        }
-        filteredCases: cases @include(if: $fetchData) {
-          hits(first: 0 filters: $fmgChart_filters) {
-            total
-          }
-        }
-        genes @include(if: $fetchData) {
-          hits (first: 20 filters: $fmgChart_filters, score: $score) @include(if: $fetchData) {
-            total
-            edges {
-              node {
-                id
-                score
-                symbol
-                gene_id
-                case {
-                  hits(first: 1) {
-                    total
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    `
-  }
-};
-
-const FrequentlyMutatedGenesChart = Relay.createContainer(
-  FrequentlyMutatedGenesChartComponent,
-  FrequentlyMutatedGenesChartQuery
-);
-
-export default FrequentlyMutatedGenesChart;
+export default createRenderer(Route, createContainer(Component));

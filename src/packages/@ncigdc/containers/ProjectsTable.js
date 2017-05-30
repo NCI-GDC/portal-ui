@@ -16,7 +16,7 @@ const createTableHeading = columnDefinition => {
   if (!th) {
     return <Th key={id}>{name}</Th>;
   } else if (_.isFunction(th)) {
-    return th(columnDefinition);
+    return <columnDefinition.th columnDefinition={columnDefinition} key={id} />;
   } else {
     console.warn(
       `[Column: ${id}] Passing in an initialized object for th is deprecated. Please pass in a function instead.`

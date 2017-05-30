@@ -11,7 +11,7 @@ import Loader from "@ncigdc/uikit/Loaders/Loader";
 import { handleStateChange } from "@ncigdc/dux/relayProgress";
 import ProjectPage from "@ncigdc/containers/ProjectPage";
 import type { TPrepareNodeParams } from "@ncigdc/utils/routes/types";
-import { parseFilterParam, parseIntParam } from "@ncigdc/utils/uri";
+import { parseFilterParam } from "@ncigdc/utils/uri";
 import { replaceFilters } from "@ncigdc/utils/filters";
 import { nodeAndViewerQuery } from "./queries";
 
@@ -111,10 +111,7 @@ const prepareNodeParams: TPrepareNodeParams = type => ({
       content: [
         { op: "=", content: { field: "project.project_id", value: params.id } }
       ]
-    },
-    macTable_offset: parseIntParam(q.macTable_offset, 0),
-    macTable_size: parseIntParam(q.macTable_size, 10),
-    macTable_filters: parseFilterParam(q.macTable_filters, null)
+    }
   };
 
   return {

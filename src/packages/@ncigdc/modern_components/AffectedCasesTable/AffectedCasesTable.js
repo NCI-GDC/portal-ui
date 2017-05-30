@@ -3,10 +3,16 @@
 import React from "react";
 import Relay from "react-relay/classic";
 import withSize from "@ncigdc/utils/withSize";
-import { isEqual } from "lodash";
-import { withPropsOnChange, compose } from "recompose";
-
-import { parseIntParam, parseFilterParam } from "@ncigdc/utils/uri";
+import { compose } from "recompose";
+import { connect } from "react-redux";
+import { parse } from "query-string";
+import {
+  parseIntParam,
+  parseFilterParam,
+  parseJSURLParam
+} from "@ncigdc/utils/uri";
+import { viewerQuery } from "@ncigdc/routes/queries";
+import { handleStateChange } from "@ncigdc/dux/relayProgress";
 import Showing from "@ncigdc/components/Pagination/Showing";
 import { withTheme } from "@ncigdc/theme";
 import ageDisplay from "@ncigdc/utils/ageDisplay";
@@ -27,30 +33,115 @@ import MutationsCount from "@ncigdc/containers/MutationsCount";
 import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
 import TableActions from "@ncigdc/components/TableActions";
 
-const MostAffectedCasesTableComponent = compose(
-  withRouter,
-  withPropsOnChange(
-    (props, nextProps) =>
-      ["query", "defaultFilters"].some(
-        propName => !isEqual(props[propName], nextProps[propName])
+const createRenderer = (Route, Container) =>
+  compose(connect(), withRouter)((props: mixed) => (
+    <Relay.Renderer
+      environment={Relay.Store}
+      queryConfig={new Route(props)}
+      onReadyStateChange={handleStateChange(props)}
+      Container={Container}
+      render={({ props: relayProps }) =>
+        relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
+      }
+    />
+  ));
+
+class Route extends Relay.Route {
+  static routeName = "AffectedCasesTableRoute";
+  static queries = viewerQuery;
+  static prepareParams = ({
+    location: { search },
+    defaultSize = 10,
+    defaultFilters = null
+  }) => {
+    const q = parse(search);
+
+    return {
+      affectedCasesTable_filters: parseFilterParam(
+        q.affectedCasesTable_filters,
+        defaultFilters
       ),
-    ({ relay, query, defaultFilters }) => {
-      relay.setVariables({
-        fetchData: true,
-        macTable_offset: parseIntParam(query.macTable_offset, 0),
-        macTable_size: parseIntParam(query.macTable_size, 10),
-        macTable_filters: parseFilterParam(
-          query.macTable_filters,
-          defaultFilters || null
-        )
-      });
+      affectedCasesTable_offset: parseIntParam(q.affectedCasesTable_offset, 0),
+      affectedCasesTable_size: parseIntParam(
+        q.affectedCasesTable_size,
+        defaultSize
+      ),
+      affectedCasesTable_sort: parseJSURLParam(q.affectedCasesTable_sort, null)
+    };
+  };
+}
+
+const createContainer = Component =>
+  Relay.createContainer(Component, {
+    initialVariables: {
+      score: "gene.gene_id",
+      affectedCasesTable_filters: null,
+      affectedCasesTable_size: 10,
+      affectedCasesTable_offset: 0
+    },
+    fragments: {
+      viewer: () => Relay.QL`
+        fragment on Root {
+          explore {
+            mutationsCountFragment: ssms {
+              ${MutationsCount.getFragment("ssms")}
+            }
+            cases {
+              hits (
+                score: $score
+                first: $affectedCasesTable_size
+                filters: $affectedCasesTable_filters
+                offset: $affectedCasesTable_offset
+              ) {
+                total
+                edges {
+                  node {
+                    primary_site
+                    score
+                    case_id
+                    submitter_id
+                    demographic {
+                      gender
+                    }
+                    summary {
+                      data_categories {
+                        data_category
+                        file_count
+                      }
+                    }
+                    diagnoses {
+                      hits(first: 1) {
+                        edges {
+                          node {
+                            age_at_diagnosis
+                            tumor_stage
+                            days_to_last_follow_up
+                            days_to_death
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
     }
-  ),
+  });
+
+const Component = compose(
+  withRouter,
   withTheme,
   withSize()
 )(
   (
-    { explore: { cases, mutationsCountFragment }, relay, defaultFilters } = {}
+    {
+      viewer: { explore: { cases, mutationsCountFragment } },
+      relay,
+      defaultFilters
+    } = {}
   ) => {
     if (cases && !cases.hits.edges.length) {
       return <Row style={{ padding: "1rem" }}>No data found.</Row>;
@@ -70,7 +161,7 @@ const MostAffectedCasesTableComponent = compose(
         >
           <Showing
             docType="cases"
-            prefix={"macTable"}
+            prefix="affectedCasesTable"
             params={relay.route.params}
             total={totalCases}
           />
@@ -264,7 +355,7 @@ const MostAffectedCasesTableComponent = compose(
           }
         />
         <Pagination
-          prefix={"macTable"}
+          prefix="affectedCasesTable"
           params={relay.route.params}
           total={!cases ? 0 : cases.hits.total}
         />
@@ -273,70 +364,4 @@ const MostAffectedCasesTableComponent = compose(
   }
 );
 
-export const MostAffectedCasesTableQuery = {
-  initialVariables: {
-    fetchData: false,
-    score: "gene.gene_id",
-    macTable_filters: null,
-    macTable_size: 10,
-    macTable_offset: 0
-  },
-  fragments: {
-    explore: () => Relay.QL`
-      fragment on Explore {
-        allCases: cases {
-          hits(first: 0) { total }
-        }
-        mutationsCountFragment: ssms {
-          ${MutationsCount.getFragment("ssms")}
-        }
-        cases @include(if: $fetchData) {
-          hits (
-            score: $score
-            first: $macTable_size
-            filters: $macTable_filters
-            offset: $macTable_offset
-          ) @include(if: $fetchData) {
-            total
-            edges {
-              node {
-                primary_site
-                score
-                case_id
-                submitter_id
-                demographic {
-                  gender
-                }
-                summary {
-                  data_categories {
-                    data_category
-                    file_count
-                  }
-                }
-                diagnoses {
-                  hits(first: 1) {
-                    edges {
-                      node {
-                        age_at_diagnosis
-                        tumor_stage
-                        days_to_last_follow_up
-                        days_to_death
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    `
-  }
-};
-
-const MostAffectedCasesTable = Relay.createContainer(
-  MostAffectedCasesTableComponent,
-  MostAffectedCasesTableQuery
-);
-
-export default MostAffectedCasesTable;
+export default createRenderer(Route, createContainer(Component));

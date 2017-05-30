@@ -5,7 +5,6 @@ import Relay from "react-relay/classic";
 import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
 
 import MostAffectedCasesChart from "@ncigdc/containers/MostAffectedCasesChart";
-import MostAffectedCasesTable from "@ncigdc/containers/MostAffectedCasesTable";
 import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
 import Project from "@ncigdc/components/Project";
 
@@ -134,7 +133,6 @@ export const ProjectPageQuery = {
         }
         explore {
           ${MostAffectedCasesChart.getFragment("explore")}
-          ${MostAffectedCasesTable.getFragment("explore")}
           cases {
             mutatedCases: hits(first: 0, filters: $mutatedFilters) {
               total

@@ -38,7 +38,7 @@ const GeneSymbolComponent = compose(
 }) => (
   explore.genes.hits
     ? <span>{(head(explore.genes.hits.edges) || { node: { symbol: geneId } }).node.symbol}</span>
-      : <span>{ geneId }</span>
+      : <span style={{ width: '45px' }}>&nbsp;</span>
   )
 );
 

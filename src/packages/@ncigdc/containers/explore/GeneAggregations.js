@@ -40,14 +40,14 @@ const presetFacets = [
     type: "id"
   },
   {
-    title: "Type",
+    title: "Biotype",
     field: "biotype",
     full: "genes.biotype",
     doc_type: "genes",
     type: "terms"
   },
   {
-    title: "Curated Gene Set",
+    title: "Is Cancer Gene Census",
     field: "is_cancer_gene_census",
     full: "genes.is_cancer_gene_census",
     doc_type: "genes",
@@ -66,6 +66,7 @@ export const GeneAggregationsComponent = compose(
       setCollapsed={props.setSsmIdCollapsed}
     />
     <SuggestionFacet
+      geneSymbolFragment={props.geneSymbolFragment}
       title="Gene"
       doctype="genes"
       collapsed={props.idCollapsed}
@@ -116,6 +117,7 @@ export const GeneAggregationsQuery = {
           buckets {
             doc_count
             key
+            key_as_string
           }
         }
       }

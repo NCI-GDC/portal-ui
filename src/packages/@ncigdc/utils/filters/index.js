@@ -182,9 +182,22 @@ export const setFilters = filterContent =>
     content: filterContent
   };
 
+const getDisplayValue = (value) => {
+  switch (typeof value) {
+    case 'string':
+      return value;
+    case 'number':
+      return value === 0 ? 'false' : 'true';
+    case 'boolean':
+      return value ? 'true' : 'false';
+    default:
+      return value;
+  }
+};
+
 export const inCurrentFilters = ({ currentFilters, key, dotField }) =>
   currentFilters.some(
-    f => f.content.field === dotField && f.content.value.includes(key)
+    f => f.content.field === dotField && f.content.value.map(v => getDisplayValue(v)).includes(key)
   );
 
 export const getFilterValue = ({ currentFilters, dotField }) =>

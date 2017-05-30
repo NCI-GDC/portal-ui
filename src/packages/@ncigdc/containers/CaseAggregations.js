@@ -93,7 +93,7 @@ const presetFacets = [
     type: "keyword"
   },
   {
-    title: "Cancer Program",
+    title: "Program",
     field: "project.program.name",
     full: "cases.project.program.name",
     doc_type: "cases",

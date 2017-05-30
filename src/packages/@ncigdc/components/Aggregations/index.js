@@ -51,3 +51,11 @@ export const CheckedLink = styled(Link, {
     color: ({ theme }) => theme.success
   }
 });
+
+export const facetFieldDisplayMapper = field => {
+  const map = {
+        'genes.symbol': 'Gene Symbol',
+        'genes.gene_id': 'Gene',
+      };
+  return map[field] || field;
+};

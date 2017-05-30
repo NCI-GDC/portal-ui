@@ -5,7 +5,6 @@ import Relay from "react-relay/classic";
 import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
 import _ from "lodash";
 
-import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
 import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
 import Case from "@ncigdc/components/Case";
 
@@ -330,9 +329,6 @@ export const CasePageQuery = {
     `,
     viewer: () => Relay.QL`
       fragment on Root {
-        frequentMutationsChartFragment: explore {
-          ${FrequentMutationsChart.getFragment("explore")}
-        }
         explore{
           cases {
             hits(first: 1, filters: $caseFilters) {

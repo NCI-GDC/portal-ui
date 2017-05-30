@@ -4,7 +4,6 @@ import React from "react";
 import Relay from "react-relay/classic";
 import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
 
-import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
 import MostAffectedCasesChart from "@ncigdc/containers/MostAffectedCasesChart";
 import MostAffectedCasesTable from "@ncigdc/containers/MostAffectedCasesTable";
 import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
@@ -134,7 +133,6 @@ export const ProjectPageQuery = {
           }
         }
         explore {
-          ${FrequentMutationsChart.getFragment("explore")}
           ${MostAffectedCasesChart.getFragment("explore")}
           ${MostAffectedCasesTable.getFragment("explore")}
           cases {

@@ -25,7 +25,7 @@ import { RepositoryFilesLink } from "@ncigdc/components/Links/RepositoryLink";
 import ProjectLink from "@ncigdc/components/Links/ProjectLink";
 import Button from "@ncigdc/uikit/Button";
 import { removeFilesFromCart, addAllFilesInCart } from "@ncigdc/dux/cart";
-import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
+import SsmsBarChart from "@ncigdc/modern_components/SsmsBarChart/SsmsBarChart";
 import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";
 import FileIcon from "@ncigdc/theme/icons/File";
 import AnnotationIcon from "@ncigdc/theme/icons/Edit";
@@ -357,11 +357,9 @@ const Case = compose(
               Most Frequent Mutations
             </h1>
             <Column>
-              <FrequentMutationsChart
+              <SsmsBarChart
                 projectId={p.project.project_id}
-                numCasesAggByProject={numCasesAggByProject}
                 defaultFilters={fmFilters}
-                explore={viewer.frequentMutationsChartFragment}
                 context={p.project.project_id}
               />
               <SsmsTable

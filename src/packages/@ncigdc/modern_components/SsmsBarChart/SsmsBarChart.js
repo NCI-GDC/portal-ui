@@ -3,8 +3,10 @@
 import React from "react";
 import Relay from "react-relay/classic";
 import withSize from "@ncigdc/utils/withSize";
-import { isEqual, orderBy } from "lodash";
-import { compose, withPropsOnChange, withHandlers } from "recompose";
+import { orderBy } from "lodash";
+import { parse } from "query-string";
+import { compose, withHandlers } from "recompose";
+import { viewerQuery } from "@ncigdc/routes/queries";
 import withRouter from "@ncigdc/utils/withRouter";
 import { parseFilterParam } from "@ncigdc/utils/uri";
 import { makeFilter } from "@ncigdc/utils/filters";
@@ -22,7 +24,81 @@ const CHART_HEIGHT = 285;
 const CHART_MARGINS = { top: 20, right: 50, bottom: 65, left: 55 };
 const MAX_BARS = 20;
 
-const FrequentMutationsChartComponent = compose(
+const createRenderer = (Route, Container) =>
+  compose(withRouter)((props: mixed) => (
+    <Relay.Renderer
+      environment={Relay.Store}
+      queryConfig={new Route(props)}
+      Container={Container}
+      render={({ props: relayProps }) =>
+        relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
+      }
+    />
+  ));
+
+class Route extends Relay.Route {
+  static routeName = "SsmsBarChartRoute";
+  static queries = viewerQuery;
+  static prepareParams = ({ location: { search }, defaultFilters = null }) => {
+    const q = parse(search);
+
+    return {
+      ssmsBarChart_filters: parseFilterParam(
+        q.ssmsBarChart_filters,
+        defaultFilters || null
+      )
+    };
+  };
+}
+
+const createContainer = Component =>
+  Relay.createContainer(Component, {
+    initialVariables: {
+      fetchData: false,
+      ssmsChart_filters: null,
+      score: "occurrence.case.project.project_id",
+      ssmTested: makeFilter(
+        [
+          {
+            field: "cases.available_variation_data",
+            value: "ssm"
+          }
+        ],
+        false
+      ),
+      sort: [
+        { field: "_score", order: "desc" },
+        { field: "_uid", order: "asc" }
+      ]
+    },
+    fragments: {
+      viewer: () => Relay.QL`
+        fragment on Root {
+          explore {
+            filteredCases: cases {
+              hits(first: 0 filters: $ssmsChart_filters) {
+                total
+              }
+            }
+            ssms {
+              hits (first: 20 filters: $ssmsChart_filters, score: $score, sort: $sort) {
+                total
+                edges {
+                  node {
+                    score
+                    genomic_dna_change
+                    ssm_id
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    }
+  });
+
+const Component = compose(
   withRouter,
   withHandlers({
     handleClickMutation: ({ push, onClickMutation }) => (ssm, chartData) =>
@@ -30,21 +106,6 @@ const FrequentMutationsChartComponent = compose(
         ? onClickMutation(ssm, chartData)
         : push(`/ssms/${ssm.ssm_id}`)
   }),
-  withPropsOnChange(
-    (props, nextProps) =>
-      ["query", "projectId", "defaultFilters"].some(
-        propName => !isEqual(props[propName], nextProps[propName])
-      ),
-    ({ relay, query, defaultFilters }) => {
-      relay.setVariables({
-        fetchData: true,
-        fmChart_filters: parseFilterParam(
-          query.fmChart_filters,
-          defaultFilters || null
-        )
-      });
-    }
-  ),
   withTheme,
   withSize()
 )(
@@ -52,7 +113,7 @@ const FrequentMutationsChartComponent = compose(
     theme,
     showSurvivalPlot,
     size: { width },
-    explore: { ssms = { hits: { edges: [] } }, filteredCases },
+    viewer: { explore: { ssms = { hits: { edges: [] } }, filteredCases } },
     context,
     handleClickMutation
   }) => {
@@ -138,51 +199,4 @@ const FrequentMutationsChartComponent = compose(
   }
 );
 
-export const FrequentMutationsChartQuery = {
-  initialVariables: {
-    fetchData: false,
-    fmChart_filters: null,
-    score: "occurrence.case.project.project_id",
-    ssmTested: makeFilter(
-      [
-        {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ],
-      false
-    ),
-    sort: [{ field: "_score", order: "desc" }, { field: "_uid", order: "asc" }]
-  },
-  fragments: {
-    explore: () => Relay.QL`
-      fragment on Explore {
-        d: cases { hits(first: 0) { total }}
-        filteredCases: cases @include(if: $fetchData) {
-          hits(first: 0 filters: $fmChart_filters) {
-            total
-          }
-        }
-        ssms @include(if: $fetchData) {
-          hits (first: 20 filters: $fmChart_filters, score: $score, sort: $sort) {
-            total
-            edges {
-              node {
-                score
-                genomic_dna_change
-                ssm_id
-              }
-            }
-          }
-        }
-      }
-    `
-  }
-};
-
-const FrequentMutationsChart = Relay.createContainer(
-  FrequentMutationsChartComponent,
-  FrequentMutationsChartQuery
-);
-
-export default FrequentMutationsChart;
+export default createRenderer(Route, createContainer(Component));

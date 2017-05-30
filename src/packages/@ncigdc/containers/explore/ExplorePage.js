@@ -20,7 +20,6 @@ import GeneAggregations from "@ncigdc/containers/explore/GeneAggregations";
 import SSMAggregations from "@ncigdc/containers/explore/SSMAggregations";
 import MutationsCount from "@ncigdc/containers/MutationsCount";
 
-import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
 import GeneSymbol from "@ncigdc/containers/GeneSymbol";
 
 export type TProps = {
@@ -213,9 +212,6 @@ export const ExplorePageQuery = {
         }
        geneSymbolFragment: explore {
           ${GeneSymbol.getFragment("explore")}
-        }
-        frequentMutationsChartFragment: explore {
-          ${FrequentMutationsChart.getFragment("explore")}
         }
         explore {
           mutationsCountFragment: ssms {

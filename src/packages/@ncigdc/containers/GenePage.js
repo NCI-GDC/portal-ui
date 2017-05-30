@@ -13,7 +13,7 @@ import CancerDistributionChart
 import CancerDistributionTable
   from "@ncigdc/containers/CancerDistributionTable";
 import Lolliplot from "@ncigdc/containers/Lolliplot";
-import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
+import SsmsBarChart from "@ncigdc/modern_components/SsmsBarChart/SsmsBarChart";
 import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";
 import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
 import DoubleHelix from "@ncigdc/theme/icons/DoubleHelix";
@@ -136,9 +136,8 @@ export const GenePageComponent = (props: TProps) => {
           </h1>
 
           <Column>
-            <FrequentMutationsChart
+            <SsmsBarChart
               defaultFilters={fmFilters}
-              explore={props.viewer.explore}
               context={props.node.symbol}
             />
             <SsmsTable
@@ -196,7 +195,6 @@ export const GenePageQuery = {
           ${CancerDistributionTable.getFragment("projects")}
         }
         explore {
-          ${FrequentMutationsChart.getFragment("explore")}
           ${CancerDistributionTable.getFragment("explore")}
           ssms {
             ${CancerDistributionChart.getFragment("ssms")}

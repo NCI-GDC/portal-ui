@@ -11,7 +11,7 @@ import { makeFilter, replaceFilters } from "@ncigdc/utils/filters";
 
 import { Row, Column } from "@ncigdc/uikit/Flex";
 
-import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
+import SsmsBarChart from "@ncigdc/modern_components/SsmsBarChart/SsmsBarChart";
 import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";
 import MostAffectedCasesChart from "@ncigdc/containers/MostAffectedCasesChart";
 import MostAffectedCasesTable from "@ncigdc/containers/MostAffectedCasesTable";
@@ -226,10 +226,9 @@ const ProjectVisualizations = enhance(
               <Column flex="1">
                 {loadingAggregation
                   ? <SpinnerCentered />
-                  : <FrequentMutationsChart
+                  : <SsmsBarChart
                       projectId={projectId}
                       defaultFilters={fmFilters}
-                      explore={viewer.explore}
                       context={projectId}
                       showSurvivalPlot
                     />}

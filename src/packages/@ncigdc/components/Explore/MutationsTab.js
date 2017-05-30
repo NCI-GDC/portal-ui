@@ -13,7 +13,7 @@ import { getDefaultCurve } from "@ncigdc/utils/survivalplot";
 import withFilters from "@ncigdc/utils/withFilters";
 import { makeFilter, toggleFilters } from "@ncigdc/utils/filters";
 
-import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
+import SsmsBarChart from "@ncigdc/modern_components/SsmsBarChart/SsmsBarChart";
 import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";
 import SurvivalPlotWrapper from "@ncigdc/components/SurvivalPlotWrapper";
 
@@ -102,9 +102,8 @@ export default compose(
 
       <Row>
         <Column flex="1" style={{ width: "50%" }}>
-          <FrequentMutationsChart
+          <SsmsBarChart
             defaultFilters={filters}
-            explore={viewer.frequentMutationsChartFragment}
             context="Explore"
             showSurvivalPlot
             onClickMutation={handleClickMutation}

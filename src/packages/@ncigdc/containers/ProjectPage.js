@@ -7,9 +7,6 @@ import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
 import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
 import MostAffectedCasesChart from "@ncigdc/containers/MostAffectedCasesChart";
 import MostAffectedCasesTable from "@ncigdc/containers/MostAffectedCasesTable";
-import FrequentlyMutatedGenesChart
-  from "@ncigdc/containers/FrequentlyMutatedGenesChart";
-
 import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
 import Project from "@ncigdc/components/Project";
 
@@ -140,7 +137,6 @@ export const ProjectPageQuery = {
           ${FrequentMutationsChart.getFragment("explore")}
           ${MostAffectedCasesChart.getFragment("explore")}
           ${MostAffectedCasesTable.getFragment("explore")}
-          ${FrequentlyMutatedGenesChart.getFragment("explore")}
           cases {
             mutatedCases: hits(first: 0, filters: $mutatedFilters) {
               total

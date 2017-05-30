@@ -133,7 +133,7 @@ const projectsTableModel = [
     id: "seq",
     subHeading: true,
     parent: "data_category",
-    th: (
+    th: () => (
       <NumTh key="seq">
         <abbr>
           <Tooltip Component={CATEGORY_MAP.Seq} style={tableToolTipHint()}>
@@ -189,7 +189,7 @@ const projectsTableModel = [
     id: "exp",
     subHeading: true,
     parent: "data_category",
-    th: (
+    th: () => (
       <NumTh key="exp">
         <abbr>
           <Tooltip Component={CATEGORY_MAP.Exp} style={tableToolTipHint()}>
@@ -245,7 +245,7 @@ const projectsTableModel = [
     id: "snv",
     subHeading: true,
     parent: "data_category",
-    th: (
+    th: () => (
       <NumTh key="snv">
         <abbr>
           <Tooltip Component={CATEGORY_MAP.SNV} style={tableToolTipHint()}>
@@ -301,7 +301,7 @@ const projectsTableModel = [
     id: "cnv",
     subHeading: true,
     parent: "data_category",
-    th: (
+    th: () => (
       <NumTh key="cnv">
         <abbr>
           <Tooltip Component={CATEGORY_MAP.CNV} style={tableToolTipHint()}>
@@ -357,7 +357,7 @@ const projectsTableModel = [
     id: "meth",
     subHeading: true,
     parent: "data_category",
-    th: (
+    th: () => (
       <NumTh key="meth">
         <abbr>
           <Tooltip Component={CATEGORY_MAP.Meth} style={tableToolTipHint()}>
@@ -413,7 +413,7 @@ const projectsTableModel = [
     id: "clinical",
     subHeading: true,
     parent: "data_category",
-    th: (
+    th: () => (
       <NumTh key="clinical">
         <abbr>
           <Tooltip Component={CATEGORY_MAP.Clinical} style={tableToolTipHint()}>
@@ -471,7 +471,7 @@ const projectsTableModel = [
     id: "bio",
     subHeading: true,
     parent: "data_category",
-    th: (
+    th: () => (
       <NumTh key="bio">
         <abbr>
           <Tooltip Component={CATEGORY_MAP.Bio} style={tableToolTipHint()}>

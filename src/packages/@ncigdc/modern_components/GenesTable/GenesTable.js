@@ -73,7 +73,19 @@ class Route extends Relay.Route {
       ),
       genesTable_offset: parseIntParam(q.genesTable_offset, 0),
       genesTable_size: parseIntParam(q.genesTable_size, defaultSize),
-      genesTable_sort: parseJSURLParam(q.genesTable_sort, null)
+      genesTable_sort: parseJSURLParam(q.genesTable_sort, null),
+      geneCaseFilter: addInFilters(
+        q.genesTable_filters || defaultFilters,
+        makeFilter(
+          [
+            {
+              field: "cases.available_variation_data",
+              value: "ssm"
+            }
+          ],
+          false
+        )
+      )
     };
   };
 }
@@ -103,7 +115,7 @@ const createContainer = Component =>
             ssms {
               ${MutationsCount.getFragment("ssms")}
             }
-            x: cases { hits(first: 0) { total }}
+            cases { hits(first: 0 filters: $ssmTested) { total }}
             filteredCases: cases {
               hits(first: 0 filters: $geneCaseFilter) {
                 total
@@ -158,7 +170,7 @@ const Component = compose(
     query,
     tableLink
   }) => {
-    const { genes, filteredCases, ssms } = explore || {};
+    const { genes, filteredCases, ssms, cases } = explore || {};
 
     if (genes && !genes.hits.edges.length) {
       return <Row style={{ padding: "1rem" }}>No gene data found.</Row>;
@@ -312,6 +324,7 @@ const Component = compose(
                     false
                   )}
                   caseTotal={g.case.hits.total}
+                  gdcCaseTotal={cases.hits.total}
                 />
               ),
               num_mutations: React.createElement(

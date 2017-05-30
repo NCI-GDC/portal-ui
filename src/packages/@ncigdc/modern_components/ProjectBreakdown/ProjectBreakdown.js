@@ -3,25 +3,22 @@
 
 import React from "react";
 import Relay from "react-relay/classic";
-import { compose, withState } from "recompose";
-import { connect } from "react-redux";
 import { viewerQuery } from "@ncigdc/routes/queries";
 import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
-import TogglableUl from "@ncigdc/uikit/TogglableUl";
+import Toggle from "@ncigdc/uikit/Toggle";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 
-const createRenderer = (Route, Container) =>
-  compose(connect())((props: mixed) => (
-    <Relay.Renderer
-      environment={Relay.Store}
-      queryConfig={new Route(props)}
-      Container={Container}
-      render={({ props: relayProps }) =>
-        relayProps
-          ? <Container {...relayProps} {...props} />
-          : <i className="fa fa-spinner fa-spin" />}
-    />
-  ));
+const createRenderer = (Route, Container) => (props: mixed) => (
+  <Relay.Renderer
+    environment={Relay.Store}
+    queryConfig={new Route(props)}
+    Container={Container}
+    render={({ props: relayProps }) =>
+      relayProps
+        ? <Container {...relayProps} {...props} />
+        : <i className="fa fa-spinner fa-spin" />}
+  />
+);
 
 class Route extends Relay.Route {
   static routeName = "ProjectBreakdownRoute";
@@ -34,7 +31,6 @@ class Route extends Relay.Route {
 const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
-      fetchData: false,
       aggFilters: null,
       ssmTested: makeFilter(
         [
@@ -51,7 +47,6 @@ const createContainer = Component =>
         fragment on Root {
           explore {
             cases {
-              hits(first: 0 filters: $ssmTested) { total }
               allAggs: aggregations(filters: $ssmTested) {
                 project__project_id {
                   buckets {
@@ -60,7 +55,7 @@ const createContainer = Component =>
                   }
                 }
               }
-              aggregations(filters: $aggFilters) @include(if: $fetchData) {
+              aggregations(filters: $aggFilters) {
                 project__project_id {
                   buckets {
                     doc_count
@@ -75,11 +70,7 @@ const createContainer = Component =>
     }
   });
 
-const Component = compose(
-  withState("loading", "setLoading", false)
-)(({ loading, setLoading, viewer, caseTotal, filters, relay }) => {
-  const { cases } = viewer.explore;
-
+const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
   const allAggs = !cases.allAggs
     ? {}
     : cases.allAggs.project__project_id.buckets.reduce(
@@ -101,88 +92,93 @@ const Component = compose(
       );
 
   return (
-    <TogglableUl
-      onToggle={() => {
-        relay.setVariables({
-          fetchData: true
-        });
-        setLoading(l => !l);
-      }}
-      items={[
-        <span key="total">
-          <ExploreLink
-            query={{
-              searchTableTab: "cases",
-              filters
-            }}
-          >
-            {caseTotal.toLocaleString()}
-          </ExploreLink>
-          <span> / </span>
-          <ExploreLink
-            query={{
-              searchTableTab: "cases",
-              filters: makeFilter(
-                [{ field: "cases.available_variation_data", value: ["ssm"] }],
-                false
-              )
-            }}
-          >
-            {cases.hits.total.toLocaleString()}
-          </ExploreLink>
-        </span>,
-        ...(loading &&
-        !cases.aggregations && [<i className="fa fa-spinner fa-spin" />]),
-        ...Object.entries(filteredAggs) // eslint-disable-line
-          // $FlowIgnore
-          .sort(([ak, av], [bk, bv]) => bv / allAggs[bk] - av / allAggs[ak])
-          .map(([k, v]) => (
-            <span key={k}>
-              <span>{k}: </span>
-              <ExploreLink
-                query={{
-                  searchTableTab: "cases",
-                  filters: addInFilters(
-                    filters,
-                    makeFilter(
-                      [{ field: "cases.project.project_id", value: [k] }],
-                      false
-                    )
-                  )
-                }}
-              >
-                {v}
-              </ExploreLink>
-              <span> / </span>
-              <ExploreLink
-                query={{
-                  searchTableTab: "cases",
-                  filters: makeFilter(
-                    [
-                      {
-                        field: "cases.available_variation_data",
-                        value: ["ssm"]
-                      },
-                      { field: "cases.project.project_id", value: [k] }
-                    ],
+    <div>
+      {Object.entries(filteredAggs) // eslint-disable-line
+        // $FlowIgnore
+        .sort(([ak, av], [bk, bv]) => bv / allAggs[bk] - av / allAggs[ak])
+        .map(([k, v]) => (
+          <div key={k}>
+            <span>{k}: </span>
+            <ExploreLink
+              query={{
+                searchTableTab: "cases",
+                filters: addInFilters(
+                  filters,
+                  makeFilter(
+                    [{ field: "cases.project.project_id", value: [k] }],
                     false
                   )
-                }}
-              >
-                {allAggs[k]}
-              </ExploreLink>
-              <span>
-                &nbsp;
-                (
-                {// $FlowIgnore
-                (v / allAggs[k] * 100).toFixed(2)}
-                %)
-              </span>
+                )
+              }}
+            >
+              {v}
+            </ExploreLink>
+            <span> / </span>
+            <ExploreLink
+              query={{
+                searchTableTab: "cases",
+                filters: makeFilter(
+                  [
+                    {
+                      field: "cases.available_variation_data",
+                      value: ["ssm"]
+                    },
+                    { field: "cases.project.project_id", value: [k] }
+                  ],
+                  false
+                )
+              }}
+            >
+              {allAggs[k]}
+            </ExploreLink>
+            <span>
+              &nbsp;
+              (
+              {// $FlowIgnore
+              (v / allAggs[k] * 100).toFixed(2)}
+              %)
             </span>
-          ))
-      ]}
-    />
+          </div>
+        ))}
+    </div>
   );
-});
+};
 
-export default createRenderer(Route, createContainer(Component));
+const Renderer = createRenderer(Route, createContainer(Component));
+
+type TProps = {|
+  caseTotal: number,
+  gdcCaseTotal: number,
+  filters: Object
+|};
+
+export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
+  <Toggle
+    title={
+      <span key="total">
+        <ExploreLink
+          query={{
+            searchTableTab: "cases",
+            filters
+          }}
+        >
+          {caseTotal.toLocaleString()}
+        </ExploreLink>
+        <span> / </span>
+        <ExploreLink
+          query={{
+            searchTableTab: "cases",
+            filters: makeFilter(
+              [{ field: "cases.available_variation_data", value: ["ssm"] }],
+              false
+            )
+          }}
+        >
+          {gdcCaseTotal.toLocaleString()}
+        </ExploreLink>
+      </span>
+    }
+  >
+    <Renderer filters={filters} />
+  </Toggle>
+);

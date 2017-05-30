@@ -6,7 +6,6 @@ import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
 import _ from "lodash";
 
 import FrequentMutationsChart from "@ncigdc/containers/FrequentMutationsChart";
-import ProjectBreakdown from "@ncigdc/containers/ProjectBreakdown";
 import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
 import Case from "@ncigdc/components/Case";
 
@@ -333,9 +332,6 @@ export const CasePageQuery = {
       fragment on Root {
         frequentMutationsChartFragment: explore {
           ${FrequentMutationsChart.getFragment("explore")}
-        }
-        projectBreakdownFragment: explore {
-          ${ProjectBreakdown.getFragment("explore")}
         }
         explore{
           cases {

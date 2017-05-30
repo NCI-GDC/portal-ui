@@ -73,7 +73,19 @@ class Route extends Relay.Route {
       ),
       genesTable_offset: parseIntParam(q.genesTable_offset, 0),
       genesTable_size: parseIntParam(q.genesTable_size, defaultSize),
-      genesTable_sort: parseJSURLParam(q.genesTable_sort, null)
+      genesTable_sort: parseJSURLParam(q.genesTable_sort, null),
+      geneCaseFilter: addInFilters(
+        q.genesTable_filters || defaultFilters,
+        makeFilter(
+          [
+            {
+              field: "cases.available_variation_data",
+              value: "ssm"
+            }
+          ],
+          false
+        )
+      )
     };
   };
 }

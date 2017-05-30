@@ -73,7 +73,19 @@ class Route extends Relay.Route {
       ssmsTable_filters: parseFilterParam(q.ssmsTable_filters, defaultFilters),
       ssmsTable_offset: parseIntParam(q.ssmsTable_offset, 0),
       ssmsTable_size: parseIntParam(q.ssmsTable_size, defaultSize),
-      ssmsTable_sort: parseJSURLParam(q.ssmsTable_sort, null)
+      ssmsTable_sort: parseJSURLParam(q.ssmsTable_sort, null),
+      ssmCaseFilter: addInFilters(
+        q.ssmsTable_filters || defaultFilters,
+        makeFilter(
+          [
+            {
+              field: "available_variation_data",
+              value: "ssm"
+            }
+          ],
+          false
+        )
+      )
     };
   };
 }

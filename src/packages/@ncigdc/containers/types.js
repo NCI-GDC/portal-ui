@@ -1,6 +1,7 @@
 /* @flow */
 
 export type TTableProps = {
+  ssmCounts: Object,
   downloadable?: boolean,
   totalCases: number,
   totalFiles: number,

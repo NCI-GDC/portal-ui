@@ -11,7 +11,6 @@ import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
 import { findDataCategory, sumDataCategories } from "@ncigdc/utils/data";
 import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
 import withFilters from "@ncigdc/utils/withFilters";
-import MutationsCount from "@ncigdc/containers/MutationsCount";
 import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
 
 import type { TCategory } from "@ncigdc/utils/data/types";
@@ -19,6 +18,7 @@ import type { TCategory } from "@ncigdc/utils/data/types";
 import { Tr, Td, TdNum } from "@ncigdc/uikit/Table";
 
 import { withTheme } from "@ncigdc/theme";
+import MutationsCount from "@ncigdc/components/MutationsCount";
 
 export type TProps = {|
   index: number,
@@ -51,8 +51,10 @@ export const CaseTrComponent = compose(
     node,
     index,
     theme,
-    explore: { mutationsCountFragment },
-    filters
+    explore,
+    filters,
+    ssmCount,
+    ssmCountsLoading
   }: TProps) => {
     const filesCount = sumDataCategories(node.summary.data_categories);
 
@@ -120,8 +122,8 @@ export const CaseTrComponent = compose(
         })}
         <Td style={{ textAlign: "right" }}>
           <MutationsCount
-            key={node.case_id}
-            ssms={mutationsCountFragment}
+            isLoading={ssmCountsLoading}
+            ssmCount={ssmCount}
             filters={addInFilters(
               filters,
               makeFilter(

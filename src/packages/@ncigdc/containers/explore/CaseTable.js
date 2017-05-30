@@ -2,6 +2,8 @@
 
 import React from "react";
 import Relay from "react-relay/classic";
+import withFilters from "@ncigdc/utils/withFilters";
+import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
 
 import { Row } from "@ncigdc/uikit/Flex";
 import Showing from "@ncigdc/components/Pagination/Showing";
@@ -15,6 +17,7 @@ import { Tooltip } from "@ncigdc/uikit/Tooltip";
 import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
 import { tableToolTipHint } from "@ncigdc/theme/mixins";
 
+import { compose, withPropsOnChange, withState } from "recompose";
 import CaseTr from "./CaseTr";
 
 import type { TTableProps } from "../types";
@@ -30,9 +33,62 @@ const styles = {
   }
 };
 
-export const CaseTableComponent = (props: TTableProps) => {
+export const CaseTableComponent = compose(
+  withFilters(),
+  withState("ssmCountsLoading", "setSsmCountsLoading", true),
+  withPropsOnChange(
+    ["hits"],
+    ({
+      setSsmCountsLoading,
+      ssmCountsLoading,
+      hits,
+      relay,
+      filters
+    }: TTableProps) => {
+      const caseIds = hits.edges.map(e => e.node.case_id);
+      if (!ssmCountsLoading) {
+        setSsmCountsLoading(true);
+      }
+      relay.setVariables(
+        {
+          fetchSsmCounts: !!caseIds.length,
+          ssmCountsfilters: caseIds.length
+            ? addInFilters(
+                filters,
+                makeFilter(
+                  [
+                    {
+                      field: "occurrence.case.case_id",
+                      value: caseIds
+                    }
+                  ],
+                  false
+                )
+              )
+            : null
+        },
+        readyState => {
+          if (readyState.done) {
+            setSsmCountsLoading(false);
+          }
+        }
+      );
+    }
+  ),
+  withPropsOnChange(["explore"], ({ explore }: TTableProps) => {
+    const { occurrence__case__case_id: { buckets } } = explore.ssms
+      .aggregations || {
+      occurrence__case__case_id: { buckets: [] }
+    };
+    const ssmCounts = buckets.reduce(
+      (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
+      {}
+    );
+    return { ssmCounts };
+  })
+)((props: TTableProps) => {
   const prefix = "cases";
-
+  const { ssmCounts, ssmCountsLoading } = props;
   return (
     <div>
       <Row
@@ -134,6 +190,8 @@ export const CaseTableComponent = (props: TTableProps) => {
               <CaseTr
                 {...e}
                 key={e.node.id}
+                ssmCount={ssmCounts[e.node.case_id]}
+                ssmCountsLoading={ssmCountsLoading}
                 index={i}
                 explore={props.explore}
               />
@@ -148,9 +206,13 @@ export const CaseTableComponent = (props: TTableProps) => {
       />
     </div>
   );
-};
+});
 
 export const CaseTableQuery = {
+  initialVariables: {
+    fetchSsmCounts: false,
+    ssmCountsfilters: null
+  },
   fragments: {
     hits: () => Relay.QL`
       fragment on ECaseConnection {
@@ -158,7 +220,23 @@ export const CaseTableQuery = {
         edges {
           node {
             id
+            case_id
             ${CaseTr.getFragment("node")}
+          }
+        }
+      }
+    `,
+    explore: () => Relay.QL`
+      fragment on Explore {
+        ssms {
+          blah: hits(first: 0) { total }
+          aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) @include(if: $fetchSsmCounts){
+            occurrence__case__case_id {
+              buckets {
+                key
+                doc_count
+              }
+            }
           }
         }
       }

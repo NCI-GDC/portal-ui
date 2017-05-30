@@ -3,7 +3,7 @@
 import React from "react";
 import Relay from "react-relay/classic";
 import withSize from "@ncigdc/utils/withSize";
-import { compose } from "recompose";
+import { compose, withPropsOnChange, withState } from "recompose";
 import { connect } from "react-redux";
 import { parse } from "query-string";
 import {
@@ -29,9 +29,9 @@ import EntityPageHorizontalTable
 import { Row } from "@ncigdc/uikit/Flex";
 import { Tooltip } from "@ncigdc/uikit/Tooltip";
 import Pagination from "@ncigdc/components/Pagination";
-import MutationsCount from "@ncigdc/containers/MutationsCount";
 import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
 import TableActions from "@ncigdc/components/TableActions";
+import MutationsCount from "@ncigdc/components/MutationsCount";
 
 const COMPONENT_NAME = "AffectedCasesTable";
 
@@ -52,8 +52,11 @@ const createRenderer = (Route, Container) =>
   ));
 
 class Route extends Relay.Route {
-  static routeName = COMPONENT_NAME;
-  static queries = viewerQuery;
+  static routeName = "AffectedCasesTableRoute";
+  static queries = {
+    ...viewerQuery,
+    exploreSsms: () => Relay.QL`query { viewer }`
+  };
   static prepareParams = ({
     location: { search },
     defaultSize = 10,
@@ -82,15 +85,29 @@ const createContainer = Component =>
       score: "gene.gene_id",
       affectedCasesTable_filters: null,
       affectedCasesTable_size: 10,
-      affectedCasesTable_offset: 0
+      affectedCasesTable_offset: 0,
+      ssmCountsfilters: null
     },
     fragments: {
+      exploreSsms: () => Relay.QL`
+        fragment on Root {
+          explore {
+            ssms {
+              aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) {
+                occurrence__case__case_id {
+                  buckets {
+                    key
+                    doc_count
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
       viewer: () => Relay.QL`
         fragment on Root {
           explore {
-            mutationsCountFragment: ssms {
-              ${MutationsCount.getFragment("ssms")}
-            }
             cases {
               hits (
                 score: $score
@@ -139,13 +156,58 @@ const createContainer = Component =>
 const Component = compose(
   withRouter,
   withTheme,
-  withSize()
+  withSize(),
+  withState("ssmCountsLoading", "setSsmCountsLoading", true),
+  withPropsOnChange(
+    ["viewer"],
+    ({
+      viewer: { explore: { cases: { hits: { edges } } } },
+      relay,
+      ssmCountsLoading,
+      setSsmCountsLoading
+    }) => {
+      const caseIds = edges.map(({ node }) => node.case_id);
+      if (!ssmCountsLoading) {
+        setSsmCountsLoading(true);
+      }
+      relay.setVariables(
+        {
+          ssmCountsfilters: caseIds.length
+            ? makeFilter(
+                [
+                  {
+                    field: "occurrence.case.case_id",
+                    value: caseIds
+                  }
+                ],
+                false
+              )
+            : null
+        },
+        readyState => {
+          if (readyState.done) {
+            setSsmCountsLoading(false);
+          }
+        }
+      );
+    }
+  ),
+  withPropsOnChange(["exploreSsms"], ({ exploreSsms: { explore } }) => {
+    const { ssms: { aggregations } } = explore;
+    const ssmCounts = (aggregations || {
+      occurrence__case__case_id: { buckets: [] }
+    }).occurrence__case__case_id.buckets
+      .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
+    return { ssmCounts };
+  })
 )(
   (
     {
       viewer: { explore: { cases, mutationsCountFragment } },
       relay,
-      defaultFilters
+      defaultFilters,
+      ssmCounts,
+      ssmCountsLoading
     } = {}
   ) => {
     if (cases && !cases.hits.edges.length) {
@@ -316,8 +378,8 @@ const Component = compose(
                     days_to_death: diagnosis.days_to_death,
                     num_mutations: (
                       <MutationsCount
-                        key={c.case_id}
-                        ssms={mutationsCountFragment}
+                        isLoading={ssmCountsLoading}
+                        ssmCount={ssmCounts[c.case_id]}
                         filters={makeFilter(
                           [{ field: "cases.case_id", value: [c.case_id] }],
                           false

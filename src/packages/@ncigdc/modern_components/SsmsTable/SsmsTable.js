@@ -111,7 +111,7 @@ const createContainer = Component =>
       viewer: () => Relay.QL`
         fragment on Root {
           explore {
-            cases { hits(first: 0) { total }}
+            cases { hits(first: 0 filters: $ssmTested) { total }}
             filteredCases: cases {
               hits(first: 0 filters: $ssmCaseFilter) {
                 total

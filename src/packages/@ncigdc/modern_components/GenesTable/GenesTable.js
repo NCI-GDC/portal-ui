@@ -103,7 +103,7 @@ const createContainer = Component =>
             ssms {
               ${MutationsCount.getFragment("ssms")}
             }
-            cases { hits(first: 0) { total }}
+            cases { hits(first: 0 filters: $ssmTested) { total }}
             filteredCases: cases {
               hits(first: 0 filters: $geneCaseFilter) {
                 total

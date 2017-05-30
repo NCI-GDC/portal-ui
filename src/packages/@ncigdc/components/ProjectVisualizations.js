@@ -13,7 +13,8 @@ import { Row, Column } from "@ncigdc/uikit/Flex";
 
 import SsmsBarChart from "@ncigdc/modern_components/SsmsBarChart/SsmsBarChart";
 import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";
-import MostAffectedCasesChart from "@ncigdc/containers/MostAffectedCasesChart";
+import AffectedCasesBarChart
+  from "@ncigdc/modern_components/AffectedCasesBarChart/AffectedCasesBarChart";
 import AffectedCasesTable
   from "@ncigdc/modern_components/AffectedCasesTable/AffectedCasesTable";
 import GenesBarChart
@@ -274,8 +275,7 @@ const ProjectVisualizations = enhance(
             <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
             Most Affected Cases
           </h1>
-          <MostAffectedCasesChart
-            explore={viewer.explore}
+          <AffectedCasesBarChart
             defaultFilters={macFilters}
             style={{ width: "50%", flexGrow: 0 }}
           />

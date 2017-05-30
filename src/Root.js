@@ -6,6 +6,7 @@ import Relay from "react-relay/classic";
 import Router from "react-router-dom/BrowserRouter";
 import { stringify, parse } from "query-string";
 import md5 from "blueimp-md5";
+import urlJoin from "url-join";
 import {
   RelayNetworkLayer,
   urlMiddleware,
@@ -20,7 +21,7 @@ const stringifyQuery = query => stringify(query, { strict: false });
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
     urlMiddleware({
-      url: req => `${process.env.REACT_APP_API}graphql`
+      url: req => urlJoin(process.env.REACT_APP_API, "graphql")
     }),
     retryMiddleware({
       fetchTimeout: 15000,

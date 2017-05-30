@@ -2,7 +2,7 @@
 import { fetchApi } from "@ncigdc/utils/ajax";
 import { handleActions } from "redux-actions";
 
-const REACT_APP_API_BASE_URL = "https://github.com/NCI-GDC/gdcapi";
+const API_BASE_URL = "https://github.com/NCI-GDC/gdcapi";
 const UI_BASE_URL = "https://github.com/NCI-GDC/portal-ui";
 
 const red = "color: rgb(173, 30, 30);";
@@ -36,18 +36,18 @@ const logVersionInfo = ({
   );
   console.groupEnd();
 
-  // process.env.REACT_APP_API info
+  // API info
   console.groupCollapsed(
-    "%c★ process.env.REACT_APP_API Git Info\n==============",
+    "%c★ API Git Info\n==============",
     `${red};${fontStyle}`
   );
   console.info(
-    `%cTag Link: %c${REACT_APP_API_BASE_URL}/releases/tag/${apiVersion}`,
+    `%cTag Link: %c${API_BASE_URL}/releases/tag/${apiVersion}`,
     fontStyle,
     blue
   );
   console.info(
-    `%cCommit Link: %c${REACT_APP_API_BASE_URL}/commit/${apiCommitHash}`,
+    `%cCommit Link: %c${API_BASE_URL}/commit/${apiCommitHash}`,
     fontStyle,
     blue
   );

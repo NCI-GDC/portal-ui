@@ -102,7 +102,7 @@ const GDCAppsDropdown = () => (
             <span className="icon icon-gdc-portal-api">
               {_.range(0, 11).map(x => <span key={x} className={`path${x}`} />)}
             </span>
-            <p>process.env.REACT_APP_API</p>
+            <p>API</p>
           </ExternalLink>
         </DropdownItem>
         <DropdownItem>

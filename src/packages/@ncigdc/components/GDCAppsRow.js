@@ -67,7 +67,7 @@ const GDCAppsRow = () => (
       href="https://gdc.cancer.gov/developers/gdc-application-programming-interface-api"
       target="_blank"
       rel="noopener noreferrer"
-      title="GDC process.env.REACT_APP_API"
+      title="GDC API"
     >
       <span
         className="icon icon-gdc-portal-api"

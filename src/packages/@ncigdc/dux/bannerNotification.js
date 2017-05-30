@@ -45,9 +45,7 @@ const reducer = (state = initialState, action) => {
       return [
         ...(action.payload || [])
           .filter(
-            n =>
-              n.components.includes("PORTAL") ||
-              n.components.includes("process.env.REACT_APP_API")
+            n => n.components.includes("PORTAL") || n.components.includes("API")
           )
           .map(n => ({ ...n, dismissed: false })),
         ...state

@@ -3,6 +3,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import DownCaretIcon from "react-icons/lib/fa/caret-down";
+import urlJoin from "url-join";
+
 import { Row } from "@ncigdc/uikit/Flex";
 import Dropdown from "@ncigdc/uikit/Dropdown";
 import DropdownItem from "@ncigdc/uikit/DropdownItem";
@@ -22,11 +24,17 @@ const NavLink = styled.a({
 const logout = () => {
   if (window.location.port) {
     window.location.assign(
-      `${process.env.REACT_APP_GDC_AUTH}logout?next=:${window.location.port}${window.location.pathname}`
+      urlJoin(
+        process.env.REACT_APP_GDC_AUTH,
+        `logout?next=:${window.location.port}${window.location.pathname}`
+      )
     );
   } else {
     window.location.assign(
-      `${process.env.REACT_APP_GDC_AUTH}logout?next=${window.location.pathname}`
+      urlJoin(
+        process.env.REACT_APP_GDC_AUTH,
+        `logout?next=${window.location.pathname}`
+      )
     );
   }
 };

@@ -6,6 +6,7 @@ import _ from "lodash";
 
 import { replaceFilters } from "@ncigdc/utils/filters";
 import styled from "@ncigdc/theme/styled";
+import { fetchApi } from "@ncigdc/utils/ajax/index";
 
 type TPropsDefault = { slug?: string, currentFilters?: Object, size?: number };
 type TPropsMulti = {
@@ -34,9 +35,8 @@ async function fetchCurves(
     { filters: filters && JSON.stringify(filters), size },
     _.isNil
   );
-  const url = `${process.env.REACT_APP_API}analysis/survival?${queryString.stringify(params)}`;
-  const res = await fetch(url);
-  const rawData = await res.json();
+  const url = `analysis/survival?${queryString.stringify(params)}`;
+  const rawData = await fetchApi(url);
   return enoughData(rawData) ? rawData : { results: [] };
 }
 

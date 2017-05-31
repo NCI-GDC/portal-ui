@@ -50,7 +50,7 @@ const TableActions = (
 ) => (
   <LocationSubscriber>
     {({ query }: {| query: TRawQuery |}) => (
-      <Row style={style}>
+      <Row style={style} spacing="0.2rem">
         {entityType &&
           <ArrangeColumnsButton
             entityType={entityType}
@@ -83,7 +83,6 @@ const TableActions = (
           <DownloadTableToTsvButton
             selector={tsvSelector}
             filename={tsvFilename}
-            style={{ marginLeft: "0.2rem" }}
           />}
       </Row>
     )}

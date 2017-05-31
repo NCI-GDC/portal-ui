@@ -128,7 +128,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                 alignItems: "center"
               }}
             >
-              <Row>
+              <Row spacing="0.2rem">
                 <Button
                   onClick={() =>
                     props.dispatch(fetchFilesAndAdd(props.filters, fileCount))}

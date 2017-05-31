@@ -2,10 +2,8 @@
 
 import React from 'react';
 
-import {
-  RepositoryCasesLink,
-  RepositoryFilesLink,
-} from '@ncigdc/components/Links/RepositoryLink';
+import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import { findDataCategory } from '@ncigdc/utils/data';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -48,8 +46,9 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
   type TLink = (props: TLinkProps) => any;
 
   const CasesLink: TLink = ({ fields = [], children }) =>
-    <RepositoryCasesLink
+    <ExploreLink
       query={{
+        searchTableTab: 'cases',
         filters: makeFilter([
           { field: 'cases.project.project_id', value: [node.project_id] },
           ...fields,
@@ -57,7 +56,7 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
       }}
     >
       {children}
-    </RepositoryCasesLink>;
+    </ExploreLink>;
 
   return (
     <Tr
@@ -80,7 +79,7 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
           ? <CasesLink>{caseCount.toLocaleString()}</CasesLink>
           : 0}
       </TdNum>
-      {Object.values(DATA_CATEGORIES).map(category => {
+      {Object.values(DATA_CATEGORIES).map((category: any) => {
         const count =
           findDataCategory(category.abbr, node.summary.data_categories)
             .case_count || 0;
@@ -90,7 +89,10 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
             {count > 0
               ? <CasesLink
                   fields={[
-                    { field: 'files.data_category', value: category.full },
+                    {
+                      field: 'cases.summary.data_categories.data_category',
+                      value: category.full,
+                    },
                   ]}
                 >
                   {count.toLocaleString()}

@@ -8,12 +8,6 @@ export const RepositoryFilesLink = makeListLink({
   query: { searchTableTab: 'files' },
 });
 
-export const RepositoryCasesLink = makeListLink({
-  pathname: '/repository',
-  children: 'repository',
-  query: { searchTableTab: 'cases' },
-});
-
 export default makeListLink({
   pathname: '/repository',
   children: 'repository',

@@ -1,9 +1,7 @@
 // @flow
 import React from 'react';
-import {
-  RepositoryCasesLink,
-  RepositoryFilesLink,
-} from '@ncigdc/components/Links/RepositoryLink';
+import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import { Th, Td } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -21,7 +19,8 @@ type TLink = (props: TLinkProps) => any;
 const dataCategoryColumns = createDataCategoryColumns({
   title: 'Available Cases per Data Category',
   countKey: 'case_count',
-  Link: RepositoryCasesLink,
+  Link: ExploreLink,
+  fieldName: 'cases.summary.data_categories.data_category',
   getCellLinkFilters: node => [
     {
       field: 'cases.project.project_id',
@@ -39,7 +38,7 @@ const dataCategoryColumns = createDataCategoryColumns({
 const CasesLink: TLink = ({ node, fields = [], children }) =>
   children === '0'
     ? <span>0</span>
-    : <RepositoryCasesLink
+    : <ExploreLink
         query={{
           filters: makeFilter([
             { field: 'cases.project.project_id', value: [node.project_id] },
@@ -48,7 +47,7 @@ const CasesLink: TLink = ({ node, fields = [], children }) =>
         }}
       >
         {children}
-      </RepositoryCasesLink>;
+      </ExploreLink>;
 
 const getProjectIdFilter = projects =>
   makeFilter([
@@ -113,7 +112,7 @@ const projectsTableModel = [
       </NumTd>,
     total: withRouter(({ hits, query }) =>
       <NumTd>
-        <RepositoryCasesLink
+        <ExploreLink
           query={{
             filters: query.filters ? getProjectIdFilter(hits) : null,
           }}
@@ -121,7 +120,7 @@ const projectsTableModel = [
           {hits.edges
             .reduce((acc, val) => acc + val.node.summary.case_count, 0)
             .toLocaleString()}
-        </RepositoryCasesLink>
+        </ExploreLink>
       </NumTd>,
     ),
   },

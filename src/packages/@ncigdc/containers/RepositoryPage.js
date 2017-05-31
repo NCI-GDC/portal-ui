@@ -80,7 +80,7 @@ export const RepositoryPageComponent = (props: TProps) => {
     });
 
   const fileCount = props.viewer.repository.files.hits.total;
-  const caseCount = props.viewer.repository.cases.hits.total;
+  // const caseCount = props.viewer.repository.cases.hits.total;
   const fileSize = props.viewer.cart_summary.aggregations.fs.value;
 
   return (
@@ -93,6 +93,19 @@ export const RepositoryPageComponent = (props: TProps) => {
         }}
         facetTabs={[
           {
+            id: 'files',
+            text: 'Files',
+            component: (
+              <FileAggregations
+                aggregations={props.viewer.repository.files.aggregations}
+                suggestions={
+                  (props.viewer.autocomplete_file || { hits: [] }).hits
+                }
+                setAutocomplete={setAutocompleteFiles}
+              />
+            ),
+          },
+          {
             id: 'cases',
             text: 'Cases',
             component: (
@@ -103,19 +116,6 @@ export const RepositoryPageComponent = (props: TProps) => {
                   (props.viewer.autocomplete_case || { hits: [] }).hits
                 }
                 setAutocomplete={setAutocompleteCases}
-              />
-            ),
-          },
-          {
-            id: 'files',
-            text: 'Files',
-            component: (
-              <FileAggregations
-                aggregations={props.viewer.repository.files.aggregations}
-                suggestions={
-                  (props.viewer.autocomplete_file || { hits: [] }).hits
-                }
-                setAutocomplete={setAutocompleteFiles}
               />
             ),
           },
@@ -176,22 +176,6 @@ export const RepositoryPageComponent = (props: TProps) => {
                 </Row>
               }
               links={[
-                {
-                  id: 'cases',
-                  text: `Cases (${caseCount.toLocaleString()})`,
-                  component: !!props.viewer.repository.cases.hits.total
-                    ? <div>
-                        <RepoCasesPies
-                          aggregations={
-                            props.viewer.repository.cases.aggregations
-                          }
-                        />
-                        <CasesTable hits={props.viewer.repository.cases.hits} />
-                      </div>
-                    : <NoResultsMessage>
-                        No results found using those filters.
-                      </NoResultsMessage>,
-                },
                 {
                   id: 'files',
                   text: `Files (${fileCount.toLocaleString()})`,

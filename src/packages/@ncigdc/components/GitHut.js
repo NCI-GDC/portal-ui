@@ -148,7 +148,6 @@ export default compose(withRouter)(
           pathname: "/repository",
           children: "repository",
           query: {
-            searchTableTab: "cases",
             filters: JSURL.stringify(JSON.parse(params.filters || null))
           }
         },

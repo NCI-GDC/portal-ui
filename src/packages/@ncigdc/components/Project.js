@@ -203,7 +203,7 @@ const Project = (
               caseCount
                 ? {
                     merge: 'replace',
-                    pathname: '/repository',
+                    pathname: '/exploration',
                     query: {
                       filters: makeFilter(projectFilter),
                     },
@@ -264,10 +264,19 @@ const Project = (
             tableTitle="Cases and File Counts by Experimental Strategy"
             pieChartTitle="File Counts by Experimental Strategy"
             data={experimentalStrategies.map((item, i) => {
-              const filters = makeFilter([
+              const repoFilters = makeFilter([
                 ...projectFilter,
                 {
                   field: 'files.experimental_strategy',
+                  value: [item.experimental_strategy],
+                },
+              ]);
+
+              const exploreFilters = makeFilter([
+                ...projectFilter,
+                {
+                  field:
+                    'cases.summary.experimental_strategies.experimental_strategy',
                   value: [item.experimental_strategy],
                 },
               ]);
@@ -288,9 +297,9 @@ const Project = (
                 case_count: (
                   <Link
                     merge="replace"
-                    pathname="/repository"
+                    pathname="/exploration"
                     query={{
-                      filters,
+                      filters: exploreFilters,
                       facetTab: 'cases',
                       searchTableTab: 'cases',
                     }}
@@ -303,7 +312,7 @@ const Project = (
                     merge="replace"
                     pathname="/repository"
                     query={{
-                      filters,
+                      filters: repoFilters,
                       facetTab: 'files',
                       searchTableTab: 'files',
                     }}
@@ -321,7 +330,7 @@ const Project = (
                 clickHandler: () => {
                   const newQuery = mergeQuery(
                     {
-                      filters,
+                      filters: repoFilters,
                       facetTab: 'files',
                       searchTableTab: 'files',
                     },
@@ -363,9 +372,17 @@ const Project = (
             tableTitle="Cases and File Counts by Data Category"
             pieChartTitle="File Counts by Data Category"
             data={dataCategories.map((item, i) => {
-              const filters = makeFilter([
+              const repoFilters = makeFilter([
                 ...projectFilter,
                 { field: 'files.data_category', value: [item.data_category] },
+              ]);
+
+              const exploreFilters = makeFilter([
+                ...projectFilter,
+                {
+                  field: 'cases.summary.data_categories.data_category',
+                  value: [item.data_category],
+                },
               ]);
 
               return {
@@ -384,9 +401,9 @@ const Project = (
                 case_count: item.case_count > 0
                   ? <Link
                       merge="replace"
-                      pathname="/repository"
+                      pathname="/exploration"
                       query={{
-                        filters,
+                        filters: exploreFilters,
                         facetTab: 'cases',
                         searchTableTab: 'cases',
                       }}
@@ -399,7 +416,7 @@ const Project = (
                       merge="replace"
                       pathname="/repository"
                       query={{
-                        filters,
+                        filters: repoFilters,
                         facetTab: 'files',
                         searchTableTab: 'files',
                       }}
@@ -417,7 +434,7 @@ const Project = (
                 clickHandler: () => {
                   const newQuery = mergeQuery(
                     {
-                      filters,
+                      filters: repoFilters,
                       facetTab: 'files',
                       searchTableTab: 'files',
                     },

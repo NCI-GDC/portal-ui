@@ -5016,9 +5016,9 @@ once@^1.3.0, once@^1.3.3, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-oncogrid@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/oncogrid/-/oncogrid-1.2.1.tgz#3a28178e1e4f582955f97b547acd0653675d1d56"
+oncogrid@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/oncogrid/-/oncogrid-1.2.2.tgz#7f7394f3f9ab6385954c8089f1808e6872fc6c54"
   dependencies:
     d3 "3.5.17"
     lodash.clonedeep "^4.5.0"

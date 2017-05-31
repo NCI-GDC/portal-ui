@@ -3,11 +3,8 @@
 import React from "react";
 import Relay from "react-relay/classic";
 import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
-import _ from "lodash";
-
 import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
 import Case from "@ncigdc/components/Case";
-
 import type { TRawQuery } from "@ncigdc/utils/uri/types";
 
 export type TProps = {
@@ -72,11 +69,9 @@ export const CasePageComponent = ({ node, viewer }: TProps) => (
           query={ctx.query}
           node={node}
           totalFiles={node.files.hits.total}
-          ssmTested={_.get(
-            viewer.explore.cases.hits,
-            "edges[0].node.available_variation_data",
-            []
-          ).includes("ssm")}
+          ssmTested={(viewer.explore.cases.hits.edges[0].node
+            .available_variation_data || [])
+            .includes("ssm")}
           files={node.files.hits.edges.map(f => ({
             ...f.node,
             projects: [node.project.project_id]

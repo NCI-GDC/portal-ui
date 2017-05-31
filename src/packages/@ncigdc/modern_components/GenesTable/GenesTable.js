@@ -8,7 +8,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { parse } from "query-string";
 import { scaleOrdinal, schemeCategory10 } from "d3";
-import { handleStateChange } from "@ncigdc/dux/relayProgress";
 import {
   parseIntParam,
   parseFilterParam,
@@ -21,9 +20,10 @@ import withBetterRouter from "@ncigdc/utils/withRouter";
 import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
 import Showing from "@ncigdc/components/Pagination/Showing";
 import GeneLink from "@ncigdc/components/Links/GeneLink";
+import { handleReadyStateChange } from "@ncigdc/dux/loaders";
 import EntityPageHorizontalTable
   from "@ncigdc/components/EntityPageHorizontalTable";
-import Loader from "@ncigdc/uikit/Loaders/Loader";
+import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
 import { Row } from "@ncigdc/uikit/Flex";
 import { Tooltip } from "@ncigdc/uikit/Tooltip";
 import Button from "@ncigdc/uikit/Button";
@@ -42,22 +42,26 @@ import DownloadTableToTsvButton, {
 } from "@ncigdc/components/DownloadTableToTsvButton";
 
 const colors = scaleOrdinal(schemeCategory10);
+const COMPONENT_NAME = "GenesTable";
 
 const createRenderer = (Route, Container) =>
   compose(connect(), withRouter)((props: mixed) => (
-    <Relay.Renderer
-      environment={Relay.Store}
-      queryConfig={new Route(props)}
-      onReadyStateChange={handleStateChange(props)}
-      Container={Container}
-      render={({ props: relayProps }) =>
-        relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-      }
-    />
+    <div style={{ position: "relative", minHeight: "387px" }}>
+      <Relay.Renderer
+        environment={Relay.Store}
+        queryConfig={new Route(props)}
+        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
+        Container={Container}
+        render={({ props: relayProps }) =>
+          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
+        }
+      />
+      <ConnectedLoader name={COMPONENT_NAME} />
+    </div>
   ));
 
 class Route extends Relay.Route {
-  static routeName = "GenesTableRoute";
+  static routeName = COMPONENT_NAME;
   static queries = viewerQuery;
   static prepareParams = ({
     location: { search },
@@ -179,7 +183,7 @@ const Component = compose(
     const data = !genes ? [] : genes.hits.edges.map(x => x.node);
 
     return (
-      <Loader loading={!genes} height="387px">
+      <span>
         <Row
           style={{
             backgroundColor: "white",
@@ -395,7 +399,7 @@ const Component = compose(
           params={relay.route.params}
           total={!genes ? 0 : genes.hits.total}
         />
-      </Loader>
+      </span>
     );
   }
 );

@@ -1,6 +1,7 @@
 /* @flow */
 
 import React from "react";
+import _ from "lodash";
 import { createFragmentContainer, graphql } from "react-relay/compat";
 import { connect } from "react-redux";
 import { compose } from "recompose";
@@ -9,6 +10,20 @@ import TableActions from "@ncigdc/components/TableActions";
 import tableModels from "@ncigdc/tableModels";
 
 import Table, { Tr, Th, Td } from "@ncigdc/uikit/Table";
+
+const createTableHeading = columnDefinition => {
+  const { id, name, th } = columnDefinition;
+  if (!th) {
+    return <Th key={id}>{name}</Th>;
+  } else if (_.isFunction(th)) {
+    return <columnDefinition.th columnDefinition={columnDefinition} key={id} />;
+  } else {
+    console.warn(
+      `[Column: ${id}] Passing in an initialized object for th is deprecated. Please pass in a function instead.`
+    );
+    return th;
+  }
+};
 
 export const SearchTable = compose(
   connect(state => ({ tableColumns: state.tableColumns.projects }))
@@ -61,10 +76,10 @@ export const SearchTable = compose(
             id="projects-table"
             headings={tableInfo
               .filter(x => !x.subHeading)
-              .map(x => x.th || <Th key={x.id}>{x.name}</Th>)}
+              .map(createTableHeading)}
             subheadings={tableInfo
               .filter(x => x.subHeading)
-              .map(x => x.th || <Th key={x.id}>{x.name}</Th>)}
+              .map(createTableHeading)}
             body={
               <tbody>
                 {hits.edges.map((e, i) => (

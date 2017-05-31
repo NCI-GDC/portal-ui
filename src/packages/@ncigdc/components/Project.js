@@ -106,67 +106,69 @@ const Project = (
 
   return (
     <span>
-      <Row style={{ ...styles.margin, flexDirection: "row-reverse" }}>
-        <DownloadButton
-          disabled={!biospecimenCount}
-          filename={`biospecimen.project-${projectId}`}
-          url={urlJoin(process.env.REACT_APP_API, "cases")}
-          activeText="Processing"
-          inactiveText={
-            biospecimenCount ? "Download Biospecimen" : "No Biospecimen Data"
-          }
-          fields={["case_id"]}
-          dataExportExpands={[
-            "samples",
-            "samples.portions",
-            "samples.portions.analytes",
-            "samples.portions.analytes.aliquots",
-            "samples.portions.analytes.aliquots.annotations",
-            "samples.portions.analytes.annotations",
-            "samples.portions.submitter_id",
-            "samples.portions.slides",
-            "samples.portions.annotations",
-            "samples.portions.center"
-          ]}
-          filters={dataExportFilters}
-        />
-
-        <DownloadButton
-          disabled={!clinicalCount}
-          filename={`clinical.project-${projectId}`}
-          url={urlJoin(process.env.REACT_APP_API, "cases")}
-          activeText="Processing"
-          inactiveText={
-            clinicalCount ? "Download Clinical" : "No Clinical Data"
-          }
-          fields={["case_id"]}
-          dataExportExpands={[
-            "demographic",
-            "diagnoses",
-            "family_histories",
-            "exposures"
-          ]}
-          filters={dataExportFilters}
-        />
-
-        <Tooltip
-          Component={
-            <div style={{ maxWidth: 250 }}>
-              Download a manifest for use with the GDC Data Transfer Tool.
-              The GDC Data Transfer Tool is recommended for transferring large volumes of data.
-            </div>
-          }
-        >
+      <Row>
+        <Row style={{ ...styles.margin, marginLeft: "auto" }} spacing="0.2rem">
           <DownloadButton
-            disabled={!fileCount}
-            url={urlJoin(process.env.REACT_APP_API, "files")}
-            activeText="Downloading"
-            inactiveText="Download Manifest"
-            fields={["file_id", "file_name", "md5sum", "file_size", "state"]}
-            returnType="manifest"
-            filters={makeFilter(projectFilter, false)}
+            disabled={!biospecimenCount}
+            filename={`biospecimen.project-${projectId}`}
+            url={urlJoin(process.env.REACT_APP_API, "cases")}
+            activeText="Processing"
+            inactiveText={
+              biospecimenCount ? "Download Biospecimen" : "No Biospecimen Data"
+            }
+            fields={["case_id"]}
+            dataExportExpands={[
+              "samples",
+              "samples.portions",
+              "samples.portions.analytes",
+              "samples.portions.analytes.aliquots",
+              "samples.portions.analytes.aliquots.annotations",
+              "samples.portions.analytes.annotations",
+              "samples.portions.submitter_id",
+              "samples.portions.slides",
+              "samples.portions.annotations",
+              "samples.portions.center"
+            ]}
+            filters={dataExportFilters}
           />
-        </Tooltip>
+
+          <DownloadButton
+            disabled={!clinicalCount}
+            filename={`clinical.project-${projectId}`}
+            url={urlJoin(process.env.REACT_APP_API, "cases")}
+            activeText="Processing"
+            inactiveText={
+              clinicalCount ? "Download Clinical" : "No Clinical Data"
+            }
+            fields={["case_id"]}
+            dataExportExpands={[
+              "demographic",
+              "diagnoses",
+              "family_histories",
+              "exposures"
+            ]}
+            filters={dataExportFilters}
+          />
+
+          <Tooltip
+            Component={
+              <div style={{ maxWidth: 250 }}>
+                Download a manifest for use with the GDC Data Transfer Tool.
+                The GDC Data Transfer Tool is recommended for transferring large volumes of data.
+              </div>
+            }
+          >
+            <DownloadButton
+              disabled={!fileCount}
+              url={urlJoin(process.env.REACT_APP_API, "files")}
+              activeText="Downloading"
+              inactiveText="Download Manifest"
+              fields={["file_id", "file_name", "md5sum", "file_size", "state"]}
+              returnType="manifest"
+              filters={makeFilter(projectFilter, false)}
+            />
+          </Tooltip>
+        </Row>
       </Row>
 
       <Row style={{ flexWrap: "wrap" }} spacing={SPACING}>

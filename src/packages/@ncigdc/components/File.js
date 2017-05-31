@@ -153,7 +153,10 @@ const File = ({
     : <span>0</span>;
   return (
     <Column>
-      <Row style={{ justifyContent: "flex-end", padding: "1rem 0" }}>
+      <Row
+        style={{ justifyContent: "flex-end", padding: "1rem 0" }}
+        spacing="0.2rem"
+      >
         <Button
           onClick={() => dispatch(toggleFilesInCart(node))}
           leftIcon={<ShoppingCartIcon />}

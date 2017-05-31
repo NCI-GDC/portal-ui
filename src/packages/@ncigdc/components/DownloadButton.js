@@ -10,13 +10,6 @@ import DownloadIcon from "@ncigdc/theme/icons/Download";
 import Spinner from "@ncigdc/theme/icons/Spinner";
 import Hidden from "@ncigdc/components/Hidden";
 
-const styles = {
-  buttons: {
-    flex: "none",
-    marginLeft: "0.2rem"
-  }
-};
-
 type TDownloadButton = {
   url: string,
   active: boolean,
@@ -61,8 +54,7 @@ const DownloadButton = ({
   return (
     <Button
       style={{
-        ...style,
-        ...styles.buttons
+        ...style
       }}
       leftIcon={text && icon}
       disabled={disabled || active}

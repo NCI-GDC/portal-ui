@@ -4,14 +4,16 @@ import React from "react";
 import Relay from "react-relay/classic";
 import withSize from "@ncigdc/utils/withSize";
 import { parse } from "query-string";
+import { connect } from "react-redux";
 import { compose } from "recompose";
 import withRouter from "@ncigdc/utils/withRouter";
 import { viewerQuery } from "@ncigdc/routes/queries";
+import { handleReadyStateChange } from "@ncigdc/dux/loaders";
 import { parseFilterParam } from "@ncigdc/utils/uri";
 import { Row, Column } from "@ncigdc/uikit/Flex";
 import BarChart from "@ncigdc/components/Charts/BarChart";
 import { withTheme } from "@ncigdc/theme";
-import Loader from "@ncigdc/uikit/Loaders/Loader";
+import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
 import DownloadVisualizationButton
   from "@ncigdc/components/DownloadVisualizationButton";
 import wrapSvg from "@ncigdc/utils/wrapSvg";
@@ -19,21 +21,26 @@ import wrapSvg from "@ncigdc/utils/wrapSvg";
 const CHART_HEIGHT = 285;
 const CHART_MARGINS = { top: 20, right: 50, bottom: 65, left: 55 };
 const MAX_BARS = 20;
+const COMPONENT_NAME = "AffectedCasesBarChart";
 
 const createRenderer = (Route, Container) =>
-  compose(withRouter)((props: mixed) => (
-    <Relay.Renderer
-      environment={Relay.Store}
-      queryConfig={new Route(props)}
-      Container={Container}
-      render={({ props: relayProps }) =>
-        relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-      }
-    />
+  compose(withRouter, connect())((props: mixed) => (
+    <div style={{ position: "relative", minHeight: `${CHART_HEIGHT}px` }}>
+      <Relay.Renderer
+        environment={Relay.Store}
+        queryConfig={new Route(props)}
+        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
+        Container={Container}
+        render={({ props: relayProps }) =>
+          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
+        }
+      />
+      <ConnectedLoader name={COMPONENT_NAME} />
+    </div>
   ));
 
 class Route extends Relay.Route {
-  static routeName = "AffectedCasesBarChartRoute";
+  static routeName = COMPONENT_NAME;
   static queries = viewerQuery;
   static prepareParams = ({ location: { search }, defaultFilters = null }) => {
     const q = parse(search);
@@ -105,7 +112,7 @@ const Component = compose(
     }));
 
     return (
-      <Loader loading={!cases} height={CHART_HEIGHT}>
+      <span>
         <Column>
           {cases &&
             !!cases.hits.edges.length &&
@@ -154,7 +161,7 @@ const Component = compose(
               />
             </Row>}
         </Column>
-      </Loader>
+      </span>
     );
   }
 );

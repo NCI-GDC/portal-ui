@@ -12,7 +12,7 @@ import {
   parseJSURLParam
 } from "@ncigdc/utils/uri";
 import { viewerQuery } from "@ncigdc/routes/queries";
-import { handleStateChange } from "@ncigdc/dux/relayProgress";
+import { handleReadyStateChange } from "@ncigdc/dux/loaders";
 import Showing from "@ncigdc/components/Pagination/Showing";
 import { withTheme } from "@ncigdc/theme";
 import ageDisplay from "@ncigdc/utils/ageDisplay";
@@ -21,7 +21,7 @@ import { tableToolTipHint } from "@ncigdc/theme/mixins";
 import CaseLink from "@ncigdc/components/Links/CaseLink";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 import withRouter from "@ncigdc/utils/withRouter";
-import Loader from "@ncigdc/uikit/Loaders/Loader";
+import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
 import { RepositoryFilesLink } from "@ncigdc/components/Links/RepositoryLink";
 import { makeFilter } from "@ncigdc/utils/filters";
 import EntityPageHorizontalTable
@@ -33,21 +33,26 @@ import MutationsCount from "@ncigdc/containers/MutationsCount";
 import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
 import TableActions from "@ncigdc/components/TableActions";
 
+const COMPONENT_NAME = "AffectedCasesTable";
+
 const createRenderer = (Route, Container) =>
   compose(connect(), withRouter)((props: mixed) => (
-    <Relay.Renderer
-      environment={Relay.Store}
-      queryConfig={new Route(props)}
-      onReadyStateChange={handleStateChange(props)}
-      Container={Container}
-      render={({ props: relayProps }) =>
-        relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-      }
-    />
+    <div style={{ position: "relative", minHeight: "387px" }}>
+      <Relay.Renderer
+        environment={Relay.Store}
+        queryConfig={new Route(props)}
+        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
+        Container={Container}
+        render={({ props: relayProps }) =>
+          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
+        }
+      />
+      <ConnectedLoader name={COMPONENT_NAME} />
+    </div>
   ));
 
 class Route extends Relay.Route {
-  static routeName = "AffectedCasesTableRoute";
+  static routeName = COMPONENT_NAME;
   static queries = viewerQuery;
   static prepareParams = ({
     location: { search },
@@ -150,7 +155,7 @@ const Component = compose(
     const totalCases = cases ? cases.hits.total : 0;
 
     return (
-      <Loader loading={!cases} height="387px">
+      <span>
         <Row
           style={{
             backgroundColor: "white",
@@ -361,7 +366,7 @@ const Component = compose(
           params={relay.route.params}
           total={!cases ? 0 : cases.hits.total}
         />
-      </Loader>
+      </span>
     );
   }
 );

@@ -9,7 +9,7 @@ import { startCase, truncate, get, orderBy } from "lodash";
 import { connect } from "react-redux";
 import { parse } from "query-string";
 import { scaleOrdinal, schemeCategory10 } from "d3";
-import { handleStateChange } from "@ncigdc/dux/relayProgress";
+import { handleReadyStateChange } from "@ncigdc/dux/loaders";
 import {
   parseIntParam,
   parseFilterParam,
@@ -24,7 +24,7 @@ import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
 import Showing from "@ncigdc/components/Pagination/Showing";
 import EntityPageHorizontalTable
   from "@ncigdc/components/EntityPageHorizontalTable";
-import Loader from "@ncigdc/uikit/Loaders/Loader";
+import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
 import BubbleIcon from "@ncigdc/theme/icons/BubbleIcon";
 import { Row } from "@ncigdc/uikit/Flex";
 import { Tooltip } from "@ncigdc/uikit/Tooltip";
@@ -45,22 +45,26 @@ import type { TGroupFilter } from "@ncigdc/utils/filters/types";
 import TableActions from "@ncigdc/components/TableActions";
 
 const colors = scaleOrdinal(schemeCategory10);
+const COMPONENT_NAME = "SsmsTable";
 
 const createRenderer = (Route, Container) =>
   compose(connect(), withRouter)((props: mixed) => (
-    <Relay.Renderer
-      environment={Relay.Store}
-      queryConfig={new Route(props)}
-      onReadyStateChange={handleStateChange(props)}
-      Container={Container}
-      render={({ props: relayProps }) =>
-        relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-      }
-    />
+    <div style={{ position: "relative", minHeight: "387px" }}>
+      <Relay.Renderer
+        environment={Relay.Store}
+        queryConfig={new Route(props)}
+        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
+        Container={Container}
+        render={({ props: relayProps }) =>
+          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
+        }
+      />
+      <ConnectedLoader name={COMPONENT_NAME} />
+    </div>
   ));
 
 class Route extends Relay.Route {
-  static routeName = "SsmsTableRoute";
+  static routeName = COMPONENT_NAME;
   static queries = viewerQuery;
   static prepareParams = ({
     location: { search },
@@ -318,7 +322,7 @@ const Component = compose(
     const totalSsms = ssms ? ssms.hits.total : 0;
 
     return (
-      <Loader loading={!ssms} height="387px">
+      <span>
         <Row
           style={{
             backgroundColor: "white",
@@ -570,7 +574,7 @@ const Component = compose(
           params={relay.variables}
           total={!ssms ? 0 : ssms.hits.total}
         />
-      </Loader>
+      </span>
     );
   }
 );

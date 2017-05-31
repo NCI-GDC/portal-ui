@@ -1,6 +1,7 @@
 // @flow
 
 import React from "react";
+import { connect } from "react-redux";
 import Overlay from "@ncigdc/uikit/Overlay";
 import Spinner from "./Material";
 
@@ -24,3 +25,14 @@ export default (
     {children}
   </div>
 );
+
+export const ConnectedLoader = connect(s => ({
+  loaders: s.loaders
+}))(({ loaders, name }) => (
+  <Overlay
+    show={loaders.includes(name)}
+    style={{ position: "absolute", zIndex: 10 }}
+  >
+    <Spinner />
+  </Overlay>
+));

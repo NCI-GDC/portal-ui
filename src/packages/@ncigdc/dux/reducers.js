@@ -11,6 +11,7 @@ import versionInfo from "./versionInfo";
 import bannerNotification from "./bannerNotification";
 import relayProgress from "./relayProgress";
 import error from "./error";
+import loaders from "./loaders";
 import tableColumns from "./tableColumns";
 
 /*----------------------------------------------------------------------------*/
@@ -26,5 +27,6 @@ export default {
   bannerNotification,
   relayProgress,
   error,
+  loaders,
   tableColumns
 };

@@ -29,6 +29,7 @@ import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
 import FileIcon from '@ncigdc/theme/icons/File';
 import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
+import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
 const styles = {
@@ -362,7 +363,7 @@ const Case = compose(
                   <ExploreLink
                     query={{ searchTableTab: 'mutations', filters: fmFilters }}
                   >
-                    Open in Exploration
+                    <GdcDataIcon /> Open in Exploration
                   </ExploreLink>
                 }
               />

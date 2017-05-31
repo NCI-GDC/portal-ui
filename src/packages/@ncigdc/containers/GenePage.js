@@ -3,7 +3,6 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 
-import ChartIcon from '@ncigdc/theme/icons/BarChart';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { makeFilter } from '@ncigdc/utils/filters';
 import GeneSummary from '@ncigdc/containers/GeneSummary';
@@ -14,8 +13,10 @@ import Lolliplot from '@ncigdc/containers/Lolliplot';
 import SsmsBarChart from '@ncigdc/modern_components/SsmsBarChart/SsmsBarChart';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
-import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
+import ChartIcon from '@ncigdc/theme/icons/BarChart';
+import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 
 const styles = {
   heading: {
@@ -144,7 +145,7 @@ export const GenePageComponent = (props: TProps) => {
                 <ExploreLink
                   query={{ searchTableTab: 'mutations', filters: fmFilters }}
                 >
-                  Open in Exploration
+                  <GdcDataIcon /> Open in Exploration
                 </ExploreLink>
               }
             />

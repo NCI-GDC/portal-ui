@@ -2,12 +2,10 @@
 
 import React from 'react';
 import { compose, withState, lifecycle, withPropsOnChange } from 'recompose';
-import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
-import { parseFilterParam } from '@ncigdc/utils/uri';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
-import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
+import { makeFilter } from '@ncigdc/utils/filters';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
@@ -17,11 +15,10 @@ import AffectedCasesBarChart from '@ncigdc/modern_components/AffectedCasesBarCha
 import AffectedCasesTable from '@ncigdc/modern_components/AffectedCasesTable/AffectedCasesTable';
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable/GenesTable';
-import OncoGridWrapper from '@ncigdc/components/Oncogrid/OncogridWrapper';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import SpinnerCentered from '@ncigdc/components/SpinnerCentered';
-import type { TRawQuery } from '@ncigdc/utils/uri/types';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import { GdcDataIcon, GridIcon } from '@ncigdc/theme/icons';
 
 const styles = {
   heading: {
@@ -177,43 +174,24 @@ const ProjectVisualizations = enhance(
               defaultSize={10}
               context={projectId}
               tableLink={
-                <ExploreLink
-                  query={{ searchTableTab: 'genes', filters: fmFilters }}
-                >
-                  Open in Exploration
-                </ExploreLink>
+                <span>
+                  <ExploreLink
+                    query={{ searchTableTab: 'oncogrid', filters: fmFilters }}
+                    style={{ marginRight: '1.5rem' }}
+                  >
+                    <GridIcon /> OncoGrid
+                  </ExploreLink>
+
+                  <ExploreLink
+                    query={{ searchTableTab: 'genes', filters: fmFilters }}
+                  >
+                    <GdcDataIcon /> Open in Exploration
+                  </ExploreLink>
+                </span>
               }
             />
           </Column>
         </Column>
-
-        <Column
-          style={{ ...styles.card, marginTop: '2rem', position: 'static' }}
-        >
-          <h1 style={{ ...styles.heading, padding: '1rem' }} id="oncogrid">
-            <i className="fa fa-th" style={{ paddingRight: '10px' }} />
-            OncoGrid
-          </h1>
-          <LocationSubscriber>
-            {(ctx: {| pathname: string, query: TRawQuery |}) => {
-              const { filters } = ctx.query || {};
-              const currentFilters = parseFilterParam(filters, null);
-              const componentFilters = replaceFilters(
-                makeFilter([
-                  { field: 'cases.project.project_id', value: projectId },
-                ]),
-                currentFilters,
-              );
-              return (
-                <OncoGridWrapper
-                  projectId={projectId}
-                  currentFilters={componentFilters}
-                />
-              );
-            }}
-          </LocationSubscriber>
-        </Column>
-
         <Column style={{ ...styles.card, marginTop: '2rem' }}>
           <h1
             style={{ ...styles.heading, padding: '1rem' }}
@@ -262,7 +240,7 @@ const ProjectVisualizations = enhance(
                         filters: fmFilters,
                       }}
                     >
-                      Open in Exploration
+                      <GdcDataIcon /> Open in Exploration
                     </ExploreLink>
                   }
                 />}

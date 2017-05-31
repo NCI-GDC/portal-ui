@@ -6,11 +6,13 @@ import Relay from "react-relay/classic";
 import withSize from "@ncigdc/utils/withSize";
 import { compose, withHandlers } from "recompose";
 import { parse } from "query-string";
+import { connect } from "react-redux";
+import { handleReadyStateChange } from "@ncigdc/dux/loaders";
 import withRouter from "@ncigdc/utils/withRouter";
 import { parseFilterParam } from "@ncigdc/utils/uri";
 import { viewerQuery } from "@ncigdc/routes/queries";
 import { makeFilter } from "@ncigdc/utils/filters";
-import Loader from "@ncigdc/uikit/Loaders/Loader";
+import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
 import { withTheme } from "@ncigdc/theme";
 import { Row, Column } from "@ncigdc/uikit/Flex";
 import DownloadVisualizationButton
@@ -23,21 +25,26 @@ const TITLE = "Distribution of Most Frequently Mutated Genes";
 const CHART_HEIGHT = 285;
 const CHART_MARGINS = { top: 20, right: 50, bottom: 65, left: 55 };
 const MAX_BARS = 20;
+const COMPONENT_NAME = "GenesBarChart";
 
 const createRenderer = (Route, Container) =>
-  compose(withRouter)((props: mixed) => (
-    <Relay.Renderer
-      environment={Relay.Store}
-      queryConfig={new Route(props)}
-      Container={Container}
-      render={({ props: relayProps }) =>
-        relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-      }
-    />
+  compose(withRouter, connect())((props: mixed) => (
+    <div style={{ position: "relative", minHeight: `${CHART_HEIGHT}px` }}>
+      <Relay.Renderer
+        environment={Relay.Store}
+        queryConfig={new Route(props)}
+        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
+        Container={Container}
+        render={({ props: relayProps }) =>
+          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
+        }
+      />
+      <ConnectedLoader name={COMPONENT_NAME} />
+    </div>
   ));
 
 class Route extends Relay.Route {
-  static routeName = "GenesBarChartRoute";
+  static routeName = COMPONENT_NAME;
   static queries = viewerQuery;
   static prepareParams = ({ location: { search }, defaultFilters = null }) => {
     const q = parse(search);
@@ -210,7 +217,7 @@ const Component = compose(
       }));
 
     return (
-      <Loader loading={!genes} height={CHART_HEIGHT}>
+      <span>
         {!!mutatedGenesChartData &&
           <Column>
             <VisualizationHeader
@@ -263,7 +270,7 @@ const Component = compose(
                 </Row>
               </div>}
           </Column>}
-      </Loader>
+      </span>
     );
   }
 );

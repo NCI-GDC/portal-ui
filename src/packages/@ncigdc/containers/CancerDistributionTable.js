@@ -147,6 +147,7 @@ const CancerDistributionTableComponent = compose(
         );
 
         return {
+          id: row.project_id, // used for key in table
           freq: row.num_affected_cases_percent,
           project_id: (
             <ProjectLink uuid={row.project_id}>{row.project_id}</ProjectLink>
@@ -299,7 +300,7 @@ const CancerDistributionTableComponent = compose(
         </Row>
         <Column style={{ width: "100%", minWidth: 450 }}>
           <EntityPageHorizontalTable
-            idKey="project_id"
+            idKey="id"
             tableId="cancer-distribution-table"
             headings={[
               { key: "project_id", title: "Project ID" },

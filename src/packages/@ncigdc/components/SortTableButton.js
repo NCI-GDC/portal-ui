@@ -46,7 +46,7 @@ const SortTableButton = compose(
   (
     { style, options, query: q, sortKey, theme }: TSortTableButtonProps = {}
   ) => {
-    const { [sortKey]: sort, ...query } = q;
+    const { [sortKey]: sort } = q;
     const fields = parseJSURLParam(sort, []);
 
     return (
@@ -82,8 +82,8 @@ const SortTableButton = compose(
               <CheckboxRow flex="1">
                 <Link
                   style={{ width: "100%" }}
+                  merge
                   query={{
-                    ...query,
                     [sortKey]: JSURL.stringify(nextSort)
                   }}
                 >
@@ -102,8 +102,8 @@ const SortTableButton = compose(
               <RadioRow>
                 <Link
                   style={{ width: "100%" }}
+                  merge
                   query={{
-                    ...query,
                     [sortKey]: JSURL.stringify([
                       ...otherFields,
                       { field: x.id, order: "asc" }
@@ -120,8 +120,8 @@ const SortTableButton = compose(
                 </Link>
                 <Link
                   style={{ width: "100%" }}
+                  merge
                   query={{
-                    ...query,
                     [sortKey]: JSURL.stringify([
                       ...otherFields,
                       { field: x.id, order: "desc" }

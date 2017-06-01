@@ -2,8 +2,7 @@ git:
   depth: 10
 language: node_js
 node_js:
-  - "6"
-cache: yarn
+  - "8"
 sudo: required
 services:
 - docker
@@ -11,10 +10,11 @@ jobs:
   include:
     - stage: test
       script:
-        - yarn test -- --no-cache
+        - npm run lint
+        - npm run test -- --no-cache
     - stage: deploy
       script:
-        - NODE_ENV=production REACT_APP_COMMIT_HASH=$TRAVIS_COMMIT yarn build
+        - NODE_ENV=production REACT_APP_COMMIT_HASH=$TRAVIS_COMMIT npm run build
         - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" quay.io
         - bash docker.sh
 notifications:

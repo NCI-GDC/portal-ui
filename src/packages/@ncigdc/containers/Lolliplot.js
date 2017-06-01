@@ -599,17 +599,8 @@ const LolliplotComponent = compose(
                     <span>{lolliplotData.mutations.length} Mutations</span>
                   </div>
                   <div style={{ marginTop: "6px" }}>
-                    <select
-                      value={blacklist}
-                      onChange={e => {
-                        e.persist();
-                        setState(s => ({ ...s, blacklist: e.target.value }));
-                      }}
-                      aria-label="Color by:"
-                    >
-                      <option value="consequence">Consequence</option>
-                      <option value="impact">Impact (VEP)</option>
-                    </select>
+                    {/* <select> removed for https://jira.opensciencedatacloud.org/browse/PRTL-1260 */}
+                    <b>Consequence Type</b>
                   </div>
                   <div style={{ marginTop: "6px" }}>
                     <div

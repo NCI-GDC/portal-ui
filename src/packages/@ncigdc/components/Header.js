@@ -22,10 +22,15 @@ import { setModal } from "@ncigdc/dux/modal";
 import SessionExpiredModal from "@ncigdc/components/Modals/SessionExpiredModal";
 
 import Banner from "@ncigdc/uikit/Banner";
+import activeTheme from "@ncigdc/theme/versions/active";
 
 const styles = {
   iconPadding: {
     paddingRight: "4px"
+  },
+  activeNavLink: {
+    backgroundColor: activeTheme.greyScale2,
+    color: activeTheme.white
   }
 };
 
@@ -107,7 +112,7 @@ const Header = compose(
             id="header-home"
           >
             {/* tabindexes */}
-            <HomeLink>
+            <HomeLink exact activeStyle={styles.activeNavLink}>
               <i className="fa fa-home" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Home</span>
             </HomeLink>
@@ -116,13 +121,13 @@ const Header = compose(
             data-ng-class="{ active: hc.$state.includes('projects') }"
             id="header-projects"
           >
-            <ProjectsLink>
+            <ProjectsLink exact activeStyle={styles.activeNavLink}>
               <i className="icon-gdc-projects" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Projects</span>
             </ProjectsLink>
           </li>
           <li>
-            <ExploreLink>
+            <ExploreLink exact activeStyle={styles.activeNavLink}>
               <i className="icon-gdc-data" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Exploration</span>
             </ExploreLink>
@@ -131,7 +136,7 @@ const Header = compose(
             data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
             id="header-repository"
           >
-            <RepositoryLink>
+            <RepositoryLink exact activeStyle={styles.activeNavLink}>
               <i className="fa fa-database" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Repository</span>
             </RepositoryLink>

@@ -55,7 +55,7 @@ const SearchPage = (
     showFacets,
     setShowFacets,
     filtersLinkProps,
-    geneSymbolFragment,
+    geneSymbolFragment
   }: TProps = {}
 ) => (
   <Container>

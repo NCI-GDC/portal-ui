@@ -60,7 +60,6 @@ const user = {
 
 const TESTCase = { node: { project: { project_id: "TCGA-TEST" } } };
 const LUADCase = { node: { project: { project_id: "TCGA-LUAD" } } };
-const LAMLCase = { node: { project: { project_id: "TCGA-LAML" } } };
 const KIRPCase = { node: { project: { project_id: "TCGA-KIRP" } } };
 const KIRCCase = { node: { project: { project_id: "TCGA-KIRC" } } };
 

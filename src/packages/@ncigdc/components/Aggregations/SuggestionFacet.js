@@ -19,7 +19,7 @@ import CheckCircleOIcon from "@ncigdc/theme/icons/CheckCircleOIcon";
 import type { TRawQuery } from "@ncigdc/utils/uri/types";
 import withSelectableList from "@ncigdc/utils/withSelectableList";
 import namespace from "@ncigdc/utils/namespace";
-import GeneSymbol from '@ncigdc/containers/GeneSymbol';
+import GeneSymbol from "@ncigdc/containers/GeneSymbol";
 
 import Hidden from "../Hidden";
 import { Container, StyledInput, CheckedRow, CheckedLink } from "./";
@@ -155,10 +155,12 @@ const SuggestionFacet = compose(
                         }}
                       >
                         <CheckCircleOIcon style={{ paddingRight: "0.5rem" }} />
-                        {fieldNoDoctype === 'gene_id' ? <GeneSymbol
-                            explore={geneSymbolFragment}
-                            geneId={v}
-                        /> : v}
+                        {fieldNoDoctype === "gene_id"
+                          ? <GeneSymbol
+                              explore={geneSymbolFragment}
+                              geneId={v}
+                            />
+                          : v}
                       </CheckedLink>
                     </CheckedRow>
                   ))}

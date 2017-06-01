@@ -2,17 +2,13 @@
 
 // Vendor
 import React from "react";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
-import { compose, withState, mapProps, pure } from "recompose";
-import AngleIcon from "react-icons/lib/fa/angle-down";
+import { compose, withState, pure } from "recompose";
 import SearchIcon from "react-icons/lib/fa/search";
 
 // Custom
 import { makeFilter } from "@ncigdc/utils/filters";
-import { parseFilterParam } from "@ncigdc/utils/uri";
 import { Row, Column } from "@ncigdc/uikit/Flex";
 import withDropdown from "@ncigdc/uikit/withDropdown";
-import { withTheme } from "@ncigdc/theme";
 import { dropdown } from "@ncigdc/theme/mixins";
 import styled from "@ncigdc/theme/styled";
 import Link from "@ncigdc/components/Links/Link";
@@ -46,7 +42,6 @@ const StyledDropdownLink = styled(Link, {
   textDecoration: "none"
 });
 
-let input;
 const PrefixFacet = compose(
   withDropdown,
   pure,

@@ -112,7 +112,11 @@ const Header = compose(
             id="header-home"
           >
             {/* tabindexes */}
-            <HomeLink exact activeStyle={styles.activeNavLink}>
+            <HomeLink
+              exact
+              activeStyle={styles.activeNavLink}
+              className="HomeLink"
+            >
               <i className="fa fa-home" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Home</span>
             </HomeLink>
@@ -121,13 +125,21 @@ const Header = compose(
             data-ng-class="{ active: hc.$state.includes('projects') }"
             id="header-projects"
           >
-            <ProjectsLink exact activeStyle={styles.activeNavLink}>
+            <ProjectsLink
+              exact
+              activeStyle={styles.activeNavLink}
+              className="ProjectsLink"
+            >
               <i className="icon-gdc-projects" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Projects</span>
             </ProjectsLink>
           </li>
           <li>
-            <ExploreLink exact activeStyle={styles.activeNavLink}>
+            <ExploreLink
+              exact
+              activeStyle={styles.activeNavLink}
+              className="ExploreLink"
+            >
               <i className="icon-gdc-data" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Exploration</span>
             </ExploreLink>
@@ -136,7 +148,11 @@ const Header = compose(
             data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
             id="header-repository"
           >
-            <RepositoryLink exact activeStyle={styles.activeNavLink}>
+            <RepositoryLink
+              exact
+              activeStyle={styles.activeNavLink}
+              className="RepositoryLink"
+            >
               <i className="fa fa-database" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Repository</span>
             </RepositoryLink>

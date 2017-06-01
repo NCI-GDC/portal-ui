@@ -32,6 +32,13 @@ type TProps = {
   currentFilters?: TGroupFilter
 };
 
+function jsonDownloadTooltip(excepts) {
+  const len = excepts.length;
+  const last = excepts[len - 1];
+  return `Download All${len ? ` Except ${len === 1 ? last : excepts
+            .slice(0, -1)
+            .join(", ") + " and " + last}` : ""}`;
+}
 const TableActions = (
   {
     prefix,
@@ -45,7 +52,8 @@ const TableActions = (
     tsvSelector,
     tsvFilename,
     style,
-    currentFilters
+    currentFilters,
+    nonDownloadableColumns = []
   }: TProps = {}
 ) => (
   <LocationSubscriber>
@@ -65,7 +73,11 @@ const TableActions = (
             style={visualizingButton}
           />}
         {downloadable &&
-          <Tooltip Component={<span>Export Table</span>}>
+          <Tooltip
+            Component={
+              <span>{jsonDownloadTooltip(nonDownloadableColumns)}</span>
+            }
+          >
             <DownloadButton
               filters={
                 currentFilters || parseFilterParam((query || {}).filters, {})
@@ -76,6 +88,9 @@ const TableActions = (
               fields={downloadFields}
               style={visualizingButton}
               size={total}
+              inactiveText="JSON"
+              activeText="JSON"
+              showIcon={false}
             />
           </Tooltip>}
         {tsvSelector &&

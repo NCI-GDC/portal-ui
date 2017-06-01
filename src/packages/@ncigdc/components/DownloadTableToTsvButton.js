@@ -27,7 +27,7 @@ const DownloadTableToTsvButton = ({
   selector,
   style = {}
 }: TProps) => (
-  <Tooltip Component={<span>Export current table view as TSV</span>}>
+  <Tooltip Component={<span>Export current view</span>}>
     <Button
       style={{ ...visualizingButton, ...style }}
       onClick={() => {

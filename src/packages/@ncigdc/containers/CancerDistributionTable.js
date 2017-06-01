@@ -18,7 +18,6 @@ import DownloadTableToTsvButton
   from "@ncigdc/components/DownloadTableToTsvButton";
 import Button from "@ncigdc/uikit/Button";
 import saveFile from "@ncigdc/utils/filesaver";
-import { DownloadIcon } from "@ncigdc/theme/icons";
 import Showing from "@ncigdc/components/Pagination/Showing";
 import Pagination from "@ncigdc/components/Pagination";
 import withRouter from "@ncigdc/utils/withRouter";
@@ -276,7 +275,9 @@ const CancerDistributionTableComponent = compose(
               Open in Exploration
             </ExploreLink>
             <Tooltip
-              Component={<span>Export Table</span>}
+              Component={
+                <span>Export All{geneId ? " Except # Mutations" : ""}</span>
+              }
               style={{ marginLeft: "2rem" }}
             >
               <Button
@@ -288,7 +289,7 @@ const CancerDistributionTableComponent = compose(
                     "cancer-distribution-data"
                   )}
               >
-                <DownloadIcon />
+                JSON
               </Button>
             </Tooltip>
             <DownloadTableToTsvButton

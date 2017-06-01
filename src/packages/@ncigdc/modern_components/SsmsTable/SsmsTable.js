@@ -345,6 +345,7 @@ const Component = compose(
               prefix={prefix}
               total={totalSsms}
               endpoint={prefix}
+              nonDownloadableColumns={["# Cases"]}
               downloadFields={[
                 "genomic_dna_change",
                 "mutation_subtype",

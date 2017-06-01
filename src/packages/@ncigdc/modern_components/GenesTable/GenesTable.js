@@ -37,9 +37,8 @@ import ProjectBreakdown
   from "@ncigdc/modern_components/ProjectBreakdown/ProjectBreakdown";
 import CosmicIcon from "@ncigdc/theme/icons/Cosmic";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
-import DownloadTableToTsvButton, {
-  ForTsvExport
-} from "@ncigdc/components/DownloadTableToTsvButton";
+import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
+import TableActions from "@ncigdc/components/TableActions";
 
 const colors = scaleOrdinal(schemeCategory10);
 const COMPONENT_NAME = "GenesTable";
@@ -181,7 +180,7 @@ const Component = compose(
     }
 
     const data = !genes ? [] : genes.hits.edges.map(x => x.node);
-
+    const totalGenes = !genes ? 0 : genes.hits.total;
     return (
       <span>
         <Row
@@ -195,14 +194,25 @@ const Component = compose(
             docType="genes"
             prefix="genesTable"
             params={relay.route.params}
-            total={!genes ? 0 : genes.hits.total}
+            total={totalGenes}
           />
           <Row>
             {tableLink}
-            <DownloadTableToTsvButton
-              selector="#frequently-mutated-genes-table"
-              filename="frequently-mutated-genes.tsv"
-              style={{ marginLeft: "0.5rem" }}
+            <TableActions
+              prefix="genes"
+              total={totalGenes}
+              endpoint="genes"
+              nonDownloadableColumns={["# Cases", "# Mutations"]}
+              downloadFields={[
+                "symbol",
+                "name",
+                "cytoband",
+                "biotype",
+                "gene_id",
+                "is_cancer_gene_census"
+              ]}
+              tsvSelector="#frequently-mutated-genes-table"
+              tsvFilename="frequently-mutated-genes.tsv"
             />
           </Row>
         </Row>

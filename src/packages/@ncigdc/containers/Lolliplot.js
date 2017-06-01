@@ -353,7 +353,9 @@ const LolliplotComponent = compose(
       <Row>
         <h1 style={{ ...styles.heading, padding: "1rem" }} id="protein">
           <DoubleHelix width="12px" />
-          <span style={{ marginLeft: "1rem" }}>Protein</span>
+          <span style={{ marginLeft: "1rem" }}>
+            {(gene || {}).symbol} - Protein
+          </span>
         </h1>
       </Row>
       <Loader loading={!gene || !lolliplotData.mutations.length} height="503px">

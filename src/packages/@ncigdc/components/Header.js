@@ -22,16 +22,16 @@ import { setModal } from "@ncigdc/dux/modal";
 import SessionExpiredModal from "@ncigdc/components/Modals/SessionExpiredModal";
 
 import Banner from "@ncigdc/uikit/Banner";
-import activeTheme from "@ncigdc/theme/versions/active";
+import { withTheme } from "@ncigdc/theme";
 
 const styles = {
   iconPadding: {
     paddingRight: "4px"
   },
-  activeNavLink: {
-    backgroundColor: activeTheme.greyScale2,
-    color: activeTheme.white
-  }
+  activeNavLink: theme => ({
+    backgroundColor: theme.greyScale2,
+    color: theme.white
+  })
 };
 
 const Header = compose(
@@ -59,8 +59,9 @@ const Header = compose(
       }
     }
   }),
+  withTheme,
   pure
-)(({ user, notifications, dispatch }) => (
+)(({ user, notifications, dispatch, theme }) => (
   <header
     id="header"
     className="navbar navbar-default navbar-static-top"
@@ -114,7 +115,7 @@ const Header = compose(
             {/* tabindexes */}
             <HomeLink
               exact
-              activeStyle={styles.activeNavLink}
+              activeStyle={styles.activeNavLink(theme)}
               className="HomeLink"
             >
               <i className="fa fa-home" style={styles.iconPadding} />
@@ -127,7 +128,7 @@ const Header = compose(
           >
             <ProjectsLink
               exact
-              activeStyle={styles.activeNavLink}
+              activeStyle={styles.activeNavLink(theme)}
               className="ProjectsLink"
             >
               <i className="icon-gdc-projects" style={styles.iconPadding} />
@@ -137,7 +138,7 @@ const Header = compose(
           <li>
             <ExploreLink
               exact
-              activeStyle={styles.activeNavLink}
+              activeStyle={styles.activeNavLink(theme)}
               className="ExploreLink"
             >
               <i className="icon-gdc-data" style={styles.iconPadding} />
@@ -150,7 +151,7 @@ const Header = compose(
           >
             <RepositoryLink
               exact
-              activeStyle={styles.activeNavLink}
+              activeStyle={styles.activeNavLink(theme)}
               className="RepositoryLink"
             >
               <i className="fa fa-database" style={styles.iconPadding} />

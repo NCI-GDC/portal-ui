@@ -5,7 +5,7 @@ no-restricted-globals: 0
 import React from "react";
 import { lifecycle, compose, withState, withProps, mapProps } from "recompose";
 import OncoGrid from "oncogrid";
-import { uniqueId, get } from "lodash";
+import { uniqueId, get, mapKeys } from "lodash";
 import { connect } from "react-redux";
 import withSize from "@ncigdc/utils/withSize";
 import FullScreenIcon from "react-icons/lib/md/fullscreen";
@@ -401,12 +401,8 @@ const OncoGridWrapper = compose(
               {heatMapMode
                 ? <StepLegend rightLabel="More Mutations" />
                 : <SwatchLegend
-                    colorMap={Object.entries(colorMap).reduce(
-                      (acc, [key, val]) =>
-                        Object.assign(acc, {
-                          [key.replace("_variant", "")]: val
-                        }),
-                      {}
+                    colorMap={mapKeys(colorMap, (val, key) =>
+                      key.replace("_variant", "")
                     )}
                   />}
             </div>

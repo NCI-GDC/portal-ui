@@ -464,10 +464,13 @@ const LolliplotComponent = compose(
                 wrapSvg({
                   selector: `${selector} svg.chart`,
                   title: `Gene: ${gene.symbol}, Transcript: ${activeTranscript.transcript_id}(${activeTranscript.length_amino_acid} aa)`,
-                  margins: { top: 20, right: 20, bottom: 20, left: 20 },
+                  margins: { top: 20, right: 20, bottom: 20, left: 40 },
                   embed: {
                     right: {
                       width: 250,
+                      margins: {
+                        right: 20
+                      },
                       elements: [document.querySelector("#mutation-stats")]
                     }
                   }

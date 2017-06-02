@@ -258,7 +258,10 @@ const Component = compose(
             {
               key: "num_mutations",
               title: (
-                <Tooltip Component="# SSM" style={tableToolTipHint()}>
+                <Tooltip
+                  Component="# Simple Somatic Mutations"
+                  style={tableToolTipHint()}
+                >
                   # Mutations
                 </Tooltip>
               ),
@@ -268,7 +271,7 @@ const Component = compose(
               key: "num_genes",
               title: (
                 <Tooltip
-                  Component="# Genes with SSM"
+                  Component="# Genes with Simple Somatic Mutations"
                   style={tableToolTipHint()}
                 >
                   # Genes

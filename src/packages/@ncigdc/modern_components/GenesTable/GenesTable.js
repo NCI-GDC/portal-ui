@@ -232,7 +232,8 @@ const Component = compose(
                   Component={
                     <span>
                       Breakdown of Affected Cases in {context} <br />
-                      # of Cases where Gene is <br />mutated /# SSM tested Cases
+                      # of Cases where Gene is <br />
+                      mutated /# Simple Somatic Mutations tested Cases
                     </span>
                   }
                   style={tableToolTipHint()}
@@ -247,8 +248,10 @@ const Component = compose(
                 <Tooltip
                   Component={
                     <span>
-                      # of Cases where Gene contains SSM<br />
-                      / # SSM tested Cases portal wide<br />
+                      # of Cases where Gene contains Simple Somatic Mutations
+                      <br />
+                      / # Simple Somatic Mutations tested Cases portal wide
+                      <br />
                       Expand to see breakdown by project
                     </span>
                   }
@@ -263,7 +266,11 @@ const Component = compose(
               tdStyle: { textAlign: "right" },
               title: (
                 <Tooltip
-                  Component={<span># of SSM in the Gene in {context}</span>}
+                  Component={
+                    <span>
+                      # of Simple Somatic Mutations in the Gene in {context}
+                    </span>
+                  }
                   style={tableToolTipHint()}
                 >
                   # Mutations

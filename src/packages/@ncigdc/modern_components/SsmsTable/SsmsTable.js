@@ -332,7 +332,7 @@ const Component = compose(
           }}
         >
           <Showing
-            docType="mutations"
+            docType="somatic mutations"
             prefix="ssmsTable"
             params={relay.variables}
             total={totalSsms}
@@ -395,8 +395,9 @@ const Component = compose(
                 <Tooltip
                   Component={
                     <span>
-                      Breakdown of Cases Affected by SSM in {context} <br />
-                      # of Cases where Mutation is observed / # of SSM tested Cases
+                      Breakdown of Cases Affected by Simple Somatic Mutations in&nbsp;
+                      {context}<br />
+                      # of Cases where Mutation is observed / # of Simple Somatic Mutations tested Cases
                     </span>
                   }
                   style={tableToolTipHint()}
@@ -412,7 +413,8 @@ const Component = compose(
                   Component={
                     <span>
                       # of Cases where Mutation is observed<br />
-                      / # SSM tested Cases portal wide<br />
+                      / # Simple Somatic Mutations tested Cases portal wide
+                      <br />
                       Expand to see breakdown by project
                     </span>
                   }

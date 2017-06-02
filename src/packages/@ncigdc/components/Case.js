@@ -354,7 +354,7 @@ const Case = compose(
                 className="fa fa-bar-chart-o"
                 style={{ paddingRight: "10px" }}
               />
-              Most Frequent Mutations
+              Most Frequent Somatic Mutations
             </h1>
             <Column>
               <SsmsBarChart

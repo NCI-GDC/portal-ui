@@ -21,7 +21,7 @@ import BarChart from "@ncigdc/components/Charts/BarChart";
 import wrapSvg from "@ncigdc/utils/wrapSvg";
 import VisualizationHeader from "@ncigdc/components/VisualizationHeader";
 
-const TITLE = "Distribution of Most Frequent Mutations";
+const TITLE = "Distribution of Most Frequent Somatic Mutations";
 const CHART_HEIGHT = 285;
 const CHART_MARGINS = { top: 20, right: 50, bottom: 65, left: 55 };
 const MAX_BARS = 20;

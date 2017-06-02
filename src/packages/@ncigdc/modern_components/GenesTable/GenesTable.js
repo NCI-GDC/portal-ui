@@ -202,7 +202,7 @@ const Component = compose(
               prefix="genes"
               total={totalGenes}
               endpoint="genes"
-              nonDownloadableColumns={["#Cases", "#Mutations"]}
+              downloadTooltip="Export All Except #Cases and #Mutations"
               currentFilters={defaultFilters}
               downloadFields={[
                 "symbol",

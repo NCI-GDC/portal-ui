@@ -38,10 +38,8 @@ const InternalLink = ({
 
   const q = removeEmptyKeys ? removeEmptyKeys(q1) : q1;
 
-  const validAttrProps = Object.assign(
-    _.pick(rest, reactRouterLinkProps),
-    validAttributes(rest)
-  );
+  const validAttrProps = validAttributes(rest);
+  const validLinkProps = _.pick(rest, reactRouterLinkProps);
 
   const search = stringify(q);
 
@@ -52,6 +50,7 @@ const InternalLink = ({
         search
       }}
       {...validAttrProps}
+      {...validLinkProps}
       onClick={event => {
         if (validAttrProps.onClick) {
           validAttrProps.onClick(event);

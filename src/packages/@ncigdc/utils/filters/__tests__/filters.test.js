@@ -1,6 +1,6 @@
 /* @flow */
 
-import { addInFilters, toggleFilters, mergeQuery, combineValues } from "../";
+import { addInFilters, toggleFilters, mergeQuery } from "../";
 import jsurl from "jsurl";
 
 const baseFilter = {

@@ -117,7 +117,9 @@ export const GenePageComponent = (props: TProps) => {
               <Row>
                 <h1 style={{ ...styles.heading, padding: "1rem" }} id="protein">
                   <DoubleHelix width="12px" />
-                  <span style={{ marginLeft: "1rem" }}>Protein</span>
+                  <span style={{ marginLeft: "1rem" }}>
+                    {props.node.symbol} - Protein
+                  </span>
                 </h1>
               </Row>
               <div style={{ padding: "1rem" }}>

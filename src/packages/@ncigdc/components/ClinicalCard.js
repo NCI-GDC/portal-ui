@@ -14,6 +14,7 @@ import DownloadButton from "@ncigdc/components/DownloadButton";
 import { visualizingButton } from "@ncigdc/theme/mixins";
 import EntityPageVerticalTable
   from "@ncigdc/components/EntityPageVerticalTable";
+import ageDisplay from "@ncigdc/utils/ageDisplay";
 
 const ClinicalCard = ({
   p: {
@@ -110,7 +111,10 @@ const ClinicalCard = ({
                         td: x.classification_of_tumor
                       },
                       { th: "Alcohol Intensity", td: x.alcohol_intensity },
-                      { th: "Age at Diagnosis", td: x.age_at_diagnosis },
+                      {
+                        th: "Age at Diagnosis",
+                        td: ageDisplay(x.age_at_diagnosis)
+                      },
                       { th: "Days to Birth", td: x.days_to_birth },
                       { th: "Days to Death", td: x.days_to_death },
                       {

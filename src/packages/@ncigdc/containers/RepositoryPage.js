@@ -15,7 +15,7 @@ import AnnotationsLink from "@ncigdc/components/Links/AnnotationsLink";
 import NoResultsMessage from "@ncigdc/components/NoResultsMessage";
 import DownloadButton from "@ncigdc/components/DownloadButton";
 
-import CaseTable from "@ncigdc/containers/CaseTable";
+import CasesTable from "@ncigdc/containers/CasesTable";
 import CaseAggregations from "@ncigdc/containers/CaseAggregations";
 import FileTable from "@ncigdc/containers/FileTable";
 import FileAggregations from "@ncigdc/containers/FileAggregations";
@@ -185,7 +185,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                             props.viewer.repository.cases.aggregations
                           }
                         />
-                        <CaseTable hits={props.viewer.repository.cases.hits} />
+                        <CasesTable hits={props.viewer.repository.cases.hits} />
                       </div>
                     : <NoResultsMessage>
                         No results found using those filters.
@@ -269,7 +269,7 @@ export const RepositoryPageQuery = {
               ${RepoCasesPies.getFragment("aggregations")}
             }
             hits(first: $cases_size offset: $cases_offset, filters: $filters, sort: $cases_sort) {
-              ${CaseTable.getFragment("hits")}
+              ${CasesTable.getFragment("hits")}
               total
             }
           }

@@ -53,7 +53,7 @@ export const CaseTableComponent = (props: TTableProps) => {
           total={props.hits.total}
           sortKey="cases_sort"
           endpoint={props.endpoint || "cases"}
-          nonDownloadableColumns={["# Mutations", "# Genes"]}
+          nonDownloadableColumns={["#Mutations", "#Genes"]}
           downloadFields={[
             "case_id",
             "project.project_id",

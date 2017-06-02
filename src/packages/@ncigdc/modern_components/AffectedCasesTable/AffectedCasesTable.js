@@ -182,7 +182,7 @@ const Component = compose(
               prefix={"cases"}
               total={totalCases}
               endpoint={"case_ssms"}
-              nonDownloadableColumns={["# Mutations", "# Genes"]}
+              nonDownloadableColumns={["#Mutations", "#Genes"]}
               downloadFields={[
                 "primary_site",
                 "case_id",

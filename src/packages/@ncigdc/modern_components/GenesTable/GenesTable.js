@@ -202,7 +202,7 @@ const Component = compose(
               prefix="genes"
               total={totalGenes}
               endpoint="genes"
-              nonDownloadableColumns={["# Cases", "# Mutations"]}
+              nonDownloadableColumns={["#Cases", "#Mutations"]}
               downloadFields={[
                 "symbol",
                 "name",

@@ -49,11 +49,8 @@ const BarChart = (() => ({
     .rangeRound([0, width])
     .paddingInner(0.3)
     .paddingOuter(0.5);
-
-  const y = d3
-    .scaleLinear()
-    .range([height, 0])
-    .domain([0, d3.max(data, d => d.value)]);
+  const maxY = d3.max(data, d => d.value);
+  const y = d3.scaleLinear().range([height, 0]).domain([0, maxY]);
 
   const svg = d3
     .select(el)
@@ -77,7 +74,9 @@ const BarChart = (() => ({
 
   const yG = svg
     .append("g")
-    .call(d3.axisLeft(y).ticks(4).tickSize(-width).tickSizeOuter(0));
+    .call(
+      d3.axisLeft(y).ticks(Math.min(4, maxY)).tickSize(-width).tickSizeOuter(0)
+    );
 
   yG.selectAll("path").style("stroke", "none");
   yG.selectAll("line").style("stroke", yAxisStyle.stroke);

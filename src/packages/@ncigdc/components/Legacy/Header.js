@@ -63,7 +63,7 @@ const Header = ({ theme }) => (
     <Row style={styles.top}>
       <Row flex="9">
         <Link to="/" style={styles.logo}>
-          <img src={logo} />
+          <img src={logo} alt="GDC Data Portal" />
         </Link>
         <span style={styles.copy}>
           The legacy data is the original data that uses the old genome build hg19
@@ -81,7 +81,11 @@ const Header = ({ theme }) => (
           href="https://gdc-portal.nci.nih.gov/"
           className={styles.activePortalLink(theme)}
         >
-          <img src={activePortalLogo} style={styles.activePortalLogo} />
+          <img
+            src={activePortalLogo}
+            alt="GDC Data Portal"
+            style={styles.activePortalLogo}
+          />
           <Column>
             <Row>Launch the</Row>
             <Row><strong>GDC Data Portal</strong></Row>

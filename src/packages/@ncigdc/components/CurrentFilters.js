@@ -28,8 +28,8 @@ import { buttonLike } from "@ncigdc/theme/mixins";
 import UnstyledButton from "@ncigdc/uikit/UnstyledButton";
 import Link from "@ncigdc/components/Links/Link";
 
-import { facetFieldDisplayMapper } from '@ncigdc/components/Aggregations';
-import GeneSymbol from '@ncigdc/containers/GeneSymbol';
+import { facetFieldDisplayMapper } from "@ncigdc/components/Aggregations";
+import GeneSymbol from "@ncigdc/containers/GeneSymbol";
 
 /*----------------------------------------------------------------------------*/
 
@@ -94,25 +94,22 @@ const enhance = compose(
   withProps(({ expandedFilters }) => ({
     isFilterExpanded: filter => expandedFilters.includes(filter)
   })),
- withProps(({ geneSymbolFragment }) => ({
+  withProps(({ geneSymbolFragment }) => ({
     getDisplayValue: (field, value) => {
       switch (typeof value) {
-        case 'string':
-          if (field === 'genes.gene_id') {
-            return (<GeneSymbol
-              explore={geneSymbolFragment}
-              geneId={value}
-            />);
+        case "string":
+          if (field === "genes.gene_id") {
+            return <GeneSymbol explore={geneSymbolFragment} geneId={value} />;
           }
           return value;
-        case 'number':
-          return value === 0 ? 'false' : 'true';
-        case 'boolean':
-          return value ? 'true' : 'false';
+        case "number":
+          return value === 0 ? "false" : "true";
+        case "boolean":
+          return value ? "true" : "false";
         default:
           return value;
       }
-    },
+    }
   })),
   withHandlers({
     onLessClicked: ({ expandedFilters, setExpandedFilters }) => filter => {
@@ -152,7 +149,7 @@ const CurrentFilters = (
     linkFieldMap = f => f,
     hideLinkOnEmpty = true,
     geneSymbolFragment,
-    getDisplayValue,
+    getDisplayValue
   }: TProps = {}
 ) => (
   <Info style={style}>
@@ -201,7 +198,11 @@ const CurrentFilters = (
                   }
                 }}
               >
-                <Field>{humanify({ term: facetFieldDisplayMapper(filter.content.field) })}</Field>
+                <Field>
+                  {humanify({
+                    term: facetFieldDisplayMapper(filter.content.field)
+                  })}
+                </Field>
               </NotUnderlinedLink>
               {filter.op === "in" &&
                 filter.content.value.length === 1 &&
@@ -226,7 +227,7 @@ const CurrentFilters = (
                     }
                   }}
                 >
-                 <Value>
+                  <Value>
                     {getDisplayValue(filter.content.field, value)}
                   </Value>
                 </NotUnderlinedLink>

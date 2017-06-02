@@ -10,7 +10,7 @@ import { makeFilter } from "@ncigdc/utils/filters";
 import formatFileSize from "@ncigdc/utils/formatFileSize";
 import withRouter from "@ncigdc/utils/withRouter";
 import styled from "@ncigdc/theme/styled";
-import { createDataCategorySubColumns } from "./utils";
+import { createDataCategoryColumns } from "./utils";
 
 const NumTh = styled(Th, { textAlign: "right" });
 const NumTd = styled(Td, { textAlign: "right" });
@@ -18,7 +18,23 @@ const NumTd = styled(Td, { textAlign: "right" });
 type TLinkProps = { node: Object, fields?: Array<Object>, children?: mixed };
 type TLink = (props: TLinkProps) => any;
 
-const dataCategorySubColumns = createDataCategorySubColumns("case");
+const dataCategoryColumns = createDataCategoryColumns({
+  title: "Available Cases per Data Category",
+  countKey: "case_count",
+  Link: RepositoryCasesLink,
+  getCellLinkFilters: node => [
+    {
+      field: "cases.project.project_id",
+      value: node.project_id
+    }
+  ],
+  getTotalLinkFilters: hits => [
+    {
+      field: "cases.project.project_id",
+      value: hits.edges.map(({ node: p }) => p.project_id)
+    }
+  ]
+});
 
 const CasesLink: TLink = ({ node, fields = [], children }) =>
   children === "0"
@@ -118,23 +134,7 @@ const projectsTableModel = [
       </NumTd>
     ))
   },
-  ...[
-    {
-      name: "Data Categories",
-      id: "data_category",
-      th: () => (
-        <Th
-          key="data_category"
-          colSpan={dataCategorySubColumns.length}
-          style={{ textAlign: "center" }}
-        >
-          Available Cases per Data Category
-        </Th>
-      ),
-      subHeadingIds: dataCategorySubColumns.map(x => x.id)
-    },
-    ...dataCategorySubColumns
-  ],
+  ...dataCategoryColumns,
   {
     name: "Files",
     id: "summary.file_count",

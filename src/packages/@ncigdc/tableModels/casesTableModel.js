@@ -17,7 +17,7 @@ import { makeFilter } from "@ncigdc/utils/filters";
 import ageDisplay from "@ncigdc/utils/ageDisplay";
 import withRouter from "@ncigdc/utils/withRouter";
 import styled from "@ncigdc/theme/styled";
-import { createDataCategorySubColumns } from "./utils";
+import { createDataCategoryColumns } from "./utils";
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
@@ -31,7 +31,18 @@ const massageRelayFiles = (files: Object, projectId: string): Array<{}> =>
     projects: [projectId]
   }));
 
-const dataCategorySubColumns = createDataCategorySubColumns("file");
+const dataCategoryColumns = createDataCategoryColumns({
+  title: "Available Files per Data Category",
+  countKey: "file_count",
+  Link: RepositoryFilesLink,
+  getCellLinkFilters: node => [
+    {
+      field: "cases.case_id",
+      value: node.case_id
+    }
+  ],
+  getTotalLinkFilters: hits => []
+});
 
 const NumTh = styled(Th, { textAlign: "right" });
 const NumTd = styled(Td, { textAlign: "right" });
@@ -175,23 +186,7 @@ const casesTableModel = [
       </NumTd>
     ))
   },
-  ...[
-    {
-      name: "Data Categories",
-      id: "data_category",
-      th: () => (
-        <Th
-          key="data_category"
-          colSpan={dataCategorySubColumns.length}
-          style={{ textAlign: "center" }}
-        >
-          Available Cases per Data Category
-        </Th>
-      ),
-      subHeadingIds: dataCategorySubColumns.map(x => x.id)
-    },
-    ...dataCategorySubColumns
-  ],
+  ...dataCategoryColumns,
   {
     name: "Annotations",
     id: "Annotations",

@@ -182,6 +182,7 @@ const Component = compose(
               prefix={"cases"}
               total={totalCases}
               endpoint={"case_ssms"}
+              downloadTooltip="Export All Except #Mutations and #Genes"
               downloadFields={[
                 "primary_site",
                 "case_id",

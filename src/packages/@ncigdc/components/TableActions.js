@@ -45,7 +45,8 @@ const TableActions = (
     tsvSelector,
     tsvFilename,
     style,
-    currentFilters
+    currentFilters,
+    downloadTooltip = "Export All"
   }: TProps = {}
 ) => (
   <LocationSubscriber>
@@ -65,7 +66,7 @@ const TableActions = (
             style={visualizingButton}
           />}
         {downloadable &&
-          <Tooltip Component={<span>Export Table</span>}>
+          <Tooltip Component={downloadTooltip}>
             <DownloadButton
               filters={
                 currentFilters || parseFilterParam((query || {}).filters, {})
@@ -76,6 +77,9 @@ const TableActions = (
               fields={downloadFields}
               style={visualizingButton}
               size={total}
+              inactiveText="JSON"
+              activeText="JSON"
+              showIcon={false}
             />
           </Tooltip>}
         {tsvSelector &&

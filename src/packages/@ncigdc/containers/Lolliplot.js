@@ -464,12 +464,12 @@ const LolliplotComponent = compose(
                 wrapSvg({
                   selector: `${selector} svg.chart`,
                   title: `Gene: ${gene.symbol}, Transcript: ${activeTranscript.transcript_id}(${activeTranscript.length_amino_acid} aa)`,
-                  margins: { top: 20, right: 20, bottom: 20, left: 20 },
+                  margins: { top: 20, right: 20, bottom: 20, left: 40 },
                   embed: {
                     right: {
-                      width: 350,
+                      width: 250,
                       margins: {
-                        left: -350
+                        right: 20
                       },
                       elements: [document.querySelector("#mutation-stats")]
                     }
@@ -575,7 +575,10 @@ const LolliplotComponent = compose(
                     </div>
                   </div>}
               </div>
-              <div style={{ marginLeft: "20px", width: "250px" }}>
+              <div
+                id="mutation-stats"
+                style={{ marginLeft: "20px", width: "250px" }}
+              >
                 <div
                   style={{
                     border: "1px solid rgb(186, 186, 186)",
@@ -615,7 +618,7 @@ const LolliplotComponent = compose(
                         fontSize: "14px"
                       }}
                     >
-                      <Row>
+                      <div>
                         <span
                           onClick={clearBlacklist}
                           style={{
@@ -641,7 +644,7 @@ const LolliplotComponent = compose(
                         >
                           Deselect All
                         </span>
-                      </Row>
+                      </div>
                     </div>
                     {Object.entries(
                       groupByType(blacklist, lolliplotData.mutations)
@@ -653,16 +656,16 @@ const LolliplotComponent = compose(
                           fontSize: "14px"
                         }}
                       >
-                        <Row>
+                        <div>
                           <span
                             onClick={() => toggleBlacklistItem(variant)}
                             style={{
                               color: mutationColors[blacklist][variant],
                               textAlign: "center",
                               border: "2px solid",
-                              display: "inline-block",
                               width: "23px",
                               cursor: "pointer",
+                              display: "inline-block",
                               marginRight: "6px"
                             }}
                           >
@@ -671,7 +674,7 @@ const LolliplotComponent = compose(
                               : "✓"}
                           </span>
                           <span>{startCase(variant)}:</span>
-                          <span style={{ marginLeft: "auto" }}>
+                          <span style={{ float: "right" }}>
                             <b>
                               {
                                 xs
@@ -681,7 +684,7 @@ const LolliplotComponent = compose(
                             </b>
                             &nbsp;/ <b>{xs.length}</b>
                           </span>
-                        </Row>
+                        </div>
                       </div>
                     ))}
                   </div>

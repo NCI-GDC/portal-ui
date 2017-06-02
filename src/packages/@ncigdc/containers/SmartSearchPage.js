@@ -12,7 +12,7 @@ import withRouter from "@ncigdc/utils/withRouter";
 import TabbedLinks from "@ncigdc/components/TabbedLinks";
 import AnnotationsLink from "@ncigdc/components/Links/AnnotationsLink";
 
-import CaseTable from "./CaseTable";
+import CasesTable from "./CasesTable";
 import FileTable from "./FileTable";
 
 declare var _: Object;
@@ -151,7 +151,7 @@ class SmartSearchComponent extends React.Component {
               id: "cases",
               text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
               component: (
-                <CaseTable hits={this.props.viewer.repository.cases.hits} />
+                <CasesTable hits={this.props.viewer.repository.cases.hits} />
               )
             },
             {
@@ -185,7 +185,7 @@ export const SmartSearchQuery = {
         repository {
           cases {
             hits(first: $cases_size offset: $cases_offset, filters: $filters) {
-              ${CaseTable.getFragment("hits")}
+              ${CasesTable.getFragment("hits")}
               total
             }
           }

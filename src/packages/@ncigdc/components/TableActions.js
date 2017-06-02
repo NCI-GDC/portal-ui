@@ -35,7 +35,7 @@ type TProps = {
 function jsonDownloadTooltip(excepts) {
   const len = excepts.length;
   const last = excepts[len - 1];
-  return `Download All${len ? ` Except ${len === 1 ? last : excepts
+  return `Export All${len ? ` Except ${len === 1 ? last : excepts
             .slice(0, -1)
             .join(", ") + " and " + last}` : ""}`;
 }

@@ -69,9 +69,12 @@ export const CasePageComponent = ({ node, viewer }: TProps) => (
           query={ctx.query}
           node={node}
           totalFiles={node.files.hits.total}
-          ssmTested={(viewer.explore.cases.hits.edges[0].node
-            .available_variation_data || [])
-            .includes("ssm")}
+          ssmTested={
+            viewer.explore.cases.hits.edges.length &&
+              (viewer.explore.cases.hits.edges[0].node
+                .available_variation_data || [])
+                .includes("ssm")
+          }
           files={node.files.hits.edges.map(f => ({
             ...f.node,
             projects: [node.project.project_id]

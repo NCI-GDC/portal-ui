@@ -206,6 +206,7 @@ const OncoGridWrapper = compose(
     ): Promise<*> {
       if (!filteredConsequenceTypes.length) {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
+        setOncoGrid({});
         setOncoGridData(null);
         setIsLoading(false);
         return;
@@ -399,7 +400,15 @@ const OncoGridWrapper = compose(
             <div style={{ flexGrow: 1 }} className="oncogrid-legend">
               {heatMapMode
                 ? <StepLegend rightLabel="More Mutations" />
-                : <SwatchLegend colorMap={colorMap} />}
+                : <SwatchLegend
+                    colorMap={Object.entries(colorMap).reduce(
+                      (acc, [key, val]) =>
+                        Object.assign(acc, {
+                          [key.replace("_variant", "")]: val
+                        }),
+                      {}
+                    )}
+                  />}
             </div>
             <Row
               style={{

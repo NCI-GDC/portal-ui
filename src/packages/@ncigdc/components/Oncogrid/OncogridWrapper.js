@@ -5,7 +5,7 @@ no-restricted-globals: 0
 import React from "react";
 import { lifecycle, compose, withState, withProps, mapProps } from "recompose";
 import OncoGrid from "oncogrid";
-import { uniqueId, get } from "lodash";
+import { uniqueId, get, mapKeys } from "lodash";
 import { connect } from "react-redux";
 import withSize from "@ncigdc/utils/withSize";
 import FullScreenIcon from "react-icons/lib/md/fullscreen";
@@ -206,6 +206,7 @@ const OncoGridWrapper = compose(
     ): Promise<*> {
       if (!filteredConsequenceTypes.length) {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
+        setOncoGrid({});
         setOncoGridData(null);
         setIsLoading(false);
         return;
@@ -399,7 +400,11 @@ const OncoGridWrapper = compose(
             <div style={{ flexGrow: 1 }} className="oncogrid-legend">
               {heatMapMode
                 ? <StepLegend rightLabel="More Mutations" />
-                : <SwatchLegend colorMap={colorMap} />}
+                : <SwatchLegend
+                    colorMap={mapKeys(colorMap, (val, key) =>
+                      key.replace("_variant", "")
+                    )}
+                  />}
             </div>
             <Row
               style={{

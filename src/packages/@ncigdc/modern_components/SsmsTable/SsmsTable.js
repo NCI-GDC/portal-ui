@@ -345,6 +345,7 @@ const Component = compose(
               prefix={prefix}
               total={totalSsms}
               endpoint={prefix}
+              downloadTooltip="Export All Except #Cases"
               downloadFields={[
                 "genomic_dna_change",
                 "mutation_subtype",

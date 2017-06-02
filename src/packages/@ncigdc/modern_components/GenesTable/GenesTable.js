@@ -203,6 +203,7 @@ const Component = compose(
               total={totalGenes}
               endpoint="genes"
               nonDownloadableColumns={["#Cases", "#Mutations"]}
+              currentFilters={defaultFilters}
               downloadFields={[
                 "symbol",
                 "name",

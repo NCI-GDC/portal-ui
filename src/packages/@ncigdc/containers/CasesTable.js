@@ -62,13 +62,13 @@ export const SearchTable = compose(
               name: "Gender"
             }
           ]}
-          tsvSelector="#repository-case-table"
-          tsvFilename="repository-case-table.tsv"
+          tsvSelector="#repository-cases-table"
+          tsvFilename="repository-cases-table.tsv"
         />
       </Row>
       <div style={{ overflowX: "auto" }}>
         <Table
-          id="repository-case-table"
+          id="repository-cases-table"
           headings={tableInfo
             .filter(x => !x.subHeading)
             .map(x => <x.th key={x.id} />)}

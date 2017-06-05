@@ -14,7 +14,7 @@ import formatFileSize from "@ncigdc/utils/formatFileSize";
 import { userCanDownloadFile } from "@ncigdc/utils/auth";
 import { Row, Column } from "@ncigdc/uikit/Flex";
 import { withTheme } from "@ncigdc/theme";
-import FileTable from "@ncigdc/containers/FileTable";
+import FilesTable from "@ncigdc/containers/FilesTable";
 import MetadataDownloadButton from "@ncigdc/components/MetadataDownloadButton";
 import SummaryCard from "@ncigdc/components/SummaryCard";
 import HowToDownload from "@ncigdc/components/HowToDownload";
@@ -207,7 +207,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
               <RemoveFromCartButton />
             </Row>
           </Row>
-          <FileTable
+          <FilesTable
             hits={viewer.repository.files.hits}
             downloadable={false}
             canAddToCart={false}
@@ -218,15 +218,16 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
   );
 };
 
-const enhance = compose(withTheme);
-
 export { CartPage };
 
 export default createFragmentContainer(
-  connect(state => ({
-    ...state.cart,
-    ...state.auth
-  }))(enhance(CartPage)),
+  compose(
+    connect(state => ({
+      ...state.cart,
+      ...state.auth
+    })),
+    withTheme
+  )(CartPage),
   {
     /* TODO manually deal with:
   initialVariables: {
@@ -254,7 +255,7 @@ export default createFragmentContainer(
       repository {
         files {
           hits(first: $files_size offset: $files_offset, sort: $files_sort filters: $filters) {
-            ...FileTable_hits
+            ...FilesTable_hits
           }
         }
       }

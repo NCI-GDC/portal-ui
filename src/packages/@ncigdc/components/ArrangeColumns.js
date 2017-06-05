@@ -82,9 +82,9 @@ const ArrangeColumns = compose(
                   x => x.subHeadingIds
                 );
                 // find current index of subheading columm
-                const subHeadingColIndex = tableColumns.indexOf(
-                  subHeadingCol.id
-                );
+                const subHeadingColIndex = !subHeadingCol
+                  ? -1
+                  : tableColumns.indexOf(subHeadingCol.id);
                 // figure out whether to put before or after column with subheadings
                 const afterSubheadingCol =
                   subHeadingColIndex !== -1 && subHeadingColIndex < i;

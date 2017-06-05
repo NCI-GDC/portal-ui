@@ -389,6 +389,7 @@ const File = ({
                   ...acc,
                   ...output_files.hits.edges.map(({ node: file }) => ({
                     ...file,
+                    file_size: formatFileSize(file.file_size),
                     file_name: (
                       <FileLink uuid={file.file_id}>{file.file_name}</FileLink>
                     ),

@@ -92,6 +92,7 @@ export const GenePageComponent = (props: TProps) => {
               ssms={props.viewer.explore.ssms}
               projects={props.viewer.projects}
               filters={cdFilters}
+              style={{ width: "50%" }}
             />
             <CancerDistributionTable
               filters={cdFilters}
@@ -139,6 +140,7 @@ export const GenePageComponent = (props: TProps) => {
 
           <Column>
             <SsmsBarChart
+              style={{ width: "50%", flexGrow: 0 }}
               defaultFilters={fmFilters}
               context={props.node.symbol}
             />

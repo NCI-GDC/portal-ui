@@ -358,6 +358,7 @@ const Case = compose(
             </h1>
             <Column>
               <SsmsBarChart
+                style={{ width: "50%" }}
                 projectId={p.project.project_id}
                 defaultFilters={fmFilters}
                 context={p.project.project_id}

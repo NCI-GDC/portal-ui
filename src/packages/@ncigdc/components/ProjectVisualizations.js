@@ -232,7 +232,6 @@ const ProjectVisualizations = enhance(
                       projectId={projectId}
                       defaultFilters={fmFilters}
                       context={projectId}
-                      showSurvivalPlot
                     />}
               </Column>
               <Column flex="1">

@@ -153,6 +153,7 @@ export const SSMPageComponent = compose(
           ssms={viewer.explore.ssms}
           filters={cdFilters}
           ChartTitle={CancerDistributionTitle}
+          style={{ width: "50%" }}
         />
         <CancerDistributionTable
           filters={cdFilters}

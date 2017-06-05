@@ -22,8 +22,7 @@ import withSize from "@ncigdc/utils/withSize";
 import withBetterRouter from "@ncigdc/utils/withRouter";
 import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
 import Showing from "@ncigdc/components/Pagination/Showing";
-import EntityPageHorizontalTable
-  from "@ncigdc/components/EntityPageHorizontalTable";
+import EntityPageHorizontalTable from "@ncigdc/components/EntityPageHorizontalTable";
 import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
 import BubbleIcon from "@ncigdc/theme/icons/BubbleIcon";
 import { Row } from "@ncigdc/uikit/Flex";
@@ -35,8 +34,7 @@ import Hidden from "@ncigdc/components/Hidden";
 import Pagination from "@ncigdc/components/Pagination";
 import SurvivalIcon from "@ncigdc/theme/icons/SurvivalIcon";
 import { getSurvivalCurves } from "@ncigdc/utils/survivalplot";
-import ProjectBreakdown
-  from "@ncigdc/modern_components/ProjectBreakdown/ProjectBreakdown";
+import ProjectBreakdown from "@ncigdc/modern_components/ProjectBreakdown/ProjectBreakdown";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
 import { withTheme } from "@ncigdc/theme";
@@ -48,7 +46,7 @@ const colors = scaleOrdinal(schemeCategory10);
 const COMPONENT_NAME = "SsmsTable";
 
 const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) => (
+  compose(connect(), withRouter)((props: mixed) =>
     <div style={{ position: "relative", minHeight: "387px" }}>
       <Relay.Renderer
         environment={Relay.Store}
@@ -61,7 +59,7 @@ const createRenderer = (Route, Container) =>
       />
       <ConnectedLoader name={COMPONENT_NAME} />
     </div>
-  ));
+  );
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -234,26 +232,28 @@ type TMapData = (
 
 const mapData: TMapData = (data, shouldShowGeneSymbol, theme) =>
   data.map(hit => {
-    const consequenceOfInterest = hit.consequence.hits.edges.find(
-      consequence => get(consequence, "node.transcript.annotation.impact"),
-      {}
-    ) || {};
+    const consequenceOfInterest =
+      hit.consequence.hits.edges.find(
+        consequence => get(consequence, "node.transcript.annotation.impact"),
+        {}
+      ) || {};
     const { transcript } = consequenceOfInterest.node || {};
     const {
       annotation = {},
       consequence_type: consequenceType = "",
       gene = {},
       aa_change: aaChange
-    } = transcript || {};
+    } =
+      transcript || {};
     const { symbol, gene_id: geneId } = gene;
     const impact = annotation.impact;
 
     return {
       ...hit,
       impact,
-      mutation_subtype: mutationSubTypeMap[
-        (hit.mutation_subtype || "").toLowerCase()
-      ] || hit.mutation_subtype,
+      mutation_subtype:
+        mutationSubTypeMap[(hit.mutation_subtype || "").toLowerCase()] ||
+          hit.mutation_subtype,
       consequence_type: (
         <span>
           <b>{startCase(consequenceType.replace("variant", ""))}</b>&nbsp;
@@ -286,6 +286,7 @@ const Component = compose(
     {
       defaultFilters,
       showSurvivalPlot = false,
+      hasEnoughSurvivalDataOnPrimaryCurve,
       selectedSurvivalData = { id: "" },
       setSelectedSurvivalData = () => {},
       viewer: { explore: { ssms, filteredCases, cases } },
@@ -395,7 +396,8 @@ const Component = compose(
                 <Tooltip
                   Component={
                     <span>
-                      Breakdown of Cases Affected by Simple Somatic Mutations in&nbsp;
+                      Breakdown of Cases Affected by Simple Somatic Mutations
+                      in&nbsp;
                       {context}<br />
                       # of Cases where Mutation is observed / # of Cases tested for Simple Somatic Mutations
                     </span>
@@ -533,17 +535,24 @@ const Component = compose(
               ? {
                   survival_plot: (
                     <Tooltip
-                      Component={`Click icon to plot ${x.genomic_dna_change}`}
+                      Component={
+                        hasEnoughSurvivalDataOnPrimaryCurve
+                          ? `Click icon to plot ${x.genomic_dna_change}`
+                          : "Not enough survival data"
+                      }
                     >
                       <Button
                         style={{
                           padding: "2px 3px",
-                          backgroundColor: colors(
-                            selectedSurvivalData.id === x.ssm_id ? 1 : 0
-                          ),
+                          backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
+                            ? colors(
+                                selectedSurvivalData.id === x.ssm_id ? 1 : 0
+                              )
+                            : "#666",
                           color: "white",
                           margin: "0 auto"
                         }}
+                        disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
                         onClick={() => {
                           if (x.ssm_id !== selectedSurvivalData.id) {
                             setSurvivalLoadingId(x.ssm_id);

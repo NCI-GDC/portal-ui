@@ -9,7 +9,7 @@ import {
   withHandlers
 } from "recompose";
 import { Column, Row } from "@ncigdc/uikit/Flex";
-import { getDefaultCurve } from "@ncigdc/utils/survivalplot";
+import { getDefaultCurve, enoughData } from "@ncigdc/utils/survivalplot";
 import withFilters from "@ncigdc/utils/withFilters";
 import { makeFilter, toggleFilters } from "@ncigdc/utils/filters";
 
@@ -90,10 +90,11 @@ export default compose(
     viewer,
     filters,
     survivalData,
+    defaultSurvivalData,
     selectedSurvivalData,
     setSelectedSurvivalData,
     handleClickMutation
-  }) => (
+  }) =>
     <Column style={styles.card}>
       <h1 style={{ ...styles.heading, padding: "1rem" }} id="mutated-genes">
         <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
@@ -122,10 +123,12 @@ export default compose(
       <SsmsTable
         defaultFilters={filters}
         selectedSurvivalData={selectedSurvivalData}
+        hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
+          defaultSurvivalData.rawData
+        )}
         setSelectedSurvivalData={setSelectedSurvivalData}
         showSurvivalPlot
         context="Cohort"
       />
     </Column>
-  )
 );

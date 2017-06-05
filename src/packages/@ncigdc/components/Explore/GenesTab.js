@@ -9,11 +9,10 @@ import {
   withHandlers
 } from "recompose";
 import { Row, Column } from "@ncigdc/uikit/Flex";
-import { getDefaultCurve } from "@ncigdc/utils/survivalplot";
+import { getDefaultCurve, enoughData } from "@ncigdc/utils/survivalplot";
 import withFilters from "@ncigdc/utils/withFilters";
 import SurvivalPlotWrapper from "@ncigdc/components/SurvivalPlotWrapper";
-import GenesBarChart
-  from "@ncigdc/modern_components/GenesBarChart/GenesBarChart";
+import GenesBarChart from "@ncigdc/modern_components/GenesBarChart/GenesBarChart";
 import GenesTable from "@ncigdc/modern_components/GenesTable/GenesTable";
 import { makeFilter, toggleFilters } from "@ncigdc/utils/filters";
 
@@ -89,12 +88,13 @@ export default compose(
   ({
     state: { loading },
     survivalData,
+    defaultSurvivalData,
     selectedSurvivalData,
     setSelectedSurvivalData,
     viewer,
     filters,
     handleClickGene
-  }) => (
+  }) =>
     <Column style={styles.card}>
       <h1 style={{ ...styles.heading, padding: "1rem" }} id="mutated-genes">
         <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
@@ -120,11 +120,13 @@ export default compose(
         <GenesTable
           defaultFilters={filters}
           survivalData={survivalData}
+          hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
+            defaultSurvivalData.rawData
+          )}
           setSelectedSurvivalData={setSelectedSurvivalData}
           selectedSurvivalData={selectedSurvivalData}
           context="Cohort"
         />
       </Column>
     </Column>
-  )
 );

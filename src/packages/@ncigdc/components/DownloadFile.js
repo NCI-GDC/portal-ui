@@ -11,6 +11,15 @@ import NoAccessModal from "@ncigdc/components/Modals/NoAccessModal";
 import Hidden from "@ncigdc/components/Hidden";
 import Button from "@ncigdc/uikit/Button";
 
+type TProps = {
+  user: Object,
+  file: Object,
+  dispatch: Function,
+  activeText?: string,
+  inactiveText?: string,
+  style?: Object
+};
+
 function DownloadFile({
   user,
   file,
@@ -18,14 +27,7 @@ function DownloadFile({
   activeText,
   inactiveText,
   style = {}
-}: {
-  user: Object,
-  file: Object,
-  dispatch: Function,
-  activeText?: string,
-  inactiveText?: string,
-  style?: Object
-}): any {
+}: TProps): any {
   if (userCanDownloadFile({ user, file })) {
     return (
       <DownloadButton

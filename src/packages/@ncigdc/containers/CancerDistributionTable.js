@@ -313,9 +313,9 @@ const CancerDistributionTableComponent = compose(
                   <Tooltip
                     Component={
                       <span>
-                        # Simple Somatic Mutations tested Cases in Project affected by&nbsp;
+                        # Cases tested for Simple Somatic Mutations in Project affected by&nbsp;
                         {entityName}
-                        / # Simple Somatic Mutations tested Cases in Project
+                        / # Cases tested for Simple Somatic Mutations in Project
                       </span>
                     }
                     style={tableToolTipHint()}

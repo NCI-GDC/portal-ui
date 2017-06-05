@@ -100,7 +100,7 @@ class SmartSearchComponent extends React.Component {
 
             document.querySelector(".btn-search-query").onclick = () => {
               const gql = this.gql || {};
-              const filters = gql.filters.op === "and"
+              const filters = _.get(gql, 'filters.op') === "and"
                 ? gql.filters
                 : { op: "and", content: [gql.filters] };
 

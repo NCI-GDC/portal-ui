@@ -52,9 +52,7 @@ const DownloadButton = ({
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
   const icon =
-    showIcon &&
-    text &&
-    (active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />);
+    showIcon && (active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />);
 
   return (
     <Button

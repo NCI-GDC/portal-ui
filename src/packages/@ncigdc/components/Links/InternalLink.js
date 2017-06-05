@@ -1,7 +1,8 @@
 /* @flow */
 
 import React from "react";
-import Link from "react-router-dom/Link";
+import _ from "lodash";
+import Link from "react-router-dom/NavLink";
 import JSURL from "jsurl";
 import { stringify } from "query-string";
 import { removeEmptyKeys as rek } from "@ncigdc/utils/uri";
@@ -9,6 +10,16 @@ import validAttributes from "@ncigdc/theme/utils/validAttributes";
 import { scrollToId } from "@ncigdc/components/Links/deepLink";
 
 import type { TLinkProps } from "./types";
+
+const reactRouterLinkProps = [
+  "to",
+  "replace",
+  "activeClassName",
+  "activeStyle",
+  "exact",
+  "strict",
+  "isActive"
+];
 
 const InternalLink = ({
   pathname,
@@ -28,6 +39,7 @@ const InternalLink = ({
   const q = removeEmptyKeys ? removeEmptyKeys(q1) : q1;
 
   const validAttrProps = validAttributes(rest);
+  const validLinkProps = _.pick(rest, reactRouterLinkProps);
 
   const search = stringify(q);
 
@@ -38,6 +50,7 @@ const InternalLink = ({
         search
       }}
       {...validAttrProps}
+      {...validLinkProps}
       onClick={event => {
         if (validAttrProps.onClick) {
           validAttrProps.onClick(event);

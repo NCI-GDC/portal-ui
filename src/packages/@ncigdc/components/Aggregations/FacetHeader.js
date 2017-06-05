@@ -69,8 +69,8 @@ const FacetHeader = compose(
   }) => (
     <LocationSubscriber>
       {(ctx: {| pathname: string, query: TRawQuery |}) => {
-        const currentFilters = (ctx.query &&
-          parseFilterParam((ctx.query || {}).filters, {}).content) || [];
+        const currentFilters =
+          ctx.query && parseFilterParam((ctx.query || {}).filters, {});
         return (
           <Header>
             <span

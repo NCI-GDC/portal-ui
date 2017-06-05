@@ -6,7 +6,7 @@ import { setModal } from "@ncigdc/dux/modal";
 import Button from "@ncigdc/uikit/Button";
 import { Column, Row } from "@ncigdc/uikit/Flex";
 
-const FirstTimeModal = ({
+const BaseModal = ({
   dispatch,
   title,
   children,
@@ -45,4 +45,4 @@ const FirstTimeModal = ({
   </Column>
 );
 
-export default connect()(FirstTimeModal);
+export default connect()(BaseModal);

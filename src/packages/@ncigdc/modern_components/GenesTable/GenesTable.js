@@ -233,7 +233,7 @@ const Component = compose(
                     <span>
                       Breakdown of Affected Cases in {context} <br />
                       # of Cases where Gene is <br />
-                      mutated /# Simple Somatic Mutations tested Cases
+                      mutated /# Cases tested for Simple Somatic Mutations
                     </span>
                   }
                   style={tableToolTipHint()}
@@ -250,7 +250,7 @@ const Component = compose(
                     <span>
                       # of Cases where Gene contains Simple Somatic Mutations
                       <br />
-                      / # Simple Somatic Mutations tested Cases portal wide
+                      / # Cases tested for Simple Somatic Mutations portal wide
                       <br />
                       Expand to see breakdown by project
                     </span>

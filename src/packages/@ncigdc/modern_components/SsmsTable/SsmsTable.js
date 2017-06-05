@@ -397,7 +397,7 @@ const Component = compose(
                     <span>
                       Breakdown of Cases Affected by Simple Somatic Mutations in&nbsp;
                       {context}<br />
-                      # of Cases where Mutation is observed / # of Simple Somatic Mutations tested Cases
+                      # of Cases where Mutation is observed / # of Cases tested for Simple Somatic Mutations
                     </span>
                   }
                   style={tableToolTipHint()}
@@ -413,7 +413,7 @@ const Component = compose(
                   Component={
                     <span>
                       # of Cases where Mutation is observed<br />
-                      / # Simple Somatic Mutations tested Cases portal wide
+                      / # Cases tested for Simple Somatic Mutations portal wide
                       <br />
                       Expand to see breakdown by project
                     </span>

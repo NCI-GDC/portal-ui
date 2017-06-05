@@ -15,11 +15,11 @@ import withRouter from "@ncigdc/utils/withRouter";
 import { makeFilter } from "@ncigdc/utils/filters";
 
 import styled from "@ncigdc/theme/styled";
+import GDCAppsRow from "@ncigdc/components/GDCApps/GDCAppsRow";
 
 import ExploringLinks from "./ExploringLinks";
 import HomeSearch from "./HomeSearch";
 import PortalSummary from "./PortalSummary";
-import GDCAppsRow from "./GDCAppsRow";
 
 import "./humanbody.css";
 

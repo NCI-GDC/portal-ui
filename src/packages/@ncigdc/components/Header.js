@@ -13,7 +13,7 @@ import RepositoryLink from "@ncigdc/components/Links/RepositoryLink";
 import CartLink from "@ncigdc/components/Links/CartLink";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 import ProjectsLink from "@ncigdc/components/Links/ProjectsLink";
-import GDCAppsDropdown from "@ncigdc/components/GDCAppsDropdown";
+import GDCAppsDropdown from "@ncigdc/components/GDCApps/GDCAppsDropdown";
 import QuickSearch from "@ncigdc/components/QuickSearch/QuickSearch";
 import LoginButton from "@ncigdc/components/LoginButton";
 import UserDropdown from "@ncigdc/components/UserDropdown";

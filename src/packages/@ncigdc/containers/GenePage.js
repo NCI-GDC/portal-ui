@@ -134,7 +134,7 @@ export const GenePageComponent = (props: TProps) => {
             id="frequent-mutations"
           >
             <ChartIcon style={{ marginRight: "1rem" }} />
-            Most Frequent Mutations
+            Most Frequent Somatic Mutations
           </h1>
 
           <Column>

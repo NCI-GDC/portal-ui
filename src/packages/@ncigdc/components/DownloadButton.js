@@ -27,7 +27,8 @@ type TDownloadButton = {
   altMessage: boolean,
   style: Object,
   extraParams: Object,
-  setParentState: () => {}
+  setParentState: () => {},
+  showIcon?: boolean
 };
 
 const DownloadButton = ({
@@ -46,10 +47,12 @@ const DownloadButton = ({
   setActive,
   altMessage = false,
   style = {},
-  extraParams = {}
+  extraParams = {},
+  showIcon = true
 }: TDownloadButton) => {
-  const icon = active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />;
   const text = active ? activeText : inactiveText;
+  const icon =
+    showIcon && (active ? <Spinner key="icon" /> : <DownloadIcon key="icon" />);
 
   return (
     <Button

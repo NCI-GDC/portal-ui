@@ -37,9 +37,8 @@ import ProjectBreakdown
   from "@ncigdc/modern_components/ProjectBreakdown/ProjectBreakdown";
 import CosmicIcon from "@ncigdc/theme/icons/Cosmic";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
-import DownloadTableToTsvButton, {
-  ForTsvExport
-} from "@ncigdc/components/DownloadTableToTsvButton";
+import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
+import TableActions from "@ncigdc/components/TableActions";
 
 const colors = scaleOrdinal(schemeCategory10);
 const COMPONENT_NAME = "GenesTable";
@@ -181,7 +180,7 @@ const Component = compose(
     }
 
     const data = !genes ? [] : genes.hits.edges.map(x => x.node);
-
+    const totalGenes = !genes ? 0 : genes.hits.total;
     return (
       <span>
         <Row
@@ -195,14 +194,26 @@ const Component = compose(
             docType="genes"
             prefix="genesTable"
             params={relay.route.params}
-            total={!genes ? 0 : genes.hits.total}
+            total={totalGenes}
           />
           <Row>
             {tableLink}
-            <DownloadTableToTsvButton
-              selector="#frequently-mutated-genes-table"
-              filename="frequently-mutated-genes.tsv"
-              style={{ marginLeft: "0.5rem" }}
+            <TableActions
+              prefix="genes"
+              total={totalGenes}
+              endpoint="genes"
+              downloadTooltip="Export All Except #Cases and #Mutations"
+              currentFilters={defaultFilters}
+              downloadFields={[
+                "symbol",
+                "name",
+                "cytoband",
+                "biotype",
+                "gene_id",
+                "is_cancer_gene_census"
+              ]}
+              tsvSelector="#frequently-mutated-genes-table"
+              tsvFilename="frequently-mutated-genes.tsv"
             />
           </Row>
         </Row>
@@ -221,7 +232,8 @@ const Component = compose(
                   Component={
                     <span>
                       Breakdown of Affected Cases in {context} <br />
-                      # of Cases where Gene is <br />mutated /# SSM tested Cases
+                      # of Cases where Gene is <br />
+                      mutated /# Cases tested for Simple Somatic Mutations
                     </span>
                   }
                   style={tableToolTipHint()}
@@ -236,8 +248,10 @@ const Component = compose(
                 <Tooltip
                   Component={
                     <span>
-                      # of Cases where Gene contains SSM<br />
-                      / # SSM tested Cases portal wide<br />
+                      # of Cases where Gene contains Simple Somatic Mutations
+                      <br />
+                      / # Cases tested for Simple Somatic Mutations portal wide
+                      <br />
                       Expand to see breakdown by project
                     </span>
                   }
@@ -252,7 +266,11 @@ const Component = compose(
               tdStyle: { textAlign: "right" },
               title: (
                 <Tooltip
-                  Component={<span># of SSM in the Gene in {context}</span>}
+                  Component={
+                    <span>
+                      # of Simple Somatic Mutations in the Gene in {context}
+                    </span>
+                  }
                   style={tableToolTipHint()}
                 >
                   # Mutations

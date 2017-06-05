@@ -53,6 +53,7 @@ export const CaseTableComponent = (props: TTableProps) => {
           total={props.hits.total}
           sortKey="cases_sort"
           endpoint={props.endpoint || "cases"}
+          downloadTooltip="Export All Except #Mutations and #Genes"
           downloadFields={[
             "case_id",
             "project.project_id",
@@ -97,7 +98,7 @@ export const CaseTableComponent = (props: TTableProps) => {
               </Th>
               <Th rowSpan="2" style={styles.right}>
                 <Tooltip
-                  Component="# SSM Filtered by current criteria"
+                  Component="# Simple Somatic Mutations Filtered by current criteria"
                   style={tableToolTipHint()}
                 >
                   # Mutations
@@ -105,7 +106,7 @@ export const CaseTableComponent = (props: TTableProps) => {
               </Th>
               <Th rowSpan="2" style={styles.right}>
                 <Tooltip
-                  Component="# Genes with SSM Filtered by current criteria"
+                  Component="# Genes with Simple Somatic Mutations Filtered by current criteria"
                   style={tableToolTipHint()}
                 >
                   # Genes

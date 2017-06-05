@@ -132,18 +132,20 @@ export const CaseTrComponent = compose(
           />
         </Td>
         <Td style={{ textAlign: "right" }}>
-          <ExploreLink
-            merge
-            query={{
-              searchTableTab: "genes",
-              filters: makeFilter(
-                [{ field: "cases.case_id", value: [node.case_id] }],
-                false
-              )
-            }}
-          >
-            {node.score.toLocaleString()}
-          </ExploreLink>
+          {node.score > 0
+            ? <ExploreLink
+                merge
+                query={{
+                  searchTableTab: "genes",
+                  filters: makeFilter(
+                    [{ field: "cases.case_id", value: [node.case_id] }],
+                    false
+                  )
+                }}
+              >
+                {node.score.toLocaleString()}
+              </ExploreLink>
+            : 0}
         </Td>
       </Tr>
     );

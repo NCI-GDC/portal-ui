@@ -18,7 +18,6 @@ import DownloadTableToTsvButton
   from "@ncigdc/components/DownloadTableToTsvButton";
 import Button from "@ncigdc/uikit/Button";
 import saveFile from "@ncigdc/utils/filesaver";
-import { DownloadIcon } from "@ncigdc/theme/icons";
 import Showing from "@ncigdc/components/Pagination/Showing";
 import Pagination from "@ncigdc/components/Pagination";
 import withRouter from "@ncigdc/utils/withRouter";
@@ -242,7 +241,7 @@ const CancerDistributionTableComponent = compose(
             key: "num_mutations",
             title: (
               <Tooltip
-                Component={`Number of SSM observed in ${entityName} in Project`}
+                Component={`Number of Simple Somatic Mutations observed in ${entityName} in Project`}
                 style={tableToolTipHint()}
               >
                 # Mutations
@@ -276,7 +275,9 @@ const CancerDistributionTableComponent = compose(
               Open in Exploration
             </ExploreLink>
             <Tooltip
-              Component={<span>Export Table</span>}
+              Component={
+                <span>Export All{geneId ? " Except # Mutations" : ""}</span>
+              }
               style={{ marginLeft: "2rem" }}
             >
               <Button
@@ -288,7 +289,7 @@ const CancerDistributionTableComponent = compose(
                     "cancer-distribution-data"
                   )}
               >
-                <DownloadIcon />
+                JSON
               </Button>
             </Tooltip>
             <DownloadTableToTsvButton
@@ -312,8 +313,9 @@ const CancerDistributionTableComponent = compose(
                   <Tooltip
                     Component={
                       <span>
-                        # SSM tested Cases in Project affected by {entityName}
-                        / # SSM tested Cases in Project
+                        # Cases tested for Simple Somatic Mutations in Project affected by&nbsp;
+                        {entityName}
+                        / # Cases tested for Simple Somatic Mutations in Project
                       </span>
                     }
                     style={tableToolTipHint()}

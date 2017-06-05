@@ -189,11 +189,11 @@ const Case = compose(
       return acc.concat({
         ...type,
         id: type.data_category,
-        file_count: (
-          <RepositoryFilesLink query={linkQuery}>
-            {type.file_count}
-          </RepositoryFilesLink>
-        ),
+        file_count: type.file_count > 0
+          ? <RepositoryFilesLink query={linkQuery}>
+              {type.file_count}
+            </RepositoryFilesLink>
+          : "0",
         file_count_value: type.file_count,
         tooltip: (
           <span>
@@ -354,7 +354,7 @@ const Case = compose(
                 className="fa fa-bar-chart-o"
                 style={{ paddingRight: "10px" }}
               />
-              Most Frequent Mutations
+              Most Frequent Somatic Mutations
             </h1>
             <Column>
               <SsmsBarChart

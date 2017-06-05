@@ -381,7 +381,11 @@ const File = ({
                 { key: "data_type", title: "Data Type" },
                 { key: "data_format", title: "Data Format" },
                 { key: "workflow_type", title: "Analysis workflow" },
-                { key: "file_size", title: "File Size" },
+                {
+                  key: "file_size",
+                  title: "File Size",
+                  style: { textAlign: "right" }
+                },
                 { key: "action", title: "Action" }
               ]}
               data={node.downstream_analyses.hits.edges.reduce(
@@ -389,6 +393,7 @@ const File = ({
                   ...acc,
                   ...output_files.hits.edges.map(({ node: file }) => ({
                     ...file,
+                    file_size: formatFileSize(file.file_size),
                     file_name: (
                       <FileLink uuid={file.file_id}>{file.file_name}</FileLink>
                     ),

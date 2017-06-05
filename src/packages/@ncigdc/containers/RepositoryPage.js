@@ -264,7 +264,7 @@ export const RepositoryPageQuery = {
         }
         repository {
           cases {
-            aggregations(filters: $filters) {
+            aggregations(filters: $filters filters_self: false) {
               ${CaseAggregations.getFragment("aggregations")}
               ${RepoCasesPies.getFragment("aggregations")}
             }
@@ -274,7 +274,7 @@ export const RepositoryPageQuery = {
             }
           }
           files {
-            aggregations(filters: $filters) {
+            aggregations(filters: $filters filters_self: false) {
               ${FileAggregations.getFragment("aggregations")}
               ${RepoFilesPies.getFragment("aggregations")}
             }

@@ -19,7 +19,7 @@
               }
             }
           ],
-          "description": "Directs the executor to include this field or fragment only when the `if` argument is true.",
+          "description": null,
           "locations": [
             "FIELD",
             "FRAGMENT_SPREAD",
@@ -44,33 +44,13 @@
               }
             }
           ],
-          "description": "Directs the executor to skip this field or fragment when the `if` argument is true.",
+          "description": null,
           "locations": [
             "FIELD",
             "FRAGMENT_SPREAD",
             "INLINE_FRAGMENT"
           ],
           "name": "skip"
-        },
-        {
-          "args": [
-            {
-              "defaultValue": "\"No longer supported\"",
-              "description": "Explains why this element was deprecated, usually also including a suggestion for how toaccess supported similar data. Formatted in [Markdown](https://daringfireball.net/projects/markdown/).",
-              "name": "reason",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            }
-          ],
-          "description": "Marks an element of a GraphQL schema as no longer supported.",
-          "locations": [
-            "FIELD_DEFINITION",
-            "ENUM_VALUE"
-          ],
-          "name": "deprecated"
         }
       ],
       "mutationType": null,
@@ -642,6 +622,16 @@
                     "name": "FiltersArgument",
                     "ofType": null
                   }
+                },
+                {
+                  "defaultValue": "true",
+                  "description": null,
+                  "name": "filters_self",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
                 }
               ],
               "deprecationReason": null,
@@ -786,6 +776,16 @@
           "interfaces": null,
           "kind": "SCALAR",
           "name": "JSONString",
+          "possibleTypes": null
+        },
+        {
+          "description": "The `Boolean` scalar type represents `true` or `false`.",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "SCALAR",
+          "name": "Boolean",
           "possibleTypes": null
         },
         {
@@ -11885,16 +11885,6 @@
           "possibleTypes": null
         },
         {
-          "description": "The `Boolean` scalar type represents `true` or `false`.",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "SCALAR",
-          "name": "Boolean",
-          "possibleTypes": null
-        },
-        {
           "description": null,
           "enumValues": null,
           "fields": [
@@ -18577,6 +18567,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "FiltersArgument",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "true",
+                  "description": null,
+                  "name": "filters_self",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   }
                 }
@@ -31181,6 +31181,16 @@
                     "name": "FiltersArgument",
                     "ofType": null
                   }
+                },
+                {
+                  "defaultValue": "true",
+                  "description": null,
+                  "name": "filters_self",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
                 }
               ],
               "deprecationReason": null,
@@ -36599,6 +36609,16 @@
                     "name": "FiltersArgument",
                     "ofType": null
                   }
+                },
+                {
+                  "defaultValue": "true",
+                  "description": null,
+                  "name": "filters_self",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
                 }
               ],
               "deprecationReason": null,
@@ -41428,6 +41448,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "FiltersArgument",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "true",
+                  "description": null,
+                  "name": "filters_self",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   }
                 }
@@ -46870,6 +46900,16 @@
                     "name": "FiltersArgument",
                     "ofType": null
                   }
+                },
+                {
+                  "defaultValue": "true",
+                  "description": null,
+                  "name": "filters_self",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
+                    "ofType": null
+                  }
                 }
               ],
               "deprecationReason": null,
@@ -47756,6 +47796,16 @@
                   "type": {
                     "kind": "SCALAR",
                     "name": "FiltersArgument",
+                    "ofType": null
+                  }
+                },
+                {
+                  "defaultValue": "true",
+                  "description": null,
+                  "name": "filters_self",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Boolean",
                     "ofType": null
                   }
                 }
@@ -49386,72 +49436,6 @@
               "description": "Location adjacent to an inline fragment.",
               "isDeprecated": false,
               "name": "INLINE_FRAGMENT"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to a schema definition.",
-              "isDeprecated": false,
-              "name": "SCHEMA"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to a scalar definition.",
-              "isDeprecated": false,
-              "name": "SCALAR"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an object definition.",
-              "isDeprecated": false,
-              "name": "OBJECT"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to a field definition.",
-              "isDeprecated": false,
-              "name": "FIELD_DEFINITION"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an argument definition.",
-              "isDeprecated": false,
-              "name": "ARGUMENT_DEFINITION"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an interface definition.",
-              "isDeprecated": false,
-              "name": "INTERFACE"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to a union definition.",
-              "isDeprecated": false,
-              "name": "UNION"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an enum definition.",
-              "isDeprecated": false,
-              "name": "ENUM"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an enum value definition.",
-              "isDeprecated": false,
-              "name": "ENUM_VALUE"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an input object definition.",
-              "isDeprecated": false,
-              "name": "INPUT_OBJECT"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Location adjacent to an input object field definition.",
-              "isDeprecated": false,
-              "name": "INPUT_FIELD_DEFINITION"
             }
           ],
           "fields": null,

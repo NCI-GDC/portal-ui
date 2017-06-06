@@ -71,7 +71,7 @@ const SearchPage = (
                 setShowFacets(!showFacets);
               }}
             >
-              <DoubleArrowLeftIcon /> Hide Filters
+              <DoubleArrowLeftIcon />
             </UnstyledButton>
           }
           hideTabs={facetTabs.length <= 1}
@@ -82,7 +82,7 @@ const SearchPage = (
       <Row style={{ marginBottom: "2rem" }}>
         {!showFacets &&
           <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
-            <span>Show Filters <DoubleArrowRightIcon /></span>
+            <DoubleArrowRightIcon />
           </ShowFacetsButton>}
         <CurrentFilters
           geneSymbolFragment={geneSymbolFragment}

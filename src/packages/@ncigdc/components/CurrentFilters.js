@@ -263,8 +263,7 @@ const CurrentFilters = (
               currentFilters.map(({ content: { field, value } }) => ({
                 field: linkFieldMap(field),
                 value
-              })),
-              false
+              }))
             )
           }
         }

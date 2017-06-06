@@ -90,15 +90,12 @@ const PrefixFacet = compose(
               <StyledDropdownLink
                 merge="toggle"
                 query={{
-                  filters: makeFilter(
-                    [
-                      {
-                        field: `${doctype}.${fieldNoDoctype}`,
-                        value: [`${value}*`]
-                      }
-                    ],
-                    false
-                  )
+                  filters: makeFilter([
+                    {
+                      field: `${doctype}.${fieldNoDoctype}`,
+                      value: [`${value}*`]
+                    }
+                  ])
                 }}
                 id="prefix-search-link"
                 onClick={() => {

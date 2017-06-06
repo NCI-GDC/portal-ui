@@ -47,15 +47,12 @@ const ExactMatchFacet = compose(
                       <CheckedLink
                         merge="toggle"
                         query={{
-                          filters: makeFilter(
-                            [
-                              {
-                                field: `${doctype}.${fieldNoDoctype}`,
-                                value: [v]
-                              }
-                            ],
-                            false
-                          )
+                          filters: makeFilter([
+                            {
+                              field: `${doctype}.${fieldNoDoctype}`,
+                              value: [v]
+                            }
+                          ])
                         }}
                       >
                         <CheckCircleOIcon style={{ paddingRight: "0.5rem" }} />
@@ -82,15 +79,12 @@ const ExactMatchFacet = compose(
                     <GoLink
                       merge="toggle"
                       query={{
-                        filters: makeFilter(
-                          [
-                            {
-                              field: `${doctype}.${fieldNoDoctype}`,
-                              value: [inputValue]
-                            }
-                          ],
-                          false
-                        )
+                        filters: makeFilter([
+                          {
+                            field: `${doctype}.${fieldNoDoctype}`,
+                            value: [inputValue]
+                          }
+                        ])
                       }}
                       dark={!!inputValue}
                       onClick={() => setInputValue("")}

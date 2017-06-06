@@ -207,10 +207,9 @@ export const getFilterValue = ({ currentFilters, dotField }) =>
   currentFilters.find(f => f.content.field === dotField);
 
 type TMakeFilter = (
-  fields: [{ field: string, value: string }],
-  returnString: boolean
+  fields: [{ field: string, value: string }]
 ) => Object | string;
-export const makeFilter: TMakeFilter = (fields, returnString = true) => {
+export const makeFilter: TMakeFilter = fields => {
   const contentArray = fields.map(item => {
     const value = _.isArray(item.value) ? item.value : item.value.split(",");
 
@@ -230,7 +229,7 @@ export const makeFilter: TMakeFilter = (fields, returnString = true) => {
       }
     : {};
 
-  return returnString ? JSON.stringify(filters) : filters;
+  return filters;
 };
 
 export const removeFilter: TRemoveFilter = (field, query) => {

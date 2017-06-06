@@ -706,10 +706,9 @@ export const LolliplotQuery = {
     haveTotal: false,
     first: 10000,
     lolliplotFilters: null,
-    isCanonical: makeFilter(
-      [{ field: "transcripts.is_canonical", value: [true] }],
-      false
-    )
+    isCanonical: makeFilter([
+      { field: "transcripts.is_canonical", value: [true] }
+    ])
   },
   fragments: {
     viewer: () => Relay.QL`

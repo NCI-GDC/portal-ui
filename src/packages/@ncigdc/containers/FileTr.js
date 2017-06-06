@@ -77,10 +77,7 @@ function getCaseLink({
     return (
       <RepositoryCasesLink
         query={{
-          filters: makeFilter(
-            [{ field: "files.file_id", value: [fileId] }],
-            false
-          )
+          filters: makeFilter([{ field: "files.file_id", value: [fileId] }])
         }}
       >
         {total.toLocaleString()}

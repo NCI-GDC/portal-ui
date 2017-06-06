@@ -63,10 +63,10 @@ export const CaseTrComponent = compose(
     const FilesLink: TFilesLink = ({ fields = [], children }) => (
       <RepositoryFilesLink
         query={{
-          filters: makeFilter(
-            [{ field: "cases.case_id", value: [node.case_id] }, ...fields],
-            false
-          )
+          filters: makeFilter([
+            { field: "cases.case_id", value: [node.case_id] },
+            ...fields
+          ])
         }}
       >
         {children}
@@ -126,10 +126,7 @@ export const CaseTrComponent = compose(
             ssmCount={ssmCount}
             filters={addInFilters(
               filters,
-              makeFilter(
-                [{ field: "cases.case_id", value: [node.case_id] }],
-                false
-              )
+              makeFilter([{ field: "cases.case_id", value: [node.case_id] }])
             )}
           />
         </Td>
@@ -139,10 +136,9 @@ export const CaseTrComponent = compose(
                 merge
                 query={{
                   searchTableTab: "genes",
-                  filters: makeFilter(
-                    [{ field: "cases.case_id", value: [node.case_id] }],
-                    false
-                  )
+                  filters: makeFilter([
+                    { field: "cases.case_id", value: [node.case_id] }
+                  ])
                 }}
               >
                 {node.score.toLocaleString()}

@@ -64,10 +64,9 @@ function addFilter(query: Object, push: Function): Function {
   return (field, values) => {
     const newQuery = mergeQuery(
       {
-        filters: makeFilter(
-          [{ field, value: Array.isArray(values) ? values : [values] }],
-          false
-        )
+        filters: makeFilter([
+          { field, value: Array.isArray(values) ? values : [values] }
+        ])
       },
       query,
       "toggle"

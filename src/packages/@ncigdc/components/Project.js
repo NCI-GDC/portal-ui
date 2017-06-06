@@ -102,7 +102,7 @@ const Project = (
     }
   ];
 
-  const dataExportFilters = makeFilter(projectFilter, false);
+  const dataExportFilters = makeFilter(projectFilter);
 
   return (
     <span>
@@ -165,7 +165,7 @@ const Project = (
               inactiveText="Download Manifest"
               fields={["file_id", "file_name", "md5sum", "file_size", "state"]}
               returnType="manifest"
-              filters={makeFilter(projectFilter, false)}
+              filters={makeFilter(projectFilter)}
             />
           </Tooltip>
         </Row>
@@ -204,7 +204,7 @@ const Project = (
                     merge: "replace",
                     pathname: "/repository",
                     query: {
-                      filters: makeFilter(projectFilter, false)
+                      filters: makeFilter(projectFilter)
                     }
                   }
                 : null
@@ -220,7 +220,7 @@ const Project = (
                 ? {
                     pathname: "/repository",
                     query: {
-                      filters: makeFilter(projectFilter, false),
+                      filters: makeFilter(projectFilter),
                       facetTab: "files",
                       searchTableTab: "files"
                     }
@@ -240,15 +240,12 @@ const Project = (
                     pathname: `/annotations${totalAnnotations === 1 ? `/${annotations[0].annotation_id}` : ""}`,
                     query: {
                       filters: totalAnnotations > 1 &&
-                        makeFilter(
-                          [
-                            {
-                              field: "annotations.project.project_id",
-                              value: projectId
-                            }
-                          ],
-                          false
-                        )
+                        makeFilter([
+                          {
+                            field: "annotations.project.project_id",
+                            value: projectId
+                          }
+                        ])
                     }
                   }
                 : null
@@ -263,16 +260,13 @@ const Project = (
             tableTitle="Cases and File Counts by Experimental Strategy"
             pieChartTitle="File Counts by Experimental Strategy"
             data={experimentalStrategies.map((item, i) => {
-              const filters = makeFilter(
-                [
-                  ...projectFilter,
-                  {
-                    field: "files.experimental_strategy",
-                    value: [item.experimental_strategy]
-                  }
-                ],
-                false
-              );
+              const filters = makeFilter([
+                ...projectFilter,
+                {
+                  field: "files.experimental_strategy",
+                  value: [item.experimental_strategy]
+                }
+              ]);
 
               return {
                 id: item.experimental_strategy,
@@ -365,13 +359,10 @@ const Project = (
             tableTitle="Cases and File Counts by Data Category"
             pieChartTitle="File Counts by Data Category"
             data={dataCategories.map((item, i) => {
-              const filters = makeFilter(
-                [
-                  ...projectFilter,
-                  { field: "files.data_category", value: [item.data_category] }
-                ],
-                false
-              );
+              const filters = makeFilter([
+                ...projectFilter,
+                { field: "files.data_category", value: [item.data_category] }
+              ]);
 
               return {
                 id: item.data_category,

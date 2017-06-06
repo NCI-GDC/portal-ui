@@ -88,10 +88,7 @@ const BiospecimenCard = ({
             url={urlJoin(process.env.REACT_APP_API, "cases")}
             activeText="Processing"
             inactiveText="Export"
-            filters={makeFilter(
-              [{ field: "cases.case_id", value: p.case_id }],
-              false
-            )}
+            filters={makeFilter([{ field: "cases.case_id", value: p.case_id }])}
             fields={["case_id"]}
             dataExportExpands={[
               "samples",

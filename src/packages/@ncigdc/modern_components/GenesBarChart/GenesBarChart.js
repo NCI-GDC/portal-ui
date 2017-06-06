@@ -60,15 +60,12 @@ const createContainer = Component =>
     initialVariables: {
       genesBarChart_filters: null,
       score: "case.project.project_id",
-      ssmTested: makeFilter(
-        [
-          {
-            field: "cases.available_variation_data",
-            value: "ssm"
-          }
-        ],
-        false
-      )
+      ssmTested: makeFilter([
+        {
+          field: "cases.available_variation_data",
+          value: "ssm"
+        }
+      ])
     },
     fragments: {
       viewer: () => Relay.QL`

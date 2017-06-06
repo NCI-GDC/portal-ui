@@ -94,17 +94,14 @@ const CancerDistributionTableComponent = compose(
           fetchProjects: true,
           numProjects: nextProps.cases.filtered.project__project_id.buckets
             .length,
-          projectFilter: makeFilter(
-            [
-              {
-                field: "project_id",
-                value: nextProps.cases.filtered.project__project_id.buckets.map(
-                  b => b.key
-                )
-              }
-            ],
-            false
-          )
+          projectFilter: makeFilter([
+            {
+              field: "project_id",
+              value: nextProps.cases.filtered.project__project_id.buckets.map(
+                b => b.key
+              )
+            }
+          ])
         });
       }
     }
@@ -160,13 +157,10 @@ const CancerDistributionTableComponent = compose(
         : { field: "ssms.ssm_id", value: [entityName] };
 
       const cancerDistData = rawData.map(row => {
-        const projectFilter = makeFilter(
-          [
-            baseFilter,
-            { field: "cases.project.project_id", value: [row.project_id] }
-          ],
-          false
-        );
+        const projectFilter = makeFilter([
+          baseFilter,
+          { field: "cases.project.project_id", value: [row.project_id] }
+        ]);
 
         return {
           id: row.project_id, // used for key in table
@@ -187,16 +181,13 @@ const CancerDistributionTableComponent = compose(
               <ExploreLink
                 query={{
                   searchTableTab: "cases",
-                  filters: makeFilter(
-                    [
-                      {
-                        field: "cases.project.project_id",
-                        value: [row.project_id]
-                      },
-                      { field: "cases.available_variation_data", value: "ssm" }
-                    ],
-                    false
-                  )
+                  filters: makeFilter([
+                    {
+                      field: "cases.project.project_id",
+                      value: [row.project_id]
+                    },
+                    { field: "cases.available_variation_data", value: "ssm" }
+                  ])
                 }}
               >
                 {row.num_affected_cases_total.toLocaleString()}
@@ -371,15 +362,12 @@ const CancerDistributionTableQuery = {
     fetchFilteredCaseAggs: false,
     ssmCountsfilters: null,
     fetchSsmCounts: false,
-    ssmTested: makeFilter(
-      [
-        {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ],
-      false
-    )
+    ssmTested: makeFilter([
+      {
+        field: "cases.available_variation_data",
+        value: "ssm"
+      }
+    ])
   },
   fragments: {
     projects: () => Relay.QL`

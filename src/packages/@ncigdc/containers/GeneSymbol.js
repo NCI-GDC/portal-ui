@@ -11,15 +11,12 @@ const GeneSymbolComponent = compose(
   withProps(({ relay }) => ({
     setRelayFilters: ({ geneId }) => {
       const variables = {
-        geneIdFilters: makeFilter(
-          [
-            {
-              field: "genes.gene_id",
-              value: [geneId]
-            }
-          ],
-          false
-        ),
+        geneIdFilters: makeFilter([
+          {
+            field: "genes.gene_id",
+            value: [geneId]
+          }
+        ]),
         fetchGeneSymbols: !!geneId
       };
       relay.setVariables(variables);

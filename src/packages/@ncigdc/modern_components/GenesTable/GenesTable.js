@@ -82,15 +82,12 @@ class Route extends Relay.Route {
       genesTable_sort: parseJSURLParam(q.genesTable_sort, null),
       geneCaseFilter: addInFilters(
         q.genesTable_filters || defaultFilters,
-        makeFilter(
-          [
-            {
-              field: "cases.available_variation_data",
-              value: "ssm"
-            }
-          ],
-          false
-        )
+        makeFilter([
+          {
+            field: "cases.available_variation_data",
+            value: "ssm"
+          }
+        ])
       )
     };
   };
@@ -105,15 +102,12 @@ const createContainer = Component =>
       genesTable_offset: 0,
       score: "case.project.project_id",
       geneCaseFilter: null,
-      ssmTested: makeFilter(
-        [
-          {
-            field: "cases.available_variation_data",
-            value: "ssm"
-          }
-        ],
-        false
-      )
+      ssmTested: makeFilter([
+        {
+          field: "cases.available_variation_data",
+          value: "ssm"
+        }
+      ])
     },
     fragments: {
       exploreSsms: () => Relay.QL`
@@ -196,15 +190,12 @@ const Component = compose(
           ssmCountsfilters: geneIds.length
             ? addInFilters(
                 defaultFilters,
-                makeFilter(
-                  [
-                    {
-                      field: "consequence.transcript.gene.gene_id",
-                      value: geneIds
-                    }
-                  ],
-                  false
-                )
+                makeFilter([
+                  {
+                    field: "consequence.transcript.gene.gene_id",
+                    value: geneIds
+                  }
+                ])
               )
             : null
         },
@@ -376,10 +367,9 @@ const Component = compose(
                       searchTableTab: "cases",
                       filters: addInFilters(
                         query.fmgTable_filters || defaultFilters,
-                        makeFilter(
-                          [{ field: "genes.gene_id", value: [g.gene_id] }],
-                          false
-                        )
+                        makeFilter([
+                          { field: "genes.gene_id", value: [g.gene_id] }
+                        ])
                       )
                     }}
                   >
@@ -391,15 +381,12 @@ const Component = compose(
                       searchTableTab: "cases",
                       filters: addInFilters(
                         query.fmgTable_filters || defaultFilters,
-                        makeFilter(
-                          [
-                            {
-                              field: "cases.available_variation_data",
-                              value: ["ssm"]
-                            }
-                          ],
-                          false
-                        )
+                        makeFilter([
+                          {
+                            field: "cases.available_variation_data",
+                            value: ["ssm"]
+                          }
+                        ])
                       )
                     }}
                   >
@@ -411,10 +398,9 @@ const Component = compose(
               ),
               projectBreakdown: (
                 <ProjectBreakdown
-                  filters={makeFilter(
-                    [{ field: "genes.gene_id", value: g.gene_id }],
-                    false
-                  )}
+                  filters={makeFilter([
+                    { field: "genes.gene_id", value: g.gene_id }
+                  ])}
                   caseTotal={g.case.hits.total}
                   gdcCaseTotal={cases.hits.total}
                 />
@@ -425,10 +411,7 @@ const Component = compose(
                   ssmCount={ssmCounts[g.gene_id]}
                   filters={addInFilters(
                     defaultFilters,
-                    makeFilter(
-                      [{ field: "genes.gene_id", value: [g.gene_id] }],
-                      false
-                    )
+                    makeFilter([{ field: "genes.gene_id", value: [g.gene_id] }])
                   )}
                 />
               ),

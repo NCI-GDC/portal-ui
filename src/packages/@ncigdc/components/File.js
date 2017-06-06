@@ -74,10 +74,9 @@ const getAnnotationsCount = (annotations, entity) => {
     return (
       <AnnotationsLink
         query={{
-          filters: makeFilter(
-            [{ field: "annotations.entity_id", value: entity.entity_id }],
-            false
-          )
+          filters: makeFilter([
+            { field: "annotations.entity_id", value: entity.entity_id }
+          ])
         }}
       >
         {filteredAnnotations.length}
@@ -137,15 +136,12 @@ const File = ({
   const sourceFilesRepoLink = node.analysis.input_files.hits.total
     ? <RepositoryFilesLink
         query={{
-          filters: makeFilter(
-            [
-              {
-                field: "downstream_analyses.output_files.file_id",
-                value: node.file_id
-              }
-            ],
-            false
-          )
+          filters: makeFilter([
+            {
+              field: "downstream_analyses.output_files.file_id",
+              value: node.file_id
+            }
+          ])
         }}
       >
         {node.analysis.input_files.hits.total}

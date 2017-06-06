@@ -32,6 +32,16 @@ const styles = {
   },
   container: {
     position: "relative"
+  },
+  noResults: {
+    position: "absolute",
+    top: "100%",
+    right: 0,
+    backgroundColor: "#fff",
+    padding: "4px 10px",
+    boxShadow: "rgba(0, 0, 0, 0.156863) 0px 2px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 2px 10px 0px",
+    zIndex: 90,
+    width: "100%"
   }
 };
 
@@ -127,7 +137,7 @@ export default compose(
           onChange={event => setQuery(event.target.value)}
           onKeyDown={handleKeyDown}
         />}
-      {state.results &&
+      {!!(state.results && state.results.length) &&
         <QuickSearchResults
           results={_.map(
             state.results,
@@ -139,6 +149,10 @@ export default compose(
           onActivateItem={selectItem}
           isLoading={state.isLoading}
         />}
+      {!state.isLoading &&
+        state.query &&
+        (state.results || []).length === 0 &&
+        <div style={styles.noResults}>No results found</div>}
     </a>
   )
 );

@@ -38,6 +38,7 @@ const withKeyboardSelection = (
         selectItem: item => {
           setSelectedItem(item);
           onSelectItem(item, { focusedItem, list, ...props });
+          setTimeout(() => setFocusedItem(undefined));
         },
         cancel: () => {
           setSelectedItem(undefined);

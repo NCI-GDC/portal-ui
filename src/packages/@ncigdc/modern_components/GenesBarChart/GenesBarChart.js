@@ -3,7 +3,6 @@
 
 import React from "react";
 import Relay from "react-relay/classic";
-import withSize from "@ncigdc/utils/withSize";
 import { compose, withHandlers } from "recompose";
 import { parse } from "query-string";
 import { connect } from "react-redux";
@@ -23,8 +22,6 @@ import VisualizationHeader from "@ncigdc/components/VisualizationHeader";
 
 const TITLE = "Distribution of Most Frequently Mutated Genes";
 const CHART_HEIGHT = 285;
-const CHART_MARGINS = { top: 20, right: 50, bottom: 65, left: 55 };
-const MAX_BARS = 20;
 const COMPONENT_NAME = "GenesBarChart";
 
 const createRenderer = (Route, Container) =>
@@ -125,26 +122,18 @@ const Component = compose(
         ? onClickGene(gene, chartData)
         : push(`/genes/${gene.gene_id}`)
   }),
-  withTheme,
-  withSize()
+  withTheme
 )(
   ({
     projectId = "",
     theme,
-    size: { width },
     viewer: {
       explore: { genes = { hits: { edges: [] } }, cases, filteredCases }
     },
-    showSurvivalPlot = true,
     context = "explore",
-    handleClickGene
+    handleClickGene,
+    style
   }) => {
-    const bandWidth =
-      (width - CHART_MARGINS.right - CHART_MARGINS.left) /
-      (MAX_BARS + 1) /
-      (showSurvivalPlot ? 1 : 2) *
-      0.7;
-
     const numCasesAggByProject = cases.aggregations.project__project_id.buckets.reduce(
       (acc, b) => ({
         ...acc,
@@ -217,9 +206,9 @@ const Component = compose(
       }));
 
     return (
-      <span>
+      <div style={style}>
         {!!mutatedGenesChartData &&
-          <Column>
+          <Column style={{ paddingLeft: "2rem" }}>
             <VisualizationHeader
               title={TITLE}
               buttons={[
@@ -243,12 +232,10 @@ const Component = compose(
             />
             {!!mutatedGenesChartData.length &&
               <div id="mutated-genes-chart">
-                <Row style={{ padding: "2rem 2rem 0" }}>
+                <Row style={{ paddingTop: "2rem" }}>
                   <BarChart
                     data={mutatedGenesChartData}
                     yAxis={{ title: "% of Cases Affected" }}
-                    bandwidth={bandWidth}
-                    margin={CHART_MARGINS}
                     height={CHART_HEIGHT}
                     styles={{
                       xAxis: {
@@ -270,7 +257,7 @@ const Component = compose(
                 </Row>
               </div>}
           </Column>}
-      </span>
+      </div>
     );
   }
 );

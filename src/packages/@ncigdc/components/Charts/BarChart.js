@@ -9,6 +9,7 @@ import { compose, withState, pure } from "recompose";
 // Custom
 import { withTheme } from "@ncigdc/theme";
 import { withTooltip } from "@ncigdc/uikit/Tooltip";
+import withSize from "@ncigdc/utils/withSize";
 import "./style.css";
 
 const BarChart = (() => ({
@@ -19,16 +20,17 @@ const BarChart = (() => ({
   styles,
   height: h,
   margin: m,
-  bandwidth: bw,
   setTooltip,
-  theme
+  theme,
+  size: { width }
 }) => {
   const el = ReactFauxDOM.createElement("div");
+  el.style.width = "100%";
+  const innerPadding = 0.3;
+  const outerPadding = 0.3;
 
-  const margin = m || { top: 30, right: 50, bottom: 55, left: 30 };
-  const bandWidth = bw || 36;
-  const width =
-    Object.keys(data).length * bandWidth + margin.left + margin.right;
+  const margin = m || { top: 20, right: 50, bottom: 65, left: 55 };
+  const chartWidth = width - margin.left - margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
@@ -46,16 +48,16 @@ const BarChart = (() => ({
   const x = d3
     .scaleBand()
     .domain(data.map(d => d.label))
-    .rangeRound([0, width])
-    .paddingInner(0.3)
-    .paddingOuter(0.5);
+    .rangeRound([0, chartWidth])
+    .paddingInner(innerPadding)
+    .paddingOuter(outerPadding);
   const maxY = d3.max(data, d => d.value);
   const y = d3.scaleLinear().range([height, 0]).domain([0, maxY]);
 
   const svg = d3
     .select(el)
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
+    .attr("width", width)
     .attr("height", height + margin.top + margin.bottom)
     .append("g", "chart")
     .attr("fill", "#fff")
@@ -75,7 +77,11 @@ const BarChart = (() => ({
   const yG = svg
     .append("g")
     .call(
-      d3.axisLeft(y).ticks(Math.min(4, maxY)).tickSize(-width).tickSizeOuter(0)
+      d3
+        .axisLeft(y)
+        .ticks(Math.min(4, maxY))
+        .tickSize(-chartWidth)
+        .tickSizeOuter(0)
     );
 
   yG.selectAll("path").style("stroke", "none");
@@ -157,5 +163,6 @@ export default compose(
   withTheme,
   withTooltip,
   withState("chart", "setState", <span />),
+  withSize(),
   pure
 )(BarChart);

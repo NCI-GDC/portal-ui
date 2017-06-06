@@ -2,7 +2,6 @@
 
 import React from "react";
 import Relay from "react-relay/classic";
-import withSize from "@ncigdc/utils/withSize";
 import { parse } from "query-string";
 import { connect } from "react-redux";
 import { compose } from "recompose";
@@ -19,8 +18,6 @@ import DownloadVisualizationButton
 import wrapSvg from "@ncigdc/utils/wrapSvg";
 
 const CHART_HEIGHT = 285;
-const CHART_MARGINS = { top: 20, right: 50, bottom: 65, left: 55 };
-const MAX_BARS = 20;
 const COMPONENT_NAME = "AffectedCasesBarChart";
 
 const createRenderer = (Route, Container) =>
@@ -86,21 +83,14 @@ const createContainer = Component =>
 
 const Component = compose(
   withTheme,
-  withSize(),
   withRouter
 )(
   ({
     viewer: { explore: { cases = { hits: { edges: [] } } } },
     theme,
-    size: { width },
-    push
+    push,
+    style
   }) => {
-    const bandWidth =
-      (width - CHART_MARGINS.right - CHART_MARGINS.left) /
-      (MAX_BARS + 1) /
-      2 *
-      0.7;
-
     const chartData = cases.hits.edges.map(x => x.node).map(c => ({
       fullLabel: c.case_id,
       label: `${c.case_id.substring(0, 8)}\u2026`,
@@ -112,11 +102,11 @@ const Component = compose(
     }));
 
     return (
-      <span>
-        <Column>
+      <div style={style}>
+        <Column style={{ padding: "0 0 0 2rem" }}>
           {cases &&
             !!cases.hits.edges.length &&
-            <Row style={{ width: "50%", justifyContent: "flex-end" }}>
+            <Row style={{ justifyContent: "flex-end" }}>
               <DownloadVisualizationButton
                 svg={() =>
                   wrapSvg({
@@ -135,12 +125,10 @@ const Component = compose(
             </Row>}
           {cases &&
             !!cases.hits.edges.length &&
-            <Row style={{ padding: "0 2rem" }} id="most-affected-cases">
+            <Row id="most-affected-cases">
               <BarChart
                 data={chartData}
-                margin={CHART_MARGINS}
                 height={CHART_HEIGHT}
-                bandwidth={bandWidth}
                 yAxis={{ title: "# Affected Genes" }}
                 styles={{
                   xAxis: {
@@ -161,7 +149,7 @@ const Component = compose(
               />
             </Row>}
         </Column>
-      </span>
+      </div>
     );
   }
 );

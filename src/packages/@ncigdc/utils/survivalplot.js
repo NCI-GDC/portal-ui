@@ -24,6 +24,8 @@ const Symbol = styled.span({
 });
 
 export const enoughData = (data: Object) =>
+  data &&
+  data.results &&
   data.results.length &&
   data.results.every(r => r.donors.length >= MINIMUM_CASES);
 
@@ -55,7 +57,7 @@ export const getDefaultCurve = memoize(
       : [
           {
             key: `${slug || ""}-not-enough-data`,
-            value: <span>Not enough data{slug && ` on ${slug}`}</span>
+            value: <span>Not enough survival data</span>
           }
         ];
 
@@ -151,7 +153,7 @@ export const getSurvivalCurves = memoize(
         : [
             {
               key: `${slug || value}-not-enough-data`,
-              value: <span>Not enough data on {slug || value}</span>
+              value: <span>Not enough survival data for {slug || value}</span>
             }
           ]
     };

@@ -9,7 +9,7 @@ import {
   withHandlers
 } from "recompose";
 import { Row, Column } from "@ncigdc/uikit/Flex";
-import { getDefaultCurve } from "@ncigdc/utils/survivalplot";
+import { getDefaultCurve, enoughData } from "@ncigdc/utils/survivalplot";
 import withFilters from "@ncigdc/utils/withFilters";
 import SurvivalPlotWrapper from "@ncigdc/components/SurvivalPlotWrapper";
 import GenesBarChart
@@ -89,6 +89,7 @@ export default compose(
   ({
     state: { loading },
     survivalData,
+    defaultSurvivalData,
     selectedSurvivalData,
     setSelectedSurvivalData,
     viewer,
@@ -120,6 +121,9 @@ export default compose(
         <GenesTable
           defaultFilters={filters}
           survivalData={survivalData}
+          hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
+            defaultSurvivalData.rawData
+          )}
           setSelectedSurvivalData={setSelectedSurvivalData}
           selectedSurvivalData={selectedSurvivalData}
           context="Cohort"

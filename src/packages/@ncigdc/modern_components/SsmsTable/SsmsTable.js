@@ -286,6 +286,7 @@ const Component = compose(
     {
       defaultFilters,
       showSurvivalPlot = false,
+      hasEnoughSurvivalDataOnPrimaryCurve,
       selectedSurvivalData = { id: "" },
       setSelectedSurvivalData = () => {},
       viewer: { explore: { ssms, filteredCases, cases } },
@@ -395,7 +396,8 @@ const Component = compose(
                 <Tooltip
                   Component={
                     <span>
-                      Breakdown of Cases Affected by Simple Somatic Mutations in&nbsp;
+                      Breakdown of Cases Affected by Simple Somatic Mutations
+                      in&nbsp;
                       {context}<br />
                       # of Cases where Mutation is observed / # of Cases tested for Simple Somatic Mutations
                     </span>
@@ -533,17 +535,24 @@ const Component = compose(
               ? {
                   survival_plot: (
                     <Tooltip
-                      Component={`Click icon to plot ${x.genomic_dna_change}`}
+                      Component={
+                        hasEnoughSurvivalDataOnPrimaryCurve
+                          ? `Click icon to plot ${x.genomic_dna_change}`
+                          : "Not enough survival data"
+                      }
                     >
                       <Button
                         style={{
                           padding: "2px 3px",
-                          backgroundColor: colors(
-                            selectedSurvivalData.id === x.ssm_id ? 1 : 0
-                          ),
+                          backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
+                            ? colors(
+                                selectedSurvivalData.id === x.ssm_id ? 1 : 0
+                              )
+                            : "#666",
                           color: "white",
                           margin: "0 auto"
                         }}
+                        disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
                         onClick={() => {
                           if (x.ssm_id !== selectedSurvivalData.id) {
                             setSurvivalLoadingId(x.ssm_id);

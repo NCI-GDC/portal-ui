@@ -9,7 +9,7 @@ import {
   withHandlers
 } from "recompose";
 import { Column, Row } from "@ncigdc/uikit/Flex";
-import { getDefaultCurve } from "@ncigdc/utils/survivalplot";
+import { getDefaultCurve, enoughData } from "@ncigdc/utils/survivalplot";
 import withFilters from "@ncigdc/utils/withFilters";
 import { makeFilter, toggleFilters } from "@ncigdc/utils/filters";
 
@@ -90,6 +90,7 @@ export default compose(
     viewer,
     filters,
     survivalData,
+    defaultSurvivalData,
     selectedSurvivalData,
     setSelectedSurvivalData,
     handleClickMutation
@@ -121,6 +122,9 @@ export default compose(
       <SsmsTable
         defaultFilters={filters}
         selectedSurvivalData={selectedSurvivalData}
+        hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
+          defaultSurvivalData.rawData
+        )}
         setSelectedSurvivalData={setSelectedSurvivalData}
         showSurvivalPlot
         context="Cohort"

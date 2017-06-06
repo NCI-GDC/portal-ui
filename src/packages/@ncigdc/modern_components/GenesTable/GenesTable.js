@@ -169,6 +169,7 @@ const Component = compose(
     survivalLoadingId,
     setSelectedSurvivalData,
     selectedSurvivalData,
+    hasEnoughSurvivalDataOnPrimaryCurve,
     context,
     query,
     tableLink
@@ -375,16 +376,23 @@ const Component = compose(
                   </ForTsvExport>
                 </span>,
               survival_plot: (
-                <Tooltip Component={`Click icon to plot ${g.symbol}`}>
+                <Tooltip
+                  Component={
+                    hasEnoughSurvivalDataOnPrimaryCurve
+                      ? `Click icon to plot ${g.symbol}`
+                      : "Not enough survival data"
+                  }
+                >
                   <Button
                     style={{
                       padding: "2px 3px",
-                      backgroundColor: colors(
-                        selectedSurvivalData.id === g.symbol ? 1 : 0
-                      ),
+                      backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
+                        ? colors(selectedSurvivalData.id === g.symbol ? 1 : 0)
+                        : "#666",
                       color: "white",
                       margin: "0 auto"
                     }}
+                    disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
                     onClick={() => {
                       if (g.symbol !== selectedSurvivalData.id) {
                         setSurvivalLoadingId(g.symbol);

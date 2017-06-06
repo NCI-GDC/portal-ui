@@ -121,6 +121,7 @@ const OncoGridWrapper = compose(
   withState("showGridLines", "setShowGridLines", true),
   withState("heatMapMode", "setHeatMapMode", false),
   withState("isLoading", "setIsLoading", true),
+  withState("caseCount", "setCaseCount", 0),
   withState(
     "uniqueGridClass",
     "setUniqueGridClass",
@@ -171,7 +172,7 @@ const OncoGridWrapper = compose(
     return {
       ...props,
       title: title ||
-        `${cases} Most Mutated Cases and Top ${genes} Mutated Genes`,
+        `${cases}${cases < props.caseCount ? " Most" : ""} Mutated Cases and Top ${genes} Mutated Genes`,
       impacts: impacts ||
       (currentImpacts && currentImpacts.content.value) || [],
       filteredConsequenceTypes,
@@ -200,7 +201,8 @@ const OncoGridWrapper = compose(
         uniqueGridClass,
         dispatch,
         push,
-        filteredConsequenceTypes
+        filteredConsequenceTypes,
+        setCaseCount
       }: TProps = {},
       previousResponses: Object
     ): Promise<*> {
@@ -282,9 +284,11 @@ const OncoGridWrapper = compose(
         consequenceTypes: filteredConsequenceTypes
       });
 
-      if (gridParams && !previousResponses) {
+      if (gridParams) {
+        if (previousResponses && oncoGrid.toggleGridLines) oncoGrid.destroy();
         const grid = new OncoGrid(gridParams);
         grid.render();
+        setCaseCount(responses.totalCases);
         setOncoGrid(grid);
         setOncoGridData(responses);
         refreshGridState({
@@ -293,19 +297,7 @@ const OncoGridWrapper = compose(
           setShowGridLines,
           setCrosshairMode
         });
-      } else if (gridParams && previousResponses) {
-        if (oncoGrid.toggleGridLines) oncoGrid.destroy();
-        const grid = new OncoGrid(gridParams);
-        grid.render();
-        setOncoGrid(grid);
-        setOncoGridData(responses);
-        refreshGridState({
-          oncoGrid: grid,
-          setHeatMapMode,
-          setShowGridLines,
-          setCrosshairMode
-        });
-      } else if (!gridParams) {
+      } else {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
         setOncoGridData(null);
       }

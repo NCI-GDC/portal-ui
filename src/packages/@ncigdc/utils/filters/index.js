@@ -10,7 +10,8 @@ import type {
   TMergeFns,
   TMergeQuery,
   TSortFilters,
-  TFilterByWhitelist
+  TFilterByWhitelist,
+  TRemoveFilter
 } from "./types";
 
 const sortFilters: TSortFilters = (a, b) =>
@@ -230,6 +231,26 @@ export const makeFilter: TMakeFilter = (fields, returnString = true) => {
     : {};
 
   return returnString ? JSON.stringify(filters) : filters;
+};
+
+export const removeFilter: TRemoveFilter = (field, query) => {
+  if (!query) return null;
+  if (!field) return query;
+
+  if (!Array.isArray(query.content)) {
+    return query.content.field === field ? null : query;
+  }
+
+  const filteredContent = query.content
+    .map(q => removeFilter(field, q))
+    .filter(Boolean);
+
+  return filteredContent.length
+    ? {
+        ...query,
+        content: filteredContent
+      }
+    : null;
 };
 
 export default makeFilter;

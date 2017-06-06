@@ -70,7 +70,8 @@ const MAX_GENES = 50;
 const styles = {
   container: {
     overflow: "visible",
-    padding: "0 30px"
+    padding: "0 30px",
+    background: "white"
   },
   fullscreen: {
     maxWidth: "100%",
@@ -78,8 +79,7 @@ const styles = {
     marginLeft: 0,
     padding: "100px 100px 0",
     overflow: "scroll",
-    height: "100%",
-    background: "white"
+    height: "100%"
   },
   button: {
     ...visualizingButton,

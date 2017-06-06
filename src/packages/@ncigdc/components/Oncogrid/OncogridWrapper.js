@@ -78,7 +78,8 @@ const styles = {
     marginLeft: 0,
     padding: "100px 100px 0",
     overflow: "scroll",
-    height: "100%"
+    height: "100%",
+    background: "white"
   },
   button: {
     ...visualizingButton,

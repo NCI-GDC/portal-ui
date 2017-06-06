@@ -218,7 +218,7 @@ export const ExplorePageQuery = {
             ${MutationsCount.getFragment("ssms")}
           }
           cases {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
+            aggregations(filters: $filters) {
               ${CaseAggregations.getFragment("aggregations")}
               ${ExploreCasesPies.getFragment("aggregations")}
             }
@@ -228,7 +228,7 @@ export const ExplorePageQuery = {
             }
           }
           genes {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
+            aggregations(filters: $filters) {
               ${GeneAggregations.getFragment("aggregations")}
             }
             hits(first: $genes_size offset: $genes_offset, filters: $filters) {
@@ -236,7 +236,7 @@ export const ExplorePageQuery = {
             }
           }
           ssms {
-            aggregations(filters: $filters aggregations_filter_themselves: false) {
+            aggregations(filters: $filters) {
               ${SSMAggregations.getFragment("aggregations")}
             }
             hits(first: $ssms_size offset: $ssms_offset, filters: $filters) {

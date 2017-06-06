@@ -10,7 +10,6 @@ import AddCaseFilesToCartButton
 import ProjectLink from "@ncigdc/components/Links/ProjectLink";
 import CaseLink from "@ncigdc/components/Links/CaseLink";
 import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
-import AnnotationsLink from "@ncigdc/components/Links/AnnotationsLink";
 import { Th, Td } from "@ncigdc/uikit/Table";
 import { makeFilter } from "@ncigdc/utils/filters";
 // import formatFileSize from "@ncigdc/utils/formatFileSize";
@@ -18,6 +17,7 @@ import ageDisplay from "@ncigdc/utils/ageDisplay";
 import withRouter from "@ncigdc/utils/withRouter";
 import styled from "@ncigdc/theme/styled";
 import { createDataCategoryColumns } from "./utils";
+import { AnnotationCountLink } from "../components/Links/AnnotationCountLink";
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
@@ -192,17 +192,12 @@ const casesTableModel = [
     th: () => <NumTh key="Annotations" rowSpan="2">Annotations</NumTh>,
     td: ({ node }) => (
       <NumTd key="Annotations">
-        {node.annotations.hits.total === 0
-          ? "0"
-          : <AnnotationsLink
-              query={{
-                filters: makeFilter([
-                  { field: "annotations.case_id", value: node.case_id }
-                ])
-              }}
-            >
-              {node.annotations.hits.total.toLocaleString()}
-            </AnnotationsLink>}
+        <AnnotationCountLink
+          hits={node.annotations.hits}
+          filters={makeFilter([
+            { field: "annotations.case_id", value: node.case_id }
+          ])}
+        />
       </NumTd>
     )
   },

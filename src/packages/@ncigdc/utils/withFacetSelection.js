@@ -1,6 +1,7 @@
 /* @flow */
 /* eslint fp/no-this: 0, max-len: 1 */
 import _ from "lodash";
+import JSURL from "jsurl";
 import {
   withState,
   withProps,
@@ -9,13 +10,23 @@ import {
   compose
 } from "recompose";
 import tryParseJSON from "@ncigdc/utils/tryParseJSON";
+import withRouter from "@ncigdc/utils/withRouter";
+import { removeFilter } from "@ncigdc/utils/filters/index";
+import { removeEmptyKeys, parseFilterParam } from "@ncigdc/utils/uri/index";
+
+type TProps = {
+  storageKey: string,
+  presetFacetFields: Array<string>,
+  validFacetDocTypes: Array<string>,
+  validFacetPrefixes?: Array<string>
+};
 
 export default ({
   storageKey,
   presetFacetFields,
   validFacetDocTypes,
   validFacetPrefixes
-}) =>
+}: TProps) =>
   compose(
     withState("shouldShowFacetSelection", "setShouldShowFacetSelection", false),
     withState("userSelectedFacets", "setUserSelectedFacets", []),
@@ -59,6 +70,7 @@ export default ({
         this.props.loadUserSelectedFacetsFromStorage();
       }
     }),
+    withRouter,
     withHandlers({
       handleSelectFacet: ({
         userSelectedFacets,
@@ -81,11 +93,25 @@ export default ({
       handleRequestRemoveFacet: ({
         userSelectedFacets,
         setUserSelectedFacets,
-        saveFacetsToStorage
+        saveFacetsToStorage,
+        push,
+        query
       }) => facet => {
         const facets = _.without(userSelectedFacets, facet);
         setUserSelectedFacets(facets);
         saveFacetsToStorage(facets);
+
+        const newFilters = removeFilter(
+          facet.full,
+          parseFilterParam(query.filters)
+        );
+
+        push({
+          query: removeEmptyKeys({
+            ...query,
+            filters: newFilters && JSURL.stringify(newFilters)
+          })
+        });
       }
     })
   );

@@ -10,7 +10,8 @@ import type {
   TMergeFns,
   TMergeQuery,
   TSortFilters,
-  TFilterByWhitelist
+  TFilterByWhitelist,
+  TUriQuery
 } from "./types";
 
 const sortFilters: TSortFilters = (a, b) =>
@@ -230,6 +231,22 @@ export const makeFilter: TMakeFilter = (fields, returnString = true) => {
     : {};
 
   return returnString ? JSON.stringify(filters) : filters;
+};
+
+type TRemoveFilter = (field: string, query: TUriQuery) => TUriQuery;
+export const removeFilter: TRemoveFilter = (field, query) => {
+  if (!query) return null;
+  if (!field) return query;
+  const content = (Array.isArray(query.content)
+    ? query.content
+    : [query]).filter(f => f.content.field !== field);
+
+  return content.length
+    ? {
+        op: "and",
+        content: content
+      }
+    : null;
 };
 
 export default makeFilter;

@@ -3,7 +3,7 @@
 
 import React from "react";
 import Relay from "react-relay/classic";
-import { compose, withState } from "recompose";
+import { compose, withState, withPropsOnChange } from "recompose";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { parse } from "query-string";
@@ -14,11 +14,11 @@ import {
   parseJSURLParam
 } from "@ncigdc/utils/uri";
 import { viewerQuery } from "@ncigdc/routes/queries";
-import MutationsCount from "@ncigdc/containers/MutationsCount";
 import withSize from "@ncigdc/utils/withSize";
 import withBetterRouter from "@ncigdc/utils/withRouter";
 import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
 import Showing from "@ncigdc/components/Pagination/Showing";
+import MutationsCount from "@ncigdc/components/MutationsCount";
 import GeneLink from "@ncigdc/components/Links/GeneLink";
 import { handleReadyStateChange } from "@ncigdc/dux/loaders";
 import EntityPageHorizontalTable
@@ -61,7 +61,10 @@ const createRenderer = (Route, Container) =>
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
-  static queries = viewerQuery;
+  static queries = {
+    ...viewerQuery,
+    exploreSsms: () => Relay.QL`query { viewer }`
+  };
   static prepareParams = ({
     location: { search },
     defaultSize = 10,
@@ -96,6 +99,7 @@ class Route extends Relay.Route {
 const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
+      ssmCountsfilters: null,
       genesTable_filters: null,
       genesTable_size: 10,
       genesTable_offset: 0,
@@ -112,12 +116,25 @@ const createContainer = Component =>
       )
     },
     fragments: {
-      viewer: () => Relay.QL`
+      exploreSsms: () => Relay.QL`
         fragment on Root {
           explore {
             ssms {
-              ${MutationsCount.getFragment("ssms")}
+              aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) {
+                consequence__transcript__gene__gene_id {
+                  buckets {
+                    key
+                    doc_count
+                  }
+                }
+              }
             }
+          }
+        }
+      `,
+      viewer: () => Relay.QL`
+        fragment on Root {
+          explore {
             cases { hits(first: 0 filters: $ssmTested) { total }}
             filteredCases: cases {
               hits(first: 0 filters: $geneCaseFilter) {
@@ -159,10 +176,59 @@ const createContainer = Component =>
 const Component = compose(
   withBetterRouter,
   withState("survivalLoadingId", "setSurvivalLoadingId", ""),
+  withState("ssmCountsLoading", "setSsmCountsLoading", true),
+  withPropsOnChange(
+    ["viewer"],
+    ({
+      ssmCountsLoading,
+      setSsmCountsLoading,
+      viewer,
+      relay,
+      defaultFilters
+    }: TTableProps) => {
+      const { hits } = viewer.explore.genes;
+      const geneIds = hits.edges.map(e => e.node.gene_id);
+      if (!ssmCountsLoading) {
+        setSsmCountsLoading(true);
+      }
+      relay.setVariables(
+        {
+          ssmCountsfilters: geneIds.length
+            ? addInFilters(
+                defaultFilters,
+                makeFilter(
+                  [
+                    {
+                      field: "consequence.transcript.gene.gene_id",
+                      value: geneIds
+                    }
+                  ],
+                  false
+                )
+              )
+            : null
+        },
+        readyState => {
+          if (readyState.done) {
+            setSsmCountsLoading(false);
+          }
+        }
+      );
+    }
+  ),
+  withPropsOnChange(["exploreSsms"], ({ exploreSsms: { explore } }) => {
+    const { ssms: { aggregations } } = explore;
+    const ssmCounts = (aggregations || {
+      consequence__transcript__gene__gene_id: { buckets: [] }
+    }).consequence__transcript__gene__gene_id.buckets
+      .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
+    return { ssmCounts };
+  }),
   withSize()
 )(
   ({
     viewer: { explore } = {},
+    exploreSsms,
     defaultFilters,
     relay = { route: { params: {} } },
     setSurvivalLoadingId,
@@ -172,9 +238,11 @@ const Component = compose(
     hasEnoughSurvivalDataOnPrimaryCurve,
     context,
     query,
-    tableLink
+    tableLink,
+    ssmCounts = [],
+    ssmCountsLoading
   }) => {
-    const { genes, filteredCases, ssms, cases } = explore || {};
+    const { genes, filteredCases, cases } = explore || {};
 
     if (genes && !genes.hits.edges.length) {
       return <Row style={{ padding: "1rem" }}>No gene data found.</Row>;
@@ -351,20 +419,18 @@ const Component = compose(
                   gdcCaseTotal={cases.hits.total}
                 />
               ),
-              num_mutations: React.createElement(
-                MutationsCount,
-                {
-                  key: g.gene_id,
-                  ssms,
-                  filters: addInFilters(
+              num_mutations: (
+                <MutationsCount
+                  isLoading={ssmCountsLoading}
+                  ssmCount={ssmCounts[g.gene_id]}
+                  filters={addInFilters(
                     defaultFilters,
                     makeFilter(
                       [{ field: "genes.gene_id", value: [g.gene_id] }],
                       false
                     )
-                  )
-                },
-                null
+                  )}
+                />
               ),
               annotations: g.is_cancer_gene_census &&
                 <span>

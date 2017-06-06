@@ -4,8 +4,9 @@ import styled from "@ncigdc/theme/styled";
 
 const Box = styled.span({
   backgroundColor: ({ theme }) => theme.greyScale4,
-  width: "10px",
-  height: "20px"
+  width: "20px",
+  height: "16px",
+  display: "inline-block"
 });
 
 const GreyBox = () => <Box />;

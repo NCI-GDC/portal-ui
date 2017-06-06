@@ -11,7 +11,6 @@ import { Tooltip } from "@ncigdc/uikit/Tooltip";
 import { Column, Row } from "@ncigdc/uikit/Flex";
 import { makeFilter } from "@ncigdc/utils/filters";
 import ProjectLink from "@ncigdc/components/Links/ProjectLink";
-import MutationsCount from "@ncigdc/containers/MutationsCount";
 import GreyBox from "@ncigdc/uikit/GreyBox";
 import Loader from "@ncigdc/uikit/Loaders/Loader";
 import DownloadTableToTsvButton
@@ -22,6 +21,7 @@ import Showing from "@ncigdc/components/Pagination/Showing";
 import Pagination from "@ncigdc/components/Pagination";
 import withRouter from "@ncigdc/utils/withRouter";
 import type { TGroupFilter } from "@ncigdc/utils/filters/types";
+import MutationsCount from "@ncigdc/components/MutationsCount";
 
 const paginationPrefix = "canDistTable";
 
@@ -74,7 +74,23 @@ const CancerDistributionTableComponent = compose(
         !isEqual(nextProps.cases, this.props.cases) &&
         nextProps.cases.filtered
       ) {
+        const { geneId } = this.props;
         this.props.relay.setVariables({
+          fetchSsmCounts: !!geneId,
+          ssmCountsfilters: geneId
+            ? {
+                op: "and",
+                content: [
+                  {
+                    op: "in",
+                    content: {
+                      field: "consequence.transcript.gene.gene_id",
+                      value: [geneId]
+                    }
+                  }
+                ]
+              }
+            : null,
           fetchProjects: true,
           numProjects: nextProps.cases.filtered.project__project_id.buckets
             .length,
@@ -96,6 +112,12 @@ const CancerDistributionTableComponent = compose(
   withPropsOnChange(
     ["cases", "projects", "geneId", "entityName", "explore"],
     ({ cases, projects, geneId, entityName, explore }: TProps) => {
+      const { ssms: { aggregations } } = explore;
+      const ssmCounts = (aggregations || {
+        occurrence__case__project__project_id: { buckets: [] }
+      }).occurrence__case__project__project_id.buckets
+        .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
+
       const casesByProjectMap = get(
         cases.total,
         "project__project_id.buckets",
@@ -125,7 +147,8 @@ const CancerDistributionTableComponent = compose(
             site: project ? (project.node.primary_site || []).join(", ") : null,
             num_affected_cases: b.doc_count,
             num_affected_cases_total: totalCasesByProject,
-            num_affected_cases_percent: b.doc_count / totalCasesByProject
+            num_affected_cases_percent: b.doc_count / totalCasesByProject,
+            mutations_counts: ssmCounts[b.key]
           };
         })
         .sort(
@@ -187,8 +210,7 @@ const CancerDistributionTableComponent = compose(
             ? {
                 num_mutations: (
                   <MutationsCount
-                    key={row.project_id}
-                    ssms={explore.ssms}
+                    ssmCount={ssmCounts[row.project_id]}
                     filters={projectFilter}
                   />
                 )
@@ -347,6 +369,8 @@ const CancerDistributionTableQuery = {
     numProjects: null,
     fetchProjects: false,
     fetchFilteredCaseAggs: false,
+    ssmCountsfilters: null,
+    fetchSsmCounts: false,
     ssmTested: makeFilter(
       [
         {
@@ -375,7 +399,15 @@ const CancerDistributionTableQuery = {
     explore: () => Relay.QL`
       fragment on Explore {
         ssms {
-          ${MutationsCount.getFragment("ssms")}
+          blah: hits(first: 0) { total }
+          aggregations(filters: $ssmCountsfilters) @include(if: $fetchSsmCounts){
+            occurrence__case__project__project_id {
+              buckets {
+                key
+                doc_count
+              }
+            }
+          }
         }
       }
     `,

@@ -122,7 +122,7 @@ export const ProjectsPageQuery = {
           }
         }
         projects {
-          aggregations(filters: $filters) {
+          aggregations(filters: $filters aggregations_filter_themselves: false) {
             ${ProjectAggregations.getFragment("aggregations")}
           }
           hits(first: $size offset: $offset, sort: $projects_sort, filters: $filters) {

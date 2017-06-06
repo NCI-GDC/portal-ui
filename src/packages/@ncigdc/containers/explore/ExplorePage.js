@@ -18,7 +18,6 @@ import CaseTable from "@ncigdc/containers/explore/CaseTable";
 import CaseAggregations from "@ncigdc/containers/explore/CaseAggregations";
 import GeneAggregations from "@ncigdc/containers/explore/GeneAggregations";
 import SSMAggregations from "@ncigdc/containers/explore/SSMAggregations";
-import MutationsCount from "@ncigdc/containers/MutationsCount";
 
 import GeneSymbol from "@ncigdc/containers/GeneSymbol";
 
@@ -214,11 +213,9 @@ export const ExplorePageQuery = {
           ${GeneSymbol.getFragment("explore")}
         }
         explore {
-          mutationsCountFragment: ssms {
-            ${MutationsCount.getFragment("ssms")}
-          }
+          ${CaseTable.getFragment("explore")}
           cases {
-            aggregations(filters: $filters) {
+            aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment("aggregations")}
               ${ExploreCasesPies.getFragment("aggregations")}
             }
@@ -228,7 +225,7 @@ export const ExplorePageQuery = {
             }
           }
           genes {
-            aggregations(filters: $filters) {
+            aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${GeneAggregations.getFragment("aggregations")}
             }
             hits(first: $genes_size offset: $genes_offset, filters: $filters) {
@@ -236,7 +233,7 @@ export const ExplorePageQuery = {
             }
           }
           ssms {
-            aggregations(filters: $filters) {
+            aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${SSMAggregations.getFragment("aggregations")}
             }
             hits(first: $ssms_size offset: $ssms_offset, filters: $filters) {

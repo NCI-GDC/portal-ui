@@ -11,7 +11,7 @@ import type {
   TMergeQuery,
   TSortFilters,
   TFilterByWhitelist,
-  TUriQuery
+  TRemoveFilter
 } from "./types";
 
 const sortFilters: TSortFilters = (a, b) =>
@@ -233,18 +233,22 @@ export const makeFilter: TMakeFilter = (fields, returnString = true) => {
   return returnString ? JSON.stringify(filters) : filters;
 };
 
-type TRemoveFilter = (field: string, query: TUriQuery) => TUriQuery;
 export const removeFilter: TRemoveFilter = (field, query) => {
   if (!query) return null;
   if (!field) return query;
-  const content = (Array.isArray(query.content)
-    ? query.content
-    : [query]).filter(f => f.content.field !== field);
 
-  return content.length
+  if (!Array.isArray(query.content)) {
+    return query.content.field === field ? null : query;
+  }
+
+  const filteredContent = query.content
+    .map(q => removeFilter(field, q))
+    .filter(Boolean);
+
+  return filteredContent.length
     ? {
-        op: "and",
-        content: content
+        ...query,
+        content: filteredContent
       }
     : null;
 };

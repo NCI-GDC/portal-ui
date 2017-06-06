@@ -45,3 +45,8 @@ export type TFilterByWhitelist = (
   o: ?TRawQuery,
   w: ?Array<string>
 ) => TRawQuery;
+
+export type TRemoveFilter = (
+  field: string,
+  query: TGroupFilter
+) => ?TGroupFilter;

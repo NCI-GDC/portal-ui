@@ -13,7 +13,7 @@ const withPagination = (props = {}) => Wrapper =>
   class extends React.Component {
     state = {
       first: props.first || 10,
-      offset: props.offset || 0
+      offset: props.offset || 0,
     };
 
     setPagination = payload => this.setState(payload);
@@ -33,7 +33,7 @@ const styles = {
   topRow: theme => ({
     alignItems: "center",
     padding: "1rem",
-    borderTop: `1px solid ${theme.greyScale5}`
+    borderTop: `1px solid ${theme.greyScale5}`,
   }),
   tableActionButtons: theme =>
     css({
@@ -47,14 +47,14 @@ const styles = {
       border: `1px solid ${theme.greyScale4}`,
       ".inactive": {
         ":hover": {
-          backgroundColor: theme.greyScale6
-        }
+          backgroundColor: theme.greyScale6,
+        },
       },
       ".active": {
         backgroundColor: theme.secondaryHighContrast,
-        color: "white"
-      }
-    })
+        color: "white",
+      },
+    }),
 };
 
 const PaginationHeader = props => (
@@ -82,7 +82,7 @@ export const PaginationBtn = withTheme(
     >
       {children}
     </button>
-  )
+  ),
 );
 
 const PaginationControls = withTheme(props => {
@@ -107,14 +107,14 @@ const PaginationControls = withTheme(props => {
         <PaginationBtn
           onClick={() =>
             props.setPagination({
-              offset: Math.max(0, props.offset - props.first)
+              offset: Math.max(0, props.offset - props.first),
             })}
         >
           {"<"}
         </PaginationBtn>
         {_.range(
           1 + pageOffset,
-          Math.min(11 + pageOffset, totalPages)
+          Math.min(11 + pageOffset, totalPages),
         ).map(x => (
           <PaginationBtn
             key={x}
@@ -134,7 +134,7 @@ const PaginationControls = withTheme(props => {
         <PaginationBtn
           onClick={() =>
             props.setPagination({
-              offset: (props.total - props.total) % props.size
+              offset: (props.total - props.total) % props.size,
             })}
         >
           {">>"}
@@ -156,8 +156,8 @@ const PaginationContainer = compose(
       ) {
         this.props.onChange(next);
       }
-    }
-  })
+    },
+  }),
 )(props => (
   <span>
     <Row style={{ padding: "0 1rem" }}>
@@ -174,5 +174,5 @@ export {
   withPagination,
   PaginationHeader,
   PaginationControls,
-  PaginationContainer
+  PaginationContainer,
 };

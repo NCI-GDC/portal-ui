@@ -18,7 +18,7 @@ const Dropdown = ({
   dropdownClassName = "",
   button = null,
   isDisabled = false,
-  autoclose = true
+  autoclose = true,
 }) => (
   <span style={{ position: "relative", ...style }}>
     <span

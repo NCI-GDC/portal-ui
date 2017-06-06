@@ -30,8 +30,8 @@ export const buttonBaseStyles = {
     backgroundColor: ({ theme, disabled }) =>
       disabled
         ? theme.greyScale4
-        : Color(theme.primary).lighten(0.7).rgbString()
-  }
+        : Color(theme.primary).lighten(0.7).rgbString(),
+  },
 };
 
 type TButtonProps = {
@@ -39,7 +39,7 @@ type TButtonProps = {
   disabled?: boolean,
   leftIcon?: mixed,
   rightIcon?: mixed,
-  style?: Object
+  style?: Object,
 };
 const Button = (
   {
@@ -49,7 +49,7 @@ const Button = (
     disabled = false,
     children,
     ...props
-  }: TButtonProps = {}
+  }: TButtonProps = {},
 ) => {
   const StyledButton = styled.button({ ...buttonBaseStyles, ...style });
   return (

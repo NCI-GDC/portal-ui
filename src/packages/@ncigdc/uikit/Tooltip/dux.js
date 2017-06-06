@@ -8,7 +8,7 @@ export const setTooltip = Component => ({ type: SET_TOOLTIP, Component });
 
 export default handleActions(
   {
-    [SET_TOOLTIP]: (state, { Component }) => ({ Component })
+    [SET_TOOLTIP]: (state, { Component }) => ({ Component }),
   },
-  { Component: null }
+  { Component: null },
 );

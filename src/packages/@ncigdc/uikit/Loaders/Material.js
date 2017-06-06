@@ -4,14 +4,14 @@ import React from "react";
 import "./Material.css";
 
 type TProps = {
-  style?: Object
+  style?: Object,
 };
 
 const Spinner = ({ style = {} }: TProps = {}) => (
   <div
     style={{
       transition: "opacity 0.35s ease",
-      ...style
+      ...style,
     }}
     className="mdl-spinner mdl-spinner--single-color mdl-js-spinner is-active is-upgraded"
   >

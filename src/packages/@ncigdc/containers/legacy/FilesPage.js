@@ -15,20 +15,20 @@ export type TProps = {
   viewer: {
     cases: {
       aggregations: string,
-      hits: string
+      hits: string,
     },
     files: {
       aggregations: string,
-      hits: string
-    }
-  }
+      hits: string,
+    },
+  },
 };
 
 export const FilesPageComponent = (props: TProps) => {
   const setAutocomplete = quicksearch =>
     props.relay.setVariables({
       quicksearch,
-      runQuicksearch: !!quicksearch
+      runQuicksearch: !!quicksearch,
     });
 
   return (
@@ -42,14 +42,14 @@ export const FilesPageComponent = (props: TProps) => {
               hits={(props.viewer.cases || {}).hits || {}}
               setAutocomplete={setAutocomplete}
             />
-          )
+          ),
         },
         {
           text: "files",
           component: (
             <FileAggregations aggregations={props.viewer.files.aggregations} />
-          )
-        }
+          ),
+        },
       ]}
       results={<FileTable hits={props.viewer.files.hits} />}
     />
@@ -63,7 +63,7 @@ export const FilesPageQuery = {
     files_sort: null,
     filters: null,
     quicksearch: "",
-    runQuicksearch: false
+    runQuicksearch: false,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -85,8 +85,8 @@ export const FilesPageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const FilesPage = Relay.createContainer(FilesPageComponent, FilesPageQuery);

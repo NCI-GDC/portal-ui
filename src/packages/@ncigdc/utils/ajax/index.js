@@ -8,8 +8,8 @@ const DEFAULTS = {
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": true,
-    "X-Auth-Token": "secret admin token"
-  }
+    "X-Auth-Token": "secret admin token",
+  },
 };
 
 export function fetchAuth(options: { endpoint: string }): Object {
@@ -17,8 +17,8 @@ export function fetchAuth(options: { endpoint: string }): Object {
     [CALL_API]: {
       ...DEFAULTS,
       ...options,
-      endpoint: urlJoin(process.env.REACT_APP_GDC_AUTH, options.endpoint)
-    }
+      endpoint: urlJoin(process.env.REACT_APP_GDC_AUTH, options.endpoint),
+    },
   };
 }
 
@@ -29,6 +29,6 @@ export const fetchApi = (endpoint, opts = {}) => {
     opts.method = "POST"; // eslint-disable-line no-param-reassign, fp/no-mutation
   }
   return fetch(urlJoin(process.env.REACT_APP_API, endpoint), opts).then(r =>
-    r.json()
+    r.json(),
   );
 };

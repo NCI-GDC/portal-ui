@@ -11,7 +11,7 @@ import { scaleOrdinal, schemeCategory10 } from "d3";
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam
+  parseJSURLParam,
 } from "@ncigdc/utils/uri";
 import { viewerQuery } from "@ncigdc/routes/queries";
 import withSize from "@ncigdc/utils/withSize";
@@ -68,27 +68,30 @@ class Route extends Relay.Route {
   static prepareParams = ({
     location: { search },
     defaultSize = 10,
-    defaultFilters = null
+    defaultFilters = null,
   }) => {
     const q = parse(search);
 
     return {
       genesTable_filters: parseFilterParam(
         q.genesTable_filters,
-        defaultFilters
+        defaultFilters,
       ),
       genesTable_offset: parseIntParam(q.genesTable_offset, 0),
       genesTable_size: parseIntParam(q.genesTable_size, defaultSize),
       genesTable_sort: parseJSURLParam(q.genesTable_sort, null),
       geneCaseFilter: addInFilters(
         q.genesTable_filters || defaultFilters,
-        makeFilter([
-          {
-            field: "cases.available_variation_data",
-            value: "ssm"
-          }
-        ])
-      )
+        makeFilter(
+          [
+            {
+              field: "cases.available_variation_data",
+              value: "ssm",
+            },
+          ],
+          false,
+        ),
+      ),
     };
   };
 }
@@ -102,12 +105,15 @@ const createContainer = Component =>
       genesTable_offset: 0,
       score: "case.project.project_id",
       geneCaseFilter: null,
-      ssmTested: makeFilter([
-        {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ])
+      ssmTested: makeFilter(
+        [
+          {
+            field: "cases.available_variation_data",
+            value: "ssm",
+          },
+        ],
+        false,
+      ),
     },
     fragments: {
       exploreSsms: () => Relay.QL`
@@ -163,59 +169,14 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 const Component = compose(
   withBetterRouter,
   withState("survivalLoadingId", "setSurvivalLoadingId", ""),
-  withState("ssmCountsLoading", "setSsmCountsLoading", true),
-  withPropsOnChange(
-    ["viewer"],
-    ({
-      ssmCountsLoading,
-      setSsmCountsLoading,
-      viewer,
-      relay,
-      defaultFilters
-    }: TTableProps) => {
-      const { hits } = viewer.explore.genes;
-      const geneIds = hits.edges.map(e => e.node.gene_id);
-      if (!ssmCountsLoading) {
-        setSsmCountsLoading(true);
-      }
-      relay.setVariables(
-        {
-          ssmCountsfilters: geneIds.length
-            ? addInFilters(
-                defaultFilters,
-                makeFilter([
-                  {
-                    field: "consequence.transcript.gene.gene_id",
-                    value: geneIds
-                  }
-                ])
-              )
-            : null
-        },
-        readyState => {
-          if (readyState.done) {
-            setSsmCountsLoading(false);
-          }
-        }
-      );
-    }
-  ),
-  withPropsOnChange(["exploreSsms"], ({ exploreSsms: { explore } }) => {
-    const { ssms: { aggregations } } = explore;
-    const ssmCounts = (aggregations || {
-      consequence__transcript__gene__gene_id: { buckets: [] }
-    }).consequence__transcript__gene__gene_id.buckets
-      .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
-    return { ssmCounts };
-  }),
-  withSize()
+  withSize(),
 )(
   ({
     viewer: { explore } = {},
@@ -230,8 +191,6 @@ const Component = compose(
     context,
     query,
     tableLink,
-    ssmCounts = [],
-    ssmCountsLoading
   }) => {
     const { genes, filteredCases, cases } = explore || {};
 
@@ -247,7 +206,7 @@ const Component = compose(
           style={{
             backgroundColor: "white",
             padding: "1rem",
-            justifyContent: "space-between"
+            justifyContent: "space-between",
           }}
         >
           <Showing
@@ -270,7 +229,7 @@ const Component = compose(
                 "cytoband",
                 "biotype",
                 "gene_id",
-                "is_cancer_gene_census"
+                "is_cancer_gene_census",
               ]}
               tsvSelector="#frequently-mutated-genes-table"
               tsvFilename="frequently-mutated-genes.tsv"
@@ -300,7 +259,7 @@ const Component = compose(
                 >
                   # Affected Cases<br />in {context}
                 </Tooltip>
-              )
+              ),
             },
             {
               key: "projectBreakdown",
@@ -319,7 +278,7 @@ const Component = compose(
                 >
                   # Affected Cases<br /> Across the GDC
                 </Tooltip>
-              )
+              ),
             },
             {
               key: "num_mutations",
@@ -335,18 +294,18 @@ const Component = compose(
                 >
                   # Mutations
                 </Tooltip>
-              )
+              ),
             },
             {
               key: "annotations",
               title: "Annotations",
-              tdStyle: { textAlign: "center", padding: "5px 0 0 0" }
+              tdStyle: { textAlign: "center", padding: "5px 0 0 0" },
             },
             {
               title: <span>Survival <br />Analysis</span>,
               key: "survival_plot",
-              style: { textAlign: "center", width: "100px" }
-            }
+              style: { textAlign: "center", width: "100px" },
+            },
           ]}
           data={data
             .map(g => ({
@@ -367,10 +326,11 @@ const Component = compose(
                       searchTableTab: "cases",
                       filters: addInFilters(
                         query.fmgTable_filters || defaultFilters,
-                        makeFilter([
-                          { field: "genes.gene_id", value: [g.gene_id] }
-                        ])
-                      )
+                        makeFilter(
+                          [{ field: "genes.gene_id", value: [g.gene_id] }],
+                          false,
+                        ),
+                      ),
                     }}
                   >
                     {(g.numCases || 0).toLocaleString()}
@@ -381,13 +341,16 @@ const Component = compose(
                       searchTableTab: "cases",
                       filters: addInFilters(
                         query.fmgTable_filters || defaultFilters,
-                        makeFilter([
-                          {
-                            field: "cases.available_variation_data",
-                            value: ["ssm"]
-                          }
-                        ])
-                      )
+                        makeFilter(
+                          [
+                            {
+                              field: "cases.available_variation_data",
+                              value: ["ssm"],
+                            },
+                          ],
+                          false,
+                        ),
+                      ),
                     }}
                   >
                     {(filteredCases.hits.total || 0).toLocaleString()}
@@ -398,9 +361,10 @@ const Component = compose(
               ),
               projectBreakdown: (
                 <ProjectBreakdown
-                  filters={makeFilter([
-                    { field: "genes.gene_id", value: g.gene_id }
-                  ])}
+                  filters={makeFilter(
+                    [{ field: "genes.gene_id", value: g.gene_id }],
+                    false,
+                  )}
                   caseTotal={g.case.hits.total}
                   gdcCaseTotal={cases.hits.total}
                 />
@@ -411,9 +375,13 @@ const Component = compose(
                   ssmCount={ssmCounts[g.gene_id]}
                   filters={addInFilters(
                     defaultFilters,
-                    makeFilter([{ field: "genes.gene_id", value: [g.gene_id] }])
-                  )}
-                />
+                    makeFilter(
+                      [{ field: "genes.gene_id", value: [g.gene_id] }],
+                      false,
+                    ),
+                  ),
+                },
+                null,
               ),
               annotations: g.is_cancer_gene_census &&
                 <span>
@@ -435,11 +403,11 @@ const Component = compose(
                   <Button
                     style={{
                       padding: "2px 3px",
-                      backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
-                        ? colors(selectedSurvivalData.id === g.symbol ? 1 : 0)
-                        : "#666",
+                      backgroundColor: colors(
+                        selectedSurvivalData.id === g.symbol ? 1 : 0,
+                      ),
                       color: "white",
-                      margin: "0 auto"
+                      margin: "0 auto",
                     }}
                     disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
                     onClick={() => {
@@ -448,7 +416,7 @@ const Component = compose(
                         getSurvivalCurves({
                           field: "gene.symbol",
                           value: g.symbol,
-                          currentFilters: defaultFilters
+                          currentFilters: defaultFilters,
                         }).then(survivalData => {
                           setSelectedSurvivalData(survivalData);
                           setSurvivalLoadingId("");
@@ -464,7 +432,7 @@ const Component = compose(
                     <Hidden>add to survival plot</Hidden>
                   </Button>
                 </Tooltip>
-              )
+              ),
             }))
             // NOTE: manual sort is required because relay does not return items from cache ordered by score (PRTL-1041)
             .sort((a, b) => b.numCases - a.numCases)}
@@ -476,7 +444,7 @@ const Component = compose(
         />
       </span>
     );
-  }
+  },
 );
 
 export default createRenderer(Route, createContainer(Component));

@@ -2,7 +2,7 @@
 
 export const setModal = component => ({
   type: "TOGGLE_MODAL",
-  payload: component
+  payload: component,
 });
 
 function modal(state = null, action) {

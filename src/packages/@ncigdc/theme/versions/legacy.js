@@ -34,5 +34,5 @@ export default {
 
   facetsPanelWidth: "35rem",
 
-  headerPosition: "absolute"
+  headerPosition: "absolute",
 };

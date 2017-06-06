@@ -13,5 +13,5 @@ export default {
   Project: "PR",
   Annotation: "AN",
   Gene: "GN",
-  Ssm: "MU"
+  Ssm: "MU",
 };

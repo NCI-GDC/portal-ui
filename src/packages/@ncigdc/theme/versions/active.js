@@ -31,7 +31,7 @@ const theme = {
     HIGH: "rgb(185, 36, 36)",
     MODERATE: "#634d0c",
     LOW: "#015c0a",
-    MODIFIER: "#c94d18"
+    MODIFIER: "#c94d18",
   },
   //
   // alerts
@@ -50,7 +50,7 @@ const theme = {
 
   headerPosition: "fixed",
 
-  spacing: "2rem"
+  spacing: "2rem",
 };
 
 export const globalRules = `

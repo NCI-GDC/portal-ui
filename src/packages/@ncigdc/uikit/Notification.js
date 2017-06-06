@@ -22,33 +22,33 @@ const styles = {
     pointerEvents: "none",
     textAlign: "center",
     wordBreak: "break-word",
-    ...center
+    ...center,
   },
   inactive: {
-    transform: "translateY(-140%)"
+    transform: "translateY(-140%)",
   },
   active: {
-    transform: "translateY(0)"
+    transform: "translateY(0)",
   },
   info: {
     color: "#5C5151",
     backgroundColor: "#EDF8FB",
-    border: "1px solid #B4CCD4"
+    border: "1px solid #B4CCD4",
   },
   add: {
     color: "#3c763d",
     backgroundColor: "#dff0d8",
-    border: "1px solid #d6e9c6"
+    border: "1px solid #d6e9c6",
   },
   remove: {
     color: "#773c63",
     backgroundColor: "#f0d8dd",
-    border: "1px solid #e9c6c6"
+    border: "1px solid #e9c6c6",
   },
   warning: {
     color: "#8a6d3b",
     backgroundColor: "#fcf8e3",
-    border: "1px solid #faebcc"
+    border: "1px solid #faebcc",
   },
   toast: {
     position: "relative",
@@ -56,7 +56,7 @@ const styles = {
     width: "40rem",
     borderRadius: "10px",
     pointerEvents: "all",
-    ...zDepth1
+    ...zDepth1,
   },
   closeIcon: {
     position: "absolute",
@@ -64,9 +64,9 @@ const styles = {
     right: "5px",
     cursor: "pointer",
     ":hover": {
-      color: "red"
-    }
-  }
+      color: "red",
+    },
+  },
 };
 
 const Notification = ({ style, visible, action, close, children }) => (
@@ -74,7 +74,7 @@ const Notification = ({ style, visible, action, close, children }) => (
     style={{
       ...styles.container,
       ...(visible ? styles.active : styles.inactive),
-      ...style
+      ...style,
     }}
   >
     <div style={{ ...styles.toast, ...(styles[action] || styles.add) }}>
@@ -91,7 +91,7 @@ Notification.propTypes = {
   visible: PropTypes.bool,
   action: PropTypes.string,
   close: PropTypes.func,
-  delay: PropTypes.number
+  delay: PropTypes.number,
 };
 
 let timeoutId;
@@ -144,8 +144,8 @@ const enhance = compose(
       setState(() => false);
       if (timeoutId) clearTimeout(timeoutId);
     },
-    ...rest
-  }))
+    ...rest,
+  })),
 );
 
 /*----------------------------------------------------------------------------*/

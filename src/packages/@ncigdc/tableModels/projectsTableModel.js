@@ -2,7 +2,7 @@
 import React from "react";
 import {
   RepositoryCasesLink,
-  RepositoryFilesLink
+  RepositoryFilesLink,
 } from "@ncigdc/components/Links/RepositoryLink";
 import ProjectLink from "@ncigdc/components/Links/ProjectLink";
 import { Th, Td } from "@ncigdc/uikit/Table";
@@ -25,15 +25,15 @@ const dataCategoryColumns = createDataCategoryColumns({
   getCellLinkFilters: node => [
     {
       field: "cases.project.project_id",
-      value: node.project_id
-    }
+      value: node.project_id,
+    },
   ],
   getTotalLinkFilters: hits => [
     {
       field: "cases.project.project_id",
-      value: hits.edges.map(({ node: p }) => p.project_id)
-    }
-  ]
+      value: hits.edges.map(({ node: p }) => p.project_id),
+    },
+  ],
 });
 
 const CasesLink: TLink = ({ node, fields = [], children }) =>
@@ -41,22 +41,28 @@ const CasesLink: TLink = ({ node, fields = [], children }) =>
     ? <span>0</span>
     : <RepositoryCasesLink
         query={{
-          filters: makeFilter([
-            { field: "cases.project.project_id", value: [node.project_id] },
-            ...fields
-          ])
+          filters: makeFilter(
+            [
+              { field: "cases.project.project_id", value: [node.project_id] },
+              ...fields,
+            ],
+            false,
+          ),
         }}
       >
         {children}
       </RepositoryCasesLink>;
 
 const getProjectIdFilter = projects =>
-  makeFilter([
-    {
-      field: "cases.project.project_id",
-      value: projects.edges.map(({ node: p }) => p.project_id)
-    }
-  ]);
+  makeFilter(
+    [
+      {
+        field: "cases.project.project_id",
+        value: projects.edges.map(({ node: p }) => p.project_id),
+      },
+    ],
+    false,
+  );
 
 const projectsTableModel = [
   {
@@ -71,7 +77,7 @@ const projectsTableModel = [
           {node.project_id}
         </ProjectLink>
       </Td>
-    )
+    ),
   },
   {
     name: "Disease Type",
@@ -83,7 +89,7 @@ const projectsTableModel = [
       <Td key={node.disease_type} style={{ whiteSpace: "normal" }}>
         {node.disease_type}
       </Td>
-    )
+    ),
   },
   {
     name: "Primary Site",
@@ -91,7 +97,7 @@ const projectsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Primary Site</Th>,
-    td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>
+    td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
   },
   {
     name: "Program",
@@ -99,7 +105,7 @@ const projectsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Program</Th>,
-    td: ({ node }) => <Td key="program">{node.program.name}</Td>
+    td: ({ node }) => <Td key="program">{node.program.name}</Td>,
   },
   {
     name: "Cases",
@@ -118,7 +124,7 @@ const projectsTableModel = [
       <NumTd>
         <RepositoryCasesLink
           query={{
-            filters: query.filters ? getProjectIdFilter(hits) : null
+            filters: query.filters ? getProjectIdFilter(hits) : null,
           }}
         >
           {hits.edges
@@ -126,7 +132,7 @@ const projectsTableModel = [
             .toLocaleString()}
         </RepositoryCasesLink>
       </NumTd>
-    ))
+    )),
   },
   ...dataCategoryColumns,
   {
@@ -139,9 +145,10 @@ const projectsTableModel = [
       <NumTd>
         <RepositoryFilesLink
           query={{
-            filters: makeFilter([
-              { field: "cases.project.project_id", value: node.project_id }
-            ])
+            filters: makeFilter(
+              [{ field: "cases.project.project_id", value: node.project_id }],
+              false,
+            ),
           }}
         >
           {node.summary.file_count.toLocaleString()}
@@ -152,7 +159,7 @@ const projectsTableModel = [
       <NumTd>
         <RepositoryFilesLink
           query={{
-            filters: query.filters ? getProjectIdFilter(hits) : null
+            filters: query.filters ? getProjectIdFilter(hits) : null,
           }}
         >
           {hits.edges
@@ -160,7 +167,7 @@ const projectsTableModel = [
             .toLocaleString()}
         </RepositoryFilesLink>
       </NumTd>
-    ))
+    )),
   },
   {
     name: "File size",
@@ -177,11 +184,11 @@ const projectsTableModel = [
     total: ({ hits }) => (
       <NumTd>
         {formatFileSize(
-          hits.edges.reduce((acc, val) => acc + val.node.summary.file_size, 0)
+          hits.edges.reduce((acc, val) => acc + val.node.summary.file_size, 0),
         )}
       </NumTd>
-    )
-  }
+    ),
+  },
 ];
 
 export default projectsTableModel;

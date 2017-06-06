@@ -27,14 +27,14 @@ type TMargin = {
   top?: number,
   right?: number,
   bottom?: number,
-  left?: number
+  left?: number,
 };
 
 type TEmbed = {
   elements?: Array<?Element>,
   styles?: string,
   margins?: TMargin,
-  width?: number
+  width?: number,
 };
 
 export type TWrapSvg = ({
@@ -45,8 +45,8 @@ export type TWrapSvg = ({
   embed?: {
     top?: TEmbed,
     right?: TEmbed,
-    bottom?: TEmbed
-  }
+    bottom?: TEmbed,
+  },
 }) => ?Element;
 
 const titleHeight = 20;
@@ -56,13 +56,13 @@ function buildForeignObject({
   margins,
   width = 0,
   topOffset,
-  styles = ""
+  styles = "",
 }: {
   elements?: Array<?Element>,
   margins: TMargin,
   width?: number,
   topOffset: number,
-  styles?: string
+  styles?: string,
 }): { html: string, height: number } {
   const foreignObjects = elements.filter(Boolean);
   // $FlowIgnore
@@ -87,7 +87,7 @@ function buildForeignObject({
           </div>
         </div>
       </foreignObject>
-    `
+    `,
   };
 }
 
@@ -96,7 +96,7 @@ export const wrapSvg: TWrapSvg = ({
   title,
   margins = { top: 20, right: 20, bottom: 20, left: 20 },
   className = "",
-  embed = {}
+  embed = {},
 }) => {
   const svg = document.querySelector(selector);
   if (!svg) return svg;
@@ -104,7 +104,7 @@ export const wrapSvg: TWrapSvg = ({
   const {
     top: embedTop = {},
     right: embedRight = {},
-    bottom: embedBottom = {}
+    bottom: embedBottom = {},
   } = embed;
   const width = sum([
     parseInt(viewBox[2] || svg.getAttribute("width") || 0, 10),
@@ -112,23 +112,23 @@ export const wrapSvg: TWrapSvg = ({
     margins.right,
     embedRight.width,
     (embedRight.margins || {}).left,
-    (embedRight.margins || {}).right
+    (embedRight.margins || {}).right,
   ]);
 
   const rightObject = buildForeignObject({
     ...embedRight,
     margins: {
       ...embedRight.margins,
-      left: width - sum([embedRight.width, (embedRight.margins || {}).right])
+      left: width - sum([embedRight.width, (embedRight.margins || {}).right]),
     },
-    topOffset: titleHeight + margins.top
+    topOffset: titleHeight + margins.top,
   });
 
   const beforeObject = buildForeignObject({
     ...embedTop,
     margins,
     width: width - sum([margins.left, margins.right]),
-    topOffset: titleHeight + margins.top
+    topOffset: titleHeight + margins.top,
   });
 
   const height = sum([
@@ -136,14 +136,14 @@ export const wrapSvg: TWrapSvg = ({
     margins.top,
     margins.bottom,
     titleHeight,
-    beforeObject.height
+    beforeObject.height,
   ]);
 
   const afterObject = buildForeignObject({
     ...embedBottom,
     margins,
     width: width - sum([margins.left, margins.right]),
-    topOffset: height
+    topOffset: height,
   });
 
   const svgClass = svg.getAttribute("class");
@@ -169,7 +169,7 @@ export const wrapSvg: TWrapSvg = ({
       <g transform="translate(${margins.left || 0},${sum([
     titleHeight,
     margins.top,
-    beforeObject.height
+    beforeObject.height,
   ])})">
         ${svg.innerHTML}
       </g>

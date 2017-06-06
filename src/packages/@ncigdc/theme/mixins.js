@@ -7,11 +7,11 @@ import { getTheme } from "./index";
 export const center = {
   display: "flex",
   alignItems: "center",
-  justifyContent: "center"
+  justifyContent: "center",
 };
 
 export const zDepth1 = {
-  boxShadow: "0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)"
+  boxShadow: "0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)",
 };
 
 export const buttonLike = {
@@ -19,7 +19,7 @@ export const buttonLike = {
   padding: "6px 12px",
   fontSize: "14px",
   borderRadius: "4px",
-  border: "1px solid transparent"
+  border: "1px solid transparent",
 };
 
 export const dropdown = {
@@ -29,7 +29,7 @@ export const dropdown = {
   minWidth: "165px",
   backgroundColor: "white",
   textAlign: "left",
-  right: 0
+  right: 0,
 };
 
 export const dropdownButton = {
@@ -37,7 +37,7 @@ export const dropdownButton = {
   padding: "0.3rem 0.5rem",
   border: "1px solid rgb(204, 204, 204)",
   cursor: "pointer",
-  alignItems: "center"
+  alignItems: "center",
 };
 
 export const visualizingButton = {
@@ -48,7 +48,7 @@ export const visualizingButton = {
   minWidth: 40,
   minHeight: 28,
   display: "inline-flex",
-  outline: "none"
+  outline: "none",
 };
 
 export const margin = (left, right) => {
@@ -66,11 +66,11 @@ export const clickable = css({
   color: "rgb(38, 134, 195)",
   cursor: "pointer",
   ":hover": {
-    color: "rgb(35, 92, 124)"
-  }
+    color: "rgb(35, 92, 124)",
+  },
 });
 
 export const tableToolTipHint = () => ({
   display: "inline-block",
-  borderBottom: `1px dashed ${getTheme().greyScale3}`
+  borderBottom: `1px dashed ${getTheme().greyScale3}`,
 });

@@ -568,7 +568,7 @@ export const initialFileAggregationsVariables = {
   shouldShow_submitter_id: false,
   shouldShow_tags: false,
   shouldShow_type: false,
-  shouldShow_updated_datetime: false
+  shouldShow_updated_datetime: false,
 };
 
 export const repositoryFileAggregationsFragment = () => Relay.QL`

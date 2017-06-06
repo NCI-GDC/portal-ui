@@ -17,8 +17,8 @@ const NavLink = styled.a({
   padding: "15px 13px",
   display: "inline-block",
   ":hover": {
-    backgroundColor: "#dedddd"
-  }
+    backgroundColor: "#dedddd",
+  },
 });
 
 const logout = () => {
@@ -26,22 +26,22 @@ const logout = () => {
     window.location.assign(
       urlJoin(
         process.env.REACT_APP_GDC_AUTH,
-        `logout?next=:${window.location.port}${window.location.pathname}`
-      )
+        `logout?next=:${window.location.port}${window.location.pathname}`,
+      ),
     );
   } else {
     window.location.assign(
       urlJoin(
         process.env.REACT_APP_GDC_AUTH,
-        `logout?next=${window.location.pathname}`
-      )
+        `logout?next=${window.location.pathname}`,
+      ),
     );
   }
 };
 
 const UserDropdown = connect(state => ({
   token: state.auth.token,
-  user: state.auth.user
+  user: state.auth.user,
 }))(({ user, dispatch }) => (
   <Row style={{ alignSelf: "stretch" }}>
     <Dropdown
@@ -56,7 +56,7 @@ const UserDropdown = connect(state => ({
         onClick={() => {
           const numProjects = Object.keys(user.projects || {}).reduce(
             (acc, k) => [...acc, ...user.projects[k]],
-            []
+            [],
           ).length;
           if (numProjects) {
             dispatch(fetchToken());
@@ -77,8 +77,8 @@ const UserDropdown = connect(state => ({
                     {" "}
                     to learn more about obtaining access to protected data.
                   </span>
-                )
-              })
+                ),
+              }),
             );
           }
         }}

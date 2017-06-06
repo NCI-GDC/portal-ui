@@ -6,7 +6,7 @@ import {
   withState,
   withProps,
   withPropsOnChange,
-  withHandlers
+  withHandlers,
 } from "recompose";
 import { Row, Column } from "@ncigdc/uikit/Flex";
 import { getDefaultCurve, enoughData } from "@ncigdc/utils/survivalplot";
@@ -22,15 +22,15 @@ const styles = {
     flexGrow: 1,
     fontSize: "2rem",
     marginBottom: 7,
-    marginTop: 7
+    marginTop: 7,
   },
   card: {
-    backgroundColor: "white"
-  }
+    backgroundColor: "white",
+  },
 };
 
 const initialState = {
-  loading: true
+  loading: true,
 };
 
 export default compose(
@@ -45,16 +45,16 @@ export default compose(
       setDefaultSurvivalData,
       setSelectedSurvivalData,
       filters,
-      setState
+      setState,
     }) => ({
       survivalData: {
         legend: selectedSurvivalData.legend || defaultSurvivalData.legend,
-        rawData: selectedSurvivalData.rawData || defaultSurvivalData.rawData
+        rawData: selectedSurvivalData.rawData || defaultSurvivalData.rawData,
       },
       updateData: async () => {
         const survivalData = await getDefaultCurve({
           currentFilters: filters,
-          slug: "Explore"
+          slug: "Explore",
         });
 
         setDefaultSurvivalData(survivalData);
@@ -62,10 +62,10 @@ export default compose(
 
         setState(s => ({
           ...s,
-          loading: false
+          loading: false,
         }));
-      }
-    })
+      },
+    }),
   ),
   withPropsOnChange(["filters"], ({ updateData }) => {
     updateData();
@@ -74,17 +74,17 @@ export default compose(
     handleClickGene: ({ push, query, filters }) => gene => {
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: "genes.gene_id", value: [gene.gene_id] }])
+        makeFilter([{ field: "genes.gene_id", value: [gene.gene_id] }], false),
       );
       push({
         pathname: "/exploration",
         query: {
           ...query,
-          filters: JSURL.stringify(newFilters)
-        }
+          filters: JSURL.stringify(newFilters),
+        },
       });
-    }
-  })
+    },
+  }),
 )(
   ({
     state: { loading },
@@ -94,7 +94,7 @@ export default compose(
     setSelectedSurvivalData,
     viewer,
     filters,
-    handleClickGene
+    handleClickGene,
   }) => (
     <Column style={styles.card}>
       <h1 style={{ ...styles.heading, padding: "1rem" }} id="mutated-genes">
@@ -130,5 +130,5 @@ export default compose(
         />
       </Column>
     </Column>
-  )
+  ),
 );

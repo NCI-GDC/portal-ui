@@ -15,7 +15,7 @@ import FacetHeader from "@ncigdc/components/Aggregations/FacetHeader";
 
 import {
   initialFileAggregationsVariables,
-  repositoryFileAggregationsFragment
+  repositoryFileAggregationsFragment,
 } from "@ncigdc/utils/generated-relay-query-parts";
 import withFacetSelection from "@ncigdc/utils/withFacetSelection";
 import escapeForRelay from "@ncigdc/utils/escapeForRelay";
@@ -36,17 +36,17 @@ const presetFacets = [
   {
     field: "experimental_strategy",
     full: "files.experimental_strategy",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Workflow Type",
     field: "analysis.workflow_type",
     full: "files.analysis.workflow_type",
-    type: "keyword"
+    type: "keyword",
   },
   { field: "data_format", full: "files.data_format", type: "keyword" },
   { field: "platform", full: "files.platform", type: "keyword" },
-  { field: "access", full: "files.access", type: "keyword" }
+  { field: "access", full: "files.access", type: "keyword" },
 ];
 
 const presetFacetFields = presetFacets.map(x => x.field);
@@ -55,16 +55,16 @@ const enhance = compose(
   withFacetSelection({
     storageKey,
     presetFacetFields,
-    validFacetDocTypes: ["files"]
+    validFacetDocTypes: ["files"],
   }),
-  withState("fileIdCollapsed", "setFileIdCollapsed", false)
+  withState("fileIdCollapsed", "setFileIdCollapsed", false),
 );
 
 const styles = {
   link: {
     textDecoration: "underline",
-    color: "#2a72a5"
-  }
+    color: "#2a72a5",
+  },
 };
 
 export type TProps = {
@@ -78,7 +78,7 @@ export type TProps = {
     data_type: { buckets: [TBucket] },
     experimental_strategy: { buckets: [TBucket] },
     platform: { buckets: [TBucket] },
-    analysis__workflow_type: { buckets: [TBucket] }
+    analysis__workflow_type: { buckets: [TBucket] },
   },
   theme: Object,
 
@@ -90,13 +90,13 @@ export type TProps = {
     doc_type: String,
     field: String,
     full: String,
-    type: "id" | "string" | "long"
+    type: "id" | "string" | "long",
   |}>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
   presetFacetFields: Array<String>,
   shouldShowFacetSelection: Boolean,
-  facetExclusionTest: Function
+  facetExclusionTest: Function,
 };
 
 export const FileAggregationsComponent = (props: TProps) => (
@@ -105,7 +105,7 @@ export const FileAggregationsComponent = (props: TProps) => (
       className="text-right"
       style={{
         padding: "10px 15px",
-        borderBottom: `1px solid ${props.theme.greyScale5}`
+        borderBottom: `1px solid ${props.theme.greyScale5}`,
       }}
     >
       {!!props.userSelectedFacets.length &&
@@ -199,7 +199,7 @@ export const FileAggregationsQuery = {
     {},
     _.mapValues(initialFileAggregationsVariables, (value, key) => {
       const userSelectedFacetsFromStorage = tryParseJSON(
-        window.localStorage.getItem(storageKey) || null
+        window.localStorage.getItem(storageKey) || null,
       ) || [];
       const escapedFieldsToShow = presetFacetFields
         .concat(userSelectedFacetsFromStorage.map(x => x.field))
@@ -210,7 +210,7 @@ export const FileAggregationsQuery = {
         _.includes(escapedFieldsToShow, key.replace(/^shouldShow_/, ""))
       );
     }),
-    { shouldRequestAllAggregations: false }
+    { shouldRequestAllAggregations: false },
   ),
   prepareVariables: prevVariables =>
     _.mapValues(
@@ -221,18 +221,18 @@ export const FileAggregationsQuery = {
         _.includes(
           (tryParseJSON(window.localStorage.getItem(storageKey)) || [])
             .map(x => escapeForRelay(x.field)),
-          key.replace(/^shouldShow_/, "")
+          key.replace(/^shouldShow_/, ""),
         ) ||
-        value
+        value,
     ),
   fragments: {
-    aggregations: repositoryFileAggregationsFragment
-  }
+    aggregations: repositoryFileAggregationsFragment,
+  },
 };
 
 const FileAggregations = Relay.createContainer(
   enhance(withTheme(FileAggregationsComponent)),
-  FileAggregationsQuery
+  FileAggregationsQuery,
 );
 
 export default FileAggregations;

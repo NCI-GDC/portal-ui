@@ -6,7 +6,7 @@ export default function ExternalLink({
   children,
   style,
   title,
-  hasExternalIcon = true
+  hasExternalIcon = true,
 }): React.Element {
   return (
     <a

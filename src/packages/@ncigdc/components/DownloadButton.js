@@ -28,7 +28,7 @@ type TDownloadButton = {
   style: Object,
   extraParams: Object,
   setParentState: () => {},
-  showIcon?: boolean
+  showIcon?: boolean,
 };
 
 const DownloadButton = ({
@@ -48,7 +48,7 @@ const DownloadButton = ({
   altMessage = false,
   style = {},
   extraParams = {},
-  showIcon = true
+  showIcon = true,
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
   const icon =
@@ -57,7 +57,7 @@ const DownloadButton = ({
   return (
     <Button
       style={{
-        ...style
+        ...style,
       }}
       leftIcon={text && icon}
       disabled={disabled || active}
@@ -72,7 +72,7 @@ const DownloadButton = ({
           pretty: true,
           ...(returnType ? { return_type: returnType } : {}),
           ...(filename ? { filename } : {}),
-          ...extraParams
+          ...extraParams,
         };
 
         setActive(true);
@@ -81,7 +81,7 @@ const DownloadButton = ({
           params,
           url,
           method: "POST",
-          altMessage
+          altMessage,
         })(() => {}, () => setActive(false));
       }}
     >
@@ -93,15 +93,15 @@ const DownloadButton = ({
 const enhance = compose(
   connect(),
   withState("state", "setState", {
-    active: false
+    active: false,
   }),
   mapProps(({ setParentState, state, setState, active, ...rest }) => ({
     setActive: setParentState
       ? setParentState
       : active => setState(s => ({ ...s, active })),
     active: active ? active : state.active,
-    ...rest
-  }))
+    ...rest,
+  })),
 );
 
 export default enhance(DownloadButton);

@@ -18,7 +18,7 @@ const reactRouterLinkProps = [
   "activeStyle",
   "exact",
   "strict",
-  "isActive"
+  "isActive",
 ];
 
 const InternalLink = ({
@@ -33,7 +33,7 @@ const InternalLink = ({
 
   const q1 = {
     ...q0,
-    filters: f0
+    filters: f0,
   };
 
   const q = removeEmptyKeys ? removeEmptyKeys(q1) : q1;
@@ -47,7 +47,7 @@ const InternalLink = ({
     <Link
       to={{
         pathname,
-        search
+        search,
       }}
       {...validAttrProps}
       {...validLinkProps}
@@ -65,7 +65,7 @@ const InternalLink = ({
 
 InternalLink.defaultProps = {
   // eslint-disable-line fp/no-mutation
-  removeEmptyKeys: rek
+  removeEmptyKeys: rek,
 };
 
 export default InternalLink;

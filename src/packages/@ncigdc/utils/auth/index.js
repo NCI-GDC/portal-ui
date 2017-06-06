@@ -10,8 +10,8 @@ const isUserProject = ({ user, file }) => {
     new Set([
       ...(file.projects || []).map(p => p.project_id || p),
       ...(file.cases || { hits: { edges: [] } }).hits.edges
-        .map(e => e.node.project.project_id)
-    ])
+        .map(e => e.node.project.project_id),
+    ]),
   );
 
   const gdcIds = Object.keys((user.projects || { gdc_ids: {} }).gdc_ids);
@@ -25,9 +25,9 @@ const fileInCorrectState = (file): boolean =>
 const intersectsWithFileAcl = ({ user, file }): boolean =>
   _.intersection(
     Object.keys((user.projects || { phs_ids: {} }).phs_ids).filter(
-      p => user.projects.phs_ids[p].indexOf("_member_") !== -1
+      p => user.projects.phs_ids[p].indexOf("_member_") !== -1,
     ) || [],
-    file.acl
+    file.acl,
   ).length !== 0;
 
 const userCanDownloadFiles = ({ user, files }) =>
@@ -60,5 +60,5 @@ export {
   userCanDownloadFiles,
   userCanDownloadFile,
   intersectsWithFileAcl,
-  fileInCorrectState
+  fileInCorrectState,
 };

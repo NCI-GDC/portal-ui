@@ -13,16 +13,16 @@ import BookIcon from "@ncigdc/theme/icons/Book";
 
 type TProps = {
   node: Object,
-  externalLinks: Object
+  externalLinks: Object,
 };
 
 const enhance = compose(
   withProps(({ node }) => ({
     externalLinks: {
       ...omit(node.external_db_ids, "__dataID__"),
-      ensembl: [node.gene_id]
-    }
-  }))
+      ensembl: [node.gene_id],
+    },
+  })),
 );
 
 const GeneExternalReferencesComponent = ({ externalLinks }: TProps = {}) => (
@@ -38,7 +38,7 @@ const GeneExternalReferencesComponent = ({ externalLinks }: TProps = {}) => (
         ? <ExternalLink href={externalReferenceLinks[db](externalLinks[db][0])}>
             {externalLinks[db]}
           </ExternalLink>
-        : "--"
+        : "--",
     }))}
     style={{ flex: 1 }}
   />
@@ -56,13 +56,13 @@ export const GeneExternalReferencesQuery = {
           omim_gene
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const GeneExternalReferences = Relay.createContainer(
   enhance(GeneExternalReferencesComponent),
-  GeneExternalReferencesQuery
+  GeneExternalReferencesQuery,
 );
 
 export default GeneExternalReferences;

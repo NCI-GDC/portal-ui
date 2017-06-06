@@ -9,7 +9,7 @@ const notify = payload => ({ type: NOTIFY, payload });
 const initialState = {
   id: null,
   component: null,
-  action: null
+  action: null,
 };
 
 function reducer(state: TState = initialState, action: TAction): TState {

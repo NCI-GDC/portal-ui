@@ -26,28 +26,28 @@ type TProps = {
       project__project_id: {
         buckets: Array<{
           key: string,
-          doc_count: number
-        }>
-      }
+          doc_count: number,
+        }>,
+      },
     },
     filtered: {
       project__project_id: {
         buckets: Array<{
           key: string,
-          doc_count: number
-        }>
-      }
-    }
+          doc_count: number,
+        }>,
+      },
+    },
   },
   ssms: {
     hits: {
-      total: number
-    }
+      total: number,
+    },
   },
   aggregations: Object,
   theme: Object,
   push: Function,
-  ChartTitle: ReactClass<{}>
+  ChartTitle: ReactClass<{}>,
 };
 
 const CHART_HEIGHT = 295;
@@ -57,13 +57,13 @@ export type TChartTitleProps = {
   cases: number,
   projects: Array<{ project_id: string }>,
   ssms: number,
-  filters: any
+  filters: any,
 };
 const DefaultChartTitle = ({
   cases = 0,
   projects = [],
   ssms = 0,
-  filters
+  filters,
 }: TChartTitleProps) => (
   <h5 style={{ textTransform: "uppercase", padding: "0 2rem" }}>
     <ExploreLink query={{ searchTableTab: "cases", filters }}>
@@ -83,11 +83,11 @@ const DefaultChartTitle = ({
               op: "in",
               content: {
                 field: "projects.project_id",
-                value: projects.map(p => p.project_id)
-              }
-            }
-          ]
-        }
+                value: projects.map(p => p.project_id),
+              },
+            },
+          ],
+        },
       }}
     >
       {projects.length.toLocaleString()}
@@ -103,10 +103,10 @@ const CancerDistributionChartComponent = compose(
     componentDidMount(): void {
       this.props.relay.setVariables({
         fetchFilteredCaseAggs: true,
-        caseAggsFilter: this.props.filters
+        caseAggsFilter: this.props.filters,
       });
-    }
-  })
+    },
+  }),
 )(
   (
     {
@@ -116,19 +116,19 @@ const CancerDistributionChartComponent = compose(
       push,
       ChartTitle = DefaultChartTitle,
       filters,
-      style
-    }: TProps = {}
+      style,
+    }: TProps = {},
   ) => {
     const casesByProjectMap = (cases.total || {
-      project__project_id: []
+      project__project_id: [],
     }).project__project_id.buckets
       .reduce(
         (acc, bucket) => ({ ...acc, [bucket.key]: bucket.doc_count }),
-        {}
+        {},
       );
 
     const cancerDistData = (cases.filtered || {
-      project__project_id: { buckets: [] }
+      project__project_id: { buckets: [] },
     }).project__project_id.buckets
       .map(b => {
         const totalCasesByProject = casesByProjectMap[b.key];
@@ -138,7 +138,7 @@ const CancerDistributionChartComponent = compose(
           freq,
           project_id: b.key,
           num_affected_cases: b.doc_count,
-          num_cases_total: totalCasesByProject
+          num_cases_total: totalCasesByProject,
         };
       });
 
@@ -158,7 +158,7 @@ const CancerDistributionChartComponent = compose(
             {d.num_cases_total.toLocaleString()}&nbsp;
             ({(d.freq * 100).toFixed(2)}%)
           </span>
-        )
+        ),
       }));
 
     return (
@@ -169,7 +169,7 @@ const CancerDistributionChartComponent = compose(
               <Row
                 style={{
                   justifyContent: "space-between",
-                  alignItems: "center"
+                  alignItems: "center",
                 }}
               >
                 <ChartTitle
@@ -182,11 +182,11 @@ const CancerDistributionChartComponent = compose(
                   svg={() =>
                     wrapSvg({
                       selector: "#cancer-distribution svg",
-                      title: "Cancer Distribution"
+                      title: "Cancer Distribution",
                     })}
                   data={chartData.map(d => ({
                     label: d.label,
-                    value: d.value
+                    value: d.value,
                   }))}
                   slug="cancer-distribution-bar-chart"
                   noText
@@ -204,18 +204,18 @@ const CancerDistributionChartComponent = compose(
                   styles={{
                     xAxis: {
                       stroke: theme.greyScale4,
-                      textFill: theme.greyScale3
+                      textFill: theme.greyScale3,
                     },
                     yAxis: {
                       stroke: theme.greyScale4,
-                      textFill: theme.greyScale3
+                      textFill: theme.greyScale3,
                     },
                     bars: { fill: theme.secondary },
                     tooltips: {
                       fill: "#fff",
                       stroke: theme.greyScale4,
-                      textFill: theme.greyScale3
-                    }
+                      textFill: theme.greyScale3,
+                    },
                   }}
                 />
               </Row>
@@ -223,19 +223,22 @@ const CancerDistributionChartComponent = compose(
           </Loader>}
       </div>
     );
-  }
+  },
 );
 
 const CancerDistributionChartQuery = {
   initialVariables: {
     caseAggsFilter: null,
     fetchFilteredCaseAggs: false,
-    ssmTested: makeFilter([
-      {
-        field: "cases.available_variation_data",
-        value: "ssm"
-      }
-    ])
+    ssmTested: makeFilter(
+      [
+        {
+          field: "cases.available_variation_data",
+          value: "ssm",
+        },
+      ],
+      false,
+    ),
   },
   fragments: {
     ssms: () => Relay.QL`
@@ -265,13 +268,13 @@ const CancerDistributionChartQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const CancerDistributionChart = Relay.createContainer(
   CancerDistributionChartComponent,
-  CancerDistributionChartQuery
+  CancerDistributionChartQuery,
 );
 
 export default CancerDistributionChart;

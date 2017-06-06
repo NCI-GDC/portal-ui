@@ -8,12 +8,12 @@ import { withTheme } from "@ncigdc/theme";
 
 const ProgressBar = styled(Progress, {
   position: "absolute",
-  zIndex: 10000
+  zIndex: 10000,
 });
 
 const ProgressContainer = compose(
   connect(state => ({ percent: state.relayProgress.percent })),
-  withTheme
+  withTheme,
 )(({ percent, theme }) => (
   <ProgressBar
     percent={percent}

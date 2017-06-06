@@ -6,7 +6,7 @@ import withTooltip from "@ncigdc/uikit/Tooltip/withTooltip";
 
 const OverflowTooltippedLabel = compose(
   withTooltip,
-  withState("hasTooltip", "setHasTooltip", false)
+  withState("hasTooltip", "setHasTooltip", false),
 )(
   ({
     setHasTooltip,
@@ -15,7 +15,7 @@ const OverflowTooltippedLabel = compose(
     style,
     htmlFor,
     props,
-    setTooltip
+    setTooltip,
   }) => (
     <label
       style={{
@@ -24,7 +24,7 @@ const OverflowTooltippedLabel = compose(
         minWidth: 0,
         overflow: "hidden",
         padding: "0 0.25rem",
-        ...style
+        ...style,
       }}
       ref={el => {
         if (!hasTooltip && el) {
@@ -40,7 +40,7 @@ const OverflowTooltippedLabel = compose(
     >
       {children}
     </label>
-  )
+  ),
 );
 
 export default OverflowTooltippedLabel;

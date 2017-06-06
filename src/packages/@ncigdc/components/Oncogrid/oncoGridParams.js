@@ -8,7 +8,7 @@ import {
   geneTracks,
   geneSetTracks,
   gdcTracks,
-  getColorValue
+  getColorValue,
 } from "@ncigdc/components/Oncogrid/tracks";
 import { mapDonors, mapGenes, buildOccurences } from "./dataMapping";
 import type { TDonorInput, TGeneInput, TOccurenceInput } from "./dataMapping";
@@ -17,13 +17,13 @@ const donorTracks = [...clinicalDonorTracks, ...dataTypeTracks];
 
 const trackColorMap = [...donorTracks, ...geneTracks].reduce(
   (acc, t) => ({ ...acc, [t.fieldName]: t.color }),
-  {}
+  {},
 );
 
 const fillFunc = (track: { fieldName: string, value?: mixed }) =>
   getColorValue({
     color: trackColorMap[track.fieldName] || "",
-    value: track.value
+    value: track.value,
   });
 
 function dataTypeLegend(): string {
@@ -67,7 +67,7 @@ export default function({
   },
   donorClick = (d: {}) => {
     console.log("donorClick", d);
-  }
+  },
 }: {
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
@@ -78,7 +78,7 @@ export default function({
   width: number,
   addTrackFunc: (
     trackOptions: Array<{ name: string }>,
-    callback: (t: Array<{ name: string }>) => void
+    callback: (t: Array<{ name: string }>) => void,
   ) => void,
   trackPadding: number,
   consequenceTypes: Array<string>,
@@ -87,14 +87,14 @@ export default function({
   gridClick?: Function,
   geneHistogramClick?: Function,
   geneClick?: Function,
-  donorClick?: Function
+  donorClick?: Function,
 }): ?Object {
   const { observations, donorIds, geneIds } = buildOccurences(
     occurencesData,
     donorData,
     geneData,
     consequenceTypes,
-    impacts
+    impacts,
   );
   if (observations.length === 0) return null;
   const donors = mapDonors(donorData, donorIds);
@@ -106,10 +106,10 @@ export default function({
 
   const donorOpacityFunc = ({
     type,
-    value
+    value,
   }: {
     type: string,
-    value: number
+    value: number,
   }) => {
     switch (type) {
       case "int":
@@ -160,13 +160,13 @@ export default function({
         .map(t => (t.legend ? t.legend({
                   ...t,
                   maxDaysToDeath,
-                  values: uniq(donors.map(d => d[t.fieldName]))
+                  values: uniq(donors.map(d => d[t.fieldName])),
                 }) : ""))
         .filter(Boolean)
         .join("</div><div>")}</div>`,
       "Data Types": dataTypeLegend(),
       GDC: gdcLegend(maxDonorsAffected),
-      "Gene Sets": geneSetLegend()
+      "Gene Sets": geneSetLegend(),
     },
     templates: {
       mainGrid: `
@@ -181,7 +181,7 @@ export default function({
         {{#donor}}<div>Case: {{donor.id}}</div>{{/donor}}
         {{#gene}}<div>Gene: {{gene.symbol}}</div>{{/gene}}
         {{#obs}}<div>Mutations: {{obs}}</div>{{/obs}}
-      `
+      `,
     },
     trackLegendLabel: '<i style="font-size: 13px; margin-left: 5px" class="fa fa-question-circle"></i>',
     donorTracks,
@@ -199,7 +199,7 @@ export default function({
     gridClick,
     geneHistogramClick,
     geneClick,
-    donorClick
+    donorClick,
   };
 }
 

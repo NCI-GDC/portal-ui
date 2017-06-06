@@ -27,7 +27,7 @@ import RemoveFromCartButton from "@ncigdc/components/RemoveFromCartButton";
 const getAuthCounts = ({ user, files }) => {
   const defaultData = {
     authorized: { count: 0, file_size: 0 },
-    unauthorized: { count: 0, file_size: 0 }
+    unauthorized: { count: 0, file_size: 0 },
   };
 
   const authCountAndFileSizes = files.reduce((result, file) => {
@@ -43,13 +43,13 @@ const getAuthCounts = ({ user, files }) => {
     {
       key: "Authorized",
       doc_count: authCountAndFileSizes.authorized.count || 0,
-      file_size: authCountAndFileSizes.authorized.file_size
+      file_size: authCountAndFileSizes.authorized.file_size,
     },
     {
       key: "Unauthorized",
       doc_count: authCountAndFileSizes.unauthorized.count || 0,
-      file_size: authCountAndFileSizes.unauthorized.file_size
-    }
+      file_size: authCountAndFileSizes.unauthorized.file_size,
+    },
   ].filter(i => i.doc_count);
 };
 
@@ -61,8 +61,8 @@ export type TProps = {
     repository: {
       files: {
         aggregations: string,
-        hits: string
-      }
+        hits: string,
+      },
     },
     summary: {
       aggregations: {
@@ -72,12 +72,12 @@ export type TProps = {
             case_count: number,
             doc_count: number,
             file_size: number,
-            key: string
-          }>
-        }
-      }
-    }
-  }
+            key: string,
+          }>,
+        },
+      },
+    },
+  },
 };
 
 type TCartPage = (props: TProps) => React.Element<*>;
@@ -86,13 +86,13 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
 
   const styles = {
     container: {
-      padding: "2rem 2.5rem 13rem"
+      padding: "2rem 2.5rem 13rem",
     },
     header: {
       padding: "1rem",
       borderBottom: `1px solid ${theme.greyScale4}`,
-      color: theme.primary
-    }
+      color: theme.primary,
+    },
   };
 
   return (
@@ -113,7 +113,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 title="CASES"
                 count={viewer.summary.aggregations.project__project_id.buckets.reduce(
                   (sum, bucket) => sum + bucket.case_count,
-                  0
+                  0,
                 )}
                 icon={<CaseIcon style={{ width: "4rem", height: "4rem" }} />}
                 style={{ backgroundColor: "transparent" }}
@@ -132,7 +132,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 flex: 1,
                 backgroundColor: "transparent",
                 height: "19em",
-                overflow: "auto"
+                overflow: "auto",
               }}
               tableTitle="File Counts by Project"
               pieChartTitle="File Counts by Project"
@@ -142,8 +142,8 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   case_count: item.case_count,
                   file_count: item.doc_count.toLocaleString(),
                   file_size: formatFileSize(item.file_size),
-                  tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`
-                })
+                  tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`,
+                }),
               )}
               footer={`${viewer.summary.aggregations.project__project_id.buckets.length} Projects `}
               path="file_count"
@@ -152,18 +152,18 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 {
                   key: "case_count",
                   title: "Cases",
-                  style: { textAlign: "right" }
+                  style: { textAlign: "right" },
                 },
                 {
                   key: "file_count",
                   title: "Files",
-                  style: { textAlign: "right" }
+                  style: { textAlign: "right" },
                 },
                 {
                   key: "file_size",
                   title: "File Size",
-                  style: { textAlign: "right" }
-                }
+                  style: { textAlign: "right" },
+                },
               ]}
             />
             <SummaryCard
@@ -171,14 +171,14 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 flex: 1,
                 backgroundColor: "transparent",
                 height: "19em",
-                overflow: "auto"
+                overflow: "auto",
               }}
               tableTitle="File Counts by Authorization Level"
               pieChartTitle="File Counts by Authorization Level"
               data={authCounts.map(x => ({
                 ...x,
                 file_size: formatFileSize(x.file_size),
-                tooltip: `${x.key}: ${formatFileSize(x.file_size)}`
+                tooltip: `${x.key}: ${formatFileSize(x.file_size)}`,
               }))}
               footer={`${authCounts.length} Authorization Levels`}
               path="doc_count"
@@ -187,13 +187,13 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 {
                   key: "doc_count",
                   title: "Files",
-                  style: { textAlign: "right" }
+                  style: { textAlign: "right" },
                 },
                 {
                   key: "file_size",
                   title: "File Size",
-                  style: { textAlign: "right" }
-                }
+                  style: { textAlign: "right" },
+                },
               ]}
             />
             <HowToDownload
@@ -221,13 +221,10 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
 export { CartPage };
 
 export default createFragmentContainer(
-  compose(
-    connect(state => ({
-      ...state.cart,
-      ...state.auth
-    })),
-    withTheme
-  )(CartPage),
+  connect(state => ({
+    ...state.cart,
+    ...state.auth,
+  }))(enhance(CartPage)),
   {
     /* TODO manually deal with:
   initialVariables: {
@@ -260,6 +257,6 @@ export default createFragmentContainer(
         }
       }
     }
-  `
-  }
+  `,
+  },
 );

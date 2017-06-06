@@ -21,5 +21,5 @@ export {
   ShoppingCartIcon,
   FileIcon,
   CaseIcon,
-  SaveIcon
+  SaveIcon,
 };

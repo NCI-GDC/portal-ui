@@ -24,7 +24,7 @@ describe("search", () => {
   it("should find top level partial matches", () => {
     const query = "TC";
     const foundSubmitterIds = getSubmitterIds(
-      flatten(testBiotree.map(e => search(query, e)))
+      flatten(testBiotree.map(e => search(query, e))),
     );
     expect(foundSubmitterIds).not.toHaveLength(0);
     foundSubmitterIds.forEach(id => expect(id).toMatch(query));

@@ -24,28 +24,28 @@ const MagnifyingGlass = styled(SearchIcon, {
   height: "3.4rem",
   borderRadius: "4px 0 0 4px",
   border: ({ theme }) => `1px solid ${theme.greyScale4}`,
-  borderRight: "none"
+  borderRight: "none",
 });
 
 const StyledDropdownLink = styled(Link, {
   color: ({ theme }) => theme.greyScale2,
   padding: "1rem",
   ":link": {
-    textDecoration: "none"
+    textDecoration: "none",
   },
   ":hover": {
     backgroundColor: "rgb(31, 72, 108)",
     color: "white",
-    textDecoration: "none"
+    textDecoration: "none",
   },
   width: "100%",
-  textDecoration: "none"
+  textDecoration: "none",
 });
 
 const PrefixFacet = compose(
   withDropdown,
   pure,
-  withState("value", "setValue", "")
+  withState("value", "setValue", ""),
 )(
   ({
     doctype,
@@ -57,7 +57,7 @@ const PrefixFacet = compose(
     mouseUpHandler,
     value,
     setValue,
-    collapsed
+    collapsed,
   }) => (
     <Container>
       {!collapsed &&
@@ -82,7 +82,7 @@ const PrefixFacet = compose(
                 ...dropdown,
                 marginTop: 0,
                 top: "35px",
-                minWidth: "290px"
+                minWidth: "290px",
               }}
               onMouseUp={mouseUpHandler}
               onMouseDown={mouseDownHandler}
@@ -90,12 +90,15 @@ const PrefixFacet = compose(
               <StyledDropdownLink
                 merge="toggle"
                 query={{
-                  filters: makeFilter([
-                    {
-                      field: `${doctype}.${fieldNoDoctype}`,
-                      value: [`${value}*`]
-                    }
-                  ])
+                  filters: makeFilter(
+                    [
+                      {
+                        field: `${doctype}.${fieldNoDoctype}`,
+                        value: [`${value}*`],
+                      },
+                    ],
+                    false,
+                  ),
                 }}
                 id="prefix-search-link"
                 onClick={() => {
@@ -109,6 +112,6 @@ const PrefixFacet = compose(
             </Column>}
         </Row>}
     </Container>
-  )
+  ),
 );
 export default PrefixFacet;

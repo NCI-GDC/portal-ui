@@ -11,7 +11,7 @@ const baseStyle = {
   flexDirection: "row",
   boxSizing: "border-box",
   position: "relative",
-  outline: "none"
+  outline: "none",
 };
 
 const Row = ({ flex, wrap, style, spacing, children, ...props }) => (
@@ -20,7 +20,7 @@ const Row = ({ flex, wrap, style, spacing, children, ...props }) => (
       ...baseStyle,
       flex,
       ...(wrap ? { flexWrap: "wrap" } : {}),
-      ...style
+      ...style,
     }}
     {...props}
   >
@@ -34,9 +34,9 @@ const Row = ({ flex, wrap, style, spacing, children, ...props }) => (
             ...child.props,
             style: {
               ...(i ? { marginLeft: spacing } : {}),
-              ...(child.props.style ? child.props.style : {})
-            }
-          })
+              ...(child.props.style ? child.props.style : {}),
+            },
+          }),
       )}
   </div>
 );
@@ -46,7 +46,7 @@ Row.propTypes = {
   style: PropTypes.object,
   flex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   wrap: PropTypes.bool,
-  spacing: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  spacing: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 /*----------------------------------------------------------------------------*/

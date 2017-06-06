@@ -17,7 +17,7 @@ export const createDataCategoryColumns = ({
   countKey,
   Link,
   getCellLinkFilters,
-  getTotalLinkFilters
+  getTotalLinkFilters,
 }) => {
   return [
     {
@@ -32,7 +32,7 @@ export const createDataCategoryColumns = ({
           {title}
         </Th>
       ),
-      subHeadingIds: _.map(DATA_CATEGORIES, category => category.id)
+      subHeadingIds: _.map(DATA_CATEGORIES, category => category.id),
     },
     ..._.map(DATA_CATEGORIES, (category, key) => ({
       name: category.abbr,
@@ -51,7 +51,7 @@ export const createDataCategoryColumns = ({
       td: ({ node }) => {
         const count = findDataCategory(
           category.abbr,
-          node.summary.data_categories
+          node.summary.data_categories,
         )[countKey];
         return (
           <NumTd>
@@ -59,10 +59,13 @@ export const createDataCategoryColumns = ({
               ? "0"
               : <Link
                   query={{
-                    filters: makeFilter([
-                      ...getCellLinkFilters(node),
-                      { field: "files.data_category", value: category.full }
-                    ])
+                    filters: makeFilter(
+                      [
+                        ...getCellLinkFilters(node),
+                        { field: "files.data_category", value: category.full },
+                      ],
+                      false,
+                    ),
                   }}
                 >
                   {count.toLocaleString()}
@@ -74,10 +77,13 @@ export const createDataCategoryColumns = ({
         <NumTd>
           <Link
             query={{
-              filters: makeFilter([
-                ...getTotalLinkFilters(hits),
-                { field: "files.data_category", value: category.full }
-              ])
+              filters: makeFilter(
+                [
+                  ...getTotalLinkFilters(hits),
+                  { field: "files.data_category", value: category.full },
+                ],
+                false,
+              ),
             }}
           >
             {_.sumBy(
@@ -85,11 +91,11 @@ export const createDataCategoryColumns = ({
               x =>
                 findDataCategory(category.abbr, x.node.summary.data_categories)[
                   countKey
-                ]
+                ],
             ).toLocaleString()}
           </Link>
         </NumTd>
-      )
-    }))
+      ),
+    })),
   ];
 };

@@ -20,19 +20,19 @@ const drawChart = ({
   colors,
   projectsIdtoName,
   setTooltip,
-  theme
+  theme,
 }) => {
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
     fontSize: "1.3rem",
     fontWeight: "500",
-    stroke: theme.greyScale4
+    stroke: theme.greyScale4,
   };
   const xAxisStyle = xAxis.style || {
     textFill: theme.greyScale3,
     fontSize: "1.3rem",
     fontWeight: "700",
-    stroke: theme.greyScale4
+    stroke: theme.greyScale4,
   };
 
   const el = ReactFauxDOM.createElement("div");
@@ -52,7 +52,7 @@ const drawChart = ({
 
   const set = new Set(data.reduce((acc, d) => [...acc, ...Object.keys(d)], []));
   const allKeys = Array.from(set).filter(
-    v => v !== "symbol" && v !== "total" && v !== "gene_id"
+    v => v !== "symbol" && v !== "total" && v !== "gene_id",
   );
 
   const stack = d3.stack().keys(allKeys);
@@ -68,7 +68,7 @@ const drawChart = ({
   const stackedData = stack(data).map(d =>
     d
       .filter(d2 => !isNaN(d2[0]) && !isNaN(d2[1]))
-      .map(d2 => d2.concat({ key: d.key, index: d.index, data: d2.data }))
+      .map(d2 => d2.concat({ key: d.key, index: d.index, data: d2.data })),
   );
 
   const bars = g
@@ -98,7 +98,7 @@ const drawChart = ({
           {d[2].data[d[2].key] > 1 ? "s" : ""}
           {" "}
           affected
-        </span>
+        </span>,
       );
     })
     .on("mouseleave", () => {
@@ -163,7 +163,7 @@ type TProps = {
   width?: number,
   height?: number,
   theme: Object,
-  setTooltip: Function
+  setTooltip: Function,
 };
 type TStackedBarChart = (props: TProps) => React.Element<*>;
 const StackedBarChart: TStackedBarChart = (
@@ -177,8 +177,8 @@ const StackedBarChart: TStackedBarChart = (
     projectsIdtoName,
     width = 450,
     height = 200,
-    setTooltip
-  } = {}
+    setTooltip,
+  } = {},
 ) =>
   Object.keys(data).length
     ? drawChart({
@@ -191,7 +191,7 @@ const StackedBarChart: TStackedBarChart = (
         width,
         height,
         setTooltip,
-        theme
+        theme,
       })
     : <Row style={{ color: xAxis.style.textFill, justifyContent: "center" }}>
         No data

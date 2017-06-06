@@ -15,19 +15,19 @@ import { ExternalLink } from "@ncigdc/uikit/Links";
 const styles = {
   summary: {
     marginBottom: "2rem",
-    minWidth: "450px"
+    minWidth: "450px",
   },
   column: {
     width: "100%",
-    minWidth: 450
-  }
+    minWidth: 450,
+  },
 };
 
 type TProps = {
   node: Object,
   functionalImpact: string,
   functionalImpactTranscript: Object,
-  theme: Object
+  theme: Object,
 };
 
 const SsmSummaryComponent = compose(
@@ -36,26 +36,26 @@ const SsmSummaryComponent = compose(
     const consequences = node.consequence.hits.edges;
     const consequenceOfInterest = consequences.find(
       consequence => get(consequence, "node.transcript.annotation.impact"),
-      {}
+      {},
     );
     const functionalImpactTranscript = get(
       consequenceOfInterest,
       "node.transcript",
-      {}
+      {},
     );
     const functionalImpact = get(
       functionalImpactTranscript,
-      "annotation.impact"
+      "annotation.impact",
     );
 
     return {
       functionalImpact,
-      functionalImpactTranscript
+      functionalImpactTranscript,
     };
-  })
+  }),
 )(
   (
-    { node, functionalImpact, functionalImpactTranscript, theme }: TProps = {}
+    { node, functionalImpact, functionalImpactTranscript, theme }: TProps = {},
   ) => (
     <EntityPageVerticalTable
       id="Summary"
@@ -68,13 +68,13 @@ const SsmSummaryComponent = compose(
             <span style={{ whiteSpace: "pre-line", wordBreak: "break-all" }}>
               {node.genomic_dna_change}
             </span>
-          )
+          ),
         },
         { th: "Type", td: node.mutation_subtype },
         { th: "Reference genome assembly", td: node.ncbi_build || "" },
         {
           th: "Allele in the reference assembly",
-          td: node.reference_allele || ""
+          td: node.reference_allele || "",
         },
         {
           th: "Functional Impact (VEP)",
@@ -84,7 +84,7 @@ const SsmSummaryComponent = compose(
                 toolTipText={functionalImpact}
                 text={functionalImpact.slice(
                   0,
-                  functionalImpact === "MODIFIER" ? 2 : 1
+                  functionalImpact === "MODIFIER" ? 2 : 1,
                 )}
                 backgroundColor={theme.impacts[functionalImpact]}
               />
@@ -93,7 +93,7 @@ const SsmSummaryComponent = compose(
                   display: "inline-block",
                   textTransform: "capitalize",
                   marginLeft: "0.4em",
-                  marginRight: "0.4em"
+                  marginRight: "0.4em",
                 }}
               >
                 {functionalImpact.toLowerCase()}
@@ -102,22 +102,22 @@ const SsmSummaryComponent = compose(
                 key={functionalImpactTranscript.transcript_id}
                 style={{ paddingRight: "0.5em" }}
                 href={externalReferenceLinks.ensembl(
-                  functionalImpactTranscript.transcript_id
+                  functionalImpactTranscript.transcript_id,
                 )}
               >
                 {functionalImpactTranscript.transcript_id}
               </ExternalLink>
             </div>,
-          style: { textTransform: "capitalize" }
-        }
+          style: { textTransform: "capitalize" },
+        },
       ]}
       style={{
         ...styles.summary,
         ...styles.column,
-        alignSelf: "flex-start"
+        alignSelf: "flex-start",
       }}
     />
-  )
+  ),
 );
 
 export const SsmSummaryQuery = {
@@ -144,8 +144,8 @@ export const SsmSummaryQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const SsmSummary = Relay.createContainer(SsmSummaryComponent, SsmSummaryQuery);

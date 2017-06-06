@@ -34,9 +34,9 @@ const styles = {
     padding: "0.6rem 1rem",
     cursor: "pointer",
     ":hover": {
-      backgroundColor: theme.greyScale6
-    }
-  })
+      backgroundColor: theme.greyScale6,
+    },
+  }),
 };
 
 type TProps = {
@@ -48,7 +48,7 @@ type TProps = {
   noText?: boolean,
   tsvData?: Array<Object>,
   theme: Object,
-  tooltipHTML: any
+  tooltipHTML: any,
 };
 
 const enhance = compose(withTheme);
@@ -84,7 +84,7 @@ const DownloadVisualizationButton = ({
           downloadSvg({
             svg: getSelector(svg),
             stylePrefix,
-            fileName: `${slug}.svg`
+            fileName: `${slug}.svg`,
           });
         }}
       >
@@ -98,8 +98,8 @@ const DownloadVisualizationButton = ({
           ...(supportsSvgToPng()
             ? {}
             : {
-                opacity: 0.5
-              })
+                opacity: 0.5,
+              }),
         }}
         onClick={() => {
           if (!supportsSvgToPng()) return;
@@ -107,7 +107,7 @@ const DownloadVisualizationButton = ({
             svg: getSelector(svg),
             stylePrefix,
             fileName: `${slug}.png`,
-            scale: 2
+            scale: 2,
           });
         }}
       >
@@ -143,7 +143,7 @@ const DownloadVisualizationButton = ({
                 ? mapArrayToTsvString(tsvData)
                 : toTsvString(tsvData),
               "TSV",
-              `${slug}.tsv`
+              `${slug}.tsv`,
             );
           }
         }}

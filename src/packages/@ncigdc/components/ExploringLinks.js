@@ -27,8 +27,8 @@ const linkStyle = {
     backgroundColor: props =>
       Color(props.backgroundColor || props.theme.primary)
         .lighten(0.2)
-        .rgbString()
-  }
+        .rgbString(),
+  },
 };
 
 const Projects = styled(ProjectsLink, linkStyle);
@@ -40,7 +40,7 @@ const Icon = styled.i({
   backgroundColor: "rgba(255, 255, 255, 0.35)",
   borderRadius: "0.5rem",
   padding: "0.8rem 1.2rem",
-  fontSize: "1.5rem"
+  fontSize: "1.5rem",
 });
 
 const ExploringLinks = () => (

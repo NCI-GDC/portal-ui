@@ -12,16 +12,16 @@ const enhance = compose(
         push({
           pathname: opts.pathname,
           search: `?${stringify(opts.query)}`,
-          state: opts.state
+          state: opts.state,
         });
       } else {
         push(opts);
       }
-    }
+    },
   })),
   withProps(props => ({
-    query: parse(props.location.search)
-  }))
+    query: parse(props.location.search),
+  })),
 );
 
 const withBetterRouter = Wrapped => enhance(props => <Wrapped {...props} />);

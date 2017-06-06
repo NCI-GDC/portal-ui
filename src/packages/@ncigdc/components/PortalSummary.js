@@ -18,20 +18,20 @@ const Container = styled(Column, {
   ...zDepth1,
   marginTop: "2rem",
   backgroundColor: "white",
-  borderTop: "3px solid rgb(37, 208, 182)"
+  borderTop: "3px solid rgb(37, 208, 182)",
 });
 
 const CountBox = styled(Column, {
   padding: "1.5rem",
   flex: 1,
   justifyContent: "center",
-  alignItems: "center"
+  alignItems: "center",
 });
 
 const Title = styled(Row, {
   justifyContent: "center",
   textTransform: "uppercase",
-  marginBottom: "0.5rem"
+  marginBottom: "0.5rem",
 });
 
 type TProps = {
@@ -41,7 +41,7 @@ type TProps = {
   casesCountData: Object,
   filesCountData: Object,
   genesCountData: Object,
-  ssmsCountData: Object
+  ssmsCountData: Object,
 };
 const PortalSummary = (props: TProps) => (
   <Container>
@@ -53,7 +53,7 @@ const PortalSummary = (props: TProps) => (
         style={{
           fontSize: "1.3rem",
           color: "rgb(37, 97, 122)",
-          marginLeft: "2rem"
+          marginLeft: "2rem",
         }}
       >
         <a

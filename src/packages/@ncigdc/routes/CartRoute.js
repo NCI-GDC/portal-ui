@@ -26,9 +26,9 @@ class CartRoute extends Relay.Route {
       filters: files.length
         ? setFilter({
             field: "files.file_id",
-            value: files.map(f => f.file_id)
+            value: files.map(f => f.file_id),
           })
-        : null
+        : null,
     };
   };
 }

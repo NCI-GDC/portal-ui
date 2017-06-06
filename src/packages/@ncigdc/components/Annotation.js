@@ -30,13 +30,13 @@ const Annotation = ({ node, theme }: { node: Object, theme: Object }) => (
             >
               {node.entity_id}
             </CaseLink>
-          )
+          ),
         },
         { th: "Entity Barcode", td: node.entity_submitter_id },
         { th: "Entity type", td: node.entity_type },
         {
           th: "Case UUID",
-          td: <CaseLink uuid={node.case_id}>{node.case_id}</CaseLink>
+          td: <CaseLink uuid={node.case_id}>{node.case_id}</CaseLink>,
         },
         { th: "Case Submitter ID", td: node.case_submitter_id },
         {
@@ -45,12 +45,12 @@ const Annotation = ({ node, theme }: { node: Object, theme: Object }) => (
             <ProjectLink uuid={node.project.project_id}>
               {node.project.project_id}
             </ProjectLink>
-          )
+          ),
         },
         { th: "Classification", td: node.classification },
         { th: "Category", td: node.category },
         { th: "Created On", td: node.created_datetime },
-        { th: "Status", td: node.status }
+        { th: "Status", td: node.status },
       ]}
       style={{ flex: 1 }}
     />

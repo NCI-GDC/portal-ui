@@ -5,7 +5,7 @@ import {
   userCanDownloadFile,
   userCanDownloadFiles,
   fileInCorrectState,
-  intersectsWithFileAcl
+  intersectsWithFileAcl,
 } from "..";
 
 const user = {
@@ -20,8 +20,8 @@ const user = {
         "release",
         "_member_",
         "read_report",
-        "delete"
-      ]
+        "delete",
+      ],
     },
     gdc_ids: {
       "TCGA-TEST": [
@@ -32,7 +32,7 @@ const user = {
         "download",
         "_member_",
         "read_report",
-        "delete"
+        "delete",
       ],
       "TCGA-LUAD": [
         "read",
@@ -42,7 +42,7 @@ const user = {
         "download",
         "_member_",
         "read_report",
-        "delete"
+        "delete",
       ],
       "TCGA-LAML": [
         "read",
@@ -52,10 +52,10 @@ const user = {
         "download",
         "_member_",
         "read_report",
-        "delete"
-      ]
-    }
-  }
+        "delete",
+      ],
+    },
+  },
 };
 
 const TESTCase = { node: { project: { project_id: "TCGA-TEST" } } };
@@ -72,14 +72,14 @@ describe("isUserProject", () => {
       expect(
         isUserProject({
           user,
-          file: { projects: [{ project_id: "TCGA-TEST" }] }
-        })
+          file: { projects: [{ project_id: "TCGA-TEST" }] },
+        }),
       ).toBe(true);
       expect(
         isUserProject({
           user,
-          file: { projects: [{ project_id: "TCGA-KIRC" }] }
-        })
+          file: { projects: [{ project_id: "TCGA-KIRC" }] },
+        }),
       ).toBe(false);
     });
     it("with more than one project, only one of them needs to be in gdc_ids", () => {
@@ -87,17 +87,23 @@ describe("isUserProject", () => {
         isUserProject({
           user,
           file: {
-            projects: [{ project_id: "TCGA-TEST" }, { project_id: "TCGA-LUAD" }]
-          }
-        })
+            projects: [
+              { project_id: "TCGA-TEST" },
+              { project_id: "TCGA-LUAD" },
+            ],
+          },
+        }),
       ).toBe(true);
       expect(
         isUserProject({
           user,
           file: {
-            projects: [{ project_id: "TCGA-TEST" }, { project_id: "TCGA-KIRC" }]
-          }
-        })
+            projects: [
+              { project_id: "TCGA-TEST" },
+              { project_id: "TCGA-KIRC" },
+            ],
+          },
+        }),
       ).toBe(true);
       expect(
         isUserProject({
@@ -106,10 +112,10 @@ describe("isUserProject", () => {
             projects: [
               { project_id: "TCGA-KIRP" },
               { project_id: "TCGA-TEST" },
-              { project_id: "TCGA-KIRC" }
-            ]
-          }
-        })
+              { project_id: "TCGA-KIRC" },
+            ],
+          },
+        }),
       ).toBe(true);
     });
   });
@@ -126,11 +132,11 @@ describe("isUserProject", () => {
           file: {
             cases: {
               hits: {
-                edges: [TESTCase, LUADCase]
-              }
-            }
-          }
-        })
+                edges: [TESTCase, LUADCase],
+              },
+            },
+          },
+        }),
       ).toBe(true);
       expect(
         isUserProject({
@@ -138,11 +144,11 @@ describe("isUserProject", () => {
           file: {
             cases: {
               hits: {
-                edges: [TESTCase, KIRPCase]
-              }
-            }
-          }
-        })
+                edges: [TESTCase, KIRPCase],
+              },
+            },
+          },
+        }),
       ).toBe(true);
       expect(
         isUserProject({
@@ -150,11 +156,11 @@ describe("isUserProject", () => {
           file: {
             cases: {
               hits: {
-                edges: [KIRCCase, KIRPCase]
-              }
-            }
-          }
-        })
+                edges: [KIRCCase, KIRPCase],
+              },
+            },
+          },
+        }),
       ).toBe(false);
     });
   });
@@ -163,20 +169,20 @@ describe("isUserProject", () => {
 describe("fileInCorrectState", () => {
   it('should be correct for active files when file.state is submitted and file.file_state is in ["submitted", "processing", "processed"]', () => {
     expect(
-      fileInCorrectState({ state: "submitted", file_state: "submitted" })
+      fileInCorrectState({ state: "submitted", file_state: "submitted" }),
     ).toBe(true);
     expect(
-      fileInCorrectState({ state: "submitted", file_state: "processing" })
+      fileInCorrectState({ state: "submitted", file_state: "processing" }),
     ).toBe(true);
     expect(
-      fileInCorrectState({ state: "submitted", file_state: "processed" })
+      fileInCorrectState({ state: "submitted", file_state: "processed" }),
     ).toBe(true);
 
     expect(
-      fileInCorrectState({ state: "submitted", file_state: "registered" })
+      fileInCorrectState({ state: "submitted", file_state: "registered" }),
     ).toBe(false);
     expect(
-      fileInCorrectState({ state: "uploaded", file_state: "submitted" })
+      fileInCorrectState({ state: "uploaded", file_state: "submitted" }),
     ).toBe(false);
   });
 });
@@ -185,10 +191,10 @@ describe("intersectsWithFileAcl", () => {
   it("should detect _member_ role phsids_ has intersection with file.acl", () => {
     expect(intersectsWithFileAcl({ user, file: { acl: ["TEST"] } })).toBe(true);
     expect(
-      intersectsWithFileAcl({ user, file: { acl: ["TEST", "NOT IN"] } })
+      intersectsWithFileAcl({ user, file: { acl: ["TEST", "NOT IN"] } }),
     ).toBe(true);
     expect(intersectsWithFileAcl({ user, file: { acl: ["NOT IN"] } })).toBe(
-      false
+      false,
     );
   });
 });
@@ -196,64 +202,64 @@ describe("intersectsWithFileAcl", () => {
 describe("userCanDownloadFiles", () => {
   it("should work on files with projects", () => {
     expect(userCanDownloadFiles({ user, files: [{ access: "open" }] })).toBe(
-      true
+      true,
     );
     expect(
       userCanDownloadFiles({
         user,
-        files: [{ access: "controlled", projects: ["TCGA-TEST"] }]
-      })
+        files: [{ access: "controlled", projects: ["TCGA-TEST"] }],
+      }),
     ).toBe(true);
     expect(
       userCanDownloadFiles({
         user,
-        files: [{ access: "controlled", projects: ["TCGA-KIRC"] }]
-      })
+        files: [{ access: "controlled", projects: ["TCGA-KIRC"] }],
+      }),
     ).toBe(false);
     expect(
       userCanDownloadFiles({
         user,
-        files: [{ access: "controlled", projects: ["TCGA-KIRC", "TCGA-TEST"] }]
-      })
+        files: [{ access: "controlled", projects: ["TCGA-KIRC", "TCGA-TEST"] }],
+      }),
     ).toBe(true);
     expect(
       userCanDownloadFiles({
         user,
         files: [
           { access: "controlled", projects: ["TCGA-KIRC", "TCGA-TEST"] },
-          { access: "controlled", projects: ["TCGA-KIRC"] }
-        ]
-      })
+          { access: "controlled", projects: ["TCGA-KIRC"] },
+        ],
+      }),
     ).toBe(false);
     expect(
       userCanDownloadFiles({
         user,
-        files: [TESTFile]
-      })
+        files: [TESTFile],
+      }),
     ).toBe(true);
     expect(
       userCanDownloadFiles({
         user,
-        files: [TESTFile, LUADFile]
-      })
+        files: [TESTFile, LUADFile],
+      }),
     ).toBe(true);
     expect(
       userCanDownloadFiles({
         user,
         files: [
           { access: "open", ...TESTFile },
-          { access: "open", ...KIRPFile }
-        ]
-      })
+          { access: "open", ...KIRPFile },
+        ],
+      }),
     ).toBe(true);
     expect(
       userCanDownloadFiles({
         user,
         files: [
           { access: "controlled", ...TESTFile },
-          { access: "controlled", ...KIRPFile }
-        ]
-      })
+          { access: "controlled", ...KIRPFile },
+        ],
+      }),
     ).toBe(false);
   });
   it("should work on files with no projects", () => {
@@ -264,10 +270,10 @@ describe("userCanDownloadFiles", () => {
           {
             state: "submitted",
             file_state: "submitted",
-            acl: ["TEST"]
-          }
-        ]
-      })
+            acl: ["TEST"],
+          },
+        ],
+      }),
     ).toBe(true);
     expect(
       userCanDownloadFiles({
@@ -276,15 +282,15 @@ describe("userCanDownloadFiles", () => {
           {
             state: "submitted",
             file_state: "submitted",
-            acl: ["TEST"]
+            acl: ["TEST"],
           },
           {
             state: "submitted",
             file_state: "submitted",
-            acl: ["NOT-IN"]
-          }
-        ]
-      })
+            acl: ["NOT-IN"],
+          },
+        ],
+      }),
     ).toBe(false);
     expect(
       userCanDownloadFiles({
@@ -293,10 +299,10 @@ describe("userCanDownloadFiles", () => {
           {
             state: "uploaded",
             file_state: "registered",
-            acl: ["TEST"]
-          }
-        ]
-      })
+            acl: ["TEST"],
+          },
+        ],
+      }),
     ).toBe(false);
     expect(
       userCanDownloadFiles({
@@ -305,10 +311,10 @@ describe("userCanDownloadFiles", () => {
           {
             state: "submitted",
             file_state: "submitted",
-            acl: []
-          }
-        ]
-      })
+            acl: [],
+          },
+        ],
+      }),
     ).toBe(false);
     expect(
       userCanDownloadFiles({
@@ -317,10 +323,10 @@ describe("userCanDownloadFiles", () => {
           {
             state: "submitted",
             file_state: "submitted",
-            acl: ["NOT-IN"]
-          }
-        ]
-      })
+            acl: ["NOT-IN"],
+          },
+        ],
+      }),
     ).toBe(false);
   });
 });
@@ -332,9 +338,9 @@ describe("userCanDownloadFile", () => {
         file: {
           state: "submitted",
           file_state: "submitted",
-          acl: ["TEST"]
-        }
-      })
+          acl: ["TEST"],
+        },
+      }),
     ).toBe(true);
     expect(
       userCanDownloadFile({
@@ -342,23 +348,23 @@ describe("userCanDownloadFile", () => {
         file: {
           state: "submitted",
           file_state: "submitted",
-          acl: ["NOT-IN"]
-        }
-      })
+          acl: ["NOT-IN"],
+        },
+      }),
     ).toBe(false);
   });
   it("should not throw when user has no projects", () => {
     expect(
       userCanDownloadFile({
         user: { username: "TEST_USER" },
-        file: TESTFile
-      })
+        file: TESTFile,
+      }),
     ).toBe(false);
     expect(
       userCanDownloadFile({
         user: { username: "TEST_USER" },
-        file: { access: "open", ...TESTFile }
-      })
+        file: { access: "open", ...TESTFile },
+      }),
     ).toBe(true);
   });
 });

@@ -33,14 +33,14 @@ const InternalLinkWithContext = ({
         // mergeQuery(ctx.query).filters is a jsurl string
         // mergeQuery({}, ctx.query).filters is an object
         _.isEqual(mergedQuery.filters, mergeQuery({}, ctx.query).filters),
-        _.every([ctx.query.filters, mergedQuery.filters], _.isNil)
+        _.every([ctx.query.filters, mergedQuery.filters], _.isNil),
       ]);
 
       const queryWithOffsetsReset = hasFilterChanged
         ? mergedQuery
         : _.mapValues(
             mergedQuery,
-            (value, paramName) => (paramName.endsWith("offset") ? 0 : value)
+            (value, paramName) => (paramName.endsWith("offset") ? 0 : value),
           );
 
       return (
@@ -52,7 +52,7 @@ const InternalLinkWithContext = ({
 
 InternalLinkWithContext.defaultProps = {
   // eslint-disable-line fp/no-mutation
-  mergeQuery: mq
+  mergeQuery: mq,
 };
 
 export default InternalLinkWithContext;

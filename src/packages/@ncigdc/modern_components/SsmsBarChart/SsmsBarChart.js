@@ -49,8 +49,8 @@ class Route extends Relay.Route {
     return {
       ssmsBarChart_filters: parseFilterParam(
         q.ssmsBarChart_filters,
-        defaultFilters || null
-      )
+        defaultFilters || null,
+      ),
     };
   };
 }
@@ -61,16 +61,19 @@ const createContainer = Component =>
       fetchData: false,
       ssmsBarChart_filters: null,
       score: "occurrence.case.project.project_id",
-      ssmTested: makeFilter([
-        {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ]),
+      ssmTested: makeFilter(
+        [
+          {
+            field: "cases.available_variation_data",
+            value: "ssm",
+          },
+        ],
+        false,
+      ),
       sort: [
         { field: "_score", order: "desc" },
-        { field: "_uid", order: "asc" }
-      ]
+        { field: "_uid", order: "asc" },
+      ],
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -95,8 +98,8 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 const Component = compose(
@@ -105,22 +108,22 @@ const Component = compose(
     handleClickMutation: ({ push, onClickMutation }) => (ssm, chartData) =>
       onClickMutation
         ? onClickMutation(ssm, chartData)
-        : push(`/ssms/${ssm.ssm_id}`)
+        : push(`/ssms/${ssm.ssm_id}`),
   }),
-  withTheme
+  withTheme,
 )(
   ({
     theme,
     viewer: { explore: { ssms = { hits: { edges: [] } }, filteredCases } },
     context,
     handleClickMutation,
-    style
+    style,
   }) => {
     // Data has to be sorted because the relay cache does not store the order.
     const chartData = orderBy(
       ssms.hits.edges.map(e => e.node),
       ["score", "ssm_id"],
-      ["desc", "asc"]
+      ["desc", "asc"],
     ).map(({ score = 0, ssm_id: ssmId }) => ({
       fullLabel: ssmId,
       label: `${ssmId.substr(0, 8)}...`,
@@ -143,7 +146,7 @@ const Component = compose(
             </div>}
         </span>
       ),
-      onClick: () => handleClickMutation({ ssm_id: ssmId }, chartData)
+      onClick: () => handleClickMutation({ ssm_id: ssmId }, chartData),
     }));
 
     return (
@@ -160,12 +163,12 @@ const Component = compose(
                     wrapSvg({ selector: "#mutation-chart svg", title: TITLE })}
                   data={chartData.map(d => ({
                     label: d.fullLabel,
-                    value: d.value
+                    value: d.value,
                   }))}
                   slug="most-frequent-mutations-bar-chart"
                   noText
                   tooltipHTML="Download image or data"
-                />
+                />,
               ]}
             />
             <Row id="mutation-chart" style={{ paddingTop: "2rem" }}>
@@ -178,15 +181,15 @@ const Component = compose(
                   tooltips: {
                     fill: "#fff",
                     stroke: theme.greyScale4,
-                    textFill: theme.greyScale3
-                  }
+                    textFill: theme.greyScale3,
+                  },
                 }}
               />
             </Row>
           </Column>}
       </div>
     );
-  }
+  },
 );
 
 export default createRenderer(Route, createContainer(Component));

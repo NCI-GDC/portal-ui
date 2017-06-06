@@ -10,7 +10,7 @@ export type TProps = {|
   pred: boolean,
   prfOff: string,
   style?: Object,
-  className?: Object
+  className?: Object,
 |};
 
 const PaginationLink = (props: TProps) =>

@@ -33,25 +33,25 @@ const SPACING = "2rem";
 const styles = {
   countCard: {
     width: "auto",
-    marginBottom: SPACING
+    marginBottom: SPACING,
   },
   column: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   margin: {
-    marginBottom: SPACING
+    marginBottom: SPACING,
   },
   icon: {
     width: "4rem",
     height: "4rem",
-    color: "#888"
+    color: "#888",
   },
   coloredSquare: {
     display: "inline-block",
     width: 10,
     height: 10,
-    marginRight: 5
-  }
+    marginRight: 5,
+  },
 };
 
 const enhance = compose(withRouter);
@@ -72,7 +72,7 @@ type TProps = {|
   biospecimenCount: number,
   push: Function,
   query: Object,
-  viewer: Object
+  viewer: Object,
 |};
 
 const Project = (
@@ -92,14 +92,14 @@ const Project = (
     biospecimenCount,
     push,
     query,
-    viewer
-  }: TProps = {}
+    viewer,
+  }: TProps = {},
 ) => {
   const projectFilter = [
     {
       field: "cases.project.project_id",
-      value: projectId
-    }
+      value: projectId,
+    },
   ];
 
   const dataExportFilters = makeFilter(projectFilter);
@@ -127,7 +127,7 @@ const Project = (
               "samples.portions.submitter_id",
               "samples.portions.slides",
               "samples.portions.annotations",
-              "samples.portions.center"
+              "samples.portions.center",
             ]}
             filters={dataExportFilters}
           />
@@ -145,7 +145,7 @@ const Project = (
               "demographic",
               "diagnoses",
               "family_histories",
-              "exposures"
+              "exposures",
             ]}
             filters={dataExportFilters}
           />
@@ -181,13 +181,13 @@ const Project = (
               { th: "Project Name", td: projectName },
               {
                 th: "Disease Type",
-                td: <CollapsibleList data={diseaseType} />
+                td: <CollapsibleList data={diseaseType} />,
               },
               {
                 th: "Primary Site",
-                td: <CollapsibleList data={primarySite} />
+                td: <CollapsibleList data={primarySite} />,
               },
-              { th: "Program", td: programName }
+              { th: "Program", td: programName },
             ]}
           />
         </span>
@@ -204,8 +204,8 @@ const Project = (
                     merge: "replace",
                     pathname: "/repository",
                     query: {
-                      filters: makeFilter(projectFilter)
-                    }
+                      filters: makeFilter(projectFilter, false),
+                    },
                   }
                 : null
             }
@@ -222,8 +222,8 @@ const Project = (
                     query: {
                       filters: makeFilter(projectFilter),
                       facetTab: "files",
-                      searchTableTab: "files"
-                    }
+                      searchTableTab: "files",
+                    },
                   }
                 : null
             }
@@ -240,13 +240,16 @@ const Project = (
                     pathname: `/annotations${totalAnnotations === 1 ? `/${annotations[0].annotation_id}` : ""}`,
                     query: {
                       filters: totalAnnotations > 1 &&
-                        makeFilter([
-                          {
-                            field: "annotations.project.project_id",
-                            value: projectId
-                          }
-                        ])
-                    }
+                        makeFilter(
+                          [
+                            {
+                              field: "annotations.project.project_id",
+                              value: projectId,
+                            },
+                          ],
+                          false,
+                        ),
+                    },
                   }
                 : null
             }
@@ -260,13 +263,16 @@ const Project = (
             tableTitle="Cases and File Counts by Experimental Strategy"
             pieChartTitle="File Counts by Experimental Strategy"
             data={experimentalStrategies.map((item, i) => {
-              const filters = makeFilter([
-                ...projectFilter,
-                {
-                  field: "files.experimental_strategy",
-                  value: [item.experimental_strategy]
-                }
-              ]);
+              const filters = makeFilter(
+                [
+                  ...projectFilter,
+                  {
+                    field: "files.experimental_strategy",
+                    value: [item.experimental_strategy],
+                  },
+                ],
+                false,
+              );
 
               return {
                 id: item.experimental_strategy,
@@ -275,7 +281,7 @@ const Project = (
                     <div
                       style={{
                         ...styles.coloredSquare,
-                        backgroundColor: colors20(i)
+                        backgroundColor: colors20(i),
                       }}
                     />
                     {item.experimental_strategy}
@@ -288,7 +294,7 @@ const Project = (
                     query={{
                       filters,
                       facetTab: "cases",
-                      searchTableTab: "cases"
+                      searchTableTab: "cases",
                     }}
                   >
                     {(item.case_count || 0).toLocaleString()}
@@ -301,7 +307,7 @@ const Project = (
                     query={{
                       filters,
                       facetTab: "files",
-                      searchTableTab: "files"
+                      searchTableTab: "files",
                     }}
                   >
                     {(item.file_count || 0).toLocaleString()}
@@ -319,18 +325,18 @@ const Project = (
                     {
                       filters,
                       facetTab: "files",
-                      searchTableTab: "files"
+                      searchTableTab: "files",
                     },
                     query,
-                    "replace"
+                    "replace",
                   );
                   const q = removeEmptyKeys({
                     ...newQuery,
                     filters: newQuery.filters &&
-                      JSURL.stringify(newQuery.filters)
+                      JSURL.stringify(newQuery.filters),
                   });
                   push({ pathname: "/repository", query: q });
-                }
+                },
               };
             })}
             footer={`${experimentalStrategies.length} Experimental Strategies`}
@@ -339,18 +345,18 @@ const Project = (
               {
                 key: "experimental_strategy",
                 title: "Experimental Strategy",
-                color: true
+                color: true,
               },
               {
                 key: "case_count",
                 title: "Cases",
-                style: { textAlign: "right" }
+                style: { textAlign: "right" },
               },
               {
                 key: "file_count",
                 title: "Files",
-                style: { textAlign: "right" }
-              }
+                style: { textAlign: "right" },
+              },
             ]}
           />
         </span>
@@ -359,10 +365,13 @@ const Project = (
             tableTitle="Cases and File Counts by Data Category"
             pieChartTitle="File Counts by Data Category"
             data={dataCategories.map((item, i) => {
-              const filters = makeFilter([
-                ...projectFilter,
-                { field: "files.data_category", value: [item.data_category] }
-              ]);
+              const filters = makeFilter(
+                [
+                  ...projectFilter,
+                  { field: "files.data_category", value: [item.data_category] },
+                ],
+                false,
+              );
 
               return {
                 id: item.data_category,
@@ -371,7 +380,7 @@ const Project = (
                     <div
                       style={{
                         ...styles.coloredSquare,
-                        backgroundColor: colors20(i)
+                        backgroundColor: colors20(i),
                       }}
                     />
                     {item.data_category}
@@ -384,7 +393,7 @@ const Project = (
                       query={{
                         filters,
                         facetTab: "cases",
-                        searchTableTab: "cases"
+                        searchTableTab: "cases",
                       }}
                     >
                       {item.case_count.toLocaleString()}
@@ -397,7 +406,7 @@ const Project = (
                       query={{
                         filters,
                         facetTab: "files",
-                        searchTableTab: "files"
+                        searchTableTab: "files",
                       }}
                     >
                       {item.file_count.toLocaleString()}
@@ -415,18 +424,18 @@ const Project = (
                     {
                       filters,
                       facetTab: "files",
-                      searchTableTab: "files"
+                      searchTableTab: "files",
                     },
                     query,
-                    "replace"
+                    "replace",
                   );
                   const q = removeEmptyKeys({
                     ...newQuery,
                     filters: newQuery.filters &&
-                      JSURL.stringify(newQuery.filters)
+                      JSURL.stringify(newQuery.filters),
                   });
                   push({ pathname: "/repository", query: q });
-                }
+                },
               };
             })}
             footer={`${dataCategories.length} Data Categories`}
@@ -436,13 +445,13 @@ const Project = (
               {
                 key: "case_count",
                 title: "Cases",
-                style: { textAlign: "right" }
+                style: { textAlign: "right" },
               },
               {
                 key: "file_count",
                 title: "Files",
-                style: { textAlign: "right" }
-              }
+                style: { textAlign: "right" },
+              },
             ]}
           />
         </span>

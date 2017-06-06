@@ -12,40 +12,40 @@ const style = {
     color: "white",
     padding: "1rem",
     transition: "all 0.25s ease",
-    borderBottom: "1px solid #ebebeb"
+    borderBottom: "1px solid #ebebeb",
   },
   icon: {
     flex: 1,
     paddingLeft: "5px",
-    fontSize: "1.2em"
+    fontSize: "1.2em",
   },
   message: {
-    flex: 32
+    flex: 32,
   },
   dismiss: {
     paddingRight: "5px",
-    cursor: "pointer"
+    cursor: "pointer",
   },
   dismissed: {
     height: "0px",
     overflow: "hidden",
     padding: 0,
-    borderBottom: 0
+    borderBottom: 0,
   },
   warning: {
     color: "#000000",
     fontWeight: "bold",
-    backgroundColor: "#D39C3F"
+    backgroundColor: "#D39C3F",
   },
   error: {
-    backgroundColor: "#83001E"
-  }
+    backgroundColor: "#83001E",
+  },
 };
 
 const levelToIcon = {
   info: <span className="fa fa-question icon" />,
   warning: <span className="fa fa-exclamation icon" />,
-  error: <span className="fa fa-exclamation-triangle icon" />
+  error: <span className="fa fa-exclamation-triangle icon" />,
 };
 
 type BannerProps = {
@@ -53,7 +53,7 @@ type BannerProps = {
   level: string,
   dismissible: boolean,
   handleOnDismiss: () => {},
-  dismissed: boolean
+  dismissed: boolean,
 };
 
 const Banner = ({
@@ -61,13 +61,13 @@ const Banner = ({
   level,
   dismissible,
   handleOnDismiss,
-  dismissed
+  dismissed,
 }: BannerProps) => (
   <Row
     style={{
       ...style.headerBanner,
       ...(dismissed ? style.dismissed : {}),
-      ...(style[level.toLowerCase()] || {})
+      ...(style[level.toLowerCase()] || {}),
     }}
     className="header-banner"
   >

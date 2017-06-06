@@ -18,17 +18,17 @@ import escapeForRelay from "@ncigdc/utils/escapeForRelay";
 export type TProps = {
   aggregations: {
     biotype: { buckets: [TBucket] },
-    is_cancer_gene_census: { buckets: [TBucket] }
+    is_cancer_gene_census: { buckets: [TBucket] },
   },
   hits: {
     edges: Array<{|
       node: {|
-        id: string
-      |}
-    |}>
+        id: string,
+      |},
+    |}>,
   },
   setAutocomplete: Function,
-  theme: Object
+  theme: Object,
 };
 
 const presetFacets = [
@@ -37,26 +37,26 @@ const presetFacets = [
     field: "gene_id",
     full: "genes.gene_id",
     doc_type: "genes",
-    type: "id"
+    type: "id",
   },
   {
     title: "Biotype",
     field: "biotype",
     full: "genes.biotype",
     doc_type: "genes",
-    type: "terms"
+    type: "terms",
   },
   {
     title: "Is Cancer Gene Census",
     field: "is_cancer_gene_census",
     full: "genes.is_cancer_gene_census",
     doc_type: "genes",
-    type: "terms"
-  }
+    type: "terms",
+  },
 ];
 
 export const GeneAggregationsComponent = compose(
-  withState("idCollapsed", "setIdCollapsed", false)
+  withState("idCollapsed", "setIdCollapsed", false),
 )((props: TProps) => (
   <div>
     <FacetHeader
@@ -121,13 +121,13 @@ export const GeneAggregationsQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const GeneAggregations = Relay.createContainer(
   withTheme(GeneAggregationsComponent),
-  GeneAggregationsQuery
+  GeneAggregationsQuery,
 );
 
 export default GeneAggregations;

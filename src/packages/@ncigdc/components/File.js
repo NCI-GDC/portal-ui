@@ -39,7 +39,7 @@ const DISPLAY_MAPPING = {
   "Simple Nucleotide Variation": ["analysis", "downstreamAnalysis"],
   "Copy Number Variation": ["analysis", "downstreamAnalysis"],
   "Structural Rearrangement": ["analysis", "downstreamAnalysis"],
-  "DNA Methylation": ["analysis", "downstreamAnalysis"]
+  "DNA Methylation": ["analysis", "downstreamAnalysis"],
 };
 
 const styles = {
@@ -47,8 +47,8 @@ const styles = {
     ...visualizingButton,
     padding: "3px 5px",
     minWidth: "initial",
-    minHeight: "initial"
-  }
+    minHeight: "initial",
+  },
 };
 
 function displaySection(section: string, dataCategory: string): boolean {
@@ -61,7 +61,7 @@ const fileInCart = (files, file) => files.some(f => f.file_id === file.file_id);
 
 const getAnnotationsCount = (annotations, entity) => {
   const filteredAnnotations = annotations.hits.edges.filter(
-    ({ node: a }) => a.entity_id === entity.entity_id
+    ({ node: a }) => a.entity_id === entity.entity_id,
   );
 
   if (filteredAnnotations.length === 1) {
@@ -74,9 +74,10 @@ const getAnnotationsCount = (annotations, entity) => {
     return (
       <AnnotationsLink
         query={{
-          filters: makeFilter([
-            { field: "annotations.entity_id", value: entity.entity_id }
-          ])
+          filters: makeFilter(
+            [{ field: "annotations.entity_id", value: entity.entity_id }],
+            false,
+          ),
         }}
       >
         {filteredAnnotations.length}
@@ -93,18 +94,18 @@ const File = ({
   searchTerm,
   setState,
   dispatch,
-  files
+  files,
 }: {
   node: Object,
   theme: Object,
   searchTerm: string,
   setState: Function,
   dispatch: Function,
-  files: Array<Object>
+  files: Array<Object>,
 }) => {
   const filteredAE = node.associated_entities.hits.edges
     .filter(({ node: ae }) =>
-      Object.keys(ae).map(k => ae[k].includes(searchTerm)).includes(true)
+      Object.keys(ae).map(k => ae[k].includes(searchTerm)).includes(true),
     )
     .map(({ node: ae }) => ({
       ...ae,
@@ -118,7 +119,7 @@ const File = ({
           {ae.entity_id}
         </CaseLink>
       ),
-      annotation_count: getAnnotationsCount(node.annotations, ae)
+      annotation_count: getAnnotationsCount(node.annotations, ae),
     }));
 
   const archiveComponent = node.archive.archive_id
@@ -130,18 +131,21 @@ const File = ({
 
   const projectIds = uniq(
     (node.cases.hits.edges || [])
-      .map(({ node: { project: { project_id: pId } } }) => pId)
+      .map(({ node: { project: { project_id: pId } } }) => pId),
   );
 
   const sourceFilesRepoLink = node.analysis.input_files.hits.total
     ? <RepositoryFilesLink
         query={{
-          filters: makeFilter([
-            {
-              field: "downstream_analyses.output_files.file_id",
-              value: node.file_id
-            }
-          ])
+          filters: makeFilter(
+            [
+              {
+                field: "downstream_analyses.output_files.file_id",
+                value: node.file_id,
+              },
+            ],
+            false,
+          ),
         }}
       >
         {node.analysis.input_files.hits.total}
@@ -177,7 +181,7 @@ const File = ({
             {
               th: "Name",
               td: node.file_name,
-              style: { whiteSpace: "pre-wrap", wordBreak: "break-all" }
+              style: { whiteSpace: "pre-wrap", wordBreak: "break-all" },
             },
             { th: "Access", td: node.access },
             { th: "UUID", td: node.file_id },
@@ -190,9 +194,9 @@ const File = ({
               th: "Project ID",
               td: projectIds.map(
                 pId =>
-                  pId && <ProjectLink key={pId} uuid={pId}>{pId}</ProjectLink>
-              )
-            }
+                  pId && <ProjectLink key={pId} uuid={pId}>{pId}</ProjectLink>,
+              ),
+            },
           ]}
         />
         <EntityPageVerticalTable
@@ -202,7 +206,7 @@ const File = ({
             { th: "Data Category", td: node.data_category },
             { th: "Data Type", td: node.data_type },
             { th: "Experimental Strategy", td: node.experimental_strategy },
-            { th: "Platform", td: node.platform || "--" }
+            { th: "Platform", td: node.platform || "--" },
           ]}
         />
       </Row>
@@ -224,7 +228,7 @@ const File = ({
                       height: "34px",
                       display: "flex",
                       justifyContent: "center",
-                      alignItems: "center"
+                      alignItems: "center",
                     }}
                   >
                     <SearchIcon size={14} />
@@ -245,7 +249,7 @@ const File = ({
                     paddingLeft: "1rem",
                     border: `1px solid ${theme.greyScale5}`,
                     width: "28rem",
-                    borderRadius: "0 4px 4px 0"
+                    borderRadius: "0 4px 4px 0",
                   }}
                 />
               </Row>
@@ -256,7 +260,7 @@ const File = ({
               { key: "entity_id", title: "Entity Id" },
               { key: "entity_type", title: "Entity Type" },
               { key: "case_id", title: "Case UUID" },
-              { key: "annotation_count", title: "Annotations" }
+              { key: "annotation_count", title: "Annotations" },
             ]}
             data={filteredAE}
           />
@@ -273,7 +277,7 @@ const File = ({
               {
                 th: "Workflow Completion Date",
                 td: node.analysis.updated_datetime &&
-                  moment(node.analysis.updated_datetime).format("YYYY-MM-DD")
+                  moment(node.analysis.updated_datetime).format("YYYY-MM-DD"),
               },
               {
                 th: "Source Files",
@@ -285,8 +289,8 @@ const File = ({
                     >
                       1
                     </FileLink>
-                  : sourceFilesRepoLink
-              }
+                  : sourceFilesRepoLink,
+              },
             ]}
           />
           <EntityPageVerticalTable
@@ -294,7 +298,7 @@ const File = ({
             style={{ width: "50%" }}
             thToTd={[
               { th: "Genome Build", td: "GRCh38.p0" },
-              { th: "Genome Name", td: "GRCh38.d1.vd1" }
+              { th: "Genome Name", td: "GRCh38.d1.vd1" },
             ]}
           />
         </Row>}
@@ -311,10 +315,10 @@ const File = ({
                 { key: "read_length", title: "Read Length" },
                 { key: "library_name", title: "Library Name" },
                 { key: "sequencing_center", title: "Sequencing Center" },
-                { key: "sequencing_date", title: "Sequencing Date" }
+                { key: "sequencing_date", title: "Sequencing Date" },
               ]}
               data={node.analysis.metadata.read_groups.hits.edges.map(
-                readGroup => readGroup.node
+                readGroup => readGroup.node,
               )}
             />
           </Column>
@@ -333,15 +337,15 @@ const File = ({
                     maxWidth: "150px",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    whiteSpace: "nowrap"
+                    whiteSpace: "nowrap",
                   },
-                  tooltip: true
+                  tooltip: true,
                 },
                 { key: "data_category", title: "Data Category" },
                 { key: "data_type", title: "Data Type" },
                 { key: "data_format", title: "Data Format" },
                 { key: "file_size", title: "File Size" },
-                { key: "action", title: "Action" }
+                { key: "action", title: "Action" },
               ]}
               data={node.metadata_files.hits.edges.map(md => ({
                 ...md,
@@ -356,7 +360,7 @@ const File = ({
                       style={styles.tableDownloadAction}
                     />
                   </Row>
-                )
+                ),
               }))}
             />
           </Column>
@@ -371,7 +375,7 @@ const File = ({
                 {
                   key: "file_name",
                   title: "File Name",
-                  style: { whiteSpace: "pre-wrap", wordBreak: "break-all" }
+                  style: { whiteSpace: "pre-wrap", wordBreak: "break-all" },
                 },
                 { key: "data_category", title: "Data Category" },
                 { key: "data_type", title: "Data Type" },
@@ -380,9 +384,9 @@ const File = ({
                 {
                   key: "file_size",
                   title: "File Size",
-                  style: { textAlign: "right" }
+                  style: { textAlign: "right" },
                 },
-                { key: "action", title: "Action" }
+                { key: "action", title: "Action" },
               ]}
               data={node.downstream_analyses.hits.edges.reduce(
                 (acc, { node: { output_files, workflow_type } }) => [
@@ -400,9 +404,9 @@ const File = ({
                           file={{
                             ...file,
                             projects: [
-                              node.cases.hits.edges[0].node.project.project_id
+                              node.cases.hits.edges[0].node.project.project_id,
                             ],
-                            acl: node.acl
+                            acl: node.acl,
                           }}
                           style={{ padding: "3px 5px" }}
                         />
@@ -411,10 +415,10 @@ const File = ({
                           style={styles.tableDownloadAction}
                         />
                       </Row>
-                    )
-                  }))
+                    ),
+                  })),
                 ],
-                []
+                [],
               )}
             />
           </Column>
@@ -426,5 +430,5 @@ const File = ({
 export default compose(
   withState("searchTerm", "setState", ""),
   withTheme,
-  connect(state => ({ ...state.cart }))
+  connect(state => ({ ...state.cart })),
 )(File);

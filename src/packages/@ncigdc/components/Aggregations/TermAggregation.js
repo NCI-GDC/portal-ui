@@ -29,7 +29,7 @@ type TProps = {
   showingValueSearch: boolean,
   collapsed: boolean,
   setShowingMore: Function,
-  showingMore: boolean
+  showingMore: boolean,
 };
 
 const BucketLink = styled(Link, {
@@ -38,8 +38,8 @@ const BucketLink = styled(Link, {
   color: ({ theme }) => theme.greyScale1,
   ":link": {
     textDecoration: "none",
-    color: ({ theme }) => theme.greyScale1
-  }
+    color: ({ theme }) => theme.greyScale1,
+  },
 });
 
 const ToggleMoreLink = styled.div({
@@ -48,19 +48,19 @@ const ToggleMoreLink = styled.div({
   fontSize: "1.2rem",
   cursor: "pointer",
   ":link": {
-    color: ({ theme }) => theme.greyScale7
+    color: ({ theme }) => theme.greyScale7,
   },
   ":visited": {
-    color: ({ theme }) => theme.greyScale7
-  }
+    color: ({ theme }) => theme.greyScale7,
+  },
 });
 
 const BucketRow = styled(Row, {
-  padding: "0.3rem 0"
+  padding: "0.3rem 0",
 });
 
 const BottomRow = styled(Row, {
-  padding: "0.5rem"
+  padding: "0.5rem",
 });
 
 let input;
@@ -96,7 +96,7 @@ const TermAggregation = (props: TProps) => {
                       right: 0,
                       padding: "10px",
                       transition: "all 0.3s ease",
-                      outline: 0
+                      outline: 0,
                     }}
                     onClick={() => {
                       props.setFilter("");
@@ -122,11 +122,11 @@ const TermAggregation = (props: TProps) => {
                                 op: "in",
                                 content: {
                                   field: dotField,
-                                  value: [bucket.name]
-                                }
-                              }
-                            ]
-                          }
+                                  value: [bucket.name],
+                                },
+                              },
+                            ],
+                          },
                         }}
                       >
                         <input
@@ -135,12 +135,12 @@ const TermAggregation = (props: TProps) => {
                           style={{
                             pointerEvents: "none",
                             marginRight: "5px",
-                            flexShrink: 0
+                            flexShrink: 0,
                           }}
                           checked={inCurrentFilters({
                             key: bucket.name,
                             dotField,
-                            currentFilters
+                            currentFilters,
                           })}
                           id={`input-${props.title}-${bucket.name.replace(/\s/g, "-")}`}
                           name={`input-${props.title}-${bucket.name.replace(/\s/g, "-")}`}
@@ -190,10 +190,10 @@ const enhance = compose(
     filteredBuckets: buckets.filter(
       b =>
         b.key !== "_missing" &&
-        b.key.toLowerCase().includes(filter.toLowerCase())
-    )
+        b.key.toLowerCase().includes(filter.toLowerCase()),
+    ),
   })),
-  pure
+  pure,
 );
 
 export default enhance(TermAggregation);

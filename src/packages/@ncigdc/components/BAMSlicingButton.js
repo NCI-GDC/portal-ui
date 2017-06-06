@@ -16,7 +16,7 @@ import NoAccessModal from "@ncigdc/components/Modals/NoAccessModal";
 import { userCanDownloadFile } from "@ncigdc/utils/auth";
 
 const BAMButton = styled(Button, {
-  marginLeft: "0.5rem"
+  marginLeft: "0.5rem",
 });
 
 const enhance = compose(withState("active", "setActive", false), pure);
@@ -26,7 +26,7 @@ type TProps = {
   user: Object,
   dispatch: Function,
   setActive: Function,
-  active: boolean
+  active: boolean,
 };
 
 const BAMSlicingButton = ({
@@ -34,7 +34,7 @@ const BAMSlicingButton = ({
   user,
   dispatch,
   setActive,
-  active
+  active,
 }: TProps) => (
   <BAMButton
     style={{ marginLeft: "0.5rem" }}
@@ -49,8 +49,8 @@ const BAMSlicingButton = ({
                 closeModal={() => dispatch(setModal(null))}
                 setActive={setActive}
               />
-            : <NoAccessModal />
-        )
+            : <NoAccessModal />,
+        ),
       )}
   >
     {active ? "Slicing" : "BAM Slicing"}
@@ -59,6 +59,6 @@ const BAMSlicingButton = ({
 
 export default enhance(
   connect(state => ({
-    user: state.auth.user
-  }))(BAMSlicingButton)
+    user: state.auth.user,
+  }))(BAMSlicingButton),
 );

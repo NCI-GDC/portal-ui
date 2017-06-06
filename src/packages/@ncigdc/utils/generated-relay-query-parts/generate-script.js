@@ -70,7 +70,7 @@ const generateFragments = async () => {
     }`;
     return fetch("http://localhost:5000/graphql", {
       method: "POST",
-      body: JSON.stringify({ query })
+      body: JSON.stringify({ query }),
     })
       .then(x => x.json())
       .then(x => x.data.__type.fields)
@@ -80,40 +80,40 @@ const generateFragments = async () => {
   const [
     caseAggregationsFields,
     fileAggregationsFields,
-    exploreCaseAggregationsFields
+    exploreCaseAggregationsFields,
   ] = [
     await fetchAggregationFields("CaseAggregations"),
     await fetchAggregationFields("FileAggregations"),
-    await fetchAggregationFields("ECaseAggregations")
+    await fetchAggregationFields("ECaseAggregations"),
   ];
 
   const repositoryCaseAggregations = exportTemplate(
     caseAggregationsFields,
     "repositoryCaseAggregationsFragment",
-    "CaseAggregations"
+    "CaseAggregations",
   );
   const repositoryFileAggregations = exportTemplate(
     fileAggregationsFields,
     "repositoryFileAggregationsFragment",
-    "FileAggregations"
+    "FileAggregations",
   );
   const exploreCaseAggregations = exportTemplate(
     exploreCaseAggregationsFields,
     "exploreCaseAggregationsFragment",
-    "ECaseAggregations"
+    "ECaseAggregations",
   );
 
   fs.writeFileSync(
     path.join(__dirname, "repositoryCaseAggregations.js"),
-    wrapFile(repositoryCaseAggregations)
+    wrapFile(repositoryCaseAggregations),
   );
   fs.writeFileSync(
     path.join(__dirname, "repositoryFileAggregations.js"),
-    wrapFile(repositoryFileAggregations)
+    wrapFile(repositoryFileAggregations),
   );
   fs.writeFileSync(
     path.join(__dirname, "exploreCaseAggregations.js"),
-    wrapFile(exploreCaseAggregations)
+    wrapFile(exploreCaseAggregations),
   );
 };
 

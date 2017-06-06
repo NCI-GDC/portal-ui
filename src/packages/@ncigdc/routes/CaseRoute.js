@@ -11,7 +11,7 @@ import CasePage from "@ncigdc/containers/CasePage";
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam
+  parseJSURLParam,
 } from "@ncigdc/utils/uri";
 import NotFound from "@ncigdc/components/NotFound";
 import Loader from "@ncigdc/uikit/Loaders/Loader";
@@ -31,10 +31,10 @@ class CaseRoute extends Relay.Route {
           op: "=",
           content: {
             field: "cases.case_id",
-            value: params.id
-          }
-        }
-      ]
+            value: params.id,
+          },
+        },
+      ],
     };
 
     return {
@@ -46,7 +46,7 @@ class CaseRoute extends Relay.Route {
       fmTable_offset: parseIntParam(q.fmTable_offset, 0),
       fmTable_size: parseIntParam(q.fmTable_size, 20),
       fmTable_filters: parseFilterParam(q.filters, null),
-      caseFilters
+      caseFilters,
     };
   };
 }

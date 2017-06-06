@@ -23,7 +23,7 @@ const styles = {
     backgroundColor: theme.greyScale2,
     height: "36px",
     justifyContent: "center",
-    zIndex: 2000
+    zIndex: 2000,
   }),
   link: theme =>
     css({
@@ -32,22 +32,22 @@ const styles = {
       textDecoration: "none !important",
       transition: "background-color 0.2s ease",
       ":hover": {
-        backgroundColor: Color(theme.greyScale2).darken(0.5).rgbString()
+        backgroundColor: Color(theme.greyScale2).darken(0.5).rgbString(),
       },
-      ...center
+      ...center,
     }),
   faded: {
-    color: "rgb(191, 191, 191)"
+    color: "rgb(191, 191, 191)",
   },
   marginLeft: {
-    marginLeft: "0.7rem"
+    marginLeft: "0.7rem",
   },
   fileLength: {
     marginLeft: "0.5rem",
     padding: "0.4rem 0.6rem",
     fontSize: "1rem",
-    backgroundColor: "#5b5151"
-  }
+    backgroundColor: "#5b5151",
+  },
 };
 
 const Nav = ({ theme }) => (

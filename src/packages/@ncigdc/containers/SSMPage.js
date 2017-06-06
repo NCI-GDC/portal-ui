@@ -18,7 +18,7 @@ import CancerDistributionTable
   from "@ncigdc/containers/CancerDistributionTable";
 
 import type {
-  TChartTitleProps
+  TChartTitleProps,
 } from "@ncigdc/containers/CancerDistributionChart";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 import ProjectsLink from "@ncigdc/components/Links/ProjectsLink";
@@ -26,7 +26,7 @@ import ProjectsLink from "@ncigdc/components/Links/ProjectsLink";
 const CancerDistributionTitle = ({
   cases = 0,
   projects = [],
-  filters
+  filters,
 }: TChartTitleProps) => (
   <h5 style={{ textTransform: "uppercase", padding: "0 2rem" }}>
     THIS MUTATION AFFECTS&nbsp;
@@ -43,11 +43,11 @@ const CancerDistributionTitle = ({
               op: "in",
               content: {
                 field: "projects.project_id",
-                value: projects.map(p => p.project_id)
-              }
-            }
-          ]
-        }
+                value: projects.map(p => p.project_id),
+              },
+            },
+          ],
+        },
       }}
     >
       {projects.length.toLocaleString()}
@@ -61,14 +61,14 @@ const styles = {
     flexGrow: 1,
     fontSize: "2rem",
     marginBottom: 7,
-    marginTop: 7
+    marginTop: 7,
   },
   card: {
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   lolliplotZeroStateWrapper: {
-    padding: "24px 18px"
-  }
+    padding: "24px 18px",
+  },
 };
 
 export type TProps = {
@@ -82,13 +82,13 @@ export type TProps = {
             transcript: {
               transcript_id: string,
               gene: {
-                gene_id: string
-              }
-            }
-          }
-        }>
-      }
-    }
+                gene_id: string,
+              },
+            },
+          },
+        }>,
+      },
+    },
   },
   viewer: {
     projects: Object,
@@ -96,28 +96,31 @@ export type TProps = {
       cases: {
         aggregations: {
           project__project_id: {
-            buckets: Array<Object>
-          }
-        }
+            buckets: Array<Object>,
+          },
+        },
       },
-      ssms: Object
-    }
+      ssms: Object,
+    },
   },
   canonicalGeneId: string,
-  cdFilters: Object
+  cdFilters: Object,
 };
 
 export const SSMPageComponent = compose(
   withPropsOnChange(["node"], ({ node }) => ({
     canonicalGeneId: node.consequence.hits.edges.find(
-      x => x.node.transcript.is_canonical
+      x => x.node.transcript.is_canonical,
     ).node.transcript.gene.gene_id,
 
-    cdFilters: makeFilter([
-      { field: "ssms.ssm_id", value: node.ssm_id },
-      { field: "cases.available_variation_data", value: "ssm" }
-    ])
-  }))
+    cdFilters: makeFilter(
+      [
+        { field: "ssms.ssm_id", value: node.ssm_id },
+        { field: "cases.available_variation_data", value: "ssm" },
+      ],
+      false,
+    ),
+  })),
 )(({ node, viewer, canonicalGeneId, cdFilters }: TProps = {}) => (
   <FullWidthLayout title={node.ssm_id} entityType="MU">
     <Row spacing="2rem" id="summary">
@@ -169,7 +172,7 @@ export const SSMPageComponent = compose(
             viewer={viewer}
             lolliplot={viewer.analysis.protein_mutations}
             transcripts={node.consequence.hits.edges.map(
-              x => x.node.transcript
+              x => x.node.transcript,
             )}
           />
         : <div style={styles.lolliplotZeroStateWrapper}>
@@ -235,8 +238,8 @@ export const SSMPageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const SSMPage = Relay.createContainer(SSMPageComponent, SSMPageQuery);

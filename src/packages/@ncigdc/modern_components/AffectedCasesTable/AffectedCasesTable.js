@@ -9,7 +9,7 @@ import { parse } from "query-string";
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam
+  parseJSURLParam,
 } from "@ncigdc/utils/uri";
 import { viewerQuery } from "@ncigdc/routes/queries";
 import { handleReadyStateChange } from "@ncigdc/dux/loaders";
@@ -60,21 +60,21 @@ class Route extends Relay.Route {
   static prepareParams = ({
     location: { search },
     defaultSize = 10,
-    defaultFilters = null
+    defaultFilters = null,
   }) => {
     const q = parse(search);
 
     return {
       affectedCasesTable_filters: parseFilterParam(
         q.affectedCasesTable_filters,
-        defaultFilters
+        defaultFilters,
       ),
       affectedCasesTable_offset: parseIntParam(q.affectedCasesTable_offset, 0),
       affectedCasesTable_size: parseIntParam(
         q.affectedCasesTable_size,
-        defaultSize
+        defaultSize,
       ),
-      affectedCasesTable_sort: parseJSURLParam(q.affectedCasesTable_sort, null)
+      affectedCasesTable_sort: parseJSURLParam(q.affectedCasesTable_sort, null),
     };
   };
 }
@@ -86,7 +86,6 @@ const createContainer = Component =>
       affectedCasesTable_filters: null,
       affectedCasesTable_size: 10,
       affectedCasesTable_offset: 0,
-      ssmCountsfilters: null
     },
     fragments: {
       exploreSsms: () => Relay.QL`
@@ -149,63 +148,21 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 const Component = compose(
   withRouter,
   withTheme,
   withSize(),
-  withState("ssmCountsLoading", "setSsmCountsLoading", true),
-  withPropsOnChange(
-    ["viewer"],
-    ({
-      viewer: { explore: { cases: { hits: { edges } } } },
-      relay,
-      ssmCountsLoading,
-      setSsmCountsLoading
-    }) => {
-      const caseIds = edges.map(({ node }) => node.case_id);
-      if (!ssmCountsLoading) {
-        setSsmCountsLoading(true);
-      }
-      relay.setVariables(
-        {
-          ssmCountsfilters: caseIds.length
-            ? makeFilter([
-                {
-                  field: "occurrence.case.case_id",
-                  value: caseIds
-                }
-              ])
-            : null
-        },
-        readyState => {
-          if (readyState.done) {
-            setSsmCountsLoading(false);
-          }
-        }
-      );
-    }
-  ),
-  withPropsOnChange(["exploreSsms"], ({ exploreSsms: { explore } }) => {
-    const { ssms: { aggregations } } = explore;
-    const ssmCounts = (aggregations || {
-      occurrence__case__case_id: { buckets: [] }
-    }).occurrence__case__case_id.buckets
-      .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
-    return { ssmCounts };
-  })
 )(
   (
     {
       viewer: { explore: { cases, mutationsCountFragment } },
       relay,
       defaultFilters,
-      ssmCounts,
-      ssmCountsLoading
-    } = {}
+    } = {},
   ) => {
     if (cases && !cases.hits.edges.length) {
       return <Row style={{ padding: "1rem" }}>No data found.</Row>;
@@ -220,7 +177,7 @@ const Component = compose(
             backgroundColor: "white",
             padding: "1rem",
             justifyContent: "space-between",
-            alignItems: "flex-end"
+            alignItems: "flex-end",
           }}
         >
           <Showing
@@ -252,7 +209,7 @@ const Component = compose(
                 "diagnoses.age_at_diagnosis",
                 "diagnoses.tumor_stage",
                 "diagnoses.days_to_last_follow_up",
-                "diagnoses.days_to_death"
+                "diagnoses.days_to_death",
               ]}
               tsvSelector="#most-affected-cases-table"
               tsvFilename="most-affected-cases-table.tsv"
@@ -269,7 +226,7 @@ const Component = compose(
             { key: "gender", title: "Gender" },
             {
               key: "age_at_diagnosis",
-              title: <span>Age at<br />Diagnosis</span>
+              title: <span>Age at<br />Diagnosis</span>,
             },
             { key: "tumor_stage", title: "Stage" },
             {
@@ -278,7 +235,7 @@ const Component = compose(
                 <Tooltip Component="Survival (days)" style={tableToolTipHint()}>
                   Survival
                 </Tooltip>
-              )
+              ),
             },
             {
               key: "days_to_last_follow_up",
@@ -290,7 +247,7 @@ const Component = compose(
                   Last Follow<br />Up (days)
                 </Tooltip>
               ),
-              style: { textAlign: "right", padding: "3px 15px 3px 3px" }
+              style: { textAlign: "right", padding: "3px 15px 3px 3px" },
             },
             {
               key: "data_types",
@@ -312,7 +269,7 @@ const Component = compose(
                     {DATA_CATEGORIES[k].abbr}
                   </Tooltip>
                 </abbr>
-              ))
+              )),
             },
             {
               key: "num_mutations",
@@ -324,7 +281,7 @@ const Component = compose(
                   # Mutations
                 </Tooltip>
               ),
-              style: { textAlign: "right" }
+              style: { textAlign: "right" },
             },
             {
               key: "num_genes",
@@ -336,8 +293,8 @@ const Component = compose(
                   # Genes
                 </Tooltip>
               ),
-              style: { textAlign: "right" }
-            }
+              style: { textAlign: "right" },
+            },
           ]}
           data={
             !cases
@@ -346,9 +303,9 @@ const Component = compose(
                   const dataCategorySummary = c.summary.data_categories.reduce(
                     (acc, d) => ({
                       ...acc,
-                      [d.data_category]: d.file_count
+                      [d.data_category]: d.file_count,
                     }),
-                    {}
+                    {},
                   );
 
                   const diagnosis = (c.diagnoses.hits.edges[0] || { node: {} })
@@ -375,20 +332,22 @@ const Component = compose(
                     days_to_death: diagnosis.days_to_death,
                     num_mutations: (
                       <MutationsCount
-                        isLoading={ssmCountsLoading}
-                        ssmCount={ssmCounts[c.case_id]}
-                        filters={makeFilter([
-                          { field: "cases.case_id", value: [c.case_id] }
-                        ])}
+                        key={c.case_id}
+                        ssms={mutationsCountFragment}
+                        filters={makeFilter(
+                          [{ field: "cases.case_id", value: [c.case_id] }],
+                          false,
+                        )}
                       />
                     ),
                     num_genes: (
                       <ExploreLink
                         query={{
                           searchTableTab: "genes",
-                          filters: makeFilter([
-                            { field: "cases.case_id", value: [c.case_id] }
-                          ])
+                          filters: makeFilter(
+                            [{ field: "cases.case_id", value: [c.case_id] }],
+                            false,
+                          ),
                         }}
                       >
                         {c.score}
@@ -399,22 +358,25 @@ const Component = compose(
                         dataCategorySummary[DATA_CATEGORIES[k].full]
                           ? <RepositoryFilesLink
                               query={{
-                                filters: makeFilter([
-                                  {
-                                    field: "cases.case_id",
-                                    value: c.case_id
-                                  },
-                                  {
-                                    field: "files.data_category",
-                                    value: DATA_CATEGORIES[k].full
-                                  }
-                                ])
+                                filters: makeFilter(
+                                  [
+                                    {
+                                      field: "cases.case_id",
+                                      value: c.case_id,
+                                    },
+                                    {
+                                      field: "files.data_category",
+                                      value: DATA_CATEGORIES[k].full,
+                                    },
+                                  ],
+                                  false,
+                                ),
                               }}
                             >
                               {dataCategorySummary[DATA_CATEGORIES[k].full]}
                             </RepositoryFilesLink>
-                          : "--"
-                    )
+                          : "--",
+                    ),
                   };
                 })
           }
@@ -426,7 +388,7 @@ const Component = compose(
         />
       </span>
     );
-  }
+  },
 );
 
 export default createRenderer(Route, createContainer(Component));

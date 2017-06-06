@@ -7,7 +7,7 @@ module.exports = facet => {
     return "datetime";
   } else if (
     _.some(["_id", "_uuid", "md5sum", "file_name"], idSuffix =>
-      _.includes(fieldName, idSuffix)
+      _.includes(fieldName, idSuffix),
     )
   ) {
     return "id";

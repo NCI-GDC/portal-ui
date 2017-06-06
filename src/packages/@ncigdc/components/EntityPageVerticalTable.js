@@ -15,23 +15,23 @@ const EntityPageVerticalTable = ({
   className,
   titleStyle,
   id,
-  theme
+  theme,
 }) => {
   const styles = {
     table: {
       borderCollapse: "collapse",
       borderSpacing: 0,
       overflow: "auto",
-      backgroundColor: "#fff"
+      backgroundColor: "#fff",
     },
     tr: {
       border: "none !important",
-      color: theme.greyScale2
+      color: theme.greyScale2,
     },
     td: {
       border: "none !important",
-      color: theme.greyScale2
-    }
+      color: theme.greyScale2,
+    },
   };
   return (
     <Column
@@ -40,7 +40,7 @@ const EntityPageVerticalTable = ({
       style={{
         flexWrap: "wrap",
         overflow: "auto",
-        ...style
+        ...style,
       }}
     >
       {title &&
@@ -55,7 +55,7 @@ const EntityPageVerticalTable = ({
             marginBottom: 0,
             padding: "1rem",
             backgroundColor: "#fff",
-            ...titleStyle
+            ...titleStyle,
           }}
         >
           {title}
@@ -71,7 +71,7 @@ const EntityPageVerticalTable = ({
                     ...styles.tr,
                     backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff",
                     textTransform: "capitalize",
-                    verticalAlign: "top"
+                    verticalAlign: "top",
                   }}
                 >
                   {d.th}
@@ -81,7 +81,7 @@ const EntityPageVerticalTable = ({
                     style={{
                       ...styles.td,
                       backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff",
-                      ...d.style
+                      ...d.style,
                     }}
                     text={d.collapsibleTd}
                   />}
@@ -90,7 +90,7 @@ const EntityPageVerticalTable = ({
                     style={{
                       ...styles.td,
                       backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff",
-                      ...d.style
+                      ...d.style,
                     }}
                   >
                     {d.td}
@@ -101,7 +101,7 @@ const EntityPageVerticalTable = ({
                     style={{
                       ...styles.td,
                       backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff",
-                      ...d.style
+                      ...d.style,
                     }}
                   >
                     --
@@ -119,7 +119,7 @@ EntityPageVerticalTable.propTypes = {
   title: PropTypes.node,
   style: PropTypes.object,
   props: PropTypes.any,
-  thToTd: PropTypes.array
+  thToTd: PropTypes.array,
 };
 
 export default withTheme(EntityPageVerticalTable);

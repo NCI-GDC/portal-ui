@@ -14,7 +14,7 @@ import withRouter from "@ncigdc/utils/withRouter";
 import {
   mergeQuery,
   makeFilter,
-  inCurrentFilters
+  inCurrentFilters,
 } from "@ncigdc/utils/filters";
 import { removeEmptyKeys, parseFilterParam } from "@ncigdc/utils/uri";
 
@@ -28,8 +28,8 @@ export type TProps = {
     project__disease_type: { buckets: [TBucket] },
     project__primary_site: { buckets: [TBucket] },
     project__program__name: { buckets: [TBucket] },
-    project__project_id: { buckets: [TBucket] }
-  }
+    project__project_id: { buckets: [TBucket] },
+  },
 };
 
 const toPieData = clickHandler => bucket => ({
@@ -41,40 +41,41 @@ const toPieData = clickHandler => bucket => ({
       <b>{bucket.key}</b><br />
       {bucket.doc_count.toLocaleString()} case{bucket.doc_count > 1 ? "s" : 0}
     </span>
-  )
+  ),
 });
 
 const ColumnCenter = styled(Column, {
   justifyContent: "center",
-  alignItems: "center"
+  alignItems: "center",
 });
 
 const RowCenter = styled(Row, {
   justifyContent: "space-around",
-  alignItems: "center"
+  alignItems: "center",
 });
 
 const PieTitle = styled.h4({
-  color: ({ theme }) => theme.primary || "inherit"
+  color: ({ theme }) => theme.primary || "inherit",
 });
 
 function addFilter(query: Object, push: Function): Function {
   return (field, values) => {
     const newQuery = mergeQuery(
       {
-        filters: makeFilter([
-          { field, value: Array.isArray(values) ? values : [values] }
-        ])
+        filters: makeFilter(
+          [{ field, value: Array.isArray(values) ? values : [values] }],
+          false,
+        ),
       },
       query,
-      "toggle"
+      "toggle",
     );
 
     push({
       query: removeEmptyKeys({
         ...newQuery,
-        filters: newQuery.filters && JSURL.stringify(newQuery.filters)
-      })
+        filters: newQuery.filters && JSURL.stringify(newQuery.filters),
+      }),
     });
   };
 }
@@ -100,14 +101,14 @@ const ExploreCasesChartsComponent = ({ aggregations, push }: TProps) => (
                       ? inCurrentFilters({
                           key: bucket.key,
                           dotField: "cases.primary_site",
-                          currentFilters
+                          currentFilters,
                         })
-                      : true
+                      : true,
                 )
                 .map(
                   toPieData(({ data }) =>
-                    clickHandler("cases.primary_site", data.id)
-                  )
+                    clickHandler("cases.primary_site", data.id),
+                  ),
                 )}
               path="doc_count"
               height={125}
@@ -124,14 +125,14 @@ const ExploreCasesChartsComponent = ({ aggregations, push }: TProps) => (
                       ? inCurrentFilters({
                           key: bucket.key,
                           dotField: "cases.project.project_id",
-                          currentFilters
+                          currentFilters,
                         })
-                      : true
+                      : true,
                 )
                 .map(
                   toPieData(({ data }) =>
-                    clickHandler("cases.project.project_id", data.id)
-                  )
+                    clickHandler("cases.project.project_id", data.id),
+                  ),
                 )}
               path="doc_count"
               height={125}
@@ -148,14 +149,14 @@ const ExploreCasesChartsComponent = ({ aggregations, push }: TProps) => (
                       ? inCurrentFilters({
                           key: bucket.key,
                           dotField: "cases.disease_type",
-                          currentFilters
+                          currentFilters,
                         })
-                      : true
+                      : true,
                 )
                 .map(
                   toPieData(({ data }) =>
-                    clickHandler("cases.disease_type", data.id)
-                  )
+                    clickHandler("cases.disease_type", data.id),
+                  ),
                 )}
               path="doc_count"
               height={125}
@@ -172,14 +173,14 @@ const ExploreCasesChartsComponent = ({ aggregations, push }: TProps) => (
                       ? inCurrentFilters({
                           key: bucket.key,
                           dotField: "cases.demographic.gender",
-                          currentFilters
+                          currentFilters,
                         })
-                      : true
+                      : true,
                 )
                 .map(
                   toPieData(({ data }) =>
-                    clickHandler("cases.demographic.gender", data.id)
-                  )
+                    clickHandler("cases.demographic.gender", data.id),
+                  ),
                 )}
               path="doc_count"
               height={125}
@@ -196,14 +197,14 @@ const ExploreCasesChartsComponent = ({ aggregations, push }: TProps) => (
                       ? inCurrentFilters({
                           key: bucket.key,
                           dotField: "cases.diagnoses.vital_status",
-                          currentFilters
+                          currentFilters,
                         })
-                      : true
+                      : true,
                 )
                 .map(
                   toPieData(({ data }) =>
-                    clickHandler("cases.diagnoses.vital_status", data.id)
-                  )
+                    clickHandler("cases.diagnoses.vital_status", data.id),
+                  ),
                 )}
               path="doc_count"
               height={125}
@@ -269,13 +270,13 @@ export const ExploreCasesChartsQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const ExploreCasesCharts = Relay.createContainer(
   enhance(ExploreCasesChartsComponent),
-  ExploreCasesChartsQuery
+  ExploreCasesChartsQuery,
 );
 
 export default ExploreCasesCharts;

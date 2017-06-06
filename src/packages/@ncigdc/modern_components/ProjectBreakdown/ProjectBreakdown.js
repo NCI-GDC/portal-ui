@@ -24,7 +24,7 @@ class Route extends Relay.Route {
   static routeName = "ProjectBreakdownRoute";
   static queries = viewerQuery;
   static prepareParams = ({ filters = null }) => ({
-    aggFilters: filters
+    aggFilters: filters,
   });
 }
 
@@ -32,12 +32,15 @@ const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
       aggFilters: null,
-      ssmTested: makeFilter([
-        {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ])
+      ssmTested: makeFilter(
+        [
+          {
+            field: "cases.available_variation_data",
+            value: "ssm",
+          },
+        ],
+        false,
+      ),
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -63,8 +66,8 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
@@ -73,9 +76,9 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
     : cases.allAggs.project__project_id.buckets.reduce(
         (acc, b) => ({
           ...acc,
-          [b.key]: b.doc_count
+          [b.key]: b.doc_count,
         }),
-        {}
+        {},
       );
 
   const filteredAggs = !cases.aggregations
@@ -83,9 +86,9 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
     : cases.aggregations.project__project_id.buckets.reduce(
         (acc, b) => ({
           ...acc,
-          [b.key]: b.doc_count
+          [b.key]: b.doc_count,
         }),
-        {}
+        {},
       );
 
   return (
@@ -101,10 +104,11 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
                 searchTableTab: "cases",
                 filters: addInFilters(
                   filters,
-                  makeFilter([
-                    { field: "cases.project.project_id", value: [k] }
-                  ])
-                )
+                  makeFilter(
+                    [{ field: "cases.project.project_id", value: [k] }],
+                    false,
+                  ),
+                ),
               }}
             >
               {v}
@@ -113,13 +117,16 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
             <ExploreLink
               query={{
                 searchTableTab: "cases",
-                filters: makeFilter([
-                  {
-                    field: "cases.available_variation_data",
-                    value: ["ssm"]
-                  },
-                  { field: "cases.project.project_id", value: [k] }
-                ])
+                filters: makeFilter(
+                  [
+                    {
+                      field: "cases.available_variation_data",
+                      value: ["ssm"],
+                    },
+                    { field: "cases.project.project_id", value: [k] },
+                  ],
+                  false,
+                ),
               }}
             >
               {allAggs[k]}
@@ -142,7 +149,7 @@ const Renderer = createRenderer(Route, createContainer(Component));
 type TProps = {|
   caseTotal: number,
   gdcCaseTotal: number,
-  filters: Object
+  filters: Object,
 |};
 
 export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
@@ -152,7 +159,7 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
         <ExploreLink
           query={{
             searchTableTab: "cases",
-            filters
+            filters,
           }}
         >
           {caseTotal.toLocaleString()}
@@ -161,9 +168,10 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
         <ExploreLink
           query={{
             searchTableTab: "cases",
-            filters: makeFilter([
-              { field: "cases.available_variation_data", value: ["ssm"] }
-            ])
+            filters: makeFilter(
+              [{ field: "cases.available_variation_data", value: ["ssm"] }],
+              false,
+            ),
           }}
         >
           {gdcCaseTotal.toLocaleString()}

@@ -17,7 +17,7 @@ import UnstyledButton from "@ncigdc/uikit/UnstyledButton";
 
 export type TCartFile = {
   file_name: string,
-  file_id: string
+  file_id: string,
 };
 
 type TNotification = {
@@ -27,8 +27,8 @@ type TNotification = {
   extraText?: any,
   prepositon: string,
   undo: {
-    files: Array<TCartFile>
-  }
+    files: Array<TCartFile>,
+  },
 };
 
 export const UPDATE_CART = "UPDATE_CART";
@@ -44,7 +44,7 @@ const getNotificationComponent = (
   action,
   id,
   notification: TNotification,
-  dispatch
+  dispatch,
 ) => ({
   action,
   id,
@@ -66,12 +66,12 @@ const getNotificationComponent = (
             <i
               className="fa fa-undo"
               style={{
-                marginRight: "0.3rem"
+                marginRight: "0.3rem",
               }}
             />
             <UnstyledButton
               style={{
-                textDecoration: "underline"
+                textDecoration: "underline",
               }}
               // eslint-disable-next-line no-use-before-define
               onClick={() =>
@@ -82,13 +82,13 @@ const getNotificationComponent = (
           </strong>
         </span>}
     </Column>
-  )
+  ),
 });
 
 const messageNotificationDispatcher = (
   action: string,
   message,
-  dispatch: Function
+  dispatch: Function,
 ) => {
   dispatch(
     notify({
@@ -100,13 +100,13 @@ const messageNotificationDispatcher = (
             {message}
           </span>
         </Column>
-      )
-    })
+      ),
+    }),
   );
 };
 
 function toggleFilesInCart(
-  incomingFile: TCartFile | Array<TCartFile>
+  incomingFile: TCartFile | Array<TCartFile>,
 ): Function {
   return (dispatch, getState) => {
     const incomingFileArray = Array.isArray(incomingFile)
@@ -117,7 +117,7 @@ function toggleFilesInCart(
 
     if (nextFiles.length > MAX_CART_SIZE) {
       dispatch({
-        type: CART_FULL
+        type: CART_FULL,
       });
       messageNotificationDispatcher("warning", MAX_CART_WARNING, dispatch);
       return;
@@ -134,12 +134,12 @@ function toggleFilesInCart(
               file: incomingFile.file_name,
               prepositon: "to",
               undo: {
-                files: incomingFile
-              }
+                files: incomingFile,
+              },
             },
-            dispatch
-          )
-        )
+            dispatch,
+          ),
+        ),
       );
     }
 
@@ -155,18 +155,18 @@ function toggleFilesInCart(
               fileText: incomingFile.file_name ? "" : "files ",
               prepositon: "from",
               undo: {
-                files: incomingFile
-              }
+                files: incomingFile,
+              },
             },
-            dispatch
-          )
-        )
+            dispatch,
+          ),
+        ),
       );
     }
 
     dispatch({
       type: UPDATE_CART,
-      payload: nextFiles
+      payload: nextFiles,
     });
   };
 }
@@ -188,23 +188,23 @@ function removeFilesFromCart(files: Array<TCartFile> | TCartFile): Function {
             fileText: filesToRemove.file_name ? "" : "files ",
             prepositon: "from",
             undo: {
-              files: filesToRemove
-            }
+              files: filesToRemove,
+            },
           },
-          dispatch
-        )
-      )
+          dispatch,
+        ),
+      ),
     );
 
     dispatch({
       type: UPDATE_CART,
-      payload: nextFiles
+      payload: nextFiles,
     });
   };
 }
 
 function addAllFilesInCart(
-  incomingFiles: Array<TCartFile> | TCartFile
+  incomingFiles: Array<TCartFile> | TCartFile,
 ): Function {
   return (dispatch, getState) => {
     const incomingFilesArray = Array.isArray(incomingFiles)
@@ -214,14 +214,14 @@ function addAllFilesInCart(
     const nextFiles = incomingFilesArray.filter(
       file =>
         !existingFiles.some(
-          existingFile => existingFile.file_id === file.file_id
-        )
+          existingFile => existingFile.file_id === file.file_id,
+        ),
     );
     const filesInCart = incomingFilesArray.length - nextFiles.length;
 
     if (nextFiles.length + existingFiles.length > MAX_CART_SIZE) {
       dispatch({
-        type: CART_FULL
+        type: CART_FULL,
       });
       messageNotificationDispatcher("warning", MAX_CART_WARNING, dispatch);
       return;
@@ -247,12 +247,12 @@ function addAllFilesInCart(
               ),
               prepositon: "to",
               undo: {
-                files: incomingFilesArray
-              }
+                files: incomingFilesArray,
+              },
             },
-            dispatch
-          )
-        )
+            dispatch,
+          ),
+        ),
       );
     } else if (nextFiles) {
       dispatch(
@@ -266,17 +266,17 @@ function addAllFilesInCart(
               fileText: "files ",
               prepositon: "to",
               undo: {
-                files: incomingFilesArray
-              }
+                files: incomingFilesArray,
+              },
             },
-            dispatch
-          )
-        )
+            dispatch,
+          ),
+        ),
       );
     }
     dispatch({
       type: ADD_TO_CART,
-      payload: nextFiles
+      payload: nextFiles,
     });
   };
 }
@@ -289,19 +289,19 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
       messageNotificationDispatcher(
         "info",
         <span>Adding <b>{total}</b> files to cart</span>,
-        dispatch
+        dispatch,
       );
 
       const search = stringify({
         filters: currentFilters && JSON.stringify(currentFilters),
         size: total,
-        fields: "acl,state,file_state,access,file_id,file_size,cases.project.project_id"
+        fields: "acl,state,file_state,access,file_id,file_size,cases.project.project_id",
       });
       const { data } = await fetchApi(`files?${search}`);
       dispatch(addAllFilesInCart(data.hits));
     } else {
       dispatch({
-        type: CART_FULL
+        type: CART_FULL,
       });
       messageNotificationDispatcher("warning", MAX_CART_WARNING, dispatch);
     }
@@ -320,8 +320,8 @@ function fetchFilesAndRemove(currentFilters: ?Object, size: number): Function {
             <Column>
               <span>There are no files in the cart to remove.</span>
             </Column>
-          )
-        })
+          ),
+        }),
       );
 
       return;
@@ -330,7 +330,7 @@ function fetchFilesAndRemove(currentFilters: ?Object, size: number): Function {
     messageNotificationDispatcher(
       "info",
       <span>Removing files from cart</span>,
-      dispatch
+      dispatch,
     );
 
     const filters = size > MAX_CART_SIZE
@@ -342,12 +342,12 @@ function fetchFilesAndRemove(currentFilters: ?Object, size: number): Function {
                 op: "in",
                 content: {
                   field: "files.file_id",
-                  value: existingFiles.map(f => f.file_id)
-                }
-              }
-            ]
+                  value: existingFiles.map(f => f.file_id),
+                },
+              },
+            ],
           },
-          currentFilters
+          currentFilters,
         )
       : currentFilters;
 
@@ -356,8 +356,8 @@ function fetchFilesAndRemove(currentFilters: ?Object, size: number): Function {
       body: {
         filters,
         size: Math.min(size, MAX_CART_SIZE),
-        fields: "file_id,file_name"
-      }
+        fields: "file_id,file_name",
+      },
     };
     const { data } = await fetchApi("files", search);
     dispatch(removeFilesFromCart(data.hits));
@@ -379,17 +379,17 @@ function removeAllInCart(): Function {
               fileText: "files ",
               prepositon: "from",
               undo: {
-                files: existingFiles
-              }
+                files: existingFiles,
+              },
             },
-            dispatch
-          )
-        )
+            dispatch,
+          ),
+        ),
       );
 
       dispatch({
         type: CLEAR_CART,
-        payload: []
+        payload: [],
       });
     } else {
       dispatch(
@@ -400,15 +400,15 @@ function removeAllInCart(): Function {
             <Column>
               <span>There are no files in the cart</span>
             </Column>
-          )
-        })
+          ),
+        }),
       );
     }
   };
 }
 
 const initialState = {
-  files: []
+  files: [],
 };
 
 export function reducer(state: Object = initialState, action: Object): Object {
@@ -428,13 +428,13 @@ export function reducer(state: Object = initialState, action: Object): Object {
             access: file.access,
             file_id: file.file_id,
             file_size: file.file_size,
-            projects: file.projects
-          }))
-        )
+            projects: file.projects,
+          })),
+        ),
       };
     case CLEAR_CART:
       return {
-        files: []
+        files: [],
       };
     case UPDATE_CART:
       return {
@@ -446,8 +446,8 @@ export function reducer(state: Object = initialState, action: Object): Object {
           access: file.access,
           file_id: file.file_id,
           file_size: file.file_size,
-          projects: file.projects
-        }))
+          projects: file.projects,
+        })),
       };
     case CART_FULL:
       return state;
@@ -464,7 +464,7 @@ export {
   removeAllInCart,
   removeFilesFromCart,
   fetchFilesAndAdd,
-  fetchFilesAndRemove
+  fetchFilesAndRemove,
 };
 
 export default reducer;

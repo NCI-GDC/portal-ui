@@ -29,26 +29,26 @@ export type TProps = {|
     case_id: string,
     submitter_id: string,
     demographic: {|
-      gender: string
+      gender: string,
     |},
     project: {|
       primary_site: string,
-      project_id: string
+      project_id: string,
     |},
     summary: {|
       data_categories: Array<{|
         case_count?: number,
-        data_category: TCategory
-      |}>
-    |}
+        data_category: TCategory,
+      |}>,
+    |},
   |},
-  theme: Object
+  theme: Object,
 |};
 
 function massageRelayFiles(files: Object, projectId: string): Array<{}> {
   return _.get(files, "hits.edges", []).map(edge => edge.node).map(file => ({
     ...file,
-    projects: [projectId]
+    projects: [projectId],
   }));
 }
 
@@ -57,7 +57,7 @@ export const CaseTrComponent = ({
   index,
   theme,
   relay,
-  total
+  total,
 }: TProps) => {
   type TFilesLinkProps = { fields?: Array<Object>, children?: mixed };
   type TFilesLink = (props: TFilesLinkProps) => any;
@@ -66,8 +66,8 @@ export const CaseTrComponent = ({
       query={{
         filters: makeFilter(
           [{ field: "cases.case_id", value: [node.case_id] }, ...fields],
-          false
-        )
+          false,
+        ),
       }}
     >
       {children}
@@ -77,7 +77,7 @@ export const CaseTrComponent = ({
   return (
     <Tr
       style={{
-        backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff"
+        backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff",
       }}
     >
       <Td>
@@ -85,14 +85,14 @@ export const CaseTrComponent = ({
           hasFiles={
             _.sum(
               node.summary.data_categories.map(
-                dataCategory => dataCategory.file_count
-              )
+                dataCategory => dataCategory.file_count,
+              ),
             ) > 0
           }
           files={massageRelayFiles(node.files, node.project.project_id)}
           filteredFiles={massageRelayFiles(
             node.filteredFiles,
-            node.project.project_id
+            node.project.project_id,
           )}
           relay={relay}
           dropdownStyle={
@@ -136,7 +136,7 @@ export const CaseTrComponent = ({
             {count > 0
               ? <FilesLink
                   fields={[
-                    { field: "files.data_category", value: category.full }
+                    { field: "files.data_category", value: category.full },
                   ]}
                 >
                   {count.toLocaleString()}
@@ -152,8 +152,8 @@ export const CaseTrComponent = ({
               query={{
                 filters: makeFilter(
                   [{ field: "annotations.case_id", value: node.case_id }],
-                  false
-                )
+                  false,
+                ),
               }}
             >
               {node.annotations.hits.total.toLocaleString()}
@@ -167,7 +167,7 @@ export const CaseTrQuery = {
   initialVariables: {
     isFileDataRequired: false,
     isFilteredFileDataRequired: false,
-    filesFilters: null
+    filesFilters: null,
   },
   fragments: {
     node: () => Relay.QL`
@@ -221,8 +221,8 @@ export const CaseTrQuery = {
         }
 
       }
-    `
-  }
+    `,
+  },
 };
 
 const CaseTr = Relay.createContainer(withTheme(CaseTrComponent), CaseTrQuery);

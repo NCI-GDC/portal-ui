@@ -7,11 +7,11 @@ export const DATA_CATEGORIES = {
   CNV: { full: "Copy Number Variation", abbr: "CNV" },
   METH: { full: "DNA Methylation", abbr: "Meth" },
   CLINICAL: { full: "Clinical", abbr: "Clinical" },
-  BIOSPECIMEN: { full: "Biospecimen", abbr: "Bio" }
+  BIOSPECIMEN: { full: "Biospecimen", abbr: "Bio" },
 };
 
 export const DATA_TYPES = {
-  GEQ: { full: "Gene Expression Quantification", abbr: "GEQ" }
+  GEQ: { full: "Gene Expression Quantification", abbr: "GEQ" },
 };
 
 export const EXPERIMENTAL_STRATEGIES = [
@@ -52,5 +52,5 @@ export const EXPERIMENTAL_STRATEGIES = [
   "DNA-Seq",
   "Total RNA-Seq",
   "VALIDATION",
-  "OTHER"
+  "OTHER",
 ].map(n => n.toLowerCase());

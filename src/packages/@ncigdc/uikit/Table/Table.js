@@ -11,8 +11,8 @@ const styles = {
     borderCollapse: "collapse",
     borderSpacing: 0,
     overflow: "auto",
-    backgroundColor: "#fff"
-  }
+    backgroundColor: "#fff",
+  },
 };
 
 const Table = ({ style, body, headings = [], subheadings = [], ...props }) => (
@@ -24,7 +24,7 @@ const Table = ({ style, body, headings = [], subheadings = [], ...props }) => (
       {!!subheadings.length &&
         <Tr>
           {subheadings.map(
-            x => (typeof x === "string" ? <Th key={x}>{x}</Th> : x)
+            x => (typeof x === "string" ? <Th key={x}>{x}</Th> : x),
           )}
         </Tr>}
     </thead>

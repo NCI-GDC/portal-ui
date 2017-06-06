@@ -29,7 +29,7 @@ type TProps = {
   tsvSelector?: string,
   tsvFilename?: string,
   style?: Object,
-  currentFilters?: TGroupFilter
+  currentFilters?: TGroupFilter,
 };
 
 const TableActions = (
@@ -46,8 +46,8 @@ const TableActions = (
     tsvFilename,
     style,
     currentFilters,
-    downloadTooltip = "Export All"
-  }: TProps = {}
+    downloadTooltip = "Export All",
+  }: TProps = {},
 ) => (
   <LocationSubscriber>
     {({ query }: {| query: TRawQuery |}) => (

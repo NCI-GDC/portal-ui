@@ -8,20 +8,20 @@ const List = styled.ul({
   listStyle: "none",
   paddingLeft: 0,
   marginBottom: 0,
-  display: "inline-block"
+  display: "inline-block",
 });
 
 const NotUnderlinedLink = styled.a({
   ":link": {
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 });
 
 const Toggle = styled.li({
   textAlign: "right",
   fontStyle: "italic",
   padding: "0 1rem",
-  color: ({ theme }) => theme.primary
+  color: ({ theme }) => theme.primary,
 });
 
 const CollapsibleList = ({

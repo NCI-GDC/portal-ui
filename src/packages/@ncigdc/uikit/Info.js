@@ -15,8 +15,8 @@ const styles = {
     alignItems: "center",
     padding: "2rem",
     fontSize: "1.5rem",
-    color: "black"
-  }
+    color: "black",
+  },
 };
 
 const Info = ({ style, children, theme, ...props }) => (
@@ -24,7 +24,7 @@ const Info = ({ style, children, theme, ...props }) => (
     style={{
       backgroundColor: theme.alertInfo,
       ...styles.alert,
-      ...style
+      ...style,
     }}
     {...props}
   >
@@ -34,7 +34,7 @@ const Info = ({ style, children, theme, ...props }) => (
 
 Info.propTypes = {
   children: PropTypes.node,
-  style: PropTypes.object
+  style: PropTypes.object,
 };
 
 /*----------------------------------------------------------------------------*/

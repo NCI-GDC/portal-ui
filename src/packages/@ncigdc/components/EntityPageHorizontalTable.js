@@ -13,14 +13,14 @@ const styles = {
     borderCollapse: "collapse",
     borderSpacing: 0,
     overflow: "auto",
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   tr: {
-    border: "none !important"
+    border: "none !important",
   },
   td: {
-    border: "none !important"
-  }
+    border: "none !important",
+  },
 };
 
 // th are horizontal
@@ -34,13 +34,13 @@ const EntityPageHorizontalTable = ({
   emptyMessage,
   theme,
   tableId,
-  idKey
+  idKey,
 }) => (
   <Column
     style={{
       flexWrap: "wrap",
       overflow: "auto",
-      ...style
+      ...style,
     }}
   >
     {title &&
@@ -57,7 +57,7 @@ const EntityPageHorizontalTable = ({
           backgroundColor: "#fff",
           display: "flex",
           justifyContent: "space-between",
-          ...titleStyle
+          ...titleStyle,
         }}
       >
         {title} {rightComponent}
@@ -79,7 +79,7 @@ const EntityPageHorizontalTable = ({
         subheadings={headings.map(
           h =>
             h.subheadings &&
-            h.subheadings.map((s, i) => <Th key={`subheading-${i}`}>{s}</Th>)
+            h.subheadings.map((s, i) => <Th key={`subheading-${i}`}>{s}</Th>),
         )}
         body={
           <tbody>
@@ -87,7 +87,7 @@ const EntityPageHorizontalTable = ({
               <Tr
                 style={{
                   ...styles.tr,
-                  backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff"
+                  backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff",
                 }}
                 key={d[idKey] || i}
               >
@@ -105,7 +105,7 @@ const EntityPageHorizontalTable = ({
                         />}
                       {v || "--"}
                     </Td>
-                  ))
+                  )),
                 )}
               </Tr>
             ))}
@@ -115,7 +115,7 @@ const EntityPageHorizontalTable = ({
     {!data.length &&
       <Row
         style={{
-          borderBottom: `1px solid ${theme.greyScale5}`
+          borderBottom: `1px solid ${theme.greyScale5}`,
         }}
       >
         {emptyMessage && <h4 style={{ padding: "1rem" }}>{emptyMessage}</h4>}

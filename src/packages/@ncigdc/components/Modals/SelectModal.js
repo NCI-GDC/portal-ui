@@ -11,40 +11,40 @@ import { visualizingButton } from "@ncigdc/theme/mixins";
 const styles = {
   horizonalPadding: {
     paddingRight: 20,
-    paddingLeft: 20
+    paddingLeft: 20,
   },
   button: {
     ...visualizingButton,
-    minWidth: 100
-  }
+    minWidth: 100,
+  },
 };
 
 type TOption = {
-  name: string
+  name: string,
 };
 
 type TProps = {
   options: Array<TOption>,
   onClose: Function,
   selectedOptions: Array<number>,
-  setSelectedOptions: Function
+  setSelectedOptions: Function,
 };
 
 const SelectOverlay = ({
   options = [],
   onClose,
   selectedOptions,
-  setSelectedOptions
+  setSelectedOptions,
 }: TProps) => (
   <Column
     style={{
-      padding: "15px"
+      padding: "15px",
     }}
   >
     <Row
       style={{
         ...styles.horizonalPadding,
-        borderBottom: "1px solid #e5e5e5"
+        borderBottom: "1px solid #e5e5e5",
       }}
     >
       <h2 style={{ marginTop: 0 }}>Select Tracks to Add</h2>
@@ -52,7 +52,7 @@ const SelectOverlay = ({
     <div
       style={{
         ...styles.horizonalPadding,
-        paddingTop: 10
+        paddingTop: 10,
       }}
     >
       {options.map((track, i) => (

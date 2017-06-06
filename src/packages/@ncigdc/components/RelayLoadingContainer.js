@@ -6,5 +6,5 @@ import Overlay from "@ncigdc/uikit/Overlay";
 import Particle from "@ncigdc/uikit/Loaders/Particle";
 
 export default compose(
-  connect(state => ({ relayLoading: state.relayLoading }))
+  connect(state => ({ relayLoading: state.relayLoading })),
 )(({ relayLoading }) => <Overlay show={relayLoading}><Particle /></Overlay>);

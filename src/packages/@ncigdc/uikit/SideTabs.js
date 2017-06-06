@@ -20,5 +20,5 @@ const SideTabs = ({ setTab, activeTab, tabs, tabContent, ...props }) => (
 );
 
 export default withState("activeTab", "setTab", props => props.defaultTab || 0)(
-  SideTabs
+  SideTabs,
 );

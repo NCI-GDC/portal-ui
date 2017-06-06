@@ -6,5 +6,4 @@ import filesTableModel from "./filesTableModel";
 export default {
   projects: projectsTableModel,
   cases: casesTableModel,
-  files: filesTableModel
 };

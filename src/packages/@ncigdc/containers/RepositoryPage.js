@@ -32,35 +32,35 @@ export type TProps = {
   filters: any,
   viewer: {
     autocomplete_case: {
-      hits: Array<Object>
+      hits: Array<Object>,
     },
     autocomplete_file: {
-      hits: Array<Object>
+      hits: Array<Object>,
     },
     cart_summary: {
       aggregations: {
         fs: {
-          value: number
-        }
-      }
+          value: number,
+        },
+      },
     },
     repository: {
       cases: {
         aggregations: string,
         hits: {
-          total: number
-        }
+          total: number,
+        },
       },
       files: {
         aggregations: string,
         hits: {
-          total: number
-        }
-      }
-    }
+          total: number,
+        },
+      },
+    },
   },
   showFacets: boolean,
-  setShowFacets: Function
+  setShowFacets: Function,
 };
 
 const enhance = compose(connect(), withFilters());
@@ -69,13 +69,13 @@ export const RepositoryPageComponent = (props: TProps) => {
   const setAutocompleteCases = value =>
     props.relay.setVariables({
       idAutocompleteCase: value,
-      runAutocompleteCase: !!value
+      runAutocompleteCase: !!value,
     });
 
   const setAutocompleteFiles = value =>
     props.relay.setVariables({
       idAutocompleteFile: value,
-      runAutocompleteFile: !!value
+      runAutocompleteFile: !!value,
     });
 
   const fileCount = props.viewer.repository.files.hits.total;
@@ -88,7 +88,7 @@ export const RepositoryPageComponent = (props: TProps) => {
         filtersLinkProps={{
           hideLinkOnEmpty: false,
           linkPathname: "/query",
-          linkText: "Advanced Search"
+          linkText: "Advanced Search",
         }}
         facetTabs={[
           {
@@ -103,7 +103,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                 }
                 setAutocomplete={setAutocompleteCases}
               />
-            )
+            ),
           },
           {
             id: "files",
@@ -116,8 +116,8 @@ export const RepositoryPageComponent = (props: TProps) => {
                 }
                 setAutocomplete={setAutocompleteFiles}
               />
-            )
-          }
+            ),
+          },
         ]}
         results={
           <span>
@@ -125,7 +125,7 @@ export const RepositoryPageComponent = (props: TProps) => {
               style={{
                 justifyContent: "space-between",
                 padding: "0 0 2rem",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <Row spacing="0.2rem">
@@ -146,7 +146,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                     "file_name",
                     "md5sum",
                     "file_size",
-                    "state"
+                    "state",
                   ]}
                   returnType="manifest"
                   filters={props.filters}
@@ -189,7 +189,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                       </div>
                     : <NoResultsMessage>
                         No results found using those filters.
-                      </NoResultsMessage>
+                      </NoResultsMessage>,
                 },
                 {
                   id: "files",
@@ -205,8 +205,8 @@ export const RepositoryPageComponent = (props: TProps) => {
                       </div>
                     : <NoResultsMessage>
                         No results found using those filters.
-                      </NoResultsMessage>
-                }
+                      </NoResultsMessage>,
+                },
               ]}
             />
           </span>
@@ -228,7 +228,7 @@ export const RepositoryPageQuery = {
     idAutocompleteCase: null,
     idAutocompleteFile: null,
     runAutocompleteCase: false,
-    runAutocompleteFile: false
+    runAutocompleteFile: false,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -285,13 +285,13 @@ export const RepositoryPageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const RepositoryPage = Relay.createContainer(
   enhance(RepositoryPageComponent),
-  RepositoryPageQuery
+  RepositoryPageQuery,
 );
 
 export default RepositoryPage;

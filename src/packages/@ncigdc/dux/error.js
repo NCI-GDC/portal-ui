@@ -7,7 +7,7 @@ export type TState = { error: Object };
 const resetError = () => ({ type: RESET_ERROR, payload: null });
 
 const initialState = {
-  error: null
+  error: null,
 };
 
 function errorReducer(state: TState = initialState, action: TAction): TState {

@@ -18,13 +18,13 @@ const mapValues: TMapValues = (style, props) =>
       ...acc,
       [k]: typeof v === "object"
         ? mapValues(v, props)
-        : addPropsToFunction(v, props)
+        : addPropsToFunction(v, props),
     }),
-    {}
+    {},
   );
 
 type TCreateStyledComponent = (
-  el: string | ReactClass<{}>
+  el: string | ReactClass<{}>,
 ) => (style: Object) => ReactClass<*>;
 const createStyledComponent: TCreateStyledComponent = el => style =>
   withTheme(({ ref, children, theme, ...props }) => {
@@ -39,10 +39,10 @@ const createStyledComponent: TCreateStyledComponent = el => style =>
         ref: node => (ref ? ref(node) : () => {}),
         className: `${props.className || ""} ${css(mapValues(style, {
             theme,
-            ...props
-          }))}`
+            ...props,
+          }))}`,
       },
-      children
+      children,
     );
   });
 

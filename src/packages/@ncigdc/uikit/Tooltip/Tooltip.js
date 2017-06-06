@@ -6,7 +6,7 @@ import withTooltip from "./withTooltip";
 type TProps = {|
   Component: any,
   children: any,
-  setTooltip: Function
+  setTooltip: Function,
 |};
 
 const Tooltip = ({ Component, children, setTooltip, ...props }: TProps) => (

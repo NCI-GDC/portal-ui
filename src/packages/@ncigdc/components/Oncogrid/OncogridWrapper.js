@@ -14,16 +14,16 @@ import JSURL from "jsurl";
 import {
   exitFullScreen,
   enterFullScreen,
-  isFullScreen
+  isFullScreen,
 } from "@ncigdc/utils/fullscreen";
 import {
   getFilterValue,
   makeFilter,
-  replaceFilters
+  replaceFilters,
 } from "@ncigdc/utils/filters";
 import {
   consequenceTypes,
-  colorMap
+  colorMap,
 } from "@ncigdc/utils/filters/prepared/significantConsequences";
 import withRouter from "@ncigdc/utils/withRouter";
 
@@ -51,12 +51,12 @@ function refreshGridState({
   oncoGrid,
   setHeatMapMode,
   setShowGridLines,
-  setCrosshairMode
+  setCrosshairMode,
 }: {
   oncoGrid: Object,
   setHeatMapMode: Function,
   setShowGridLines: Function,
-  setCrosshairMode: Function
+  setCrosshairMode: Function,
 }): void {
   setHeatMapMode(oncoGrid.heatMapMode);
   setShowGridLines(oncoGrid.drawGridLines);
@@ -71,7 +71,6 @@ const styles = {
   container: {
     overflow: "visible",
     padding: "0 30px",
-    background: "white"
   },
   fullscreen: {
     maxWidth: "100%",
@@ -79,16 +78,16 @@ const styles = {
     marginLeft: 0,
     padding: "100px 100px 0",
     overflow: "scroll",
-    height: "100%"
+    height: "100%",
   },
   button: {
     ...visualizingButton,
-    marginBottom: 12
+    marginBottom: 12,
   },
   buttonActive: {
     backgroundColor: "#e6e6e6",
-    borderColor: "#adadad"
-  }
+    borderColor: "#adadad",
+  },
 };
 
 const containerRefs = {};
@@ -111,7 +110,7 @@ type TProps = {
   dispatch: Function,
   push: Function,
   impacts: Array<string>,
-  filteredConsequenceTypes: Array<string>
+  filteredConsequenceTypes: Array<string>,
 };
 
 const OncoGridWrapper = compose(
@@ -126,7 +125,7 @@ const OncoGridWrapper = compose(
   withState(
     "uniqueGridClass",
     "setUniqueGridClass",
-    () => GRID_CLASS + uniqueId()
+    () => GRID_CLASS + uniqueId(),
   ),
   withState("trackLegends", "setTrackLegends", []),
   mapProps(({ title, impacts, ...props }) => {
@@ -139,19 +138,19 @@ const OncoGridWrapper = compose(
 
     const currentImpacts = getFilterValue({
       currentFilters: props.currentFilters.content,
-      dotField: "ssms.consequence.transcript.annotation.impact"
+      dotField: "ssms.consequence.transcript.annotation.impact",
     });
 
     const currentConsequenceTypes = get(
       getFilterValue({
         currentFilters: props.currentFilters.content,
-        dotField: "ssms.consequence.transcript.consequence_type"
+        dotField: "ssms.consequence.transcript.consequence_type",
       }),
       "content.value",
-      consequenceTypes
+      consequenceTypes,
     );
     const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
-      currentConsequenceTypes.includes(c)
+      currentConsequenceTypes.includes(c),
     );
 
     const currentFilters = replaceFilters(
@@ -162,12 +161,12 @@ const OncoGridWrapper = compose(
             op: "in",
             content: {
               field: "ssms.consequence.transcript.consequence_type",
-              value: filteredConsequenceTypes
-            }
-          }
-        ]
+              value: filteredConsequenceTypes,
+            },
+          },
+        ],
       },
-      props.currentFilters
+      props.currentFilters,
     );
 
     return {
@@ -177,7 +176,7 @@ const OncoGridWrapper = compose(
       impacts: impacts ||
       (currentImpacts && currentImpacts.content.value) || [],
       filteredConsequenceTypes,
-      currentFilters
+      currentFilters,
     };
   }),
   withProps({
@@ -203,9 +202,9 @@ const OncoGridWrapper = compose(
         dispatch,
         push,
         filteredConsequenceTypes,
-        setCaseCount
+        setCaseCount,
       }: TProps = {},
-      previousResponses: Object
+      previousResponses: Object,
     ): Promise<*> {
       if (!filteredConsequenceTypes.length) {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
@@ -218,7 +217,7 @@ const OncoGridWrapper = compose(
       const responses = await getQueries({
         currentFilters,
         maxCases: MAX_CASES,
-        maxGenes: MAX_GENES
+        maxGenes: MAX_GENES,
       });
       if (!wrapperRefs[uniqueGridClass]) return;
 
@@ -238,9 +237,9 @@ const OncoGridWrapper = compose(
             pathname: "/exploration",
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: "cases.case_id", value: data.id }])
-              )
-            }
+                makeFilter([{ field: "cases.case_id", value: data.id }], false),
+              ),
+            },
           });
         },
         gridClick: (data: { id: string }) => {
@@ -248,11 +247,11 @@ const OncoGridWrapper = compose(
             pathname: "/exploration",
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: "ssms.ssm_id", value: data.id }])
+                makeFilter([{ field: "ssms.ssm_id", value: data.id }], false),
               ),
               facetTab: "mutations",
-              searchTableTab: "mutations"
-            }
+              searchTableTab: "mutations",
+            },
           });
         },
         geneHistogramClick: (data: { id: string }) => {
@@ -260,11 +259,11 @@ const OncoGridWrapper = compose(
             pathname: "/exploration",
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: "genes.gene_id", value: data.id }])
+                makeFilter([{ field: "genes.gene_id", value: data.id }], false),
               ),
               facetTab: "genes",
-              searchTableTab: "genes"
-            }
+              searchTableTab: "genes",
+            },
           });
         },
         trackPadding: 30,
@@ -277,12 +276,12 @@ const OncoGridWrapper = compose(
                   dispatch(setModal(null));
                   if (tracks.length) callback(tracks);
                 }}
-              />
-            )
+              />,
+            ),
           );
         },
         impacts,
-        consequenceTypes: filteredConsequenceTypes
+        consequenceTypes: filteredConsequenceTypes,
       });
 
       if (gridParams) {
@@ -296,7 +295,7 @@ const OncoGridWrapper = compose(
           oncoGrid: grid,
           setHeatMapMode,
           setShowGridLines,
-          setCrosshairMode
+          setCrosshairMode,
         });
       } else {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
@@ -308,7 +307,7 @@ const OncoGridWrapper = compose(
       }
 
       setIsLoading(false);
-    }
+    },
   }),
   connect(),
   withSize(),
@@ -318,7 +317,7 @@ const OncoGridWrapper = compose(
         crosshairMode: lastCrosshairMode,
         showGridLines: lastShowGridLines,
         heatMapMode: lastHeadMapMode,
-        size: { width: lastWidth }
+        size: { width: lastWidth },
       } = this.props;
 
       const {
@@ -329,7 +328,7 @@ const OncoGridWrapper = compose(
         showGridLines,
         heatMapMode,
         size: { width },
-        uniqueGridClass
+        uniqueGridClass,
       } = nextProps;
 
       if (oncoGrid.toggleGridLines) {
@@ -339,7 +338,7 @@ const OncoGridWrapper = compose(
         if (width !== lastWidth) {
           oncoGrid.resize(
             wrapperRefs[uniqueGridClass].offsetWidth - oncoGridPadding,
-            oncoGridHeight
+            oncoGridHeight,
           );
         }
       }
@@ -359,8 +358,8 @@ const OncoGridWrapper = compose(
       const { uniqueGridClass } = this.props;
       delete containerRefs[uniqueGridClass]; // eslint-disable-line fp/no-delete
       delete wrapperRefs[uniqueGridClass]; // eslint-disable-line fp/no-delete
-    }
-  })
+    },
+  }),
 )(
   ({
     oncoGrid,
@@ -374,13 +373,13 @@ const OncoGridWrapper = compose(
     isLoading,
     uniqueGridClass,
     trackLegends,
-    title
+    title,
   }) => (
     <Loader loading={isLoading} height="800px">
       <div
         style={{
           ...styles.container,
-          ...(isFullScreen() && styles.fullscreen)
+          ...(isFullScreen() && styles.fullscreen),
         }}
         ref={r => {
           containerRefs[uniqueGridClass] = r;
@@ -395,7 +394,7 @@ const OncoGridWrapper = compose(
                 ? <StepLegend rightLabel="More Mutations" />
                 : <SwatchLegend
                     colorMap={mapKeys(colorMap, (val, key) =>
-                      key.replace("_variant", "")
+                      key.replace("_variant", ""),
                     )}
                   />}
             </div>
@@ -403,7 +402,7 @@ const OncoGridWrapper = compose(
               style={{
                 justifyContent: "flex-end",
                 marginRight: "12px",
-                flexWrap: "wrap"
+                flexWrap: "wrap",
               }}
               spacing="1rem"
             >
@@ -426,15 +425,15 @@ const OncoGridWrapper = compose(
                       top: {
                         elements: [
                           containerRefs[uniqueGridClass].querySelector(
-                            ".oncogrid-legend"
-                          )
-                        ]
+                            ".oncogrid-legend",
+                          ),
+                        ],
                       },
                       bottom: {
                         elements: elementsAfter,
-                        styles: "display: inline-block; width: 200px; vertical-align: top; "
-                      }
-                    }
+                        styles: "display: inline-block; width: 200px; vertical-align: top; ",
+                      },
+                    },
                   });
 
                   elementsAfter.forEach(el => document.body.removeChild(el));
@@ -456,7 +455,7 @@ const OncoGridWrapper = compose(
                       oncoGrid,
                       setHeatMapMode,
                       setShowGridLines,
-                      setCrosshairMode
+                      setCrosshairMode,
                     });
                   }}
                 >
@@ -476,7 +475,7 @@ const OncoGridWrapper = compose(
                 <Button
                   style={{
                     ...styles.button,
-                    ...(heatMapMode && styles.buttonActive)
+                    ...(heatMapMode && styles.buttonActive),
                   }}
                   onClick={() => setHeatMapMode(!heatMapMode)}
                 >
@@ -487,7 +486,7 @@ const OncoGridWrapper = compose(
                 <Button
                   style={{
                     ...styles.button,
-                    ...(showGridLines && styles.buttonActive)
+                    ...(showGridLines && styles.buttonActive),
                   }}
                   onClick={() => setShowGridLines(!showGridLines)}
                 >
@@ -498,7 +497,7 @@ const OncoGridWrapper = compose(
                 <Button
                   style={{
                     ...styles.button,
-                    ...(crosshairMode && styles.buttonActive)
+                    ...(crosshairMode && styles.buttonActive),
                   }}
                   onClick={() => setCrosshairMode(!crosshairMode)}
                 >
@@ -510,7 +509,7 @@ const OncoGridWrapper = compose(
                   style={{
                     ...styles.button,
                     ...(isFullScreen() && styles.buttonActive),
-                    marginRight: 0
+                    marginRight: 0,
                   }}
                   onClick={() => {
                     if (isFullScreen()) {
@@ -520,14 +519,14 @@ const OncoGridWrapper = compose(
                         oncoGrid,
                         setHeatMapMode,
                         setShowGridLines,
-                        setCrosshairMode
+                        setCrosshairMode,
                       });
                     } else {
                       enterFullScreen(containerRefs[uniqueGridClass]);
                       oncoGrid.resize(
                         screen.width - 400,
                         screen.height - 400,
-                        true
+                        true,
                       );
                     }
                   }}
@@ -543,7 +542,7 @@ const OncoGridWrapper = compose(
                     fontSize: "1.1rem",
                     verticalAlign: "top",
                     width: "100%",
-                    textAlign: "right"
+                    textAlign: "right",
                   }}
                 >
                   Click and drag to select a region on the OncoGrid to zoom in.
@@ -563,12 +562,12 @@ const OncoGridWrapper = compose(
           }} // eslint-disable-line fp/no-mutation
           style={{
             cursor: crosshairMode ? "crosshair" : "pointer",
-            visibility: isLoading ? "hidden" : "visible"
+            visibility: isLoading ? "hidden" : "visible",
           }}
         />
       </div>
     </Loader>
-  )
+  ),
 );
 
 export default OncoGridWrapper;

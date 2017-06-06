@@ -10,10 +10,10 @@ const baseFilter = {
       op: "in",
       content: {
         field: "file.file_id",
-        value: ["fileA"]
-      }
-    }
-  ]
+        value: ["fileA"],
+      },
+    },
+  ],
 };
 
 const fileBFilter = {
@@ -23,10 +23,10 @@ const fileBFilter = {
       op: "in",
       content: {
         field: "file.file_id",
-        value: ["fileB"]
-      }
-    }
-  ]
+        value: ["fileB"],
+      },
+    },
+  ],
 };
 
 const caseFilter = {
@@ -36,34 +36,34 @@ const caseFilter = {
       op: "in",
       content: {
         field: "case.case_id",
-        value: ["somecase"]
-      }
-    }
-  ]
+        value: ["somecase"],
+      },
+    },
+  ],
 };
 
 const rangeFromFilter = {
   op: ">=",
   content: {
     field: "cases.diagnoses.age_at_diagnosis",
-    value: [5113]
-  }
+    value: [5113],
+  },
 };
 
 const rangeToFilter = {
   op: "<=",
   content: {
     field: "cases.diagnoses.age_at_diagnosis",
-    value: [33236]
-  }
+    value: [33236],
+  },
 };
 
 const primarySiteFilter = {
   op: "in",
   content: {
     field: "cases.primary_site",
-    value: ["Lung"]
-  }
+    value: ["Lung"],
+  },
 };
 
 describe("addInFilters", () => {
@@ -85,17 +85,17 @@ describe("addInFilters", () => {
           op: "in",
           content: {
             field: "file.file_id",
-            value: ["fileA", "fileB"]
-          }
-        }
-      ]
+            value: ["fileA", "fileB"],
+          },
+        },
+      ],
     });
   });
 
   it("should keep other fields in the filter when adding", () => {
     const result = addInFilters(
       fileBFilter,
-      addInFilters(caseFilter, baseFilter)
+      addInFilters(caseFilter, baseFilter),
     );
     expect(result).toMatchObject({
       op: "and",
@@ -104,17 +104,17 @@ describe("addInFilters", () => {
           op: "in",
           content: {
             field: "case.case_id",
-            value: ["somecase"]
-          }
+            value: ["somecase"],
+          },
         },
         {
           op: "in",
           content: {
             field: "file.file_id",
-            value: ["fileA", "fileB"]
-          }
-        }
-      ]
+            value: ["fileA", "fileB"],
+          },
+        },
+      ],
     });
   });
 
@@ -134,10 +134,10 @@ describe("toggleFilters", () => {
           op: "in",
           content: {
             field: "file.file_id",
-            value: ["fileA", "fileB"]
-          }
-        }
-      ]
+            value: ["fileA", "fileB"],
+          },
+        },
+      ],
     });
   });
   it("should remove an existing value", () => {
@@ -147,18 +147,18 @@ describe("toggleFilters", () => {
 
   const q = {
     op: "and",
-    content: [primarySiteFilter]
+    content: [primarySiteFilter],
   };
 
   const ctxq = {
     op: "and",
-    content: [rangeFromFilter, rangeToFilter, primarySiteFilter]
+    content: [rangeFromFilter, rangeToFilter, primarySiteFilter],
   };
   it("should not change the range filter if an unrelated filter was removed", () => {
     const result = toggleFilters(q, ctxq);
     expect(result).toEqual({
       op: "and",
-      content: [rangeFromFilter, rangeToFilter]
+      content: [rangeFromFilter, rangeToFilter],
     });
   });
 
@@ -166,7 +166,7 @@ describe("toggleFilters", () => {
     const result = toggleFilters(ctxq, q);
     expect(result).toEqual({
       op: "and",
-      content: [rangeFromFilter, rangeToFilter]
+      content: [rangeFromFilter, rangeToFilter],
     });
   });
 });
@@ -177,15 +177,15 @@ describe("mergeQuery", () => {
       offset: 0,
       filters: {
         op: "and",
-        content: [primarySiteFilter]
-      }
+        content: [primarySiteFilter],
+      },
     };
 
     const c = {
       filters: jsurl.stringify({
         op: "and",
-        content: [rangeFromFilter, rangeToFilter, primarySiteFilter]
-      })
+        content: [rangeFromFilter, rangeToFilter, primarySiteFilter],
+      }),
     };
 
     const result = mergeQuery(q, c, "toggle", null);
@@ -194,8 +194,8 @@ describe("mergeQuery", () => {
       offset: 0,
       filters: {
         op: "and",
-        content: [rangeFromFilter, rangeToFilter]
-      }
+        content: [rangeFromFilter, rangeToFilter],
+      },
     };
 
     expect(result).toEqual(expectedResult);

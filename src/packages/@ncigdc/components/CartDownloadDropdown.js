@@ -32,18 +32,18 @@ const styles = {
     color: theme.greyScale2,
     justifyContent: "flex-start",
     ":hover": {
-      backgroundColor: theme.greyScale6
-    }
+      backgroundColor: theme.greyScale6,
+    },
   }),
   button: theme => ({
     borderRadius: "0px",
     marginLeft: "0px",
     ...styles.common(theme),
-    "[disabled]": styles.common(theme)
+    "[disabled]": styles.common(theme),
   }),
   iconSpacing: {
-    marginRight: "0.6rem"
-  }
+    marginRight: "0.6rem",
+  },
 };
 
 const downloadCart = (files, dispatch, setState) => {
@@ -76,7 +76,7 @@ const downloadCart = (files, dispatch, setState) => {
                 downloadCart(
                   files.filter(file => file.access === "open"),
                   dispatch,
-                  setState
+                  setState,
                 )}
               style={{ margin: "0 10px" }}
             >
@@ -90,8 +90,8 @@ const downloadCart = (files, dispatch, setState) => {
             </Button>
           }
           closeText="Cancel"
-        />
-      )
+        />,
+      ),
     );
   } else if (files.reduce((sum, x) => sum + x.file_size, 0) > 5 * 10e8) {
     dispatch(
@@ -108,8 +108,8 @@ const downloadCart = (files, dispatch, setState) => {
               Data Transfer Tool
             </ExternalLink> Tool to continue.
           </p>
-        </BaseModal>
-      )
+        </BaseModal>,
+      ),
     );
   } else {
     dispatch(setModal(null));
@@ -117,10 +117,10 @@ const downloadCart = (files, dispatch, setState) => {
     download({
       url: urlJoin(process.env.REACT_APP_GDC_AUTH, "api/data"),
       params: {
-        ids: files.map(file => file.file_id)
+        ids: files.map(file => file.file_id),
       },
       method: "POST",
-      altMessage: true
+      altMessage: true,
     })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
   }
 };
@@ -131,13 +131,13 @@ const CartDownloadDropdown = ({
   disabled = false,
   state,
   setState,
-  dispatch
+  dispatch,
 }) => (
   <Row>
     <Dropdown
       dropdownStyle={{
         marginTop: "2px",
-        borderRadius: "4px"
+        borderRadius: "4px",
       }}
       dropdownItemClass={false}
       button={
@@ -165,7 +165,7 @@ const CartDownloadDropdown = ({
             setState(s => ({ ...s, manifestDownloading: currentState }))}
           active={state.manifestDownloading}
           extraParams={{
-            ids: files.files.map(file => file.file_id)
+            ids: files.files.map(file => file.file_id),
           }}
         />
         <Button
@@ -186,6 +186,6 @@ export default compose(
   withTheme,
   withState("state", "setState", {
     manifestDownloading: false,
-    cartDownloading: false
-  })
+    cartDownloading: false,
+  }),
 )(CartDownloadDropdown);

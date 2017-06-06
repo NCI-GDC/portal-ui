@@ -12,7 +12,7 @@ const DoubleRingChart = ({
   height = 160,
   width = 160,
   outerRingWidth = 30,
-  setTooltip
+  setTooltip,
 }) => {
   const centerRingWidth = width - outerRingWidth * 2;
   const centerRingHeight = height - outerRingWidth * 2;
@@ -38,34 +38,34 @@ const DoubleRingChart = ({
     tooltip: d.tooltip,
     innerRadius: 0,
     outerRadius: centerRadius - 5,
-    clickHandler: d.clickHandler
+    clickHandler: d.clickHandler,
   }));
   const innerPie = d3.pie().padAngle(HALF_DEGREE_IN_RAD * 2).value(d => d.v)(
-    innerPieData
+    innerPieData,
   );
   const outerPieData = data.map((d, i) => ({
     items: d.outer.map(p => ({
       v: p.value,
       key: p.key,
       tooltip: p.tooltip,
-      clickHandler: p.clickHandler
+      clickHandler: p.clickHandler,
     })),
     innerRadius: centerRadius,
-    outerRadius: radius
+    outerRadius: radius,
   }));
   const outerPie = outerPieData.map((p, i) =>
     d3
       .pie()
       .padAngle(HALF_DEGREE_IN_RAD)
       .startAngle(innerPie[i].startAngle)
-      .endAngle(innerPie[i].endAngle)(p.items.map(i => i.v))
+      .endAngle(innerPie[i].endAngle)(p.items.map(i => i.v)),
   );
 
   const dataWithPie = [
     innerPieData.map((p, i) => ({
       ...p,
       pie: innerPie[i],
-      color: colors[innerPieData[i].key].color
+      color: colors[innerPieData[i].key].color,
     })),
     outerPieData.reduce(
       (acc, p, i) => [
@@ -77,11 +77,11 @@ const DoubleRingChart = ({
           key: item.key,
           tooltip: item.tooltip,
           color: colors[innerPieData[i].key].projects[item.key],
-          clickHandler: item.clickHandler
-        }))
+          clickHandler: item.clickHandler,
+        })),
       ],
-      []
-    )
+      [],
+    ),
   ];
   const g = svg.selectAll(".g").data(dataWithPie).enter().append("g");
 
@@ -91,7 +91,7 @@ const DoubleRingChart = ({
     .enter()
     .append("path")
     .attr("d", d =>
-      d3.arc().outerRadius(d.outerRadius).innerRadius(d.innerRadius)(d.pie)
+      d3.arc().outerRadius(d.outerRadius).innerRadius(d.innerRadius)(d.pie),
     )
     .style("fill", (d, i) => d.color);
 
@@ -119,14 +119,14 @@ DoubleRingChart.propTypes = {
         PropTypes.shape({
           key: PropTypes.string,
           value: PropTypes.number,
-          clickHandler: PropTypes.func
-        })
-      )
-    })
+          clickHandler: PropTypes.func,
+        }),
+      ),
+    }),
   ),
   height: PropTypes.number,
   width: PropTypes.number,
-  outerRingWidth: PropTypes.number
+  outerRingWidth: PropTypes.number,
 };
 
 /*----------------------------------------------------------------------------*/

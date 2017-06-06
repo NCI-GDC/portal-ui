@@ -11,10 +11,10 @@ describe("Pagination", () => {
         filters: null,
         fmTable_filters: null,
         fmTable_offset: 0,
-        fmTable_size: 20
+        fmTable_size: 20,
       },
       total: 37,
-      prefix: "fmTable"
+      prefix: "fmTable",
     };
     const { totalPages } = calculatePages(props);
     expect(totalPages).toEqual(2);
@@ -37,7 +37,7 @@ describe("generates a pagination range", () => {
       17,
       18,
       19,
-      20
+      20,
     ]);
   });
 });

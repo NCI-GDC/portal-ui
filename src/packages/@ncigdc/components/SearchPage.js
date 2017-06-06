@@ -13,18 +13,18 @@ import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@ncigdc/theme/icons";
 const sidePadding = "2.5rem";
 
 const Container = styled(Row, {
-  padding: `2rem ${sidePadding} 13rem`
+  padding: `2rem ${sidePadding} 13rem`,
 });
 
 const FacetsPanel = styled(Column, {
   width: ({ theme }) => theme.facetsPanelWidth,
   flex: "none",
-  marginRight: "18px"
+  marginRight: "18px",
 });
 
 const Content = styled(Column, {
   flex: 1,
-  width: 0
+  width: 0,
 });
 
 const ShowFacetsButton = styled.button({
@@ -35,7 +35,7 @@ const ShowFacetsButton = styled.button({
   borderLeft: "none",
   margin: `2.1rem 4rem auto -${sidePadding}`,
   outline: "none",
-  borderRadius: "0 0.4rem 0.4rem 0"
+  borderRadius: "0 0.4rem 0.4rem 0",
 });
 
 type TProps = {|
@@ -43,7 +43,7 @@ type TProps = {|
   results?: mixed,
   showFacets: boolean,
   setShowFacets: Function,
-  showRepositoryQuery: boolean
+  showRepositoryQuery: boolean,
 |};
 
 const enhance = compose(withState("showFacets", "setShowFacets", true));
@@ -55,8 +55,8 @@ const SearchPage = (
     showFacets,
     setShowFacets,
     filtersLinkProps,
-    geneSymbolFragment
-  }: TProps = {}
+    geneSymbolFragment,
+  }: TProps = {},
 ) => (
   <Container>
     {showFacets &&

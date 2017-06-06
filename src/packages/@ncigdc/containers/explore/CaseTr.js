@@ -29,32 +29,30 @@ export type TProps = {|
     primary_site: string,
     submitter_id: string,
     demographic: {|
-      gender: string
+      gender: string,
     |},
     project: {|
-      project_id: string
+      project_id: string,
     |},
     summary: {|
       data_categories: Array<{|
         case_count?: number,
-        data_category: TCategory
-      |}>
-    |}
+        data_category: TCategory,
+      |}>,
+    |},
   |},
-  theme: Object
+  theme: Object,
 |};
 
 export const CaseTrComponent = compose(
-  withFilters()
+  withFilters(),
 )(
   ({
     node,
     index,
     theme,
-    explore,
+    explore: { mutationsCountFragment },
     filters,
-    ssmCount,
-    ssmCountsLoading
   }: TProps) => {
     const filesCount = sumDataCategories(node.summary.data_categories);
 
@@ -63,10 +61,10 @@ export const CaseTrComponent = compose(
     const FilesLink: TFilesLink = ({ fields = [], children }) => (
       <RepositoryFilesLink
         query={{
-          filters: makeFilter([
-            { field: "cases.case_id", value: [node.case_id] },
-            ...fields
-          ])
+          filters: makeFilter(
+            [{ field: "cases.case_id", value: [node.case_id] }, ...fields],
+            false,
+          ),
         }}
       >
         {children}
@@ -76,7 +74,7 @@ export const CaseTrComponent = compose(
     return (
       <Tr
         style={{
-          backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff"
+          backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff",
         }}
       >
         <Td>
@@ -111,7 +109,7 @@ export const CaseTrComponent = compose(
               {count > 0
                 ? <FilesLink
                     fields={[
-                      { field: "files.data_category", value: category.full }
+                      { field: "files.data_category", value: category.full },
                     ]}
                   >
                     {count.toLocaleString()}
@@ -126,7 +124,10 @@ export const CaseTrComponent = compose(
             ssmCount={ssmCount}
             filters={addInFilters(
               filters,
-              makeFilter([{ field: "cases.case_id", value: [node.case_id] }])
+              makeFilter(
+                [{ field: "cases.case_id", value: [node.case_id] }],
+                false,
+              ),
             )}
           />
         </Td>
@@ -136,9 +137,10 @@ export const CaseTrComponent = compose(
                 merge
                 query={{
                   searchTableTab: "genes",
-                  filters: makeFilter([
-                    { field: "cases.case_id", value: [node.case_id] }
-                  ])
+                  filters: makeFilter(
+                    [{ field: "cases.case_id", value: [node.case_id] }],
+                    false,
+                  ),
                 }}
               >
                 {node.score.toLocaleString()}
@@ -147,7 +149,7 @@ export const CaseTrComponent = compose(
         </Td>
       </Tr>
     );
-  }
+  },
 );
 
 export const CaseTrQuery = {
@@ -171,8 +173,8 @@ export const CaseTrQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const CaseTr = Relay.createContainer(withTheme(CaseTrComponent), CaseTrQuery);

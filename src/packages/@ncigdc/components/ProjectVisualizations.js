@@ -31,11 +31,11 @@ const styles = {
     flexGrow: 1,
     fontSize: "2rem",
     marginBottom: 7,
-    marginTop: 7
+    marginTop: 7,
   },
   card: {
-    backgroundColor: "white"
-  }
+    backgroundColor: "white",
+  },
 };
 
 const initialState = {
@@ -43,19 +43,19 @@ const initialState = {
   loadingAggregation: true,
   numCasesAggByProject: {},
   mutatedGenesProject: {},
-  defaultSurvivalData: {}
+  defaultSurvivalData: {},
 };
 
 const enhance = compose(
   withState(
     "selectedMutatedGenesSurvivalData",
     "setSelectedMutatedGenesSurvivalData",
-    {}
+    {},
   ),
   withState(
     "selectedFrequentMutationsSurvivalData",
     "setSelectedFrequentMutationsSurvivalData",
-    {}
+    {},
   ),
   withState("state", "setState", initialState),
   withState("numCasesAggByProject", "setNumCasesAggByProject", undefined),
@@ -65,15 +65,15 @@ const enhance = compose(
     const defaultSurvivalData = await getDefaultCurve({
       currentFilters: {
         op: "=",
-        content: { field: "cases.project.project_id", value: projectId }
+        content: { field: "cases.project.project_id", value: projectId },
       },
-      slug: projectId
+      slug: projectId,
     });
 
     setState(s => ({
       ...s,
       loadingSurvival: false,
-      defaultSurvivalData
+      defaultSurvivalData,
     }));
   }),
   lifecycle({
@@ -86,24 +86,24 @@ const enhance = compose(
     async componentDidMount(): Promise<*> {
       const mutatedCasesCountByProject = await fetchApi(
         "analysis/mutated_cases_count_by_project?size=0",
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
 
       const numCasesAggByProject = mutatedCasesCountByProject.aggregations.projects.buckets.reduce(
         (acc, b) => ({
           ...acc,
-          [b.key]: b.case_summary.case_with_ssm.doc_count
+          [b.key]: b.case_summary.case_with_ssm.doc_count,
         }),
-        {}
+        {},
       );
       this.props.setNumCasesAggByProject(numCasesAggByProject);
 
       this.props.setState(s => ({
         ...s,
-        loadingAggregation: false
+        loadingAggregation: false,
       }));
-    }
-  })
+    },
+  }),
 );
 
 const ProjectVisualizations = enhance(
@@ -112,35 +112,37 @@ const ProjectVisualizations = enhance(
       defaultSurvivalData,
       numCasesAggByProject,
       loadingSurvival,
-      loadingAggregation
+      loadingAggregation,
     },
     selectedMutatedGenesSurvivalData,
     setSelectedMutatedGenesSurvivalData,
     selectedFrequentMutationsSurvivalData,
     setSelectedFrequentMutationsSurvivalData,
     projectId,
-    viewer
+    viewer,
   }) => {
     const mutatedGenesSurvivalData = {
       legend: selectedMutatedGenesSurvivalData.legend ||
         defaultSurvivalData.legend,
       rawData: selectedMutatedGenesSurvivalData.rawData ||
-        defaultSurvivalData.rawData
+        defaultSurvivalData.rawData,
     };
 
     const frequentMutationsSurvivalData = {
       legend: selectedFrequentMutationsSurvivalData.legend ||
         defaultSurvivalData.legend,
       rawData: selectedFrequentMutationsSurvivalData.rawData ||
-        defaultSurvivalData.rawData
+        defaultSurvivalData.rawData,
     };
 
-    const fmFilters = makeFilter([
-      { field: "cases.project.project_id", value: projectId }
-    ]);
-    const macFilters = makeFilter([
-      { field: "cases.project.project_id", value: projectId }
-    ]);
+    const fmFilters = makeFilter(
+      [{ field: "cases.project.project_id", value: projectId }],
+      false,
+    );
+    const macFilters = makeFilter(
+      [{ field: "cases.project.project_id", value: projectId }],
+      false,
+    );
 
     return (
       <div>
@@ -197,10 +199,11 @@ const ProjectVisualizations = enhance(
               const { filters } = ctx.query || {};
               const currentFilters = parseFilterParam(filters, null);
               const componentFilters = replaceFilters(
-                makeFilter([
-                  { field: "cases.project.project_id", value: projectId }
-                ]),
-                currentFilters
+                makeFilter(
+                  [{ field: "cases.project.project_id", value: projectId }],
+                  false,
+                ),
+                currentFilters,
               );
               return (
                 <OncoGridWrapper
@@ -254,7 +257,7 @@ const ProjectVisualizations = enhance(
                     <ExploreLink
                       query={{
                         searchTableTab: "mutations",
-                        filters: fmFilters
+                        filters: fmFilters,
                       }}
                     >
                       Open in Exploration
@@ -279,7 +282,7 @@ const ProjectVisualizations = enhance(
         </Column>
       </div>
     );
-  }
+  },
 );
 
 export default ProjectVisualizations;

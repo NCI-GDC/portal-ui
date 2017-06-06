@@ -7,7 +7,7 @@ export default ({ style, ...props }) => (
     style={{
       height: "0.8em",
       fill: "currentcolor",
-      ...style
+      ...style,
     }}
     {...props}
   >

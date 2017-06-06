@@ -7,12 +7,12 @@ const LoginModal = (
   {
     message = "You don't have access",
     primaryButton,
-    closeText = "Close"
+    closeText = "Close",
   }: {
     message?: string,
     primaryButton?: any,
-    closeText?: string
-  } = {}
+    closeText?: string,
+  } = {},
 ) => (
   <BaseModal
     title="Access Error"

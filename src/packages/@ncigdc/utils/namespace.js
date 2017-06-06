@@ -7,7 +7,7 @@ const namespace = (ns, ...hocs) =>
   compose(
     withProps(props => ({ $parentProps: props })),
     ...hocs,
-    mapProps(props => ({ [ns]: props, ...props.$parentProps }))
+    mapProps(props => ({ [ns]: props, ...props.$parentProps })),
   );
 
 export default namespace;

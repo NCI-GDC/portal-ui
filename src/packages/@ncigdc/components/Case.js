@@ -9,7 +9,7 @@ import withRouter from "@ncigdc/utils/withRouter";
 import { makeFilter, mergeQuery } from "@ncigdc/utils/filters";
 import {
   EXPERIMENTAL_STRATEGIES,
-  DATA_CATEGORIES
+  DATA_CATEGORIES,
 } from "@ncigdc/utils/constants";
 import { removeEmptyKeys } from "@ncigdc/utils/uri";
 import Column from "@ncigdc/uikit/Flex/Column";
@@ -36,17 +36,17 @@ const styles = {
   icon: {
     width: "4rem",
     height: "4rem",
-    color: "#888"
+    color: "#888",
   },
   card: {
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   heading: {
     flexGrow: 1,
     fontSize: "2rem",
     marginBottom: 7,
-    marginTop: 7
-  }
+    marginTop: 7,
+  },
 };
 
 type TProps = {|
@@ -61,27 +61,30 @@ type TProps = {|
   totalFiles: number,
   files: Array<Object>,
   viewer: Object,
-  ssmTested: boolean
+  ssmTested: boolean,
 |};
 
 const getAnnotationsLinkParams = annotations => {
   if (annotations.total === 1) {
     return {
-      pathname: `/annotations/${annotations.edges[0].node.annotation_id}`
+      pathname: `/annotations/${annotations.edges[0].node.annotation_id}`,
     };
   } else if (annotations.total > 1) {
     return {
       pathname: "/annotations",
       query: {
-        filters: makeFilter([
-          {
-            field: "annotations.annotation_id",
-            value: annotations.edges.map(
-              ({ node: annotation }) => annotation.annotation_id
-            )
-          }
-        ])
-      }
+        filters: makeFilter(
+          [
+            {
+              field: "annotations.annotation_id",
+              value: annotations.edges.map(
+                ({ node: annotation }) => annotation.annotation_id,
+              ),
+            },
+          ],
+          false,
+        ),
+      },
     };
   }
 
@@ -91,7 +94,7 @@ const getAnnotationsLinkParams = annotations => {
 const Case = compose(
   withRouter,
   withTheme,
-  connect(state => ({ cartFiles: state.cart.files }))
+  connect(state => ({ cartFiles: state.cart.files })),
 )(
   (
     {
@@ -105,8 +108,8 @@ const Case = compose(
       totalFiles,
       files,
       viewer,
-      ssmTested
-    }: TProps = {}
+      ssmTested,
+    }: TProps = {},
   ) => {
     const p = node;
 
@@ -114,18 +117,21 @@ const Case = compose(
       (result, name) => {
         const strat = p.summary.experimental_strategies.find(
           item =>
-            item.experimental_strategy.toLowerCase() === name.toLowerCase()
+            item.experimental_strategy.toLowerCase() === name.toLowerCase(),
         );
 
         if (strat) {
           const linkQuery = {
-            filters: makeFilter([
-              { field: "cases.case_id", value: p.case_id },
-              {
-                field: "files.experimental_strategy",
-                value: [strat.experimental_strategy]
-              }
-            ])
+            filters: makeFilter(
+              [
+                { field: "cases.case_id", value: p.case_id },
+                {
+                  field: "files.experimental_strategy",
+                  value: [strat.experimental_strategy],
+                },
+              ],
+              false,
+            ),
           };
 
           return [
@@ -149,32 +155,36 @@ const Case = compose(
                 const newQuery = mergeQuery(linkQuery, query, "replace");
                 const q = removeEmptyKeys({
                   ...newQuery,
-                  filters: newQuery.filters && JSURL.stringify(newQuery.filters)
+                  filters: newQuery.filters &&
+                    JSURL.stringify(newQuery.filters),
                 });
                 push({ pathname: "/repository", query: q });
-              }
-            }
+              },
+            },
           ];
         }
 
         return result;
       },
-      []
+      [],
     );
 
     const dataCategories = Object.keys(DATA_CATEGORIES).reduce((acc, key) => {
       const type = p.summary.data_categories.find(
-        item => item.data_category === DATA_CATEGORIES[key].full
+        item => item.data_category === DATA_CATEGORIES[key].full,
       ) || {
         data_category: DATA_CATEGORIES[key].full,
-        file_count: 0
+        file_count: 0,
       };
 
       const linkQuery = {
-        filters: makeFilter([
-          { field: "cases.case_id", value: p.case_id },
-          { field: "files.data_category", value: [type.data_category] }
-        ])
+        filters: makeFilter(
+          [
+            { field: "cases.case_id", value: p.case_id },
+            { field: "files.data_category", value: [type.data_category] },
+          ],
+          false,
+        ),
       };
 
       return acc.concat({
@@ -196,23 +206,24 @@ const Case = compose(
           const newQuery = mergeQuery(linkQuery, query, "replace");
           const q = removeEmptyKeys({
             ...newQuery,
-            filters: newQuery.filters && JSURL.stringify(newQuery.filters)
+            filters: newQuery.filters && JSURL.stringify(newQuery.filters),
           });
           push({ pathname: "/repository", query: q });
-        }
+        },
       });
     }, []);
 
     const hasFilesToAdd = files.filter(
-      f => !cartFiles.some(cf => cf.file_id === f.file_id)
+      f => !cartFiles.some(cf => cf.file_id === f.file_id),
     ).length;
     const cartOperation = hasFilesToAdd
       ? addAllFilesInCart
       : removeFilesFromCart;
 
-    const fmFilters = makeFilter([
-      { field: "cases.project.project_id", value: p.project.project_id }
-    ]);
+    const fmFilters = makeFilter(
+      [{ field: "cases.project.project_id", value: p.project.project_id }],
+      false,
+    );
 
     return (
       <Column spacing={theme.spacing}>
@@ -240,12 +251,12 @@ const Case = compose(
                   <ProjectLink uuid={p.project.project_id}>
                     {p.project.project_id}
                   </ProjectLink>
-                )
+                ),
               },
               { th: "Project Name", td: p.project.name },
               { th: "Disease Type", td: p.disease_type },
               { th: "Program", td: p.project.program.name },
-              { th: "Primary Site", td: p.primary_site }
+              { th: "Primary Site", td: p.primary_site },
             ]}
             style={{ flex: 1 }}
           />
@@ -261,12 +272,13 @@ const Case = compose(
                   ? {
                       pathname: "/repository",
                       query: {
-                        filters: makeFilter([
-                          { field: "cases.case_id", value: p.case_id }
-                        ]),
+                        filters: makeFilter(
+                          [{ field: "cases.case_id", value: p.case_id }],
+                          false,
+                        ),
                         facetTab: "files",
-                        searchTableTab: "files"
-                      }
+                        searchTableTab: "files",
+                      },
                     }
                   : null
               }
@@ -293,13 +305,13 @@ const Case = compose(
                 {
                   key: "experimental_strategy",
                   title: "Experimental Strategy",
-                  color: true
+                  color: true,
                 },
                 {
                   key: "file_count",
                   title: "Files",
-                  style: { textAlign: "right" }
-                }
+                  style: { textAlign: "right" },
+                },
               ]}
             />
           </span>
@@ -315,8 +327,8 @@ const Case = compose(
                 {
                   key: "file_count",
                   title: "Files",
-                  style: { textAlign: "right" }
-                }
+                  style: { textAlign: "right" },
+                },
               ]}
             />
           </span>
@@ -368,7 +380,7 @@ const Case = compose(
           </Column>}
       </Column>
     );
-  }
+  },
 );
 
 export default Case;

@@ -20,7 +20,7 @@ export const AnnotationTableComponent = (props: TTableProps) => (
       style={{
         backgroundColor: "white",
         padding: "1rem",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
       }}
     >
       <Showing
@@ -41,37 +41,37 @@ export const AnnotationTableComponent = (props: TTableProps) => (
           "entity_id",
           "category",
           "classification",
-          "created_datetime"
+          "created_datetime",
         ]}
         sortOptions={[
           {
             id: "annotation_id",
-            name: "ID"
+            name: "ID",
           },
           {
             id: "case_id",
-            name: "Case UUID"
+            name: "Case UUID",
           },
           {
             id: "project.project_id",
-            name: "Project"
+            name: "Project",
           },
           {
             id: "entity_type",
-            name: "Entity Type"
+            name: "Entity Type",
           },
           {
             id: "entity_id",
-            name: "Entity ID"
+            name: "Entity ID",
           },
           {
             id: "category",
-            name: "Category"
+            name: "Category",
           },
           {
             id: "classification",
-            name: "Classification"
-          }
+            name: "Classification",
+          },
         ]}
         tsvSelector="#annotations-table"
         tsvFilename="annotations-table.tsv"
@@ -88,7 +88,7 @@ export const AnnotationTableComponent = (props: TTableProps) => (
           "Entity UUID",
           "Category",
           "Classification",
-          "Date Created"
+          "Date Created",
         ]}
         body={
           <tbody>
@@ -115,13 +115,13 @@ export const AnnotationTableQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const AnnotationTable = Relay.createContainer(
   AnnotationTableComponent,
-  AnnotationTableQuery
+  AnnotationTableQuery,
 );
 
 export default AnnotationTable;

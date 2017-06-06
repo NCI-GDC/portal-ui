@@ -25,7 +25,7 @@ class GlobalTooltip extends Component {
         className="global-tooltip"
         ref={node => (this.globalTooltip = node)}
         style={{
-          visibility: this.props.tooltip.Component ? "visible" : "hidden"
+          visibility: this.props.tooltip.Component ? "visible" : "hidden",
         }}
       >
         {this.props.tooltip.Component}

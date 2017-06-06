@@ -11,30 +11,30 @@ export type TProps = {
     explore: {
       genes: {
         hits: {
-          total: number
-        }
+          total: number,
+        },
       },
       ssms: {
         hits: {
-          total: number
-        }
-      }
+          total: number,
+        },
+      },
     },
     repository: {
       cases: {
         hits: {
-          total: number
-        }
+          total: number,
+        },
       },
       files: {
         hits: {
-          total: number
-        }
-      }
+          total: number,
+        },
+      },
     },
     projects: {
       aggregations: {
-        primary_site: { buckets: [TBucket] }
+        primary_site: { buckets: [TBucket] },
       },
       hits: {
         edges: Array<{|
@@ -44,14 +44,14 @@ export type TProps = {
             primary_site: string,
             summary: {
               case_count: number,
-              file_count: number
-            }
-          |}
+              file_count: number,
+            },
+          |},
         |}>,
-        total: number
-      }
-    }
-  }
+        total: number,
+      },
+    },
+  },
 };
 
 type THomePageComponent = (props: TProps) => React.Element<*>;
@@ -61,38 +61,38 @@ export const HomePageComponent: THomePageComponent = (
       explore: {
         genes: {
           hits: {
-            total: 0
-          }
+            total: 0,
+          },
         },
         ssms: {
           hits: {
-            total: 0
-          }
-        }
+            total: 0,
+          },
+        },
       },
       repository: {
         cases: {
           hits: {
-            total: 0
-          }
+            total: 0,
+          },
         },
         files: {
           hits: {
-            total: 0
-          }
-        }
+            total: 0,
+          },
+        },
       },
       projects: {
         aggregations: {
-          primary_site: { buckets: [] }
+          primary_site: { buckets: [] },
         },
         hits: {
           edges: [],
-          total: 0
-        }
-      }
-    }
-  } = {}
+          total: 0,
+        },
+      },
+    },
+  } = {},
 ) => (
   <Home
     humanBodyData={viewer.projects.hits.edges.map(x => x.node)}
@@ -156,7 +156,7 @@ const HomePage = createFragmentContainer(HomePageComponent, {
           }
         }
       }
-    `
+    `,
 });
 
 export default HomePage;

@@ -13,17 +13,17 @@ import CollapsibleList from "@ncigdc/uikit/CollapsibleList";
 const styles = {
   summary: {
     marginBottom: "2rem",
-    minWidth: "450px"
+    minWidth: "450px",
   },
   column: {
     width: "100%",
-    minWidth: 450
-  }
+    minWidth: 450,
+  },
 };
 
 type TProps = {
   node: Object,
-  dbSNP: string
+  dbSNP: string,
 };
 
 const SsmExternalReferencesComponent = compose(
@@ -33,9 +33,9 @@ const SsmExternalReferencesComponent = compose(
         c.node.transcript.annotation.dbsnp_rs
           ? c.node.transcript.annotation.dbsnp_rs
           : acc,
-      ""
-    )
-  }))
+      "",
+    ),
+  })),
 )(({ node, dbSNP }: TProps = {}) => (
   <EntityPageVerticalTable
     title={
@@ -50,7 +50,7 @@ const SsmExternalReferencesComponent = compose(
           ? <ExternalLink href={externalReferenceLinks.dbsnp(dbSNP)}>
               {dbSNP}
             </ExternalLink>
-          : "--"
+          : "--",
       },
       {
         th: "COSMIC",
@@ -60,15 +60,15 @@ const SsmExternalReferencesComponent = compose(
               data={(node.cosmic_id || []).map(c => (
                 <ExternalLink
                   href={externalReferenceLinks[c.substring(0, 4).toLowerCase()](
-                    c.match(/(\d+)$/g)
+                    c.match(/(\d+)$/g),
                   )}
                 >
                   {c}
                 </ExternalLink>
               ))}
             />
-          : "--"
-      }
+          : "--",
+      },
     ]}
     style={{ ...styles.summary, ...styles.column, alignSelf: "flex-start" }}
   />
@@ -83,11 +83,11 @@ export const SsmExternalReferencesQuery = {
           op: "NOT",
           content: {
             field: "consequence.transcript.annotation.dbsnp_rs",
-            value: "MISSING"
-          }
-        }
-      ]
-    }
+            value: "MISSING",
+          },
+        },
+      ],
+    },
   },
   fragments: {
     node: () => Relay.QL`
@@ -107,13 +107,13 @@ export const SsmExternalReferencesQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const SsmExternalReferences = Relay.createContainer(
   SsmExternalReferencesComponent,
-  SsmExternalReferencesQuery
+  SsmExternalReferencesQuery,
 );
 
 export default SsmExternalReferences;

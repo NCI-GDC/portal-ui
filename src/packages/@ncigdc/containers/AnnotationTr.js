@@ -23,16 +23,16 @@ export type TProps = {
     entity_id: string,
     entity_type: string,
     project: {
-      project_id: string
-    }
+      project_id: string,
+    },
   },
-  theme: Object
+  theme: Object,
 };
 
 export const AnnotationTrComponent = ({ node, index, theme }: TProps) => (
   <Tr
     style={{
-      backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff"
+      backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff",
     }}
   >
     <Td>
@@ -90,13 +90,13 @@ export const AnnotationTrQuery = {
         classification
         created_datetime
       }
-    `
-  }
+    `,
+  },
 };
 
 const AnnotationTr = Relay.createContainer(
   withTheme(AnnotationTrComponent),
-  AnnotationTrQuery
+  AnnotationTrQuery,
 );
 
 export default AnnotationTr;

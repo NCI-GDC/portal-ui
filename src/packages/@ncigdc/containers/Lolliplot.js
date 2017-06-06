@@ -8,7 +8,7 @@ import {
   lifecycle,
   withProps,
   withPropsOnChange,
-  withState
+  withState,
 } from "recompose";
 import { insertRule } from "glamor";
 import * as d3 from "d3";
@@ -47,47 +47,47 @@ const styles = {
     marginBottom: 7,
     marginTop: 7,
     display: "flex",
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 };
 
 type TTranscript = {
   length_amino_acid: number,
   is_canonical: boolean,
-  transcript_id: string
+  transcript_id: string,
 };
 
 type TProps = {
   ssms: {
     hits: {
       edges: Array<{
-        node: {}
-      }>
-    }
+        node: {},
+      }>,
+    },
   },
   state: {
     activeTranscript: TTranscript,
     actions: {
-      reset: Function
-    }
+      reset: Function,
+    },
   },
   viewer: {
     node: {
       transcripts: {
         hits: {
           edges: Array<{
-            node: TTranscript
-          }>
-        }
-      }
-    }
+            node: TTranscript,
+          }>,
+        },
+      },
+    },
   },
   setState: Function,
   setTooltip: Function,
   push: Function,
   geneId: String,
   relay: Object,
-  mutationId: string
+  mutationId: string,
 };
 
 let container;
@@ -105,21 +105,21 @@ const LolliplotComponent = compose(
     blacklist: "consequence",
     consequenceBlacklist: new Set(),
     impactBlacklist: new Set(),
-    ssmsLoading: false
+    ssmsLoading: false,
   }),
   withProps(({ state, setState }) => ({
     fetchGene(props: Object): void {
       props.relay.setVariables({
         // eslint-disable-line fp/no-this
         fetchGene: true,
-        lolliplotGeneId: btoa(`Gene:${props.geneId}`) // eslint-disable-line fp/no-this
+        lolliplotGeneId: btoa(`Gene:${props.geneId}`), // eslint-disable-line fp/no-this
       });
     },
     fetchSsms(props: Object): void {
       const transcript = props.state.activeTranscript.transcript_id
         ? props.state.activeTranscript
         : (props.viewer.node.transcripts.hits.edges.find(
-            x => x.node.is_canonical
+            x => x.node.is_canonical,
           ) || {}).node;
 
       props.relay.setVariables(
@@ -133,11 +133,11 @@ const LolliplotComponent = compose(
                 op: "=",
                 content: {
                   field: "consequence.transcript.transcript_id",
-                  value: transcript.transcript_id
-                }
-              }
-            ]
-          }
+                  value: transcript.transcript_id,
+                },
+              },
+            ],
+          },
         },
         ({ done }) => {
           if (!props.state.ssmsLoading && !done) {
@@ -147,7 +147,7 @@ const LolliplotComponent = compose(
           if (done) {
             props.setState(s => ({ ...s, ssmsLoading: false }));
           }
-        }
+        },
       );
     },
     toggleBlacklistItem: variant => {
@@ -165,10 +165,10 @@ const LolliplotComponent = compose(
     fillBlacklist: variants => {
       const blacklist = new Set(variants);
       setState(s => ({ ...s, [`${state.blacklist}Blacklist`]: blacklist }));
-    }
+    },
   })),
   withPropsOnChange(["lolliplot"], ({ lolliplot }) => ({
-    ssms: lolliplot.data ? JSON.parse(lolliplot.data) : {}
+    ssms: lolliplot.data ? JSON.parse(lolliplot.data) : {},
   })),
   lifecycle({
     componentDidMount(): void {
@@ -211,14 +211,14 @@ const LolliplotComponent = compose(
 
       if (!this.props.viewer.node && nextProps.viewer.node) {
         const activeTranscript = (nextProps.viewer.node.transcripts.hits.edges.find(
-          x => x.node.is_canonical
+          x => x.node.is_canonical,
         ) || {}).node;
 
         this.props.setState(s => ({
           ...s,
           activeTranscript,
           min: 0,
-          max: activeTranscript.length_amino_acid
+          max: activeTranscript.length_amino_acid,
         }));
 
         return;
@@ -228,22 +228,22 @@ const LolliplotComponent = compose(
 
       if (this.props.viewer.node) {
         const pt = (this.props.viewer.node.transcripts.hits.edges.find(
-          x => x.node.is_canonical
+          x => x.node.is_canonical,
         ) || {}).node;
         const nt = (nextProps.viewer.node.transcripts.hits.edges.find(
-          x => x.node.is_canonical
+          x => x.node.is_canonical,
         ) || {}).node;
 
         if (pt.transcript_id !== nt.transcript_id) {
           const activeTranscript = (nextProps.viewer.node.transcripts.hits.edges.find(
-            x => x.node.is_canonical
+            x => x.node.is_canonical,
           ) || {}).node;
 
           this.props.setState(s => ({
             ...s,
             activeTranscript,
             min: 0,
-            max: activeTranscript.length_amino_acid
+            max: activeTranscript.length_amino_acid,
           }));
 
           return;
@@ -266,23 +266,23 @@ const LolliplotComponent = compose(
       ) {
         this.props.fetchSsms(nextProps);
       }
-    }
+    },
   }),
   withPropsOnChange(["state"], ({ state }) => ({
-    filterByType: type => d => !state[`${type}Blacklist`].has(d[type])
+    filterByType: type => d => !state[`${type}Blacklist`].has(d[type]),
   })),
   withPropsOnChange(
     ["viewer", "ssms", "state"],
     ({ state: { activeTranscript }, ssms }) => {
       const lolliplotData = buildProteinLolliplotData({
         transcript: activeTranscript,
-        data: (ssms.hits || []).map(x => ({ score: x._score, ...x._source }))
+        data: (ssms.hits || []).map(x => ({ score: x._score, ...x._source })),
       });
 
       return {
-        lolliplotData
+        lolliplotData,
       };
-    }
+    },
   ),
   withPropsOnChange(["lolliplotData"], ({ lolliplotData }) => {
     const consequences = groupByType("consequence", lolliplotData.mutations);
@@ -301,28 +301,28 @@ const LolliplotComponent = compose(
       "#7462E0",
       "#4B6A88",
       "#856514",
-      "#D43900"
+      "#D43900",
     ];
 
     const mutationColors = {
       consequence: Object.keys(consequences).reduce(
         (acc, type, i) => ({
           ...acc,
-          [type]: highContrastPallet[i % highContrastPallet.length]
+          [type]: highContrastPallet[i % highContrastPallet.length],
         }),
-        {}
+        {},
       ),
       impact: {
         HIGH: "rgb(221, 60, 60)",
         MODERATE: "rgb(132, 168, 56)",
-        default: "rgb(135, 145, 150)"
-      }
+        default: "rgb(135, 145, 150)",
+      },
     };
 
     return {
-      mutationColors
+      mutationColors,
     };
-  })
+  }),
 )(
   ({
     state: {
@@ -347,7 +347,7 @@ const LolliplotComponent = compose(
     lolliplotData,
     mutationColors,
     filterByType,
-    transcripts
+    transcripts,
   }) => (
     <Column>
       <Row>
@@ -365,7 +365,7 @@ const LolliplotComponent = compose(
               marginBottom: "2rem",
               padding: "0 2rem",
               alignItems: "center",
-              height: "35px"
+              height: "35px",
             }}
             spacing="1rem"
           >
@@ -379,7 +379,7 @@ const LolliplotComponent = compose(
                     fontWeight: activeTranscript.transcript_id ===
                       gene.canonical_transcript_id
                       ? "bold"
-                      : "initial"
+                      : "initial",
                   }}
                 >
                   {activeTranscript.transcript_id}
@@ -401,17 +401,17 @@ const LolliplotComponent = compose(
                       ...(activeTranscript.transcript_id === t.transcript_id
                         ? {
                             backgroundColor: "rgb(44, 136, 170)",
-                            color: "white"
+                            color: "white",
                           }
                         : {}),
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                     onClick={() =>
                       setState(s => ({
                         ...s,
                         activeTranscript: t,
                         min: 0,
-                        max: t.length_amino_acid
+                        max: t.length_amino_acid,
                       }))}
                   >
                     {t.transcript_id} ({t.length_amino_acid} aa)
@@ -421,7 +421,7 @@ const LolliplotComponent = compose(
                 .filter(
                   t =>
                     t.length_amino_acid &&
-                    t.transcript_id !== gene.canonical_transcript_id
+                    t.transcript_id !== gene.canonical_transcript_id,
                 )
                 .map(t => (
                   <DropdownItem
@@ -430,17 +430,17 @@ const LolliplotComponent = compose(
                       ...(activeTranscript.transcript_id === t.transcript_id
                         ? {
                             backgroundColor: "rgb(44, 136, 170)",
-                            color: "white"
+                            color: "white",
                           }
                         : {}),
-                      cursor: "pointer"
+                      cursor: "pointer",
                     }}
                     onClick={() =>
                       setState(s => ({
                         ...s,
                         activeTranscript: t,
                         min: 0,
-                        max: t.length_amino_acid
+                        max: t.length_amino_acid,
                       }))}
                   >
                     {t.transcript_id} ({t.length_amino_acid} aa)
@@ -453,7 +453,7 @@ const LolliplotComponent = compose(
                 setState(s => ({
                   ...s,
                   min: 0,
-                  max: activeTranscript.length_amino_acid
+                  max: activeTranscript.length_amino_acid,
                 }))}
               leftIcon={<i className="fa fa-refresh" />}
             >
@@ -469,11 +469,11 @@ const LolliplotComponent = compose(
                     right: {
                       width: 250,
                       margins: {
-                        right: 20
+                        right: 20,
                       },
-                      elements: [document.querySelector("#mutation-stats")]
-                    }
-                  }
+                      elements: [document.querySelector("#mutation-stats")],
+                    },
+                  },
                 })}
               data={lolliplotData}
               stylePrefix="#protein-viewer-root"
@@ -529,7 +529,7 @@ const LolliplotComponent = compose(
                             <div>DNA Change: {d.genomic_dna_change}</div>
                             <div># of Cases: {cases.toLocaleString()}</div>
                             <div>Functional Impact: {d.impact}</div>
-                          </span>
+                          </span>,
                         );
                       }}
                       onPointMouseout={() => setTooltip(null)}
@@ -552,7 +552,7 @@ const LolliplotComponent = compose(
                               <div><b>{d.id}</b></div>
                               <div>{d.description}</div>
                               <div><b>Click to zoom</b></div>
-                            </span>
+                            </span>,
                           );
                         }}
                         onProteinMouseout={() => setTooltip(null)}
@@ -568,8 +568,8 @@ const LolliplotComponent = compose(
                         data={{
                           ...lolliplotData,
                           mutations: lolliplotData.mutations.filter(
-                            filterByType(blacklist)
-                          )
+                            filterByType(blacklist),
+                          ),
                         }}
                       />
                     </div>
@@ -582,7 +582,7 @@ const LolliplotComponent = compose(
                 <div
                   style={{
                     border: "1px solid rgb(186, 186, 186)",
-                    padding: "13px"
+                    padding: "13px",
                   }}
                 >
                   <div>
@@ -606,7 +606,7 @@ const LolliplotComponent = compose(
                     <div
                       style={{
                         marginTop: "6px",
-                        fontSize: "14px"
+                        fontSize: "14px",
                       }}
                     >
                       <div>
@@ -614,7 +614,7 @@ const LolliplotComponent = compose(
                           onClick={clearBlacklist}
                           style={{
                             color: "rgb(27, 103, 145)",
-                            cursor: "pointer"
+                            cursor: "pointer",
                           }}
                         >
                           Select All
@@ -624,13 +624,13 @@ const LolliplotComponent = compose(
                           onClick={() => {
                             fillBlacklist(
                               Object.keys(
-                                groupByType(blacklist, lolliplotData.mutations)
-                              )
+                                groupByType(blacklist, lolliplotData.mutations),
+                              ),
                             );
                           }}
                           style={{
                             color: "rgb(27, 103, 145)",
-                            cursor: "pointer"
+                            cursor: "pointer",
                           }}
                         >
                           Deselect All
@@ -638,13 +638,13 @@ const LolliplotComponent = compose(
                       </div>
                     </div>
                     {Object.entries(
-                      groupByType(blacklist, lolliplotData.mutations)
+                      groupByType(blacklist, lolliplotData.mutations),
                     ).map(([variant, xs]) => (
                       <div
                         key={variant}
                         style={{
                           marginTop: "6px",
-                          fontSize: "14px"
+                          fontSize: "14px",
                         }}
                       >
                         <div>
@@ -657,7 +657,7 @@ const LolliplotComponent = compose(
                               width: "23px",
                               cursor: "pointer",
                               display: "inline-block",
-                              marginRight: "6px"
+                              marginRight: "6px",
                             }}
                           >
                             {state[`${blacklist}Blacklist`].has(variant)
@@ -685,7 +685,7 @@ const LolliplotComponent = compose(
         </div>
       </Loader>
     </Column>
-  )
+  ),
 );
 
 export const LolliplotQuery = {
@@ -697,9 +697,10 @@ export const LolliplotQuery = {
     haveTotal: false,
     first: 10000,
     lolliplotFilters: null,
-    isCanonical: makeFilter([
-      { field: "transcripts.is_canonical", value: [true] }
-    ])
+    isCanonical: makeFilter(
+      [{ field: "transcripts.is_canonical", value: [true] }],
+      false,
+    ),
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -751,8 +752,8 @@ export const LolliplotQuery = {
           ]
         ) @include(if: $fetchSsms)
       }
-    `
-  }
+    `,
+  },
 };
 
 export default Relay.createContainer(LolliplotComponent, LolliplotQuery);

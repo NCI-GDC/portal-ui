@@ -8,29 +8,29 @@ import { Row, Column } from "@ncigdc/uikit/Flex";
 const styles = {
   table: {
     fontSize: "1.28rem",
-    display: "inline-flex"
+    display: "inline-flex",
   },
   td: {
-    padding: 6
+    padding: 6,
   },
   cell: {
     paddingTop: 4,
-    paddingBottom: 4
+    paddingBottom: 4,
   },
   color: {
     marginRight: 5,
     display: "inline-block",
     width: 15,
     height: 15,
-    verticalAlign: "middle"
-  }
+    verticalAlign: "middle",
+  },
 };
 
 export const StepLegend = ({
   steps = [0.25, 0.5, 0.75, 1],
   color = "#D33682",
   leftLabel = "Less",
-  rightLabel = "More"
+  rightLabel = "More",
 }) => (
   <Row style={styles.table}>
     <Column style={styles.td}>{leftLabel}</Column>
@@ -65,5 +65,5 @@ export const SwatchLegend = ({ colorMap }) => {
 
 export default {
   StepLegend,
-  SwatchLegend
+  SwatchLegend,
 };

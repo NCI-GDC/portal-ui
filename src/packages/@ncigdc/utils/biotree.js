@@ -23,7 +23,7 @@ export const entityTypes = [
   { s: "portion", p: "portions" },
   { s: "aliquot", p: "aliquots" },
   { s: "analyte", p: "analytes" },
-  { s: "slide", p: "slides" }
+  { s: "slide", p: "slides" },
 ];
 
 export const idFields = [
@@ -31,7 +31,7 @@ export const idFields = [
   "portion_id",
   "analyte_id",
   "slide_id",
-  "aliquot_id"
+  "aliquot_id",
 ];
 
 export const match = (query: string, entity: Object): boolean =>

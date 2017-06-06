@@ -18,19 +18,19 @@ import Nav from "./Nav";
 
 const styles = {
   header: theme => ({
-    borderTop: `6px solid ${theme.primary}`
+    borderTop: `6px solid ${theme.primary}`,
   }),
   top: {
     background: "linear-gradient(to bottom, #fefefe 0%, #c7c7c7 100%)",
     padding: "15px 0",
-    height: "90px"
+    height: "90px",
   },
   copy: {
-    fontSize: "1.2rem"
+    fontSize: "1.2rem",
   },
   logo: {
     minWidth: "275px",
-    margin: "0 15px"
+    margin: "0 15px",
   },
   activePortalLink: theme =>
     css({
@@ -46,16 +46,16 @@ const styles = {
       ":hover": {
         color: "#fff",
         textDecoration: "none",
-        backgroundColor: Color(theme.primary).lighten(0.5).rgbString()
-      }
+        backgroundColor: Color(theme.primary).lighten(0.5).rgbString(),
+      },
     }),
   activePortalLogo: {
     height: "40px",
     width: "4rem",
     textIndent: "-10000px",
     marginRight: "15px",
-    display: "inline-block"
-  }
+    display: "inline-block",
+  },
 };
 
 const Header = ({ theme }) => (

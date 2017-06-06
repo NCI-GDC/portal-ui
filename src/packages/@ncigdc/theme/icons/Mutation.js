@@ -4,11 +4,11 @@ import React from "react";
 type TProps = {
   color?: string,
   height?: string,
-  width?: string
+  width?: string,
 };
 type TMutation = (props: TProps) => React.Element<*>;
 const Mutation: TMutation = (
-  { width = "100%", height = "100%", color: fill = "rgb(107,98,98)" } = {}
+  { width = "100%", height = "100%", color: fill = "rgb(107,98,98)" } = {},
 ) => (
   <svg width={width} height={height} viewBox="0 0 50 61" version="1.1">
     <g id="_chromosome_Artboard2" transform="matrix(1,0,0,1,-13.0762,-25.3313)">

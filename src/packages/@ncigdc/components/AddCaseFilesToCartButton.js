@@ -16,11 +16,11 @@ import withFilters from "@ncigdc/utils/withFilters";
 const styles = {
   dropdownContainer: {
     left: 0,
-    right: "auto"
+    right: "auto",
   },
   icon: {
-    marginRight: "1em"
-  }
+    marginRight: "1em",
+  },
 };
 
 const AddCaseFilesToCartButton = compose(
@@ -29,14 +29,14 @@ const AddCaseFilesToCartButton = compose(
   withFilters(),
   withProps(({ filters, cart, files = [], filteredFiles = [] }) => ({
     filesInCart: _.intersectionBy(cart.files, files, "file_id"),
-    filteredFilesInCart: _.intersectionBy(cart.files, filteredFiles, "file_id")
+    filteredFilesInCart: _.intersectionBy(cart.files, filteredFiles, "file_id"),
   })),
   withHandlers({
     handleDropdownActivate: ({
       relay,
       setIsLoading,
       filters,
-      hasFiles
+      hasFiles,
     }) => () => {
       if (!hasFiles) {
         // this case has no files to fetch.
@@ -47,14 +47,14 @@ const AddCaseFilesToCartButton = compose(
         {
           isFileDataRequired: true,
           isFilteredFileDataRequired: true,
-          filesFilters: filters
+          filesFilters: filters,
         },
         readyState =>
           _.some([readyState.ready, readyState.aborted, readyState.error]) &&
-          setIsLoading(false)
+          setIsLoading(false),
       );
-    }
-  })
+    },
+  }),
 )(
   ({
     hasFiles,
@@ -65,7 +65,7 @@ const AddCaseFilesToCartButton = compose(
     isLoading,
     filesInCart,
     filteredFilesInCart,
-    dropdownStyle = {}
+    dropdownStyle = {},
   }) => (
     <Dropdown
       dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyle }}
@@ -144,10 +144,10 @@ const AddCaseFilesToCartButton = compose(
           >
             <TrashIcon style={styles.icon} />
             Remove filtered Case files from Cart ({filteredFilesInCart.length})
-          </DropdownItem>
+          </DropdownItem>,
       ]}
     </Dropdown>
-  )
+  ),
 );
 
 export default AddCaseFilesToCartButton;

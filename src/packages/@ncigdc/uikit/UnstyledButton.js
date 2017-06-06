@@ -10,7 +10,7 @@ const base = {
   border: "none",
   cursor: "pointer",
   outline: "none",
-  padding: 0
+  padding: 0,
 };
 
 export default ({ children, style, ...props }) => (

@@ -11,7 +11,7 @@ import tableModels from "@ncigdc/tableModels";
 import Table, { Tr, Td } from "@ncigdc/uikit/Table";
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.projects }))
+  connect(state => ({ tableColumns: state.tableColumns.projects })),
 )(
   ({
     downloadable,
@@ -19,7 +19,7 @@ export const SearchTable = compose(
     params,
     entityType = "projects",
     tableHeader,
-    tableColumns
+    tableColumns,
   }) => {
     const tableInfo = tableModels[entityType] // eslint-disable-line
       .slice()
@@ -33,7 +33,7 @@ export const SearchTable = compose(
             backgroundColor: "white",
             padding: "1rem",
             justifyContent: "space-between",
-            alignItems: "center"
+            alignItems: "center",
           }}
         >
           {tableHeader &&
@@ -81,7 +81,7 @@ export const SearchTable = compose(
                       x =>
                         x.total
                           ? <x.total key={x.id} hits={hits} />
-                          : <Td key={x.id} />
+                          : <Td key={x.id} />,
                     )}
                 </Tr>
               </tbody>
@@ -90,7 +90,7 @@ export const SearchTable = compose(
         </div>
       </div>
     );
-  }
+  },
 );
 
 const ProjectsTable = createFragmentContainer(
@@ -119,7 +119,7 @@ const ProjectsTable = createFragmentContainer(
         }
       }
     }
-  `
+  `,
 );
 
 export default ProjectsTable;

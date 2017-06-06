@@ -13,7 +13,7 @@ import {
   addAllFilesInCart,
   fetchFilesAndAdd,
   fetchFilesAndRemove,
-  toggleFilesInCart
+  toggleFilesInCart,
 } from "@ncigdc/dux/cart";
 
 import Row from "@ncigdc/uikit/Flex/Row";
@@ -30,13 +30,13 @@ type TProps = {
   edges: Array<TCartFile>,
   files: Array<TCartFile>,
   total: number,
-  dispatch: Function
+  dispatch: Function,
 };
 
 const DropDownCaret = styled.span({
   backgroundColor: "#FFF",
   borderTopRightRadius: "4px",
-  borderBottomRightRadius: "4px"
+  borderBottomRightRadius: "4px",
 });
 
 const DropDownStyle = {
@@ -44,13 +44,13 @@ const DropDownStyle = {
   right: "initial",
   left: "-25px",
   marginTop: "5px",
-  borderRadius: "4px"
+  borderRadius: "4px",
 };
 
 const DropDownItemStyle = {
   padding: "3px 20px",
   margin: "5px 0",
-  fontWeight: "normal"
+  fontWeight: "normal",
 };
 
 const CartButton = styled(Button, {
@@ -62,8 +62,8 @@ const CartButton = styled(Button, {
   cursor: "pointer",
   backgroundColor: ({ active }) => (active ? "#255425" : "rgb(0, 80, 131)"),
   ":hover": {
-    backgroundColor: ({ active }) => (active ? "#255425" : "rgb(0, 80, 131)")
-  }
+    backgroundColor: ({ active }) => (active ? "#255425" : "rgb(0, 80, 131)"),
+  },
 });
 
 const filesInCart = (edges, files) => {

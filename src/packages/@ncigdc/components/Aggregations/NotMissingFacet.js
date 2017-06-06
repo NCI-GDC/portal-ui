@@ -18,7 +18,7 @@ type TProps = {
   notMissingDocCount: number,
   style: Object,
   title: string,
-  collapsed: boolean
+  collapsed: boolean,
 };
 
 const BucketLink = styled(Link, {
@@ -27,12 +27,12 @@ const BucketLink = styled(Link, {
   color: ({ theme }) => theme.greyScale1,
   ":link": {
     textDecoration: "none",
-    color: ({ theme }) => theme.greyScale1
-  }
+    color: ({ theme }) => theme.greyScale1,
+  },
 });
 
 const BucketRow = styled(Row, {
-  padding: "0.3rem 0"
+  padding: "0.3rem 0",
 });
 
 const NotMissingFacet = (props: TProps) => {
@@ -56,10 +56,10 @@ const NotMissingFacet = (props: TProps) => {
                         content: [
                           {
                             op: "not",
-                            content: { field: dotField, value: ["missing"] }
-                          }
-                        ]
-                      }
+                            content: { field: dotField, value: ["missing"] },
+                          },
+                        ],
+                      },
                     }}
                   >
                     <input
@@ -70,7 +70,7 @@ const NotMissingFacet = (props: TProps) => {
                         ({ op, content: { field, value } }) =>
                           op === "not" &&
                           field === dotField &&
-                          value.includes("missing")
+                          value.includes("missing"),
                       )}
                       id={`input-${props.title}-not-missing`}
                       name={`input-${props.title}-not-missing`}

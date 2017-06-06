@@ -19,9 +19,9 @@ const Column = ({ style, children, spacing, ...props }) => (
             ...child.props,
             style: {
               ...(i ? { marginTop: spacing } : {}),
-              ...(child.props.style ? child.props.style : {})
-            }
-          })
+              ...(child.props.style ? child.props.style : {}),
+            },
+          }),
       )}
   </Row>
 );
@@ -29,7 +29,7 @@ const Column = ({ style, children, spacing, ...props }) => (
 Column.propTypes = {
   children: PropTypes.node,
   style: PropTypes.object,
-  spacing: PropTypes.string
+  spacing: PropTypes.string,
 };
 
 /*----------------------------------------------------------------------------*/

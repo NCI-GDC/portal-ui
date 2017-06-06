@@ -13,13 +13,13 @@ export type TProps = {
   relay: Object,
   viewer: {
     autocomplete: {
-      hits: Array<Object>
+      hits: Array<Object>,
     },
     annotations: {
       aggregations: string,
-      hits: string
-    }
-  }
+      hits: string,
+    },
+  },
 };
 
 export const AnnotationsPageComponent = (props: TProps) => (
@@ -35,11 +35,11 @@ export const AnnotationsPageComponent = (props: TProps) => (
             setAutocomplete={(value, onReadyStateChange) =>
               props.relay.setVariables(
                 { idAutocomplete: value, runAutocomplete: !!value },
-                onReadyStateChange
+                onReadyStateChange,
               )}
           />
-        )
-      }
+        ),
+      },
     ]}
     results={<AnnotationTable hits={props.viewer.annotations.hits} />}
   />
@@ -52,7 +52,7 @@ export const AnnotationsPageQuery = {
     filters: null,
     idAutocomplete: null,
     runAutocomplete: false,
-    annotations_sort: null
+    annotations_sort: null,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -74,13 +74,13 @@ export const AnnotationsPageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const AnnotationsPage = Relay.createContainer(
   AnnotationsPageComponent,
-  AnnotationsPageQuery
+  AnnotationsPageQuery,
 );
 
 export default AnnotationsPage;

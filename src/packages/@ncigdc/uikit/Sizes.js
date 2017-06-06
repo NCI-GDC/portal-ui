@@ -7,18 +7,18 @@ import UnstyledButton from "./UnstyledButton";
 export default ({
   first,
   sizes = [10, 20, 40, 60, 80, 100],
-  onChange
+  onChange,
 }: {
   first: number,
   sizes?: Array<number>,
-  onChange: Function
+  onChange: Function,
 }) => (
   <Dropdown
     selected={first}
     dropdownStyle={{
       minWidth: "40px",
       width: "40px",
-      zIndex: 101
+      zIndex: 101,
     }}
   >
     {sizes.map(x => (
@@ -27,7 +27,7 @@ export default ({
         style={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         {first === x

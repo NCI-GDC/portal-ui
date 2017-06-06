@@ -35,7 +35,7 @@ const removeEmptyCols = (data: Array<Array<string>>): string => {
 
 export function mapStringArrayToTsvString(
   header: Array<string>,
-  data: Array<Array<string>>
+  data: Array<Array<string>>,
 ): string {
   const allData = [header, ...data];
   const noEmptyCols = removeEmptyCols(allData);

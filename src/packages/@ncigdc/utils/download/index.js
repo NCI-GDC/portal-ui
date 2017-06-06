@@ -26,7 +26,7 @@ const showErrorModal = error => {
     setModal(
       <Column
         style={{
-          padding: "15px"
+          padding: "15px",
         }}
       >
         {warning}
@@ -35,8 +35,8 @@ const showErrorModal = error => {
             OK
           </Button>
         </Row>
-      </Column>
-    )
+      </Column>,
+    ),
   );
 };
 // notification config
@@ -47,7 +47,7 @@ const progressChecker = (
   downloadToken,
   altMessage,
   inProgress,
-  done
+  done,
 ) => {
   inProgress();
   const waitTime = 1000;
@@ -61,9 +61,9 @@ const progressChecker = (
       e =>
         _.isError(e)
           ? {
-              message: "GDC download service is currently experiencing issues."
+              message: "GDC download service is currently experiencing issues.",
             }
-          : e
+          : e,
     )(_.partial(getIframeResponse, iFrame));
 
     return error;
@@ -112,7 +112,7 @@ const progressChecker = (
       <a
         onClick={cancelDownload}
         style={{
-          textDecoration: "underline"
+          textDecoration: "underline",
         }}
       >
         <strong>
@@ -143,8 +143,8 @@ const progressChecker = (
               action: "add",
               id: `download/${attempts}`,
               component: simpleMessage,
-              delay: 1000
-            })
+              delay: 1000,
+            }),
           );
         } else if (attempts === 6) {
           store.dispatch(
@@ -152,8 +152,8 @@ const progressChecker = (
               action: "add",
               id: `download/${attempts}`,
               component: detailedMessage,
-              delay: 0
-            })
+              delay: 0,
+            }),
           );
         }
       } else {
@@ -162,8 +162,8 @@ const progressChecker = (
             action: "add",
             id: `download/${attempts}`,
             component: simpleMessage,
-            delay: 0
-          })
+            delay: 0,
+          }),
         );
       }
 
@@ -231,7 +231,7 @@ const download = ({ url, params, method = "GET", altMessage = false }) => {
     Cookies.set(cookieKey, downloadToken);
     _.assign(params, {
       downloadCookieKey: cookieKey,
-      downloadCookiePath: cookiePath
+      downloadCookiePath: cookiePath,
     });
   }
 
@@ -244,7 +244,7 @@ const download = ({ url, params, method = "GET", altMessage = false }) => {
         [].concat(paramValue).reduce((acc, v) => acc + toHtml(key, v), "")
       );
     },
-    ""
+    "",
   );
 
   const formHtml = `<form
@@ -262,7 +262,7 @@ const download = ({ url, params, method = "GET", altMessage = false }) => {
       style="display: none"
       src="about:blank"
       onload="this.__frame__loaded = true;">
-    </iframe>`
+    </iframe>`,
   )
     // Appending to document body to allow navigation away from the current
     // page and downloads in the background

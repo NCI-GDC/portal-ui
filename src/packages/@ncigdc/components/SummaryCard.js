@@ -19,20 +19,20 @@ import NoResultsMessage from "@ncigdc/components/NoResultsMessage";
 
 const Header = styled(Row, {
   padding: "1rem",
-  color: ({ theme }) => theme.greyScale7 || "silver"
+  color: ({ theme }) => theme.greyScale7 || "silver",
 });
 
 const Footer = styled(Row, {
   padding: "1rem",
-  ...center
+  ...center,
 });
 
 const SummaryCard = compose(
   withState("showTable", "setShowTable", true),
   withSize({ monitorHeight: true }),
   withPropsOnChange(["size"], ({ size }) => ({
-    pieDiameter: Math.max(Math.min(size.width, size.height - 100), 120)
-  }))
+    pieDiameter: Math.max(Math.min(size.width, size.height - 100), 120),
+  })),
 )(
   ({
     data,
@@ -45,7 +45,7 @@ const SummaryCard = compose(
     showTable,
     setShowTable,
     headings,
-    pieDiameter
+    pieDiameter,
   }) => (
     <Card style={style}>
       <Column>
@@ -79,11 +79,11 @@ const SummaryCard = compose(
             height={pieDiameter}
             width={pieDiameter}
           />,
-          footer && <Footer key={footer}>{footer}</Footer>
+          footer && <Footer key={footer}>{footer}</Footer>,
         ]}
       </Column>
     </Card>
-  )
+  ),
 );
 
 SummaryCard.propTypes = {
@@ -92,7 +92,7 @@ SummaryCard.propTypes = {
   data: PropTypes.array,
   footer: PropTypes.node,
   path: PropTypes.string,
-  table: PropTypes.object
+  table: PropTypes.object,
 };
 
 /*----------------------------------------------------------------------------*/

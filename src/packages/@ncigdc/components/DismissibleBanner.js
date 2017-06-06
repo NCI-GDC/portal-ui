@@ -43,12 +43,12 @@ const DismissibleBanner = ({ dispatch }) => (
               <Row
                 style={{
                   justifyContent: "space-between",
-                  alignItems: "center"
+                  alignItems: "center",
                 }}
               >
                 <p
                   style={{
-                    marginBottom: "0"
+                    marginBottom: "0",
                   }}
                 >
                   Check the
@@ -67,8 +67,8 @@ const DismissibleBanner = ({ dispatch }) => (
                   <span>OK</span>
                 </Button>
               </Row>
-            </div>
-          )
+            </div>,
+          ),
         )}
     >
       Click here for more information.

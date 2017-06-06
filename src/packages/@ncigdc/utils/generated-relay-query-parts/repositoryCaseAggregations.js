@@ -893,7 +893,7 @@ export const initialCaseAggregationsVariables = {
   shouldShow_tissue_source_site__name: false,
   shouldShow_tissue_source_site__project: false,
   shouldShow_tissue_source_site__tissue_source_site_id: false,
-  shouldShow_updated_datetime: false
+  shouldShow_updated_datetime: false,
 };
 
 export const repositoryCaseAggregationsFragment = () => Relay.QL`

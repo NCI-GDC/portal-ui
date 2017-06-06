@@ -10,13 +10,13 @@ import styled from "@ncigdc/theme/styled";
 
 const Td = styled.td({
   padding: "3px",
-  whiteSpace: "nowrap"
+  whiteSpace: "nowrap",
 });
 
 const Toggle = styled.div({
   textAlign: "right",
   fontStyle: "italic",
-  color: ({ theme }) => theme.primary
+  color: ({ theme }) => theme.primary,
 });
 
 const enhance = withState("expanded", "toggleExpand", false);
@@ -33,7 +33,7 @@ const CollapsibleTd = enhance(
           {expanded ? "\u25B4 less" : "\u25BE more"}
         </Toggle>}
     </Td>
-  )
+  ),
 );
 
 /*----------------------------------------------------------------------------*/

@@ -21,7 +21,7 @@ const getCurrentFromAndTo = ({ field, query }) => {
       c.content.field === dotField
         ? { ...acc, [c.op]: c.content.value[0] }
         : acc,
-    { ">=": undefined, "<=": undefined }
+    { ">=": undefined, "<=": undefined },
   );
 };
 
@@ -32,7 +32,7 @@ const convertMaxMin = ({ max, min, convertDays, selectedUnit, setState }) => {
     setState(s => ({
       ...s,
       minDisplayed: Math.floor(min / conversionFactor),
-      maxDisplayed: Math.ceil((max + 1 - conversionFactor) / conversionFactor)
+      maxDisplayed: Math.ceil((max + 1 - conversionFactor) / conversionFactor),
     }));
   } else {
     setState(s => ({ ...s, maxDisplayed: max, minDisplayed: min }));
@@ -46,7 +46,7 @@ const inputChanged = ({ from, to, convertDays, selectedUnit, setState }) => {
       from: from ? from : undefined,
       to: to ? to : undefined,
       fromDisplayed: from ? from : "",
-      toDisplayed: to ? to : ""
+      toDisplayed: to ? to : "",
     }));
   } else if (selectedUnit === "years") {
     setState(s => ({
@@ -56,7 +56,7 @@ const inputChanged = ({ from, to, convertDays, selectedUnit, setState }) => {
         ? Math.floor(to * conversionFactor + conversionFactor - 1)
         : undefined,
       fromDisplayed: from ? from : "",
-      toDisplayed: to ? to : ""
+      toDisplayed: to ? to : "",
     }));
   }
 };
@@ -68,7 +68,7 @@ const convertInputs = ({ from, to, selectedUnit, setState }) => {
       from,
       to,
       fromDisplayed: from,
-      toDisplayed: to
+      toDisplayed: to,
     }));
   } else if (selectedUnit === "years") {
     setState(s => ({
@@ -76,7 +76,7 @@ const convertInputs = ({ from, to, selectedUnit, setState }) => {
       from,
       to,
       fromDisplayed: Math.ceil(from / conversionFactor),
-      toDisplayed: Math.ceil((to + 1 - conversionFactor) / conversionFactor)
+      toDisplayed: Math.ceil((to + 1 - conversionFactor) / conversionFactor),
     }));
   }
 };
@@ -87,7 +87,7 @@ const WarningRow = styled(Row, {
   color: "#8a6d3b",
   padding: "15px",
   border: "1px solid transparent",
-  borderRadius: "4px"
+  borderRadius: "4px",
 });
 
 const enhance = compose(
@@ -98,7 +98,7 @@ const enhance = compose(
     toDisplayed: "",
     maxDisplayed: 0,
     minDisplayed: 0,
-    selectedUnit: "years"
+    selectedUnit: "years",
   }),
   withRouter,
   lifecycle({
@@ -110,7 +110,7 @@ const enhance = compose(
         min,
         convertDays,
         state: { selectedUnit },
-        setState
+        setState,
       } = this.props;
       const thisFieldCurrent = getCurrentFromAndTo({ field, query });
       const opToWord = { ">=": "from", "<=": "to" };
@@ -118,21 +118,21 @@ const enhance = compose(
         .filter(k => thisFieldCurrent[k])
         .reduce(
           (acc, k) => ({ ...acc, [opToWord[k]]: thisFieldCurrent[k] }),
-          {}
+          {},
         );
       if (convertDays) {
         convertInputs({
           from: newState.from,
           to: newState.to,
           selectedUnit,
-          setState
+          setState,
         });
       } else {
         setState(s => ({
           ...s,
           ...newState,
           fromDisplayed: newState.from,
-          toDisplayed: newState.to
+          toDisplayed: newState.to,
         }));
       }
       convertMaxMin({ max, min, convertDays, selectedUnit, setState });
@@ -140,7 +140,7 @@ const enhance = compose(
     componentWillReceiveProps(nextProps: Object): void {
       if (
         Object.entries(this.props.query).some(
-          ([key, val]) => val !== nextProps.query[key]
+          ([key, val]) => val !== nextProps.query[key],
         )
       ) {
         const { field, query } = nextProps;
@@ -151,25 +151,25 @@ const enhance = compose(
           .filter(k => thisFieldCurrent[k])
           .reduce(
             (acc, k) => ({ ...acc, [opToWord[k]]: thisFieldCurrent[k] }),
-            {}
+            {},
           );
         if (convertDays) {
           convertInputs({
             from: newState.from,
             to: newState.to,
             selectedUnit,
-            setState
+            setState,
           });
         } else {
           setState(s => ({
             ...s,
             ...newState,
             fromDisplayed: newState.from,
-            toDisplayed: newState.to
+            toDisplayed: newState.to,
           }));
         }
       }
-    }
+    },
   }),
   mapProps(({ setState, max, min, convertDays, ...rest }) => ({
     handleFromChanged: e => {
@@ -180,7 +180,7 @@ const enhance = compose(
         to: toDisplayed,
         convertDays,
         selectedUnit,
-        setState
+        setState,
       });
     },
     handleToChanged: e => {
@@ -191,7 +191,7 @@ const enhance = compose(
         to: v,
         convertDays,
         selectedUnit,
-        setState
+        setState,
       });
     },
     handleUnitChanged: e => {
@@ -205,9 +205,9 @@ const enhance = compose(
     max,
     min,
     convertDays,
-    ...rest
+    ...rest,
   })),
-  pure
+  pure,
 );
 
 type TProps = {
@@ -220,7 +220,7 @@ type TProps = {
     from: number,
     selectedUnit: string,
     fromDisplayed: number,
-    toDisplayed: number
+    toDisplayed: number,
   },
   style: Object,
   toggleCollapsed: Function,
@@ -230,29 +230,29 @@ type TProps = {
   min: Number,
   max: Number,
   convertDays: boolean,
-  collapsed: boolean
+  collapsed: boolean,
 };
 
 const RangeFacet = (props: TProps) => {
   const dotField = props.field.replace(/__/g, ".");
   const innerContent = [
     { op: ">=", value: props.state.from },
-    { op: "<=", value: props.state.to }
+    { op: "<=", value: props.state.to },
   ]
     .filter(v => v.value)
     .map(v => ({
       op: v.op,
       content: {
         field: dotField,
-        value: [v.value]
-      }
+        value: [v.value],
+      },
     }));
   const query = {
     offset: 0,
     filters: {
       op: "and",
-      content: innerContent
-    }
+      content: innerContent,
+    },
   };
   const { maxDisplayed, minDisplayed } = props.state;
 
@@ -298,7 +298,7 @@ const RangeFacet = (props: TProps) => {
             <InputLabel
               style={{
                 borderRight: 0,
-                borderRadius: "4px 0 0 4px"
+                borderRadius: "4px 0 0 4px",
               }}
               htmlFor={`from-${dotField}`}
             >
@@ -319,7 +319,7 @@ const RangeFacet = (props: TProps) => {
             <InputLabel
               style={{
                 borderLeft: 0,
-                borderRight: 0
+                borderRight: 0,
               }}
               htmlFor={`to-${dotField}`}
             >

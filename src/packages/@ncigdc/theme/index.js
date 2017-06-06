@@ -5,7 +5,7 @@ import React from "react";
 import { insertRule } from "glamor";
 
 export type TTheme = {
-  impacts: {}
+  impacts: {},
 };
 
 let theme = {};
@@ -17,7 +17,7 @@ export const setTheme: TSetTheme = (version = "active", custom = {}) => {
 
   theme = {
     ...loadedVersion.default,
-    ...custom
+    ...custom,
   };
 
   if (loadedVersion.globalRules) insertRule(loadedVersion.globalRules);

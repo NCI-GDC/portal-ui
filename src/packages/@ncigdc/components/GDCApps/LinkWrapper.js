@@ -14,12 +14,12 @@ export default styled(Row, {
     color: "#333",
     fontWeight: "normal",
     fontSize: "small",
-    display: "block"
+    display: "block",
   },
   " .icon": {
-    fontSize: "2rem"
+    fontSize: "2rem",
   },
   ":hover": {
-    backgroundColor: "#ededed"
-  }
+    backgroundColor: "#ededed",
+  },
 });

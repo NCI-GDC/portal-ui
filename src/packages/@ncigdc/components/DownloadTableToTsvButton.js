@@ -11,7 +11,7 @@ import { Tooltip } from "@ncigdc/uikit/Tooltip";
 type TProps = {
   selector: string,
   filename: string,
-  style: Object
+  style: Object,
 };
 
 const getSingleHeader = (headThs: Array<NodeList>) =>
@@ -19,13 +19,13 @@ const getSingleHeader = (headThs: Array<NodeList>) =>
     headThs[0],
     (acc, th) =>
       th.rowSpan === 2 ? [...acc, th] : [...acc, ...map(headThs[1], t => t)],
-    []
+    [],
   );
 
 const DownloadTableToTsvButton = ({
   filename,
   selector,
-  style = {}
+  style = {},
 }: TProps) => (
   <Tooltip Component={<span>Export current view</span>}>
     <Button
@@ -38,7 +38,7 @@ const DownloadTableToTsvButton = ({
           ? getSingleHeader(headThs)
           : tableEl.querySelectorAll("th");
         const thText = map(thEls, el => el.innerText).map(t =>
-          t.replace("\n", " ")
+          t.replace("\n", " "),
         );
         const trs = tableEl.querySelector("tbody").querySelectorAll("tr");
         const tdText = map(trs, t => {
@@ -61,7 +61,7 @@ const DownloadTableToTsvButton = ({
                 : [joinedText];
               return [...acc, ...fittedToColspan];
             },
-            []
+            [],
           );
         });
         saveFile(mapStringArrayToTsvString(thText, tdText), "TSV", filename);

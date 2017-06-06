@@ -10,14 +10,14 @@ export type TProps = {|
   prfSize: string,
   prfOff: string,
   size: number,
-  sizes?: Array<number>
+  sizes?: Array<number>,
 |};
 
 const Sizes = ({
   sizes = [10, 20, 40, 60, 80, 100],
   size,
   prfSize,
-  prfOff
+  prfOff,
 }: TProps) => {
   return (
     <span>
@@ -27,7 +27,7 @@ const Sizes = ({
           minWidth: "40px",
           width: "40px",
           left: "0",
-          zIndex: 99999
+          zIndex: 99999,
         }}
       >
         {sizes.map(x => (
@@ -36,7 +36,7 @@ const Sizes = ({
             style={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             {x === size

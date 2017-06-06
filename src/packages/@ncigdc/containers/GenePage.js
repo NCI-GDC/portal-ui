@@ -26,11 +26,11 @@ const styles = {
     marginBottom: 7,
     marginTop: 7,
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
   card: {
-    backgroundColor: "white"
-  }
+    backgroundColor: "white",
+  },
 };
 
 export type TProps = {|
@@ -40,31 +40,37 @@ export type TProps = {|
     biotype: string,
     transcripts: {
       hits: {
-        edges: Array<Object>
-      }
-    }
+        edges: Array<Object>,
+      },
+    },
   },
   viewer: {
     explore: {
       cases: Object,
-      ssms: Object
+      ssms: Object,
     },
-    projects: Object
-  }
+    projects: Object,
+  },
 |};
 
 export const GenePageComponent = (props: TProps) => {
-  const fmFilters = makeFilter([
-    {
-      field: "genes.gene_id",
-      value: [props.node.gene_id]
-    }
-  ]);
+  const fmFilters = makeFilter(
+    [
+      {
+        field: "genes.gene_id",
+        value: [props.node.gene_id],
+      },
+    ],
+    false,
+  );
 
-  const cdFilters = makeFilter([
-    { field: "genes.gene_id", value: props.node.gene_id },
-    { field: "cases.available_variation_data", value: "ssm" }
-  ]);
+  const cdFilters = makeFilter(
+    [
+      { field: "genes.gene_id", value: props.node.gene_id },
+      { field: "cases.available_variation_data", value: "ssm" },
+    ],
+    false,
+  );
 
   return (
     <FullWidthLayout title={props.node.symbol} entityType="GN">
@@ -208,8 +214,8 @@ export const GenePageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const GenePage = Relay.createContainer(GenePageComponent, GenePageQuery);

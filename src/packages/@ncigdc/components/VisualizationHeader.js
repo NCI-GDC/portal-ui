@@ -8,7 +8,7 @@ type TProps = {|
   title: string,
   buttons: Array<any>,
   buttonWidth?: number,
-  style?: Object
+  style?: Object,
 |};
 
 const SPACING = 10;
@@ -21,14 +21,14 @@ const Title = styled(Row, {
   flex: 1,
   marginRight: SPACING,
   justifyContent: "center",
-  alignItems: "center"
+  alignItems: "center",
 });
 
 const VisualizationHeader = ({
   title,
   buttons = [],
   buttonWidth = 40,
-  style
+  style,
 }: TProps) => {
   const buttonsWidth =
     buttons.length * buttonWidth + SPACING * Math.max(buttons.length - 1, 0);

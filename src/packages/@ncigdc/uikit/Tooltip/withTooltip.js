@@ -5,7 +5,7 @@ import {
   withState,
   lifecycle,
   withHandlers,
-  mapProps
+  mapProps,
 } from "recompose";
 import { connect } from "react-redux";
 import { setTooltip } from "@ncigdc/uikit/Tooltip";
@@ -18,18 +18,18 @@ const enhance = compose(
     setTooltip: ({ dispatch, setTooltipState }) => (tooltip = null) => {
       setTooltipState(tooltip);
       dispatch(setTooltip(tooltip));
-    }
+    },
   }),
   lifecycle({
     componentWillUnmount(): void {
       if (this.props.tooltipState) {
         this.props.setTooltip();
       }
-    }
+    },
   }),
   mapProps(props =>
-    omit(props, ["tooltipState", "setTooltipState", "dispatch"])
-  )
+    omit(props, ["tooltipState", "setTooltipState", "dispatch"]),
+  ),
 );
 
 const withTooltip = Wrapped => enhance(props => <Wrapped {...props} />);

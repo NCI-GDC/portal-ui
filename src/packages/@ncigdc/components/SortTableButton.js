@@ -22,13 +22,13 @@ import { withTheme } from "@ncigdc/theme";
 /*----------------------------------------------------------------------------*/
 
 const CheckboxRow = styled(Row, {
-  padding: "0.3rem 0.6rem"
+  padding: "0.3rem 0.6rem",
 });
 
 const RadioRow = styled(Row, {
   padding: "0.3rem 0.6rem",
   marginLeft: "auto",
-  alignItems: "center"
+  alignItems: "center",
 });
 
 type TSortTableButtonProps = {
@@ -36,15 +36,15 @@ type TSortTableButtonProps = {
   options: Array<Object>,
   query: Object,
   sortKey: string,
-  theme: Object
+  theme: Object,
 };
 
 const SortTableButton = compose(
   withRouter,
-  withTheme
+  withTheme,
 )(
   (
-    { style, options, query: q, sortKey, theme }: TSortTableButtonProps = {}
+    { style, options, query: q, sortKey, theme }: TSortTableButtonProps = {},
   ) => {
     const { [sortKey]: sort } = q;
     const fields = parseJSURLParam(sort, []);
@@ -75,8 +75,8 @@ const SortTableButton = compose(
                 lineHeight: "1.5",
                 borderRight: "2px solid transparent",
                 ":hover": {
-                  borderRight: `2px solid ${theme.secondary}`
-                }
+                  borderRight: `2px solid ${theme.secondary}`,
+                },
               }}
             >
               <CheckboxRow flex="1">
@@ -84,7 +84,7 @@ const SortTableButton = compose(
                   style={{ width: "100%" }}
                   merge
                   query={{
-                    [sortKey]: JSURL.stringify(nextSort)
+                    [sortKey]: JSURL.stringify(nextSort),
                   }}
                 >
                   <input
@@ -106,8 +106,8 @@ const SortTableButton = compose(
                   query={{
                     [sortKey]: JSURL.stringify([
                       ...otherFields,
-                      { field: x.id, order: "asc" }
-                    ])
+                      { field: x.id, order: "asc" },
+                    ]),
                   }}
                 >
                   <ArrowDownIcon />
@@ -124,8 +124,8 @@ const SortTableButton = compose(
                   query={{
                     [sortKey]: JSURL.stringify([
                       ...otherFields,
-                      { field: x.id, order: "desc" }
-                    ])
+                      { field: x.id, order: "desc" },
+                    ]),
                   }}
                 >
                   <ArrowUpIcon />
@@ -141,7 +141,7 @@ const SortTableButton = compose(
         })}
       </Dropdown>
     );
-  }
+  },
 );
 
 /*----------------------------------------------------------------------------*/

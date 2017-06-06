@@ -24,14 +24,14 @@ import GeneSymbol from "@ncigdc/containers/GeneSymbol";
 export type TProps = {
   autocomplete: {
     cases: {
-      hits: Array<Object>
+      hits: Array<Object>,
     },
     genes: {
-      hits: Array<Object>
+      hits: Array<Object>,
     },
     ssms: {
-      hits: Array<Object>
-    }
+      hits: Array<Object>,
+    },
   },
   relay: Object,
   viewer: {
@@ -39,25 +39,25 @@ export type TProps = {
       cases: {
         aggregations: string,
         hits: {
-          total: number
-        }
+          total: number,
+        },
       },
       genes: {
         aggregations: string,
         hits: {
-          total: number
-        }
+          total: number,
+        },
       },
       ssms: {
         aggregations: string,
         hits: {
-          total: number
-        }
-      }
-    }
+          total: number,
+        },
+      },
+    },
   },
   showFacets: boolean,
-  setShowFacets: Function
+  setShowFacets: Function,
 };
 
 export const ExplorePageComponent = (props: TProps) => (
@@ -74,10 +74,10 @@ export const ExplorePageComponent = (props: TProps) => (
             setAutocomplete={(value, onReadyStateChange) =>
               props.relay.setVariables(
                 { idAutocompleteCases: value, runAutocompleteCases: !!value },
-                onReadyStateChange
+                onReadyStateChange,
               )}
           />
-        )
+        ),
       },
       {
         id: "genes",
@@ -90,10 +90,10 @@ export const ExplorePageComponent = (props: TProps) => (
             setAutocomplete={(value, onReadyStateChange) =>
               props.relay.setVariables(
                 { idAutocompleteGenes: value, runAutocompleteGenes: !!value },
-                onReadyStateChange
+                onReadyStateChange,
               )}
           />
-        )
+        ),
       },
       {
         id: "mutations",
@@ -106,11 +106,11 @@ export const ExplorePageComponent = (props: TProps) => (
             setAutocomplete={(value, onReadyStateChange) =>
               props.relay.setVariables(
                 { idAutocompleteSsms: value, runAutocompleteSsms: !!value },
-                onReadyStateChange
+                onReadyStateChange,
               )}
           />
-        )
-      }
+        ),
+      },
     ]}
     results={
       <TabbedLinks
@@ -126,14 +126,14 @@ export const ExplorePageComponent = (props: TProps) => (
                   hits={props.viewer.explore.cases.hits}
                   aggregations={props.viewer.explore.cases.aggregations}
                 />
-              : <NoResultsMessage>No Cases Found.</NoResultsMessage>
+              : <NoResultsMessage>No Cases Found.</NoResultsMessage>,
           },
           {
             id: "genes",
             text: `Genes (${props.viewer.explore.genes.hits.total.toLocaleString()})`,
             component: props.viewer.explore.genes.hits.total
               ? <GenesTab viewer={props.viewer} />
-              : <NoResultsMessage>No Genes Found.</NoResultsMessage>
+              : <NoResultsMessage>No Genes Found.</NoResultsMessage>,
           },
           {
             id: "mutations",
@@ -143,13 +143,13 @@ export const ExplorePageComponent = (props: TProps) => (
                   totalNumCases={props.viewer.explore.cases.hits.total}
                   viewer={props.viewer}
                 />
-              : <NoResultsMessage>No Mutations Found.</NoResultsMessage>
+              : <NoResultsMessage>No Mutations Found.</NoResultsMessage>,
           },
           {
             id: "oncogrid",
             text: "OncoGrid",
-            component: <OncogridTab />
-          }
+            component: <OncogridTab />,
+          },
         ]}
       />
     }
@@ -174,7 +174,7 @@ export const ExplorePageQuery = {
     idAutocompleteGenes: null,
     runAutocompleteGenes: false,
     idAutocompleteSsms: null,
-    runAutocompleteSsms: false
+    runAutocompleteSsms: false,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -243,13 +243,13 @@ export const ExplorePageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const ExplorePage = Relay.createContainer(
   ExplorePageComponent,
-  ExplorePageQuery
+  ExplorePageQuery,
 );
 
 export default ExplorePage;

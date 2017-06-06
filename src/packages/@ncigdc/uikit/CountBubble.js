@@ -11,8 +11,8 @@ const styles = {
     padding: ".2em .6em .3em",
     borderRadius: ".25em",
     fontWeight: "bold",
-    height: "20px"
-  }
+    height: "20px",
+  },
 };
 
 const CountBubble = ({ style, children, ...props }) => (

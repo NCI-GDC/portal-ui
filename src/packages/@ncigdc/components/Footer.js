@@ -21,21 +21,21 @@ const styles = {
     borderBottom: "none",
     display: "flex",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   }),
   outerContainer: {
     fontSize: "85.714%",
     padding: "15px 0",
     color: "#97abb6",
-    textAlign: "center"
+    textAlign: "center",
   },
   innerContainer: {
     margin: "5px auto 0",
-    textAlign: "center"
+    textAlign: "center",
   },
   link: {
-    color: "#c2cfd5"
-  }
+    color: "#c2cfd5",
+  },
 };
 
 const ExternalLink = ({
@@ -55,7 +55,7 @@ const ExternalLink = ({
 
 export default compose(
   connect(state => state.versionInfo),
-  withTheme
+  withTheme,
 )(
   ({
     theme,
@@ -63,7 +63,7 @@ export default compose(
     uiCommitHash,
     apiVersion,
     apiCommitHash,
-    dataRelease
+    dataRelease,
   }) => (
     <footer style={styles.footer(theme)}>
       <div style={styles.outerContainer} role="contentinfo">
@@ -116,5 +116,5 @@ export default compose(
         </div>
       </div>
     </footer>
-  )
+  ),
 );

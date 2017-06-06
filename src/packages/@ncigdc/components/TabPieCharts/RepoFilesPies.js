@@ -15,7 +15,7 @@ import {
   ShowToggleBox,
   BottomBorderedBox,
   PieTitle,
-  SelfFilteringPie
+  SelfFilteringPie,
 } from "./";
 
 export type TProps = {
@@ -26,17 +26,17 @@ export type TProps = {
     data_type: { buckets: [TBucket] },
     experimental_strategy: { buckets: [TBucket] },
     data_format: { buckets: [TBucket] },
-    access: { buckets: [TBucket] }
+    access: { buckets: [TBucket] },
   },
   setShowingMore: Function,
   showingMore: boolean,
-  size: { width: number }
+  size: { width: number },
 };
 
 const enhance = compose(
   withRouter,
   withState("showingMore", "setShowingMore", false),
-  withSize()
+  withSize(),
 );
 
 const RepoFilesPiesComponent = ({
@@ -45,7 +45,7 @@ const RepoFilesPiesComponent = ({
   push,
   showingMore,
   setShowingMore,
-  size: { width }
+  size: { width },
 }: TProps) => {
   const currentFilters = (query &&
     parseFilterParam((query || {}).filters, {}).content) || [];
@@ -75,7 +75,7 @@ const RepoFilesPiesComponent = ({
             <SelfFilteringPie
               buckets={_.get(
                 aggregations,
-                "cases__project__project_id.buckets"
+                "cases__project__project_id.buckets",
               )}
               fieldName="files.cases.project.project_id"
               docTypeSingular="file"
@@ -169,7 +169,7 @@ const RepoFilesPiesComponent = ({
                 height={125}
                 width={125}
               />
-            </ColumnCenter>
+            </ColumnCenter>,
           ]}
         </WrappedRow>
       </BottomBorderedBox>
@@ -229,13 +229,13 @@ export const RepoFilesPiesQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const RepoFilesPies = Relay.createContainer(
   enhance(RepoFilesPiesComponent),
-  RepoFilesPiesQuery
+  RepoFilesPiesQuery,
 );
 
 export default RepoFilesPies;

@@ -7,8 +7,8 @@ import PropTypes from "prop-types";
 const styles = {
   td: {
     padding: "3px",
-    whiteSpace: "nowrap"
-  }
+    whiteSpace: "nowrap",
+  },
 };
 
 const Td = ({ style, children, ...props }) => (
@@ -17,7 +17,7 @@ const Td = ({ style, children, ...props }) => (
 
 Td.propTypes = {
   children: PropTypes.node,
-  style: PropTypes.object
+  style: PropTypes.object,
 };
 
 /*----------------------------------------------------------------------------*/

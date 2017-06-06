@@ -5,7 +5,7 @@ import Particle from "@ncigdc/uikit/Loaders/Particle";
 import { Column } from "@ncigdc/uikit/Flex";
 
 type TProps = {
-  style: Object
+  style: Object,
 };
 
 const SpinnerCentered = ({ style, ...props }: TProps) => (
@@ -15,7 +15,7 @@ const SpinnerCentered = ({ style, ...props }: TProps) => (
       justifyContent: "center",
       height: "100%",
       padding: 20,
-      ...style
+      ...style,
     }}
     {...props}
   >

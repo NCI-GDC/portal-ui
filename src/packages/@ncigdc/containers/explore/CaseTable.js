@@ -26,11 +26,11 @@ const styles = {
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    borderSpacing: 0
+    borderSpacing: 0,
   },
   right: {
-    textAlign: "right"
-  }
+    textAlign: "right",
+  },
 };
 
 export const CaseTableComponent = compose(
@@ -95,7 +95,7 @@ export const CaseTableComponent = compose(
         style={{
           backgroundColor: "white",
           padding: "1rem",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
         }}
       >
         <Showing
@@ -116,21 +116,21 @@ export const CaseTableComponent = compose(
             "cases.primary_site",
             "demographic.gender",
             "summary.data_categories.file_count",
-            "summary.data_categories.data_category"
+            "summary.data_categories.data_category",
           ]}
           sortOptions={[
             {
               id: "project.project_id",
-              name: "Project"
+              name: "Project",
             },
             {
               id: "primary_site",
-              name: "Primary Site"
+              name: "Primary Site",
             },
             {
               id: "demographic.gender",
-              name: "Gender"
-            }
+              name: "Gender",
+            },
           ]}
           tsvSelector="#explore-case-table"
           tsvFilename="explore-case-table.tsv"
@@ -226,22 +226,7 @@ export const CaseTableQuery = {
         }
       }
     `,
-    explore: () => Relay.QL`
-      fragment on Explore {
-        ssms {
-          blah: hits(first: 0) { total }
-          aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) @include(if: $fetchSsmCounts){
-            occurrence__case__case_id {
-              buckets {
-                key
-                doc_count
-              }
-            }
-          }
-        }
-      }
-    `
-  }
+  },
 };
 
 const CaseTable = Relay.createContainer(CaseTableComponent, CaseTableQuery);

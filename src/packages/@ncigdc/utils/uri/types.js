@@ -4,11 +4,11 @@
 import type { TGroupFilter } from "../filters/types";
 
 export type TRawQuery = {
-  filters?: string
+  filters?: string,
 };
 
 export type TUriQuery = {
-  filters?: ?TGroupFilter
+  filters?: ?TGroupFilter,
 };
 
 export type TIsEmptyArray = (x: mixed) => boolean;

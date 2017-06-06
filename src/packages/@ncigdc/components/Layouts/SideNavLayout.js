@@ -14,17 +14,17 @@ const styles = {
     backgroundColor: "rgb(232, 232, 232)",
     position: theme.headerPosition,
     height: theme.headerPosition === "fixed" ? "100vh" : "calc(100% + 200px)",
-    zIndex: 50
+    zIndex: 50,
   }),
   linkContainer: {
     padding: "10px 0 10px 20px",
-    alignItems: "center"
+    alignItems: "center",
   },
   link: theme => ({
     textDecoration: "none",
     color: theme.primary,
     fontSize: "0.9em",
-    alignItems: "center"
+    alignItems: "center",
   }),
   title: theme => ({
     background: "rgba(255, 255, 255, 0.9)",
@@ -34,7 +34,7 @@ const styles = {
     position: theme.headerPosition,
     zIndex: 55,
     boxShadow: "0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)",
-    fontSize: "2.2rem"
+    fontSize: "2.2rem",
   }),
   type: theme => ({
     backgroundColor: theme.primary,
@@ -47,12 +47,12 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     width: "30px",
-    transform: "scale(0.85)"
+    transform: "scale(0.85)",
   }),
   body: {
     width: "100%",
-    padding: "85px 100px 70px 270px"
-  }
+    padding: "85px 100px 70px 270px",
+  },
 };
 
 const SideNavLayout = props => (

@@ -27,19 +27,19 @@ import { withTheme } from "@ncigdc/theme";
 
 const styles = {
   iconPadding: {
-    paddingRight: "4px"
+    paddingRight: "4px",
   },
   activeNavLink: theme => ({
     backgroundColor: theme.greyScale2,
-    color: theme.white
-  })
+    color: theme.white,
+  }),
 };
 
 const Header = compose(
   connect(state => ({
     notifications: state.bannerNotification,
     user: state.auth.user,
-    error: state.error
+    error: state.error,
   })),
   withHandlers({
     handleApiError: ({ dispatch }) => ({ status, user }) => {
@@ -47,7 +47,7 @@ const Header = compose(
         dispatch(setModal(<SessionExpiredModal />));
         dispatch(forceLogout());
       }
-    }
+    },
   }),
   lifecycle({
     componentDidMount(): void {
@@ -62,10 +62,10 @@ const Header = compose(
       if (nextProps.error !== this.props.error) {
         this.props.handleApiError({ ...nextProps.error, user: nextProps.user });
       }
-    }
+    },
   }),
   withTheme,
-  pure
+  pure,
 )(({ user, notifications, dispatch, theme }) => (
   <header
     id="header"

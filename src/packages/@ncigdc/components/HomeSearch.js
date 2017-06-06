@@ -11,7 +11,7 @@ import withSelectableList from "@ncigdc/utils/withSelectableList";
 import QuickSearchResults from "./QuickSearch/QuickSearchResults";
 
 const Container = styled.div({
-  position: "relative"
+  position: "relative",
 });
 
 const Input = styled.input({
@@ -25,8 +25,8 @@ const Input = styled.input({
   border: "4px solid #6668c3",
   ":focus": {
     borderColor: "rgb(219, 139, 18) !important",
-    boxShadow: "0px 0px 22px 0px rgba(219, 139, 18, 0.75)"
-  }
+    boxShadow: "0px 0px 22px 0px rgba(219, 139, 18, 0.75)",
+  },
 });
 
 const HomeSearch = compose(
@@ -36,17 +36,17 @@ const HomeSearch = compose(
     withSelectableList(
       {
         keyHandlerName: "handleKeyDown",
-        listSourcePropPath: "search.state.results"
+        listSourcePropPath: "search.state.results",
       },
       {
-        onSelectItem: (item, { search }) => item && search.selectItem(item)
-      }
-    )
-  )
+        onSelectItem: (item, { search }) => item && search.selectItem(item),
+      },
+    ),
+  ),
 )(
   ({
     search: { state, setQuery, focusItem, reset },
-    selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem }
+    selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
   }) => (
     <Container
       onBlur={event => {
@@ -67,7 +67,7 @@ const HomeSearch = compose(
         style={{
           position: "absolute",
           top: "34px",
-          left: "15px"
+          left: "15px",
         }}
       />
       <Input
@@ -80,7 +80,7 @@ const HomeSearch = compose(
 
       <QuickSearchResults
         results={state.results.map(
-          item => (item === focusedItem ? { ...item, isSelected: true } : item)
+          item => (item === focusedItem ? { ...item, isSelected: true } : item),
         )}
         query={state.query}
         onSelectItem={setFocusedItem}
@@ -89,12 +89,12 @@ const HomeSearch = compose(
         style={{
           container: {
             width: "100%",
-            left: 0
-          }
+            left: 0,
+          },
         }}
       />
     </Container>
-  )
+  ),
 );
 
 export default HomeSearch;

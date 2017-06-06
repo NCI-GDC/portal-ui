@@ -32,7 +32,7 @@ const HowToDownload = ({ style = {} }) => (
 );
 
 HowToDownload.propTypes = {
-  style: PropTypes.object
+  style: PropTypes.object,
 };
 
 /*----------------------------------------------------------------------------*/

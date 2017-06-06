@@ -17,7 +17,7 @@ const borderStyle = theme => `1px solid ${theme.greyScale4}`;
 const tabBorder = theme => ({
   borderLeft: borderStyle(theme),
   borderRight: borderStyle(theme),
-  borderTop: borderStyle(theme)
+  borderTop: borderStyle(theme),
 });
 
 const baseTabStyle = theme =>
@@ -34,7 +34,7 @@ const baseTabStyle = theme =>
     marginBottom: "-1px",
     transition: "background-color 0.2s ease",
     borderRadius: "4px 4px 0 0",
-    cursor: "pointer"
+    cursor: "pointer",
   });
 
 const styles = {
@@ -44,8 +44,8 @@ const styles = {
       zIndex: 2,
       ...tabBorder(theme),
       ":hover": {
-        backgroundColor: "white"
-      }
+        backgroundColor: "white",
+      },
     }),
   inactive: theme =>
     css({
@@ -53,16 +53,16 @@ const styles = {
         textDecoration: "none",
         color: "#000",
         backgroundColor: Color(theme.greyScale6).darken(0.05).rgbString(),
-        ...tabBorder(theme)
-      }
+        ...tabBorder(theme),
+      },
     }),
   margin: css({
-    marginLeft: "0.4rem"
+    marginLeft: "0.4rem",
   }),
   content: theme => ({
     border: borderStyle(theme),
-    backgroundColor: "#fff"
-  })
+    backgroundColor: "#fff",
+  }),
 };
 
 const Tab = ({ active, sibling, children, theme, tabStyle = {}, ...props }) => (
@@ -138,7 +138,7 @@ Tabs.propTypes = {
   children: PropTypes.node,
   activeIndex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   style: PropTypes.object,
-  tabs: PropTypes.node
+  tabs: PropTypes.node,
 };
 
 /*----------------------------------------------------------------------------*/

@@ -6,7 +6,7 @@ export const testAliquot = {
   analyte_type_id: null,
   concentration: 0.16,
   source_center: "23",
-  submitter_id: "TCGA-IR-A3LF-01A-21R-A22V-13"
+  submitter_id: "TCGA-IR-A3LF-01A-21R-A22V-13",
 };
 export const testBiotree = [
   {
@@ -70,8 +70,8 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.16,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-01A-21R-A22V-13"
-                                  }
+                                    submitter_id: "TCGA-IR-A3LF-01A-21R-A22V-13",
+                                  },
                                 },
                                 {
                                   __dataID__: "client:client:-1766687068124:QWxpcXVvdDo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YjZhNzRhMDItY2QzYi00ZjBhLWJiMmYtZjkwYzFkM2Y2ZDE0OmIwNTE0MjExLTBmM2MtNGFmNy1hYzk1LWY0ZTdkNmIyYzY1MzowNzBjMTI0Yi04N2ZlLTRkYzMtYmQ4Yi05N2ZjYjA4MjIxMWE6ODUxMDY0YzgtNTgyYS00MTRhLWJmY2MtZTEwNDJiYjlmZjdi",
@@ -83,12 +83,12 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.16,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-01A-21R-A22U-07"
-                                  }
-                                }
+                                    submitter_id: "TCGA-IR-A3LF-01A-21R-A22U-07",
+                                  },
+                                },
                               ],
-                              total: 2
-                            }
+                              total: 2,
+                            },
                           },
                           amount: null,
                           analyte_id: "070c124b-87fe-4dc3-bd8b-97fcb082211a",
@@ -97,8 +97,8 @@ export const testBiotree = [
                           concentration: 0.16,
                           spectrophotometer_method: "UV Spec",
                           submitter_id: "TCGA-IR-A3LF-01A-21R",
-                          well_number: null
-                        }
+                          well_number: null,
+                        },
                       },
                       {
                         __dataID__: "client:client:-1766687068122:QW5hbHl0ZTo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YjZhNzRhMDItY2QzYi00ZjBhLWJiMmYtZjkwYzFkM2Y2ZDE0OmIwNTE0MjExLTBmM2MtNGFmNy1hYzk1LWY0ZTdkNmIyYzY1MzpkOTk2NmE3NC04ZGZmLTQxMzItYThmMi00NTAwZDU3NTQzNGM=",
@@ -124,12 +124,12 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.5,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-01A-21W-A23F-09"
-                                  }
-                                }
+                                    submitter_id: "TCGA-IR-A3LF-01A-21W-A23F-09",
+                                  },
+                                },
                               ],
-                              total: 1
-                            }
+                              total: 1,
+                            },
                           },
                           amount: null,
                           analyte_id: "d9966a74-8dff-4132-a8f2-4500d575434c",
@@ -138,8 +138,8 @@ export const testBiotree = [
                           concentration: null,
                           spectrophotometer_method: null,
                           submitter_id: "TCGA-IR-A3LF-01A-21W",
-                          well_number: null
-                        }
+                          well_number: null,
+                        },
                       },
                       {
                         __dataID__: "client:client:-1766687068122:QW5hbHl0ZTo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YjZhNzRhMDItY2QzYi00ZjBhLWJiMmYtZjkwYzFkM2Y2ZDE0OmIwNTE0MjExLTBmM2MtNGFmNy1hYzk1LWY0ZTdkNmIyYzY1Mzo5NDQ3NDYxYy0zNGQyLTRmMmEtYjgwMi05NzE3MTljMjk4Zjg=",
@@ -165,8 +165,8 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.15,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-01A-21D-A232-26"
-                                  }
+                                    submitter_id: "TCGA-IR-A3LF-01A-21D-A232-26",
+                                  },
                                 },
                                 {
                                   __dataID__: "client:client:-1766687068128:QWxpcXVvdDo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YjZhNzRhMDItY2QzYi00ZjBhLWJiMmYtZjkwYzFkM2Y2ZDE0OmIwNTE0MjExLTBmM2MtNGFmNy1hYzk1LWY0ZTdkNmIyYzY1Mzo5NDQ3NDYxYy0zNGQyLTRmMmEtYjgwMi05NzE3MTljMjk4Zjg6YTQ2YTc0MzUtN2M0OS00NThhLWFiN2QtMDI0OWE1MzBmMDQ4",
@@ -178,8 +178,8 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.15,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-01A-21D-A230-05"
-                                  }
+                                    submitter_id: "TCGA-IR-A3LF-01A-21D-A230-05",
+                                  },
                                 },
                                 {
                                   __dataID__: "client:client:-1766687068128:QWxpcXVvdDo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YjZhNzRhMDItY2QzYi00ZjBhLWJiMmYtZjkwYzFkM2Y2ZDE0OmIwNTE0MjExLTBmM2MtNGFmNy1hYzk1LWY0ZTdkNmIyYzY1Mzo5NDQ3NDYxYy0zNGQyLTRmMmEtYjgwMi05NzE3MTljMjk4Zjg6OWJjNWFmNjAtYmYzNC00NzY2LTlhN2ItN2E3MDZlOTcwODIz",
@@ -191,8 +191,8 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.15,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-01A-21D-A22W-01"
-                                  }
+                                    submitter_id: "TCGA-IR-A3LF-01A-21D-A22W-01",
+                                  },
                                 },
                                 {
                                   __dataID__: "client:client:-1766687068128:QWxpcXVvdDo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YjZhNzRhMDItY2QzYi00ZjBhLWJiMmYtZjkwYzFkM2Y2ZDE0OmIwNTE0MjExLTBmM2MtNGFmNy1hYzk1LWY0ZTdkNmIyYzY1Mzo5NDQ3NDYxYy0zNGQyLTRmMmEtYjgwMi05NzE3MTljMjk4Zjg6MjI0YjI2YjAtZGNlZC00YjVhLTk1YzEtYzVkNGMyMzQ4YjA3",
@@ -204,12 +204,12 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.07,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-01A-21D-A22X-09"
-                                  }
-                                }
+                                    submitter_id: "TCGA-IR-A3LF-01A-21D-A22X-09",
+                                  },
+                                },
                               ],
-                              total: 4
-                            }
+                              total: 4,
+                            },
                           },
                           amount: null,
                           analyte_id: "9447461c-34d2-4f2a-b802-971719c298f8",
@@ -218,12 +218,12 @@ export const testBiotree = [
                           concentration: 0.15,
                           spectrophotometer_method: "PicoGreen",
                           submitter_id: "TCGA-IR-A3LF-01A-21D",
-                          well_number: null
-                        }
-                      }
+                          well_number: null,
+                        },
+                      },
                     ],
-                    total: 3
-                  }
+                    total: 3,
+                  },
                 },
                 is_ffpe: "false",
                 portion_id: "b0514211-0f3c-4af7-ac95-f4e7d6b2c653",
@@ -253,16 +253,16 @@ export const testBiotree = [
                           percent_tumor_nuclei: 60,
                           section_location: "TOP",
                           slide_id: "f578963e-0316-49ec-9e39-4b2763520a31",
-                          submitter_id: "TCGA-IR-A3LF-01A-02-TSB"
-                        }
-                      }
+                          submitter_id: "TCGA-IR-A3LF-01A-02-TSB",
+                        },
+                      },
                     ],
-                    total: 1
-                  }
+                    total: 1,
+                  },
                 },
                 submitter_id: "TCGA-IR-A3LF-01A-21",
-                weight: 30
-              }
+                weight: 30,
+              },
             },
             {
               __dataID__: "client:client:-1766687068120:UG9ydGlvbjo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YjZhNzRhMDItY2QzYi00ZjBhLWJiMmYtZjkwYzFkM2Y2ZDE0OmI2NWYzNmM1LTc1ZTAtNDVhYS1iMjU0LTE2YWJjNGM1ZGY2NA==",
@@ -277,8 +277,8 @@ export const testBiotree = [
                     __dataID__: "client:-1766687068132_first(99)",
                     __status__: 4,
                     edges: [],
-                    total: 0
-                  }
+                    total: 0,
+                  },
                 },
                 is_ffpe: "false",
                 portion_id: "b65f36c5-75e0-45aa-b254-16abc4c5df64",
@@ -290,16 +290,16 @@ export const testBiotree = [
                     __dataID__: "client:-1766687068134_first(99)",
                     __status__: 4,
                     edges: [],
-                    total: 0
-                  }
+                    total: 0,
+                  },
                 },
                 submitter_id: "TCGA-IR-A3LF-01A-11-A40I-20",
-                weight: null
-              }
-            }
+                weight: null,
+              },
+            },
           ],
-          total: 2
-        }
+          total: 2,
+        },
       },
       preservation_method: null,
       sample_id: "b6a74a02-cd3b-4f0a-bb2f-f90c1d3f6d14",
@@ -312,8 +312,8 @@ export const testBiotree = [
       tissue_type: null,
       tumor_code: null,
       tumor_code_id: null,
-      tumor_descriptor: null
-    }
+      tumor_descriptor: null,
+    },
   },
   {
     __dataID__: "client:client:-1766687068118:U2FtcGxlOjc4NWRkZWExLTM5OWQtNDdkOC1iMmIwLTM5ZTk1ZWFhMjRiNTpiYWNjNTA5Mi1iNmFiLTRhMjgtOWQ1NS1mYTNhZDIyYzNlZWY=",
@@ -376,8 +376,8 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.08,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-10A-01D-A22X-09"
-                                  }
+                                    submitter_id: "TCGA-IR-A3LF-10A-01D-A22X-09",
+                                  },
                                 },
                                 {
                                   __dataID__: "client:client:-1766687068140:QWxpcXVvdDo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YmFjYzUwOTItYjZhYi00YTI4LTlkNTUtZmEzYWQyMmMzZWVmOjBkMWU4YWQzLTg4ZDYtNGZiNC1hOGU3LTIwMGEzMWVmOTQ4ZjoyNGM5OTc1Ny1iNTBjLTQ0ZGEtOTU1ZS1jMDRmNGNkMWI5YTc6MzlmZWIyNDMtMTdhOC00YTFiLWEyNjMtNzY2NmM5OTFmNWQ1",
@@ -389,8 +389,8 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.16,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-10A-01D-A22W-01"
-                                  }
+                                    submitter_id: "TCGA-IR-A3LF-10A-01D-A22W-01",
+                                  },
                                 },
                                 {
                                   __dataID__: "client:client:-1766687068140:QWxpcXVvdDo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YmFjYzUwOTItYjZhYi00YTI4LTlkNTUtZmEzYWQyMmMzZWVmOjBkMWU4YWQzLTg4ZDYtNGZiNC1hOGU3LTIwMGEzMWVmOTQ4ZjoyNGM5OTc1Ny1iNTBjLTQ0ZGEtOTU1ZS1jMDRmNGNkMWI5YTc6NzU3YmFiYmMtOWEyZC00YmY1LWIyOTgtNDgyMjJmZWE3YmQ4",
@@ -402,12 +402,12 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.16,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-10A-01D-A232-26"
-                                  }
-                                }
+                                    submitter_id: "TCGA-IR-A3LF-10A-01D-A232-26",
+                                  },
+                                },
                               ],
-                              total: 3
-                            }
+                              total: 3,
+                            },
                           },
                           amount: null,
                           analyte_id: "24c99757-b50c-44da-955e-c04f4cd1b9a7",
@@ -416,8 +416,8 @@ export const testBiotree = [
                           concentration: 0.16,
                           spectrophotometer_method: "PicoGreen",
                           submitter_id: "TCGA-IR-A3LF-10A-01D",
-                          well_number: null
-                        }
+                          well_number: null,
+                        },
                       },
                       {
                         __dataID__: "client:client:-1766687068138:QW5hbHl0ZTo3ODVkZGVhMS0zOTlkLTQ3ZDgtYjJiMC0zOWU5NWVhYTI0YjU6YmFjYzUwOTItYjZhYi00YTI4LTlkNTUtZmEzYWQyMmMzZWVmOjBkMWU4YWQzLTg4ZDYtNGZiNC1hOGU3LTIwMGEzMWVmOTQ4ZjpkZWIzMTY0MC1jOGE1LTQ3OTAtOGEzMC04YTMyZWY0ZGNiODg=",
@@ -443,12 +443,12 @@ export const testBiotree = [
                                     analyte_type_id: null,
                                     concentration: 0.5,
                                     source_center: "23",
-                                    submitter_id: "TCGA-IR-A3LF-10A-01W-A23F-09"
-                                  }
-                                }
+                                    submitter_id: "TCGA-IR-A3LF-10A-01W-A23F-09",
+                                  },
+                                },
                               ],
-                              total: 1
-                            }
+                              total: 1,
+                            },
                           },
                           amount: null,
                           analyte_id: "deb31640-c8a5-4790-8a30-8a32ef4dcb88",
@@ -457,12 +457,12 @@ export const testBiotree = [
                           concentration: null,
                           spectrophotometer_method: null,
                           submitter_id: "TCGA-IR-A3LF-10A-01W",
-                          well_number: null
-                        }
-                      }
+                          well_number: null,
+                        },
+                      },
                     ],
-                    total: 2
-                  }
+                    total: 2,
+                  },
                 },
                 is_ffpe: "false",
                 portion_id: "0d1e8ad3-88d6-4fb4-a8e7-200a31ef948f",
@@ -474,16 +474,16 @@ export const testBiotree = [
                     __dataID__: "client:-1766687068144_first(99)",
                     __status__: 4,
                     edges: [],
-                    total: 0
-                  }
+                    total: 0,
+                  },
                 },
                 submitter_id: "TCGA-IR-A3LF-10A-01",
-                weight: null
-              }
-            }
+                weight: null,
+              },
+            },
           ],
-          total: 1
-        }
+          total: 1,
+        },
       },
       preservation_method: null,
       sample_id: "bacc5092-b6ab-4a28-9d55-fa3ad22c3eef",
@@ -496,7 +496,7 @@ export const testBiotree = [
       tissue_type: null,
       tumor_code: null,
       tumor_code_id: null,
-      tumor_descriptor: null
-    }
-  }
+      tumor_descriptor: null,
+    },
+  },
 ];

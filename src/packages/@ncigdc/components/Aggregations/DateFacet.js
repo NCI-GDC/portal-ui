@@ -17,20 +17,20 @@ const Label = styled.label({
   color: ({ theme }) => theme.greyScale2,
   padding: "0.8rem",
   height: "3.4rem",
-  border: ({ theme }) => `1px solid ${theme.greyScale4}`
+  border: ({ theme }) => `1px solid ${theme.greyScale4}`,
 });
 
 const enhance = compose(
   withState("state", "setState", {
     date: moment(),
-    focused: false
+    focused: false,
   }),
   mapProps(({ setState, ...rest }) => ({
     handleDatePicked: date => setState(s => ({ ...s, date })),
     setState,
-    ...rest
+    ...rest,
   })),
-  pure
+  pure,
 );
 
 type TProps = {
@@ -40,12 +40,12 @@ type TProps = {
   collapsed: boolean,
   state: {
     date: any,
-    focused: boolean
+    focused: boolean,
   },
   setState: Function,
   style: Object,
   handleToChanged: Function,
-  handleFromChanged: Function
+  handleFromChanged: Function,
 };
 
 const DateFacet = (props: TProps) => {
@@ -59,11 +59,11 @@ const DateFacet = (props: TProps) => {
           op: ">=",
           content: {
             field: dotField,
-            value: [(props.state.date || moment()).format("YYYY-MM-DD")]
-          }
-        }
-      ]
-    }
+            value: [(props.state.date || moment()).format("YYYY-MM-DD")],
+          },
+        },
+      ],
+    },
   };
 
   return (
@@ -73,7 +73,7 @@ const DateFacet = (props: TProps) => {
           <Label
             style={{
               borderRight: 0,
-              borderRadius: "4px 0 0 4px"
+              borderRadius: "4px 0 0 4px",
             }}
             htmlFor={`since-${dotField}`}
           >

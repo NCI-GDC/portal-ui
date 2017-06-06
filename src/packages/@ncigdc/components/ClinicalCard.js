@@ -22,16 +22,16 @@ const ClinicalCard = ({
     diagnoses: { hits: { edges: diagnoses = [] } },
     family_histories: familyHistory = [],
     demographic = {},
-    exposures: { hits: { edges: exposures = [], total: totalExposures } }
+    exposures: { hits: { edges: exposures = [], total: totalExposures } },
   },
   activeTab,
   setTab,
-  theme
+  theme,
 }: {
   p: Object,
   activeTab: number,
   setTab: Function,
-  theme: Object
+  theme: Object,
 }) => (
   <Card
     style={{ flex: 1 }}
@@ -51,10 +51,10 @@ const ClinicalCard = ({
                 op: "in",
                 content: {
                   field: "cases.case_id",
-                  value: [caseId]
-                }
-              }
-            ]
+                  value: [caseId],
+                },
+              },
+            ],
           }}
           fields={["case_id"]}
           dataExportExpands={[
@@ -62,7 +62,7 @@ const ClinicalCard = ({
             "diagnoses",
             "diagnoses.treatments",
             "family_histories",
-            "exposures"
+            "exposures",
           ]}
         />
       </Row>
@@ -77,7 +77,7 @@ const ClinicalCard = ({
           Diagnoses / Treatments ({diagnoses.length})
         </p>,
         <p key="Family Histories">Family Histories ({familyHistory.length})</p>,
-        <p key="Exposures">Exposures ({totalExposures})</p>
+        <p key="Exposures">Exposures ({totalExposures})</p>,
       ]}
       activeIndex={activeTab}
     >
@@ -89,7 +89,7 @@ const ClinicalCard = ({
             { th: "Gender", td: demographic.gender },
             { th: "Race", td: demographic.race },
             { th: "Year of Birth", td: demographic.year_of_birth },
-            { th: "Year of Death", td: demographic.year_of_death }
+            { th: "Year of Death", td: demographic.year_of_death },
           ]}
           style={{ flex: 1 }}
         />}
@@ -108,46 +108,46 @@ const ClinicalCard = ({
                       { th: "ID", td: x.diagnosis_id },
                       {
                         th: "Classification of Tumor",
-                        td: x.classification_of_tumor
+                        td: x.classification_of_tumor,
                       },
                       { th: "Alcohol Intensity", td: x.alcohol_intensity },
                       {
                         th: "Age at Diagnosis",
-                        td: ageDisplay(x.age_at_diagnosis)
+                        td: ageDisplay(x.age_at_diagnosis),
                       },
                       { th: "Days to Birth", td: x.days_to_birth },
                       { th: "Days to Death", td: x.days_to_death },
                       {
                         th: "Days to Last Follow Up",
-                        td: x.days_to_last_follow_up
+                        td: x.days_to_last_follow_up,
                       },
                       {
                         th: "Days to Last Known Disease Status",
-                        td: x.days_to_last_known_disease_status
+                        td: x.days_to_last_known_disease_status,
                       },
                       { th: "Days to Recurrence", td: x.days_to_recurrence },
                       {
                         th: "Last Known Disease Status",
-                        td: x.last_known_disease_status
+                        td: x.last_known_disease_status,
                       },
                       { th: "Morphology", td: x.morphology },
                       { th: "Primary Diagnosis", td: x.primary_diagnosis },
                       { th: "Prior Malignancy", td: x.prior_malignancy },
                       {
                         th: "Progression or Recurrence",
-                        td: x.progression_or_recurrence
+                        td: x.progression_or_recurrence,
                       },
                       {
                         th: "Site of Resection of Biopsy",
-                        td: x.site_of_resection_or_biopsy
+                        td: x.site_of_resection_or_biopsy,
                       },
                       {
                         th: "Tissue or Organ of Origin",
-                        td: x.tissue_or_organ_of_origin
+                        td: x.tissue_or_organ_of_origin,
                       },
                       { th: "Tumor Grade", td: x.tumor_grade },
                       { th: "Tumor Stage", td: x.tumor_stage },
-                      { th: "Vital Status", td: x.vital_status }
+                      { th: "Vital Status", td: x.vital_status },
                     ]}
                     style={{ flex: 1 }}
                   />
@@ -156,7 +156,7 @@ const ClinicalCard = ({
                       padding: "1rem",
                       color: theme.greyScale7,
                       fontSize: "2rem",
-                      lineHeight: "1.4em"
+                      lineHeight: "1.4em",
                     }}
                   >
                     Treatments (
@@ -171,7 +171,7 @@ const ClinicalCard = ({
                         <Th key="agents">Therapeutic Agents</Th>,
                         <Th key="intent_type">Treatment Intent Type</Th>,
                         <Th key="therapy">Treatment or Therapy</Th>,
-                        <Th key="days">Days to Treatment</Th>
+                        <Th key="days">Days to Treatment</Th>,
                       ]}
                       body={
                         <tbody>
@@ -214,18 +214,18 @@ const ClinicalCard = ({
                     { th: "ID", td: x.family_history_id },
                     {
                       th: "Relationship Age at Diagnosis",
-                      td: x.relationship_age_at_diagnosis
+                      td: x.relationship_age_at_diagnosis,
                     },
                     { th: "Relationship Gender", td: x.relationship_gender },
                     {
                       th: "Relationship Primary Diagnosis",
-                      td: x.relationship_primary_diagnosis
+                      td: x.relationship_primary_diagnosis,
                     },
                     { th: "Relationship Type", td: x.relationship_type },
                     {
                       th: "Relative with Cancer History",
-                      td: x.relative_with_cancer_history
-                    }
+                      td: x.relative_with_cancer_history,
+                    },
                   ]}
                 />
               ))}
@@ -253,7 +253,7 @@ const ClinicalCard = ({
                     { th: "Cigarettes per Day", td: x.node.cigarettes_per_day },
                     { th: "Height", td: x.node.height },
                     { th: "Weight", td: x.node.weight },
-                    { th: "Years Smoked", td: x.node.years_smoked }
+                    { th: "Years Smoked", td: x.node.years_smoked },
                   ]}
                 />
               ))}
@@ -268,5 +268,5 @@ const ClinicalCard = ({
 );
 
 export default compose(withState("activeTab", "setTab", 0), withTheme)(
-  ClinicalCard
+  ClinicalCard,
 );

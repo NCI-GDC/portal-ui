@@ -28,5 +28,5 @@ export default {
   relayProgress,
   error,
   loaders,
-  tableColumns
+  tableColumns,
 };

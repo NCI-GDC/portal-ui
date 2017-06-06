@@ -4,7 +4,7 @@ import { withTheme } from "@ncigdc/theme";
 
 type TNoResultsProps = {
   children: any,
-  style: any
+  style: any,
 };
 
 const NoResultsMessage = withTheme(
@@ -14,7 +14,7 @@ const NoResultsMessage = withTheme(
     >
       {children || "No results found"}
     </span>
-  )
+  ),
 );
 
 export default NoResultsMessage;

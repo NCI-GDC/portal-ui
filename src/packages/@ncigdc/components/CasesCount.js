@@ -4,8 +4,8 @@ import React from "react";
 
 type TProps = {
   hits: {
-    total: number
-  }
+    total: number,
+  },
 };
 
 const CasesCount = (props: TProps) => (

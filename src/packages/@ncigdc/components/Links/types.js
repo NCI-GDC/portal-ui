@@ -10,11 +10,11 @@ export type TListLinkProps = {
   pathname?: string,
   query?: TUriQuery,
   removeEmptyKeys?: TRemoveEmptyKeys,
-  whitelist?: Array<string>
+  whitelist?: Array<string>,
 };
 
 export type TIdLinkProps = {
-  id: string
+  id: string,
 } & TListLinkProps;
 
 export type TLinkProps = TListLinkProps | TIdLinkProps;

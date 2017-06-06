@@ -10,25 +10,25 @@ const DownIcon = styled(DI, {
   color: ({ theme }) => theme.primaryLight1,
   fontSize: "1.2em",
   transform: ({ isDown }) => `rotate(${isDown ? "0deg" : "90deg"})`,
-  transition: "0.3s ease"
+  transition: "0.3s ease",
 });
 
 type TProps = {
   active: boolean,
   toggleActive: Function,
   items: Array<mixed>,
-  onToggle?: Function
+  onToggle?: Function,
 };
 
 // the first item in items is used as the toggle
 const TogglableUl = (
-  { active, toggleActive, items, onToggle = () => {} }: TProps = {}
+  { active, toggleActive, items, onToggle = () => {} }: TProps = {},
 ) => (
   <ul
     style={{
       listStyle: "none",
       paddingLeft: 0,
-      marginBottom: 0
+      marginBottom: 0,
     }}
   >
     <li

@@ -17,7 +17,7 @@ const AnnotationsFacets = ({ location, Aggregations: { Cases, Files } }) => (
         key="tab1"
         to={{
           pathname: "/files",
-          query: { ...location.query, facetTab: "cases" }
+          query: { ...location.query, facetTab: "cases" },
         }}
       >
         Cases
@@ -26,11 +26,11 @@ const AnnotationsFacets = ({ location, Aggregations: { Cases, Files } }) => (
         key="tab2"
         to={{
           pathname: "/files",
-          query: { ...location.query, facetTab: "files" }
+          query: { ...location.query, facetTab: "files" },
         }}
       >
         Files
-      </Link>
+      </Link>,
     ]}
     activeIndex={location.query.facetTab === "cases" ? 0 : 1}
   >
@@ -40,7 +40,7 @@ const AnnotationsFacets = ({ location, Aggregations: { Cases, Files } }) => (
 
 AnnotationsFacets.propTypes = {
   location: PropTypes.object,
-  Aggregations: PropTypes.object
+  Aggregations: PropTypes.object,
 };
 
 export default withRouter(AnnotationsFacets);

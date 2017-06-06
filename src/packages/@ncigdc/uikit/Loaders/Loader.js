@@ -9,11 +9,11 @@ type TProps = {
   children?: mixed,
   loading: boolean,
   style?: Object,
-  height?: string | number
+  height?: string | number,
 };
 
 export default (
-  { children, style = {}, loading = true, height, ...props }: TProps = {}
+  { children, style = {}, loading = true, height, ...props }: TProps = {},
 ) => (
   <div
     style={{ ...style, height: loading ? height || "1rem" : "auto" }}
@@ -27,7 +27,7 @@ export default (
 );
 
 export const ConnectedLoader = connect(s => ({
-  loaders: s.loaders
+  loaders: s.loaders,
 }))(({ loaders, name }) => (
   <Overlay
     show={loaders.includes(name)}

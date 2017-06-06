@@ -11,7 +11,7 @@ import {
   pure,
   withHandlers,
   withPropsOnChange,
-  withProps
+  withProps,
 } from "recompose";
 import JSURL from "jsurl";
 
@@ -37,28 +37,28 @@ const Field = styled(Button, {
   backgroundColor: ({ theme }) => theme.greyScale2,
   ":hover": {
     backgroundColor: ({ theme }) =>
-      Color(theme.greyScale2).lighten(0.7).rgbString()
-  }
+      Color(theme.greyScale2).lighten(0.7).rgbString(),
+  },
 });
 
 const Value = styled(Button, {
   backgroundColor: ({ theme }) => theme.success,
   ":hover": {
     backgroundColor: ({ theme }) =>
-      Color(theme.success).lighten(0.7).rgbString()
-  }
+      Color(theme.success).lighten(0.7).rgbString(),
+  },
 });
 
 const Op = styled.span({
   ...buttonLike,
   backgroundColor: ({ theme }) => theme.primary,
-  color: "white"
+  color: "white",
 });
 
 const NotUnderlinedLink = styled(Link, {
   ":link": {
-    textDecoration: "none"
-  }
+    textDecoration: "none",
+  },
 });
 
 const LinkButton = styled(Link, {
@@ -66,8 +66,8 @@ const LinkButton = styled(Link, {
   flex: "none",
   ":link": {
     textDecoration: "none",
-    color: buttonBaseStyles.color
-  }
+    color: buttonBaseStyles.color,
+  },
 });
 
 type TProps = {
@@ -79,20 +79,20 @@ type TProps = {
   linkPathname?: string,
   linkText?: string,
   linkFieldMap?: Function,
-  hideLinkOnEmpty: boolean
+  hideLinkOnEmpty: boolean,
 };
 
 const enhance = compose(
   withRouter,
   withPropsOnChange(["query"], ({ query: { filters } }) => ({
-    filters: JSURL.parse(filters)
+    filters: JSURL.parse(filters),
   })),
   withPropsOnChange(["filters"], ({ filters }) => ({
-    currentFilters: (filters && filters.content) || []
+    currentFilters: (filters && filters.content) || [],
   })),
   withState("expandedFilters", "setExpandedFilters", []),
   withProps(({ expandedFilters }) => ({
-    isFilterExpanded: filter => expandedFilters.includes(filter)
+    isFilterExpanded: filter => expandedFilters.includes(filter),
   })),
   withProps(({ geneSymbolFragment }) => ({
     getDisplayValue: (field, value) => {
@@ -109,14 +109,14 @@ const enhance = compose(
         default:
           return value;
       }
-    }
+    },
   })),
   withHandlers({
     onLessClicked: ({ expandedFilters, setExpandedFilters }) => filter => {
       setExpandedFilters(xor(expandedFilters, [filter]));
-    }
+    },
   }),
-  pure
+  pure,
 );
 
 const styles = {
@@ -124,17 +124,17 @@ const styles = {
     fontSize: "2rem",
     marginRight: "0.3rem",
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
   rightParen: {
     fontSize: "2rem",
     marginRight: "0.3rem",
     display: "flex",
-    alignItems: "center"
+    alignItems: "center",
   },
   groupPadding: {
-    padding: "0.5rem 0"
-  }
+    padding: "0.5rem 0",
+  },
 };
 
 const CurrentFilters = (
@@ -149,8 +149,8 @@ const CurrentFilters = (
     linkFieldMap = f => f,
     hideLinkOnEmpty = true,
     geneSymbolFragment,
-    getDisplayValue
-  }: TProps = {}
+    getDisplayValue,
+  }: TProps = {},
 ) => (
   <Info style={style}>
     {!currentFilters.length &&
@@ -159,7 +159,7 @@ const CurrentFilters = (
           display: "flex",
           alignItems: "center",
           lineHeight: "44px",
-          width: "100%"
+          width: "100%",
         }}
       >
         <LeftArrow />
@@ -171,7 +171,7 @@ const CurrentFilters = (
       <Row
         style={{
           width: "100%",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
         }}
       >
         <Row wrap spacing="0.3rem">
@@ -194,13 +194,13 @@ const CurrentFilters = (
                   offset: 0,
                   filters: {
                     op: "and",
-                    content: [filter]
-                  }
+                    content: [filter],
+                  },
                 }}
               >
                 <Field>
                   {humanify({
-                    term: facetFieldDisplayMapper(filter.content.field)
+                    term: facetFieldDisplayMapper(filter.content.field),
                   })}
                 </Field>
               </NotUnderlinedLink>
@@ -223,8 +223,8 @@ const CurrentFilters = (
                     offset: 0,
                     filters: {
                       op: "and",
-                      content: [filter]
-                    }
+                      content: [filter],
+                    },
                   }}
                 >
                   <Value>
@@ -262,9 +262,10 @@ const CurrentFilters = (
             filters: makeFilter(
               currentFilters.map(({ content: { field, value } }) => ({
                 field: linkFieldMap(field),
-                value
-              }))
-            )
+                value,
+              })),
+              false,
+            ),
           }
         }
       >

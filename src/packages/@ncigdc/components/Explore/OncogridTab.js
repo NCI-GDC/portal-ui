@@ -12,11 +12,11 @@ const styles = {
     flexGrow: 1,
     fontSize: "2rem",
     marginBottom: 7,
-    marginTop: 7
+    marginTop: 7,
   },
   card: {
-    backgroundColor: "white"
-  }
+    backgroundColor: "white",
+  },
 };
 
 export default props => (

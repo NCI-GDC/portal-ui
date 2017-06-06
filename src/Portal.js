@@ -15,8 +15,8 @@ import PortalContainer from "@ncigdc/components/PortalContainer";
 
 export const store = setupStore({
   persistConfig: {
-    keyPrefix: "ncigdcActive"
-  }
+    keyPrefix: "ncigdcActive",
+  },
 });
 
 store.dispatch(fetchApiVersionInfo());
@@ -40,8 +40,8 @@ const PortalQuery = {
           username
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const Portal = Relay.createContainer(PortalComponent, PortalQuery);

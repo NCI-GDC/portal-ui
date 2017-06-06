@@ -24,7 +24,7 @@ const getNestedValue = (item, path) => {
 
 const PieChart = compose(
   withTooltip,
-  withTheme
+  withTheme,
 )(({ data, path = "file_count", height = 160, width = 160, setTooltip }) => {
   const color = d3.scaleOrdinal(d3.schemeCategory20);
   const outerRadius = height / 2 + 10;
@@ -82,13 +82,13 @@ const PieChart = compose(
     .attr("class", d => `pointer arc-hover-${_.snakeCase(d.data.id)}`)
     .on("mouseenter", d => {
       document.querySelector(
-        `.arc-hover-${_.snakeCase(d.data.id)}`
+        `.arc-hover-${_.snakeCase(d.data.id)}`,
       ).style.opacity = 0.5;
       setTooltip(d.data.tooltip);
     })
     .on("mouseleave", d => {
       document.querySelector(
-        `.arc-hover-${_.snakeCase(d.data.id)}`
+        `.arc-hover-${_.snakeCase(d.data.id)}`,
       ).style.opacity = 0;
       setTooltip();
     })
@@ -103,7 +103,7 @@ const PieChart = compose(
 });
 
 PieChart.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
 };
 
 /*----------------------------------------------------------------------------*/

@@ -17,7 +17,7 @@ type TProps = {
   dispatch: Function,
   activeText?: string,
   inactiveText?: string,
-  style?: Object
+  style?: Object,
 };
 
 function DownloadFile({
@@ -26,7 +26,7 @@ function DownloadFile({
   dispatch,
   activeText,
   inactiveText,
-  style = {}
+  style = {},
 }: TProps): any {
   if (userCanDownloadFile({ user, file })) {
     return (
@@ -35,7 +35,7 @@ function DownloadFile({
         filename={file.file_name}
         url={urlJoin(
           process.env.REACT_APP_GDC_AUTH,
-          "api/data?annotations=true&related_files=true"
+          "api/data?annotations=true&related_files=true",
         )}
         activeText={activeText}
         inactiveText={inactiveText}
@@ -50,8 +50,8 @@ function DownloadFile({
       onClick={() =>
         dispatch(
           setModal(
-            <NoAccessModal message="You don't have access to this file." />
-          )
+            <NoAccessModal message="You don't have access to this file." />,
+          ),
         )}
       leftIcon={inactiveText && <i className={"fa fa-download"} />}
     >
@@ -64,5 +64,5 @@ function DownloadFile({
 }
 
 export default compose(connect(state => ({ ...state.auth, ...state.cart })))(
-  DownloadFile
+  DownloadFile,
 );

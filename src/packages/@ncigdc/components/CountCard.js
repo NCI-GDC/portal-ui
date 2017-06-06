@@ -28,7 +28,7 @@ CountCard.propTypes = {
   count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   icon: PropTypes.node,
   style: PropTypes.object,
-  linkParams: PropTypes.object
+  linkParams: PropTypes.object,
 };
 
 /*----------------------------------------------------------------------------*/

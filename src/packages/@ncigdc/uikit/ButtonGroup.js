@@ -22,9 +22,9 @@ const ButtonGroup = ({ style, children, ...props }) => (
             `${i === children.length - 1 ? "4px" : "0px"} ` +
             `${!i ? "4px" : "0px"}`,
           ...(i ? { borderLeft: "none" } : {}),
-          display: "inline"
-        })
-      })
+          display: "inline",
+        }),
+      }),
     )}
   </Row>
 );

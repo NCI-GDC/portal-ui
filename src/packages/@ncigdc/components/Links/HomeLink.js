@@ -5,7 +5,7 @@ import Link from "./Link";
 
 type TProps = {|
   children?: mixed,
-  style?: Object
+  style?: Object,
 |};
 
 const HomeLink = ({ children, ...props }: TProps) => (

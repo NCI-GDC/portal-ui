@@ -17,7 +17,7 @@ import { nodeAndViewerQuery } from "./queries";
 
 const prepareNodeParams: TPrepareNodeParams = type => ({
   location: { search },
-  match: { params }
+  match: { params },
 }) => {
   const q = parse(search);
   const clinicalFilters = {
@@ -27,8 +27,8 @@ const prepareNodeParams: TPrepareNodeParams = type => ({
         op: "=",
         content: {
           field: "project.project_id",
-          value: params.id
-        }
+          value: params.id,
+        },
       },
       {
         op: "OR",
@@ -37,33 +37,33 @@ const prepareNodeParams: TPrepareNodeParams = type => ({
             op: "NOT",
             content: {
               field: "cases.demographic.demographic_id",
-              value: "MISSING"
-            }
+              value: "MISSING",
+            },
           },
           {
             op: "NOT",
             content: {
               field: "cases.diagnoses.diagnosis_id",
-              value: "MISSING"
-            }
+              value: "MISSING",
+            },
           },
           {
             op: "NOT",
             content: {
               field: "cases.family_histories.family_history_id",
-              value: "MISSING"
-            }
+              value: "MISSING",
+            },
           },
           {
             op: "NOT",
             content: {
               field: "cases.exposures.exposure_id",
-              value: "MISSING"
-            }
-          }
-        ]
-      }
-    ]
+              value: "MISSING",
+            },
+          },
+        ],
+      },
+    ],
   };
 
   const biospecimenFilters = {
@@ -73,28 +73,28 @@ const prepareNodeParams: TPrepareNodeParams = type => ({
         op: "=",
         content: {
           field: "project.project_id",
-          value: params.id
-        }
+          value: params.id,
+        },
       },
       {
         op: "NOT",
         content: {
           field: "cases.samples.sample_id",
-          value: "MISSING"
-        }
-      }
-    ]
+          value: "MISSING",
+        },
+      },
+    ],
   };
 
   const qq: Object = {
     ...q,
     clinicalFilters: replaceFilters(
       clinicalFilters,
-      parseFilterParam(q.filters, null)
+      parseFilterParam(q.filters, null),
     ),
     biospecimenFilters: replaceFilters(
       biospecimenFilters,
-      parseFilterParam(q.filters, null)
+      parseFilterParam(q.filters, null),
     ),
     mutatedFilters: {
       op: "AND",
@@ -102,21 +102,21 @@ const prepareNodeParams: TPrepareNodeParams = type => ({
         { op: "=", content: { field: "project.project_id", value: params.id } },
         {
           op: "IN",
-          content: { field: "cases.available_variation_data", value: ["ssm"] }
-        }
-      ]
+          content: { field: "cases.available_variation_data", value: ["ssm"] },
+        },
+      ],
     },
     annotationsFilters: {
       op: "AND",
       content: [
-        { op: "=", content: { field: "project.project_id", value: params.id } }
-      ]
-    }
+        { op: "=", content: { field: "project.project_id", value: params.id } },
+      ],
+    },
   };
 
   return {
     id: btoa(`${type}:${params.id}`),
-    ...qq
+    ...qq,
   };
 };
 

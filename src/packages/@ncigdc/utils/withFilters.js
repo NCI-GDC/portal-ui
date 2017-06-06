@@ -6,7 +6,7 @@ import withRouter from "@ncigdc/utils/withRouter";
 
 type TArgs = {
   propName: string,
-  defaults: mixed
+  defaults: mixed,
 };
 export default ({ propName = "filters", defaults = null }: TArgs = {}) =>
   compose(
@@ -15,7 +15,7 @@ export default ({ propName = "filters", defaults = null }: TArgs = {}) =>
       ({ location }, { location: previousLocation }) =>
         location.search !== previousLocation.search,
       ({ query: { filters } }) => ({
-        [propName]: JSURL.parse(filters) || defaults
-      })
-    )
+        [propName]: JSURL.parse(filters) || defaults,
+      }),
+    ),
   );

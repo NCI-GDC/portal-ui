@@ -20,8 +20,8 @@ export type TProps = {
     disease_type: { buckets: [TBucket] },
     primary_site: { buckets: [TBucket] },
     project__program__name: { buckets: [TBucket] },
-    project__project_id: { buckets: [TBucket] }
-  }
+    project__project_id: { buckets: [TBucket] },
+  },
 };
 
 const enhance = compose(withRouter);
@@ -164,13 +164,13 @@ export const RepoCasesPiesQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const RepoCasesPies = Relay.createContainer(
   enhance(RepoCasesPiesComponent),
-  RepoCasesPiesQuery
+  RepoCasesPiesQuery,
 );
 
 export default RepoCasesPies;

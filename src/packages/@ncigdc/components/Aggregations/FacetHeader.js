@@ -19,7 +19,7 @@ const Header = styled(Row, {
   alignItems: "center",
   justifyContent: "space-between",
   padding: "1rem 1.2rem 0.5rem 1.2rem",
-  backgroundColor: "white"
+  backgroundColor: "white",
 });
 
 const IconsRow = styled(Row, {
@@ -27,25 +27,25 @@ const IconsRow = styled(Row, {
   lineHeight: "1.48px",
   fontSize: "1.2em",
   ":link": {
-    color: ({ theme }) => theme.greyScale7
+    color: ({ theme }) => theme.greyScale7,
   },
   ":visited": {
-    color: ({ theme }) => theme.greyScale7
-  }
+    color: ({ theme }) => theme.greyScale7,
+  },
 });
 
 const RemoveIcon = styled(CloseIcon, {
   ":hover::before": {
-    textShadow: ({ theme }) => theme.textShadow
+    textShadow: ({ theme }) => theme.textShadow,
   },
   color: ({ theme }) => theme.greyScale7,
-  paddingLeft: "2px"
+  paddingLeft: "2px",
 });
 
 const MagnifyingGlass = styled(SearchIcon, {
   ":hover::before": {
-    textShadow: ({ theme }) => theme.textShadow
-  }
+    textShadow: ({ theme }) => theme.textShadow,
+  },
 });
 
 const FacetHeader = compose(
@@ -53,8 +53,8 @@ const FacetHeader = compose(
     handleRequestRemove: () => {},
     isRemovable: false,
     hasValueSearch: false,
-    setShowingValueSearch: () => {}
-  })
+    setShowingValueSearch: () => {},
+  }),
 )(
   ({
     field,
@@ -65,7 +65,7 @@ const FacetHeader = compose(
     setCollapsed,
     showingValueSearch,
     setShowingValueSearch,
-    hasValueSearch
+    hasValueSearch,
   }) => (
     <LocationSubscriber>
       {(ctx: {| pathname: string, query: TRawQuery |}) => {
@@ -80,7 +80,7 @@ const FacetHeader = compose(
               <AngleIcon
                 style={{
                   paddingRight: "0.25rem",
-                  transform: `rotate(${collapsed ? 270 : 0}deg)`
+                  transform: `rotate(${collapsed ? 270 : 0}deg)`,
                 }}
               />
               {title}
@@ -105,6 +105,6 @@ const FacetHeader = compose(
         );
       }}
     </LocationSubscriber>
-  )
+  ),
 );
 export default FacetHeader;

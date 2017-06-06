@@ -4,7 +4,7 @@ import React from "react";
 
 import {
   RepositoryCasesLink,
-  RepositoryFilesLink
+  RepositoryFilesLink,
 } from "@ncigdc/components/Links/RepositoryLink";
 import ProjectLink from "@ncigdc/components/Links/ProjectLink";
 import { findDataCategory } from "@ncigdc/utils/data";
@@ -25,19 +25,19 @@ export type TProps = {|
     name: string,
     primary_site: string,
     program: {|
-      name: string
+      name: string,
     |},
     project_id: string,
     summary: {|
       case_count: number,
       data_categories: Array<{|
         case_count?: number,
-        data_category: TCategory
+        data_category: TCategory,
       |}>,
-      file_count: number
-    |}
+      file_count: number,
+    |},
   |},
-  theme: Object
+  theme: Object,
 |};
 
 export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
@@ -50,10 +50,13 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
   const CasesLink: TLink = ({ fields = [], children }) => (
     <RepositoryCasesLink
       query={{
-        filters: makeFilter([
-          { field: "cases.project.project_id", value: [node.project_id] },
-          ...fields
-        ])
+        filters: makeFilter(
+          [
+            { field: "cases.project.project_id", value: [node.project_id] },
+            ...fields,
+          ],
+          false,
+        ),
       }}
     >
       {children}
@@ -63,7 +66,7 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
   return (
     <Tr
       style={{
-        backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff"
+        backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff",
       }}
     >
       <Td>
@@ -91,7 +94,7 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
             {count > 0
               ? <CasesLink
                   fields={[
-                    { field: "files.data_category", value: category.full }
+                    { field: "files.data_category", value: category.full },
                   ]}
                 >
                   {count.toLocaleString()}
@@ -104,12 +107,15 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
         {fileCount > 0
           ? <RepositoryFilesLink
               query={{
-                filters: makeFilter([
-                  {
-                    field: "cases.project.project_id",
-                    value: node.project_id
-                  }
-                ])
+                filters: makeFilter(
+                  [
+                    {
+                      field: "cases.project.project_id",
+                      value: node.project_id,
+                    },
+                  ],
+                  false,
+                ),
               }}
             >
               {fileCount.toLocaleString()}

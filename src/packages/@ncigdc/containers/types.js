@@ -9,15 +9,15 @@ export type TTableProps = {
   hits: {
     edges: Array<{|
       node: {|
-        id: string
-      |}
+        id: string,
+      |},
     |}>,
-    total: number
+    total: number,
   },
   relay: {
     route: {
-      params: Object
-    }
+      params: Object,
+    },
   },
   canAddToCart?: boolean,
   tableHeader?: string,
@@ -28,10 +28,10 @@ export type TTableProps = {
         project_id: string,
         summary: {
           file_count: number,
-          data_categories: Array<{}>
-        }
-      }
-    }>
+          data_categories: Array<{}>,
+        },
+      },
+    }>,
   },
-  query: {}
+  query: {},
 };

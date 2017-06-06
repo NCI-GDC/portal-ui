@@ -20,17 +20,17 @@ const styles = {
     alignItems: "center",
     pointerEvents: "none",
     backgroundColor: "rgba(255, 255, 255, 0.8)",
-    transition: "opacity 0.35s ease"
+    transition: "opacity 0.35s ease",
   },
   show: {
     opacity: 1,
     pointerEvents: "all",
-    cursor: "default"
+    cursor: "default",
   },
   hide: {
     opacity: 0,
-    pointerEvents: "none"
-  }
+    pointerEvents: "none",
+  },
 };
 
 const Overlay = ({ children, style, show, ...props }) => (
@@ -38,7 +38,7 @@ const Overlay = ({ children, style, show, ...props }) => (
     style={{
       ...styles.container,
       ...style,
-      ...(show ? styles.show : styles.hide)
+      ...(show ? styles.show : styles.hide),
     }}
     {...props}
   >
@@ -48,7 +48,7 @@ const Overlay = ({ children, style, show, ...props }) => (
 
 Overlay.propTypes = {
   ...uikit,
-  show: PropTypes.bool
+  show: PropTypes.bool,
 };
 
 /*----------------------------------------------------------------------------*/

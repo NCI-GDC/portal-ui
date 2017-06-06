@@ -13,7 +13,7 @@ const modalStyles = {
     bottom: "0px",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     display: "block",
-    zIndex: "111"
+    zIndex: "111",
   },
   content: {
     position: "initial",
@@ -23,8 +23,8 @@ const modalStyles = {
     margin: "30px auto",
     padding: "0px",
     width: "65%",
-    boxShadow: "rgba(0, 0, 0, 0.5) 0px 5px 15px"
-  }
+    boxShadow: "rgba(0, 0, 0, 0.5) 0px 5px 15px",
+  },
 };
 
 const Modal = ({ isOpen, onRequestClose, style, children }) => (

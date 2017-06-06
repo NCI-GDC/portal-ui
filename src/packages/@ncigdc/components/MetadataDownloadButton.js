@@ -54,7 +54,7 @@ const MetadataDropdownButton = ({ files }) => (
       "downstream_analyses.output_files.data_format",
       "downstream_analyses.workflow_type",
       "downstream_analyses.output_files.file_size",
-      "index_files.file_id"
+      "index_files.file_id",
     ]}
     extraParams={{
       expand: [
@@ -86,20 +86,20 @@ const MetadataDropdownButton = ({ files }) => (
         "cases.samples.portions.submitter_id",
         "cases.samples.portions.slides",
         "cases.samples.portions.annotations",
-        "cases.samples.portions.center"
-      ]
+        "cases.samples.portions.center",
+      ],
     }}
     filters={{
       content: [
         {
           content: {
             field: "files.file_id",
-            value: files.files.map(file => file.file_id)
+            value: files.files.map(file => file.file_id),
           },
-          op: "in"
-        }
+          op: "in",
+        },
       ],
-      op: "and"
+      op: "and",
     }}
   />
 );

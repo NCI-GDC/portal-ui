@@ -16,7 +16,7 @@ import { Container, StyledInput, GoLink, CheckedRow, CheckedLink } from "./";
 
 const ExactMatchFacet = compose(
   withState("inputValue", "setInputValue", ""),
-  pure
+  pure,
 )(
   ({
     title,
@@ -26,7 +26,7 @@ const ExactMatchFacet = compose(
     collapsed,
     inputValue,
     setInputValue,
-    style
+    style,
   }) => {
     return (
       <LocationSubscriber>
@@ -36,7 +36,7 @@ const ExactMatchFacet = compose(
             .content;
           const currentValues = getFilterValue({
             currentFilters,
-            dotField: `${doctype}.${fieldNoDoctype}`
+            dotField: `${doctype}.${fieldNoDoctype}`,
           }) || { content: { value: [] } };
           return (
             <Container style={style}>
@@ -47,12 +47,15 @@ const ExactMatchFacet = compose(
                       <CheckedLink
                         merge="toggle"
                         query={{
-                          filters: makeFilter([
-                            {
-                              field: `${doctype}.${fieldNoDoctype}`,
-                              value: [v]
-                            }
-                          ])
+                          filters: makeFilter(
+                            [
+                              {
+                                field: `${doctype}.${fieldNoDoctype}`,
+                                value: [v],
+                              },
+                            ],
+                            false,
+                          ),
                         }}
                       >
                         <CheckCircleOIcon style={{ paddingRight: "0.5rem" }} />
@@ -66,7 +69,7 @@ const ExactMatchFacet = compose(
                     </label>
                     <StyledInput
                       style={{
-                        borderRadius: "4px 0 0 4px"
+                        borderRadius: "4px 0 0 4px",
                       }}
                       id={fieldNoDoctype}
                       name={fieldNoDoctype}
@@ -79,12 +82,15 @@ const ExactMatchFacet = compose(
                     <GoLink
                       merge="toggle"
                       query={{
-                        filters: makeFilter([
-                          {
-                            field: `${doctype}.${fieldNoDoctype}`,
-                            value: [inputValue]
-                          }
-                        ])
+                        filters: makeFilter(
+                          [
+                            {
+                              field: `${doctype}.${fieldNoDoctype}`,
+                              value: [inputValue],
+                            },
+                          ],
+                          false,
+                        ),
                       }}
                       dark={!!inputValue}
                       onClick={() => setInputValue("")}
@@ -98,7 +104,7 @@ const ExactMatchFacet = compose(
         }}
       </LocationSubscriber>
     );
-  }
+  },
 );
 
 export default ExactMatchFacet;

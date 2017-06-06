@@ -8,7 +8,7 @@ type TProps = {|
   children?: Function,
   className?: string,
   count: number,
-  style?: Object
+  style?: Object,
 |};
 
 const CartLink = (props: TProps) => (

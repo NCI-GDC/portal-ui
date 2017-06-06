@@ -20,7 +20,7 @@ class GeneRoute extends Relay.Route {
     const q = parse(search);
     const qq: Object = {
       ...q,
-      filters: parseFilterParam(q.filters, null)
+      filters: parseFilterParam(q.filters, null),
     };
 
     return {
@@ -28,7 +28,7 @@ class GeneRoute extends Relay.Route {
       fmTable_offset: parseIntParam(q.fmTable_offset, 0),
       fmTable_size: parseIntParam(q.fmTable_size, 10),
       fmTable_filters: parseFilterParam(q.fmTable_filters, null),
-      ...qq
+      ...qq,
     };
   };
 }

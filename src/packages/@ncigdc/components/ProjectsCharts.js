@@ -11,7 +11,7 @@ import {
   withProps,
   lifecycle,
   mapProps,
-  withPropsOnChange
+  withPropsOnChange,
 } from "recompose";
 import JSURL from "jsurl";
 import { isEqual, sortBy } from "lodash";
@@ -43,7 +43,7 @@ const color = d3.scaleOrdinal([
   "#CE6DBD",
   "#AD494A",
   "#8C6D31",
-  "#B5CF6B"
+  "#B5CF6B",
 ]);
 
 type TProps = {
@@ -54,17 +54,17 @@ type TProps = {
   state: {
     numUniqueCases: number,
     topGenesWithCasesPerProject: {
-      [gene_id: string]: { [project_id: string]: number, symbol: string }
+      [gene_id: string]: { [project_id: string]: number, symbol: string },
     },
     projectsIsFetching: boolean,
     genesIsFetching: boolean,
     topGenesSource: Array<{
       gene_id: string,
-      symbol: string
-    }>
+      symbol: string,
+    }>,
   },
   relay: {
-    setVariables: Function
+    setVariables: Function,
   },
   hits: { edges: Array<Object> },
   theme: Object,
@@ -74,20 +74,20 @@ type TProps = {
   explore: {
     cases: {
       hits: {
-        total: number
-      }
+        total: number,
+      },
     },
     genes: {
       hits: {
         edges: Array<{
           node: {
             gene_id: string,
-            symbol: string
-          }
-        }>
-      }
-    }
-  }
+            symbol: string,
+          },
+        }>,
+      },
+    },
+  },
 };
 
 const Container = styled(Row, {
@@ -95,7 +95,7 @@ const Container = styled(Row, {
   backgroundColor: "white",
   border: "1px solid #ddd",
   borderRadius: "4px",
-  height: "300px"
+  height: "300px",
 });
 
 const initialState = {
@@ -103,7 +103,7 @@ const initialState = {
   numUniqueCases: 0,
   projectsIsFetching: false,
   genesIsFetching: true,
-  topGenesSource: []
+  topGenesSource: [],
 };
 
 function getGenes({ relay, caseCountFilters, fmgChartFilters }: TProps): void {
@@ -112,7 +112,7 @@ function getGenes({ relay, caseCountFilters, fmgChartFilters }: TProps): void {
     fmgCaseCount_filters: caseCountFilters.length
       ? { op: "AND", content: caseCountFilters }
       : null,
-    fmgChart_filters: fmgChartFilters
+    fmgChart_filters: fmgChartFilters,
   });
 }
 
@@ -122,7 +122,7 @@ const ProjectsChartsComponent = compose(
   // eslint-disable-next-line fp/no-mutating-methods
   mapProps(props => ({
     ...props,
-    projectIds: props.hits.edges.map(x => x.node.project_id).sort()
+    projectIds: props.hits.edges.map(x => x.node.project_id).sort(),
   })),
   withPropsOnChange(["projectIds"], ({ projectIds }) => ({
     fmgChartFilters: {
@@ -134,18 +134,18 @@ const ProjectsChartsComponent = compose(
               op: "in",
               content: {
                 field: "cases.project.project_id",
-                value: projectIds
-              }
+                value: projectIds,
+              },
             }
           : null,
         {
           op: "in",
           content: {
             field: "genes.is_cancer_gene_census",
-            value: [true]
-          }
-        }
-      ].filter(Boolean)
+            value: [true],
+          },
+        },
+      ].filter(Boolean),
     },
     caseCountFilters: [
       caseHasMutation,
@@ -154,11 +154,11 @@ const ProjectsChartsComponent = compose(
             op: "in",
             content: {
               field: "cases.project.project_id",
-              value: projectIds
-            }
+              value: projectIds,
+            },
           }
-        : null
-    ].filter(Boolean)
+        : null,
+    ].filter(Boolean),
   })),
   withProps({
     async fetchData(props: TProps): Promise<*> {
@@ -166,19 +166,19 @@ const ProjectsChartsComponent = compose(
         .map(g => g.node);
 
       const {
-        aggregations
+        aggregations,
       } = await fetchApi("analysis/top_cases_counts_by_genes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: {
           size: 0,
           gene_ids: topGenesSource.map(g => g.gene_id).join(),
-          filters: JSON.stringify(props.fmgChartFilters)
-        }
+          filters: JSON.stringify(props.fmgChartFilters),
+        },
       });
 
       const caseAggs = aggregations.projects.buckets.filter(b =>
-        props.projectIds.includes(b.key)
+        props.projectIds.includes(b.key),
       );
       const numUniqueCases = props.explore.cases.hits.total;
 
@@ -189,12 +189,12 @@ const ProjectsChartsComponent = compose(
               ...genes,
               [gene.key]: {
                 ...genes[gene.key],
-                [agg.key]: gene.doc_count
-              }
+                [agg.key]: gene.doc_count,
+              },
             }),
-            acc
+            acc,
           ),
-        topGenesSource.reduce((acc, g) => ({ ...acc, [g.gene_id]: {} }), {})
+        topGenesSource.reduce((acc, g) => ({ ...acc, [g.gene_id]: {} }), {}),
       );
 
       props.setState(state => ({
@@ -202,9 +202,9 @@ const ProjectsChartsComponent = compose(
         numUniqueCases,
         topGenesWithCasesPerProject,
         genesIsFetching: false,
-        topGenesSource
+        topGenesSource,
       }));
-    }
+    },
   }),
   lifecycle({
     componentDidMount(): void {
@@ -221,9 +221,9 @@ const ProjectsChartsComponent = compose(
         this.props.setState(s => ({ ...s, genesIsFetching: true }));
         this.props.fetchData(nextProps);
       }
-    }
+    },
   }),
-  withTheme
+  withTheme,
 )(
   ({
     state: {
@@ -231,14 +231,14 @@ const ProjectsChartsComponent = compose(
       topGenesWithCasesPerProject,
       projectsIsFetching,
       genesIsFetching,
-      topGenesSource
+      topGenesSource,
     },
     hits,
     theme,
     query,
     pathname,
     push,
-    caseCountFilters
+    caseCountFilters,
   }: TProps) => {
     const projects = hits.edges.map(x => x.node);
     // eslint-disable-next-line fp/no-mutating-methods
@@ -253,8 +253,8 @@ const ProjectsChartsComponent = compose(
           .reduce(
             (sum, projectId) =>
               sum + topGenesWithCasesPerProject[geneId][projectId],
-            0
-          )
+            0,
+          ),
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
 
@@ -281,16 +281,16 @@ const ProjectsChartsComponent = compose(
               {
                 filters: setFilter({
                   field: "projects.primary_site",
-                  value: [].concat(p.primary_site || [])
-                })
+                  value: [].concat(p.primary_site || []),
+                }),
               },
               query,
-              "toggle"
+              "toggle",
             );
 
             const q = removeEmptyKeys({
               ...newQuery,
-              filters: newQuery.filters && JSURL.stringify(newQuery.filters)
+              filters: newQuery.filters && JSURL.stringify(newQuery.filters),
             });
 
             push({ pathname, query: q });
@@ -314,40 +314,41 @@ const ProjectsChartsComponent = compose(
                   {
                     filters: setFilter({
                       field: "projects.project_id",
-                      value: [].concat(p.project_id || [])
-                    })
+                      value: [].concat(p.project_id || []),
+                    }),
                   },
                   query,
-                  "toggle"
+                  "toggle",
                 );
 
                 const q = removeEmptyKeys({
                   ...newQuery,
-                  filters: newQuery.filters && JSURL.stringify(newQuery.filters)
+                  filters: newQuery.filters &&
+                    JSURL.stringify(newQuery.filters),
                 });
 
                 push({ pathname, query: q });
-              }
-            }
-          ]
-        }
+              },
+            },
+          ],
+        },
       };
     }, {});
 
     const totalCases = projects.reduce(
       (sum, p) => sum + p.summary.case_count,
-      0
+      0,
     );
 
     // there are 24 primary sites
     const projectsInTopGenes = Object.keys(topGenesWithCasesPerProject).reduce(
       (acc, g) => [...acc, ...Object.keys(topGenesWithCasesPerProject[g])],
-      []
+      [],
     );
 
     const primarySiteProjects = sortBy(projects, [
       p => projectsInTopGenes.includes(p),
-      p => p.project_id
+      p => p.project_id,
     ]).reduce(
       (acc, p, i) => ({
         ...acc,
@@ -355,11 +356,11 @@ const ProjectsChartsComponent = compose(
           color: acc[p.primary_site] ? acc[p.primary_site].color : color(i),
           projects: [
             ...(acc[p.primary_site] || { projects: [] }).projects,
-            p.project_id
-          ]
-        }
+            p.project_id,
+          ],
+        },
       }),
-      {}
+      {},
     );
 
     // brighten project colors by a multiplier that's based on projects number, so the slices don't get too light
@@ -376,14 +377,14 @@ const ProjectsChartsComponent = compose(
                 .color(primarySiteProjects[primarySite].color)
                 .brighter(
                   0.5 *
-                    (1 / primarySiteProjects[primarySite].projects.length * i)
-                )
+                    (1 / primarySiteProjects[primarySite].projects.length * i),
+                ),
             }),
-            {}
-          )
-        }
+            {},
+          ),
+        },
       }),
-      {}
+      {},
     );
 
     return (
@@ -393,7 +394,7 @@ const ProjectsChartsComponent = compose(
             paddingRight: "10px",
             minWidth: "550px",
             flexGrow: "2",
-            flexBasis: "66%"
+            flexBasis: "66%",
           }}
         >
           <div
@@ -401,7 +402,7 @@ const ProjectsChartsComponent = compose(
               alignSelf: "center",
               color: theme.greyScale7,
               padding: "1.5rem 0 0.5rem",
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           >
             Top Mutated Cancer Genes in Selected Projects
@@ -417,7 +418,7 @@ const ProjectsChartsComponent = compose(
                   style={{
                     alignSelf: "center",
                     color: theme.greyScale7,
-                    fontSize: "1.2rem"
+                    fontSize: "1.2rem",
                   }}
                   key="bar-subtitle"
                 >
@@ -426,7 +427,7 @@ const ProjectsChartsComponent = compose(
                       searchTableTab: "cases",
                       filters: caseCountFilters
                         ? { op: "and", content: caseCountFilters }
-                        : null
+                        : null,
                     }}
                   >
                     {numUniqueCases.toLocaleString()}
@@ -443,36 +444,36 @@ const ProjectsChartsComponent = compose(
                         data={stackedBarData}
                         projectsIdtoName={projects.reduce(
                           (acc, p) => ({ ...acc, [p.project_id]: p.name }),
-                          {}
+                          {},
                         )}
                         colors={Object.keys(primarySiteToColor).reduce(
                           (acc, pSite) => ({
                             ...acc,
-                            ...primarySiteToColor[pSite].projects
+                            ...primarySiteToColor[pSite].projects,
                           }),
-                          {}
+                          {},
                         )}
                         yAxis={{ title: "Cases Affected" }}
                         styles={{
                           xAxis: {
                             stroke: theme.greyScale4,
-                            textFill: theme.greyScale3
+                            textFill: theme.greyScale3,
                           },
                           yAxis: {
                             stroke: theme.greyScale4,
-                            textFill: theme.greyScale3
-                          }
+                            textFill: theme.greyScale3,
+                          },
                         }}
                       />
                     )}
                   </Measure>
-                </span>
+                </span>,
               ]
             : <Row
                 style={{
                   justifyContent: "center",
                   paddingTop: "2em",
-                  paddingBottom: "2em"
+                  paddingBottom: "2em",
                 }}
               >
                 <SpinnerParticle />
@@ -484,7 +485,7 @@ const ProjectsChartsComponent = compose(
               alignSelf: "center",
               color: theme.greyScale7,
               padding: "1.5rem 0 0.5rem",
-              fontWeight: "bold"
+              fontWeight: "bold",
             }}
           >
             Case Distribution per Project
@@ -495,7 +496,7 @@ const ProjectsChartsComponent = compose(
                   style={{
                     alignSelf: "center",
                     fontSize: "1.2rem",
-                    marginBottom: "2rem"
+                    marginBottom: "2rem",
                   }}
                   key="pie-subtitle"
                 >
@@ -509,18 +510,18 @@ const ProjectsChartsComponent = compose(
                     colors={primarySiteToColor}
                     data={Object.keys(doubleRingData).map(primarySite => ({
                       key: primarySite,
-                      ...doubleRingData[primarySite]
+                      ...doubleRingData[primarySite],
                     }))}
                     height={200}
                     width={200}
                   />
-                </span>
+                </span>,
               ]
             : <Row
                 style={{
                   justifyContent: "center",
                   paddingTop: "2em",
-                  paddingBottom: "2em"
+                  paddingBottom: "2em",
                 }}
               >
                 <SpinnerParticle />
@@ -528,7 +529,7 @@ const ProjectsChartsComponent = compose(
         </Column>
       </Container>
     );
-  }
+  },
 );
 
 export const ProjectsChartsQuery = {
@@ -536,7 +537,7 @@ export const ProjectsChartsQuery = {
     fetchGeneData: false,
     fmgCaseCount_filters: null,
     fmgChart_filters: null,
-    score: "case.project.project_id"
+    score: "case.project.project_id",
   },
   fragments: {
     explore: () => Relay.QL`
@@ -596,13 +597,13 @@ export const ProjectsChartsQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const ProjectsCharts = Relay.createContainer(
   ProjectsChartsComponent,
-  ProjectsChartsQuery
+  ProjectsChartsQuery,
 );
 
 export default ProjectsCharts;

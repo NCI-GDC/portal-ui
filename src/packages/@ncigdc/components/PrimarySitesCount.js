@@ -6,8 +6,8 @@ import type { TBucket } from "@ncigdc/components/Aggregations/types";
 
 export type TProps = {
   aggregations: {
-    primary_site: { buckets: [TBucket] }
-  }
+    primary_site: { buckets: [TBucket] },
+  },
 };
 
 const PrimarySitesCount = (props: TProps) => (

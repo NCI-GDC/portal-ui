@@ -14,13 +14,13 @@ type TPropsMulti = {
   field: string,
   slug?: string,
   currentFilters?: Object,
-  size?: number
+  size?: number,
 };
 
 const MINIMUM_CASES = 10;
 
 const Symbol = styled.span({
-  fontSize: "1.2em"
+  fontSize: "1.2em",
 });
 
 export const enoughData = (data: Object) =>
@@ -31,11 +31,11 @@ export const enoughData = (data: Object) =>
 
 async function fetchCurves(
   filters: ?Array<Object>,
-  size: number
+  size: number,
 ): Promise<Object> {
   const params = _.omitBy(
     { filters: filters && JSON.stringify(filters), size },
-    _.isNil
+    _.isNil,
   );
   const url = `analysis/survival?${queryString.stringify(params)}`;
   const rawData = await fetchApi(url);
@@ -51,27 +51,27 @@ export const getDefaultCurve = memoize(
       ? slug && [
           {
             key: slug,
-            value: `${rawData.results[0].donors.length.toLocaleString()} Cases with Survival Data`
-          }
+            value: `${rawData.results[0].donors.length.toLocaleString()} Cases with Survival Data`,
+          },
         ]
       : [
           {
             key: `${slug || ""}-not-enough-data`,
-            value: <span>Not enough survival data</span>
-          }
+            value: <span>Not enough data{slug && ` on ${slug}`}</span>,
+          },
         ];
 
     return {
       rawData,
       id: slug,
-      legend
+      legend,
     };
   },
   {
     max: 10,
     promise: true,
-    normalizer: args => JSON.stringify(args[0])
-  }
+    normalizer: args => JSON.stringify(args[0]),
+  },
 );
 
 export const getSurvivalCurves = memoize(
@@ -80,20 +80,20 @@ export const getSurvivalCurves = memoize(
     field,
     slug,
     currentFilters,
-    size
+    size,
   }: TPropsMulti): Promise<Object> => {
     const filters = [
       replaceFilters(
         {
           op: "and",
-          content: [{ op: "excludeifany", content: { field, value } }]
+          content: [{ op: "excludeifany", content: { field, value } }],
         },
-        currentFilters
+        currentFilters,
       ),
       replaceFilters(
         { op: "and", content: [{ op: "=", content: { field, value } }] },
-        currentFilters
-      )
+        currentFilters,
+      ),
     ];
 
     const rawData = await fetchCurves(filters, size);
@@ -106,9 +106,9 @@ export const getSurvivalCurves = memoize(
           ...r,
           meta: {
             ...r.meta,
-            label: `S${idx + 1}`
-          }
-        }))
+            label: `S${idx + 1}`,
+          },
+        })),
       },
       id: value,
       legend: hasEnoughData
@@ -129,7 +129,7 @@ export const getSurvivalCurves = memoize(
                   {" "}
                   Not Mutated Cases
                 </span>
-              )
+              ),
             },
             {
               key: `${slug || value}-mutated`,
@@ -147,20 +147,20 @@ export const getSurvivalCurves = memoize(
                   {" "}
                   Mutated Cases
                 </span>
-              )
-            }
+              ),
+            },
           ]
         : [
             {
               key: `${slug || value}-not-enough-data`,
-              value: <span>Not enough survival data for {slug || value}</span>
-            }
-          ]
+              value: <span>Not enough data on {slug || value}</span>,
+            },
+          ],
     };
   },
   {
     max: 10,
     promise: true,
-    normalizer: args => JSON.stringify(args[0])
-  }
+    normalizer: args => JSON.stringify(args[0]),
+  },
 );

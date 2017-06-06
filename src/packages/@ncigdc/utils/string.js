@@ -4,14 +4,14 @@ export const capitalize = (original: string) => {
   const customCapitalizations = {
     mirna: "miRNA",
     dbsnp: "dbSNP",
-    cosmic: "COSMIC"
+    cosmic: "COSMIC",
   };
   return original
     .split(" ")
     .map(
       word =>
         customCapitalizations[word.toLowerCase()] ||
-        `${word.charAt(0).toUpperCase()}${word.slice(1)}`
+        `${word.charAt(0).toUpperCase()}${word.slice(1)}`,
     )
     .join(" ");
 };
@@ -19,7 +19,7 @@ export const capitalize = (original: string) => {
 export const humanify = ({
   term,
   capitalize: cap = true,
-  facetTerm = false
+  facetTerm = false,
 }) => {
   let original;
   let humanified;

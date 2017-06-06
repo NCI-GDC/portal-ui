@@ -4,12 +4,12 @@ const UPDATE_RELAY_PROGRESS = "UPDATE_RELAY_PROGRESS";
 
 const updateProgress = (payload: Object): Object => ({
   type: UPDATE_RELAY_PROGRESS,
-  payload
+  payload,
 });
 
 const initialState = {
   percent: 0,
-  event: null
+  event: null,
 };
 
 const reducer = (state = initialState, action: Object) => {
@@ -29,21 +29,21 @@ const handleStateChange: THandleStateChange = props => ({ events }) => {
   props.dispatch(
     updateProgress({
       percent: events.length * 30,
-      event: events[events.length - 1].type
-    })
+      event: events[events.length - 1].type,
+    }),
   );
 
   if (
     events.some(
       x =>
-        x.type === "NETWORK_QUERY_RECEIVED_ALL" || x.type === "STORE_FOUND_ALL"
+        x.type === "NETWORK_QUERY_RECEIVED_ALL" || x.type === "STORE_FOUND_ALL",
     )
   ) {
     props.dispatch(
       updateProgress({
         percent: 0,
-        event: events[events.length - 1].type
-      })
+        event: events[events.length - 1].type,
+      }),
     );
   }
 };

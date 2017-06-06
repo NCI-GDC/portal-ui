@@ -41,7 +41,7 @@ const SkipLink = styled.a({
   position: "absolute",
   left: "-999px",
   backgroundColor: "#fff",
-  zIndex: 1000
+  zIndex: 1000,
 });
 
 const FIRST_TIME_KEY = "NCI-Warning";
@@ -68,13 +68,13 @@ const enhance = compose(
     },
     componentWillUnmount(): void {
       this.removeListen(); // eslint-disable-line fp/no-this
-    }
-  })
+    },
+  }),
 );
 const PortalContainer = ({
-  notifications
+  notifications,
 }: {
-  notifications: Array<{ dismissed: string }>
+  notifications: Array<{ dismissed: string }>,
 }) => (
   <div style={{ position: "relative", minHeight: "100vh" }}>
     <SkipLink href="#skip">Skip to Main Content</SkipLink>
@@ -85,7 +85,7 @@ const PortalContainer = ({
       style={{
         paddingTop: `calc(51px + ${notifications.filter(n => !n.dismissed).length * 40}px)`,
         paddingBottom: "120px",
-        transition: "padding 0.25s ease"
+        transition: "padding 0.25s ease",
       }}
     >
       <Route

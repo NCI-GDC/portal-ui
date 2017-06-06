@@ -15,7 +15,7 @@ const styles = {
     zIndex: 55,
     boxShadow: "0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)",
     fontSize: "2.2rem",
-    left: 0
+    left: 0,
   }),
   type: theme => ({
     backgroundColor: theme.primary,
@@ -28,16 +28,16 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     width: "30px",
-    transform: "scale(0.85)"
+    transform: "scale(0.85)",
   }),
   body: {
     width: "100vw",
     maxWidth: "1600px",
-    padding: "85px 100px 90px"
+    padding: "85px 100px 90px",
   },
   wrapper: {
-    alignItems: "center"
-  }
+    alignItems: "center",
+  },
 };
 
 const FullWidthLayout = props => (

@@ -15,23 +15,23 @@ const SortRow = styled(Row, {
   alignItems: "center",
   padding: "0.3rem 0.6rem",
   ":hover": {
-    backgroundColor: ({ theme }) => theme.greyScale6
-  }
+    backgroundColor: ({ theme }) => theme.greyScale6,
+  },
 });
 
 const ArrangeColumns = compose(
   connect((state, props) => ({
-    tableColumns: state.tableColumns[props.entityType]
+    tableColumns: state.tableColumns[props.entityType],
   })),
   withState("state", "setState", ({ entityType }) => ({
     draggingIndex: null,
-    columns: tableModels[entityType]
+    columns: tableModels[entityType],
   })),
-  pure
+  pure,
 )(({ dispatch, tableColumns, setState, state, searchTerm, entityType }) => {
   const filteredColumns = state.columns.filter(
     x =>
-      x.name.toLowerCase().includes(searchTerm.toLowerCase()) && !x.subHeading
+      x.name.toLowerCase().includes(searchTerm.toLowerCase()) && !x.subHeading,
   );
 
   return (
@@ -51,11 +51,11 @@ const ArrangeColumns = compose(
                           x.id,
                           ...tableModels[entityType]
                             .filter(c => c.parent === x.id)
-                            .map(c => c.id)
+                            .map(c => c.id),
                         ]
-                      : [])
+                      : []),
                   ],
-                  []
+                  [],
                 );
 
                 dispatch(setColumns({ entityType, ids: nextColumnIds }));
@@ -73,18 +73,18 @@ const ArrangeColumns = compose(
               onClick={() => {
                 if (column.subHeadingIds) {
                   column.subHeadingIds.forEach(id =>
-                    dispatch(toggleColumn({ entityType, id }))
+                    dispatch(toggleColumn({ entityType, id })),
                   );
                 }
 
                 // brittle, assuming a single column with subheadings.
                 const subHeadingCol = tableModels[entityType].find(
-                  x => x.subHeadingIds
+                  x => x.subHeadingIds,
                 );
                 // find current index of subheading columm
-                const subHeadingColIndex = !subHeadingCol
-                  ? -1
-                  : tableColumns.indexOf(subHeadingCol.id);
+                const subHeadingColIndex = tableColumns.indexOf(
+                  subHeadingCol.id,
+                );
                 // figure out whether to put before or after column with subheadings
                 const afterSubheadingCol =
                   subHeadingColIndex !== -1 && subHeadingColIndex < i;
@@ -96,8 +96,8 @@ const ArrangeColumns = compose(
                     // if after subheading col include number of subheadings to place inbetween
                     index: afterSubheadingCol && !column.subHeadingIds
                       ? i + subHeadingCol.subHeadingIds.length
-                      : i
-                  })
+                      : i,
+                  }),
                 );
               }}
             >

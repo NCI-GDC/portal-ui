@@ -7,7 +7,7 @@ import {
   withState,
   withHandlers,
   withProps,
-  withPropsOnChange
+  withPropsOnChange,
 } from "recompose";
 import type { TSearchHit } from "@ncigdc/components/QuickSearch/types";
 
@@ -19,7 +19,7 @@ export const withSearch = passedInState => {
     results: [],
     query: "",
     isLoading: false,
-    isInSearchMode: false
+    isInSearchMode: false,
   };
 
   // prevent results that come back out-of-order from being displayed
@@ -34,7 +34,7 @@ export const withSearch = passedInState => {
         if (timeOfMostRecentRequest === timeOfRequest) {
           setState(s => ({ ...s, results, isLoading: false }));
         }
-      }
+      },
     })),
     withHandlers({
       setQuery: ({ setState }) => q => {
@@ -46,21 +46,21 @@ export const withSearch = passedInState => {
       fetchResults: ({ handleResults }) => (query, timeOfRequest) =>
         throttledInvoker(() =>
           fetchApi(
-            `/all?query=${window.encodeURIComponent(query)}&size=5`
+            `/all?query=${window.encodeURIComponent(query)}&size=5`,
           ).then(response =>
-            handleResults(response.data.query.hits, timeOfRequest)
-          )
-        )
+            handleResults(response.data.query.hits, timeOfRequest),
+          ),
+        ),
     }),
     withHandlers({
       selectItem: ({ push, reset }) => (item: TSearchHit) => {
         push(
           `/${atob(item.id)
             .split(":")[0]
-            .toLocaleLowerCase()}s/${atob(item.id).split(":")[1]}`
+            .toLocaleLowerCase()}s/${atob(item.id).split(":")[1]}`,
         );
         setTimeout(reset, 100);
-      }
+      },
     }),
     withPropsOnChange(
       (props, nextProps) => props.state.query !== nextProps.state.query,
@@ -73,8 +73,8 @@ export const withSearch = passedInState => {
         } else if (results && results.length) {
           setState(s => ({ ...s, results: [] }));
         }
-      }
-    )
+      },
+    ),
   );
 };
 

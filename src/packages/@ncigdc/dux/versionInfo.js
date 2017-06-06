@@ -13,43 +13,43 @@ const logVersionInfo = ({
   uiVersion,
   uiCommitHash,
   apiCommitHash,
-  apiVersion
+  apiVersion,
 }) => {
   // UI info
   console.groupCollapsed(
     "%c★ UI Git Info\n=============",
-    `${red};${fontStyle}`
+    `${red};${fontStyle}`,
   );
 
   if (uiVersion) {
     console.info(
       `%cTag Link: %c${UI_BASE_URL}/releases/tag/${uiVersion}`,
       fontStyle,
-      blue
+      blue,
     );
   }
 
   console.info(
     `%cCommit Link: %c${UI_BASE_URL}/commit/${uiCommitHash}`,
     fontStyle,
-    blue
+    blue,
   );
   console.groupEnd();
 
   // API info
   console.groupCollapsed(
     "%c★ API Git Info\n==============",
-    `${red};${fontStyle}`
+    `${red};${fontStyle}`,
   );
   console.info(
     `%cTag Link: %c${API_BASE_URL}/releases/tag/${apiVersion}`,
     fontStyle,
-    blue
+    blue,
   );
   console.info(
     `%cCommit Link: %c${API_BASE_URL}/commit/${apiCommitHash}`,
     fontStyle,
-    blue
+    blue,
   );
   console.groupEnd();
 };
@@ -65,17 +65,17 @@ export function fetchApiVersionInfo(): Function {
     const apiVersionInfo = {
       apiVersion: tag,
       apiCommitHash: commit,
-      dataRelease: data_release
+      dataRelease: data_release,
     };
 
     logVersionInfo({
       ...getState().versionInfo,
-      ...apiVersionInfo
+      ...apiVersionInfo,
     });
 
     dispatch({
       type: VERSION_INFO_SUCCESS,
-      payload: apiVersionInfo
+      payload: apiVersionInfo,
     });
   };
 }
@@ -86,15 +86,15 @@ const initialState = {
   uiCommitHash: process.env.REACT_APP_COMMIT_HASH,
   apiVersion: "",
   apiCommitHash: "",
-  dataRelease: ""
+  dataRelease: "",
 };
 
 export default handleActions(
   {
     [VERSION_INFO_SUCCESS]: (state, action) => ({
       ...state,
-      ...action.payload
-    })
+      ...action.payload,
+    }),
   },
-  initialState
+  initialState,
 );

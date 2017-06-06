@@ -27,19 +27,19 @@ type TProps = {
   height: number,
   legend: Array<{
     key: string,
-    value: any
+    value: any,
   }>,
   rawData: {
     results: Array<{
       donors: Array<Object>,
       meta: {
         id: string | number,
-        label: string
-      }
+        label: string,
+      },
     }>,
     overallStats: {
-      pValue: number
-    }
+      pValue: number,
+    },
   },
   setXDomain: Function,
   setSurvivalContainer: Function,
@@ -48,7 +48,7 @@ type TProps = {
   survivalContainer: Element,
   setTooltip: Function,
   push: Function,
-  uniqueClass: string
+  uniqueClass: string,
 };
 
 const TITLE = "Overall Survival Plot";
@@ -57,7 +57,7 @@ const SVG_MARGINS = {
   top: 15,
   right: 20,
   bottom: 40,
-  left: 50
+  left: 50,
 };
 
 const colors = scaleOrdinal(schemeCategory10);
@@ -68,8 +68,8 @@ const styles = {
     fontSize: "1.1rem",
     height: "1.5rem",
     marginTop: "0.5rem",
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 };
 
 const SurvivalPlotWrapper = ({
@@ -79,7 +79,7 @@ const SurvivalPlotWrapper = ({
   setXDomain,
   setSurvivalContainer,
   survivalPlotloading = false,
-  uniqueClass
+  uniqueClass,
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const pValue = overallStats.pValue;
@@ -109,10 +109,10 @@ const SurvivalPlotWrapper = ({
                           document.querySelector(`.${uniqueClass} .legend-1`),
                           pValue
                             ? document.querySelector(`.${uniqueClass} .p-value`)
-                            : null
-                        ]
-                      }
-                    }
+                            : null,
+                        ],
+                      },
+                    },
                   })}
                 data={results}
                 stylePrefix={`.${CLASS_NAME}`}
@@ -125,7 +125,7 @@ const SurvivalPlotWrapper = ({
                     ...data,
                     ...(results.length > 1
                       ? mapData.map(m => m.set("label", set.meta.label))
-                      : mapData)
+                      : mapData),
                   ];
                 }, [])}
               />,
@@ -133,7 +133,7 @@ const SurvivalPlotWrapper = ({
                 <Button style={visualizingButton} onClick={() => setXDomain()}>
                   <i className="fa fa-undo" /><Hidden>Reset</Hidden>
                 </Button>
-              </Tooltip>
+              </Tooltip>,
             ]}
           />
           <div>
@@ -141,7 +141,7 @@ const SurvivalPlotWrapper = ({
               style={{
                 justifyContent: "center",
                 flexWrap: "wrap",
-                marginTop: "0.5rem"
+                marginTop: "0.5rem",
               }}
             >
               {legend &&
@@ -152,7 +152,7 @@ const SurvivalPlotWrapper = ({
                         color: palette[i],
                         padding: "0 1rem",
                         fontSize: "1.35rem",
-                        textAlign: "center"
+                        textAlign: "center",
                       }}
                     >
                       {l.value}
@@ -174,7 +174,7 @@ const SurvivalPlotWrapper = ({
               textAlign: "right",
               marginBottom: -SVG_MARGINS.top,
               marginRight: SVG_MARGINS.right,
-              fontSize: "1.1rem"
+              fontSize: "1.1rem",
             }}
           >
             drag to zoom
@@ -186,7 +186,7 @@ const SurvivalPlotWrapper = ({
         style={{
           overflow: "hidden",
           height: survivalPlotloading ? "0px" : height,
-          position: "relative"
+          position: "relative",
         }}
       />
     </Loader>
@@ -201,7 +201,7 @@ function renderSurvivalPlot(props: TProps): void {
     survivalContainer,
     setXDomain,
     setTooltip,
-    push
+    push,
   } = props;
   const { results = [] } = rawData;
 
@@ -226,13 +226,13 @@ function renderSurvivalPlot(props: TProps): void {
             {censored
               ? `Interval of last follow-up: ${time.toLocaleString()} days`
               : `Time of Death: ${time.toLocaleString()} days`}
-          </span>
+          </span>,
         );
       },
       onMouseLeaveDonor: () => setTooltip(),
       onClickDonor: (e, donor) => push({ pathname: `/cases/${donor.id}` }),
       onDomainChange: setXDomain,
-      margins: SVG_MARGINS
+      margins: SVG_MARGINS,
     });
   }
 }
@@ -255,8 +255,8 @@ const enhance = compose(
 
     componentDidMount(): void {
       renderSurvivalPlot(this.props); // eslint-disable-line fp/no-this
-    }
-  })
+    },
+  }),
 );
 
 export default enhance(SurvivalPlotWrapper);

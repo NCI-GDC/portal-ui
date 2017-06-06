@@ -49,8 +49,8 @@ class Route extends Relay.Route {
     return {
       genesBarChart_filters: parseFilterParam(
         q.genesBarChart_filters,
-        defaultFilters || null
-      )
+        defaultFilters || null,
+      ),
     };
   };
 }
@@ -60,12 +60,15 @@ const createContainer = Component =>
     initialVariables: {
       genesBarChart_filters: null,
       score: "case.project.project_id",
-      ssmTested: makeFilter([
-        {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ])
+      ssmTested: makeFilter(
+        [
+          {
+            field: "cases.available_variation_data",
+            value: "ssm",
+          },
+        ],
+        false,
+      ),
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -107,8 +110,8 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 const Component = compose(
@@ -117,26 +120,26 @@ const Component = compose(
     handleClickGene: ({ push, onClickGene }) => (gene, chartData) =>
       onClickGene
         ? onClickGene(gene, chartData)
-        : push(`/genes/${gene.gene_id}`)
+        : push(`/genes/${gene.gene_id}`),
   }),
-  withTheme
+  withTheme,
 )(
   ({
     projectId = "",
     theme,
     viewer: {
-      explore: { genes = { hits: { edges: [] } }, cases, filteredCases }
+      explore: { genes = { hits: { edges: [] } }, cases, filteredCases },
     },
     context = "explore",
     handleClickGene,
-    style
+    style,
   }) => {
     const numCasesAggByProject = cases.aggregations.project__project_id.buckets.reduce(
       (acc, b) => ({
         ...acc,
-        [b.key]: b.doc_count
+        [b.key]: b.doc_count,
       }),
-      {}
+      {},
     );
 
     const tooltipContext = (ctx, { symbol, score = 0 }) => {
@@ -199,7 +202,7 @@ const Component = compose(
           ? g.score / numCasesAggByProject[projectId] * 100
           : g.score / filteredCases.hits.total * 100,
         tooltip: tooltipContext(context, g),
-        onClick: () => handleClickGene(g, mutatedGenesChartData)
+        onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
 
     return (
@@ -215,16 +218,16 @@ const Component = compose(
                   svg={() =>
                     wrapSvg({
                       selector: "#mutated-genes-chart svg",
-                      title: TITLE
+                      title: TITLE,
                     })}
                   data={mutatedGenesChartData.map(d => ({
                     label: d.label,
-                    value: d.value
+                    value: d.value,
                   }))}
                   slug="most-frequently-mutated-genes-bar-chart"
                   tooltipHTML="Download image or data"
                   noText
-                />
+                />,
               ]}
             />
             {!!mutatedGenesChartData.length &&
@@ -237,18 +240,18 @@ const Component = compose(
                     styles={{
                       xAxis: {
                         stroke: theme.greyScale4,
-                        textFill: theme.greyScale3
+                        textFill: theme.greyScale3,
                       },
                       yAxis: {
                         stroke: theme.greyScale4,
-                        textFill: theme.greyScale3
+                        textFill: theme.greyScale3,
                       },
                       bars: { fill: theme.secondary },
                       tooltips: {
                         fill: "#fff",
                         stroke: theme.greyScale4,
-                        textFill: theme.greyScale3
-                      }
+                        textFill: theme.greyScale3,
+                      },
                     }}
                   />
                 </Row>
@@ -256,7 +259,7 @@ const Component = compose(
           </Column>}
       </div>
     );
-  }
+  },
 );
 
 export default createRenderer(Route, createContainer(Component));

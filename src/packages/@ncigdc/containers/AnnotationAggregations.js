@@ -25,11 +25,11 @@ export type TProps = {
     project__primary_site: { buckets: [TBucket] },
     project__program__name: { buckets: [TBucket] },
     project__project_id: { buckets: [TBucket] },
-    status: { buckets: [TBucket] }
+    status: { buckets: [TBucket] },
   },
   setAutocomplete: () => {},
   suggestions: Array<Object>,
-  theme: Object
+  theme: Object,
 };
 
 const annotationFacets = [
@@ -38,61 +38,61 @@ const annotationFacets = [
     field: "entity_id",
     full: "annotations.entity_id",
     doc_type: "annotations",
-    type: "exact"
+    type: "exact",
   },
   {
     title: "Case UUID",
     field: "case_id",
     full: "annotations.case_id",
     doc_type: "annotations",
-    type: "exact"
+    type: "exact",
   },
   {
     title: "Primary Site",
     field: "project.primary_site",
     full: "annotations.project.primary_site",
     doc_type: "annotations",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Project",
     field: "project.project_id",
     full: "annotations.project.project_id",
     doc_type: "annotations",
-    type: "terms"
+    type: "terms",
   },
   {
     title: "Entity Type",
     field: "entity_type",
     full: "annotations.entity_type",
     doc_type: "annotations",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Annotation Category",
     field: "category",
     full: "annotations.category",
     doc_type: "annotations",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Annotation Created",
     field: "created_datetime",
     full: "annotations.created_datetime",
     doc_type: "annotations",
-    type: "date"
+    type: "date",
   },
   {
     title: "Annotation Classification",
     field: "classification",
     full: "annotations.classification",
     doc_type: "annotations",
-    type: "keyword"
-  }
+    type: "keyword",
+  },
 ];
 
 export const AnnotationAggregationsComponent = compose(
-  withState("annotationIdCollapsed", "setAnnotationIdCollapsed", false)
+  withState("annotationIdCollapsed", "setAnnotationIdCollapsed", false),
 )((props: TProps) => (
   <div>
     <FacetHeader
@@ -178,13 +178,13 @@ export const AnnotationAggregationsQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const AnnotationAggregations = Relay.createContainer(
   withTheme(AnnotationAggregationsComponent),
-  AnnotationAggregationsQuery
+  AnnotationAggregationsQuery,
 );
 
 export default AnnotationAggregations;

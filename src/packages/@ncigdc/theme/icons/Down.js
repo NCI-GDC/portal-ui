@@ -3,7 +3,7 @@ import React from "react";
 import validAttributes from "@ncigdc/theme/utils/validAttributes";
 
 type TProps = {
-  className?: string
+  className?: string,
 };
 
 export default ({ className = "", ...props }: TProps = {}) => (

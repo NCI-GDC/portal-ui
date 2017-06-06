@@ -18,5 +18,5 @@ const NotificationContainer = ({ notification }) => (
 );
 
 export default connect(state => ({ notification: state.notification }))(
-  NotificationContainer
+  NotificationContainer,
 );

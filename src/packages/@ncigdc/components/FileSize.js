@@ -15,14 +15,14 @@ type TProps = {|
     spacer?: string,
     standard?: string,
     symbols?: Object,
-    unix?: boolean
-  |}
+    unix?: boolean,
+  |},
 |};
 
 const FileSize = (props: TProps) => (
   <span>
     {formatFileSize(props.bytes, {
-      ...props.options
+      ...props.options,
     })}
   </span>
 );

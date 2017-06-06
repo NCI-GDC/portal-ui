@@ -4,11 +4,11 @@ import React from "react";
 type TProps = {
   color: string,
   height: string,
-  width: string
+  width: string,
 };
 type TDoubleHelix = (props: TProps) => React.Element<*>;
 const DoubleHelix: TDoubleHelix = (
-  { width = "100%", height = "100%", color = "rgb(107,98,98)" } = {}
+  { width = "100%", height = "100%", color = "rgb(107,98,98)" } = {},
 ) => (
   <svg
     width={width}
@@ -19,7 +19,7 @@ const DoubleHelix: TDoubleHelix = (
       fillRule: "evenodd",
       clipRule: "evenodd",
       strokeLinejoin: "round",
-      strokeMiterlimit: 1.41421
+      strokeMiterlimit: 1.41421,
     }}
   >
     <g

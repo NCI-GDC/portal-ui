@@ -15,7 +15,7 @@ const Container = styled(Row, {
   margin: "2rem 0",
   justifyContent: "space-around",
   width: "100vw",
-  padding: "0 14rem"
+  padding: "0 14rem",
 });
 
 const GDCAppsRow = () => (

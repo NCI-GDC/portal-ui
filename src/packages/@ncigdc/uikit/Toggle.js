@@ -11,7 +11,7 @@ const DownIcon = styled(DI, {
   fontSize: "1.2em",
   transform: ({ isDown }) => `rotate(${isDown ? "0deg" : "90deg"})`,
   transition: "0.3s ease",
-  cursor: "pointer"
+  cursor: "pointer",
 });
 
 type TProps = {
@@ -19,12 +19,12 @@ type TProps = {
   toggleActive: Function,
   title: mixed,
   onToggle?: Function,
-  children: mixed
+  children: mixed,
 };
 
 // the first item in items is used as the toggle
 const TogglableUl = (
-  { active, toggleActive, children, title, onToggle = () => {} }: TProps = {}
+  { active, toggleActive, children, title, onToggle = () => {} }: TProps = {},
 ) => (
   <span>
     <div>

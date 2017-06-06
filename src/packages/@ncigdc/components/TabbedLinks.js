@@ -11,16 +11,16 @@ type TTabbedLinksProps = {
   links: [Object],
   queryParam: string,
   tabToolbar?: React.Element<>,
-  hideTabs?: boolean
+  hideTabs?: boolean,
 };
 type TTabbedLinks = (props: TTabbedLinksProps) => React.Element<{}>;
 const TabbedLinks: TTabbedLinks = (
-  { links, queryParam, defaultIndex = 0, tabToolbar, hideTabs } = {}
+  { links, queryParam, defaultIndex = 0, tabToolbar, hideTabs } = {},
 ) => (
   <LocationSubscriber>
     {(ctx: {| pathname: string, query: TRawQuery |}) => {
       const foundIndex = links.findIndex(
-        x => x.id === (ctx.query || {})[queryParam]
+        x => x.id === (ctx.query || {})[queryParam],
       );
       const activeIndex = foundIndex > -1 ? foundIndex : defaultIndex;
 
@@ -36,7 +36,7 @@ const TabbedLinks: TTabbedLinks = (
                     style={{
                       padding: "1.2rem 1.8rem",
                       textDecoration: "none",
-                      display: "inline-block"
+                      display: "inline-block",
                     }}
                     key={x.id}
                     query={{ [queryParam]: x.id }}

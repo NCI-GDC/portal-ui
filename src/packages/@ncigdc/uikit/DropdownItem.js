@@ -9,8 +9,8 @@ const itemStyle = {
   width: "100%",
   ":hover": {
     color: "#262626",
-    backgroundColor: "#f5f5f5"
-  }
+    backgroundColor: "#f5f5f5",
+  },
 };
 
 export default ({ children, style, ...props }) => (

@@ -4,7 +4,7 @@
 export type TDataCategory = {|
   case_count?: number,
   data_category: TCategory,
-  file_count?: number
+  file_count?: number,
 |};
 
 // waiting on $Values
@@ -30,6 +30,6 @@ export type TCategoryMap = { [k: TCategoryAbbr]: TCategory };
 
 export type TFindDataCategory = (
   category: TCategoryAbbr,
-  categories: Array<TDataCategory>
+  categories: Array<TDataCategory>,
 ) => TDataCategory;
 export type TSumDataCategories = (categories: Array<TDataCategory>) => number;

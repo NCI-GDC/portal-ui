@@ -12,32 +12,32 @@ export type TProps = {|
   params: Object,
   prefix?: string,
   total: number,
-  theme: Object
+  theme: Object,
 |};
 
 const styles = {
   topRow: theme => ({
     alignItems: "center",
     padding: "1rem",
-    borderTop: `1px solid ${theme.greyScale5}`
+    borderTop: `1px solid ${theme.greyScale5}`,
   }),
   leftBtn: theme => ({
     border: `1px solid ${theme.greyScale5}`,
-    borderRadius: "4px 0 0 4px"
+    borderRadius: "4px 0 0 4px",
   }),
   middleBtn: theme => ({
     borderTop: `1px solid ${theme.greyScale5}`,
     borderBottom: `1px solid ${theme.greyScale5}`,
     borderRight: `1px solid ${theme.greyScale5}`,
-    borderLeft: "none"
+    borderLeft: "none",
   }),
   rightBtn: theme => ({
     borderTop: `1px solid ${theme.greyScale5}`,
     borderBottom: `1px solid ${theme.greyScale5}`,
     borderRight: `1px solid ${theme.greyScale5}`,
     borderLeft: "none",
-    borderRadius: "0 4px 4px 0"
-  })
+    borderRadius: "0 4px 4px 0",
+  }),
 };
 
 export const calculatePages = (props: TProps): {} => {
@@ -67,7 +67,7 @@ export const calculatePages = (props: TProps): {} => {
     nextPred,
     currentPage,
     totalPages,
-    pageOffset
+    pageOffset,
   };
 };
 
@@ -75,7 +75,7 @@ export const getPaginationRange = (pageOffset, totalPages) => {
   const numPagesToShow = 10;
   return _.range(
     1 + pageOffset,
-    Math.min(numPagesToShow + pageOffset, totalPages) + 1
+    Math.min(numPagesToShow + pageOffset, totalPages) + 1,
   );
 };
 
@@ -91,7 +91,7 @@ const Pagination = (props: TProps) => {
     nextPred,
     currentPage,
     totalPages,
-    pageOffset
+    pageOffset,
   } = calculatePages(props);
 
   return (

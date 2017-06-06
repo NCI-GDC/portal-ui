@@ -19,14 +19,14 @@ import { withTheme } from "@ncigdc/theme";
 const strandIconMap = {
   "-1": <MinusIcon />,
   // $FlowIgnore
-  1: <PlusIcon />
+  1: <PlusIcon />,
 };
 
 type TProps = {
   consequenceDataGrouped: Object,
   theme: Object,
   functionalImpactTranscript: Object,
-  canonicalTranscriptId: string
+  canonicalTranscriptId: string,
 };
 
 const ConsequencesTableComponent = compose(
@@ -34,17 +34,17 @@ const ConsequencesTableComponent = compose(
   withPropsOnChange(["node"], ({ node }) => {
     const consequenceOfInterest = node.consequence.hits.edges.find(
       consequence => get(consequence, "node.transcript.annotation.impact"),
-      {}
+      {},
     );
     const functionalImpactTranscript = get(
       consequenceOfInterest,
       "node.transcript",
-      {}
+      {},
     );
 
     const canonicalTranscriptId = (find(
       node.consequence.hits.edges,
-      "node.transcript.is_canonical"
+      "node.transcript.is_canonical",
     ) || { node: { transcript: { transcript_id: "" } } }).node.transcript
       .transcript_id;
 
@@ -56,17 +56,17 @@ const ConsequencesTableComponent = compose(
     return {
       functionalImpactTranscript,
       canonicalTranscriptId,
-      consequenceDataGrouped
+      consequenceDataGrouped,
     };
-  })
+  }),
 )(
   (
     {
       consequenceDataGrouped,
       canonicalTranscriptId,
       functionalImpactTranscript,
-      theme
-    }: TProps = {}
+      theme,
+    }: TProps = {},
   ) => (
     <EntityPageHorizontalTable
       style={{ width: "100%", minWidth: "450px" }}
@@ -75,7 +75,7 @@ const ConsequencesTableComponent = compose(
         {
           key: "aa_change",
           title: "AA Change",
-          tdStyle: { wordBreak: "break-all", whiteSpace: "pre-line" }
+          tdStyle: { wordBreak: "break-all", whiteSpace: "pre-line" },
         },
         {
           key: "consequence",
@@ -86,15 +86,15 @@ const ConsequencesTableComponent = compose(
             >
               Consequence
             </Tooltip>
-          )
+          ),
         },
         {
           key: "coding_dna_change",
           title: "Coding DNA Change",
-          tdStyle: { wordBreak: "break-all", whiteSpace: "pre-line" }
+          tdStyle: { wordBreak: "break-all", whiteSpace: "pre-line" },
         },
         { key: "strand", title: "Strand" },
-        { key: "transcripts", title: "Transcript(s)" }
+        { key: "transcripts", title: "Transcript(s)" },
       ]}
       data={Object.values(consequenceDataGrouped).map(d => {
         const first = d[0].node.transcript;
@@ -113,7 +113,7 @@ const ConsequencesTableComponent = compose(
             <CollapsibleList
               data={sortBy(
                 transcripts,
-                t => t !== canonicalTranscriptId
+                t => t !== canonicalTranscriptId,
               ).map(t => (
                 <span>
                   <ExternalLink
@@ -122,7 +122,7 @@ const ConsequencesTableComponent = compose(
                       paddingRight: "0.5em",
                       fontWeight: t === functionalImpactTranscript.transcript_id
                         ? "bold"
-                        : "normal"
+                        : "normal",
                     }}
                     href={externalReferenceLinks.ensembl(t)}
                   >
@@ -137,11 +137,11 @@ const ConsequencesTableComponent = compose(
                 </span>
               ))}
             />
-          )
+          ),
         };
       })}
     />
-  )
+  ),
 );
 
 export const ConsequencesTableQuery = {
@@ -173,13 +173,13 @@ export const ConsequencesTableQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const ConsequencesTable = Relay.createContainer(
   ConsequencesTableComponent,
-  ConsequencesTableQuery
+  ConsequencesTableQuery,
 );
 
 export default ConsequencesTable;

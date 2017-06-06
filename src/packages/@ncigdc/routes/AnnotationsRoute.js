@@ -11,7 +11,7 @@ import AnnotationsPage from "@ncigdc/containers/AnnotationsPage";
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam
+  parseJSURLParam,
 } from "@ncigdc/utils/uri";
 
 import { viewerQuery } from "./queries";
@@ -28,7 +28,7 @@ class AnnotationsRoute extends Relay.Route {
       offset: parseIntParam(q.offset, 0),
       size: parseIntParam(q.size, 20),
       filters: parseFilterParam(q.filters, null),
-      annotations_sort: parseJSURLParam(q.annotations_sort, null)
+      annotations_sort: parseJSURLParam(q.annotations_sort, null),
     };
   };
 }

@@ -22,8 +22,8 @@ const DropDownButton = styled.span({
   ":hover": {
     cursor: "pointer",
     color: "#333",
-    backgroundColor: "#dedddd"
-  }
+    backgroundColor: "#dedddd",
+  },
 });
 
 const DropdownContent = styled(Row, {
@@ -31,7 +31,7 @@ const DropdownContent = styled(Row, {
   zIndex: 1,
   textAlign: "center",
   justifyContent: "space-between",
-  width: "initial"
+  width: "initial",
 });
 
 const BUTTON_WIDTH = 26;
@@ -43,12 +43,12 @@ const GDCAppsDropdown = () => (
       margin: 0,
       border: "none",
       color: "#767676",
-      display: "block"
+      display: "block",
     }}
     dropdownStyle={{
       marginTop: "15px",
       borderBottomLeftRadius: "5px",
-      borderBottomRightRadius: "5px"
+      borderBottomRightRadius: "5px",
     }}
     button={
       <DropDownButton>

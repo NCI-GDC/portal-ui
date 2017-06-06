@@ -10,7 +10,7 @@ import {
   CLEAR_CART,
   CART_FULL,
   reducer,
-  MAX_CART_SIZE
+  MAX_CART_SIZE,
 } from "../cart";
 
 const fileA = { file_id: "a", access: "open", file_size: 0, projects: [] };
@@ -24,7 +24,7 @@ describe("action creators", () => {
     addAllFilesInCart(fileA)(dispatch, getState);
     expect(dispatch).toHaveBeenCalledWith({
       type: ADD_TO_CART,
-      payload: [fileA]
+      payload: [fileA],
     });
   });
 
@@ -34,7 +34,7 @@ describe("action creators", () => {
     addAllFilesInCart([fileA, fileB])(dispatch, getState);
     expect(dispatch).toHaveBeenCalledWith({
       type: ADD_TO_CART,
-      payload: [fileA, fileB]
+      payload: [fileA, fileB],
     });
   });
 
@@ -43,24 +43,24 @@ describe("action creators", () => {
       cart: {
         files: range(0, MAX_CART_SIZE - 1).map(id => ({
           ...fileA,
-          file_id: id
-        }))
-      }
+          file_id: id,
+        })),
+      },
     });
     const dispatch = jest.fn();
     addAllFilesInCart(fileA)(dispatch, getState);
     expect(dispatch).toHaveBeenCalledTimes(2);
     expect(dispatch).toHaveBeenCalledWith({
       type: ADD_TO_CART,
-      payload: [fileA]
+      payload: [fileA],
     });
   });
 
   it("should not allow more than MAX_CART_SIZE files to be added", () => {
     const getState = () => ({
       cart: {
-        files: range(0, MAX_CART_SIZE).map(id => ({ ...fileA, file_id: id }))
-      }
+        files: range(0, MAX_CART_SIZE).map(id => ({ ...fileA, file_id: id })),
+      },
     });
     const dispatch = jest.fn();
     addAllFilesInCart(fileA)(dispatch, getState);
@@ -81,7 +81,7 @@ describe("action creators", () => {
     toggleFilesInCart(fileA)(dispatch, getState);
     expect(dispatch).toHaveBeenCalledWith({
       type: UPDATE_CART,
-      payload: [fileA]
+      payload: [fileA],
     });
   });
 
@@ -97,23 +97,23 @@ describe("action creators", () => {
       cart: {
         files: range(0, MAX_CART_SIZE - 1).map(id => ({
           ...fileA,
-          file_id: id
-        }))
-      }
+          file_id: id,
+        })),
+      },
     });
     const dispatch = jest.fn();
     toggleFilesInCart(fileA)(dispatch, getState);
     expect(dispatch).toHaveBeenCalledWith({
       type: UPDATE_CART,
-      payload: [...getState().cart.files, fileA]
+      payload: [...getState().cart.files, fileA],
     });
   });
 
   it("should not allow more files than max to be toggled in", () => {
     const getState = () => ({
       cart: {
-        files: range(0, MAX_CART_SIZE).map(id => ({ ...fileA, file_id: id }))
-      }
+        files: range(0, MAX_CART_SIZE).map(id => ({ ...fileA, file_id: id })),
+      },
     });
     const dispatch = jest.fn();
     toggleFilesInCart(fileA)(dispatch, getState);
@@ -130,8 +130,8 @@ describe("reducer", () => {
     expect(
       reducer(initalState, {
         type: ADD_TO_CART,
-        payload: [fileA]
-      })
+        payload: [fileA],
+      }),
     ).toEqual({ files: [fileA] });
   });
   it("should handle UPDATE_CART", () => {
@@ -140,9 +140,9 @@ describe("reducer", () => {
         { files: [fileA] },
         {
           type: UPDATE_CART,
-          payload: [fileB]
-        }
-      )
+          payload: [fileB],
+        },
+      ),
     ).toEqual({ files: [fileB] });
   });
   it("should handle CLEAR_CART", () => {
@@ -150,9 +150,9 @@ describe("reducer", () => {
       reducer(
         { files: [fileA] },
         {
-          type: CLEAR_CART
-        }
-      )
+          type: CLEAR_CART,
+        },
+      ),
     ).toEqual({ files: [] });
   });
 });

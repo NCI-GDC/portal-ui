@@ -11,12 +11,12 @@ import { withTheme } from "@ncigdc/theme";
 
 const styles = {
   card: {
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   header: theme => ({
     padding: "1rem",
-    color: theme.greyScale7
-  })
+    color: theme.greyScale7,
+  }),
 };
 
 const Card = ({ style, children, title, theme, ...props }) => (
@@ -30,7 +30,7 @@ Card.propTypes = {
   children: PropTypes.node,
   style: PropTypes.object,
   title: PropTypes.node,
-  theme: PropTypes.object
+  theme: PropTypes.object,
 };
 
 /*----------------------------------------------------------------------------*/

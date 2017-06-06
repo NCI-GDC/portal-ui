@@ -45,8 +45,8 @@ class Route extends Relay.Route {
     return {
       affectedCasesBarChart_filters: parseFilterParam(
         q.affectedCasesBarChart_filters,
-        defaultFilters || null
-      )
+        defaultFilters || null,
+      ),
     };
   };
 }
@@ -55,7 +55,7 @@ const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
       affectedCasesBarChart_filters: null,
-      score: "gene.gene_id"
+      score: "gene.gene_id",
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -77,19 +77,19 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 const Component = compose(
   withTheme,
-  withRouter
+  withRouter,
 )(
   ({
     viewer: { explore: { cases = { hits: { edges: [] } } } },
     theme,
     push,
-    style
+    style,
   }) => {
     const chartData = cases.hits.edges.map(x => x.node).map(c => ({
       fullLabel: c.case_id,
@@ -98,7 +98,7 @@ const Component = compose(
       tooltip: (
         <span>{c.case_id}<br />{c.score.toLocaleString()} Genes Affected</span>
       ),
-      onClick: () => push(`/cases/${c.case_id}`)
+      onClick: () => push(`/cases/${c.case_id}`),
     }));
 
     return (
@@ -111,11 +111,11 @@ const Component = compose(
                 svg={() =>
                   wrapSvg({
                     selector: "#most-affected-cases svg",
-                    title: "Most Affected Cases"
+                    title: "Most Affected Cases",
                   })}
                 data={chartData.map(d => ({
                   label: d.fullLabel,
-                  value: d.value
+                  value: d.value,
                 }))}
                 slug="most-affected-cases-bar-chart"
                 noText
@@ -133,25 +133,25 @@ const Component = compose(
                 styles={{
                   xAxis: {
                     stroke: theme.greyScale4,
-                    textFill: theme.greyScale3
+                    textFill: theme.greyScale3,
                   },
                   yAxis: {
                     stroke: theme.greyScale4,
-                    textFill: theme.greyScale3
+                    textFill: theme.greyScale3,
                   },
                   bars: { fill: theme.secondary },
                   tooltips: {
                     fill: "#fff",
                     stroke: theme.greyScale4,
-                    textFill: theme.greyScale3
-                  }
+                    textFill: theme.greyScale3,
+                  },
                 }}
               />
             </Row>}
         </Column>
       </div>
     );
-  }
+  },
 );
 
 export default createRenderer(Route, createContainer(Component));

@@ -62,7 +62,7 @@ const transformChartData: TTransformChartData = ({ hits }) => {
         _key: pID,
         values: primarySiteData,
         _count: caseCount,
-        fileCount
+        fileCount,
       };
     })
     .filter(d => d._count > 0)
@@ -76,7 +76,7 @@ const transformChartData: TTransformChartData = ({ hits }) => {
     _.assign(dataStack, primarySite);
 
     const sortedProjects = primarySite.values.sort(
-      (a, b) => a.summary.case_count - b.summary.case_count
+      (a, b) => a.summary.case_count - b.summary.case_count,
     );
 
     dataStack.stacks = sortedProjects.map(project => {
@@ -94,7 +94,7 @@ const transformChartData: TTransformChartData = ({ hits }) => {
         y1: newPrimarySiteTotal,
         projectID: project.project_id,
         caseCount: project.summary.case_count,
-        fileCount: project.summary.file_count
+        fileCount: project.summary.file_count,
       };
 
       primarySiteTotal = newPrimarySiteTotal;
@@ -110,38 +110,38 @@ const transformChartData: TTransformChartData = ({ hits }) => {
 
 const center = {
   alignItems: "center",
-  justifyContent: "center"
+  justifyContent: "center",
 };
 
 const Title = styled.div({
   color: "white",
-  fontSize: "3rem"
+  fontSize: "3rem",
 });
 
 const SubTitle = styled.div({
-  color: "white"
+  color: "white",
 });
 
 const GradientContainer = styled(Row, {
   backgroundColor: "#000",
-  backgroundImage: "radial-gradient(ellipse at center, rgba(147,206,222,1) 0%, rgba(117,189,209,1) 48%, rgba(73,129,189,1) 100%)"
+  backgroundImage: "radial-gradient(ellipse at center, rgba(147,206,222,1) 0%, rgba(117,189,209,1) 48%, rgba(73,129,189,1) 100%)",
 });
 
 const containerStyle = {
   flex: 1,
   padding: "3rem",
   height: "50rem",
-  position: "relative"
+  position: "relative",
 };
 
 const InsideContainer = styled.div(containerStyle);
 const CenteredColumnContainer = styled(Column, {
   ...containerStyle,
-  ...center
+  ...center,
 });
 
 const initialState = {
-  humanBodyLoading: true
+  humanBodyLoading: true,
 };
 
 const Home = compose(
@@ -155,17 +155,17 @@ const Home = compose(
 
       setState(state => ({
         ...state,
-        humanBodyLoading: !humanBodyData.length
+        humanBodyLoading: !humanBodyData.length,
       }));
 
       const data = transformChartData({ hits: humanBodyData }).sort(
-        (a, b) => (a._key > b._key ? 1 : -1)
+        (a, b) => (a._key > b._key ? 1 : -1),
       );
 
       if (humanBodyData.length) {
         setTimeout(() => {
           const highlights = document.querySelectorAll(
-            "#human-body-highlights > svg"
+            "#human-body-highlights > svg",
           );
           for (const h of highlights) {
             if (!data.some(d => d._key === h.id.replace(/-/g, " "))) {
@@ -181,13 +181,16 @@ const Home = compose(
               if (data.find(x => x._key === key)) {
                 const query = {
                   filters: JSURL.stringify(
-                    makeFilter([
-                      {
-                        field: "cases.primary_site",
-                        value: [key]
-                      }
-                    ])
-                  )
+                    makeFilter(
+                      [
+                        {
+                          field: "cases.primary_site",
+                          value: [key],
+                        },
+                      ],
+                      false,
+                    ),
+                  ),
                 };
                 push({ pathname: "/exploration", query });
               } else {
@@ -208,7 +211,7 @@ const Home = compose(
                     {" "}
                     files)
                   </div>
-                </span>
+                </span>,
               );
             },
             mouseOutHandler: () => setTooltip(),
@@ -220,12 +223,12 @@ const Home = compose(
             offsetTop: root.offsetTop,
             primarySiteKey: "_key",
             caseCountKey: "_count",
-            fileCountKey: "fileCount"
+            fileCountKey: "fileCount",
           });
         });
       }
-    }
-  })
+    },
+  }),
 )(({ state: { humanBodyLoading }, config, ...props }) => (
   <Column>
     <GradientContainer>

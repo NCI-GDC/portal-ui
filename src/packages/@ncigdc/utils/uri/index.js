@@ -8,7 +8,7 @@ import type {
   TRemoveEmptyKeys,
   TParseFilterParam,
   TParseJSURLParam,
-  TParseIntParam
+  TParseIntParam,
 } from "./types";
 
 export const isEmptyArray: TIsEmptyArray = x =>

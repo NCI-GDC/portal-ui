@@ -32,7 +32,7 @@ function getSquare(track: Object): string {
 function legendGradient(track): string {
   return `
     <b>${track.name}: </b> ${track.min || 0} ${fadeSteps.reduce((html, opacity) => html + getSquare(
-        { ...track, opacity }
+        { ...track, opacity },
       ), "")} ${track.max}
   `;
 }
@@ -68,10 +68,10 @@ export const clinicalDonorTracks = [
     group: "Clinical",
     color: {
       male: "#420692",
-      female: "rgb(220, 96, 156)"
+      female: "rgb(220, 96, 156)",
     },
     collapsed: true,
-    legend: legendBoolean
+    legend: legendBoolean,
   },
   {
     name: "Race",
@@ -80,7 +80,7 @@ export const clinicalDonorTracks = [
     sort: sortByString,
     group: "Clinical",
     color: random,
-    legend: legendMulti
+    legend: legendMulti,
   },
   {
     name: "Ethnicity",
@@ -90,7 +90,7 @@ export const clinicalDonorTracks = [
     group: "Clinical",
     color: random,
     collapsed: true,
-    legend: legendMulti
+    legend: legendMulti,
   },
   {
     name: "Age at Diagnosis",
@@ -100,7 +100,7 @@ export const clinicalDonorTracks = [
     group: "Clinical",
     color: "#638f56",
     template: "<div>{{displayId}}</div>{{displayName}}: {{displayValue}}{{#notNullSentinel}} days{{/notNullSentinel}}",
-    legend: track => legendGradient({ ...track, max: "100+" })
+    legend: track => legendGradient({ ...track, max: "100+" }),
   },
   {
     name: "Vital Status",
@@ -110,9 +110,9 @@ export const clinicalDonorTracks = [
     group: "Clinical",
     color: {
       true: "#1693c0",
-      false: "darkred"
+      false: "darkred",
     },
-    legend: legendBoolean
+    legend: legendBoolean,
   },
   {
     name: "Days To Death",
@@ -121,8 +121,8 @@ export const clinicalDonorTracks = [
     sort: sortInt,
     group: "Clinical",
     color: "blue",
-    legend: track => legendGradient({ ...track, max: track.maxDaysToDeath })
-  }
+    legend: track => legendGradient({ ...track, max: track.maxDaysToDeath }),
+  },
 ];
 
 const dataTypeTemplate = `
@@ -140,7 +140,7 @@ export const dataTypeTracks = [
     longName: "Clinical",
     color: "darkkhaki",
     template: dataTypeTemplate,
-    legend: legendSingle
+    legend: legendSingle,
   },
   {
     name: "Biospecimen",
@@ -151,7 +151,7 @@ export const dataTypeTracks = [
     longName: "Biospecimen",
     color: "darkslategrey",
     template: dataTypeTemplate,
-    legend: legendSingle
+    legend: legendSingle,
   },
   {
     name: "Raw Sequencing Data",
@@ -162,7 +162,7 @@ export const dataTypeTracks = [
     longName: "Raw Sequencing Data",
     color: "cyan",
     template: dataTypeTemplate,
-    legend: legendSingle
+    legend: legendSingle,
   },
   {
     name: "Simple Nucleotide Variation",
@@ -173,7 +173,7 @@ export const dataTypeTracks = [
     longName: "Simple Nucleotide Variation",
     color: "darkkhaki",
     template: dataTypeTemplate,
-    legend: legendSingle
+    legend: legendSingle,
   },
   {
     name: "Copy Number Variation",
@@ -184,7 +184,7 @@ export const dataTypeTracks = [
     longName: "Copy Number Variation",
     color: "darksalmon",
     template: dataTypeTemplate,
-    legend: legendSingle
+    legend: legendSingle,
   },
   {
     name: "Transcriptome Profiling",
@@ -195,8 +195,8 @@ export const dataTypeTracks = [
     longName: "Transcriptome Profiling",
     color: "mediumseagreen",
     template: dataTypeTemplate,
-    legend: legendSingle
-  }
+    legend: legendSingle,
+  },
 ];
 
 export const gdcTracks = [
@@ -207,8 +207,8 @@ export const gdcTracks = [
     sort: sortInt,
     group: "GDC",
     color: "mediumpurple",
-    legend: legendGradient
-  }
+    legend: legendGradient,
+  },
 ];
 
 export const geneSetTracks = [
@@ -220,8 +220,8 @@ export const geneSetTracks = [
     sort: sortBool,
     group: "Gene Sets",
     color: "darkgreen",
-    legend: legendSingle
-  }
+    legend: legendSingle,
+  },
 ];
 
 export const geneTracks = [...gdcTracks, ...geneSetTracks];
@@ -229,5 +229,5 @@ export const geneTracks = [...gdcTracks, ...geneSetTracks];
 export default {
   clinicalDonorTracks,
   dataTypeTracks,
-  geneTracks
+  geneTracks,
 };

@@ -24,12 +24,12 @@ const styles = {
     marginLeft: "0px",
     padding: "0.6rem 1rem",
     ":hover": {
-      backgroundColor: theme.greyScale6
-    }
+      backgroundColor: theme.greyScale6,
+    },
   }),
   iconSpacing: {
-    marginRight: "0.6rem"
-  }
+    marginRight: "0.6rem",
+  },
 };
 
 const getUnauthorizedFiles = files =>
@@ -41,7 +41,7 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch }) => (
       dropdownStyle={{
         marginTop: "2px",
         borderRadius: "4px",
-        minWidth: "22rem"
+        minWidth: "22rem",
       }}
       dropdownItemClass={false}
       button={
@@ -50,8 +50,8 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch }) => (
             backgroundColor: "#A62924",
             marginLeft: "10px",
             ":hover": {
-              backgroundColor: "#7C1F1B"
-            }
+              backgroundColor: "#7C1F1B",
+            },
           }}
           leftIcon={<TrashIcon />}
           rightIcon={<DownCaretIcon />}
@@ -86,5 +86,5 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch }) => (
 /*----------------------------------------------------------------------------*/
 
 export default compose(connect(state => state.cart), withTheme)(
-  RemoveFromCartButton
+  RemoveFromCartButton,
 );

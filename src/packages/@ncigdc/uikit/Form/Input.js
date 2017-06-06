@@ -16,8 +16,8 @@ const styles = {
     backgroundColor: "#fff",
     border: "1px solid #ccc",
     boxShadow: "inset 0 1px 1px rgba(0, 0, 0, 0.075)",
-    transition: "border-color ease-in-out .15s, box-shadow ease-in-out .15s"
-  }
+    transition: "border-color ease-in-out .15s, box-shadow ease-in-out .15s",
+  },
 };
 
 const Input = ({ style, getNode, ...props }) => (
@@ -31,7 +31,7 @@ const Input = ({ style, getNode, ...props }) => (
 
 Input.propTypes = {
   style: PropTypes.object,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
 };
 
 /*----------------------------------------------------------------------------*/

@@ -15,15 +15,15 @@ export type TProps = {
   relay: Object,
   viewer: {
     autocomplete: {
-      hits: Array<Object>
+      hits: Array<Object>,
     },
     projects: {
       aggregations: string,
-      hits: string
-    }
+      hits: string,
+    },
   },
   showFacets: boolean,
-  setShowFacets: Function
+  setShowFacets: Function,
 };
 
 export const ProjectsPageComponent = (props: TProps) => (
@@ -44,7 +44,7 @@ export const ProjectsPageComponent = (props: TProps) => (
         }
 
         return field.replace(/^projects/, "cases.project");
-      }
+      },
     }}
     facetTabs={[
       {
@@ -57,11 +57,11 @@ export const ProjectsPageComponent = (props: TProps) => (
             setAutocomplete={(value, onReadyStateChange) =>
               props.relay.setVariables(
                 { idAutocomplete: value, runAutocomplete: !!value },
-                onReadyStateChange
+                onReadyStateChange,
               )}
           />
-        )
-      }
+        ),
+      },
     ]}
     results={
       <span>
@@ -81,13 +81,13 @@ export const ProjectsPageComponent = (props: TProps) => (
                   params={props.relay.route.params}
                   hits={props.viewer.projects.hits}
                 />
-              )
+              ),
             },
             {
               id: "graph",
               text: "Graph",
-              component: <GitHut params={props.relay.route.params} />
-            }
+              component: <GitHut params={props.relay.route.params} />,
+            },
           ]}
         />
       </span>
@@ -103,7 +103,7 @@ export const ProjectsPageQuery = {
     sort: null,
     idAutocomplete: null,
     runAutocomplete: false,
-    projects_sort: null
+    projects_sort: null,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -131,13 +131,13 @@ export const ProjectsPageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const ProjectsPage = Relay.createContainer(
   ProjectsPageComponent,
-  ProjectsPageQuery
+  ProjectsPageQuery,
 );
 
 export default ProjectsPage;

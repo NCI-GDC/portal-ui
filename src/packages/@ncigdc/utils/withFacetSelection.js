@@ -7,7 +7,7 @@ import {
   withProps,
   lifecycle,
   withHandlers,
-  compose
+  compose,
 } from "recompose";
 import tryParseJSON from "@ncigdc/utils/tryParseJSON";
 import withRouter from "@ncigdc/utils/withRouter";
@@ -25,33 +25,33 @@ export default ({
   storageKey,
   presetFacetFields,
   validFacetDocTypes,
-  validFacetPrefixes
-}: TProps) =>
+  validFacetPrefixes,
+}) =>
   compose(
     withState("shouldShowFacetSelection", "setShouldShowFacetSelection", false),
     withState("userSelectedFacets", "setUserSelectedFacets", []),
     withProps(({ userSelectedFacets, setUserSelectedFacets }) => ({
       facetExclusionTest: facet => {
         const facetFieldNamesToExclude = presetFacetFields.concat(
-          userSelectedFacets.map(x => x.field)
+          userSelectedFacets.map(x => x.field),
         );
         const match = _.some([
           !_.includes(validFacetDocTypes, facet.doc_type),
           _.includes(facetFieldNamesToExclude, facet.field),
           validFacetPrefixes &&
-            !_.includes(validFacetPrefixes.map(p => facet.full.indexOf(p)), 0)
+            !_.includes(validFacetPrefixes.map(p => facet.full.indexOf(p)), 0),
         ]);
         return match;
       },
       loadUserSelectedFacetsFromStorage: () => {
         const userSelectedFacetsFromStorage = tryParseJSON(
-          window.localStorage.getItem(storageKey) || null
+          window.localStorage.getItem(storageKey) || null,
         ) || [];
         setUserSelectedFacets(
           _.uniqBy(
             userSelectedFacets.concat(userSelectedFacetsFromStorage),
-            x => x.full
-          )
+            x => x.full,
+          ),
         );
       },
       saveFacetsToStorage: facets => {
@@ -60,15 +60,15 @@ export default ({
         } catch (error) {
           console.error(
             "Unable to save user selected facets to localStorage",
-            error
+            error,
           );
         }
-      }
+      },
     })),
     lifecycle({
       componentWillMount(): void {
         this.props.loadUserSelectedFacetsFromStorage();
-      }
+      },
     }),
     withRouter,
     withHandlers({
@@ -76,7 +76,7 @@ export default ({
         userSelectedFacets,
         setUserSelectedFacets,
         saveFacetsToStorage,
-        setShouldShowFacetSelection
+        setShouldShowFacetSelection,
       }) => facet => {
         const facets = _.uniqBy([facet, ...userSelectedFacets], x => x.full);
         setShouldShowFacetSelection(false);
@@ -85,7 +85,7 @@ export default ({
       },
       handleResetFacets: ({
         setUserSelectedFacets,
-        saveFacetsToStorage
+        saveFacetsToStorage,
       }) => () => {
         setUserSelectedFacets([]);
         saveFacetsToStorage();
@@ -94,24 +94,10 @@ export default ({
         userSelectedFacets,
         setUserSelectedFacets,
         saveFacetsToStorage,
-        push,
-        query
       }) => facet => {
         const facets = _.without(userSelectedFacets, facet);
         setUserSelectedFacets(facets);
         saveFacetsToStorage(facets);
-
-        const newFilters = removeFilter(
-          facet.full,
-          parseFilterParam(query.filters)
-        );
-
-        push({
-          query: removeEmptyKeys({
-            ...query,
-            filters: newFilters && JSURL.stringify(newFilters)
-          })
-        });
-      }
-    })
+      },
+    }),
   );

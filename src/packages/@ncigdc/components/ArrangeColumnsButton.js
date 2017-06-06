@@ -18,7 +18,7 @@ const SearchIcon = styled(SI, {
   color: ({ theme }) => theme.greyScale2,
   padding: "0.7rem",
   width: "3rem",
-  height: "3rem"
+  height: "3rem",
 });
 
 const RestoreDefaults = styled(Row, {
@@ -26,15 +26,15 @@ const RestoreDefaults = styled(Row, {
   padding: "0.3rem 0.6rem",
   cursor: "pointer",
   ":hover": {
-    textDecoration: "underline"
-  }
+    textDecoration: "underline",
+  },
 });
 
 let searchInput;
 
 const ArrangeColumnsButton = compose(
   connect(),
-  withState("searchTerm", "setState", "")
+  withState("searchTerm", "setState", ""),
 )(({ searchTerm, setState, dispatch, entityType, style = {} }) => (
   <Dropdown
     autoclose={false}
@@ -53,7 +53,7 @@ const ArrangeColumnsButton = compose(
         <input
           style={{
             width: "100%",
-            padding: "0.3rem 0.5rem"
+            padding: "0.3rem 0.5rem",
           }}
           type="text"
           placeholder="Filter Columns"

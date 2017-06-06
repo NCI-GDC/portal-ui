@@ -7,7 +7,7 @@ export const colorMap = {
   start_lost: "#ff2323",
   stop_lost: "#d3ec00",
   initiator_codon_variant: "#5abaff",
-  stop_gained: "#af57db"
+  stop_gained: "#af57db",
 };
 
 export const consequenceTypes = Object.keys(colorMap);
@@ -16,8 +16,8 @@ const filter: TValueFilter = {
   op: "in",
   content: {
     field: "ssms.consequence.transcript.consequence_type",
-    value: consequenceTypes
-  }
+    value: consequenceTypes,
+  },
 };
 
 export default filter;

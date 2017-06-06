@@ -7,5 +7,5 @@ export default styled.th({
   padding: "3px",
   lineHeight: "20px",
   textAlign: "left",
-  whiteSpace: "nowrap"
+  whiteSpace: "nowrap",
 });

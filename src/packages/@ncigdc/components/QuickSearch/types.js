@@ -3,7 +3,7 @@
 export type TShard = {
   failed: number,
   successful: number,
-  total: number
+  total: number,
 };
 
 export type TSearchHitType =
@@ -19,7 +19,7 @@ export type TSearchHitType =
 export type TSearchHit = {
   _id: string,
   _score: number,
-  _type: TSearchHitType
+  _type: TSearchHitType,
 };
 
 export type TSearchResponse = {
@@ -28,7 +28,7 @@ export type TSearchResponse = {
     hits: TSearchHit[],
     total: Number,
     timed_out: boolean,
-    took: number
+    took: number,
   },
-  warings: {}
+  warings: {},
 };

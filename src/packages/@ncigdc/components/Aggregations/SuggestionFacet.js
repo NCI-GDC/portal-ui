@@ -32,14 +32,14 @@ const MagnifyingGlass = styled(SearchIcon, {
   height: "3.4rem",
   borderRadius: "4px 0 0 4px",
   border: ({ theme }) => `1px solid ${theme.greyScale4}`,
-  borderRight: "none"
+  borderRight: "none",
 });
 
 const StyledDropdownRow = styled(Row, {
   color: ({ theme }) => theme.greyScale4,
   padding: "1rem",
   textDecoration: "none",
-  fontStyle: "italic"
+  fontStyle: "italic",
 });
 
 const StyledDropdownLink = styled(Link, {
@@ -47,16 +47,16 @@ const StyledDropdownLink = styled(Link, {
   color: ({ theme }) => theme.greyScale2,
   ":link": {
     textDecoration: "none",
-    color: ({ theme, isActive }) => (isActive ? "white" : theme.primary)
+    color: ({ theme, isActive }) => (isActive ? "white" : theme.primary),
   },
   ":visited": {
     textDecoration: "none",
-    color: ({ theme, isActive }) => (isActive ? "white" : theme.primary)
+    color: ({ theme, isActive }) => (isActive ? "white" : theme.primary),
   },
   backgroundColor: ({ isActive }) =>
     isActive ? "rgb(31, 72, 108)" : "inherit",
   width: "100%",
-  textDecoration: "none"
+  textDecoration: "none",
 });
 
 const SuggestionFacet = compose(
@@ -67,21 +67,21 @@ const SuggestionFacet = compose(
   withHandlers({
     // TODO: use router push
     handleSelectItem: () => item =>
-      document.querySelector(`[data-link-id="${item.id}"]`).click()
+      document.querySelector(`[data-link-id="${item.id}"]`).click(),
   }),
   namespace(
     "selectableList",
     withSelectableList(
       {
         keyHandlerName: "handleKeyEvent",
-        listSourcePropPath: "results"
+        listSourcePropPath: "results",
       },
       {
-        onSelectItem: (item, { handleSelectItem }) => handleSelectItem(item)
-      }
-    )
+        onSelectItem: (item, { handleSelectItem }) => handleSelectItem(item),
+      },
+    ),
   ),
-  pure
+  pure,
 )(
   ({
     isLoading,
@@ -102,7 +102,7 @@ const SuggestionFacet = compose(
     style,
     inputValue,
     setInputValue,
-    geneSymbolFragment
+    geneSymbolFragment,
   }) => {
     const query = v => ({
       offset: 0,
@@ -113,11 +113,11 @@ const SuggestionFacet = compose(
             op: "in",
             content: {
               field: `${doctype}.${fieldNoDoctype}`,
-              value: [v]
-            }
-          }
-        ]
-      }
+              value: [v],
+            },
+          },
+        ],
+      },
     });
 
     return (
@@ -128,7 +128,7 @@ const SuggestionFacet = compose(
             .content;
           const currentValues = getFilterValue({
             currentFilters,
-            dotField: `${doctype}.${fieldNoDoctype}`
+            dotField: `${doctype}.${fieldNoDoctype}`,
           }) || { content: { value: [] } };
           return (
             <Container style={style}>
@@ -147,11 +147,11 @@ const SuggestionFacet = compose(
                                 op: "in",
                                 content: {
                                   field: `${doctype}.${fieldNoDoctype}`,
-                                  value: [v]
-                                }
-                              }
-                            ]
-                          }
+                                  value: [v],
+                                },
+                              },
+                            ],
+                          },
                         }}
                       >
                         <CheckCircleOIcon style={{ paddingRight: "0.5rem" }} />
@@ -183,8 +183,8 @@ const SuggestionFacet = compose(
                               _.some([
                                 readyState.ready,
                                 readyState.aborted,
-                                readyState.error
-                              ]) && setIsLoading(false)
+                                readyState.error,
+                              ]) && setIsLoading(false),
                           );
                         }
                       }}
@@ -193,10 +193,10 @@ const SuggestionFacet = compose(
                       value={inputValue}
                       aria-activedescendant={_.get(
                         selectableList,
-                        "focusedItem.id"
+                        "focusedItem.id",
                       )}
                       {...active && {
-                        "aria-owns": `${fieldNoDoctype}-options`
+                        "aria-owns": `${fieldNoDoctype}-options`,
                       }}
                     />
                     {active &&
@@ -207,7 +207,7 @@ const SuggestionFacet = compose(
                           marginTop: 0,
                           top: "35px",
                           width: "300px",
-                          wordBreak: "break-word"
+                          wordBreak: "break-word",
                         }}
                         onMouseUp={mouseUpHandler}
                         onMouseDown={mouseDownHandler}
@@ -245,7 +245,7 @@ const SuggestionFacet = compose(
         }}
       </LocationSubscriber>
     );
-  }
+  },
 );
 
 export default SuggestionFacet;

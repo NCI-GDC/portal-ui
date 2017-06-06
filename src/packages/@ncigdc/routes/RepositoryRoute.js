@@ -11,7 +11,7 @@ import RepositoryPage from "@ncigdc/containers/RepositoryPage";
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam
+  parseJSURLParam,
 } from "@ncigdc/utils/uri";
 
 import { viewerQuery } from "./queries";
@@ -31,7 +31,7 @@ class RepositoryRoute extends Relay.Route {
       files_offset: parseIntParam(q.files_offset, 0),
       files_size: parseIntParam(q.files_size, 20),
       files_sort: parseJSURLParam(q.files_sort, null),
-      filters: parseFilterParam(q.filters, null)
+      filters: parseFilterParam(q.filters, null),
     };
   };
 }

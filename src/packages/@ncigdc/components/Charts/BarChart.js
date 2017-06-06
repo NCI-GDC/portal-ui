@@ -22,7 +22,7 @@ const BarChart = (() => ({
   margin: m,
   setTooltip,
   theme,
-  size: { width }
+  size: { width },
 }) => {
   const el = ReactFauxDOM.createElement("div");
   el.style.width = "100%";
@@ -36,13 +36,13 @@ const BarChart = (() => ({
     textFill: theme.greyScale3,
     fontSize: "1.3rem",
     fontWeight: "500",
-    stroke: theme.greyScale4
+    stroke: theme.greyScale4,
   };
   const xAxisStyle = xAxis.style || {
     textFill: theme.greyScale3,
     fontSize: "1.3rem",
     fontWeight: "700",
-    stroke: theme.greyScale4
+    stroke: theme.greyScale4,
   };
 
   const x = d3
@@ -81,7 +81,7 @@ const BarChart = (() => ({
         .axisLeft(y)
         .ticks(Math.min(4, maxY))
         .tickSize(-chartWidth)
-        .tickSizeOuter(0)
+        .tickSizeOuter(0),
     );
 
   yG.selectAll("path").style("stroke", "none");
@@ -164,5 +164,5 @@ export default compose(
   withTooltip,
   withState("chart", "setState", <span />),
   withSize(),
-  pure
+  pure,
 )(BarChart);

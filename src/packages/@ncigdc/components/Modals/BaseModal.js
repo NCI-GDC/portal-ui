@@ -12,14 +12,14 @@ const BaseModal = ({
   children,
   closeText = "Accept",
   extraButtons,
-  style
+  style,
 }: {
   dispatch: Function,
   title: any,
   children: any,
   closeText: any,
   extraButtons: any,
-  style: Object
+  style: Object,
 }) => (
   <Column style={style}>
     <h2 style={{ paddingLeft: 15 }}>{title}</h2>
@@ -28,7 +28,7 @@ const BaseModal = ({
         borderBottom: "1px solid #e5e5e5",
         borderTop: "1px solid #e5e5e5",
         padding: 15,
-        marginBottom: 15
+        marginBottom: 15,
       }}
     >
       {children}

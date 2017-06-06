@@ -3,7 +3,7 @@ import React from "react";
 import _ from "lodash";
 import {
   RepositoryCasesLink,
-  RepositoryFilesLink
+  RepositoryFilesLink,
 } from "@ncigdc/components/Links/RepositoryLink";
 import AddCaseFilesToCartButton
   from "@ncigdc/components/AddCaseFilesToCartButton";
@@ -21,14 +21,14 @@ import { createDataCategoryColumns } from "./utils";
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
-  c: { age_at_diagnosis: number }
+  c: { age_at_diagnosis: number },
 ): { age_at_diagnosis: number } =>
   c.age_at_diagnosis < p.age_at_diagnosis ? c : p;
 
 const massageRelayFiles = (files: Object, projectId: string): Array<{}> =>
   _.get(files, "hits.edges", []).map(edge => edge.node).map(file => ({
     ...file,
-    projects: [projectId]
+    projects: [projectId],
   }));
 
 const dataCategoryColumns = createDataCategoryColumns({
@@ -38,10 +38,10 @@ const dataCategoryColumns = createDataCategoryColumns({
   getCellLinkFilters: node => [
     {
       field: "cases.case_id",
-      value: node.case_id
-    }
+      value: node.case_id,
+    },
   ],
-  getTotalLinkFilters: hits => []
+  getTotalLinkFilters: hits => [],
 });
 
 const NumTh = styled(Th, { textAlign: "right" });
@@ -52,22 +52,25 @@ const FilesLink = ({ node, fields = [], children }) =>
     ? <span>0</span>
     : <RepositoryFilesLink
         query={{
-          filters: makeFilter([
-            { field: "cases.case_id", value: [node.case_id] },
-            ...fields
-          ])
+          filters: makeFilter(
+            [{ field: "cases.case_id", value: [node.case_id] }, ...fields],
+            false,
+          ),
         }}
       >
         {children}
       </RepositoryFilesLink>;
 
 const getProjectIdFilter = projects =>
-  makeFilter([
-    {
-      field: "cases.project.project_id",
-      value: projects.edges.map(({ node: p }) => p.project_id)
-    }
-  ]);
+  makeFilter(
+    [
+      {
+        field: "cases.project.project_id",
+        value: projects.edges.map(({ node: p }) => p.project_id),
+      },
+    ],
+    false,
+  );
 
 const casesTableModel = [
   {
@@ -80,14 +83,14 @@ const casesTableModel = [
           hasFiles={
             _.sum(
               node.summary.data_categories.map(
-                dataCategory => dataCategory.file_count
-              )
+                dataCategory => dataCategory.file_count,
+              ),
             ) > 0
           }
           files={massageRelayFiles(node.files, node.project.project_id)}
           filteredFiles={massageRelayFiles(
             node.filteredFiles,
-            node.project.project_id
+            node.project.project_id,
           )}
           relay={relay}
           dropdownStyle={
@@ -95,7 +98,7 @@ const casesTableModel = [
           }
         />
       </Td>
-    )
+    ),
   },
   {
     name: "Case UUID",
@@ -115,13 +118,13 @@ const casesTableModel = [
           {node.case_id}
         </ForTsvExport>
       </Td>
-    )
+    ),
   },
   {
     name: "Submitter UUID",
     id: "submitter_id",
     th: () => <Th key="submitter_id" rowSpan="2">Submitter ID</Th>,
-    td: ({ node }) => <Td>{node.submitter_id}</Td>
+    td: ({ node }) => <Td>{node.submitter_id}</Td>,
   },
   {
     name: "Project",
@@ -134,7 +137,7 @@ const casesTableModel = [
           id={`row-${index}-project-link`}
         />
       </Td>
-    )
+    ),
   },
   {
     name: "Primary Site",
@@ -142,7 +145,7 @@ const casesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th key="primary_site" rowSpan="2">Primary Site</Th>,
-    td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>
+    td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
   },
   {
     name: "Gender",
@@ -154,7 +157,7 @@ const casesTableModel = [
       <Td key="demographic.gender">
         {_.capitalize(node.demographic.gender) || "--"}
       </Td>
-    )
+    ),
   },
   {
     name: "Files",
@@ -173,7 +176,7 @@ const casesTableModel = [
       <NumTd>
         <RepositoryCasesLink
           query={{
-            filters: query.filters ? getProjectIdFilter(hits) : null
+            filters: query.filters ? getProjectIdFilter(hits) : null,
           }}
         >
           {hits.edges
@@ -181,7 +184,7 @@ const casesTableModel = [
             .toLocaleString()}
         </RepositoryCasesLink>
       </NumTd>
-    ))
+    )),
   },
   ...dataCategoryColumns,
   {
@@ -196,15 +199,16 @@ const casesTableModel = [
           ? "0"
           : <AnnotationsLink
               query={{
-                filters: makeFilter([
-                  { field: "annotations.case_id", value: node.case_id }
-                ])
+                filters: makeFilter(
+                  [{ field: "annotations.case_id", value: node.case_id }],
+                  false,
+                ),
               }}
             >
               {node.annotations.hits.total.toLocaleString()}
             </AnnotationsLink>}
       </NumTd>
-    )
+    ),
   },
   {
     name: "Program",
@@ -216,7 +220,7 @@ const casesTableModel = [
       <Td>
         {node.project.program.name}
       </Td>
-    )
+    ),
   },
   {
     name: "Disease Type",
@@ -228,7 +232,7 @@ const casesTableModel = [
       <Td>
         {node.disease_type}
       </Td>
-    )
+    ),
   },
   {
     name: "Age at diagnosis",
@@ -242,12 +246,12 @@ const casesTableModel = [
         .map(x => x.node)
         .reduce(
           (p, c) => (c.age_at_diagnosis < p ? c.age_at_diagnosis : p),
-          Infinity
+          Infinity,
         );
       return (
         <Td>{age !== Infinity && node.diagnoses ? ageDisplay(age) : "--"}</Td>
       );
-    }
+    },
   },
   {
     name: "Days to death",
@@ -265,7 +269,7 @@ const casesTableModel = [
             "--"}
         </Td>
       );
-    }
+    },
   },
   {
     name: "Vital Status",
@@ -278,7 +282,7 @@ const casesTableModel = [
         .map(x => x.node)
         .reduce(youngestDiagnosis, { age_at_diagnosis: Infinity });
       return <Td>{primaryDiagnosis.vital_status}</Td>;
-    }
+    },
   },
   {
     name: "Primary Diagnosis",
@@ -295,7 +299,7 @@ const casesTableModel = [
           {(node.diagnoses && primaryDiagnosis.primary_diagnosis) || "--"}
         </Td>
       );
-    }
+    },
   },
   {
     name: "Ethnicity",
@@ -305,7 +309,7 @@ const casesTableModel = [
     th: () => <Th rowSpan="2">Ethnicity</Th>,
     td: ({ node }) => (
       <Td>{(node.demographic && node.demographic.ethnicity) || "--"}</Td>
-    )
+    ),
   },
   {
     name: "Race",
@@ -317,8 +321,8 @@ const casesTableModel = [
       <Td>
         {(node.demographic && node.demographic.race) || "--"}
       </Td>
-    )
-  }
+    ),
+  },
 ];
 
 export default casesTableModel;

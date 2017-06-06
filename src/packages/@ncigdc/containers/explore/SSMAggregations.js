@@ -22,74 +22,74 @@ const presetFacets = [
     field: "ssm_id",
     full: "ssms.ssm_id",
     doc_type: "ssms",
-    type: "id"
+    type: "id",
   },
   {
     title: "Impact (VEP)",
     field: "consequence.transcript.annotation.impact",
     full: "ssms.consequence.transcript.annotation.impact",
     doc_type: "ssms",
-    type: "terms"
+    type: "terms",
   },
   {
     title: "Consequence Type",
     field: "consequence.transcript.consequence_type",
     full: "ssms.consequence.transcript.consequence_type",
     doc_type: "ssms",
-    type: "terms"
+    type: "terms",
   },
   {
     title: "Mutation Type",
     field: "mutation_type",
     full: "ssms.mutation_type",
     doc_type: "ssms",
-    type: "terms"
+    type: "terms",
   },
   {
     title: "Variant Caller",
     field: "occurrence.case.observation.variant_calling.variant_caller",
     full: "ssms.occurrence.case.observation.variant_calling.variant_caller",
     doc_type: "ssms",
-    type: "terms"
+    type: "terms",
   },
   {
     title: "COSMIC ID",
     field: "cosmic_id",
     full: "ssms.cosmic_id",
     doc_type: "ssms",
-    type: "notMissing"
+    type: "notMissing",
   },
   {
     title: "dbSNP rs ID",
     field: "consequence.transcript.annotation.dbsnp_rs",
     full: "ssms.consequence.transcript.annotation.dbsnp_rs",
     doc_type: "ssms",
-    type: "notMissing"
-  }
+    type: "notMissing",
+  },
 ];
 
 export type TProps = {
   aggregations: {
     consequence__transcript__annotation__impact: { buckets: [TBucket] },
     consequence__transcript__consequence_type: { buckets: [TBucket] },
-    mutation_type: { buckets: [TBucket] }
+    mutation_type: { buckets: [TBucket] },
   },
   hits: {
     edges: Array<{|
       node: {|
-        id: string
-      |}
-    |}>
+        id: string,
+      |},
+    |}>,
   },
   setAutocomplete: Function,
   theme: Object,
-  suggestions: Array
+  suggestions: Array,
 };
 
 export const SSMAggregationsComponent = compose(
   withState("idCollapsed", "setIdCollapsed", false),
   withState("cosmicIdCollapsed", "setCosmicIdCollapsed", false),
-  withState("dbSNPCollapsed", "setDbSNPCollapsed", false)
+  withState("dbSNPCollapsed", "setDbSNPCollapsed", false),
 )((props: TProps) => (
   <div>
     <FacetHeader
@@ -124,8 +124,8 @@ export const SSMAggregationsComponent = compose(
           ![
             "ssms.ssm_id",
             "ssms.cosmic_id",
-            "ssms.consequence.transcript.annotation.dbsnp_rs"
-          ].includes(full)
+            "ssms.consequence.transcript.annotation.dbsnp_rs",
+          ].includes(full),
       )
       .map(facet => (
         <FacetWrapper
@@ -221,13 +221,13 @@ export const SSMAggregationsQuery = {
           total
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const SSMAggregations = Relay.createContainer(
   withTheme(SSMAggregationsComponent),
-  SSMAggregationsQuery
+  SSMAggregationsQuery,
 );
 
 export default SSMAggregations;

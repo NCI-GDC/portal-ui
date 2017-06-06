@@ -11,16 +11,16 @@ export type TProps = {
     access: string,
     cases: Array<{
       project: {
-        project_id: string
-      }
+        project_id: string,
+      },
     }>,
     data_category: string,
     data_format: string,
     file_id: string,
     file_name: string,
     file_size: number,
-    platform: string
-  }
+    platform: string,
+  },
 };
 
 export const FilePageComponent = (props: TProps) => (
@@ -161,8 +161,8 @@ export const FilePageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const FilePage = Relay.createContainer(FilePageComponent, FilePageQuery);

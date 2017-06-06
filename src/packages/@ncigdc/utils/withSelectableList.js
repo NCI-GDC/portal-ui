@@ -5,7 +5,7 @@ import {
   withState,
   withHandlers,
   withProps,
-  withPropsOnChange
+  withPropsOnChange,
 } from "recompose";
 
 const getPreviousItem = (items, reference) =>
@@ -15,13 +15,13 @@ const getNextItem = (items, reference) =>
 
 const withKeyboardSelection = (
   { keyHandlerName, listSourcePropPath },
-  { onFocusItem = _.noop, onSelectItem = _.noop, onCancel = _.noop }
+  { onFocusItem = _.noop, onSelectItem = _.noop, onCancel = _.noop },
 ) =>
   compose(
     withState("focusedItem", "setFocusedItem", undefined),
     withState("selectedItem", "setSelectedItem", undefined),
     withProps(props => ({
-      list: _.get(props, listSourcePropPath)
+      list: _.get(props, listSourcePropPath),
     })),
     withProps(
       ({ list, focusedItem, setFocusedItem, setSelectedItem, ...props }) => ({
@@ -44,11 +44,11 @@ const withKeyboardSelection = (
           setSelectedItem(undefined);
           setFocusedItem(undefined);
           onCancel({ focusedItem, list, ...props });
-        }
-      })
+        },
+      }),
     ),
     withPropsOnChange(["focusedItem"], ({ focusedItem, ...props }) =>
-      onFocusItem(focusedItem, props)
+      onFocusItem(focusedItem, props),
     ),
     withHandlers({
       [keyHandlerName]: ({
@@ -56,7 +56,7 @@ const withKeyboardSelection = (
         selectItem,
         focusPreviousItem,
         focusNextItem,
-        cancel
+        cancel,
       }) => event =>
         (({
           ArrowUp: () => {
@@ -68,9 +68,9 @@ const withKeyboardSelection = (
             focusNextItem();
           },
           Enter: () => selectItem(focusedItem),
-          Escape: () => cancel()
-        }[event.key] || _.noop)())
-    })
+          Escape: () => cancel(),
+        }[event.key] || _.noop)()),
+    }),
   );
 
 export default withKeyboardSelection;

@@ -33,7 +33,7 @@ const styles = {
     minWidth: "115px",
     minHeight: "34px",
     display: "inline-flex",
-    outline: "none"
+    outline: "none",
   },
   searchIcon: theme => ({
     backgroundColor: theme.greyScale5,
@@ -43,8 +43,8 @@ const styles = {
     height: "3.4rem",
     borderRadius: "4px 0 0 4px",
     border: `1px solid ${theme.greyScale4}`,
-    borderRight: "none"
-  })
+    borderRight: "none",
+  }),
 };
 
 type TProps = {
@@ -55,7 +55,7 @@ type TProps = {
   setAllExpanded: Function,
   allExpanded: Boolean,
   expandAllFirstClick: Boolean,
-  setExpandAllFirstClick: Function
+  setExpandAllFirstClick: Function,
 };
 
 const BiospecimenCard = ({
@@ -66,7 +66,7 @@ const BiospecimenCard = ({
   setAllExpanded,
   allExpanded,
   expandAllFirstClick,
-  setExpandAllFirstClick
+  setExpandAllFirstClick,
 }: TProps) => {
   const founds = p.samples.hits.edges.map(e => search(query, e));
   const flattened = _.flatten(founds);
@@ -88,7 +88,10 @@ const BiospecimenCard = ({
             url={urlJoin(process.env.REACT_APP_API, "cases")}
             activeText="Processing"
             inactiveText="Export"
-            filters={makeFilter([{ field: "cases.case_id", value: p.case_id }])}
+            filters={makeFilter(
+              [{ field: "cases.case_id", value: p.case_id }],
+              false,
+            )}
             fields={["case_id"]}
             dataExportExpands={[
               "samples",
@@ -100,7 +103,7 @@ const BiospecimenCard = ({
               "samples.portions.submitter_id",
               "samples.portions.slides",
               "samples.portions.annotations",
-              "samples.portions.center"
+              "samples.portions.center",
             ]}
           />
         </Row>
@@ -126,7 +129,7 @@ const BiospecimenCard = ({
             </Row>
             <Button
               style={{
-                paddingLeft: "10px"
+                paddingLeft: "10px",
               }}
               onClick={() => {
                 Emitter.emit("expand", !allExpanded);
@@ -149,7 +152,7 @@ const BiospecimenCard = ({
                   ...s,
                   selectedEntity,
                   type: type.s,
-                  query: ""
+                  query: "",
                 }))}
               defaultExpanded={allExpanded}
             />
@@ -162,7 +165,7 @@ const BiospecimenCard = ({
               { th: "Submitter ID", td: selectedEntity.submitter_id },
               {
                 th: `${type} ID`,
-                td: selectedEntity[idFields.find(id => selectedEntity[id])]
+                td: selectedEntity[idFields.find(id => selectedEntity[id])],
               },
               ...Object.entries(selectedEntity)
                 .filter(
@@ -171,8 +174,8 @@ const BiospecimenCard = ({
                       "submitter_id",
                       "expanded",
                       `${type}_id`,
-                      "__dataID__"
-                    ].includes(key)
+                      "__dataID__",
+                    ].includes(key),
                 )
                 .map(([key, val]) => {
                   if (
@@ -180,11 +183,11 @@ const BiospecimenCard = ({
                   ) {
                     return {
                       th: humanify({ term: key }),
-                      td: formatValue(val.hits.total)
+                      td: formatValue(val.hits.total),
                     };
                   }
                   return { th: humanify({ term: key }), td: formatValue(val) };
-                })
+                }),
             ]}
             style={{ flex: 1 }}
           />
@@ -200,7 +203,7 @@ export default compose(
   withState("state", "setState", ({ p, bioId }) => ({
     selectedEntity: p.samples.hits.edges[0].node,
     type: "sample",
-    query: bioId || ""
+    query: bioId || "",
   })),
-  withTheme
+  withTheme,
 )(BiospecimenCard);

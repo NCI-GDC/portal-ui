@@ -14,7 +14,7 @@ type TProps = {
   value: string,
   setValue: Function,
   active: boolean,
-  setActive: Function
+  setActive: Function,
 };
 
 export const processBAMSliceInput = (userInput: string): Object => {
@@ -26,10 +26,10 @@ export const processBAMSliceInput = (userInput: string): Object => {
         const regionTemplates = [
           r => `${r[0]}`,
           r => `${r[0]}:${r[1]}`,
-          r => `${r[0]}:${r[1]}-${r[2]}`
+          r => `${r[0]}:${r[1]}-${r[2]}`,
         ];
         return regionTemplates[region.length - 1](region);
-      })
+      }),
     };
   }
   return {};
@@ -68,7 +68,7 @@ const enhance = compose(withState("value", "setValue", ""), pure);
 const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
   <Column
     style={{
-      padding: "15px"
+      padding: "15px",
     }}
   >
     <h2>BAM Slicing</h2>
@@ -85,7 +85,7 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
       style={{
         minHeight: "100px",
         tabSize: 4,
-        fontFamily: "'Courier New', Courier, monospace"
+        fontFamily: "'Courier New', Courier, monospace",
       }}
       value={value}
       onKeyDown={e => allowTab(e, setValue)}
@@ -102,16 +102,16 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
           if (value) {
             const params = {
               body: processBAMSliceInput(value),
-              attachment: true
+              attachment: true,
             };
             setActive(true);
             download({
               params,
               url: urlJoin(
                 process.env.REACT_APP_GDC_AUTH,
-                `api/v0/slicing/view/${file.file_id}`
+                `api/v0/slicing/view/${file.file_id}`,
               ),
-              method: "POST"
+              method: "POST",
             })(() => {}, () => setActive(false));
           }
           closeModal();

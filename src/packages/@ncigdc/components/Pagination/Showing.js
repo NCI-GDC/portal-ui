@@ -8,7 +8,7 @@ export type TProps = {|
   docType: string,
   params: Object,
   prefix?: string,
-  total: number
+  total: number,
 |};
 
 const Sizes = (props: TProps) => {
@@ -18,7 +18,7 @@ const Sizes = (props: TProps) => {
   const start = +props.params[prfOff] + 1;
   const end = Math.min(
     +props.params[prfOff] + +props.params[prfSize],
-    props.total
+    props.total,
   );
 
   return (

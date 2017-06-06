@@ -12,7 +12,7 @@ import tableModels from "@ncigdc/tableModels";
 import Table, { Tr } from "@ncigdc/uikit/Table";
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.cases }))
+  connect(state => ({ tableColumns: state.tableColumns.cases })),
 )(({ relay, hits, entityType = "cases", tableColumns }) => {
   const tableInfo = tableModels[entityType] // eslint-disable-line
     .slice()
@@ -25,7 +25,7 @@ export const SearchTable = compose(
         style={{
           backgroundColor: "white",
           padding: "1rem",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
         }}
       >
         <Showing
@@ -46,21 +46,21 @@ export const SearchTable = compose(
             "project.project_id",
             "demographic.gender",
             "summary.data_categories.file_count",
-            "summary.data_categories.data_category"
+            "summary.data_categories.data_category",
           ]}
           sortOptions={[
             {
               id: "project.project_id",
-              name: "Project"
+              name: "Project",
             },
             {
               id: "primary_site",
-              name: "Primary Site"
+              name: "Primary Site",
             },
             {
               id: "demographic.gender",
-              name: "Gender"
-            }
+              name: "Gender",
+            },
           ]}
           tsvSelector="#repository-cases-table"
           tsvFilename="repository-cases-table.tsv"
@@ -109,7 +109,7 @@ const CasesTable = Relay.createContainer(SearchTable, {
   initialVariables: {
     isFileDataRequired: false,
     isFilteredFileDataRequired: false,
-    filesFilters: null
+    filesFilters: null,
   },
   fragments: {
     hits: () => Relay.QL`
@@ -186,8 +186,8 @@ const CasesTable = Relay.createContainer(SearchTable, {
             }
           }
         }
-      `
-  }
+      `,
+  },
 });
 
 export default CasesTable;

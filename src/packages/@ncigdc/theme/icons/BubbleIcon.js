@@ -8,13 +8,13 @@ const bubbleStyle = {
   borderRadius: "8px",
   fontSize: "10px",
   fontWeight: "bold",
-  display: "inline-block"
+  display: "inline-block",
 };
 
 type TProps = {
   text: string,
   toolTipText: string,
-  backgroundColor: string
+  backgroundColor: string,
 };
 
 export default ({ text, toolTipText, backgroundColor }: TProps) => (
@@ -22,7 +22,7 @@ export default ({ text, toolTipText, backgroundColor }: TProps) => (
     <span
       style={{
         ...bubbleStyle,
-        backgroundColor
+        backgroundColor,
       }}
     >
       {text}

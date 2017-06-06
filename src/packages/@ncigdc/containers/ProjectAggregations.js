@@ -24,11 +24,11 @@ export type TProps = {
     project_id: { buckets: [TBucket] },
     summary__data_categories__data_category: { buckets: [TBucket] },
     summary__experimental_strategies__experimental_strategy: {
-      buckets: [TBucket]
-    }
+      buckets: [TBucket],
+    },
   },
   setAutocomplete: Function,
-  theme: Object
+  theme: Object,
 };
 
 const projectFacets = [
@@ -37,40 +37,40 @@ const projectFacets = [
     field: "primary_site",
     full: "projects.primary_site",
     doc_type: "project",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Program",
     field: "program.name",
     full: "projects.program.name",
     doc_type: "project",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Disease Type",
     field: "disease_type",
     full: "projects.disease_type",
     doc_type: "project",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Data Category",
     field: "summary.data_categories.data_category",
     full: "projects.summary.data_categories.data_category",
     doc_type: "project",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Experimental Strategies",
     field: "summary.experimental_strategies.experimental_strategy",
     full: "projects.summary.experimental_strategies.experimental_strategy",
     doc_type: "project",
-    type: "keyword"
-  }
+    type: "keyword",
+  },
 ];
 
 export const ProjectAggregationsComponent = compose(
-  withState("projectIdCollapsed", "setProjectIdCollapsed", false)
+  withState("projectIdCollapsed", "setProjectIdCollapsed", false),
 )((props: TProps) => (
   <div>
     <FacetHeader
@@ -161,13 +161,13 @@ export const ProjectAggregationsQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const ProjectAggregations = Relay.createContainer(
   withTheme(ProjectAggregationsComponent),
-  ProjectAggregationsQuery
+  ProjectAggregationsQuery,
 );
 
 export default ProjectAggregations;

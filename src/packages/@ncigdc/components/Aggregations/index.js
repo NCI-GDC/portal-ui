@@ -8,7 +8,7 @@ import Link from "@ncigdc/components/Links/Link";
 
 export const Container = styled(Column, {
   padding: "0 1.2rem 1rem 1.2rem",
-  backgroundColor: "white"
+  backgroundColor: "white",
 });
 
 export const InputLabel = styled.label({
@@ -16,12 +16,12 @@ export const InputLabel = styled.label({
   color: ({ theme }) => theme.greyScale2,
   padding: "0.8rem",
   height: "3.4rem",
-  border: ({ theme }) => `1px solid ${theme.greyScale4}`
+  border: ({ theme }) => `1px solid ${theme.greyScale4}`,
 });
 
 export const StyledInput = styled(Input, {
   height: "3.4rem",
-  borderRadius: "0 4px 4px 0"
+  borderRadius: "0 4px 4px 0",
 });
 
 export const GoLink = styled(Link, {
@@ -34,13 +34,13 @@ export const GoLink = styled(Link, {
   borderRadius: "0 4px 4px 0",
   ":link": ({ theme, dark }) => ({
     textDecoration: "none",
-    color: dark ? theme.greyScale1 : theme.greyScale2
-  })
+    color: dark ? theme.greyScale1 : theme.greyScale2,
+  }),
 });
 
 export const CheckedRow = styled(Row, {
   padding: "0.25rem",
-  fontSize: "1.5rem"
+  fontSize: "1.5rem",
 });
 
 export const CheckedLink = styled(Link, {
@@ -48,14 +48,14 @@ export const CheckedLink = styled(Link, {
   textDecoration: "none",
   ":link": {
     textDecoration: "none",
-    color: ({ theme }) => theme.success
-  }
+    color: ({ theme }) => theme.success,
+  },
 });
 
 export const facetFieldDisplayMapper = field => {
   const map = {
     "genes.symbol": "Gene Symbol",
-    "genes.gene_id": "Gene"
+    "genes.gene_id": "Gene",
   };
   return map[field] || field;
 };

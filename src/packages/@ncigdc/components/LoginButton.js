@@ -19,7 +19,7 @@ const openAuthWindow = ({ pathname, dispatch }) => {
     const returningPath = `${pathname}?${+new Date()}`;
     const redirectUrl = urlJoin(
       process.env.REACT_APP_GDC_AUTH,
-      `?next=${returningPath}`
+      `?next=${returningPath}`,
     );
 
     const closeLogin = url =>
@@ -57,18 +57,18 @@ const openAuthWindow = ({ pathname, dispatch }) => {
 const Link = styled.a({
   textDecoration: "none",
   transition: "background-color 0.2s ease",
-  cursor: "pointer"
+  cursor: "pointer",
 });
 
 const styles = {
   marginLeft: {
-    marginLeft: "0.7rem"
-  }
+    marginLeft: "0.7rem",
+  },
 };
 
 type TLoginButtonProps = {
   children: mixed,
-  dispatch: Function
+  dispatch: Function,
 };
 const LoginButton = ({ children, dispatch }: TLoginButtonProps) => (
   <LocationSubscriber>

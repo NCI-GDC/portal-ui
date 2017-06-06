@@ -212,7 +212,7 @@ export const initialECaseAggregationsVariables = {
   shouldShow_tissue_source_site__name: false,
   shouldShow_tissue_source_site__project: false,
   shouldShow_tissue_source_site__tissue_source_site_id: false,
-  shouldShow_updated_datetime: false
+  shouldShow_updated_datetime: false,
 };
 
 export const exploreCaseAggregationsFragment = () => Relay.QL`

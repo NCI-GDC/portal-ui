@@ -29,7 +29,7 @@ type TProps = {|
   entityName: string,
   geneId: string,
   explore: {
-    ssms: {}
+    ssms: {},
   },
   cases: {
     total: {},
@@ -37,10 +37,10 @@ type TProps = {|
       project__project_id: {
         buckets: Array<{
           doc_count: number,
-          key: string
-        }>
-      }
-    }
+          key: string,
+        }>,
+      },
+    },
   },
   projects: {
     hits: {
@@ -48,17 +48,17 @@ type TProps = {|
       project__project_id: {
         buckets: Array<{
           doc_count: number,
-          key: string
-        }>
-      }
-    }
+          key: string,
+        }>,
+      },
+    },
   },
   filters: TGroupFilter,
   rawData: Array<{}>,
   cancerDistData: Array<{}>,
   tableData: Array<{}>,
   query: {},
-  enablePagination: boolean
+  enablePagination: boolean,
 |};
 
 const CancerDistributionTableComponent = compose(
@@ -66,7 +66,7 @@ const CancerDistributionTableComponent = compose(
     componentDidMount(): void {
       this.props.relay.setVariables({
         fetchFilteredCaseAggs: true,
-        caseAggsFilter: this.props.filters
+        caseAggsFilter: this.props.filters,
       });
     },
     componentWillReceiveProps(nextProps: TProps): void {
@@ -94,17 +94,20 @@ const CancerDistributionTableComponent = compose(
           fetchProjects: true,
           numProjects: nextProps.cases.filtered.project__project_id.buckets
             .length,
-          projectFilter: makeFilter([
-            {
-              field: "project_id",
-              value: nextProps.cases.filtered.project__project_id.buckets.map(
-                b => b.key
-              )
-            }
-          ])
+          projectFilter: makeFilter(
+            [
+              {
+                field: "project_id",
+                value: nextProps.cases.filtered.project__project_id.buckets.map(
+                  b => b.key,
+                ),
+              },
+            ],
+            false,
+          ),
         });
       }
-    }
+    },
   }),
   withPropsOnChange(
     ["cases", "projects", "geneId", "entityName", "explore"],
@@ -118,19 +121,19 @@ const CancerDistributionTableComponent = compose(
       const casesByProjectMap = get(
         cases.total,
         "project__project_id.buckets",
-        []
+        [],
       ).reduce(
         (acc, bucket) => ({ ...acc, [bucket.key]: bucket.doc_count }),
-        {}
+        {},
       );
       const projectsById = groupBy(
         (projects.hits || { edges: [] }).edges,
-        e => e.node.project_id
+        e => e.node.project_id,
       );
 
       // eslint-disable-next-line fp/no-mutating-methods
       const rawData = (cases.filtered || {
-        project__project_id: { buckets: [] }
+        project__project_id: { buckets: [] },
       }).project__project_id.buckets
         .map(b => {
           const totalCasesByProject = casesByProjectMap[b.key];
@@ -145,11 +148,10 @@ const CancerDistributionTableComponent = compose(
             num_affected_cases: b.doc_count,
             num_affected_cases_total: totalCasesByProject,
             num_affected_cases_percent: b.doc_count / totalCasesByProject,
-            mutations_counts: ssmCounts[b.key]
           };
         })
         .sort(
-          (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent
+          (a, b) => b.num_affected_cases_percent - a.num_affected_cases_percent,
         );
 
       const baseFilter = geneId
@@ -157,10 +159,13 @@ const CancerDistributionTableComponent = compose(
         : { field: "ssms.ssm_id", value: [entityName] };
 
       const cancerDistData = rawData.map(row => {
-        const projectFilter = makeFilter([
-          baseFilter,
-          { field: "cases.project.project_id", value: [row.project_id] }
-        ]);
+        const projectFilter = makeFilter(
+          [
+            baseFilter,
+            { field: "cases.project.project_id", value: [row.project_id] },
+          ],
+          false,
+        );
 
         return {
           id: row.project_id, // used for key in table
@@ -181,13 +186,16 @@ const CancerDistributionTableComponent = compose(
               <ExploreLink
                 query={{
                   searchTableTab: "cases",
-                  filters: makeFilter([
-                    {
-                      field: "cases.project.project_id",
-                      value: [row.project_id]
-                    },
-                    { field: "cases.available_variation_data", value: "ssm" }
-                  ])
+                  filters: makeFilter(
+                    [
+                      {
+                        field: "cases.project.project_id",
+                        value: [row.project_id],
+                      },
+                      { field: "cases.available_variation_data", value: "ssm" },
+                    ],
+                    false,
+                  ),
                 }}
               >
                 {row.num_affected_cases_total.toLocaleString()}
@@ -204,14 +212,14 @@ const CancerDistributionTableComponent = compose(
                     ssmCount={ssmCounts[row.project_id]}
                     filters={projectFilter}
                   />
-                )
+                ),
               }
-            : null)
+            : null),
         };
       });
 
       return { rawData, cancerDistData };
-    }
+    },
   ),
   withRouter,
   withPropsOnChange(
@@ -225,15 +233,15 @@ const CancerDistributionTableComponent = compose(
         query: {
           ...query,
           [`${paginationPrefix}_size`]: size,
-          [`${paginationPrefix}_offset`]: enablePagination ? offset : 0
+          [`${paginationPrefix}_offset`]: enablePagination ? offset : 0,
         },
         enablePagination,
         tableData: enablePagination
           ? cancerDistData.slice(offset, offset + size)
-          : cancerDistData
+          : cancerDistData,
       };
-    }
-  )
+    },
+  ),
 )(
   (
     {
@@ -245,8 +253,8 @@ const CancerDistributionTableComponent = compose(
       cancerDistData,
       tableData,
       query,
-      enablePagination
-    }: TProps = {}
+      enablePagination,
+    }: TProps = {},
   ) => {
     const mutationsHeading = geneId
       ? [
@@ -260,8 +268,8 @@ const CancerDistributionTableComponent = compose(
                 # Mutations
               </Tooltip>
             ),
-            style: { textAlign: "right" }
-          }
+            style: { textAlign: "right" },
+          },
         ]
       : [];
 
@@ -272,7 +280,7 @@ const CancerDistributionTableComponent = compose(
             backgroundColor: "white",
             padding: "1rem",
             justifyContent: "space-between",
-            alignItems: "flex-end"
+            alignItems: "flex-end",
           }}
         >
           {enablePagination
@@ -299,7 +307,7 @@ const CancerDistributionTableComponent = compose(
                   saveFile(
                     JSON.stringify(rawData, null, 2),
                     "JSON",
-                    "cancer-distribution-data"
+                    "cancer-distribution-data",
                   )}
               >
                 JSON
@@ -335,9 +343,9 @@ const CancerDistributionTableComponent = compose(
                   >
                     # Affected Cases
                   </Tooltip>
-                )
+                ),
               },
-              ...mutationsHeading
+              ...mutationsHeading,
             ]}
             data={tableData}
           />
@@ -350,7 +358,7 @@ const CancerDistributionTableComponent = compose(
         </Column>
       </Loader>
     );
-  }
+  },
 );
 
 const CancerDistributionTableQuery = {
@@ -360,14 +368,15 @@ const CancerDistributionTableQuery = {
     numProjects: null,
     fetchProjects: false,
     fetchFilteredCaseAggs: false,
-    ssmCountsfilters: null,
-    fetchSsmCounts: false,
-    ssmTested: makeFilter([
-      {
-        field: "cases.available_variation_data",
-        value: "ssm"
-      }
-    ])
+    ssmTested: makeFilter(
+      [
+        {
+          field: "cases.available_variation_data",
+          value: "ssm",
+        },
+      ],
+      false,
+    ),
   },
   fragments: {
     projects: () => Relay.QL`
@@ -418,13 +427,13 @@ const CancerDistributionTableQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const CancerDistributionTable = Relay.createContainer(
   CancerDistributionTableComponent,
-  CancerDistributionTableQuery
+  CancerDistributionTableQuery,
 );
 
 export default CancerDistributionTable;

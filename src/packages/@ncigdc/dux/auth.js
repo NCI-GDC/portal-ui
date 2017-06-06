@@ -26,25 +26,25 @@ export function fetchUser() {
           const text = await res.text();
           const json = JSON.parse(text);
           return json;
-        }
+        },
       },
-      USER_FAILURE
+      USER_FAILURE,
     ],
-    endpoint: "user"
+    endpoint: "user",
   });
 }
 
 export function forceLogout(): Action {
   return {
     type: USER_FAILURE,
-    payload: { message: "Session timed out or not authorized" }
+    payload: { message: "Session timed out or not authorized" },
   };
 }
 
 export function clearToken(): Action {
   return {
     type: TOKEN_CLEAR,
-    payload: {}
+    payload: {},
   };
 }
 
@@ -59,15 +59,15 @@ export function fetchToken() {
 
           saveAs(
             new Blob([token], { type: "text/plain;charset=us-ascii" }),
-            `gdc-user-token.${new Date().toISOString()}.txt`
+            `gdc-user-token.${new Date().toISOString()}.txt`,
           );
 
           return token;
-        }
+        },
       },
-      TOKEN_FAILURE
+      TOKEN_FAILURE,
     ],
-    endpoint: "token/refresh"
+    endpoint: "token/refresh",
   });
 }
 
@@ -77,7 +77,7 @@ const initialState: State = {
   user: null,
   error: {},
   isFetchingToken: false,
-  token: undefined
+  token: undefined,
 };
 
 export default handleActions(
@@ -86,41 +86,41 @@ export default handleActions(
       ...state,
       isFetching: true,
       user: null,
-      error: {}
+      error: {},
     }),
     [USER_SUCCESS]: (state, action) => ({
       ...state,
       isFetching: false,
       user: action.error ? null : action.payload,
       error: action.error ? action.payload : {},
-      firstLoad: false
+      firstLoad: false,
     }),
     [USER_FAILURE]: (state, action) => ({
       ...state,
       isFetching: false,
       error: action.payload,
       user: null,
-      firstLoad: false
+      firstLoad: false,
     }),
     [TOKEN_REQUEST]: state => ({
       ...state,
-      isFetchingToken: true
+      isFetchingToken: true,
     }),
     [TOKEN_SUCCESS]: (state, action) => ({
       ...state,
       isFetchingToken: false,
-      token: action.payload
+      token: action.payload,
     }),
     [TOKEN_FAILURE]: state => ({
       ...state,
       isFetchingToken: false,
-      token: undefined
+      token: undefined,
     }),
     [TOKEN_CLEAR]: state => ({
       ...state,
       isFetchingToken: false,
-      token: undefined
-    })
+      token: undefined,
+    }),
   },
-  initialState
+  initialState,
 );

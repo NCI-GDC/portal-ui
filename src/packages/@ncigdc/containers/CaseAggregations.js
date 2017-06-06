@@ -19,7 +19,7 @@ import { withTheme } from "@ncigdc/theme";
 import CaseIcon from "@ncigdc/theme/icons/Case";
 import {
   initialCaseAggregationsVariables,
-  repositoryCaseAggregationsFragment
+  repositoryCaseAggregationsFragment,
 } from "@ncigdc/utils/generated-relay-query-parts";
 import withFacetSelection from "@ncigdc/utils/withFacetSelection";
 import escapeForRelay from "@ncigdc/utils/escapeForRelay";
@@ -40,14 +40,14 @@ export type TProps = {
     project__disease_type: { buckets: [TBucket] },
     project__primary_site: { buckets: [TBucket] },
     project__program__name: { buckets: [TBucket] },
-    project__project_id: { buckets: [TBucket] }
+    project__project_id: { buckets: [TBucket] },
   },
   hits: {
     edges: Array<{|
       node: {|
-        id: string
-      |}
-    |}>
+        id: string,
+      |},
+    |}>,
   },
   setAutocomplete: Function,
   theme: Object,
@@ -58,13 +58,13 @@ export type TProps = {
     doc_type: String,
     field: String,
     full: String,
-    type: "id" | "string" | "long"
+    type: "id" | "string" | "long",
   |}>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
   presetFacetFields: Array<String>,
   shouldShowFacetSelection: Boolean,
-  facetExclusionTest: Function
+  facetExclusionTest: Function,
 };
 
 const storageKey = "RepositoryCaseAggregations.userSelectedFacets";
@@ -75,7 +75,7 @@ const presetFacets = [
     field: "case_id",
     full: "cases.case_id",
     doc_type: "cases",
-    type: "id"
+    type: "id",
   },
   {
     title: "Case Submitter ID",
@@ -83,42 +83,42 @@ const presetFacets = [
     full: "cases.submitter_id",
     doc_type: "cases",
     type: "id",
-    placeholder: "eg. TCGA-DD*, *DD*, TCGA-DD-AAVP"
+    placeholder: "eg. TCGA-DD*, *DD*, TCGA-DD-AAVP",
   },
   {
     title: "Primary Site",
     field: "primary_site",
     full: "cases.primary_site",
     doc_type: "cases",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Program",
     field: "project.program.name",
     full: "cases.project.program.name",
     doc_type: "cases",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Project",
     field: "project.project_id",
     full: "cases.project.project_id",
     doc_type: "cases",
-    type: "terms"
+    type: "terms",
   },
   {
     title: "Disease Type",
     field: "disease_type",
     full: "cases.disease_type",
     doc_type: "cases",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Gender",
     field: "demographic.gender",
     full: "cases.demographic.gender",
     doc_type: "cases",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Age at Diagnosis",
@@ -126,36 +126,36 @@ const presetFacets = [
     full: "cases.diagnoses.age_at_diagnosis",
     doc_type: "cases",
     type: "long",
-    additionalProps: { convertDays: true }
+    additionalProps: { convertDays: true },
   },
   {
     title: "Vital Status",
     field: "diagnoses.vital_status",
     full: "cases.diagnoses.vital_status",
     doc_type: "cases",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Days to Death",
     field: "diagnoses.days_to_death",
     full: "cases.diagnoses.days_to_death",
     doc_type: "cases",
-    type: "long"
+    type: "long",
   },
   {
     title: "Race",
     field: "demographic.race",
     full: "cases.demographic.race",
     doc_type: "cases",
-    type: "keyword"
+    type: "keyword",
   },
   {
     title: "Ethnicity",
     field: "demographic.ethnicity",
     full: "cases.demographic.ethnicity",
     doc_type: "cases",
-    type: "keyword"
-  }
+    type: "keyword",
+  },
 ];
 
 const presetFacetFields = presetFacets.map(x => x.field);
@@ -164,16 +164,16 @@ const enhance = compose(
   withFacetSelection({
     storageKey,
     presetFacetFields,
-    validFacetDocTypes: ["cases"]
+    validFacetDocTypes: ["cases"],
   }),
-  withState("caseIdCollapsed", "setCaseIdCollapsed", false)
+  withState("caseIdCollapsed", "setCaseIdCollapsed", false),
 );
 
 const styles = {
   link: {
     textDecoration: "underline",
-    color: "#2a72a5"
-  }
+    color: "#2a72a5",
+  },
 };
 
 export const CaseAggregationsComponent = (props: TProps) => (
@@ -182,7 +182,7 @@ export const CaseAggregationsComponent = (props: TProps) => (
       className="text-right"
       style={{
         padding: "10px 15px",
-        borderBottom: `1px solid ${props.theme.greyScale5}`
+        borderBottom: `1px solid ${props.theme.greyScale5}`,
       }}
     >
       {!!props.userSelectedFacets.length &&
@@ -276,7 +276,7 @@ export const CaseAggregationsQuery = {
     {},
     _.mapValues(initialCaseAggregationsVariables, (value, key) => {
       const userSelectedFacetsFromStorage = tryParseJSON(
-        window.localStorage.getItem(storageKey)
+        window.localStorage.getItem(storageKey),
       ) || [];
       const escapedFieldsToShow = presetFacetFields
         .concat(userSelectedFacetsFromStorage.map(x => x.field))
@@ -287,7 +287,7 @@ export const CaseAggregationsQuery = {
         _.includes(escapedFieldsToShow, key.replace(/^shouldShow_/, ""))
       );
     }),
-    { shouldRequestAllAggregations: false }
+    { shouldRequestAllAggregations: false },
   ),
   prepareVariables: prevVariables =>
     _.mapValues(
@@ -298,18 +298,18 @@ export const CaseAggregationsQuery = {
         _.includes(
           (tryParseJSON(window.localStorage.getItem(storageKey)) || [])
             .map(x => escapeForRelay(x.field)),
-          key.replace(/^shouldShow_/, "")
+          key.replace(/^shouldShow_/, ""),
         ) ||
-        value
+        value,
     ),
   fragments: {
-    aggregations: repositoryCaseAggregationsFragment
-  }
+    aggregations: repositoryCaseAggregationsFragment,
+  },
 };
 
 const CaseAggregations = Relay.createContainer(
   enhance(withTheme(CaseAggregationsComponent)),
-  CaseAggregationsQuery
+  CaseAggregationsQuery,
 );
 
 export default CaseAggregations;

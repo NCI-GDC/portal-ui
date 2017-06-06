@@ -10,25 +10,25 @@ const entityTypes = [
   { s: "portion", p: "portions" },
   { s: "aliquot", p: "aliquots" },
   { s: "analyte", p: "analytes" },
-  { s: "slide", p: "slides" }
+  { s: "slide", p: "slides" },
 ];
 
 const pointer = css({
-  cursor: "pointer"
+  cursor: "pointer",
 });
 
 const underline = css({
-  borderBottom: "3px solid #60a8d2"
+  borderBottom: "3px solid #60a8d2",
 });
 
 const hoverUnderline = css({
   ":hover": {
-    borderBottom: "2px solid #60a8d2"
-  }
+    borderBottom: "2px solid #60a8d2",
+  },
 });
 
 const highlight = css({
-  backgroundColor: "#f3fc39"
+  backgroundColor: "#f3fc39",
 });
 
 const BioTreeItem = ({
@@ -37,7 +37,7 @@ const BioTreeItem = ({
   selectEntity,
   selectedEntity,
   query,
-  expanded
+  expanded,
 }) => (
   <div
     className="biospecimen-row document tree-item"
@@ -58,7 +58,7 @@ const BioTreeItem = ({
               ${query && (search(query, { node: entity }) || [])
                   .map(e => e.node)
                   .some(
-                    e => e[`${type.s}_id`] === entity[`${type.s}_id`]
+                    e => e[`${type.s}_id`] === entity[`${type.s}_id`],
                   ) ? highlight : ""}
             `}
           onClick={e => {

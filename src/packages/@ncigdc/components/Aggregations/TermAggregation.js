@@ -132,7 +132,11 @@ const TermAggregation = (props: TProps) => {
                         <input
                           readOnly
                           type="checkbox"
-                          style={{ pointerEvents: "none", marginRight: "5px" }}
+                          style={{
+                            pointerEvents: "none",
+                            marginRight: "5px",
+                            flexShrink: 0
+                          }}
                           checked={inCurrentFilters({
                             key: bucket.name,
                             dotField,

@@ -66,7 +66,7 @@ export const AnnotationsPageQuery = {
           }
         },
         annotations {
-          aggregations(filters: $filters) {
+          aggregations(filters: $filters filters_self: false) {
             ${AnnotationAggregations.getFragment("aggregations")}
           }
           hits(first: $size offset: $offset, filters: $filters, sort: $annotations_sort) {

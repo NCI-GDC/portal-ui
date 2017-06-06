@@ -5,7 +5,6 @@ import Relay from "react-relay/classic";
 import { lifecycle, compose } from "recompose";
 import { sortBy, sum, get } from "lodash";
 
-import withSize from "@ncigdc/utils/withSize";
 import withRouter from "@ncigdc/utils/withRouter";
 import { makeFilter } from "@ncigdc/utils/filters";
 import { Row, Column } from "@ncigdc/uikit/Flex";
@@ -20,6 +19,7 @@ import ProjectsLink from "@ncigdc/components/Links/ProjectsLink";
 import type { TGroupFilter } from "@ncigdc/utils/filters/types";
 
 type TProps = {
+  style: Object,
   filters: ?TGroupFilter,
   cases: {
     total: {
@@ -45,17 +45,13 @@ type TProps = {
     }
   },
   aggregations: Object,
-  size: {
-    width: number
-  },
   theme: Object,
   push: Function,
   ChartTitle: ReactClass<{}>
 };
 
 const CHART_HEIGHT = 295;
-const CHART_MARGINS = { top: 20, right: 50, bottom: 75, left: 40 };
-const MAX_BARS = 20;
+const CHART_MARGINS = { top: 20, right: 50, bottom: 75, left: 55 };
 
 export type TChartTitleProps = {
   cases: number,
@@ -101,7 +97,6 @@ const DefaultChartTitle = ({
 );
 
 const CancerDistributionChartComponent = compose(
-  withSize(),
   withRouter,
   withTheme,
   lifecycle({
@@ -117,11 +112,11 @@ const CancerDistributionChartComponent = compose(
     {
       cases,
       ssms,
-      size: { width },
       theme,
       push,
       ChartTitle = DefaultChartTitle,
-      filters
+      filters,
+      style
     }: TProps = {}
   ) => {
     const casesByProjectMap = (cases.total || {
@@ -147,56 +142,40 @@ const CancerDistributionChartComponent = compose(
         };
       });
 
-    const sortedCancerDistData = sortBy(cancerDistData, d => -d.freq);
-
-    const chartData = sortedCancerDistData.map(d => ({
-      label: d.project_id,
-      value: d.freq * 100,
-      onClick: () => push(`/projects/${d.project_id}`),
-      tooltip: (
-        <span>
-          {d.num_affected_cases.toLocaleString()}&nbsp;
-          Case
-          {d.num_affected_cases > 1 ? "s" : ""}
-          {" "}
-          Affected in
-          {" "}
-          <b>{d.project_id}</b>
-          <br />
-          {d.num_affected_cases.toLocaleString()}
-          {" "}
-          /
-          {" "}
-          {d.num_cases_total.toLocaleString()}&nbsp;
-          ({(d.freq * 100).toFixed(2)}%)
-        </span>
-      )
-    }));
-
-    const bandWidth =
-      (width - CHART_MARGINS.right - CHART_MARGINS.left) /
-      (MAX_BARS + 1) /
-      2 *
-      0.7;
+    const chartData = sortBy(cancerDistData, d => -d.freq)
+      .slice(0, 20)
+      .map(d => ({
+        label: d.project_id,
+        value: d.freq * 100,
+        onClick: () => push(`/projects/${d.project_id}`),
+        tooltip: (
+          <span>
+            {d.num_affected_cases.toLocaleString()}&nbsp;Case
+            {d.num_affected_cases > 1 ? "s " : " "}
+            Affected in <b>{d.project_id}</b><br />
+            {d.num_affected_cases.toLocaleString()}
+            &nbsp;/&nbsp;
+            {d.num_cases_total.toLocaleString()}&nbsp;
+            ({(d.freq * 100).toFixed(2)}%)
+          </span>
+        )
+      }));
 
     return (
-      <span>
+      <div style={style}>
         {chartData.length >= 5 &&
           <Loader loading={!cases.filtered} height={CHART_HEIGHT}>
-            <Column>
+            <Column style={{ padding: "0 0 0 2rem" }}>
               <Row
                 style={{
                   justifyContent: "space-between",
-                  alignItems: "center",
-                  width: "50%"
+                  alignItems: "center"
                 }}
               >
                 <ChartTitle
-                  cases={sum(
-                    sortedCancerDistData.map(d => d.num_affected_cases)
-                  )}
+                  cases={sum(cancerDistData.map(d => d.num_affected_cases))}
                   ssms={get(ssms, "hits.total", 0)}
-                  projects={sortedCancerDistData}
+                  projects={cancerDistData}
                   filters={filters}
                 />
                 <DownloadVisualizationButton
@@ -216,12 +195,9 @@ const CancerDistributionChartComponent = compose(
                 />
               </Row>
 
-              <Row
-                style={{ padding: "0 2rem", justifyContent: "space-between" }}
-              >
+              <Row style={{ justifyContent: "space-between" }}>
                 <BarChart
                   margin={CHART_MARGINS}
-                  bandwidth={bandWidth}
                   data={chartData}
                   yAxis={{ title: "% of Cases Affected" }}
                   height={CHART_HEIGHT}
@@ -245,7 +221,7 @@ const CancerDistributionChartComponent = compose(
               </Row>
             </Column>
           </Loader>}
-      </span>
+      </div>
     );
   }
 );

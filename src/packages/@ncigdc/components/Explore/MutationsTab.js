@@ -106,7 +106,6 @@ export default compose(
           <SsmsBarChart
             defaultFilters={filters}
             context="Explore"
-            showSurvivalPlot
             onClickMutation={handleClickMutation}
           />
         </Column>

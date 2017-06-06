@@ -135,7 +135,8 @@ async function getQueries({
   return {
     genes,
     occurences: occurrences.data.hits,
-    cases: cases.data.hits
+    cases: cases.data.hits,
+    totalCases: cases.data.pagination.total
   };
 }
 

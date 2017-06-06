@@ -13,7 +13,7 @@ import RepositoryLink from "@ncigdc/components/Links/RepositoryLink";
 import CartLink from "@ncigdc/components/Links/CartLink";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 import ProjectsLink from "@ncigdc/components/Links/ProjectsLink";
-import GDCAppsDropdown from "@ncigdc/components/GDCAppsDropdown";
+import GDCAppsDropdown from "@ncigdc/components/GDCApps/GDCAppsDropdown";
 import QuickSearch from "@ncigdc/components/QuickSearch/QuickSearch";
 import LoginButton from "@ncigdc/components/LoginButton";
 import UserDropdown from "@ncigdc/components/UserDropdown";
@@ -22,11 +22,16 @@ import { setModal } from "@ncigdc/dux/modal";
 import SessionExpiredModal from "@ncigdc/components/Modals/SessionExpiredModal";
 
 import Banner from "@ncigdc/uikit/Banner";
+import { withTheme } from "@ncigdc/theme";
 
 const styles = {
   iconPadding: {
     paddingRight: "4px"
-  }
+  },
+  activeNavLink: theme => ({
+    backgroundColor: theme.greyScale2,
+    color: theme.white
+  })
 };
 
 const Header = compose(
@@ -54,8 +59,9 @@ const Header = compose(
       }
     }
   }),
+  withTheme,
   pure
-)(({ user, notifications, dispatch }) => (
+)(({ user, notifications, dispatch, theme }) => (
   <header
     id="header"
     className="navbar navbar-default navbar-static-top"
@@ -107,7 +113,11 @@ const Header = compose(
             id="header-home"
           >
             {/* tabindexes */}
-            <HomeLink>
+            <HomeLink
+              exact
+              activeStyle={styles.activeNavLink(theme)}
+              className="HomeLink"
+            >
               <i className="fa fa-home" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Home</span>
             </HomeLink>
@@ -116,13 +126,21 @@ const Header = compose(
             data-ng-class="{ active: hc.$state.includes('projects') }"
             id="header-projects"
           >
-            <ProjectsLink>
+            <ProjectsLink
+              exact
+              activeStyle={styles.activeNavLink(theme)}
+              className="ProjectsLink"
+            >
               <i className="icon-gdc-projects" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Projects</span>
             </ProjectsLink>
           </li>
           <li>
-            <ExploreLink>
+            <ExploreLink
+              exact
+              activeStyle={styles.activeNavLink(theme)}
+              className="ExploreLink"
+            >
               <i className="icon-gdc-data" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Exploration</span>
             </ExploreLink>
@@ -131,7 +149,11 @@ const Header = compose(
             data-ng-class="{ active: hc.$state.includes('search') || hc.$state.includes('query') }"
             id="header-repository"
           >
-            <RepositoryLink>
+            <RepositoryLink
+              exact
+              activeStyle={styles.activeNavLink(theme)}
+              className="RepositoryLink"
+            >
               <i className="fa fa-database" style={styles.iconPadding} />
               <span className="hidden-sm" data-translate>Repository</span>
             </RepositoryLink>

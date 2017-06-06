@@ -7,7 +7,7 @@ const LoginModal = (
   {
     message = "You don't have access",
     primaryButton,
-    closeText
+    closeText = "Close"
   }: {
     message?: string,
     primaryButton?: any,

@@ -3,7 +3,6 @@
 import React from "react";
 import Relay from "react-relay/classic";
 import { connect } from "react-redux";
-import withSize from "@ncigdc/utils/withSize";
 import { orderBy } from "lodash";
 import { parse } from "query-string";
 import { compose, withHandlers } from "recompose";
@@ -23,8 +22,6 @@ import VisualizationHeader from "@ncigdc/components/VisualizationHeader";
 
 const TITLE = "Distribution of Most Frequent Somatic Mutations";
 const CHART_HEIGHT = 285;
-const CHART_MARGINS = { top: 20, right: 50, bottom: 65, left: 55 };
-const MAX_BARS = 20;
 const COMPONENT_NAME = "SsmsBarChart";
 
 const createRenderer = (Route, Container) =>
@@ -113,23 +110,15 @@ const Component = compose(
         ? onClickMutation(ssm, chartData)
         : push(`/ssms/${ssm.ssm_id}`)
   }),
-  withTheme,
-  withSize()
+  withTheme
 )(
   ({
     theme,
-    showSurvivalPlot,
-    size: { width },
     viewer: { explore: { ssms = { hits: { edges: [] } }, filteredCases } },
     context,
-    handleClickMutation
+    handleClickMutation,
+    style
   }) => {
-    const bandWidth =
-      (width - CHART_MARGINS.right - CHART_MARGINS.left) /
-      (MAX_BARS + 1) /
-      (showSurvivalPlot ? 1 : 2) *
-      0.7;
-
     // Data has to be sorted because the relay cache does not store the order.
     const chartData = orderBy(
       ssms.hits.edges.map(e => e.node),
@@ -161,13 +150,12 @@ const Component = compose(
     }));
 
     return (
-      <span>
+      <div style={style}>
         {ssms &&
           !!ssms.hits.edges.length &&
-          <Column>
+          <Column style={{ paddingLeft: "2rem" }}>
             <VisualizationHeader
               title={TITLE}
-              style={{ width: showSurvivalPlot ? "100%" : "50%" }}
               buttons={[
                 <DownloadVisualizationButton
                   key="download"
@@ -183,11 +171,9 @@ const Component = compose(
                 />
               ]}
             />
-            <Row id="mutation-chart" style={{ padding: "2rem 2rem 0" }}>
+            <Row id="mutation-chart" style={{ paddingTop: "2rem" }}>
               <BarChart
-                bandwidth={bandWidth}
                 data={chartData}
-                margin={CHART_MARGINS}
                 height={CHART_HEIGHT}
                 yAxis={{ title: "# Affected Cases" }}
                 styles={{
@@ -201,7 +187,7 @@ const Component = compose(
               />
             </Row>
           </Column>}
-      </span>
+      </div>
     );
   }
 );

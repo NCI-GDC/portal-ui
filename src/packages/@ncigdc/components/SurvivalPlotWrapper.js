@@ -13,6 +13,7 @@ import { Tooltip, withTooltip } from "@ncigdc/uikit/Tooltip";
 import Hidden from "@ncigdc/components/Hidden";
 import withRouter from "@ncigdc/utils/withRouter";
 import { wrapSvg } from "@ncigdc/utils/wrapSvg";
+import withSize from "@ncigdc/utils/withSize";
 import DownloadVisualizationButton
   from "@ncigdc/components/DownloadVisualizationButton";
 import { visualizingButton } from "@ncigdc/theme/mixins";
@@ -242,6 +243,7 @@ const enhance = compose(
   withState("xDomain", "setXDomain", undefined),
   withState("survivalContainer", "setSurvivalContainer", null),
   withState("uniqueClass", "setUniqueClass", () => CLASS_NAME + _.uniqueId()),
+  withSize(),
   lifecycle({
     shouldComponentUpdate(nextProps: TProps): void {
       return !_.isEqual(this.props, nextProps); // eslint-disable-line fp/no-this

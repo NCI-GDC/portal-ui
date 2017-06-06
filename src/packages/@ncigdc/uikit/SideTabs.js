@@ -1,9 +1,9 @@
 // @flow
 
-import React from "react";
-import { withState } from "recompose";
-import { Row } from "./Flex";
-import Tabs from "./Tabs";
+import React from 'react';
+import { withState } from 'recompose';
+import { Row } from './Flex';
+import Tabs from './Tabs';
 
 const SideTabs = ({ setTab, activeTab, tabs, tabContent, ...props }) => (
   <Row flex="1">
@@ -19,6 +19,6 @@ const SideTabs = ({ setTab, activeTab, tabs, tabContent, ...props }) => (
   </Row>
 );
 
-export default withState("activeTab", "setTab", props => props.defaultTab || 0)(
+export default withState('activeTab', 'setTab', props => props.defaultTab || 0)(
   SideTabs,
 );

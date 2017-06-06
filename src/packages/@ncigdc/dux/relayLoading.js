@@ -1,6 +1,6 @@
 // @flow
 
-const TOGGLE_LOADING = "TOGGLE_LOADING";
+const TOGGLE_LOADING = 'TOGGLE_LOADING';
 
 const toggleLoading = (isLoading: boolean): Object => ({
   type: TOGGLE_LOADING,
@@ -9,7 +9,7 @@ const toggleLoading = (isLoading: boolean): Object => ({
 
 const relayLoading = (state: boolean = false, action: Object) => {
   switch (action.type) {
-    case "TOGGLE_LOADING":
+    case 'TOGGLE_LOADING':
       return action.payload;
     default:
       return state;

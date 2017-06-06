@@ -1,9 +1,9 @@
 // @flow
-import { sum } from "lodash";
-import { insertRule } from "glamor";
-import "innersvg-polyfill";
+import { sum } from 'lodash';
+import { insertRule } from 'glamor';
+import 'innersvg-polyfill';
 
-const EXPORT_CLASS = "exported-svg-class";
+const EXPORT_CLASS = 'exported-svg-class';
 insertRule(`
   .${EXPORT_CLASS} select {
     display: none;
@@ -56,7 +56,7 @@ function buildForeignObject({
   margins,
   width = 0,
   topOffset,
-  styles = "",
+  styles = '',
 }: {
   elements?: Array<?Element>,
   margins: TMargin,
@@ -71,7 +71,7 @@ function buildForeignObject({
   return {
     height: elementsHeight,
     html: !foreignObjects.length
-      ? ""
+      ? ''
       : `
       <foreignObject
         x="${margins.left || 0}"
@@ -95,19 +95,19 @@ export const wrapSvg: TWrapSvg = ({
   selector,
   title,
   margins = { top: 20, right: 20, bottom: 20, left: 20 },
-  className = "",
+  className = '',
   embed = {},
 }) => {
   const svg = document.querySelector(selector);
   if (!svg) return svg;
-  const viewBox = (svg.getAttribute("viewBox") || "").split(/\s+|,/);
+  const viewBox = (svg.getAttribute('viewBox') || '').split(/\s+|,/);
   const {
     top: embedTop = {},
     right: embedRight = {},
     bottom: embedBottom = {},
   } = embed;
   const width = sum([
-    parseInt(viewBox[2] || svg.getAttribute("width") || 0, 10),
+    parseInt(viewBox[2] || svg.getAttribute('width') || 0, 10),
     margins.left,
     margins.right,
     embedRight.width,
@@ -132,7 +132,7 @@ export const wrapSvg: TWrapSvg = ({
   });
 
   const height = sum([
-    parseInt(viewBox[3] || svg.getAttribute("height") || 0, 10),
+    parseInt(viewBox[3] || svg.getAttribute('height') || 0, 10),
     margins.top,
     margins.bottom,
     titleHeight,
@@ -146,9 +146,9 @@ export const wrapSvg: TWrapSvg = ({
     topOffset: height,
   });
 
-  const svgClass = svg.getAttribute("class");
+  const svgClass = svg.getAttribute('class');
 
-  const wrapper = document.createElement("div");
+  const wrapper = document.createElement('div');
 
   // eslint-disable-next-line fp/no-mutation
   wrapper.innerHTML = `
@@ -157,7 +157,7 @@ export const wrapSvg: TWrapSvg = ({
       height="${sum([height, afterObject.height])}"
       viewBox="0 0 ${width} ${sum([height, afterObject.height])}"
       style="font-size: 10px"
-      class="${EXPORT_CLASS} ${svgClass || ""} ${className}"
+      class="${EXPORT_CLASS} ${svgClass || ''} ${className}"
     >
       <g transform="translate(0, ${margins.top || 0})">
         <text x="${width / 2}" y="0" text-anchor="middle" dominant-baseline="hanging">
@@ -176,7 +176,7 @@ export const wrapSvg: TWrapSvg = ({
       ${afterObject.html}
     </svg>
   `;
-  return wrapper.querySelector("svg");
+  return wrapper.querySelector('svg');
 };
 
 export default wrapSvg;

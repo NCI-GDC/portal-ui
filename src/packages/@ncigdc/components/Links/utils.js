@@ -1,10 +1,10 @@
 /* @flow */
 
-import React from "react";
+import React from 'react';
 
-import Link from "./Link";
+import Link from './Link';
 
-import type { TListLinkProps, TIdLinkProps, TLinkProps } from "./types";
+import type { TListLinkProps, TIdLinkProps, TLinkProps } from './types';
 
 type TIdLinkConfig = {|
   pathname: string,

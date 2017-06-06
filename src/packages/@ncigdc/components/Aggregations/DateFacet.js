@@ -1,27 +1,27 @@
 /* @flow */
 
-import React from "react";
-import { compose, withState, mapProps, pure } from "recompose";
-import { SingleDatePicker } from "react-dates";
-import "react-dates/lib/css/_datepicker.css";
-import moment from "moment";
+import React from 'react';
+import { compose, withState, mapProps, pure } from 'recompose';
+import { SingleDatePicker } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
+import moment from 'moment';
 
-import styled from "@ncigdc/theme/styled";
-import { Row } from "@ncigdc/uikit/Flex";
+import styled from '@ncigdc/theme/styled';
+import { Row } from '@ncigdc/uikit/Flex';
 
-import { Container, GoLink } from "./";
-import "./style.css";
+import { Container, GoLink } from './';
+import './style.css';
 
 const Label = styled.label({
   backgroundColor: ({ theme }) => theme.greyScale5,
   color: ({ theme }) => theme.greyScale2,
-  padding: "0.8rem",
-  height: "3.4rem",
+  padding: '0.8rem',
+  height: '3.4rem',
   border: ({ theme }) => `1px solid ${theme.greyScale4}`,
 });
 
 const enhance = compose(
-  withState("state", "setState", {
+  withState('state', 'setState', {
     date: moment(),
     focused: false,
   }),
@@ -49,17 +49,17 @@ type TProps = {
 };
 
 const DateFacet = (props: TProps) => {
-  const dotField = props.field.replace(/__/g, ".");
+  const dotField = props.field.replace(/__/g, '.');
   const query = {
     offset: 0,
     filters: {
-      op: "and",
+      op: 'and',
       content: [
         {
-          op: ">=",
+          op: '>=',
           content: {
             field: dotField,
-            value: [(props.state.date || moment()).format("YYYY-MM-DD")],
+            value: [(props.state.date || moment()).format('YYYY-MM-DD')],
           },
         },
       ],
@@ -73,7 +73,7 @@ const DateFacet = (props: TProps) => {
           <Label
             style={{
               borderRight: 0,
-              borderRadius: "4px 0 0 4px",
+              borderRadius: '4px 0 0 4px',
             }}
             htmlFor={`since-${dotField}`}
           >

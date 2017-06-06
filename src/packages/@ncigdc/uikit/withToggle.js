@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import _ from "lodash";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 export default function withToggle(ComposedComponent) {
   return class Toggle extends Component {

@@ -1,13 +1,13 @@
 /* @flow */
-import _ from "lodash";
-import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
+import _ from 'lodash';
+import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
 
 import type {
   TCategoryMap,
   TFindDataCategory,
   TSumDataCategories,
   TCategoryAbbr,
-} from "./types";
+} from './types';
 
 export const CATEGORY_MAP: TCategoryMap = _.fromPairs(
   Object.values(DATA_CATEGORIES).map(c => [c.abbr, c.full]),
@@ -38,7 +38,7 @@ export const buildProteinLolliplotData = (
   {
     transcript = {
       domains: [],
-      transcript_id: "",
+      transcript_id: '',
     },
     data = [],
   }: TBuildProteinLolliplotArgs = {},
@@ -62,10 +62,10 @@ export const buildProteinLolliplotData = (
         genomic_dna_change: mutation.genomic_dna_change,
         x: consequence.transcript.aa_start,
         consequence: consequence.transcript.consequence_type.replace(
-          "_variant",
-          "",
+          '_variant',
+          '',
         ),
-        impact: (consequence.transcript.annotation || {}).impact || "UNKNOWN",
+        impact: (consequence.transcript.annotation || {}).impact || 'UNKNOWN',
         aa_change: consequence.transcript.aa_change,
       };
     }),

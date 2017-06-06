@@ -1,17 +1,17 @@
 // @flow
 
 // Vendor
-import React, { Children, cloneElement } from "react";
-import PropTypes from "prop-types";
+import React, { Children, cloneElement } from 'react';
+import PropTypes from 'prop-types';
 
 /*----------------------------------------------------------------------------*/
 
 const baseStyle = {
-  display: "flex",
-  flexDirection: "row",
-  boxSizing: "border-box",
-  position: "relative",
-  outline: "none",
+  display: 'flex',
+  flexDirection: 'row',
+  boxSizing: 'border-box',
+  position: 'relative',
+  outline: 'none',
 };
 
 const Row = ({ flex, wrap, style, spacing, children, ...props }) => (
@@ -19,7 +19,7 @@ const Row = ({ flex, wrap, style, spacing, children, ...props }) => (
     style={{
       ...baseStyle,
       flex,
-      ...(wrap ? { flexWrap: "wrap" } : {}),
+      ...(wrap ? { flexWrap: 'wrap' } : {}),
       ...style,
     }}
     {...props}

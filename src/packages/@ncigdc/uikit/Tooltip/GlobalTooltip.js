@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import "./style.css";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import './style.css';
 
 class GlobalTooltip extends Component {
   componentDidMount() {
-    window.addEventListener("mousemove", this.moveTooltip);
+    window.addEventListener('mousemove', this.moveTooltip);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("mousemove", this.moveTooltip);
+    window.removeEventListener('mousemove', this.moveTooltip);
   }
 
   moveTooltip = event => {
@@ -25,7 +25,7 @@ class GlobalTooltip extends Component {
         className="global-tooltip"
         ref={node => (this.globalTooltip = node)}
         style={{
-          visibility: this.props.tooltip.Component ? "visible" : "hidden",
+          visibility: this.props.tooltip.Component ? 'visible' : 'hidden',
         }}
       >
         {this.props.tooltip.Component}

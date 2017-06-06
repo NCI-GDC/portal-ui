@@ -1,21 +1,21 @@
 /* @flow */
 
-import React from "react";
-import urlJoin from "url-join";
+import React from 'react';
+import urlJoin from 'url-join';
 
-import { Row } from "@ncigdc/uikit/Flex";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import DownloadButton from "@ncigdc/components/DownloadButton";
-import ArrangeColumnsButton from "@ncigdc/components/ArrangeColumnsButton";
-import SortTableButton from "@ncigdc/components/SortTableButton";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
+import { Row } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import DownloadButton from '@ncigdc/components/DownloadButton';
+import ArrangeColumnsButton from '@ncigdc/components/ArrangeColumnsButton';
+import SortTableButton from '@ncigdc/components/SortTableButton';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
-import { visualizingButton } from "@ncigdc/theme/mixins";
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 import DownloadTableToTsvButton
-  from "@ncigdc/components/DownloadTableToTsvButton";
-import type { TGroupFilter } from "@ncigdc/utils/filters/types";
+  from '@ncigdc/components/DownloadTableToTsvButton';
+import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 
 type TProps = {
   prefix: string,
@@ -41,12 +41,12 @@ const TableActions = (
     endpoint,
     downloadFields,
     downloadable = true,
-    entityType = "",
+    entityType = '',
     tsvSelector,
     tsvFilename,
     style,
     currentFilters,
-    downloadTooltip = "Export All",
+    downloadTooltip = 'Export All',
   }: TProps = {},
 ) => (
   <LocationSubscriber>

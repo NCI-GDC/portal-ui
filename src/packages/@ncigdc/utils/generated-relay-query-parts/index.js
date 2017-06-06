@@ -1,5 +1,5 @@
 /* @flow */
 
-export * from "./exploreCaseAggregations";
-export * from "./repositoryCaseAggregations";
-export * from "./repositoryFileAggregations";
+export * from './exploreCaseAggregations';
+export * from './repositoryCaseAggregations';
+export * from './repositoryFileAggregations';

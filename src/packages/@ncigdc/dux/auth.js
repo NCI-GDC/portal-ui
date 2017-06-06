@@ -1,20 +1,20 @@
 /* @flow */
 
-import { saveAs } from "filesaver.js";
-import { handleActions } from "redux-actions";
-import { fetchAuth } from "@ncigdc/utils/ajax";
+import { saveAs } from 'filesaver.js';
+import { handleActions } from 'redux-actions';
+import { fetchAuth } from '@ncigdc/utils/ajax';
 
 export type State = { isFetching: boolean, user: ?Object, error?: Object };
 export type Action = { type: string, payload: any };
 
-const USER_REQUEST = "gdc/USER_REQUEST";
-const USER_SUCCESS = "gdc/USER_SUCCESS";
-const USER_FAILURE = "gdc/USER_FAILURE";
+const USER_REQUEST = 'gdc/USER_REQUEST';
+const USER_SUCCESS = 'gdc/USER_SUCCESS';
+const USER_FAILURE = 'gdc/USER_FAILURE';
 
-const TOKEN_REQUEST = "gdc/TOKEN_REQUEST";
-const TOKEN_SUCCESS = "gdc/TOKEN_SUCCESS";
-const TOKEN_FAILURE = "gdc/TOKEN_FAILURE";
-const TOKEN_CLEAR = "gdc/TOKEN_CLEAR";
+const TOKEN_REQUEST = 'gdc/TOKEN_REQUEST';
+const TOKEN_SUCCESS = 'gdc/TOKEN_SUCCESS';
+const TOKEN_FAILURE = 'gdc/TOKEN_FAILURE';
+const TOKEN_CLEAR = 'gdc/TOKEN_CLEAR';
 
 export function fetchUser() {
   return fetchAuth({
@@ -30,14 +30,14 @@ export function fetchUser() {
       },
       USER_FAILURE,
     ],
-    endpoint: "user",
+    endpoint: 'user',
   });
 }
 
 export function forceLogout(): Action {
   return {
     type: USER_FAILURE,
-    payload: { message: "Session timed out or not authorized" },
+    payload: { message: 'Session timed out or not authorized' },
   };
 }
 
@@ -58,7 +58,7 @@ export function fetchToken() {
           const token = await res.text();
 
           saveAs(
-            new Blob([token], { type: "text/plain;charset=us-ascii" }),
+            new Blob([token], { type: 'text/plain;charset=us-ascii' }),
             `gdc-user-token.${new Date().toISOString()}.txt`,
           );
 
@@ -67,7 +67,7 @@ export function fetchToken() {
       },
       TOKEN_FAILURE,
     ],
-    endpoint: "token/refresh",
+    endpoint: 'token/refresh',
   });
 }
 

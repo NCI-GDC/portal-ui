@@ -1,23 +1,23 @@
 /* @flow */
 /* eslint fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { connect } from "react-redux";
-import { parse } from "query-string";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { connect } from 'react-redux';
+import { parse } from 'query-string';
 
-import { handleStateChange } from "@ncigdc/dux/relayProgress";
-import RepositoryPage from "@ncigdc/containers/RepositoryPage";
+import { handleStateChange } from '@ncigdc/dux/relayProgress';
+import RepositoryPage from '@ncigdc/containers/RepositoryPage';
 import {
   parseIntParam,
   parseFilterParam,
   parseJSURLParam,
-} from "@ncigdc/utils/uri";
+} from '@ncigdc/utils/uri';
 
-import { viewerQuery } from "./queries";
+import { viewerQuery } from './queries';
 
 class RepositoryRoute extends Relay.Route {
-  static routeName = "RepositoryRoute";
+  static routeName = 'RepositoryRoute';
 
   static queries = viewerQuery;
 

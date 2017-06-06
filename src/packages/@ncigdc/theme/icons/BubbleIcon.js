@@ -1,14 +1,14 @@
 // @flow
-import React from "react";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
+import React from 'react';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const bubbleStyle = {
-  color: "white",
-  padding: "2px 5px",
-  borderRadius: "8px",
-  fontSize: "10px",
-  fontWeight: "bold",
-  display: "inline-block",
+  color: 'white',
+  padding: '2px 5px',
+  borderRadius: '8px',
+  fontSize: '10px',
+  fontWeight: 'bold',
+  display: 'inline-block',
 };
 
 type TProps = {

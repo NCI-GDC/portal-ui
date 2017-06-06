@@ -1,7 +1,7 @@
 /* @flow */
 /* eslint flowtype/no-weak-types: 0 */
 
-import type { TGroupFilter } from "../filters/types";
+import type { TGroupFilter } from '../filters/types';
 
 export type TRawQuery = {
   filters?: string,

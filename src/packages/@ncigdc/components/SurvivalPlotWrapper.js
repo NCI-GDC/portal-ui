@@ -1,27 +1,27 @@
 // @flow
 
-import React from "react";
-import { compose, lifecycle, withState } from "recompose";
-import _ from "lodash";
-import { scaleOrdinal, schemeCategory10 } from "d3";
-import { renderPlot } from "@oncojs/survivalplot";
-import Loader from "@ncigdc/uikit/Loaders/Loader";
-import toMap from "@ncigdc/utils/toMap";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import Button from "@ncigdc/uikit/Button";
-import { Tooltip, withTooltip } from "@ncigdc/uikit/Tooltip";
-import Hidden from "@ncigdc/components/Hidden";
-import withRouter from "@ncigdc/utils/withRouter";
-import { wrapSvg } from "@ncigdc/utils/wrapSvg";
-import withSize from "@ncigdc/utils/withSize";
+import React from 'react';
+import { compose, lifecycle, withState } from 'recompose';
+import _ from 'lodash';
+import { scaleOrdinal, schemeCategory10 } from 'd3';
+import { renderPlot } from '@oncojs/survivalplot';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
+import toMap from '@ncigdc/utils/toMap';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import Button from '@ncigdc/uikit/Button';
+import { Tooltip, withTooltip } from '@ncigdc/uikit/Tooltip';
+import Hidden from '@ncigdc/components/Hidden';
+import withRouter from '@ncigdc/utils/withRouter';
+import { wrapSvg } from '@ncigdc/utils/wrapSvg';
+import withSize from '@ncigdc/utils/withSize';
 import DownloadVisualizationButton
-  from "@ncigdc/components/DownloadVisualizationButton";
-import { visualizingButton } from "@ncigdc/theme/mixins";
-import VisualizationHeader from "@ncigdc/components/VisualizationHeader";
+  from '@ncigdc/components/DownloadVisualizationButton';
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 
-import "./survivalPlot.css";
+import './survivalPlot.css';
 
-const CLASS_NAME = "survival-plot";
+const CLASS_NAME = 'survival-plot';
 
 type TProps = {
   height: number,
@@ -51,7 +51,7 @@ type TProps = {
   uniqueClass: string,
 };
 
-const TITLE = "Overall Survival Plot";
+const TITLE = 'Overall Survival Plot';
 
 const SVG_MARGINS = {
   top: 15,
@@ -65,10 +65,10 @@ const palette = [colors(0), colors(1)];
 
 const styles = {
   pValue: {
-    fontSize: "1.1rem",
-    height: "1.5rem",
-    marginTop: "0.5rem",
-    textAlign: "center",
+    fontSize: '1.1rem',
+    height: '1.5rem',
+    marginTop: '0.5rem',
+    textAlign: 'center',
   },
 };
 
@@ -124,7 +124,7 @@ const SurvivalPlotWrapper = ({
                   return [
                     ...data,
                     ...(results.length > 1
-                      ? mapData.map(m => m.set("label", set.meta.label))
+                      ? mapData.map(m => m.set('label', set.meta.label))
                       : mapData),
                   ];
                 }, [])}
@@ -139,9 +139,9 @@ const SurvivalPlotWrapper = ({
           <div>
             <Row
               style={{
-                justifyContent: "center",
-                flexWrap: "wrap",
-                marginTop: "0.5rem",
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                marginTop: '0.5rem',
               }}
             >
               {legend &&
@@ -150,9 +150,9 @@ const SurvivalPlotWrapper = ({
                     <div
                       style={{
                         color: palette[i],
-                        padding: "0 1rem",
-                        fontSize: "1.35rem",
-                        textAlign: "center",
+                        padding: '0 1rem',
+                        fontSize: '1.35rem',
+                        textAlign: 'center',
                       }}
                     >
                       {l.value}
@@ -171,10 +171,10 @@ const SurvivalPlotWrapper = ({
           }
           <div
             style={{
-              textAlign: "right",
+              textAlign: 'right',
               marginBottom: -SVG_MARGINS.top,
               marginRight: SVG_MARGINS.right,
-              fontSize: "1.1rem",
+              fontSize: '1.1rem',
             }}
           >
             drag to zoom
@@ -184,9 +184,9 @@ const SurvivalPlotWrapper = ({
         className={CLASS_NAME}
         ref={setSurvivalContainer}
         style={{
-          overflow: "hidden",
-          height: survivalPlotloading ? "0px" : height,
-          position: "relative",
+          overflow: 'hidden',
+          height: survivalPlotloading ? '0px' : height,
+          position: 'relative',
         }}
       />
     </Loader>
@@ -211,12 +211,12 @@ function renderSurvivalPlot(props: TProps): void {
       dataSets: results,
       palette,
       xDomain,
-      xAxisLabel: "Duration (days)",
-      yAxisLabel: "Survival Rate",
+      xAxisLabel: 'Duration (days)',
+      yAxisLabel: 'Survival Rate',
       height,
       getSetSymbol: (curve, curves) =>
         curves.length === 1
-          ? ""
+          ? ''
           : `<tspan font-style="italic">S</tspan><tspan font-size="0.7em" baseline-shift="-15%">${curves.indexOf(curve) + 1}</tspan>`,
       onMouseEnterDonor: (e, { id, survivalEstimate, time = 0, censored }) => {
         setTooltip(
@@ -240,9 +240,9 @@ function renderSurvivalPlot(props: TProps): void {
 const enhance = compose(
   withTooltip,
   withRouter,
-  withState("xDomain", "setXDomain", undefined),
-  withState("survivalContainer", "setSurvivalContainer", null),
-  withState("uniqueClass", "setUniqueClass", () => CLASS_NAME + _.uniqueId()),
+  withState('xDomain', 'setXDomain', undefined),
+  withState('survivalContainer', 'setSurvivalContainer', null),
+  withState('uniqueClass', 'setUniqueClass', () => CLASS_NAME + _.uniqueId()),
   withSize(),
   lifecycle({
     shouldComponentUpdate(nextProps: TProps): void {

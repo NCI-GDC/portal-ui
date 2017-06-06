@@ -1,19 +1,19 @@
 // @flow
-import React from "react";
+import React from 'react';
 import {
   compose,
   withState,
   lifecycle,
   withHandlers,
   mapProps,
-} from "recompose";
-import { connect } from "react-redux";
-import { setTooltip } from "@ncigdc/uikit/Tooltip";
-import { omit } from "lodash";
+} from 'recompose';
+import { connect } from 'react-redux';
+import { setTooltip } from '@ncigdc/uikit/Tooltip';
+import { omit } from 'lodash';
 
 const enhance = compose(
   connect(),
-  withState("tooltipState", "setTooltipState", false),
+  withState('tooltipState', 'setTooltipState', false),
   withHandlers({
     setTooltip: ({ dispatch, setTooltipState }) => (tooltip = null) => {
       setTooltipState(tooltip);
@@ -28,7 +28,7 @@ const enhance = compose(
     },
   }),
   mapProps(props =>
-    omit(props, ["tooltipState", "setTooltipState", "dispatch"]),
+    omit(props, ['tooltipState', 'setTooltipState', 'dispatch']),
   ),
 );
 

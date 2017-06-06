@@ -1,16 +1,16 @@
 // @flow
 
-import React from "react";
-import { compose, withState } from "recompose";
+import React from 'react';
+import { compose, withState } from 'recompose';
 
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import styled from "@ncigdc/theme/styled";
-import CurrentFilters from "@ncigdc/components/CurrentFilters";
-import TabbedLinks from "@ncigdc/components/TabbedLinks";
-import UnstyledButton from "@ncigdc/uikit/UnstyledButton";
-import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@ncigdc/theme/icons";
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import styled from '@ncigdc/theme/styled';
+import CurrentFilters from '@ncigdc/components/CurrentFilters';
+import TabbedLinks from '@ncigdc/components/TabbedLinks';
+import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
+import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@ncigdc/theme/icons';
 
-const sidePadding = "2.5rem";
+const sidePadding = '2.5rem';
 
 const Container = styled(Row, {
   padding: `2rem ${sidePadding} 13rem`,
@@ -18,8 +18,8 @@ const Container = styled(Row, {
 
 const FacetsPanel = styled(Column, {
   width: ({ theme }) => theme.facetsPanelWidth,
-  flex: "none",
-  marginRight: "18px",
+  flex: 'none',
+  marginRight: '18px',
 });
 
 const Content = styled(Column, {
@@ -28,14 +28,14 @@ const Content = styled(Column, {
 });
 
 const ShowFacetsButton = styled.button({
-  flex: "none",
+  flex: 'none',
   padding: 10,
   backgroundColor: ({ theme }) => theme.white,
   border: ({ theme }) => `1px solid ${theme.greyScale4}`,
-  borderLeft: "none",
+  borderLeft: 'none',
   margin: `2.1rem 4rem auto -${sidePadding}`,
-  outline: "none",
-  borderRadius: "0 0.4rem 0.4rem 0",
+  outline: 'none',
+  borderRadius: '0 0.4rem 0.4rem 0',
 });
 
 type TProps = {|
@@ -46,7 +46,7 @@ type TProps = {|
   showRepositoryQuery: boolean,
 |};
 
-const enhance = compose(withState("showFacets", "setShowFacets", true));
+const enhance = compose(withState('showFacets', 'setShowFacets', true));
 
 const SearchPage = (
   {
@@ -79,7 +79,7 @@ const SearchPage = (
         />
       </FacetsPanel>}
     <Content>
-      <Row style={{ marginBottom: "2rem" }}>
+      <Row style={{ marginBottom: '2rem' }}>
         {!showFacets &&
           <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
             <DoubleArrowRightIcon />

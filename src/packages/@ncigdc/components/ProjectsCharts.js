@@ -1,10 +1,10 @@
 /* @flow */
 // Vendor
-import React from "react";
-import Measure from "react-measure";
-import Relay from "react-relay/classic";
-import QuestionIcon from "react-icons/lib/fa/question-circle";
-import * as d3 from "d3";
+import React from 'react';
+import Measure from 'react-measure';
+import Relay from 'react-relay/classic';
+import QuestionIcon from 'react-icons/lib/fa/question-circle';
+import * as d3 from 'd3';
 import {
   compose,
   withState,
@@ -12,38 +12,38 @@ import {
   lifecycle,
   mapProps,
   withPropsOnChange,
-} from "recompose";
-import JSURL from "jsurl";
-import { isEqual, sortBy } from "lodash";
+} from 'recompose';
+import JSURL from 'jsurl';
+import { isEqual, sortBy } from 'lodash';
 
 // Custom
-import Column from "@ncigdc/uikit/Flex/Column";
-import Row from "@ncigdc/uikit/Flex/Row";
-import SpinnerParticle from "@ncigdc/uikit/Loaders/Particle";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
+import Column from '@ncigdc/uikit/Flex/Column';
+import Row from '@ncigdc/uikit/Flex/Row';
+import SpinnerParticle from '@ncigdc/uikit/Loaders/Particle';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-import withRouter from "@ncigdc/utils/withRouter";
-import { fetchApi } from "@ncigdc/utils/ajax";
-import { setFilter, mergeQuery } from "@ncigdc/utils/filters";
-import { removeEmptyKeys } from "@ncigdc/utils/uri";
+import withRouter from '@ncigdc/utils/withRouter';
+import { fetchApi } from '@ncigdc/utils/ajax';
+import { setFilter, mergeQuery } from '@ncigdc/utils/filters';
+import { removeEmptyKeys } from '@ncigdc/utils/uri';
 
-import DoubleRingChart from "@ncigdc/components/Charts/DoubleRingChart";
-import StackedBarChart from "@ncigdc/components/Charts/StackedBarChart";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
+import DoubleRingChart from '@ncigdc/components/Charts/DoubleRingChart';
+import StackedBarChart from '@ncigdc/components/Charts/StackedBarChart';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
-import styled from "@ncigdc/theme/styled";
-import { withTheme } from "@ncigdc/theme";
-import caseHasMutation from "@ncigdc/utils/filters/prepared/caseHasMutation";
+import styled from '@ncigdc/theme/styled';
+import { withTheme } from '@ncigdc/theme';
+import caseHasMutation from '@ncigdc/utils/filters/prepared/caseHasMutation';
 import significantConsequences
-  from "@ncigdc/utils/filters/prepared/significantConsequences";
-import type { TGroupContent, TGroupFilter } from "@ncigdc/utils/filters/types";
+  from '@ncigdc/utils/filters/prepared/significantConsequences';
+import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
 
 const color = d3.scaleOrdinal([
   ...d3.schemeCategory20,
-  "#CE6DBD",
-  "#AD494A",
-  "#8C6D31",
-  "#B5CF6B",
+  '#CE6DBD',
+  '#AD494A',
+  '#8C6D31',
+  '#B5CF6B',
 ]);
 
 type TProps = {
@@ -91,11 +91,11 @@ type TProps = {
 };
 
 const Container = styled(Row, {
-  marginBottom: "2rem",
-  backgroundColor: "white",
-  border: "1px solid #ddd",
-  borderRadius: "4px",
-  height: "300px",
+  marginBottom: '2rem',
+  backgroundColor: 'white',
+  border: '1px solid #ddd',
+  borderRadius: '4px',
+  height: '300px',
 });
 
 const initialState = {
@@ -110,38 +110,38 @@ function getGenes({ relay, caseCountFilters, fmgChartFilters }: TProps): void {
   relay.setVariables({
     fetchGeneData: true,
     fmgCaseCount_filters: caseCountFilters.length
-      ? { op: "AND", content: caseCountFilters }
+      ? { op: 'AND', content: caseCountFilters }
       : null,
     fmgChart_filters: fmgChartFilters,
   });
 }
 
 const ProjectsChartsComponent = compose(
-  withState("state", "setState", initialState),
+  withState('state', 'setState', initialState),
   withRouter,
   // eslint-disable-next-line fp/no-mutating-methods
   mapProps(props => ({
     ...props,
     projectIds: props.hits.edges.map(x => x.node.project_id).sort(),
   })),
-  withPropsOnChange(["projectIds"], ({ projectIds }) => ({
+  withPropsOnChange(['projectIds'], ({ projectIds }) => ({
     fmgChartFilters: {
-      op: "AND",
+      op: 'AND',
       content: [
         significantConsequences,
         projectIds.length
           ? {
-              op: "in",
+              op: 'in',
               content: {
-                field: "cases.project.project_id",
+                field: 'cases.project.project_id',
                 value: projectIds,
               },
             }
           : null,
         {
-          op: "in",
+          op: 'in',
           content: {
-            field: "genes.is_cancer_gene_census",
+            field: 'genes.is_cancer_gene_census',
             value: [true],
           },
         },
@@ -151,9 +151,9 @@ const ProjectsChartsComponent = compose(
       caseHasMutation,
       projectIds.length
         ? {
-            op: "in",
+            op: 'in',
             content: {
-              field: "cases.project.project_id",
+              field: 'cases.project.project_id',
               value: projectIds,
             },
           }
@@ -167,9 +167,9 @@ const ProjectsChartsComponent = compose(
 
       const {
         aggregations,
-      } = await fetchApi("analysis/top_cases_counts_by_genes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      } = await fetchApi('analysis/top_cases_counts_by_genes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: {
           size: 0,
           gene_ids: topGenesSource.map(g => g.gene_id).join(),
@@ -249,7 +249,7 @@ const ProjectsChartsComponent = compose(
         onClick: () => push(`/genes/${geneId}`),
         ...topGenesWithCasesPerProject[geneId],
         total: Object.keys(topGenesWithCasesPerProject[geneId])
-          .filter(k => k !== "symbol")
+          .filter(k => k !== 'symbol')
           .reduce(
             (sum, projectId) =>
               sum + topGenesWithCasesPerProject[geneId][projectId],
@@ -271,21 +271,21 @@ const ProjectsChartsComponent = compose(
             <span>
               <b>{p.primary_site}</b><br />
               {primarySiteCasesCount.toLocaleString()}
-              {" "}
+              {' '}
               case
-              {primarySiteCasesCount > 1 ? "s" : ""}
+              {primarySiteCasesCount > 1 ? 's' : ''}
             </span>
           ),
           clickHandler: () => {
             const newQuery = mergeQuery(
               {
                 filters: setFilter({
-                  field: "projects.primary_site",
+                  field: 'projects.primary_site',
                   value: [].concat(p.primary_site || []),
                 }),
               },
               query,
-              "toggle",
+              'toggle',
             );
 
             const q = removeEmptyKeys({
@@ -304,21 +304,21 @@ const ProjectsChartsComponent = compose(
                 <span>
                   <b>{p.name}</b><br />
                   {p.summary.case_count.toLocaleString()}
-                  {" "}
+                  {' '}
                   case
-                  {p.summary.case_count > 1 ? "s" : 0}
+                  {p.summary.case_count > 1 ? 's' : 0}
                 </span>
               ),
               clickHandler: () => {
                 const newQuery = mergeQuery(
                   {
                     filters: setFilter({
-                      field: "projects.project_id",
+                      field: 'projects.project_id',
                       value: [].concat(p.project_id || []),
                     }),
                   },
                   query,
-                  "toggle",
+                  'toggle',
                 );
 
                 const q = removeEmptyKeys({
@@ -391,24 +391,24 @@ const ProjectsChartsComponent = compose(
       <Container>
         <Column
           style={{
-            paddingRight: "10px",
-            minWidth: "550px",
-            flexGrow: "2",
-            flexBasis: "66%",
+            paddingRight: '10px',
+            minWidth: '550px',
+            flexGrow: '2',
+            flexBasis: '66%',
           }}
         >
           <div
             style={{
-              alignSelf: "center",
+              alignSelf: 'center',
               color: theme.greyScale7,
-              padding: "1.5rem 0 0.5rem",
-              fontWeight: "bold",
+              padding: '1.5rem 0 0.5rem',
+              fontWeight: 'bold',
             }}
           >
             Top Mutated Cancer Genes in Selected Projects
             <Tooltip Component={<span>From COSMIC Cancer Gene Census</span>}>
               <QuestionIcon
-                style={{ color: theme.greyScale7, marginLeft: "5px" }}
+                style={{ color: theme.greyScale7, marginLeft: '5px' }}
               />
             </Tooltip>
           </div>
@@ -416,26 +416,26 @@ const ProjectsChartsComponent = compose(
             ? [
                 <div
                   style={{
-                    alignSelf: "center",
+                    alignSelf: 'center',
                     color: theme.greyScale7,
-                    fontSize: "1.2rem",
+                    fontSize: '1.2rem',
                   }}
                   key="bar-subtitle"
                 >
                   <ExploreLink
                     query={{
-                      searchTableTab: "cases",
+                      searchTableTab: 'cases',
                       filters: caseCountFilters
-                        ? { op: "and", content: caseCountFilters }
+                        ? { op: 'and', content: caseCountFilters }
                         : null,
                     }}
                   >
                     {numUniqueCases.toLocaleString()}
                   </ExploreLink>
-                  {` Unique Case${!numUniqueCases || numUniqueCases > 1 ? "s" : ""} with Somatic Mutation Data` // eslint-disable-line max-len
+                  {` Unique Case${!numUniqueCases || numUniqueCases > 1 ? 's' : ''} with Somatic Mutation Data` // eslint-disable-line max-len
                   }
                 </div>,
-                <span style={{ transform: "scale(0.9)" }} key="bar-wrapper">
+                <span style={{ transform: 'scale(0.9)' }} key="bar-wrapper">
                   <Measure key="bar-chart">
                     {({ width }) => (
                       <StackedBarChart
@@ -453,7 +453,7 @@ const ProjectsChartsComponent = compose(
                           }),
                           {},
                         )}
-                        yAxis={{ title: "Cases Affected" }}
+                        yAxis={{ title: 'Cases Affected' }}
                         styles={{
                           xAxis: {
                             stroke: theme.greyScale4,
@@ -471,21 +471,21 @@ const ProjectsChartsComponent = compose(
               ]
             : <Row
                 style={{
-                  justifyContent: "center",
-                  paddingTop: "2em",
-                  paddingBottom: "2em",
+                  justifyContent: 'center',
+                  paddingTop: '2em',
+                  paddingBottom: '2em',
                 }}
               >
                 <SpinnerParticle />
               </Row>}
         </Column>
-        <Column style={{ minWidth: "200px", flexGrow: "1", flexBasis: "33%" }}>
+        <Column style={{ minWidth: '200px', flexGrow: '1', flexBasis: '33%' }}>
           <div
             style={{
-              alignSelf: "center",
+              alignSelf: 'center',
               color: theme.greyScale7,
-              padding: "1.5rem 0 0.5rem",
-              fontWeight: "bold",
+              padding: '1.5rem 0 0.5rem',
+              fontWeight: 'bold',
             }}
           >
             Case Distribution per Project
@@ -494,17 +494,17 @@ const ProjectsChartsComponent = compose(
             ? [
                 <div
                   style={{
-                    alignSelf: "center",
-                    fontSize: "1.2rem",
-                    marginBottom: "2rem",
+                    alignSelf: 'center',
+                    fontSize: '1.2rem',
+                    marginBottom: '2rem',
                   }}
                   key="pie-subtitle"
                 >
-                  {`${totalCases.toLocaleString()} Case${totalCases === 0 || totalCases > 1 ? "s" : ""}
-              across ${projects.length.toLocaleString()} Project${projects.length === 0 || projects.length > 1 ? "s" : ""}` // eslint-disable-line max-len
+                  {`${totalCases.toLocaleString()} Case${totalCases === 0 || totalCases > 1 ? 's' : ''}
+              across ${projects.length.toLocaleString()} Project${projects.length === 0 || projects.length > 1 ? 's' : ''}` // eslint-disable-line max-len
                   }
                 </div>,
-                <span style={{ transform: "scale(0.75)" }} key="circle-wrapper">
+                <span style={{ transform: 'scale(0.75)' }} key="circle-wrapper">
                   <DoubleRingChart
                     key="pie-chart"
                     colors={primarySiteToColor}
@@ -519,9 +519,9 @@ const ProjectsChartsComponent = compose(
               ]
             : <Row
                 style={{
-                  justifyContent: "center",
-                  paddingTop: "2em",
-                  paddingBottom: "2em",
+                  justifyContent: 'center',
+                  paddingTop: '2em',
+                  paddingBottom: '2em',
                 }}
               >
                 <SpinnerParticle />
@@ -537,7 +537,7 @@ export const ProjectsChartsQuery = {
     fetchGeneData: false,
     fmgCaseCount_filters: null,
     fmgChart_filters: null,
-    score: "case.project.project_id",
+    score: 'case.project.project_id',
   },
   fragments: {
     explore: () => Relay.QL`

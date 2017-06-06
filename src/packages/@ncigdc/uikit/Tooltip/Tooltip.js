@@ -1,7 +1,7 @@
 // @flow
-import React from "react";
+import React from 'react';
 
-import withTooltip from "./withTooltip";
+import withTooltip from './withTooltip';
 
 type TProps = {|
   Component: any,

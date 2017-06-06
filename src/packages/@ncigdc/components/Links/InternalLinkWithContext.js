@@ -1,16 +1,16 @@
 /* @flow */
 
-import React from "react";
-import _ from "lodash";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
+import React from 'react';
+import _ from 'lodash';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
-import { mergeQuery as mq } from "@ncigdc/utils/filters";
+import { mergeQuery as mq } from '@ncigdc/utils/filters';
 
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
-import InternalLink from "./InternalLink";
+import InternalLink from './InternalLink';
 
-import type { TLinkProps } from "./types";
+import type { TLinkProps } from './types';
 
 const InternalLinkWithContext = ({
   pathname,
@@ -40,7 +40,7 @@ const InternalLinkWithContext = ({
         ? mergedQuery
         : _.mapValues(
             mergedQuery,
-            (value, paramName) => (paramName.endsWith("offset") ? 0 : value),
+            (value, paramName) => (paramName.endsWith('offset') ? 0 : value),
           );
 
       return (

@@ -1,10 +1,10 @@
 // @flow
 
-import React from "react";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
-import Tabs from "@ncigdc/uikit/Tabs";
-import Link from "@ncigdc/components/Links/Link";
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
+import React from 'react';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
+import Tabs from '@ncigdc/uikit/Tabs';
+import Link from '@ncigdc/components/Links/Link';
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
 type TTabbedLinksProps = {
   defaultIndex?: number,
@@ -34,9 +34,9 @@ const TabbedLinks: TTabbedLinks = (
               : links.map(x => (
                   <Link
                     style={{
-                      padding: "1.2rem 1.8rem",
-                      textDecoration: "none",
-                      display: "inline-block",
+                      padding: '1.2rem 1.8rem',
+                      textDecoration: 'none',
+                      display: 'inline-block',
                     }}
                     key={x.id}
                     query={{ [queryParam]: x.id }}

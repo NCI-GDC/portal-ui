@@ -1,27 +1,24 @@
 // @flow
 
-import React from "react";
+import React from 'react';
 
-import Link from "@ncigdc/components/Links/Link";
-import UndoIcon from "@ncigdc/theme/icons/UndoIcon";
-import Hidden from "@ncigdc/components/Hidden";
-import styled from "@ncigdc/theme/styled";
-import {
-  removeFilter,
-  fieldInCurrentFilters
-} from "@ncigdc/utils/filters/index";
+import Link from '@ncigdc/components/Links/Link';
+import UndoIcon from '@ncigdc/theme/icons/UndoIcon';
+import { getFilterValue } from '@ncigdc/utils/filters';
+import Hidden from '@ncigdc/components/Hidden';
+import styled from '@ncigdc/theme/styled';
 
 const ShadowedUndoIcon = styled(UndoIcon, {
-  ":hover::before": {
+  ':hover::before': {
     textShadow: ({ theme }) => theme.textShadow,
   },
 });
 
 const StyledLink = styled(Link, {
-  ":link": {
+  ':link': {
     color: ({ theme }) => theme.greyScale3,
   },
-  ":visited": {
+  ':visited': {
     color: ({ theme }) => theme.greyScale3,
   },
 });
@@ -35,15 +32,15 @@ const FacetResetButton = ({ field, currentFilters, style, ...props }) => {
   return (
     <StyledLink
       merge="toggle"
-      style={{ display: display ? "inline" : "none", ...style }}
+      style={{ display: display ? 'inline' : 'none', ...style }}
       query={
         !!currentValues.content.value.length && {
           offset: 0,
           filters: {
-            op: "and",
+            op: 'and',
             content: [
               {
-                op: "in",
+                op: 'in',
                 content: {
                   field,
                   value: currentValues.content.value,

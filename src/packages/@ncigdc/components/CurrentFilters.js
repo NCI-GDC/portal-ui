@@ -1,10 +1,10 @@
 // @flow
-import React from "react";
-import { take, xor, omit } from "lodash";
-import UndoIcon from "react-icons/lib/md/undo";
-import LeftArrow from "react-icons/lib/fa/long-arrow-left";
-import Cogs from "react-icons/lib/fa/cogs";
-import Color from "color";
+import React from 'react';
+import { take, xor, omit } from 'lodash';
+import UndoIcon from 'react-icons/lib/md/undo';
+import LeftArrow from 'react-icons/lib/fa/long-arrow-left';
+import Cogs from 'react-icons/lib/fa/cogs';
+import Color from 'color';
 import {
   compose,
   withState,
@@ -12,30 +12,30 @@ import {
   withHandlers,
   withPropsOnChange,
   withProps,
-} from "recompose";
-import JSURL from "jsurl";
+} from 'recompose';
+import JSURL from 'jsurl';
 
-import { humanify } from "@ncigdc/utils/string";
-import withRouter from "@ncigdc/utils/withRouter";
-import { makeFilter } from "@ncigdc/utils/filters";
+import { humanify } from '@ncigdc/utils/string';
+import withRouter from '@ncigdc/utils/withRouter';
+import { makeFilter } from '@ncigdc/utils/filters';
 
-import Button, { buttonBaseStyles } from "@ncigdc/uikit/Button";
-import { Row } from "@ncigdc/uikit/Flex";
-import Info from "@ncigdc/uikit/Info";
+import Button, { buttonBaseStyles } from '@ncigdc/uikit/Button';
+import { Row } from '@ncigdc/uikit/Flex';
+import Info from '@ncigdc/uikit/Info';
 
-import styled from "@ncigdc/theme/styled";
-import { buttonLike } from "@ncigdc/theme/mixins";
-import UnstyledButton from "@ncigdc/uikit/UnstyledButton";
-import Link from "@ncigdc/components/Links/Link";
+import styled from '@ncigdc/theme/styled';
+import { buttonLike } from '@ncigdc/theme/mixins';
+import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
+import Link from '@ncigdc/components/Links/Link';
 
-import { facetFieldDisplayMapper } from "@ncigdc/components/Aggregations";
-import GeneSymbol from "@ncigdc/containers/GeneSymbol";
+import { facetFieldDisplayMapper } from '@ncigdc/components/Aggregations';
+import GeneSymbol from '@ncigdc/containers/GeneSymbol';
 
 /*----------------------------------------------------------------------------*/
 
 const Field = styled(Button, {
   backgroundColor: ({ theme }) => theme.greyScale2,
-  ":hover": {
+  ':hover': {
     backgroundColor: ({ theme }) =>
       Color(theme.greyScale2).lighten(0.7).rgbString(),
   },
@@ -43,7 +43,7 @@ const Field = styled(Button, {
 
 const Value = styled(Button, {
   backgroundColor: ({ theme }) => theme.success,
-  ":hover": {
+  ':hover': {
     backgroundColor: ({ theme }) =>
       Color(theme.success).lighten(0.7).rgbString(),
   },
@@ -52,20 +52,20 @@ const Value = styled(Button, {
 const Op = styled.span({
   ...buttonLike,
   backgroundColor: ({ theme }) => theme.primary,
-  color: "white",
+  color: 'white',
 });
 
 const NotUnderlinedLink = styled(Link, {
-  ":link": {
-    textDecoration: "none",
+  ':link': {
+    textDecoration: 'none',
   },
 });
 
 const LinkButton = styled(Link, {
   ...buttonBaseStyles,
-  flex: "none",
-  ":link": {
-    textDecoration: "none",
+  flex: 'none',
+  ':link': {
+    textDecoration: 'none',
     color: buttonBaseStyles.color,
   },
 });
@@ -84,28 +84,28 @@ type TProps = {
 
 const enhance = compose(
   withRouter,
-  withPropsOnChange(["query"], ({ query: { filters } }) => ({
+  withPropsOnChange(['query'], ({ query: { filters } }) => ({
     filters: JSURL.parse(filters),
   })),
-  withPropsOnChange(["filters"], ({ filters }) => ({
+  withPropsOnChange(['filters'], ({ filters }) => ({
     currentFilters: (filters && filters.content) || [],
   })),
-  withState("expandedFilters", "setExpandedFilters", []),
+  withState('expandedFilters', 'setExpandedFilters', []),
   withProps(({ expandedFilters }) => ({
     isFilterExpanded: filter => expandedFilters.includes(filter),
   })),
   withProps(({ geneSymbolFragment }) => ({
     getDisplayValue: (field, value) => {
       switch (typeof value) {
-        case "string":
-          if (field === "genes.gene_id") {
+        case 'string':
+          if (field === 'genes.gene_id') {
             return <GeneSymbol explore={geneSymbolFragment} geneId={value} />;
           }
           return value;
-        case "boolean":
-          return value ? "true" : "false";
-        case "number":
-          return value;
+        case 'number':
+          return value === 0 ? 'false' : 'true';
+        case 'boolean':
+          return value ? 'true' : 'false';
         default:
           return value;
       }
@@ -121,19 +121,19 @@ const enhance = compose(
 
 const styles = {
   leftParen: {
-    fontSize: "2rem",
-    marginRight: "0.3rem",
-    display: "flex",
-    alignItems: "center",
+    fontSize: '2rem',
+    marginRight: '0.3rem',
+    display: 'flex',
+    alignItems: 'center',
   },
   rightParen: {
-    fontSize: "2rem",
-    marginRight: "0.3rem",
-    display: "flex",
-    alignItems: "center",
+    fontSize: '2rem',
+    marginRight: '0.3rem',
+    display: 'flex',
+    alignItems: 'center',
   },
   groupPadding: {
-    padding: "0.5rem 0",
+    padding: '0.5rem 0',
   },
 };
 
@@ -156,28 +156,28 @@ const CurrentFilters = (
     {!currentFilters.length &&
       <span
         style={{
-          display: "flex",
-          alignItems: "center",
-          lineHeight: "44px",
-          width: "100%",
+          display: 'flex',
+          alignItems: 'center',
+          lineHeight: '44px',
+          width: '100%',
         }}
       >
         <LeftArrow />
-        <span style={{ marginLeft: "0.6rem" }}>
+        <span style={{ marginLeft: '0.6rem' }}>
           Start searching by selecting a facet
         </span>
       </span>}
     {!!currentFilters.length &&
       <Row
         style={{
-          width: "100%",
-          justifyContent: "space-between",
+          width: '100%',
+          justifyContent: 'space-between',
         }}
       >
         <Row wrap spacing="0.3rem">
           <NotUnderlinedLink
             style={styles.groupPadding}
-            query={omit(query, "filters")}
+            query={omit(query, 'filters')}
           >
             <Button leftIcon={<UndoIcon />}>Clear</Button>
           </NotUnderlinedLink>
@@ -193,7 +193,7 @@ const CurrentFilters = (
                 query={{
                   offset: 0,
                   filters: {
-                    op: "and",
+                    op: 'and',
                     content: [filter],
                   },
                 }}
@@ -204,13 +204,13 @@ const CurrentFilters = (
                   })}
                 </Field>
               </NotUnderlinedLink>
-              {filter.op === "in" &&
+              {filter.op === 'in' &&
                 filter.content.value.length === 1 &&
                 <Op>IS</Op>}
-              {filter.op === "in" &&
+              {filter.op === 'in' &&
                 filter.content.value.length > 1 &&
                 <Op>IN</Op>}
-              {filter.op !== "in" && <Button>{filter.op}</Button>}
+              {filter.op !== 'in' && <Button>{filter.op}</Button>}
               {filter.content.value.length > 1 &&
                 <span style={styles.leftParen}>(</span>}
               {(isFilterExpanded(filter)
@@ -222,7 +222,7 @@ const CurrentFilters = (
                   query={{
                     offset: 0,
                     filters: {
-                      op: "and",
+                      op: 'and',
                       content: [filter],
                     },
                   }}
@@ -241,7 +241,7 @@ const CurrentFilters = (
                 </UnstyledButton>}
               {isFilterExpanded(filter) &&
                 <UnstyledButton
-                  style={{ display: "flex", alignItems: "center" }}
+                  style={{ display: 'flex', alignItems: 'center' }}
                   onClick={() => onLessClicked(filter)}
                 >
                   Less

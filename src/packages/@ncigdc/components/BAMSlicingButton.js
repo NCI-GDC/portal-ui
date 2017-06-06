@@ -1,25 +1,25 @@
 // @flow
 
 // Vendor
-import React from "react";
-import { connect } from "react-redux";
-import { compose, withState, pure } from "recompose";
-import CutleryIcon from "@ncigdc/theme/icons/Cutlery";
-import Spinner from "@ncigdc/theme/icons/Spinner";
+import React from 'react';
+import { connect } from 'react-redux';
+import { compose, withState, pure } from 'recompose';
+import CutleryIcon from '@ncigdc/theme/icons/Cutlery';
+import Spinner from '@ncigdc/theme/icons/Spinner';
 
 // Custom
-import Button from "@ncigdc/uikit/Button";
-import styled from "@ncigdc/theme/styled";
-import { setModal } from "@ncigdc/dux/modal";
-import BAMModal from "@ncigdc/components/Modals/BAMModal";
-import NoAccessModal from "@ncigdc/components/Modals/NoAccessModal";
-import { userCanDownloadFile } from "@ncigdc/utils/auth";
+import Button from '@ncigdc/uikit/Button';
+import styled from '@ncigdc/theme/styled';
+import { setModal } from '@ncigdc/dux/modal';
+import BAMModal from '@ncigdc/components/Modals/BAMModal';
+import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
+import { userCanDownloadFile } from '@ncigdc/utils/auth';
 
 const BAMButton = styled(Button, {
-  marginLeft: "0.5rem",
+  marginLeft: '0.5rem',
 });
 
-const enhance = compose(withState("active", "setActive", false), pure);
+const enhance = compose(withState('active', 'setActive', false), pure);
 
 type TProps = {
   file: Object,
@@ -37,7 +37,7 @@ const BAMSlicingButton = ({
   active,
 }: TProps) => (
   <BAMButton
-    style={{ marginLeft: "0.5rem" }}
+    style={{ marginLeft: '0.5rem' }}
     leftIcon={active ? <Spinner /> : <CutleryIcon />}
     disabled={active}
     onClick={() =>
@@ -53,7 +53,7 @@ const BAMSlicingButton = ({
         ),
       )}
   >
-    {active ? "Slicing" : "BAM Slicing"}
+    {active ? 'Slicing' : 'BAM Slicing'}
   </BAMButton>
 );
 

@@ -1,29 +1,29 @@
 // @flow
-import React from "react";
-import Relay from "react-relay/classic";
-import { lifecycle, compose, withPropsOnChange } from "recompose";
-import { groupBy, isEqual, head, get } from "lodash";
-import { tableToolTipHint, visualizingButton } from "@ncigdc/theme/mixins";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { lifecycle, compose, withPropsOnChange } from 'recompose';
+import { groupBy, isEqual, head, get } from 'lodash';
+import { tableToolTipHint, visualizingButton } from '@ncigdc/theme/mixins';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable
-  from "@ncigdc/components/EntityPageHorizontalTable";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import { Column, Row } from "@ncigdc/uikit/Flex";
-import { makeFilter } from "@ncigdc/utils/filters";
-import ProjectLink from "@ncigdc/components/Links/ProjectLink";
-import GreyBox from "@ncigdc/uikit/GreyBox";
-import Loader from "@ncigdc/uikit/Loaders/Loader";
+  from '@ncigdc/components/EntityPageHorizontalTable';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { Column, Row } from '@ncigdc/uikit/Flex';
+import { makeFilter } from '@ncigdc/utils/filters';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
+import MutationsCount from '@ncigdc/containers/MutationsCount';
+import GreyBox from '@ncigdc/uikit/GreyBox';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
 import DownloadTableToTsvButton
-  from "@ncigdc/components/DownloadTableToTsvButton";
-import Button from "@ncigdc/uikit/Button";
-import saveFile from "@ncigdc/utils/filesaver";
-import Showing from "@ncigdc/components/Pagination/Showing";
-import Pagination from "@ncigdc/components/Pagination";
-import withRouter from "@ncigdc/utils/withRouter";
-import type { TGroupFilter } from "@ncigdc/utils/filters/types";
-import MutationsCount from "@ncigdc/components/MutationsCount";
+  from '@ncigdc/components/DownloadTableToTsvButton';
+import Button from '@ncigdc/uikit/Button';
+import saveFile from '@ncigdc/utils/filesaver';
+import Showing from '@ncigdc/components/Pagination/Showing';
+import Pagination from '@ncigdc/components/Pagination';
+import withRouter from '@ncigdc/utils/withRouter';
+import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 
-const paginationPrefix = "canDistTable";
+const paginationPrefix = 'canDistTable';
 
 type TProps = {|
   entityName: string,
@@ -97,7 +97,7 @@ const CancerDistributionTableComponent = compose(
           projectFilter: makeFilter(
             [
               {
-                field: "project_id",
+                field: 'project_id',
                 value: nextProps.cases.filtered.project__project_id.buckets.map(
                   b => b.key,
                 ),
@@ -110,7 +110,7 @@ const CancerDistributionTableComponent = compose(
     },
   }),
   withPropsOnChange(
-    ["cases", "projects", "geneId", "entityName", "explore"],
+    ['cases', 'projects', 'geneId', 'entityName', 'explore'],
     ({ cases, projects, geneId, entityName, explore }: TProps) => {
       const { ssms: { aggregations } } = explore;
       const ssmCounts = (aggregations || {
@@ -120,7 +120,7 @@ const CancerDistributionTableComponent = compose(
 
       const casesByProjectMap = get(
         cases.total,
-        "project__project_id.buckets",
+        'project__project_id.buckets',
         [],
       ).reduce(
         (acc, bucket) => ({ ...acc, [bucket.key]: bucket.doc_count }),
@@ -142,9 +142,9 @@ const CancerDistributionTableComponent = compose(
           return {
             project_id: b.key,
             disease_type: project
-              ? (project.node.disease_type || []).join(", ")
+              ? (project.node.disease_type || []).join(', ')
               : null,
-            site: project ? (project.node.primary_site || []).join(", ") : null,
+            site: project ? (project.node.primary_site || []).join(', ') : null,
             num_affected_cases: b.doc_count,
             num_affected_cases_total: totalCasesByProject,
             num_affected_cases_percent: b.doc_count / totalCasesByProject,
@@ -155,14 +155,14 @@ const CancerDistributionTableComponent = compose(
         );
 
       const baseFilter = geneId
-        ? { field: "genes.gene_id", value: [geneId] }
-        : { field: "ssms.ssm_id", value: [entityName] };
+        ? { field: 'genes.gene_id', value: [geneId] }
+        : { field: 'ssms.ssm_id', value: [entityName] };
 
       const cancerDistData = rawData.map(row => {
         const projectFilter = makeFilter(
           [
             baseFilter,
-            { field: "cases.project.project_id", value: [row.project_id] },
+            { field: 'cases.project.project_id', value: [row.project_id] },
           ],
           false,
         );
@@ -178,21 +178,21 @@ const CancerDistributionTableComponent = compose(
           num_affected_cases: (
             <span>
               <ExploreLink
-                query={{ searchTableTab: "cases", filters: projectFilter }}
+                query={{ searchTableTab: 'cases', filters: projectFilter }}
               >
                 {row.num_affected_cases}
               </ExploreLink>
               <span> / </span>
               <ExploreLink
                 query={{
-                  searchTableTab: "cases",
+                  searchTableTab: 'cases',
                   filters: makeFilter(
                     [
                       {
-                        field: "cases.project.project_id",
+                        field: 'cases.project.project_id',
                         value: [row.project_id],
                       },
-                      { field: "cases.available_variation_data", value: "ssm" },
+                      { field: 'cases.available_variation_data', value: 'ssm' },
                     ],
                     false,
                   ),
@@ -223,7 +223,7 @@ const CancerDistributionTableComponent = compose(
   ),
   withRouter,
   withPropsOnChange(
-    ["cancerDistData", "query"],
+    ['cancerDistData', 'query'],
     ({ cancerDistData, query }) => {
       const size = parseInt(query[`${paginationPrefix}_size`] || 10, 10);
       const offset = parseInt(query[`${paginationPrefix}_offset`] || 0, 10);
@@ -259,7 +259,7 @@ const CancerDistributionTableComponent = compose(
     const mutationsHeading = geneId
       ? [
           {
-            key: "num_mutations",
+            key: 'num_mutations',
             title: (
               <Tooltip
                 Component={`Number of Simple Somatic Mutations observed in ${entityName} in Project`}
@@ -268,7 +268,7 @@ const CancerDistributionTableComponent = compose(
                 # Mutations
               </Tooltip>
             ),
-            style: { textAlign: "right" },
+            style: { textAlign: 'right' },
           },
         ]
       : [];
@@ -277,10 +277,10 @@ const CancerDistributionTableComponent = compose(
       <Loader loading={!cases.filtered} height="387px">
         <Row
           style={{
-            backgroundColor: "white",
-            padding: "1rem",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
+            backgroundColor: 'white',
+            padding: '1rem',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
           }}
         >
           {enablePagination
@@ -291,23 +291,23 @@ const CancerDistributionTableComponent = compose(
                 total={cancerDistData.length}
               />
             : <span />}
-          <Row style={{ alignItems: "flex-end" }}>
-            <ExploreLink query={{ searchTableTab: "cases", filters }}>
+          <Row style={{ alignItems: 'flex-end' }}>
+            <ExploreLink query={{ searchTableTab: 'cases', filters }}>
               Open in Exploration
             </ExploreLink>
             <Tooltip
               Component={
-                <span>Export All{geneId ? " Except # Mutations" : ""}</span>
+                <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
               }
-              style={{ marginLeft: "2rem" }}
+              style={{ marginLeft: '2rem' }}
             >
               <Button
                 style={{ ...visualizingButton }}
                 onClick={() =>
                   saveFile(
                     JSON.stringify(rawData, null, 2),
-                    "JSON",
-                    "cancer-distribution-data",
+                    'JSON',
+                    'cancer-distribution-data',
                   )}
               >
                 JSON
@@ -316,20 +316,20 @@ const CancerDistributionTableComponent = compose(
             <DownloadTableToTsvButton
               selector="#cancer-distribution-table"
               filename="cancer-distribution-table.tsv"
-              style={{ marginLeft: "0.5rem" }}
+              style={{ marginLeft: '0.5rem' }}
             />
           </Row>
         </Row>
-        <Column style={{ width: "100%", minWidth: 450 }}>
+        <Column style={{ width: '100%', minWidth: 450 }}>
           <EntityPageHorizontalTable
             idKey="id"
             tableId="cancer-distribution-table"
             headings={[
-              { key: "project_id", title: "Project ID" },
-              { key: "disease_type", title: "Disease Type" },
-              { key: "site", title: "Site" },
+              { key: 'project_id', title: 'Project ID' },
+              { key: 'disease_type', title: 'Disease Type' },
+              { key: 'site', title: 'Site' },
               {
-                key: "num_affected_cases",
+                key: 'num_affected_cases',
                 title: (
                   <Tooltip
                     Component={
@@ -371,8 +371,8 @@ const CancerDistributionTableQuery = {
     ssmTested: makeFilter(
       [
         {
-          field: "cases.available_variation_data",
-          value: "ssm",
+          field: 'cases.available_variation_data',
+          value: 'ssm',
         },
       ],
       false,
@@ -396,15 +396,7 @@ const CancerDistributionTableQuery = {
     explore: () => Relay.QL`
       fragment on Explore {
         ssms {
-          blah: hits(first: 0) { total }
-          aggregations(filters: $ssmCountsfilters) @include(if: $fetchSsmCounts){
-            occurrence__case__project__project_id {
-              buckets {
-                key
-                doc_count
-              }
-            }
-          }
+          ${MutationsCount.getFragment('ssms')}
         }
       }
     `,

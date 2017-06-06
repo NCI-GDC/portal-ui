@@ -1,20 +1,20 @@
 // @flow
 
 // Vendor
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 // Custom
-import { withTheme } from "@ncigdc/theme";
+import { withTheme } from '@ncigdc/theme';
 
 /*----------------------------------------------------------------------------*/
 
 const styles = {
   card: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
   header: theme => ({
-    padding: "1rem",
+    padding: '1rem',
     color: theme.greyScale7,
   }),
 };

@@ -1,7 +1,7 @@
 /* @flow */
 /* eslint max-len:0, comma-dangle:0 */
 
-import Relay from "react-relay/classic";
+import Relay from 'react-relay/classic';
 
 export const initialCaseAggregationsVariables = {
   shouldShow_aliquot_ids: false,

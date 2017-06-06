@@ -1,101 +1,45 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import withFilters from "@ncigdc/utils/withFilters";
-import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
+import React from 'react';
+import Relay from 'react-relay/classic';
 
-import { Row } from "@ncigdc/uikit/Flex";
-import Showing from "@ncigdc/components/Pagination/Showing";
+import { Row } from '@ncigdc/uikit/Flex';
+import Showing from '@ncigdc/components/Pagination/Showing';
 
-import Pagination from "@ncigdc/components/Pagination";
+import Pagination from '@ncigdc/components/Pagination';
 
-import TableActions from "@ncigdc/components/TableActions";
+import TableActions from '@ncigdc/components/TableActions';
 
-import { Tr, Th } from "@ncigdc/uikit/Table";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
-import { tableToolTipHint } from "@ncigdc/theme/mixins";
+import { Tr, Th } from '@ncigdc/uikit/Table';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
+import { tableToolTipHint } from '@ncigdc/theme/mixins';
 
-import { compose, withPropsOnChange, withState } from "recompose";
-import CaseTr from "./CaseTr";
+import CaseTr from './CaseTr';
 
-import type { TTableProps } from "../types";
+import type { TTableProps } from '../types';
 
 const styles = {
   table: {
-    width: "100%",
-    borderCollapse: "collapse",
+    width: '100%',
+    borderCollapse: 'collapse',
     borderSpacing: 0,
   },
   right: {
-    textAlign: "right",
+    textAlign: 'right',
   },
 };
 
-export const CaseTableComponent = compose(
-  withFilters(),
-  withState("ssmCountsLoading", "setSsmCountsLoading", true),
-  withPropsOnChange(
-    ["hits"],
-    ({
-      setSsmCountsLoading,
-      ssmCountsLoading,
-      hits,
-      relay,
-      filters
-    }: TTableProps) => {
-      const caseIds = hits.edges.map(e => e.node.case_id);
-      if (!ssmCountsLoading) {
-        setSsmCountsLoading(true);
-      }
-      relay.setVariables(
-        {
-          fetchSsmCounts: !!caseIds.length,
-          ssmCountsfilters: caseIds.length
-            ? addInFilters(
-                filters,
-                makeFilter(
-                  [
-                    {
-                      field: "occurrence.case.case_id",
-                      value: caseIds
-                    }
-                  ],
-                  false
-                )
-              )
-            : null
-        },
-        readyState => {
-          if (readyState.done) {
-            setSsmCountsLoading(false);
-          }
-        }
-      );
-    }
-  ),
-  withPropsOnChange(["explore"], ({ explore }: TTableProps) => {
-    const { occurrence__case__case_id: { buckets } } = explore.ssms
-      .aggregations || {
-      occurrence__case__case_id: { buckets: [] }
-    };
-    const ssmCounts = buckets.reduce(
-      (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
-      {}
-    );
-    return { ssmCounts };
-  })
-)((props: TTableProps) => {
-  const prefix = "cases";
-  const { ssmCounts, ssmCountsLoading } = props;
+export const CaseTableComponent = (props: TTableProps) => {
+  const prefix = 'cases';
+
   return (
     <div>
       <Row
         style={{
-          backgroundColor: "white",
-          padding: "1rem",
-          justifyContent: "space-between",
+          backgroundColor: 'white',
+          padding: '1rem',
+          justifyContent: 'space-between',
         }}
       >
         <Showing
@@ -108,35 +52,35 @@ export const CaseTableComponent = compose(
           prefix={prefix}
           total={props.hits.total}
           sortKey="cases_sort"
-          endpoint={props.endpoint || "cases"}
+          endpoint={props.endpoint || 'cases'}
           downloadTooltip="Export All Except #Mutations and #Genes"
           downloadFields={[
-            "case_id",
-            "project.project_id",
-            "cases.primary_site",
-            "demographic.gender",
-            "summary.data_categories.file_count",
-            "summary.data_categories.data_category",
+            'case_id',
+            'project.project_id',
+            'cases.primary_site',
+            'demographic.gender',
+            'summary.data_categories.file_count',
+            'summary.data_categories.data_category',
           ]}
           sortOptions={[
             {
-              id: "project.project_id",
-              name: "Project",
+              id: 'project.project_id',
+              name: 'Project',
             },
             {
-              id: "primary_site",
-              name: "Primary Site",
+              id: 'primary_site',
+              name: 'Primary Site',
             },
             {
-              id: "demographic.gender",
-              name: "Gender",
+              id: 'demographic.gender',
+              name: 'Gender',
             },
           ]}
           tsvSelector="#explore-case-table"
           tsvFilename="explore-case-table.tsv"
         />
       </Row>
-      <div style={{ overflowX: "auto" }}>
+      <div style={{ overflowX: 'auto' }}>
         <table style={styles.table} id="explore-case-table">
           <thead>
             <Tr>
@@ -220,8 +164,7 @@ export const CaseTableQuery = {
         edges {
           node {
             id
-            case_id
-            ${CaseTr.getFragment("node")}
+            ${CaseTr.getFragment('node')}
           }
         }
       }

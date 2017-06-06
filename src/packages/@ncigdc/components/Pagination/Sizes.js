@@ -1,10 +1,10 @@
 /* @flow */
 
-import React from "react";
+import React from 'react';
 
-import Dropdown from "@ncigdc/uikit/Dropdown";
-import DropdownItem from "@ncigdc/uikit/DropdownItem";
-import Link from "@ncigdc/components/Links/Link";
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import Link from '@ncigdc/components/Links/Link';
 
 export type TProps = {|
   prfSize: string,
@@ -24,9 +24,9 @@ const Sizes = ({
       <Dropdown
         selected={size}
         dropdownStyle={{
-          minWidth: "40px",
-          width: "40px",
-          left: "0",
+          minWidth: '40px',
+          width: '40px',
+          left: '0',
           zIndex: 99999,
         }}
       >
@@ -34,9 +34,9 @@ const Sizes = ({
           <DropdownItem
             key={x}
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             {x === size

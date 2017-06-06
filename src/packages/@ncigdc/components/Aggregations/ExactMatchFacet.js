@@ -1,21 +1,21 @@
 // @flow
 
 // Vendor
-import React from "react";
-import { compose, withState, pure } from "recompose";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
+import React from 'react';
+import { compose, withState, pure } from 'recompose';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
 // Custom
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import { getFilterValue, makeFilter } from "@ncigdc/utils/filters";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import CheckCircleOIcon from "@ncigdc/theme/icons/CheckCircleOIcon";
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
-import Hidden from "../Hidden";
-import { Container, StyledInput, GoLink, CheckedRow, CheckedLink } from "./";
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { getFilterValue, makeFilter } from '@ncigdc/utils/filters';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import CheckCircleOIcon from '@ncigdc/theme/icons/CheckCircleOIcon';
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import Hidden from '../Hidden';
+import { Container, StyledInput, GoLink, CheckedRow, CheckedLink } from './';
 
 const ExactMatchFacet = compose(
-  withState("inputValue", "setInputValue", ""),
+  withState('inputValue', 'setInputValue', ''),
   pure,
 )(
   ({
@@ -58,7 +58,7 @@ const ExactMatchFacet = compose(
                           ),
                         }}
                       >
-                        <CheckCircleOIcon style={{ paddingRight: "0.5rem" }} />
+                        <CheckCircleOIcon style={{ paddingRight: '0.5rem' }} />
                         {v}
                       </CheckedLink>
                     </CheckedRow>
@@ -69,7 +69,7 @@ const ExactMatchFacet = compose(
                     </label>
                     <StyledInput
                       style={{
-                        borderRadius: "4px 0 0 4px",
+                        borderRadius: '4px 0 0 4px',
                       }}
                       id={fieldNoDoctype}
                       name={fieldNoDoctype}
@@ -93,7 +93,7 @@ const ExactMatchFacet = compose(
                         ),
                       }}
                       dark={!!inputValue}
-                      onClick={() => setInputValue("")}
+                      onClick={() => setInputValue('')}
                     >
                       Go!
                     </GoLink>

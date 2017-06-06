@@ -1,13 +1,13 @@
 // @flow
-import { fetchApi } from "@ncigdc/utils/ajax";
-import { handleActions } from "redux-actions";
+import { fetchApi } from '@ncigdc/utils/ajax';
+import { handleActions } from 'redux-actions';
 
-const API_BASE_URL = "https://github.com/NCI-GDC/gdcapi";
-const UI_BASE_URL = "https://github.com/NCI-GDC/portal-ui";
+const API_BASE_URL = 'https://github.com/NCI-GDC/gdcapi';
+const UI_BASE_URL = 'https://github.com/NCI-GDC/portal-ui';
 
-const red = "color: rgb(173, 30, 30);";
-const blue = "color: rgb(89, 139, 214);";
-const fontStyle = "font-weight: bold;";
+const red = 'color: rgb(173, 30, 30);';
+const blue = 'color: rgb(89, 139, 214);';
+const fontStyle = 'font-weight: bold;';
 
 const logVersionInfo = ({
   uiVersion,
@@ -17,7 +17,7 @@ const logVersionInfo = ({
 }) => {
   // UI info
   console.groupCollapsed(
-    "%c★ UI Git Info\n=============",
+    '%c★ UI Git Info\n=============',
     `${red};${fontStyle}`,
   );
 
@@ -38,7 +38,7 @@ const logVersionInfo = ({
 
   // API info
   console.groupCollapsed(
-    "%c★ API Git Info\n==============",
+    '%c★ API Git Info\n==============',
     `${red};${fontStyle}`,
   );
   console.info(
@@ -56,12 +56,12 @@ const logVersionInfo = ({
 
 // Action Types
 
-export const VERSION_INFO_SUCCESS = "gdc/VERSION_INFO_SUCCESS";
+export const VERSION_INFO_SUCCESS = 'gdc/VERSION_INFO_SUCCESS';
 
 // Action Creator
 export function fetchApiVersionInfo(): Function {
   return async (dispatch, getState) => {
-    const { tag, commit, data_release } = await fetchApi("status");
+    const { tag, commit, data_release } = await fetchApi('status');
     const apiVersionInfo = {
       apiVersion: tag,
       apiCommitHash: commit,
@@ -84,9 +84,9 @@ export function fetchApiVersionInfo(): Function {
 const initialState = {
   uiVersion: process.env.REACT_APP_COMMIT_TAG,
   uiCommitHash: process.env.REACT_APP_COMMIT_HASH,
-  apiVersion: "",
-  apiCommitHash: "",
-  dataRelease: "",
+  apiVersion: '',
+  apiCommitHash: '',
+  dataRelease: '',
 };
 
 export default handleActions(

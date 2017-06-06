@@ -1,31 +1,31 @@
 // @flow
-import React from "react";
-import JSURL from "jsurl";
+import React from 'react';
+import JSURL from 'jsurl';
 import {
   compose,
   withState,
   withProps,
   withPropsOnChange,
   withHandlers,
-} from "recompose";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import { getDefaultCurve, enoughData } from "@ncigdc/utils/survivalplot";
-import withFilters from "@ncigdc/utils/withFilters";
-import SurvivalPlotWrapper from "@ncigdc/components/SurvivalPlotWrapper";
+} from 'recompose';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
+import withFilters from '@ncigdc/utils/withFilters';
+import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import GenesBarChart
-  from "@ncigdc/modern_components/GenesBarChart/GenesBarChart";
-import GenesTable from "@ncigdc/modern_components/GenesTable/GenesTable";
-import { makeFilter, toggleFilters } from "@ncigdc/utils/filters";
+  from '@ncigdc/modern_components/GenesBarChart/GenesBarChart';
+import GenesTable from '@ncigdc/modern_components/GenesTable/GenesTable';
+import { makeFilter, toggleFilters } from '@ncigdc/utils/filters';
 
 const styles = {
   heading: {
     flexGrow: 1,
-    fontSize: "2rem",
+    fontSize: '2rem',
     marginBottom: 7,
     marginTop: 7,
   },
   card: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
 };
 
@@ -35,9 +35,9 @@ const initialState = {
 
 export default compose(
   withFilters(),
-  withState("defaultSurvivalData", "setDefaultSurvivalData", {}),
-  withState("selectedSurvivalData", "setSelectedSurvivalData", {}),
-  withState("state", "setState", initialState),
+  withState('defaultSurvivalData', 'setDefaultSurvivalData', {}),
+  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
+  withState('state', 'setState', initialState),
   withProps(
     ({
       selectedSurvivalData,
@@ -54,7 +54,7 @@ export default compose(
       updateData: async () => {
         const survivalData = await getDefaultCurve({
           currentFilters: filters,
-          slug: "Explore",
+          slug: 'Explore',
         });
 
         setDefaultSurvivalData(survivalData);
@@ -67,17 +67,17 @@ export default compose(
       },
     }),
   ),
-  withPropsOnChange(["filters"], ({ updateData }) => {
+  withPropsOnChange(['filters'], ({ updateData }) => {
     updateData();
   }),
   withHandlers({
     handleClickGene: ({ push, query, filters }) => gene => {
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: "genes.gene_id", value: [gene.gene_id] }], false),
+        makeFilter([{ field: 'genes.gene_id', value: [gene.gene_id] }], false),
       );
       push({
-        pathname: "/exploration",
+        pathname: '/exploration',
         query: {
           ...query,
           filters: JSURL.stringify(newFilters),
@@ -97,19 +97,19 @@ export default compose(
     handleClickGene,
   }) => (
     <Column style={styles.card}>
-      <h1 style={{ ...styles.heading, padding: "1rem" }} id="mutated-genes">
-        <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
+      <h1 style={{ ...styles.heading, padding: '1rem' }} id="mutated-genes">
+        <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
         Genes
       </h1>
       <Column>
         <Row>
-          <Column flex="none" style={{ width: "50%" }}>
+          <Column flex="none" style={{ width: '50%' }}>
             <GenesBarChart
               defaultFilters={filters}
               onClickGene={handleClickGene}
             />
           </Column>
-          <Column flex="none" style={{ width: "50%" }}>
+          <Column flex="none" style={{ width: '50%' }}>
             <SurvivalPlotWrapper
               {...survivalData}
               onReset={() => setSelectedSurvivalData({})}

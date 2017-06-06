@@ -7,14 +7,14 @@ export type TShard = {
 };
 
 export type TSearchHitType =
-  | "gene"
-  | "case"
-  | "ssm"
-  | "occurrence"
-  | "project"
-  | "file"
-  | "annotation"
-  | "report";
+  | 'gene'
+  | 'case'
+  | 'ssm'
+  | 'occurrence'
+  | 'project'
+  | 'file'
+  | 'annotation'
+  | 'report';
 
 export type TSearchHit = {
   _id: string,

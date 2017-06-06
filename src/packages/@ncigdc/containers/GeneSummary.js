@@ -1,17 +1,17 @@
 // @flow
 
-import React from "react";
-import Relay from "react-relay/classic";
+import React from 'react';
+import Relay from 'react-relay/classic';
 import EntityPageVerticalTable
-  from "@ncigdc/components/EntityPageVerticalTable";
-import TableIcon from "@ncigdc/theme/icons/Table";
-import MinusIcon from "@ncigdc/theme/icons/Minus";
-import PlusIcon from "@ncigdc/theme/icons/Plus";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
-import { makeFilter } from "@ncigdc/utils/filters";
+  from '@ncigdc/components/EntityPageVerticalTable';
+import TableIcon from '@ncigdc/theme/icons/Table';
+import MinusIcon from '@ncigdc/theme/icons/Minus';
+import PlusIcon from '@ncigdc/theme/icons/Plus';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import { makeFilter } from '@ncigdc/utils/filters';
 
 const strandIconMap = {
-  "-1": <MinusIcon />,
+  '-1': <MinusIcon />,
   1: <PlusIcon />,
 };
 
@@ -22,48 +22,48 @@ type TProps = {
 const GeneSummaryComponent = ({ node: gene }: TProps = {}) => (
   <EntityPageVerticalTable
     id="summary"
-    title={<span><TableIcon style={{ marginRight: "1rem" }} />Summary</span>}
+    title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
     thToTd={[
-      { th: "Symbol", td: gene.symbol },
-      { th: "Name", td: gene.name },
+      { th: 'Symbol', td: gene.symbol },
+      { th: 'Name', td: gene.name },
       {
-        th: "Synonyms",
+        th: 'Synonyms',
         td: gene.synonyms.length &&
           gene.synonyms.map(s => <div key={s}>{s}</div>),
         style: {
-          whiteSpace: "pre-wrap",
-          wordBreak: "breakWord",
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'breakWord',
         },
       },
-      { th: "Type", td: gene.biotype },
+      { th: 'Type', td: gene.biotype },
       {
-        th: "Location",
+        th: 'Location',
         td: `chr${gene.gene_chromosome}:${gene.gene_start}-${gene.gene_end} (GRCh38)`,
       },
       {
-        th: "Strand",
+        th: 'Strand',
         td: gene.gene_strand && strandIconMap[gene.gene_strand.toString(10)],
       },
       {
-        th: "Description",
+        th: 'Description',
         collapsibleTd: gene.description,
         style: {
-          whiteSpace: "pre-wrap",
-          wordBreak: "breakWord",
-          lineHeight: "2.2rem",
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'breakWord',
+          lineHeight: '2.2rem',
         },
       },
       {
-        th: "Annotation",
+        th: 'Annotation',
         td: gene.is_cancer_gene_census
           ? <ExploreLink
               merge
               query={{
-                searchTableTab: "genes",
+                searchTableTab: 'genes',
                 filters: makeFilter(
                   [
                     {
-                      field: "genes.is_cancer_gene_census",
+                      field: 'genes.is_cancer_gene_census',
                       value: [gene.is_cancer_gene_census],
                     },
                   ],
@@ -73,19 +73,19 @@ const GeneSummaryComponent = ({ node: gene }: TProps = {}) => (
             >
               Cancer Gene Census
             </ExploreLink>
-          : "--",
+          : '--',
       },
     ]}
     style={{
       summary: {
-        marginBottom: "2rem",
+        marginBottom: '2rem',
       },
       column: {
-        width: "100%",
+        width: '100%',
         minWidth: 450,
       },
-      alignSelf: "flex-start",
-      width: "100%",
+      alignSelf: 'flex-start',
+      width: '100%',
     }}
   />
 );

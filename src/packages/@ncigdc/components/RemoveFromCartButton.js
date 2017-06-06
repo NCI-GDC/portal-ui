@@ -1,56 +1,56 @@
 // @flow
 
-import React from "react";
-import { connect } from "react-redux";
-import { compose } from "recompose";
-import XIcon from "react-icons/lib/fa/close";
-import DownCaretIcon from "react-icons/lib/fa/caret-down";
-import TrashIcon from "react-icons/lib/fa/trash-o";
+import React from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import XIcon from 'react-icons/lib/fa/close';
+import DownCaretIcon from 'react-icons/lib/fa/caret-down';
+import TrashIcon from 'react-icons/lib/fa/trash-o';
 
-import Button from "@ncigdc/uikit/Button";
-import Dropdown from "@ncigdc/uikit/Dropdown";
-import { Column, Row } from "@ncigdc/uikit/Flex";
+import Button from '@ncigdc/uikit/Button';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import { Column, Row } from '@ncigdc/uikit/Flex';
 
-import { withTheme } from "@ncigdc/theme";
+import { withTheme } from '@ncigdc/theme';
 
-import { toggleFilesInCart } from "@ncigdc/dux/cart";
+import { toggleFilesInCart } from '@ncigdc/dux/cart';
 
 const styles = {
   row: theme => ({
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     color: theme.greyScale2,
-    justifyContent: "flex-start",
-    borderRadius: "0px",
-    marginLeft: "0px",
-    padding: "0.6rem 1rem",
-    ":hover": {
+    justifyContent: 'flex-start',
+    borderRadius: '0px',
+    marginLeft: '0px',
+    padding: '0.6rem 1rem',
+    ':hover': {
       backgroundColor: theme.greyScale6,
     },
   }),
   iconSpacing: {
-    marginRight: "0.6rem",
+    marginRight: '0.6rem',
   },
 };
 
 const getUnauthorizedFiles = files =>
-  files.filter(file => file.access === "controlled");
+  files.filter(file => file.access === 'controlled');
 
 const RemoveFromCartButton = ({ style, files, theme, dispatch }) => (
   <Row>
     <Dropdown
       dropdownStyle={{
-        marginTop: "2px",
-        borderRadius: "4px",
-        minWidth: "22rem",
+        marginTop: '2px',
+        borderRadius: '4px',
+        minWidth: '22rem',
       }}
       dropdownItemClass={false}
       button={
         <Button
           style={{
-            backgroundColor: "#A62924",
-            marginLeft: "10px",
-            ":hover": {
-              backgroundColor: "#7C1F1B",
+            backgroundColor: '#A62924',
+            marginLeft: '10px',
+            ':hover': {
+              backgroundColor: '#7C1F1B',
             },
           }}
           leftIcon={<TrashIcon />}

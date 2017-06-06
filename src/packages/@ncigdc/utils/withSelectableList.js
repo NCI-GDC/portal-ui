@@ -1,12 +1,12 @@
 // @flow
-import _ from "lodash";
+import _ from 'lodash';
 import {
   compose,
   withState,
   withHandlers,
   withProps,
   withPropsOnChange,
-} from "recompose";
+} from 'recompose';
 
 const getPreviousItem = (items, reference) =>
   reference ? _.nth(items, items.indexOf(reference) - 1) : _.last(items);
@@ -18,8 +18,8 @@ const withKeyboardSelection = (
   { onFocusItem = _.noop, onSelectItem = _.noop, onCancel = _.noop },
 ) =>
   compose(
-    withState("focusedItem", "setFocusedItem", undefined),
-    withState("selectedItem", "setSelectedItem", undefined),
+    withState('focusedItem', 'setFocusedItem', undefined),
+    withState('selectedItem', 'setSelectedItem', undefined),
     withProps(props => ({
       list: _.get(props, listSourcePropPath),
     })),
@@ -47,7 +47,7 @@ const withKeyboardSelection = (
         },
       }),
     ),
-    withPropsOnChange(["focusedItem"], ({ focusedItem, ...props }) =>
+    withPropsOnChange(['focusedItem'], ({ focusedItem, ...props }) =>
       onFocusItem(focusedItem, props),
     ),
     withHandlers({

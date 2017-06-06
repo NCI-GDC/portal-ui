@@ -1,53 +1,53 @@
 // @flow
 /* eslint react/no-unescaped-entities: 0 */
 
-import React from "react";
-import { compose, withState } from "recompose";
-import { connect } from "react-redux";
-import urlJoin from "url-join";
+import React from 'react';
+import { compose, withState } from 'recompose';
+import { connect } from 'react-redux';
+import urlJoin from 'url-join';
 
-import DownloadButton from "@ncigdc/components/DownloadButton";
-import NoAccessModal from "@ncigdc/components/Modals/NoAccessModal";
-import BaseModal from "@ncigdc/components/Modals/BaseModal";
+import DownloadButton from '@ncigdc/components/DownloadButton';
+import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
+import BaseModal from '@ncigdc/components/Modals/BaseModal';
 
-import DownCaretIcon from "react-icons/lib/fa/caret-down";
+import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 
-import { setModal } from "@ncigdc/dux/modal";
+import { setModal } from '@ncigdc/dux/modal';
 
-import Dropdown from "@ncigdc/uikit/Dropdown";
-import Button from "@ncigdc/uikit/Button";
-import { Column, Row } from "@ncigdc/uikit/Flex";
-import { ExternalLink } from "@ncigdc/uikit/Links";
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import Button from '@ncigdc/uikit/Button';
+import { Column, Row } from '@ncigdc/uikit/Flex';
+import { ExternalLink } from '@ncigdc/uikit/Links';
 
-import { withTheme } from "@ncigdc/theme";
-import DownloadIcon from "@ncigdc/theme/icons/Download";
-import Spinner from "@ncigdc/theme/icons/Spinner";
+import { withTheme } from '@ncigdc/theme';
+import DownloadIcon from '@ncigdc/theme/icons/Download';
+import Spinner from '@ncigdc/theme/icons/Spinner';
 
-import download from "@ncigdc/utils/download";
+import download from '@ncigdc/utils/download';
 /*----------------------------------------------------------------------------*/
 
 const styles = {
   common: theme => ({
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     color: theme.greyScale2,
-    justifyContent: "flex-start",
-    ":hover": {
+    justifyContent: 'flex-start',
+    ':hover': {
       backgroundColor: theme.greyScale6,
     },
   }),
   button: theme => ({
-    borderRadius: "0px",
-    marginLeft: "0px",
+    borderRadius: '0px',
+    marginLeft: '0px',
     ...styles.common(theme),
-    "[disabled]": styles.common(theme),
+    '[disabled]': styles.common(theme),
   }),
   iconSpacing: {
-    marginRight: "0.6rem",
+    marginRight: '0.6rem',
   },
 };
 
 const downloadCart = (files, dispatch, setState) => {
-  const controlledFiles = files.filter(file => file.access === "controlled");
+  const controlledFiles = files.filter(file => file.access === 'controlled');
 
   if (controlledFiles.length) {
     dispatch(
@@ -74,17 +74,17 @@ const downloadCart = (files, dispatch, setState) => {
             <Button
               onClick={() =>
                 downloadCart(
-                  files.filter(file => file.access === "open"),
+                  files.filter(file => file.access === 'open'),
                   dispatch,
                   setState,
                 )}
-              style={{ margin: "0 10px" }}
+              style={{ margin: '0 10px' }}
             >
               <span>
                 Download
-                {" "}
+                {' '}
                 {files.length - controlledFiles.length}
-                {" "}
+                {' '}
                 authorized files
               </span>
             </Button>
@@ -115,11 +115,11 @@ const downloadCart = (files, dispatch, setState) => {
     dispatch(setModal(null));
     setState(s => ({ ...s, cartDownloading: true }));
     download({
-      url: urlJoin(process.env.REACT_APP_GDC_AUTH, "api/data"),
+      url: urlJoin(process.env.REACT_APP_GDC_AUTH, 'api/data'),
       params: {
         ids: files.map(file => file.file_id),
       },
-      method: "POST",
+      method: 'POST',
       altMessage: true,
     })(() => {}, () => setState(s => ({ ...s, cartDownloading: false })));
   }
@@ -136,13 +136,13 @@ const CartDownloadDropdown = ({
   <Row>
     <Dropdown
       dropdownStyle={{
-        marginTop: "2px",
-        borderRadius: "4px",
+        marginTop: '2px',
+        borderRadius: '4px',
       }}
       dropdownItemClass={false}
       button={
         <Button
-          style={{ marginLeft: "10px" }}
+          style={{ marginLeft: '10px' }}
           leftIcon={
             state.manifestDownloading || state.cartDownloading
               ? <Spinner />
@@ -157,7 +157,7 @@ const CartDownloadDropdown = ({
       <Column>
         <DownloadButton
           style={styles.button(theme)}
-          url={urlJoin(process.env.REACT_APP_GDC_AUTH, "api/manifest")}
+          url={urlJoin(process.env.REACT_APP_GDC_AUTH, 'api/manifest')}
           activeText="Manifest"
           inactiveText="Manifest"
           altMessage={false}
@@ -184,7 +184,7 @@ const CartDownloadDropdown = ({
 export default compose(
   connect(),
   withTheme,
-  withState("state", "setState", {
+  withState('state', 'setState', {
     manifestDownloading: false,
     cartDownloading: false,
   }),

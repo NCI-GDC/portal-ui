@@ -1,6 +1,6 @@
 /* @flow */
-import { insertRule } from "glamor";
-import { uniq } from "lodash";
+import { insertRule } from 'glamor';
+import { uniq } from 'lodash';
 
 import {
   clinicalDonorTracks,
@@ -9,9 +9,9 @@ import {
   geneSetTracks,
   gdcTracks,
   getColorValue,
-} from "@ncigdc/components/Oncogrid/tracks";
-import { mapDonors, mapGenes, buildOccurences } from "./dataMapping";
-import type { TDonorInput, TGeneInput, TOccurenceInput } from "./dataMapping";
+} from '@ncigdc/components/Oncogrid/tracks';
+import { mapDonors, mapGenes, buildOccurences } from './dataMapping';
+import type { TDonorInput, TGeneInput, TOccurenceInput } from './dataMapping';
 
 const donorTracks = [...clinicalDonorTracks, ...dataTypeTracks];
 
@@ -22,29 +22,29 @@ const trackColorMap = [...donorTracks, ...geneTracks].reduce(
 
 const fillFunc = (track: { fieldName: string, value?: mixed }) =>
   getColorValue({
-    color: trackColorMap[track.fieldName] || "",
+    color: trackColorMap[track.fieldName] || '',
     value: track.value,
   });
 
 function dataTypeLegend(): string {
   return `<div><b>Available Data Types:</b></div><div>${dataTypeTracks
-    .map(t => (t.legend ? t.legend(t) : ""))
+    .map(t => (t.legend ? t.legend(t) : ''))
     .filter(Boolean)
-    .join("</div><div>")}</div>`;
+    .join('</div><div>')}</div>`;
 }
 
 function gdcLegend(max: number): string {
   return `<div><b># of Cases Affected:</b></div><div>${gdcTracks
-    .map(t => (t.legend ? t.legend({ ...t, max }) : ""))
+    .map(t => (t.legend ? t.legend({ ...t, max }) : ''))
     .filter(Boolean)
-    .join("</div><div>")}`;
+    .join('</div><div>')}`;
 }
 
 function geneSetLegend(): string {
   return `<div><b>Gene Sets:</b></div><div>${geneSetTracks
-    .map(t => (t.legend ? t.legend(t) : ""))
+    .map(t => (t.legend ? t.legend(t) : ''))
     .filter(Boolean)
-    .join("</div><div>")}</div>`;
+    .join('</div><div>')}</div>`;
 }
 
 export default function({
@@ -59,14 +59,14 @@ export default function({
   trackPadding,
   consequenceTypes,
   impacts,
-  donorHistogramClick = (d: {}) => console.log("donorHistogramClick: ", d),
-  gridClick = (o: {}) => console.log("gridClick: ", o),
-  geneHistogramClick = (g: {}) => console.log("geneHistogramClick: ", g),
+  donorHistogramClick = (d: {}) => console.log('donorHistogramClick: ', d),
+  gridClick = (o: {}) => console.log('gridClick: ', o),
+  geneHistogramClick = (g: {}) => console.log('geneHistogramClick: ', g),
   geneClick = (g: {}) => {
-    console.log("geneClick", g);
+    console.log('geneClick', g);
   },
   donorClick = (d: {}) => {
-    console.log("donorClick", d);
+    console.log('donorClick', d);
   },
 }: {
   donorData: Array<TDonorInput>,
@@ -112,19 +112,19 @@ export default function({
     value: number,
   }) => {
     switch (type) {
-      case "int":
+      case 'int':
         return value / 100;
-      case "vital":
-      case "gender":
-      case "ethnicity":
-      case "race":
-      case "primary_diagnosi":
+      case 'vital':
+      case 'gender':
+      case 'ethnicity':
+      case 'race':
+      case 'primary_diagnosi':
         return 1;
-      case "bool":
+      case 'bool':
         return value ? 1 : 0;
-      case "days_to_death":
+      case 'days_to_death':
         return value / maxDaysToDeath;
-      case "age":
+      case 'age':
         return value / maxAgeAtDiagnosis;
       default:
         return 0;
@@ -133,9 +133,9 @@ export default function({
 
   const geneOpacity = ({ type, value }: { type: string, value: number }) => {
     switch (type) {
-      case "int":
+      case 'int':
         return value / maxDonorsAffected;
-      case "bool":
+      case 'bool':
         return value ? 1 : 0;
       default:
         return 1;
@@ -161,12 +161,12 @@ export default function({
                   ...t,
                   maxDaysToDeath,
                   values: uniq(donors.map(d => d[t.fieldName])),
-                }) : ""))
+                }) : ''))
         .filter(Boolean)
-        .join("</div><div>")}</div>`,
-      "Data Types": dataTypeLegend(),
+        .join('</div><div>')}</div>`,
+      'Data Types': dataTypeLegend(),
       GDC: gdcLegend(maxDonorsAffected),
-      "Gene Sets": geneSetLegend(),
+      'Gene Sets': geneSetLegend(),
     },
     templates: {
       mainGrid: `
@@ -190,7 +190,7 @@ export default function({
     geneTracks,
     geneOpacityFunc: geneOpacity,
     geneFillFunc: fillFunc,
-    expandableGroups: ["Clinical"],
+    expandableGroups: ['Clinical'],
     margin: { top: 20, right: 5, bottom: 20, left: 0 },
     leftTextWidth: 120,
     addTrackFunc,

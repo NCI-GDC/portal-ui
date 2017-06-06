@@ -1,8 +1,8 @@
 /* @flow */
 
-import React from "react";
+import React from 'react';
 
-import { Row } from "@ncigdc/uikit/Flex";
+import { Row } from '@ncigdc/uikit/Flex';
 
 export type TProps = {|
   docType: string,
@@ -12,8 +12,8 @@ export type TProps = {|
 |};
 
 const Sizes = (props: TProps) => {
-  const prfOff = [props.prefix, "offset"].filter(Boolean).join("_");
-  const prfSize = [props.prefix, "size"].filter(Boolean).join("_");
+  const prfOff = [props.prefix, 'offset'].filter(Boolean).join('_');
+  const prfSize = [props.prefix, 'size'].filter(Boolean).join('_');
 
   const start = +props.params[prfOff] + 1;
   const end = Math.min(

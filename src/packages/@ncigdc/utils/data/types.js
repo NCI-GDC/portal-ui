@@ -9,22 +9,22 @@ export type TDataCategory = {|
 
 // waiting on $Values
 export type TCategory =
-  | "Raw Sequencing Data"
-  | "Transcriptome Profiling"
-  | "Simple Nucleotide Variation"
-  | "Copy Number Variation"
-  | "Clinical"
-  | "DNA Methylation"
-  | "Biospecimen";
+  | 'Raw Sequencing Data'
+  | 'Transcriptome Profiling'
+  | 'Simple Nucleotide Variation'
+  | 'Copy Number Variation'
+  | 'Clinical'
+  | 'DNA Methylation'
+  | 'Biospecimen';
 
 export type TCategoryAbbr =
-  | "Seq"
-  | "Exp"
-  | "SNV"
-  | "CNV"
-  | "Clinical"
-  | "Bio"
-  | "Meth";
+  | 'Seq'
+  | 'Exp'
+  | 'SNV'
+  | 'CNV'
+  | 'Clinical'
+  | 'Bio'
+  | 'Meth';
 
 export type TCategoryMap = { [k: TCategoryAbbr]: TCategory };
 

@@ -1,8 +1,8 @@
 // @flow
-import React from "react";
-import Dropdown from "@ncigdc/uikit/Dropdown";
-import DropdownItem from "@ncigdc/uikit/DropdownItem";
-import UnstyledButton from "./UnstyledButton";
+import React from 'react';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import UnstyledButton from './UnstyledButton';
 
 export default ({
   first,
@@ -16,8 +16,8 @@ export default ({
   <Dropdown
     selected={first}
     dropdownStyle={{
-      minWidth: "40px",
-      width: "40px",
+      minWidth: '40px',
+      width: '40px',
       zIndex: 101,
     }}
   >
@@ -25,9 +25,9 @@ export default ({
       <DropdownItem
         key={x}
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         {first === x

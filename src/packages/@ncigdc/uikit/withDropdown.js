@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import withToggle from "./withToggle";
+import React, { Component } from 'react';
+import withToggle from './withToggle';
 
 export default function withDropdown(ComposedComponent) {
   class Dropdown extends Component {
     constructor(props) {
       super(props);
       this.state = { mouseIsDownOnComponent: false };
-      window.addEventListener("mousedown", this.closeDropdown);
+      window.addEventListener('mousedown', this.closeDropdown);
     }
 
     componentWillUnmount() {
-      window.removeEventListener("mousedown", this.closeDropdown);
+      window.removeEventListener('mousedown', this.closeDropdown);
     }
 
     closeDropdown = () => {

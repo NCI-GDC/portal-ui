@@ -1,15 +1,15 @@
 // @flow
-import _ from "lodash";
-import withRouter from "@ncigdc/utils/withRouter";
-import { fetchApi } from "@ncigdc/utils/ajax";
+import _ from 'lodash';
+import withRouter from '@ncigdc/utils/withRouter';
+import { fetchApi } from '@ncigdc/utils/ajax';
 import {
   compose,
   withState,
   withHandlers,
   withProps,
   withPropsOnChange,
-} from "recompose";
-import type { TSearchHit } from "@ncigdc/components/QuickSearch/types";
+} from 'recompose';
+import type { TSearchHit } from '@ncigdc/components/QuickSearch/types';
 
 const throttledInvoker = _.throttle(fn => fn(), 300, { leading: false });
 
@@ -17,7 +17,7 @@ export const withSearch = passedInState => {
   // prefix props to avoid collisions with existing props for component being enhanced
   const defaultState = {
     results: [],
-    query: "",
+    query: '',
     isLoading: false,
     isInSearchMode: false,
   };
@@ -27,7 +27,7 @@ export const withSearch = passedInState => {
   let timeOfMostRecentRequest = 0;
 
   return compose(
-    withState("state", "setState", _.defaults(passedInState, defaultState)),
+    withState('state', 'setState', _.defaults(passedInState, defaultState)),
     withRouter,
     withProps(({ setState }) => ({
       handleResults: (results, timeOfRequest) => {
@@ -41,7 +41,7 @@ export const withSearch = passedInState => {
         setState(s => ({ ...s, query: q.trim() }));
       },
       reset: ({ setState }) => () => {
-        setState(s => ({ ...s, query: "", isInSearchMode: false }));
+        setState(s => ({ ...s, query: '', isInSearchMode: false }));
       },
       fetchResults: ({ handleResults }) => (query, timeOfRequest) =>
         throttledInvoker(() =>
@@ -56,8 +56,8 @@ export const withSearch = passedInState => {
       selectItem: ({ push, reset }) => (item: TSearchHit) => {
         push(
           `/${atob(item.id)
-            .split(":")[0]
-            .toLocaleLowerCase()}s/${atob(item.id).split(":")[1]}`,
+            .split(':')[0]
+            .toLocaleLowerCase()}s/${atob(item.id).split(':')[1]}`,
         );
         setTimeout(reset, 100);
       },

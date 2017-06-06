@@ -1,31 +1,31 @@
 // @flow
-import React from "react";
-import JSURL from "jsurl";
+import React from 'react';
+import JSURL from 'jsurl';
 import {
   compose,
   withState,
   withProps,
   withPropsOnChange,
   withHandlers,
-} from "recompose";
-import { Column, Row } from "@ncigdc/uikit/Flex";
-import { getDefaultCurve, enoughData } from "@ncigdc/utils/survivalplot";
-import withFilters from "@ncigdc/utils/withFilters";
-import { makeFilter, toggleFilters } from "@ncigdc/utils/filters";
+} from 'recompose';
+import { Column, Row } from '@ncigdc/uikit/Flex';
+import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
+import withFilters from '@ncigdc/utils/withFilters';
+import { makeFilter, toggleFilters } from '@ncigdc/utils/filters';
 
-import SsmsBarChart from "@ncigdc/modern_components/SsmsBarChart/SsmsBarChart";
-import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";
-import SurvivalPlotWrapper from "@ncigdc/components/SurvivalPlotWrapper";
+import SsmsBarChart from '@ncigdc/modern_components/SsmsBarChart/SsmsBarChart';
+import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
+import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 const styles = {
   heading: {
     flexGrow: 1,
-    fontSize: "2rem",
+    fontSize: '2rem',
     marginBottom: 7,
     marginTop: 7,
   },
   card: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
 };
 
@@ -35,9 +35,9 @@ const initialState = {
 
 export default compose(
   withFilters(),
-  withState("defaultSurvivalData", "setDefaultSurvivalData", {}),
-  withState("selectedSurvivalData", "setSelectedSurvivalData", {}),
-  withState("state", "setState", initialState),
+  withState('defaultSurvivalData', 'setDefaultSurvivalData', {}),
+  withState('selectedSurvivalData', 'setSelectedSurvivalData', {}),
+  withState('state', 'setState', initialState),
   withProps(
     ({
       selectedSurvivalData,
@@ -54,7 +54,7 @@ export default compose(
       updateData: async () => {
         const survivalData = await getDefaultCurve({
           currentFilters: filters,
-          slug: "Explore",
+          slug: 'Explore',
         });
 
         setDefaultSurvivalData(survivalData);
@@ -67,17 +67,17 @@ export default compose(
       },
     }),
   ),
-  withPropsOnChange(["filters"], ({ updateData }) => {
+  withPropsOnChange(['filters'], ({ updateData }) => {
     updateData();
   }),
   withHandlers({
     handleClickMutation: ({ push, query, filters }) => ssm => {
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: "ssms.ssm_id", value: [ssm.ssm_id] }], false),
+        makeFilter([{ field: 'ssms.ssm_id', value: [ssm.ssm_id] }], false),
       );
       push({
-        pathname: "/exploration",
+        pathname: '/exploration',
         query: {
           ...query,
           filters: JSURL.stringify(newFilters),
@@ -96,20 +96,20 @@ export default compose(
     handleClickMutation,
   }) => (
     <Column style={styles.card}>
-      <h1 style={{ ...styles.heading, padding: "1rem" }} id="mutated-genes">
-        <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
+      <h1 style={{ ...styles.heading, padding: '1rem' }} id="mutated-genes">
+        <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
         Somatic Mutations
       </h1>
 
       <Row>
-        <Column flex="1" style={{ width: "50%" }}>
+        <Column flex="1" style={{ width: '50%' }}>
           <SsmsBarChart
             defaultFilters={filters}
             context="Explore"
             onClickMutation={handleClickMutation}
           />
         </Column>
-        <Column flex="1" style={{ width: "50%" }}>
+        <Column flex="1" style={{ width: '50%' }}>
           <SurvivalPlotWrapper
             {...survivalData}
             onReset={() => setSelectedSurvivalData({})}

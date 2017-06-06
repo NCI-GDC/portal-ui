@@ -1,12 +1,12 @@
 // @flow
-import React from "react";
-import { compose, withState } from "recompose";
+import React from 'react';
+import { compose, withState } from 'recompose';
 
-import withTooltip from "@ncigdc/uikit/Tooltip/withTooltip";
+import withTooltip from '@ncigdc/uikit/Tooltip/withTooltip';
 
 const OverflowTooltippedLabel = compose(
   withTooltip,
-  withState("hasTooltip", "setHasTooltip", false),
+  withState('hasTooltip', 'setHasTooltip', false),
 )(
   ({
     setHasTooltip,
@@ -19,11 +19,11 @@ const OverflowTooltippedLabel = compose(
   }) => (
     <label
       style={{
-        whiteSpace: "nowrap",
-        textOverflow: "ellipsis",
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
         minWidth: 0,
-        overflow: "hidden",
-        padding: "0 0.25rem",
+        overflow: 'hidden',
+        padding: '0 0.25rem',
         ...style,
       }}
       ref={el => {

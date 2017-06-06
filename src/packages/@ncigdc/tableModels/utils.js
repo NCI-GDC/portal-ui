@@ -1,16 +1,16 @@
 // @flow
-import React from "react";
-import _ from "lodash";
-import Tooltip from "@ncigdc/uikit/Tooltip/Tooltip";
-import { tableToolTipHint } from "@ncigdc/theme/mixins";
-import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
-import styled from "@ncigdc/theme/styled";
-import { Th, Td } from "@ncigdc/uikit/Table";
-import { makeFilter } from "@ncigdc/utils/filters";
-import { findDataCategory } from "@ncigdc/utils/data";
+import React from 'react';
+import _ from 'lodash';
+import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
+import { tableToolTipHint } from '@ncigdc/theme/mixins';
+import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
+import styled from '@ncigdc/theme/styled';
+import { Th, Td } from '@ncigdc/uikit/Table';
+import { makeFilter } from '@ncigdc/utils/filters';
+import { findDataCategory } from '@ncigdc/utils/data';
 
-const NumTh = styled(Th, { textAlign: "right" });
-const NumTd = styled(Td, { textAlign: "right" });
+const NumTh = styled(Th, { textAlign: 'right' });
+const NumTd = styled(Td, { textAlign: 'right' });
 
 export const createDataCategoryColumns = ({
   title,
@@ -21,13 +21,13 @@ export const createDataCategoryColumns = ({
 }) => {
   return [
     {
-      name: "Data Categories",
-      id: "data_category",
+      name: 'Data Categories',
+      id: 'data_category',
       th: () => (
         <Th
           key="data_category"
           colSpan={Object.keys(DATA_CATEGORIES).length}
-          style={{ textAlign: "center" }}
+          style={{ textAlign: 'center' }}
         >
           {title}
         </Th>
@@ -38,7 +38,7 @@ export const createDataCategoryColumns = ({
       name: category.abbr,
       id: category.abbr,
       subHeading: true,
-      parent: "data_category",
+      parent: 'data_category',
       th: () => (
         <NumTh>
           <abbr>
@@ -56,13 +56,13 @@ export const createDataCategoryColumns = ({
         return (
           <NumTd>
             {count === 0
-              ? "0"
+              ? '0'
               : <Link
                   query={{
                     filters: makeFilter(
                       [
                         ...getCellLinkFilters(node),
-                        { field: "files.data_category", value: category.full },
+                        { field: 'files.data_category', value: category.full },
                       ],
                       false,
                     ),
@@ -80,7 +80,7 @@ export const createDataCategoryColumns = ({
               filters: makeFilter(
                 [
                   ...getTotalLinkFilters(hits),
-                  { field: "files.data_category", value: category.full },
+                  { field: 'files.data_category', value: category.full },
                 ],
                 false,
               ),

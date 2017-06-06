@@ -1,23 +1,23 @@
 // @flow
-import React from "react";
-import _ from "lodash";
+import React from 'react';
+import _ from 'lodash';
 import {
   RepositoryCasesLink,
   RepositoryFilesLink,
-} from "@ncigdc/components/Links/RepositoryLink";
+} from '@ncigdc/components/Links/RepositoryLink';
 import AddCaseFilesToCartButton
-  from "@ncigdc/components/AddCaseFilesToCartButton";
-import ProjectLink from "@ncigdc/components/Links/ProjectLink";
-import CaseLink from "@ncigdc/components/Links/CaseLink";
-import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
-import AnnotationsLink from "@ncigdc/components/Links/AnnotationsLink";
-import { Th, Td } from "@ncigdc/uikit/Table";
-import { makeFilter } from "@ncigdc/utils/filters";
+  from '@ncigdc/components/AddCaseFilesToCartButton';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
+import CaseLink from '@ncigdc/components/Links/CaseLink';
+import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
+import { Th, Td } from '@ncigdc/uikit/Table';
+import { makeFilter } from '@ncigdc/utils/filters';
 // import formatFileSize from "@ncigdc/utils/formatFileSize";
-import ageDisplay from "@ncigdc/utils/ageDisplay";
-import withRouter from "@ncigdc/utils/withRouter";
-import styled from "@ncigdc/theme/styled";
-import { createDataCategoryColumns } from "./utils";
+import ageDisplay from '@ncigdc/utils/ageDisplay';
+import withRouter from '@ncigdc/utils/withRouter';
+import styled from '@ncigdc/theme/styled';
+import { createDataCategoryColumns } from './utils';
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
@@ -26,34 +26,34 @@ const youngestDiagnosis = (
   c.age_at_diagnosis < p.age_at_diagnosis ? c : p;
 
 const massageRelayFiles = (files: Object, projectId: string): Array<{}> =>
-  _.get(files, "hits.edges", []).map(edge => edge.node).map(file => ({
+  _.get(files, 'hits.edges', []).map(edge => edge.node).map(file => ({
     ...file,
     projects: [projectId],
   }));
 
 const dataCategoryColumns = createDataCategoryColumns({
-  title: "Available Files per Data Category",
-  countKey: "file_count",
+  title: 'Available Files per Data Category',
+  countKey: 'file_count',
   Link: RepositoryFilesLink,
   getCellLinkFilters: node => [
     {
-      field: "cases.case_id",
+      field: 'cases.case_id',
       value: node.case_id,
     },
   ],
   getTotalLinkFilters: hits => [],
 });
 
-const NumTh = styled(Th, { textAlign: "right" });
-const NumTd = styled(Td, { textAlign: "right" });
+const NumTh = styled(Th, { textAlign: 'right' });
+const NumTd = styled(Td, { textAlign: 'right' });
 
 const FilesLink = ({ node, fields = [], children }) =>
-  children === "0"
+  children === '0'
     ? <span>0</span>
     : <RepositoryFilesLink
         query={{
           filters: makeFilter(
-            [{ field: "cases.case_id", value: [node.case_id] }, ...fields],
+            [{ field: 'cases.case_id', value: [node.case_id] }, ...fields],
             false,
           ),
         }}
@@ -65,7 +65,7 @@ const getProjectIdFilter = projects =>
   makeFilter(
     [
       {
-        field: "cases.project.project_id",
+        field: 'cases.project.project_id',
         value: projects.edges.map(({ node: p }) => p.project_id),
       },
     ],
@@ -74,8 +74,8 @@ const getProjectIdFilter = projects =>
 
 const casesTableModel = [
   {
-    name: "Cart",
-    id: "cart",
+    name: 'Cart',
+    id: 'cart',
     th: () => <Th key="cart" rowSpan="2">Cart</Th>,
     td: ({ node, relay, total, index }) => (
       <Td>
@@ -94,15 +94,15 @@ const casesTableModel = [
           )}
           relay={relay}
           dropdownStyle={
-            total - 1 === index ? { top: "auto", bottom: "100%" } : {}
+            total - 1 === index ? { top: 'auto', bottom: '100%' } : {}
           }
         />
       </Td>
     ),
   },
   {
-    name: "Case UUID",
-    id: "case_id",
+    name: 'Case UUID',
+    id: 'case_id',
     th: () => <Th key="case_id" rowSpan="2">Case UUID</Th>,
     td: ({ node, index }) => (
       <Td>
@@ -110,7 +110,7 @@ const casesTableModel = [
           uuid={node.case_id}
           id={`row-${index}-case-link`}
           merge
-          whitelist={["filters"]}
+          whitelist={['filters']}
         >
           {node.case_id.substr(0, 8)}
         </CaseLink>
@@ -121,14 +121,14 @@ const casesTableModel = [
     ),
   },
   {
-    name: "Submitter UUID",
-    id: "submitter_id",
+    name: 'Submitter UUID',
+    id: 'submitter_id',
     th: () => <Th key="submitter_id" rowSpan="2">Submitter ID</Th>,
     td: ({ node }) => <Td>{node.submitter_id}</Td>,
   },
   {
-    name: "Project",
-    id: "project_id",
+    name: 'Project',
+    id: 'project_id',
     th: () => <Th key="project_id" rowSpan="2">Project</Th>,
     td: ({ node, index }) => (
       <Td>
@@ -140,28 +140,28 @@ const casesTableModel = [
     ),
   },
   {
-    name: "Primary Site",
-    id: "primary_site",
+    name: 'Primary Site',
+    id: 'primary_site',
     sortable: true,
     downloadable: true,
     th: () => <Th key="primary_site" rowSpan="2">Primary Site</Th>,
     td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
   },
   {
-    name: "Gender",
-    id: "demographic.gender",
+    name: 'Gender',
+    id: 'demographic.gender',
     sortable: true,
     downloadable: true,
     th: () => <Th key="demographic.gender" rowSpan="2">Gender</Th>,
     td: ({ node }) => (
       <Td key="demographic.gender">
-        {_.capitalize(node.demographic.gender) || "--"}
+        {_.capitalize(node.demographic.gender) || '--'}
       </Td>
     ),
   },
   {
-    name: "Files",
-    id: "summary.file_count",
+    name: 'Files',
+    id: 'summary.file_count',
     sortable: true,
     downloadable: true,
     th: () => <NumTh key="summary.file_count" rowSpan="2">Files</NumTh>,
@@ -188,19 +188,19 @@ const casesTableModel = [
   },
   ...dataCategoryColumns,
   {
-    name: "Annotations",
-    id: "Annotations",
+    name: 'Annotations',
+    id: 'Annotations',
     sortable: true,
     downloadable: true,
     th: () => <NumTh key="Annotations" rowSpan="2">Annotations</NumTh>,
     td: ({ node }) => (
       <NumTd key="Annotations">
         {node.annotations.hits.total === 0
-          ? "0"
+          ? '0'
           : <AnnotationsLink
               query={{
                 filters: makeFilter(
-                  [{ field: "annotations.case_id", value: node.case_id }],
+                  [{ field: 'annotations.case_id', value: node.case_id }],
                   false,
                 ),
               }}
@@ -211,8 +211,8 @@ const casesTableModel = [
     ),
   },
   {
-    name: "Program",
-    id: "project.program.name",
+    name: 'Program',
+    id: 'project.program.name',
     sortable: false,
     hidden: true,
     th: () => <Th rowSpan="2">Program</Th>,
@@ -223,8 +223,8 @@ const casesTableModel = [
     ),
   },
   {
-    name: "Disease Type",
-    id: "disease_type",
+    name: 'Disease Type',
+    id: 'disease_type',
     sortable: false,
     hidden: true,
     th: () => <Th rowSpan="2">Disease Type</Th>,
@@ -235,8 +235,8 @@ const casesTableModel = [
     ),
   },
   {
-    name: "Age at diagnosis",
-    id: "diagnoses.age_at_diagnosis",
+    name: 'Age at diagnosis',
+    id: 'diagnoses.age_at_diagnosis',
     sortable: false,
     hidden: true,
     th: () => <Th rowSpan="2">Age at diagnosis</Th>,
@@ -249,13 +249,13 @@ const casesTableModel = [
           Infinity,
         );
       return (
-        <Td>{age !== Infinity && node.diagnoses ? ageDisplay(age) : "--"}</Td>
+        <Td>{age !== Infinity && node.diagnoses ? ageDisplay(age) : '--'}</Td>
       );
     },
   },
   {
-    name: "Days to death",
-    id: "diagnoses.days_to_death",
+    name: 'Days to death',
+    id: 'diagnoses.days_to_death',
     sortable: false,
     hidden: true,
     th: () => <Th rowSpan="2">Days to death</Th>,
@@ -266,14 +266,14 @@ const casesTableModel = [
       return (
         <Td>
           {(node.diagnoses && ageDisplay(primaryDiagnosis.days_to_death)) ||
-            "--"}
+            '--'}
         </Td>
       );
     },
   },
   {
-    name: "Vital Status",
-    id: "diagnoses.vital_status",
+    name: 'Vital Status',
+    id: 'diagnoses.vital_status',
     sortable: false,
     hidden: true,
     th: () => <Th rowSpan="2">Vital Status</Th>,
@@ -285,8 +285,8 @@ const casesTableModel = [
     },
   },
   {
-    name: "Primary Diagnosis",
-    id: "diagnoses.primary_diagnosis",
+    name: 'Primary Diagnosis',
+    id: 'diagnoses.primary_diagnosis',
     sortable: false,
     hidden: true,
     th: () => <Th rowSpan="2">Primary Diagnosis</Th>,
@@ -296,30 +296,30 @@ const casesTableModel = [
         .reduce(youngestDiagnosis, { age_at_diagnosis: Infinity });
       return (
         <Td>
-          {(node.diagnoses && primaryDiagnosis.primary_diagnosis) || "--"}
+          {(node.diagnoses && primaryDiagnosis.primary_diagnosis) || '--'}
         </Td>
       );
     },
   },
   {
-    name: "Ethnicity",
-    id: "demographic.ethnicity",
+    name: 'Ethnicity',
+    id: 'demographic.ethnicity',
     sortable: false,
     hidden: true,
     th: () => <Th rowSpan="2">Ethnicity</Th>,
     td: ({ node }) => (
-      <Td>{(node.demographic && node.demographic.ethnicity) || "--"}</Td>
+      <Td>{(node.demographic && node.demographic.ethnicity) || '--'}</Td>
     ),
   },
   {
-    name: "Race",
-    id: "demographic.race",
+    name: 'Race',
+    id: 'demographic.race',
     sortable: false,
     hidden: true,
     th: () => <Th rowSpan="2">Race</Th>,
     td: ({ node }) => (
       <Td>
-        {(node.demographic && node.demographic.race) || "--"}
+        {(node.demographic && node.demographic.race) || '--'}
       </Td>
     ),
   },

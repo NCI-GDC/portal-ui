@@ -1,14 +1,14 @@
 /* @flow */
 
-import React from "react";
-import { createFragmentContainer, graphql } from "react-relay/compat";
-import { connect } from "react-redux";
-import { compose } from "recompose";
-import { Row } from "@ncigdc/uikit/Flex";
-import TableActions from "@ncigdc/components/TableActions";
-import tableModels from "@ncigdc/tableModels";
+import React from 'react';
+import { createFragmentContainer, graphql } from 'react-relay/compat';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import { Row } from '@ncigdc/uikit/Flex';
+import TableActions from '@ncigdc/components/TableActions';
+import tableModels from '@ncigdc/tableModels';
 
-import Table, { Tr, Td } from "@ncigdc/uikit/Table";
+import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 
 export const SearchTable = compose(
   connect(state => ({ tableColumns: state.tableColumns.projects })),
@@ -17,7 +17,7 @@ export const SearchTable = compose(
     downloadable,
     hits,
     params,
-    entityType = "projects",
+    entityType = 'projects',
     tableHeader,
     tableColumns,
   }) => {
@@ -30,10 +30,10 @@ export const SearchTable = compose(
       <div>
         <Row
           style={{
-            backgroundColor: "white",
-            padding: "1rem",
-            justifyContent: "space-between",
-            alignItems: "center",
+            backgroundColor: 'white',
+            padding: '1rem',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
         >
           {tableHeader &&
@@ -56,7 +56,7 @@ export const SearchTable = compose(
             tsvFilename="projects-table.tsv"
           />
         </Row>
-        <div style={{ overflowX: "auto" }}>
+        <div style={{ overflowX: 'auto' }}>
           <Table
             id="projects-table"
             headings={tableInfo

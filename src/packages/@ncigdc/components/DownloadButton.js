@@ -1,14 +1,14 @@
 // @flow
 
-import React from "react";
-import { connect } from "react-redux";
-import { compose, withState, mapProps } from "recompose";
+import React from 'react';
+import { connect } from 'react-redux';
+import { compose, withState, mapProps } from 'recompose';
 
-import download from "@ncigdc/utils/download";
-import Button from "@ncigdc/uikit/Button";
-import DownloadIcon from "@ncigdc/theme/icons/Download";
-import Spinner from "@ncigdc/theme/icons/Spinner";
-import Hidden from "@ncigdc/components/Hidden";
+import download from '@ncigdc/utils/download';
+import Button from '@ncigdc/uikit/Button';
+import DownloadIcon from '@ncigdc/theme/icons/Download';
+import Spinner from '@ncigdc/theme/icons/Spinner';
+import Hidden from '@ncigdc/components/Hidden';
 
 type TDownloadButton = {
   url: string,
@@ -40,7 +40,7 @@ const DownloadButton = ({
   inactiveText,
   returnType,
   size = 10000,
-  format = "JSON",
+  format = 'JSON',
   fields = [],
   filters = {},
   active,
@@ -80,7 +80,7 @@ const DownloadButton = ({
         download({
           params,
           url,
-          method: "POST",
+          method: 'POST',
           altMessage,
         })(() => {}, () => setActive(false));
       }}
@@ -92,7 +92,7 @@ const DownloadButton = ({
 
 const enhance = compose(
   connect(),
-  withState("state", "setState", {
+  withState('state', 'setState', {
     active: false,
   }),
   mapProps(({ setParentState, state, setState, active, ...rest }) => ({

@@ -1,11 +1,11 @@
 // @flow
 /* eslint fp/no-mutating-methods: 0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { lifecycle, compose, withProps } from "recompose";
-import { isEqual, head } from "lodash";
-import { makeFilter } from "@ncigdc/utils/filters";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { lifecycle, compose, withProps } from 'recompose';
+import { isEqual, head } from 'lodash';
+import { makeFilter } from '@ncigdc/utils/filters';
 
 const GeneSymbolComponent = compose(
   withProps(({ relay }) => ({
@@ -14,7 +14,7 @@ const GeneSymbolComponent = compose(
         geneIdFilters: makeFilter(
           [
             {
-              field: "genes.gene_id",
+              field: 'genes.gene_id',
               value: [geneId],
             },
           ],
@@ -44,7 +44,7 @@ const GeneSymbolComponent = compose(
               .node.symbol
           }
         </span>
-      : <span style={{ width: "45px" }}>&nbsp;</span>,
+      : <span style={{ width: '45px' }}>&nbsp;</span>,
 );
 
 export const GeneSymbolQuery = {

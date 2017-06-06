@@ -1,19 +1,19 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { compose, withState } from "recompose";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { compose, withState } from 'recompose';
 
-import SuggestionFacet from "@ncigdc/components/Aggregations/SuggestionFacet";
-import FacetHeader from "@ncigdc/components/Aggregations/FacetHeader";
-import FacetWrapper from "@ncigdc/components/FacetWrapper";
-import escapeForRelay from "@ncigdc/utils/escapeForRelay";
+import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
+import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
+import FacetWrapper from '@ncigdc/components/FacetWrapper';
+import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 
-import type { TBucket } from "@ncigdc/components/Aggregations/types";
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
-import { Row } from "@ncigdc/uikit/Flex";
-import { withTheme } from "@ncigdc/theme";
-import AnnotationIcon from "@ncigdc/theme/icons/AnnotationIcon";
+import { Row } from '@ncigdc/uikit/Flex';
+import { withTheme } from '@ncigdc/theme';
+import AnnotationIcon from '@ncigdc/theme/icons/AnnotationIcon';
 
 export type TProps = {
   annotationIdCollapsed: boolean,
@@ -34,65 +34,65 @@ export type TProps = {
 
 const annotationFacets = [
   {
-    title: "Entity ID",
-    field: "entity_id",
-    full: "annotations.entity_id",
-    doc_type: "annotations",
-    type: "exact",
+    title: 'Entity ID',
+    field: 'entity_id',
+    full: 'annotations.entity_id',
+    doc_type: 'annotations',
+    type: 'exact',
   },
   {
-    title: "Case UUID",
-    field: "case_id",
-    full: "annotations.case_id",
-    doc_type: "annotations",
-    type: "exact",
+    title: 'Case UUID',
+    field: 'case_id',
+    full: 'annotations.case_id',
+    doc_type: 'annotations',
+    type: 'exact',
   },
   {
-    title: "Primary Site",
-    field: "project.primary_site",
-    full: "annotations.project.primary_site",
-    doc_type: "annotations",
-    type: "keyword",
+    title: 'Primary Site',
+    field: 'project.primary_site',
+    full: 'annotations.project.primary_site',
+    doc_type: 'annotations',
+    type: 'keyword',
   },
   {
-    title: "Project",
-    field: "project.project_id",
-    full: "annotations.project.project_id",
-    doc_type: "annotations",
-    type: "terms",
+    title: 'Project',
+    field: 'project.project_id',
+    full: 'annotations.project.project_id',
+    doc_type: 'annotations',
+    type: 'terms',
   },
   {
-    title: "Entity Type",
-    field: "entity_type",
-    full: "annotations.entity_type",
-    doc_type: "annotations",
-    type: "keyword",
+    title: 'Entity Type',
+    field: 'entity_type',
+    full: 'annotations.entity_type',
+    doc_type: 'annotations',
+    type: 'keyword',
   },
   {
-    title: "Annotation Category",
-    field: "category",
-    full: "annotations.category",
-    doc_type: "annotations",
-    type: "keyword",
+    title: 'Annotation Category',
+    field: 'category',
+    full: 'annotations.category',
+    doc_type: 'annotations',
+    type: 'keyword',
   },
   {
-    title: "Annotation Created",
-    field: "created_datetime",
-    full: "annotations.created_datetime",
-    doc_type: "annotations",
-    type: "date",
+    title: 'Annotation Created',
+    field: 'created_datetime',
+    full: 'annotations.created_datetime',
+    doc_type: 'annotations',
+    type: 'date',
   },
   {
-    title: "Annotation Classification",
-    field: "classification",
-    full: "annotations.classification",
-    doc_type: "annotations",
-    type: "keyword",
+    title: 'Annotation Classification',
+    field: 'classification',
+    full: 'annotations.classification',
+    doc_type: 'annotations',
+    type: 'keyword',
   },
 ];
 
 export const AnnotationAggregationsComponent = compose(
-  withState("annotationIdCollapsed", "setAnnotationIdCollapsed", false),
+  withState('annotationIdCollapsed', 'setAnnotationIdCollapsed', false),
 )((props: TProps) => (
   <div>
     <FacetHeader
@@ -102,7 +102,7 @@ export const AnnotationAggregationsComponent = compose(
       setCollapsed={props.setAnnotationIdCollapsed}
     />
     <SuggestionFacet
-      title={"Annotation ID"}
+      title={'Annotation ID'}
       collapsed={props.annotationIdCollapsed}
       placeholder="Search for Annotation ID"
       hits={props.suggestions}
@@ -112,7 +112,7 @@ export const AnnotationAggregationsComponent = compose(
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       dropdownItem={x => (
         <Row>
-          <AnnotationIcon style={{ paddingRight: "1rem" }} />
+          <AnnotationIcon style={{ paddingRight: '1rem' }} />
           {x.annotation_id}
         </Row>
       )}

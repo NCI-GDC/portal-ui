@@ -1,25 +1,14 @@
 /* @flow */
 /* eslint fp/no-this: 0, max-len: 1 */
-import _ from "lodash";
-import JSURL from "jsurl";
+import _ from 'lodash';
 import {
   withState,
   withProps,
   lifecycle,
   withHandlers,
   compose,
-} from "recompose";
-import tryParseJSON from "@ncigdc/utils/tryParseJSON";
-import withRouter from "@ncigdc/utils/withRouter";
-import { removeFilter } from "@ncigdc/utils/filters/index";
-import { removeEmptyKeys, parseFilterParam } from "@ncigdc/utils/uri/index";
-
-type TProps = {
-  storageKey: string,
-  presetFacetFields: Array<string>,
-  validFacetDocTypes: Array<string>,
-  validFacetPrefixes?: Array<string>
-};
+} from 'recompose';
+import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 
 export default ({
   storageKey,
@@ -28,8 +17,8 @@ export default ({
   validFacetPrefixes,
 }) =>
   compose(
-    withState("shouldShowFacetSelection", "setShouldShowFacetSelection", false),
-    withState("userSelectedFacets", "setUserSelectedFacets", []),
+    withState('shouldShowFacetSelection', 'setShouldShowFacetSelection', false),
+    withState('userSelectedFacets', 'setUserSelectedFacets', []),
     withProps(({ userSelectedFacets, setUserSelectedFacets }) => ({
       facetExclusionTest: facet => {
         const facetFieldNamesToExclude = presetFacetFields.concat(
@@ -59,7 +48,7 @@ export default ({
           window.localStorage.setItem(storageKey, JSON.stringify(facets));
         } catch (error) {
           console.error(
-            "Unable to save user selected facets to localStorage",
+            'Unable to save user selected facets to localStorage',
             error,
           );
         }

@@ -1,19 +1,19 @@
 /* @flow */
 
-import type { TRawQuery, TUriQuery } from "../uri/types";
+import type { TRawQuery, TUriQuery } from '../uri/types';
 
 export type TValueContent = {|
   field: string,
   value: Array<mixed>,
 |};
-export type TValueOp = "in";
+export type TValueOp = 'in';
 export type TValueFilter = {|
   content: TValueContent,
   op: TValueOp,
 |};
 
 export type TGroupContent = Array<TValueFilter>;
-export type TGroupOp = "and";
+export type TGroupOp = 'and';
 export type TGroupFilter = {|
   content: TGroupContent,
   op: TGroupOp,
@@ -29,7 +29,7 @@ export type TMergeFilters = (
   c: ?TGroupFilter,
 ) => ?TGroupFilter;
 
-export type TMergeEnum = boolean | "toggle" | "replace";
+export type TMergeEnum = boolean | 'toggle' | 'replace';
 
 export type TMergeFns = (v: TMergeEnum) => TMergeFilters;
 

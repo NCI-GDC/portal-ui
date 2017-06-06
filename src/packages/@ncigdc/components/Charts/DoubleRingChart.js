@@ -1,10 +1,10 @@
 // @flow
 
-import PropTypes from "prop-types";
-import * as d3 from "d3";
-import ReactFauxDOM from "react-faux-dom";
+import PropTypes from 'prop-types';
+import * as d3 from 'd3';
+import ReactFauxDOM from 'react-faux-dom';
 
-import { withTooltip } from "@ncigdc/uikit/Tooltip";
+import { withTooltip } from '@ncigdc/uikit/Tooltip';
 
 const DoubleRingChart = ({
   data,
@@ -19,17 +19,17 @@ const DoubleRingChart = ({
   const centerRadius = Math.min(centerRingWidth, centerRingHeight) / 2;
   const radius = Math.min(width, height) / 2;
 
-  const node = ReactFauxDOM.createElement("div");
-  node.style.setProperty("display", "flex");
-  node.style.setProperty("justify-content", "center");
+  const node = ReactFauxDOM.createElement('div');
+  node.style.setProperty('display', 'flex');
+  node.style.setProperty('justify-content', 'center');
 
   const svg = d3
     .select(node)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .append('g')
+    .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
   const HALF_DEGREE_IN_RAD = 0.00872665;
   const innerPieData = data.map(d => ({
@@ -83,27 +83,27 @@ const DoubleRingChart = ({
       [],
     ),
   ];
-  const g = svg.selectAll(".g").data(dataWithPie).enter().append("g");
+  const g = svg.selectAll('.g').data(dataWithPie).enter().append('g');
 
   const fill = g
-    .selectAll("path")
+    .selectAll('path')
     .data(d => d)
     .enter()
-    .append("path")
-    .attr("d", d =>
+    .append('path')
+    .attr('d', d =>
       d3.arc().outerRadius(d.outerRadius).innerRadius(d.innerRadius)(d.pie),
     )
-    .style("fill", (d, i) => d.color);
+    .style('fill', (d, i) => d.color);
 
   fill
-    .attr("class", "pointer")
-    .on("mouseenter", d => {
+    .attr('class', 'pointer')
+    .on('mouseenter', d => {
       setTooltip(d.tooltip);
     })
-    .on("mouseleave", d => {
+    .on('mouseleave', d => {
       setTooltip();
     })
-    .on("mousedown", d => d.clickHandler && d.clickHandler());
+    .on('mousedown', d => d.clickHandler && d.clickHandler());
 
   return node.toReact();
 };

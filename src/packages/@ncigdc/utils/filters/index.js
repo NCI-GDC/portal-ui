@@ -1,8 +1,8 @@
 /* @flow */
 /* eslint fp/no-mutating-methods: 0 */
 
-import _ from "lodash";
-import { parseFilterParam } from "../uri";
+import _ from 'lodash';
+import { parseFilterParam } from '../uri';
 
 import type {
   TMergeFilters,
@@ -11,7 +11,7 @@ import type {
   TMergeQuery,
   TSortFilters,
   TFilterByWhitelist,
-} from "./types";
+} from './types';
 
 const sortFilters: TSortFilters = (a, b) =>
   a.content.field.localeCompare(b.content.field);
@@ -22,7 +22,7 @@ export const combineValues: TCombineValues = (x, y) => {
   if (y.content.value.length === 0) return x;
 
   const merged = {
-    op: "in",
+    op: 'in',
     content: {
       field: x.content.field,
       value: x.content.value
@@ -43,7 +43,7 @@ export const addInValue: TCombineValues = (x, y) => {
   if (y.content.value.length === 0) return x;
 
   const merged = {
-    op: "in",
+    op: 'in',
     content: {
       field: x.content.field,
       value: x.content.value
@@ -64,7 +64,7 @@ export const toggleFilters: TMergeFilters = (q, ctxq) => {
   if (!q) return ctxq;
 
   const merged = {
-    op: "and",
+    op: 'and',
     content: ctxq.content
       .reduce((acc, ctx) => {
         const found = acc.find(
@@ -88,7 +88,7 @@ export const replaceFilters: TMergeFilters = (q, ctxq) => {
   if (!q) return ctxq;
 
   const merged = {
-    op: "and",
+    op: 'and',
     content: ctxq.content
       .reduce((acc, ctx) => {
         const found = acc.find(
@@ -109,7 +109,7 @@ export const addInFilters: TMergeFilters = (q, ctxq) => {
   if (!q) return ctxq;
 
   const merged = {
-    op: "and",
+    op: 'and',
     content: ctxq.content
       .reduce((acc, ctx) => {
         const found = acc.find(
@@ -129,9 +129,9 @@ export const addInFilters: TMergeFilters = (q, ctxq) => {
 
 const mergeFns: TMergeFns = v => {
   switch (v) {
-    case "toggle":
+    case 'toggle':
       return toggleFilters;
-    case "add":
+    case 'add':
       return addInFilters;
     default:
       return replaceFilters;
@@ -167,10 +167,10 @@ export const mergeQuery: TMergeQuery = (q, c, mergeType, whitelist) => {
 };
 
 export const setFilter = ({ value, field }) => ({
-  op: "and",
+  op: 'and',
   content: [
     {
-      op: "in",
+      op: 'in',
       content: { field, value },
     },
   ],
@@ -178,18 +178,18 @@ export const setFilter = ({ value, field }) => ({
 
 export const setFilters = filterContent =>
   filterContent.length && {
-    op: "and",
+    op: 'and',
     content: filterContent,
   };
 
 const getDisplayValue = value => {
   switch (typeof value) {
-    case "string":
+    case 'string':
       return value;
-    case "number":
-      return value === 0 ? "false" : "true";
-    case "boolean":
-      return value ? "true" : "false";
+    case 'number':
+      return value === 0 ? 'false' : 'true';
+    case 'boolean':
+      return value ? 'true' : 'false';
     default:
       return value;
   }
@@ -214,26 +214,12 @@ type TMakeFilter = (
   fields: [{ field: string, value: string }],
   returnString: boolean,
 ) => Object | string;
-export const makeFilter: TMakeFilter = fields => {
-  if (!fields.length) return {};
-  return {
-    op: "and",
-    content: fields.map(item => {
-      const value = _.isArray(item.value) ? item.value : item.value.split(",");
-
-      return {
-        op: "in",
-        content: {
-          field: item.field,
-          value
-        }
-      };
-    })
-  };
-};
+export const makeFilter: TMakeFilter = (fields, returnString = true) => {
+  const contentArray = fields.map(item => {
+    const value = _.isArray(item.value) ? item.value : item.value.split(',');
 
     return {
-      op: "in",
+      op: 'in',
       content: {
         field: item.field,
         value,
@@ -247,7 +233,7 @@ export const makeFilter: TMakeFilter = fields => {
 
   return filteredContent.length
     ? {
-        op: "and",
+        op: 'and',
         content: contentArray,
       }
     : null;

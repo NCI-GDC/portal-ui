@@ -1,23 +1,23 @@
 /* @flow */
 /* eslint fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { connect } from "react-redux";
-import { parse } from "query-string";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { connect } from 'react-redux';
+import { parse } from 'query-string';
 
-import { handleStateChange } from "@ncigdc/dux/relayProgress";
-import ExplorePage from "@ncigdc/containers/explore/ExplorePage";
+import { handleStateChange } from '@ncigdc/dux/relayProgress';
+import ExplorePage from '@ncigdc/containers/explore/ExplorePage';
 import {
   parseIntParam,
   parseFilterParam,
   parseJSURLParam,
-} from "@ncigdc/utils/uri";
+} from '@ncigdc/utils/uri';
 
-import { viewerQuery } from "./queries";
+import { viewerQuery } from './queries';
 
 class ExploreRoute extends Relay.Route {
-  static routeName = "ExploreRoute";
+  static routeName = 'ExploreRoute';
 
   static queries = {
     ...viewerQuery,

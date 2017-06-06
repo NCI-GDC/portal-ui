@@ -1,13 +1,13 @@
 // @flow
-import React from "react";
-import { compose } from "recompose";
-import { connect } from "react-redux";
-import Progress from "react-progress";
-import styled from "@ncigdc/theme/styled";
-import { withTheme } from "@ncigdc/theme";
+import React from 'react';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
+import Progress from 'react-progress';
+import styled from '@ncigdc/theme/styled';
+import { withTheme } from '@ncigdc/theme';
 
 const ProgressBar = styled(Progress, {
-  position: "absolute",
+  position: 'absolute',
   zIndex: 10000,
 });
 

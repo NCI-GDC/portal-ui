@@ -1,5 +1,5 @@
 /* @flow */
 
-import { makeListLink } from "./utils";
+import { makeListLink } from './utils';
 
-export default makeListLink({ pathname: "/files", children: "files" });
+export default makeListLink({ pathname: '/files', children: 'files' });

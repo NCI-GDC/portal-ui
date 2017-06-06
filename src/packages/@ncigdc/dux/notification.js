@@ -1,5 +1,5 @@
 /* @flow */
-const NOTIFY = "NOTIFY";
+const NOTIFY = 'NOTIFY';
 
 export type TAction = { type: string, payload: any };
 export type TState = { id: number, component: Object, action: string };

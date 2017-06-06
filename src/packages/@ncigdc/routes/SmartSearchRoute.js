@@ -1,23 +1,23 @@
 // @flow
 /* eslint fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { connect } from "react-redux";
-import { parse } from "query-string";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { connect } from 'react-redux';
+import { parse } from 'query-string';
 
-import { handleStateChange } from "@ncigdc/dux/relayProgress";
-import SmartSearchPage from "@ncigdc/containers/SmartSearchPage";
+import { handleStateChange } from '@ncigdc/dux/relayProgress';
+import SmartSearchPage from '@ncigdc/containers/SmartSearchPage';
 import {
   parseIntParam,
   parseFilterParam,
   parseJSURLParam,
-} from "@ncigdc/utils/uri";
+} from '@ncigdc/utils/uri';
 
-import { viewerQuery } from "./queries";
+import { viewerQuery } from './queries';
 
 class SmartSearchRoute extends Relay.Route {
-  static routeName = "RepositoryRoute";
+  static routeName = 'RepositoryRoute';
   static queries = viewerQuery;
   static prepareParams = ({ location: { search } }) => {
     const q = parse(search);

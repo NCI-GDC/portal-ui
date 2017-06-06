@@ -1,18 +1,18 @@
 /* @flow */
 
-import React from "react";
+import React from 'react';
 
-import DismissibleBanner from "@ncigdc/components/DismissibleBanner";
+import DismissibleBanner from '@ncigdc/components/DismissibleBanner';
 
-import { fetchApi } from "@ncigdc/utils/ajax";
+import { fetchApi } from '@ncigdc/utils/ajax';
 
-const NOTIFICATION_SUCCESS = "NOTIFICATION_SUCCESS";
-const NOTIFICATION_DISMISS = "NOTIFICATION_DISMISS";
+const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
+const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
 
 export function fetchNotifications() {
   return async dispatch => {
-    let { data } = await fetchApi("notifications", {
-      headers: { "Content-Type": "application/json" },
+    let { data } = await fetchApi('notifications', {
+      headers: { 'Content-Type': 'application/json' },
     });
 
     dispatch({
@@ -31,8 +31,8 @@ export function dismissNotification(notificationID) {
 
 let initialState = [
   {
-    components: ["PORTAL"],
-    level: "INFO",
+    components: ['PORTAL'],
+    level: 'INFO',
     id: 0,
     dismissible: true,
     message: <DismissibleBanner />,
@@ -46,7 +46,7 @@ const reducer = (state = initialState, action) => {
         ...(action.payload || [])
           .filter(
             n =>
-              n.components.includes("PORTAL") || n.components.includes("API"),
+              n.components.includes('PORTAL') || n.components.includes('API'),
           )
           .map(n => ({ ...n, dismissed: false })),
         ...state,

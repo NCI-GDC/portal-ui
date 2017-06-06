@@ -1,14 +1,14 @@
 // @flow
-import React from "react";
-import { withRouter } from "react-router-dom";
-import { stringify, parse } from "query-string";
-import { compose, withPropsOnChange, withProps } from "recompose";
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { stringify, parse } from 'query-string';
+import { compose, withPropsOnChange, withProps } from 'recompose';
 
 const enhance = compose(
   withRouter,
-  withPropsOnChange(["push"], ({ push }) => ({
+  withPropsOnChange(['push'], ({ push }) => ({
     push: opts => {
-      if (typeof opts === "object") {
+      if (typeof opts === 'object') {
         push({
           pathname: opts.pathname,
           search: `?${stringify(opts.query)}`,

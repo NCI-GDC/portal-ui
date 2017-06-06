@@ -1,9 +1,9 @@
 // @flow
 
-import React from "react";
-import { connect } from "react-redux";
-import Overlay from "@ncigdc/uikit/Overlay";
-import Spinner from "./Material";
+import React from 'react';
+import { connect } from 'react-redux';
+import Overlay from '@ncigdc/uikit/Overlay';
+import Spinner from './Material';
 
 type TProps = {
   children?: mixed,
@@ -16,10 +16,10 @@ export default (
   { children, style = {}, loading = true, height, ...props }: TProps = {},
 ) => (
   <div
-    style={{ ...style, height: loading ? height || "1rem" : "auto" }}
+    style={{ ...style, height: loading ? height || '1rem' : 'auto' }}
     {...props}
   >
-    <Overlay show={loading} style={{ position: "absolute", zIndex: 10 }}>
+    <Overlay show={loading} style={{ position: 'absolute', zIndex: 10 }}>
       <Spinner />
     </Overlay>
     {children}
@@ -31,7 +31,7 @@ export const ConnectedLoader = connect(s => ({
 }))(({ loaders, name }) => (
   <Overlay
     show={loaders.includes(name)}
-    style={{ position: "absolute", zIndex: 10 }}
+    style={{ position: 'absolute', zIndex: 10 }}
   >
     <Spinner />
   </Overlay>

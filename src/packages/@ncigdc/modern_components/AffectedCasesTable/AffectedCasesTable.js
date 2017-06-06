@@ -1,43 +1,43 @@
 // @flow
 
-import React from "react";
-import Relay from "react-relay/classic";
-import withSize from "@ncigdc/utils/withSize";
-import { compose, withPropsOnChange, withState } from "recompose";
-import { connect } from "react-redux";
-import { parse } from "query-string";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import withSize from '@ncigdc/utils/withSize';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
+import { parse } from 'query-string';
 import {
   parseIntParam,
   parseFilterParam,
   parseJSURLParam,
-} from "@ncigdc/utils/uri";
-import { viewerQuery } from "@ncigdc/routes/queries";
-import { handleReadyStateChange } from "@ncigdc/dux/loaders";
-import Showing from "@ncigdc/components/Pagination/Showing";
-import { withTheme } from "@ncigdc/theme";
-import ageDisplay from "@ncigdc/utils/ageDisplay";
-import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
-import { tableToolTipHint } from "@ncigdc/theme/mixins";
-import CaseLink from "@ncigdc/components/Links/CaseLink";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
-import withRouter from "@ncigdc/utils/withRouter";
-import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
-import { RepositoryFilesLink } from "@ncigdc/components/Links/RepositoryLink";
-import { makeFilter } from "@ncigdc/utils/filters";
+} from '@ncigdc/utils/uri';
+import { viewerQuery } from '@ncigdc/routes/queries';
+import { handleReadyStateChange } from '@ncigdc/dux/loaders';
+import Showing from '@ncigdc/components/Pagination/Showing';
+import { withTheme } from '@ncigdc/theme';
+import ageDisplay from '@ncigdc/utils/ageDisplay';
+import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
+import { tableToolTipHint } from '@ncigdc/theme/mixins';
+import CaseLink from '@ncigdc/components/Links/CaseLink';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import withRouter from '@ncigdc/utils/withRouter';
+import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
+import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
+import { makeFilter } from '@ncigdc/utils/filters';
 import EntityPageHorizontalTable
-  from "@ncigdc/components/EntityPageHorizontalTable";
-import { Row } from "@ncigdc/uikit/Flex";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import Pagination from "@ncigdc/components/Pagination";
-import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
-import TableActions from "@ncigdc/components/TableActions";
-import MutationsCount from "@ncigdc/components/MutationsCount";
+  from '@ncigdc/components/EntityPageHorizontalTable';
+import { Row } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import Pagination from '@ncigdc/components/Pagination';
+import MutationsCount from '@ncigdc/containers/MutationsCount';
+import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import TableActions from '@ncigdc/components/TableActions';
 
-const COMPONENT_NAME = "AffectedCasesTable";
+const COMPONENT_NAME = 'AffectedCasesTable';
 
 const createRenderer = (Route, Container) =>
   compose(connect(), withRouter)((props: mixed) => (
-    <div style={{ position: "relative", minHeight: "387px" }}>
+    <div style={{ position: 'relative', minHeight: '387px' }}>
       <Relay.Renderer
         environment={Relay.Store}
         queryConfig={new Route(props)}
@@ -82,7 +82,7 @@ class Route extends Relay.Route {
 const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
-      score: "gene.gene_id",
+      score: 'gene.gene_id',
       affectedCasesTable_filters: null,
       affectedCasesTable_size: 10,
       affectedCasesTable_offset: 0,
@@ -91,15 +91,8 @@ const createContainer = Component =>
       exploreSsms: () => Relay.QL`
         fragment on Root {
           explore {
-            ssms {
-              aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) {
-                occurrence__case__case_id {
-                  buckets {
-                    key
-                    doc_count
-                  }
-                }
-              }
+            mutationsCountFragment: ssms {
+              ${MutationsCount.getFragment('ssms')}
             }
           }
         }
@@ -165,7 +158,7 @@ const Component = compose(
     } = {},
   ) => {
     if (cases && !cases.hits.edges.length) {
-      return <Row style={{ padding: "1rem" }}>No data found.</Row>;
+      return <Row style={{ padding: '1rem' }}>No data found.</Row>;
     }
 
     const totalCases = cases ? cases.hits.total : 0;
@@ -174,10 +167,10 @@ const Component = compose(
       <span>
         <Row
           style={{
-            backgroundColor: "white",
-            padding: "1rem",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
+            backgroundColor: 'white',
+            padding: '1rem',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
           }}
         >
           <Showing
@@ -186,30 +179,30 @@ const Component = compose(
             params={relay.route.params}
             total={totalCases}
           />
-          <Row style={{ alignItems: "flex-end" }}>
+          <Row style={{ alignItems: 'flex-end' }}>
             <ExploreLink
-              query={{ searchTableTab: "cases", filters: defaultFilters }}
+              query={{ searchTableTab: 'cases', filters: defaultFilters }}
             >
               Open in Exploration
             </ExploreLink>
             <TableActions
               currentFilters={defaultFilters}
-              style={{ marginLeft: "2rem" }}
-              prefix={"cases"}
+              style={{ marginLeft: '2rem' }}
+              prefix={'cases'}
               total={totalCases}
-              endpoint={"case_ssms"}
+              endpoint={'case_ssms'}
               downloadTooltip="Export All Except #Mutations and #Genes"
               downloadFields={[
-                "primary_site",
-                "case_id",
-                "submitter_id",
-                "demographic.gender",
-                "summary.data_categories.data_category",
-                "summary.data_categories.file_count",
-                "diagnoses.age_at_diagnosis",
-                "diagnoses.tumor_stage",
-                "diagnoses.days_to_last_follow_up",
-                "diagnoses.days_to_death",
+                'primary_site',
+                'case_id',
+                'submitter_id',
+                'demographic.gender',
+                'summary.data_categories.data_category',
+                'summary.data_categories.file_count',
+                'diagnoses.age_at_diagnosis',
+                'diagnoses.tumor_stage',
+                'diagnoses.days_to_last_follow_up',
+                'diagnoses.days_to_death',
               ]}
               tsvSelector="#most-affected-cases-table"
               tsvFilename="most-affected-cases-table.tsv"
@@ -220,17 +213,17 @@ const Component = compose(
           idKey="case_id"
           tableId="most-affected-cases-table"
           headings={[
-            { key: "id", title: "UUID" },
-            { key: "submitter_id", title: "Submitter ID" },
-            { key: "primary_site", title: "Site" },
-            { key: "gender", title: "Gender" },
+            { key: 'id', title: 'UUID' },
+            { key: 'submitter_id', title: 'Submitter ID' },
+            { key: 'primary_site', title: 'Site' },
+            { key: 'gender', title: 'Gender' },
             {
-              key: "age_at_diagnosis",
+              key: 'age_at_diagnosis',
               title: <span>Age at<br />Diagnosis</span>,
             },
-            { key: "tumor_stage", title: "Stage" },
+            { key: 'tumor_stage', title: 'Stage' },
             {
-              key: "days_to_death",
+              key: 'days_to_death',
               title: (
                 <Tooltip Component="Survival (days)" style={tableToolTipHint()}>
                   Survival
@@ -238,7 +231,7 @@ const Component = compose(
               ),
             },
             {
-              key: "days_to_last_follow_up",
+              key: 'days_to_last_follow_up',
               title: (
                 <Tooltip
                   Component="Days to Last Follow Up"
@@ -247,20 +240,20 @@ const Component = compose(
                   Last Follow<br />Up (days)
                 </Tooltip>
               ),
-              style: { textAlign: "right", padding: "3px 15px 3px 3px" },
+              style: { textAlign: 'right', padding: '3px 15px 3px 3px' },
             },
             {
-              key: "data_types",
+              key: 'data_types',
               title: (
-                <div style={{ textAlign: "center" }}>
+                <div style={{ textAlign: 'center' }}>
                   Available Files per Data Category
                 </div>
               ),
-              style: { textAlign: "right" },
+              style: { textAlign: 'right' },
               subheadings: Object.keys(DATA_CATEGORIES).map(k => (
                 <abbr
                   key={DATA_CATEGORIES[k].abbr}
-                  style={{ fontSize: "1rem" }}
+                  style={{ fontSize: '1rem' }}
                 >
                   <Tooltip
                     Component={DATA_CATEGORIES[k].full}
@@ -272,7 +265,7 @@ const Component = compose(
               )),
             },
             {
-              key: "num_mutations",
+              key: 'num_mutations',
               title: (
                 <Tooltip
                   Component="# Simple Somatic Mutations"
@@ -281,10 +274,10 @@ const Component = compose(
                   # Mutations
                 </Tooltip>
               ),
-              style: { textAlign: "right" },
+              style: { textAlign: 'right' },
             },
             {
-              key: "num_genes",
+              key: 'num_genes',
               title: (
                 <Tooltip
                   Component="# Genes with Simple Somatic Mutations"
@@ -293,7 +286,7 @@ const Component = compose(
                   # Genes
                 </Tooltip>
               ),
-              style: { textAlign: "right" },
+              style: { textAlign: 'right' },
             },
           ]}
           data={
@@ -325,7 +318,7 @@ const Component = compose(
                     ),
                     submitter_id: c.submitter_id,
                     primary_site: c.primary_site,
-                    gender: c.demographic ? c.demographic.gender : "",
+                    gender: c.demographic ? c.demographic.gender : '',
                     age_at_diagnosis: ageDisplay(diagnosis.age_at_diagnosis),
                     tumor_stage: diagnosis.tumor_stage,
                     days_to_last_follow_up: diagnosis.days_to_last_follow_up,
@@ -335,7 +328,7 @@ const Component = compose(
                         key={c.case_id}
                         ssms={mutationsCountFragment}
                         filters={makeFilter(
-                          [{ field: "cases.case_id", value: [c.case_id] }],
+                          [{ field: 'cases.case_id', value: [c.case_id] }],
                           false,
                         )}
                       />
@@ -343,9 +336,9 @@ const Component = compose(
                     num_genes: (
                       <ExploreLink
                         query={{
-                          searchTableTab: "genes",
+                          searchTableTab: 'genes',
                           filters: makeFilter(
-                            [{ field: "cases.case_id", value: [c.case_id] }],
+                            [{ field: 'cases.case_id', value: [c.case_id] }],
                             false,
                           ),
                         }}
@@ -361,11 +354,11 @@ const Component = compose(
                                 filters: makeFilter(
                                   [
                                     {
-                                      field: "cases.case_id",
+                                      field: 'cases.case_id',
                                       value: c.case_id,
                                     },
                                     {
-                                      field: "files.data_category",
+                                      field: 'files.data_category',
                                       value: DATA_CATEGORIES[k].full,
                                     },
                                   ],
@@ -375,7 +368,7 @@ const Component = compose(
                             >
                               {dataCategorySummary[DATA_CATEGORIES[k].full]}
                             </RepositoryFilesLink>
-                          : "--",
+                          : '--',
                     ),
                   };
                 })

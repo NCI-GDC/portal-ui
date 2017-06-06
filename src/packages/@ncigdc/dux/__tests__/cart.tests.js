@@ -1,5 +1,5 @@
 /* @flow */
-import { range } from "lodash";
+import { range } from 'lodash';
 
 import {
   addAllFilesInCart,
@@ -11,14 +11,14 @@ import {
   CART_FULL,
   reducer,
   MAX_CART_SIZE,
-} from "../cart";
+} from '../cart';
 
-const fileA = { file_id: "a", access: "open", file_size: 0, projects: [] };
-const fileB = { file_id: "b", access: "open", file_size: 0, projects: [] };
+const fileA = { file_id: 'a', access: 'open', file_size: 0, projects: [] };
+const fileB = { file_id: 'b', access: 'open', file_size: 0, projects: [] };
 
-describe("action creators", () => {
+describe('action creators', () => {
   const storeInitalState = { cart: { files: [] } };
-  it("should add one file", () => {
+  it('should add one file', () => {
     const getState = () => storeInitalState;
     const dispatch = jest.fn();
     addAllFilesInCart(fileA)(dispatch, getState);
@@ -28,7 +28,7 @@ describe("action creators", () => {
     });
   });
 
-  it("should add an array of files", () => {
+  it('should add an array of files', () => {
     const getState = () => storeInitalState;
     const dispatch = jest.fn();
     addAllFilesInCart([fileA, fileB])(dispatch, getState);
@@ -38,7 +38,7 @@ describe("action creators", () => {
     });
   });
 
-  it("should allow up to MAX_CART_SIZE files to be added", () => {
+  it('should allow up to MAX_CART_SIZE files to be added', () => {
     const getState = () => ({
       cart: {
         files: range(0, MAX_CART_SIZE - 1).map(id => ({
@@ -56,7 +56,7 @@ describe("action creators", () => {
     });
   });
 
-  it("should not allow more than MAX_CART_SIZE files to be added", () => {
+  it('should not allow more than MAX_CART_SIZE files to be added', () => {
     const getState = () => ({
       cart: {
         files: range(0, MAX_CART_SIZE).map(id => ({ ...fileA, file_id: id })),
@@ -68,14 +68,14 @@ describe("action creators", () => {
     expect(dispatch).toHaveBeenCalledWith({ type: CART_FULL });
   });
 
-  it("should remove all files in cart", () => {
+  it('should remove all files in cart', () => {
     const getState = () => ({ cart: { files: [fileA, fileB] } });
     const dispatch = jest.fn();
     removeAllInCart()(dispatch, getState);
     expect(dispatch).toHaveBeenCalledWith({ type: CLEAR_CART, payload: [] });
   });
 
-  it("should allow a file to be toggled in", () => {
+  it('should allow a file to be toggled in', () => {
     const getState = () => ({ cart: { files: [] } });
     const dispatch = jest.fn();
     toggleFilesInCart(fileA)(dispatch, getState);
@@ -85,14 +85,14 @@ describe("action creators", () => {
     });
   });
 
-  it("should allow a file to be toggled out", () => {
+  it('should allow a file to be toggled out', () => {
     const getState = () => ({ cart: { files: [fileA] } });
     const dispatch = jest.fn();
     toggleFilesInCart(fileA)(dispatch, getState);
     expect(dispatch).toHaveBeenCalledWith({ type: UPDATE_CART, payload: [] });
   });
 
-  it("should allow up to max to be toggled in", () => {
+  it('should allow up to max to be toggled in', () => {
     const getState = () => ({
       cart: {
         files: range(0, MAX_CART_SIZE - 1).map(id => ({
@@ -109,7 +109,7 @@ describe("action creators", () => {
     });
   });
 
-  it("should not allow more files than max to be toggled in", () => {
+  it('should not allow more files than max to be toggled in', () => {
     const getState = () => ({
       cart: {
         files: range(0, MAX_CART_SIZE).map(id => ({ ...fileA, file_id: id })),
@@ -121,12 +121,12 @@ describe("action creators", () => {
   });
 });
 
-describe("reducer", () => {
+describe('reducer', () => {
   const initalState = { files: [] };
-  it("inital state should have 0 files", () => {
+  it('inital state should have 0 files', () => {
     expect(reducer(undefined, {})).toEqual(initalState);
   });
-  it("should handle ADD_TO_CART", () => {
+  it('should handle ADD_TO_CART', () => {
     expect(
       reducer(initalState, {
         type: ADD_TO_CART,
@@ -134,7 +134,7 @@ describe("reducer", () => {
       }),
     ).toEqual({ files: [fileA] });
   });
-  it("should handle UPDATE_CART", () => {
+  it('should handle UPDATE_CART', () => {
     expect(
       reducer(
         { files: [fileA] },
@@ -145,7 +145,7 @@ describe("reducer", () => {
       ),
     ).toEqual({ files: [fileB] });
   });
-  it("should handle CLEAR_CART", () => {
+  it('should handle CLEAR_CART', () => {
     expect(
       reducer(
         { files: [fileA] },

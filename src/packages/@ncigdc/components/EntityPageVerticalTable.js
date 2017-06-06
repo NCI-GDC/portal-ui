@@ -1,11 +1,11 @@
 // @flow
 
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import { Column } from "@ncigdc/uikit/Flex";
-import { withTheme } from "@ncigdc/theme";
-import Table, { Tr, Td, Th, CollapsibleTd } from "@ncigdc/uikit/Table";
+import { Column } from '@ncigdc/uikit/Flex';
+import { withTheme } from '@ncigdc/theme';
+import Table, { Tr, Td, Th, CollapsibleTd } from '@ncigdc/uikit/Table';
 
 // th are vertical
 const EntityPageVerticalTable = ({
@@ -19,17 +19,17 @@ const EntityPageVerticalTable = ({
 }) => {
   const styles = {
     table: {
-      borderCollapse: "collapse",
+      borderCollapse: 'collapse',
       borderSpacing: 0,
-      overflow: "auto",
-      backgroundColor: "#fff",
+      overflow: 'auto',
+      backgroundColor: '#fff',
     },
     tr: {
-      border: "none !important",
+      border: 'none !important',
       color: theme.greyScale2,
     },
     td: {
-      border: "none !important",
+      border: 'none !important',
       color: theme.greyScale2,
     },
   };
@@ -38,8 +38,8 @@ const EntityPageVerticalTable = ({
       id={id}
       className={className}
       style={{
-        flexWrap: "wrap",
-        overflow: "auto",
+        flexWrap: 'wrap',
+        overflow: 'auto',
         ...style,
       }}
     >
@@ -47,14 +47,14 @@ const EntityPageVerticalTable = ({
         <h1
           style={{
             color: theme.greyScale7,
-            width: "100%",
-            fontSize: "2rem",
-            lineHeight: "1.4em",
-            fontWeight: "normal",
+            width: '100%',
+            fontSize: '2rem',
+            lineHeight: '1.4em',
+            fontWeight: 'normal',
             marginTop: 0,
             marginBottom: 0,
-            padding: "1rem",
-            backgroundColor: "#fff",
+            padding: '1rem',
+            backgroundColor: '#fff',
             ...titleStyle,
           }}
         >
@@ -69,9 +69,9 @@ const EntityPageVerticalTable = ({
                 <Th
                   style={{
                     ...styles.tr,
-                    backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff",
-                    textTransform: "capitalize",
-                    verticalAlign: "top",
+                    backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
+                    textTransform: 'capitalize',
+                    verticalAlign: 'top',
                   }}
                 >
                   {d.th}
@@ -80,7 +80,7 @@ const EntityPageVerticalTable = ({
                   <CollapsibleTd
                     style={{
                       ...styles.td,
-                      backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff",
+                      backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
                       ...d.style,
                     }}
                     text={d.collapsibleTd}
@@ -89,7 +89,7 @@ const EntityPageVerticalTable = ({
                   <Td
                     style={{
                       ...styles.td,
-                      backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff",
+                      backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
                       ...d.style,
                     }}
                   >
@@ -100,7 +100,7 @@ const EntityPageVerticalTable = ({
                   <Td
                     style={{
                       ...styles.td,
-                      backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff",
+                      backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
                       ...d.style,
                     }}
                   >

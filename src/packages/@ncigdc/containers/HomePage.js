@@ -1,10 +1,10 @@
 /* @flow */
 
-import React from "react";
-import { createFragmentContainer, graphql } from "react-relay/compat";
+import React from 'react';
+import { createFragmentContainer, graphql } from 'react-relay/compat';
 
-import Home from "@ncigdc/components/Home";
-import type { TBucket } from "@ncigdc/components/Aggregations/types";
+import Home from '@ncigdc/components/Home';
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
 export type TProps = {
   viewer: {

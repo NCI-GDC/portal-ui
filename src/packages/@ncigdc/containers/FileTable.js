@@ -1,28 +1,28 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
+import React from 'react';
+import Relay from 'react-relay/classic';
 
-import Pagination from "@ncigdc/components/Pagination";
-import Showing from "@ncigdc/components/Pagination/Showing";
-import AddToCartButtonAll from "@ncigdc/components/AddToCartButtonAll";
-import { Row } from "@ncigdc/uikit/Flex";
-import TableActions from "@ncigdc/components/TableActions";
+import Pagination from '@ncigdc/components/Pagination';
+import Showing from '@ncigdc/components/Pagination/Showing';
+import AddToCartButtonAll from '@ncigdc/components/AddToCartButtonAll';
+import { Row } from '@ncigdc/uikit/Flex';
+import TableActions from '@ncigdc/components/TableActions';
 
-import { Tr, Th } from "@ncigdc/uikit/Table";
+import { Tr, Th } from '@ncigdc/uikit/Table';
 
-import FileTr from "./FileTr";
+import FileTr from './FileTr';
 
-import type { TTableProps } from "./types";
+import type { TTableProps } from './types';
 
 const styles = {
   table: {
-    width: "100%",
-    borderCollapse: "collapse",
+    width: '100%',
+    borderCollapse: 'collapse',
     borderSpacing: 0,
   },
   right: {
-    textAlign: "right",
+    textAlign: 'right',
   },
 };
 
@@ -33,22 +33,22 @@ export const FileTableComponent = ({
   canAddToCart = true,
   tableHeader,
 }: TTableProps) => {
-  const prefix = "files";
+  const prefix = 'files';
 
   return (
     <div>
       {tableHeader &&
         <h3
           className="panel-title"
-          style={{ padding: "1rem", marginTop: "-6rem" }}
+          style={{ padding: '1rem', marginTop: '-6rem' }}
         >
           {tableHeader}
         </h3>}
       <Row
         style={{
-          backgroundColor: "white",
-          padding: "1rem",
-          justifyContent: "space-between",
+          backgroundColor: 'white',
+          padding: '1rem',
+          justifyContent: 'space-between',
         }}
       >
         <Showing
@@ -64,54 +64,54 @@ export const FileTableComponent = ({
           endpoint="files"
           downloadable={downloadable}
           downloadFields={[
-            "file_id",
-            "file_name",
-            "cases.project.project_id",
-            "cases.case_id",
-            "access",
-            "data_category",
-            "data_format",
-            "file_size",
+            'file_id',
+            'file_name',
+            'cases.project.project_id',
+            'cases.case_id',
+            'access',
+            'data_category',
+            'data_format',
+            'file_size',
           ]}
           sortOptions={[
             {
-              id: "file_id",
-              name: "File UUID",
+              id: 'file_id',
+              name: 'File UUID',
             },
             {
-              id: "submitter_id",
-              name: "File Submitter ID",
+              id: 'submitter_id',
+              name: 'File Submitter ID',
             },
             {
-              id: "access",
-              name: "Access",
+              id: 'access',
+              name: 'Access',
             },
             {
-              id: "file_name",
-              name: "File Name",
+              id: 'file_name',
+              name: 'File Name',
             },
             {
-              id: "cases.project.project_id",
-              name: "Project",
+              id: 'cases.project.project_id',
+              name: 'Project',
             },
             {
-              id: "data_category",
-              name: "Data Category",
+              id: 'data_category',
+              name: 'Data Category',
             },
             {
-              id: "data_format",
-              name: "Data Format",
+              id: 'data_format',
+              name: 'Data Format',
             },
             {
-              id: "file_size",
-              name: "Size",
+              id: 'file_size',
+              name: 'Size',
             },
           ]}
           tsvSelector="#repository-files-table"
           tsvFilename="repository-files-table.tsv"
         />
       </Row>
-      <div style={{ overflowX: "auto" }}>
+      <div style={{ overflowX: 'auto' }}>
         <table style={styles.table} id="repository-files-table">
           <thead>
             <Tr>

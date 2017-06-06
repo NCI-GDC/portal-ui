@@ -1,9 +1,9 @@
 /* @flow */
-import { parse } from "query-string";
+import { parse } from 'query-string';
 
-import type { TPrepareNodeParams } from "./types";
+import type { TPrepareNodeParams } from './types';
 
-import { parseFilterParam } from "../uri";
+import { parseFilterParam } from '../uri';
 
 export const prepareNodeParams: TPrepareNodeParams = type => ({
   location: { search },

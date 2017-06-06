@@ -1,20 +1,20 @@
 // @flow
-import React from "react";
-import { connect } from "react-redux";
-import { compose, withState, pure } from "recompose";
-import ArrangeIcon from "react-icons/lib/fa/bars";
+import React from 'react';
+import { connect } from 'react-redux';
+import { compose, withState, pure } from 'recompose';
+import ArrangeIcon from 'react-icons/lib/fa/bars';
 
-import { Row } from "@ncigdc/uikit/Flex";
-import SortableItem from "@ncigdc/uikit/SortableItem";
-import tableModels from "@ncigdc/tableModels";
-import { toggleColumn, setColumns } from "@ncigdc/dux/tableColumns";
-import styled from "@ncigdc/theme/styled";
+import { Row } from '@ncigdc/uikit/Flex';
+import SortableItem from '@ncigdc/uikit/SortableItem';
+import tableModels from '@ncigdc/tableModels';
+import { toggleColumn, setColumns } from '@ncigdc/dux/tableColumns';
+import styled from '@ncigdc/theme/styled';
 
 const SortRow = styled(Row, {
-  lineHeight: "1.5",
-  alignItems: "center",
-  padding: "0.3rem 0.6rem",
-  ":hover": {
+  lineHeight: '1.5',
+  alignItems: 'center',
+  padding: '0.3rem 0.6rem',
+  ':hover': {
     backgroundColor: ({ theme }) => theme.greyScale6,
   },
 });
@@ -23,7 +23,7 @@ const ArrangeColumns = compose(
   connect((state, props) => ({
     tableColumns: state.tableColumns[props.entityType],
   })),
-  withState("state", "setState", ({ entityType }) => ({
+  withState('state', 'setState', ({ entityType }) => ({
     draggingIndex: null,
     columns: tableModels[entityType],
   })),
@@ -69,7 +69,7 @@ const ArrangeColumns = compose(
         >
           <SortRow>
             <Row
-              style={{ width: "100%", cursor: "pointer" }}
+              style={{ width: '100%', cursor: 'pointer' }}
               onClick={() => {
                 if (column.subHeadingIds) {
                   column.subHeadingIds.forEach(id =>
@@ -103,13 +103,13 @@ const ArrangeColumns = compose(
             >
               <input
                 readOnly
-                style={{ pointerEvents: "none" }}
+                style={{ pointerEvents: 'none' }}
                 type="checkbox"
                 checked={tableColumns.includes(column.id)}
               />
-              <span style={{ marginLeft: "0.3rem" }}>{column.name}</span>
+              <span style={{ marginLeft: '0.3rem' }}>{column.name}</span>
             </Row>
-            <ArrangeIcon style={{ marginLeft: "auto", cursor: "row-resize" }} />
+            <ArrangeIcon style={{ marginLeft: 'auto', cursor: 'row-resize' }} />
           </SortRow>
         </SortableItem>
       ))}

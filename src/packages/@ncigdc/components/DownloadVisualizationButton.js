@@ -1,28 +1,28 @@
 // @flow
 
-import React from "react";
-import downloadSvg from "download-svg";
-import { compose } from "recompose";
+import React from 'react';
+import downloadSvg from 'download-svg';
+import { compose } from 'recompose';
 
-import saveFile from "@ncigdc/utils/filesaver";
-import toTsvString, { mapArrayToTsvString } from "@ncigdc/utils/toTsvString";
-import DropDown from "@ncigdc/uikit/Dropdown";
-import DropdownItem from "@ncigdc/uikit/DropdownItem";
-import Button from "@ncigdc/uikit/Button";
-import { visualizingButton } from "@ncigdc/theme/mixins";
+import saveFile from '@ncigdc/utils/filesaver';
+import toTsvString, { mapArrayToTsvString } from '@ncigdc/utils/toTsvString';
+import DropDown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import Button from '@ncigdc/uikit/Button';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 
-import { withTheme } from "@ncigdc/theme";
+import { withTheme } from '@ncigdc/theme';
 
-import Download from "@ncigdc/theme/icons/Download";
-import Hidden from "@ncigdc/components/Hidden";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import supportsSvgToPng from "@ncigdc/utils/supportsSvgToPng";
+import Download from '@ncigdc/theme/icons/Download';
+import Hidden from '@ncigdc/components/Hidden';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import supportsSvgToPng from '@ncigdc/utils/supportsSvgToPng';
 
 function getSelector(el?: string | Element): ?Element {
   switch (typeof el) {
-    case "string":
+    case 'string':
       return document.querySelector(el);
-    case "function":
+    case 'function':
       return el();
     default:
       return el;
@@ -31,9 +31,9 @@ function getSelector(el?: string | Element): ?Element {
 
 const styles = {
   row: theme => ({
-    padding: "0.6rem 1rem",
-    cursor: "pointer",
-    ":hover": {
+    padding: '0.6rem 1rem',
+    cursor: 'pointer',
+    ':hover': {
       backgroundColor: theme.greyScale6,
     },
   }),
@@ -56,7 +56,7 @@ const enhance = compose(withTheme);
 const DownloadVisualizationButton = ({
   svg,
   data,
-  slug = "export",
+  slug = 'export',
   stylePrefix,
   noText,
   tsvData,
@@ -70,7 +70,7 @@ const DownloadVisualizationButton = ({
         <Button leftIcon={!noText && <Download />} style={visualizingButton}>
           {noText
             ? <span><Download /><Hidden>Download</Hidden></span>
-            : "Download"}
+            : 'Download'}
         </Button>
       </Tooltip>
     }
@@ -112,7 +112,7 @@ const DownloadVisualizationButton = ({
         }}
       >
         {supportsSvgToPng()
-          ? "PNG"
+          ? 'PNG'
           : <Tooltip
               Component={`
                   Download as PNG is currently unavaialable in your browser.
@@ -127,7 +127,7 @@ const DownloadVisualizationButton = ({
         key="JSON"
         style={styles.row(theme)}
         onClick={() => {
-          saveFile(JSON.stringify(data, null, 2), "JSON", `${slug}.json`);
+          saveFile(JSON.stringify(data, null, 2), 'JSON', `${slug}.json`);
         }}
       >
         JSON
@@ -142,7 +142,7 @@ const DownloadVisualizationButton = ({
               tsvData[0] && tsvData[0].forEach
                 ? mapArrayToTsvString(tsvData)
                 : toTsvString(tsvData),
-              "TSV",
+              'TSV',
               `${slug}.tsv`,
             );
           }

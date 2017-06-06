@@ -1,12 +1,12 @@
 // @flow
-import React from "react";
-import memoize from "memoizee";
-import queryString from "query-string";
-import _ from "lodash";
+import React from 'react';
+import memoize from 'memoizee';
+import queryString from 'query-string';
+import _ from 'lodash';
 
-import { replaceFilters } from "@ncigdc/utils/filters";
-import styled from "@ncigdc/theme/styled";
-import { fetchApi } from "@ncigdc/utils/ajax/index";
+import { replaceFilters } from '@ncigdc/utils/filters';
+import styled from '@ncigdc/theme/styled';
+import { fetchApi } from '@ncigdc/utils/ajax/index';
 
 type TPropsDefault = { slug?: string, currentFilters?: Object, size?: number };
 type TPropsMulti = {
@@ -20,7 +20,7 @@ type TPropsMulti = {
 const MINIMUM_CASES = 10;
 
 const Symbol = styled.span({
-  fontSize: "1.2em",
+  fontSize: '1.2em',
 });
 
 export const enoughData = (data: Object) =>
@@ -56,7 +56,7 @@ export const getDefaultCurve = memoize(
         ]
       : [
           {
-            key: `${slug || ""}-not-enough-data`,
+            key: `${slug || ''}-not-enough-data`,
             value: <span>Not enough data{slug && ` on ${slug}`}</span>,
           },
         ];
@@ -85,13 +85,13 @@ export const getSurvivalCurves = memoize(
     const filters = [
       replaceFilters(
         {
-          op: "and",
-          content: [{ op: "excludeifany", content: { field, value } }],
+          op: 'and',
+          content: [{ op: 'excludeifany', content: { field, value } }],
         },
         currentFilters,
       ),
       replaceFilters(
-        { op: "and", content: [{ op: "=", content: { field, value } }] },
+        { op: 'and', content: [{ op: '=', content: { field, value } }] },
         currentFilters,
       ),
     ];
@@ -119,14 +119,14 @@ export const getSurvivalCurves = memoize(
                 <span>
                   S
                   <sub>1</sub>
-                  {" "}
+                  {' '}
                   (N =
-                  {" "}
+                  {' '}
                   {rawData.results[0].donors.length.toLocaleString()}
                   ) -
-                  {" "}
+                  {' '}
                   <Symbol>{slug || value}</Symbol>
-                  {" "}
+                  {' '}
                   Not Mutated Cases
                 </span>
               ),
@@ -137,14 +137,14 @@ export const getSurvivalCurves = memoize(
                 <span>
                   S
                   <sub>2</sub>
-                  {" "}
+                  {' '}
                   (N =
-                  {" "}
+                  {' '}
                   {rawData.results[1].donors.length.toLocaleString()}
                   ) -
-                  {" "}
+                  {' '}
                   <Symbol>{slug || value}</Symbol>
-                  {" "}
+                  {' '}
                   Mutated Cases
                 </span>
               ),

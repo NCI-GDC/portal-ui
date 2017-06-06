@@ -2,50 +2,50 @@
 /* eslint
 no-restricted-globals: 0
 */
-import React from "react";
-import { lifecycle, compose, withState, withProps, mapProps } from "recompose";
-import OncoGrid from "oncogrid";
-import { uniqueId, get, mapKeys } from "lodash";
-import { connect } from "react-redux";
-import withSize from "@ncigdc/utils/withSize";
-import FullScreenIcon from "react-icons/lib/md/fullscreen";
-import JSURL from "jsurl";
+import React from 'react';
+import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
+import OncoGrid from 'oncogrid';
+import { uniqueId, get, mapKeys } from 'lodash';
+import { connect } from 'react-redux';
+import withSize from '@ncigdc/utils/withSize';
+import FullScreenIcon from 'react-icons/lib/md/fullscreen';
+import JSURL from 'jsurl';
 
 import {
   exitFullScreen,
   enterFullScreen,
   isFullScreen,
-} from "@ncigdc/utils/fullscreen";
+} from '@ncigdc/utils/fullscreen';
 import {
   getFilterValue,
   makeFilter,
   replaceFilters,
-} from "@ncigdc/utils/filters";
+} from '@ncigdc/utils/filters';
 import {
   consequenceTypes,
   colorMap,
-} from "@ncigdc/utils/filters/prepared/significantConsequences";
-import withRouter from "@ncigdc/utils/withRouter";
+} from '@ncigdc/utils/filters/prepared/significantConsequences';
+import withRouter from '@ncigdc/utils/withRouter';
 
-import Loader from "@ncigdc/uikit/Loaders/Loader";
-import Button from "@ncigdc/uikit/Button";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
+import Loader from '@ncigdc/uikit/Loaders/Loader';
+import Button from '@ncigdc/uikit/Button';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-import { StepLegend, SwatchLegend } from "@ncigdc/components/Legends";
-import SelectModal from "@ncigdc/components/Modals/SelectModal";
+import { StepLegend, SwatchLegend } from '@ncigdc/components/Legends';
+import SelectModal from '@ncigdc/components/Modals/SelectModal';
 import DownloadVisualizationButton
-  from "@ncigdc/components/DownloadVisualizationButton";
-import Hidden from "@ncigdc/components/Hidden";
+  from '@ncigdc/components/DownloadVisualizationButton';
+import Hidden from '@ncigdc/components/Hidden';
 
-import { visualizingButton } from "@ncigdc/theme/mixins";
-import { setModal } from "@ncigdc/dux/modal";
-import wrapSvg from "@ncigdc/utils/wrapSvg";
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import { setModal } from '@ncigdc/dux/modal';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 
-import getQueries from "./getQueries";
-import oncoGridParams from "./oncoGridParams";
+import getQueries from './getQueries';
+import oncoGridParams from './oncoGridParams';
 
-import "./oncogrid.css";
+import './oncogrid.css';
 
 function refreshGridState({
   oncoGrid,
@@ -63,30 +63,30 @@ function refreshGridState({
   setCrosshairMode(oncoGrid.crosshairMode);
 }
 
-const GRID_CLASS = "oncogrid-wrapper";
+const GRID_CLASS = 'oncogrid-wrapper';
 const MAX_CASES = 1000;
 const MAX_GENES = 50;
 
 const styles = {
   container: {
-    overflow: "visible",
-    padding: "0 30px",
+    overflow: 'visible',
+    padding: '0 30px',
   },
   fullscreen: {
-    maxWidth: "100%",
-    width: "100%",
+    maxWidth: '100%',
+    width: '100%',
     marginLeft: 0,
-    padding: "100px 100px 0",
-    overflow: "scroll",
-    height: "100%",
+    padding: '100px 100px 0',
+    overflow: 'scroll',
+    height: '100%',
   },
   button: {
     ...visualizingButton,
     marginBottom: 12,
   },
   buttonActive: {
-    backgroundColor: "#e6e6e6",
-    borderColor: "#adadad",
+    backgroundColor: '#e6e6e6',
+    borderColor: '#adadad',
   },
 };
 
@@ -115,19 +115,19 @@ type TProps = {
 
 const OncoGridWrapper = compose(
   withRouter,
-  withState("oncoGrid", "setOncoGrid", {}),
-  withState("oncoGridData", "setOncoGridData", null),
-  withState("crosshairMode", "setCrosshairMode", false),
-  withState("showGridLines", "setShowGridLines", true),
-  withState("heatMapMode", "setHeatMapMode", false),
-  withState("isLoading", "setIsLoading", true),
-  withState("caseCount", "setCaseCount", 0),
+  withState('oncoGrid', 'setOncoGrid', {}),
+  withState('oncoGridData', 'setOncoGridData', null),
+  withState('crosshairMode', 'setCrosshairMode', false),
+  withState('showGridLines', 'setShowGridLines', true),
+  withState('heatMapMode', 'setHeatMapMode', false),
+  withState('isLoading', 'setIsLoading', true),
+  withState('caseCount', 'setCaseCount', 0),
   withState(
-    "uniqueGridClass",
-    "setUniqueGridClass",
+    'uniqueGridClass',
+    'setUniqueGridClass',
     () => GRID_CLASS + uniqueId(),
   ),
-  withState("trackLegends", "setTrackLegends", []),
+  withState('trackLegends', 'setTrackLegends', []),
   mapProps(({ title, impacts, ...props }) => {
     const cases = props.oncoGridData
       ? props.oncoGridData.cases.length
@@ -138,15 +138,15 @@ const OncoGridWrapper = compose(
 
     const currentImpacts = getFilterValue({
       currentFilters: props.currentFilters.content,
-      dotField: "ssms.consequence.transcript.annotation.impact",
+      dotField: 'ssms.consequence.transcript.annotation.impact',
     });
 
     const currentConsequenceTypes = get(
       getFilterValue({
         currentFilters: props.currentFilters.content,
-        dotField: "ssms.consequence.transcript.consequence_type",
+        dotField: 'ssms.consequence.transcript.consequence_type',
       }),
-      "content.value",
+      'content.value',
       consequenceTypes,
     );
     const filteredConsequenceTypes = consequenceTypes.filter((c: any) =>
@@ -155,12 +155,12 @@ const OncoGridWrapper = compose(
 
     const currentFilters = replaceFilters(
       {
-        op: "and",
+        op: 'and',
         content: [
           {
-            op: "in",
+            op: 'in',
             content: {
-              field: "ssms.consequence.transcript.consequence_type",
+              field: 'ssms.consequence.transcript.consequence_type',
               value: filteredConsequenceTypes,
             },
           },
@@ -172,7 +172,7 @@ const OncoGridWrapper = compose(
     return {
       ...props,
       title: title ||
-        `${cases}${cases < props.caseCount ? " Most" : ""} Mutated Cases and Top ${genes} Mutated Genes`,
+        `${cases}${cases < props.caseCount ? ' Most' : ''} Mutated Cases and Top ${genes} Mutated Genes`,
       impacts: impacts ||
       (currentImpacts && currentImpacts.content.value) || [],
       filteredConsequenceTypes,
@@ -234,35 +234,35 @@ const OncoGridWrapper = compose(
         donorClick: ({ id }: { id: string }) => push(`/cases/${id}`),
         donorHistogramClick: (data: { id: string }) => {
           push({
-            pathname: "/exploration",
+            pathname: '/exploration',
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: "cases.case_id", value: data.id }], false),
+                makeFilter([{ field: 'cases.case_id', value: data.id }], false),
               ),
             },
           });
         },
         gridClick: (data: { id: string }) => {
           push({
-            pathname: "/exploration",
+            pathname: '/exploration',
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: "ssms.ssm_id", value: data.id }], false),
+                makeFilter([{ field: 'ssms.ssm_id', value: data.id }], false),
               ),
-              facetTab: "mutations",
-              searchTableTab: "mutations",
+              facetTab: 'mutations',
+              searchTableTab: 'mutations',
             },
           });
         },
         geneHistogramClick: (data: { id: string }) => {
           push({
-            pathname: "/exploration",
+            pathname: '/exploration',
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: "genes.gene_id", value: data.id }], false),
+                makeFilter([{ field: 'genes.gene_id', value: data.id }], false),
               ),
-              facetTab: "genes",
-              searchTableTab: "genes",
+              facetTab: 'genes',
+              searchTableTab: 'genes',
             },
           });
         },
@@ -385,34 +385,34 @@ const OncoGridWrapper = compose(
           containerRefs[uniqueGridClass] = r;
         }} // eslint-disable-line fp/no-mutation
       >
-        <h4 style={{ textAlign: "center" }}>{title}</h4>
+        <h4 style={{ textAlign: 'center' }}>{title}</h4>
         {oncoGridData &&
           !isLoading &&
-          <Row style={{ marginLeft: 0, minHeight: "70px" }}>
+          <Row style={{ marginLeft: 0, minHeight: '70px' }}>
             <div style={{ flexGrow: 1 }} className="oncogrid-legend">
               {heatMapMode
                 ? <StepLegend rightLabel="More Mutations" />
                 : <SwatchLegend
                     colorMap={mapKeys(colorMap, (val, key) =>
-                      key.replace("_variant", ""),
+                      key.replace('_variant', ''),
                     )}
                   />}
             </div>
             <Row
               style={{
-                justifyContent: "flex-end",
-                marginRight: "12px",
-                flexWrap: "wrap",
+                justifyContent: 'flex-end',
+                marginRight: '12px',
+                flexWrap: 'wrap',
               }}
               spacing="1rem"
             >
               <DownloadVisualizationButton
                 svg={() => {
                   const elementsAfter = trackLegends.map(html => {
-                    const div = document.createElement("div");
+                    const div = document.createElement('div');
                     div.innerHTML = html; // eslint-disable-line fp/no-mutation
-                    div.style.position = "absolute"; // eslint-disable-line fp/no-mutation
-                    div.style.left = "-99999px"; // eslint-disable-line fp/no-mutation
+                    div.style.position = 'absolute'; // eslint-disable-line fp/no-mutation
+                    div.style.left = '-99999px'; // eslint-disable-line fp/no-mutation
                     document.body.appendChild(div);
                     return div;
                   });
@@ -425,13 +425,13 @@ const OncoGridWrapper = compose(
                       top: {
                         elements: [
                           containerRefs[uniqueGridClass].querySelector(
-                            ".oncogrid-legend",
+                            '.oncogrid-legend',
                           ),
                         ],
                       },
                       bottom: {
                         elements: elementsAfter,
-                        styles: "display: inline-block; width: 200px; vertical-align: top; ",
+                        styles: 'display: inline-block; width: 200px; vertical-align: top; ',
                       },
                     },
                   });
@@ -539,10 +539,10 @@ const OncoGridWrapper = compose(
               {crosshairMode &&
                 <div
                   style={{
-                    fontSize: "1.1rem",
-                    verticalAlign: "top",
-                    width: "100%",
-                    textAlign: "right",
+                    fontSize: '1.1rem',
+                    verticalAlign: 'top',
+                    width: '100%',
+                    textAlign: 'right',
                   }}
                 >
                   Click and drag to select a region on the OncoGrid to zoom in.
@@ -551,7 +551,7 @@ const OncoGridWrapper = compose(
           </Row>}
         {!oncoGridData &&
           !isLoading &&
-          <Column style={{ alignItems: "center", padding: "2rem 0" }}>
+          <Column style={{ alignItems: 'center', padding: '2rem 0' }}>
             <div>No result found.</div>
           </Column>}
 
@@ -561,8 +561,8 @@ const OncoGridWrapper = compose(
             wrapperRefs[uniqueGridClass] = n;
           }} // eslint-disable-line fp/no-mutation
           style={{
-            cursor: crosshairMode ? "crosshair" : "pointer",
-            visibility: isLoading ? "hidden" : "visible",
+            cursor: crosshairMode ? 'crosshair' : 'pointer',
+            visibility: isLoading ? 'hidden' : 'visible',
           }}
         />
       </div>

@@ -1,24 +1,24 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { compose } from "recompose";
-import { RepositoryFilesLink } from "@ncigdc/components/Links/RepositoryLink";
-import CaseLink from "@ncigdc/components/Links/CaseLink";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
-import ProjectLink from "@ncigdc/components/Links/ProjectLink";
-import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
-import { findDataCategory, sumDataCategories } from "@ncigdc/utils/data";
-import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
-import withFilters from "@ncigdc/utils/withFilters";
-import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { compose } from 'recompose';
+import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
+import CaseLink from '@ncigdc/components/Links/CaseLink';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
+import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
+import { findDataCategory, sumDataCategories } from '@ncigdc/utils/data';
+import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import withFilters from '@ncigdc/utils/withFilters';
+import MutationsCount from '@ncigdc/containers/MutationsCount';
+import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 
-import type { TCategory } from "@ncigdc/utils/data/types";
+import type { TCategory } from '@ncigdc/utils/data/types';
 
-import { Tr, Td, TdNum } from "@ncigdc/uikit/Table";
+import { Tr, Td, TdNum } from '@ncigdc/uikit/Table';
 
-import { withTheme } from "@ncigdc/theme";
-import MutationsCount from "@ncigdc/components/MutationsCount";
+import { withTheme } from '@ncigdc/theme';
 
 export type TProps = {|
   index: number,
@@ -62,7 +62,7 @@ export const CaseTrComponent = compose(
       <RepositoryFilesLink
         query={{
           filters: makeFilter(
-            [{ field: "cases.case_id", value: [node.case_id] }, ...fields],
+            [{ field: 'cases.case_id', value: [node.case_id] }, ...fields],
             false,
           ),
         }}
@@ -74,11 +74,11 @@ export const CaseTrComponent = compose(
     return (
       <Tr
         style={{
-          backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff",
+          backgroundColor: index % 2 === 0 ? theme.tableStripe : '#fff',
         }}
       >
         <Td>
-          <CaseLink uuid={node.case_id} merge whitelist={["filters"]}>
+          <CaseLink uuid={node.case_id} merge whitelist={['filters']}>
             {node.case_id.substr(0, 8)}
           </CaseLink>
           <ForTsvExport>
@@ -91,11 +91,11 @@ export const CaseTrComponent = compose(
             {node.project.project_id}
           </ProjectLink>
         </Td>
-        <Td>{node.primary_site || "--"}</Td>
-        <Td style={{ textTransform: "capitalize" }}>
-          {node.demographic.gender || "--"}
+        <Td>{node.primary_site || '--'}</Td>
+        <Td style={{ textTransform: 'capitalize' }}>
+          {node.demographic.gender || '--'}
         </Td>
-        <Td style={{ textAlign: "right" }}>
+        <Td style={{ textAlign: 'right' }}>
           {filesCount > 0
             ? <FilesLink>{filesCount.toLocaleString()}</FilesLink>
             : 0}
@@ -109,7 +109,7 @@ export const CaseTrComponent = compose(
               {count > 0
                 ? <FilesLink
                     fields={[
-                      { field: "files.data_category", value: category.full },
+                      { field: 'files.data_category', value: category.full },
                     ]}
                   >
                     {count.toLocaleString()}
@@ -118,27 +118,27 @@ export const CaseTrComponent = compose(
             </TdNum>
           );
         })}
-        <Td style={{ textAlign: "right" }}>
+        <Td style={{ textAlign: 'right' }}>
           <MutationsCount
             isLoading={ssmCountsLoading}
             ssmCount={ssmCount}
             filters={addInFilters(
               filters,
               makeFilter(
-                [{ field: "cases.case_id", value: [node.case_id] }],
+                [{ field: 'cases.case_id', value: [node.case_id] }],
                 false,
               ),
             )}
           />
         </Td>
-        <Td style={{ textAlign: "right" }}>
+        <Td style={{ textAlign: 'right' }}>
           {node.score > 0
             ? <ExploreLink
                 merge
                 query={{
-                  searchTableTab: "genes",
+                  searchTableTab: 'genes',
                   filters: makeFilter(
-                    [{ field: "cases.case_id", value: [node.case_id] }],
+                    [{ field: 'cases.case_id', value: [node.case_id] }],
                     false,
                   ),
                 }}

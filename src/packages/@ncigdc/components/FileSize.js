@@ -1,8 +1,8 @@
 /* @flow */
 /* eslint flowtype/no-weak-types:0 */
 
-import React from "react";
-import formatFileSize from "@ncigdc/utils/formatFileSize";
+import React from 'react';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
 
 type TProps = {|
   bytes: number,

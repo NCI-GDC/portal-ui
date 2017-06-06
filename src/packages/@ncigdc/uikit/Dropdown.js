@@ -1,10 +1,10 @@
 // @flow
 
-import React from "react";
-import DownCaretIcon from "react-icons/lib/fa/caret-down";
-import * as styles from "@ncigdc/theme/mixins";
-import withDropdown from "./withDropdown";
-import { Row, Column } from "./Flex";
+import React from 'react';
+import DownCaretIcon from 'react-icons/lib/fa/caret-down';
+import * as styles from '@ncigdc/theme/mixins';
+import withDropdown from './withDropdown';
+import { Row, Column } from './Flex';
 
 const Dropdown = ({
   style,
@@ -15,12 +15,12 @@ const Dropdown = ({
   mouseUpHandler,
   children,
   dropdownStyle = {},
-  dropdownClassName = "",
+  dropdownClassName = '',
   button = null,
   isDisabled = false,
   autoclose = true,
 }) => (
-  <span style={{ position: "relative", ...style }}>
+  <span style={{ position: 'relative', ...style }}>
     <span
       onMouseDown={mouseDownHandler}
       onMouseUp={mouseUpHandler}
@@ -29,7 +29,7 @@ const Dropdown = ({
       {button ||
         <Row style={styles.dropdownButton}>
           <span>{selected}</span>
-          <DownCaretIcon style={{ marginLeft: "auto" }} />
+          <DownCaretIcon style={{ marginLeft: 'auto' }} />
         </Row>}
     </span>
     {active &&

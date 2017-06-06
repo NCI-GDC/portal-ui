@@ -1,49 +1,49 @@
 // @flow
-import React from "react";
+import React from 'react';
 import {
   RepositoryCasesLink,
   RepositoryFilesLink,
-} from "@ncigdc/components/Links/RepositoryLink";
-import ProjectLink from "@ncigdc/components/Links/ProjectLink";
-import { Th, Td } from "@ncigdc/uikit/Table";
-import { makeFilter } from "@ncigdc/utils/filters";
-import formatFileSize from "@ncigdc/utils/formatFileSize";
-import withRouter from "@ncigdc/utils/withRouter";
-import styled from "@ncigdc/theme/styled";
-import { createDataCategoryColumns } from "./utils";
+} from '@ncigdc/components/Links/RepositoryLink';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
+import { Th, Td } from '@ncigdc/uikit/Table';
+import { makeFilter } from '@ncigdc/utils/filters';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
+import withRouter from '@ncigdc/utils/withRouter';
+import styled from '@ncigdc/theme/styled';
+import { createDataCategoryColumns } from './utils';
 
-const NumTh = styled(Th, { textAlign: "right" });
-const NumTd = styled(Td, { textAlign: "right" });
+const NumTh = styled(Th, { textAlign: 'right' });
+const NumTd = styled(Td, { textAlign: 'right' });
 
 type TLinkProps = { node: Object, fields?: Array<Object>, children?: mixed };
 type TLink = (props: TLinkProps) => any;
 
 const dataCategoryColumns = createDataCategoryColumns({
-  title: "Available Cases per Data Category",
-  countKey: "case_count",
+  title: 'Available Cases per Data Category',
+  countKey: 'case_count',
   Link: RepositoryCasesLink,
   getCellLinkFilters: node => [
     {
-      field: "cases.project.project_id",
+      field: 'cases.project.project_id',
       value: node.project_id,
     },
   ],
   getTotalLinkFilters: hits => [
     {
-      field: "cases.project.project_id",
+      field: 'cases.project.project_id',
       value: hits.edges.map(({ node: p }) => p.project_id),
     },
   ],
 });
 
 const CasesLink: TLink = ({ node, fields = [], children }) =>
-  children === "0"
+  children === '0'
     ? <span>0</span>
     : <RepositoryCasesLink
         query={{
           filters: makeFilter(
             [
-              { field: "cases.project.project_id", value: [node.project_id] },
+              { field: 'cases.project.project_id', value: [node.project_id] },
               ...fields,
             ],
             false,
@@ -57,7 +57,7 @@ const getProjectIdFilter = projects =>
   makeFilter(
     [
       {
-        field: "cases.project.project_id",
+        field: 'cases.project.project_id',
         value: projects.edges.map(({ node: p }) => p.project_id),
       },
     ],
@@ -66,8 +66,8 @@ const getProjectIdFilter = projects =>
 
 const projectsTableModel = [
   {
-    name: "Project ID",
-    id: "project_id",
+    name: 'Project ID',
+    id: 'project_id',
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Project ID</Th>,
@@ -80,36 +80,36 @@ const projectsTableModel = [
     ),
   },
   {
-    name: "Disease Type",
-    id: "disease_type",
+    name: 'Disease Type',
+    id: 'disease_type',
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Disease Type</Th>,
     td: ({ node }) => (
-      <Td key={node.disease_type} style={{ whiteSpace: "normal" }}>
+      <Td key={node.disease_type} style={{ whiteSpace: 'normal' }}>
         {node.disease_type}
       </Td>
     ),
   },
   {
-    name: "Primary Site",
-    id: "primary_site",
+    name: 'Primary Site',
+    id: 'primary_site',
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Primary Site</Th>,
     td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
   },
   {
-    name: "Program",
-    id: "program.name",
+    name: 'Program',
+    id: 'program.name',
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Program</Th>,
     td: ({ node }) => <Td key="program">{node.program.name}</Td>,
   },
   {
-    name: "Cases",
-    id: "summary.case_count",
+    name: 'Cases',
+    id: 'summary.case_count',
     sortable: true,
     downloadable: true,
     th: () => <NumTh rowSpan="2">Cases</NumTh>,
@@ -136,8 +136,8 @@ const projectsTableModel = [
   },
   ...dataCategoryColumns,
   {
-    name: "Files",
-    id: "summary.file_count",
+    name: 'Files',
+    id: 'summary.file_count',
     sortable: true,
     downloadable: true,
     th: () => <NumTh rowSpan="2">Files</NumTh>,
@@ -146,7 +146,7 @@ const projectsTableModel = [
         <RepositoryFilesLink
           query={{
             filters: makeFilter(
-              [{ field: "cases.project.project_id", value: node.project_id }],
+              [{ field: 'cases.project.project_id', value: node.project_id }],
               false,
             ),
           }}
@@ -170,8 +170,8 @@ const projectsTableModel = [
     )),
   },
   {
-    name: "File size",
-    id: "summary.file_size",
+    name: 'File size',
+    id: 'summary.file_size',
     sortable: true,
     hidden: true,
     downloadable: true,

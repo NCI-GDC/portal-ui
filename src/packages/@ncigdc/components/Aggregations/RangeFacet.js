@@ -1,19 +1,19 @@
 /* @flow */
 
-import React from "react";
-import { compose, withState, mapProps, pure, lifecycle } from "recompose";
+import React from 'react';
+import { compose, withState, mapProps, pure, lifecycle } from 'recompose';
 
-import styled from "@ncigdc/theme/styled";
-import withRouter from "@ncigdc/utils/withRouter";
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import Input from "@ncigdc/uikit/Form/Input";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import ExclamationTriangle from "@ncigdc/theme/icons/ExclamationTriangle";
+import styled from '@ncigdc/theme/styled';
+import withRouter from '@ncigdc/utils/withRouter';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import Input from '@ncigdc/uikit/Form/Input';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import ExclamationTriangle from '@ncigdc/theme/icons/ExclamationTriangle';
 
-import { Container, InputLabel, StyledInput, GoLink } from "./";
+import { Container, InputLabel, StyledInput, GoLink } from './';
 
 const getCurrentFromAndTo = ({ field, query }) => {
-  const dotField = field.replace(/__/g, ".");
+  const dotField = field.replace(/__/g, '.');
   const currentFilters = (query &&
     parseFilterParam((query || {}).filters, {}).content) || [];
   return currentFilters.reduce(
@@ -21,14 +21,14 @@ const getCurrentFromAndTo = ({ field, query }) => {
       c.content.field === dotField
         ? { ...acc, [c.op]: c.content.value[0] }
         : acc,
-    { ">=": undefined, "<=": undefined },
+    { '>=': undefined, '<=': undefined },
   );
 };
 
 const conversionFactor = 365.25;
 const warningDays = Math.floor(90 * conversionFactor);
 const convertMaxMin = ({ max, min, convertDays, selectedUnit, setState }) => {
-  if (convertDays && selectedUnit === "years") {
+  if (convertDays && selectedUnit === 'years') {
     setState(s => ({
       ...s,
       minDisplayed: Math.floor(min / conversionFactor),
@@ -40,29 +40,29 @@ const convertMaxMin = ({ max, min, convertDays, selectedUnit, setState }) => {
 };
 
 const inputChanged = ({ from, to, convertDays, selectedUnit, setState }) => {
-  if (!convertDays || selectedUnit === "days") {
+  if (!convertDays || selectedUnit === 'days') {
     setState(s => ({
       ...s,
       from: from ? from : undefined,
       to: to ? to : undefined,
-      fromDisplayed: from ? from : "",
-      toDisplayed: to ? to : "",
+      fromDisplayed: from ? from : '',
+      toDisplayed: to ? to : '',
     }));
-  } else if (selectedUnit === "years") {
+  } else if (selectedUnit === 'years') {
     setState(s => ({
       ...s,
       from: from ? Math.floor(from * conversionFactor) : undefined,
       to: to
         ? Math.floor(to * conversionFactor + conversionFactor - 1)
         : undefined,
-      fromDisplayed: from ? from : "",
-      toDisplayed: to ? to : "",
+      fromDisplayed: from ? from : '',
+      toDisplayed: to ? to : '',
     }));
   }
 };
 
 const convertInputs = ({ from, to, selectedUnit, setState }) => {
-  if (selectedUnit === "days") {
+  if (selectedUnit === 'days') {
     setState(s => ({
       ...s,
       from,
@@ -70,7 +70,7 @@ const convertInputs = ({ from, to, selectedUnit, setState }) => {
       fromDisplayed: from,
       toDisplayed: to,
     }));
-  } else if (selectedUnit === "years") {
+  } else if (selectedUnit === 'years') {
     setState(s => ({
       ...s,
       from,
@@ -82,23 +82,23 @@ const convertInputs = ({ from, to, selectedUnit, setState }) => {
 };
 
 const WarningRow = styled(Row, {
-  backgroundColor: "#fcf8e3",
-  borderColor: "#faebcc",
-  color: "#8a6d3b",
-  padding: "15px",
-  border: "1px solid transparent",
-  borderRadius: "4px",
+  backgroundColor: '#fcf8e3',
+  borderColor: '#faebcc',
+  color: '#8a6d3b',
+  padding: '15px',
+  border: '1px solid transparent',
+  borderRadius: '4px',
 });
 
 const enhance = compose(
-  withState("state", "setState", {
+  withState('state', 'setState', {
     from: undefined,
     to: undefined,
-    fromDisplayed: "",
-    toDisplayed: "",
+    fromDisplayed: '',
+    toDisplayed: '',
     maxDisplayed: 0,
     minDisplayed: 0,
-    selectedUnit: "years",
+    selectedUnit: 'years',
   }),
   withRouter,
   lifecycle({
@@ -113,7 +113,7 @@ const enhance = compose(
         setState,
       } = this.props;
       const thisFieldCurrent = getCurrentFromAndTo({ field, query });
-      const opToWord = { ">=": "from", "<=": "to" };
+      const opToWord = { '>=': 'from', '<=': 'to' };
       const newState = Object.keys(thisFieldCurrent)
         .filter(k => thisFieldCurrent[k])
         .reduce(
@@ -146,7 +146,7 @@ const enhance = compose(
         const { field, query } = nextProps;
         const { state: { selectedUnit }, setState, convertDays } = this.props;
         const thisFieldCurrent = getCurrentFromAndTo({ field, query });
-        const opToWord = { ">=": "from", "<=": "to" };
+        const opToWord = { '>=': 'from', '<=': 'to' };
         const newState = Object.keys(thisFieldCurrent)
           .filter(k => thisFieldCurrent[k])
           .reduce(
@@ -234,10 +234,10 @@ type TProps = {
 };
 
 const RangeFacet = (props: TProps) => {
-  const dotField = props.field.replace(/__/g, ".");
+  const dotField = props.field.replace(/__/g, '.');
   const innerContent = [
-    { op: ">=", value: props.state.from },
-    { op: "<=", value: props.state.to },
+    { op: '>=', value: props.state.from },
+    { op: '<=', value: props.state.to },
   ]
     .filter(v => v.value)
     .map(v => ({
@@ -250,7 +250,7 @@ const RangeFacet = (props: TProps) => {
   const query = {
     offset: 0,
     filters: {
-      op: "and",
+      op: 'and',
       content: innerContent,
     },
   };
@@ -264,29 +264,29 @@ const RangeFacet = (props: TProps) => {
           <form name={`${dotField}-radio`}>
             <label
               htmlFor={`${dotField}-years-radio`}
-              style={{ paddingRight: "10px" }}
+              style={{ paddingRight: '10px' }}
             >
               <input
                 type="radio"
                 value="years"
                 onChange={props.handleUnitChanged}
-                checked={props.state.selectedUnit === "years"}
+                checked={props.state.selectedUnit === 'years'}
                 id={`${dotField}-years-radio`}
-                style={{ marginRight: "5px" }}
+                style={{ marginRight: '5px' }}
               />
               Years
             </label>
             <label
               htmlFor={`${dotField}-days-radio`}
-              style={{ paddingRight: "10px" }}
+              style={{ paddingRight: '10px' }}
             >
               <input
                 type="radio"
                 value="days"
                 onChange={props.handleUnitChanged}
-                checked={props.state.selectedUnit === "days"}
+                checked={props.state.selectedUnit === 'days'}
                 id={`${dotField}-days-radio`}
-                style={{ marginRight: "5px" }}
+                style={{ marginRight: '5px' }}
               />
               Days
             </label>
@@ -298,7 +298,7 @@ const RangeFacet = (props: TProps) => {
             <InputLabel
               style={{
                 borderRight: 0,
-                borderRadius: "4px 0 0 4px",
+                borderRadius: '4px 0 0 4px',
               }}
               htmlFor={`from-${dotField}`}
             >
@@ -306,7 +306,7 @@ const RangeFacet = (props: TProps) => {
             </InputLabel>
             <StyledInput
               style={{ borderRadius: 0 }}
-              value={props.state.fromDisplayed || ""}
+              value={props.state.fromDisplayed || ''}
               onChange={props.handleFromChanged}
               id={`from-${dotField}`}
               key={`from-${dotField}`}
@@ -326,7 +326,7 @@ const RangeFacet = (props: TProps) => {
               To:
             </InputLabel>
             <Input
-              value={props.state.toDisplayed || ""}
+              value={props.state.toDisplayed || ''}
               onChange={props.handleToChanged}
               id={`to-${dotField}`}
               key={`to-${dotField}`}
@@ -344,15 +344,15 @@ const RangeFacet = (props: TProps) => {
               Go!
             </GoLink>
           </Row>
-          {props.title === "Age at Diagnosis" &&
+          {props.title === 'Age at Diagnosis' &&
             (props.state.from >= warningDays ||
               props.state.to >= warningDays) &&
             <WarningRow>
               <span>
-                <ExclamationTriangle style={{ paddingRight: "5px" }} />
+                <ExclamationTriangle style={{ paddingRight: '5px' }} />
                 For health information privacy concerns, individuals over 89 will all appear as 90 years old. For more information,
                 click
-                {" "}
+                {' '}
                 <a
                   href="https://gdc.nci.nih.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
                   target="_blank"

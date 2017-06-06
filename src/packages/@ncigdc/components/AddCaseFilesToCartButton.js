@@ -1,35 +1,35 @@
 /* @flow */
 
-import React from "react";
-import _ from "lodash";
-import { connect } from "react-redux";
-import { compose, withState, withProps, withHandlers } from "recompose";
+import React from 'react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
+import { compose, withState, withProps, withHandlers } from 'recompose';
 
-import Dropdown from "@ncigdc/uikit/Dropdown";
-import DropdownItem from "@ncigdc/uikit/DropdownItem";
-import ShoppingCartIcon from "@ncigdc/theme/icons/ShoppingCart";
-import TrashIcon from "react-icons/lib/fa/trash";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import { addAllFilesInCart, removeFilesFromCart } from "@ncigdc/dux/cart";
-import withFilters from "@ncigdc/utils/withFilters";
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
+import TrashIcon from 'react-icons/lib/fa/trash';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { addAllFilesInCart, removeFilesFromCart } from '@ncigdc/dux/cart';
+import withFilters from '@ncigdc/utils/withFilters';
 
 const styles = {
   dropdownContainer: {
     left: 0,
-    right: "auto",
+    right: 'auto',
   },
   icon: {
-    marginRight: "1em",
+    marginRight: '1em',
   },
 };
 
 const AddCaseFilesToCartButton = compose(
   connect(state => ({ cart: state.cart })),
-  withState("isLoading", "setIsLoading", false),
+  withState('isLoading', 'setIsLoading', false),
   withFilters(),
   withProps(({ filters, cart, files = [], filteredFiles = [] }) => ({
-    filesInCart: _.intersectionBy(cart.files, files, "file_id"),
-    filteredFilesInCart: _.intersectionBy(cart.files, filteredFiles, "file_id"),
+    filesInCart: _.intersectionBy(cart.files, files, 'file_id'),
+    filteredFilesInCart: _.intersectionBy(cart.files, filteredFiles, 'file_id'),
   })),
   withHandlers({
     handleDropdownActivate: ({
@@ -69,24 +69,24 @@ const AddCaseFilesToCartButton = compose(
   }) => (
     <Dropdown
       dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyle }}
-      dropdownClassName={isLoading ? "hidden" : "dropdown-menu"}
+      dropdownClassName={isLoading ? 'hidden' : 'dropdown-menu'}
       isDisabled={!hasFiles}
       button={
         hasFiles
           ? <button
               className="btn btn-default dropdown-toggle fa fa-shopping-cart"
-              style={{ padding: "0 4px" }}
+              style={{ padding: '0 4px' }}
             >
               <span
-                className={isLoading ? "fa fa-spinner fa-spin" : "caret"}
-                style={{ marginLeft: "0.5rem" }}
+                className={isLoading ? 'fa fa-spinner fa-spin' : 'caret'}
+                style={{ marginLeft: '0.5rem' }}
               />
               <span className="icon-btn-label">Case Actions</span>
             </button>
           : <Tooltip Component={<span>This case has no files.</span>}>
               <button
                 className="btn disabled fa fa-shopping-cart"
-                style={{ padding: "0px 17px 0 4px" }}
+                style={{ padding: '0px 17px 0 4px' }}
                 aria-label="This case has no files"
               />
             </Tooltip>

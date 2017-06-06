@@ -1,12 +1,12 @@
 // @flow
 
-import React from "react";
-import { compose, withState } from "recompose";
-import { xor } from "lodash";
+import React from 'react';
+import { compose, withState } from 'recompose';
+import { xor } from 'lodash';
 
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import Button from "@ncigdc/uikit/Button";
-import { visualizingButton } from "@ncigdc/theme/mixins";
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import Button from '@ncigdc/uikit/Button';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 
 const styles = {
   horizonalPadding: {
@@ -38,13 +38,13 @@ const SelectOverlay = ({
 }: TProps) => (
   <Column
     style={{
-      padding: "15px",
+      padding: '15px',
     }}
   >
     <Row
       style={{
         ...styles.horizonalPadding,
-        borderBottom: "1px solid #e5e5e5",
+        borderBottom: '1px solid #e5e5e5',
       }}
     >
       <h2 style={{ marginTop: 0 }}>Select Tracks to Add</h2>
@@ -70,7 +70,7 @@ const SelectOverlay = ({
           </label>
         </Row>
       ))}
-      <Row style={{ justifyContent: "center", marginTop: 10 }} spacing="1rem">
+      <Row style={{ justifyContent: 'center', marginTop: 10 }} spacing="1rem">
         <Button
           style={styles.button}
           onClick={() => onClose(selectedOptions.map(i => options[i]))}
@@ -83,6 +83,6 @@ const SelectOverlay = ({
   </Column>
 );
 
-const enhance = compose(withState("selectedOptions", "setSelectedOptions", []));
+const enhance = compose(withState('selectedOptions', 'setSelectedOptions', []));
 
 export default enhance(SelectOverlay);

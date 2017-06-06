@@ -1,26 +1,26 @@
 // @flow
-import React from "react";
-import { withState } from "recompose";
+import React from 'react';
+import { withState } from 'recompose';
 
-import styled from "@ncigdc/theme/styled";
+import styled from '@ncigdc/theme/styled';
 
 const List = styled.ul({
-  listStyle: "none",
+  listStyle: 'none',
   paddingLeft: 0,
   marginBottom: 0,
-  display: "inline-block",
+  display: 'inline-block',
 });
 
 const NotUnderlinedLink = styled.a({
-  ":link": {
-    textDecoration: "none",
+  ':link': {
+    textDecoration: 'none',
   },
 });
 
 const Toggle = styled.li({
-  textAlign: "right",
-  fontStyle: "italic",
-  padding: "0 1rem",
+  textAlign: 'right',
+  fontStyle: 'italic',
+  padding: '0 1rem',
   color: ({ theme }) => theme.primary,
 });
 
@@ -39,10 +39,10 @@ const CollapsibleList = ({
     {data.length > limit &&
       <Toggle>
         <NotUnderlinedLink onClick={() => toggleExpand(v => !v)}>
-          {expanded ? "\u25B4 less" : `\u25BE ${data.length - limit} more`}
+          {expanded ? '\u25B4 less' : `\u25BE ${data.length - limit} more`}
         </NotUnderlinedLink>
       </Toggle>}
   </List>
 );
 
-export default withState("expanded", "toggleExpand", false)(CollapsibleList);
+export default withState('expanded', 'toggleExpand', false)(CollapsibleList);

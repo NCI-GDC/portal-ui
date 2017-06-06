@@ -1,53 +1,53 @@
 // @flow
 
-import React from "react";
-import { compose, withState } from "recompose";
-import { connect } from "react-redux";
-import ShoppingCartIcon from "@ncigdc/theme/icons/ShoppingCart";
-import { uniq } from "lodash";
-import moment from "moment";
+import React from 'react';
+import { compose, withState } from 'recompose';
+import { connect } from 'react-redux';
+import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
+import { uniq } from 'lodash';
+import moment from 'moment';
 
-import { withTheme } from "@ncigdc/theme";
-import SearchIcon from "react-icons/lib/fa/search";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import formatFileSize from "@ncigdc/utils/formatFileSize";
+import { withTheme } from '@ncigdc/theme';
+import SearchIcon from 'react-icons/lib/fa/search';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
 import EntityPageVerticalTable
-  from "@ncigdc/components/EntityPageVerticalTable";
+  from '@ncigdc/components/EntityPageVerticalTable';
 import EntityPageHorizontalTable
-  from "@ncigdc/components/EntityPageHorizontalTable";
-import BAMSlicingButton from "@ncigdc/components/BAMSlicingButton";
-import AnnotationLink from "@ncigdc/components/Links/AnnotationLink";
-import AnnotationsLink from "@ncigdc/components/Links/AnnotationsLink";
-import ProjectLink from "@ncigdc/components/Links/ProjectLink";
-import CaseLink from "@ncigdc/components/Links/CaseLink";
-import FileLink from "@ncigdc/components/Links/FileLink";
-import Link from "@ncigdc/components/Links/Link";
-import Hidden from "@ncigdc/components/Hidden";
-import { toggleFilesInCart } from "@ncigdc/dux/cart";
-import Button from "@ncigdc/uikit/Button";
-import AddToCartButtonSingle from "@ncigdc/components/AddToCartButtonSingle";
-import DownloadFile from "@ncigdc/components/DownloadFile";
-import { visualizingButton } from "@ncigdc/theme/mixins";
-import { RepositoryFilesLink } from "@ncigdc/components/Links/RepositoryLink";
+  from '@ncigdc/components/EntityPageHorizontalTable';
+import BAMSlicingButton from '@ncigdc/components/BAMSlicingButton';
+import AnnotationLink from '@ncigdc/components/Links/AnnotationLink';
+import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
+import CaseLink from '@ncigdc/components/Links/CaseLink';
+import FileLink from '@ncigdc/components/Links/FileLink';
+import Link from '@ncigdc/components/Links/Link';
+import Hidden from '@ncigdc/components/Hidden';
+import { toggleFilesInCart } from '@ncigdc/dux/cart';
+import Button from '@ncigdc/uikit/Button';
+import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
+import DownloadFile from '@ncigdc/components/DownloadFile';
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 
-import { makeFilter } from "@ncigdc/utils/filters";
+import { makeFilter } from '@ncigdc/utils/filters';
 
 // value of data_category mapped to sections to display
 const DISPLAY_MAPPING = {
-  "Raw Sequencing Data": ["analysis", "readGroup", "downstreamAnalysis"],
-  "Transcriptome Profiling": ["analysis", "downstreamAnalysis"],
-  "Simple Nucleotide Variation": ["analysis", "downstreamAnalysis"],
-  "Copy Number Variation": ["analysis", "downstreamAnalysis"],
-  "Structural Rearrangement": ["analysis", "downstreamAnalysis"],
-  "DNA Methylation": ["analysis", "downstreamAnalysis"],
+  'Raw Sequencing Data': ['analysis', 'readGroup', 'downstreamAnalysis'],
+  'Transcriptome Profiling': ['analysis', 'downstreamAnalysis'],
+  'Simple Nucleotide Variation': ['analysis', 'downstreamAnalysis'],
+  'Copy Number Variation': ['analysis', 'downstreamAnalysis'],
+  'Structural Rearrangement': ['analysis', 'downstreamAnalysis'],
+  'DNA Methylation': ['analysis', 'downstreamAnalysis'],
 };
 
 const styles = {
   tableDownloadAction: {
     ...visualizingButton,
-    padding: "3px 5px",
-    minWidth: "initial",
-    minHeight: "initial",
+    padding: '3px 5px',
+    minWidth: 'initial',
+    minHeight: 'initial',
   },
 };
 
@@ -75,7 +75,7 @@ const getAnnotationsCount = (annotations, entity) => {
       <AnnotationsLink
         query={{
           filters: makeFilter(
-            [{ field: "annotations.entity_id", value: entity.entity_id }],
+            [{ field: 'annotations.entity_id', value: entity.entity_id }],
             false,
           ),
         }}
@@ -113,8 +113,8 @@ const File = ({
       entity_id: (
         <CaseLink
           uuid={ae.case_id}
-          query={ae.entity_type !== "case" ? { bioId: ae.entity_id } : {}}
-          deepLink={ae.entity_type !== "case" ? "biospecimen" : undefined}
+          query={ae.entity_type !== 'case' ? { bioId: ae.entity_id } : {}}
+          deepLink={ae.entity_type !== 'case' ? 'biospecimen' : undefined}
         >
           {ae.entity_id}
         </CaseLink>
@@ -124,10 +124,10 @@ const File = ({
 
   const archiveComponent = node.archive.archive_id
     ? <Link>
-        {node.archive.submitter_id || "--"} - {node.archive.revision}
+        {node.archive.submitter_id || '--'} - {node.archive.revision}
         (todo: link out to file search pg with files.archive.archive_id filter)
       </Link>
-    : "--";
+    : '--';
 
   const projectIds = uniq(
     (node.cases.hits.edges || [])
@@ -140,7 +140,7 @@ const File = ({
           filters: makeFilter(
             [
               {
-                field: "downstream_analyses.output_files.file_id",
+                field: 'downstream_analyses.output_files.file_id',
                 value: node.file_id,
               },
             ],
@@ -154,44 +154,44 @@ const File = ({
   return (
     <Column>
       <Row
-        style={{ justifyContent: "flex-end", padding: "1rem 0" }}
+        style={{ justifyContent: 'flex-end', padding: '1rem 0' }}
         spacing="0.2rem"
       >
         <Button
           onClick={() => dispatch(toggleFilesInCart(node))}
           leftIcon={<ShoppingCartIcon />}
         >
-          {fileInCart(files, node) ? "Remove from Cart" : "Add to Cart"}
+          {fileInCart(files, node) ? 'Remove from Cart' : 'Add to Cart'}
         </Button>
-        {node.data_type === "Aligned Reads" &&
-          node.data_format === "BAM" &&
+        {node.data_type === 'Aligned Reads' &&
+          node.data_format === 'BAM' &&
           node.index_files.hits.total &&
           <BAMSlicingButton file={node} />}
         <DownloadFile
           file={node}
-          activeText={"Processing"}
-          inactiveText={"Download"}
+          activeText={'Processing'}
+          inactiveText={'Download'}
         />
       </Row>
-      <Row style={{ alignItems: "flex-start" }}>
+      <Row style={{ alignItems: 'flex-start' }}>
         <EntityPageVerticalTable
           title="File Properties"
-          style={{ width: "58%", marginRight: "2rem" }}
+          style={{ width: '58%', marginRight: '2rem' }}
           thToTd={[
             {
-              th: "Name",
+              th: 'Name',
               td: node.file_name,
-              style: { whiteSpace: "pre-wrap", wordBreak: "break-all" },
+              style: { whiteSpace: 'pre-wrap', wordBreak: 'break-all' },
             },
-            { th: "Access", td: node.access },
-            { th: "UUID", td: node.file_id },
-            { th: "Submitter ID", td: node.submitter_id || "--" },
-            { th: "Data Format", td: node.data_format },
-            { th: "Size", td: formatFileSize(node.file_size) },
-            { th: "MD5 Checksum", td: node.md5sum },
-            { th: "Archive", td: archiveComponent },
+            { th: 'Access', td: node.access },
+            { th: 'UUID', td: node.file_id },
+            { th: 'Submitter ID', td: node.submitter_id || '--' },
+            { th: 'Data Format', td: node.data_format },
+            { th: 'Size', td: formatFileSize(node.file_size) },
+            { th: 'MD5 Checksum', td: node.md5sum },
+            { th: 'Archive', td: archiveComponent },
             {
-              th: "Project ID",
+              th: 'Project ID',
               td: projectIds.map(
                 pId =>
                   pId && <ProjectLink key={pId} uuid={pId}>{pId}</ProjectLink>,
@@ -201,16 +201,16 @@ const File = ({
         />
         <EntityPageVerticalTable
           title="Data Information"
-          style={{ width: "42%" }}
+          style={{ width: '42%' }}
           thToTd={[
-            { th: "Data Category", td: node.data_category },
-            { th: "Data Type", td: node.data_type },
-            { th: "Experimental Strategy", td: node.experimental_strategy },
-            { th: "Platform", td: node.platform || "--" },
+            { th: 'Data Category', td: node.data_category },
+            { th: 'Data Type', td: node.data_type },
+            { th: 'Experimental Strategy', td: node.experimental_strategy },
+            { th: 'Platform', td: node.platform || '--' },
           ]}
         />
       </Row>
-      <Row style={{ paddingTop: "2rem" }}>
+      <Row style={{ paddingTop: '2rem' }}>
         <Column style={{ flexGrow: 1 }}>
           <EntityPageHorizontalTable
             rightComponent={
@@ -222,13 +222,13 @@ const File = ({
                       borderLeft: `1px solid ${theme.greyScale5}`,
                       borderBottom: `1px solid ${theme.greyScale5}`,
                       borderRight: 0,
-                      borderRadius: "4px 0 0 4px",
+                      borderRadius: '4px 0 0 4px',
                       backgroundColor: `${theme.greyScale4}`,
-                      width: "38px",
-                      height: "34px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      width: '38px',
+                      height: '34px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}
                   >
                     <SearchIcon size={14} />
@@ -245,11 +245,11 @@ const File = ({
                   }}
                   onChange={() => setState(() => searchInput.value)}
                   style={{
-                    fontSize: "14px",
-                    paddingLeft: "1rem",
+                    fontSize: '14px',
+                    paddingLeft: '1rem',
                     border: `1px solid ${theme.greyScale5}`,
-                    width: "28rem",
-                    borderRadius: "0 4px 4px 0",
+                    width: '28rem',
+                    borderRadius: '0 4px 4px 0',
                   }}
                 />
               </Row>
@@ -257,30 +257,30 @@ const File = ({
             title="Associated Cases/Biospecimen"
             emptyMessage="No cases or biospecimen found."
             headings={[
-              { key: "entity_id", title: "Entity Id" },
-              { key: "entity_type", title: "Entity Type" },
-              { key: "case_id", title: "Case UUID" },
-              { key: "annotation_count", title: "Annotations" },
+              { key: 'entity_id', title: 'Entity Id' },
+              { key: 'entity_type', title: 'Entity Type' },
+              { key: 'case_id', title: 'Case UUID' },
+              { key: 'annotation_count', title: 'Annotations' },
             ]}
             data={filteredAE}
           />
         </Column>
       </Row>
-      {displaySection("analysis", node.data_category) &&
-        <Row style={{ paddingTop: "2rem", alignItems: "flex-start" }}>
+      {displaySection('analysis', node.data_category) &&
+        <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
           <EntityPageVerticalTable
             title="Analysis"
-            style={{ marginRight: "2rem", width: "50%" }}
+            style={{ marginRight: '2rem', width: '50%' }}
             thToTd={[
-              { th: "Analysis ID", td: node.analysis.analysis_id },
-              { th: "Workflow Type", td: node.analysis.workflow_type },
+              { th: 'Analysis ID', td: node.analysis.analysis_id },
+              { th: 'Workflow Type', td: node.analysis.workflow_type },
               {
-                th: "Workflow Completion Date",
+                th: 'Workflow Completion Date',
                 td: node.analysis.updated_datetime &&
-                  moment(node.analysis.updated_datetime).format("YYYY-MM-DD"),
+                  moment(node.analysis.updated_datetime).format('YYYY-MM-DD'),
               },
               {
-                th: "Source Files",
+                th: 'Source Files',
                 td: node.analysis.input_files.hits.total === 1
                   ? <FileLink
                       uuid={
@@ -295,27 +295,27 @@ const File = ({
           />
           <EntityPageVerticalTable
             title="Reference Genome"
-            style={{ width: "50%" }}
+            style={{ width: '50%' }}
             thToTd={[
-              { th: "Genome Build", td: "GRCh38.p0" },
-              { th: "Genome Name", td: "GRCh38.d1.vd1" },
+              { th: 'Genome Build', td: 'GRCh38.p0' },
+              { th: 'Genome Name', td: 'GRCh38.d1.vd1' },
             ]}
           />
         </Row>}
       {node.analysis.metadata &&
-        displaySection("readGroup", node.data_category) &&
-        <Row style={{ paddingTop: "2rem" }}>
+        displaySection('readGroup', node.data_category) &&
+        <Row style={{ paddingTop: '2rem' }}>
           <Column style={{ flexGrow: 1 }}>
             <EntityPageHorizontalTable
               title="Read Groups"
               emptyMessage="No read group files found."
               headings={[
-                { key: "read_group_id", title: "Read Group ID" },
-                { key: "is_paired_end", title: "Is Paired End" },
-                { key: "read_length", title: "Read Length" },
-                { key: "library_name", title: "Library Name" },
-                { key: "sequencing_center", title: "Sequencing Center" },
-                { key: "sequencing_date", title: "Sequencing Date" },
+                { key: 'read_group_id', title: 'Read Group ID' },
+                { key: 'is_paired_end', title: 'Is Paired End' },
+                { key: 'read_length', title: 'Read Length' },
+                { key: 'library_name', title: 'Library Name' },
+                { key: 'sequencing_center', title: 'Sequencing Center' },
+                { key: 'sequencing_date', title: 'Sequencing Date' },
               ]}
               data={node.analysis.metadata.read_groups.hits.edges.map(
                 readGroup => readGroup.node,
@@ -324,28 +324,28 @@ const File = ({
           </Column>
         </Row>}
       {!!node.metadata_files.hits.edges.length &&
-        <Row style={{ paddingTop: "2rem" }}>
+        <Row style={{ paddingTop: '2rem' }}>
           <Column style={{ flexGrow: 1 }}>
             <EntityPageHorizontalTable
               title="Metadata Files"
               emptyMessage="No metadata files found."
               headings={[
                 {
-                  key: "file_name",
-                  title: "File Name",
+                  key: 'file_name',
+                  title: 'File Name',
                   style: {
-                    maxWidth: "150px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    maxWidth: '150px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
                   },
                   tooltip: true,
                 },
-                { key: "data_category", title: "Data Category" },
-                { key: "data_type", title: "Data Type" },
-                { key: "data_format", title: "Data Format" },
-                { key: "file_size", title: "File Size" },
-                { key: "action", title: "Action" },
+                { key: 'data_category', title: 'Data Category' },
+                { key: 'data_type', title: 'Data Type' },
+                { key: 'data_format', title: 'Data Format' },
+                { key: 'file_size', title: 'File Size' },
+                { key: 'action', title: 'Action' },
               ]}
               data={node.metadata_files.hits.edges.map(md => ({
                 ...md,
@@ -353,7 +353,7 @@ const File = ({
                   <Row>
                     <AddToCartButtonSingle
                       file={{ ...md, cases: node.cases }}
-                      style={{ padding: "3px 5px" }}
+                      style={{ padding: '3px 5px' }}
                     />
                     <DownloadFile
                       file={{ ...md, cases: node.cases }}
@@ -365,28 +365,28 @@ const File = ({
             />
           </Column>
         </Row>}
-      {displaySection("downstreamAnalysis", node.data_category) &&
-        <Row style={{ paddingTop: "2rem" }}>
+      {displaySection('downstreamAnalysis', node.data_category) &&
+        <Row style={{ paddingTop: '2rem' }}>
           <Column style={{ flexGrow: 1 }}>
             <EntityPageHorizontalTable
               title="Downstream Analyses Files"
               emptyMessage="No Downstream Analysis files found."
               headings={[
                 {
-                  key: "file_name",
-                  title: "File Name",
-                  style: { whiteSpace: "pre-wrap", wordBreak: "break-all" },
+                  key: 'file_name',
+                  title: 'File Name',
+                  style: { whiteSpace: 'pre-wrap', wordBreak: 'break-all' },
                 },
-                { key: "data_category", title: "Data Category" },
-                { key: "data_type", title: "Data Type" },
-                { key: "data_format", title: "Data Format" },
-                { key: "workflow_type", title: "Analysis workflow" },
+                { key: 'data_category', title: 'Data Category' },
+                { key: 'data_type', title: 'Data Type' },
+                { key: 'data_format', title: 'Data Format' },
+                { key: 'workflow_type', title: 'Analysis workflow' },
                 {
-                  key: "file_size",
-                  title: "File Size",
-                  style: { textAlign: "right" },
+                  key: 'file_size',
+                  title: 'File Size',
+                  style: { textAlign: 'right' },
                 },
-                { key: "action", title: "Action" },
+                { key: 'action', title: 'Action' },
               ]}
               data={node.downstream_analyses.hits.edges.reduce(
                 (acc, { node: { output_files, workflow_type } }) => [
@@ -408,7 +408,7 @@ const File = ({
                             ],
                             acl: node.acl,
                           }}
-                          style={{ padding: "3px 5px" }}
+                          style={{ padding: '3px 5px' }}
                         />
                         <DownloadFile
                           file={file}
@@ -428,7 +428,7 @@ const File = ({
 };
 
 export default compose(
-  withState("searchTerm", "setState", ""),
+  withState('searchTerm', 'setState', ''),
   withTheme,
   connect(state => ({ ...state.cart })),
 )(File);

@@ -1,11 +1,11 @@
 /* @flow */
 /* eslint fp/no-mutation: 0 fp/no-let: 0, fp/no-mutating-methods: 0 */
-import _ from "lodash";
+import _ from 'lodash';
 import {
   initialCaseAggregationsVariables,
-} from "@ncigdc/utils/generated-relay-query-parts";
+} from '@ncigdc/utils/generated-relay-query-parts';
 
-jest.mock("@ncigdc/uikit/Tooltip", () => {});
+jest.mock('@ncigdc/uikit/Tooltip', () => {});
 
 const localStorageMock = (() => {
   let store = {};
@@ -22,16 +22,16 @@ const localStorageMock = (() => {
   };
 })();
 
-Object.defineProperty(window, "localStorage", {
+Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 });
 
-const { CaseAggregationsQuery } = require("../CaseAggregations");
+const { CaseAggregationsQuery } = require('../CaseAggregations');
 
 const [fieldNameA, fieldNameB] = Object.keys(initialCaseAggregationsVariables);
 
-describe("prepareVariables", () => {
-  it("should return all fields as true if shouldRequestAllAggregations is true", () => {
+describe('prepareVariables', () => {
+  it('should return all fields as true if shouldRequestAllAggregations is true', () => {
     const testVarsA = {
       [fieldNameA]: false,
       [fieldNameB]: false,
@@ -51,7 +51,7 @@ describe("prepareVariables", () => {
     ).toBe(true);
   });
 
-  it("should return all fields as false if all fields were already false", () => {
+  it('should return all fields as false if all fields were already false', () => {
     const testVars = {
       [fieldNameA]: false,
       [fieldNameB]: false,

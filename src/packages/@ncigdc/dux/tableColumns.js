@@ -1,16 +1,16 @@
 // @flow
-import { REHYDRATE } from "redux-persist/constants";
+import { REHYDRATE } from 'redux-persist/constants';
 
 // Custom
-import tableModels from "@ncigdc/tableModels";
-import { namespaceActions } from "./utils";
+import tableModels from '@ncigdc/tableModels';
+import { namespaceActions } from './utils';
 
 /*----------------------------------------------------------------------------*/
 
-const tableColumns = namespaceActions("tableColumns", [
-  "TOGGLE_COLUMN",
-  "RESTORE",
-  "SET",
+const tableColumns = namespaceActions('tableColumns', [
+  'TOGGLE_COLUMN',
+  'RESTORE',
+  'SET',
 ]);
 
 const toggleColumn = ({ entityType, id, index }) => ({

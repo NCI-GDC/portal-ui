@@ -1,5 +1,5 @@
 /* @flow */
-const RESET_ERROR = "RESET_ERROR";
+const RESET_ERROR = 'RESET_ERROR';
 
 export type TAction = { type: string, payload: any, error: any };
 export type TState = { error: Object };

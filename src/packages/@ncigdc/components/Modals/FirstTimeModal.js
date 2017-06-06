@@ -1,8 +1,8 @@
 // @flow
 /* eslint-disable max-len */
-import React from "react";
-import { ExternalLink } from "@ncigdc/uikit/Links";
-import BaseModal from "@ncigdc/components/Modals/BaseModal";
+import React from 'react';
+import { ExternalLink } from '@ncigdc/uikit/Links';
+import BaseModal from '@ncigdc/components/Modals/BaseModal';
 
 const FirstTimeModal = () => (
   <BaseModal title="Warning" closeText="Accept">
@@ -21,26 +21,26 @@ const FirstTimeModal = () => (
     <p>
       <b>WARNING</b>
       : Please read the
-      {" "}
+      {' '}
       <ExternalLink
         hasExternalIcon={false}
         href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes"
       >
         GDC Data Release Notes
       </ExternalLink>
-      {" "}
+      {' '}
       prior to accessing this web site as the Release Notes provide details about data updates, known issues and workarounds.
     </p>
     <p>
       Contact
-      {" "}
+      {' '}
       <ExternalLink
         hasExternalIcon={false}
         href="https://gdc.cancer.gov/support#gdc-help-desk"
       >
         GDC Support
       </ExternalLink>
-      {" "}
+      {' '}
       for more information.
     </p>
   </BaseModal>

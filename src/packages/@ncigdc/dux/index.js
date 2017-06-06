@@ -1,9 +1,9 @@
 // @flow
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import { persistStore } from "redux-persist";
-import { apiMiddleware } from "redux-api-middleware";
-import reducers from "./reducers";
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { persistStore } from 'redux-persist';
+import { apiMiddleware } from 'redux-api-middleware';
+import reducers from './reducers';
 
 type TSetupStoreArgs = {
   persistConfig: Object,
@@ -16,7 +16,7 @@ const setupStore: TSetupStore = ({ persistConfig = {} } = {}) => {
   );
 
   persistStore(store, {
-    whitelist: ["cart", "tableColumns"],
+    whitelist: ['cart', 'tableColumns'],
     ...persistConfig,
   });
 

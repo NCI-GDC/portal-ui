@@ -1,11 +1,11 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
-import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
-import Case from "@ncigdc/components/Case";
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
+import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
+import Case from '@ncigdc/components/Case';
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
 export type TProps = {
   node: {
@@ -73,7 +73,7 @@ export const CasePageComponent = ({ node, viewer }: TProps) => (
             viewer.explore.cases.hits.edges.length &&
               (viewer.explore.cases.hits.edges[0].node
                 .available_variation_data || [])
-                .includes("ssm")
+                .includes('ssm')
           }
           files={node.files.hits.edges.map(f => ({
             ...f.node,

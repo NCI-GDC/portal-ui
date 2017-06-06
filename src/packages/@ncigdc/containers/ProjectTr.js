@@ -1,22 +1,22 @@
 /* @flow */
 
-import React from "react";
+import React from 'react';
 
 import {
   RepositoryCasesLink,
   RepositoryFilesLink,
-} from "@ncigdc/components/Links/RepositoryLink";
-import ProjectLink from "@ncigdc/components/Links/ProjectLink";
-import { findDataCategory } from "@ncigdc/utils/data";
-import { makeFilter } from "@ncigdc/utils/filters";
-import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
+} from '@ncigdc/components/Links/RepositoryLink';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
+import { findDataCategory } from '@ncigdc/utils/data';
+import { makeFilter } from '@ncigdc/utils/filters';
+import { DATA_CATEGORIES } from '@ncigdc/utils/constants';
 
-import type { TCategory } from "@ncigdc/utils/data/types";
+import type { TCategory } from '@ncigdc/utils/data/types';
 
-import { Tr, Td, TdNum } from "@ncigdc/uikit/Table";
-import CollapsibleList from "@ncigdc/uikit/CollapsibleList";
+import { Tr, Td, TdNum } from '@ncigdc/uikit/Table';
+import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 
-import { withTheme } from "@ncigdc/theme";
+import { withTheme } from '@ncigdc/theme';
 
 export type TProps = {|
   index: number,
@@ -52,7 +52,7 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
       query={{
         filters: makeFilter(
           [
-            { field: "cases.project.project_id", value: [node.project_id] },
+            { field: 'cases.project.project_id', value: [node.project_id] },
             ...fields,
           ],
           false,
@@ -66,13 +66,13 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
   return (
     <Tr
       style={{
-        backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff",
+        backgroundColor: index % 2 === 0 ? theme.tableStripe : '#fff',
       }}
     >
       <Td>
         <ProjectLink uuid={node.project_id} />
       </Td>
-      <Td style={{ whiteSpace: "normal" }}>
+      <Td style={{ whiteSpace: 'normal' }}>
         <CollapsibleList data={node.disease_type} />
       </Td>
       <Td>
@@ -94,7 +94,7 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
             {count > 0
               ? <CasesLink
                   fields={[
-                    { field: "files.data_category", value: category.full },
+                    { field: 'files.data_category', value: category.full },
                   ]}
                 >
                   {count.toLocaleString()}
@@ -110,7 +110,7 @@ export const ProjectTrComponent = ({ node, index, theme }: TProps) => {
                 filters: makeFilter(
                   [
                     {
-                      field: "cases.project.project_id",
+                      field: 'cases.project.project_id',
                       value: node.project_id,
                     },
                   ],

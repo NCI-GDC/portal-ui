@@ -1,11 +1,11 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
+import React from 'react';
+import Relay from 'react-relay/classic';
 
-import Annotation from "@ncigdc/components/Annotation";
+import Annotation from '@ncigdc/components/Annotation';
 
-import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
+import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 
 export type TProps = {
   node: {

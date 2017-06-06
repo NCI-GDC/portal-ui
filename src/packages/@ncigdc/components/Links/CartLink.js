@@ -1,8 +1,8 @@
 /* @flow */
 
-import React from "react";
-import { connect } from "react-redux";
-import Link from "./Link";
+import React from 'react';
+import { connect } from 'react-redux';
+import Link from './Link';
 
 type TProps = {|
   children?: Function,
@@ -14,10 +14,10 @@ type TProps = {|
 const CartLink = (props: TProps) => (
   <Link
     pathname="/cart"
-    className={props.className || ""}
+    className={props.className || ''}
     style={props.style || {}}
   >
-    {props.children ? props.children(props.count) : "cart"}
+    {props.children ? props.children(props.count) : 'cart'}
   </Link>
 );
 

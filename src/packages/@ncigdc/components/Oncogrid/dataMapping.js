@@ -1,6 +1,6 @@
 /* @flow */
 /* eslint-disable fp/no-loops, fp/no-let, fp/no-mutation, fp/no-mutating-methods */
-import { dataTypeTracks } from "./tracks";
+import { dataTypeTracks } from './tracks';
 
 const dataTypesInitial = dataTypeTracks.reduce(
   (acc, d) => ({ ...acc, [d.fieldName]: 0 }),
@@ -57,8 +57,8 @@ export const mapDonors = (
     if (donorIds.has(case_id)) {
       const {
         gender,
-        race = "not reported",
-        ethnicity = "not reported",
+        race = 'not reported',
+        ethnicity = 'not reported',
       } = demographic;
       const {
         age_at_diagnosis,
@@ -73,7 +73,7 @@ export const mapDonors = (
         race,
         ethnicity,
         age: nullSentinel(age_at_diagnosis),
-        vitalStatus: vitalStatus === "alive",
+        vitalStatus: vitalStatus === 'alive',
         daysToDeath: nullSentinel(days_to_death),
       };
 

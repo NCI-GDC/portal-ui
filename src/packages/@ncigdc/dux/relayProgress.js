@@ -1,6 +1,6 @@
 // @flow
 
-const UPDATE_RELAY_PROGRESS = "UPDATE_RELAY_PROGRESS";
+const UPDATE_RELAY_PROGRESS = 'UPDATE_RELAY_PROGRESS';
 
 const updateProgress = (payload: Object): Object => ({
   type: UPDATE_RELAY_PROGRESS,
@@ -14,7 +14,7 @@ const initialState = {
 
 const reducer = (state = initialState, action: Object) => {
   switch (action.type) {
-    case "UPDATE_RELAY_PROGRESS":
+    case 'UPDATE_RELAY_PROGRESS':
       return action.payload;
     default:
       return state;
@@ -36,7 +36,7 @@ const handleStateChange: THandleStateChange = props => ({ events }) => {
   if (
     events.some(
       x =>
-        x.type === "NETWORK_QUERY_RECEIVED_ALL" || x.type === "STORE_FOUND_ALL",
+        x.type === 'NETWORK_QUERY_RECEIVED_ALL' || x.type === 'STORE_FOUND_ALL',
     )
   ) {
     props.dispatch(

@@ -1,8 +1,8 @@
 // @flow
-import React from "react";
+import React from 'react';
 
-import Particle from "@ncigdc/uikit/Loaders/Particle";
-import { Column } from "@ncigdc/uikit/Flex";
+import Particle from '@ncigdc/uikit/Loaders/Particle';
+import { Column } from '@ncigdc/uikit/Flex';
 
 type TProps = {
   style: Object,
@@ -11,9 +11,9 @@ type TProps = {
 const SpinnerCentered = ({ style, ...props }: TProps) => (
   <Column
     style={{
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100%",
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
       padding: 20,
       ...style,
     }}

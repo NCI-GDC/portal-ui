@@ -1,19 +1,19 @@
 /* @flow */
 /* eslint fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { parse } from "query-string";
-import { connect } from "react-redux";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { parse } from 'query-string';
+import { connect } from 'react-redux';
 
-import NotFound from "@ncigdc/components/NotFound";
-import Loader from "@ncigdc/uikit/Loaders/Loader";
-import { handleStateChange } from "@ncigdc/dux/relayProgress";
-import ProjectPage from "@ncigdc/containers/ProjectPage";
-import type { TPrepareNodeParams } from "@ncigdc/utils/routes/types";
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import { replaceFilters } from "@ncigdc/utils/filters";
-import { nodeAndViewerQuery } from "./queries";
+import NotFound from '@ncigdc/components/NotFound';
+import Loader from '@ncigdc/uikit/Loaders/Loader';
+import { handleStateChange } from '@ncigdc/dux/relayProgress';
+import ProjectPage from '@ncigdc/containers/ProjectPage';
+import type { TPrepareNodeParams } from '@ncigdc/utils/routes/types';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { replaceFilters } from '@ncigdc/utils/filters';
+import { nodeAndViewerQuery } from './queries';
 
 const prepareNodeParams: TPrepareNodeParams = type => ({
   location: { search },
@@ -21,44 +21,44 @@ const prepareNodeParams: TPrepareNodeParams = type => ({
 }) => {
   const q = parse(search);
   const clinicalFilters = {
-    op: "AND",
+    op: 'AND',
     content: [
       {
-        op: "=",
+        op: '=',
         content: {
-          field: "project.project_id",
+          field: 'project.project_id',
           value: params.id,
         },
       },
       {
-        op: "OR",
+        op: 'OR',
         content: [
           {
-            op: "NOT",
+            op: 'NOT',
             content: {
-              field: "cases.demographic.demographic_id",
-              value: "MISSING",
+              field: 'cases.demographic.demographic_id',
+              value: 'MISSING',
             },
           },
           {
-            op: "NOT",
+            op: 'NOT',
             content: {
-              field: "cases.diagnoses.diagnosis_id",
-              value: "MISSING",
+              field: 'cases.diagnoses.diagnosis_id',
+              value: 'MISSING',
             },
           },
           {
-            op: "NOT",
+            op: 'NOT',
             content: {
-              field: "cases.family_histories.family_history_id",
-              value: "MISSING",
+              field: 'cases.family_histories.family_history_id',
+              value: 'MISSING',
             },
           },
           {
-            op: "NOT",
+            op: 'NOT',
             content: {
-              field: "cases.exposures.exposure_id",
-              value: "MISSING",
+              field: 'cases.exposures.exposure_id',
+              value: 'MISSING',
             },
           },
         ],
@@ -67,20 +67,20 @@ const prepareNodeParams: TPrepareNodeParams = type => ({
   };
 
   const biospecimenFilters = {
-    op: "AND",
+    op: 'AND',
     content: [
       {
-        op: "=",
+        op: '=',
         content: {
-          field: "project.project_id",
+          field: 'project.project_id',
           value: params.id,
         },
       },
       {
-        op: "NOT",
+        op: 'NOT',
         content: {
-          field: "cases.samples.sample_id",
-          value: "MISSING",
+          field: 'cases.samples.sample_id',
+          value: 'MISSING',
         },
       },
     ],
@@ -97,19 +97,19 @@ const prepareNodeParams: TPrepareNodeParams = type => ({
       parseFilterParam(q.filters, null),
     ),
     mutatedFilters: {
-      op: "AND",
+      op: 'AND',
       content: [
-        { op: "=", content: { field: "project.project_id", value: params.id } },
+        { op: '=', content: { field: 'project.project_id', value: params.id } },
         {
-          op: "IN",
-          content: { field: "cases.available_variation_data", value: ["ssm"] },
+          op: 'IN',
+          content: { field: 'cases.available_variation_data', value: ['ssm'] },
         },
       ],
     },
     annotationsFilters: {
-      op: "AND",
+      op: 'AND',
       content: [
-        { op: "=", content: { field: "project.project_id", value: params.id } },
+        { op: '=', content: { field: 'project.project_id', value: params.id } },
       ],
     },
   };
@@ -121,9 +121,9 @@ const prepareNodeParams: TPrepareNodeParams = type => ({
 };
 
 class ProjectRoute extends Relay.Route {
-  static routeName = "ProjectPageRoute";
+  static routeName = 'ProjectPageRoute';
   static queries = nodeAndViewerQuery;
-  static prepareParams = prepareNodeParams("Project");
+  static prepareParams = prepareNodeParams('Project');
 }
 
 export default connect()((routeProps: mixed) => (

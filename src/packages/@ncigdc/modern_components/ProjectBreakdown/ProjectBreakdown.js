@@ -1,12 +1,12 @@
 // @flow
 /* eslint fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { viewerQuery } from "@ncigdc/routes/queries";
-import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
-import Toggle from "@ncigdc/uikit/Toggle";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { viewerQuery } from '@ncigdc/routes/queries';
+import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import Toggle from '@ncigdc/uikit/Toggle';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
 const createRenderer = (Route, Container) => (props: mixed) => (
   <Relay.Renderer
@@ -21,7 +21,7 @@ const createRenderer = (Route, Container) => (props: mixed) => (
 );
 
 class Route extends Relay.Route {
-  static routeName = "ProjectBreakdownRoute";
+  static routeName = 'ProjectBreakdownRoute';
   static queries = viewerQuery;
   static prepareParams = ({ filters = null }) => ({
     aggFilters: filters,
@@ -35,8 +35,8 @@ const createContainer = Component =>
       ssmTested: makeFilter(
         [
           {
-            field: "cases.available_variation_data",
-            value: "ssm",
+            field: 'cases.available_variation_data',
+            value: 'ssm',
           },
         ],
         false,
@@ -101,11 +101,11 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
             <span>{k}: </span>
             <ExploreLink
               query={{
-                searchTableTab: "cases",
+                searchTableTab: 'cases',
                 filters: addInFilters(
                   filters,
                   makeFilter(
-                    [{ field: "cases.project.project_id", value: [k] }],
+                    [{ field: 'cases.project.project_id', value: [k] }],
                     false,
                   ),
                 ),
@@ -116,14 +116,14 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
             <span> / </span>
             <ExploreLink
               query={{
-                searchTableTab: "cases",
+                searchTableTab: 'cases',
                 filters: makeFilter(
                   [
                     {
-                      field: "cases.available_variation_data",
-                      value: ["ssm"],
+                      field: 'cases.available_variation_data',
+                      value: ['ssm'],
                     },
-                    { field: "cases.project.project_id", value: [k] },
+                    { field: 'cases.project.project_id', value: [k] },
                   ],
                   false,
                 ),
@@ -158,7 +158,7 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
       <span key="total">
         <ExploreLink
           query={{
-            searchTableTab: "cases",
+            searchTableTab: 'cases',
             filters,
           }}
         >
@@ -167,9 +167,9 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
         <span> / </span>
         <ExploreLink
           query={{
-            searchTableTab: "cases",
+            searchTableTab: 'cases',
             filters: makeFilter(
-              [{ field: "cases.available_variation_data", value: ["ssm"] }],
+              [{ field: 'cases.available_variation_data', value: ['ssm'] }],
               false,
             ),
           }}

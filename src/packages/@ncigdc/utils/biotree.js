@@ -1,6 +1,6 @@
 // @flow
 
-import _ from "lodash";
+import _ from 'lodash';
 
 type TFormatValue = (value: any) => string;
 export const formatValue: TFormatValue = value => {
@@ -13,32 +13,32 @@ export const formatValue: TFormatValue = value => {
   }
 
   if (!value && (!isNaN(value) && value !== 0)) {
-    return "--";
+    return '--';
   }
 
   return value;
 };
 
 export const entityTypes = [
-  { s: "portion", p: "portions" },
-  { s: "aliquot", p: "aliquots" },
-  { s: "analyte", p: "analytes" },
-  { s: "slide", p: "slides" },
+  { s: 'portion', p: 'portions' },
+  { s: 'aliquot', p: 'aliquots' },
+  { s: 'analyte', p: 'analytes' },
+  { s: 'slide', p: 'slides' },
 ];
 
 export const idFields = [
-  "sample_id",
-  "portion_id",
-  "analyte_id",
-  "slide_id",
-  "aliquot_id",
+  'sample_id',
+  'portion_id',
+  'analyte_id',
+  'slide_id',
+  'aliquot_id',
 ];
 
 export const match = (query: string, entity: Object): boolean =>
   Object.keys(entity).some(k => {
     const formatted = formatValue(entity[k]);
     return (
-      typeof formatted === "string" &&
+      typeof formatted === 'string' &&
       formatted.toLowerCase().includes(query.toLowerCase())
     );
   });

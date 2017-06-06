@@ -1,17 +1,17 @@
 // @flow
 
-import React from "react";
-import styled from "@ncigdc/theme/styled";
-import DI from "@ncigdc/theme/icons/Down";
-import withToggle from "./withToggle";
+import React from 'react';
+import styled from '@ncigdc/theme/styled';
+import DI from '@ncigdc/theme/icons/Down';
+import withToggle from './withToggle';
 
 const DownIcon = styled(DI, {
-  paddingLeft: "0.5rem",
+  paddingLeft: '0.5rem',
   color: ({ theme }) => theme.primaryLight1,
-  fontSize: "1.2em",
-  transform: ({ isDown }) => `rotate(${isDown ? "0deg" : "90deg"})`,
-  transition: "0.3s ease",
-  cursor: "pointer",
+  fontSize: '1.2em',
+  transform: ({ isDown }) => `rotate(${isDown ? '0deg' : '90deg'})`,
+  transition: '0.3s ease',
+  cursor: 'pointer',
 });
 
 type TProps = {

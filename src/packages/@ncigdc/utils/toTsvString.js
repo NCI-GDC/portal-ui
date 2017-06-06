@@ -1,28 +1,28 @@
 /* @flow */
-import { zip, some } from "lodash";
+import { zip, some } from 'lodash';
 
 export default (xs: Array<Object>): string => {
-  let result = "";
+  let result = '';
   if (xs) {
-    result = `${Object.keys(xs[0]).join("\t")}\n`;
+    result = `${Object.keys(xs[0]).join('\t')}\n`;
     xs.forEach(x => {
-      result += `${Object.keys(x).map(key => x[key]).join("\t")}\n`;
+      result += `${Object.keys(x).map(key => x[key]).join('\t')}\n`;
     });
   }
   return result;
 };
 
 export function mapArrayToTsvString(xs: Array<Map<string, string>>): string {
-  let result = "";
+  let result = '';
   xs[0].forEach((val, key) => {
     result += `${key}\t`;
   });
-  result += "\n";
+  result += '\n';
   xs.forEach(x => {
     x.forEach(val => {
       result += `${val}\t`;
     });
-    result += "\n";
+    result += '\n';
   });
   return result;
 }
@@ -39,5 +39,5 @@ export function mapStringArrayToTsvString(
 ): string {
   const allData = [header, ...data];
   const noEmptyCols = removeEmptyCols(allData);
-  return noEmptyCols.map(row => row.join("\t")).join("\n");
+  return noEmptyCols.map(row => row.join('\t')).join('\n');
 }

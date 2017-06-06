@@ -1,7 +1,7 @@
 // @flow
 /* eslint fp/no-rest-parameters:0 */
 
-import { compose, withProps, mapProps } from "recompose";
+import { compose, withProps, mapProps } from 'recompose';
 
 const namespace = (ns, ...hocs) =>
   compose(

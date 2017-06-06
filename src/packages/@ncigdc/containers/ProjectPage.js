@@ -1,17 +1,17 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
-import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
-import Project from "@ncigdc/components/Project";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
+import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
+import Project from '@ncigdc/components/Project';
 
 import {
   EXPERIMENTAL_STRATEGIES,
   DATA_CATEGORIES,
-} from "@ncigdc/utils/constants";
+} from '@ncigdc/utils/constants';
 
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
 export type TProps = {
   viewer: {

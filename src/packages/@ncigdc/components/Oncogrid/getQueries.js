@@ -1,7 +1,7 @@
 /* @flow */
-import { replaceFilters } from "@ncigdc/utils/filters";
-import memoize from "memoizee";
-import { fetchApi } from "@ncigdc/utils/ajax";
+import { replaceFilters } from '@ncigdc/utils/filters';
+import memoize from 'memoizee';
+import { fetchApi } from '@ncigdc/utils/ajax';
 
 async function getGenes({
   currentFilters,
@@ -10,10 +10,10 @@ async function getGenes({
   currentFilters: Object,
   size: number,
 }): Promise<Object> {
-  const fields = ["gene_id", "symbol", "is_cancer_gene_census"];
+  const fields = ['gene_id', 'symbol', 'is_cancer_gene_census'];
 
   return fetchApi(
-    `analysis/top_mutated_genes_by_project?size=${size}&fields=${fields.join()}${currentFilters.content.length ? `&filters=${JSON.stringify(currentFilters)}` : ""}`,
+    `analysis/top_mutated_genes_by_project?size=${size}&fields=${fields.join()}${currentFilters.content.length ? `&filters=${JSON.stringify(currentFilters)}` : ''}`,
   );
 }
 
@@ -31,31 +31,31 @@ async function getOccurences(args: {
 
   const filters = replaceFilters(
     {
-      op: "and",
+      op: 'and',
       content: [
-        { op: "in", content: { field: "genes.gene_id", value: geneIds } },
-        { op: "in", content: { field: "cases.case_id", value: caseIds } },
+        { op: 'in', content: { field: 'genes.gene_id', value: geneIds } },
+        { op: 'in', content: { field: 'cases.case_id', value: caseIds } },
       ],
     },
     currentFilters,
   );
 
   const fields = [
-    "ssm.consequence.transcript.consequence_type",
-    "ssm.consequence.transcript.annotation.impact",
-    "ssm.consequence.transcript.gene.gene_id",
-    "ssm.ssm_id",
-    "case.case_id",
+    'ssm.consequence.transcript.consequence_type',
+    'ssm.consequence.transcript.annotation.impact',
+    'ssm.consequence.transcript.gene.gene_id',
+    'ssm.ssm_id',
+    'case.case_id',
   ];
 
-  const { data } = await fetchApi("ssm_occurrences", {
-    headers: { "Content-Type": "application/json" },
+  const { data } = await fetchApi('ssm_occurrences', {
+    headers: { 'Content-Type': 'application/json' },
     body: {
       filters,
       size: OCCURRENCE_CHUNK,
       from,
       fields: fields.join(),
-      sort: "_uid", // force consistent order
+      sort: '_uid', // force consistent order
     },
   });
 
@@ -87,30 +87,30 @@ async function getCases({
 
   const filters = replaceFilters(
     {
-      op: "and",
+      op: 'and',
       content: [
-        { op: "in", content: { field: "genes.gene_id", value: geneIds } },
+        { op: 'in', content: { field: 'genes.gene_id', value: geneIds } },
       ],
     },
     currentFilters,
   );
 
-  return fetchApi("analysis/top_mutated_cases_by_gene", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  return fetchApi('analysis/top_mutated_cases_by_gene', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: {
       filters,
       size,
       fields: [
-        "diagnoses.days_to_death",
-        "diagnoses.age_at_diagnosis",
-        "diagnoses.vital_status",
-        "demographic.gender",
-        "demographic.race",
-        "demographic.ethnicity",
-        "case_id",
-        "summary.data_categories.file_count",
-        "summary.data_categories.data_category",
+        'diagnoses.days_to_death',
+        'diagnoses.age_at_diagnosis',
+        'diagnoses.vital_status',
+        'demographic.gender',
+        'demographic.race',
+        'demographic.ethnicity',
+        'case_id',
+        'summary.data_categories.file_count',
+        'summary.data_categories.data_category',
       ].join(),
     },
   });

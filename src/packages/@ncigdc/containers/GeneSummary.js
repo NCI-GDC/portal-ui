@@ -60,15 +60,12 @@ const GeneSummaryComponent = ({ node: gene }: TProps = {}) => (
               merge
               query={{
                 searchTableTab: "genes",
-                filters: makeFilter(
-                  [
-                    {
-                      field: "genes.is_cancer_gene_census",
-                      value: [gene.is_cancer_gene_census]
-                    }
-                  ],
-                  false
-                )
+                filters: makeFilter([
+                  {
+                    field: "genes.is_cancer_gene_census",
+                    value: [gene.is_cancer_gene_census]
+                  }
+                ])
               }}
             >
               Cancer Gene Census

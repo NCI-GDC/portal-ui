@@ -61,15 +61,12 @@ const createContainer = Component =>
       fetchData: false,
       ssmsBarChart_filters: null,
       score: "occurrence.case.project.project_id",
-      ssmTested: makeFilter(
-        [
-          {
-            field: "cases.available_variation_data",
-            value: "ssm"
-          }
-        ],
-        false
-      ),
+      ssmTested: makeFilter([
+        {
+          field: "cases.available_variation_data",
+          value: "ssm"
+        }
+      ]),
       sort: [
         { field: "_score", order: "desc" },
         { field: "_uid", order: "asc" }

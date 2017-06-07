@@ -32,15 +32,12 @@ const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
       aggFilters: null,
-      ssmTested: makeFilter(
-        [
-          {
-            field: "cases.available_variation_data",
-            value: "ssm"
-          }
-        ],
-        false
-      )
+      ssmTested: makeFilter([
+        {
+          field: "cases.available_variation_data",
+          value: "ssm"
+        }
+      ])
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -104,10 +101,9 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
                 searchTableTab: "cases",
                 filters: addInFilters(
                   filters,
-                  makeFilter(
-                    [{ field: "cases.project.project_id", value: [k] }],
-                    false
-                  )
+                  makeFilter([
+                    { field: "cases.project.project_id", value: [k] }
+                  ])
                 )
               }}
             >
@@ -117,16 +113,13 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
             <ExploreLink
               query={{
                 searchTableTab: "cases",
-                filters: makeFilter(
-                  [
-                    {
-                      field: "cases.available_variation_data",
-                      value: ["ssm"]
-                    },
-                    { field: "cases.project.project_id", value: [k] }
-                  ],
-                  false
-                )
+                filters: makeFilter([
+                  {
+                    field: "cases.available_variation_data",
+                    value: ["ssm"]
+                  },
+                  { field: "cases.project.project_id", value: [k] }
+                ])
               }}
             >
               {allAggs[k]}
@@ -168,10 +161,9 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
         <ExploreLink
           query={{
             searchTableTab: "cases",
-            filters: makeFilter(
-              [{ field: "cases.available_variation_data", value: ["ssm"] }],
-              false
-            )
+            filters: makeFilter([
+              { field: "cases.available_variation_data", value: ["ssm"] }
+            ])
           }}
         >
           {gdcCaseTotal.toLocaleString()}

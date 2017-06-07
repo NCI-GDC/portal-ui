@@ -230,15 +230,12 @@ const CancerDistributionChartQuery = {
   initialVariables: {
     caseAggsFilter: null,
     fetchFilteredCaseAggs: false,
-    ssmTested: makeFilter(
-      [
-        {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ],
-      false
-    )
+    ssmTested: makeFilter([
+      {
+        field: "cases.available_variation_data",
+        value: "ssm"
+      }
+    ])
   },
   fragments: {
     ssms: () => Relay.QL`

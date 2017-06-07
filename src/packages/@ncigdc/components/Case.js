@@ -73,17 +73,14 @@ const getAnnotationsLinkParams = annotations => {
     return {
       pathname: "/annotations",
       query: {
-        filters: makeFilter(
-          [
-            {
-              field: "annotations.annotation_id",
-              value: annotations.edges.map(
-                ({ node: annotation }) => annotation.annotation_id
-              )
-            }
-          ],
-          false
-        )
+        filters: makeFilter([
+          {
+            field: "annotations.annotation_id",
+            value: annotations.edges.map(
+              ({ node: annotation }) => annotation.annotation_id
+            )
+          }
+        ])
       }
     };
   }
@@ -122,16 +119,13 @@ const Case = compose(
 
         if (strat) {
           const linkQuery = {
-            filters: makeFilter(
-              [
-                { field: "cases.case_id", value: p.case_id },
-                {
-                  field: "files.experimental_strategy",
-                  value: [strat.experimental_strategy]
-                }
-              ],
-              false
-            )
+            filters: makeFilter([
+              { field: "cases.case_id", value: p.case_id },
+              {
+                field: "files.experimental_strategy",
+                value: [strat.experimental_strategy]
+              }
+            ])
           };
 
           return [
@@ -177,13 +171,10 @@ const Case = compose(
       };
 
       const linkQuery = {
-        filters: makeFilter(
-          [
-            { field: "cases.case_id", value: p.case_id },
-            { field: "files.data_category", value: [type.data_category] }
-          ],
-          false
-        )
+        filters: makeFilter([
+          { field: "cases.case_id", value: p.case_id },
+          { field: "files.data_category", value: [type.data_category] }
+        ])
       };
 
       return acc.concat({
@@ -219,10 +210,9 @@ const Case = compose(
       ? addAllFilesInCart
       : removeFilesFromCart;
 
-    const fmFilters = makeFilter(
-      [{ field: "cases.project.project_id", value: p.project.project_id }],
-      false
-    );
+    const fmFilters = makeFilter([
+      { field: "cases.project.project_id", value: p.project.project_id }
+    ]);
 
     return (
       <Column spacing={theme.spacing}>
@@ -271,10 +261,9 @@ const Case = compose(
                   ? {
                       pathname: "/repository",
                       query: {
-                        filters: makeFilter(
-                          [{ field: "cases.case_id", value: p.case_id }],
-                          false
-                        ),
+                        filters: makeFilter([
+                          { field: "cases.case_id", value: p.case_id }
+                        ]),
                         facetTab: "files",
                         searchTableTab: "files"
                       }

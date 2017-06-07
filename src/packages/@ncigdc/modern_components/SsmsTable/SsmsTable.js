@@ -80,15 +80,12 @@ class Route extends Relay.Route {
       ssmsTable_sort: parseJSURLParam(q.ssmsTable_sort, null),
       ssmCaseFilter: addInFilters(
         q.ssmsTable_filters || defaultFilters,
-        makeFilter(
-          [
-            {
-              field: "available_variation_data",
-              value: "ssm"
-            }
-          ],
-          false
-        )
+        makeFilter([
+          {
+            field: "available_variation_data",
+            value: "ssm"
+          }
+        ])
       )
     };
   };
@@ -109,15 +106,12 @@ const createContainer = Component =>
         }
       },
       ssmCaseFilter: null,
-      ssmTested: makeFilter(
-        [
-          {
-            field: "cases.available_variation_data",
-            value: "ssm"
-          }
-        ],
-        false
-      ),
+      ssmTested: makeFilter([
+        {
+          field: "cases.available_variation_data",
+          value: "ssm"
+        }
+      ]),
       sort: [
         { field: "_score", order: "desc" },
         { field: "_uid", order: "asc" }
@@ -473,10 +467,7 @@ const Component = compose(
                     searchTableTab: "cases",
                     filters: addInFilters(
                       query.fmgTable_filters || defaultFilters,
-                      makeFilter(
-                        [{ field: "ssms.ssm_id", value: x.ssm_id }],
-                        false
-                      )
+                      makeFilter([{ field: "ssms.ssm_id", value: x.ssm_id }])
                     )
                   }}
                 >
@@ -490,15 +481,12 @@ const Component = compose(
                       ? query.ssmsTable_filters || defaultFilters
                       : addInFilters(
                           query.ssmsTable_filters || defaultFilters,
-                          makeFilter(
-                            [
-                              {
-                                field: "cases.available_variation_data",
-                                value: ["ssm"]
-                              }
-                            ],
-                            false
-                          )
+                          makeFilter([
+                            {
+                              field: "cases.available_variation_data",
+                              value: ["ssm"]
+                            }
+                          ])
                         )
                   }}
                 >
@@ -511,10 +499,9 @@ const Component = compose(
             ),
             projectBreakdown: (
               <ProjectBreakdown
-                filters={makeFilter(
-                  [{ field: "ssms.ssm_id", value: x.ssm_id }],
-                  false
-                )}
+                filters={makeFilter([
+                  { field: "ssms.ssm_id", value: x.ssm_id }
+                ])}
                 caseTotal={x.occurrence.hits.total}
                 gdcCaseTotal={cases.hits.total}
               />

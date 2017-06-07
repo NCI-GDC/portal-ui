@@ -54,23 +54,17 @@ export type TProps = {|
 |};
 
 export const GenePageComponent = (props: TProps) => {
-  const fmFilters = makeFilter(
-    [
-      {
-        field: "genes.gene_id",
-        value: [props.node.gene_id]
-      }
-    ],
-    false
-  );
+  const fmFilters = makeFilter([
+    {
+      field: "genes.gene_id",
+      value: [props.node.gene_id]
+    }
+  ]);
 
-  const cdFilters = makeFilter(
-    [
-      { field: "genes.gene_id", value: props.node.gene_id },
-      { field: "cases.available_variation_data", value: "ssm" }
-    ],
-    false
-  );
+  const cdFilters = makeFilter([
+    { field: "genes.gene_id", value: props.node.gene_id },
+    { field: "cases.available_variation_data", value: "ssm" }
+  ]);
 
   return (
     <FullWidthLayout title={props.node.symbol} entityType="GN">

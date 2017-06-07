@@ -238,7 +238,7 @@ const OncoGridWrapper = compose(
             pathname: "/exploration",
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: "cases.case_id", value: data.id }], false)
+                makeFilter([{ field: "cases.case_id", value: data.id }])
               )
             }
           });
@@ -248,7 +248,7 @@ const OncoGridWrapper = compose(
             pathname: "/exploration",
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: "ssms.ssm_id", value: data.id }], false)
+                makeFilter([{ field: "ssms.ssm_id", value: data.id }])
               ),
               facetTab: "mutations",
               searchTableTab: "mutations"
@@ -260,7 +260,7 @@ const OncoGridWrapper = compose(
             pathname: "/exploration",
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: "genes.gene_id", value: data.id }], false)
+                makeFilter([{ field: "genes.gene_id", value: data.id }])
               ),
               facetTab: "genes",
               searchTableTab: "genes"

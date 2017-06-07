@@ -173,15 +173,12 @@ const Component = compose(
       relay.setVariables(
         {
           ssmCountsfilters: caseIds.length
-            ? makeFilter(
-                [
-                  {
-                    field: "occurrence.case.case_id",
-                    value: caseIds
-                  }
-                ],
-                false
-              )
+            ? makeFilter([
+                {
+                  field: "occurrence.case.case_id",
+                  value: caseIds
+                }
+              ])
             : null
         },
         readyState => {
@@ -380,20 +377,18 @@ const Component = compose(
                       <MutationsCount
                         isLoading={ssmCountsLoading}
                         ssmCount={ssmCounts[c.case_id]}
-                        filters={makeFilter(
-                          [{ field: "cases.case_id", value: [c.case_id] }],
-                          false
-                        )}
+                        filters={makeFilter([
+                          { field: "cases.case_id", value: [c.case_id] }
+                        ])}
                       />
                     ),
                     num_genes: (
                       <ExploreLink
                         query={{
                           searchTableTab: "genes",
-                          filters: makeFilter(
-                            [{ field: "cases.case_id", value: [c.case_id] }],
-                            false
-                          )
+                          filters: makeFilter([
+                            { field: "cases.case_id", value: [c.case_id] }
+                          ])
                         }}
                       >
                         {c.score}
@@ -404,19 +399,16 @@ const Component = compose(
                         dataCategorySummary[DATA_CATEGORIES[k].full]
                           ? <RepositoryFilesLink
                               query={{
-                                filters: makeFilter(
-                                  [
-                                    {
-                                      field: "cases.case_id",
-                                      value: c.case_id
-                                    },
-                                    {
-                                      field: "files.data_category",
-                                      value: DATA_CATEGORIES[k].full
-                                    }
-                                  ],
-                                  false
-                                )
+                                filters: makeFilter([
+                                  {
+                                    field: "cases.case_id",
+                                    value: c.case_id
+                                  },
+                                  {
+                                    field: "files.data_category",
+                                    value: DATA_CATEGORIES[k].full
+                                  }
+                                ])
                               }}
                             >
                               {dataCategorySummary[DATA_CATEGORIES[k].full]}

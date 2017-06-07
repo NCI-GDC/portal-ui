@@ -74,7 +74,7 @@ export default compose(
     handleClickGene: ({ push, query, filters }) => gene => {
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: "genes.gene_id", value: [gene.gene_id] }], false)
+        makeFilter([{ field: "genes.gene_id", value: [gene.gene_id] }])
       );
       push({
         pathname: "/exploration",

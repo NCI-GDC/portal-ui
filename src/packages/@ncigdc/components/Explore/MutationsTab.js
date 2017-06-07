@@ -74,7 +74,7 @@ export default compose(
     handleClickMutation: ({ push, query, filters }) => ssm => {
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: "ssms.ssm_id", value: [ssm.ssm_id] }], false)
+        makeFilter([{ field: "ssms.ssm_id", value: [ssm.ssm_id] }])
       );
       push({
         pathname: "/exploration",

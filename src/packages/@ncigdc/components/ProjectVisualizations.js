@@ -135,14 +135,12 @@ const ProjectVisualizations = enhance(
         defaultSurvivalData.rawData
     };
 
-    const fmFilters = makeFilter(
-      [{ field: "cases.project.project_id", value: projectId }],
-      false
-    );
-    const macFilters = makeFilter(
-      [{ field: "cases.project.project_id", value: projectId }],
-      false
-    );
+    const fmFilters = makeFilter([
+      { field: "cases.project.project_id", value: projectId }
+    ]);
+    const macFilters = makeFilter([
+      { field: "cases.project.project_id", value: projectId }
+    ]);
 
     return (
       <div>
@@ -199,10 +197,9 @@ const ProjectVisualizations = enhance(
               const { filters } = ctx.query || {};
               const currentFilters = parseFilterParam(filters, null);
               const componentFilters = replaceFilters(
-                makeFilter(
-                  [{ field: "cases.project.project_id", value: projectId }],
-                  false
-                ),
+                makeFilter([
+                  { field: "cases.project.project_id", value: projectId }
+                ]),
                 currentFilters
               );
               return (

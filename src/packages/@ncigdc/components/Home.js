@@ -181,15 +181,12 @@ const Home = compose(
               if (data.find(x => x._key === key)) {
                 const query = {
                   filters: JSURL.stringify(
-                    makeFilter(
-                      [
-                        {
-                          field: "cases.primary_site",
-                          value: [key]
-                        }
-                      ],
-                      false
-                    )
+                    makeFilter([
+                      {
+                        field: "cases.primary_site",
+                        value: [key]
+                      }
+                    ])
                   )
                 };
                 push({ pathname: "/exploration", query });

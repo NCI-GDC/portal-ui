@@ -52,25 +52,22 @@ const FilesLink = ({ node, fields = [], children }) =>
     ? <span>0</span>
     : <RepositoryFilesLink
         query={{
-          filters: makeFilter(
-            [{ field: "cases.case_id", value: [node.case_id] }, ...fields],
-            false
-          )
+          filters: makeFilter([
+            { field: "cases.case_id", value: [node.case_id] },
+            ...fields
+          ])
         }}
       >
         {children}
       </RepositoryFilesLink>;
 
 const getProjectIdFilter = projects =>
-  makeFilter(
-    [
-      {
-        field: "cases.project.project_id",
-        value: projects.edges.map(({ node: p }) => p.project_id)
-      }
-    ],
-    false
-  );
+  makeFilter([
+    {
+      field: "cases.project.project_id",
+      value: projects.edges.map(({ node: p }) => p.project_id)
+    }
+  ]);
 
 const casesTableModel = [
   {
@@ -199,10 +196,9 @@ const casesTableModel = [
           ? "0"
           : <AnnotationsLink
               query={{
-                filters: makeFilter(
-                  [{ field: "annotations.case_id", value: node.case_id }],
-                  false
-                )
+                filters: makeFilter([
+                  { field: "annotations.case_id", value: node.case_id }
+                ])
               }}
             >
               {node.annotations.hits.total.toLocaleString()}

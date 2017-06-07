@@ -41,28 +41,22 @@ const CasesLink: TLink = ({ node, fields = [], children }) =>
     ? <span>0</span>
     : <RepositoryCasesLink
         query={{
-          filters: makeFilter(
-            [
-              { field: "cases.project.project_id", value: [node.project_id] },
-              ...fields
-            ],
-            false
-          )
+          filters: makeFilter([
+            { field: "cases.project.project_id", value: [node.project_id] },
+            ...fields
+          ])
         }}
       >
         {children}
       </RepositoryCasesLink>;
 
 const getProjectIdFilter = projects =>
-  makeFilter(
-    [
-      {
-        field: "cases.project.project_id",
-        value: projects.edges.map(({ node: p }) => p.project_id)
-      }
-    ],
-    false
-  );
+  makeFilter([
+    {
+      field: "cases.project.project_id",
+      value: projects.edges.map(({ node: p }) => p.project_id)
+    }
+  ]);
 
 const projectsTableModel = [
   {
@@ -145,10 +139,9 @@ const projectsTableModel = [
       <NumTd>
         <RepositoryFilesLink
           query={{
-            filters: makeFilter(
-              [{ field: "cases.project.project_id", value: node.project_id }],
-              false
-            )
+            filters: makeFilter([
+              { field: "cases.project.project_id", value: node.project_id }
+            ])
           }}
         >
           {node.summary.file_count.toLocaleString()}

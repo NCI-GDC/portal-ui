@@ -113,13 +113,10 @@ export const SSMPageComponent = compose(
       x => x.node.transcript.is_canonical
     ).node.transcript.gene.gene_id,
 
-    cdFilters: makeFilter(
-      [
-        { field: "ssms.ssm_id", value: node.ssm_id },
-        { field: "cases.available_variation_data", value: "ssm" }
-      ],
-      false
-    )
+    cdFilters: makeFilter([
+      { field: "ssms.ssm_id", value: node.ssm_id },
+      { field: "cases.available_variation_data", value: "ssm" }
+    ])
   }))
 )(({ node, viewer, canonicalGeneId, cdFilters }: TProps = {}) => (
   <FullWidthLayout title={node.ssm_id} entityType="MU">

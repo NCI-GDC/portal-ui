@@ -207,30 +207,24 @@ export const getFilterValue = ({ currentFilters, dotField }) =>
   currentFilters.find(f => f.content.field === dotField);
 
 type TMakeFilter = (
-  fields: [{ field: string, value: string }],
-  returnString: boolean
+  fields: [{ field: string, value: string }]
 ) => Object | string;
-export const makeFilter: TMakeFilter = (fields, returnString = true) => {
-  const contentArray = fields.map(item => {
-    const value = _.isArray(item.value) ? item.value : item.value.split(",");
+export const makeFilter: TMakeFilter = fields => {
+  if (!fields.length) return {};
+  return {
+    op: "and",
+    content: fields.map(item => {
+      const value = _.isArray(item.value) ? item.value : item.value.split(",");
 
-    return {
-      op: "in",
-      content: {
-        field: item.field,
-        value
-      }
-    };
-  });
-
-  const filters = contentArray.length
-    ? {
-        op: "and",
-        content: contentArray
-      }
-    : {};
-
-  return returnString ? JSON.stringify(filters) : filters;
+      return {
+        op: "in",
+        content: {
+          field: item.field,
+          value
+        }
+      };
+    })
+  };
 };
 
 export const removeFilter: TRemoveFilter = (field, query) => {

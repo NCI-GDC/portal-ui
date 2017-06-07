@@ -59,13 +59,10 @@ export const createDataCategoryColumns = ({
               ? "0"
               : <Link
                   query={{
-                    filters: makeFilter(
-                      [
-                        ...getCellLinkFilters(node),
-                        { field: "files.data_category", value: category.full }
-                      ],
-                      false
-                    )
+                    filters: makeFilter([
+                      ...getCellLinkFilters(node),
+                      { field: "files.data_category", value: category.full }
+                    ])
                   }}
                 >
                   {count.toLocaleString()}
@@ -77,13 +74,10 @@ export const createDataCategoryColumns = ({
         <NumTd>
           <Link
             query={{
-              filters: makeFilter(
-                [
-                  ...getTotalLinkFilters(hits),
-                  { field: "files.data_category", value: category.full }
-                ],
-                false
-              )
+              filters: makeFilter([
+                ...getTotalLinkFilters(hits),
+                { field: "files.data_category", value: category.full }
+              ])
             }}
           >
             {_.sumBy(

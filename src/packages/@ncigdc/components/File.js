@@ -138,7 +138,7 @@ const File = ({
         query={{
           filters: makeFilter([
             {
-              field: "downstream_analyses.output_files.file_id",
+              field: "files.downstream_analyses.output_files.file_id",
               value: node.file_id
             }
           ])

@@ -57,6 +57,7 @@ const AddCaseFilesToCartButton = compose(
   })
 )(
   ({
+    filters,
     hasFiles,
     files = [],
     filteredFiles = [],
@@ -121,8 +122,11 @@ const AddCaseFilesToCartButton = compose(
             )
           </DropdownItem>,
 
-        !!(filteredFiles.length &&
-          filteredFiles.length > filteredFilesInCart.length) &&
+        _.every([
+          filteredFiles.length,
+          filteredFiles.length > filteredFilesInCart.length,
+          filteredFiles.length < files.length
+        ]) &&
           <DropdownItem
             onClick={() => dispatch(addAllFilesInCart(filteredFiles))}
             aria-label="Add filtered Case files to the Cart"

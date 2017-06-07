@@ -139,7 +139,14 @@ const filesTableModel = [
     name: "Annotations",
     id: "annotations.annotation_id",
     th: () => <Th>Annotations</Th>,
-    td: ({ node }) => <TdNum>{node.annotations.hits.total}</TdNum>
+    td: ({ node }) => (
+      <TdNum>
+        {
+          // leaving link off until we have a proper way to filter the annotation page by file
+          node.annotations.hits.total
+        }
+      </TdNum>
+    )
   },
   {
     name: "Data Type",

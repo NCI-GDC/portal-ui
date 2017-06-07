@@ -4,7 +4,8 @@
 	"compilerOptions": {
 		"target": "es6",
 		"module": "commonjs",
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": "src/packages/"
 	},
 	"exclude": [
 		"./node_modules",

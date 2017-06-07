@@ -2,6 +2,7 @@
 
 import React from "react";
 import { compose, withState, mapProps, pure, lifecycle } from "recompose";
+import { isEqual } from "lodash";
 
 import styled from "@ncigdc/theme/styled";
 import withRouter from "@ncigdc/utils/withRouter";
@@ -35,7 +36,7 @@ const convertMaxMin = ({ max, min, convertDays, selectedUnit, setState }) => {
       maxDisplayed: Math.ceil((max + 1 - conversionFactor) / conversionFactor)
     }));
   } else {
-    setState(s => ({ ...s, maxDisplayed: max, minDisplayed: min }));
+    setState(s => ({ ...s, maxDisplayed: max || 0, minDisplayed: min || 0 }));
   }
 };
 
@@ -139,11 +140,11 @@ const enhance = compose(
     },
     componentWillReceiveProps(nextProps: Object): void {
       if (
-        Object.entries(this.props.query).some(
-          ([key, val]) => val !== nextProps.query[key]
+        ["field", "query", "max", "min"].some(
+          k => !isEqual(this.props[k], nextProps[k])
         )
       ) {
-        const { field, query } = nextProps;
+        const { field, query, max, min } = nextProps;
         const { state: { selectedUnit }, setState, convertDays } = this.props;
         const thisFieldCurrent = getCurrentFromAndTo({ field, query });
         const opToWord = { ">=": "from", "<=": "to" };
@@ -168,6 +169,8 @@ const enhance = compose(
             toDisplayed: newState.to
           }));
         }
+
+        convertMaxMin({ max, min, convertDays, selectedUnit, setState });
       }
     }
   }),

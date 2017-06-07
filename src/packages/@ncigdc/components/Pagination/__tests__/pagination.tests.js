@@ -1,8 +1,8 @@
 /* @flow */
-import { calculatePages, getPaginationRange } from "../";
+import { calculatePages, getPaginationRange } from '../';
 
-describe("Pagination", () => {
-  it("calculates pages", () => {
+describe('Pagination', () => {
+  it('calculates pages', () => {
     const props = {
       params: {
         files_offset: 0,
@@ -11,21 +11,21 @@ describe("Pagination", () => {
         filters: null,
         fmTable_filters: null,
         fmTable_offset: 0,
-        fmTable_size: 20
+        fmTable_size: 20,
       },
       total: 37,
-      prefix: "fmTable"
+      prefix: 'fmTable',
     };
     const { totalPages } = calculatePages(props);
     expect(totalPages).toEqual(2);
   });
 });
 
-describe("generates a pagination range", () => {
-  it("displays all pages if total pages is less than 10", () => {
+describe('generates a pagination range', () => {
+  it('displays all pages if total pages is less than 10', () => {
     expect(getPaginationRange(0, 2)).toEqual([1, 2]);
   });
-  it("displays only 10 pages if more than 10 pages", () => {
+  it('displays only 10 pages if more than 10 pages', () => {
     expect(getPaginationRange(0, 300)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(getPaginationRange(10, 300)).toEqual([
       11,
@@ -37,7 +37,7 @@ describe("generates a pagination range", () => {
       17,
       18,
       19,
-      20
+      20,
     ]);
   });
 });

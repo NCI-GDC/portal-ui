@@ -1,24 +1,24 @@
 /* @flow */
 
-import type { TGroupFilter } from "../filters/types";
-import type { TRawQuery } from "../uri/types";
+import type { TGroupFilter } from '../filters/types';
+import type { TRawQuery } from '../uri/types';
 
 export type TRelayRouteParamsViewer = {
-  filters: ?TGroupFilter
+  filters: ?TGroupFilter,
 };
 
 export type TRelayRouteParamsNode = {
   filters: ?TGroupFilter,
-  id: string
+  id: string,
 };
 
 export type TPrepareViewerParams = (o: {
-  location: { query: TRawQuery }
+  location: { query: TRawQuery },
 }) => TRelayRouteParamsViewer;
 
 export type TPrepareNodeParams = (
-  t: string
+  t: string,
 ) => (o: {
   location: { search: TRawQuery },
-  match: { params: { id: string } }
+  match: { params: { id: string } },
 }) => TRelayRouteParamsNode;

@@ -1,19 +1,19 @@
 // @flow
-import React from "react";
+import React from 'react';
 
 type TProps = {
   color?: string,
   height?: string,
-  width?: string
+  width?: string,
 };
 type TCosmic = (props: TProps) => React.Element<*>;
 const Cosmic: TCosmic = (
   {
-    width = "100%",
-    height = "100%",
-    fillColor = "#c9daeb",
-    borderColor = "#074886"
-  } = {}
+    width = '100%',
+    height = '100%',
+    fillColor = '#c9daeb',
+    borderColor = '#074886',
+  } = {},
 ) => (
   <svg height={height} width={width} viewBox="0 0 950 742" version="1.1">
     <g>

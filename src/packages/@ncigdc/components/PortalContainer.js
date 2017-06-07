@@ -1,50 +1,50 @@
 // @flow
 
-import React from "react";
-import { connect } from "react-redux";
-import Route from "react-router/Route";
-import Switch from "react-router/Switch";
-import Cookies from "js-cookie";
-import { compose, lifecycle } from "recompose";
+import React from 'react';
+import { connect } from 'react-redux';
+import Route from 'react-router/Route';
+import Switch from 'react-router/Switch';
+import Cookies from 'js-cookie';
+import { compose, lifecycle } from 'recompose';
 
-import RepositoryRoute from "@ncigdc/routes/RepositoryRoute";
-import ExploreRoute from "@ncigdc/routes/ExploreRoute";
-import ProjectsRoute from "@ncigdc/routes/ProjectsRoute";
-import AnnotationsRoute from "@ncigdc/routes/AnnotationsRoute";
-import ProjectRoute from "@ncigdc/routes/ProjectRoute";
-import FileRoute from "@ncigdc/routes/FileRoute";
-import CaseRoute from "@ncigdc/routes/CaseRoute";
-import AnnotationRoute from "@ncigdc/routes/AnnotationRoute";
-import CartRoute from "@ncigdc/routes/CartRoute";
-import HomeRoute from "@ncigdc/routes/HomeRoute";
-import GeneRoute from "@ncigdc/routes/GeneRoute";
-import SSMRoute from "@ncigdc/routes/SSMRoute";
-import SmartSearchRoute from "@ncigdc/routes/SmartSearchRoute";
+import RepositoryRoute from '@ncigdc/routes/RepositoryRoute';
+import ExploreRoute from '@ncigdc/routes/ExploreRoute';
+import ProjectsRoute from '@ncigdc/routes/ProjectsRoute';
+import AnnotationsRoute from '@ncigdc/routes/AnnotationsRoute';
+import ProjectRoute from '@ncigdc/routes/ProjectRoute';
+import FileRoute from '@ncigdc/routes/FileRoute';
+import CaseRoute from '@ncigdc/routes/CaseRoute';
+import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
+import CartRoute from '@ncigdc/routes/CartRoute';
+import HomeRoute from '@ncigdc/routes/HomeRoute';
+import GeneRoute from '@ncigdc/routes/GeneRoute';
+import SSMRoute from '@ncigdc/routes/SSMRoute';
+import SmartSearchRoute from '@ncigdc/routes/SmartSearchRoute';
 
-import Head from "@ncigdc/components/Head";
-import Header from "@ncigdc/components/Header";
-import Footer from "@ncigdc/components/Footer";
-import NotificationContainer from "@ncigdc/components/NotificationContainer";
-import RelayLoadingContainer from "@ncigdc/components/RelayLoadingContainer";
-import ProgressContainer from "@ncigdc/components/ProgressContainer";
-import ModalContainer from "@ncigdc/components/ModalContainer";
-import NotFound from "@ncigdc/components/NotFound";
+import Head from '@ncigdc/components/Head';
+import Header from '@ncigdc/components/Header';
+import Footer from '@ncigdc/components/Footer';
+import NotificationContainer from '@ncigdc/components/NotificationContainer';
+import RelayLoadingContainer from '@ncigdc/components/RelayLoadingContainer';
+import ProgressContainer from '@ncigdc/components/ProgressContainer';
+import ModalContainer from '@ncigdc/components/ModalContainer';
+import NotFound from '@ncigdc/components/NotFound';
 
-import withRouter from "@ncigdc/utils/withRouter";
-import { GlobalTooltip } from "@ncigdc/uikit/Tooltip";
+import withRouter from '@ncigdc/utils/withRouter';
+import { GlobalTooltip } from '@ncigdc/uikit/Tooltip';
 
-import styled from "@ncigdc/theme/styled";
-import { setModal } from "@ncigdc/dux/modal";
-import FirstTimeModal from "@ncigdc/components/Modals/FirstTimeModal";
+import styled from '@ncigdc/theme/styled';
+import { setModal } from '@ncigdc/dux/modal';
+import FirstTimeModal from '@ncigdc/components/Modals/FirstTimeModal';
 
 const SkipLink = styled.a({
-  position: "absolute",
-  left: "-999px",
-  backgroundColor: "#fff",
-  zIndex: 1000
+  position: 'absolute',
+  left: '-999px',
+  backgroundColor: '#fff',
+  zIndex: 1000,
 });
 
-const FIRST_TIME_KEY = "NCI-Warning";
+const FIRST_TIME_KEY = 'NCI-Warning';
 
 const enhance = compose(
   connect(store => ({ notifications: store.bannerNotification })),
@@ -68,15 +68,15 @@ const enhance = compose(
     },
     componentWillUnmount(): void {
       this.removeListen(); // eslint-disable-line fp/no-this
-    }
-  })
+    },
+  }),
 );
 const PortalContainer = ({
-  notifications
+  notifications,
 }: {
-  notifications: Array<{ dismissed: string }>
+  notifications: Array<{ dismissed: string }>,
 }) => (
-  <div style={{ position: "relative", minHeight: "100vh" }}>
+  <div style={{ position: 'relative', minHeight: '100vh' }}>
     <SkipLink href="#skip">Skip to Main Content</SkipLink>
     <ProgressContainer />
     <Header />
@@ -84,12 +84,12 @@ const PortalContainer = ({
       id="skip"
       style={{
         paddingTop: `calc(51px + ${notifications.filter(n => !n.dismissed).length * 40}px)`,
-        paddingBottom: "120px",
-        transition: "padding 0.25s ease"
+        paddingBottom: '120px',
+        transition: 'padding 0.25s ease',
       }}
     >
       <Route
-        children={p => <Head title={p.location.pathname.split("/")[1]} />}
+        children={p => <Head title={p.location.pathname.split('/')[1]} />}
       />
       <Switch>
         <Route exact path="/" component={HomeRoute} />

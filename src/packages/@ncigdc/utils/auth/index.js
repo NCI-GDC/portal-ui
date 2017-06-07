@@ -1,6 +1,6 @@
 // @flow
 
-import _ from "lodash";
+import _ from 'lodash';
 
 const isUserProject = ({ user, file }) => {
   if (!user) {
@@ -10,8 +10,8 @@ const isUserProject = ({ user, file }) => {
     new Set([
       ...(file.projects || []).map(p => p.project_id || p),
       ...(file.cases || { hits: { edges: [] } }).hits.edges
-        .map(e => e.node.project.project_id)
-    ])
+        .map(e => e.node.project.project_id),
+    ]),
   );
 
   const gdcIds = Object.keys((user.projects || { gdc_ids: {} }).gdc_ids);
@@ -19,24 +19,24 @@ const isUserProject = ({ user, file }) => {
 };
 
 const fileInCorrectState = (file): boolean =>
-  file.state === "submitted" &&
-  ["submitted", "processing", "processed"].indexOf(file.file_state) !== -1;
+  file.state === 'submitted' &&
+  ['submitted', 'processing', 'processed'].indexOf(file.file_state) !== -1;
 
 const intersectsWithFileAcl = ({ user, file }): boolean =>
   _.intersection(
     Object.keys((user.projects || { phs_ids: {} }).phs_ids).filter(
-      p => user.projects.phs_ids[p].indexOf("_member_") !== -1
+      p => user.projects.phs_ids[p].indexOf('_member_') !== -1,
     ) || [],
-    file.acl
+    file.acl,
   ).length !== 0;
 
 const userCanDownloadFiles = ({ user, files }) =>
   files.every(file => {
-    if (file.access === "open") {
+    if (file.access === 'open') {
       return true;
     }
 
-    if (file.access !== "open" && !user) {
+    if (file.access !== 'open' && !user) {
       return false;
     }
 
@@ -60,5 +60,5 @@ export {
   userCanDownloadFiles,
   userCanDownloadFile,
   intersectsWithFileAcl,
-  fileInCorrectState
+  fileInCorrectState,
 };

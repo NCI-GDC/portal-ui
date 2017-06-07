@@ -1,37 +1,37 @@
 // @flow
 
 // Vendor
-import React from "react";
-import Color from "color";
+import React from 'react';
+import Color from 'color';
 
 // Custom
-import styled from "@ncigdc/theme/styled";
-import { center, margin } from "@ncigdc/theme/mixins";
-import validAttributes from "@ncigdc/theme/utils/validAttributes";
+import styled from '@ncigdc/theme/styled';
+import { center, margin } from '@ncigdc/theme/mixins';
+import validAttributes from '@ncigdc/theme/utils/validAttributes';
 
 /*----------------------------------------------------------------------------*/
 
 export const buttonBaseStyles = {
   ...center,
-  position: "relative",
-  cursor: ({ disabled }) => (disabled ? "not-allowed" : "pointer"),
-  padding: "6px 12px",
-  fontSize: "14px",
-  borderRadius: "4px",
-  borderColor: "transparent",
+  position: 'relative',
+  cursor: ({ disabled }) => (disabled ? 'not-allowed' : 'pointer'),
+  padding: '6px 12px',
+  fontSize: '14px',
+  borderRadius: '4px',
+  borderColor: 'transparent',
   borderWidth: 1,
-  borderStyle: "solid",
+  borderStyle: 'solid',
   backgroundColor: ({ theme, disabled }) =>
     disabled ? theme.greyScale4 : theme.primary,
-  color: "white",
-  outline: "none",
-  transition: "0.25s ease",
-  ":hover": {
+  color: 'white',
+  outline: 'none',
+  transition: '0.25s ease',
+  ':hover': {
     backgroundColor: ({ theme, disabled }) =>
       disabled
         ? theme.greyScale4
-        : Color(theme.primary).lighten(0.7).rgbString()
-  }
+        : Color(theme.primary).lighten(0.7).rgbString(),
+  },
 };
 
 type TButtonProps = {
@@ -39,7 +39,7 @@ type TButtonProps = {
   disabled?: boolean,
   leftIcon?: mixed,
   rightIcon?: mixed,
-  style?: Object
+  style?: Object,
 };
 const Button = (
   {
@@ -49,12 +49,12 @@ const Button = (
     disabled = false,
     children,
     ...props
-  }: TButtonProps = {}
+  }: TButtonProps = {},
 ) => {
   const StyledButton = styled.button({ ...buttonBaseStyles, ...style });
   return (
     <StyledButton disabled={disabled} {...validAttributes(props)}>
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         {leftIcon}
         <span style={{ ...margin(leftIcon, rightIcon), ...center }}>
           {children}

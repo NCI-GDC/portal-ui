@@ -1,26 +1,29 @@
 // @flow
 /* eslint fp/no-mutating-methods: 0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { lifecycle, compose, withProps } from "recompose";
-import { isEqual, head } from "lodash";
-import { makeFilter } from "@ncigdc/utils/filters";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { lifecycle, compose, withProps } from 'recompose';
+import { isEqual, head } from 'lodash';
+import { makeFilter } from '@ncigdc/utils/filters';
 
 const GeneSymbolComponent = compose(
   withProps(({ relay }) => ({
     setRelayFilters: ({ geneId }) => {
       const variables = {
-        geneIdFilters: makeFilter([
-          {
-            field: "genes.gene_id",
-            value: [geneId]
-          }
-        ]),
-        fetchGeneSymbols: !!geneId
+        geneIdFilters: makeFilter(
+          [
+            {
+              field: 'genes.gene_id',
+              value: [geneId],
+            },
+          ],
+          false,
+        ),
+        fetchGeneSymbols: !!geneId,
       };
       relay.setVariables(variables);
-    }
+    },
   })),
   lifecycle({
     componentDidMount(): void {
@@ -30,8 +33,8 @@ const GeneSymbolComponent = compose(
       if (!isEqual(this.props.filters, nextProps.filters)) {
         nextProps.setRelayFilters(nextProps);
       }
-    }
-  })
+    },
+  }),
 )(
   ({ explore, geneId }) =>
     explore.genes.hits
@@ -41,13 +44,13 @@ const GeneSymbolComponent = compose(
               .node.symbol
           }
         </span>
-      : <span style={{ width: "45px" }}>&nbsp;</span>
+      : <span style={{ width: '45px' }}>&nbsp;</span>,
 );
 
 export const GeneSymbolQuery = {
   initialVariables: {
     geneIdFilters: null,
-    fetchGeneSymbols: false
+    fetchGeneSymbols: false,
   },
   fragments: {
     explore: () => Relay.QL`
@@ -63,8 +66,8 @@ export const GeneSymbolQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const GeneSymbol = Relay.createContainer(GeneSymbolComponent, GeneSymbolQuery);

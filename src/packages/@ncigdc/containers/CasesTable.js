@@ -1,19 +1,19 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { compose } from "recompose";
-import { connect } from "react-redux";
-import Pagination from "@ncigdc/components/Pagination";
-import Showing from "@ncigdc/components/Pagination/Showing";
-import { Row } from "@ncigdc/uikit/Flex";
-import TableActions from "@ncigdc/components/TableActions";
-import tableModels from "@ncigdc/tableModels";
-import Table, { Tr } from "@ncigdc/uikit/Table";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
+import Pagination from '@ncigdc/components/Pagination';
+import Showing from '@ncigdc/components/Pagination/Showing';
+import { Row } from '@ncigdc/uikit/Flex';
+import TableActions from '@ncigdc/components/TableActions';
+import tableModels from '@ncigdc/tableModels';
+import Table, { Tr } from '@ncigdc/uikit/Table';
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.cases }))
-)(({ relay, hits, entityType = "cases", tableColumns }) => {
+  connect(state => ({ tableColumns: state.tableColumns.cases })),
+)(({ relay, hits, entityType = 'cases', tableColumns }) => {
   const tableInfo = tableModels[entityType] // eslint-disable-line
     .slice()
     .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
@@ -23,9 +23,9 @@ export const SearchTable = compose(
     <div>
       <Row
         style={{
-          backgroundColor: "white",
-          padding: "1rem",
-          justifyContent: "space-between"
+          backgroundColor: 'white',
+          padding: '1rem',
+          justifyContent: 'space-between',
         }}
       >
         <Showing
@@ -41,32 +41,32 @@ export const SearchTable = compose(
           sortKey="cases_sort"
           endpoint="cases"
           downloadFields={[
-            "case_id",
-            "primary_site",
-            "project.project_id",
-            "demographic.gender",
-            "summary.data_categories.file_count",
-            "summary.data_categories.data_category"
+            'case_id',
+            'primary_site',
+            'project.project_id',
+            'demographic.gender',
+            'summary.data_categories.file_count',
+            'summary.data_categories.data_category',
           ]}
           sortOptions={[
             {
-              id: "project.project_id",
-              name: "Project"
+              id: 'project.project_id',
+              name: 'Project',
             },
             {
-              id: "primary_site",
-              name: "Primary Site"
+              id: 'primary_site',
+              name: 'Primary Site',
             },
             {
-              id: "demographic.gender",
-              name: "Gender"
-            }
+              id: 'demographic.gender',
+              name: 'Gender',
+            },
           ]}
           tsvSelector="#repository-cases-table"
           tsvFilename="repository-cases-table.tsv"
         />
       </Row>
-      <div style={{ overflowX: "auto" }}>
+      <div style={{ overflowX: 'auto' }}>
         <Table
           id="repository-cases-table"
           headings={tableInfo
@@ -109,7 +109,7 @@ const CasesTable = Relay.createContainer(SearchTable, {
   initialVariables: {
     isFileDataRequired: false,
     isFilteredFileDataRequired: false,
-    filesFilters: null
+    filesFilters: null,
   },
   fragments: {
     hits: () => Relay.QL`
@@ -186,8 +186,8 @@ const CasesTable = Relay.createContainer(SearchTable, {
             }
           }
         }
-      `
-  }
+      `,
+  },
 });
 
 export default CasesTable;

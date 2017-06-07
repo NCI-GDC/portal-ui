@@ -1,28 +1,28 @@
 /* @flow */
 
-import "@ncigdc/theme/global.css";
+import '@ncigdc/theme/global.css';
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { Provider } from "react-redux";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { Provider } from 'react-redux';
 
-import setupStore from "@ncigdc/dux";
-import { fetchApiVersionInfo } from "@ncigdc/dux/versionInfo";
-import { fetchNotifications } from "@ncigdc/dux/bannerNotification";
-import { fetchUser } from "@ncigdc/dux/auth";
+import setupStore from '@ncigdc/dux';
+import { fetchApiVersionInfo } from '@ncigdc/dux/versionInfo';
+import { fetchNotifications } from '@ncigdc/dux/bannerNotification';
+import { fetchUser } from '@ncigdc/dux/auth';
 
-import PortalContainer from "@ncigdc/components/PortalContainer";
+import PortalContainer from '@ncigdc/components/PortalContainer';
 
 export const store = setupStore({
   persistConfig: {
-    keyPrefix: "ncigdcActive"
-  }
+    keyPrefix: 'ncigdcActive',
+  },
 });
 
 store.dispatch(fetchApiVersionInfo());
 store.dispatch(fetchNotifications());
 
-if (process.env.NODE_ENV !== "development") {
+if (process.env.NODE_ENV !== 'development') {
   store.dispatch(fetchUser());
 }
 
@@ -40,8 +40,8 @@ const PortalQuery = {
           username
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const Portal = Relay.createContainer(PortalComponent, PortalQuery);

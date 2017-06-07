@@ -1,18 +1,18 @@
 // @flow
 
-import React from "react";
-import { withState, compose, lifecycle, mapProps } from "recompose";
-import { style } from "glamor";
-import BioTreeItem from "./BioTreeItem";
-import { search } from "../utils/biotree";
-import Emitter from "@ncigdc/utils/emitter";
+import React from 'react';
+import { withState, compose, lifecycle, mapProps } from 'recompose';
+import { style } from 'glamor';
+import BioTreeItem from './BioTreeItem';
+import { search } from '../utils/biotree';
+import Emitter from '@ncigdc/utils/emitter';
 
 const expandedColor = style({
-  color: "#267c2a"
+  color: '#267c2a',
 });
 
 const collapsedColor = style({
-  color: "#2f487e"
+  color: '#2f487e',
 });
 
 const BioTreeView = ({
@@ -23,7 +23,7 @@ const BioTreeView = ({
   selectEntity,
   selectedEntity,
   query,
-  childrenExpanded
+  childrenExpanded,
 }) => {
   const expanded =
     ex || (query && entities.hits.edges.some(e => search(query, e).length));
@@ -39,13 +39,13 @@ const BioTreeView = ({
         >
           <div className="tree">
             <i
-              style={{ cursor: "pointer" }}
+              style={{ cursor: 'pointer' }}
               className={`
                 fa
                 ${expanded ? `fa-minus-square ${expandedColor}` : `fa-plus-square ${collapsedColor}`}
               `}
             />
-            <span className="h5 type" style={{ textTransform: "capitalize" }}>
+            <span className="h5 type" style={{ textTransform: 'capitalize' }}>
               {type.p}
             </span>
           </div>
@@ -69,19 +69,19 @@ const BioTreeView = ({
 
 const enhance = compose(
   withState(
-    "expanded",
-    "setExpanded",
-    props => props.defaultExpanded || props.entities.expanded
+    'expanded',
+    'setExpanded',
+    props => props.defaultExpanded || props.entities.expanded,
   ),
-  withState("emitterToken", "setEmitterToken", null),
+  withState('emitterToken', 'setEmitterToken', null),
   mapProps(({ defaultExpanded, ...rest }) => ({
     childrenExpanded: defaultExpanded,
-    ...rest
+    ...rest,
   })),
   lifecycle({
     componentWillMount(): void {
       const { setExpanded, setEmitterToken } = this.props;
-      const token = Emitter.addListener("expand", toExpand => {
+      const token = Emitter.addListener('expand', toExpand => {
         setExpanded(toExpand);
       });
       setEmitterToken(token);
@@ -89,7 +89,7 @@ const enhance = compose(
     componentWillUnmount(): void {
       const { emitterToken } = this.props;
       emitterToken.remove();
-    }
-  })
+    },
+  }),
 );
 export default enhance(BioTreeView);

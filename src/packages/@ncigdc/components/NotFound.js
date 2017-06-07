@@ -1,8 +1,8 @@
 // @flow
 /* eslint-disable quotes */
 
-import React from "react";
-import HomeLink from "@ncigdc/components/Links/HomeLink";
+import React from 'react';
+import HomeLink from '@ncigdc/components/Links/HomeLink';
 
 export default () => (
   <div className="container-fluid text-center not-found">

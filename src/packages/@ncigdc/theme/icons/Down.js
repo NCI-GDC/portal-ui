@@ -1,11 +1,11 @@
 // @flow
-import React from "react";
-import validAttributes from "@ncigdc/theme/utils/validAttributes";
+import React from 'react';
+import validAttributes from '@ncigdc/theme/utils/validAttributes';
 
 type TProps = {
-  className?: string
+  className?: string,
 };
 
-export default ({ className = "", ...props }: TProps = {}) => (
+export default ({ className = '', ...props }: TProps = {}) => (
   <i className={`${className} fa fa-caret-down`} {...validAttributes(props)} />
 );

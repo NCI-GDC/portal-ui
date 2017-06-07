@@ -1,18 +1,18 @@
 // @flow
 
 // Vendor
-import React from "react";
-import PropTypes from "prop-types";
-import { css } from "glamor";
-import { withTheme } from "@ncigdc/theme";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { css } from 'glamor';
+import { withTheme } from '@ncigdc/theme';
 
 /*----------------------------------------------------------------------------*/
 
 const aStyle = css({
-  textDecoration: "none",
-  ":hover": {
-    textDecoration: "underline"
-  }
+  textDecoration: 'none',
+  ':hover': {
+    textDecoration: 'underline',
+  },
 });
 
 const A = ({ style, children, theme, ...props }) => (
@@ -27,7 +27,7 @@ const A = ({ style, children, theme, ...props }) => (
 
 A.propTypes = {
   style: PropTypes.object,
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 /*----------------------------------------------------------------------------*/

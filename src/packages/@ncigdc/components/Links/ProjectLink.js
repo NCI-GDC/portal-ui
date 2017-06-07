@@ -1,5 +1,5 @@
 /* @flow */
 
-import { makeIDLink } from "./utils";
+import { makeIDLink } from './utils';
 
-export default makeIDLink({ pathname: "/projects" });
+export default makeIDLink({ pathname: '/projects' });

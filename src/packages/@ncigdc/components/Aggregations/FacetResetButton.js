@@ -1,47 +1,55 @@
 // @flow
 
-import React from "react";
+import React from 'react';
 
-import Link from "@ncigdc/components/Links/Link";
-import UndoIcon from "@ncigdc/theme/icons/UndoIcon";
-import Hidden from "@ncigdc/components/Hidden";
-import styled from "@ncigdc/theme/styled";
-import {
-  removeFilter,
-  fieldInCurrentFilters
-} from "@ncigdc/utils/filters/index";
+import Link from '@ncigdc/components/Links/Link';
+import UndoIcon from '@ncigdc/theme/icons/UndoIcon';
+import { getFilterValue } from '@ncigdc/utils/filters';
+import Hidden from '@ncigdc/components/Hidden';
+import styled from '@ncigdc/theme/styled';
 
 const ShadowedUndoIcon = styled(UndoIcon, {
-  ":hover::before": {
-    textShadow: ({ theme }) => theme.textShadow
-  }
+  ':hover::before': {
+    textShadow: ({ theme }) => theme.textShadow,
+  },
 });
 
 const StyledLink = styled(Link, {
-  ":link": {
-    color: ({ theme }) => theme.greyScale3
+  ':link': {
+    color: ({ theme }) => theme.greyScale3,
   },
-  ":visited": {
-    color: ({ theme }) => theme.greyScale3
-  }
+  ':visited': {
+    color: ({ theme }) => theme.greyScale3,
+  },
 });
 
 const FacetResetButton = ({ field, currentFilters, style, ...props }) => {
-  const newFilters = removeFilter(field, currentFilters);
-  const newQuery = newFilters
-    ? {
-        offset: 0,
-        filters: newFilters
-      }
-    : {};
-  const inCurrent = fieldInCurrentFilters({
-    currentFilters: currentFilters.content || [],
-    field
-  });
+  const currentValues = getFilterValue({
+    currentFilters,
+    dotField: field,
+  }) || { content: { value: [] } };
+  const display = !!currentValues.content.value.length;
   return (
     <StyledLink
-      style={{ display: inCurrent ? "inline" : "none", ...style }}
-      query={inCurrent ? newQuery : {}}
+      merge="toggle"
+      style={{ display: display ? 'inline' : 'none', ...style }}
+      query={
+        !!currentValues.content.value.length && {
+          offset: 0,
+          filters: {
+            op: 'and',
+            content: [
+              {
+                op: 'in',
+                content: {
+                  field,
+                  value: currentValues.content.value,
+                },
+              },
+            ],
+          },
+        }
+      }
     >
       <ShadowedUndoIcon /><Hidden>reset</Hidden>
     </StyledLink>

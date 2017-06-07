@@ -1,13 +1,13 @@
 // @flow
-import React from "react";
-import Relay from "react-relay/classic";
-import _ from "lodash";
-import { compose } from "recompose";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import _ from 'lodash';
+import { compose } from 'recompose';
 
-import type { TBucket } from "@ncigdc/components/Aggregations/types";
-import withRouter from "@ncigdc/utils/withRouter";
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import { ColumnCenter, RowCenter, PieTitle, SelfFilteringPie } from "./";
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import withRouter from '@ncigdc/utils/withRouter';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { ColumnCenter, RowCenter, PieTitle, SelfFilteringPie } from './';
 
 export type TProps = {
   push: Function,
@@ -20,8 +20,8 @@ export type TProps = {
     disease_type: { buckets: [TBucket] },
     primary_site: { buckets: [TBucket] },
     project__program__name: { buckets: [TBucket] },
-    project__project_id: { buckets: [TBucket] }
-  }
+    project__project_id: { buckets: [TBucket] },
+  },
 };
 
 const enhance = compose(withRouter);
@@ -35,7 +35,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
       <ColumnCenter>
         <PieTitle>Primary Sites</PieTitle>
         <SelfFilteringPie
-          buckets={_.get(aggregations, "primary_site.buckets")}
+          buckets={_.get(aggregations, 'primary_site.buckets')}
           fieldName="cases.primary_site"
           docTypeSingular="case"
           currentFieldNames={currentFieldNames}
@@ -50,7 +50,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
       <ColumnCenter>
         <PieTitle>Projects</PieTitle>
         <SelfFilteringPie
-          buckets={_.get(aggregations, "project__project_id.buckets")}
+          buckets={_.get(aggregations, 'project__project_id.buckets')}
           fieldName="cases.project.project_id"
           docTypeSingular="case"
           currentFieldNames={currentFieldNames}
@@ -65,7 +65,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
       <ColumnCenter>
         <PieTitle>Disease Type</PieTitle>
         <SelfFilteringPie
-          buckets={_.get(aggregations, "disease_type.buckets")}
+          buckets={_.get(aggregations, 'disease_type.buckets')}
           fieldName="cases.disease_type"
           docTypeSingular="case"
           currentFieldNames={currentFieldNames}
@@ -80,7 +80,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
       <ColumnCenter>
         <PieTitle>Gender</PieTitle>
         <SelfFilteringPie
-          buckets={_.get(aggregations, "demographic__gender.buckets")}
+          buckets={_.get(aggregations, 'demographic__gender.buckets')}
           fieldName="cases.demographic.gender"
           docTypeSingular="case"
           currentFieldNames={currentFieldNames}
@@ -95,7 +95,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
       <ColumnCenter>
         <PieTitle>Vital Status</PieTitle>
         <SelfFilteringPie
-          buckets={_.get(aggregations, "diagnoses__vital_status.buckets")}
+          buckets={_.get(aggregations, 'diagnoses__vital_status.buckets')}
           fieldName="cases.diagnoses.vital_status"
           docTypeSingular="case"
           currentFieldNames={currentFieldNames}
@@ -164,13 +164,13 @@ export const RepoCasesPiesQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const RepoCasesPies = Relay.createContainer(
   enhance(RepoCasesPiesComponent),
-  RepoCasesPiesQuery
+  RepoCasesPiesQuery,
 );
 
 export default RepoCasesPies;

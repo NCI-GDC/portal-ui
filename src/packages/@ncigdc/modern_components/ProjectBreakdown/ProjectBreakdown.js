@@ -1,12 +1,12 @@
 // @flow
 /* eslint fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { viewerQuery } from "@ncigdc/routes/queries";
-import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
-import Toggle from "@ncigdc/uikit/Toggle";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { viewerQuery } from '@ncigdc/routes/queries';
+import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import Toggle from '@ncigdc/uikit/Toggle';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
 const createRenderer = (Route, Container) => (props: mixed) => (
   <Relay.Renderer
@@ -21,10 +21,10 @@ const createRenderer = (Route, Container) => (props: mixed) => (
 );
 
 class Route extends Relay.Route {
-  static routeName = "ProjectBreakdownRoute";
+  static routeName = 'ProjectBreakdownRoute';
   static queries = viewerQuery;
   static prepareParams = ({ filters = null }) => ({
-    aggFilters: filters
+    aggFilters: filters,
   });
 }
 
@@ -32,12 +32,15 @@ const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
       aggFilters: null,
-      ssmTested: makeFilter([
-        {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ])
+      ssmTested: makeFilter(
+        [
+          {
+            field: 'cases.available_variation_data',
+            value: 'ssm',
+          },
+        ],
+        false,
+      ),
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -63,8 +66,8 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
@@ -73,9 +76,9 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
     : cases.allAggs.project__project_id.buckets.reduce(
         (acc, b) => ({
           ...acc,
-          [b.key]: b.doc_count
+          [b.key]: b.doc_count,
         }),
-        {}
+        {},
       );
 
   const filteredAggs = !cases.aggregations
@@ -83,9 +86,9 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
     : cases.aggregations.project__project_id.buckets.reduce(
         (acc, b) => ({
           ...acc,
-          [b.key]: b.doc_count
+          [b.key]: b.doc_count,
         }),
-        {}
+        {},
       );
 
   return (
@@ -98,13 +101,14 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
             <span>{k}: </span>
             <ExploreLink
               query={{
-                searchTableTab: "cases",
+                searchTableTab: 'cases',
                 filters: addInFilters(
                   filters,
-                  makeFilter([
-                    { field: "cases.project.project_id", value: [k] }
-                  ])
-                )
+                  makeFilter(
+                    [{ field: 'cases.project.project_id', value: [k] }],
+                    false,
+                  ),
+                ),
               }}
             >
               {v}
@@ -112,14 +116,17 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
             <span> / </span>
             <ExploreLink
               query={{
-                searchTableTab: "cases",
-                filters: makeFilter([
-                  {
-                    field: "cases.available_variation_data",
-                    value: ["ssm"]
-                  },
-                  { field: "cases.project.project_id", value: [k] }
-                ])
+                searchTableTab: 'cases',
+                filters: makeFilter(
+                  [
+                    {
+                      field: 'cases.available_variation_data',
+                      value: ['ssm'],
+                    },
+                    { field: 'cases.project.project_id', value: [k] },
+                  ],
+                  false,
+                ),
               }}
             >
               {allAggs[k]}
@@ -142,7 +149,7 @@ const Renderer = createRenderer(Route, createContainer(Component));
 type TProps = {|
   caseTotal: number,
   gdcCaseTotal: number,
-  filters: Object
+  filters: Object,
 |};
 
 export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
@@ -151,8 +158,8 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
       <span key="total">
         <ExploreLink
           query={{
-            searchTableTab: "cases",
-            filters
+            searchTableTab: 'cases',
+            filters,
           }}
         >
           {caseTotal.toLocaleString()}
@@ -160,10 +167,11 @@ export default ({ caseTotal, gdcCaseTotal, filters }: TProps = {}) => (
         <span> / </span>
         <ExploreLink
           query={{
-            searchTableTab: "cases",
-            filters: makeFilter([
-              { field: "cases.available_variation_data", value: ["ssm"] }
-            ])
+            searchTableTab: 'cases',
+            filters: makeFilter(
+              [{ field: 'cases.available_variation_data', value: ['ssm'] }],
+              false,
+            ),
           }}
         >
           {gdcCaseTotal.toLocaleString()}

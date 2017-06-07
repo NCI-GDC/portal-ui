@@ -1,6 +1,6 @@
 /* @flow */
-import { insertRule } from "glamor";
-import { uniq } from "lodash";
+import { insertRule } from 'glamor';
+import { uniq } from 'lodash';
 
 import {
   clinicalDonorTracks,
@@ -8,43 +8,43 @@ import {
   geneTracks,
   geneSetTracks,
   gdcTracks,
-  getColorValue
-} from "@ncigdc/components/Oncogrid/tracks";
-import { mapDonors, mapGenes, buildOccurences } from "./dataMapping";
-import type { TDonorInput, TGeneInput, TOccurenceInput } from "./dataMapping";
+  getColorValue,
+} from '@ncigdc/components/Oncogrid/tracks';
+import { mapDonors, mapGenes, buildOccurences } from './dataMapping';
+import type { TDonorInput, TGeneInput, TOccurenceInput } from './dataMapping';
 
 const donorTracks = [...clinicalDonorTracks, ...dataTypeTracks];
 
 const trackColorMap = [...donorTracks, ...geneTracks].reduce(
   (acc, t) => ({ ...acc, [t.fieldName]: t.color }),
-  {}
+  {},
 );
 
 const fillFunc = (track: { fieldName: string, value?: mixed }) =>
   getColorValue({
-    color: trackColorMap[track.fieldName] || "",
-    value: track.value
+    color: trackColorMap[track.fieldName] || '',
+    value: track.value,
   });
 
 function dataTypeLegend(): string {
   return `<div><b>Available Data Types:</b></div><div>${dataTypeTracks
-    .map(t => (t.legend ? t.legend(t) : ""))
+    .map(t => (t.legend ? t.legend(t) : ''))
     .filter(Boolean)
-    .join("</div><div>")}</div>`;
+    .join('</div><div>')}</div>`;
 }
 
 function gdcLegend(max: number): string {
   return `<div><b># of Cases Affected:</b></div><div>${gdcTracks
-    .map(t => (t.legend ? t.legend({ ...t, max }) : ""))
+    .map(t => (t.legend ? t.legend({ ...t, max }) : ''))
     .filter(Boolean)
-    .join("</div><div>")}`;
+    .join('</div><div>')}`;
 }
 
 function geneSetLegend(): string {
   return `<div><b>Gene Sets:</b></div><div>${geneSetTracks
-    .map(t => (t.legend ? t.legend(t) : ""))
+    .map(t => (t.legend ? t.legend(t) : ''))
     .filter(Boolean)
-    .join("</div><div>")}</div>`;
+    .join('</div><div>')}</div>`;
 }
 
 export default function({
@@ -59,15 +59,15 @@ export default function({
   trackPadding,
   consequenceTypes,
   impacts,
-  donorHistogramClick = (d: {}) => console.log("donorHistogramClick: ", d),
-  gridClick = (o: {}) => console.log("gridClick: ", o),
-  geneHistogramClick = (g: {}) => console.log("geneHistogramClick: ", g),
+  donorHistogramClick = (d: {}) => console.log('donorHistogramClick: ', d),
+  gridClick = (o: {}) => console.log('gridClick: ', o),
+  geneHistogramClick = (g: {}) => console.log('geneHistogramClick: ', g),
   geneClick = (g: {}) => {
-    console.log("geneClick", g);
+    console.log('geneClick', g);
   },
   donorClick = (d: {}) => {
-    console.log("donorClick", d);
-  }
+    console.log('donorClick', d);
+  },
 }: {
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
@@ -78,7 +78,7 @@ export default function({
   width: number,
   addTrackFunc: (
     trackOptions: Array<{ name: string }>,
-    callback: (t: Array<{ name: string }>) => void
+    callback: (t: Array<{ name: string }>) => void,
   ) => void,
   trackPadding: number,
   consequenceTypes: Array<string>,
@@ -87,14 +87,14 @@ export default function({
   gridClick?: Function,
   geneHistogramClick?: Function,
   geneClick?: Function,
-  donorClick?: Function
+  donorClick?: Function,
 }): ?Object {
   const { observations, donorIds, geneIds } = buildOccurences(
     occurencesData,
     donorData,
     geneData,
     consequenceTypes,
-    impacts
+    impacts,
   );
   if (observations.length === 0) return null;
   const donors = mapDonors(donorData, donorIds);
@@ -106,25 +106,25 @@ export default function({
 
   const donorOpacityFunc = ({
     type,
-    value
+    value,
   }: {
     type: string,
-    value: number
+    value: number,
   }) => {
     switch (type) {
-      case "int":
+      case 'int':
         return value / 100;
-      case "vital":
-      case "gender":
-      case "ethnicity":
-      case "race":
-      case "primary_diagnosi":
+      case 'vital':
+      case 'gender':
+      case 'ethnicity':
+      case 'race':
+      case 'primary_diagnosi':
         return 1;
-      case "bool":
+      case 'bool':
         return value ? 1 : 0;
-      case "days_to_death":
+      case 'days_to_death':
         return value / maxDaysToDeath;
-      case "age":
+      case 'age':
         return value / maxAgeAtDiagnosis;
       default:
         return 0;
@@ -133,9 +133,9 @@ export default function({
 
   const geneOpacity = ({ type, value }: { type: string, value: number }) => {
     switch (type) {
-      case "int":
+      case 'int':
         return value / maxDonorsAffected;
-      case "bool":
+      case 'bool':
         return value ? 1 : 0;
       default:
         return 1;
@@ -160,13 +160,13 @@ export default function({
         .map(t => (t.legend ? t.legend({
                   ...t,
                   maxDaysToDeath,
-                  values: uniq(donors.map(d => d[t.fieldName]))
-                }) : ""))
+                  values: uniq(donors.map(d => d[t.fieldName])),
+                }) : ''))
         .filter(Boolean)
-        .join("</div><div>")}</div>`,
-      "Data Types": dataTypeLegend(),
+        .join('</div><div>')}</div>`,
+      'Data Types': dataTypeLegend(),
       GDC: gdcLegend(maxDonorsAffected),
-      "Gene Sets": geneSetLegend()
+      'Gene Sets': geneSetLegend(),
     },
     templates: {
       mainGrid: `
@@ -181,7 +181,7 @@ export default function({
         {{#donor}}<div>Case: {{donor.id}}</div>{{/donor}}
         {{#gene}}<div>Gene: {{gene.symbol}}</div>{{/gene}}
         {{#obs}}<div>Mutations: {{obs}}</div>{{/obs}}
-      `
+      `,
     },
     trackLegendLabel: '<i style="font-size: 13px; margin-left: 5px" class="fa fa-question-circle"></i>',
     donorTracks,
@@ -190,7 +190,7 @@ export default function({
     geneTracks,
     geneOpacityFunc: geneOpacity,
     geneFillFunc: fillFunc,
-    expandableGroups: ["Clinical"],
+    expandableGroups: ['Clinical'],
     margin: { top: 20, right: 5, bottom: 20, left: 0 },
     leftTextWidth: 120,
     addTrackFunc,
@@ -199,7 +199,7 @@ export default function({
     gridClick,
     geneHistogramClick,
     geneClick,
-    donorClick
+    donorClick,
   };
 }
 

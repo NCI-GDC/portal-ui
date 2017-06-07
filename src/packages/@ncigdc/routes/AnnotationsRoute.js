@@ -1,23 +1,23 @@
 /* @flow */
 /* eslint fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { connect } from "react-redux";
-import { parse } from "query-string";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { connect } from 'react-redux';
+import { parse } from 'query-string';
 
-import { handleStateChange } from "@ncigdc/dux/relayProgress";
-import AnnotationsPage from "@ncigdc/containers/AnnotationsPage";
+import { handleStateChange } from '@ncigdc/dux/relayProgress';
+import AnnotationsPage from '@ncigdc/containers/AnnotationsPage';
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam
-} from "@ncigdc/utils/uri";
+  parseJSURLParam,
+} from '@ncigdc/utils/uri';
 
-import { viewerQuery } from "./queries";
+import { viewerQuery } from './queries';
 
 class AnnotationsRoute extends Relay.Route {
-  static routeName = "AnnotationsRoute";
+  static routeName = 'AnnotationsRoute';
 
   static queries = viewerQuery;
 
@@ -28,7 +28,7 @@ class AnnotationsRoute extends Relay.Route {
       offset: parseIntParam(q.offset, 0),
       size: parseIntParam(q.size, 20),
       filters: parseFilterParam(q.filters, null),
-      annotations_sort: parseJSURLParam(q.annotations_sort, null)
+      annotations_sort: parseJSURLParam(q.annotations_sort, null),
     };
   };
 }

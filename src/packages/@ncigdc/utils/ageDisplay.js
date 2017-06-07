@@ -1,11 +1,11 @@
 // @flow
 
-import _ from "lodash";
+import _ from 'lodash';
 
 export default (
   ageInDays: number,
   yearsOnly: boolean = false,
-  defaultValue: string = "--"
+  defaultValue: string = '--',
 ): string => {
   const oneYear = 365.25;
   const leapThenPair = (years: number, days: number): number[] =>
@@ -13,7 +13,7 @@ export default (
   const timeString = (
     number: number,
     singular: string,
-    plural: string
+    plural: string,
   ): string => {
     const pluralChecked = plural || `${singular}s`;
     return `${number} ${number === 1 ? singular : pluralChecked}`;
@@ -26,12 +26,12 @@ export default (
   return _.zip(
     leapThenPair(
       Math.floor(ageInDays / oneYear),
-      Math.ceil(ageInDays % oneYear)
+      Math.ceil(ageInDays % oneYear),
     ),
-    ["year", "day"]
+    ['year', 'day'],
   )
-    .filter(p => (yearsOnly ? p[1] === "year" : p[0] > 0))
+    .filter(p => (yearsOnly ? p[1] === 'year' : p[0] > 0))
     .map(p => (!yearsOnly ? _timeString(p) : p[0]))
-    .join(" ")
+    .join(' ')
     .trim();
 };

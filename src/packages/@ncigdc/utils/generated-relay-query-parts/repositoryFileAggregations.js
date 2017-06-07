@@ -1,7 +1,7 @@
 /* @flow */
 /* eslint max-len:0, comma-dangle:0 */
 
-import Relay from "react-relay/classic";
+import Relay from 'react-relay/classic';
 
 export const initialFileAggregationsVariables = {
   shouldShow_access: false,
@@ -568,7 +568,7 @@ export const initialFileAggregationsVariables = {
   shouldShow_submitter_id: false,
   shouldShow_tags: false,
   shouldShow_type: false,
-  shouldShow_updated_datetime: false
+  shouldShow_updated_datetime: false,
 };
 
 export const repositoryFileAggregationsFragment = () => Relay.QL`

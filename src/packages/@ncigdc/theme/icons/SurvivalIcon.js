@@ -1,13 +1,13 @@
 // @flow
-import React from "react";
+import React from 'react';
 
 export default ({ style, ...props }) => (
   <svg
     viewBox="0 0 2048 1536"
     style={{
-      height: "0.8em",
-      fill: "currentcolor",
-      ...style
+      height: '0.8em',
+      fill: 'currentcolor',
+      ...style,
     }}
     {...props}
   >

@@ -1,8 +1,8 @@
 // @flow
-import React from "react";
+import React from 'react';
 
-import BaseModal from "@ncigdc/components/Modals/BaseModal";
-import LoginButton from "../LoginButton";
+import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import LoginButton from '../LoginButton';
 
 const SessionExpired = () => (
   <BaseModal title="Session Expired" closeText="Cancel">

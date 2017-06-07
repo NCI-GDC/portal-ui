@@ -1,41 +1,41 @@
 // @flow
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react';
+import { connect } from 'react-redux';
 
-import { setModal } from "@ncigdc/dux/modal";
-import Button from "@ncigdc/uikit/Button";
-import { Column, Row } from "@ncigdc/uikit/Flex";
+import { setModal } from '@ncigdc/dux/modal';
+import Button from '@ncigdc/uikit/Button';
+import { Column, Row } from '@ncigdc/uikit/Flex';
 
 const BaseModal = ({
   dispatch,
   title,
   children,
-  closeText = "Accept",
+  closeText = 'Accept',
   extraButtons,
-  style
+  style,
 }: {
   dispatch: Function,
   title: any,
   children: any,
   closeText: any,
   extraButtons: any,
-  style: Object
+  style: Object,
 }) => (
   <Column style={style}>
     <h2 style={{ paddingLeft: 15 }}>{title}</h2>
     <Column
       style={{
-        borderBottom: "1px solid #e5e5e5",
-        borderTop: "1px solid #e5e5e5",
+        borderBottom: '1px solid #e5e5e5',
+        borderTop: '1px solid #e5e5e5',
         padding: 15,
-        marginBottom: 15
+        marginBottom: 15,
       }}
     >
       {children}
     </Column>
     <Row style={{ marginBottom: 15, marginRight: 15 }} spacing={10}>
       <Button
-        style={{ margin: "0 0 0 auto" }}
+        style={{ margin: '0 0 0 auto' }}
         onClick={() => dispatch(setModal(null))}
       >
         {closeText}

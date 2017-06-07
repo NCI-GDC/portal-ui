@@ -1,37 +1,37 @@
 // @flow
 
-import React from "react";
+import React from 'react';
 
-import styled from "@ncigdc/theme/styled";
-import { zDepth1 } from "@ncigdc/theme/mixins";
-import DoubleHelix from "@ncigdc/theme/icons/DoubleHelix";
-import MutationIcon from "@ncigdc/theme/icons/Mutation";
+import styled from '@ncigdc/theme/styled';
+import { zDepth1 } from '@ncigdc/theme/mixins';
+import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
+import MutationIcon from '@ncigdc/theme/icons/Mutation';
 
-import ProjectsCount from "@ncigdc/components/ProjectsCount";
-import PrimarySitesCount from "@ncigdc/components/PrimarySitesCount";
-import CasesCount from "@ncigdc/components/CasesCount";
-import FilesCount from "@ncigdc/components/FilesCount";
+import ProjectsCount from '@ncigdc/components/ProjectsCount';
+import PrimarySitesCount from '@ncigdc/components/PrimarySitesCount';
+import CasesCount from '@ncigdc/components/CasesCount';
+import FilesCount from '@ncigdc/components/FilesCount';
 
-import { Row, Column } from "@ncigdc/uikit/Flex";
+import { Row, Column } from '@ncigdc/uikit/Flex';
 
 const Container = styled(Column, {
   ...zDepth1,
-  marginTop: "2rem",
-  backgroundColor: "white",
-  borderTop: "3px solid rgb(37, 208, 182)"
+  marginTop: '2rem',
+  backgroundColor: 'white',
+  borderTop: '3px solid rgb(37, 208, 182)',
 });
 
 const CountBox = styled(Column, {
-  padding: "1.5rem",
+  padding: '1.5rem',
   flex: 1,
-  justifyContent: "center",
-  alignItems: "center"
+  justifyContent: 'center',
+  alignItems: 'center',
 });
 
 const Title = styled(Row, {
-  justifyContent: "center",
-  textTransform: "uppercase",
-  marginBottom: "0.5rem"
+  justifyContent: 'center',
+  textTransform: 'uppercase',
+  marginBottom: '0.5rem',
 });
 
 type TProps = {
@@ -41,19 +41,19 @@ type TProps = {
   casesCountData: Object,
   filesCountData: Object,
   genesCountData: Object,
-  ssmsCountData: Object
+  ssmsCountData: Object,
 };
 const PortalSummary = (props: TProps) => (
   <Container>
-    <Row style={{ padding: "2rem", alignItems: "baseline" }}>
-      <div style={{ fontSize: "2.3rem", color: "rgb(70, 70, 70)" }}>
+    <Row style={{ padding: '2rem', alignItems: 'baseline' }}>
+      <div style={{ fontSize: '2.3rem', color: 'rgb(70, 70, 70)' }}>
         Data Portal Summary
       </div>
       <div
         style={{
-          fontSize: "1.3rem",
-          color: "rgb(37, 97, 122)",
-          marginLeft: "2rem"
+          fontSize: '1.3rem',
+          color: 'rgb(37, 97, 122)',
+          marginLeft: '2rem',
         }}
       >
         <a
@@ -71,10 +71,10 @@ const PortalSummary = (props: TProps) => (
           <Title>Projects</Title>
           <Row>
             <i
-              style={{ color: "#01b987", fontSize: "3rem" }}
+              style={{ color: '#01b987', fontSize: '3rem' }}
               className="icon-gdc-projects project-icon"
             />
-            <span style={{ fontSize: "2.5rem", marginLeft: "0.5rem" }}>
+            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <ProjectsCount hits={props.projectsCountData} />
             </span>
           </Row>
@@ -83,10 +83,10 @@ const PortalSummary = (props: TProps) => (
           <Title>Primary Sites</Title>
           <Row>
             <i
-              style={{ color: "#01b987", fontSize: "3rem" }}
+              style={{ color: '#01b987', fontSize: '3rem' }}
               className="icon-gdc-cases data-icon"
             />
-            <span style={{ fontSize: "2.5rem", marginLeft: "0.5rem" }}>
+            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <PrimarySitesCount aggregations={props.primarySitesCountData} />
             </span>
           </Row>
@@ -95,10 +95,10 @@ const PortalSummary = (props: TProps) => (
           <Title>Cases</Title>
           <Row>
             <i
-              style={{ color: "#01b987", fontSize: "3rem" }}
+              style={{ color: '#01b987', fontSize: '3rem' }}
               className="icon-gdc-cases data-icon"
             />
-            <span style={{ fontSize: "2.5rem", marginLeft: "0.5rem" }}>
+            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <CasesCount hits={props.casesCountData} />
             </span>
           </Row>
@@ -109,10 +109,10 @@ const PortalSummary = (props: TProps) => (
           <Title>Files</Title>
           <Row>
             <i
-              style={{ color: "#01b987", fontSize: "3rem" }}
+              style={{ color: '#01b987', fontSize: '3rem' }}
               className="fa fa-file-o data-icon"
             />
-            <span style={{ fontSize: "2.5rem", marginLeft: "0.5rem" }}>
+            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <FilesCount hits={props.filesCountData} />
             </span>
           </Row>
@@ -121,7 +121,7 @@ const PortalSummary = (props: TProps) => (
           <Title>Genes</Title>
           <Row>
             <DoubleHelix color="#01b987" width="20px" height="35px" />
-            <span style={{ fontSize: "2.5rem", marginLeft: "0.5rem" }}>
+            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <CasesCount hits={props.genesCountData} />
             </span>
           </Row>
@@ -130,7 +130,7 @@ const PortalSummary = (props: TProps) => (
           <Title>Mutations</Title>
           <Row>
             <MutationIcon color="#01b987" width="32px" height="39px" />
-            <span style={{ fontSize: "2.5rem", marginLeft: "0.5rem" }}>
+            <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <FilesCount hits={props.ssmsCountData} />
             </span>
           </Row>

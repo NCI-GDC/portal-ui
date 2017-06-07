@@ -1,7 +1,7 @@
 /* @flow */
 /* eslint max-len:0, comma-dangle:0 */
 
-import Relay from "react-relay/classic";
+import Relay from 'react-relay/classic';
 
 export const initialECaseAggregationsVariables = {
   shouldShow_available_variation_data: false,
@@ -212,7 +212,7 @@ export const initialECaseAggregationsVariables = {
   shouldShow_tissue_source_site__name: false,
   shouldShow_tissue_source_site__project: false,
   shouldShow_tissue_source_site__tissue_source_site_id: false,
-  shouldShow_updated_datetime: false
+  shouldShow_updated_datetime: false,
 };
 
 export const exploreCaseAggregationsFragment = () => Relay.QL`

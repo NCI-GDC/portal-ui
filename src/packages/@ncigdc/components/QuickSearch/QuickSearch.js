@@ -1,87 +1,77 @@
 // @flow
 
-import React from "react";
-import _ from "lodash";
-import { compose } from "recompose";
-import styled from "@ncigdc/theme/styled";
-import QuickSearchResults from "./QuickSearchResults";
-import { withSearch } from "@ncigdc/utils/withSearch";
-import namespace from "@ncigdc/utils/namespace";
-import withSelectableList from "@ncigdc/utils/withSelectableList";
+import React from 'react';
+import _ from 'lodash';
+import { compose } from 'recompose';
+import styled from '@ncigdc/theme/styled';
+import QuickSearchResults from './QuickSearchResults';
+import { withSearch } from '@ncigdc/utils/withSearch';
+import namespace from '@ncigdc/utils/namespace';
+import withSelectableList from '@ncigdc/utils/withSelectableList';
 
 const styles = {
   searchIconWrapper: {
-    marginRight: "4px",
-    position: "relative"
+    marginRight: '4px',
+    position: 'relative',
   },
   searchIcon: {
     // add a bit of transition delay to avoid jank with really fast queries
-    transition: "opacity 0.2s ease 0.1s"
+    transition: 'opacity 0.2s ease 0.1s',
   },
   loadingIcon: {
-    position: "absolute",
+    position: 'absolute',
     left: 0,
     top: 0,
-    transition: "opacity 0.2s ease 0.1s"
+    transition: 'opacity 0.2s ease 0.1s',
   },
   invisible: {
-    opacity: 0
+    opacity: 0,
   },
   visible: {
-    opacity: 1
+    opacity: 1,
   },
   container: {
-    position: "relative"
+    position: 'relative',
   },
-  noResults: {
-    position: "absolute",
-    top: "100%",
-    right: 0,
-    backgroundColor: "#fff",
-    padding: "4px 10px",
-    boxShadow: "rgba(0, 0, 0, 0.156863) 0px 2px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 2px 10px 0px",
-    zIndex: 90,
-    width: "100%"
-  }
 };
 
 const SearchInput = styled.input({
-  fontSize: "14px",
-  height: "3rem",
-  padding: "0.7rem 1rem",
+  fontSize: '14px',
+  height: '3rem',
+  padding: '0.7rem 1rem',
   border: ({ theme }) => `1px solid ${theme.greyScale5}`,
-  width: "17rem",
-  borderRadius: "4px",
-  outline: "none",
-  transition: "all 0.2s ease",
+  width: '17rem',
+  borderRadius: '4px',
+  outline: 'none',
+  transition: 'all 0.2s ease',
   marginTop: -10,
   marginBottom: -10,
-  ":focus": {
-    borderColor: "rgb(18, 141, 219) !important",
-    boxShadow: "0px 0px 22px 0px rgba(18, 147, 219, 0.75)"
-  }
+  ':focus': {
+    borderColor: 'rgb(18, 141, 219) !important',
+    boxShadow: '0px 0px 22px 0px rgba(18, 147, 219, 0.75)',
+  },
 });
 
 export default compose(
-  namespace("search", withSearch()),
+  namespace('search', withSearch()),
   namespace(
-    "selectableList",
+    'selectableList',
     withSelectableList(
       {
-        keyHandlerName: "handleKeyDown",
-        listSourcePropPath: "search.state.results"
+        keyHandlerName: 'handleKeyDown',
+        listSourcePropPath: 'search.state.results',
       },
       {
-        onSelectItem: (item, { search }) => item && search.selectItem(item)
-      }
-    )
-  )
+        onSelectItem: (item, { search }) => item && search.selectItem(item),
+      },
+    ),
+  ),
 )(
   ({
     search: { state, setState, setQuery, reset },
     selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
     tabIndex,
-    style
+    style,
   }) => (
     <a
       tabIndex={tabIndex}
@@ -103,7 +93,7 @@ export default compose(
       }}
       style={{
         ...style,
-        ...styles.container
+        ...styles.container,
       }}
     >
       <span style={styles.searchIconWrapper}>
@@ -112,7 +102,7 @@ export default compose(
           style={Object.assign(
             {},
             styles.searchIcon,
-            state.isLoading ? styles.invisible : styles.visible
+            state.isLoading ? styles.invisible : styles.visible,
           )}
         />
         <i
@@ -120,7 +110,7 @@ export default compose(
           style={Object.assign(
             {},
             styles.loadingIcon,
-            state.isLoading ? styles.visible : styles.invisible
+            state.isLoading ? styles.visible : styles.invisible,
           )}
         />
       </span>
@@ -142,7 +132,7 @@ export default compose(
           results={_.map(
             state.results,
             item =>
-              item === focusedItem ? { ...item, isSelected: true } : item
+              item === focusedItem ? { ...item, isSelected: true } : item,
           )}
           query={state.query}
           onSelectItem={setFocusedItem}
@@ -154,5 +144,5 @@ export default compose(
         (state.results || []).length === 0 &&
         <div style={styles.noResults}>No results found</div>}
     </a>
-  )
+  ),
 );

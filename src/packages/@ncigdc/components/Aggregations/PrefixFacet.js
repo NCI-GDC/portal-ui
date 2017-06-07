@@ -1,51 +1,51 @@
 // @flow
 
 // Vendor
-import React from "react";
-import { compose, withState, pure } from "recompose";
-import SearchIcon from "react-icons/lib/fa/search";
+import React from 'react';
+import { compose, withState, pure } from 'recompose';
+import SearchIcon from 'react-icons/lib/fa/search';
 
 // Custom
-import { makeFilter } from "@ncigdc/utils/filters";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import withDropdown from "@ncigdc/uikit/withDropdown";
-import { dropdown } from "@ncigdc/theme/mixins";
-import styled from "@ncigdc/theme/styled";
-import Link from "@ncigdc/components/Links/Link";
-import Hidden from "@ncigdc/components/Hidden";
+import { makeFilter } from '@ncigdc/utils/filters';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import withDropdown from '@ncigdc/uikit/withDropdown';
+import { dropdown } from '@ncigdc/theme/mixins';
+import styled from '@ncigdc/theme/styled';
+import Link from '@ncigdc/components/Links/Link';
+import Hidden from '@ncigdc/components/Hidden';
 
-import { Container, StyledInput } from "./";
+import { Container, StyledInput } from './';
 
 const MagnifyingGlass = styled(SearchIcon, {
   backgroundColor: ({ theme }) => theme.greyScale5,
   color: ({ theme }) => theme.greyScale2,
-  padding: "0.8rem",
-  width: "3.4rem",
-  height: "3.4rem",
-  borderRadius: "4px 0 0 4px",
+  padding: '0.8rem',
+  width: '3.4rem',
+  height: '3.4rem',
+  borderRadius: '4px 0 0 4px',
   border: ({ theme }) => `1px solid ${theme.greyScale4}`,
-  borderRight: "none"
+  borderRight: 'none',
 });
 
 const StyledDropdownLink = styled(Link, {
   color: ({ theme }) => theme.greyScale2,
-  padding: "1rem",
-  ":link": {
-    textDecoration: "none"
+  padding: '1rem',
+  ':link': {
+    textDecoration: 'none',
   },
-  ":hover": {
-    backgroundColor: "rgb(31, 72, 108)",
-    color: "white",
-    textDecoration: "none"
+  ':hover': {
+    backgroundColor: 'rgb(31, 72, 108)',
+    color: 'white',
+    textDecoration: 'none',
   },
-  width: "100%",
-  textDecoration: "none"
+  width: '100%',
+  textDecoration: 'none',
 });
 
 const PrefixFacet = compose(
   withDropdown,
   pure,
-  withState("value", "setValue", "")
+  withState('value', 'setValue', ''),
 )(
   ({
     doctype,
@@ -57,7 +57,7 @@ const PrefixFacet = compose(
     mouseUpHandler,
     value,
     setValue,
-    collapsed
+    collapsed,
   }) => (
     <Container>
       {!collapsed &&
@@ -81,8 +81,8 @@ const PrefixFacet = compose(
               style={{
                 ...dropdown,
                 marginTop: 0,
-                top: "35px",
-                minWidth: "290px"
+                top: '35px',
+                minWidth: '290px',
               }}
               onMouseUp={mouseUpHandler}
               onMouseDown={mouseDownHandler}
@@ -90,17 +90,20 @@ const PrefixFacet = compose(
               <StyledDropdownLink
                 merge="toggle"
                 query={{
-                  filters: makeFilter([
-                    {
-                      field: `${doctype}.${fieldNoDoctype}`,
-                      value: [`${value}*`]
-                    }
-                  ])
+                  filters: makeFilter(
+                    [
+                      {
+                        field: `${doctype}.${fieldNoDoctype}`,
+                        value: [`${value}*`],
+                      },
+                    ],
+                    false,
+                  ),
                 }}
                 id="prefix-search-link"
                 onClick={() => {
                   setActive(false);
-                  setValue("");
+                  setValue('');
                 }}
               >
                 {value}* <br />
@@ -109,6 +112,6 @@ const PrefixFacet = compose(
             </Column>}
         </Row>}
     </Container>
-  )
+  ),
 );
 export default PrefixFacet;

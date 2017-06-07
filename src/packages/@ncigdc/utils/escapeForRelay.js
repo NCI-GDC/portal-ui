@@ -1,2 +1,2 @@
 /* @flow */
-export default string => string.replace(/\./g, "__");
+export default string => string.replace(/\./g, '__');

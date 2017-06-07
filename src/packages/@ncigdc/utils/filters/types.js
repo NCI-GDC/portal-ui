@@ -1,49 +1,49 @@
 /* @flow */
 
-import type { TRawQuery, TUriQuery } from "../uri/types";
+import type { TRawQuery, TUriQuery } from '../uri/types';
 
 export type TValueContent = {|
   field: string,
-  value: Array<mixed>
+  value: Array<mixed>,
 |};
-export type TValueOp = "in";
+export type TValueOp = 'in';
 export type TValueFilter = {|
   content: TValueContent,
-  op: TValueOp
+  op: TValueOp,
 |};
 
 export type TGroupContent = Array<TValueFilter>;
-export type TGroupOp = "and";
+export type TGroupOp = 'and';
 export type TGroupFilter = {|
   content: TGroupContent,
-  op: TGroupOp
+  op: TGroupOp,
 |};
 
 export type TCombineValues = (
   x: TValueFilter,
-  y: TValueFilter
+  y: TValueFilter,
 ) => ?TValueFilter;
 
 export type TMergeFilters = (
   q: ?TGroupFilter,
-  c: ?TGroupFilter
+  c: ?TGroupFilter,
 ) => ?TGroupFilter;
 
-export type TMergeEnum = boolean | "toggle" | "replace";
+export type TMergeEnum = boolean | 'toggle' | 'replace';
 
 export type TMergeFns = (v: TMergeEnum) => TMergeFilters;
 
 export type TMergeQuery = (
   q: ?TUriQuery,
   c: TRawQuery,
-  t: TMergeEnum
+  t: TMergeEnum,
 ) => TUriQuery;
 
 export type TSortFilters = (a: TValueFilter, b: TValueFilter) => number;
 
 export type TFilterByWhitelist = (
   o: ?TRawQuery,
-  w: ?Array<string>
+  w: ?Array<string>,
 ) => TRawQuery;
 
 export type TRemoveFilter = (

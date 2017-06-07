@@ -1,11 +1,11 @@
 // @flow
 
-import React from "react";
-import { connect } from "react-redux";
-import Row from "@ncigdc/uikit/Flex/Row";
-import Button from "@ncigdc/uikit/Button";
+import React from 'react';
+import { connect } from 'react-redux';
+import Row from '@ncigdc/uikit/Flex/Row';
+import Button from '@ncigdc/uikit/Button';
 
-import { setModal } from "@ncigdc/dux/modal";
+import { setModal } from '@ncigdc/dux/modal';
 
 const DismissibleBanner = ({ dispatch }) => (
   <Row>
@@ -15,14 +15,14 @@ const DismissibleBanner = ({ dispatch }) => (
       onClick={() =>
         dispatch(
           setModal(
-            <div style={{ position: "relative", padding: "15px" }}>
+            <div style={{ position: 'relative', padding: '15px' }}>
               <h2 className="banner-title">
-                <span style={{ color: "#6b6262" }}>
+                <span style={{ color: '#6b6262' }}>
                   {`Can't find your data?`}
                 </span>
                 <span className="banner-title-link">
                   You may be looking for the
-                  {" "}
+                  {' '}
                   <a
                     href="https://gdc-portal.nci.nih.gov/legacy-archive/search/f"
                     target="_blank"
@@ -42,17 +42,17 @@ const DismissibleBanner = ({ dispatch }) => (
               </div>
               <Row
                 style={{
-                  justifyContent: "space-between",
-                  alignItems: "center"
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
                 }}
               >
                 <p
                   style={{
-                    marginBottom: "0"
+                    marginBottom: '0',
                   }}
                 >
                   Check the
-                  {" "}
+                  {' '}
                   <a
                     href="https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/"
                     target="_blank"
@@ -60,15 +60,15 @@ const DismissibleBanner = ({ dispatch }) => (
                   >
                     Data Release Notes
                   </a>
-                  {" "}
+                  {' '}
                   for additional details.
                 </p>
                 <Button onClick={() => dispatch(setModal(null))}>
                   <span>OK</span>
                 </Button>
               </Row>
-            </div>
-          )
+            </div>,
+          ),
         )}
     >
       Click here for more information.

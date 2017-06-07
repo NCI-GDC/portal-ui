@@ -1,41 +1,41 @@
 // @flow
 
-import React from "react";
-import Color from "color";
-import { compose } from "recompose";
-import { connect } from "react-redux";
-import { withTheme } from "@ncigdc/theme";
-import { ExternalLink as ELink } from "@ncigdc/uikit/Links";
-import HomeLink from "./Links/HomeLink";
+import React from 'react';
+import Color from 'color';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
+import { withTheme } from '@ncigdc/theme';
+import { ExternalLink as ELink } from '@ncigdc/uikit/Links';
+import HomeLink from './Links/HomeLink';
 
 const styles = {
   footer: theme => ({
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     left: 0,
-    width: "100%",
+    width: '100%',
     zIndex: 100,
-    height: "auto",
+    height: 'auto',
     backgroundColor: theme.greyScale1,
     borderTop: `6px solid ${Color(theme.greyScale1).lighten(2).rgbString()}`,
-    borderBottom: "none",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
+    borderBottom: 'none',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   }),
   outerContainer: {
-    fontSize: "85.714%",
-    padding: "15px 0",
-    color: "#97abb6",
-    textAlign: "center"
+    fontSize: '85.714%',
+    padding: '15px 0',
+    color: '#97abb6',
+    textAlign: 'center',
   },
   innerContainer: {
-    margin: "5px auto 0",
-    textAlign: "center"
+    margin: '5px auto 0',
+    textAlign: 'center',
   },
   link: {
-    color: "#c2cfd5"
-  }
+    color: '#c2cfd5',
+  },
 };
 
 const ExternalLink = ({
@@ -55,7 +55,7 @@ const ExternalLink = ({
 
 export default compose(
   connect(state => state.versionInfo),
-  withTheme
+  withTheme,
 )(
   ({
     theme,
@@ -63,7 +63,7 @@ export default compose(
     uiCommitHash,
     apiVersion,
     apiCommitHash,
-    dataRelease
+    dataRelease,
   }) => (
     <footer style={styles.footer(theme)}>
       <div style={styles.outerContainer} role="contentinfo">
@@ -101,14 +101,14 @@ export default compose(
           NIH... Turning Discovery Into Health ®
         </div>
         <div style={styles.innerContainer}>
-          <span> UI @ {uiVersion || (uiCommitHash || "").slice(0, 7)}</span>
+          <span> UI @ {uiVersion || (uiCommitHash || '').slice(0, 7)}</span>
 
           <span>, API {apiVersion}</span>
           {apiCommitHash && <span> @ {apiCommitHash.slice(0, 7)}</span>}
 
           <span>
             ,
-            {" "}
+            {' '}
             <ExternalLink href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/">
               {dataRelease}
             </ExternalLink>
@@ -116,5 +116,5 @@ export default compose(
         </div>
       </div>
     </footer>
-  )
+  ),
 );

@@ -1,50 +1,50 @@
 // @flow
 
-import React from "react";
-import { compose, withState } from "recompose";
-import { xor } from "lodash";
+import React from 'react';
+import { compose, withState } from 'recompose';
+import { xor } from 'lodash';
 
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import Button from "@ncigdc/uikit/Button";
-import { visualizingButton } from "@ncigdc/theme/mixins";
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import Button from '@ncigdc/uikit/Button';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 
 const styles = {
   horizonalPadding: {
     paddingRight: 20,
-    paddingLeft: 20
+    paddingLeft: 20,
   },
   button: {
     ...visualizingButton,
-    minWidth: 100
-  }
+    minWidth: 100,
+  },
 };
 
 type TOption = {
-  name: string
+  name: string,
 };
 
 type TProps = {
   options: Array<TOption>,
   onClose: Function,
   selectedOptions: Array<number>,
-  setSelectedOptions: Function
+  setSelectedOptions: Function,
 };
 
 const SelectOverlay = ({
   options = [],
   onClose,
   selectedOptions,
-  setSelectedOptions
+  setSelectedOptions,
 }: TProps) => (
   <Column
     style={{
-      padding: "15px"
+      padding: '15px',
     }}
   >
     <Row
       style={{
         ...styles.horizonalPadding,
-        borderBottom: "1px solid #e5e5e5"
+        borderBottom: '1px solid #e5e5e5',
       }}
     >
       <h2 style={{ marginTop: 0 }}>Select Tracks to Add</h2>
@@ -52,7 +52,7 @@ const SelectOverlay = ({
     <div
       style={{
         ...styles.horizonalPadding,
-        paddingTop: 10
+        paddingTop: 10,
       }}
     >
       {options.map((track, i) => (
@@ -70,7 +70,7 @@ const SelectOverlay = ({
           </label>
         </Row>
       ))}
-      <Row style={{ justifyContent: "center", marginTop: 10 }} spacing="1rem">
+      <Row style={{ justifyContent: 'center', marginTop: 10 }} spacing="1rem">
         <Button
           style={styles.button}
           onClick={() => onClose(selectedOptions.map(i => options[i]))}
@@ -83,6 +83,6 @@ const SelectOverlay = ({
   </Column>
 );
 
-const enhance = compose(withState("selectedOptions", "setSelectedOptions", []));
+const enhance = compose(withState('selectedOptions', 'setSelectedOptions', []));
 
 export default enhance(SelectOverlay);

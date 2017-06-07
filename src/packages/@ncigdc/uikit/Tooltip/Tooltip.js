@@ -1,12 +1,12 @@
 // @flow
-import React from "react";
+import React from 'react';
 
-import withTooltip from "./withTooltip";
+import withTooltip from './withTooltip';
 
 type TProps = {|
   Component: any,
   children: any,
-  setTooltip: Function
+  setTooltip: Function,
 |};
 
 const Tooltip = ({ Component, children, setTooltip, ...props }: TProps) => (

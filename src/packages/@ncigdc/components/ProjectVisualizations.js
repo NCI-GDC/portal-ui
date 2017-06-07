@@ -1,41 +1,41 @@
 // @flow
 
-import React from "react";
-import { compose, withState, lifecycle, withPropsOnChange } from "recompose";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
+import React from 'react';
+import { compose, withState, lifecycle, withPropsOnChange } from 'recompose';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import { fetchApi } from "@ncigdc/utils/ajax";
-import { getDefaultCurve } from "@ncigdc/utils/survivalplot";
-import { makeFilter, replaceFilters } from "@ncigdc/utils/filters";
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { fetchApi } from '@ncigdc/utils/ajax';
+import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
+import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 
-import { Row, Column } from "@ncigdc/uikit/Flex";
+import { Row, Column } from '@ncigdc/uikit/Flex';
 
-import SsmsBarChart from "@ncigdc/modern_components/SsmsBarChart/SsmsBarChart";
-import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";
+import SsmsBarChart from '@ncigdc/modern_components/SsmsBarChart/SsmsBarChart';
+import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
 import AffectedCasesBarChart
-  from "@ncigdc/modern_components/AffectedCasesBarChart/AffectedCasesBarChart";
+  from '@ncigdc/modern_components/AffectedCasesBarChart/AffectedCasesBarChart';
 import AffectedCasesTable
-  from "@ncigdc/modern_components/AffectedCasesTable/AffectedCasesTable";
+  from '@ncigdc/modern_components/AffectedCasesTable/AffectedCasesTable';
 import GenesBarChart
-  from "@ncigdc/modern_components/GenesBarChart/GenesBarChart";
-import GenesTable from "@ncigdc/modern_components/GenesTable/GenesTable";
-import OncoGridWrapper from "@ncigdc/components/Oncogrid/OncogridWrapper";
-import SurvivalPlotWrapper from "@ncigdc/components/SurvivalPlotWrapper";
-import SpinnerCentered from "@ncigdc/components/SpinnerCentered";
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
+  from '@ncigdc/modern_components/GenesBarChart/GenesBarChart';
+import GenesTable from '@ncigdc/modern_components/GenesTable/GenesTable';
+import OncoGridWrapper from '@ncigdc/components/Oncogrid/OncogridWrapper';
+import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+import SpinnerCentered from '@ncigdc/components/SpinnerCentered';
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
 const styles = {
   heading: {
     flexGrow: 1,
-    fontSize: "2rem",
+    fontSize: '2rem',
     marginBottom: 7,
-    marginTop: 7
+    marginTop: 7,
   },
   card: {
-    backgroundColor: "white"
-  }
+    backgroundColor: 'white',
+  },
 };
 
 const initialState = {
@@ -43,37 +43,37 @@ const initialState = {
   loadingAggregation: true,
   numCasesAggByProject: {},
   mutatedGenesProject: {},
-  defaultSurvivalData: {}
+  defaultSurvivalData: {},
 };
 
 const enhance = compose(
   withState(
-    "selectedMutatedGenesSurvivalData",
-    "setSelectedMutatedGenesSurvivalData",
-    {}
+    'selectedMutatedGenesSurvivalData',
+    'setSelectedMutatedGenesSurvivalData',
+    {},
   ),
   withState(
-    "selectedFrequentMutationsSurvivalData",
-    "setSelectedFrequentMutationsSurvivalData",
-    {}
+    'selectedFrequentMutationsSurvivalData',
+    'setSelectedFrequentMutationsSurvivalData',
+    {},
   ),
-  withState("state", "setState", initialState),
-  withState("numCasesAggByProject", "setNumCasesAggByProject", undefined),
-  withPropsOnChange(["projectId"], async ({ projectId, setState }) => {
+  withState('state', 'setState', initialState),
+  withState('numCasesAggByProject', 'setNumCasesAggByProject', undefined),
+  withPropsOnChange(['projectId'], async ({ projectId, setState }) => {
     if (!projectId) return;
 
     const defaultSurvivalData = await getDefaultCurve({
       currentFilters: {
-        op: "=",
-        content: { field: "cases.project.project_id", value: projectId }
+        op: '=',
+        content: { field: 'cases.project.project_id', value: projectId },
       },
-      slug: projectId
+      slug: projectId,
     });
 
     setState(s => ({
       ...s,
       loadingSurvival: false,
-      defaultSurvivalData
+      defaultSurvivalData,
     }));
   }),
   lifecycle({
@@ -85,25 +85,25 @@ const enhance = compose(
     },
     async componentDidMount(): Promise<*> {
       const mutatedCasesCountByProject = await fetchApi(
-        "analysis/mutated_cases_count_by_project?size=0",
-        { headers: { "Content-Type": "application/json" } }
+        'analysis/mutated_cases_count_by_project?size=0',
+        { headers: { 'Content-Type': 'application/json' } },
       );
 
       const numCasesAggByProject = mutatedCasesCountByProject.aggregations.projects.buckets.reduce(
         (acc, b) => ({
           ...acc,
-          [b.key]: b.case_summary.case_with_ssm.doc_count
+          [b.key]: b.case_summary.case_with_ssm.doc_count,
         }),
-        {}
+        {},
       );
       this.props.setNumCasesAggByProject(numCasesAggByProject);
 
       this.props.setState(s => ({
         ...s,
-        loadingAggregation: false
+        loadingAggregation: false,
       }));
-    }
-  })
+    },
+  }),
 );
 
 const ProjectVisualizations = enhance(
@@ -112,53 +112,55 @@ const ProjectVisualizations = enhance(
       defaultSurvivalData,
       numCasesAggByProject,
       loadingSurvival,
-      loadingAggregation
+      loadingAggregation,
     },
     selectedMutatedGenesSurvivalData,
     setSelectedMutatedGenesSurvivalData,
     selectedFrequentMutationsSurvivalData,
     setSelectedFrequentMutationsSurvivalData,
     projectId,
-    viewer
+    viewer,
   }) => {
     const mutatedGenesSurvivalData = {
       legend: selectedMutatedGenesSurvivalData.legend ||
         defaultSurvivalData.legend,
       rawData: selectedMutatedGenesSurvivalData.rawData ||
-        defaultSurvivalData.rawData
+        defaultSurvivalData.rawData,
     };
 
     const frequentMutationsSurvivalData = {
       legend: selectedFrequentMutationsSurvivalData.legend ||
         defaultSurvivalData.legend,
       rawData: selectedFrequentMutationsSurvivalData.rawData ||
-        defaultSurvivalData.rawData
+        defaultSurvivalData.rawData,
     };
 
-    const fmFilters = makeFilter([
-      { field: "cases.project.project_id", value: projectId }
-    ]);
-    const macFilters = makeFilter([
-      { field: "cases.project.project_id", value: projectId }
-    ]);
+    const fmFilters = makeFilter(
+      [{ field: 'cases.project.project_id', value: projectId }],
+      false,
+    );
+    const macFilters = makeFilter(
+      [{ field: 'cases.project.project_id', value: projectId }],
+      false,
+    );
 
     return (
       <div>
         <Column style={styles.card}>
-          <h1 style={{ ...styles.heading, padding: "1rem" }} id="mutated-genes">
-            <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
+          <h1 style={{ ...styles.heading, padding: '1rem' }} id="mutated-genes">
+            <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
             Most Frequently Mutated Genes
           </h1>
           <Column>
             <Row>
-              <Column flex="none" style={{ width: "50%" }}>
+              <Column flex="none" style={{ width: '50%' }}>
                 <GenesBarChart
                   defaultFilters={fmFilters}
                   projectId={projectId}
                   context="project"
                 />
               </Column>
-              <Column flex="none" style={{ width: "50%" }}>
+              <Column flex="none" style={{ width: '50%' }}>
                 <SurvivalPlotWrapper
                   {...mutatedGenesSurvivalData}
                   onReset={() => setSelectedMutatedGenesSurvivalData({})}
@@ -176,7 +178,7 @@ const ProjectVisualizations = enhance(
               context={projectId}
               tableLink={
                 <ExploreLink
-                  query={{ searchTableTab: "genes", filters: fmFilters }}
+                  query={{ searchTableTab: 'genes', filters: fmFilters }}
                 >
                   Open in Exploration
                 </ExploreLink>
@@ -186,10 +188,10 @@ const ProjectVisualizations = enhance(
         </Column>
 
         <Column
-          style={{ ...styles.card, marginTop: "2rem", position: "static" }}
+          style={{ ...styles.card, marginTop: '2rem', position: 'static' }}
         >
-          <h1 style={{ ...styles.heading, padding: "1rem" }} id="oncogrid">
-            <i className="fa fa-th" style={{ paddingRight: "10px" }} />
+          <h1 style={{ ...styles.heading, padding: '1rem' }} id="oncogrid">
+            <i className="fa fa-th" style={{ paddingRight: '10px' }} />
             OncoGrid
           </h1>
           <LocationSubscriber>
@@ -197,10 +199,11 @@ const ProjectVisualizations = enhance(
               const { filters } = ctx.query || {};
               const currentFilters = parseFilterParam(filters, null);
               const componentFilters = replaceFilters(
-                makeFilter([
-                  { field: "cases.project.project_id", value: projectId }
-                ]),
-                currentFilters
+                makeFilter(
+                  [{ field: 'cases.project.project_id', value: projectId }],
+                  false,
+                ),
+                currentFilters,
               );
               return (
                 <OncoGridWrapper
@@ -212,12 +215,12 @@ const ProjectVisualizations = enhance(
           </LocationSubscriber>
         </Column>
 
-        <Column style={{ ...styles.card, marginTop: "2rem" }}>
+        <Column style={{ ...styles.card, marginTop: '2rem' }}>
           <h1
-            style={{ ...styles.heading, padding: "1rem" }}
+            style={{ ...styles.heading, padding: '1rem' }}
             id="frequent-mutations"
           >
-            <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
+            <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
             Most Frequent Somatic Mutations
           </h1>
           <Column>
@@ -253,8 +256,8 @@ const ProjectVisualizations = enhance(
                   tableLink={
                     <ExploreLink
                       query={{
-                        searchTableTab: "mutations",
-                        filters: fmFilters
+                        searchTableTab: 'mutations',
+                        filters: fmFilters,
                       }}
                     >
                       Open in Exploration
@@ -263,23 +266,23 @@ const ProjectVisualizations = enhance(
                 />}
           </Column>
         </Column>
-        <Column style={{ ...styles.card, marginTop: "2rem" }}>
+        <Column style={{ ...styles.card, marginTop: '2rem' }}>
           <h1
-            style={{ ...styles.heading, padding: "1rem" }}
+            style={{ ...styles.heading, padding: '1rem' }}
             id="most-affected-cases"
           >
-            <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
+            <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
             Most Affected Cases
           </h1>
           <AffectedCasesBarChart
             defaultFilters={macFilters}
-            style={{ width: "50%", flexGrow: 0 }}
+            style={{ width: '50%', flexGrow: 0 }}
           />
           <AffectedCasesTable defaultFilters={macFilters} />
         </Column>
       </div>
     );
-  }
+  },
 );
 
 export default ProjectVisualizations;

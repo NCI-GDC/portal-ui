@@ -1,6 +1,6 @@
 /* @flow */
 
-import JSURL from "jsurl";
+import JSURL from 'jsurl';
 
 import type {
   TIsEmptyArray,
@@ -8,14 +8,14 @@ import type {
   TRemoveEmptyKeys,
   TParseFilterParam,
   TParseJSURLParam,
-  TParseIntParam
-} from "./types";
+  TParseIntParam,
+} from './types';
 
 export const isEmptyArray: TIsEmptyArray = x =>
   !!(x && (Array.isArray(x) && x.length === 0));
 
 export const isEmptyObject: TIsEmptyObject = x =>
-  !!(x && typeof x === "object" && Object.keys(x).length === 0);
+  !!(x && typeof x === 'object' && Object.keys(x).length === 0);
 
 export const removeEmptyKeys: TRemoveEmptyKeys = q =>
   Object.keys(q).reduce((acc, k) => {

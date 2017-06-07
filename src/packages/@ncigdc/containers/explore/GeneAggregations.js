@@ -1,62 +1,62 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import _ from "lodash";
-import { compose, withState } from "recompose";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import _ from 'lodash';
+import { compose, withState } from 'recompose';
 
-import SuggestionFacet from "@ncigdc/components/Aggregations/SuggestionFacet";
-import FacetWrapper from "@ncigdc/components/FacetWrapper";
-import FacetHeader from "@ncigdc/components/Aggregations/FacetHeader";
+import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
+import FacetWrapper from '@ncigdc/components/FacetWrapper';
+import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 
-import type { TBucket } from "@ncigdc/components/Aggregations/types";
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
-import { withTheme } from "@ncigdc/theme";
-import { Column } from "@ncigdc/uikit/Flex";
-import escapeForRelay from "@ncigdc/utils/escapeForRelay";
+import { withTheme } from '@ncigdc/theme';
+import { Column } from '@ncigdc/uikit/Flex';
+import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 
 export type TProps = {
   aggregations: {
     biotype: { buckets: [TBucket] },
-    is_cancer_gene_census: { buckets: [TBucket] }
+    is_cancer_gene_census: { buckets: [TBucket] },
   },
   hits: {
     edges: Array<{|
       node: {|
-        id: string
-      |}
-    |}>
+        id: string,
+      |},
+    |}>,
   },
   setAutocomplete: Function,
-  theme: Object
+  theme: Object,
 };
 
 const presetFacets = [
   {
-    title: "Gene",
-    field: "gene_id",
-    full: "genes.gene_id",
-    doc_type: "genes",
-    type: "id"
+    title: 'Gene',
+    field: 'gene_id',
+    full: 'genes.gene_id',
+    doc_type: 'genes',
+    type: 'id',
   },
   {
-    title: "Biotype",
-    field: "biotype",
-    full: "genes.biotype",
-    doc_type: "genes",
-    type: "terms"
+    title: 'Biotype',
+    field: 'biotype',
+    full: 'genes.biotype',
+    doc_type: 'genes',
+    type: 'terms',
   },
   {
-    title: "Is Cancer Gene Census",
-    field: "is_cancer_gene_census",
-    full: "genes.is_cancer_gene_census",
-    doc_type: "genes",
-    type: "terms"
-  }
+    title: 'Is Cancer Gene Census',
+    field: 'is_cancer_gene_census',
+    full: 'genes.is_cancer_gene_census',
+    doc_type: 'genes',
+    type: 'terms',
+  },
 ];
 
 export const GeneAggregationsComponent = compose(
-  withState("idCollapsed", "setIdCollapsed", false)
+  withState('idCollapsed', 'setIdCollapsed', false),
 )((props: TProps) => (
   <div>
     <FacetHeader
@@ -75,9 +75,9 @@ export const GeneAggregationsComponent = compose(
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       dropdownItem={x => (
-        <span style={{ display: "flex" }}>
+        <span style={{ display: 'flex' }}>
           <Column>
-            <span style={{ fontWeight: "bold" }}>
+            <span style={{ fontWeight: 'bold' }}>
               {x.symbol}
             </span>
             <span>
@@ -89,7 +89,7 @@ export const GeneAggregationsComponent = compose(
       )}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
-    {_.reject(presetFacets, { full: "genes.gene_id" }).map(facet => (
+    {_.reject(presetFacets, { full: 'genes.gene_id' }).map(facet => (
       <FacetWrapper
         key={facet.full}
         facet={facet}
@@ -121,13 +121,13 @@ export const GeneAggregationsQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const GeneAggregations = Relay.createContainer(
   withTheme(GeneAggregationsComponent),
-  GeneAggregationsQuery
+  GeneAggregationsQuery,
 );
 
 export default GeneAggregations;

@@ -1,11 +1,11 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
+import React from 'react';
+import Relay from 'react-relay/classic';
 
-import Annotation from "@ncigdc/components/Annotation";
+import Annotation from '@ncigdc/components/Annotation';
 
-import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
+import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 
 export type TProps = {
   node: {
@@ -20,10 +20,10 @@ export type TProps = {
     entity_type: string,
     notes: string,
     project: {
-      project_id: string
+      project_id: string,
     },
-    status: string
-  }
+    status: string,
+  },
 };
 
 export const AnnotationPageComponent = ({ node }: TProps) => (
@@ -51,13 +51,13 @@ export const AnnotationPageQuery = {
         status
         notes
       }
-    `
-  }
+    `,
+  },
 };
 
 const AnnotationPage = Relay.createContainer(
   AnnotationPageComponent,
-  AnnotationPageQuery
+  AnnotationPageQuery,
 );
 
 export default AnnotationPage;

@@ -1,14 +1,14 @@
 // @flow
-import React from "react";
+import React from 'react';
 
 type TProps = {
   color?: string,
   height?: string,
-  width?: string
+  width?: string,
 };
 type TMutation = (props: TProps) => React.Element<*>;
 const Mutation: TMutation = (
-  { width = "100%", height = "100%", color: fill = "rgb(107,98,98)" } = {}
+  { width = '100%', height = '100%', color: fill = 'rgb(107,98,98)' } = {},
 ) => (
   <svg width={width} height={height} viewBox="0 0 50 61" version="1.1">
     <g id="_chromosome_Artboard2" transform="matrix(1,0,0,1,-13.0762,-25.3313)">
@@ -17,7 +17,7 @@ const Mutation: TMutation = (
         y="25.331"
         width="49.436"
         height="60.014"
-        style={{ fill: "none" }}
+        style={{ fill: 'none' }}
       />
       <clipPath id="_chromosome_clip1">
         <rect x="13.076" y="25.331" width="49.436" height="60.014" />
@@ -32,7 +32,7 @@ const Mutation: TMutation = (
             y="0.741"
             width="86.92"
             height="100.687"
-            style={{ fill: "none" }}
+            style={{ fill: 'none' }}
           />
           <g transform="matrix(0.954869,0.549419,-0.45922,0.651811,52.7591,3.11315)">
             <path

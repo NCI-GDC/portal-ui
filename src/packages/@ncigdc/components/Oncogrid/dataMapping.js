@@ -1,28 +1,28 @@
 /* @flow */
 /* eslint-disable fp/no-loops, fp/no-let, fp/no-mutation, fp/no-mutating-methods */
-import { dataTypeTracks } from "./tracks";
+import { dataTypeTracks } from './tracks';
 
 const dataTypesInitial = dataTypeTracks.reduce(
   (acc, d) => ({ ...acc, [d.fieldName]: 0 }),
-  {}
+  {},
 );
 
 export type TDonorInput = {
   summary: {
-    data_categories: Array<{ data_category: string, file_count: number }>
+    data_categories: Array<{ data_category: string, file_count: number }>,
   },
   demographic: {
     gender: string,
     race: string,
-    ethnicity: string
+    ethnicity: string,
   },
   case_id: string,
   diagnoses: Array<{
     age_at_diagnosis: number,
     vital_status: string,
     days_to_death: number,
-    primary_diagnosis: string
-  }>
+    primary_diagnosis: string,
+  }>,
 };
 
 export type TDonor = {
@@ -32,7 +32,7 @@ export type TDonor = {
   ethnicity: string,
   age: number,
   vitalStatus: boolean,
-  daysToDeath: number
+  daysToDeath: number,
 };
 
 function nullSentinel(value: ?number): number {
@@ -42,7 +42,7 @@ function nullSentinel(value: ?number): number {
 
 export const mapDonors = (
   donors: Array<TDonorInput>,
-  donorIds: Set<string>
+  donorIds: Set<string>,
 ): Array<TDonor> => {
   const arr = [];
 
@@ -51,19 +51,19 @@ export const mapDonors = (
       summary: { data_categories },
       demographic = {},
       case_id,
-      diagnoses = []
+      diagnoses = [],
     } = donors[i];
 
     if (donorIds.has(case_id)) {
       const {
         gender,
-        race = "not reported",
-        ethnicity = "not reported"
+        race = 'not reported',
+        ethnicity = 'not reported',
       } = demographic;
       const {
         age_at_diagnosis,
         vital_status: vitalStatus,
-        days_to_death
+        days_to_death,
       } = diagnoses[0] || {};
 
       const output = {
@@ -73,8 +73,8 @@ export const mapDonors = (
         race,
         ethnicity,
         age: nullSentinel(age_at_diagnosis),
-        vitalStatus: vitalStatus === "alive",
-        daysToDeath: nullSentinel(days_to_death)
+        vitalStatus: vitalStatus === 'alive',
+        daysToDeath: nullSentinel(days_to_death),
       };
 
       for (let j = 0; j < data_categories.length; j += 1) {
@@ -93,19 +93,19 @@ export type TGeneInput = {
   gene_id: string,
   symbol: string,
   _score: number,
-  is_cancer_gene_census: boolean
+  is_cancer_gene_census: boolean,
 };
 
 export type TGene = {
   id: string,
   symbol: string,
   totalDonors: number,
-  cgc: boolean
+  cgc: boolean,
 };
 
 export const mapGenes = (
   genes: Array<TGeneInput>,
-  geneIds: Set<string>
+  geneIds: Set<string>,
 ): Array<TGene> => {
   const arr = [];
 
@@ -116,7 +116,7 @@ export const mapGenes = (
         id: gene_id,
         symbol,
         totalDonors: _score,
-        cgc: !!cgc
+        cgc: !!cgc,
       });
     }
   }
@@ -131,17 +131,17 @@ export type TOccurenceInput = {
       transcript: {
         consequence_type: string,
         gene: {
-          gene_id: string
+          gene_id: string,
         },
         annotation: {
-          impact: string
-        }
-      }
-    }>
+          impact: string,
+        },
+      },
+    }>,
   },
   case: {
-    case_id: string
-  }
+    case_id: string,
+  },
 };
 
 export type TOccurence = {
@@ -150,7 +150,7 @@ export type TOccurence = {
   geneId: string,
   consequence: string,
   geneSymbol: string,
-  functionalImpact: string
+  functionalImpact: string,
 };
 
 type TBuildOccurences = (
@@ -158,11 +158,11 @@ type TBuildOccurences = (
   donors: Array<TDonorInput>,
   genes: Array<TGeneInput>,
   consequenceTypes: Array<string>,
-  impacts: Array<string>
+  impacts: Array<string>,
 ) => {
   observations: Array<TOccurence>,
   donorIds: Set<string>,
-  geneIds: Set<string>
+  geneIds: Set<string>,
 };
 
 export const buildOccurences: TBuildOccurences = (
@@ -170,7 +170,7 @@ export const buildOccurences: TBuildOccurences = (
   donors,
   genes,
   consequenceTypes = [],
-  impacts
+  impacts,
 ) => {
   const allowedCaseIds = new Set();
   for (let i = 0; i < donors.length; i += 1) {
@@ -189,7 +189,7 @@ export const buildOccurences: TBuildOccurences = (
   for (let i = 0; i < occurrences.length; i += 1) {
     const {
       ssm: { consequence, ssm_id },
-      case: { case_id } = {}
+      case: { case_id } = {},
     } = occurrences[i];
 
     if (allowedCaseIds.has(case_id)) {
@@ -198,7 +198,7 @@ export const buildOccurences: TBuildOccurences = (
         const {
           annotation: { impact } = {},
           gene: { gene_id } = {},
-          consequence_type
+          consequence_type,
         } = transcript;
         const geneSymbol = geneIdToSymbol[gene_id];
 
@@ -220,7 +220,7 @@ export const buildOccurences: TBuildOccurences = (
 
             // optional
             geneSymbol,
-            functionalImpact: impact
+            functionalImpact: impact,
           });
         }
       }
@@ -230,7 +230,7 @@ export const buildOccurences: TBuildOccurences = (
   return {
     observations,
     donorIds,
-    geneIds
+    geneIds,
   };
 };
 

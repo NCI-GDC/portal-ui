@@ -1,10 +1,8 @@
 // @flow
-import projectsTableModel from "./projectsTableModel";
-import casesTableModel from "./casesTableModel";
-import filesTableModel from "./filesTableModel";
+import projectsTableModel from './projectsTableModel';
+import casesTableModel from './casesTableModel';
 
 export default {
   projects: projectsTableModel,
   cases: casesTableModel,
-  files: filesTableModel
 };

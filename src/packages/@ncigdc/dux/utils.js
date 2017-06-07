@@ -3,8 +3,8 @@ export const namespaceActions = (namespace, constants) =>
     constants.reduce(
       (obj, constant) => ({
         ...obj,
-        [constant]: `${namespace}/${constant}`
+        [constant]: `${namespace}/${constant}`,
       }),
-      {}
-    )
+      {},
+    ),
   );

@@ -1,13 +1,13 @@
 // @flow
-import React from "react";
-import Relay from "react-relay/classic";
-import _ from "lodash";
-import { compose, withState } from "recompose";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import _ from 'lodash';
+import { compose, withState } from 'recompose';
 
-import withSize from "@ncigdc/utils/withSize";
-import type { TBucket } from "@ncigdc/components/Aggregations/types";
-import withRouter from "@ncigdc/utils/withRouter";
-import { parseFilterParam } from "@ncigdc/utils/uri";
+import withSize from '@ncigdc/utils/withSize';
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import withRouter from '@ncigdc/utils/withRouter';
+import { parseFilterParam } from '@ncigdc/utils/uri';
 import {
   ColumnCenter,
   RowCenter,
@@ -15,8 +15,8 @@ import {
   ShowToggleBox,
   BottomBorderedBox,
   PieTitle,
-  SelfFilteringPie
-} from "./";
+  SelfFilteringPie,
+} from './';
 
 export type TProps = {
   push: Function,
@@ -26,17 +26,17 @@ export type TProps = {
     data_type: { buckets: [TBucket] },
     experimental_strategy: { buckets: [TBucket] },
     data_format: { buckets: [TBucket] },
-    access: { buckets: [TBucket] }
+    access: { buckets: [TBucket] },
   },
   setShowingMore: Function,
   showingMore: boolean,
-  size: { width: number }
+  size: { width: number },
 };
 
 const enhance = compose(
   withRouter,
-  withState("showingMore", "setShowingMore", false),
-  withSize()
+  withState('showingMore', 'setShowingMore', false),
+  withSize(),
 );
 
 const RepoFilesPiesComponent = ({
@@ -45,7 +45,7 @@ const RepoFilesPiesComponent = ({
   push,
   showingMore,
   setShowingMore,
-  size: { width }
+  size: { width },
 }: TProps) => {
   const currentFilters = (query &&
     parseFilterParam((query || {}).filters, {}).content) || [];
@@ -54,11 +54,11 @@ const RepoFilesPiesComponent = ({
   return (
     <div>
       <BottomBorderedBox>
-        <WrappedRow style={{ maxWidth: `${width}px`, width: "100%" }}>
+        <WrappedRow style={{ maxWidth: `${width}px`, width: '100%' }}>
           <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Primary Site</PieTitle>
             <SelfFilteringPie
-              buckets={_.get(aggregations, "cases__primary_site.buckets")}
+              buckets={_.get(aggregations, 'cases__primary_site.buckets')}
               fieldName="files.cases.primary_site"
               docTypeSingular="file"
               currentFieldNames={currentFieldNames}
@@ -75,7 +75,7 @@ const RepoFilesPiesComponent = ({
             <SelfFilteringPie
               buckets={_.get(
                 aggregations,
-                "cases__project__project_id.buckets"
+                'cases__project__project_id.buckets',
               )}
               fieldName="files.cases.project.project_id"
               docTypeSingular="file"
@@ -91,7 +91,7 @@ const RepoFilesPiesComponent = ({
           <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Data Category</PieTitle>
             <SelfFilteringPie
-              buckets={_.get(aggregations, "data_category.buckets")}
+              buckets={_.get(aggregations, 'data_category.buckets')}
               fieldName="files.data_category"
               docTypeSingular="file"
               currentFieldNames={currentFieldNames}
@@ -106,7 +106,7 @@ const RepoFilesPiesComponent = ({
           <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Data Type</PieTitle>
             <SelfFilteringPie
-              buckets={_.get(aggregations, "data_type.buckets")}
+              buckets={_.get(aggregations, 'data_type.buckets')}
               fieldName="files.data_type"
               docTypeSingular="file"
               currentFieldNames={currentFieldNames}
@@ -121,7 +121,7 @@ const RepoFilesPiesComponent = ({
           <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
             <PieTitle>Data Format</PieTitle>
             <SelfFilteringPie
-              buckets={_.get(aggregations, "data_format.buckets")}
+              buckets={_.get(aggregations, 'data_format.buckets')}
               fieldName="files.data_format"
               docTypeSingular="file"
               currentFieldNames={currentFieldNames}
@@ -140,7 +140,7 @@ const RepoFilesPiesComponent = ({
             >
               <PieTitle>Experimental Strategy</PieTitle>
               <SelfFilteringPie
-                buckets={_.get(aggregations, "experimental_strategy.buckets")}
+                buckets={_.get(aggregations, 'experimental_strategy.buckets')}
                 fieldName="files.experimental_strategy"
                 docTypeSingular="file"
                 currentFieldNames={currentFieldNames}
@@ -158,7 +158,7 @@ const RepoFilesPiesComponent = ({
             >
               <PieTitle>Access Level</PieTitle>
               <SelfFilteringPie
-                buckets={_.get(aggregations, "access.buckets")}
+                buckets={_.get(aggregations, 'access.buckets')}
                 fieldName="files.access"
                 docTypeSingular="file"
                 currentFieldNames={currentFieldNames}
@@ -169,13 +169,13 @@ const RepoFilesPiesComponent = ({
                 height={125}
                 width={125}
               />
-            </ColumnCenter>
+            </ColumnCenter>,
           ]}
         </WrappedRow>
       </BottomBorderedBox>
-      <RowCenter style={{ marginTop: "-1.5rem" }}>
+      <RowCenter style={{ marginTop: '-1.5rem' }}>
         <ShowToggleBox onClick={() => setShowingMore(!showingMore)}>
-          Show {showingMore ? "Less" : "More"}
+          Show {showingMore ? 'Less' : 'More'}
         </ShowToggleBox>
       </RowCenter>
     </div>
@@ -229,13 +229,13 @@ export const RepoFilesPiesQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const RepoFilesPies = Relay.createContainer(
   enhance(RepoFilesPiesComponent),
-  RepoFilesPiesQuery
+  RepoFilesPiesQuery,
 );
 
 export default RepoFilesPies;

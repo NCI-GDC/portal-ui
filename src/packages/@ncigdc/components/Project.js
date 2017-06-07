@@ -1,57 +1,57 @@
 // @flow
-import React from "react";
-import { scaleOrdinal, schemeCategory20 } from "d3";
-import { compose } from "recompose";
-import withRouter from "@ncigdc/utils/withRouter";
-import JSURL from "jsurl";
-import urlJoin from "url-join";
+import React from 'react';
+import { scaleOrdinal, schemeCategory20 } from 'd3';
+import { compose } from 'recompose';
+import withRouter from '@ncigdc/utils/withRouter';
+import JSURL from 'jsurl';
+import urlJoin from 'url-join';
 
-import { makeFilter, mergeQuery } from "@ncigdc/utils/filters";
+import { makeFilter, mergeQuery } from '@ncigdc/utils/filters';
 
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import CollapsibleList from "@ncigdc/uikit/CollapsibleList";
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 
 import EntityPageVerticalTable
-  from "@ncigdc/components/EntityPageVerticalTable";
-import CountCard from "@ncigdc/components/CountCard";
-import DownloadButton from "@ncigdc/components/DownloadButton";
-import SummaryCard from "@ncigdc/components/SummaryCard";
-import ProjectVisualizations from "@ncigdc/components/ProjectVisualizations";
-import Link from "@ncigdc/components/Links/Link";
+  from '@ncigdc/components/EntityPageVerticalTable';
+import CountCard from '@ncigdc/components/CountCard';
+import DownloadButton from '@ncigdc/components/DownloadButton';
+import SummaryCard from '@ncigdc/components/SummaryCard';
+import ProjectVisualizations from '@ncigdc/components/ProjectVisualizations';
+import Link from '@ncigdc/components/Links/Link';
 
-import { removeEmptyKeys } from "@ncigdc/utils/uri";
+import { removeEmptyKeys } from '@ncigdc/utils/uri';
 
-import FileIcon from "@ncigdc/theme/icons/File";
-import CaseIcon from "@ncigdc/theme/icons/Case";
-import AnnotationIcon from "@ncigdc/theme/icons/Edit";
+import FileIcon from '@ncigdc/theme/icons/File';
+import CaseIcon from '@ncigdc/theme/icons/Case';
+import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 
 const colors20 = scaleOrdinal(schemeCategory20);
 
-const SPACING = "2rem";
+const SPACING = '2rem';
 
 const styles = {
   countCard: {
-    width: "auto",
-    marginBottom: SPACING
+    width: 'auto',
+    marginBottom: SPACING,
   },
   column: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   margin: {
-    marginBottom: SPACING
+    marginBottom: SPACING,
   },
   icon: {
-    width: "4rem",
-    height: "4rem",
-    color: "#888"
+    width: '4rem',
+    height: '4rem',
+    color: '#888',
   },
   coloredSquare: {
-    display: "inline-block",
+    display: 'inline-block',
     width: 10,
     height: 10,
-    marginRight: 5
-  }
+    marginRight: 5,
+  },
 };
 
 const enhance = compose(withRouter);
@@ -72,7 +72,7 @@ type TProps = {|
   biospecimenCount: number,
   push: Function,
   query: Object,
-  viewer: Object
+  viewer: Object,
 |};
 
 const Project = (
@@ -92,14 +92,14 @@ const Project = (
     biospecimenCount,
     push,
     query,
-    viewer
-  }: TProps = {}
+    viewer,
+  }: TProps = {},
 ) => {
   const projectFilter = [
     {
-      field: "cases.project.project_id",
-      value: projectId
-    }
+      field: 'cases.project.project_id',
+      value: projectId,
+    },
   ];
 
   const dataExportFilters = makeFilter(projectFilter);
@@ -107,27 +107,27 @@ const Project = (
   return (
     <span>
       <Row>
-        <Row style={{ ...styles.margin, marginLeft: "auto" }} spacing="0.2rem">
+        <Row style={{ ...styles.margin, marginLeft: 'auto' }} spacing="0.2rem">
           <DownloadButton
             disabled={!biospecimenCount}
             filename={`biospecimen.project-${projectId}`}
-            url={urlJoin(process.env.REACT_APP_API, "cases")}
+            url={urlJoin(process.env.REACT_APP_API, 'cases')}
             activeText="Processing"
             inactiveText={
-              biospecimenCount ? "Download Biospecimen" : "No Biospecimen Data"
+              biospecimenCount ? 'Download Biospecimen' : 'No Biospecimen Data'
             }
-            fields={["case_id"]}
+            fields={['case_id']}
             dataExportExpands={[
-              "samples",
-              "samples.portions",
-              "samples.portions.analytes",
-              "samples.portions.analytes.aliquots",
-              "samples.portions.analytes.aliquots.annotations",
-              "samples.portions.analytes.annotations",
-              "samples.portions.submitter_id",
-              "samples.portions.slides",
-              "samples.portions.annotations",
-              "samples.portions.center"
+              'samples',
+              'samples.portions',
+              'samples.portions.analytes',
+              'samples.portions.analytes.aliquots',
+              'samples.portions.analytes.aliquots.annotations',
+              'samples.portions.analytes.annotations',
+              'samples.portions.submitter_id',
+              'samples.portions.slides',
+              'samples.portions.annotations',
+              'samples.portions.center',
             ]}
             filters={dataExportFilters}
           />
@@ -135,17 +135,17 @@ const Project = (
           <DownloadButton
             disabled={!clinicalCount}
             filename={`clinical.project-${projectId}`}
-            url={urlJoin(process.env.REACT_APP_API, "cases")}
+            url={urlJoin(process.env.REACT_APP_API, 'cases')}
             activeText="Processing"
             inactiveText={
-              clinicalCount ? "Download Clinical" : "No Clinical Data"
+              clinicalCount ? 'Download Clinical' : 'No Clinical Data'
             }
-            fields={["case_id"]}
+            fields={['case_id']}
             dataExportExpands={[
-              "demographic",
-              "diagnoses",
-              "family_histories",
-              "exposures"
+              'demographic',
+              'diagnoses',
+              'family_histories',
+              'exposures',
             ]}
             filters={dataExportFilters}
           />
@@ -160,10 +160,10 @@ const Project = (
           >
             <DownloadButton
               disabled={!fileCount}
-              url={urlJoin(process.env.REACT_APP_API, "files")}
+              url={urlJoin(process.env.REACT_APP_API, 'files')}
               activeText="Downloading"
               inactiveText="Download Manifest"
-              fields={["file_id", "file_name", "md5sum", "file_size", "state"]}
+              fields={['file_id', 'file_name', 'md5sum', 'file_size', 'state']}
               returnType="manifest"
               filters={makeFilter(projectFilter)}
             />
@@ -171,28 +171,28 @@ const Project = (
         </Row>
       </Row>
 
-      <Row style={{ flexWrap: "wrap" }} spacing={SPACING}>
+      <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
         <span style={{ ...styles.column, ...styles.margin }}>
           <EntityPageVerticalTable
             id="summary"
             title={<span><i className="fa fa-table" /> Summary</span>}
             thToTd={[
-              { th: "Project ID", td: projectId },
-              { th: "Project Name", td: projectName },
+              { th: 'Project ID', td: projectId },
+              { th: 'Project Name', td: projectName },
               {
-                th: "Disease Type",
-                td: <CollapsibleList data={diseaseType} />
+                th: 'Disease Type',
+                td: <CollapsibleList data={diseaseType} />,
               },
               {
-                th: "Primary Site",
-                td: <CollapsibleList data={primarySite} />
+                th: 'Primary Site',
+                td: <CollapsibleList data={primarySite} />,
               },
-              { th: "Program", td: programName }
+              { th: 'Program', td: programName },
             ]}
           />
         </span>
 
-        <Column style={{ ...styles.margin, width: "200px" }}>
+        <Column style={{ ...styles.margin, width: '200px' }}>
           <CountCard
             title="CASES"
             count={caseCount.toLocaleString()}
@@ -201,11 +201,11 @@ const Project = (
             linkParams={
               caseCount
                 ? {
-                    merge: "replace",
-                    pathname: "/repository",
+                    merge: 'replace',
+                    pathname: '/repository',
                     query: {
-                      filters: makeFilter(projectFilter)
-                    }
+                      filters: makeFilter(projectFilter, false),
+                    },
                   }
                 : null
             }
@@ -218,12 +218,12 @@ const Project = (
             linkParams={
               fileCount
                 ? {
-                    pathname: "/repository",
+                    pathname: '/repository',
                     query: {
-                      filters: makeFilter(projectFilter),
-                      facetTab: "files",
-                      searchTableTab: "files"
-                    }
+                      filters: makeFilter(projectFilter, false),
+                      facetTab: 'files',
+                      searchTableTab: 'files',
+                    },
                   }
                 : null
             }
@@ -236,17 +236,20 @@ const Project = (
             linkParams={
               totalAnnotations
                 ? {
-                    merge: "replace",
-                    pathname: `/annotations${totalAnnotations === 1 ? `/${annotations[0].annotation_id}` : ""}`,
+                    merge: 'replace',
+                    pathname: `/annotations${totalAnnotations === 1 ? `/${annotations[0].annotation_id}` : ''}`,
                     query: {
                       filters: totalAnnotations > 1 &&
-                        makeFilter([
-                          {
-                            field: "annotations.project.project_id",
-                            value: projectId
-                          }
-                        ])
-                    }
+                        makeFilter(
+                          [
+                            {
+                              field: 'annotations.project.project_id',
+                              value: projectId,
+                            },
+                          ],
+                          false,
+                        ),
+                    },
                   }
                 : null
             }
@@ -254,19 +257,22 @@ const Project = (
         </Column>
       </Row>
 
-      <Row style={{ flexWrap: "wrap" }} spacing={SPACING}>
+      <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
         <span style={{ ...styles.column, ...styles.margin, flex: 1 }}>
           <SummaryCard
             tableTitle="Cases and File Counts by Experimental Strategy"
             pieChartTitle="File Counts by Experimental Strategy"
             data={experimentalStrategies.map((item, i) => {
-              const filters = makeFilter([
-                ...projectFilter,
-                {
-                  field: "files.experimental_strategy",
-                  value: [item.experimental_strategy]
-                }
-              ]);
+              const filters = makeFilter(
+                [
+                  ...projectFilter,
+                  {
+                    field: 'files.experimental_strategy',
+                    value: [item.experimental_strategy],
+                  },
+                ],
+                false,
+              );
 
               return {
                 id: item.experimental_strategy,
@@ -275,7 +281,7 @@ const Project = (
                     <div
                       style={{
                         ...styles.coloredSquare,
-                        backgroundColor: colors20(i)
+                        backgroundColor: colors20(i),
                       }}
                     />
                     {item.experimental_strategy}
@@ -287,8 +293,8 @@ const Project = (
                     pathname="/repository"
                     query={{
                       filters,
-                      facetTab: "cases",
-                      searchTableTab: "cases"
+                      facetTab: 'cases',
+                      searchTableTab: 'cases',
                     }}
                   >
                     {(item.case_count || 0).toLocaleString()}
@@ -300,8 +306,8 @@ const Project = (
                     pathname="/repository"
                     query={{
                       filters,
-                      facetTab: "files",
-                      searchTableTab: "files"
+                      facetTab: 'files',
+                      searchTableTab: 'files',
                     }}
                   >
                     {(item.file_count || 0).toLocaleString()}
@@ -311,46 +317,46 @@ const Project = (
                 tooltip: (
                   <span>
                     <b>{item.experimental_strategy}</b><br />
-                    {item.file_count} file{item.file_count > 1 ? "s" : 0}
+                    {item.file_count} file{item.file_count > 1 ? 's' : 0}
                   </span>
                 ),
                 clickHandler: () => {
                   const newQuery = mergeQuery(
                     {
                       filters,
-                      facetTab: "files",
-                      searchTableTab: "files"
+                      facetTab: 'files',
+                      searchTableTab: 'files',
                     },
                     query,
-                    "replace"
+                    'replace',
                   );
                   const q = removeEmptyKeys({
                     ...newQuery,
                     filters: newQuery.filters &&
-                      JSURL.stringify(newQuery.filters)
+                      JSURL.stringify(newQuery.filters),
                   });
-                  push({ pathname: "/repository", query: q });
-                }
+                  push({ pathname: '/repository', query: q });
+                },
               };
             })}
             footer={`${experimentalStrategies.length} Experimental Strategies`}
             path="file_count_value"
             headings={[
               {
-                key: "experimental_strategy",
-                title: "Experimental Strategy",
-                color: true
+                key: 'experimental_strategy',
+                title: 'Experimental Strategy',
+                color: true,
               },
               {
-                key: "case_count",
-                title: "Cases",
-                style: { textAlign: "right" }
+                key: 'case_count',
+                title: 'Cases',
+                style: { textAlign: 'right' },
               },
               {
-                key: "file_count",
-                title: "Files",
-                style: { textAlign: "right" }
-              }
+                key: 'file_count',
+                title: 'Files',
+                style: { textAlign: 'right' },
+              },
             ]}
           />
         </span>
@@ -359,10 +365,13 @@ const Project = (
             tableTitle="Cases and File Counts by Data Category"
             pieChartTitle="File Counts by Data Category"
             data={dataCategories.map((item, i) => {
-              const filters = makeFilter([
-                ...projectFilter,
-                { field: "files.data_category", value: [item.data_category] }
-              ]);
+              const filters = makeFilter(
+                [
+                  ...projectFilter,
+                  { field: 'files.data_category', value: [item.data_category] },
+                ],
+                false,
+              );
 
               return {
                 id: item.data_category,
@@ -371,7 +380,7 @@ const Project = (
                     <div
                       style={{
                         ...styles.coloredSquare,
-                        backgroundColor: colors20(i)
+                        backgroundColor: colors20(i),
                       }}
                     />
                     {item.data_category}
@@ -383,66 +392,66 @@ const Project = (
                       pathname="/repository"
                       query={{
                         filters,
-                        facetTab: "cases",
-                        searchTableTab: "cases"
+                        facetTab: 'cases',
+                        searchTableTab: 'cases',
                       }}
                     >
                       {item.case_count.toLocaleString()}
                     </Link>
-                  : "0",
+                  : '0',
                 file_count: item.file_count
                   ? <Link
                       merge="replace"
                       pathname="/repository"
                       query={{
                         filters,
-                        facetTab: "files",
-                        searchTableTab: "files"
+                        facetTab: 'files',
+                        searchTableTab: 'files',
                       }}
                     >
                       {item.file_count.toLocaleString()}
                     </Link>
-                  : "0",
+                  : '0',
                 file_count_value: item.file_count,
                 tooltip: (
                   <span>
                     <b>{item.data_category}</b><br />
-                    {item.file_count} file{item.file_count > 1 ? "s" : 0}
+                    {item.file_count} file{item.file_count > 1 ? 's' : 0}
                   </span>
                 ),
                 clickHandler: () => {
                   const newQuery = mergeQuery(
                     {
                       filters,
-                      facetTab: "files",
-                      searchTableTab: "files"
+                      facetTab: 'files',
+                      searchTableTab: 'files',
                     },
                     query,
-                    "replace"
+                    'replace',
                   );
                   const q = removeEmptyKeys({
                     ...newQuery,
                     filters: newQuery.filters &&
-                      JSURL.stringify(newQuery.filters)
+                      JSURL.stringify(newQuery.filters),
                   });
-                  push({ pathname: "/repository", query: q });
-                }
+                  push({ pathname: '/repository', query: q });
+                },
               };
             })}
             footer={`${dataCategories.length} Data Categories`}
             path="file_count_value"
             headings={[
-              { key: "data_category", title: "Data Category", color: true },
+              { key: 'data_category', title: 'Data Category', color: true },
               {
-                key: "case_count",
-                title: "Cases",
-                style: { textAlign: "right" }
+                key: 'case_count',
+                title: 'Cases',
+                style: { textAlign: 'right' },
               },
               {
-                key: "file_count",
-                title: "Files",
-                style: { textAlign: "right" }
-              }
+                key: 'file_count',
+                title: 'Files',
+                style: { textAlign: 'right' },
+              },
             ]}
           />
         </span>

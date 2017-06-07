@@ -3,23 +3,23 @@
 export type TShard = {
   failed: number,
   successful: number,
-  total: number
+  total: number,
 };
 
 export type TSearchHitType =
-  | "gene"
-  | "case"
-  | "ssm"
-  | "occurrence"
-  | "project"
-  | "file"
-  | "annotation"
-  | "report";
+  | 'gene'
+  | 'case'
+  | 'ssm'
+  | 'occurrence'
+  | 'project'
+  | 'file'
+  | 'annotation'
+  | 'report';
 
 export type TSearchHit = {
   _id: string,
   _score: number,
-  _type: TSearchHitType
+  _type: TSearchHitType,
 };
 
 export type TSearchResponse = {
@@ -28,7 +28,7 @@ export type TSearchResponse = {
     hits: TSearchHit[],
     total: Number,
     timed_out: boolean,
-    took: number
+    took: number,
   },
-  warings: {}
+  warings: {},
 };

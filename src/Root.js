@@ -1,27 +1,27 @@
 /* @flow */
 /* eslint better/no-ifs:0, import/no-commonjs:0, fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import Router from "react-router-dom/BrowserRouter";
-import { stringify, parse } from "query-string";
-import md5 from "blueimp-md5";
-import urlJoin from "url-join";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import Router from 'react-router-dom/BrowserRouter';
+import { stringify, parse } from 'query-string';
+import md5 from 'blueimp-md5';
+import urlJoin from 'url-join';
 import {
   RelayNetworkLayer,
   urlMiddleware,
-  retryMiddleware
-} from "react-relay-network-layer";
+  retryMiddleware,
+} from 'react-relay-network-layer';
 
-import { viewerQuery } from "@ncigdc/routes/queries";
-import Container from "./Portal";
+import { viewerQuery } from '@ncigdc/routes/queries';
+import Container from './Portal';
 
 const stringifyQuery = query => stringify(query, { strict: false });
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
     urlMiddleware({
-      url: req => urlJoin(process.env.REACT_APP_API, "graphql")
+      url: req => urlJoin(process.env.REACT_APP_API, 'graphql'),
     }),
     retryMiddleware({
       fetchTimeout: 15000,
@@ -29,31 +29,31 @@ Relay.injectNetworkLayer(
       forceRetry: (cb, delay) => {
         window.forceRelayRetry = cb;
         console.log(
-          `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`
+          `call \`forceRelayRetry()\` for immediately retry! Or wait ${delay} ms.`,
         );
       },
-      statusCodes: [500, 503, 504]
+      statusCodes: [500, 503, 504],
     }),
     // Add hash id to request
     next => req => {
-      const [url, search = ""] = req.url.split("?");
+      const [url, search = ''] = req.url.split('?');
       const hash =
         parse(search).hash ||
         md5(
           [
             req.relayReqObj._printedQuery.text,
-            JSON.stringify(req.relayReqObj._printedQuery.variables)
-          ].join(":")
+            JSON.stringify(req.relayReqObj._printedQuery.variables),
+          ].join(':'),
         );
 
       req.url = `${url}?hash=${hash}`; // eslint-disable-line no-param-reassign, fp/no-mutation
       return next(req);
-    }
-  ])
+    },
+  ]),
 );
 
 class Route extends Relay.Route {
-  static routeName = "RootRoute";
+  static routeName = 'RootRoute';
   static queries = viewerQuery;
 }
 

@@ -1,20 +1,20 @@
 // @flow
 
-import React from "react";
-import { compose, withState } from "recompose";
-import urlJoin from "url-join";
+import React from 'react';
+import { compose, withState } from 'recompose';
+import urlJoin from 'url-join';
 
-import Card from "@ncigdc/uikit/Card";
-import Tabs from "@ncigdc/uikit/Tabs";
-import SideTabs from "@ncigdc/uikit/SideTabs";
-import Table, { Tr, Td, Th } from "@ncigdc/uikit/Table";
-import { withTheme } from "@ncigdc/theme";
-import Row from "@ncigdc/uikit/Flex/Row";
-import DownloadButton from "@ncigdc/components/DownloadButton";
-import { visualizingButton } from "@ncigdc/theme/mixins";
+import Card from '@ncigdc/uikit/Card';
+import Tabs from '@ncigdc/uikit/Tabs';
+import SideTabs from '@ncigdc/uikit/SideTabs';
+import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
+import { withTheme } from '@ncigdc/theme';
+import Row from '@ncigdc/uikit/Flex/Row';
+import DownloadButton from '@ncigdc/components/DownloadButton';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 import EntityPageVerticalTable
-  from "@ncigdc/components/EntityPageVerticalTable";
-import ageDisplay from "@ncigdc/utils/ageDisplay";
+  from '@ncigdc/components/EntityPageVerticalTable';
+import ageDisplay from '@ncigdc/utils/ageDisplay';
 
 const ClinicalCard = ({
   p: {
@@ -22,54 +22,54 @@ const ClinicalCard = ({
     diagnoses: { hits: { edges: diagnoses = [] } },
     family_histories: familyHistory = [],
     demographic = {},
-    exposures: { hits: { edges: exposures = [], total: totalExposures } }
+    exposures: { hits: { edges: exposures = [], total: totalExposures } },
   },
   activeTab,
   setTab,
-  theme
+  theme,
 }: {
   p: Object,
   activeTab: number,
   setTab: Function,
-  theme: Object
+  theme: Object,
 }) => (
   <Card
     style={{ flex: 1 }}
     title={
-      <Row style={{ justifyContent: "space-between" }}>
+      <Row style={{ justifyContent: 'space-between' }}>
         <span>Clinical</span>
         <DownloadButton
           style={visualizingButton}
           filename={`clinical.case-${caseId}`}
-          url={urlJoin(process.env.REACT_APP_API, "cases")}
+          url={urlJoin(process.env.REACT_APP_API, 'cases')}
           activeText="Processing"
           inactiveText="Export"
           filters={{
-            op: "and",
+            op: 'and',
             content: [
               {
-                op: "in",
+                op: 'in',
                 content: {
-                  field: "cases.case_id",
-                  value: [caseId]
-                }
-              }
-            ]
+                  field: 'cases.case_id',
+                  value: [caseId],
+                },
+              },
+            ],
           }}
-          fields={["case_id"]}
+          fields={['case_id']}
           dataExportExpands={[
-            "demographic",
-            "diagnoses",
-            "diagnoses.treatments",
-            "family_histories",
-            "exposures"
+            'demographic',
+            'diagnoses',
+            'diagnoses.treatments',
+            'family_histories',
+            'exposures',
           ]}
         />
       </Row>
     }
   >
     <Tabs
-      contentStyle={{ border: "none" }}
+      contentStyle={{ border: 'none' }}
       onTabClick={i => setTab(() => i)}
       tabs={[
         <p key="Demographic">Demographic</p>,
@@ -77,19 +77,19 @@ const ClinicalCard = ({
           Diagnoses / Treatments ({diagnoses.length})
         </p>,
         <p key="Family Histories">Family Histories ({familyHistory.length})</p>,
-        <p key="Exposures">Exposures ({totalExposures})</p>
+        <p key="Exposures">Exposures ({totalExposures})</p>,
       ]}
       activeIndex={activeTab}
     >
       {activeTab === 0 &&
         <EntityPageVerticalTable
           thToTd={[
-            { th: "ID", td: demographic.demographic_id },
-            { th: "Ethnicity", td: demographic.ethnicity },
-            { th: "Gender", td: demographic.gender },
-            { th: "Race", td: demographic.race },
-            { th: "Year of Birth", td: demographic.year_of_birth },
-            { th: "Year of Death", td: demographic.year_of_death }
+            { th: 'ID', td: demographic.demographic_id },
+            { th: 'Ethnicity', td: demographic.ethnicity },
+            { th: 'Gender', td: demographic.gender },
+            { th: 'Race', td: demographic.race },
+            { th: 'Year of Birth', td: demographic.year_of_birth },
+            { th: 'Year of Death', td: demographic.year_of_death },
           ]}
           style={{ flex: 1 }}
         />}
@@ -97,7 +97,7 @@ const ClinicalCard = ({
         <div>
           {!!diagnoses.length &&
             <SideTabs
-              contentStyle={{ border: "none" }}
+              contentStyle={{ border: 'none' }}
               tabs={diagnoses.map(x => (
                 <p key={x.node.diagnosis_id}>{x.node.diagnosis_id}</p>
               ))}
@@ -105,58 +105,58 @@ const ClinicalCard = ({
                 <span key={x.diagnosis_id}>
                   <EntityPageVerticalTable
                     thToTd={[
-                      { th: "ID", td: x.diagnosis_id },
+                      { th: 'ID', td: x.diagnosis_id },
                       {
-                        th: "Classification of Tumor",
-                        td: x.classification_of_tumor
+                        th: 'Classification of Tumor',
+                        td: x.classification_of_tumor,
                       },
-                      { th: "Alcohol Intensity", td: x.alcohol_intensity },
+                      { th: 'Alcohol Intensity', td: x.alcohol_intensity },
                       {
-                        th: "Age at Diagnosis",
-                        td: ageDisplay(x.age_at_diagnosis)
+                        th: 'Age at Diagnosis',
+                        td: ageDisplay(x.age_at_diagnosis),
                       },
-                      { th: "Days to Birth", td: x.days_to_birth },
-                      { th: "Days to Death", td: x.days_to_death },
+                      { th: 'Days to Birth', td: x.days_to_birth },
+                      { th: 'Days to Death', td: x.days_to_death },
                       {
-                        th: "Days to Last Follow Up",
-                        td: x.days_to_last_follow_up
-                      },
-                      {
-                        th: "Days to Last Known Disease Status",
-                        td: x.days_to_last_known_disease_status
-                      },
-                      { th: "Days to Recurrence", td: x.days_to_recurrence },
-                      {
-                        th: "Last Known Disease Status",
-                        td: x.last_known_disease_status
-                      },
-                      { th: "Morphology", td: x.morphology },
-                      { th: "Primary Diagnosis", td: x.primary_diagnosis },
-                      { th: "Prior Malignancy", td: x.prior_malignancy },
-                      {
-                        th: "Progression or Recurrence",
-                        td: x.progression_or_recurrence
+                        th: 'Days to Last Follow Up',
+                        td: x.days_to_last_follow_up,
                       },
                       {
-                        th: "Site of Resection of Biopsy",
-                        td: x.site_of_resection_or_biopsy
+                        th: 'Days to Last Known Disease Status',
+                        td: x.days_to_last_known_disease_status,
+                      },
+                      { th: 'Days to Recurrence', td: x.days_to_recurrence },
+                      {
+                        th: 'Last Known Disease Status',
+                        td: x.last_known_disease_status,
+                      },
+                      { th: 'Morphology', td: x.morphology },
+                      { th: 'Primary Diagnosis', td: x.primary_diagnosis },
+                      { th: 'Prior Malignancy', td: x.prior_malignancy },
+                      {
+                        th: 'Progression or Recurrence',
+                        td: x.progression_or_recurrence,
                       },
                       {
-                        th: "Tissue or Organ of Origin",
-                        td: x.tissue_or_organ_of_origin
+                        th: 'Site of Resection of Biopsy',
+                        td: x.site_of_resection_or_biopsy,
                       },
-                      { th: "Tumor Grade", td: x.tumor_grade },
-                      { th: "Tumor Stage", td: x.tumor_stage },
-                      { th: "Vital Status", td: x.vital_status }
+                      {
+                        th: 'Tissue or Organ of Origin',
+                        td: x.tissue_or_organ_of_origin,
+                      },
+                      { th: 'Tumor Grade', td: x.tumor_grade },
+                      { th: 'Tumor Stage', td: x.tumor_stage },
+                      { th: 'Vital Status', td: x.vital_status },
                     ]}
                     style={{ flex: 1 }}
                   />
                   <div
                     style={{
-                      padding: "1rem",
+                      padding: '1rem',
                       color: theme.greyScale7,
-                      fontSize: "2rem",
-                      lineHeight: "1.4em"
+                      fontSize: '2rem',
+                      lineHeight: '1.4em',
                     }}
                   >
                     Treatments (
@@ -171,31 +171,31 @@ const ClinicalCard = ({
                         <Th key="agents">Therapeutic Agents</Th>,
                         <Th key="intent_type">Treatment Intent Type</Th>,
                         <Th key="therapy">Treatment or Therapy</Th>,
-                        <Th key="days">Days to Treatment</Th>
+                        <Th key="days">Days to Treatment</Th>,
                       ]}
                       body={
                         <tbody>
                           {x.treatments.hits.edges.map(({ node }) => (
                             <Tr key={node.treatment_id}>
-                              <Td>{node.treatment_id || "--"}</Td>
-                              <Td>{node.therapeutic_agents || "--"}</Td>
-                              <Td>{node.treatment_intent_type || "--"}</Td>
-                              <Td>{node.treatment_or_therapy || "--"}</Td>
-                              <Td>{node.days_to_treatment || "--"}</Td>
+                              <Td>{node.treatment_id || '--'}</Td>
+                              <Td>{node.therapeutic_agents || '--'}</Td>
+                              <Td>{node.treatment_intent_type || '--'}</Td>
+                              <Td>{node.treatment_or_therapy || '--'}</Td>
+                              <Td>{node.days_to_treatment || '--'}</Td>
                             </Tr>
                           ))}
                         </tbody>
                       }
                     />}
                   {(!x.treatments || !x.treatments.hits.edges.length) &&
-                    <div style={{ paddingLeft: "2rem" }}>
+                    <div style={{ paddingLeft: '2rem' }}>
                       No Treatments Found.
                     </div>}
                 </span>
               ))}
             />}
           {!diagnoses.length &&
-            <h3 style={{ paddingLeft: "2rem" }}>
+            <h3 style={{ paddingLeft: '2rem' }}>
               No Diagnoses Found.
             </h3>}
         </div>}
@@ -203,7 +203,7 @@ const ClinicalCard = ({
         <div>
           {!!familyHistory.length &&
             <SideTabs
-              contentStyle={{ border: "none" }}
+              contentStyle={{ border: 'none' }}
               tabs={familyHistory.map(x => (
                 <p key={x.family_history_id}>{x.family_history_id}</p>
               ))}
@@ -211,27 +211,27 @@ const ClinicalCard = ({
                 <EntityPageVerticalTable
                   key={x.family_history_id}
                   thToTd={[
-                    { th: "ID", td: x.family_history_id },
+                    { th: 'ID', td: x.family_history_id },
                     {
-                      th: "Relationship Age at Diagnosis",
-                      td: x.relationship_age_at_diagnosis
+                      th: 'Relationship Age at Diagnosis',
+                      td: x.relationship_age_at_diagnosis,
                     },
-                    { th: "Relationship Gender", td: x.relationship_gender },
+                    { th: 'Relationship Gender', td: x.relationship_gender },
                     {
-                      th: "Relationship Primary Diagnosis",
-                      td: x.relationship_primary_diagnosis
+                      th: 'Relationship Primary Diagnosis',
+                      td: x.relationship_primary_diagnosis,
                     },
-                    { th: "Relationship Type", td: x.relationship_type },
+                    { th: 'Relationship Type', td: x.relationship_type },
                     {
-                      th: "Relative with Cancer History",
-                      td: x.relative_with_cancer_history
-                    }
+                      th: 'Relative with Cancer History',
+                      td: x.relative_with_cancer_history,
+                    },
                   ]}
                 />
               ))}
             />}
           {!familyHistory.length &&
-            <h3 style={{ paddingLeft: "2rem" }}>
+            <h3 style={{ paddingLeft: '2rem' }}>
               No Family Histories Found.
             </h3>}
         </div>}
@@ -239,7 +239,7 @@ const ClinicalCard = ({
         <div>
           {!!totalExposures &&
             <SideTabs
-              contentStyle={{ border: "none" }}
+              contentStyle={{ border: 'none' }}
               tabs={exposures.map(x => (
                 <p key={x.node.exposure_id}>{x.node.exposure_id}</p>
               ))}
@@ -247,19 +247,19 @@ const ClinicalCard = ({
                 <EntityPageVerticalTable
                   key={x.node.exposure_id}
                   thToTd={[
-                    { th: "ID", td: x.node.exposure_id },
-                    { th: "Alcohol History", td: x.node.alcohol_history },
-                    { th: "BMI", td: x.node.bmi },
-                    { th: "Cigarettes per Day", td: x.node.cigarettes_per_day },
-                    { th: "Height", td: x.node.height },
-                    { th: "Weight", td: x.node.weight },
-                    { th: "Years Smoked", td: x.node.years_smoked }
+                    { th: 'ID', td: x.node.exposure_id },
+                    { th: 'Alcohol History', td: x.node.alcohol_history },
+                    { th: 'BMI', td: x.node.bmi },
+                    { th: 'Cigarettes per Day', td: x.node.cigarettes_per_day },
+                    { th: 'Height', td: x.node.height },
+                    { th: 'Weight', td: x.node.weight },
+                    { th: 'Years Smoked', td: x.node.years_smoked },
                   ]}
                 />
               ))}
             />}
           {!totalExposures &&
-            <h3 style={{ paddingLeft: "2rem" }}>
+            <h3 style={{ paddingLeft: '2rem' }}>
               No Exposures Found.
             </h3>}
         </div>}
@@ -267,6 +267,6 @@ const ClinicalCard = ({
   </Card>
 );
 
-export default compose(withState("activeTab", "setTab", 0), withTheme)(
-  ClinicalCard
+export default compose(withState('activeTab', 'setTab', 0), withTheme)(
+  ClinicalCard,
 );

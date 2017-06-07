@@ -25,7 +25,7 @@ export const buttonLike = {
 export const dropdown = {
   ...zDepth1,
   position: "absolute",
-  zIndex: 1,
+  zIndex: 200,
   minWidth: "165px",
   backgroundColor: "white",
   textAlign: "left",

@@ -13,7 +13,7 @@ import TabbedLinks from "@ncigdc/components/TabbedLinks";
 import AnnotationsLink from "@ncigdc/components/Links/AnnotationsLink";
 
 import CasesTable from "./CasesTable";
-import FileTable from "./FileTable";
+import FilesTable from "./FilesTable";
 
 declare var _: Object;
 declare var angular: Object;
@@ -145,7 +145,7 @@ class SmartSearchComponent extends React.Component {
               id: "files",
               text: `Files (${this.props.viewer.repository.files.hits.total.toLocaleString()})`,
               component: (
-                <FileTable hits={this.props.viewer.repository.files.hits} />
+                <FilesTable hits={this.props.viewer.repository.files.hits} />
               )
             }
           ]}
@@ -178,7 +178,7 @@ export const SmartSearchQuery = {
           }
           files {
             hits(first: $files_size offset: $files_offset, filters: $filters) {
-              ${FileTable.getFragment("hits")}
+              ${FilesTable.getFragment("hits")}
               total
             }
           }

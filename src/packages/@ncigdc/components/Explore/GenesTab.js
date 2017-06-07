@@ -12,8 +12,7 @@ import { Row, Column } from "@ncigdc/uikit/Flex";
 import { getDefaultCurve, enoughData } from "@ncigdc/utils/survivalplot";
 import withFilters from "@ncigdc/utils/withFilters";
 import SurvivalPlotWrapper from "@ncigdc/components/SurvivalPlotWrapper";
-import GenesBarChart
-  from "@ncigdc/modern_components/GenesBarChart/GenesBarChart";
+import GenesBarChart from "@ncigdc/modern_components/GenesBarChart/GenesBarChart";
 import GenesTable from "@ncigdc/modern_components/GenesTable/GenesTable";
 import { makeFilter, toggleFilters } from "@ncigdc/utils/filters";
 
@@ -95,7 +94,7 @@ export default compose(
     viewer,
     filters,
     handleClickGene
-  }) => (
+  }) =>
     <Column style={styles.card}>
       <h1 style={{ ...styles.heading, padding: "1rem" }} id="mutated-genes">
         <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
@@ -130,5 +129,4 @@ export default compose(
         />
       </Column>
     </Column>
-  )
 );

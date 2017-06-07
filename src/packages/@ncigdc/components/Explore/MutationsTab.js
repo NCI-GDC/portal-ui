@@ -94,7 +94,7 @@ export default compose(
     selectedSurvivalData,
     setSelectedSurvivalData,
     handleClickMutation
-  }) => (
+  }) =>
     <Column style={styles.card}>
       <h1 style={{ ...styles.heading, padding: "1rem" }} id="mutated-genes">
         <i className="fa fa-bar-chart-o" style={{ paddingRight: "10px" }} />
@@ -130,5 +130,4 @@ export default compose(
         context="Cohort"
       />
     </Column>
-  )
 );

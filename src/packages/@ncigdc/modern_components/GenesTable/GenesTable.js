@@ -21,8 +21,7 @@ import Showing from "@ncigdc/components/Pagination/Showing";
 import MutationsCount from "@ncigdc/components/MutationsCount";
 import GeneLink from "@ncigdc/components/Links/GeneLink";
 import { handleReadyStateChange } from "@ncigdc/dux/loaders";
-import EntityPageHorizontalTable
-  from "@ncigdc/components/EntityPageHorizontalTable";
+import EntityPageHorizontalTable from "@ncigdc/components/EntityPageHorizontalTable";
 import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
 import { Row } from "@ncigdc/uikit/Flex";
 import { Tooltip } from "@ncigdc/uikit/Tooltip";
@@ -33,8 +32,7 @@ import Hidden from "@ncigdc/components/Hidden";
 import Pagination from "@ncigdc/components/Pagination";
 import SurvivalIcon from "@ncigdc/theme/icons/SurvivalIcon";
 import { getSurvivalCurves } from "@ncigdc/utils/survivalplot";
-import ProjectBreakdown
-  from "@ncigdc/modern_components/ProjectBreakdown/ProjectBreakdown";
+import ProjectBreakdown from "@ncigdc/modern_components/ProjectBreakdown/ProjectBreakdown";
 import CosmicIcon from "@ncigdc/theme/icons/Cosmic";
 import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
@@ -44,7 +42,7 @@ const colors = scaleOrdinal(schemeCategory10);
 const COMPONENT_NAME = "GenesTable";
 
 const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) => (
+  compose(connect(), withRouter)((props: mixed) =>
     <div style={{ position: "relative", minHeight: "387px" }}>
       <Relay.Renderer
         environment={Relay.Store}
@@ -57,7 +55,7 @@ const createRenderer = (Route, Container) =>
       />
       <ConnectedLoader name={COMPONENT_NAME} />
     </div>
-  ));
+  );
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -392,8 +390,9 @@ const Component = compose(
                   >
                     {(filteredCases.hits.total || 0).toLocaleString()}
                   </ExploreLink>
-                  <span
-                  >{` (${((g.numCases || 0) / filteredCases.hits.total * 100).toFixed(2)}%)`}</span>
+                  <span>{` (${((g.numCases || 0) /
+                    filteredCases.hits.total *
+                    100).toFixed(2)}%)`}</span>
                 </span>
               ),
               projectBreakdown: (
@@ -415,15 +414,16 @@ const Component = compose(
                   )}
                 />
               ),
-              annotations: g.is_cancer_gene_census &&
-                <span>
-                  <Tooltip Component="Cancer Gene Census">
-                    <CosmicIcon width={"20px"} height={"16px"} />
-                  </Tooltip>
-                  <ForTsvExport>
-                    Cancer Gene Census
-                  </ForTsvExport>
-                </span>,
+              annotations:
+                g.is_cancer_gene_census &&
+                  <span>
+                    <Tooltip Component="Cancer Gene Census">
+                      <CosmicIcon width={"20px"} height={"16px"} />
+                    </Tooltip>
+                    <ForTsvExport>
+                      Cancer Gene Census
+                    </ForTsvExport>
+                  </span>,
               survival_plot: (
                 <Tooltip
                   Component={

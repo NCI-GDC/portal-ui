@@ -100,6 +100,7 @@ export const ExplorePageComponent = (props: TProps) => (
         text: "Mutations",
         component: (
           <SSMAggregations
+            defaultFilters={props.filters}
             aggregations={props.viewer.explore.ssms.aggregations}
             ssms={props.viewer.explore.ssms}
             suggestions={get(props, "viewer.autocomplete_ssms.hits", [])}

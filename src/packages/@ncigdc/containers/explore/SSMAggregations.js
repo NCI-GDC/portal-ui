@@ -3,7 +3,8 @@
 
 import React from "react";
 import Relay from "react-relay/classic";
-import { compose, withState } from "recompose";
+import { compose, withState, lifecycle } from "recompose";
+import { isEqual } from "lodash";
 
 import SuggestionFacet from "@ncigdc/components/Aggregations/SuggestionFacet";
 import FacetWrapper from "@ncigdc/components/FacetWrapper";
@@ -15,6 +16,7 @@ import { withTheme } from "@ncigdc/theme";
 import { Column } from "@ncigdc/uikit/Flex";
 import escapeForRelay from "@ncigdc/utils/escapeForRelay";
 import NotMissingFacet from "@ncigdc/components/Aggregations/NotMissingFacet";
+import { replaceFilters } from "@ncigdc/utils/filters/index";
 
 const presetFacets = [
   {
@@ -86,10 +88,49 @@ export type TProps = {
   suggestions: Array
 };
 
+function setVariables({ relay, defaultFilters }) {
+  relay.setVariables({
+    cosmicFilters: replaceFilters(
+      {
+        op: "and",
+        content: [
+          { op: "not", content: { field: "cosmic_id", value: ["MISSING"] } }
+        ]
+      },
+      defaultFilters
+    ),
+    dbsnpRsFilters: replaceFilters(
+      {
+        op: "and",
+        content: [
+          {
+            op: "not",
+            content: {
+              field: "consequence.transcript.annotation.dbsnp_rs",
+              value: ["MISSING"]
+            }
+          }
+        ]
+      },
+      defaultFilters
+    )
+  });
+}
+
 export const SSMAggregationsComponent = compose(
   withState("idCollapsed", "setIdCollapsed", false),
   withState("cosmicIdCollapsed", "setCosmicIdCollapsed", false),
-  withState("dbSNPCollapsed", "setDbSNPCollapsed", false)
+  withState("dbSNPCollapsed", "setDbSNPCollapsed", false),
+  lifecycle({
+    componentDidMount() {
+      setVariables(this.props);
+    },
+    componentWillReceiveProps(nextProps) {
+      if (!isEqual(this.props.defaultFilters, nextProps.defaultFilters)) {
+        setVariables(nextProps);
+      }
+    }
+  })
 )((props: TProps) => (
   <div>
     <FacetHeader
@@ -168,6 +209,10 @@ export const SSMAggregationsComponent = compose(
 ));
 
 export const SSMAggregationsQuery = {
+  initialVariables: {
+    dbsnpRsFilters: null,
+    cosmicFilters: null
+  },
   fragments: {
     aggregations: () => Relay.QL`
       fragment on SsmAggregations {
@@ -199,25 +244,10 @@ export const SSMAggregationsQuery = {
     `,
     ssms: () => Relay.QL`
       fragment on Ssms {
-        cosmic_id_not_missing: hits(
-          filters: { op: "and", content: [
-            { op: "not", content: { field: "cosmic_id", value: ["MISSING"] } }
-            ] }
-        ) {
+        cosmic_id_not_missing: hits(filters: $cosmicFilters) {
           total
         }
-        dbsnp_rs_not_missing: hits(
-          filters:
-          {
-            op: "and",
-            content: [{
-              op: "not", content: {
-                field: "consequence.transcript.annotation.dbsnp_rs",
-                value: ["MISSING"]
-              }
-            }]
-          }
-        ) {
+        dbsnp_rs_not_missing: hits(filters: $dbsnpRsFilters) {
           total
         }
       }

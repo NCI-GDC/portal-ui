@@ -400,6 +400,7 @@ const File = ({
                           file={{
                             ...file,
                             projects: [
+                              //output file has no project, get parent project
                               node.cases.hits.edges[0].node.project.project_id
                             ],
                             acl: node.acl
@@ -407,7 +408,14 @@ const File = ({
                           style={{ padding: "3px 5px" }}
                         />
                         <DownloadFile
-                          file={file}
+                          file={{
+                            ...file,
+                            projects: [
+                              //output file has no project, get parent project
+                              node.cases.hits.edges[0].node.project.project_id
+                            ],
+                            acl: node.acl
+                          }}
                           style={styles.tableDownloadAction}
                         />
                       </Row>

@@ -53,6 +53,34 @@ const userCanDownloadFiles = ({ user, files }) =>
 const userCanDownloadFile = ({ user, file }) =>
   userCanDownloadFiles({ user, files: [file] });
 
+const getAuthCounts = ({ user, files }) => {
+  const defaultData = {
+    authorized: { count: 0, file_size: 0 },
+    unauthorized: { count: 0, file_size: 0 }
+  };
+
+  const authCountAndFileSizes = files.reduce((result, file) => {
+    const canDownloadKey = userCanDownloadFile({ user, file })
+      ? "authorized"
+      : "unauthorized";
+    result[canDownloadKey].count += 1;
+    result[canDownloadKey].file_size += file.file_size;
+    return result;
+  }, defaultData);
+
+  return [
+    {
+      key: "authorized",
+      doc_count: authCountAndFileSizes.authorized.count || 0,
+      file_size: authCountAndFileSizes.authorized.file_size
+    },
+    {
+      key: "unauthorized",
+      doc_count: authCountAndFileSizes.unauthorized.count || 0,
+      file_size: authCountAndFileSizes.unauthorized.file_size
+    }
+  ].filter(i => i.doc_count);
+};
 /*----------------------------------------------------------------------------*/
 
 export {
@@ -60,5 +88,6 @@ export {
   userCanDownloadFiles,
   userCanDownloadFile,
   intersectsWithFileAcl,
-  fileInCorrectState
+  fileInCorrectState,
+  getAuthCounts
 };

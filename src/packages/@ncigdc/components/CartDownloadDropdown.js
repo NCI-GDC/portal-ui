@@ -6,6 +6,7 @@ import { compose, withState } from "recompose";
 import { connect } from "react-redux";
 import urlJoin from "url-join";
 
+import { getAuthCounts } from "@ncigdc/utils/auth";
 import DownloadButton from "@ncigdc/components/DownloadButton";
 import NoAccessModal from "@ncigdc/components/Modals/NoAccessModal";
 import BaseModal from "@ncigdc/components/Modals/BaseModal";
@@ -46,10 +47,18 @@ const styles = {
   }
 };
 
-const downloadCart = (files, dispatch, setState) => {
-  const controlledFiles = files.filter(file => file.access === "controlled");
-
-  if (controlledFiles.length) {
+const downloadCart = (user, files, dispatch, setState) => {
+  const { authorized, unauthorized } = getAuthCounts({ user, files }).reduce(
+    (acc, c) => ({
+      ...acc,
+      [c.key]: { doc_count: c.doc_count, file_size: c.file_size }
+    }),
+    {
+      authorized: { doc_count: 0, file_size: 0 },
+      unauthorized: { doc_count: 0, file_size: 0 }
+    }
+  );
+  if (unauthorized.doc_count > 0) {
     dispatch(
       setModal(
         <NoAccessModal
@@ -60,12 +69,12 @@ const downloadCart = (files, dispatch, setState) => {
               </p>
               <p>
                 <span className="label label-success">
-                  {files.length - controlledFiles.length}
+                  {authorized.doc_count}
                 </span> files that you are authorized to download.
               </p>
               <p>
                 <span className="label label-danger">
-                  {controlledFiles.length}
+                  {unauthorized.doc_count}
                 </span> files that you are not authorized to download.
               </p>
             </div>
@@ -74,6 +83,7 @@ const downloadCart = (files, dispatch, setState) => {
             <Button
               onClick={() =>
                 downloadCart(
+                  user,
                   files.filter(file => file.access === "open"),
                   dispatch,
                   setState
@@ -81,11 +91,8 @@ const downloadCart = (files, dispatch, setState) => {
               style={{ margin: "0 10px" }}
             >
               <span>
-                Download
-                {" "}
-                {files.length - controlledFiles.length}
-                {" "}
-                authorized files
+                Download &nbsp;
+                {authorized.doc_count} authorized files
               </span>
             </Button>
           }
@@ -126,6 +133,7 @@ const downloadCart = (files, dispatch, setState) => {
 };
 
 const CartDownloadDropdown = ({
+  user,
   files,
   theme,
   disabled = false,
@@ -165,13 +173,13 @@ const CartDownloadDropdown = ({
             setState(s => ({ ...s, manifestDownloading: currentState }))}
           active={state.manifestDownloading}
           extraParams={{
-            ids: files.files.map(file => file.file_id)
+            ids: files.map(file => file.file_id)
           }}
         />
         <Button
           style={styles.button(theme)}
           disabled={state.cartDownloading}
-          onClick={() => downloadCart(files.files, dispatch, setState)}
+          onClick={() => downloadCart(user, files, dispatch, setState)}
           leftIcon={state.cartDownloading ? <Spinner /> : <DownloadIcon />}
         >
           Cart

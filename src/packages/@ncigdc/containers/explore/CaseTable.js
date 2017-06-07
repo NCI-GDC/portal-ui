@@ -131,7 +131,7 @@ export const CaseTableComponent = compose(
       </Row>
       <div style={{ overflowX: "auto" }}>
         <Table
-          id="repository-case-table"
+          id="explore-case-table"
           headings={tableInfo
             .filter(x => !x.subHeading)
             .map(x => <x.th key={x.id} />)}

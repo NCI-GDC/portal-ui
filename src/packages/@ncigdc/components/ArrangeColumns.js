@@ -33,10 +33,18 @@ const ArrangeColumns = compose(
     x =>
       x.name.toLowerCase().includes(searchTerm.toLowerCase()) && !x.subHeading
   );
-
   return (
     <div>
-      {filteredColumns.map((column, i) => (
+      {[
+        ...filteredColumns
+          .filter(x => tableColumns.includes(x.id))
+          .slice()
+          // sort by order of column state
+          .sort(
+            (a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id)
+          ),
+        ...filteredColumns.filter(x => !tableColumns.includes(x.id))
+      ].map((column, i) => (
         <SortableItem
           key={column.id}
           updateState={nextState =>

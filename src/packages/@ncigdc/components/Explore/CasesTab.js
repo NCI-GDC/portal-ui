@@ -6,7 +6,7 @@ import ExploreCasesPies from "@ncigdc/components/TabPieCharts/ExploreCasesPies";
 
 const CasesTab = props => (
   <div>
-    <ExploreCasesPies aggregations={props.aggregations} />
+    <ExploreCasesPies aggregations={props.pies} />
     <CaseTable hits={props.hits} explore={props.explore} endpoint="case_ssms" />
   </div>
 );

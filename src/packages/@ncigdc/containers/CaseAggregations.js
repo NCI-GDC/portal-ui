@@ -37,8 +37,8 @@ export type TProps = {
     diagnoses__vital_status: { buckets: [TBucket] },
     diagnoses__days_to_death: { max: number, min: number },
     diagnoses__age_at_diagnosis: { max: number, min: number },
-    project__disease_type: { buckets: [TBucket] },
-    project__primary_site: { buckets: [TBucket] },
+    disease_type: { buckets: [TBucket] },
+    primary_site: { buckets: [TBucket] },
     project__program__name: { buckets: [TBucket] },
     project__project_id: { buckets: [TBucket] }
   },

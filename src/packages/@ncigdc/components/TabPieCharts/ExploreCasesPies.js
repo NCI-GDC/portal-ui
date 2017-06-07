@@ -17,8 +17,8 @@ export type TProps = {
     demographic__gender: { buckets: [TBucket] },
     demographic__race: { buckets: [TBucket] },
     diagnoses__vital_status: { buckets: [TBucket] },
-    project__disease_type: { buckets: [TBucket] },
-    project__primary_site: { buckets: [TBucket] },
+    disease_type: { buckets: [TBucket] },
+    primary_site: { buckets: [TBucket] },
     project__program__name: { buckets: [TBucket] },
     project__project_id: { buckets: [TBucket] }
   }
@@ -36,8 +36,8 @@ const CohortCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
         <PieTitle>Primary Sites</PieTitle>
         <SelfFilteringPie
           docTypeSingular="case"
-          buckets={_.get(aggregations, "project__primary_site.buckets")}
-          fieldName="cases.project.primary_site"
+          buckets={_.get(aggregations, "primary_site.buckets")}
+          fieldName="cases.primary_site"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
           query={query}
@@ -66,8 +66,8 @@ const CohortCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
         <PieTitle>Disease Type</PieTitle>
         <SelfFilteringPie
           docTypeSingular="case"
-          buckets={_.get(aggregations, "project__disease_type.buckets")}
-          fieldName="cases.project.disease_type"
+          buckets={_.get(aggregations, "disease_type.buckets")}
+          fieldName="cases.disease_type"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
           query={query}
@@ -139,13 +139,13 @@ export const CohortCasesPiesQuery = {
             key
           }
         }
-        project__disease_type {
+        disease_type {
           buckets {
             doc_count
             key
           }
         }
-        project__primary_site {
+        primary_site {
           buckets {
             doc_count
             key

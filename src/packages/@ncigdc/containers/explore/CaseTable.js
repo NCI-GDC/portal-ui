@@ -4,34 +4,19 @@ import React from "react";
 import Relay from "react-relay/classic";
 import withFilters from "@ncigdc/utils/withFilters";
 import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
-
+import { connect } from "react-redux";
 import { Row } from "@ncigdc/uikit/Flex";
 import Showing from "@ncigdc/components/Pagination/Showing";
-
+import tableModels from "@ncigdc/tableModels";
 import Pagination from "@ncigdc/components/Pagination";
 
 import TableActions from "@ncigdc/components/TableActions";
 
-import { Tr, Th } from "@ncigdc/uikit/Table";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import { DATA_CATEGORIES } from "@ncigdc/utils/constants";
-import { tableToolTipHint } from "@ncigdc/theme/mixins";
+import Table, { Tr } from "@ncigdc/uikit/Table";
 
 import { compose, withPropsOnChange, withState } from "recompose";
-import CaseTr from "./CaseTr";
 
 import type { TTableProps } from "../types";
-
-const styles = {
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    borderSpacing: 0
-  },
-  right: {
-    textAlign: "right"
-  }
-};
 
 export const CaseTableComponent = compose(
   withFilters(),
@@ -85,10 +70,17 @@ export const CaseTableComponent = compose(
       {}
     );
     return { ssmCounts };
-  })
+  }),
+  connect(state => ({ tableColumns: state.tableColumns.exploreCases }))
 )((props: TTableProps) => {
   const prefix = "cases";
-  const { ssmCounts, ssmCountsLoading } = props;
+  const { ssmCounts, ssmCountsLoading, tableColumns } = props;
+
+  const tableInfo = tableModels.exploreCases // eslint-disable-line
+    .slice()
+    .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
+    .filter(x => tableColumns.includes(x.id));
+
   return (
     <div>
       <Row
@@ -106,6 +98,7 @@ export const CaseTableComponent = compose(
         />
         <TableActions
           prefix={prefix}
+          entityType="exploreCases"
           total={props.hits.total}
           sortKey="cases_sort"
           endpoint={props.endpoint || "cases"}
@@ -137,67 +130,37 @@ export const CaseTableComponent = compose(
         />
       </Row>
       <div style={{ overflowX: "auto" }}>
-        <table style={styles.table} id="explore-case-table">
-          <thead>
-            <Tr>
-              <Th rowSpan="2">Case UUID</Th>
-              <Th rowSpan="2">Submitter ID</Th>
-              <Th rowSpan="2">Project</Th>
-              <Th rowSpan="2">Primary Site</Th>
-              <Th rowSpan="2">Gender</Th>
-              <Th rowSpan="2" style={styles.right}>Files</Th>
-              <Th
-                colSpan={Object.entries(DATA_CATEGORIES).length}
-                style={styles.center}
-              >
-                Available Files per Data Category
-              </Th>
-              <Th rowSpan="2" style={styles.right}>
-                <Tooltip
-                  Component="# Simple Somatic Mutations Filtered by current criteria"
-                  style={tableToolTipHint()}
-                >
-                  # Mutations
-                </Tooltip>
-              </Th>
-              <Th rowSpan="2" style={styles.right}>
-                <Tooltip
-                  Component="# Genes with Simple Somatic Mutations Filtered by current criteria"
-                  style={tableToolTipHint()}
-                >
-                  # Genes
-                </Tooltip>
-              </Th>
-            </Tr>
-
-            <Tr>
-              {Object.values(DATA_CATEGORIES).map((category: any) => (
-                <Th key={category.abbr} style={styles.right}>
-                  <abbr>
-                    <Tooltip
-                      Component={category.full}
-                      style={tableToolTipHint()}
-                    >
-                      {category.abbr}
-                    </Tooltip>
-                  </abbr>
-                </Th>
+        <Table
+          id="explore-case-table"
+          headings={tableInfo
+            .filter(x => !x.subHeading)
+            .map(x => <x.th key={x.id} />)}
+          subheadings={tableInfo
+            .filter(x => x.subHeading)
+            .map(x => <x.th key={x.id} />)}
+          body={
+            <tbody>
+              {props.hits.edges.map((e, i) => (
+                <Tr key={e.node.id} index={i}>
+                  {tableInfo
+                    .filter(x => x.td)
+                    .map(x => (
+                      <x.td
+                        key={x.id}
+                        node={e.node}
+                        relay={props.relay}
+                        index={i}
+                        total={props.hits.total}
+                        ssmCount={ssmCounts[e.node.case_id]}
+                        ssmCountsLoading={ssmCountsLoading}
+                        filters={props.filters}
+                      />
+                    ))}
+                </Tr>
               ))}
-            </Tr>
-          </thead>
-          <tbody>
-            {props.hits.edges.map((e, i) => (
-              <CaseTr
-                {...e}
-                key={e.node.id}
-                ssmCount={ssmCounts[e.node.case_id]}
-                ssmCountsLoading={ssmCountsLoading}
-                index={i}
-                explore={props.explore}
-              />
-            ))}
-          </tbody>
-        </table>
+            </tbody>
+          }
+        />
       </div>
       <Pagination
         prefix={prefix}
@@ -219,9 +182,42 @@ export const CaseTableQuery = {
         total
         edges {
           node {
+            score
             id
             case_id
-            ${CaseTr.getFragment("node")}
+            primary_site
+            disease_type
+            submitter_id
+            project {
+              project_id
+              program {
+                name
+              }
+            }
+            diagnoses {
+              hits(first: 99) {
+                edges {
+                  node {
+                    primary_diagnosis
+                    age_at_diagnosis
+                    vital_status
+                    days_to_death
+                  }
+                }
+              }
+            }
+            demographic {
+              gender
+              ethnicity
+              race
+            }
+            summary {
+              data_categories {
+                file_count
+                data_category
+              }
+              file_count
+            }
           }
         }
       }

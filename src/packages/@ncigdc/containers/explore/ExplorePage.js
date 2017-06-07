@@ -126,6 +126,7 @@ export const ExplorePageComponent = (props: TProps) => (
                   explore={props.viewer.explore}
                   hits={props.viewer.explore.cases.hits}
                   aggregations={props.viewer.explore.cases.aggregations}
+                  pies={props.viewer.explore.cases.pies}
                 />
               : <NoResultsMessage>No Cases Found.</NoResultsMessage>
           },
@@ -218,6 +219,8 @@ export const ExplorePageQuery = {
           cases {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment("aggregations")}
+            }
+            pies: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${ExploreCasesPies.getFragment("aggregations")}
             }
             hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {

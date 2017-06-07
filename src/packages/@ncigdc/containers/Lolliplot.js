@@ -16,10 +16,8 @@ import { startCase } from "lodash";
 import { Lolliplot, Backbone, Minimap } from "@oncojs/react-lolliplot/dist/lib";
 import Tooltip from "@ncigdc/uikit/Tooltip/Tooltip";
 import { makeFilter } from "@ncigdc/utils/filters";
-import MutationLink from "@ncigdc/components/Links/MutationLink";
 import significantConsequences
   from "@ncigdc/utils/filters/prepared/significantConsequences";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 import withRouter from "@ncigdc/utils/withRouter";
 import groupByType from "@ncigdc/utils/groupByType";
 import { buildProteinLolliplotData } from "@ncigdc/utils/data";
@@ -614,50 +612,45 @@ const LolliplotComponent = compose(
                                 {" "}
                                 mutation
                                 {outsideSsms.length > 1
-                                  ? "s DNA changes occur "
-                                  : "'s DNA change occurs "}
+                                  ? "s amino acid changes occur "
+                                  : "'s amino acid change occurs "}
                                 {" "}
-                                outside of this transcript's range.
+                                outside of the annotated transcript's length.
                               </div>
                               <div style={{ marginTop: 5 }}>
-                                Click icon to view
-                                {" "}
-                                {outsideSsms.length > 1 ? "them" : "it"}
-                                .
+                                <table style={{ width: "100%" }}>
+                                  <thead>
+                                    <tr>
+                                      <th>AA Change</th>
+                                      <th>Position</th>
+                                      <th style={{ textAlign: "right" }}>
+                                        # Cases
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {outsideSsms.map(d => (
+                                      <tr>
+                                        <td>{d.aa_change}</td>
+                                        <td>{d.x}</td>
+                                        <td style={{ textAlign: "right" }}>
+                                          {d.y}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
                               </div>
                             </div>
                           }
                         >
-                          {outsideSsms.length > 1
-                            ? <ExploreLink
-                                merge
-                                query={{
-                                  searchTableTab: "mutations",
-                                  filters: makeFilter([
-                                    {
-                                      field: "ssms.ssm_id",
-                                      value: outsideSsms.map(d => d.id)
-                                    }
-                                  ])
-                                }}
-                              >
-                                <i
-                                  className="fa fa-warning"
-                                  style={{
-                                    color: "rgb(230, 24, 24)",
-                                    cursor: "pointer"
-                                  }}
-                                />
-                              </ExploreLink>
-                            : <MutationLink uuid={outsideSsms[0].id}>
-                                <i
-                                  className="fa fa-warning"
-                                  style={{
-                                    color: "rgb(230, 24, 24)",
-                                    cursor: "pointer"
-                                  }}
-                                />
-                              </MutationLink>}
+                          <i
+                            className="fa fa-warning"
+                            style={{
+                              color: "rgb(215, 175, 33)",
+                              cursor: "pointer"
+                            }}
+                          />
                         </Tooltip>
                       </span>}
                   </div>

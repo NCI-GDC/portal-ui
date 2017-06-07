@@ -428,7 +428,11 @@ export function reducer(state: Object = initialState, action: Object): Object {
             access: file.access,
             file_id: file.file_id,
             file_size: file.file_size,
-            projects: file.projects
+            projects: file.cases
+              ? file.cases.hits.edges.map(
+                  ({ node: { project: { project_id } } }) => project_id
+                )
+              : file.projects
           }))
         )
       };
@@ -446,7 +450,11 @@ export function reducer(state: Object = initialState, action: Object): Object {
           access: file.access,
           file_id: file.file_id,
           file_size: file.file_size,
-          projects: file.projects
+          projects: file.cases
+            ? file.cases.hits.edges.map(
+                ({ node: { project: { project_id } } }) => project_id
+              )
+            : file.projects
         }))
       };
     case CART_FULL:

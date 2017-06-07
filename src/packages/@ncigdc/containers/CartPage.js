@@ -11,7 +11,7 @@ import FileSizeIcon from "react-icons/lib/fa/floppy-o";
 
 // Custom
 import formatFileSize from "@ncigdc/utils/formatFileSize";
-import { userCanDownloadFile } from "@ncigdc/utils/auth";
+import { getAuthCounts } from "@ncigdc/utils/auth";
 import { Row, Column } from "@ncigdc/uikit/Flex";
 import { withTheme } from "@ncigdc/theme";
 import FilesTable from "@ncigdc/containers/FilesTable";
@@ -23,35 +23,6 @@ import CartDownloadDropdown from "@ncigdc/components/CartDownloadDropdown";
 import RemoveFromCartButton from "@ncigdc/components/RemoveFromCartButton";
 
 /*----------------------------------------------------------------------------*/
-
-const getAuthCounts = ({ user, files }) => {
-  const defaultData = {
-    authorized: { count: 0, file_size: 0 },
-    unauthorized: { count: 0, file_size: 0 }
-  };
-
-  const authCountAndFileSizes = files.reduce((result, file) => {
-    const canDownloadKey = userCanDownloadFile({ user, file })
-      ? "authorized"
-      : "unauthorized";
-    result[canDownloadKey].count += 1;
-    result[canDownloadKey].file_size += file.file_size;
-    return result;
-  }, defaultData);
-
-  return [
-    {
-      key: "Authorized",
-      doc_count: authCountAndFileSizes.authorized.count || 0,
-      file_size: authCountAndFileSizes.authorized.file_size
-    },
-    {
-      key: "Unauthorized",
-      doc_count: authCountAndFileSizes.unauthorized.count || 0,
-      file_size: authCountAndFileSizes.unauthorized.file_size
-    }
-  ].filter(i => i.doc_count);
-};
 
 export type TProps = {
   files: Array<Object>,
@@ -183,7 +154,12 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
               footer={`${authCounts.length} Authorization Levels`}
               path="doc_count"
               headings={[
-                { key: "key", title: "Level", color: true },
+                {
+                  key: "key",
+                  title: "Level",
+                  color: true,
+                  tdStyle: { textTransform: "capitalize" }
+                },
                 {
                   key: "doc_count",
                   title: "Files",
@@ -203,7 +179,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
           <Row style={{ marginBottom: "2rem" }}>
             <Row style={{ marginLeft: "auto" }} spacing="1rem">
               <MetadataDownloadButton files={{ files }} />
-              <CartDownloadDropdown files={{ files }} />
+              <CartDownloadDropdown files={files} user={user} />
               <RemoveFromCartButton />
             </Row>
           </Row>

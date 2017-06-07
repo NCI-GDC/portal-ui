@@ -14,6 +14,7 @@ import { insertRule } from "glamor";
 import * as d3 from "d3";
 import { startCase } from "lodash";
 import { Lolliplot, Backbone, Minimap } from "@oncojs/react-lolliplot/dist/lib";
+import Tooltip from "@ncigdc/uikit/Tooltip/Tooltip";
 import { makeFilter } from "@ncigdc/utils/filters";
 import significantConsequences
   from "@ncigdc/utils/filters/prepared/significantConsequences";
@@ -280,7 +281,10 @@ const LolliplotComponent = compose(
       });
 
       return {
-        lolliplotData
+        lolliplotData,
+        outsideSsms: lolliplotData.mutations.filter(
+          d => d.x > activeTranscript.length_amino_acid
+        )
       };
     }
   ),
@@ -347,7 +351,8 @@ const LolliplotComponent = compose(
     lolliplotData,
     mutationColors,
     filterByType,
-    transcripts
+    transcripts,
+    outsideSsms
   }) => (
     <Column>
       <Row>
@@ -597,6 +602,57 @@ const LolliplotComponent = compose(
                     </span>
                     <span> / </span>
                     <span>{lolliplotData.mutations.length} Mutations</span>
+                    {outsideSsms.length &&
+                      <span style={{ float: "right" }}>
+                        <Tooltip
+                          Component={
+                            <div>
+                              <div>
+                                {outsideSsms.length}
+                                {" "}
+                                mutation
+                                {outsideSsms.length > 1
+                                  ? "s amino acid changes occur "
+                                  : "'s amino acid change occurs "}
+                                {" "}
+                                outside of the annotated transcript's length.
+                              </div>
+                              <div style={{ marginTop: 5 }}>
+                                <table style={{ width: "100%" }}>
+                                  <thead>
+                                    <tr>
+                                      <th>AA Change</th>
+                                      <th>Position</th>
+                                      <th style={{ textAlign: "right" }}>
+                                        # Cases
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {outsideSsms.map(d => (
+                                      <tr>
+                                        <td>{d.aa_change}</td>
+                                        <td>{d.x}</td>
+                                        <td style={{ textAlign: "right" }}>
+                                          {d.y}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          }
+                        >
+                          <i
+                            className="fa fa-warning"
+                            style={{
+                              color: "rgb(215, 175, 33)",
+                              cursor: "pointer"
+                            }}
+                          />
+                        </Tooltip>
+                      </span>}
                   </div>
                   <div style={{ marginTop: "6px" }}>
                     {/* <select> removed for https://jira.opensciencedatacloud.org/browse/PRTL-1260 */}

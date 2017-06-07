@@ -14,9 +14,12 @@ import { insertRule } from "glamor";
 import * as d3 from "d3";
 import { startCase } from "lodash";
 import { Lolliplot, Backbone, Minimap } from "@oncojs/react-lolliplot/dist/lib";
+import Tooltip from "@ncigdc/uikit/Tooltip/Tooltip";
 import { makeFilter } from "@ncigdc/utils/filters";
+import MutationLink from "@ncigdc/components/Links/MutationLink";
 import significantConsequences
   from "@ncigdc/utils/filters/prepared/significantConsequences";
+import ExploreLink from "@ncigdc/components/Links/ExploreLink";
 import withRouter from "@ncigdc/utils/withRouter";
 import groupByType from "@ncigdc/utils/groupByType";
 import { buildProteinLolliplotData } from "@ncigdc/utils/data";
@@ -280,7 +283,10 @@ const LolliplotComponent = compose(
       });
 
       return {
-        lolliplotData
+        lolliplotData,
+        outsideSsms: lolliplotData.mutations.filter(
+          d => d.x > activeTranscript.length_amino_acid
+        )
       };
     }
   ),
@@ -347,7 +353,8 @@ const LolliplotComponent = compose(
     lolliplotData,
     mutationColors,
     filterByType,
-    transcripts
+    transcripts,
+    outsideSsms
   }) => (
     <Column>
       <Row>
@@ -597,6 +604,62 @@ const LolliplotComponent = compose(
                     </span>
                     <span> / </span>
                     <span>{lolliplotData.mutations.length} Mutations</span>
+                    {outsideSsms.length &&
+                      <span style={{ float: "right" }}>
+                        <Tooltip
+                          Component={
+                            <div>
+                              <div>
+                                {outsideSsms.length}
+                                {" "}
+                                mutation
+                                {outsideSsms.length > 1
+                                  ? "s DNA changes occur "
+                                  : "'s DNA change occurs "}
+                                {" "}
+                                outside of this transcript's range.
+                              </div>
+                              <div style={{ marginTop: 5 }}>
+                                Click icon to view
+                                {" "}
+                                {outsideSsms.length > 1 ? "them" : "it"}
+                                .
+                              </div>
+                            </div>
+                          }
+                        >
+                          {outsideSsms.length > 1
+                            ? <ExploreLink
+                                merge
+                                query={{
+                                  searchTableTab: "mutations",
+                                  filters: makeFilter([
+                                    {
+                                      field: "ssms.ssm_id",
+                                      value: outsideSsms.map(d => d.id)
+                                    }
+                                  ])
+                                }}
+                              >
+                                <i
+                                  className="fa fa-warning"
+                                  style={{
+                                    color: "rgb(230, 24, 24)",
+                                    cursor: "pointer"
+                                  }}
+                                />
+                              </ExploreLink>
+                            : <MutationLink uuid={outsideSsms[0].id}>
+                                <i
+                                  className="fa fa-warning"
+                                  style={{
+                                    color: "rgb(230, 24, 24)",
+                                    cursor: "pointer"
+                                  }}
+                                />
+                              </MutationLink>}
+                        </Tooltip>
+                      </span>}
                   </div>
                   <div style={{ marginTop: "6px" }}>
                     {/* <select> removed for https://jira.opensciencedatacloud.org/browse/PRTL-1260 */}

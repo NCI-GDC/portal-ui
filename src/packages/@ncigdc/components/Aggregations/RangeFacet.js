@@ -311,7 +311,7 @@ const RangeFacet = (props: TProps) => {
               id={`from-${dotField}`}
               key={`from-${dotField}`}
               type="number"
-              placeholder={minDisplayed}
+              placeholder={`eg. ${minDisplayed}`}
               max={maxDisplayed}
               min={minDisplayed}
               title="todo"
@@ -331,7 +331,7 @@ const RangeFacet = (props: TProps) => {
               id={`to-${dotField}`}
               key={`to-${dotField}`}
               type="number"
-              placeholder={maxDisplayed}
+              placeholder={`eg. ${maxDisplayed}`}
               max={maxDisplayed}
               min={minDisplayed}
               title="todo"

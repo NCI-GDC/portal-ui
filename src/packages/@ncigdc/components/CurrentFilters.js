@@ -102,10 +102,10 @@ const enhance = compose(
             return <GeneSymbol explore={geneSymbolFragment} geneId={value} />;
           }
           return value;
-        case "number":
-          return value === 0 ? "false" : "true";
         case "boolean":
           return value ? "true" : "false";
+        case "number":
+          return value;
         default:
           return value;
       }

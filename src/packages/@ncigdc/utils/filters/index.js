@@ -196,12 +196,17 @@ const getDisplayValue = value => {
   }
 };
 
+// true if field and value in
 export const inCurrentFilters = ({ currentFilters, key, dotField }) =>
   currentFilters.some(
     f =>
       f.content.field === dotField &&
       f.content.value.map(v => getDisplayValue(v)).includes(key)
   );
+
+// true if field in
+export const fieldInCurrentFilters = ({ currentFilters, field }) =>
+  currentFilters.some(f => f.content.field === field);
 
 export const getFilterValue = ({ currentFilters, dotField }) =>
   currentFilters.find(f => f.content.field === dotField);
@@ -230,6 +235,7 @@ export const makeFilter: TMakeFilter = fields => {
 export const removeFilter: TRemoveFilter = (field, query) => {
   if (!query) return null;
   if (!field) return query;
+  if (Object.keys(query).length === 0) return query;
 
   if (!Array.isArray(query.content)) {
     return query.content.field === field ? null : query;

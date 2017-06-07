@@ -4,9 +4,12 @@ import React from "react";
 
 import Link from "@ncigdc/components/Links/Link";
 import UndoIcon from "@ncigdc/theme/icons/UndoIcon";
-import { getFilterValue } from "@ncigdc/utils/filters";
 import Hidden from "@ncigdc/components/Hidden";
 import styled from "@ncigdc/theme/styled";
+import {
+  removeFilter,
+  fieldInCurrentFilters
+} from "@ncigdc/utils/filters/index";
 
 const ShadowedUndoIcon = styled(UndoIcon, {
   ":hover::before": {
@@ -24,32 +27,21 @@ const StyledLink = styled(Link, {
 });
 
 const FacetResetButton = ({ field, currentFilters, style, ...props }) => {
-  const currentValues = getFilterValue({
-    currentFilters,
-    dotField: field
-  }) || { content: { value: [] } };
-  const display = !!currentValues.content.value.length;
+  const newFilters = removeFilter(field, currentFilters);
+  const newQuery = newFilters
+    ? {
+        offset: 0,
+        filters: newFilters
+      }
+    : {};
+  const inCurrent = fieldInCurrentFilters({
+    currentFilters: currentFilters.content || [],
+    field
+  });
   return (
     <StyledLink
-      merge="toggle"
-      style={{ display: display ? "inline" : "none", ...style }}
-      query={
-        !!currentValues.content.value.length && {
-          offset: 0,
-          filters: {
-            op: "and",
-            content: [
-              {
-                op: "in",
-                content: {
-                  field,
-                  value: currentValues.content.value
-                }
-              }
-            ]
-          }
-        }
-      }
+      style={{ display: inCurrent ? "inline" : "none", ...style }}
+      query={inCurrent ? newQuery : {}}
     >
       <ShadowedUndoIcon /><Hidden>reset</Hidden>
     </StyledLink>

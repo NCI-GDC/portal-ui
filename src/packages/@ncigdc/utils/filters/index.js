@@ -210,26 +210,21 @@ type TMakeFilter = (
   fields: [{ field: string, value: string }]
 ) => Object | string;
 export const makeFilter: TMakeFilter = fields => {
-  const contentArray = fields.map(item => {
-    const value = _.isArray(item.value) ? item.value : item.value.split(",");
+  if (!fields.length) return {};
+  return {
+    op: "and",
+    content: fields.map(item => {
+      const value = _.isArray(item.value) ? item.value : item.value.split(",");
 
-    return {
-      op: "in",
-      content: {
-        field: item.field,
-        value
-      }
-    };
-  });
-
-  const filters = contentArray.length
-    ? {
-        op: "and",
-        content: contentArray
-      }
-    : {};
-
-  return filters;
+      return {
+        op: "in",
+        content: {
+          field: item.field,
+          value
+        }
+      };
+    })
+  };
 };
 
 export const removeFilter: TRemoveFilter = (field, query) => {

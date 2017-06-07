@@ -19,6 +19,7 @@ import LoginButton from "@ncigdc/components/LoginButton";
 import UserDropdown from "@ncigdc/components/UserDropdown";
 import Hidden from "@ncigdc/components/Hidden";
 import { setModal } from "@ncigdc/dux/modal";
+import { forceLogout } from "@ncigdc/dux/auth";
 import SessionExpiredModal from "@ncigdc/components/Modals/SessionExpiredModal";
 
 import Banner from "@ncigdc/uikit/Banner";
@@ -41,21 +42,25 @@ const Header = compose(
     error: state.error
   })),
   withHandlers({
-    handleApiError: ({ dispatch }) => ({ status }) => {
-      if (status === 401 || status === 403) {
+    handleApiError: ({ dispatch }) => ({ status, user }) => {
+      if (user && status === 401) {
         dispatch(setModal(<SessionExpiredModal />));
+        dispatch(forceLogout());
       }
     }
   }),
   lifecycle({
     componentDidMount(): void {
       if (this.props.error) {
-        this.props.handleApiError({ ...this.props.error });
+        this.props.handleApiError({
+          ...this.props.error,
+          user: this.props.user
+        });
       }
     },
     componentWillReceiveProps(nextProps: Object): void {
       if (nextProps.error !== this.props.error) {
-        this.props.handleApiError({ ...nextProps.error });
+        this.props.handleApiError({ ...nextProps.error, user: nextProps.user });
       }
     }
   }),

@@ -31,7 +31,9 @@ const FirstTimeModal = () =>
     </p>
     <p>
       <b>WARNING</b>
-      : Please read the
+      : Data in the GDC is considered provisional as the GDC applies
+      state-of-the art analysis pipelines which evolve over time. Please read
+      the
       {' '}
       <ExternalLink
         hasExternalIcon={false}

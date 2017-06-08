@@ -1,55 +1,53 @@
 /* @flow */
 /* eslint fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { compose, withState } from "recompose";
-import { withRouter } from "react-router-dom";
-import { startCase, truncate, get, orderBy } from "lodash";
-import { connect } from "react-redux";
-import { parse } from "query-string";
-import { scaleOrdinal, schemeCategory10 } from "d3";
-import { handleReadyStateChange } from "@ncigdc/dux/loaders";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { compose, withState } from 'recompose';
+import { withRouter } from 'react-router-dom';
+import { startCase, truncate, get, orderBy } from 'lodash';
+import { connect } from 'react-redux';
+import { parse } from 'query-string';
+import { scaleOrdinal, schemeCategory10 } from 'd3';
+import { handleReadyStateChange } from '@ncigdc/dux/loaders';
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam
-} from "@ncigdc/utils/uri";
-import { viewerQuery } from "@ncigdc/routes/queries";
-import GeneLink from "@ncigdc/components/Links/GeneLink";
-import MutationLink from "@ncigdc/components/Links/MutationLink";
-import withSize from "@ncigdc/utils/withSize";
-import withBetterRouter from "@ncigdc/utils/withRouter";
-import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
-import Showing from "@ncigdc/components/Pagination/Showing";
-import EntityPageHorizontalTable
-  from "@ncigdc/components/EntityPageHorizontalTable";
-import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
-import BubbleIcon from "@ncigdc/theme/icons/BubbleIcon";
-import { Row } from "@ncigdc/uikit/Flex";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import Button from "@ncigdc/uikit/Button";
-import { tableToolTipHint } from "@ncigdc/theme/mixins";
-import { SpinnerIcon } from "@ncigdc/theme/icons";
-import Hidden from "@ncigdc/components/Hidden";
-import Pagination from "@ncigdc/components/Pagination";
-import SurvivalIcon from "@ncigdc/theme/icons/SurvivalIcon";
-import { getSurvivalCurves } from "@ncigdc/utils/survivalplot";
-import ProjectBreakdown
-  from "@ncigdc/modern_components/ProjectBreakdown/ProjectBreakdown";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
-import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
-import { withTheme } from "@ncigdc/theme";
-import type { TTheme } from "@ncigdc/theme";
-import type { TGroupFilter } from "@ncigdc/utils/filters/types";
-import TableActions from "@ncigdc/components/TableActions";
+  parseJSURLParam,
+} from '@ncigdc/utils/uri';
+import { viewerQuery } from '@ncigdc/routes/queries';
+import GeneLink from '@ncigdc/components/Links/GeneLink';
+import MutationLink from '@ncigdc/components/Links/MutationLink';
+import withSize from '@ncigdc/utils/withSize';
+import withBetterRouter from '@ncigdc/utils/withRouter';
+import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import Showing from '@ncigdc/components/Pagination/Showing';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
+import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
+import { Row } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import Button from '@ncigdc/uikit/Button';
+import { tableToolTipHint } from '@ncigdc/theme/mixins';
+import { SpinnerIcon } from '@ncigdc/theme/icons';
+import Hidden from '@ncigdc/components/Hidden';
+import Pagination from '@ncigdc/components/Pagination';
+import SurvivalIcon from '@ncigdc/theme/icons/SurvivalIcon';
+import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
+import ProjectBreakdown from '@ncigdc/modern_components/ProjectBreakdown/ProjectBreakdown';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import { withTheme } from '@ncigdc/theme';
+import type { TTheme } from '@ncigdc/theme';
+import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+import TableActions from '@ncigdc/components/TableActions';
 
 const colors = scaleOrdinal(schemeCategory10);
-const COMPONENT_NAME = "SsmsTable";
+const COMPONENT_NAME = 'SsmsTable';
 
 const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) => (
-    <div style={{ position: "relative", minHeight: "387px" }}>
+  compose(connect(), withRouter)((props: mixed) =>
+    <div style={{ position: 'relative', minHeight: '387px' }}>
       <Relay.Renderer
         environment={Relay.Store}
         queryConfig={new Route(props)}
@@ -60,8 +58,8 @@ const createRenderer = (Route, Container) =>
         }
       />
       <ConnectedLoader name={COMPONENT_NAME} />
-    </div>
-  ));
+    </div>,
+  );
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -69,7 +67,7 @@ class Route extends Relay.Route {
   static prepareParams = ({
     location: { search },
     defaultSize = 10,
-    defaultFilters = null
+    defaultFilters = null,
   }) => {
     const q = parse(search);
 
@@ -82,11 +80,11 @@ class Route extends Relay.Route {
         q.ssmsTable_filters || defaultFilters,
         makeFilter([
           {
-            field: "available_variation_data",
-            value: "ssm"
-          }
-        ])
-      )
+            field: 'available_variation_data',
+            value: 'ssm',
+          },
+        ]),
+      ),
     };
   };
 }
@@ -94,28 +92,28 @@ class Route extends Relay.Route {
 const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
-      score: "occurrence.case.project.project_id",
+      score: 'occurrence.case.project.project_id',
       ssmsTable_filters: null,
       ssmsTable_size: 10,
       ssmsTable_offset: 0,
       consequenceFilters: {
-        op: "NOT",
+        op: 'NOT',
         content: {
-          field: "consequence.transcript.annotation.impact",
-          value: "missing"
-        }
+          field: 'consequence.transcript.annotation.impact',
+          value: 'missing',
+        },
       },
       ssmCaseFilter: null,
       ssmTested: makeFilter([
         {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
+          field: 'cases.available_variation_data',
+          value: 'ssm',
+        },
       ]),
       sort: [
-        { field: "_score", order: "desc" },
-        { field: "_uid", order: "asc" }
-      ]
+        { field: '_score', order: 'desc' },
+        { field: '_uid', order: 'asc' },
+      ],
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -167,14 +165,14 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 type TProps = {
   showSurvivalPlot: boolean,
   selectedSurvivalData: {
-    id: string
+    id: string,
   },
   context?: string,
   setSelectedSurvivalData: Function,
@@ -184,24 +182,24 @@ type TProps = {
         hits: {
           total: number,
           edges: Array<{
-            node: {}
-          }>
-        }
+            node: {},
+          }>,
+        },
       },
       filteredCases: {
         hits: {
-          total: number
-        }
-      }
-    }
+          total: number,
+        },
+      },
+    },
   },
   projectBreakdown: Object,
   shouldShowGeneSymbol: boolean,
   relay: {
     route: {
-      params: {}
+      params: {},
     },
-    variables: Object
+    variables: Object,
   },
   setSurvivalLoadingId: Function,
   survivalLoadingId: string,
@@ -209,79 +207,81 @@ type TProps = {
   query: {
     ssmsTable_offset: string,
     ssmsTable_size: string,
-    ssmsTable_filters: string
+    ssmsTable_filters: string,
   },
-  defaultFilters: TGroupFilter
+  defaultFilters: TGroupFilter,
 };
 
 const mutationSubTypeMap = {
-  "single base substitution": "Substitution",
-  "small deletion": "Deletion",
-  "small insertion": "Insertion"
+  'single base substitution': 'Substitution',
+  'small deletion': 'Deletion',
+  'small insertion': 'Insertion',
 };
 
 type TMapData = (
   data: Array<Object>,
   shouldShowGeneSymbol: boolean,
-  theme: Object
+  theme: Object,
 ) => Array<Object>;
 
 const mapData: TMapData = (data, shouldShowGeneSymbol, theme) =>
   data.map(hit => {
-    const consequenceOfInterest = hit.consequence.hits.edges.find(
-      consequence => get(consequence, "node.transcript.annotation.impact"),
-      {}
-    ) || {};
+    const consequenceOfInterest =
+      hit.consequence.hits.edges.find(
+        consequence => get(consequence, 'node.transcript.annotation.impact'),
+        {},
+      ) || {};
     const { transcript } = consequenceOfInterest.node || {};
     const {
       annotation = {},
-      consequence_type: consequenceType = "",
+      consequence_type: consequenceType = '',
       gene = {},
-      aa_change: aaChange
-    } = transcript || {};
+      aa_change: aaChange,
+    } =
+      transcript || {};
     const { symbol, gene_id: geneId } = gene;
     const impact = annotation.impact;
 
     return {
       ...hit,
       impact,
-      mutation_subtype: mutationSubTypeMap[
-        (hit.mutation_subtype || "").toLowerCase()
-      ] || hit.mutation_subtype,
+      mutation_subtype:
+        mutationSubTypeMap[(hit.mutation_subtype || '').toLowerCase()] ||
+          hit.mutation_subtype,
       consequence_type: (
         <span>
-          <b>{startCase(consequenceType.replace("variant", ""))}</b>&nbsp;
+          <b>{startCase(consequenceType.replace('variant', ''))}</b>&nbsp;
           {shouldShowGeneSymbol && <GeneLink uuid={geneId}>{symbol}</GeneLink>}
           <Tooltip
             Component={
-              <div style={{ maxWidth: 300, wordBreak: "break-all" }}>
+              <div style={{ maxWidth: 300, wordBreak: 'break-all' }}>
                 {aaChange}
               </div>
             }
             style={{
-              color: theme.impacts[impact] || "inherit"
+              color: theme.impacts[impact] || 'inherit',
             }}
           >
             &nbsp;
             {truncate(aaChange, { length: 12 })}
           </Tooltip>
         </span>
-      )
+      ),
     };
   });
 
 const Component = compose(
   withBetterRouter,
-  withState("survivalLoadingId", "setSurvivalLoadingId", ""),
+  withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withTheme,
-  withSize()
+  withSize(),
 )(
   (
     {
       defaultFilters,
       showSurvivalPlot = false,
       hasEnoughSurvivalDataOnPrimaryCurve,
-      selectedSurvivalData = { id: "" },
+      selectedSurvivalData = { id: '' },
       setSelectedSurvivalData = () => {},
       viewer: { explore: { ssms, filteredCases, cases } },
       shouldShowGeneSymbol = true,
@@ -290,14 +290,14 @@ const Component = compose(
       survivalLoadingId,
       theme,
       projectBreakdown,
-      context = "explore",
+      context = 'explore',
       query,
       location,
-      tableLink
-    }: TProps = {}
+      tableLink,
+    }: TProps = {},
   ) => {
     if (ssms && !ssms.hits.edges.length) {
-      return <Row style={{ padding: "1rem" }}>No mutation data found.</Row>;
+      return <Row style={{ padding: '1rem' }}>No mutation data found.</Row>;
     }
 
     // Data has to be sorted because the relay cache does not store the order.
@@ -305,25 +305,25 @@ const Component = compose(
       ssms
         ? orderBy(
             ssms.hits.edges.map(x => x.node),
-            ["score", "ssm_id"],
-            ["desc", "asc"]
+            ['score', 'ssm_id'],
+            ['desc', 'asc'],
           )
         : [],
       shouldShowGeneSymbol,
-      theme
+      theme,
     );
 
-    const prefix = "ssms";
+    const prefix = 'ssms';
     const totalSsms = ssms ? ssms.hits.total : 0;
 
     return (
       <span>
         <Row
           style={{
-            backgroundColor: "white",
-            padding: "1rem",
-            justifyContent: "space-between",
-            alignItems: "flex-end"
+            backgroundColor: 'white',
+            padding: '1rem',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
           }}
         >
           <Showing
@@ -332,25 +332,25 @@ const Component = compose(
             params={relay.variables}
             total={totalSsms}
           />
-          <Row style={{ alignItems: "flex-end" }}>
+          <Row style={{ alignItems: 'flex-end' }}>
             {tableLink}
             <TableActions
               currentFilters={query.ssmsTable_filters || defaultFilters}
-              style={{ marginLeft: "2rem" }}
+              style={{ marginLeft: '2rem' }}
               prefix={prefix}
               total={totalSsms}
               endpoint={prefix}
               downloadTooltip="Export All Except #Cases"
               downloadFields={[
-                "genomic_dna_change",
-                "mutation_subtype",
-                "consequence.transcript.consequence_type",
-                "consequence.transcript.annotation.impact",
-                "consequence.transcript.is_canonical",
-                "consequence.transcript.gene.gene_id",
-                "consequence.transcript.gene.symbol",
-                "consequence.transcript.aa_change",
-                "ssm_id"
+                'genomic_dna_change',
+                'mutation_subtype',
+                'consequence.transcript.consequence_type',
+                'consequence.transcript.annotation.impact',
+                'consequence.transcript.is_canonical',
+                'consequence.transcript.gene.gene_id',
+                'consequence.transcript.gene.symbol',
+                'consequence.transcript.aa_change',
+                'ssm_id',
               ]}
               tsvSelector="#frequent-mutations-table"
               tsvFilename="frequent-mutations.tsv"
@@ -362,17 +362,17 @@ const Component = compose(
           tableId="frequent-mutations-table"
           headings={[
             {
-              key: "mutation_uuid",
-              title: "Mutation ID"
+              key: 'mutation_uuid',
+              title: 'Mutation ID',
             },
             {
-              key: "genomic_dna_change",
+              key: 'genomic_dna_change',
               title: (
                 <Tooltip
                   Component={
                     <span>
                       Genomic DNA change, shown as <br />
-                      {"{chromosome}:g{start}{ref}>{tumor}"}
+                      {'{chromosome}:g{start}{ref}>{tumor}'}
                     </span>
                   }
                   style={tableToolTipHint()}
@@ -380,12 +380,12 @@ const Component = compose(
                   DNA Change
                 </Tooltip>
               ),
-              className: "id-cell"
+              className: 'id-cell',
             },
-            { key: "mutation_subtype", title: "Type" },
-            { key: "consequence_type", title: "Consequences" },
+            { key: 'mutation_subtype', title: 'Type' },
+            { key: 'consequence_type', title: 'Consequences' },
             {
-              key: "filteredCases",
+              key: 'filteredCases',
               title: (
                 <Tooltip
                   Component={
@@ -393,17 +393,18 @@ const Component = compose(
                       Breakdown of Cases Affected by Simple Somatic Mutations
                       in&nbsp;
                       {context}<br />
-                      # of Cases where Mutation is observed / # of Cases tested for Simple Somatic Mutations
+                      # of Cases where Mutation is observed / # of Cases tested
+                      for Simple Somatic Mutations
                     </span>
                   }
                   style={tableToolTipHint()}
                 >
                   # Affected Cases<br />in {context}
                 </Tooltip>
-              )
+              ),
             },
             {
-              key: "projectBreakdown",
+              key: 'projectBreakdown',
               title: (
                 <Tooltip
                   Component={
@@ -418,22 +419,22 @@ const Component = compose(
                 >
                   # Affected Cases<br /> Across the GDC
                 </Tooltip>
-              )
+              ),
             },
             {
-              key: "impact",
+              key: 'impact',
               title: <span>Impact<br />(VEP)</span>,
-              style: { textAlign: "center" }
+              style: { textAlign: 'center' },
             },
             ...(showSurvivalPlot
               ? [
                   {
                     title: <span>Survival<br />Analysis</span>,
-                    key: "survival_plot",
-                    style: { textAlign: "center", width: "100px" }
-                  }
+                    key: 'survival_plot',
+                    style: { textAlign: 'center', width: '100px' },
+                  },
                 ]
-              : [])
+              : []),
           ]}
           data={frequentMutations.map(({ score = 0, ...x }) => ({
             // eslint-disable-line
@@ -451,7 +452,7 @@ const Component = compose(
             genomic_dna_change: (
               <Tooltip
                 Component={
-                  <div style={{ maxWidth: 300, wordBreak: "break-all" }}>
+                  <div style={{ maxWidth: 300, wordBreak: 'break-all' }}>
                     {x.genomic_dna_change}
                   </div>
                 }
@@ -464,11 +465,11 @@ const Component = compose(
                 <ExploreLink
                   merge
                   query={{
-                    searchTableTab: "cases",
+                    searchTableTab: 'cases',
                     filters: addInFilters(
                       query.fmgTable_filters || defaultFilters,
-                      makeFilter([{ field: "ssms.ssm_id", value: x.ssm_id }])
-                    )
+                      makeFilter([{ field: 'ssms.ssm_id', value: x.ssm_id }]),
+                    ),
                   }}
                 >
                   {score.toLocaleString()}
@@ -476,18 +477,18 @@ const Component = compose(
                 <span> / </span>
                 <ExploreLink
                   query={{
-                    searchTableTab: "cases",
-                    filters: location.pathname.split("/")[1] === "genes"
+                    searchTableTab: 'cases',
+                    filters: location.pathname.split('/')[1] === 'genes'
                       ? query.ssmsTable_filters || defaultFilters
                       : addInFilters(
                           query.ssmsTable_filters || defaultFilters,
                           makeFilter([
                             {
-                              field: "cases.available_variation_data",
-                              value: ["ssm"]
-                            }
-                          ])
-                        )
+                              field: 'cases.available_variation_data',
+                              value: ['ssm'],
+                            },
+                          ]),
+                        ),
                   }}
                 >
                   {(filteredCases.hits.total || 0).toLocaleString()}
@@ -500,18 +501,18 @@ const Component = compose(
             projectBreakdown: (
               <ProjectBreakdown
                 filters={makeFilter([
-                  { field: "ssms.ssm_id", value: x.ssm_id }
+                  { field: 'ssms.ssm_id', value: x.ssm_id },
                 ])}
                 caseTotal={x.occurrence.hits.total}
                 gdcCaseTotal={cases.hits.total}
               />
             ),
-            impact: !["LOW", "MODERATE", "HIGH", "MODIFIER"].includes(x.impact)
+            impact: !['LOW', 'MODERATE', 'HIGH', 'MODIFIER'].includes(x.impact)
               ? null
               : <span>
                   <BubbleIcon
                     toolTipText={x.impact}
-                    text={x.impact.slice(0, x.impact === "MODIFIER" ? 2 : 1)}
+                    text={x.impact.slice(0, x.impact === 'MODIFIER' ? 2 : 1)}
                     backgroundColor={theme.impacts[x.impact]}
                   />
                   <ForTsvExport>
@@ -525,32 +526,32 @@ const Component = compose(
                       Component={
                         hasEnoughSurvivalDataOnPrimaryCurve
                           ? `Click icon to plot ${x.genomic_dna_change}`
-                          : "Not enough survival data"
+                          : 'Not enough survival data'
                       }
                     >
                       <Button
                         style={{
-                          padding: "2px 3px",
+                          padding: '2px 3px',
                           backgroundColor: hasEnoughSurvivalDataOnPrimaryCurve
                             ? colors(
-                                selectedSurvivalData.id === x.ssm_id ? 1 : 0
+                                selectedSurvivalData.id === x.ssm_id ? 1 : 0,
                               )
-                            : "#666",
-                          color: "white",
-                          margin: "0 auto"
+                            : '#666',
+                          color: 'white',
+                          margin: '0 auto',
                         }}
                         disabled={!hasEnoughSurvivalDataOnPrimaryCurve}
                         onClick={() => {
                           if (x.ssm_id !== selectedSurvivalData.id) {
                             setSurvivalLoadingId(x.ssm_id);
                             getSurvivalCurves({
-                              field: "gene.ssm.ssm_id",
+                              field: 'gene.ssm.ssm_id',
                               value: x.ssm_id,
                               slug: x.ssm_id.substr(0, 8),
-                              currentFilters: defaultFilters
+                              currentFilters: defaultFilters,
                             }).then(data => {
                               setSelectedSurvivalData(data);
-                              setSurvivalLoadingId("");
+                              setSurvivalLoadingId('');
                             });
                           } else {
                             setSelectedSurvivalData({});
@@ -563,9 +564,9 @@ const Component = compose(
                         <Hidden>add to survival plot</Hidden>
                       </Button>
                     </Tooltip>
-                  )
+                  ),
                 }
-              : {})
+              : {}),
           }))}
         />
         <Pagination
@@ -575,7 +576,7 @@ const Component = compose(
         />
       </span>
     );
-  }
+  },
 );
 
 export default createRenderer(Route, createContainer(Component));

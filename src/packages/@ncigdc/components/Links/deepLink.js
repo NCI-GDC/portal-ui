@@ -39,7 +39,7 @@ export const scrollToId = id => {
     observer.observe(document, {
       attributes: true,
       childList: true,
-      subtree: true
+      subtree: true,
     });
 
     stopObservingTimeoutId = window.setTimeout(() => {

@@ -1,21 +1,20 @@
 /* @flow */
 
-import React from "react";
-import urlJoin from "url-join";
+import React from 'react';
+import urlJoin from 'url-join';
 
-import { Row } from "@ncigdc/uikit/Flex";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import DownloadButton from "@ncigdc/components/DownloadButton";
-import ArrangeColumnsButton from "@ncigdc/components/ArrangeColumnsButton";
-import SortTableButton from "@ncigdc/components/SortTableButton";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
+import { Row } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import DownloadButton from '@ncigdc/components/DownloadButton';
+import ArrangeColumnsButton from '@ncigdc/components/ArrangeColumnsButton';
+import SortTableButton from '@ncigdc/components/SortTableButton';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
-import { visualizingButton } from "@ncigdc/theme/mixins";
-import DownloadTableToTsvButton
-  from "@ncigdc/components/DownloadTableToTsvButton";
-import type { TGroupFilter } from "@ncigdc/utils/filters/types";
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
+import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 
 type TProps = {
   prefix: string,
@@ -29,7 +28,7 @@ type TProps = {
   tsvSelector?: string,
   tsvFilename?: string,
   style?: Object,
-  currentFilters?: TGroupFilter
+  currentFilters?: TGroupFilter,
 };
 
 const TableActions = (
@@ -41,16 +40,16 @@ const TableActions = (
     endpoint,
     downloadFields,
     downloadable = true,
-    entityType = "",
+    entityType = '',
     tsvSelector,
     tsvFilename,
     style,
     currentFilters,
-    downloadTooltip = "Export All"
-  }: TProps = {}
-) => (
+    downloadTooltip = 'Export All',
+  }: TProps = {},
+) =>
   <LocationSubscriber>
-    {({ query }: {| query: TRawQuery |}) => (
+    {({ query }: {| query: TRawQuery |}) =>
       <Row style={style} spacing="0.2rem">
         {entityType &&
           <ArrangeColumnsButton
@@ -88,9 +87,7 @@ const TableActions = (
             selector={tsvSelector}
             filename={tsvFilename}
           />}
-      </Row>
-    )}
-  </LocationSubscriber>
-);
+      </Row>}
+  </LocationSubscriber>;
 
 export default TableActions;

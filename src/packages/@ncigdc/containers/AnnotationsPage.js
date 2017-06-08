@@ -1,33 +1,33 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
+import React from 'react';
+import Relay from 'react-relay/classic';
 
-import SearchPage from "@ncigdc/components/SearchPage";
+import SearchPage from '@ncigdc/components/SearchPage';
 
-import AnnotationTable from "./AnnotationTable";
-import AnnotationAggregations from "./AnnotationAggregations";
+import AnnotationTable from './AnnotationTable';
+import AnnotationAggregations from './AnnotationAggregations';
 
 export type TProps = {
   location: Object,
   relay: Object,
   viewer: {
     autocomplete: {
-      hits: Array<Object>
+      hits: Array<Object>,
     },
     annotations: {
       aggregations: string,
-      hits: string
-    }
-  }
+      hits: string,
+    },
+  },
 };
 
-export const AnnotationsPageComponent = (props: TProps) => (
+export const AnnotationsPageComponent = (props: TProps) =>
   <SearchPage
     facetTabs={[
       {
-        id: "cases",
-        text: "Cases",
+        id: 'cases',
+        text: 'Cases',
         component: (
           <AnnotationAggregations
             aggregations={props.viewer.annotations.aggregations}
@@ -35,15 +35,14 @@ export const AnnotationsPageComponent = (props: TProps) => (
             setAutocomplete={(value, onReadyStateChange) =>
               props.relay.setVariables(
                 { idAutocomplete: value, runAutocomplete: !!value },
-                onReadyStateChange
+                onReadyStateChange,
               )}
           />
-        )
-      }
+        ),
+      },
     ]}
     results={<AnnotationTable hits={props.viewer.annotations.hits} />}
-  />
-);
+  />;
 
 export const AnnotationsPageQuery = {
   initialVariables: {
@@ -52,7 +51,7 @@ export const AnnotationsPageQuery = {
     filters: null,
     idAutocomplete: null,
     runAutocomplete: false,
-    annotations_sort: null
+    annotations_sort: null,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -67,20 +66,20 @@ export const AnnotationsPageQuery = {
         },
         annotations {
           aggregations(filters: $filters aggregations_filter_themselves: false) {
-            ${AnnotationAggregations.getFragment("aggregations")}
+            ${AnnotationAggregations.getFragment('aggregations')}
           }
           hits(first: $size offset: $offset, filters: $filters, sort: $annotations_sort) {
-            ${AnnotationTable.getFragment("hits")}
+            ${AnnotationTable.getFragment('hits')}
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const AnnotationsPage = Relay.createContainer(
   AnnotationsPageComponent,
-  AnnotationsPageQuery
+  AnnotationsPageQuery,
 );
 
 export default AnnotationsPage;

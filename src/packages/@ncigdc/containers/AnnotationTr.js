@@ -1,16 +1,16 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
+import React from 'react';
+import Relay from 'react-relay/classic';
 
-import AnnotationLink from "@ncigdc/components/Links/AnnotationLink";
-import CaseLink from "@ncigdc/components/Links/CaseLink";
-import ProjectLink from "@ncigdc/components/Links/ProjectLink";
+import AnnotationLink from '@ncigdc/components/Links/AnnotationLink';
+import CaseLink from '@ncigdc/components/Links/CaseLink';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 
-import { Tr, Td } from "@ncigdc/uikit/Table";
+import { Tr, Td } from '@ncigdc/uikit/Table';
 
-import { withTheme } from "@ncigdc/theme";
-import { ForTsvExport } from "@ncigdc/components/DownloadTableToTsvButton";
+import { withTheme } from '@ncigdc/theme';
+import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 
 export type TProps = {
   index: number,
@@ -23,16 +23,16 @@ export type TProps = {
     entity_id: string,
     entity_type: string,
     project: {
-      project_id: string
-    }
+      project_id: string,
+    },
   },
-  theme: Object
+  theme: Object,
 };
 
-export const AnnotationTrComponent = ({ node, index, theme }: TProps) => (
+export const AnnotationTrComponent = ({ node, index, theme }: TProps) =>
   <Tr
     style={{
-      backgroundColor: index % 2 === 0 ? theme.tableStripe : "#fff"
+      backgroundColor: index % 2 === 0 ? theme.tableStripe : '#fff',
     }}
   >
     <Td>
@@ -60,8 +60,8 @@ export const AnnotationTrComponent = ({ node, index, theme }: TProps) => (
     <Td>
       <CaseLink
         uuid={node.case_id}
-        query={node.entity_type !== "case" ? { bioId: node.entity_id } : {}}
-        deepLink={node.entity_type !== "case" ? "biospecimen" : undefined}
+        query={node.entity_type !== 'case' ? { bioId: node.entity_id } : {}}
+        deepLink={node.entity_type !== 'case' ? 'biospecimen' : undefined}
       >
         {node.entity_id.substr(0, 8)}
       </CaseLink>
@@ -72,8 +72,7 @@ export const AnnotationTrComponent = ({ node, index, theme }: TProps) => (
     <Td>{node.category}</Td>
     <Td>{node.classification}</Td>
     <Td>{node.created_datetime}</Td>
-  </Tr>
-);
+  </Tr>;
 
 export const AnnotationTrQuery = {
   fragments: {
@@ -90,13 +89,13 @@ export const AnnotationTrQuery = {
         classification
         created_datetime
       }
-    `
-  }
+    `,
+  },
 };
 
 const AnnotationTr = Relay.createContainer(
   withTheme(AnnotationTrComponent),
-  AnnotationTrQuery
+  AnnotationTrQuery,
 );
 
 export default AnnotationTr;

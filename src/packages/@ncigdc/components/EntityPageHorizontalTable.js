@@ -1,26 +1,26 @@
 // @flow
 
-import React from "react";
-import * as d3 from "d3";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import Table, { Tr, Td, Th } from "@ncigdc/uikit/Table";
-import { withTheme } from "@ncigdc/theme";
+import React from 'react';
+import * as d3 from 'd3';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
+import { withTheme } from '@ncigdc/theme';
 
 const colors = d3.scaleOrdinal(d3.schemeCategory20);
 
 const styles = {
   table: {
-    borderCollapse: "collapse",
+    borderCollapse: 'collapse',
     borderSpacing: 0,
-    overflow: "auto",
-    backgroundColor: "#fff"
+    overflow: 'auto',
+    backgroundColor: '#fff',
   },
   tr: {
-    border: "none !important"
+    border: 'none !important',
   },
   td: {
-    border: "none !important"
-  }
+    border: 'none !important',
+  },
 };
 
 // th are horizontal
@@ -34,30 +34,30 @@ const EntityPageHorizontalTable = ({
   emptyMessage,
   theme,
   tableId,
-  idKey
-}) => (
+  idKey,
+}) =>
   <Column
     style={{
-      flexWrap: "wrap",
-      overflow: "auto",
-      ...style
+      flexWrap: 'wrap',
+      overflow: 'auto',
+      ...style,
     }}
   >
     {title &&
       <h3
         style={{
           color: theme.greyScale7,
-          width: "100%",
-          fontSize: "24px",
-          lineHeight: "1.4em",
-          fontWeight: "normal",
+          width: '100%',
+          fontSize: '24px',
+          lineHeight: '1.4em',
+          fontWeight: 'normal',
           marginTop: 0,
           marginBottom: 0,
-          padding: "1rem",
-          backgroundColor: "#fff",
-          display: "flex",
-          justifyContent: "space-between",
-          ...titleStyle
+          padding: '1rem',
+          backgroundColor: '#fff',
+          display: 'flex',
+          justifyContent: 'space-between',
+          ...titleStyle,
         }}
       >
         {title} {rightComponent}
@@ -66,7 +66,7 @@ const EntityPageHorizontalTable = ({
       <Table
         id={tableId}
         style={styles.table}
-        headings={headings.map(h => (
+        headings={headings.map(h =>
           <Th
             rowSpan={h.subheadings ? 1 : 2}
             colSpan={h.subheadings ? h.subheadings.length : 1}
@@ -74,53 +74,52 @@ const EntityPageHorizontalTable = ({
             style={h.thStyle || h.style || {}}
           >
             {h.title}
-          </Th>
-        ))}
+          </Th>,
+        )}
         subheadings={headings.map(
           h =>
             h.subheadings &&
-            h.subheadings.map((s, i) => <Th key={`subheading-${i}`}>{s}</Th>)
+            h.subheadings.map((s, i) => <Th key={`subheading-${i}`}>{s}</Th>),
         )}
         body={
           <tbody>
-            {data.map((d, i) => (
+            {data.map((d, i) =>
               <Tr
                 style={{
                   ...styles.tr,
-                  backgroundColor: i % 2 === 0 ? theme.tableStripe : "#fff"
+                  backgroundColor: i % 2 === 0 ? theme.tableStripe : '#fff',
                 }}
                 key={d[idKey] || i}
               >
                 {headings.map(h =>
-                  [].concat(d[h.key]).map((v, j) => (
+                  [].concat(d[h.key]).map((v, j) =>
                     <Td
                       key={`${h.key}-${j}`}
                       style={h.tdStyle || h.style || {}}
-                      className={h.className || ""}
+                      className={h.className || ''}
                     >
                       {h.color &&
                         <div
                           className="h-color"
                           style={{ backgroundColor: colors(i) }}
                         />}
-                      {v || "--"}
-                    </Td>
-                  ))
+                      {v || '--'}
+                    </Td>,
+                  ),
                 )}
-              </Tr>
-            ))}
+              </Tr>,
+            )}
           </tbody>
         }
       />}
     {!data.length &&
       <Row
         style={{
-          borderBottom: `1px solid ${theme.greyScale5}`
+          borderBottom: `1px solid ${theme.greyScale5}`,
         }}
       >
-        {emptyMessage && <h4 style={{ padding: "1rem" }}>{emptyMessage}</h4>}
+        {emptyMessage && <h4 style={{ padding: '1rem' }}>{emptyMessage}</h4>}
       </Row>}
-  </Column>
-);
+  </Column>;
 
 export default withTheme(EntityPageHorizontalTable);

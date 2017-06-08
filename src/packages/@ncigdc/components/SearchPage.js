@@ -1,41 +1,41 @@
 // @flow
 
-import React from "react";
-import { compose, withState } from "recompose";
+import React from 'react';
+import { compose, withState } from 'recompose';
 
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import styled from "@ncigdc/theme/styled";
-import CurrentFilters from "@ncigdc/components/CurrentFilters";
-import TabbedLinks from "@ncigdc/components/TabbedLinks";
-import UnstyledButton from "@ncigdc/uikit/UnstyledButton";
-import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from "@ncigdc/theme/icons";
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import styled from '@ncigdc/theme/styled';
+import CurrentFilters from '@ncigdc/components/CurrentFilters';
+import TabbedLinks from '@ncigdc/components/TabbedLinks';
+import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
+import { DoubleArrowLeftIcon, DoubleArrowRightIcon } from '@ncigdc/theme/icons';
 
-const sidePadding = "2.5rem";
+const sidePadding = '2.5rem';
 
 const Container = styled(Row, {
-  padding: `2rem ${sidePadding} 13rem`
+  padding: `2rem ${sidePadding} 13rem`,
 });
 
 const FacetsPanel = styled(Column, {
   width: ({ theme }) => theme.facetsPanelWidth,
-  flex: "none",
-  marginRight: "18px"
+  flex: 'none',
+  marginRight: '18px',
 });
 
 const Content = styled(Column, {
   flex: 1,
-  width: 0
+  width: 0,
 });
 
 const ShowFacetsButton = styled.button({
-  flex: "none",
+  flex: 'none',
   padding: 10,
   backgroundColor: ({ theme }) => theme.white,
   border: ({ theme }) => `1px solid ${theme.greyScale4}`,
-  borderLeft: "none",
+  borderLeft: 'none',
   margin: `2.1rem 4rem auto -${sidePadding}`,
-  outline: "none",
-  borderRadius: "0 0.4rem 0.4rem 0"
+  outline: 'none',
+  borderRadius: '0 0.4rem 0.4rem 0',
 });
 
 type TProps = {|
@@ -43,10 +43,10 @@ type TProps = {|
   results?: mixed,
   showFacets: boolean,
   setShowFacets: Function,
-  showRepositoryQuery: boolean
+  showRepositoryQuery: boolean,
 |};
 
-const enhance = compose(withState("showFacets", "setShowFacets", true));
+const enhance = compose(withState('showFacets', 'setShowFacets', true));
 
 const SearchPage = (
   {
@@ -55,9 +55,9 @@ const SearchPage = (
     showFacets,
     setShowFacets,
     filtersLinkProps,
-    geneSymbolFragment
-  }: TProps = {}
-) => (
+    geneSymbolFragment,
+  }: TProps = {},
+) =>
   <Container>
     {showFacets &&
       <FacetsPanel>
@@ -79,7 +79,7 @@ const SearchPage = (
         />
       </FacetsPanel>}
     <Content>
-      <Row style={{ marginBottom: "2rem" }}>
+      <Row style={{ marginBottom: '2rem' }}>
         {!showFacets &&
           <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
             <DoubleArrowRightIcon />
@@ -92,7 +92,6 @@ const SearchPage = (
       </Row>
       {results}
     </Content>
-  </Container>
-);
+  </Container>;
 
 export default enhance(SearchPage);

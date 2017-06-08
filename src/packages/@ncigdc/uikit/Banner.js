@@ -1,51 +1,51 @@
 // @flow
 
-import React from "react";
+import React from 'react';
 
-import Row from "@ncigdc/uikit/Flex/Row";
+import Row from '@ncigdc/uikit/Flex/Row';
 
 const style = {
   headerBanner: {
-    display: "flex",
-    alignItems: "center",
-    backgroundColor: "#265986",
-    color: "white",
-    padding: "1rem",
-    transition: "all 0.25s ease",
-    borderBottom: "1px solid #ebebeb"
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: '#265986',
+    color: 'white',
+    padding: '1rem',
+    transition: 'all 0.25s ease',
+    borderBottom: '1px solid #ebebeb',
   },
   icon: {
     flex: 1,
-    paddingLeft: "5px",
-    fontSize: "1.2em"
+    paddingLeft: '5px',
+    fontSize: '1.2em',
   },
   message: {
-    flex: 32
+    flex: 32,
   },
   dismiss: {
-    paddingRight: "5px",
-    cursor: "pointer"
+    paddingRight: '5px',
+    cursor: 'pointer',
   },
   dismissed: {
-    height: "0px",
-    overflow: "hidden",
+    height: '0px',
+    overflow: 'hidden',
     padding: 0,
-    borderBottom: 0
+    borderBottom: 0,
   },
   warning: {
-    color: "#000000",
-    fontWeight: "bold",
-    backgroundColor: "#D39C3F"
+    color: '#000000',
+    fontWeight: 'bold',
+    backgroundColor: '#D39C3F',
   },
   error: {
-    backgroundColor: "#83001E"
-  }
+    backgroundColor: '#83001E',
+  },
 };
 
 const levelToIcon = {
   info: <span className="fa fa-question icon" />,
   warning: <span className="fa fa-exclamation icon" />,
-  error: <span className="fa fa-exclamation-triangle icon" />
+  error: <span className="fa fa-exclamation-triangle icon" />,
 };
 
 type BannerProps = {
@@ -53,7 +53,7 @@ type BannerProps = {
   level: string,
   dismissible: boolean,
   handleOnDismiss: () => {},
-  dismissed: boolean
+  dismissed: boolean,
 };
 
 const Banner = ({
@@ -61,13 +61,13 @@ const Banner = ({
   level,
   dismissible,
   handleOnDismiss,
-  dismissed
-}: BannerProps) => (
+  dismissed,
+}: BannerProps) =>
   <Row
     style={{
       ...style.headerBanner,
       ...(dismissed ? style.dismissed : {}),
-      ...(style[level.toLowerCase()] || {})
+      ...(style[level.toLowerCase()] || {}),
     }}
     className="header-banner"
   >
@@ -83,7 +83,6 @@ const Banner = ({
       >
         Dismiss <i className="fa fa-times" />
       </span>}
-  </Row>
-);
+  </Row>;
 
 export default Banner;

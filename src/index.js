@@ -1,14 +1,14 @@
 /* @flow */
 
-import "babel-polyfill";
+import 'babel-polyfill';
 
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import { setTheme } from "@ncigdc/theme";
+import { setTheme } from '@ncigdc/theme';
 
-import Root from "./Root";
+import Root from './Root';
 
-setTheme("active");
+setTheme('active');
 
-ReactDOM.render(<Root />, document.getElementById("root"));
+ReactDOM.render(<Root />, document.getElementById('root'));

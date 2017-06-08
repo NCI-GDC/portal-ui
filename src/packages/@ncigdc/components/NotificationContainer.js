@@ -1,10 +1,10 @@
 // @flow
-import React from "react";
-import { connect } from "react-redux";
-import Notification from "@ncigdc/uikit/Notification";
-import { Row } from "@ncigdc/uikit/Flex";
+import React from 'react';
+import { connect } from 'react-redux';
+import Notification from '@ncigdc/uikit/Notification';
+import { Row } from '@ncigdc/uikit/Flex';
 
-const NotificationContainer = ({ notification }) => (
+const NotificationContainer = ({ notification }) =>
   <Row>
     {notification &&
       <Notification
@@ -14,9 +14,8 @@ const NotificationContainer = ({ notification }) => (
       >
         {notification.component}
       </Notification>}
-  </Row>
-);
+  </Row>;
 
 export default connect(state => ({ notification: state.notification }))(
-  NotificationContainer
+  NotificationContainer,
 );

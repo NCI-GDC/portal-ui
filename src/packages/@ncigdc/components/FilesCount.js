@@ -1,19 +1,18 @@
 // @flow
 
-import React from "react";
+import React from 'react';
 
 type TProps = {
   hits: {
-    total: number
-  }
+    total: number,
+  },
 };
 
-const FilesCount = (props: TProps) => (
+const FilesCount = (props: TProps) =>
   <span>
     {props.hits.total > 0
       ? props.hits.total.toLocaleString()
       : <span className="fa fa-spinner fa-spin" />}
-  </span>
-);
+  </span>;
 
 export default FilesCount;

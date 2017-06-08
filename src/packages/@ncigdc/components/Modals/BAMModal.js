@@ -1,12 +1,12 @@
 // @flow
 
-import React from "react";
-import { compose, withState, pure } from "recompose";
-import urlJoin from "url-join";
+import React from 'react';
+import { compose, withState, pure } from 'recompose';
+import urlJoin from 'url-join';
 
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import Button from "@ncigdc/uikit/Button";
-import download from "@ncigdc/utils/download";
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import Button from '@ncigdc/uikit/Button';
+import download from '@ncigdc/utils/download';
 
 type TProps = {
   file: Object,
@@ -14,22 +14,22 @@ type TProps = {
   value: string,
   setValue: Function,
   active: boolean,
-  setActive: Function
+  setActive: Function,
 };
 
 export const processBAMSliceInput = (userInput: string): Object => {
   if (userInput) {
-    const lines = userInput.split("\n");
+    const lines = userInput.split('\n');
     return {
       regions: lines.map(line => {
-        const region = line.split("\t");
+        const region = line.split('\t');
         const regionTemplates = [
           r => `${r[0]}`,
           r => `${r[0]}:${r[1]}`,
-          r => `${r[0]}:${r[1]}-${r[2]}`
+          r => `${r[0]}:${r[1]}-${r[2]}`,
         ];
         return regionTemplates[region.length - 1](region);
-      })
+      }),
     };
   }
   return {};
@@ -38,7 +38,7 @@ export const processBAMSliceInput = (userInput: string): Object => {
 const setPos = (element: any, caretPos: number): void => {
   if (element.createTextRange) {
     const range = element.createTextRange();
-    range.move("character", caretPos);
+    range.move('character', caretPos);
     range.select();
   } else {
     element.focus();
@@ -63,29 +63,30 @@ const allowTab = (event: any, setValue) => {
   }
 };
 
-const enhance = compose(withState("value", "setValue", ""), pure);
+const enhance = compose(withState('value', 'setValue', ''), pure);
 
-const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
+const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) =>
   <Column
     style={{
-      padding: "15px"
+      padding: '15px',
     }}
   >
     <h2>BAM Slicing</h2>
     <h3>File name: {file.file_name}</h3>
     <label htmlFor="bed">
-      Please enter one or more slices' genome coordinates below in one of the following formats:
+      Please enter one or more slices' genome coordinates below in one of the
+      following formats:
     </label>
     <pre>
       chr7:140505783-140511649<br />
-      {"chr1	150505782	150511648"}
+      {'chr1	150505782	150511648'}
     </pre>
     <textarea
       id="bed"
       style={{
-        minHeight: "100px",
+        minHeight: '100px',
         tabSize: 4,
-        fontFamily: "'Courier New', Courier, monospace"
+        fontFamily: "'Courier New', Courier, monospace",
       }}
       value={value}
       onKeyDown={e => allowTab(e, setValue)}
@@ -93,8 +94,8 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
         setValue(e.target.value);
       }}
     />
-    <Row style={{ paddingTop: "0.5rem", justifyContent: "flex-end" }}>
-      <Button onClick={closeModal} style={{ marginRight: "0.5rem" }}>
+    <Row style={{ paddingTop: '0.5rem', justifyContent: 'flex-end' }}>
+      <Button onClick={closeModal} style={{ marginRight: '0.5rem' }}>
         Cancel
       </Button>
       <Button
@@ -102,16 +103,16 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
           if (value) {
             const params = {
               body: processBAMSliceInput(value),
-              attachment: true
+              attachment: true,
             };
             setActive(true);
             download({
               params,
               url: urlJoin(
                 process.env.REACT_APP_GDC_AUTH,
-                `api/v0/slicing/view/${file.file_id}`
+                `api/v0/slicing/view/${file.file_id}`,
               ),
-              method: "POST"
+              method: 'POST',
             })(() => {}, () => setActive(false));
           }
           closeModal();
@@ -120,7 +121,6 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) => (
         Download
       </Button>
     </Row>
-  </Column>
-);
+  </Column>;
 
 export default enhance(BAMModal);

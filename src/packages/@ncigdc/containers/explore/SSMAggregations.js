@@ -1,126 +1,126 @@
 /* @flow */
 /* eslint jsx-a11y/no-static-element-interactions: 0, max-len: 1 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { compose, withState, lifecycle } from "recompose";
-import { isEqual } from "lodash";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { compose, withState, lifecycle } from 'recompose';
+import { isEqual } from 'lodash';
 
-import SuggestionFacet from "@ncigdc/components/Aggregations/SuggestionFacet";
-import FacetWrapper from "@ncigdc/components/FacetWrapper";
-import FacetHeader from "@ncigdc/components/Aggregations/FacetHeader";
+import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
+import FacetWrapper from '@ncigdc/components/FacetWrapper';
+import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 
-import type { TBucket } from "@ncigdc/components/Aggregations/types";
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
-import { withTheme } from "@ncigdc/theme";
-import { Column } from "@ncigdc/uikit/Flex";
-import escapeForRelay from "@ncigdc/utils/escapeForRelay";
-import NotMissingFacet from "@ncigdc/components/Aggregations/NotMissingFacet";
-import { replaceFilters } from "@ncigdc/utils/filters/index";
+import { withTheme } from '@ncigdc/theme';
+import { Column } from '@ncigdc/uikit/Flex';
+import escapeForRelay from '@ncigdc/utils/escapeForRelay';
+import NotMissingFacet from '@ncigdc/components/Aggregations/NotMissingFacet';
+import { replaceFilters } from '@ncigdc/utils/filters/index';
 
 const presetFacets = [
   {
-    title: "SSM ID",
-    field: "ssm_id",
-    full: "ssms.ssm_id",
-    doc_type: "ssms",
-    type: "id"
+    title: 'SSM ID',
+    field: 'ssm_id',
+    full: 'ssms.ssm_id',
+    doc_type: 'ssms',
+    type: 'id',
   },
   {
-    title: "Impact (VEP)",
-    field: "consequence.transcript.annotation.impact",
-    full: "ssms.consequence.transcript.annotation.impact",
-    doc_type: "ssms",
-    type: "terms"
+    title: 'Impact (VEP)',
+    field: 'consequence.transcript.annotation.impact',
+    full: 'ssms.consequence.transcript.annotation.impact',
+    doc_type: 'ssms',
+    type: 'terms',
   },
   {
-    title: "Consequence Type",
-    field: "consequence.transcript.consequence_type",
-    full: "ssms.consequence.transcript.consequence_type",
-    doc_type: "ssms",
-    type: "terms"
+    title: 'Consequence Type',
+    field: 'consequence.transcript.consequence_type',
+    full: 'ssms.consequence.transcript.consequence_type',
+    doc_type: 'ssms',
+    type: 'terms',
   },
   {
-    title: "Mutation Type",
-    field: "mutation_type",
-    full: "ssms.mutation_type",
-    doc_type: "ssms",
-    type: "terms"
+    title: 'Mutation Type',
+    field: 'mutation_type',
+    full: 'ssms.mutation_type',
+    doc_type: 'ssms',
+    type: 'terms',
   },
   {
-    title: "Variant Caller",
-    field: "occurrence.case.observation.variant_calling.variant_caller",
-    full: "ssms.occurrence.case.observation.variant_calling.variant_caller",
-    doc_type: "ssms",
-    type: "terms"
+    title: 'Variant Caller',
+    field: 'occurrence.case.observation.variant_calling.variant_caller',
+    full: 'ssms.occurrence.case.observation.variant_calling.variant_caller',
+    doc_type: 'ssms',
+    type: 'terms',
   },
   {
-    title: "COSMIC ID",
-    field: "cosmic_id",
-    full: "ssms.cosmic_id",
-    doc_type: "ssms",
-    type: "notMissing"
+    title: 'COSMIC ID',
+    field: 'cosmic_id',
+    full: 'ssms.cosmic_id',
+    doc_type: 'ssms',
+    type: 'notMissing',
   },
   {
-    title: "dbSNP rs ID",
-    field: "consequence.transcript.annotation.dbsnp_rs",
-    full: "ssms.consequence.transcript.annotation.dbsnp_rs",
-    doc_type: "ssms",
-    type: "notMissing"
-  }
+    title: 'dbSNP rs ID',
+    field: 'consequence.transcript.annotation.dbsnp_rs',
+    full: 'ssms.consequence.transcript.annotation.dbsnp_rs',
+    doc_type: 'ssms',
+    type: 'notMissing',
+  },
 ];
 
 export type TProps = {
   aggregations: {
     consequence__transcript__annotation__impact: { buckets: [TBucket] },
     consequence__transcript__consequence_type: { buckets: [TBucket] },
-    mutation_type: { buckets: [TBucket] }
+    mutation_type: { buckets: [TBucket] },
   },
   hits: {
     edges: Array<{|
       node: {|
-        id: string
-      |}
-    |}>
+        id: string,
+      |},
+    |}>,
   },
   setAutocomplete: Function,
   theme: Object,
-  suggestions: Array
+  suggestions: Array,
 };
 
 function setVariables({ relay, defaultFilters }) {
   relay.setVariables({
     cosmicFilters: replaceFilters(
       {
-        op: "and",
+        op: 'and',
         content: [
-          { op: "not", content: { field: "cosmic_id", value: ["MISSING"] } }
-        ]
+          { op: 'not', content: { field: 'cosmic_id', value: ['MISSING'] } },
+        ],
       },
-      defaultFilters
+      defaultFilters,
     ),
     dbsnpRsFilters: replaceFilters(
       {
-        op: "and",
+        op: 'and',
         content: [
           {
-            op: "not",
+            op: 'not',
             content: {
-              field: "consequence.transcript.annotation.dbsnp_rs",
-              value: ["MISSING"]
-            }
-          }
-        ]
+              field: 'consequence.transcript.annotation.dbsnp_rs',
+              value: ['MISSING'],
+            },
+          },
+        ],
       },
-      defaultFilters
-    )
+      defaultFilters,
+    ),
   });
 }
 
 export const SSMAggregationsComponent = compose(
-  withState("idCollapsed", "setIdCollapsed", false),
-  withState("cosmicIdCollapsed", "setCosmicIdCollapsed", false),
-  withState("dbSNPCollapsed", "setDbSNPCollapsed", false),
+  withState('idCollapsed', 'setIdCollapsed', false),
+  withState('cosmicIdCollapsed', 'setCosmicIdCollapsed', false),
+  withState('dbSNPCollapsed', 'setDbSNPCollapsed', false),
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
@@ -129,9 +129,9 @@ export const SSMAggregationsComponent = compose(
       if (!isEqual(this.props.defaultFilters, nextProps.defaultFilters)) {
         setVariables(nextProps);
       }
-    }
-  })
-)((props: TProps) => (
+    },
+  }),
+)((props: TProps) =>
   <div>
     <FacetHeader
       title="Mutation"
@@ -148,27 +148,26 @@ export const SSMAggregationsComponent = compose(
       hits={props.suggestions}
       // eslint-disable-next-line react/jsx-curly-spacing
       setAutocomplete={props.setAutocomplete}
-      dropdownItem={x => (
-        <span style={{ display: "flex" }}>
+      dropdownItem={x =>
+        <span style={{ display: 'flex' }}>
           <Column>
-            <span style={{ fontWeight: "bold" }}>
+            <span style={{ fontWeight: 'bold' }}>
               {x.ssm_id}
             </span>
           </Column>
-        </span>
-      )}
+        </span>}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
     {presetFacets
       .filter(
         ({ full }) =>
           ![
-            "ssms.ssm_id",
-            "ssms.cosmic_id",
-            "ssms.consequence.transcript.annotation.dbsnp_rs"
-          ].includes(full)
+            'ssms.ssm_id',
+            'ssms.cosmic_id',
+            'ssms.consequence.transcript.annotation.dbsnp_rs',
+          ].includes(full),
       )
-      .map(facet => (
+      .map(facet =>
         <FacetWrapper
           key={facet.full}
           facet={facet}
@@ -177,8 +176,8 @@ export const SSMAggregationsComponent = compose(
           relay={props.relay}
           additionalProps={facet.additionalProps}
           style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-        />
-      ))}
+        />,
+      )}
     <FacetHeader
       title="COSMIC ID"
       field="ssms.cosmic_id"
@@ -205,13 +204,13 @@ export const SSMAggregationsComponent = compose(
       notMissingDocCount={props.ssms.dbsnp_rs_not_missing.total}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
-  </div>
-));
+  </div>,
+);
 
 export const SSMAggregationsQuery = {
   initialVariables: {
     dbsnpRsFilters: null,
-    cosmicFilters: null
+    cosmicFilters: null,
   },
   fragments: {
     aggregations: () => Relay.QL`
@@ -251,13 +250,13 @@ export const SSMAggregationsQuery = {
           total
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const SSMAggregations = Relay.createContainer(
   withTheme(SSMAggregationsComponent),
-  SSMAggregationsQuery
+  SSMAggregationsQuery,
 );
 
 export default SSMAggregations;

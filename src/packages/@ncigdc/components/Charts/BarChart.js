@@ -1,16 +1,16 @@
 // @flow
 
 // Vender
-import React from "react";
-import * as d3 from "d3";
-import ReactFauxDOM from "react-faux-dom";
-import { compose, withState, pure } from "recompose";
+import React from 'react';
+import * as d3 from 'd3';
+import ReactFauxDOM from 'react-faux-dom';
+import { compose, withState, pure } from 'recompose';
 
 // Custom
-import { withTheme } from "@ncigdc/theme";
-import { withTooltip } from "@ncigdc/uikit/Tooltip";
-import withSize from "@ncigdc/utils/withSize";
-import "./style.css";
+import { withTheme } from '@ncigdc/theme';
+import { withTooltip } from '@ncigdc/uikit/Tooltip';
+import withSize from '@ncigdc/utils/withSize';
+import './style.css';
 
 const BarChart = (() => ({
   data,
@@ -22,10 +22,10 @@ const BarChart = (() => ({
   margin: m,
   setTooltip,
   theme,
-  size: { width }
+  size: { width },
 }) => {
-  const el = ReactFauxDOM.createElement("div");
-  el.style.width = "100%";
+  const el = ReactFauxDOM.createElement('div');
+  el.style.width = '100%';
   const innerPadding = 0.3;
   const outerPadding = 0.3;
 
@@ -34,15 +34,15 @@ const BarChart = (() => ({
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
-    fontSize: "1.3rem",
-    fontWeight: "500",
-    stroke: theme.greyScale4
+    fontSize: '1.3rem',
+    fontWeight: '500',
+    stroke: theme.greyScale4,
   };
   const xAxisStyle = xAxis.style || {
     textFill: theme.greyScale3,
-    fontSize: "1.3rem",
-    fontWeight: "700",
-    stroke: theme.greyScale4
+    fontSize: '1.3rem',
+    fontWeight: '700',
+    stroke: theme.greyScale4,
   };
 
   const x = d3
@@ -56,98 +56,98 @@ const BarChart = (() => ({
 
   const svg = d3
     .select(el)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g", "chart")
-    .attr("fill", "#fff")
-    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height + margin.top + margin.bottom)
+    .append('g', 'chart')
+    .attr('fill', '#fff')
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   svg
-    .append("text")
-    .attr("y", 0 - margin.top)
-    .attr("x", width / 2)
-    .attr("dy", "1em")
-    .style("text-anchor", "middle")
-    .style("fontSize", "1.1rem")
-    .style("fontWeight", "500")
-    .attr("fill", yAxisStyle.textFill)
+    .append('text')
+    .attr('y', 0 - margin.top)
+    .attr('x', width / 2)
+    .attr('dy', '1em')
+    .style('text-anchor', 'middle')
+    .style('fontSize', '1.1rem')
+    .style('fontWeight', '500')
+    .attr('fill', yAxisStyle.textFill)
     .text(title);
 
   const yG = svg
-    .append("g")
+    .append('g')
     .call(
       d3
         .axisLeft(y)
         .ticks(Math.min(4, maxY))
         .tickSize(-chartWidth)
-        .tickSizeOuter(0)
+        .tickSizeOuter(0),
     );
 
-  yG.selectAll("path").style("stroke", "none");
-  yG.selectAll("line").style("stroke", yAxisStyle.stroke);
+  yG.selectAll('path').style('stroke', 'none');
+  yG.selectAll('line').style('stroke', yAxisStyle.stroke);
   yG
-    .selectAll("text")
-    .style("fontSize", yAxisStyle.fontSize)
-    .style("fill", yAxisStyle.textFill);
+    .selectAll('text')
+    .style('fontSize', yAxisStyle.fontSize)
+    .style('fill', yAxisStyle.textFill);
 
   svg
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin.left)
-    .attr("x", 0 - height / 2)
-    .attr("dy", "1em")
-    .style("text-anchor", "middle")
-    .style("fontSize", yAxisStyle.fontSize)
-    .style("fontWeight", yAxisStyle.fontWeight)
-    .attr("fill", yAxisStyle.textFill)
-    .text(yAxis.title || "");
+    .append('text')
+    .attr('transform', 'rotate(-90)')
+    .attr('y', 0 - margin.left)
+    .attr('x', 0 - height / 2)
+    .attr('dy', '1em')
+    .style('text-anchor', 'middle')
+    .style('fontSize', yAxisStyle.fontSize)
+    .style('fontWeight', yAxisStyle.fontWeight)
+    .attr('fill', yAxisStyle.textFill)
+    .text(yAxis.title || '');
 
   const xG = svg
-    .append("g")
-    .attr("transform", `translate(0, ${height})`)
+    .append('g')
+    .attr('transform', `translate(0, ${height})`)
     .call(d3.axisBottom(x));
 
   xG
-    .selectAll("text")
-    .style("text-anchor", "end")
-    .style("fontSize", xAxisStyle.fontSize)
-    .style("fontWeight", xAxisStyle.fontWeight)
-    .attr("fill", xAxisStyle.textFill)
-    .attr("dx", "-1em")
-    .attr("dy", ".15em")
-    .attr("transform", "rotate(-45)");
+    .selectAll('text')
+    .style('text-anchor', 'end')
+    .style('fontSize', xAxisStyle.fontSize)
+    .style('fontWeight', xAxisStyle.fontWeight)
+    .attr('fill', xAxisStyle.textFill)
+    .attr('dx', '-1em')
+    .attr('dy', '.15em')
+    .attr('transform', 'rotate(-45)');
 
-  xG.selectAll("path").style("stroke", xAxisStyle.stroke);
+  xG.selectAll('path').style('stroke', xAxisStyle.stroke);
 
-  xG.selectAll("line").style("stroke", xAxisStyle.stroke);
+  xG.selectAll('line').style('stroke', xAxisStyle.stroke);
 
   const barGs = svg
-    .selectAll("g.chart")
+    .selectAll('g.chart')
     .data(data)
     .enter()
-    .append("g")
-    .attr("class", "bar-g");
+    .append('g')
+    .attr('class', 'bar-g');
 
   const drawBar = barG => {
     barG
-      .append("rect")
-      .attr("class", "bar")
-      .attr("fill", (styles.bars || { fill: "steelblue" }).fill)
-      .attr("width", x.bandwidth())
-      .attr("y", d => y(d.value))
-      .attr("x", d => x(d.label))
-      .attr("height", d => height - y(d.value))
-      .on("click", d => {
+      .append('rect')
+      .attr('class', 'bar')
+      .attr('fill', (styles.bars || { fill: 'steelblue' }).fill)
+      .attr('width', x.bandwidth())
+      .attr('y', d => y(d.value))
+      .attr('x', d => x(d.label))
+      .attr('height', d => height - y(d.value))
+      .on('click', d => {
         if (d.onClick) {
           d.onClick();
         }
       })
-      .classed("pointer", d => d.onClick)
-      .on("mouseenter", d => {
+      .classed('pointer', d => d.onClick)
+      .on('mouseenter', d => {
         setTooltip(d.tooltip);
       })
-      .on("mouseleave", () => {
+      .on('mouseleave', () => {
         setTooltip();
       });
   };
@@ -162,7 +162,7 @@ const BarChart = (() => ({
 export default compose(
   withTheme,
   withTooltip,
-  withState("chart", "setState", <span />),
+  withState('chart', 'setState', <span />),
   withSize(),
-  pure
+  pure,
 )(BarChart);

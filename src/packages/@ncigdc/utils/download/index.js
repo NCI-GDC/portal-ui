@@ -1,42 +1,42 @@
 // @flow
 
-import React from "react";
+import React from 'react';
 // TODO change this
-import { store } from "../../../../Portal";
+import { store } from '../../../../Portal';
 
-import _ from "lodash";
-import $ from "jquery";
-import Cookies from "js-cookie";
+import _ from 'lodash';
+import $ from 'jquery';
+import Cookies from 'js-cookie';
 
-import { notify } from "@ncigdc/dux/notification";
-import { setModal } from "@ncigdc/dux/modal";
+import { notify } from '@ncigdc/dux/notification';
+import { setModal } from '@ncigdc/dux/modal';
 
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import Button from "@ncigdc/uikit/Button";
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import Button from '@ncigdc/uikit/Button';
 
 // const cookiePath = document.querySelector('base').getAttribute('href')
-const cookiePath = "/";
-const iFrameIdPrefix = "__downloader_iframe__";
-const formIdPrefix = "__downloader_form__";
+const cookiePath = '/';
+const iFrameIdPrefix = '__downloader_iframe__';
+const formIdPrefix = '__downloader_form__';
 const getIframeResponse = iFrame =>
-  JSON.parse(iFrame.contents().find("body pre").text());
+  JSON.parse(iFrame.contents().find('body pre').text());
 const showErrorModal = error => {
   const warning = error.warning || error.message;
   store.dispatch(
     setModal(
       <Column
         style={{
-          padding: "15px"
+          padding: '15px',
         }}
       >
         {warning}
-        <Row style={{ paddingTop: "0.5rem", justifyContent: "flex-end" }}>
+        <Row style={{ paddingTop: '0.5rem', justifyContent: 'flex-end' }}>
           <Button onClick={() => store.dispatch(setModal(null))}>
             OK
           </Button>
         </Row>
-      </Column>
-    )
+      </Column>,
+    ),
   );
 };
 // notification config
@@ -47,7 +47,7 @@ const progressChecker = (
   downloadToken,
   altMessage,
   inProgress,
-  done
+  done,
 ) => {
   inProgress();
   const waitTime = 1000;
@@ -61,9 +61,9 @@ const progressChecker = (
       e =>
         _.isError(e)
           ? {
-              message: "GDC download service is currently experiencing issues."
+              message: 'GDC download service is currently experiencing issues.',
             }
-          : e
+          : e,
     )(_.partial(getIframeResponse, iFrame));
 
     return error;
@@ -101,18 +101,20 @@ const progressChecker = (
         file size, number of files, or number of concurrent users).
       </div>
       <div>
-        We recommend that you use the <a
+        We recommend that you use the{' '}
+        <a
           href="https://gdc.cancer.gov/access-data/gdc-data-transfer-tool"
           target="_blank"
           rel="noopener noreferrer"
         >
-          {" "}GDC Data Transfer Tool
-        </a> or cancel the download and try again later.
+          {' '}GDC Data Transfer Tool
+        </a>{' '}
+        or cancel the download and try again later.
       </div>
       <a
         onClick={cancelDownload}
         style={{
-          textDecoration: "underline"
+          textDecoration: 'underline',
         }}
       >
         <strong>
@@ -140,30 +142,30 @@ const progressChecker = (
         if (attempts === 5 || attempts === 2) {
           store.dispatch(
             notify({
-              action: "add",
+              action: 'add',
               id: `download/${attempts}`,
               component: simpleMessage,
-              delay: 1000
-            })
+              delay: 1000,
+            }),
           );
         } else if (attempts === 6) {
           store.dispatch(
             notify({
-              action: "add",
+              action: 'add',
               id: `download/${attempts}`,
               component: detailedMessage,
-              delay: 0
-            })
+              delay: 0,
+            }),
           );
         }
       } else {
         store.dispatch(
           notify({
-            action: "add",
+            action: 'add',
             id: `download/${attempts}`,
             component: simpleMessage,
-            delay: 0
-          })
+            delay: 0,
+          }),
         );
       }
 
@@ -204,21 +206,23 @@ const cookielessChecker = (iFrame, inProgress, done) => {
 };
 
 const hashString = s =>
-  s.split("").reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
+  s.split('').reduce((acc, c) => (acc << 5) - acc + c.charCodeAt(0), 0);
 
 const toHtml = (key, value) =>
   `<input
     type="hidden"
     name="${key}"
-    value="${_.isPlainObject(value) ? JSON.stringify(value).replace(/"/g, "&quot;") : value}"
+    value="${_.isPlainObject(value)
+      ? JSON.stringify(value).replace(/"/g, '&quot;')
+      : value}"
   />`;
 
-const arrayToStringFields = ["expand", "fields", "facets"];
+const arrayToStringFields = ['expand', 'fields', 'facets'];
 
 const arrayToStringOnFields = (key, value, fields) =>
   _.includes(fields, key) ? [].concat(value).join() : value;
 
-const download = ({ url, params, method = "GET", altMessage = false }) => {
+const download = ({ url, params, method = 'GET', altMessage = false }) => {
   const downloadToken = _.uniqueId(`${+new Date()}-`);
   const iFrameId = iFrameIdPrefix + downloadToken;
   const formId = formIdPrefix + downloadToken;
@@ -231,7 +235,7 @@ const download = ({ url, params, method = "GET", altMessage = false }) => {
     Cookies.set(cookieKey, downloadToken);
     _.assign(params, {
       downloadCookieKey: cookieKey,
-      downloadCookiePath: cookiePath
+      downloadCookiePath: cookiePath,
     });
   }
 
@@ -241,10 +245,10 @@ const download = ({ url, params, method = "GET", altMessage = false }) => {
       const paramValue = arrayToStringOnFields(key, value, arrayToStringFields);
       return (
         result +
-        [].concat(paramValue).reduce((acc, v) => acc + toHtml(key, v), "")
+        [].concat(paramValue).reduce((acc, v) => acc + toHtml(key, v), '')
       );
     },
-    ""
+    '',
   );
 
   const formHtml = `<form
@@ -262,17 +266,17 @@ const download = ({ url, params, method = "GET", altMessage = false }) => {
       style="display: none"
       src="about:blank"
       onload="this.__frame__loaded = true;">
-    </iframe>`
+    </iframe>`,
   )
     // Appending to document body to allow navigation away from the current
     // page and downloads in the background
-    .appendTo("body");
+    .appendTo('body');
 
   const iFrame = $(`#${iFrameId}`);
   iFrame[0].__frame__loaded = false;
 
   iFrame.ready(() => {
-    const iFrameBody = iFrame.contents().find("body");
+    const iFrameBody = iFrame.contents().find('body');
     iFrameBody.append(formHtml);
 
     const form = iFrameBody.find(`#${formId}`);

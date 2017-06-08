@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import _ from "lodash";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 export default function withToggle(ComposedComponent) {
   return class Toggle extends Component {
@@ -8,13 +8,13 @@ export default function withToggle(ComposedComponent) {
       // Allow active state changes to trigger actions such as toggling relay variables
       onActivate: PropTypes.func,
       onDeactivate: PropTypes.func,
-      active: PropTypes.bool
+      active: PropTypes.bool,
     };
 
     static defaultProps = {
       onActivate: () => {},
       onDeactivate: () => {},
-      active: false
+      active: false,
     };
 
     constructor(props) {

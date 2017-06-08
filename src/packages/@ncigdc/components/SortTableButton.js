@@ -1,34 +1,34 @@
 // @flow
 
-import React from "react";
-import { compose } from "recompose";
-import ArrowDownIcon from "react-icons/lib/fa/long-arrow-down";
-import ArrowUpIcon from "react-icons/lib/fa/long-arrow-up";
-import JSURL from "jsurl";
+import React from 'react';
+import { compose } from 'recompose';
+import ArrowDownIcon from 'react-icons/lib/fa/long-arrow-down';
+import ArrowUpIcon from 'react-icons/lib/fa/long-arrow-up';
+import JSURL from 'jsurl';
 
-import withRouter from "@ncigdc/utils/withRouter";
-import { parseJSURLParam } from "@ncigdc/utils/uri";
-import { SortIcon } from "@ncigdc/theme/icons";
-import { Row } from "@ncigdc/uikit/Flex";
-import Button from "@ncigdc/uikit/Button";
-import Dropdown from "@ncigdc/uikit/Dropdown";
-import DropdownItem from "@ncigdc/uikit/DropdownItem";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
-import styled from "@ncigdc/theme/styled";
-import Link from "@ncigdc/components/Links/Link";
-import Hidden from "@ncigdc/components/Hidden";
-import { withTheme } from "@ncigdc/theme";
+import withRouter from '@ncigdc/utils/withRouter';
+import { parseJSURLParam } from '@ncigdc/utils/uri';
+import { SortIcon } from '@ncigdc/theme/icons';
+import { Row } from '@ncigdc/uikit/Flex';
+import Button from '@ncigdc/uikit/Button';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import styled from '@ncigdc/theme/styled';
+import Link from '@ncigdc/components/Links/Link';
+import Hidden from '@ncigdc/components/Hidden';
+import { withTheme } from '@ncigdc/theme';
 
 /*----------------------------------------------------------------------------*/
 
 const CheckboxRow = styled(Row, {
-  padding: "0.3rem 0.6rem"
+  padding: '0.3rem 0.6rem',
 });
 
 const RadioRow = styled(Row, {
-  padding: "0.3rem 0.6rem",
-  marginLeft: "auto",
-  alignItems: "center"
+  padding: '0.3rem 0.6rem',
+  marginLeft: 'auto',
+  alignItems: 'center',
 });
 
 type TSortTableButtonProps = {
@@ -36,15 +36,15 @@ type TSortTableButtonProps = {
   options: Array<Object>,
   query: Object,
   sortKey: string,
-  theme: Object
+  theme: Object,
 };
 
 const SortTableButton = compose(
   withRouter,
-  withTheme
+  withTheme,
 )(
   (
-    { style, options, query: q, sortKey, theme }: TSortTableButtonProps = {}
+    { style, options, query: q, sortKey, theme }: TSortTableButtonProps = {},
   ) => {
     const { [sortKey]: sort } = q;
     const fields = parseJSURLParam(sort, []);
@@ -59,80 +59,80 @@ const SortTableButton = compose(
             </Button>
           </Tooltip>
         }
-        dropdownStyle={{ top: "100%", marginTop: 5, whiteSpace: "nowrap" }}
+        dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
       >
         {options.map(x => {
           const sameField = fields.filter(f => f.field === x.id)[0];
           const otherFields = fields.filter(f => f.field !== x.id);
           const nextSort = sameField
             ? otherFields
-            : [...otherFields, { field: x.id, order: "asc" }];
+            : [...otherFields, { field: x.id, order: 'asc' }];
 
           return (
             <DropdownItem
               key={x.id}
               style={{
-                lineHeight: "1.5",
-                borderRight: "2px solid transparent",
-                ":hover": {
-                  borderRight: `2px solid ${theme.secondary}`
-                }
+                lineHeight: '1.5',
+                borderRight: '2px solid transparent',
+                ':hover': {
+                  borderRight: `2px solid ${theme.secondary}`,
+                },
               }}
             >
               <CheckboxRow flex="1">
                 <Link
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                   merge
                   query={{
-                    [sortKey]: JSURL.stringify(nextSort)
+                    [sortKey]: JSURL.stringify(nextSort),
                   }}
                 >
                   <input
                     readOnly
-                    style={{ pointerEvents: "none" }}
+                    style={{ pointerEvents: 'none' }}
                     type="checkbox"
                     checked={!!sameField}
                     name={x.name}
                   />
-                  <label htmlFor={x.name} style={{ marginLeft: "0.3rem" }}>
+                  <label htmlFor={x.name} style={{ marginLeft: '0.3rem' }}>
                     {x.name}
                   </label>
                 </Link>
               </CheckboxRow>
               <RadioRow>
                 <Link
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                   merge
                   query={{
                     [sortKey]: JSURL.stringify([
                       ...otherFields,
-                      { field: x.id, order: "asc" }
-                    ])
+                      { field: x.id, order: 'asc' },
+                    ]),
                   }}
                 >
                   <ArrowDownIcon />
                   <input
                     readOnly
                     type="radio"
-                    checked={!!sameField && sameField.order === "asc"}
+                    checked={!!sameField && sameField.order === 'asc'}
                   />
 
                 </Link>
                 <Link
-                  style={{ width: "100%" }}
+                  style={{ width: '100%' }}
                   merge
                   query={{
                     [sortKey]: JSURL.stringify([
                       ...otherFields,
-                      { field: x.id, order: "desc" }
-                    ])
+                      { field: x.id, order: 'desc' },
+                    ]),
                   }}
                 >
                   <ArrowUpIcon />
                   <input
                     readOnly
                     type="radio"
-                    checked={!!sameField && sameField.order === "desc"}
+                    checked={!!sameField && sameField.order === 'desc'}
                   />
                 </Link>
               </RadioRow>
@@ -141,7 +141,7 @@ const SortTableButton = compose(
         })}
       </Dropdown>
     );
-  }
+  },
 );
 
 /*----------------------------------------------------------------------------*/

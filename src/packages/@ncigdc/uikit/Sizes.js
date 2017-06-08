@@ -1,39 +1,38 @@
 // @flow
-import React from "react";
-import Dropdown from "@ncigdc/uikit/Dropdown";
-import DropdownItem from "@ncigdc/uikit/DropdownItem";
-import UnstyledButton from "./UnstyledButton";
+import React from 'react';
+import Dropdown from '@ncigdc/uikit/Dropdown';
+import DropdownItem from '@ncigdc/uikit/DropdownItem';
+import UnstyledButton from './UnstyledButton';
 
 export default ({
   first,
   sizes = [10, 20, 40, 60, 80, 100],
-  onChange
+  onChange,
 }: {
   first: number,
   sizes?: Array<number>,
-  onChange: Function
-}) => (
+  onChange: Function,
+}) =>
   <Dropdown
     selected={first}
     dropdownStyle={{
-      minWidth: "40px",
-      width: "40px",
-      zIndex: 101
+      minWidth: '40px',
+      width: '40px',
+      zIndex: 101,
     }}
   >
-    {sizes.map(x => (
+    {sizes.map(x =>
       <DropdownItem
         key={x}
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center"
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         {first === x
           ? x
           : <UnstyledButton onClick={() => onChange(x)}>{x}</UnstyledButton>}
-      </DropdownItem>
-    ))}
-  </Dropdown>
-);
+      </DropdownItem>,
+    )}
+  </Dropdown>;

@@ -1,68 +1,69 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { compose } from "recompose";
-import { connect } from "react-redux";
-import Pagination from "@ncigdc/components/Pagination";
-import Showing from "@ncigdc/components/Pagination/Showing";
-import AddToCartButtonAll from "@ncigdc/components/AddToCartButtonAll";
-import { Row } from "@ncigdc/uikit/Flex";
-import TableActions from "@ncigdc/components/TableActions";
-import tableModels from "@ncigdc/tableModels";
-import Table, { Th, Tr, Td } from "@ncigdc/uikit/Table";
-import styled from "@ncigdc/theme/styled";
-import Button from "@ncigdc/uikit/Button";
-import AddToCartButtonSingle from "@ncigdc/components/AddToCartButtonSingle";
-import { toggleFilesInCart } from "@ncigdc/dux/cart";
-import { Tooltip } from "@ncigdc/uikit/Tooltip";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
+import Pagination from '@ncigdc/components/Pagination';
+import Showing from '@ncigdc/components/Pagination/Showing';
+import AddToCartButtonAll from '@ncigdc/components/AddToCartButtonAll';
+import { Row } from '@ncigdc/uikit/Flex';
+import TableActions from '@ncigdc/components/TableActions';
+import tableModels from '@ncigdc/tableModels';
+import Table, { Th, Tr, Td } from '@ncigdc/uikit/Table';
+import styled from '@ncigdc/theme/styled';
+import Button from '@ncigdc/uikit/Button';
+import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
+import { toggleFilesInCart } from '@ncigdc/dux/cart';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const RemoveButton = styled(Button, {
-  backgroundColor: "#FFF",
-  borderColor: "#CCC",
-  color: "#333",
-  margin: "0 auto",
-  padding: "0px 5px",
-  ":hover": {
-    background: "linear-gradient(to bottom, #ffffff 50%, #e6e6e6 100%) repeat scroll 0 0 #E6E6E6",
-    borderColor: "#ADADAD"
-  }
+  backgroundColor: '#FFF',
+  borderColor: '#CCC',
+  color: '#333',
+  margin: '0 auto',
+  padding: '0px 5px',
+  ':hover': {
+    background:
+      'linear-gradient(to bottom, #ffffff 50%, #e6e6e6 100%) repeat scroll 0 0 #E6E6E6',
+    borderColor: '#ADADAD',
+  },
 });
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.files }))
+  connect(state => ({ tableColumns: state.tableColumns.files })),
 )(
   ({
     downloadable,
     relay,
     hits,
-    entityType = "files",
+    entityType = 'files',
     tableColumns,
     canAddToCart = true,
     tableHeader,
-    dispatch
+    dispatch,
   }) => {
     const tableInfo = tableModels[entityType] // eslint-disable-line
       .slice()
       .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
       .filter(x => tableColumns.includes(x.id));
 
-    const prefix = "files";
+    const prefix = 'files';
 
     return (
       <div>
         {tableHeader &&
           <h3
             className="panel-title"
-            style={{ padding: "1rem", marginTop: "-6rem" }}
+            style={{ padding: '1rem', marginTop: '-6rem' }}
           >
             {tableHeader}
           </h3>}
         <Row
           style={{
-            backgroundColor: "white",
-            padding: "1rem",
-            justifyContent: "space-between"
+            backgroundColor: 'white',
+            padding: '1rem',
+            justifyContent: 'space-between',
           }}
         >
           <Showing
@@ -79,54 +80,54 @@ export const SearchTable = compose(
             downloadable={downloadable}
             entityType={entityType}
             downloadFields={[
-              "file_id",
-              "file_name",
-              "cases.project.project_id",
-              "cases.case_id",
-              "access",
-              "data_category",
-              "data_format",
-              "file_size"
+              'file_id',
+              'file_name',
+              'cases.project.project_id',
+              'cases.case_id',
+              'access',
+              'data_category',
+              'data_format',
+              'file_size',
             ]}
             sortOptions={[
               {
-                id: "file_id",
-                name: "File UUID"
+                id: 'file_id',
+                name: 'File UUID',
               },
               {
-                id: "submitter_id",
-                name: "File Submitter ID"
+                id: 'submitter_id',
+                name: 'File Submitter ID',
               },
               {
-                id: "access",
-                name: "Access"
+                id: 'access',
+                name: 'Access',
               },
               {
-                id: "file_name",
-                name: "File Name"
+                id: 'file_name',
+                name: 'File Name',
               },
               {
-                id: "cases.project.project_id",
-                name: "Project"
+                id: 'cases.project.project_id',
+                name: 'Project',
               },
               {
-                id: "data_category",
-                name: "Data Category"
+                id: 'data_category',
+                name: 'Data Category',
               },
               {
-                id: "data_format",
-                name: "Data Format"
+                id: 'data_format',
+                name: 'Data Format',
               },
               {
-                id: "file_size",
-                name: "Size"
-              }
+                id: 'file_size',
+                name: 'Size',
+              },
             ]}
             tsvSelector="#repository-files-table"
             tsvFilename="repository-files-table.tsv"
           />
         </Row>
-        <div style={{ overflowX: "auto" }}>
+        <div style={{ overflowX: 'auto' }}>
           <Table
             id="repository-files-table"
             headings={[
@@ -137,13 +138,13 @@ export const SearchTable = compose(
                     total={hits.total}
                   />}
               </Th>,
-              ...tableInfo.map(x => (
-                <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />
-              ))
+              ...tableInfo.map(x =>
+                <x.th key={x.id} hits={hits} canAddToCart={canAddToCart} />,
+              ),
             ]}
             body={
               <tbody>
-                {hits.edges.map((e, i) => (
+                {hits.edges.map((e, i) =>
                   <Tr key={e.node.id} index={i}>
                     {[
                       <Td key="add_to_cart">
@@ -154,25 +155,25 @@ export const SearchTable = compose(
                             onClick={() => dispatch(toggleFilesInCart(e.node))}
                             aria-label="Remove"
                           >
-                            <Tooltip Component={"Remove"}>
+                            <Tooltip Component={'Remove'}>
                               <i className="fa fa-trash-o" />
                             </Tooltip>
                           </RemoveButton>}
                       </Td>,
                       ...tableInfo
                         .filter(x => x.td)
-                        .map(x => (
+                        .map(x =>
                           <x.td
                             key={x.id}
                             node={e.node}
                             relay={relay}
                             index={i}
                             total={hits.total}
-                          />
-                        ))
+                          />,
+                        ),
                     ]}
-                  </Tr>
-                ))}
+                  </Tr>,
+                )}
               </tbody>
             }
           />
@@ -184,7 +185,7 @@ export const SearchTable = compose(
         />
       </div>
     );
-  }
+  },
 );
 
 export const FileTableQuery = {
@@ -229,8 +230,8 @@ export const FileTableQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const FileTable = Relay.createContainer(SearchTable, FileTableQuery);

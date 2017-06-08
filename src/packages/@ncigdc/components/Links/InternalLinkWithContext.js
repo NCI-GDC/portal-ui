@@ -1,16 +1,16 @@
 /* @flow */
 
-import React from "react";
-import _ from "lodash";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
+import React from 'react';
+import _ from 'lodash';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
-import { mergeQuery as mq } from "@ncigdc/utils/filters";
+import { mergeQuery as mq } from '@ncigdc/utils/filters';
 
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
-import InternalLink from "./InternalLink";
+import InternalLink from './InternalLink';
 
-import type { TLinkProps } from "./types";
+import type { TLinkProps } from './types';
 
 const InternalLinkWithContext = ({
   pathname,
@@ -19,7 +19,7 @@ const InternalLinkWithContext = ({
   mergeQuery,
   whitelist,
   ...rest
-}: TLinkProps) => (
+}: TLinkProps) =>
   <LocationSubscriber>
     {(ctx: {| pathname: string, query: TRawQuery |}) => {
       const pn = pathname || ctx.pathname;
@@ -33,26 +33,25 @@ const InternalLinkWithContext = ({
         // mergeQuery(ctx.query).filters is a jsurl string
         // mergeQuery({}, ctx.query).filters is an object
         _.isEqual(mergedQuery.filters, mergeQuery({}, ctx.query).filters),
-        _.every([ctx.query.filters, mergedQuery.filters], _.isNil)
+        _.every([ctx.query.filters, mergedQuery.filters], _.isNil),
       ]);
 
       const queryWithOffsetsReset = hasFilterChanged
         ? mergedQuery
         : _.mapValues(
             mergedQuery,
-            (value, paramName) => (paramName.endsWith("offset") ? 0 : value)
+            (value, paramName) => (paramName.endsWith('offset') ? 0 : value),
           );
 
       return (
         <InternalLink pathname={pn} query={queryWithOffsetsReset} {...rest} />
       );
     }}
-  </LocationSubscriber>
-);
+  </LocationSubscriber>;
 
 InternalLinkWithContext.defaultProps = {
   // eslint-disable-line fp/no-mutation
-  mergeQuery: mq
+  mergeQuery: mq,
 };
 
 export default InternalLinkWithContext;

@@ -1,34 +1,34 @@
 // @flow
 /* eslint-disable fp/no-mutation */
 
-import { createElement } from "react";
-import { css } from "glamor";
-import { withTheme } from "./index";
-import validAttributes from "./utils/validAttributes";
-import domElements from "./utils/domElements";
+import { createElement } from 'react';
+import { css } from 'glamor';
+import { withTheme } from './index';
+import validAttributes from './utils/validAttributes';
+import domElements from './utils/domElements';
 
 type TAddPropsToFunction = (value: Function | string, props: Object) => string;
 const addPropsToFunction: TAddPropsToFunction = (value, props) =>
-  typeof value === "function" ? value(props) : value;
+  typeof value === 'function' ? value(props) : value;
 
 type TMapValues = (style: Object, props: Object) => Object;
 const mapValues: TMapValues = (style, props) =>
   Object.entries(style).reduce(
     (acc, [k, v]) => ({
       ...acc,
-      [k]: typeof v === "object"
+      [k]: typeof v === 'object'
         ? mapValues(v, props)
-        : addPropsToFunction(v, props)
+        : addPropsToFunction(v, props),
     }),
-    {}
+    {},
   );
 
 type TCreateStyledComponent = (
-  el: string | ReactClass<{}>
+  el: string | ReactClass<{}>,
 ) => (style: Object) => ReactClass<*>;
 const createStyledComponent: TCreateStyledComponent = el => style =>
   withTheme(({ ref, children, theme, ...props }) => {
-    const validAttrProps = typeof el === "string"
+    const validAttrProps = typeof el === 'string'
       ? validAttributes(props)
       : props;
 
@@ -37,12 +37,14 @@ const createStyledComponent: TCreateStyledComponent = el => style =>
       {
         ...validAttrProps,
         ref: node => (ref ? ref(node) : () => {}),
-        className: `${props.className || ""} ${css(mapValues(style, {
+        className: `${props.className || ''} ${css(
+          mapValues(style, {
             theme,
-            ...props
-          }))}`
+            ...props,
+          }),
+        )}`,
       },
-      children
+      children,
     );
   });
 

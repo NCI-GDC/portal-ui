@@ -1,36 +1,34 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
+import React from 'react';
+import Relay from 'react-relay/classic';
 
-import ChartIcon from "@ncigdc/theme/icons/BarChart";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import { makeFilter } from "@ncigdc/utils/filters";
-import GeneSummary from "@ncigdc/containers/GeneSummary";
-import GeneExternalReferences from "@ncigdc/containers/GeneExternalReferences";
-import CancerDistributionChart
-  from "@ncigdc/containers/CancerDistributionChart";
-import CancerDistributionTable
-  from "@ncigdc/containers/CancerDistributionTable";
-import Lolliplot from "@ncigdc/containers/Lolliplot";
-import SsmsBarChart from "@ncigdc/modern_components/SsmsBarChart/SsmsBarChart";
-import SsmsTable from "@ncigdc/modern_components/SsmsTable/SsmsTable";
-import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
-import DoubleHelix from "@ncigdc/theme/icons/DoubleHelix";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
+import ChartIcon from '@ncigdc/theme/icons/BarChart';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import { makeFilter } from '@ncigdc/utils/filters';
+import GeneSummary from '@ncigdc/containers/GeneSummary';
+import GeneExternalReferences from '@ncigdc/containers/GeneExternalReferences';
+import CancerDistributionChart from '@ncigdc/containers/CancerDistributionChart';
+import CancerDistributionTable from '@ncigdc/containers/CancerDistributionTable';
+import Lolliplot from '@ncigdc/containers/Lolliplot';
+import SsmsBarChart from '@ncigdc/modern_components/SsmsBarChart/SsmsBarChart';
+import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
+import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
+import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
 const styles = {
   heading: {
     flexGrow: 1,
-    fontSize: "2.2rem",
+    fontSize: '2.2rem',
     marginBottom: 7,
     marginTop: 7,
-    display: "flex",
-    alignItems: "center"
+    display: 'flex',
+    alignItems: 'center',
   },
   card: {
-    backgroundColor: "white"
-  }
+    backgroundColor: 'white',
+  },
 };
 
 export type TProps = {|
@@ -40,30 +38,30 @@ export type TProps = {|
     biotype: string,
     transcripts: {
       hits: {
-        edges: Array<Object>
-      }
-    }
+        edges: Array<Object>,
+      },
+    },
   },
   viewer: {
     explore: {
       cases: Object,
-      ssms: Object
+      ssms: Object,
     },
-    projects: Object
-  }
+    projects: Object,
+  },
 |};
 
 export const GenePageComponent = (props: TProps) => {
   const fmFilters = makeFilter([
     {
-      field: "genes.gene_id",
-      value: [props.node.gene_id]
-    }
+      field: 'genes.gene_id',
+      value: [props.node.gene_id],
+    },
   ]);
 
   const cdFilters = makeFilter([
-    { field: "genes.gene_id", value: props.node.gene_id },
-    { field: "cases.available_variation_data", value: "ssm" }
+    { field: 'genes.gene_id', value: props.node.gene_id },
+    { field: 'cases.available_variation_data', value: 'ssm' },
   ]);
 
   return (
@@ -75,8 +73,8 @@ export const GenePageComponent = (props: TProps) => {
         </Row>
         <Column style={styles.card} id="cancer-distribution">
           <Row>
-            <h1 style={{ ...styles.heading, padding: "1rem" }}>
-              <ChartIcon style={{ marginRight: "1rem" }} />
+            <h1 style={{ ...styles.heading, padding: '1rem' }}>
+              <ChartIcon style={{ marginRight: '1rem' }} />
               Cancer Distribution
             </h1>
           </Row>
@@ -86,7 +84,7 @@ export const GenePageComponent = (props: TProps) => {
               ssms={props.viewer.explore.ssms}
               projects={props.viewer.projects}
               filters={cdFilters}
-              style={{ width: "50%" }}
+              style={{ width: '50%' }}
             />
             <CancerDistributionTable
               filters={cdFilters}
@@ -99,42 +97,42 @@ export const GenePageComponent = (props: TProps) => {
           </Column>
         </Column>
 
-        <Column style={{ ...styles.card, marginTop: "2rem" }}>
-          {props.node.biotype === "protein_coding" &&
+        <Column style={{ ...styles.card, marginTop: '2rem' }}>
+          {props.node.biotype === 'protein_coding' &&
             <Lolliplot
               geneId={props.node.gene_id}
               transcripts={props.node.transcripts.hits.edges.map(x => x.node)}
               lolliplot={props.viewer.analysis.protein_mutations}
               viewer={props.viewer}
             />}
-          {props.node.biotype !== "protein_coding" &&
+          {props.node.biotype !== 'protein_coding' &&
             <div>
               <Row>
-                <h1 style={{ ...styles.heading, padding: "1rem" }} id="protein">
+                <h1 style={{ ...styles.heading, padding: '1rem' }} id="protein">
                   <DoubleHelix width="12px" />
-                  <span style={{ marginLeft: "1rem" }}>
+                  <span style={{ marginLeft: '1rem' }}>
                     {props.node.symbol} - Protein
                   </span>
                 </h1>
               </Row>
-              <div style={{ padding: "1rem" }}>
+              <div style={{ padding: '1rem' }}>
                 No mutation occurs in the coding region of this gene.
               </div>
             </div>}
         </Column>
 
-        <Column style={{ ...styles.card, marginTop: "2rem" }}>
+        <Column style={{ ...styles.card, marginTop: '2rem' }}>
           <h1
-            style={{ ...styles.heading, padding: "1rem" }}
+            style={{ ...styles.heading, padding: '1rem' }}
             id="frequent-mutations"
           >
-            <ChartIcon style={{ marginRight: "1rem" }} />
+            <ChartIcon style={{ marginRight: '1rem' }} />
             Most Frequent Somatic Mutations
           </h1>
 
           <Column>
             <SsmsBarChart
-              style={{ width: "50%", flexGrow: 0 }}
+              style={{ width: '50%', flexGrow: 0 }}
               defaultFilters={fmFilters}
               context={props.node.symbol}
             />
@@ -144,7 +142,7 @@ export const GenePageComponent = (props: TProps) => {
               context={props.node.symbol}
               tableLink={
                 <ExploreLink
-                  query={{ searchTableTab: "mutations", filters: fmFilters }}
+                  query={{ searchTableTab: 'mutations', filters: fmFilters }}
                 >
                   Open in Exploration
                 </ExploreLink>
@@ -182,34 +180,34 @@ export const GenePageQuery = {
             }
           }
         }
-        ${GeneSummary.getFragment("node")}
-        ${GeneExternalReferences.getFragment("node")}
+        ${GeneSummary.getFragment('node')}
+        ${GeneExternalReferences.getFragment('node')}
       }
     `,
     viewer: () => Relay.QL`
       fragment on Root {
-        ${Lolliplot.getFragment("viewer")}
+        ${Lolliplot.getFragment('viewer')}
         projects {
-          ${CancerDistributionTable.getFragment("projects")}
+          ${CancerDistributionTable.getFragment('projects')}
         }
         explore {
-          ${CancerDistributionTable.getFragment("explore")}
+          ${CancerDistributionTable.getFragment('explore')}
           ssms {
-            ${CancerDistributionChart.getFragment("ssms")}
+            ${CancerDistributionChart.getFragment('ssms')}
           }
           cases {
-            ${CancerDistributionChart.getFragment("cases")}
-            ${CancerDistributionTable.getFragment("cases")}
+            ${CancerDistributionChart.getFragment('cases')}
+            ${CancerDistributionTable.getFragment('cases')}
           }
         }
         analysis {
           protein_mutations {
-            ${Lolliplot.getFragment("lolliplot")}
+            ${Lolliplot.getFragment('lolliplot')}
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const GenePage = Relay.createContainer(GenePageComponent, GenePageQuery);

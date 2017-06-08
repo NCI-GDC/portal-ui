@@ -1,6 +1,5 @@
 // @flow
-import React from "react";
+import React from 'react';
 
-export default ({ className = "", ...props }) => (
-  <i className={`${className} fa fa-check-circle-o`} {...props} />
-);
+export default ({ className = '', ...props }) =>
+  <i className={`${className} fa fa-check-circle-o`} {...props} />;

@@ -1,31 +1,31 @@
 // @flow
-import { REHYDRATE } from "redux-persist/constants";
+import { REHYDRATE } from 'redux-persist/constants';
 
 // Custom
-import tableModels from "@ncigdc/tableModels";
-import { namespaceActions } from "./utils";
+import tableModels from '@ncigdc/tableModels';
+import { namespaceActions } from './utils';
 
 /*----------------------------------------------------------------------------*/
 
-const tableColumns = namespaceActions("tableColumns", [
-  "TOGGLE_COLUMN",
-  "RESTORE",
-  "SET"
+const tableColumns = namespaceActions('tableColumns', [
+  'TOGGLE_COLUMN',
+  'RESTORE',
+  'SET',
 ]);
 
 const toggleColumn = ({ entityType, id, index }) => ({
   type: tableColumns.TOGGLE_COLUMN,
-  payload: { entityType, id, index }
+  payload: { entityType, id, index },
 });
 
 const restoreColumns = entityType => ({
   type: tableColumns.RESTORE,
-  payload: { entityType }
+  payload: { entityType },
 });
 
 const setColumns = ({ entityType, ids }) => ({
   type: tableColumns.SET,
-  payload: { entityType, ids }
+  payload: { entityType, ids },
 });
 
 // Store ids of table items that are not hidden by default
@@ -34,9 +34,9 @@ const reduceColumns = (acc, x) => [...acc, ...(!x.hidden ? [x.id] : [])];
 const initialState = Object.keys(tableModels).reduce(
   (acc, key) => ({
     ...acc,
-    [key]: tableModels[key].reduce(reduceColumns, [])
+    [key]: tableModels[key].reduce(reduceColumns, []),
   }),
-  {}
+  {},
 );
 
 const reducer = (state = initialState, action) => {
@@ -56,8 +56,8 @@ const reducer = (state = initialState, action) => {
             [entityType]: [
               ...state[entityType].slice(0, index),
               id,
-              ...state[entityType].slice(index, Infinity)
-            ]
+              ...state[entityType].slice(index, Infinity),
+            ],
           };
     }
 

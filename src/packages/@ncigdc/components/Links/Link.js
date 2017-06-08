@@ -1,11 +1,11 @@
 /* @flow */
 
-import React from "react";
+import React from 'react';
 
-import InternalLink from "./InternalLink";
-import InternalLinkWithContext from "./InternalLinkWithContext";
+import InternalLink from './InternalLink';
+import InternalLinkWithContext from './InternalLinkWithContext';
 
-import type { TLinkProps } from "./types";
+import type { TLinkProps } from './types';
 
 const needsContext = props => !props.pathname || props.merge;
 

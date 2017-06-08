@@ -8,8 +8,8 @@ declare var SecurityError: any;
 let isSupported = true; // eslint-disable-line fp/no-let
 
 const src = `data:image/svg+xml;base64,${window.btoa(svg)}`;
-const canvas = document.createElement("canvas");
-const context = canvas.getContext("2d");
+const canvas = document.createElement('canvas');
+const context = canvas.getContext('2d');
 
 const image = new Image();
 
@@ -19,11 +19,11 @@ image.onload = () => {
   context.drawImage(image, 0, 0);
 
   try {
-    canvas.toDataURL("image/png", 0.8);
+    canvas.toDataURL('image/png', 0.8);
   } catch (e) {
     if (
-      (typeof SecurityError !== "undefined" && e instanceof SecurityError) ||
-      e.name === "SecurityError"
+      (typeof SecurityError !== 'undefined' && e instanceof SecurityError) ||
+      e.name === 'SecurityError'
     ) {
       isSupported = false; // eslint-disable-line fp/no-mutation
     }

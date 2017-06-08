@@ -1,256 +1,176 @@
-- [Development Practices](#development-practices)
+# Contributing
+
+- [Setup Development Environment](#setup-development-environment)
 - [Version Control](#version-control)
+- [Your First Pull Request](#your-first-pull-request)
 
-# Development Practices
-- [Git Templates](#git-templates)
-- [Feature Pattern](#feature-pattern)
-- [Page Object Pattern](#page-object-pattern)
-- [SUIT CSS naming conventions](#suit-css-naming-conventions)
+## Setup Development Environment
 
-## Git Templates
-Use the general [git templates](https://github.com/NCI-GDC/git-templates) for NCI-GDC project. Follow the instruction [here](https://github.com/NCI-GDC/git-templates#setup-git-templates) to setup for global config or for this particular repo. It contains git hooks to do security scanning for each commit, as well as other type checkings to insure the consistency of coding format.
+- [Git User](#git-user)
+- [GPG Keys](#gpg-keys)
 
-## Feature Pattern
+### Git User
 
-Feature pattern can simplify development
+1\. Tell Git who you are
 
-*References*
+```
+git config --global user.name "Your Name"
+git config --global user.email "example@address.com"
+```
 
-- https://medium.com/opinionated-angularjs/scalable-code-organization-in-angularjs-9f01b594bf06
-- https://github.com/mgechev/angularjs-in-patterns
-- http://blog.mgechev.com/2014/05/08/angularjs-in-patterns-part-1-overview-of-angularjs/
- 
-## Page Object Pattern
+### GPG Keys
 
-Page Object pattern can simplify testing
+1\. Install [GPG Tools](https://gpgtools.org) -- do a customized install and deselect GPGMail.
 
-*References*
+2\. Tell Git to use the `gpg2` that comes with `GPG Tools`
 
-- https://github.com/angular/protractor/blob/master/docs/page-objects.md
-- http://www.thoughtworks.com/insights/blog/using-page-objects-overcome-protractors-shortcomings
-- https://teamgaslight.com/blog/getting-started-with-protractor-and-page-objects-for-angularjs-e2e-testing
-- http://spin.atomicobject.com/2014/08/08/page-objects-angular-protractor-specs/
+```
+git config --global gpg.program /usr/local/MacGPG2/bin/gpg2
+```
 
-# SUIT CSS naming conventions
+3\. Generate a GPG key using `Applications/GPG Keychain`
 
-We use the component naming system for css classes based on SUIT CSS.
+<img src="https://github.com/knitjs/knit/raw/master/docs/gpg_keychain.png" />
 
-*References*
+4\. Tell Git to use your new GPG Key and auto-sign all commits
 
-- https://github.com/suitcss/suit/blob/master/doc/naming-conventions.md
-- http://atendesigngroup.com/blog/component-element-modifier-design-pattern
-- http://smacss.com/book/type-module
-- http://bem.info/method/definitions/
-- https://github.com/montagejs/montage/wiki/Naming-Conventions
+```
+git config --global user.signingkey KEY_ID_FROM_STEP_3
+git config --global commit.gpgsign true
+```
 
+5\. Add Keys to Github
 
-# Version Control
+https://help.github.com/articles/adding-a-new-gpg-key-to-your-github-account/
 
+https://help.github.com/articles/generating-a-new-gpg-key/
+
+## Version Control
+
+- [Master](#master)
+- [Next](#next)
 - [Branches](#branches)
 - [Commits](#commits)
 - [Code Review](#code-review)
-- [Rebase](#rebase)
-- [Merge Branch](#merge-branch)
-- [Tags](#tags)
-- [Signed Commits](#signed-commits)
-- [Master Branch](#master-branch)
-- [Release](#release)
-- [Workflow](#workflow)
 
-## Branches
-All development should happen on a branch not on master. Branches should formatted as `type/GDC-##-couple-words` or `type/very-short-description`.
+### Master
 
-This branch structure is similar to git flow but customized for our use cases. Also we are not using git flow directly because it has an inflexible release process.
+The `master` branch should be considered the most up-to-date stable version of the software. No active development should take place on directly `master` and the latest commit should always be tagged to a release.
+
+- [Hotfix](#hotfix) should be branched off of `master`
+
+### Next
+
+The `next` branch should be considered the most up-to-date development version of the software. No active development should take place on directly on `next`.
+
+- All [development](#branches) should be branched off of `next`
+
+- `next` should be rebased with `master` after a hotfix
+
+### Branches
+
+All development should happen on a branch off of `next`. Branch names should include a ticket number if possible: `TICKET-##-couple-words` or `my-update`.
 
 ```
-❯ git checkout -b feat/GDC-11-my-feature
+git checkout -b TICKET-11-my-feature
 ```
 
-*References*
+- Branches should be rebased with `next` if they get out of date.
 
-- http://nvie.com/posts/a-successful-git-branching-model/
+- Branches should be [merged](#merge-branch) into `next` when they are completed.
 
-## Commits
+### Hotfix
 
-Commit messages follow a combination of guidelines set by Angular and Tim Pope.
+A hotfix is a [branch](#branches) that uses `master` as a base instead of `next`.
+
+### Commits
+
+- Commit messages should make it easy for some one to scan through a commit log and understand the current state of the code.
+- When only changing documentation, include `[ci skip]` in the commit description
+- Consider starting the commit message with an applicable emoji:
+  * :tada: `:tada:` for the initial commit
+  * :green_heart: `:green_heart:` when fixing the CI build
+  * :white_check_mark: `:white_check_mark:` when adding tests
+  * :arrow_up: `:arrow_up:` when upgrading dependencies
+  * :arrow_down: `:arrow_down:` when downgrading dependencies
+  * :shirt: `:shirt:` when removing linter warnings
+  * :recycle: `:wrench:` when refactoring
+  * :wrench: `:wrench:` when updating tooling
+
+  start with one of the following emojis to add your commit to the change log:
+  * :racehorse: `:racehorse:` when improving performance
+  * :sparkles: `:sparkles:` when adding a new feature
+  * :bug: `:bug:` when fixing a bug
+  * :books: `:books:` when adding documentation
+  * :globe_with_meridians: `:globe_with_meridians:` when adding internationalization
+
+- you can use multiple emojis but only with first will be considered when generating the change log
+- you can look at [gitmoji](https://gitmoji.carloscuesta.me/) for inspiration
+
+#### Examples
+
+Commits have the following structure:
+
+```
+:icon: [TICKET-1,TICKET-2] one line description
+
+Longer description
+- list of changes
+- one more thing
+```
 
 Examples of valid commits:
- 
-```
-type(scope): one line description (50 char or less)
-```
 
 ```
-type(scope): one line description (50 char or less)
+:sparkles: [TICKET-1,TICKET-2] adds new page to that page
 
-Longer description (70 or less)
-- list of changes
-- one more thing
+Adds new feature to do that thing that we wanted to do:
+- That one thing it does
+- that other thing it does
 ```
 
 ```
-type(scope): one line description (50 char or less)
-
-Longer description (70 or less)
-- list of changes
-- one more thing
-
-Closes ##, ##
-Closes ##
+:bug: [TICKET-1] fixes bug with thing
 ```
 
-This format is automatically checked by a pre commit git hook.
-
-*References*
-
-- http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-- http://addamhardy.com/blog/2013/06/05/good-commit-messages-and-enforcing-them-with-git-hooks/
-- https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#
-
-## Code Review
-
-All branches should be pushed to [Github](https://github.com/NCI-GDC/portal-ui) for code review. 
-
-Any branches containing significant work need to be reviewed and signed-off before they can be considered complete.
-
-## Rebase
-*References*
-
 ```
-❯ git rebase -i master
+:racehorse::wrench: better production mode
 ```
 
-- https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase-i
-
-## Merge Branch
-
-Branches can only be merged after the following is completed:
-
-0. Rebased
-0. Signed Off
-0. Tested by CI
-
-## Tags
-
 ```
-❯ git tag -s 1.2.3
+:shirt: fixes eslint in tests
 ```
 
-*References*
+### Code Review
 
-- http://git-scm.com/book/en/Git-Basics-Tagging
+- All branches should be pushed to Github for code review.
 
-## Signed Commits
+- All branches need to be reviewed and signed-off before they can be considered complete.
 
-Tags should be signed.
+- Any branches containing significant changes will also need to be QA'ed.
 
-### Generating a PGP Key
-```
-❯ brew install gpg 
-❯ gpg --gen-key
-❯ gpg --list-secret-keys | grep "^sec"
-sub   XXX/[gpg-key-id] XXX-DATE
-❯ git config user.signingkey [gpg-key-id]
-```
+### Merge Branch
 
-### Adding a maintainer key
-```
-❯ gpg -a --export [gpg-key-id] | git hash-object -w --stdin
-[object SHA]
-❯ git tag -a maintainer-pgp-pub [object SHA]
-```
+After a branch has been [reviewed](#code-review) it can be merged.
 
-*References*
+When merging use the `Squash and Merge` option:
 
-- http://mikegerwitz.com/papers/git-horror-story
-- https://fedoraproject.org/wiki/Creating_GPG_Keys
-- http://www.javacodegeeks.com/2013/10/signing-git-tags.html
-- https://coderwall.com/p/d3uo3w
-- http://git.661346.n2.nabble.com/GPG-signing-for-git-commit-td2582986.html
+![alt text](https://github.com/knitjs/knit/raw/master/docs/squash.png)
 
-## Master Branch
+Before merging you are free to squash commits locally if you want more control over the commit message.
 
-No development should happen on the master branch and tests should never be broken.
+https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Squashing-Commits
 
-## Release
+https://github.com/blog/2141-squash-your-commits
 
-### Version Schema
-
-Version number are based on the current stage of development, in the form:
-
-```
-0.{Phase}.{Month}-spr{Sprint}
-```
-
-For example the version `0.1.8-spr3` represents `Phase 1`, `Monthly deadline 8`, `Sprint 3`
-
-### Prepare release
-
-```
-❯ ./release -v 1.1.1 -a prepare
-Preparing release for 1.1.1...                              OK
-Checking that there are no uncommited items...              OK
-Checking that 1.1.1 is greater than 1.1.1-beta...           OK
-Updating from 1.1.1-beta to 1.1.1...                        OK
-...
-Generating changelog from 1.1.1 to HEAD...
-Parsed 2 commits.
-```
-
-... make any final changes to docs here if needed ...
-
-### Publish release
-
-```
-❯ ./release -v 1.1.1 -a publish
-[master 7d94010] chore(release): Release 1.1.1
- 2 files changed, 14 insertions(+), 1 deletion(-)
-
-You need a passphrase to unlock the secret key for
-user: "{Maintinear Info}"
-2048-bit RSA key, ID {Maintainer Key}, created 2014-10-01
-
-Counting objects: 13, done.
-Delta compression using up to 8 threads.
-Compressing objects: 100% (12/12), done.
-Writing objects: 100% (13/13), 1.92 KiB | 0 bytes/s, done.
-Total 13 (delta 6), reused 0 (delta 0)
-To git@github.com:nci-gdc/portal-ui.git
- * [new tag]         1.1.1 -> 1.1.1
-Total 0 (delta 0), reused 0 (delta 0)
-To git@github.com:nci-gdc/portal-ui.git
-   5a22164..7d94010  master -> master
-```
-
-### Start next release
-
-```
-❯ ./release.sh -v 1.1.2-beta -a next
-Preparing release for 1.1.2-beta...                         OK
-Checking that there are no uncommited items...              OK
-Checking that 1.1.2-beta is greater than 1.1.1...           OK
-Updating from 1.1.1 to 1.1.2-beta...                        OK
-[master fd6ced3] chore(release): Start Development on 1.1.2-beta
- 1 file changed, 1 insertion(+), 1 deletion(-)
-Counting objects: 3, done.
-Delta compression using up to 8 threads.
-Compressing objects: 100% (3/3), done.
-Writing objects: 100% (3/3), 329 bytes | 0 bytes/s, done.
-Total 3 (delta 2), reused 0 (delta 0)
-To git@github.com:nci-gdc/portal-ui.git
-   7d94010..fd6ced3  master -> master
-```
-
-## Workflow
-0. clone the repo, git init with [template](#git-templates)
+## Your First Pull Request
+0. clone the repo
 0. create a new [branch](#branches)
-0. do some [work](#development-practices)
+0. do some [work](#setup-development-environment)
 0. [commit](#commits) your changes
 0. push changes to Github for [review](#code-review)
-0. repeat 2-4 as necessary
-0. [rebase](#rebase) master into your branch and deal with any conflicts.
+0. repeat as necessary
+0. rebase [next](#next) into your branch and deal with any conflicts.
 0. get someone to [review and sign-off](#code-review) on your branch
 0. wait for the CI system to test your branch
-0. have your branch [merged](#merge-branch) into master
-0. repeat 1-9 until sprint complete
-0. run [release](#release) process
+0. [merge](#merge-branch) into [next](#next)

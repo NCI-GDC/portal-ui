@@ -70,6 +70,7 @@ const SearchPage = (
               onClick={() => {
                 setShowFacets(!showFacets);
               }}
+              aria-label="Toggle Facet Panel Visibility"
             >
               <DoubleArrowLeftIcon />
             </UnstyledButton>

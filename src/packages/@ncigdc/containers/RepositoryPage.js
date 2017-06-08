@@ -138,7 +138,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                 </Button>
                 <DownloadButton
                   disabled={!fileCount}
-                  url={urlJoin(process.env.REACT_APP_API, 'files')}
+                  url={urlJoin(process.env.REACT_APP_GDC_AUTH, 'api/files')}
                   activeText="Downloading"
                   inactiveText="Download Manifest"
                   fields={[

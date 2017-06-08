@@ -72,7 +72,7 @@ const TableActions = (
               }
               disabled={!total}
               filename={prefix}
-              url={urlJoin(process.env.REACT_APP_API, endpoint)}
+              url={urlJoin(process.env.REACT_APP_GDC_AUTH, 'api', endpoint)}
               fields={downloadFields}
               style={visualizingButton}
               size={total}

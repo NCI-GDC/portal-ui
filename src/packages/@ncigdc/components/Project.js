@@ -110,7 +110,7 @@ const Project = (
           <DownloadButton
             disabled={!biospecimenCount}
             filename={`biospecimen.project-${projectId}`}
-            url={urlJoin(process.env.REACT_APP_API, 'cases')}
+            url={urlJoin(process.env.REACT_APP_GDC_AUTH, 'api/cases')}
             activeText="Processing"
             inactiveText={
               biospecimenCount ? 'Download Biospecimen' : 'No Biospecimen Data'
@@ -134,7 +134,7 @@ const Project = (
           <DownloadButton
             disabled={!clinicalCount}
             filename={`clinical.project-${projectId}`}
-            url={urlJoin(process.env.REACT_APP_API, 'cases')}
+            url={urlJoin(process.env.REACT_APP_GDC_AUTH, 'api/cases')}
             activeText="Processing"
             inactiveText={
               clinicalCount ? 'Download Clinical' : 'No Clinical Data'
@@ -160,7 +160,7 @@ const Project = (
           >
             <DownloadButton
               disabled={!fileCount}
-              url={urlJoin(process.env.REACT_APP_API, 'files')}
+              url={urlJoin(process.env.REACT_APP_GDC_AUTH, 'api/files')}
               activeText="Downloading"
               inactiveText="Download Manifest"
               fields={['file_id', 'file_name', 'md5sum', 'file_size', 'state']}

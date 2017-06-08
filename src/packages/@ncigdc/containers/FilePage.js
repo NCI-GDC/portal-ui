@@ -1,33 +1,32 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
+import React from 'react';
+import Relay from 'react-relay/classic';
 
-import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
-import File from "@ncigdc/components/File";
+import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
+import File from '@ncigdc/components/File';
 
 export type TProps = {
   node: {
     access: string,
     cases: Array<{
       project: {
-        project_id: string
-      }
+        project_id: string,
+      },
     }>,
     data_category: string,
     data_format: string,
     file_id: string,
     file_name: string,
     file_size: number,
-    platform: string
-  }
+    platform: string,
+  },
 };
 
-export const FilePageComponent = (props: TProps) => (
+export const FilePageComponent = (props: TProps) =>
   <FullWidthLayout title={props.node.file_id} entityType="FL">
     <File node={props.node} />
-  </FullWidthLayout>
-);
+  </FullWidthLayout>;
 
 export const FilePageQuery = {
   fragments: {
@@ -161,8 +160,8 @@ export const FilePageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const FilePage = Relay.createContainer(FilePageComponent, FilePageQuery);

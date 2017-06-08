@@ -1,6 +1,6 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 export default {
   children: PropTypes.node,
-  style: PropTypes.object
+  style: PropTypes.object,
 };

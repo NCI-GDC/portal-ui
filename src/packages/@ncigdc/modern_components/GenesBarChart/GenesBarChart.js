@@ -1,32 +1,31 @@
 // @flow
 /* eslint fp/no-class:0 */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { compose, withHandlers } from "recompose";
-import { parse } from "query-string";
-import { connect } from "react-redux";
-import { handleReadyStateChange } from "@ncigdc/dux/loaders";
-import withRouter from "@ncigdc/utils/withRouter";
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import { viewerQuery } from "@ncigdc/routes/queries";
-import { makeFilter } from "@ncigdc/utils/filters";
-import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
-import { withTheme } from "@ncigdc/theme";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import DownloadVisualizationButton
-  from "@ncigdc/components/DownloadVisualizationButton";
-import BarChart from "@ncigdc/components/Charts/BarChart";
-import wrapSvg from "@ncigdc/utils/wrapSvg";
-import VisualizationHeader from "@ncigdc/components/VisualizationHeader";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { compose, withHandlers } from 'recompose';
+import { parse } from 'query-string';
+import { connect } from 'react-redux';
+import { handleReadyStateChange } from '@ncigdc/dux/loaders';
+import withRouter from '@ncigdc/utils/withRouter';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { viewerQuery } from '@ncigdc/routes/queries';
+import { makeFilter } from '@ncigdc/utils/filters';
+import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
+import { withTheme } from '@ncigdc/theme';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
+import BarChart from '@ncigdc/components/Charts/BarChart';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
+import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
 
-const TITLE = "Distribution of Most Frequently Mutated Genes";
+const TITLE = 'Distribution of Most Frequently Mutated Genes';
 const CHART_HEIGHT = 285;
-const COMPONENT_NAME = "GenesBarChart";
+const COMPONENT_NAME = 'GenesBarChart';
 
 const createRenderer = (Route, Container) =>
-  compose(withRouter, connect())((props: mixed) => (
-    <div style={{ position: "relative", minHeight: `${CHART_HEIGHT}px` }}>
+  compose(withRouter, connect())((props: mixed) =>
+    <div style={{ position: 'relative', minHeight: `${CHART_HEIGHT}px` }}>
       <Relay.Renderer
         environment={Relay.Store}
         queryConfig={new Route(props)}
@@ -37,8 +36,8 @@ const createRenderer = (Route, Container) =>
         }
       />
       <ConnectedLoader name={COMPONENT_NAME} />
-    </div>
-  ));
+    </div>,
+  );
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -49,8 +48,8 @@ class Route extends Relay.Route {
     return {
       genesBarChart_filters: parseFilterParam(
         q.genesBarChart_filters,
-        defaultFilters || null
-      )
+        defaultFilters || null,
+      ),
     };
   };
 }
@@ -59,13 +58,13 @@ const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
       genesBarChart_filters: null,
-      score: "case.project.project_id",
+      score: 'case.project.project_id',
       ssmTested: makeFilter([
         {
-          field: "cases.available_variation_data",
-          value: "ssm"
-        }
-      ])
+          field: 'cases.available_variation_data',
+          value: 'ssm',
+        },
+      ]),
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -107,8 +106,8 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 const Component = compose(
@@ -117,47 +116,47 @@ const Component = compose(
     handleClickGene: ({ push, onClickGene }) => (gene, chartData) =>
       onClickGene
         ? onClickGene(gene, chartData)
-        : push(`/genes/${gene.gene_id}`)
+        : push(`/genes/${gene.gene_id}`),
   }),
-  withTheme
+  withTheme,
 )(
   ({
-    projectId = "",
+    projectId = '',
     theme,
     viewer: {
-      explore: { genes = { hits: { edges: [] } }, cases, filteredCases }
+      explore: { genes = { hits: { edges: [] } }, cases, filteredCases },
     },
-    context = "explore",
+    context = 'explore',
     handleClickGene,
-    style
+    style,
   }) => {
     const numCasesAggByProject = cases.aggregations.project__project_id.buckets.reduce(
       (acc, b) => ({
         ...acc,
-        [b.key]: b.doc_count
+        [b.key]: b.doc_count,
       }),
-      {}
+      {},
     );
 
     const tooltipContext = (ctx, { symbol, score = 0 }) => {
       switch (ctx) {
-        case "project": {
+        case 'project': {
           return (
             <span>
               <b>{symbol}</b><br />
               {score.toLocaleString()}
-              {" "}
+              {' '}
               Case
-              {score > 1 ? "s" : ""}
-              {" "}
+              {score > 1 ? 's' : ''}
+              {' '}
               affected in
-              {" "}
+              {' '}
               {projectId}
               <br />
               {score.toLocaleString()}
-              {" "}
+              {' '}
               /
-              {" "}
+              {' '}
               {(numCasesAggByProject[projectId] || 0).toLocaleString()}
               &nbsp;(
               {(score / numCasesAggByProject[projectId] * 100).toFixed(2)}
@@ -165,21 +164,21 @@ const Component = compose(
             </span>
           );
         }
-        case "explore": {
+        case 'explore': {
           return (
             <span>
               <b>{symbol}</b><br />
               {score.toLocaleString()}
-              {" "}
+              {' '}
               Case
-              {score > 1 ? "s" : ""}
-              {" "}
+              {score > 1 ? 's' : ''}
+              {' '}
               affected in explore
               <br />
               {score.toLocaleString()}
-              {" "}
+              {' '}
               /
-              {" "}
+              {' '}
               {(filteredCases.hits.total || 0).toLocaleString()}
               &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%)
             </span>
@@ -195,17 +194,17 @@ const Component = compose(
       .sort((a, b) => b.score - a.score)
       .map(g => ({
         label: g.symbol,
-        value: context === "project" && projectId
+        value: context === 'project' && projectId
           ? g.score / numCasesAggByProject[projectId] * 100
           : g.score / filteredCases.hits.total * 100,
         tooltip: tooltipContext(context, g),
-        onClick: () => handleClickGene(g, mutatedGenesChartData)
+        onClick: () => handleClickGene(g, mutatedGenesChartData),
       }));
 
     return (
       <div style={style}>
         {!!mutatedGenesChartData &&
-          <Column style={{ paddingLeft: "2rem" }}>
+          <Column style={{ paddingLeft: '2rem' }}>
             <VisualizationHeader
               title={TITLE}
               buttons={[
@@ -214,41 +213,41 @@ const Component = compose(
                   disabled={!mutatedGenesChartData.length}
                   svg={() =>
                     wrapSvg({
-                      selector: "#mutated-genes-chart svg",
-                      title: TITLE
+                      selector: '#mutated-genes-chart svg',
+                      title: TITLE,
                     })}
                   data={mutatedGenesChartData.map(d => ({
                     label: d.label,
-                    value: d.value
+                    value: d.value,
                   }))}
                   slug="most-frequently-mutated-genes-bar-chart"
                   tooltipHTML="Download image or data"
                   noText
-                />
+                />,
               ]}
             />
             {!!mutatedGenesChartData.length &&
               <div id="mutated-genes-chart">
-                <Row style={{ paddingTop: "2rem" }}>
+                <Row style={{ paddingTop: '2rem' }}>
                   <BarChart
                     data={mutatedGenesChartData}
-                    yAxis={{ title: "% of Cases Affected" }}
+                    yAxis={{ title: '% of Cases Affected' }}
                     height={CHART_HEIGHT}
                     styles={{
                       xAxis: {
                         stroke: theme.greyScale4,
-                        textFill: theme.greyScale3
+                        textFill: theme.greyScale3,
                       },
                       yAxis: {
                         stroke: theme.greyScale4,
-                        textFill: theme.greyScale3
+                        textFill: theme.greyScale3,
                       },
                       bars: { fill: theme.secondary },
                       tooltips: {
-                        fill: "#fff",
+                        fill: '#fff',
                         stroke: theme.greyScale4,
-                        textFill: theme.greyScale3
-                      }
+                        textFill: theme.greyScale3,
+                      },
                     }}
                   />
                 </Row>
@@ -256,7 +255,7 @@ const Component = compose(
           </Column>}
       </div>
     );
-  }
+  },
 );
 
 export default createRenderer(Route, createContainer(Component));

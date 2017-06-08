@@ -1,8 +1,8 @@
 /* @flow */
 /* eslint flowtype/no-weak-types:0 */
 
-import React from "react";
-import formatFileSize from "@ncigdc/utils/formatFileSize";
+import React from 'react';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
 
 type TProps = {|
   bytes: number,
@@ -15,16 +15,15 @@ type TProps = {|
     spacer?: string,
     standard?: string,
     symbols?: Object,
-    unix?: boolean
-  |}
+    unix?: boolean,
+  |},
 |};
 
-const FileSize = (props: TProps) => (
+const FileSize = (props: TProps) =>
   <span>
     {formatFileSize(props.bytes, {
-      ...props.options
+      ...props.options,
     })}
-  </span>
-);
+  </span>;
 
 export default FileSize;

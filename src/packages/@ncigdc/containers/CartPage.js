@@ -1,26 +1,26 @@
 // @flow
 
 // Vendor
-import React from "react";
-import { compose } from "recompose";
-import { createFragmentContainer, graphql } from "react-relay/compat";
-import { connect } from "react-redux";
-import FileIcon from "react-icons/lib/fa/file-o";
-import CaseIcon from "react-icons/lib/fa/user";
-import FileSizeIcon from "react-icons/lib/fa/floppy-o";
+import React from 'react';
+import { compose } from 'recompose';
+import { createFragmentContainer, graphql } from 'react-relay/compat';
+import { connect } from 'react-redux';
+import FileIcon from 'react-icons/lib/fa/file-o';
+import CaseIcon from 'react-icons/lib/fa/user';
+import FileSizeIcon from 'react-icons/lib/fa/floppy-o';
 
 // Custom
-import formatFileSize from "@ncigdc/utils/formatFileSize";
-import { getAuthCounts } from "@ncigdc/utils/auth";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import { withTheme } from "@ncigdc/theme";
-import FilesTable from "@ncigdc/containers/FilesTable";
-import MetadataDownloadButton from "@ncigdc/components/MetadataDownloadButton";
-import SummaryCard from "@ncigdc/components/SummaryCard";
-import HowToDownload from "@ncigdc/components/HowToDownload";
-import CountCard from "@ncigdc/components/CountCard";
-import CartDownloadDropdown from "@ncigdc/components/CartDownloadDropdown";
-import RemoveFromCartButton from "@ncigdc/components/RemoveFromCartButton";
+import formatFileSize from '@ncigdc/utils/formatFileSize';
+import { getAuthCounts } from '@ncigdc/utils/auth';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import { withTheme } from '@ncigdc/theme';
+import FilesTable from '@ncigdc/containers/FilesTable';
+import MetadataDownloadButton from '@ncigdc/components/MetadataDownloadButton';
+import SummaryCard from '@ncigdc/components/SummaryCard';
+import HowToDownload from '@ncigdc/components/HowToDownload';
+import CountCard from '@ncigdc/components/CountCard';
+import CartDownloadDropdown from '@ncigdc/components/CartDownloadDropdown';
+import RemoveFromCartButton from '@ncigdc/components/RemoveFromCartButton';
 
 /*----------------------------------------------------------------------------*/
 
@@ -32,8 +32,8 @@ export type TProps = {
     repository: {
       files: {
         aggregations: string,
-        hits: string
-      }
+        hits: string,
+      },
     },
     summary: {
       aggregations: {
@@ -43,12 +43,12 @@ export type TProps = {
             case_count: number,
             doc_count: number,
             file_size: number,
-            key: string
-          }>
-        }
-      }
-    }
-  }
+            key: string,
+          }>,
+        },
+      },
+    },
+  },
 };
 
 type TCartPage = (props: TProps) => React.Element<*>;
@@ -57,13 +57,13 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
 
   const styles = {
     container: {
-      padding: "2rem 2.5rem 13rem"
+      padding: '2rem 2.5rem 13rem',
     },
     header: {
-      padding: "1rem",
+      padding: '1rem',
       borderBottom: `1px solid ${theme.greyScale4}`,
-      color: theme.primary
-    }
+      color: theme.primary,
+    },
   };
 
   return (
@@ -72,38 +72,38 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
       {!!files.length &&
         !!viewer.repository.files.hits &&
         <Column>
-          <Row spacing="2rem" style={{ marginBottom: "2rem" }}>
+          <Row spacing="2rem" style={{ marginBottom: '2rem' }}>
             <Column spacing="0.8rem">
               <CountCard
                 title="FILES"
                 count={files.length}
-                icon={<FileIcon style={{ width: "4rem", height: "4rem" }} />}
-                style={{ backgroundColor: "transparent" }}
+                icon={<FileIcon style={{ width: '4rem', height: '4rem' }} />}
+                style={{ backgroundColor: 'transparent' }}
               />
               <CountCard
                 title="CASES"
                 count={viewer.summary.aggregations.project__project_id.buckets.reduce(
                   (sum, bucket) => sum + bucket.case_count,
-                  0
+                  0,
                 )}
-                icon={<CaseIcon style={{ width: "4rem", height: "4rem" }} />}
-                style={{ backgroundColor: "transparent" }}
+                icon={<CaseIcon style={{ width: '4rem', height: '4rem' }} />}
+                style={{ backgroundColor: 'transparent' }}
               />
               <CountCard
                 title="FILE SIZE"
                 count={formatFileSize(viewer.summary.aggregations.fs.value)}
                 icon={
-                  <FileSizeIcon style={{ width: "4rem", height: "4rem" }} />
+                  <FileSizeIcon style={{ width: '4rem', height: '4rem' }} />
                 }
-                style={{ backgroundColor: "transparent" }}
+                style={{ backgroundColor: 'transparent' }}
               />
             </Column>
             <SummaryCard
               style={{
                 flex: 1,
-                backgroundColor: "transparent",
-                height: "19em",
-                overflow: "auto"
+                backgroundColor: 'transparent',
+                height: '19em',
+                overflow: 'auto',
               }}
               tableTitle="File Counts by Project"
               pieChartTitle="File Counts by Project"
@@ -113,71 +113,72 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   case_count: item.case_count,
                   file_count: item.doc_count.toLocaleString(),
                   file_size: formatFileSize(item.file_size),
-                  tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`
-                })
+                  tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`,
+                }),
               )}
-              footer={`${viewer.summary.aggregations.project__project_id.buckets.length} Projects `}
+              footer={`${viewer.summary.aggregations.project__project_id.buckets
+                .length} Projects `}
               path="file_count"
               headings={[
-                { key: "project", title: "Project", color: true },
+                { key: 'project', title: 'Project', color: true },
                 {
-                  key: "case_count",
-                  title: "Cases",
-                  style: { textAlign: "right" }
+                  key: 'case_count',
+                  title: 'Cases',
+                  style: { textAlign: 'right' },
                 },
                 {
-                  key: "file_count",
-                  title: "Files",
-                  style: { textAlign: "right" }
+                  key: 'file_count',
+                  title: 'Files',
+                  style: { textAlign: 'right' },
                 },
                 {
-                  key: "file_size",
-                  title: "File Size",
-                  style: { textAlign: "right" }
-                }
+                  key: 'file_size',
+                  title: 'File Size',
+                  style: { textAlign: 'right' },
+                },
               ]}
             />
             <SummaryCard
               style={{
                 flex: 1,
-                backgroundColor: "transparent",
-                height: "19em",
-                overflow: "auto"
+                backgroundColor: 'transparent',
+                height: '19em',
+                overflow: 'auto',
               }}
               tableTitle="File Counts by Authorization Level"
               pieChartTitle="File Counts by Authorization Level"
               data={authCounts.map(x => ({
                 ...x,
                 file_size: formatFileSize(x.file_size),
-                tooltip: `${x.key}: ${formatFileSize(x.file_size)}`
+                tooltip: `${x.key}: ${formatFileSize(x.file_size)}`,
               }))}
               footer={`${authCounts.length} Authorization Levels`}
               path="doc_count"
               headings={[
                 {
-                  key: "key",
-                  title: "Level",
+                  key: 'key',
+                  title: 'Level',
                   color: true,
-                  tdStyle: { textTransform: "capitalize" }
+                  tdStyle: { textTransform: 'capitalize' },
                 },
                 {
-                  key: "doc_count",
-                  title: "Files",
-                  style: { textAlign: "right" }
+                  key: 'doc_count',
+                  title: 'Files',
+                  style: { textAlign: 'right' },
                 },
                 {
-                  key: "file_size",
-                  title: "File Size",
-                  style: { textAlign: "right" }
-                }
+                  key: 'file_size',
+                  title: 'File Size',
+                  style: { textAlign: 'right' },
+                },
               ]}
             />
             <HowToDownload
-              style={{ flex: 1, backgroundColor: "transparent" }}
+              style={{ flex: 1, backgroundColor: 'transparent' }}
             />
           </Row>
-          <Row style={{ marginBottom: "2rem" }}>
-            <Row style={{ marginLeft: "auto" }} spacing="1rem">
+          <Row style={{ marginBottom: '2rem' }}>
+            <Row style={{ marginLeft: 'auto' }} spacing="1rem">
               <MetadataDownloadButton files={{ files }} />
               <CartDownloadDropdown files={files} user={user} />
               <RemoveFromCartButton />
@@ -187,7 +188,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
             hits={viewer.repository.files.hits}
             downloadable={false}
             canAddToCart={false}
-            tableHeader={"Cart Items"}
+            tableHeader={'Cart Items'}
           />
         </Column>}
     </Column>
@@ -200,9 +201,9 @@ export default createFragmentContainer(
   compose(
     connect(state => ({
       ...state.cart,
-      ...state.auth
+      ...state.auth,
     })),
-    withTheme
+    withTheme,
   )(CartPage),
   {
     /* TODO manually deal with:
@@ -236,6 +237,6 @@ export default createFragmentContainer(
         }
       }
     }
-  `
-  }
+  `,
+  },
 );

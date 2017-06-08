@@ -1,52 +1,52 @@
 /* @flow */
 /* eslint jsx-a11y/no-static-element-interactions: 0, max-len: 1 */
 
-import React from "react";
-import Relay from "react-relay/classic";
+import React from 'react';
+import Relay from 'react-relay/classic';
 
-import _ from "lodash";
-import { compose, withState } from "recompose";
+import _ from 'lodash';
+import { compose, withState } from 'recompose';
 
-import Modal from "@ncigdc/uikit/Modal";
-import SuggestionFacet from "@ncigdc/components/Aggregations/SuggestionFacet";
-import FacetSelection from "@ncigdc/components/FacetSelection";
-import FacetWrapper from "@ncigdc/components/FacetWrapper";
-import FacetHeader from "@ncigdc/components/Aggregations/FacetHeader";
+import Modal from '@ncigdc/uikit/Modal';
+import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
+import FacetSelection from '@ncigdc/components/FacetSelection';
+import FacetWrapper from '@ncigdc/components/FacetWrapper';
+import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 
 import {
   initialFileAggregationsVariables,
-  repositoryFileAggregationsFragment
-} from "@ncigdc/utils/generated-relay-query-parts";
-import withFacetSelection from "@ncigdc/utils/withFacetSelection";
-import escapeForRelay from "@ncigdc/utils/escapeForRelay";
-import tryParseJSON from "@ncigdc/utils/tryParseJSON";
+  repositoryFileAggregationsFragment,
+} from '@ncigdc/utils/generated-relay-query-parts';
+import withFacetSelection from '@ncigdc/utils/withFacetSelection';
+import escapeForRelay from '@ncigdc/utils/escapeForRelay';
+import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 
-import type { TBucket } from "@ncigdc/components/Aggregations/types";
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
-import { withTheme } from "@ncigdc/theme";
-import FileIcon from "@ncigdc/theme/icons/File";
-import { Column } from "@ncigdc/uikit/Flex";
+import { withTheme } from '@ncigdc/theme';
+import FileIcon from '@ncigdc/theme/icons/File';
+import { Column } from '@ncigdc/uikit/Flex';
 
-const storageKey = "RepositoryFileAggregations.userSelectedFacets";
+const storageKey = 'RepositoryFileAggregations.userSelectedFacets';
 
 const presetFacets = [
-  { title: "File", field: "file_id", full: "files.file_id", type: "keyword" },
-  { field: "data_category", full: "files.data_category", type: "keyword" },
-  { field: "data_type", full: "files.data_type", type: "keyword" },
+  { title: 'File', field: 'file_id', full: 'files.file_id', type: 'keyword' },
+  { field: 'data_category', full: 'files.data_category', type: 'keyword' },
+  { field: 'data_type', full: 'files.data_type', type: 'keyword' },
   {
-    field: "experimental_strategy",
-    full: "files.experimental_strategy",
-    type: "keyword"
+    field: 'experimental_strategy',
+    full: 'files.experimental_strategy',
+    type: 'keyword',
   },
   {
-    title: "Workflow Type",
-    field: "analysis.workflow_type",
-    full: "files.analysis.workflow_type",
-    type: "keyword"
+    title: 'Workflow Type',
+    field: 'analysis.workflow_type',
+    full: 'files.analysis.workflow_type',
+    type: 'keyword',
   },
-  { field: "data_format", full: "files.data_format", type: "keyword" },
-  { field: "platform", full: "files.platform", type: "keyword" },
-  { field: "access", full: "files.access", type: "keyword" }
+  { field: 'data_format', full: 'files.data_format', type: 'keyword' },
+  { field: 'platform', full: 'files.platform', type: 'keyword' },
+  { field: 'access', full: 'files.access', type: 'keyword' },
 ];
 
 const presetFacetFields = presetFacets.map(x => x.field);
@@ -55,16 +55,16 @@ const enhance = compose(
   withFacetSelection({
     storageKey,
     presetFacetFields,
-    validFacetDocTypes: ["files"]
+    validFacetDocTypes: ['files'],
   }),
-  withState("fileIdCollapsed", "setFileIdCollapsed", false)
+  withState('fileIdCollapsed', 'setFileIdCollapsed', false),
 );
 
 const styles = {
   link: {
-    textDecoration: "underline",
-    color: "#2a72a5"
-  }
+    textDecoration: 'underline',
+    color: '#2a72a5',
+  },
 };
 
 export type TProps = {
@@ -78,7 +78,7 @@ export type TProps = {
     data_type: { buckets: [TBucket] },
     experimental_strategy: { buckets: [TBucket] },
     platform: { buckets: [TBucket] },
-    analysis__workflow_type: { buckets: [TBucket] }
+    analysis__workflow_type: { buckets: [TBucket] },
   },
   theme: Object,
 
@@ -90,29 +90,30 @@ export type TProps = {
     doc_type: String,
     field: String,
     full: String,
-    type: "id" | "string" | "long"
+    type: 'id' | 'string' | 'long',
   |}>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
   presetFacetFields: Array<String>,
   shouldShowFacetSelection: Boolean,
-  facetExclusionTest: Function
+  facetExclusionTest: Function,
 };
 
-export const FileAggregationsComponent = (props: TProps) => (
+export const FileAggregationsComponent = (props: TProps) =>
   <div>
     <div
       className="text-right"
       style={{
-        padding: "10px 15px",
-        borderBottom: `1px solid ${props.theme.greyScale5}`
+        padding: '10px 15px',
+        borderBottom: `1px solid ${props.theme.greyScale5}`,
       }}
     >
       {!!props.userSelectedFacets.length &&
         <span>
           <a onClick={props.handleResetFacets} style={styles.link}>
             Reset
-          </a> &nbsp;|&nbsp;
+          </a>{' '}
+          &nbsp;|&nbsp;
         </span>}
       <a
         onClick={() => props.setShouldShowFacetSelection(true)}
@@ -124,7 +125,7 @@ export const FileAggregationsComponent = (props: TProps) => (
     </div>
     <Modal
       isOpen={props.shouldShowFacetSelection}
-      style={{ content: { border: 0, padding: "15px" } }}
+      style={{ content: { border: 0, padding: '15px' } }}
     >
       <FacetSelection
         title="Add a File Filter"
@@ -136,7 +137,7 @@ export const FileAggregationsComponent = (props: TProps) => (
       />
     </Modal>
 
-    {props.userSelectedFacets.map(facet => (
+    {props.userSelectedFacets.map(facet =>
       <FacetWrapper
         isRemovable
         key={facet.full}
@@ -145,8 +146,8 @@ export const FileAggregationsComponent = (props: TProps) => (
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      />
-    ))}
+      />,
+    )}
     <FacetHeader
       title="File"
       field="files.file_id"
@@ -162,24 +163,23 @@ export const FileAggregationsComponent = (props: TProps) => (
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      dropdownItem={x => (
-        <span style={{ display: "flex" }}>
+      dropdownItem={x =>
+        <span style={{ display: 'flex' }}>
           <Column>
-            <FileIcon style={{ paddingRight: "1rem", paddingTop: "1rem" }} />
+            <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
           </Column>
           <Column>
-            <span style={{ fontWeight: "bold" }}>
+            <span style={{ fontWeight: 'bold' }}>
               {x.file_id}
             </span>
-            <span style={{ fontSize: "80%" }}>
+            <span style={{ fontSize: '80%' }}>
               {x.submitter_id}
             </span>
             {x.file_name} <br />
           </Column>
-        </span>
-      )}
+        </span>}
     />
-    {_.reject(presetFacets, { full: "files.file_id" }).map(facet => (
+    {_.reject(presetFacets, { full: 'files.file_id' }).map(facet =>
       <FacetWrapper
         key={facet.full}
         facet={facet}
@@ -188,29 +188,27 @@ export const FileAggregationsComponent = (props: TProps) => (
         relay={props.relay}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
         additionalProps={facet.additionalProps}
-      />
-    ))}
+      />,
+    )}
 
-  </div>
-);
+  </div>;
 
 export const FileAggregationsQuery = {
   initialVariables: Object.assign(
     {},
     _.mapValues(initialFileAggregationsVariables, (value, key) => {
-      const userSelectedFacetsFromStorage = tryParseJSON(
-        window.localStorage.getItem(storageKey) || null
-      ) || [];
+      const userSelectedFacetsFromStorage =
+        tryParseJSON(window.localStorage.getItem(storageKey) || null) || [];
       const escapedFieldsToShow = presetFacetFields
         .concat(userSelectedFacetsFromStorage.map(x => x.field))
         .filter(Boolean)
         .map(escapeForRelay);
       return (
         value ||
-        _.includes(escapedFieldsToShow, key.replace(/^shouldShow_/, ""))
+        _.includes(escapedFieldsToShow, key.replace(/^shouldShow_/, ''))
       );
     }),
-    { shouldRequestAllAggregations: false }
+    { shouldRequestAllAggregations: false },
   ),
   prepareVariables: prevVariables =>
     _.mapValues(
@@ -221,18 +219,18 @@ export const FileAggregationsQuery = {
         _.includes(
           (tryParseJSON(window.localStorage.getItem(storageKey)) || [])
             .map(x => escapeForRelay(x.field)),
-          key.replace(/^shouldShow_/, "")
+          key.replace(/^shouldShow_/, ''),
         ) ||
-        value
+        value,
     ),
   fragments: {
-    aggregations: repositoryFileAggregationsFragment
-  }
+    aggregations: repositoryFileAggregationsFragment,
+  },
 };
 
 const FileAggregations = Relay.createContainer(
   enhance(withTheme(FileAggregationsComponent)),
-  FileAggregationsQuery
+  FileAggregationsQuery,
 );
 
 export default FileAggregations;

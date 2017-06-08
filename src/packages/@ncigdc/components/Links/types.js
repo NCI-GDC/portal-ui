@@ -1,7 +1,7 @@
 /* @flow */
 
-import type { TUriQuery, TRemoveEmptyKeys } from "@ncigdc/utils/uri/types";
-import type { TMergeQuery, TMergeEnum } from "@ncigdc/utils/filters/types";
+import type { TUriQuery, TRemoveEmptyKeys } from '@ncigdc/utils/uri/types';
+import type { TMergeQuery, TMergeEnum } from '@ncigdc/utils/filters/types';
 
 export type TListLinkProps = {
   children?: mixed,
@@ -10,11 +10,11 @@ export type TListLinkProps = {
   pathname?: string,
   query?: TUriQuery,
   removeEmptyKeys?: TRemoveEmptyKeys,
-  whitelist?: Array<string>
+  whitelist?: Array<string>,
 };
 
 export type TIdLinkProps = {
-  id: string
+  id: string,
 } & TListLinkProps;
 
 export type TLinkProps = TListLinkProps | TIdLinkProps;

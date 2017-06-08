@@ -1,11 +1,11 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
-import FullWidthLayout from "@ncigdc/components/Layouts/FullWidthLayout";
-import Case from "@ncigdc/components/Case";
-import type { TRawQuery } from "@ncigdc/utils/uri/types";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
+import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
+import Case from '@ncigdc/components/Case';
+import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
 export type TProps = {
   node: {
@@ -19,24 +19,24 @@ export type TProps = {
             cases: {
               hits: {
                 edges: {
-                  node: Object
-                }
-              }
-            }
-          }
-        }
-      }
+                  node: Object,
+                },
+              },
+            },
+          },
+        },
+      },
     },
     project: {
       disease_type: string,
       name: string,
       primary_site: string,
       program: {
-        name: string
+        name: string,
       },
-      project_id: string
+      project_id: string,
     },
-    submitter_id: string
+    submitter_id: string,
   },
   viewer: {
     explore: {
@@ -44,54 +44,52 @@ export type TProps = {
         hits: {
           edges: Array<{
             node: {
-              available_variation_data: Array<string>
-            }
-          }>
+              available_variation_data: Array<string>,
+            },
+          }>,
         },
         aggregations: {
           project__project_id: {
             buckets: Array<{
               doc_count: number,
-              key: string
-            }>
-          }
-        }
-      }
-    }
-  }
+              key: string,
+            }>,
+          },
+        },
+      },
+    },
+  },
 };
 
-export const CasePageComponent = ({ node, viewer }: TProps) => (
+export const CasePageComponent = ({ node, viewer }: TProps) =>
   <FullWidthLayout title={node.case_id} entityType="CA">
     <LocationSubscriber>
-      {(ctx: {| pathname: string, query: TRawQuery |}) => (
+      {(ctx: {| pathname: string, query: TRawQuery |}) =>
         <Case
           query={ctx.query}
           node={node}
           totalFiles={node.files.hits.total}
           ssmTested={
             viewer.explore.cases.hits.edges.length &&
-              (viewer.explore.cases.hits.edges[0].node
-                .available_variation_data || [])
-                .includes("ssm")
+            (viewer.explore.cases.hits.edges[0].node.available_variation_data ||
+              [])
+              .includes('ssm')
           }
           files={node.files.hits.edges.map(f => ({
             ...f.node,
-            projects: [node.project.project_id]
+            projects: [node.project.project_id],
           }))}
           numCasesAggByProject={viewer.explore.cases.aggregations.project__project_id.buckets.reduce(
             (acc, b) => ({
               ...acc,
-              [b.key]: b.doc_count
+              [b.key]: b.doc_count,
             }),
-            {}
+            {},
           )}
           viewer={viewer}
-        />
-      )}
+        />}
     </LocationSubscriber>
-  </FullWidthLayout>
-);
+  </FullWidthLayout>;
 
 export const CasePageQuery = {
   initialVariables: {
@@ -99,7 +97,7 @@ export const CasePageQuery = {
     files_size: null,
     files_sort: null,
     filters: null,
-    caseFilters: null
+    caseFilters: null,
   },
   fragments: {
     node: () => Relay.QL`
@@ -348,8 +346,8 @@ export const CasePageQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const CasePage = Relay.createContainer(CasePageComponent, CasePageQuery);

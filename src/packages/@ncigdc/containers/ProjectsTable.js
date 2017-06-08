@@ -1,25 +1,25 @@
 /* @flow */
 
-import React from "react";
-import { createFragmentContainer, graphql } from "react-relay/compat";
-import { connect } from "react-redux";
-import { compose } from "recompose";
-import { Row } from "@ncigdc/uikit/Flex";
-import TableActions from "@ncigdc/components/TableActions";
-import tableModels from "@ncigdc/tableModels";
+import React from 'react';
+import { createFragmentContainer, graphql } from 'react-relay/compat';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import { Row } from '@ncigdc/uikit/Flex';
+import TableActions from '@ncigdc/components/TableActions';
+import tableModels from '@ncigdc/tableModels';
 
-import Table, { Tr, Td } from "@ncigdc/uikit/Table";
+import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.projects }))
+  connect(state => ({ tableColumns: state.tableColumns.projects })),
 )(
   ({
     downloadable,
     hits,
     params,
-    entityType = "projects",
+    entityType = 'projects',
     tableHeader,
-    tableColumns
+    tableColumns,
   }) => {
     const tableInfo = tableModels[entityType] // eslint-disable-line
       .slice()
@@ -30,10 +30,10 @@ export const SearchTable = compose(
       <div>
         <Row
           style={{
-            backgroundColor: "white",
-            padding: "1rem",
-            justifyContent: "space-between",
-            alignItems: "center"
+            backgroundColor: 'white',
+            padding: '1rem',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
         >
           {tableHeader &&
@@ -56,7 +56,7 @@ export const SearchTable = compose(
             tsvFilename="projects-table.tsv"
           />
         </Row>
-        <div style={{ overflowX: "auto" }}>
+        <div style={{ overflowX: 'auto' }}>
           <Table
             id="projects-table"
             headings={tableInfo
@@ -67,13 +67,13 @@ export const SearchTable = compose(
               .map(x => <x.th key={x.id} />)}
             body={
               <tbody>
-                {hits.edges.map((e, i) => (
+                {hits.edges.map((e, i) =>
                   <Tr key={e.node.id} index={i}>
                     {tableInfo
                       .filter(x => x.td)
                       .map(x => <x.td key={x.id} node={e.node} />)}
-                  </Tr>
-                ))}
+                  </Tr>,
+                )}
                 <Tr>
                   {tableInfo
                     .filter(x => x.td)
@@ -81,7 +81,7 @@ export const SearchTable = compose(
                       x =>
                         x.total
                           ? <x.total key={x.id} hits={hits} />
-                          : <Td key={x.id} />
+                          : <Td key={x.id} />,
                     )}
                 </Tr>
               </tbody>
@@ -90,7 +90,7 @@ export const SearchTable = compose(
         </div>
       </div>
     );
-  }
+  },
 );
 
 const ProjectsTable = createFragmentContainer(
@@ -119,7 +119,7 @@ const ProjectsTable = createFragmentContainer(
         }
       }
     }
-  `
+  `,
 );
 
 export default ProjectsTable;

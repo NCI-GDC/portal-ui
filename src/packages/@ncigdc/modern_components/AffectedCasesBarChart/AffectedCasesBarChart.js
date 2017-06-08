@@ -1,28 +1,27 @@
 // @flow
 
-import React from "react";
-import Relay from "react-relay/classic";
-import { parse } from "query-string";
-import { connect } from "react-redux";
-import { compose } from "recompose";
-import withRouter from "@ncigdc/utils/withRouter";
-import { viewerQuery } from "@ncigdc/routes/queries";
-import { handleReadyStateChange } from "@ncigdc/dux/loaders";
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import BarChart from "@ncigdc/components/Charts/BarChart";
-import { withTheme } from "@ncigdc/theme";
-import { ConnectedLoader } from "@ncigdc/uikit/Loaders/Loader";
-import DownloadVisualizationButton
-  from "@ncigdc/components/DownloadVisualizationButton";
-import wrapSvg from "@ncigdc/utils/wrapSvg";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import { parse } from 'query-string';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import withRouter from '@ncigdc/utils/withRouter';
+import { viewerQuery } from '@ncigdc/routes/queries';
+import { handleReadyStateChange } from '@ncigdc/dux/loaders';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import BarChart from '@ncigdc/components/Charts/BarChart';
+import { withTheme } from '@ncigdc/theme';
+import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
+import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
+import wrapSvg from '@ncigdc/utils/wrapSvg';
 
 const CHART_HEIGHT = 285;
-const COMPONENT_NAME = "AffectedCasesBarChart";
+const COMPONENT_NAME = 'AffectedCasesBarChart';
 
 const createRenderer = (Route, Container) =>
-  compose(withRouter, connect())((props: mixed) => (
-    <div style={{ position: "relative", minHeight: `${CHART_HEIGHT}px` }}>
+  compose(withRouter, connect())((props: mixed) =>
+    <div style={{ position: 'relative', minHeight: `${CHART_HEIGHT}px` }}>
       <Relay.Renderer
         environment={Relay.Store}
         queryConfig={new Route(props)}
@@ -33,8 +32,8 @@ const createRenderer = (Route, Container) =>
         }
       />
       <ConnectedLoader name={COMPONENT_NAME} />
-    </div>
-  ));
+    </div>,
+  );
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -45,8 +44,8 @@ class Route extends Relay.Route {
     return {
       affectedCasesBarChart_filters: parseFilterParam(
         q.affectedCasesBarChart_filters,
-        defaultFilters || null
-      )
+        defaultFilters || null,
+      ),
     };
   };
 }
@@ -55,7 +54,7 @@ const createContainer = Component =>
   Relay.createContainer(Component, {
     initialVariables: {
       affectedCasesBarChart_filters: null,
-      score: "gene.gene_id"
+      score: 'gene.gene_id',
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -77,19 +76,19 @@ const createContainer = Component =>
             }
           }
         }
-      `
-    }
+      `,
+    },
   });
 
 const Component = compose(
   withTheme,
-  withRouter
+  withRouter,
 )(
   ({
     viewer: { explore: { cases = { hits: { edges: [] } } } },
     theme,
     push,
-    style
+    style,
   }) => {
     const chartData = cases.hits.edges.map(x => x.node).map(c => ({
       fullLabel: c.case_id,
@@ -98,29 +97,29 @@ const Component = compose(
       tooltip: (
         <span>{c.case_id}<br />{c.score.toLocaleString()} Genes Affected</span>
       ),
-      onClick: () => push(`/cases/${c.case_id}`)
+      onClick: () => push(`/cases/${c.case_id}`),
     }));
 
     return (
       <div style={style}>
-        <Column style={{ padding: "0 0 0 2rem" }}>
+        <Column style={{ padding: '0 0 0 2rem' }}>
           {cases &&
             !!cases.hits.edges.length &&
-            <Row style={{ justifyContent: "flex-end" }}>
+            <Row style={{ justifyContent: 'flex-end' }}>
               <DownloadVisualizationButton
                 svg={() =>
                   wrapSvg({
-                    selector: "#most-affected-cases svg",
-                    title: "Most Affected Cases"
+                    selector: '#most-affected-cases svg',
+                    title: 'Most Affected Cases',
                   })}
                 data={chartData.map(d => ({
                   label: d.fullLabel,
-                  value: d.value
+                  value: d.value,
                 }))}
                 slug="most-affected-cases-bar-chart"
                 noText
                 tooltipHTML="Download image or data"
-                style={{ marginRight: "2rem" }}
+                style={{ marginRight: '2rem' }}
               />
             </Row>}
           {cases &&
@@ -129,29 +128,29 @@ const Component = compose(
               <BarChart
                 data={chartData}
                 height={CHART_HEIGHT}
-                yAxis={{ title: "# Affected Genes" }}
+                yAxis={{ title: '# Affected Genes' }}
                 styles={{
                   xAxis: {
                     stroke: theme.greyScale4,
-                    textFill: theme.greyScale3
+                    textFill: theme.greyScale3,
                   },
                   yAxis: {
                     stroke: theme.greyScale4,
-                    textFill: theme.greyScale3
+                    textFill: theme.greyScale3,
                   },
                   bars: { fill: theme.secondary },
                   tooltips: {
-                    fill: "#fff",
+                    fill: '#fff',
                     stroke: theme.greyScale4,
-                    textFill: theme.greyScale3
-                  }
+                    textFill: theme.greyScale3,
+                  },
                 }}
               />
             </Row>}
         </Column>
       </div>
     );
-  }
+  },
 );
 
 export default createRenderer(Route, createContainer(Component));

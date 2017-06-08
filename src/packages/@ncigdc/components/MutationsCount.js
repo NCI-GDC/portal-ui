@@ -1,7 +1,7 @@
 // @flow
-import React from "react";
-import GreyBox from "@ncigdc/uikit/GreyBox";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
+import React from 'react';
+import GreyBox from '@ncigdc/uikit/GreyBox';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 
 const MutationsCount = ({ ssmCount, filters, isLoading = false }) => {
   if (isLoading) {
@@ -11,8 +11,8 @@ const MutationsCount = ({ ssmCount, filters, isLoading = false }) => {
     ? <ExploreLink
         merge
         query={{
-          searchTableTab: "mutations",
-          filters
+          searchTableTab: 'mutations',
+          filters,
         }}
       >
         {ssmCount}

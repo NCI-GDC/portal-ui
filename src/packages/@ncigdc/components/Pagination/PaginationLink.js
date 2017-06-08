@@ -1,8 +1,8 @@
 /* @flow */
 
-import React from "react";
+import React from 'react';
 
-import Link from "@ncigdc/components/Links/Link";
+import Link from '@ncigdc/components/Links/Link';
 
 export type TProps = {|
   children?: string,
@@ -10,7 +10,7 @@ export type TProps = {|
   pred: boolean,
   prfOff: string,
   style?: Object,
-  className?: Object
+  className?: Object,
 |};
 
 const PaginationLink = (props: TProps) =>
@@ -19,7 +19,7 @@ const PaginationLink = (props: TProps) =>
         merge
         query={{ [props.prfOff]: props.offset }}
         style={props.style || {}}
-        className={props.className || ""}
+        className={props.className || ''}
       >
         {props.children}
       </Link>

@@ -1,14 +1,14 @@
 // @flow
 
-import React from "react";
-import { connect } from "react-redux";
-import { compose, withState, mapProps } from "recompose";
+import React from 'react';
+import { connect } from 'react-redux';
+import { compose, withState, mapProps } from 'recompose';
 
-import download from "@ncigdc/utils/download";
-import Button from "@ncigdc/uikit/Button";
-import DownloadIcon from "@ncigdc/theme/icons/Download";
-import Spinner from "@ncigdc/theme/icons/Spinner";
-import Hidden from "@ncigdc/components/Hidden";
+import download from '@ncigdc/utils/download';
+import Button from '@ncigdc/uikit/Button';
+import DownloadIcon from '@ncigdc/theme/icons/Download';
+import Spinner from '@ncigdc/theme/icons/Spinner';
+import Hidden from '@ncigdc/components/Hidden';
 
 type TDownloadButton = {
   url: string,
@@ -28,7 +28,7 @@ type TDownloadButton = {
   style: Object,
   extraParams: Object,
   setParentState: () => {},
-  showIcon?: boolean
+  showIcon?: boolean,
 };
 
 const DownloadButton = ({
@@ -40,7 +40,7 @@ const DownloadButton = ({
   inactiveText,
   returnType,
   size = 10000,
-  format = "JSON",
+  format = 'JSON',
   fields = [],
   filters = {},
   active,
@@ -48,7 +48,7 @@ const DownloadButton = ({
   altMessage = false,
   style = {},
   extraParams = {},
-  showIcon = true
+  showIcon = true,
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
   const icon =
@@ -57,7 +57,7 @@ const DownloadButton = ({
   return (
     <Button
       style={{
-        ...style
+        ...style,
       }}
       leftIcon={text && icon}
       disabled={disabled || active}
@@ -72,7 +72,7 @@ const DownloadButton = ({
           pretty: true,
           ...(returnType ? { return_type: returnType } : {}),
           ...(filename ? { filename } : {}),
-          ...extraParams
+          ...extraParams,
         };
 
         setActive(true);
@@ -80,8 +80,8 @@ const DownloadButton = ({
         download({
           params,
           url,
-          method: "POST",
-          altMessage
+          method: 'POST',
+          altMessage,
         })(() => {}, () => setActive(false));
       }}
     >
@@ -92,16 +92,16 @@ const DownloadButton = ({
 
 const enhance = compose(
   connect(),
-  withState("state", "setState", {
-    active: false
+  withState('state', 'setState', {
+    active: false,
   }),
   mapProps(({ setParentState, state, setState, active, ...rest }) => ({
     setActive: setParentState
       ? setParentState
       : active => setState(s => ({ ...s, active })),
     active: active ? active : state.active,
-    ...rest
-  }))
+    ...rest,
+  })),
 );
 
 export default enhance(DownloadButton);

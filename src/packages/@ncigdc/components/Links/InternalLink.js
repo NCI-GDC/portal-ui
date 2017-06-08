@@ -1,24 +1,24 @@
 /* @flow */
 
-import React from "react";
-import _ from "lodash";
-import Link from "react-router-dom/NavLink";
-import JSURL from "jsurl";
-import { stringify } from "query-string";
-import { removeEmptyKeys as rek } from "@ncigdc/utils/uri";
-import validAttributes from "@ncigdc/theme/utils/validAttributes";
-import { scrollToId } from "@ncigdc/components/Links/deepLink";
+import React from 'react';
+import _ from 'lodash';
+import Link from 'react-router-dom/NavLink';
+import JSURL from 'jsurl';
+import { stringify } from 'query-string';
+import { removeEmptyKeys as rek } from '@ncigdc/utils/uri';
+import validAttributes from '@ncigdc/theme/utils/validAttributes';
+import { scrollToId } from '@ncigdc/components/Links/deepLink';
 
-import type { TLinkProps } from "./types";
+import type { TLinkProps } from './types';
 
 const reactRouterLinkProps = [
-  "to",
-  "replace",
-  "activeClassName",
-  "activeStyle",
-  "exact",
-  "strict",
-  "isActive"
+  'to',
+  'replace',
+  'activeClassName',
+  'activeStyle',
+  'exact',
+  'strict',
+  'isActive',
 ];
 
 const InternalLink = ({
@@ -33,7 +33,7 @@ const InternalLink = ({
 
   const q1 = {
     ...q0,
-    filters: f0
+    filters: f0,
   };
 
   const q = removeEmptyKeys ? removeEmptyKeys(q1) : q1;
@@ -47,7 +47,7 @@ const InternalLink = ({
     <Link
       to={{
         pathname,
-        search
+        search,
       }}
       {...validAttrProps}
       {...validLinkProps}
@@ -65,7 +65,7 @@ const InternalLink = ({
 
 InternalLink.defaultProps = {
   // eslint-disable-line fp/no-mutation
-  removeEmptyKeys: rek
+  removeEmptyKeys: rek,
 };
 
 export default InternalLink;

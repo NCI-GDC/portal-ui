@@ -1,39 +1,39 @@
 /* @flow */
 
-import React from "react";
-import { compose, withState, mapProps, pure, lifecycle } from "recompose";
-import { isEqual } from "lodash";
+import React from 'react';
+import { compose, withState, mapProps, pure, lifecycle } from 'recompose';
+import { isEqual } from 'lodash';
 
-import styled from "@ncigdc/theme/styled";
-import withRouter from "@ncigdc/utils/withRouter";
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import Input from "@ncigdc/uikit/Form/Input";
-import { Row, Column } from "@ncigdc/uikit/Flex";
-import ExclamationTriangle from "@ncigdc/theme/icons/ExclamationTriangle";
+import styled from '@ncigdc/theme/styled';
+import withRouter from '@ncigdc/utils/withRouter';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import Input from '@ncigdc/uikit/Form/Input';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import ExclamationTriangle from '@ncigdc/theme/icons/ExclamationTriangle';
 
-import { Container, InputLabel, StyledInput, GoLink } from "./";
+import { Container, InputLabel, StyledInput, GoLink } from './';
 
 const getCurrentFromAndTo = ({ field, query }) => {
-  const dotField = field.replace(/__/g, ".");
-  const currentFilters = (query &&
-    parseFilterParam((query || {}).filters, {}).content) || [];
+  const dotField = field.replace(/__/g, '.');
+  const currentFilters =
+    (query && parseFilterParam((query || {}).filters, {}).content) || [];
   return currentFilters.reduce(
     (acc, c) =>
       c.content.field === dotField
         ? { ...acc, [c.op]: c.content.value[0] }
         : acc,
-    { ">=": undefined, "<=": undefined }
+    { '>=': undefined, '<=': undefined },
   );
 };
 
 const conversionFactor = 365.25;
 const warningDays = Math.floor(90 * conversionFactor);
 const convertMaxMin = ({ max, min, convertDays, selectedUnit, setState }) => {
-  if (convertDays && selectedUnit === "years") {
+  if (convertDays && selectedUnit === 'years') {
     setState(s => ({
       ...s,
       minDisplayed: Math.floor(min / conversionFactor),
-      maxDisplayed: Math.ceil((max + 1 - conversionFactor) / conversionFactor)
+      maxDisplayed: Math.ceil((max + 1 - conversionFactor) / conversionFactor),
     }));
   } else {
     setState(s => ({ ...s, maxDisplayed: max || 0, minDisplayed: min || 0 }));
@@ -41,65 +41,65 @@ const convertMaxMin = ({ max, min, convertDays, selectedUnit, setState }) => {
 };
 
 const inputChanged = ({ from, to, convertDays, selectedUnit, setState }) => {
-  if (!convertDays || selectedUnit === "days") {
+  if (!convertDays || selectedUnit === 'days') {
     setState(s => ({
       ...s,
       from: from ? from : undefined,
       to: to ? to : undefined,
-      fromDisplayed: from ? from : "",
-      toDisplayed: to ? to : ""
+      fromDisplayed: from ? from : '',
+      toDisplayed: to ? to : '',
     }));
-  } else if (selectedUnit === "years") {
+  } else if (selectedUnit === 'years') {
     setState(s => ({
       ...s,
       from: from ? Math.floor(from * conversionFactor) : undefined,
       to: to
         ? Math.floor(to * conversionFactor + conversionFactor - 1)
         : undefined,
-      fromDisplayed: from ? from : "",
-      toDisplayed: to ? to : ""
+      fromDisplayed: from ? from : '',
+      toDisplayed: to ? to : '',
     }));
   }
 };
 
 const convertInputs = ({ from, to, selectedUnit, setState }) => {
-  if (selectedUnit === "days") {
+  if (selectedUnit === 'days') {
     setState(s => ({
       ...s,
       from,
       to,
       fromDisplayed: from,
-      toDisplayed: to
+      toDisplayed: to,
     }));
-  } else if (selectedUnit === "years") {
+  } else if (selectedUnit === 'years') {
     setState(s => ({
       ...s,
       from,
       to,
       fromDisplayed: Math.ceil(from / conversionFactor),
-      toDisplayed: Math.ceil((to + 1 - conversionFactor) / conversionFactor)
+      toDisplayed: Math.ceil((to + 1 - conversionFactor) / conversionFactor),
     }));
   }
 };
 
 const WarningRow = styled(Row, {
-  backgroundColor: "#fcf8e3",
-  borderColor: "#faebcc",
-  color: "#8a6d3b",
-  padding: "15px",
-  border: "1px solid transparent",
-  borderRadius: "4px"
+  backgroundColor: '#fcf8e3',
+  borderColor: '#faebcc',
+  color: '#8a6d3b',
+  padding: '15px',
+  border: '1px solid transparent',
+  borderRadius: '4px',
 });
 
 const enhance = compose(
-  withState("state", "setState", {
+  withState('state', 'setState', {
     from: undefined,
     to: undefined,
-    fromDisplayed: "",
-    toDisplayed: "",
+    fromDisplayed: '',
+    toDisplayed: '',
     maxDisplayed: 0,
     minDisplayed: 0,
-    selectedUnit: "years"
+    selectedUnit: 'years',
   }),
   withRouter,
   lifecycle({
@@ -111,68 +111,68 @@ const enhance = compose(
         min,
         convertDays,
         state: { selectedUnit },
-        setState
+        setState,
       } = this.props;
       const thisFieldCurrent = getCurrentFromAndTo({ field, query });
-      const opToWord = { ">=": "from", "<=": "to" };
+      const opToWord = { '>=': 'from', '<=': 'to' };
       const newState = Object.keys(thisFieldCurrent)
         .filter(k => thisFieldCurrent[k])
         .reduce(
           (acc, k) => ({ ...acc, [opToWord[k]]: thisFieldCurrent[k] }),
-          {}
+          {},
         );
       if (convertDays) {
         convertInputs({
           from: newState.from,
           to: newState.to,
           selectedUnit,
-          setState
+          setState,
         });
       } else {
         setState(s => ({
           ...s,
           ...newState,
           fromDisplayed: newState.from,
-          toDisplayed: newState.to
+          toDisplayed: newState.to,
         }));
       }
       convertMaxMin({ max, min, convertDays, selectedUnit, setState });
     },
     componentWillReceiveProps(nextProps: Object): void {
       if (
-        ["field", "query", "max", "min"].some(
-          k => !isEqual(this.props[k], nextProps[k])
+        ['field', 'query', 'max', 'min'].some(
+          k => !isEqual(this.props[k], nextProps[k]),
         )
       ) {
         const { field, query, max, min } = nextProps;
         const { state: { selectedUnit }, setState, convertDays } = this.props;
         const thisFieldCurrent = getCurrentFromAndTo({ field, query });
-        const opToWord = { ">=": "from", "<=": "to" };
+        const opToWord = { '>=': 'from', '<=': 'to' };
         const newState = Object.keys(thisFieldCurrent)
           .filter(k => thisFieldCurrent[k])
           .reduce(
             (acc, k) => ({ ...acc, [opToWord[k]]: thisFieldCurrent[k] }),
-            {}
+            {},
           );
         if (convertDays) {
           convertInputs({
             from: newState.from,
             to: newState.to,
             selectedUnit,
-            setState
+            setState,
           });
         } else {
           setState(s => ({
             ...s,
             ...newState,
             fromDisplayed: newState.from,
-            toDisplayed: newState.to
+            toDisplayed: newState.to,
           }));
         }
 
         convertMaxMin({ max, min, convertDays, selectedUnit, setState });
       }
-    }
+    },
   }),
   mapProps(({ setState, max, min, convertDays, ...rest }) => ({
     handleFromChanged: e => {
@@ -183,7 +183,7 @@ const enhance = compose(
         to: toDisplayed,
         convertDays,
         selectedUnit,
-        setState
+        setState,
       });
     },
     handleToChanged: e => {
@@ -194,7 +194,7 @@ const enhance = compose(
         to: v,
         convertDays,
         selectedUnit,
-        setState
+        setState,
       });
     },
     handleUnitChanged: e => {
@@ -208,9 +208,9 @@ const enhance = compose(
     max,
     min,
     convertDays,
-    ...rest
+    ...rest,
   })),
-  pure
+  pure,
 );
 
 type TProps = {
@@ -223,7 +223,7 @@ type TProps = {
     from: number,
     selectedUnit: string,
     fromDisplayed: number,
-    toDisplayed: number
+    toDisplayed: number,
   },
   style: Object,
   toggleCollapsed: Function,
@@ -233,29 +233,29 @@ type TProps = {
   min: Number,
   max: Number,
   convertDays: boolean,
-  collapsed: boolean
+  collapsed: boolean,
 };
 
 const RangeFacet = (props: TProps) => {
-  const dotField = props.field.replace(/__/g, ".");
+  const dotField = props.field.replace(/__/g, '.');
   const innerContent = [
-    { op: ">=", value: props.state.from },
-    { op: "<=", value: props.state.to }
+    { op: '>=', value: props.state.from },
+    { op: '<=', value: props.state.to },
   ]
     .filter(v => v.value)
     .map(v => ({
       op: v.op,
       content: {
         field: dotField,
-        value: [v.value]
-      }
+        value: [v.value],
+      },
     }));
   const query = {
     offset: 0,
     filters: {
-      op: "and",
-      content: innerContent
-    }
+      op: 'and',
+      content: innerContent,
+    },
   };
   const { maxDisplayed, minDisplayed } = props.state;
 
@@ -267,29 +267,29 @@ const RangeFacet = (props: TProps) => {
           <form name={`${dotField}-radio`}>
             <label
               htmlFor={`${dotField}-years-radio`}
-              style={{ paddingRight: "10px" }}
+              style={{ paddingRight: '10px' }}
             >
               <input
                 type="radio"
                 value="years"
                 onChange={props.handleUnitChanged}
-                checked={props.state.selectedUnit === "years"}
+                checked={props.state.selectedUnit === 'years'}
                 id={`${dotField}-years-radio`}
-                style={{ marginRight: "5px" }}
+                style={{ marginRight: '5px' }}
               />
               Years
             </label>
             <label
               htmlFor={`${dotField}-days-radio`}
-              style={{ paddingRight: "10px" }}
+              style={{ paddingRight: '10px' }}
             >
               <input
                 type="radio"
                 value="days"
                 onChange={props.handleUnitChanged}
-                checked={props.state.selectedUnit === "days"}
+                checked={props.state.selectedUnit === 'days'}
                 id={`${dotField}-days-radio`}
-                style={{ marginRight: "5px" }}
+                style={{ marginRight: '5px' }}
               />
               Days
             </label>
@@ -301,7 +301,7 @@ const RangeFacet = (props: TProps) => {
             <InputLabel
               style={{
                 borderRight: 0,
-                borderRadius: "4px 0 0 4px"
+                borderRadius: '4px 0 0 4px',
               }}
               htmlFor={`from-${dotField}`}
             >
@@ -309,7 +309,7 @@ const RangeFacet = (props: TProps) => {
             </InputLabel>
             <StyledInput
               style={{ borderRadius: 0 }}
-              value={props.state.fromDisplayed || ""}
+              value={props.state.fromDisplayed || ''}
               onChange={props.handleFromChanged}
               id={`from-${dotField}`}
               key={`from-${dotField}`}
@@ -322,14 +322,14 @@ const RangeFacet = (props: TProps) => {
             <InputLabel
               style={{
                 borderLeft: 0,
-                borderRight: 0
+                borderRight: 0,
               }}
               htmlFor={`to-${dotField}`}
             >
               To:
             </InputLabel>
             <Input
-              value={props.state.toDisplayed || ""}
+              value={props.state.toDisplayed || ''}
               onChange={props.handleToChanged}
               id={`to-${dotField}`}
               key={`to-${dotField}`}
@@ -347,15 +347,16 @@ const RangeFacet = (props: TProps) => {
               Go!
             </GoLink>
           </Row>
-          {props.title === "Age at Diagnosis" &&
+          {props.title === 'Age at Diagnosis' &&
             (props.state.from >= warningDays ||
               props.state.to >= warningDays) &&
             <WarningRow>
               <span>
-                <ExclamationTriangle style={{ paddingRight: "5px" }} />
-                For health information privacy concerns, individuals over 89 will all appear as 90 years old. For more information,
+                <ExclamationTriangle style={{ paddingRight: '5px' }} />
+                For health information privacy concerns, individuals over 89
+                will all appear as 90 years old. For more information,
                 click
-                {" "}
+                {' '}
                 <a
                   href="https://gdc.nci.nih.gov/about-gdc/gdc-faqs#collapsible-item-618-question"
                   target="_blank"

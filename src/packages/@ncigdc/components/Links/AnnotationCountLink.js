@@ -1,6 +1,6 @@
-import React from "react";
-import AnnotationLink from "./AnnotationLink";
-import AnnotationsLink from "./AnnotationsLink";
+import React from 'react';
+import AnnotationLink from './AnnotationLink';
+import AnnotationsLink from './AnnotationsLink';
 
 export const AnnotationCountLink = ({ hits, filters }) => {
   if (hits.total > 1) {

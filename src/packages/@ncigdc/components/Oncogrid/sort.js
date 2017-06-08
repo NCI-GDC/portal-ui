@@ -30,5 +30,5 @@ export function sortByString(field) {
 export default {
   sortBool,
   sortByString,
-  sortInt
+  sortInt,
 };

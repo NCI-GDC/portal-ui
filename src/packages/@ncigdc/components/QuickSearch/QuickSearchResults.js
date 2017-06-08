@@ -1,85 +1,85 @@
 // @flow
 /* eslint react/prop-types:0 */
 
-import React from "react";
-import _ from "lodash";
-import entityShortnameMapping from "@ncigdc/utils/entityShortnameMapping";
-import type { TSearchHit } from "./types";
+import React from 'react';
+import _ from 'lodash';
+import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
+import type { TSearchHit } from './types';
 
 const styles = {
   container: {
-    position: "absolute",
+    position: 'absolute',
     right: 0,
-    top: "100%",
-    backgroundColor: "#fff",
-    listStyleType: "none",
+    top: '100%',
+    backgroundColor: '#fff',
+    listStyleType: 'none',
     padding: 0,
-    boxShadow: "rgba(0, 0, 0, 0.156863) 0px 2px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 2px 10px 0px",
+    boxShadow:
+      'rgba(0, 0, 0, 0.156863) 0px 2px 5px 0px, rgba(0, 0, 0, 0.117647) 0px 2px 10px 0px',
     zIndex: 90,
-    maxHeight: "500px",
-    overflowY: "auto",
-    width: "406px"
+    maxHeight: '500px',
+    overflowY: 'auto',
+    width: '406px',
   },
   item: {
-    padding: "0.5rem 1rem",
-    transition: "all 0.1s ease",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "stretch"
+    padding: '0.5rem 1rem',
+    transition: 'all 0.1s ease',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'stretch',
   },
   itemIconWrapper: {
-    marginLeft: "-1rem",
-    marginTop: "-0.5rem",
-    marginBottom: "-0.5rem",
-    marginRight: "1rem",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-start",
+    marginLeft: '-1rem',
+    marginTop: '-0.5rem',
+    marginBottom: '-0.5rem',
+    marginRight: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
     width: 32,
-    backgroundColor: "#505556",
-    flexShrink: 0
+    backgroundColor: '#505556',
+    flexShrink: 0,
   },
   itemIcon: {
-    width: "100%",
-    height: "3.2rem",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    color: "#fff",
-    backgroundColor: "#453D3D"
+    width: '100%',
+    height: '3.2rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: '#fff',
+    backgroundColor: '#453D3D',
   },
   itemTitle: {
-    fontWeight: "500"
+    fontWeight: '500',
   },
   selectedItem: {
-    backgroundColor: "rgb(0, 80, 131)",
-    color: "#fff"
+    backgroundColor: 'rgb(0, 80, 131)',
+    color: '#fff',
   },
   deemphasizedItem: {
-    color: "#999"
+    color: '#999',
   },
   highlights: {
-    fontSize: "1.14rem",
-    fontStyle: "italic",
-    color: "#525252"
+    fontSize: '1.14rem',
+    fontStyle: 'italic',
+    color: '#525252',
   },
   loadingMessage: {
-    minWidth: "11em",
-    textAlign: "left",
-    color: "#999"
-  }
+    minWidth: '11em',
+    textAlign: 'left',
+    color: '#999',
+  },
 };
 
-const ResultIcon = ({ type, style }) => (
-  <span style={style}>{entityShortnameMapping[type] || type}</span>
-);
+const ResultIcon = ({ type, style }) =>
+  <span style={style}>{entityShortnameMapping[type] || type}</span>;
 
-export const findMatchingToken = (item, lq, value = "") => {
+export const findMatchingToken = (item, lq, value = '') => {
   const ks = Object.keys(item);
 
   for (let i = 0; i < ks.length; i++) {
     const k = ks[i];
-    if (k === "isSelected") continue;
+    if (k === 'isSelected') continue;
     const terms = [].concat(item[k]);
     for (let j = 0; j < terms.length; j++) {
       const term = terms[j];
@@ -102,7 +102,7 @@ export const findMatchingToken = (item, lq, value = "") => {
       }
 
       if (
-        (term || "").toLocaleLowerCase().replace(/[()]/g, "").indexOf(lq) !== -1
+        (term || '').toLocaleLowerCase().replace(/[()]/g, '').indexOf(lq) !== -1
       ) {
         value = term;
       }
@@ -113,7 +113,7 @@ export const findMatchingToken = (item, lq, value = "") => {
 };
 
 const internalHighlight = (query, foundText) => {
-  const index = (foundText || "")
+  const index = (foundText || '')
     .toLocaleLowerCase()
     .indexOf(query.toLocaleLowerCase());
   if (foundText && index !== -1) {
@@ -128,11 +128,11 @@ const internalHighlight = (query, foundText) => {
 const ResultHighlights = ({
   item,
   query,
-  style
+  style,
 }: {
   item: Object,
   query: string,
-  style: Object
+  style: Object,
 }) => {
   const lq = query.toLocaleLowerCase();
   const value = findMatchingToken(item, lq);
@@ -146,7 +146,7 @@ type TProps = {
   onSelectItem: Function,
   onActivateItem: Function,
   isLoading: boolean,
-  style: object
+  style: object,
 };
 
 export default ({
@@ -155,40 +155,39 @@ export default ({
   isLoading,
   onSelectItem,
   onActivateItem,
-  style = {}
-}: TProps) => (
+  style = {},
+}: TProps) =>
   <ul style={{ ...styles.container, ...style.container }}>
-    {results.map((item, i) => (
+    {results.map((item, i) =>
       <li
         key={item.id}
         style={{
           ...(item.isSelected && styles.selectedItem),
           ...styles.item,
-          ...(isLoading && styles.deemphasizedItem)
+          ...(isLoading && styles.deemphasizedItem),
         }}
         onMouseEnter={() => onSelectItem(item)}
         onClick={() => onActivateItem(item)}
       >
         <div style={styles.itemIconWrapper}>
           <ResultIcon
-            type={atob(item.id).split(":")[0]}
+            type={atob(item.id).split(':')[0]}
             style={styles.itemIcon}
           />
         </div>
         <div>
           <span style={styles.itemTitle}>
-            {item.symbol || atob(item.id).split(":")[1]}
+            {item.symbol || atob(item.id).split(':')[1]}
           </span>
           <ResultHighlights
             item={item}
             query={query}
             style={{
               ...styles.highlights,
-              ...(item.isSelected && _.pick(styles.selectedItem, "color"))
+              ...(item.isSelected && _.pick(styles.selectedItem, 'color')),
             }}
           />
         </div>
-      </li>
-    ))}
-  </ul>
-);
+      </li>,
+    )}
+  </ul>;

@@ -1,48 +1,52 @@
 /* @flow */
 /* globals fetch */
-const fs = require("fs");
-const path = require("path");
-require("isomorphic-fetch");
-const _ = require("lodash");
+const fs = require('fs');
+const path = require('path');
+require('isomorphic-fetch');
+const _ = require('lodash');
 
-const getFacetType = require("@ncigdc/utils/getFacetType");
+const getFacetType = require('@ncigdc/utils/getFacetType');
 
 // ids and dates don't need aggregations
 const getFacetAggregationTemplate = facet => {
   const fieldName = facet.name;
   const facetType = getFacetType(facet);
-  if (_.includes(["datetime"], facetType)) {
-    return "";
+  if (_.includes(['datetime'], facetType)) {
+    return '';
   }
   return `
 ${fieldName} @include(if: $shouldShow_${fieldName}) {
-  ${{ terms: `
+  ${{
+    terms: `
       buckets {
         doc_count
         key
       }
-      `, id: `
+      `,
+    id: `
       buckets {
         doc_count
         key
       }
-      `, range: `
+      `,
+    range: `
       count
       max
       avg
       min
-    ` }[facetType]}
+    `,
+  }[facetType]}
 }`;
 };
 
 const exportTemplate = (facets, exportFunctionName, fragmentName) => `
 export const initial${fragmentName}Variables = {
-${facets.map(facet => `  shouldShow_${facet.name}: false`).join(",\n")}
+${facets.map(facet => `  shouldShow_${facet.name}: false`).join(',\n')}
 };
 
 export const ${exportFunctionName} = () => Relay.QL\`
   fragment on ${fragmentName} {
-    ${facets.map(getFacetAggregationTemplate).join("\n")}
+    ${facets.map(getFacetAggregationTemplate).join('\n')}
   }
 \`;
 `;
@@ -68,55 +72,55 @@ const generateFragments = async () => {
         }
       }
     }`;
-    return fetch("http://localhost:5000/graphql", {
-      method: "POST",
-      body: JSON.stringify({ query })
+    return fetch('http://localhost:5000/graphql', {
+      method: 'POST',
+      body: JSON.stringify({ query }),
     })
       .then(x => x.json())
       .then(x => x.data.__type.fields)
-      .then(x => _.orderBy(x, ["name", "asc"]));
+      .then(x => _.orderBy(x, ['name', 'asc']));
   };
 
   const [
     caseAggregationsFields,
     fileAggregationsFields,
-    exploreCaseAggregationsFields
+    exploreCaseAggregationsFields,
   ] = [
-    await fetchAggregationFields("CaseAggregations"),
-    await fetchAggregationFields("FileAggregations"),
-    await fetchAggregationFields("ECaseAggregations")
+    await fetchAggregationFields('CaseAggregations'),
+    await fetchAggregationFields('FileAggregations'),
+    await fetchAggregationFields('ECaseAggregations'),
   ];
 
   const repositoryCaseAggregations = exportTemplate(
     caseAggregationsFields,
-    "repositoryCaseAggregationsFragment",
-    "CaseAggregations"
+    'repositoryCaseAggregationsFragment',
+    'CaseAggregations',
   );
   const repositoryFileAggregations = exportTemplate(
     fileAggregationsFields,
-    "repositoryFileAggregationsFragment",
-    "FileAggregations"
+    'repositoryFileAggregationsFragment',
+    'FileAggregations',
   );
   const exploreCaseAggregations = exportTemplate(
     exploreCaseAggregationsFields,
-    "exploreCaseAggregationsFragment",
-    "ECaseAggregations"
+    'exploreCaseAggregationsFragment',
+    'ECaseAggregations',
   );
 
   fs.writeFileSync(
-    path.join(__dirname, "repositoryCaseAggregations.js"),
-    wrapFile(repositoryCaseAggregations)
+    path.join(__dirname, 'repositoryCaseAggregations.js'),
+    wrapFile(repositoryCaseAggregations),
   );
   fs.writeFileSync(
-    path.join(__dirname, "repositoryFileAggregations.js"),
-    wrapFile(repositoryFileAggregations)
+    path.join(__dirname, 'repositoryFileAggregations.js'),
+    wrapFile(repositoryFileAggregations),
   );
   fs.writeFileSync(
-    path.join(__dirname, "exploreCaseAggregations.js"),
-    wrapFile(exploreCaseAggregations)
+    path.join(__dirname, 'exploreCaseAggregations.js'),
+    wrapFile(exploreCaseAggregations),
   );
 };
 
 generateFragments()
-  .then(() => console.log("done"))
+  .then(() => console.log('done'))
   .catch(e => console.error(e));

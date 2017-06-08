@@ -11,5 +11,5 @@ export default {
     `http://feb2014.archive.ensembl.org/Homo_sapiens/Transcript/Summary?db=core;t=${id}`,
   cosm: id => `http://cancer.sanger.ac.uk/cosmic/mutation/overview?id=${id}`,
   cosn: id => `http://cancer.sanger.ac.uk/cosmic/ncv/overview?id=${id}`,
-  dbsnp: id => `https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=${id}`
+  dbsnp: id => `https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=${id}`,
 };

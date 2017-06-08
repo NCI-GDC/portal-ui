@@ -1,45 +1,45 @@
 // @flow
 
-import React from "react";
-import { compose, pure, lifecycle, withHandlers } from "recompose";
-import { connect } from "react-redux";
+import React from 'react';
+import { compose, pure, lifecycle, withHandlers } from 'recompose';
+import { connect } from 'react-redux';
 
-import { dismissNotification } from "@ncigdc/dux/bannerNotification";
+import { dismissNotification } from '@ncigdc/dux/bannerNotification';
 
-import nciGdcLogo from "@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg";
+import nciGdcLogo from '@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg';
 
-import HomeLink from "@ncigdc/components/Links/HomeLink";
-import RepositoryLink from "@ncigdc/components/Links/RepositoryLink";
-import CartLink from "@ncigdc/components/Links/CartLink";
-import ExploreLink from "@ncigdc/components/Links/ExploreLink";
-import ProjectsLink from "@ncigdc/components/Links/ProjectsLink";
-import GDCAppsDropdown from "@ncigdc/components/GDCApps/GDCAppsDropdown";
-import QuickSearch from "@ncigdc/components/QuickSearch/QuickSearch";
-import LoginButton from "@ncigdc/components/LoginButton";
-import UserDropdown from "@ncigdc/components/UserDropdown";
-import Hidden from "@ncigdc/components/Hidden";
-import { setModal } from "@ncigdc/dux/modal";
-import { forceLogout } from "@ncigdc/dux/auth";
-import SessionExpiredModal from "@ncigdc/components/Modals/SessionExpiredModal";
+import HomeLink from '@ncigdc/components/Links/HomeLink';
+import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
+import CartLink from '@ncigdc/components/Links/CartLink';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
+import GDCAppsDropdown from '@ncigdc/components/GDCApps/GDCAppsDropdown';
+import QuickSearch from '@ncigdc/components/QuickSearch/QuickSearch';
+import LoginButton from '@ncigdc/components/LoginButton';
+import UserDropdown from '@ncigdc/components/UserDropdown';
+import Hidden from '@ncigdc/components/Hidden';
+import { setModal } from '@ncigdc/dux/modal';
+import { forceLogout } from '@ncigdc/dux/auth';
+import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 
-import Banner from "@ncigdc/uikit/Banner";
-import { withTheme } from "@ncigdc/theme";
+import Banner from '@ncigdc/uikit/Banner';
+import { withTheme } from '@ncigdc/theme';
 
 const styles = {
   iconPadding: {
-    paddingRight: "4px"
+    paddingRight: '4px',
   },
   activeNavLink: theme => ({
     backgroundColor: theme.greyScale2,
-    color: theme.white
-  })
+    color: theme.white,
+  }),
 };
 
 const Header = compose(
   connect(state => ({
     notifications: state.bannerNotification,
     user: state.auth.user,
-    error: state.error
+    error: state.error,
   })),
   withHandlers({
     handleApiError: ({ dispatch }) => ({ status, user }) => {
@@ -47,14 +47,14 @@ const Header = compose(
         dispatch(setModal(<SessionExpiredModal />));
         dispatch(forceLogout());
       }
-    }
+    },
   }),
   lifecycle({
     componentDidMount(): void {
       if (this.props.error) {
         this.props.handleApiError({
           ...this.props.error,
-          user: this.props.user
+          user: this.props.user,
         });
       }
     },
@@ -62,11 +62,11 @@ const Header = compose(
       if (nextProps.error !== this.props.error) {
         this.props.handleApiError({ ...nextProps.error, user: nextProps.user });
       }
-    }
+    },
   }),
   withTheme,
-  pure
-)(({ user, notifications, dispatch, theme }) => (
+  pure,
+)(({ user, notifications, dispatch, theme }) =>
   <header
     id="header"
     className="navbar navbar-default navbar-static-top"
@@ -74,13 +74,13 @@ const Header = compose(
     role="banner"
   >
 
-    {notifications.map(n => (
+    {notifications.map(n =>
       <Banner
         {...n}
         key={n.id}
         handleOnDismiss={() => dispatch(dismissNotification(n.id))}
-      />
-    ))}
+      />,
+    )}
 
     <div className="container-fluid">
       <div className="navbar-header">
@@ -104,7 +104,7 @@ const Header = compose(
         </HomeLink>
       </div>
       <nav
-        style={{ outline: "none" }}
+        style={{ outline: 'none' }}
         className="navbar-collapse collapse navbar-responsive-collapse"
         data-uib-collapse="hc.isCollapsed"
         data-ng-click="hc.collapse($event)"
@@ -191,7 +191,7 @@ const Header = compose(
           {/* if hc.cookieEnabled */}
           <li className="nav-cart">
             <CartLink>
-              {count => (
+              {count =>
                 <span>
                   <i
                     className="fa fa-shopping-cart"
@@ -206,8 +206,7 @@ const Header = compose(
                   <span className="label label-primary">
                     {count.toLocaleString()}
                   </span>
-                </span>
-              )}
+                </span>}
             </CartLink>
           </li>
           <li className="nav-GDCApps">
@@ -216,7 +215,7 @@ const Header = compose(
         </ul>
       </nav>
     </div>
-  </header>
-));
+  </header>,
+);
 
 export default Header;

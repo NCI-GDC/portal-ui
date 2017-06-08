@@ -1,19 +1,19 @@
 // @flow
-import React from "react";
-import BaseModal from "@ncigdc/components/Modals/BaseModal";
-import LoginButton from "@ncigdc/components/LoginButton";
+import React from 'react';
+import BaseModal from '@ncigdc/components/Modals/BaseModal';
+import LoginButton from '@ncigdc/components/LoginButton';
 
 const LoginModal = (
   {
     message = "You don't have access",
     primaryButton,
-    closeText = "Close"
+    closeText = 'Close',
   }: {
     message?: string,
     primaryButton?: any,
-    closeText?: string
-  } = {}
-) => (
+    closeText?: string,
+  } = {},
+) =>
   <BaseModal
     title="Access Error"
     extraButtons={primaryButton}
@@ -21,7 +21,6 @@ const LoginModal = (
   >
     {message}
     <p>Please <LoginButton /></p>
-  </BaseModal>
-);
+  </BaseModal>;
 
 export default LoginModal;

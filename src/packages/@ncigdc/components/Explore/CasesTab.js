@@ -1,14 +1,13 @@
 // @flow
 
-import React from "react";
-import CaseTable from "@ncigdc/containers/explore/CaseTable";
-import ExploreCasesPies from "@ncigdc/components/TabPieCharts/ExploreCasesPies";
+import React from 'react';
+import CaseTable from '@ncigdc/containers/explore/CaseTable';
+import ExploreCasesPies from '@ncigdc/components/TabPieCharts/ExploreCasesPies';
 
-const CasesTab = props => (
+const CasesTab = props =>
   <div>
     <ExploreCasesPies aggregations={props.pies} />
     <CaseTable hits={props.hits} explore={props.explore} endpoint="case_ssms" />
-  </div>
-);
+  </div>;
 
 export default CasesTab;

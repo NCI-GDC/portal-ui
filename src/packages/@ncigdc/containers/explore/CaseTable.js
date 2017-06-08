@@ -1,34 +1,34 @@
 /* @flow */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import withFilters from "@ncigdc/utils/withFilters";
-import { makeFilter, addInFilters } from "@ncigdc/utils/filters";
-import { connect } from "react-redux";
-import { Row } from "@ncigdc/uikit/Flex";
-import Showing from "@ncigdc/components/Pagination/Showing";
-import tableModels from "@ncigdc/tableModels";
-import Pagination from "@ncigdc/components/Pagination";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import withFilters from '@ncigdc/utils/withFilters';
+import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import { connect } from 'react-redux';
+import { Row } from '@ncigdc/uikit/Flex';
+import Showing from '@ncigdc/components/Pagination/Showing';
+import tableModels from '@ncigdc/tableModels';
+import Pagination from '@ncigdc/components/Pagination';
 
-import TableActions from "@ncigdc/components/TableActions";
+import TableActions from '@ncigdc/components/TableActions';
 
-import Table, { Tr } from "@ncigdc/uikit/Table";
+import Table, { Tr } from '@ncigdc/uikit/Table';
 
-import { compose, withPropsOnChange, withState } from "recompose";
+import { compose, withPropsOnChange, withState } from 'recompose';
 
-import type { TTableProps } from "../types";
+import type { TTableProps } from '../types';
 
 export const CaseTableComponent = compose(
   withFilters(),
-  withState("ssmCountsLoading", "setSsmCountsLoading", true),
+  withState('ssmCountsLoading', 'setSsmCountsLoading', true),
   withPropsOnChange(
-    ["hits"],
+    ['hits'],
     ({
       setSsmCountsLoading,
       ssmCountsLoading,
       hits,
       relay,
-      filters
+      filters,
     }: TTableProps) => {
       const caseIds = hits.edges.map(e => e.node.case_id);
       if (!ssmCountsLoading) {
@@ -43,37 +43,37 @@ export const CaseTableComponent = compose(
                 makeFilter(
                   [
                     {
-                      field: "occurrence.case.case_id",
-                      value: caseIds
-                    }
+                      field: 'occurrence.case.case_id',
+                      value: caseIds,
+                    },
                   ],
-                  false
-                )
+                  false,
+                ),
               )
-            : null
+            : null,
         },
         readyState => {
           if (readyState.done) {
             setSsmCountsLoading(false);
           }
-        }
+        },
       );
-    }
+    },
   ),
-  withPropsOnChange(["explore"], ({ explore }: TTableProps) => {
+  withPropsOnChange(['explore'], ({ explore }: TTableProps) => {
     const { occurrence__case__case_id: { buckets } } = explore.ssms
       .aggregations || {
-      occurrence__case__case_id: { buckets: [] }
+      occurrence__case__case_id: { buckets: [] },
     };
     const ssmCounts = buckets.reduce(
       (acc, b) => ({ ...acc, [b.key]: b.doc_count }),
-      {}
+      {},
     );
     return { ssmCounts };
   }),
-  connect(state => ({ tableColumns: state.tableColumns.exploreCases }))
+  connect(state => ({ tableColumns: state.tableColumns.exploreCases })),
 )((props: TTableProps) => {
-  const prefix = "cases";
+  const prefix = 'cases';
   const { ssmCounts, ssmCountsLoading, tableColumns } = props;
 
   const tableInfo = tableModels.exploreCases // eslint-disable-line
@@ -85,9 +85,9 @@ export const CaseTableComponent = compose(
     <div>
       <Row
         style={{
-          backgroundColor: "white",
-          padding: "1rem",
-          justifyContent: "space-between"
+          backgroundColor: 'white',
+          padding: '1rem',
+          justifyContent: 'space-between',
         }}
       >
         <Showing
@@ -101,35 +101,35 @@ export const CaseTableComponent = compose(
           entityType="exploreCases"
           total={props.hits.total}
           sortKey="cases_sort"
-          endpoint={props.endpoint || "cases"}
+          endpoint={props.endpoint || 'cases'}
           downloadTooltip="Export All Except #Mutations and #Genes"
           downloadFields={[
-            "case_id",
-            "project.project_id",
-            "cases.primary_site",
-            "demographic.gender",
-            "summary.data_categories.file_count",
-            "summary.data_categories.data_category"
+            'case_id',
+            'project.project_id',
+            'cases.primary_site',
+            'demographic.gender',
+            'summary.data_categories.file_count',
+            'summary.data_categories.data_category',
           ]}
           sortOptions={[
             {
-              id: "project.project_id",
-              name: "Project"
+              id: 'project.project_id',
+              name: 'Project',
             },
             {
-              id: "primary_site",
-              name: "Primary Site"
+              id: 'primary_site',
+              name: 'Primary Site',
             },
             {
-              id: "demographic.gender",
-              name: "Gender"
-            }
+              id: 'demographic.gender',
+              name: 'Gender',
+            },
           ]}
           tsvSelector="#explore-case-table"
           tsvFilename="explore-case-table.tsv"
         />
       </Row>
-      <div style={{ overflowX: "auto" }}>
+      <div style={{ overflowX: 'auto' }}>
         <Table
           id="explore-case-table"
           headings={tableInfo
@@ -140,11 +140,11 @@ export const CaseTableComponent = compose(
             .map(x => <x.th key={x.id} />)}
           body={
             <tbody>
-              {props.hits.edges.map((e, i) => (
+              {props.hits.edges.map((e, i) =>
                 <Tr key={e.node.id} index={i}>
                   {tableInfo
                     .filter(x => x.td)
-                    .map(x => (
+                    .map(x =>
                       <x.td
                         key={x.id}
                         node={e.node}
@@ -154,10 +154,10 @@ export const CaseTableComponent = compose(
                         ssmCount={ssmCounts[e.node.case_id]}
                         ssmCountsLoading={ssmCountsLoading}
                         filters={props.filters}
-                      />
-                    ))}
-                </Tr>
-              ))}
+                      />,
+                    )}
+                </Tr>,
+              )}
             </tbody>
           }
         />
@@ -174,7 +174,7 @@ export const CaseTableComponent = compose(
 export const CaseTableQuery = {
   initialVariables: {
     fetchSsmCounts: false,
-    ssmCountsfilters: null
+    ssmCountsfilters: null,
   },
   fragments: {
     hits: () => Relay.QL`
@@ -236,8 +236,8 @@ export const CaseTableQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const CaseTable = Relay.createContainer(CaseTableComponent, CaseTableQuery);

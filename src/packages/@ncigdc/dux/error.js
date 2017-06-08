@@ -1,5 +1,5 @@
 /* @flow */
-const RESET_ERROR = "RESET_ERROR";
+const RESET_ERROR = 'RESET_ERROR';
 
 export type TAction = { type: string, payload: any, error: any };
 export type TState = { error: Object };
@@ -7,7 +7,7 @@ export type TState = { error: Object };
 const resetError = () => ({ type: RESET_ERROR, payload: null });
 
 const initialState = {
-  error: null
+  error: null,
 };
 
 function errorReducer(state: TState = initialState, action: TAction): TState {

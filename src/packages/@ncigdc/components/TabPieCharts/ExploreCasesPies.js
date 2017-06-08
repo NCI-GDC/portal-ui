@@ -1,13 +1,13 @@
 // @flow
-import React from "react";
-import Relay from "react-relay/classic";
-import _ from "lodash";
-import { compose } from "recompose";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import _ from 'lodash';
+import { compose } from 'recompose';
 
-import type { TBucket } from "@ncigdc/components/Aggregations/types";
-import withRouter from "@ncigdc/utils/withRouter";
-import { parseFilterParam } from "@ncigdc/utils/uri";
-import { ColumnCenter, RowCenter, PieTitle, SelfFilteringPie } from "./";
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import withRouter from '@ncigdc/utils/withRouter';
+import { parseFilterParam } from '@ncigdc/utils/uri';
+import { ColumnCenter, RowCenter, PieTitle, SelfFilteringPie } from './';
 
 export type TProps = {
   push: Function,
@@ -20,15 +20,15 @@ export type TProps = {
     disease_type: { buckets: [TBucket] },
     primary_site: { buckets: [TBucket] },
     project__program__name: { buckets: [TBucket] },
-    project__project_id: { buckets: [TBucket] }
-  }
+    project__project_id: { buckets: [TBucket] },
+  },
 };
 
 const enhance = compose(withRouter);
 
 const CohortCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
-  const currentFilters = (query &&
-    parseFilterParam((query || {}).filters, {}).content) || [];
+  const currentFilters =
+    (query && parseFilterParam((query || {}).filters, {}).content) || [];
   const currentFieldNames = currentFilters.map(f => f.content.field);
   return (
     <RowCenter>
@@ -36,7 +36,7 @@ const CohortCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
         <PieTitle>Primary Sites</PieTitle>
         <SelfFilteringPie
           docTypeSingular="case"
-          buckets={_.get(aggregations, "primary_site.buckets")}
+          buckets={_.get(aggregations, 'primary_site.buckets')}
           fieldName="cases.primary_site"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
@@ -51,7 +51,7 @@ const CohortCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
         <PieTitle>Projects</PieTitle>
         <SelfFilteringPie
           docTypeSingular="case"
-          buckets={_.get(aggregations, "project__project_id.buckets")}
+          buckets={_.get(aggregations, 'project__project_id.buckets')}
           fieldName="cases.project.project_id"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
@@ -66,7 +66,7 @@ const CohortCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
         <PieTitle>Disease Type</PieTitle>
         <SelfFilteringPie
           docTypeSingular="case"
-          buckets={_.get(aggregations, "disease_type.buckets")}
+          buckets={_.get(aggregations, 'disease_type.buckets')}
           fieldName="cases.disease_type"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
@@ -81,7 +81,7 @@ const CohortCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
         <PieTitle>Gender</PieTitle>
         <SelfFilteringPie
           docTypeSingular="case"
-          buckets={_.get(aggregations, "demographic__gender.buckets")}
+          buckets={_.get(aggregations, 'demographic__gender.buckets')}
           fieldName="cases.demographic.gender"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
@@ -96,7 +96,7 @@ const CohortCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
         <PieTitle>Vital Status</PieTitle>
         <SelfFilteringPie
           docTypeSingular="case"
-          buckets={_.get(aggregations, "diagnoses__vital_status.buckets")}
+          buckets={_.get(aggregations, 'diagnoses__vital_status.buckets')}
           fieldName="cases.diagnoses.vital_status"
           currentFieldNames={currentFieldNames}
           currentFilters={currentFilters}
@@ -164,13 +164,13 @@ export const CohortCasesPiesQuery = {
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const CohortCasesPies = Relay.createContainer(
   enhance(CohortCasesPiesComponent),
-  CohortCasesPiesQuery
+  CohortCasesPiesQuery,
 );
 
 export default CohortCasesPies;

@@ -2,15 +2,15 @@
 /* eslint no-restricted-globals: 0 */
 
 // Vendor
-import React from "react";
-import { connect } from "react-redux";
-import LoginIcon from "react-icons/lib/fa/sign-in";
-import urlJoin from "url-join";
+import React from 'react';
+import { connect } from 'react-redux';
+import LoginIcon from 'react-icons/lib/fa/sign-in';
+import urlJoin from 'url-join';
 
 // Custom
-import { fetchUser } from "@ncigdc/dux/auth";
-import LocationSubscriber from "@ncigdc/components/LocationSubscriber";
-import styled from "@ncigdc/theme/styled";
+import { fetchUser } from '@ncigdc/dux/auth';
+import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
+import styled from '@ncigdc/theme/styled';
 
 /*----------------------------------------------------------------------------*/
 
@@ -19,13 +19,13 @@ const openAuthWindow = ({ pathname, dispatch }) => {
     const returningPath = `${pathname}?${+new Date()}`;
     const redirectUrl = urlJoin(
       process.env.REACT_APP_GDC_AUTH,
-      `?next=${returningPath}`
+      `?next=${returningPath}`,
     );
 
     const closeLogin = url =>
       url === redirectUrl ? false : url.includes(returningPath);
 
-    const win = open(redirectUrl, "Auth", "width=800, height=600");
+    const win = open(redirectUrl, 'Auth', 'width=800, height=600');
 
     const interval = setInterval(() => {
       try {
@@ -46,7 +46,7 @@ const openAuthWindow = ({ pathname, dispatch }) => {
           }, 1000);
         }
       } catch (err) {
-        console.log("Error while monitoring the Login window: ", err);
+        console.log('Error while monitoring the Login window: ', err);
       }
     }, 500);
   } else {
@@ -55,34 +55,32 @@ const openAuthWindow = ({ pathname, dispatch }) => {
 };
 
 const Link = styled.a({
-  textDecoration: "none",
-  transition: "background-color 0.2s ease",
-  cursor: "pointer"
+  textDecoration: 'none',
+  transition: 'background-color 0.2s ease',
+  cursor: 'pointer',
 });
 
 const styles = {
   marginLeft: {
-    marginLeft: "0.7rem"
-  }
+    marginLeft: '0.7rem',
+  },
 };
 
 type TLoginButtonProps = {
   children: mixed,
-  dispatch: Function
+  dispatch: Function,
 };
-const LoginButton = ({ children, dispatch }: TLoginButtonProps) => (
+const LoginButton = ({ children, dispatch }: TLoginButtonProps) =>
   <LocationSubscriber>
-    {({ pathname }) => (
+    {({ pathname }) =>
       <Link onClick={() => openAuthWindow({ pathname, dispatch })}>
         {children ||
           <span>
             <LoginIcon />
             <span style={styles.marginLeft}>Login</span>
           </span>}
-      </Link>
-    )}
-  </LocationSubscriber>
-);
+      </Link>}
+  </LocationSubscriber>;
 
 /*----------------------------------------------------------------------------*/
 

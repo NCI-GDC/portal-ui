@@ -1,88 +1,87 @@
 // @flow
 
 // Vendor
-import React from "react";
-import PropTypes from "prop-types";
-import { compose, withState, shouldUpdate, mapProps } from "recompose";
-import CloseIcon from "react-icons/lib/md/close";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { compose, withState, shouldUpdate, mapProps } from 'recompose';
+import CloseIcon from 'react-icons/lib/md/close';
 
 // Custom
-import { center, zDepth1 } from "@ncigdc/theme/mixins";
+import { center, zDepth1 } from '@ncigdc/theme/mixins';
 
 /*----------------------------------------------------------------------------*/
 
 const styles = {
   container: {
-    position: "fixed",
+    position: 'fixed',
     top: 0,
-    width: "100vw",
+    width: '100vw',
     zIndex: 100,
-    margin: "1rem 0",
-    transition: "transform 0.25s ease",
-    pointerEvents: "none",
-    textAlign: "center",
-    wordBreak: "break-word",
-    ...center
+    margin: '1rem 0',
+    transition: 'transform 0.25s ease',
+    pointerEvents: 'none',
+    textAlign: 'center',
+    wordBreak: 'break-word',
+    ...center,
   },
   inactive: {
-    transform: "translateY(-140%)"
+    transform: 'translateY(-140%)',
   },
   active: {
-    transform: "translateY(0)"
+    transform: 'translateY(0)',
   },
   info: {
-    color: "#5C5151",
-    backgroundColor: "#EDF8FB",
-    border: "1px solid #B4CCD4"
+    color: '#5C5151',
+    backgroundColor: '#EDF8FB',
+    border: '1px solid #B4CCD4',
   },
   add: {
-    color: "#3c763d",
-    backgroundColor: "#dff0d8",
-    border: "1px solid #d6e9c6"
+    color: '#3c763d',
+    backgroundColor: '#dff0d8',
+    border: '1px solid #d6e9c6',
   },
   remove: {
-    color: "#773c63",
-    backgroundColor: "#f0d8dd",
-    border: "1px solid #e9c6c6"
+    color: '#773c63',
+    backgroundColor: '#f0d8dd',
+    border: '1px solid #e9c6c6',
   },
   warning: {
-    color: "#8a6d3b",
-    backgroundColor: "#fcf8e3",
-    border: "1px solid #faebcc"
+    color: '#8a6d3b',
+    backgroundColor: '#fcf8e3',
+    border: '1px solid #faebcc',
   },
   toast: {
-    position: "relative",
-    padding: "1.5rem",
-    width: "40rem",
-    borderRadius: "10px",
-    pointerEvents: "all",
-    ...zDepth1
+    position: 'relative',
+    padding: '1.5rem',
+    width: '40rem',
+    borderRadius: '10px',
+    pointerEvents: 'all',
+    ...zDepth1,
   },
   closeIcon: {
-    position: "absolute",
-    top: "5px",
-    right: "5px",
-    cursor: "pointer",
-    ":hover": {
-      color: "red"
-    }
-  }
+    position: 'absolute',
+    top: '5px',
+    right: '5px',
+    cursor: 'pointer',
+    ':hover': {
+      color: 'red',
+    },
+  },
 };
 
-const Notification = ({ style, visible, action, close, children }) => (
+const Notification = ({ style, visible, action, close, children }) =>
   <div
     style={{
       ...styles.container,
       ...(visible ? styles.active : styles.inactive),
-      ...style
+      ...style,
     }}
   >
     <div style={{ ...styles.toast, ...(styles[action] || styles.add) }}>
       <CloseIcon style={styles.closeIcon} onClick={close} />
       {children}
     </div>
-  </div>
-);
+  </div>;
 
 Notification.propTypes = {
   style: PropTypes.object,
@@ -91,14 +90,14 @@ Notification.propTypes = {
   visible: PropTypes.bool,
   action: PropTypes.string,
   close: PropTypes.func,
-  delay: PropTypes.number
+  delay: PropTypes.number,
 };
 
 let timeoutId;
 let pageload = false;
 
 const enhance = compose(
-  withState("visible", "setState", false),
+  withState('visible', 'setState', false),
   shouldUpdate((props, nextProps) => {
     // Do not render on the first prop update, such as store rehydration
     if (pageload) {
@@ -144,8 +143,8 @@ const enhance = compose(
       setState(() => false);
       if (timeoutId) clearTimeout(timeoutId);
     },
-    ...rest
-  }))
+    ...rest,
+  })),
 );
 
 /*----------------------------------------------------------------------------*/

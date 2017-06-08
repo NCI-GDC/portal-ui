@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import urlJoin from 'url-join';
-
+import { userProjectsCount } from '@ncigdc/utils/auth';
 import { Row } from '@ncigdc/uikit/Flex';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
@@ -54,11 +54,7 @@ const UserDropdown = connect(state => ({
     >
       <DropdownItem
         onClick={() => {
-          const numProjects = Object.keys(user.projects || {}).reduce(
-            (acc, k) => [...acc, ...user.projects[k]],
-            [],
-          ).length;
-          if (numProjects) {
+          if (userProjectsCount(user)) {
             dispatch(fetchToken());
           } else {
             dispatch(

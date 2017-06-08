@@ -263,10 +263,7 @@ const ProjectVisualizations = enhance(
           </Column>
         </Column>
         <Column style={{ ...styles.card, marginTop: '2rem' }}>
-          <h1
-            style={{ ...styles.heading, padding: '1rem' }}
-            id="most-affected-cases"
-          >
+          <h1 style={{ ...styles.heading, padding: '1rem' }}>
             <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
             Most Affected Cases
           </h1>

@@ -6,7 +6,7 @@ import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
+import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import { makeFilter, replaceFilters } from '@ncigdc/utils/filters';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -170,6 +170,9 @@ const ProjectVisualizations = enhance(
               survivalData={mutatedGenesSurvivalData}
               setSelectedSurvivalData={setSelectedMutatedGenesSurvivalData}
               selectedSurvivalData={selectedMutatedGenesSurvivalData}
+              hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
+                mutatedGenesSurvivalData.rawData,
+              )}
               defaultFilters={fmFilters}
               defaultSize={10}
               context={projectId}
@@ -247,6 +250,9 @@ const ProjectVisualizations = enhance(
                   setSelectedSurvivalData={
                     setSelectedFrequentMutationsSurvivalData
                   }
+                  hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
+                    frequentMutationsSurvivalData.rawData,
+                  )}
                   showSurvivalPlot
                   context={projectId}
                   tableLink={

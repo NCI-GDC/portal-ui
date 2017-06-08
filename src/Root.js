@@ -7,11 +7,8 @@ import Router from "react-router-dom/BrowserRouter";
 import { stringify, parse } from "query-string";
 import md5 from "blueimp-md5";
 import urlJoin from "url-join";
-import {
-  RelayNetworkLayer,
-  urlMiddleware,
-  retryMiddleware
-} from "react-relay-network-layer";
+import { RelayNetworkLayer, urlMiddleware } from "react-relay-network-layer";
+import retryMiddleware from "@ncigdc/utils/retryMiddleware";
 
 import { viewerQuery } from "@ncigdc/routes/queries";
 import Container from "./Portal";

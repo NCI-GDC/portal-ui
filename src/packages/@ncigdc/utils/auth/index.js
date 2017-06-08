@@ -81,6 +81,13 @@ const getAuthCounts = ({ user, files }) => {
     },
   ].filter(i => i.doc_count);
 };
+
+const userProjectsCount = (user: Object) =>
+  Object.keys(user.projects || {}).reduce(
+    (acc, k) => [...acc, ...Object.keys(user.projects[k])],
+    [],
+  ).length;
+
 /*----------------------------------------------------------------------------*/
 
 export {
@@ -90,4 +97,5 @@ export {
   intersectsWithFileAcl,
   fileInCorrectState,
   getAuthCounts,
+  userProjectsCount,
 };

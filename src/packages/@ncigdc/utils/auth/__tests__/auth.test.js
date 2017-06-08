@@ -6,6 +6,7 @@ import {
   userCanDownloadFiles,
   fileInCorrectState,
   intersectsWithFileAcl,
+  userProjectsCount,
 } from '..';
 
 const user = {
@@ -366,5 +367,10 @@ describe('userCanDownloadFile', () => {
         file: { access: 'open', ...TESTFile },
       }),
     ).toBe(true);
+  });
+});
+describe('userProjectsCount', () => {
+  it('should return the correct number of projects', () => {
+    expect(userProjectsCount(user)).toBe(4);
   });
 });

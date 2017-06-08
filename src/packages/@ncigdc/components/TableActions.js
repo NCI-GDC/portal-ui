@@ -15,6 +15,7 @@ import type { TRawQuery } from '@ncigdc/utils/uri/types';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { AUTH_API } from '@ncigdc/utils/constants';
 
 type TProps = {
   prefix: string,
@@ -72,7 +73,7 @@ const TableActions = (
               }
               disabled={!total}
               filename={prefix}
-              url={urlJoin(process.env.REACT_APP_GDC_AUTH, 'api', endpoint)}
+              url={urlJoin(AUTH_API, endpoint)}
               fields={downloadFields}
               style={visualizingButton}
               size={total}

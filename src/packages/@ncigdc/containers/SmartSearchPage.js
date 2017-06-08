@@ -14,6 +14,7 @@ import AnnotationsLink from "@ncigdc/components/Links/AnnotationsLink";
 
 import CasesTable from "./CasesTable";
 import FilesTable from "./FilesTable";
+import { API } from '@ncigdc/utils/constants';
 
 declare var _: Object;
 declare var angular: Object;
@@ -38,7 +39,7 @@ class SmartSearchComponent extends React.Component {
         "RestangularProvider",
         ($locationProvider, RestangularProvider) => {
           $locationProvider.html5Mode(false);
-          RestangularProvider.setBaseUrl(process.env.REACT_APP_API);
+          RestangularProvider.setBaseUrl(API);
         }
       ])
       .run([

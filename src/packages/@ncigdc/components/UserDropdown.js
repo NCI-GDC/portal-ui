@@ -12,6 +12,7 @@ import styled from '@ncigdc/theme/styled';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import { fetchToken } from '@ncigdc/dux/auth';
 import { notify } from '@ncigdc/dux/notification';
+import { AUTH } from '@ncigdc/utils/constants';
 
 const NavLink = styled.a({
   padding: '15px 13px',
@@ -25,16 +26,13 @@ const logout = () => {
   if (window.location.port) {
     window.location.assign(
       urlJoin(
-        process.env.REACT_APP_GDC_AUTH,
+        AUTH,
         `logout?next=:${window.location.port}${window.location.pathname}`,
       ),
     );
   } else {
     window.location.assign(
-      urlJoin(
-        process.env.REACT_APP_GDC_AUTH,
-        `logout?next=${window.location.pathname}`,
-      ),
+      urlJoin(AUTH, `logout?next=${window.location.pathname}`),
     );
   }
 };

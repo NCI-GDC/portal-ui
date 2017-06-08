@@ -7,6 +7,7 @@ import urlJoin from 'url-join';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import download from '@ncigdc/utils/download';
+import { AUTH_API } from '@ncigdc/utils/constants';
 
 type TProps = {
   file: Object,
@@ -108,10 +109,7 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) =>
             setActive(true);
             download({
               params,
-              url: urlJoin(
-                process.env.REACT_APP_GDC_AUTH,
-                `api/v0/slicing/view/${file.file_id}`,
-              ),
+              url: urlJoin(AUTH_API, `v0/slicing/view/${file.file_id}`),
               method: 'POST',
             })(() => {}, () => setActive(false));
           }

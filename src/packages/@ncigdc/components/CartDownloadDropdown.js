@@ -25,6 +25,7 @@ import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 
 import download from '@ncigdc/utils/download';
+import { AUTH_API } from '@ncigdc/utils/constants';
 /*----------------------------------------------------------------------------*/
 
 const styles = {
@@ -126,7 +127,7 @@ const downloadCart = (user, files, dispatch, setState) => {
     dispatch(setModal(null));
     setState(s => ({ ...s, cartDownloading: true }));
     download({
-      url: urlJoin(process.env.REACT_APP_GDC_AUTH, 'api/data'),
+      url: urlJoin(AUTH_API, 'data'),
       params: {
         ids: files.map(file => file.file_id),
       },
@@ -169,7 +170,7 @@ const CartDownloadDropdown = ({
       <Column>
         <DownloadButton
           style={styles.button(theme)}
-          url={urlJoin(process.env.REACT_APP_GDC_AUTH, 'api/manifest')}
+          url={urlJoin(AUTH_API, 'manifest')}
           activeText="Manifest"
           inactiveText="Manifest"
           altMessage={false}

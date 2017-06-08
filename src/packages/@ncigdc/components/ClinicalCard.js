@@ -14,6 +14,7 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
+import { API } from '@ncigdc/utils/constants';
 
 const ClinicalCard = ({
   p: {
@@ -40,7 +41,7 @@ const ClinicalCard = ({
         <DownloadButton
           style={visualizingButton}
           filename={`clinical.case-${caseId}`}
-          url={urlJoin(process.env.REACT_APP_API, 'cases')}
+          url={urlJoin(API, 'cases')}
           activeText="Processing"
           inactiveText="Export"
           filters={{

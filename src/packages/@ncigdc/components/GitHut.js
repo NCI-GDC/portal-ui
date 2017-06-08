@@ -7,6 +7,7 @@ import { compose } from "recompose";
 import { insertRule } from "glamor";
 
 import withRouter from "@ncigdc/utils/withRouter";
+import { API } from '@ncigdc/utils/constants';
 
 declare var angular: { module: Function };
 declare var _: {
@@ -59,7 +60,7 @@ export default compose(withRouter)(
           "RestangularProvider",
           ($locationProvider, RestangularProvider) => {
             $locationProvider.html5Mode(false);
-            RestangularProvider.setBaseUrl(process.env.REACT_APP_API);
+            RestangularProvider.setBaseUrl(API);
             // Previous API treated "from=0" to be the same as "from=1", the current API doesn't.
             RestangularProvider.addFullRequestInterceptor(
               (element, operation, what, url, headers, query) => ({

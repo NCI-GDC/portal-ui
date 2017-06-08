@@ -43,7 +43,7 @@ npm i
 npm test
 ```
 
-<img src="http://i.imgur.com/5b9sN0C.png" />
+<img src="http://i.imgur.com/SBplvwn.png" />
 
 ## Development
 
@@ -51,7 +51,7 @@ npm test
 npm start
 ```
 
-<img src="http://i.imgur.com/3IXyJfy.png" />
+<img src="http://i.imgur.com/5dQYvoW.png" />
 
 ## Contributing
 

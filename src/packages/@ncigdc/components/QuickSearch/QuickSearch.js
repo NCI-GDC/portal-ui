@@ -139,6 +139,7 @@ export default compose(
           type="text"
           onChange={event => setQuery(event.target.value)}
           onKeyDown={handleKeyDown}
+          aria-label="Quick Search Input"
         />}
       {!!(state.results && state.results.length) &&
         <QuickSearchResults

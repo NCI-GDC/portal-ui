@@ -212,7 +212,7 @@ const Case = compose(
       : removeFilesFromCart;
 
     const fmFilters = makeFilter([
-      { field: 'cases.project.project_id', value: p.project.project_id },
+      { field: 'cases.case_id', value: p.case_id },
     ]);
 
     return (

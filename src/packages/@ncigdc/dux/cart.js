@@ -18,6 +18,12 @@ import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 export type TCartFile = {
   file_name: string,
   file_id: string,
+  acl: Array<string>,
+  state: string,
+  file_state: string,
+  access: string,
+  file_size: number,
+  projects: Array<string>,
 };
 
 type TNotification = {
@@ -301,7 +307,11 @@ function fetchFilesAndAdd(currentFilters: ?Object, total: number): Function {
           'acl,state,file_state,access,file_id,file_size,cases.project.project_id',
       });
       const { data } = await fetchApi(`files?${search}`);
-      dispatch(addAllFilesInCart(data.hits));
+      const files = data.hits.map(({ cases, ...rest }) => ({
+        ...rest,
+        projects: cases.map(({ project: { project_id } }) => project_id),
+      }));
+      dispatch(addAllFilesInCart(files));
     } else {
       dispatch({
         type: CART_FULL,

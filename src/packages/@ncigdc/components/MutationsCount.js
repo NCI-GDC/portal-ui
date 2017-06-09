@@ -15,7 +15,7 @@ const MutationsCount = ({ ssmCount, filters, isLoading = false }) => {
           filters,
         }}
       >
-        {ssmCount}
+        {ssmCount.toLocaleString()}
       </ExploreLink>
     : <span>0</span>;
 };

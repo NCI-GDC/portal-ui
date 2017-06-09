@@ -182,8 +182,13 @@ export const FileTableQuery = {
               }
             }
             annotations {
-              hits(first:0) {
+              hits(first:1) {
                 total
+                edges {
+                  node {
+                    annotation_id
+                  }
+                }
               }
             }
           }

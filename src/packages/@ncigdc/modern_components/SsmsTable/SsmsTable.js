@@ -293,7 +293,6 @@ const Component = compose(
       context = 'explore',
       query,
       location,
-      tableLink,
     }: TProps = {},
   ) => {
     if (ssms && !ssms.hits.edges.length) {
@@ -333,7 +332,6 @@ const Component = compose(
             total={totalSsms}
           />
           <Row style={{ alignItems: 'flex-end' }}>
-            {tableLink}
             <TableActions
               currentFilters={query.ssmsTable_filters || defaultFilters}
               style={{ marginLeft: '2rem' }}

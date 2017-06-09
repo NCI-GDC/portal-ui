@@ -282,9 +282,6 @@ const CancerDistributionTableComponent = compose(
               />
             : <span />}
           <Row style={{ alignItems: 'flex-end' }}>
-            <ExploreLink query={{ searchTableTab: 'cases', filters }}>
-              Open in Exploration
-            </ExploreLink>
             <Tooltip
               Component={
                 <span>Export All{geneId ? ' Except # Mutations' : ''}</span>

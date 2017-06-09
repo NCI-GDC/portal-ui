@@ -229,11 +229,6 @@ const Component = compose(
             total={totalCases}
           />
           <Row style={{ alignItems: 'flex-end' }}>
-            <ExploreLink
-              query={{ searchTableTab: 'cases', filters: defaultFilters }}
-            >
-              Open in Exploration
-            </ExploreLink>
             <TableActions
               currentFilters={defaultFilters}
               style={{ marginLeft: '2rem' }}
@@ -273,11 +268,8 @@ const Component = compose(
             { key: 'tumor_stage', title: 'Stage' },
             {
               key: 'days_to_death',
-              title: (
-                <Tooltip Component="Survival (days)" style={tableToolTipHint()}>
-                  Survival
-                </Tooltip>
-              ),
+              title: 'Survival (days)',
+              style: { textAlign: 'right' },
             },
             {
               key: 'days_to_last_follow_up',
@@ -370,8 +362,11 @@ const Component = compose(
                     gender: c.demographic ? c.demographic.gender : '',
                     age_at_diagnosis: ageDisplay(diagnosis.age_at_diagnosis),
                     tumor_stage: diagnosis.tumor_stage,
-                    days_to_last_follow_up: diagnosis.days_to_last_follow_up,
-                    days_to_death: diagnosis.days_to_death,
+                    days_to_last_follow_up: (diagnosis.days_to_last_follow_up ||
+                      0)
+                      .toLocaleString(),
+                    days_to_death: (diagnosis.days_to_death || 0)
+                      .toLocaleString(),
                     num_mutations: (
                       <MutationsCount
                         isLoading={ssmCountsLoading}
@@ -390,7 +385,7 @@ const Component = compose(
                           ]),
                         }}
                       >
-                        {c.score}
+                        {c.score.toLocaleString()}
                       </ExploreLink>
                     ),
                     data_types: Object.keys(DATA_CATEGORIES).map(

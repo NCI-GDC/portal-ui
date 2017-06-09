@@ -10,6 +10,8 @@ import ShoppingCartIcon from './ShoppingCart';
 import FileIcon from './File';
 import CaseIcon from './Case';
 import SaveIcon from './Save';
+import GdcDataIcon from './GdcData';
+import GridIcon from './Grid.js';
 
 export {
   DownloadIcon,
@@ -22,4 +24,6 @@ export {
   FileIcon,
   CaseIcon,
   SaveIcon,
+  GdcDataIcon,
+  GridIcon,
 };

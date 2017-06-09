@@ -3,7 +3,6 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 
-import ChartIcon from '@ncigdc/theme/icons/BarChart';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { makeFilter } from '@ncigdc/utils/filters';
 import GeneSummary from '@ncigdc/containers/GeneSummary';
@@ -14,8 +13,10 @@ import Lolliplot from '@ncigdc/containers/Lolliplot';
 import SsmsBarChart from '@ncigdc/modern_components/SsmsBarChart/SsmsBarChart';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
-import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
+import ChartIcon from '@ncigdc/theme/icons/BarChart';
+import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 
 const styles = {
   heading: {
@@ -72,11 +73,16 @@ export const GenePageComponent = (props: TProps) => {
           <Row flex="1"><GeneExternalReferences node={props.node} /></Row>
         </Row>
         <Column style={styles.card} id="cancer-distribution">
-          <Row>
-            <h1 style={{ ...styles.heading, padding: '1rem' }}>
+          <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+            <h1 style={{ ...styles.heading }}>
               <ChartIcon style={{ marginRight: '1rem' }} />
               Cancer Distribution
             </h1>
+            <ExploreLink
+              query={{ searchTableTab: 'cases', filters: cdFilters }}
+            >
+              <GdcDataIcon /> Open in Exploration
+            </ExploreLink>
           </Row>
           <Column>
             <CancerDistributionChart
@@ -122,13 +128,17 @@ export const GenePageComponent = (props: TProps) => {
         </Column>
 
         <Column style={{ ...styles.card, marginTop: '2rem' }}>
-          <h1
-            style={{ ...styles.heading, padding: '1rem' }}
-            id="frequent-mutations"
-          >
-            <ChartIcon style={{ marginRight: '1rem' }} />
-            Most Frequent Somatic Mutations
-          </h1>
+          <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+            <h1 style={{ ...styles.heading }} id="frequent-mutations">
+              <ChartIcon style={{ marginRight: '1rem' }} />
+              Most Frequent Somatic Mutations
+            </h1>
+            <ExploreLink
+              query={{ searchTableTab: 'mutations', filters: fmFilters }}
+            >
+              <GdcDataIcon /> Open in Exploration
+            </ExploreLink>
+          </Row>
 
           <Column>
             <SsmsBarChart
@@ -140,13 +150,6 @@ export const GenePageComponent = (props: TProps) => {
               defaultFilters={fmFilters}
               shouldShowGeneSymbol={false}
               context={props.node.symbol}
-              tableLink={
-                <ExploreLink
-                  query={{ searchTableTab: 'mutations', filters: fmFilters }}
-                >
-                  Open in Exploration
-                </ExploreLink>
-              }
             />
           </Column>
         </Column>

@@ -229,11 +229,6 @@ const Component = compose(
             total={totalCases}
           />
           <Row style={{ alignItems: 'flex-end' }}>
-            <ExploreLink
-              query={{ searchTableTab: 'cases', filters: defaultFilters }}
-            >
-              Open in Exploration
-            </ExploreLink>
             <TableActions
               currentFilters={defaultFilters}
               style={{ marginLeft: '2rem' }}

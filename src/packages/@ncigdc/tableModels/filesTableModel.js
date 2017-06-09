@@ -5,7 +5,7 @@ import { uniq } from 'lodash';
 import { Th, Td, TdNum } from '@ncigdc/uikit/Table';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
-import { RepositoryCasesLink } from '@ncigdc/components/Links/RepositoryLink';
+import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import FileLink from '@ncigdc/components/Links/FileLink';
 import { makeFilter } from '@ncigdc/utils/filters';
 import FileSize from '@ncigdc/components/FileSize';
@@ -80,7 +80,7 @@ const filesTableModel = [
     }) =>
       <TdNum>
         {total > 1 &&
-          <RepositoryCasesLink
+          <RepositoryFilesLink
             query={{
               filters: makeFilter(
                 [{ field: 'files.file_id', value: [fileId] }],
@@ -89,7 +89,7 @@ const filesTableModel = [
             }}
           >
             {total.toLocaleString()}
-          </RepositoryCasesLink>}
+          </RepositoryFilesLink>}
         {total === 1 &&
           <CaseLink uuid={cases[0].node.case_id}>{total}</CaseLink>}
 

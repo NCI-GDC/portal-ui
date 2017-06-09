@@ -12,7 +12,6 @@ import withRouter from "@ncigdc/utils/withRouter";
 import TabbedLinks from "@ncigdc/components/TabbedLinks";
 import AnnotationsLink from "@ncigdc/components/Links/AnnotationsLink";
 
-import CasesTable from "./CasesTable";
 import FilesTable from "./FilesTable";
 import { API } from '@ncigdc/utils/constants';
 
@@ -136,13 +135,6 @@ class SmartSearchComponent extends React.Component {
           }
           links={[
             {
-              id: "cases",
-              text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
-              component: (
-                <CasesTable hits={this.props.viewer.repository.cases.hits} />
-              )
-            },
-            {
               id: "files",
               text: `Files (${this.props.viewer.repository.files.hits.total.toLocaleString()})`,
               component: (
@@ -159,9 +151,6 @@ class SmartSearchComponent extends React.Component {
 
 export const SmartSearchQuery = {
   initialVariables: {
-    cases_offset: null,
-    cases_size: null,
-    cases_sort: null,
     files_offset: null,
     files_size: null,
     files_sort: null,
@@ -171,12 +160,6 @@ export const SmartSearchQuery = {
     viewer: () => Relay.QL`
       fragment on Root {
         repository {
-          cases {
-            hits(first: $cases_size offset: $cases_offset, filters: $filters) {
-              ${CasesTable.getFragment("hits")}
-              total
-            }
-          }
           files {
             hits(first: $files_size offset: $files_offset, filters: $filters) {
               ${FilesTable.getFragment("hits")}

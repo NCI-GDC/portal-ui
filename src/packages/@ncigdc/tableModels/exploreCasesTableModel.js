@@ -1,10 +1,7 @@
 // @flow
 import React from 'react';
 import _ from 'lodash';
-import {
-  RepositoryCasesLink,
-  RepositoryFilesLink,
-} from '@ncigdc/components/Links/RepositoryLink';
+import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
@@ -137,7 +134,7 @@ const casesTableModel = [
       </NumTd>,
     total: withRouter(({ hits, query }) =>
       <NumTd>
-        <RepositoryCasesLink
+        <ExploreLink
           query={{
             filters: query.filters ? getProjectIdFilter(hits) : null,
           }}
@@ -145,7 +142,7 @@ const casesTableModel = [
           {hits.edges
             .reduce((acc, val) => acc + val.node.summary.case_count, 0)
             .toLocaleString()}
-        </RepositoryCasesLink>
+        </ExploreLink>
       </NumTd>,
     ),
   },

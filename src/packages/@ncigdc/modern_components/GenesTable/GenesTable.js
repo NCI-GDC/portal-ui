@@ -227,7 +227,6 @@ const Component = compose(
     hasEnoughSurvivalDataOnPrimaryCurve,
     context,
     query,
-    tableLink,
     ssmCounts = [],
     ssmCountsLoading,
   }) => {
@@ -255,7 +254,6 @@ const Component = compose(
             total={totalGenes}
           />
           <Row>
-            {tableLink}
             <TableActions
               prefix="genes"
               total={totalGenes}

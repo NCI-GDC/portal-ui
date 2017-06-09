@@ -15,7 +15,6 @@ import Loader from '@ncigdc/uikit/Loaders/Loader';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
 import Button from '@ncigdc/uikit/Button';
 import saveFile from '@ncigdc/utils/filesaver';
-import { GdcDataIcon } from '@ncigdc/theme/icons';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import Pagination from '@ncigdc/components/Pagination';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -283,9 +282,6 @@ const CancerDistributionTableComponent = compose(
               />
             : <span />}
           <Row style={{ alignItems: 'flex-end' }}>
-            <ExploreLink query={{ searchTableTab: 'cases', filters }}>
-              <GdcDataIcon /> Open in Exploration
-            </ExploreLink>
             <Tooltip
               Component={
                 <span>Export All{geneId ? ' Except # Mutations' : ''}</span>

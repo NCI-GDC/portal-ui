@@ -73,11 +73,16 @@ export const GenePageComponent = (props: TProps) => {
           <Row flex="1"><GeneExternalReferences node={props.node} /></Row>
         </Row>
         <Column style={styles.card} id="cancer-distribution">
-          <Row>
-            <h1 style={{ ...styles.heading, padding: '1rem' }}>
+          <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+            <h1 style={{ ...styles.heading }}>
               <ChartIcon style={{ marginRight: '1rem' }} />
               Cancer Distribution
             </h1>
+            <ExploreLink
+              query={{ searchTableTab: 'cases', filters: cdFilters }}
+            >
+              <GdcDataIcon /> Open in Exploration
+            </ExploreLink>
           </Row>
           <Column>
             <CancerDistributionChart
@@ -123,13 +128,17 @@ export const GenePageComponent = (props: TProps) => {
         </Column>
 
         <Column style={{ ...styles.card, marginTop: '2rem' }}>
-          <h1
-            style={{ ...styles.heading, padding: '1rem' }}
-            id="frequent-mutations"
-          >
-            <ChartIcon style={{ marginRight: '1rem' }} />
-            Most Frequent Somatic Mutations
-          </h1>
+          <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+            <h1 style={{ ...styles.heading }} id="frequent-mutations">
+              <ChartIcon style={{ marginRight: '1rem' }} />
+              Most Frequent Somatic Mutations
+            </h1>
+            <ExploreLink
+              query={{ searchTableTab: 'mutations', filters: fmFilters }}
+            >
+              <GdcDataIcon /> Open in Exploration
+            </ExploreLink>
+          </Row>
 
           <Column>
             <SsmsBarChart
@@ -141,13 +150,6 @@ export const GenePageComponent = (props: TProps) => {
               defaultFilters={fmFilters}
               shouldShowGeneSymbol={false}
               context={props.node.symbol}
-              tableLink={
-                <ExploreLink
-                  query={{ searchTableTab: 'mutations', filters: fmFilters }}
-                >
-                  <GdcDataIcon /> Open in Exploration
-                </ExploreLink>
-              }
             />
           </Column>
         </Column>

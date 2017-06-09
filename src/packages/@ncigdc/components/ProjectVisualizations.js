@@ -141,10 +141,28 @@ const ProjectVisualizations = enhance(
     return (
       <div>
         <Column style={styles.card}>
-          <h1 style={{ ...styles.heading, padding: '1rem' }} id="mutated-genes">
-            <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
-            Most Frequently Mutated Genes
-          </h1>
+          <Row style={{ padding: '1rem 1rem 2rem' }}>
+            <h1 style={{ ...styles.heading }} id="mutated-genes">
+              <i
+                className="fa fa-bar-chart-o"
+                style={{ paddingRight: '10px' }}
+              />
+              Most Frequently Mutated Genes
+            </h1>
+            <Row style={{ alignItems: 'center' }}>
+              <ExploreLink
+                query={{ searchTableTab: 'oncogrid', filters: fmFilters }}
+                style={{ marginRight: '1.5rem' }}
+              >
+                <GridIcon /> OncoGrid
+              </ExploreLink>
+              <ExploreLink
+                query={{ searchTableTab: 'genes', filters: fmFilters }}
+              >
+                <GdcDataIcon /> Open in Exploration
+              </ExploreLink>
+            </Row>
+          </Row>
           <Column>
             <Row>
               <Column flex="none" style={{ width: '50%' }}>
@@ -173,33 +191,27 @@ const ProjectVisualizations = enhance(
               defaultFilters={fmFilters}
               defaultSize={10}
               context={projectId}
-              tableLink={
-                <span>
-                  <ExploreLink
-                    query={{ searchTableTab: 'oncogrid', filters: fmFilters }}
-                    style={{ marginRight: '1.5rem' }}
-                  >
-                    <GridIcon /> OncoGrid
-                  </ExploreLink>
-
-                  <ExploreLink
-                    query={{ searchTableTab: 'genes', filters: fmFilters }}
-                  >
-                    <GdcDataIcon /> Open in Exploration
-                  </ExploreLink>
-                </span>
-              }
             />
           </Column>
         </Column>
         <Column style={{ ...styles.card, marginTop: '2rem' }}>
-          <h1
-            style={{ ...styles.heading, padding: '1rem' }}
-            id="frequent-mutations"
-          >
-            <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
-            Most Frequent Somatic Mutations
-          </h1>
+          <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+            <h1 style={{ ...styles.heading }} id="frequent-mutations">
+              <i
+                className="fa fa-bar-chart-o"
+                style={{ paddingRight: '10px' }}
+              />
+              Most Frequent Somatic Mutations
+            </h1>
+            <ExploreLink
+              query={{
+                searchTableTab: 'mutations',
+                filters: fmFilters,
+              }}
+            >
+              <GdcDataIcon /> Open in Exploration
+            </ExploreLink>
+          </Row>
           <Column>
             <Row>
               <Column flex="1">
@@ -233,24 +245,24 @@ const ProjectVisualizations = enhance(
                   )}
                   showSurvivalPlot
                   context={projectId}
-                  tableLink={
-                    <ExploreLink
-                      query={{
-                        searchTableTab: 'mutations',
-                        filters: fmFilters,
-                      }}
-                    >
-                      <GdcDataIcon /> Open in Exploration
-                    </ExploreLink>
-                  }
                 />}
           </Column>
         </Column>
         <Column style={{ ...styles.card, marginTop: '2rem' }}>
-          <h1 style={{ ...styles.heading, padding: '1rem' }}>
-            <i className="fa fa-bar-chart-o" style={{ paddingRight: '10px' }} />
-            Most Affected Cases
-          </h1>
+          <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+            <h1 style={{ ...styles.heading }}>
+              <i
+                className="fa fa-bar-chart-o"
+                style={{ paddingRight: '10px' }}
+              />
+              Most Affected Cases
+            </h1>
+            <ExploreLink
+              query={{ searchTableTab: 'cases', filters: macFilters }}
+            >
+              <GdcDataIcon /> Open in Exploration
+            </ExploreLink>
+          </Row>
           <AffectedCasesBarChart
             defaultFilters={macFilters}
             style={{ width: '50%', flexGrow: 0 }}

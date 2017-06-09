@@ -31,7 +31,6 @@ import Pagination from '@ncigdc/components/Pagination';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import TableActions from '@ncigdc/components/TableActions';
 import MutationsCount from '@ncigdc/components/MutationsCount';
-import { GdcDataIcon } from '@ncigdc/theme/icons';
 
 const COMPONENT_NAME = 'AffectedCasesTable';
 
@@ -230,11 +229,6 @@ const Component = compose(
             total={totalCases}
           />
           <Row style={{ alignItems: 'flex-end' }}>
-            <ExploreLink
-              query={{ searchTableTab: 'cases', filters: defaultFilters }}
-            >
-              <GdcDataIcon /> Open in Exploration
-            </ExploreLink>
             <TableActions
               currentFilters={defaultFilters}
               style={{ marginLeft: '2rem' }}

@@ -6,6 +6,7 @@ import { compose, withPropsOnChange } from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import TableIcon from '@ncigdc/theme/icons/Table';
 import ChartIcon from '@ncigdc/theme/icons/BarChart';
+import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import { makeFilter } from '@ncigdc/utils/filters';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import Lolliplot from '@ncigdc/containers/Lolliplot';
@@ -132,11 +133,14 @@ export const SSMPageComponent = compose(
       style={{ ...styles.card, marginTop: '2rem' }}
       id="cancer-distribution"
     >
-      <Row>
-        <h1 style={{ ...styles.heading, padding: '1rem' }}>
+      <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+        <h1 style={{ ...styles.heading }}>
           <ChartIcon style={{ marginRight: '1rem' }} />
           Cancer Distribution
         </h1>
+        <ExploreLink query={{ searchTableTab: 'cases', filters: cdFilters }}>
+          <GdcDataIcon /> Open in Exploration
+        </ExploreLink>
       </Row>
       <Column>
         <CancerDistributionChart

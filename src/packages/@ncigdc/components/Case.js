@@ -338,16 +338,20 @@ const Case = compose(
         </Row>
         {ssmTested &&
           <Column style={{ ...styles.card, marginTop: '2rem' }}>
-            <h1
-              style={{ ...styles.heading, padding: '1rem' }}
-              id="frequent-mutations"
-            >
-              <i
-                className="fa fa-bar-chart-o"
-                style={{ paddingRight: '10px' }}
-              />
-              Most Frequent Somatic Mutations
-            </h1>
+            <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+              <h1 style={{ ...styles.heading }} id="frequent-mutations">
+                <i
+                  className="fa fa-bar-chart-o"
+                  style={{ paddingRight: '10px' }}
+                />
+                Most Frequent Somatic Mutations
+              </h1>
+              <ExploreLink
+                query={{ searchTableTab: 'mutations', filters: fmFilters }}
+              >
+                <GdcDataIcon /> Open in Exploration
+              </ExploreLink>
+            </Row>
             <Column>
               <SsmsBarChart
                 style={{ width: '50%' }}
@@ -359,13 +363,6 @@ const Case = compose(
                 projectId={p.project.project_id}
                 defaultFilters={fmFilters}
                 context={p.project.project_id}
-                tableLink={
-                  <ExploreLink
-                    query={{ searchTableTab: 'mutations', filters: fmFilters }}
-                  >
-                    <GdcDataIcon /> Open in Exploration
-                  </ExploreLink>
-                }
               />
             </Column>
           </Column>}

@@ -4,6 +4,7 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import JSURL from 'jsurl';
 import queryString from 'query-string';
+import PropTypes from 'prop-types';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -26,7 +27,7 @@ const angularBootstrapHtml = `
 
 class SmartSearchComponent extends React.Component {
   static contextTypes = {
-    router: React.PropTypes.object,
+    router: PropTypes.object,
   };
 
   componentDidMount() {

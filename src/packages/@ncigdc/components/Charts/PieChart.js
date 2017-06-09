@@ -55,7 +55,7 @@ const PieChart = compose(
     .append('g')
     .each(d => {
       d.outerRadius = outerRadius - 20;
-    }) // eslint-disable-line
+    })
     .attr('class', 'arc');
 
   const gHover = svg
@@ -65,7 +65,7 @@ const PieChart = compose(
     .append('g')
     .each(d => {
       d.outerRadius = outerRadius - 15;
-    }) // eslint-disable-line
+    })
     .attr('class', 'arc-hover');
 
   const gPath = g.append('path');

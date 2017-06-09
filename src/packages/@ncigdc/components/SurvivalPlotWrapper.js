@@ -247,15 +247,15 @@ const enhance = compose(
   withSize(),
   lifecycle({
     shouldComponentUpdate(nextProps: TProps): void {
-      return !_.isEqual(this.props, nextProps); // eslint-disable-line fp/no-this
+      return !_.isEqual(this.props, nextProps);
     },
 
     componentDidUpdate(): void {
-      renderSurvivalPlot(this.props); // eslint-disable-line fp/no-this
+      renderSurvivalPlot(this.props);
     },
 
     componentDidMount(): void {
-      renderSurvivalPlot(this.props); // eslint-disable-line fp/no-this
+      renderSurvivalPlot(this.props);
     },
   }),
 );

@@ -146,7 +146,6 @@ export const SSMAggregationsComponent = compose(
       fieldNoDoctype="ssm_id"
       placeholder="Search for mutation id"
       hits={props.suggestions}
-      // eslint-disable-next-line react/jsx-curly-spacing
       setAutocomplete={props.setAutocomplete}
       dropdownItem={x =>
         <span style={{ display: 'flex' }}>

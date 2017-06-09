@@ -346,7 +346,6 @@ const Component = compose(
           ]}
           data={data
             .map(g => ({
-              // eslint-disable-line
               ...g,
               name: (
                 <div style={{ maxWidth: '230px', whiteSpace: 'normal' }}>

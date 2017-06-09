@@ -89,7 +89,7 @@ const Component = ({ viewer: { explore: { cases = {} } }, filters, relay }) => {
 
   return (
     <div>
-      {Object.entries(filteredAggs) // eslint-disable-line
+      {Object.entries(filteredAggs)
         // $FlowIgnore
         .sort(([ak, av], [bk, bv]) => bv / allAggs[bk] - av / allAggs[ak])
         .map(([k, v]) =>

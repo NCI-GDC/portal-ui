@@ -1,27 +1,26 @@
 /* @flow */
-/* eslint-disable */
 
-import React from "react";
-import JSURL from "jsurl";
-import { compose } from "recompose";
-import { insertRule } from "glamor";
+import React from 'react';
+import JSURL from 'jsurl';
+import { compose } from 'recompose';
+import { insertRule } from 'glamor';
 
-import withRouter from "@ncigdc/utils/withRouter";
+import withRouter from '@ncigdc/utils/withRouter';
 import { API } from '@ncigdc/utils/constants';
 
 declare var angular: { module: Function };
 declare var _: {
   flatten: Function,
   groupBy: Function,
-  tail: Function
+  tail: Function,
 };
 
 // Append d3-tip for githut. Appending here to avoid issues in load order.
 const d3TipUrl =
-  "https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js";
+  'https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js';
 const existingScript = document.querySelector(`script[src="${d3TipUrl}"]`);
 if (!existingScript) {
-  const script = document.createElement("script");
+  const script = document.createElement('script');
   script.src = d3TipUrl;
   document.body.appendChild(script);
 }
@@ -54,10 +53,10 @@ export default compose(withRouter)(
     componentDidMount() {
       const self = this;
       angular
-        .module("legacyAngularWrapper", ["ngApp"])
+        .module('legacyAngularWrapper', ['ngApp'])
         .config([
-          "$locationProvider",
-          "RestangularProvider",
+          '$locationProvider',
+          'RestangularProvider',
           ($locationProvider, RestangularProvider) => {
             $locationProvider.html5Mode(false);
             RestangularProvider.setBaseUrl(API);
@@ -65,16 +64,16 @@ export default compose(withRouter)(
             RestangularProvider.addFullRequestInterceptor(
               (element, operation, what, url, headers, query) => ({
                 params: Object.assign({}, query, {
-                  from: query.from === 1 ? 0 : query.from
-                })
-              })
+                  from: query.from === 1 ? 0 : query.from,
+                }),
+              }),
             );
-          }
+          },
         ])
         .run([
-          "$browser",
-          "LocationService",
-          "$state",
+          '$browser',
+          'LocationService',
+          '$state',
           ($browser, LocationService, $state) => {
             // angular dirty checks the browser url and messes with routing in other pages
             let pendingLocation = null;
@@ -83,17 +82,17 @@ export default compose(withRouter)(
                 pendingLocation = url;
                 return $browser;
               } else {
-                return pendingLocation || location.href.replace(/%27/g, "'");
+                return pendingLocation || location.href.replace(/%27/g, "'"); // eslint-disable-line no-restricted-globals
               }
             };
             $state.go = this.handleAngularRouterRequestGo;
             LocationService.filters = () => this.props.params.filters;
-          }
+          },
         ])
-        .directive("githut", [
-          "$timeout",
+        .directive('githut', [
+          '$timeout',
           $timeout => ({
-            controller: "ProjectsController as prsc",
+            controller: 'ProjectsController as prsc',
             link(scope, element, attrs, controller) {
               controller.ProjectsState.tabs.graph.active = true;
               self.angularController = controller;
@@ -104,17 +103,17 @@ export default compose(withRouter)(
                   Object.values(
                     _.groupBy(
                       element.find(
-                        ".githut #pc svg #labels .label:last-child text"
+                        '.githut #pc svg #labels .label:last-child text',
                       ),
-                      "innerHTML"
-                    )
+                      'innerHTML',
+                    ),
                   )
                     .filter(els => els.length > 1)
-                    .map(_.tail)
+                    .map(_.tail),
                 );
                 duplicatePrimarySiteTexts.forEach(text => {
                   text.style.fillOpacity = 0;
-                  text.style.pointerEvents = "none";
+                  text.style.pointerEvents = 'none';
                 });
               };
               // NOTE: firing multiple times b/c we're not sure when the graph is finished drawing
@@ -130,10 +129,10 @@ export default compose(withRouter)(
             data="prsc.githutData"
             config="prsc.githutConfig"
           ></git-hut>
-        `
-          })
+        `,
+          }),
         ]);
-      angular.bootstrap(this.container, ["legacyAngularWrapper"]);
+      angular.bootstrap(this.container, ['legacyAngularWrapper']);
     }
 
     componentDidUpdate() {
@@ -144,25 +143,25 @@ export default compose(withRouter)(
 
     handleAngularRouterRequestGo = (state, params, options) => {
       const stateMap = {
-        "search.participants": {
-          pathname: "/repository",
-          children: "repository",
+        'search.participants': {
+          pathname: '/repository',
+          children: 'repository',
           query: {
-            searchTableTab: "cases",
-            filters: JSURL.stringify(JSON.parse(params.filters || null))
-          }
+            searchTableTab: 'cases',
+            filters: JSURL.stringify(JSON.parse(params.filters || null)),
+          },
         },
-        "search.files": {
-          pathname: "/repository",
-          children: "repository",
+        'search.files': {
+          pathname: '/repository',
+          children: 'repository',
           query: {
-            searchTableTab: "files",
-            filters: JSURL.stringify(JSON.parse(params.filters || null))
-          }
+            searchTableTab: 'files',
+            filters: JSURL.stringify(JSON.parse(params.filters || null)),
+          },
         },
         project: {
-          pathname: `/projects/${params.projectId}`
-        }
+          pathname: `/projects/${params.projectId}`,
+        },
       };
 
       this.props.push(stateMap[state]);
@@ -173,9 +172,9 @@ export default compose(withRouter)(
         <div>
           <h2
             style={{
-              textAlign: "center",
+              textAlign: 'center',
               marginBottom: -40,
-              fontSize: 19
+              fontSize: 19,
             }}
           >
             Case count per Data Category
@@ -184,10 +183,10 @@ export default compose(withRouter)(
             ref={c => {
               this.container = c;
             }}
-            dangerouslySetInnerHTML={{ __html: "<githut></githut>" }}
+            dangerouslySetInnerHTML={{ __html: '<githut></githut>' }}
           />
         </div>
       );
     }
-  }
+  },
 );

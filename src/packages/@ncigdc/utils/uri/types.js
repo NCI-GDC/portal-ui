@@ -19,6 +19,6 @@ export type TRemoveEmptyKeys = (p: Object) => Object;
 
 export type TParseIntParam = (s: ?string, d: number) => number;
 
-export type TParseJSURLParam = (s: ?string, d: any) => any; // eslint-disable-line flowtype/type-id-match
+export type TParseJSURLParam = (s: ?string, d: any) => any;
 
 export type TParseFilterParam = (s: ?string, d: ?TGroupFilter) => ?TGroupFilter;

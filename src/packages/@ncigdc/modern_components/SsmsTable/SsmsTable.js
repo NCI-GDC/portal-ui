@@ -435,7 +435,6 @@ const Component = compose(
               : []),
           ]}
           data={frequentMutations.map(({ score = 0, ...x }) => ({
-            // eslint-disable-line
             ...x,
             mutation_uuid: (
               <span>

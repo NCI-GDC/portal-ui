@@ -1,5 +1,4 @@
 /* @flow */
-/* eslint-disable fp/no-loops, fp/no-let, fp/no-mutation, fp/no-mutating-methods */
 import { dataTypeTracks } from './tracks';
 
 const dataTypesInitial = dataTypeTracks.reduce(

@@ -190,7 +190,7 @@ const Component = compose(
       }
     };
     const geneNodes = genes.hits.edges.map(x => x.node);
-    const mutatedGenesChartData = geneNodes // eslint-disable-line fp/no-mutating-methods
+    const mutatedGenesChartData = geneNodes
       .sort((a, b) => b.score - a.score)
       .map(g => ({
         label: g.symbol,

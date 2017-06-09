@@ -26,8 +26,8 @@ export function fetchAuth(options: { endpoint: string }): Object {
 // $FlowIgnore
 export const fetchApi = (endpoint, opts = {}) => {
   if (opts.body) {
-    opts.body = opts.body ? JSON.stringify(opts.body) : ''; // eslint-disable-line no-param-reassign, fp/no-mutation
-    opts.method = 'POST'; // eslint-disable-line no-param-reassign, fp/no-mutation
+    opts.body = opts.body ? JSON.stringify(opts.body) : '';
+    opts.method = 'POST';
   }
   return fetch(urlJoin(API, endpoint), opts).then(r => r.json());
 };

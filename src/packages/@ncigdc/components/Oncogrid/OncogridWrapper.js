@@ -360,8 +360,8 @@ const OncoGridWrapper = compose(
     },
     componentWillUnmount(): void {
       const { uniqueGridClass } = this.props;
-      delete containerRefs[uniqueGridClass]; // eslint-disable-line fp/no-delete
-      delete wrapperRefs[uniqueGridClass]; // eslint-disable-line fp/no-delete
+      delete containerRefs[uniqueGridClass];
+      delete wrapperRefs[uniqueGridClass];
     },
   }),
 )(
@@ -387,7 +387,7 @@ const OncoGridWrapper = compose(
         }}
         ref={r => {
           containerRefs[uniqueGridClass] = r;
-        }} // eslint-disable-line fp/no-mutation
+        }}
       >
         <h4 style={{ textAlign: 'center' }}>{title}</h4>
         {oncoGridData &&
@@ -414,9 +414,9 @@ const OncoGridWrapper = compose(
                 svg={() => {
                   const elementsAfter = trackLegends.map(html => {
                     const div = document.createElement('div');
-                    div.innerHTML = html; // eslint-disable-line fp/no-mutation
-                    div.style.position = 'absolute'; // eslint-disable-line fp/no-mutation
-                    div.style.left = '-99999px'; // eslint-disable-line fp/no-mutation
+                    div.innerHTML = html;
+                    div.style.position = 'absolute';
+                    div.style.left = '-99999px';
                     document.body.appendChild(div);
                     return div;
                   });
@@ -564,7 +564,7 @@ const OncoGridWrapper = compose(
           className={`${GRID_CLASS} ${uniqueGridClass}`}
           ref={n => {
             wrapperRefs[uniqueGridClass] = n;
-          }} // eslint-disable-line fp/no-mutation
+          }}
           style={{
             cursor: crosshairMode ? 'crosshair' : 'pointer',
             visibility: isLoading ? 'hidden' : 'visible',

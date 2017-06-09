@@ -41,7 +41,6 @@ const ArrangeColumns = compose(
           key={column.id}
           updateState={nextState =>
             setState(state => {
-              // eslint-disable-line
               if (!nextState.items && state.items) {
                 const nextColumnIds = state.items.reduce(
                   (acc, x) => [

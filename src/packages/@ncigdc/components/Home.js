@@ -152,7 +152,7 @@ const Home = compose(
   withRouter,
   lifecycle({
     async componentDidMount(): Promise<*> {
-      const { setState, setTooltip, push, humanBodyData } = this.props; // eslint-disable-line fp/no-this
+      const { setState, setTooltip, push, humanBodyData } = this.props;
 
       setState(state => ({
         ...state,

@@ -81,7 +81,6 @@ const getNotificationComponent = (
               style={{
                 textDecoration: 'underline',
               }}
-              // eslint-disable-next-line no-use-before-define
               onClick={() =>
                 dispatch(toggleFilesInCart(notification.undo.files))}
             >

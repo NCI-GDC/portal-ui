@@ -43,7 +43,7 @@ Relay.injectNetworkLayer(
           ].join(':'),
         );
 
-      req.url = `${url}?hash=${hash}`; // eslint-disable-line no-param-reassign, fp/no-mutation
+      req.url = `${url}?hash=${hash}`;
       return next(req);
     },
   ]),

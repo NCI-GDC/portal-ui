@@ -10,6 +10,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
 import Hidden from '@ncigdc/components/Hidden';
 import Button from '@ncigdc/uikit/Button';
+import { AUTH_API } from '@ncigdc/utils/constants';
 
 type TProps = {
   user: Object,
@@ -33,10 +34,7 @@ function DownloadFile({
       <DownloadButton
         extraParams={{ ids: file.file_id }}
         filename={file.file_name}
-        url={urlJoin(
-          process.env.REACT_APP_GDC_AUTH,
-          'api/data?annotations=true&related_files=true',
-        )}
+        url={urlJoin(AUTH_API, 'data?annotations=true&related_files=true')}
         activeText={activeText}
         inactiveText={inactiveText}
         style={style}

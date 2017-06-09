@@ -1,6 +1,7 @@
 // @flow
 import { CALL_API } from 'redux-api-middleware';
 import urlJoin from 'url-join';
+import { API, AUTH } from '@ncigdc/utils/constants';
 
 const DEFAULTS = {
   method: 'get',
@@ -17,7 +18,7 @@ export function fetchAuth(options: { endpoint: string }): Object {
     [CALL_API]: {
       ...DEFAULTS,
       ...options,
-      endpoint: urlJoin(process.env.REACT_APP_GDC_AUTH, options.endpoint),
+      endpoint: urlJoin(AUTH, options.endpoint),
     },
   };
 }
@@ -28,7 +29,5 @@ export const fetchApi = (endpoint, opts = {}) => {
     opts.body = opts.body ? JSON.stringify(opts.body) : ''; // eslint-disable-line no-param-reassign, fp/no-mutation
     opts.method = 'POST'; // eslint-disable-line no-param-reassign, fp/no-mutation
   }
-  return fetch(urlJoin(process.env.REACT_APP_API, endpoint), opts).then(r =>
-    r.json(),
-  );
+  return fetch(urlJoin(API, endpoint), opts).then(r => r.json());
 };

@@ -3,7 +3,7 @@
  *   relay-compiler
  *
  * @providesModule CartPage_viewer.graphql
- * @generated SignedSource<<57c41cc3d33a0b09478cae9c2164cab6>>
+ * @generated SignedSource<<f16890dde29c797d25941e0833125f70>>
  * @flow
  * @nogrep
  */
@@ -214,7 +214,7 @@ const fragment /*: ConcreteFragment*/ = {
               "selections": [
                 {
                   "kind": "FragmentSpread",
-                  "name": "FileTable_hits",
+                  "name": "FilesTable_hits",
                   "args": null
                 }
               ],

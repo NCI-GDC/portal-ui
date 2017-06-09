@@ -11,16 +11,14 @@ import urlJoin from 'url-join';
 import { fetchUser } from '@ncigdc/dux/auth';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import styled from '@ncigdc/theme/styled';
+import { AUTH } from '@ncigdc/utils/constants';
 
 /*----------------------------------------------------------------------------*/
 
 const openAuthWindow = ({ pathname, dispatch }) => {
   if (navigator.cookieEnabled) {
     const returningPath = `${pathname}?${+new Date()}`;
-    const redirectUrl = urlJoin(
-      process.env.REACT_APP_GDC_AUTH,
-      `?next=${returningPath}`,
-    );
+    const redirectUrl = urlJoin(AUTH, `?next=${returningPath}`);
 
     const closeLogin = url =>
       url === redirectUrl ? false : url.includes(returningPath);

@@ -24,6 +24,7 @@ import { removeEmptyKeys } from '@ncigdc/utils/uri';
 import FileIcon from '@ncigdc/theme/icons/File';
 import CaseIcon from '@ncigdc/theme/icons/Case';
 import AnnotationIcon from '@ncigdc/theme/icons/Edit';
+import { AUTH_API } from '@ncigdc/utils/constants';
 
 const colors20 = scaleOrdinal(schemeCategory20);
 
@@ -110,7 +111,7 @@ const Project = (
           <DownloadButton
             disabled={!biospecimenCount}
             filename={`biospecimen.project-${projectId}`}
-            url={urlJoin(process.env.REACT_APP_API, 'cases')}
+            url={urlJoin(AUTH_API, 'cases')}
             activeText="Processing"
             inactiveText={
               biospecimenCount ? 'Download Biospecimen' : 'No Biospecimen Data'
@@ -134,7 +135,7 @@ const Project = (
           <DownloadButton
             disabled={!clinicalCount}
             filename={`clinical.project-${projectId}`}
-            url={urlJoin(process.env.REACT_APP_API, 'cases')}
+            url={urlJoin(AUTH_API, 'cases')}
             activeText="Processing"
             inactiveText={
               clinicalCount ? 'Download Clinical' : 'No Clinical Data'
@@ -160,7 +161,7 @@ const Project = (
           >
             <DownloadButton
               disabled={!fileCount}
-              url={urlJoin(process.env.REACT_APP_API, 'files')}
+              url={urlJoin(AUTH_API, 'files')}
               activeText="Downloading"
               inactiveText="Download Manifest"
               fields={['file_id', 'file_name', 'md5sum', 'file_size', 'state']}

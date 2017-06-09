@@ -23,6 +23,7 @@ import { withTheme } from '@ncigdc/theme';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import Button from '@ncigdc/uikit/Button';
 import Emitter from '@ncigdc/utils/emitter';
+import { API } from '@ncigdc/utils/constants';
 
 const styles = {
   button: {
@@ -84,7 +85,7 @@ const BiospecimenCard = ({
           <DownloadButton
             style={visualizingButton}
             filename={`biospecimen.case-${p.case_id}`}
-            url={urlJoin(process.env.REACT_APP_API, 'cases')}
+            url={urlJoin(API, 'cases')}
             activeText="Processing"
             inactiveText="Export"
             filters={makeFilter([{ field: 'cases.case_id', value: p.case_id }])}

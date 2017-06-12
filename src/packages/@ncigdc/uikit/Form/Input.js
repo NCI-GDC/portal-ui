@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 const styles = {
   input: {
     width: '100%',
+    minWidth: 0,
     height: '34px',
     padding: '6px 12px',
     fontSize: '14px',

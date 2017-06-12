@@ -11,7 +11,7 @@ import Input from '@ncigdc/uikit/Form/Input';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import ExclamationTriangle from '@ncigdc/theme/icons/ExclamationTriangle';
 
-import { Container, InputLabel, StyledInput, GoLink } from './';
+import { Container, InputLabel, GoLink } from './';
 
 const getCurrentFromAndTo = ({ field, query }) => {
   const dotField = field.replace(/__/g, '.');
@@ -307,8 +307,7 @@ const RangeFacet = (props: TProps) => {
             >
               From:
             </InputLabel>
-            <StyledInput
-              style={{ borderRadius: 0 }}
+            <Input
               value={props.state.fromDisplayed || ''}
               onChange={props.handleFromChanged}
               id={`from-${dotField}`}

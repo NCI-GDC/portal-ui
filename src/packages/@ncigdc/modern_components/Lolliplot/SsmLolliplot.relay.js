@@ -29,7 +29,7 @@ export default (Component: ReactClass<*>) =>
       <Query
         parentProps={props}
         name="SsmLolliplot"
-        minHeight={387}
+        minHeight={20}
         variables={props.variables}
         Component={Component}
         query={graphql`

@@ -13,8 +13,9 @@ import { dropdown } from '@ncigdc/theme/mixins';
 import styled from '@ncigdc/theme/styled';
 import Link from '@ncigdc/components/Links/Link';
 import Hidden from '@ncigdc/components/Hidden';
+import Input from '@ncigdc/uikit/Form/Input';
 
-import { Container, StyledInput } from './';
+import { Container } from './';
 
 const MagnifyingGlass = styled(SearchIcon, {
   backgroundColor: ({ theme }) => theme.greyScale5,
@@ -65,7 +66,8 @@ const PrefixFacet = compose(
           <label htmlFor={fieldNoDoctype}>
             <MagnifyingGlass /><Hidden>title</Hidden>
           </label>
-          <StyledInput
+          <Input
+            style={{ borderRadius: '0 4px 4px 0' }}
             id={fieldNoDoctype}
             name={fieldNoDoctype}
             onChange={e => {

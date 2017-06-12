@@ -23,7 +23,6 @@ export const withSearch = passedInState => {
   };
 
   // prevent results that come back out-of-order from being displayed
-  // eslint-disable-next-line fp/no-let
   let timeOfMostRecentRequest = 0;
 
   return compose(
@@ -65,7 +64,6 @@ export const withSearch = passedInState => {
     withPropsOnChange(
       (props, nextProps) => props.state.query !== nextProps.state.query,
       ({ state: { query, results }, setState, fetchResults }) => {
-        // eslint-disable-next-line fp/no-mutation
         timeOfMostRecentRequest = new Date().getTime();
         if (query) {
           setState(s => ({ ...s, isLoading: true }));

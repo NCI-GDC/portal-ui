@@ -76,7 +76,7 @@ export const CaseTableComponent = compose(
   const prefix = 'cases';
   const { ssmCounts, ssmCountsLoading, tableColumns } = props;
 
-  const tableInfo = tableModels.exploreCases // eslint-disable-line
+  const tableInfo = tableModels.exploreCases
     .slice()
     .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
     .filter(x => tableColumns.includes(x.id));

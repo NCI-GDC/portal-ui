@@ -64,7 +64,6 @@ const InternalLink = ({
 };
 
 InternalLink.defaultProps = {
-  // eslint-disable-line fp/no-mutation
   removeEmptyKeys: rek,
 };
 

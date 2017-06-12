@@ -118,7 +118,6 @@ function getGenes({ relay, caseCountFilters, fmgChartFilters }: TProps): void {
 const ProjectsChartsComponent = compose(
   withState('state', 'setState', initialState),
   withRouter,
-  // eslint-disable-next-line fp/no-mutating-methods
   mapProps(props => ({
     ...props,
     projectIds: props.hits.edges.map(x => x.node.project_id).sort(),
@@ -240,7 +239,6 @@ const ProjectsChartsComponent = compose(
     caseCountFilters,
   }: TProps) => {
     const projects = hits.edges.map(x => x.node);
-    // eslint-disable-next-line fp/no-mutating-methods
     const stackedBarData = topGenesSource
       .map(({ gene_id: geneId, symbol }) => ({
         symbol,
@@ -433,8 +431,7 @@ const ProjectsChartsComponent = compose(
                   </ExploreLink>
                   {` Unique Case${!numUniqueCases || numUniqueCases > 1
                     ? 's'
-                    : ''} with Somatic Mutation Data` // eslint-disable-line max-len
-                  }
+                    : ''} with Somatic Mutation Data`}
                 </div>,
                 <span style={{ transform: 'scale(0.9)' }} key="bar-wrapper">
                   <Measure key="bar-chart">
@@ -507,8 +504,7 @@ const ProjectsChartsComponent = compose(
               across ${projects.length.toLocaleString()} Project${projects.length ===
                     0 || projects.length > 1
                     ? 's'
-                    : ''}` // eslint-disable-line max-len
-                  }
+                    : ''}`}
                 </div>,
                 <span style={{ transform: 'scale(0.75)' }} key="circle-wrapper">
                   <DoubleRingChart

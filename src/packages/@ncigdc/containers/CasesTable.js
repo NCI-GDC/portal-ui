@@ -14,7 +14,7 @@ import Table, { Tr } from '@ncigdc/uikit/Table';
 export const SearchTable = compose(
   connect(state => ({ tableColumns: state.tableColumns.cases })),
 )(({ relay, hits, entityType = 'cases', tableColumns }) => {
-  const tableInfo = tableModels[entityType] // eslint-disable-line
+  const tableInfo = tableModels[entityType]
     .slice()
     .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
     .filter(x => tableColumns.includes(x.id));

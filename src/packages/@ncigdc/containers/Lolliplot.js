@@ -109,9 +109,8 @@ const LolliplotComponent = compose(
   withProps(({ state, setState }) => ({
     fetchGene(props: Object): void {
       props.relay.setVariables({
-        // eslint-disable-line fp/no-this
         fetchGene: true,
-        lolliplotGeneId: btoa(`Gene:${props.geneId}`), // eslint-disable-line fp/no-this
+        lolliplotGeneId: btoa(`Gene:${props.geneId}`),
       });
     },
     fetchSsms(props: Object): void {

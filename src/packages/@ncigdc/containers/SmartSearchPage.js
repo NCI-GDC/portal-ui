@@ -1,19 +1,19 @@
 /* @flow */
-/* eslint-disable */
 
-import React from "react";
-import Relay from "react-relay/classic";
-import JSURL from "jsurl";
-import queryString from "query-string";
+import React from 'react';
+import Relay from 'react-relay/classic';
+import JSURL from 'jsurl';
+import queryString from 'query-string';
+import PropTypes from 'prop-types';
 
-import { Row } from "@ncigdc/uikit/Flex";
-import Button from "@ncigdc/uikit/Button";
-import withRouter from "@ncigdc/utils/withRouter";
-import TabbedLinks from "@ncigdc/components/TabbedLinks";
-import AnnotationsLink from "@ncigdc/components/Links/AnnotationsLink";
+import { Row } from '@ncigdc/uikit/Flex';
+import Button from '@ncigdc/uikit/Button';
+import withRouter from '@ncigdc/utils/withRouter';
+import TabbedLinks from '@ncigdc/components/TabbedLinks';
+import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 
-import CasesTable from "./CasesTable";
-import FilesTable from "./FilesTable";
+import CasesTable from './CasesTable';
+import FilesTable from './FilesTable';
 import { API } from '@ncigdc/utils/constants';
 
 declare var _: Object;
@@ -27,23 +27,23 @@ const angularBootstrapHtml = `
 
 class SmartSearchComponent extends React.Component {
   static contextTypes = {
-    router: React.PropTypes.object
+    router: PropTypes.object,
   };
 
   componentDidMount() {
     const router = this.context.router;
     angular
-      .module("legacyAngularWrapper", ["ngApp"])
+      .module('legacyAngularWrapper', ['ngApp'])
       .config([
-        "$locationProvider",
-        "RestangularProvider",
+        '$locationProvider',
+        'RestangularProvider',
         ($locationProvider, RestangularProvider) => {
           $locationProvider.html5Mode(false);
           RestangularProvider.setBaseUrl(API);
-        }
+        },
       ])
       .run([
-        "$browser",
+        '$browser',
         $browser => {
           // angular dirty checks the browser url and messes with routing in other pages
           let pendingLocation = null;
@@ -52,69 +52,67 @@ class SmartSearchComponent extends React.Component {
               pendingLocation = url;
               return $browser;
             } else {
-              return pendingLocation || location.href.replace(/%27/g, "'");
+              return pendingLocation || location.href.replace(/%27/g, "'"); // eslint-disable-line no-restricted-globals
             }
           };
-        }
+        },
       ])
-      .directive("smartSearchWrapper", [
-        "LocationService",
+      .directive('smartSearchWrapper', [
+        'LocationService',
         LocationService => ({
           controller() {
             this.setQuery = () => {
               const { query, filters } = queryString.parse(
-                window.location.search
+                window.location.search,
               );
               const currentQuery =
                 query ||
                 (filters && LocationService.filter2query(JSURL.parse(filters)));
 
-              if (typeof currentQuery === "string") {
+              if (typeof currentQuery === 'string') {
                 this.query = currentQuery;
               }
             };
             this.sendQuery = () => {
               const gql = this.gql || {};
-              const filters = { op: "and", content: [gql.filters] };
+              const filters = { op: 'and', content: [gql.filters] };
 
               const data = {
                 query: this.query,
-                filters: gql.filters && JSURL.stringify(filters)
+                filters: gql.filters && JSURL.stringify(filters),
               };
 
               router.push(
-                `/query?${queryString.stringify(_.omitBy(data, _.isEmpty))}`
+                `/query?${queryString.stringify(_.omitBy(data, _.isEmpty))}`,
               );
             };
             this.resetQuery = () => {
-              this.query = "";
+              this.query = '';
               this.gql = null;
               this.Error = null;
-              router.push("/query");
+              router.push('/query');
             };
 
-            this.query = "";
-            this.gql = "";
+            this.query = '';
+            this.gql = '';
             this.Error = null;
 
             this.setQuery();
 
-            document.querySelector(".btn-search-query").onclick = () => {
-              router.push(
-                `/repository`
-              );
+            document.querySelector('.btn-search-query').onclick = () => {
+              router.push(`/repository`);
             };
           },
-          controllerAs: "sb",
-          templateUrl: "components/ui/search/templates/search-bar.html"
-        })
+          controllerAs: 'sb',
+          templateUrl: 'components/ui/search/templates/search-bar.html',
+        }),
       ]);
-    angular.bootstrap(this.container, ["legacyAngularWrapper"]);
+    angular.bootstrap(this.container, ['legacyAngularWrapper']);
   }
 
   render(): void {
     return (
-      <div style={{ padding: "3rem 8rem" }}>
+      <div style={{ padding: '3rem 8rem' }}>
         <div
           ref={c => {
             this.container = c;
@@ -126,7 +124,7 @@ class SmartSearchComponent extends React.Component {
           queryParam="searchTableTab"
           defaultIndex={0}
           tabToolbar={
-            <Row spacing="2rem" style={{ alignItems: "center" }}>
+            <Row spacing="2rem" style={{ alignItems: 'center' }}>
               <AnnotationsLink>
                 <Button leftIcon={<i className="fa fa-edit" />}>
                   Browse Annotations
@@ -136,19 +134,19 @@ class SmartSearchComponent extends React.Component {
           }
           links={[
             {
-              id: "cases",
+              id: 'cases',
               text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
               component: (
                 <CasesTable hits={this.props.viewer.repository.cases.hits} />
-              )
+              ),
             },
             {
-              id: "files",
+              id: 'files',
               text: `Files (${this.props.viewer.repository.files.hits.total.toLocaleString()})`,
               component: (
                 <FilesTable hits={this.props.viewer.repository.files.hits} />
-              )
-            }
+              ),
+            },
           ]}
         />
 
@@ -165,7 +163,7 @@ export const SmartSearchQuery = {
     files_offset: null,
     files_size: null,
     files_sort: null,
-    filters: null
+    filters: null,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -173,25 +171,25 @@ export const SmartSearchQuery = {
         repository {
           cases {
             hits(first: $cases_size offset: $cases_offset, filters: $filters) {
-              ${CasesTable.getFragment("hits")}
+              ${CasesTable.getFragment('hits')}
               total
             }
           }
           files {
             hits(first: $files_size offset: $files_offset, filters: $filters) {
-              ${FilesTable.getFragment("hits")}
+              ${FilesTable.getFragment('hits')}
               total
             }
           }
         }
       }
-    `
-  }
+    `,
+  },
 };
 
 const SmartSearchPage = Relay.createContainer(
   withRouter(SmartSearchComponent),
-  SmartSearchQuery
+  SmartSearchQuery,
 );
 
 export default SmartSearchPage;

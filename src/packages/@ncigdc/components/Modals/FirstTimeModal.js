@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable max-len */
 import React from 'react';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';

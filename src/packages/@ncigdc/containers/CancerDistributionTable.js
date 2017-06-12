@@ -126,7 +126,6 @@ const CancerDistributionTableComponent = compose(
         e => e.node.project_id,
       );
 
-      // eslint-disable-next-line fp/no-mutating-methods
       const rawData = (cases.filtered || {
         project__project_id: { buckets: [] },
       }).project__project_id.buckets

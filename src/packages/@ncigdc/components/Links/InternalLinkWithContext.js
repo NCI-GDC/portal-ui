@@ -56,7 +56,6 @@ const InternalLinkWithContext = ({
   </LocationSubscriber>;
 
 InternalLinkWithContext.defaultProps = {
-  // eslint-disable-line fp/no-mutation
   mergeQuery: mq,
 };
 

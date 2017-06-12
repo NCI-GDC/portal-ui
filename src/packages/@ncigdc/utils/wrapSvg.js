@@ -150,7 +150,6 @@ export const wrapSvg: TWrapSvg = ({
 
   const wrapper = document.createElement('div');
 
-  // eslint-disable-next-line fp/no-mutation
   wrapper.innerHTML = `
     <svg
       width="${width}"

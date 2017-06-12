@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable fp/no-mutation */
 
 import { createElement } from 'react';
 import { css } from 'glamor';

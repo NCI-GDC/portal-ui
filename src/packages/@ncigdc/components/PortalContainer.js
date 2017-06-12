@@ -52,11 +52,10 @@ const enhance = compose(
   lifecycle({
     componentDidMount(): void {
       if (!Cookies.get(FIRST_TIME_KEY)) {
-        this.props.dispatch(setModal(<FirstTimeModal />)); // eslint-disable-line fp/no-this
+        this.props.dispatch(setModal(<FirstTimeModal />));
         Cookies.set(FIRST_TIME_KEY, true);
       }
 
-      /* eslint-disable */
       let lastPathname = this.props.location.pathname;
       this.removeListen = this.props.listen(location => {
         if (location.pathname !== lastPathname) {
@@ -64,10 +63,9 @@ const enhance = compose(
           lastPathname = location.pathname;
         }
       });
-      /* eslint-enable */
     },
     componentWillUnmount(): void {
-      this.removeListen(); // eslint-disable-line fp/no-this
+      this.removeListen();
     },
   }),
 );

@@ -1,5 +1,4 @@
 // @flow
-/* eslint-disable fp/no-mutation, fp/no-let, import/no-dynamic-require */
 
 import React from 'react';
 import { insertRule } from 'glamor';

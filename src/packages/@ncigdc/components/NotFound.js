@@ -1,6 +1,4 @@
 // @flow
-/* eslint-disable quotes */
-
 import React from 'react';
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 

@@ -4,7 +4,9 @@ import React from 'react';
 import { graphql } from 'react-relay';
 import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
 import { makeFilter } from '@ncigdc/utils/filters';
+import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
 import Query from '@ncigdc/modern_components/Query';
+import withFilters from '@ncigdc/utils/withFilters';
 
 export default (Component: Object) =>
   compose(
@@ -12,7 +14,8 @@ export default (Component: Object) =>
       ({ geneId }) => !geneId,
       renderComponent(() => <div><pre>geneId</pre> must be provided</div>),
     ),
-    withPropsOnChange(['geneId'], ({ geneId = 'ENSG00000134086' }) => {
+    withFilters(),
+    withPropsOnChange(['geneId', 'filters'], ({ geneId, filters }) => {
       return {
         variables: {
           filters: makeFilter([
@@ -21,6 +24,20 @@ export default (Component: Object) =>
               value: [geneId],
             },
           ]),
+          ssmsFilters: {
+            op: 'and',
+            content: [
+              significantConsequences,
+              ...(filters ? filters.content : []),
+              {
+                op: 'in',
+                content: {
+                  field: 'genes.gene_id',
+                  value: [geneId],
+                },
+              },
+            ],
+          },
         },
       };
     }),
@@ -29,12 +46,13 @@ export default (Component: Object) =>
       <Query
         parentProps={props}
         name="GeneLolliplot"
-        minHeight={387}
+        minHeight={20}
         variables={props.variables}
         Component={Component}
         query={graphql`
           query GeneLolliplot_relayQuery(
             $filters: FiltersArgument
+            $ssmsFilters: FiltersArgument
           ) {
             viewer {
               explore {
@@ -62,6 +80,16 @@ export default (Component: Object) =>
                             }
                           }
                         }
+                      }
+                    }
+                  }
+                }
+                ssms {
+                  aggregations(filters: $ssmsFilters) {
+                    consequence__transcript__transcript_id {
+                      buckets {
+                        doc_count
+                        key
                       }
                     }
                   }

@@ -3,7 +3,7 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { lifecycle, compose } from 'recompose';
-import { sortBy, sum, get } from 'lodash';
+import { sortBy, sum, get, isEqual } from 'lodash';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -94,15 +94,24 @@ const DefaultChartTitle = ({
     projects
   </h5>;
 
+function setCaseAggFilters(props) {
+  props.relay.setVariables({
+    fetchFilteredCaseAggs: true,
+    caseAggsFilter: props.filters,
+  });
+}
+
 const CancerDistributionChartComponent = compose(
   withRouter,
   withTheme,
   lifecycle({
     componentDidMount(): void {
-      this.props.relay.setVariables({
-        fetchFilteredCaseAggs: true,
-        caseAggsFilter: this.props.filters,
-      });
+      setCaseAggFilters(this.props);
+    },
+    componentWillReceiveProps(nextProps): void {
+      if (!isEqual(this.props.filters, nextProps.filters)) {
+        setCaseAggFilters(nextProps);
+      }
     },
   }),
 )(

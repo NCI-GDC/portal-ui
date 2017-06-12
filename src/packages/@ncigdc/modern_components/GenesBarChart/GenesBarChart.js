@@ -6,6 +6,8 @@ import Relay from 'react-relay/classic';
 import { compose, withHandlers } from 'recompose';
 import { parse } from 'query-string';
 import { connect } from 'react-redux';
+import JSURL from 'jsurl';
+
 import { handleReadyStateChange } from '@ncigdc/dux/loaders';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam } from '@ncigdc/utils/uri';
@@ -113,10 +115,16 @@ const createContainer = Component =>
 const Component = compose(
   withRouter,
   withHandlers({
-    handleClickGene: ({ push, onClickGene }) => (gene, chartData) =>
+    handleClickGene: ({ push, onClickGene, defaultFilters }) => (
+      gene,
+      chartData,
+    ) =>
       onClickGene
         ? onClickGene(gene, chartData)
-        : push(`/genes/${gene.gene_id}`),
+        : push({
+            pathname: `/genes/${gene.gene_id}`,
+            query: { filters: JSURL.stringify(defaultFilters) },
+          }),
   }),
   withTheme,
 )(

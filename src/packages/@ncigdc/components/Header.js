@@ -3,11 +3,7 @@
 import React from 'react';
 import { compose, pure, lifecycle, withHandlers } from 'recompose';
 import { connect } from 'react-redux';
-
 import { dismissNotification } from '@ncigdc/dux/bannerNotification';
-
-import nciGdcLogo from '@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg';
-
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
 import CartLink from '@ncigdc/components/Links/CartLink';
@@ -24,6 +20,10 @@ import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
+
+const nciGdcLogo = process.env.REACT_APP_ENV === 'nightly'
+  ? require('@ncigdc/theme/images/NHI_GDC_DataPortal-logo-nightly.svg')
+  : require('@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg');
 
 const styles = {
   iconPadding: {

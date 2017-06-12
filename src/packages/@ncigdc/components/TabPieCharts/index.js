@@ -40,6 +40,7 @@ export const WrappedRow = styled(Row, {
 export const RowCenter = styled(Row, {
   justifyContent: 'space-around',
   alignItems: 'center',
+  flexWrap: 'wrap',
 });
 
 export const ShowToggleBox = styled.div({

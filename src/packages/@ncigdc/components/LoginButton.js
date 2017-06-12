@@ -1,13 +1,9 @@
 // @flow
 /* eslint no-restricted-globals: 0 */
 
-// Vendor
 import React from 'react';
 import { connect } from 'react-redux';
 import LoginIcon from 'react-icons/lib/fa/sign-in';
-import urlJoin from 'url-join';
-
-// Custom
 import { fetchUser } from '@ncigdc/dux/auth';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import styled from '@ncigdc/theme/styled';
@@ -17,13 +13,7 @@ import { AUTH } from '@ncigdc/utils/constants';
 
 const openAuthWindow = ({ pathname, dispatch }) => {
   if (navigator.cookieEnabled) {
-    const returningPath = `${pathname}?${+new Date()}`;
-    const redirectUrl = urlJoin(AUTH, `?next=${returningPath}`);
-
-    const closeLogin = url =>
-      url === redirectUrl ? false : url.includes(returningPath);
-
-    const win = open(redirectUrl, 'Auth', 'width=800, height=600');
+    const win = open(AUTH, 'Auth', 'width=800, height=600');
 
     const interval = setInterval(() => {
       try {
@@ -33,7 +23,7 @@ const openAuthWindow = ({ pathname, dispatch }) => {
         // Must check this block (if the login window has been closed) first!
         if (win.closed) {
           clearInterval(interval);
-        } else if (closeLogin(win.document.URL)) {
+        } else if (win.document.URL.includes(location.origin)) {
           win.close();
 
           setTimeout(() => {

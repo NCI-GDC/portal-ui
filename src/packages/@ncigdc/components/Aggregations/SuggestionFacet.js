@@ -20,9 +20,10 @@ import type { TRawQuery } from '@ncigdc/utils/uri/types';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 import namespace from '@ncigdc/utils/namespace';
 import GeneSymbol from '@ncigdc/containers/GeneSymbol';
+import Input from '@ncigdc/uikit/Form/Input';
 
 import Hidden from '../Hidden';
-import { Container, StyledInput, CheckedRow, CheckedLink } from './';
+import { Container, CheckedRow, CheckedLink } from './';
 
 const MagnifyingGlass = styled(SearchIcon, {
   backgroundColor: ({ theme }) => theme.greyScale5,
@@ -168,7 +169,8 @@ const SuggestionFacet = compose(
                     <label htmlFor={fieldNoDoctype}>
                       <MagnifyingGlass /><Hidden>{title}</Hidden>
                     </label>
-                    <StyledInput
+                    <Input
+                      style={{ borderRadius: '0 4px 4px 0' }}
                       id={fieldNoDoctype}
                       name={fieldNoDoctype}
                       onChange={e => {

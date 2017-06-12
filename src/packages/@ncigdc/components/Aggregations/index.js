@@ -2,7 +2,6 @@
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import styled from '@ncigdc/theme/styled';
-import Input from '@ncigdc/uikit/Form/Input';
 
 import Link from '@ncigdc/components/Links/Link';
 
@@ -17,11 +16,6 @@ export const InputLabel = styled.label({
   padding: '0.8rem',
   height: '3.4rem',
   border: ({ theme }) => `1px solid ${theme.greyScale4}`,
-});
-
-export const StyledInput = styled(Input, {
-  height: '3.4rem',
-  borderRadius: '0 4px 4px 0',
 });
 
 export const GoLink = styled(Link, {

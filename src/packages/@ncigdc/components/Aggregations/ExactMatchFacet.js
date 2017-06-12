@@ -12,7 +12,8 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import CheckCircleOIcon from '@ncigdc/theme/icons/CheckCircleOIcon';
 import type { TRawQuery } from '@ncigdc/utils/uri/types';
 import Hidden from '../Hidden';
-import { Container, StyledInput, GoLink, CheckedRow, CheckedLink } from './';
+import { Container, GoLink, CheckedRow, CheckedLink } from './';
+import Input from '@ncigdc/uikit/Form/Input';
 
 const ExactMatchFacet = compose(
   withState('inputValue', 'setInputValue', ''),
@@ -64,7 +65,7 @@ const ExactMatchFacet = compose(
                     <label htmlFor={fieldNoDoctype}>
                       <Hidden>{title}</Hidden>
                     </label>
-                    <StyledInput
+                    <Input
                       style={{
                         borderRadius: '4px 0 0 4px',
                       }}

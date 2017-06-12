@@ -2,11 +2,11 @@
 
 import React from 'react';
 import ExploreCasesTable from '@ncigdc/modern_components/ExploreCasesTable/ExploreCasesTable';
-import ExploreCasesPies from '@ncigdc/components/TabPieCharts/ExploreCasesPies';
+import ExploreCasesPies from '@ncigdc/modern_components/ExploreCasesPies/ExploreCasesPies';
 
-const CasesTab = props =>
+const CasesTab = () =>
   <div>
-    <ExploreCasesPies aggregations={props.pies} />
+    <ExploreCasesPies />
     <ExploreCasesTable />
   </div>;
 

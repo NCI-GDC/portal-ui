@@ -3,15 +3,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, mapProps } from 'recompose';
+import urlJoin from 'url-join';
 
 import download from '@ncigdc/utils/download';
 import Button from '@ncigdc/uikit/Button';
 import DownloadIcon from '@ncigdc/theme/icons/Download';
 import Spinner from '@ncigdc/theme/icons/Spinner';
 import Hidden from '@ncigdc/components/Hidden';
+import { AUTH_API } from '@ncigdc/utils/constants';
 
 type TDownloadButton = {
-  url: string,
+  endpoint: string,
   active: boolean,
   disabled: boolean,
   filename: string,
@@ -32,7 +34,7 @@ type TDownloadButton = {
 };
 
 const DownloadButton = ({
-  url,
+  endpoint,
   disabled = false,
   filename,
   dataExportExpands,
@@ -79,7 +81,7 @@ const DownloadButton = ({
 
         download({
           params,
-          url,
+          url: urlJoin(AUTH_API, endpoint),
           method: 'POST',
           altMessage,
         })(() => {}, () => setActive(false));

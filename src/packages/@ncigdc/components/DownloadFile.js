@@ -2,7 +2,6 @@
 import React from 'react';
 import { compose } from 'recompose';
 import { connect } from 'react-redux';
-import urlJoin from 'url-join';
 
 import DownloadButton from '@ncigdc/components/DownloadButton';
 import { userCanDownloadFile } from '@ncigdc/utils/auth';
@@ -10,7 +9,6 @@ import { setModal } from '@ncigdc/dux/modal';
 import NoAccessModal from '@ncigdc/components/Modals/NoAccessModal';
 import Hidden from '@ncigdc/components/Hidden';
 import Button from '@ncigdc/uikit/Button';
-import { AUTH_API } from '@ncigdc/utils/constants';
 
 type TProps = {
   user: Object,
@@ -34,7 +32,7 @@ function DownloadFile({
       <DownloadButton
         extraParams={{ ids: file.file_id }}
         filename={file.file_name}
-        url={urlJoin(AUTH_API, 'data?annotations=true&related_files=true')}
+        endpoint="data?annotations=true&related_files=true"
         activeText={activeText}
         inactiveText={inactiveText}
         style={style}

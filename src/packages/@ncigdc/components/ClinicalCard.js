@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { compose, withState } from 'recompose';
-import urlJoin from 'url-join';
 
 import Card from '@ncigdc/uikit/Card';
 import Tabs from '@ncigdc/uikit/Tabs';
@@ -14,7 +13,6 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
-import { API } from '@ncigdc/utils/constants';
 
 const ClinicalCard = ({
   p: {
@@ -41,7 +39,7 @@ const ClinicalCard = ({
         <DownloadButton
           style={visualizingButton}
           filename={`clinical.case-${caseId}`}
-          url={urlJoin(API, 'cases')}
+          endpoint="cases"
           activeText="Processing"
           inactiveText="Export"
           filters={{

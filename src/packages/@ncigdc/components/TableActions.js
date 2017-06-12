@@ -1,7 +1,6 @@
 /* @flow */
 
 import React from 'react';
-import urlJoin from 'url-join';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -15,7 +14,6 @@ import type { TRawQuery } from '@ncigdc/utils/uri/types';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
-import { AUTH_API } from '@ncigdc/utils/constants';
 
 type TProps = {
   prefix: string,
@@ -73,7 +71,7 @@ const TableActions = (
               }
               disabled={!total}
               filename={prefix}
-              url={urlJoin(AUTH_API, endpoint)}
+              endpoint={endpoint}
               fields={downloadFields}
               style={visualizingButton}
               size={total}

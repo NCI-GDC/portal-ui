@@ -32,8 +32,14 @@ const InternalLinkWithContext = ({
         // Note: empty {} passed in b/c
         // mergeQuery(ctx.query).filters is a jsurl string
         // mergeQuery({}, ctx.query).filters is an object
-        _.isEqual(mergedQuery.filters, mergeQuery({}, ctx.query).filters),
-        _.every([ctx.query.filters, mergedQuery.filters], _.isNil),
+        _.isEqual(
+          _.get(mergedQuery, 'filters'),
+          _.get(mergeQuery({}, ctx.query), 'filters'),
+        ),
+        _.every(
+          [_.get(ctx.query, 'filters'), _.get(mergedQuery, 'filters')],
+          _.isNil,
+        ),
       ]);
 
       const queryWithOffsetsReset = hasFilterChanged

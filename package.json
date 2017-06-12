@@ -8,7 +8,7 @@
   },
   "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
-    "precommit": "lint-staged",
+    "precommit": "os=`git rev-parse refs/stash`; git stash save -q -k; ns=`git rev-parse refs/stash`; lint-staged; if [ \"$os\" != \"$ns\" ]; then git stash pop --index -q; fi",
     "start": "BROWSER=none jailbreak-react-scripts start",
     "build": "jailbreak-react-scripts build",
     "test": "react-scripts test --env=jsdom",

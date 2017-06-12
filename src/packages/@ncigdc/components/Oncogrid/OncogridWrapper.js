@@ -63,7 +63,7 @@ function refreshGridState({
 }
 
 const GRID_CLASS = 'oncogrid-wrapper';
-const MAX_CASES = 1000;
+const MAX_CASES = 500;
 const MAX_GENES = 50;
 
 const styles = {

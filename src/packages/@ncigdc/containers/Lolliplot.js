@@ -601,7 +601,7 @@ const LolliplotComponent = compose(
                     </span>
                     <span> / </span>
                     <span>{lolliplotData.mutations.length} Mutations</span>
-                    {outsideSsms.length &&
+                    {outsideSsms.length > 0 &&
                       <span style={{ float: 'right' }}>
                         <Tooltip
                           Component={

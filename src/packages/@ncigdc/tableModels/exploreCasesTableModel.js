@@ -132,7 +132,7 @@ const casesTableModel = [
     td: ({ node }) =>
       <NumTd key="summary.file_count">
         <FilesLink node={node}>
-          {node.summary.file_count.toLocaleString()}
+          {(node.summary.file_count || 0).toLocaleString()}
         </FilesLink>
       </NumTd>,
     total: withRouter(({ hits, query }) =>
@@ -204,7 +204,7 @@ const casesTableModel = [
                 ),
               }}
             >
-              {node.score.toLocaleString()}
+              {(node.score || 0).toLocaleString()}
             </ExploreLink>
           : 0}
       </Td>,

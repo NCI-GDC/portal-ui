@@ -4,32 +4,151 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import withFilters from '@ncigdc/utils/withFilters';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Row } from '@ncigdc/uikit/Flex';
+import { parse } from 'query-string';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import tableModels from '@ncigdc/tableModels';
 import Pagination from '@ncigdc/components/Pagination';
-
 import TableActions from '@ncigdc/components/TableActions';
-
 import Table, { Tr } from '@ncigdc/uikit/Table';
-
+import { handleReadyStateChange } from '@ncigdc/dux/loaders';
+import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 import { compose, withPropsOnChange, withState } from 'recompose';
+import {
+  parseIntParam,
+  parseFilterParam,
+  parseJSURLParam,
+} from '@ncigdc/utils/uri';
 
-import type { TTableProps } from '../types';
+const COMPONENT_NAME = 'ExploreCasesTable';
 
-export const CaseTableComponent = compose(
+const createRenderer = (Route, Container) =>
+  compose(connect(), withRouter)((props: mixed) =>
+    <div style={{ position: 'relative', minHeight: '387px' }}>
+      <Relay.Renderer
+        environment={Relay.Store}
+        queryConfig={new Route(props)}
+        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
+        Container={Container}
+        render={({ props: relayProps }) =>
+          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
+        }
+      />
+      <ConnectedLoader name={COMPONENT_NAME} />
+    </div>,
+  );
+
+class Route extends Relay.Route {
+  static routeName = COMPONENT_NAME;
+  static queries = {
+    viewer: () => Relay.QL`query { viewer }`,
+  };
+  static prepareParams = ({
+    location: { search },
+    defaultSize = 20,
+    defaultFilters = null,
+  }) => {
+    const q = parse(search);
+
+    return {
+      filters: parseFilterParam(q.filters, defaultFilters),
+      cases_offset: parseIntParam(q.cases_offset, 0),
+      cases_size: parseIntParam(q.cases_size, defaultSize),
+      cases_sort: parseJSURLParam(q.cases_sort, null),
+    };
+  };
+}
+
+const createContainer = Component =>
+  Relay.createContainer(Component, {
+    initialVariables: {
+      fetchSsmCounts: false,
+      ssmCountsfilters: null,
+      cases_offset: null,
+      cases_size: null,
+      cases_sort: null,
+      cases_score: 'gene.gene_id',
+      filters: null,
+    },
+    fragments: {
+      viewer: () => Relay.QL`
+        fragment on Root {
+          explore {
+            cases {
+              hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {
+                total
+                edges {
+                  node {
+                    score
+                    id
+                    case_id
+                    primary_site
+                    disease_type
+                    submitter_id
+                    project {
+                      project_id
+                      program {
+                        name
+                      }
+                    }
+                    diagnoses {
+                      hits(first: 1) {
+                        edges {
+                          node {
+                            primary_diagnosis
+                            age_at_diagnosis
+                            vital_status
+                            days_to_death
+                          }
+                        }
+                      }
+                    }
+                    demographic {
+                      gender
+                      ethnicity
+                      race
+                    }
+                    summary {
+                      data_categories {
+                        file_count
+                        data_category
+                      }
+                      file_count
+                    }
+                  }
+                }
+              }
+            }
+            ssms {
+              aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) @include(if: $fetchSsmCounts){
+                occurrence__case__case_id {
+                  buckets {
+                    key
+                    doc_count
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+    },
+  });
+
+const Component = compose(
   withFilters(),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
   withPropsOnChange(
-    ['hits'],
+    ['viewer'],
     ({
       setSsmCountsLoading,
       ssmCountsLoading,
-      hits,
+      viewer: { explore: { cases: { hits } } },
       relay,
       filters,
-    }: TTableProps) => {
+    }) => {
       const caseIds = hits.edges.map(e => e.node.case_id);
       if (!ssmCountsLoading) {
         setSsmCountsLoading(true);
@@ -60,7 +179,7 @@ export const CaseTableComponent = compose(
       );
     },
   ),
-  withPropsOnChange(['explore'], ({ explore }: TTableProps) => {
+  withPropsOnChange(['viewer'], ({ viewer: { explore } }) => {
     const { occurrence__case__case_id: { buckets } } = explore.ssms
       .aggregations || {
       occurrence__case__case_id: { buckets: [] },
@@ -72,7 +191,7 @@ export const CaseTableComponent = compose(
     return { ssmCounts };
   }),
   connect(state => ({ tableColumns: state.tableColumns.exploreCases })),
-)((props: TTableProps) => {
+)(props => {
   const prefix = 'cases';
   const { ssmCounts, ssmCountsLoading, tableColumns } = props;
 
@@ -94,14 +213,14 @@ export const CaseTableComponent = compose(
           docType="cases"
           prefix={prefix}
           params={props.relay.route.params}
-          total={props.hits.total}
+          total={props.viewer.explore.cases.hits.total}
         />
         <TableActions
           prefix={prefix}
           entityType="exploreCases"
-          total={props.hits.total}
+          total={props.viewer.explore.cases.hits.total}
           sortKey="cases_sort"
-          endpoint={props.endpoint || 'cases'}
+          endpoint="case_ssms"
           downloadTooltip="Export All Except #Mutations and #Genes"
           downloadFields={[
             'case_id',
@@ -140,7 +259,7 @@ export const CaseTableComponent = compose(
             .map(x => <x.th key={x.id} />)}
           body={
             <tbody>
-              {props.hits.edges.map((e, i) =>
+              {props.viewer.explore.cases.hits.edges.map((e, i) =>
                 <Tr key={e.node.id} index={i}>
                   {tableInfo
                     .filter(x => x.td)
@@ -150,7 +269,7 @@ export const CaseTableComponent = compose(
                         node={e.node}
                         relay={props.relay}
                         index={i}
-                        total={props.hits.total}
+                        total={props.viewer.explore.cases.hits.total}
                         ssmCount={ssmCounts[e.node.case_id]}
                         ssmCountsLoading={ssmCountsLoading}
                         filters={props.filters}
@@ -165,81 +284,10 @@ export const CaseTableComponent = compose(
       <Pagination
         prefix={prefix}
         params={props.relay.route.params}
-        total={props.hits.total}
+        total={props.viewer.explore.cases.hits.total}
       />
     </div>
   );
 });
 
-export const CaseTableQuery = {
-  initialVariables: {
-    fetchSsmCounts: false,
-    ssmCountsfilters: null,
-  },
-  fragments: {
-    hits: () => Relay.QL`
-      fragment on ECaseConnection {
-        total
-        edges {
-          node {
-            score
-            id
-            case_id
-            primary_site
-            disease_type
-            submitter_id
-            project {
-              project_id
-              program {
-                name
-              }
-            }
-            diagnoses {
-              hits(first: 1) {
-                edges {
-                  node {
-                    primary_diagnosis
-                    age_at_diagnosis
-                    vital_status
-                    days_to_death
-                  }
-                }
-              }
-            }
-            demographic {
-              gender
-              ethnicity
-              race
-            }
-            summary {
-              data_categories {
-                file_count
-                data_category
-              }
-              file_count
-            }
-          }
-        }
-      }
-    `,
-    explore: () => Relay.QL`
-      fragment on Explore {
-        ssms {
-          blah: hits(first: 0) { total }
-          aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) @include(if: $fetchSsmCounts){
-            occurrence__case__case_id {
-              buckets {
-                key
-                doc_count
-              }
-            }
-          }
-        }
-      }
-    `,
-  },
-};
-
-const CaseTable = Relay.createContainer(CaseTableComponent, CaseTableQuery);
-
-export default CaseTable;
+export default createRenderer(Route, createContainer(Component));

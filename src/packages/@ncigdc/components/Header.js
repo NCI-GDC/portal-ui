@@ -17,11 +17,11 @@ import Hidden from '@ncigdc/components/Hidden';
 import { setModal } from '@ncigdc/dux/modal';
 import { forceLogout } from '@ncigdc/dux/auth';
 import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
-
+import { DEPLOY_TARGET } from '@ncigdc/utils/constants';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
 
-const nciGdcLogo = process.env.REACT_APP_ENV === 'nightly'
+const nciGdcLogo = DEPLOY_TARGET === 'nightly'
   ? require('@ncigdc/theme/images/NHI_GDC_DataPortal-logo-nightly.svg')
   : require('@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg');
 

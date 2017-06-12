@@ -195,7 +195,7 @@ export const CaseTableQuery = {
               }
             }
             diagnoses {
-              hits(first: 99) {
+              hits(first: 1) {
                 edges {
                   node {
                     primary_diagnosis

@@ -42,9 +42,7 @@ const initialState = Object.keys(tableModels).reduce(
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
-      const incoming = action.payload.tableColumns;
-      if (incoming) return incoming;
-      return state;
+      return { ...state, ...action.payload.tableColumns };
     }
 
     case tableColumns.TOGGLE_COLUMN: {

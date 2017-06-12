@@ -170,7 +170,7 @@ const CartDownloadDropdown = ({
       <Column>
         <DownloadButton
           style={styles.button(theme)}
-          url={urlJoin(AUTH_API, 'manifest')}
+          endpoint="manifest"
           activeText="Manifest"
           inactiveText="Manifest"
           altMessage={false}

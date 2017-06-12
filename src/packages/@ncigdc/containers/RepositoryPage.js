@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import urlJoin from 'url-join';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
@@ -25,7 +24,6 @@ import withFilters from '@ncigdc/utils/withFilters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 import RepoCasesPies from '@ncigdc/components/TabPieCharts/RepoCasesPies';
 import RepoFilesPies from '@ncigdc/components/TabPieCharts/RepoFilesPies';
-import { AUTH_API } from '@ncigdc/utils/constants';
 
 export type TProps = {
   relay: Object,
@@ -139,7 +137,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                 </Button>
                 <DownloadButton
                   disabled={!fileCount}
-                  url={urlJoin(AUTH_API, 'files')}
+                  endpoint="files"
                   activeText="Downloading"
                   inactiveText="Download Manifest"
                   fields={[

@@ -1,13 +1,11 @@
 // @flow
 import React from 'react';
-import urlJoin from 'url-join';
 
 import DownloadButton from '@ncigdc/components/DownloadButton';
-import { API } from '@ncigdc/utils/constants';
 
 const MetadataDropdownButton = ({ files }) =>
   <DownloadButton
-    url={urlJoin(API, 'files')}
+    endpoint="files"
     size={files.files.length}
     filename="metadata.cart"
     activeText="Downloading"

@@ -11,10 +11,7 @@ import MutationsTab from '@ncigdc/components/Explore/MutationsTab';
 import OncogridTab from '@ncigdc/components/Explore/OncogridTab';
 import CasesTab from '@ncigdc/components/Explore/CasesTab';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
-
 import ExploreCasesPies from '@ncigdc/components/TabPieCharts/ExploreCasesPies';
-
-import CaseTable from '@ncigdc/containers/explore/CaseTable';
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
@@ -122,12 +119,7 @@ export const ExplorePageComponent = (props: TProps) =>
             id: 'cases',
             text: `Cases (${props.viewer.explore.cases.hits.total.toLocaleString()})`,
             component: !!props.viewer.explore.cases.hits.total
-              ? <CasesTab
-                  explore={props.viewer.explore}
-                  hits={props.viewer.explore.cases.hits}
-                  aggregations={props.viewer.explore.cases.aggregations}
-                  pies={props.viewer.explore.cases.pies}
-                />
+              ? <CasesTab pies={props.viewer.explore.cases.pies} />
               : <NoResultsMessage>No Cases Found.</NoResultsMessage>,
           },
           {
@@ -214,7 +206,6 @@ export const ExplorePageQuery = {
           ${GeneSymbol.getFragment('explore')}
         }
         explore {
-          ${CaseTable.getFragment('explore')}
           cases {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment('aggregations')}
@@ -223,7 +214,6 @@ export const ExplorePageQuery = {
               ${ExploreCasesPies.getFragment('aggregations')}
             }
             hits(first: $cases_size offset: $cases_offset filters: $filters score: $cases_score sort: $cases_sort) {
-              ${CaseTable.getFragment('hits')}
               total
             }
           }

@@ -1,6 +1,12 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { compose, lifecycle, withPropsOnChange } from 'recompose';
+import {
+  compose,
+  lifecycle,
+  withPropsOnChange,
+  branch,
+  renderComponent,
+} from 'recompose';
 import { isEqual } from 'lodash';
 import { Lolliplot, Backbone, Minimap } from '@oncojs/react-lolliplot/dist/lib';
 import LolliplotStats from './LolliplotStats';
@@ -49,6 +55,10 @@ export default compose(
       ? JSON.parse(analysis.protein_mutations.data)
       : {},
   })),
+  branch(
+    ({ ssms }) => !ssms.hits.length,
+    renderComponent(() => <div>Not enough data.</div>),
+  ),
   withPropsOnChange(
     ['viewer', 'ssms', 'state'],
     ({ activeTranscript, blacklist, ssms, setState }) => {

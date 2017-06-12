@@ -4,7 +4,6 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import { makeFilter } from '@ncigdc/utils/filters';
 import GeneSummary from '@ncigdc/containers/GeneSummary';
 import GeneExternalReferences from '@ncigdc/containers/GeneExternalReferences';
 import CancerDistributionChart from '@ncigdc/containers/CancerDistributionChart';
@@ -13,9 +12,13 @@ import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import { GeneLolliplot } from '@ncigdc/modern_components/Lolliplot';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import CurrentFilters from '@ncigdc/components/CurrentFilters';
 import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
 import ChartIcon from '@ncigdc/theme/icons/BarChart';
 import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
+
+import GeneSymbol from '@ncigdc/containers/GeneSymbol';
+import { replaceFilters } from '@ncigdc/utils/filters';
 
 const styles = {
   heading: {
@@ -32,6 +35,7 @@ const styles = {
 };
 
 export type TProps = {|
+  filters: {},
   node: {
     gene_id: string,
     symbol: string,
@@ -48,25 +52,47 @@ export type TProps = {|
       ssms: Object,
     },
     projects: Object,
+    analysis: {
+      protein_mutations: {},
+    },
+    geneSymbolFragment: {},
   },
 |};
 
 export const GenePageComponent = (props: TProps) => {
-  const fmFilters = makeFilter([
+  const geneFilter = replaceFilters(
     {
-      field: 'genes.gene_id',
-      value: [props.node.gene_id],
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: { field: 'genes.gene_id', value: [props.node.gene_id] },
+        },
+      ],
     },
-  ]);
+    props.filters,
+  );
 
-  const cdFilters = makeFilter([
-    { field: 'genes.gene_id', value: props.node.gene_id },
-    { field: 'cases.available_variation_data', value: 'ssm' },
-  ]);
+  const mutatedGeneFilter = replaceFilters(
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: { field: 'cases.available_variation_data', value: ['ssm'] },
+        },
+      ],
+    },
+    geneFilter,
+  );
 
   return (
     <FullWidthLayout title={props.node.symbol} entityType="GN">
       <Column spacing="2rem">
+        {props.filters &&
+          <CurrentFilters
+            geneSymbolFragment={props.viewer.geneSymbolFragment}
+          />}
         <Row spacing="2rem">
           <Row flex="1"><GeneSummary node={props.node} /></Row>
           <Row flex="1"><GeneExternalReferences node={props.node} /></Row>
@@ -78,7 +104,7 @@ export const GenePageComponent = (props: TProps) => {
               Cancer Distribution
             </h1>
             <ExploreLink
-              query={{ searchTableTab: 'cases', filters: cdFilters }}
+              query={{ searchTableTab: 'cases', filters: mutatedGeneFilter }}
             >
               <GdcDataIcon /> Open in Exploration
             </ExploreLink>
@@ -88,11 +114,11 @@ export const GenePageComponent = (props: TProps) => {
               cases={props.viewer.explore.cases}
               ssms={props.viewer.explore.ssms}
               projects={props.viewer.projects}
-              filters={cdFilters}
+              filters={mutatedGeneFilter}
               style={{ width: '50%' }}
             />
             <CancerDistributionTable
-              filters={cdFilters}
+              filters={mutatedGeneFilter}
               entityName={props.node.symbol}
               geneId={props.node.gene_id}
               cases={props.viewer.explore.cases}
@@ -128,7 +154,7 @@ export const GenePageComponent = (props: TProps) => {
               Most Frequent Somatic Mutations
             </h1>
             <ExploreLink
-              query={{ searchTableTab: 'mutations', filters: fmFilters }}
+              query={{ searchTableTab: 'mutations', filters: geneFilter }}
             >
               <GdcDataIcon /> Open in Exploration
             </ExploreLink>
@@ -136,7 +162,7 @@ export const GenePageComponent = (props: TProps) => {
 
           <Column>
             <SsmsTable
-              defaultFilters={fmFilters}
+              defaultFilters={geneFilter}
               shouldShowGeneSymbol={false}
               context={props.node.symbol}
             />
@@ -178,6 +204,9 @@ export const GenePageQuery = {
     `,
     viewer: () => Relay.QL`
       fragment on Root {
+        geneSymbolFragment: explore {
+          ${GeneSymbol.getFragment('explore')}
+        }
         projects {
           ${CancerDistributionTable.getFragment('projects')}
         }

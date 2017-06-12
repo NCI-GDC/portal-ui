@@ -34,8 +34,14 @@ export default compose(
   withRouter,
   withPropsOnChange(
     ['viewer'],
-    ({ viewer: { explore: { genes: { hits: { edges } } } } }) => ({
+    ({
+      viewer: {
+        explore: { genes: { hits: { edges } }, ssms: { aggregations } },
+      },
+    }) => ({
       gene: edges[0].node,
+      transcriptBuckets:
+        aggregations.consequence__transcript__transcript_id.buckets,
     }),
   ),
   withState('state', 'setState', props => {
@@ -99,6 +105,7 @@ export default compose(
     push,
     filterByType,
     transcripts,
+    transcriptBuckets,
   }) =>
     <Column style={{ backgroundColor: 'white' }}>
       <Row>
@@ -113,7 +120,9 @@ export default compose(
         <LolliplotToolbar
           activeTranscript={activeTranscript}
           gene={gene}
-          transcripts={transcripts}
+          transcripts={transcripts.filter(x =>
+            transcriptBuckets.find(b => b.key === x.transcript_id),
+          )}
           setState={setState}
           selector={selector}
         />

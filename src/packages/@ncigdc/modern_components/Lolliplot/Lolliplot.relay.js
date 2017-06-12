@@ -5,30 +5,38 @@ import { graphql } from 'react-relay';
 import { compose, withPropsOnChange } from 'recompose';
 import Query from '@ncigdc/modern_components/Query';
 import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
+import withFilters from '@ncigdc/utils/withFilters';
+import withRouter from '@ncigdc/utils/withRouter';
 
 export default (Component: ReactClass<*>) =>
   compose(
-    withPropsOnChange(['activeTranscript'], ({ activeTranscript }) => {
-      return {
-        variables: {
-          score: 'occurrence.case.project.project_id',
-          first: 10000,
-          filters: {
-            op: 'and',
-            content: [
-              significantConsequences,
-              {
-                op: '=',
-                content: {
-                  field: 'consequence.transcript.transcript_id',
-                  value: [activeTranscript.transcript_id],
+    withRouter,
+    withFilters(),
+    withPropsOnChange(
+      ['activeTranscript', 'filters', 'location'],
+      ({ activeTranscript, filters }) => {
+        return {
+          variables: {
+            score: 'occurrence.case.project.project_id',
+            first: 10000,
+            filters: {
+              op: 'and',
+              content: [
+                significantConsequences,
+                {
+                  op: '=',
+                  content: {
+                    field: 'consequence.transcript.transcript_id',
+                    value: [activeTranscript.transcript_id],
+                  },
                 },
-              },
-            ],
+                ...(filters ? filters.content : []),
+              ],
+            },
           },
-        },
-      };
-    }),
+        };
+      },
+    ),
   )((props: Object) => {
     return (
       <Query

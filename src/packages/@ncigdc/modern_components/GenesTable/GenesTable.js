@@ -352,7 +352,11 @@ const Component = compose(
                   {g.name}
                 </div>
               ),
-              symbol: <GeneLink uuid={g.gene_id}>{g.symbol}</GeneLink>,
+              symbol: (
+                <GeneLink uuid={g.gene_id} query={{ filters: defaultFilters }}>
+                  {g.symbol}
+                </GeneLink>
+              ),
               cytoband: (g.cytoband || []).join(', '),
               filteredCases: (
                 <span>

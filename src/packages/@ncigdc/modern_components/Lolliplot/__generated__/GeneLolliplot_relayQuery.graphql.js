@@ -3,8 +3,8 @@
  *   relay-compiler
  *
  * @providesModule GeneLolliplot_relayQuery.graphql
- * @generated SignedSource<<c6401dccfb5c8c104b0818411d3564f8>>
- * @relayHash f735ed7629b0c830708e865484fa8152
+ * @generated SignedSource<<6973eaa28e61ff543bb01d25549ab206>>
+ * @relayHash f20a9484458ab950540d08a6347b147b
  * @flow
  * @nogrep
  */
@@ -22,6 +22,7 @@ import type {ConcreteBatch} from 'relay-runtime';
 /*
 query GeneLolliplot_relayQuery(
   $filters: FiltersArgument
+  $ssmsFilters: FiltersArgument
 ) {
   viewer {
     explore {
@@ -55,6 +56,16 @@ query GeneLolliplot_relayQuery(
           }
         }
       }
+      ssms {
+        aggregations(filters: $ssmsFilters) {
+          consequence__transcript__transcript_id {
+            buckets {
+              doc_count
+              key
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -66,6 +77,12 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "filters",
+        "type": "FiltersArgument",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "ssmsFilters",
         "type": "FiltersArgument",
         "defaultValue": null
       }
@@ -278,6 +295,71 @@ const batch /*: ConcreteBatch*/ = {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "kind": "LinkedField",
+                "alias": null,
+                "args": null,
+                "concreteType": "Ssms",
+                "name": "ssms",
+                "plural": false,
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "args": [
+                      {
+                        "kind": "Variable",
+                        "name": "filters",
+                        "variableName": "ssmsFilters",
+                        "type": "FiltersArgument"
+                      }
+                    ],
+                    "concreteType": "SsmAggregations",
+                    "name": "aggregations",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "kind": "LinkedField",
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "Aggregations",
+                        "name": "consequence__transcript__transcript_id",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "kind": "LinkedField",
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "Bucket",
+                            "name": "buckets",
+                            "plural": true,
+                            "selections": [
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "doc_count",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "key",
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -297,6 +379,12 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "filters",
+        "type": "FiltersArgument",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "ssmsFilters",
         "type": "FiltersArgument",
         "defaultValue": null
       }
@@ -523,6 +611,71 @@ const batch /*: ConcreteBatch*/ = {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "kind": "LinkedField",
+                "alias": null,
+                "args": null,
+                "concreteType": "Ssms",
+                "name": "ssms",
+                "plural": false,
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": null,
+                    "args": [
+                      {
+                        "kind": "Variable",
+                        "name": "filters",
+                        "variableName": "ssmsFilters",
+                        "type": "FiltersArgument"
+                      }
+                    ],
+                    "concreteType": "SsmAggregations",
+                    "name": "aggregations",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "kind": "LinkedField",
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "Aggregations",
+                        "name": "consequence__transcript__transcript_id",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "kind": "LinkedField",
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "Bucket",
+                            "name": "buckets",
+                            "plural": true,
+                            "selections": [
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "doc_count",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "key",
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -532,7 +685,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query GeneLolliplot_relayQuery(\n  $filters: FiltersArgument\n) {\n  viewer {\n    explore {\n      genes {\n        hits(first: 1, filters: $filters) {\n          edges {\n            node {\n              gene_id\n              symbol\n              canonical_transcript_id\n              transcripts {\n                hits(first: 99) {\n                  edges {\n                    node {\n                      is_canonical\n                      transcript_id\n                      length_amino_acid\n                      domains {\n                        hit_name\n                        description\n                        start\n                        end\n                      }\n                      id\n                    }\n                  }\n                }\n              }\n              id\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+  "text": "query GeneLolliplot_relayQuery(\n  $filters: FiltersArgument\n  $ssmsFilters: FiltersArgument\n) {\n  viewer {\n    explore {\n      genes {\n        hits(first: 1, filters: $filters) {\n          edges {\n            node {\n              gene_id\n              symbol\n              canonical_transcript_id\n              transcripts {\n                hits(first: 99) {\n                  edges {\n                    node {\n                      is_canonical\n                      transcript_id\n                      length_amino_acid\n                      domains {\n                        hit_name\n                        description\n                        start\n                        end\n                      }\n                      id\n                    }\n                  }\n                }\n              }\n              id\n            }\n          }\n        }\n      }\n      ssms {\n        aggregations(filters: $ssmsFilters) {\n          consequence__transcript__transcript_id {\n            buckets {\n              doc_count\n              key\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

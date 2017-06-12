@@ -11,6 +11,7 @@ const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig, uploadables) {
   const [componentName] = operation.name.split('_relayQuery');
+
   setTimeout(() => reduxStore.dispatch(setLoader(componentName)));
 
   return fetch(urlJoin(process.env.REACT_APP_API, 'graphql'), {
@@ -24,7 +25,7 @@ function fetchQuery(operation, variables, cacheConfig, uploadables) {
       variables,
     }),
   }).then(response => {
-    reduxStore.dispatch(removeLoader(componentName));
+    setTimeout(() => reduxStore.dispatch(removeLoader(componentName)));
     return response.json();
   });
 }

@@ -237,13 +237,18 @@ const ProjectsChartsComponent = compose(
     pathname,
     push,
     caseCountFilters,
+    fmgChartFilters,
   }: TProps) => {
     const projects = hits.edges.map(x => x.node);
     const stackedBarData = topGenesSource
       .map(({ gene_id: geneId, symbol }) => ({
         symbol,
         gene_id: geneId,
-        onClick: () => push(`/genes/${geneId}`),
+        onClick: () =>
+          push({
+            pathname: `/genes/${geneId}`,
+            query: { filters: JSURL.stringify(fmgChartFilters) },
+          }),
         ...topGenesWithCasesPerProject[geneId],
         total: Object.keys(topGenesWithCasesPerProject[geneId])
           .filter(k => k !== 'symbol')

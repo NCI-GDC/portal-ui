@@ -70,8 +70,8 @@ const ArrangeColumns = compose(
               style={{ width: '100%', cursor: 'pointer', alignItems: 'center' }}
               onClick={() => {
                 if (column.subHeadingIds) {
-                  column.subHeadingIds.forEach(id =>
-                    dispatch(toggleColumn({ entityType, id })),
+                  column.subHeadingIds.forEach((id, j) =>
+                    dispatch(toggleColumn({ entityType, id, index: i + j })),
                   );
                 }
 

@@ -6,7 +6,7 @@
     "name": "OICR",
     "url": "https://github.com/NCI-GDC/"
   },
-  "homepage": "https://gdc-portal.nci.nih.gov/",
+  "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
     "precommit": "lint-staged",
     "start": "BROWSER=none jailbreak-react-scripts start",

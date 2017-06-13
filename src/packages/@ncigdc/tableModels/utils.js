@@ -23,6 +23,7 @@ export const createDataCategoryColumns = ({
     {
       name: 'Data Categories',
       id: 'data_category',
+      field: `summary.data_categories.data_category,summary.data_categories.${countKey}`,
       th: () =>
         <Th
           key="data_category"
@@ -31,6 +32,7 @@ export const createDataCategoryColumns = ({
         >
           {title}
         </Th>,
+      downloadable: true,
       subHeadingIds: _.map(DATA_CATEGORIES, category => category.abbr),
     },
     ..._.map(DATA_CATEGORIES, (category, key) => ({

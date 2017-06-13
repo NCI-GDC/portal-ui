@@ -48,10 +48,10 @@ export const SearchTable = compose(
             sortKey={`${entityType}_sort`}
             endpoint={entityType}
             downloadable={downloadable}
-            downloadFields={tableModels[entityType]
+            downloadFields={tableInfo
               .filter(x => x.downloadable)
-              .map(x => x.id)}
-            sortOptions={tableModels[entityType].filter(x => x.sortable)}
+              .map(x => x.field || x.id)}
+            sortOptions={tableInfo.filter(x => x.sortable)}
             tsvSelector="#projects-table"
             tsvFilename="projects-table.tsv"
           />

@@ -33,7 +33,7 @@ let initialState = [
   {
     components: ['PORTAL'],
     level: 'INFO',
-    id: 0,
+    id: 'initial_banner',
     dismissible: true,
     message: <DismissibleBanner />,
   },

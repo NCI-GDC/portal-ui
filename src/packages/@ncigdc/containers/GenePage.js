@@ -10,7 +10,7 @@ import GeneExternalReferences from '@ncigdc/containers/GeneExternalReferences';
 import CancerDistributionChart from '@ncigdc/containers/CancerDistributionChart';
 import CancerDistributionTable from '@ncigdc/containers/CancerDistributionTable';
 import Lolliplot from '@ncigdc/containers/Lolliplot';
-import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
+import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';

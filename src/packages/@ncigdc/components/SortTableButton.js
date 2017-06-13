@@ -37,6 +37,7 @@ type TSortTableButtonProps = {
   query: Object,
   sortKey: string,
   theme: Object,
+  isDisabled?: boolean,
 };
 
 const SortTableButton = compose(
@@ -44,7 +45,14 @@ const SortTableButton = compose(
   withTheme,
 )(
   (
-    { style, options, query: q, sortKey, theme }: TSortTableButtonProps = {},
+    {
+      style,
+      options,
+      query: q,
+      sortKey,
+      theme,
+      isDisabled,
+    }: TSortTableButtonProps = {},
   ) => {
     const { [sortKey]: sort } = q;
     const fields = parseJSURLParam(sort, []);
@@ -52,9 +60,10 @@ const SortTableButton = compose(
     return (
       <Dropdown
         autoclose={false}
+        isDisabled={isDisabled}
         button={
           <Tooltip Component={<span>Sort Table</span>}>
-            <Button style={style}>
+            <Button style={style} disabled={isDisabled}>
               <SortIcon /><Hidden>Sort Table</Hidden>
             </Button>
           </Tooltip>

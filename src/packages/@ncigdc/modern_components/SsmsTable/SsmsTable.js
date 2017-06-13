@@ -2,28 +2,15 @@
 /* eslint fp/no-class:0 */
 
 import React from 'react';
-import Relay from 'react-relay/classic';
 import { compose, withState } from 'recompose';
-import { withRouter } from 'react-router-dom';
-import { startCase, truncate, get, orderBy } from 'lodash';
-import { connect } from 'react-redux';
-import { parse } from 'query-string';
+import { truncate, orderBy, get } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
-import { handleReadyStateChange } from '@ncigdc/dux/loaders';
-import {
-  parseIntParam,
-  parseFilterParam,
-  parseJSURLParam,
-} from '@ncigdc/utils/uri';
-import { viewerQuery } from '@ncigdc/routes/queries';
-import GeneLink from '@ncigdc/components/Links/GeneLink';
 import MutationLink from '@ncigdc/components/Links/MutationLink';
 import withSize from '@ncigdc/utils/withSize';
 import withBetterRouter from '@ncigdc/utils/withRouter';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -42,134 +29,9 @@ import { withTheme } from '@ncigdc/theme';
 import type { TTheme } from '@ncigdc/theme';
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 import TableActions from '@ncigdc/components/TableActions';
-import { MUTATION_SUBTYPE_MAP } from '@ncigdc/utils/constants';
 
+import mapData from './mapData';
 const colors = scaleOrdinal(schemeCategory10);
-const COMPONENT_NAME = 'SsmsTable';
-
-const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) =>
-    <div style={{ position: 'relative', minHeight: 170 }}>
-      <Relay.Renderer
-        environment={Relay.Store}
-        queryConfig={new Route(props)}
-        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
-        Container={Container}
-        render={({ props: relayProps }) =>
-          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-        }
-      />
-      <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
-
-class Route extends Relay.Route {
-  static routeName = COMPONENT_NAME;
-  static queries = viewerQuery;
-  static prepareParams = ({
-    location: { search },
-    defaultSize = 10,
-    defaultFilters = null,
-  }) => {
-    const q = parse(search);
-
-    return {
-      ssmsTable_filters: parseFilterParam(q.ssmsTable_filters, defaultFilters),
-      ssmsTable_offset: parseIntParam(q.ssmsTable_offset, 0),
-      ssmsTable_size: parseIntParam(q.ssmsTable_size, defaultSize),
-      ssmsTable_sort: parseJSURLParam(q.ssmsTable_sort, null),
-      ssmCaseFilter: addInFilters(
-        q.ssmsTable_filters || defaultFilters,
-        makeFilter([
-          {
-            field: 'available_variation_data',
-            value: 'ssm',
-          },
-        ]),
-      ),
-    };
-  };
-}
-
-const createContainer = Component =>
-  Relay.createContainer(Component, {
-    initialVariables: {
-      score: 'occurrence.case.project.project_id',
-      ssmsTable_filters: null,
-      ssmsTable_size: 10,
-      ssmsTable_offset: 0,
-      consequenceFilters: {
-        op: 'NOT',
-        content: {
-          field: 'consequence.transcript.annotation.impact',
-          value: 'missing',
-        },
-      },
-      ssmCaseFilter: null,
-      ssmTested: makeFilter([
-        {
-          field: 'cases.available_variation_data',
-          value: 'ssm',
-        },
-      ]),
-      sort: [
-        { field: '_score', order: 'desc' },
-        { field: '_uid', order: 'asc' },
-      ],
-    },
-    fragments: {
-      viewer: () => Relay.QL`
-        fragment on Root {
-          explore {
-            cases { hits(first: 0 filters: $ssmTested) { total }}
-            filteredCases: cases {
-              hits(first: 0 filters: $ssmCaseFilter) {
-                total
-              }
-            }
-            ssms {
-              hits(first: $ssmsTable_size offset: $ssmsTable_offset filters: $ssmsTable_filters, score: $score, sort: $sort) {
-                total
-                edges {
-                  node {
-                    score
-                    genomic_dna_change
-                    mutation_subtype
-                    ssm_id
-                    consequence {
-                      hits(first: 1 filters: $consequenceFilters) {
-                        edges {
-                          node {
-                            transcript {
-                              is_canonical
-                              annotation {
-                                impact
-                              }
-                              consequence_type
-                              gene {
-                                gene_id
-                                symbol
-                              }
-                              aa_change
-                            }
-                          }
-                        }
-                      }
-                    }
-                    occurrence {
-                      hits(first: 0 filters: $ssmTested) {
-                        total
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      `,
-    },
-  });
 
 type TProps = {
   showSurvivalPlot: boolean,
@@ -214,59 +76,7 @@ type TProps = {
   defaultFilters: TGroupFilter,
 };
 
-type TMapData = (
-  data: Array<Object>,
-  shouldShowGeneSymbol: boolean,
-  theme: Object,
-) => Array<Object>;
-
-const mapData: TMapData = (data, shouldShowGeneSymbol, theme) =>
-  data.map(hit => {
-    const consequenceOfInterest =
-      hit.consequence.hits.edges.find(
-        consequence => get(consequence, 'node.transcript.annotation.impact'),
-        {},
-      ) || {};
-    const { transcript } = consequenceOfInterest.node || {};
-    const {
-      annotation = {},
-      consequence_type: consequenceType = '',
-      gene = {},
-      aa_change: aaChange,
-    } =
-      transcript || {};
-    const { symbol, gene_id: geneId } = gene;
-    const impact = annotation.impact;
-
-    return {
-      ...hit,
-      impact,
-      mutation_subtype:
-        MUTATION_SUBTYPE_MAP[(hit.mutation_subtype || '').toLowerCase()] ||
-          hit.mutation_subtype,
-      consequence_type: (
-        <span>
-          <b>{startCase(consequenceType.replace('variant', ''))}</b>&nbsp;
-          {shouldShowGeneSymbol && <GeneLink uuid={geneId}>{symbol}</GeneLink>}
-          <Tooltip
-            Component={
-              <div style={{ maxWidth: 300, wordBreak: 'break-all' }}>
-                {aaChange}
-              </div>
-            }
-            style={{
-              color: theme.impacts[impact] || 'inherit',
-            }}
-          >
-            &nbsp;
-            {truncate(aaChange, { length: 12 })}
-          </Tooltip>
-        </span>
-      ),
-    };
-  });
-
-const Component = compose(
+export default compose(
   withBetterRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withTheme,
@@ -289,6 +99,7 @@ const Component = compose(
       context = 'explore',
       query,
       location,
+      variables,
     }: TProps = {},
   ) => {
     if (ssms && !ssms.hits.edges.length) {
@@ -324,7 +135,7 @@ const Component = compose(
           <Showing
             docType="somatic mutations"
             prefix="ssmsTable"
-            params={relay.variables}
+            params={variables}
             total={totalSsms}
           />
           <Row style={{ alignItems: 'flex-end' }}>
@@ -583,12 +394,10 @@ const Component = compose(
         />
         <Pagination
           prefix="ssmsTable"
-          params={relay.variables}
+          params={variables}
           total={!ssms ? 0 : ssms.hits.total}
         />
       </span>
     );
   },
 );
-
-export default createRenderer(Route, createContainer(Component));

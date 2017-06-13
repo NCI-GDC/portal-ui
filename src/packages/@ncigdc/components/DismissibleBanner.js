@@ -24,7 +24,7 @@ const DismissibleBanner = ({ dispatch }) =>
                   You may be looking for the
                   {' '}
                   <a
-                    href="https://gdc-portal.nci.nih.gov/legacy-archive/search/f"
+                    href="https://portal.gdc.cancer.gov/legacy-archive/search/f"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -59,7 +59,7 @@ const DismissibleBanner = ({ dispatch }) =>
                   Check the
                   {' '}
                   <a
-                    href="https://gdc-docs.nci.nih.gov/Data/Release_Notes/Data_Release_Notes/"
+                    href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
                     target="_blank"
                     rel="noopener noreferrer"
                   >

@@ -73,7 +73,7 @@ const Header = ({ theme }) =>
           <br />
           Please visit the
           {' '}
-          <a href="https://gdc-portal.nci.nih.gov/">GDC Data Portal</a>
+          <a href="https://portal.gdc.cancer.gov/">GDC Data Portal</a>
           .
         </span>
       </Row>

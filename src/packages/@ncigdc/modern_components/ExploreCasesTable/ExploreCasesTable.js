@@ -222,28 +222,10 @@ const Component = compose(
           sortKey="cases_sort"
           endpoint="case_ssms"
           downloadTooltip="Export All Except #Mutations and #Genes"
-          downloadFields={[
-            'case_id',
-            'project.project_id',
-            'cases.primary_site',
-            'demographic.gender',
-            'summary.data_categories.file_count',
-            'summary.data_categories.data_category',
-          ]}
-          sortOptions={[
-            {
-              id: 'project.project_id',
-              name: 'Project',
-            },
-            {
-              id: 'primary_site',
-              name: 'Primary Site',
-            },
-            {
-              id: 'demographic.gender',
-              name: 'Gender',
-            },
-          ]}
+          downloadFields={tableInfo
+            .filter(x => x.downloadable)
+            .map(x => x.field || x.id)}
+          sortOptions={tableInfo.filter(x => x.sortable)}
           tsvSelector="#explore-case-table"
           tsvFilename="explore-case-table.tsv"
         />

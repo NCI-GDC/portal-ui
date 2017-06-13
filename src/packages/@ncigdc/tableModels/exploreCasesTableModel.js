@@ -70,6 +70,7 @@ const casesTableModel = [
   {
     name: 'Case UUID',
     id: 'case_id',
+    downloadable: true,
     th: () => <Th key="case_id" rowSpan="2">Case UUID</Th>,
     td: ({ node, index }) =>
       <Td>
@@ -89,12 +90,14 @@ const casesTableModel = [
   {
     name: 'Submitter UUID',
     id: 'submitter_id',
+    downloadable: true,
     th: () => <Th key="submitter_id" rowSpan="2">Submitter ID</Th>,
     td: ({ node }) => <Td>{node.submitter_id}</Td>,
   },
   {
     name: 'Project',
-    id: 'project_id',
+    id: 'project.project_id',
+    downloadable: true,
     th: () => <Th key="project_id" rowSpan="2">Project</Th>,
     td: ({ node, index }) =>
       <Td>
@@ -213,6 +216,7 @@ const casesTableModel = [
     name: 'Program',
     id: 'project.program.name',
     sortable: false,
+    downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Program</Th>,
     td: ({ node }) =>
@@ -224,6 +228,7 @@ const casesTableModel = [
     name: 'Disease Type',
     id: 'disease_type',
     sortable: false,
+    downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Disease Type</Th>,
     td: ({ node }) =>
@@ -235,6 +240,7 @@ const casesTableModel = [
     name: 'Age at diagnosis',
     id: 'diagnoses.age_at_diagnosis',
     sortable: false,
+    downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Age at diagnosis</Th>,
     td: ({ node }) => {
@@ -254,6 +260,7 @@ const casesTableModel = [
     name: 'Days to death',
     id: 'diagnoses.days_to_death',
     sortable: false,
+    downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Days to death</Th>,
     td: ({ node }) => {
@@ -272,6 +279,7 @@ const casesTableModel = [
     name: 'Vital Status',
     id: 'diagnoses.vital_status',
     sortable: false,
+    downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Vital Status</Th>,
     td: ({ node }) => {
@@ -285,6 +293,7 @@ const casesTableModel = [
     name: 'Primary Diagnosis',
     id: 'diagnoses.primary_diagnosis',
     sortable: false,
+    downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Primary Diagnosis</Th>,
     td: ({ node }) => {
@@ -302,6 +311,7 @@ const casesTableModel = [
     name: 'Ethnicity',
     id: 'demographic.ethnicity',
     sortable: false,
+    downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Ethnicity</Th>,
     td: ({ node }) =>
@@ -311,6 +321,7 @@ const casesTableModel = [
     name: 'Race',
     id: 'demographic.race',
     sortable: false,
+    downloadable: true,
     hidden: true,
     th: () => <Th rowSpan="2">Race</Th>,
     td: ({ node }) =>

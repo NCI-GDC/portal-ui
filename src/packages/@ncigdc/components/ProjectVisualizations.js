@@ -2,14 +2,11 @@
 
 import React from 'react';
 import { compose, withState, lifecycle, withPropsOnChange } from 'recompose';
-
 import { fetchApi } from '@ncigdc/utils/ajax';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import { makeFilter } from '@ncigdc/utils/filters';
-
 import { Row, Column } from '@ncigdc/uikit/Flex';
-
-import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
+import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import AffectedCasesBarChart from '@ncigdc/modern_components/AffectedCasesBarChart/AffectedCasesBarChart';
 import AffectedCasesTable from '@ncigdc/modern_components/AffectedCasesTable/AffectedCasesTable';
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart/GenesBarChart';

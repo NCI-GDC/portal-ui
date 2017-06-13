@@ -24,7 +24,7 @@ import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import Button from '@ncigdc/uikit/Button';
 import { removeFilesFromCart, addAllFilesInCart } from '@ncigdc/dux/cart';
-import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
+import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import FileIcon from '@ncigdc/theme/icons/File';
 import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';

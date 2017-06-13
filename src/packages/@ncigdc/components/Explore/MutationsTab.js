@@ -12,8 +12,7 @@ import { Column, Row } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import withFilters from '@ncigdc/utils/withFilters';
 import { makeFilter, toggleFilters } from '@ncigdc/utils/filters';
-
-import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
+import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import { removeEmptyKeys } from '@ncigdc/utils/uri';
 

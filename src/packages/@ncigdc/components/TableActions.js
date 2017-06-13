@@ -58,6 +58,7 @@ const TableActions = (
         {sortOptions &&
           sortKey &&
           <SortTableButton
+            isDisabled={!sortOptions.length}
             options={sortOptions}
             query={query || {}}
             sortKey={sortKey}

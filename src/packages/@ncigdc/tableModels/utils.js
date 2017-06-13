@@ -31,7 +31,7 @@ export const createDataCategoryColumns = ({
         >
           {title}
         </Th>,
-      subHeadingIds: _.map(DATA_CATEGORIES, category => category.id),
+      subHeadingIds: _.map(DATA_CATEGORIES, category => category.abbr),
     },
     ..._.map(DATA_CATEGORIES, (category, key) => ({
       name: category.abbr,

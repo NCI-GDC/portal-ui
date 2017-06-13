@@ -1,2 +1,3 @@
-import SsmsTable from './SsmsTable';
-export default SsmsTable;
+import Component from './SsmsTable';
+import createRenderer from './SsmsTable.relay';
+export default createRenderer(Component);

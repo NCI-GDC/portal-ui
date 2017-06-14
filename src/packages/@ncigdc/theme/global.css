@@ -134,6 +134,9 @@ input::-moz-focus-inner {
 input {
   line-height: normal;
 }
+input::-ms-clear {
+    display: none;
+}
 input[type="checkbox"],
 input[type="radio"] {
   box-sizing: border-box;

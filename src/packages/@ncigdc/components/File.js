@@ -46,6 +46,7 @@ const styles = {
     padding: '3px 5px',
     minWidth: 'initial',
     minHeight: 'initial',
+    height: 'initial',
   },
 };
 

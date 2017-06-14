@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './style.css';
@@ -11,12 +12,16 @@ class GlobalTooltip extends Component {
     window.removeEventListener('mousemove', this.moveTooltip);
   }
 
-  moveTooltip = event => {
-    this.globalTooltip.style.left = `${event.pageX}px`;
-    this.globalTooltip.style.top = `${event.pageY -
-      this.globalTooltip.offsetHeight -
-      15}px`;
-  };
+  moveTooltip = _.throttle(event => {
+    const left = event.pageX;
+    const top = event.pageY;
+    setTimeout(() => {
+      this.globalTooltip.style.left = `${left}px`;
+      this.globalTooltip.style.top = `${top -
+        this.globalTooltip.offsetHeight -
+        15}px`;
+    });
+  }, 200);
 
   showTooltip = () => this.setState({ showTootip: true });
   hideTooltip = () => this.setState({ showTootip: false });

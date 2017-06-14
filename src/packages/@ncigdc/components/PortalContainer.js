@@ -37,6 +37,8 @@ import styled from '@ncigdc/theme/styled';
 import { setModal } from '@ncigdc/dux/modal';
 import FirstTimeModal from '@ncigdc/components/Modals/FirstTimeModal';
 
+import * as ModernComponents from '@ncigdc/modern_components';
+
 const SkipLink = styled.a({
   position: 'absolute',
   left: '-999px',
@@ -104,6 +106,15 @@ const PortalContainer = ({
         <Route path="/annotations/:id" component={AnnotationRoute} />
         <Route path="/genes/:id" component={GeneRoute} />
         <Route path="/ssms/:id" component={SSMRoute} />
+        <Route
+          path="/components/:component"
+          component={({ match, ...props }) => {
+            const Component = ModernComponents[match.params.component];
+            return Component
+              ? <Component />
+              : <h1>No matching component found.</h1>;
+          }}
+        />
         <Route component={NotFound} />
       </Switch>
     </div>

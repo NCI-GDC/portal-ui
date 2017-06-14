@@ -89,7 +89,7 @@ const ClinicalCard = ({
             { th: 'Year of Birth', td: demographic.year_of_birth },
             { th: 'Year of Death', td: demographic.year_of_death },
           ]}
-          style={{ flex: 1 }}
+          style={{ flex: '1 1 auto' }}
         />}
       {activeTab === 1 &&
         <div>

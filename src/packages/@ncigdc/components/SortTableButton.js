@@ -84,10 +84,7 @@ const SortTableButton = compose(
                 },
               }}
             >
-              <Row
-                flex="1"
-                style={{ padding: '0.3rem 0.6rem', flexBasis: 'auto' }}
-              >
+              <Row flex="1 1 auto" style={{ padding: '0.3rem 0.6rem' }}>
                 <Link
                   style={{ width: '100%' }}
                   merge

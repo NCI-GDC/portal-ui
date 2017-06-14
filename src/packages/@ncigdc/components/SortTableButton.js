@@ -21,10 +21,6 @@ import { withTheme } from '@ncigdc/theme';
 
 /*----------------------------------------------------------------------------*/
 
-const CheckboxRow = styled(Row, {
-  padding: '0.3rem 0.6rem',
-});
-
 const RadioRow = styled(Row, {
   padding: '0.3rem 0.6rem',
   marginLeft: 'auto',
@@ -79,7 +75,10 @@ const SortTableButton = compose(
                 },
               }}
             >
-              <CheckboxRow flex="1">
+              <Row
+                flex="1"
+                style={{ padding: '0.3rem 0.6rem', flexBasis: 'auto' }}
+              >
                 <Link
                   style={{ width: '100%' }}
                   merge
@@ -98,7 +97,7 @@ const SortTableButton = compose(
                     {x.name}
                   </label>
                 </Link>
-              </CheckboxRow>
+              </Row>
               <RadioRow>
                 <Link
                   style={{ width: '100%' }}

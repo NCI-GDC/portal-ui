@@ -15,8 +15,7 @@ import styled from '@ncigdc/theme/styled';
 import Input from '@ncigdc/uikit/Form/Input';
 import OverflowTooltippedLabel from '@ncigdc/uikit/OverflowTooltippedLabel';
 
-import Link from '../Links/Link';
-import { Container } from './';
+import { Container, BucketLink } from './';
 
 import type { TBucket } from './types';
 
@@ -31,16 +30,6 @@ type TProps = {
   setShowingMore: Function,
   showingMore: boolean,
 };
-
-const BucketLink = styled(Link, {
-  minWidth: 0,
-  display: 'inherit',
-  color: ({ theme }) => theme.greyScale1,
-  ':link': {
-    textDecoration: 'none',
-    color: ({ theme }) => theme.greyScale1,
-  },
-});
 
 const ToggleMoreLink = styled.div({
   marginLeft: 'auto',
@@ -138,6 +127,7 @@ const TermAggregation = (props: TProps) => {
                             pointerEvents: 'none',
                             marginRight: '5px',
                             flexShrink: 0,
+                            verticalAlign: 'middle',
                           }}
                           checked={inCurrentFilters({
                             key: bucket.name,
@@ -158,7 +148,10 @@ const TermAggregation = (props: TProps) => {
                             /\s/g,
                             '-',
                           )}`}
-                          style={{ marginLeft: '0.3rem' }}
+                          style={{
+                            marginLeft: '0.3rem',
+                            verticalAlign: 'middle',
+                          }}
                         >
                           {bucket.name}
                         </OverflowTooltippedLabel>

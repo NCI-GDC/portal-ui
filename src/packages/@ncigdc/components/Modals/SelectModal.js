@@ -56,7 +56,7 @@ const SelectOverlay = ({
       }}
     >
       {options.map((track, i) =>
-        <Row key={track.name}>
+        <Row key={track.name} style={{ alignItems: 'center' }}>
           <input
             value={i}
             type="checkbox"

@@ -263,7 +263,7 @@ const RangeFacet = (props: TProps) => {
     <Container style={{ ...props.style }}>
       {!props.collapsed &&
         props.convertDays &&
-        <Row>
+        <Row style={{ marginBottom: '0.5rem' }}>
           <form name={`${dotField}-radio`}>
             <label
               htmlFor={`${dotField}-years-radio`}

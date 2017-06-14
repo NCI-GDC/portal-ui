@@ -7,6 +7,7 @@ export default ({ style, ...props }) =>
     style={{
       height: '0.8em',
       fill: 'currentcolor',
+      flexBasis: 16,
       ...style,
     }}
     {...props}

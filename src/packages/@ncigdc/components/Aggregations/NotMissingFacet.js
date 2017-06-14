@@ -10,8 +10,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import CountBubble from '@ncigdc/uikit/CountBubble';
 import styled from '@ncigdc/theme/styled';
 
-import Link from '../Links/Link';
-import { Container } from './';
+import { Container, BucketLink } from './';
 
 type TProps = {
   field: string,
@@ -20,16 +19,6 @@ type TProps = {
   title: string,
   collapsed: boolean,
 };
-
-const BucketLink = styled(Link, {
-  minWidth: 0,
-  display: 'inherit',
-  color: ({ theme }) => theme.greyScale1,
-  ':link': {
-    textDecoration: 'none',
-    color: ({ theme }) => theme.greyScale1,
-  },
-});
 
 const BucketRow = styled(Row, {
   padding: '0.3rem 0',
@@ -67,7 +56,11 @@ const NotMissingFacet = (props: TProps) => {
                     <input
                       readOnly
                       type="checkbox"
-                      style={{ pointerEvents: 'none', marginRight: '5px' }}
+                      style={{
+                        pointerEvents: 'none',
+                        marginRight: '5px',
+                        verticalAlign: 'middle',
+                      }}
                       checked={currentFilters.some(
                         ({ op, content: { field, value } }) =>
                           op === 'not' &&
@@ -77,7 +70,10 @@ const NotMissingFacet = (props: TProps) => {
                       id={`input-${props.title}-not-missing`}
                       name={`input-${props.title}-not-missing`}
                     />
-                    <label htmlFor={`input-${props.title}-not-missing`}>
+                    <label
+                      htmlFor={`input-${props.title}-not-missing`}
+                      style={{ verticalAlign: 'middle' }}
+                    >
                       Not Missing
                     </label>
                   </BucketLink>

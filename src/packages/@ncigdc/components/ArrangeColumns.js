@@ -11,7 +11,6 @@ import { toggleColumn, setColumns } from '@ncigdc/dux/tableColumns';
 import styled from '@ncigdc/theme/styled';
 
 const SortRow = styled(Row, {
-  lineHeight: '1.5',
   alignItems: 'center',
   padding: '0.3rem 0.6rem',
   ':hover': {
@@ -68,7 +67,7 @@ const ArrangeColumns = compose(
         >
           <SortRow>
             <Row
-              style={{ width: '100%', cursor: 'pointer' }}
+              style={{ width: '100%', cursor: 'pointer', alignItems: 'center' }}
               onClick={() => {
                 if (column.subHeadingIds) {
                   column.subHeadingIds.forEach((id, j) =>

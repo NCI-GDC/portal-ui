@@ -59,3 +59,14 @@ export const facetFieldDisplayMapper = field => {
   };
   return map[field] || field;
 };
+
+export const BucketLink = styled(Link, {
+  minWidth: 0,
+  display: 'inline-block',
+  color: ({ theme }) => theme.greyScale1,
+  ':link': {
+    textDecoration: 'none',
+    color: ({ theme }) => theme.greyScale1,
+  },
+  marginBottom: '0.5rem',
+});

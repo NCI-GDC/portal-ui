@@ -184,7 +184,7 @@ const BiospecimenCard = ({
                   return { th: humanify({ term: key }), td: formatValue(val) };
                 }),
             ]}
-            style={{ flex: 1 }}
+            style={{ flex: '1 1 auto' }}
           />
         </Column>
       </Row>

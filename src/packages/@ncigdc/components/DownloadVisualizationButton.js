@@ -18,7 +18,7 @@ import Hidden from '@ncigdc/components/Hidden';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import supportsSvgToPng from '@ncigdc/utils/supportsSvgToPng';
 
-function getSelector(el?: string | Element): ?Element {
+function getDOMNode(el?: string | Element): ?Element {
   switch (typeof el) {
     case 'string':
       return document.querySelector(el);
@@ -82,7 +82,7 @@ const DownloadVisualizationButton = ({
         style={styles.row(theme)}
         onClick={() => {
           downloadSvg({
-            svg: getSelector(svg),
+            svg: getDOMNode(svg),
             stylePrefix,
             fileName: `${slug}.svg`,
           });
@@ -104,7 +104,7 @@ const DownloadVisualizationButton = ({
         onClick={() => {
           if (!supportsSvgToPng()) return;
           downloadSvg({
-            svg: getSelector(svg),
+            svg: getDOMNode(svg),
             stylePrefix,
             fileName: `${slug}.png`,
             scale: 2,

@@ -14,7 +14,7 @@ const isUserProject = ({ user, file }) => {
     ]),
   );
 
-  const gdcIds = Object.keys((user.projects || { gdc_ids: {} }).gdc_ids);
+  const gdcIds = Object.keys(_.get(user, 'projects.gdc_ids', {}));
   return _.intersection(projectIds, gdcIds).length !== 0;
 };
 
@@ -24,7 +24,7 @@ const fileInCorrectState = (file): boolean =>
 
 const intersectsWithFileAcl = ({ user, file }): boolean =>
   _.intersection(
-    Object.keys((user.projects || { phs_ids: {} }).phs_ids).filter(
+    Object.keys(_.get(user, 'projects.phs_ids', {})).filter(
       p => user.projects.phs_ids[p].indexOf('_member_') !== -1,
     ) || [],
     file.acl,

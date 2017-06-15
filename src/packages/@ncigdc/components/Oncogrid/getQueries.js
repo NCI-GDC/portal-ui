@@ -2,6 +2,8 @@
 import { replaceFilters } from '@ncigdc/utils/filters';
 import memoize from 'memoizee';
 import { fetchApi } from '@ncigdc/utils/ajax';
+import Queue from 'queue';
+import md5 from 'blueimp-md5';
 
 async function getGenes({
   currentFilters,
@@ -21,16 +23,15 @@ async function getGenes({
 }
 
 const OCCURRENCE_CHUNK = 10000;
-async function getOccurences(args: {
+async function getOccurrences(args: {
   geneIds: Array<string>,
   caseIds: Array<string>,
   currentFilters: Object,
-  from?: number,
-  hits?: Array<{}>,
 }): Promise<Object> {
-  const { geneIds, caseIds, currentFilters, from = 0, hits = [] } = args;
+  const queue = Queue({ concurrency: 6 });
+  const { geneIds, caseIds, currentFilters } = args;
 
-  if (!geneIds.length || !caseIds.length) return { data: { hits } };
+  if (!geneIds.length || !caseIds.length) return { data: { hits: [] } };
 
   const filters = replaceFilters(
     {
@@ -51,30 +52,55 @@ async function getOccurences(args: {
     'case.case_id',
   ];
 
-  const { data } = await fetchApi('ssm_occurrences', {
+  const firstSize = 0;
+  const defaultOptions = {
     headers: { 'Content-Type': 'application/json' },
     body: {
       filters,
-      size: OCCURRENCE_CHUNK,
-      from,
+      size: firstSize,
+      from: 0,
       fields: fields.join(),
       sort: '_uid', // force consistent order
     },
+  };
+  const hash = md5(JSON.stringify(defaultOptions));
+  const { data } = await fetchApi(`ssm_occurrences?hash=${hash}`, {
+    ...defaultOptions,
   });
+  let hits = data.hits;
 
-  if (from + OCCURRENCE_CHUNK < data.pagination.total) {
-    return getOccurences({
-      ...args,
-      from: from + OCCURRENCE_CHUNK,
-      hits: [...hits, ...data.hits],
+  for (
+    let count = firstSize;
+    count < data.pagination.total;
+    count += OCCURRENCE_CHUNK
+  ) {
+    // eslint-disable-next-line no-loop-func
+    queue.push(callback => {
+      const options = {
+        ...defaultOptions,
+        body: {
+          ...defaultOptions.body,
+          from: count,
+          size: OCCURRENCE_CHUNK,
+        },
+      };
+      const hash = md5(JSON.stringify(options));
+      fetchApi(`ssm_occurrences?hash=${hash}`, options).then(response => {
+        hits = [...hits, ...response.data.hits];
+        callback();
+      });
     });
   }
 
-  return {
-    data: {
-      hits: [...hits, ...data.hits],
-    },
-  };
+  return new Promise((resolve, reject) => {
+    queue.start(err => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({ data: { hits } });
+      }
+    });
+  });
 }
 
 async function getCases({
@@ -133,7 +159,11 @@ async function getQueries({
   const geneIds = genes.map(gene => gene.gene_id);
   const cases = await getCases({ geneIds, currentFilters, size: maxCases });
   const caseIds = cases.data.hits.map(c => c.case_id);
-  const occurrences = await getOccurences({ geneIds, currentFilters, caseIds });
+  const occurrences = await getOccurrences({
+    geneIds,
+    currentFilters,
+    caseIds,
+  });
 
   return {
     genes,

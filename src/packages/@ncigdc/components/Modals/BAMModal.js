@@ -103,7 +103,7 @@ const BAMModal = ({ file, closeModal, value, setValue, setActive }: TProps) =>
         onClick={() => {
           if (value) {
             const params = {
-              body: processBAMSliceInput(value),
+              ...processBAMSliceInput(value),
               attachment: true,
             };
             setActive(true);

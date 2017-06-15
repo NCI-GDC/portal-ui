@@ -68,6 +68,7 @@ export default function({
   donorClick = (d: {}) => {
     console.log('donorClick', d);
   },
+  grid = true,
 }: {
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
@@ -88,6 +89,7 @@ export default function({
   geneHistogramClick?: Function,
   geneClick?: Function,
   donorClick?: Function,
+  grid?: boolean,
 }): ?Object {
   const { observations, donorIds, geneIds } = buildOccurences(
     occurencesData,
@@ -152,7 +154,7 @@ export default function({
     colorMap,
     scaleToFit: true,
     heatMap: false,
-    grid: true,
+    grid,
     minCellHeight: 8,
     trackHeight: 12,
     trackLegends: {

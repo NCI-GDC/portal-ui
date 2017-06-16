@@ -46,6 +46,19 @@ import oncoGridParams from './oncoGridParams';
 
 import './oncogrid.css';
 
+const startTimes = {};
+const timer = {
+  time: label => (startTimes[label] = performance.now()),
+  timeEnd: label => {
+    if (!startTimes[label]) {
+      console.warn(`No start time was found for "${label}"`);
+      return;
+    }
+    const duration = performance.now() - startTimes[label];
+    return duration;
+  },
+};
+
 function refreshGridState({
   oncoGrid,
   setHeatMapMode,
@@ -63,7 +76,7 @@ function refreshGridState({
 }
 
 const GRID_CLASS = 'oncogrid-wrapper';
-const MAX_CASES = 500;
+const MAX_CASES = 2000;
 const MAX_GENES = 50;
 
 const styles = {
@@ -291,7 +304,26 @@ const OncoGridWrapper = compose(
       if (gridParams) {
         if (previousResponses && oncoGrid.toggleGridLines) oncoGrid.destroy();
         const grid = new OncoGrid(gridParams);
+        grid.on('render:all:start', () => {
+          timer.time('oncogrid:render:all');
+          global.mixpanel.time_event('oncogrid:render');
+        });
         grid.render();
+        grid.on('render:all:end', () => {
+          const duration = timer.timeEnd('oncogrid:render:all');
+          global.mixpanel.track('oncogrid:render', {
+            duration,
+            donors: grid.donors.length,
+            genes: grid.genes.length,
+            observations: grid.observations.length,
+          });
+          global.analytics.track('oncogrid:render', {
+            duration,
+            donors: grid.donors.length,
+            genes: grid.genes.length,
+            observations: grid.observations.length,
+          });
+        });
         setCaseCount(responses.totalCases);
         setOncoGrid(grid);
         setOncoGridData(responses);

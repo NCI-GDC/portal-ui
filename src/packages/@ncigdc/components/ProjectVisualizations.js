@@ -186,7 +186,7 @@ const ProjectVisualizations = enhance(
               setSelectedSurvivalData={setSelectedMutatedGenesSurvivalData}
               selectedSurvivalData={selectedMutatedGenesSurvivalData}
               hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-                mutatedGenesSurvivalData.rawData,
+                defaultSurvivalData.rawData,
               )}
               defaultFilters={fmFilters}
               defaultSize={10}
@@ -241,7 +241,7 @@ const ProjectVisualizations = enhance(
                     setSelectedFrequentMutationsSurvivalData
                   }
                   hasEnoughSurvivalDataOnPrimaryCurve={enoughData(
-                    frequentMutationsSurvivalData.rawData,
+                    defaultSurvivalData.rawData,
                   )}
                   showSurvivalPlot
                   context={projectId}

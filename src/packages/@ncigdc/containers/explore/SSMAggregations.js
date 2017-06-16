@@ -1,10 +1,8 @@
 /* @flow */
-/* eslint jsx-a11y/no-static-element-interactions: 0, max-len: 1 */
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import { compose, withState, lifecycle } from 'recompose';
-import { isEqual } from 'lodash';
+import { compose, withState } from 'recompose';
 
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
@@ -16,10 +14,16 @@ import { withTheme } from '@ncigdc/theme';
 import { Column } from '@ncigdc/uikit/Flex';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import NotMissingFacet from '@ncigdc/components/Aggregations/NotMissingFacet';
-import { replaceFilters } from '@ncigdc/utils/filters/index';
 import { MUTATION_SUBTYPE_MAP } from '@ncigdc/utils/constants';
 
-const presetFacets = [
+const presetFacets: Array<{
+  title: string,
+  field: string,
+  full: string,
+  doc_type: string,
+  type: string,
+  additionalProps?: {},
+}> = [
   {
     title: 'SSM ID',
     field: 'ssm_id',
@@ -86,52 +90,28 @@ export type TProps = {
   },
   setAutocomplete: Function,
   theme: Object,
-  suggestions: Array,
+  suggestions: Array<{}>,
+  idCollapsed: boolean,
+  setIdCollapsed: Function,
+  cosmicIdCollapsed: boolean,
+  setCosmicIdCollapsed: boolean,
+  relay: {},
+  ssms: {
+    cosmic_id_not_missing: {
+      total: number,
+    },
+    dbsnp_rs_not_missing: {
+      total: number,
+    },
+  },
+  dbSNPCollapsed: boolean,
+  setDbSNPCollapsed: Function,
 };
-
-function setVariables({ relay, defaultFilters }) {
-  relay.setVariables({
-    cosmicFilters: replaceFilters(
-      {
-        op: 'and',
-        content: [
-          { op: 'not', content: { field: 'cosmic_id', value: ['MISSING'] } },
-        ],
-      },
-      defaultFilters,
-    ),
-    dbsnpRsFilters: replaceFilters(
-      {
-        op: 'and',
-        content: [
-          {
-            op: 'not',
-            content: {
-              field: 'consequence.transcript.annotation.dbsnp_rs',
-              value: ['MISSING'],
-            },
-          },
-        ],
-      },
-      defaultFilters,
-    ),
-  });
-}
 
 export const SSMAggregationsComponent = compose(
   withState('idCollapsed', 'setIdCollapsed', false),
   withState('cosmicIdCollapsed', 'setCosmicIdCollapsed', false),
   withState('dbSNPCollapsed', 'setDbSNPCollapsed', false),
-  lifecycle({
-    componentDidMount() {
-      setVariables(this.props);
-    },
-    componentWillReceiveProps(nextProps) {
-      if (!isEqual(this.props.defaultFilters, nextProps.defaultFilters)) {
-        setVariables(nextProps);
-      }
-    },
-  }),
 )((props: TProps) =>
   <div>
     <FacetHeader
@@ -219,10 +199,6 @@ export const SSMAggregationsComponent = compose(
 );
 
 export const SSMAggregationsQuery = {
-  initialVariables: {
-    dbsnpRsFilters: null,
-    cosmicFilters: null,
-  },
   fragments: {
     aggregations: () => Relay.QL`
       fragment on SsmAggregations {
@@ -249,16 +225,6 @@ export const SSMAggregationsQuery = {
             doc_count
             key
           }
-        }
-      }
-    `,
-    ssms: () => Relay.QL`
-      fragment on Ssms {
-        cosmic_id_not_missing: hits(filters: $cosmicFilters) {
-          total
-        }
-        dbsnp_rs_not_missing: hits(filters: $dbsnpRsFilters) {
-          total
         }
       }
     `,

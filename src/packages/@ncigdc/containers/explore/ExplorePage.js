@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
+import { compose, lifecycle } from 'recompose';
 
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -16,6 +17,7 @@ import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 
 import GeneSymbol from '@ncigdc/containers/GeneSymbol';
+import { replaceFilters } from '@ncigdc/utils/filters';
 
 export type TProps = {
   autocomplete: {
@@ -56,6 +58,47 @@ export type TProps = {
   setShowFacets: Function,
 };
 
+function setVariables({ relay, filters }) {
+  relay.setVariables({
+    cosmicFilters: replaceFilters(
+      {
+        op: 'and',
+        content: [
+          { op: 'not', content: { field: 'cosmic_id', value: ['MISSING'] } },
+        ],
+      },
+      filters,
+    ),
+    dbsnpRsFilters: replaceFilters(
+      {
+        op: 'and',
+        content: [
+          {
+            op: 'not',
+            content: {
+              field: 'consequence.transcript.annotation.dbsnp_rs',
+              value: ['MISSING'],
+            },
+          },
+        ],
+      },
+      filters,
+    ),
+  });
+}
+
+const enhance = compose(
+  lifecycle({
+    componentDidMount() {
+      setVariables(this.props);
+    },
+    componentWillReceiveProps(nextProps) {
+      if (!isEqual(this.props.filters, nextProps.filters)) {
+        setVariables(nextProps);
+      }
+    },
+  }),
+);
 export const ExplorePageComponent = (props: TProps) =>
   <SearchPage
     geneSymbolFragment={get(props, 'viewer.geneSymbolFragment', {})}
@@ -167,6 +210,8 @@ export const ExplorePageQuery = {
     runAutocompleteGenes: false,
     idAutocompleteSsms: null,
     runAutocompleteSsms: false,
+    dbsnpRsFilters: null,
+    cosmicFilters: null,
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -228,7 +273,12 @@ export const ExplorePageQuery = {
             hits(first: $ssms_size offset: $ssms_offset, filters: $filters) {
               total
             }
-            ${SSMAggregations.getFragment('ssms')}
+            cosmic_id_not_missing: hits(filters: $cosmicFilters) {
+              total
+            }
+            dbsnp_rs_not_missing: hits(filters: $dbsnpRsFilters) {
+              total
+            }
           }
         }
       }
@@ -237,7 +287,7 @@ export const ExplorePageQuery = {
 };
 
 const ExplorePage = Relay.createContainer(
-  ExplorePageComponent,
+  enhance(ExplorePageComponent),
   ExplorePageQuery,
 );
 

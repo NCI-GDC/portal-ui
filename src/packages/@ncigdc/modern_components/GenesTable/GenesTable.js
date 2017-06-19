@@ -43,7 +43,7 @@ const COMPONENT_NAME = 'GenesTable';
 
 const createRenderer = (Route, Container) =>
   compose(connect(), withRouter)((props: mixed) =>
-    <div style={{ position: 'relative', minHeight: '387px' }}>
+    <div style={{ position: 'relative', minHeight: 170 }}>
       <Relay.Renderer
         environment={Relay.Store}
         queryConfig={new Route(props)}

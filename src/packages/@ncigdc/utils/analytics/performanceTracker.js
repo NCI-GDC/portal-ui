@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 const startTimes = {};
 export const timer = {
   time: label => (startTimes[label] = performance.now()),
@@ -16,12 +14,17 @@ export const timer = {
 const performanceTracker = {
   begin: label => {
     timer.time(label);
-    global.mixpanel.time_event(label);
+    global.mixpanel.time_event(label.split(':')[0]);
   },
   end: (label, additionalProperties) => {
     const duration = timer.timeEnd(label);
-    global.mixpanel.track(label, {
+    const eventFields = label.split(':');
+    const category = eventFields[0];
+    global.mixpanel.track(category, {
       duration,
+      category,
+      action: eventFields[1],
+      label: eventFields[2],
       ...additionalProperties,
     });
   },

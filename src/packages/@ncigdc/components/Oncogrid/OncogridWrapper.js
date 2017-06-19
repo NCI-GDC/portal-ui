@@ -64,7 +64,7 @@ function refreshGridState({
 }
 
 const GRID_CLASS = 'oncogrid-wrapper';
-const MAX_CASES = 50;
+const MAX_CASES = 500;
 const MAX_GENES = 50;
 
 const styles = {
@@ -218,20 +218,20 @@ const OncoGridWrapper = compose(
         return;
       }
 
-      performanceTracker.begin('oncogrid:data:fetch');
+      performanceTracker.begin('oncogrid:fetch');
       const responses = await getQueries({
         currentFilters,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       });
-      performanceTracker.end('oncogrid:data:fetch', {
+      performanceTracker.end('oncogrid:fetch', {
         currentFilters,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       });
       if (!wrapperRefs[uniqueGridClass]) return;
 
-      performanceTracker.begin('oncogrid:data:process');
+      performanceTracker.begin('oncogrid:process');
       const gridParams = oncoGridParams({
         colorMap,
         element: wrapperRefs[uniqueGridClass],
@@ -302,7 +302,7 @@ const OncoGridWrapper = compose(
         occurences: responses.occurences,
       };
 
-      performanceTracker.end('oncogrid:data:process', performanceContext);
+      performanceTracker.end('oncogrid:process data', performanceContext);
 
       if (gridParams) {
         if (previousResponses && oncoGrid.toggleGridLines) oncoGrid.destroy();

@@ -65,7 +65,7 @@
 -->
   <script src="https://cdn.ravenjs.com/3.16.0/raven.min.js" crossorigin="anonymous"></script>
   <script>
-    Raven.config('https://5f73d26234ab4f4396d9b974518a2722@sentry.io/180517').install()
+    "%NODE_ENV%" !== "development" && Raven.config('https://5f73d26234ab4f4396d9b974518a2722@sentry.io/180517').install()
   </script>
   <!-- legacy Angular stuff -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

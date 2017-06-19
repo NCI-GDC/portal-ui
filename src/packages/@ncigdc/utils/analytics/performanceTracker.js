@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 const startTimes = {};
-const timer = {
+export const timer = {
   time: label => (startTimes[label] = performance.now()),
   timeEnd: label => {
     if (!startTimes[label]) {
@@ -20,16 +20,10 @@ const performanceTracker = {
   },
   end: (label, additionalProperties) => {
     const duration = timer.timeEnd(label);
-    const properties = _.isNil(duration)
-      ? {
-          duration,
-          ...additionalProperties,
-        }
-      : {
-          errorCode: 404,
-        };
-
-    global.mixpanel.track(label, properties);
+    global.mixpanel.track(label, {
+      duration,
+      ...additionalProperties,
+    });
   },
 };
 

@@ -73,6 +73,11 @@ export function fetchApiVersionInfo(): Function {
       ...apiVersionInfo,
     });
 
+    global.mixpanel.register({
+      ...getState().versionInfo,
+      ...apiVersionInfo,
+    });
+
     dispatch({
       type: VERSION_INFO_SUCCESS,
       payload: apiVersionInfo,

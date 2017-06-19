@@ -172,7 +172,7 @@ export const wrapSvg: TWrapSvg = ({
     beforeObject.height,
   ])})">
         ${svg.innerHTML.replace(
-          /url\((?:['|"]*)(?:http|https):\/\/(?:.+)(#.+)(?:['|"]*)\)/g,
+          /url\(['"]?https?:\/\/[^#]+(#.+)['"]?\)/g,
           'url($1)',
         )}
       </g>

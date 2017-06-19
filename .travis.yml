@@ -4,14 +4,19 @@ language: node_js
 node_js:
   - "8"
 sudo: required
+dist: trusty
+group: edge
 services:
 - docker
+cache: npm
 jobs:
   include:
     - stage: test
       script:
-        - npm run lint
-        - npm run test -- --no-cache
+        # this will only run lint / tests against modified files but it is unstable
+        # - echo $TRAVIS_COMMIT_RANGE | sed 's/\.\.\./../' | xargs git diff-tree --no-commit-id --name-only -r | xargs echo -n
+        - npm run lint -- --max-warnings=0 || travis_terminate 1
+        - npm test || travis_terminate 1
     - stage: deploy
       script:
         - NODE_ENV=production REACT_APP_COMMIT_HASH=$TRAVIS_COMMIT npm run build

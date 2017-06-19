@@ -112,7 +112,7 @@ async function getCases({
   currentFilters: Object,
   size: number,
 }): Promise<Object> {
-  if (!geneIds.length) return { data: { hits: [] } };
+  if (!geneIds.length) return { data: { hits: [], pagination: { total: 0 } } };
 
   const filters = replaceFilters(
     {

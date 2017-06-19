@@ -9,6 +9,11 @@ import {
   userProjectsCount,
 } from '..';
 
+const projectLessUser = {
+  username: 'iamprojectless',
+  projects: {},
+};
+
 const user = {
   username: 'TEST_USER',
   projects: {
@@ -68,6 +73,23 @@ const TESTFile = { cases: { hits: { edges: [TESTCase] } } };
 const LUADFile = { cases: { hits: { edges: [LUADCase] } } };
 const KIRPFile = { cases: { hits: { edges: [KIRPCase] } } };
 describe('isUserProject', () => {
+  it('should not fail on a projectless user with a project object', () => {
+    expect(
+      isUserProject({
+        user: projectLessUser,
+        file: { projects: [{ project_id: 'TCGA-TEST' }] },
+      }),
+    ).toBe(false);
+  });
+
+  it('should not fail on a projectless user without a project object', () => {
+    expect(
+      isUserProject({
+        user: { username: 'bleh' },
+        file: { projects: [{ project_id: 'TCGA-TEST' }] },
+      }),
+    ).toBe(false);
+  });
   it('should detect projects directly under file', () => {
     it('with only one project', () => {
       expect(

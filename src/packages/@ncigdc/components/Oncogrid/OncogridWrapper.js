@@ -40,24 +40,12 @@ import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { setModal } from '@ncigdc/dux/modal';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
+import { performanceTracker } from '@ncigdc/utils/analytics';
 
 import getQueries from './getQueries';
 import oncoGridParams from './oncoGridParams';
 
 import './oncogrid.css';
-
-const startTimes = {};
-const timer = {
-  time: label => (startTimes[label] = performance.now()),
-  timeEnd: label => {
-    if (!startTimes[label]) {
-      console.warn(`No start time was found for "${label}"`);
-      return;
-    }
-    const duration = performance.now() - startTimes[label];
-    return duration;
-  },
-};
 
 function refreshGridState({
   oncoGrid,
@@ -76,7 +64,7 @@ function refreshGridState({
 }
 
 const GRID_CLASS = 'oncogrid-wrapper';
-const MAX_CASES = 2000;
+const MAX_CASES = 50;
 const MAX_GENES = 50;
 
 const styles = {
@@ -230,13 +218,20 @@ const OncoGridWrapper = compose(
         return;
       }
 
+      performanceTracker.begin('oncogrid:data:fetch');
       const responses = await getQueries({
+        currentFilters,
+        maxCases: MAX_CASES,
+        maxGenes: MAX_GENES,
+      });
+      performanceTracker.end('oncogrid:data:fetch', {
         currentFilters,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       });
       if (!wrapperRefs[uniqueGridClass]) return;
 
+      performanceTracker.begin('oncogrid:data:process');
       const gridParams = oncoGridParams({
         colorMap,
         element: wrapperRefs[uniqueGridClass],
@@ -301,29 +296,28 @@ const OncoGridWrapper = compose(
         consequenceTypes: filteredConsequenceTypes,
       });
 
+      const performanceContext = {
+        donors: responses.cases,
+        genes: responses.genes,
+        occurences: responses.occurences,
+      };
+
+      performanceTracker.end('oncogrid:data:process', performanceContext);
+
       if (gridParams) {
         if (previousResponses && oncoGrid.toggleGridLines) oncoGrid.destroy();
+
+        performanceTracker.begin('oncogrid:init');
         const grid = new OncoGrid(gridParams);
-        grid.on('render:all:start', () => {
-          timer.time('oncogrid:render:all');
-          global.mixpanel.time_event('oncogrid:render');
-        });
+        performanceTracker.end('oncogrid:init', performanceContext);
+
+        performanceTracker.begin('oncogrid:render');
         grid.render();
+
         grid.on('render:all:end', () => {
-          const duration = timer.timeEnd('oncogrid:render:all');
-          global.mixpanel.track('oncogrid:render', {
-            duration,
-            donors: grid.donors.length,
-            genes: grid.genes.length,
-            observations: grid.observations.length,
-          });
-          global.analytics.track('oncogrid:render', {
-            duration,
-            donors: grid.donors.length,
-            genes: grid.genes.length,
-            observations: grid.observations.length,
-          });
+          performanceTracker.end('oncogrid:render', performanceContext);
         });
+
         setCaseCount(responses.totalCases);
         setOncoGrid(grid);
         setOncoGridData(responses);

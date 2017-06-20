@@ -17,6 +17,7 @@ import withSize from '@ncigdc/utils/withSize';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
+import { performanceTracker } from '@ncigdc/utils/analytics';
 
 import './survivalPlot.css';
 
@@ -203,8 +204,8 @@ function renderSurvivalPlot(props: TProps): void {
     push,
   } = props;
   const { results = [] } = rawData;
-
   if (survivalContainer) {
+    performanceTracker.begin('survival:render');
     renderPlot({
       container: survivalContainer,
       dataSets: results,
@@ -235,6 +236,11 @@ function renderSurvivalPlot(props: TProps): void {
       onDomainChange: setXDomain,
       margins: SVG_MARGINS,
     });
+    const performanceContext = {
+      data_sets: results.length,
+      donors: _.sum(results.map(x => x.donors.length)),
+    };
+    performanceTracker.end('survival:render', performanceContext);
   }
 }
 
@@ -247,15 +253,16 @@ const enhance = compose(
   withSize(),
   lifecycle({
     shouldComponentUpdate(nextProps: TProps): void {
-      return !_.isEqual(this.props, nextProps);
+      const props = ['xDomain', 'size', 'rawData', 'survivalPlotloading'];
+      return !_.isEqual(_.pick(this.props, props), _.pick(nextProps, props));
     },
 
     componentDidUpdate(): void {
-      renderSurvivalPlot(this.props);
+      !this.props.survivalPlotloading && renderSurvivalPlot(this.props);
     },
 
     componentDidMount(): void {
-      renderSurvivalPlot(this.props);
+      !this.props.survivalPlotloading && renderSurvivalPlot(this.props);
     },
   }),
 );

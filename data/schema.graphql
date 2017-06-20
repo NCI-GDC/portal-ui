@@ -1,5 +1,6 @@
 schema {
   query: Root
+  mutation: Mutation
 }
 
 type Aggregations {
@@ -1662,6 +1663,56 @@ type ConsequenceTranscript {
   # keyword
   ref_seq_accession: String
   id: String
+}
+
+type CreateCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type CreateExploreSet {
+  case(input: CreateSetInput): CreateCaseSet
+  gene(input: CreateSetInput): CreateGeneSet
+  ssm(input: CreateSetInput): CreateSsmSet
+}
+
+type CreateGeneSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type CreateRepositoryCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type CreateRepositoryFileSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type CreateRepositorySet {
+  case(input: CreateSetInput): CreateRepositoryCaseSet
+  file(input: CreateSetInput): CreateRepositoryFileSet
+}
+
+type CreateSet {
+  explore: CreateExploreSet
+  repository: CreateRepositorySet
+}
+
+input CreateSetInput {
+  filters: FiltersArgument
+}
+
+type CreateSsmSet {
+  set_id: String
+  size: Int
+  time: Float
 }
 
 type DataCategories {
@@ -4810,6 +4861,10 @@ enum Mode {
   sum
 }
 
+type Mutation {
+  sets(input: RelayIsDumb): Sets
+}
+
 # An object with an ID
 interface Node {
   id: ID!
@@ -5449,6 +5504,10 @@ type ReadGroups {
   hits(offset: Int, sort: [Sort], filters: FiltersArgument, before: String, after: String, first: Int, last: Int): ReadGroupConnection
 }
 
+input RelayIsDumb {
+  relay_is_dumb: FiltersArgument
+}
+
 type Repository {
   cases: RepositoryCases
   files: Files
@@ -5620,6 +5679,10 @@ type SampleEdge {
 
 type Samples {
   hits(offset: Int, sort: [Sort], filters: FiltersArgument, before: String, after: String, first: Int, last: Int): SampleConnection
+}
+
+type Sets {
+  create: CreateSet
 }
 
 type Slide implements Node {

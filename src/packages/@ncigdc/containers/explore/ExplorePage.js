@@ -16,6 +16,9 @@ import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 
+import { Row } from '@ncigdc/uikit/Flex';
+import SaveSetButton from '@ncigdc/modern_components/SaveSetButton/SaveSetButton';
+
 import GeneSymbol from '@ncigdc/containers/GeneSymbol';
 import { replaceFilters } from '@ncigdc/utils/filters';
 
@@ -153,41 +156,55 @@ export const ExplorePageComponent = (props: TProps) =>
       },
     ]}
     results={
-      <TabbedLinks
-        queryParam="searchTableTab"
-        defaultIndex={0}
-        links={[
-          {
-            id: 'cases',
-            text: `Cases (${props.viewer.explore.cases.hits.total.toLocaleString()})`,
-            component: !!props.viewer.explore.cases.hits.total
-              ? <CasesTab />
-              : <NoResultsMessage>No Cases Found.</NoResultsMessage>,
-          },
-          {
-            id: 'genes',
-            text: `Genes (${props.viewer.explore.genes.hits.total.toLocaleString()})`,
-            component: props.viewer.explore.genes.hits.total
-              ? <GenesTab viewer={props.viewer} />
-              : <NoResultsMessage>No Genes Found.</NoResultsMessage>,
-          },
-          {
-            id: 'mutations',
-            text: `Mutations (${props.viewer.explore.ssms.hits.total.toLocaleString()})`,
-            component: props.viewer.explore.ssms.hits.total
-              ? <MutationsTab
-                  totalNumCases={props.viewer.explore.cases.hits.total}
-                  viewer={props.viewer}
-                />
-              : <NoResultsMessage>No Mutations Found.</NoResultsMessage>,
-          },
-          {
-            id: 'oncogrid',
-            text: 'OncoGrid',
-            component: <OncogridTab />,
-          },
-        ]}
-      />
+      <span>
+        <Row
+          style={{
+            justifyContent: 'space-between',
+            padding: '0 0 2rem',
+            alignItems: 'center',
+          }}
+        >
+          <SaveSetButton
+            filters={props.filters}
+            setSize={props.viewer.explore.cases.hits.total.toLocaleString()}
+          />
+        </Row>
+        <TabbedLinks
+          queryParam="searchTableTab"
+          defaultIndex={0}
+          links={[
+            {
+              id: 'cases',
+              text: `Cases (${props.viewer.explore.cases.hits.total.toLocaleString()})`,
+              component: !!props.viewer.explore.cases.hits.total
+                ? <CasesTab />
+                : <NoResultsMessage>No Cases Found.</NoResultsMessage>,
+            },
+            {
+              id: 'genes',
+              text: `Genes (${props.viewer.explore.genes.hits.total.toLocaleString()})`,
+              component: props.viewer.explore.genes.hits.total
+                ? <GenesTab viewer={props.viewer} />
+                : <NoResultsMessage>No Genes Found.</NoResultsMessage>,
+            },
+            {
+              id: 'mutations',
+              text: `Mutations (${props.viewer.explore.ssms.hits.total.toLocaleString()})`,
+              component: props.viewer.explore.ssms.hits.total
+                ? <MutationsTab
+                    totalNumCases={props.viewer.explore.cases.hits.total}
+                    viewer={props.viewer}
+                  />
+                : <NoResultsMessage>No Mutations Found.</NoResultsMessage>,
+            },
+            {
+              id: 'oncogrid',
+              text: 'OncoGrid',
+              component: <OncogridTab />,
+            },
+          ]}
+        />
+      </span>
     }
   />;
 

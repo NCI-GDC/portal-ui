@@ -20,13 +20,14 @@ const performanceTracker = {
     const duration = timer.timeEnd(label);
     const eventFields = label.split(':');
     const category = eventFields[0];
-    global.mixpanel.track(category, {
+    const properties = {
       duration,
       category,
       action: eventFields[1],
       label: eventFields[2],
       ...additionalProperties,
-    });
+    };
+    global.mixpanel.track(category, properties);
   },
 };
 

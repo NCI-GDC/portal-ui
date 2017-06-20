@@ -297,12 +297,12 @@ const OncoGridWrapper = compose(
       });
 
       const performanceContext = {
-        donors: responses.cases,
-        genes: responses.genes,
-        occurences: responses.occurences,
+        donors: responses.cases.length,
+        genes: responses.genes.length,
+        occurences: responses.occurences.length,
       };
 
-      performanceTracker.end('oncogrid:process data', performanceContext);
+      performanceTracker.end('oncogrid:process', performanceContext);
 
       if (gridParams) {
         if (previousResponses && oncoGrid.toggleGridLines) oncoGrid.destroy();
@@ -314,9 +314,9 @@ const OncoGridWrapper = compose(
         performanceTracker.begin('oncogrid:render');
         grid.render();
 
-        grid.on('render:all:end', () => {
-          performanceTracker.end('oncogrid:render', performanceContext);
-        });
+        grid.on('render:all:end', () =>
+          performanceTracker.end('oncogrid:render', performanceContext),
+        );
 
         setCaseCount(responses.totalCases);
         setOncoGrid(grid);

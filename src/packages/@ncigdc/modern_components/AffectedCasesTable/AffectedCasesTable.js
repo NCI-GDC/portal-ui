@@ -363,9 +363,9 @@ const Component = compose(
                     age_at_diagnosis: ageDisplay(diagnosis.age_at_diagnosis),
                     tumor_stage: diagnosis.tumor_stage,
                     days_to_last_follow_up: (diagnosis.days_to_last_follow_up ||
-                      0)
+                      '--')
                       .toLocaleString(),
-                    days_to_death: (diagnosis.days_to_death || 0)
+                    days_to_death: (diagnosis.days_to_death || '--')
                       .toLocaleString(),
                     num_mutations: (
                       <MutationsCount

@@ -122,6 +122,7 @@ const OncoGridWrapper = compose(
   withState('heatMapMode', 'setHeatMapMode', false),
   withState('isLoading', 'setIsLoading', true),
   withState('caseCount', 'setCaseCount', 0),
+  withState('lastRequest', 'setLastRequest', null),
   withState(
     'uniqueGridClass',
     'setUniqueGridClass',
@@ -207,6 +208,8 @@ const OncoGridWrapper = compose(
         filteredConsequenceTypes,
         setCaseCount,
         showGridLines,
+        lastRequest,
+        setLastRequest,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -218,12 +221,15 @@ const OncoGridWrapper = compose(
         return;
       }
 
+      if (lastRequest) lastRequest.cancelled = true;
+      const request = { cancelled: false };
+      setLastRequest(request);
       const responses = await getQueries({
         currentFilters,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       });
-      if (!wrapperRefs[uniqueGridClass]) return;
+      if (!wrapperRefs[uniqueGridClass] || request.cancelled) return;
 
       const gridParams = oncoGridParams({
         grid: showGridLines,
@@ -362,7 +368,8 @@ const OncoGridWrapper = compose(
       this.props.getQueries(this.props);
     },
     componentWillUnmount(): void {
-      const { uniqueGridClass } = this.props;
+      const { uniqueGridClass, oncoGrid } = this.props;
+      if (oncoGrid.toggleGridLines) oncoGrid.destroy();
       delete containerRefs[uniqueGridClass];
       delete wrapperRefs[uniqueGridClass];
     },

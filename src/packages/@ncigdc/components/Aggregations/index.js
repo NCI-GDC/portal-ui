@@ -62,7 +62,8 @@ export const facetFieldDisplayMapper = field => {
 
 export const BucketLink = styled(Link, {
   minWidth: 0,
-  display: 'inline-block',
+  display: 'flex',
+  alignItems: 'center',
   color: ({ theme }) => theme.greyScale1,
   ':link': {
     textDecoration: 'none',

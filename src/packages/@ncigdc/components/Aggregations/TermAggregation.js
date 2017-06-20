@@ -103,6 +103,7 @@ const TermAggregation = (props: TProps) => {
                   .map(bucket =>
                     <BucketRow key={bucket.name}>
                       <BucketLink
+                        className="bucket-link"
                         merge="toggle"
                         query={{
                           offset: 0,
@@ -156,7 +157,7 @@ const TermAggregation = (props: TProps) => {
                           {bucket.name}
                         </OverflowTooltippedLabel>
                       </BucketLink>
-                      <CountBubble>
+                      <CountBubble className="bucket-count">
                         {bucket.doc_count.toLocaleString()}
                       </CountBubble>
                     </BucketRow>,

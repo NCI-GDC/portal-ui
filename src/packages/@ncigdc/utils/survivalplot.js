@@ -7,6 +7,7 @@ import _ from 'lodash';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import styled from '@ncigdc/theme/styled';
 import { fetchApi } from '@ncigdc/utils/ajax/index';
+import { performanceTracker } from '@ncigdc/utils/analytics';
 
 type TPropsDefault = { slug?: string, currentFilters?: Object, size?: number };
 type TPropsMulti = {
@@ -38,7 +39,11 @@ async function fetchCurves(
     _.isNil,
   );
   const url = `analysis/survival?${queryString.stringify(params)}`;
+  performanceTracker.begin('survival:fetch');
   const rawData = await fetchApi(url);
+  performanceTracker.end('survival:fetch', {
+    filters: params.filters,
+  });
   return enoughData(rawData) ? rawData : { results: [] };
 }
 

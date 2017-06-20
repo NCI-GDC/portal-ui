@@ -5,7 +5,7 @@ no-restricted-globals: 0
 import React from 'react';
 import { lifecycle, compose, withState, withProps, mapProps } from 'recompose';
 import OncoGrid from 'oncogrid';
-import { uniqueId, get, mapKeys } from 'lodash';
+import { uniqueId, get, mapKeys, debounce } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
@@ -122,6 +122,7 @@ const OncoGridWrapper = compose(
   withState('heatMapMode', 'setHeatMapMode', false),
   withState('isLoading', 'setIsLoading', true),
   withState('caseCount', 'setCaseCount', 0),
+  withState('lastRequest', 'setLastRequest', null),
   withState(
     'uniqueGridClass',
     'setUniqueGridClass',
@@ -206,6 +207,9 @@ const OncoGridWrapper = compose(
         push,
         filteredConsequenceTypes,
         setCaseCount,
+        showGridLines,
+        lastRequest,
+        setLastRequest,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -217,14 +221,18 @@ const OncoGridWrapper = compose(
         return;
       }
 
+      if (lastRequest) lastRequest.cancelled = true;
+      const request = { cancelled: false };
+      setLastRequest(request);
       const responses = await getQueries({
         currentFilters,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       });
-      if (!wrapperRefs[uniqueGridClass]) return;
+      if (!wrapperRefs[uniqueGridClass] || request.cancelled) return;
 
       const gridParams = oncoGridParams({
+        grid: showGridLines,
         colorMap,
         element: wrapperRefs[uniqueGridClass],
         donorData: responses.cases,
@@ -291,6 +299,7 @@ const OncoGridWrapper = compose(
       if (gridParams) {
         if (previousResponses && oncoGrid.toggleGridLines) oncoGrid.destroy();
         const grid = new OncoGrid(gridParams);
+        grid.resize = debounce(grid.resize.bind(grid), 200);
         grid.render();
         setCaseCount(responses.totalCases);
         setOncoGrid(grid);
@@ -359,7 +368,8 @@ const OncoGridWrapper = compose(
       this.props.getQueries(this.props);
     },
     componentWillUnmount(): void {
-      const { uniqueGridClass } = this.props;
+      const { uniqueGridClass, oncoGrid } = this.props;
+      if (oncoGrid.toggleGridLines) oncoGrid.destroy();
       delete containerRefs[uniqueGridClass];
       delete wrapperRefs[uniqueGridClass];
     },

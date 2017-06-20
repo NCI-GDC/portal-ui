@@ -21,7 +21,7 @@ class GlobalTooltip extends Component {
         this.globalTooltip.offsetHeight -
         15}px`;
     });
-  }, 200);
+  }, 16);
 
   showTooltip = () => this.setState({ showTootip: true });
   hideTooltip = () => this.setState({ showTootip: false });

@@ -117,7 +117,7 @@ const LolliplotComponent = compose(
         },
         ({ done }) =>
           done &&
-          performanceTracker.end('lolliplot:fetch:ssms', {
+          performanceTracker.end('lolliplot:fetch:gene', {
             gene_id: props.geneId,
           }),
       );

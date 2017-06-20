@@ -30,6 +30,7 @@ import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import Loader from '@ncigdc/uikit/Loaders/Loader';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
+import { performanceTracker } from '@ncigdc/utils/analytics';
 
 const id = 'protein-viewer-root';
 const selector = `#${id}`;
@@ -107,12 +108,21 @@ const LolliplotComponent = compose(
   }),
   withProps(({ state, setState }) => ({
     fetchGene(props: Object): void {
-      props.relay.setVariables({
-        fetchGene: true,
-        lolliplotGeneId: btoa(`Gene:${props.geneId}`),
-      });
+      performanceTracker.begin('lolliplot:fetch:gene');
+      props.relay.setVariables(
+        {
+          fetchGene: true,
+          lolliplotGeneId: btoa(`Gene:${props.geneId}`),
+        },
+        ({ done }) =>
+          done &&
+          performanceTracker.end('lolliplot:fetch:gene', {
+            gene_id: props.geneId,
+          }),
+      );
     },
     fetchSsms(props: Object): void {
+      performanceTracker.begin('lolliplot:fetch:ssms');
       const transcript = props.state.activeTranscript.transcript_id
         ? props.state.activeTranscript
         : (props.viewer.node.transcripts.hits.edges.find(
@@ -143,6 +153,10 @@ const LolliplotComponent = compose(
 
           if (done) {
             props.setState(s => ({ ...s, ssmsLoading: false }));
+            performanceTracker.end('lolliplot:fetch:ssms', {
+              gene_id: props.geneId,
+              transcript_id: transcript.transcript_id,
+            });
           }
         },
       );

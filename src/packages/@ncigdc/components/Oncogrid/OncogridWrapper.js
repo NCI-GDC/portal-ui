@@ -40,6 +40,7 @@ import Hidden from '@ncigdc/components/Hidden';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { setModal } from '@ncigdc/dux/modal';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
+import { performanceTracker } from '@ncigdc/utils/analytics';
 
 import getQueries from './getQueries';
 import oncoGridParams from './oncoGridParams';
@@ -224,13 +225,20 @@ const OncoGridWrapper = compose(
       if (lastRequest) lastRequest.cancelled = true;
       const request = { cancelled: false };
       setLastRequest(request);
+      performanceTracker.begin('oncogrid:fetch');
       const responses = await getQueries({
+        currentFilters,
+        maxCases: MAX_CASES,
+        maxGenes: MAX_GENES,
+      });
+      performanceTracker.end('oncogrid:fetch', {
         currentFilters,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       });
       if (!wrapperRefs[uniqueGridClass] || request.cancelled) return;
 
+      performanceTracker.begin('oncogrid:process');
       const gridParams = oncoGridParams({
         grid: showGridLines,
         colorMap,
@@ -296,11 +304,29 @@ const OncoGridWrapper = compose(
         consequenceTypes: filteredConsequenceTypes,
       });
 
+      const performanceContext = {
+        donors: responses.cases.length,
+        genes: responses.genes.length,
+        occurences: responses.occurences.length,
+      };
+
+      performanceTracker.end('oncogrid:process', performanceContext);
+
       if (gridParams) {
         if (previousResponses && oncoGrid.toggleGridLines) oncoGrid.destroy();
+
+        performanceTracker.begin('oncogrid:init');
         const grid = new OncoGrid(gridParams);
+        performanceTracker.end('oncogrid:init', performanceContext);
         grid.resize = debounce(grid.resize.bind(grid), 200);
+
+        performanceTracker.begin('oncogrid:render');
         grid.render();
+
+        grid.on('render:all:end', () =>
+          performanceTracker.end('oncogrid:render', performanceContext),
+        );
+
         setCaseCount(responses.totalCases);
         setOncoGrid(grid);
         setOncoGridData(responses);

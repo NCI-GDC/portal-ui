@@ -15,7 +15,6 @@ import * as d3 from 'd3';
 import { startCase } from 'lodash';
 import { Lolliplot, Backbone, Minimap } from '@oncojs/react-lolliplot/dist/lib';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
-import { makeFilter } from '@ncigdc/utils/filters';
 import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
 import withRouter from '@ncigdc/utils/withRouter';
 import groupByType from '@ncigdc/utils/groupByType';
@@ -324,6 +323,11 @@ const LolliplotComponent = compose(
       mutationColors,
     };
   }),
+  withPropsOnChange(['viewer'], ({ viewer: { node: gene } }, transcripts) => ({
+    transcripts: transcripts
+      ? transcripts
+      : gene ? gene.transcripts.hits.edges.map(x => x.node) : transcripts,
+  })),
 )(
   ({
     state: {
@@ -503,7 +507,10 @@ const LolliplotComponent = compose(
                 ref={n => {
                   if (!width) {
                     if (!container) container = n;
-                    setState(s => ({ ...s, width: s.width || n.clientWidth }));
+                    setState(s => ({
+                      ...s,
+                      width: s.width || n.clientWidth,
+                    }));
                   }
                 }}
               >
@@ -629,7 +636,7 @@ const LolliplotComponent = compose(
                                   </thead>
                                   <tbody>
                                     {outsideSsms.map(d =>
-                                      <tr>
+                                      <tr key={d.aa_change}>
                                         <td>{d.aa_change}</td>
                                         <td>{d.x}</td>
                                         <td style={{ textAlign: 'right' }}>
@@ -760,9 +767,6 @@ export const LolliplotQuery = {
     haveTotal: false,
     first: 10000,
     lolliplotFilters: null,
-    isCanonical: makeFilter([
-      { field: 'transcripts.is_canonical', value: [true] },
-    ]),
   },
   fragments: {
     viewer: () => Relay.QL`
@@ -773,7 +777,7 @@ export const LolliplotQuery = {
             symbol
             canonical_transcript_id
             transcripts {
-              hits(first: 1 filters: $isCanonical) {
+              hits(first: 99) {
                 edges {
                   node {
                     is_canonical

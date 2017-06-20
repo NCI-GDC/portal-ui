@@ -167,9 +167,6 @@ export const SSMPageComponent = compose(
             geneId={canonicalGeneId}
             viewer={viewer}
             lolliplot={viewer.analysis.protein_mutations}
-            transcripts={node.consequence.hits.edges.map(
-              x => x.node.transcript,
-            )}
           />
         : <div style={styles.lolliplotZeroStateWrapper}>
             No protein coding transcript is affected by this mutation in CDS

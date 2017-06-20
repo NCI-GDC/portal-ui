@@ -6,6 +6,8 @@ import Link from '@ncigdc/components/Links/Link';
 import UndoIcon from '@ncigdc/theme/icons/UndoIcon';
 import Hidden from '@ncigdc/components/Hidden';
 import styled from '@ncigdc/theme/styled';
+import withRouter from '@ncigdc/utils/withRouter';
+
 import {
   removeFilter,
   fieldInCurrentFilters,
@@ -26,14 +28,19 @@ const StyledLink = styled(Link, {
   },
 });
 
-const FacetResetButton = ({ field, currentFilters, style, ...props }) => {
+const FacetResetButton = ({
+  field,
+  currentFilters,
+  query,
+  style,
+  ...props
+}) => {
   const newFilters = removeFilter(field, currentFilters);
-  const newQuery = newFilters
-    ? {
-        offset: 0,
-        filters: newFilters,
-      }
-    : {};
+  const newQuery = {
+    ...query,
+    offset: 0,
+    filters: newFilters,
+  };
   const inCurrent = fieldInCurrentFilters({
     currentFilters: currentFilters.content || [],
     field,
@@ -41,11 +48,11 @@ const FacetResetButton = ({ field, currentFilters, style, ...props }) => {
   return (
     <StyledLink
       style={{ display: inCurrent ? 'inline' : 'none', ...style }}
-      query={inCurrent ? newQuery : {}}
+      query={newQuery}
     >
       <ShadowedUndoIcon /><Hidden>reset</Hidden>
     </StyledLink>
   );
 };
 
-export default FacetResetButton;
+export default withRouter(FacetResetButton);

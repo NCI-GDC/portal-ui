@@ -1,12 +1,18 @@
 const startTimes = {};
 export const timer = {
-  time: label => (startTimes[label] = performance.now()),
+  time: label => {
+    if (label in startTimes) {
+      console.warn(`Start time for "${label}" already exists`);
+    }
+    startTimes[label] = performance.now();
+  },
   timeEnd: label => {
     if (!startTimes[label]) {
       console.warn(`No start time was found for "${label}"`);
       return;
     }
     const duration = performance.now() - startTimes[label];
+    delete startTimes[label];
     return duration;
   },
 };

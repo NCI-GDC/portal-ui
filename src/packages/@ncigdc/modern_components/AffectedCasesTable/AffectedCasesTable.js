@@ -362,11 +362,13 @@ const Component = compose(
                     gender: c.demographic ? c.demographic.gender : '',
                     age_at_diagnosis: ageDisplay(diagnosis.age_at_diagnosis),
                     tumor_stage: diagnosis.tumor_stage,
-                    days_to_last_follow_up: (diagnosis.days_to_last_follow_up ||
-                      '--')
-                      .toLocaleString(),
-                    days_to_death: (diagnosis.days_to_death || '--')
-                      .toLocaleString(),
+                    days_to_last_follow_up: (diagnosis.days_to_last_follow_up !=
+                      null
+                      ? diagnosis.days_to_last_follow_up
+                      : '--').toLocaleString(),
+                    days_to_death: (diagnosis.days_to_death != null
+                      ? diagnosis.days_to_death
+                      : '--').toLocaleString(),
                     num_mutations: (
                       <MutationsCount
                         isLoading={ssmCountsLoading}

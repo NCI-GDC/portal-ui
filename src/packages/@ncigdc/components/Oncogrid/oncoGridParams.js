@@ -10,8 +10,8 @@ import {
   gdcTracks,
   getColorValue,
 } from '@ncigdc/components/Oncogrid/tracks';
-import { mapDonors, mapGenes, buildOccurences } from './dataMapping';
-import type { TDonorInput, TGeneInput, TOccurenceInput } from './dataMapping';
+import { mapDonors, mapGenes, buildOccurrences } from './dataMapping';
+import type { TDonorInput, TGeneInput, TOccurrenceInput } from './dataMapping';
 
 const donorTracks = [...clinicalDonorTracks, ...dataTypeTracks];
 
@@ -50,7 +50,7 @@ function geneSetLegend(): string {
 export default function({
   donorData,
   geneData,
-  occurencesData,
+  occurrencesData,
   colorMap,
   element,
   height = 150,
@@ -72,7 +72,7 @@ export default function({
 }: {
   donorData: Array<TDonorInput>,
   geneData: Array<TGeneInput>,
-  occurencesData: Array<TOccurenceInput>,
+  occurrencesData: Array<TOccurrenceInput>,
   colorMap: { [key: string]: string },
   element: string,
   height: number,
@@ -91,8 +91,8 @@ export default function({
   donorClick?: Function,
   grid?: boolean,
 }): ?Object {
-  const { observations, donorIds, geneIds } = buildOccurences(
-    occurencesData,
+  const { observations, donorIds, geneIds } = buildOccurrences(
+    occurrencesData,
     donorData,
     geneData,
     consequenceTypes,

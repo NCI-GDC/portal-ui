@@ -120,7 +120,7 @@ export const mapGenes = (
   return arr;
 };
 
-export type TOccurenceInput = {
+export type TOccurrenceInput = {
   ssm: {
     ssm_id: string,
     consequence: Array<{
@@ -140,7 +140,7 @@ export type TOccurenceInput = {
   },
 };
 
-export type TOccurence = {
+export type TOccurrence = {
   id: string,
   donorId: string,
   geneId: string,
@@ -149,19 +149,19 @@ export type TOccurence = {
   functionalImpact: string,
 };
 
-type TBuildOccurences = (
-  occurrences: Array<TOccurenceInput>,
+type TBuildOccurrences = (
+  occurrences: Array<TOccurrenceInput>,
   donors: Array<TDonorInput>,
   genes: Array<TGeneInput>,
   consequenceTypes: Array<string>,
   impacts: Array<string>,
 ) => {
-  observations: Array<TOccurence>,
+  observations: Array<TOccurrence>,
   donorIds: Set<string>,
   geneIds: Set<string>,
 };
 
-export const buildOccurences: TBuildOccurences = (
+export const buildOccurrences: TBuildOccurrences = (
   occurrences,
   donors,
   genes,
@@ -230,4 +230,4 @@ export const buildOccurences: TBuildOccurences = (
   };
 };
 
-export default { mapDonors, mapGenes, buildOccurences };
+export default { mapDonors, mapGenes, buildOccurrences };

@@ -6,44 +6,25 @@ import Queue from 'queue';
 import md5 from 'blueimp-md5';
 
 async function getGenes({
-  currentFilters,
+  filters,
   size = 50,
 }: {
-  currentFilters: Object,
+  filters: Object,
   size: number,
 }): Promise<Object> {
   const fields = ['gene_id', 'symbol', 'is_cancer_gene_census'];
 
   return fetchApi(
-    `analysis/top_mutated_genes_by_project?size=${size}&fields=${fields.join()}${currentFilters
+    `analysis/top_mutated_genes_by_project?size=${size}&fields=${fields.join()}${filters
       .content.length
-      ? `&filters=${JSON.stringify(currentFilters)}`
+      ? `&filters=${JSON.stringify(filters)}`
       : ''}`,
   );
 }
 
 const OCCURRENCE_CHUNK = 10000;
-async function getOccurrences(args: {
-  geneIds: Array<string>,
-  caseIds: Array<string>,
-  currentFilters: Object,
-}): Promise<Object> {
+async function getOccurrences(args: { filters: Object }): Promise<Object> {
   const queue = Queue({ concurrency: 6 });
-  const { geneIds, caseIds, currentFilters } = args;
-
-  if (!geneIds.length || !caseIds.length) return { data: { hits: [] } };
-
-  const filters = replaceFilters(
-    {
-      op: 'and',
-      content: [
-        { op: 'in', content: { field: 'genes.gene_id', value: geneIds } },
-        { op: 'in', content: { field: 'cases.case_id', value: caseIds } },
-      ],
-    },
-    currentFilters,
-  );
-
   const fields = [
     'ssm.consequence.transcript.consequence_type',
     'ssm.consequence.transcript.annotation.impact',
@@ -56,7 +37,7 @@ async function getOccurrences(args: {
   const defaultOptions = {
     headers: { 'Content-Type': 'application/json' },
     body: {
-      filters,
+      filters: args.filters,
       size: firstSize,
       from: 0,
       fields: fields.join(),
@@ -104,26 +85,12 @@ async function getOccurrences(args: {
 }
 
 async function getCases({
-  geneIds,
-  currentFilters,
+  filters,
   size = 50,
 }: {
-  geneIds: Array<string>,
-  currentFilters: Object,
+  filters: Object,
   size: number,
 }): Promise<Object> {
-  if (!geneIds.length) return { data: { hits: [], pagination: { total: 0 } } };
-
-  const filters = replaceFilters(
-    {
-      op: 'and',
-      content: [
-        { op: 'in', content: { field: 'genes.gene_id', value: geneIds } },
-      ],
-    },
-    currentFilters,
-  );
-
   return fetchApi('analysis/top_mutated_cases_by_gene', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -145,6 +112,7 @@ async function getCases({
   });
 }
 
+const NO_RESULT = { genes: [], occurrences: [], cases: [], totalCases: 0 };
 async function getQueries({
   currentFilters,
   maxGenes,
@@ -154,22 +122,70 @@ async function getQueries({
   maxGenes: number,
   maxCases: number,
 }): Promise<Object> {
-  const { data } = await getGenes({ currentFilters, size: maxGenes });
-  const genes = data.hits;
-  const geneIds = genes.map(gene => gene.gene_id);
-  const cases = await getCases({ geneIds, currentFilters, size: maxCases });
-  const caseIds = cases.data.hits.map(c => c.case_id);
-  const occurrences = await getOccurrences({
-    geneIds,
+  const geneFilters = replaceFilters(
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'NOT',
+          content: {
+            field: 'ssms.consequence.transcript.annotation.impact',
+            value: 'missing',
+          },
+        },
+      ],
+    },
     currentFilters,
-    caseIds,
+  );
+  const { data: { hits: genes } } = await getGenes({
+    filters: geneFilters,
+    size: maxGenes,
+  });
+  if (!genes.length) return NO_RESULT;
+
+  const geneIds = genes.map(gene => gene.gene_id);
+  const caseFilters = replaceFilters(
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: { field: 'genes.gene_id', value: geneIds },
+        },
+      ],
+    },
+    geneFilters,
+  );
+  const {
+    data: { hits: cases, pagination: { total: totalCases } },
+  } = await getCases({
+    filters: caseFilters,
+    size: maxCases,
+  });
+  if (!totalCases) return NO_RESULT;
+
+  const caseIds = cases.map(c => c.case_id);
+  const occurrenceFilters = replaceFilters(
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: { field: 'cases.case_id', value: caseIds },
+        },
+      ],
+    },
+    caseFilters,
+  );
+  const { data: { hits: occurrences } } = await getOccurrences({
+    filters: occurrenceFilters,
   });
 
   return {
     genes,
-    occurences: occurrences.data.hits,
-    cases: cases.data.hits,
-    totalCases: cases.data.pagination.total,
+    occurrences,
+    cases,
+    totalCases,
   };
 }
 

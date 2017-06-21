@@ -15,6 +15,7 @@ import { makeFilter, toggleFilters } from '@ncigdc/utils/filters';
 
 import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+import { removeEmptyKeys } from '@ncigdc/utils/uri';
 
 const styles = {
   heading: {
@@ -77,10 +78,10 @@ export default compose(
       );
       push({
         pathname: '/exploration',
-        query: {
+        query: removeEmptyKeys({
           ...query,
-          filters: JSURL.stringify(newFilters),
-        },
+          filters: newFilters && JSURL.stringify(newFilters),
+        }),
       });
     },
   }),

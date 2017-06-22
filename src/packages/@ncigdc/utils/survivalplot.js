@@ -43,6 +43,8 @@ async function fetchCurves(
   const rawData = await fetchApi(url);
   performanceTracker.end('survival:fetch', {
     filters: params.filters,
+    data_sets: rawData.results.length,
+    donors: _.sum(rawData.results.map(x => x.donors.length)),
   });
   return enoughData(rawData) ? rawData : { results: [] };
 }

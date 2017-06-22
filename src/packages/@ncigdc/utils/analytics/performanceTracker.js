@@ -1,29 +1,24 @@
 const startTimes = {};
-export const timer = {
-  time: label => {
+
+const performanceTracker = {
+  begin: label => {
     if (label in startTimes) {
       console.warn(`Start time for "${label}" already exists`);
     }
-    startTimes[label] = performance.now();
+    startTimes[label] = Date.now();
+    global.mixpanel.time_event(label.split(':')[0]);
+    return startTimes[label];
   },
-  timeEnd: label => {
+  end: (label, additionalProperties) => {
     if (!startTimes[label]) {
       console.warn(`No start time was found for "${label}"`);
       return;
     }
-    const duration = performance.now() - startTimes[label];
+    const endTime = Date.now();
+    const startTime = startTimes[label];
     delete startTimes[label];
-    return duration;
-  },
-};
 
-const performanceTracker = {
-  begin: label => {
-    timer.time(label);
-    global.mixpanel.time_event(label.split(':')[0]);
-  },
-  end: (label, additionalProperties) => {
-    const duration = timer.timeEnd(label);
+    const duration = endTime - startTime;
     const eventFields = label.split(':');
     const category = eventFields[0];
     const properties = {
@@ -33,7 +28,22 @@ const performanceTracker = {
       label: eventFields[2],
       ...additionalProperties,
     };
+
     global.mixpanel.track(category, properties);
+
+    global.newrelic.addPageAction(label, {
+      ...properties,
+      name: label,
+    });
+
+    global.newrelic.addToTrace({
+      ...properties,
+      name: label,
+      start: startTime,
+      end: endTime,
+    });
+
+    return duration;
   },
 };
 

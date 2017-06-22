@@ -40,7 +40,12 @@ export const withSearch = passedInState => {
         setState(s => ({ ...s, query: q.trim() }));
       },
       reset: ({ setState }) => () => {
-        setState(s => ({ ...s, query: '', isInSearchMode: false }));
+        setState(s => ({
+          ...s,
+          query: '',
+          isInSearchMode: false,
+          isLoading: false,
+        }));
       },
       fetchResults: ({ handleResults }) => (query, timeOfRequest) =>
         throttledInvoker(() =>

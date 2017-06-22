@@ -231,11 +231,16 @@ const OncoGridWrapper = compose(
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       });
-      performanceTracker.end('oncogrid:fetch', {
-        currentFilters,
+
+      const performanceContext = {
+        donors: responses.cases.length,
+        genes: responses.genes.length,
+        occurences: responses.occurences.length,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
-      });
+      };
+
+      performanceTracker.end('oncogrid:fetch', performanceContext);
       if (!wrapperRefs[uniqueGridClass] || request.cancelled) return;
 
       performanceTracker.begin('oncogrid:process');
@@ -303,12 +308,6 @@ const OncoGridWrapper = compose(
         impacts,
         consequenceTypes: filteredConsequenceTypes,
       });
-
-      const performanceContext = {
-        donors: responses.cases.length,
-        genes: responses.genes.length,
-        occurences: responses.occurences.length,
-      };
 
       performanceTracker.end('oncogrid:process', performanceContext);
 

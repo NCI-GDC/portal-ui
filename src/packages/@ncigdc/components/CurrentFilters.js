@@ -81,6 +81,19 @@ type TProps = {
   hideLinkOnEmpty: boolean,
 };
 
+export const getDisplayOp = (op, value) => {
+  if (op === 'in') {
+    if (value.length === 1) {
+      if (value[0].includes('set_id')) {
+        return 'IN';
+      }
+      return 'IS';
+    }
+    return 'IN';
+  }
+  return op;
+};
+
 const enhance = compose(
   withRouter,
   withPropsOnChange(['query'], ({ query: { filters } }) => ({
@@ -99,6 +112,9 @@ const enhance = compose(
         case 'string':
           if (field === 'genes.gene_id') {
             return <GeneSymbol explore={geneSymbolFragment} geneId={value} />;
+          }
+          if (value.includes('set_id:')) {
+            return 'input set';
           }
           return value;
         case 'boolean':
@@ -204,13 +220,9 @@ const CurrentFilters = (
                   })}
                 </Field>
               </NotUnderlinedLink>
-              {filter.op === 'in' &&
-                filter.content.value.length === 1 &&
-                <Op>IS</Op>}
-              {filter.op === 'in' &&
-                filter.content.value.length > 1 &&
-                <Op>IN</Op>}
-              {filter.op !== 'in' && <Button>{filter.op}</Button>}
+              <Op>
+                {getDisplayOp(filter.op, filter.content.value)}
+              </Op>
               {filter.content.value.length > 1 &&
                 <span style={styles.leftParen}>(</span>}
               {(isFilterExpanded(filter)

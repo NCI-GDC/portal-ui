@@ -19,15 +19,15 @@ const mutation = graphql`
     $input: CreateSetInput
     $never_used: RelayIsDumb
   ) {
-  sets(input: $never_used) {
-    create {
-      explore {
-        case(input: $input) {
-          set_id
+    sets(input: $never_used) {
+      create {
+        explore {
+          case(input: $input) {
+            set_id
+          }
         }
       }
     }
-  }
   }
 `;
 

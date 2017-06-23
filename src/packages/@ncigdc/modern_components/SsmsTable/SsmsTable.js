@@ -544,7 +544,13 @@ const Component = compose(
                             getSurvivalCurves({
                               field: 'gene.ssm.ssm_id',
                               value: x.ssm_id,
-                              slug: x.ssm_id.substr(0, 8),
+                              slug: `${get(
+                                x,
+                                'consequence.hits.edges[0].node.transcript.gene.symbol',
+                              )} ${get(
+                                x,
+                                'consequence.hits.edges[0].node.transcript.aa_change',
+                              )}`,
                               currentFilters: defaultFilters,
                             }).then(data => {
                               setSelectedSurvivalData(data);

@@ -12,7 +12,7 @@ import {
 } from 'recompose';
 import { insertRule } from 'glamor';
 import * as d3 from 'd3';
-import { startCase } from 'lodash';
+import { startCase, isEqual } from 'lodash';
 import { Lolliplot, Backbone, Minimap } from '@oncojs/react-lolliplot/dist/lib';
 import Tooltip from '@ncigdc/uikit/Tooltip/Tooltip';
 import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
@@ -270,17 +270,27 @@ const LolliplotComponent = compose(
   })),
   withPropsOnChange(
     ['viewer', 'ssms', 'state'],
-    ({ state: { activeTranscript }, ssms }) => {
+    ({ state: { activeTranscript, blacklist }, ssms, setState }) => {
       const lolliplotData = buildProteinLolliplotData({
         transcript: activeTranscript,
         data: (ssms.hits || []).map(x => ({ score: x._score, ...x._source })),
       });
+
+      const impactUnknown = isEqual(
+        Object.keys(groupByType('impact', lolliplotData.mutations)),
+        ['UNKNOWN'],
+      );
+
+      if (blacklist === 'impact' && impactUnknown) {
+        setState(s => ({ ...s, blacklist: 'consequence' }));
+      }
 
       return {
         lolliplotData,
         outsideSsms: lolliplotData.mutations.filter(
           d => d.x > activeTranscript.length_amino_acid,
         ),
+        impactUnknown,
       };
     },
   ),
@@ -354,6 +364,7 @@ const LolliplotComponent = compose(
     filterByType,
     transcripts,
     outsideSsms,
+    impactUnknown,
   }) =>
     <Column>
       <Row>
@@ -670,7 +681,9 @@ const LolliplotComponent = compose(
                       aria-label="Color by:"
                     >
                       <option value="consequence">Consequence</option>
-                      <option value="impact">Impact (VEP)</option>
+                      <option value="impact" disabled={impactUnknown}>
+                        Impact (VEP)
+                      </option>
                     </select>
                   </div>
                   <div style={{ marginTop: '6px' }}>
@@ -739,11 +752,13 @@ const LolliplotComponent = compose(
                           <span style={{ float: 'right' }}>
                             <b>
                               {
+                                // $FlowIgnore
                                 xs
                                   .filter(d => d.x >= min && d.x <= max)
                                   .filter(filterByType(blacklist)).length
                               }
                             </b>
+                            {/* $FlowIgnore */}
                             &nbsp;/ <b>{xs.length}</b>
                           </span>
                         </div>

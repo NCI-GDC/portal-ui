@@ -79,50 +79,10 @@ export const SearchTable = compose(
             endpoint="files"
             downloadable={downloadable}
             entityType={entityType}
-            downloadFields={[
-              'file_id',
-              'file_name',
-              'cases.project.project_id',
-              'cases.case_id',
-              'access',
-              'data_category',
-              'data_format',
-              'file_size',
-            ]}
-            sortOptions={[
-              {
-                id: 'file_id',
-                name: 'File UUID',
-              },
-              {
-                id: 'submitter_id',
-                name: 'File Submitter ID',
-              },
-              {
-                id: 'access',
-                name: 'Access',
-              },
-              {
-                id: 'file_name',
-                name: 'File Name',
-              },
-              {
-                id: 'cases.project.project_id',
-                name: 'Project',
-              },
-              {
-                id: 'data_category',
-                name: 'Data Category',
-              },
-              {
-                id: 'data_format',
-                name: 'Data Format',
-              },
-              {
-                id: 'file_size',
-                name: 'Size',
-              },
-            ]}
+            downloadFields={tableInfo
+              .filter(x => x.downloadable)
+              .map(x => x.field || x.id)}
+            sortOptions={tableInfo.filter(x => x.sortable)}
             tsvSelector="#repository-files-table"
             tsvFilename="repository-files-table.tsv"
           />

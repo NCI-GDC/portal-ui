@@ -41,6 +41,7 @@ import { withTheme } from '@ncigdc/theme';
 import type { TTheme } from '@ncigdc/theme';
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 import TableActions from '@ncigdc/components/TableActions';
+import { MUTATION_SUBTYPE_MAP } from '@ncigdc/utils/constants';
 
 const colors = scaleOrdinal(schemeCategory10);
 const COMPONENT_NAME = 'SsmsTable';
@@ -212,12 +213,6 @@ type TProps = {
   defaultFilters: TGroupFilter,
 };
 
-const mutationSubTypeMap = {
-  'single base substitution': 'Substitution',
-  'small deletion': 'Deletion',
-  'small insertion': 'Insertion',
-};
-
 type TMapData = (
   data: Array<Object>,
   shouldShowGeneSymbol: boolean,
@@ -246,7 +241,7 @@ const mapData: TMapData = (data, shouldShowGeneSymbol, theme) =>
       ...hit,
       impact,
       mutation_subtype:
-        mutationSubTypeMap[(hit.mutation_subtype || '').toLowerCase()] ||
+        MUTATION_SUBTYPE_MAP[(hit.mutation_subtype || '').toLowerCase()] ||
           hit.mutation_subtype,
       consequence_type: (
         <span>

@@ -6,7 +6,7 @@
     "name": "OICR",
     "url": "https://github.com/NCI-GDC/"
   },
-  "homepage": "https://gdc-portal.nci.nih.gov/",
+  "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
     "precommit": "lint-staged",
     "start": "BROWSER=none jailbreak-react-scripts start",
@@ -50,7 +50,7 @@
     "jsurl": "0.1.5",
     "memoizee": "0.4.5",
     "moment": "2.17.1",
-    "oncogrid": "1.4.1",
+    "oncogrid": "1.4.3",
     "prop-types": "15.5.10",
     "query-string": "4.3.4",
     "queue": "4.2.1",

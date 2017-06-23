@@ -66,7 +66,7 @@ const UserDropdown = connect(state => ({
                     does not have access to any protected data within the GDC.
                     Click
                     {' '}
-                    <a href="https://gdc.nci.nih.gov/access-data/obtaining-access-controlled-data">
+                    <a href="https://gdc.cancer.gov/access-data/obtaining-access-controlled-data">
                       here
                     </a>
                     {' '}

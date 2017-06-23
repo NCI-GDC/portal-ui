@@ -223,7 +223,15 @@ const CurrentFilters = (
                     offset: 0,
                     filters: {
                       op: 'and',
-                      content: [filter],
+                      content: [
+                        {
+                          op: filter.op,
+                          content: {
+                            field: filter.content.field,
+                            value: [value],
+                          },
+                        },
+                      ],
                     },
                   }}
                 >

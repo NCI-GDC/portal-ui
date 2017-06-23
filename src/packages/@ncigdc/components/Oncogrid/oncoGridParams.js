@@ -117,6 +117,7 @@ export default function({
       case 'int':
         return value / 100;
       case 'vital':
+        return !value || value === 'not reported' ? 0 : 1;
       case 'gender':
       case 'ethnicity':
       case 'race':

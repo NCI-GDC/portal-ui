@@ -30,7 +30,7 @@ export type TDonor = {
   race: string,
   ethnicity: string,
   age: number,
-  vitalStatus: boolean,
+  vitalStatus: 'not reported' | 'alive' | 'dead',
   daysToDeath: number,
 };
 
@@ -39,10 +39,11 @@ function nullSentinel(value: ?number): number {
   return -777;
 }
 
-export const mapDonors = (
+type TMapDonors = (
   donors: Array<TDonorInput>,
   donorIds: Set<string>,
-): Array<TDonor> => {
+) => Array<TDonor>;
+export const mapDonors: TMapDonors = (donors, donorIds) => {
   const arr = [];
 
   for (let i = 0; i < donors.length; i += 1) {
@@ -59,7 +60,11 @@ export const mapDonors = (
         race = 'not reported',
         ethnicity = 'not reported',
       } = demographic;
-      const { age_at_diagnosis, vital_status: vitalStatus, days_to_death } =
+      const {
+        age_at_diagnosis,
+        vital_status: vitalStatus = 'not reported',
+        days_to_death,
+      } =
         diagnoses[0] || {};
 
       const output = {
@@ -69,7 +74,7 @@ export const mapDonors = (
         race,
         ethnicity,
         age: nullSentinel(age_at_diagnosis),
-        vitalStatus: vitalStatus === 'alive',
+        vitalStatus,
         daysToDeath: nullSentinel(days_to_death),
       };
 
@@ -99,10 +104,11 @@ export type TGene = {
   cgc: boolean,
 };
 
-export const mapGenes = (
+type TMapGenes = (
   genes: Array<TGeneInput>,
   geneIds: Set<string>,
-): Array<TGene> => {
+) => Array<TGene>;
+export const mapGenes: TMapGenes = (genes, geneIds) => {
   const arr = [];
 
   for (let i = 0; i < genes.length; i += 1) {
@@ -160,7 +166,6 @@ type TBuildOccurrences = (
   donorIds: Set<string>,
   geneIds: Set<string>,
 };
-
 export const buildOccurrences: TBuildOccurrences = (
   occurrences,
   donors,

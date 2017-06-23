@@ -40,28 +40,10 @@ export const SearchTable = compose(
           total={hits.total}
           sortKey="cases_sort"
           endpoint="cases"
-          downloadFields={[
-            'case_id',
-            'primary_site',
-            'project.project_id',
-            'demographic.gender',
-            'summary.data_categories.file_count',
-            'summary.data_categories.data_category',
-          ]}
-          sortOptions={[
-            {
-              id: 'project.project_id',
-              name: 'Project',
-            },
-            {
-              id: 'primary_site',
-              name: 'Primary Site',
-            },
-            {
-              id: 'demographic.gender',
-              name: 'Gender',
-            },
-          ]}
+          downloadFields={tableInfo
+            .filter(x => x.downloadable)
+            .map(x => x.field || x.id)}
+          sortOptions={tableInfo.filter(x => x.sortable)}
           tsvSelector="#repository-cases-table"
           tsvFilename="repository-cases-table.tsv"
         />

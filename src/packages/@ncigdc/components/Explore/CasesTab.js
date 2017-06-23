@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react';
-import CaseTable from '@ncigdc/containers/explore/CaseTable';
-import ExploreCasesPies from '@ncigdc/components/TabPieCharts/ExploreCasesPies';
+import ExploreCasesTable from '@ncigdc/modern_components/ExploreCasesTable/ExploreCasesTable';
+import ExploreCasesPies from '@ncigdc/modern_components/ExploreCasesPies/ExploreCasesPies';
 
-const CasesTab = props =>
+const CasesTab = () =>
   <div>
-    <ExploreCasesPies aggregations={props.pies} />
-    <CaseTable hits={props.hits} explore={props.explore} endpoint="case_ssms" />
+    <ExploreCasesPies />
+    <ExploreCasesTable />
   </div>;
 
 export default CasesTab;

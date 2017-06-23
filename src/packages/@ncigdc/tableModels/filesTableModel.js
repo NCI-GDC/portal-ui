@@ -25,12 +25,14 @@ const filesTableModel = [
         </FileLink>
       </Td>,
     sortable: true,
+    downloadable: true,
     hidden: true,
   },
   {
     name: 'File Submitter ID',
     id: 'submitter_id',
     sortable: true,
+    downloadable: true,
     hidden: true,
     th: () => <Th>File Submitter ID</Th>,
     td: ({ node }) =>
@@ -42,6 +44,7 @@ const filesTableModel = [
     name: 'Access',
     id: 'access',
     sortable: true,
+    downloadable: true,
     th: () => <Th>Access</Th>,
     td: ({ node }) =>
       <Td>
@@ -60,6 +63,7 @@ const filesTableModel = [
     name: 'File Name',
     id: 'file_name',
     sortable: true,
+    downloadable: true,
     th: () => <Th>File Name</Th>,
     td: ({ node }) =>
       <Td>
@@ -95,6 +99,7 @@ const filesTableModel = [
 
         {total === 0 && 0}
       </TdNum>,
+    downloadable: true,
   },
   {
     name: 'Project',
@@ -107,27 +112,31 @@ const filesTableModel = [
         ).map(pId => <ProjectLink key={pId} uuid={pId}>{pId}</ProjectLink>)}
       </Td>,
     sortable: true,
+    downloadable: true,
   },
   {
     name: 'Data Category',
     id: 'data_category',
-    sortable: true,
     th: () => <Th>Data Category</Th>,
     td: ({ node }) => <Td>{node.data_category || '--'}</Td>,
+    sortable: true,
+    downloadable: true,
   },
   {
     name: 'Data Format',
     id: 'data_format',
-    sortable: true,
     th: () => <Th>Data Format</Th>,
     td: ({ node }) => <Td>{node.data_format || '--'}</Td>,
+    sortable: true,
+    downloadable: true,
   },
   {
     name: 'Size',
     id: 'file_size',
-    sortable: true,
     th: () => <Th>File Size</Th>,
     td: ({ node }) => <Td><FileSize bytes={node.file_size} /></Td>,
+    sortable: true,
+    downloadable: true,
   },
   {
     name: 'Annotations',
@@ -140,14 +149,16 @@ const filesTableModel = [
           node.annotations.hits.total
         }
       </TdNum>,
+    downloadable: true,
   },
   {
     name: 'Data Type',
     id: 'data_type',
-    sortable: false,
-    hidden: true,
     th: () => <Th>Data Type</Th>,
     td: ({ node }) => <Td>{node.data_type || '--'}</Td>,
+    sortable: false,
+    downloadable: true,
+    hidden: true,
   },
   {
     name: 'Experimental Strategy',
@@ -158,6 +169,7 @@ const filesTableModel = [
         {node.experimental_strategy || '--'}
       </Td>,
     sortable: false,
+    downloadable: true,
     hidden: true,
   },
   {
@@ -166,6 +178,7 @@ const filesTableModel = [
     th: () => <Th>Platform</Th>,
     td: ({ node }) => <Td>{node.platform || '--'}</Td>,
     sortable: false,
+    downloadable: true,
     hidden: true,
   },
 ];

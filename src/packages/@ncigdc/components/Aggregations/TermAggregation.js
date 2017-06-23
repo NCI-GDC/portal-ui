@@ -1,6 +1,7 @@
 /* @flow */
 
 import React from 'react';
+import _ from 'lodash';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
 import { compose, withState, withPropsOnChange, pure } from 'recompose';
 
@@ -97,7 +98,7 @@ const TermAggregation = (props: TProps) => {
               </Row>}
             {!props.collapsed &&
               <Column>
-                {filteredBuckets
+                {_.orderBy(filteredBuckets, 'doc_count', 'desc')
                   .slice(0, props.showingMore ? Infinity : 5)
                   .map(b => ({ ...b, name: b.key_as_string || b.key }))
                   .map(bucket =>

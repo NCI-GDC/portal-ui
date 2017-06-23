@@ -105,9 +105,10 @@ export type TProps = {
 
 export const SSMPageComponent = compose(
   withPropsOnChange(['node'], ({ node }) => ({
-    canonicalGeneId: node.consequence.hits.edges.find(
+    canonicalGeneId: (node.consequence.hits.edges.find(
       x => x.node.transcript.is_canonical,
-    ).node.transcript.gene.gene_id,
+    ) || { node: { transcript: { gene: { gene_id: '' } } } }).node.transcript
+      .gene.gene_id,
 
     cdFilters: makeFilter([
       { field: 'ssms.ssm_id', value: node.ssm_id },

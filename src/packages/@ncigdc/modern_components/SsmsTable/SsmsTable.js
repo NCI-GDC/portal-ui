@@ -494,10 +494,7 @@ const Component = compose(
                     {(filteredCases.hits.total || 0).toLocaleString()}
                   </ExploreLink>
                 </span>
-                <SparkMeter
-                  value={score / filteredCases.hits.total}
-                  max={Math.max(...frequentMutations.map(x => x.score))}
-                />
+                <SparkMeter value={score / filteredCases.hits.total} />
                 <span
                   style={{
                     fontSize: '0.8em',

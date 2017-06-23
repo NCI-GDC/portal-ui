@@ -17,7 +17,6 @@ import JSURL from 'jsurl';
 
 import { humanify } from '@ncigdc/utils/string';
 import withRouter from '@ncigdc/utils/withRouter';
-import { makeFilter } from '@ncigdc/utils/filters';
 
 import Button, { buttonBaseStyles } from '@ncigdc/uikit/Button';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -260,12 +259,15 @@ const CurrentFilters = (
         pathname={linkPathname}
         query={
           currentFilters.length && {
-            filters: makeFilter(
-              currentFilters.map(({ content: { field, value } }) => ({
-                field: linkFieldMap(field),
-                value,
-              })),
-            ),
+            filters: {
+              op: 'AND',
+              content: currentFilters.map(
+                ({ content: { field, value }, op }) => ({
+                  op,
+                  content: { field: linkFieldMap(field), value },
+                }),
+              ),
+            },
           }
         }
       >

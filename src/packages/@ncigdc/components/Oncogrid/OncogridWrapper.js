@@ -237,7 +237,7 @@ const OncoGridWrapper = compose(
         element: wrapperRefs[uniqueGridClass],
         donorData: responses.cases,
         geneData: responses.genes,
-        occurencesData: responses.occurences,
+        occurrencesData: responses.occurrences,
         width:
           (containerRefs[uniqueGridClass] || { offsetWidth: 0 }).offsetWidth -
             oncoGridPadding,

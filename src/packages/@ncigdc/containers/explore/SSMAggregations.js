@@ -17,6 +17,7 @@ import { Column } from '@ncigdc/uikit/Flex';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import NotMissingFacet from '@ncigdc/components/Aggregations/NotMissingFacet';
 import { replaceFilters } from '@ncigdc/utils/filters/index';
+import { MUTATION_SUBTYPE_MAP } from '@ncigdc/utils/constants';
 
 const presetFacets = [
   {
@@ -41,9 +42,9 @@ const presetFacets = [
     type: 'terms',
   },
   {
-    title: 'Mutation Type',
-    field: 'mutation_type',
-    full: 'ssms.mutation_type',
+    title: 'Type',
+    field: 'mutation_subtype',
+    full: 'ssms.mutation_subtype',
     doc_type: 'ssms',
     type: 'terms',
   },
@@ -171,7 +172,18 @@ export const SSMAggregationsComponent = compose(
           key={facet.full}
           facet={facet}
           title={facet.title}
-          aggregation={props.aggregations[escapeForRelay(facet.field)]}
+          aggregation={
+            facet.field === 'mutation_subtype'
+              ? {
+                  buckets: props.aggregations[
+                    escapeForRelay(facet.field)
+                  ].buckets.map(({ doc_count, key }) => ({
+                    key: MUTATION_SUBTYPE_MAP[key.toLowerCase()],
+                    doc_count,
+                  })),
+                }
+              : props.aggregations[escapeForRelay(facet.field)]
+          }
           relay={props.relay}
           additionalProps={facet.additionalProps}
           style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
@@ -226,7 +238,7 @@ export const SSMAggregationsQuery = {
             key
           }
         }
-        mutation_type {
+        mutation_subtype {
           buckets {
             doc_count
             key

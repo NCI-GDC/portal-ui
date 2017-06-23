@@ -303,7 +303,7 @@ const ProjectsChartsComponent = compose(
                   {p.summary.case_count.toLocaleString()}
                   {' '}
                   case
-                  {p.summary.case_count > 1 ? 's' : 0}
+                  {p.summary.case_count > 1 ? 's' : ''}
                 </span>
               ),
               clickHandler: () => {

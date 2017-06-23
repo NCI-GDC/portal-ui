@@ -3,6 +3,7 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import withSize from '@ncigdc/utils/withSize';
+import _ from 'lodash';
 import { compose, withPropsOnChange, withState } from 'recompose';
 import { connect } from 'react-redux';
 import { parse } from 'query-string';
@@ -362,11 +363,12 @@ const Component = compose(
                     gender: c.demographic ? c.demographic.gender : '',
                     age_at_diagnosis: ageDisplay(diagnosis.age_at_diagnosis),
                     tumor_stage: diagnosis.tumor_stage,
-                    days_to_last_follow_up: (diagnosis.days_to_last_follow_up !=
-                      null
+                    days_to_last_follow_up: (!_.isNil(
+                      diagnosis.days_to_last_follow_up,
+                    )
                       ? diagnosis.days_to_last_follow_up
                       : '--').toLocaleString(),
-                    days_to_death: (diagnosis.days_to_death != null
+                    days_to_death: (!_.isNil(diagnosis.days_to_death)
                       ? diagnosis.days_to_death
                       : '--').toLocaleString(),
                     num_mutations: (

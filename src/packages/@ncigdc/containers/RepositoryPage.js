@@ -46,14 +46,14 @@ export type TProps = {
     repository: {
       cases: {
         aggregations: {},
-        pieAggregations: {},
+        pies: {},
         hits: {
           total: number,
         },
       },
       files: {
         aggregations: {},
-        pieAggregations: {},
+        pies: {},
         hits: {
           total: number,
         },
@@ -182,9 +182,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                   component: !!props.viewer.repository.cases.hits.total
                     ? <div>
                         <RepoCasesPies
-                          aggregations={
-                            props.viewer.repository.cases.pieAggregations
-                          }
+                          aggregations={props.viewer.repository.cases.pies}
                         />
                         <CasesTable hits={props.viewer.repository.cases.hits} />
                       </div>
@@ -198,9 +196,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                   component: !!props.viewer.repository.files.hits.total
                     ? <div>
                         <RepoFilesPies
-                          aggregations={
-                            props.viewer.repository.files.pieAggregations
-                          }
+                          aggregations={props.viewer.repository.files.pies}
                         />
                         <FilesTable hits={props.viewer.repository.files.hits} />
                       </div>
@@ -268,7 +264,7 @@ export const RepositoryPageQuery = {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment('aggregations')}
             }
-            pieAggregations: aggregations(filters: $filters aggregations_filter_themselves: true) {
+            pies: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoCasesPies.getFragment('aggregations')}
             }
             hits(first: $cases_size offset: $cases_offset, filters: $filters, sort: $cases_sort) {
@@ -280,7 +276,7 @@ export const RepositoryPageQuery = {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${FileAggregations.getFragment('aggregations')}
             }
-            pieAggregations: aggregations(filters: $filters aggregations_filter_themselves: true) {
+            pies: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoFilesPies.getFragment('aggregations')}
             }
             hits(first: $files_size offset: $files_offset, filters: $filters, sort: $files_sort) {

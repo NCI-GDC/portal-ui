@@ -18,7 +18,7 @@ const BarChart = (() => ({
   yAxis = {},
   xAxis = {},
   styles,
-  height: h,
+  height: h = 200,
   margin: m,
   setTooltip,
   theme,
@@ -31,7 +31,7 @@ const BarChart = (() => ({
 
   const margin = m || { top: 20, right: 50, bottom: 65, left: 55 };
   const chartWidth = width - margin.left - margin.right;
-  const height = (h || 200) - margin.top - margin.bottom;
+  const height = h - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
     textFill: theme.greyScale3,
     fontSize: '1.3rem',
@@ -51,6 +51,7 @@ const BarChart = (() => ({
     .rangeRound([0, chartWidth])
     .paddingInner(innerPadding)
     .paddingOuter(outerPadding);
+
   const maxY = d3.max(data, d => d.value);
   const y = d3.scaleLinear().range([height, 0]).domain([0, maxY]);
 

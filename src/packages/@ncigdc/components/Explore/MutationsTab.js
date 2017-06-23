@@ -102,20 +102,20 @@ export default compose(
       </h1>
 
       <Row>
-        <Column flex="1" style={{ width: '50%' }}>
-          <SsmsBarChart
-            defaultFilters={filters}
-            context="Explore"
-            onClickMutation={handleClickMutation}
-          />
-        </Column>
-        <Column flex="1" style={{ width: '50%' }}>
+        <Column flex="1" style={{ width: '50%', padding: '0 20px' }}>
           <SurvivalPlotWrapper
             {...survivalData}
             onReset={() => setSelectedSurvivalData({})}
             height={240}
             survivalPlotloading={false}
           />
+        </Column>
+        <Column flex="1" style={{ width: '50%' }}>
+          {/* <SsmsBarChart
+            defaultFilters={filters}
+            context="Explore"
+            onClickMutation={handleClickMutation}
+          /> */}
         </Column>
       </Row>
 

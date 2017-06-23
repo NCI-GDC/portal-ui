@@ -3,7 +3,7 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
-import { orderBy } from 'lodash';
+import { truncate, get, orderBy } from 'lodash';
 import { parse } from 'query-string';
 import { compose, withHandlers } from 'recompose';
 import { viewerQuery } from '@ncigdc/routes/queries';
@@ -70,6 +70,13 @@ const createContainer = Component =>
         { field: '_score', order: 'desc' },
         { field: '_uid', order: 'asc' },
       ],
+      consequenceFilters: {
+        op: 'NOT',
+        content: {
+          field: 'consequence.transcript.annotation.impact',
+          value: 'missing',
+        },
+      },
     },
     fragments: {
       viewer: () => Relay.QL`
@@ -88,6 +95,26 @@ const createContainer = Component =>
                     score
                     genomic_dna_change
                     ssm_id
+                    consequence {
+                      hits(first: 1 filters: $consequenceFilters) {
+                        edges {
+                          node {
+                            transcript {
+                              is_canonical
+                              annotation {
+                                impact
+                              }
+                              consequence_type
+                              gene {
+                                gene_id
+                                symbol
+                              }
+                              aa_change
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -120,30 +147,40 @@ const Component = compose(
       ssms.hits.edges.map(e => e.node),
       ['score', 'ssm_id'],
       ['desc', 'asc'],
-    ).map(({ score = 0, ssm_id: ssmId }) => ({
-      fullLabel: ssmId,
-      label: `${ssmId.substr(0, 8)}...`,
-      value: score,
-      tooltip: (
-        <span>
-          <b>{ssmId}</b><br />
-          <div>
-            {score.toLocaleString()} Case{score > 1 ? 's' : ''}
-            &nbsp;affected in {context}
-          </div>
-          {!!filteredCases.hits.total &&
+    ).map(({ score = 0, ssm_id: ssmId, consequence }) => {
+      const consequenceOfInterest =
+        consequence.hits.edges.find(
+          consequence => get(consequence, 'node.transcript.annotation.impact'),
+          {},
+        ) || {};
+      const { transcript } = consequenceOfInterest.node || {};
+      const { gene = {}, aa_change: aaChange } = transcript || {};
+      const { symbol } = gene;
+
+      return {
+        label: `${symbol} ${truncate(aaChange, { length: 12 })}`,
+        value: score,
+        tooltip: (
+          <span>
+            <b>{ssmId}</b><br />
             <div>
-              <span>{score.toLocaleString()}</span>
-              <span> / </span>
-              <span>{filteredCases.hits.total.toLocaleString()}</span>
-              <span>
-                &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%)
-              </span>
-            </div>}
-        </span>
-      ),
-      onClick: () => handleClickMutation({ ssm_id: ssmId }, chartData),
-    }));
+              {score.toLocaleString()} Case{score > 1 ? 's' : ''}
+              &nbsp;affected in {context}
+            </div>
+            {!!filteredCases.hits.total &&
+              <div>
+                <span>{score.toLocaleString()}</span>
+                <span> / </span>
+                <span>{filteredCases.hits.total.toLocaleString()}</span>
+                <span>
+                  &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%)
+                </span>
+              </div>}
+          </span>
+        ),
+        onClick: () => handleClickMutation({ ssm_id: ssmId }, chartData),
+      };
+    });
 
     return (
       <div style={style}>
@@ -172,6 +209,7 @@ const Component = compose(
                 data={chartData}
                 height={CHART_HEIGHT}
                 yAxis={{ title: '# Affected Cases' }}
+                margin={{ top: 20, right: 50, bottom: 125, left: 55 }}
                 styles={{
                   bars: { fill: theme.secondary },
                   tooltips: {

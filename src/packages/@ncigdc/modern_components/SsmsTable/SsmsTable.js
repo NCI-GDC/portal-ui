@@ -28,6 +28,7 @@ import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Button from '@ncigdc/uikit/Button';
+import Ratio from '@ncigdc/uikit/Ratio';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 import Hidden from '@ncigdc/components/Hidden';
@@ -384,6 +385,9 @@ const Component = compose(
             { key: 'consequence_type', title: 'Consequences' },
             {
               key: 'filteredCases',
+              style: {
+                textAlign: 'right',
+              },
               title: (
                 <Tooltip
                   Component={
@@ -403,6 +407,9 @@ const Component = compose(
             },
             {
               key: 'projectBreakdown',
+              style: {
+                textAlign: 'right',
+              },
               title: (
                 <Tooltip
                   Component={
@@ -458,40 +465,53 @@ const Component = compose(
               </Tooltip>
             ),
             filteredCases: (
-              <span>
-                <ExploreLink
-                  merge
-                  query={{
-                    searchTableTab: 'cases',
-                    filters: addInFilters(
-                      query.fmgTable_filters || defaultFilters,
-                      makeFilter([{ field: 'ssms.ssm_id', value: x.ssm_id }]),
-                    ),
+              <span style={{ marginLeft: -40 }}>
+                <span style={{ marginRight: -40 }}>
+                  <ExploreLink
+                    merge
+                    query={{
+                      searchTableTab: 'cases',
+                      filters: addInFilters(
+                        query.fmgTable_filters || defaultFilters,
+                        makeFilter([{ field: 'ssms.ssm_id', value: x.ssm_id }]),
+                      ),
+                    }}
+                  >
+                    {score.toLocaleString()}
+                  </ExploreLink>
+                  <span> / </span>
+                  <ExploreLink
+                    query={{
+                      searchTableTab: 'cases',
+                      filters: location.pathname.split('/')[1] === 'genes'
+                        ? query.ssmsTable_filters || defaultFilters
+                        : addInFilters(
+                            query.ssmsTable_filters || defaultFilters,
+                            makeFilter([
+                              {
+                                field: 'cases.available_variation_data',
+                                value: ['ssm'],
+                              },
+                            ]),
+                          ),
+                    }}
+                  >
+                    {(filteredCases.hits.total || 0).toLocaleString()}
+                  </ExploreLink>
+                </span>
+                <Ratio
+                  value={score / filteredCases.hits.total}
+                  max={Math.max(...frequentMutations.map(x => x.score))}
+                />
+                <span
+                  style={{
+                    fontSize: '0.8em',
+                    width: 40,
+                    marginLeft: 40,
+                    display: 'inline-block',
                   }}
                 >
-                  {score.toLocaleString()}
-                </ExploreLink>
-                <span> / </span>
-                <ExploreLink
-                  query={{
-                    searchTableTab: 'cases',
-                    filters: location.pathname.split('/')[1] === 'genes'
-                      ? query.ssmsTable_filters || defaultFilters
-                      : addInFilters(
-                          query.ssmsTable_filters || defaultFilters,
-                          makeFilter([
-                            {
-                              field: 'cases.available_variation_data',
-                              value: ['ssm'],
-                            },
-                          ]),
-                        ),
-                  }}
-                >
-                  {(filteredCases.hits.total || 0).toLocaleString()}
-                </ExploreLink>
-                <span>
-                  &nbsp;({(score / filteredCases.hits.total * 100).toFixed(2)}%)
+                  {(score / filteredCases.hits.total * 100).toFixed(2)}%
                 </span>
               </span>
             ),

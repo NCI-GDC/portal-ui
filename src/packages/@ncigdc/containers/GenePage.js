@@ -10,7 +10,6 @@ import GeneExternalReferences from '@ncigdc/containers/GeneExternalReferences';
 import CancerDistributionChart from '@ncigdc/containers/CancerDistributionChart';
 import CancerDistributionTable from '@ncigdc/containers/CancerDistributionTable';
 import Lolliplot from '@ncigdc/containers/Lolliplot';
-import SsmsBarChart from '@ncigdc/modern_components/SsmsBarChart/SsmsBarChart';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
@@ -141,11 +140,6 @@ export const GenePageComponent = (props: TProps) => {
           </Row>
 
           <Column>
-            <SsmsBarChart
-              style={{ width: '50%', flexGrow: 0 }}
-              defaultFilters={fmFilters}
-              context={props.node.symbol}
-            />
             <SsmsTable
               defaultFilters={fmFilters}
               shouldShowGeneSymbol={false}

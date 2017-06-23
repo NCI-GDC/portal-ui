@@ -9,7 +9,6 @@ import { makeFilter } from '@ncigdc/utils/filters';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 
-import SsmsBarChart from '@ncigdc/modern_components/SsmsBarChart/SsmsBarChart';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
 import AffectedCasesBarChart from '@ncigdc/modern_components/AffectedCasesBarChart/AffectedCasesBarChart';
 import AffectedCasesTable from '@ncigdc/modern_components/AffectedCasesTable/AffectedCasesTable';
@@ -215,15 +214,6 @@ const ProjectVisualizations = enhance(
           <Column>
             <Row>
               <Column flex="1">
-                {loadingAggregation
-                  ? <SpinnerCentered />
-                  : <SsmsBarChart
-                      projectId={projectId}
-                      defaultFilters={fmFilters}
-                      context={projectId}
-                    />}
-              </Column>
-              <Column flex="1">
                 <SurvivalPlotWrapper
                   {...frequentMutationsSurvivalData}
                   onReset={() => setSelectedFrequentMutationsSurvivalData({})}
@@ -231,6 +221,7 @@ const ProjectVisualizations = enhance(
                   survivalPlotloading={loadingSurvival}
                 />
               </Column>
+              <Column flex="1" />
             </Row>
             {loadingAggregation
               ? <SpinnerCentered />

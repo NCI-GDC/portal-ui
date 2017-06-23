@@ -113,8 +113,8 @@ export const clinicalDonorTracks = [
     sort: sortByString,
     group: 'Clinical',
     color: {
-      true: '#1693c0',
-      false: 'darkred',
+      alive: '#1693c0',
+      dead: 'darkred',
     },
     legend: legendBoolean,
   },

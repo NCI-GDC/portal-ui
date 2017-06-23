@@ -58,3 +58,9 @@ export const EXPERIMENTAL_STRATEGIES = [
   'VALIDATION',
   'OTHER',
 ].map(n => n.toLowerCase());
+
+export const MUTATION_SUBTYPE_MAP = {
+  'single base substitution': 'Substitution',
+  'small deletion': 'Deletion',
+  'small insertion': 'Insertion',
+};

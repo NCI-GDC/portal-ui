@@ -13,7 +13,6 @@ import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import withFilters from '@ncigdc/utils/withFilters';
 import { makeFilter, toggleFilters } from '@ncigdc/utils/filters';
 
-import SsmsBarChart from '@ncigdc/modern_components/SsmsBarChart/SsmsBarChart';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
@@ -102,14 +101,7 @@ export default compose(
       </h1>
 
       <Row>
-        <Column flex="1" style={{ width: '50%' }}>
-          <SsmsBarChart
-            defaultFilters={filters}
-            context="Explore"
-            onClickMutation={handleClickMutation}
-          />
-        </Column>
-        <Column flex="1" style={{ width: '50%' }}>
+        <Column flex="1" style={{ width: '50%', padding: '0 20px' }}>
           <SurvivalPlotWrapper
             {...survivalData}
             onReset={() => setSelectedSurvivalData({})}
@@ -117,6 +109,7 @@ export default compose(
             survivalPlotloading={false}
           />
         </Column>
+        <Column flex="1" style={{ width: '50%' }} />
       </Row>
 
       <SsmsTable

@@ -24,7 +24,6 @@ import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import Button from '@ncigdc/uikit/Button';
 import { removeFilesFromCart, addAllFilesInCart } from '@ncigdc/dux/cart';
-import SsmsBarChart from '@ncigdc/modern_components/SsmsBarChart/SsmsBarChart';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable/SsmsTable';
 import FileIcon from '@ncigdc/theme/icons/File';
 import AnnotationIcon from '@ncigdc/theme/icons/Edit';
@@ -353,12 +352,6 @@ const Case = compose(
               </ExploreLink>
             </Row>
             <Column>
-              <SsmsBarChart
-                style={{ width: '50%' }}
-                projectId={p.project.project_id}
-                defaultFilters={fmFilters}
-                context={p.project.project_id}
-              />
               <SsmsTable
                 projectId={p.project.project_id}
                 defaultFilters={fmFilters}

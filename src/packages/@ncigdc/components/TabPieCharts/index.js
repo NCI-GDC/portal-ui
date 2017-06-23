@@ -21,7 +21,7 @@ const toPieData = (clickHandler, docTypeSingular) => bucket => ({
       {bucket.doc_count.toLocaleString()}
       {' '}
       {docTypeSingular}
-      {bucket.doc_count > 1 ? 's' : 0}
+      {bucket.doc_count > 1 ? 's' : ''}
     </span>
   ),
 });

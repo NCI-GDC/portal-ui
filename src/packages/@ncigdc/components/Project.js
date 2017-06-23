@@ -313,7 +313,7 @@ const Project = (
                 tooltip: (
                   <span>
                     <b>{item.experimental_strategy}</b><br />
-                    {item.file_count} file{item.file_count > 1 ? 's' : 0}
+                    {item.file_count} file{item.file_count > 1 ? 's' : ''}
                   </span>
                 ),
                 clickHandler: () => {
@@ -409,7 +409,7 @@ const Project = (
                 tooltip: (
                   <span>
                     <b>{item.data_category}</b><br />
-                    {item.file_count} file{item.file_count > 1 ? 's' : 0}
+                    {item.file_count} file{item.file_count > 1 ? 's' : ''}
                   </span>
                 ),
                 clickHandler: () => {

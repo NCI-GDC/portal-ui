@@ -45,13 +45,15 @@ export type TProps = {
     },
     repository: {
       cases: {
-        aggregations: string,
+        aggregations: {},
+        pieAggregations: {},
         hits: {
           total: number,
         },
       },
       files: {
-        aggregations: string,
+        aggregations: {},
+        pieAggregations: {},
         hits: {
           total: number,
         },
@@ -181,7 +183,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                     ? <div>
                         <RepoCasesPies
                           aggregations={
-                            props.viewer.repository.cases.aggregations
+                            props.viewer.repository.cases.pieAggregations
                           }
                         />
                         <CasesTable hits={props.viewer.repository.cases.hits} />
@@ -197,7 +199,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                     ? <div>
                         <RepoFilesPies
                           aggregations={
-                            props.viewer.repository.files.aggregations
+                            props.viewer.repository.files.pieAggregations
                           }
                         />
                         <FilesTable hits={props.viewer.repository.files.hits} />
@@ -265,6 +267,8 @@ export const RepositoryPageQuery = {
           cases {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment('aggregations')}
+            }
+            pieAggregations: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoCasesPies.getFragment('aggregations')}
             }
             hits(first: $cases_size offset: $cases_offset, filters: $filters, sort: $cases_sort) {
@@ -275,6 +279,8 @@ export const RepositoryPageQuery = {
           files {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${FileAggregations.getFragment('aggregations')}
+            }
+            pieAggregations: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoFilesPies.getFragment('aggregations')}
             }
             hits(first: $files_size offset: $files_offset, filters: $filters, sort: $files_sort) {

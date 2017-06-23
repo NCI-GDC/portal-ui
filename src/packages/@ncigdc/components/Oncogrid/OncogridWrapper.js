@@ -345,9 +345,13 @@ const OncoGridWrapper = compose(
       } = nextProps;
 
       if (oncoGrid.toggleGridLines) {
-        if (lastCrosshairMode !== crosshairMode) oncoGrid.toggleCrosshair();
-        if (lastShowGridLines !== showGridLines) oncoGrid.toggleGridLines();
-        if (lastHeadMapMode !== heatMapMode) oncoGrid.toggleHeatmap();
+        if (lastCrosshairMode !== crosshairMode) {
+          oncoGrid.setCrosshair(crosshairMode);
+        }
+        if (lastShowGridLines !== showGridLines) {
+          oncoGrid.setGridLines(showGridLines);
+        }
+        if (lastHeadMapMode !== heatMapMode) oncoGrid.setHeatmap(heatMapMode);
         if (width !== lastWidth) {
           oncoGrid.resize(
             wrapperRefs[uniqueGridClass].offsetWidth - oncoGridPadding,

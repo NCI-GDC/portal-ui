@@ -30,7 +30,7 @@ export const ProjectsPageComponent = (props: TProps) =>
   <SearchPage
     filtersLinkProps={{
       linkPathname: '/repository',
-      linkText: 'Open Query in Data Page',
+      linkText: 'Open Query in Repository',
       linkFieldMap: (field: string) => {
         if (field.indexOf('projects.summary') > -1) {
           return `files.${field.split('.').pop()}`;

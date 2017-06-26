@@ -81,8 +81,8 @@ type TProps = {
   hideLinkOnEmpty: boolean,
 };
 
-export const getDisplayOp = (op, value) => {
-  if (op === 'in') {
+export const getDisplayOp = (op: string, value: Array<string>) => {
+  if (op.toLowerCase() === 'in') {
     if (value.length === 1) {
       if (value[0].includes('set_id')) {
         return 'IN';
@@ -277,6 +277,9 @@ const CurrentFilters = (
       (!hideLinkOnEmpty || !!currentFilters.length) &&
       <LinkButton
         pathname={linkPathname}
+        disabled={currentFilters
+          .reduce((acc, f) => [...acc, ...f.content.value], [])
+          .some(v => v.includes('set_id:'))}
         query={
           currentFilters.length && {
             filters: {
@@ -294,7 +297,6 @@ const CurrentFilters = (
         <Cogs style={{ marginRight: 5 }} />{linkText}
       </LinkButton>}
   </Info>;
-
 /*----------------------------------------------------------------------------*/
 
 export default enhance(CurrentFilters);

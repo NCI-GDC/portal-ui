@@ -24,6 +24,7 @@ import withFilters from '@ncigdc/utils/withFilters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 import RepoCasesPies from '@ncigdc/components/TabPieCharts/RepoCasesPies';
 import RepoFilesPies from '@ncigdc/components/TabPieCharts/RepoFilesPies';
+import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateRepositoryCaseSetButton';
 
 export type TProps = {
   relay: Object,
@@ -150,6 +151,11 @@ export const RepositoryPageComponent = (props: TProps) => {
                   inactiveText="Download Manifest"
                   returnType="manifest"
                   filters={props.filters}
+                />
+                <CreateRepositoryCaseSetButton
+                  filters={props.filters}
+                  setSize={caseCount}
+                  style={{ paddingLeft: '5px' }}
                 />
               </Row>
               <AnnotationsLink>

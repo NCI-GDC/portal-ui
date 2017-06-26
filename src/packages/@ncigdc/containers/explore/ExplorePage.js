@@ -16,8 +16,7 @@ import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 
-import { Row } from '@ncigdc/uikit/Flex';
-import SaveSetButton from '@ncigdc/modern_components/SaveSetButton/SaveSetButton';
+import CreateExploreCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateExploreCaseSetButton';
 
 import GeneSymbol from '@ncigdc/containers/GeneSymbol';
 import { replaceFilters } from '@ncigdc/utils/filters';
@@ -157,18 +156,11 @@ export const ExplorePageComponent = (props: TProps) =>
     ]}
     results={
       <span>
-        <Row
-          style={{
-            justifyContent: 'space-between',
-            padding: '0 0 2rem',
-            alignItems: 'center',
-          }}
-        >
-          <SaveSetButton
-            filters={props.filters}
-            setSize={props.viewer.explore.cases.hits.total.toLocaleString()}
-          />
-        </Row>
+        <CreateExploreCaseSetButton
+          filters={props.filters}
+          setSize={props.viewer.explore.cases.hits.total}
+          style={{ marginBottom: '2rem' }}
+        />
         <TabbedLinks
           queryParam="searchTableTab"
           defaultIndex={0}

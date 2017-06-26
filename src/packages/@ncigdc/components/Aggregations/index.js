@@ -50,6 +50,7 @@ export const facetFieldDisplayMapper = field => {
   const map = {
     'genes.symbol': 'Gene Symbol',
     'genes.gene_id': 'Gene',
+    'cases.case_id': 'Case',
   };
   return map[field] || field;
 };

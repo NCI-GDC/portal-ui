@@ -123,6 +123,16 @@ const SuggestionFacet = compose(
       },
     });
 
+    const getCheckedValue = v => {
+      if (fieldNoDoctype === 'gene_id') {
+        return <GeneSymbol explore={geneSymbolFragment} geneId={v} />;
+      }
+      if (v.includes('set_id:')) {
+        return 'input set';
+      }
+      return v;
+    };
+
     return (
       <LocationSubscriber>
         {(ctx: {| pathname: string, query: TRawQuery |}) => {
@@ -158,12 +168,7 @@ const SuggestionFacet = compose(
                         }}
                       >
                         <CheckCircleOIcon style={{ paddingRight: '0.5rem' }} />
-                        {fieldNoDoctype === 'gene_id'
-                          ? <GeneSymbol
-                              explore={geneSymbolFragment}
-                              geneId={v}
-                            />
-                          : v}
+                        {getCheckedValue(v)}
                       </CheckedLink>
                     </CheckedRow>,
                   )}

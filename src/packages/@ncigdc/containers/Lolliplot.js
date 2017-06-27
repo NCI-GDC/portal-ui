@@ -526,7 +526,18 @@ const LolliplotComponent = compose(
                 }}
               >
                 {width &&
-                  <div>
+                  <div style={{ position: 'relative' }}>
+                    <span
+                      style={{
+                        transform: 'rotate(270deg)',
+                        display: 'inline-block',
+                        position: 'relative',
+                        left: -20,
+                        bottom: -100,
+                      }}
+                    >
+                      # Cases
+                    </span>
                     <Lolliplot
                       d3={d3}
                       min={min}

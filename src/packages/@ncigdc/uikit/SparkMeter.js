@@ -6,6 +6,7 @@ export default ({ value, width = 30, max = 30 }) =>
       position: 'relative',
       height: 8,
       width: width + 10,
+      pointerEvents: 'none',
     }}
   >
     <span

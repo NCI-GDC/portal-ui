@@ -6,7 +6,9 @@ const performanceTracker = {
       console.warn(`Start time for "${label}" already exists`);
     }
     startTimes[label] = Date.now();
-    global.mixpanel.time_event(label.split(':')[0]);
+    if (global.mixpanel) {
+      global.mixpanel.time_event(label.split(':')[0]);
+    }
     return startTimes[label];
   },
   end: (label, additionalProperties) => {
@@ -28,20 +30,23 @@ const performanceTracker = {
       label: eventFields[2],
       ...additionalProperties,
     };
+    if (global.mixpanel) {
+      global.mixpanel.track(category, properties);
+    }
 
-    global.mixpanel.track(category, properties);
+    if (global.newrelic) {
+      global.newrelic.addPageAction(label, {
+        ...properties,
+        name: label,
+      });
 
-    global.newrelic.addPageAction(label, {
-      ...properties,
-      name: label,
-    });
-
-    global.newrelic.addToTrace({
-      ...properties,
-      name: label,
-      start: startTime,
-      end: endTime,
-    });
+      global.newrelic.addToTrace({
+        ...properties,
+        name: label,
+        start: startTime,
+        end: endTime,
+      });
+    }
 
     return duration;
   },

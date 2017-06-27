@@ -293,7 +293,7 @@ const CancerDistributionTableComponent = compose(
                   saveFile(
                     JSON.stringify(rawData, null, 2),
                     'JSON',
-                    'cancer-distribution-data',
+                    'cancer-distribution-data.json',
                   )}
               >
                 JSON

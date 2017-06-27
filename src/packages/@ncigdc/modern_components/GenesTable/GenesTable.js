@@ -339,7 +339,7 @@ const Component = compose(
               tdStyle: { textAlign: 'center', padding: '5px 0 0 0' },
             },
             {
-              title: <span>Survival <br />Analysis</span>,
+              title: <span>Survival</span>,
               key: 'survival_plot',
               style: { textAlign: 'center', width: '100px' },
             },

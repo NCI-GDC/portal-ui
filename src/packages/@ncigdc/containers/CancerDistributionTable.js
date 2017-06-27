@@ -7,7 +7,7 @@ import { tableToolTipHint, visualizingButton } from '@ncigdc/theme/mixins';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import { Column, Row } from '@ncigdc/uikit/Flex';
+import { Row } from '@ncigdc/uikit/Flex';
 import { makeFilter } from '@ncigdc/utils/filters';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import GreyBox from '@ncigdc/uikit/GreyBox';
@@ -15,11 +15,10 @@ import Loader from '@ncigdc/uikit/Loaders/Loader';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
 import Button from '@ncigdc/uikit/Button';
 import saveFile from '@ncigdc/utils/filesaver';
-import Showing from '@ncigdc/components/Pagination/Showing';
-import Pagination from '@ncigdc/components/Pagination';
 import withRouter from '@ncigdc/utils/withRouter';
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 import MutationsCount from '@ncigdc/components/MutationsCount';
+import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
 
 const paginationPrefix = 'canDistTable';
 
@@ -54,9 +53,6 @@ type TProps = {|
   filters: TGroupFilter,
   rawData: Array<{}>,
   cancerDistData: Array<{}>,
-  tableData: Array<{}>,
-  query: {},
-  enablePagination: boolean,
 |};
 
 const CancerDistributionTableComponent = compose(
@@ -211,26 +207,6 @@ const CancerDistributionTableComponent = compose(
     },
   ),
   withRouter,
-  withPropsOnChange(
-    ['cancerDistData', 'query'],
-    ({ cancerDistData, query }) => {
-      const size = parseInt(query[`${paginationPrefix}_size`] || 10, 10);
-      const offset = parseInt(query[`${paginationPrefix}_offset`] || 0, 10);
-      const enablePagination = cancerDistData.length > 10;
-
-      return {
-        query: {
-          ...query,
-          [`${paginationPrefix}_size`]: size,
-          [`${paginationPrefix}_offset`]: enablePagination ? offset : 0,
-        },
-        enablePagination,
-        tableData: enablePagination
-          ? cancerDistData.slice(offset, offset + size)
-          : cancerDistData,
-      };
-    },
-  ),
 )(
   (
     {
@@ -240,9 +216,6 @@ const CancerDistributionTableComponent = compose(
       filters,
       rawData,
       cancerDistData,
-      tableData,
-      query,
-      enablePagination,
     }: TProps = {},
   ) => {
     const mutationsHeading = geneId
@@ -264,49 +237,38 @@ const CancerDistributionTableComponent = compose(
 
     return (
       <Loader loading={!cases.filtered} height="387px">
-        <Row
-          style={{
-            backgroundColor: 'white',
-            padding: '1rem',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-          }}
-        >
-          {enablePagination
-            ? <Showing
-                docType="projects"
-                prefix={paginationPrefix}
-                params={query}
-                total={cancerDistData.length}
-              />
-            : <span />}
-          <Row style={{ alignItems: 'flex-end' }}>
-            <Tooltip
-              Component={
-                <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
-              }
-              style={{ marginLeft: '2rem' }}
-            >
-              <Button
-                style={{ ...visualizingButton }}
-                onClick={() =>
-                  saveFile(
-                    JSON.stringify(rawData, null, 2),
-                    'JSON',
-                    'cancer-distribution-data.json',
-                  )}
+        <LocalPaginationTable
+          style={{ width: '100%', minWidth: 450 }}
+          data={cancerDistData}
+          prefix={paginationPrefix}
+          buttons={
+            <Row style={{ alignItems: 'flex-end' }}>
+              <Tooltip
+                Component={
+                  <span>Export All{geneId ? ' Except # Mutations' : ''}</span>
+                }
+                style={{ marginLeft: '2rem' }}
               >
-                JSON
-              </Button>
-            </Tooltip>
-            <DownloadTableToTsvButton
-              selector="#cancer-distribution-table"
-              filename="cancer-distribution-table.tsv"
-              style={{ marginLeft: '0.5rem' }}
-            />
-          </Row>
-        </Row>
-        <Column style={{ width: '100%', minWidth: 450 }}>
+                <Button
+                  style={{ ...visualizingButton }}
+                  onClick={() =>
+                    saveFile(
+                      JSON.stringify(rawData, null, 2),
+                      'JSON',
+                      'cancer-distribution-data.json',
+                    )}
+                >
+                  JSON
+                </Button>
+              </Tooltip>
+              <DownloadTableToTsvButton
+                selector="#cancer-distribution-table"
+                filename="cancer-distribution-table.tsv"
+                style={{ marginLeft: '0.5rem' }}
+              />
+            </Row>
+          }
+        >
           <EntityPageHorizontalTable
             idKey="id"
             tableId="cancer-distribution-table"
@@ -334,15 +296,8 @@ const CancerDistributionTableComponent = compose(
               },
               ...mutationsHeading,
             ]}
-            data={tableData}
           />
-          {enablePagination &&
-            <Pagination
-              prefix={paginationPrefix}
-              params={query}
-              total={cancerDistData.length}
-            />}
-        </Column>
+        </LocalPaginationTable>
       </Loader>
     );
   },

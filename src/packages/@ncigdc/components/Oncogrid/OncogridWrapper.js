@@ -235,7 +235,7 @@ const OncoGridWrapper = compose(
       const performanceContext = {
         donors: responses.cases.length,
         genes: responses.genes.length,
-        occurences: responses.occurrences.length,
+        occurrences: responses.occurrences.length,
         maxCases: MAX_CASES,
         maxGenes: MAX_GENES,
       };

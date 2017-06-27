@@ -1,3 +1,9 @@
 {
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "eslint.autoFixOnSave": true,
+    "flow.stopFlowOnExit": true,
+    "flow.enabled": true,
+    "flow.useNPMPackagedFlow": true,
+    "flow.showStatus": true,
+    "flow.runOnEdit": true
 }

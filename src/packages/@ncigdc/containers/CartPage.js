@@ -2,6 +2,7 @@
 
 // Vendor
 import React from 'react';
+import _ from 'lodash';
 import { compose } from 'recompose';
 import { createFragmentContainer, graphql } from 'react-relay/compat';
 import { connect } from 'react-redux';
@@ -21,6 +22,8 @@ import HowToDownload from '@ncigdc/components/HowToDownload';
 import CountCard from '@ncigdc/components/CountCard';
 import CartDownloadDropdown from '@ncigdc/components/CartDownloadDropdown';
 import RemoveFromCartButton from '@ncigdc/components/RemoveFromCartButton';
+import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
+import SampleSize from '@ncigdc/components/SampleSize';
 
 /*----------------------------------------------------------------------------*/
 
@@ -111,8 +114,35 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 item => ({
                   project: item.key,
                   case_count: item.case_count,
+                  case_count_meter: (
+                    <SparkMeterWithTooltip
+                      part={item.case_count}
+                      whole={_.sumBy(
+                        viewer.summary.aggregations.project__project_id.buckets,
+                        item => item.case_count,
+                      )}
+                    />
+                  ),
                   file_count: item.doc_count.toLocaleString(),
+                  file_count_meter: (
+                    <SparkMeterWithTooltip
+                      part={item.doc_count}
+                      whole={_.sumBy(
+                        viewer.summary.aggregations.project__project_id.buckets,
+                        item => item.doc_count,
+                      )}
+                    />
+                  ),
                   file_size: formatFileSize(item.file_size),
+                  file_size_meter: (
+                    <SparkMeterWithTooltip
+                      part={item.file_size}
+                      whole={_.sumBy(
+                        viewer.summary.aggregations.project__project_id.buckets,
+                        item => item.file_size,
+                      )}
+                    />
+                  ),
                   tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`,
                 }),
               )}
@@ -127,14 +157,64 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   style: { textAlign: 'right' },
                 },
                 {
+                  key: 'case_count_meter',
+                  title: (
+                    <SampleSize
+                      n={_.sumBy(
+                        viewer.summary.aggregations.project__project_id.buckets,
+                        item => item.case_count,
+                      )}
+                    />
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
+                },
+                {
                   key: 'file_count',
                   title: 'Files',
                   style: { textAlign: 'right' },
                 },
                 {
+                  key: 'file_count_meter',
+                  title: (
+                    <SampleSize
+                      n={_.sumBy(
+                        viewer.summary.aggregations.project__project_id.buckets,
+                        item => item.doc_count,
+                      )}
+                    />
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
+                },
+                {
                   key: 'file_size',
                   title: 'File Size',
                   style: { textAlign: 'right' },
+                },
+                {
+                  key: 'file_size_meter',
+                  title: (
+                    <SampleSize
+                      n={_.sumBy(
+                        viewer.summary.aggregations.project__project_id.buckets,
+                        item => item.file_size,
+                      )}
+                      formatter={formatFileSize}
+                      symbol="∑"
+                    />
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
                 },
               ]}
             />
@@ -149,7 +229,19 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
               pieChartTitle="File Counts by Authorization Level"
               data={authCounts.map(x => ({
                 ...x,
+                file_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={x.file_count}
+                    whole={_.sumBy(authCounts, item => item.doc_count)}
+                  />
+                ),
                 file_size: formatFileSize(x.file_size),
+                file_size_meter: (
+                  <SparkMeterWithTooltip
+                    part={x.file_size}
+                    whole={_.sumBy(authCounts, item => item.file_size)}
+                  />
+                ),
                 tooltip: `${x.key}: ${formatFileSize(x.file_size)}`,
               }))}
               footer={`${authCounts.length} Authorization Levels`}
@@ -167,9 +259,37 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   style: { textAlign: 'right' },
                 },
                 {
+                  key: 'file_count_meter',
+                  title: (
+                    <SampleSize
+                      n={_.sumBy(authCounts, item => item.doc_count)}
+                    />
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
+                },
+                {
                   key: 'file_size',
                   title: 'File Size',
                   style: { textAlign: 'right' },
+                },
+                {
+                  key: 'file_size_meter',
+                  title: (
+                    <SampleSize
+                      n={_.sumBy(authCounts, item => item.file_size)}
+                      formatter={formatFileSize}
+                      symbol="∑"
+                    />
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
                 },
               ]}
             />

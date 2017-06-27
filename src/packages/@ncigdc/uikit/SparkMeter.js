@@ -1,5 +1,5 @@
 import React from 'react';
-export default ({ value, width = 30, max = 30 }) =>
+export default ({ value, width = 30, max = 30, ...props }) =>
   <div
     style={{
       width,
@@ -10,10 +10,12 @@ export default ({ value, width = 30, max = 30 }) =>
       display: 'inline-block',
       pointerEvents: 'none',
     }}
+    {...props}
   >
     <div
       style={{
-        width: Math.max(value * max, 2),
+        left: 0,
+        width: value > 0 ? Math.max(value * max, 2) : 0,
         height: 8,
         backgroundColor: `rgb(39, 156, 75)`,
         borderRadius: 2,

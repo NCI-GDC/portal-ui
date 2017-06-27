@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import _ from 'lodash';
 import { compose } from 'recompose';
 import JSURL from 'jsurl';
 import { connect } from 'react-redux';
@@ -30,6 +31,8 @@ import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
 import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
+import SampleSize from '@ncigdc/components/SampleSize';
 
 const styles = {
   icon: {
@@ -137,6 +140,15 @@ const Case = compose(
                   {strat.file_count}
                 </RepositoryFilesLink>
               ),
+              file_count_meter: (
+                <SparkMeterWithTooltip
+                  part={strat.file_count}
+                  whole={_.sumBy(
+                    p.summary.experimental_strategies,
+                    item => item.file_count,
+                  )}
+                />
+              ),
               file_count_value: strat.file_count,
               tooltip: (
                 <span>
@@ -185,6 +197,12 @@ const Case = compose(
               {type.file_count}
             </RepositoryFilesLink>
           : '0',
+        file_count_meter: (
+          <SparkMeterWithTooltip
+            part={type.file_count}
+            whole={_.sumBy(p.summary.data_categories, item => item.file_count)}
+          />
+        ),
         file_count_value: type.file_count,
         tooltip: (
           <span>
@@ -301,6 +319,22 @@ const Case = compose(
                   title: 'Files',
                   style: { textAlign: 'right' },
                 },
+                {
+                  key: 'file_count_meter',
+                  title: (
+                    <SampleSize
+                      n={_.sumBy(
+                        p.summary.experimental_strategies,
+                        item => item.file_count,
+                      )}
+                    />
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
+                },
               ]}
             />
           </span>
@@ -318,6 +352,22 @@ const Case = compose(
                   key: 'file_count',
                   title: 'Files',
                   style: { textAlign: 'right' },
+                },
+                {
+                  key: 'file_count_meter',
+                  title: (
+                    <SampleSize
+                      n={_.sumBy(
+                        p.summary.data_categories,
+                        item => item.file_count,
+                      )}
+                    />
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
                 },
               ]}
             />

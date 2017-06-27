@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import _ from 'lodash';
 import { scaleOrdinal, schemeCategory20 } from 'd3';
 import { compose } from 'recompose';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -17,6 +18,8 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 import SummaryCard from '@ncigdc/components/SummaryCard';
 import ProjectVisualizations from '@ncigdc/components/ProjectVisualizations';
 import Link from '@ncigdc/components/Links/Link';
+import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
+import SampleSize from '@ncigdc/components/SampleSize';
 
 import { removeEmptyKeys } from '@ncigdc/utils/uri';
 
@@ -296,6 +299,15 @@ const Project = (
                     {(item.case_count || 0).toLocaleString()}
                   </Link>
                 ),
+                case_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={item.case_count}
+                    whole={_.sumBy(
+                      experimentalStrategies,
+                      item => item.case_count,
+                    )}
+                  />
+                ),
                 file_count: (
                   <Link
                     merge="replace"
@@ -308,6 +320,15 @@ const Project = (
                   >
                     {(item.file_count || 0).toLocaleString()}
                   </Link>
+                ),
+                file_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={item.file_count}
+                    whole={_.sumBy(
+                      experimentalStrategies,
+                      item => item.file_count,
+                    )}
+                  />
                 ),
                 file_count_value: item.file_count,
                 tooltip: (
@@ -349,9 +370,35 @@ const Project = (
                 style: { textAlign: 'right' },
               },
               {
+                key: 'case_count_meter',
+                title: (
+                  <SampleSize
+                    n={_.sumBy(experimentalStrategies, item => item.case_count)}
+                  />
+                ),
+                thStyle: {
+                  width: 1,
+                  textAlign: 'center',
+                },
+                style: { textAlign: 'left' },
+              },
+              {
                 key: 'file_count',
                 title: 'Files',
                 style: { textAlign: 'right' },
+              },
+              {
+                key: 'file_count_meter',
+                title: (
+                  <SampleSize
+                    n={_.sumBy(experimentalStrategies, item => item.file_count)}
+                  />
+                ),
+                thStyle: {
+                  width: 1,
+                  textAlign: 'center',
+                },
+                style: { textAlign: 'left' },
               },
             ]}
           />
@@ -391,7 +438,13 @@ const Project = (
                     >
                       {item.case_count.toLocaleString()}
                     </Link>
-                  : '0',
+                  : 0,
+                case_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={item.case_count}
+                    whole={_.sumBy(dataCategories, item => item.case_count)}
+                  />
+                ),
                 file_count: item.file_count
                   ? <Link
                       merge="replace"
@@ -404,7 +457,13 @@ const Project = (
                     >
                       {item.file_count.toLocaleString()}
                     </Link>
-                  : '0',
+                  : 0,
+                file_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={item.file_count}
+                    whole={_.sumBy(dataCategories, item => item.file_count)}
+                  />
+                ),
                 file_count_value: item.file_count,
                 tooltip: (
                   <span>
@@ -441,9 +500,35 @@ const Project = (
                 style: { textAlign: 'right' },
               },
               {
+                key: 'case_count_meter',
+                title: (
+                  <SampleSize
+                    n={_.sumBy(dataCategories, item => item.case_count)}
+                  />
+                ),
+                thStyle: {
+                  textAlign: 'center',
+                  width: 1,
+                },
+                style: { textAlign: 'left' },
+              },
+              {
                 key: 'file_count',
                 title: 'Files',
                 style: { textAlign: 'right' },
+              },
+              {
+                key: 'file_count_meter',
+                title: (
+                  <SampleSize
+                    n={_.sumBy(dataCategories, item => item.file_count)}
+                  />
+                ),
+                thStyle: {
+                  textAlign: 'center',
+                  width: 1,
+                },
+                style: { textAlign: 'left' },
               },
             ]}
           />

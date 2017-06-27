@@ -184,9 +184,16 @@ const LolliplotComponent = compose(
   lifecycle({
     componentDidMount(): void {
       this.props.fetchGene(this.props);
-      window.addEventListener('resize', () => {
-        this.props.setState(s => ({ ...s, width: container.clientWidth }));
-      });
+
+      this.onResize = () => {
+        if (container) {
+          this.props.setState(s => ({ ...s, width: container.clientWidth }));
+        }
+      };
+      window.addEventListener('resize', this.onResize);
+    },
+    componentWillUnmount(): void {
+      window.removeEventListener('resize', this.onResize);
     },
     async componentWillReceiveProps(nextProps: TProps): Promise<*> {
       /*

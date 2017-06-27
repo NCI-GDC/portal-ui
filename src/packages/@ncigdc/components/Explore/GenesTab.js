@@ -15,6 +15,7 @@ import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable/GenesTable';
 import { makeFilter, toggleFilters } from '@ncigdc/utils/filters';
+import { removeEmptyKeys } from '@ncigdc/utils/uri';
 
 const styles = {
   heading: {
@@ -77,10 +78,10 @@ export default compose(
       );
       push({
         pathname: '/exploration',
-        query: {
+        query: removeEmptyKeys({
           ...query,
-          filters: JSURL.stringify(newFilters),
-        },
+          filters: newFilters && JSURL.stringify(newFilters),
+        }),
       });
     },
   }),

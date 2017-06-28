@@ -643,21 +643,23 @@ const LolliplotComponent = compose(
                     <span>
                       Viewing
                       {' '}
-                      {
-                        lolliplotData.mutations
-                          .filter(d => d.x >= min && d.x <= max)
-                          .filter(filterByType(blacklist)).length
-                      }
+                      {lolliplotData.mutations
+                        .filter(d => d.x >= min && d.x <= max)
+                        .filter(filterByType(blacklist))
+                        .length.toLocaleString()}
                     </span>
                     <span> / </span>
-                    <span>{lolliplotData.mutations.length} Mutations</span>
+                    <span>
+                      {lolliplotData.mutations.length.toLocaleString()}{' '}
+                      Mutations
+                    </span>
                     {outsideSsms.length > 0 &&
                       <span style={{ float: 'right' }}>
                         <Tooltip
                           Component={
                             <div>
                               <div>
-                                {outsideSsms.length}
+                                {outsideSsms.length.toLocaleString()}
                                 {' '}
                                 mutation
                                 {outsideSsms.length > 1
@@ -783,15 +785,14 @@ const LolliplotComponent = compose(
                           <span>{startCase(variant)}:</span>
                           <span style={{ float: 'right' }}>
                             <b>
-                              {
-                                // $FlowIgnore
-                                xs
-                                  .filter(d => d.x >= min && d.x <= max)
-                                  .filter(filterByType(blacklist)).length
-                              }
+                              {// $FlowIgnore
+                              xs
+                                .filter(d => d.x >= min && d.x <= max)
+                                .filter(filterByType(blacklist))
+                                .length.toLocaleString()}
                             </b>
                             {/* $FlowIgnore */}
-                            &nbsp;/ <b>{xs.length}</b>
+                            &nbsp;/ <b>{xs.length.toLocaleString()}</b>
                           </span>
                         </div>
                       </div>,

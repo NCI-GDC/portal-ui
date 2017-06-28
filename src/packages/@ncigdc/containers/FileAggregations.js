@@ -25,7 +25,7 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
 import { withTheme } from '@ncigdc/theme';
 import FileIcon from '@ncigdc/theme/icons/File';
-import { Column } from '@ncigdc/uikit/Flex';
+import { Row } from '@ncigdc/uikit/Flex';
 
 const storageKey = 'RepositoryFileAggregations.userSelectedFacets';
 
@@ -164,20 +164,14 @@ export const FileAggregationsComponent = (props: TProps) =>
       setAutocomplete={props.setAutocomplete}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
       dropdownItem={x =>
-        <span style={{ display: 'flex' }}>
-          <Column>
-            <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
-          </Column>
-          <Column>
-            <span style={{ fontWeight: 'bold' }}>
-              {x.file_id}
-            </span>
-            <span style={{ fontSize: '80%' }}>
-              {x.submitter_id}
-            </span>
-            {x.file_name} <br />
-          </Column>
-        </span>}
+        <Row>
+          <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+          <div>
+            <div style={{ fontWeight: 'bold' }}>{x.file_id}</div>
+            <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
+            {x.file_name}
+          </div>
+        </Row>}
     />
     {_.reject(presetFacets, { full: 'files.file_id' }).map(facet =>
       <FacetWrapper

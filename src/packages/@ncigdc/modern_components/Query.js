@@ -6,7 +6,7 @@ import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 
 const lastRelayProps = {};
 
-export default props =>
+export default (props: Object) =>
   <div style={{ position: 'relative', minHeight: props.minHeight }}>
     <QueryRenderer
       environment={environment}

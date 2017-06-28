@@ -34,7 +34,7 @@ const DownloadTableToTsvButton = ({ filename, selector, style = {} }: TProps) =>
           ? getSingleHeader(headThs)
           : tableEl.querySelectorAll('th');
         const thText = map(thEls, el => el.innerText).map(t =>
-          t.replace('\n', ' '),
+          t.replace(/\s+/g, ' '),
         );
         const trs = tableEl.querySelector('tbody').querySelectorAll('tr');
         const tdText = map(trs, t => {
@@ -48,9 +48,9 @@ const DownloadTableToTsvButton = ({ filename, selector, style = {} }: TProps) =>
                 : td.innerText;
               const joinedText = exportText
                 .trim()
-                .replace(/\u00A0/g, ' ')
-                .split('\n')
-                .join(',');
+                .split(/\s*\n\s*/)
+                .join(',')
+                .replace(/[\s\u00A0]+/g, ' ');
               const colspan = td.getAttribute('colspan');
               const fittedToColspan = colspan
                 ? [joinedText, ...Array(colspan - 1)]

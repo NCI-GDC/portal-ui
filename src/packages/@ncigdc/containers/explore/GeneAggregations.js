@@ -12,7 +12,6 @@ import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
 import { withTheme } from '@ncigdc/theme';
-import { Column } from '@ncigdc/uikit/Flex';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 
 export type TProps = {
@@ -75,17 +74,11 @@ export const GeneAggregationsComponent = compose(
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       dropdownItem={x =>
-        <span style={{ display: 'flex' }}>
-          <Column>
-            <span style={{ fontWeight: 'bold' }}>
-              {x.symbol}
-            </span>
-            <span>
-              {x.gene_id}
-            </span>
-            {x.name}
-          </Column>
-        </span>}
+        <div>
+          <div style={{ fontWeight: 'bold' }}>{x.symbol}</div>
+          {x.gene_id}<br />
+          {x.name}
+        </div>}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
     {_.reject(presetFacets, { full: 'genes.gene_id' }).map(facet =>

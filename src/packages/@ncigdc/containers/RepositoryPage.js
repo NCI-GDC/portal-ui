@@ -67,17 +67,23 @@ export type TProps = {
 const enhance = compose(connect(), withFilters());
 
 export const RepositoryPageComponent = (props: TProps) => {
-  const setAutocompleteCases = value =>
-    props.relay.setVariables({
-      idAutocompleteCase: value,
-      runAutocompleteCase: !!value,
-    });
+  const setAutocompleteCases = (value, onReadyStateChange) =>
+    props.relay.setVariables(
+      {
+        idAutocompleteCase: value,
+        runAutocompleteCase: !!value,
+      },
+      onReadyStateChange,
+    );
 
-  const setAutocompleteFiles = value =>
-    props.relay.setVariables({
-      idAutocompleteFile: value,
-      runAutocompleteFile: !!value,
-    });
+  const setAutocompleteFiles = (value, onReadyStateChange) =>
+    props.relay.setVariables(
+      {
+        idAutocompleteFile: value,
+        runAutocompleteFile: !!value,
+      },
+      onReadyStateChange,
+    );
 
   const fileCount = props.viewer.repository.files.hits.total;
   const caseCount = props.viewer.repository.cases.hits.total;

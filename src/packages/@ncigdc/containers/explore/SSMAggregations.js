@@ -11,7 +11,6 @@ import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
 import { withTheme } from '@ncigdc/theme';
-import { Column } from '@ncigdc/uikit/Flex';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import NotMissingFacet from '@ncigdc/components/Aggregations/NotMissingFacet';
 
@@ -127,14 +126,7 @@ export const SSMAggregationsComponent = compose(
       placeholder="Search for mutation id"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
-      dropdownItem={x =>
-        <span style={{ display: 'flex' }}>
-          <Column>
-            <span style={{ fontWeight: 'bold' }}>
-              {x.ssm_id}
-            </span>
-          </Column>
-        </span>}
+      dropdownItem={x => <div style={{ fontWeight: 'bold' }}>{x.ssm_id}</div>}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
     {presetFacets

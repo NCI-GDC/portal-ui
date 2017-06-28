@@ -12,7 +12,7 @@ import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
 import { withTheme } from '@ncigdc/theme';
-import { Row, Column } from '@ncigdc/uikit/Flex';
+import { Row } from '@ncigdc/uikit/Flex';
 import FolderIcon from '@ncigdc/theme/icons/Folder';
 
 export type TProps = {
@@ -89,20 +89,12 @@ export const ProjectAggregationsComponent = compose(
       fieldNoDoctype="project_id"
       dropdownItem={x =>
         <Row>
-          <Column>
-            <FolderIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
-          </Column>
-          <Column>
-            <Row style={{ fontWeight: 'bold' }}>
-              {x.name}
-            </Row>
-            <Row>
-              {x.project_id}
-            </Row>
-            <Row>
-              {x.primary_site}
-            </Row>
-          </Column>
+          <FolderIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+          <div>
+            <div style={{ fontWeight: 'bold' }}>{x.name}</div>
+            {x.project_id}<br />
+            {x.primary_site}
+          </div>
         </Row>}
     />
     {projectFacets.map(facet =>

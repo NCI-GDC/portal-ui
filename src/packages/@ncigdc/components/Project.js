@@ -164,7 +164,6 @@ const Project = (
               endpoint="files"
               activeText="Downloading"
               inactiveText="Download Manifest"
-              fields={['file_id', 'file_name', 'md5sum', 'file_size', 'state']}
               returnType="manifest"
               filters={makeFilter(projectFilter)}
             />

@@ -460,46 +460,43 @@ const Component = compose(
               </Tooltip>
             ),
             filteredCases: (
-              <span style={{ marginLeft: -40 }}>
-                <span style={{ marginRight: -40 }}>
-                  <ExploreLink
-                    merge
-                    query={{
-                      searchTableTab: 'cases',
-                      filters: addInFilters(
-                        query.fmgTable_filters || defaultFilters,
-                        makeFilter([{ field: 'ssms.ssm_id', value: x.ssm_id }]),
-                      ),
-                    }}
-                  >
-                    {score.toLocaleString()}
-                  </ExploreLink>
-                  <span> / </span>
-                  <ExploreLink
-                    query={{
-                      searchTableTab: 'cases',
-                      filters: location.pathname.split('/')[1] === 'genes'
-                        ? query.ssmsTable_filters || defaultFilters
-                        : addInFilters(
-                            query.ssmsTable_filters || defaultFilters,
-                            makeFilter([
-                              {
-                                field: 'cases.available_variation_data',
-                                value: ['ssm'],
-                              },
-                            ]),
-                          ),
-                    }}
-                  >
-                    {(filteredCases.hits.total || 0).toLocaleString()}
-                  </ExploreLink>
-                </span>
+              <span>
+                <ExploreLink
+                  merge
+                  query={{
+                    searchTableTab: 'cases',
+                    filters: addInFilters(
+                      query.fmgTable_filters || defaultFilters,
+                      makeFilter([{ field: 'ssms.ssm_id', value: x.ssm_id }]),
+                    ),
+                  }}
+                >
+                  {score.toLocaleString()}
+                </ExploreLink>
+                <span> / </span>
+                <ExploreLink
+                  query={{
+                    searchTableTab: 'cases',
+                    filters: location.pathname.split('/')[1] === 'genes'
+                      ? query.ssmsTable_filters || defaultFilters
+                      : addInFilters(
+                          query.ssmsTable_filters || defaultFilters,
+                          makeFilter([
+                            {
+                              field: 'cases.available_variation_data',
+                              value: ['ssm'],
+                            },
+                          ]),
+                        ),
+                  }}
+                >
+                  {(filteredCases.hits.total || 0).toLocaleString()}
+                </ExploreLink>
                 <SparkMeter value={score / filteredCases.hits.total} />
                 <span
                   style={{
                     fontSize: '0.8em',
                     width: 40,
-                    marginLeft: 40,
                     display: 'inline-block',
                   }}
                 >

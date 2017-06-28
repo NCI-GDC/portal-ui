@@ -77,7 +77,7 @@ const RepoFilesPiesComponent = ({
                 aggregations,
                 'cases__project__project_id.buckets',
               )}
-              fieldName="files.cases.project.project_id"
+              fieldName="cases.project.project_id"
               docTypeSingular="file"
               currentFieldNames={currentFieldNames}
               currentFilters={currentFilters}

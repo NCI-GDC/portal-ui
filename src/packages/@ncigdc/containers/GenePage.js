@@ -9,8 +9,8 @@ import GeneSummary from '@ncigdc/containers/GeneSummary';
 import GeneExternalReferences from '@ncigdc/containers/GeneExternalReferences';
 import CancerDistributionChart from '@ncigdc/containers/CancerDistributionChart';
 import CancerDistributionTable from '@ncigdc/containers/CancerDistributionTable';
-import Lolliplot from '@ncigdc/containers/Lolliplot';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable';
+import { GeneLolliplot } from '@ncigdc/modern_components/Lolliplot';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
@@ -104,12 +104,7 @@ export const GenePageComponent = (props: TProps) => {
 
         <Column style={{ ...styles.card, marginTop: '2rem' }}>
           {props.node.biotype === 'protein_coding' &&
-            <Lolliplot
-              geneId={props.node.gene_id}
-              transcripts={props.node.transcripts.hits.edges.map(x => x.node)}
-              lolliplot={props.viewer.analysis.protein_mutations}
-              viewer={props.viewer}
-            />}
+            <GeneLolliplot geneId={props.node.gene_id} />}
           {props.node.biotype !== 'protein_coding' &&
             <div>
               <Row>
@@ -183,7 +178,6 @@ export const GenePageQuery = {
     `,
     viewer: () => Relay.QL`
       fragment on Root {
-        ${Lolliplot.getFragment('viewer')}
         projects {
           ${CancerDistributionTable.getFragment('projects')}
         }
@@ -195,11 +189,6 @@ export const GenePageQuery = {
           cases {
             ${CancerDistributionChart.getFragment('cases')}
             ${CancerDistributionTable.getFragment('cases')}
-          }
-        }
-        analysis {
-          protein_mutations {
-            ${Lolliplot.getFragment('lolliplot')}
           }
         }
       }

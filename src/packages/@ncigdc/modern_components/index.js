@@ -4,6 +4,7 @@ import ExploreCasesPies from './ExploreCasesPies';
 import ExploreCasesTable from './ExploreCasesTable';
 import GenesBarChart from './GenesBarChart';
 import GenesTable from './GenesTable';
+import { GeneLolliplot, SsmLolliplot } from './Lolliplot';
 import ProjectBreakdown from './ProjectBreakdown';
 import SsmsBarChart from './SsmsBarChart';
 import SsmsTable from './SsmsTable';
@@ -15,6 +16,8 @@ export {
   ExploreCasesTable,
   GenesBarChart,
   GenesTable,
+  GeneLolliplot,
+  SsmLolliplot,
   ProjectBreakdown,
   SsmsBarChart,
   SsmsTable,

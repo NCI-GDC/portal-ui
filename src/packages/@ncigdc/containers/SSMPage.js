@@ -9,7 +9,7 @@ import ChartIcon from '@ncigdc/theme/icons/BarChart';
 import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import { makeFilter } from '@ncigdc/utils/filters';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
-import Lolliplot from '@ncigdc/containers/Lolliplot';
+import { SsmLolliplot } from '@ncigdc/modern_components/Lolliplot';
 import SsmSummary from '@ncigdc/containers/SsmSummary';
 import SsmExternalReferences from '@ncigdc/containers/SsmExternalReferences';
 import ConsequencesTable from '@ncigdc/containers/ConsequencesTable';
@@ -70,7 +70,7 @@ const styles = {
 export type TProps = {
   node: {
     ssm_id: string,
-    gene_aa_change: Array,
+    gene_aa_change: Array<string>,
     consequence: {
       hits: {
         edges: Array<{
@@ -99,23 +99,17 @@ export type TProps = {
       ssms: Object,
     },
   },
-  canonicalGeneId: string,
   cdFilters: Object,
 };
 
 export const SSMPageComponent = compose(
   withPropsOnChange(['node'], ({ node }) => ({
-    canonicalGeneId: (node.consequence.hits.edges.find(
-      x => x.node.transcript.is_canonical,
-    ) || { node: { transcript: { gene: { gene_id: '' } } } }).node.transcript
-      .gene.gene_id,
-
     cdFilters: makeFilter([
       { field: 'ssms.ssm_id', value: node.ssm_id },
       { field: 'cases.available_variation_data', value: 'ssm' },
     ]),
   })),
-)(({ node, viewer, canonicalGeneId, cdFilters }: TProps = {}) =>
+)(({ node, viewer, cdFilters }: TProps = {}) =>
   <FullWidthLayout title={node.ssm_id} entityType="MU">
     <Row spacing="2rem" id="summary">
       <Row flex="1"><SsmSummary node={node} /></Row>
@@ -163,12 +157,7 @@ export const SSMPageComponent = compose(
     </Column>
     <Column style={{ ...styles.card, marginTop: '2rem' }}>
       {node.gene_aa_change.length
-        ? <Lolliplot
-            mutationId={node.ssm_id}
-            geneId={canonicalGeneId}
-            viewer={viewer}
-            lolliplot={viewer.analysis.protein_mutations}
-          />
+        ? <SsmLolliplot mutationId={node.ssm_id} ssmId={node.ssm_id} />
         : <div style={styles.lolliplotZeroStateWrapper}>
             No protein coding transcript is affected by this mutation in CDS
             region.
@@ -205,7 +194,6 @@ export const SSMPageQuery = {
     `,
     viewer: () => Relay.QL`
       fragment on Root {
-        ${Lolliplot.getFragment('viewer')}
         projects {
           ${CancerDistributionTable.getFragment('projects')}
         }
@@ -225,11 +213,6 @@ export const SSMPageQuery = {
                 }
               }
             }
-          }
-        }
-        analysis {
-          protein_mutations {
-            ${Lolliplot.getFragment('lolliplot')}
           }
         }
       }

@@ -9,6 +9,9 @@ import { RepositoryCasesLink } from '@ncigdc/components/Links/RepositoryLink';
 import FileLink from '@ncigdc/components/Links/FileLink';
 import { makeFilter } from '@ncigdc/utils/filters';
 import FileSize from '@ncigdc/components/FileSize';
+import styled from '@ncigdc/theme/styled';
+
+const NumTh = styled(Th, { textAlign: 'right' });
 
 const filesTableModel = [
   {
@@ -133,8 +136,8 @@ const filesTableModel = [
   {
     name: 'Size',
     id: 'file_size',
-    th: () => <Th>File Size</Th>,
-    td: ({ node }) => <Td><FileSize bytes={node.file_size} /></Td>,
+    th: () => <NumTh>File Size</NumTh>,
+    td: ({ node }) => <TdNum><FileSize bytes={node.file_size} /></TdNum>,
     sortable: true,
     downloadable: true,
   },

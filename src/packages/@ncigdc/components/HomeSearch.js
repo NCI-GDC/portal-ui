@@ -74,10 +74,10 @@ const HomeSearch = compose(
       />
       <Input
         type="text"
-        placeholder="e.g. BRAF, Breast, TCGA-BLCA, c0892598-1f7b-4f23-9cd8-731f797753d5"
+        placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-VD-AA8M"
         onChange={event => setQuery(event.target.value)}
         onKeyDown={handleKeyDown}
-        aria-label="Quick search: e.g. BRAF, Breast, TCGA-BLCA, c0892598-1f7b-4f23-9cd8-731f797753d5"
+        aria-label="Quick search: e.g. BRAF, Breast, TCGA-BLCA, TCGA-VD-AA8M"
       />
 
       <QuickSearchResults

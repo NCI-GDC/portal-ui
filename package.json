@@ -14,7 +14,9 @@
     "lint": "eslint .",
     "flow": "flow check",
     "relay": "relay-compiler --src src --schema ./data/schema.graphql",
-    "schema": "node ./data/getSchema"
+    "schema": "node ./data/getSchema",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "proxy": {
     "/api": {
@@ -83,6 +85,7 @@
     "jailbreak-react-scripts": "0.0.2",
     "prettier": "1.4.4",
     "react-scripts": "1.0.7",
-    "relay-compiler": "1.0.0"
+    "relay-compiler": "1.0.0",
+    "@storybook/react": "^3.1.7"
   }
 }

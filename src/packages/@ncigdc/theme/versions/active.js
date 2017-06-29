@@ -56,7 +56,6 @@ const theme = {
 export const globalRules = `
   a:link {
     color: ${theme.primary};
-    text-decoration: underline;
   }
 `;
 

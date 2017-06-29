@@ -20,6 +20,7 @@ const styles = {
     alignItems: 'center',
     padding: '1rem',
     borderTop: `1px solid ${theme.greyScale5}`,
+    backgroundColor: 'white',
   }),
   leftBtn: theme => ({
     border: `1px solid ${theme.greyScale5}`,

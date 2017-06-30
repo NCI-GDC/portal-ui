@@ -1,5 +1,4 @@
 /* @flow */
-/* eslint fp/no-class:0 */
 
 import React from 'react';
 import { graphql } from 'react-relay';

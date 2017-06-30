@@ -1,14 +1,17 @@
 /* @flow */
-/* eslint fp/no-class:0 */
 
 import React from 'react';
 import { graphql } from 'react-relay';
-import { compose, withPropsOnChange } from 'recompose';
+import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
 import { makeFilter } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: Object) =>
   compose(
+    branch(
+      ({ geneId }) => !geneId,
+      renderComponent(() => <div><pre>geneId</pre> must be provided</div>),
+    ),
     withPropsOnChange(['geneId'], ({ geneId = 'ENSG00000134086' }) => {
       return {
         variables: {

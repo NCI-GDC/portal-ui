@@ -133,7 +133,18 @@ export default compose(
         }}
       >
         {width &&
-          <div>
+          <div style={{ position: 'relative' }}>
+            <span
+              style={{
+                transform: 'rotate(270deg)',
+                display: 'inline-block',
+                position: 'relative',
+                left: -20,
+                bottom: -100,
+              }}
+            >
+              # Cases
+            </span>
             <Lolliplot
               d3={d3}
               min={min}
@@ -171,14 +182,35 @@ export default compose(
                 width={width}
                 update={payload => setState(s => ({ ...s, ...payload }))}
                 data={lolliplotData.proteins}
-                onProteinClick={d =>
-                  setState(s => ({ ...s, min: d.start, max: d.end }))}
+                onProteinClick={d => {
+                  if (min === d.start && max === d.end) {
+                    setState(s => ({
+                      ...s,
+                      min: 0,
+                      max: activeTranscript.length_amino_acid,
+                    }));
+                    setTooltip(null);
+                  } else {
+                    setState(s => ({ ...s, min: d.start, max: d.end }));
+                    setTooltip(
+                      <span>
+                        <div><b>{d.id}</b></div>
+                        <div>{d.description}</div>
+                        <div><b>Click to reset zoom</b></div>
+                      </span>,
+                    );
+                  }
+                }}
                 onProteinMouseover={d => {
                   setTooltip(
                     <span>
                       <div><b>{d.id}</b></div>
                       <div>{d.description}</div>
-                      <div><b>Click to zoom</b></div>
+                      {min === d.start &&
+                        max === d.end &&
+                        <div><b>Click to reset zoom</b></div>}
+                      {(min !== d.start || max !== d.end) &&
+                        <div><b>Click to zoom</b></div>}
                     </span>,
                   );
                 }}

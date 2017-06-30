@@ -29,21 +29,20 @@ export default ({
         <span>
           Viewing
           {' '}
-          {
-            mutations
-              .filter(d => d.x >= min && d.x <= max)
-              .filter(filterByType(blacklist)).length
-          }
+          {mutations
+            .filter(d => d.x >= min && d.x <= max)
+            .filter(filterByType(blacklist))
+            .length.toLocaleString()}
         </span>
         <span> / </span>
-        <span>{mutations.length} Mutations</span>
+        <span>{mutations.length.toLocaleString()} Mutations</span>
         {outsideSsms.length > 0 &&
           <span style={{ float: 'right' }}>
             <Tooltip
               Component={
                 <div>
                   <div>
-                    {outsideSsms.length}
+                    {outsideSsms.length.toLocaleString()}
                     {' '}
                     mutation
                     {outsideSsms.length > 1
@@ -165,15 +164,14 @@ export default ({
               <span>{startCase(variant)}:</span>
               <span style={{ float: 'right' }}>
                 <b>
-                  {
-                    // $FlowIgnore
-                    xs
-                      .filter(d => d.x >= min && d.x <= max)
-                      .filter(filterByType(blacklist)).length
-                  }
+                  {// $FlowIgnore
+                  xs
+                    .filter(d => d.x >= min && d.x <= max)
+                    .filter(filterByType(blacklist))
+                    .length.toLocaleString()}
                 </b>
                 {/* $FlowIgnore */}
-                &nbsp;/ <b>{xs.length}</b>
+                &nbsp;/ <b>{xs.length.toLocaleString()}</b>
               </span>
             </div>
           </div>,

@@ -526,7 +526,18 @@ const LolliplotComponent = compose(
                 }}
               >
                 {width &&
-                  <div>
+                  <div style={{ position: 'relative' }}>
+                    <span
+                      style={{
+                        transform: 'rotate(270deg)',
+                        display: 'inline-block',
+                        position: 'relative',
+                        left: -20,
+                        bottom: -100,
+                      }}
+                    >
+                      # Cases
+                    </span>
                     <Lolliplot
                       d3={d3}
                       min={min}
@@ -566,14 +577,35 @@ const LolliplotComponent = compose(
                         update={payload =>
                           setState(s => ({ ...s, ...payload }))}
                         data={lolliplotData.proteins}
-                        onProteinClick={d =>
-                          setState(s => ({ ...s, min: d.start, max: d.end }))}
+                        onProteinClick={d => {
+                          if (min === d.start && max === d.end) {
+                            setState(s => ({
+                              ...s,
+                              min: 0,
+                              max: activeTranscript.length_amino_acid,
+                            }));
+                            setTooltip(null);
+                          } else {
+                            setState(s => ({ ...s, min: d.start, max: d.end }));
+                            setTooltip(
+                              <span>
+                                <div><b>{d.id}</b></div>
+                                <div>{d.description}</div>
+                                <div><b>Click to reset zoom</b></div>
+                              </span>,
+                            );
+                          }
+                        }}
                         onProteinMouseover={d => {
                           setTooltip(
                             <span>
                               <div><b>{d.id}</b></div>
                               <div>{d.description}</div>
-                              <div><b>Click to zoom</b></div>
+                              {min === d.start &&
+                                max === d.end &&
+                                <div><b>Click to reset zoom</b></div>}
+                              {(min !== d.start || max !== d.end) &&
+                                <div><b>Click to zoom</b></div>}
                             </span>,
                           );
                         }}
@@ -611,21 +643,23 @@ const LolliplotComponent = compose(
                     <span>
                       Viewing
                       {' '}
-                      {
-                        lolliplotData.mutations
-                          .filter(d => d.x >= min && d.x <= max)
-                          .filter(filterByType(blacklist)).length
-                      }
+                      {lolliplotData.mutations
+                        .filter(d => d.x >= min && d.x <= max)
+                        .filter(filterByType(blacklist))
+                        .length.toLocaleString()}
                     </span>
                     <span> / </span>
-                    <span>{lolliplotData.mutations.length} Mutations</span>
+                    <span>
+                      {lolliplotData.mutations.length.toLocaleString()}{' '}
+                      Mutations
+                    </span>
                     {outsideSsms.length > 0 &&
                       <span style={{ float: 'right' }}>
                         <Tooltip
                           Component={
                             <div>
                               <div>
-                                {outsideSsms.length}
+                                {outsideSsms.length.toLocaleString()}
                                 {' '}
                                 mutation
                                 {outsideSsms.length > 1
@@ -751,15 +785,14 @@ const LolliplotComponent = compose(
                           <span>{startCase(variant)}:</span>
                           <span style={{ float: 'right' }}>
                             <b>
-                              {
-                                // $FlowIgnore
-                                xs
-                                  .filter(d => d.x >= min && d.x <= max)
-                                  .filter(filterByType(blacklist)).length
-                              }
+                              {// $FlowIgnore
+                              xs
+                                .filter(d => d.x >= min && d.x <= max)
+                                .filter(filterByType(blacklist))
+                                .length.toLocaleString()}
                             </b>
                             {/* $FlowIgnore */}
-                            &nbsp;/ <b>{xs.length}</b>
+                            &nbsp;/ <b>{xs.length.toLocaleString()}</b>
                           </span>
                         </div>
                       </div>,

@@ -1,29 +1,29 @@
 /* @flow */
-/* eslint fp/no-class:0 */
 
 import React from 'react';
 import { graphql } from 'react-relay';
-import { compose, withPropsOnChange } from 'recompose';
+import { compose, branch, withPropsOnChange, renderComponent } from 'recompose';
 import { makeFilter } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
   compose(
-    withPropsOnChange(
-      ['ssmId'],
-      ({ ssmId = 'a0fe6696-dd49-555d-bb9e-cdbec315dbb3' }) => {
-        return {
-          variables: {
-            filters: makeFilter([
-              {
-                field: 'ssms.ssm_id',
-                value: [ssmId],
-              },
-            ]),
-          },
-        };
-      },
+    branch(
+      ({ ssmId }) => !ssmId,
+      renderComponent(() => <div><pre>ssmId</pre> must be provided</div>),
     ),
+    withPropsOnChange(['ssmId'], ({ ssmId }) => {
+      return {
+        variables: {
+          filters: makeFilter([
+            {
+              field: 'ssms.ssm_id',
+              value: [ssmId],
+            },
+          ]),
+        },
+      };
+    }),
   )((props: Object) => {
     return (
       <Query

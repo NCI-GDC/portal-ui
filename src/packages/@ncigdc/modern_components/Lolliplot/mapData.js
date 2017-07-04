@@ -41,10 +41,18 @@ export default (
       };
     }),
 
-  proteins: (transcript.domains || []).map(protein => ({
-    id: protein.hit_name,
-    start: protein.start,
-    end: protein.end,
-    description: protein.description,
-  })),
+  proteins: (() => {
+    const colors = (transcript.domains || []).reduce((acc, protein, i) => ({
+      ...acc,
+      [protein.hit_name]: `hsl(${i * 100 % 360}, 60%, 60%)`,
+    }));
+
+    return (transcript.domains || []).map(protein => ({
+      id: protein.hit_name,
+      start: protein.start,
+      end: protein.end,
+      description: protein.description,
+      getProteinColor: () => colors[protein.hit_name],
+    }));
+  })(),
 });

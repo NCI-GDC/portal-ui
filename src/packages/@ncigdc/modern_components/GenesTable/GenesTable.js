@@ -2,27 +2,15 @@
 /* eslint fp/no-class:0 */
 
 import React from 'react';
-import Relay from 'react-relay/classic';
 import { compose, withState, withPropsOnChange } from 'recompose';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { parse } from 'query-string';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
-import {
-  parseIntParam,
-  parseFilterParam,
-  parseJSURLParam,
-} from '@ncigdc/utils/uri';
-import { viewerQuery } from '@ncigdc/routes/queries';
 import withSize from '@ncigdc/utils/withSize';
 import withBetterRouter from '@ncigdc/utils/withRouter';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import MutationsCount from '@ncigdc/components/MutationsCount';
 import GeneLink from '@ncigdc/components/Links/GeneLink';
-import { handleReadyStateChange } from '@ncigdc/dux/loaders';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Button from '@ncigdc/uikit/Button';
@@ -39,185 +27,26 @@ import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import TableActions from '@ncigdc/components/TableActions';
 
 const colors = scaleOrdinal(schemeCategory10);
-const COMPONENT_NAME = 'GenesTable';
 
-const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) =>
-    <div style={{ position: 'relative', minHeight: 170 }}>
-      <Relay.Renderer
-        environment={Relay.Store}
-        queryConfig={new Route(props)}
-        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
-        Container={Container}
-        render={({ props: relayProps }) =>
-          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-        }
-      />
-      <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
-
-class Route extends Relay.Route {
-  static routeName = COMPONENT_NAME;
-  static queries = {
-    ...viewerQuery,
-    exploreSsms: () => Relay.QL`query { viewer }`,
-  };
-  static prepareParams = ({
-    location: { search },
-    defaultSize = 10,
-    defaultFilters = null,
-  }) => {
-    const q = parse(search);
-
-    return {
-      genesTable_filters: parseFilterParam(
-        q.genesTable_filters,
-        defaultFilters,
-      ),
-      genesTable_offset: parseIntParam(q.genesTable_offset, 0),
-      genesTable_size: parseIntParam(q.genesTable_size, defaultSize),
-      genesTable_sort: parseJSURLParam(q.genesTable_sort, null),
-      geneCaseFilter: addInFilters(
-        q.genesTable_filters || defaultFilters,
-        makeFilter([
-          {
-            field: 'cases.available_variation_data',
-            value: 'ssm',
-          },
-        ]),
-      ),
-    };
-  };
-}
-
-const createContainer = Component =>
-  Relay.createContainer(Component, {
-    initialVariables: {
-      ssmCountsfilters: null,
-      genesTable_filters: null,
-      genesTable_size: 10,
-      genesTable_offset: 0,
-      score: 'case.project.project_id',
-      geneCaseFilter: null,
-      ssmTested: makeFilter([
-        {
-          field: 'cases.available_variation_data',
-          value: 'ssm',
-        },
-      ]),
-    },
-    fragments: {
-      exploreSsms: () => Relay.QL`
-        fragment on Root {
-          explore {
-            ssms {
-              aggregations(filters: $ssmCountsfilters aggregations_filter_themselves: true) {
-                consequence__transcript__gene__gene_id {
-                  buckets {
-                    key
-                    doc_count
-                  }
-                }
-              }
-            }
-          }
-        }
-      `,
-      viewer: () => Relay.QL`
-        fragment on Root {
-          explore {
-            cases { hits(first: 0 filters: $ssmTested) { total }}
-            filteredCases: cases {
-              hits(first: 0 filters: $geneCaseFilter) {
-                total
-              }
-            }
-            genes {
-              hits (
-                first: $genesTable_size
-                offset: $genesTable_offset
-                filters: $genesTable_filters
-                score: $score
-              ) {
-                total
-                edges {
-                  node {
-                    numCases: score
-                    symbol
-                    name
-                    cytoband
-                    biotype
-                    gene_id
-                    is_cancer_gene_census
-                    case {
-                      hits(first: 0 filters: $ssmTested) {
-                        total
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      `,
-    },
-  });
-
-const Component = compose(
+export default compose(
   withBetterRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
   withPropsOnChange(
-    ['viewer'],
-    ({
-      ssmCountsLoading,
-      setSsmCountsLoading,
-      viewer,
-      relay,
-      defaultFilters,
-    }: TTableProps) => {
-      const { hits } = viewer.explore.genes;
-      const geneIds = hits.edges.map(e => e.node.gene_id);
-      if (!ssmCountsLoading) {
-        setSsmCountsLoading(true);
-      }
-      relay.setVariables(
-        {
-          ssmCountsfilters: geneIds.length
-            ? addInFilters(
-                defaultFilters,
-                makeFilter([
-                  {
-                    field: 'consequence.transcript.gene.gene_id',
-                    value: geneIds,
-                  },
-                ]),
-              )
-            : null,
-        },
-        readyState => {
-          if (readyState.done) {
-            setSsmCountsLoading(false);
-          }
-        },
-      );
+    ['ssmsAggregationsViewer'],
+    ({ ssmsAggregationsViewer: { explore } }) => {
+      const { ssms: { aggregations } } = explore;
+      const ssmCounts = (aggregations || {
+        consequence__transcript__gene__gene_id: { buckets: [] },
+      }).consequence__transcript__gene__gene_id.buckets
+        .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
+      return { ssmCounts };
     },
   ),
-  withPropsOnChange(['exploreSsms'], ({ exploreSsms: { explore } }) => {
-    const { ssms: { aggregations } } = explore;
-    const ssmCounts = (aggregations || {
-      consequence__transcript__gene__gene_id: { buckets: [] },
-    }).consequence__transcript__gene__gene_id.buckets
-      .reduce((acc, b) => ({ ...acc, [b.key]: b.doc_count }), {});
-    return { ssmCounts };
-  }),
   withSize(),
 )(
   ({
-    viewer: { explore } = {},
-    exploreSsms,
+    genesTableViewer: { explore } = {},
     defaultFilters,
     relay = { route: { params: {} } },
     setSurvivalLoadingId,
@@ -229,6 +58,7 @@ const Component = compose(
     query,
     ssmCounts = [],
     ssmCountsLoading,
+    parentVariables,
   }) => {
     const { genes, filteredCases, cases } = explore || {};
 
@@ -250,7 +80,7 @@ const Component = compose(
           <Showing
             docType="genes"
             prefix="genesTable"
-            params={relay.route.params}
+            params={parentVariables}
             total={totalGenes}
           />
           <Row>
@@ -408,7 +238,6 @@ const Component = compose(
               ),
               num_mutations: (
                 <MutationsCount
-                  isLoading={ssmCountsLoading}
                   ssmCount={ssmCounts[g.gene_id]}
                   filters={addInFilters(
                     defaultFilters,
@@ -475,12 +304,10 @@ const Component = compose(
         />
         <Pagination
           prefix="genesTable"
-          params={relay.route.params}
+          params={parentVariables}
           total={!genes ? 0 : genes.hits.total}
         />
       </span>
     );
   },
 );
-
-export default createRenderer(Route, createContainer(Component));

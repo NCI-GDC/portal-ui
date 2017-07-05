@@ -13,11 +13,17 @@ export default (props: Object) =>
       render={({ props: nextRelayProps }) => {
         lastRelayProps[props.name] =
           nextRelayProps || lastRelayProps[props.name];
+
         if (lastRelayProps[props.name])
           return (
             <props.Component
               {...lastRelayProps[props.name]}
               {...props.parentProps}
+              parentVariables={{
+                ...props.parentProps.parentVariables,
+                ...props.parentProps.variables,
+                ...props.parentVariables,
+              }}
             />
           );
         return null;

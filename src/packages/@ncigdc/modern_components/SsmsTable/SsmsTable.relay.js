@@ -1,5 +1,4 @@
 /* @flow */
-/* eslint fp/no-class:0 */
 
 import React from 'react';
 import { graphql } from 'react-relay';
@@ -14,7 +13,7 @@ import {
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default Component =>
+export default (Component: ReactClass<*>) =>
   compose(
     withRouter,
     withPropsOnChange(

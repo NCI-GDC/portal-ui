@@ -372,9 +372,23 @@ const Project = (
               {
                 key: 'case_count_meter',
                 title: (
-                  <SampleSize
-                    n={_.sumBy(experimentalStrategies, item => item.case_count)}
-                  />
+                  <Link
+                    merge="replace"
+                    pathname="/repository"
+                    query={{
+                      filters: makeFilter(projectFilter),
+                      facetTab: 'cases',
+                      searchTableTab: 'cases',
+                    }}
+                    title="Browse cases"
+                  >
+                    <SampleSize
+                      n={_.sumBy(
+                        experimentalStrategies,
+                        item => item.case_count,
+                      )}
+                    />
+                  </Link>
                 ),
                 thStyle: {
                   width: 1,
@@ -390,9 +404,23 @@ const Project = (
               {
                 key: 'file_count_meter',
                 title: (
-                  <SampleSize
-                    n={_.sumBy(experimentalStrategies, item => item.file_count)}
-                  />
+                  <Link
+                    merge="replace"
+                    pathname="/repository"
+                    query={{
+                      filters: makeFilter(projectFilter),
+                      facetTab: 'files',
+                      searchTableTab: 'files',
+                    }}
+                    title="Browse files"
+                  >
+                    <SampleSize
+                      n={_.sumBy(
+                        experimentalStrategies,
+                        item => item.file_count,
+                      )}
+                    />
+                  </Link>
                 ),
                 thStyle: {
                   width: 1,
@@ -502,9 +530,20 @@ const Project = (
               {
                 key: 'case_count_meter',
                 title: (
-                  <SampleSize
-                    n={_.sumBy(dataCategories, item => item.case_count)}
-                  />
+                  <Link
+                    merge="replace"
+                    pathname="/repository"
+                    query={{
+                      filters: makeFilter(projectFilter),
+                      facetTab: 'cases',
+                      searchTableTab: 'cases',
+                    }}
+                    title="Browse cases"
+                  >
+                    <SampleSize
+                      n={_.sumBy(dataCategories, item => item.case_count)}
+                    />
+                  </Link>
                 ),
                 thStyle: {
                   textAlign: 'center',
@@ -520,9 +559,20 @@ const Project = (
               {
                 key: 'file_count_meter',
                 title: (
-                  <SampleSize
-                    n={_.sumBy(dataCategories, item => item.file_count)}
-                  />
+                  <Link
+                    merge="replace"
+                    pathname="/repository"
+                    query={{
+                      filters: makeFilter(projectFilter),
+                      facetTab: 'files',
+                      searchTableTab: 'files',
+                    }}
+                    title="Browse files"
+                  >
+                    <SampleSize
+                      n={_.sumBy(dataCategories, item => item.file_count)}
+                    />
+                  </Link>
                 ),
                 thStyle: {
                   textAlign: 'center',

@@ -22,6 +22,7 @@ import ClinicalCard from '@ncigdc/components/ClinicalCard';
 import BiospecimenCard from '@ncigdc/components/BiospecimenCard';
 import { withTheme } from '@ncigdc/theme';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
+import Link from '@ncigdc/components/Links/Link';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import Button from '@ncigdc/uikit/Button';
 import { removeFilesFromCart, addAllFilesInCart } from '@ncigdc/dux/cart';
@@ -322,12 +323,28 @@ const Case = compose(
                 {
                   key: 'file_count_meter',
                   title: (
-                    <SampleSize
-                      n={_.sumBy(
-                        p.summary.experimental_strategies,
-                        item => item.file_count,
-                      )}
-                    />
+                    <Link
+                      merge="replace"
+                      pathname="/repository"
+                      query={{
+                        filters: makeFilter([
+                          {
+                            field: 'cases.case_id',
+                            value: p.case_id,
+                          },
+                        ]),
+                        facetTab: 'cases',
+                        searchTableTab: 'cases',
+                      }}
+                      title="Browse files"
+                    >
+                      <SampleSize
+                        n={_.sumBy(
+                          p.summary.experimental_strategies,
+                          item => item.file_count,
+                        )}
+                      />
+                    </Link>
                   ),
                   thStyle: {
                     width: 1,
@@ -356,12 +373,28 @@ const Case = compose(
                 {
                   key: 'file_count_meter',
                   title: (
-                    <SampleSize
-                      n={_.sumBy(
-                        p.summary.data_categories,
-                        item => item.file_count,
-                      )}
-                    />
+                    <Link
+                      merge="replace"
+                      pathname="/repository"
+                      query={{
+                        filters: makeFilter([
+                          {
+                            field: 'cases.case_id',
+                            value: p.case_id,
+                          },
+                        ]),
+                        facetTab: 'cases',
+                        searchTableTab: 'cases',
+                      }}
+                      title="Browse files"
+                    >
+                      <SampleSize
+                        n={_.sumBy(
+                          p.summary.data_categories,
+                          item => item.file_count,
+                        )}
+                      />
+                    </Link>
                   ),
                   thStyle: {
                     width: 1,

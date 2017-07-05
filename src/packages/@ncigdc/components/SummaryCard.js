@@ -10,7 +10,6 @@ import withSize from '@ncigdc/utils/withSize';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Card from '@ncigdc/uikit/Card';
 import styled from '@ncigdc/theme/styled';
-import { center } from '@ncigdc/theme/mixins';
 import EntityPageHorizontalTable from './EntityPageHorizontalTable';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 
@@ -19,11 +18,6 @@ import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 const Header = styled(Row, {
   padding: '1rem',
   color: ({ theme }) => theme.greyScale7 || 'silver',
-});
-
-const Footer = styled(Row, {
-  padding: '1rem',
-  ...center,
 });
 
 const SummaryCard = compose(

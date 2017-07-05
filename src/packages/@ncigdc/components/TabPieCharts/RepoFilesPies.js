@@ -71,7 +71,7 @@ const RepoFilesPiesComponent = ({
             />
           </ColumnCenter>
           <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
-            <PieTitle>Project ID</PieTitle>
+            <PieTitle>Project</PieTitle>
             <SelfFilteringPie
               buckets={_.get(
                 aggregations,

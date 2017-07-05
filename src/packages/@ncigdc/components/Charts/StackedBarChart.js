@@ -89,17 +89,7 @@ const drawChart = ({
     .attr('height', d => y(d[0]) - y(d[1]))
     .attr('width', x.bandwidth())
     .on('mouseenter', d => {
-      setTooltip(
-        <span>
-          <b>{projectsIdtoName[d[2].key]}</b><br />
-          {d[2].data[d[2].key]}
-          {' '}
-          case
-          {d[2].data[d[2].key] > 1 ? 's' : ''}
-          {' '}
-          affected
-        </span>,
-      );
+      setTooltip(d[2].data.tooltips[d[2].key]);
     })
     .on('mouseleave', () => {
       setTooltip();

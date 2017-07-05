@@ -45,6 +45,8 @@ const color = d3.scaleOrdinal([
   '#B5CF6B',
 ]);
 
+type yAxisUnit = 'percent' | 'number';
+
 type TProps = {
   setState: Function,
   projectIds: Array<string>,
@@ -65,6 +67,8 @@ type TProps = {
   relay: {
     setVariables: Function,
   },
+  yAxisUnit?: yAxisUnit,
+  setYAxisUnit?: Function,
   hits: { edges: Array<Object> },
   theme: Object,
   query: Object,
@@ -117,6 +121,7 @@ function getGenes({ relay, caseCountFilters, fmgChartFilters }: TProps): void {
 
 const ProjectsChartsComponent = compose(
   withState('state', 'setState', initialState),
+  withState('yAxisUnit', 'setYAxisUnit', 'percent'),
   withRouter,
   mapProps(props => ({
     ...props,
@@ -231,6 +236,8 @@ const ProjectsChartsComponent = compose(
       genesIsFetching,
       topGenesSource,
     },
+    yAxisUnit,
+    setYAxisUnit,
     hits,
     theme,
     query,
@@ -240,6 +247,29 @@ const ProjectsChartsComponent = compose(
     fmgChartFilters,
   }: TProps) => {
     const projects = hits.edges.map(x => x.node);
+    const stackedBarCalculations = topGenesSource.reduce(
+      (acc, { gene_id: geneId }) => ({
+        ...acc,
+        [geneId]: {
+          countTotal: Object.keys(topGenesWithCasesPerProject[geneId]).reduce(
+            (sum, projectId) =>
+              sum + topGenesWithCasesPerProject[geneId][projectId],
+            0,
+          ),
+          byProject: Object.keys(
+            topGenesWithCasesPerProject[geneId],
+          ).map(projectId => ({
+            projectId,
+            percent:
+              topGenesWithCasesPerProject[geneId][projectId] /
+                numUniqueCases *
+                100,
+            count: topGenesWithCasesPerProject[geneId][projectId],
+          })),
+        },
+      }),
+      {},
+    );
     const stackedBarData = topGenesSource
       .map(({ gene_id: geneId, symbol }) => ({
         symbol,
@@ -249,14 +279,36 @@ const ProjectsChartsComponent = compose(
             pathname: `/genes/${geneId}`,
             query: { filters: JSURL.stringify(fmgChartFilters) },
           }),
-        ...topGenesWithCasesPerProject[geneId],
-        total: Object.keys(topGenesWithCasesPerProject[geneId])
-          .filter(k => k !== 'symbol')
-          .reduce(
-            (sum, projectId) =>
-              sum + topGenesWithCasesPerProject[geneId][projectId],
-            0,
-          ),
+        tooltips: stackedBarCalculations[geneId].byProject.reduce(
+          (acc, { projectId, percent, count }) => ({
+            ...acc,
+            [projectId]: (
+              <span>
+                <b>
+                  {projectId}:{' '}
+                  {
+                    (projects.find(p => p.project_id === projectId) || {
+                      name: '',
+                    }).name
+                  }
+                </b>
+                <br /> {count} Case{count > 1 ? 's' : ''} Affected<br />
+                {count} / {numUniqueCases} ({percent.toFixed(2)}%)
+              </span>
+            ),
+          }),
+          {},
+        ),
+        ...stackedBarCalculations[geneId].byProject.reduce(
+          (acc, { projectId, percent, count }) => ({
+            ...acc,
+            [projectId]: yAxisUnit === 'number' ? count : percent,
+          }),
+          {},
+        ),
+        total: yAxisUnit === 'number'
+          ? stackedBarCalculations[geneId].countTotal
+          : stackedBarCalculations[geneId].countTotal / numUniqueCases * 100,
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
 
@@ -342,7 +394,6 @@ const ProjectsChartsComponent = compose(
       0,
     );
 
-    // there are 24 primary sites
     const projectsInTopGenes = Object.keys(topGenesWithCasesPerProject).reduce(
       (acc, g) => [...acc, ...Object.keys(topGenesWithCasesPerProject[g])],
       [],
@@ -377,9 +428,8 @@ const ProjectsChartsComponent = compose(
               ...acc,
               [projectId]: d3
                 .color(primarySiteProjects[primarySite].color)
-                .brighter(
-                  0.5 *
-                    (1 / primarySiteProjects[primarySite].projects.length * i),
+                .darker(
+                  1 / primarySiteProjects[primarySite].projects.length * i,
                 ),
             }),
             {},
@@ -396,7 +446,6 @@ const ProjectsChartsComponent = compose(
             paddingRight: '10px',
             minWidth: '550px',
             flexGrow: '2',
-            flexBasis: '66%',
           }}
         >
           <div
@@ -446,36 +495,79 @@ const ProjectsChartsComponent = compose(
                     ? 's'
                     : ''} with Somatic Mutation Data`}
                 </div>,
-                <span style={{ transform: 'scale(0.9)' }} key="bar-wrapper">
+                <span
+                  key="bar-wrapper"
+                  style={{ paddingLeft: '10px', paddingRight: '10px' }}
+                >
+                  <form name="y-axis-unit-toggle" key="y-axis-unit-toggle">
+                    <label
+                      htmlFor="percentage-cases-radio"
+                      style={{
+                        paddingRight: '10px',
+                        color: theme.greyScale7,
+                        fontSize: '1.2rem',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        value="days"
+                        onChange={() => setYAxisUnit('percent')}
+                        checked={yAxisUnit === 'percent'}
+                        id="percentage-cases-radio"
+                        style={{ marginRight: '5px' }}
+                      />
+                      % of Cases Affected
+                    </label>
+                    <label
+                      htmlFor="number-cases-radio"
+                      style={{
+                        paddingRight: '10px',
+                        color: theme.greyScale7,
+                        fontSize: '1.2rem',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        value="years"
+                        onChange={() => setYAxisUnit('number')}
+                        checked={yAxisUnit === 'number'}
+                        id="number-cases-radio"
+                        style={{ marginRight: '5px' }}
+                      />
+                      # of Cases Affected
+                    </label>
+                  </form>
                   <Measure key="bar-chart">
                     {({ width }) =>
-                      <StackedBarChart
-                        width={width}
-                        height={170}
-                        data={stackedBarData}
-                        projectsIdtoName={projects.reduce(
-                          (acc, p) => ({ ...acc, [p.project_id]: p.name }),
-                          {},
-                        )}
-                        colors={Object.keys(primarySiteToColor).reduce(
-                          (acc, pSite) => ({
-                            ...acc,
-                            ...primarySiteToColor[pSite].projects,
-                          }),
-                          {},
-                        )}
-                        yAxis={{ title: 'Cases Affected' }}
-                        styles={{
-                          xAxis: {
-                            stroke: theme.greyScale4,
-                            textFill: theme.greyScale3,
-                          },
-                          yAxis: {
-                            stroke: theme.greyScale4,
-                            textFill: theme.greyScale3,
-                          },
-                        }}
-                      />}
+                      <div style={{ transform: 'scale(0.9)' }}>
+                        <StackedBarChart
+                          width={width}
+                          height={170}
+                          data={stackedBarData}
+                          projectsIdtoName={projects.reduce(
+                            (acc, p) => ({ ...acc, [p.project_id]: p.name }),
+                            {},
+                          )}
+                          colors={Object.keys(primarySiteToColor).reduce(
+                            (acc, pSite) => ({
+                              ...acc,
+                              ...primarySiteToColor[pSite].projects,
+                            }),
+                            {},
+                          )}
+                          yAxis={{ title: 'Cases Affected' }}
+                          styles={{
+                            xAxis: {
+                              stroke: theme.greyScale4,
+                              textFill: theme.greyScale3,
+                            },
+                            yAxis: {
+                              stroke: theme.greyScale4,
+                              textFill: theme.greyScale3,
+                            },
+                          }}
+                        />
+                      </div>}
                   </Measure>
                 </span>,
               ]
@@ -581,7 +673,6 @@ export const ProjectsChartsQuery = {
             total
           }
         }
-        
         genes @include(if: $fetchGeneData) {
           hits (first: 20 filters: $fmgChart_filters, score: $score) {
             total

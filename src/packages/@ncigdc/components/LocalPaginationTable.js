@@ -13,6 +13,7 @@ const LocalPaginationTable = ({
   data,
   buttons,
   style,
+  entityName = 'projects',
 }) => {
   const size = parseInt(query[`${prefix}_size`] || 10, 10);
   const offset = parseInt(query[`${prefix}_offset`] || 0, 10);
@@ -36,7 +37,7 @@ const LocalPaginationTable = ({
       >
         {enablePagination
           ? <Showing
-              docType="projects"
+              docType={entityName}
               prefix={prefix}
               params={params}
               total={data.length}

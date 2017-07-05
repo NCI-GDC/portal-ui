@@ -148,7 +148,7 @@ const Component = ({
   return (
     <RowCenter>
       <ColumnCenter>
-        <PieTitle>Primary Sites</PieTitle>
+        <PieTitle>Primary Site</PieTitle>
         <SelfFilteringPie
           docTypeSingular="case"
           buckets={_.get(aggregations, 'primary_site.buckets')}
@@ -163,7 +163,7 @@ const Component = ({
         />
       </ColumnCenter>
       <ColumnCenter>
-        <PieTitle>Projects</PieTitle>
+        <PieTitle>Project</PieTitle>
         <SelfFilteringPie
           docTypeSingular="case"
           buckets={_.get(aggregations, 'project__project_id.buckets')}

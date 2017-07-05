@@ -124,11 +124,11 @@ const SuggestionFacet = compose(
     });
 
     const getCheckedValue = v => {
-      if (fieldNoDoctype === 'gene_id') {
-        return <GeneSymbol explore={geneSymbolFragment} geneId={v} />;
-      }
       if (v.includes('set_id:')) {
         return 'input set';
+      }
+      if (fieldNoDoctype === 'gene_id') {
+        return <GeneSymbol explore={geneSymbolFragment} geneId={v} />;
       }
       return v;
     };

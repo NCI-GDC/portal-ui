@@ -239,6 +239,7 @@ const CancerDistributionTableComponent = compose(
           style={{ width: '100%', minWidth: 450 }}
           data={cancerDistData}
           prefix={paginationPrefix}
+          entityName="projects"
           buttons={
             <Row style={{ alignItems: 'flex-end' }}>
               <Tooltip

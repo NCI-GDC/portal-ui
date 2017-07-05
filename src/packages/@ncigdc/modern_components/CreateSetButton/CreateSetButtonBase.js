@@ -56,6 +56,7 @@ const CreateSetButton = ({
         <Spinner />
       </Overlay>
       <Button
+        disabled={disabled}
         style={style}
         disabled={disabled}
         onClick={() => {

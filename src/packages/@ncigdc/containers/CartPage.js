@@ -2,7 +2,6 @@
 
 // Vendor
 import React from 'react';
-import _ from 'lodash';
 import { compose } from 'recompose';
 import { createFragmentContainer, graphql } from 'react-relay/compat';
 import { connect } from 'react-redux';
@@ -71,6 +70,13 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
     },
   };
 
+  const caseCount = viewer.summary.aggregations.project__project_id.buckets.reduce(
+    (sum, bucket) => sum + bucket.case_count,
+    0,
+  );
+
+  const fileSize = viewer.summary.aggregations.fs.value;
+
   return (
     <Column style={styles.container}>
       {!files.length && <h1>Your cart is empty.</h1>}
@@ -87,16 +93,13 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
               />
               <CountCard
                 title="CASES"
-                count={viewer.summary.aggregations.project__project_id.buckets.reduce(
-                  (sum, bucket) => sum + bucket.case_count,
-                  0,
-                )}
+                count={caseCount}
                 icon={<CaseIcon style={{ width: '4rem', height: '4rem' }} />}
                 style={{ backgroundColor: 'transparent' }}
               />
               <CountCard
                 title="FILE SIZE"
-                count={formatFileSize(viewer.summary.aggregations.fs.value)}
+                count={formatFileSize(fileSize)}
                 icon={
                   <FileSizeIcon style={{ width: '4rem', height: '4rem' }} />
                 }
@@ -119,30 +122,21 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   case_count_meter: (
                     <SparkMeterWithTooltip
                       part={item.case_count}
-                      whole={_.sumBy(
-                        viewer.summary.aggregations.project__project_id.buckets,
-                        item => item.case_count,
-                      )}
+                      whole={caseCount}
                     />
                   ),
                   file_count: item.doc_count.toLocaleString(),
                   file_count_meter: (
                     <SparkMeterWithTooltip
                       part={item.doc_count}
-                      whole={_.sumBy(
-                        viewer.summary.aggregations.project__project_id.buckets,
-                        item => item.doc_count,
-                      )}
+                      whole={files.length}
                     />
                   ),
                   file_size: formatFileSize(item.file_size),
                   file_size_meter: (
                     <SparkMeterWithTooltip
                       part={item.file_size}
-                      whole={_.sumBy(
-                        viewer.summary.aggregations.project__project_id.buckets,
-                        item => item.file_size,
-                      )}
+                      whole={fileSize}
                     />
                   ),
                   tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`,
@@ -177,13 +171,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                       }}
                       title="Browse cases"
                     >
-                      <SampleSize
-                        n={_.sumBy(
-                          viewer.summary.aggregations.project__project_id
-                            .buckets,
-                          item => item.case_count,
-                        )}
-                      />
+                      <SampleSize n={caseCount} />
                     </Link>
                   ),
                   thStyle: {
@@ -216,13 +204,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                       }}
                       title="Browse files"
                     >
-                      <SampleSize
-                        n={_.sumBy(
-                          viewer.summary.aggregations.project__project_id
-                            .buckets,
-                          item => item.doc_count,
-                        )}
-                      />
+                      <SampleSize n={files.length} />
                     </Link>
                   ),
                   thStyle: {
@@ -240,10 +222,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   key: 'file_size_meter',
                   title: (
                     <SampleSize
-                      n={_.sumBy(
-                        viewer.summary.aggregations.project__project_id.buckets,
-                        item => item.file_size,
-                      )}
+                      n={fileSize}
                       formatter={formatFileSize}
                       symbol="∑"
                     />
@@ -269,16 +248,13 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 ...x,
                 file_count_meter: (
                   <SparkMeterWithTooltip
-                    part={x.file_count}
-                    whole={_.sumBy(authCounts, item => item.doc_count)}
+                    part={x.doc_count}
+                    whole={files.length}
                   />
                 ),
                 file_size: formatFileSize(x.file_size),
                 file_size_meter: (
-                  <SparkMeterWithTooltip
-                    part={x.file_size}
-                    whole={_.sumBy(authCounts, item => item.file_size)}
-                  />
+                  <SparkMeterWithTooltip part={x.file_size} whole={fileSize} />
                 ),
                 tooltip: `${x.key}: ${formatFileSize(x.file_size)}`,
               }))}
@@ -315,9 +291,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                       }}
                       title="Browse files"
                     >
-                      <SampleSize
-                        n={_.sumBy(authCounts, item => item.doc_count)}
-                      />
+                      <SampleSize n={files.length} />
                     </Link>
                   ),
                   thStyle: {
@@ -335,7 +309,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   key: 'file_size_meter',
                   title: (
                     <SampleSize
-                      n={_.sumBy(authCounts, item => item.file_size)}
+                      n={fileSize}
                       formatter={formatFileSize}
                       symbol="∑"
                     />

@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react';
-import _ from 'lodash';
 import { compose } from 'recompose';
 import JSURL from 'jsurl';
 import { connect } from 'react-redux';
@@ -144,10 +143,7 @@ const Case = compose(
               file_count_meter: (
                 <SparkMeterWithTooltip
                   part={strat.file_count}
-                  whole={_.sumBy(
-                    p.summary.experimental_strategies,
-                    item => item.file_count,
-                  )}
+                  whole={totalFiles}
                 />
               ),
               file_count_value: strat.file_count,
@@ -199,10 +195,7 @@ const Case = compose(
             </RepositoryFilesLink>
           : '0',
         file_count_meter: (
-          <SparkMeterWithTooltip
-            part={type.file_count}
-            whole={_.sumBy(p.summary.data_categories, item => item.file_count)}
-          />
+          <SparkMeterWithTooltip part={type.file_count} whole={totalFiles} />
         ),
         file_count_value: type.file_count,
         tooltip: (
@@ -324,7 +317,6 @@ const Case = compose(
                   key: 'file_count_meter',
                   title: (
                     <Link
-                      merge="replace"
                       pathname="/repository"
                       query={{
                         filters: makeFilter([
@@ -338,12 +330,7 @@ const Case = compose(
                       }}
                       title="Browse files"
                     >
-                      <SampleSize
-                        n={_.sumBy(
-                          p.summary.experimental_strategies,
-                          item => item.file_count,
-                        )}
-                      />
+                      <SampleSize n={files.length} />
                     </Link>
                   ),
                   thStyle: {
@@ -374,7 +361,6 @@ const Case = compose(
                   key: 'file_count_meter',
                   title: (
                     <Link
-                      merge="replace"
                       pathname="/repository"
                       query={{
                         filters: makeFilter([
@@ -388,12 +374,7 @@ const Case = compose(
                       }}
                       title="Browse files"
                     >
-                      <SampleSize
-                        n={_.sumBy(
-                          p.summary.data_categories,
-                          item => item.file_count,
-                        )}
-                      />
+                      <SampleSize n={files.length} />
                     </Link>
                   ),
                   thStyle: {

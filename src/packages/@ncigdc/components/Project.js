@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import _ from 'lodash';
 import { scaleOrdinal, schemeCategory20 } from 'd3';
 import { compose } from 'recompose';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -302,10 +301,7 @@ const Project = (
                 case_count_meter: (
                   <SparkMeterWithTooltip
                     part={item.case_count}
-                    whole={_.sumBy(
-                      experimentalStrategies,
-                      item => item.case_count,
-                    )}
+                    whole={caseCount}
                   />
                 ),
                 file_count: (
@@ -324,10 +320,7 @@ const Project = (
                 file_count_meter: (
                   <SparkMeterWithTooltip
                     part={item.file_count}
-                    whole={_.sumBy(
-                      experimentalStrategies,
-                      item => item.file_count,
-                    )}
+                    whole={fileCount}
                   />
                 ),
                 file_count_value: item.file_count,
@@ -382,12 +375,7 @@ const Project = (
                     }}
                     title="Browse cases"
                   >
-                    <SampleSize
-                      n={_.sumBy(
-                        experimentalStrategies,
-                        item => item.case_count,
-                      )}
-                    />
+                    <SampleSize n={caseCount} />
                   </Link>
                 ),
                 thStyle: {
@@ -414,12 +402,7 @@ const Project = (
                     }}
                     title="Browse files"
                   >
-                    <SampleSize
-                      n={_.sumBy(
-                        experimentalStrategies,
-                        item => item.file_count,
-                      )}
-                    />
+                    <SampleSize n={fileCount} />
                   </Link>
                 ),
                 thStyle: {
@@ -470,7 +453,7 @@ const Project = (
                 case_count_meter: (
                   <SparkMeterWithTooltip
                     part={item.case_count}
-                    whole={_.sumBy(dataCategories, item => item.case_count)}
+                    whole={caseCount}
                   />
                 ),
                 file_count: item.file_count
@@ -489,7 +472,7 @@ const Project = (
                 file_count_meter: (
                   <SparkMeterWithTooltip
                     part={item.file_count}
-                    whole={_.sumBy(dataCategories, item => item.file_count)}
+                    whole={fileCount}
                   />
                 ),
                 file_count_value: item.file_count,
@@ -540,9 +523,7 @@ const Project = (
                     }}
                     title="Browse cases"
                   >
-                    <SampleSize
-                      n={_.sumBy(dataCategories, item => item.case_count)}
-                    />
+                    <SampleSize n={caseCount} />
                   </Link>
                 ),
                 thStyle: {
@@ -569,9 +550,7 @@ const Project = (
                     }}
                     title="Browse files"
                   >
-                    <SampleSize
-                      n={_.sumBy(dataCategories, item => item.file_count)}
-                    />
+                    <SampleSize n={fileCount} />
                   </Link>
                 ),
                 thStyle: {

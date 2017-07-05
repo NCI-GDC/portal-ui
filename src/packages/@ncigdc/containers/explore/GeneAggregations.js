@@ -4,17 +4,22 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { compose, withState } from 'recompose';
+import { connect } from 'react-redux';
 
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
-
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
+import UploadGeneSet from '@ncigdc/components/Modals/UploadGeneSet';
 
 import { withTheme } from '@ncigdc/theme';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
+import { setModal } from '@ncigdc/dux/modal';
+
+import Button from '@ncigdc/uikit/Button';
 
 export type TProps = {
+  dispatch: Function,
   aggregations: {
     biotype: { buckets: [TBucket] },
     is_cancer_gene_census: { buckets: [TBucket] },
@@ -56,6 +61,8 @@ const presetFacets = [
 
 export const GeneAggregationsComponent = compose(
   withState('idCollapsed', 'setIdCollapsed', false),
+  connect(),
+  withTheme,
 )((props: TProps) =>
   <div>
     <FacetHeader
@@ -79,8 +86,25 @@ export const GeneAggregationsComponent = compose(
           {x.gene_id}<br />
           {x.name}
         </div>}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
+    <div
+      style={{
+        borderBottom: `1px solid ${props.theme.greyScale5}`,
+        padding: '0 1.2rem 1rem',
+      }}
+    >
+      <Button
+        style={{ padding: '4px 12px', width: '100%' }}
+        onClick={() =>
+          props.dispatch(
+            setModal(
+              <UploadGeneSet onClose={() => props.dispatch(setModal(null))} />,
+            ),
+          )}
+      >
+        Upload Gene Set
+      </Button>
+    </div>
     {_.reject(presetFacets, { full: 'genes.gene_id' }).map(facet =>
       <FacetWrapper
         key={facet.full}
@@ -118,7 +142,7 @@ export const GeneAggregationsQuery = {
 };
 
 const GeneAggregations = Relay.createContainer(
-  withTheme(GeneAggregationsComponent),
+  GeneAggregationsComponent,
   GeneAggregationsQuery,
 );
 

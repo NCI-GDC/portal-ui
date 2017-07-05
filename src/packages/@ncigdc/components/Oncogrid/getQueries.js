@@ -1,9 +1,7 @@
 /* @flow */
 import { replaceFilters } from '@ncigdc/utils/filters';
 import memoize from 'memoizee';
-import { fetchApi } from '@ncigdc/utils/ajax';
-import Queue from 'queue';
-import md5 from 'blueimp-md5';
+import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
 
 async function getGenes({
   filters,
@@ -22,65 +20,19 @@ async function getGenes({
   );
 }
 
-const OCCURRENCE_CHUNK = 10000;
-async function getOccurrences(args: { filters: Object }): Promise<Object> {
-  const queue = Queue({ concurrency: 6 });
-  const fields = [
-    'ssm.consequence.transcript.consequence_type',
-    'ssm.consequence.transcript.annotation.impact',
-    'ssm.consequence.transcript.gene.gene_id',
-    'ssm.ssm_id',
-    'case.case_id',
-  ];
-
-  const firstSize = 0;
-  const defaultOptions = {
+async function getOccurrences({ filters }): Promise<Object> {
+  return fetchApiChunked('ssm_occurrences', {
     headers: { 'Content-Type': 'application/json' },
     body: {
-      filters: args.filters,
-      size: firstSize,
-      from: 0,
-      fields: fields.join(),
-      sort: '_uid', // force consistent order
+      filters,
+      fields: [
+        'ssm.consequence.transcript.consequence_type',
+        'ssm.consequence.transcript.annotation.impact',
+        'ssm.consequence.transcript.gene.gene_id',
+        'ssm.ssm_id',
+        'case.case_id',
+      ].join(),
     },
-  };
-  const hash = md5(JSON.stringify(defaultOptions));
-  const { data } = await fetchApi(`ssm_occurrences?hash=${hash}`, {
-    ...defaultOptions,
-  });
-  let hits = data.hits;
-
-  for (
-    let count = firstSize;
-    count < data.pagination.total;
-    count += OCCURRENCE_CHUNK
-  ) {
-    // eslint-disable-next-line no-loop-func
-    queue.push(callback => {
-      const options = {
-        ...defaultOptions,
-        body: {
-          ...defaultOptions.body,
-          from: count,
-          size: OCCURRENCE_CHUNK,
-        },
-      };
-      const hash = md5(JSON.stringify(options));
-      fetchApi(`ssm_occurrences?hash=${hash}`, options).then(response => {
-        hits = [...hits, ...response.data.hits];
-        callback();
-      });
-    });
-  }
-
-  return new Promise((resolve, reject) => {
-    queue.start(err => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve({ data: { hits } });
-      }
-    });
   });
 }
 

@@ -12,6 +12,7 @@ import CaseIcon from './Case';
 import SaveIcon from './Save';
 import GdcDataIcon from './GdcData';
 import GridIcon from './Grid.js';
+import CaretIcon from './Caret';
 
 export {
   DownloadIcon,
@@ -26,4 +27,5 @@ export {
   SaveIcon,
   GdcDataIcon,
   GridIcon,
+  CaretIcon,
 };

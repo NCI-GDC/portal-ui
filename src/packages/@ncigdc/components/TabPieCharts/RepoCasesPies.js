@@ -33,7 +33,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
   return (
     <RowCenter>
       <ColumnCenter>
-        <PieTitle>Primary Sites</PieTitle>
+        <PieTitle>Primary Site</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'primary_site.buckets')}
           fieldName="cases.primary_site"
@@ -48,7 +48,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
         />
       </ColumnCenter>
       <ColumnCenter>
-        <PieTitle>Projects</PieTitle>
+        <PieTitle>Project</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'project__project_id.buckets')}
           fieldName="cases.project.project_id"

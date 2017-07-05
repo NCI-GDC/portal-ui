@@ -217,6 +217,7 @@ const File = ({
         data={filteredAE}
         prefix={paginationPrefix}
         style={{ flexGrow: 1, backgroundColor: 'white', marginTop: '2rem' }}
+        entityName="associated cases/biospecimen"
       >
         <EntityPageHorizontalTable
           rightComponent={
@@ -244,7 +245,7 @@ const File = ({
               <input
                 id="filter-cases"
                 name="filter-cases"
-                placeholder="Type to filter cases."
+                placeholder="Type to filter associated cases/biospecimen"
                 type="text"
                 ref={n => {
                   searchInput = n;

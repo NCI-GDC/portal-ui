@@ -23,7 +23,6 @@ import CartDownloadDropdown from '@ncigdc/components/CartDownloadDropdown';
 import RemoveFromCartButton from '@ncigdc/components/RemoveFromCartButton';
 import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
 import SampleSize from '@ncigdc/components/SampleSize';
-import Link from '@ncigdc/components/Links/Link';
 
 /*----------------------------------------------------------------------------*/
 
@@ -53,19 +52,6 @@ export type TProps = {
     },
   },
 };
-
-const getFilesFilter = files => ({
-  op: 'or',
-  content: [
-    {
-      op: 'in',
-      content: {
-        field: 'files.file_id',
-        value: files.map(file => file.file_id),
-      },
-    },
-  ],
-});
 
 type TCartPage = (props: TProps) => React.Element<*>;
 const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
@@ -170,20 +156,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 },
                 {
                   key: 'case_count_meter',
-                  title: (
-                    <Link
-                      merge="replace"
-                      pathname="/repository"
-                      query={{
-                        filters: getFilesFilter(files),
-                        facetTab: 'cases',
-                        searchTableTab: 'cases',
-                      }}
-                      title="Browse cases"
-                    >
-                      <SampleSize n={caseCount} />
-                    </Link>
-                  ),
+                  title: <SampleSize n={caseCount} />,
                   thStyle: {
                     width: 1,
                     textAlign: 'center',
@@ -197,20 +170,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 },
                 {
                   key: 'file_count_meter',
-                  title: (
-                    <Link
-                      merge="replace"
-                      pathname="/repository"
-                      query={{
-                        filters: getFilesFilter(files),
-                        facetTab: 'files',
-                        searchTableTab: 'files',
-                      }}
-                      title="Browse files"
-                    >
-                      <SampleSize n={files.length} />
-                    </Link>
-                  ),
+                  title: <SampleSize n={files.length} />,
                   thStyle: {
                     width: 1,
                     textAlign: 'center',
@@ -282,20 +242,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 },
                 {
                   key: 'file_count_meter',
-                  title: (
-                    <Link
-                      merge="replace"
-                      pathname="/repository"
-                      query={{
-                        filters: getFilesFilter(files),
-                        facetTab: 'files',
-                        searchTableTab: 'files',
-                      }}
-                      title="Browse files"
-                    >
-                      <SampleSize n={files.length} />
-                    </Link>
-                  ),
+                  title: <SampleSize n={files.length} />,
                   thStyle: {
                     width: 1,
                     textAlign: 'center',

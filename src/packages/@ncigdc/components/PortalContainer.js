@@ -99,7 +99,7 @@ const PortalContainer = compose(
         <Route path="/files/:id" component={FileRoute} />
         <Route path="/cases/:id" component={CaseRoute} />
         <Route path="/annotations/:id" component={AnnotationRoute} />
-        <Route path="/ssms/:id" component={SSMRoute} />
+        {SSMRoute}
         {GeneRoute}
         <Route
           path="/components/:component"

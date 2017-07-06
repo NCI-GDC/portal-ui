@@ -15,6 +15,7 @@ import CurrentFilters from '@ncigdc/components/CurrentFilters';
 import ChartIcon from '@ncigdc/theme/icons/BarChart';
 import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import { replaceFilters } from '@ncigdc/utils/filters';
+import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 
 const styles = {
   heading: {
@@ -30,7 +31,7 @@ const styles = {
   },
 };
 
-export default () =>
+export default (
   <Route
     path="/genes/:id"
     component={({ match, geneId = match.params.id, filters }) => {
@@ -64,19 +65,16 @@ export default () =>
       );
 
       return (
-        <FullWidthLayout title={'GET SYMBOL'} entityType="GN">
+        <FullWidthLayout title={<GeneSymbol geneId={geneId} />} entityType="GN">
           <Column spacing="2rem">
-            {filters &&
-              <CurrentFilters
-              // geneSymbolFragment={props.viewer.geneSymbolFragment}
-              />}
+            {filters && <CurrentFilters />}
             <Row spacing="2rem">
               <Row flex="1"><GeneSummary geneId={geneId} /></Row>
               <Row flex="1">
                 <GeneExternalReferences geneId={geneId} />
               </Row>
             </Row>
-            <Column style={styles.card} id="cancer-distribution">
+            {/* <Column style={styles.card} id="cancer-distribution">
               <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
                 <h1 style={{ ...styles.heading }}>
                   <ChartIcon style={{ marginRight: '1rem' }} />
@@ -128,9 +126,10 @@ export default () =>
                   context={'props.node.symbol'}
                 />
               </Column>
-            </Column>
+            </Column> */}
           </Column>
         </FullWidthLayout>
       );
     }}
-  />;
+  />
+);

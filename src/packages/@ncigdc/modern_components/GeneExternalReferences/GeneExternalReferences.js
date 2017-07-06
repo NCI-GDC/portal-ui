@@ -12,12 +12,15 @@ type TProps = {
 };
 
 export default compose(
-  withProps(({ node }) => ({
-    externalLinks: {
-      ...omit(node.external_db_ids, '__dataID__'),
-      ensembl: [node.gene_id],
-    },
-  })),
+  withProps(({ viewer: { explore: { genes: { hits: { edges } } } } } = {}) => {
+    const gene = edges[0].node;
+    return {
+      externalLinks: {
+        ...omit(gene.external_db_ids, '__dataID__'),
+        ensembl: [gene.gene_id],
+      },
+    };
+  }),
 )(({ externalLinks }: TProps = {}) =>
   <EntityPageVerticalTable
     title={

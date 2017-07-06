@@ -28,27 +28,20 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="GeneExternalReferences"
-        minHeight={387}
+        name="GeneSymbol"
         variables={props.variables}
         Component={Component}
         query={graphql`
-        query GeneExternalReferences_relayQuery(
+        query GeneSymbol_relayQuery(
           $filters: FiltersArgument
         ) {
           viewer {
             explore {
               genes {
-                hits(first: 1 filters: $filters) {
+                hits(filters: $filters first: 1) {
                   edges {
                     node {
-                      gene_id
-                      external_db_ids {
-                        entrez_gene
-                        uniprotkb_swissprot
-                        hgnc
-                        omim_gene
-                      }
+                      symbol
                     }
                   }
                 }

@@ -15,6 +15,8 @@ export default (Component: ReactClass<*>) =>
       ({ location: { search }, defaultSize = 10, defaultFilters = null }) => {
         const q = parse(search);
 
+        console.log('heyhey??');
+
         return {
           variables: {
             genesTable_filters: parseFilterParam(

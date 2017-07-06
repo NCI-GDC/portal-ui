@@ -69,7 +69,7 @@ export default (Component: ReactClass<*>) =>
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query SsmsTable_relayQuery(
+          query CancerDistributionTable_relayQuery(
             $ssmTested: FiltersArgument
             $ssmCaseFilter: FiltersArgument
             $ssmsTable_size: Int
@@ -78,10 +78,20 @@ export default (Component: ReactClass<*>) =>
             $ssmsTable_filters: FiltersArgument
             $score: String
             $sort: [Sort]
+            $ssmCountsFilters: FiltersArgument
           ) {
             viewer {
               explore {
-
+                ssms {
+                  aggregations(filters: $ssmCountsFilters) {
+                    occurrence__case__project__project_id {
+                      buckets {
+                        key
+                        doc_count
+                      }
+                    }
+                  }
+                }
               }
             }
           }

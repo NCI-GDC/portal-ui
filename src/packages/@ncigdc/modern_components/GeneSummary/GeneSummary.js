@@ -13,74 +13,76 @@ const strandIconMap = {
   1: <PlusIcon />,
 };
 
-type TProps = {
-  node: Object,
-};
-
-export default ({ node: gene }: TProps = {}) =>
-  <EntityPageVerticalTable
-    id="summary"
-    title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
-    thToTd={[
-      { th: 'Symbol', td: gene.symbol },
-      { th: 'Name', td: gene.name },
-      {
-        th: 'Synonyms',
-        td:
-          gene.synonyms.length &&
-            gene.synonyms.map(s => <div key={s}>{s}</div>),
-        style: {
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'breakWord',
+export default (
+  { viewer: { explore: { genes: { hits: { edges } } } } } = {},
+) => {
+  const gene = edges[0].node;
+  return (
+    <EntityPageVerticalTable
+      id="summary"
+      title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
+      thToTd={[
+        { th: 'Symbol', td: gene.symbol },
+        { th: 'Name', td: gene.name },
+        {
+          th: 'Synonyms',
+          td:
+            gene.synonyms.length &&
+              gene.synonyms.map(s => <div key={s}>{s}</div>),
+          style: {
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'breakWord',
+          },
         },
-      },
-      { th: 'Type', td: gene.biotype },
-      {
-        th: 'Location',
-        td: `chr${gene.gene_chromosome}:${gene.gene_start}-${gene.gene_end} (GRCh38)`,
-      },
-      {
-        th: 'Strand',
-        td: gene.gene_strand && strandIconMap[gene.gene_strand.toString(10)],
-      },
-      {
-        th: 'Description',
-        collapsibleTd: gene.description,
-        style: {
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'breakWord',
-          lineHeight: '2.2rem',
+        { th: 'Type', td: gene.biotype },
+        {
+          th: 'Location',
+          td: `chr${gene.gene_chromosome}:${gene.gene_start}-${gene.gene_end} (GRCh38)`,
         },
-      },
-      {
-        th: 'Annotation',
-        td: gene.is_cancer_gene_census
-          ? <ExploreLink
-              merge
-              query={{
-                searchTableTab: 'genes',
-                filters: makeFilter([
-                  {
-                    field: 'genes.is_cancer_gene_census',
-                    value: [gene.is_cancer_gene_census],
-                  },
-                ]),
-              }}
-            >
-              Cancer Gene Census
-            </ExploreLink>
-          : '--',
-      },
-    ]}
-    style={{
-      summary: {
-        marginBottom: '2rem',
-      },
-      column: {
+        {
+          th: 'Strand',
+          td: gene.gene_strand && strandIconMap[gene.gene_strand.toString(10)],
+        },
+        {
+          th: 'Description',
+          collapsibleTd: gene.description,
+          style: {
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'breakWord',
+            lineHeight: '2.2rem',
+          },
+        },
+        {
+          th: 'Annotation',
+          td: gene.is_cancer_gene_census
+            ? <ExploreLink
+                merge
+                query={{
+                  searchTableTab: 'genes',
+                  filters: makeFilter([
+                    {
+                      field: 'genes.is_cancer_gene_census',
+                      value: [gene.is_cancer_gene_census],
+                    },
+                  ]),
+                }}
+              >
+                Cancer Gene Census
+              </ExploreLink>
+            : '--',
+        },
+      ]}
+      style={{
+        summary: {
+          marginBottom: '2rem',
+        },
+        column: {
+          width: '100%',
+          minWidth: 450,
+        },
+        alignSelf: 'flex-start',
         width: '100%',
-        minWidth: 450,
-      },
-      alignSelf: 'flex-start',
-      width: '100%',
-    }}
-  />;
+      }}
+    />
+  );
+};

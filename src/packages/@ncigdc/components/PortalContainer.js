@@ -100,7 +100,7 @@ const PortalContainer = compose(
         <Route path="/cases/:id" component={CaseRoute} />
         <Route path="/annotations/:id" component={AnnotationRoute} />
         <Route path="/ssms/:id" component={SSMRoute} />
-        <GeneRoute />
+        {GeneRoute}
         <Route
           path="/components/:component"
           component={({ match, ...props }) => {

@@ -38,7 +38,7 @@ export default (Component: ReactClass<*>) =>
           ) {
             viewer {
               explore {
-                gene {
+                genes {
                   hits(first: 1 filters: $filters) {
                     edges {
                       node {

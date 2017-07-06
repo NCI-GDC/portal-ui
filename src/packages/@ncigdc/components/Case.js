@@ -325,8 +325,8 @@ const Case = compose(
                             value: p.case_id,
                           },
                         ]),
-                        facetTab: 'cases',
-                        searchTableTab: 'cases',
+                        facetTab: 'files',
+                        searchTableTab: 'files',
                       }}
                       title="Browse files"
                     >
@@ -369,8 +369,8 @@ const Case = compose(
                             value: p.case_id,
                           },
                         ]),
-                        facetTab: 'cases',
-                        searchTableTab: 'cases',
+                        facetTab: 'files',
+                        searchTableTab: 'files',
                       }}
                       title="Browse files"
                     >

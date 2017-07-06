@@ -214,10 +214,10 @@ export const getFilterValue = ({ currentFilters, dotField }) =>
 type TMakeFilter = (
   fields: [{ field: string, value: string }],
 ) => Object | string;
-export const makeFilter: TMakeFilter = (fields, { op } = { op: 'and' }) => {
+export const makeFilter: TMakeFilter = fields => {
   if (!fields.length) return {};
   return {
-    op,
+    op: 'and',
     content: fields.map(item => {
       const value = _.isArray(item.value) ? item.value : item.value.split(',');
 

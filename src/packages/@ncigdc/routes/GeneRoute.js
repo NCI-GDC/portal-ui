@@ -5,7 +5,7 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import Route from 'react-router/Route';
 import GeneSummary from '@ncigdc/modern_components/GeneSummary';
 import GeneExternalReferences from '@ncigdc/modern_components/GeneExternalReferences';
-import CancerDistributionChart from '@ncigdc/containers/CancerDistributionChart';
+import CancerDistributionBarChart from '@ncigdc/modern_components/CancerDistributionBarChart';
 import CancerDistributionTable from '@ncigdc/containers/CancerDistributionTable';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import { GeneLolliplot } from '@ncigdc/modern_components/Lolliplot';
@@ -74,7 +74,7 @@ export default (
                 <GeneExternalReferences geneId={geneId} />
               </Row>
             </Row>
-            {/* <Column style={styles.card} id="cancer-distribution">
+            <Column style={styles.card} id="cancer-distribution">
               <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
                 <h1 style={{ ...styles.heading }}>
                   <ChartIcon style={{ marginRight: '1rem' }} />
@@ -90,19 +90,19 @@ export default (
                 </ExploreLink>
               </Row>
               <Column>
-                <CancerDistributionChart
+                <CancerDistributionBarChart
                   filters={mutatedGeneFilter}
                   style={{ width: '50%' }}
                 />
-                <CancerDistributionTable
+                {/* <CancerDistributionTable
                   filters={mutatedGeneFilter}
                   entityName={'GET SYMBOL'}
                   geneId={geneId}
-                />
+                /> */}
               </Column>
             </Column>
 
-            <Column style={{ ...styles.card, marginTop: '2rem' }}>
+            {/* <Column style={{ ...styles.card, marginTop: '2rem' }}>
               <GeneLolliplot geneId={geneId} />}
             </Column>
 

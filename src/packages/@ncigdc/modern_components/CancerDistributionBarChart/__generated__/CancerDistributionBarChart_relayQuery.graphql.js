@@ -3,8 +3,8 @@
  *   relay-compiler
  *
  * @providesModule CancerDistributionBarChart_relayQuery.graphql
- * @generated SignedSource<<75f07970812ba7ba24b8e389d02a1341>>
- * @relayHash 9e7701755ae0dfe4d8938744c53367cf
+ * @generated SignedSource<<0d6068fd70052855c042ed3756f286e0>>
+ * @relayHash e9a49d65d95572166b380b3a345dee18
  * @flow
  * @nogrep
  */
@@ -21,24 +21,30 @@ import type {ConcreteBatch} from 'relay-runtime';
 
 /*
 query CancerDistributionBarChart_relayQuery(
+  $caseAggsFilters: FiltersArgument
   $ssmTested: FiltersArgument
-  $ssmCaseFilter: FiltersArgument
-  $ssmsTable_size: Int
-  $consequenceFilters: FiltersArgument
-  $ssmsTable_offset: Int
-  $ssmsTable_filters: FiltersArgument
-  $score: String
-  $sort: [Sort]
-  $ssmCountsFilters: FiltersArgument
 ) {
   viewer {
     explore {
       ssms {
-        aggregations(filters: $ssmCountsFilters) {
-          occurrence__case__project__project_id {
+        hits(first: 0, filters: $caseAggsFilters) {
+          total
+        }
+      }
+      cases {
+        filtered: aggregations(filters: $caseAggsFilters) {
+          project__project_id {
             buckets {
-              key
               doc_count
+              key
+            }
+          }
+        }
+        total: aggregations(filters: $ssmTested) {
+          project__project_id {
+            buckets {
+              doc_count
+              key
             }
           }
         }
@@ -53,55 +59,13 @@ const batch /*: ConcreteBatch*/ = {
     "argumentDefinitions": [
       {
         "kind": "LocalArgument",
+        "name": "caseAggsFilters",
+        "type": "FiltersArgument",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
         "name": "ssmTested",
-        "type": "FiltersArgument",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmCaseFilter",
-        "type": "FiltersArgument",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmsTable_size",
-        "type": "Int",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "consequenceFilters",
-        "type": "FiltersArgument",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmsTable_offset",
-        "type": "Int",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmsTable_filters",
-        "type": "FiltersArgument",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "score",
-        "type": "String",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "sort",
-        "type": "[Sort]",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmCountsFilters",
         "type": "FiltersArgument",
         "defaultValue": null
       }
@@ -141,11 +105,53 @@ const batch /*: ConcreteBatch*/ = {
                       {
                         "kind": "Variable",
                         "name": "filters",
-                        "variableName": "ssmCountsFilters",
+                        "variableName": "caseAggsFilters",
+                        "type": "FiltersArgument"
+                      },
+                      {
+                        "kind": "Literal",
+                        "name": "first",
+                        "value": 0,
+                        "type": "Int"
+                      }
+                    ],
+                    "concreteType": "SsmConnection",
+                    "name": "hits",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "args": null,
+                        "name": "total",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "kind": "LinkedField",
+                "alias": null,
+                "args": null,
+                "concreteType": "ExploreCases",
+                "name": "cases",
+                "plural": false,
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": "filtered",
+                    "args": [
+                      {
+                        "kind": "Variable",
+                        "name": "filters",
+                        "variableName": "caseAggsFilters",
                         "type": "FiltersArgument"
                       }
                     ],
-                    "concreteType": "SsmAggregations",
+                    "concreteType": "ECaseAggregations",
                     "name": "aggregations",
                     "plural": false,
                     "selections": [
@@ -154,7 +160,7 @@ const batch /*: ConcreteBatch*/ = {
                         "alias": null,
                         "args": null,
                         "concreteType": "Aggregations",
-                        "name": "occurrence__case__project__project_id",
+                        "name": "project__project_id",
                         "plural": false,
                         "selections": [
                           {
@@ -169,14 +175,68 @@ const batch /*: ConcreteBatch*/ = {
                                 "kind": "ScalarField",
                                 "alias": null,
                                 "args": null,
-                                "name": "key",
+                                "name": "doc_count",
                                 "storageKey": null
                               },
                               {
                                 "kind": "ScalarField",
                                 "alias": null,
                                 "args": null,
+                                "name": "key",
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "LinkedField",
+                    "alias": "total",
+                    "args": [
+                      {
+                        "kind": "Variable",
+                        "name": "filters",
+                        "variableName": "ssmTested",
+                        "type": "FiltersArgument"
+                      }
+                    ],
+                    "concreteType": "ECaseAggregations",
+                    "name": "aggregations",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "kind": "LinkedField",
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "Aggregations",
+                        "name": "project__project_id",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "kind": "LinkedField",
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "Bucket",
+                            "name": "buckets",
+                            "plural": true,
+                            "selections": [
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
                                 "name": "doc_count",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "key",
                                 "storageKey": null
                               }
                             ],
@@ -208,55 +268,13 @@ const batch /*: ConcreteBatch*/ = {
     "argumentDefinitions": [
       {
         "kind": "LocalArgument",
+        "name": "caseAggsFilters",
+        "type": "FiltersArgument",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
         "name": "ssmTested",
-        "type": "FiltersArgument",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmCaseFilter",
-        "type": "FiltersArgument",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmsTable_size",
-        "type": "Int",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "consequenceFilters",
-        "type": "FiltersArgument",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmsTable_offset",
-        "type": "Int",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmsTable_filters",
-        "type": "FiltersArgument",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "score",
-        "type": "String",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "sort",
-        "type": "[Sort]",
-        "defaultValue": null
-      },
-      {
-        "kind": "LocalArgument",
-        "name": "ssmCountsFilters",
         "type": "FiltersArgument",
         "defaultValue": null
       }
@@ -296,11 +314,53 @@ const batch /*: ConcreteBatch*/ = {
                       {
                         "kind": "Variable",
                         "name": "filters",
-                        "variableName": "ssmCountsFilters",
+                        "variableName": "caseAggsFilters",
+                        "type": "FiltersArgument"
+                      },
+                      {
+                        "kind": "Literal",
+                        "name": "first",
+                        "value": 0,
+                        "type": "Int"
+                      }
+                    ],
+                    "concreteType": "SsmConnection",
+                    "name": "hits",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "kind": "ScalarField",
+                        "alias": null,
+                        "args": null,
+                        "name": "total",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              },
+              {
+                "kind": "LinkedField",
+                "alias": null,
+                "args": null,
+                "concreteType": "ExploreCases",
+                "name": "cases",
+                "plural": false,
+                "selections": [
+                  {
+                    "kind": "LinkedField",
+                    "alias": "filtered",
+                    "args": [
+                      {
+                        "kind": "Variable",
+                        "name": "filters",
+                        "variableName": "caseAggsFilters",
                         "type": "FiltersArgument"
                       }
                     ],
-                    "concreteType": "SsmAggregations",
+                    "concreteType": "ECaseAggregations",
                     "name": "aggregations",
                     "plural": false,
                     "selections": [
@@ -309,7 +369,7 @@ const batch /*: ConcreteBatch*/ = {
                         "alias": null,
                         "args": null,
                         "concreteType": "Aggregations",
-                        "name": "occurrence__case__project__project_id",
+                        "name": "project__project_id",
                         "plural": false,
                         "selections": [
                           {
@@ -324,14 +384,68 @@ const batch /*: ConcreteBatch*/ = {
                                 "kind": "ScalarField",
                                 "alias": null,
                                 "args": null,
-                                "name": "key",
+                                "name": "doc_count",
                                 "storageKey": null
                               },
                               {
                                 "kind": "ScalarField",
                                 "alias": null,
                                 "args": null,
+                                "name": "key",
+                                "storageKey": null
+                              }
+                            ],
+                            "storageKey": null
+                          }
+                        ],
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "kind": "LinkedField",
+                    "alias": "total",
+                    "args": [
+                      {
+                        "kind": "Variable",
+                        "name": "filters",
+                        "variableName": "ssmTested",
+                        "type": "FiltersArgument"
+                      }
+                    ],
+                    "concreteType": "ECaseAggregations",
+                    "name": "aggregations",
+                    "plural": false,
+                    "selections": [
+                      {
+                        "kind": "LinkedField",
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "Aggregations",
+                        "name": "project__project_id",
+                        "plural": false,
+                        "selections": [
+                          {
+                            "kind": "LinkedField",
+                            "alias": null,
+                            "args": null,
+                            "concreteType": "Bucket",
+                            "name": "buckets",
+                            "plural": true,
+                            "selections": [
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
                                 "name": "doc_count",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "key",
                                 "storageKey": null
                               }
                             ],
@@ -354,7 +468,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query CancerDistributionBarChart_relayQuery(\n  $ssmTested: FiltersArgument\n  $ssmCaseFilter: FiltersArgument\n  $ssmsTable_size: Int\n  $consequenceFilters: FiltersArgument\n  $ssmsTable_offset: Int\n  $ssmsTable_filters: FiltersArgument\n  $score: String\n  $sort: [Sort]\n  $ssmCountsFilters: FiltersArgument\n) {\n  viewer {\n    explore {\n      ssms {\n        aggregations(filters: $ssmCountsFilters) {\n          occurrence__case__project__project_id {\n            buckets {\n              key\n              doc_count\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+  "text": "query CancerDistributionBarChart_relayQuery(\n  $caseAggsFilters: FiltersArgument\n  $ssmTested: FiltersArgument\n) {\n  viewer {\n    explore {\n      ssms {\n        hits(first: 0, filters: $caseAggsFilters) {\n          total\n        }\n      }\n      cases {\n        filtered: aggregations(filters: $caseAggsFilters) {\n          project__project_id {\n            buckets {\n              doc_count\n              key\n            }\n          }\n        }\n        total: aggregations(filters: $ssmTested) {\n          project__project_id {\n            buckets {\n              doc_count\n              key\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

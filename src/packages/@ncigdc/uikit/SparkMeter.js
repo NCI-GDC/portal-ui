@@ -1,5 +1,5 @@
 import React from 'react';
-export default ({ value, width = 30, max = 30, ...props }) =>
+export default ({ value, width = 30, max = 30, style, ...props }) =>
   <div
     style={{
       width,
@@ -9,6 +9,7 @@ export default ({ value, width = 30, max = 30, ...props }) =>
       borderRadius: 2,
       display: 'inline-block',
       pointerEvents: 'none',
+      ...style,
     }}
     {...props}
   >

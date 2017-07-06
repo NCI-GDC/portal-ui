@@ -10,7 +10,6 @@ import CaseIcon from 'react-icons/lib/fa/user';
 import FileSizeIcon from 'react-icons/lib/fa/floppy-o';
 
 // Custom
-import { makeFilter } from '@ncigdc/utils/filters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 import { getAuthCounts } from '@ncigdc/utils/auth';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -54,6 +53,19 @@ export type TProps = {
     },
   },
 };
+
+const getFilesFilter = files => ({
+  op: 'or',
+  content: [
+    {
+      op: 'in',
+      content: {
+        field: 'files.file_id',
+        value: files.map(file => file.file_id),
+      },
+    },
+  ],
+});
 
 type TCartPage = (props: TProps) => React.Element<*>;
 const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
@@ -159,13 +171,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                       merge="replace"
                       pathname="/repository"
                       query={{
-                        filters: makeFilter(
-                          files.map(file => ({
-                            field: 'files.file_id',
-                            value: file.file_id,
-                          })),
-                          { op: 'or' },
-                        ),
+                        filters: getFilesFilter(files),
                         facetTab: 'cases',
                         searchTableTab: 'cases',
                       }}
@@ -192,13 +198,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                       merge="replace"
                       pathname="/repository"
                       query={{
-                        filters: makeFilter(
-                          files.map(file => ({
-                            field: 'files.file_id',
-                            value: file.file_id,
-                          })),
-                          { op: 'or' },
-                        ),
+                        filters: getFilesFilter(files),
                         facetTab: 'files',
                         searchTableTab: 'files',
                       }}
@@ -279,13 +279,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                       merge="replace"
                       pathname="/repository"
                       query={{
-                        filters: makeFilter(
-                          files.map(file => ({
-                            field: 'files.file_id',
-                            value: file.file_id,
-                          })),
-                          { op: 'or' },
-                        ),
+                        filters: getFilesFilter(files),
                         facetTab: 'files',
                         searchTableTab: 'files',
                       }}

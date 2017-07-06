@@ -102,8 +102,8 @@ export default (
               </Column>
             </Column>
 
-            {/* <Column style={{ ...styles.card, marginTop: '2rem' }}>
-              <GeneLolliplot geneId={geneId} />}
+            <Column style={{ ...styles.card, marginTop: '2rem' }}>
+              <GeneLolliplot geneId={geneId} />
             </Column>
 
             <Column style={{ ...styles.card, marginTop: '2rem' }}>
@@ -126,7 +126,7 @@ export default (
                   context={'props.node.symbol'}
                 />
               </Column>
-            </Column> */}
+            </Column>
           </Column>
         </FullWidthLayout>
       );

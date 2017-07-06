@@ -21,6 +21,8 @@ import HowToDownload from '@ncigdc/components/HowToDownload';
 import CountCard from '@ncigdc/components/CountCard';
 import CartDownloadDropdown from '@ncigdc/components/CartDownloadDropdown';
 import RemoveFromCartButton from '@ncigdc/components/RemoveFromCartButton';
+import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
+import SampleSize from '@ncigdc/components/SampleSize';
 
 /*----------------------------------------------------------------------------*/
 
@@ -66,14 +68,21 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
     },
   };
 
+  const caseCount = viewer.summary.aggregations.project__project_id.buckets.reduce(
+    (sum, bucket) => sum + bucket.case_count,
+    0,
+  );
+
+  const fileSize = viewer.summary.aggregations.fs.value;
+
   return (
     <Column style={styles.container}>
       {!files.length && <h1>Your cart is empty.</h1>}
       {!!files.length &&
         !!viewer.repository.files.hits &&
         <Column>
-          <Row spacing="2rem" style={{ marginBottom: '2rem' }}>
-            <Column spacing="0.8rem">
+          <Row style={{ marginBottom: '2rem', flexWrap: 'wrap' }}>
+            <Column spacing="0.8rem" style={{ marginRight: '1rem' }}>
               <CountCard
                 title="FILES"
                 count={files.length}
@@ -82,16 +91,13 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
               />
               <CountCard
                 title="CASES"
-                count={viewer.summary.aggregations.project__project_id.buckets.reduce(
-                  (sum, bucket) => sum + bucket.case_count,
-                  0,
-                )}
+                count={caseCount}
                 icon={<CaseIcon style={{ width: '4rem', height: '4rem' }} />}
                 style={{ backgroundColor: 'transparent' }}
               />
               <CountCard
                 title="FILE SIZE"
-                count={formatFileSize(viewer.summary.aggregations.fs.value)}
+                count={formatFileSize(fileSize)}
                 icon={
                   <FileSizeIcon style={{ width: '4rem', height: '4rem' }} />
                 }
@@ -104,6 +110,10 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 backgroundColor: 'transparent',
                 height: '19em',
                 overflow: 'auto',
+                minWidth: '30em',
+                flexShrink: 0,
+                marginLeft: '1rem',
+                marginRight: '1rem',
               }}
               tableTitle="File Counts by Project"
               pieChartTitle="File Counts by Project"
@@ -111,8 +121,26 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 item => ({
                   project: item.key,
                   case_count: item.case_count,
+                  case_count_meter: (
+                    <SparkMeterWithTooltip
+                      part={item.case_count}
+                      whole={caseCount}
+                    />
+                  ),
                   file_count: item.doc_count.toLocaleString(),
+                  file_count_meter: (
+                    <SparkMeterWithTooltip
+                      part={item.doc_count}
+                      whole={files.length}
+                    />
+                  ),
                   file_size: formatFileSize(item.file_size),
+                  file_size_meter: (
+                    <SparkMeterWithTooltip
+                      part={item.file_size}
+                      whole={fileSize}
+                    />
+                  ),
                   tooltip: `${item.key}: ${item.doc_count.toLocaleString()}`,
                 }),
               )}
@@ -127,14 +155,47 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   style: { textAlign: 'right' },
                 },
                 {
+                  key: 'case_count_meter',
+                  title: <SampleSize n={caseCount} />,
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
+                },
+                {
                   key: 'file_count',
                   title: 'Files',
                   style: { textAlign: 'right' },
                 },
                 {
+                  key: 'file_count_meter',
+                  title: <SampleSize n={files.length} />,
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
+                },
+                {
                   key: 'file_size',
                   title: 'File Size',
                   style: { textAlign: 'right' },
+                },
+                {
+                  key: 'file_size_meter',
+                  title: (
+                    <SampleSize
+                      n={fileSize}
+                      formatter={formatFileSize}
+                      symbol="∑"
+                    />
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
                 },
               ]}
             />
@@ -144,12 +205,25 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 backgroundColor: 'transparent',
                 height: '19em',
                 overflow: 'auto',
+                minWidth: '23em',
+                flexShrink: 0,
+                marginLeft: '1rem',
+                marginRight: '1rem',
               }}
               tableTitle="File Counts by Authorization Level"
               pieChartTitle="File Counts by Authorization Level"
               data={authCounts.map(x => ({
                 ...x,
+                file_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={x.doc_count}
+                    whole={files.length}
+                  />
+                ),
                 file_size: formatFileSize(x.file_size),
+                file_size_meter: (
+                  <SparkMeterWithTooltip part={x.file_size} whole={fileSize} />
+                ),
                 tooltip: `${x.key}: ${formatFileSize(x.file_size)}`,
               }))}
               footer={`${authCounts.length} Authorization Levels`}
@@ -167,14 +241,43 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                   style: { textAlign: 'right' },
                 },
                 {
+                  key: 'file_count_meter',
+                  title: <SampleSize n={files.length} />,
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
+                },
+                {
                   key: 'file_size',
                   title: 'File Size',
                   style: { textAlign: 'right' },
                 },
+                {
+                  key: 'file_size_meter',
+                  title: (
+                    <SampleSize
+                      n={fileSize}
+                      formatter={formatFileSize}
+                      symbol="∑"
+                    />
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
+                },
               ]}
             />
             <HowToDownload
-              style={{ flex: 1, backgroundColor: 'transparent' }}
+              style={{
+                flex: 1,
+                backgroundColor: 'transparent',
+                minWidth: '18em',
+                flexShrink: 0,
+              }}
             />
           </Row>
           <Row style={{ marginBottom: '2rem' }}>

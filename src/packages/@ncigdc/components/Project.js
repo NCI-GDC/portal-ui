@@ -17,6 +17,8 @@ import DownloadButton from '@ncigdc/components/DownloadButton';
 import SummaryCard from '@ncigdc/components/SummaryCard';
 import ProjectVisualizations from '@ncigdc/components/ProjectVisualizations';
 import Link from '@ncigdc/components/Links/Link';
+import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
+import SampleSize from '@ncigdc/components/SampleSize';
 
 import { removeEmptyKeys } from '@ncigdc/utils/uri';
 
@@ -296,6 +298,12 @@ const Project = (
                     {(item.case_count || 0).toLocaleString()}
                   </Link>
                 ),
+                case_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={item.case_count}
+                    whole={caseCount}
+                  />
+                ),
                 file_count: (
                   <Link
                     merge="replace"
@@ -308,6 +316,12 @@ const Project = (
                   >
                     {(item.file_count || 0).toLocaleString()}
                   </Link>
+                ),
+                file_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={item.file_count}
+                    whole={fileCount}
+                  />
                 ),
                 file_count_value: item.file_count,
                 tooltip: (
@@ -349,9 +363,53 @@ const Project = (
                 style: { textAlign: 'right' },
               },
               {
+                key: 'case_count_meter',
+                title: (
+                  <Link
+                    merge="replace"
+                    pathname="/repository"
+                    query={{
+                      filters: makeFilter(projectFilter),
+                      facetTab: 'cases',
+                      searchTableTab: 'cases',
+                    }}
+                    title="Browse cases"
+                  >
+                    <SampleSize n={caseCount} />
+                  </Link>
+                ),
+                thStyle: {
+                  width: 1,
+                  textAlign: 'center',
+                },
+                style: { textAlign: 'left' },
+              },
+              {
                 key: 'file_count',
                 title: 'Files',
                 style: { textAlign: 'right' },
+              },
+              {
+                key: 'file_count_meter',
+                title: (
+                  <Link
+                    merge="replace"
+                    pathname="/repository"
+                    query={{
+                      filters: makeFilter(projectFilter),
+                      facetTab: 'files',
+                      searchTableTab: 'files',
+                    }}
+                    title="Browse files"
+                  >
+                    <SampleSize n={fileCount} />
+                  </Link>
+                ),
+                thStyle: {
+                  width: 1,
+                  textAlign: 'center',
+                },
+                style: { textAlign: 'left' },
               },
             ]}
           />
@@ -391,7 +449,13 @@ const Project = (
                     >
                       {item.case_count.toLocaleString()}
                     </Link>
-                  : '0',
+                  : 0,
+                case_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={item.case_count}
+                    whole={caseCount}
+                  />
+                ),
                 file_count: item.file_count
                   ? <Link
                       merge="replace"
@@ -404,7 +468,13 @@ const Project = (
                     >
                       {item.file_count.toLocaleString()}
                     </Link>
-                  : '0',
+                  : 0,
+                file_count_meter: (
+                  <SparkMeterWithTooltip
+                    part={item.file_count}
+                    whole={fileCount}
+                  />
+                ),
                 file_count_value: item.file_count,
                 tooltip: (
                   <span>
@@ -441,9 +511,53 @@ const Project = (
                 style: { textAlign: 'right' },
               },
               {
+                key: 'case_count_meter',
+                title: (
+                  <Link
+                    merge="replace"
+                    pathname="/repository"
+                    query={{
+                      filters: makeFilter(projectFilter),
+                      facetTab: 'cases',
+                      searchTableTab: 'cases',
+                    }}
+                    title="Browse cases"
+                  >
+                    <SampleSize n={caseCount} />
+                  </Link>
+                ),
+                thStyle: {
+                  textAlign: 'center',
+                  width: 1,
+                },
+                style: { textAlign: 'left' },
+              },
+              {
                 key: 'file_count',
                 title: 'Files',
                 style: { textAlign: 'right' },
+              },
+              {
+                key: 'file_count_meter',
+                title: (
+                  <Link
+                    merge="replace"
+                    pathname="/repository"
+                    query={{
+                      filters: makeFilter(projectFilter),
+                      facetTab: 'files',
+                      searchTableTab: 'files',
+                    }}
+                    title="Browse files"
+                  >
+                    <SampleSize n={fileCount} />
+                  </Link>
+                ),
+                thStyle: {
+                  textAlign: 'center',
+                  width: 1,
+                },
+                style: { textAlign: 'left' },
               },
             ]}
           />

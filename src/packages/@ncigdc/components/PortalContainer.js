@@ -48,7 +48,7 @@ const SkipLink = styled.a({
 
 const FIRST_TIME_KEY = 'NCI-Warning';
 
-const enhance = compose(
+const PortalContainer = compose(
   connect(store => ({ notifications: store.bannerNotification })),
   withRouter,
   lifecycle({
@@ -70,12 +70,7 @@ const enhance = compose(
       this.removeListen();
     },
   }),
-);
-const PortalContainer = ({
-  notifications,
-}: {
-  notifications: Array<{ dismissed: string }>,
-}) =>
+)(({ notifications }: { notifications: Array<{ dismissed: string }> }) =>
   <div style={{ position: 'relative', minHeight: '100vh', minWidth: 1024 }}>
     <SkipLink href="#skip">Skip to Main Content</SkipLink>
     <ProgressContainer />
@@ -104,8 +99,8 @@ const PortalContainer = ({
         <Route path="/files/:id" component={FileRoute} />
         <Route path="/cases/:id" component={CaseRoute} />
         <Route path="/annotations/:id" component={AnnotationRoute} />
-        <Route path="/genes/:id" component={GeneRoute} />
         <Route path="/ssms/:id" component={SSMRoute} />
+        <GeneRoute />
         <Route
           path="/components/:component"
           component={({ match, ...props }) => {
@@ -124,6 +119,7 @@ const PortalContainer = ({
     <NotificationContainer />
     <ModalContainer />
     <GlobalTooltip />
-  </div>;
+  </div>,
+);
 
-export default enhance(PortalContainer);
+export default PortalContainer;

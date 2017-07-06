@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react';
-import Relay from 'react-relay/classic';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import TableIcon from '@ncigdc/theme/icons/Table';
 import MinusIcon from '@ncigdc/theme/icons/Minus';
@@ -18,7 +17,7 @@ type TProps = {
   node: Object,
 };
 
-const GeneSummaryComponent = ({ node: gene }: TProps = {}) =>
+export default ({ node: gene }: TProps = {}) =>
   <EntityPageVerticalTable
     id="summary"
     title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
@@ -85,30 +84,3 @@ const GeneSummaryComponent = ({ node: gene }: TProps = {}) =>
       width: '100%',
     }}
   />;
-
-export const GeneSummaryQuery = {
-  fragments: {
-    node: () => Relay.QL`
-      fragment on Gene {
-        description
-        gene_id
-        symbol
-        name
-        synonyms
-        biotype
-        gene_chromosome
-        gene_start
-        gene_end
-        gene_strand
-        is_cancer_gene_census
-      }
-    `,
-  },
-};
-
-const GeneSummary = Relay.createContainer(
-  GeneSummaryComponent,
-  GeneSummaryQuery,
-);
-
-export default GeneSummary;

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Route from 'react-router/Route';
-import { compose, withPropsOnChange } from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import TableIcon from '@ncigdc/theme/icons/Table';
 import ChartIcon from '@ncigdc/theme/icons/BarChart';
@@ -86,10 +85,10 @@ export default (
               Consequences
             </h1>
             <Row>
-              <ConsequencesTable />
+              <ConsequencesTable ssmId={ssmId} />
             </Row>
           </Column>
-          {/* <Column
+          <Column
             style={{ ...styles.card, marginTop: '2rem' }}
             id="cancer-distribution"
           >
@@ -115,7 +114,7 @@ export default (
           </Column>
           <Column style={{ ...styles.card, marginTop: '2rem' }}>
             <SsmLolliplot mutationId={ssmId} ssmId={ssmId} />
-          </Column> */}
+          </Column>
         </FullWidthLayout>
       );
     }}

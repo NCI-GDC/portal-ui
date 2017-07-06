@@ -1,85 +1,131 @@
-<Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
-  <span style={{ ...styles.column, ...styles.margin }}>
-    <EntityPageVerticalTable
-      id="summary"
-      title={<span><i className="fa fa-table" /> Summary</span>}
-      thToTd={[
-        { th: 'Project ID', td: projectId },
-        { th: 'Project Name', td: projectName },
-        {
-          th: 'Disease Type',
-          td: <CollapsibleList data={diseaseType} />,
-        },
-        {
-          th: 'Primary Site',
-          td: <CollapsibleList data={primarySite} />,
-        },
-        { th: 'Program', td: programName },
-      ]}
-    />
-  </span>
+import React from 'react';
+import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import { makeFilter } from '@ncigdc/utils/filters';
+import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
+import CountCard from '@ncigdc/components/CountCard';
+import FileIcon from '@ncigdc/theme/icons/File';
+import CaseIcon from '@ncigdc/theme/icons/Case';
 
-  <Column style={{ ...styles.margin, width: '200px' }}>
-    <CountCard
-      title="CASES"
-      count={caseCount.toLocaleString()}
-      icon={<CaseIcon style={styles.icon} className="fa-3x" />}
-      style={styles.countCard}
-      linkParams={
-        caseCount
-          ? {
-              merge: 'replace',
-              pathname: '/repository',
-              query: {
-                filters: makeFilter(projectFilter),
-              },
-            }
-          : null
-      }
-    />
-    <CountCard
-      title="FILES"
-      count={fileCount.toLocaleString()}
-      icon={<FileIcon style={styles.icon} className="fa-3x" />}
-      style={styles.countCard}
-      linkParams={
-        fileCount
-          ? {
-              pathname: '/repository',
-              query: {
-                filters: makeFilter(projectFilter),
-                facetTab: 'files',
-                searchTableTab: 'files',
-              },
-            }
-          : null
-      }
-    />
-    <CountCard
-      title="ANNOTATIONS"
-      count={totalAnnotations.toLocaleString()}
-      icon={<AnnotationIcon style={styles.icon} className="fa-3x" />}
-      style={{ ...styles.countCard, marginBottom: 0 }}
-      linkParams={
-        totalAnnotations
-          ? {
-              merge: 'replace',
-              pathname: `/annotations${totalAnnotations === 1
-                ? `/${annotations[0].annotation_id}`
-                : ''}`,
-              query: {
-                filters:
-                  totalAnnotations > 1 &&
-                    makeFilter([
-                      {
-                        field: 'annotations.project.project_id',
-                        value: projectId,
-                      },
-                    ]),
-              },
-            }
-          : null
-      }
-    />
-  </Column>
-</Row>;
+const SPACING = '2rem';
+
+const styles = {
+  countCard: {
+    width: 'auto',
+    marginBottom: SPACING,
+  },
+  column: {
+    flexGrow: 1,
+  },
+  margin: {
+    marginBottom: SPACING,
+  },
+  icon: {
+    width: '4rem',
+    height: '4rem',
+    color: '#888',
+  },
+  coloredSquare: {
+    display: 'inline-block',
+    width: 10,
+    height: 10,
+    marginRight: 5,
+  },
+};
+
+export default ({ viewer: { projects: { hits: { edges } } } }) => {
+  const project = edges[0].node;
+  const projectFilter = [
+    {
+      field: 'cases.project.project_id',
+      value: project.project_id,
+    },
+  ];
+  return (
+    <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
+      <span style={{ ...styles.column, ...styles.margin }}>
+        <EntityPageVerticalTable
+          id="summary"
+          title={<span><i className="fa fa-table" /> Summary</span>}
+          thToTd={[
+            { th: 'Project ID', td: project.project_id },
+            { th: 'Project Name', td: project.name },
+            {
+              th: 'Disease Type',
+              td: <CollapsibleList data={project.disease_type} />,
+            },
+            {
+              th: 'Primary Site',
+              td: <CollapsibleList data={project.primary_site} />,
+            },
+            { th: 'Program', td: project.program.name },
+          ]}
+        />
+      </span>
+
+      <Column style={{ ...styles.margin, width: '200px' }}>
+        <CountCard
+          title="CASES"
+          count={project.summary.case_count.toLocaleString()}
+          icon={<CaseIcon style={styles.icon} className="fa-3x" />}
+          style={styles.countCard}
+          linkParams={
+            project.summary.case_count
+              ? {
+                  merge: 'replace',
+                  pathname: '/repository',
+                  query: {
+                    filters: makeFilter(projectFilter),
+                  },
+                }
+              : null
+          }
+        />
+        <CountCard
+          title="FILES"
+          count={project.summary.file_count.toLocaleString()}
+          icon={<FileIcon style={styles.icon} className="fa-3x" />}
+          style={styles.countCard}
+          linkParams={
+            project.summary.file_count
+              ? {
+                  pathname: '/repository',
+                  query: {
+                    filters: makeFilter(projectFilter),
+                    facetTab: 'files',
+                    searchTableTab: 'files',
+                  },
+                }
+              : null
+          }
+        />
+        {/* <CountCard
+          title="ANNOTATIONS"
+          count={totalAnnotations.toLocaleString()}
+          icon={<AnnotationIcon style={styles.icon} className="fa-3x" />}
+          style={{ ...styles.countCard, marginBottom: 0 }}
+          linkParams={
+            totalAnnotations
+              ? {
+                  merge: 'replace',
+                  pathname: `/annotations${totalAnnotations === 1
+                    ? `/${annotations[0].annotation_id}`
+                    : ''}`,
+                  query: {
+                    filters:
+                      totalAnnotations > 1 &&
+                        makeFilter([
+                          {
+                            field: 'annotations.project.project_id',
+                            value: projectId,
+                          },
+                        ]),
+                  },
+                }
+              : null
+          }
+        /> */}
+      </Column>
+    </Row>
+  );
+};

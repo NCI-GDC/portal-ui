@@ -1,83 +1,24 @@
 /* @flow */
 
 import React from 'react';
+import Route from 'react-router/Route';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
+import ProjectSummary from '@ncigdc/modern_components/ProjectSummary';
 
 import {
   EXPERIMENTAL_STRATEGIES,
   DATA_CATEGORIES,
 } from '@ncigdc/utils/constants';
 
-export default ({ node, viewer }: TProps) =>
-  <FullWidthLayout title={node.project_id} entityType="PR">
-    <span>
-      <Row>
-        <Row style={{ ...styles.margin, marginLeft: 'auto' }} spacing="0.2rem">
-          <DownloadButton
-            disabled={!biospecimenCount}
-            filename={`biospecimen.project-${projectId}`}
-            endpoint="cases"
-            activeText="Processing"
-            inactiveText={
-              biospecimenCount ? 'Download Biospecimen' : 'No Biospecimen Data'
-            }
-            fields={['case_id']}
-            dataExportExpands={[
-              'samples',
-              'samples.portions',
-              'samples.portions.analytes',
-              'samples.portions.analytes.aliquots',
-              'samples.portions.analytes.aliquots.annotations',
-              'samples.portions.analytes.annotations',
-              'samples.portions.submitter_id',
-              'samples.portions.slides',
-              'samples.portions.annotations',
-              'samples.portions.center',
-            ]}
-            filters={dataExportFilters}
-          />
+export default (
+  <Route
+    path="/projects/:id"
+    component={({ match, projectId = match.params.id, filters }) => {
+      return (
+        <FullWidthLayout title={projectId} entityType="PR">
+          <ProjectSummary projectId={projectId} />
 
-          <DownloadButton
-            disabled={!clinicalCount}
-            filename={`clinical.project-${projectId}`}
-            endpoint="cases"
-            activeText="Processing"
-            inactiveText={
-              clinicalCount ? 'Download Clinical' : 'No Clinical Data'
-            }
-            fields={['case_id']}
-            dataExportExpands={[
-              'demographic',
-              'diagnoses',
-              'family_histories',
-              'exposures',
-            ]}
-            filters={dataExportFilters}
-          />
-
-          <Tooltip
-            Component={
-              <div style={{ maxWidth: 250 }}>
-                Download a manifest for use with the GDC Data Transfer Tool.
-                The GDC Data Transfer Tool is recommended for transferring large
-                volumes of data.
-              </div>
-            }
-          >
-            <DownloadButton
-              disabled={!fileCount}
-              endpoint="files"
-              activeText="Downloading"
-              inactiveText="Download Manifest"
-              fields={['file_id', 'file_name', 'md5sum', 'file_size', 'state']}
-              returnType="manifest"
-              filters={makeFilter(projectFilter)}
-            />
-          </Tooltip>
-        </Row>
-      </Row>
-
-      <div>
+          {/* <div>
         <Column style={styles.card}>
           <Row style={{ padding: '1rem 1rem 2rem' }}>
             <h1 style={{ ...styles.heading }} id="mutated-genes">
@@ -199,6 +140,9 @@ export default ({ node, viewer }: TProps) =>
           />
           <AffectedCasesTable defaultFilters={macFilters} />
         </Column>
-      </div>
-    </span>
-  </FullWidthLayout>;
+      </div> */}
+        </FullWidthLayout>
+      );
+    }}
+  />
+);

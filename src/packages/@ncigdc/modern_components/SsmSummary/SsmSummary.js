@@ -23,32 +23,35 @@ const styles = {
 
 export default compose(
   withTheme,
-  withPropsOnChange(['viewer'], ({ viewer: { explore: { ssms: edges } } }) => {
-    const node = edges[0].node;
-    const consequences = node.consequence.hits.edges;
+  withPropsOnChange(
+    ['viewer'],
+    ({ viewer: { explore: { ssms: { hits: { edges } } } } }) => {
+      const node = edges[0].node;
+      const consequences = node.consequence.hits.edges;
 
-    const consequenceOfInterest = consequences.find(
-      consequence => get(consequence, 'node.transcript.annotation.impact'),
-      {},
-    );
+      const consequenceOfInterest = consequences.find(
+        consequence => get(consequence, 'node.transcript.annotation.impact'),
+        {},
+      );
 
-    const functionalImpactTranscript = get(
-      consequenceOfInterest,
-      'node.transcript',
-      {},
-    );
+      const functionalImpactTranscript = get(
+        consequenceOfInterest,
+        'node.transcript',
+        {},
+      );
 
-    const functionalImpact = get(
-      functionalImpactTranscript,
-      'annotation.impact',
-    );
+      const functionalImpact = get(
+        functionalImpactTranscript,
+        'annotation.impact',
+      );
 
-    return {
-      functionalImpact,
-      functionalImpactTranscript,
-      node,
-    };
-  }),
+      return {
+        functionalImpact,
+        functionalImpactTranscript,
+        node,
+      };
+    },
+  ),
 )(({ node, functionalImpact, functionalImpactTranscript, theme } = {}) =>
   <EntityPageVerticalTable
     id="Summary"

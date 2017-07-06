@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import Relay from 'react-relay/classic';
 import { compose, withPropsOnChange } from 'recompose';
 import { orderBy, groupBy, get, find } from 'lodash';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
@@ -36,86 +35,92 @@ type TProps = {
   consequences: Array<Object>,
 };
 
-const ConsequencesTableComponent = compose(
+export default compose(
   withTheme,
-  withPropsOnChange(['node'], ({ node, theme }) => {
-    const consequenceOfInterest = node.consequence.hits.edges.find(
-      consequence => get(consequence, 'node.transcript.annotation.impact'),
-      {},
-    );
-    const functionalImpactTranscript = get(
-      consequenceOfInterest,
-      'node.transcript',
-      {},
-    );
+  withPropsOnChange(
+    ['viewer'],
+    ({ viewer: { explore: { ssms: { hits: { edges } } } }, theme }) => {
+      const node = edges[0].node;
+      const consequenceOfInterest = node.consequence.hits.edges.find(
+        consequence => get(consequence, 'node.transcript.annotation.impact'),
+        {},
+      );
+      const functionalImpactTranscript = get(
+        consequenceOfInterest,
+        'node.transcript',
+        {},
+      );
 
-    const canonicalTranscriptId = (find(
-      node.consequence.hits.edges,
-      'node.transcript.is_canonical',
-    ) || { node: { transcript: { transcript_id: '' } } }).node.transcript
-      .transcript_id;
+      const canonicalTranscriptId = (find(
+        node.consequence.hits.edges,
+        'node.transcript.is_canonical',
+      ) || { node: { transcript: { transcript_id: '' } } }).node.transcript
+        .transcript_id;
 
-    const consequenceDataGrouped = groupBy(node.consequence.hits.edges, c => {
-      const { transcript: t } = c.node;
-      return `${t.gene.symbol}${t.aa_change}${t.consequence_type}${t.annotation
-        .hgvsc}${t.gene.gene_strand}`;
-    });
+      const consequenceDataGrouped = groupBy(node.consequence.hits.edges, c => {
+        const { transcript: t } = c.node;
+        return `${t.gene.symbol}${t.aa_change}${t.consequence_type}${t
+          .annotation.hgvsc}${t.gene.gene_strand}`;
+      });
 
-    const consequences = node.consequence.hits.edges.map(
-      x => x.node.transcript,
-    );
+      const consequences = node.consequence.hits.edges.map(
+        x => x.node.transcript,
+      );
 
-    const dataRows = orderBy(
-      consequences.map(transcript => {
-        return {
-          symbol: (
-            <GeneLink uuid={transcript.gene.gene_id}>
-              {transcript.gene.symbol}
-            </GeneLink>
-          ),
-          aa_change: transcript.aa_change,
-          consequence: transcript.consequence_type,
-          coding_dna_change: transcript.annotation.hgvsc,
-          strand: transcript.gene.gene_strand
-            ? strandIconMap[transcript.gene.gene_strand.toString(10)]
-            : '--',
-          transcripts: (
-            <span>
-              <ExternalLink
-                key={transcript.transcript_id}
-                style={{
-                  paddingRight: '0.5em',
-                  fontWeight: transcript.transcript_id ===
-                    functionalImpactTranscript.transcript_id
-                    ? 'bold'
-                    : 'normal',
-                }}
-                href={externalReferenceLinks.ensembl(transcript.transcript_id)}
-              >
-                {transcript.transcript_id}
-              </ExternalLink>
-              {transcript.transcript_id === canonicalTranscriptId &&
-                <BubbleIcon
-                  text="C"
-                  toolTipText="Canonical"
-                  backgroundColor={theme.primary}
-                />}
-            </span>
-          ),
-        };
-      }),
-      ['aa_change'],
-      ['asc'],
-    );
+      const dataRows = orderBy(
+        consequences.map(transcript => {
+          return {
+            symbol: (
+              <GeneLink uuid={transcript.gene.gene_id}>
+                {transcript.gene.symbol}
+              </GeneLink>
+            ),
+            aa_change: transcript.aa_change,
+            consequence: transcript.consequence_type,
+            coding_dna_change: transcript.annotation.hgvsc,
+            strand: transcript.gene.gene_strand
+              ? strandIconMap[transcript.gene.gene_strand.toString(10)]
+              : '--',
+            transcripts: (
+              <span>
+                <ExternalLink
+                  key={transcript.transcript_id}
+                  style={{
+                    paddingRight: '0.5em',
+                    fontWeight: transcript.transcript_id ===
+                      functionalImpactTranscript.transcript_id
+                      ? 'bold'
+                      : 'normal',
+                  }}
+                  href={externalReferenceLinks.ensembl(
+                    transcript.transcript_id,
+                  )}
+                >
+                  {transcript.transcript_id}
+                </ExternalLink>
+                {transcript.transcript_id === canonicalTranscriptId &&
+                  <BubbleIcon
+                    text="C"
+                    toolTipText="Canonical"
+                    backgroundColor={theme.primary}
+                  />}
+              </span>
+            ),
+          };
+        }),
+        ['aa_change'],
+        ['asc'],
+      );
 
-    return {
-      functionalImpactTranscript,
-      canonicalTranscriptId,
-      consequenceDataGrouped,
-      consequences,
-      dataRows,
-    };
-  }),
+      return {
+        functionalImpactTranscript,
+        canonicalTranscriptId,
+        consequenceDataGrouped,
+        consequences,
+        dataRows,
+      };
+    },
+  ),
 )(
   (
     {
@@ -189,43 +194,3 @@ const ConsequencesTableComponent = compose(
       />
     </LocalPaginationTable>,
 );
-
-export const ConsequencesTableQuery = {
-  fragments: {
-    node: () => Relay.QL`
-      fragment on Ssm {
-        cosmic_id
-        consequence {
-          hits(first: 99) {
-            edges {
-              node {
-                transcript {
-                  transcript_id
-                  aa_change
-                  is_canonical
-                  consequence_type
-                  annotation {
-                    hgvsc
-                    impact
-                  }
-                  gene {
-                    gene_id
-                    symbol
-                    gene_strand
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    `,
-  },
-};
-
-const ConsequencesTable = Relay.createContainer(
-  ConsequencesTableComponent,
-  ConsequencesTableQuery,
-);
-
-export default ConsequencesTable;

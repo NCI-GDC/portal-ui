@@ -22,7 +22,7 @@ const styles = {
 export default compose(
   withPropsOnChange(
     ['viewer'],
-    ({ viewer: { explore: { ssms: { edges } } } }) => {
+    ({ viewer: { explore: { ssms: { hits: { edges } } } } }) => {
       const node = edges[0].node;
       return {
         dbSNP: node.consequence.hits.edges.reduce(

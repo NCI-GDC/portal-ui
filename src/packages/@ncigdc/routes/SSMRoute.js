@@ -10,21 +10,16 @@ import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import { makeFilter } from '@ncigdc/utils/filters';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import { SsmLolliplot } from '@ncigdc/modern_components/Lolliplot';
-import SsmSummary from '@ncigdc/containers/SsmSummary';
-import SsmExternalReferences from '@ncigdc/containers/SsmExternalReferences';
-import ConsequencesTable from '@ncigdc/containers/ConsequencesTable';
+import SsmSummary from '@ncigdc/modern_components/SsmSummary';
+import SsmExternalReferences from '@ncigdc/modern_components/SsmExternalReferences';
+import ConsequencesTable from '@ncigdc/modern_components/ConsequencesTable';
 import CancerDistributionBarChart from '@ncigdc/modern_components/CancerDistributionBarChart';
 import CancerDistributionTable from '@ncigdc/modern_components/CancerDistributionTable';
 
-import type { TChartTitleProps } from '@ncigdc/containers/CancerDistributionBarChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 
-const CancerDistributionTitle = ({
-  cases = 0,
-  projects = [],
-  filters,
-}: TChartTitleProps) =>
+const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) =>
   <h5 style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
     THIS MUTATION AFFECTS&nbsp;
     <ExploreLink query={{ searchTableTab: 'cases', filters }}>
@@ -82,7 +77,7 @@ export default (
             <Row flex="1"><SsmSummary ssmId={ssmId} /></Row>
             <Row flex="1"><SsmExternalReferences ssmId={ssmId} /></Row>
           </Row>
-          {/* <Column style={styles.card}>
+          <Column style={styles.card}>
             <h1
               id="consequences"
               style={{ ...styles.heading, padding: '1rem' }}
@@ -94,7 +89,7 @@ export default (
               <ConsequencesTable />
             </Row>
           </Column>
-          <Column
+          {/* <Column
             style={{ ...styles.card, marginTop: '2rem' }}
             id="cancer-distribution"
           >

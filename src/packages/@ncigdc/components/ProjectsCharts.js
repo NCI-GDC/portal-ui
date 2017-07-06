@@ -408,7 +408,15 @@ const ProjectsChartsComponent = compose(
             }}
           >
             Top Mutated Cancer Genes in Selected Projects
-            <Tooltip Component={<span>From COSMIC Cancer Gene Census</span>}>
+            <Tooltip
+              Component={
+                <div style={{ maxWidth: '24em' }}>
+                  From COSMIC Cancer Gene Census and mutation consequence types
+                  in {'{'}missense_variant, frameshift_variant, start_lost,
+                  stop_lost, initiator_codon_variant, stop_gained{'}'}
+                </div>
+              }
+            >
               <QuestionIcon
                 style={{ color: theme.greyScale7, marginLeft: '5px' }}
               />

@@ -6,7 +6,7 @@ import Route from 'react-router/Route';
 import GeneSummary from '@ncigdc/modern_components/GeneSummary';
 import GeneExternalReferences from '@ncigdc/modern_components/GeneExternalReferences';
 import CancerDistributionBarChart from '@ncigdc/modern_components/CancerDistributionBarChart';
-import CancerDistributionTable from '@ncigdc/containers/CancerDistributionTable';
+import CancerDistributionTable from '@ncigdc/modern_components/CancerDistributionTable';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import { GeneLolliplot } from '@ncigdc/modern_components/Lolliplot';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
@@ -94,11 +94,11 @@ export default (
                   filters={mutatedGeneFilter}
                   style={{ width: '50%' }}
                 />
-                {/* <CancerDistributionTable
+                <CancerDistributionTable
                   filters={mutatedGeneFilter}
                   entityName={'GET SYMBOL'}
                   geneId={geneId}
-                /> */}
+                />
               </Column>
             </Column>
 

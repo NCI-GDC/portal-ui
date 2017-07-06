@@ -95,8 +95,8 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
       {!!files.length &&
         !!viewer.repository.files.hits &&
         <Column>
-          <Row spacing="2rem" style={{ marginBottom: '2rem' }}>
-            <Column spacing="0.8rem">
+          <Row style={{ marginBottom: '2rem', flexWrap: 'wrap' }}>
+            <Column spacing="0.8rem" style={{ marginRight: '1rem' }}>
               <CountCard
                 title="FILES"
                 count={files.length}
@@ -124,6 +124,10 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 backgroundColor: 'transparent',
                 height: '19em',
                 overflow: 'auto',
+                minWidth: '30em',
+                flexShrink: 0,
+                marginLeft: '1rem',
+                marginRight: '1rem',
               }}
               tableTitle="File Counts by Project"
               pieChartTitle="File Counts by Project"
@@ -241,6 +245,10 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
                 backgroundColor: 'transparent',
                 height: '19em',
                 overflow: 'auto',
+                minWidth: '23em',
+                flexShrink: 0,
+                marginLeft: '1rem',
+                marginRight: '1rem',
               }}
               tableTitle="File Counts by Authorization Level"
               pieChartTitle="File Counts by Authorization Level"
@@ -317,7 +325,12 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
               ]}
             />
             <HowToDownload
-              style={{ flex: 1, backgroundColor: 'transparent' }}
+              style={{
+                flex: 1,
+                backgroundColor: 'transparent',
+                minWidth: '18em',
+                flexShrink: 0,
+              }}
             />
           </Row>
           <Row style={{ marginBottom: '2rem' }}>

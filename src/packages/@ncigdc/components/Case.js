@@ -21,6 +21,7 @@ import ClinicalCard from '@ncigdc/components/ClinicalCard';
 import BiospecimenCard from '@ncigdc/components/BiospecimenCard';
 import { withTheme } from '@ncigdc/theme';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
+import Link from '@ncigdc/components/Links/Link';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import Button from '@ncigdc/uikit/Button';
 import { removeFilesFromCart, addAllFilesInCart } from '@ncigdc/dux/cart';
@@ -30,6 +31,8 @@ import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
 import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import SparkMeterWithTooltip from '@ncigdc/components/SparkMeterWithTooltip';
+import SampleSize from '@ncigdc/components/SampleSize';
 
 const styles = {
   icon: {
@@ -137,6 +140,12 @@ const Case = compose(
                   {strat.file_count}
                 </RepositoryFilesLink>
               ),
+              file_count_meter: (
+                <SparkMeterWithTooltip
+                  part={strat.file_count}
+                  whole={totalFiles}
+                />
+              ),
               file_count_value: strat.file_count,
               tooltip: (
                 <span>
@@ -185,6 +194,9 @@ const Case = compose(
               {type.file_count}
             </RepositoryFilesLink>
           : '0',
+        file_count_meter: (
+          <SparkMeterWithTooltip part={type.file_count} whole={totalFiles} />
+        ),
         file_count_value: type.file_count,
         tooltip: (
           <span>
@@ -301,6 +313,32 @@ const Case = compose(
                   title: 'Files',
                   style: { textAlign: 'right' },
                 },
+                {
+                  key: 'file_count_meter',
+                  title: (
+                    <Link
+                      pathname="/repository"
+                      query={{
+                        filters: makeFilter([
+                          {
+                            field: 'cases.case_id',
+                            value: p.case_id,
+                          },
+                        ]),
+                        facetTab: 'files',
+                        searchTableTab: 'files',
+                      }}
+                      title="Browse files"
+                    >
+                      <SampleSize n={files.length} />
+                    </Link>
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
+                },
               ]}
             />
           </span>
@@ -318,6 +356,32 @@ const Case = compose(
                   key: 'file_count',
                   title: 'Files',
                   style: { textAlign: 'right' },
+                },
+                {
+                  key: 'file_count_meter',
+                  title: (
+                    <Link
+                      pathname="/repository"
+                      query={{
+                        filters: makeFilter([
+                          {
+                            field: 'cases.case_id',
+                            value: p.case_id,
+                          },
+                        ]),
+                        facetTab: 'files',
+                        searchTableTab: 'files',
+                      }}
+                      title="Browse files"
+                    >
+                      <SampleSize n={files.length} />
+                    </Link>
+                  ),
+                  thStyle: {
+                    width: 1,
+                    textAlign: 'center',
+                  },
+                  style: { textAlign: 'left' },
                 },
               ]}
             />

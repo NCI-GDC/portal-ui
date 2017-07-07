@@ -15,10 +15,7 @@ function readFile(file) {
   });
 }
 
-const enhance = compose(
-  withState('uploading', 'setUploading', false),
-  withState('inputFiles', 'setInputFile', ''),
-);
+const enhance = compose(withState('uploading', 'setUploading', false));
 
 export default enhance(
   ({ setInputFile, setInputGenes, inputFiles, setUploading, uploading }) => {

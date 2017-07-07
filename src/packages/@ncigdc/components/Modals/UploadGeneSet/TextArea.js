@@ -2,7 +2,7 @@ import React from 'react';
 
 import Button from '@ncigdc/uikit/Button';
 
-export default ({ inputGenes, setInputGenes }) => {
+export default ({ inputGenes, setInputGenes, onClear }) => {
   return (
     <div>
       Type or copy-and-paste a list of gene identifiers (Ensembl, Symbol, Entrez
@@ -16,10 +16,7 @@ export default ({ inputGenes, setInputGenes }) => {
           minHeight: 100,
         }}
       />
-      <Button
-        style={{ margin: '0 0 0 auto' }}
-        onClick={() => setInputGenes('')}
-      >
+      <Button style={{ margin: '0 0 0 auto' }} onClick={onClear}>
         Clear
       </Button>
     </div>

@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { compose, withState, withPropsOnChange } from 'recompose';
+import { compose, withState, withPropsOnChange, withProps } from 'recompose';
 import { debounce } from 'lodash';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -25,6 +25,13 @@ const styles = {
 const enhance = compose(
   withState('inputGenes', 'setInputGenes', ''),
   withState('validating', 'setValidating', false),
+  withState('inputFiles', 'setInputFile', ''),
+  withProps(props => ({
+    onClear: () => {
+      props.setInputFile('');
+      props.setInputGenes('');
+    },
+  })),
   withPropsOnChange(
     ['inputGenes', 'validating'],
     ({ inputGenes, setValidating, validating }) => {
@@ -51,6 +58,9 @@ type TProps = {
   invalidGenes: Array<string>,
   genes: Array<string>,
   validating: boolean,
+  inputFiles: string,
+  setInputFile: Function,
+  onClear: Function,
 };
 const SelectOverlay = ({
   onClose,
@@ -59,6 +69,9 @@ const SelectOverlay = ({
   invalidGenes,
   genes,
   validating,
+  inputFiles,
+  setInputFile,
+  onClear,
 }: TProps) => {
   return (
     <div
@@ -86,8 +99,16 @@ const SelectOverlay = ({
           paddingBottom: 10,
         }}
       >
-        <TextArea inputGenes={inputGenes} setInputGenes={setInputGenes} />
-        <FileUpload setInputGenes={setInputGenes} />
+        <TextArea
+          inputGenes={inputGenes}
+          setInputGenes={setInputGenes}
+          onClear={onClear}
+        />
+        <FileUpload
+          setInputGenes={setInputGenes}
+          inputFiles={inputFiles}
+          setInputFile={setInputFile}
+        />
         {validating && <span><SpinnerIcon /> validating genes</span>}
         <Warning hasGenes={!!genes.length} invalidGenes={invalidGenes} />
         {genes.length > 0 &&

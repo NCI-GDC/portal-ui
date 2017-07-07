@@ -23,7 +23,10 @@ const openAuthWindow = ({ pathname, dispatch }) => {
         // Must check this block (if the login window has been closed) first!
         if (win.closed) {
           clearInterval(interval);
-        } else if (win.document.URL.includes(location.origin)) {
+        } else if (
+          win.document.URL.includes(location.origin) &&
+          !win.document.URL.includes(location.origin + '/auth')
+        ) {
           win.close();
 
           setTimeout(() => {

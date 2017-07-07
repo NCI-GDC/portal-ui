@@ -14,7 +14,7 @@ export type TListLinkProps = {
 };
 
 export type TIdLinkProps = {
-  id: string,
+  uuid: string,
 } & TListLinkProps;
 
 export type TLinkProps = TListLinkProps | TIdLinkProps;

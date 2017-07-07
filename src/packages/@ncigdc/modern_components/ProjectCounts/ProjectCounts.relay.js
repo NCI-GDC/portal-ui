@@ -28,12 +28,12 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="ProjectSummary"
+        name="ProjectCounts"
         minHeight={387}
         variables={props.variables}
         Component={Component}
         query={graphql`
-          query ProjectSummary_relayQuery(
+          query ProjectCounts_relayQuery(
             $filters: FiltersArgument
           ) {
             viewer {
@@ -44,24 +44,24 @@ export default (Component: ReactClass<*>) =>
                       project_id
                       name
                       disease_type
-                      primary_site
                       program {
                         name
                       }
+                      primary_site
                       summary {
-                       case_count
-                       file_count
-                     }
-                    }
-                  }
-                }
-              }
-              annotations {
-                hits(first: 1 filters: $filters) {
-                  total
-                  edges {
-                    node {
-                      annotation_id
+                        case_count
+                        file_count
+                        experimental_strategies {
+                          experimental_strategy
+                          file_count
+                          case_count
+                        }
+                        data_categories {
+                          data_category
+                          file_count
+                          case_count
+                        }
+                      }
                     }
                   }
                 }

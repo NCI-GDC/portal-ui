@@ -6,6 +6,7 @@ import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 import CountCard from '@ncigdc/components/CountCard';
 import FileIcon from '@ncigdc/theme/icons/File';
 import CaseIcon from '@ncigdc/theme/icons/Case';
+import AnnotationIcon from '@ncigdc/theme/icons/Edit';
 
 const SPACING = '2rem';
 
@@ -33,7 +34,7 @@ const styles = {
   },
 };
 
-export default ({ viewer: { projects: { hits: { edges } } } }) => {
+export default ({ viewer: { annotations, projects: { hits: { edges } } } }) => {
   const project = edges[0].node;
   const projectFilter = [
     {
@@ -41,6 +42,7 @@ export default ({ viewer: { projects: { hits: { edges } } } }) => {
       value: project.project_id,
     },
   ];
+
   return (
     <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
       <span style={{ ...styles.column, ...styles.margin }}>
@@ -99,32 +101,33 @@ export default ({ viewer: { projects: { hits: { edges } } } }) => {
               : null
           }
         />
-        {/* <CountCard
+        <CountCard
           title="ANNOTATIONS"
-          count={totalAnnotations.toLocaleString()}
+          count={annotations.hits.total.toLocaleString()}
           icon={<AnnotationIcon style={styles.icon} className="fa-3x" />}
           style={{ ...styles.countCard, marginBottom: 0 }}
           linkParams={
-            totalAnnotations
+            annotations.hits.total
               ? {
                   merge: 'replace',
-                  pathname: `/annotations${totalAnnotations === 1
-                    ? `/${annotations[0].annotation_id}`
+                  pathname: `/annotations${annotations.hits.total.toLocaleString() ===
+                    1
+                    ? `/${annotations.hits.edges[0].node.annotation_id}`
                     : ''}`,
                   query: {
                     filters:
-                      totalAnnotations > 1 &&
+                      annotations.hits.total > 1 &&
                         makeFilter([
                           {
                             field: 'annotations.project.project_id',
-                            value: projectId,
+                            value: project.project_id,
                           },
                         ]),
                   },
                 }
               : null
           }
-        /> */}
+        />
       </Column>
     </Row>
   );

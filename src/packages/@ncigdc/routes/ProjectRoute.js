@@ -4,6 +4,10 @@ import React from 'react';
 import Route from 'react-router/Route';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import ProjectSummary from '@ncigdc/modern_components/ProjectSummary';
+import {
+  ProjectCountsDataCategory,
+  ProjectCountsExpStrategy,
+} from '@ncigdc/modern_components/ProjectCounts';
 
 import {
   EXPERIMENTAL_STRATEGIES,
@@ -17,6 +21,8 @@ export default (
       return (
         <FullWidthLayout title={projectId} entityType="PR">
           <ProjectSummary projectId={projectId} />
+          <ProjectCountsDataCategory projectId={projectId} />
+          <ProjectCountsExpStrategy projectId={projectId} />
 
           {/* <div>
         <Column style={styles.card}>

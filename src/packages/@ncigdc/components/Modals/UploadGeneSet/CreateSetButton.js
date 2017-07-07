@@ -36,7 +36,7 @@ export default enhance(({ genes, onClose, push, query, ...props }: TProps) => {
                     {
                       op: 'in',
                       content: {
-                        field: 'genes',
+                        field: 'genes.gene_id',
                         value: [`set_id:${setId}`],
                       },
                     },

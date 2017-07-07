@@ -38,6 +38,7 @@ export default ({ genes, ...props }) => {
       <LocalPaginationTable
         prefix="uploadGeneSet"
         data={data}
+        entityName="submitted gene identifiers"
         buttons={
           <Row style={{ alignItems: 'flex-end' }}>
             <Button

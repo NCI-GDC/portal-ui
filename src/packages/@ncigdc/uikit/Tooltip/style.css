@@ -1,25 +1,26 @@
 .global-tooltip {
+  height: 0;
   position: absolute;
   top: 0;
   left: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.global-tooltip>.wrapper {
+  position: relative;
+  bottom: 12px;
+  left: -50%;
   padding: 6px;
   color: rgb(61, 61, 61);
   background: #ffffff;
-  border-radius: 6px;
   font-size: 10px;
   border: 2px solid #DEDEDE;
-  transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 9999;
-  visibility: hidden;
+  border-radius: 6px;
+  transform: translate(0, -100%);
 }
 
-.global-tooltip.active {
-  visibility: visible;
-}
-
-.global-tooltip:before {
-  content: '';
+.global-tooltip>.wrapper>.point1 {
   position: absolute;
   top: 100%;
   left: 50%;
@@ -30,8 +31,7 @@
   border-left: 12px solid transparent;
 }
 
-.global-tooltip:after {
-  content: '';
+.global-tooltip>.wrapper>.point2 {
   position: absolute;
   top: 100%;
   left: 50%;

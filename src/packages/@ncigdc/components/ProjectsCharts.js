@@ -510,10 +510,28 @@ const ProjectsChartsComponent = compose(
                   }}
                   key="pie-subtitle"
                 >
-                  {`${totalCases.toLocaleString()} Case${totalCases === 0 ||
-                    totalCases > 1
-                    ? 's'
-                    : ''}
+                  <ExploreLink
+                    query={{
+                      searchTableTab: 'cases',
+                      filters: projects.length
+                        ? {
+                            op: 'and',
+                            content: [
+                              {
+                                op: 'in',
+                                content: {
+                                  field: 'cases.project.project_id',
+                                  value: projects.map(x => x.project_id),
+                                },
+                              },
+                            ],
+                          }
+                        : null,
+                    }}
+                  >
+                    {totalCases.toLocaleString()}
+                  </ExploreLink>
+                  {` Case${totalCases === 0 || totalCases > 1 ? 's' : ''}
               across ${projects.length.toLocaleString()} Project${projects.length ===
                     0 || projects.length > 1
                     ? 's'

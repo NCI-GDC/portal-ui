@@ -10,13 +10,9 @@ const mutationSubTypeMap = {
   'small insertion': 'Insertion',
 };
 
-type TMapData = (
-  data: Array<Object>,
-  shouldShowGeneSymbol: boolean,
-  theme: Object,
-) => Array<Object>;
+type TMapData = (data: Array<Object>, theme: Object) => Array<Object>;
 
-const mapData: TMapData = (data, shouldShowGeneSymbol, theme) =>
+const mapData: TMapData = (data, theme) =>
   data.map(hit => {
     const consequenceOfInterest =
       hit.consequence.hits.edges.find(
@@ -43,7 +39,16 @@ const mapData: TMapData = (data, shouldShowGeneSymbol, theme) =>
       consequence_type: (
         <span>
           <b>{startCase(consequenceType.replace('variant', ''))}</b>&nbsp;
-          {shouldShowGeneSymbol && <GeneLink uuid={geneId}>{symbol}</GeneLink>}
+          <GeneLink
+            uuid={geneId}
+            activeStyle={{
+              textDecoration: 'none',
+              color: theme.greyScale2,
+              cursor: 'default',
+            }}
+          >
+            {symbol}
+          </GeneLink>
           <Tooltip
             Component={
               <div style={{ maxWidth: 300, wordBreak: 'break-all' }}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { compose, branch, renderComponent } from 'recompose';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -34,7 +35,12 @@ const styles = {
   },
 };
 
-export default ({ viewer: { annotations, projects: { hits: { edges } } } }) => {
+export default compose(
+  branch(
+    ({ viewer }) => !viewer.projects.hits.edges[0],
+    renderComponent(() => <div>No project found.</div>),
+  ),
+)(({ viewer: { annotations, projects: { hits: { edges } } } }) => {
   const project = edges[0].node;
   const projectFilter = [
     {
@@ -131,4 +137,4 @@ export default ({ viewer: { annotations, projects: { hits: { edges } } } }) => {
       </Column>
     </Row>
   );
-};
+});

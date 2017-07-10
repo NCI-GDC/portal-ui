@@ -29,7 +29,7 @@ export default (Component: ReactClass<*>) =>
       <Query
         parentProps={props}
         name="ProjectSummary"
-        minHeight={387}
+        minHeight={249}
         variables={props.variables}
         Component={Component}
         query={graphql`

@@ -10,7 +10,9 @@ export default (props: Object) =>
   <div style={{ position: 'relative', minHeight: props.minHeight }}>
     <QueryRenderer
       environment={environment}
-      render={({ props: nextRelayProps }) => {
+      render={({ props: nextRelayProps, error }) => {
+        // TODO: handle error
+
         lastRelayProps[props.name] =
           nextRelayProps || lastRelayProps[props.name];
 

@@ -83,19 +83,45 @@ export const Zone = ({
             <Button onClick={remove}>X</Button>
           </div>
         </div>
-        <div>
-          {propTypes &&
-            Object.keys(propTypes).map(prop =>
-              <div key={prop}>
-                <label>{prop}</label>
+        {propTypes &&
+          <div style={{ paddingBottom: 10 }}>
+            {Object.keys(propTypes).map(prop =>
+              <div
+                key={prop}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '5px 10px',
+                }}
+              >
+                <pre
+                  style={{
+                    backgroundColor: 'transparent',
+                    color: 'white',
+                    border: 'none',
+                    textShadow: 'none',
+                    padding: 0,
+                    margin: 0,
+                  }}
+                >
+                  {prop}:
+                </pre>
                 <input
-                  style={{ color: 'black' }}
+                  style={{
+                    padding: '4px 8px',
+                    color: 'white',
+                    marginLeft: 8,
+                    backgroundColor: 'transparent',
+                    borderRadius: 5,
+                    border: '1px solid',
+                  }}
+                  defaultValue={component.userProps[prop]}
                   onChange={e =>
                     changeProp({ zoneIndex, prop, value: e.target.value })}
                 />
               </div>,
             )}
-        </div>
+          </div>}
       </div>}
     {children}
   </div>;

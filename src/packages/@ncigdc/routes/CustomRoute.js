@@ -21,6 +21,10 @@ export default (
           type: 'GenesTable',
           userProps: {},
         },
+        {
+          type: 'GeneSymbol',
+          userProps: {},
+        },
       ]),
     )(({ location, zones, setZones }) => {
       const { edit } = parse(location.search);

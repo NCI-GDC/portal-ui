@@ -15,6 +15,7 @@ import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import CaseRoute from '@ncigdc/routes/CaseRoute';
 import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
+import CustomRoute from '@ncigdc/routes/CustomRoute';
 import CartRoute from '@ncigdc/routes/CartRoute';
 import HomeRoute from '@ncigdc/routes/HomeRoute';
 import GeneRoute from '@ncigdc/routes/GeneRoute';
@@ -100,6 +101,7 @@ const PortalContainer = compose(
         <Route path="/cases/:id" component={CaseRoute} />
         <Route path="/annotations/:id" component={AnnotationRoute} />
         {SSMRoute}
+        {CustomRoute}
         {GeneRoute}
         <Route
           path="/components/:component"

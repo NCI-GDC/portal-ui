@@ -10,7 +10,7 @@ import ProjectBreakdown from './ProjectBreakdown';
 import SsmsBarChart from './SsmsBarChart';
 import SsmsTable from './SsmsTable';
 
-export {
+export default {
   AffectedCasesBarChart,
   AffectedCasesTable,
   ExploreCasesPies,

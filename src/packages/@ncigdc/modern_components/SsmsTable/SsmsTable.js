@@ -58,7 +58,6 @@ type TProps = {
     },
   },
   projectBreakdown: Object,
-  shouldShowGeneSymbol: boolean,
   relay: {
     route: {
       params: {},
@@ -90,7 +89,6 @@ export default compose(
       selectedSurvivalData = { id: '' },
       setSelectedSurvivalData = () => {},
       viewer: { explore: { ssms, filteredCases, cases } },
-      shouldShowGeneSymbol = true,
       relay,
       setSurvivalLoadingId,
       survivalLoadingId,
@@ -115,7 +113,6 @@ export default compose(
             ['desc', 'asc'],
           )
         : [],
-      shouldShowGeneSymbol,
       theme,
     );
 

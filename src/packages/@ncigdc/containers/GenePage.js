@@ -163,7 +163,6 @@ export const GenePageComponent = (props: TProps) => {
           <Column>
             <SsmsTable
               defaultFilters={geneFilter}
-              shouldShowGeneSymbol={false}
               context={props.node.symbol}
             />
           </Column>

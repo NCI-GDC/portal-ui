@@ -50,6 +50,7 @@ const CreateRepositoryCaseSetButton = ({ filters, setSize, style, push }) => {
       disabled={!setSize}
       style={style}
       filters={filters}
+      field="cases.case_id"
       commitMutation={(variables, onCompleted, onError) => {
         commitMutation(environment, {
           mutation: repositoryMutation,

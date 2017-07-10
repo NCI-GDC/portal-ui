@@ -30,6 +30,7 @@ const CreateExploreGeneSetButton = ({ onComplete, ...props }: TProps) => {
   return (
     <CreateSetButtonBase
       {...props}
+      field="genes.gene_id"
       setIdExtractor={response => response.sets.create.explore.gene.set_id}
       commitMutation={(variables, onCompleted, onError) => {
         commitMutation(environment, {

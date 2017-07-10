@@ -14,11 +14,11 @@ import Components from '@ncigdc/modern_components';
 
 import { DragSource } from 'react-dnd';
 
-let dragging;
+let draggingType;
 
 const typeSource = {
   beginDrag(props) {
-    dragging = props.type;
+    draggingType = props.type;
     return {};
   },
 };
@@ -32,8 +32,8 @@ function collectType(connect, monitor) {
 
 const zoneTarget = {
   drop(props, monitor) {
-    props.setZones(z => [...z, dragging]);
-    dragging = null;
+    props.setZones(z => [...z, { type: draggingType, userProps: {} }]);
+    draggingType = null;
   },
 };
 
@@ -82,7 +82,7 @@ const EmptyZone = DropTarget(
   ),
 );
 
-const Zone = ({ edit, children, type, remove, style }) =>
+const Zone = ({ edit, children, component, remove, style }) =>
   <div
     style={{
       position: 'relative',
@@ -108,7 +108,7 @@ const Zone = ({ edit, children, type, remove, style }) =>
             color: 'white',
           }}
         >
-          <div>{type}</div>
+          <div>{component.type}</div>
           <div style={{ marginLeft: 'auto' }}>
             <Button onClick={remove}>X</Button>
           </div>
@@ -147,7 +147,12 @@ export default (
     path="/custom"
     component={compose(
       DragDropContext(HTML5Backend),
-      withState('zones', 'setZones', ['GenesTable']),
+      withState('zones', 'setZones', [
+        {
+          type: 'GenesTable',
+          userProps: {},
+        },
+      ]),
     )(({ location, zones, setZones }) => {
       const { edit } = parse(location.search);
       return (
@@ -160,20 +165,20 @@ export default (
           {edit && <ComponentList pathname={location.pathname} edit={edit} />}
           <div style={{ marginLeft: edit ? 220 : 0 }}>
             <Column spacing="2rem">
-              {zones.map((type, i) => {
-                const Component = Components[type];
+              {zones.map((component, i) => {
+                const Component = Components[component.type];
                 return (
                   <Zone
                     key={i}
                     edit={edit}
-                    type={type}
+                    component={component}
                     remove={() =>
                       setZones(zones => [
                         ...zones.slice(0, i),
                         ...zones.slice(i + 1),
                       ])}
                   >
-                    <Component />
+                    <Component {...component.userProps} />
                   </Zone>
                 );
               })}

@@ -136,7 +136,7 @@ const ConsequencesTableComponent = compose(
       style={{ width: '100%', minWidth: 450 }}
       data={dataRows}
       prefix={paginationPrefix}
-      entityName={'entries'}
+      entityName={''}
       buttons={
         <Row style={{ alignItems: 'flex-end' }}>
           <Tooltip

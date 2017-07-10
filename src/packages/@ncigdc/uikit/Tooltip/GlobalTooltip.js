@@ -24,14 +24,14 @@ class GlobalTooltip extends Component {
   moveTooltip = _.throttle(event => {
     this.globalTooltip.style.transform = `translate(${event.pageX}px, ${event.pageY}px)`;
 
-    const elWidth = this.wrapper.offsetWidth / 2 + PADDING;
-
-    // keep tooltip on screen
+    // shift tooltip if it is off screen.
+    const minDistanceFromEdge = this.wrapper.offsetWidth / 2 + PADDING;
     const offset =
-      Math.max(elWidth - event.pageX, 0) ||
-      Math.min(windowWidth - event.pageX - elWidth, 0);
-
+      Math.max(minDistanceFromEdge - event.pageX, 0) ||
+      Math.min(windowWidth - event.pageX - minDistanceFromEdge, 0);
     this.wrapper.style.transform = `translate(${offset}px, -100%)`;
+
+    // move point so it still points at the mouse
     this.point1.style.transform = `translateX(${-1 * offset}px)`;
     this.point2.style.transform = `translateX(${-1 * offset}px)`;
   }, 16);

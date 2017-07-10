@@ -36,7 +36,16 @@ export const EmptyZone = compose(
   ),
 );
 
-export const Zone = ({ edit, children, component, remove, style }) =>
+export const Zone = ({
+  edit,
+  children,
+  component,
+  zoneIndex,
+  remove,
+  style,
+  propTypes,
+  changeProp,
+}) =>
   <div
     style={{
       position: 'relative',
@@ -52,20 +61,40 @@ export const Zone = ({ edit, children, component, remove, style }) =>
           width: '100%',
           height: '100%',
         }}
+      />}
+    {edit &&
+      <div
+        style={{
+          backgroundColor: 'rgb(50, 50, 50)',
+          color: 'white',
+          zIndex: 20,
+          position: 'relative',
+        }}
       >
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             padding: 5,
-            backgroundColor: 'rgb(50, 50, 50)',
-            color: 'white',
           }}
         >
           <div>{component.type}</div>
           <div style={{ marginLeft: 'auto' }}>
             <Button onClick={remove}>X</Button>
           </div>
+        </div>
+        <div>
+          {propTypes &&
+            Object.keys(propTypes).map(prop =>
+              <div key={prop}>
+                <label>{prop}</label>
+                <input
+                  style={{ color: 'black' }}
+                  onChange={e =>
+                    changeProp({ zoneIndex, prop, value: e.target.value })}
+                />
+              </div>,
+            )}
         </div>
       </div>}
     {children}

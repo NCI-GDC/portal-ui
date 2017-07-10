@@ -1,3 +1,8 @@
+import PropTypes from 'prop-types';
 import Component from './GeneExternalReferences';
 import createRenderer from './GeneExternalReferences.relay';
-export default createRenderer(Component);
+const GeneExternalReferences = createRenderer(Component);
+GeneExternalReferences.propTypes = {
+  geneId: PropTypes.string,
+};
+export default GeneExternalReferences;

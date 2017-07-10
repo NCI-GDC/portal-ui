@@ -36,11 +36,27 @@ export default (
             <Column spacing="2rem">
               {zones.map((component, i) => {
                 const Component = Components[component.type];
+
                 return (
                   <Zone
                     key={i}
+                    zoneIndex={i}
                     edit={edit}
+                    propTypes={Component.propTypes}
                     component={component}
+                    changeProp={({ zoneIndex, prop, value }) =>
+                      setZones(zones =>
+                        zones.map((z, i) => {
+                          if (i !== zoneIndex) return z;
+                          return {
+                            ...z,
+                            userProps: {
+                              ...z.userProps,
+                              [prop]: value,
+                            },
+                          };
+                        }),
+                      )}
                     remove={() =>
                       setZones(zones => [
                         ...zones.slice(0, i),

@@ -222,7 +222,7 @@ const CancerDistributionTableComponent = compose(
             key: 'num_mutations',
             title: (
               <Tooltip
-                Component={`Number of Simple Somatic Mutations observed in ${entityName} in Project`}
+                Component={`# distinct (unique) Simple Somatic Mutations observed in ${entityName} in Project`}
                 style={tableToolTipHint()}
               >
                 # Mutations

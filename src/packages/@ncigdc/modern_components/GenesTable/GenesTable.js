@@ -324,7 +324,8 @@ const Component = compose(
                 <Tooltip
                   Component={
                     <span>
-                      # of Simple Somatic Mutations in the Gene in {context}
+                      # of distinct (unique) Simple Somatic Mutations in the
+                      Gene in {context}
                     </span>
                   }
                   style={tableToolTipHint()}

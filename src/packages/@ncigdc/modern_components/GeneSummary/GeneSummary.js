@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import { compose, branch, renderComponent } from 'recompose';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import TableIcon from '@ncigdc/theme/icons/Table';
 import MinusIcon from '@ncigdc/theme/icons/Minus';
@@ -13,9 +14,12 @@ const strandIconMap = {
   1: <PlusIcon />,
 };
 
-export default (
-  { viewer: { explore: { genes: { hits: { edges } } } } } = {},
-) => {
+export default compose(
+  branch(
+    ({ viewer }) => !viewer.explore.genes.hits.edges[0],
+    renderComponent(() => <div>No gene found.</div>),
+  ),
+)(({ viewer: { explore: { genes: { hits: { edges } } } } } = {}) => {
   const gene = edges[0].node;
   return (
     <EntityPageVerticalTable
@@ -85,4 +89,4 @@ export default (
       }}
     />
   );
-};
+});

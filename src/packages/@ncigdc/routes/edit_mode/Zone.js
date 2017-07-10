@@ -57,7 +57,7 @@ export const Zone = ({
         style={{
           position: 'absolute',
           zIndex: edit ? 10 : 0,
-          backgroundColor: edit ? 'rgba(193, 255, 227, 0.3)' : 'transparent',
+          backgroundColor: edit ? 'rgba(193, 255, 227, 0.2)' : 'transparent',
           width: '100%',
           height: '100%',
         }}

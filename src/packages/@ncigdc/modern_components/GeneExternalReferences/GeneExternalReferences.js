@@ -1,5 +1,5 @@
 import React from 'react';
-import { compose, withProps } from 'recompose';
+import { compose, withProps, branch, renderComponent } from 'recompose';
 import { omit } from 'lodash';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
@@ -12,6 +12,10 @@ type TProps = {
 };
 
 export default compose(
+  branch(
+    ({ viewer }) => !viewer.explore.genes.hits.edges[0],
+    renderComponent(() => <div>No gene found.</div>),
+  ),
   withProps(({ viewer: { explore: { genes: { hits: { edges } } } } } = {}) => {
     const gene = edges[0].node;
     return {

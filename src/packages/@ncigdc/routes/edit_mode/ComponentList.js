@@ -1,13 +1,16 @@
 import React from 'react';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
 import { DragSource } from 'react-dnd';
 import { Link } from 'react-router-dom';
 import Components from '@ncigdc/modern_components';
 import { Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import { setDraggingComponent } from './dux';
 
 const typeSource = {
-  beginDrag(props) {
-    // draggingType = props.type;
+  beginDrag({ dispatch, type }) {
+    dispatch(setDraggingComponent(type));
     return {};
   },
 };
@@ -19,10 +22,9 @@ function collectType(connect, monitor) {
   };
 }
 
-const ComponentBubble = DragSource(
-  'type',
-  typeSource,
-  collectType,
+const ComponentBubble = compose(
+  connect(),
+  DragSource('type', typeSource, collectType),
 )(({ isDragging, connectDragSource, type }) =>
   connectDragSource(
     <div

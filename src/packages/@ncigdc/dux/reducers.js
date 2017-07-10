@@ -1,6 +1,7 @@
 // @flow
 
 import { tooltipReducer as tooltip } from '@ncigdc/uikit/Tooltip';
+import editMode from '@ncigdc/routes/edit_mode/dux';
 
 import modal from './modal';
 import relayLoading from './relayLoading';
@@ -29,4 +30,5 @@ export default {
   error,
   loaders,
   tableColumns,
+  editMode,
 };

@@ -1,12 +1,14 @@
 /* @flow */
 
 import React from 'react';
+import { compose } from 'recompose';
+import { connect } from 'react-redux';
 import { DropTarget } from 'react-dnd';
 import Button from '@ncigdc/uikit/Button';
 
 const zoneTarget = {
   drop(props, monitor) {
-    props.setZones(z => [...z, { type: props.draggingType, userProps: {} }]);
+    props.setZones(z => [...z, { type: props.componentType, userProps: {} }]);
   },
 };
 
@@ -17,10 +19,9 @@ function collectZone(connect, monitor) {
   };
 }
 
-export const EmptyZone = DropTarget(
-  'type',
-  zoneTarget,
-  collectZone,
+export const EmptyZone = compose(
+  connect(state => state.editMode),
+  DropTarget('type', zoneTarget, collectZone),
 )(({ isOver, connectDropTarget }) =>
   connectDropTarget(
     <div

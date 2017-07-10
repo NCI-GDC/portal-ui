@@ -25,6 +25,7 @@ const CreateSetButton = ({
   setIsCreating,
   dispatch,
   children,
+  disabled,
 }) => {
   const onError = err => {
     setIsCreating(false);
@@ -56,6 +57,7 @@ const CreateSetButton = ({
       </Overlay>
       <Button
         style={style}
+        disabled={disabled}
         onClick={() => {
           if (!setOnlyInCurrentFilters) {
             setIsCreating(true);

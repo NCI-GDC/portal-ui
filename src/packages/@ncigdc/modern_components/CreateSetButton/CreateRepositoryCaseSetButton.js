@@ -47,6 +47,7 @@ const CreateRepositoryCaseSetButton = ({ filters, setSize, style, push }) => {
   };
   return (
     <CreateSetButtonBase
+      disabled={!setSize}
       style={style}
       filters={filters}
       commitMutation={(variables, onCompleted, onError) => {

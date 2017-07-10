@@ -50,6 +50,7 @@ const CreateExploreCaseSetButton = ({ filters, setSize, style, push }) => {
     <CreateSetButtonBase
       style={style}
       filters={filters}
+      disabled={!setSize}
       setIdExtractor={response => response.sets.create.explore.case.set_id}
       commitMutation={(variables, onCompleted, onError) => {
         commitMutation(environment, {

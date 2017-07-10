@@ -1,5 +1,5 @@
 import React from 'react';
-import { uniq, get } from 'lodash';
+import { get } from 'lodash';
 
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import { geneMap, GENE_ID_FIELDS } from '@ncigdc/utils/validateIds';
@@ -10,6 +10,7 @@ import saveFile from '@ncigdc/utils/filesaver';
 import toTsvString from '@ncigdc/utils/toTsvString';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { theme } from '@ncigdc/theme/index';
+import TabbedLinks from '@ncigdc/components/TabbedLinks';
 
 const ID_FIELD_DISPLAY = {
   symbol: 'Symbol',
@@ -20,9 +21,10 @@ const ID_FIELD_DISPLAY = {
   'external_db_ids.omim_gene': 'OMIM',
 };
 
-export default ({ genes, ...props }) => {
+export default ({ genes, invalidGenes, ...props }) => {
   const submittedHeaders = [];
-  const data = Object.entries(
+  const unmatched = invalidGenes.map(gene => ({ submitted: gene }));
+  const matched = Object.entries(
     genes.reduce((acc, gene) => {
       acc[geneMap[gene].gene_id] = (acc[geneMap[gene].gene_id] || [])
         .concat(gene);
@@ -54,59 +56,117 @@ export default ({ genes, ...props }) => {
     }));
 
   const from = genes.length;
-  const to = uniq(data.map(g => g.mapped[0])).length;
+  const to = matched.length;
+
   return (
-    <div {...props}>
-      {from} submitted gene identifier{from > 1 ? 's' : ''} mapped to {to} GDC
-      gene{to > 1 ? 's' : ''}
-      <LocalPaginationTable
-        prefix="uploadGeneSet"
-        data={data}
-        entityName="submitted gene identifiers"
-        buttons={
-          <Row style={{ alignItems: 'flex-end' }}>
-            <Button
-              style={{ ...visualizingButton }}
-              onClick={() =>
-                saveFile(
-                  toTsvString(
-                    data.map(item => ({
-                      submitted: item.submitted,
-                      mappedGeneId: item.mapped[0],
-                      mappedSymbol: item.mapped[1],
-                    })),
-                  ),
-                  'TSV',
-                  `geneList.tsv`,
-                )}
-            >
-              TSV
-            </Button>
-          </Row>
-        }
-      >
-        <EntityPageHorizontalTable
-          dividerStyle={{
-            borderLeft: `1px solid ${theme.greyScale3}`,
-          }}
-          headings={[
-            {
-              key: 'submitted',
-              title: 'Submitted Gene Identifier',
-              subheadings: submittedHeaders
-                .filter(Boolean)
-                .map(h => ID_FIELD_DISPLAY[h]),
-              thStyle: { textAlign: 'center' },
-            },
-            {
-              key: 'mapped',
-              title: 'Mapped',
-              subheadings: ['GDC Gene ID', ID_FIELD_DISPLAY.symbol],
-              thStyle: { textAlign: 'center' },
-            },
-          ]}
-        />
-      </LocalPaginationTable>
-    </div>
+    <TabbedLinks
+      {...props}
+      queryParam="uploadGeneTab"
+      links={[
+        {
+          id: 'matched',
+          text: `Matched (${from})`,
+          component: (
+            <div>
+              <div style={{ margin: '1rem 1rem 0' }}>
+                {from} submitted gene identifier{from > 1 ? 's' : ''}{' '}
+                mapped to{' '}
+                {to} GDC gene{to > 1 ? 's' : ''}
+              </div>
+              <LocalPaginationTable
+                prefix="matchedGenes"
+                data={matched}
+                entityName="submitted gene identifiers"
+                buttons={
+                  <Row style={{ alignItems: 'flex-end' }}>
+                    <Button
+                      style={{ ...visualizingButton }}
+                      onClick={() =>
+                        saveFile(
+                          toTsvString(
+                            matched.map(item => ({
+                              submitted: item.submitted,
+                              mappedGeneId: item.mapped[0],
+                              mappedSymbol: item.mapped[1],
+                            })),
+                          ),
+                          'TSV',
+                          `matched-gene-list.tsv`,
+                        )}
+                    >
+                      TSV
+                    </Button>
+                  </Row>
+                }
+              >
+                <EntityPageHorizontalTable
+                  dividerStyle={{
+                    borderLeft: `1px solid ${theme.greyScale3}`,
+                  }}
+                  headings={[
+                    {
+                      key: 'submitted',
+                      title: 'Submitted Gene Identifier',
+                      subheadings: submittedHeaders
+                        .filter(Boolean)
+                        .map(h => ID_FIELD_DISPLAY[h]),
+                      thStyle: { textAlign: 'center' },
+                    },
+                    {
+                      key: 'mapped',
+                      title: 'Mapped',
+                      subheadings: ['GDC Gene ID', ID_FIELD_DISPLAY.symbol],
+                      thStyle: { textAlign: 'center' },
+                    },
+                  ]}
+                />
+              </LocalPaginationTable>
+            </div>
+          ),
+        },
+        {
+          id: 'unmatched',
+          text: `Unmatched (${invalidGenes.length})`,
+          component: (
+            <div>
+              <div style={{ margin: '1rem 1rem 0' }}>
+                {invalidGenes.length} submitted gene identifier{invalidGenes.length > 1 ? 's' : ''}{' '}
+                not recognized
+              </div>
+              <LocalPaginationTable
+                prefix="unmatchedGenes"
+                data={unmatched}
+                entityName="submitted gene identifiers"
+                buttons={
+                  <Row style={{ alignItems: 'flex-end' }}>
+                    <Button
+                      style={{ ...visualizingButton }}
+                      onClick={() =>
+                        saveFile(
+                          toTsvString(unmatched),
+                          'TSV',
+                          `unmatched-gene-list.tsv`,
+                        )}
+                    >
+                      TSV
+                    </Button>
+                  </Row>
+                }
+              >
+                <EntityPageHorizontalTable
+                  headings={[
+                    {
+                      key: 'submitted',
+                      title: 'Submitted Gene Identifier',
+                      thStyle: { textAlign: 'center' },
+                    },
+                  ]}
+                />
+              </LocalPaginationTable>
+            </div>
+          ),
+        },
+      ]}
+    />
   );
 };

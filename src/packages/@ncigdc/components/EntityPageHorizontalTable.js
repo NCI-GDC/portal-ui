@@ -35,6 +35,7 @@ const EntityPageHorizontalTable = ({
   theme,
   tableId,
   idKey,
+  dividerStyle,
 }) =>
   <Column
     style={{
@@ -66,20 +67,32 @@ const EntityPageHorizontalTable = ({
       <Table
         id={tableId}
         style={styles.table}
-        headings={headings.map(h =>
+        headings={headings.map((h, i) =>
           <Th
             rowSpan={h.subheadings ? 1 : 2}
             colSpan={h.subheadings ? h.subheadings.length : 1}
             key={h.key}
-            style={h.thStyle || h.style || {}}
+            style={{
+              ...(h.thStyle || h.style || {}),
+              ...(i > 0 ? dividerStyle : {}),
+            }}
           >
             {h.title}
           </Th>,
         )}
         subheadings={headings.map(
-          h =>
+          (h, i) =>
             h.subheadings &&
-            h.subheadings.map((s, i) => <Th key={`subheading-${i}`}>{s}</Th>),
+            h.subheadings.map((s, j) =>
+              <Th
+                key={`subheading-${j}`}
+                style={{
+                  ...(i > 0 && j === 0 ? dividerStyle : {}),
+                }}
+              >
+                {s}
+              </Th>,
+            ),
         )}
         body={
           <tbody>
@@ -91,11 +104,14 @@ const EntityPageHorizontalTable = ({
                 }}
                 key={d[idKey] || i}
               >
-                {headings.map(h =>
+                {headings.map((h, i) =>
                   [].concat(d[h.key]).map((v, j) =>
                     <Td
                       key={`${h.key}-${j}`}
-                      style={h.tdStyle || h.style || {}}
+                      style={{
+                        ...(h.tdStyle || h.style || {}),
+                        ...(i > 0 && j === 0 ? dividerStyle : {}),
+                      }}
                       className={h.className || ''}
                     >
                       {h.color &&

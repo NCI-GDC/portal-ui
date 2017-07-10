@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { compose, withPropsOnChange } from 'recompose';
+import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import BookIcon from '@ncigdc/theme/icons/Book';
@@ -20,6 +20,10 @@ const styles = {
 };
 
 export default compose(
+  branch(
+    ({ viewer }) => !viewer.explore.ssms.hits.edges[0],
+    renderComponent(() => <div>No ssm found.</div>),
+  ),
   withPropsOnChange(
     ['viewer'],
     ({ viewer: { explore: { ssms: { hits: { edges } } } } }) => {

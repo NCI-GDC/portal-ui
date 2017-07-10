@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { compose, withPropsOnChange } from 'recompose';
+import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
 import { get } from 'lodash';
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import TableIcon from '@ncigdc/theme/icons/Table';
@@ -22,6 +22,10 @@ const styles = {
 };
 
 export default compose(
+  branch(
+    ({ viewer }) => !viewer.explore.ssms.hits.edges[0],
+    renderComponent(() => <div>No ssm found.</div>),
+  ),
   withTheme,
   withPropsOnChange(
     ['viewer'],

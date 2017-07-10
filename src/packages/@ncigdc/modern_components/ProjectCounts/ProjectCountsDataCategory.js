@@ -1,5 +1,6 @@
 import React from 'react';
 import { scaleOrdinal, schemeCategory20 } from 'd3';
+import { compose, branch, renderComponent } from 'recompose';
 import JSURL from 'jsurl';
 import SummaryCard from '@ncigdc/components/SummaryCard';
 import { makeFilter, mergeQuery } from '@ncigdc/utils/filters';
@@ -19,7 +20,12 @@ const styles = {
   },
 };
 
-export default ({ viewer: { projects: { hits: { edges } } }, query, push }) => {
+export default compose(
+  branch(
+    ({ viewer }) => !viewer.projects.hits.edges[0],
+    renderComponent(() => <div>No project found.</div>),
+  ),
+)(({ viewer: { projects: { hits: { edges } } }, query, push }) => {
   const project = edges[0].node;
   const dataCategories = Object.keys(DATA_CATEGORIES).reduce((acc, key) => {
     const type = project.summary.data_categories.find(
@@ -128,4 +134,4 @@ export default ({ viewer: { projects: { hits: { edges } } }, query, push }) => {
       ]}
     />
   );
-};
+});

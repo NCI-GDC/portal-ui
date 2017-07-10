@@ -4,25 +4,10 @@ import React from 'react';
 import { compose, withState } from 'recompose';
 import { parse } from 'query-string';
 import { Link } from 'react-router-dom';
-import { handleActions } from 'redux-actions';
-import { Row, Column } from '@ncigdc/uikit/Flex';
 import Route from 'react-router/Route';
-import GeneSummary from '@ncigdc/modern_components/GeneSummary';
-import GeneExternalReferences from '@ncigdc/modern_components/GeneExternalReferences';
-import CancerDistributionBarChart from '@ncigdc/modern_components/CancerDistributionBarChart';
-import CancerDistributionTable from '@ncigdc/modern_components/CancerDistributionTable';
-import SsmsTable from '@ncigdc/modern_components/SsmsTable';
-import { GeneLolliplot } from '@ncigdc/modern_components/Lolliplot';
-import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
-import ExploreLink from '@ncigdc/components/Links/ExploreLink';
-import CurrentFilters from '@ncigdc/components/CurrentFilters';
-import ChartIcon from '@ncigdc/theme/icons/BarChart';
-import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
-import { replaceFilters } from '@ncigdc/utils/filters';
-import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
-
 import { DragDropContext, DropTarget } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import Button from '@ncigdc/uikit/Button';
 
 import Components from '@ncigdc/modern_components';
 
@@ -30,55 +15,63 @@ import { DragSource } from 'react-dnd';
 
 let dragging;
 
-const cardSource = {
+const typeSource = {
   beginDrag(props) {
-    dragging = props.x;
+    dragging = props.type;
     return {};
   },
 };
 
-function collect(connect, monitor) {
+function collectType(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
     isDragging: monitor.isDragging(),
   };
 }
 
-const squareTarget = {
+const zoneTarget = {
   drop(props, monitor) {
-    props.addZone(z => [...z, Components[dragging]]);
+    props.setZones(z => [...z, dragging]);
     dragging = null;
   },
 };
 
-function collectDrop(connect, monitor) {
+function collectZone(connect, monitor) {
   return {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
   };
 }
 
-const ComponentBubble = DragSource('c', cardSource, collect)(props =>
-  props.connectDragSource(
+const ComponentBubble = DragSource(
+  'type',
+  typeSource,
+  collectType,
+)(({ isDragging, connectDragSource, type }) =>
+  connectDragSource(
     <div
       style={{
-        backgroundColor: props.isDragging ? 'rgb(18, 143, 182)' : 'white',
+        backgroundColor: isDragging ? 'rgb(18, 143, 182)' : 'white',
         borderRadius: 4,
         padding: '3px 5px',
         margin: 5,
         cursor: 'pointer',
       }}
     >
-      {props.x}
+      {type}
     </div>,
   ),
 );
 
-const Zone = DropTarget('c', squareTarget, collectDrop)(props =>
-  props.connectDropTarget(
+const EmptyZone = DropTarget(
+  'type',
+  zoneTarget,
+  collectZone,
+)(({ isOver, connectDropTarget }) =>
+  connectDropTarget(
     <div
       style={{
-        color: props.isOver ? 'rgb(113, 204, 164)' : 'rgb(87, 87, 87)',
+        color: isOver ? 'rgb(113, 204, 164)' : 'rgb(87, 87, 87)',
         border: '2px dotted',
         padding: 20,
       }}
@@ -88,14 +81,66 @@ const Zone = DropTarget('c', squareTarget, collectDrop)(props =>
   ),
 );
 
+const Zone = ({ edit, children, type, remove }) =>
+  <div
+    style={{
+      position: 'relative',
+    }}
+  >
+    {edit &&
+      <div
+        style={{
+          position: 'absolute',
+          zIndex: edit ? 10 : 0,
+          backgroundColor: edit ? 'rgba(193, 255, 227, 0.3)' : 'transparent',
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: 5,
+            backgroundColor: 'rgb(50, 50, 50)',
+            color: 'white',
+          }}
+        >
+          <div>{type}</div>
+          <div style={{ marginLeft: 'auto' }}>
+            <Button onClick={remove}>X</Button>
+          </div>
+        </div>
+      </div>}
+    {children}
+  </div>;
+
+const ComponentList = () =>
+  <div
+    style={{
+      backgroundColor: 'rgb(42, 42, 42)',
+      position: 'fixed',
+      width: '200px',
+      height: '100vh',
+      zIndex: 9999,
+      top: 0,
+      left: 0,
+    }}
+  >
+    <h3 style={{ color: 'white', margin: 5 }}>Components:</h3>
+    {Object.keys(Components).map(type =>
+      <ComponentBubble key={type} type={type} />,
+    )}
+  </div>;
+
 export default (
   <Route
     path="/custom"
     component={compose(
       DragDropContext(HTML5Backend),
-      withState('zones', 'addZone', [Components.GenesTable]),
-    )(p => {
-      const { edit } = parse(p.location.search);
+      withState('zones', 'setZones', ['GenesTable']),
+    )(({ location, zones, setZones }) => {
+      const { edit } = parse(location.search);
       return (
         <div
           style={{
@@ -103,49 +148,29 @@ export default (
             padding: '85px 100px 90px',
           }}
         >
-          {edit &&
-            <div
-              style={{
-                backgroundColor: 'rgb(42, 42, 42)',
-                position: 'fixed',
-                width: '200px',
-                height: '100vh',
-                zIndex: 9999,
-                top: 0,
-                left: 0,
-              }}
-            >
-              <h3 style={{ color: 'white', margin: 5 }}>Components:</h3>
-              {Object.keys(Components).map(x =>
-                <ComponentBubble key={x} x={x} />,
-              )}
-            </div>}
+          {edit && <ComponentList />}
           <div style={{ marginLeft: edit ? 220 : 0 }}>
-            <Link to={`${p.location.pathname}?edit=${edit ? '' : 1}`}>
+            <Link to={`${location.pathname}?edit=${edit ? '' : 1}`}>
               Toggle Edit
             </Link>
-            {p.zones.map((X, zone) =>
-              <div
-                key={zone}
-                style={{
-                  position: 'relative',
-                }}
-              >
-                <div
-                  style={{
-                    position: 'absolute',
-                    zIndex: edit ? 10 : 0,
-                    backgroundColor: edit
-                      ? 'rgba(193, 255, 227, 0.3)'
-                      : 'transparent',
-                    width: '100%',
-                    height: '100%',
-                  }}
-                />
-                <X />
-              </div>,
-            )}
-            {edit && <Zone addZone={p.addZone} />}
+            {zones.map((type, i) => {
+              const Component = Components[type];
+              return (
+                <Zone
+                  key={i}
+                  edit={edit}
+                  type={type}
+                  remove={() =>
+                    setZones(zones => [
+                      ...zones.slice(0, i),
+                      ...zones.slice(i + 1),
+                    ])}
+                >
+                  <Component />
+                </Zone>
+              );
+            })}
+            {edit && <EmptyZone setZones={setZones} />}
           </div>
         </div>
       );

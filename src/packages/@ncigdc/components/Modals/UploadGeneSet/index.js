@@ -11,7 +11,6 @@ import MappingTable from './MappingTable';
 import TextArea from './TextArea';
 import CreateSetButton from './CreateSetButton';
 import FileUpload from './FileUpload';
-import Warning from './Warning';
 
 const debounceValidateGenes = debounce(validateGenes, 200);
 
@@ -110,9 +109,12 @@ const SelectOverlay = ({
           setInputFile={setInputFile}
         />
         {validating && <span><SpinnerIcon /> validating genes</span>}
-        <Warning hasGenes={!!genes.length} invalidGenes={invalidGenes} />
         {genes.length > 0 &&
-          <MappingTable genes={genes} style={{ marginTop: '2rem' }} />}
+          <MappingTable
+            genes={genes}
+            invalidGenes={invalidGenes}
+            style={{ marginTop: '2rem' }}
+          />}
       </div>
       <Row
         style={{

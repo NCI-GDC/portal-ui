@@ -61,7 +61,6 @@ const CreateSetButton = ({
       <Button
         disabled={disabled}
         style={style}
-        disabled={disabled}
         onClick={() => {
           if (!setOnlyInCurrentFilters) {
             setIsCreating(true);

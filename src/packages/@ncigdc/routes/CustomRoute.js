@@ -2,12 +2,13 @@
 
 import React from 'react';
 import { compose, withState } from 'recompose';
-import { parse } from 'query-string';
 import { Link } from 'react-router-dom';
+import { parse } from 'query-string';
 import Route from 'react-router/Route';
 import { DragDropContext, DropTarget } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Button from '@ncigdc/uikit/Button';
+import { Row, Column } from '@ncigdc/uikit/Flex';
 
 import Components from '@ncigdc/modern_components';
 
@@ -81,10 +82,11 @@ const EmptyZone = DropTarget(
   ),
 );
 
-const Zone = ({ edit, children, type, remove }) =>
+const Zone = ({ edit, children, type, remove, style }) =>
   <div
     style={{
       position: 'relative',
+      ...style,
     }}
   >
     {edit &&
@@ -115,8 +117,8 @@ const Zone = ({ edit, children, type, remove }) =>
     {children}
   </div>;
 
-const ComponentList = () =>
-  <div
+const ComponentList = ({ pathname, edit }) =>
+  <Column
     style={{
       backgroundColor: 'rgb(42, 42, 42)',
       position: 'fixed',
@@ -131,7 +133,14 @@ const ComponentList = () =>
     {Object.keys(Components).map(type =>
       <ComponentBubble key={type} type={type} />,
     )}
-  </div>;
+    <div style={{ marginTop: 'auto', padding: '20px 5px' }}>
+      <Link to={`${pathname}?edit=${edit ? '' : 1}`}>
+        <Button style={{ width: '100%' }}>
+          SAVE
+        </Button>
+      </Link>
+    </div>
+  </Column>;
 
 export default (
   <Route
@@ -148,29 +157,31 @@ export default (
             padding: '85px 100px 90px',
           }}
         >
-          {edit && <ComponentList />}
+          {edit && <ComponentList pathname={location.pathname} edit={edit} />}
           <div style={{ marginLeft: edit ? 220 : 0 }}>
-            <Link to={`${location.pathname}?edit=${edit ? '' : 1}`}>
-              Toggle Edit
-            </Link>
-            {zones.map((type, i) => {
-              const Component = Components[type];
-              return (
-                <Zone
-                  key={i}
-                  edit={edit}
-                  type={type}
-                  remove={() =>
-                    setZones(zones => [
-                      ...zones.slice(0, i),
-                      ...zones.slice(i + 1),
-                    ])}
-                >
-                  <Component />
-                </Zone>
-              );
-            })}
-            {edit && <EmptyZone setZones={setZones} />}
+            <Column spacing="2rem">
+              {zones.map((type, i) => {
+                const Component = Components[type];
+                return (
+                  <Zone
+                    key={i}
+                    edit={edit}
+                    type={type}
+                    remove={() =>
+                      setZones(zones => [
+                        ...zones.slice(0, i),
+                        ...zones.slice(i + 1),
+                      ])}
+                  >
+                    <Component />
+                  </Zone>
+                );
+              })}
+            </Column>
+            {edit &&
+              <div style={{ marginTop: '2rem' }}>
+                <EmptyZone setZones={setZones} />
+              </div>}
           </div>
         </div>
       );

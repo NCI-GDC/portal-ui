@@ -24,23 +24,23 @@ const ID_FIELD_DISPLAY = {
 const enhance = compose(
   lifecycle({
     shouldComponentUpdate(nextProps) {
-      return ['invalidGenes', 'genes'].some(
+      return ['unmatched', 'matched'].some(
         key => !isEqual(nextProps[key], this.props[key]),
       );
     },
   }),
-  withPropsOnChange(['invalidGenes'], ({ genes, invalidGenes }) => {
+  withPropsOnChange(['unmatched'], ({ unmatched }) => {
     return {
-      unmatched: invalidGenes.map(gene => ({ submitted: gene })),
+      unmatched: unmatched.map(gene => ({ submitted: gene })),
     };
   }),
-  withPropsOnChange(['genes'], ({ genes }) => {
+  withPropsOnChange(['matched'], ({ matched }) => {
     const submittedHeaders = [];
 
     return {
       submittedHeaders,
-      matched: Object.entries(
-        genes.reduce((acc, gene) => {
+      matchedGenes: Object.entries(
+        matched.reduce((acc, gene) => {
           acc[geneMap[gene].gene_id] = (acc[geneMap[gene].gene_id] || [])
             .concat(gene);
           return acc;
@@ -75,9 +75,9 @@ const enhance = compose(
 );
 
 export default enhance(
-  ({ genes, matched, unmatched, submittedHeaders, ...props }) => {
-    const from = genes.length;
-    const to = matched.length;
+  ({ matched, matchedGenes, unmatched, submittedHeaders, ...props }) => {
+    const from = matched.length;
+    const to = matchedGenes.length;
 
     return (
       <TabbedLinks
@@ -106,7 +106,7 @@ export default enhance(
                     onClick={() =>
                       saveFile(
                         toTsvString(
-                          matched.map(item => ({
+                          matchedGenes.map(item => ({
                             submitted: item.submitted,
                             mappedGeneId: item.mapped[0],
                             mappedSymbol: item.mapped[1],
@@ -123,7 +123,7 @@ export default enhance(
                   dividerStyle={{
                     borderLeft: `1px solid ${theme.greyScale3}`,
                   }}
-                  data={matched}
+                  data={matchedGenes}
                   headings={[
                     {
                       key: 'submitted',

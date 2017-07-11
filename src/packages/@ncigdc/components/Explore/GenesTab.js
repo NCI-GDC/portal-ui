@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import JSURL from 'jsurl';
+import { get } from 'lodash';
 import {
   compose,
   withState,
@@ -14,7 +15,11 @@ import withFilters from '@ncigdc/utils/withFilters';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable/GenesTable';
-import { makeFilter, toggleFilters } from '@ncigdc/utils/filters';
+import {
+  makeFilter,
+  toggleFilters,
+  getFilterValue,
+} from '@ncigdc/utils/filters';
 import { removeEmptyKeys } from '@ncigdc/utils/uri';
 
 const styles = {
@@ -72,9 +77,24 @@ export default compose(
   }),
   withHandlers({
     handleClickGene: ({ push, query, filters }) => gene => {
+      const sets = []
+        .concat(
+          get(
+            getFilterValue({
+              currentFilters: get(filters, 'content', []),
+              dotField: 'genes.gene_id',
+            }),
+            'content.value',
+            [],
+          ),
+        )
+        .filter(v => v.includes('set_id'));
+
       const newFilters = toggleFilters(
         filters,
-        makeFilter([{ field: 'genes.gene_id', value: [gene.gene_id] }]),
+        makeFilter([
+          { field: 'genes.gene_id', value: [gene.gene_id, ...sets] },
+        ]),
       );
       push({
         pathname: '/exploration',

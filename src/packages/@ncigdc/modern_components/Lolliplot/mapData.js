@@ -42,10 +42,13 @@ export default (
     }),
 
   proteins: (() => {
-    const colors = (transcript.domains || []).reduce((acc, protein, i) => ({
-      ...acc,
-      [protein.hit_name]: `hsl(${i * 100 % 360}, 60%, 60%)`,
-    }));
+    const colors = (transcript.domains || []).reduce(
+      (acc, protein, i) => ({
+        ...acc,
+        [protein.hit_name]: `hsl(${i * 100 % 360}, 60%, 60%)`,
+      }),
+      {},
+    );
 
     return (transcript.domains || []).map(protein => ({
       id: protein.hit_name,

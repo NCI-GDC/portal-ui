@@ -4,6 +4,8 @@ import React, { Children, cloneElement } from 'react';
 import _ from 'lodash';
 import ReactModal from 'react-modal';
 
+import './Modal.css';
+
 const modalStyles = {
   overlay: {
     position: 'fixed',

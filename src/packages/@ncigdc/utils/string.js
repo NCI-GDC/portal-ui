@@ -1,5 +1,4 @@
 // @flow
-
 export const capitalize = (original: string) => {
   const customCapitalizations = {
     mirna: 'miRNA',
@@ -20,6 +19,10 @@ export const humanify = ({
   term,
   capitalize: cap = true,
   facetTerm = false,
+}: {
+  term: string,
+  capitalize?: boolean,
+  facetTerm?: boolean,
 }) => {
   let original;
   let humanified;
@@ -40,4 +43,26 @@ export const humanify = ({
   }
 
   return cap ? capitalize(humanified) : humanified;
+};
+
+export const truncateAfterMarker = (
+  term: string,
+  markers: Array<string>,
+  length: number,
+  omission?: string = '…',
+) => {
+  const { index, marker } = markers.reduce(
+    (acc, marker) => {
+      const index = term.indexOf(marker);
+      if (index !== -1) {
+        return { index, marker };
+      }
+      return acc;
+    },
+    { index: -1, marker: '' },
+  );
+  if (index !== -1 && term.length > index + marker.length + 8) {
+    return `${term.substring(0, index + marker.length + 8)}${omission}`;
+  }
+  return term;
 };

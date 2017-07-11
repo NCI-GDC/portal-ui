@@ -116,13 +116,13 @@ const File = ({
     : associatedEntities).map(({ node: ae }) => ({
     ...ae,
     case_id: <CaseLink uuid={ae.case_id}>{ae.case_id}</CaseLink>,
-    entity_id: (
+    entity_submitter_id: (
       <CaseLink
         uuid={ae.case_id}
         query={ae.entity_type !== 'case' ? { bioId: ae.entity_id } : {}}
         deepLink={ae.entity_type !== 'case' ? 'biospecimen' : undefined}
       >
-        {ae.entity_id}
+        {ae.entity_submitter_id}
       </CaseLink>
     ),
     annotation_count: getAnnotationsCount(node.annotations, ae),
@@ -272,7 +272,7 @@ const File = ({
           title="Associated Cases/Biospecimen"
           emptyMessage="No cases or biospecimen found."
           headings={[
-            { key: 'entity_id', title: 'Entity Id' },
+            { key: 'entity_submitter_id', title: 'Entity Submitter ID' },
             { key: 'entity_type', title: 'Entity Type' },
             { key: 'case_id', title: 'Case UUID' },
             { key: 'annotation_count', title: 'Annotations' },

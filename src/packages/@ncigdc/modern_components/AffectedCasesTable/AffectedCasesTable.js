@@ -29,9 +29,9 @@ import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTa
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Pagination from '@ncigdc/components/Pagination';
-import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import TableActions from '@ncigdc/components/TableActions';
 import MutationsCount from '@ncigdc/components/MutationsCount';
+import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 
 const COMPONENT_NAME = 'AffectedCasesTable';
 
@@ -118,6 +118,9 @@ const createContainer = Component =>
                 total
                 edges {
                   node {
+                    project {
+                      project_id
+                    }
                     primary_site
                     score
                     case_id
@@ -238,8 +241,8 @@ const Component = compose(
               endpoint={'case_ssms'}
               downloadTooltip="Export All Except #Mutations and #Genes"
               downloadFields={[
-                'primary_site',
                 'case_id',
+                'primary_site',
                 'submitter_id',
                 'demographic.gender',
                 'summary.data_categories.data_category',
@@ -258,8 +261,9 @@ const Component = compose(
           idKey="case_id"
           tableId="most-affected-cases-table"
           headings={[
-            { key: 'id', title: 'UUID' },
+            { key: 'id', title: 'Case UUID', style: { display: 'none' } },
             { key: 'submitter_id', title: 'Submitter ID' },
+            { key: 'project_id', title: 'Project ID' },
             { key: 'primary_site', title: 'Site' },
             { key: 'gender', title: 'Gender' },
             {
@@ -348,17 +352,13 @@ const Component = compose(
 
                   return {
                     ...c,
-                    id: (
-                      <span>
-                        <CaseLink uuid={c.case_id}>
-                          {c.case_id.substr(0, 8)}
-                        </CaseLink>
-                        <ForTsvExport>
-                          {c.case_id}
-                        </ForTsvExport>
-                      </span>
+                    id: <ForTsvExport>{c.case_id}</ForTsvExport>,
+                    submitter_id: (
+                      <CaseLink uuid={c.case_id}>
+                        {c.submitter_id}
+                      </CaseLink>
                     ),
-                    submitter_id: c.submitter_id,
+                    project_id: c.project.project_id,
                     primary_site: c.primary_site,
                     gender: c.demographic ? c.demographic.gender : '',
                     age_at_diagnosis: ageDisplay(diagnosis.age_at_diagnosis),

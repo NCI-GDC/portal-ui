@@ -8,7 +8,6 @@ import {
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
-import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { Th, Td } from '@ncigdc/uikit/Table';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
@@ -71,7 +70,18 @@ const casesTableModel = [
     name: 'Case UUID',
     id: 'case_id',
     downloadable: true,
+    hidden: true,
     th: () => <Th key="case_id" rowSpan="2">Case UUID</Th>,
+    td: ({ node }) =>
+      <Td>
+        {node.case_id}
+      </Td>,
+  },
+  {
+    name: 'Submitter ID',
+    id: 'submitter_id',
+    downloadable: true,
+    th: () => <Th key="submitter_id" rowSpan="2">Submitter ID</Th>,
     td: ({ node, index }) =>
       <Td>
         <CaseLink
@@ -80,19 +90,9 @@ const casesTableModel = [
           merge
           whitelist={['filters']}
         >
-          {node.case_id.substr(0, 8)}
+          {node.submitter_id}
         </CaseLink>
-        <ForTsvExport>
-          {node.case_id}
-        </ForTsvExport>
       </Td>,
-  },
-  {
-    name: 'Submitter ID',
-    id: 'submitter_id',
-    downloadable: true,
-    th: () => <Th key="submitter_id" rowSpan="2">Submitter ID</Th>,
-    td: ({ node }) => <Td>{node.submitter_id}</Td>,
   },
   {
     name: 'Project',

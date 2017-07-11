@@ -62,7 +62,10 @@ export type TProps = {
 };
 
 export const CasePageComponent = ({ node, viewer }: TProps) =>
-  <FullWidthLayout title={node.case_id} entityType="CA">
+  <FullWidthLayout
+    title={`${node.project.project_id} / ${node.submitter_id}`}
+    entityType="CA"
+  >
     <LocationSubscriber>
       {(ctx: {| pathname: string, query: TRawQuery |}) =>
         <Case

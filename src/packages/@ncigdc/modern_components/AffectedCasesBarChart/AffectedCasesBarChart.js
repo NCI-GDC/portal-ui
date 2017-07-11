@@ -70,6 +70,7 @@ const createContainer = Component =>
                   node {
                     score
                     case_id
+                    submitter_id
                   }
                 }
               }
@@ -91,11 +92,14 @@ const Component = compose(
     style,
   }) => {
     const chartData = cases.hits.edges.map(x => x.node).map(c => ({
-      fullLabel: c.case_id,
-      label: `${c.case_id.substring(0, 8)}\u2026`,
+      fullLabel: c.submitter_id,
+      label: c.submitter_id,
       value: c.score,
       tooltip: (
-        <span>{c.case_id}<br />{c.score.toLocaleString()} Genes Affected</span>
+        <span>
+          <b>{c.submitter_id}</b><br />
+          {c.score.toLocaleString()} Genes Affected
+        </span>
       ),
       onClick: () => push(`/cases/${c.case_id}`),
     }));
@@ -128,6 +132,7 @@ const Component = compose(
               <BarChart
                 data={chartData}
                 height={CHART_HEIGHT}
+                margin={{ top: 20, right: 50, bottom: 85, left: 55 }}
                 yAxis={{ title: '# Affected Genes' }}
                 styles={{
                   xAxis: {

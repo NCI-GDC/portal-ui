@@ -3,9 +3,10 @@
 
 import React from 'react';
 import { compose, withState } from 'recompose';
-import { truncate, orderBy, get } from 'lodash';
+import { orderBy, get } from 'lodash';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import MutationLink from '@ncigdc/components/Links/MutationLink';
+import { DNA_CHANGE_MARKERS } from '@ncigdc/utils/constants';
 import withSize from '@ncigdc/utils/withSize';
 import withBetterRouter from '@ncigdc/utils/withRouter';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
@@ -29,6 +30,7 @@ import { withTheme } from '@ncigdc/theme';
 import type { TTheme } from '@ncigdc/theme';
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 import TableActions from '@ncigdc/components/TableActions';
+import { truncateAfterMarker } from '@ncigdc/utils/string';
 
 import mapData from './mapData';
 const colors = scaleOrdinal(schemeCategory10);
@@ -166,6 +168,7 @@ export default compose(
             {
               key: 'mutation_uuid',
               title: 'Mutation ID',
+              style: { display: 'none' },
             },
             {
               key: 'genomic_dna_change',
@@ -183,6 +186,7 @@ export default compose(
                 </Tooltip>
               ),
               className: 'id-cell',
+              style: { whiteSpace: 'normal' },
             },
             { key: 'mutation_subtype', title: 'Type' },
             { key: 'consequence_type', title: 'Consequences' },
@@ -247,14 +251,9 @@ export default compose(
           data={frequentMutations.map(({ score = 0, ...x }) => ({
             ...x,
             mutation_uuid: (
-              <span>
-                <MutationLink uuid={x.ssm_id}>
-                  {x.ssm_id.substr(0, 8)}
-                </MutationLink>
-                <ForTsvExport>
-                  {x.ssm_id}
-                </ForTsvExport>
-              </span>
+              <ForTsvExport>
+                {x.ssm_id}
+              </ForTsvExport>
             ),
             genomic_dna_change: (
               <Tooltip
@@ -264,7 +263,13 @@ export default compose(
                   </div>
                 }
               >
-                {truncate(x.genomic_dna_change, { length: 22 })}
+                <MutationLink uuid={x.ssm_id}>
+                  {truncateAfterMarker(
+                    x.genomic_dna_change,
+                    DNA_CHANGE_MARKERS,
+                    8,
+                  )}
+                </MutationLink>
               </Tooltip>
             ),
             filteredCases: (

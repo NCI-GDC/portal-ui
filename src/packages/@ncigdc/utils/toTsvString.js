@@ -27,7 +27,7 @@ export function mapArrayToTsvString(xs: Array<Map<string, string>>): string {
   return result;
 }
 
-const removeEmptyCols = (data: Array<Array<string>>): string => {
+const removeEmptyCols = (data: Array<Array<string>>): Array<Array<string>> => {
   const transposed = zip(...data);
   const noEmptyColsTransposed = transposed.filter(col => some(col, c => c));
   return zip(...noEmptyColsTransposed);

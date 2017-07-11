@@ -1,6 +1,7 @@
 /* @flow */
 
-import { capitalize } from '../string';
+import { capitalize, truncateAfterMarker } from '../string';
+import { DNA_CHANGE_MARKERS } from '@ncigdc/utils/constants';
 
 describe('capitalize', () => {
   it('should captalize a string', () => {
@@ -28,5 +29,42 @@ describe('capitalize', () => {
     expect(capitalize('danish marzipan cosmic biscuit')).toEqual(
       'Danish Marzipan COSMIC Biscuit',
     );
+  });
+});
+
+describe('truncateDNAChange', () => {
+  it('return 8 characters after ins', () => {
+    expect(
+      truncateAfterMarker(
+        'chr1:g.76576946_76576947insAAAAAAAAAAAAAAAAAAAAAAC',
+        DNA_CHANGE_MARKERS,
+        8,
+      ),
+    ).toEqual('chr1:g.76576946_76576947insAAAAAAAA…');
+  });
+
+  it('return 8 characters after del', () => {
+    expect(
+      truncateAfterMarker(
+        'chr1:g.76576946_76576947delAAAAAAAAAAAAAAAAAAAAAAC',
+        DNA_CHANGE_MARKERS,
+        8,
+      ),
+    ).toEqual('chr1:g.76576946_76576947delAAAAAAAA…');
+  });
+
+  it('return 8 characters after >', () => {
+    expect(
+      truncateAfterMarker(
+        'chr1:g.76576946_76576947A>AAAAAAAAAAAAAAAAAAAAAC',
+        DNA_CHANGE_MARKERS,
+        8,
+      ),
+    ).toEqual('chr1:g.76576946_76576947A>AAAAAAAA…');
+  });
+  it('doesnt add … if shorter than length', () => {
+    expect(
+      truncateAfterMarker('chr1:g.76576946_76576947A>C', DNA_CHANGE_MARKERS, 1),
+    ).toEqual('chr1:g.76576946_76576947A>C');
   });
 });

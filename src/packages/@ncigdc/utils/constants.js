@@ -64,3 +64,5 @@ export const MUTATION_SUBTYPE_MAP = {
   'small deletion': 'Deletion',
   'small insertion': 'Insertion',
 };
+
+export const DNA_CHANGE_MARKERS = ['del', 'ins', '>'];

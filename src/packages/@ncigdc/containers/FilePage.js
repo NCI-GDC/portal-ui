@@ -24,7 +24,7 @@ export type TProps = {
 };
 
 export const FilePageComponent = (props: TProps) =>
-  <FullWidthLayout title={props.node.file_id} entityType="FL">
+  <FullWidthLayout title={props.node.file_name} entityType="FL">
     <File node={props.node} />
   </FullWidthLayout>;
 
@@ -128,6 +128,7 @@ export const FilePageQuery = {
               node {
                 case_id
                 entity_id
+                entity_submitter_id
                 entity_type
               }
             }

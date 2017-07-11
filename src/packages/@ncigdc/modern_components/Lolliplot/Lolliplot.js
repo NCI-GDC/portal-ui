@@ -173,9 +173,9 @@ export default compose(
               onPointMouseover={({ y: cases = 0, ...d }) => {
                 setTooltip(
                   <span>
-                    <div><b>{d.id}</b></div>
+                    <div><b>DNA Change: {d.genomic_dna_change}</b></div>
+                    <div>ID: {d.id}</div>
                     <div>AA Change: {d.aa_change}</div>
-                    <div>DNA Change: {d.genomic_dna_change}</div>
                     <div># of Cases: {cases.toLocaleString()}</div>
                     <div>Functional Impact: {d.impact}</div>
                   </span>,

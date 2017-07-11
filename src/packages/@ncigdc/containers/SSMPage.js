@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
+import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { compose, withPropsOnChange } from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import TableIcon from '@ncigdc/theme/icons/Table';
@@ -16,6 +17,7 @@ import ConsequencesTable from '@ncigdc/containers/ConsequencesTable';
 import CancerDistributionChart from '@ncigdc/containers/CancerDistributionChart';
 import CancerDistributionTable from '@ncigdc/containers/CancerDistributionTable';
 
+import { DNA_CHANGE_MARKERS } from '@ncigdc/utils/constants';
 import type { TChartTitleProps } from '@ncigdc/containers/CancerDistributionChart';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
@@ -71,6 +73,7 @@ export type TProps = {
   node: {
     ssm_id: string,
     gene_aa_change: Array<string>,
+    genomic_dna_change: string,
     consequence: {
       hits: {
         edges: Array<{
@@ -110,7 +113,10 @@ export const SSMPageComponent = compose(
     ]),
   })),
 )(({ node, viewer, cdFilters }: TProps = {}) =>
-  <FullWidthLayout title={node.ssm_id} entityType="MU">
+  <FullWidthLayout
+    title={truncateAfterMarker(node.genomic_dna_change, DNA_CHANGE_MARKERS, 8)}
+    entityType="MU"
+  >
     <Row spacing="2rem" id="summary">
       <Row flex="1"><SsmSummary node={node} /></Row>
       <Row flex="1"><SsmExternalReferences node={node} /></Row>
@@ -172,6 +178,7 @@ export const SSMPageQuery = {
       fragment on Ssm {
         ssm_id
         gene_aa_change
+        genomic_dna_change
         consequence {
           hits(first: 99) {
             edges {

@@ -2,7 +2,7 @@
 import React from 'react';
 import { compose, withState, withPropsOnChange, withProps } from 'recompose';
 import { debounce } from 'lodash';
-import { Row } from '@ncigdc/uikit/Flex';
+import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { validateGenes, geneMap } from '@ncigdc/utils/validateIds';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
@@ -73,11 +73,10 @@ const SelectOverlay = ({
   onClear,
 }: TProps) => {
   return (
-    <div
+    <Column
       style={{
         padding: '15px 0',
         maxHeight: 'calc(100vh - 60px)',
-        overflow: 'auto',
       }}
     >
       <h2
@@ -96,6 +95,7 @@ const SelectOverlay = ({
           borderBottom: '1px solid #e5e5e5',
           paddingTop: 10,
           paddingBottom: 10,
+          overflow: 'auto',
         }}
       >
         <TextArea
@@ -121,13 +121,17 @@ const SelectOverlay = ({
           ...styles.horizontalPadding,
           justifyContent: 'flex-end',
           paddingTop: 10,
+          flex: 'none',
         }}
         spacing="1rem"
       >
         <Button onClick={() => onClose()}>Cancel</Button>
+        <Button onClick={onClear} disabled={!inputFiles && !inputGenes}>
+          Clear
+        </Button>
         <CreateSetButton genes={genes} onClose={onClose} />
       </Row>
-    </div>
+    </Column>
   );
 };
 

@@ -1,13 +1,19 @@
 // @flow
 
 import React from 'react';
-import { compose, pure, lifecycle, withHandlers } from 'recompose';
+import {
+  compose,
+  pure,
+  lifecycle,
+  withHandlers,
+  withPropsOnChange,
+} from 'recompose';
 import { connect } from 'react-redux';
-
+import { parse } from 'query-string';
+import { Link } from 'react-router-dom';
 import { dismissNotification } from '@ncigdc/dux/bannerNotification';
-
 import nciGdcLogo from '@ncigdc/theme/images/NHI_GDC_DataPortal-logo.svg';
-
+import withRouter from '@ncigdc/utils/withRouter';
 import HomeLink from '@ncigdc/components/Links/HomeLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
 import CartLink from '@ncigdc/components/Links/CartLink';
@@ -65,8 +71,11 @@ const Header = compose(
     },
   }),
   withTheme,
-  pure,
-)(({ user, notifications, dispatch, theme }) =>
+  withRouter,
+  withPropsOnChange(['location'], ({ location }) => ({
+    search: parse(location.search),
+  })),
+)(({ user, notifications, dispatch, theme, location, search }) =>
   <header
     id="header"
     className="navbar navbar-default navbar-static-top"
@@ -211,6 +220,11 @@ const Header = compose(
           </li>
           <li className="nav-GDCApps">
             <GDCAppsDropdown />
+          </li>
+          <li>
+            <Link to={`${location.pathname}?edit=${search.edit ? '' : 1}`}>
+              <i className="fa fa-edit" style={styles.iconPadding} />
+            </Link>
           </li>
         </ul>
       </nav>

@@ -28,6 +28,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     width: '30px',
+    height: '30px',
     transform: 'scale(0.85)',
   }),
   body: {

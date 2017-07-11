@@ -1,12 +1,9 @@
 // @flow
 
 import React from 'react';
-import Relay from 'react-relay/classic';
-import { lifecycle, compose } from 'recompose';
-import { sortBy, sum, get, isEqual } from 'lodash';
-
+import { compose } from 'recompose';
+import { sortBy, sum, get } from 'lodash';
 import withRouter from '@ncigdc/utils/withRouter';
-import { makeFilter } from '@ncigdc/utils/filters';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import { withTheme } from '@ncigdc/theme';
@@ -94,31 +91,13 @@ const DefaultChartTitle = ({
     projects
   </h5>;
 
-function setCaseAggFilters(props) {
-  props.relay.setVariables({
-    fetchFilteredCaseAggs: true,
-    caseAggsFilter: props.filters,
-  });
-}
-
-const CancerDistributionChartComponent = compose(
+export default compose(
   withRouter,
   withTheme,
-  lifecycle({
-    componentDidMount(): void {
-      setCaseAggFilters(this.props);
-    },
-    componentWillReceiveProps(nextProps): void {
-      if (!isEqual(this.props.filters, nextProps.filters)) {
-        setCaseAggFilters(nextProps);
-      }
-    },
-  }),
 )(
   (
     {
-      cases,
-      ssms,
+      viewer: { explore: { cases, ssms } },
       theme,
       push,
       ChartTitle = DefaultChartTitle,
@@ -232,53 +211,3 @@ const CancerDistributionChartComponent = compose(
     );
   },
 );
-
-const CancerDistributionChartQuery = {
-  initialVariables: {
-    caseAggsFilter: null,
-    fetchFilteredCaseAggs: false,
-    ssmTested: makeFilter([
-      {
-        field: 'cases.available_variation_data',
-        value: 'ssm',
-      },
-    ]),
-  },
-  fragments: {
-    ssms: () => Relay.QL`
-      fragment on Ssms {
-        placeholder: hits(first: 0) { total }
-        hits(first: 0, filters: $caseAggsFilter) @include(if: $fetchFilteredCaseAggs) {
-          total
-        }
-      }
-    `,
-    cases: () => Relay.QL`
-      fragment on ExploreCases {
-        filtered: aggregations(filters: $caseAggsFilter) @include(if: $fetchFilteredCaseAggs) {
-          project__project_id {
-            buckets {
-              doc_count
-              key
-            }
-          }
-        }
-        total: aggregations(filters: $ssmTested) {
-          project__project_id {
-            buckets {
-              doc_count
-              key
-            }
-          }
-        }
-      }
-    `,
-  },
-};
-
-const CancerDistributionChart = Relay.createContainer(
-  CancerDistributionChartComponent,
-  CancerDistributionChartQuery,
-);
-
-export default CancerDistributionChart;

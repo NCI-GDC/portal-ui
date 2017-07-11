@@ -1,10 +1,6 @@
-// @flow
-
 import React from 'react';
-import Relay from 'react-relay/classic';
-import { compose, withProps } from 'recompose';
+import { compose, withProps, branch, renderComponent } from 'recompose';
 import { omit } from 'lodash';
-
 import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
 import { ExternalLink } from '@ncigdc/uikit/Links';
@@ -15,16 +11,21 @@ type TProps = {
   externalLinks: Object,
 };
 
-const enhance = compose(
-  withProps(({ node }) => ({
-    externalLinks: {
-      ...omit(node.external_db_ids, '__dataID__'),
-      ensembl: [node.gene_id],
-    },
-  })),
-);
-
-const GeneExternalReferencesComponent = ({ externalLinks }: TProps = {}) =>
+export default compose(
+  branch(
+    ({ viewer }) => !viewer.explore.genes.hits.edges[0],
+    renderComponent(() => <div>No gene found.</div>),
+  ),
+  withProps(({ viewer: { explore: { genes: { hits: { edges } } } } } = {}) => {
+    const gene = edges[0].node;
+    return {
+      externalLinks: {
+        ...omit(gene.external_db_ids, '__dataID__'),
+        ensembl: [gene.gene_id],
+      },
+    };
+  }),
+)(({ externalLinks }: TProps = {}) =>
   <EntityPageVerticalTable
     title={
       <span>
@@ -40,27 +41,5 @@ const GeneExternalReferencesComponent = ({ externalLinks }: TProps = {}) =>
         : '--',
     }))}
     style={{ flex: 1 }}
-  />;
-
-export const GeneExternalReferencesQuery = {
-  fragments: {
-    node: () => Relay.QL`
-      fragment on Gene {
-        gene_id
-        external_db_ids {
-          entrez_gene
-          uniprotkb_swissprot
-          hgnc
-          omim_gene
-        }
-      }
-    `,
-  },
-};
-
-const GeneExternalReferences = Relay.createContainer(
-  enhance(GeneExternalReferencesComponent),
-  GeneExternalReferencesQuery,
+  />,
 );
-
-export default GeneExternalReferences;

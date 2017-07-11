@@ -15,6 +15,7 @@ import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import CaseRoute from '@ncigdc/routes/CaseRoute';
 import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
+import CustomRoute from '@ncigdc/routes/CustomRoute';
 import CartRoute from '@ncigdc/routes/CartRoute';
 import HomeRoute from '@ncigdc/routes/HomeRoute';
 import GeneRoute from '@ncigdc/routes/GeneRoute';
@@ -48,7 +49,7 @@ const SkipLink = styled.a({
 
 const FIRST_TIME_KEY = 'NCI-Warning';
 
-const enhance = compose(
+const PortalContainer = compose(
   connect(store => ({ notifications: store.bannerNotification })),
   withRouter,
   lifecycle({
@@ -70,12 +71,7 @@ const enhance = compose(
       this.removeListen();
     },
   }),
-);
-const PortalContainer = ({
-  notifications,
-}: {
-  notifications: Array<{ dismissed: string }>,
-}) =>
+)(({ notifications }: { notifications: Array<{ dismissed: string }> }) =>
   <div style={{ position: 'relative', minHeight: '100vh', minWidth: 1024 }}>
     <SkipLink href="#skip">Skip to Main Content</SkipLink>
     <ProgressContainer />
@@ -100,12 +96,13 @@ const PortalContainer = ({
         <Route exact path="/projects" component={ProjectsRoute} />
         <Route exact path="/annotations" component={AnnotationsRoute} />
         <Route exact path="/query" component={SmartSearchRoute} />
-        <Route path="/projects/:id" component={ProjectRoute} />
+        {ProjectRoute}
         <Route path="/files/:id" component={FileRoute} />
         <Route path="/cases/:id" component={CaseRoute} />
         <Route path="/annotations/:id" component={AnnotationRoute} />
-        <Route path="/genes/:id" component={GeneRoute} />
-        <Route path="/ssms/:id" component={SSMRoute} />
+        {SSMRoute}
+        {CustomRoute}
+        {GeneRoute}
         <Route
           path="/components/:component"
           component={({ match, ...props }) => {
@@ -124,6 +121,7 @@ const PortalContainer = ({
     <NotificationContainer />
     <ModalContainer />
     <GlobalTooltip />
-  </div>;
+  </div>,
+);
 
-export default enhance(PortalContainer);
+export default PortalContainer;

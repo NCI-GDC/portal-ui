@@ -109,7 +109,7 @@ const SelectOverlay = ({
           setInputFile={setInputFile}
         />
         {validating && <span><SpinnerIcon /> validating genes</span>}
-        {genes.length > 0 &&
+        {inputGenes &&
           <MappingTable
             genes={genes}
             invalidGenes={invalidGenes}

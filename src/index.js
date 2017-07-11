@@ -7,8 +7,8 @@ import ReactDOM from 'react-dom';
 import { setTheme } from '@ncigdc/theme';
 
 global.trace = process.env.NODE_ENV === 'production'
-  ? C => p => <C {...p} />
-  : require('@ncigdc/utils/trace.js').default;
+  ? require('@ncigdc/utils/trace').noop
+  : require('@ncigdc/utils/trace').default;
 
 const Root = require('./Root').default;
 

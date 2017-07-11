@@ -9,7 +9,7 @@ import React from 'react';
 /* Recommended to be put on the global namespace in development mode:
 
 global.trace = process.env.NODE_ENV === 'production'
-  ? C => p => <C {...p} />
+  ? require(<path_to_trace>).noop
   : require(<path_to_trace>).default;
 
 */
@@ -39,3 +39,5 @@ export default (additionalMessage = '') => Component => props => (
   console.log(props),
   <Component {...props} />
 );
+
+export const noop = () => C => p => <C {...p} />;

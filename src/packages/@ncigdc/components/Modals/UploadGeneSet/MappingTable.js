@@ -77,6 +77,7 @@ export default ({ genes, invalidGenes, ...props }) => {
                 prefix="matchedGenes"
                 data={matched}
                 entityName="submitted gene identifiers"
+                sizes={[5, 10, 20, 40, 60, 80, 100]}
                 buttons={
                   <Row style={{ alignItems: 'flex-end' }}>
                     <Button

@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Button from '@ncigdc/uikit/Button';
 import Row from '@ncigdc/uikit/Flex/Row';
 import { QuestionIcon } from '@ncigdc/theme/icons';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
@@ -33,12 +32,9 @@ export default ({ inputGenes, setInputGenes, onClear }) => {
         placeholder="e.g. ENSG00000155657, TTN, 7273, HGNC:12403, 188840, Q8WZ42"
         style={{
           width: '100%',
-          minHeight: 100,
+          minHeight: 80,
         }}
       />
-      <Button style={{ margin: '0 0 0 auto' }} onClick={onClear}>
-        Clear
-      </Button>
     </div>
   );
 };

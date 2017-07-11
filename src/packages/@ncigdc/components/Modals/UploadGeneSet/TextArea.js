@@ -4,7 +4,7 @@ import Row from '@ncigdc/uikit/Flex/Row';
 import { QuestionIcon } from '@ncigdc/theme/icons';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-export default ({ inputGenes, setInputGenes, onClear }) => {
+export default ({ inputGenes, setInputGenes }) => {
   return (
     <div>
       <Row style={{ justifyContent: 'space-between' }}>

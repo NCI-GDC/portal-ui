@@ -11,7 +11,7 @@ import { branch, renderComponent } from 'recompose';
   trace('Trying to fix issue #12')(Button)
 
   compose(
-    global.trace() // string argument is optional.
+    trace() // string argument is optional.
   )
 */
 
@@ -21,9 +21,10 @@ export default (additionalMessage = '') => Component =>
     renderComponent(Component),
   )(
     props => (
-      additionalMessage && console.log(additionalMessage),
       console.info(
-        `%ctracing ${Component.displayName} props:\n${'tracing '.replace(
+        `${additionalMessage
+          ? additionalMessage + '\n'
+          : ''}%ctracing ${Component.displayName} props:\n${'tracing '.replace(
           /./g,
           '=',
         )}${Component.displayName.replace(/./g, '=')}=${'props:'.replace(
@@ -31,8 +32,8 @@ export default (additionalMessage = '') => Component =>
           '=',
         )}`,
         'color: rgb(22, 138, 96);font-weight: bold;',
+        props,
       ),
-      console.log(props),
       <Component {...props} />
     ),
   );

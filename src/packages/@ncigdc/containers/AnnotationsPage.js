@@ -5,7 +5,7 @@ import Relay from 'react-relay/classic';
 
 import SearchPage from '@ncigdc/components/SearchPage';
 
-import AnnotationTable from './AnnotationTable';
+import AnnotationsTable from './AnnotationsTable';
 import AnnotationAggregations from './AnnotationAggregations';
 
 export type TProps = {
@@ -41,13 +41,13 @@ export const AnnotationsPageComponent = (props: TProps) =>
         ),
       },
     ]}
-    results={<AnnotationTable hits={props.viewer.annotations.hits} />}
+    results={<AnnotationsTable hits={props.viewer.annotations.hits} />}
   />;
 
 export const AnnotationsPageQuery = {
   initialVariables: {
-    size: null,
-    offset: null,
+    annotations_size: null,
+    annotations_offset: null,
     filters: null,
     idAutocomplete: null,
     runAutocomplete: false,
@@ -68,8 +68,8 @@ export const AnnotationsPageQuery = {
           aggregations(filters: $filters aggregations_filter_themselves: false) {
             ${AnnotationAggregations.getFragment('aggregations')}
           }
-          hits(first: $size offset: $offset, filters: $filters, sort: $annotations_sort) {
-            ${AnnotationTable.getFragment('hits')}
+          hits(first: $annotations_size offset: $annotations_offset, filters: $filters, sort: $annotations_sort) {
+            ${AnnotationsTable.getFragment('hits')}
           }
         }
       }

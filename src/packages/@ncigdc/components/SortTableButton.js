@@ -120,6 +120,7 @@ const SortTableButton = compose(
                     readOnly
                     type="radio"
                     checked={!!sameField && sameField.order === 'asc'}
+                    style={{ pointerEvents: 'none' }}
                   />
 
                 </Link>
@@ -138,6 +139,7 @@ const SortTableButton = compose(
                     readOnly
                     type="radio"
                     checked={!!sameField && sameField.order === 'desc'}
+                    style={{ pointerEvents: 'none' }}
                   />
                 </Link>
               </RadioRow>

@@ -190,7 +190,7 @@ const Component = compose(
     );
     return { ssmCounts };
   }),
-  connect(state => ({ tableColumns: state.tableColumns.exploreCases })),
+  connect(state => ({ tableColumns: state.tableColumns.exploreCases.ids })),
 )(props => {
   const prefix = 'cases';
   const { ssmCounts, ssmCountsLoading, tableColumns } = props;

@@ -84,7 +84,7 @@ type TProps = {
 export const getDisplayOp = (op: string, value: Array<string>) => {
   if (op.toLowerCase() === 'in') {
     if (value.length === 1) {
-      if (value[0].includes('set_id')) {
+      if (typeof value[0] === 'string' && value[0].includes('set_id')) {
         return 'IN';
       }
       return 'IS';

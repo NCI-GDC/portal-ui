@@ -162,12 +162,23 @@ const SurvivalPlotWrapper = ({
             </Row>
           </div>
           {
-            <div className="p-value">
-              <div style={styles.pValue}>
-                {_.isNumber(pValue) &&
-                  `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+            <Tooltip
+              Component={
+                pValue === 0 &&
+                <div>
+                  Value shows 0.00e+0 because the<br />P-Value is extremely low
+                  and goes beyond<br />the precision inherent in the code
+                </div>
+              }
+            >
+              {console.log(pValue)}
+              <div className="p-value">
+                <div style={styles.pValue}>
+                  {_.isNumber(pValue) &&
+                    `Log-Rank Test P-Value = ${pValue.toExponential(2)}`}
+                </div>
               </div>
-            </div>
+            </Tooltip>
           }
           <div
             style={{

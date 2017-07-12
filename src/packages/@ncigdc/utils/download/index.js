@@ -5,7 +5,6 @@ import React from 'react';
 import { store } from '../../../../Portal';
 
 import _ from 'lodash';
-import $ from 'jquery';
 import Cookies from 'js-cookie';
 
 import { notify } from '@ncigdc/dux/notification';
@@ -14,12 +13,15 @@ import { setModal } from '@ncigdc/dux/modal';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 
+const getBody = iframe => {
+  const document = iframe.contentWindow || iframe.contentDocument;
+  return (document.document || document).body;
+};
+
 // const cookiePath = document.querySelector('base').getAttribute('href')
 const cookiePath = '/';
-const iFrameIdPrefix = '__downloader_iframe__';
-const formIdPrefix = '__downloader_form__';
 const getIframeResponse = iFrame =>
-  JSON.parse(iFrame.contents().find('body pre').text());
+  JSON.parse(getBody(iFrame).querySelector('pre').innerText);
 const showErrorModal = error => {
   const warning = error.warning || error.message;
   store.dispatch(
@@ -72,7 +74,7 @@ const progressChecker = (
   const finished = () => {
     //console.info('Download check count & wait interval (in milliseconds):', attempts, waitTime);
     timeoutPromise = null;
-    iFrame.remove();
+    iFrame.parentNode.removeChild(iFrame);
     store.dispatch(notify(null));
     done();
   };
@@ -126,7 +128,7 @@ const progressChecker = (
 
   const checker = () => {
     attempts++;
-    if (iFrame[0].__frame__loaded) {
+    if (iFrame.__frame__loaded) {
       // The downloadToken cookie is removed before the server sends the response
       if (cookieStillThere()) {
         const error = handleError();
@@ -182,7 +184,7 @@ const progressChecker = (
 const cookielessChecker = (iFrame, inProgress, done) => {
   // let attempts = 30;
   // const finished = () => {
-  //   iFrame.remove();
+  //   iFrame.parentNode.removeChild(iFrame);
   //   done();
   // };
   // const checker = () => {
@@ -224,8 +226,6 @@ const arrayToStringOnFields = (key, value, fields) =>
 
 const download = ({ url, params, method = 'GET', altMessage = false }) => {
   const downloadToken = _.uniqueId(`${+new Date()}-`);
-  const iFrameId = iFrameIdPrefix + downloadToken;
-  const formId = formIdPrefix + downloadToken;
   // a cookie value that the server will remove as a download-ready indicator
   const cookieKey = navigator.cookieEnabled
     ? Math.abs(hashString(JSON.stringify(params) + downloadToken)).toString(16)
@@ -251,37 +251,26 @@ const download = ({ url, params, method = 'GET', altMessage = false }) => {
     '',
   );
 
-  const formHtml = `<form
-      method="${method.toUpperCase()}"
-      id="${formId}"
-      action="${url}"
-      style="display: none"
-    >
-      ${fields}
-    </form>`;
+  const iFrame = document.createElement('iframe');
 
-  $(
-    `<iframe
-      id="${iFrameId}"
-      style="display: none"
-      src="about:blank"
-      onload="this.__frame__loaded = true;">
-    </iframe>`,
-  )
-    // Appending to document body to allow navigation away from the current
-    // page and downloads in the background
-    .appendTo('body');
+  iFrame.style.display = 'none';
+  iFrame.src = 'about:blank';
+  iFrame.onload = function() {
+    this.__frame__loaded = true;
+  };
+  // Appending to document body to allow navigation away from the current
+  // page and downloads in the background
+  document.body.appendChild(iFrame);
+  iFrame.__frame__loaded = false;
 
-  const iFrame = $(`#${iFrameId}`);
-  iFrame[0].__frame__loaded = false;
+  const form = document.createElement('form');
+  form.method = method.toUpperCase();
+  form.action = url;
+  form.innerHTML = fields;
 
-  iFrame.ready(() => {
-    const iFrameBody = iFrame.contents().find('body');
-    iFrameBody.append(formHtml);
+  getBody(iFrame).appendChild(form);
 
-    const form = iFrameBody.find(`#${formId}`);
-    form.submit();
-  });
+  form.submit();
 
   return cookieKey
     ? _.partial(progressChecker, iFrame, cookieKey, downloadToken, altMessage)

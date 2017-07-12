@@ -36,40 +36,43 @@ const enhance = compose(
   }),
   withPropsOnChange(['matched'], ({ matched }) => {
     const submittedHeaders = [];
+    const matchedGenes = Object.entries(
+      matched.reduce((acc, gene) => {
+        acc[geneMap[gene].gene_id] = (acc[geneMap[gene].gene_id] || [])
+          .concat(gene);
+        return acc;
+      }, {}),
+    )
+      .map(([geneId, submitted]) => {
+        const geneData = geneMap[geneId];
+        var temp = GENE_ID_FIELDS.map((idField, i) => {
+          const value = []
+            .concat(get(geneData, idField, []))
+            .filter(v => submitted.includes(v.toUpperCase()))[0];
+
+          if (value) {
+            submittedHeaders[i] = idField;
+            return value;
+          } else {
+            return '';
+          }
+        });
+
+        return {
+          submitted: temp,
+          mapped: [geneId, geneMap[geneId].symbol],
+        };
+      })
+      .map(row => ({
+        ...row,
+        submitted: row.submitted.filter((s, i) => submittedHeaders[i]),
+      }));
 
     return {
-      submittedHeaders,
-      matchedGenes: Object.entries(
-        matched.reduce((acc, gene) => {
-          acc[geneMap[gene].gene_id] = (acc[geneMap[gene].gene_id] || [])
-            .concat(gene);
-          return acc;
-        }, {}),
-      )
-        .map(([geneId, submitted]) => {
-          const geneData = geneMap[geneId];
-          var temp = GENE_ID_FIELDS.map((idField, i) => {
-            const value = []
-              .concat(get(geneData, idField, []))
-              .filter(v => submitted.includes(v.toUpperCase()))[0];
-
-            if (value) {
-              submittedHeaders[i] = idField;
-              return value;
-            } else {
-              return '';
-            }
-          });
-
-          return {
-            submitted: temp,
-            mapped: [geneId, geneMap[geneId].symbol],
-          };
-        })
-        .map(row => ({
-          ...row,
-          submitted: row.submitted.filter((s, i) => submittedHeaders[i]),
-        })),
+      matchedGenes,
+      submittedHeaders: submittedHeaders
+        .filter(Boolean)
+        .map(h => ID_FIELD_DISPLAY[h]),
     };
   }),
 );
@@ -107,7 +110,13 @@ export default enhance(
                       saveFile(
                         toTsvString(
                           matchedGenes.map(item => ({
-                            submitted: item.submitted,
+                            ...item.submitted.reduce(
+                              (acc, field, i) =>
+                                Object.assign(acc, {
+                                  [`submitted${submittedHeaders[i]}`]: field,
+                                }),
+                              {},
+                            ),
                             mappedGeneId: item.mapped[0],
                             mappedSymbol: item.mapped[1],
                           })),
@@ -128,9 +137,7 @@ export default enhance(
                     {
                       key: 'submitted',
                       title: 'Submitted Gene Identifier',
-                      subheadings: submittedHeaders
-                        .filter(Boolean)
-                        .map(h => ID_FIELD_DISPLAY[h]),
+                      subheadings: submittedHeaders,
                       thStyle: { textAlign: 'center' },
                     },
                     {

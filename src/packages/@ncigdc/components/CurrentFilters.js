@@ -110,11 +110,11 @@ const enhance = compose(
     getDisplayValue: (field, value) => {
       switch (typeof value) {
         case 'string':
-          if (field === 'genes.gene_id') {
-            return <GeneSymbol explore={geneSymbolFragment} geneId={value} />;
-          }
           if (value.includes('set_id:')) {
             return 'input set';
+          }
+          if (field === 'genes.gene_id') {
+            return <GeneSymbol explore={geneSymbolFragment} geneId={value} />;
           }
           return value;
         case 'boolean':

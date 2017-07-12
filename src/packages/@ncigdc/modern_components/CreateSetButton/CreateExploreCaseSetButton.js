@@ -49,6 +49,7 @@ const CreateExploreCaseSetButton = ({ filters, setSize, style, push }) => {
   return (
     <CreateSetButtonBase
       style={style}
+      field="cases.case_id"
       filters={filters}
       disabled={!setSize}
       setIdExtractor={response => response.sets.create.explore.case.set_id}

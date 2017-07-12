@@ -9,6 +9,7 @@ const theme = {
   primaryLight1: 'rgb(187,14,61)',
 
   success: '#255425',
+  error: 'rgb(187,14,61)',
 
   secondary: 'rgb(23, 132, 172)',
   secondaryHighContrast: '#005b7c',

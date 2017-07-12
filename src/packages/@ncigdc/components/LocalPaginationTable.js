@@ -14,10 +14,12 @@ const LocalPaginationTable = ({
   buttons,
   style,
   entityName = 'projects',
+  sizes,
 }) => {
-  const size = parseInt(query[`${prefix}_size`] || 10, 10);
+  const defaultSize = (sizes && sizes[0]) || 10;
+  const size = parseInt(query[`${prefix}_size`] || defaultSize, 10);
   const offset = parseInt(query[`${prefix}_offset`] || 0, 10);
-  const enablePagination = data.length > 10;
+  const enablePagination = data.length > defaultSize;
   const params = {
     ...query,
     [`${prefix}_size`]: size,
@@ -49,7 +51,12 @@ const LocalPaginationTable = ({
         React.cloneElement(child, { data: tableData }),
       )}
       {enablePagination &&
-        <Pagination prefix={prefix} params={params} total={data.length} />}
+        <Pagination
+          prefix={prefix}
+          params={params}
+          total={data.length}
+          sizes={sizes}
+        />}
     </div>
   );
 };

@@ -99,7 +99,7 @@ export default enhance(
                   <div>
                     {from} submitted gene identifier{from > 1 ? 's' : ''}{' '}
                     mapped to{' '}
-                    {to} GDC gene{to > 1 ? 's' : ''}
+                    {to} unique GDC gene{to > 1 ? 's' : ''}
                   </div>
                   <Button
                     style={{ ...visualizingButton }}
@@ -135,7 +135,7 @@ export default enhance(
                     },
                     {
                       key: 'mapped',
-                      title: 'Mapped',
+                      title: 'Mapped To',
                       subheadings: ['GDC Gene ID', ID_FIELD_DISPLAY.symbol],
                       thStyle: { textAlign: 'center' },
                     },

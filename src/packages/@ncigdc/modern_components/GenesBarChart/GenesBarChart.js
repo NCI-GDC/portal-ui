@@ -12,7 +12,7 @@ import { handleReadyStateChange } from '@ncigdc/dux/loaders';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import { viewerQuery } from '@ncigdc/routes/queries';
-import { makeFilter } from '@ncigdc/utils/filters';
+import { makeFilter, removeFilter } from '@ncigdc/utils/filters';
 import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -123,7 +123,11 @@ const Component = compose(
         ? onClickGene(gene, chartData)
         : push({
             pathname: `/genes/${gene.gene_id}`,
-            query: { filters: JSURL.stringify(defaultFilters) },
+            query: {
+              filters: JSURL.stringify(
+                removeFilter(f => f.match(/^genes\./), defaultFilters),
+              ),
+            },
           }),
   }),
   withTheme,

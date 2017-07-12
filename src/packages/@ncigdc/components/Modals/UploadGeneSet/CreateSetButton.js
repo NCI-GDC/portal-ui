@@ -28,6 +28,7 @@ export default enhance(({ genes, onClose, push, query, ...props }: TProps) => {
           pathname: '/exploration',
           query: {
             ...query,
+            searchTableTab: 'genes',
             filters: JSURL.stringify(
               replaceFilters(
                 {

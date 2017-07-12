@@ -4,8 +4,9 @@ import { compose, withState, withPropsOnChange } from 'recompose';
 import { debounce } from 'lodash';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import { validateGenes, geneMap } from '@ncigdc/utils/validateIds';
-import { SpinnerIcon } from '@ncigdc/theme/icons';
+import { CaretIcon, SpinnerIcon } from '@ncigdc/theme/icons';
 
 import MappingTable from './MappingTable';
 import CreateSetButton from './CreateSetButton';
@@ -22,6 +23,7 @@ const styles = {
 
 const enhance = compose(
   withState('validating', 'setValidating', false),
+  withState('showTable', 'setShowTable', true),
   withState('genes', 'setGenes', []),
   withPropsOnChange(
     ['genes', 'validating'],
@@ -51,6 +53,8 @@ class UploadGeneSet extends React.Component {
       unmatched,
       matched,
       validating,
+      showTable,
+      setShowTable,
     } = this.props;
 
     return (
@@ -82,11 +86,21 @@ class UploadGeneSet extends React.Component {
           <GeneInput onUpdate={setGenes} ref={n => (this.geneInput = n)} />
           {validating && <span><SpinnerIcon /> validating genes</span>}
           {!!genes.length &&
-            <MappingTable
-              matched={matched}
-              unmatched={unmatched}
-              style={{ marginTop: '2rem' }}
-            />}
+            <div style={{ marginTop: '2rem' }}>
+              <UnstyledButton
+                onClick={e => setShowTable(s => !s)}
+                style={{ textDecoration: 'underline' }}
+              >
+                Show Summary Table ({matched.length} matched, {unmatched.length}{' '}
+                unmatched) <CaretIcon direction={showTable ? 'down' : 'left'} />
+              </UnstyledButton>
+              {showTable &&
+                <MappingTable
+                  matched={matched}
+                  unmatched={unmatched}
+                  style={{ marginTop: '0.5rem' }}
+                />}
+            </div>}
         </div>
         <Row
           style={{

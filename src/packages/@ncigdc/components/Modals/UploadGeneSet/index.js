@@ -91,7 +91,7 @@ class UploadGeneSet extends React.Component {
                 onClick={e => setShowTable(s => !s)}
                 style={{ textDecoration: 'underline' }}
               >
-                Show Summary Table ({matched.length} matched, {unmatched.length}{' '}
+                Summary Table ({matched.length} matched, {unmatched.length}{' '}
                 unmatched) <CaretIcon direction={showTable ? 'down' : 'left'} />
               </UnstyledButton>
               {showTable &&

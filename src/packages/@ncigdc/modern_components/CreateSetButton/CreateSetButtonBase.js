@@ -26,6 +26,7 @@ const CreateSetButton = ({
   dispatch,
   children,
   disabled,
+  field,
 }) => {
   const onError = err => {
     setIsCreating(false);
@@ -43,10 +44,12 @@ const CreateSetButton = ({
     reRouteOnCompleted(setIdExtractor(response));
   };
 
+  const content = get(filters, 'content[0].content');
   const setOnlyInCurrentFilters = filters
     ? filters.content.length === 1 &&
-        filters.content[0].content.value.length === 1 &&
-        filters.content[0].content.value[0].includes('set_id:')
+        content.value.length === 1 &&
+        content.value[0].includes('set_id:') &&
+        content.field === field
     : false;
 
   const variables = { input: { filters: filters ? filters : {} } };
@@ -56,18 +59,16 @@ const CreateSetButton = ({
         <Spinner />
       </Overlay>
       <Button
-        style={style}
         disabled={disabled}
+        style={style}
         onClick={() => {
           if (!setOnlyInCurrentFilters) {
             setIsCreating(true);
             commitMutation(variables, onCompleted, onError);
           } else {
-            const setId = get(
-              filters,
-              'content[0].content.value[0]',
-              '',
-            ).substring('set_id:'.length);
+            const setId = get(content, 'value[0]', '').substring(
+              'set_id:'.length,
+            );
             reRouteOnCompleted(setId);
           }
         }}

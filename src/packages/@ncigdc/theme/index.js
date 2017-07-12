@@ -10,7 +10,7 @@ export type TTheme = {
 let theme = {};
 
 type TSetTheme = (version: string, custom?: Object) => void;
-export const setTheme: TSetTheme = (version = 'active', custom = {}) => {
+export const setTheme: TSetTheme = (version, custom = {}) => {
   // $FlowIgnore
   const loadedVersion = require(`./versions/${version}`);
 
@@ -27,3 +27,7 @@ export const getTheme = (): TTheme => theme;
 type TWithTheme = (Wrapped: ReactClass<{}>) => ReactClass<{}>;
 export const withTheme: TWithTheme = Wrapped => props =>
   <Wrapped theme={getTheme()} {...props} />;
+
+setTheme('active');
+
+export { theme };

@@ -7,7 +7,6 @@ import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { Th, Td } from '@ncigdc/uikit/Table';
 
 /*
-  This is the new requirement:
 - UUID: default (shorten UUID on the UI)
 - Case UUID: hidden
 - Case Submitter ID: default
@@ -52,14 +51,7 @@ const annotationsTableModel = [
     th: () => <Th key="case_id" rowSpan="2">Case UUID</Th>,
     td: ({ node, index }) =>
       <Td>
-        <CaseLink
-          uuid={node.case_id}
-          id={`row-${index}-case-link`}
-          merge
-          whitelist={['filters']}
-        >
-          {node.case_id.substr(0, 8)}
-        </CaseLink>
+        {node.case_id}
         <ForTsvExport>
           {node.case_id}
         </ForTsvExport>
@@ -137,13 +129,7 @@ const annotationsTableModel = [
     th: () => <Th key="entity_id" rowSpan="2">Entity UUID</Th>,
     td: ({ node, index }) =>
       <Td>
-        <CaseLink
-          uuid={node.case_id}
-          query={node.entity_type !== 'case' ? { bioId: node.entity_id } : {}}
-          deepLink={node.entity_type !== 'case' ? 'biospecimen' : undefined}
-        >
-          {node.entity_id.substr(0, 8)}
-        </CaseLink>
+        {node.entity_id}
         <ForTsvExport>
           {node.entity_id}
         </ForTsvExport>

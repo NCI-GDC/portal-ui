@@ -52,9 +52,6 @@ const annotationsTableModel = [
     td: ({ node, index }) =>
       <Td>
         {node.case_id}
-        <ForTsvExport>
-          {node.case_id}
-        </ForTsvExport>
       </Td>,
   },
   {
@@ -116,9 +113,6 @@ const annotationsTableModel = [
     td: ({ node, index }) =>
       <Td>
         {node.entity_type}
-        <ForTsvExport>
-          {node.entity_type}
-        </ForTsvExport>
       </Td>,
   },
   {
@@ -130,9 +124,6 @@ const annotationsTableModel = [
     td: ({ node, index }) =>
       <Td>
         {node.entity_id}
-        <ForTsvExport>
-          {node.entity_id}
-        </ForTsvExport>
       </Td>,
   },
   {
@@ -163,9 +154,6 @@ const annotationsTableModel = [
     td: ({ node, index }) =>
       <Td>
         {node.category}
-        <ForTsvExport>
-          {node.category}
-        </ForTsvExport>
       </Td>,
   },
   {
@@ -176,9 +164,6 @@ const annotationsTableModel = [
     td: ({ node, index }) =>
       <Td>
         {node.classification}
-        <ForTsvExport>
-          {node.classification}
-        </ForTsvExport>
       </Td>,
   },
   {
@@ -189,9 +174,6 @@ const annotationsTableModel = [
     td: ({ node, index }) =>
       <Td>
         {node.created_datetime}
-        <ForTsvExport>
-          {node.created_datetime}
-        </ForTsvExport>
       </Td>,
   },
   {
@@ -203,9 +185,6 @@ const annotationsTableModel = [
     td: ({ node, index }) =>
       <Td>
         {node.status}
-        <ForTsvExport>
-          {node.status}
-        </ForTsvExport>
       </Td>,
   },
   {
@@ -217,9 +196,6 @@ const annotationsTableModel = [
     td: ({ node, index }) =>
       <Td>
         {node.notes}
-        <ForTsvExport>
-          {node.notes}
-        </ForTsvExport>
       </Td>,
   },
 ];

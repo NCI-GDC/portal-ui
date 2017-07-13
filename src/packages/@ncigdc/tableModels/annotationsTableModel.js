@@ -55,10 +55,10 @@ const annotationsTableModel = [
       </Td>,
   },
   {
-    name: 'Case Submitter ID',
+    name: 'Case ID',
     id: 'case_submitter_id',
     downloadable: true,
-    th: () => <Th key="case_submitter_id" rowSpan="2">Case Submitter ID</Th>,
+    th: () => <Th key="case_submitter_id" rowSpan="2">Case ID</Th>,
     td: ({ node, index }) =>
       <Td>
         <CaseLink
@@ -127,11 +127,10 @@ const annotationsTableModel = [
       </Td>,
   },
   {
-    name: 'Entity Submitter ID',
+    name: 'Entity ID',
     id: 'entity_submitter_id',
     downloadable: true,
-    th: () =>
-      <Th key="entity_submitter_id" rowSpan="2">Entity Submitter ID</Th>,
+    th: () => <Th key="entity_submitter_id" rowSpan="2">Entity ID</Th>,
     td: ({ node, index }) =>
       <Td>
         <CaseLink

@@ -60,11 +60,11 @@ const getProjectIdFilter = projects =>
 
 const projectsTableModel = [
   {
-    name: 'Project ID',
+    name: 'Project',
     id: 'project_id',
     sortable: true,
     downloadable: true,
-    th: () => <Th rowSpan="2">Project ID</Th>,
+    th: () => <Th rowSpan="2">Project</Th>,
     td: ({ node }) =>
       <Td>
         <ProjectLink uuid={node.project_id}>

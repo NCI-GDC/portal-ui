@@ -78,7 +78,7 @@ const presetFacets = [
     type: 'id',
   },
   {
-    title: 'Case Submitter ID',
+    title: 'Case ID',
     field: 'submitter_id',
     full: 'cases.submitter_id',
     doc_type: 'cases',

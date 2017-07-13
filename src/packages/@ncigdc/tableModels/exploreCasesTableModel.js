@@ -78,10 +78,10 @@ const casesTableModel = [
       </Td>,
   },
   {
-    name: 'Submitter ID',
+    name: 'Case ID',
     id: 'submitter_id',
     downloadable: true,
-    th: () => <Th key="submitter_id" rowSpan="2">Submitter ID</Th>,
+    th: () => <Th key="submitter_id" rowSpan="2">Case ID</Th>,
     td: ({ node, index }) =>
       <Td>
         <CaseLink

@@ -262,8 +262,8 @@ const Component = compose(
           tableId="most-affected-cases-table"
           headings={[
             { key: 'id', title: 'Case UUID', style: { display: 'none' } },
-            { key: 'submitter_id', title: 'Submitter ID' },
-            { key: 'project_id', title: 'Project ID' },
+            { key: 'submitter_id', title: 'Case ID' },
+            { key: 'project_id', title: 'Project' },
             { key: 'primary_site', title: 'Site' },
             { key: 'gender', title: 'Gender' },
             {

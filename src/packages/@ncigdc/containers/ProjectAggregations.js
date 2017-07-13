@@ -82,7 +82,7 @@ export const ProjectAggregationsComponent = compose(
     <SuggestionFacet
       title="Project"
       collapsed={props.projectIdCollapsed}
-      placeholder="Search for Project ID"
+      placeholder="Search for Project"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       doctype="projects"

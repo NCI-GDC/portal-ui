@@ -71,6 +71,9 @@ const createContainer = Component =>
                     score
                     case_id
                     submitter_id
+                    project {
+                      project_id
+                    }
                   }
                 }
               }
@@ -98,6 +101,7 @@ const Component = compose(
       tooltip: (
         <span>
           <b>{c.submitter_id}</b><br />
+          Project: {c.project.project_id}<br />
           {c.score.toLocaleString()} Genes Affected
         </span>
       ),

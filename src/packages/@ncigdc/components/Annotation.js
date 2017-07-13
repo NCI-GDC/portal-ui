@@ -37,9 +37,9 @@ const Annotation = ({ node, theme }: { node: Object, theme: Object }) =>
           th: 'Case UUID',
           td: <CaseLink uuid={node.case_id}>{node.case_id}</CaseLink>,
         },
-        { th: 'Case Submitter ID', td: node.case_submitter_id },
+        { th: 'Case ID', td: node.case_submitter_id },
         {
-          th: 'Project ID',
+          th: 'Project',
           td: (
             <ProjectLink uuid={node.project.project_id}>
               {node.project.project_id}

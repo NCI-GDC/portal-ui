@@ -25,8 +25,8 @@ class AnnotationsRoute extends Relay.Route {
     const q = parse(search);
 
     return {
-      offset: parseIntParam(q.offset, 0),
-      size: parseIntParam(q.size, 20),
+      annotations_offset: parseIntParam(q.annotations_offset, 0),
+      annotations_size: parseIntParam(q.annotations_size, 20),
       filters: parseFilterParam(q.filters, null),
       annotations_sort: parseJSURLParam(q.annotations_sort, null),
     };

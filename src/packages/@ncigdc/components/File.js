@@ -188,13 +188,13 @@ const File = ({
             },
             { th: 'Access', td: node.access },
             { th: 'UUID', td: node.file_id },
-            { th: 'Submitter ID', td: node.submitter_id || '--' },
+            { th: 'Case ID', td: node.submitter_id || '--' },
             { th: 'Data Format', td: node.data_format },
             { th: 'Size', td: formatFileSize(node.file_size) },
             { th: 'MD5 Checksum', td: node.md5sum },
             { th: 'Archive', td: archiveComponent },
             {
-              th: 'Project ID',
+              th: 'Project',
               td: projectIds.map(
                 pId =>
                   pId && <ProjectLink key={pId} uuid={pId}>{pId}</ProjectLink>,
@@ -272,7 +272,7 @@ const File = ({
           title="Associated Cases/Biospecimen"
           emptyMessage="No cases or biospecimen found."
           headings={[
-            { key: 'entity_submitter_id', title: 'Entity Submitter ID' },
+            { key: 'entity_submitter_id', title: 'Entity ID' },
             { key: 'entity_type', title: 'Entity Type' },
             { key: 'case_id', title: 'Case UUID' },
             { key: 'annotation_count', title: 'Annotations' },

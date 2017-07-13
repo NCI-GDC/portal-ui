@@ -177,7 +177,7 @@ const Project = (
             id="summary"
             title={<span><i className="fa fa-table" /> Summary</span>}
             thToTd={[
-              { th: 'Project ID', td: projectId },
+              { th: 'Project', td: projectId },
               { th: 'Project Name', td: projectName },
               {
                 th: 'Disease Type',

@@ -245,9 +245,9 @@ const Case = compose(
             title={<span><i className="fa fa-table" /> Summary</span>}
             thToTd={[
               { th: 'Case UUID', td: p.case_id },
-              { th: 'Case Submitter ID', td: p.submitter_id },
+              { th: 'Case ID', td: p.submitter_id },
               {
-                th: 'Project ID',
+                th: 'Project',
                 td: (
                   <ProjectLink uuid={p.project.project_id}>
                     {p.project.project_id}

@@ -238,7 +238,8 @@ export const removeFilter: TRemoveFilter = (field, query) => {
   if (Object.keys(query).length === 0) return query;
 
   if (!Array.isArray(query.content)) {
-    return query.content.field === field ? null : query;
+    const fieldFilter = typeof field === 'function' ? field : f => f === field;
+    return fieldFilter(query.content.field) ? null : query;
   }
 
   const filteredContent = query.content

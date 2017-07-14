@@ -16,7 +16,7 @@ import {
 import { viewerQuery } from '@ncigdc/routes/queries';
 import withSize from '@ncigdc/utils/withSize';
 import withBetterRouter from '@ncigdc/utils/withRouter';
-import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import { makeFilter, addInFilters, removeFilter } from '@ncigdc/utils/filters';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import MutationsCount from '@ncigdc/components/MutationsCount';
 import GeneLink from '@ncigdc/components/Links/GeneLink';
@@ -354,7 +354,15 @@ const Component = compose(
                 </div>
               ),
               symbol: (
-                <GeneLink uuid={g.gene_id} query={{ filters: defaultFilters }}>
+                <GeneLink
+                  uuid={g.gene_id}
+                  query={{
+                    filters: removeFilter(
+                      f => f.match(/^genes\./),
+                      defaultFilters,
+                    ),
+                  }}
+                >
                   {g.symbol}
                 </GeneLink>
               ),

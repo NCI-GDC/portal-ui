@@ -24,7 +24,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 import withRouter from '@ncigdc/utils/withRouter';
 import { fetchApi } from '@ncigdc/utils/ajax';
-import { setFilter, mergeQuery } from '@ncigdc/utils/filters';
+import { setFilter, mergeQuery, removeFilter } from '@ncigdc/utils/filters';
 import { removeEmptyKeys } from '@ncigdc/utils/uri';
 
 import DoubleRingChart from '@ncigdc/components/Charts/DoubleRingChart';
@@ -277,7 +277,11 @@ const ProjectsChartsComponent = compose(
         onClick: () =>
           push({
             pathname: `/genes/${geneId}`,
-            query: { filters: JSURL.stringify(fmgChartFilters) },
+            query: {
+              filters: JSURL.stringify(
+                removeFilter(f => f.match(/^genes\./), fmgChartFilters),
+              ),
+            },
           }),
         tooltips: stackedBarCalculations[geneId].byProject.reduce(
           (acc, { projectId, percent, count }) => ({

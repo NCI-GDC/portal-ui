@@ -171,7 +171,6 @@ const SurvivalPlotWrapper = ({
                 </div>
               }
             >
-              {console.log(pValue)}
               <div className="p-value">
                 <div style={styles.pValue}>
                   {_.isNumber(pValue) &&

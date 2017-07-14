@@ -230,10 +230,13 @@ function renderSurvivalPlot(props: TProps): void {
           : `<tspan font-style="italic">S</tspan><tspan font-size="0.7em" baseline-shift="-15%">${curves.indexOf(
               curve,
             ) + 1}</tspan>`,
-      onMouseEnterDonor: (e, { id, survivalEstimate, time = 0, censored }) => {
+      onMouseEnterDonor: (
+        e,
+        { id, survivalEstimate, time = 0, censored, submitter_id, project_id },
+      ) => {
         setTooltip(
           <span>
-            Case ID: {id}<br />
+            Case ID: {project_id} / {submitter_id}<br />
             Survival Rate: {Math.round(survivalEstimate * 100)}%<br />
             {censored
               ? `Interval of last follow-up: ${time.toLocaleString()} days`

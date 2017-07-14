@@ -16,6 +16,8 @@ import CasesTable from './CasesTable';
 import FilesTable from './FilesTable';
 import { API } from '@ncigdc/utils/constants';
 
+require('lodash-backports').register();
+
 declare var _: Object;
 declare var angular: Object;
 

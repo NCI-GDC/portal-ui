@@ -41,6 +41,7 @@
     "jquery": "3.2.1",
     "js-cookie": "2.1.4",
     "jsurl": "0.1.5",
+    "lodash-backports": "1.0.1",
     "memoizee": "0.4.5",
     "moment": "2.17.1",
     "oncogrid": "1.4.4",

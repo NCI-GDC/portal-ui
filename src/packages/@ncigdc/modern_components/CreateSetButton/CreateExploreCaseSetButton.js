@@ -63,8 +63,7 @@ const CreateExploreCaseSetButton = ({ filters, setSize, style, push }) => {
       }}
       reRouteOnCompleted={reRouteOnCompleted}
     >
-      View {setSize.toLocaleString()} {setSize === 1 ? ' Case' : ' Cases'} in
-      Repository
+      View in Repository
     </CreateSetButtonBase>
   );
 };

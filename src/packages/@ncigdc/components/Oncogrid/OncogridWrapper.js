@@ -262,7 +262,12 @@ const OncoGridWrapper = compose(
             pathname: '/exploration',
             query: {
               filters: JSURL.stringify(
-                makeFilter([{ field: 'cases.case_id', value: data.id }]),
+                makeFilter([
+                  {
+                    field: 'cases.case_id',
+                    value: responses.caseNameMap[data.id].uuid,
+                  },
+                ]),
               ),
             },
           });

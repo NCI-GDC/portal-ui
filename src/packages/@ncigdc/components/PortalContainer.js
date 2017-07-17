@@ -105,7 +105,7 @@ const PortalContainer = ({
         <Route path="/cases/:id" component={CaseRoute} />
         <Route path="/annotations/:id" component={AnnotationRoute} />
         {GeneRoute}
-        <Route path="/ssms/:id" component={SSMRoute} />
+        {SSMRoute}
         <Route
           path="/components/:component"
           component={({ match, ...props }) => {

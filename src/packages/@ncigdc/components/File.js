@@ -188,7 +188,6 @@ const File = ({
             },
             { th: 'Access', td: node.access },
             { th: 'UUID', td: node.file_id },
-            { th: 'Case ID', td: node.submitter_id || '--' },
             { th: 'Data Format', td: node.data_format },
             { th: 'Size', td: formatFileSize(node.file_size) },
             { th: 'MD5 Checksum', td: node.md5sum },

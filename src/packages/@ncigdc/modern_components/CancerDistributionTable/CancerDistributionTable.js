@@ -194,7 +194,7 @@ export default compose(
           idKey="id"
           tableId="cancer-distribution-table"
           headings={[
-            { key: 'project_id', title: 'Project ID' },
+            { key: 'project_id', title: 'Project' },
             { key: 'disease_type', title: 'Disease Type' },
             { key: 'site', title: 'Site' },
             {

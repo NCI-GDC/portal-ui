@@ -1,5 +1,6 @@
 /* @flow */
 import { replaceFilters } from '@ncigdc/utils/filters';
+import _ from 'lodash';
 import memoize from 'memoizee';
 import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
 
@@ -135,12 +136,32 @@ async function getQueries({
     filters: occurrenceFilters,
   });
 
-  console.log(cases);
+  const caseUUIDMap = _.mapValues(_.groupBy(cases, 'case_id'), ([donor]) => ({
+    ...donor,
+    uuid: donor.case_id,
+    slug: `${donor.project.project_id} / ${donor.submitter_id}`,
+  }));
+  const caseSlugMap = _.mapKeys(caseUUIDMap, donor => donor.slug);
+
+  const massagedCases = cases.map(donor => ({
+    ...donor,
+    uuid: donor.case_id,
+    case_id: caseUUIDMap[donor.case_id].slug,
+  }));
+
+  const massagedOccurrences = occurrences.map(occurrence => ({
+    ...occurrence,
+    case: {
+      case_id: caseUUIDMap[occurrence.case.case_id].slug,
+    },
+  }));
+
   return {
     genes,
-    occurrences,
-    cases,
+    occurrences: massagedOccurrences,
+    cases: massagedCases,
     totalCases,
+    caseSlugMap,
   };
 }
 

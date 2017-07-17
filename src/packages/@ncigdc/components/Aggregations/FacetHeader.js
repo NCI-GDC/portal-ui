@@ -10,7 +10,9 @@ import FacetResetButton from '@ncigdc/components/Aggregations/FacetResetButton';
 import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 import SearchIcon from '@ncigdc/theme/icons/SearchIcon';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
+import QuestionIcon from '@ncigdc/theme/icons/Question';
 import { Row } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const Header = styled(Row, {
   color: ({ theme }) => theme.primary,
@@ -59,6 +61,7 @@ const FacetHeader = compose(
   ({
     field,
     title,
+    description,
     isRemovable,
     handleRequestRemove,
     collapsed,
@@ -86,6 +89,10 @@ const FacetHeader = compose(
               {title}
             </span>
             <IconsRow>
+              {description &&
+                <Tooltip Component={description}>
+                  <QuestionIcon />
+                </Tooltip>}
               {hasValueSearch &&
                 <MagnifyingGlass
                   onClick={() => setShowingValueSearch(!showingValueSearch)}

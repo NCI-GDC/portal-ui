@@ -7,6 +7,7 @@ import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { compose, withState } from 'recompose';
 
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
@@ -231,25 +232,34 @@ export const CaseAggregationsComponent = (props: TProps) =>
       collapsed={props.caseIdCollapsed}
       setCollapsed={props.setCaseIdCollapsed}
     />
-    <SuggestionFacet
-      title="Case"
-      collapsed={props.caseIdCollapsed}
-      doctype="cases"
-      fieldNoDoctype="case_id"
-      placeholder="Search for Case ID"
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
-      dropdownItem={x =>
-        <Row>
-          <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
-          <div>
-            <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
-            <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
-            {x.project.project_id}
-          </div>
-        </Row>}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-    />
+    <Tooltip
+      Component={
+        <span>
+          Enter Gene symbol, synonym, name or IDs for Ensembl, Entrez gene, HGNC
+          Gene, OMIM, UniProtKB/Swiss-Prot
+        </span>
+      }
+    >
+      <SuggestionFacet
+        title="Case"
+        collapsed={props.caseIdCollapsed}
+        doctype="cases"
+        fieldNoDoctype="case_id"
+        placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
+        hits={props.suggestions}
+        setAutocomplete={props.setAutocomplete}
+        dropdownItem={x =>
+          <Row>
+            <CaseIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+            <div>
+              <div style={{ fontWeight: 'bold' }}>{x.case_id}</div>
+              <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
+              {x.project.project_id}
+            </div>
+          </Row>}
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+      />
+    </Tooltip>
 
     {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet =>
       <FacetWrapper

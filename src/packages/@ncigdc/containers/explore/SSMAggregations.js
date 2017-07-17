@@ -13,6 +13,7 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 import { withTheme } from '@ncigdc/theme';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import NotMissingFacet from '@ncigdc/components/Aggregations/NotMissingFacet';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const presetFacets: Array<{
   title: string,
@@ -118,17 +119,23 @@ export const SSMAggregationsComponent = compose(
       collapsed={props.idCollapsed}
       setCollapsed={props.setIdCollapsed}
     />
-    <SuggestionFacet
-      title="Mutation"
-      doctype="ssms"
-      collapsed={props.idCollapsed}
-      fieldNoDoctype="ssm_id"
-      placeholder="Search for mutation id"
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
-      dropdownItem={x => <div style={{ fontWeight: 'bold' }}>{x.ssm_id}</div>}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-    />
+    <Tooltip
+      Component={
+        'Enter Mutation UUID, DNA Change, Gene AA Change, COSMIC ID or dbSNP rs ID'
+      }
+    >
+      <SuggestionFacet
+        title="Mutation"
+        doctype="ssms"
+        collapsed={props.idCollapsed}
+        fieldNoDoctype="ssm_id"
+        placeholder="e.g. BRAF V600E, chr7:g.140753336A>T"
+        hits={props.suggestions}
+        setAutocomplete={props.setAutocomplete}
+        dropdownItem={x => <div style={{ fontWeight: 'bold' }}>{x.ssm_id}</div>}
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+      />
+    </Tooltip>
     {presetFacets
       .filter(
         ({ full }) =>

@@ -26,6 +26,7 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 import { withTheme } from '@ncigdc/theme';
 import FileIcon from '@ncigdc/theme/icons/File';
 import { Row } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const storageKey = 'RepositoryFileAggregations.userSelectedFacets';
 
@@ -154,25 +155,27 @@ export const FileAggregationsComponent = (props: TProps) =>
       collapsed={props.fileIdCollapsed}
       setCollapsed={props.setFileIdCollapsed}
     />
-    <SuggestionFacet
-      title="File"
-      collapsed={props.fileIdCollapsed}
-      doctype="files"
-      fieldNoDoctype="file_id"
-      placeholder="Search for File ID or File Submitter ID"
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
-      dropdownItem={x =>
-        <Row>
-          <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
-          <div>
-            <div style={{ fontWeight: 'bold' }}>{x.file_id}</div>
-            <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
-            {x.file_name}
-          </div>
-        </Row>}
-    />
+    <Tooltip Component="Enter File UUID or name">
+      <SuggestionFacet
+        title="File"
+        collapsed={props.fileIdCollapsed}
+        doctype="files"
+        fieldNoDoctype="file_id"
+        placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
+        hits={props.suggestions}
+        setAutocomplete={props.setAutocomplete}
+        style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
+        dropdownItem={x =>
+          <Row>
+            <FileIcon style={{ paddingRight: '1rem', paddingTop: '1rem' }} />
+            <div>
+              <div style={{ fontWeight: 'bold' }}>{x.file_id}</div>
+              <div style={{ fontSize: '80%' }}>{x.submitter_id}</div>
+              {x.file_name}
+            </div>
+          </Row>}
+      />
+    </Tooltip>
     {_.reject(presetFacets, { full: 'files.file_id' }).map(facet =>
       <FacetWrapper
         key={facet.full}

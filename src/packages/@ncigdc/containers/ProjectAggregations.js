@@ -14,6 +14,7 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 import { withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex';
 import FolderIcon from '@ncigdc/theme/icons/Folder';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 export type TProps = {
   suggestions: Array<Object>,
@@ -73,16 +74,18 @@ export const ProjectAggregationsComponent = compose(
   withState('projectIdCollapsed', 'setProjectIdCollapsed', false),
 )((props: TProps) =>
   <div>
-    <FacetHeader
-      title="Project"
-      field="projects.project_id"
-      collapsed={props.projectIdCollapsed}
-      setCollapsed={props.setProjectIdCollapsed}
-    />
+    <Tooltip Component="Enter Project ID, Project name, Disease Type or Primary Site">
+      <FacetHeader
+        title="Project"
+        field="projects.project_id"
+        collapsed={props.projectIdCollapsed}
+        setCollapsed={props.setProjectIdCollapsed}
+      />
+    </Tooltip>
     <SuggestionFacet
       title="Project"
       collapsed={props.projectIdCollapsed}
-      placeholder="Search for Project"
+      placeholder="e.g. TCGA-GBM, Brain"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       doctype="projects"

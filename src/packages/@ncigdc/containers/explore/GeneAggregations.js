@@ -17,6 +17,7 @@ import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import { setModal } from '@ncigdc/dux/modal';
 
 import Button from '@ncigdc/uikit/Button';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 export type TProps = {
   dispatch: Function,
@@ -71,22 +72,28 @@ export const GeneAggregationsComponent = compose(
       collapsed={props.idCollapsed}
       setCollapsed={props.setSsmIdCollapsed}
     />
-    <SuggestionFacet
-      geneSymbolFragment={props.geneSymbolFragment}
-      title="Gene"
-      doctype="genes"
-      collapsed={props.idCollapsed}
-      fieldNoDoctype="gene_id"
-      placeholder="Search for Gene Symbol or ID"
-      hits={props.suggestions}
-      setAutocomplete={props.setAutocomplete}
-      dropdownItem={x =>
-        <div>
-          <div style={{ fontWeight: 'bold' }}>{x.symbol}</div>
-          {x.gene_id}<br />
-          {x.name}
-        </div>}
-    />
+    <Tooltip
+      Component={
+        'Enter Gene symbol, synonym, name or IDs for Ensembl, Entrez gene, HGNC Gene, OMIM, UniProtKB/Swiss-Prot'
+      }
+    >
+      <SuggestionFacet
+        geneSymbolFragment={props.geneSymbolFragment}
+        title="Gene"
+        doctype="genes"
+        collapsed={props.idCollapsed}
+        fieldNoDoctype="gene_id"
+        placeholder="e.g. BRAF, ENSG00000157764"
+        hits={props.suggestions}
+        setAutocomplete={props.setAutocomplete}
+        dropdownItem={x =>
+          <div>
+            <div style={{ fontWeight: 'bold' }}>{x.symbol}</div>
+            {x.gene_id}<br />
+            {x.name}
+          </div>}
+      />
+    </Tooltip>
     <div
       style={{
         borderBottom: `1px solid ${props.theme.greyScale5}`,

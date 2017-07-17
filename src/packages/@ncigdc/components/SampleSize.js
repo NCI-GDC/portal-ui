@@ -17,7 +17,10 @@ export default ({
   formatter = x => x.toLocaleString(),
   symbol = 'n',
 }) =>
-  <span {...css({ ...styles.deemphasizedHeading, ...style })}>
+  <span
+    {...css({ ...styles.deemphasizedHeading, ...style })}
+    data-test="sample-size"
+  >
     <small>( </small> {symbol}=
     {n ? formatter(n) : `--`}
     <small> )</small>

@@ -56,9 +56,10 @@ const SearchPage = (
     setShowFacets,
     filtersLinkProps,
     geneSymbolFragment,
+    ...props
   }: TProps = {},
 ) =>
-  <Container>
+  <Container data-test={props['data-test'] || 'search-page'}>
     {showFacets &&
       <FacetsPanel>
         <TabbedLinks

@@ -81,6 +81,7 @@ const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) =>
       return (
         <Row>
           <CartButton
+            data-test="toggle-all-files-in-cart"
             active={inCart}
             onClick={() =>
               inCart
@@ -95,6 +96,7 @@ const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) =>
           </CartButton>
           <Dropdown
             dropdownStyle={DropDownStyle}
+            data-test="add-to-cart-dropdown"
             button={
               <Row>
                 <DropDownCaret>
@@ -104,6 +106,7 @@ const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) =>
             }
           >
             <DropdownItem
+              data-test="add-all-files"
               onClick={() => dispatch(fetchFilesAndAdd(currentFilters, total))}
               aria-label="Add all files to cart"
               style={DropDownItemStyle}
@@ -113,6 +116,7 @@ const AddToCartButtonAll = ({ edges, files, total, dispatch }: TProps) =>
               Add all files to the Cart
             </DropdownItem>
             <DropdownItem
+              data-test="remove-all-files"
               onClick={() =>
                 dispatch(fetchFilesAndRemove(currentFilters, total))}
               aria-label="Remove all files from cart"

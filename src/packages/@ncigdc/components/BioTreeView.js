@@ -28,7 +28,7 @@ const BioTreeView = ({
   const expanded =
     ex || (query && entities.hits.edges.some(e => search(query, e).length));
   return (
-    <div>
+    <div data-test="biotree-view">
       {entities.hits.total > 0 &&
         <div
           onClick={e => {

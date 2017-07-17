@@ -36,8 +36,10 @@ const EntityPageHorizontalTable = ({
   tableId,
   idKey,
   dividerStyle,
+  ...props
 }) =>
   <Column
+    data-test={props['data-test'] || 'entity-table-wrapper'}
     style={{
       flexWrap: 'wrap',
       overflow: 'auto',

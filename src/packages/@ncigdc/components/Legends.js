@@ -54,7 +54,7 @@ export const SwatchLegend = ({ colorMap }) => {
   );
 
   return (
-    <Row style={styles.table}>
+    <Row style={styles.table} data-test="legends">
       <Column style={styles.td}>{labels.slice(0, 2)}</Column>
       <Column style={styles.td}>{labels.slice(2, 4)}</Column>
       <Column style={styles.td}>{labels.slice(4, 6)}</Column>

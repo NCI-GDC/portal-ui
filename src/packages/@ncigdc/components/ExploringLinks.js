@@ -44,7 +44,7 @@ const Icon = styled.i({
 });
 
 const ExploringLinks = () =>
-  <Row spacing="2rem">
+  <Row spacing="2rem" data-test="explore-links">
     <Projects backgroundColor="#1c7960">
       <Icon className="icon-gdc-projects" />
       &nbsp; <span>Projects</span>

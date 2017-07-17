@@ -16,6 +16,7 @@ const EntityPageVerticalTable = ({
   titleStyle,
   id,
   theme,
+  ...props
 }) => {
   const styles = {
     table: {
@@ -36,6 +37,7 @@ const EntityPageVerticalTable = ({
   return (
     <Column
       id={id}
+      data-test={props['data-test'] || 'entity-table-wrapper'}
       className={className}
       style={{
         flexWrap: 'wrap',

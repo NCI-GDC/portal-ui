@@ -135,7 +135,7 @@ const ProjectVisualizations = enhance(
     ]);
 
     return (
-      <div>
+      <div data-test="project-viz">
         <Column style={styles.card}>
           <Row style={{ padding: '1rem 1rem 2rem' }}>
             <h1 style={{ ...styles.heading }} id="mutated-genes">

@@ -17,6 +17,7 @@ import Download from '@ncigdc/theme/icons/Download';
 import Hidden from '@ncigdc/components/Hidden';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import supportsSvgToPng from '@ncigdc/utils/supportsSvgToPng';
+import { track } from '@ncigdc/utils/analytics';
 
 function getDOMNode(el?: string | Element): ?Element {
   switch (typeof el) {
@@ -65,6 +66,7 @@ const DownloadVisualizationButton = ({
   ...props
 }: TProps) =>
   <DropDown
+    data-test={props['data-test'] || 'download-viz-button'}
     button={
       <Tooltip Component={tooltipHTML}>
         <Button leftIcon={!noText && <Download />} style={visualizingButton}>
@@ -79,6 +81,7 @@ const DownloadVisualizationButton = ({
     {svg &&
       <DropdownItem
         key="svg"
+        data-test="download-svg"
         style={styles.row(theme)}
         onClick={() => {
           downloadSvg({
@@ -86,6 +89,7 @@ const DownloadVisualizationButton = ({
             stylePrefix,
             fileName: `${slug}.svg`,
           });
+          track('download-viz', { type: 'svg' });
         }}
       >
         SVG
@@ -93,6 +97,7 @@ const DownloadVisualizationButton = ({
     {svg &&
       <DropdownItem
         key="png"
+        data-test="download-png"
         style={{
           ...styles.row(theme),
           ...(supportsSvgToPng()
@@ -109,6 +114,7 @@ const DownloadVisualizationButton = ({
             fileName: `${slug}.png`,
             scale: 2,
           });
+          track('download-viz', { type: 'png' });
         }}
       >
         {supportsSvgToPng()
@@ -128,6 +134,7 @@ const DownloadVisualizationButton = ({
         style={styles.row(theme)}
         onClick={() => {
           saveFile(JSON.stringify(data, null, 2), 'JSON', `${slug}.json`);
+          track('download-viz', { type: 'json' });
         }}
       >
         JSON
@@ -145,6 +152,7 @@ const DownloadVisualizationButton = ({
               'TSV',
               `${slug}.tsv`,
             );
+            track('download-viz', { type: 'tsv' });
           }
         }}
       >

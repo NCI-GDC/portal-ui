@@ -37,6 +37,7 @@ const ArrangeColumnsButton = compose(
   withState('searchTerm', 'setState', ''),
 )(({ searchTerm, setState, dispatch, entityType, style = {} }) =>
   <Dropdown
+    data-test="arrange-columns-button"
     autoclose={false}
     button={
       <Tooltip Component={<span>Arrange Columns</span>}>
@@ -51,6 +52,7 @@ const ArrangeColumnsButton = compose(
       <Row>
         <SearchIcon />
         <input
+          data-test="filter-columns"
           style={{
             width: '100%',
             padding: '0.3rem 0.5rem',
@@ -64,6 +66,7 @@ const ArrangeColumnsButton = compose(
         />
       </Row>
       <RestoreDefaults
+        data-test="restore-defaults"
         onClick={() => {
           dispatch(restoreColumns(entityType));
           setState(() => '');

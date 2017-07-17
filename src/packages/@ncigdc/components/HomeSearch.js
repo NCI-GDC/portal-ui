@@ -49,6 +49,7 @@ const HomeSearch = compose(
     selectableList: { handleKeyDown, focusedItem, setFocusedItem, selectItem },
   }) =>
     <Container
+      data-test="home-search"
       onBlur={event => {
         const currentTarget = event.currentTarget;
         const relatedTarget = event.relatedTarget;
@@ -73,6 +74,7 @@ const HomeSearch = compose(
         }}
       />
       <Input
+        data-test="search-input"
         type="text"
         placeholder="e.g. BRAF, Breast, TCGA-BLCA, TCGA-A5-A0G2"
         onChange={event => setQuery(event.target.value)}

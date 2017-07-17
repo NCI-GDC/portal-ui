@@ -29,7 +29,7 @@ export default (Component: ReactClass<*>) =>
       <Query
         parentProps={props}
         name="ConsequencesTable"
-        minHeight={387}
+        minHeight={53}
         variables={props.variables}
         Component={Component}
         query={graphql`

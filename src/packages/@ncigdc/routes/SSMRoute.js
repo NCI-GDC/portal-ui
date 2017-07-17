@@ -7,6 +7,7 @@ import TableIcon from '@ncigdc/theme/icons/Table';
 import ChartIcon from '@ncigdc/theme/icons/BarChart';
 import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import { makeFilter } from '@ncigdc/utils/filters';
+import Heading from '@ncigdc/uikit/Heading';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import { SsmLolliplot } from '@ncigdc/modern_components/Lolliplot';
 import SsmSummary from '@ncigdc/modern_components/SsmSummary';
@@ -46,21 +47,6 @@ const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) =>
     PROJECTS
   </h5>;
 
-const styles = {
-  heading: {
-    flexGrow: 1,
-    fontSize: '2rem',
-    marginBottom: 7,
-    marginTop: 7,
-  },
-  card: {
-    backgroundColor: 'white',
-  },
-  lolliplotZeroStateWrapper: {
-    padding: '24px 18px',
-  },
-};
-
 export default (
   <Route
     path="/ssms/:id"
@@ -76,27 +62,24 @@ export default (
             <Row flex="1"><SsmSummary ssmId={ssmId} /></Row>
             <Row flex="1"><SsmExternalReferences ssmId={ssmId} /></Row>
           </Row>
-          <Column style={styles.card}>
-            <h1
-              id="consequences"
-              style={{ ...styles.heading, padding: '1rem' }}
-            >
+          <Column style={{ backgroundColor: 'white' }}>
+            <Heading id="consequences" style={{ padding: '1rem' }}>
               <TableIcon style={{ marginRight: '1rem' }} />
               Consequences
-            </h1>
+            </Heading>
             <Row>
               <ConsequencesTable ssmId={ssmId} />
             </Row>
           </Column>
           <Column
-            style={{ ...styles.card, marginTop: '2rem' }}
+            style={{ backgroundColor: 'white', marginTop: '2rem' }}
             id="cancer-distribution"
           >
             <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
-              <h1 style={{ ...styles.heading }}>
+              <Heading>
                 <ChartIcon style={{ marginRight: '1rem' }} />
                 Cancer Distribution
-              </h1>
+              </Heading>
               <ExploreLink
                 query={{ searchTableTab: 'cases', filters: cdFilters }}
               >
@@ -112,7 +95,7 @@ export default (
               <CancerDistributionTable filters={cdFilters} entityName={ssmId} />
             </Column>
           </Column>
-          <Column style={{ ...styles.card, marginTop: '2rem' }}>
+          <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
             <SsmLolliplot mutationId={ssmId} ssmId={ssmId} />
           </Column>
         </FullWidthLayout>

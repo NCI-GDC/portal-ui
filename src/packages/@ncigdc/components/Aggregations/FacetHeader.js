@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { compose, defaultProps } from 'recompose';
+import { css } from 'glamor';
 
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
@@ -90,7 +91,10 @@ const FacetHeader = compose(
             </span>
             <IconsRow>
               {description &&
-                <Tooltip Component={description}>
+                <Tooltip
+                  Component={description}
+                  {...css({ ':not(:last-child)': { marginRight: 8 } })}
+                >
                   <QuestionIcon />
                 </Tooltip>}
               {hasValueSearch &&

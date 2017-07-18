@@ -91,7 +91,7 @@ const SurvivalPlotWrapper = ({
       className={uniqueClass}
     >
       {!survivalPlotloading &&
-        <Column>
+        <Column data-test="survival-plot-meta">
           <VisualizationHeader
             title={TITLE}
             buttons={[
@@ -191,6 +191,7 @@ const SurvivalPlotWrapper = ({
           </div>
         </Column>}
       <div
+        data-test="survival-plot-container"
         className={CLASS_NAME}
         ref={setSurvivalContainer}
         style={{

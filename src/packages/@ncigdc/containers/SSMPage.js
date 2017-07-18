@@ -114,6 +114,7 @@ export const SSMPageComponent = compose(
   })),
 )(({ node, viewer, cdFilters }: TProps = {}) =>
   <FullWidthLayout
+    data-test="ssm-page"
     title={truncateAfterMarker(node.genomic_dna_change, DNA_CHANGE_MARKERS, 8)}
     entityType="MU"
   >
@@ -139,7 +140,10 @@ export const SSMPageComponent = compose(
           <ChartIcon style={{ marginRight: '1rem' }} />
           Cancer Distribution
         </h1>
-        <ExploreLink query={{ searchTableTab: 'cases', filters: cdFilters }}>
+        <ExploreLink
+          query={{ searchTableTab: 'cases', filters: cdFilters }}
+          data-test="explore-link"
+        >
           <GdcDataIcon /> Open in Exploration
         </ExploreLink>
       </Row>

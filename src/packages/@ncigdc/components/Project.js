@@ -105,10 +105,11 @@ const Project = (
   const dataExportFilters = makeFilter(projectFilter);
 
   return (
-    <span>
+    <span data-test="project">
       <Row>
         <Row style={{ ...styles.margin, marginLeft: 'auto' }} spacing="0.2rem">
           <DownloadButton
+            data-test="download-biospecimen"
             disabled={!biospecimenCount}
             filename={`biospecimen.project-${projectId}`}
             endpoint="cases"
@@ -133,6 +134,7 @@ const Project = (
           />
 
           <DownloadButton
+            data-test="download-clinical"
             disabled={!clinicalCount}
             filename={`clinical.project-${projectId}`}
             endpoint="cases"
@@ -160,6 +162,7 @@ const Project = (
             }
           >
             <DownloadButton
+              data-test="download-manifest"
               disabled={!fileCount}
               endpoint="files"
               activeText="Downloading"
@@ -194,6 +197,7 @@ const Project = (
 
         <Column style={{ ...styles.margin, width: '200px' }}>
           <CountCard
+            data-test="case-count"
             title="CASES"
             count={caseCount.toLocaleString()}
             icon={<CaseIcon style={styles.icon} className="fa-3x" />}
@@ -211,6 +215,7 @@ const Project = (
             }
           />
           <CountCard
+            data-test="file-count"
             title="FILES"
             count={fileCount.toLocaleString()}
             icon={<FileIcon style={styles.icon} className="fa-3x" />}
@@ -229,6 +234,7 @@ const Project = (
             }
           />
           <CountCard
+            data-test="annotation-count"
             title="ANNOTATIONS"
             count={totalAnnotations.toLocaleString()}
             icon={<AnnotationIcon style={styles.icon} className="fa-3x" />}
@@ -260,6 +266,7 @@ const Project = (
       <Row style={{ flexWrap: 'wrap' }} spacing={SPACING}>
         <span style={{ ...styles.column, ...styles.margin, flex: 1 }}>
           <SummaryCard
+            data-test="experimental-strategy-summary"
             tableTitle="Cases and File Counts by Experimental Strategy"
             pieChartTitle="File Counts by Experimental Strategy"
             data={experimentalStrategies.map((item, i) => {
@@ -415,6 +422,7 @@ const Project = (
         </span>
         <span style={{ ...styles.column, ...styles.margin, flex: 1 }}>
           <SummaryCard
+            data-test="data-category-summary"
             tableTitle="Cases and File Counts by Data Category"
             pieChartTitle="File Counts by Data Category"
             data={dataCategories.map((item, i) => {

@@ -114,7 +114,7 @@ class SmartSearchComponent extends React.Component {
 
   render(): void {
     return (
-      <div style={{ padding: '3rem 8rem' }}>
+      <div style={{ padding: '3rem 8rem' }} data-test="smart-search">
         <div
           ref={c => {
             this.container = c;
@@ -127,7 +127,7 @@ class SmartSearchComponent extends React.Component {
           defaultIndex={0}
           tabToolbar={
             <Row spacing="2rem" style={{ alignItems: 'center' }}>
-              <AnnotationsLink>
+              <AnnotationsLink data-test="annotations-link">
                 <Button leftIcon={<i className="fa fa-edit" />}>
                   Browse Annotations
                 </Button>

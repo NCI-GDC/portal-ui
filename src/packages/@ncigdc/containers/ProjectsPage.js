@@ -28,6 +28,7 @@ export type TProps = {
 
 export const ProjectsPageComponent = (props: TProps) =>
   <SearchPage
+    data-test="projects-page"
     filtersLinkProps={{
       linkPathname: '/repository',
       linkText: 'Open Query in Repository',

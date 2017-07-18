@@ -103,6 +103,7 @@ const enhance = compose(
 );
 export const ExplorePageComponent = (props: TProps) =>
   <SearchPage
+    data-test="explore-page"
     geneSymbolFragment={get(props, 'viewer.geneSymbolFragment', {})}
     facetTabs={[
       {

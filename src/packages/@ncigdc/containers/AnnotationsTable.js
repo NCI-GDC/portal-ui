@@ -32,7 +32,7 @@ export const SearchTable = compose(
     const prefix = 'annotations';
 
     return (
-      <div>
+      <div data-test="annotations-table">
         {tableHeader &&
           <h3
             className="panel-title"

@@ -30,6 +30,7 @@ function DownloadFile({
   if (userCanDownloadFile({ user, file })) {
     return (
       <DownloadButton
+        data-test="download-button"
         extraParams={{ ids: file.file_id }}
         filename={file.file_name}
         endpoint="data?annotations=true&related_files=true"
@@ -42,6 +43,7 @@ function DownloadFile({
 
   return (
     <Button
+      data-test="download-button"
       style={{ flex: 'none', marginLeft: '0.2rem', ...style }}
       onClick={() =>
         dispatch(

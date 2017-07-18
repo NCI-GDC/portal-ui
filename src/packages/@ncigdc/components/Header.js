@@ -89,7 +89,13 @@ const Header = compose(
           className="navbar-toggle"
           data-ng-click="hc.toggleCollapsed()"
         >
-          <span className="sr-only" data-translate>Toggle navigation</span>
+          <span
+            className="sr-only"
+            data-translate
+            data-test="toggle-navigation"
+          >
+            Toggle navigation
+          </span>
           <span className="icon-bar" />
           <span className="icon-bar" />
           <span className="icon-bar" />

@@ -7,12 +7,15 @@ import Card from '@ncigdc/uikit/Card';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Link from '@ncigdc/components/Links/Link';
 
-const CountCard = ({ title, count, icon, style, linkParams }) =>
-  <Card style={{ padding: '1rem', width: '15rem', ...style }}>
+const CountCard = ({ title, count, icon, style, linkParams, ...props }) =>
+  <Card
+    data-test={props['data-test'] || 'count-card'}
+    style={{ padding: '1rem', width: '15rem', ...style }}
+  >
     <Row>
       <Column>
         <Row style={{ fontSize: '1.1rem' }}>{title}</Row>
-        <Row style={{ fontSize: '2rem', width: '5em' }}>
+        <Row style={{ fontSize: '2rem', width: '5em' }} data-test="count">
           {linkParams ? <Link {...linkParams}>{count}</Link> : count}
         </Row>
       </Column>

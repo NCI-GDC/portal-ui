@@ -76,6 +76,7 @@ const Notification = ({ style, visible, action, close, children }) =>
       ...(visible ? styles.active : styles.inactive),
       ...style,
     }}
+    data-test="notification"
   >
     <div style={{ ...styles.toast, ...(styles[action] || styles.add) }}>
       <CloseIcon style={styles.closeIcon} onClick={close} />

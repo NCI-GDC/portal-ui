@@ -148,6 +148,7 @@ const CartDownloadDropdown = ({
 }) =>
   <Row>
     <Dropdown
+      data-test="cart-download-dropdown"
       dropdownStyle={{
         marginTop: '2px',
         borderRadius: '4px',
@@ -169,6 +170,7 @@ const CartDownloadDropdown = ({
     >
       <Column>
         <DownloadButton
+          data-test="download-manifest"
           style={styles.button(theme)}
           endpoint="manifest"
           activeText="Manifest"
@@ -182,6 +184,7 @@ const CartDownloadDropdown = ({
           }}
         />
         <Button
+          data-test="download-cart"
           style={styles.button(theme)}
           disabled={state.cartDownloading}
           onClick={() => downloadCart(user, files, dispatch, setState)}

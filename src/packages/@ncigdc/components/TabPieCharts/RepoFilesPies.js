@@ -52,10 +52,13 @@ const RepoFilesPiesComponent = ({
   const currentFieldNames = currentFilters.map(f => f.content.field);
   const pieColMinWidth = width / 5;
   return (
-    <div>
+    <div data-test="repo-files-pies">
       <BottomBorderedBox>
         <WrappedRow style={{ maxWidth: `${width}px`, width: '100%' }}>
-          <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
+          <ColumnCenter
+            style={{ minWidth: `${pieColMinWidth}px` }}
+            data-test="primary-site-pie"
+          >
             <PieTitle>Primary Site</PieTitle>
             <SelfFilteringPie
               buckets={_.get(aggregations, 'cases__primary_site.buckets')}
@@ -70,7 +73,10 @@ const RepoFilesPiesComponent = ({
               width={125}
             />
           </ColumnCenter>
-          <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
+          <ColumnCenter
+            style={{ minWidth: `${pieColMinWidth}px` }}
+            data-test="project-pie"
+          >
             <PieTitle>Project</PieTitle>
             <SelfFilteringPie
               buckets={_.get(
@@ -88,7 +94,10 @@ const RepoFilesPiesComponent = ({
               width={125}
             />
           </ColumnCenter>
-          <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
+          <ColumnCenter
+            style={{ minWidth: `${pieColMinWidth}px` }}
+            data-test="data-category-pie"
+          >
             <PieTitle>Data Category</PieTitle>
             <SelfFilteringPie
               buckets={_.get(aggregations, 'data_category.buckets')}
@@ -103,7 +112,10 @@ const RepoFilesPiesComponent = ({
               width={125}
             />
           </ColumnCenter>
-          <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
+          <ColumnCenter
+            style={{ minWidth: `${pieColMinWidth}px` }}
+            data-test="data-type"
+          >
             <PieTitle>Data Type</PieTitle>
             <SelfFilteringPie
               buckets={_.get(aggregations, 'data_type.buckets')}
@@ -118,7 +130,10 @@ const RepoFilesPiesComponent = ({
               width={125}
             />
           </ColumnCenter>
-          <ColumnCenter style={{ minWidth: `${pieColMinWidth}px` }}>
+          <ColumnCenter
+            style={{ minWidth: `${pieColMinWidth}px` }}
+            data-test="data-format"
+          >
             <PieTitle>Data Format</PieTitle>
             <SelfFilteringPie
               buckets={_.get(aggregations, 'data_format.buckets')}
@@ -137,6 +152,7 @@ const RepoFilesPiesComponent = ({
             <ColumnCenter
               style={{ minWidth: `${pieColMinWidth}px` }}
               key="files.experimental_strategy"
+              data-test="experimental-strategy"
             >
               <PieTitle>Experimental Strategy</PieTitle>
               <SelfFilteringPie
@@ -155,6 +171,7 @@ const RepoFilesPiesComponent = ({
             <ColumnCenter
               key="files.access"
               style={{ minWidth: `${pieColMinWidth}px` }}
+              data-test="access-level"
             >
               <PieTitle>Access Level</PieTitle>
               <SelfFilteringPie

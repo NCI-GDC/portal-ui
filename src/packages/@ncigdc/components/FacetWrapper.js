@@ -169,7 +169,7 @@ const FacetWrapper = compose(
         .length >= 20;
 
     return (
-      <FacetWrapperDiv style={style}>
+      <FacetWrapperDiv style={style} data-test="facet">
         <FacetHeader
           title={displayTitle}
           field={facet.full}

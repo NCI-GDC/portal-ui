@@ -76,7 +76,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
   const fileSize = viewer.summary.aggregations.fs.value;
 
   return (
-    <Column style={styles.container}>
+    <Column style={styles.container} data-test="cart-page">
       {!files.length && <h1>Your cart is empty.</h1>}
       {!!files.length &&
         !!viewer.repository.files.hits &&

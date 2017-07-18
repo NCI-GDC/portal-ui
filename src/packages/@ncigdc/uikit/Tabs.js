@@ -90,10 +90,11 @@ const Tabs = ({
   ...props
 }) =>
   side
-    ? <Row style={style} flex="1" {...props}>
+    ? <Row style={style} flex="1" {...props} data-test="tabs">
         <Column>
           {Children.map(tabs, (child, i) =>
             <Tab
+              data-test="tab"
               onClick={() => (onTabClick ? onTabClick(i) : () => {})}
               active={i === activeIndex}
               sibling={i}
@@ -110,10 +111,11 @@ const Tabs = ({
           {children}
         </Column>
       </Row>
-    : <Column style={style} {...props}>
+    : <Column style={style} data-test="tabs" {...props}>
         <Row style={{ alignItems: 'center' }}>
           {Children.map(tabs, (child, i) =>
             <Tab
+              data-test="tab"
               onClick={() => (onTabClick ? onTabClick(i) : () => {})}
               active={i === activeIndex}
               sibling={i}

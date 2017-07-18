@@ -32,7 +32,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
   const currentFieldNames = currentFilters.map(f => f.content.field);
   return (
     <RowCenter>
-      <ColumnCenter>
+      <ColumnCenter data-test="primary-site">
         <PieTitle>Primary Site</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'primary_site.buckets')}
@@ -47,7 +47,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
           width={125}
         />
       </ColumnCenter>
-      <ColumnCenter>
+      <ColumnCenter data-test="project">
         <PieTitle>Project</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'project__project_id.buckets')}
@@ -62,7 +62,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
           width={125}
         />
       </ColumnCenter>
-      <ColumnCenter>
+      <ColumnCenter data-test="disease-type">
         <PieTitle>Disease Type</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'disease_type.buckets')}
@@ -77,7 +77,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
           width={125}
         />
       </ColumnCenter>
-      <ColumnCenter>
+      <ColumnCenter data-test="gender">
         <PieTitle>Gender</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'demographic__gender.buckets')}
@@ -92,7 +92,7 @@ const RepoCasesPiesComponent = ({ aggregations, query, push }: TProps) => {
           width={125}
         />
       </ColumnCenter>
-      <ColumnCenter>
+      <ColumnCenter data-test="vital-status">
         <PieTitle>Vital Status</PieTitle>
         <SelfFilteringPie
           buckets={_.get(aggregations, 'diagnoses__vital_status.buckets')}

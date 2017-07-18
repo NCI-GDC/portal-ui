@@ -37,6 +37,7 @@ const BAMSlicingButton = ({
   active,
 }: TProps) =>
   <BAMButton
+    data-test="bam-button"
     style={{ marginLeft: '0.5rem' }}
     leftIcon={active ? <Spinner /> : <CutleryIcon />}
     disabled={active}
@@ -45,6 +46,7 @@ const BAMSlicingButton = ({
         setModal(
           user && userCanDownloadFile({ user, file })
             ? <BAMModal
+                data-test="bam-modal"
                 file={file}
                 closeModal={() => dispatch(setModal(null))}
                 setActive={setActive}

@@ -51,6 +51,7 @@ const DownloadButton = ({
   style = {},
   extraParams = {},
   showIcon = true,
+  ...props
 }: TDownloadButton) => {
   const text = active ? activeText : inactiveText;
   const icon =
@@ -58,6 +59,7 @@ const DownloadButton = ({
 
   return (
     <Button
+      data-test={props['data-test'] || 'download-button'}
       style={{
         ...style,
       }}

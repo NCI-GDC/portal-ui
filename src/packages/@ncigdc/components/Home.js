@@ -228,7 +228,7 @@ const Home = compose(
     },
   }),
 )(({ state: { humanBodyLoading }, config, ...props }) =>
-  <Column>
+  <Column data-test="Home">
     <GradientContainer>
       <InsideContainer>
         <SubTitle style={{ fontSize: '2rem' }}>

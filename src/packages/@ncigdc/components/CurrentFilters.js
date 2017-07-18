@@ -167,7 +167,7 @@ const CurrentFilters = (
     getDisplayValue,
   }: TProps = {},
 ) =>
-  <Info style={style}>
+  <Info style={style} data-test="current-filters">
     {!currentFilters.length &&
       <span
         style={{
@@ -191,6 +191,7 @@ const CurrentFilters = (
       >
         <Row wrap spacing="0.3rem">
           <NotUnderlinedLink
+            data-test="clear"
             style={styles.groupPadding}
             query={omit(query, 'filters')}
           >
@@ -205,6 +206,7 @@ const CurrentFilters = (
               style={styles.groupPadding}
             >
               <NotUnderlinedLink
+                data-test="field-name"
                 merge="toggle"
                 query={{
                   offset: 0,
@@ -229,6 +231,7 @@ const CurrentFilters = (
                 ? filter.content.value
                 : take(filter.content.value, 2)).map(value =>
                 <NotUnderlinedLink
+                  data-test="field-value"
                   key={value}
                   merge="toggle"
                   query={{
@@ -254,6 +257,7 @@ const CurrentFilters = (
               )}
               {filter.content.value.length > 2 &&
                 <UnstyledButton
+                  data-test="toggle"
                   style={styles.rightParen}
                   onClick={() => onLessClicked(filter)}
                 >
@@ -261,6 +265,7 @@ const CurrentFilters = (
                 </UnstyledButton>}
               {isFilterExpanded(filter) &&
                 <UnstyledButton
+                  data-test="toggle"
                   style={{ display: 'flex', alignItems: 'center' }}
                   onClick={() => onLessClicked(filter)}
                 >

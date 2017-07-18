@@ -35,6 +35,7 @@ const Modal = ({ isOpen, onRequestClose, style, children }) =>
     isOpen={isOpen}
     onRequestClose={onRequestClose || (() => {})}
     contentLabel="Modal"
+    data-test="modal"
   >
     {Children.map(children, child => cloneElement(child, { ...child.props }))}
   </ReactModal>;

@@ -57,6 +57,7 @@ const SsmSummaryComponent = compose(
     { node, functionalImpact, functionalImpactTranscript, theme }: TProps = {},
   ) =>
     <EntityPageVerticalTable
+      data-test="ssm-summary"
       id="Summary"
       title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
       thToTd={[
@@ -81,6 +82,7 @@ const SsmSummaryComponent = compose(
             functionalImpact &&
               <div>
                 <BubbleIcon
+                  data-test="functional-impact-bubble"
                   toolTipText={functionalImpact}
                   text={functionalImpact.slice(
                     0,
@@ -89,6 +91,7 @@ const SsmSummaryComponent = compose(
                   backgroundColor={theme.impacts[functionalImpact]}
                 />
                 <span
+                  data-test="functional-impact"
                   style={{
                     display: 'inline-block',
                     textTransform: 'capitalize',
@@ -99,6 +102,7 @@ const SsmSummaryComponent = compose(
                   {functionalImpact.toLowerCase()}
                 </span>
                 <ExternalLink
+                  data-test="function-impact-transcript-link"
                   key={functionalImpactTranscript.transcript_id}
                   style={{ paddingRight: '0.5em' }}
                   href={externalReferenceLinks.ensembl(

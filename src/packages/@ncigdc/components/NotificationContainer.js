@@ -5,7 +5,7 @@ import Notification from '@ncigdc/uikit/Notification';
 import { Row } from '@ncigdc/uikit/Flex';
 
 const NotificationContainer = ({ notification }) =>
-  <Row>
+  <Row data-test="notification-wrapper">
     {notification &&
       <Notification
         id={notification.id}

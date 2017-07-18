@@ -22,6 +22,7 @@ const DoubleRingChart = ({
   const node = ReactFauxDOM.createElement('div');
   node.style.setProperty('display', 'flex');
   node.style.setProperty('justify-content', 'center');
+  node.setAttribute('data-test', 'double-ring-chart');
 
   const svg = d3
     .select(node)

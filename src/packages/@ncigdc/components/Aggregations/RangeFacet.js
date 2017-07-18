@@ -260,7 +260,7 @@ const RangeFacet = (props: TProps) => {
   const { maxDisplayed, minDisplayed } = props.state;
 
   return (
-    <Container style={{ ...props.style }}>
+    <Container style={{ ...props.style }} data-test="range-facet">
       {!props.collapsed &&
         props.convertDays &&
         <Row style={{ marginBottom: '0.5rem' }}>

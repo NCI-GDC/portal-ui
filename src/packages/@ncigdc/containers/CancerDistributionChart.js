@@ -169,7 +169,7 @@ const CancerDistributionChartComponent = compose(
       }));
 
     return (
-      <div style={style}>
+      <div style={style} data-test="cancer-distribution-chart">
         {chartData.length >= 5 &&
           <Loader loading={!cases.filtered} height={CHART_HEIGHT}>
             <Column style={{ padding: '0 0 0 2rem' }}>

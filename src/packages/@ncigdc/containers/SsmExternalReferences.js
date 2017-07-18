@@ -37,6 +37,7 @@ const SsmExternalReferencesComponent = compose(
   })),
 )(({ node, dbSNP }: TProps = {}) =>
   <EntityPageVerticalTable
+    data-test="external-references"
     title={
       <span>
         <BookIcon style={{ marginRight: '1rem' }} /> External References
@@ -46,7 +47,10 @@ const SsmExternalReferencesComponent = compose(
       {
         th: <span style={{ textTransform: 'none' }}>dbSNP</span>,
         td: dbSNP && /rs(\d+)$/g.test(dbSNP)
-          ? <ExternalLink href={externalReferenceLinks.dbsnp(dbSNP)}>
+          ? <ExternalLink
+              href={externalReferenceLinks.dbsnp(dbSNP)}
+              data-test="dbsnp-link"
+            >
               {dbSNP}
             </ExternalLink>
           : '--',
@@ -58,6 +62,7 @@ const SsmExternalReferencesComponent = compose(
               style={{ minWidth: '300px' }}
               data={(node.cosmic_id || []).map(c =>
                 <ExternalLink
+                  data-test="cosmic-link"
                   href={externalReferenceLinks[c.substring(0, 4).toLowerCase()](
                     c.match(/(\d+)$/g),
                   )}

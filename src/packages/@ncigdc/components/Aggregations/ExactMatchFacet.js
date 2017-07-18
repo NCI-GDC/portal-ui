@@ -40,7 +40,7 @@ const ExactMatchFacet = compose(
             dotField: `${doctype}.${fieldNoDoctype}`,
           }) || { content: { value: [] } };
           return (
-            <Container style={style}>
+            <Container style={style} data-test="exact-match-facet">
               {!collapsed &&
                 <Column>
                   {currentValues.content.value.map(v =>

@@ -9,7 +9,7 @@ type TProps = {
 };
 
 const ProjectsCount = (props: TProps) =>
-  <span>
+  <span data-test="projects-count">
     {props.hits.total > 0
       ? props.hits.total.toLocaleString()
       : <span className="fa fa-spinner fa-spin" />}

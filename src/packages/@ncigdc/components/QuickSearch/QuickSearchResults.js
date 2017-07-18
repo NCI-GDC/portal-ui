@@ -157,7 +157,10 @@ export default ({
   onActivateItem,
   style = {},
 }: TProps) =>
-  <ul style={{ ...styles.container, ...style.container }}>
+  <ul
+    style={{ ...styles.container, ...style.container }}
+    data-test="quick-search-results"
+  >
     {results.map((item, i) =>
       <li
         key={item.id}

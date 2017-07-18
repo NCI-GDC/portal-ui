@@ -100,7 +100,7 @@ export type TProps = {
 };
 
 export const FileAggregationsComponent = (props: TProps) =>
-  <div>
+  <div data-test="file-aggregations">
     <div
       className="text-right"
       style={{

@@ -72,7 +72,7 @@ const projectFacets = [
 export const ProjectAggregationsComponent = compose(
   withState('projectIdCollapsed', 'setProjectIdCollapsed', false),
 )((props: TProps) =>
-  <div>
+  <div data-test="project-aggregations">
     <FacetHeader
       title="Project"
       field="projects.project_id"

@@ -426,6 +426,7 @@ const OncoGridWrapper = compose(
   }) =>
     <Loader loading={isLoading} height="800px">
       <div
+        data-test="oncogrid-wrapper"
         style={{
           ...styles.container,
           ...(isFullScreen() && styles.fullscreen),

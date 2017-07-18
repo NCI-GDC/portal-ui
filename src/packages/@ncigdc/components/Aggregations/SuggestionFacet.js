@@ -144,7 +144,7 @@ const SuggestionFacet = compose(
             dotField: `${doctype}.${fieldNoDoctype}`,
           }) || { content: { value: [] } };
           return (
-            <Container style={style}>
+            <Container style={style} data-test="suggestion-facet">
               {!collapsed &&
                 <Column>
                   {currentValues.content.value.map(v =>

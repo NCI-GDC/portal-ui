@@ -34,7 +34,10 @@ const VisualizationHeader = ({
     buttons.length * buttonWidth + SPACING * Math.max(buttons.length - 1, 0);
 
   return (
-    <Row style={{ ...style, margin: '0 1.2rem' }}>
+    <Row
+      style={{ ...style, margin: '0 1.2rem' }}
+      data-test="visualization-header"
+    >
       <Title style={{ marginLeft: buttonsWidth + SPACING }}>
         {title}
       </Title>

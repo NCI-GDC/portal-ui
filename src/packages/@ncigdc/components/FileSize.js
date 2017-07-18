@@ -20,7 +20,7 @@ type TProps = {|
 |};
 
 const FileSize = (props: TProps) =>
-  <span>
+  <span data-test={props['data-test'] || 'file-size'}>
     {formatFileSize(props.bytes, {
       ...props.options,
     })}

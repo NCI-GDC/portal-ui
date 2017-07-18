@@ -32,6 +32,7 @@ const ClinicalCard = ({
   theme: Object,
 }) =>
   <Card
+    data-test="clinical-card"
     style={{ flex: 1 }}
     title={
       <Row style={{ justifyContent: 'space-between' }}>

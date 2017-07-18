@@ -49,7 +49,7 @@ const TableActions = (
 ) =>
   <LocationSubscriber>
     {({ query }: {| query: TRawQuery |}) =>
-      <Row style={style} spacing="0.2rem">
+      <Row style={style} spacing="0.2rem" data-test="table-actions">
         {entityType &&
           <ArrangeColumnsButton
             entityType={entityType}

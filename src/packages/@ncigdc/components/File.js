@@ -155,12 +155,13 @@ const File = ({
       </RepositoryFilesLink>
     : <span>0</span>;
   return (
-    <Column>
+    <Column data-test="file">
       <Row
         style={{ justifyContent: 'flex-end', padding: '1rem 0' }}
         spacing="0.2rem"
       >
         <Button
+          data-test="toggle-cart"
           onClick={() => dispatch(toggleFilesInCart(node))}
           leftIcon={<ShoppingCartIcon />}
         >
@@ -178,6 +179,7 @@ const File = ({
       </Row>
       <Row style={{ alignItems: 'flex-start' }}>
         <EntityPageVerticalTable
+          data-test="file-properties"
           title="File Properties"
           style={{ width: '58%', marginRight: '2rem' }}
           thToTd={[
@@ -202,6 +204,7 @@ const File = ({
           ]}
         />
         <EntityPageVerticalTable
+          data-test="data-information"
           title="Data Information"
           style={{ width: '42%' }}
           thToTd={[
@@ -213,6 +216,7 @@ const File = ({
         />
       </Row>
       <LocalPaginationTable
+        data-test="associated-cases"
         data={filteredAE}
         prefix={paginationPrefix}
         style={{ flexGrow: 1, backgroundColor: 'white', marginTop: '2rem' }}
@@ -282,6 +286,7 @@ const File = ({
       {displaySection('analysis', node.data_category) &&
         <Row style={{ paddingTop: '2rem', alignItems: 'flex-start' }}>
           <EntityPageVerticalTable
+            data-test="analysis"
             title="Analysis"
             style={{ marginRight: '2rem', width: '50%' }}
             thToTd={[
@@ -308,6 +313,7 @@ const File = ({
             ]}
           />
           <EntityPageVerticalTable
+            data-test="reference-genome"
             title="Reference Genome"
             style={{ width: '50%' }}
             thToTd={[
@@ -321,6 +327,7 @@ const File = ({
         <Row style={{ paddingTop: '2rem' }}>
           <Column style={{ flexGrow: 1 }}>
             <EntityPageHorizontalTable
+              data-test="read-groups"
               title="Read Groups"
               emptyMessage="No read group files found."
               headings={[
@@ -341,6 +348,7 @@ const File = ({
         <Row style={{ paddingTop: '2rem' }}>
           <Column style={{ flexGrow: 1 }}>
             <EntityPageHorizontalTable
+              data-test="metadata-files"
               title="Metadata Files"
               emptyMessage="No metadata files found."
               headings={[
@@ -383,6 +391,7 @@ const File = ({
         <Row style={{ paddingTop: '2rem' }}>
           <Column style={{ flexGrow: 1 }}>
             <EntityPageHorizontalTable
+              data-test="downstream-analyses"
               title="Downstream Analyses Files"
               emptyMessage="No Downstream Analysis files found."
               headings={[

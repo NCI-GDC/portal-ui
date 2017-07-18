@@ -7,6 +7,7 @@ import { mapStringArrayToTsvString } from '@ncigdc/utils/toTsvString';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { track } from '@ncigdc/utils/analytics';
 
 type TProps = {
   selector: string,
@@ -61,6 +62,7 @@ const DownloadTableToTsvButton = ({ filename, selector, style = {} }: TProps) =>
           );
         });
         saveFile(mapStringArrayToTsvString(thText, tdText), 'TSV', filename);
+        track('download-table', { type: 'tsv', filename, selector });
       }}
     >
       TSV

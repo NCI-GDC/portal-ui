@@ -54,7 +54,11 @@ const Button = (
 ) => {
   const StyledButton = styled.button({ ...buttonBaseStyles, ...style });
   return (
-    <StyledButton disabled={disabled} {...validAttributes(props)}>
+    <StyledButton
+      disabled={disabled}
+      {...validAttributes(props)}
+      data-test={props['data-test']}
+    >
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {leftIcon}
         <span style={{ ...margin(leftIcon, rightIcon), ...center }}>

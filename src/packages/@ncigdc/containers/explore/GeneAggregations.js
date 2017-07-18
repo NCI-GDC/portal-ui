@@ -33,6 +33,11 @@ export type TProps = {
   },
   setAutocomplete: Function,
   theme: Object,
+  idCollapsed: boolean,
+  setSsmIdCollapsed: Function,
+  geneSymbolFragment: Object,
+  suggestions: Object,
+  relay: Object,
 };
 
 const presetFacets = [
@@ -67,7 +72,7 @@ export const GeneAggregationsComponent = compose(
   <div>
     <FacetHeader
       title="Gene"
-      field="genes.symbol"
+      field="genes.gene_id"
       collapsed={props.idCollapsed}
       setCollapsed={props.setSsmIdCollapsed}
     />

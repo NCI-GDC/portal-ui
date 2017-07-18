@@ -16,6 +16,7 @@ const ProgressContainer = compose(
   withTheme,
 )(({ percent, theme }) =>
   <ProgressBar
+    data-test="progress-bar"
     percent={percent}
     color={theme.primaryLight1}
     height={3}

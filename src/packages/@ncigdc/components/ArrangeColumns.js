@@ -34,9 +34,10 @@ const ArrangeColumns = compose(
   );
 
   return (
-    <div>
+    <div data-test="arrange-columns">
       {filteredColumns.map((column, i) =>
         <SortableItem
+          data-test="column"
           key={column.id}
           updateState={nextState =>
             setState(state => {

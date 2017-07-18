@@ -15,6 +15,7 @@ const LocalPaginationTable = ({
   style,
   entityName = 'projects',
   sizes,
+  ...props
 }) => {
   const defaultSize = (sizes && sizes[0]) || 10;
   const size = parseInt(query[`${prefix}_size`] || defaultSize, 10);
@@ -28,7 +29,7 @@ const LocalPaginationTable = ({
   const tableData = enablePagination ? data.slice(offset, offset + size) : data;
 
   return (
-    <div style={style}>
+    <div style={style} data-test={props['data-test']}>
       <Row
         style={{
           backgroundColor: 'white',

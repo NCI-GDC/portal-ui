@@ -69,12 +69,14 @@ const AddCaseFilesToCartButton = compose(
     dropdownStyle = {},
   }) =>
     <Dropdown
+      data-test="add-case-files-to-cart-dropdown"
       dropdownStyle={{ ...styles.dropdownContainer, ...dropdownStyle }}
       dropdownClassName={isLoading ? 'hidden' : 'dropdown-menu'}
       isDisabled={!hasFiles}
       button={
         hasFiles
           ? <button
+              data-test="case-actions"
               className="btn btn-default dropdown-toggle fa fa-shopping-cart"
               style={{ padding: '0 4px' }}
             >
@@ -86,6 +88,7 @@ const AddCaseFilesToCartButton = compose(
             </button>
           : <Tooltip Component={<span>This case has no files.</span>}>
               <button
+                data-test="case-actions"
                 className="btn disabled fa fa-shopping-cart"
                 style={{ padding: '0px 17px 0 4px' }}
                 aria-label="This case has no files"
@@ -98,6 +101,7 @@ const AddCaseFilesToCartButton = compose(
       {!isLoading && [
         !!(files.length && files.length > filesInCart.length) &&
           <DropdownItem
+            data-test="add-all-files"
             onClick={() => dispatch(addAllFilesInCart(files))}
             aria-label="Add all Case files to the Cart"
             role="button"
@@ -111,6 +115,7 @@ const AddCaseFilesToCartButton = compose(
 
         !!(files.length && filesInCart.length) &&
           <DropdownItem
+            data-test="remove-all-files"
             onClick={() => dispatch(removeFilesFromCart(files))}
             aria-label="Remove all Case files from the Cart"
             role="button"
@@ -128,6 +133,7 @@ const AddCaseFilesToCartButton = compose(
           filteredFiles.length < files.length,
         ]) &&
           <DropdownItem
+            data-test="add-filtered-files"
             onClick={() => dispatch(addAllFilesInCart(filteredFiles))}
             aria-label="Add filtered Case files to the Cart"
             role="button"
@@ -141,6 +147,7 @@ const AddCaseFilesToCartButton = compose(
 
         !!(filteredFiles.length && filteredFilesInCart.length) &&
           <DropdownItem
+            data-test="remove-filtered-files"
             onClick={() => dispatch(removeFilesFromCart(filteredFiles))}
             aria-label="Remove filtered Case files from the Cart"
             role="button"

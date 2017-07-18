@@ -444,7 +444,7 @@ const ProjectsChartsComponent = compose(
     );
 
     return (
-      <Container>
+      <Container data-test="projects-charts">
         <Column
           style={{
             paddingRight: '10px',
@@ -585,7 +585,10 @@ const ProjectsChartsComponent = compose(
                 <SpinnerParticle />
               </Row>}
         </Column>
-        <Column style={{ minWidth: '200px', flexGrow: '1', flexBasis: '33%' }}>
+        <Column
+          style={{ minWidth: '200px', flexGrow: '1', flexBasis: '33%' }}
+          data-test="case-distribution-per-project"
+        >
           <div
             style={{
               alignSelf: 'center',

@@ -7,6 +7,7 @@ export default function ExternalLink({
   style,
   title,
   hasExternalIcon = true,
+  ...props
 }): React.Element {
   return (
     <a
@@ -15,6 +16,7 @@ export default function ExternalLink({
       rel="noopener noreferrer"
       style={style}
       title={title}
+      data-test={props['data-test'] || 'external-link'}
     >
       {hasExternalIcon &&
         <ExternalLinkIcon style={{ marginRight: '0.5rem' }} />}

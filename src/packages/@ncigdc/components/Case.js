@@ -227,9 +227,10 @@ const Case = compose(
     ]);
 
     return (
-      <Column spacing={theme.spacing}>
+      <Column spacing={theme.spacing} data-test="case">
         <Row style={{ justifyContent: 'flex-end' }}>
           <Button
+            data-test="cart-file-toggle"
             onClick={() => dispatch(cartOperation(files))}
             leftIcon={<ShoppingCartIcon />}
           >
@@ -264,6 +265,7 @@ const Case = compose(
 
           <Column style={{ width: '200px' }} spacing={theme.spacing}>
             <CountCard
+              data-test="files-count"
               style={{ width: 'auto' }}
               title="FILES"
               count={totalFiles.toLocaleString()}
@@ -284,6 +286,7 @@ const Case = compose(
               }
             />
             <CountCard
+              data-test="annotations-count"
               style={{ width: 'auto' }}
               title="ANNOTATIONS"
               count={p.annotations.hits.total.toLocaleString()}
@@ -296,6 +299,7 @@ const Case = compose(
         <Row style={{ flexWrap: 'wrap' }} spacing={theme.spacing}>
           <span style={{ flex: 1 }}>
             <SummaryCard
+              data-test="experimental-strategy-summary"
               tableTitle="File Counts by Experimental Strategy"
               pieChartTitle="File Counts by Experimental Strategy"
               data={experimentalStrategies}
@@ -344,6 +348,7 @@ const Case = compose(
           </span>
           <span style={{ flex: 1 }}>
             <SummaryCard
+              data-test="data-category-summary"
               tableTitle="File Counts by Data Category"
               pieChartTitle="File Counts by Experimental Strategy"
               data={dataCategories}

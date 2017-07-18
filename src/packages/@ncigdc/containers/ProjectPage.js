@@ -64,7 +64,11 @@ export type TProps = {
 };
 
 export const ProjectPageComponent = ({ node, viewer }: TProps) =>
-  <FullWidthLayout title={node.project_id} entityType="PR">
+  <FullWidthLayout
+    title={node.project_id}
+    entityType="PR"
+    data-test="project-page"
+  >
     <LocationSubscriber>
       {(ctx: {| pathname: string, query: TRawQuery |}) =>
         <Project

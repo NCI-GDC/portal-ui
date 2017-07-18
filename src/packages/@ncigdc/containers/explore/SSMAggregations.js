@@ -111,7 +111,7 @@ export const SSMAggregationsComponent = compose(
   withState('cosmicIdCollapsed', 'setCosmicIdCollapsed', false),
   withState('dbSNPCollapsed', 'setDbSNPCollapsed', false),
 )((props: TProps) =>
-  <div>
+  <div data-test="ssm-aggregations">
     <FacetHeader
       title="Mutation"
       field="ssms.ssm_id"

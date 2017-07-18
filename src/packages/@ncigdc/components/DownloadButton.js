@@ -59,7 +59,7 @@ const DownloadButton = ({
 
   return (
     <Button
-      data-test={props['data-test'] || 'download-button'}
+      className={props.className || 'test-download-button'}
       style={{
         ...style,
       }}

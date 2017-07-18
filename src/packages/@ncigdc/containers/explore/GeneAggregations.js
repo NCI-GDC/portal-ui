@@ -64,7 +64,7 @@ export const GeneAggregationsComponent = compose(
   connect(),
   withTheme,
 )((props: TProps) =>
-  <div data-test="gene-aggregations">
+  <div className="test-gene-aggregations">
     <FacetHeader
       title="Gene"
       field="genes.symbol"

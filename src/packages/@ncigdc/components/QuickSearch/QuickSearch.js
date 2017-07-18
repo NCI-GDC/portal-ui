@@ -85,7 +85,7 @@ export default compose(
     style,
   }) =>
     <a
-      data-test="quick-search-toggle"
+      className="quick-search-toggle"
       tabIndex={tabIndex}
       onClick={() =>
         !state.isInSearchMode && setState({ isInSearchMode: true })}
@@ -136,7 +136,7 @@ export default compose(
       {state.isInSearchMode &&
         <SearchInput
           autoFocus
-          data-test="quick-search-input"
+          className="quick-search-input"
           placeholder="Quick Search"
           type="text"
           onChange={event => setQuery(event.target.value)}

@@ -63,7 +63,7 @@ export type TProps = {
 
 export const CasePageComponent = ({ node, viewer }: TProps) =>
   <FullWidthLayout
-    data-test="case-page"
+    className="test-case-page"
     title={`${node.project.project_id} / ${node.submitter_id}`}
     entityType="CA"
   >

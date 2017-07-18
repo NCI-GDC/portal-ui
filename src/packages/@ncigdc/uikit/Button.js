@@ -57,7 +57,7 @@ const Button = (
     <StyledButton
       disabled={disabled}
       {...validAttributes(props)}
-      data-test={props['data-test']}
+      className={props.className + ' button'}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {leftIcon}

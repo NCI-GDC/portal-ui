@@ -36,7 +36,7 @@ const drawChart = ({
   };
 
   const el = ReactFauxDOM.createElement('div');
-  el.setAttribute('data-test', 'stacked-bar-chart');
+  el.setAttribute('class', 'test-stacked-bar-chart');
 
   const margin = { top: 10, right: 0, bottom: 55, left: 70 };
   const x = d3

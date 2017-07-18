@@ -32,7 +32,7 @@ const PieChart = compose(
   const node = ReactFauxDOM.createElement('div');
   node.style.setProperty('display', 'flex');
   node.style.setProperty('justify-content', 'center');
-  node.setAttribute('data-test', 'pie-chart');
+  node.setAttribute('class', 'test-pie-chart');
 
   const pie = d3
     .pie()

@@ -91,7 +91,7 @@ export const RepositoryPageComponent = (props: TProps) => {
   const fileSize = props.viewer.cart_summary.aggregations.fs.value;
 
   return (
-    <div data-test="repository-page">
+    <div className="test-repository-page">
       <SearchPage
         filtersLinkProps={{
           hideLinkOnEmpty: false,

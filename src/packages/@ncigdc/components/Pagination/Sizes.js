@@ -22,7 +22,7 @@ const Sizes = ({
   return (
     <span>
       <Dropdown
-        data-test="page-size-selection"
+        className="test-page-size-selection"
         selected={size}
         dropdownStyle={{
           minWidth: '40px',
@@ -33,7 +33,7 @@ const Sizes = ({
       >
         {sizes.map(x =>
           <DropdownItem
-            data-test="page-size-option"
+            className="test-page-size-option"
             key={x}
             style={{
               display: 'flex',

@@ -67,7 +67,7 @@ const DateFacet = (props: TProps) => {
   };
 
   return (
-    <Container style={{ ...props.style }} data-test="date-facet">
+    <Container style={{ ...props.style }} className="test-date-facet">
       {!props.collapsed &&
         <Row>
           <Label

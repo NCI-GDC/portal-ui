@@ -24,10 +24,10 @@ import { Th, Td } from '@ncigdc/uikit/Table';
 
 const annotationsTableModel = [
   {
-    name: 'Annotation UUID',
+    name: 'UUID',
     id: 'annotation_id',
     downloadable: true,
-    th: () => <Th key="annotation_id" rowSpan="2">Annotation UUID</Th>,
+    th: () => <Th key="annotation_id" rowSpan="2">UUID</Th>,
     td: ({ node, index }) =>
       <Td>
         <AnnotationLink

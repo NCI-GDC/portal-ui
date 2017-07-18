@@ -60,7 +60,7 @@ const SsmSummaryComponent = compose(
       id="Summary"
       title={<span><TableIcon style={{ marginRight: '1rem' }} />Summary</span>}
       thToTd={[
-        { th: 'ID', td: node.ssm_id },
+        { th: 'UUID', td: node.ssm_id },
         {
           th: 'DNA change',
           td: (

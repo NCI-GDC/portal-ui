@@ -256,7 +256,8 @@ const OncoGridWrapper = compose(
             oncoGridPadding,
         height: oncoGridHeight,
         geneClick: ({ id }: { id: string }) => push(`/genes/${id}`),
-        donorClick: ({ id }: { id: string }) => push(`/cases/${id}`),
+        donorClick: ({ id }: { id: string }) =>
+          push(`/cases/${responses.caseNameMap[id].uuid}`),
         donorHistogramClick: (data: { id: string }) => {
           push({
             pathname: '/exploration',

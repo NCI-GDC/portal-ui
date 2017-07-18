@@ -139,7 +139,7 @@ async function getQueries({
   const caseUUIDMap = mapValues(groupBy(cases, 'case_id'), ([donor]) => ({
     ...donor,
     uuid: donor.case_id,
-    name: `${donor.project.project_id} / ${donor.submitter_id}`,
+    name: `${donor.project.project_id} ̸  ${donor.submitter_id}`, //contains unicode special chars for zoom selector to work
   }));
   const caseNameMap = mapKeys(caseUUIDMap, donor => donor.name);
 

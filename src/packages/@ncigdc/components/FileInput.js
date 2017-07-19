@@ -24,7 +24,7 @@ export default ({ addFiles, style, ...props }: TProps) => {
       style={{ ...baseStyle, ...style }}
       type="file"
       title="File Input"
-      data-test={props['data-test'] || 'file-input'}
+      className={props.className + ' test-file-input'}
       onChange={event => {
         addFiles(Array.prototype.slice.call(event.target.files));
 

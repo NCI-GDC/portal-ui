@@ -133,7 +133,7 @@ const ConsequencesTableComponent = compose(
     }: TProps = {},
   ) =>
     <LocalPaginationTable
-      data-test="consequences-table"
+      className="test-consequences-table"
       style={{ width: '100%', minWidth: 450 }}
       data={dataRows}
       prefix={paginationPrefix}

@@ -59,7 +59,7 @@ const SearchPage = (
     ...props
   }: TProps = {},
 ) =>
-  <Container data-test={props['data-test'] || 'search-page'}>
+  <Container className={props.className + ' test-search-page'}>
     {showFacets &&
       <FacetsPanel>
         <TabbedLinks

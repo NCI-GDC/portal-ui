@@ -10,7 +10,7 @@ import Card from '@ncigdc/uikit/Card';
 const title = <span>How to download files in my Cart?</span>;
 
 const HowToDownload = ({ style = {} }) =>
-  <Card style={style} title={title} data-test="how-to-download">
+  <Card style={style} title={title} className="test-how-to-download">
     <div style={{ padding: '1rem' }}>
       <strong>Download Manifest:</strong>
       <br />

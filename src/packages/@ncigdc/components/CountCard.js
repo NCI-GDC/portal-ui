@@ -9,13 +9,13 @@ import Link from '@ncigdc/components/Links/Link';
 
 const CountCard = ({ title, count, icon, style, linkParams, ...props }) =>
   <Card
-    data-test={props['data-test'] || 'count-card'}
+    className={props.className || 'test-count-card'}
     style={{ padding: '1rem', width: '15rem', ...style }}
   >
     <Row>
       <Column>
         <Row style={{ fontSize: '1.1rem' }}>{title}</Row>
-        <Row style={{ fontSize: '2rem', width: '5em' }} data-test="count">
+        <Row style={{ fontSize: '2rem', width: '5em' }} className="test-count">
           {linkParams ? <Link {...linkParams}>{count}</Link> : count}
         </Row>
       </Column>

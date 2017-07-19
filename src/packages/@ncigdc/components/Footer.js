@@ -59,7 +59,7 @@ export default compose(
     apiCommitHash,
     dataRelease,
   }) =>
-    <footer style={styles.footer(theme)} data-test="footer">
+    <footer style={styles.footer(theme)} className="test-footer">
       <div style={styles.outerContainer} role="contentinfo">
         <div style={styles.innerContainer}>
           <HomeLink style={styles.link}>Site Home</HomeLink>

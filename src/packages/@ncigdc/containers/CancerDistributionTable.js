@@ -236,7 +236,7 @@ const CancerDistributionTableComponent = compose(
     return (
       <Loader loading={!cases.filtered} height="387px">
         <LocalPaginationTable
-          data-test="cancer-distribution-table"
+          className="test-cancer-distribution-table"
           style={{ width: '100%', minWidth: 450 }}
           data={cancerDistData}
           prefix={paginationPrefix}

@@ -241,7 +241,7 @@ export default compose(
     },
   }),
 )(props =>
-  <div data-test="facet-selection">
+  <div className="test-facet-selection">
     <div {...css(styles.header)}>
       <h2 data-translate className="modal-title">
         <span>{props.title}</span>
@@ -275,7 +275,7 @@ export default compose(
 
       <label tabIndex={0} role="button" className="pull-right">
         <input
-          data-test="filter-useful-facet"
+          className="test-filter-useful-facet"
           type="checkbox"
           onChange={event =>
             props.setUselessFacetVisibility(event.target.checked)}
@@ -287,13 +287,13 @@ export default compose(
 
     </div>
 
-    <ul {...css(styles.facetList)} data-test="search-result-list">
+    <ul {...css(styles.facetList)} className="test-search-result-list">
       {_.map(props.filteredFacets, facet => {
         const isFocused =
           props.focusedFacet && facet.full === props.focusedFacet.full;
         return (
           <li
-            data-test="search-result-item"
+            className="test-search-result-item"
             key={facet.full}
             onClick={() => props.handleSelectFacet(facet)}
             onMouseEnter={() => props.setFocusedFacet(facet)}

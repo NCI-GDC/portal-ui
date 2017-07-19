@@ -22,7 +22,7 @@ const Sizes = (props: TProps) => {
   );
 
   return (
-    <Row spacing="0.5rem" data-test="showing">
+    <Row spacing="0.5rem" className="test-showing">
       <span>Showing</span>
       <strong>{start.toLocaleString()}</strong>
       <span>-</span>

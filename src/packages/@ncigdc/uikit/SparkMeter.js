@@ -11,7 +11,7 @@ export default ({ value, width = 30, max = 30, style, ...props }) =>
       pointerEvents: 'none',
       ...style,
     }}
-    data-test="spark-meter"
+    className="test-spark-meter"
     {...props}
   >
     <div

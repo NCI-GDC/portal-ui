@@ -10,8 +10,6 @@ import {
   ProjectCountsDataCategory,
   ProjectCountsExpStrategy,
 } from '@ncigdc/modern_components/ProjectCounts';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
-import DownloadButton from '@ncigdc/components/DownloadButton';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import SpinnerCentered from '@ncigdc/components/SpinnerCentered';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -23,6 +21,7 @@ import AffectedCasesBarChart from '@ncigdc/modern_components/AffectedCasesBarCha
 import AffectedCasesTable from '@ncigdc/modern_components/AffectedCasesTable';
 import DownloadBiospecimenButton from '@ncigdc/modern_components/DownloadBiospecimenButton';
 import DownloadClinicalButton from '@ncigdc/modern_components/DownloadClinicalButton';
+import DownloadManifestButton from '@ncigdc/modern_components/DownloadManifestButton';
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
@@ -157,27 +156,7 @@ export default (
             >
               <DownloadBiospecimenButton projectId={projectId} />
               <DownloadClinicalButton projectId={projectId} />
-
-              <Tooltip
-                Component={
-                  <div style={{ maxWidth: 250 }}>
-                    Download a manifest for use with the GDC Data Transfer Tool.
-                    The GDC Data Transfer Tool is recommended for transferring
-                    large
-                    volumes of data.
-                  </div>
-                }
-              >
-                <DownloadButton
-                  data-test="download-manifest"
-                  // disabled={!fileCount}
-                  endpoint="files"
-                  activeText="Downloading"
-                  inactiveText="Download Manifest"
-                  returnType="manifest"
-                  filters={makeFilter(projectFilter)}
-                />
-              </Tooltip>
+              <DownloadManifestButton projectId={projectId} />
             </Row>
             <ProjectSummary projectId={projectId} />
             <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>

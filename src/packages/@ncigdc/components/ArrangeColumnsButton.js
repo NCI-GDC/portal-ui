@@ -48,7 +48,7 @@ const ArrangeColumnsButton = compose(
     }
     dropdownStyle={{ top: '100%', marginTop: 5, whiteSpace: 'nowrap' }}
   >
-    <Column style={{ width: '22rem' }}>
+    <Column style={{ minWidth: '22rem' }}>
       <Row>
         <SearchIcon />
         <input

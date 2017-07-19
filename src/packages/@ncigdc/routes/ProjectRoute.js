@@ -22,6 +22,7 @@ import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import AffectedCasesBarChart from '@ncigdc/modern_components/AffectedCasesBarChart';
 import AffectedCasesTable from '@ncigdc/modern_components/AffectedCasesTable';
 import DownloadBiospecimenButton from '@ncigdc/modern_components/DownloadBiospecimenButton';
+import DownloadClinicalButton from '@ncigdc/modern_components/DownloadClinicalButton';
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
@@ -155,25 +156,7 @@ export default (
               spacing="0.2rem"
             >
               <DownloadBiospecimenButton projectId={projectId} />
-
-              <DownloadButton
-                data-test="download-clinical"
-                // disabled={!clinicalCount}
-                filename={`clinical.project-${projectId}`}
-                endpoint="cases"
-                activeText="Processing"
-                // inactiveText={
-                //   clinicalCount ? 'Download Clinical' : 'No Clinical Data'
-                // }
-                fields={['case_id']}
-                dataExportExpands={[
-                  'demographic',
-                  'diagnoses',
-                  'family_histories',
-                  'exposures',
-                ]}
-                // filters={dataExportFilters}
-              />
+              <DownloadClinicalButton projectId={projectId} />
 
               <Tooltip
                 Component={

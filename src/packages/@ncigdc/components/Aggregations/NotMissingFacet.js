@@ -34,7 +34,7 @@ const NotMissingFacet = (props: TProps) => {
             parseFilterParam((ctx.query || {}).filters, {}).content) ||
           [];
         return (
-          <Container style={props.style} data-test="not-mission-facet">
+          <Container style={props.style} className="test-not-missing-facet">
             {!props.collapsed &&
               <Column>
                 <BucketRow>

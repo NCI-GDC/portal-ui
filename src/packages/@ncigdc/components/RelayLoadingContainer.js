@@ -8,7 +8,7 @@ import Particle from '@ncigdc/uikit/Loaders/Particle';
 export default compose(
   connect(state => ({ relayLoading: state.relayLoading })),
 )(({ relayLoading }) =>
-  <Overlay show={relayLoading} data-test="loading-container">
+  <Overlay show={relayLoading} className="test-loading-container">
     <Particle />
   </Overlay>,
 );

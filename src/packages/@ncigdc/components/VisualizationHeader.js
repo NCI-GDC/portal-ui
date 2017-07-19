@@ -36,7 +36,7 @@ const VisualizationHeader = ({
   return (
     <Row
       style={{ ...style, margin: '0 1.2rem' }}
-      data-test="visualization-header"
+      className="test-visualization-header"
     >
       <Title style={{ marginLeft: buttonsWidth + SPACING }}>
         {title}

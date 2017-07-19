@@ -19,7 +19,7 @@ export default ({
 }) =>
   <span
     {...css({ ...styles.deemphasizedHeading, ...style })}
-    data-test="sample-size"
+    className="test-sample-size"
   >
     <small>( </small> {symbol}=
     {n ? formatter(n) : `--`}

@@ -24,7 +24,7 @@ export type TProps = {
 
 export const AnnotationsPageComponent = (props: TProps) =>
   <SearchPage
-    data-test="annotations-page"
+    className="test-annotations-page"
     facetTabs={[
       {
         id: 'cases',

@@ -33,7 +33,7 @@ export const FilesPageComponent = (props: TProps) => {
 
   return (
     <SearchPage
-      data-test="legacy-files-page"
+      className="test-legacy-files-page"
       facetTabs={[
         {
           text: 'cases',

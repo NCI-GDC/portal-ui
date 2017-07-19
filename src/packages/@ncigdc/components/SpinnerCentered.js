@@ -10,7 +10,7 @@ type TProps = {
 
 const SpinnerCentered = ({ style, ...props }: TProps) =>
   <Column
-    data-test="spinner"
+    className="test-spinner"
     style={{
       alignItems: 'center',
       justifyContent: 'center',

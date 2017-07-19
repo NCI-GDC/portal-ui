@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { compose } from 'recompose';
+import { compose, setDisplayName } from 'recompose';
 import ArrowDownIcon from 'react-icons/lib/fa/long-arrow-down';
 import ArrowUpIcon from 'react-icons/lib/fa/long-arrow-up';
 import JSURL from 'jsurl';
@@ -37,6 +37,7 @@ type TSortTableButtonProps = {
 };
 
 const SortTableButton = compose(
+  setDisplayName('SortTableButton'),
   withRouter,
   withTheme,
 )(

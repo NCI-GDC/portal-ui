@@ -8,7 +8,6 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import { withTheme } from '@ncigdc/theme';
 import BarChart from '@ncigdc/components/Charts/BarChart';
-import Loader from '@ncigdc/uikit/Loaders/Loader';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
@@ -150,7 +149,7 @@ export default compose(
     return (
       <div style={style}>
         {chartData.length >= 5 &&
-          <Loader loading={!cases.filtered} height={CHART_HEIGHT}>
+          <span>
             <Column style={{ padding: '0 0 0 2rem' }}>
               <Row
                 style={{
@@ -206,7 +205,7 @@ export default compose(
                 />
               </Row>
             </Column>
-          </Loader>}
+          </span>}
       </div>
     );
   },

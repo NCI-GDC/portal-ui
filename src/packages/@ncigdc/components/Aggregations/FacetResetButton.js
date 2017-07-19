@@ -46,6 +46,7 @@ const FacetResetButton = ({
     field,
   });
   return (
+    inCurrent &&
     <StyledLink
       style={{ display: inCurrent ? 'inline' : 'none', ...style }}
       query={newQuery}

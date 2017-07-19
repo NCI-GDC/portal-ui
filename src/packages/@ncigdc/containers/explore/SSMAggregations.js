@@ -117,13 +117,14 @@ export const SSMAggregationsComponent = compose(
       field="ssms.ssm_id"
       collapsed={props.idCollapsed}
       setCollapsed={props.setIdCollapsed}
+      description="Enter Mutation UUID, DNA Change, Gene AA Change, COSMIC ID or dbSNP rs ID"
     />
     <SuggestionFacet
       title="Mutation"
       doctype="ssms"
       collapsed={props.idCollapsed}
       fieldNoDoctype="ssm_id"
-      placeholder="Search for mutation id"
+      placeholder="e.g. BRAF V600E, chr7:g.140753336A>T"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       dropdownItem={x => <div style={{ fontWeight: 'bold' }}>{x.ssm_id}</div>}

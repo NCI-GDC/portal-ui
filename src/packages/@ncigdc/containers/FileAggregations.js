@@ -153,13 +153,14 @@ export const FileAggregationsComponent = (props: TProps) =>
       field="files.file_id"
       collapsed={props.fileIdCollapsed}
       setCollapsed={props.setFileIdCollapsed}
+      description="Enter File UUID or name"
     />
     <SuggestionFacet
       title="File"
       collapsed={props.fileIdCollapsed}
       doctype="files"
       fieldNoDoctype="file_id"
-      placeholder="Search for File ID or File Submitter ID"
+      placeholder="e.g. 142682.bam, 4f6e2e7a-b..."
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { compose, defaultProps } from 'recompose';
+import { css } from 'glamor';
 
 import { parseFilterParam } from '@ncigdc/utils/uri';
 import LocationSubscriber from '@ncigdc/components/LocationSubscriber';
@@ -10,7 +11,9 @@ import FacetResetButton from '@ncigdc/components/Aggregations/FacetResetButton';
 import CloseIcon from '@ncigdc/theme/icons/CloseIcon';
 import SearchIcon from '@ncigdc/theme/icons/SearchIcon';
 import AngleIcon from '@ncigdc/theme/icons/AngleIcon';
+import QuestionIcon from '@ncigdc/theme/icons/Question';
 import { Row } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 const Header = styled(Row, {
   color: ({ theme }) => theme.primary,
@@ -59,6 +62,7 @@ const FacetHeader = compose(
   ({
     field,
     title,
+    description,
     isRemovable,
     handleRequestRemove,
     collapsed,
@@ -86,6 +90,13 @@ const FacetHeader = compose(
               {title}
             </span>
             <IconsRow>
+              {description &&
+                <Tooltip
+                  Component={description}
+                  {...css({ ':not(:last-child)': { marginRight: 8 } })}
+                >
+                  <QuestionIcon />
+                </Tooltip>}
               {hasValueSearch &&
                 <MagnifyingGlass
                   onClick={() => setShowingValueSearch(!showingValueSearch)}

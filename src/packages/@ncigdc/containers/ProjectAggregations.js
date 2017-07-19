@@ -78,11 +78,12 @@ export const ProjectAggregationsComponent = compose(
       field="projects.project_id"
       collapsed={props.projectIdCollapsed}
       setCollapsed={props.setProjectIdCollapsed}
+      description="Enter Project ID, Project name, Disease Type or Primary Site"
     />
     <SuggestionFacet
       title="Project"
       collapsed={props.projectIdCollapsed}
-      placeholder="Search for Project"
+      placeholder="e.g. TCGA-GBM, Brain"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       doctype="projects"

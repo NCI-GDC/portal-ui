@@ -26,7 +26,7 @@ export default (Component: ReactClass<*>) =>
       <Query
         parentProps={props}
         name="CancerDistributionBarChart"
-        minHeight={387}
+        minHeight={10}
         variables={props.variables}
         Component={Component}
         query={graphql`

@@ -7,24 +7,25 @@ import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 const lastRelayProps = {};
 
 export default (props: Object) =>
-  <div
-    style={{
-      position: 'relative',
-      minHeight: props.minHeight,
-      width: '100%',
-      ...props.style,
-    }}
-  >
+  <div style={{ position: 'relative', minHeight: props.minHeight }}>
     <QueryRenderer
       environment={environment}
-      render={({ props: nextRelayProps }) => {
+      render={({ props: nextRelayProps, error }) => {
+        // TODO: handle error
+
         lastRelayProps[props.name] =
           nextRelayProps || lastRelayProps[props.name];
+
         if (lastRelayProps[props.name])
           return (
             <props.Component
               {...lastRelayProps[props.name]}
               {...props.parentProps}
+              parentVariables={{
+                ...props.parentProps.parentVariables,
+                ...props.parentProps.variables,
+                ...props.parentVariables,
+              }}
             />
           );
         return null;

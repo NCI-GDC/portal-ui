@@ -47,7 +47,7 @@ const reducer = (state = initialState, action) => {
     case REHYDRATE: {
       return {
         ...state,
-        ...Object.entries(action.payload.tableColumns).reduce(
+        ...Object.entries(action.payload.tableColumns || {}).reduce(
           (acc, [key, val]) => ({
             ...acc,
             [key]: Array.isArray(val)

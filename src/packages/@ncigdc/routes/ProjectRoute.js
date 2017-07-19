@@ -157,9 +157,15 @@ export default (
               style={{ marginBottom: '2rem', marginLeft: 'auto' }}
               spacing="0.2rem"
             >
-              <DownloadBiospecimenButton projectId={projectId} />
-              <DownloadClinicalButton projectId={projectId} />
-              <DownloadManifestButton projectId={projectId} />
+              <span>
+                <DownloadBiospecimenButton projectId={projectId} />
+              </span>
+              <span>
+                <DownloadClinicalButton projectId={projectId} />
+              </span>
+              <span>
+                <DownloadManifestButton projectId={projectId} />
+              </span>
             </Row>
             <ProjectSummary projectId={projectId} />
             <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>

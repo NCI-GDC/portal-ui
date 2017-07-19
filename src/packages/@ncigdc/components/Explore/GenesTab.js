@@ -13,8 +13,8 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import withFilters from '@ncigdc/utils/withFilters';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
-import GenesBarChart from '@ncigdc/modern_components/GenesBarChart/GenesBarChart';
-import GenesTable from '@ncigdc/modern_components/GenesTable/GenesTable';
+import GenesBarChart from '@ncigdc/modern_components/GenesBarChart';
+import GenesTable from '@ncigdc/modern_components/GenesTable';
 import {
   makeFilter,
   toggleFilters,

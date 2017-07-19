@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState, mapProps } from 'recompose';
+import { compose, withState, mapProps, setDisplayName } from 'recompose';
 import urlJoin from 'url-join';
 
 import download from '@ncigdc/utils/download';
@@ -95,6 +95,7 @@ const DownloadButton = ({
 };
 
 const enhance = compose(
+  setDisplayName('DownloadButton'),
   connect(),
   withState('state', 'setState', {
     active: false,

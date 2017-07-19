@@ -41,7 +41,7 @@ const fileInCart = (files, file) => files.some(f => f.file_id === file.file_id);
 
 const AddToCartButtonSingle = ({ dispatch, file, files, theme }) =>
   <Button
-    data-test="add-to-cart"
+    className="test-add-to-cart"
     style={{
       ...styles.button(theme),
       ...(fileInCart(files, file)

@@ -41,7 +41,7 @@ const UserDropdown = connect(state => ({
   token: state.auth.token,
   user: state.auth.user,
 }))(({ user, dispatch }) =>
-  <Row style={{ alignSelf: 'stretch' }} data-test="user-dropdown">
+  <Row style={{ alignSelf: 'stretch' }} className="test-user-dropdown">
     <Dropdown
       button={
         <NavLink>

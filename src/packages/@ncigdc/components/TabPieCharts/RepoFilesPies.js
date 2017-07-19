@@ -52,12 +52,12 @@ const RepoFilesPiesComponent = ({
   const currentFieldNames = currentFilters.map(f => f.content.field);
   const pieColMinWidth = width / 5;
   return (
-    <div data-test="repo-files-pies">
+    <div className="test-repo-files-pies">
       <BottomBorderedBox>
         <WrappedRow style={{ maxWidth: `${width}px`, width: '100%' }}>
           <ColumnCenter
             style={{ minWidth: `${pieColMinWidth}px` }}
-            data-test="primary-site-pie"
+            className="test-primary-site-pie"
           >
             <PieTitle>Primary Site</PieTitle>
             <SelfFilteringPie
@@ -75,7 +75,7 @@ const RepoFilesPiesComponent = ({
           </ColumnCenter>
           <ColumnCenter
             style={{ minWidth: `${pieColMinWidth}px` }}
-            data-test="project-pie"
+            className="test-project-pie"
           >
             <PieTitle>Project</PieTitle>
             <SelfFilteringPie
@@ -96,7 +96,7 @@ const RepoFilesPiesComponent = ({
           </ColumnCenter>
           <ColumnCenter
             style={{ minWidth: `${pieColMinWidth}px` }}
-            data-test="data-category-pie"
+            className="test-data-category-pie"
           >
             <PieTitle>Data Category</PieTitle>
             <SelfFilteringPie
@@ -114,7 +114,7 @@ const RepoFilesPiesComponent = ({
           </ColumnCenter>
           <ColumnCenter
             style={{ minWidth: `${pieColMinWidth}px` }}
-            data-test="data-type"
+            className="test-data-type"
           >
             <PieTitle>Data Type</PieTitle>
             <SelfFilteringPie
@@ -132,7 +132,7 @@ const RepoFilesPiesComponent = ({
           </ColumnCenter>
           <ColumnCenter
             style={{ minWidth: `${pieColMinWidth}px` }}
-            data-test="data-format"
+            className="test-data-format"
           >
             <PieTitle>Data Format</PieTitle>
             <SelfFilteringPie
@@ -152,7 +152,7 @@ const RepoFilesPiesComponent = ({
             <ColumnCenter
               style={{ minWidth: `${pieColMinWidth}px` }}
               key="files.experimental_strategy"
-              data-test="experimental-strategy"
+              className="test-experimental-strategy"
             >
               <PieTitle>Experimental Strategy</PieTitle>
               <SelfFilteringPie
@@ -171,7 +171,7 @@ const RepoFilesPiesComponent = ({
             <ColumnCenter
               key="files.access"
               style={{ minWidth: `${pieColMinWidth}px` }}
-              data-test="access-level"
+              className="test-access-level"
             >
               <PieTitle>Access Level</PieTitle>
               <SelfFilteringPie

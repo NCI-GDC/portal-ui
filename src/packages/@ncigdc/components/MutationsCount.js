@@ -14,11 +14,11 @@ const MutationsCount = ({ ssmCount, filters, isLoading = false }) => {
           searchTableTab: 'mutations',
           filters,
         }}
-        data-test="mutations-count"
+        className="test-mutations-count"
       >
         {ssmCount.toLocaleString()}
       </ExploreLink>
-    : <span data-test="mutations-count">0</span>;
+    : <span className="test-mutations-count">0</span>;
 };
 
 export default MutationsCount;

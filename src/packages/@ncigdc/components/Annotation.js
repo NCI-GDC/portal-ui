@@ -11,7 +11,7 @@ import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import { withTheme } from '@ncigdc/theme';
 
 const Annotation = ({ node, theme }: { node: Object, theme: Object }) =>
-  <Column spacing={theme.spacing} data-test="annotation">
+  <Column spacing={theme.spacing} className="test-annotation">
     <EntityPageVerticalTable
       id="summary"
       title={<span><i className="fa fa-table" /> Summary</span>}

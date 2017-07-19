@@ -444,7 +444,7 @@ const ProjectsChartsComponent = compose(
     );
 
     return (
-      <Container data-test="projects-charts">
+      <Container className="test-projects-charts">
         <Column
           style={{
             paddingRight: '10px',
@@ -587,7 +587,7 @@ const ProjectsChartsComponent = compose(
         </Column>
         <Column
           style={{ minWidth: '200px', flexGrow: '1', flexBasis: '33%' }}
-          data-test="case-distribution-per-project"
+          className="test-case-distribution-per-project"
         >
           <div
             style={{

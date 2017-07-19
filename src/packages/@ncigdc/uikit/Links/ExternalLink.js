@@ -16,7 +16,7 @@ export default function ExternalLink({
       rel="noopener noreferrer"
       style={style}
       title={title}
-      data-test={props['data-test'] || 'external-link'}
+      className={props.className + ' test-external-link'}
     >
       {hasExternalIcon &&
         <ExternalLinkIcon style={{ marginRight: '0.5rem' }} />}

@@ -8,7 +8,7 @@ import Button from '@ncigdc/uikit/Button';
 import { setModal } from '@ncigdc/dux/modal';
 
 const DismissibleBanner = ({ dispatch }) =>
-  <Row data-test="banner">
+  <Row className="test-banner">
     <strong>{`Can't find your data?`}</strong>
     <span
       className="header-banner-link"

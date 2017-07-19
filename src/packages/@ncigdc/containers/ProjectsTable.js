@@ -27,7 +27,7 @@ export const SearchTable = compose(
       .filter(x => tableColumns.includes(x.id));
 
     return (
-      <div data-test="projects-table">
+      <div className="test-projects-table">
         <Row
           style={{
             backgroundColor: 'white',

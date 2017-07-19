@@ -159,7 +159,7 @@ export default ({
 }: TProps) =>
   <ul
     style={{ ...styles.container, ...style.container }}
-    data-test="quick-search-results"
+    className="test-quick-search-results"
   >
     {results.map((item, i) =>
       <li

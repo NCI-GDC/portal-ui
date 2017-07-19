@@ -26,7 +26,7 @@ const BarChart = (() => ({
 }) => {
   const el = ReactFauxDOM.createElement('div');
   el.style.width = '100%';
-  el.setAttribute('data-test', 'bar-chart');
+  el.setAttribute('class', 'test-bar-chart');
   const innerPadding = 0.3;
   const outerPadding = 0.3;
 

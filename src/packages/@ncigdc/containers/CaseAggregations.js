@@ -177,7 +177,7 @@ const styles = {
 };
 
 export const CaseAggregationsComponent = (props: TProps) =>
-  <div data-test="case-aggregations">
+  <div className="test-case-aggregations">
     <div
       className="text-right"
       style={{

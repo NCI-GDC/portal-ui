@@ -29,7 +29,7 @@ const LocalPaginationTable = ({
   const tableData = enablePagination ? data.slice(offset, offset + size) : data;
 
   return (
-    <div style={style} data-test={props['data-test']}>
+    <div style={style} className={props.className}>
       <Row
         style={{
           backgroundColor: 'white',

@@ -19,11 +19,11 @@ const Dropdown = ({
   button = null,
   isDisabled = false,
   autoclose = true,
-  ...props
+  className,
 }) =>
   <span
     style={{ position: 'relative', ...style }}
-    data-test={props['data-test']}
+    className={className + ' dropdown'}
   >
     <span
       onMouseDown={mouseDownHandler}

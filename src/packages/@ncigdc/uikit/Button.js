@@ -53,6 +53,8 @@ const Button = (
   }: TButtonProps = {},
 ) => {
   const StyledButton = styled.button({ ...buttonBaseStyles, ...style });
+  StyledButton.displayName = 'StyledButton';
+
   return (
     <StyledButton
       disabled={disabled}

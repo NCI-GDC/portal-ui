@@ -1,8 +1,5 @@
 // @flow
-import React from 'react';
-import { startCase, truncate, get } from 'lodash';
-import GeneLink from '@ncigdc/components/Links/GeneLink';
-import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { get } from 'lodash';
 
 const mutationSubTypeMap = {
   'single base substitution': 'Substitution',
@@ -27,7 +24,7 @@ const mapData: TMapData = (data, theme) =>
       aa_change: aaChange,
     } =
       transcript || {};
-    const { symbol, gene_id: geneId } = gene;
+    const { symbol: geneSymbol, gene_id: geneId } = gene;
     const impact = annotation.impact;
 
     return {
@@ -36,34 +33,10 @@ const mapData: TMapData = (data, theme) =>
       mutation_subtype:
         mutationSubTypeMap[(hit.mutation_subtype || '').toLowerCase()] ||
           hit.mutation_subtype,
-      consequence_type: (
-        <span>
-          <b>{startCase(consequenceType.replace('variant', ''))}</b>&nbsp;
-          <GeneLink
-            uuid={geneId}
-            activeStyle={{
-              textDecoration: 'none',
-              color: theme.greyScale2,
-              cursor: 'default',
-            }}
-          >
-            {symbol}
-          </GeneLink>
-          <Tooltip
-            Component={
-              <div style={{ maxWidth: 300, wordBreak: 'break-all' }}>
-                {aaChange}
-              </div>
-            }
-            style={{
-              color: theme.impacts[impact] || 'inherit',
-            }}
-          >
-            &nbsp;
-            {truncate(aaChange, { length: 12 })}
-          </Tooltip>
-        </span>
-      ),
+      geneId,
+      geneSymbol,
+      consequenceType,
+      aaChange,
     };
   });
 

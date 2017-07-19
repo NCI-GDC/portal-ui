@@ -16,11 +16,10 @@ export type TProps = {|
 const PaginationLink = (props: TProps) =>
   props.pred
     ? <Link
-        data-test="pagination-link"
         merge
         query={{ [props.prfOff]: props.offset }}
         style={props.style || {}}
-        className={props.className || ''}
+        className={props.className || 'test-pagination-link'}
       >
         {props.children}
       </Link>

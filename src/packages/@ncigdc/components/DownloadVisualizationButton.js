@@ -66,7 +66,7 @@ const DownloadVisualizationButton = ({
   ...props
 }: TProps) =>
   <DropDown
-    data-test={props['data-test'] || 'download-viz-button'}
+    className={props.className || 'test-download-viz-button'}
     button={
       <Tooltip Component={tooltipHTML}>
         <Button leftIcon={!noText && <Download />} style={visualizingButton}>
@@ -81,7 +81,7 @@ const DownloadVisualizationButton = ({
     {svg &&
       <DropdownItem
         key="svg"
-        data-test="download-svg"
+        className="test-download-svg"
         style={styles.row(theme)}
         onClick={() => {
           downloadSvg({
@@ -97,7 +97,7 @@ const DownloadVisualizationButton = ({
     {svg &&
       <DropdownItem
         key="png"
-        data-test="download-png"
+        className="test-download-png"
         style={{
           ...styles.row(theme),
           ...(supportsSvgToPng()

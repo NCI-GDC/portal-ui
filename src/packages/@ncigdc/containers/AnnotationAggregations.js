@@ -94,7 +94,7 @@ const annotationFacets = [
 export const AnnotationAggregationsComponent = compose(
   withState('annotationIdCollapsed', 'setAnnotationIdCollapsed', false),
 )((props: TProps) =>
-  <div data-test="annotation-aggregations">
+  <div className="test-annotation-aggregations">
     <FacetHeader
       title="Annotation ID"
       field="annotations.annotation_id"

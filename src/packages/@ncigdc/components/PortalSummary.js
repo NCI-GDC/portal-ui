@@ -44,7 +44,7 @@ type TProps = {
   ssmsCountData: Object,
 };
 const PortalSummary = (props: TProps) =>
-  <Container data-test="portal-summary">
+  <Container className="test-portal-summary">
     <Row style={{ padding: '2rem', alignItems: 'baseline' }}>
       <div style={{ fontSize: '2.3rem', color: 'rgb(70, 70, 70)' }}>
         Data Portal Summary
@@ -57,7 +57,7 @@ const PortalSummary = (props: TProps) =>
         }}
       >
         <a
-          data-test="release"
+          className="test-release"
           target="_blank"
           rel="noopener noreferrer"
           href="https://docs.gdc.cancer.gov/Data/Release_Notes/Data_Release_Notes/"
@@ -123,7 +123,10 @@ const PortalSummary = (props: TProps) =>
           <Row>
             <DoubleHelix color="#01b987" width={20} height={35} />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <CasesCount data-test="genes-count" hits={props.genesCountData} />
+              <CasesCount
+                className="test-genes-count"
+                hits={props.genesCountData}
+              />
             </span>
           </Row>
         </CountBox>
@@ -133,7 +136,7 @@ const PortalSummary = (props: TProps) =>
             <MutationIcon color="#01b987" width="32px" height="39px" />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <FilesCount
-                data-test="mutations-count"
+                className="test-mutations-count"
                 hits={props.ssmsCountData}
               />
             </span>

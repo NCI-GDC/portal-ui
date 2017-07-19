@@ -51,7 +51,7 @@ export const SearchTable = compose(
     const prefix = 'files';
 
     return (
-      <div data-test="files-table">
+      <div className="test-files-table">
         {tableHeader &&
           <h3
             className="panel-title"

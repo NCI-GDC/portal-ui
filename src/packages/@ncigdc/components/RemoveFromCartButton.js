@@ -36,7 +36,7 @@ const getUnauthorizedFiles = files =>
   files.filter(file => file.access === 'controlled');
 
 const RemoveFromCartButton = ({ style, files, theme, dispatch }) =>
-  <Row data-test="remove-from-cart-button-container">
+  <Row className="test-remove-from-cart-button-container">
     <Dropdown
       dropdownStyle={{
         marginTop: '2px',
@@ -46,7 +46,7 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch }) =>
       dropdownItemClass={false}
       button={
         <Button
-          data-test="remove-from-cart"
+          className="test-remove-from-cart"
           style={{
             backgroundColor: '#A62924',
             marginLeft: '10px',
@@ -63,7 +63,7 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch }) =>
     >
       <Column>
         <Button
-          data-test="remove-all-files"
+          className="test-remove-all-files"
           style={styles.row(theme)}
           onClick={() => dispatch(toggleFilesInCart(files))}
           leftIcon={<XIcon />}
@@ -73,7 +73,7 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch }) =>
           </span>
         </Button>
         <Button
-          data-test="remove-unauthorized-files"
+          className="test-remove-unauthorized-files"
           style={styles.row(theme)}
           onClick={() =>
             dispatch(toggleFilesInCart(getUnauthorizedFiles(files)))}

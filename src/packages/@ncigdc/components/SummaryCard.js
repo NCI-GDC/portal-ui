@@ -26,7 +26,7 @@ const SummaryCard = compose(
     pieDiameter: Math.max(Math.min(size.width, size.height - 100), 120),
   })),
 )(({ data, title, tableTitle, style = {}, footer, path, headings, ...props }) =>
-  <Card style={style} data-test={props['data-test'] || 'summary-card'}>
+  <Card style={style} className={props.className + ' test-summary-card'}>
     <Column>
       <Header>
         <span style={{ flexGrow: 1, fontSize: '1.7rem' }}>

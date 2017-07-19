@@ -72,7 +72,7 @@ const FacetHeader = compose(
         const currentFilters =
           ctx.query && parseFilterParam((ctx.query || {}).filters, {});
         return (
-          <Header data-test="facet-header">
+          <Header className="test-facet-header">
             <span
               style={{ cursor: 'pointer' }}
               onClick={() => setCollapsed(!collapsed)}

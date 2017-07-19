@@ -27,7 +27,7 @@ const TabbedLinks: TTabbedLinks = (
 
       return (
         <Tabs
-          data-test="tabbed-links"
+          className="test-tabbed-links"
           style={style}
           tabToolbar={tabToolbar}
           tabStyle={{ padding: 0 }}
@@ -44,7 +44,7 @@ const TabbedLinks: TTabbedLinks = (
                     key={x.id}
                     query={{ [queryParam]: x.id }}
                     merge
-                    data-test={x.id}
+                    className={x.id}
                   >
                     {x.text}
                   </Link>,

@@ -65,7 +65,7 @@ const LoginButton = ({ children, dispatch }: TLoginButtonProps) =>
   <LocationSubscriber>
     {({ pathname }) =>
       <Link
-        data-test="login-button"
+        className="test-login-button"
         onClick={() => openAuthWindow({ pathname, dispatch })}
       >
         {children ||

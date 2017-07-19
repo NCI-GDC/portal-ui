@@ -76,13 +76,13 @@ const BiospecimenCard = ({
 
   return (
     <Card
-      data-test="biospecimen-card"
+      className="test-biospecimen-card"
       style={{ flex: 1 }}
       title={
         <Row style={{ justifyContent: 'space-between' }}>
           <span>Biospecimen</span>
           <DownloadButton
-            data-test="download-biospecimen"
+            className="test-download-biospecimen"
             style={visualizingButton}
             filename={`biospecimen.case-${p.case_id}`}
             endpoint="cases"

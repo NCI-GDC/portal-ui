@@ -18,10 +18,7 @@ type TProps = {
 };
 
 export default ({ text, toolTipText, backgroundColor, ...props }: TProps) =>
-  <Tooltip
-    Component={toolTipText}
-    data-test={props['data-test'] || 'bubble-icon'}
-  >
+  <Tooltip Component={toolTipText} className={props.className + ' bubble-icon'}>
     <span
       style={{
         ...bubbleStyle,

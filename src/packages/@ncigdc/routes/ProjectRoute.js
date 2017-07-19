@@ -21,6 +21,7 @@ import { GdcDataIcon, GridIcon } from '@ncigdc/theme/icons';
 import SsmsTable from '@ncigdc/modern_components/SsmsTable';
 import AffectedCasesBarChart from '@ncigdc/modern_components/AffectedCasesBarChart';
 import AffectedCasesTable from '@ncigdc/modern_components/AffectedCasesTable';
+import DownloadBiospecimenButton from '@ncigdc/modern_components/DownloadBiospecimenButton';
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
@@ -153,32 +154,7 @@ export default (
               style={{ marginBottom: '2rem', marginLeft: 'auto' }}
               spacing="0.2rem"
             >
-              <DownloadButton
-                data-test="download-biospecimen"
-                // disabled={!biospecimenCount}
-                filename={`biospecimen.project-${projectId}`}
-                endpoint="cases"
-                activeText="Processing"
-                // inactiveText={
-                //   biospecimenCount
-                //     ? 'Download Biospecimen'
-                //     : 'No Biospecimen Data'
-                // }
-                fields={['case_id']}
-                dataExportExpands={[
-                  'samples',
-                  'samples.portions',
-                  'samples.portions.analytes',
-                  'samples.portions.analytes.aliquots',
-                  'samples.portions.analytes.aliquots.annotations',
-                  'samples.portions.analytes.annotations',
-                  'samples.portions.submitter_id',
-                  'samples.portions.slides',
-                  'samples.portions.annotations',
-                  'samples.portions.center',
-                ]}
-                // filters={dataExportFilters}
-              />
+              <DownloadBiospecimenButton projectId={projectId} />
 
               <DownloadButton
                 data-test="download-clinical"

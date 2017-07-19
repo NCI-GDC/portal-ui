@@ -10,6 +10,8 @@ import {
   ProjectCountsDataCategory,
   ProjectCountsExpStrategy,
 } from '@ncigdc/modern_components/ProjectCounts';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import DownloadButton from '@ncigdc/components/DownloadButton';
 import { fetchApi } from '@ncigdc/utils/ajax';
 import SpinnerCentered from '@ncigdc/components/SpinnerCentered';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -147,9 +149,86 @@ export default (
         ]);
         return (
           <FullWidthLayout title={projectId} entityType="PR">
+            <Row
+              style={{ marginBottom: '2rem', marginLeft: 'auto' }}
+              spacing="0.2rem"
+            >
+              <DownloadButton
+                data-test="download-biospecimen"
+                // disabled={!biospecimenCount}
+                filename={`biospecimen.project-${projectId}`}
+                endpoint="cases"
+                activeText="Processing"
+                // inactiveText={
+                //   biospecimenCount
+                //     ? 'Download Biospecimen'
+                //     : 'No Biospecimen Data'
+                // }
+                fields={['case_id']}
+                dataExportExpands={[
+                  'samples',
+                  'samples.portions',
+                  'samples.portions.analytes',
+                  'samples.portions.analytes.aliquots',
+                  'samples.portions.analytes.aliquots.annotations',
+                  'samples.portions.analytes.annotations',
+                  'samples.portions.submitter_id',
+                  'samples.portions.slides',
+                  'samples.portions.annotations',
+                  'samples.portions.center',
+                ]}
+                // filters={dataExportFilters}
+              />
+
+              <DownloadButton
+                data-test="download-clinical"
+                // disabled={!clinicalCount}
+                filename={`clinical.project-${projectId}`}
+                endpoint="cases"
+                activeText="Processing"
+                // inactiveText={
+                //   clinicalCount ? 'Download Clinical' : 'No Clinical Data'
+                // }
+                fields={['case_id']}
+                dataExportExpands={[
+                  'demographic',
+                  'diagnoses',
+                  'family_histories',
+                  'exposures',
+                ]}
+                // filters={dataExportFilters}
+              />
+
+              <Tooltip
+                Component={
+                  <div style={{ maxWidth: 250 }}>
+                    Download a manifest for use with the GDC Data Transfer Tool.
+                    The GDC Data Transfer Tool is recommended for transferring
+                    large
+                    volumes of data.
+                  </div>
+                }
+              >
+                <DownloadButton
+                  data-test="download-manifest"
+                  // disabled={!fileCount}
+                  endpoint="files"
+                  activeText="Downloading"
+                  inactiveText="Download Manifest"
+                  returnType="manifest"
+                  filters={makeFilter(projectFilter)}
+                />
+              </Tooltip>
+            </Row>
             <ProjectSummary projectId={projectId} />
-            <ProjectCountsDataCategory projectId={projectId} />
-            <ProjectCountsExpStrategy projectId={projectId} />
+            <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>
+              <span style={{ ...styles.column, ...styles.margin, flex: 1 }}>
+                <ProjectCountsDataCategory projectId={projectId} />
+              </span>
+              <span style={{ ...styles.column, ...styles.margin, flex: 1 }}>
+                <ProjectCountsExpStrategy projectId={projectId} />
+              </span>
+            </Row>
 
             <div>
               <Column style={styles.card}>

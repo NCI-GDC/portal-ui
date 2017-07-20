@@ -34,6 +34,7 @@ const CreateExploreCaseSetButton = ({ filters, setSize, style, push }) => {
     push({
       pathname: '/repository',
       query: {
+        searchTableTab: 'files',
         filters: JSURL.stringify(
           makeFilter([
             {
@@ -63,7 +64,7 @@ const CreateExploreCaseSetButton = ({ filters, setSize, style, push }) => {
       }}
       reRouteOnCompleted={reRouteOnCompleted}
     >
-      View in Repository
+      View Files in Repository
     </CreateSetButtonBase>
   );
 };

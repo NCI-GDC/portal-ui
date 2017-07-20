@@ -3,8 +3,8 @@
  *   relay-compiler
  *
  * @providesModule ProjectSummary_relayQuery.graphql
- * @generated SignedSource<<92097b97b5fc1ba512fcdb3f595f3f94>>
- * @relayHash dcc0f712fa0dc6b1a28463a72ed4a39a
+ * @generated SignedSource<<0338ec5114ad26a913a18852844a2325>>
+ * @relayHash 59aa3c600156bcdfc3fac313b6ba04a2
  * @flow
  * @nogrep
  */
@@ -22,6 +22,7 @@ import type {ConcreteBatch} from 'relay-runtime';
 /*
 query ProjectSummary_relayQuery(
   $filters: FiltersArgument
+  $annotationsFilters: FiltersArgument
 ) {
   viewer {
     projects {
@@ -45,7 +46,7 @@ query ProjectSummary_relayQuery(
       }
     }
     annotations {
-      hits(first: 1, filters: $filters) {
+      hits(first: 1, filters: $annotationsFilters) {
         total
         edges {
           node {
@@ -65,6 +66,12 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "filters",
+        "type": "FiltersArgument",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "annotationsFilters",
         "type": "FiltersArgument",
         "defaultValue": null
       }
@@ -224,7 +231,7 @@ const batch /*: ConcreteBatch*/ = {
                   {
                     "kind": "Variable",
                     "name": "filters",
-                    "variableName": "filters",
+                    "variableName": "annotationsFilters",
                     "type": "FiltersArgument"
                   },
                   {
@@ -295,6 +302,12 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "filters",
+        "type": "FiltersArgument",
+        "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "annotationsFilters",
         "type": "FiltersArgument",
         "defaultValue": null
       }
@@ -461,7 +474,7 @@ const batch /*: ConcreteBatch*/ = {
                   {
                     "kind": "Variable",
                     "name": "filters",
-                    "variableName": "filters",
+                    "variableName": "annotationsFilters",
                     "type": "FiltersArgument"
                   },
                   {
@@ -529,7 +542,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query ProjectSummary_relayQuery(\n  $filters: FiltersArgument\n) {\n  viewer {\n    projects {\n      hits(first: 1, filters: $filters) {\n        edges {\n          node {\n            project_id\n            name\n            disease_type\n            primary_site\n            program {\n              name\n            }\n            summary {\n              case_count\n              file_count\n            }\n            id\n          }\n        }\n      }\n    }\n    annotations {\n      hits(first: 1, filters: $filters) {\n        total\n        edges {\n          node {\n            annotation_id\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
+  "text": "query ProjectSummary_relayQuery(\n  $filters: FiltersArgument\n  $annotationsFilters: FiltersArgument\n) {\n  viewer {\n    projects {\n      hits(first: 1, filters: $filters) {\n        edges {\n          node {\n            project_id\n            name\n            disease_type\n            primary_site\n            program {\n              name\n            }\n            summary {\n              case_count\n              file_count\n            }\n            id\n          }\n        }\n      }\n    }\n    annotations {\n      hits(first: 1, filters: $annotationsFilters) {\n        total\n        edges {\n          node {\n            annotation_id\n            id\n          }\n        }\n      }\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

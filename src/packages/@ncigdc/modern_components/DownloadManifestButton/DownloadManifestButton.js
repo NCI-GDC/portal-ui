@@ -23,7 +23,7 @@ export default ({ projectId, viewer }) => {
       }
     >
       <DownloadButton
-        data-test="download-manifest"
+        className="test-download-manifest"
         disabled={!fileCount}
         endpoint="files"
         activeText="Downloading"

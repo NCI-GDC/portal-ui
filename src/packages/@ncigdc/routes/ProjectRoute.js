@@ -27,6 +27,9 @@ import GenesTable from '@ncigdc/modern_components/GenesTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 
 const styles = {
+  column: {
+    flexGrow: 1,
+  },
   heading: {
     flexGrow: 1,
     fontSize: '2rem',
@@ -160,10 +163,10 @@ export default (
             </Row>
             <ProjectSummary projectId={projectId} />
             <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>
-              <span style={{ ...styles.column, ...styles.margin, flex: 1 }}>
+              <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
                 <ProjectCountsDataCategory projectId={projectId} />
               </span>
-              <span style={{ ...styles.column, ...styles.margin, flex: 1 }}>
+              <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
                 <ProjectCountsExpStrategy projectId={projectId} />
               </span>
             </Row>

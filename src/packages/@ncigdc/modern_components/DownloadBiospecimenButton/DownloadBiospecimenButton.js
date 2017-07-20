@@ -14,7 +14,7 @@ export default ({ projectId, viewer }) => {
 
   return (
     <DownloadButton
-      data-test="download-biospecimen"
+      className="test-download-biospecimen"
       disabled={!biospecimenCount}
       filename={`biospecimen.project-${projectId}`}
       endpoint="cases"

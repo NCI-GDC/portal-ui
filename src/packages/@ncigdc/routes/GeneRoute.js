@@ -1,6 +1,8 @@
 /* @flow */
 
 import React from 'react';
+import JSURL from 'jsurl';
+import { parse } from 'query-string';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Route from 'react-router/Route';
 import GeneSummary from '@ncigdc/modern_components/GeneSummary';
@@ -21,7 +23,10 @@ import Heading from '@ncigdc/uikit/Heading';
 export default (
   <Route
     path="/genes/:id"
-    component={({ match, geneId = match.params.id, filters }) => {
+    component={({ match, geneId = match.params.id, location }) => {
+      const { filters: f } = parse(location.search);
+      const filters = f && JSURL.parse(f);
+
       const geneFilter = replaceFilters(
         {
           op: 'and',

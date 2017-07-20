@@ -21,6 +21,12 @@ export default (Component: ReactClass<*>) =>
               value: [projectId],
             },
           ]),
+          annotationsFilters: makeFilter([
+            {
+              field: 'project.project_id',
+              value: [projectId],
+            },
+          ]),
         },
       };
     }),
@@ -35,6 +41,7 @@ export default (Component: ReactClass<*>) =>
         query={graphql`
           query ProjectSummary_relayQuery(
             $filters: FiltersArgument
+            $annotationsFilters: FiltersArgument
           ) {
             viewer {
               projects {
@@ -57,7 +64,7 @@ export default (Component: ReactClass<*>) =>
                 }
               }
               annotations {
-                hits(first: 1 filters: $filters) {
+                hits(first: 1 filters: $annotationsFilters) {
                   total
                   edges {
                     node {

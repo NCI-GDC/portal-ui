@@ -31,7 +31,7 @@ const RemoveButton = styled(Button, {
 });
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.files })),
+  connect(state => ({ tableColumns: state.tableColumns.files.ids })),
 )(
   ({
     downloadable,

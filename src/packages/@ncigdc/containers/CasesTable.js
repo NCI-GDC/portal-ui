@@ -12,7 +12,7 @@ import tableModels from '@ncigdc/tableModels';
 import Table, { Tr } from '@ncigdc/uikit/Table';
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.cases })),
+  connect(state => ({ tableColumns: state.tableColumns.cases.ids })),
 )(({ relay, hits, entityType = 'cases', tableColumns }) => {
   const tableInfo = tableModels[entityType]
     .slice()

@@ -3,8 +3,8 @@
  *   relay-compiler
  *
  * @providesModule SsmsTable_relayQuery.graphql
- * @generated SignedSource<<3547890d93d37f7cfcd89f160dce7679>>
- * @relayHash 28819b3f43c02c6410e7b6c42d928aa8
+ * @generated SignedSource<<d9089cced74ec00d2ef342c2059bf69e>>
+ * @relayHash ff8e4ba5d9e2f99587ac7618e01ab611
  * @flow
  * @nogrep
  */
@@ -47,6 +47,7 @@ query SsmsTable_relayQuery(
           total
           edges {
             node {
+              id
               score
               genomic_dna_change
               mutation_subtype
@@ -77,7 +78,6 @@ query SsmsTable_relayQuery(
                   total
                 }
               }
-              id
             }
           }
         }
@@ -313,6 +313,13 @@ const batch /*: ConcreteBatch*/ = {
                             "name": "node",
                             "plural": false,
                             "selections": [
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "id",
+                                "storageKey": null
+                              },
                               {
                                 "kind": "ScalarField",
                                 "alias": null,
@@ -769,6 +776,13 @@ const batch /*: ConcreteBatch*/ = {
                                 "kind": "ScalarField",
                                 "alias": null,
                                 "args": null,
+                                "name": "id",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
                                 "name": "score",
                                 "storageKey": null
                               },
@@ -973,13 +987,6 @@ const batch /*: ConcreteBatch*/ = {
                                   }
                                 ],
                                 "storageKey": null
-                              },
-                              {
-                                "kind": "ScalarField",
-                                "alias": null,
-                                "args": null,
-                                "name": "id",
-                                "storageKey": null
                               }
                             ],
                             "storageKey": null
@@ -1001,7 +1008,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query SsmsTable_relayQuery(\n  $ssmTested: FiltersArgument\n  $ssmCaseFilter: FiltersArgument\n  $ssmsTable_size: Int\n  $consequenceFilters: FiltersArgument\n  $ssmsTable_offset: Int\n  $ssmsTable_filters: FiltersArgument\n  $score: String\n  $sort: [Sort]\n) {\n  viewer {\n    explore {\n      cases {\n        hits(first: 0, filters: $ssmTested) {\n          total\n        }\n      }\n      filteredCases: cases {\n        hits(first: 0, filters: $ssmCaseFilter) {\n          total\n        }\n      }\n      ssms {\n        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, filters: $ssmsTable_filters, score: $score, sort: $sort) {\n          total\n          edges {\n            node {\n              score\n              genomic_dna_change\n              mutation_subtype\n              ssm_id\n              consequence {\n                hits(first: 1, filters: $consequenceFilters) {\n                  edges {\n                    node {\n                      transcript {\n                        is_canonical\n                        annotation {\n                          impact\n                        }\n                        consequence_type\n                        gene {\n                          gene_id\n                          symbol\n                        }\n                        aa_change\n                      }\n                      id\n                    }\n                  }\n                }\n              }\n              occurrence {\n                hits(first: 0, filters: $ssmTested) {\n                  total\n                }\n              }\n              id\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+  "text": "query SsmsTable_relayQuery(\n  $ssmTested: FiltersArgument\n  $ssmCaseFilter: FiltersArgument\n  $ssmsTable_size: Int\n  $consequenceFilters: FiltersArgument\n  $ssmsTable_offset: Int\n  $ssmsTable_filters: FiltersArgument\n  $score: String\n  $sort: [Sort]\n) {\n  viewer {\n    explore {\n      cases {\n        hits(first: 0, filters: $ssmTested) {\n          total\n        }\n      }\n      filteredCases: cases {\n        hits(first: 0, filters: $ssmCaseFilter) {\n          total\n        }\n      }\n      ssms {\n        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, filters: $ssmsTable_filters, score: $score, sort: $sort) {\n          total\n          edges {\n            node {\n              id\n              score\n              genomic_dna_change\n              mutation_subtype\n              ssm_id\n              consequence {\n                hits(first: 1, filters: $consequenceFilters) {\n                  edges {\n                    node {\n                      transcript {\n                        is_canonical\n                        annotation {\n                          impact\n                        }\n                        consequence_type\n                        gene {\n                          gene_id\n                          symbol\n                        }\n                        aa_change\n                      }\n                      id\n                    }\n                  }\n                }\n              }\n              occurrence {\n                hits(first: 0, filters: $ssmTested) {\n                  total\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

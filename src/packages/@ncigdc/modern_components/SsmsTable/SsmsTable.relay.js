@@ -93,6 +93,7 @@ export default Component =>
                     total
                     edges {
                       node {
+                        id
                         score
                         genomic_dna_change
                         mutation_subtype

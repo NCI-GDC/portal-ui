@@ -23,9 +23,9 @@ const restoreColumns = entityType => ({
   payload: { entityType },
 });
 
-const setColumns = ({ entityType, ids }) => ({
+const setColumns = payload => ({
   type: tableColumns.SET,
-  payload: { entityType, ids },
+  payload,
 });
 
 // Store ids of table items that are not hidden by default
@@ -34,7 +34,10 @@ const reduceColumns = (acc, x) => [...acc, ...(!x.hidden ? [x.id] : [])];
 const initialState = Object.keys(tableModels).reduce(
   (acc, key) => ({
     ...acc,
-    [key]: tableModels[key].reduce(reduceColumns, []),
+    [key]: {
+      ids: tableModels[key].reduce(reduceColumns, []),
+      order: tableModels[key].map(c => c.id),
+    },
   }),
   {},
 );
@@ -42,31 +45,57 @@ const initialState = Object.keys(tableModels).reduce(
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE: {
-      return { ...state, ...action.payload.tableColumns };
+      return {
+        ...state,
+        ...Object.entries(action.payload.tableColumns).reduce(
+          (acc, [key, val]) => ({
+            ...acc,
+            [key]: Array.isArray(val)
+              ? {
+                  ...state[key],
+                  ids: val,
+                }
+              : val,
+          }),
+          {},
+        ),
+      };
     }
 
     case tableColumns.TOGGLE_COLUMN: {
       const { entityType, id, index } = action.payload;
-      return state[entityType].find(x => x === id)
-        ? { ...state, [entityType]: state[entityType].filter(x => x !== id) }
+      return state[entityType].ids.find(x => x === id)
+        ? {
+            ...state,
+            [entityType]: {
+              ...state[entityType],
+              ids: state[entityType].ids.filter(x => x !== id),
+            },
+          }
         : {
             ...state,
-            [entityType]: [
-              ...state[entityType].slice(0, index),
-              id,
-              ...state[entityType].slice(index, Infinity),
-            ],
+            [entityType]: {
+              ...state[entityType],
+              ids: [
+                ...state[entityType].ids.slice(0, index),
+                id,
+                ...state[entityType].ids.slice(index, Infinity),
+              ],
+            },
           };
     }
 
     case tableColumns.RESTORE: {
       const { entityType } = action.payload;
-      return { ...state, [entityType]: initialState[entityType] };
+      return {
+        ...state,
+        [entityType]: initialState[entityType],
+      };
     }
 
     case tableColumns.SET: {
-      const { entityType, ids } = action.payload;
-      return { ...state, [entityType]: ids };
+      const { entityType, ids, order } = action.payload;
+      return { ...state, [entityType]: { ids, order } };
     }
 
     default:

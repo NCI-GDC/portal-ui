@@ -15,26 +15,21 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 import ProjectBreakdown from '@ncigdc/modern_components/ProjectBreakdown';
 import BubbleIcon from '@ncigdc/theme/icons/BubbleIcon';
-// import CosmicIcon from '@ncigdc/theme/icons/Cosmic';
 import MutationLink from '@ncigdc/components/Links/MutationLink';
 import Hidden from '@ncigdc/components/Hidden';
 import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
 import Button from '@ncigdc/uikit/Button';
-// import styled from '@ncigdc/theme/styled';
 import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 
 const colors = scaleOrdinal(schemeCategory10);
-
-// const NumTh = styled(Th, { textAlign: 'right' });
-// const NumTd = styled(Td, { textAlign: 'right' });
 
 const SsmsTableModel = [
   {
     name: 'Mutation ID',
     id: 'mutation_uuid',
     sortable: true,
-    nidden: true,
+    hidden: true,
     downloadable: true,
     th: () =>
       <Th>
@@ -42,6 +37,7 @@ const SsmsTableModel = [
       </Th>,
     td: ({ node }) =>
       <Td>
+        {node.ssm_id}
         <ForTsvExport>
           {node.ssm_id}
         </ForTsvExport>
@@ -154,7 +150,7 @@ const SsmsTableModel = [
           # Affected Cases<br />in {context}
         </Tooltip>
       </Th>,
-    td: ({ node, query, defaultFilters, filteredCases, score, location }) =>
+    td: ({ node, query, defaultFilters, filteredCases, location }) =>
       <Td>
         <span>
           <ExploreLink
@@ -167,7 +163,7 @@ const SsmsTableModel = [
               ),
             }}
           >
-            {score.toLocaleString()}
+            {node.score.toLocaleString()}
           </ExploreLink>
           <span> / </span>
           <ExploreLink
@@ -188,7 +184,7 @@ const SsmsTableModel = [
           >
             {(filteredCases.hits.total || 0).toLocaleString()}
           </ExploreLink>
-          <SparkMeter value={score / filteredCases.hits.total} />
+          <SparkMeter value={node.score / filteredCases.hits.total} />
           <span
             style={{
               fontSize: '0.8em',
@@ -196,7 +192,7 @@ const SsmsTableModel = [
               display: 'inline-block',
             }}
           >
-            {(score / filteredCases.hits.total * 100).toFixed(2)}%
+            {(node.score / filteredCases.hits.total * 100).toFixed(2)}%
           </span>
         </span>
       </Td>,
@@ -236,7 +232,7 @@ const SsmsTableModel = [
     id: 'impact',
     sortable: true,
     downloadable: true,
-    th: () => <Td>Impact<br />(VEP)</Td>,
+    th: () => <Th>Impact<br />(VEP)</Th>,
     td: ({ node, theme }) =>
       <Td>
         {!['LOW', 'MODERATE', 'HIGH', 'MODIFIER'].includes(node.impact)

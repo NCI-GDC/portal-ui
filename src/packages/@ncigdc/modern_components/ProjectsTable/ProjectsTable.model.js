@@ -10,7 +10,7 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 import withRouter from '@ncigdc/utils/withRouter';
 import styled from '@ncigdc/theme/styled';
-import { createDataCategoryColumns } from './utils';
+import { createDataCategoryColumns } from '@ncigdc/tableModels/utils';
 
 const NumTh = styled(Th, { textAlign: 'right' });
 const NumTd = styled(Td, { textAlign: 'right' });

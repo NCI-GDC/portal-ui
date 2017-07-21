@@ -11,7 +11,7 @@ import tableModels from '@ncigdc/tableModels';
 import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.projects })),
+  connect(state => ({ tableColumns: state.tableColumns.projects.ids })),
 )(
   ({
     downloadable,

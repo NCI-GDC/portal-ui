@@ -22,9 +22,11 @@ const ArrangeColumns = compose(
   connect((state, props) => ({
     tableColumns: state.tableColumns[props.entityType],
   })),
-  withState('state', 'setState', ({ entityType }) => ({
+  withState('state', 'setState', ({ entityType, tableColumns: { order } }) => ({
     draggingIndex: null,
-    columns: tableModels[entityType],
+    columns: tableModels[entityType]
+      .slice()
+      .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)),
   })),
   pure,
 )(({ dispatch, tableColumns, setState, state, searchTerm, entityType }) => {
@@ -45,7 +47,7 @@ const ArrangeColumns = compose(
                 const nextColumnIds = state.items.reduce(
                   (acc, x) => [
                     ...acc,
-                    ...(tableColumns.includes(x.id)
+                    ...(tableColumns.ids.includes(x.id)
                       ? [
                           x.id,
                           ...tableModels[entityType]
@@ -56,8 +58,13 @@ const ArrangeColumns = compose(
                   ],
                   [],
                 );
-
-                dispatch(setColumns({ entityType, ids: nextColumnIds }));
+                dispatch(
+                  setColumns({
+                    entityType,
+                    ids: nextColumnIds,
+                    order: state.items.map(c => c.id),
+                  }),
+                );
               }
               return { columns: filteredColumns, ...nextState };
             })}
@@ -83,7 +90,7 @@ const ArrangeColumns = compose(
                 // find current index of subheading columm
                 const subHeadingColIndex = !subHeadingCol
                   ? -1
-                  : tableColumns.indexOf(subHeadingCol.id);
+                  : tableColumns.ids.indexOf(subHeadingCol.id);
                 // figure out whether to put before or after column with subheadings
                 const afterSubheadingCol =
                   subHeadingColIndex !== -1 && subHeadingColIndex < i;
@@ -104,7 +111,7 @@ const ArrangeColumns = compose(
                 readOnly
                 style={{ pointerEvents: 'none' }}
                 type="checkbox"
-                checked={tableColumns.includes(column.id)}
+                checked={tableColumns.ids.includes(column.id)}
               />
               <span style={{ marginLeft: '0.3rem' }}>{column.name}</span>
             </Row>

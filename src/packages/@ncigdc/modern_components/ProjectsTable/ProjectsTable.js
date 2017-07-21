@@ -1,17 +1,21 @@
 /* @flow */
 
 import React from 'react';
-import { createFragmentContainer, graphql } from 'react-relay/compat';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
+import { compose, setDisplayName, mapProps } from 'recompose';
 import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
 import tableModels from '@ncigdc/tableModels';
 
 import Table, { Tr, Td } from '@ncigdc/uikit/Table';
 
-export const SearchTable = compose(
+export default compose(
+  setDisplayName('ProjectsTablePresentation'),
   connect(state => ({ tableColumns: state.tableColumns.projects.ids })),
+  mapProps(props => ({
+    ...props,
+    hits: props.viewer.projects.hits,
+  })),
 )(
   ({
     downloadable,
@@ -91,34 +95,3 @@ export const SearchTable = compose(
     );
   },
 );
-
-const ProjectsTable = createFragmentContainer(
-  SearchTable,
-  graphql`
-    fragment ProjectsTable_hits on ProjectConnection {
-      total
-      edges @relay(plural: true) {
-        node {
-          id
-          project_id
-          disease_type
-          program {
-            name
-          }
-          primary_site
-          summary {
-            case_count
-            data_categories {
-              case_count
-              data_category
-            }
-            file_count
-            file_size
-          }
-        }
-      }
-    }
-  `,
-);
-
-export default ProjectsTable;

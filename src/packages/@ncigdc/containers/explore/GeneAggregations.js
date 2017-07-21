@@ -33,6 +33,11 @@ export type TProps = {
   },
   setAutocomplete: Function,
   theme: Object,
+  idCollapsed: boolean,
+  setSsmIdCollapsed: Function,
+  geneSymbolFragment: Object,
+  suggestions: Object,
+  relay: Object,
 };
 
 const presetFacets = [
@@ -67,9 +72,12 @@ export const GeneAggregationsComponent = compose(
   <div className="test-gene-aggregations">
     <FacetHeader
       title="Gene"
-      field="genes.symbol"
+      field="genes.gene_id"
       collapsed={props.idCollapsed}
       setCollapsed={props.setSsmIdCollapsed}
+      description={
+        'Enter Gene symbol, synonym, name or IDs for Ensembl, Entrez gene, HGNC Gene, OMIM, UniProtKB/Swiss-Prot'
+      }
     />
     <SuggestionFacet
       geneSymbolFragment={props.geneSymbolFragment}
@@ -77,7 +85,7 @@ export const GeneAggregationsComponent = compose(
       doctype="genes"
       collapsed={props.idCollapsed}
       fieldNoDoctype="gene_id"
-      placeholder="Search for Gene Symbol or ID"
+      placeholder="e.g. BRAF, ENSG00000157764"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       dropdownItem={x =>

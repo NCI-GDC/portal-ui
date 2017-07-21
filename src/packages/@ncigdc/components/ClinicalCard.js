@@ -83,7 +83,7 @@ const ClinicalCard = ({
       {activeTab === 0 &&
         <EntityPageVerticalTable
           thToTd={[
-            { th: 'ID', td: demographic.demographic_id },
+            { th: 'UUID', td: demographic.demographic_id },
             { th: 'Ethnicity', td: demographic.ethnicity },
             { th: 'Gender', td: demographic.gender },
             { th: 'Race', td: demographic.race },
@@ -104,7 +104,7 @@ const ClinicalCard = ({
                 <span key={x.diagnosis_id}>
                   <EntityPageVerticalTable
                     thToTd={[
-                      { th: 'ID', td: x.diagnosis_id },
+                      { th: 'UUID', td: x.diagnosis_id },
                       {
                         th: 'Classification of Tumor',
                         td: x.classification_of_tumor,
@@ -166,7 +166,7 @@ const ClinicalCard = ({
                     !!x.treatments.hits.edges.length &&
                     <Table
                       headings={[
-                        <Th key="id">ID</Th>,
+                        <Th key="id">UUID</Th>,
                         <Th key="agents">Therapeutic Agents</Th>,
                         <Th key="intent_type">Treatment Intent Type</Th>,
                         <Th key="therapy">Treatment or Therapy</Th>,
@@ -210,7 +210,7 @@ const ClinicalCard = ({
                 <EntityPageVerticalTable
                   key={x.family_history_id}
                   thToTd={[
-                    { th: 'ID', td: x.family_history_id },
+                    { th: 'UUID', td: x.family_history_id },
                     {
                       th: 'Relationship Age at Diagnosis',
                       td: x.relationship_age_at_diagnosis,
@@ -246,7 +246,7 @@ const ClinicalCard = ({
                 <EntityPageVerticalTable
                   key={x.node.exposure_id}
                   thToTd={[
-                    { th: 'ID', td: x.node.exposure_id },
+                    { th: 'UUID', td: x.node.exposure_id },
                     { th: 'Alcohol History', td: x.node.alcohol_history },
                     { th: 'BMI', td: x.node.bmi },
                     { th: 'Cigarettes per Day', td: x.node.cigarettes_per_day },

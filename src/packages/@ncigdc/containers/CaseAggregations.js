@@ -230,13 +230,17 @@ export const CaseAggregationsComponent = (props: TProps) =>
       field="cases.case_id"
       collapsed={props.caseIdCollapsed}
       setCollapsed={props.setCaseIdCollapsed}
+      description={
+        'Enter UUID or ID of Case, Sample, Portion, Slide, Analyte or Aliquot'
+      }
     />
+
     <SuggestionFacet
       title="Case"
       collapsed={props.caseIdCollapsed}
       doctype="cases"
       fieldNoDoctype="case_id"
-      placeholder="Search for Case ID"
+      placeholder="e.g. TCGA-A5-A0G2, 432fe4a9-2..."
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       dropdownItem={x =>

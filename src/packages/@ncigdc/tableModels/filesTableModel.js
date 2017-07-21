@@ -32,18 +32,6 @@ const filesTableModel = [
     hidden: true,
   },
   {
-    name: 'File Submitter ID',
-    id: 'submitter_id',
-    sortable: true,
-    downloadable: true,
-    hidden: true,
-    th: () => <Th>File Submitter ID</Th>,
-    td: ({ node }) =>
-      <Td style={{ whiteSpace: 'pre-line', wordBreak: 'break-all' }}>
-        {node.submitter_id || '--'}
-      </Td>,
-  },
-  {
     name: 'Access',
     id: 'access',
     sortable: true,

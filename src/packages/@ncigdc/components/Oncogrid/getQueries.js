@@ -1,5 +1,6 @@
 /* @flow */
 import { replaceFilters } from '@ncigdc/utils/filters';
+import { mapKeys, mapValues, groupBy } from 'lodash';
 import memoize from 'memoizee';
 import { fetchApi, fetchApiChunked } from '@ncigdc/utils/ajax';
 
@@ -57,6 +58,8 @@ async function getCases({
         'demographic.race',
         'demographic.ethnicity',
         'case_id',
+        'submitter_id',
+        'project.project_id',
         'summary.data_categories.file_count',
         'summary.data_categories.data_category',
       ].join(),
@@ -133,11 +136,32 @@ async function getQueries({
     filters: occurrenceFilters,
   });
 
+  const caseUUIDMap = mapValues(groupBy(cases, 'case_id'), ([donor]) => ({
+    ...donor,
+    uuid: donor.case_id,
+    name: `${donor.project.project_id} ̸  ${donor.submitter_id}`, //contains unicode special chars for zoom selector to work
+  }));
+  const caseNameMap = mapKeys(caseUUIDMap, donor => donor.name);
+
+  const massagedCases = cases.map(donor => ({
+    ...donor,
+    uuid: donor.case_id,
+    case_id: caseUUIDMap[donor.case_id].name,
+  }));
+
+  const massagedOccurrences = occurrences.map(occurrence => ({
+    ...occurrence,
+    case: {
+      case_id: caseUUIDMap[occurrence.case.case_id].name,
+    },
+  }));
+
   return {
     genes,
-    occurrences,
-    cases,
+    occurrences: massagedOccurrences,
+    cases: massagedCases,
     totalCases,
+    caseNameMap,
   };
 }
 

@@ -37,7 +37,6 @@ export const FilePageQuery = {
     node: () => Relay.QL`
       fragment on File {
         file_id
-        submitter_id
         file_id
         file_name
         file_size

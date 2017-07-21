@@ -34,7 +34,7 @@ export type TProps = {
 
 const annotationFacets = [
   {
-    title: 'Entity ID',
+    title: 'Entity UUID',
     field: 'entity_id',
     full: 'annotations.entity_id',
     doc_type: 'annotations',
@@ -96,7 +96,7 @@ export const AnnotationAggregationsComponent = compose(
 )((props: TProps) =>
   <div className="test-annotation-aggregations">
     <FacetHeader
-      title="Annotation ID"
+      title="Annotation UUID"
       field="annotations.annotation_id"
       collapsed={props.annotationIdCollapsed}
       setCollapsed={props.setAnnotationIdCollapsed}
@@ -104,7 +104,7 @@ export const AnnotationAggregationsComponent = compose(
     <SuggestionFacet
       title={'Annotation ID'}
       collapsed={props.annotationIdCollapsed}
-      placeholder="Search for Annotation ID"
+      placeholder="Search for Annotation UUID"
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       doctype="annotations"

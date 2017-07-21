@@ -165,7 +165,6 @@ export const FileTableQuery = {
             acl
             data_category
             data_format
-            submitter_id
             platform
             data_type
             experimental_strategy

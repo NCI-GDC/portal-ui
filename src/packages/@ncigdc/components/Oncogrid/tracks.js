@@ -130,7 +130,7 @@ export const clinicalDonorTracks = [
 ];
 
 const dataTypeTemplate = `
-  <div>{{displayId}}</div
+  <div>{{displayId}}</div>
   {{displayName}}: {{displayValue}}{{#notNullSentinel}} files{{/notNullSentinel}}
 `;
 

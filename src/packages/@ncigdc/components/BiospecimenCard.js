@@ -159,9 +159,9 @@ const BiospecimenCard = ({
         <Column flex="4">
           <EntityPageVerticalTable
             thToTd={[
-              { th: 'Submitter ID', td: selectedEntity.submitter_id },
+              { th: `${type} ID`, td: selectedEntity.submitter_id },
               {
-                th: `${type} ID`,
+                th: `${type} UUID`,
                 td: selectedEntity[idFields.find(id => selectedEntity[id])],
               },
               ...Object.entries(selectedEntity)

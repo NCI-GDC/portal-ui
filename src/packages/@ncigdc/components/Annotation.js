@@ -31,7 +31,7 @@ const Annotation = ({ node, theme }: { node: Object, theme: Object }) =>
             </CaseLink>
           ),
         },
-        { th: 'Entity Barcode', td: node.entity_submitter_id },
+        { th: 'Entity ID', td: node.entity_submitter_id },
         { th: 'Entity type', td: node.entity_type },
         {
           th: 'Case UUID',

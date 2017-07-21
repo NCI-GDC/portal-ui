@@ -46,6 +46,7 @@ const FacetResetButton = ({
     field,
   });
   return (
+    inCurrent &&
     <StyledLink
       className="test-facet-reset-button"
       style={{ display: inCurrent ? 'inline' : 'none', ...style }}

@@ -279,7 +279,7 @@ const CurrentFilters = (
         pathname={linkPathname}
         disabled={currentFilters
           .reduce((acc, f) => [...acc, ...f.content.value], [])
-          .some(v => v.includes('set_id:'))}
+          .some(v => v.toString().includes('set_id:'))}
         query={
           currentFilters.length && {
             filters: {

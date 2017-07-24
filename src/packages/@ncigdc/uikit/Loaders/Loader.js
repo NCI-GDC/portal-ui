@@ -27,11 +27,14 @@ export default (
 
 export const ConnectedLoader = connect(s => ({
   loaders: s.loaders,
-}))(({ loaders, name }) =>
-  <Overlay
-    show={loaders.includes(name)}
-    style={{ position: 'absolute', zIndex: 10 }}
-  >
-    <Spinner />
-  </Overlay>,
+}))(
+  ({ loaders, name, customLoader: CL }) =>
+    CL
+      ? <CL loading={loaders.includes(name)} />
+      : <Overlay
+          show={loaders.includes(name)}
+          style={{ position: 'absolute', zIndex: 10 }}
+        >
+          <Spinner />
+        </Overlay>,
 );

@@ -7,7 +7,9 @@ import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 const lastRelayProps = {};
 
 export default (props: Object) =>
-  <div style={{ position: 'relative', minHeight: props.minHeight }}>
+  <div
+    style={{ position: 'relative', minHeight: props.minHeight, width: '100%' }}
+  >
     <QueryRenderer
       environment={environment}
       render={({ props: nextRelayProps, error }) => {
@@ -32,5 +34,5 @@ export default (props: Object) =>
       }}
       {...props}
     />
-    <ConnectedLoader name={props.name} />
+    <ConnectedLoader name={props.name} customLoader={props.customLoader} />
   </div>;

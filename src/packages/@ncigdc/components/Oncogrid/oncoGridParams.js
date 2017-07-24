@@ -179,16 +179,21 @@ export default function({
     templates: {
       mainGrid: `
         {{#observation}}
-          <div>Case: {{observation.donorId}}</div>
+          <div>Case: {{donor.displayId}}</div>
           <div>Gene: {{observation.geneSymbol}}</div>
           <div>Mutation: {{observation.id}}</div>
           <div>Consequence: {{observation.consequence}}</div>
         {{/observation}}
       `,
       mainGridCrosshair: `
-        {{#donor}}<div>Case: {{donor.id}}</div>{{/donor}}
+        {{#donor}}<div>Case: {{donor.displayId}}</div>{{/donor}}
         {{#gene}}<div>Gene: {{gene.symbol}}</div>{{/gene}}
         {{#obs}}<div>Mutations: {{obs}}</div>{{/obs}}
+      `,
+      histogram: `
+        {{#domain.symbol}}{{domain.symbol}}{{/domain.symbol}}
+        {{^domain.symbol}}{{domain.displayId}}{{/domain.symbol}}
+        <br/> Count: {{domain.count}}<br/>
       `,
     },
     trackLegendLabel:

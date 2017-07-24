@@ -44,7 +44,7 @@
     "lodash-backports": "1.0.1",
     "memoizee": "0.4.5",
     "moment": "2.17.1",
-    "oncogrid": "1.4.4",
+    "oncogrid": "1.4.6",
     "prop-types": "15.5.10",
     "query-string": "4.3.4",
     "queue": "4.2.1",

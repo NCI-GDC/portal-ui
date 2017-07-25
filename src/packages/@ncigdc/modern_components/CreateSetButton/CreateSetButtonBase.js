@@ -48,7 +48,7 @@ const CreateSetButton = ({
   const setOnlyInCurrentFilters = filters
     ? filters.content.length === 1 &&
         content.value.length === 1 &&
-        content.value[0].includes('set_id:') &&
+        content.value[0].toString().includes('set_id:') &&
         content.field === field
     : false;
 

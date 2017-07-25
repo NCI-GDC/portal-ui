@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState, pure } from 'recompose';
+import { compose, withState, pure, withPropsOnChange } from 'recompose';
 import ArrangeIcon from 'react-icons/lib/fa/bars';
 
 import { Row } from '@ncigdc/uikit/Flex';
@@ -28,6 +28,20 @@ const ArrangeColumns = compose(
       .slice()
       .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)),
   })),
+  withPropsOnChange(
+    ['tableColumns'],
+    ({ tableColumns, entityType, setState }) => {
+      setState({
+        columns: tableModels[entityType]
+          .slice()
+          .sort(
+            (a, b) =>
+              tableColumns.order.indexOf(a.id) -
+              tableColumns.order.indexOf(b.id),
+          ),
+      });
+    },
+  ),
   pure,
 )(({ dispatch, tableColumns, setState, state, searchTerm, entityType }) => {
   const filteredColumns = state.columns.filter(

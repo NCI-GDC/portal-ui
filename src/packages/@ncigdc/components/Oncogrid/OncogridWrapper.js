@@ -322,9 +322,11 @@ const OncoGridWrapper = compose(
         performanceTracker.begin('oncogrid:render');
         grid.render();
 
-        grid.on('render:all:end', () =>
-          performanceTracker.end('oncogrid:render', performanceContext),
-        );
+        grid.container.node().style.visibility = 'hidden';
+        grid.on('render:all:end', () => {
+          grid.container.node().style.visibility = 'visible';
+          performanceTracker.end('oncogrid:render', performanceContext);
+        });
 
         setCaseCount(responses.totalCases);
         setOncoGrid(grid);

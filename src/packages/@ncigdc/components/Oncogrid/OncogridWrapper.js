@@ -52,12 +52,16 @@ function refreshGridState({
   setHeatMapMode,
   setShowGridLines,
   setCrosshairMode,
+  setIsLoading,
 }: {
   oncoGrid: Object,
   setHeatMapMode: Function,
   setShowGridLines: Function,
   setCrosshairMode: Function,
+  setIsLoading: Function,
 }): void {
+  setIsLoading(true);
+  oncoGrid.container.node().style.visibility = 'hidden';
   setHeatMapMode(oncoGrid.heatMapMode);
   setShowGridLines(oncoGrid.drawGridLines);
   setCrosshairMode(oncoGrid.crosshairMode);
@@ -324,6 +328,7 @@ const OncoGridWrapper = compose(
 
         grid.container.node().style.visibility = 'hidden';
         grid.on('render:all:end', () => {
+          setIsLoading(false);
           grid.container.node().style.visibility = 'visible';
           performanceTracker.end('oncogrid:render', performanceContext);
         });
@@ -336,6 +341,7 @@ const OncoGridWrapper = compose(
           setHeatMapMode,
           setShowGridLines,
           setCrosshairMode,
+          setIsLoading,
         });
       } else {
         if (oncoGrid.toggleGridLines) oncoGrid.destroy();
@@ -345,8 +351,6 @@ const OncoGridWrapper = compose(
       if (gridParams) {
         setTrackLegends(Object.values(gridParams.trackLegends));
       }
-
-      setIsLoading(false);
     },
   }),
   connect(),
@@ -416,6 +420,7 @@ const OncoGridWrapper = compose(
     crosshairMode,
     setCrosshairMode,
     isLoading,
+    setIsLoading,
     uniqueGridClass,
     trackLegends,
     title,
@@ -503,6 +508,7 @@ const OncoGridWrapper = compose(
                       setHeatMapMode,
                       setShowGridLines,
                       setCrosshairMode,
+                      setIsLoading,
                     });
                   }}
                 >
@@ -567,6 +573,7 @@ const OncoGridWrapper = compose(
                         setHeatMapMode,
                         setShowGridLines,
                         setCrosshairMode,
+                        setIsLoading,
                       });
                     } else {
                       enterFullScreen(containerRefs[uniqueGridClass]);

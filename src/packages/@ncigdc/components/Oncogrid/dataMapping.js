@@ -16,6 +16,10 @@ export type TDonorInput = {
     ethnicity: string,
   },
   case_id: string,
+  project: {
+    project_id: string,
+  },
+  submitter_id: string,
   diagnoses: Array<{
     age_at_diagnosis: number,
     vital_status: string,
@@ -52,6 +56,8 @@ export const mapDonors: TMapDonors = (donors, donorIds) => {
       demographic = {},
       case_id,
       diagnoses = [],
+      project: { project_id },
+      submitter_id,
     } = donors[i];
 
     if (donorIds.has(case_id)) {
@@ -76,6 +82,7 @@ export const mapDonors: TMapDonors = (donors, donorIds) => {
         age: nullSentinel(age_at_diagnosis),
         vitalStatus,
         daysToDeath: nullSentinel(days_to_death),
+        displayId: `${project_id} / ${submitter_id}`,
       };
 
       for (let j = 0; j < data_categories.length; j += 1) {

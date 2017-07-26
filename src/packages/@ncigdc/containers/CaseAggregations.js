@@ -4,8 +4,14 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
-import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
+import {
+  compose,
+  withState,
+  setDisplayName,
+  lifecycle,
+  withPropsOnChange,
+} from 'recompose';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
@@ -17,10 +23,6 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 
 import { withTheme } from '@ncigdc/theme';
 import CaseIcon from '@ncigdc/theme/icons/Case';
-import {
-  initialCaseAggregationsVariables,
-  repositoryCaseAggregationsFragment,
-} from '@ncigdc/utils/generated-relay-query-parts';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
@@ -34,6 +36,7 @@ export type TProps = {
   caseIdCollapsed: boolean,
   setCaseIdCollapsed: Function,
   relay: Object,
+  facets: { facets: string },
   aggregations: {
     demographic__ethnicity: { buckets: [TBucket] },
     demographic__gender: { buckets: [TBucket] },
@@ -55,6 +58,7 @@ export type TProps = {
   },
   setAutocomplete: Function,
   theme: Object,
+  filters: Object,
   suggestions: Array<Object>,
 
   userSelectedFacets: Array<{|
@@ -66,9 +70,11 @@ export type TProps = {
   |}>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
+  handleRequestRemoveFacet: Function,
   presetFacetFields: Array<String>,
   shouldShowFacetSelection: Boolean,
   facetExclusionTest: Function,
+  setShouldShowFacetSelection: Function,
 };
 
 const storageKey = 'RepositoryCaseAggregations.userSelectedFacets';
@@ -165,6 +171,7 @@ const presetFacets = [
 const presetFacetFields = presetFacets.map(x => x.field);
 
 const enhance = compose(
+  setDisplayName('RepoCaseAggregations'),
   withFacetSelection({
     storageKey,
     presetFacetFields,
@@ -172,6 +179,28 @@ const enhance = compose(
   }),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
   connect(),
+  withPropsOnChange(['filters'], ({ filters, relay }) =>
+    relay.setVariables({
+      filters,
+      repoCaseCustomFacetFields: (tryParseJSON(
+        window.localStorage.getItem(storageKey),
+      ) || [])
+        .map(({ field }) => field)
+        .join(','),
+    }),
+  ),
+  lifecycle({
+    componentDidMount(): void {
+      this.props.relay.setVariables({
+        filters: this.props.filters,
+        repoCaseCustomFacetFields: (tryParseJSON(
+          window.localStorage.getItem(storageKey),
+        ) || [])
+          .map(({ field }) => field)
+          .join(','),
+      });
+    },
+  }),
 );
 
 const styles = {
@@ -183,6 +212,8 @@ const styles = {
 
 export const CaseAggregationsComponent = (props: TProps) =>
   <div className="test-case-aggregations">
+    {console.log(tryParseJSON(props.facets.facets))}
+    {console.log(props.relay.variables)}
     <div
       className="text-right"
       style={{
@@ -210,10 +241,12 @@ export const CaseAggregationsComponent = (props: TProps) =>
     >
       <FacetSelection
         title="Add a Case/Biospecimen Filter"
+        relayVarName="repoCaseCustomFacetFields"
+        docType="cases"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
-        additionalFacetData={props.aggregations}
+        additionalFacetData={tryParseJSON(props.facets.facets)}
         relay={props.relay}
       />
     </Modal>
@@ -221,9 +254,10 @@ export const CaseAggregationsComponent = (props: TProps) =>
     {props.userSelectedFacets.map(facet =>
       <FacetWrapper
         isRemovable
+        relayVarName="repoCaseCustomFacetFields"
         key={facet.full}
         facet={facet}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        aggregation={tryParseJSON(props.facets.facets, {})[facet.field]}
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
@@ -286,37 +320,82 @@ export const CaseAggregationsComponent = (props: TProps) =>
   </div>;
 
 export const CaseAggregationsQuery = {
-  initialVariables: Object.assign(
-    {},
-    _.mapValues(initialCaseAggregationsVariables, (value, key) => {
-      const userSelectedFacetsFromStorage =
-        tryParseJSON(window.localStorage.getItem(storageKey)) || [];
-      const escapedFieldsToShow = presetFacetFields
-        .concat(userSelectedFacetsFromStorage.map(x => x.field))
-        .filter(Boolean)
-        .map(escapeForRelay);
-      return (
-        value ||
-        _.includes(escapedFieldsToShow, key.replace(/^shouldShow_/, ''))
-      );
-    }),
-    { shouldRequestAllAggregations: false },
-  ),
-  prepareVariables: prevVariables =>
-    _.mapValues(
-      prevVariables,
-      (value, key) =>
-        prevVariables.shouldRequestAllAggregations ||
-        initialCaseAggregationsVariables[key] ||
-        _.includes(
-          (tryParseJSON(window.localStorage.getItem(storageKey)) || [])
-            .map(x => escapeForRelay(x.field)),
-          key.replace(/^shouldShow_/, ''),
-        ) ||
-        value,
-    ),
+  initialVariables: {
+    repoCaseCustomFacetFields: (tryParseJSON(
+      window.localStorage.getItem(storageKey),
+    ) || [])
+      .map(({ field }) => field)
+      .join(','),
+    filters: null,
+  },
   fragments: {
-    aggregations: repositoryCaseAggregationsFragment,
+    facets: () => Relay.QL`
+      fragment on RepositoryCases {
+        facets(facets: $repoCaseCustomFacetFields filters: $filters)
+      }
+    `,
+    aggregations: () => Relay.QL`
+      fragment on CaseAggregations {
+        primary_site {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        project__program__name {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        project__project_id {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        disease_type {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        demographic__gender {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        diagnoses__age_at_diagnosis {
+          max
+          min
+          count
+        }
+        diagnoses__vital_status {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        diagnoses__days_to_death {
+          max
+          min
+          count
+        }
+        demographic__race {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        demographic__ethnicity {
+          buckets {
+            doc_count
+            key
+          }
+        }
+      }
+    `,
   },
 };
 

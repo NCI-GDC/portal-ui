@@ -5,7 +5,13 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 
 import _ from 'lodash';
-import { compose, withState } from 'recompose';
+import {
+  compose,
+  withState,
+  setDisplayName,
+  lifecycle,
+  withPropsOnChange,
+} from 'recompose';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
@@ -13,10 +19,6 @@ import FacetSelection from '@ncigdc/components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 
-import {
-  initialFileAggregationsVariables,
-  repositoryFileAggregationsFragment,
-} from '@ncigdc/utils/generated-relay-query-parts';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
@@ -52,12 +54,35 @@ const presetFacets = [
 const presetFacetFields = presetFacets.map(x => x.field);
 
 const enhance = compose(
+  setDisplayName('RepoFileAggregations'),
   withFacetSelection({
     storageKey,
     presetFacetFields,
     validFacetDocTypes: ['files'],
   }),
   withState('fileIdCollapsed', 'setFileIdCollapsed', false),
+  withPropsOnChange(['filters'], ({ filters, relay }) =>
+    relay.setVariables({
+      filters,
+      filesCustomFacetFields: (tryParseJSON(
+        window.localStorage.getItem(storageKey),
+      ) || [])
+        .map(({ field }) => field)
+        .join(','),
+    }),
+  ),
+  lifecycle({
+    componentDidMount(): void {
+      this.props.relay.setVariables({
+        filters: this.props.filters,
+        filesCustomFacetFields: (tryParseJSON(
+          window.localStorage.getItem(storageKey),
+        ) || [])
+          .map(({ field }) => field)
+          .join(','),
+      });
+    },
+  }),
 );
 
 const styles = {
@@ -71,6 +96,7 @@ export type TProps = {
   relay: Object,
   fileIdCollapsed: boolean,
   setFileIdCollapsed: Function,
+  facets: { facets: string },
   aggregations: {
     access: { buckets: [TBucket] },
     data_category: { buckets: [TBucket] },
@@ -81,7 +107,7 @@ export type TProps = {
     analysis__workflow_type: { buckets: [TBucket] },
   },
   theme: Object,
-
+  filters: Object,
   suggestions: Array<Object>,
   setAutocomplete: Function,
 
@@ -94,9 +120,11 @@ export type TProps = {
   |}>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
+  handleRequestRemoveFacet: Function,
   presetFacetFields: Array<String>,
   shouldShowFacetSelection: Boolean,
   facetExclusionTest: Function,
+  setShouldShowFacetSelection: Function,
 };
 
 export const FileAggregationsComponent = (props: TProps) =>
@@ -129,10 +157,12 @@ export const FileAggregationsComponent = (props: TProps) =>
     >
       <FacetSelection
         title="Add a File Filter"
+        relayVarName="filesCustomFacetFields"
+        docType="files"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
-        additionalFacetData={props.aggregations}
+        additionalFacetData={tryParseJSON(props.facets.facets)}
         relay={props.relay}
       />
     </Modal>
@@ -140,9 +170,10 @@ export const FileAggregationsComponent = (props: TProps) =>
     {props.userSelectedFacets.map(facet =>
       <FacetWrapper
         isRemovable
+        relayVarName="filesCustomFacetFields"
         key={facet.full}
         facet={facet}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        aggregation={tryParseJSON(props.facets.facets, {})[facet.field]}
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
@@ -189,37 +220,66 @@ export const FileAggregationsComponent = (props: TProps) =>
   </div>;
 
 export const FileAggregationsQuery = {
-  initialVariables: Object.assign(
-    {},
-    _.mapValues(initialFileAggregationsVariables, (value, key) => {
-      const userSelectedFacetsFromStorage =
-        tryParseJSON(window.localStorage.getItem(storageKey) || null) || [];
-      const escapedFieldsToShow = presetFacetFields
-        .concat(userSelectedFacetsFromStorage.map(x => x.field))
-        .filter(Boolean)
-        .map(escapeForRelay);
-      return (
-        value ||
-        _.includes(escapedFieldsToShow, key.replace(/^shouldShow_/, ''))
-      );
-    }),
-    { shouldRequestAllAggregations: false },
-  ),
-  prepareVariables: prevVariables =>
-    _.mapValues(
-      prevVariables,
-      (value, key) =>
-        prevVariables.shouldRequestAllAggregations ||
-        initialFileAggregationsVariables[key] ||
-        _.includes(
-          (tryParseJSON(window.localStorage.getItem(storageKey)) || [])
-            .map(x => escapeForRelay(x.field)),
-          key.replace(/^shouldShow_/, ''),
-        ) ||
-        value,
-    ),
+  initialVariables: {
+    filesCustomFacetFields: (tryParseJSON(
+      window.localStorage.getItem(storageKey),
+    ) || [])
+      .map(({ field }) => field)
+      .join(','),
+    filters: null,
+  },
   fragments: {
-    aggregations: repositoryFileAggregationsFragment,
+    facets: () => Relay.QL`
+      fragment on Files {
+        facets(facets: $filesCustomFacetFields filters: $filters)
+      }
+    `,
+    aggregations: () => Relay.QL`
+      fragment on FileAggregations {
+        data_category {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        data_type {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        experimental_strategy {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        analysis__workflow_type {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        data_format {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        platform {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        access {
+          buckets {
+            doc_count
+            key
+          }
+        }
+      }
+    `,
   },
 };
 

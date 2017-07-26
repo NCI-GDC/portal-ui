@@ -16,7 +16,6 @@ import {
 import { fetchApi } from '@ncigdc/utils/ajax';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
 import Highlight from 'react-highlighter';
-import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
 
 const facetMatchesQuery = (facet, query) =>
@@ -135,26 +134,43 @@ export default compose(
       relay,
       setIsLoadingAdditionalFacetData,
       setShouldHideUselessFacets,
+      facetMapping,
+      relayVarName,
+      docType,
     }) => ({
       setUselessFacetVisibility: shouldHideUselessFacets => {
         setShouldHideUselessFacets(shouldHideUselessFacets);
-        setIsLoadingAdditionalFacetData(shouldHideUselessFacets);
         localStorage.setItem(
           'shouldHideUselessFacets',
           JSON.stringify(shouldHideUselessFacets),
         );
-        relay.setVariables(
-          { shouldRequestAllAggregations: shouldHideUselessFacets },
-          readyState => {
-            if (
-              _.some([readyState.ready, readyState.aborted, readyState.error])
-            ) {
-              setIsLoadingAdditionalFacetData(false);
-            }
-          },
-        );
+        const byDocType = _.groupBy(facetMapping, o => o.doc_type);
+        if (shouldHideUselessFacets && byDocType[docType]) {
+          setIsLoadingAdditionalFacetData(shouldHideUselessFacets);
+          relay.setVariables(
+            {
+              [relayVarName]: byDocType[docType]
+                .map(({ field }) => field)
+                .join(','),
+            },
+            readyState => {
+              if (
+                _.some([readyState.ready, readyState.aborted, readyState.error])
+              ) {
+                setIsLoadingAdditionalFacetData(false);
+              }
+            },
+          );
+        }
       },
     }),
+  ),
+  withPropsOnChange(
+    ['isLoadingFacetMapping'],
+    ({ isLoadingFacetMapping, setUselessFacetVisibility }) =>
+      !isLoadingFacetMapping &&
+      JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
+      setUselessFacetVisibility(true),
   ),
   withHandlers({
     fetchData: ({ setFacetMapping, setIsLoadingFacetMapping }) => async () => {
@@ -200,7 +216,7 @@ export default compose(
           facetMatchesQuery(facet, query),
           !excludeFacetsBy(facet),
           !shouldHideUselessFacets ||
-            Object.keys(usefulFacets).includes(escapeForRelay(facet.field)),
+            Object.keys(usefulFacets).includes(facet.field),
         ]),
       ),
     }),
@@ -215,7 +231,6 @@ export default compose(
       onRequestClose,
       relay,
     }) => () => {
-      relay.setVariables({ shouldRequestAllAggregations: false });
       setQuery('');
       setFocusedFacet(null);
       onRequestClose();
@@ -235,8 +250,6 @@ export default compose(
   ),
   lifecycle({
     componentDidMount(): void {
-      JSON.parse(localStorage.getItem('shouldHideUselessFacets') || 'null') &&
-        this.props.setUselessFacetVisibility(true);
       this.props.fetchData();
     },
   }),
@@ -276,7 +289,7 @@ export default compose(
       <h3 {...css(styles.resultsCount)}>
         {props.isLoading
           ? 'Loading...'
-          : `${props.filteredFacets.length} cases fields`}
+          : `${props.filteredFacets.length} ${props.docType} fields`}
       </h3>
 
       <label tabIndex={0} role="button" className="pull-right">
@@ -292,52 +305,37 @@ export default compose(
       </label>
 
     </div>
-
     <ul {...css(styles.facetList)} className="test-search-result-list">
-      {_.map(props.filteredFacets, facet => {
-        const isFocused =
-          props.focusedFacet && facet.full === props.focusedFacet.full;
-        return (
-          <li
-            className="test-search-result-item"
-            key={facet.full}
-            onClick={() => props.handleSelectFacet(facet)}
-            onMouseEnter={() => props.setFocusedFacet(facet)}
-            {...css(styles.facetItem)}
-          >
-            <div {...css(styles.itemIconWrapper)}>
-              <span {...css(styles.itemIcon)}>
-                {
-                  entityShortnameMapping[
-                    { cases: 'case', files: 'file' }[facet.doc_type]
-                  ]
-                }
-              </span>
-            </div>
-            <div
-              {...css(
-                styles.facetTexts,
-                isFocused && styles.focusedItem.container,
-              )}
+      {!props.isLoading &&
+        _.map(props.filteredFacets, facet => {
+          const isFocused =
+            props.focusedFacet && facet.full === props.focusedFacet.full;
+          return (
+            <li
+              className="test-search-result-item"
+              key={facet.full}
+              onClick={() => props.handleSelectFacet(facet)}
+              onMouseEnter={() => props.setFocusedFacet(facet)}
+              {...css(styles.facetItem)}
             >
-              <span
+              <div {...css(styles.itemIconWrapper)}>
+                <span {...css(styles.itemIcon)}>
+                  {
+                    entityShortnameMapping[
+                      { cases: 'case', files: 'file' }[facet.doc_type]
+                    ]
+                  }
+                </span>
+              </div>
+              <div
                 {...css(
-                  styles.facetTitle,
-                  isFocused && styles.focusedItem.text,
+                  styles.facetTexts,
+                  isFocused && styles.focusedItem.container,
                 )}
               >
-                <ConditionalHighlight
-                  condition={props.query.length >= 2}
-                  search={props.query}
-                >
-                  {facet.field}
-                </ConditionalHighlight>
-                <span {...css(styles.facetType)}>{facet.type}</span>
-              </span>
-              {facet.description &&
-                <p
+                <span
                   {...css(
-                    styles.facetDescription,
+                    styles.facetTitle,
                     isFocused && styles.focusedItem.text,
                   )}
                 >
@@ -345,13 +343,28 @@ export default compose(
                     condition={props.query.length >= 2}
                     search={props.query}
                   >
-                    {facet.description}
+                    {facet.field}
                   </ConditionalHighlight>
-                </p>}
-            </div>
-          </li>
-        );
-      })}
+                  <span {...css(styles.facetType)}>{facet.type}</span>
+                </span>
+                {facet.description &&
+                  <p
+                    {...css(
+                      styles.facetDescription,
+                      isFocused && styles.focusedItem.text,
+                    )}
+                  >
+                    <ConditionalHighlight
+                      condition={props.query.length >= 2}
+                      search={props.query}
+                    >
+                      {facet.description}
+                    </ConditionalHighlight>
+                  </p>}
+              </div>
+            </li>
+          );
+        })}
     </ul>
   </div>,
 );

@@ -79,32 +79,20 @@ const FacetWrapper = compose(
   defaultProps({
     onRequestRemove: _.noop,
     isRemovable: false,
+    relayVarName: null,
   }),
   renameProps({
     onRequestRemove: 'handleRequestRemove',
   }),
   lifecycle({
     componentWillMount(): void {
-      // strict equality check because we don't want to set variables that don't exist
-      if (
-        this.props.relay.variables[
-          `shouldShow_${escapeForRelay(this.props.facet.field)}`
-        ] === false
-      ) {
-        this.props.relay.setVariables({
-          [`shouldShow_${escapeForRelay(this.props.facet.field)}`]: true,
-        });
-      }
-    },
-    componentWillUnmount(): void {
-      if (
-        this.props.relay.variables[
-          `shouldShow_${escapeForRelay(this.props.facet.field)}`
-        ]
-      ) {
-        this.props.relay.setVariables({
-          [`shouldShow_${escapeForRelay(this.props.facet.field)}`]: false,
-        });
+      const { relayVarName, relay, facet: { field } } = this.props;
+      if (relayVarName) {
+        if (!relay.variables[relayVarName].includes(field)) {
+          relay.setVariables({
+            [relayVarName]: [field, relay.variables[relayVarName]].join(','),
+          });
+        }
       }
     },
   }),

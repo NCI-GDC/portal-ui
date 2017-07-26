@@ -28,7 +28,7 @@ import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import Link from '@ncigdc/components/Links/Link';
 
 import { facetFieldDisplayMapper } from '@ncigdc/components/Aggregations';
-import GeneSymbol from '@ncigdc/containers/GeneSymbol';
+import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 
 /*----------------------------------------------------------------------------*/
 
@@ -106,7 +106,7 @@ const enhance = compose(
   withProps(({ expandedFilters }) => ({
     isFilterExpanded: filter => expandedFilters.includes(filter),
   })),
-  withProps(({ geneSymbolFragment }) => ({
+  withProps(() => ({
     getDisplayValue: (field, value) => {
       switch (typeof value) {
         case 'string':
@@ -114,7 +114,7 @@ const enhance = compose(
             return 'input set';
           }
           if (field === 'genes.gene_id') {
-            return <GeneSymbol explore={geneSymbolFragment} geneId={value} />;
+            return <GeneSymbol geneId={value} />;
           }
           return value;
         case 'boolean':
@@ -163,7 +163,6 @@ const CurrentFilters = (
     linkText,
     linkFieldMap = f => f,
     hideLinkOnEmpty = true,
-    geneSymbolFragment,
     getDisplayValue,
   }: TProps = {},
 ) =>

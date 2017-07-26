@@ -4,7 +4,6 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
 import { compose, lifecycle } from 'recompose';
-
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GenesTab from '@ncigdc/components/Explore/GenesTab';
@@ -15,10 +14,7 @@ import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import CaseAggregations from '@ncigdc/containers/explore/CaseAggregations';
 import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
-
 import CreateExploreCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateExploreCaseSetButton';
-
-import GeneSymbol from '@ncigdc/containers/GeneSymbol';
 import { replaceFilters } from '@ncigdc/utils/filters';
 
 export type TProps = {
@@ -104,7 +100,6 @@ const enhance = compose(
 export const ExplorePageComponent = (props: TProps) =>
   <SearchPage
     className="test-explore-page"
-    geneSymbolFragment={get(props, 'viewer.geneSymbolFragment', {})}
     facetTabs={[
       {
         id: 'cases',
@@ -126,7 +121,6 @@ export const ExplorePageComponent = (props: TProps) =>
         text: 'Genes',
         component: (
           <GeneAggregations
-            geneSymbolFragment={get(props, 'viewer.geneSymbolFragment', {})}
             aggregations={props.viewer.explore.genes.aggregations}
             suggestions={get(props, 'viewer.autocomplete_genes.hits', [])}
             setAutocomplete={(value, onReadyStateChange) =>
@@ -255,9 +249,6 @@ export const ExplorePageQuery = {
               ssm_id
             }
           }
-        }
-       geneSymbolFragment: explore {
-          ${GeneSymbol.getFragment('explore')}
         }
         explore {
           cases {

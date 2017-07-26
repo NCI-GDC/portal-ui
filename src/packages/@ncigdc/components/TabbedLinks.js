@@ -8,7 +8,7 @@ import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
 type TTabbedLinksProps = {
   defaultIndex?: number,
-  links: [Object],
+  links: Array<Object>,
   queryParam: string,
   tabToolbar?: React.Element<>,
   hideTabs?: boolean,

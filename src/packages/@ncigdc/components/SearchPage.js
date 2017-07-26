@@ -55,7 +55,6 @@ const SearchPage = (
     showFacets,
     setShowFacets,
     filtersLinkProps,
-    geneSymbolFragment,
     ...props
   }: TProps = {},
 ) =>
@@ -86,11 +85,7 @@ const SearchPage = (
           <ShowFacetsButton onClick={() => setShowFacets(!showFacets)}>
             <DoubleArrowRightIcon />
           </ShowFacetsButton>}
-        <CurrentFilters
-          geneSymbolFragment={geneSymbolFragment}
-          style={{ flex: 1 }}
-          {...filtersLinkProps}
-        />
+        <CurrentFilters style={{ flex: 1 }} {...filtersLinkProps} />
       </Row>
       {results}
     </Content>

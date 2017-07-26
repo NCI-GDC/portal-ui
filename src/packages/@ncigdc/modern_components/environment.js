@@ -5,15 +5,15 @@ import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
 import { setLoader, removeLoader } from '@ncigdc/dux/loaders';
 
-const reduxStore = process.env.NODE_ENV === 'test'
-  ? { dispatch: x => x }
-  : require('../../../Portal').store;
-
 const source = new RecordSource();
 const store = new Store(source);
 const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig, uploadables) {
+  const reduxStore = process.env.NODE_ENV === 'test'
+    ? { dispatch: x => x }
+    : require('../../../Portal').store;
+
   const body = JSON.stringify({
     query: operation.text, // GraphQL text from input
     variables,

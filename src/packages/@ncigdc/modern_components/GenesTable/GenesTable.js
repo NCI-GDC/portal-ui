@@ -97,39 +97,41 @@ export default compose(
             />
           </Row>
         </Row>
-        <Table
-          id="genes-table"
-          headings={tableInfo.map(x => <x.th key={x.id} context={context} />)}
-          body={
-            <tbody>
-              {data.map((e, i) =>
-                <Tr key={e.node.id} index={i}>
-                  {tableInfo
-                    .filter(x => x.td)
-                    .map(x =>
-                      <x.td
-                        key={x.id}
-                        node={e.node}
-                        context={context}
-                        ssmCounts={ssmCounts}
-                        cases={cases}
-                        defaultFilters={defaultFilters}
-                        filteredCases={filteredCases}
-                        query={query}
-                        setSurvivalLoadingId={setSurvivalLoadingId}
-                        survivalLoadingId={survivalLoadingId}
-                        setSelectedSurvivalData={setSelectedSurvivalData}
-                        selectedSurvivalData={selectedSurvivalData}
-                        hasEnoughSurvivalDataOnPrimaryCurve={
-                          hasEnoughSurvivalDataOnPrimaryCurve
-                        }
-                      />,
-                    )}
-                </Tr>,
-              )}
-            </tbody>
-          }
-        />
+        <div style={{ overflowX: 'auto' }}>
+          <Table
+            id="genes-table"
+            headings={tableInfo.map(x => <x.th key={x.id} context={context} />)}
+            body={
+              <tbody>
+                {data.map((e, i) =>
+                  <Tr key={e.node.id} index={i}>
+                    {tableInfo
+                      .filter(x => x.td)
+                      .map(x =>
+                        <x.td
+                          key={x.id}
+                          node={e.node}
+                          context={context}
+                          ssmCounts={ssmCounts}
+                          cases={cases}
+                          defaultFilters={defaultFilters}
+                          filteredCases={filteredCases}
+                          query={query}
+                          setSurvivalLoadingId={setSurvivalLoadingId}
+                          survivalLoadingId={survivalLoadingId}
+                          setSelectedSurvivalData={setSelectedSurvivalData}
+                          selectedSurvivalData={selectedSurvivalData}
+                          hasEnoughSurvivalDataOnPrimaryCurve={
+                            hasEnoughSurvivalDataOnPrimaryCurve
+                          }
+                        />,
+                      )}
+                  </Tr>,
+                )}
+              </tbody>
+            }
+          />
+        </div>
         <Pagination
           prefix="genesTable"
           params={parentVariables}

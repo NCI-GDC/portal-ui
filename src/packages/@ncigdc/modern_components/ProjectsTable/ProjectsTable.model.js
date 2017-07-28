@@ -11,6 +11,7 @@ import formatFileSize from '@ncigdc/utils/formatFileSize';
 import withRouter from '@ncigdc/utils/withRouter';
 import styled from '@ncigdc/theme/styled';
 import { createDataCategoryColumns } from '@ncigdc/tableModels/utils';
+import CollapsibleList from '@ncigdc/uikit/CollapsibleList';
 
 const NumTh = styled(Th, { textAlign: 'right' });
 const NumTd = styled(Td, { textAlign: 'right' });
@@ -80,7 +81,7 @@ const projectsTableModel = [
     th: () => <Th rowSpan="2">Disease Type</Th>,
     td: ({ node }) =>
       <Td key={node.disease_type} style={{ whiteSpace: 'normal' }}>
-        {node.disease_type}
+        <CollapsibleList data={node.disease_type} />
       </Td>,
   },
   {
@@ -89,7 +90,8 @@ const projectsTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th rowSpan="2">Primary Site</Th>,
-    td: ({ node }) => <Td key="primary_site">{node.primary_site}</Td>,
+    td: ({ node }) =>
+      <Td key="primary_site"><CollapsibleList data={node.primary_site} /></Td>,
   },
   {
     name: 'Program',

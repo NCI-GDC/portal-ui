@@ -83,9 +83,6 @@ export default compose(
   withState('yAxisUnit', 'setYAxisUnit', 'percent'),
   withRouter,
   withProps(props => {
-    const topGenesSource = (props.viewer.explore.genes.hits.edges || [])
-      .map(g => g.node);
-
     const { aggregations } = JSON.parse(
       props.analysisViewer.analysis.top_cases_count_by_genes.data,
     );
@@ -108,13 +105,15 @@ export default compose(
           }),
           acc,
         ),
-      topGenesSource.reduce((acc, g) => ({ ...acc, [g.gene_id]: {} }), {}),
+      props.topGenesSource.reduce(
+        (acc, g) => ({ ...acc, [g.gene_id]: {} }),
+        {},
+      ),
     );
 
     return {
       numUniqueCases,
       topGenesWithCasesPerProject,
-      topGenesSource,
     };
   }),
   withTheme,
@@ -186,8 +185,9 @@ export default compose(
                     }).name
                   }
                 </b>
-                <br /> {count} Case{count > 1 ? 's' : ''} Affected<br />
-                {count} / {numUniqueCases} ({percent.toFixed(2)}%)
+                <br /> {count.toLocaleString()} Case{count > 1 ? 's' : ''}{' '}
+                Affected<br />
+                {count.toLocaleString()} / {numUniqueCases.toLocaleString()} ({percent.toFixed(2)}%)
               </span>
             ),
           }),

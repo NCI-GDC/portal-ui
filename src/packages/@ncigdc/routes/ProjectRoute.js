@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import Route from 'react-router/Route';
+import { Route } from 'react-router-dom';
 import { compose, withState, lifecycle, withPropsOnChange } from 'recompose';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';

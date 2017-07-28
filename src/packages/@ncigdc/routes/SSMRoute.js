@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import Route from 'react-router/Route';
+import { Route } from 'react-router-dom';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import TableIcon from '@ncigdc/theme/icons/Table';
 import ChartIcon from '@ncigdc/theme/icons/BarChart';

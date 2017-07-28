@@ -4,7 +4,7 @@ import React from 'react';
 import JSURL from 'jsurl';
 import { parse } from 'query-string';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import Route from 'react-router/Route';
+import { Route } from 'react-router-dom';
 import GeneSummary from '@ncigdc/modern_components/GeneSummary';
 import GeneExternalReferences from '@ncigdc/modern_components/GeneExternalReferences';
 import CancerDistributionBarChart from '@ncigdc/modern_components/CancerDistributionBarChart';

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import _ from 'lodash';
-import Link from 'react-router-dom/NavLink';
+import { NavLink as Link } from 'react-router-dom';
 import JSURL from 'jsurl';
 import { stringify } from 'query-string';
 import { removeEmptyKeys as rek } from '@ncigdc/utils/uri';

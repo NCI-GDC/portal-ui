@@ -14,6 +14,7 @@ export default (Component: ReactClass<*>) =>
           .map(g => g.node);
 
         return {
+          topGenesSource,
           variables: {
             filters: fmgChartFilters,
             geneIds: topGenesSource.map(g => g.gene_id),

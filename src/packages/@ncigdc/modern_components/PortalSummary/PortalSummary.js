@@ -1,25 +1,16 @@
 // @flow
 
 import React from 'react';
-
+import { connect } from 'react-redux';
 import styled from '@ncigdc/theme/styled';
-import { zDepth1 } from '@ncigdc/theme/mixins';
 import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
 import MutationIcon from '@ncigdc/theme/icons/Mutation';
-
 import ProjectsCount from '@ncigdc/components/ProjectsCount';
 import PrimarySitesCount from '@ncigdc/components/PrimarySitesCount';
 import CasesCount from '@ncigdc/components/CasesCount';
 import FilesCount from '@ncigdc/components/FilesCount';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
-
-const Container = styled(Column, {
-  ...zDepth1,
-  marginTop: '2rem',
-  backgroundColor: 'white',
-  borderTop: '3px solid rgb(37, 208, 182)',
-});
 
 const CountBox = styled(Column, {
   padding: '1.5rem',
@@ -34,17 +25,10 @@ const Title = styled(Row, {
   marginBottom: '0.5rem',
 });
 
-type TProps = {
-  dataRelease: string,
-  projectsCountData: Object,
-  primarySitesCountData: Object,
-  casesCountData: Object,
-  filesCountData: Object,
-  genesCountData: Object,
-  ssmsCountData: Object,
-};
-const PortalSummary = (props: TProps) =>
-  <Container className="test-portal-summary">
+const PortalSummary = connect(state => ({
+  dataRelease: state.versionInfo.dataRelease,
+}))(props =>
+  <span>
     <Row style={{ padding: '2rem', alignItems: 'baseline' }}>
       <div style={{ fontSize: '2.3rem', color: 'rgb(70, 70, 70)' }}>
         Data Portal Summary
@@ -76,7 +60,7 @@ const PortalSummary = (props: TProps) =>
               className="icon-gdc-projects project-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <ProjectsCount hits={props.projectsCountData} />
+              <ProjectsCount hits={props.viewer.projects.hits} />
             </span>
           </Row>
         </CountBox>
@@ -88,7 +72,9 @@ const PortalSummary = (props: TProps) =>
               className="icon-gdc-cases data-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <PrimarySitesCount aggregations={props.primarySitesCountData} />
+              <PrimarySitesCount
+                aggregations={props.viewer.projects.aggregations}
+              />
             </span>
           </Row>
         </CountBox>
@@ -100,7 +86,7 @@ const PortalSummary = (props: TProps) =>
               className="icon-gdc-cases data-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <CasesCount hits={props.casesCountData} />
+              <CasesCount hits={props.viewer.repository.cases.hits} />
             </span>
           </Row>
         </CountBox>
@@ -114,7 +100,7 @@ const PortalSummary = (props: TProps) =>
               className="fa fa-file-o data-icon"
             />
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
-              <FilesCount hits={props.filesCountData} />
+              <FilesCount hits={props.viewer.repository.files.hits} />
             </span>
           </Row>
         </CountBox>
@@ -125,7 +111,7 @@ const PortalSummary = (props: TProps) =>
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <CasesCount
                 className="test-genes-count"
-                hits={props.genesCountData}
+                hits={props.viewer.explore.genes.hits}
               />
             </span>
           </Row>
@@ -137,13 +123,14 @@ const PortalSummary = (props: TProps) =>
             <span style={{ fontSize: '2.5rem', marginLeft: '0.5rem' }}>
               <FilesCount
                 className="test-mutations-count"
-                hits={props.ssmsCountData}
+                hits={props.viewer.explore.ssms.hits}
               />
             </span>
           </Row>
         </CountBox>
       </Row>
     </Column>
-  </Container>;
+  </span>,
+);
 
 export default PortalSummary;

@@ -102,7 +102,7 @@ const PortalContainer = ({
         <Route exact path="/query" component={SmartSearchRoute} />
         {ProjectRoute}
         <Route path="/files/:id" component={FileRoute} />
-        <Route path="/cases/:id" component={CaseRoute} />
+        {CaseRoute}
         <Route path="/annotations/:id" component={AnnotationRoute} />
         {GeneRoute}
         {SSMRoute}

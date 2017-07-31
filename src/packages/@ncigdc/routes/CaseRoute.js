@@ -1,44 +1,111 @@
-/* @flow */
+// @flow
+
+import React from 'react';
 import { parse } from 'query-string';
-
-import CasePage from '@ncigdc/containers/CasePage';
+import { Route } from 'react-router-dom';
+import Column from '@ncigdc/uikit/Flex/Column';
+import Row from '@ncigdc/uikit/Flex/Row';
+import ST from '@ncigdc/modern_components/SsmsTable';
+import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
+import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import ClinicalCard from '@ncigdc/modern_components/ClinicalCard';
+import CaseSummary from '@ncigdc/modern_components/CaseSummary';
+import AddOrRemoveAllFilesButton from '@ncigdc/modern_components/AddOrRemoveAllFilesButton';
+import { makeFilter } from '@ncigdc/utils/filters';
 import {
-  parseIntParam,
-  parseFilterParam,
-  parseJSURLParam,
-} from '@ncigdc/utils/uri';
+  CaseCountsDataCategory,
+  CaseCountsExpStrategy,
+} from '@ncigdc/modern_components/CaseCounts';
+import BiospecimenCard from '@ncigdc/modern_components/BiospecimenCard';
+import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
+import createCaseSummary from '@ncigdc/modern_components/CaseSummary/CaseSummary.relay.js';
 
-import { makeEntityPage } from './utils';
+const SsmsTable = createCaseSummary(props =>
+  <ST
+    defaultFilters={props.fmFilters}
+    context={
+      props.viewer.repository.cases.hits.edges[0].node.project.project_id
+    }
+    hideSurvival
+  />,
+);
 
-export default makeEntityPage({
-  entity: 'Case',
-  Page: CasePage,
-  prepareParams: ({ match: { params }, location: { search } }) => {
-    const q = parse(search);
-
-    const caseFilters = {
-      op: 'AND',
-      content: [
-        {
-          op: '=',
-          content: {
-            field: 'cases.case_id',
-            value: params.id,
-          },
-        },
-      ],
-    };
-
-    return {
-      id: btoa(`Case:${params.id}`),
-      files_offset: parseIntParam(q.files_offset, 0),
-      files_size: parseIntParam(q.files_size, 20),
-      files_sort: parseJSURLParam(q.files_sort, null),
-      filters: parseFilterParam(q.filters, null),
-      fmTable_offset: parseIntParam(q.fmTable_offset, 0),
-      fmTable_size: parseIntParam(q.fmTable_size, 20),
-      fmTable_filters: parseFilterParam(q.filters, null),
-      caseFilters,
-    };
+const styles = {
+  column: {
+    flexGrow: 1,
   },
-});
+  icon: {
+    width: '4rem',
+    height: '4rem',
+    color: '#888',
+  },
+  card: {
+    backgroundColor: 'white',
+  },
+  heading: {
+    flexGrow: 1,
+    fontSize: '2rem',
+    marginBottom: 7,
+    marginTop: 7,
+  },
+};
+
+export default (
+  <Route
+    path="/cases/:id"
+    component={({
+      match,
+      caseId = match.params.id,
+      location,
+      query = parse(location.search),
+    }) => {
+      const fmFilters = makeFilter([{ field: 'cases.case_id', value: caseId }]);
+
+      return (
+        <FullWidthLayout title={caseId} entityType="PR">
+          <Column spacing="2rem" className="test-case">
+            <Row style={{ justifyContent: 'flex-end' }}>
+              <AddOrRemoveAllFilesButton caseId={caseId} />
+            </Row>
+            <CaseSummary caseId={caseId} />
+            <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>
+              <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
+                <CaseCountsDataCategory caseId={caseId} />
+              </span>
+              <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
+                <CaseCountsExpStrategy caseId={caseId} />
+              </span>
+            </Row>
+
+            <Row id="clinical" style={{ flexWrap: 'wrap' }} spacing="2rem">
+              <ClinicalCard caseId={caseId} />
+            </Row>
+
+            <Row id="biospecimen" style={{ flexWrap: 'wrap' }} spacing="2rem">
+              <BiospecimenCard caseId={caseId} bioId={query.bioId} />
+            </Row>
+            <Column style={{ ...styles.card, marginTop: '2rem' }}>
+              <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+                <h1 style={{ ...styles.heading }} id="frequent-mutations">
+                  <i
+                    className="fa fa-bar-chart-o"
+                    style={{ paddingRight: '10px' }}
+                  />
+                  Most Frequent Somatic Mutations
+                </h1>
+                <ExploreLink
+                  query={{ searchTableTab: 'mutations', filters: fmFilters }}
+                >
+                  <GdcDataIcon /> Open in Exploration
+                </ExploreLink>
+              </Row>
+              <Column>
+                <SsmsTable caseId={caseId} defaultFilters={fmFilters} />
+              </Column>
+            </Column>
+          </Column>
+        </FullWidthLayout>
+      );
+    }}
+  />
+);

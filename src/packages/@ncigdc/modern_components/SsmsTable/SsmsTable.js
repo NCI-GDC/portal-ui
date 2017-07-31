@@ -84,6 +84,8 @@ export default compose(
       location,
       variables,
       tableColumns,
+      hideContext,
+      hideSurvival,
     }: TProps = {},
   ) => {
     if (ssms && !ssms.hits.edges.length) {
@@ -145,15 +147,22 @@ export default compose(
         <div style={{ overflowX: 'auto' }}>
           <Table
             id="ssms-table"
-            headings={tableInfo.map(x =>
-              <x.th key={x.id} context={context} theme={theme} />,
-            )}
+            headings={tableInfo
+              .filter(x => (hideContext ? x.id !== 'filteredCases' : true))
+              .filter(x => (hideSurvival ? x.id !== 'survival_plot' : true))
+              .map(x => <x.th key={x.id} context={context} theme={theme} />)}
             body={
               <tbody>
                 {data.map((node, i) =>
                   <Tr key={node.id} index={i}>
                     {tableInfo
                       .filter(x => x.td)
+                      .filter(
+                        x => (hideContext ? x.id !== 'filteredCases' : true),
+                      )
+                      .filter(
+                        x => (hideSurvival ? x.id !== 'survival_plot' : true),
+                      )
                       .map(x =>
                         <x.td
                           key={x.id}

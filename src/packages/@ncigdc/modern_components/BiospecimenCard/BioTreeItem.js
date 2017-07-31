@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { css } from 'glamor';
-import { search } from '@ncigdc/utils/biotree';
-import BioTreeView from './BioTreeView';
 import Highlight from 'react-highlighter';
+import { search } from './utils';
+import BioTreeView from './BioTreeView';
 
 const entityTypes = [
   { s: 'portion', p: 'portions' },

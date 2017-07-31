@@ -42,10 +42,9 @@ export const SearchTable = compose(
             </h3>}
           <div><b>{hits.total}</b> Projects</div>
           <TableActions
-            prefix={entityType}
-            entityType={entityType}
+            type="project"
+            arrangeColumnKey={entityType}
             total={hits.total}
-            sortKey={`${entityType}_sort`}
             endpoint={entityType}
             downloadable={downloadable}
             downloadFields={tableInfo

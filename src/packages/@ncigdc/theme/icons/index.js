@@ -14,6 +14,7 @@ import GdcDataIcon from './GdcData';
 import GridIcon from './Grid.js';
 import CaretIcon from './Caret';
 import QuestionIcon from './Question';
+import ExclamationTriangleIcon from './ExclamationTriangle';
 
 export {
   DownloadIcon,
@@ -30,4 +31,5 @@ export {
   GridIcon,
   CaretIcon,
   QuestionIcon,
+  ExclamationTriangleIcon,
 };

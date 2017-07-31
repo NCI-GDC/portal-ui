@@ -1,25 +1,19 @@
 /* @flow */
-
 import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { compose, withState } from 'recompose';
-import { connect } from 'react-redux';
 
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
 import { UploadGeneSet } from '@ncigdc/components/Modals/UploadSet';
-
+import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
-import { setModal } from '@ncigdc/dux/modal';
-
-import Button from '@ncigdc/uikit/Button';
 
 export type TProps = {
-  dispatch: Function,
   aggregations: {
     biotype: { buckets: [TBucket] },
     is_cancer_gene_census: { buckets: [TBucket] },
@@ -66,7 +60,6 @@ const presetFacets = [
 
 export const GeneAggregationsComponent = compose(
   withState('idCollapsed', 'setIdCollapsed', false),
-  connect(),
   withTheme,
 )((props: TProps) =>
   <div className="test-gene-aggregations">
@@ -95,19 +88,24 @@ export const GeneAggregationsComponent = compose(
           {x.name}
         </div>}
     />
-    <div
+
+    <UploadSetButton
+      type="gene"
       style={{
+        width: '100%',
         borderBottom: `1px solid ${props.theme.greyScale5}`,
         padding: '0 1.2rem 1rem',
       }}
+      UploadModal={UploadGeneSet}
+      defaultQuery={{
+        pathname: '/exploration',
+        query: { searchTableTab: 'genes' },
+      }}
+      idField="genes.gene_id"
     >
-      <Button
-        style={{ padding: '4px 12px', width: '100%' }}
-        onClick={() => props.dispatch(setModal(<UploadGeneSet />))}
-      >
-        Upload Gene Set
-      </Button>
-    </div>
+      Upload Gene Set
+    </UploadSetButton>
+
     {_.reject(presetFacets, { full: 'genes.gene_id' }).map(facet =>
       <FacetWrapper
         key={facet.full}

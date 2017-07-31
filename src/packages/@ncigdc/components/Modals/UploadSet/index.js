@@ -12,8 +12,8 @@ import {
   geneMap,
   GENE_ID_FIELD_DISPLAY,
 } from '@ncigdc/utils/validateIds';
-import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateRepositoryCaseSetButton';
-import CreateExploreGeneSetButton from '@ncigdc/modern_components/CreateSetButton/CreateExploreGeneSetButton';
+import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/CreateRepositoryCaseSetButton';
+import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 
 import { CaseMappingTable, GeneMappingTable } from './MappingTable';

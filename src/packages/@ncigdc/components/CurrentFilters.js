@@ -29,6 +29,7 @@ import Link from '@ncigdc/components/Links/Link';
 
 import { facetFieldDisplayMapper } from '@ncigdc/components/Aggregations';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
+import SetId from '@ncigdc/components/SetId';
 
 /*----------------------------------------------------------------------------*/
 
@@ -111,7 +112,7 @@ const enhance = compose(
       switch (typeof value) {
         case 'string':
           if (value.includes('set_id:')) {
-            return 'input set';
+            return <SetId set={value} />;
           }
           if (field === 'genes.gene_id') {
             return <GeneSymbol geneId={value} />;

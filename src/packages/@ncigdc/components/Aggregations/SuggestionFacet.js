@@ -21,8 +21,9 @@ import withSelectableList from '@ncigdc/utils/withSelectableList';
 import namespace from '@ncigdc/utils/namespace';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import Input from '@ncigdc/uikit/Form/Input';
+import SetId from '@ncigdc/components/SetId';
+import Hidden from '@ncigdc/components/Hidden';
 
-import Hidden from '../Hidden';
 import { Container, CheckedRow, CheckedLink } from './';
 
 const MagnifyingGlass = styled(SearchIcon, {
@@ -124,7 +125,7 @@ const SuggestionFacet = compose(
 
     const getCheckedValue = v => {
       if (v.includes('set_id:')) {
-        return 'input set';
+        return <SetId set={v} />;
       }
       if (fieldNoDoctype === 'gene_id') {
         return <GeneSymbol geneId={v} />;

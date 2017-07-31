@@ -3,9 +3,9 @@
 import React from 'react';
 import { withState, compose, lifecycle, mapProps } from 'recompose';
 import { style } from 'glamor';
-import BioTreeItem from './BioTreeItem';
-import { search } from '../utils/biotree';
 import Emitter from '@ncigdc/utils/emitter';
+import BioTreeItem from './BioTreeItem';
+import { search } from './utils';
 
 const expandedColor = style({
   color: '#267c2a',

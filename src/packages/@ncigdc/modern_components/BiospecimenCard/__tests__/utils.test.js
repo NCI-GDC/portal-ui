@@ -1,7 +1,7 @@
 /* @flow */
 
 import { flatten } from 'lodash';
-import { search, match } from '../biotree';
+import { search, match } from '../utils';
 import { testBiotree, testAliquot } from '../__fixtures__/biotree.fixture';
 
 const getSubmitterIds = array =>

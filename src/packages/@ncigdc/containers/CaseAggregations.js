@@ -1,6 +1,4 @@
 /* @flow */
-/* eslint jsx-a11y/no-static-element-interactions: 0, max-len: 1 */
-
 import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
@@ -18,21 +16,18 @@ import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import { Row } from '@ncigdc/uikit/Flex';
 import FacetSelection from '@ncigdc/components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
-
-import type { TBucket } from '@ncigdc/components/Aggregations/types';
-
+import UploadSetButton from '@ncigdc/components/UploadSetButton';
 import { withTheme } from '@ncigdc/theme';
 import CaseIcon from '@ncigdc/theme/icons/Case';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
-import Button from '@ncigdc/uikit/Button';
-import { setModal } from '@ncigdc/dux/modal';
 import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 
+import type { TBucket } from '@ncigdc/components/Aggregations/types';
+
 export type TProps = {
-  dispatch: Function,
   caseIdCollapsed: boolean,
   setCaseIdCollapsed: Function,
   relay: Object,
@@ -292,21 +287,23 @@ export const CaseAggregationsComponent = (props: TProps) =>
             {x.project.project_id}
           </div>
         </Row>}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
-    <div
+    <UploadSetButton
+      type="case"
       style={{
+        width: '100%',
         borderBottom: `1px solid ${props.theme.greyScale5}`,
         padding: '0 1.2rem 1rem',
       }}
+      UploadModal={UploadCaseSet}
+      defaultQuery={{
+        pathname: '/repository',
+        query: { searchTableTab: 'cases' },
+      }}
+      idField="cases.case_id"
     >
-      <Button
-        style={{ padding: '4px 12px', width: '100%' }}
-        onClick={() => props.dispatch(setModal(<UploadCaseSet />))}
-      >
-        Upload Case Set
-      </Button>
-    </div>
+      Upload Case Set
+    </UploadSetButton>
     {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet =>
       <FacetWrapper
         key={facet.full}

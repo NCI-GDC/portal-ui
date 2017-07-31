@@ -244,7 +244,10 @@ export const RepositoryPageComponent = (props: TProps) => {
                         <RepoCasesPies
                           aggregations={props.viewer.repository.cases.pies}
                         />
-                        <CasesTable hits={props.viewer.repository.cases.hits} />
+                        <CasesTable
+                          hits={props.viewer.repository.cases.hits}
+                          filters={props.filters}
+                        />
                       </div>
                     : <NoResultsMessage>
                         No results found using those filters.

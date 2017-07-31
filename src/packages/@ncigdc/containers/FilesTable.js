@@ -73,12 +73,11 @@ export const SearchTable = compose(
             total={hits.total}
           />
           <TableActions
-            prefix={prefix}
+            type="file"
             total={hits.total}
-            sortKey="files_sort"
             endpoint="files"
             downloadable={downloadable}
-            entityType={entityType}
+            arrangeColumnKey={entityType}
             downloadFields={tableInfo
               .filter(x => x.downloadable)
               .map(x => x.field || x.id)}

@@ -100,7 +100,6 @@ export default compose(
     // Data has to be sorted because the relay cache does not store the order.
     const data = mapData(ssms.hits.edges.map(x => x.node), theme);
 
-    const prefix = 'ssms';
     const totalSsms = ssms ? ssms.hits.total : 0;
 
     const tableInfo = tableModel
@@ -120,18 +119,18 @@ export default compose(
         >
           <Showing
             docType="somatic mutations"
-            prefix="ssmsTable"
+            prefix="ssms"
             params={variables}
             total={totalSsms}
           />
           <Row style={{ alignItems: 'flex-end' }}>
             <TableActions
+              type="ssm"
               currentFilters={query.ssmsTable_filters || defaultFilters}
               style={{ marginLeft: '2rem' }}
-              prefix={prefix}
-              entityType="ssms"
+              arrangeColumnKey="ssms"
               total={totalSsms}
-              endpoint={prefix}
+              endpoint="ssms"
               downloadTooltip="Export All Except #Cases"
               downloadFields={[
                 'genomic_dna_change',

@@ -12,6 +12,7 @@ import {
   lifecycle,
   withPropsOnChange,
 } from 'recompose';
+import { connect } from 'react-redux';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
@@ -28,8 +29,6 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 import { withTheme } from '@ncigdc/theme';
 import FileIcon from '@ncigdc/theme/icons/File';
 import { Row } from '@ncigdc/uikit/Flex';
-
-const storageKey = 'RepositoryFileAggregations.userSelectedFacets';
 
 const presetFacets = [
   { title: 'File', field: 'file_id', full: 'files.file_id', type: 'keyword' },
@@ -52,32 +51,35 @@ const presetFacets = [
 ];
 
 const presetFacetFields = presetFacets.map(x => x.field);
+const entityType = 'Files';
 
 const enhance = compose(
   setDisplayName('RepoFileAggregations'),
   withFacetSelection({
-    storageKey,
+    entityType,
     presetFacetFields,
     validFacetDocTypes: ['files'],
   }),
+  connect((state, props) => ({
+    userSelectedFacets: state.customFacets[entityType],
+  })),
   withState('fileIdCollapsed', 'setFileIdCollapsed', false),
-  withPropsOnChange(['filters'], ({ filters, relay }) =>
-    relay.setVariables({
-      filters,
-      filesCustomFacetFields: (tryParseJSON(
-        window.localStorage.getItem(storageKey),
-      ) || [])
-        .map(({ field }) => field)
-        .join(','),
-    }),
+  withPropsOnChange(
+    ['filters', 'userSelectedFacets'],
+    ({ filters, relay, userSelectedFacets }) =>
+      relay.setVariables({
+        filters,
+        filesCustomFacetFields: userSelectedFacets
+          .map(({ field }) => field)
+          .join(','),
+      }),
   ),
   lifecycle({
     componentDidMount(): void {
-      this.props.relay.setVariables({
-        filters: this.props.filters,
-        filesCustomFacetFields: (tryParseJSON(
-          window.localStorage.getItem(storageKey),
-        ) || [])
+      const { filters, relay, userSelectedFacets } = this.props;
+      relay.setVariables({
+        filters,
+        filesCustomFacetFields: userSelectedFacets
           .map(({ field }) => field)
           .join(','),
       });
@@ -173,7 +175,10 @@ export const FileAggregationsComponent = (props: TProps) =>
         relayVarName="filesCustomFacetFields"
         key={facet.full}
         facet={facet}
-        aggregation={tryParseJSON(props.facets.facets, {})[facet.field]}
+        aggregation={
+          props.facets.facets &&
+          tryParseJSON(props.facets.facets, {})[facet.field]
+        }
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
@@ -221,11 +226,7 @@ export const FileAggregationsComponent = (props: TProps) =>
 
 export const FileAggregationsQuery = {
   initialVariables: {
-    filesCustomFacetFields: (tryParseJSON(
-      window.localStorage.getItem(storageKey),
-    ) || [])
-      .map(({ field }) => field)
-      .join(','),
+    filesCustomFacetFields: '',
     filters: null,
   },
   fragments: {

@@ -77,8 +77,6 @@ export type TProps = {
   setShouldShowFacetSelection: Function,
 };
 
-const storageKey = 'RepositoryCaseAggregations.userSelectedFacets';
-
 const presetFacets = [
   {
     title: 'Case',
@@ -170,32 +168,34 @@ const presetFacets = [
 
 const presetFacetFields = presetFacets.map(x => x.field);
 
+const entityType = 'RepositoryCases';
 const enhance = compose(
   setDisplayName('RepoCaseAggregations'),
   withFacetSelection({
-    storageKey,
+    entityType,
     presetFacetFields,
     validFacetDocTypes: ['cases'],
   }),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
-  connect(),
-  withPropsOnChange(['filters'], ({ filters, relay }) =>
-    relay.setVariables({
-      filters,
-      repoCaseCustomFacetFields: (tryParseJSON(
-        window.localStorage.getItem(storageKey),
-      ) || [])
-        .map(({ field }) => field)
-        .join(','),
-    }),
+  connect((state, props) => ({
+    userSelectedFacets: state.customFacets[entityType],
+  })),
+  withPropsOnChange(
+    ['filters', 'userSelectedFacets'],
+    ({ filters, relay, userSelectedFacets }) =>
+      relay.setVariables({
+        filters,
+        repoCaseCustomFacetFields: userSelectedFacets
+          .map(({ field }) => field)
+          .join(','),
+      }),
   ),
   lifecycle({
     componentDidMount(): void {
+      const { filters, userSelectedFacets } = this.props;
       this.props.relay.setVariables({
-        filters: this.props.filters,
-        repoCaseCustomFacetFields: (tryParseJSON(
-          window.localStorage.getItem(storageKey),
-        ) || [])
+        filters: filters,
+        repoCaseCustomFacetFields: userSelectedFacets
           .map(({ field }) => field)
           .join(','),
       });
@@ -212,8 +212,6 @@ const styles = {
 
 export const CaseAggregationsComponent = (props: TProps) =>
   <div className="test-case-aggregations">
-    {console.log(tryParseJSON(props.facets.facets))}
-    {console.log(props.relay.variables)}
     <div
       className="text-right"
       style={{
@@ -254,10 +252,12 @@ export const CaseAggregationsComponent = (props: TProps) =>
     {props.userSelectedFacets.map(facet =>
       <FacetWrapper
         isRemovable
-        relayVarName="repoCaseCustomFacetFields"
         key={facet.full}
         facet={facet}
-        aggregation={tryParseJSON(props.facets.facets, {})[facet.field]}
+        aggregation={
+          props.facets.facets &&
+          tryParseJSON(props.facets.facets, {})[facet.field]
+        }
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
@@ -321,11 +321,7 @@ export const CaseAggregationsComponent = (props: TProps) =>
 
 export const CaseAggregationsQuery = {
   initialVariables: {
-    repoCaseCustomFacetFields: (tryParseJSON(
-      window.localStorage.getItem(storageKey),
-    ) || [])
-      .map(({ field }) => field)
-      .join(','),
+    repoCaseCustomFacetFields: '',
     filters: null,
   },
   fragments: {

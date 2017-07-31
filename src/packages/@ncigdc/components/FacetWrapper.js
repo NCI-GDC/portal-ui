@@ -3,13 +3,7 @@
 import React from 'react';
 import _ from 'lodash';
 
-import {
-  compose,
-  lifecycle,
-  defaultProps,
-  renameProps,
-  withState,
-} from 'recompose';
+import { compose, defaultProps, renameProps, withState } from 'recompose';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 import DateFacet from '@ncigdc/components/Aggregations/DateFacet';
@@ -17,8 +11,6 @@ import RangeFacet from '@ncigdc/components/Aggregations/RangeFacet';
 import ExactMatchFacet from '@ncigdc/components/Aggregations/ExactMatchFacet';
 import styled from '@ncigdc/theme/styled';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
-
-import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 
 const COMMON_PREPOSITIONS = [
   'a',
@@ -79,22 +71,9 @@ const FacetWrapper = compose(
   defaultProps({
     onRequestRemove: _.noop,
     isRemovable: false,
-    relayVarName: null,
   }),
   renameProps({
     onRequestRemove: 'handleRequestRemove',
-  }),
-  lifecycle({
-    componentWillMount(): void {
-      const { relayVarName, relay, facet: { field } } = this.props;
-      if (relayVarName) {
-        if (!relay.variables[relayVarName].includes(field)) {
-          relay.setVariables({
-            [relayVarName]: [field, relay.variables[relayVarName]].join(','),
-          });
-        }
-      }
-    },
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
   withState('collapsed', 'setCollapsed', false),

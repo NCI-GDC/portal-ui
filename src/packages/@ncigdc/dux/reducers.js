@@ -14,6 +14,7 @@ import error from './error';
 import loaders from './loaders';
 import tableColumns from './tableColumns';
 import customFacets from './customFacets';
+import sets from './sets';
 
 /*----------------------------------------------------------------------------*/
 
@@ -31,4 +32,5 @@ export default {
   loaders,
   tableColumns,
   customFacets,
+  sets,
 };

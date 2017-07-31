@@ -1,9 +1,10 @@
 // @flow
 import React from 'react';
-import environment from '@ncigdc/modern_components/environment';
-import { commitMutation, graphql } from 'react-relay';
+import { graphql } from 'react-relay';
 
-import CreateSetButtonBase from './CreateSetButtonBase';
+import SetButtonBase from './SetButtonBase';
+
+import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 
 const repositoryMutation = graphql`
   mutation CreateRepositoryCaseSetButtonMutation(
@@ -23,32 +24,25 @@ const repositoryMutation = graphql`
 `;
 
 type TProps = {
-  onComplete: Function,
   children: any,
+  filters: TGroupFilter,
 };
 
 const CreateRepositoryCaseSetButton = ({
-  onComplete,
   children,
+  filters,
   ...props
 }: TProps) => {
   return (
-    <CreateSetButtonBase
+    <SetButtonBase
       {...props}
+      input={{ filters }}
       field="cases.case_id"
-      commitMutation={(variables, onCompleted, onError) => {
-        commitMutation(environment, {
-          mutation: repositoryMutation,
-          variables,
-          onCompleted,
-          onError,
-        });
-      }}
       setIdExtractor={response => response.sets.create.repository.case.set_id}
-      reRouteOnCompleted={onComplete}
+      mutation={repositoryMutation}
     >
       {children}
-    </CreateSetButtonBase>
+    </SetButtonBase>
   );
 };
 

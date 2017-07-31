@@ -10,10 +10,11 @@ import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
 import tableModels from '@ncigdc/tableModels';
 import Table, { Tr } from '@ncigdc/uikit/Table';
+import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateRepositoryCaseSetButton';
 
 export const SearchTable = compose(
   connect(state => ({ tableColumns: state.tableColumns.cases.ids })),
-)(({ relay, hits, entityType = 'cases', tableColumns }) => {
+)(({ relay, hits, entityType = 'cases', tableColumns, filters }) => {
   const tableInfo = tableModels[entityType]
     .slice()
     .sort((a, b) => tableColumns.indexOf(a.id) - tableColumns.indexOf(b.id))
@@ -35,10 +36,9 @@ export const SearchTable = compose(
           total={hits.total}
         />
         <TableActions
-          prefix={entityType}
-          entityType={entityType}
+          type="case"
+          arrangeColumnKey={entityType}
           total={hits.total}
-          sortKey="cases_sort"
           endpoint="cases"
           downloadFields={tableInfo
             .filter(x => x.downloadable)
@@ -46,6 +46,8 @@ export const SearchTable = compose(
           sortOptions={tableInfo.filter(x => x.sortable)}
           tsvSelector="#repository-cases-table"
           tsvFilename="repository-cases-table.tsv"
+          CreateSetButton={CreateRepositoryCaseSetButton}
+          idField="cases.case_id"
         />
       </Row>
       <div style={{ overflowX: 'auto' }}>

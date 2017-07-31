@@ -234,9 +234,9 @@ const Component = compose(
           />
           <Row style={{ alignItems: 'flex-end' }}>
             <TableActions
+              type="case"
               currentFilters={defaultFilters}
               style={{ marginLeft: '2rem' }}
-              prefix={'cases'}
               total={totalCases}
               endpoint={'case_ssms'}
               downloadTooltip="Export All Except #Mutations and #Genes"

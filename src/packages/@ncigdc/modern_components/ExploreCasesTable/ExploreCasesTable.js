@@ -17,6 +17,7 @@ import Table, { Tr } from '@ncigdc/uikit/Table';
 import { handleReadyStateChange } from '@ncigdc/dux/loaders';
 import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 import withRouter from '@ncigdc/utils/withRouter';
+import CreateExploreCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateExploreCaseSetButton';
 import {
   parseIntParam,
   parseFilterParam,
@@ -217,10 +218,9 @@ const Component = compose(
           total={props.viewer.explore.cases.hits.total}
         />
         <TableActions
-          prefix={prefix}
-          entityType="exploreCases"
+          type="case"
+          arrangeColumnKey="exploreCases"
           total={props.viewer.explore.cases.hits.total}
-          sortKey="cases_sort"
           endpoint="case_ssms"
           downloadTooltip="Export All Except #Mutations and #Genes"
           downloadFields={tableInfo
@@ -229,6 +229,8 @@ const Component = compose(
           sortOptions={tableInfo.filter(x => x.sortable)}
           tsvSelector="#explore-case-table"
           tsvFilename="explore-case-table.tsv"
+          CreateSetButton={CreateExploreCaseSetButton}
+          idField="cases.case_id"
         />
       </Row>
       <div style={{ overflowX: 'auto' }}>

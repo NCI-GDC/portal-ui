@@ -1,20 +1,19 @@
 /* @flow */
-/* eslint fp/no-class:0 */
-
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState, withPropsOnChange } from 'recompose';
 import withSize from '@ncigdc/utils/withSize';
-import withBetterRouter from '@ncigdc/utils/withRouter';
+import withRouter from '@ncigdc/utils/withRouter';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import { Row } from '@ncigdc/uikit/Flex';
 import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
+import CreateExploreGeneSetButton from '@ncigdc/modern_components/CreateSetButton/CreateExploreGeneSetButton';
 import tableModel from './GenesTable.model';
 
 export default compose(
-  withBetterRouter,
+  withRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
   withPropsOnChange(
@@ -46,6 +45,7 @@ export default compose(
     ssmCountsLoading,
     parentVariables,
     tableColumns,
+    dispatch,
   }) => {
     const { genes, filteredCases, cases } = explore || {};
 
@@ -78,8 +78,8 @@ export default compose(
           />
           <Row>
             <TableActions
-              prefix="genes"
-              entityType="genes"
+              type="gene"
+              arrangeColumnKey="genes"
               total={totalGenes}
               endpoint="genes"
               downloadTooltip="Export All Except #Cases and #Mutations"
@@ -94,6 +94,8 @@ export default compose(
               ]}
               tsvSelector="#genes-table"
               tsvFilename="frequently-mutated-genes.tsv"
+              CreateSetButton={CreateExploreGeneSetButton}
+              idField="genes.gene_id"
             />
           </Row>
         </Row>

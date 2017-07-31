@@ -307,6 +307,57 @@ type Annotations {
   hits(score: String, query: String, offset: Int, sort: [Sort], filters: FiltersArgument, before: String, after: String, first: Int, last: Int): AnnotationConnection
 }
 
+type AppendCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type AppendExploreSet {
+  case(input: AppendSetInput): AppendCaseSet
+  gene(input: AppendSetInput): AppendGeneSet
+  ssm(input: AppendSetInput): AppendSsmSet
+}
+
+type AppendGeneSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type AppendRepositoryCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type AppendRepositoryFileSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type AppendRepositorySet {
+  case(input: AppendSetInput): AppendRepositoryCaseSet
+  file(input: AppendSetInput): AppendRepositoryFileSet
+}
+
+type AppendSet {
+  explore: AppendExploreSet
+  repository: AppendRepositorySet
+}
+
+input AppendSetInput {
+  filters: FiltersArgument
+  set_id: String
+}
+
+type AppendSsmSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
 type Archive {
   # keyword
   archive_id: String
@@ -5508,6 +5559,57 @@ input RelayIsDumb {
   relay_is_dumb: FiltersArgument
 }
 
+type RemoveCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type RemoveExploreSet {
+  case(input: RemoveSetInput): RemoveCaseSet
+  gene(input: RemoveSetInput): RemoveGeneSet
+  ssm(input: RemoveSetInput): RemoveSsmSet
+}
+
+type RemoveGeneSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type RemoveRepositoryCaseSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type RemoveRepositoryFileSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
+type RemoveRepositorySet {
+  case(input: RemoveSetInput): RemoveRepositoryCaseSet
+  file(input: RemoveSetInput): RemoveRepositoryFileSet
+}
+
+type RemoveSet {
+  explore: RemoveExploreSet
+  repository: RemoveRepositorySet
+}
+
+input RemoveSetInput {
+  filters: FiltersArgument
+  set_id: String
+}
+
+type RemoveSsmSet {
+  set_id: String
+  size: Int
+  time: Float
+}
+
 type Repository {
   cases: RepositoryCases
   files: Files
@@ -5683,6 +5785,8 @@ type Samples {
 
 type Sets {
   create: CreateSet
+  append: AppendSet
+  remove: RemoveSet
 }
 
 type Slide implements Node {

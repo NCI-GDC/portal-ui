@@ -27,7 +27,7 @@ export default (additionalMessage = '') => Component =>
           : ''}%ctracing ${Component.displayName} props:\n${'tracing '.replace(
           /./g,
           '=',
-        )}${(Component.displayName || '')
+        )}${(Component.displayName || 'unnamed component')
           .replace(/./g, '=')}=${'props:'.replace(/./g, '=')}`,
         'color: rgb(22, 138, 96);font-weight: bold;',
         props,

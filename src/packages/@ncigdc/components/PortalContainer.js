@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import Route from 'react-router/Route';
-import Switch from 'react-router/Switch';
+import { Route, Switch } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { compose, lifecycle } from 'recompose';
 
@@ -49,8 +48,8 @@ const SkipLink = styled.a({
 const FIRST_TIME_KEY = 'NCI-Warning';
 
 const enhance = compose(
-  connect(store => ({ notifications: store.bannerNotification })),
   withRouter,
+  connect(store => ({ notifications: store.bannerNotification })),
   lifecycle({
     componentDidMount(): void {
       if (!Cookies.get(FIRST_TIME_KEY)) {
@@ -59,7 +58,7 @@ const enhance = compose(
       }
 
       let lastPathname = this.props.location.pathname;
-      this.removeListen = this.props.listen(location => {
+      this.removeListen = this.props.history.listen(location => {
         if (location.pathname !== lastPathname) {
           window.scrollTo(0, 0);
           lastPathname = location.pathname;
@@ -89,6 +88,7 @@ const PortalContainer = ({
         transition: 'padding 0.25s ease',
       }}
     >
+
       <Route
         children={p => <Head title={p.location.pathname.split('/')[1]} />}
       />

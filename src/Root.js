@@ -3,8 +3,7 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import Router from 'react-router-dom/BrowserRouter';
-import { stringify, parse } from 'query-string';
+import { parse } from 'query-string';
 import md5 from 'blueimp-md5';
 import urlJoin from 'url-join';
 import { RelayNetworkLayer, urlMiddleware } from 'react-relay-network-layer';
@@ -12,8 +11,6 @@ import retryMiddleware from '@ncigdc/utils/retryMiddleware';
 
 import { viewerQuery } from '@ncigdc/routes/queries';
 import Container from './Portal';
-
-const stringifyQuery = query => stringify(query, { strict: false });
 
 Relay.injectNetworkLayer(
   new RelayNetworkLayer([
@@ -55,12 +52,10 @@ class Route extends Relay.Route {
 }
 
 const Root = (props: mixed) =>
-  <Router stringifyQuery={stringifyQuery}>
-    <Relay.Renderer
-      Container={Container}
-      queryConfig={new Route(props)}
-      environment={Relay.Store}
-    />
-  </Router>;
+  <Relay.Renderer
+    Container={Container}
+    queryConfig={new Route(props)}
+    environment={Relay.Store}
+  />;
 
 export default Root;

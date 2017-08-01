@@ -6,7 +6,7 @@ import { compose, withPropsOnChange, withProps } from 'recompose';
 
 const enhance = compose(
   withRouter,
-  withPropsOnChange(['push'], ({ push }) => ({
+  withPropsOnChange(['location'], ({ history: { push } }) => ({
     push: opts => {
       if (typeof opts === 'object') {
         push({

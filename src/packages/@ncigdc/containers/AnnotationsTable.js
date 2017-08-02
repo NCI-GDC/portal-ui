@@ -12,7 +12,7 @@ import tableModels from '@ncigdc/tableModels';
 import Table, { Tr } from '@ncigdc/uikit/Table';
 
 export const SearchTable = compose(
-  connect(state => ({ tableColumns: state.tableColumns.annotations })),
+  connect(state => ({ tableColumns: state.tableColumns.annotations.ids })),
 )(
   ({
     downloadable,

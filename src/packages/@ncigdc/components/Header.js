@@ -21,7 +21,7 @@ import Hidden from '@ncigdc/components/Hidden';
 import { setModal } from '@ncigdc/dux/modal';
 import { forceLogout } from '@ncigdc/dux/auth';
 import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
-
+import withRouter from '@ncigdc/utils/withRouter';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
 
@@ -36,6 +36,7 @@ const styles = {
 };
 
 const Header = compose(
+  withRouter,
   connect(state => ({
     notifications: state.bannerNotification,
     user: state.auth.user,

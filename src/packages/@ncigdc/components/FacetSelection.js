@@ -243,7 +243,13 @@ export default compose(
 )(props =>
   <div className="test-facet-selection">
     <div {...css(styles.header)}>
-      <h2 data-translate className="modal-title">
+      <h2
+        data-translate
+        style={{
+          margin: 0,
+          lineHeight: 1.42857143,
+        }}
+      >
         <span>{props.title}</span>
         <a
           onClick={props.handleClose}

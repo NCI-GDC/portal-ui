@@ -136,17 +136,17 @@ class SmartSearchComponent extends React.Component {
           }
           links={[
             {
-              id: 'cases',
-              text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
-              component: (
-                <CasesTable hits={this.props.viewer.repository.cases.hits} />
-              ),
-            },
-            {
               id: 'files',
               text: `Files (${this.props.viewer.repository.files.hits.total.toLocaleString()})`,
               component: (
                 <FilesTable hits={this.props.viewer.repository.files.hits} />
+              ),
+            },
+            {
+              id: 'cases',
+              text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
+              component: (
+                <CasesTable hits={this.props.viewer.repository.cases.hits} />
               ),
             },
           ]}

@@ -1,12 +1,8 @@
 // @flow
 
-import React, { Children, cloneElement } from 'react';
-import _ from 'lodash';
-import ReactModal from 'react-modal';
+import React from 'react';
 
 import './Modal.css';
-
-ReactModal.setAppElement('#root');
 
 const modalStyles = {
   overlay: {
@@ -31,15 +27,42 @@ const modalStyles = {
   },
 };
 
-const Modal = ({ isOpen, onRequestClose, style, children }) =>
-  <ReactModal
-    style={{ ..._.merge({}, modalStyles, style) }}
-    isOpen={isOpen}
-    onRequestClose={onRequestClose || (() => {})}
-    contentLabel="Modal"
-    className="test-modal"
-  >
-    {Children.map(children, child => cloneElement(child, { ...child.props }))}
-  </ReactModal>;
+const openClassName = 'modal-open';
+function updateOpenClass(condition) {
+  if (condition) {
+    document.body.classList.add(openClassName);
+  } else {
+    document.body.classList.remove(openClassName);
+  }
+}
 
-export default Modal;
+export default class ModalContainer extends React.Component {
+  componentDidMount() {
+    updateOpenClass(this.props.isOpen);
+  }
+  componentWillReceiveProps(nextProps) {
+    updateOpenClass(nextProps.isOpen);
+  }
+  componentWillUnmount() {
+    updateOpenClass(true);
+  }
+  render() {
+    const { className, children, onClose, style = {}, isOpen } = this.props;
+
+    return (
+      isOpen &&
+      <div
+        className={`${className || ''} test-modal`}
+        style={{ ...modalStyles.overlay, ...style.overlay }}
+        onClick={onClose}
+      >
+        <div
+          style={{ ...modalStyles.content, ...style.content }}
+          onClick={e => e.stopPropagation()}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  }
+}

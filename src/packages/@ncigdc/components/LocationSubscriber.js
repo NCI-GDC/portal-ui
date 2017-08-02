@@ -1,7 +1,7 @@
 // @flow
 
 import { parse } from 'query-string';
-import { withRouter } from 'react-router-dom';
+import withRouter from '@ncigdc/utils/withRouter';
 
 const LocationSubscriber = withRouter(({ location, children }) =>
   children({ ...location, query: parse(location.search) }),

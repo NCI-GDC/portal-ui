@@ -33,7 +33,7 @@ class SmartSearchComponent extends React.Component {
   };
 
   componentDidMount() {
-    const router = this.context.router;
+    const push = this.props.push;
     angular
       .module('legacyAngularWrapper', ['ngApp'])
       .config([
@@ -84,7 +84,7 @@ class SmartSearchComponent extends React.Component {
                 filters: gql.filters && JSURL.stringify(filters),
               };
 
-              router.push(
+              push(
                 `/query?${queryString.stringify(_.omitBy(data, _.isEmpty))}`,
               );
             };
@@ -92,7 +92,7 @@ class SmartSearchComponent extends React.Component {
               this.query = '';
               this.gql = null;
               this.Error = null;
-              router.push('/query');
+              push('/query');
             };
 
             this.query = '';
@@ -102,7 +102,7 @@ class SmartSearchComponent extends React.Component {
             this.setQuery();
 
             document.querySelector('.btn-search-query').onclick = () => {
-              router.push(`/repository`);
+              push(`/repository`);
             };
           },
           controllerAs: 'sb',

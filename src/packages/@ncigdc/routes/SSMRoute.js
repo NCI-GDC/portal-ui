@@ -68,7 +68,7 @@ export default (
               Consequences
             </Heading>
             <Row>
-              <ConsequencesTable ssmId={ssmId} />
+              <ConsequencesTable ssmId={ssmId} context="" />
             </Row>
           </Column>
           <Column

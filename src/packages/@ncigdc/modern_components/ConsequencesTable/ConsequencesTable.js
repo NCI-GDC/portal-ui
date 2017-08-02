@@ -130,9 +130,11 @@ export default compose(
       canonicalTranscriptId,
       functionalImpactTranscript,
       theme,
+      context,
     }: TProps = {},
   ) =>
     <LocalPaginationTable
+      entityName={context}
       style={{ width: '100%', minWidth: 450 }}
       data={dataRows}
       prefix={paginationPrefix}

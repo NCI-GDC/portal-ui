@@ -2,12 +2,13 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
+import { compose, withPropsOnChange, withState } from 'recompose';
+import { connect } from 'react-redux';
+import { parse } from 'query-string';
+
 import withFilters from '@ncigdc/utils/withFilters';
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
 import { Row } from '@ncigdc/uikit/Flex';
-import { parse } from 'query-string';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import tableModels from '@ncigdc/tableModels';
 import Pagination from '@ncigdc/components/Pagination';
@@ -15,7 +16,7 @@ import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
 import { handleReadyStateChange } from '@ncigdc/dux/loaders';
 import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
-import { compose, withPropsOnChange, withState } from 'recompose';
+import withRouter from '@ncigdc/utils/withRouter';
 import {
   parseIntParam,
   parseFilterParam,

@@ -4,7 +4,7 @@ import React from 'react';
 import { graphql } from 'react-relay';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
-import Query from '@ncigdc/modern_components/Query';
+import { BaseQuery } from '@ncigdc/modern_components/Query';
 
 export default (Component: ReactClass<*>) =>
   compose(
@@ -26,7 +26,7 @@ export default (Component: ReactClass<*>) =>
     }),
   )((props: Object) => {
     return (
-      <Query
+      <BaseQuery
         parentProps={props}
         name="GeneSymbol"
         variables={props.variables}

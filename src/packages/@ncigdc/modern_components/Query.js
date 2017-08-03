@@ -6,33 +6,35 @@ import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 
 const lastRelayProps = {};
 
+export const BaseQuery = (props: Object) =>
+  <QueryRenderer
+    environment={environment}
+    render={({ props: nextRelayProps, error }) => {
+      // TODO: handle error
+
+      lastRelayProps[props.name] = nextRelayProps || lastRelayProps[props.name];
+
+      if (lastRelayProps[props.name])
+        return (
+          <props.Component
+            {...lastRelayProps[props.name]}
+            {...props.parentProps}
+            parentVariables={{
+              ...props.parentProps.parentVariables,
+              ...props.parentProps.variables,
+              ...props.parentVariables,
+            }}
+          />
+        );
+      return null;
+    }}
+    {...props}
+  />;
+
 export default (props: Object) =>
   <div
     style={{ position: 'relative', minHeight: props.minHeight, width: '100%' }}
   >
-    <QueryRenderer
-      environment={environment}
-      render={({ props: nextRelayProps, error }) => {
-        // TODO: handle error
-
-        lastRelayProps[props.name] =
-          nextRelayProps || lastRelayProps[props.name];
-
-        if (lastRelayProps[props.name])
-          return (
-            <props.Component
-              {...lastRelayProps[props.name]}
-              {...props.parentProps}
-              parentVariables={{
-                ...props.parentProps.parentVariables,
-                ...props.parentProps.variables,
-                ...props.parentVariables,
-              }}
-            />
-          );
-        return null;
-      }}
-      {...props}
-    />
+    <BaseQuery {...props} />
     <ConnectedLoader name={props.name} customLoader={props.customLoader} />
   </div>;

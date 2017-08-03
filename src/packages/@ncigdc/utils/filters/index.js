@@ -14,8 +14,15 @@ import type {
   TRemoveFilter,
 } from './types';
 
-const sortFilters: TSortFilters = (a, b) =>
-  a.content.field.localeCompare(b.content.field);
+const sortFilters: TSortFilters = (a, b) => {
+  if (a.content.field && b.content.field) {
+    return a.content.field.localeCompare(b.content.field);
+  } else if (a.content.field || b.content.field) {
+    return a.content.field ? -1 : 1;
+  } else {
+    return 0;
+  }
+};
 
 export const combineValues: TCombineValues = (x, y) => {
   if (x.content.value.length === 0 && y.content.value.length === 0) return null;

@@ -13,7 +13,7 @@ const LocalPaginationTable = ({
   data,
   buttons,
   style,
-  entityName = 'projects',
+  entityName,
   sizes,
   ...props
 }) => {

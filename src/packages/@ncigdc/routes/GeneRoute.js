@@ -116,6 +116,7 @@ export default (
                   defaultFilters={geneFilter}
                   shouldShowGeneSymbol={false}
                   context={<GeneSymbol geneId={geneId} />}
+                  hideSurvival
                 />
               </Column>
             </Column>

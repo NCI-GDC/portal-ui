@@ -116,6 +116,7 @@ export default (
                   defaultFilters={geneFilter}
                   shouldShowGeneSymbol={false}
                   context={'props.node.symbol'}
+                  hideSurvival
                 />
               </Column>
             </Column>

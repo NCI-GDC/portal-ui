@@ -138,6 +138,7 @@ export default compose(
     }: TProps = {},
   ) =>
     <LocalPaginationTable
+      className="test-consequences-table"
       style={{ width: '100%', minWidth: 450 }}
       data={dataRows}
       prefix={paginationPrefix}

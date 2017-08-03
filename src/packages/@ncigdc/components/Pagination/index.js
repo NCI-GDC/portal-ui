@@ -2,9 +2,11 @@
 
 import React from 'react';
 import _ from 'lodash';
-import { PaginationBtn } from '@ncigdc/uikit/Pagination';
+
 import { Row } from '@ncigdc/uikit/Flex';
 import { withTheme } from '@ncigdc/theme';
+
+import PaginationButton from './PaginationButton';
 import PaginationLink from './PaginationLink';
 import Sizes from './Sizes';
 
@@ -110,34 +112,34 @@ const Pagination = (props: TProps) => {
 
       <Row style={{ marginLeft: 'auto' }}>
         <PaginationLink pred={prevPred} prfOff={prfOff} offset={0}>
-          <PaginationBtn style={styles.leftBtn(props.theme)}>
+          <PaginationButton style={styles.leftBtn(props.theme)}>
             {'«'}
-          </PaginationBtn>
+          </PaginationButton>
         </PaginationLink>
         <PaginationLink pred={prevPred} prfOff={prfOff} offset={prev}>
-          <PaginationBtn style={styles.middleBtn(props.theme)}>
+          <PaginationButton style={styles.middleBtn(props.theme)}>
             {'‹'}
-          </PaginationBtn>
+          </PaginationButton>
         </PaginationLink>
         {getPaginationRange(pageOffset, totalPages).map(x =>
           <PaginationLink key={x} prfOff={prfOff} offset={(x - 1) * size} pred>
-            <PaginationBtn
+            <PaginationButton
               active={currentPage === x}
               style={styles.middleBtn(props.theme)}
             >
               {x}
-            </PaginationBtn>
+            </PaginationButton>
           </PaginationLink>,
         )}
         <PaginationLink pred={nextPred} prfOff={prfOff} offset={next}>
-          <PaginationBtn style={styles.middleBtn(props.theme)}>
+          <PaginationButton style={styles.middleBtn(props.theme)}>
             {'›'}
-          </PaginationBtn>
+          </PaginationButton>
         </PaginationLink>
         <PaginationLink pred={nextPred} prfOff={prfOff} offset={last}>
-          <PaginationBtn style={styles.rightBtn(props.theme)}>
+          <PaginationButton style={styles.rightBtn(props.theme)}>
             {'»'}
-          </PaginationBtn>
+          </PaginationButton>
         </PaginationLink>
       </Row>
     </Row>

@@ -31,10 +31,12 @@ export const BaseQuery = (props: Object) =>
     {...props}
   />;
 
-export default (props: Object) =>
-  <div
-    style={{ position: 'relative', minHeight: props.minHeight, width: '100%' }}
-  >
+export default ({
+  minHeight,
+  style = { position: 'relative', width: '100%', minHeight },
+  ...props
+}: Object) =>
+  <div style={style}>
     <BaseQuery {...props} />
     <ConnectedLoader name={props.name} customLoader={props.customLoader} />
   </div>;

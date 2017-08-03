@@ -210,7 +210,7 @@ export default compose(
                     <span>
                       # Cases tested for Simple Somatic Mutations in Project
                       affected by&nbsp;
-                      {entityName}
+                      {entityName}&nbsp;
                       / # Cases tested for Simple Somatic Mutations in Project
                     </span>
                   }

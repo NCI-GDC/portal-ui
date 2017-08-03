@@ -145,7 +145,12 @@ export default compose(
           key: 'num_mutations',
           title: (
             <Tooltip
-              Component={`Number of Simple Somatic Mutations observed in ${entityName} in Project`}
+              Component={
+                <span>
+                  Number of Simple Somatic Mutations observed in {entityName} in
+                  Project
+                </span>
+              }
               style={tableToolTipHint()}
             >
               # Mutations

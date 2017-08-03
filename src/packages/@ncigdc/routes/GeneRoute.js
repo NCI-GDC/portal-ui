@@ -91,7 +91,7 @@ export default (
                 />
                 <CancerDistributionTable
                   filters={mutatedGeneFilter}
-                  entityName={'GET SYMBOL'}
+                  entityName={<GeneSymbol geneId={geneId} />}
                   geneId={geneId}
                 />
               </Column>
@@ -115,7 +115,7 @@ export default (
                 <SsmsTable
                   defaultFilters={geneFilter}
                   shouldShowGeneSymbol={false}
-                  context={'props.node.symbol'}
+                  context={<GeneSymbol geneId={geneId} />}
                 />
               </Column>
             </Column>

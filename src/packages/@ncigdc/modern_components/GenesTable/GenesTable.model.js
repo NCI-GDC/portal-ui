@@ -184,13 +184,15 @@ const GenesTableModel = [
     th: () => <NumTh># Mutations</NumTh>,
     td: ({ node, ssmCounts, defaultFilters }) =>
       <NumTd>
-        <MutationsCount
-          ssmCount={ssmCounts[node.gene_id]}
-          filters={addInFilters(
-            defaultFilters,
-            makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }]),
-          )}
-        />
+        <Tooltip Component={`# of Simple Somatic Mutations in the Gene`}>
+          <MutationsCount
+            ssmCount={ssmCounts[node.gene_id]}
+            filters={addInFilters(
+              defaultFilters,
+              makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }]),
+            )}
+          />
+        </Tooltip>
       </NumTd>,
   },
   {

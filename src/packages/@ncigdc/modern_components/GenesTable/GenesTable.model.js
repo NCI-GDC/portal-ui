@@ -181,9 +181,16 @@ const GenesTableModel = [
     id: 'mutations',
     sortable: true,
     downloadable: true,
-    th: () =>
+    th: ({ context }) =>
       <NumTh>
-        <Tooltip Component={`# of Simple Somatic Mutations in the Gene`}>
+        <Tooltip
+          Component={
+            <span>
+              # of Simple Somatic Mutations in the Gene{' '}
+              {context ? <span>in {context}</span> : ''}
+            </span>
+          }
+        >
           # Mutations
         </Tooltip>
       </NumTh>,

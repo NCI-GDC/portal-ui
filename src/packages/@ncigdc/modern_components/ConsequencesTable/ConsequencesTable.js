@@ -5,7 +5,7 @@ import { orderBy, groupBy, get, find } from 'lodash';
 import externalReferenceLinks from '@ncigdc/utils/externalReferenceLinks';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
-import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
+import DownloadTableToTsvButton, { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import saveFile from '@ncigdc/utils/filesaver';
@@ -79,7 +79,12 @@ export default compose(
             consequence: transcript.consequence_type,
             coding_dna_change: transcript.annotation.hgvsc,
             strand: transcript.gene.gene_strand
-              ? strandIconMap[transcript.gene.gene_strand.toString(10)]
+              ? <span>
+                  {strandIconMap[transcript.gene.gene_strand.toString(10)]}
+                  <ForTsvExport>
+                    {transcript.gene.gene_strand.toString(10)}
+                  </ForTsvExport>
+                </span>
               : '--',
             transcripts: (
               <span>

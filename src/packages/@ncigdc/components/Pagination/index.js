@@ -49,14 +49,17 @@ export const calculatePages = (props: TProps): {} => {
 
   const offset = props.params[prfOff];
   const size = props.params[prfSize];
+
+  const totalPages = Math.ceil(props.total / size);
   const prev = Math.max(offset - size, 0);
-  const last = props.total - props.total % size;
+  const last = (totalPages - 1) * size;
+
   const next = Math.min(offset + size, last);
   const prevPred = offset !== 0;
   const nextPred = offset < last;
 
   const currentPage = Math.ceil(offset / size) + 1;
-  const totalPages = Math.ceil(props.total / size);
+
   const pageOffset = 10 * Math.floor((currentPage - 1) / 10);
   return {
     prfOff,

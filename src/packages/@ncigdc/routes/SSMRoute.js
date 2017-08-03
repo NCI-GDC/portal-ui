@@ -1,6 +1,7 @@
 /* @flow */
 
 import React from 'react';
+import { truncate } from 'lodash';
 import { Route } from 'react-router-dom';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import TableIcon from '@ncigdc/theme/icons/Table';
@@ -15,9 +16,19 @@ import SsmExternalReferences from '@ncigdc/modern_components/SsmExternalReferenc
 import ConsequencesTable from '@ncigdc/modern_components/ConsequencesTable';
 import CancerDistributionBarChart from '@ncigdc/modern_components/CancerDistributionBarChart';
 import CancerDistributionTable from '@ncigdc/modern_components/CancerDistributionTable';
-
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
+import createSsmSummary from '@ncigdc/modern_components/SsmSummary/SsmSummary.relay';
+
+const DnaChange = createSsmSummary(
+  ({
+    viewer,
+    dnaChange = viewer.explore.ssms.hits.edges[0].node.genomic_dna_change,
+  }) =>
+    <span>
+      {truncate(dnaChange, 12)}
+    </span>,
+);
 
 const CancerDistributionTitle = ({ cases = 0, projects = [], filters }) =>
   <h5 style={{ textTransform: 'uppercase', padding: '0 2rem' }}>
@@ -57,7 +68,7 @@ export default (
       ]);
 
       return (
-        <FullWidthLayout title={ssmId} entityType="MU">
+        <FullWidthLayout title={<DnaChange ssmId={ssmId} />} entityType="MU">
           <Row spacing="2rem" id="summary">
             <Row flex="1"><SsmSummary ssmId={ssmId} /></Row>
             <Row flex="1"><SsmExternalReferences ssmId={ssmId} /></Row>

@@ -1,7 +1,13 @@
 // @flow
 
 import React from 'react';
-import { compose, withProps, withPropsOnChange, withState } from 'recompose';
+import {
+  compose,
+  withProps,
+  withPropsOnChange,
+  withState,
+  lifecycle,
+} from 'recompose';
 import { insertRule } from 'glamor';
 import withRouter from '@ncigdc/utils/withRouter';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -58,6 +64,26 @@ export default compose(
       consequenceBlacklist: new Set(),
       impactBlacklist: new Set(),
     };
+  }),
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if (this.props.gene.gene_id !== nextProps.gene.gene_id) {
+        const activeTranscript = (nextProps.gene.transcripts.hits.edges.find(
+          x => x.node.is_canonical,
+        ) || {}).node;
+
+        this.props.setState(s => ({
+          ...s,
+          activeTranscript,
+          min: 0,
+          max: activeTranscript.length_amino_acid,
+          width: 0,
+          blacklist: 'consequence',
+          consequenceBlacklist: new Set(),
+          impactBlacklist: new Set(),
+        }));
+      }
+    },
   }),
   withProps(({ state, setState }) => ({
     toggleBlacklistItem: variant => {

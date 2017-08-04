@@ -68,7 +68,10 @@ export default (
       ]);
 
       return (
-        <FullWidthLayout title={<DnaChange ssmId={ssmId} />} entityType="MU">
+        <FullWidthLayout
+          title={<DnaChange ssmId={ssmId} minHeight={31} />}
+          entityType="MU"
+        >
           <Row spacing="2rem" id="summary">
             <Row flex="1"><SsmSummary ssmId={ssmId} /></Row>
             <Row flex="1"><SsmExternalReferences ssmId={ssmId} /></Row>

@@ -7,6 +7,5 @@ export default ({ part, whole }) =>
     <SparkMeter
       value={part / whole}
       aria-label={`${(part / whole * 100).toFixed(2)}%`}
-      role="figure"
     />
   </Tooltip>;

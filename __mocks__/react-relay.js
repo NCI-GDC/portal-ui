@@ -5,4 +5,5 @@ module.exports = {
   Mutation: Relay.Mutation,
   Route: Relay.Route,
   createContainer: component => component,
+  graphql: q => q,
 };

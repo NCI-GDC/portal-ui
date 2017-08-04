@@ -1,9 +1,9 @@
 import React from 'react';
+import { compose, withState } from 'recompose';
 
 import FileInput from '@ncigdc/components/FileInput';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
-import { compose, withState } from 'recompose';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 
 const REMOVE_HEADER_FROM_TSV = false;
@@ -18,7 +18,7 @@ function readFile(file) {
 const enhance = compose(withState('uploading', 'setUploading', false));
 
 export default enhance(
-  ({ setInputFile, setInputGenes, inputFiles, setUploading, uploading }) => {
+  ({ setInputFile, setInput, inputFiles, setUploading, uploading }) => {
     return (
       <div>
         Or choose a file to upload
@@ -32,7 +32,7 @@ export default enhance(
                 setInputFile(files.map(f => f.name).join(', '));
 
                 Promise.all(files.map(f => readFile(f))).then(data => {
-                  setInputGenes(
+                  setInput(
                     data
                       .map(
                         ({ result, file }) =>

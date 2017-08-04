@@ -18,19 +18,22 @@ const sortFilters: TSortFilters = (a, b) =>
   a.content.field.localeCompare(b.content.field);
 
 export const combineValues: TCombineValues = (x, y) => {
-  if (x.content.value.length === 0 && y.content.value.length === 0) return null;
-  if (x.content.value.length === 0) return y;
-  if (y.content.value.length === 0) return x;
+  const xValue = [].concat(x.content.value || []);
+  const yValue = [].concat(y.content.value || []);
+
+  if (xValue.length === 0 && yValue.length === 0) return null;
+  if (xValue.length === 0) return y;
+  if (yValue.length === 0) return x;
 
   const merged = {
     op: 'in',
     content: {
       field: x.content.field,
-      value: x.content.value
+      value: xValue
         .reduce((acc, v) => {
           if (acc.includes(v)) return acc.filter(f => f !== v);
           return [...acc, v];
-        }, y.content.value)
+        }, yValue)
         .sort(),
     },
   };

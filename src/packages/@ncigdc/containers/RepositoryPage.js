@@ -4,6 +4,7 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import JSURL from 'jsurl';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -25,8 +26,10 @@ import formatFileSize from '@ncigdc/utils/formatFileSize';
 import RepoCasesPies from '@ncigdc/components/TabPieCharts/RepoCasesPies';
 import RepoFilesPies from '@ncigdc/components/TabPieCharts/RepoFilesPies';
 import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateRepositoryCaseSetButton';
+import withRouter from '@ncigdc/utils/withRouter';
 
 export type TProps = {
+  push: Function,
   relay: Object,
   dispatch: Function,
   filters: any,
@@ -65,7 +68,7 @@ export type TProps = {
   setShowFacets: Function,
 };
 
-const enhance = compose(connect(), withFilters());
+const enhance = compose(connect(), withFilters(), withRouter);
 
 export const RepositoryPageComponent = (props: TProps) => {
   const setAutocompleteCases = (value, onReadyStateChange) =>
@@ -154,9 +157,32 @@ export const RepositoryPageComponent = (props: TProps) => {
                 />
                 <CreateRepositoryCaseSetButton
                   filters={props.filters}
-                  setSize={caseCount}
+                  disabled={!caseCount}
                   style={{ paddingLeft: '5px' }}
-                />
+                  onComplete={setId => {
+                    props.push({
+                      pathname: '/exploration',
+                      query: {
+                        filters: JSURL.stringify({
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                            },
+                          ],
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  View {caseCount.toLocaleString()}{' '}
+                  {caseCount === 1 ? ' Case' : ' Cases'} in
+                  Exploration
+                </CreateRepositoryCaseSetButton>
               </Row>
               <AnnotationsLink>
                 <i className="fa fa-edit" /> Browse Annotations

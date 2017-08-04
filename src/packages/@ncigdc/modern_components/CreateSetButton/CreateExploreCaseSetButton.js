@@ -2,11 +2,6 @@
 import React from 'react';
 import environment from '@ncigdc/modern_components/environment';
 import { commitMutation, graphql } from 'react-relay';
-import JSURL from 'jsurl';
-import { compose } from 'recompose';
-
-import withRouter from '@ncigdc/utils/withRouter';
-import { makeFilter } from '@ncigdc/utils/filters';
 
 import CreateSetButtonBase from './CreateSetButtonBase';
 
@@ -27,32 +22,20 @@ const exploreMutation = graphql`
   }
 `;
 
-const enhance = compose(withRouter);
+type TProps = {
+  onComplete: Function,
+  children: any,
+};
 
-const CreateExploreCaseSetButton = ({ filters, setSize, style, push }) => {
-  const reRouteOnCompleted = setId => {
-    push({
-      pathname: '/repository',
-      query: {
-        searchTableTab: 'files',
-        filters: JSURL.stringify(
-          makeFilter([
-            {
-              field: 'cases.case_id',
-              value: `set_id:${setId}`,
-            },
-          ]),
-        ),
-      },
-    });
-  };
-
+const CreateExploreCaseSetButton = ({
+  onComplete,
+  children,
+  ...props
+}: TProps) => {
   return (
     <CreateSetButtonBase
-      style={style}
+      {...props}
       field="cases.case_id"
-      filters={filters}
-      disabled={!setSize}
       setIdExtractor={response => response.sets.create.explore.case.set_id}
       commitMutation={(variables, onCompleted, onError) => {
         commitMutation(environment, {
@@ -62,11 +45,11 @@ const CreateExploreCaseSetButton = ({ filters, setSize, style, push }) => {
           onError,
         });
       }}
-      reRouteOnCompleted={reRouteOnCompleted}
+      reRouteOnCompleted={onComplete}
     >
-      View Files in Repository
+      {children}
     </CreateSetButtonBase>
   );
 };
 
-export default enhance(CreateExploreCaseSetButton);
+export default CreateExploreCaseSetButton;

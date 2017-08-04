@@ -131,7 +131,7 @@ export default ({
             },
           },
         })}
-      data={lolliplotData}
+      data={window.lolliplotData}
       stylePrefix="#protein-viewer-root"
       slug={`protein_viewer-${gene.symbol}-${moment().format('YYYY-MM-DD')}`}
     />

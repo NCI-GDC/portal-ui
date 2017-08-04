@@ -76,6 +76,9 @@ export default compose(
         setState(s => ({ ...s, blacklist: 'consequence' }));
       }
 
+      // quick fix for passing mapped data to JSON download button
+      window.lolliplotData = lolliplotData;
+
       return {
         lolliplotData,
         outsideSsms: lolliplotData.mutations.filter(

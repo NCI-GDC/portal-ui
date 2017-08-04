@@ -24,9 +24,14 @@ const exploreMutation = graphql`
 
 type TProps = {
   onComplete: Function,
+  children: any,
 };
 
-const CreateExploreGeneSetButton = ({ onComplete, ...props }: TProps) => {
+const CreateExploreGeneSetButton = ({
+  onComplete,
+  children,
+  ...props
+}: TProps) => {
   return (
     <CreateSetButtonBase
       {...props}
@@ -42,7 +47,7 @@ const CreateExploreGeneSetButton = ({ onComplete, ...props }: TProps) => {
       }}
       reRouteOnCompleted={onComplete}
     >
-      Submit
+      {children}
     </CreateSetButtonBase>
   );
 };

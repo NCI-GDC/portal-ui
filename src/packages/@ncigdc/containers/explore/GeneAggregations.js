@@ -10,7 +10,7 @@ import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
-import UploadGeneSet from '@ncigdc/components/Modals/UploadGeneSet';
+import { UploadGeneSet } from '@ncigdc/components/Modals/UploadSet';
 
 import { withTheme } from '@ncigdc/theme';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
@@ -103,12 +103,7 @@ export const GeneAggregationsComponent = compose(
     >
       <Button
         style={{ padding: '4px 12px', width: '100%' }}
-        onClick={() =>
-          props.dispatch(
-            setModal(
-              <UploadGeneSet onClose={() => props.dispatch(setModal(null))} />,
-            ),
-          )}
+        onClick={() => props.dispatch(setModal(<UploadGeneSet />))}
       >
         Upload Gene Set
       </Button>

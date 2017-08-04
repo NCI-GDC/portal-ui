@@ -19,7 +19,6 @@ import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import FileLink from '@ncigdc/components/Links/FileLink';
-import Link from '@ncigdc/components/Links/Link';
 import Hidden from '@ncigdc/components/Hidden';
 import { toggleFilesInCart } from '@ncigdc/dux/cart';
 import Button from '@ncigdc/uikit/Button';
@@ -129,10 +128,21 @@ const File = ({
   }));
 
   const archiveComponent = node.archive.archive_id
-    ? <Link>
-        {node.archive.submitter_id || '--'} - {node.archive.revision}
-        (todo: link out to file search pg with files.archive.archive_id filter)
-      </Link>
+    ? <span>
+        {node.archive.submitter_id || '--'} - rev {node.archive.revision} &nbsp;
+        (<RepositoryFilesLink
+          query={{
+            filters: makeFilter([
+              {
+                field: 'files.archive.archive_id',
+                value: node.archive.archive_id,
+              },
+            ]),
+          }}
+        >
+          view files
+        </RepositoryFilesLink>)
+      </span>
     : '--';
 
   const projectIds = uniq(

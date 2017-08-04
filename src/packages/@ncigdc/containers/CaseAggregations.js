@@ -3,9 +3,9 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-
 import _ from 'lodash';
 import { compose, withState } from 'recompose';
+import { connect } from 'react-redux';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
@@ -25,8 +25,12 @@ import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
+import Button from '@ncigdc/uikit/Button';
+import { setModal } from '@ncigdc/dux/modal';
+import { UploadCaseSet } from '@ncigdc/components/Modals/UploadSet';
 
 export type TProps = {
+  dispatch: Function,
   caseIdCollapsed: boolean,
   setCaseIdCollapsed: Function,
   relay: Object,
@@ -167,6 +171,7 @@ const enhance = compose(
     validFacetDocTypes: ['cases'],
   }),
   withState('caseIdCollapsed', 'setCaseIdCollapsed', false),
+  connect(),
 );
 
 const styles = {
@@ -254,7 +259,19 @@ export const CaseAggregationsComponent = (props: TProps) =>
         </Row>}
       style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
-
+    <div
+      style={{
+        borderBottom: `1px solid ${props.theme.greyScale5}`,
+        padding: '0 1.2rem 1rem',
+      }}
+    >
+      <Button
+        style={{ padding: '4px 12px', width: '100%' }}
+        onClick={() => props.dispatch(setModal(<UploadCaseSet />))}
+      >
+        Upload Case Set
+      </Button>
+    </div>
     {_.reject(presetFacets, { full: 'cases.case_id' }).map(facet =>
       <FacetWrapper
         key={facet.full}

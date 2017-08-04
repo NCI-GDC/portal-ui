@@ -4,6 +4,8 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
 import { compose, lifecycle } from 'recompose';
+import JSURL from 'jsurl';
+
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GenesTab from '@ncigdc/components/Explore/GenesTab';
@@ -16,8 +18,10 @@ import GeneAggregations from '@ncigdc/containers/explore/GeneAggregations';
 import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import CreateExploreCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateExploreCaseSetButton';
 import { replaceFilters } from '@ncigdc/utils/filters';
+import withRouter from '@ncigdc/utils/withRouter';
 
 export type TProps = {
+  filters: {},
   autocomplete: {
     cases: {
       hits: Array<Object>,
@@ -86,6 +90,7 @@ function setVariables({ relay, filters }) {
 }
 
 const enhance = compose(
+  withRouter,
   lifecycle({
     componentDidMount() {
       setVariables(this.props);
@@ -153,9 +158,30 @@ export const ExplorePageComponent = (props: TProps) =>
       <span>
         <CreateExploreCaseSetButton
           filters={props.filters}
-          setSize={props.viewer.explore.cases.hits.total}
+          disabled={!props.viewer.explore.cases.hits.total}
           style={{ marginBottom: '2rem' }}
-        />
+          onComplete={setId => {
+            props.push({
+              pathname: '/repository',
+              query: {
+                filters: JSURL.stringify({
+                  op: 'AND',
+                  content: [
+                    {
+                      op: 'IN',
+                      content: {
+                        field: 'cases.case_id',
+                        value: [`set_id:${setId}`],
+                      },
+                    },
+                  ],
+                }),
+              },
+            });
+          }}
+        >
+          View in Repository
+        </CreateExploreCaseSetButton>
         <TabbedLinks
           queryParam="searchTableTab"
           defaultIndex={0}

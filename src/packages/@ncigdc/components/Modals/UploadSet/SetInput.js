@@ -8,12 +8,12 @@ const onUpdate = debounce((str, callback) => {
   callback(str.split(/[\s,]+/).filter(Boolean).map(g => g.toUpperCase()));
 }, 500);
 
-const initState = { inputGenes: '', inputFiles: '' };
+const initState = { input: '', inputFiles: '' };
 
-class GeneInput extends React.Component {
+class SetInput extends React.Component {
   state = initState;
   update = str => {
-    this.setState({ inputGenes: str });
+    this.setState({ input: str });
     onUpdate(str, this.props.onUpdate);
   };
   clear() {
@@ -24,12 +24,15 @@ class GeneInput extends React.Component {
     return (
       <div>
         <TextArea
-          inputGenes={this.state.inputGenes}
-          setInputGenes={this.update}
+          input={this.state.input}
+          setInput={this.update}
+          helpText={this.props.helpText}
+          placeholder={this.props.placeholder}
+          type={this.props.type}
         />
         <FileUpload
           inputFiles={this.state.inputFiles}
-          setInputGenes={this.update}
+          setInput={this.update}
           setInputFile={files => this.setState({ inputFiles: files })}
         />
       </div>
@@ -37,4 +40,4 @@ class GeneInput extends React.Component {
   }
 }
 
-export default GeneInput;
+export default SetInput;

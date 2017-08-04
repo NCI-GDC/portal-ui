@@ -6,7 +6,7 @@ import { compose } from 'recompose';
 import XIcon from 'react-icons/lib/fa/close';
 import DownCaretIcon from 'react-icons/lib/fa/caret-down';
 import TrashIcon from 'react-icons/lib/fa/trash-o';
-
+import { userCanDownloadFile } from '@ncigdc/utils/auth';
 import Button from '@ncigdc/uikit/Button';
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import { Column, Row } from '@ncigdc/uikit/Flex';
@@ -32,10 +32,7 @@ const styles = {
   },
 };
 
-const getUnauthorizedFiles = files =>
-  files.filter(file => file.access === 'controlled');
-
-const RemoveFromCartButton = ({ style, files, theme, dispatch }) =>
+const RemoveFromCartButton = ({ style, files, theme, dispatch, user }) =>
   <Row className="test-remove-from-cart-button-container">
     <Dropdown
       dropdownStyle={{
@@ -76,10 +73,16 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch }) =>
           className="test-remove-unauthorized-files"
           style={styles.row(theme)}
           onClick={() =>
-            dispatch(toggleFilesInCart(getUnauthorizedFiles(files)))}
+            dispatch(
+              toggleFilesInCart(
+                files.filter(file => userCanDownloadFile({ user, file })),
+              ),
+            )}
           leftIcon={<XIcon />}
         >
-          Unauthorized Files ({getUnauthorizedFiles(files).length})
+          Unauthorized Files ({
+            files.filter(file => userCanDownloadFile({ user, file })).length
+          })
         </Button>
       </Column>
     </Dropdown>

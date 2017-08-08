@@ -6,7 +6,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 export default ({ input, setInput, helpText, type, placeholder }) => {
   return (
-    <div>
+    <label style={{ display: 'block' }}>
       <Row style={{ justifyContent: 'space-between' }}>
         <div>
           Type or copy-and-paste a list of {type} identifiers
@@ -26,6 +26,6 @@ export default ({ input, setInput, helpText, type, placeholder }) => {
           minHeight: 80,
         }}
       />
-    </div>
+    </label>
   );
 };

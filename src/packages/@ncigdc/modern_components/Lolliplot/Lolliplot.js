@@ -76,8 +76,8 @@ export default compose(
         setState(s => ({ ...s, blacklist: 'consequence' }));
       }
 
-      // quick fix for passing mapped data to JSON download button
-      window.lolliplotData = lolliplotData;
+      // pass data up to wrapper -> toolbar
+      setState(s => ({ ...s, lolliplotData }));
 
       return {
         lolliplotData,

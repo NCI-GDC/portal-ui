@@ -56,6 +56,7 @@ export default compose(
     ) || {}).node;
 
     return {
+      lolliplotData: null,
       activeTranscript,
       min: 0,
       max: activeTranscript.length_amino_acid,
@@ -120,6 +121,7 @@ export default compose(
       min,
       max,
       blacklist,
+      lolliplotData,
       ...state
     },
     mutationId,
@@ -143,15 +145,17 @@ export default compose(
         </h1>
       </Row>
       <div>
-        <LolliplotToolbar
-          activeTranscript={activeTranscript}
-          gene={gene}
-          transcripts={transcripts.filter(x =>
-            transcriptBuckets.find(b => b.key === x.transcript_id),
-          )}
-          setState={setState}
-          selector={selector}
-        />
+        {lolliplotData &&
+          <LolliplotToolbar
+            activeTranscript={activeTranscript}
+            gene={gene}
+            transcripts={transcripts.filter(x =>
+              transcriptBuckets.find(b => b.key === x.transcript_id),
+            )}
+            setState={setState}
+            selector={selector}
+            lolliplotData={lolliplotData}
+          />}
         {notEnoughData &&
           <Column style={{ alignItems: 'center', padding: '20px' }}>
             Not enough data

@@ -2,7 +2,7 @@
 import React from 'react';
 import { compose, withState, withPropsOnChange } from 'recompose';
 import { debounce } from 'lodash';
-import { Row, Column } from '@ncigdc/uikit/Flex';
+import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 import { validateGenes, geneMap } from '@ncigdc/utils/validateIds';
@@ -58,12 +58,7 @@ class UploadGeneSet extends React.Component {
     } = this.props;
 
     return (
-      <Column
-        style={{
-          padding: '15px 0',
-          maxHeight: 'calc(100vh - 60px)',
-        }}
-      >
+      <div style={{ padding: '15px 0' }}>
         <h2
           style={{
             ...styles.horizontalPadding,
@@ -81,6 +76,8 @@ class UploadGeneSet extends React.Component {
             paddingTop: 10,
             paddingBottom: 10,
             overflow: 'auto',
+            // calc instead of using flex because IE11 doesn't handle flex + maxheight properly
+            maxHeight: 'calc(100vh - 160px)',
           }}
         >
           <GeneInput onUpdate={setGenes} ref={n => (this.geneInput = n)} />
@@ -115,7 +112,7 @@ class UploadGeneSet extends React.Component {
           <Button onClick={this.clear} disabled={!genes.length}>Clear</Button>
           <CreateSetButton genes={matched} onClose={onClose} />
         </Row>
-      </Column>
+      </div>
     );
   }
 }

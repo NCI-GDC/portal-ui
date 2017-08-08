@@ -9,18 +9,13 @@ import { uniqueId, get, mapKeys, debounce } from 'lodash';
 import { connect } from 'react-redux';
 import withSize from '@ncigdc/utils/withSize';
 import FullScreenIcon from 'react-icons/lib/md/fullscreen';
-import JSURL from 'jsurl';
 
 import {
   exitFullScreen,
   enterFullScreen,
   isFullScreen,
 } from '@ncigdc/utils/fullscreen';
-import {
-  getFilterValue,
-  makeFilter,
-  replaceFilters,
-} from '@ncigdc/utils/filters';
+import { getFilterValue, replaceFilters } from '@ncigdc/utils/filters';
 import {
   consequenceTypes,
   colorMap,
@@ -33,17 +28,17 @@ import { Row, Column } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 import { StepLegend, SwatchLegend } from '@ncigdc/components/Legends';
-import SelectModal from '@ncigdc/components/Modals/SelectModal';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import Hidden from '@ncigdc/components/Hidden';
 
 import { visualizingButton } from '@ncigdc/theme/mixins';
-import { setModal } from '@ncigdc/dux/modal';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import { performanceTracker } from '@ncigdc/utils/analytics';
+import { withTooltip } from '@ncigdc/uikit/Tooltip/index';
 
 import getQueries from './getQueries';
 import oncoGridParams from './oncoGridParams';
+import mouseEvents from './mouseEvents';
 
 import './oncogrid.css';
 
@@ -188,6 +183,7 @@ const OncoGridWrapper = compose(
       currentFilters,
     };
   }),
+  withTooltip,
   withProps({
     oncoGridHeight: 150,
     oncoGridPadding: 306,
@@ -215,6 +211,7 @@ const OncoGridWrapper = compose(
         showGridLines,
         lastRequest,
         setLastRequest,
+        setTooltip,
       }: TProps = {},
       previousResponses: Object,
     ): Promise<*> {
@@ -259,61 +256,7 @@ const OncoGridWrapper = compose(
           (containerRefs[uniqueGridClass] || { offsetWidth: 0 }).offsetWidth -
             oncoGridPadding,
         height: oncoGridHeight,
-        geneClick: ({ id }: { id: string }) => push(`/genes/${id}`),
-        donorClick: ({ id }: { id: string }) => push(`/cases/${id}`),
-        donorHistogramClick: (data: { id: string }) => {
-          push({
-            pathname: '/exploration',
-            query: {
-              filters: JSURL.stringify(
-                makeFilter([
-                  {
-                    field: 'cases.case_id',
-                    value: data.id,
-                  },
-                ]),
-              ),
-            },
-          });
-        },
-        gridClick: (data: { id: string }) => {
-          push({
-            pathname: '/exploration',
-            query: {
-              filters: JSURL.stringify(
-                makeFilter([{ field: 'ssms.ssm_id', value: data.id }]),
-              ),
-              facetTab: 'mutations',
-              searchTableTab: 'mutations',
-            },
-          });
-        },
-        geneHistogramClick: (data: { id: string }) => {
-          push({
-            pathname: '/exploration',
-            query: {
-              filters: JSURL.stringify(
-                makeFilter([{ field: 'genes.gene_id', value: data.id }]),
-              ),
-              facetTab: 'genes',
-              searchTableTab: 'genes',
-            },
-          });
-        },
         trackPadding: 30,
-        addTrackFunc: (options, callback) => {
-          dispatch(
-            setModal(
-              <SelectModal
-                options={options}
-                onClose={(tracks = []) => {
-                  dispatch(setModal(null));
-                  if (tracks.length) callback(tracks);
-                }}
-              />,
-            ),
-          );
-        },
         impacts,
         consequenceTypes: filteredConsequenceTypes,
       });
@@ -336,6 +279,14 @@ const OncoGridWrapper = compose(
           setIsLoading(false);
           grid.container.node().style.visibility = 'visible';
           performanceTracker.end('oncogrid:render', performanceContext);
+        });
+
+        mouseEvents({
+          grid,
+          setTooltip,
+          trackLegends: gridParams.trackLegends,
+          push,
+          dispatch,
         });
 
         setCaseCount(responses.totalCases);

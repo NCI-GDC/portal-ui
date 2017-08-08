@@ -2,9 +2,11 @@
 
 import React from 'react';
 import _ from 'lodash';
-import { PaginationBtn } from '@ncigdc/uikit/Pagination';
+
 import { Row } from '@ncigdc/uikit/Flex';
 import { withTheme } from '@ncigdc/theme';
+
+import PaginationButton from './PaginationButton';
 import PaginationLink from './PaginationLink';
 import Sizes from './Sizes';
 
@@ -47,14 +49,17 @@ export const calculatePages = (props: TProps): {} => {
 
   const offset = props.params[prfOff];
   const size = props.params[prfSize];
+
+  const totalPages = Math.ceil(props.total / size);
   const prev = Math.max(offset - size, 0);
-  const last = props.total - props.total % size;
+  const last = (totalPages - 1) * size;
+
   const next = Math.min(offset + size, last);
   const prevPred = offset !== 0;
   const nextPred = offset < last;
 
   const currentPage = Math.ceil(offset / size) + 1;
-  const totalPages = Math.ceil(props.total / size);
+
   const pageOffset = 10 * Math.floor((currentPage - 1) / 10);
   return {
     prfOff,
@@ -110,34 +115,34 @@ const Pagination = (props: TProps) => {
 
       <Row style={{ marginLeft: 'auto' }}>
         <PaginationLink pred={prevPred} prfOff={prfOff} offset={0}>
-          <PaginationBtn style={styles.leftBtn(props.theme)}>
+          <PaginationButton style={styles.leftBtn(props.theme)}>
             {'«'}
-          </PaginationBtn>
+          </PaginationButton>
         </PaginationLink>
         <PaginationLink pred={prevPred} prfOff={prfOff} offset={prev}>
-          <PaginationBtn style={styles.middleBtn(props.theme)}>
+          <PaginationButton style={styles.middleBtn(props.theme)}>
             {'‹'}
-          </PaginationBtn>
+          </PaginationButton>
         </PaginationLink>
         {getPaginationRange(pageOffset, totalPages).map(x =>
           <PaginationLink key={x} prfOff={prfOff} offset={(x - 1) * size} pred>
-            <PaginationBtn
+            <PaginationButton
               active={currentPage === x}
               style={styles.middleBtn(props.theme)}
             >
               {x}
-            </PaginationBtn>
+            </PaginationButton>
           </PaginationLink>,
         )}
         <PaginationLink pred={nextPred} prfOff={prfOff} offset={next}>
-          <PaginationBtn style={styles.middleBtn(props.theme)}>
+          <PaginationButton style={styles.middleBtn(props.theme)}>
             {'›'}
-          </PaginationBtn>
+          </PaginationButton>
         </PaginationLink>
         <PaginationLink pred={nextPred} prfOff={prfOff} offset={last}>
-          <PaginationBtn style={styles.rightBtn(props.theme)}>
+          <PaginationButton style={styles.rightBtn(props.theme)}>
             {'»'}
-          </PaginationBtn>
+          </PaginationButton>
         </PaginationLink>
       </Row>
     </Row>

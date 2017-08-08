@@ -70,7 +70,6 @@
     "redux-api-middleware": "2.0.0-beta.2",
     "redux-persist": "4.8.0",
     "redux-thunk": "2.2.0",
-    "style-builder": "1.0.13",
     "url-join": "1.1.0"
   },
   "devDependencies": {

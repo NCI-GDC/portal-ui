@@ -41,3 +41,44 @@ describe('generates a pagination range', () => {
     ]);
   });
 });
+
+describe('last page is correct', () => {
+  it('last page offset is < then total', () => {
+    const total = 37;
+    const props = {
+      params: {
+        files_offset: 0,
+        files_size: 20,
+        files_sort: null,
+        filters: null,
+        fmTable_filters: null,
+        fmTable_offset: 0,
+        fmTable_size: 20,
+      },
+      total,
+      prefix: 'fmTable',
+    };
+    const { last } = calculatePages(props);
+    expect(last < total).toEqual(true);
+  });
+
+  it('last page offset + first is >= total', () => {
+    const total = 37;
+    const first = 20;
+    const props = {
+      params: {
+        files_offset: 0,
+        files_size: 20,
+        files_sort: null,
+        filters: null,
+        fmTable_filters: null,
+        fmTable_offset: 0,
+        fmTable_size: first,
+      },
+      total,
+      prefix: 'fmTable',
+    };
+    const { last } = calculatePages(props);
+    expect(last + first >= total).toEqual(true);
+  });
+});

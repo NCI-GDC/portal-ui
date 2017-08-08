@@ -43,7 +43,7 @@ export default compose(
       data={experimentalStrategies.map((item, i) => {
         const filters = makeFilter([
           {
-            field: 'projects.project_id',
+            field: 'cases.project.project_id',
             value: [project.project_id],
           },
           {

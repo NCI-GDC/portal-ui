@@ -47,7 +47,7 @@ export default compose(
       data={dataCategories.map((item, i) => {
         const filters = makeFilter([
           {
-            field: 'projects.project_id',
+            field: 'cases.project.project_id',
             value: [project.project_id],
           },
           { field: 'files.data_category', value: [item.data_category] },

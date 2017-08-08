@@ -3,7 +3,7 @@
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
 import { Th, Td } from '@ncigdc/uikit/Table';
-import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
+import { makeFilter, addInFilters, removeFilter } from '@ncigdc/utils/filters';
 import GeneLink from '@ncigdc/components/Links/GeneLink';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import SurvivalIcon from '@ncigdc/theme/icons/SurvivalIcon';
@@ -18,6 +18,8 @@ import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
 import Button from '@ncigdc/uikit/Button';
 import styled from '@ncigdc/theme/styled';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+
+import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -43,12 +45,26 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: () => <Th>Symbol</Th>,
-    td: ({ node, defaultFilters }) =>
-      <Td>
-        <GeneLink uuid={node.gene_id} query={{ filters: defaultFilters }}>
-          {node.symbol}
-        </GeneLink>
-      </Td>,
+    td: ({
+      node,
+      defaultFilters,
+    }: {
+      node: Object,
+      defaultFilters: TGroupFilter,
+    }) => {
+      return (
+        <Td>
+          <GeneLink
+            uuid={node.gene_id}
+            query={{
+              filters: removeFilter(f => f.match(/^genes\./), defaultFilters),
+            }}
+          >
+            {node.symbol}
+          </GeneLink>
+        </Td>
+      );
+    },
   },
   {
     name: 'Name',

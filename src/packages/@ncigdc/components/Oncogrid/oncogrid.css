@@ -40,24 +40,6 @@
   fill: red;
   stroke: red;
 }
-.oncogrid-wrapper div.og-tooltip-oncogrid {
-  font-weight: 300;
-  position: absolute;
-  z-index: 100001;
-  display: block;
-  visibility: visible;
-  font-size: 1.28rem;
-  pointer-events: none;
-  line-height: 2.2rem;
-  border: 1px solid #b3b3b3;
-  background-color: #fff;
-  border-radius: 3px;
-  -webkit-filter: drop-shadow(0 1px 3px rgba(180, 180, 180, 0.43));
-  box-shadow: 0 1px 3px rgba(180, 180, 180, 0.43);
-  -moz-box-shadow: 0 1px 3px rgba(180, 180, 180, 0.43);
-  filter: drop-shadow(0 1px 3px rgba(180, 180, 180, 0.43));
-  padding: 5px;
-}
 .oncogrid-wrapper .og-horizontal-cross {
   stroke: black;
 }

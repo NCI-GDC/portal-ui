@@ -170,6 +170,7 @@ const CartDownloadDropdown = ({
     >
       <Column>
         <DownloadButton
+          size={files.length}
           className="test-download-manifest"
           style={styles.button(theme)}
           endpoint="manifest"

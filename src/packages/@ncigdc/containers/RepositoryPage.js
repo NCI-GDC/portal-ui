@@ -12,7 +12,7 @@ import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
-import DownloadButton from '@ncigdc/components/DownloadButton';
+import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
 
 import CasesTable from '@ncigdc/containers/CasesTable';
 import CaseAggregations from '@ncigdc/containers/CaseAggregations';
@@ -144,12 +144,8 @@ export const RepositoryPageComponent = (props: TProps) => {
                 >
                   Add All Files to Cart
                 </Button>
-                <DownloadButton
-                  disabled={!fileCount}
-                  endpoint="files"
-                  activeText="Downloading"
-                  inactiveText="Download Manifest"
-                  returnType="manifest"
+                <DownloadManifestButton
+                  fileCount={fileCount}
                   filters={props.filters}
                 />
                 <CreateRepositoryCaseSetButton

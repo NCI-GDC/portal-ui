@@ -75,7 +75,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
     push(`/${type === 'donor' ? 'cases' : 'genes'}/${id}`);
   });
   grid.on('histogramClick', ({ domain: { id }, type }) => {
-    type = type === 'donor' ? 'case' : type;
+    const gdcType = type === 'donor' ? 'case' : type;
     push({
       pathname: '/exploration',
       query: {
@@ -84,12 +84,12 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
           content: [
             {
               op: 'IN',
-              content: { field: `${type}s.${type}_id`, value: [id] },
+              content: { field: `${gdcType}s.${gdcType}_id`, value: [id] },
             },
           ],
         }),
-        facetTab: `${type}s`,
-        searchTableTab: `${type}s`,
+        facetTab: `${gdcType}s`,
+        searchTableTab: `${gdcType}s`,
       },
     });
   });

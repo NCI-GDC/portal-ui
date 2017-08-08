@@ -8,7 +8,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
   grid.on('gridMouseOver', data => {
     setTooltip(
       data.observation &&
-        <div>
+        <div style={{ maxWidth: 800 }}>
           <div>Case: {data.donor.displayId}</div>
           <div>Gene: {data.observation.geneSymbol}</div>
           <div>Mutation: {data.observation.id}</div>
@@ -20,7 +20,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
 
   grid.on('gridCrosshairMouseOver', data => {
     setTooltip(
-      <div>
+      <div style={{ maxWidth: 800 }}>
         {data.donor && <div>Case: {data.donor.displayId}</div>}
         {data.gene && <div>Gene: {data.gene.symbol}</div>}
         {data.obs && <div>Mutations: {data.obs}</div>}
@@ -31,7 +31,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
 
   grid.on('histogramMouseOver', data => {
     setTooltip(
-      <div>
+      <div style={{ maxWidth: 800 }}>
         {data.domain.symbol ? data.domain.symbol : data.domain.displayId}
         <br /> Count: {data.domain.count}<br />
       </div>,
@@ -52,7 +52,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
       },
     }) => {
       setTooltip(
-        <div>
+        <div style={{ maxWidth: 800 }}>
           <div>{displayId}</div>
           {displayName}: {displayValue.toString()}
           {type === 'age'

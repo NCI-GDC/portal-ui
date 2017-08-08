@@ -102,8 +102,6 @@ export const clinicalDonorTracks = [
     sort: sortInt,
     group: 'Clinical',
     color: '#638f56',
-    template:
-      '<div>{{displayId}}</div>{{displayName}}: {{displayValue}}{{#notNullSentinel}} days{{/notNullSentinel}}',
     legend: track => legendGradient({ ...track, max: '100+' }),
   },
   {
@@ -129,11 +127,6 @@ export const clinicalDonorTracks = [
   },
 ];
 
-const dataTypeTemplate = `
-  <div>{{displayId}}</div>
-  {{displayName}}: {{displayValue}}{{#notNullSentinel}} files{{/notNullSentinel}}
-`;
-
 export const dataTypeTracks = [
   {
     name: 'Clinical',
@@ -143,7 +136,6 @@ export const dataTypeTracks = [
     group: 'Data Types',
     longName: 'Clinical',
     color: 'darkkhaki',
-    template: dataTypeTemplate,
     legend: legendSingle,
   },
   {
@@ -154,7 +146,6 @@ export const dataTypeTracks = [
     group: 'Data Types',
     longName: 'Biospecimen',
     color: 'darkslategrey',
-    template: dataTypeTemplate,
     legend: legendSingle,
   },
   {
@@ -165,7 +156,6 @@ export const dataTypeTracks = [
     group: 'Data Types',
     longName: 'Raw Sequencing Data',
     color: 'cyan',
-    template: dataTypeTemplate,
     legend: legendSingle,
   },
   {
@@ -176,7 +166,6 @@ export const dataTypeTracks = [
     group: 'Data Types',
     longName: 'Simple Nucleotide Variation',
     color: 'darkkhaki',
-    template: dataTypeTemplate,
     legend: legendSingle,
   },
   {
@@ -187,7 +176,6 @@ export const dataTypeTracks = [
     group: 'Data Types',
     longName: 'Copy Number Variation',
     color: 'darksalmon',
-    template: dataTypeTemplate,
     legend: legendSingle,
   },
   {
@@ -198,7 +186,6 @@ export const dataTypeTracks = [
     group: 'Data Types',
     longName: 'Transcriptome Profiling',
     color: 'mediumseagreen',
-    template: dataTypeTemplate,
     legend: legendSingle,
   },
 ];

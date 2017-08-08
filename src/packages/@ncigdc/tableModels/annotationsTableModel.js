@@ -27,6 +27,7 @@ const annotationsTableModel = [
     name: 'UUID',
     id: 'annotation_id',
     downloadable: true,
+    sortable: true,
     th: () => <Th key="annotation_id" rowSpan="2">UUID</Th>,
     td: ({ node, index }) =>
       <Td>
@@ -58,6 +59,7 @@ const annotationsTableModel = [
     name: 'Case ID',
     id: 'case_submitter_id',
     downloadable: true,
+    sortable: true,
     th: () => <Th key="case_submitter_id" rowSpan="2">Case ID</Th>,
     td: ({ node, index }) =>
       <Td>
@@ -93,6 +95,7 @@ const annotationsTableModel = [
   {
     name: 'Project',
     id: 'project.project_id',
+    sortable: true,
     downloadable: true,
     th: () => <Th key="project.project_id" rowSpan="2">Project</Th>,
     td: ({ node, index }) =>
@@ -108,6 +111,7 @@ const annotationsTableModel = [
   {
     name: 'Entity Type',
     id: 'entity_type',
+    sortable: true,
     downloadable: true,
     th: () => <Th key="entity_type" rowSpan="2">Entity Type</Th>,
     td: ({ node, index }) =>
@@ -118,6 +122,7 @@ const annotationsTableModel = [
   {
     name: 'Entity UUID',
     id: 'entity_id',
+    sortable: true,
     downloadable: true,
     hidden: true,
     th: () => <Th key="entity_id" rowSpan="2">Entity UUID</Th>,
@@ -129,6 +134,7 @@ const annotationsTableModel = [
   {
     name: 'Entity ID',
     id: 'entity_submitter_id',
+    sortable: true,
     downloadable: true,
     th: () => <Th key="entity_submitter_id" rowSpan="2">Entity ID</Th>,
     td: ({ node, index }) =>
@@ -149,6 +155,7 @@ const annotationsTableModel = [
     name: 'Category',
     id: 'category',
     downloadable: true,
+    sortable: true,
     th: () => <Th key="category" rowSpan="2">Category</Th>,
     td: ({ node, index }) =>
       <Td>
@@ -158,6 +165,7 @@ const annotationsTableModel = [
   {
     name: 'Classification',
     id: 'classification',
+    sortable: true,
     downloadable: true,
     th: () => <Th key="classification" rowSpan="2">Classification</Th>,
     td: ({ node, index }) =>

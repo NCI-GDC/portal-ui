@@ -55,19 +55,9 @@ export default function({
   element,
   height = 150,
   width = 680,
-  addTrackFunc,
   trackPadding,
   consequenceTypes,
   impacts,
-  donorHistogramClick = (d: {}) => console.log('donorHistogramClick: ', d),
-  gridClick = (o: {}) => console.log('gridClick: ', o),
-  geneHistogramClick = (g: {}) => console.log('geneHistogramClick: ', g),
-  geneClick = (g: {}) => {
-    console.log('geneClick', g);
-  },
-  donorClick = (d: {}) => {
-    console.log('donorClick', d);
-  },
   grid = true,
 }: {
   donorData: Array<TDonorInput>,
@@ -77,18 +67,9 @@ export default function({
   element: string,
   height: number,
   width: number,
-  addTrackFunc: (
-    trackOptions: Array<{ name: string }>,
-    callback: (t: Array<{ name: string }>) => void,
-  ) => void,
   trackPadding: number,
   consequenceTypes: Array<string>,
   impacts: Array<string>,
-  donorHistogramClick?: Function,
-  gridClick?: Function,
-  geneHistogramClick?: Function,
-  geneClick?: Function,
-  donorClick?: Function,
   grid?: boolean,
 }): ?Object {
   const { observations, donorIds, geneIds } = buildOccurrences(
@@ -176,26 +157,6 @@ export default function({
       GDC: gdcLegend(maxDonorsAffected),
       'Gene Sets': geneSetLegend(),
     },
-    templates: {
-      mainGrid: `
-        {{#observation}}
-          <div>Case: {{donor.displayId}}</div>
-          <div>Gene: {{observation.geneSymbol}}</div>
-          <div>Mutation: {{observation.id}}</div>
-          <div>Consequence: {{observation.consequence}}</div>
-        {{/observation}}
-      `,
-      mainGridCrosshair: `
-        {{#donor}}<div>Case: {{donor.displayId}}</div>{{/donor}}
-        {{#gene}}<div>Gene: {{gene.symbol}}</div>{{/gene}}
-        {{#obs}}<div>Mutations: {{obs}}</div>{{/obs}}
-      `,
-      histogram: `
-        {{#domain.symbol}}{{domain.symbol}}{{/domain.symbol}}
-        {{^domain.symbol}}{{domain.displayId}}{{/domain.symbol}}
-        <br/> Count: {{domain.count}}<br/>
-      `,
-    },
     trackLegendLabel:
       '<i style="font-size: 13px; margin-left: 5px" class="fa fa-question-circle"></i>',
     donorTracks,
@@ -207,13 +168,7 @@ export default function({
     expandableGroups: ['Clinical'],
     margin: { top: 20, right: 5, bottom: 20, left: 0 },
     leftTextWidth: 120,
-    addTrackFunc,
     trackPadding,
-    donorHistogramClick,
-    gridClick,
-    geneHistogramClick,
-    geneClick,
-    donorClick,
   };
 }
 

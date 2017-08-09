@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { compose, lifecycle } from 'recompose';
+import { compose, lifecycle, branch, renderComponent } from 'recompose';
 import { connect } from 'react-redux';
 import JSURL from 'jsurl';
 import sapien from '@oncojs/sapien';
@@ -22,6 +22,10 @@ const containerStyle = {
 const InsideContainer = styled.div(containerStyle);
 
 export default compose(
+  branch(
+    ({ viewer }) => !viewer.repository.cases.aggregations,
+    renderComponent(() => <div>No data found.</div>),
+  ),
   withTooltip,
   connect(state => ({ config: state.versionInfo })),
   withRouter,

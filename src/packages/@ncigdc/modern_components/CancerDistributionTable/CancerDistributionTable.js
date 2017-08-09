@@ -147,8 +147,8 @@ export default compose(
             <Tooltip
               Component={
                 <span>
-                  Number of Simple Somatic Mutations observed in {entityName} in
-                  Project
+                  # Unique Simple Somatic Mutations observed in{' '}
+                  {entityName} in Project
                 </span>
               }
               style={tableToolTipHint()}

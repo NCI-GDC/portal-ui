@@ -98,6 +98,7 @@ const casesTableModel = [
     name: 'Project',
     id: 'project.project_id',
     downloadable: true,
+    sortable: true,
     th: () => <Th key="project_id" rowSpan="2">Project</Th>,
     td: ({ node, index }) =>
       <Td>

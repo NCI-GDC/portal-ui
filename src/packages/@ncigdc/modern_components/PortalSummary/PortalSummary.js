@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import { compose, branch, renderComponent } from 'recompose';
 import { connect } from 'react-redux';
 import styled from '@ncigdc/theme/styled';
 import DoubleHelix from '@ncigdc/theme/icons/DoubleHelix';
@@ -25,9 +26,18 @@ const Title = styled(Row, {
   marginBottom: '0.5rem',
 });
 
-const PortalSummary = connect(state => ({
-  dataRelease: state.versionInfo.dataRelease,
-}))(props =>
+const PortalSummary = compose(
+  branch(
+    ({ viewer }) =>
+      !viewer.projects.hits ||
+      !viewer.repository.cases.hits ||
+      !viewer.repository.files.hits,
+    renderComponent(() => <div>No data found.</div>),
+  ),
+  connect(state => ({
+    dataRelease: state.versionInfo.dataRelease,
+  })),
+)(props =>
   <span>
     <Row style={{ padding: '2rem', alignItems: 'baseline' }}>
       <div style={{ fontSize: '2.3rem', color: 'rgb(70, 70, 70)' }}>

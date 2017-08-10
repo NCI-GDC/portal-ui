@@ -7,7 +7,7 @@ import { compose, withState } from 'recompose';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
 import styled from '@ncigdc/theme/styled';
 
-const BrowseButton = styled.div({
+const BrowseButton = styled.label({
   ...buttonBaseStyles,
   marginRight: 5,
 });
@@ -33,6 +33,7 @@ export default enhance(
             Browse<FileInput
               multiple
               accept=".tsv,.csv,.txt"
+              style={{ display: 'none' }}
               addFiles={files => {
                 setUploading(true);
                 setInputFile(files.map(f => f.name).join(', '));

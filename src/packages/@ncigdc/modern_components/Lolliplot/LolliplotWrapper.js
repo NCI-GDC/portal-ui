@@ -1,7 +1,13 @@
 // @flow
 
 import React from 'react';
-import { compose, withProps, withPropsOnChange, withState } from 'recompose';
+import {
+  compose,
+  withProps,
+  withPropsOnChange,
+  withState,
+  lifecycle,
+} from 'recompose';
 import { insertRule } from 'glamor';
 import withRouter from '@ncigdc/utils/withRouter';
 import { Row, Column } from '@ncigdc/uikit/Flex';
@@ -50,6 +56,7 @@ export default compose(
     ) || {}).node;
 
     return {
+      lolliplotData: null,
       activeTranscript,
       min: 0,
       max: activeTranscript.length_amino_acid,
@@ -58,6 +65,26 @@ export default compose(
       consequenceBlacklist: new Set(),
       impactBlacklist: new Set(),
     };
+  }),
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if (this.props.gene.gene_id !== nextProps.gene.gene_id) {
+        const activeTranscript = (nextProps.gene.transcripts.hits.edges.find(
+          x => x.node.is_canonical,
+        ) || {}).node;
+
+        this.props.setState(s => ({
+          ...s,
+          activeTranscript,
+          min: 0,
+          max: activeTranscript.length_amino_acid,
+          width: 0,
+          blacklist: 'consequence',
+          consequenceBlacklist: new Set(),
+          impactBlacklist: new Set(),
+        }));
+      }
+    },
   }),
   withProps(({ state, setState }) => ({
     toggleBlacklistItem: variant => {
@@ -94,6 +121,7 @@ export default compose(
       min,
       max,
       blacklist,
+      lolliplotData,
       ...state
     },
     mutationId,
@@ -117,15 +145,17 @@ export default compose(
         </h1>
       </Row>
       <div>
-        <LolliplotToolbar
-          activeTranscript={activeTranscript}
-          gene={gene}
-          transcripts={transcripts.filter(x =>
-            transcriptBuckets.find(b => b.key === x.transcript_id),
-          )}
-          setState={setState}
-          selector={selector}
-        />
+        {lolliplotData &&
+          <LolliplotToolbar
+            activeTranscript={activeTranscript}
+            gene={gene}
+            transcripts={transcripts.filter(x =>
+              transcriptBuckets.find(b => b.key === x.transcript_id),
+            )}
+            setState={setState}
+            selector={selector}
+            lolliplotData={lolliplotData}
+          />}
         {notEnoughData &&
           <Column style={{ alignItems: 'center', padding: '20px' }}>
             Not enough data

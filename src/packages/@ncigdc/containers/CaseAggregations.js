@@ -37,6 +37,7 @@ export type TProps = {
   setCaseIdCollapsed: Function,
   relay: Object,
   facets: { facets: string },
+  parsedFacets: Object,
   aggregations: {
     demographic__ethnicity: { buckets: [TBucket] },
     demographic__gender: { buckets: [TBucket] },
@@ -190,6 +191,9 @@ const enhance = compose(
           .join(','),
       }),
   ),
+  withPropsOnChange(['facets'], ({ facets }) => ({
+    parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
+  })),
   lifecycle({
     componentDidMount(): void {
       const { filters, userSelectedFacets } = this.props;
@@ -244,7 +248,7 @@ export const CaseAggregationsComponent = (props: TProps) =>
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
-        additionalFacetData={tryParseJSON(props.facets.facets)}
+        additionalFacetData={props.parsedFacets}
         relay={props.relay}
       />
     </Modal>
@@ -254,10 +258,7 @@ export const CaseAggregationsComponent = (props: TProps) =>
         isRemovable
         key={facet.full}
         facet={facet}
-        aggregation={
-          props.facets.facets &&
-          tryParseJSON(props.facets.facets, {})[facet.field]
-        }
+        aggregation={props.parsedFacets[facet.field]}
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}

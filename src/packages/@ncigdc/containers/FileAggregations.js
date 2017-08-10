@@ -74,6 +74,9 @@ const enhance = compose(
           .join(','),
       }),
   ),
+  withPropsOnChange(['facets'], ({ facets }) => ({
+    parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
+  })),
   lifecycle({
     componentDidMount(): void {
       const { filters, relay, userSelectedFacets } = this.props;
@@ -99,6 +102,7 @@ export type TProps = {
   fileIdCollapsed: boolean,
   setFileIdCollapsed: Function,
   facets: { facets: string },
+  parsedFacets: Object,
   aggregations: {
     access: { buckets: [TBucket] },
     data_category: { buckets: [TBucket] },
@@ -164,7 +168,7 @@ export const FileAggregationsComponent = (props: TProps) =>
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
-        additionalFacetData={tryParseJSON(props.facets.facets)}
+        additionalFacetData={props.parsedFacets}
         relay={props.relay}
       />
     </Modal>
@@ -175,10 +179,7 @@ export const FileAggregationsComponent = (props: TProps) =>
         relayVarName="filesCustomFacetFields"
         key={facet.full}
         facet={facet}
-        aggregation={
-          props.facets.facets &&
-          tryParseJSON(props.facets.facets, {})[facet.field]
-        }
+        aggregation={props.parsedFacets[facet.field]}
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}

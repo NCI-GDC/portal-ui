@@ -268,7 +268,7 @@ export const RepositoryPageQuery = {
             pies: aggregations(filters: $filters aggregations_filter_themselves: true) {
               ${RepoCasesPies.getFragment('aggregations')}
             }
-            hits(first: $cases_size offset: $cases_offset, filters: $filters, sort: $cases_sort) {
+            hits(score: "annotations.annotation_id" first: $cases_size offset: $cases_offset, filters: $filters, sort: $cases_sort) {
               ${CasesTable.getFragment('hits')}
               total
             }

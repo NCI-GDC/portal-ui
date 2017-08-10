@@ -6,6 +6,8 @@ import ReactModal from 'react-modal';
 
 import './Modal.css';
 
+ReactModal.setAppElement('#root');
+
 const modalStyles = {
   overlay: {
     position: 'fixed',

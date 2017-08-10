@@ -11,8 +11,6 @@ const Dropdown = ({
   selected,
   active,
   setActive,
-  mouseDownHandler,
-  mouseUpHandler,
   children,
   dropdownStyle = {},
   dropdownClassName = '',
@@ -25,11 +23,7 @@ const Dropdown = ({
     style={{ position: 'relative', ...style }}
     className={className + ' dropdown'}
   >
-    <span
-      onMouseDown={mouseDownHandler}
-      onMouseUp={mouseUpHandler}
-      onClick={() => !isDisabled && setActive(!active)}
-    >
+    <span onClick={e => !isDisabled && setActive(!active)}>
       {button ||
         <Row style={styles.dropdownButton}>
           <span>{selected}</span>
@@ -40,9 +34,7 @@ const Dropdown = ({
       <Column
         className={dropdownClassName}
         style={{ ...styles.dropdown, ...dropdownStyle }}
-        onMouseDown={mouseDownHandler}
-        onMouseUp={mouseUpHandler}
-        onClick={() => autoclose && setTimeout(() => setActive(false))}
+        onClick={e => !autoclose && e.stopPropagation()}
       >
         {children}
       </Column>}

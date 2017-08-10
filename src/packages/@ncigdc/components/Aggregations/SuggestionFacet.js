@@ -217,8 +217,7 @@ const SuggestionFacet = compose(
                           width: '300px',
                           wordBreak: 'break-word',
                         }}
-                        onMouseUp={mouseUpHandler}
-                        onMouseDown={mouseDownHandler}
+                        onClick={e => e.stopPropagation()}
                       >
                         {(results || []).map(x =>
                           <Row

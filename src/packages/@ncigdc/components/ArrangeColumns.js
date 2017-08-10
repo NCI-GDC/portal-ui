@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState, pure, withPropsOnChange } from 'recompose';
+import { compose, withState, pure, lifecycle } from 'recompose';
 import ArrangeIcon from 'react-icons/lib/fa/bars';
 
 import { Row } from '@ncigdc/uikit/Flex';
@@ -18,30 +18,27 @@ const SortRow = styled(Row, {
   },
 });
 
+function updateColumns({ tableColumns: { order }, entityType }) {
+  return tableModels[entityType]
+    .slice()
+    .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+}
+
 const ArrangeColumns = compose(
   connect((state, props) => ({
     tableColumns: state.tableColumns[props.entityType],
   })),
-  withState('state', 'setState', ({ entityType, tableColumns: { order } }) => ({
+  withState('state', 'setState', props => ({
     draggingIndex: null,
-    columns: tableModels[entityType]
-      .slice()
-      .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)),
+    columns: updateColumns(props),
   })),
-  withPropsOnChange(
-    ['tableColumns'],
-    ({ tableColumns, entityType, setState }) => {
-      setState({
-        columns: tableModels[entityType]
-          .slice()
-          .sort(
-            (a, b) =>
-              tableColumns.order.indexOf(a.id) -
-              tableColumns.order.indexOf(b.id),
-          ),
-      });
+  lifecycle({
+    componentWillReceiveProps(nextProps) {
+      if (nextProps.tableColumns !== this.props.tableColumns) {
+        nextProps.setState({ columns: updateColumns(nextProps) });
+      }
     },
-  ),
+  }),
   pure,
 )(({ dispatch, tableColumns, setState, state, searchTerm, entityType }) => {
   const filteredColumns = state.columns.filter(

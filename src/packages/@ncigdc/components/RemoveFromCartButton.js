@@ -75,13 +75,13 @@ const RemoveFromCartButton = ({ style, files, theme, dispatch, user }) =>
           onClick={() =>
             dispatch(
               toggleFilesInCart(
-                files.filter(file => userCanDownloadFile({ user, file })),
+                files.filter(file => !userCanDownloadFile({ user, file })),
               ),
             )}
           leftIcon={<XIcon />}
         >
           Unauthorized Files ({
-            files.filter(file => userCanDownloadFile({ user, file })).length
+            files.filter(file => !userCanDownloadFile({ user, file })).length
           })
         </Button>
       </Column>

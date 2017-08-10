@@ -1,27 +1,12 @@
 // @flow
 import React from 'react';
 
-let baseStyle = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  bottom: 0,
-  opacity: 0,
-  width: '100%',
-  zIndex: 1,
-  cursor: 'pointer',
-};
+type TProps = { addFiles: Function };
 
-type TProps = {|
-  addFiles: Function,
-  style?: {},
-|};
-
-export default ({ addFiles, style, ...props }: TProps) => {
+export default ({ addFiles, ...props }: TProps) => {
   return (
     <input
       {...props}
-      style={{ ...baseStyle, ...style }}
       type="file"
       title="File Input"
       className={props.className + ' test-file-input'}

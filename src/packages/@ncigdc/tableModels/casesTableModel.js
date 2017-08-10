@@ -183,11 +183,11 @@ const casesTableModel = [
   ...dataCategoryColumns,
   {
     name: 'Annotations',
-    id: 'Annotations',
+    id: 'score',
     sortable: true,
-    th: () => <NumTh key="Annotations" rowSpan="2">Annotations</NumTh>,
+    th: () => <NumTh key="score" rowSpan="2">Annotations</NumTh>,
     td: ({ node }) =>
-      <NumTd key="Annotations">
+      <NumTd key="score">
         <AnnotationCountLink
           hits={node.annotations.hits}
           filters={makeFilter([

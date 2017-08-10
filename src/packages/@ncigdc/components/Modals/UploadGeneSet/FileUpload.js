@@ -2,9 +2,15 @@ import React from 'react';
 
 import FileInput from '@ncigdc/components/FileInput';
 import { Row } from '@ncigdc/uikit/Flex';
-import Button from '@ncigdc/uikit/Button';
+import { buttonBaseStyles } from '@ncigdc/uikit/Button';
 import { compose, withState } from 'recompose';
 import { SpinnerIcon } from '@ncigdc/theme/icons';
+import styled from '@ncigdc/theme/styled';
+
+const BrowseButton = styled.div({
+  ...buttonBaseStyles,
+  marginRight: 5,
+});
 
 const REMOVE_HEADER_FROM_TSV = false;
 function readFile(file) {
@@ -23,7 +29,7 @@ export default enhance(
       <div>
         Or choose a file to upload
         <Row style={{ alignItems: 'center' }}>
-          <Button style={{ marginRight: 5 }}>
+          <BrowseButton>
             Browse<FileInput
               multiple
               accept=".tsv,.csv,.txt"
@@ -46,7 +52,7 @@ export default enhance(
                 });
               }}
             />
-          </Button>
+          </BrowseButton>
           {inputFiles}
         </Row>
         {uploading && <span><SpinnerIcon /> uploading files</span>}

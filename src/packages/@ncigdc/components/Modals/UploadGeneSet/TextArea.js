@@ -6,7 +6,7 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
 export default ({ inputGenes, setInputGenes }) => {
   return (
-    <div>
+    <label style={{ display: 'block' }}>
       <Row style={{ justifyContent: 'space-between' }}>
         <div>
           Type or copy-and-paste a list of gene identifiers
@@ -16,7 +16,8 @@ export default ({ inputGenes, setInputGenes }) => {
             <div style={{ whiteSpace: 'nowrap' }}>
               - Gene identifier accepted: Gene symbol, Ensembl, Entrez gene,
               HGNC Gene, OMIM, UniProtKB/Swiss-Prot<br />
-              - Delimiters between gene identifiers: comma, space, tab or 1 gene
+              - Delimiters between gene identifiers: comma, space, tab or 1
+              gene
               identifier per line<br />
               - If you upload a file, format file is text file (.txt, .csv,
               .tsv)
@@ -35,6 +36,6 @@ export default ({ inputGenes, setInputGenes }) => {
           minHeight: 80,
         }}
       />
-    </div>
+    </label>
   );
 };

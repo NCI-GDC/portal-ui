@@ -76,9 +76,6 @@ export default compose(
         setState(s => ({ ...s, blacklist: 'consequence' }));
       }
 
-      // pass data up to wrapper -> toolbar
-      setState(s => ({ ...s, lolliplotData }));
-
       return {
         lolliplotData,
         outsideSsms: lolliplotData.mutations.filter(
@@ -88,9 +85,14 @@ export default compose(
       };
     },
   ),
-  withPropsOnChange(['lolliplotData'], ({ lolliplotData }) => {
+  // pass data up to parent for download button
+  withPropsOnChange(
+    (p, n) =>
+      p.activeTranscript.transcript_id !== n.activeTranscript.transcript_id,
+    ({ setState, lolliplotData }) => setState(s => ({ ...s, lolliplotData })),
+  ),
+  withPropsOnChange(['lolliplotData'], ({ lolliplotData, setState }) => {
     const consequences = groupByType('consequence', lolliplotData.mutations);
-
     const mutationColors = {
       consequence: Object.keys(consequences).reduce(
         (acc, type, i) => ({

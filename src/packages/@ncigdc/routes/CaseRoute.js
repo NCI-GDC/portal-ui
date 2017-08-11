@@ -62,7 +62,7 @@ export default (
       const fmFilters = makeFilter([{ field: 'cases.case_id', value: caseId }]);
 
       return (
-        <FullWidthLayout title={caseId} entityType="PR">
+        <FullWidthLayout title={caseId} entityType="CA">
           <Column spacing="2rem" className="test-case">
             <Row style={{ justifyContent: 'flex-end' }}>
               <AddOrRemoveAllFilesButton caseId={caseId} />

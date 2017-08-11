@@ -205,7 +205,7 @@ const SuggestionFacet = compose(
                               selectableList,
                               `focusedItem.${fieldNoDoctype}`,
                             )
-                          : undefined
+                          : null
                       }
                       {...active && {
                         'aria-owns': `${fieldNoDoctype}-options`,

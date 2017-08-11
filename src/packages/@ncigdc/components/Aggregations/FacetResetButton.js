@@ -4,7 +4,6 @@ import React from 'react';
 
 import Link from '@ncigdc/components/Links/Link';
 import UndoIcon from '@ncigdc/theme/icons/UndoIcon';
-import Hidden from '@ncigdc/components/Hidden';
 import styled from '@ncigdc/theme/styled';
 import withRouter from '@ncigdc/utils/withRouter';
 
@@ -51,8 +50,9 @@ const FacetResetButton = ({
       className="test-facet-reset-button"
       style={{ display: inCurrent ? 'inline' : 'none', ...style }}
       query={newQuery}
+      aria-label="reset"
     >
-      <ShadowedUndoIcon /><Hidden>reset</Hidden>
+      <ShadowedUndoIcon />
     </StyledLink>
   );
 };

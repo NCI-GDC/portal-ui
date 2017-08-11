@@ -199,10 +199,14 @@ const SuggestionFacet = compose(
                       onKeyDown={selectableList.handleKeyEvent}
                       placeholder={placeholder}
                       value={inputValue}
-                      aria-activedescendant={_.get(
-                        selectableList,
-                        'focusedItem.id',
-                      )}
+                      aria-activedescendant={
+                        active
+                          ? _.get(
+                              selectableList,
+                              `focusedItem.${fieldNoDoctype}`,
+                            )
+                          : null // false gets stringify, so value needs to be `null` or `undefined`
+                      }
                       {...active && {
                         'aria-owns': `${fieldNoDoctype}-options`,
                       }}

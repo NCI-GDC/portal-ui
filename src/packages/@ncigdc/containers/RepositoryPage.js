@@ -17,7 +17,7 @@ import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
 
 import CasesTable from '@ncigdc/containers/CasesTable';
 import CaseAggregations from '@ncigdc/containers/CaseAggregations';
-import FilesTable from '@ncigdc/containers/FilesTable';
+import FilesTable from '@ncigdc/modern_components/FilesTable';
 import FileAggregations from '@ncigdc/containers/FileAggregations';
 import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
 import { ShoppingCartIcon, SaveIcon } from '@ncigdc/theme/icons';
@@ -230,7 +230,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                         <RepoFilesPies
                           aggregations={props.viewer.repository.files.pies}
                         />
-                        <FilesTable hits={props.viewer.repository.files.hits} />
+                        <FilesTable />
                       </div>
                     : <NoResultsMessage>
                         No results found using those filters.
@@ -335,7 +335,6 @@ export const RepositoryPageQuery = {
               ${RepoFilesPies.getFragment('aggregations')}
             }
             hits(first: $files_size offset: $files_offset, filters: $filters, sort: $files_sort) {
-              ${FilesTable.getFragment('hits')}
               total
             }
           }

@@ -1,43 +1,78 @@
-/* @flow */
-/* eslint fp/no-class:0 */
-
+// @flow
 import React from 'react';
-import Relay from 'react-relay/classic';
-import { parse } from 'query-string';
+import { Route } from 'react-router-dom';
+import { compose } from 'recompose';
 import { connect } from 'react-redux';
-
-import { handleStateChange } from '@ncigdc/dux/relayProgress';
-import CartPage from '@ncigdc/containers/CartPage';
-import { parseIntParam, parseJSURLParam } from '@ncigdc/utils/uri';
 import { setFilter } from '@ncigdc/utils/filters';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import FilesTable from '@ncigdc/modern_components/FilesTable';
+import CartSummary from '@ncigdc/modern_components/CartSummary';
+import MetadataDownloadButton from '@ncigdc/components/MetadataDownloadButton';
+import HowToDownload from '@ncigdc/components/HowToDownload';
+import CartDownloadDropdown from '@ncigdc/components/CartDownloadDropdown';
+import RemoveFromCartButton from '@ncigdc/components/RemoveFromCartButton';
 
-import { viewerQuery } from './queries';
-
-class CartRoute extends Relay.Route {
-  static routeName = 'CartRoute';
-  static queries = viewerQuery;
-  static prepareParams = ({ location: { search }, files }) => {
-    const q = parse(search);
-
-    return {
-      files_offset: parseIntParam(q.files_offset, 0),
-      files_size: parseIntParam(q.files_size, 20),
-      files_sort: parseJSURLParam(q.files_sort, null),
-      filters: files.length
-        ? setFilter({
-            field: 'files.file_id',
-            value: files.map(f => f.file_id),
-          })
-        : null,
-    };
-  };
-}
-
-export default connect(state => state.cart)((props: mixed) =>
-  <Relay.Renderer
-    Container={CartPage}
-    queryConfig={new CartRoute(props)}
-    environment={Relay.Store}
-    onReadyStateChange={handleStateChange(props)}
-  />,
+export default (
+  <Route
+    path="/cart"
+    component={compose(
+      connect(state => ({
+        ...state.cart,
+        ...state.auth,
+      })),
+    )(
+      ({
+        viewer,
+        files,
+        user,
+        defaultFilters = files.length
+          ? setFilter({
+              field: 'files.file_id',
+              value: files.map(f => f.file_id),
+            })
+          : null,
+        styles = {
+          container: {
+            padding: '2rem 2.5rem 13rem',
+          },
+        },
+      }) => {
+        return (
+          <Column style={styles.container} className="test-cart-page">
+            {!files.length && <h1>Your cart is empty.</h1>}
+            {!!files.length &&
+              <Column>
+                <Row style={{ marginBottom: '2rem', flexWrap: 'wrap' }}>
+                  <CartSummary defaultFilters={defaultFilters} files={files} />
+                  <HowToDownload
+                    style={{
+                      flex: 1,
+                      backgroundColor: 'transparent',
+                      minWidth: '18em',
+                      flexShrink: 0,
+                    }}
+                  />
+                </Row>
+                <Row style={{ marginBottom: '2rem' }}>
+                  <Row
+                    style={{ marginLeft: 'auto', zIndex: 10 }}
+                    spacing="1rem"
+                  >
+                    <MetadataDownloadButton files={{ files }} />
+                    <CartDownloadDropdown files={files} user={user} />
+                    <RemoveFromCartButton user={user} />
+                  </Row>
+                </Row>
+                <FilesTable
+                  downloadable={false}
+                  canAddToCart={false}
+                  tableHeader={'Cart Items'}
+                  defaultFilters={defaultFilters}
+                />
+              </Column>}
+          </Column>
+        );
+      },
+    )}
+  />
 );

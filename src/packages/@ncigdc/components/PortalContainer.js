@@ -113,16 +113,17 @@ const PortalContainer = ({
       />
       <Switch>
         <Route exact path="/" component={HomeRoute} />
-        <Route exact path="/cart" component={CartRoute} />
         <Route exact path="/repository" component={RepositoryRoute} />
         <Route exact path="/exploration" component={ExploreRoute} />
         <Route exact path="/projects" component={ProjectsRoute} />
         <Route exact path="/annotations" component={AnnotationsRoute} />
         <Route exact path="/query" component={SmartSearchRoute} />
-        {ProjectRoute}
+        <Route path="/annotations/:id" component={AnnotationRoute} />
         <Route path="/files/:id" component={FileRoute} />
+        {ProjectRoute}
         {CaseRoute}
         {AnnotationRoute}
+        {CartRoute}
         {GeneRoute}
         {SSMRoute}
         <Route

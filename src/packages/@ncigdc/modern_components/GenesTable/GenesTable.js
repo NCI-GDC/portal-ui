@@ -39,7 +39,6 @@ export default compose(
   ({
     genesTableViewer: { explore } = {},
     defaultFilters,
-    relay = { route: { params: {} } },
     setSurvivalLoadingId,
     survivalLoadingId,
     setSelectedSurvivalData,

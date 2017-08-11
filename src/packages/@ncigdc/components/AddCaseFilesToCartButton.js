@@ -4,6 +4,7 @@ import React from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState, withProps, withHandlers } from 'recompose';
+import { stringify } from 'query-string';
 
 import Dropdown from '@ncigdc/uikit/Dropdown';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
@@ -12,6 +13,8 @@ import TrashIcon from 'react-icons/lib/fa/trash';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { addAllFilesInCart, removeFilesFromCart } from '@ncigdc/dux/cart';
 import withFilters from '@ncigdc/utils/withFilters';
+import { fetchApi } from '@ncigdc/utils/ajax';
+import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 
 const styles = {
   dropdownContainer: {
@@ -23,44 +26,79 @@ const styles = {
   },
 };
 
+const fetchFiles = async (caseId: string, size, filters?: Object) => {
+  const search = stringify({
+    filters: JSON.stringify(
+      addInFilters(
+        filters,
+        makeFilter(
+          [
+            {
+              field: 'cases.case_id',
+              value: [caseId],
+            },
+          ],
+          false,
+        ),
+      ),
+    ),
+    size,
+    fields:
+      'acl,state,file_state,access,file_id,file_size,cases.project.project_id',
+  });
+
+  const { data } = await fetchApi(`files?${search}`);
+  const files = data.hits.map(({ cases, ...rest }) => ({
+    ...rest,
+    projects: cases.map(({ project: { project_id } }) => project_id),
+  }));
+  return files;
+};
+
 const AddCaseFilesToCartButton = compose(
   connect(state => ({ cart: state.cart })),
   withState('isLoading', 'setIsLoading', false),
+  withState('fetchedFiles', 'setFetchedFiles', []),
+  withState('fetchedFilteredFiles', 'setFetchedFilteredFiles', []),
   withFilters(),
-  withProps(({ filters, cart, files = [], filteredFiles = [] }) => ({
-    filesInCart: _.intersectionBy(cart.files, files, 'file_id'),
-    filteredFilesInCart: _.intersectionBy(cart.files, filteredFiles, 'file_id'),
-  })),
+  withProps(
+    ({ filters, cart, fetchedFiles = [], fetchedFilteredFiles = [] }) => ({
+      filesInCart: _.intersectionBy(cart.files, fetchedFiles, 'file_id'),
+      filteredFilesInCart: _.intersectionBy(
+        cart.files,
+        fetchedFilteredFiles,
+        'file_id',
+      ),
+    }),
+  ),
   withHandlers({
     handleDropdownActivate: ({
-      relay,
       setIsLoading,
+      setFetchedFiles,
+      setFetchedFilteredFiles,
       filters,
       hasFiles,
-    }) => () => {
+      caseId,
+      fileCount,
+    }) => async () => {
       if (!hasFiles) {
         // this case has no files to fetch.
         return;
       }
       setIsLoading(true);
-      relay.setVariables(
-        {
-          isFileDataRequired: true,
-          isFilteredFileDataRequired: true,
-          filesFilters: filters,
-        },
-        readyState =>
-          _.some([readyState.ready, readyState.aborted, readyState.error]) &&
-          setIsLoading(false),
-      );
+      setFetchedFiles(await fetchFiles(caseId, fileCount));
+      if (filters) {
+        setFetchedFilteredFiles(await fetchFiles(caseId, fileCount, filters));
+      }
+      setIsLoading(false);
     },
   }),
 )(
   ({
     filters,
     hasFiles,
-    files = [],
-    filteredFiles = [],
+    fetchedFiles = [],
+    fetchedFilteredFiles = [],
     dispatch,
     handleDropdownActivate,
     isLoading,
@@ -95,26 +133,27 @@ const AddCaseFilesToCartButton = compose(
       }
       onActivate={handleDropdownActivate}
     >
+
       {isLoading && <DropdownItem> Loading case files... </DropdownItem>}
       {!isLoading && [
-        !!(files.length && files.length > filesInCart.length) &&
+        !!(fetchedFiles.length && fetchedFiles.length > filesInCart.length) &&
           <DropdownItem
             className="test-add-all-files"
-            onClick={() => dispatch(addAllFilesInCart(files))}
+            onClick={() => dispatch(addAllFilesInCart(fetchedFiles))}
             aria-label="Add all Case files to the Cart"
             role="button"
             key="addAll"
           >
             <ShoppingCartIcon style={styles.icon} />
             Add all Case files to the Cart (
-            {files.length}
+            {fetchedFiles.length}
             )
           </DropdownItem>,
 
-        !!(files.length && filesInCart.length) &&
+        !!(fetchedFiles.length && filesInCart.length) &&
           <DropdownItem
             className="test-remove-all-files"
-            onClick={() => dispatch(removeFilesFromCart(files))}
+            onClick={() => dispatch(removeFilesFromCart(fetchedFiles))}
             aria-label="Remove all Case files from the Cart"
             role="button"
             key="removeAll"
@@ -126,27 +165,27 @@ const AddCaseFilesToCartButton = compose(
           </DropdownItem>,
 
         _.every([
-          filteredFiles.length,
-          filteredFiles.length > filteredFilesInCart.length,
-          filteredFiles.length < files.length,
+          fetchedFilteredFiles.length,
+          fetchedFilteredFiles.length > filteredFilesInCart.length,
+          fetchedFilteredFiles.length < fetchedFiles.length,
         ]) &&
           <DropdownItem
             className="test-add-filtered-files"
-            onClick={() => dispatch(addAllFilesInCart(filteredFiles))}
+            onClick={() => dispatch(addAllFilesInCart(fetchedFilteredFiles))}
             aria-label="Add filtered Case files to the Cart"
             role="button"
             key="addFiltered"
           >
             <ShoppingCartIcon style={styles.icon} />
             Add filtered Case files to the Cart (
-            {filteredFiles.length}
+            {fetchedFilteredFiles.length}
             )
           </DropdownItem>,
 
-        !!(filteredFiles.length && filteredFilesInCart.length) &&
+        !!(fetchedFilteredFiles.length && filteredFilesInCart.length) &&
           <DropdownItem
             className="test-remove-filtered-files"
-            onClick={() => dispatch(removeFilesFromCart(filteredFiles))}
+            onClick={() => dispatch(removeFilesFromCart(fetchedFilteredFiles))}
             aria-label="Remove filtered Case files from the Cart"
             role="button"
             key="removeFiltered"

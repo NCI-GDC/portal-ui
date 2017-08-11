@@ -1,6 +1,6 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { compose, lifecycle, branch, renderComponent } from 'recompose';
+import { compose, branch, renderComponent, withProps } from 'recompose';
 import { isEqual } from 'lodash';
 import { Lolliplot, Backbone, Minimap } from '@oncojs/react-lolliplot/dist/lib';
 import LolliplotStats from './LolliplotStats';
@@ -8,10 +8,11 @@ import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import { Row } from '@ncigdc/uikit/Flex';
 import groupByType from '@ncigdc/utils/groupByType';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import withSize from '@ncigdc/utils/withSize';
 import mapData from './mapData';
 
-let container;
 const id = 'protein-viewer-root';
+const STATS_WIDTH = 250;
 
 const highContrastPallet = [
   '#007FAA',
@@ -32,19 +33,10 @@ const highContrastPallet = [
 
 export default compose(
   withTooltip,
-  lifecycle({
-    componentDidMount(): void {
-      this.onResize = () => {
-        if (container) {
-          this.props.setState(s => ({ ...s, width: container.clientWidth }));
-        }
-      };
-      window.addEventListener('resize', this.onResize);
-    },
-    componentWillUnmount(): void {
-      window.removeEventListener('resize', this.onResize);
-    },
-  }),
+  withSize(),
+  withProps(({ size: { width } }) => ({
+    graphWidth: width && width - STATS_WIDTH,
+  })),
   withPropsOnChange(['analysis'], ({ analysis }) => ({
     ssms: analysis.protein_mutations.data
       ? JSON.parse(analysis.protein_mutations.data)
@@ -103,7 +95,7 @@ export default compose(
 )(
   ({
     activeTranscript,
-    width,
+    graphWidth,
     setState,
     mutationId,
     min,
@@ -122,20 +114,8 @@ export default compose(
     setTooltip,
   }) =>
     <Row>
-      <div
-        id={id}
-        style={{ flex: 1, userSelect: 'none' }}
-        ref={n => {
-          if (!width) {
-            if (!container) container = n;
-            setState(s => ({
-              ...s,
-              width: s.width || n.clientWidth,
-            }));
-          }
-        }}
-      >
-        {width &&
+      <div id={id} style={{ flex: 1, userSelect: 'none' }}>
+        {graphWidth &&
           <div style={{ position: 'relative' }}>
             <span
               style={{
@@ -153,7 +133,7 @@ export default compose(
               min={min}
               max={max}
               domainWidth={activeTranscript.length_amino_acid}
-              width={width}
+              width={graphWidth}
               update={payload => setState(s => ({ ...s, ...payload }))}
               highlightedPointId={mutationId}
               getPointColor={d => mutationColors[blacklist][d[blacklist]]}
@@ -182,7 +162,7 @@ export default compose(
                 max={max}
                 d3={d3}
                 domainWidth={activeTranscript.length_amino_acid}
-                width={width}
+                width={graphWidth}
                 update={payload => setState(s => ({ ...s, ...payload }))}
                 data={lolliplotData.proteins}
                 onProteinClick={d => {
@@ -224,7 +204,7 @@ export default compose(
                 max={max}
                 d3={d3}
                 domainWidth={activeTranscript.length_amino_acid}
-                width={width}
+                width={graphWidth}
                 update={payload => setState(s => ({ ...s, ...payload }))}
                 data={{
                   ...lolliplotData,
@@ -237,6 +217,7 @@ export default compose(
           </div>}
       </div>
       <LolliplotStats
+        style={{ width: STATS_WIDTH, flex: 'none' }}
         mutations={lolliplotData.mutations}
         filterByType={filterByType}
         blacklist={blacklist}

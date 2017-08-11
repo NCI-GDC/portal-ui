@@ -205,7 +205,7 @@ const SuggestionFacet = compose(
                               selectableList,
                               `focusedItem.${fieldNoDoctype}`,
                             )
-                          : null
+                          : null // false gets stringify, so value needs to be `null` or `undefined`
                       }
                       {...active && {
                         'aria-owns': `${fieldNoDoctype}-options`,

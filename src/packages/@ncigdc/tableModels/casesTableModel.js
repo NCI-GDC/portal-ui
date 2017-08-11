@@ -22,12 +22,6 @@ const youngestDiagnosis = (
 ): { age_at_diagnosis: number } =>
   c.age_at_diagnosis < p.age_at_diagnosis ? c : p;
 
-const massageRelayFiles = (files: Object, projectId: string): Array<{}> =>
-  _.get(files, 'hits.edges', []).map(edge => edge.node).map(file => ({
-    ...file,
-    projects: [projectId],
-  }));
-
 const dataCategoryColumns = createDataCategoryColumns({
   title: 'Available Files per Data Category',
   countKey: 'file_count',
@@ -74,6 +68,7 @@ const casesTableModel = [
     td: ({ node, relay, total, index }) =>
       <Td>
         <AddCaseFilesToCartButton
+          caseId={node.case_id}
           hasFiles={
             _.sum(
               node.summary.data_categories.map(
@@ -81,12 +76,7 @@ const casesTableModel = [
               ),
             ) > 0
           }
-          files={massageRelayFiles(node.files, node.project.project_id)}
-          filteredFiles={massageRelayFiles(
-            node.filteredFiles,
-            node.project.project_id,
-          )}
-          relay={relay}
+          fileCount={node.summary.file_count}
           dropdownStyle={
             total - 1 === index ? { top: 'auto', bottom: '100%' } : {}
           }

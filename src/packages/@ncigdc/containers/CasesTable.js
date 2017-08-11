@@ -145,31 +145,6 @@ const CasesTable = Relay.createContainer(SearchTable, {
                 file_count
               }
 
-              files @include(if: $isFileDataRequired){
-                hits(first:99) {
-                  edges {
-                    node {
-                      id
-                      file_id
-                      access
-                      file_size
-                    }
-                  }
-                }
-              }
-
-              filteredFiles: files @include(if: $isFilteredFileDataRequired){
-                hits(first:99, filters: $filesFilters) {
-                  edges {
-                    node {
-                      id
-                      file_id
-                      access
-                      file_size
-                    }
-                  }
-                }
-              }
             }
           }
         }

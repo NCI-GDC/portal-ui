@@ -1,18 +1,13 @@
 import React from 'react';
 import * as d3 from 'd3';
-import {
-  compose,
-  lifecycle,
-  withPropsOnChange,
-  branch,
-  renderComponent,
-} from 'recompose';
+import { compose, lifecycle, branch, renderComponent } from 'recompose';
 import { isEqual } from 'lodash';
 import { Lolliplot, Backbone, Minimap } from '@oncojs/react-lolliplot/dist/lib';
 import LolliplotStats from './LolliplotStats';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import { Row } from '@ncigdc/uikit/Flex';
 import groupByType from '@ncigdc/utils/groupByType';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import mapData from './mapData';
 
 let container;
@@ -60,12 +55,15 @@ export default compose(
     renderComponent(() => <div>Not enough data.</div>),
   ),
   withPropsOnChange(
-    ['viewer', 'ssms', 'state'],
+    ['activeTranscript', 'ssms'],
     ({ activeTranscript, blacklist, ssms, setState }) => {
       const lolliplotData = mapData({
         transcript: activeTranscript,
         data: (ssms.hits || []).map(x => ({ score: x._score, ...x._source })),
       });
+
+      // pass data up to parent for download button
+      setState(s => ({ ...s, lolliplotData }));
 
       const impactUnknown = isEqual(
         Object.keys(groupByType('impact', lolliplotData.mutations)),
@@ -76,7 +74,24 @@ export default compose(
         setState(s => ({ ...s, blacklist: 'consequence' }));
       }
 
+      const consequences = groupByType('consequence', lolliplotData.mutations);
+      const mutationColors = {
+        consequence: Object.keys(consequences).reduce(
+          (acc, type, i) => ({
+            ...acc,
+            [type]: highContrastPallet[i % highContrastPallet.length],
+          }),
+          {},
+        ),
+        impact: {
+          HIGH: 'rgb(221, 60, 60)',
+          MODERATE: 'rgb(132, 168, 56)',
+          default: 'rgb(135, 145, 150)',
+        },
+      };
+
       return {
+        mutationColors,
         lolliplotData,
         outsideSsms: lolliplotData.mutations.filter(
           d => d.x > activeTranscript.length_amino_acid,
@@ -85,33 +100,6 @@ export default compose(
       };
     },
   ),
-  // pass data up to parent for download button
-  withPropsOnChange(
-    (p, n) =>
-      p.activeTranscript.transcript_id !== n.activeTranscript.transcript_id,
-    ({ setState, lolliplotData }) => setState(s => ({ ...s, lolliplotData })),
-  ),
-  withPropsOnChange(['lolliplotData'], ({ lolliplotData, setState }) => {
-    const consequences = groupByType('consequence', lolliplotData.mutations);
-    const mutationColors = {
-      consequence: Object.keys(consequences).reduce(
-        (acc, type, i) => ({
-          ...acc,
-          [type]: highContrastPallet[i % highContrastPallet.length],
-        }),
-        {},
-      ),
-      impact: {
-        HIGH: 'rgb(221, 60, 60)',
-        MODERATE: 'rgb(132, 168, 56)',
-        default: 'rgb(135, 145, 150)',
-      },
-    };
-
-    return {
-      mutationColors,
-    };
-  }),
 )(
   ({
     activeTranscript,

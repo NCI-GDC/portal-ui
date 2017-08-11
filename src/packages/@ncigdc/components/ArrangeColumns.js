@@ -121,6 +121,7 @@ const ArrangeColumns = compose(
               <input
                 readOnly
                 style={{ pointerEvents: 'none' }}
+                aria-label={column.name}
                 type="checkbox"
                 checked={tableColumns.ids.includes(column.id)}
               />

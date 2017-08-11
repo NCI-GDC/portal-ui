@@ -58,6 +58,7 @@ const ArrangeColumnsButton = compose(
             padding: '0.3rem 0.5rem',
           }}
           type="text"
+          aria-label="Filter Columns"
           placeholder="Filter Columns"
           ref={node => {
             searchInput = node;

@@ -34,8 +34,19 @@ export type TProps = {
     },
   },
   relay: Object,
+  filters: Object,
   viewer: {
     explore: {
+      customCaseFacets: {
+        facets: {
+          facets: string,
+        },
+      },
+      customFileFacets: {
+        facets: {
+          facets: string,
+        },
+      },
       cases: {
         aggregations: string,
         hits: {
@@ -111,6 +122,7 @@ export const ExplorePageComponent = (props: TProps) =>
         text: 'Cases',
         component: (
           <CaseAggregations
+            facets={props.viewer.explore.customCaseFacets}
             aggregations={props.viewer.explore.cases.aggregations}
             suggestions={get(props, 'viewer.autocomplete_cases.hits', [])}
             setAutocomplete={(value, onReadyStateChange) =>
@@ -277,6 +289,9 @@ export const ExplorePageQuery = {
           }
         }
         explore {
+          customCaseFacets: cases {
+            ${CaseAggregations.getFragment('facets')}
+          }
           cases {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment('aggregations')}

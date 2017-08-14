@@ -13,6 +13,7 @@ import relayProgress from './relayProgress';
 import error from './error';
 import loaders from './loaders';
 import tableColumns from './tableColumns';
+import customFacets from './customFacets';
 
 /*----------------------------------------------------------------------------*/
 
@@ -29,4 +30,5 @@ export default {
   error,
   loaders,
   tableColumns,
+  customFacets,
 };

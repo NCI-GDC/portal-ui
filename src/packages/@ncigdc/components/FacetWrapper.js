@@ -3,13 +3,7 @@
 import React from 'react';
 import _ from 'lodash';
 
-import {
-  compose,
-  lifecycle,
-  defaultProps,
-  renameProps,
-  withState,
-} from 'recompose';
+import { compose, defaultProps, renameProps, withState } from 'recompose';
 
 import TermAggregation from '@ncigdc/components/Aggregations/TermAggregation';
 import DateFacet from '@ncigdc/components/Aggregations/DateFacet';
@@ -17,8 +11,6 @@ import RangeFacet from '@ncigdc/components/Aggregations/RangeFacet';
 import ExactMatchFacet from '@ncigdc/components/Aggregations/ExactMatchFacet';
 import styled from '@ncigdc/theme/styled';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
-
-import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 
 const COMMON_PREPOSITIONS = [
   'a',
@@ -82,31 +74,6 @@ const FacetWrapper = compose(
   }),
   renameProps({
     onRequestRemove: 'handleRequestRemove',
-  }),
-  lifecycle({
-    componentWillMount(): void {
-      // strict equality check because we don't want to set variables that don't exist
-      if (
-        this.props.relay.variables[
-          `shouldShow_${escapeForRelay(this.props.facet.field)}`
-        ] === false
-      ) {
-        this.props.relay.setVariables({
-          [`shouldShow_${escapeForRelay(this.props.facet.field)}`]: true,
-        });
-      }
-    },
-    componentWillUnmount(): void {
-      if (
-        this.props.relay.variables[
-          `shouldShow_${escapeForRelay(this.props.facet.field)}`
-        ]
-      ) {
-        this.props.relay.setVariables({
-          [`shouldShow_${escapeForRelay(this.props.facet.field)}`]: false,
-        });
-      }
-    },
   }),
   withState('showingValueSearch', 'setShowingValueSearch', false),
   withState('collapsed', 'setCollapsed', false),

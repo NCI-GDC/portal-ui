@@ -3,7 +3,7 @@
 import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
-import { compose } from 'recompose';
+import { compose, setDisplayName } from 'recompose';
 import JSURL from 'jsurl';
 
 import { Row } from '@ncigdc/uikit/Flex';
@@ -48,6 +48,16 @@ export type TProps = {
       },
     },
     repository: {
+      customCaseFacets: {
+        facets: {
+          facets: string,
+        },
+      },
+      customFileFacets: {
+        facets: {
+          facets: string,
+        },
+      },
       cases: {
         aggregations: {},
         pies: {},
@@ -68,7 +78,12 @@ export type TProps = {
   setShowFacets: Function,
 };
 
-const enhance = compose(connect(), withFilters(), withRouter);
+const enhance = compose(
+  setDisplayName('RepositoryPage'),
+  connect(),
+  withFilters(),
+  withRouter,
+);
 
 export const RepositoryPageComponent = (props: TProps) => {
   const setAutocompleteCases = (value, onReadyStateChange) =>
@@ -107,7 +122,9 @@ export const RepositoryPageComponent = (props: TProps) => {
             text: 'Files',
             component: (
               <FileAggregations
+                facets={props.viewer.repository.customFileFacets}
                 aggregations={props.viewer.repository.files.aggregations}
+                filters={props.filters}
                 suggestions={
                   (props.viewer.autocomplete_file || { hits: [] }).hits
                 }
@@ -120,6 +137,8 @@ export const RepositoryPageComponent = (props: TProps) => {
             text: 'Cases',
             component: (
               <CaseAggregations
+                facets={props.viewer.repository.customCaseFacets}
+                filters={props.filters}
                 aggregations={props.viewer.repository.cases.aggregations}
                 hits={(props.viewer.repository.cases || {}).hits || {}}
                 suggestions={
@@ -287,6 +306,12 @@ export const RepositoryPageQuery = {
           }
         }
         repository {
+          customCaseFacets: cases {
+            ${CaseAggregations.getFragment('facets')}
+          }
+          customFileFacets: files {
+            ${FileAggregations.getFragment('facets')}
+          }
           cases {
             aggregations(filters: $filters aggregations_filter_themselves: false) {
               ${CaseAggregations.getFragment('aggregations')}

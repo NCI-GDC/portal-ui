@@ -9,6 +9,7 @@ import { Column } from '@ncigdc/uikit/Flex';
 import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
+import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 
 const enhance = compose(
@@ -25,6 +26,7 @@ export default enhance(
     dispatch,
     filters,
     CreateSetButton,
+    RemoveFromSetButton,
     field,
     style,
     hasSets,
@@ -83,6 +85,24 @@ export default enhance(
               }}
             >
               Add to existing {type} set
+            </DropdownItem>}
+          {hasSets &&
+            <DropdownItem
+              style={{ lineHeight: '1.5', cursor: 'pointer' }}
+              onClick={() => {
+                dispatch(
+                  setModal(
+                    <RemoveSetModal
+                      title={`Remove ${type}s from existing set`}
+                      filters={filters}
+                      type={type}
+                      RemoveFromSetButton={RemoveFromSetButton}
+                    />,
+                  ),
+                );
+              }}
+            >
+              Remove from existing {type} set
             </DropdownItem>}
         </Column>
       </Dropdown>

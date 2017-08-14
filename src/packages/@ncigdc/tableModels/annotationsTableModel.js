@@ -72,7 +72,7 @@ const annotationsTableModel = [
           {node.case_submitter_id}
         </CaseLink>
         <ForTsvExport>
-          {node.case_id}
+          {node.case_submitter_id}
         </ForTsvExport>
       </Td>,
   },

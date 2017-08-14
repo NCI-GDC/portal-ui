@@ -5,7 +5,14 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 
 import _ from 'lodash';
-import { compose, withState } from 'recompose';
+import {
+  compose,
+  withState,
+  setDisplayName,
+  lifecycle,
+  withPropsOnChange,
+} from 'recompose';
+import { connect } from 'react-redux';
 
 import Modal from '@ncigdc/uikit/Modal';
 import SuggestionFacet from '@ncigdc/components/Aggregations/SuggestionFacet';
@@ -13,10 +20,6 @@ import FacetSelection from '@ncigdc/components/FacetSelection';
 import FacetWrapper from '@ncigdc/components/FacetWrapper';
 import FacetHeader from '@ncigdc/components/Aggregations/FacetHeader';
 
-import {
-  initialFileAggregationsVariables,
-  repositoryFileAggregationsFragment,
-} from '@ncigdc/utils/generated-relay-query-parts';
 import withFacetSelection from '@ncigdc/utils/withFacetSelection';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import tryParseJSON from '@ncigdc/utils/tryParseJSON';
@@ -26,8 +29,6 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 import { withTheme } from '@ncigdc/theme';
 import FileIcon from '@ncigdc/theme/icons/File';
 import { Row } from '@ncigdc/uikit/Flex';
-
-const storageKey = 'RepositoryFileAggregations.userSelectedFacets';
 
 const presetFacets = [
   { title: 'File', field: 'file_id', full: 'files.file_id', type: 'keyword' },
@@ -50,14 +51,43 @@ const presetFacets = [
 ];
 
 const presetFacetFields = presetFacets.map(x => x.field);
+const entityType = 'Files';
 
 const enhance = compose(
+  setDisplayName('RepoFileAggregations'),
   withFacetSelection({
-    storageKey,
+    entityType,
     presetFacetFields,
     validFacetDocTypes: ['files'],
   }),
+  connect((state, props) => ({
+    userSelectedFacets: state.customFacets[entityType],
+  })),
   withState('fileIdCollapsed', 'setFileIdCollapsed', false),
+  withPropsOnChange(
+    ['filters', 'userSelectedFacets'],
+    ({ filters, relay, userSelectedFacets }) =>
+      relay.setVariables({
+        filters,
+        filesCustomFacetFields: userSelectedFacets
+          .map(({ field }) => field)
+          .join(','),
+      }),
+  ),
+  withPropsOnChange(['facets'], ({ facets }) => ({
+    parsedFacets: facets.facets ? tryParseJSON(facets.facets, {}) : {},
+  })),
+  lifecycle({
+    componentDidMount(): void {
+      const { filters, relay, userSelectedFacets } = this.props;
+      relay.setVariables({
+        filters,
+        filesCustomFacetFields: userSelectedFacets
+          .map(({ field }) => field)
+          .join(','),
+      });
+    },
+  }),
 );
 
 const styles = {
@@ -71,6 +101,8 @@ export type TProps = {
   relay: Object,
   fileIdCollapsed: boolean,
   setFileIdCollapsed: Function,
+  facets: { facets: string },
+  parsedFacets: Object,
   aggregations: {
     access: { buckets: [TBucket] },
     data_category: { buckets: [TBucket] },
@@ -81,7 +113,7 @@ export type TProps = {
     analysis__workflow_type: { buckets: [TBucket] },
   },
   theme: Object,
-
+  filters: Object,
   suggestions: Array<Object>,
   setAutocomplete: Function,
 
@@ -94,9 +126,11 @@ export type TProps = {
   |}>,
   handleSelectFacet: Function,
   handleResetFacets: Function,
+  handleRequestRemoveFacet: Function,
   presetFacetFields: Array<String>,
   shouldShowFacetSelection: Boolean,
   facetExclusionTest: Function,
+  setShouldShowFacetSelection: Function,
 };
 
 export const FileAggregationsComponent = (props: TProps) =>
@@ -129,10 +163,12 @@ export const FileAggregationsComponent = (props: TProps) =>
     >
       <FacetSelection
         title="Add a File Filter"
+        relayVarName="filesCustomFacetFields"
+        docType="files"
         onSelect={props.handleSelectFacet}
         onRequestClose={() => props.setShouldShowFacetSelection(false)}
         excludeFacetsBy={props.facetExclusionTest}
-        additionalFacetData={props.aggregations}
+        additionalFacetData={props.parsedFacets}
         relay={props.relay}
       />
     </Modal>
@@ -140,9 +176,10 @@ export const FileAggregationsComponent = (props: TProps) =>
     {props.userSelectedFacets.map(facet =>
       <FacetWrapper
         isRemovable
+        relayVarName="filesCustomFacetFields"
         key={facet.full}
         facet={facet}
-        aggregation={props.aggregations[escapeForRelay(facet.field)]}
+        aggregation={props.parsedFacets[facet.field]}
         relay={props.relay}
         onRequestRemove={() => props.handleRequestRemoveFacet(facet)}
         style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
@@ -189,37 +226,62 @@ export const FileAggregationsComponent = (props: TProps) =>
   </div>;
 
 export const FileAggregationsQuery = {
-  initialVariables: Object.assign(
-    {},
-    _.mapValues(initialFileAggregationsVariables, (value, key) => {
-      const userSelectedFacetsFromStorage =
-        tryParseJSON(window.localStorage.getItem(storageKey) || null) || [];
-      const escapedFieldsToShow = presetFacetFields
-        .concat(userSelectedFacetsFromStorage.map(x => x.field))
-        .filter(Boolean)
-        .map(escapeForRelay);
-      return (
-        value ||
-        _.includes(escapedFieldsToShow, key.replace(/^shouldShow_/, ''))
-      );
-    }),
-    { shouldRequestAllAggregations: false },
-  ),
-  prepareVariables: prevVariables =>
-    _.mapValues(
-      prevVariables,
-      (value, key) =>
-        prevVariables.shouldRequestAllAggregations ||
-        initialFileAggregationsVariables[key] ||
-        _.includes(
-          (tryParseJSON(window.localStorage.getItem(storageKey)) || [])
-            .map(x => escapeForRelay(x.field)),
-          key.replace(/^shouldShow_/, ''),
-        ) ||
-        value,
-    ),
+  initialVariables: {
+    filesCustomFacetFields: '',
+    filters: null,
+  },
   fragments: {
-    aggregations: repositoryFileAggregationsFragment,
+    facets: () => Relay.QL`
+      fragment on Files {
+        facets(facets: $filesCustomFacetFields filters: $filters)
+      }
+    `,
+    aggregations: () => Relay.QL`
+      fragment on FileAggregations {
+        data_category {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        data_type {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        experimental_strategy {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        analysis__workflow_type {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        data_format {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        platform {
+          buckets {
+            doc_count
+            key
+          }
+        }
+        access {
+          buckets {
+            doc_count
+            key
+          }
+        }
+      }
+    `,
   },
 };
 

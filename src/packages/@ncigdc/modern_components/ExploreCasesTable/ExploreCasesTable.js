@@ -24,6 +24,8 @@ import {
   parseFilterParam,
   parseJSURLParam,
 } from '@ncigdc/utils/uri';
+import { theme } from '@ncigdc/theme';
+import withSelectIds from '@ncigdc/utils/withSelectIds';
 
 const COMPONENT_NAME = 'ExploreCasesTable';
 
@@ -143,6 +145,7 @@ const createContainer = Component =>
 const Component = compose(
   withFilters(),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
+  withSelectIds,
   withPropsOnChange(
     ['viewer'],
     ({
@@ -234,6 +237,7 @@ const Component = compose(
           CreateSetButton={CreateExploreCaseSetButton}
           RemoveFromSetButton={RemoveFromExploreCaseSetButton}
           idField="cases.case_id"
+          selectedIds={props.selectedIds}
         />
       </Row>
       <div style={{ overflowX: 'auto' }}>
@@ -241,14 +245,29 @@ const Component = compose(
           id="explore-case-table"
           headings={tableInfo
             .filter(x => !x.subHeading)
-            .map(x => <x.th key={x.id} />)}
+            .map(x =>
+              <x.th
+                key={x.id}
+                nodes={props.viewer.explore.cases.hits.edges}
+                selectedIds={props.selectedIds}
+                setSelectedIds={props.setSelectedIds}
+              />,
+            )}
           subheadings={tableInfo
             .filter(x => x.subHeading)
             .map(x => <x.th key={x.id} />)}
           body={
             <tbody>
               {props.viewer.explore.cases.hits.edges.map((e, i) =>
-                <Tr key={e.node.id} index={i}>
+                <Tr
+                  key={e.node.id}
+                  index={i}
+                  style={{
+                    ...(props.selectedIds.includes(e.node.case_id) && {
+                      backgroundColor: theme.tableHighlight,
+                    }),
+                  }}
+                >
                   {tableInfo
                     .filter(x => x.td)
                     .map(x =>
@@ -261,6 +280,8 @@ const Component = compose(
                         ssmCount={ssmCounts[e.node.case_id]}
                         ssmCountsLoading={ssmCountsLoading}
                         filters={props.filters}
+                        selectedIds={props.selectedIds}
+                        setSelectedIds={props.setSelectedIds}
                       />,
                     )}
                 </Tr>,

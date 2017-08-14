@@ -42,7 +42,7 @@ const theme = {
   // table
 
   tableStripe: 'rgb(236, 243, 246)',
-
+  tableHighlight: '#ffffbe',
   /*
    *  Dimensions
    */

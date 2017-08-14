@@ -7,7 +7,6 @@ import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
 
 export default compose(
   connect(state => ({ cartFiles: state.cart.files })),
-  global.trace('wat'),
 )(({ dispatch, cartFiles, filesViewer: { repository: { files: f } } }) => {
   const files = f.hits.edges.map(x => x.node);
   const hasFilesToAdd = files.filter(

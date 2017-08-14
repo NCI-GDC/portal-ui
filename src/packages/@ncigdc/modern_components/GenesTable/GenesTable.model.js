@@ -200,9 +200,10 @@ const GenesTableModel = [
     th: ({ context }) =>
       <NumTh>
         <Tooltip
+          style={tableToolTipHint()}
           Component={
             <span>
-              # of Simple Somatic Mutations in the Gene{' '}
+              # Unique Simple Somatic Mutations in the Gene{' '}
               {context ? <span>in {context}</span> : ''}
             </span>
           }
@@ -212,7 +213,6 @@ const GenesTableModel = [
       </NumTh>,
     td: ({ node, ssmCounts, defaultFilters }) =>
       <NumTd>
-
         <MutationsCount
           ssmCount={ssmCounts[node.gene_id]}
           filters={addInFilters(

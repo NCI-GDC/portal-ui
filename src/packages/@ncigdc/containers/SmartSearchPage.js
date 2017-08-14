@@ -12,8 +12,8 @@ import withRouter from '@ncigdc/utils/withRouter';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import FilesTable from '@ncigdc/modern_components/FilesTable';
+import CasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import { API } from '@ncigdc/utils/constants';
-import CasesTable from './CasesTable';
 
 require('lodash-backports').register();
 
@@ -142,9 +142,7 @@ class SmartSearchComponent extends React.Component {
             {
               id: 'cases',
               text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
-              component: (
-                <CasesTable hits={this.props.viewer.repository.cases.hits} />
-              ),
+              component: <CasesTable />,
             },
           ]}
         />
@@ -170,7 +168,6 @@ export const SmartSearchQuery = {
         repository {
           cases {
             hits(first: $cases_size offset: $cases_offset, filters: $filters) {
-              ${CasesTable.getFragment('hits')}
               total
             }
           }

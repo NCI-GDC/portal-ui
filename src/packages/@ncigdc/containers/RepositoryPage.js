@@ -15,9 +15,9 @@ import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import NoResultsMessage from '@ncigdc/components/NoResultsMessage';
 import DownloadManifestButton from '@ncigdc/components/DownloadManifestButton';
 
-import CasesTable from '@ncigdc/containers/CasesTable';
 import CaseAggregations from '@ncigdc/containers/CaseAggregations';
 import FilesTable from '@ncigdc/modern_components/FilesTable';
+import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import FileAggregations from '@ncigdc/containers/FileAggregations';
 import { fetchFilesAndAdd } from '@ncigdc/dux/cart';
 import { ShoppingCartIcon, SaveIcon } from '@ncigdc/theme/icons';
@@ -208,12 +208,6 @@ export const RepositoryPageComponent = (props: TProps) => {
               defaultIndex={0}
               tabToolbar={
                 <Row spacing="2rem" style={{ alignItems: 'center' }}>
-                  {/*<span style={{ flex: 'none' }}>
-                    <CaseIcon outline style={{ marginRight: 5 }} /> <strong>{caseCount.toLocaleString()}</strong> cases
-                  </span>
-                  <span style={{ flex: 'none' }}>
-                    <FileIcon text style={{ marginRight: 5 }} /> <strong>{fileCount.toLocaleString()}</strong> files
-                  </span>*/}
                   <span style={{ flex: 'none' }}>
                     <SaveIcon style={{ marginRight: 5 }} />
                     {' '}
@@ -244,10 +238,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                         <RepoCasesPies
                           aggregations={props.viewer.repository.cases.pies}
                         />
-                        <CasesTable
-                          hits={props.viewer.repository.cases.hits}
-                          filters={props.filters}
-                        />
+                        <RepoCasesTable />
                       </div>
                     : <NoResultsMessage>
                         No results found using those filters.
@@ -323,7 +314,6 @@ export const RepositoryPageQuery = {
               ${RepoCasesPies.getFragment('aggregations')}
             }
             hits(score: "annotations.annotation_id" first: $cases_size offset: $cases_offset, filters: $filters, sort: $cases_sort) {
-              ${CasesTable.getFragment('hits')}
               total
             }
           }

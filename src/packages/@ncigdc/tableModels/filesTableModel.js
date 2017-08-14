@@ -9,6 +9,8 @@ import { RepositoryCasesLink } from '@ncigdc/components/Links/RepositoryLink';
 import FileLink from '@ncigdc/components/Links/FileLink';
 import { makeFilter } from '@ncigdc/utils/filters';
 import FileSize from '@ncigdc/components/FileSize';
+import { AnnotationCountLink } from '@ncigdc/components/Links/AnnotationCountLink';
+
 import styled from '@ncigdc/theme/styled';
 
 const NumTh = styled(Th, { textAlign: 'right' });
@@ -133,12 +135,11 @@ const filesTableModel = [
     name: 'Annotations',
     id: 'annotations.annotation_id',
     th: () => <Th>Annotations</Th>,
-    td: ({ node }) =>
+    td: ({ node: { annotations } }) =>
       <TdNum>
-        {
-          // leaving link off until we have a proper way to filter the annotation page by file
-          node.annotations.hits.total
-        }
+        {annotations.hits.total > 1 // leaving link off for multiple annotations until we have a proper way to filter the annotation page by file
+          ? annotations.hits.total.toLocaleString()
+          : <AnnotationCountLink hits={annotations.hits} />}
       </TdNum>,
     downloadable: true,
   },

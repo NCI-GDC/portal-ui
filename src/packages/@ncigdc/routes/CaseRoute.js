@@ -9,6 +9,7 @@ import ST from '@ncigdc/modern_components/SsmsTable';
 import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ClinicalCard from '@ncigdc/modern_components/ClinicalCard';
+import CaseSymbol from '@ncigdc/modern_components/CaseSymbol';
 import CaseSummary from '@ncigdc/modern_components/CaseSummary';
 import AddOrRemoveAllFilesButton from '@ncigdc/modern_components/AddOrRemoveAllFilesButton';
 import { makeFilter } from '@ncigdc/utils/filters';
@@ -62,7 +63,7 @@ export default (
       const fmFilters = makeFilter([{ field: 'cases.case_id', value: caseId }]);
 
       return (
-        <FullWidthLayout title={caseId} entityType="CA">
+        <FullWidthLayout title={<CaseSymbol caseId={caseId} />} entityType="CA">
           <Column spacing="2rem" className="test-case">
             <Row style={{ justifyContent: 'flex-end' }}>
               <AddOrRemoveAllFilesButton caseId={caseId} />

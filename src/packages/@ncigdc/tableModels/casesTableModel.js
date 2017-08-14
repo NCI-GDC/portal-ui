@@ -13,7 +13,7 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 import styled from '@ncigdc/theme/styled';
-import { createDataCategoryColumns } from './utils';
+import { createDataCategoryColumns, createSelectColumn } from './utils';
 import { AnnotationCountLink } from '../components/Links/AnnotationCountLink';
 
 const youngestDiagnosis = (
@@ -61,6 +61,7 @@ const getProjectIdFilter = projects =>
   ]);
 
 const casesTableModel = [
+  createSelectColumn({ idField: 'case_id', headerRowSpan: 2 }),
   {
     name: 'Cart',
     id: 'cart',

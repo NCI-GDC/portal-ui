@@ -9,7 +9,9 @@ import { Row } from '@ncigdc/uikit/Flex';
 import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import CreateExploreGeneSetButton from '@ncigdc/modern_components/CreateSetButton/CreateExploreGeneSetButton';
+import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
+import RemoveFromExploreGeneSetButton from '@ncigdc/modern_components/setButtons/RemoveFromExploreGeneSetButton';
+
 import tableModel from './GenesTable.model';
 
 export default compose(
@@ -95,6 +97,7 @@ export default compose(
               tsvSelector="#genes-table"
               tsvFilename="frequently-mutated-genes.tsv"
               CreateSetButton={CreateExploreGeneSetButton}
+              RemoveFromSetButton={RemoveFromExploreGeneSetButton}
               idField="genes.gene_id"
             />
           </Row>

@@ -35,6 +35,7 @@ type TProps = {
   RemoveFromSetButton?: ReactClass<{}>,
   idField?: string,
   query: TRawQuery,
+  selectedIds?: Array<string>,
 };
 
 const enhance = compose(withRouter);
@@ -56,6 +57,7 @@ const TableActions = ({
   RemoveFromSetButton,
   idField,
   query,
+  selectedIds,
 }: TProps) => {
   return (
     <Row style={style} spacing="0.2rem" className="test-table-actions">
@@ -100,12 +102,13 @@ const TableActions = ({
         RemoveFromSetButton &&
         idField &&
         <SetActions
-          disabled={!total}
+          total={total}
           filters={currentFilters}
           CreateSetButton={CreateSetButton}
           RemoveFromSetButton={RemoveFromSetButton}
           field={idField}
           type={type}
+          selectedIds={selectedIds || []}
         />}
     </Row>
   );

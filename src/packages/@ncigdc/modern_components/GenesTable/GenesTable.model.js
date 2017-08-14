@@ -20,6 +20,7 @@ import styled from '@ncigdc/theme/styled';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
+import { createSelectColumn } from '../../tableModels/utils';
 
 const colors = scaleOrdinal(schemeCategory10);
 
@@ -27,6 +28,7 @@ const NumTh = styled(Th, { textAlign: 'right' });
 const NumTd = styled(Td, { textAlign: 'right' });
 
 const GenesTableModel = [
+  createSelectColumn({ idField: 'gene_id' }),
   {
     name: 'Gene ID',
     id: 'gene_id',

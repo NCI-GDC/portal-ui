@@ -92,3 +92,51 @@ export const createDataCategoryColumns = ({
     })),
   ];
 };
+
+type TCreateSelectColumn = ({
+  idField: string,
+  headerRowSpan?: number,
+}) => {};
+export const createSelectColumn: TCreateSelectColumn = ({
+  idField,
+  headerRowSpan,
+}) => {
+  return {
+    name: 'Select',
+    id: 'select',
+    sortable: false,
+    downloadable: false,
+    hidden: false,
+    th: ({ nodes, selectedIds, setSelectedIds }) => {
+      const ids = nodes.map(({ node }) => node[idField]);
+      const allSelected = ids.every(id => selectedIds.includes(id));
+
+      return (
+        <Th rowSpan={headerRowSpan}>
+          <input
+            type="checkbox"
+            checked={allSelected}
+            onChange={e => {
+              setSelectedIds(
+                allSelected
+                  ? _.xor(selectedIds, ids)
+                  : _.uniq(ids.concat(selectedIds)),
+              );
+            }}
+          />
+        </Th>
+      );
+    },
+    td: ({ node, selectedIds, setSelectedIds }) =>
+      <Td>
+        <input
+          type="checkbox"
+          value={node[idField]}
+          checked={selectedIds.includes(node[idField])}
+          onChange={e => {
+            setSelectedIds(_.xor(selectedIds, [node[idField]]));
+          }}
+        />
+      </Td>,
+  };
+};

@@ -1,6 +1,6 @@
 /* @flow */
 
-export default (str, defaultValue = null) => {
+export default (str: string, defaultValue: any = null) => {
   try {
     return JSON.parse(str);
   } catch (e) {

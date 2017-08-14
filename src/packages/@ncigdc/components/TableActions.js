@@ -12,7 +12,6 @@ import SortTableButton from '@ncigdc/components/SortTableButton';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import DownloadTableToTsvButton from '@ncigdc/components/DownloadTableToTsvButton';
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
-import CreateRepositoryCaseSetButton from '../modern_components/CreateSetButton/CreateRepositoryCaseSetButton';
 import SetActions from '@ncigdc/components/SetActions';
 import { compose } from 'recompose';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -33,6 +32,7 @@ type TProps = {
   currentFilters?: TGroupFilter,
   downloadTooltip?: any,
   CreateSetButton?: ReactClass<{}>,
+  RemoveFromSetButton?: ReactClass<{}>,
   idField?: string,
   query: TRawQuery,
 };
@@ -53,6 +53,7 @@ const TableActions = ({
   currentFilters,
   downloadTooltip = 'Export All',
   CreateSetButton,
+  RemoveFromSetButton,
   idField,
   query,
 }: TProps) => {
@@ -96,11 +97,13 @@ const TableActions = ({
         />}
 
       {CreateSetButton &&
+        RemoveFromSetButton &&
         idField &&
         <SetActions
           disabled={!total}
           filters={currentFilters}
-          CreateSetButton={CreateRepositoryCaseSetButton}
+          CreateSetButton={CreateSetButton}
+          RemoveFromSetButton={RemoveFromSetButton}
           field={idField}
           type={type}
         />}

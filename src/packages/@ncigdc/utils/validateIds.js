@@ -1,5 +1,7 @@
 import { fetchApiChunked } from '@ncigdc/utils/ajax';
 
+const FETCH_ALL_GENES = process.env.NODE_ENV !== 'test';
+
 function _getIds(obj, path) {
   const [segment] = path;
   const data = obj[segment];
@@ -38,7 +40,23 @@ export const GENE_ID_FIELD_DISPLAY = {
 };
 export const GENE_ID_FIELDS = Object.keys(GENE_ID_FIELD_DISPLAY);
 export const geneMap = {};
-export const validateGenes = validate(GENE_ID_FIELDS, geneMap, 'gene', 'genes');
+let allGenePromise =
+  FETCH_ALL_GENES &&
+  fetchApiChunked('genes', {
+    headers: { 'Content-Type': 'application/json' },
+    body: {
+      fields: GENE_ID_FIELDS.join(','),
+    },
+  }).then(response => {
+    updateMap(geneMap, GENE_ID_FIELDS, response.data.hits);
+  });
+export const validateGenes = validate({
+  idFields: GENE_ID_FIELDS,
+  map: geneMap,
+  field: 'gene',
+  endpoint: 'genes',
+  dataPromise: allGenePromise,
+});
 
 export const CASE_ID_FIELD_DISPLAY = {
   case_id: 'Case UUID',
@@ -56,36 +74,47 @@ export const CASE_ID_FIELD_DISPLAY = {
 };
 export const CASE_ID_FIELDS = Object.keys(CASE_ID_FIELD_DISPLAY);
 export const caseMap = {};
-export const validateCases = validate(
-  CASE_ID_FIELDS,
-  caseMap,
-  'case',
-  'cases',
-  ['project.project_id'],
-);
+export const validateCases = validate({
+  idFields: CASE_ID_FIELDS,
+  map: caseMap,
+  field: 'case',
+  endpoint: 'cases',
+  extraFields: ['project.project_id'],
+});
 
-function validate(idFields, map, field, endpoint, extraFields = []) {
+function validate({
+  idFields,
+  map,
+  field,
+  endpoint,
+  extraFields = [],
+  dataPromise,
+}) {
   return async (ids = [], onValidatingStateChange) => {
     const notValidatedIds = ids.filter(g => typeof map[g] === 'undefined');
     if (notValidatedIds.length <= 0) return;
     onValidatingStateChange(true);
-
-    const response = await fetchApiChunked(endpoint, {
-      headers: { 'Content-Type': 'application/json' },
-      body: {
-        size: notValidatedIds.length,
-        fields: idFields.concat(extraFields).join(','),
-        filters: {
-          op: 'IN',
-          content: {
-            field: `${field}_autocomplete.lowercase`,
-            value: notValidatedIds.map(s => s.toLowerCase()),
+    if (!dataPromise) {
+      const response = await fetchApiChunked(endpoint, {
+        headers: { 'Content-Type': 'application/json' },
+        body: {
+          size: notValidatedIds.length,
+          fields: idFields.concat(extraFields).join(','),
+          filters: {
+            op: 'IN',
+            content: {
+              field: `${field}_autocomplete.lowercase`,
+              value: notValidatedIds.map(s => s.toLowerCase()),
+            },
           },
         },
-      },
-    });
-    notValidatedIds.forEach(g => (map[g] = map[g] || null));
-    updateMap(map, idFields, response.data.hits);
+      });
+      notValidatedIds.forEach(g => (map[g] = map[g] || null));
+      updateMap(map, idFields, response.data.hits);
+    } else {
+      await dataPromise;
+      notValidatedIds.forEach(g => (map[g] = map[g] || null));
+    }
 
     onValidatingStateChange(false);
   };

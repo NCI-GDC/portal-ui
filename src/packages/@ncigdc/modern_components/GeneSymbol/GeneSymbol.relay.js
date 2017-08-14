@@ -2,9 +2,12 @@
 
 import React from 'react';
 import { graphql } from 'react-relay';
-import { makeFilter } from '@ncigdc/utils/filters';
+import { get } from 'lodash';
 import { compose, withPropsOnChange, branch, renderComponent } from 'recompose';
+
+import { makeFilter } from '@ncigdc/utils/filters';
 import { BaseQuery } from '@ncigdc/modern_components/Query';
+import { geneMap } from '@ncigdc/utils/validateIds';
 
 export default (Component: ReactClass<*>) =>
   compose(
@@ -14,6 +17,7 @@ export default (Component: ReactClass<*>) =>
     ),
     withPropsOnChange(['geneId'], ({ geneId }) => {
       return {
+        symbol: get(geneMap, `${geneId}.symbol`),
         variables: {
           filters: makeFilter([
             {
@@ -25,31 +29,30 @@ export default (Component: ReactClass<*>) =>
       };
     }),
   )((props: Object) => {
-    return (
-      <BaseQuery
-        parentProps={props}
-        name="GeneSymbol"
-        variables={props.variables}
-        Component={Component}
-        query={graphql`
-        query GeneSymbol_relayQuery(
-          $filters: FiltersArgument
-        ) {
-          viewer {
-            explore {
-              genes {
-                hits(filters: $filters first: 1) {
-                  edges {
-                    node {
-                      symbol
+    return props.symbol
+      ? <span>{props.symbol}</span>
+      : <BaseQuery
+          parentProps={props}
+          name="GeneSymbol"
+          variables={props.variables}
+          Component={Component}
+          query={graphql`
+            query GeneSymbol_relayQuery(
+              $filters: FiltersArgument
+            ) {
+              viewer {
+                explore {
+                  genes {
+                    hits(filters: $filters first: 1) {
+                      edges {
+                        node {
+                          symbol
+                        }
+                      }
                     }
                   }
                 }
               }
-            }
-          }
-        }
-      `}
-      />
-    );
+            }`}
+        />;
   });

@@ -10,7 +10,8 @@ import { Row } from '@ncigdc/uikit/Flex';
 import TableActions from '@ncigdc/components/TableActions';
 import tableModels from '@ncigdc/tableModels';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/CreateSetButton/CreateRepositoryCaseSetButton';
+import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/CreateRepositoryCaseSetButton';
+import RemoveFromRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/RemoveFromRepositoryCaseSetButton';
 
 export const SearchTable = compose(
   connect(state => ({ tableColumns: state.tableColumns.cases.ids })),
@@ -46,7 +47,9 @@ export const SearchTable = compose(
           sortOptions={tableInfo.filter(x => x.sortable)}
           tsvSelector="#repository-cases-table"
           tsvFilename="repository-cases-table.tsv"
+          currentFilters={filters}
           CreateSetButton={CreateRepositoryCaseSetButton}
+          RemoveFromSetButton={RemoveFromRepositoryCaseSetButton}
           idField="cases.case_id"
         />
       </Row>

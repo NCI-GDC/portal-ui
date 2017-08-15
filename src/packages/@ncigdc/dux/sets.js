@@ -18,10 +18,15 @@ type TAction = {
 };
 type TActionCreator = (payload: TPayload) => TAction;
 
-const sets = namespaceActions('sets', ['ADD_SET', 'REMOVE_SET']);
+const sets = namespaceActions('sets', ['ADD_SET', 'REMOVE_SET', 'UPDATE_SET']);
 
 const addSet: TActionCreator = payload => ({
   type: sets.ADD_SET,
+  payload,
+});
+
+const updateSet: TActionCreator = payload => ({
+  type: sets.UPDATE_SET,
   payload,
 });
 
@@ -33,32 +38,36 @@ const removeSet: TActionCreator = payload => ({
 const initialState = {};
 
 const reducer = (state: TState = initialState, action: TAction) => {
+  const payload = action.payload;
   switch (action.type) {
     case REHYDRATE:
       return {
         ...state,
         ...action.payload.sets,
       };
-    case sets.ADD_SET: {
-      const { label = '', id, type } = action.payload;
-
+    case sets.ADD_SET:
       return {
         ...state,
-        [type]: {
-          ...state[type],
-          [label]: id,
+        [payload.type]: {
+          ...state[payload.type],
+          [payload.id]: payload.label || '',
         },
       };
-    }
 
-    case sets.REMOVE_SET: {
-      const { label, type } = action.payload;
-
+    case sets.REMOVE_SET:
       return {
         ...state,
-        [type]: omit(state[type], label),
+        [payload.type]: omit(state[payload.type], payload.id),
       };
-    }
+
+    case sets.UPDATE_SET:
+      return {
+        ...state,
+        [payload.type]: {
+          ...omit(state[payload.type], payload.oldId),
+          [payload.newId]: state[payload.type][payload.oldId],
+        },
+      };
 
     default:
       return state;
@@ -67,6 +76,6 @@ const reducer = (state: TState = initialState, action: TAction) => {
 
 /*----------------------------------------------------------------------------*/
 
-export { addSet, removeSet };
+export { addSet, removeSet, updateSet };
 
 export default reducer;

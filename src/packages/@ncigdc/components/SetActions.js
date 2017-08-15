@@ -32,7 +32,8 @@ export default enhance(
     selectedIds,
     ...props
   }) => {
-    const total = selectedIds.length || props.total;
+    const titleType = type.replace(/^./, m => m.toUpperCase());
+    const total = selectedIds.length || props.total || 0;
     const displayType = `${type}${total > 1 ? 's' : ''}`;
     const filters = selectedIds.length
       ? { op: 'in', content: { field, value: selectedIds } }
@@ -42,7 +43,7 @@ export default enhance(
       <Dropdown
         button={
           <Button style={{ ...visualizingButton, ...style }} disabled={!total}>
-            save/edit {type} set
+            Save/Edit {titleType} Set
           </Button>
         }
         dropdownStyle={{
@@ -62,7 +63,7 @@ export default enhance(
               },
             }}
           >
-            {total}&nbsp;{displayType}
+            {total.toLocaleString()}&nbsp;{displayType}
           </DropdownItem>
           <DropdownItem
             style={{ lineHeight: '1.5', cursor: 'pointer' }}
@@ -72,8 +73,8 @@ export default enhance(
                   <SaveSetModal
                     title={
                       selectedIds.length
-                        ? `Save ${total} ${displayType} as new set`
-                        : `Save ${type.replace(/^./, m => m.toUpperCase())} Set`
+                        ? `Save ${total.toLocaleString()} ${displayType} as new set`
+                        : `Save ${titleType} Set`
                     }
                     filters={filters}
                     type={type}
@@ -93,7 +94,7 @@ export default enhance(
                   setModal(
                     <AppendSetModal
                       field={field}
-                      title={`Add ${total} ${displayType} to existing set`}
+                      title={`Add ${total.toLocaleString()} ${displayType} to existing set`}
                       filters={filters}
                       type={type}
                       CreateSetButton={CreateSetButton}
@@ -111,7 +112,8 @@ export default enhance(
                 dispatch(
                   setModal(
                     <RemoveSetModal
-                      title={`Remove ${total} ${displayType} from existing set`}
+                      field={field}
+                      title={`Remove ${total.toLocaleString()} ${displayType} from existing set`}
                       filters={filters}
                       type={type}
                       RemoveFromSetButton={RemoveFromSetButton}

@@ -82,7 +82,7 @@ export default enhance(
           }
         >
 
-          {Object.entries(sets).map(([label, setId]: [string, string]) => {
+          {Object.entries(sets).map(([setId, label]: [string, string]) => {
             const value = `set_id:${setId}`;
             return (
               <DropdownItem key={label} style={{ padding: 5 }}>

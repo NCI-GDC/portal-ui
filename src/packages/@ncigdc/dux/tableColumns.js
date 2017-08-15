@@ -47,18 +47,40 @@ const reducer = (state = initialState, action) => {
     case REHYDRATE: {
       return {
         ...state,
-        ...Object.entries(action.payload.tableColumns || {}).reduce(
-          (acc, [key, val]) => ({
-            ...acc,
-            [key]: Array.isArray(val)
-              ? {
-                  ...state[key],
-                  ids: val,
+        ...Object.entries(
+          action.payload.tableColumns || {},
+        ).reduce((acc, [key, val]: [string, any]) => {
+          const order = Array.isArray(val) ? state[key].order : val.order;
+          const newColumns = state[key].order.filter(c => !order.includes(c));
+
+          const ids = newColumns
+            .filter(id => {
+              if (!state[key].ids.includes(id)) return false;
+              const column = tableModels[key].find(c => c.id === id);
+              if (column.subHeading) {
+                const parent = tableModels[key].find(
+                  c => c.id === column.parent,
+                );
+                if (parent) {
+                  return (
+                    state[key].ids.includes(parent.id) &&
+                    newColumns.includes(parent.id)
+                  );
                 }
-              : val,
-          }),
-          {},
-        ),
+              }
+              return true;
+            })
+            .concat(Array.isArray(val) ? val : val.ids);
+
+          return {
+            ...acc,
+            [key]: {
+              ...state[key],
+              ids,
+              order: [...newColumns, ...order],
+            },
+          };
+        }, {}),
       };
     }
 

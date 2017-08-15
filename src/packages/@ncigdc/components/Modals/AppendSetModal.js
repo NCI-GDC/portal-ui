@@ -5,8 +5,9 @@ import { compose, withState, withProps } from 'recompose';
 import { stringify } from 'query-string';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
-import { addSet } from '@ncigdc/dux/sets';
+import { updateSet } from '@ncigdc/dux/sets';
 import { setModal } from '@ncigdc/dux/modal';
+import SetTable from '@ncigdc/components/SetTable';
 import withRouter from '@ncigdc/utils/withRouter';
 
 const enhance = compose(
@@ -43,22 +44,22 @@ const AppendSetModal = ({
                 filters,
                 {
                   op: 'in',
-                  content: { field, value: [`set_id:${sets[selected]}`] },
+                  content: { field, value: [`set_id:${selected}`] },
                 },
               ],
             }
           }
           onComplete={setId => {
-            if ((query.filters || '').includes(sets[selected])) {
+            if ((query.filters || '').includes(selected)) {
               history.replace({
                 search: `?${stringify({
                   ...query,
-                  filters: query.filters.replace(sets[selected], setId),
+                  filters: query.filters.replace(selected, setId),
                 })}`,
               });
             }
             dispatch(setModal(null));
-            dispatch(addSet({ type, label: selected, id: setId }));
+            dispatch(updateSet({ type, oldId: selected, newId: setId }));
           }}
         >
           Save
@@ -66,16 +67,12 @@ const AppendSetModal = ({
       }
       closeText="Cancel"
     >
-      <select
-        autoFocus
-        value={selected}
-        onChange={e => setSelected(e.target.value)}
-      >
-        <option value="" disabled selected>Select set</option>
-        {Object.keys(sets).map(key =>
-          <option key={key} value={key}>{key}</option>,
-        )}
-      </select>
+      <SetTable
+        setSelected={setSelected}
+        selected={selected}
+        type={type}
+        field={field}
+      />
     </BaseModal>
   );
 };

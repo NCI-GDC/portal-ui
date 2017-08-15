@@ -5,8 +5,9 @@ import { connect } from 'react-redux';
 import { stringify } from 'query-string';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
-import { addSet } from '@ncigdc/dux/sets';
+import { updateSet } from '@ncigdc/dux/sets';
 import { setModal } from '@ncigdc/dux/modal';
+import SetTable from '@ncigdc/components/SetTable';
 import withRouter from '@ncigdc/utils/withRouter';
 
 const enhance = compose(
@@ -24,6 +25,7 @@ const RemoveSetModal = ({
   filters,
   dispatch,
   type,
+  field,
   sets,
   history,
   query,
@@ -33,20 +35,20 @@ const RemoveSetModal = ({
     extraButtons={
       <RemoveFromSetButton
         disabled={!selected}
-        setId={`set_id:${sets[selected]}`}
+        setId={`set_id:${selected}`}
         filters={filters}
         action="remove"
         onComplete={setId => {
-          if ((query.filters || '').includes(sets[selected])) {
+          if ((query.filters || '').includes(selected)) {
             history.replace({
               search: `?${stringify({
                 ...query,
-                filters: query.filters.replace(sets[selected], setId),
+                filters: query.filters.replace(selected, setId),
               })}`,
             });
           }
           dispatch(setModal(null));
-          dispatch(addSet({ type, label: selected, id: setId }));
+          dispatch(updateSet({ type, oldId: selected, newId: setId }));
         }}
       >
         Save
@@ -54,16 +56,13 @@ const RemoveSetModal = ({
     }
     closeText="Cancel"
   >
-    <select
-      autoFocus
-      value={selected}
-      onChange={e => setSelected(e.target.value)}
-    >
-      <option value="" disabled selected>Select set</option>
-      {Object.keys(sets).map(key =>
-        <option key={key} value={key}>{key}</option>,
-      )}
-    </select>
+    <SetTable
+      sets={sets}
+      setSelected={setSelected}
+      selected={selected}
+      type={type}
+      field={field}
+    />
   </BaseModal>;
 
 export default enhance(RemoveSetModal);

@@ -10,7 +10,7 @@ export default enhance(({ set, sets }) => {
   return (
     <span>
       {Object.values(sets).reduce((setLabel, obj) => {
-        return Object.entries(obj).reduce((setLabel, [label, id]) => {
+        return Object.entries(obj).reduce((setLabel, [id, label]) => {
           return setId === id ? label : setLabel;
         }, setLabel);
       }, 'input set')}

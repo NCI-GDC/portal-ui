@@ -15,6 +15,6 @@ export default compose(
   })),
 )(({ node }) =>
   <span>
-    {node.file_id}
+    {node.file_name}
   </span>,
 );

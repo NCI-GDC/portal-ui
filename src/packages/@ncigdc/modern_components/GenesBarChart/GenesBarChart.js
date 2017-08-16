@@ -6,11 +6,10 @@ import Relay from 'react-relay/classic';
 import { compose, withHandlers } from 'recompose';
 import { parse } from 'query-string';
 import { connect } from 'react-redux';
-import JSURL from 'jsurl';
 
 import { handleReadyStateChange } from '@ncigdc/dux/loaders';
 import withRouter from '@ncigdc/utils/withRouter';
-import { parseFilterParam } from '@ncigdc/utils/uri';
+import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import { makeFilter, removeFilter } from '@ncigdc/utils/filters';
 import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
@@ -124,7 +123,7 @@ const Component = compose(
         : push({
             pathname: `/genes/${gene.gene_id}`,
             query: {
-              filters: JSURL.stringify(
+              filters: stringifyJSONParam(
                 removeFilter(f => f.match(/^genes\./), defaultFilters),
               ),
             },

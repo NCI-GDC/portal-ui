@@ -1,9 +1,8 @@
 import React from 'react';
-import JSURL from 'jsurl';
 import { compose } from 'recompose';
 
 import { replaceFilters } from '@ncigdc/utils/filters';
-import { parseFilterParam } from '@ncigdc/utils/uri';
+import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 import withRouter from '@ncigdc/utils/withRouter';
 
 type TProps = {
@@ -38,7 +37,7 @@ export default enhance(
             query: {
               ...query,
               searchTableTab: `${type}s`,
-              filters: JSURL.stringify(
+              filters: stringifyJSONParam(
                 replaceFilters(
                   {
                     op: 'AND',

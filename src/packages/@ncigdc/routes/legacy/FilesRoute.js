@@ -8,7 +8,7 @@ import FilesPage from '@ncigdc/containers/legacy/FilesPage';
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam,
+  parseJSONParam,
 } from '@ncigdc/utils/uri';
 
 import { viewerQuery } from '../queries';
@@ -23,7 +23,7 @@ class FilesRoute extends Relay.Route {
     return {
       files_offset: parseIntParam(q.files_offset, 0),
       files_size: parseIntParam(q.files_size, 20),
-      files_sort: parseJSURLParam(q.files_sort, null),
+      files_sort: parseJSONParam(q.files_sort, null),
       filters: parseFilterParam(q.filters, null),
     };
   };

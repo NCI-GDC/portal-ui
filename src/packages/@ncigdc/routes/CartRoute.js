@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 import { handleStateChange } from '@ncigdc/dux/relayProgress';
 import CartPage from '@ncigdc/containers/CartPage';
-import { parseIntParam, parseJSURLParam } from '@ncigdc/utils/uri';
+import { parseIntParam, parseJSONParam } from '@ncigdc/utils/uri';
 import { setFilter } from '@ncigdc/utils/filters';
 
 import { viewerQuery } from './queries';
@@ -22,7 +22,7 @@ class CartRoute extends Relay.Route {
     return {
       files_offset: parseIntParam(q.files_offset, 0),
       files_size: parseIntParam(q.files_size, 20),
-      files_sort: parseJSURLParam(q.files_sort, null),
+      files_sort: parseJSONParam(q.files_sort, null),
       filters: files.length
         ? setFilter({
             field: 'files.file_id',

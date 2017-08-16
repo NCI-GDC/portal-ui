@@ -8,8 +8,7 @@ import {
 } from '@ncigdc/utils/filters';
 import PieChart from '@ncigdc/components/Charts/PieChart';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import { removeEmptyKeys } from '@ncigdc/utils/uri';
-import JSURL from 'jsurl';
+import { stringifyJSONParam, removeEmptyKeys } from '@ncigdc/utils/uri';
 
 const toPieData = (clickHandler, docTypeSingular) => bucket => ({
   id: bucket.key,
@@ -76,7 +75,7 @@ function addFilter(query: Object, push: Function): Function {
     push({
       query: removeEmptyKeys({
         ...newQuery,
-        filters: newQuery.filters && JSURL.stringify(newQuery.filters),
+        filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
       }),
     });
   };

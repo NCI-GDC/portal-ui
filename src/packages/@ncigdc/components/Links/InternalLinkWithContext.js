@@ -30,7 +30,7 @@ const InternalLinkWithContext = ({
 
       const hasFilterChanged = _.some([
         // Note: empty {} passed in b/c
-        // mergeQuery(ctx.query).filters is a jsurl string
+        // mergeQuery(ctx.query).filters is a JSON string
         // mergeQuery({}, ctx.query).filters is an object
         _.isEqual(
           _.get(mergedQuery, 'filters'),

@@ -11,7 +11,7 @@ import ExplorePage from '@ncigdc/containers/explore/ExplorePage';
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam,
+  parseJSONParam,
 } from '@ncigdc/utils/uri';
 
 import { viewerQuery } from './queries';
@@ -31,7 +31,7 @@ class ExploreRoute extends Relay.Route {
       filters: parseFilterParam(q.filters, null),
       cases_offset: parseIntParam(q.cases_offset, 0),
       cases_size: parseIntParam(q.cases_size, 20),
-      cases_sort: parseJSURLParam(q.cases_sort, null),
+      cases_sort: parseJSONParam(q.cases_sort, null),
     };
   };
 }

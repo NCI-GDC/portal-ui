@@ -1,8 +1,9 @@
 // @flow
 
 import { withPropsOnChange, compose } from 'recompose';
-import JSURL from 'jsurl';
+
 import withRouter from '@ncigdc/utils/withRouter';
+import { parseJSONParam } from '@ncigdc/utils/uri';
 
 type TArgs = {
   propName: string,
@@ -15,7 +16,7 @@ export default ({ propName = 'filters', defaults = null }: TArgs = {}) =>
       ({ location }, { location: previousLocation }) =>
         location.search !== previousLocation.search,
       ({ query: { filters } }) => ({
-        [propName]: JSURL.parse(filters) || defaults,
+        [propName]: parseJSONParam(filters, defaults),
       }),
     ),
   );

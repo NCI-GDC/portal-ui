@@ -13,7 +13,6 @@ import {
   mapProps,
   withPropsOnChange,
 } from 'recompose';
-import JSURL from 'jsurl';
 import { isEqual, sortBy } from 'lodash';
 
 // Custom
@@ -36,6 +35,7 @@ import caseHasMutation from '@ncigdc/utils/filters/prepared/caseHasMutation';
 import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
 import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
 import PieChart from '@ncigdc/components/Charts/PieChart';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 const color = d3.scaleOrdinal([
   ...d3.schemeCategory20,
@@ -165,8 +165,9 @@ const ProjectsChartsComponent = compose(
   })),
   withProps({
     async fetchData(props: TProps): Promise<*> {
-      const topGenesSource = (props.explore.genes.hits.edges || [])
-        .map(g => g.node);
+      const topGenesSource = (props.explore.genes.hits.edges || []).map(
+        g => g.node,
+      );
 
       const {
         aggregations,
@@ -262,8 +263,8 @@ const ProjectsChartsComponent = compose(
             projectId,
             percent:
               topGenesWithCasesPerProject[geneId][projectId] /
-                numUniqueCases *
-                100,
+              numUniqueCases *
+              100,
             count: topGenesWithCasesPerProject[geneId][projectId],
           })),
         },
@@ -278,7 +279,7 @@ const ProjectsChartsComponent = compose(
           push({
             pathname: `/genes/${geneId}`,
             query: {
-              filters: JSURL.stringify(
+              filters: stringifyJSONParam(
                 removeFilter(f => f.match(/^genes\./), fmgChartFilters),
               ),
             },
@@ -310,9 +311,10 @@ const ProjectsChartsComponent = compose(
           }),
           {},
         ),
-        total: yAxisUnit === 'number'
-          ? stackedBarCalculations[geneId].countTotal
-          : stackedBarCalculations[geneId].countTotal / numUniqueCases * 100,
+        total:
+          yAxisUnit === 'number'
+            ? stackedBarCalculations[geneId].countTotal
+            : stackedBarCalculations[geneId].countTotal / numUniqueCases * 100,
       }))
       .sort((a, b) => b.total - a.total); // relay score sorting isn't returned in reliable order
     const pieChartData = projects.map(project => {
@@ -334,7 +336,7 @@ const ProjectsChartsComponent = compose(
 
           const q = removeEmptyKeys({
             ...newQuery,
-            filters: newQuery.filters && JSURL.stringify(newQuery.filters),
+            filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
           });
 
           push({ pathname, query: q });
@@ -433,115 +435,118 @@ const ProjectsChartsComponent = compose(
               />
             </Tooltip>
           </div>
-          {!genesIsFetching
-            ? [
-                <div
-                  style={{
-                    alignSelf: 'center',
-                    color: theme.greyScale7,
-                    fontSize: '1.2rem',
+          {!genesIsFetching ? (
+            [
+              <div
+                style={{
+                  alignSelf: 'center',
+                  color: theme.greyScale7,
+                  fontSize: '1.2rem',
+                }}
+                key="bar-subtitle"
+              >
+                <ExploreLink
+                  query={{
+                    searchTableTab: 'cases',
+                    filters: caseCountFilters
+                      ? { op: 'and', content: caseCountFilters }
+                      : null,
                   }}
-                  key="bar-subtitle"
                 >
-                  <ExploreLink
-                    query={{
-                      searchTableTab: 'cases',
-                      filters: caseCountFilters
-                        ? { op: 'and', content: caseCountFilters }
-                        : null,
+                  {numUniqueCases.toLocaleString()}
+                </ExploreLink>
+                {` Unique Case${!numUniqueCases || numUniqueCases > 1
+                  ? 's'
+                  : ''} with Somatic Mutation Data`}
+              </div>,
+              <span
+                key="bar-wrapper"
+                style={{ paddingLeft: '10px', paddingRight: '10px' }}
+              >
+                <form name="y-axis-unit-toggle" key="y-axis-unit-toggle">
+                  <label
+                    htmlFor="percentage-cases-radio"
+                    style={{
+                      paddingRight: '10px',
+                      color: theme.greyScale7,
+                      fontSize: '1.2rem',
                     }}
                   >
-                    {numUniqueCases.toLocaleString()}
-                  </ExploreLink>
-                  {` Unique Case${!numUniqueCases || numUniqueCases > 1
-                    ? 's'
-                    : ''} with Somatic Mutation Data`}
-                </div>,
-                <span
-                  key="bar-wrapper"
-                  style={{ paddingLeft: '10px', paddingRight: '10px' }}
-                >
-                  <form name="y-axis-unit-toggle" key="y-axis-unit-toggle">
-                    <label
-                      htmlFor="percentage-cases-radio"
-                      style={{
-                        paddingRight: '10px',
-                        color: theme.greyScale7,
-                        fontSize: '1.2rem',
-                      }}
-                    >
-                      <input
-                        type="radio"
-                        value="days"
-                        onChange={() => setYAxisUnit('percent')}
-                        checked={yAxisUnit === 'percent'}
-                        id="percentage-cases-radio"
-                        style={{ marginRight: '5px' }}
+                    <input
+                      type="radio"
+                      value="days"
+                      onChange={() => setYAxisUnit('percent')}
+                      checked={yAxisUnit === 'percent'}
+                      id="percentage-cases-radio"
+                      style={{ marginRight: '5px' }}
+                    />
+                    % of Cases Affected
+                  </label>
+                  <label
+                    htmlFor="number-cases-radio"
+                    style={{
+                      paddingRight: '10px',
+                      color: theme.greyScale7,
+                      fontSize: '1.2rem',
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      value="years"
+                      onChange={() => setYAxisUnit('number')}
+                      checked={yAxisUnit === 'number'}
+                      id="number-cases-radio"
+                      style={{ marginRight: '5px' }}
+                    />
+                    # of Cases Affected
+                  </label>
+                </form>
+                <Measure key="bar-chart">
+                  {({ width }) => (
+                    <div style={{ transform: 'scale(0.9)' }}>
+                      <StackedBarChart
+                        width={width}
+                        height={170}
+                        data={stackedBarData}
+                        projectsIdtoName={projects.reduce(
+                          (acc, p) => ({ ...acc, [p.project_id]: p.name }),
+                          {},
+                        )}
+                        colors={Object.keys(primarySiteToColor).reduce(
+                          (acc, pSite) => ({
+                            ...acc,
+                            ...primarySiteToColor[pSite].projects,
+                          }),
+                          {},
+                        )}
+                        yAxis={{ title: 'Cases Affected' }}
+                        styles={{
+                          xAxis: {
+                            stroke: theme.greyScale4,
+                            textFill: theme.greyScale3,
+                          },
+                          yAxis: {
+                            stroke: theme.greyScale4,
+                            textFill: theme.greyScale3,
+                          },
+                        }}
                       />
-                      % of Cases Affected
-                    </label>
-                    <label
-                      htmlFor="number-cases-radio"
-                      style={{
-                        paddingRight: '10px',
-                        color: theme.greyScale7,
-                        fontSize: '1.2rem',
-                      }}
-                    >
-                      <input
-                        type="radio"
-                        value="years"
-                        onChange={() => setYAxisUnit('number')}
-                        checked={yAxisUnit === 'number'}
-                        id="number-cases-radio"
-                        style={{ marginRight: '5px' }}
-                      />
-                      # of Cases Affected
-                    </label>
-                  </form>
-                  <Measure key="bar-chart">
-                    {({ width }) =>
-                      <div style={{ transform: 'scale(0.9)' }}>
-                        <StackedBarChart
-                          width={width}
-                          height={170}
-                          data={stackedBarData}
-                          projectsIdtoName={projects.reduce(
-                            (acc, p) => ({ ...acc, [p.project_id]: p.name }),
-                            {},
-                          )}
-                          colors={Object.keys(primarySiteToColor).reduce(
-                            (acc, pSite) => ({
-                              ...acc,
-                              ...primarySiteToColor[pSite].projects,
-                            }),
-                            {},
-                          )}
-                          yAxis={{ title: 'Cases Affected' }}
-                          styles={{
-                            xAxis: {
-                              stroke: theme.greyScale4,
-                              textFill: theme.greyScale3,
-                            },
-                            yAxis: {
-                              stroke: theme.greyScale4,
-                              textFill: theme.greyScale3,
-                            },
-                          }}
-                        />
-                      </div>}
-                  </Measure>
-                </span>,
-              ]
-            : <Row
-                style={{
-                  justifyContent: 'center',
-                  paddingTop: '2em',
-                  paddingBottom: '2em',
-                }}
-              >
-                <SpinnerParticle />
-              </Row>}
+                    </div>
+                  )}
+                </Measure>
+              </span>,
+            ]
+          ) : (
+            <Row
+              style={{
+                justifyContent: 'center',
+                paddingTop: '2em',
+                paddingBottom: '2em',
+              }}
+            >
+              <SpinnerParticle />
+            </Row>
+          )}
         </Column>
         <Column
           style={{ minWidth: '200px', flexGrow: '1', flexBasis: '33%' }}
@@ -557,61 +562,63 @@ const ProjectsChartsComponent = compose(
           >
             Case Distribution per Project
           </div>
-          {!projectsIsFetching
-            ? [
-                <div
-                  style={{
-                    alignSelf: 'center',
-                    fontSize: '1.2rem',
-                    marginBottom: '2rem',
-                  }}
-                  key="pie-subtitle"
-                >
-                  <ExploreLink
-                    query={{
-                      searchTableTab: 'cases',
-                      filters: projects.length
-                        ? {
-                            op: 'and',
-                            content: [
-                              {
-                                op: 'in',
-                                content: {
-                                  field: 'cases.project.project_id',
-                                  value: projects.map(x => x.project_id),
-                                },
-                              },
-                            ],
-                          }
-                        : null,
-                    }}
-                  >
-                    {totalCases.toLocaleString()}
-                  </ExploreLink>
-                  {` Case${totalCases === 0 || totalCases > 1 ? 's' : ''}
-              across ${projects.length.toLocaleString()} Project${projects.length ===
-                    0 || projects.length > 1
-                    ? 's'
-                    : ''}`}
-                </div>,
-                <PieChart
-                  key="pie-chart"
-                  path="count"
-                  data={pieChartData}
-                  height={150}
-                  width={150}
-                  marginTop={25}
-                />,
-              ]
-            : <Row
+          {!projectsIsFetching ? (
+            [
+              <div
                 style={{
-                  justifyContent: 'center',
-                  paddingTop: '2em',
-                  paddingBottom: '2em',
+                  alignSelf: 'center',
+                  fontSize: '1.2rem',
+                  marginBottom: '2rem',
                 }}
+                key="pie-subtitle"
               >
-                <SpinnerParticle />
-              </Row>}
+                <ExploreLink
+                  query={{
+                    searchTableTab: 'cases',
+                    filters: projects.length
+                      ? {
+                          op: 'and',
+                          content: [
+                            {
+                              op: 'in',
+                              content: {
+                                field: 'cases.project.project_id',
+                                value: projects.map(x => x.project_id),
+                              },
+                            },
+                          ],
+                        }
+                      : null,
+                  }}
+                >
+                  {totalCases.toLocaleString()}
+                </ExploreLink>
+                {` Case${totalCases === 0 || totalCases > 1 ? 's' : ''}
+              across ${projects.length.toLocaleString()} Project${projects.length ===
+                  0 || projects.length > 1
+                  ? 's'
+                  : ''}`}
+              </div>,
+              <PieChart
+                key="pie-chart"
+                path="count"
+                data={pieChartData}
+                height={150}
+                width={150}
+                marginTop={25}
+              />,
+            ]
+          ) : (
+            <Row
+              style={{
+                justifyContent: 'center',
+                paddingTop: '2em',
+                paddingBottom: '2em',
+              }}
+            >
+              <SpinnerParticle />
+            </Row>
+          )}
         </Column>
       </Container>
     );

@@ -4,7 +4,6 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { connect } from 'react-redux';
 import { compose, setDisplayName } from 'recompose';
-import JSURL from 'jsurl';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -27,6 +26,7 @@ import RepoCasesPies from '@ncigdc/components/TabPieCharts/RepoCasesPies';
 import RepoFilesPies from '@ncigdc/components/TabPieCharts/RepoFilesPies';
 import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/CreateRepositoryCaseSetButton';
 import withRouter from '@ncigdc/utils/withRouter';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 export type TProps = {
   push: Function,
@@ -178,7 +178,7 @@ export const RepositoryPageComponent = (props: TProps) => {
                     props.push({
                       pathname: '/exploration',
                       query: {
-                        filters: JSURL.stringify({
+                        filters: stringifyJSONParam({
                           op: 'AND',
                           content: [
                             {

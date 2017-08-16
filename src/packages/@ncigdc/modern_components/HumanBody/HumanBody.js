@@ -9,12 +9,12 @@ import {
   withProps,
 } from 'recompose';
 import { connect } from 'react-redux';
-import JSURL from 'jsurl';
 import sapien from '@oncojs/sapien';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import { Column } from '@ncigdc/uikit/Flex';
 import withRouter from '@ncigdc/utils/withRouter';
 import { makeFilter } from '@ncigdc/utils/filters';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import styled from '@ncigdc/theme/styled';
 import './humanbody.css';
 import {
@@ -96,7 +96,7 @@ export default compose(
             const datum = data.find(x => x._key === key);
             if (datum) {
               const query = {
-                filters: JSURL.stringify(
+                filters: stringifyJSONParam(
                   makeFilter([
                     {
                       field: 'cases.primary_site',

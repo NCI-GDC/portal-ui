@@ -10,6 +10,8 @@ import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import CaseRoute from '@ncigdc/routes/CaseRoute';
 import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
+
+import ComponentsRoute from '@ncigdc/routes/ComponentsRoute';
 import GeneRoute from '@ncigdc/routes/GeneRoute';
 import SSMRoute from '@ncigdc/routes/SSMRoute';
 import SmartSearchRoute from '@ncigdc/routes/SmartSearchRoute';
@@ -30,8 +32,6 @@ import styled from '@ncigdc/theme/styled';
 import { setModal } from '@ncigdc/dux/modal';
 import FirstTimeModal from '@ncigdc/components/Modals/FirstTimeModal';
 import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
-
-import * as ModernComponents from '@ncigdc/modern_components';
 
 const SkipLink = styled.a({
   position: 'absolute',
@@ -125,15 +125,7 @@ const PortalContainer = ({
         {AnnotationRoute}
         {GeneRoute}
         {SSMRoute}
-        <Route
-          path="/components/:component"
-          component={({ match, ...props }) => {
-            const Component = ModernComponents[match.params.component];
-            return Component
-              ? <Component />
-              : <h1>No matching component found.</h1>;
-          }}
-        />
+        <Route path="/components/:component" component={ComponentsRoute} />
         <Route component={NotFound} />
       </Switch>
     </div>

@@ -1,20 +1,18 @@
 /* @flow */
 
 import React from 'react';
-import JSURL from 'jsurl';
 import draw from './draw';
 import { debounce } from 'lodash';
-
 import { compose } from 'recompose';
 
 import withRouter from '@ncigdc/utils/withRouter';
-
 import { fetchApi } from '@ncigdc/utils/ajax/index';
+import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 
-import './style.css';
-import { parseFilterParam } from '../../utils/uri/index';
 import getColumns from './columns';
 import prepareData from './prepareData';
+
+import './style.css';
 
 // TODO: require d3-tip instead. Currently appends d3-tip for githut. Appending here to avoid issues in load order.
 const d3TipUrl =
@@ -54,7 +52,7 @@ class GitHutWrapper extends React.Component {
         this.props.push({
           pathname: '/repository',
           query: {
-            filters: JSURL.stringify({
+            filters: stringifyJSONParam({
               op: 'AND',
               content: [
                 {
@@ -73,7 +71,7 @@ class GitHutWrapper extends React.Component {
         this.props.push({
           pathname: '/repository',
           query: {
-            filters: JSURL.stringify({
+            filters: stringifyJSONParam({
               op: 'AND',
               content: [
                 {
@@ -100,7 +98,7 @@ class GitHutWrapper extends React.Component {
           pathname: '/repository',
           query: {
             searchTableTab: 'files',
-            filters: JSURL.stringify({
+            filters: stringifyJSONParam({
               op: 'AND',
               content: [
                 {

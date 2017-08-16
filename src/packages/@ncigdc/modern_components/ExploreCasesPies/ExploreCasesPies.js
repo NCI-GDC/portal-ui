@@ -3,19 +3,15 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import _ from 'lodash';
 import { parse } from 'query-string';
-import { compose } from 'recompose';
-import { connect } from 'react-redux';
 import type { TBucket } from '@ncigdc/components/Aggregations/types';
-import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam } from '@ncigdc/utils/uri';
-import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 import {
   ColumnCenter,
   RowCenter,
   PieTitle,
   SelfFilteringPie,
 } from '@ncigdc/components/TabPieCharts';
-import { handleReadyStateChange } from '@ncigdc/dux/loaders';
+import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 
 export type TProps = {
   push: Function,
@@ -39,22 +35,6 @@ export type TProps = {
 };
 
 const COMPONENT_NAME = 'ExploreCasesPies';
-
-const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) =>
-    <div style={{ position: 'relative', minHeight: '161px' }}>
-      <Relay.Renderer
-        environment={Relay.Store}
-        queryConfig={new Route(props)}
-        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
-        Container={Container}
-        render={({ props: relayProps }) =>
-          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-        }
-      />
-      <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -226,4 +206,4 @@ const Component = ({
   );
 };
 
-export default createRenderer(Route, createContainer(Component));
+export default createClassicRenderer(Route, createContainer(Component), 161);

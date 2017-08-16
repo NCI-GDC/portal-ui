@@ -3,8 +3,8 @@
  *   relay-compiler
  *
  * @providesModule AddOrRemoveAllFilesButton_relayQuery.graphql
- * @generated SignedSource<<1db58e80bfe464da44d344a809006e3b>>
- * @relayHash 069401c3d800731ab233af4ac1ed64ea
+ * @generated SignedSource<<603bff4ecde12b7c8738579253bb4fca>>
+ * @relayHash 63ac6c339bdde5fe2f3b7759b2acee28
  * @flow
  * @nogrep
  */
@@ -30,7 +30,25 @@ query AddOrRemoveAllFilesButton_relayQuery(
         hits(first: $first, filters: $filters) {
           edges {
             node {
+              acl
+              state
+              file_state
+              access
               file_id
+              file_size
+              cases {
+                hits {
+                  edges {
+                    node {
+                      project {
+                        project_id
+                        id
+                      }
+                      id
+                    }
+                  }
+                }
+              }
               id
             }
           }
@@ -126,7 +144,104 @@ const batch /*: ConcreteBatch*/ = {
                                 "kind": "ScalarField",
                                 "alias": null,
                                 "args": null,
+                                "name": "acl",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "state",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "file_state",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "access",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
                                 "name": "file_id",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "file_size",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "LinkedField",
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "FileCases",
+                                "name": "cases",
+                                "plural": false,
+                                "selections": [
+                                  {
+                                    "kind": "LinkedField",
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "FileCaseConnection",
+                                    "name": "hits",
+                                    "plural": false,
+                                    "selections": [
+                                      {
+                                        "kind": "LinkedField",
+                                        "alias": null,
+                                        "args": null,
+                                        "concreteType": "FileCaseEdge",
+                                        "name": "edges",
+                                        "plural": true,
+                                        "selections": [
+                                          {
+                                            "kind": "LinkedField",
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FileCase",
+                                            "name": "node",
+                                            "plural": false,
+                                            "selections": [
+                                              {
+                                                "kind": "LinkedField",
+                                                "alias": null,
+                                                "args": null,
+                                                "concreteType": "Project",
+                                                "name": "project",
+                                                "plural": false,
+                                                "selections": [
+                                                  {
+                                                    "kind": "ScalarField",
+                                                    "alias": null,
+                                                    "args": null,
+                                                    "name": "project_id",
+                                                    "storageKey": null
+                                                  }
+                                                ],
+                                                "storageKey": null
+                                              }
+                                            ],
+                                            "storageKey": null
+                                          }
+                                        ],
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  }
+                                ],
                                 "storageKey": null
                               }
                             ],
@@ -238,7 +353,118 @@ const batch /*: ConcreteBatch*/ = {
                                 "kind": "ScalarField",
                                 "alias": null,
                                 "args": null,
+                                "name": "acl",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "state",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "file_state",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "access",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
                                 "name": "file_id",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "ScalarField",
+                                "alias": null,
+                                "args": null,
+                                "name": "file_size",
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "LinkedField",
+                                "alias": null,
+                                "args": null,
+                                "concreteType": "FileCases",
+                                "name": "cases",
+                                "plural": false,
+                                "selections": [
+                                  {
+                                    "kind": "LinkedField",
+                                    "alias": null,
+                                    "args": null,
+                                    "concreteType": "FileCaseConnection",
+                                    "name": "hits",
+                                    "plural": false,
+                                    "selections": [
+                                      {
+                                        "kind": "LinkedField",
+                                        "alias": null,
+                                        "args": null,
+                                        "concreteType": "FileCaseEdge",
+                                        "name": "edges",
+                                        "plural": true,
+                                        "selections": [
+                                          {
+                                            "kind": "LinkedField",
+                                            "alias": null,
+                                            "args": null,
+                                            "concreteType": "FileCase",
+                                            "name": "node",
+                                            "plural": false,
+                                            "selections": [
+                                              {
+                                                "kind": "LinkedField",
+                                                "alias": null,
+                                                "args": null,
+                                                "concreteType": "Project",
+                                                "name": "project",
+                                                "plural": false,
+                                                "selections": [
+                                                  {
+                                                    "kind": "ScalarField",
+                                                    "alias": null,
+                                                    "args": null,
+                                                    "name": "project_id",
+                                                    "storageKey": null
+                                                  },
+                                                  {
+                                                    "kind": "ScalarField",
+                                                    "alias": null,
+                                                    "args": null,
+                                                    "name": "id",
+                                                    "storageKey": null
+                                                  }
+                                                ],
+                                                "storageKey": null
+                                              },
+                                              {
+                                                "kind": "ScalarField",
+                                                "alias": null,
+                                                "args": null,
+                                                "name": "id",
+                                                "storageKey": null
+                                              }
+                                            ],
+                                            "storageKey": null
+                                          }
+                                        ],
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  }
+                                ],
                                 "storageKey": null
                               },
                               {
@@ -268,7 +494,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query AddOrRemoveAllFilesButton_relayQuery(\n  $filters: FiltersArgument\n  $first: Int\n) {\n  filesViewer: viewer {\n    repository {\n      files {\n        hits(first: $first, filters: $filters) {\n          edges {\n            node {\n              file_id\n              id\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+  "text": "query AddOrRemoveAllFilesButton_relayQuery(\n  $filters: FiltersArgument\n  $first: Int\n) {\n  filesViewer: viewer {\n    repository {\n      files {\n        hits(first: $first, filters: $filters) {\n          edges {\n            node {\n              acl\n              state\n              file_state\n              access\n              file_id\n              file_size\n              cases {\n                hits {\n                  edges {\n                    node {\n                      project {\n                        project_id\n                        id\n                      }\n                      id\n                    }\n                  }\n                }\n              }\n              id\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

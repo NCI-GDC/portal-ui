@@ -46,7 +46,23 @@ export default (Component: ReactClass<*>) =>
                   hits(first: $first, filters: $filters) {
                     edges {
                       node {
-                        file_id
+                        acl,
+                        state,
+                        file_state,
+                        access,
+                        file_id,
+                        file_size,
+                        cases {
+                          hits {
+                            edges {
+                              node {
+                                project {
+                                  project_id
+                                }
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import JSURL from 'jsurl';
 import queryString from 'query-string';
 import PropTypes from 'prop-types';
 
@@ -15,6 +14,7 @@ import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import CasesTable from './CasesTable';
 import FilesTable from './FilesTable';
 import { API } from '@ncigdc/utils/constants';
+import { stringifyJSONParam, parseJSONParam } from '@ncigdc/utils/uri';
 
 require('lodash-backports').register();
 
@@ -69,7 +69,8 @@ class SmartSearchComponent extends React.Component {
               );
               const currentQuery =
                 query ||
-                (filters && LocationService.filter2query(JSURL.parse(filters)));
+                (filters &&
+                  LocationService.filter2query(parseJSONParam(filters)));
 
               if (typeof currentQuery === 'string') {
                 this.query = currentQuery;
@@ -81,7 +82,7 @@ class SmartSearchComponent extends React.Component {
 
               const data = {
                 query: this.query,
-                filters: gql.filters && JSURL.stringify(filters),
+                filters: gql.filters && stringifyJSONParam(filters),
               };
 
               push(

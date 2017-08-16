@@ -13,7 +13,6 @@ import {
   mapProps,
   withPropsOnChange,
 } from 'recompose';
-import JSURL from 'jsurl';
 import { isEqual, sortBy } from 'lodash';
 
 // Custom
@@ -36,6 +35,7 @@ import { withTheme } from '@ncigdc/theme';
 import caseHasMutation from '@ncigdc/utils/filters/prepared/caseHasMutation';
 import significantConsequences from '@ncigdc/utils/filters/prepared/significantConsequences';
 import type { TGroupContent, TGroupFilter } from '@ncigdc/utils/filters/types';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 const color = d3.scaleOrdinal([
   ...d3.schemeCategory20,
@@ -278,7 +278,7 @@ const ProjectsChartsComponent = compose(
           push({
             pathname: `/genes/${geneId}`,
             query: {
-              filters: JSURL.stringify(
+              filters: stringifyJSONParam(
                 removeFilter(f => f.match(/^genes\./), fmgChartFilters),
               ),
             },
@@ -348,7 +348,7 @@ const ProjectsChartsComponent = compose(
 
             const q = removeEmptyKeys({
               ...newQuery,
-              filters: newQuery.filters && JSURL.stringify(newQuery.filters),
+              filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
             });
 
             push({ pathname, query: q });
@@ -382,7 +382,7 @@ const ProjectsChartsComponent = compose(
                 const q = removeEmptyKeys({
                   ...newQuery,
                   filters:
-                    newQuery.filters && JSURL.stringify(newQuery.filters),
+                    newQuery.filters && stringifyJSONParam(newQuery.filters),
                 });
 
                 push({ pathname, query: q });

@@ -1,6 +1,6 @@
 import React from 'react';
-import JSURL from 'jsurl';
 
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { setModal } from '@ncigdc/dux/modal';
 import SelectModal from '@ncigdc/components/Modals/SelectModal';
 
@@ -79,7 +79,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
     push({
       pathname: '/exploration',
       query: {
-        filters: JSURL.stringify({
+        filters: stringifyJSONParam({
           op: 'AND',
           content: [
             {
@@ -97,7 +97,7 @@ export default function({ grid, setTooltip, trackLegends, push, dispatch }) {
     push({
       pathname: '/exploration',
       query: {
-        filters: JSURL.stringify({
+        filters: stringifyJSONParam({
           op: 'AND',
           content: [
             {

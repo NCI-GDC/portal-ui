@@ -3,9 +3,8 @@
 import React from 'react';
 import _ from 'lodash';
 import { NavLink as Link } from 'react-router-dom';
-import JSURL from 'jsurl';
 import { stringify } from 'query-string';
-import { removeEmptyKeys as rek } from '@ncigdc/utils/uri';
+import { removeEmptyKeys as rek, stringifyJSONParam } from '@ncigdc/utils/uri';
 import validAttributes from '@ncigdc/theme/utils/validAttributes';
 import { scrollToId } from '@ncigdc/components/Links/deepLink';
 
@@ -29,7 +28,7 @@ const InternalLink = ({
   ...rest
 }: TLinkProps) => {
   const q0 = query || {};
-  const f0 = q0.filters ? JSURL.stringify(q0.filters) : null;
+  const f0 = q0.filters ? stringifyJSONParam(q0.filters) : null;
 
   const q1 = {
     ...q0,

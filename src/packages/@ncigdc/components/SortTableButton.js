@@ -4,10 +4,9 @@ import React from 'react';
 import { compose, setDisplayName } from 'recompose';
 import ArrowDownIcon from 'react-icons/lib/fa/long-arrow-down';
 import ArrowUpIcon from 'react-icons/lib/fa/long-arrow-up';
-import JSURL from 'jsurl';
 
 import withRouter from '@ncigdc/utils/withRouter';
-import { parseJSURLParam } from '@ncigdc/utils/uri';
+import { parseJSONParam, stringifyJSONParam } from '@ncigdc/utils/uri';
 import { SortIcon } from '@ncigdc/theme/icons';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
@@ -52,7 +51,7 @@ const SortTableButton = compose(
     }: TSortTableButtonProps = {},
   ) => {
     const { [sortKey]: sort } = q;
-    const fields = parseJSURLParam(sort, []);
+    const fields = parseJSONParam(sort, []);
 
     return (
       <Dropdown
@@ -90,7 +89,7 @@ const SortTableButton = compose(
                   style={{ width: '100%' }}
                   merge
                   query={{
-                    [sortKey]: JSURL.stringify(nextSort),
+                    [sortKey]: stringifyJSONParam(nextSort),
                   }}
                 >
                   <input
@@ -110,7 +109,7 @@ const SortTableButton = compose(
                   style={{ width: '100%' }}
                   merge
                   query={{
-                    [sortKey]: JSURL.stringify([
+                    [sortKey]: stringifyJSONParam([
                       ...otherFields,
                       { field: x.id, order: 'asc' },
                     ]),
@@ -129,7 +128,7 @@ const SortTableButton = compose(
                   style={{ width: '100%' }}
                   merge
                   query={{
-                    [sortKey]: JSURL.stringify([
+                    [sortKey]: stringifyJSONParam([
                       ...otherFields,
                       { field: x.id, order: 'desc' },
                     ]),

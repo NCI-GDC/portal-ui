@@ -4,7 +4,6 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import { get, isEqual } from 'lodash';
 import { compose, lifecycle } from 'recompose';
-import JSURL from 'jsurl';
 
 import SearchPage from '@ncigdc/components/SearchPage';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
@@ -19,6 +18,7 @@ import SSMAggregations from '@ncigdc/containers/explore/SSMAggregations';
 import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import withRouter from '@ncigdc/utils/withRouter';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 export type TProps = {
   filters: {},
@@ -176,7 +176,7 @@ export const ExplorePageComponent = (props: TProps) =>
             props.push({
               pathname: '/repository',
               query: {
-                filters: JSURL.stringify({
+                filters: stringifyJSONParam({
                   op: 'AND',
                   content: [
                     {

@@ -10,7 +10,7 @@ import { parse } from 'query-string';
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam,
+  parseJSONParam,
 } from '@ncigdc/utils/uri';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import { handleReadyStateChange } from '@ncigdc/dux/loaders';
@@ -75,7 +75,7 @@ class Route extends Relay.Route {
         q.affectedCasesTable_size,
         defaultSize,
       ),
-      affectedCasesTable_sort: parseJSURLParam(q.affectedCasesTable_sort, null),
+      affectedCasesTable_sort: parseJSONParam(q.affectedCasesTable_sort, null),
     };
   };
 }

@@ -22,7 +22,7 @@ import RemoveFromExploreCaseSetButton from '@ncigdc/modern_components/setButtons
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam,
+  parseJSONParam,
 } from '@ncigdc/utils/uri';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
@@ -62,7 +62,7 @@ class Route extends Relay.Route {
       filters: parseFilterParam(q.filters, defaultFilters),
       cases_offset: parseIntParam(q.cases_offset, 0),
       cases_size: parseIntParam(q.cases_size, defaultSize),
-      cases_sort: parseJSURLParam(q.cases_sort, null),
+      cases_sort: parseJSONParam(q.cases_sort, null),
     };
   };
 }

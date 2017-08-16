@@ -3,12 +3,12 @@
 import React from 'react';
 import { compose, lifecycle, branch, renderComponent } from 'recompose';
 import { connect } from 'react-redux';
-import JSURL from 'jsurl';
 import sapien from '@oncojs/sapien';
 import { withTooltip } from '@ncigdc/uikit/Tooltip';
 import { Column } from '@ncigdc/uikit/Flex';
 import withRouter from '@ncigdc/utils/withRouter';
 import { makeFilter } from '@ncigdc/utils/filters';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import styled from '@ncigdc/theme/styled';
 import './humanbody.css';
 
@@ -60,7 +60,7 @@ export default compose(
             const key = d._key.replace(/-/g, ' ');
             if (data.find(x => x._key === key)) {
               const query = {
-                filters: JSURL.stringify(
+                filters: stringifyJSONParam(
                   makeFilter([
                     {
                       field: 'cases.primary_site',

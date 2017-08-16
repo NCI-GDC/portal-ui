@@ -1,12 +1,11 @@
 import React from 'react';
 import { scaleOrdinal, schemeCategory20 } from 'd3';
 import { compose, branch, renderComponent } from 'recompose';
-import JSURL from 'jsurl';
 import SummaryCard from '@ncigdc/components/SummaryCard';
 import { makeFilter, mergeQuery } from '@ncigdc/utils/filters';
 import Link from '@ncigdc/components/Links/Link';
 import { removeEmptyKeys } from '@ncigdc/utils/uri';
-
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import { EXPERIMENTAL_STRATEGIES } from '@ncigdc/utils/constants';
 
 const colors20 = scaleOrdinal(schemeCategory20);
@@ -110,7 +109,7 @@ export default compose(
             );
             const q = removeEmptyKeys({
               ...newQuery,
-              filters: newQuery.filters && JSURL.stringify(newQuery.filters),
+              filters: newQuery.filters && stringifyJSONParam(newQuery.filters),
             });
             push({ pathname: '/repository', query: q });
           },

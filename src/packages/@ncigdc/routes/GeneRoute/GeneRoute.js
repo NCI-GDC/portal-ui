@@ -1,7 +1,6 @@
 /* @flow */
 
 import React from 'react';
-import JSURL from 'jsurl';
 import { parse } from 'query-string';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import GeneSummary from '@ncigdc/modern_components/GeneSummary';
@@ -18,10 +17,11 @@ import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import Heading from '@ncigdc/uikit/Heading';
+import { parseJSONParam } from '@ncigdc/utils/uri';
 
 export default ({ match, geneId = match.params.id, location }: Object) => {
   const { filters: f } = parse(location.search);
-  const filters = f && JSURL.parse(f);
+  const filters = parseJSONParam(f, f);
 
   const geneFilter = replaceFilters(
     {

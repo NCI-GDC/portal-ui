@@ -1,13 +1,13 @@
 /* @flow */
 /* eslint fp/no-this: 0, max-len: 1 */
 import _ from 'lodash';
-import JSURL from 'jsurl';
 import { connect } from 'react-redux';
 import { withState, withProps, withHandlers, compose } from 'recompose';
 import { add, remove, reset } from '@ncigdc/dux/customFacets';
 import withRouter from '@ncigdc/utils/withRouter';
 import { removeFilter } from '@ncigdc/utils/filters/index';
 import { removeEmptyKeys, parseFilterParam } from '@ncigdc/utils/uri/index';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 type TProps = {
   entityType: string,
@@ -70,7 +70,7 @@ export default ({
         push({
           query: removeEmptyKeys({
             ...query,
-            filters: newFilters && JSURL.stringify(newFilters),
+            filters: newFilters && stringifyJSONParam(newFilters),
           }),
         });
       },

@@ -2,42 +2,24 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import { connect } from 'react-redux';
 import { orderBy } from 'lodash';
 import { parse } from 'query-string';
 import { compose, withHandlers } from 'recompose';
 import { viewerQuery } from '@ncigdc/routes/queries';
 import withRouter from '@ncigdc/utils/withRouter';
 import { parseFilterParam } from '@ncigdc/utils/uri';
-import { handleReadyStateChange } from '@ncigdc/dux/loaders';
 import { makeFilter } from '@ncigdc/utils/filters';
 import { withTheme } from '@ncigdc/theme';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 import DownloadVisualizationButton from '@ncigdc/components/DownloadVisualizationButton';
 import BarChart from '@ncigdc/components/Charts/BarChart';
 import wrapSvg from '@ncigdc/utils/wrapSvg';
 import VisualizationHeader from '@ncigdc/components/VisualizationHeader';
+import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 
 const TITLE = 'Distribution of Most Frequent Somatic Mutations';
 const CHART_HEIGHT = 285;
 const COMPONENT_NAME = 'SsmsBarChart';
-
-const createRenderer = (Route, Container) =>
-  compose(withRouter, connect())((props: mixed) =>
-    <div style={{ position: 'relative', minHeight: `${CHART_HEIGHT}px` }}>
-      <Relay.Renderer
-        environment={Relay.Store}
-        queryConfig={new Route(props)}
-        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
-        Container={Container}
-        render={({ props: relayProps }) =>
-          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-        }
-      />
-      <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -188,4 +170,8 @@ const Component = compose(
   },
 );
 
-export default createRenderer(Route, createContainer(Component));
+export default createClassicRenderer(
+  Route,
+  createContainer(Component),
+  CHART_HEIGHT,
+);

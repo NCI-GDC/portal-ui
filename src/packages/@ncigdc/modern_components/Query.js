@@ -1,42 +1,84 @@
 // @flow
 import React from 'react';
 import { QueryRenderer } from 'react-relay';
+import Relay from 'react-relay/classic';
+import { withPropsOnChange } from 'recompose';
+
 import environment from '@ncigdc/modern_components/environment';
-import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
+import { withLoader } from '@ncigdc/uikit/Loaders/Loader';
+import withRouter from '@ncigdc/utils/withRouter';
 
-const lastRelayProps = {};
+export const createClassicRenderer = (Route, Container, minHeight) => {
+  const Component = withLoader(Container);
 
-export const BaseQuery = (props: Object) =>
-  <QueryRenderer
-    environment={environment}
-    render={({ props: nextRelayProps, error }) => {
-      // TODO: handle error
+  return withRouter(
+    class extends React.Component {
+      lastProps = null;
 
-      lastRelayProps[props.name] = nextRelayProps || lastRelayProps[props.name];
-
-      if (lastRelayProps[props.name] || (props.renderOnError && error))
+      render() {
         return (
-          <props.Component
-            {...lastRelayProps[props.name]}
-            {...props.parentProps}
-            parentVariables={{
-              ...props.parentProps.parentVariables,
-              ...props.parentProps.variables,
-              ...props.parentVariables,
-            }}
-          />
-        );
-      return null;
-    }}
-    {...props}
-  />;
+          <div style={{ position: 'relative', minHeight }}>
+            <Relay.Renderer
+              environment={Relay.Store}
+              queryConfig={new Route(this.props)}
+              Container={Container}
+              render={({ props: relayProps, error }) => {
+                this.lastProps = relayProps || this.lastProps;
 
-export default ({
-  minHeight,
-  style = { position: 'relative', width: '100%', minHeight },
-  ...props
-}: Object) =>
-  <div style={style}>
-    <BaseQuery {...props} />
-    <ConnectedLoader name={props.name} customLoader={props.customLoader} />
-  </div>;
+                return (
+                  <Component
+                    minHeight={minHeight}
+                    {...this.lastProps}
+                    {...this.props}
+                    firstLoad={!this.lastProps}
+                    loading={!relayProps && !error}
+                  />
+                );
+              }}
+            />
+          </div>
+        );
+      }
+    },
+  );
+};
+
+export class BaseQuery extends React.Component {
+  lastProps = null;
+
+  render() {
+    const { query, variables } = this.props;
+
+    return (
+      <QueryRenderer
+        environment={environment}
+        query={query}
+        variables={variables}
+        render={({ props: relayProps, error }) => {
+          const { parentProps, parentVariables, Component } = this.props;
+          // TODO: handle error
+          this.lastProps = relayProps || this.lastProps;
+
+          return (
+            <Component
+              {...parentProps}
+              parentVariables={{
+                ...parentProps.parentVariables,
+                ...parentProps.variables,
+                ...parentVariables,
+              }}
+              {...this.lastProps}
+              {...this.props}
+              firstLoad={!this.lastProps}
+              loading={!relayProps && !error}
+            />
+          );
+        }}
+      />
+    );
+  }
+}
+
+export default withPropsOnChange(['Component'], ({ Component }) => ({
+  Component: withLoader(Component),
+}))(BaseQuery);

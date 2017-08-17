@@ -75,6 +75,8 @@ export const withSearch = passedInState => {
           fetchResults(query, timeOfMostRecentRequest);
         } else if (results && results.length) {
           setState(s => ({ ...s, results: [] }));
+        } else {
+          setState(s => ({ ...s, isLoading: false }));
         }
       },
     ),

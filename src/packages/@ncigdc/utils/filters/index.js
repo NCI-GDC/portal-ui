@@ -40,7 +40,7 @@ export const combineValues: TCombineValues = (x, y) => {
   if (yValue.length === 0) return x;
 
   const merged = {
-    op: 'in',
+    op: x.op,
     content: {
       field: x.content.field,
       value: xValue
@@ -142,12 +142,41 @@ export const addInFilters: TMergeFilters = (q, ctxq) => {
   return merged.content.length ? merged : null;
 };
 
+export const flipFilters: TMergeFilters = (q, ctxq) => {
+  if (!ctxq && !q) return null;
+  if (!ctxq) return q;
+  if (!q) return ctxq;
+
+  const flipped = toggleFilters(
+    {
+      op: 'and',
+      content: q.content.map(f => ({
+        ...f,
+        op: f.op === 'in' ? 'exclude' : 'in',
+      })),
+    },
+    ctxq,
+  );
+
+  const toggled = toggleFilters(q, ctxq);
+  const t1 = toggleFilters(flipped, toggled);
+
+  console.log(3333, t1.content);
+
+  console.log(123, toggled.content);
+
+  return null;
+  return merged.content.length ? merged : null;
+};
+
 const mergeFns: TMergeFns = v => {
   switch (v) {
     case 'toggle':
       return toggleFilters;
     case 'add':
       return addInFilters;
+    case 'flip':
+      return flipFilters;
     default:
       return replaceFilters;
   }

@@ -170,6 +170,84 @@ describe('toggleFilters', () => {
   });
 });
 
+// describe('flipFilters', () => {
+//   it('should swap same field/value ins for excludes', () => {
+//     const result = flipFilters(
+//       {
+//         op: 'and',
+//         content: [
+//           {
+//             op: 'in',
+//             content: {
+//               field: 'file.file_id',
+//               value: ['fileA'],
+//             },
+//           },
+//           {
+//             op: 'exclude',
+//             content: {
+//               field: 'file.file_name',
+//               value: ['fileA'],
+//             },
+//           },
+//         ],
+//       },
+//       {
+//         op: 'and',
+//         content: [
+//           {
+//             op: 'in',
+//             content: {
+//               field: 'file.foo',
+//               value: ['bar'],
+//             },
+//           },
+//           {
+//             op: 'exclude',
+//             content: {
+//               field: 'file.file_id',
+//               value: ['fileA'],
+//             },
+//           },
+//           {
+//             op: 'in',
+//             content: {
+//               field: 'file.file_name',
+//               value: ['fileA'],
+//             },
+//           },
+//         ],
+//       },
+//     );
+//     expect(result).toEqual({
+//       op: 'and',
+//       content: [
+//         {
+//           op: 'in',
+//           content: {
+//             field: 'file.foo',
+//             value: ['bar'],
+//           },
+//         },
+//         {
+//           op: 'in',
+//           content: {
+//             field: 'file.file_id',
+//             value: ['fileA'],
+//           },
+//         },
+//         {
+//           op: 'exclude',
+//           content: {
+//             field: 'file.file_name',
+//             value: ['fileA'],
+//           },
+//         },
+//       ],
+//     });
+//   });
+// });
+
 describe('mergeQuery', () => {
   it('should not change the range filter if an unrelated filter was removed', () => {
     const q = {

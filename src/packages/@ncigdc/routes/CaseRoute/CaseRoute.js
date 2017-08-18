@@ -67,7 +67,10 @@ export default ({
     <FullWidthLayout title={caseId} entityType="CA">
       <Column spacing="2rem" className="test-case">
         <Row style={{ justifyContent: 'flex-end' }}>
-          <AddOrRemoveAllFilesButton caseId={caseId} />
+          <AddOrRemoveAllFilesButton
+            caseId={caseId}
+            style={{ width: 'auto' }}
+          />
         </Row>
         <CaseSummary caseId={caseId} />
         <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>

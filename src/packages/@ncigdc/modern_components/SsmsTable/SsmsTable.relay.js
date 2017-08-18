@@ -14,12 +14,17 @@ import {
 import { makeFilter, addInFilters } from '@ncigdc/utils/filters';
 import Query from '@ncigdc/modern_components/Query';
 
-export default Component =>
+export default (Component: ReactClass<*>) =>
   compose(
     withRouter,
     withPropsOnChange(
-      ['location'],
-      ({ location, defaultFilters = null, defaultSize = 10 }) => {
+      ['location', 'defaultFilters', 'defaultSize'],
+      ({
+        location,
+        defaultFilters = null,
+        contextFilters = null,
+        defaultSize = 10,
+      }) => {
         const q = parse(location.search);
         return {
           variables: {
@@ -31,7 +36,7 @@ export default Component =>
             ssmsTable_size: parseIntParam(q.ssmsTable_size, defaultSize),
             ssmsTable_sort: parseJSURLParam(q.ssmsTable_sort, null),
             ssmCaseFilter: addInFilters(
-              q.ssmsTable_filters || defaultFilters,
+              q.ssmsTable_filters || contextFilters || defaultFilters,
               makeFilter([
                 {
                   field: 'available_variation_data',
@@ -61,7 +66,7 @@ export default Component =>
         };
       },
     ),
-  )((props: mixed) => {
+  )((props: Object) => {
     return (
       <Query
         parentProps={props}
@@ -116,6 +121,11 @@ export default Component =>
                                 }
                               }
                             }
+                          }
+                        }
+                        filteredOccurences: occurrence {
+                          hits(first: 0 filters: $ssmCaseFilter) {
+                            total
                           }
                         }
                         occurrence {

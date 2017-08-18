@@ -57,6 +57,10 @@ type TProps = {
     ssmsTable_filters: string,
   },
   defaultFilters: TGroupFilter,
+  variables: Object,
+  tableColumns: Array<string>,
+  hideContext: boolean,
+  hideSurvival: boolean,
 };
 
 export default compose(
@@ -69,6 +73,7 @@ export default compose(
   (
     {
       defaultFilters,
+      contextFilters,
       showSurvivalPlot = false,
       hasEnoughSurvivalDataOnPrimaryCurve,
       selectedSurvivalData = { id: '' },
@@ -172,6 +177,7 @@ export default compose(
                           context={context}
                           cases={cases}
                           defaultFilters={defaultFilters}
+                          contextFilters={contextFilters}
                           filteredCases={filteredCases}
                           query={query}
                           setSurvivalLoadingId={setSurvivalLoadingId}

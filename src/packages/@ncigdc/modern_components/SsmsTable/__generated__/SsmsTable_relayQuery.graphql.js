@@ -3,8 +3,8 @@
  *   relay-compiler
  *
  * @providesModule SsmsTable_relayQuery.graphql
- * @generated SignedSource<<d9089cced74ec00d2ef342c2059bf69e>>
- * @relayHash ff8e4ba5d9e2f99587ac7618e01ab611
+ * @generated SignedSource<<e74f70ac1b3d5c54c7382af96d27adf8>>
+ * @relayHash 55d2bb9515c4bbd03a8998939cb101ee
  * @flow
  * @nogrep
  */
@@ -71,6 +71,11 @@ query SsmsTable_relayQuery(
                       id
                     }
                   }
+                }
+              }
+              filteredOccurences: occurrence {
+                hits(first: 0, filters: $ssmCaseFilter) {
+                  total
                 }
               }
               occurrence {
@@ -472,6 +477,48 @@ const batch /*: ConcreteBatch*/ = {
                                             "storageKey": null
                                           }
                                         ],
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  }
+                                ],
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "LinkedField",
+                                "alias": "filteredOccurences",
+                                "args": null,
+                                "concreteType": "Occurrences",
+                                "name": "occurrence",
+                                "plural": false,
+                                "selections": [
+                                  {
+                                    "kind": "LinkedField",
+                                    "alias": null,
+                                    "args": [
+                                      {
+                                        "kind": "Variable",
+                                        "name": "filters",
+                                        "variableName": "ssmCaseFilter",
+                                        "type": "FiltersArgument"
+                                      },
+                                      {
+                                        "kind": "Literal",
+                                        "name": "first",
+                                        "value": 0,
+                                        "type": "Int"
+                                      }
+                                    ],
+                                    "concreteType": "OccurrenceConnection",
+                                    "name": "hits",
+                                    "plural": false,
+                                    "selections": [
+                                      {
+                                        "kind": "ScalarField",
+                                        "alias": null,
+                                        "args": null,
+                                        "name": "total",
                                         "storageKey": null
                                       }
                                     ],
@@ -948,6 +995,48 @@ const batch /*: ConcreteBatch*/ = {
                               },
                               {
                                 "kind": "LinkedField",
+                                "alias": "filteredOccurences",
+                                "args": null,
+                                "concreteType": "Occurrences",
+                                "name": "occurrence",
+                                "plural": false,
+                                "selections": [
+                                  {
+                                    "kind": "LinkedField",
+                                    "alias": null,
+                                    "args": [
+                                      {
+                                        "kind": "Variable",
+                                        "name": "filters",
+                                        "variableName": "ssmCaseFilter",
+                                        "type": "FiltersArgument"
+                                      },
+                                      {
+                                        "kind": "Literal",
+                                        "name": "first",
+                                        "value": 0,
+                                        "type": "Int"
+                                      }
+                                    ],
+                                    "concreteType": "OccurrenceConnection",
+                                    "name": "hits",
+                                    "plural": false,
+                                    "selections": [
+                                      {
+                                        "kind": "ScalarField",
+                                        "alias": null,
+                                        "args": null,
+                                        "name": "total",
+                                        "storageKey": null
+                                      }
+                                    ],
+                                    "storageKey": null
+                                  }
+                                ],
+                                "storageKey": null
+                              },
+                              {
+                                "kind": "LinkedField",
                                 "alias": null,
                                 "args": null,
                                 "concreteType": "Occurrences",
@@ -1008,7 +1097,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query SsmsTable_relayQuery(\n  $ssmTested: FiltersArgument\n  $ssmCaseFilter: FiltersArgument\n  $ssmsTable_size: Int\n  $consequenceFilters: FiltersArgument\n  $ssmsTable_offset: Int\n  $ssmsTable_filters: FiltersArgument\n  $score: String\n  $sort: [Sort]\n) {\n  viewer {\n    explore {\n      cases {\n        hits(first: 0, filters: $ssmTested) {\n          total\n        }\n      }\n      filteredCases: cases {\n        hits(first: 0, filters: $ssmCaseFilter) {\n          total\n        }\n      }\n      ssms {\n        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, filters: $ssmsTable_filters, score: $score, sort: $sort) {\n          total\n          edges {\n            node {\n              id\n              score\n              genomic_dna_change\n              mutation_subtype\n              ssm_id\n              consequence {\n                hits(first: 1, filters: $consequenceFilters) {\n                  edges {\n                    node {\n                      transcript {\n                        is_canonical\n                        annotation {\n                          impact\n                        }\n                        consequence_type\n                        gene {\n                          gene_id\n                          symbol\n                        }\n                        aa_change\n                      }\n                      id\n                    }\n                  }\n                }\n              }\n              occurrence {\n                hits(first: 0, filters: $ssmTested) {\n                  total\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+  "text": "query SsmsTable_relayQuery(\n  $ssmTested: FiltersArgument\n  $ssmCaseFilter: FiltersArgument\n  $ssmsTable_size: Int\n  $consequenceFilters: FiltersArgument\n  $ssmsTable_offset: Int\n  $ssmsTable_filters: FiltersArgument\n  $score: String\n  $sort: [Sort]\n) {\n  viewer {\n    explore {\n      cases {\n        hits(first: 0, filters: $ssmTested) {\n          total\n        }\n      }\n      filteredCases: cases {\n        hits(first: 0, filters: $ssmCaseFilter) {\n          total\n        }\n      }\n      ssms {\n        hits(first: $ssmsTable_size, offset: $ssmsTable_offset, filters: $ssmsTable_filters, score: $score, sort: $sort) {\n          total\n          edges {\n            node {\n              id\n              score\n              genomic_dna_change\n              mutation_subtype\n              ssm_id\n              consequence {\n                hits(first: 1, filters: $consequenceFilters) {\n                  edges {\n                    node {\n                      transcript {\n                        is_canonical\n                        annotation {\n                          impact\n                        }\n                        consequence_type\n                        gene {\n                          gene_id\n                          symbol\n                        }\n                        aa_change\n                      }\n                      id\n                    }\n                  }\n                }\n              }\n              filteredOccurences: occurrence {\n                hits(first: 0, filters: $ssmCaseFilter) {\n                  total\n                }\n              }\n              occurrence {\n                hits(first: 0, filters: $ssmTested) {\n                  total\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

@@ -138,11 +138,9 @@ const SsmsTableModel = [
         <Tooltip
           Component={
             <span>
-              Breakdown of Cases Affected by Simple Somatic Mutations
-              in&nbsp;
-              {context}<br />
-              # of Cases where Mutation is observed / # of Cases tested
-              for Simple Somatic Mutations
+              # of Cases where Mutation is observed in {context}
+              <br /> / # of Cases tested
+              for Simple Somatic Mutations in {context}
             </span>
           }
           style={tableToolTipHint()}
@@ -150,7 +148,14 @@ const SsmsTableModel = [
           # Affected Cases<br />in {context}
         </Tooltip>
       </Th>,
-    td: ({ node, query, defaultFilters, filteredCases, location }) =>
+    td: ({
+      node,
+      query,
+      contextFilters,
+      defaultFilters,
+      filteredCases,
+      location,
+    }) =>
       <Td>
         <span>
           <ExploreLink
@@ -158,21 +163,21 @@ const SsmsTableModel = [
             query={{
               searchTableTab: 'cases',
               filters: addInFilters(
-                query.genesTable_filters || defaultFilters,
+                query.genesTable_filters || contextFilters || defaultFilters,
                 makeFilter([{ field: 'ssms.ssm_id', value: node.ssm_id }]),
               ),
             }}
           >
-            {node.score.toLocaleString()}
+            {node.filteredOccurences.hits.total.toLocaleString()}
           </ExploreLink>
           <span> / </span>
           <ExploreLink
             query={{
               searchTableTab: 'cases',
               filters: location.pathname.split('/')[1] === 'genes'
-                ? query.ssmsTable_filters || defaultFilters
+                ? query.ssmsTable_filters || contextFilters || defaultFilters
                 : addInFilters(
-                    query.ssmsTable_filters || defaultFilters,
+                    query.ssmsTable_filters || contextFilters || defaultFilters,
                     makeFilter([
                       {
                         field: 'cases.available_variation_data',

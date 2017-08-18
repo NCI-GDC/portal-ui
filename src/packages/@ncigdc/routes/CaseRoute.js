@@ -19,16 +19,23 @@ import {
 } from '@ncigdc/modern_components/CaseCounts';
 import BiospecimenCard from '@ncigdc/modern_components/BiospecimenCard';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
-import createCaseSummary from '@ncigdc/modern_components/CaseSummary/CaseSummary.relay.js';
+import createCaseSummary from '@ncigdc/modern_components/CaseSummary/CaseSummary.relay';
 
-const SsmsTable = createCaseSummary(props =>
-  <ST
-    defaultFilters={props.fmFilters}
-    context={
-      props.viewer.repository.cases.hits.edges[0].node.project.project_id
-    }
-    hideSurvival
-  />,
+const SsmsTable = createCaseSummary(
+  ({
+    viewer,
+    node = viewer.repository.cases.hits.edges[0].node,
+    projectId = node.project.project_id,
+    ...props
+  }) =>
+    <ST
+      {...props}
+      contextFilters={makeFilter([
+        { field: 'cases.project.project_id', value: projectId },
+      ])}
+      context={projectId}
+      hideSurvival
+    />,
 );
 
 const styles = {

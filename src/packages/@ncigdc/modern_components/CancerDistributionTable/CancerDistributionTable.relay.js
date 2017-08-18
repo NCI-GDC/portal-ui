@@ -26,7 +26,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="CancerDistributionTable"
         minHeight={50}
         variables={props.variables}
         Component={Component}

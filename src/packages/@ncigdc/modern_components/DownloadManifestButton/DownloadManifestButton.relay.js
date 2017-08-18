@@ -28,7 +28,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="DownloadManifestButton"
         minHeight={50}
         variables={props.variables}
         Component={Component}

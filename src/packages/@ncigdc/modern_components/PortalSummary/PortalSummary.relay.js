@@ -8,7 +8,6 @@ export default (Component: ReactClass<*>) => (props: Object) => {
   return (
     <Query
       parentProps={props}
-      name="PortalSummary"
       minHeight={259}
       variables={props.variables}
       Component={Component}

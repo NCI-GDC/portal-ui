@@ -28,7 +28,7 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        minHeight={50}
+        minHeight={34}
         variables={props.variables}
         Component={Component}
         Loader={() => null}

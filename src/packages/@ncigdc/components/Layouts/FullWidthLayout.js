@@ -11,6 +11,7 @@ const styles = {
     color: theme.primary,
     padding: '14px 0 8px 100px',
     width: '100%',
+    height: 53,
     position: theme.headerPosition,
     zIndex: 55,
     boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',

@@ -120,6 +120,8 @@ export default compose(
                   pathname: '/repository',
                   query: {
                     filters: makeFilter(projectFilter),
+                    facetTab: 'cases',
+                    searchTableTab: 'cases',
                   },
                 }
               : null

@@ -93,6 +93,7 @@ export default enhance(
                   </div>
                   <Button
                     style={{ ...visualizingButton }}
+                    disabled={!matchedCases.length}
                     onClick={() =>
                       saveFile(
                         toTsvString(
@@ -158,6 +159,7 @@ export default enhance(
                   </div>
                   <Button
                     style={{ ...visualizingButton }}
+                    disabled={!unmatched.length}
                     onClick={() =>
                       saveFile(
                         toTsvString(unmatched),

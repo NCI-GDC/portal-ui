@@ -27,9 +27,10 @@ const SsmsTable = createCaseSummary(
     node = viewer.repository.cases.hits.edges[0].node,
     projectId = node.project.project_id,
     caseId = node.case_id,
+    ...props
   }) =>
     <ST
-      defaultFilters={makeFilter([{ field: 'cases.case_id', value: caseId }])}
+      {...props}
       contextFilters={makeFilter([
         { field: 'cases.project.project_id', value: projectId },
       ])}

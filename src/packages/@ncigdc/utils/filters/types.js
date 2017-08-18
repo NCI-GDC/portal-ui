@@ -6,7 +6,7 @@ export type TValueContent = {|
   field: string,
   value: Array<mixed>,
 |};
-export type TValueOp = 'in';
+export type TValueOp = 'in' | 'exclude' | 'and';
 export type TValueFilter = {|
   content: TValueContent,
   op: TValueOp,
@@ -23,6 +23,11 @@ export type TCombineValues = (
   x: TValueFilter,
   y: TValueFilter,
 ) => ?TValueFilter;
+
+export type TFlipValues = (
+  x: TValueFilter,
+  y: TValueFilter,
+) => Array<?TValueFilter>;
 
 export type TMergeFilters = (
   q: ?TGroupFilter,

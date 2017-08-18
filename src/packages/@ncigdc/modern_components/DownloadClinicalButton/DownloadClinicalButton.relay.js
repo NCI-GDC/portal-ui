@@ -80,7 +80,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="DownloadClinicalButton"
         minHeight={53}
         variables={props.variables}
         Component={Component}

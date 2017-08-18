@@ -21,7 +21,6 @@ export default (Component: ReactClass<*>) => (props: Object) => {
   return (
     <Query
       parentProps={props}
-      name="HumanBody"
       minHeight={200}
       Loader={({ loading }) =>
         !loading

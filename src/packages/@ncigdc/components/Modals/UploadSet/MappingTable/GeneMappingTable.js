@@ -97,6 +97,7 @@ export default enhance(
                   </div>
                   <Button
                     style={{ ...visualizingButton }}
+                    disabled={!matchedGenes.length}
                     onClick={() =>
                       saveFile(
                         toTsvString(
@@ -163,6 +164,7 @@ export default enhance(
                   </div>
                   <Button
                     style={{ ...visualizingButton }}
+                    disabled={!unmatched.length}
                     onClick={() =>
                       saveFile(
                         toTsvString(unmatched),

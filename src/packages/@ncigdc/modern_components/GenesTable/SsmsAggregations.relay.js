@@ -33,7 +33,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="SsmsAggregations"
         minHeight={387}
         variables={props.variables}
         Component={Component}

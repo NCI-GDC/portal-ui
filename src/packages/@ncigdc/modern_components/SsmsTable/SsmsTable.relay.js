@@ -70,7 +70,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="SsmsTable"
         minHeight={387}
         variables={props.variables}
         Component={Component}

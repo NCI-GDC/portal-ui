@@ -28,7 +28,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <BaseQuery
         parentProps={props}
-        name="GeneSymbol"
         variables={props.variables}
         Component={Component}
         query={graphql`

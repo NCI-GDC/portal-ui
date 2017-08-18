@@ -45,7 +45,6 @@ export default (Component: Object) =>
     return (
       <Query
         parentProps={props}
-        name="GeneLolliplot"
         minHeight={20}
         variables={props.variables}
         Component={Component}

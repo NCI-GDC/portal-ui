@@ -28,7 +28,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="SsmLolliplot"
         minHeight={20}
         variables={props.variables}
         Component={Component}

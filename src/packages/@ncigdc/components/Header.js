@@ -25,6 +25,7 @@ import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import { AnalysisIcon } from '@ncigdc/theme/icons';
+import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
 
 const styles = {
   iconPadding: {
@@ -157,6 +158,9 @@ const Header = compose(
         </ul>
         <ul className="nav navbar-nav navbar-right">
           <li><QuickSearch tabIndex="0" /></li>
+          <li>
+            <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
+          </li>
           {!user && <li><LoginButton /></li>}
           {user && <li className="hidden-xs"><UserDropdown /></li>}
           <li className="nav-cart">

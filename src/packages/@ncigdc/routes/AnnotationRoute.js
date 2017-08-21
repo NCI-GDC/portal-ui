@@ -1,6 +1,13 @@
-/* @flow */
-import AnnotationPage from '@ncigdc/containers/AnnotationPage';
+// @flow
 
-import { makeEntityPage } from './utils';
+import React from 'react';
+import { Route } from 'react-router-dom';
+import AnnotationSummary from '@ncigdc/modern_components/AnnotationSummary';
 
-export default makeEntityPage({ entity: 'Annotation', Page: AnnotationPage });
+export default (
+  <Route
+    path="/annotations/:id"
+    component={({ match, annotationId = match.params.id }) =>
+      <AnnotationSummary annotationId={annotationId} />}
+  />
+);

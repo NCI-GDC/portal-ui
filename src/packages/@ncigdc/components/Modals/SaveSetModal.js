@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { addSet, replaceSet } from '@ncigdc/dux/sets';
 import { setModal } from '@ncigdc/dux/modal';
-import { ExclamationTriangleIcon } from '@ncigdc/theme/icons';
 import filtersToName from '@ncigdc/utils/filtersToName';
+import WarningBox from '@ncigdc/uikit/WarningBox';
 
 const enhance = compose(
   withState(
@@ -63,21 +63,11 @@ const SaveSetModal = ({
         type="text"
       />
       {existingSet &&
-        <div
-          style={{
-            marginTop: 10,
-            paddingRight: '5px',
-            backgroundColor: '#fcf8e3',
-            borderColor: '#faebcc',
-            color: '#8a6d3b',
-            padding: '15px',
-            border: '1px solid transparent',
-            borderRadius: '4px',
-          }}
-        >
-          <ExclamationTriangleIcon /> Warning: A set with the same name exists,
+        <WarningBox>
+          Warning: A set with the same name exists,
           this will overwrite it.
-        </div>}
+
+        </WarningBox>}
     </BaseModal>
   );
 };

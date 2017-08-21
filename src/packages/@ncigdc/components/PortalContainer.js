@@ -103,7 +103,7 @@ const PortalContainer = ({
         {ProjectRoute}
         <Route path="/files/:id" component={FileRoute} />
         {CaseRoute}
-        <Route path="/annotations/:id" component={AnnotationRoute} />
+        {AnnotationRoute}
         {GeneRoute}
         {SSMRoute}
         <Route

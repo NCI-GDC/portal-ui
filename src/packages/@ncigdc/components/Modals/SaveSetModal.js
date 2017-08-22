@@ -4,11 +4,10 @@ import { compose, withState, withProps } from 'recompose';
 import { connect } from 'react-redux';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
-import { addSet } from '@ncigdc/dux/sets';
+import { addSet, replaceSet } from '@ncigdc/dux/sets';
 import { setModal } from '@ncigdc/dux/modal';
 import { ExclamationTriangleIcon } from '@ncigdc/theme/icons';
 import filtersToName from '@ncigdc/utils/filtersToName';
-import { updateSet } from '../../dux/sets';
 
 const enhance = compose(
   withState(
@@ -42,7 +41,7 @@ const SaveSetModal = ({
             dispatch(setModal(null));
             if (existingSet) {
               dispatch(
-                updateSet({ type, oldId: existingSet[0], newId: setId }),
+                replaceSet({ type, oldId: existingSet[0], newId: setId }),
               );
             } else {
               dispatch(addSet({ type, label: input, id: setId }));

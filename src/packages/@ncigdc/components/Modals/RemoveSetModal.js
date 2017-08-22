@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { stringify } from 'query-string';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
-import { updateSet } from '@ncigdc/dux/sets';
+import { replaceSet } from '@ncigdc/dux/sets';
 import { setModal } from '@ncigdc/dux/modal';
 import SetTable from '@ncigdc/components/SetTable';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -48,7 +48,7 @@ const RemoveSetModal = ({
             });
           }
           dispatch(setModal(null));
-          dispatch(updateSet({ type, oldId: selected, newId: setId }));
+          dispatch(replaceSet({ type, oldId: selected, newId: setId }));
         }}
       >
         Save

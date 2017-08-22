@@ -13,6 +13,7 @@ import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
 
 import ComponentsRoute from '@ncigdc/routes/ComponentsRoute';
 import GeneRoute from '@ncigdc/routes/GeneRoute';
+import AnalysisRoute from '@ncigdc/routes/AnalysisRoute';
 import SSMRoute from '@ncigdc/routes/SSMRoute';
 import SmartSearchRoute from '@ncigdc/routes/SmartSearchRoute';
 
@@ -124,6 +125,7 @@ const PortalContainer = ({
         {CaseRoute}
         {AnnotationRoute}
         {GeneRoute}
+        <AnalysisRoute />
         {SSMRoute}
         <Route path="/components/:component" component={ComponentsRoute} />
         <Route component={NotFound} />

@@ -15,6 +15,8 @@ import GridIcon from './Grid.js';
 import CaretIcon from './Caret';
 import QuestionIcon from './Question';
 import ExclamationTriangleIcon from './ExclamationTriangle';
+import TrashIcon from './Trash';
+import AnalysisIcon from './Analysis';
 
 export {
   DownloadIcon,
@@ -32,4 +34,6 @@ export {
   CaretIcon,
   QuestionIcon,
   ExclamationTriangleIcon,
+  TrashIcon,
+  AnalysisIcon,
 };

@@ -24,6 +24,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
 import { ExternalLink } from '@ncigdc/uikit/Links';
+import { AnalysisIcon } from '@ncigdc/theme/icons';
 
 const styles = {
   iconPadding: {
@@ -149,7 +150,7 @@ const Header = compose(
 
           <li>
             <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
-              <i className="fa fa-bar-chart" style={styles.iconPadding} />
+              <AnalysisIcon style={styles.iconPadding} />
               <span className="hidden-sm">Analysis</span>
             </AnalysisLink>
           </li>

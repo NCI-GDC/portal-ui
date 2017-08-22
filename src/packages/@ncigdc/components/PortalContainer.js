@@ -6,16 +6,10 @@ import { Route, Switch } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { compose, lifecycle } from 'recompose';
 
-import RepositoryRoute from '@ncigdc/routes/RepositoryRoute';
-import ExploreRoute from '@ncigdc/routes/ExploreRoute';
-import ProjectsRoute from '@ncigdc/routes/ProjectsRoute';
-import AnnotationsRoute from '@ncigdc/routes/AnnotationsRoute';
 import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
 import CaseRoute from '@ncigdc/routes/CaseRoute';
 import AnnotationRoute from '@ncigdc/routes/AnnotationRoute';
-import CartRoute from '@ncigdc/routes/CartRoute';
-import HomeRoute from '@ncigdc/routes/HomeRoute';
 import GeneRoute from '@ncigdc/routes/GeneRoute';
 import SSMRoute from '@ncigdc/routes/SSMRoute';
 import SmartSearchRoute from '@ncigdc/routes/SmartSearchRoute';
@@ -35,6 +29,7 @@ import { GlobalTooltip } from '@ncigdc/uikit/Tooltip';
 import styled from '@ncigdc/theme/styled';
 import { setModal } from '@ncigdc/dux/modal';
 import FirstTimeModal from '@ncigdc/components/Modals/FirstTimeModal';
+import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 
 import * as ModernComponents from '@ncigdc/modern_components';
 
@@ -46,6 +41,30 @@ const SkipLink = styled.a({
 });
 
 const FIRST_TIME_KEY = 'NCI-Warning';
+
+const HomeRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/HomeRoute'),
+});
+
+const CartRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/CartRoute'),
+});
+
+const RepositoryRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/RepositoryRoute'),
+});
+
+const ExploreRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/ExploreRoute'),
+});
+
+const ProjectsRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/ProjectsRoute'),
+});
+
+const AnnotationsRoute = LoadableWithLoading({
+  loader: () => import('@ncigdc/routes/AnnotationsRoute'),
+});
 
 const enhance = compose(
   withRouter,

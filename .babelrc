@@ -1,6 +1,10 @@
 {
  "presets": ["react-app"],
  "plugins": [
+  ["import-inspector", {
+      "serverSideRequirePath": false,
+      "webpackRequireWeakId": true
+    }],
   ["relay", {"compat": true, "schema": "data/schema.graphql"}]
  ]
 }

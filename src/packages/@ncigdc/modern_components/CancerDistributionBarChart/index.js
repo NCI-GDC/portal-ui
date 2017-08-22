@@ -1,3 +1,8 @@
-import Component from './CancerDistributionBarChart';
+import LoadableWithLoading from '@ncigdc/components/LoadableWithLoading';
 import createRenderer from './CancerDistributionBarChart.relay';
-export default createRenderer(Component);
+
+const AsyncComponent = LoadableWithLoading({
+  loader: () => import('./CancerDistributionBarChart'),
+});
+
+export default createRenderer(AsyncComponent);

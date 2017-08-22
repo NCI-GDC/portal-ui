@@ -14,6 +14,7 @@ import error from './error';
 import tableColumns from './tableColumns';
 import customFacets from './customFacets';
 import sets from './sets';
+import analysis from './analysis';
 
 /*----------------------------------------------------------------------------*/
 
@@ -31,4 +32,5 @@ export default {
   tableColumns,
   customFacets,
   sets,
+  analysis,
 };

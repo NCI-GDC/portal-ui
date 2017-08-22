@@ -6,6 +6,7 @@ import { insertRule } from 'glamor';
 export type TTheme = {
   impacts: {},
   tableHighlight: string,
+  greyScale5: string,
 };
 
 let theme: TTheme = {};

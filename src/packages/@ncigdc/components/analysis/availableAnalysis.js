@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Venn from '@ncigdc/components/Charts/Venn';
 import SetOperations from './SetOperations';
 

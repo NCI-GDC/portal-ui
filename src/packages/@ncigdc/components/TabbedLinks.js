@@ -13,10 +13,19 @@ type TTabbedLinksProps = {
   tabToolbar?: React.Element<>,
   hideTabs?: boolean,
   style?: Object,
+  side?: Boolean,
 };
 type TTabbedLinks = (props: TTabbedLinksProps) => React.Element<{}>;
 const TabbedLinks: TTabbedLinks = (
-  { links, queryParam, defaultIndex = 0, tabToolbar, hideTabs, style } = {},
+  {
+    links,
+    queryParam,
+    defaultIndex = 0,
+    tabToolbar,
+    hideTabs,
+    style,
+    side,
+  } = {},
 ) =>
   <LocationSubscriber>
     {(ctx: {| pathname: string, query: TRawQuery |}) => {
@@ -27,6 +36,7 @@ const TabbedLinks: TTabbedLinks = (
 
       return (
         <Tabs
+          side={side}
           className="test-tabbed-links"
           style={style}
           tabToolbar={tabToolbar}

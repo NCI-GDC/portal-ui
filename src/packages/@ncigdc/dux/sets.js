@@ -18,15 +18,15 @@ type TAction = {
 };
 type TActionCreator = (payload: TPayload) => TAction;
 
-const sets = namespaceActions('sets', ['ADD_SET', 'REMOVE_SET', 'UPDATE_SET']);
+const sets = namespaceActions('sets', ['ADD_SET', 'REMOVE_SET', 'REPLACE_SET']);
 
 const addSet: TActionCreator = payload => ({
   type: sets.ADD_SET,
   payload,
 });
 
-const updateSet: TActionCreator = payload => ({
-  type: sets.UPDATE_SET,
+const replaceSet: TActionCreator = payload => ({
+  type: sets.REPLACE_SET,
   payload,
 });
 
@@ -60,7 +60,7 @@ const reducer = (state: TState = initialState, action: TAction) => {
         [payload.type]: omit(state[payload.type], payload.id),
       };
 
-    case sets.UPDATE_SET:
+    case sets.REPLACE_SET:
       return {
         ...state,
         [payload.type]: {
@@ -76,6 +76,6 @@ const reducer = (state: TState = initialState, action: TAction) => {
 
 /*----------------------------------------------------------------------------*/
 
-export { addSet, removeSet, updateSet };
+export { addSet, removeSet, replaceSet };
 
 export default reducer;

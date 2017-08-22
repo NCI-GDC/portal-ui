@@ -33,10 +33,7 @@ function fetchQuery(operation, variables, cacheConfig, uploadables) {
         // Add authentication and other headers here
         'content-type': 'application/json',
       },
-      body: JSON.stringify({
-        query: operation.text, // GraphQL text from input
-        variables,
-      }),
+      body,
     },
   ).then(response => {
     setTimeout(() => reduxStore.dispatch(removeLoader(componentName)));

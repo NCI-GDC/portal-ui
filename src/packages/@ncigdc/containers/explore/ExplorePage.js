@@ -192,7 +192,7 @@ export const ExplorePageComponent = (props: TProps) =>
             });
           }}
         >
-          View in Repository
+          View Files in Repository
         </CreateExploreCaseSetButton>
         <TabbedLinks
           queryParam="searchTableTab"

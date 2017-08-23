@@ -1,7 +1,5 @@
 import Component from './ProjectsCharts';
-import createRendererProjects from './ProjectsCharts.relay';
-import createRendererGenesAndCases from './GenesAndCases.relay';
-import createRendererTopCasesCounts from './TopCasesCountByGenes.relay';
-export default createRendererProjects(
-  createRendererGenesAndCases(createRendererTopCasesCounts(Component)),
-);
+import withProjects from './ProjectsCharts.relay';
+import withGenesAndCases from './GenesAndCases.relay';
+import withTopCasesCounts from './TopCasesCountByGenes.relay';
+export default withProjects(withGenesAndCases(withTopCasesCounts(Component)));

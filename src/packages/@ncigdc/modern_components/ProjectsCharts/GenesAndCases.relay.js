@@ -60,6 +60,7 @@ export default (Component: ReactClass<*>) =>
               ? { op: 'AND', content: caseCountFilters }
               : null,
             gene_filters: fmgChartFilters,
+            score: 'case.project.project_id',
           },
         };
       },

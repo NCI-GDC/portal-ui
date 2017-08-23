@@ -3,8 +3,8 @@
  *   relay-compiler
  *
  * @providesModule RemoveFromExploreGeneSetButtonMutation.graphql
- * @generated SignedSource<<36c7577f61e5ff3b29d73d1882d20c55>>
- * @relayHash 71c76a790dd163892d4fab6f46814d64
+ * @generated SignedSource<<851eed7c4300d194349877ae4b46e3b6>>
+ * @relayHash 5a2ef8283ecae40370770c150df87dc5
  * @flow
  * @nogrep
  */
@@ -20,30 +20,30 @@ export type RelayIsDumb = {
 };
 
 export type RemoveFromExploreGeneSetButtonMutationResponse = {
-  remove?: ?RemoveFromExploreGeneSetButtonMutationResponse_remove;
+  remove_from?: ?RemoveFromExploreGeneSetButtonMutationResponse_remove_from;
 };
 
-export type RemoveFromExploreGeneSetButtonMutationResponse_remove_explore_gene = {
+export type RemoveFromExploreGeneSetButtonMutationResponse_remove_from_explore_gene = {
   set_id?: ?string;
 };
 
-export type RemoveFromExploreGeneSetButtonMutationResponse_remove_explore = {
-  gene?: ?RemoveFromExploreGeneSetButtonMutationResponse_remove_explore_gene;
+export type RemoveFromExploreGeneSetButtonMutationResponse_remove_from_explore = {
+  gene?: ?RemoveFromExploreGeneSetButtonMutationResponse_remove_from_explore_gene;
 };
 
-export type RemoveFromExploreGeneSetButtonMutationResponse_remove = {
-  explore?: ?RemoveFromExploreGeneSetButtonMutationResponse_remove_explore;
+export type RemoveFromExploreGeneSetButtonMutationResponse_remove_from = {
+  explore?: ?RemoveFromExploreGeneSetButtonMutationResponse_remove_from_explore;
 };
 */
 
 
 /*
 mutation RemoveFromExploreGeneSetButtonMutation(
-  $input: RemoveSetInput
+  $input: RemoveFromSetInput
   $never_used: RelayIsDumb
 ) {
   sets(input: $never_used) {
-    remove {
+    remove_from {
       explore {
         gene(input: $input) {
           set_id
@@ -60,7 +60,7 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "input",
-        "type": "RemoveSetInput",
+        "type": "RemoveFromSetInput",
         "defaultValue": null
       },
       {
@@ -93,15 +93,15 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "LinkedField",
             "alias": null,
             "args": null,
-            "concreteType": "RemoveSet",
-            "name": "remove",
+            "concreteType": "RemoveFromSet",
+            "name": "remove_from",
             "plural": false,
             "selections": [
               {
                 "kind": "LinkedField",
                 "alias": null,
                 "args": null,
-                "concreteType": "RemoveExploreSet",
+                "concreteType": "RemoveFromExploreSet",
                 "name": "explore",
                 "plural": false,
                 "selections": [
@@ -113,10 +113,10 @@ const batch /*: ConcreteBatch*/ = {
                         "kind": "Variable",
                         "name": "input",
                         "variableName": "input",
-                        "type": "RemoveSetInput"
+                        "type": "RemoveFromSetInput"
                       }
                     ],
-                    "concreteType": "RemoveGeneSet",
+                    "concreteType": "RemoveFromGeneSet",
                     "name": "gene",
                     "plural": false,
                     "selections": [
@@ -151,7 +151,7 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "input",
-        "type": "RemoveSetInput",
+        "type": "RemoveFromSetInput",
         "defaultValue": null
       },
       {
@@ -184,15 +184,15 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "LinkedField",
             "alias": null,
             "args": null,
-            "concreteType": "RemoveSet",
-            "name": "remove",
+            "concreteType": "RemoveFromSet",
+            "name": "remove_from",
             "plural": false,
             "selections": [
               {
                 "kind": "LinkedField",
                 "alias": null,
                 "args": null,
-                "concreteType": "RemoveExploreSet",
+                "concreteType": "RemoveFromExploreSet",
                 "name": "explore",
                 "plural": false,
                 "selections": [
@@ -204,10 +204,10 @@ const batch /*: ConcreteBatch*/ = {
                         "kind": "Variable",
                         "name": "input",
                         "variableName": "input",
-                        "type": "RemoveSetInput"
+                        "type": "RemoveFromSetInput"
                       }
                     ],
-                    "concreteType": "RemoveGeneSet",
+                    "concreteType": "RemoveFromGeneSet",
                     "name": "gene",
                     "plural": false,
                     "selections": [
@@ -232,7 +232,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation RemoveFromExploreGeneSetButtonMutation(\n  $input: RemoveSetInput\n  $never_used: RelayIsDumb\n) {\n  sets(input: $never_used) {\n    remove {\n      explore {\n        gene(input: $input) {\n          set_id\n        }\n      }\n    }\n  }\n}\n"
+  "text": "mutation RemoveFromExploreGeneSetButtonMutation(\n  $input: RemoveFromSetInput\n  $never_used: RelayIsDumb\n) {\n  sets(input: $never_used) {\n    remove_from {\n      explore {\n        gene(input: $input) {\n          set_id\n        }\n      }\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

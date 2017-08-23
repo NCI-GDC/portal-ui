@@ -3,8 +3,8 @@
  *   relay-compiler
  *
  * @providesModule RemoveFromRepositoryCaseSetButtonMutation.graphql
- * @generated SignedSource<<431ae6fd511c357b2027406722fac8e2>>
- * @relayHash d128c452f91c9a89f27ad67e7fba2e18
+ * @generated SignedSource<<6a1c207ed40e23bc348f6b82d2a6fa1a>>
+ * @relayHash bd66113f0ff820c49c9c40c399491c68
  * @flow
  * @nogrep
  */
@@ -20,30 +20,30 @@ export type RelayIsDumb = {
 };
 
 export type RemoveFromRepositoryCaseSetButtonMutationResponse = {
-  remove?: ?RemoveFromRepositoryCaseSetButtonMutationResponse_remove;
+  remove_from?: ?RemoveFromRepositoryCaseSetButtonMutationResponse_remove_from;
 };
 
-export type RemoveFromRepositoryCaseSetButtonMutationResponse_remove_repository_case = {
+export type RemoveFromRepositoryCaseSetButtonMutationResponse_remove_from_repository_case = {
   set_id?: ?string;
 };
 
-export type RemoveFromRepositoryCaseSetButtonMutationResponse_remove_repository = {
-  case?: ?RemoveFromRepositoryCaseSetButtonMutationResponse_remove_repository_case;
+export type RemoveFromRepositoryCaseSetButtonMutationResponse_remove_from_repository = {
+  case?: ?RemoveFromRepositoryCaseSetButtonMutationResponse_remove_from_repository_case;
 };
 
-export type RemoveFromRepositoryCaseSetButtonMutationResponse_remove = {
-  repository?: ?RemoveFromRepositoryCaseSetButtonMutationResponse_remove_repository;
+export type RemoveFromRepositoryCaseSetButtonMutationResponse_remove_from = {
+  repository?: ?RemoveFromRepositoryCaseSetButtonMutationResponse_remove_from_repository;
 };
 */
 
 
 /*
 mutation RemoveFromRepositoryCaseSetButtonMutation(
-  $input: RemoveSetInput
+  $input: RemoveFromSetInput
   $never_used: RelayIsDumb
 ) {
   sets(input: $never_used) {
-    remove {
+    remove_from {
       repository {
         case(input: $input) {
           set_id
@@ -60,7 +60,7 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "input",
-        "type": "RemoveSetInput",
+        "type": "RemoveFromSetInput",
         "defaultValue": null
       },
       {
@@ -93,15 +93,15 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "LinkedField",
             "alias": null,
             "args": null,
-            "concreteType": "RemoveSet",
-            "name": "remove",
+            "concreteType": "RemoveFromSet",
+            "name": "remove_from",
             "plural": false,
             "selections": [
               {
                 "kind": "LinkedField",
                 "alias": null,
                 "args": null,
-                "concreteType": "RemoveRepositorySet",
+                "concreteType": "RemoveFromRepositorySet",
                 "name": "repository",
                 "plural": false,
                 "selections": [
@@ -113,10 +113,10 @@ const batch /*: ConcreteBatch*/ = {
                         "kind": "Variable",
                         "name": "input",
                         "variableName": "input",
-                        "type": "RemoveSetInput"
+                        "type": "RemoveFromSetInput"
                       }
                     ],
-                    "concreteType": "RemoveRepositoryCaseSet",
+                    "concreteType": "RemoveFromRepositoryCaseSet",
                     "name": "case",
                     "plural": false,
                     "selections": [
@@ -151,7 +151,7 @@ const batch /*: ConcreteBatch*/ = {
       {
         "kind": "LocalArgument",
         "name": "input",
-        "type": "RemoveSetInput",
+        "type": "RemoveFromSetInput",
         "defaultValue": null
       },
       {
@@ -184,15 +184,15 @@ const batch /*: ConcreteBatch*/ = {
             "kind": "LinkedField",
             "alias": null,
             "args": null,
-            "concreteType": "RemoveSet",
-            "name": "remove",
+            "concreteType": "RemoveFromSet",
+            "name": "remove_from",
             "plural": false,
             "selections": [
               {
                 "kind": "LinkedField",
                 "alias": null,
                 "args": null,
-                "concreteType": "RemoveRepositorySet",
+                "concreteType": "RemoveFromRepositorySet",
                 "name": "repository",
                 "plural": false,
                 "selections": [
@@ -204,10 +204,10 @@ const batch /*: ConcreteBatch*/ = {
                         "kind": "Variable",
                         "name": "input",
                         "variableName": "input",
-                        "type": "RemoveSetInput"
+                        "type": "RemoveFromSetInput"
                       }
                     ],
-                    "concreteType": "RemoveRepositoryCaseSet",
+                    "concreteType": "RemoveFromRepositoryCaseSet",
                     "name": "case",
                     "plural": false,
                     "selections": [
@@ -232,7 +232,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "mutation RemoveFromRepositoryCaseSetButtonMutation(\n  $input: RemoveSetInput\n  $never_used: RelayIsDumb\n) {\n  sets(input: $never_used) {\n    remove {\n      repository {\n        case(input: $input) {\n          set_id\n        }\n      }\n    }\n  }\n}\n"
+  "text": "mutation RemoveFromRepositoryCaseSetButtonMutation(\n  $input: RemoveFromSetInput\n  $never_used: RelayIsDumb\n) {\n  sets(input: $never_used) {\n    remove_from {\n      repository {\n        case(input: $input) {\n          set_id\n        }\n      }\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

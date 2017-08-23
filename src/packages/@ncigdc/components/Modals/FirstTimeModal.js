@@ -3,8 +3,8 @@ import React from 'react';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 
-const FirstTimeModal = () =>
-  <BaseModal title="Warning" closeText="Accept">
+const FirstTimeModal = ({ onClose }) =>
+  <BaseModal title="Warning" closeText="Accept" onClose={onClose}>
     <p>
       You are accessing a U.S. Government web site which may contain information
       that must be protected under the U. S. Privacy Act or other sensitive

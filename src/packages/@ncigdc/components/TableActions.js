@@ -71,7 +71,7 @@ const TableActions = ({
           isDisabled={!sortOptions.length}
           options={sortOptions}
           query={query || {}}
-          sortKey={`${type}_sort`}
+          sortKey={`${type}s_sort`}
           style={visualizingButton}
         />}
       {downloadable &&

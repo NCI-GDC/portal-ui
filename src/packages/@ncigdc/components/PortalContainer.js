@@ -113,7 +113,15 @@ const PortalContainer = ({
         children={p => <Head title={p.location.pathname.split('/')[1]} />}
       />
       <Switch>
-        <Route exact path="/venn" component={Venn} />
+        <Route
+          exact
+          path="/venn"
+          component={() =>
+            <div>
+              {/* <Venn data={[1, 2]} /> */}
+              <Venn data={[1, 2, 3]} />
+            </div>}
+        />
         <Route exact path="/" component={HomeRoute} />
         <Route exact path="/cart" component={CartRoute} />
         <Route exact path="/repository" component={RepositoryRoute} />

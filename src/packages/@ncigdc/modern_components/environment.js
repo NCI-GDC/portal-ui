@@ -3,11 +3,12 @@
 import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
+import memoize from 'memoizee';
 import { setLoader, removeLoader } from '@ncigdc/dux/loaders';
 
 const source = new RecordSource();
 const store = new Store(source);
-const simpleCache = {};
+const memoizedFetch = memoize(fetch, { promise: true });
 const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig, uploadables) {
@@ -23,34 +24,21 @@ function fetchQuery(operation, variables, cacheConfig, uploadables) {
   const hash = md5(body);
   const [componentName] = operation.name.split('_relayQuery');
 
-  if (simpleCache[hash]) {
-    return Promise.resolve(simpleCache[hash]);
-  }
-
   setTimeout(() => reduxStore.dispatch(setLoader(componentName)));
 
-  return fetch(
+  return memoizedFetch(
     urlJoin(process.env.REACT_APP_API, `graphql/${componentName}?hash=${hash}`),
     {
       method: 'POST',
       headers: {
-        // Add authentication and other headers here
         'content-type': 'application/json',
       },
-      body: JSON.stringify({
-        query: operation.text, // GraphQL text from input
-        variables,
-      }),
+      body,
     },
-  )
-    .then(response => {
-      setTimeout(() => reduxStore.dispatch(removeLoader(componentName)));
-      return response.json();
-    })
-    .then(json => {
-      simpleCache[hash] = json;
-      return json;
-    });
+  ).then(response => {
+    setTimeout(() => reduxStore.dispatch(removeLoader(componentName)));
+    return response.json();
+  });
 }
 
 // Create a network layer from the fetch function

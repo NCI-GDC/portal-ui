@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import { compose, withPropsOnChange, withState } from 'recompose';
+import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 import { parse } from 'query-string';
 
@@ -26,6 +26,7 @@ import {
 } from '@ncigdc/utils/uri';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const COMPONENT_NAME = 'ExploreCasesTable';
 

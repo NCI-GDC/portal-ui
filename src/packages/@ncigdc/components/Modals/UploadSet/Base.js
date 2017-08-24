@@ -1,11 +1,12 @@
 // @flow
 import React from 'react';
-import { compose, withState, withPropsOnChange } from 'recompose';
+import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { setModal } from '@ncigdc/dux/modal';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 import SetInput from './SetInput';
 

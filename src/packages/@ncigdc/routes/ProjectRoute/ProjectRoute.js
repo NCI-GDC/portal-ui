@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import { compose, withState, lifecycle, withPropsOnChange } from 'recompose';
+import { compose, withState, lifecycle } from 'recompose';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import ProjectSummary from '@ncigdc/modern_components/ProjectSummary';
@@ -24,6 +24,7 @@ import DownloadManifestButton from '@ncigdc/modern_components/DownloadManifestBu
 import GenesBarChart from '@ncigdc/modern_components/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const styles = {
   column: {

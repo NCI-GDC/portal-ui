@@ -53,6 +53,7 @@ export const SearchTable = compose(
           />
           <TableActions
             type="annotation"
+            arrangeColumnKey={entityType}
             total={hits.total}
             endpoint="annotations"
             downloadable={downloadable}

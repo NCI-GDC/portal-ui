@@ -855,10 +855,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "submitter_id",
+              "name": "days_to_lost_to_followup",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -931,6 +931,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "demographic__cause_of_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -1023,6 +1035,42 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "demographic__days_to_birth",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "demographic__vital_status",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "demographic__days_to_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "demographic__submitter_id",
               "type": {
                 "kind": "OBJECT",
@@ -1051,6 +1099,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "lost_to_followup",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -4815,10 +4875,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__submitter_id",
+              "name": "files__cases__days_to_lost_to_followup",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -4891,6 +4951,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__demographic__cause_of_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -4983,6 +5055,42 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "files__cases__demographic__days_to_birth",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__demographic__vital_status",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__demographic__days_to_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__cases__demographic__submitter_id",
               "type": {
                 "kind": "OBJECT",
@@ -5011,6 +5119,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__lost_to_followup",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -7623,6 +7743,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "files__cases__index_date",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__cases__family_histories__relationship_gender",
               "type": {
                 "kind": "OBJECT",
@@ -7743,6 +7875,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "files__cases__submitter_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__cases__diagnoses__ann_arbor_b_symptoms",
               "type": {
                 "kind": "OBJECT",
@@ -7783,6 +7927,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__progression_free_survival",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -7935,258 +8091,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__diagnoses__new_event_anatomic_site",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__days_to_last_known_disease_status",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__perineural_invasion_present",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__days_to_hiv_diagnosis",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__ajcc_clinical_n",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__ajcc_pathologic_t",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__prior_treatment",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__ajcc_clinical_t",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__colon_polyps_history",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__ajcc_clinical_m",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__ajcc_pathologic_m",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__ajcc_pathologic_n",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__vascular_invasion_present",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__ldh_level_at_diagnosis",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__days_to_last_follow_up",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__residual_disease",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__days_to_recurrence",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__diagnosis_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__tumor_grade",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__state",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "files__cases__diagnoses__figo_stage",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "files__cases__diagnoses__treatments__days_to_treatment_start",
               "type": {
                 "kind": "OBJECT",
@@ -8295,6 +8199,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "files__cases__diagnoses__treatments__regimen_or_line_of_therapy",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__cases__diagnoses__treatments__treatment_intent_type",
               "type": {
                 "kind": "OBJECT",
@@ -8355,10 +8271,310 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "files__cases__diagnoses__new_event_anatomic_site",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__days_to_last_known_disease_status",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__perineural_invasion_present",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__days_to_hiv_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__ajcc_pathologic_m",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__ajcc_pathologic_t",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__prior_treatment",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__ajcc_clinical_t",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__colon_polyps_history",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__ajcc_clinical_m",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__ajcc_clinical_n",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__ajcc_pathologic_n",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__ldh_level_at_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__days_to_last_follow_up",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__progression_free_survival_event",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__best_overall_response",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__residual_disease",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__days_to_recurrence",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__diagnosis_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__tumor_grade",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__state",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__figo_stage",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__days_to_birth",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__cause_of_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "files__cases__diagnoses__lymphatic_invasion_present",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__days_to_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -8379,7 +8595,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__diagnoses__days_to_birth",
+              "name": "files__cases__diagnoses__days_to_best_overall_response",
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
@@ -8427,10 +8643,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__diagnoses__circumferential_resection_margin",
+              "name": "files__cases__diagnoses__vascular_invasion_present",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -8475,7 +8691,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "files__cases__diagnoses__cause_of_death",
+              "name": "files__cases__diagnoses__iss_stage",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -8551,6 +8767,30 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__circumferential_resection_margin",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "files__cases__diagnoses__overall_survival",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -10191,6 +10431,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "index_date",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "case_autocomplete",
               "type": {
                 "kind": "OBJECT",
@@ -10323,6 +10575,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "submitter_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "diagnoses__ann_arbor_b_symptoms",
               "type": {
                 "kind": "OBJECT",
@@ -10363,6 +10627,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__progression_free_survival",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -10515,258 +10791,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__new_event_anatomic_site",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__days_to_last_known_disease_status",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__perineural_invasion_present",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__days_to_hiv_diagnosis",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__ajcc_clinical_n",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__ajcc_pathologic_t",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__prior_treatment",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__ajcc_clinical_t",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__colon_polyps_history",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__ajcc_clinical_m",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__ajcc_pathologic_m",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__ajcc_pathologic_n",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__vascular_invasion_present",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__ldh_level_at_diagnosis",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__days_to_last_follow_up",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__residual_disease",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__days_to_recurrence",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__diagnosis_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__tumor_grade",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__state",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "diagnoses__figo_stage",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "diagnoses__treatments__days_to_treatment_start",
               "type": {
                 "kind": "OBJECT",
@@ -10875,6 +10899,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "diagnoses__treatments__regimen_or_line_of_therapy",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "diagnoses__treatments__treatment_intent_type",
               "type": {
                 "kind": "OBJECT",
@@ -10935,10 +10971,310 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "diagnoses__new_event_anatomic_site",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__days_to_last_known_disease_status",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__perineural_invasion_present",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__days_to_hiv_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__ajcc_pathologic_m",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__ajcc_pathologic_t",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__prior_treatment",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__ajcc_clinical_t",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__colon_polyps_history",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__ajcc_clinical_m",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__ajcc_clinical_n",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__ajcc_pathologic_n",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__ldh_level_at_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__days_to_last_follow_up",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__progression_free_survival_event",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__best_overall_response",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__residual_disease",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__days_to_recurrence",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__diagnosis_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__tumor_grade",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__state",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__figo_stage",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__days_to_birth",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__cause_of_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "diagnoses__lymphatic_invasion_present",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__days_to_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -10959,7 +11295,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__days_to_birth",
+              "name": "diagnoses__days_to_best_overall_response",
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
@@ -11007,10 +11343,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__circumferential_resection_margin",
+              "name": "diagnoses__vascular_invasion_present",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -11055,7 +11391,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "diagnoses__cause_of_death",
+              "name": "diagnoses__iss_stage",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -11131,6 +11467,30 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__circumferential_resection_margin",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "diagnoses__overall_survival",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -12016,12 +12376,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "keyword",
+              "description": "long",
               "isDeprecated": false,
-              "name": "submitter_id",
+              "name": "days_to_lost_to_followup",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -12102,6 +12462,18 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
+              "name": "lost_to_followup",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
               "name": "state",
               "type": {
                 "kind": "SCALAR",
@@ -12138,7 +12510,31 @@
               "deprecationReason": null,
               "description": "keyword",
               "isDeprecated": false,
+              "name": "index_date",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
               "name": "case_autocomplete",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "keyword",
+              "isDeprecated": false,
+              "name": "submitter_id",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -12802,6 +13198,18 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "Text term to identify the cause of death for a patient.\n",
+              "isDeprecated": false,
+              "name": "cause_of_death",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
               "isDeprecated": false,
               "name": "updated_datetime",
@@ -12880,6 +13288,42 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Time interval from a person's date of birth to the date of initial pathologic diagnosis, represented as a calculated negative number of days.\n",
+              "isDeprecated": false,
+              "name": "days_to_birth",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The survival state of the person registered on the protocol.\n",
+              "isDeprecated": false,
+              "name": "vital_status",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Time interval from a person's date of death to the date of initial pathologic diagnosis, represented as a calculated number of days.\n",
+              "isDeprecated": false,
+              "name": "days_to_death",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -13217,6 +13661,18 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "Number of days between the date used for index and the first date the patient is known to be free of disease progression.\n",
+              "isDeprecated": false,
+              "name": "progression_free_survival",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "A combination of date and time of day in the form [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]\n",
               "isDeprecated": false,
               "name": "updated_datetime",
@@ -13409,9 +13865,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Extent of the regional lymph node involvement for the cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.\n",
+              "description": "Code to represent the defined absence or presence of distant spread or metastases (M) to locations via vascular channels or lymphatics beyond the regional lymph nodes, using criteria established by the American Joint Committee on Cancer (AJCC).\n",
               "isDeprecated": false,
-              "name": "ajcc_clinical_n",
+              "name": "ajcc_pathologic_m",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -13481,9 +13937,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Code to represent the defined absence or presence of distant spread or metastases (M) to locations via vascular channels or lymphatics beyond the regional lymph nodes, using criteria established by the American Joint Committee on Cancer (AJCC).\n",
+              "description": "Extent of the regional lymph node involvement for the cancer based on evidence obtained from clinical assessment parameters determined prior to treatment.\n",
               "isDeprecated": false,
-              "name": "ajcc_pathologic_m",
+              "name": "ajcc_clinical_n",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -13496,18 +13952,6 @@
               "description": "The codes that represent the stage of cancer based on the nodes present (N stage) according to criteria based on multiple editions of the AJCC's Cancer Staging Manual.\n",
               "isDeprecated": false,
               "name": "ajcc_pathologic_n",
-              "type": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "The yes/no indicator to ask if large vessel or venous invasion was detected by surgery or presence in a tumor specimen.\n",
-              "isDeprecated": false,
-              "name": "vascular_invasion_present",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -13541,6 +13985,30 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "The event used to define the patient's disease progression.\n",
+              "isDeprecated": false,
+              "name": "progression_free_survival_event",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The best improvement achieved throughout the entire course of protocol treatment.\n",
+              "isDeprecated": false,
+              "name": "best_overall_response",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "Text terms to describe the status of a tissue margin following surgical resection.\n",
               "isDeprecated": false,
               "name": "residual_disease",
@@ -13553,7 +14021,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from the date of new tumor event including progression, recurrence and new primary malignancies to the date of initial pathologic diagnosis, represented as a calculated number of days.\n",
+              "description": "Number of days between the date used for index and the date the patient was diagnosed with a recurrent malignancy. \n",
               "isDeprecated": false,
               "name": "days_to_recurrence",
               "type": {
@@ -13613,12 +14081,48 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "Time interval from a person's date of birth to the date of initial pathologic diagnosis, represented as a calculated negative number of days.\n",
+              "isDeprecated": false,
+              "name": "days_to_birth",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Text term to identify the cause of death for a patient.\n",
+              "isDeprecated": false,
+              "name": "cause_of_death",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "A yes/no indicator to ask if small or thin-walled vessel invasion is present, indicating lymphatic involvement\n",
               "isDeprecated": false,
               "name": "lymphatic_invasion_present",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Number of days between the date used for index and the date of diagnosis.\n",
+              "isDeprecated": false,
+              "name": "days_to_diagnosis",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -13637,9 +14141,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from a person's date of birth to the date of initial pathologic diagnosis, represented as a calculated negative number of days.\n",
+              "description": "Number of days between the date used for index and the date of the patient's best overall response.\n",
               "isDeprecated": false,
-              "name": "days_to_birth",
+              "name": "days_to_best_overall_response",
               "type": {
                 "kind": "SCALAR",
                 "name": "Float",
@@ -13685,12 +14189,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "A value in millimeters indicating the measured length between a malignant lesion of the colon or rectum and the nearest radial (or circumferential) border of tissue removed during cancer surgery.\n",
+              "description": "The yes/no indicator to ask if large vessel or venous invasion was detected by surgery or presence in a tumor specimen.\n",
               "isDeprecated": false,
-              "name": "circumferential_resection_margin",
+              "name": "vascular_invasion_present",
               "type": {
                 "kind": "SCALAR",
-                "name": "Float",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -13733,9 +14237,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Text term to identify the cause of death for a patient.\n",
+              "description": "The multiple myeloma disease stage at diagnosis.\n",
               "isDeprecated": false,
-              "name": "cause_of_death",
+              "name": "iss_stage",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -13811,6 +14315,30 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "A value in millimeters indicating the measured length between a malignant lesion of the colon or rectum and the nearest radial (or circumferential) border of tissue removed during cancer surgery.\n",
+              "isDeprecated": false,
+              "name": "circumferential_resection_margin",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Number of days between the date used for index and the patient's date of death or the date the patient was last known to be alive.\n",
+              "isDeprecated": false,
+              "name": "overall_survival",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -14193,6 +14721,18 @@
               "description": "Text identification of the individual agent(s) used as part of a prior treatment regimen.\n",
               "isDeprecated": false,
               "name": "therapeutic_agents",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The name of a regimen or line of therapy assigned to the patient.\n",
+              "isDeprecated": false,
+              "name": "regimen_or_line_of_therapy",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -20128,10 +20668,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__submitter_id",
+              "name": "cases__days_to_lost_to_followup",
               "type": {
                 "kind": "OBJECT",
-                "name": "Aggregations",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -20204,6 +20744,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__demographic__cause_of_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -20296,6 +20848,42 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "cases__demographic__days_to_birth",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__demographic__vital_status",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__demographic__days_to_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "cases__demographic__submitter_id",
               "type": {
                 "kind": "OBJECT",
@@ -20324,6 +20912,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__lost_to_followup",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -22936,6 +23536,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "cases__index_date",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "cases__family_histories__relationship_gender",
               "type": {
                 "kind": "OBJECT",
@@ -23056,6 +23668,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "cases__submitter_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "cases__diagnoses__ann_arbor_b_symptoms",
               "type": {
                 "kind": "OBJECT",
@@ -23096,6 +23720,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__progression_free_survival",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -23248,258 +23884,6 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__diagnoses__new_event_anatomic_site",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__days_to_last_known_disease_status",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__perineural_invasion_present",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__days_to_hiv_diagnosis",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__ajcc_clinical_n",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__ajcc_pathologic_t",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__prior_treatment",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__ajcc_clinical_t",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__colon_polyps_history",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__ajcc_clinical_m",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__ajcc_pathologic_m",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__ajcc_pathologic_n",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__vascular_invasion_present",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__ldh_level_at_diagnosis",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__days_to_last_follow_up",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__residual_disease",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__days_to_recurrence",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Stats",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__diagnosis_id",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__tumor_grade",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__state",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cases__diagnoses__figo_stage",
-              "type": {
-                "kind": "OBJECT",
-                "name": "Aggregations",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
               "name": "cases__diagnoses__treatments__days_to_treatment_start",
               "type": {
                 "kind": "OBJECT",
@@ -23608,6 +23992,18 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "cases__diagnoses__treatments__regimen_or_line_of_therapy",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "cases__diagnoses__treatments__treatment_intent_type",
               "type": {
                 "kind": "OBJECT",
@@ -23668,10 +24064,310 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
+              "name": "cases__diagnoses__new_event_anatomic_site",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__days_to_last_known_disease_status",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__perineural_invasion_present",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__days_to_hiv_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__ajcc_pathologic_m",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__ajcc_pathologic_t",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__prior_treatment",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__ajcc_clinical_t",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__colon_polyps_history",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__ajcc_clinical_m",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__ajcc_clinical_n",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__ajcc_pathologic_n",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__ldh_level_at_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__days_to_last_follow_up",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__progression_free_survival_event",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__best_overall_response",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__residual_disease",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__days_to_recurrence",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__diagnosis_id",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__tumor_grade",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__state",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__figo_stage",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__days_to_birth",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__cause_of_death",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
               "name": "cases__diagnoses__lymphatic_invasion_present",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__days_to_diagnosis",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -23692,7 +24388,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__diagnoses__days_to_birth",
+              "name": "cases__diagnoses__days_to_best_overall_response",
               "type": {
                 "kind": "OBJECT",
                 "name": "Stats",
@@ -23740,10 +24436,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__diagnoses__circumferential_resection_margin",
+              "name": "cases__diagnoses__vascular_invasion_present",
               "type": {
                 "kind": "OBJECT",
-                "name": "Stats",
+                "name": "Aggregations",
                 "ofType": null
               }
             },
@@ -23788,7 +24484,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "cases__diagnoses__cause_of_death",
+              "name": "cases__diagnoses__iss_stage",
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
@@ -23864,6 +24560,30 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Aggregations",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__circumferential_resection_margin",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cases__diagnoses__overall_survival",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Stats",
                 "ofType": null
               }
             },
@@ -28937,12 +29657,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": null,
+              "description": "The number of days between the date used for index and to the date the patient was lost to follow-up.\n",
               "isDeprecated": false,
-              "name": "submitter_id",
+              "name": "days_to_lost_to_followup",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Float",
                 "ofType": null
               }
             },
@@ -29021,6 +29741,18 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "A yes/no indicator related to whether a patient was unable to be contacted for follow-up.\n",
+              "isDeprecated": false,
+              "name": "lost_to_followup",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "The current state of the object.\n",
               "isDeprecated": false,
               "name": "state",
@@ -29048,6 +29780,30 @@
               "description": "keyword",
               "isDeprecated": false,
               "name": "submitter_sample_ids",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "The reference or anchor date used during date obfuscation, where a single date is obscurred by creating one or more date ranges in relation to this date.\n",
+              "isDeprecated": false,
+              "name": "index_date",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "submitter_id",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -35027,7 +35783,7 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Time interval from the date of new tumor event including progression, recurrence and new primary malignancies to the date of initial pathologic diagnosis, represented as a calculated number of days.\n",
+              "description": "Number of days between the date used for index and the date the patient was diagnosed with a recurrent malignancy. \n",
               "isDeprecated": false,
               "name": "days_to_recurrence",
               "type": {
@@ -48879,10 +49635,10 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "remove",
+              "name": "remove_from",
               "type": {
                 "kind": "OBJECT",
-                "name": "RemoveSet",
+                "name": "RemoveFromSet",
                 "ofType": null
               }
             }
@@ -49771,7 +50527,7 @@
               "name": "explore",
               "type": {
                 "kind": "OBJECT",
-                "name": "RemoveExploreSet",
+                "name": "RemoveFromExploreSet",
                 "ofType": null
               }
             },
@@ -49783,7 +50539,7 @@
               "name": "repository",
               "type": {
                 "kind": "OBJECT",
-                "name": "RemoveRepositorySet",
+                "name": "RemoveFromRepositorySet",
                 "ofType": null
               }
             }
@@ -49791,7 +50547,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "RemoveSet",
+          "name": "RemoveFromSet",
           "possibleTypes": null
         },
         {
@@ -49806,7 +50562,7 @@
                   "name": "input",
                   "type": {
                     "kind": "INPUT_OBJECT",
-                    "name": "RemoveSetInput",
+                    "name": "RemoveFromSetInput",
                     "ofType": null
                   }
                 }
@@ -49817,7 +50573,7 @@
               "name": "case",
               "type": {
                 "kind": "OBJECT",
-                "name": "RemoveCaseSet",
+                "name": "RemoveFromCaseSet",
                 "ofType": null
               }
             },
@@ -49829,7 +50585,7 @@
                   "name": "input",
                   "type": {
                     "kind": "INPUT_OBJECT",
-                    "name": "RemoveSetInput",
+                    "name": "RemoveFromSetInput",
                     "ofType": null
                   }
                 }
@@ -49840,7 +50596,7 @@
               "name": "gene",
               "type": {
                 "kind": "OBJECT",
-                "name": "RemoveGeneSet",
+                "name": "RemoveFromGeneSet",
                 "ofType": null
               }
             },
@@ -49852,7 +50608,7 @@
                   "name": "input",
                   "type": {
                     "kind": "INPUT_OBJECT",
-                    "name": "RemoveSetInput",
+                    "name": "RemoveFromSetInput",
                     "ofType": null
                   }
                 }
@@ -49863,7 +50619,7 @@
               "name": "ssm",
               "type": {
                 "kind": "OBJECT",
-                "name": "RemoveSsmSet",
+                "name": "RemoveFromSsmSet",
                 "ofType": null
               }
             }
@@ -49871,7 +50627,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "RemoveExploreSet",
+          "name": "RemoveFromExploreSet",
           "possibleTypes": null
         },
         {
@@ -49902,7 +50658,7 @@
           ],
           "interfaces": null,
           "kind": "INPUT_OBJECT",
-          "name": "RemoveSetInput",
+          "name": "RemoveFromSetInput",
           "possibleTypes": null
         },
         {
@@ -49949,7 +50705,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "RemoveCaseSet",
+          "name": "RemoveFromCaseSet",
           "possibleTypes": null
         },
         {
@@ -49996,7 +50752,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "RemoveGeneSet",
+          "name": "RemoveFromGeneSet",
           "possibleTypes": null
         },
         {
@@ -50043,7 +50799,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "RemoveSsmSet",
+          "name": "RemoveFromSsmSet",
           "possibleTypes": null
         },
         {
@@ -50058,7 +50814,7 @@
                   "name": "input",
                   "type": {
                     "kind": "INPUT_OBJECT",
-                    "name": "RemoveSetInput",
+                    "name": "RemoveFromSetInput",
                     "ofType": null
                   }
                 }
@@ -50069,7 +50825,7 @@
               "name": "case",
               "type": {
                 "kind": "OBJECT",
-                "name": "RemoveRepositoryCaseSet",
+                "name": "RemoveFromRepositoryCaseSet",
                 "ofType": null
               }
             },
@@ -50081,7 +50837,7 @@
                   "name": "input",
                   "type": {
                     "kind": "INPUT_OBJECT",
-                    "name": "RemoveSetInput",
+                    "name": "RemoveFromSetInput",
                     "ofType": null
                   }
                 }
@@ -50092,7 +50848,7 @@
               "name": "file",
               "type": {
                 "kind": "OBJECT",
-                "name": "RemoveRepositoryFileSet",
+                "name": "RemoveFromRepositoryFileSet",
                 "ofType": null
               }
             }
@@ -50100,7 +50856,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "RemoveRepositorySet",
+          "name": "RemoveFromRepositorySet",
           "possibleTypes": null
         },
         {
@@ -50147,7 +50903,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "RemoveRepositoryCaseSet",
+          "name": "RemoveFromRepositoryCaseSet",
           "possibleTypes": null
         },
         {
@@ -50194,7 +50950,7 @@
           "inputFields": null,
           "interfaces": [],
           "kind": "OBJECT",
-          "name": "RemoveRepositoryFileSet",
+          "name": "RemoveFromRepositoryFileSet",
           "possibleTypes": null
         },
         {

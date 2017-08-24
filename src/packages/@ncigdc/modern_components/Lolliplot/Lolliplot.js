@@ -1,6 +1,12 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { compose, branch, renderComponent, withProps } from 'recompose';
+import {
+  compose,
+  branch,
+  renderComponent,
+  withProps,
+  withState,
+} from 'recompose';
 import { isEqual } from 'lodash';
 import { Lolliplot, Backbone, Minimap } from '@oncojs/react-lolliplot/dist/lib';
 import LolliplotStats from './LolliplotStats';
@@ -10,6 +16,8 @@ import groupByType from '@ncigdc/utils/groupByType';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import withSize from '@ncigdc/utils/withSize';
 import mapData from './mapData';
+import styled from '@ncigdc/theme/styled';
+import separateOverlapping from './separateOverlapping';
 
 const id = 'protein-viewer-root';
 const STATS_WIDTH = 250;
@@ -30,6 +38,12 @@ const highContrastPallet = [
   '#856514',
   '#D43900',
 ];
+
+const LinkSpan = styled.span({
+  textDecoration: 'underline',
+  color: ({ theme }) => theme.primary,
+  cursor: 'pointer',
+});
 
 export default compose(
   withTooltip,
@@ -85,6 +99,7 @@ export default compose(
       return {
         mutationColors,
         lolliplotData,
+        proteinTracks: separateOverlapping(lolliplotData.proteins),
         outsideSsms: lolliplotData.mutations.filter(
           d => d.x > activeTranscript.length_amino_acid,
         ),
@@ -92,6 +107,7 @@ export default compose(
       };
     },
   ),
+  withState('expandDomains', 'toggleExpandedDomains', false),
 )(
   ({
     activeTranscript,
@@ -103,6 +119,7 @@ export default compose(
     mutationColors,
     blacklist,
     lolliplotData,
+    proteinTracks,
     push,
     outsideSsms,
     impactUnknown,
@@ -112,6 +129,8 @@ export default compose(
     toggleBlacklistItem,
     filterByType,
     setTooltip,
+    expandDomains,
+    toggleExpandedDomains,
   }) =>
     <Row>
       <div id={id} style={{ flex: 1, userSelect: 'none' }}>
@@ -157,48 +176,70 @@ export default compose(
               onPointMouseout={() => setTooltip(null)}
             />
             <div style={{ marginTop: '-20px' }}>
-              <Backbone
-                min={min}
-                max={max}
-                d3={d3}
-                domainWidth={activeTranscript.length_amino_acid}
-                width={graphWidth}
-                update={payload => setState(s => ({ ...s, ...payload }))}
-                data={lolliplotData.proteins}
-                onProteinClick={d => {
-                  if (min === d.start && max === d.end) {
-                    setState(s => ({
-                      ...s,
-                      min: 0,
-                      max: activeTranscript.length_amino_acid,
-                    }));
-                    setTooltip(null);
-                  } else {
-                    setState(s => ({ ...s, min: d.start, max: d.end }));
-                    setTooltip(
-                      <span>
-                        <div><b>{d.id}</b></div>
-                        <div>{d.description}</div>
-                        <div><b>Click to reset zoom</b></div>
-                      </span>,
-                    );
-                  }
-                }}
-                onProteinMouseover={d => {
-                  setTooltip(
-                    <span>
-                      <div><b>{d.id}</b></div>
-                      <div>{d.description}</div>
-                      {min === d.start &&
-                        max === d.end &&
-                        <div><b>Click to reset zoom</b></div>}
-                      {(min !== d.start || max !== d.end) &&
-                        <div><b>Click to zoom</b></div>}
-                    </span>,
-                  );
-                }}
-                onProteinMouseout={() => setTooltip(null)}
-              />
+              {proteinTracks.length > 1 &&
+                <Row style={{ margin: '15px 0 0 15px' }} spacing="5px">
+                  <i
+                    className="fa fa-warning"
+                    style={{
+                      color: 'rgb(215, 175, 33)',
+                    }}
+                  />
+                  <span style={{ fontSize: '0.8em' }}>
+                    Some overlapping domains are not shown by default. &nbsp;
+                    <LinkSpan
+                      onClick={() => toggleExpandedDomains(!expandDomains)}
+                    >
+                      Click here to show / hide them.
+                    </LinkSpan>
+                  </span>
+                </Row>}
+              {proteinTracks
+                .slice(0, expandDomains ? Infinity : 1)
+                .map((trackData, i) =>
+                  <Backbone
+                    key={i}
+                    min={min}
+                    max={max}
+                    d3={d3}
+                    domainWidth={activeTranscript.length_amino_acid}
+                    width={graphWidth}
+                    update={payload => setState(s => ({ ...s, ...payload }))}
+                    data={trackData}
+                    onProteinClick={d => {
+                      if (min === d.start && max === d.end) {
+                        setState(s => ({
+                          ...s,
+                          min: 0,
+                          max: activeTranscript.length_amino_acid,
+                        }));
+                        setTooltip(null);
+                      } else {
+                        setState(s => ({ ...s, min: d.start, max: d.end }));
+                        setTooltip(
+                          <span>
+                            <div><b>{d.id}</b></div>
+                            <div>{d.description}</div>
+                            <div><b>Click to reset zoom</b></div>
+                          </span>,
+                        );
+                      }
+                    }}
+                    onProteinMouseover={d => {
+                      setTooltip(
+                        <span>
+                          <div><b>{d.id}</b></div>
+                          <div>{d.description}</div>
+                          {min === d.start &&
+                            max === d.end &&
+                            <div><b>Click to reset zoom</b></div>}
+                          {(min !== d.start || max !== d.end) &&
+                            <div><b>Click to zoom</b></div>}
+                        </span>,
+                      );
+                    }}
+                    onProteinMouseout={() => setTooltip(null)}
+                  />,
+                )}
               <Minimap
                 min={min}
                 max={max}

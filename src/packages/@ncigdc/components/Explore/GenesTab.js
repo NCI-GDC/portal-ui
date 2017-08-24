@@ -2,13 +2,7 @@
 import React from 'react';
 import JSURL from 'jsurl';
 import { get } from 'lodash';
-import {
-  compose,
-  withState,
-  withProps,
-  withPropsOnChange,
-  withHandlers,
-} from 'recompose';
+import { compose, withState, withProps, withHandlers } from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import withFilters from '@ncigdc/utils/withFilters';
@@ -21,6 +15,7 @@ import {
   getFilterValue,
 } from '@ncigdc/utils/filters';
 import { removeEmptyKeys } from '@ncigdc/utils/uri';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const styles = {
   heading: {

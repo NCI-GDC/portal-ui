@@ -9,7 +9,6 @@ import {
   lifecycle,
   withProps,
   renameProps,
-  withPropsOnChange,
   defaultProps,
   withHandlers,
 } from 'recompose';
@@ -17,6 +16,7 @@ import { fetchApi } from '@ncigdc/utils/ajax';
 import entityShortnameMapping from '@ncigdc/utils/entityShortnameMapping';
 import Highlight from 'react-highlighter';
 import withSelectableList from '@ncigdc/utils/withSelectableList';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const facetMatchesQuery = (facet, query) =>
   _.some([facet.field, facet.description].map(_.toLower), searchTarget =>

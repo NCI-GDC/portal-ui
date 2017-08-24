@@ -4,7 +4,7 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import withSize from '@ncigdc/utils/withSize';
 import _ from 'lodash';
-import { compose, withPropsOnChange, withState } from 'recompose';
+import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 import { parse } from 'query-string';
 import {
@@ -32,6 +32,7 @@ import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import MutationsCount from '@ncigdc/components/MutationsCount';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const COMPONENT_NAME = 'AffectedCasesTable';
 

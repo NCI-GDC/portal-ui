@@ -7,6 +7,7 @@ import { Row } from '@ncigdc/uikit/Flex';
 const NotificationContainer = ({ notification }) =>
   <Row className="test-notification-wrapper">
     {notification &&
+      notification.component &&
       <Notification
         id={notification.id}
         action={notification.action}

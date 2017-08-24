@@ -42,12 +42,6 @@ type TProps = {
     },
   },
   projectBreakdown: Object,
-  relay: {
-    route: {
-      params: {},
-    },
-    variables: Object,
-  },
   setSurvivalLoadingId: Function,
   survivalLoadingId: string,
   theme: TTheme,
@@ -57,7 +51,7 @@ type TProps = {
     ssmsTable_filters: string,
   },
   defaultFilters: TGroupFilter,
-  variables: Object,
+  parentVariables: Object,
   tableColumns: Array<string>,
   hideContext: boolean,
   hideSurvival: boolean,
@@ -79,7 +73,6 @@ export default compose(
       selectedSurvivalData = { id: '' },
       setSelectedSurvivalData = () => {},
       viewer: { explore: { ssms, filteredCases, cases } },
-      relay,
       setSurvivalLoadingId,
       survivalLoadingId,
       theme,
@@ -87,7 +80,7 @@ export default compose(
       context = 'explore',
       query,
       location,
-      variables,
+      parentVariables,
       tableColumns,
       hideContext,
       hideSurvival,
@@ -119,8 +112,8 @@ export default compose(
         >
           <Showing
             docType="somatic mutations"
-            prefix="ssms"
-            params={variables}
+            prefix="ssmsTable"
+            params={parentVariables}
             total={totalSsms}
           />
           <Row style={{ alignItems: 'flex-end' }}>
@@ -196,7 +189,7 @@ export default compose(
         </div>
         <Pagination
           prefix="ssmsTable"
-          params={variables}
+          params={parentVariables}
           total={!ssms ? 0 : ssms.hits.total}
         />
       </span>

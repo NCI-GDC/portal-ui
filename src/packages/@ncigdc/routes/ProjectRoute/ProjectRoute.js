@@ -25,6 +25,7 @@ import GenesBarChart from '@ncigdc/modern_components/GenesBarChart';
 import GenesTable from '@ncigdc/modern_components/GenesTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import HasCases from '@ncigdc/modern_components/HasCases';
 
 const styles = {
   column: {
@@ -172,7 +173,7 @@ export default enhance(
           </span>
         </Row>
 
-        <div>
+        <HasCases projectId={projectId} mutated>
           <Column style={styles.card}>
             <Row style={{ padding: '1rem 1rem 2rem' }}>
               <h1 style={styles.heading} id="mutated-genes">
@@ -300,7 +301,7 @@ export default enhance(
             />
             <AffectedCasesTable defaultFilters={projectFilter} />
           </Column>
-        </div>
+        </HasCases>
       </FullWidthLayout>
     );
   },

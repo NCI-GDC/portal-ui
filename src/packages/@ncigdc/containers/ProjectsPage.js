@@ -7,8 +7,7 @@ import SearchPage from '@ncigdc/components/SearchPage';
 import ProjectsCharts from '@ncigdc/components/ProjectsCharts';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GitHut from '@ncigdc/components/GitHut';
-
-import ProjectsTable from './ProjectsTable';
+import ProjectsTable from '@ncigdc/modern_components/ProjectsTable';
 import ProjectAggregations from './ProjectAggregations';
 
 export type TProps = {
@@ -77,12 +76,7 @@ export const ProjectsPageComponent = (props: TProps) =>
             {
               id: 'table',
               text: 'Table',
-              component: (
-                <ProjectsTable
-                  params={props.relay.route.params}
-                  hits={props.viewer.projects.hits}
-                />
-              ),
+              component: <ProjectsTable />,
             },
             {
               id: 'graph',
@@ -126,7 +120,6 @@ export const ProjectsPageQuery = {
             ${ProjectAggregations.getFragment('aggregations')}
           }
           hits(first: $size offset: $offset, sort: $projects_sort, filters: $filters) {
-            ${ProjectsTable.getFragment('hits')}
             ${ProjectsCharts.getFragment('hits')}
           }
         }

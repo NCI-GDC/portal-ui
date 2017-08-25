@@ -9,6 +9,7 @@ import countComponents from '@ncigdc/modern_components/Counts';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Button from '@ncigdc/uikit/Button';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
+import { theme } from '@ncigdc/theme/index';
 
 type TProps = {
   sets: {},
@@ -107,13 +108,14 @@ const SetTable = ({
     .reduce((acc, rows) => acc.concat(rows), []);
 
   return (
-    <div style={{ padding: '2rem 2.5rem' }}>
-      <div>
-        You can edit and save case and gene sets of interest from the{' '}
+    <div>
+      <div style={{ padding: '2rem 2.5rem 0' }}>
+        You can create and save case and gene sets of interest from the{' '}
         <ExploreLink>Exploration Page</ExploreLink>
+        <h1 style={{ fontSize: '2rem' }}>{title}</h1>
+        <div>{setInstructions}</div>
       </div>
-      <h1 style={{ fontSize: '2rem' }}>{title}</h1>
-      <div>{setInstructions}</div>
+
       {setData.length
         ? <EntityPageHorizontalTable data={setData} headings={headings} />
         : <EntityPageHorizontalTable
@@ -130,7 +132,14 @@ const SetTable = ({
               })),
             ]}
           />}
-      <Row spacing={5} style={{ justifyContent: 'flex-end', marginTop: 10 }}>
+      <Row
+        spacing={5}
+        style={{
+          justifyContent: 'flex-end',
+          padding: '1rem 2.5rem 1rem',
+          borderTop: `1px solid ${theme.greyScale5}`,
+        }}
+      >
         <Button onClick={onCancel}>Cancel</Button>
         <Button onClick={onDemo}>Demo</Button>
         <Button

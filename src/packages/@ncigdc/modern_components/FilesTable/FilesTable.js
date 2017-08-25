@@ -1,8 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import Relay from 'react-relay/classic';
-import { compose } from 'recompose';
+import { compose, setDisplayName, branch, renderComponent } from 'recompose';
 import { connect } from 'react-redux';
 import Pagination from '@ncigdc/components/Pagination';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -30,18 +29,25 @@ const RemoveButton = styled(Button, {
   },
 });
 
-export const SearchTable = compose(
+export default compose(
+  setDisplayName('FilesTablePresentation'),
   connect(state => ({ tableColumns: state.tableColumns.files.ids })),
+  branch(
+    ({ viewer }) =>
+      !viewer.repository.files.hits ||
+      !viewer.repository.files.hits.edges.length,
+    renderComponent(() => <div>No results found</div>),
+  ),
 )(
   ({
     downloadable,
-    relay,
-    hits,
+    viewer: { repository: { files: { hits } } },
     entityType = 'files',
     tableColumns,
     canAddToCart = true,
     tableHeader,
     dispatch,
+    parentVariables,
   }) => {
     const tableInfo = tableModels[entityType]
       .slice()
@@ -69,7 +75,7 @@ export const SearchTable = compose(
           <Showing
             docType="files"
             prefix={prefix}
-            params={relay.route.params}
+            params={parentVariables}
             total={hits.total}
           />
           <TableActions
@@ -125,7 +131,6 @@ export const SearchTable = compose(
                           <x.td
                             key={x.id}
                             node={e.node}
-                            relay={relay}
                             index={i}
                             total={hits.total}
                           />,
@@ -139,59 +144,10 @@ export const SearchTable = compose(
         </div>
         <Pagination
           prefix={prefix}
-          params={relay.route.params}
+          params={parentVariables}
           total={hits.total}
         />
       </div>
     );
   },
 );
-
-export const FileTableQuery = {
-  fragments: {
-    hits: () => Relay.QL`
-      fragment on FileConnection {
-        total
-        edges {
-          node {
-            id
-            file_id
-            file_name
-            file_size
-            access
-            file_state
-            state
-            acl
-            data_category
-            data_format
-            platform
-            data_type
-            experimental_strategy
-            cases {
-              hits(first: 1) {
-                total
-                edges {
-                  node {
-                    case_id
-                    project {
-                      project_id
-                    }
-                  }
-                }
-              }
-            }
-            annotations {
-              hits(first:0) {
-                total
-              }
-            }
-          }
-        }
-      }
-    `,
-  },
-};
-
-const FileTable = Relay.createContainer(SearchTable, FileTableQuery);
-
-export default FileTable;

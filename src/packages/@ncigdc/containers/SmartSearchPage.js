@@ -11,9 +11,8 @@ import Button from '@ncigdc/uikit/Button';
 import withRouter from '@ncigdc/utils/withRouter';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
-
-import CasesTable from './CasesTable';
-import FilesTable from './FilesTable';
+import FilesTable from '@ncigdc/modern_components/FilesTable';
+import CasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import { API } from '@ncigdc/utils/constants';
 
 require('lodash-backports').register();
@@ -138,16 +137,12 @@ class SmartSearchComponent extends React.Component {
             {
               id: 'files',
               text: `Files (${this.props.viewer.repository.files.hits.total.toLocaleString()})`,
-              component: (
-                <FilesTable hits={this.props.viewer.repository.files.hits} />
-              ),
+              component: <FilesTable />,
             },
             {
               id: 'cases',
               text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
-              component: (
-                <CasesTable hits={this.props.viewer.repository.cases.hits} />
-              ),
+              component: <CasesTable />,
             },
           ]}
         />
@@ -173,13 +168,11 @@ export const SmartSearchQuery = {
         repository {
           cases {
             hits(first: $cases_size offset: $cases_offset, filters: $filters) {
-              ${CasesTable.getFragment('hits')}
               total
             }
           }
           files {
             hits(first: $files_size offset: $files_offset, filters: $filters) {
-              ${FilesTable.getFragment('hits')}
               total
             }
           }

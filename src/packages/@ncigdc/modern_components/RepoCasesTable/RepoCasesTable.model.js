@@ -8,13 +8,16 @@ import {
 import AddCaseFilesToCartButton from '@ncigdc/components/AddCaseFilesToCartButton';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
+import { AnnotationCountLink } from '@ncigdc/components/Links/AnnotationCountLink';
 import { Th, Td } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 import styled from '@ncigdc/theme/styled';
-import { createDataCategoryColumns, createSelectColumn } from './utils';
-import { AnnotationCountLink } from '../components/Links/AnnotationCountLink';
+import {
+  createDataCategoryColumns,
+  createSelectColumn,
+} from '@ncigdc/tableModels/utils';
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },

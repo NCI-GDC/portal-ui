@@ -4,7 +4,7 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 
 import SearchPage from '@ncigdc/components/SearchPage';
-import ProjectsCharts from '@ncigdc/components/ProjectsCharts';
+import ProjectsCharts from '@ncigdc/modern_components/ProjectsCharts';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GitHut from '@ncigdc/components/GitHut';
 
@@ -66,10 +66,7 @@ export const ProjectsPageComponent = (props: TProps) =>
     ]}
     results={
       <span>
-        <ProjectsCharts
-          hits={props.viewer.projects.hits}
-          explore={props.viewer.explore}
-        />
+        <ProjectsCharts />
         <TabbedLinks
           queryParam="projectsTableTab"
           defaultIndex={0}
@@ -103,9 +100,6 @@ export const ProjectsPageQuery = {
   fragments: {
     viewer: () => Relay.QL`
       fragment on Root {
-        explore {
-          ${ProjectsCharts.getFragment('explore')}
-        }
         autocomplete: query(query: $idAutocomplete types: ["project"]) @include(if: $runAutocomplete) {
           hits {
             id
@@ -119,9 +113,6 @@ export const ProjectsPageQuery = {
         projects {
           aggregations(filters: $filters aggregations_filter_themselves: false) {
             ${ProjectAggregations.getFragment('aggregations')}
-          }
-          hits(first: $size offset: $offset, sort: $projects_sort, filters: $filters) {
-            ${ProjectsCharts.getFragment('hits')}
           }
         }
       }

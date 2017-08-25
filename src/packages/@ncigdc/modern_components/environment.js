@@ -6,6 +6,7 @@ import md5 from 'blueimp-md5';
 
 const source = new RecordSource();
 const store = new Store(source);
+const simpleCache = {};
 const handlerProvider = null;
 
 function fetchQuery(operation, variables, cacheConfig) {
@@ -15,22 +16,27 @@ function fetchQuery(operation, variables, cacheConfig) {
   });
 
   const hash = md5(body);
-
   const [componentName] = operation.name.split('_relayQuery');
+
+  if (simpleCache[hash]) {
+    return Promise.resolve(simpleCache[hash]);
+  }
 
   return fetch(
     urlJoin(process.env.REACT_APP_API, `graphql/${componentName}?hash=${hash}`),
     {
       method: 'POST',
       headers: {
-        // Add authentication and other headers here
         'content-type': 'application/json',
       },
       body,
     },
-  ).then(response => {
-    return response.json();
-  });
+  )
+    .then(response => response.json())
+    .then(json => {
+      simpleCache[hash] = json;
+      return json;
+    });
 }
 
 // Create a network layer from the fetch function

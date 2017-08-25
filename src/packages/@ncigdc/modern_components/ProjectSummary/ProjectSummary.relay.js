@@ -34,7 +34,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="ProjectSummary"
         minHeight={249}
         variables={props.variables}
         Component={Component}

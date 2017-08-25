@@ -40,7 +40,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="SsmExternalReferences"
         minHeight={200}
         variables={props.variables}
         Component={Component}

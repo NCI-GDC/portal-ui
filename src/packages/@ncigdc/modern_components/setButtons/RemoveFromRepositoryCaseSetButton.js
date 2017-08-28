@@ -8,11 +8,11 @@ import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 
 const repositoryMutation = graphql`
   mutation RemoveFromRepositoryCaseSetButtonMutation(
-    $input: RemoveSetInput
+    $input: RemoveFromSetInput
     $never_used: RelayIsDumb
   ) {
     sets(input: $never_used) {
-      remove {
+      remove_from {
         repository {
           case(input: $input) {
             set_id
@@ -40,7 +40,8 @@ const RemoveFromRepositoryCaseSetButton = ({
       {...props}
       input={{ filters, set_id: setId }}
       field="cases.case_id"
-      setIdExtractor={response => response.sets.remove.repository.case.set_id}
+      setIdExtractor={response =>
+        response.sets.remove_from.repository.case.set_id}
       mutation={repositoryMutation}
     >
       {children}

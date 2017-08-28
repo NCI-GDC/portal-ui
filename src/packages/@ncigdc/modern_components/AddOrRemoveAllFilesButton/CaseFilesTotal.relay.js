@@ -28,11 +28,10 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="CaseFilesTotal"
-        minHeight={50}
+        minHeight={34}
         variables={props.variables}
         Component={Component}
-        customLoader={() => null}
+        Loader={() => null}
         query={graphql`
           query CaseFilesTotal_relayQuery(
             $filters: FiltersArgument

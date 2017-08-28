@@ -28,7 +28,6 @@ export default (Component: ReactClass<*>) =>
     return (
       <Query
         parentProps={props}
-        name="ClinicalCard"
         minHeight={249}
         variables={props.variables}
         Component={Component}

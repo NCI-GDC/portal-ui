@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Relay from 'react-relay/classic';
-import { compose, withPropsOnChange, withState } from 'recompose';
+import { compose, withState } from 'recompose';
 import { connect } from 'react-redux';
 import { parse } from 'query-string';
 
@@ -14,36 +14,19 @@ import tableModels from '@ncigdc/tableModels';
 import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
-import { handleReadyStateChange } from '@ncigdc/dux/loaders';
-import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
-import withRouter from '@ncigdc/utils/withRouter';
 import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
 import RemoveFromExploreCaseSetButton from '@ncigdc/modern_components/setButtons/RemoveFromExploreCaseSetButton';
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam,
+  parseJSONParam,
 } from '@ncigdc/utils/uri';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 
 const COMPONENT_NAME = 'ExploreCasesTable';
-
-const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) =>
-    <div style={{ position: 'relative', minHeight: '387px' }}>
-      <Relay.Renderer
-        environment={Relay.Store}
-        queryConfig={new Route(props)}
-        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
-        Container={Container}
-        render={({ props: relayProps }) =>
-          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-        }
-      />
-      <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
 
 class Route extends Relay.Route {
   static routeName = COMPONENT_NAME;
@@ -61,7 +44,7 @@ class Route extends Relay.Route {
       filters: parseFilterParam(q.filters, defaultFilters),
       cases_offset: parseIntParam(q.cases_offset, 0),
       cases_size: parseIntParam(q.cases_size, defaultSize),
-      cases_sort: parseJSURLParam(q.cases_sort, null),
+      cases_sort: parseJSONParam(q.cases_sort, null),
     };
   };
 }
@@ -299,4 +282,4 @@ const Component = compose(
   );
 });
 
-export default createRenderer(Route, createContainer(Component));
+export default createClassicRenderer(Route, createContainer(Component), 387);

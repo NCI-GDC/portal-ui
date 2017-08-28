@@ -1,14 +1,7 @@
 // @flow
 import React from 'react';
-import JSURL from 'jsurl';
 import { get } from 'lodash';
-import {
-  compose,
-  withState,
-  withProps,
-  withPropsOnChange,
-  withHandlers,
-} from 'recompose';
+import { compose, withState, withProps, withHandlers } from 'recompose';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import withFilters from '@ncigdc/utils/withFilters';
@@ -20,7 +13,8 @@ import {
   toggleFilters,
   getFilterValue,
 } from '@ncigdc/utils/filters';
-import { removeEmptyKeys } from '@ncigdc/utils/uri';
+import { removeEmptyKeys, stringifyJSONParam } from '@ncigdc/utils/uri';
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
 const styles = {
   heading: {
@@ -100,7 +94,7 @@ export default compose(
         pathname: '/exploration',
         query: removeEmptyKeys({
           ...query,
-          filters: newFilters && JSURL.stringify(newFilters),
+          filters: newFilters && stringifyJSONParam(newFilters),
         }),
       });
     },

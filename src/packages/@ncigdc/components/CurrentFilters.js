@@ -13,7 +13,6 @@ import {
   withPropsOnChange,
   withProps,
 } from 'recompose';
-import JSURL from 'jsurl';
 
 import { humanify } from '@ncigdc/utils/string';
 import withRouter from '@ncigdc/utils/withRouter';
@@ -30,6 +29,7 @@ import Link from '@ncigdc/components/Links/Link';
 import { facetFieldDisplayMapper } from '@ncigdc/components/Aggregations';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import SetId from '@ncigdc/components/SetId';
+import { parseJSONParam } from '@ncigdc/utils/uri/index';
 
 /*----------------------------------------------------------------------------*/
 
@@ -98,7 +98,7 @@ export const getDisplayOp = (op: string, value: Array<string>) => {
 const enhance = compose(
   withRouter,
   withPropsOnChange(['query'], ({ query: { filters } }) => ({
-    filters: JSURL.parse(filters),
+    filters: parseJSONParam(filters),
   })),
   withPropsOnChange(['filters'], ({ filters }) => ({
     currentFilters: (filters && filters.content) || [],

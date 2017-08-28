@@ -4,16 +4,15 @@ import React from 'react';
 import Relay from 'react-relay/classic';
 import withSize from '@ncigdc/utils/withSize';
 import _ from 'lodash';
-import { compose, withPropsOnChange, withState } from 'recompose';
-import { connect } from 'react-redux';
+import { compose, withState } from 'recompose';
 import { parse } from 'query-string';
+
 import {
   parseIntParam,
   parseFilterParam,
-  parseJSURLParam,
+  parseJSONParam,
 } from '@ncigdc/utils/uri';
 import { viewerQuery } from '@ncigdc/routes/queries';
-import { handleReadyStateChange } from '@ncigdc/dux/loaders';
 import Showing from '@ncigdc/components/Pagination/Showing';
 import { withTheme } from '@ncigdc/theme';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
@@ -22,7 +21,6 @@ import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import withRouter from '@ncigdc/utils/withRouter';
-import { ConnectedLoader } from '@ncigdc/uikit/Loaders/Loader';
 import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
 import { makeFilter } from '@ncigdc/utils/filters';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
@@ -32,24 +30,8 @@ import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import MutationsCount from '@ncigdc/components/MutationsCount';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
-
-const COMPONENT_NAME = 'AffectedCasesTable';
-
-const createRenderer = (Route, Container) =>
-  compose(connect(), withRouter)((props: mixed) =>
-    <div style={{ position: 'relative', minHeight: '387px' }}>
-      <Relay.Renderer
-        environment={Relay.Store}
-        queryConfig={new Route(props)}
-        onReadyStateChange={handleReadyStateChange(COMPONENT_NAME, props)}
-        Container={Container}
-        render={({ props: relayProps }) =>
-          relayProps ? <Container {...relayProps} {...props} /> : undefined // needed to prevent flicker
-        }
-      />
-      <ConnectedLoader name={COMPONENT_NAME} />
-    </div>,
-  );
+import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
+import { createClassicRenderer } from '@ncigdc/modern_components/Query';
 
 class Route extends Relay.Route {
   static routeName = 'AffectedCasesTableRoute';
@@ -74,7 +56,7 @@ class Route extends Relay.Route {
         q.affectedCasesTable_size,
         defaultSize,
       ),
-      affectedCasesTable_sort: parseJSURLParam(q.affectedCasesTable_sort, null),
+      affectedCasesTable_sort: parseJSONParam(q.affectedCasesTable_sort, null),
     };
   };
 }
@@ -427,4 +409,4 @@ const Component = compose(
   },
 );
 
-export default createRenderer(Route, createContainer(Component));
+export default createClassicRenderer(Route, createContainer(Component), 387);

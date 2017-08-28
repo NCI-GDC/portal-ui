@@ -1,16 +1,30 @@
-function getValues(filters) {
+function getValues(filters, sets) {
   const content = filters.content;
-  if (Array.isArray(content)) {
-    return content.reduce((acc, c) => [...acc, ...getValues(c)], []);
+  if (!content) {
+    return [];
+  } else if (Array.isArray(content)) {
+    return content.reduce((acc, c) => [...acc, ...getValues(c, sets)], []);
   } else {
-    return [[].concat(content.value || [])];
+    return [
+      []
+        .concat(content.value || [])
+        .map(
+          v =>
+            v.includes('set_id:')
+              ? sets[v.replace('set_id:', '')] || 'input set'
+              : v,
+        ),
+    ];
   }
 }
 
 const MAX_VALUES = 6;
-export default function filtersToName(filters, max = MAX_VALUES) {
+export default function({ filters, max = MAX_VALUES, sets }) {
   if (!filters) return '';
-  const values = getValues(filters);
+  const values = getValues(
+    filters,
+    Object.values(sets).reduce((a, b) => ({ ...a, ...b }), {}),
+  );
   let total = 0;
   return values
     .reduce((acc, value, i, arr) => {

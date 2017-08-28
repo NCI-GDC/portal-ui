@@ -158,15 +158,9 @@ export const flipFilters: TMergeFilters = (q, ctxq) => {
     ctxq,
   );
 
-  const toggled = toggleFilters(q, ctxq);
-  const t1 = toggleFilters(flipped, toggled);
+  // const toggled = toggleFilters(q, ctxq);
 
-  console.log(3333, t1.content);
-
-  console.log(123, toggled.content);
-
-  return null;
-  return merged.content.length ? merged : null;
+  return flipped.content.length ? flipped : null;
 };
 
 const mergeFns: TMergeFns = v => {

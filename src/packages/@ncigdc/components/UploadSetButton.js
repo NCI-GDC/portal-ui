@@ -12,6 +12,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Link from '@ncigdc/components/Links/Link';
 import { getFilterValue } from '@ncigdc/utils/filters';
+import countComponents from '@ncigdc/modern_components/Counts/index';
 
 const enhance = compose(
   connect(({ sets }) => ({ sets })),
@@ -41,7 +42,10 @@ export default enhance(
     idField,
     style,
     currentFilters,
+    type,
   }) => {
+    const CountComponent = countComponents[type];
+
     const currentValues = !currentFilters
       ? []
       : get(
@@ -87,7 +91,7 @@ export default enhance(
             return (
               <DropdownItem key={label} style={{ padding: 5 }}>
                 <Link
-                  style={{ width: '100%' }}
+                  style={{ width: '100%', textDecoration: 'none' }}
                   merge="toggle"
                   {...defaultQuery}
                   query={{
@@ -103,16 +107,30 @@ export default enhance(
                     },
                   }}
                 >
-                  <input
-                    readOnly
-                    style={{ pointerEvents: 'none' }}
-                    type="checkbox"
-                    checked={currentValues.includes(value)}
-                    name={label}
-                  />
-                  <label htmlFor={label} style={{ marginLeft: '0.3rem' }}>
-                    {label}
-                  </label>
+                  <Row style={{ alignItems: 'center' }} spacing="0.5rem">
+                    <input
+                      readOnly
+                      style={{ pointerEvents: 'none' }}
+                      type="checkbox"
+                      checked={currentValues.includes(value)}
+                      name={label}
+                    />
+                    <label htmlFor={label}>
+                      {label}
+                      <div style={{ fontSize: '0.8em' }}>
+                        <CountComponent
+                          filters={{
+                            op: '=',
+                            content: {
+                              field: idField,
+                              value: `set_id:${setId}`,
+                            },
+                          }}
+                        />{' '}
+                        {type.replace(/^./, m => m.toUpperCase())}s
+                      </div>
+                    </label>
+                  </Row>
                 </Link>
 
               </DropdownItem>

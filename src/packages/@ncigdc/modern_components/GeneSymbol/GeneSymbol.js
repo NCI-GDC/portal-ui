@@ -1,12 +1,12 @@
 // @flow
 
 import React from 'react';
-import { head } from 'lodash';
+import { head, get } from 'lodash';
 import { compose, branch, renderComponent } from 'recompose';
 
 export default compose(
   branch(
-    ({ viewer }) => !viewer.explore.genes.hits.edges[0],
+    ({ viewer }) => !get(viewer, 'explore.genes.hits.edges[0]'),
     renderComponent(() => <div>No gene found.</div>),
   ),
 )(({ viewer: { explore } }: Object) =>

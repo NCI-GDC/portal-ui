@@ -10,12 +10,13 @@ import filtersToName from '@ncigdc/utils/filtersToName';
 import WarningBox from '@ncigdc/uikit/WarningBox';
 
 const enhance = compose(
+  connect(({ sets }) => ({ sets })),
   withState(
     'input',
     'setInput',
-    ({ filters, type }) => filtersToName(filters) || `All ${type}s`,
+    ({ filters, type, sets }) =>
+      filtersToName({ filters, sets }) || `All ${type}s`,
   ),
-  connect(({ sets }) => ({ sets })),
   withProps(({ sets, type }) => ({ sets: sets[type] || {} })),
 );
 

@@ -12,17 +12,20 @@ import { center, zDepth1 } from '@ncigdc/theme/mixins';
 /*----------------------------------------------------------------------------*/
 
 const styles = {
-  container: {
+  wrapper: {
     position: 'fixed',
     top: 0,
     width: '100vw',
     zIndex: 100,
-    margin: '1rem 0',
-    transition: 'transform 0.25s ease',
     pointerEvents: 'none',
     textAlign: 'center',
     wordBreak: 'break-word',
+    overflow: 'hidden',
     ...center,
+  },
+  container: {
+    margin: '1rem 0',
+    transition: 'transform 0.25s ease',
   },
   inactive: {
     transform: 'translateY(-140%)',
@@ -69,18 +72,20 @@ const styles = {
   },
 };
 
-const Notification = ({ style, visible, action, close, children }) =>
-  <div
-    style={{
-      ...styles.container,
-      ...(visible ? styles.active : styles.inactive),
-      ...style,
-    }}
-    className="test-notification"
-  >
-    <div style={{ ...styles.toast, ...(styles[action] || styles.add) }}>
-      <CloseIcon style={styles.closeIcon} onClick={close} />
-      {children}
+const Notification = ({ style, visible, action, close, children, className }) =>
+  <div style={styles.wrapper} className={className}>
+    <div
+      style={{
+        ...styles.container,
+        ...(visible ? styles.active : styles.inactive),
+        ...style,
+      }}
+      className="test-notification"
+    >
+      <div style={{ ...styles.toast, ...(styles[action] || styles.add) }}>
+        <CloseIcon style={styles.closeIcon} onClick={close} />
+        {children}
+      </div>
     </div>
   </div>;
 

@@ -12,6 +12,7 @@ import AppendSetModal from '@ncigdc/components/Modals/AppendSetModal';
 import RemoveSetModal from '@ncigdc/components/Modals/RemoveSetModal';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import { theme } from '@ncigdc/theme';
+import pluralize from '@ncigdc/utils/pluralize';
 
 const enhance = compose(
   connect(({ sets }) => ({ sets })),
@@ -34,7 +35,7 @@ export default enhance(
   }) => {
     const titleType = type.replace(/^./, m => m.toUpperCase());
     const total = selectedIds.length || props.total || 0;
-    const displayType = `${type}${total > 1 ? 's' : ''}`;
+    const countAndType = pluralize(titleType, total, true);
     const filters = selectedIds.length
       ? { op: 'in', content: { field, value: selectedIds } }
       : props.filters;
@@ -63,7 +64,7 @@ export default enhance(
               },
             }}
           >
-            {total.toLocaleString()}&nbsp;{displayType}
+            {countAndType}
           </DropdownItem>
           <DropdownItem
             style={{ lineHeight: '1.5', cursor: 'pointer' }}
@@ -71,11 +72,8 @@ export default enhance(
               dispatch(
                 setModal(
                   <SaveSetModal
-                    title={
-                      selectedIds.length
-                        ? `Save ${total.toLocaleString()} ${displayType} as new set`
-                        : `Save ${titleType} Set`
-                    }
+                    title={`Save ${countAndType} as New Set`}
+                    total={total}
                     filters={filters}
                     type={type}
                     CreateSetButton={CreateSetButton}
@@ -94,7 +92,7 @@ export default enhance(
                   setModal(
                     <AppendSetModal
                       field={field}
-                      title={`Add ${total.toLocaleString()} ${displayType} to existing set`}
+                      title={`Add ${countAndType} to Existing Set`}
                       filters={filters}
                       type={type}
                       CreateSetButton={CreateSetButton}
@@ -113,7 +111,7 @@ export default enhance(
                   setModal(
                     <RemoveSetModal
                       field={field}
-                      title={`Remove ${total.toLocaleString()} ${displayType} from existing set`}
+                      title={`Remove ${countAndType} from Existing Set`}
                       filters={filters}
                       type={type}
                       RemoveFromSetButton={RemoveFromSetButton}

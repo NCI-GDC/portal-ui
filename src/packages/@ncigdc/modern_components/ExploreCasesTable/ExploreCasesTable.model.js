@@ -14,7 +14,10 @@ import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 import styled from '@ncigdc/theme/styled';
-import { createDataCategoryColumns, createSelectColumn } from './utils';
+import {
+  createDataCategoryColumns,
+  createSelectColumn,
+} from '@ncigdc/tableModels/utils';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
 import MutationsCount from '@ncigdc/components/MutationsCount';
 

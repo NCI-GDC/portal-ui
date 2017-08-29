@@ -1,5 +1,7 @@
 // @flow
 
+const localStorage = window.localStorage || {};
+
 export const AUTH =
   localStorage.REACT_APP_GDC_AUTH || process.env.REACT_APP_GDC_AUTH || '';
 export const AUTH_API = `${AUTH}/api`;

@@ -29,6 +29,7 @@ import NotFound from '@ncigdc/components/NotFound';
 import withRouter from '@ncigdc/utils/withRouter';
 import { GlobalTooltip } from '@ncigdc/uikit/Tooltip';
 
+import Venn from '@ncigdc/components/Charts/Venn';
 import styled from '@ncigdc/theme/styled';
 import { setModal } from '@ncigdc/dux/modal';
 import FirstTimeModal from '@ncigdc/components/Modals/FirstTimeModal';
@@ -113,6 +114,15 @@ const PortalContainer = ({
         children={p => <Head title={p.location.pathname.split('/')[1]} />}
       />
       <Switch>
+        <Route
+          exact
+          path="/venn"
+          component={() =>
+            <div>
+              {/* <Venn data={[1, 2]} /> */}
+              <Venn data={[1, 2, 3]} />
+            </div>}
+        />
         <Route exact path="/" component={HomeRoute} />
         <Route exact path="/cart" component={CartRoute} />
         <Route exact path="/repository" component={RepositoryRoute} />

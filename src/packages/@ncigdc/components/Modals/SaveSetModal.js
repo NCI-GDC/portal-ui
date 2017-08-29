@@ -19,6 +19,7 @@ const enhance = compose(
       filtersToName({ filters, sets }) || `All ${type}s`,
   ),
   withProps(({ sets, type }) => ({ sets: sets[type] || {} })),
+  withState('shouldCallCreateSet', 'setShouldCallCreateSet', false),
 );
 
 const SaveSetModal = ({
@@ -30,16 +31,20 @@ const SaveSetModal = ({
   dispatch,
   type,
   sets,
+  shouldCallCreateSet,
+  setShouldCallCreateSet,
 }) => {
   const existingSet = Object.entries(sets).find(([, label]) => label === input);
   return (
     <BaseModal
       title={title}
+      onKeyDown={event => event.key === 'Enter' && setShouldCallCreateSet(true)}
       extraButtons={
         <CreateSetButton
           forceCreate
           disabled={!input}
           filters={filters}
+          shouldCallCreateSet={shouldCallCreateSet}
           onComplete={setId => {
             onSaveComplete({
               dispatch,

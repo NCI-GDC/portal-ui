@@ -17,10 +17,11 @@ export default (Component: ReactClass<*>) =>
       ['location'],
       ({ location: { search }, defaultSize = 20, defaultFilters = null }) => {
         const q = parse(search);
-
+        const filters = parseFilterParam(q.filters, defaultFilters);
         return {
+          defaultFilters: filters,
           variables: {
-            filters: parseFilterParam(q.filters, defaultFilters),
+            filters,
             cases_offset: parseIntParam(q.cases_offset, 0),
             cases_size: parseIntParam(q.cases_size, defaultSize),
             cases_sort: parseJSONParam(q.cases_sort, null),

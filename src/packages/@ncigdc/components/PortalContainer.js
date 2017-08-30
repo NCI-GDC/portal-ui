@@ -2,9 +2,12 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { withState } from 'recompose';
 import { Route, Switch } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { compose, lifecycle } from 'recompose';
+
+import _ from 'lodash';
 
 import ProjectRoute from '@ncigdc/routes/ProjectRoute';
 import FileRoute from '@ncigdc/routes/FileRoute';
@@ -15,6 +18,7 @@ import ComponentsRoute from '@ncigdc/routes/ComponentsRoute';
 import GeneRoute from '@ncigdc/routes/GeneRoute';
 import AnalysisRoute from '@ncigdc/routes/AnalysisRoute';
 import SSMRoute from '@ncigdc/routes/SSMRoute';
+import ManageSetsRoute from '@ncigdc/routes/ManageSetsRoute';
 import SmartSearchRoute from '@ncigdc/routes/SmartSearchRoute';
 
 import Head from '@ncigdc/components/Head';
@@ -29,6 +33,7 @@ import NotFound from '@ncigdc/components/NotFound';
 import withRouter from '@ncigdc/utils/withRouter';
 import { GlobalTooltip } from '@ncigdc/uikit/Tooltip';
 
+import Venn from '@ncigdc/components/Charts/Venn';
 import styled from '@ncigdc/theme/styled';
 import { setModal } from '@ncigdc/dux/modal';
 import FirstTimeModal from '@ncigdc/components/Modals/FirstTimeModal';
@@ -108,11 +113,27 @@ const PortalContainer = ({
         transition: 'padding 0.25s ease',
       }}
     >
-
       <Route
         children={p => <Head title={p.location.pathname.split('/')[1]} />}
       />
       <Switch>
+        <Route
+          exact
+          path="/venn"
+          component={withState('d', 'sd', 3)(({ d, sd }) =>
+            <div style={{ marginTop: '5rem', padding: '50px' }}>
+              <Venn data={_.range(0, d)} />
+              <hr />
+
+              <input
+                type="range"
+                min="2"
+                max="20"
+                onChange={e => sd(+e.target.value)}
+              />
+            </div>,
+          )}
+        />
         <Route exact path="/" component={HomeRoute} />
         <Route exact path="/cart" component={CartRoute} />
         <Route exact path="/repository" component={RepositoryRoute} />
@@ -125,6 +146,7 @@ const PortalContainer = ({
         {CaseRoute}
         {AnnotationRoute}
         {GeneRoute}
+        {ManageSetsRoute}
         <AnalysisRoute />
         {SSMRoute}
         <Route path="/components/:component" component={ComponentsRoute} />

@@ -54,17 +54,21 @@ const section = (
             return (
               <tr key={k}>
                 <td width={250}>{k}</td>
-                <td style={{ textAlign: 'right' }}>{set1_bucket.doc_count}</td>
                 <td style={{ textAlign: 'right' }}>
-                  {(set1_bucket.doc_count / result1.hits.total * 100).toFixed(
-                    0,
-                  )}%
+                  {(set1_bucket || {}).doc_count || 0}
                 </td>
-                <td style={{ textAlign: 'right' }}>{set2_bucket.doc_count}</td>
                 <td style={{ textAlign: 'right' }}>
-                  {(set2_bucket.doc_count / result2.hits.total * 100).toFixed(
-                    0,
-                  )}%
+                  {((set1_bucket || {}).doc_count ||
+                    0 / result1.hits.total * 100)
+                    .toFixed(0)}%
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  {(set2_bucket || {}).doc_count || 0}
+                </td>
+                <td style={{ textAlign: 'right' }}>
+                  {((set2_bucket || {}).doc_count ||
+                    0 / result2.hits.total * 100)
+                    .toFixed(0)}%
                 </td>
               </tr>
             );

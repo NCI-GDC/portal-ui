@@ -51,7 +51,10 @@ async function fetchCurves(
 
 export const getDefaultCurve = memoize(
   async ({ slug, currentFilters, size }: TPropsDefault): Promise<Object> => {
-    const rawData = await fetchCurves(currentFilters && [currentFilters], size);
+    const rawData = await fetchCurves(
+      Array.isArray(currentFilters) ? currentFilters : [currentFilters],
+      size,
+    );
     const hasEnoughData = enoughData(rawData);
 
     const legend = hasEnoughData

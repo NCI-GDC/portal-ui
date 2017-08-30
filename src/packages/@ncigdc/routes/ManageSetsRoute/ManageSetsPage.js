@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
-import { map, reduce, xor, find, get } from 'lodash';
+import { map, reduce, xor, find, get, omit } from 'lodash';
 
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import styled from '@ncigdc/theme/styled';
@@ -96,7 +96,21 @@ const ManageSetsPage = ({
       })),
     ],
     [],
-  );
+  ).map(({ filters, setType, setId, ...rest }) => ({
+    filters,
+    setType,
+    setId,
+    ...rest,
+    countComponent: countComponents[setType]({
+      filters,
+      handleCountChange: count =>
+        setSetSizes({
+          ...setSizes,
+          [setId]: count,
+        }),
+    }),
+  }));
+
   const allSelected =
     selectedIds.length !== 0 && flattenedSets.length === selectedIds.length;
   const emptyOrDeprecatedSets = Object.keys(setSizes).filter(
@@ -143,7 +157,7 @@ const ManageSetsPage = ({
               {doneFetchingSetSizes &&
                 emptyOrDeprecatedSets.length > 0 &&
                 <Button
-                  onClick={() =>
+                  onClick={() => {
                     emptyOrDeprecatedSets.map(id =>
                       dispatch(
                         removeSet({
@@ -152,7 +166,9 @@ const ManageSetsPage = ({
                           id,
                         }),
                       ),
-                    )}
+                    );
+                    setSetSizes(omit(setSizes, emptyOrDeprecatedSets));
+                  }}
                   style={{ marginBottom: '1rem', marginLeft: '1rem' }}
                 >
                   Delete Empty or Deprecated
@@ -181,9 +197,19 @@ const ManageSetsPage = ({
               body={
                 <tbody>
                   {flattenedSets.map(
-                    ({ setId, setName, setType, filters, linkFilters }, i) =>
+                    (
+                      {
+                        setId,
+                        setName,
+                        setType,
+                        filters,
+                        linkFilters,
+                        countComponent,
+                      },
+                      i,
+                    ) =>
                       <Tr key={setId} index={i}>
-                        <Td key={`checkbox${i}`}>
+                        <Td key={`checkbox${i}`} style={{ width: '50px' }}>
                           <input
                             type="checkbox"
                             checked={selectedIds.includes(setId)}
@@ -194,7 +220,7 @@ const ManageSetsPage = ({
                             !get(setSizes, setId) &&
                             <Tooltip Component="Set is either empty or deprecated.">
                               <ExclamationTriangleIcon
-                                style={{ paddingLeft: '5px' }}
+                                style={{ paddingLeft: '5px', color: '#8a6d3b' }}
                               />
                             </Tooltip>}
                         </Td>
@@ -226,51 +252,48 @@ const ManageSetsPage = ({
                           />
                         </Td>
                         <Td key={`count${i}`}>
-                          <ExploreLink
-                            query={{
-                              searchTableTab: `${setType}s`,
-                              filters: linkFilters,
-                            }}
-                          >
-                            {countComponents[setType]({
-                              filters,
-                              handleCountChange: count =>
-                                setSetSizes({
-                                  ...setSizes,
-                                  [setId]: count,
-                                }),
-                            })}
-                          </ExploreLink>
-                        </Td>
-                        <Td>
-                          <Row>
-                            <DownloadButton
-                              className="test-download-set-tsv"
-                              style={{
-                                ...visualizingButton,
-                                marginLeft: '5px',
-                              }}
-                              endpoint={`${setType}s`}
-                              activeText="TSV"
-                              inactiveText="TSV"
-                              altMessage={false}
-                              setParentState={() => {}}
-                              active={false}
-                              filters={filters}
-                              extraParams={{ format: 'tsv' }}
-                              fields={downloadFields[setType]}
-                              filename={`set-${setName}-ids`}
-                            />
-                            {setType === 'case' &&
-                              <ButtonLikeRepoLink
+                          {get(setSizes, setId) > 0
+                            ? <ExploreLink
                                 query={{
-                                  searchTableTab: 'files',
+                                  searchTableTab: `${setType}s`,
                                   filters: linkFilters,
                                 }}
                               >
-                                View Files in Repository
-                              </ButtonLikeRepoLink>}
-                          </Row>
+                                {countComponent}
+                              </ExploreLink>
+                            : <span>{countComponent}</span>}
+                        </Td>
+                        <Td>
+                          {doneFetchingSetSizes &&
+                            get(setSizes, setId) > 0 &&
+                            <Row>
+                              <DownloadButton
+                                className="test-download-set-tsv"
+                                style={{
+                                  ...visualizingButton,
+                                  marginLeft: '5px',
+                                }}
+                                endpoint={`${setType}s`}
+                                activeText="TSV"
+                                inactiveText="TSV"
+                                altMessage={false}
+                                setParentState={() => {}}
+                                active={false}
+                                filters={filters}
+                                extraParams={{ format: 'tsv' }}
+                                fields={downloadFields[setType]}
+                                filename={`set-${setName}-ids`}
+                              />
+                              {setType === 'case' &&
+                                <ButtonLikeRepoLink
+                                  query={{
+                                    searchTableTab: 'files',
+                                    filters: linkFilters,
+                                  }}
+                                >
+                                  View Files in Repository
+                                </ButtonLikeRepoLink>}
+                            </Row>}
                         </Td>
                       </Tr>,
                   )}

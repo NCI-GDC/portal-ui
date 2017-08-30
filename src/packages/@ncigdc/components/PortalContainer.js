@@ -15,6 +15,7 @@ import ComponentsRoute from '@ncigdc/routes/ComponentsRoute';
 import GeneRoute from '@ncigdc/routes/GeneRoute';
 import AnalysisRoute from '@ncigdc/routes/AnalysisRoute';
 import SSMRoute from '@ncigdc/routes/SSMRoute';
+import ManageSetsRoute from '@ncigdc/routes/ManageSetsRoute';
 import SmartSearchRoute from '@ncigdc/routes/SmartSearchRoute';
 
 import Head from '@ncigdc/components/Head';
@@ -108,7 +109,6 @@ const PortalContainer = ({
         transition: 'padding 0.25s ease',
       }}
     >
-
       <Route
         children={p => <Head title={p.location.pathname.split('/')[1]} />}
       />
@@ -125,6 +125,7 @@ const PortalContainer = ({
         {CaseRoute}
         {AnnotationRoute}
         {GeneRoute}
+        {ManageSetsRoute}
         {AnalysisRoute}
         {SSMRoute}
         <Route path="/components/:component" component={ComponentsRoute} />

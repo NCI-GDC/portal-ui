@@ -1,3 +1,10 @@
+import React from 'react';
+
+import { GridIcon } from '@ncigdc/theme/icons';
+import Venn from '@ncigdc/components/Charts/Venn';
+import OncoGridWrapper from '@ncigdc/components/Oncogrid/OncogridWrapper';
+import SetOperations from './SetOperations';
+
 type TSelectedSets = {
   [string]: Array<string>,
 };
@@ -37,22 +44,23 @@ const availableAnalysis: Array<TAnalysis> = [
     },
     setInstructions: 'Select 2 or 3 of the same set type',
     setDisabledMessage: ({ sets, type }) =>
-      !['case', 'gene'].includes(type)
-        ? "This analysis can't be run with this type"
-        : (sets[type] || []).length
-          ? `You can only select one ${type} set`
+      ['case', 'gene'].filter(t => t !== type).some(t => sets[t])
+        ? 'Please choose only one type'
+        : (sets[type] || []).length > 3
+          ? `Please select two or three ${type} sets`
           : null,
     validateSets: sets => {
       const entries = Object.entries(sets);
       console.log(entries);
       return true;
     },
-    // return setO.every(([k, v]), i) => s.type === sets[i].type),
     ResultComponent: ({ sets }) => {
+      const type = ['case', 'gene'].find(t => sets[t]);
       return (
-        <div>
-          do stuff here
-        </div>
+        <SetOperations
+          type={type}
+          setIds={sets[type].map(id => `set_id:${id}`)}
+        />
       );
     },
   },

@@ -125,7 +125,7 @@ const PortalContainer = ({
         {CaseRoute}
         {AnnotationRoute}
         {GeneRoute}
-        <AnalysisRoute />
+        {AnalysisRoute}
         {SSMRoute}
         <Route path="/components/:component" component={ComponentsRoute} />
         <Route component={NotFound} />

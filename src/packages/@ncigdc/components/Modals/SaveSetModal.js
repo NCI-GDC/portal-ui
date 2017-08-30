@@ -35,6 +35,7 @@ const SaveSetModal = ({
       title={title}
       extraButtons={
         <CreateSetButton
+          forceCreate
           disabled={!input}
           filters={filters}
           onComplete={setId => {

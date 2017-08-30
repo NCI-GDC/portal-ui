@@ -28,6 +28,7 @@ const SetButtonBase = ({
   field,
   input,
   mutation,
+  forceCreate,
 }) => {
   return (
     <span>
@@ -48,8 +49,9 @@ const SetButtonBase = ({
             : false;
 
           if (
-            (setOnlyInCurrentFilters && !input.set_id) ||
-            input.set_id === get(content, 'value[0]', '')
+            !forceCreate &&
+            ((setOnlyInCurrentFilters && !input.set_id) ||
+              input.set_id === get(content, 'value[0]', ''))
           ) {
             const setId = get(content, 'value[0]', '').substring(
               'set_id:'.length,

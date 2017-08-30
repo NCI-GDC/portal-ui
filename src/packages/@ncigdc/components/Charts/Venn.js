@@ -27,6 +27,7 @@ export default compose(
     hoverColour = '#daf2fb',
     radius = 100,
     factor = 0.6,
+    getFillColor = _ => {},
   }) => {
     const cy = 0.3 * height;
     const cx = 0.5 * width;
@@ -71,7 +72,7 @@ export default compose(
         .attr('class', 'inner')
         .attr('width', width)
         .attr('height', height)
-        .style('fill', colors[0]),
+        .style('fill', d => getFillColor(d) || colors[0]),
     );
 
     data.forEach((d, i) =>
@@ -83,7 +84,7 @@ export default compose(
         .attr('clip-path', `url(#circle_${(i + 1) % data.length})`)
         .attr('width', width)
         .attr('height', height)
-        .style('fill', colors[1]),
+        .style('fill', d => getFillColor(d) || colors[1]),
     );
 
     let inner = svg
@@ -101,7 +102,7 @@ export default compose(
       .attr('clip-path', `url(#circle_${0})`)
       .attr('width', width)
       .attr('height', height)
-      .style('fill', colors[2]);
+      .style('fill', d => getFillColor(d) || colors[2]);
 
     // 2 intersections
     // svg

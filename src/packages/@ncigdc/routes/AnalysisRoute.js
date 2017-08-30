@@ -15,38 +15,31 @@ const enhance = compose(
   withRouter,
 );
 
-const AnalysisRoute = ({ hasAnalysis, query }) => {
+const AnalysisRoute = enhance(({ hasAnalysis, query }) => {
   const isDemo = ((query.analysisId || '').match(/^demo-(.*)/) || [])[1];
 
   return (
-    <Route
-      path="/analysis"
-      component={() => {
-        return (
-          <TabbedLinks
-            style={{ padding: '2rem 2.5rem' }}
-            queryParam="analysisTableTab"
-            links={[
+    <TabbedLinks
+      style={{ padding: '2rem 2.5rem' }}
+      queryParam="analysisTableTab"
+      links={[
+        {
+          id: 'launch',
+          text: 'Launch Analysis',
+          component: <CreateAnalysis />,
+        },
+        ...(hasAnalysis || isDemo
+          ? [
               {
-                id: 'launch',
-                text: 'Launch Analysis',
-                component: <CreateAnalysis />,
+                id: 'result',
+                text: 'Result',
+                component: <AnalysisResult />,
               },
-              ...(hasAnalysis || isDemo
-                ? [
-                    {
-                      id: 'result',
-                      text: 'Result',
-                      component: <AnalysisResult />,
-                    },
-                  ]
-                : []),
-            ]}
-          />
-        );
-      }}
+            ]
+          : []),
+      ]}
     />
   );
-};
+});
 
-export default enhance(AnalysisRoute);
+export default <Route path="/analysis" component={AnalysisRoute} />;

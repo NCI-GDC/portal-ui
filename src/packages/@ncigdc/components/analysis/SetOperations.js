@@ -6,6 +6,9 @@ import Venn from '@ncigdc/components/Charts/Venn';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import { ExploreCaseCount, GeneCount } from '@ncigdc/modern_components/Counts';
+import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
+import withRouter from '@ncigdc/utils/withRouter';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 
 const countComponents = {
   case: ExploreCaseCount,
@@ -15,189 +18,396 @@ const countComponents = {
 export default compose(
   connect(s => ({ sets: s.sets })),
   withState('selected', 'setSelected', new Set()),
-)(({ setIds, sets, type, selected, setSelected }) => {
+  withRouter,
+)(({ setIds, sets, type, selected, setSelected, push }) => {
   const setData = Object.entries(sets[type]).filter(([setId]) =>
     setIds.map(x => x.split(':')[1]).includes(setId),
   );
 
   const CountComponent = countComponents[type];
 
+  const filters = [
+    {
+      op: 'and',
+      content: setData.map(([setId]) => ({
+        op: 'in',
+        content: {
+          field: `${type}s.${type}_id`,
+          value: `set_id:${setId}`,
+        },
+      })),
+    },
+    {
+      op: 'and',
+      content: [
+        ...setData.slice(0, 2).map(([setId]) => ({
+          op: 'in',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: `set_id:${setId}`,
+          },
+        })),
+        {
+          op: 'exclude',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: `set_id:${setData[2][0]}`,
+          },
+        },
+      ],
+    },
+    {
+      op: 'and',
+      content: [
+        ...[setData[0], setData[2]].map(([setId]) => ({
+          op: 'in',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: `set_id:${setId}`,
+          },
+        })),
+        {
+          op: 'exclude',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: `set_id:${setData[1][0]}`,
+          },
+        },
+      ],
+    },
+    {
+      op: 'and',
+      content: [
+        ...[setData[1], setData[2]].map(([setId]) => ({
+          op: 'in',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: `set_id:${setId}`,
+          },
+        })),
+        {
+          op: 'exclude',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: `set_id:${setData[0][0]}`,
+          },
+        },
+      ],
+    },
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: `set_id:${setData[0][0]}`,
+          },
+        },
+        {
+          op: 'exclude',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: [`set_id:${setData[1][0]}`, `set_id:${setData[2][0]}`],
+          },
+        },
+      ],
+    },
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: `set_id:${setData[1][0]}`,
+          },
+        },
+        {
+          op: 'exclude',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: [`set_id:${setData[0][0]}`, `set_id:${setData[2][0]}`],
+          },
+        },
+      ],
+    },
+    {
+      op: 'and',
+      content: [
+        {
+          op: 'in',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: `set_id:${setData[2][0]}`,
+          },
+        },
+        {
+          op: 'exclude',
+          content: {
+            field: `${type}s.${type}_id`,
+            value: [`set_id:${setData[0][0]}`, `set_id:${setData[1][0]}`],
+          },
+        },
+      ],
+    },
+  ];
+
   const ops = [
     {
       op: '( S1 ∩ S2 ∩ S3 )',
       selected: selected.has(this.op),
       count: (
-        <CountComponent
-          filters={{
-            op: 'and',
-            content: setData.map(([setId]) => ({
-              op: 'in',
-              content: {
-                field: `${type}s.${type}_id`,
-                value: `set_id:${setId}`,
-              },
-            })),
-          }}
-        />
+        <CountComponent filters={filters[0]}>
+          {count =>
+            <Row>
+              <span>{count}</span>&nbsp;{count > 0 &&
+                <CreateExploreCaseSetButton
+                  filters={filters[0]}
+                  style={{ marginBottom: '2rem' }}
+                  onComplete={setId => {
+                    push({
+                      pathname: '/repository',
+                      query: {
+                        filters: stringifyJSONParam({
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                            },
+                          ],
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  View Files in Repository
+                </CreateExploreCaseSetButton>}
+            </Row>}
+        </CountComponent>
       ),
     },
     {
       op: '( S1 ∩ S2 ) − ( S3 )',
       selected: selected.has(this.op),
       count: (
-        <CountComponent
-          filters={{
-            op: 'and',
-            content: [
-              ...setData.slice(0, 2).map(([setId]) => ({
-                op: 'in',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: `set_id:${setId}`,
-                },
-              })),
-              {
-                op: 'exclude',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: `set_id:${setData[2][0]}`,
-                },
-              },
-            ],
-          }}
-        />
+        <CountComponent filters={filters[1]}>
+          {count =>
+            <Row>
+              <span>{count}</span>&nbsp;{count > 0 &&
+                <CreateExploreCaseSetButton
+                  filters={filters[1]}
+                  style={{ marginBottom: '2rem' }}
+                  onComplete={setId => {
+                    push({
+                      pathname: '/repository',
+                      query: {
+                        filters: stringifyJSONParam({
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                            },
+                          ],
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  View Files in Repository
+                </CreateExploreCaseSetButton>}
+            </Row>}
+        </CountComponent>
       ),
     },
     {
       op: '( S1 ∩ S3 ) − ( S2 )',
       selected: selected.has(this.op),
       count: (
-        <CountComponent
-          filters={{
-            op: 'and',
-            content: [
-              ...[setData[0], setData[2]].map(([setId]) => ({
-                op: 'in',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: `set_id:${setId}`,
-                },
-              })),
-              {
-                op: 'exclude',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: `set_id:${setData[1][0]}`,
-                },
-              },
-            ],
-          }}
-        />
+        <CountComponent filters={filters[2]}>
+          {count =>
+            <Row>
+              <span>{count}</span>&nbsp;{count > 0 &&
+                <CreateExploreCaseSetButton
+                  filters={filters[2]}
+                  style={{ marginBottom: '2rem' }}
+                  onComplete={setId => {
+                    push({
+                      pathname: '/repository',
+                      query: {
+                        filters: stringifyJSONParam({
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                            },
+                          ],
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  View Files in Repository
+                </CreateExploreCaseSetButton>}
+            </Row>}
+        </CountComponent>
       ),
     },
     {
       op: '( S2 ∩ S3 ) − ( S1 )',
       selected: selected.has(this.op),
       count: (
-        <CountComponent
-          filters={{
-            op: 'and',
-            content: [
-              ...[setData[1], setData[2]].map(([setId]) => ({
-                op: 'in',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: `set_id:${setId}`,
-                },
-              })),
-              {
-                op: 'exclude',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: `set_id:${setData[0][0]}`,
-                },
-              },
-            ],
-          }}
-        />
+        <CountComponent filters={filters[3]}>
+          {count =>
+            <Row>
+              <span>{count}</span>&nbsp;{count > 0 &&
+                <CreateExploreCaseSetButton
+                  filters={filters[3]}
+                  style={{ marginBottom: '2rem' }}
+                  onComplete={setId => {
+                    push({
+                      pathname: '/repository',
+                      query: {
+                        filters: stringifyJSONParam({
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                            },
+                          ],
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  View Files in Repository
+                </CreateExploreCaseSetButton>}
+            </Row>}
+        </CountComponent>
       ),
     },
     {
       op: '( S1 ) − ( S2 ∪ S3 )',
       count: (
-        <CountComponent
-          filters={{
-            op: 'and',
-            content: [
-              {
-                op: 'in',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: `set_id:${setData[0][0]}`,
-                },
-              },
-              {
-                op: 'exclude',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: [`set_id:${setData[1][0]}`, `set_id:${setData[2][0]}`],
-                },
-              },
-            ],
-          }}
-        />
+        <CountComponent filters={filters[4]}>
+          {count =>
+            <Row>
+              <span>{count}</span>&nbsp;{count > 0 &&
+                <CreateExploreCaseSetButton
+                  filters={filters[4]}
+                  style={{ marginBottom: '2rem' }}
+                  onComplete={setId => {
+                    push({
+                      pathname: '/repository',
+                      query: {
+                        filters: stringifyJSONParam({
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                            },
+                          ],
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  View Files in Repository
+                </CreateExploreCaseSetButton>}
+            </Row>}
+        </CountComponent>
       ),
     },
     {
       op: '( S2 ) − ( S1 ∪ S3 )',
       count: (
-        <CountComponent
-          filters={{
-            op: 'and',
-            content: [
-              {
-                op: 'in',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: `set_id:${setData[1][0]}`,
-                },
-              },
-              {
-                op: 'exclude',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: [`set_id:${setData[0][0]}`, `set_id:${setData[2][0]}`],
-                },
-              },
-            ],
-          }}
-        />
+        <CountComponent filters={filters[5]}>
+          {count =>
+            <Row>
+              <span>{count}</span>&nbsp;{count > 0 &&
+                <CreateExploreCaseSetButton
+                  filters={filters[5]}
+                  style={{ marginBottom: '2rem' }}
+                  onComplete={setId => {
+                    push({
+                      pathname: '/repository',
+                      query: {
+                        filters: stringifyJSONParam({
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                            },
+                          ],
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  View Files in Repository
+                </CreateExploreCaseSetButton>}
+            </Row>}
+        </CountComponent>
       ),
     },
     {
       op: '( S3 ) − ( S1 ∪ S2 )',
       count: (
-        <CountComponent
-          filters={{
-            op: 'and',
-            content: [
-              {
-                op: 'in',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: `set_id:${setData[2][0]}`,
-                },
-              },
-              {
-                op: 'exclude',
-                content: {
-                  field: `${type}s.${type}_id`,
-                  value: [`set_id:${setData[0][0]}`, `set_id:${setData[1][0]}`],
-                },
-              },
-            ],
-          }}
-        />
+        <CountComponent filters={filters[6]}>
+          {count =>
+            <Row>
+              <span>{count}</span>&nbsp;{count > 0 &&
+                <CreateExploreCaseSetButton
+                  filters={filters[6]}
+                  style={{ marginBottom: '2rem' }}
+                  onComplete={setId => {
+                    push({
+                      pathname: '/repository',
+                      query: {
+                        filters: stringifyJSONParam({
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: 'cases.case_id',
+                                value: [`set_id:${setId}`],
+                              },
+                            },
+                          ],
+                        }),
+                      },
+                    });
+                  }}
+                >
+                  View Files in Repository
+                </CreateExploreCaseSetButton>}
+            </Row>}
+        </CountComponent>
       ),
     },
   ];
@@ -259,7 +469,6 @@ export default compose(
                   title: '# Items',
                   style: { textAlign: 'right' },
                 },
-                { key: 'actions', title: 'Actions' },
               ]}
             />
           </Column>

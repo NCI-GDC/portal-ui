@@ -6,7 +6,9 @@ import { compose, withProps } from 'recompose';
 export default compose(
   withProps(({ viewer, path }) => {
     return {
-      count: get(viewer, path, 0).toLocaleString(),
+      count: get(viewer, path, 0),
     };
   }),
-)(({ count }) => <span>{count}</span>);
+)(({ count, children }) =>
+  <span>{children ? children(count) : count.toLocaleString()}</span>,
+);

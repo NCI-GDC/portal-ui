@@ -1,8 +1,5 @@
 import React from 'react';
-
-import { GridIcon } from '@ncigdc/theme/icons';
 import Venn from '@ncigdc/components/Charts/Venn';
-import OncoGridWrapper from '@ncigdc/components/Oncogrid/OncogridWrapper';
 import SetOperations from './SetOperations';
 
 type TSelectedSets = {

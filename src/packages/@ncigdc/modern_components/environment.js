@@ -3,6 +3,7 @@
 import urlJoin from 'url-join';
 import { Environment, Network, RecordSource, Store } from 'relay-runtime';
 import md5 from 'blueimp-md5';
+import { API } from '@ncigdc/utils/constants';
 
 const source = new RecordSource();
 const store = new Store(source);
@@ -22,16 +23,13 @@ function fetchQuery(operation, variables, cacheConfig) {
     return Promise.resolve(simpleCache[hash]);
   }
 
-  return fetch(
-    urlJoin(process.env.REACT_APP_API, `graphql/${componentName}?hash=${hash}`),
-    {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body,
+  return fetch(urlJoin(API, `graphql/${componentName}?hash=${hash}`), {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
     },
-  )
+    body,
+  })
     .then(response => response.json())
     .then(json => {
       simpleCache[hash] = json;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import _ from 'lodash';
 import Venn from '@ncigdc/components/Charts/Venn';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
@@ -17,6 +18,110 @@ export default compose(
   const setData = Object.entries(sets[type]).filter(([setId]) =>
     setIds.map(x => x.split(':')[1]).includes(setId),
   );
+
+  const CountComponent = countComponents[type];
+
+  const ops = [
+    {
+      op: '( S1 ∩ S2 ∩ S3 )',
+      count: (
+        <CountComponent
+          filters={{
+            op: 'and',
+            content: setData.map(([setId]) => ({
+              field: `${type}s.${type}_id`,
+              value: `set_id:${setId}`,
+            })),
+          }}
+        />
+      ),
+    },
+    // {
+    //   op: '( S1 ∩ S2 ) − ( S3 )',
+    //   count: (
+    //     <CountComponent
+    //       filters={{
+    //         op: '=',
+    //         content: {
+    //           field: `${type}s.${type}_id`,
+    //           value: `set_id:${setId}`,
+    //         },
+    //       }}
+    //     />
+    //   ),
+    // },
+    // {
+    //   op: '( S1 ∩ S3 ) − ( S2 )',
+    //   count: (
+    //     <CountComponent
+    //       filters={{
+    //         op: '=',
+    //         content: {
+    //           field: `${type}s.${type}_id`,
+    //           value: `set_id:${setId}`,
+    //         },
+    //       }}
+    //     />
+    //   ),
+    // },
+    // {
+    //   op: '( S2 ∩ S3 ) − ( S1 )',
+    //   count: (
+    //     <CountComponent
+    //       filters={{
+    //         op: '=',
+    //         content: {
+    //           field: `${type}s.${type}_id`,
+    //           value: `set_id:${setId}`,
+    //         },
+    //       }}
+    //     />
+    //   ),
+    // },
+    // {
+    //   op: '( S1 ) − ( S2 ∪ S3 )',
+    //   count: (
+    //     <CountComponent
+    //       filters={{
+    //         op: '=',
+    //         content: {
+    //           field: `${type}s.${type}_id`,
+    //           value: `set_id:${setId}`,
+    //         },
+    //       }}
+    //     />
+    //   ),
+    // },
+    // {
+    //   op: '( S2 ) − ( S1 ∪ S3 )',
+    //   count: (
+    //     <CountComponent
+    //       filters={{
+    //         op: '=',
+    //         content: {
+    //           field: `${type}s.${type}_id`,
+    //           value: `set_id:${setId}`,
+    //         },
+    //       }}
+    //     />
+    //   ),
+    // },
+    // {
+    //   op: '( S3 ) − ( S1 ∪ S2 )',
+    //   count: (
+    //     <CountComponent
+    //       filters={{
+    //         op: '=',
+    //         content: {
+    //           field: `${type}s.${type}_id`,
+    //           value: `set_id:${setId}`,
+    //         },
+    //       }}
+    //     />
+    //   ),
+    // },
+  ];
+
   return (
     <div>
       <div style={{ fontSize: 20 }}>Set Operations</div>
@@ -28,10 +133,9 @@ export default compose(
       <Column>
         <Row>
           <Venn data={setIds} />
-          <Column>
+          <Column spacing="2rem">
             <EntityPageHorizontalTable
               data={setData.map(([setId, label], i) => {
-                const CountComponent = countComponents[type];
                 const id = `set-table-${type}-${setId}-select`;
                 return {
                   id,
@@ -66,6 +170,19 @@ export default compose(
                 { key: 'type', title: 'Item Type' },
               ]}
             />
+            {/* <EntityPageHorizontalTable
+              data={ops}
+              headings={[
+                { key: 'select', title: 'Select' },
+                { key: 'op', title: 'Set Operation' },
+                {
+                  key: 'count',
+                  title: '# Items',
+                  style: { textAlign: 'right' },
+                },
+                { key: 'actions', title: 'Actions' },
+              ]}
+            /> */}
           </Column>
         </Row>
       </Column>

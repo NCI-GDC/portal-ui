@@ -2,6 +2,7 @@ import React from 'react';
 
 import { GridIcon } from '@ncigdc/theme/icons';
 import OncoGridWrapper from '@ncigdc/components/Oncogrid/OncogridWrapper';
+import CohortComparison from '@ncigdc/modern_components/CohortComparison';
 
 type TSelectedSets = {
   [string]: Array<string>,
@@ -67,6 +68,40 @@ const availableAnalysis: Array<TAnalysis> = [
               },
             ],
           }}
+        />
+      );
+    },
+  },
+  {
+    type: 'comparison',
+    title: 'Cohort Comparison',
+    Icon: GridIcon,
+    description: 'Cohort Comparison.',
+    demoData: {
+      id: 'demo-comparison',
+      sets: { case: ['AV4vM4A6k-Uw42heedhg', 'AV4vM8MJk-Uw42heedhh'] }, // TODO: setIds will change, need way to generate or store these.
+      type: 'comparison',
+      created: new Date().toISOString(),
+    },
+    setInstructions: 'Select 2 case sets',
+    setDisabledMessage: ({ sets, type }) =>
+      !['case'].includes(type)
+        ? "This analysis can't be run with this type"
+        : (sets[type] || []).length >= 2
+          ? `You can only select two ${type} set`
+          : null,
+    validateSets: sets =>
+      ['case'].every((t: any) => (sets[t] || []).length === 2),
+    ResultComponent: ({ sets }) => {
+      return (
+        <CohortComparison
+          facets={[
+            'demographic.gender',
+            'diagnoses.vital_status',
+            'demographic.race',
+          ]}
+          set1={sets.case[0]}
+          set2={sets.case[1]}
         />
       );
     },

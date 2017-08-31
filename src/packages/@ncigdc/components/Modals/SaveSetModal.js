@@ -5,9 +5,10 @@ import { connect } from 'react-redux';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { addSet, replaceSet } from '@ncigdc/dux/sets';
-import { setModal } from '@ncigdc/dux/modal';
 import filtersToName from '@ncigdc/utils/filtersToName';
 import WarningBox from '@ncigdc/uikit/WarningBox';
+
+import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
   connect(({ sets }) => ({ sets })),
@@ -40,7 +41,11 @@ const SaveSetModal = ({
           disabled={!input}
           filters={filters}
           onComplete={setId => {
-            dispatch(setModal(null));
+            onSaveComplete({
+              dispatch,
+              label: input,
+            });
+
             if (existingSet) {
               dispatch(
                 replaceSet({ type, oldId: existingSet[0], newId: setId }),

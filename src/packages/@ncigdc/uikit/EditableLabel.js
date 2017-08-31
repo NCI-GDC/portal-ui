@@ -14,21 +14,26 @@ export default compose(
     handleSave: value => console.log(value),
   }),
   withHandlers({
+    handleCancel: ({ text, setIsEditing, setValue }) => () => {
+      setIsEditing(false);
+      setValue(text);
+    },
+  }),
+  withHandlers({
     toggleEditingAndSave: ({
       isEditing,
       setIsEditing,
       value,
       text,
       handleSave,
+      handleCancel,
     }) => () => {
-      setIsEditing(!isEditing);
-      if (isEditing && value !== text) {
-        handleSave(value);
+      if (value.length !== 0) {
+        setIsEditing(!isEditing);
+        if (isEditing && value !== text) {
+          handleSave(value);
+        }
       }
-    },
-    handleCancel: ({ text, setIsEditing, setValue }) => () => {
-      setIsEditing(false);
-      setValue(text);
     },
   }),
 )(
@@ -58,7 +63,10 @@ export default compose(
               type="text"
               autoFocus
             />
-            <Button onClick={toggleEditingAndSave}>
+            <Button
+              onClick={toggleEditingAndSave}
+              disabled={value.length === 0}
+            >
               Save
             </Button>
             <Button onClick={handleCancel}>

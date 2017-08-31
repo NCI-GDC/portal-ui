@@ -6,9 +6,10 @@ import { stringify } from 'query-string';
 
 import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { replaceSet } from '@ncigdc/dux/sets';
-import { setModal } from '@ncigdc/dux/modal';
 import SetTable from '@ncigdc/components/SetTable';
 import withRouter from '@ncigdc/utils/withRouter';
+
+import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
   withState('selected', 'setSelected', ''),
@@ -47,7 +48,12 @@ const RemoveSetModal = ({
               })}`,
             });
           }
-          dispatch(setModal(null));
+
+          onSaveComplete({
+            dispatch,
+            label: sets[selected],
+          });
+
           dispatch(replaceSet({ type, oldId: selected, newId: setId }));
         }}
       >

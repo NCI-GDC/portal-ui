@@ -6,6 +6,7 @@ type TProps = {|
   children?: mixed,
   style?: Object,
   activeStyle?: Object,
+  onClick?: Function,
 |};
 
 export default ({ children, ...props }: TProps) =>

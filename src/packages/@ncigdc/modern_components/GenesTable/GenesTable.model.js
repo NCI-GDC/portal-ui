@@ -18,9 +18,9 @@ import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
 import Button from '@ncigdc/uikit/Button';
 import styled from '@ncigdc/theme/styled';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import { createSelectColumn } from '@ncigdc/tableModels/utils';
 
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
-import { createSelectColumn } from '../../tableModels/utils';
 
 const colors = scaleOrdinal(schemeCategory10);
 

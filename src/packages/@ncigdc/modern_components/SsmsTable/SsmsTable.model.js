@@ -21,10 +21,12 @@ import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
 import Button from '@ncigdc/uikit/Button';
 import { truncateAfterMarker } from '@ncigdc/utils/string';
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
+import { createSelectColumn } from '@ncigdc/tableModels/utils';
 
 const colors = scaleOrdinal(schemeCategory10);
 
 const SsmsTableModel = [
+  createSelectColumn({ idField: 'ssm_id' }),
   {
     name: 'Mutation ID',
     id: 'mutation_uuid',

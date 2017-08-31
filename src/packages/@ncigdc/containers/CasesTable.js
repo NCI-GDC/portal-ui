@@ -74,7 +74,7 @@ export const SearchTable = compose(
               .map(x =>
                 <x.th
                   key={x.id}
-                  nodes={hits.edges}
+                  nodes={hits.edges.map(e => e.node)}
                   selectedIds={selectedIds}
                   setSelectedIds={setSelectedIds}
                 />,

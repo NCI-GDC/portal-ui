@@ -2,13 +2,71 @@
 
 import React from 'react';
 import { Route } from 'react-router-dom';
+import { uniq, omit } from 'lodash';
+import moment from 'moment';
+import { parse } from 'query-string';
+import SearchIcon from 'react-icons/lib/fa/search';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import FileName from '@ncigdc/modern_components/FileName';
+import ShoppingCartIcon from '@ncigdc/theme/icons/ShoppingCart';
+import { Row, Column } from '@ncigdc/uikit/Flex';
+import formatFileSize from '@ncigdc/utils/formatFileSize';
+import EntityPageVerticalTable from '@ncigdc/components/EntityPageVerticalTable';
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import BAMSlicingButton from '@ncigdc/components/BAMSlicingButton';
+import ProjectLink from '@ncigdc/components/Links/ProjectLink';
+import AnnotationLink from '@ncigdc/components/Links/AnnotationLink';
+import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
+import CaseLink from '@ncigdc/components/Links/CaseLink';
+import FileLink from '@ncigdc/components/Links/FileLink';
+import Hidden from '@ncigdc/components/Hidden';
+import { toggleFilesInCart } from '@ncigdc/dux/cart';
+import Button from '@ncigdc/uikit/Button';
+import AddToCartButtonSingle from '@ncigdc/components/AddToCartButtonSingle';
+import DownloadFile from '@ncigdc/components/DownloadFile';
+import { RepositoryFilesLink } from '@ncigdc/components/Links/RepositoryLink';
+import { makeFilter } from '@ncigdc/utils/filters';
+import LocalPaginationTable from '@ncigdc/components/LocalPaginationTable';
+
+const paginationPrefix = 'assocTable';
+
+const getAnnotationsCount = (annotations, entity) => {
+  const filteredAnnotations = annotations.hits.edges.filter(
+    ({ node: a }) => a.entity_id === entity.entity_id,
+  );
+
+  if (filteredAnnotations.length === 1) {
+    return (
+      <AnnotationLink uuid={filteredAnnotations[0].node.annotation_id}>
+        {filteredAnnotations.length}
+      </AnnotationLink>
+    );
+  } else if (filteredAnnotations.length > 1) {
+    return (
+      <AnnotationsLink
+        query={{
+          filters: makeFilter([
+            { field: 'annotations.entity_id', value: entity.entity_id },
+          ]),
+        }}
+      >
+        {filteredAnnotations.length}
+      </AnnotationsLink>
+    );
+  }
+
+  return filteredAnnotations.length.toLocaleString();
+};
 
 export default (
   <Route
     path="/files/:id"
-    component={({ match, fileId = match.params.id, location }) => {
+    component={({
+      match,
+      fileId = match.params.id,
+      location,
+      query = parse(location.serach),
+    }) => {
       const searchTerm = query[`${paginationPrefix}_search`];
       const associatedEntities = node.associated_entities.hits.edges;
       const filteredAE = (searchTerm

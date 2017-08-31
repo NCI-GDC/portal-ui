@@ -1,0 +1,311 @@
+import React from 'react';
+import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
+import { theme } from '@ncigdc/theme';
+import { Row } from '@ncigdc/uikit/Flex';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import { setModal } from '@ncigdc/dux/modal';
+import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
+import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
+import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
+import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
+
+const CreateSetButtonMap = {
+  case: CreateExploreCaseSetButton,
+  ssm: CreateExploreSsmSetButton,
+  gene: CreateExploreGeneSetButton,
+};
+
+export default ({
+  selected,
+  toggle,
+  push,
+  ops,
+  CountComponent,
+  selectedFilters,
+  type,
+  dispatch,
+  CreateSetButton = CreateSetButtonMap[type],
+}) =>
+  <Table
+    headings={[
+      { key: 'selected', title: 'Select' },
+      { key: 'op', title: 'Set Operation' },
+      {
+        key: 'count',
+        title: '# Items',
+        style: { textAlign: 'right' },
+      },
+    ].map(th => <Th key={th.key}>{th.title}</Th>)}
+    body={
+      <tbody>
+        {ops.map((op, i) =>
+          <Tr
+            key={op.op}
+            index={i}
+            style={{
+              ...(selected.has(op.op) && {
+                backgroundColor: theme.tableHighlight,
+              }),
+            }}
+          >
+            <Td>
+              <input
+                type="checkbox"
+                checked={selected.has(op.op)}
+                onChange={e => toggle(op.op)}
+              />
+            </Td>
+            <Td>
+              {op.op}
+            </Td>
+            <Td>
+              <CountComponent filters={op.filters}>
+                {count =>
+                  <Row style={{ alignItems: 'center' }}>
+                    <span>
+                      {count === 0
+                        ? 0
+                        : <CreateSetButton
+                            filters={op.filters}
+                            onComplete={setId => {
+                              push({
+                                pathname: '/exploration',
+                                query: {
+                                  filters: stringifyJSONParam({
+                                    op: 'AND',
+                                    content: [
+                                      {
+                                        op: 'IN',
+                                        content: {
+                                          field: `${type}s.${type}_id`,
+                                          value: [`set_id:${setId}`],
+                                        },
+                                      },
+                                    ],
+                                  }),
+                                },
+                              });
+                            }}
+                            Component={p =>
+                              <Tooltip
+                                Component={`View ${type} set in exploration`}
+                              >
+                                <span
+                                  {...p}
+                                  style={{
+                                    cursor: 'pointer',
+                                    color: 'rgb(43, 118, 154)',
+                                    textDecoration: 'underline',
+                                  }}
+                                >
+                                  {count}
+                                </span>
+                              </Tooltip>}
+                          />}
+                    </span>&nbsp;{count > 0 &&
+                      <span style={{ marginLeft: 'auto' }}>
+                        <Tooltip Component="Save selection as new set">
+                          <i
+                            style={{
+                              cursor: 'pointer',
+                              color: 'rgb(37, 94, 153)',
+                            }}
+                            className="fa fa-save"
+                            onClick={() => {
+                              dispatch(
+                                setModal(
+                                  <SaveSetModal
+                                    title={`Save selection as new set`}
+                                    total={count}
+                                    filters={op.filters}
+                                    type={type}
+                                    displayType={type}
+                                    CreateSetButton={CreateSetButton}
+                                  />,
+                                ),
+                              );
+                            }}
+                          />
+                        </Tooltip>
+                        &nbsp;
+                        <CreateSetButton
+                          filters={op.filters}
+                          onComplete={setId => {
+                            push({
+                              pathname: '/repository',
+                              query: {
+                                filters: stringifyJSONParam({
+                                  op: 'AND',
+                                  content: [
+                                    {
+                                      op: 'IN',
+                                      content: {
+                                        field: `${type}s.${type}_id`,
+                                        value: [`set_id:${setId}`],
+                                      },
+                                    },
+                                  ],
+                                }),
+                              },
+                            });
+                          }}
+                          Component={p =>
+                            <Tooltip Component="View files in repository">
+                              <i
+                                className="fa fa-database"
+                                {...p}
+                                style={{
+                                  cursor: 'pointer',
+                                  color: 'rgb(37, 94, 153)',
+                                }}
+                              />
+                            </Tooltip>}
+                        />
+
+                      </span>}
+                  </Row>}
+              </CountComponent>
+            </Td>
+          </Tr>,
+        )}
+        <Tr
+          style={{
+            borderTop: '1px solid black',
+            borderBottom: '1px solid black',
+          }}
+        >
+          <Td colSpan="2"><b>Union of selected sets</b></Td>
+          <Td style={{ textAlign: 'right' }}>
+            {selected.size === 0
+              ? <Row>
+                  <span>0</span>                         {' '}
+                  <span
+                    style={{
+                      marginLeft: 'auto',
+                      opacity: 0,
+                    }}
+                  >
+                    <i
+                      className="fa fa-database"
+                      style={{
+                        cursor: 'pointer',
+                        color: 'rgb(37, 94, 153)',
+                      }}
+                    />
+                  </span>
+                </Row>
+              : <CountComponent filters={selectedFilters}>
+                  {count =>
+                    count === 0
+                      ? 0
+                      : <Row>
+                          <CreateSetButton
+                            filters={selectedFilters}
+                            onComplete={setId => {
+                              push({
+                                pathname: '/exploration',
+                                query: {
+                                  filters: stringifyJSONParam({
+                                    op: 'AND',
+                                    content: [
+                                      {
+                                        op: 'IN',
+                                        content: {
+                                          field: `${type}s.${type}_id`,
+                                          value: [`set_id:${setId}`],
+                                        },
+                                      },
+                                    ],
+                                  }),
+                                },
+                              });
+                            }}
+                            Component={p =>
+                              <Tooltip
+                                Component={`View ${type} set in exploration`}
+                              >
+                                <span
+                                  {...p}
+                                  style={{
+                                    cursor: 'pointer',
+                                    color: 'rgb(43, 118, 154)',
+                                    textDecoration: 'underline',
+                                  }}
+                                >
+                                  {count}
+                                </span>
+                              </Tooltip>}
+                          />
+                          <span
+                            style={{
+                              marginLeft: 'auto',
+                              opacity: selected.size && count ? 1 : 0,
+                            }}
+                          >
+                            {' '}                      {' '}
+                            <Tooltip Component="Save selection as new set">
+                              <i
+                                style={{
+                                  cursor: 'pointer',
+                                  color: 'rgb(37, 94, 153)',
+                                }}
+                                className="fa fa-save"
+                                onClick={() => {
+                                  dispatch(
+                                    setModal(
+                                      <SaveSetModal
+                                        title={`Save selection as new set`}
+                                        total={count}
+                                        filters={selectedFilters}
+                                        type={type}
+                                        displayType={type}
+                                        CreateSetButton={CreateSetButton}
+                                      />,
+                                    ),
+                                  );
+                                }}
+                              />
+                            </Tooltip>
+                            &nbsp;
+                            <CreateSetButton
+                              filters={selectedFilters}
+                              onComplete={setId => {
+                                push({
+                                  pathname: '/repository',
+                                  query: {
+                                    filters: stringifyJSONParam({
+                                      op: 'AND',
+                                      content: [
+                                        {
+                                          op: 'IN',
+                                          content: {
+                                            field: `${type}s.${type}_id`,
+                                            value: [`set_id:${setId}`],
+                                          },
+                                        },
+                                      ],
+                                    }),
+                                  },
+                                });
+                              }}
+                              Component={p =>
+                                <Tooltip Component="View files in repository">
+                                  <i
+                                    className="fa fa-database"
+                                    {...p}
+                                    style={{
+                                      cursor: 'pointer',
+                                      color: 'rgb(37, 94, 153)',
+                                    }}
+                                  />
+                                </Tooltip>}
+                            />
+                          </span>
+                        </Row>}
+                </CountComponent>}
+          </Td>
+        </Tr>
+      </tbody>
+    }
+  />;

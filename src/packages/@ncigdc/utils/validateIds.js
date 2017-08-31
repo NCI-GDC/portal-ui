@@ -40,6 +40,14 @@ export const GENE_ID_FIELDS = Object.keys(GENE_ID_FIELD_DISPLAY);
 export const geneMap = {};
 export const validateGenes = validate(GENE_ID_FIELDS, geneMap, 'gene', 'genes');
 
+export const SSM_ID_FIELD_DISPLAY = {
+  ssm_id: 'Mutation UUID',
+  genomic_dna_change: 'DNA Change',
+};
+export const SSM_ID_FIELDS = Object.keys(SSM_ID_FIELD_DISPLAY);
+export const ssmMap = {};
+export const validateSsms = validate(SSM_ID_FIELDS, ssmMap, 'ssm', 'ssms');
+
 export const CASE_ID_FIELD_DISPLAY = {
   case_id: 'Case UUID',
   submitter_id: 'Case ID',

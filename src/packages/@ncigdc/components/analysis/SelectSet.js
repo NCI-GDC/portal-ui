@@ -6,16 +6,11 @@ import { xor } from 'lodash';
 
 import { Row } from '@ncigdc/uikit/Flex';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import { ExploreCaseCount, GeneCount } from '@ncigdc/modern_components/Counts';
+import countComponents from '@ncigdc/modern_components/Counts';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import Button from '@ncigdc/uikit/Button';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import { theme } from '@ncigdc/theme/index';
-
-const countComponents = {
-  case: ExploreCaseCount,
-  gene: GeneCount,
-};
 
 type TProps = {
   sets: {},

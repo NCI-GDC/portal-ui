@@ -12,10 +12,7 @@ import { visualizingButton, buttonLike } from '@ncigdc/theme/mixins';
 import { addSet, removeSet, updateSet } from '@ncigdc/dux/sets';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
-import {
-  RepositoryCaseCount,
-  GeneCount,
-} from '@ncigdc/modern_components/Counts';
+import countComponents from '@ncigdc/modern_components/Counts';
 import { Column, Row } from '@ncigdc/uikit/Flex';
 import Heading from '@ncigdc/uikit/Heading';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
@@ -28,19 +25,16 @@ import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
 
 import DownloadButton from '@ncigdc/components/DownloadButton';
 
-const countComponents = {
-  case: RepositoryCaseCount,
-  gene: GeneCount,
-};
-
 const fields = {
   case: 'cases.case_id',
   gene: 'genes.gene_id',
+  ssm: 'ssms.ssm_id',
 };
 
 const downloadFields = {
   case: ['submitter_id', 'project.project_id', 'case_id'],
   gene: ['symbol', 'gene_id'],
+  ssm: ['genomic_dna_change', 'ssm_id'],
 };
 
 const enhance = compose(

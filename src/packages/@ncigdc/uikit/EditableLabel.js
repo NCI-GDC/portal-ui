@@ -6,6 +6,7 @@ import Input from '@ncigdc/uikit/Form/Input';
 import Pencil from '@ncigdc/theme/icons/Pencil';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 
 export default compose(
   withState('isEditing', 'setIsEditing', false),
@@ -48,9 +49,15 @@ export default compose(
   }) =>
     <div>
       {isEditing
-        ? <Row style={{ justifyContent: 'space-between' }}>
+        ? <Row
+            style={{ justifyContent: 'space-between', alignItems: 'center' }}
+          >
             <Input
-              style={{ width: '80%' }}
+              style={{
+                width: '300px',
+                borderRadius: '4px',
+                transition: 'all 0.2s ease',
+              }}
               value={value}
               onChange={e => setValue(e.target.value)}
               onKeyDown={e => {
@@ -66,10 +73,13 @@ export default compose(
             <Button
               onClick={toggleEditingAndSave}
               disabled={value.length === 0}
+              style={{
+                ...visualizingButton,
+              }}
             >
               Save
             </Button>
-            <Button onClick={handleCancel}>
+            <Button onClick={handleCancel} style={visualizingButton}>
               Cancel
             </Button>
           </Row>

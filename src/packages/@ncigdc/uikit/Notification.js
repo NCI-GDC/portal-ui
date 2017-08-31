@@ -72,12 +72,20 @@ const styles = {
   },
 };
 
-const Notification = ({ style, visible, action, close, children, className }) =>
+const Notification = ({
+  style,
+  visible,
+  action,
+  close,
+  closed,
+  children,
+  className,
+}) =>
   <div style={styles.wrapper} className={className}>
     <div
       style={{
         ...styles.container,
-        ...(visible ? styles.active : styles.inactive),
+        ...(visible && !closed ? styles.active : styles.inactive),
         ...style,
       }}
       className="test-notification"

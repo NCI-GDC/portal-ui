@@ -4,13 +4,9 @@ import { connect } from 'react-redux';
 import { withProps, compose } from 'recompose';
 
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
-import { ExploreCaseCount, GeneCount } from '@ncigdc/modern_components/Counts';
+import countComponents from '@ncigdc/modern_components/Counts';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 
-const countComponents = {
-  case: ExploreCaseCount,
-  gene: GeneCount,
-};
 type TProps = {
   sets: {},
   setSelected: Function,

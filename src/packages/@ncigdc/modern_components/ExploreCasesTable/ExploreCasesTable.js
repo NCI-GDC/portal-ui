@@ -98,7 +98,7 @@ export default compose(
               .map(x =>
                 <x.th
                   key={x.id}
-                  nodes={cases.hits.edges}
+                  nodes={cases.hits.edges.map(e => e.node)}
                   selectedIds={selectedIds}
                   setSelectedIds={setSelectedIds}
                 />,

@@ -116,7 +116,7 @@ export default compose(
               <x.th
                 key={x.id}
                 context={context}
-                nodes={data}
+                nodes={data.map(e => e.node)}
                 selectedIds={selectedIds}
                 setSelectedIds={setSelectedIds}
               />,

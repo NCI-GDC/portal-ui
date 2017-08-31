@@ -13,6 +13,8 @@ import type { TBucket } from '@ncigdc/components/Aggregations/types';
 import { withTheme } from '@ncigdc/theme';
 import escapeForRelay from '@ncigdc/utils/escapeForRelay';
 import NotMissingFacet from '@ncigdc/components/Aggregations/NotMissingFacet';
+import UploadSetButton from '@ncigdc/components/UploadSetButton';
+import { UploadSsmSet } from '@ncigdc/components/Modals/UploadSet';
 
 const presetFacets: Array<{
   title: string,
@@ -128,8 +130,23 @@ export const SSMAggregationsComponent = compose(
       hits={props.suggestions}
       setAutocomplete={props.setAutocomplete}
       dropdownItem={x => <div style={{ fontWeight: 'bold' }}>{x.ssm_id}</div>}
-      style={{ borderBottom: `1px solid ${props.theme.greyScale5}` }}
     />
+    <UploadSetButton
+      type="ssm"
+      style={{
+        width: '100%',
+        borderBottom: `1px solid ${props.theme.greyScale5}`,
+        padding: '0 1.2rem 1rem',
+      }}
+      UploadModal={UploadSsmSet}
+      defaultQuery={{
+        pathname: '/exploration',
+        query: { searchTableTab: 'ssms' },
+      }}
+      idField="ssms.ssm_id"
+    >
+      Upload Ssm Set
+    </UploadSetButton>
     {presetFacets
       .filter(
         ({ full }) =>

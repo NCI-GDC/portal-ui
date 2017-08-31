@@ -1,0 +1,194 @@
+import React from 'react';
+import { withPropsOnChange, compose } from 'recompose';
+
+import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
+import {
+  getIds,
+  ssmMap,
+  SSM_ID_FIELDS,
+  SSM_ID_FIELD_DISPLAY,
+} from '@ncigdc/utils/validateIds';
+import Button from '@ncigdc/uikit/Button';
+import Row from '@ncigdc/uikit/Flex/Row';
+import saveFile from '@ncigdc/utils/filesaver';
+import toTsvString from '@ncigdc/utils/toTsvString';
+import { visualizingButton } from '@ncigdc/theme/mixins';
+import { theme } from '@ncigdc/theme';
+import TabbedLinks from '@ncigdc/components/TabbedLinks';
+
+import Base from './Base';
+
+const enhance = compose(
+  Base(),
+  withPropsOnChange(['unmatched'], ({ unmatched }) => {
+    return {
+      unmatched: unmatched.map(ssm => ({ submitted: ssm })),
+    };
+  }),
+  withPropsOnChange(['matched'], ({ matched }) => {
+    const submittedHeaders = [];
+    const matchedSsm = Object.entries(
+      matched.reduce((acc, ssm) => {
+        acc[ssmMap[ssm.toUpperCase()].ssm_id] = (acc[
+          ssmMap[ssm.toUpperCase()].ssm_id
+        ] || [])
+          .concat(ssm);
+        return acc;
+      }, {}),
+    )
+      .map(([ssmId, submitted]) => {
+        console.log(ssmMap);
+        const ssmData = ssmMap[ssmId.toUpperCase()];
+        var temp = SSM_ID_FIELDS.map((idField, i) => {
+          const value = getIds(ssmData, idField).filter(v =>
+            submitted.includes(v.toUpperCase()),
+          )[0];
+
+          if (value) {
+            submittedHeaders[i] = idField;
+            return value;
+          } else {
+            return '';
+          }
+        });
+
+        return {
+          submitted: temp,
+          mapped: [ssmId],
+        };
+      })
+      .map(row => ({
+        ...row,
+        submitted: row.submitted.filter((s, i) => submittedHeaders[i]),
+      }));
+
+    return {
+      matchedSsm,
+      submittedHeaders: submittedHeaders
+        .filter(Boolean)
+        .map(h => SSM_ID_FIELD_DISPLAY[h]),
+    };
+  }),
+);
+
+export default enhance(
+  ({ matched, matchedSsm, unmatched, submittedHeaders, ...props }) => {
+    const from = matched.length;
+    const to = matchedSsm.length;
+
+    return (
+      <TabbedLinks
+        {...props}
+        queryParam="uploadSsmTab"
+        links={[
+          {
+            id: 'matched',
+            text: `Matched (${from})`,
+            component: (
+              <div>
+                <Row
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    margin: '1rem',
+                  }}
+                >
+                  <div>
+                    {from} submitted ssm identifier{from > 1 ? 's' : ''}{' '}
+                    mapped to{' '}
+                    {to} unique GDC ssm{to > 1 ? 's' : ''}
+                  </div>
+                  <Button
+                    style={{ ...visualizingButton }}
+                    disabled={!matchedSsm.length}
+                    onClick={() =>
+                      saveFile(
+                        toTsvString(
+                          matchedSsm.map(item => ({
+                            ...item.submitted.reduce(
+                              (acc, field, i) =>
+                                Object.assign(acc, {
+                                  [`submitted${submittedHeaders[i]}`]: field,
+                                }),
+                              {},
+                            ),
+                            mappedSsmId: item.mapped[0],
+                          })),
+                        ),
+                        'TSV',
+                        `matched-ssm-list.tsv`,
+                      )}
+                  >
+                    TSV
+                  </Button>
+                </Row>
+                <EntityPageHorizontalTable
+                  dividerStyle={{
+                    borderLeft: `1px solid ${theme.greyScale3}`,
+                  }}
+                  data={matchedSsm}
+                  headings={[
+                    {
+                      key: 'submitted',
+                      title: 'Submitted Ssm Identifier',
+                      subheadings: submittedHeaders,
+                      thStyle: { textAlign: 'center' },
+                    },
+                    {
+                      key: 'mapped',
+                      title: 'Mapped To',
+                      subheadings: ['GDC Ssm ID'],
+                      thStyle: { textAlign: 'center' },
+                    },
+                  ]}
+                />
+              </div>
+            ),
+          },
+          {
+            id: 'unmatched',
+            text: `Unmatched (${unmatched.length})`,
+            component: (
+              <div>
+                <Row
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    margin: '1rem',
+                  }}
+                >
+                  <div>
+                    {unmatched.length} submitted ssm identifier{unmatched.length > 1 ? 's' : ''}{' '}
+                    not recognized
+                  </div>
+                  <Button
+                    style={{ ...visualizingButton }}
+                    disabled={!unmatched.length}
+                    onClick={() =>
+                      saveFile(
+                        toTsvString(unmatched),
+                        'TSV',
+                        `unmatched-ssm-list.tsv`,
+                      )}
+                  >
+                    TSV
+                  </Button>
+                </Row>
+                <EntityPageHorizontalTable
+                  data={unmatched}
+                  headings={[
+                    {
+                      key: 'submitted',
+                      title: 'Submitted Ssm Identifier',
+                      thStyle: { textAlign: 'center' },
+                    },
+                  ]}
+                />
+              </div>
+            ),
+          },
+        ]}
+      />
+    );
+  },
+);

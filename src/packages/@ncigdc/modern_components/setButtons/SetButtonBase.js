@@ -38,8 +38,10 @@ const enhance = compose(
     }) => () => {
       const { filters } = input;
       const content = get(filters, 'content[0].content');
+
       const setOnlyInCurrentFilters = filters
         ? filters.content.length === 1 &&
+            content.value &&
             content.value.length === 1 &&
             content.value[0].toString().includes('set_id:') &&
             content.field === field
@@ -100,15 +102,16 @@ const SetButtonBase = ({
   children,
   disabled,
   createSet,
+  Component = Button,
 }) => {
   return (
     <span>
       <Overlay show={isCreating}>
         <Spinner />
       </Overlay>
-      <Button disabled={disabled} style={style} onClick={createSet}>
+      <Component disabled={disabled} style={style} onClick={createSet}>
         {children}
-      </Button>
+      </Component>
     </span>
   );
 };

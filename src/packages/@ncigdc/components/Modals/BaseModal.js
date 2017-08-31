@@ -13,6 +13,7 @@ const BaseModal = ({
   closeText = 'Accept',
   extraButtons,
   style,
+  ...props
 }: {
   dispatch: Function,
   title: any,
@@ -21,7 +22,7 @@ const BaseModal = ({
   extraButtons: any,
   style: Object,
 }) =>
-  <Column style={style}>
+  <Column style={style} {...props}>
     <h2 style={{ paddingLeft: 15 }}>{title}</h2>
     <Column
       style={{

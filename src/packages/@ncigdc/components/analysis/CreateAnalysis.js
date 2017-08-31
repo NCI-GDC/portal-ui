@@ -75,7 +75,8 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
                   <Button onClick={() => setAnalysis(analysis)}>
                     Select
                   </Button>
-                  <Button onClick={() => onDemo(analysis.type)}>Demo</Button>
+                  {analysis.demoData &&
+                    <Button onClick={() => onDemo(analysis.type)}>Demo</Button>}
                 </Row>
               </div>
             </Row>

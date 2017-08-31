@@ -1,5 +1,6 @@
 import React from 'react';
 import { compose } from 'recompose';
+import { uniq } from 'lodash';
 
 import { replaceFilters } from '@ncigdc/utils/filters';
 import { parseFilterParam, stringifyJSONParam } from '@ncigdc/utils/uri';
@@ -20,10 +21,11 @@ export default enhance(
     onClose,
     push,
     query,
-    idFields,
     mainField,
     type,
     CreateButton,
+    idMap,
+    idKey,
     ...props
   }: TProps) => {
     return (
@@ -58,14 +60,16 @@ export default enhance(
           });
         }}
         filters={{
-          op: 'OR',
-          content: idFields.map(field => ({
-            op: 'in',
-            content: {
-              field,
-              value: hits,
+          op: 'and',
+          content: [
+            {
+              op: 'in',
+              content: {
+                field: mainField,
+                value: uniq(hits.map(h => idMap[h][idKey])),
+              },
             },
-          })),
+          ],
         }}
       >
         Submit

@@ -10,6 +10,7 @@ import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
 import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
+import AppendExploreCaseSetButton from '@ncigdc/modern_components/setButtons/AppendExploreCaseSetButton';
 import RemoveFromExploreCaseSetButton from '@ncigdc/modern_components/setButtons/RemoveFromExploreCaseSetButton';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
@@ -89,6 +90,7 @@ export default compose(
             tsvSelector="#explore-case-table"
             tsvFilename="explore-case-table.tsv"
             CreateSetButton={CreateExploreCaseSetButton}
+            AppendSetButton={AppendExploreCaseSetButton}
             RemoveFromSetButton={RemoveFromExploreCaseSetButton}
             idField="cases.case_id"
             selectedIds={selectedIds}

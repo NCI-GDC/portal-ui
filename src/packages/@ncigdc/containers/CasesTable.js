@@ -11,6 +11,7 @@ import TableActions from '@ncigdc/components/TableActions';
 import tableModels from '@ncigdc/tableModels';
 import Table, { Tr } from '@ncigdc/uikit/Table';
 import CreateRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/CreateRepositoryCaseSetButton';
+import AppendRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/AppendRepositoryCaseSetButton';
 import RemoveFromRepositoryCaseSetButton from '@ncigdc/modern_components/setButtons/RemoveFromRepositoryCaseSetButton';
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
@@ -65,6 +66,7 @@ export const SearchTable = compose(
             score={score}
             sort={sort}
             CreateSetButton={CreateRepositoryCaseSetButton}
+            AppendSetButton={AppendRepositoryCaseSetButton}
             RemoveFromSetButton={RemoveFromRepositoryCaseSetButton}
             idField="cases.case_id"
             selectedIds={selectedIds}

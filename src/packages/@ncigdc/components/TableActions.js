@@ -59,6 +59,7 @@ const TableActions = ({
   score,
   downloadTooltip = 'Export All',
   CreateSetButton,
+  AppendSetButton,
   RemoveFromSetButton,
   idField,
   query,
@@ -112,6 +113,7 @@ const TableActions = ({
           score={score}
           sort={sort}
           CreateSetButton={CreateSetButton}
+          AppendSetButton={AppendSetButton}
           RemoveFromSetButton={RemoveFromSetButton}
           field={idField}
           type={type}

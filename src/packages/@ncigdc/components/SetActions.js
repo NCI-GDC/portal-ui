@@ -27,6 +27,7 @@ export default enhance(
     displayType,
     dispatch,
     CreateSetButton,
+    AppendSetButton,
     RemoveFromSetButton,
     field,
     style,
@@ -99,9 +100,12 @@ export default enhance(
                     <AppendSetModal
                       field={field}
                       title={`Add ${countAndType} to Existing Set`}
+                      total={total}
                       filters={filters}
+                      score={score}
+                      sort={sort}
                       type={type}
-                      CreateSetButton={CreateSetButton}
+                      AppendSetButton={AppendSetButton}
                     />,
                   ),
                 );

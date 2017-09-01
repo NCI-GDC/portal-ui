@@ -166,7 +166,7 @@ const TermAggregation = compose(
                             </BucketLink>
                             <BucketLink
                               className="bucket-link"
-                              merge="flip"
+                              merge="toggle"
                               query={{
                                 offset: 0,
                                 filters: {

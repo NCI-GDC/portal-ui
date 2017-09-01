@@ -1,7 +1,7 @@
 import React from 'react';
 import { compose, withProps } from 'recompose';
 import { connect } from 'react-redux';
-import { get } from 'lodash';
+import { get, truncate } from 'lodash';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { setModal } from '@ncigdc/dux/modal';
@@ -13,7 +13,9 @@ import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Link from '@ncigdc/components/Links/Link';
 import { getFilterValue } from '@ncigdc/utils/filters';
 import countComponents from '@ncigdc/modern_components/Counts/index';
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
+const MAX_LABEL_LENGTH = 30;
 const enhance = compose(
   connect(({ sets }) => ({ sets })),
   withRouter,
@@ -107,30 +109,38 @@ export default enhance(
                     },
                   }}
                 >
-                  <Row style={{ alignItems: 'center' }} spacing="0.5rem">
-                    <input
-                      readOnly
-                      style={{ pointerEvents: 'none' }}
-                      type="checkbox"
-                      checked={currentValues.includes(value)}
-                      name={label}
-                    />
-                    <label htmlFor={label}>
-                      {label}
-                      <div style={{ fontSize: '0.8em' }}>
-                        <CountComponent
-                          filters={{
-                            op: '=',
-                            content: {
-                              field: idField,
-                              value: `set_id:${setId}`,
-                            },
-                          }}
-                        />{' '}
-                        {type.replace(/^./, m => m.toUpperCase())}s
-                      </div>
-                    </label>
-                  </Row>
+                  <Tooltip Component={label.length > MAX_LABEL_LENGTH && label}>
+                    <Row
+                      style={{ alignItems: 'center', whiteSpace: 'nowrap' }}
+                      spacing="0.5rem"
+                    >
+
+                      <input
+                        readOnly
+                        style={{ pointerEvents: 'none' }}
+                        type="checkbox"
+                        checked={currentValues.includes(value)}
+                        name={label}
+                      />
+                      <label htmlFor={label}>
+                        {truncate(label, { length: MAX_LABEL_LENGTH })}
+
+                        <div style={{ fontSize: '0.8em' }}>
+                          <CountComponent
+                            filters={{
+                              op: '=',
+                              content: {
+                                field: idField,
+                                value: `set_id:${setId}`,
+                              },
+                            }}
+                          />{' '}
+                          {type.replace(/^./, m => m.toUpperCase())}s
+                        </div>
+
+                      </label>
+                    </Row>
+                  </Tooltip>
                 </Link>
 
               </DropdownItem>

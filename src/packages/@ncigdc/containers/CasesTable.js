@@ -27,6 +27,8 @@ export const SearchTable = compose(
     filters,
     selectedIds,
     setSelectedIds,
+    score,
+    sort,
   }) => {
     const tableInfo = tableModels[entityType]
       .slice()
@@ -60,6 +62,8 @@ export const SearchTable = compose(
             tsvSelector="#repository-cases-table"
             tsvFilename="repository-cases-table.tsv"
             currentFilters={filters}
+            score={score}
+            sort={sort}
             CreateSetButton={CreateRepositoryCaseSetButton}
             RemoveFromSetButton={RemoveFromRepositoryCaseSetButton}
             idField="cases.case_id"

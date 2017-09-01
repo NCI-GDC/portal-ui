@@ -32,6 +32,9 @@ const enhance = compose(
       input,
       mutation,
       forceCreate,
+      size,
+      sort,
+      score,
     }) => () => {
       const { filters } = input;
       const content = get(filters, 'content[0].content');
@@ -53,7 +56,15 @@ const enhance = compose(
         setIsCreating(true);
         commitMutation(environment, {
           mutation,
-          variables: { input: { ...input, filters: filters || {} } },
+          variables: {
+            input: {
+              ...input,
+              filters: filters || {},
+              size,
+              sort,
+              score,
+            },
+          },
           onCompleted: response => {
             setIsCreating(false);
             onComplete(setIdExtractor(response));

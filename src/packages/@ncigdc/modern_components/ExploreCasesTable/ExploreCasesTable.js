@@ -42,6 +42,8 @@ export default compose(
     filters,
     selectedIds,
     setSelectedIds,
+    score,
+    sort,
   }) => {
     const prefix = 'cases';
 
@@ -78,6 +80,8 @@ export default compose(
             endpoint="case_ssms"
             downloadTooltip="Export All Except #Mutations and #Genes"
             currentFilters={filters}
+            score={score}
+            sort={sort}
             downloadFields={tableInfo
               .filter(x => x.downloadable)
               .map(x => x.field || x.id)}

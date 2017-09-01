@@ -32,6 +32,8 @@ export default enhance(
     style,
     hasSets,
     selectedIds,
+    sort,
+    score,
     ...props
   }) => {
     const titleType = displayType.replace(/^./, m => m.toUpperCase());
@@ -76,6 +78,8 @@ export default enhance(
                     title={`Save ${countAndType} as New Set`}
                     total={total}
                     filters={filters}
+                    score={score}
+                    sort={sort}
                     type={type}
                     displayType={displayType}
                     CreateSetButton={CreateSetButton}

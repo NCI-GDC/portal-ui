@@ -31,6 +31,8 @@ const AppendSetModal = ({
   query,
   history,
   location,
+  score,
+  sort,
 }) => {
   return (
     <BaseModal

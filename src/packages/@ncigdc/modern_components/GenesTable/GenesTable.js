@@ -53,6 +53,8 @@ export default compose(
     dispatch,
     selectedIds,
     setSelectedIds,
+    sort,
+    score,
   }) => {
     const { genes, filteredCases, cases } = explore || {};
 
@@ -91,6 +93,8 @@ export default compose(
               endpoint="genes"
               downloadTooltip="Export All Except #Cases and #Mutations"
               currentFilters={filters}
+              score={score}
+              sort={sort}
               downloadFields={[
                 'symbol',
                 'name',

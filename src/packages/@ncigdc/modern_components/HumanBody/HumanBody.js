@@ -1,7 +1,13 @@
 // @flow
 
 import React from 'react';
-import { compose, lifecycle, branch, renderComponent } from 'recompose';
+import {
+  compose,
+  lifecycle,
+  branch,
+  renderComponent,
+  withProps,
+} from 'recompose';
 import { connect } from 'react-redux';
 import JSURL from 'jsurl';
 import sapien from '@oncojs/sapien';
@@ -11,6 +17,11 @@ import withRouter from '@ncigdc/utils/withRouter';
 import { makeFilter } from '@ncigdc/utils/filters';
 import styled from '@ncigdc/theme/styled';
 import './humanbody.css';
+import {
+  HUMAN_BODY_SITES_MAP,
+  HUMAN_BODY_ALL_ALLOWED_SITES,
+} from '@ncigdc/utils/constants';
+import { groupBy, map } from 'lodash';
 
 const containerStyle = {
   flex: 1,
@@ -29,17 +40,40 @@ export default compose(
   withTooltip,
   connect(state => ({ config: state.versionInfo })),
   withRouter,
+  withProps(({ viewer }) => ({
+    groupedData: map(
+      groupBy(
+        viewer.repository.cases.aggregations.primary_site.buckets,
+        b => HUMAN_BODY_SITES_MAP[b.key] || b.key,
+      ),
+      (group, majorPrimarySite) => ({
+        key: majorPrimarySite,
+        docCount: group.reduce((sum, { doc_count }) => sum + doc_count, 0),
+        fileCount: group.reduce(
+          (sumFiles, { key }) =>
+            (viewer.repository.files.aggregations.cases__primary_site.buckets.find(
+              f => f.key === key,
+            ) || { doc_count: 0 }).doc_count + sumFiles,
+          0,
+        ),
+        allPrimarySites: group.map(({ key }) => key),
+      }),
+    ).filter(
+      ({ key }) =>
+        !['Other And Ill-Defined Sites', 'Not Reported'].includes(key) &&
+        HUMAN_BODY_ALL_ALLOWED_SITES.includes(key),
+    ),
+  })),
   lifecycle({
     async componentDidMount(): Promise<*> {
-      const { setTooltip, push, viewer } = this.props;
+      const { setTooltip, push, groupedData } = this.props;
 
-      const data = viewer.repository.cases.aggregations.primary_site.buckets
-        .map(c => ({
-          _key: c.key,
-          _count: c.doc_count,
-          fileCount: (viewer.repository.files.aggregations.cases__primary_site.buckets.find(
-            f => f.key === c.key,
-          ) || { doc_count: 0 }).doc_count,
+      const data = groupedData
+        .map(({ key, docCount, fileCount, allPrimarySites }) => ({
+          _key: key,
+          _count: docCount,
+          fileCount,
+          allPrimarySites,
         }))
         .sort((a, b) => (a._key > b._key ? 1 : -1));
 
@@ -58,13 +92,14 @@ export default compose(
         sapien({
           clickHandler: d => {
             const key = d._key.replace(/-/g, ' ');
-            if (data.find(x => x._key === key)) {
+            const datum = data.find(x => x._key === key);
+            if (datum) {
               const query = {
                 filters: JSURL.stringify(
                   makeFilter([
                     {
                       field: 'cases.primary_site',
-                      value: [key],
+                      value: datum.allPrimarySites,
                     },
                   ]),
                 ),
@@ -96,6 +131,7 @@ export default compose(
           selector: '#human-body-root',
           width: 380,
           height: 435,
+          tickInterval: 1000,
           offsetLeft: root.offsetLeft,
           offsetTop: root.offsetTop,
           primarySiteKey: '_key',

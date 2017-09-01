@@ -109,7 +109,12 @@ export default enhance(
                     },
                   }}
                 >
-                  <Tooltip Component={label.length > MAX_LABEL_LENGTH && label}>
+                  <Tooltip
+                    Component={
+                      label.length > MAX_LABEL_LENGTH &&
+                      <div style={{ maxWidth: 400 }}>{label}</div>
+                    }
+                  >
                     <Row
                       style={{ alignItems: 'center', whiteSpace: 'nowrap' }}
                       spacing="0.5rem"

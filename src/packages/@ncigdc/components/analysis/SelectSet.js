@@ -2,8 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
-import { xor } from 'lodash';
-
+import { xor, omit } from 'lodash';
 import { Row } from '@ncigdc/uikit/Flex';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import countComponents from '@ncigdc/modern_components/Counts';
@@ -77,11 +76,16 @@ const SetTable = ({
                 type="checkbox"
                 value={setId}
                 disabled={msg}
-                onChange={e =>
-                  setSelectedSets({
-                    ...selectedSets,
-                    [type]: xor(selectedSets[type], [e.target.value]),
-                  })}
+                onChange={e => {
+                  const ids = xor(selectedSets[type], [e.target.value]);
+                  const sets = ids.length
+                    ? {
+                        ...selectedSets,
+                        [type]: ids,
+                      }
+                    : omit(selectedSets, type);
+                  setSelectedSets(sets);
+                }}
                 checked={checked}
               />
             </Tooltip>

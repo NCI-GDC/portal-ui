@@ -14,4 +14,6 @@ export default compose(
       handleCountChange(count);
     }
   }),
-)(({ count }) => <span>{count.toLocaleString()}</span>);
+)(({ count, children }) =>
+  <span>{children ? children(count) : count.toLocaleString()}</span>,
+);

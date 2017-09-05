@@ -75,3 +75,25 @@ export const tableToolTipHint = () => ({
   display: 'inline-block',
   borderBottom: `1px dashed ${getTheme().greyScale3}`,
 });
+
+export const iconButton = {
+  margin: 0,
+  padding: 0,
+  display: 'inline',
+  color: 'rgb(37, 94, 153)',
+  backgroundColor: 'transparent',
+  ':hover': {
+    color: 'rgb(0, 138, 224)',
+  },
+};
+
+export const iconLink = {
+  textDecoration: 'none',
+  ':link': {
+    color: 'rgb(37, 94, 153)',
+  },
+  ':hover': {
+    color: 'rgb(0, 138, 224)',
+  },
+  cursor: 'pointer',
+};

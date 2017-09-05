@@ -162,3 +162,9 @@ export const HUMAN_BODY_ALL_ALLOWED_SITES = [
   'Uterus',
 ];
 export const MAX_SET_SIZE = 50000;
+
+export const SET_DOWNLOAD_FIELDS = {
+  case: ['submitter_id', 'project.project_id', 'case_id'],
+  gene: ['symbol', 'gene_id'],
+  ssm: ['genomic_dna_change', 'ssm_id'],
+};

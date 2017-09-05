@@ -63,11 +63,16 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
     : <div style={{ padding: '2rem 2.5rem' }}>
         {availableAnalysis.map(analysis => {
           return (
-            <Row
-              style={{ width: '50%', alignItems: 'center' }}
-              key={analysis.type}
-            >
-              <analysis.Icon style={{ fontSize: 40, marginRight: 25 }} />
+            <Row key={analysis.type}>
+              <Row
+                style={{
+                  width: 120,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <analysis.Icon style={{ fontSize: 40, marginRight: 25 }} />
+              </Row>
               <div>
                 <h1 style={{ fontSize: '2rem' }}>{analysis.label}</h1>
                 <div style={{ marginBottom: 10 }}>{analysis.description}</div>
@@ -75,8 +80,11 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
                   <Button onClick={() => setAnalysis(analysis)}>
                     Select
                   </Button>
-                  {analysis.demoData &&
-                    <Button onClick={() => onDemo(analysis.type)}>Demo</Button>}
+                  <Button
+                    onClick={() => analysis.demoData && onDemo(analysis.type)}
+                  >
+                    Demo
+                  </Button>
                 </Row>
               </div>
             </Row>

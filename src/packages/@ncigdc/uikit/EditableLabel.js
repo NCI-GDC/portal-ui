@@ -84,8 +84,15 @@ export default compose(
             </Button>
           </Row>
         : <Row onClick={toggleEditingAndSave} style={{ cursor: 'text' }}>
-            {value}
-            <Pencil style={{ paddingLeft: '2px', alignSelf: 'center' }} />
+            <span>{value}</span>
+            <Pencil
+              style={{
+                fontSize: '0.9em',
+                paddingLeft: '5px',
+                alignSelf: 'center',
+                color: 'rgb(96, 111, 81)',
+              }}
+            />
           </Row>}
     </div>,
 );

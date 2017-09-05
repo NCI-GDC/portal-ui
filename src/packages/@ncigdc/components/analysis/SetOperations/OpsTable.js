@@ -6,6 +6,9 @@ import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
+import { SET_DOWNLOAD_FIELDS as downloadFields } from '@ncigdc/utils/constants';
+import DownloadButton from '@ncigdc/components/DownloadButton';
+import { iconButton } from '@ncigdc/theme/mixins';
 
 export default ({
   selected,
@@ -63,6 +66,8 @@ export default ({
                               push({
                                 pathname: '/exploration',
                                 query: {
+                                  searchTableTab:
+                                    (type === 'ssm' ? 'mutation' : type) + 's',
                                   filters: stringifyJSONParam({
                                     op: 'AND',
                                     content: [
@@ -90,7 +95,7 @@ export default ({
                                     textDecoration: 'underline',
                                   }}
                                 >
-                                  {count}
+                                  {count.toLocaleString()}
                                 </span>
                               </Tooltip>}
                           />}
@@ -113,10 +118,28 @@ export default ({
                                     type={type}
                                     displayType={type}
                                     CreateSetButton={CreateSetButton}
+                                    setName="My Set"
                                   />,
                                 ),
                               );
                             }}
+                          />
+                        </Tooltip>
+                        &nbsp;
+                        <Tooltip Component="Export as TSV">
+                          <DownloadButton
+                            className="test-download-set-tsv"
+                            style={iconButton}
+                            endpoint={`${type}s`}
+                            activeText="" //intentionally blank
+                            inactiveText="" //intentionally blank
+                            altMessage={false}
+                            setParentState={() => {}}
+                            active={false}
+                            filters={op.filters}
+                            extraParams={{ format: 'tsv' }}
+                            fields={downloadFields[type]}
+                            filename={`${op.op}-set-ids`}
                           />
                         </Tooltip>
                         &nbsp;
@@ -199,6 +222,8 @@ export default ({
                               push({
                                 pathname: '/exploration',
                                 query: {
+                                  searchTableTab:
+                                    (type === 'ssm' ? 'mutation' : type) + 's',
                                   filters: stringifyJSONParam({
                                     op: 'AND',
                                     content: [
@@ -258,6 +283,29 @@ export default ({
                                     ),
                                   );
                                 }}
+                              />
+                            </Tooltip>
+                            &nbsp;
+                            <Tooltip Component="Export as TSV">
+                              <DownloadButton
+                                className="test-download-set-tsv"
+                                style={{
+                                  margin: 0,
+                                  padding: 0,
+                                  display: 'inline',
+                                  color: 'rgb(37, 94, 153)',
+                                  backgroundColor: 'transparent',
+                                }}
+                                endpoint={`${type}s`}
+                                activeText="" //intentionally blank
+                                inactiveText="" //intentionally blank
+                                altMessage={false}
+                                setParentState={() => {}}
+                                active={false}
+                                filters={selectedFilters}
+                                extraParams={{ format: 'tsv' }}
+                                fields={downloadFields[type]}
+                                filename={`union-of-set-ids`}
                               />
                             </Tooltip>
                             &nbsp;

@@ -25,6 +25,7 @@ const TabbedLinks: TTabbedLinks = (
     hideTabs,
     style,
     side,
+    linkStyle = {},
   } = {},
 ) =>
   <LocationSubscriber>
@@ -50,6 +51,7 @@ const TabbedLinks: TTabbedLinks = (
                       padding: '1.2rem 1.8rem',
                       textDecoration: 'none',
                       display: 'inline-block',
+                      ...linkStyle,
                     }}
                     key={x.id}
                     query={{ [queryParam]: x.id }}

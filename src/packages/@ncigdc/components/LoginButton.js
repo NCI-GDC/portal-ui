@@ -71,7 +71,12 @@ const LoginButton = ({ children, dispatch }: TLoginButtonProps) =>
         {children ||
           <span>
             <LoginIcon />
-            <span style={styles.marginLeft}>Login</span>
+            <span
+              className="header-hidden-sm header-hidden-md"
+              style={styles.marginLeft}
+            >
+              Login
+            </span>
           </span>}
       </Link>}
   </LocationSubscriber>;

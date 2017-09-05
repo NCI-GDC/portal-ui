@@ -23,7 +23,6 @@ import SessionExpiredModal from '@ncigdc/components/Modals/SessionExpiredModal';
 import withRouter from '@ncigdc/utils/withRouter';
 import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
-import { ExternalLink } from '@ncigdc/uikit/Links';
 import { AnalysisIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
@@ -132,29 +131,16 @@ const Header = compose(
             </ExploreLink>
           </li>
           <li>
-            <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
-              <DatabaseIcon style={styles.iconPadding} />
-              <span className="hidden-sm">Repository</span>
-            </RepositoryLink>
-          </li>
-          {!!process.env.SHOW_ANALYSIS_MENU &&
-            <li>
-              <ExternalLink
-                href="https://gdc.cancer.gov/access-data/analytical-tools"
-                tabIndex="0"
-                hasExternalIcon={false}
-              >
-                <i className="fa fa-bar-chart" style={styles.iconPadding} />
-                <span className="hidden-sm">Analysis</span>
-              </ExternalLink>
-
-            </li>}
-
-          <li>
             <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
               <AnalysisIcon style={styles.iconPadding} />
               <span className="hidden-sm">Analysis</span>
             </AnalysisLink>
+          </li>
+          <li>
+            <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
+              <DatabaseIcon style={styles.iconPadding} />
+              <span className="hidden-sm">Repository</span>
+            </RepositoryLink>
           </li>
         </ul>
         <ul className="nav navbar-nav navbar-right">

@@ -29,12 +29,15 @@ function fetchQuery(operation, variables, cacheConfig) {
       'content-type': 'application/json',
     },
     body,
-  })
-    .then(response => response.json())
-    .then(json => {
-      simpleCache[hash] = json;
+  }).then(response =>
+    response.json().then(json => {
+      if (response.status === 200) {
+        simpleCache[hash] = json;
+      }
+
       return json;
-    });
+    }),
+  );
 }
 
 // Create a network layer from the fetch function

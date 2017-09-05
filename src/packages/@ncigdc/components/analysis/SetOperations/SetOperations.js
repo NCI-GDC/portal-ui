@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
 import Venn from '@ncigdc/components/Charts/Venn';
 import { Row, Column } from '@ncigdc/uikit/Flex';
+import { stringifyJSONParam } from '@ncigdc/utils/uri';
 import EntityPageHorizontalTable from '@ncigdc/components/EntityPageHorizontalTable';
 import {
   ExploreCaseCount,
@@ -12,7 +13,10 @@ import {
 } from '@ncigdc/modern_components/Counts';
 import withRouter from '@ncigdc/utils/withRouter';
 import Measure from 'react-measure';
-
+import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
+import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
+import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
 import OpsTable from './OpsTable';
 import buildOps from './buildOps';
 import TwoSetOverlay from './TwoSetOverlay';
@@ -22,6 +26,12 @@ const countComponents = {
   case: ExploreCaseCount,
   gene: GeneCount,
   ssm: SsmCount,
+};
+
+const CreateSetButtonMap = {
+  case: CreateExploreCaseSetButton,
+  ssm: CreateExploreSsmSetButton,
+  gene: CreateExploreGeneSetButton,
 };
 
 const colors = [
@@ -48,6 +58,7 @@ export default compose(
     hovering,
     setHovering,
     dispatch,
+    CreateSetButton = CreateSetButtonMap[type],
   }) => {
     const setData = Object.entries(sets[type]).filter(([setId]) =>
       setIds.map(x => x.split(':')[1]).includes(setId),
@@ -122,7 +133,7 @@ export default compose(
                         {_.truncate(label, { length: 70 })}
                       </label>
                     ),
-                    type,
+                    type: _.capitalize(type),
                     count: (
                       <CountComponent
                         filters={{
@@ -132,19 +143,65 @@ export default compose(
                             value: `set_id:${setId}`,
                           },
                         }}
-                      />
+                      >
+                        {count =>
+                          count === 0
+                            ? 0
+                            : <CreateSetButton
+                                filters={{
+                                  op: '=',
+                                  content: {
+                                    field: `${type}s.${type}_id`,
+                                    value: `set_id:${setId}`,
+                                  },
+                                }}
+                                onComplete={setId => {
+                                  push({
+                                    pathname: '/exploration',
+                                    query: {
+                                      filters: stringifyJSONParam({
+                                        op: 'AND',
+                                        content: [
+                                          {
+                                            op: 'IN',
+                                            content: {
+                                              field: `${type}s.${type}_id`,
+                                              value: [`set_id:${setId}`],
+                                            },
+                                          },
+                                        ],
+                                      }),
+                                    },
+                                  });
+                                }}
+                                Component={p =>
+                                  <Tooltip
+                                    Component={`View ${type} set in exploration`}
+                                  >
+                                    <span
+                                      style={{
+                                        cursor: 'pointer',
+                                        color: 'rgb(43, 118, 154)',
+                                        textDecoration: 'underline',
+                                      }}
+                                    >
+                                      {count}
+                                    </span>
+                                  </Tooltip>}
+                              />}
+                      </CountComponent>
                     ),
                   };
                 })}
                 headings={[
                   { key: 'alias', title: 'Alias' },
+                  { key: 'type', title: 'Item Type' },
                   { key: 'name', title: 'Name', style: { width: 100 } },
                   {
                     key: 'count',
                     title: '# Items',
                     style: { textAlign: 'right' },
                   },
-                  { key: 'type', title: 'Item Type' },
                 ]}
               />
               <hr />
@@ -157,6 +214,7 @@ export default compose(
                 dispatch={dispatch}
                 CountComponent={CountComponent}
                 selectedFilters={selectedFilters}
+                CreateSetButton={CreateSetButton}
               />
             </Column>
           </Row>

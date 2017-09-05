@@ -129,7 +129,7 @@ export default compose(
         />
       </span>
       {!state.isInSearchMode &&
-        <span className="hidden-md hidden-sm" data-translate>
+        <span className="header-hidden-sm header-hidden-md" data-translate>
           Quick Search
         </span>}
 

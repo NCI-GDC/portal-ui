@@ -44,6 +44,9 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
           <TrashIcon /> Delete All
         </Button>
       }
+      linkStyle={{
+        width: '100%',
+      }}
       links={[
         ...(demoAnalysis
           ? [
@@ -77,12 +80,15 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
               text: (
                 <Row>
                   <div style={{ marginRight: 15 }}>
-                    {analysis.title}
+                    {analysis.label}
                     <div style={{ fontSize: '1rem' }}>
                       {new Date(savedAnalysis.created).toLocaleDateString()}
                     </div>
                   </div>
-                  <UnstyledButton onClick={savedAnalysis.onClose}>
+                  <UnstyledButton
+                    style={{ marginLeft: 'auto' }}
+                    onClick={savedAnalysis.onClose}
+                  >
                     x
                   </UnstyledButton>
                 </Row>

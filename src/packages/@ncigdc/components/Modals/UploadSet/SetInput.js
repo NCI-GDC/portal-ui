@@ -28,7 +28,7 @@ class SetInput extends React.Component {
           setInput={this.update}
           helpText={this.props.helpText}
           placeholder={this.props.placeholder}
-          type={this.props.type}
+          displayType={this.props.displayType}
         />
         <FileUpload
           inputFiles={this.state.inputFiles}

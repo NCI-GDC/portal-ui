@@ -15,11 +15,13 @@ import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 import SetActions from '@ncigdc/components/SetActions';
 import { compose } from 'recompose';
 import withRouter from '@ncigdc/utils/withRouter';
+import pluralize from '@ncigdc/utils/pluralize';
 
 import type { TRawQuery } from '@ncigdc/utils/uri/types';
 
 type TProps = {
   type: string,
+  displayType?: string,
   arrangeColumnKey?: string,
   total: number,
   sortOptions?: Array<Object>,
@@ -42,6 +44,7 @@ const enhance = compose(withRouter);
 
 const TableActions = ({
   type,
+  displayType = type,
   arrangeColumnKey,
   total,
   sortOptions,
@@ -81,7 +84,7 @@ const TableActions = ({
               currentFilters || parseFilterParam((query || {}).filters, {})
             }
             disabled={!total}
-            filename={`${type}s`}
+            filename={pluralize(displayType, total)}
             endpoint={endpoint}
             fields={downloadFields}
             style={visualizingButton}
@@ -108,6 +111,7 @@ const TableActions = ({
           RemoveFromSetButton={RemoveFromSetButton}
           field={idField}
           type={type}
+          displayType={displayType}
           selectedIds={selectedIds || []}
         />}
     </Row>

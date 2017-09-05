@@ -27,6 +27,8 @@ import { AnalysisIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
 
+import './Header.css';
+
 const styles = {
   iconPadding: {
     paddingRight: '4px',
@@ -103,9 +105,7 @@ const Header = compose(
       </div>
       <nav
         style={{ outline: 'none' }}
-        className={`navbar-collapse navbar-responsive-collapse ${isCollapsed
-          ? 'collapse'
-          : ''}`}
+        className={`navbar-collapse ${isCollapsed ? 'collapse' : ''}`}
         data-uib-collapse="hc.isCollapsed"
         tabIndex="-1"
         aria-label="Site Navigation"
@@ -115,31 +115,31 @@ const Header = compose(
           <li>
             <HomeLink exact activeStyle={styles.activeNavLink(theme)}>
               <i className="fa fa-home" style={styles.iconPadding} />
-              <span className="hidden-sm">Home</span>
+              <span className="header-hidden-sm">Home</span>
             </HomeLink>
           </li>
           <li>
             <ProjectsLink exact activeStyle={styles.activeNavLink(theme)}>
               <i className="icon-gdc-projects" style={styles.iconPadding} />
-              <span className="hidden-sm">Projects</span>
+              <span className="header-hidden-sm">Projects</span>
             </ProjectsLink>
           </li>
           <li>
             <ExploreLink exact activeStyle={styles.activeNavLink(theme)}>
               <i className="icon-gdc-data" style={styles.iconPadding} />
-              <span className="hidden-sm">Exploration</span>
+              <span className="header-hidden-sm">Exploration</span>
             </ExploreLink>
           </li>
           <li>
             <AnalysisLink exact activeStyle={styles.activeNavLink(theme)}>
               <AnalysisIcon style={styles.iconPadding} />
-              <span className="hidden-sm">Analysis</span>
+              <span className="header-hidden-sm">Analysis</span>
             </AnalysisLink>
           </li>
           <li>
             <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
               <DatabaseIcon style={styles.iconPadding} />
-              <span className="hidden-sm">Repository</span>
+              <span className="header-hidden-sm">Repository</span>
             </RepositoryLink>
           </li>
         </ul>
@@ -149,8 +149,8 @@ const Header = compose(
             <ManageSetsLink activeStyle={styles.activeNavLink(theme)} />
           </li>
           {!user && <li><LoginButton /></li>}
-          {user && <li className="hidden-xs"><UserDropdown /></li>}
-          <li className="nav-cart">
+          {user && <li className="header-hidden-xs"><UserDropdown /></li>}
+          <li>
             <CartLink>
               {count =>
                 <span>
@@ -159,7 +159,7 @@ const Header = compose(
                     style={styles.iconPadding}
                   />
                   <span
-                    className="hidden-md hidden-sm"
+                    className="header-hidden-sm header-hidden-md"
                     style={styles.iconPadding}
                   >
                     Cart
@@ -170,7 +170,7 @@ const Header = compose(
                 </span>}
             </CartLink>
           </li>
-          <li className="nav-GDCApps"><GDCAppsDropdown /></li>
+          <li><GDCAppsDropdown /></li>
         </ul>
       </nav>
     </div>

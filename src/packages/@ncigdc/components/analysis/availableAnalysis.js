@@ -2,7 +2,8 @@ import React from 'react';
 import Venn from '@ncigdc/components/Charts/Venn';
 import SetOperations from './SetOperations';
 import CohortComparison from '@ncigdc/modern_components/CohortComparison';
-import { GridIcon } from '@ncigdc/theme/icons';
+import CCIcon from '@ncigdc/theme/icons/CohortComparisonIcon';
+import { withTheme } from '@ncigdc/theme';
 
 type TSelectedSets = {
   [string]: Array<string>,
@@ -28,18 +29,32 @@ type TAnalysis = {|
 const availableAnalysis: Array<TAnalysis> = [
   {
     type: 'set_operations',
-    title: 'Set Operations',
+    label: 'Set Operations',
     Icon: p =>
-      <span style={{ marginRight: 25, marginLeft: -10 }}>
-        <Venn
-          {...p}
-          data={[1, 2, 3]}
-          ops={[1, 2, 3, 4, 5, 6, 7]}
-          width={65}
-          height={70}
-          radius={18}
-        />
-      </span>,
+      <Venn
+        {...p}
+        data={[1, 2, 3]}
+        ops={[
+          { op: 1 },
+          { op: 2 },
+          { op: 3 },
+          { op: 4 },
+          { op: 5 },
+          { op: 6 },
+          { op: 7 },
+        ]}
+        width={85}
+        height={100}
+        radius={25}
+        outlineWidth={1}
+        outlineColour="rgba(46, 90, 164, 0.62)"
+        getFillColor={(d, i) => {
+          if (d.op === 5) return 'rgba(38, 166, 166, 0.65)';
+          if (d.op === 6) return 'rgba(235, 233, 46, 0.79)';
+          if (d.op === 7) return 'rgba(175, 58, 215, 0.8)';
+          return 'rgba(0,0,0,0)';
+        }}
+      />,
     description:
       'Display Venn diagram and find intersection or union, etc. of your sets of the same type.',
     demoData: null,
@@ -70,9 +85,17 @@ const availableAnalysis: Array<TAnalysis> = [
   },
   {
     type: 'comparison',
-    title: 'Cohort Comparison',
-    Icon: GridIcon,
-    description: 'Cohort Comparison.',
+    label: 'Cohort Comparison',
+    Icon: withTheme(({ theme }) =>
+      <CCIcon
+        width="80px"
+        height="80px"
+        color1="rgb(105, 16, 48)"
+        color2={theme.primary}
+      />,
+    ),
+    description: `Display the survival analysis of your case sets and compare
+    characteristics such as gender, vital status and age at diagnosis.`,
     demoData: {
       id: 'demo-comparison',
       sets: { case: ['AV4vM4A6k-Uw42heedhg', 'AV4vM8MJk-Uw42heedhh'] }, // TODO: setIds will change, need way to generate or store these.

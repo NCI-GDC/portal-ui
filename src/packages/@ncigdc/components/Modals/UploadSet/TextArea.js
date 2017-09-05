@@ -4,12 +4,12 @@ import Row from '@ncigdc/uikit/Flex/Row';
 import { QuestionIcon } from '@ncigdc/theme/icons';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 
-export default ({ input, setInput, helpText, type, placeholder }) => {
+export default ({ input, setInput, helpText, displayType, placeholder }) => {
   return (
     <label style={{ display: 'block' }}>
       <Row style={{ justifyContent: 'space-between' }}>
         <div>
-          Type or copy-and-paste a list of {type} identifiers
+          Type or copy-and-paste a list of {displayType} identifiers
         </div>
         <Tooltip
           Component={<div style={{ whiteSpace: 'nowrap' }}>{helpText}</div>}

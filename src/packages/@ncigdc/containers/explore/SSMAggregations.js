@@ -145,7 +145,7 @@ export const SSMAggregationsComponent = compose(
       }}
       idField="ssms.ssm_id"
     >
-      Upload Ssm Set
+      Upload Mutation Set
     </UploadSetButton>
     {presetFacets
       .filter(

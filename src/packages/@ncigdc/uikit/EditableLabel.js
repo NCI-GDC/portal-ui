@@ -6,6 +6,7 @@ import Input from '@ncigdc/uikit/Form/Input';
 import Pencil from '@ncigdc/theme/icons/Pencil';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
+import { visualizingButton } from '@ncigdc/theme/mixins';
 
 export default compose(
   withState('isEditing', 'setIsEditing', false),
@@ -14,21 +15,26 @@ export default compose(
     handleSave: value => console.log(value),
   }),
   withHandlers({
+    handleCancel: ({ text, setIsEditing, setValue }) => () => {
+      setIsEditing(false);
+      setValue(text);
+    },
+  }),
+  withHandlers({
     toggleEditingAndSave: ({
       isEditing,
       setIsEditing,
       value,
       text,
       handleSave,
+      handleCancel,
     }) => () => {
-      setIsEditing(!isEditing);
-      if (isEditing && value !== text) {
-        handleSave(value);
+      if (value.length !== 0) {
+        setIsEditing(!isEditing);
+        if (isEditing && value !== text) {
+          handleSave(value);
+        }
       }
-    },
-    handleCancel: ({ text, setIsEditing, setValue }) => () => {
-      setIsEditing(false);
-      setValue(text);
     },
   }),
 )(
@@ -43,9 +49,15 @@ export default compose(
   }) =>
     <div>
       {isEditing
-        ? <Row style={{ justifyContent: 'space-between' }}>
+        ? <Row
+            style={{ justifyContent: 'space-between', alignItems: 'center' }}
+          >
             <Input
-              style={{ width: '80%' }}
+              style={{
+                width: '300px',
+                borderRadius: '4px',
+                transition: 'all 0.2s ease',
+              }}
               value={value}
               onChange={e => setValue(e.target.value)}
               onKeyDown={e => {
@@ -58,16 +70,22 @@ export default compose(
               type="text"
               autoFocus
             />
-            <Button onClick={toggleEditingAndSave}>
+            <Button
+              onClick={toggleEditingAndSave}
+              disabled={value.length === 0}
+              style={{
+                ...visualizingButton,
+              }}
+            >
               Save
             </Button>
-            <Button onClick={handleCancel}>
+            <Button onClick={handleCancel} style={visualizingButton}>
               Cancel
             </Button>
           </Row>
         : <Row onClick={toggleEditingAndSave} style={{ cursor: 'text' }}>
             {value}
-            <Pencil style={{ paddingLeft: '5px' }} />
+            <Pencil style={{ paddingLeft: '2px', alignSelf: 'center' }} />
           </Row>}
     </div>,
 );

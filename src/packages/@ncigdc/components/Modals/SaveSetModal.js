@@ -17,8 +17,8 @@ const enhance = compose(
   withState(
     'inputName',
     'setInputName',
-    ({ filters, displayType, sets }) =>
-      filtersToName({ filters, sets }) || `All ${displayType}s`,
+    ({ filters, displayType, sets, setName }) =>
+      setName || filtersToName({ filters, sets }) || `All ${displayType}s`,
   ),
   withState('inputTotal', 'setInputTotal', ({ total }) =>
     Math.min(MAX_SET_SIZE, total),

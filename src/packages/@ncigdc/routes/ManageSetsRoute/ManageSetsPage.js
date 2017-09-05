@@ -8,7 +8,6 @@ import { notify } from '@ncigdc/dux/notification';
 import { closeNotification } from '@ncigdc/dux/notification';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import styled from '@ncigdc/theme/styled';
-import { visualizingButton, buttonLike } from '@ncigdc/theme/mixins';
 import { addSet, removeSet, updateSet } from '@ncigdc/dux/sets';
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import RepositoryLink from '@ncigdc/components/Links/RepositoryLink';
@@ -22,19 +21,14 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { ExclamationTriangleIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
-
+import { SET_DOWNLOAD_FIELDS as downloadFields } from '@ncigdc/utils/constants';
 import DownloadButton from '@ncigdc/components/DownloadButton';
+import { iconButton, iconLink } from '@ncigdc/theme/mixins';
 
 const fields = {
   case: 'cases.case_id',
   gene: 'genes.gene_id',
   ssm: 'ssms.ssm_id',
-};
-
-const downloadFields = {
-  case: ['submitter_id', 'project.project_id', 'case_id'],
-  gene: ['symbol', 'gene_id'],
-  ssm: ['genomic_dna_change', 'ssm_id'],
 };
 
 const enhance = compose(
@@ -44,18 +38,9 @@ const enhance = compose(
   withPropsOnChange(['sets'], ({ setSelectedIds }) => setSelectedIds([])),
 );
 
-const ButtonLikeRepoLink = styled(RepositoryLink, {
-  ...buttonLike,
-  ...visualizingButton,
+const StyledRepoLink = styled(RepositoryLink, {
   marginLeft: '5px',
-  textDecoration: 'none',
-  ':link': {
-    color: visualizingButton.color,
-  },
-  ':hover': {
-    backgroundColor: 'rgb(0, 138, 224)',
-    color: ({ theme }) => theme.white,
-  },
+  ...iconLink,
 });
 
 const ManageSetsPage = ({
@@ -268,7 +253,7 @@ const ManageSetsPage = ({
                             textTransform: 'capitalize',
                           }}
                         >
-                          {type}
+                          {type === 'ssm' ? 'mutations' : type + 's'}
                         </Td>
                         <Td
                           key={`label${i}`}
@@ -293,7 +278,8 @@ const ManageSetsPage = ({
                           {get(setSizes, id) > 0
                             ? <ExploreLink
                                 query={{
-                                  searchTableTab: `${type}s`,
+                                  searchTableTab:
+                                    (type === 'ssm' ? 'mutation' : type) + 's',
                                   filters: linkFilters,
                                 }}
                               >
@@ -308,10 +294,7 @@ const ManageSetsPage = ({
                               <Tooltip Component="Export as TSV">
                                 <DownloadButton
                                   className="test-download-set-tsv"
-                                  style={{
-                                    ...visualizingButton,
-                                    marginLeft: '5px',
-                                  }}
+                                  style={iconButton}
                                   endpoint={`${type}s`}
                                   activeText="" //intentionally blank
                                   inactiveText="" //intentionally blank
@@ -326,14 +309,14 @@ const ManageSetsPage = ({
                               </Tooltip>
                               {type === 'case' &&
                                 <Tooltip Component="View Files in Repository">
-                                  <ButtonLikeRepoLink
+                                  <StyledRepoLink
                                     query={{
                                       searchTableTab: 'files',
                                       filters: linkFilters,
                                     }}
                                   >
                                     <DatabaseIcon />
-                                  </ButtonLikeRepoLink>
+                                  </StyledRepoLink>
                                 </Tooltip>}
                             </Row>}
                         </Td>

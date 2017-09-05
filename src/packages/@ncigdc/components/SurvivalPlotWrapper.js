@@ -61,7 +61,6 @@ const SVG_MARGINS = {
 };
 
 const colors = scaleOrdinal(schemeCategory10);
-const palette = [colors(0), colors(1)];
 
 const styles = {
   pValue: {
@@ -80,6 +79,7 @@ const SurvivalPlotWrapper = ({
   setSurvivalContainer,
   survivalPlotloading = false,
   uniqueClass,
+  palette = [colors(0), colors(1)],
 }: TProps) => {
   const { results = [], overallStats = {} } = rawData || {};
   const pValue = overallStats.pValue;
@@ -212,6 +212,7 @@ function renderSurvivalPlot(props: TProps): void {
     setXDomain,
     setTooltip,
     push,
+    palette = [colors(0), colors(1)],
   } = props;
   const { results = [] } = rawData;
   if (survivalContainer) {

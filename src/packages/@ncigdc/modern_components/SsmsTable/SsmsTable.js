@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState } from 'recompose';
+import { compose, withState, withProps } from 'recompose';
 import withSize from '@ncigdc/utils/withSize';
 import withBetterRouter from '@ncigdc/utils/withRouter';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -14,6 +14,9 @@ import type { TTheme } from '@ncigdc/theme';
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
+import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
+import RemoveFromExploreSsmSetButton from '@ncigdc/modern_components/setButtons/RemoveFromExploreSsmSetButton';
+import withSelectIds from '@ncigdc/utils/withSelectIds';
 import tableModel from './SsmsTable.model';
 import mapData from './mapData';
 
@@ -58,6 +61,8 @@ type TProps = {
 };
 
 export default compose(
+  withProps(({ defaultFilters }) => ({ filters: defaultFilters })),
+  withSelectIds,
   withBetterRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withTheme,
@@ -84,6 +89,8 @@ export default compose(
       tableColumns,
       hideContext,
       hideSurvival,
+      selectedIds,
+      setSelectedIds,
     }: TProps = {},
   ) => {
     if (ssms && !ssms.hits.edges.length) {
@@ -119,6 +126,7 @@ export default compose(
           <Row style={{ alignItems: 'flex-end' }}>
             <TableActions
               type="ssm"
+              displayType="mutation"
               currentFilters={query.ssmsTable_filters || defaultFilters}
               style={{ marginLeft: '2rem' }}
               arrangeColumnKey="ssms"
@@ -138,6 +146,10 @@ export default compose(
               ]}
               tsvSelector="#ssms-table"
               tsvFilename="frequent-mutations.tsv"
+              CreateSetButton={CreateExploreSsmSetButton}
+              RemoveFromSetButton={RemoveFromExploreSsmSetButton}
+              idField="ssms.ssm_id"
+              selectedIds={selectedIds}
             />
           </Row>
         </Row>
@@ -147,11 +159,28 @@ export default compose(
             headings={tableInfo
               .filter(x => (hideContext ? x.id !== 'filteredCases' : true))
               .filter(x => (hideSurvival ? x.id !== 'survival_plot' : true))
-              .map(x => <x.th key={x.id} context={context} theme={theme} />)}
+              .map(x =>
+                <x.th
+                  key={x.id}
+                  context={context}
+                  theme={theme}
+                  nodes={data}
+                  selectedIds={selectedIds}
+                  setSelectedIds={setSelectedIds}
+                />,
+              )}
             body={
               <tbody>
                 {data.map((node, i) =>
-                  <Tr key={node.id} index={i}>
+                  <Tr
+                    key={node.id}
+                    index={i}
+                    style={{
+                      ...(selectedIds.includes(node.ssm_id) && {
+                        backgroundColor: theme.tableHighlight,
+                      }),
+                    }}
+                  >
                     {tableInfo
                       .filter(x => x.td)
                       .filter(
@@ -179,6 +208,8 @@ export default compose(
                           hasEnoughSurvivalDataOnPrimaryCurve={
                             hasEnoughSurvivalDataOnPrimaryCurve
                           }
+                          selectedIds={selectedIds}
+                          setSelectedIds={setSelectedIds}
                         />,
                       )}
                   </Tr>,

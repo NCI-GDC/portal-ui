@@ -108,7 +108,7 @@ export const createSelectColumn: TCreateSelectColumn = ({
     downloadable: false,
     hidden: false,
     th: ({ nodes, selectedIds, setSelectedIds }) => {
-      const ids = nodes.map(({ node }) => node[idField]);
+      const ids = nodes.map(node => node[idField]);
       const allSelected = ids.every(id => selectedIds.includes(id));
 
       return (

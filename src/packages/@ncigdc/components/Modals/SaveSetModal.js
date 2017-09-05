@@ -15,8 +15,8 @@ const enhance = compose(
   withState(
     'input',
     'setInput',
-    ({ filters, type, sets }) =>
-      filtersToName({ filters, sets }) || `All ${type}s`,
+    ({ filters, displayType, sets }) =>
+      filtersToName({ filters, sets }) || `All ${displayType}s`,
   ),
   withProps(({ sets, type }) => ({ sets: sets[type] || {} })),
   withState('shouldCallCreateSet', 'setShouldCallCreateSet', false),

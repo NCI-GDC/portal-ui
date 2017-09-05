@@ -8,7 +8,7 @@ export default (Component: ReactClass<*>) =>
   compose(
     withPropsOnChange(
       ['exploreCasesTableViewer'],
-      ({ exploreCasesTableViewer, defaultFilters = null }) => {
+      ({ exploreCasesTableViewer, filters = null }) => {
         const { hits } = exploreCasesTableViewer.explore.cases;
         const caseIds = hits.edges.map(e => e.node.case_id);
 
@@ -16,7 +16,7 @@ export default (Component: ReactClass<*>) =>
           variables: {
             ssmCountsfilters: caseIds.length
               ? addInFilters(
-                  defaultFilters,
+                  filters,
                   makeFilter(
                     [
                       {

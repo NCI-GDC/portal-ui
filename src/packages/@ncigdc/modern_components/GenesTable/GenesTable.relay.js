@@ -16,6 +16,7 @@ export default (Component: ReactClass<*>) =>
         const q = parse(search);
 
         return {
+          filters: defaultFilters,
           variables: {
             genesTable_filters: parseFilterParam(
               q.genesTable_filters,

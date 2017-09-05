@@ -278,7 +278,8 @@ const ManageSetsPage = ({
                         <Td
                           key={`label${i}`}
                           style={{
-                            width: '50%',
+                            width: '450px',
+                            whiteSpace: 'normal',
                           }}
                         >
                           <EditableLabel
@@ -358,7 +359,8 @@ const ManageSetsPage = ({
               />
               Please be aware that your custom sets are not persisted through
               GDC data
-              releases. You can export them from here, re-upload them in{' '}
+              releases.<br />
+              You can export them from here, re-upload them in{' '}
               <ExploreLink>Exploration</ExploreLink> and save them again at the
               next
               GDC data release.

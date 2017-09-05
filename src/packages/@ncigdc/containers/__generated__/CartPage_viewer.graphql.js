@@ -3,7 +3,7 @@
  *   relay-compiler
  *
  * @providesModule CartPage_viewer.graphql
- * @generated SignedSource<<f16890dde29c797d25941e0833125f70>>
+ * @generated SignedSource<<41f3b9ca9c3d157138306f683ab0cbe6>>
  * @flow
  * @nogrep
  */
@@ -30,11 +30,6 @@ export type CartPage_viewer = {|
       |};
     |};
   |};
-  +repository: ?{|
-    +files: ?{|
-      +hits: ?{| |};
-    |};
-  |};
 |};
 */
 
@@ -45,21 +40,6 @@ const fragment /*: ConcreteFragment*/ = {
       "kind": "RootArgument",
       "name": "filters",
       "type": "FiltersArgument"
-    },
-    {
-      "kind": "RootArgument",
-      "name": "files_size",
-      "type": "Int"
-    },
-    {
-      "kind": "RootArgument",
-      "name": "files_offset",
-      "type": "Int"
-    },
-    {
-      "kind": "RootArgument",
-      "name": "files_sort",
-      "type": "[Sort]"
     }
   ],
   "kind": "Fragment",
@@ -153,69 +133,6 @@ const fragment /*: ConcreteFragment*/ = {
                   "args": null,
                   "name": "value",
                   "storageKey": null
-                }
-              ],
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    },
-    {
-      "kind": "LinkedField",
-      "alias": null,
-      "args": null,
-      "concreteType": "Repository",
-      "name": "repository",
-      "plural": false,
-      "selections": [
-        {
-          "kind": "LinkedField",
-          "alias": null,
-          "args": null,
-          "concreteType": "Files",
-          "name": "files",
-          "plural": false,
-          "selections": [
-            {
-              "kind": "LinkedField",
-              "alias": null,
-              "args": [
-                {
-                  "kind": "Variable",
-                  "name": "filters",
-                  "variableName": "filters",
-                  "type": "FiltersArgument"
-                },
-                {
-                  "kind": "Variable",
-                  "name": "first",
-                  "variableName": "files_size",
-                  "type": "Int"
-                },
-                {
-                  "kind": "Variable",
-                  "name": "offset",
-                  "variableName": "files_offset",
-                  "type": "Int"
-                },
-                {
-                  "kind": "Variable",
-                  "name": "sort",
-                  "variableName": "files_sort",
-                  "type": "[Sort]"
-                }
-              ],
-              "concreteType": "FileConnection",
-              "name": "hits",
-              "plural": false,
-              "selections": [
-                {
-                  "kind": "FragmentSpread",
-                  "name": "FilesTable_hits",
-                  "args": null
                 }
               ],
               "storageKey": null

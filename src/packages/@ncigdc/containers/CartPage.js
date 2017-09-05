@@ -10,11 +10,12 @@ import CaseIcon from 'react-icons/lib/fa/user';
 import FileSizeIcon from 'react-icons/lib/fa/floppy-o';
 
 // Custom
+import { setFilter } from '@ncigdc/utils/filters';
 import formatFileSize from '@ncigdc/utils/formatFileSize';
 import { getAuthCounts } from '@ncigdc/utils/auth';
 import { Row, Column } from '@ncigdc/uikit/Flex';
 import { withTheme } from '@ncigdc/theme';
-import FilesTable from '@ncigdc/containers/FilesTable';
+import FilesTable from '@ncigdc/modern_components/FilesTable';
 import MetadataDownloadButton from '@ncigdc/components/MetadataDownloadButton';
 import SummaryCard from '@ncigdc/components/SummaryCard';
 import HowToDownload from '@ncigdc/components/HowToDownload';
@@ -75,11 +76,17 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
 
   const fileSize = viewer.summary.aggregations.fs.value;
 
+  const filters = files.length
+    ? setFilter({
+        field: 'files.file_id',
+        value: files.map(f => f.file_id),
+      })
+    : null;
+
   return (
     <Column style={styles.container} className="test-cart-page">
       {!files.length && <h1>Your cart is empty.</h1>}
       {!!files.length &&
-        !!viewer.repository.files.hits &&
         <Column>
           <Row style={{ marginBottom: '2rem', flexWrap: 'wrap' }}>
             <Column spacing="0.8rem" style={{ marginRight: '1rem' }}>
@@ -288,10 +295,10 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
             </Row>
           </Row>
           <FilesTable
-            hits={viewer.repository.files.hits}
             downloadable={false}
             canAddToCart={false}
             tableHeader={'Cart Items'}
+            filters={filters}
           />
         </Column>}
     </Column>
@@ -330,13 +337,6 @@ export default createFragmentContainer(
             }
           }
           fs { value }
-        }
-      }
-      repository {
-        files {
-          hits(first: $files_size offset: $files_offset, sort: $files_sort filters: $filters) {
-            ...FilesTable_hits
-          }
         }
       }
     }

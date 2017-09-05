@@ -24,6 +24,7 @@ const enhance = compose(
 export default enhance(
   ({
     type,
+    displayType,
     dispatch,
     CreateSetButton,
     RemoveFromSetButton,
@@ -33,7 +34,7 @@ export default enhance(
     selectedIds,
     ...props
   }) => {
-    const titleType = type.replace(/^./, m => m.toUpperCase());
+    const titleType = displayType.replace(/^./, m => m.toUpperCase());
     const total = selectedIds.length || props.total || 0;
     const countAndType = pluralize(titleType, total, true);
     const filters = selectedIds.length
@@ -76,13 +77,14 @@ export default enhance(
                     total={total}
                     filters={filters}
                     type={type}
+                    displayType={displayType}
                     CreateSetButton={CreateSetButton}
                   />,
                 ),
               );
             }}
           >
-            Save as new {type} set
+            Save as new {displayType} set
           </DropdownItem>
           {hasSets &&
             <DropdownItem
@@ -101,7 +103,7 @@ export default enhance(
                 );
               }}
             >
-              Add to existing {type} set
+              Add to existing {displayType} set
             </DropdownItem>}
           {hasSets &&
             <DropdownItem
@@ -120,7 +122,7 @@ export default enhance(
                 );
               }}
             >
-              Remove from existing {type} set
+              Remove from existing {displayType} set
             </DropdownItem>}
         </Column>
       </Dropdown>

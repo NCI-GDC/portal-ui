@@ -104,7 +104,7 @@ export const UploadSsmSet = withProps(() => ({
     mainField: 'ssms.ssm_id',
   }))(CreateSetButton),
   inputProps: {
-    type: 'ssm',
+    displayType: 'mutation',
     placeholder:
       'e.g. chr3:g.179234297A>G, 92b75ae1-8d4d-52c2-8658-9c981eef0e57',
     helpText: (
@@ -113,8 +113,8 @@ export const UploadSsmSet = withProps(() => ({
           - Mutation identifier accepted:{' '}
           {Object.values(SSM_ID_FIELD_DISPLAY).join(', ')}
         </div>
-        - Delimiters between ssm identifiers: comma, space, tab or 1 ssm
-        identifier per line<br />
+        - Delimiters between mutation identifiers: comma, space, tab or 1
+        mutation identifier per line<br />
         - If you upload a file, format file is text file (.txt, .csv,
         .tsv)
       </div>
@@ -123,6 +123,6 @@ export const UploadSsmSet = withProps(() => ({
   MappingTable: SsmMappingTable,
   validateHits: ssmValidateHits,
   idMap: ssmMap,
-  heading: 'Upload Ssm Set',
-  validatingMessage: <span><SpinnerIcon /> validating ssms</span>,
+  heading: 'Upload Mutation Set',
+  validatingMessage: <span><SpinnerIcon /> validating mutations</span>,
 }))(Base);

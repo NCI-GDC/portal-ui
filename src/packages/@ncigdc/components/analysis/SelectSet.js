@@ -49,10 +49,10 @@ const SetTable = ({
     { key: 'count', title: 'Items', style: { textAlign: 'right' } },
   ];
   const setData = Object.entries(sets)
-    .map(([type, sets]: [string, any], i) => {
+    .map(([type, sets]: [string, any]) => {
       const CountComponent = countComponents[type];
 
-      return Object.entries(sets).map(([setId, label]: [string, any], j) => {
+      return Object.entries(sets).map(([setId, label]: [string, any]) => {
         const id = `set-table-${type}-${setId}-select`;
         const checked = (selectedSets[type] || []).includes(setId);
 
@@ -72,7 +72,6 @@ const SetTable = ({
                   marginLeft: 3,
                   pointerEvents: msg ? 'none' : 'initial',
                 }}
-                autoFocus={j === 0 && i === 0}
                 id={id}
                 type="checkbox"
                 value={setId}

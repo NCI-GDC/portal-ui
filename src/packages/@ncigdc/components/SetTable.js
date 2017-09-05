@@ -31,14 +31,13 @@ const SetTable = ({ sets, setSelected, selected, type, field }: TProps) => {
 
   return (
     <EntityPageHorizontalTable
-      data={Object.keys(sets).map((key, i) => {
+      data={Object.keys(sets).map(key => {
         const id = `set-table-${key}-select`;
 
         return {
           select: (
             <input
               style={{ marginLeft: 3 }}
-              autoFocus={i === 0}
               id={id}
               type="radio"
               value={key}

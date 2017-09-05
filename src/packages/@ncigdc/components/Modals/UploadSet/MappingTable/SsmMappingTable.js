@@ -15,6 +15,7 @@ import toTsvString from '@ncigdc/utils/toTsvString';
 import { visualizingButton } from '@ncigdc/theme/mixins';
 import { theme } from '@ncigdc/theme';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
+import pluralize from '@ncigdc/utils/pluralize';
 
 import Base from './Base';
 
@@ -37,7 +38,6 @@ const enhance = compose(
       }, {}),
     )
       .map(([ssmId, submitted]) => {
-        console.log(ssmMap);
         const ssmData = ssmMap[ssmId.toUpperCase()];
         var temp = SSM_ID_FIELDS.map((idField, i) => {
           const value = getIds(ssmData, idField).filter(v =>
@@ -94,9 +94,8 @@ export default enhance(
                   }}
                 >
                   <div>
-                    {from} submitted ssm identifier{from > 1 ? 's' : ''}{' '}
-                    mapped to{' '}
-                    {to} unique GDC ssm{to > 1 ? 's' : ''}
+                    {from} submitted mutation {pluralize('identifier', from)}{' '}
+                    mapped to {to} unique GDC {pluralize('mutation', to)}
                   </div>
                   <Button
                     style={{ ...visualizingButton }}
@@ -116,7 +115,7 @@ export default enhance(
                           })),
                         ),
                         'TSV',
-                        `matched-ssm-list.tsv`,
+                        `matched-mutation-list.tsv`,
                       )}
                   >
                     TSV
@@ -130,14 +129,14 @@ export default enhance(
                   headings={[
                     {
                       key: 'submitted',
-                      title: 'Submitted Ssm Identifier',
+                      title: 'Submitted Mutation Identifier',
                       subheadings: submittedHeaders,
                       thStyle: { textAlign: 'center' },
                     },
                     {
                       key: 'mapped',
                       title: 'Mapped To',
-                      subheadings: ['GDC Ssm ID'],
+                      subheadings: ['GDC Mutation ID'],
                       thStyle: { textAlign: 'center' },
                     },
                   ]}
@@ -158,8 +157,8 @@ export default enhance(
                   }}
                 >
                   <div>
-                    {unmatched.length} submitted ssm identifier{unmatched.length > 1 ? 's' : ''}{' '}
-                    not recognized
+                    {unmatched.length} submitted mutation{' '}
+                    {pluralize('identifier', unmatched.length)} not recognized
                   </div>
                   <Button
                     style={{ ...visualizingButton }}
@@ -168,7 +167,7 @@ export default enhance(
                       saveFile(
                         toTsvString(unmatched),
                         'TSV',
-                        `unmatched-ssm-list.tsv`,
+                        `unmatched-mutation-list.tsv`,
                       )}
                   >
                     TSV
@@ -179,7 +178,7 @@ export default enhance(
                   headings={[
                     {
                       key: 'submitted',
-                      title: 'Submitted Ssm Identifier',
+                      title: 'Submitted Mutation Identifier',
                       thStyle: { textAlign: 'center' },
                     },
                   ]}

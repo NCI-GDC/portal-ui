@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState, withPropsOnChange, withProps } from 'recompose';
+import { compose, withState, withPropsOnChange } from 'recompose';
 import withSize from '@ncigdc/utils/withSize';
 import withRouter from '@ncigdc/utils/withRouter';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -20,7 +20,6 @@ export default compose(
   withRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
   withState('ssmCountsLoading', 'setSsmCountsLoading', true),
-  withProps(({ defaultFilters }) => ({ filters: defaultFilters })),
   withSelectIds,
   withPropsOnChange(
     ['ssmsAggregationsViewer'],
@@ -38,7 +37,7 @@ export default compose(
 )(
   ({
     genesTableViewer: { explore } = {},
-    defaultFilters,
+    filters,
     relay = { route: { params: {} } },
     setSurvivalLoadingId,
     survivalLoadingId,
@@ -91,7 +90,7 @@ export default compose(
               total={totalGenes}
               endpoint="genes"
               downloadTooltip="Export All Except #Cases and #Mutations"
-              currentFilters={defaultFilters}
+              currentFilters={filters}
               downloadFields={[
                 'symbol',
                 'name',
@@ -142,7 +141,7 @@ export default compose(
                           context={context}
                           ssmCounts={ssmCounts}
                           cases={cases}
-                          defaultFilters={defaultFilters}
+                          defaultFilters={filters}
                           filteredCases={filteredCases}
                           query={query}
                           setSurvivalLoadingId={setSurvivalLoadingId}

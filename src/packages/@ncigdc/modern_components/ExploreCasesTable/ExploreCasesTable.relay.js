@@ -19,7 +19,7 @@ export default (Component: ReactClass<*>) =>
         const q = parse(search);
         const filters = parseFilterParam(q.filters, defaultFilters);
         return {
-          defaultFilters: filters,
+          filters,
           variables: {
             filters,
             cases_offset: parseIntParam(q.cases_offset, 0),

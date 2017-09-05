@@ -39,7 +39,7 @@ export default compose(
     ssmCountsLoading,
     tableColumns,
     parentVariables,
-    defaultFilters,
+    filters,
     selectedIds,
     setSelectedIds,
   }) => {
@@ -77,7 +77,7 @@ export default compose(
             total={cases.hits.total}
             endpoint="case_ssms"
             downloadTooltip="Export All Except #Mutations and #Genes"
-            currentFilters={defaultFilters}
+            currentFilters={filters}
             downloadFields={tableInfo
               .filter(x => x.downloadable)
               .map(x => x.field || x.id)}
@@ -128,7 +128,7 @@ export default compose(
                           total={cases.hits.total}
                           ssmCount={ssmCounts[e.node.case_id]}
                           ssmCountsLoading={ssmCountsLoading}
-                          filters={defaultFilters}
+                          filters={filters}
                           selectedIds={selectedIds}
                           setSelectedIds={setSelectedIds}
                         />,

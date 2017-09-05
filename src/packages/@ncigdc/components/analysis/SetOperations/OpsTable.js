@@ -5,16 +5,7 @@ import { theme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { setModal } from '@ncigdc/dux/modal';
-import CreateExploreCaseSetButton from '@ncigdc/modern_components/setButtons/CreateExploreCaseSetButton';
-import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
-import CreateExploreSsmSetButton from '@ncigdc/modern_components/setButtons/CreateExploreSsmSetButton';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
-
-const CreateSetButtonMap = {
-  case: CreateExploreCaseSetButton,
-  ssm: CreateExploreSsmSetButton,
-  gene: CreateExploreGeneSetButton,
-};
 
 export default ({
   selected,
@@ -25,7 +16,7 @@ export default ({
   selectedFilters,
   type,
   dispatch,
-  CreateSetButton = CreateSetButtonMap[type],
+  CreateSetButton,
 }) =>
   <Table
     headings={[
@@ -129,40 +120,41 @@ export default ({
                           />
                         </Tooltip>
                         &nbsp;
-                        <CreateSetButton
-                          filters={op.filters}
-                          onComplete={setId => {
-                            push({
-                              pathname: '/repository',
-                              query: {
-                                filters: stringifyJSONParam({
-                                  op: 'AND',
-                                  content: [
-                                    {
-                                      op: 'IN',
-                                      content: {
-                                        field: `${type}s.${type}_id`,
-                                        value: [`set_id:${setId}`],
+                        {type === 'case' &&
+                          <CreateSetButton
+                            filters={op.filters}
+                            onComplete={setId => {
+                              push({
+                                pathname: '/repository',
+                                query: {
+                                  filters: stringifyJSONParam({
+                                    op: 'AND',
+                                    content: [
+                                      {
+                                        op: 'IN',
+                                        content: {
+                                          field: `${type}s.${type}_id`,
+                                          value: [`set_id:${setId}`],
+                                        },
                                       },
-                                    },
-                                  ],
-                                }),
-                              },
-                            });
-                          }}
-                          Component={p =>
-                            <Tooltip Component="View files in repository">
-                              <i
-                                className="fa fa-database"
-                                {...p}
-                                style={{
-                                  cursor: 'pointer',
-                                  color: 'rgb(37, 94, 153)',
-                                }}
-                              />
-                            </Tooltip>}
-                        />
-
+                                    ],
+                                  }),
+                                },
+                              });
+                            }}
+                            Component={p =>
+                              <Tooltip Component="View files in repository">
+                                <i
+                                  className="fa fa-database"
+                                  {...p}
+                                  style={{
+                                    cursor: 'pointer',
+                                    color: 'rgb(37, 94, 153)',
+                                  }}
+                                />
+                              </Tooltip>}
+                          />}
+                        &nbsp;
                       </span>}
                   </Row>}
               </CountComponent>
@@ -186,13 +178,14 @@ export default ({
                       opacity: 0,
                     }}
                   >
-                    <i
-                      className="fa fa-database"
-                      style={{
-                        cursor: 'pointer',
-                        color: 'rgb(37, 94, 153)',
-                      }}
-                    />
+                    {type === 'case' &&
+                      <i
+                        className="fa fa-database"
+                        style={{
+                          cursor: 'pointer',
+                          color: 'rgb(37, 94, 153)',
+                        }}
+                      />}
                   </span>
                 </Row>
               : <CountComponent filters={selectedFilters}>
@@ -268,39 +261,41 @@ export default ({
                               />
                             </Tooltip>
                             &nbsp;
-                            <CreateSetButton
-                              filters={selectedFilters}
-                              onComplete={setId => {
-                                push({
-                                  pathname: '/repository',
-                                  query: {
-                                    filters: stringifyJSONParam({
-                                      op: 'AND',
-                                      content: [
-                                        {
-                                          op: 'IN',
-                                          content: {
-                                            field: `${type}s.${type}_id`,
-                                            value: [`set_id:${setId}`],
+                            {type === 'case' &&
+                              <CreateSetButton
+                                filters={selectedFilters}
+                                onComplete={setId => {
+                                  push({
+                                    pathname: '/repository',
+                                    query: {
+                                      filters: stringifyJSONParam({
+                                        op: 'AND',
+                                        content: [
+                                          {
+                                            op: 'IN',
+                                            content: {
+                                              field: `${type}s.${type}_id`,
+                                              value: [`set_id:${setId}`],
+                                            },
                                           },
-                                        },
-                                      ],
-                                    }),
-                                  },
-                                });
-                              }}
-                              Component={p =>
-                                <Tooltip Component="View files in repository">
-                                  <i
-                                    className="fa fa-database"
-                                    {...p}
-                                    style={{
-                                      cursor: 'pointer',
-                                      color: 'rgb(37, 94, 153)',
-                                    }}
-                                  />
-                                </Tooltip>}
-                            />
+                                        ],
+                                      }),
+                                    },
+                                  });
+                                }}
+                                Component={p =>
+                                  <Tooltip Component="View files in repository">
+                                    <i
+                                      className="fa fa-database"
+                                      {...p}
+                                      style={{
+                                        cursor: 'pointer',
+                                        color: 'rgb(37, 94, 153)',
+                                      }}
+                                    />
+                                  </Tooltip>}
+                              />}
+                            &nbsp;
                           </span>
                         </Row>}
                 </CountComponent>}

@@ -76,7 +76,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
 
   const fileSize = viewer.summary.aggregations.fs.value;
 
-  const defaultFilters = files.length
+  const filters = files.length
     ? setFilter({
         field: 'files.file_id',
         value: files.map(f => f.file_id),
@@ -298,7 +298,7 @@ const CartPage: TCartPage = ({ viewer, files, user, theme } = {}) => {
             downloadable={false}
             canAddToCart={false}
             tableHeader={'Cart Items'}
-            defaultFilters={defaultFilters}
+            filters={filters}
           />
         </Column>}
     </Column>

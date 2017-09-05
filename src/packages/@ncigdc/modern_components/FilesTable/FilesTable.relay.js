@@ -17,15 +17,15 @@ export default (Component: ReactClass<*>) =>
   compose(
     withRouter,
     withPropsOnChange(
-      ['location', 'defaultFilters'],
-      ({ location, defaultFilters = null, defaultSize = 10 }) => {
+      ['location', 'filters'],
+      ({ location, filters = null, defaultSize = 10 }) => {
         const q = parse(location.search);
         return {
           variables: {
             files_offset: parseIntParam(q.files_offset, 0),
             files_size: parseIntParam(q.files_size, 20),
             files_sort: parseJSONParam(q.files_sort, null),
-            filters: parseFilterParam(q.filters, defaultFilters),
+            filters: parseFilterParam(q.filters, filters),
           },
         };
       },

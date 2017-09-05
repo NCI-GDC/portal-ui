@@ -10,9 +10,9 @@ import Button from '@ncigdc/uikit/Button';
 import withRouter from '@ncigdc/utils/withRouter';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
+import FilesTable from '@ncigdc/modern_components/FilesTable';
 
 import CasesTable from './CasesTable';
-import FilesTable from './FilesTable';
 import { API } from '@ncigdc/utils/constants';
 import { stringifyJSONParam, parseJSONParam } from '@ncigdc/utils/uri';
 
@@ -139,9 +139,7 @@ class SmartSearchComponent extends React.Component {
             {
               id: 'files',
               text: `Files (${this.props.viewer.repository.files.hits.total.toLocaleString()})`,
-              component: (
-                <FilesTable hits={this.props.viewer.repository.files.hits} />
-              ),
+              component: <FilesTable />,
             },
             {
               id: 'cases',
@@ -180,7 +178,6 @@ export const SmartSearchQuery = {
           }
           files {
             hits(first: $files_size offset: $files_offset, filters: $filters) {
-              ${FilesTable.getFragment('hits')}
               total
             }
           }

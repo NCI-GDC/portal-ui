@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
-import { compose, withState, withProps } from 'recompose';
+import { compose, withState } from 'recompose';
 import withSize from '@ncigdc/utils/withSize';
 import withBetterRouter from '@ncigdc/utils/withRouter';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -53,7 +53,7 @@ type TProps = {
     ssmsTable_size: string,
     ssmsTable_filters: string,
   },
-  defaultFilters: TGroupFilter,
+  filters: TGroupFilter,
   parentVariables: Object,
   tableColumns: Array<string>,
   hideContext: boolean,
@@ -61,7 +61,6 @@ type TProps = {
 };
 
 export default compose(
-  withProps(({ defaultFilters }) => ({ filters: defaultFilters })),
   withSelectIds,
   withBetterRouter,
   withState('survivalLoadingId', 'setSurvivalLoadingId', ''),
@@ -71,7 +70,7 @@ export default compose(
 )(
   (
     {
-      defaultFilters,
+      filters,
       contextFilters,
       showSurvivalPlot = false,
       hasEnoughSurvivalDataOnPrimaryCurve,
@@ -127,7 +126,7 @@ export default compose(
             <TableActions
               type="ssm"
               displayType="mutation"
-              currentFilters={query.ssmsTable_filters || defaultFilters}
+              currentFilters={query.ssmsTable_filters || filters}
               style={{ marginLeft: '2rem' }}
               arrangeColumnKey="ssms"
               total={totalSsms}
@@ -197,7 +196,7 @@ export default compose(
                           theme={theme}
                           context={context}
                           cases={cases}
-                          defaultFilters={defaultFilters}
+                          defaultFilters={filters}
                           contextFilters={contextFilters}
                           filteredCases={filteredCases}
                           query={query}

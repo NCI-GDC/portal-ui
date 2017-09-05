@@ -27,6 +27,7 @@ export default (Component: ReactClass<*>) =>
       }) => {
         const q = parse(location.search);
         return {
+          filters: defaultFilters,
           variables: {
             ssmsTable_filters: parseFilterParam(
               q.ssmsTable_filters,

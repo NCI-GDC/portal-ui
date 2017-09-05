@@ -25,6 +25,7 @@ import Banner from '@ncigdc/uikit/Banner';
 import { withTheme } from '@ncigdc/theme';
 import { ExternalLink } from '@ncigdc/uikit/Links';
 import { AnalysisIcon } from '@ncigdc/theme/icons';
+import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import ManageSetsLink from '@ncigdc/components/Links/ManageSetsLink';
 
 const styles = {
@@ -132,7 +133,7 @@ const Header = compose(
           </li>
           <li>
             <RepositoryLink exact activeStyle={styles.activeNavLink(theme)}>
-              <i className="fa fa-database" style={styles.iconPadding} />
+              <DatabaseIcon style={styles.iconPadding} />
               <span className="hidden-sm">Repository</span>
             </RepositoryLink>
           </li>

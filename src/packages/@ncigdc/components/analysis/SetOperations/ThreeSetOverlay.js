@@ -14,6 +14,7 @@ export default ({
     style={{
       position: 'absolute',
       width,
+      pointerEvents: 'none',
     }}
   >
     <TL x={100 + offset / friction} y={100}>

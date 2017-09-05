@@ -10,7 +10,7 @@ export default (Component: React$Element<*>) =>
     withPropsOnChange(['set1', 'set2', 'facets'], ({ set1, set2, facets }) => {
       return {
         variables: {
-          facets: facets,
+          facets,
           filter1: {
             op: 'and',
             content: [
@@ -39,7 +39,6 @@ export default (Component: React$Element<*>) =>
       };
     }),
   )((props: Object) => {
-    console.log('relay:', props);
     return (
       <Query
         parentProps={props}

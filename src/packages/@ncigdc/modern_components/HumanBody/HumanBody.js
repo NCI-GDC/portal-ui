@@ -90,6 +90,7 @@ export default compose(
       setTimeout(() => {
         const root = document.getElementById('human-body-root');
         sapien({
+          title: 'Cases by Major Primary Site',
           clickHandler: d => {
             const key = d._key.replace(/-/g, ' ');
             const datum = data.find(x => x._key === key);

@@ -150,3 +150,4 @@ export const HUMAN_BODY_ALL_ALLOWED_SITES = [
   'Thyroid',
   'Uterus',
 ];
+export const MAX_SET_SIZE = 50000;

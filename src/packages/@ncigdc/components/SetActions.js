@@ -27,18 +27,24 @@ export default enhance(
     displayType,
     dispatch,
     CreateSetButton,
+    AppendSetButton,
     RemoveFromSetButton,
     field,
     style,
     hasSets,
     selectedIds,
+    sort,
+    score,
     ...props
   }) => {
     const titleType = displayType.replace(/^./, m => m.toUpperCase());
     const total = selectedIds.length || props.total || 0;
     const countAndType = pluralize(titleType, total, true);
     const filters = selectedIds.length
-      ? { op: 'in', content: { field, value: selectedIds } }
+      ? {
+          op: 'and',
+          content: [{ op: 'in', content: { field, value: selectedIds } }],
+        }
       : props.filters;
 
     return (
@@ -76,6 +82,8 @@ export default enhance(
                     title={`Save ${countAndType} as New Set`}
                     total={total}
                     filters={filters}
+                    score={score}
+                    sort={sort}
                     type={type}
                     displayType={displayType}
                     CreateSetButton={CreateSetButton}
@@ -95,9 +103,12 @@ export default enhance(
                     <AppendSetModal
                       field={field}
                       title={`Add ${countAndType} to Existing Set`}
+                      total={total}
                       filters={filters}
+                      score={score}
+                      sort={sort}
                       type={type}
-                      CreateSetButton={CreateSetButton}
+                      AppendSetButton={AppendSetButton}
                     />,
                   ),
                 );

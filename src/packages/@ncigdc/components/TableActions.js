@@ -55,8 +55,11 @@ const TableActions = ({
   tsvFilename,
   style,
   currentFilters,
+  sort,
+  score,
   downloadTooltip = 'Export All',
   CreateSetButton,
+  AppendSetButton,
   RemoveFromSetButton,
   idField,
   query,
@@ -107,7 +110,10 @@ const TableActions = ({
         <SetActions
           total={total}
           filters={currentFilters}
+          score={score}
+          sort={sort}
           CreateSetButton={CreateSetButton}
+          AppendSetButton={AppendSetButton}
           RemoveFromSetButton={RemoveFromSetButton}
           field={idField}
           type={type}

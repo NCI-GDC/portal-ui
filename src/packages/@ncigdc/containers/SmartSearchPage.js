@@ -145,7 +145,11 @@ class SmartSearchComponent extends React.Component {
               id: 'cases',
               text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
               component: (
-                <CasesTable hits={this.props.viewer.repository.cases.hits} />
+                <CasesTable
+                  hits={this.props.viewer.repository.cases.hits}
+                  filters={this.props.filters}
+                  sort={this.props.cases_sort}
+                />
               ),
             },
           ]}

@@ -33,6 +33,7 @@ export type TProps = {
   relay: Object,
   dispatch: Function,
   filters: any,
+  cases_sort: any,
   viewer: {
     autocomplete_case: {
       hits: Array<Object>,
@@ -247,6 +248,8 @@ export const RepositoryPageComponent = (props: TProps) => {
                         <CasesTable
                           hits={props.viewer.repository.cases.hits}
                           filters={props.filters}
+                          score="annotations.annotation_id"
+                          sort={props.cases_sort}
                         />
                       </div>
                     : <NoResultsMessage>

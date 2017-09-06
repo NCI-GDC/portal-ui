@@ -14,9 +14,10 @@ export default (Component: ReactClass<*>) =>
       ['location'],
       ({ location: { search }, defaultSize = 10, defaultFilters = null }) => {
         const q = parse(search);
-
+        const score = 'case.project.project_id';
         return {
           filters: defaultFilters,
+          score,
           variables: {
             genesTable_filters: parseFilterParam(
               q.genesTable_filters,
@@ -33,7 +34,7 @@ export default (Component: ReactClass<*>) =>
                 },
               ]),
             ),
-            score: 'case.project.project_id',
+            score,
             ssmTested: makeFilter([
               {
                 field: 'cases.available_variation_data',

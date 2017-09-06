@@ -7,16 +7,21 @@ import BaseModal from '@ncigdc/components/Modals/BaseModal';
 import { addSet, replaceSet } from '@ncigdc/dux/sets';
 import filtersToName from '@ncigdc/utils/filtersToName';
 import WarningBox from '@ncigdc/uikit/WarningBox';
+import pluralize from '@ncigdc/utils/pluralize';
+import { MAX_SET_SIZE } from '@ncigdc/utils/constants';
 
 import onSaveComplete from './onSaveComplete';
 
 const enhance = compose(
   connect(({ sets }) => ({ sets })),
   withState(
-    'input',
-    'setInput',
+    'inputName',
+    'setInputName',
     ({ filters, displayType, sets }) =>
       filtersToName({ filters, sets }) || `All ${displayType}s`,
+  ),
+  withState('inputTotal', 'setInputTotal', ({ total }) =>
+    Math.min(MAX_SET_SIZE, total),
   ),
   withProps(({ sets, type }) => ({ sets: sets[type] || {} })),
   withState('shouldCallCreateSet', 'setShouldCallCreateSet', false),
@@ -25,16 +30,22 @@ const enhance = compose(
 const SaveSetModal = ({
   title,
   CreateSetButton,
-  input,
-  setInput,
+  inputName,
+  setInputName,
   filters,
+  sort,
+  score,
   dispatch,
   type,
   sets,
   shouldCallCreateSet,
   setShouldCallCreateSet,
+  inputTotal,
+  setInputTotal,
 }) => {
-  const existingSet = Object.entries(sets).find(([, label]) => label === input);
+  const existingSet = Object.entries(sets).find(
+    ([, label]) => label === inputName,
+  );
   return (
     <BaseModal
       title={title}
@@ -42,13 +53,16 @@ const SaveSetModal = ({
       extraButtons={
         <CreateSetButton
           forceCreate
-          disabled={!input}
+          disabled={!inputName || inputTotal > MAX_SET_SIZE}
           filters={filters}
+          size={inputTotal}
+          sort={sort}
+          score={score}
           shouldCallCreateSet={shouldCallCreateSet}
           onComplete={setId => {
             onSaveComplete({
               dispatch,
-              label: input,
+              label: inputName,
             });
 
             if (existingSet) {
@@ -56,7 +70,7 @@ const SaveSetModal = ({
                 replaceSet({ type, oldId: existingSet[0], newId: setId }),
               );
             } else {
-              dispatch(addSet({ type, label: input, id: setId }));
+              dispatch(addSet({ type, label: inputName, id: setId }));
             }
           }}
         >
@@ -65,14 +79,36 @@ const SaveSetModal = ({
       }
       closeText="Cancel"
     >
-      <label htmlFor="save-set-modal-name">Name: </label>
-      <input
-        autoFocus
-        value={input}
-        onChange={e => setInput(e.target.value)}
-        id="save-set-modal-name"
-        type="text"
-      />
+      <label>
+        Save top:<br />
+        <input
+          type="number"
+          max={MAX_SET_SIZE}
+          value={inputTotal}
+          onChange={e => setInputTotal(e.target.value)}
+        />
+        <div style={{ fontSize: '0.8em' }}>
+          You can save up to the top {pluralize(type, MAX_SET_SIZE, true)}
+        </div>
+      </label>
+
+      {inputTotal > MAX_SET_SIZE &&
+        <WarningBox>
+          Above maximum of {pluralize(type, MAX_SET_SIZE, true)}
+        </WarningBox>}
+
+      <label style={{ marginTop: 10 }}>
+        Name:<br />
+        <input
+          style={{ width: '100%' }}
+          autoFocus
+          value={inputName}
+          onChange={e => setInputName(e.target.value)}
+          id="save-set-modal-name"
+          type="text"
+        />
+      </label>
+
       {existingSet &&
         <WarningBox>
           Warning: A set with the same name exists,

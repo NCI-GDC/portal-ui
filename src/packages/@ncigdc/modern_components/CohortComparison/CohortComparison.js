@@ -99,7 +99,7 @@ export default compose(
     );
 
     return (
-      <Row style={{ margin: '0 3rem' }}>
+      <Row style={{ margin: '0 3rem', paddingBottom: 20 }}>
         <div style={{ flex: 5 }}>
           <h1>Cohort Comparison</h1>
           <Table
@@ -121,13 +121,17 @@ export default compose(
                   <Td style={{ width: '150px', color: set1_colour }}>
                     <Alias i={1} /> : {Set1}
                   </Td>
-                  <Td style={{ textAlign: 'right' }}>{result1.hits.total}</Td>
+                  <Td style={{ textAlign: 'right' }}>
+                    {result1.hits.total.toLocaleString()}
+                  </Td>
                 </Tr>
                 <Tr>
                   <Td style={{ width: '150px', color: set2_colour }}>
                     <Alias i={2} /> : {Set2}
                   </Td>
-                  <Td style={{ textAlign: 'right' }}>{result2.hits.total}</Td>
+                  <Td style={{ textAlign: 'right' }}>
+                    {result2.hits.total.toLocaleString()}
+                  </Td>
                 </Tr>
               </tbody>
             }
@@ -151,6 +155,8 @@ export default compose(
               result2,
               Set1,
               Set2,
+              set1,
+              set2,
             }),
           )}
         </div>

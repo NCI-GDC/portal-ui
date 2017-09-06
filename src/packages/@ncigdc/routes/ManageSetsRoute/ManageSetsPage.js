@@ -261,7 +261,7 @@ const ManageSetsPage = ({
                             textTransform: 'capitalize',
                           }}
                         >
-                          {type}
+                          {type === 'ssm' ? 'mutations' : type + 's'}
                         </Td>
                         <Td
                           key={`label${i}`}

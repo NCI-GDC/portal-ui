@@ -4,10 +4,10 @@ import { compose, withState, withProps } from 'recompose';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { withTheme } from '@ncigdc/theme';
 import { Row } from '@ncigdc/uikit/Flex';
-import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import { getDefaultCurve } from '@ncigdc/utils/survivalplot';
 import FacetTable from './FacetTable';
+import Survival from './Survival';
 
 const mapping = {
   'demographic.gender': 'Gender',
@@ -89,7 +89,7 @@ export default compose(
 
     return (
       <Row style={{ margin: '0 3rem' }}>
-        <div style={{ flex: 8 }}>
+        <div style={{ flex: 5 }}>
           <h1>Cohort Comparison</h1>
           <Table
             headings={[
@@ -100,7 +100,7 @@ export default compose(
                 key="2"
                 style={{ textAlign: 'right', backgroundColor: 'white' }}
               >
-                # of cases
+                # Cases
               </Th>,
             ]}
             body={
@@ -121,51 +121,11 @@ export default compose(
             }
           />
 
-          <h2>Survival Analysis</h2>
-          <div style={{ width: '50%' }}>
-            <SurvivalPlotWrapper {...survivalData} height={240} />
-            {survivalData.rawData &&
-              <Table
-                headings={[
-                  <Th>Cases included in Analysis</Th>,
-                  <Th style={{ textAlign: 'right' }}>
-                    # of items in <Alias i={1} />
-                  </Th>,
-                  <Th style={{ textAlign: 'right' }}>%</Th>,
-                  <Th style={{ textAlign: 'right' }}>
-                    # of items in <Alias i={2} />
-                  </Th>,
-                  <Th style={{ textAlign: 'right' }}>%</Th>,
-                ]}
-                body={
-                  <tbody>
-                    <Tr>
-                      <Td width={250}>Overall Survival Analysis</Td>
-                      <Td style={{ textAlign: 'right' }}>
-                        {survivalData.rawData.results[0] &&
-                          survivalData.rawData.results[0].donors.length}
-                      </Td>
-                      <Td style={{ textAlign: 'right' }}>
-                        {survivalData.rawData.results[0] &&
-                          (survivalData.rawData.results[0].donors.length /
-                            result1.hits.total *
-                            100).toFixed(0)}%
-                      </Td>
-                      <Td style={{ textAlign: 'right' }}>
-                        {survivalData.rawData.results[1] &&
-                          survivalData.rawData.results[1].donors.length}
-                      </Td>
-                      <Td style={{ textAlign: 'right' }}>
-                        {survivalData.rawData.results[1] &&
-                          (survivalData.rawData.results[1].donors.length /
-                            result2.hits.total *
-                            100).toFixed(0)}%
-                      </Td>
-                    </Tr>
-                  </tbody>
-                }
-              />}
-          </div>
+          {Survival({
+            survivalData,
+            result1,
+            result2,
+          })}
 
           {facets.map(field =>
             FacetTable({
@@ -179,7 +139,7 @@ export default compose(
             }),
           )}
         </div>
-        <div style={{ flex: 4 }} />
+        <div style={{ flex: 7 }} />
       </Row>
     );
   },

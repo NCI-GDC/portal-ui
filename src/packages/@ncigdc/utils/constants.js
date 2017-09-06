@@ -69,3 +69,5 @@ export const MUTATION_SUBTYPE_MAP = {
 };
 
 export const DNA_CHANGE_MARKERS = ['del', 'ins', '>'];
+
+export const MAX_SET_SIZE = 50000;

@@ -2,9 +2,12 @@
 
 import React from 'react';
 
-import DismissibleBanner from '@ncigdc/components/DismissibleBanner';
-
+import {
+  FindDataBanner,
+  ApiOverrideBanner,
+} from '@ncigdc/components/DismissibleBanner';
 import { fetchApi } from '@ncigdc/utils/ajax';
+import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
 
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
@@ -35,9 +38,16 @@ let initialState = [
     level: 'INFO',
     id: 'initial_banner',
     dismissible: true,
-    message: <DismissibleBanner />,
+    message: <FindDataBanner />,
   },
-];
+  LOCAL_STORAGE_API_OVERRIDE && {
+    components: ['PORTAL'],
+    level: 'INFO',
+    id: 'api_override',
+    dismissible: true,
+    message: <ApiOverrideBanner />,
+  },
+].filter(Boolean);
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {

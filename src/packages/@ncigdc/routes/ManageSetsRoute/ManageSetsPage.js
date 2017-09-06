@@ -22,19 +22,13 @@ import { Tooltip } from '@ncigdc/uikit/Tooltip';
 import { ExclamationTriangleIcon } from '@ncigdc/theme/icons';
 import DatabaseIcon from '@ncigdc/theme/icons/Database';
 import UnstyledButton from '@ncigdc/uikit/UnstyledButton';
-
+import { SET_DOWNLOAD_FIELDS as downloadFields } from '@ncigdc/utils/constants';
 import DownloadButton from '@ncigdc/components/DownloadButton';
 
 const fields = {
   case: 'cases.case_id',
   gene: 'genes.gene_id',
   ssm: 'ssms.ssm_id',
-};
-
-const downloadFields = {
-  case: ['submitter_id', 'project.project_id', 'case_id'],
-  gene: ['symbol', 'gene_id'],
-  ssm: ['genomic_dna_change', 'ssm_id'],
 };
 
 const enhance = compose(

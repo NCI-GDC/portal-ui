@@ -286,7 +286,8 @@ const ManageSetsPage = ({
                           {get(setSizes, id) > 0
                             ? <ExploreLink
                                 query={{
-                                  searchTableTab: `${type}s`,
+                                  searchTableTab:
+                                    (type === 'ssm' ? 'mutation' : type) + 's',
                                   filters: linkFilters,
                                 }}
                               >

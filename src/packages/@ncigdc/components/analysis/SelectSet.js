@@ -25,6 +25,7 @@ type TProps = {
   validateSets: Function,
   description: string,
   Icon: Function,
+  setTypes: Array<string>,
 };
 
 const enhance = compose(
@@ -45,6 +46,7 @@ const SetTable = ({
   validateSets,
   Icon,
   description,
+  setTypes,
 }: TProps) => {
   const headings = [
     { key: 'select', title: ' ' },
@@ -53,6 +55,7 @@ const SetTable = ({
     { key: 'count', title: 'Items', style: { textAlign: 'right' } },
   ];
   const setData = Object.entries(sets)
+    .filter(([type]) => setTypes.includes(type))
     .map(([type, sets]: [string, any]) => {
       const CountComponent = countComponents[type];
 
@@ -115,7 +118,7 @@ const SetTable = ({
   return (
     <div>
       <Row>
-        <Column style={{ padding: '2rem 2.5rem 0' }}>
+        <Column style={{ padding: '2rem 2.5rem 0', flex: 1 }}>
           <Row>
             <Row
               style={{

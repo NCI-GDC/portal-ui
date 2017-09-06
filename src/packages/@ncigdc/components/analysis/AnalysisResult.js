@@ -77,7 +77,7 @@ const AnalysisResult = ({ analysis, query, dispatch, push }) => {
               text: (
                 <Row>
                   <div style={{ marginRight: 15 }}>
-                    {analysis.title}
+                    {analysis.label}
                     <div style={{ fontSize: '1rem' }}>
                       {new Date(savedAnalysis.created).toLocaleDateString()}
                     </div>

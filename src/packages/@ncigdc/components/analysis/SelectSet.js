@@ -97,7 +97,7 @@ const SetTable = ({
               />
             </Tooltip>
           ),
-          type: type.replace(/^./, m => m.toUpperCase()),
+          type: _.capitalize(type === 'ssm' ? 'mutations' : type + 's'),
           name: <label htmlFor={id}>{_.truncate(label, { length: 70 })}</label>,
           count: (
             <CountComponent

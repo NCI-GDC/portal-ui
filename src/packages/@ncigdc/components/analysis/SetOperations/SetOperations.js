@@ -136,7 +136,6 @@ export default compose(
                 selectedFilters,
                 CreateSetButton,
               })}
-              />
             </Column>
           </Row>
         </Column>

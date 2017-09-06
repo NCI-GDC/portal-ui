@@ -13,15 +13,15 @@ export default ({ survivalData, result1, result2, Set1, Set2 }) =>
       {survivalData.rawData &&
         <Table
           headings={[
-            <Th>Cases included in Analysis</Th>,
-            <Th style={{ textAlign: 'right' }}>
+            <Th key="1">Cases included in Analysis</Th>,
+            <Th key="2" style={{ textAlign: 'right' }}>
               # Cases
             </Th>,
-            <Th style={{ textAlign: 'right' }}>%</Th>,
-            <Th style={{ textAlign: 'right' }}>
+            <Th key="3" style={{ textAlign: 'right' }}>%</Th>,
+            <Th key="4" style={{ textAlign: 'right' }}>
               # Cases
             </Th>,
-            <Th style={{ textAlign: 'right' }}>%</Th>,
+            <Th key="5" style={{ textAlign: 'right' }}>%</Th>,
           ]}
           body={
             <tbody>

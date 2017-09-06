@@ -41,7 +41,10 @@ export default enhance(
     const total = selectedIds.length || props.total || 0;
     const countAndType = pluralize(titleType, total, true);
     const filters = selectedIds.length
-      ? { op: 'in', content: { field, value: selectedIds } }
+      ? {
+          op: 'and',
+          content: [{ op: 'in', content: { field, value: selectedIds } }],
+        }
       : props.filters;
 
     return (

@@ -12,8 +12,24 @@ import { LOCAL_STORAGE_API_OVERRIDE } from '@ncigdc/utils/constants';
 const NOTIFICATION_SUCCESS = 'NOTIFICATION_SUCCESS';
 const NOTIFICATION_DISMISS = 'NOTIFICATION_DISMISS';
 
+type TState = Array<{
+  components: Array<string>,
+  level: string,
+  id: string,
+  dismissible: boolean,
+  message: any,
+  dismissed?: boolean,
+}>;
+
+type TAction = {
+  type: string,
+  payload: Array<{
+    id: string,
+    components: Array<string>,
+  }>,
+};
 export function fetchNotifications() {
-  return async dispatch => {
+  return async (dispatch: Function) => {
     let { data } = await fetchApi('notifications', {
       headers: { 'Content-Type': 'application/json' },
     });
@@ -25,10 +41,10 @@ export function fetchNotifications() {
   };
 }
 
-export function dismissNotification(notificationID) {
+export function dismissNotification(notificationID: string) {
   return {
     type: NOTIFICATION_DISMISS,
-    payload: { id: notificationID },
+    payload: [{ id: notificationID }],
   };
 }
 
@@ -40,20 +56,23 @@ let initialState = [
     dismissible: true,
     message: <FindDataBanner />,
   },
-  LOCAL_STORAGE_API_OVERRIDE && {
+];
+
+if (LOCAL_STORAGE_API_OVERRIDE) {
+  initialState.push({
     components: ['PORTAL'],
     level: 'INFO',
     id: 'api_override',
     dismissible: true,
     message: <ApiOverrideBanner />,
-  },
-].filter(Boolean);
+  });
+}
 
-const reducer = (state = initialState, action) => {
+const reducer = (state: TState = initialState, action: TAction) => {
   switch (action.type) {
     case NOTIFICATION_SUCCESS:
       return [
-        ...(action.payload || [])
+        ...(Array.isArray(action.payload) ? action.payload : [])
           .filter(
             n =>
               n.components.includes('PORTAL') || n.components.includes('API'),
@@ -62,9 +81,10 @@ const reducer = (state = initialState, action) => {
         ...state,
       ];
     case NOTIFICATION_DISMISS:
+      const ids = action.payload.map(p => p.id);
       return state.map(n => ({
         ...n,
-        dismissed: n.id === action.payload.id ? true : n.dismissed,
+        dismissed: ids.includes(n.id) ? true : n.dismissed,
       }));
     default:
       return state;

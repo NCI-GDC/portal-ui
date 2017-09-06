@@ -8,6 +8,7 @@ import { setModal } from '@ncigdc/dux/modal';
 import SaveSetModal from '@ncigdc/components/Modals/SaveSetModal';
 import { SET_DOWNLOAD_FIELDS as downloadFields } from '@ncigdc/utils/constants';
 import DownloadButton from '@ncigdc/components/DownloadButton';
+import { iconButton } from '@ncigdc/theme/mixins';
 
 export default ({
   selected,
@@ -127,13 +128,7 @@ export default ({
                         <Tooltip Component="Export as TSV">
                           <DownloadButton
                             className="test-download-set-tsv"
-                            style={{
-                              margin: 0,
-                              padding: 0,
-                              display: 'inline',
-                              color: 'rgb(37, 94, 153)',
-                              backgroundColor: 'transparent',
-                            }}
+                            style={iconButton}
                             endpoint={`${type}s`}
                             activeText="" //intentionally blank
                             inactiveText="" //intentionally blank

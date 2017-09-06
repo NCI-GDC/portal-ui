@@ -22,6 +22,7 @@ type TAnalysis = {|
   |},
   setInstructions: string,
   setDisabledMessage: ({ sets: TSelectedSets, type: string }) => ?string,
+  setTypes: Array<string>,
   validateSets: TSelectedSets => boolean,
   ResultComponent: ReactComponent<*>,
 |};
@@ -65,6 +66,7 @@ const availableAnalysis: Array<TAnalysis> = [
         : (sets[type] || []).length > 3
           ? `Please select two or three ${type} sets`
           : null,
+    setTypes: ['case', 'gene', 'ssm'],
     validateSets: sets => {
       const entries = Object.entries(sets);
       return (
@@ -109,6 +111,7 @@ const availableAnalysis: Array<TAnalysis> = [
         : (sets[type] || []).length >= 2
           ? `You can only select two ${type} set`
           : null,
+    setTypes: ['case'],
     validateSets: sets =>
       ['case'].every((t: any) => (sets[t] || []).length === 2),
     ResultComponent: ({ sets }) => {

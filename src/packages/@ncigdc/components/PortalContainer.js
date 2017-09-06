@@ -96,7 +96,14 @@ const PortalContainer = ({
 }: {
   notifications: Array<{ dismissed: string }>,
 }) =>
-  <div style={{ position: 'relative', minHeight: '100vh', minWidth: 1024 }}>
+  <div
+    style={{
+      position: 'relative',
+      minHeight: '100vh',
+      minWidth: 1024,
+      overflowX: 'hidden',
+    }}
+  >
     <SkipLink href="#skip">Skip to Main Content</SkipLink>
     <ProgressContainer />
     <Header />

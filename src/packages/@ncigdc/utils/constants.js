@@ -168,3 +168,5 @@ export const SET_DOWNLOAD_FIELDS = {
   gene: ['symbol', 'gene_id'],
   ssm: ['genomic_dna_change', 'ssm_id'],
 };
+
+export const MAX_SET_NAME_LENGTH = 100;

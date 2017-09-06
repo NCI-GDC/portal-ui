@@ -19,14 +19,14 @@ function getValues(filters, sets) {
 }
 
 const MAX_VALUES = 6;
-export default function({ filters, max = MAX_VALUES, sets }) {
+export default function({ filters, max = MAX_VALUES, sets, length = 100 }) {
   if (!filters) return '';
   const values = getValues(
     filters,
     Object.values(sets).reduce((a, b) => ({ ...a, ...b }), {}),
   );
   let total = 0;
-  return values
+  const name = values
     .reduce((acc, value, i, arr) => {
       if (total >= MAX_VALUES) return acc;
       const joined = value.slice(0, MAX_VALUES - total).join(' / ');
@@ -39,4 +39,7 @@ export default function({ filters, max = MAX_VALUES, sets }) {
       );
     }, [])
     .join(', ');
+  return name.length <= length
+    ? name
+    : name.slice(0, length - 3).replace(/[, ./]*$/, '...');
 }

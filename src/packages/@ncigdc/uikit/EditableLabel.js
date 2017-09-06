@@ -7,6 +7,8 @@ import Pencil from '@ncigdc/theme/icons/Pencil';
 import { Row } from '@ncigdc/uikit/Flex';
 import Button from '@ncigdc/uikit/Button';
 import { visualizingButton } from '@ncigdc/theme/mixins';
+import { MAX_SET_NAME_LENGTH } from '@ncigdc/utils/constants';
+import { Tooltip } from './Tooltip/index';
 
 export default compose(
   withState('isEditing', 'setIsEditing', false),
@@ -70,15 +72,27 @@ export default compose(
               type="text"
               autoFocus
             />
-            <Button
-              onClick={toggleEditingAndSave}
-              disabled={value.length === 0}
-              style={{
-                ...visualizingButton,
-              }}
+            <Tooltip
+              Component={
+                value.length === 0
+                  ? 'Name must not be empty'
+                  : value.length > MAX_SET_NAME_LENGTH
+                    ? `Maximum name length ${MAX_SET_NAME_LENGTH}`
+                    : null
+              }
             >
-              Save
-            </Button>
+              <Button
+                onClick={toggleEditingAndSave}
+                disabled={
+                  value.length === 0 || value.length > MAX_SET_NAME_LENGTH
+                }
+                style={{
+                  ...visualizingButton,
+                }}
+              >
+                Save
+              </Button>
+            </Tooltip>
             <Button onClick={handleCancel} style={visualizingButton}>
               Cancel
             </Button>

@@ -92,7 +92,7 @@ export default ({
                                     textDecoration: 'underline',
                                   }}
                                 >
-                                  {count}
+                                  {count.toLocaleString()}
                                 </span>
                               </Tooltip>}
                           />}

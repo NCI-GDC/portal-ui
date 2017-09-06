@@ -44,6 +44,8 @@ export default ({ push, setData, type, CountComponent, CreateSetButton }) =>
                       push({
                         pathname: '/exploration',
                         query: {
+                          searchTableTab:
+                            (type === 'ssm' ? 'mutation' : type) + 's',
                           filters: stringifyJSONParam({
                             op: 'AND',
                             content: [

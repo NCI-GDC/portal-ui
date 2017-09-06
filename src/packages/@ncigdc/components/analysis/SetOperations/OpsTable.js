@@ -65,6 +65,8 @@ export default ({
                               push({
                                 pathname: '/exploration',
                                 query: {
+                                  searchTableTab:
+                                    (type === 'ssm' ? 'mutation' : type) + 's',
                                   filters: stringifyJSONParam({
                                     op: 'AND',
                                     content: [
@@ -224,6 +226,8 @@ export default ({
                               push({
                                 pathname: '/exploration',
                                 query: {
+                                  searchTableTab:
+                                    (type === 'ssm' ? 'mutation' : type) + 's',
                                   filters: stringifyJSONParam({
                                     op: 'AND',
                                     content: [

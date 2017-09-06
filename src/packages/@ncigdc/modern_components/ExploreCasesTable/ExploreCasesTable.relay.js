@@ -18,14 +18,18 @@ export default (Component: ReactClass<*>) =>
       ({ location: { search }, defaultSize = 20, defaultFilters = null }) => {
         const q = parse(search);
         const filters = parseFilterParam(q.filters, defaultFilters);
+        const score = 'gene.gene_id';
+        const sort = parseJSONParam(q.cases_sort, null);
         return {
           filters,
+          score,
+          sort,
           variables: {
             filters,
             cases_offset: parseIntParam(q.cases_offset, 0),
             cases_size: parseIntParam(q.cases_size, defaultSize),
-            cases_sort: parseJSONParam(q.cases_sort, null),
-            cases_score: 'gene.gene_id',
+            cases_sort: sort,
+            cases_score: score,
           },
         };
       },

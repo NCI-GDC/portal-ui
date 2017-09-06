@@ -13,6 +13,7 @@ type TProps = {
   selected: string,
   type: string,
   field: string,
+  style: {},
 };
 
 const enhance = compose(
@@ -26,11 +27,19 @@ const enhance = compose(
   }),
 );
 
-const SetTable = ({ sets, setSelected, selected, type, field }: TProps) => {
+const SetTable = ({
+  sets,
+  setSelected,
+  selected,
+  type,
+  field,
+  style,
+}: TProps) => {
   const CountComponent = countComponents[type];
 
   return (
     <EntityPageHorizontalTable
+      style={style}
       data={Object.keys(sets).map(key => {
         const id = `set-table-${key}-select`;
 

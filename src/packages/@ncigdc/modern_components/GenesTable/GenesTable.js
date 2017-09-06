@@ -10,6 +10,7 @@ import Pagination from '@ncigdc/components/Pagination';
 import TableActions from '@ncigdc/components/TableActions';
 import Table, { Tr } from '@ncigdc/uikit/Table';
 import CreateExploreGeneSetButton from '@ncigdc/modern_components/setButtons/CreateExploreGeneSetButton';
+import AppendExploreGeneSetButton from '@ncigdc/modern_components/setButtons/AppendExploreGeneSetButton';
 import RemoveFromExploreGeneSetButton from '@ncigdc/modern_components/setButtons/RemoveFromExploreGeneSetButton';
 
 import tableModel from './GenesTable.model';
@@ -53,6 +54,8 @@ export default compose(
     dispatch,
     selectedIds,
     setSelectedIds,
+    sort,
+    score,
   }) => {
     const { genes, filteredCases, cases } = explore || {};
 
@@ -91,6 +94,8 @@ export default compose(
               endpoint="genes"
               downloadTooltip="Export All Except #Cases and #Mutations"
               currentFilters={filters}
+              score={score}
+              sort={sort}
               downloadFields={[
                 'symbol',
                 'name',
@@ -102,6 +107,7 @@ export default compose(
               tsvSelector="#genes-table"
               tsvFilename="frequently-mutated-genes.tsv"
               CreateSetButton={CreateExploreGeneSetButton}
+              AppendSetButton={AppendExploreGeneSetButton}
               RemoveFromSetButton={RemoveFromExploreGeneSetButton}
               idField="genes.gene_id"
               selectedIds={selectedIds}

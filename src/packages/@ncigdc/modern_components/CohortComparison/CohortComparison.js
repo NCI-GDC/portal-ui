@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { compose, withState, withProps } from 'recompose';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
@@ -82,16 +83,27 @@ export default compose(
     const data1 = JSON.parse(result1.facets);
     const data2 = JSON.parse(result2.facets);
 
-    const set1_name = sets.case[set1];
+    const set1_name = _.truncate(sets.case[set1], { length: 50 });
     const set1_colour = 'rgb(158, 124, 36)';
-    const set2_name = sets.case[set2];
+    const set2_name = _.truncate(sets.case[set2], { length: 50 });
     const set2_colour = 'rgb(29, 97, 135)';
+    const Set1 = (
+      <span style={{ color: set1_colour, fontWeight: 'bold' }}>
+        {set1_name}
+      </span>
+    );
+    const Set2 = (
+      <span style={{ color: set2_colour, fontWeight: 'bold' }}>
+        {set2_name}
+      </span>
+    );
 
     return (
       <Row style={{ margin: '0 3rem' }}>
         <div style={{ flex: 5 }}>
           <h1>Cohort Comparison</h1>
           <Table
+            style={{ width: '400px' }}
             headings={[
               <Th key="1" style={{ backgroundColor: 'white' }}>
                 Selected Cohorts
@@ -107,13 +119,13 @@ export default compose(
               <tbody>
                 <Tr>
                   <Td style={{ width: '150px', color: set1_colour }}>
-                    <Alias i={1} /> : {set1_name}
+                    <Alias i={1} /> : {Set1}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>{result1.hits.total}</Td>
                 </Tr>
                 <Tr>
                   <Td style={{ width: '150px', color: set2_colour }}>
-                    <Alias i={2} /> : {set2_name}
+                    <Alias i={2} /> : {Set2}
                   </Td>
                   <Td style={{ textAlign: 'right' }}>{result2.hits.total}</Td>
                 </Tr>
@@ -125,6 +137,8 @@ export default compose(
             survivalData,
             result1,
             result2,
+            Set1,
+            Set2,
           })}
 
           {facets.map(field =>
@@ -135,7 +149,8 @@ export default compose(
               data2,
               result1,
               result2,
-              Alias,
+              Set1,
+              Set2,
             }),
           )}
         </div>

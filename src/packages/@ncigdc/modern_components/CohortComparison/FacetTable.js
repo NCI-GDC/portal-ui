@@ -1,16 +1,32 @@
 import React from 'react';
 import { union, find } from 'lodash';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
+import { Row } from '@ncigdc/uikit/Flex';
 
-export default ({ mapping, field, data1, data2, result1, result2, Alias }) =>
+export default ({
+  mapping,
+  field,
+  data1,
+  data2,
+  result1,
+  result2,
+  Set1,
+  Set2,
+}) =>
   <div>
-    <h2>{mapping[field]}</h2>
+    <Row>
+      <h2>{mapping[field]}</h2>
+      <Row style={{ marginLeft: 'auto', alignItems: 'center' }}>
+        <div>{Set1}</div>
+        <div style={{ margin: '0 65px' }}>{Set2}</div>
+      </Row>
+    </Row>
     <Table
       headings={[
         <Th>{mapping[field]}</Th>,
-        <Th style={{ textAlign: 'right' }}># Cases /></Th>,
+        <Th style={{ textAlign: 'right' }}># Cases</Th>,
         <Th style={{ textAlign: 'right' }}>%</Th>,
-        <Th style={{ textAlign: 'right' }}># Cases /></Th>,
+        <Th style={{ textAlign: 'right' }}># Cases</Th>,
         <Th style={{ textAlign: 'right' }}>%</Th>,
       ]}
       body={

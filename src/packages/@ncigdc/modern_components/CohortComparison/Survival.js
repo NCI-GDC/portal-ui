@@ -1,10 +1,13 @@
 import React from 'react';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
+import { Row } from '@ncigdc/uikit/Flex';
 
-export default ({ survivalData, result1, result2 }) =>
-  <span>
-    <h2>Survival Analysis</h2>
+export default ({ survivalData, result1, result2, Set1, Set2 }) =>
+  <span style={{ marginTop: 10 }}>
+    <Row>
+      <h2>Survival Analysis</h2>
+    </Row>
     <div>
       <SurvivalPlotWrapper {...survivalData} height={240} />
       {survivalData.rawData &&
@@ -22,7 +25,7 @@ export default ({ survivalData, result1, result2 }) =>
           ]}
           body={
             <tbody>
-              <Tr>
+              <Tr index={0}>
                 <Td width={250}>Overall Survival Analysis</Td>
                 <Td style={{ textAlign: 'right' }}>
                   {survivalData.rawData.results[0] &&

@@ -80,8 +80,11 @@ const CreateAnalysis = ({ analysis, setAnalysis, dispatch, push }) => {
                   <Button onClick={() => setAnalysis(analysis)}>
                     Select
                   </Button>
-                  {analysis.demoData &&
-                    <Button onClick={() => onDemo(analysis.type)}>Demo</Button>}
+                  <Button
+                    onClick={() => analysis.demoData && onDemo(analysis.type)}
+                  >
+                    Demo
+                  </Button>
                 </Row>
               </div>
             </Row>

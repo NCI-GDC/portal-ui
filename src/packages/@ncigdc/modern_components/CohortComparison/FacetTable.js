@@ -8,10 +8,10 @@ export default ({ mapping, field, data1, data2, result1, result2, Alias }) =>
     <Table
       headings={[
         <Th>{mapping[field]}</Th>,
-        <Th style={{ textAlign: 'right' }}># of items in <Alias i={1} /></Th>,
-        <Th style={{ textAlign: 'right' }}>% in <Alias i={1} /></Th>,
-        <Th style={{ textAlign: 'right' }}># of items in <Alias i={2} /></Th>,
-        <Th style={{ textAlign: 'right' }}>% in <Alias i={2} /></Th>,
+        <Th style={{ textAlign: 'right' }}># Cases /></Th>,
+        <Th style={{ textAlign: 'right' }}>%</Th>,
+        <Th style={{ textAlign: 'right' }}># Cases /></Th>,
+        <Th style={{ textAlign: 'right' }}>%</Th>,
       ]}
       body={
         <tbody>

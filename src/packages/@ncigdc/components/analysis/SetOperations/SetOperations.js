@@ -133,7 +133,8 @@ export default compose(
                         {_.truncate(label, { length: 70 })}
                       </label>
                     ),
-                    type: _.capitalize(type),
+                    type:
+                      _.capitalize(type === 'ssm' ? 'Mutation' : type) + 's',
                     count: (
                       <CountComponent
                         filters={{

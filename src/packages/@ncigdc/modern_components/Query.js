@@ -14,7 +14,7 @@ export const BaseQuery = (props: Object) =>
 
       lastRelayProps[props.name] = nextRelayProps || lastRelayProps[props.name];
 
-      if (lastRelayProps[props.name])
+      if (lastRelayProps[props.name] || (props.renderOnError && error))
         return (
           <props.Component
             {...lastRelayProps[props.name]}

@@ -19,6 +19,7 @@ import CancerDistributionTable from '@ncigdc/modern_components/CancerDistributio
 import ExploreLink from '@ncigdc/components/Links/ExploreLink';
 import ProjectsLink from '@ncigdc/components/Links/ProjectsLink';
 import createSsmSummary from '@ncigdc/modern_components/SsmSummary/SsmSummary.relay';
+import Exists from '@ncigdc/modern_components/Exists';
 
 const DnaChange = createSsmSummary(
   ({
@@ -68,51 +69,56 @@ export default (
       ]);
 
       return (
-        <FullWidthLayout
-          title={<DnaChange ssmId={ssmId} minHeight={31} />}
-          entityType="MU"
-        >
-          <Row spacing="2rem" id="summary">
-            <Row flex="1"><SsmSummary ssmId={ssmId} /></Row>
-            <Row flex="1"><SsmExternalReferences ssmId={ssmId} /></Row>
-          </Row>
-          <Column style={{ backgroundColor: 'white' }}>
-            <Heading id="consequences" style={{ padding: '1rem' }}>
-              <TableIcon style={{ marginRight: '1rem' }} />
-              Consequences
-            </Heading>
-            <Row>
-              <ConsequencesTable ssmId={ssmId} />
-            </Row>
-          </Column>
-          <Column
-            style={{ backgroundColor: 'white', marginTop: '2rem' }}
-            id="cancer-distribution"
+        <Exists type="Ssm" id={ssmId}>
+          <FullWidthLayout
+            title={<DnaChange ssmId={ssmId} minHeight={31} />}
+            entityType="MU"
           >
-            <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
-              <Heading>
-                <ChartIcon style={{ marginRight: '1rem' }} />
-                Cancer Distribution
-              </Heading>
-              <ExploreLink
-                query={{ searchTableTab: 'cases', filters: cdFilters }}
-              >
-                <GdcDataIcon /> Open in Exploration
-              </ExploreLink>
+            <Row spacing="2rem" id="summary">
+              <Row flex="1"><SsmSummary ssmId={ssmId} /></Row>
+              <Row flex="1"><SsmExternalReferences ssmId={ssmId} /></Row>
             </Row>
-            <Column>
-              <CancerDistributionBarChart
-                filters={cdFilters}
-                ChartTitle={CancerDistributionTitle}
-                style={{ width: '50%' }}
-              />
-              <CancerDistributionTable filters={cdFilters} entityName={ssmId} />
+            <Column style={{ backgroundColor: 'white' }}>
+              <Heading id="consequences" style={{ padding: '1rem' }}>
+                <TableIcon style={{ marginRight: '1rem' }} />
+                Consequences
+              </Heading>
+              <Row>
+                <ConsequencesTable ssmId={ssmId} />
+              </Row>
             </Column>
-          </Column>
-          <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
-            <SsmLolliplot mutationId={ssmId} ssmId={ssmId} />
-          </Column>
-        </FullWidthLayout>
+            <Column
+              style={{ backgroundColor: 'white', marginTop: '2rem' }}
+              id="cancer-distribution"
+            >
+              <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
+                <Heading>
+                  <ChartIcon style={{ marginRight: '1rem' }} />
+                  Cancer Distribution
+                </Heading>
+                <ExploreLink
+                  query={{ searchTableTab: 'cases', filters: cdFilters }}
+                >
+                  <GdcDataIcon /> Open in Exploration
+                </ExploreLink>
+              </Row>
+              <Column>
+                <CancerDistributionBarChart
+                  filters={cdFilters}
+                  ChartTitle={CancerDistributionTitle}
+                  style={{ width: '50%' }}
+                />
+                <CancerDistributionTable
+                  filters={cdFilters}
+                  entityName={ssmId}
+                />
+              </Column>
+            </Column>
+            <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
+              <SsmLolliplot mutationId={ssmId} ssmId={ssmId} />
+            </Column>
+          </FullWidthLayout>
+        </Exists>
       );
     }}
   />

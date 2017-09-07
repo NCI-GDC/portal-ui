@@ -19,6 +19,7 @@ import GdcDataIcon from '@ncigdc/theme/icons/GdcData';
 import { replaceFilters } from '@ncigdc/utils/filters';
 import GeneSymbol from '@ncigdc/modern_components/GeneSymbol';
 import Heading from '@ncigdc/uikit/Heading';
+import Exists from '@ncigdc/modern_components/Exists';
 
 export default (
   <Route
@@ -57,71 +58,80 @@ export default (
       );
 
       return (
-        <FullWidthLayout title={<GeneSymbol geneId={geneId} />} entityType="GN">
-          <Column spacing="2rem">
-            {filters && <CurrentFilters />}
-            <Row spacing="2rem">
-              <Row flex="1"><GeneSummary geneId={geneId} /></Row>
-              <Row flex="1">
-                <GeneExternalReferences geneId={geneId} />
+        <Exists type="Gene" id={geneId}>
+          <FullWidthLayout
+            title={<GeneSymbol geneId={geneId} />}
+            entityType="GN"
+          >
+            <Column spacing="2rem">
+              {filters && <CurrentFilters />}
+              <Row spacing="2rem">
+                <Row flex="1"><GeneSummary geneId={geneId} /></Row>
+                <Row flex="1">
+                  <GeneExternalReferences geneId={geneId} />
+                </Row>
               </Row>
-            </Row>
-            <Column
-              style={{ backgroundColor: 'white' }}
-              id="cancer-distribution"
-            >
-              <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
-                <Heading>
-                  <ChartIcon style={{ marginRight: '1rem' }} />
-                  Cancer Distribution
-                </Heading>
-                <ExploreLink
-                  query={{
-                    searchTableTab: 'cases',
-                    filters: mutatedGeneFilter,
-                  }}
+              <Column
+                style={{ backgroundColor: 'white' }}
+                id="cancer-distribution"
+              >
+                <Row
+                  style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}
                 >
-                  <GdcDataIcon /> Open in Exploration
-                </ExploreLink>
-              </Row>
-              <Column>
-                <CancerDistributionBarChart
-                  filters={mutatedGeneFilter}
-                  style={{ width: '50%' }}
-                />
-                <CancerDistributionTable
-                  filters={mutatedGeneFilter}
-                  entityName={<GeneSymbol geneId={geneId} />}
-                  geneId={geneId}
-                />
+                  <Heading>
+                    <ChartIcon style={{ marginRight: '1rem' }} />
+                    Cancer Distribution
+                  </Heading>
+                  <ExploreLink
+                    query={{
+                      searchTableTab: 'cases',
+                      filters: mutatedGeneFilter,
+                    }}
+                  >
+                    <GdcDataIcon /> Open in Exploration
+                  </ExploreLink>
+                </Row>
+                <Column>
+                  <CancerDistributionBarChart
+                    filters={mutatedGeneFilter}
+                    style={{ width: '50%' }}
+                  />
+                  <CancerDistributionTable
+                    filters={mutatedGeneFilter}
+                    entityName={<GeneSymbol geneId={geneId} />}
+                    geneId={geneId}
+                  />
+                </Column>
+              </Column>
+              <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
+                <GeneLolliplot geneId={geneId} />
+              </Column>
+              <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
+                <Row
+                  style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}
+                >
+                  <Heading id="frequent-mutations">
+                    <ChartIcon style={{ marginRight: '1rem' }} />
+                    Most Frequent Somatic Mutations
+                  </Heading>
+                  <ExploreLink
+                    query={{ searchTableTab: 'mutations', filters: geneFilter }}
+                  >
+                    <GdcDataIcon /> Open in Exploration
+                  </ExploreLink>
+                </Row>
+                <Column>
+                  <SsmsTable
+                    defaultFilters={geneFilter}
+                    shouldShowGeneSymbol={false}
+                    context={<GeneSymbol geneId={geneId} />}
+                    hideSurvival
+                  />
+                </Column>
               </Column>
             </Column>
-            <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
-              <GeneLolliplot geneId={geneId} />
-            </Column>
-            <Column style={{ backgroundColor: 'white', marginTop: '2rem' }}>
-              <Row style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}>
-                <Heading id="frequent-mutations">
-                  <ChartIcon style={{ marginRight: '1rem' }} />
-                  Most Frequent Somatic Mutations
-                </Heading>
-                <ExploreLink
-                  query={{ searchTableTab: 'mutations', filters: geneFilter }}
-                >
-                  <GdcDataIcon /> Open in Exploration
-                </ExploreLink>
-              </Row>
-              <Column>
-                <SsmsTable
-                  defaultFilters={geneFilter}
-                  shouldShowGeneSymbol={false}
-                  context={<GeneSymbol geneId={geneId} />}
-                  hideSurvival
-                />
-              </Column>
-            </Column>
-          </Column>
-        </FullWidthLayout>
+          </FullWidthLayout>
+        </Exists>
       );
     }}
   />

@@ -3,13 +3,13 @@ import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import Table, { Tr, Td, Th } from '@ncigdc/uikit/Table';
 import { Row } from '@ncigdc/uikit/Flex';
 
-export default ({ survivalData, result1, result2, Set1, Set2 }) =>
+export default ({ survivalData, result1, result2, Set1, Set2, palette }) =>
   <span style={{ marginTop: 10 }}>
     <Row>
       <h2>Survival Analysis</h2>
     </Row>
     <div>
-      <SurvivalPlotWrapper {...survivalData} height={240} />
+      <SurvivalPlotWrapper {...survivalData} palette={palette} height={240} />
       {survivalData.rawData &&
         <Table
           headings={[

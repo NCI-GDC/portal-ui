@@ -143,6 +143,7 @@ export default compose(
             result2,
             Set1,
             Set2,
+            palette: [set1_colour, set2_colour],
           })}
 
           {facets.map(field =>

@@ -12,6 +12,11 @@ type TProps = {
   height?: string | number,
 };
 
+export const OverlayLoader = ({ loading }: { loading: boolean }) =>
+  <Overlay show={loading} style={{ position: 'absolute', zIndex: 10 }}>
+    <Spinner />
+  </Overlay>;
+
 export default (
   { children, style = {}, loading = true, height, ...props }: TProps = {},
 ) =>
@@ -19,9 +24,7 @@ export default (
     style={{ ...style, height: loading ? height || '1rem' : 'auto' }}
     {...props}
   >
-    <Overlay show={loading} style={{ position: 'absolute', zIndex: 10 }}>
-      <Spinner />
-    </Overlay>
+    <OverlayLoader loading={loading} />
     {children}
   </div>;
 
@@ -31,10 +34,5 @@ export const ConnectedLoader = connect(s => ({
   ({ loaders, name, customLoader: CL }) =>
     CL
       ? <CL loading={loaders.includes(name)} />
-      : <Overlay
-          show={loaders.includes(name)}
-          style={{ position: 'absolute', zIndex: 10 }}
-        >
-          <Spinner />
-        </Overlay>,
+      : <OverlayLoader loading={loaders.includes(name)} />,
 );

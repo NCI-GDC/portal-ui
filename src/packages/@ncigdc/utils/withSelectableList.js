@@ -67,7 +67,7 @@ const withKeyboardSelection = (
             event.preventDefault();
             focusNextItem();
           },
-          Enter: () => selectItem(focusedItem),
+          Enter: () => focusedItem && selectItem(focusedItem),
           Escape: () => cancel(),
         }[event.key] || _.noop)()),
     }),

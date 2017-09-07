@@ -20,6 +20,7 @@ import {
 import BiospecimenCard from '@ncigdc/modern_components/BiospecimenCard';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import createCaseSummary from '@ncigdc/modern_components/CaseSummary/CaseSummary.relay';
+import Exists from '@ncigdc/modern_components/Exists';
 import HasSsms from '@ncigdc/modern_components/HasSsms';
 
 const SsmsTable = createCaseSummary(
@@ -71,53 +72,65 @@ export default (
       const fmFilters = makeFilter([{ field: 'cases.case_id', value: caseId }]);
 
       return (
-        <FullWidthLayout title={<CaseSymbol caseId={caseId} />} entityType="CA">
-          <Column spacing="2rem" className="test-case">
-            <Row style={{ justifyContent: 'flex-end' }}>
-              <AddOrRemoveAllFilesButton caseId={caseId} />
-            </Row>
-            <CaseSummary caseId={caseId} />
-            <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>
-              <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
-                <CaseCountsDataCategory caseId={caseId} />
-              </span>
-              <span style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}>
-                <CaseCountsExpStrategy caseId={caseId} />
-              </span>
-            </Row>
-
-            <Row id="clinical" style={{ flexWrap: 'wrap' }} spacing="2rem">
-              <ClinicalCard caseId={caseId} />
-            </Row>
-
-            <Row id="biospecimen" style={{ flexWrap: 'wrap' }} spacing="2rem">
-              <BiospecimenCard caseId={caseId} bioId={query.bioId} />
-            </Row>
-            <HasSsms caseId={caseId}>
-              <Column style={{ ...styles.card, marginTop: '2rem' }}>
-                <Row
-                  style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}
+        <Exists type="Case" id={caseId}>
+          <FullWidthLayout
+            title={<CaseSymbol caseId={caseId} />}
+            entityType="CA"
+          >
+            <Column spacing="2rem" className="test-case">
+              <Row style={{ justifyContent: 'flex-end' }}>
+                <AddOrRemoveAllFilesButton caseId={caseId} />
+              </Row>
+              <CaseSummary caseId={caseId} />
+              <Row style={{ flexWrap: 'wrap' }} spacing={'2rem'}>
+                <span
+                  style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}
                 >
-                  <h1 style={{ ...styles.heading }} id="frequent-mutations">
-                    <i
-                      className="fa fa-bar-chart-o"
-                      style={{ paddingRight: '10px' }}
-                    />
-                    Most Frequent Somatic Mutations
-                  </h1>
-                  <ExploreLink
-                    query={{ searchTableTab: 'mutations', filters: fmFilters }}
+                  <CaseCountsDataCategory caseId={caseId} />
+                </span>
+                <span
+                  style={{ ...styles.column, marginBottom: '2rem', flex: 1 }}
+                >
+                  <CaseCountsExpStrategy caseId={caseId} />
+                </span>
+              </Row>
+
+              <Row id="clinical" style={{ flexWrap: 'wrap' }} spacing="2rem">
+                <ClinicalCard caseId={caseId} />
+              </Row>
+
+              <Row id="biospecimen" style={{ flexWrap: 'wrap' }} spacing="2rem">
+                <BiospecimenCard caseId={caseId} bioId={query.bioId} />
+              </Row>
+              <HasSsms caseId={caseId}>
+                <Column style={{ ...styles.card, marginTop: '2rem' }}>
+                  <Row
+                    style={{ padding: '1rem 1rem 2rem', alignItems: 'center' }}
                   >
-                    <GdcDataIcon /> Open in Exploration
-                  </ExploreLink>
-                </Row>
-                <Column>
-                  <SsmsTable caseId={caseId} defaultFilters={fmFilters} />
+                    <h1 style={{ ...styles.heading }} id="frequent-mutations">
+                      <i
+                        className="fa fa-bar-chart-o"
+                        style={{ paddingRight: '10px' }}
+                      />
+                      Most Frequent Somatic Mutations
+                    </h1>
+                    <ExploreLink
+                      query={{
+                        searchTableTab: 'mutations',
+                        filters: fmFilters,
+                      }}
+                    >
+                      <GdcDataIcon /> Open in Exploration
+                    </ExploreLink>
+                  </Row>
+                  <Column>
+                    <SsmsTable caseId={caseId} defaultFilters={fmFilters} />
+                  </Column>
                 </Column>
-              </Column>
-            </HasSsms>
-          </Column>
-        </FullWidthLayout>
+              </HasSsms>
+            </Column>
+          </FullWidthLayout>
+        </Exists>
       );
     }}
   />

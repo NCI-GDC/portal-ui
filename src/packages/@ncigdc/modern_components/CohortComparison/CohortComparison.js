@@ -159,6 +159,7 @@ export default compose(
               Set2,
               set1,
               set2,
+              palette: [set1_colour, set2_colour],
             }),
           )}
         </div>

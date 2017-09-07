@@ -13,7 +13,8 @@ import withSize from '@ncigdc/utils/withSize';
 import './style.css';
 
 const BarChart = (() => ({
-  data,
+  data1,
+  data2,
   title,
   yAxis = {},
   xAxis = {},
@@ -30,7 +31,7 @@ const BarChart = (() => ({
   const innerPadding = 0.3;
   const outerPadding = 0.3;
 
-  const margin = m || { top: 20, right: 50, bottom: 65, left: 55 };
+  const margin = m || { top: 20, right: 50, bottom: 85, left: 55 };
   const chartWidth = width - margin.left - margin.right;
   const height = (h || 200) - margin.top - margin.bottom;
   const yAxisStyle = yAxis.style || {
@@ -46,13 +47,14 @@ const BarChart = (() => ({
     stroke: theme.greyScale4,
   };
 
-  const x = d3
+  const x1 = d3
     .scaleBand()
-    .domain(data.map(d => d.label))
+    .domain(data1.map(d => d.label))
     .rangeRound([0, chartWidth])
     .paddingInner(innerPadding)
     .paddingOuter(outerPadding);
-  const maxY = d3.max(data, d => d.value);
+
+  const maxY = d3.max([...data1, ...data2], d => d.value);
   const y = d3.scaleLinear().range([height, 0]).domain([0, maxY]);
 
   const svg = d3
@@ -107,7 +109,7 @@ const BarChart = (() => ({
   const xG = svg
     .append('g')
     .attr('transform', `translate(0, ${height})`)
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x1));
 
   xG
     .selectAll('text')
@@ -125,7 +127,14 @@ const BarChart = (() => ({
 
   const barGs = svg
     .selectAll('g.chart')
-    .data(data)
+    .data(data1)
+    .enter()
+    .append('g')
+    .attr('class', 'bar-g');
+
+  const barG2s = svg
+    .selectAll('g.chart')
+    .data(data2)
     .enter()
     .append('g')
     .attr('class', 'bar-g');
@@ -134,10 +143,33 @@ const BarChart = (() => ({
     barG
       .append('rect')
       .attr('class', 'bar')
-      .attr('fill', (styles.bars || { fill: 'steelblue' }).fill)
-      .attr('width', x.bandwidth())
+      .attr('fill', (styles.bars1 || { fill: 'steelblue' }).fill)
+      .attr('width', x1.bandwidth() / 2)
       .attr('y', d => y(d.value))
-      .attr('x', d => x(d.label))
+      .attr('x', d => x1(d.label))
+      .attr('height', d => height - y(d.value))
+      .on('click', d => {
+        if (d.onClick) {
+          d.onClick();
+        }
+      })
+      .classed('pointer', d => d.onClick)
+      .on('mouseenter', d => {
+        setTooltip(d.tooltip);
+      })
+      .on('mouseleave', () => {
+        setTooltip();
+      });
+  };
+
+  const drawBar2 = barG => {
+    barG
+      .append('rect')
+      .attr('class', 'bar')
+      .attr('fill', (styles.bars2 || { fill: 'steelblue' }).fill)
+      .attr('width', x1.bandwidth() / 2)
+      .attr('y', d => y(d.value))
+      .attr('x', d => x1(d.label) + x1.bandwidth() / 2 + 4)
       .attr('height', d => height - y(d.value))
       .on('click', d => {
         if (d.onClick) {
@@ -155,6 +187,10 @@ const BarChart = (() => ({
 
   barGs.each(function selectAndDraw() {
     drawBar(d3.select(this));
+  });
+
+  barG2s.each(function selectAndDraw() {
+    drawBar2(d3.select(this));
   });
 
   return el.toReact();

@@ -43,7 +43,7 @@ const styles = {
 
 const FullWidthLayout = props =>
   <Row className={props.className || ''}>
-    <Column flex="1" style={styles.wrapper}>
+    <Column flex="1" style={{ ...styles.wrapper, ...(props.style || {}) }}>
       <Row style={styles.title(props.theme)}>
         <span style={styles.type(props.theme)}>{props.entityType}</span>
         {props.title}

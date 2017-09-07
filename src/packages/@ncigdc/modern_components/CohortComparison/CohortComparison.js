@@ -83,9 +83,13 @@ export default compose(
     const data1 = JSON.parse(result1.facets);
     const data2 = JSON.parse(result2.facets);
 
-    const set1_name = _.truncate(sets.case[set1], { length: 50 });
+    const set1_name = sets.case
+      ? _.truncate(sets.case[set1], { length: 50 })
+      : 'Set 1';
     const set1_colour = 'rgb(158, 124, 36)';
-    const set2_name = _.truncate(sets.case[set2], { length: 50 });
+    const set2_name = sets.case
+      ? _.truncate(sets.case[set2], { length: 50 })
+      : 'Set 2';
     const set2_colour = 'rgb(29, 97, 135)';
     const Set1 = (
       <span style={{ color: set1_colour, fontWeight: 'bold' }}>

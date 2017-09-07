@@ -147,6 +147,7 @@ export default compose(
 
           {facets.map(field =>
             FacetTable({
+              Alias,
               mapping,
               field,
               data1,

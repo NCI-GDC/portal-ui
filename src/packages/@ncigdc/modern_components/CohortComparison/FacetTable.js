@@ -15,21 +15,22 @@ export default ({
   Set2,
   set1,
   set2,
+  Alias,
 }) =>
   <div key={field}>
     <Row>
       <h2>{mapping[field]}</h2>
-      <Row style={{ marginLeft: 'auto', alignItems: 'center' }}>
+      {/* <Row style={{ marginLeft: 'auto', alignItems: 'center' }}>
         <div>{Set1}</div>
-        <div style={{ margin: '0 65px' }}>{Set2}</div>
-      </Row>
+        <div style={{ margin: '0 10px' }}>{Set2}</div>
+      </Row> */}
     </Row>
     <Table
       headings={[
         <Th key="1">{mapping[field]}</Th>,
-        <Th key="2" style={{ textAlign: 'right' }}># Cases</Th>,
+        <Th key="2" style={{ textAlign: 'right' }}># Cases <Alias i={1} /></Th>,
         <Th key="3" style={{ textAlign: 'right' }}>%</Th>,
-        <Th key="4" style={{ textAlign: 'right' }}># Cases</Th>,
+        <Th key="4" style={{ textAlign: 'right' }}># Cases <Alias i={2} /></Th>,
         <Th key="5" style={{ textAlign: 'right' }}>%</Th>,
       ]}
       body={

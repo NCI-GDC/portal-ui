@@ -118,8 +118,9 @@ const ManageSetsPage = ({
   );
 
   const doneFetchingSetSizes =
-    Object.keys(setSizes).length === flattenedSets.length &&
-    Object.keys(setSizes).length !== 0;
+    flattenedSets.length !== 0 &&
+    flattenedSets.every(({ id }) => typeof setSizes[id] === 'number');
+
   return (
     <Column style={{ padding: '2rem 2.5rem 13rem' }}>
       <Heading>

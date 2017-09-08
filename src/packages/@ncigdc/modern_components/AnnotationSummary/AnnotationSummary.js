@@ -8,13 +8,13 @@ import Card from '@ncigdc/uikit/Card';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
-
+import NotFound from '@ncigdc/components/NotFound';
 import { withTheme } from '@ncigdc/theme';
 
 export default compose(
   branch(
     ({ viewer }) => !viewer.annotations.hits.edges[0],
-    renderComponent(() => <div>No annotation found.</div>),
+    renderComponent(() => <NotFound />),
   ),
   withTheme,
 )(

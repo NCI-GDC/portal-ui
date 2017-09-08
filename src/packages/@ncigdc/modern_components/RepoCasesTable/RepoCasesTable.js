@@ -1,8 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import Relay from 'react-relay/classic';
-import { compose } from 'recompose';
+import { compose, setDisplayName, branch, renderComponent } from 'recompose';
 import { connect } from 'react-redux';
 import Pagination from '@ncigdc/components/Pagination';
 import Showing from '@ncigdc/components/Pagination/Showing';
@@ -16,16 +15,22 @@ import RemoveFromRepositoryCaseSetButton from '@ncigdc/modern_components/setButt
 import { theme } from '@ncigdc/theme';
 import withSelectIds from '@ncigdc/utils/withSelectIds';
 
-export const SearchTable = compose(
+export default compose(
+  setDisplayName('RepoCasesTablePresentation'),
   connect(state => ({ tableColumns: state.tableColumns.cases.ids })),
+  branch(
+    ({ viewer }) =>
+      !viewer.repository.cases.hits ||
+      !viewer.repository.cases.hits.edges.length,
+    renderComponent(() => <div>No results found</div>),
+  ),
   withSelectIds,
 )(
   ({
-    relay,
-    hits,
+    viewer: { repository: { cases: { hits } } },
     entityType = 'cases',
     tableColumns,
-    filters,
+    variables,
     selectedIds,
     setSelectedIds,
     score,
@@ -48,7 +53,7 @@ export const SearchTable = compose(
           <Showing
             docType="cases"
             prefix={entityType}
-            params={relay.route.params}
+            params={variables}
             total={hits.total}
           />
           <TableActions
@@ -62,9 +67,9 @@ export const SearchTable = compose(
             sortOptions={tableInfo.filter(x => x.sortable)}
             tsvSelector="#repository-cases-table"
             tsvFilename="repository-cases-table.tsv"
-            currentFilters={filters}
-            score={score}
-            sort={sort}
+            score={variables.score}
+            sort={variables.cases_sort}
+            currentFilters={variables.filters}
             CreateSetButton={CreateRepositoryCaseSetButton}
             AppendSetButton={AppendRepositoryCaseSetButton}
             RemoveFromSetButton={RemoveFromRepositoryCaseSetButton}
@@ -80,7 +85,7 @@ export const SearchTable = compose(
               .map(x =>
                 <x.th
                   key={x.id}
-                  nodes={hits.edges.map(e => e.node)}
+                  nodes={hits.edges}
                   selectedIds={selectedIds}
                   setSelectedIds={setSelectedIds}
                 />,
@@ -106,7 +111,6 @@ export const SearchTable = compose(
                         <x.td
                           key={x.id}
                           node={e.node}
-                          relay={relay}
                           index={i}
                           total={hits.total}
                           selectedIds={selectedIds}
@@ -119,79 +123,8 @@ export const SearchTable = compose(
             }
           />
         </div>
-        <Pagination
-          prefix={entityType}
-          params={relay.route.params}
-          total={hits.total}
-        />
+        <Pagination prefix={entityType} params={variables} total={hits.total} />
       </div>
     );
   },
 );
-
-const CasesTable = Relay.createContainer(SearchTable, {
-  initialVariables: {
-    isFileDataRequired: false,
-    isFilteredFileDataRequired: false,
-    filesFilters: null,
-  },
-  fragments: {
-    hits: () => Relay.QL`
-        fragment on CaseConnection {
-          total
-          edges {
-            node {
-              id
-              case_id
-              primary_site
-              disease_type
-              submitter_id
-              project {
-                project_id
-                program {
-                  name
-                }
-              }
-              annotations {
-                hits(first:1) {
-                  total
-                  edges {
-                    node {
-                      annotation_id
-                    }
-                  }
-                }
-              }
-              demographic {
-                gender
-                ethnicity
-                race
-              }
-              diagnoses {
-                hits(first: 99) {
-                  edges {
-                    node {
-                      primary_diagnosis
-                      age_at_diagnosis
-                      vital_status
-                      days_to_death
-                    }
-                  }
-                }
-              }
-              summary {
-                data_categories {
-                  file_count
-                  data_category
-                }
-                file_count
-              }
-
-            }
-          }
-        }
-      `,
-  },
-});
-
-export default CasesTable;

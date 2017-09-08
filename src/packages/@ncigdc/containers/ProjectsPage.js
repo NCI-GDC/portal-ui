@@ -7,7 +7,7 @@ import SearchPage from '@ncigdc/components/SearchPage';
 import ProjectsCharts from '@ncigdc/modern_components/ProjectsCharts';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import GitHut from '@ncigdc/components/GitHut';
-
+import { Column } from '@ncigdc/uikit/Flex';
 import ProjectsTable from '@ncigdc/modern_components/ProjectsTable';
 import ProjectAggregations from './ProjectAggregations';
 
@@ -65,7 +65,7 @@ export const ProjectsPageComponent = (props: TProps) =>
       },
     ]}
     results={
-      <span>
+      <Column spacing="2rem">
         <ProjectsCharts />
         <TabbedLinks
           queryParam="projectsTableTab"
@@ -83,7 +83,7 @@ export const ProjectsPageComponent = (props: TProps) =>
             },
           ]}
         />
-      </span>
+      </Column>
     }
   />;
 

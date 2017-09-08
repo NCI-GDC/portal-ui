@@ -72,7 +72,6 @@ type TProps = {
 };
 
 const Container = styled(Row, {
-  marginBottom: '2rem',
   backgroundColor: 'white',
   border: '1px solid #ddd',
   borderRadius: '4px',

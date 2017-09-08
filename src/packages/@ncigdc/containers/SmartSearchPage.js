@@ -11,8 +11,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import FilesTable from '@ncigdc/modern_components/FilesTable';
-
-import CasesTable from './CasesTable';
+import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
 import { API } from '@ncigdc/utils/constants';
 import { stringifyJSONParam, parseJSONParam } from '@ncigdc/utils/uri';
 
@@ -144,13 +143,7 @@ class SmartSearchComponent extends React.Component {
             {
               id: 'cases',
               text: `Cases (${this.props.viewer.repository.cases.hits.total.toLocaleString()})`,
-              component: (
-                <CasesTable
-                  hits={this.props.viewer.repository.cases.hits}
-                  filters={this.props.filters}
-                  sort={this.props.cases_sort}
-                />
-              ),
+              component: <RepoCasesTable />,
             },
           ]}
         />
@@ -176,7 +169,6 @@ export const SmartSearchQuery = {
         repository {
           cases {
             hits(first: $cases_size offset: $cases_offset, filters: $filters) {
-              ${CasesTable.getFragment('hits')}
               total
             }
           }

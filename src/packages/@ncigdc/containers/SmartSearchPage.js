@@ -11,9 +11,7 @@ import withRouter from '@ncigdc/utils/withRouter';
 import TabbedLinks from '@ncigdc/components/TabbedLinks';
 import AnnotationsLink from '@ncigdc/components/Links/AnnotationsLink';
 import FilesTable from '@ncigdc/modern_components/FilesTable';
-
 import RepoCasesTable from '@ncigdc/modern_components/RepoCasesTable';
-import FilesTable from './FilesTable';
 import { API } from '@ncigdc/utils/constants';
 import { stringifyJSONParam, parseJSONParam } from '@ncigdc/utils/uri';
 

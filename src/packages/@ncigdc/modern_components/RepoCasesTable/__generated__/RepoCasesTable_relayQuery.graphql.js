@@ -3,8 +3,8 @@
  *   relay-compiler
  *
  * @providesModule RepoCasesTable_relayQuery.graphql
- * @generated SignedSource<<bf6ff8cfb07f7b656240f66df2db59bb>>
- * @relayHash 7dfd7a7b649621a4ca66635b715f1341
+ * @generated SignedSource<<b2f5a030292970d68dd34d6d88cbada6>>
+ * @relayHash 18decba9076693e27775bd0cb232eb48
  * @flow
  * @nogrep
  */
@@ -25,11 +25,12 @@ query RepoCasesTable_relayQuery(
   $cases_offset: Int
   $cases_sort: [Sort]
   $filters: FiltersArgument
+  $score: String
 ) {
   viewer {
     repository {
       cases {
-        hits(score: "annotations.annotation_id", first: $cases_size, offset: $cases_offset, sort: $cases_sort, filters: $filters) {
+        hits(score: $score, first: $cases_size, offset: $cases_offset, sort: $cases_sort, filters: $filters) {
           total
           edges {
             node {
@@ -116,6 +117,12 @@ const batch /*: ConcreteBatch*/ = {
         "name": "filters",
         "type": "FiltersArgument",
         "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "score",
+        "type": "String",
+        "defaultValue": null
       }
     ],
     "kind": "Fragment",
@@ -169,9 +176,9 @@ const batch /*: ConcreteBatch*/ = {
                         "type": "Int"
                       },
                       {
-                        "kind": "Literal",
+                        "kind": "Variable",
                         "name": "score",
-                        "value": "annotations.annotation_id",
+                        "variableName": "score",
                         "type": "String"
                       },
                       {
@@ -548,6 +555,12 @@ const batch /*: ConcreteBatch*/ = {
         "name": "filters",
         "type": "FiltersArgument",
         "defaultValue": null
+      },
+      {
+        "kind": "LocalArgument",
+        "name": "score",
+        "type": "String",
+        "defaultValue": null
       }
     ],
     "kind": "Root",
@@ -601,9 +614,9 @@ const batch /*: ConcreteBatch*/ = {
                         "type": "Int"
                       },
                       {
-                        "kind": "Literal",
+                        "kind": "Variable",
                         "name": "score",
-                        "value": "annotations.annotation_id",
+                        "variableName": "score",
                         "type": "String"
                       },
                       {
@@ -971,7 +984,7 @@ const batch /*: ConcreteBatch*/ = {
       }
     ]
   },
-  "text": "query RepoCasesTable_relayQuery(\n  $cases_size: Int\n  $cases_offset: Int\n  $cases_sort: [Sort]\n  $filters: FiltersArgument\n) {\n  viewer {\n    repository {\n      cases {\n        hits(score: \"annotations.annotation_id\", first: $cases_size, offset: $cases_offset, sort: $cases_sort, filters: $filters) {\n          total\n          edges {\n            node {\n              id\n              case_id\n              primary_site\n              disease_type\n              submitter_id\n              project {\n                project_id\n                program {\n                  name\n                }\n                id\n              }\n              annotations {\n                hits(first: 1) {\n                  total\n                  edges {\n                    node {\n                      annotation_id\n                      id\n                    }\n                  }\n                }\n              }\n              demographic {\n                gender\n                ethnicity\n                race\n              }\n              diagnoses {\n                hits(first: 99) {\n                  edges {\n                    node {\n                      primary_diagnosis\n                      age_at_diagnosis\n                      vital_status\n                      days_to_death\n                      id\n                    }\n                  }\n                }\n              }\n              summary {\n                data_categories {\n                  file_count\n                  data_category\n                }\n                file_count\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+  "text": "query RepoCasesTable_relayQuery(\n  $cases_size: Int\n  $cases_offset: Int\n  $cases_sort: [Sort]\n  $filters: FiltersArgument\n  $score: String\n) {\n  viewer {\n    repository {\n      cases {\n        hits(score: $score, first: $cases_size, offset: $cases_offset, sort: $cases_sort, filters: $filters) {\n          total\n          edges {\n            node {\n              id\n              case_id\n              primary_site\n              disease_type\n              submitter_id\n              project {\n                project_id\n                program {\n                  name\n                }\n                id\n              }\n              annotations {\n                hits(first: 1) {\n                  total\n                  edges {\n                    node {\n                      annotation_id\n                      id\n                    }\n                  }\n                }\n              }\n              demographic {\n                gender\n                ethnicity\n                race\n              }\n              diagnoses {\n                hits(first: 99) {\n                  edges {\n                    node {\n                      primary_diagnosis\n                      age_at_diagnosis\n                      vital_status\n                      days_to_death\n                      id\n                    }\n                  }\n                }\n              }\n              summary {\n                data_categories {\n                  file_count\n                  data_category\n                }\n                file_count\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
 };
 
 module.exports = batch;

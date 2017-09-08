@@ -7,6 +7,16 @@ export const AUTH =
 export const AUTH_API = localStorage.REACT_APP_GDC_AUTH_API || `${AUTH}/api`;
 export const API = localStorage.REACT_APP_API || process.env.REACT_APP_API;
 
+export const API_OVERRIDE_KEYS = [
+  'REACT_APP_API',
+  'REACT_APP_GDC_AUTH',
+  'REACT_APP_GDC_AUTH_API',
+];
+
+export const LOCAL_STORAGE_API_OVERRIDE = API_OVERRIDE_KEYS.some(
+  k => localStorage[k],
+);
+
 export const DATA_CATEGORIES = {
   SEQ: { full: 'Raw Sequencing Data', abbr: 'Seq' },
   EXP: { full: 'Transcriptome Profiling', abbr: 'Exp' },

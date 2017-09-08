@@ -13,8 +13,11 @@ import { makeFilter } from '@ncigdc/utils/filters';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
 import styled from '@ncigdc/theme/styled';
-import { createDataCategoryColumns, createSelectColumn } from './utils';
-import { AnnotationCountLink } from '../components/Links/AnnotationCountLink';
+import {
+  createDataCategoryColumns,
+  createSelectColumn,
+} from '@ncigdc/tableModels/utils';
+import { AnnotationCountLink } from '@ncigdc/components/Links/AnnotationCountLink';
 
 const youngestDiagnosis = (
   p: { age_at_diagnosis: number },
@@ -66,7 +69,7 @@ const casesTableModel = [
     name: 'Cart',
     id: 'cart',
     th: () => <Th key="cart" rowSpan="2">Cart</Th>,
-    td: ({ node, relay, total, index }) =>
+    td: ({ node, total, index }) =>
       <Td>
         <AddCaseFilesToCartButton
           caseId={node.case_id}

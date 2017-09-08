@@ -1,7 +1,8 @@
 /* @flow */
 
 import React from 'react';
-import { compose, withState, lifecycle } from 'recompose';
+import { compose, withState, lifecycle, withProps } from 'recompose';
+import { get } from 'lodash';
 import { getDefaultCurve, enoughData } from '@ncigdc/utils/survivalplot';
 import FullWidthLayout from '@ncigdc/components/Layouts/FullWidthLayout';
 import ProjectSummary from '@ncigdc/modern_components/ProjectSummary';
@@ -26,6 +27,7 @@ import GenesTable from '@ncigdc/modern_components/GenesTable';
 import SurvivalPlotWrapper from '@ncigdc/components/SurvivalPlotWrapper';
 import withPropsOnChange from '@ncigdc/utils/withPropsOnChange';
 import HasCases from '@ncigdc/modern_components/HasCases';
+import { withExists } from '@ncigdc/modern_components/Exists/index';
 
 const styles = {
   column: {
@@ -51,6 +53,8 @@ const initialState = {
 };
 
 const enhance = compose(
+  withProps(({ match }) => ({ type: 'Project', id: get(match, 'params.id') })),
+  withExists,
   withState(
     'selectedMutatedGenesSurvivalData',
     'setSelectedMutatedGenesSurvivalData',
@@ -63,29 +67,26 @@ const enhance = compose(
   ),
   withState('state', 'setState', initialState),
   withState('numCasesAggByProject', 'setNumCasesAggByProject', undefined),
-  withPropsOnChange(
-    ['match'],
-    async ({ match, projectId = match.params.id, setState }) => {
-      if (!projectId) return;
+  withPropsOnChange(['id'], async ({ id, setState }) => {
+    if (!id) return;
 
-      const defaultSurvivalData = await getDefaultCurve({
-        currentFilters: {
-          op: '=',
-          content: { field: 'cases.project.project_id', value: projectId },
-        },
-        slug: projectId,
-      });
+    const defaultSurvivalData = await getDefaultCurve({
+      currentFilters: {
+        op: '=',
+        content: { field: 'cases.project.project_id', value: id },
+      },
+      slug: id,
+    });
 
-      setState(s => ({
-        ...s,
-        loadingSurvival: false,
-        defaultSurvivalData,
-      }));
-    },
-  ),
+    setState(s => ({
+      ...s,
+      loadingSurvival: false,
+      defaultSurvivalData,
+    }));
+  }),
   lifecycle({
     componentWillReceiveProps(nextProps): void {
-      if (nextProps.match.params.id !== this.props.match.params.id) {
+      if (nextProps.id !== this.props.id) {
         nextProps.setSelectedMutatedGenesSurvivalData({});
         nextProps.setSelectedFrequentMutationsSurvivalData({});
       }
@@ -115,8 +116,7 @@ const enhance = compose(
 
 export default enhance(
   ({
-    match,
-    projectId = match.params.id,
+    id: projectId,
     filters,
     state: {
       defaultSurvivalData,

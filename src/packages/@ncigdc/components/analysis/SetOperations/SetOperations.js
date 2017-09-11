@@ -3,11 +3,7 @@ import { compose, withState } from 'recompose';
 
 import Venn, { buildOps } from '@ncigdc/components/Charts/Venn';
 import { Row, Column } from '@ncigdc/uikit/Flex';
-import {
-  ExploreCaseCount,
-  GeneCount,
-  SsmCount,
-} from '@ncigdc/modern_components/Counts';
+import countComponents from '@ncigdc/modern_components/Counts';
 import withRouter from '@ncigdc/utils/withRouter';
 import { WithSize } from '@ncigdc/utils/withSize';
 import { CreateExploreCaseSetButton } from '@ncigdc/modern_components/withSetAction';
@@ -15,12 +11,6 @@ import { CreateExploreGeneSetButton } from '@ncigdc/modern_components/withSetAct
 import { CreateExploreSsmSetButton } from '@ncigdc/modern_components/withSetAction';
 import OpsTable from './OpsTable';
 import SetTable from './SetTable';
-
-const countComponents = {
-  case: ExploreCaseCount,
-  gene: GeneCount,
-  ssm: SsmCount,
-};
 
 const CreateSetButtonMap = {
   case: CreateExploreCaseSetButton,
@@ -47,7 +37,6 @@ export default compose(
     push,
     hovering,
     setHovering,
-    dispatch,
     CreateSetButton = CreateSetButtonMap[type],
   }) => {
     const toggle = op => {
@@ -113,7 +102,6 @@ export default compose(
                 toggle,
                 push,
                 ops,
-                dispatch,
                 CountComponent,
                 selectedFilters,
                 CreateSetButton,

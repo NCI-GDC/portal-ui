@@ -34,6 +34,7 @@ export default (Component: any) => {
 
         const setOnlyInCurrentFilters = filters
           ? filters.content.length === 1 &&
+            ['in', '='].includes(filters.content[0].op.toLowerCase()) &&
             content.value &&
             content.value.length === 1 &&
             content.value[0].toString().includes('set_id:') &&

@@ -22,10 +22,11 @@ const enhance = compose(
       filtersToName({ filters, sets, length: MAX_SET_NAME_LENGTH }) ||
       `All ${displayType}s`,
   ),
-  withState('inputTotal', 'setInputTotal', ({ total }) =>
-    Math.min(MAX_SET_SIZE, total),
-  ),
-  withProps(({ sets, type }) => ({ sets: sets[type] || {} })),
+  withProps(({ sets, type, total }) => ({
+    sets: sets[type] || {},
+    max: Math.min(MAX_SET_SIZE, total),
+  })),
+  withState('inputTotal', 'setInputTotal', ({ max }) => max),
   withState('shouldCallCreateSet', 'setShouldCallCreateSet', false),
 );
 
@@ -45,6 +46,7 @@ const SaveSetModal = ({
   setShouldCallCreateSet,
   inputTotal,
   setInputTotal,
+  max,
 }) => {
   const existingSet = Object.entries(sets).find(
     ([, label]) => label === inputName,
@@ -58,7 +60,7 @@ const SaveSetModal = ({
           forceCreate
           disabled={
             !inputName ||
-            inputTotal > MAX_SET_SIZE ||
+            inputTotal > max ||
             inputName.length > MAX_SET_NAME_LENGTH
           }
           filters={filters}
@@ -90,19 +92,18 @@ const SaveSetModal = ({
         Save top:<br />
         <input
           type="number"
-          max={MAX_SET_SIZE}
+          max={max}
           value={inputTotal}
           onChange={e => setInputTotal(e.target.value)}
         />
         <div style={{ fontSize: '0.8em' }}>
-          You can save up to the top{' '}
-          {pluralize(displayType, MAX_SET_SIZE, true)}
+          You can save up to the top {pluralize(displayType, max, true)}
         </div>
       </label>
 
-      {inputTotal > MAX_SET_SIZE &&
+      {inputTotal > max &&
         <WarningBox>
-          Above maximum of {pluralize(displayType, MAX_SET_SIZE, true)}
+          Above maximum of {pluralize(displayType, max, true)}
         </WarningBox>}
 
       <label style={{ marginTop: 10 }}>

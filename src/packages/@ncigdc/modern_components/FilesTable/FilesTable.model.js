@@ -2,16 +2,13 @@
 
 import React from 'react';
 import { uniq } from 'lodash';
-import { Th, Td, TdNum } from '@ncigdc/uikit/Table';
+import { Th, Td, TdNum, ThNum } from '@ncigdc/uikit/Table';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import { RepositoryCasesLink } from '@ncigdc/components/Links/RepositoryLink';
 import FileLink from '@ncigdc/components/Links/FileLink';
 import { makeFilter } from '@ncigdc/utils/filters';
 import FileSize from '@ncigdc/components/FileSize';
-import styled from '@ncigdc/theme/styled';
-
-const NumTh = styled(Th, { textAlign: 'right' });
 
 const filesTableModel = [
   {
@@ -69,7 +66,7 @@ const filesTableModel = [
   {
     name: 'Cases',
     id: 'cases.case_id',
-    th: () => <Th>Cases</Th>,
+    th: () => <ThNum>Cases</ThNum>,
     td: ({
       node: { cases: { hits: { total = 0, edges: cases } }, file_id: fileId },
     }) =>
@@ -124,7 +121,7 @@ const filesTableModel = [
   {
     name: 'Size',
     id: 'file_size',
-    th: () => <NumTh>File Size</NumTh>,
+    th: () => <ThNum>File Size</ThNum>,
     td: ({ node }) => <TdNum><FileSize bytes={node.file_size} /></TdNum>,
     sortable: true,
     downloadable: true,
@@ -132,7 +129,7 @@ const filesTableModel = [
   {
     name: 'Annotations',
     id: 'annotations.annotation_id',
-    th: () => <Th>Annotations</Th>,
+    th: () => <ThNum>Annotations</ThNum>,
     td: ({ node }) =>
       <TdNum>
         {

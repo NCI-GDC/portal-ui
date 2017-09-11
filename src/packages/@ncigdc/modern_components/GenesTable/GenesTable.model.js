@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { scaleOrdinal, schemeCategory10 } from 'd3';
-import { Th, Td } from '@ncigdc/uikit/Table';
+import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter, addInFilters, removeFilter } from '@ncigdc/utils/filters';
 import GeneLink from '@ncigdc/components/Links/GeneLink';
 import { tableToolTipHint } from '@ncigdc/theme/mixins';
@@ -16,16 +16,13 @@ import CosmicIcon from '@ncigdc/theme/icons/Cosmic';
 import Hidden from '@ncigdc/components/Hidden';
 import { getSurvivalCurves } from '@ncigdc/utils/survivalplot';
 import Button from '@ncigdc/uikit/Button';
-import styled from '@ncigdc/theme/styled';
+
 import { ForTsvExport } from '@ncigdc/components/DownloadTableToTsvButton';
 import { createSelectColumn } from '@ncigdc/tableModels/utils';
 
 import type { TGroupFilter } from '@ncigdc/utils/filters/types';
 
 const colors = scaleOrdinal(schemeCategory10);
-
-const NumTh = styled(Th, { textAlign: 'right' });
-const NumTd = styled(Td, { textAlign: 'right' });
 
 const GenesTableModel = [
   createSelectColumn({ idField: 'gene_id' }),
@@ -200,7 +197,7 @@ const GenesTableModel = [
     sortable: true,
     downloadable: true,
     th: ({ context }) =>
-      <NumTh>
+      <ThNum>
         <Tooltip
           style={tableToolTipHint()}
           Component={
@@ -212,9 +209,9 @@ const GenesTableModel = [
         >
           # Mutations
         </Tooltip>
-      </NumTh>,
+      </ThNum>,
     td: ({ node, ssmCounts, defaultFilters }) =>
-      <NumTd>
+      <TdNum>
         <MutationsCount
           ssmCount={ssmCounts[node.gene_id]}
           filters={addInFilters(
@@ -222,7 +219,7 @@ const GenesTableModel = [
             makeFilter([{ field: 'genes.gene_id', value: [node.gene_id] }]),
           )}
         />
-      </NumTd>,
+      </TdNum>,
   },
   {
     name: 'Annotations',

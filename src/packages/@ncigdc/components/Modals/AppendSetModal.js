@@ -34,6 +34,7 @@ const AppendSetModal = ({
   score,
   dispatch,
   type,
+  displayType,
   sets,
   field,
   query,
@@ -85,12 +86,13 @@ const AppendSetModal = ({
           onChange={e => setInputTotal(e.target.value)}
         />
         <div style={{ fontSize: '0.8em' }}>
-          You can append up to the top {pluralize(type, MAX_SET_SIZE, true)}
+          You can append up to the top{' '}
+          {pluralize(displayType, MAX_SET_SIZE, true)}
         </div>
       </label>
       {inputTotal > MAX_SET_SIZE &&
         <WarningBox>
-          Above maximum of {pluralize(type, MAX_SET_SIZE, true)}
+          Above maximum of {pluralize(displayType, MAX_SET_SIZE, true)}
         </WarningBox>}
 
       <SetTable

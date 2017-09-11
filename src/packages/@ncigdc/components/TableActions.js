@@ -64,6 +64,7 @@ const TableActions = ({
   idField,
   query,
   selectedIds,
+  scope,
 }: TProps) => {
   return (
     <Row style={style} spacing="0.2rem" className="test-table-actions">
@@ -124,6 +125,7 @@ const TableActions = ({
             type={type}
             displayType={displayType}
             selectedIds={selectedIds || []}
+            scope={scope}
           />
         )}
     </Row>

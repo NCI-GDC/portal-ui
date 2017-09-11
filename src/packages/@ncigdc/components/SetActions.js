@@ -35,6 +35,7 @@ export default enhance(
     selectedIds,
     sort,
     score,
+    scope,
     ...props
   }) => {
     const titleType = displayType.replace(/^./, m => m.toUpperCase());
@@ -108,7 +109,9 @@ export default enhance(
                       score={score}
                       sort={sort}
                       type={type}
+                      displayType={displayType}
                       AppendSetButton={AppendSetButton}
+                      scope={scope}
                     />,
                   ),
                 );

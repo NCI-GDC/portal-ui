@@ -50,17 +50,19 @@ export default enhance(
     displayType = type,
   }) => {
     const CountComponent = countComponents[type];
-
-    const currentValues = !currentFilters
-      ? []
-      : get(
-          getFilterValue({
-            currentFilters: currentFilters.content,
-            dotField: idField,
-          }),
-          'content.value',
+    const currentValues = []
+      .concat(
+        (currentFilters &&
+          get(
+            getFilterValue({
+              currentFilters: currentFilters.content,
+              dotField: idField,
+            }),
+            'content.value',
+          )) ||
           [],
-        ).filter(v => v.includes('set_id:'));
+      )
+      .filter(v => v.includes('set_id:'));
 
     return (
       <Row style={style}>
@@ -142,8 +144,15 @@ export default enhance(
                               },
                             }}
                           >
-                            {count =>
-                              pluralize(capitalize(displayType), count, true)}
+                            {count => (
+                              <span>
+                                {pluralize(
+                                  capitalize(displayType),
+                                  count,
+                                  true,
+                                )}
+                              </span>
+                            )}
                           </CountComponent>
                         </div>
                       </label>

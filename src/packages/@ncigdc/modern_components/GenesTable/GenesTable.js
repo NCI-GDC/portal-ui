@@ -91,6 +91,7 @@ export default compose(
           <Row>
             <TableActions
               type="gene"
+              scope="explore"
               arrangeColumnKey="genes"
               total={totalGenes}
               endpoint="genes"

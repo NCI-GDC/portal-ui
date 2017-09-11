@@ -31,31 +31,34 @@ export default enhance(
                 },
               }}
             >
-              {count =>
-                count === 0 ? (
-                  0
-                ) : (
-                  <ExploreLink
-                    query={{
-                      searchTableTab:
-                        (type === 'ssm' ? 'mutation' : type) + 's',
-                      filters: {
-                        op: 'AND',
-                        content: [
-                          {
-                            op: 'IN',
-                            content: {
-                              field: `${type}s.${type}_id`,
-                              value: [`set_id:${setId}`],
+              {count => (
+                <span>
+                  {count === 0 ? (
+                    0
+                  ) : (
+                    <ExploreLink
+                      query={{
+                        searchTableTab:
+                          (type === 'ssm' ? 'mutation' : type) + 's',
+                        filters: {
+                          op: 'AND',
+                          content: [
+                            {
+                              op: 'IN',
+                              content: {
+                                field: `${type}s.${type}_id`,
+                                value: [`set_id:${setId}`],
+                              },
                             },
-                          },
-                        ],
-                      },
-                    }}
-                  >
-                    {count.toLocaleString()}
-                  </ExploreLink>
-                )}
+                          ],
+                        },
+                      }}
+                    >
+                      {count.toLocaleString()}
+                    </ExploreLink>
+                  )}
+                </span>
+              )}
             </CountComponent>
           ),
         };

@@ -215,7 +215,10 @@ export const inCurrentFilters = ({ currentFilters, key, dotField }) =>
   currentFilters.some(
     f =>
       f.content.field === dotField &&
-      f.content.value.map(v => getDisplayValue(v)).includes(key),
+      []
+        .concat(f.content.value || [])
+        .map(v => getDisplayValue(v))
+        .includes(key),
   );
 
 // true if field in

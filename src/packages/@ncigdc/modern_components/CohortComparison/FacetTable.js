@@ -42,16 +42,16 @@ export default compose(
           const bucket = find(data1[field].buckets, b => b.key === k) || {};
 
           return {
-            label: bucket.key,
-            value: bucket.doc_count,
+            label: k,
+            value: bucket.doc_count || 0,
           };
         })}
         data2={data.map(k => {
           const bucket = find(data2[field].buckets, b => b.key === k) || {};
 
           return {
-            label: bucket.key,
-            value: bucket.doc_count,
+            label: k,
+            value: bucket.doc_count || 0,
           };
         })}
         yAxis={{ title: '# Cases' }}

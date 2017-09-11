@@ -8,11 +8,10 @@ import {
 import AddCaseFilesToCartButton from '@ncigdc/components/AddCaseFilesToCartButton';
 import ProjectLink from '@ncigdc/components/Links/ProjectLink';
 import CaseLink from '@ncigdc/components/Links/CaseLink';
-import { Th, Td } from '@ncigdc/uikit/Table';
+import { Th, Td, ThNum, TdNum } from '@ncigdc/uikit/Table';
 import { makeFilter } from '@ncigdc/utils/filters';
 import ageDisplay from '@ncigdc/utils/ageDisplay';
 import withRouter from '@ncigdc/utils/withRouter';
-import styled from '@ncigdc/theme/styled';
 import {
   createDataCategoryColumns,
   createSelectColumn,
@@ -37,9 +36,6 @@ const dataCategoryColumns = createDataCategoryColumns({
   ],
   getTotalLinkFilters: hits => [],
 });
-
-const NumTh = styled(Th, { textAlign: 'right' });
-const NumTd = styled(Td, { textAlign: 'right' });
 
 const FilesLink = ({ node, fields = [], children }) =>
   children === '0'
@@ -153,15 +149,15 @@ const casesTableModel = [
     id: 'summary.file_count',
     sortable: true,
     downloadable: true,
-    th: () => <NumTh key="summary.file_count" rowSpan="2">Files</NumTh>,
+    th: () => <ThNum key="summary.file_count" rowSpan="2">Files</ThNum>,
     td: ({ node }) =>
-      <NumTd key="summary.file_count">
+      <TdNum key="summary.file_count">
         <FilesLink node={node}>
           {node.summary.file_count.toLocaleString()}
         </FilesLink>
-      </NumTd>,
+      </TdNum>,
     total: withRouter(({ hits, query }) =>
-      <NumTd>
+      <TdNum>
         <RepositoryCasesLink
           query={{
             filters: query.filters ? getProjectIdFilter(hits) : null,
@@ -171,7 +167,7 @@ const casesTableModel = [
             .reduce((acc, val) => acc + val.node.summary.case_count, 0)
             .toLocaleString()}
         </RepositoryCasesLink>
-      </NumTd>,
+      </TdNum>,
     ),
   },
   ...dataCategoryColumns,
@@ -179,16 +175,16 @@ const casesTableModel = [
     name: 'Annotations',
     id: 'score',
     sortable: true,
-    th: () => <NumTh key="score" rowSpan="2">Annotations</NumTh>,
+    th: () => <ThNum key="score" rowSpan="2">Annotations</ThNum>,
     td: ({ node }) =>
-      <NumTd key="score">
+      <TdNum key="score">
         <AnnotationCountLink
           hits={node.annotations.hits}
           filters={makeFilter([
             { field: 'annotations.case_id', value: node.case_id },
           ])}
         />
-      </NumTd>,
+      </TdNum>,
   },
   {
     name: 'Program',

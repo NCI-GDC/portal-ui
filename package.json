@@ -8,8 +8,9 @@
   },
   "homepage": "https://portal.gdc.cancer.gov/",
   "scripts": {
-    "start": "BROWSER=none jailbreak-react-scripts start",
-    "build": "jailbreak-react-scripts build",
+    "start": "concurrently --kill-others 'npm run start-ui' 'npm run relay -- --watch'",
+    "start-ui": "BROWSER=none jailbreak-react-scripts start",
+    "build": "npm run relay && jailbreak-react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "lint": "eslint .",
     "flow": "flow check",
@@ -31,6 +32,7 @@
     "babel-polyfill": "6.23.0",
     "blueimp-md5": "2.7.0",
     "color": "0.11.4",
+    "concurrently": "3.5.0",
     "d3": "4.8.0",
     "download-svg": "0.1.1",
     "fbemitter": "2.1.1",
@@ -85,6 +87,6 @@
     "jailbreak-react-scripts": "0.0.2",
     "prettier": "1.4.4",
     "react-scripts": "1.0.7",
-    "relay-compiler": "1.0.0"
+    "relay-compiler": "1.3.0"
   }
 }

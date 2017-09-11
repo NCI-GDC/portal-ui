@@ -71,6 +71,7 @@ export default compose(
               }}
               type="text"
               autoFocus
+              onFocus={e => e.target.select()}
             />
             <Tooltip
               Component={

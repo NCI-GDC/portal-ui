@@ -110,6 +110,7 @@ const SaveSetModal = ({
         <input
           style={{ width: '100%' }}
           autoFocus
+          onFocus={e => e.target.select()}
           value={inputName}
           onChange={e => setInputName(e.target.value)}
           id="save-set-modal-name"

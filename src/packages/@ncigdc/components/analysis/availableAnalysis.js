@@ -63,8 +63,10 @@ const availableAnalysis: Array<TAnalysis> = [
     setDisabledMessage: ({ sets, type }) =>
       ['case', 'gene', 'ssm'].filter(t => t !== type).some(t => sets[t])
         ? 'Please choose only one type'
-        : (sets[type] || []).length > 3
-          ? `Please select two or three ${type} sets`
+        : (sets[type] || []).length >= 3
+          ? `Please select two or three ${type === 'ssm'
+              ? 'mutation'
+              : type} sets`
           : null,
     setTypes: ['case', 'gene', 'ssm'],
     validateSets: sets => {
@@ -109,7 +111,7 @@ const availableAnalysis: Array<TAnalysis> = [
       !['case'].includes(type)
         ? "This analysis can't be run with this type"
         : (sets[type] || []).length >= 2
-          ? `You can only select two ${type} set`
+          ? `You can only select two ${type === 'ssm' ? 'mutation' : type} set`
           : null,
     setTypes: ['case'],
     validateSets: sets =>

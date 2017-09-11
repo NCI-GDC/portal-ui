@@ -12,8 +12,10 @@ import withRouter from '@ncigdc/utils/withRouter';
 import DropdownItem from '@ncigdc/uikit/DropdownItem';
 import Link from '@ncigdc/components/Links/Link';
 import { getFilterValue } from '@ncigdc/utils/filters';
-import countComponents from '@ncigdc/modern_components/Counts/index';
+import countComponents from '@ncigdc/modern_components/Counts';
 import { Tooltip } from '@ncigdc/uikit/Tooltip';
+import pluralize from '@ncigdc/utils/pluralize';
+import { capitalize } from '@ncigdc/utils/string';
 
 const MAX_LABEL_LENGTH = 30;
 const enhance = compose(
@@ -45,6 +47,7 @@ export default enhance(
     style,
     currentFilters,
     type,
+    displayType = type,
   }) => {
     const CountComponent = countComponents[type];
 
@@ -139,10 +142,11 @@ export default enhance(
                                 value: `set_id:${setId}`,
                               },
                             }}
-                          />{' '}
-                          {type.replace(/^./, m => m.toUpperCase())}s
+                          >
+                            {count =>
+                              pluralize(capitalize(displayType), count, true)}
+                          </CountComponent>
                         </div>
-
                       </label>
                     </Row>
                   </Tooltip>

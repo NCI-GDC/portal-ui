@@ -133,6 +133,7 @@ export const SSMAggregationsComponent = compose(
     />
     <UploadSetButton
       type="ssm"
+      displayType="mutation"
       style={{
         width: '100%',
         borderBottom: `1px solid ${props.theme.greyScale5}`,
